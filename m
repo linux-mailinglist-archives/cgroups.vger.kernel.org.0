@@ -2,142 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F5433CA14
-	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 00:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3735633CA31
+	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 00:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhCOXl0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 19:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
+        id S232334AbhCOXyq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 19:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhCOXlC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 19:41:02 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2112C061756
-        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id m7so10456142qtq.11
-        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
+        with ESMTP id S232736AbhCOXyj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 19:54:39 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E526C06174A;
+        Mon, 15 Mar 2021 16:54:39 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id l4so33579197qkl.0;
+        Mon, 15 Mar 2021 16:54:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sHh364PFI7gr7Rg7wpaysNQPtI9BiNpDxSsKea0W7pA=;
-        b=KbheRMtg2robQTyXPOEUrlWiONJ6e2isDPkgv9TYBs4HWXHrRdzR9F4j8VM+dTeX2M
-         eabV8ybFsCDihGBWhwgMPDDTOX737BCr06IpzJThWzsqHtEJiT5yZZq3Z89KjreYoS2W
-         9GMEiDZw38HOxAu7Z1TuHEAcU6cUTzw/i3xPEKKtM4aJJtASYaaboQmNpTbWdtH+uOIs
-         tAPWz2umjmR8R0K+EHsBDPmG35CNquRmgrNIM+onWovfmkuPW6eYCeH4T0Bg0KGQ1Jbo
-         2m7pNiKU76I12k+7IUBC77cbwWHyrwEwwo1g1QPp8LoL/FS4EHStaALOmG1cd3x7bIUn
-         ms7Q==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=US0hVPQ8vE/ff4q4EMV/WahbUbFBxAIlNGyDC8TZKKo=;
+        b=anlpAKgv1icjbUA4PcLTmi9IUjIbI/zzazbcKLMIKSnLma+f+zvtMa/z+TNJ1Fb4/U
+         w4LKNq8Sxa+Jd4ADL3B6JaCsM2rY4qXj3HeZD4506hVAgMner9pcoO2Vd9OZCjXqeQ2Q
+         C/KJ3q0LAJ2t2P4R0lPsrUK1AC8Cgrxvl02ibVFSP88VrAhtb7nDKS5uiJI/tNu+Uv/M
+         HvEa87XZIybFq27EArSte01J4H7GrL53gn48U5jGfSOP/O0z/vgpwwPp2ftthhXWAsVY
+         //QJ71p/BWJs/LrqaW7yb0VkIlGKZxprXpB0uMM1gym5oJ/Pjk4XP/jxxyLzDqwn2AFp
+         k4vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sHh364PFI7gr7Rg7wpaysNQPtI9BiNpDxSsKea0W7pA=;
-        b=GaTegRFtPSiYw66ZsB7Wb4jJcpp7oc+rQ/UvICMcUiUsqlPiQhbGzbHKyY+LV4O39B
-         zT5+Y8B4EYJJafx9JALCXoPZCDthkYQa5OqKVnRMhUd6eZ/BiDfGzrEI6oXqvlOyJhZx
-         FgjseQdHyhcG/4it8qcPWv+22o186BkHdNNO0n23OyATf9CeBc1aVlTzyL2eObel4v0K
-         M+bwSiX5ezaXlr9hfAj9WejTDANFK9uuKC/FYRpB5N26gtyG/HBPI7EtOfkVF3ZZ7hGo
-         h9YxPCPTsft7qYUrFa9arfLiJCemGSAropgs6DiclsynIB+YzJBEBy0HNbC3NKzLAYxy
-         KA6g==
-X-Gm-Message-State: AOAM531oah6Eslv60GGwTyQ3fhSbmuNAZrPWfSsy1D+hDGE8UfGLvnp4
-        WrQIpJeQbRUs0f66WiYJ8dcVog==
-X-Google-Smtp-Source: ABdhPJz9md7FgYM4eYPuO/5SfyVzkVTi0KXgspL4ZAqLFAN4N7SNYwrgpLRwef8H/S3+tBIwqC2sgw==
-X-Received: by 2002:ac8:1186:: with SMTP id d6mr14164688qtj.124.1615851661253;
-        Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id o7sm13242112qki.63.2021.03.15.16.41.00
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=US0hVPQ8vE/ff4q4EMV/WahbUbFBxAIlNGyDC8TZKKo=;
+        b=KEGWOT8MVzbPBjCMDkpk8xVkk+J5TARSWq11CGzFI1rA5KWn13A/ZNNKke1pCLGutH
+         bKD1UoKogYl3cA4WbBiooJQ5MntH74omUIhKKJgIxvrEGFoNmLoJ6tprs9s4egS1Y6XV
+         7kqTJCTL4b3CJZb9Aq/BXbfYUWaB138R9CrVhVYX+7XGgh0gmfhYy2viTffPuaSjRo6a
+         s2gCy7sYUo7W0m+zayo6ipxwH8j40yQ9i4EKX9aQc8l6M7QyUMRjK7qvUS3ygXVTDaYM
+         Z9fumSBBnH4X58ek0b1ezXg69/CdoNgx5NDWybWF0R8EhFD9ZZoLOrEdFORPaeESq+bC
+         IKpw==
+X-Gm-Message-State: AOAM530U6jQg+tIETAhYN2/IuUmqty0q9sCXmJWICpIhHsCveo6u2+yw
+        dyXICQSwH8jsZqva9QyHlDk=
+X-Google-Smtp-Source: ABdhPJwa2U9JAW0IdxHOI/3q/+uL14oiW0exgSHcfpOxWOPVytqe+AmVKLw8B8hEQOQOpxUo2j2moA==
+X-Received: by 2002:a37:9b82:: with SMTP id d124mr27326575qke.489.1615852478161;
+        Mon, 15 Mar 2021 16:54:38 -0700 (PDT)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id g186sm14138805qke.0.2021.03.15.16.54.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 16:41:00 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] mm: memcontrol: switch to rstat fix
-Date:   Mon, 15 Mar 2021 19:41:00 -0400
-Message-Id: <20210315234100.64307-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.30.1
+        Mon, 15 Mar 2021 16:54:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Mar 2021 19:54:36 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jacob Pan <jacob.jun.pan@intel.com>
+Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
+        rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>
+Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
+Message-ID: <YE/zvLkL1vM8/Cdm@slm.duckdns.org>
+References: <YECfhCJtHUL9cB2L@slm.duckdns.org>
+ <20210312125821.22d9bfca@jacob-builder>
+ <YEvZ4muXqiSScQ8i@google.com>
+ <20210312145904.4071a9d6@jacob-builder>
+ <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
+ <20210313085701.1fd16a39@jacob-builder>
+ <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
+ <20210315151155.383a7e6e@jacob-builder>
+ <YE/ddx5+ToNsgUF0@slm.duckdns.org>
+ <20210315164012.4adeabe8@jacob-builder>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315164012.4adeabe8@jacob-builder>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Fix a sleep in atomic section problem: wb_writeback() takes a spinlock
-and calls wb_over_bg_thresh() -> mem_cgroup_wb_stats, but the regular
-rstat flushing function called from in there does lockbreaking and may
-sleep. Switch to the atomic variant, cgroup_rstat_irqsafe().
+Hello,
 
-To be consistent with other memcg flush calls, but without adding
-another memcg wrapper, inline and drop memcg_flush_vmstats() instead.
+On Mon, Mar 15, 2021 at 04:40:12PM -0700, Jacob Pan wrote:
+> 2. then we want to move/migrate Process1 to cg_B. so we need uncharge 10 of
+> cg_A, charge 10 of cg_B
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+So, what I don't get is why this migration is necessary. This isn't
+supported as a usage pattern and no one, at least in terms of wide-spread
+usage, does this. Why is this a requirement for your use case?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index f7fb12d3c2fc..9091913ec877 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -757,11 +757,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
- 	return mz;
- }
- 
--static void memcg_flush_vmstats(struct mem_cgroup *memcg)
--{
--	cgroup_rstat_flush(memcg->css.cgroup);
--}
--
- /**
-  * __mod_memcg_state - update cgroup memory statistics
-  * @memcg: the memory cgroup
-@@ -1572,7 +1567,7 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 	 *
- 	 * Current memory state:
- 	 */
--	memcg_flush_vmstats(memcg);
-+	cgroup_rstat_flush(memcg->css.cgroup);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -3523,7 +3518,7 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
- 	unsigned long val;
- 
- 	if (mem_cgroup_is_root(memcg)) {
--		memcg_flush_vmstats(memcg);
-+		cgroup_rstat_flush(memcg->css.cgroup);
- 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
- 			memcg_page_state(memcg, NR_ANON_MAPPED);
- 		if (swap)
-@@ -3925,7 +3920,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	memcg_flush_vmstats(memcg);
-+	cgroup_rstat_flush(memcg->css.cgroup);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -3997,7 +3992,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	memcg_flush_vmstats(memcg);
-+	cgroup_rstat_flush(memcg->css.cgroup);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -4500,7 +4495,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
- 	struct mem_cgroup *parent;
- 
--	memcg_flush_vmstats(memcg);
-+	cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
- 
- 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
- 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+Thanks.
+
 -- 
-2.30.1
-
+tejun
