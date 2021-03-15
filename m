@@ -2,74 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C1333C652
-	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 20:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A7D33C688
+	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 20:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhCOTDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 15:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbhCOTDr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 15:03:47 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174B2C06174A
-        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 12:03:47 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 892742E5;
-        Mon, 15 Mar 2021 19:03:45 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 892742E5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1615835025; bh=QypNFyeA1Y53RZBH32uQ1ZH1dtdi/T309FCBH6S4fH0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Wa25vhrYYTPme8v9i8z/h4H+WCw9Du519YF597ebySIFfUh6SJsVVzTxf2yyixL+B
-         SsBN1xBVB7VCTQvowlwB1mMloRihUDmbX0OByHyHAkWBHzOQLPgILVHLvvlMNSRHkT
-         mjGQ4cwNK04rRknRmNvMZeV5bHdTPtAJ+yjNH0h6JjhEOeyZxig6Cw8yIIfpK9I4MA
-         EMvfb1uugVcskVKgEQcYvMsKrhfeqJg+O3HmagSX9TAuweeySVqGkX/GDyxeN1KDiI
-         MbyxHuxQTi9BcUs/+0v8xmxITu54PKZmR0lGF1EtdzwidAfhlpR3t/cB/J+sq8Uj3H
-         mhcweNPe30E1g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, tj@kernel.org,
-        lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: Re: [PATCH] docs: admin-guide: cgroup-v1: Fix typos in the file
- memory.rst
-In-Reply-To: <20210313061029.28024-1-unixbhaskar@gmail.com>
-References: <20210313061029.28024-1-unixbhaskar@gmail.com>
-Date:   Mon, 15 Mar 2021 13:03:45 -0600
-Message-ID: <87im5s2q9a.fsf@meer.lwn.net>
+        id S231343AbhCOTKT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 15:10:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58734 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230243AbhCOTKN (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 15 Mar 2021 15:10:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615835412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gBh9rZ1pe0Dw23aY7I0BceM5dAfPMfFrVDEvEe02JBQ=;
+        b=LtTDSfiEFPCuY2dr1iPNxVN3WP7R4nJ6QBfYlBO9dIEx3AZD7DORPVEpyqSZwxaNBD67ho
+        thqQwRLsCImAVaMVNPEnBPxDviIafWx0by0BLCZeyNCaYS1XjGqT0/nwMs8kOH0kUWCam7
+        aDMSyE7WKRGcejD1r5ZNrf11mumaWEc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 126BDAE8F;
+        Mon, 15 Mar 2021 19:10:12 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 20:10:09 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
+Message-ID: <YE+xEbwUoRj+snTY@blackbook>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+ <YETLqGIw1GekWdYK@slm.duckdns.org>
+ <YEpoS90X19Z2QOro@blackbook>
+ <YEupplaAWU1i0G6B@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WauBitk+7AKZVUrp"
+Content-Disposition: inline
+In-Reply-To: <YEupplaAWU1i0G6B@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-> s/overcommited/overcommitted/
-> s/Overcommiting/Overcommitting/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v1/memory.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> index 52688ae34461..0d574fd3f8e3 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -360,8 +360,8 @@ U != 0, K = unlimited:
->
->  U != 0, K < U:
->      Kernel memory is a subset of the user memory. This setup is useful in
-> -    deployments where the total amount of memory per-cgroup is overcommited.
-> -    Overcommiting kernel memory limits is definitely not recommended, since the
-> +    deployments where the total amount of memory per-cgroup is overcommitted.
-> +    Overcommitting kernel memory limits is definitely not recommended, since the
->      box can still run out of non-reclaimable memory.
+--WauBitk+7AKZVUrp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Applied, thanks.
+On Fri, Mar 12, 2021 at 09:49:26AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> I will add some more information in the cover letter of the next version.
+Thanks.
 
-jon
+> Each one coming up with their own interaction is a duplicate effort
+> when they all need similar thing.
+Could this be expressed as a new BPF hook (when allocating/freeing such
+a resource unit)?
+
+The decision could be made based on the configured limit or even some
+other predicate.
+
+(I saw this proposed already but I haven't seen some more reasoning
+whether it's worse/better. IMO, BPF hooks are "cheaper" than full-blown
+controllers, though it's still new user API.)
+
+
+> As per my understanding this is the only for way for loadable modules
+> (kvm-amd in this case) to access Kernel APIs. Let me know if there is a
+> better way to do it.
+I understood the symbols are exported for such modularized builds.
+However, making them non-GPL exposes them to any out-of-tree modules,
+although, the resource types are supposed to stay hardcoded in the misc
+controller. So my point was to make them EXPORT_SYMBOL_GPL to mark
+they're just a means of implementing the modularized builds and not an
+API. (But they'd remain API for out-of-tree GPL modules anyway, so take
+this reasoning of mine with a grain of salt.)
+
+Michal
+
+--WauBitk+7AKZVUrp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPsQ0ACgkQia1+riC5
+qSh1cQ/9GddlgkcRcRP9oxFJbsVUxhnntwF8wqSof5oSUCBDSWP5Hz7M3P05aFrI
+5VTcopKswg9sI+xO2rMiZb2guzOsy4soqTHRj6emRwbs09Pmtb9uEPrg3nbTZsAR
+jUHnNRkhPB7LVMhyVRH4wmZRcD1mq0HiJLkzQNaPVG8D3XG0ge6xVr6+doCc2Ev6
+UTrbbtcdBXmZX8hnLutMYu+QWNWQJyWJjii1nJKwby1v6heb10/fN40Ai1DQiOrR
+l21qKqxrzUjzpJUOv7Rek/FHvKf1u6HcIEI8H1wx/tMdbptH7IMH6fAtRSDpzbnl
+rPzovNq6h6r49VwFPKAaY0kx8u0Yv+IUME2GrjpmuxO+O3dvDJiaQeltisxlfWLn
+/Cn236Hzs3aGAHHqqLDJXoxarCmdbFbLL5KjLfK8onoUuNkKf9jmZ2puG04Lgin6
+iuvW2VEwUeKDXGxly0+JmzbRatQlvjfltDf7QlHx5zZxbGXYXVDFaz0AKx2hS6h+
+XeoV5ko/poc6htsxJWdygD+DXl8y0c9JJlQsLHhBr5JPszYaw3BegCedwvZdF4ph
+5QczC/tm0JiKqlb9tNIJ/kv2qIC97DbLt0Q0wv3idoAAZ9iTCwOSwRIdA79txnm4
+brb1x019FyJQXQbSL9pP2saG0dbJ7PYgNHp//N/zFMahETXHkq4=
+=lJqH
+-----END PGP SIGNATURE-----
+
+--WauBitk+7AKZVUrp--
