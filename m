@@ -2,70 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B507E33C395
-	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 18:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C32D933C5C1
+	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 19:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhCORJy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 13:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34708 "EHLO mail.kernel.org"
+        id S229802AbhCOSed (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 14:34:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234153AbhCORJo (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 15 Mar 2021 13:09:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C141600CD;
-        Mon, 15 Mar 2021 17:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615828184;
-        bh=zcAvAGDwBXL4yn9+QAipdGh2ahuWzmm+14R4I24+RkE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=g6Iu0CEZAFaH5Jg9ZoCgtWqgWKonb1NUFHkQBS+M3GiQKDr1/V6urCCfAQusUacWg
-         9IEoYmTBriW3L1iLGoMQh2ng98CeiB7GT/qpZofsexz8wcH6gvisOU2jD2eAplAtwL
-         tvvDVOYwUEK+SvCMDpY+hA+Yi6q4KV4Mapbp6Ucwe2s8nzGdNn/GKT6uq0EXtFKNzo
-         +ejhdyR3aultI9g8H7wVlV7YZMKr5CLOEXJKDHKrK5Ag/yYSyY5suey7dsE0njPUx7
-         NkDKeAQ8MzgpRtH80v5cxNtdnVLw8+yLToIOKa9Fk44xUGUlAjzRc/N+F423u/jgac
-         zuQYZjBJXc+Rw==
-Date:   Mon, 15 Mar 2021 10:09:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH v2 1/8] memcg: accounting for fib6_nodes cache
-Message-ID: <20210315100942.3cc98bb4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <85b5f428-294b-af57-f496-5be5fddeeeea@virtuozzo.com>
-References: <YEnWUrYOArju66ym@dhcp22.suse.cz>
-        <85b5f428-294b-af57-f496-5be5fddeeeea@virtuozzo.com>
+        id S232041AbhCOSeT (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 15 Mar 2021 14:34:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615833258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H+y7FsHAfr9H0V0nZlpCJwqn4arhOTDKupfGhSsi4L0=;
+        b=KjlbibSfXB7NG662v+nqeUvX9bQmFZ6Tn4FZ8LSyV2Dy1wShX6HyGPkQ/3oP/oi8ltOa82
+        p4LArpJEH3uiUS4qK5AotGb4JiNd6JM5FPMBGV9OllfNYp2H0+Bq9mcfUIPNFQ81bOWovM
+        7fmYs578Xsmg19z3fl9mWp/3G2HomOI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2014DAE8F;
+        Mon, 15 Mar 2021 18:34:18 +0000 (UTC)
+Date:   Mon, 15 Mar 2021 19:34:15 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YE+op0MZKG41EALi@blackbook>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+ <20210304231946.2766648-2-vipinsh@google.com>
+ <YEpod5X29YqMhW/g@blackbook>
+ <YEu74hkEPEyvxC85@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="s/zzXfvrLmfa0Un9"
+Content-Disposition: inline
+In-Reply-To: <YEu74hkEPEyvxC85@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 15 Mar 2021 15:23:00 +0300 Vasily Averin wrote:
-> An untrusted netadmin inside a memcg-limited container can create a
-> huge number of routing entries. Currently, allocated kernel objects
-> are not accounted to proper memcg, so this can lead to global memory
-> shortage on the host and cause lot of OOM kiils.
-> 
-> One such object is the 'struct fib6_node' mostly allocated in
-> net/ipv6/route.c::__ip6_ins_rt() inside the lock_bh()/unlock_bh() section:
-> 
->  write_lock_bh(&table->tb6_lock);
->  err = fib6_add(&table->tb6_root, rt, info, mxc);
->  write_unlock_bh(&table->tb6_lock);
-> 
-> It this case is not enough to simply add SLAB_ACCOUNT to corresponding
-> kmem cache. The proper memory cgroup still cannot be found due to the
-> incorrect 'in_interrupt()' check used in memcg_kmem_bypass().
-> To be sure that caller is not executed in process contxt
-> '!in_task()' check should be used instead
 
-Sorry for a random question, I didn't get the cover letter. 
+--s/zzXfvrLmfa0Un9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What's the overhead of adding SLAB_ACCOUNT?
+On Fri, Mar 12, 2021 at 11:07:14AM -0800, Vipin Sharma <vipinsh@google.com>=
+ wrote:
+> We should be fine without atomic64_t because we are using unsigned
+> long and not 64 bit explicitly. This will work on both 32 and 64 bit
+> machines.
+I see.
 
-Please make sure you CC netdev on series which may impact networking.
+> But I will add READ_ONCE and WRITE_ONCE because of potential chances of
+> load tearing and store tearing.
+>=20
+> Do you agree?
+Yes.
+
+> This was only here to avoid multiple reads of capacity and making sure
+> if condition and seq_print will see the same value.
+Aha.
+
+> Also, I was not aware of load and store tearing of properly aligned
+> and machine word size variables. I will add READ_ONCE and WRITE_ONCE
+> at other places.
+Yeah, although it's theoretical, I think it also serves well to annotate
+such unsychronized accesses.
+
+Thanks,
+Michal
+
+--s/zzXfvrLmfa0Un9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPqKEACgkQia1+riC5
+qSihOg//SpH6gNPHIcbQ+iF47BrOX3zJwft1PTn3D8d3byIaot3/Sym+j12ttkQU
+xstX/U3Mvimyouy50DFaYLiQ+EWMOPm8dzEw2nPOQFrL0bT6cjRdFnAzH7Y2m87c
+GufRjzeGwn8H2dRTPHiUjc+ETQhdjIRUOL5yUgoJkDGmV1m63j4rQUS5JXoHuW/i
+WH8ePRhc4SlGS/Ifgu3/+g0a3z+K46umCrHA9//BHI5gPyuvobyCdwIjrFekSDAq
+5vWwp6YGavoX5ZoZALUpokgcZR/iVRhTpt5m6psuYFhb+i+sWi/jYVgAeGSzZgCU
+G9uvFogZrPASTAHTss+MwdXoKUWWckG33D5MA8RtTXobewWrO7GcpTCFb79Mm0pF
+JzdVgBuMMuphLjkXHgQnSX8wHQQ7R545TuaSLXZBM9AqDPFjScEwdi68qRKPqopt
+wqqL64XiFnoICLnZjFpp11cL1gccY4cHYo71eNrVA1bdscO1iiO/c5xPbh9JD6cX
+I/cwAksf9R+bW+XUWrgsDvx9VuCiWfhEtiT/obqgDyHEQfE7JtgVX2IDN1o1pLcM
++aGLPoyU/4Nc6aK898xqpJdzY/kCNB73YUuhdgH8lf1tY1P0myDTTivn7+XqZXd3
+hfMM6u+AdaUZhqymfylaEnTpQpBH4VfRAsBS0SnFuUnT93GnkqU=
+=+zv/
+-----END PGP SIGNATURE-----
+
+--s/zzXfvrLmfa0Un9--
