@@ -2,165 +2,209 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F166333D1C2
-	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 11:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA9033D7BC
+	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 16:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhCPK1Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Mar 2021 06:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S231486AbhCPPhf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Mar 2021 11:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235236AbhCPK1C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Mar 2021 06:27:02 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A28C061756
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 03:27:00 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id by2so9223600qvb.11
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 03:27:00 -0700 (PDT)
+        with ESMTP id S234572AbhCPPhK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Mar 2021 11:37:10 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB0AC06174A;
+        Tue, 16 Mar 2021 08:37:10 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id f12so11932992qtq.4;
+        Tue, 16 Mar 2021 08:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V0BTN/Z2jXatx08nLmn2iGZ7O1WuylzrrulrDON6R9k=;
-        b=xCib9ZN+FiOtHqn2f2GIRYRiTffT7uatWQxo/AtFklW7YHFihG2zQ/vTE6gNPQNf+9
-         vRO50HskMB8FxFuo2e/yIPiiEjRMNR2akfE/kxzq3hVHcZW6gbBwrXGM/nkazzsBxspT
-         IDDzm1pyKpT157y7ETbYQl89HFKamnR3YLguRbBuNUGLzFKgCZyAKpgnaNfuYaC+pVa6
-         LpmHEpA95pzB9VWM6M9mop0H7Z1xD8Vy9M7yIxp15Me9nGIHP1oJuFRaG4tLl0wyVweM
-         Pvxba1+vGHWQ9Sr05/mHjYuGYAaztxJfRkzf+J9pX0/vBFCFzOae7JoD3GMPcoWagsvR
-         gusg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tkj0ia5hpCZDucubv8I4sizyR82LNTriAr2vMPAQj/E=;
+        b=fmqt1PM3c9r4ycT0+M0peIYt0t0qYLcjBuaENLbx/bgURKlepe0/DFmwjyLv+NL1Bp
+         6BU8XJAV59vNYUVC9nXjmBpPTRRNCP/CTiplDVoETJt9qLIDRkS7W2GRQKQczjlEU/yv
+         NJ5y4i+hWh9cJyzwXPEsmB19k3cNXI7y8h4SyZmhZdnIIvSKoXFtqiMXn54u107oblhr
+         qN9rTSkdIoB3UUciSVvUOqZeHFgmPwkCL456MECrA54N5VUoh3QnQqHqs+k3d4jOldwF
+         cDzQ8oeLbXMQ+chuTZxAdS2KeMuB9lkB40aYVhq36Gfdj2n4zSKFXWJ4ANDmsMvl60rK
+         qCuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V0BTN/Z2jXatx08nLmn2iGZ7O1WuylzrrulrDON6R9k=;
-        b=EaQk3qJvn9b3JlkKQQClaneMN+69icWeQrVspJRzvSbWKzoSCn+YjaQBDffPhmvCNE
-         1uwmtro0d6r0C+pdDoMTBlodE+yHBPmjNYms1zfICQVDLkvorgJSq2FEqHdERuEQZz/n
-         tUoUdyqwVch1WdI8rtj4ssr8af0WuhWYO/r5bil/7Sob7K+HgLCJorUtPtGDss8lChuk
-         Y2dTJpu1tnjjxzfANSKRUDsZ33i7/8L6zWgPr3fntmUYZTPja9X2MvrwTvOKuDVyYoFS
-         3RJe0kGik52EgD1PkGKBfOCzYfeoG5gTl/DcxXONlOWCV7OtiXBX4z/+UkP/6cGJLx9R
-         Mz2w==
-X-Gm-Message-State: AOAM530UsoBnGWAg9fOPzNEjC0oar8Ca/oY9X894mLteFZXBxPhEP7PH
-        mYG29UzREWpL8bqN1yOu19l87w==
-X-Google-Smtp-Source: ABdhPJx1Qe12G4sXm6Hq0b39qzz4yiSC2X02eGBokp2+4l6Cg0jAMpo13TlhKMrD8MSowvisz7/VDA==
-X-Received: by 2002:a0c:f890:: with SMTP id u16mr15165954qvn.21.1615890419711;
-        Tue, 16 Mar 2021 03:26:59 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:7693])
-        by smtp.gmail.com with ESMTPSA id c19sm14587625qkl.78.2021.03.16.03.26.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Tkj0ia5hpCZDucubv8I4sizyR82LNTriAr2vMPAQj/E=;
+        b=HwqfQDaEXxgjg66oPTiVLUDV1OT9+Mw09oUt5+0y+kVampVtzzdFVI8mwu1e8cDXCT
+         qHV5lzZglMgs0EhaWkMFTFVNc3b1CqZ4+iyfZD9kIPF8ZumSI4Q219YvQrwgry2eTsiA
+         XFAWcLVatDmQz27TgOyZc3PBPok+5XMbjj3LzJ8KJMEDKGdrqidObFOSWoiLQ19B+MAf
+         GXxrmDEcOXCVJdYUlOaIIzc5A/PYKbeSNF1xsxW21lKG9Cw1XcHBOwgxR2lbKKobfjaH
+         Jpvv3L46X6wxdfPz/Fu2JCukHt8fbOORw2cLHgPLf0l3lmfU5CQriGBHujTWugdLcEhD
+         aB4g==
+X-Gm-Message-State: AOAM531gUXV57hnjFzFE7SJP57NvuiBdSz07OYCg7dREBf4gVpx8C5A6
+        lv6OEel7qOME8EAgxpWsgwU=
+X-Google-Smtp-Source: ABdhPJwemAre0PlJRoHQM1SeNE4jPOqETZrw2LN1kDiEtB+J4YeYq2Pdj3MbPBjFrm3tG+aawQdU1A==
+X-Received: by 2002:ac8:7f52:: with SMTP id g18mr273540qtk.250.1615909029421;
+        Tue, 16 Mar 2021 08:37:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:1ee])
+        by smtp.gmail.com with ESMTPSA id v7sm15321005qkv.86.2021.03.16.08.37.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 03:26:59 -0700 (PDT)
-Date:   Tue, 16 Mar 2021 06:26:58 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Arjun Roy <arjunroy.kdev@gmail.com>
-Cc:     akpm@linux-foundation.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, arjunroy@google.com,
-        shakeelb@google.com, edumazet@google.com, soheil@google.com,
-        kuba@kernel.org, mhocko@kernel.org, shy828301@gmail.com,
-        guro@fb.com
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <YFCH8vzFGmfFRCvV@cmpxchg.org>
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+        Tue, 16 Mar 2021 08:37:09 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+Date:   Tue, 16 Mar 2021 08:36:49 -0700
+Message-Id: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+No major changes, just rebasing and resubmitting
 
-On Mon, Mar 15, 2021 at 09:16:45PM -0700, Arjun Roy wrote:
-> From: Arjun Roy <arjunroy@google.com>
-> 
-> TCP zerocopy receive is used by high performance network applications
-> to further scale. For RX zerocopy, the memory containing the network
-> data filled by the network driver is directly mapped into the address
-> space of high performance applications. To keep the TLB cost low,
-> these applications unmap the network memory in big batches. So, this
-> memory can remain mapped for long time. This can cause a memory
-> isolation issue as this memory becomes unaccounted after getting
-> mapped into the application address space. This patch adds the memcg
-> accounting for such memory.
-> 
-> Accounting the network memory comes with its own unique challenges.
-> The high performance NIC drivers use page pooling to reuse the pages
-> to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> keep an extra reference on the pages and thus we can not depend on the
-> page reference for the uncharging. The page in the pool may keep a
-> memcg pinned for arbitrary long time or may get used by other memcg.
+Changes since V10:
 
-The page pool knows when a page is unmapped again and becomes
-available for recycling, right? Essentially the 'free' phase of that
-private allocator. That's where the uncharge should be done.
+* Added page-cache charging to mm: Charge active memcg when no mm is set
 
-For one, it's more aligned with the usual memcg charge lifetime rules.
+Changes since V9:
 
-But also it doesn't add what is essentially a private driver callback
-to the generic file unmapping path.
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
 
-Finally, this will eliminate the need for making up a new charge type
-(MEMCG_DATA_SOCK) and allow using the standard kmem charging API.
+Changes since V8:
 
-> This patch decouples the uncharging of the page from the refcnt and
-> associates it with the map count i.e. the page gets uncharged when the
-> last address space unmaps it. Now the question is, what if the driver
-> drops its reference while the page is still mapped? That is fine as
-> the address space also holds a reference to the page i.e. the
-> reference count can not drop to zero before the map count.
-> 
-> Signed-off-by: Arjun Roy <arjunroy@google.com>
-> Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-> ---
-> 
-> Changelog since v1:
-> - Pages accounted for in this manner are now tracked via MEMCG_SOCK.
-> - v1 allowed for a brief period of double-charging, now we have a
->   brief period of under-charging to avoid undue memory pressure.
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
 
-I'm afraid we'll have to go back to v1.
+Changes since V7:
 
-Let's address the issues raised with it:
+* Rebased against linus's branch
 
-1. The NR_FILE_MAPPED accounting. It is longstanding Linux behavior
-   that driver pages mapped into userspace are accounted as file
-   pages, because userspace is actually doing mmap() against a driver
-   file/fd (as opposed to an anon mmap). That is how they show up in
-   vmstat, in meminfo, and in the per process stats. There is no
-   reason to make memcg deviate from this. If we don't like it, it
-   should be taken on by changing vm_insert_page() - not trick rmap
-   into thinking these arent memcg pages and then fixing it up with
-   additional special-cased accounting callbacks.
+Changes since V6:
 
-   v1 did this right, it charged the pages the way we handle all other
-   userspace pages: before rmap, and then let the generic VM code do
-   the accounting for us with the cgroup-aware vmstat infrastructure.
+* Added separate spinlock for worker synchronization
+* Minor style changes
 
-2. The double charging. Could you elaborate how much we're talking
-   about in any given batch? Is this a problem worth worrying about?
+Changes since V5:
 
-   The way I see it, any conflict here is caused by the pages being
-   counted in the SOCK counter already, but not actually *tracked* on
-   a per page basis. If it's worth addressing, we should look into
-   fixing the root cause over there first if possible, before trying
-   to work around it here.
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
 
-   The newly-added GFP_NOFAIL is especially worrisome. The pages
-   should be charged before we make promises to userspace, not be
-   force-charged when it's too late.
+Changes since V4:
 
-   We have sk context when charging the inserted pages. Can we
-   uncharge MEMCG_SOCK after each batch of inserts? That's only 32
-   pages worth of overcharging, so not more than the regular charge
-   batch memcg is using.
+Only patches 1 and 2 have changed.
 
-   An even better way would be to do charge stealing where we reuse
-   the existing MEMCG_SOCK charges and don't have to get any new ones
-   at all - just set up page->memcg and remove the charge from the sk.
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
 
-   But yeah, it depends a bit if this is a practical concern.
+Changes since V3:
 
-Thanks,
-Johannes
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 248 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |  11 ++
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  15 ++-
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 242 insertions(+), 54 deletions(-)
+
+-- 
+2.30.2
+
