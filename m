@@ -2,31 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8593833CAE3
-	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 02:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BB333CB57
+	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 03:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCPB2P (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 21:28:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38036 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhCPB2J (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 15 Mar 2021 21:28:09 -0400
-IronPort-SDR: pMIkg6+eyF5UoBXZyTIqqVq3ag9NE890TM2PhBfgKi9F92rlYeZJ6no4TwjgeeecLhgLgJtFOg
- 71Kh1wzRszrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189273244"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="189273244"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 18:28:09 -0700
-IronPort-SDR: BbfDahb851UEsqIlHonZF+pw536xdmk6SIHATK0iFLJXSSUnSL/tkYVdroBa1309upxmGE5BK4
- fLMGVZCZqjyQ==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="412036602"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 18:28:09 -0700
-Date:   Mon, 15 Mar 2021 18:30:30 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Tejun Heo <tj@kernel.org>
+        id S234601AbhCPCWQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 22:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234598AbhCPCWO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 22:22:14 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B300C06174A;
+        Mon, 15 Mar 2021 19:22:14 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id f12so10669828qtq.4;
+        Mon, 15 Mar 2021 19:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x9e1xfobrgux5JmgRy+7168jAO2JUpIpvIQcF6MG83w=;
+        b=fjEXsStwnXKCurOKkJhtQkcTA24r1rdYzLOmvw1xvyNUJvtm0b9kg5enio6VXPGHUE
+         NeMqy3J9wiHHmkHoTqZlg8I7iJ8StIPtyYL8JawjzLLmbqjI+hrWHfILqO0RxLbwrXLC
+         jDWFObZ/zoE4IRnM9FQRyorroXQVsjphNLWMaDMpPHCRxgovQgs4vjPMMOm2o45NtdX/
+         nDbk2QOo3c4OaemxRdSTaFDuqla+i33mWKdJznmikwFBiysdhSnwmgzniAXpM9JXIQla
+         5KZ3WFUnLvoxEVwfPbWYKAVhnwTfUrDOtfhCPtfNSeuue6NnIU8ZUyDPx7cSZeSy2Yys
+         QoHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=x9e1xfobrgux5JmgRy+7168jAO2JUpIpvIQcF6MG83w=;
+        b=lDPdi1u0q9ZAJScz9tMMgPtZeDcDGKI2S0Q1C2cfHclROM7NeMEh4XLAYiJI6Oxtgm
+         IRP0L+ign0Lh/9rrqxBxX8abGIIHfJ1Q6DKG9Z1y+myQaTCTOvLedhwfokZr3iLzpTki
+         oCa8kNFDck4GAAAjKa+4lA06lEr/nE8xl2P2UEb+WQNmFExjrOhSi2ftFCokHBaL0Wiv
+         XYDmbuEVV0vndZUNGnmPXNiPxLExwmyrStKHsbVnQH15BGzBIuud8/QBMYH/LrCWT4IP
+         ODG1AjPQQ3zqE1X4JTHSP7v/poudXap6176i1p1MClkIPxTABh543Q4uBqwyvZ7+QrxF
+         pCzg==
+X-Gm-Message-State: AOAM531IIHuV5ntH7yqVE87BaEZAkboCOuoddFImHwnjrLnaDu2a319M
+        zKloiQ72TfL+pZHYrvJUFvg=
+X-Google-Smtp-Source: ABdhPJypiW/tANwk38POGxmJ+LQPrOrcn8PHYpIhP6vANCuOFNC24G9bMIqsJ6tcQiCBdmqOkqI3LA==
+X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr21363305qtx.21.1615861333631;
+        Mon, 15 Mar 2021 19:22:13 -0700 (PDT)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id d14sm13657503qkg.33.2021.03.15.19.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 19:22:13 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Mar 2021 22:22:12 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jacob Pan <jacob.jun.pan@intel.com>
 Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
         rdunlap@infradead.org, thomas.lendacky@amd.com,
         brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
@@ -43,55 +67,38 @@ Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
         Alex Williamson <alex.williamson@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        jacob.jun.pan@intel.com
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>
 Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <20210315183030.5b15aea3@jacob-builder>
-In-Reply-To: <YE/zvLkL1vM8/Cdm@slm.duckdns.org>
-References: <YECfhCJtHUL9cB2L@slm.duckdns.org>
-        <20210312125821.22d9bfca@jacob-builder>
-        <YEvZ4muXqiSScQ8i@google.com>
-        <20210312145904.4071a9d6@jacob-builder>
-        <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
-        <20210313085701.1fd16a39@jacob-builder>
-        <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
-        <20210315151155.383a7e6e@jacob-builder>
-        <YE/ddx5+ToNsgUF0@slm.duckdns.org>
-        <20210315164012.4adeabe8@jacob-builder>
-        <YE/zvLkL1vM8/Cdm@slm.duckdns.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Message-ID: <YFAWVJrM86FB17Lk@slm.duckdns.org>
+References: <YEvZ4muXqiSScQ8i@google.com>
+ <20210312145904.4071a9d6@jacob-builder>
+ <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
+ <20210313085701.1fd16a39@jacob-builder>
+ <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
+ <20210315151155.383a7e6e@jacob-builder>
+ <YE/ddx5+ToNsgUF0@slm.duckdns.org>
+ <20210315164012.4adeabe8@jacob-builder>
+ <YE/zvLkL1vM8/Cdm@slm.duckdns.org>
+ <20210315183030.5b15aea3@jacob-builder>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210315183030.5b15aea3@jacob-builder>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+On Mon, Mar 15, 2021 at 06:30:30PM -0700, Jacob Pan wrote:
+> I don't know if this is required. I thought utilities such as cgclassify
+> need to be supported.
+> " cgclassify - move running task(s) to given cgroups "
+> If no such use case, I am fine with dropping the migration support. Just
+> enforce limit on allocations.
 
-On Mon, 15 Mar 2021 19:54:36 -0400, Tejun Heo <tj@kernel.org> wrote:
+Yeah, that's what all other controllers do. Please read the in-tree cgroup2
+doc.
 
-> Hello,
-> 
-> On Mon, Mar 15, 2021 at 04:40:12PM -0700, Jacob Pan wrote:
-> > 2. then we want to move/migrate Process1 to cg_B. so we need uncharge
-> > 10 of cg_A, charge 10 of cg_B  
-> 
-> So, what I don't get is why this migration is necessary. This isn't
-> supported as a usage pattern and no one, at least in terms of wide-spread
-> usage, does this. Why is this a requirement for your use case?
-> 
-I don't know if this is required. I thought utilities such as cgclassify
-need to be supported.
-" cgclassify - move running task(s) to given cgroups "
-If no such use case, I am fine with dropping the migration support. Just
-enforce limit on allocations.
+Thanks.
 
-> Thanks.
-> 
-
-
-Thanks,
-
-Jacob
+-- 
+tejun
