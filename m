@@ -2,55 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313D333D828
-	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 16:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3CF33D890
+	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 17:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhCPPuj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Mar 2021 11:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S234391AbhCPQDB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Mar 2021 12:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237540AbhCPPub (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Mar 2021 11:50:31 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2747CC061756
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 08:50:30 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id k9so63188228lfo.12
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 08:50:30 -0700 (PDT)
+        with ESMTP id S234314AbhCPQCv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Mar 2021 12:02:51 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0547C06174A;
+        Tue, 16 Mar 2021 09:02:50 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id s2so12004737qtx.10;
+        Tue, 16 Mar 2021 09:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WwakdtxuHaTN5z0HCiQ4MNVrrN9llL1dGHrwS+1rEFI=;
-        b=Y8vlN3SI/ykxQTjQbv4kH+9CK9WxCxroUfhO5YAG/Q06fEfhC7gmihPG0b2gkbg7p2
-         BJcipNhPpwfAYZQawmSVw4SuDq9HgHqrnJ72QN6YzAPc/iS45ymhVnlsheWAmhIcRFFC
-         5n043KRfcygMCCaESFPz/xle+ga7BJvXFjAgDJ2KE3+DwTFKrqQGRARQHbIWQizdgYAx
-         yjC00EWkXA7CGN93CjqVoC9HMMj3XE/OgUEkwHEjGGzbImbrc7x5KngmL6YhRLcDwLnF
-         rOlY48nIfjjcwEFdjlIDwqnZrPTEBtobD5wnEMK+86kKf6TRdXu36PZTzykBdCGIV382
-         K6bQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OWxtuf+bX9R9Cu8TrjqwnDkf028NcAMlaQLndtH+i54=;
+        b=LYzEzss7CpK+82hRa1OyJ5aKdBxvMSCKamF0GMBN3uRD3MjSqMnlr4wAbcnVkeWmqO
+         xMTtoGkM+2XtUWunjz/GozmOPWH81mpg0mMYthGk6NU3chxb1OT/zTWHxoOJjW+y7ntB
+         FJVIMyD12Ki7bro2nKguFU5F2O98AsnxXJEy9BU/MUIDCgEKPjCkvKYOv7OcnEWKLr+Z
+         tHmR/A8LIQypTA4XLaqM6qXCgMmhMrfhcMy7oejDQr/gpqQeDou3C+fazTlvvUvsY7VN
+         C1wvmeXLITdnLCvnOkmS5rBkMbCOPGQtHiEJAyAk3aDaGwIt008WGNfYLgi//LIDoM8n
+         dKkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WwakdtxuHaTN5z0HCiQ4MNVrrN9llL1dGHrwS+1rEFI=;
-        b=FgJ39Dh3Ca+mrLSXSUHx+3vlE/mUndfZ1T6nNFH8gG4cseEfvWtrEp3xezn6d7Xc95
-         hVVOAgUMl/OSRtCztCgZUAWtCha0rzTtmjIVsXP/BKTb4HvIb1VEBHONjExDFHfLIcmo
-         yn+objui4Lo5iV03iqj7IS/HxZ+6vdjP4b97iLFth1h1Jn00CRy00lLVaTGO4L2mIKk+
-         FeL6kjowBz8mYEV4PCdXdv8GyZl4hLZnNqIE5PUugAQYqEuLJO89rke/z6uH3YgM4wEs
-         Vx1rctFSgavavk6BHXFeV4q96MKGyfixxhysMhgJ5/k4dDuTzTl3PT9+yvVr2ir/9HXa
-         uk7Q==
-X-Gm-Message-State: AOAM533E/Z4O8qaPI+qfFW9ceO+VVOMkdNqR+J+qhqrq/1US4WEqGOVE
-        MvRRgLTosLuZh2PZ91NXl+mx/VFjiwfvj0ccNDRewQ==
-X-Google-Smtp-Source: ABdhPJyZ/vV2IRRHujPOKeVa0QetQ4VOSuoAxfKAEM82kauFP2bOtUCTQcIxCf4r+D48huq9DC6J/O4En2deKcexRrA=
-X-Received: by 2002:a05:6512:39c9:: with SMTP id k9mr11272677lfu.432.1615909828360;
- Tue, 16 Mar 2021 08:50:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316153655.500806-1-schatzberg.dan@gmail.com> <20210316153655.500806-3-schatzberg.dan@gmail.com>
-In-Reply-To: <20210316153655.500806-3-schatzberg.dan@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Mar 2021 08:50:16 -0700
-Message-ID: <CALvZod7sk52OYwxP=VRhS0q4xZ57UuSdL6Mi4Y956xDq3pTatQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: Charge active memcg when no mm is set
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OWxtuf+bX9R9Cu8TrjqwnDkf028NcAMlaQLndtH+i54=;
+        b=Bpv1rK8igVDcuV9cJcR4nkLkMrj1rVEN96w+0Zmip8hH+aWBNMLJAmRMmAgAGZL/V0
+         J27z32IkvyawS7VUS75Gt8nbgifpBtlsdaFfw7VKsQJtHuhjkTqOpaAs/K4M+TUMZXBV
+         nfhbO00amjsccedGjfVpzO5Jh8PzxQZEF2iweBh4Bbvayn9mJNT2jum0vkqUzNRSgZsF
+         kT7ltUO7Yr9Z9ejeqTwigi/f+Am1cUgj8gcsMrH1DL+K1q7oEFU6lgni06qYGPSJlZbm
+         MAPlG0DjIS25QEtNgqTqN6ce/28EXiy6il88UnDAAZSoeHbldBRLNaE+HMSk9hf3AFlh
+         ENAw==
+X-Gm-Message-State: AOAM5317MjVHnND1xKejDePUWRUsdIV/V3G0wn0C0NCqW0XqAGYnhjmC
+        xfQiTzlIh80800dhRkz4ZZ0=
+X-Google-Smtp-Source: ABdhPJyLOt91wgsyuYYtOoPYt6hJjRlaQzjKxbU6Lc7KGvvik/N6MkUlXmK/47uis/lnalgwC9gnEA==
+X-Received: by 2002:ac8:5043:: with SMTP id h3mr349243qtm.97.1615910570063;
+        Tue, 16 Mar 2021 09:02:50 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:480::1:1ee])
+        by smtp.gmail.com with ESMTPSA id g2sm13740190qtu.0.2021.03.16.09.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 09:02:49 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 12:02:46 -0400
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -68,94 +67,23 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
         "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 2/3] mm: Charge active memcg when no mm is set
+Message-ID: <YFDWps+whDDhoan5@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
+ <20210316153655.500806-3-schatzberg.dan@gmail.com>
+ <CALvZod7sk52OYwxP=VRhS0q4xZ57UuSdL6Mi4Y956xDq3pTatQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7sk52OYwxP=VRhS0q4xZ57UuSdL6Mi4Y956xDq3pTatQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 8:37 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
->
-> memalloc_use_memcg() worked for kernel allocations but was silently
-> ignored for user pages.
+On Tue, Mar 16, 2021 at 08:50:16AM -0700, Shakeel Butt wrote:
+> You will need to rebase to the latest mm tree. This code has changed.
 
-set_active_memcg()
-
->
-> This patch establishes a precedence order for who gets charged:
->
-> 1. If there is a memcg associated with the page already, that memcg is
->    charged. This happens during swapin.
->
-> 2. If an explicit mm is passed, mm->memcg is charged. This happens
->    during page faults, which can be triggered in remote VMs (eg gup).
->
-> 3. Otherwise consult the current process context. If it has configured
->    a current->active_memcg, use that. Otherwise, current->mm->memcg.
-
-It's a bit more sophisticated than current->active_memcg. It has been
-extended to work in interrupt context as well.
-
->
-> Previously, if a NULL mm was passed to mem_cgroup_try_charge (case 3) it
-
-mem_cgroup_charge()
-
-> would always charge the root cgroup. Now it looks up the current
-> active_memcg first (falling back to charging the root cgroup if not
-> set).
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Acked-by: Chris Down <chris@chrisdown.name>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/filemap.c    |  2 +-
->  mm/memcontrol.c | 14 +++++++++++---
->  mm/shmem.c      |  4 ++--
->  3 files changed, 14 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 43700480d897..5135f330f05c 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -843,7 +843,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->         page->index = offset;
->
->         if (!huge) {
-> -               error = mem_cgroup_charge(page, current->mm, gfp);
-> +               error = mem_cgroup_charge(page, NULL, gfp);
->                 if (error)
->                         goto error;
->                 charged = true;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e064ac0d850a..9a1b23ed3412 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6690,7 +6690,8 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
->   * @gfp_mask: reclaim mode
->   *
->   * Try to charge @page to the memcg that @mm belongs to, reclaiming
-> - * pages according to @gfp_mask if necessary.
-> + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
-> + * charge to the active memcg.
->   *
->   * Returns 0 on success. Otherwise, an error code is returned.
->   */
-> @@ -6726,8 +6727,15 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
->                 rcu_read_unlock();
->         }
->
-> -       if (!memcg)
-> -               memcg = get_mem_cgroup_from_mm(mm);
-> +       if (!memcg) {
-> +               if (!mm) {
-> +                       memcg = get_mem_cgroup_from_current();
-> +                       if (!memcg)
-> +                               memcg = get_mem_cgroup_from_mm(current->mm);
-> +               } else {
-> +                       memcg = get_mem_cgroup_from_mm(mm);
-> +               }
-> +       }
-
-You will need to rebase to the latest mm tree. This code has changed.
+Thanks for the feedback, I will address these comments in another
+rebase. I'll wait and see if there's any comments concerning the
+loop-related patches but it sounds like this will need to go through
+the mm-tree
