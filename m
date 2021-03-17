@@ -2,276 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F52733E980
-	for <lists+cgroups@lfdr.de>; Wed, 17 Mar 2021 07:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9420633F903
+	for <lists+cgroups@lfdr.de>; Wed, 17 Mar 2021 20:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCQGF1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Mar 2021 02:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbhCQGFX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Mar 2021 02:05:23 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C10C061760
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 23:05:23 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t37so13349483pga.11
-        for <cgroups@vger.kernel.org>; Tue, 16 Mar 2021 23:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BZV91l3Kb8EFINEr5Dzile2PDT5SHthUyDAm4nn5Ats=;
-        b=FGiS2PmzaeDH4WF0bP7Hv4fgzprSnD1b+qFC24/T4VD3FAaCWtiibTviZQNnPhNvnw
-         1q6y6hWlFrJhmNjCMgkm1m/n71JgRwgcghwBE1ZZzlWvSblahgxHCO/zMfSUaohMYxcV
-         cKt+lhi8X1ptWPDzZeT9wdbaQkGO+xB3rWyDFnY1xIt3NI5KiY+LC3ZIuQf6CC17gu/n
-         dvObaXhKRQDLfZrX3CxwdXGBv2j83MeFRPlQvrbX4eqHiUjE1xlJFynkrvKiJirl26Zb
-         5LXmoAFZgFcBT27k/CBmzk0ftyXVk/eK+Yl2YFZhxza3iphST+KXgsIAHC9afWJfilvV
-         c8DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BZV91l3Kb8EFINEr5Dzile2PDT5SHthUyDAm4nn5Ats=;
-        b=oEgXvCAYqVeqqIFd1aFPGS94xn3bzjH1KSF3h37TGPzPpBy6RWaDJcK+ZwMQq9ZEpJ
-         Q+aRzRKUdSWuQ2HQn/hvY/r9pZx5+CI/Bh5Z7MS/ryeuISxwU2WFYonakGvxj2MxTKTd
-         G4tKno4ph4demP0fpjjz3Nxy6HQcygtnnrPhj7chtfP+dke5Eg+IMyOgV8tEeyrZWgz3
-         agssyiU2K3CoWiL9RLqOJErvoBCX/EFr9xHTfBB+3Shl8XMntwCD9wN2AQuH+hfnc8rA
-         Flc+qtlPX9exyOnrY4RZSst7PNI+hAAa0vxTRLhJfW0SBQ8Yz0NBjuyRl05W5He5zpAl
-         clSA==
-X-Gm-Message-State: AOAM533FDWaIOv1dY9kIHPbPk5ycR96uLMfvjqe19XcJ6qv7hPrnqefy
-        dGvxdupojXa/naZ1YiycQFB5tU8xJJVIG3xtTMcN1g==
-X-Google-Smtp-Source: ABdhPJyJcrTbVIn9pi8wPLARDF+/xlOglVeFbitDiERPWcTVLcpNzitUPYB3AokLYmQD1+p0SdEfZnZ8dJmg2aRbwA4=
-X-Received: by 2002:a63:1843:: with SMTP id 3mr1281148pgy.253.1615961122794;
- Tue, 16 Mar 2021 23:05:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com> <YFCH8vzFGmfFRCvV@cmpxchg.org>
-In-Reply-To: <YFCH8vzFGmfFRCvV@cmpxchg.org>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Tue, 16 Mar 2021 23:05:11 -0700
-Message-ID: <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+        id S233060AbhCQTTd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Mar 2021 15:19:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42174 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233125AbhCQTTI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:19:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616008746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1FI9JToETJTTOhL/4esql57OHpQfJ+0yOZIN6axrdf8=;
+        b=VmvFxUqjvDYU/DSPODFi5Pwon5T2ZwXu+y//crLatDklQiIb2cbXVepLfJjFJI6M1RbWl+
+        mhgMgVPGK+wCEsC3xSyussqphCLsT/QW6p5Qi7GHNWhrb7c3SFuULllbRmIh0Mr0HMThaN
+        oVuYiFg8GejQAYE56RItxDMuua2BUso=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3746ACA8;
+        Wed, 17 Mar 2021 19:19:06 +0000 (UTC)
+Date:   Wed, 17 Mar 2021 20:19:04 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: switch to rstat fix
+Message-ID: <YFJWKIOHsCZhCt8H@blackbook>
+References: <20210315234100.64307-1-hannes@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1EAEwdJwMJVALUFz"
+Content-Disposition: inline
+In-Reply-To: <20210315234100.64307-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 3:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> Hello,
->
-> On Mon, Mar 15, 2021 at 09:16:45PM -0700, Arjun Roy wrote:
-> > From: Arjun Roy <arjunroy@google.com>
-> >
-> > TCP zerocopy receive is used by high performance network applications
-> > to further scale. For RX zerocopy, the memory containing the network
-> > data filled by the network driver is directly mapped into the address
-> > space of high performance applications. To keep the TLB cost low,
-> > these applications unmap the network memory in big batches. So, this
-> > memory can remain mapped for long time. This can cause a memory
-> > isolation issue as this memory becomes unaccounted after getting
-> > mapped into the application address space. This patch adds the memcg
-> > accounting for such memory.
-> >
-> > Accounting the network memory comes with its own unique challenges.
-> > The high performance NIC drivers use page pooling to reuse the pages
-> > to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> > keep an extra reference on the pages and thus we can not depend on the
-> > page reference for the uncharging. The page in the pool may keep a
-> > memcg pinned for arbitrary long time or may get used by other memcg.
->
-> The page pool knows when a page is unmapped again and becomes
-> available for recycling, right? Essentially the 'free' phase of that
-> private allocator. That's where the uncharge should be done.
->
 
-In general, no it does not.  The page pool, how it operates and whether it
-exists in the first place, is an optimization that a given NIC driver can choose
-to make - and so there's no generic plumbing that ties page unmap events to
-something that a page pool could subscribe to that I am aware of. All it can do
-is check, at a given point, whether it can reuse a page or not, typically by
-checking the current page refcount.
+--1EAEwdJwMJVALUFz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A couple of examples for drivers with such a mechanism - mlx5:
-(https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c#L248)
+On Mon, Mar 15, 2021 at 07:41:00PM -0400, Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
+> Switch to the atomic variant, cgroup_rstat_irqsafe().
+Congratulations(?), the first use of cgroup_rstat_irqsafe().
 
-Or intel fm10k:
-(https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/intel/fm10k/fm10k_main.c#L207)
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-Note that typically map count is not checked (maybe because page-flipping
-receive zerocopy did not exist as a consideration when the driver was written).
+--1EAEwdJwMJVALUFz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-So given that the page pool is essentially checking on demand for whether a page
-is usable or not - since there is no specific plumbing invoked when a page is
-usable again (i.e. unmapped, in this case) - we opted to hook into when the
-mapcount is decremented inside unmap() path.
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBSViUACgkQia1+riC5
+qSgA8Q/+PPCIbVzSqgX5QVoHH253Rzg+fzFNgVR6ET0KwU838hhP2b/hLQSSIBqd
+2gJFvlRd2I8j9N7OH1DjOUAmZp6t+Tklmtb0LWfXobisOKeM9mONHFAm7cgdJDyV
+O76eq9TjFIeN2XZNRRj+n5vYIMCe+6SrtfqTxdFsieNt7Us+pASkO7j0Iw6Qral3
+mG5CaVV++/jQbrRLA9Qmrx3aa7O3kGZyMCrHE77NvSUuBbfP6pSYMtTQ6ijnh7dL
+kEY6OeXKOkzCUwtmrqrtFRMwRhUgSWpGmdIoR+UXO0ReuWJF+bu1EkpJZwMBgSlz
+m4QixHSiTFvdvu6shg3LL//QDMAdct/Vv1osei5J0RWUGI7W7Ybf/KjYKuGKWJHX
+Mvvk0k4WIhDio8GyhatwbykLzxpFDCceWj8bLe/PJUUIWG9FkeNvH3Ny5/RPVpSS
+o3QGBmUjJKpbtalwVfTi0bXi5aKNzJslJD0FMj/tkzQJxPGVMSobGBGtVXLlcge9
+iM/yEZ1KTTH7qveBl/AgcqR1vHnRWALELiqfEKTZJXWtLnitku+HD626kK7NNEHD
+uLzs8ntdLUXW1DkJ0Kr2Zj6yXr44uScg3olpYYOwpDbrA3j7uEfzsqeyJckBJVf6
+54EqfDxy/yvOg/yFGQ4L5ayoKdo+LMuz3tRUs8alsEU93K/Q4mA=
+=Z6x9
+-----END PGP SIGNATURE-----
 
-> For one, it's more aligned with the usual memcg charge lifetime rules.
->
-> But also it doesn't add what is essentially a private driver callback
-> to the generic file unmapping path.
->
-
-I understand the concern, and share it - the specific thing we'd like to avoid
-is to have driver specific code in the unmap path, and not in the least because
-any given driver could do its own thing.
-
-Rather, we consider this mechanism that we added as generic to zerocopy network
-data reception - that it does the right thing, no matter what the driver is
-doing. This would be transparent to the driver, in other words - all the driver
-has to do is to continue doing what it was before, using page->refcnt == 1 to
-decide whether it can use a page or if it is not already in use.
-
-
-Consider this instead as a broadly applicable networking feature adding a
-callback to the unmap path, instead of a particular driver. And while it is just
-TCP at present, it fundamentally isn't limited to TCP.
-
-I do have a request for clarification, if you could specify the usual memcg
-charge lifetime rules that you are referring to here? Just to make sure we're on
-the same page.
-
-> Finally, this will eliminate the need for making up a new charge type
-> (MEMCG_DATA_SOCK) and allow using the standard kmem charging API.
->
-> > This patch decouples the uncharging of the page from the refcnt and
-> > associates it with the map count i.e. the page gets uncharged when the
-> > last address space unmaps it. Now the question is, what if the driver
-> > drops its reference while the page is still mapped? That is fine as
-> > the address space also holds a reference to the page i.e. the
-> > reference count can not drop to zero before the map count.
-> >
-> > Signed-off-by: Arjun Roy <arjunroy@google.com>
-> > Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
-> > ---
-> >
-> > Changelog since v1:
-> > - Pages accounted for in this manner are now tracked via MEMCG_SOCK.
-> > - v1 allowed for a brief period of double-charging, now we have a
-> >   brief period of under-charging to avoid undue memory pressure.
->
-> I'm afraid we'll have to go back to v1.
->
-> Let's address the issues raised with it:
->
-> 1. The NR_FILE_MAPPED accounting. It is longstanding Linux behavior
->    that driver pages mapped into userspace are accounted as file
->    pages, because userspace is actually doing mmap() against a driver
->    file/fd (as opposed to an anon mmap). That is how they show up in
->    vmstat, in meminfo, and in the per process stats. There is no
->    reason to make memcg deviate from this. If we don't like it, it
->    should be taken on by changing vm_insert_page() - not trick rmap
->    into thinking these arent memcg pages and then fixing it up with
->    additional special-cased accounting callbacks.
->
->    v1 did this right, it charged the pages the way we handle all other
->    userspace pages: before rmap, and then let the generic VM code do
->    the accounting for us with the cgroup-aware vmstat infrastructure.
-
-To clarify, are you referring to the v1 approach for this patch from a
-few weeks ago?
-(i.e. charging for the page before vm_insert_page()). This patch changes when
-the charging happens, and, as you note, makes it a forced charge since we've
-already inserted the mappings into the user's address space - but it isn't
-otherwise fundamentally different from v1 in what it does. And unmap is the
-same.
-
->
-> 2. The double charging. Could you elaborate how much we're talking
->    about in any given batch? Is this a problem worth worrying about?
->
-
-The period of double counting in v1 of this patch was from around the time we do
-vm_insert_page() (note that the pages were accounted just prior to being
-inserted) till the struct sk_buff's were disposed of - for an skb
-that's up to 45 pages.
-But note that is for one socket, and there can be quite a lot of open
-sockets and
-depending on what happens in terms of scheduling the period of time we're
-double counting can be a bit high.
-
-v1 patch series had some discussion on this:
-https://www.spinics.net/lists/cgroups/msg27665.html which is why we
-have post-charging
-in v2.
-
->
->    The way I see it, any conflict here is caused by the pages being
->    counted in the SOCK counter already, but not actually *tracked* on
->    a per page basis. If it's worth addressing, we should look into
->    fixing the root cause over there first if possible, before trying
->    to work around it here.
->
-
-When you say tracked on a per-page basis, I assume you mean using the usual
-mechanism where a page has a non-null memcg set, with unaccounting occuring when
-the refcount goes to 0.
-
-Networking currently will account/unaccount bytes just based on a
-page count (and the memcg set in struct sock) rather than setting it in the page
-itself - because the recycling of pages means the next time around it could be
-charged to another memcg. And the refcount never goes to 1 due to the pooling
-(in the absence of eviction for busy pages during packet reception). When
-sitting in the driver page pool, non-null memcg does not work since we do not
-know which socket (thus which memcg) the page would be destined for since we do
-not know whose packet arrives next.
-
-The page pooling does make this all this a bit awkward, and the approach
-in this patch seems to me the cleanest solution.
-
-
->
->
->    The newly-added GFP_NOFAIL is especially worrisome. The pages
->    should be charged before we make promises to userspace, not be
->    force-charged when it's too late.
->
->    We have sk context when charging the inserted pages. Can we
->    uncharge MEMCG_SOCK after each batch of inserts? That's only 32
->    pages worth of overcharging, so not more than the regular charge
->    batch memcg is using.
-
-Right now sock uncharging is happening as we cleanup the skb, which can have up
-to 45 pages. So if we tried uncharging per SKB we'd then have up to 45 pages
-worth of overcharging per socket, multiplied by however many sockets are
-currently being overcharged in this manner.
-
-
->
->    An even better way would be to do charge stealing where we reuse
->    the existing MEMCG_SOCK charges and don't have to get any new ones
->    at all - just set up page->memcg and remove the charge from the sk.
->
-
-That gets a bit complicated since we have to be careful with forward allocs in
-the socket layer - and the bookkeeping gets a bit complicated since now for the
-struct sock we'll need to track how many bytes were 'stolen' and update all the
-code where socket accounting happens. It ends up being a larger/messier code
-change then.
-
-Thanks,
--Arjun
-
->
->
->
->    But yeah, it depends a bit if this is a practical concern.
->
-> Thanks,
-> Johannes
+--1EAEwdJwMJVALUFz--
