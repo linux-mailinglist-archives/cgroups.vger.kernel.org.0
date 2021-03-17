@@ -2,322 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9D33FAD6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Mar 2021 23:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C499833FADA
+	for <lists+cgroups@lfdr.de>; Wed, 17 Mar 2021 23:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhCQWNL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Mar 2021 18:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhCQWM7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Mar 2021 18:12:59 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3885C06175F
-        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 15:12:58 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id n24so77583qkh.9
-        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 15:12:58 -0700 (PDT)
+        id S229608AbhCQWOS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Mar 2021 18:14:18 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:48614 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhCQWOK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Mar 2021 18:14:10 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMC9dk174273;
+        Wed, 17 Mar 2021 22:13:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=zGYuXZfD+zniSD/XaAZxvizQ5334X7661tTFtRc0g54=;
+ b=RFlEBHmRZnhoj4yDk/PYccsESg4qawsvfwsEPpg5wVQWLtLPzWoYiKz+4q7bfDm6WrBz
+ kO41shph65s3p/pK6nTLN2UBImSalbZ9G2vLVji+drbUfyjyzLBXD9TeW8+oljnYTlOW
+ 3ag2N5fzItNGlIblycWO1/XS2y41MnMxtrA+3vS54xXuWFVylUZiZJkUo2qbCV4tLhl8
+ w58LBAZBPRjUVjL99XJ2vKr/bHZQH4ajamnLEDUkBB+hqmcbkN0JfJnU23KjW/hqb9vP
+ Tn3/MfJQHwrHSvpxkjsyB04/IfUgxPnIQXHMfp4K0Fliq6NiaUBQ5ZSm2k1YM8kDcXEC 8w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 378jwbnrx0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 22:13:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12HMAmmu166051;
+        Wed, 17 Mar 2021 22:13:09 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by aserp3030.oracle.com with ESMTP id 3796yvcw12-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Mar 2021 22:13:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jefzeGBAD/4bTX2QdlPHwn1ePVQV3UMquDH6ITQz1OtH3wZvethzkF3mYWumZex6QScOd0qQIcufWgmiH4VBuOtRnbrqUJ+z1eNr/bDOt0CDH88kHAVPJBX3Zxe0c7C+qsa6qt4WAVAYLcyv1OgMm5TAeNseT+9deqcLsi6hVfQKj/ak9bzMkADyQw1bG3XQ3ftEHsVkFLULvDZM9rcNfDGAajf9jKZh7VgtTC+rb2Lt6uVSB44xyvxWePZbH+LHP405mBrOSMHG6xJc46ApPs9buN9rARVNsXrDpw2tA26oHX71hd/yR2FdS7JeqhHIMhH2KpWFk2m6L851WGK60Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zGYuXZfD+zniSD/XaAZxvizQ5334X7661tTFtRc0g54=;
+ b=AWNiqWsL72g4LJEZvGmIBBITOiLzECRleQazs9hMz3UkO7ii38afBj8SUhYRdjsBWs3IM0Sy8rDT/y2Xv3oSbNnubTlBlD5C6AbXJ+4t/K6CsmZ7SuGYrX8tpCNoR97q9FAcOceA14DPdTf44GWKyhDF3Hwui8OReX85ecwbi9O5iDczodIVg6cVB/h5m/glt2ProA+jRRn/11/EGv31BISodDeZ98fE5QPbYrT3RiHqkB0Dhy3GQSM9HHPd/4S+RZ0EHywU6fssGwu39zUm0PWOWUMY1H1iztHCMdh0IlAcgU4Jhrq60XuG+E+VWQQhHB5WkYTgLBGCMJZNiuJB3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eBT0XGfN4nY7W6Afo8Mm//o9/72Xlxw+M/0UK70aLsI=;
-        b=ooo9gXV45Hjp7/yQVDH2gGDZOCSA/Z5ae83E8SvUgQ9EJD6hrUT29Pvs6dqorzaGew
-         gQQaH8JCii78m9uAczwvqGZK+b+4TcoUmDGudyBTK/gHqZ0Z8iPO3tt6UhyyCqPxz6M0
-         m6JyWZtnBUjh+sVnI4RNM0MjW36QqCyYsd92xq9Wtp34mSKKVqggxLeOsTGAKtV/BOY1
-         PrcG2MyNuJ8cMf8ZtPeuajp3kXcsdBOZvCdX6YmtiWw7kYaVd6FXBMO5cSrGE1it8lAm
-         zJEPumOuQUVSME1UY+GdehqEnOCuS3gt9UaVvZjIIBD/wEFaSKqdnd4RGS54IsyDkrsE
-         kvDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eBT0XGfN4nY7W6Afo8Mm//o9/72Xlxw+M/0UK70aLsI=;
-        b=cDtgJIB4wsGHX7ooELydgru4l5EHhdNm0IF3NeXxbUqFRrL3bbsbzjafDhING3WBqn
-         qobqOOyklMAc1egWEXxPCuw8IKfAEcQgPigTDQZNkQdY8q0MJJaydxax1N3JIed6WvoV
-         qW3N/LbMGNLurchKyoE08LLi8uHqw48QeWKx7KXnJs/C14+v2TdCsLmVWDIP0q+fG6cA
-         vG7oZeEXtBtR7Dnq6finG3DGB2N/zy/RBfboA5Tkl/izUnhQ9XPyyQGgu4VwMrK6kccT
-         Kx2bI5ElkF2i4unAwaQqclEJY3WLcWW+R3LESx/mZAABAnti1kAA/vnhT7cdO8a14Fmw
-         W2sQ==
-X-Gm-Message-State: AOAM532lE7SeXMdLW0832oSonR5HnU64wNBHob9RQHEkEW/kYtoLx2bd
-        RkxLOq7vl6MGGI8atyCnm+2PGQ==
-X-Google-Smtp-Source: ABdhPJxHZ14hH2TJ2pSev9vIolGbLptzi4A559brT3GMwqgdafcX0jd9iM/n6AtTBe/X11gjXo3pSw==
-X-Received: by 2002:a37:46c5:: with SMTP id t188mr1497181qka.47.1616019177593;
-        Wed, 17 Mar 2021 15:12:57 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:e46c])
-        by smtp.gmail.com with ESMTPSA id d84sm273493qke.53.2021.03.17.15.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Mar 2021 15:12:56 -0700 (PDT)
-Date:   Wed, 17 Mar 2021 18:12:55 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Arjun Roy <arjunroy@google.com>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <YFJ+5+NBOBiUbGWS@cmpxchg.org>
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org>
- <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zGYuXZfD+zniSD/XaAZxvizQ5334X7661tTFtRc0g54=;
+ b=odnBb62aq8fyrOBrKwq2Wi6/UGSbFZA66iASyR5j4IZeHpuFcOdzPMk88MQQhNU8IHOsh35e/Wf//jIBgp2GlV9yprumbfnCLJJjligoy2Vzel93ppBDQMCl+isA+I+8ps7YXmch84RHtNHViUcq9AZpS8yaV5cLufQ31gmQgm8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
+ by MWHPR10MB1551.namprd10.prod.outlook.com (2603:10b6:300:27::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Wed, 17 Mar
+ 2021 22:13:07 +0000
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3933.032; Wed, 17 Mar 2021
+ 22:13:06 +0000
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Andrey Ryabinin <arbn@yandex-team.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Boris Burkov <boris@bur.io>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrey Ryabinin <arbn@yandex-team.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/4] cgroup: Fix 'usage_usec' time in root's cpu.stat
+In-Reply-To: <20210217120004.7984-2-arbn@yandex-team.com>
+References: <20210217120004.7984-1-arbn@yandex-team.com>
+ <20210217120004.7984-2-arbn@yandex-team.com>
+Date:   Wed, 17 Mar 2021 18:13:02 -0400
+Message-ID: <87tup9l98x.fsf@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: MN2PR11CA0024.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::29) To MWHPR10MB1774.namprd10.prod.outlook.com
+ (2603:10b6:301:9::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from parnassus (98.229.125.203) by MN2PR11CA0024.namprd11.prod.outlook.com (2603:10b6:208:23b::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Wed, 17 Mar 2021 22:13:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e1b4e3c1-f06c-42e8-252b-08d8e991d752
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1551:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1551EED4192EB01C9106A1E8D96A9@MWHPR10MB1551.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OQUYZ6YXeUb6k49kf+LHL5nKl+Y2wTD/B2f21oKnqPbZJp5CYpH2qycSI2P6zDhkVSc0B1PHpICVYSfdkAJh/Y9iP/zrcWWqgSuyblCiE+VTkwS7Re9PjIm09SV14JMLvqvfNYbJhAbZt+JWn5H0IKHe0TMHjOl01RPsEEerzGo2cCeRscSHN9TYByb/BzFQCqiZbR3YRJnvwW6I7yAUe1mHD1eq9/LUM8xSWZm5N0WfXajqfNCGoGXNE/u79val0KZw0fzrNunD5pMjIsSjch5TSzlTPbldWeRvZU8J/YXevEOzhGkOs8p5KGmTx+5pZAyFy21x59dKyGCpORAZmN7Ql7Eq5Tt8LC3oFGrtX31hUAbx+l/rz64iLB9TqcXWbbkFg7cOPeRKTrJhrBUErmHyZTZvERtzPVHOh/4kKh9NGKVEgoq36hsoQ91qaD23sFHIDWRgaK5nRAH53P69Om0yJTQ6RCdoqacfK8xgXqylXU1HItceEvA9WycsEXrOAth8icdOyNJbFFpexspNL/jQJQ09R/m520EUHeumYjWpKcRcpppNkvtlWL3LqLNgvpk0UJl88Fv/gSJlKb9fv/xBJGDX0DWSkFy18TAne+Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(346002)(366004)(921005)(86362001)(26005)(8676002)(16526019)(4326008)(2906002)(83380400001)(956004)(7416002)(66556008)(36756003)(478600001)(8936002)(66946007)(4744005)(316002)(6486002)(52116002)(6496006)(186003)(2616005)(110136005)(54906003)(5660300002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?h0Y1WqB2+zDudwahBAP28G4yLCsQpH3u/fq9mjq+BTFmUds7MCmUm5Z6VPcu?=
+ =?us-ascii?Q?V2JyoO3ctHDFwmY79wibsDfT1N3GsZe428wV6ubpZ389BNGLm9u0tHaeDDum?=
+ =?us-ascii?Q?npIu7bSIzHQW1ipQkEJogHctonlk38XA+a4G2U5vERYsVbD7E3qQD8Dg8SzF?=
+ =?us-ascii?Q?KOTte1Q1RVT58OpM9VdxAxmyexCuse2ND5FfXfGkionKI6e5ixsxTaEvW7QD?=
+ =?us-ascii?Q?n9nlNc6H7Tkzqm0ixIpCwlrtAJRnAQL4kmSCvexARienZrB3OFP6RuXCgwFu?=
+ =?us-ascii?Q?rIdC8NbjwN+rWNqBMhlpMw6OB7CkohF/0VFHvMwaKOagawmndoxLZVQxS6Cj?=
+ =?us-ascii?Q?RpFA2nBxos9weiB5EYP6uyed+proOY0yQ1eXMRbdXQ7jTTB2SQNlT7PkupQJ?=
+ =?us-ascii?Q?NmsrFo42LB3vhFGs/h2fkOK0n9diY+TGt1BHz/o31Io5GvyO5qvIPfcXp6V5?=
+ =?us-ascii?Q?PWvGO88JRGCRfcWzJMqPxg+BWXeaOcXEvtgljjMubm8vdGO4u94E9WfGn3th?=
+ =?us-ascii?Q?Ry6QqSobth3Jh18GAonyN0T9YSM+lH++m57w5Pofm1ENLiyMvSmeLSKvAPBL?=
+ =?us-ascii?Q?3nSGxQoqwwMIzOEvk5PvbaIyp3VIIEijUUDKX3wVGAUUTh+ctq27d3RLhUTM?=
+ =?us-ascii?Q?Im7/wj8+Z9vo21FscEUNxWDTfyCbNWTYcT2GKKmYjz9iaurlZHGdy4vw98kL?=
+ =?us-ascii?Q?0NilBqCrVRnwdC33xfVbp429pgHnbuunaB5pBqwv8xQdTRb0riEPln4JjNa7?=
+ =?us-ascii?Q?YwuBLOA5jgw8yWvAy7WXBfc8xhtL3wggEFWNXQMVODFU5Zfc0Kjq9I6Ef+e6?=
+ =?us-ascii?Q?NVstL+6uEc/gvrMNnyqfk7e78I2eYfGBfitY5JtM8g2ehvzeLxFQoUOLelNe?=
+ =?us-ascii?Q?Vwx4q3IoELBGT9Brl015tlAs9VEG54i1TX40H/tHoftsJngjP5QVQUYDzgqC?=
+ =?us-ascii?Q?CGELhFozewYzCRjpApT1hM29SQuDCQTwtegqOgg9Sm6qQD4P6srdeT3AmrV9?=
+ =?us-ascii?Q?naZzmB4C1u+axXoyx8q7ZjVdEI6y30Y0Se5VZlX2hGshTCwKE4I2sx/CcllS?=
+ =?us-ascii?Q?a9RRgpXE/YAStJBTw3if7+wgh8t2jzgD6JBz11KrsOAf7EwXOZBDcgAnEALv?=
+ =?us-ascii?Q?IIbPzpx+bsI9zbMFacJ0d1YQ8OedPub9cISE137hSVpCJSsbCzPWhd4YvmIY?=
+ =?us-ascii?Q?qfGoI+LtXhXM4b0wCU3fKBPWpyYafKVTb8dfyrXOB4SJPKYvKzzendlIK8pj?=
+ =?us-ascii?Q?VqdlqM4yPCcwapp2GHRCPM3ujEUXS1Ac321LT8MFZp+dEQxbn34vFX8fTkg2?=
+ =?us-ascii?Q?KOePdmWplLChQPRiUhjmdOOZ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1b4e3c1-f06c-42e8-252b-08d8e991d752
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2021 22:13:06.7268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Vgi2tHX57Jz/7KMy4dUsY2FOexiIQBEmghyRQLfXhuThuf2oa+wQ1N71dRMEMFWcfyQeZM+UBCzMY0IZouyopSQeWrq7i69gWGcBvKLA6k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1551
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170155
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9926 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103170155
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 11:05:11PM -0700, Arjun Roy wrote:
-> On Tue, Mar 16, 2021 at 3:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > Hello,
-> >
-> > On Mon, Mar 15, 2021 at 09:16:45PM -0700, Arjun Roy wrote:
-> > > From: Arjun Roy <arjunroy@google.com>
-> > >
-> > > TCP zerocopy receive is used by high performance network applications
-> > > to further scale. For RX zerocopy, the memory containing the network
-> > > data filled by the network driver is directly mapped into the address
-> > > space of high performance applications. To keep the TLB cost low,
-> > > these applications unmap the network memory in big batches. So, this
-> > > memory can remain mapped for long time. This can cause a memory
-> > > isolation issue as this memory becomes unaccounted after getting
-> > > mapped into the application address space. This patch adds the memcg
-> > > accounting for such memory.
-> > >
-> > > Accounting the network memory comes with its own unique challenges.
-> > > The high performance NIC drivers use page pooling to reuse the pages
-> > > to eliminate/reduce expensive setup steps like IOMMU. These drivers
-> > > keep an extra reference on the pages and thus we can not depend on the
-> > > page reference for the uncharging. The page in the pool may keep a
-> > > memcg pinned for arbitrary long time or may get used by other memcg.
-> >
-> > The page pool knows when a page is unmapped again and becomes
-> > available for recycling, right? Essentially the 'free' phase of that
-> > private allocator. That's where the uncharge should be done.
-> >
-> 
-> In general, no it does not.  The page pool, how it operates and whether it
-> exists in the first place, is an optimization that a given NIC driver can choose
-> to make - and so there's no generic plumbing that ties page unmap events to
-> something that a page pool could subscribe to that I am aware of. All it can do
-> is check, at a given point, whether it can reuse a page or not, typically by
-> checking the current page refcount.
-> 
-> A couple of examples for drivers with such a mechanism - mlx5:
-> (https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c#L248)
+Andrey Ryabinin <arbn@yandex-team.com> writes:
 
-	if (page_ref_count(cache->page_cache[cache->head].page) != 1)
+> Global CPUTIME_USER counter already includes CPUTIME_GUEST
+> Also CPUTIME_NICE already includes CPUTIME_GUEST_NICE.
+>
+> Remove additions of CPUTIME_GUEST[_NICE] to total ->sum_exec_runtime
+> to not account them twice.
 
-So IIUC it co-opts the page count used by the page allocator, offset
-by the base ref of the pool. That means it doesn't control the put
-path and won't be aware of when pages are used and unused.
+Yes, that's just wrong.  usage_usec looks ok now.
 
-How does it free those pages back to the system eventually? Does it
-just do a series of put_page() on pages in the pool when something
-determines it is too big?
-
-However it does it, it found some way to live without a
-destructor. But now we need one.
-
-> Or intel fm10k:
-> (https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/intel/fm10k/fm10k_main.c#L207)
-> 
-> Note that typically map count is not checked (maybe because page-flipping
-> receive zerocopy did not exist as a consideration when the driver was written).
-> 
-> So given that the page pool is essentially checking on demand for whether a page
-> is usable or not - since there is no specific plumbing invoked when a page is
-> usable again (i.e. unmapped, in this case) - we opted to hook into when the
-> mapcount is decremented inside unmap() path.
-
-The problem is that the page isn't reusable just because it's
-unmapped. The user may have vmspliced those pages into a pipe and be
-pinning them long after the unmap.
-
-I don't know whether that happens in real life, but it's a legitimate
-thing to do. At the very least it would be an avenue for abuse.
-
-> > For one, it's more aligned with the usual memcg charge lifetime rules.
-> >
-> > But also it doesn't add what is essentially a private driver callback
-> > to the generic file unmapping path.
-> >
-> 
-> I understand the concern, and share it - the specific thing we'd like to avoid
-> is to have driver specific code in the unmap path, and not in the least because
-> any given driver could do its own thing.
-> 
-> Rather, we consider this mechanism that we added as generic to zerocopy network
-> data reception - that it does the right thing, no matter what the driver is
-> doing. This would be transparent to the driver, in other words - all the driver
-> has to do is to continue doing what it was before, using page->refcnt == 1 to
-> decide whether it can use a page or if it is not already in use.
-> 
-> 
-> Consider this instead as a broadly applicable networking feature adding a
-> callback to the unmap path, instead of a particular driver. And while it is just
-> TCP at present, it fundamentally isn't limited to TCP.
-> 
-> I do have a request for clarification, if you could specify the usual memcg
-> charge lifetime rules that you are referring to here? Just to make sure we're on
-> the same page.
-
-Usually, the charge lifetime is tied to the allocation lifetime. It
-ends when the object is fed back to whatever pool it came out of, its
-data is considered invalid, and its memory is available to new allocs.
-
-This isn't the case here, and as per above you may uncharge the page
-long before the user actually relinquishes it.
-
-> > 1. The NR_FILE_MAPPED accounting. It is longstanding Linux behavior
-> >    that driver pages mapped into userspace are accounted as file
-> >    pages, because userspace is actually doing mmap() against a driver
-> >    file/fd (as opposed to an anon mmap). That is how they show up in
-> >    vmstat, in meminfo, and in the per process stats. There is no
-> >    reason to make memcg deviate from this. If we don't like it, it
-> >    should be taken on by changing vm_insert_page() - not trick rmap
-> >    into thinking these arent memcg pages and then fixing it up with
-> >    additional special-cased accounting callbacks.
-> >
-> >    v1 did this right, it charged the pages the way we handle all other
-> >    userspace pages: before rmap, and then let the generic VM code do
-> >    the accounting for us with the cgroup-aware vmstat infrastructure.
-> 
-> To clarify, are you referring to the v1 approach for this patch from a
-> few weeks ago?
-
-Yes.
-
-> (i.e. charging for the page before vm_insert_page()). This patch changes when
-> the charging happens, and, as you note, makes it a forced charge since we've
-> already inserted the mappings into the user's address space - but it isn't
-> otherwise fundamentally different from v1 in what it does. And unmap is the
-> same.
-
-Right. The places where it IS different are the problem ;)
-
-Working around native VM accounting; adding custom accounting that is
-inconsistent with the rest of the system; force-charging a quantity of
-memory that the container may not be entitled to.
-
-Please revert back to precharging like in v1.
-
-> The period of double counting in v1 of this patch was from around the time we do
-> vm_insert_page() (note that the pages were accounted just prior to being
-> inserted) till the struct sk_buff's were disposed of - for an skb
-> that's up to 45 pages.
-
-That's seems fine.
-
-Can there be instances where the buffers are pinned by something else
-for indefinite lengths of time?
-
-> But note that is for one socket, and there can be quite a lot of open
-> sockets and
-> depending on what happens in terms of scheduling the period of time we're
-> double counting can be a bit high.
-
-You mean thread/CPU scheduling?
-
-If it comes down to that, I'm not convinced this is a practical
-concern at this point.
-
-I think we can assume that the number of sockets and the number of
-concurrent threads going through the receive path at any given time
-will scale with the size of the cgroup. And even a thousand threads
-reading from a thousand sockets at exactly the same time would double
-charge a maximum of 175M for a brief period of time. Since few people
-have 1,000 CPUs the possible overlap is further reduced.
-
-This isn't going to be a problem in the real world.
-
-> >    The way I see it, any conflict here is caused by the pages being
-> >    counted in the SOCK counter already, but not actually *tracked* on
-> >    a per page basis. If it's worth addressing, we should look into
-> >    fixing the root cause over there first if possible, before trying
-> >    to work around it here.
-> >
-> 
-> When you say tracked on a per-page basis, I assume you mean using the usual
-> mechanism where a page has a non-null memcg set, with unaccounting occuring when
-> the refcount goes to 0.
-
-Right.
-
-> Networking currently will account/unaccount bytes just based on a
-> page count (and the memcg set in struct sock) rather than setting it in the page
-> itself - because the recycling of pages means the next time around it could be
-> charged to another memcg. And the refcount never goes to 1 due to the pooling
-> (in the absence of eviction for busy pages during packet reception). When
-> sitting in the driver page pool, non-null memcg does not work since we do not
-> know which socket (thus which memcg) the page would be destined for since we do
-> not know whose packet arrives next.
-> 
-> The page pooling does make this all this a bit awkward, and the approach
-> in this patch seems to me the cleanest solution.
-
-I don't think it's clean, but as per above it also isn't complete.
-
-What's necessary is to give the network page pool a hookup to the
-page's put path so it knows when pages go unused.
-
-This would actually be great not just for this patch, but also for
-accounting the amount of memory consumed by the network stack in
-general, at the system level. This can be a sizable chunk these days,
-especially with some of the higher end nics. Users currently have no
-idea where their memory is going. And it seems it couldn't even answer
-this question right now without scanning the entire pool. It'd be
-great if it could track used and cached pages and report to vmstat.
-
-It would also be good if it could integrate with the page reclaim path
-and return any unused pages when the system is struggling with memory
-pressure. I don't see how it could easily/predictably do that without
-a good handle on what is and isn't used.
-
-These are all upsides even before your patch. Let's stop working
-around this quirk in the page pool, we've clearly run into the limit
-of this implementation.
-
-
-Here is an idea of how it could work:
-
-struct page already has
-
-                struct {        /* page_pool used by netstack */
-                        /**
-                         * @dma_addr: might require a 64-bit value even on
-                         * 32-bit architectures.
-                         */
-                        dma_addr_t dma_addr;
-                };
-
-and as you can see from its union neighbors, there is quite a bit more
-room to store private data necessary for the page pool.
-
-When a page's refcount hits zero and it's a networking page, we can
-feed it back to the page pool instead of the page allocator.
-
-From a first look, we should be able to use the PG_owner_priv_1 page
-flag for network pages (see how this flag is overloaded, we can add a
-PG_network alias). With this, we can identify the page in __put_page()
-and __release_page(). These functions are already aware of different
-types of pages and do their respective cleanup handling. We can
-similarly make network a first-class citizen and hand pages back to
-the network allocator from in there.
-
-Now the network KNOWS which of its pages are in use and which
-aren't. You can use that to uncharge pages without the DoS vector, and
-it'd go a great length toward introspecting and managing this memory -
-and not sit in a black hole as far as users and the MM are concerned.
-
-Thanks,
-Johannes
+Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Tested-by: Daniel Jordan <daniel.m.jordan@oracle.com>
