@@ -2,473 +2,177 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07C7340E12
-	for <lists+cgroups@lfdr.de>; Thu, 18 Mar 2021 20:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1210B340E3A
+	for <lists+cgroups@lfdr.de>; Thu, 18 Mar 2021 20:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhCRTUT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Mar 2021 15:20:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:56136 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232807AbhCRTUD (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 18 Mar 2021 15:20:03 -0400
-IronPort-SDR: Ym3nAW1oja6DUdcOmuc5u8p/yC39PnGyHlV6qTjLaneq3iIX/+dM1n1ug18bF0B3/Yyr5XBNAv
- dCb/G6goDNxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="251109331"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="251109331"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 12:20:03 -0700
-IronPort-SDR: Pmra8k78e3ePKuC4iG/iEEpAgZ+22HfTZa4c8uOUPZ950wVGNXMwn/j3Naaru9p8ZMCRIDKsnr
- jfdzk95v8W0g==
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; 
-   d="scan'208";a="413212544"
-Received: from brianwel-mobl1.amr.corp.intel.com (HELO [10.209.30.68]) ([10.209.30.68])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 12:20:02 -0700
-Subject: Re: [RFC PATCH 8/9] drm/gem: Associate GEM objects with drm cgroup
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-References: <20210126214626.16260-1-brian.welty@intel.com>
- <20210126214626.16260-9-brian.welty@intel.com>
- <YCJp//kMC7YjVMXv@phenom.ffwll.local>
- <dffeb6a7-90f1-e17c-9695-44678e7a39cb@intel.com>
- <YCVOl8/87bqRSQei@phenom.ffwll.local>
- <89a71735-aae5-2617-c017-310207c5873b@intel.com>
- <CAKMK7uG2PFMWXa9o4LzsF1r0Mc-M8KqD-PKZkCj+m7XeO5wCyg@mail.gmail.com>
-From:   Brian Welty <brian.welty@intel.com>
-Message-ID: <67867078-4f4b-0a6a-e55d-453b973d8b7c@intel.com>
-Date:   Thu, 18 Mar 2021 12:20:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232304AbhCRT2z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Mar 2021 15:28:55 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:46470 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232902AbhCRT2h (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Mar 2021 15:28:37 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IJJvYo045397;
+        Thu, 18 Mar 2021 19:28:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=uOQfgSt7DnQHzU9CkYe3OcxfQ5H3Z/rsIPYYFJiCANs=;
+ b=QJH9dy+su5JGPKj1DYwDoSiq3eVLBtHQ/Q1NqpXZTK/YXViWnsNsSnZ+4l1k2CvUFrzX
+ GOhecQRvRfk3rZZWPZvKRu3Tby3c4Sf8stkcR6ueU3zPqsuznNaHX7IgwcWvK0R8I3oS
+ rWY9mF8C4Uwi6DIeH/V1d/WWCWb8vWxM7yq0LidQINkzdnAfZb8chj11vBhcw6D5CEhB
+ ALwJ/tvdhdEY3ILNNviss+a39QtEp+jhLRz4GiFDGnQ8JhBxwLRtzkNN4tXu+SpzsUuq
+ uXkKnCwWuG31WQbCMhbmdScfUkGXVQnJMCLGMVaRxcUEE0L9tG3YfCc0RYD77ElkXPf3 /A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 378jwbrsx0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 19:28:17 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12IJQ7QV008640;
+        Thu, 18 Mar 2021 19:28:16 GMT
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
+        by userp3030.oracle.com with ESMTP id 3797b3bqtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Mar 2021 19:28:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m8AV6NrqMunvleqIlLqTAYhxLFUfyf6IcLU3jEvWqThBZEH7Uu3iPR7hBkt0KWOqUMiPLWotc1zIxWceoWvOkkrJR4IduXyZxXbZtZ46hJkm+A25TN8012rSyjftqzr8GbycxdpQQVhaHizJ8iTvW0WuH5MLSQohIX+pZC/DYFbUtOOcyI5mUD+l9n368GtmpgOwq/ni94G2UKLPGdGBpVct1Pd23yaNc6baAhn1vsjjggYbWIUEc6MkZc4l3LhBV0hQIy3bO+YK8IjgqjoRHFkRCJAWfJj5UpzWXnSJsGElOfIBbD6383YGPdsrcqOat0WkXZ5J/SDw8cNsD0/SSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uOQfgSt7DnQHzU9CkYe3OcxfQ5H3Z/rsIPYYFJiCANs=;
+ b=DOJcrD4sZ9AizzZkk+s4ocuz67z9gfdzHGsJUHlRwjFTDIkvNa5C79ZVgLzyuoIlyC4jKu+DpHPKIuNzlPX9cy0dIQj6Kv+F3Fi0BqTq467hnZZFnf1rGbDDlRSBk5RVqHrQQa1kcV/KXCvcF2B8BMvIws/cSKceydopj/WWw4Kl8sYNCLZJfepR2rpoUOSBlskcot0O0Ey2M1/V1cm09mVhU5G5oz3FAMWxQfIyoD3qoMzJp6X+yfw/Hbm0V4Bf+cGNE5k/Q11UPiLUObaQwxqBj4MG/csWhsvBJUJAMlp1yLaCFztRSqSKe5Ay5b0x3L31TgpdcH2+bNiVClkhNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uOQfgSt7DnQHzU9CkYe3OcxfQ5H3Z/rsIPYYFJiCANs=;
+ b=JstB/y8hptP2LlfLQBpvfgrlbZ483A2DKvjGkP/egrrAV7A0keULTYrNCsM9jda338ytDlplXK+LNpPJVHzGgPScAb9635N7PWzz2JCjqLJd5FzSGi2K7e2dpahMBziShrvWa24fBofOB4IvHDHKhOgs5I0iz6U6JUmXQAyzAnE=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
+ by CO1PR10MB4738.namprd10.prod.outlook.com (2603:10b6:303:93::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 18 Mar
+ 2021 19:28:14 +0000
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 19:28:14 +0000
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexey Klimov <aklimov@redhat.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Cc:     peterz@infradead.org, yury.norov@gmail.com, tglx@linutronix.de,
+        jobaker@redhat.com, audralmitchel@gmail.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, rafael@kernel.org, tj@kernel.org,
+        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
+Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish
+ on cpu onlining
+In-Reply-To: <20210317003616.2817418-1-aklimov@redhat.com>
+References: <20210317003616.2817418-1-aklimov@redhat.com>
+Date:   Thu, 18 Mar 2021 15:28:09 -0400
+Message-ID: <877dm4uura.fsf@oracle.com>
+Content-Type: text/plain
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: BL0PR02CA0102.namprd02.prod.outlook.com
+ (2603:10b6:208:51::43) To MWHPR10MB1774.namprd10.prod.outlook.com
+ (2603:10b6:301:9::13)
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uG2PFMWXa9o4LzsF1r0Mc-M8KqD-PKZkCj+m7XeO5wCyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from parnassus (98.229.125.203) by BL0PR02CA0102.namprd02.prod.outlook.com (2603:10b6:208:51::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Thu, 18 Mar 2021 19:28:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff52179e-f490-48d5-a8fa-08d8ea43f952
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4738:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB473899C1F70D4CD5151D218FD9699@CO1PR10MB4738.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WIHrPcH6ZTXHHU+NuzHH23zZpR8UdIthu7WnEwunfUDhi20l0qcduo2Gk3e7lhdzDRec4qv5sOLhJEDxuzIROiWLKKBXWB0/FKPKBw7ocYMwfqJI/avHOJgKMmM0Gx4HIAVhZNBNi4vjT+W5vhW8LvZ4PYCLR1IwDG1jrSq7fGz5hxeTbyl9T3gOuWFKbA5Xgm6LS7jsy4OvSb6O7qHMJZf6wQLwAPzg1chby2lqdObPIeEtHDpQ3MwK1zUoo64TqvZ7MH7pdYtUCj89tPOHEjWZwZryxQOgqN9hZ8NtwjfWYeWLd983mQrqyNCViFsEgy03W4VOBAL/1LCHiYy74lKYni1Fe0fZ2Lfrgjii13Sumj860duJs2W8xi1p6DDwLISarKlomb4vzDPYFhiCpPys8yxrnBW62cXjygDLA5bcLKWfsjO6+OpI7tROog89VeP5ZYFYarPzkLEMm1gTZTl9ctM1zS07UoMYJASBDeVNJFq9+0gVTV1lPSLLTmutjBjavmuIufFKE+WhCtiNzl/5Kc2j+jXZiIWt+ubhxMvbSIvltQ9p5wofV3Cp7PewnZk+qY4z7fdwMAxDd8xcWa7nyPahearwQ5BExNUl8/ue/VJVYTR4s1INTUwNwMN9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(396003)(39860400002)(136003)(86362001)(956004)(36756003)(8936002)(38100700001)(2906002)(4326008)(16526019)(2616005)(316002)(66946007)(6496006)(83380400001)(66556008)(5660300002)(52116002)(7416002)(8676002)(6486002)(26005)(186003)(66476007)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Qt7XhfhcA2m9QIH1cb4+rK0Y88kr1QmzMgDNMjXPzhnFtFAzp02QucPwhKI/?=
+ =?us-ascii?Q?GyFrz9dIqEt9HJjchwHD7hQe2bmk0wO8lm1eM5jpA2dYMVy+/hUdltjZO1Ej?=
+ =?us-ascii?Q?IOPqlP5H0M9MFWG0kDlBoAxItSw2K8SH2m9r6w0A8De07AHTctTYpY9DSpaV?=
+ =?us-ascii?Q?pnpTpCYHkB8fr5OeS1kWePpVeyfqd3v1N4fXwX2PMloQ1H9oBuUG9CQLsMMr?=
+ =?us-ascii?Q?eSLS6QJesAmu/b/ZC6Bk802dHnQJACaqxPMufrCChnTvNaJjNz5+6PINZ+qv?=
+ =?us-ascii?Q?hisidZGuZd4s0DhkFNdluMIpK7FwyLOWKtc1ln95Fkdqzn/37trvNcKghVTM?=
+ =?us-ascii?Q?cBUbu15bj3fuiH9lhwuoB21r4sua7hY/O+DTABLZd19n44FQzzsllN3wpyMM?=
+ =?us-ascii?Q?xVMZwT0vtWgcWXHim57OCs+2Dlot3F07Dzp+u9ZDBhvmlYmobYLUcRTbl7ua?=
+ =?us-ascii?Q?0KuVbeeJ6t/BtH94yz5pVkPDgQTiDiClc+T4A6ePrCX3HwhpOP5Sz0MO/B1X?=
+ =?us-ascii?Q?XQwcsq/uKrl6HTPWLURCygrDSLiA49ObfleGEQw8GJsdWaznGOpb4EGSxG4l?=
+ =?us-ascii?Q?exBerQlr653bYf+kzEuQgSiU43HmjfvpsfhLuAgax03F06xGjtdxbc0RnFsn?=
+ =?us-ascii?Q?SHQuEZIP3Pey5AszbqOfb6Sm8fVCPmK78iCgiEM6xxgo8EbW3pX0JKewb70K?=
+ =?us-ascii?Q?GK4zOKv2XREFZysM7NG1RWZCuV+bRsO+gtpxNsbslMO0/iaN3C3TEA44OuLp?=
+ =?us-ascii?Q?elMcdWFJo3HhvqoZi6DaW3nLaVp3fpM9Cj5Fi1pQSrsavnklXD5tGRpdq1B9?=
+ =?us-ascii?Q?gDWLs3Drl81NicSjRMGFdZvshfe3RIOxhxHmyNJekaEVlTybFxAFs8UA5qkY?=
+ =?us-ascii?Q?klbVuIlHZI2+B9iw3Vq8/Geb9gBrxzIWEkr32omzUA8Vt4WTtMurDrwOPdQT?=
+ =?us-ascii?Q?Nk7WbfkjCwXq0d2BVTWo+e/CLEwcIM7sT31SsVVs4T+Z7QS/ibs1QlDfCTtq?=
+ =?us-ascii?Q?UXj/VwRUMsUHfJjq895zlH5X+5TeFV1QYan5lcjKXhpyDhLBMIGRlspfEBuW?=
+ =?us-ascii?Q?zO0UyEJZj02mntR40TOlBXvbtZOLij//P/IlXkCoSdyZHSOKcZXqz2iDfhbi?=
+ =?us-ascii?Q?UukeKUhGkEhD1FXASN0SANd//JHqwuQH7JFQS/zQSsPXUlgh19C/z4vx3iel?=
+ =?us-ascii?Q?4/5I21Emf4bj2SAxUzgDgTW3QoD1iq4FwwUA4ibFpcqMkZsHjZJOwiVZ4JRi?=
+ =?us-ascii?Q?WwV0KKQdXJSAz9lOKOQOM60dIJ5hRbGI75L+gkBWXwNUx8ZvBa8IvArcBNZP?=
+ =?us-ascii?Q?FrPJosM+VBhEvB3/z7K2+6IO?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff52179e-f490-48d5-a8fa-08d8ea43f952
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 19:28:14.2806
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qM+wDSi3IGj+oLryLZx6HulwANsw2zjaP3Ce0fJG7NiQIyVWoezgJpKd1o83MmZ8jO1/ZgBtBBM32p6LyeQ9z22XMVtqlVd2n3R4GmR2bdA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4738
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180138
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9927 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103180137
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Alexey Klimov <aklimov@redhat.com> writes:
+> When a CPU offlined and onlined via device_offline() and device_online()
+> the userspace gets uevent notification. If, after receiving "online" uevent,
+> userspace executes sched_setaffinity() on some task trying to move it
+> to a recently onlined CPU, then it sometimes fails with -EINVAL. Userspace
+> needs to wait around 5..30 ms before sched_setaffinity() will succeed for
+> recently onlined CPU after receiving uevent.
+>
+> If in_mask argument for sched_setaffinity() has only recently onlined CPU,
+> it could fail with such flow:
+>
+>   sched_setaffinity()
+>     cpuset_cpus_allowed()
+>       guarantee_online_cpus()   <-- cs->effective_cpus mask does not
+>                                         contain recently onlined cpu
+>     cpumask_and()               <-- final new_mask is empty
+>     __set_cpus_allowed_ptr()
+>       cpumask_any_and_distribute() <-- returns dest_cpu equal to nr_cpu_ids
+>       returns -EINVAL
+>
+> Cpusets used in guarantee_online_cpus() are updated using workqueue from
+> cpuset_update_active_cpus() which in its turn is called from cpu hotplug callback
+> sched_cpu_activate() hence it may not be observable by sched_setaffinity() if
+> it is called immediately after uevent.
+>
+> Out of line uevent can be avoided if we will ensure that cpuset_hotplug_work
+> has run to completion using cpuset_wait_for_hotplug() after onlining the
+> cpu in cpu_device_up() and in cpuhp_smt_enable().
+>
+> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+> Co-analyzed-by: Joshua Baker <jobaker@redhat.com>
+> Signed-off-by: Alexey Klimov <aklimov@redhat.com>
 
-On 3/18/2021 3:16 AM, Daniel Vetter wrote:
-> On Sat, Mar 6, 2021 at 1:44 AM Brian Welty <brian.welty@intel.com> wrote:
->>
->>
->> On 2/11/2021 7:34 AM, Daniel Vetter wrote:
->>> On Wed, Feb 10, 2021 at 02:00:57PM -0800, Brian Welty wrote:
->>>>
->>>> On 2/9/2021 2:54 AM, Daniel Vetter wrote:
->>>>> On Tue, Jan 26, 2021 at 01:46:25PM -0800, Brian Welty wrote:
->>>>>> This patch adds tracking of which cgroup to make charges against for a
->>>>>> given GEM object.  We associate the current task's cgroup with GEM objects
->>>>>> as they are created.  First user of this is for charging DRM cgroup for
->>>>>> device memory allocations.  The intended behavior is for device drivers to
->>>>>> make the cgroup charging calls at the time that backing store is allocated
->>>>>> or deallocated for the object.
->>>>>>
->>>>>> Exported functions are provided for charging memory allocations for a
->>>>>> GEM object to DRM cgroup. To aid in debugging, we store how many bytes
->>>>>> have been charged inside the GEM object.  Add helpers for setting and
->>>>>> clearing the object's associated cgroup which will check that charges are
->>>>>> not being leaked.
->>>>>>
->>>>>> For shared objects, this may make the charge against a cgroup that is
->>>>>> potentially not the same cgroup as the process using the memory.  Based
->>>>>> on the memory cgroup's discussion of "memory ownership", this seems
->>>>>> acceptable [1].
->>>>>>
->>>>>> [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt, "Memory Ownership"
->>>>>>
->>>>>> Signed-off-by: Brian Welty <brian.welty@intel.com>
->>>>>
->>>>> Since for now we only have the generic gpu/xpu/bikeshed.memory bucket that
->>>>> counts everything, why don't we also charge in these gem functions?
->>>>
->>>> I'm not sure what you mean exactly.  You want to merge/move the charging logic
->>>> proposed in patch #5 (drm_cgroup_try_charge in kernel/cgroup/drm.c) into
->>>> drm_gem_object_charge_mem() ?
->>>>
->>>> Or reading below, I think you are okay keeping the logic separated as is, but
->>>> you want much of the code in kernel/cgroup/drm.c moved to drivers/gpu/cgroup ?
->>>> Yes, I see that should allow to reduce number of exported functions.
->>>
->>> Both. I mean we'd need to look at the code again when it's shuffled, but
->>> I'd say:
->>>
->>> - cgroup code and the charging for general gpu memory moves to
->>>   drivers/gpu/cgroup, so dma-buf heaps can use it too.
->>>
->>> - the charging for gem buffers moves into core gem code, so it happens for
->>>   all gpu drivers and all gem buffer allocations.
->>
->> Daniel, I'm not sure we're in sync on what 'charging for general gpu memory'
->> means.  Thus far, I have been proposing to charge/uncharge when backing store is
->> allocated/freed.  And thus, this would be done in DRM driver (so then also in
->> the dma-buf exporter).
->> I can't see how we'd hoist this part into drm gem code.
->> The memory limit in this series is for VRAM usage/limit not GEM buffers...
-> 
-> Yes this would be at gem buffer creation time. And just to get cgroups
-> for drm up&running.
+Looks good to me.
 
-Okay, but it's not of the ones in Tejun's list to start with:
-   https://lists.freedesktop.org/archives/dri-devel/2020-April/262141.html
-I hoped we would start by pursuing those (gpu.weight and gpu.memory.high)
-as first step.
-
-Limiting GEM buffers is essentially controlling virtual memory size, which 
-tend to just always get set to unlimited.
-Would be nice to get consensus from maintainers before proceeding to implement
-this.
-
-
-> 
->> Unless you are talking about charging for GEM buffer creation?  But this is
->> more of a 'soft resource' more along lines of Kenny's earlier GEM buffer limit
->> control.
->> I raised issue with this then, and at the time, Tejun agreed we should keep to
->> 'hard resource' controls, see [1] and [2].
->>
->> [1] https://lists.freedesktop.org/archives/dri-devel/2019-May/218071.html
->> [2] https://lists.freedesktop.org/archives/dri-devel/2020-April/262141.html
->>
->>>
->>> - this might or might not mean a bunch less exported stuff from the
->>>   cgroups files (since you don't need separate steps for linking a gem
->>>   object to a cgroup from the actual charging), and probably no exports
->>>   anymore for drivers (since they charge nothing). That will change
->>>   when we add charging for specific memory pools I guess, but we add that
->>>   when we add tha functionality.
->>
->> ... so considering VRAM charging, then yes, we very much need to have exported
->> functions for drivers to do the charging.
->> But these can be exported from drm.ko (or new .ko?) instead of kernel.  Is
->> that still preference?   Also, if number of exported functions is concern, we
->> can replace some of it with use of function pointers.
-> 
-> So the reason I suggested we drop all this is because we won't charge
-> in drivers, we'll charge in ttm buffer management code. Which we'll
-> adopt for dg1 in upstream. But it will take some time.
-
-Okay, thanks for clarifying.
-I'm not familiar with where try_charge/uncharge would fit into the ttm model.
-Will need to look into it more....
-
-> 
->> So then returning to this comment of yours:
->>
->>> - cgroup code and the charging for general gpu memory moves to
->>>   drivers/gpu/cgroup, so dma-buf heaps can use it too.
->>
->> If you agree that we are charging just at backing-store level, then I think
->> logic belongs in drivers/gpu/drm/cgroup ??  As charging is done in DRM driver
->> (also dma-buf exporter).  In other words, part of drm.
->> If I understand, dma-buf heaps is exporter of system memory and doesn't
->> need to charge against gpu controller??
->> Will need some help to understand the dma-buf heap use case a bit more.
-> 
-> Well we also need to track system gpu memory somehow. Currently that
-> flies under the radar, and nasty userspace can just easily exhaust all
-> of system memory with gpu buffers, even if there's otherwise cgroup
-> limits in place. Which is not good. Hence also the overall limit for
-> buffers.
-
-
-If DRM allows user-space to exhaust all of system memory, this seems
-to be a gap in enforcement of MEMCG limits for system memory.
-I tried to look into it when this was discussed in the past....
-My guess is that shmem_read_mapping_page_gfp() ->
-shmem_getpage_gfp() is not choosing the correct MM to charge against
-in the use case of drivers using shmemfs for backing gem buffers.
-
--Brian
-
-
-> -Daniel
-> 
->>
->>
->> Thanks,
->> -Brian
->>
->>>
->>>>> Also, that would remove the need for all these functions exported to
->>>>> drivers. Plus the cgroups setup could also move fully into drm core code,
->>>>> since all drivers (*) support it
->>>>> That way this would really be a fully
->>>>> generic cgroups controller, and we could land it.
->>>>
->>>>
->>>> Patch #2 proposed to have a few setup functions called during drm device
->>>> registration.
->>>> You are suggesting to have this more tightly integrated?
->>>
->>> Yeah essentially if DRIVER_GEM is set drm core would simply set this all
->>> up. Since with this we'd always account all gem buffers in cgroups, and it
->>> would make basic cgroup support a non-optional part of drm drivers.
->>>
->>>> Okay, can see what that looks like.  It's true most of the exported functions from
->>>> kernel/cgroup/drm.c were taking a struct drm_device pointer, so seems it can be
->>>> restructured as you suggest.  But I guess we will always need some logic in
->>>> kernel/cgroup/drm.c to encapsulate the allocation of the 'struct cgroup_subsys_state'
->>>> for this new controller.
->>>> But I'm not sure I see how this makes the controller 'fully generic' as you describe.
->>>
->>> All DRIVER_GEM would automatacially support it. And yes there'll still be
->>> some encapsulation ofc.
->>>
->>>>> The other things I'd do:
->>>>> - drop gpu scheduling controller from the initial patch series. Yes we'll
->>>>>   need it, but we also need vram limits and all these things for full
->>>>>   featured controller. Having the minimal viable cgroup controller in
->>>>>   upstream would unblock all these other things, and we could discuss them
->>>>>   in separate patch series, instead of one big bikeshed that never reaches
->>>>>   full consensus.
->>>>>
->>>>> - the xpu thing is probably real, I just chatted with Android people for
->>>>>   their gpu memory accounting needs, and cgroups sounds like a solution
->>>>>   for them too. But unlike on desktop/server linux, on Android all shared
->>>>>   buffers are allocated from dma-buf heaps, so outside of drm, and hence a
->>>>>   cgroup controller that's tightly tied to drm isn't that useful. So I
->>>>>   think we should move the controller/charge functions up one level into
->>>>>   drivers/gpu/cgroups.
->>>>
->>>> Hmm, so for this, you are asking for the cgroup logic to not directly use
->>>> DRM data structures?  Okay, that's why you suggest drivers/gpu/cgroups and
->>>> not drivers/gpu/drm/cgroups.  So this is your angle to make it 'fully
->>>> generic' then.....
->>>
->>> This is another flavour of "generic", maybe need to split them up:
->>> - make it more generic by rolling it out for all DRIVER_GEM
->>> - make it more generic by allowing non-drm code to charge gpu memory
->>>   (android's dma-buf heaps will need that, maybe v4l eventually too)
->>>
->>>>>   On the naming bikeshed I think gpu is perfectly fine, just explain in
->>>>>   the docs that the G stands for "general" :-) Otherwise we might need to
->>>>>   rename drivers/gpu to drivers/xpu too, and that's maybe one bikeshed too
->>>>>   far. Plus, right now it really is the controller for gpu related memory,
->>>>>   even if we extend it to Android (where it would also include
->>>>>   video/camera allocatioons). Extending this cgroup controller to
->>>>>   accelerators in general is maybe a bit too much.
->>>>>
->>>>> - The other disambiguation is how we account dma-buf (well, buffer based)
->>>>>   gpu allocations vs HMM gpu memory allocations, that might be worth
->>>>>   clarifying in the docs.
->>>>>
->>>>> - Finally to accelerate this further, I think it'd be good to pull out the
->>>>>   cgroup spec for this more minimized series into patch 1, as a draft.
->>>>>   That way we could get all stakeholders to ack on that ack, so hopefully
->>>>>   we're building something that will work for everyone. That way we can
->>>>>   hopefully untangle the controller design discussions from the
->>>>>   implementation bikeshedding as much as possible.
->>>>
->>>> Okay, thanks for all the inputs.
->>>> I agree the 'cgroup spec' should be in first patch.  Can redo this way as well.
->>>>
->>>> As much of the code here for the controller was Kenny's work...
->>>> Kenny, any input on Daniel's suggestions?
->>>> Otherwise, I can proceed to rework as suggested.
->>>
->>> If you're worried about acknowledgement if you end up fully rewriting
->>> code: Reference an old version from Kenny from archive and mention in the
->>> commit log it's based on that work. There's no requirement that you can
->>> only reuse patches from other people entirely unchanged, this kind of
->>> collaborative patch development mode happens all the time.
->>>
->>> Cheers, Daniel
->>>
->>>>
->>>> Thanks,
->>>> -Brian
->>>>
->>>>
->>>>>
->>>>> Cheers, Daniel
->>>>>
->>>>> *: vmwgfx is the only non-gem driver, but there's plans to move at least
->>>>> vmwgfx internals (maybe not the uapi, we'll see) over to gem. Once that's
->>>>> done it's truly all gpu memory.
->>>>>> ---
->>>>>>  drivers/gpu/drm/drm_gem.c | 89 +++++++++++++++++++++++++++++++++++++++
->>>>>>  include/drm/drm_gem.h     | 17 ++++++++
->>>>>>  2 files changed, 106 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
->>>>>> index c2ce78c4edc3..a12da41eaafe 100644
->>>>>> --- a/drivers/gpu/drm/drm_gem.c
->>>>>> +++ b/drivers/gpu/drm/drm_gem.c
->>>>>> @@ -29,6 +29,7 @@
->>>>>>  #include <linux/slab.h>
->>>>>>  #include <linux/mm.h>
->>>>>>  #include <linux/uaccess.h>
->>>>>> +#include <linux/cgroup_drm.h>
->>>>>>  #include <linux/fs.h>
->>>>>>  #include <linux/file.h>
->>>>>>  #include <linux/module.h>
->>>>>> @@ -112,6 +113,89 @@ drm_gem_init(struct drm_device *dev)
->>>>>>    return drmm_add_action(dev, drm_gem_init_release, NULL);
->>>>>>  }
->>>>>>
->>>>>> +/**
->>>>>> + * drm_gem_object_set_cgroup - associate GEM object with a cgroup
->>>>>> + * @obj: GEM object which is being associated with a cgroup
->>>>>> + * @task: task associated with process control group to use
->>>>>> + *
->>>>>> + * This will acquire a reference on cgroup and use for charging GEM
->>>>>> + * memory allocations.
->>>>>> + * This helper could be extended in future to migrate charges to another
->>>>>> + * cgroup, print warning if this usage occurs.
->>>>>> + */
->>>>>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
->>>>>> +                         struct task_struct *task)
->>>>>> +{
->>>>>> +  /* if object has existing cgroup, we migrate the charge... */
->>>>>> +  if (obj->drmcg) {
->>>>>> +          pr_warn("DRM: need to migrate cgroup charge of %lld\n",
->>>>>> +                  atomic64_read(&obj->drmcg_bytes_charged));
->>>>>> +  }
->>>>>> +  obj->drmcg = drmcg_get(task);
->>>>>> +}
->>>>>> +EXPORT_SYMBOL(drm_gem_object_set_cgroup);
->>>>>> +
->>>>>> +/**
->>>>>> + * drm_gem_object_unset_cgroup - clear GEM object's associated cgroup
->>>>>> + * @obj: GEM object
->>>>>> + *
->>>>>> + * This will release a reference on cgroup.
->>>>>> + */
->>>>>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj)
->>>>>> +{
->>>>>> +  WARN_ON(atomic64_read(&obj->drmcg_bytes_charged));
->>>>>> +  drmcg_put(obj->drmcg);
->>>>>> +}
->>>>>> +EXPORT_SYMBOL(drm_gem_object_unset_cgroup);
->>>>>> +
->>>>>> +/**
->>>>>> + * drm_gem_object_charge_mem - try charging size bytes to DRM cgroup
->>>>>> + * @obj: GEM object which is being charged
->>>>>> + * @size: number of bytes to charge
->>>>>> + *
->>>>>> + * Try to charge @size bytes to GEM object's associated DRM cgroup.  This
->>>>>> + * will fail if a successful charge would cause the current device memory
->>>>>> + * usage to go above the cgroup's GPU memory maximum limit.
->>>>>> + *
->>>>>> + * Returns 0 on success.  Otherwise, an error code is returned.
->>>>>> + */
->>>>>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size)
->>>>>> +{
->>>>>> +  int ret;
->>>>>> +
->>>>>> +  ret = drm_cgroup_try_charge(obj->drmcg, obj->dev,
->>>>>> +                              DRMCG_TYPE_MEM_CURRENT, size);
->>>>>> +  if (!ret)
->>>>>> +          atomic64_add(size, &obj->drmcg_bytes_charged);
->>>>>> +  return ret;
->>>>>> +}
->>>>>> +EXPORT_SYMBOL(drm_gem_object_charge_mem);
->>>>>> +
->>>>>> +/**
->>>>>> + * drm_gem_object_uncharge_mem - uncharge size bytes from DRM cgroup
->>>>>> + * @obj: GEM object which is being uncharged
->>>>>> + * @size: number of bytes to uncharge
->>>>>> + *
->>>>>> + * Uncharge @size bytes from the DRM cgroup associated with specified
->>>>>> + * GEM object.
->>>>>> + *
->>>>>> + * Returns 0 on success.  Otherwise, an error code is returned.
->>>>>> + */
->>>>>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size)
->>>>>> +{
->>>>>> +  u64 charged = atomic64_read(&obj->drmcg_bytes_charged);
->>>>>> +
->>>>>> +  if (WARN_ON(!charged))
->>>>>> +          return;
->>>>>> +  if (WARN_ON(size > charged))
->>>>>> +          size = charged;
->>>>>> +
->>>>>> +  atomic64_sub(size, &obj->drmcg_bytes_charged);
->>>>>> +  drm_cgroup_uncharge(obj->drmcg, obj->dev, DRMCG_TYPE_MEM_CURRENT,
->>>>>> +                      size);
->>>>>> +}
->>>>>> +EXPORT_SYMBOL(drm_gem_object_uncharge_mem);
->>>>>> +
->>>>>>  /**
->>>>>>   * drm_gem_object_init - initialize an allocated shmem-backed GEM object
->>>>>>   * @dev: drm_device the object should be initialized for
->>>>>> @@ -156,6 +240,8 @@ void drm_gem_private_object_init(struct drm_device *dev,
->>>>>>    obj->dev = dev;
->>>>>>    obj->filp = NULL;
->>>>>>
->>>>>> +  drm_gem_object_set_cgroup(obj, current);
->>>>>> +
->>>>>>    kref_init(&obj->refcount);
->>>>>>    obj->handle_count = 0;
->>>>>>    obj->size = size;
->>>>>> @@ -950,6 +1036,9 @@ drm_gem_object_release(struct drm_gem_object *obj)
->>>>>>
->>>>>>    dma_resv_fini(&obj->_resv);
->>>>>>    drm_gem_free_mmap_offset(obj);
->>>>>> +
->>>>>> +  /* Release reference on cgroup used with GEM object charging */
->>>>>> +  drm_gem_object_unset_cgroup(obj);
->>>>>>  }
->>>>>>  EXPORT_SYMBOL(drm_gem_object_release);
->>>>>>
->>>>>> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
->>>>>> index 240049566592..06ea10fc17bc 100644
->>>>>> --- a/include/drm/drm_gem.h
->>>>>> +++ b/include/drm/drm_gem.h
->>>>>> @@ -37,6 +37,7 @@
->>>>>>  #include <linux/kref.h>
->>>>>>  #include <linux/dma-resv.h>
->>>>>>
->>>>>> +#include <drm/drm_cgroup.h>
->>>>>>  #include <drm/drm_vma_manager.h>
->>>>>>
->>>>>>  struct dma_buf_map;
->>>>>> @@ -222,6 +223,17 @@ struct drm_gem_object {
->>>>>>     */
->>>>>>    struct file *filp;
->>>>>>
->>>>>> +  /**
->>>>>> +   * @drmcg:
->>>>>> +   *
->>>>>> +   * cgroup used for charging GEM object page allocations against. This
->>>>>> +   * is set to the current cgroup during GEM object creation.
->>>>>> +   * Charging policy is up to the DRM driver to implement and should be
->>>>>> +   * charged when allocating backing store from device memory.
->>>>>> +   */
->>>>>> +  struct drmcg *drmcg;
->>>>>> +  atomic64_t drmcg_bytes_charged;
->>>>>> +
->>>>>>    /**
->>>>>>     * @vma_node:
->>>>>>     *
->>>>>> @@ -417,4 +429,9 @@ int drm_gem_fence_array_add_implicit(struct xarray *fence_array,
->>>>>>  int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
->>>>>>                        u32 handle, u64 *offset);
->>>>>>
->>>>>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
->>>>>> +                         struct task_struct *task);
->>>>>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj);
->>>>>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size);
->>>>>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size);
->>>>>>  #endif /* __DRM_GEM_H__ */
->>>>>> --
->>>>>> 2.20.1
->>>>>>
->>>>>
->>>
-> 
-> 
-> 
+Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
