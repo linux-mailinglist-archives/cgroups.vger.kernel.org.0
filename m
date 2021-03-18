@@ -2,92 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E8833FB3F
-	for <lists+cgroups@lfdr.de>; Wed, 17 Mar 2021 23:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A0E33FCF7
+	for <lists+cgroups@lfdr.de>; Thu, 18 Mar 2021 03:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhCQWbS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Mar 2021 18:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S230159AbhCRCAT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Mar 2021 22:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhCQWaw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Mar 2021 18:30:52 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9585FC06175F
-        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 15:30:50 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id x16so238679iob.1
-        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 15:30:50 -0700 (PDT)
+        with ESMTP id S229880AbhCRCAF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Mar 2021 22:00:05 -0400
+Received: from mail-vk1-xa49.google.com (mail-vk1-xa49.google.com [IPv6:2607:f8b0:4864:20::a49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19CEC06174A
+        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
+Received: by mail-vk1-xa49.google.com with SMTP id s69so11638682vkd.20
+        for <cgroups@vger.kernel.org>; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B1Pn4DbFEch76dQ9ia9lLBjd1nNH8Pqwys+so0gPrt0=;
-        b=lNbRHp6l0oM2+Xq1AOXCruM08fOp6OY0+sGgqz70SCTkv4se0odGZQPG+2axOFqFHe
-         gBMmrJfpnSZ6ewa5+etGicUlX6aWCCHLXvxkhAfui38IGfPcdWIVG/2vuIThlZe1/5j7
-         pxqp0mj3hZDp5XwfNY+dK2+YK1nlugwQMLaDmYvF0ZlXPcqkq9/8UKBHyjRs4OUxnMUI
-         Her8syokr+HbPWZDRXobrQg0l9k0AOkKvi+yPIpnFzY8HPLuQKqeeoHWzZV9WGuL/PAE
-         cCqR255GknGuZO8aVj4J8LBWYTifQKdU526zmqrvtB1GyY5NPrRMNB45NBZi3r1tu57l
-         8nZw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=v1M50zVO+qfyX8hHQPyP5qHNesgD9s9P1xyKpHxr+O4=;
+        b=cbLMc8ExTKSMcFjJxmr7HW9m23mlVR3fNMnWGPh4+DjYZqiKhZUFQ4qcdVtPpzE/aA
+         8mzuAfy1Q0Y7qSpp/xGenI6FdRQWsuCmLqLHAF1mcTH7SZsy6c4b5+2jf6nJ4d07Cbfq
+         4v4LbsEel7zJtXZb2uQdbeUh1djn/FduBWLT8vHUZCzCeLdMhqzuFMfuR2MJROscijad
+         cQ4Qt4Yu9kV7InlNKAAj+USa8pz9YiawXTdgmUDfXxvo13msqrp/Tk04Bqk0ldaoqsYw
+         v7/o8ImE6egm/TTuhWC01bt5tIoIsowp7eUL6ELQhTEBEGO3lNsPjtUir0f1vCIdlEHf
+         AvDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B1Pn4DbFEch76dQ9ia9lLBjd1nNH8Pqwys+so0gPrt0=;
-        b=tuq2UtzBZV/ApDjLoseIefrPBKzNPhvtP6vfTEqidFFtfkPR+Ce9VhBGGbJSjkpdSQ
-         pA73AmfbSJCl0OPaCYI9WeOTIG4Pwp4KKtgsa1OU1LpljQe+CHm4JP64EHbDGQgAO4nw
-         X385xq1W8FpUAbCTC359/7f6yBQ7t6wNhtFBj2XCzXW6P9WCT9FriUmIJAHpUkYAyvIN
-         Vb/GRCsmcETQArB+TdlYrGmg6f96nLjPdZuYR+8HF5PdIWZTeY1pMggnnMHs6WM1HeSm
-         j3WPqODwXc9+ynY40MmF18Qk9E59f6nQ644g8IGDFzqLGK8nnz3+ToHj39RjdwL+hbuQ
-         KcCA==
-X-Gm-Message-State: AOAM533oYJ/fcEXi38dj8F7F6cNW7Dmy/EeioSLQ/A81qQEFU39nyF4g
-        xdIQtCFBOGDUy0XGFzZnNzUPVQ==
-X-Google-Smtp-Source: ABdhPJxQ0yBKvSv4QklWxvE86SugGD3/A4r53dNvEqsYePMtqr6ULNLPFEjf3fTnY7saMoyBr0sxVA==
-X-Received: by 2002:a6b:d80d:: with SMTP id y13mr8384632iob.75.1616020249934;
-        Wed, 17 Mar 2021 15:30:49 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id j3sm170380ila.58.2021.03.17.15.30.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Mar 2021 15:30:49 -0700 (PDT)
-Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=v1M50zVO+qfyX8hHQPyP5qHNesgD9s9P1xyKpHxr+O4=;
+        b=LqPN1F0gn2anYTzUD7K7Qg602C8nBG12Vq0uwL1UsHkYMpMFqNQuduPxzbssc3yzH0
+         9D0E1yZb2Lz0SrQCrHwtoy61PCYAgDMhiq6BSUz4f8oZS6G+uVpTSw+o6HmgtvcvsMg2
+         dwvrhJvLU+fR9xSRIHLIy5mQeAYKtcf1U7ikQFUCRPcDPXQDkdWZL17NP9eUdMxNty5s
+         Z8zqO8QegrmN8a38uWvoJB9rOm9qzlmvtUhYznVhIajyvHeKP1ICNIbrETXzS7jBVNTA
+         0ekAHpgJcImd3EYpa/D1LQs69Ba72RQPukFFQ3aVOAt8ul1rJ9HRK50sA2CP2HQFAfTg
+         qFBA==
+X-Gm-Message-State: AOAM533kToy9U9TgJTw34z2fkfjmjB7oiZyQvrh7Wz0HraxRwidei936
+        KLHDfT8h1Htse7GM9uXud0soEqf7OEb6QQ==
+X-Google-Smtp-Source: ABdhPJw8W0/x+H/Lj+3kOZGld4iiR5NSu7ISSwZyTycTarKtlprPwF1Pzu5TDYhgohhf4nqt8oNMwjVJjI1ryA==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:6cf6:3db8:f12:ae7f])
+ (user=shakeelb job=sendgmr) by 2002:a9f:2142:: with SMTP id
+ 60mr1202881uab.105.1616032804013; Wed, 17 Mar 2021 19:00:04 -0700 (PDT)
+Date:   Wed, 17 Mar 2021 18:59:59 -0700
+Message-Id: <20210318015959.2986837-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+Subject: [PATCH] memcg: set page->private before calling swap_readpage
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk>
-Date:   Wed, 17 Mar 2021 16:30:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210316153655.500806-1-schatzberg.dan@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Heiko Carstens <hca@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 3/16/21 9:36 AM, Dan Schatzberg wrote:
-> No major changes, just rebasing and resubmitting
+The function swap_readpage() (and other functions it call) extracts swap
+entry from page->private. However for SWP_SYNCHRONOUS_IO, the kernel
+skips the swapcache and thus we need to manually set the page->private
+with the swap entry before calling swap_readpage().
 
-Applied for 5.13, thanks.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reported-by: Heiko Carstens <hca@linux.ibm.com>
+---
 
+Andrew, please squash this into "memcg: charge before adding to
+swapcache on swapin" patch.
+
+ mm/memory.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index aefd158ae1ea..b6f3410b5902 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3324,7 +3324,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 					workingset_refault(page, shadow);
+ 
+ 				lru_cache_add(page);
++
++				/* To provide entry to swap_readpage() */
++				set_page_private(page, entry.val);
+ 				swap_readpage(page, true);
++				set_page_private(page, 0);
+ 			}
+ 		} else {
+ 			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
 -- 
-Jens Axboe
+2.31.0.rc2.261.g7f71774620-goog
 
