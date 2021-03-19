@@ -2,156 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523F53411D3
-	for <lists+cgroups@lfdr.de>; Fri, 19 Mar 2021 01:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DD534150B
+	for <lists+cgroups@lfdr.de>; Fri, 19 Mar 2021 06:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233599AbhCSA4v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Mar 2021 20:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S233832AbhCSFuR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Mar 2021 01:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbhCSA4m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Mar 2021 20:56:42 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD0AC061760
-        for <cgroups@vger.kernel.org>; Thu, 18 Mar 2021 17:56:41 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id r20so9885352ljk.4
-        for <cgroups@vger.kernel.org>; Thu, 18 Mar 2021 17:56:41 -0700 (PDT)
+        with ESMTP id S233818AbhCSFtr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Mar 2021 01:49:47 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D139BC06175F
+        for <cgroups@vger.kernel.org>; Thu, 18 Mar 2021 22:49:46 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id y18so1782332qky.11
+        for <cgroups@vger.kernel.org>; Thu, 18 Mar 2021 22:49:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6gTh132+rc2eC7+iuJdnPJjGut8rCOk0bv/jkoJwjos=;
-        b=dKTes1FKvp/DzPE43p1AwRBeRVKFON9qL1XwrpMNHUbvBm7Q85xfRixMCaNBCkPDxx
-         0f3qo6HyoxcRQkWCXA7TtPgH5vMcUYGmA00b6LpeYS9SUx5dWhNQ5hHuH8Ii4ULjkflM
-         DigmBVyvCZL7eApstVvrAD96tXpWWwyXd6EVlj/yWRcT/pSoyuIBa19KQlI93IT5oxFQ
-         jQPgTzIe2XuV+LhQ5xRI/GFv83yN7Oy3IDPCR1nXVyyWo3aDBIdHKjeVV0VuKMe79nnm
-         gVIggj7RDj13QlGC0t80BCt3pm87t/v49IonN9jOSlziU2Jz2l93SA0lqzWnN8OIDREF
-         2IfA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EjKKyy6zJi89FUhVJH9257gvcZYHljfd48zTgz5zIU=;
+        b=x3QpbZL8xF3lB+fhzJjWSXfOdOYw7IT0xr7pVuPujmaG7k9pCD7DqET3m+8xVwZ5fs
+         9k297z+F24N6dyH21lb1L1Xd/k1LuGHRov8Ow80+4RDOpZh75ea7sqWiYm12gaCu5Q0J
+         sVUBYLc1+1h4Kx1tvB+uDpg0n/HxaUQ8X4aeJo9h/4EaSEOm3BpoNbfNPF+U9GdYaYI3
+         73ndGlNaJSVE+R5glrk8jWDvFVtpL1IKfaJbAWKVNZ0v8wEScvUqQPE7fcnMOvALYcJR
+         T7RUNMqMWmr2NpNZNqMiKeRDcre+/EKQRJ7tR6mEQYtwnxKl3A40jfWoKVM7UDzDdbvI
+         VClQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6gTh132+rc2eC7+iuJdnPJjGut8rCOk0bv/jkoJwjos=;
-        b=FROhx0IUXanQP27JBlLpaRwHygfX/d/zCY/fCUl7o7oqI7raefcweegyi6Jpasl3DM
-         iRJiZKAiJAzSupn7gB0uKRpywgGwuECm/T1HlGsMisRVjIlWKUjkxtJ8k1dcQWmR7XTz
-         hnKhvfdDTlwpFN59Pk+OeI24rM+H7gyA4jMof2AZd1/RKN0wNuCKZevtdnwSMSllEmKi
-         fFx6eHCij2A0WrL8hfLZbHC+/to77F5xKh0qyHPUOP6l18zpfFkU3Kwca1DPdPgRAoLC
-         Ue0hk31wLjf9HH+0Zbx+Quy2PXKUViYS47TU43mTRF5TMf8igikjFsPzKYiUnO66COKm
-         zNig==
-X-Gm-Message-State: AOAM5314dYVhkjsYyOS+2ymbjv5StuHITA3woI93xOIvXHnNrCJwNc/z
-        ODkLtlfimWFgFDIzJa5SuK7mpwCGGMc6lnDFcoX3OQ==
-X-Google-Smtp-Source: ABdhPJw4PfSmG8BZQO3+q13D0kN04p4qbgUTMXaGbj9UfKZOlvSGdbi6AVJE4pU2haVVJfhDfkU30ttDFVbO2OuxjwE=
-X-Received: by 2002:a2e:7d03:: with SMTP id y3mr7056052ljc.0.1616115399502;
- Thu, 18 Mar 2021 17:56:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316153655.500806-1-schatzberg.dan@gmail.com>
- <7ca79335-026f-2511-2b58-0e9f32caa063@kernel.dk> <CALvZod6tvrZ_sj=BnM4baQepexwvOPREx3qe5ZJrmqftrqwBEA@mail.gmail.com>
- <8c32421c-4bd8-ec46-f1d0-25996956f4da@kernel.dk> <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
-In-Reply-To: <20210318164625.1018062b042e540bd83bb08e@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 18 Mar 2021 17:56:28 -0700
-Message-ID: <CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com>
-Subject: Re: [PATCH v10 0/3] Charge loop device i/o to issuing cgroup
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4EjKKyy6zJi89FUhVJH9257gvcZYHljfd48zTgz5zIU=;
+        b=aRT2XVxXm3UrTGbk232ud/EiIs2xcWNZNInWZUn3m1Q+Y/ZmEIFlc9FQc6pW7AeYSU
+         AgLek1Jq2xI1ewmM2X1z7XglTzsdeRVbPBKCyGN9lHZcodpL7IA96YAnF40Ne9HUN40h
+         tJDZDvSmCoyta9FwMwHZwdublMaSc6FSic32jFOKrEeLGIFMj0a1DPbKEdIqKIc3koru
+         NDw2/dU7yezBGYuv0fwNWgAM36KZdFjKa73mSFbuxX5v/P7VFnVL51B5Tkm4x2bFVcqG
+         4aLiA/zZ0+V5vI0eSClQWoZw4/mqz9kdtmi5lTjM3NwWh+3Zq3bNroo0XfLqdbs+LJMY
+         7igg==
+X-Gm-Message-State: AOAM5312tGQowWDQjr4gveYWfefRwmYnzQAljiFIqd+eMSyuAzp0djqE
+        Yes7hQloUy76dV7RYqRwt2mJ4g==
+X-Google-Smtp-Source: ABdhPJxsQgowksR37eF/5ncjQ+ws7e0Hspq3cD30p7EIjiZktuxNXTFxMUr5xN2ZButKHCm1FmH99g==
+X-Received: by 2002:a05:620a:c95:: with SMTP id q21mr7689952qki.360.1616132985879;
+        Thu, 18 Mar 2021 22:49:45 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id a10sm3583594qkh.122.2021.03.18.22.49.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Mar 2021 22:49:45 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 1/2] mm: memcontrol: don't allocate cgroup swap arrays when memcg is disabled
+Date:   Fri, 19 Mar 2021 01:49:43 -0400
+Message-Id: <20210319054944.50048-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 4:46 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu, 18 Mar 2021 10:00:17 -0600 Jens Axboe <axboe@kernel.dk> wrote:
->
-> > On 3/18/21 9:53 AM, Shakeel Butt wrote:
-> > > On Wed, Mar 17, 2021 at 3:30 PM Jens Axboe <axboe@kernel.dk> wrote:
-> > >>
-> > >> On 3/16/21 9:36 AM, Dan Schatzberg wrote:
-> > >>> No major changes, just rebasing and resubmitting
-> > >>
-> > >> Applied for 5.13, thanks.
-> > >>
-> > >
-> > > I have requested a couple of changes in the patch series. Can this
-> > > applied series still be changed or new patches are required?
-> >
-> > I have nothing sitting on top of it for now, so as far as I'm concerned
-> > we can apply a new series instead. Then we can also fold in that fix
-> > from Colin that he posted this morning...
->
-> The collision in memcontrol.c is a pain, but I guess as this is mainly
-> a loop patch, the block tree is an appropriate route.
->
-> Here's the collision between "mm: Charge active memcg when no mm is
-> set" and Shakeels's
-> https://lkml.kernel.org/r/20210305212639.775498-1-shakeelb@google.com
->
->
-> --- mm/memcontrol.c
-> +++ mm/memcontrol.c
-> @@ -6728,8 +6730,15 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
->                 rcu_read_unlock();
->         }
->
-> -       if (!memcg)
-> -               memcg = get_mem_cgroup_from_mm(mm);
-> +       if (!memcg) {
-> +               if (!mm) {
-> +                       memcg = get_mem_cgroup_from_current();
-> +                       if (!memcg)
-> +                               memcg = get_mem_cgroup_from_mm(current->mm);
-> +               } else {
-> +                       memcg = get_mem_cgroup_from_mm(mm);
-> +               }
-> +       }
->
->         ret = try_charge(memcg, gfp_mask, nr_pages);
->         if (ret)
->
->
-> Which I resolved thusly:
->
-> int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
-> {
->         struct mem_cgroup *memcg;
->         int ret;
->
->         if (mem_cgroup_disabled())
->                 return 0;
->
->         if (!mm) {
->                 memcg = get_mem_cgroup_from_current();
->                 (!memcg)
->                         memcg = get_mem_cgroup_from_mm(current->mm);
->         } else {
->                 memcg = get_mem_cgroup_from_mm(mm);
->         }
->
->         ret = __mem_cgroup_charge(page, memcg, gfp_mask);
->         css_put(&memcg->css);
->
->         return ret;
-> }
->
+Since commit 2d1c498072de ("mm: memcontrol: make swap tracking an
+integral part of memory control"), the cgroup swap arrays are used to
+track memory ownership at the time of swap readahead and swapoff, even
+if swap space *accounting* has been turned off by the user via
+swapaccount=0 (which sets cgroup_memory_noswap).
 
-We need something similar for mem_cgroup_swapin_charge_page() as well.
+However, the patch was overzealous: by simply dropping the
+cgroup_memory_noswap conditionals in the swapon, swapoff and uncharge
+path, it caused the cgroup arrays being allocated even when the memory
+controller as a whole is disabled. This is a waste of that memory.
 
-It is better to take this series in mm tree and Jens is ok with that [1].
+Restore mem_cgroup_disabled() checks, implied previously by
+cgroup_memory_noswap, in the swapon, swapoff, and swap_entry_free
+callbacks.
 
-[1] https://lore.kernel.org/linux-next/4fea89a5-0e18-0791-18a8-4c5907b0d2c4@kernel.dk/
+Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+Reported-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c  | 3 +++
+ mm/swap_cgroup.c | 6 ++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 668d1d7c2645..49bdcf603af1 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7101,6 +7101,9 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short id;
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	id = swap_cgroup_record(entry, 0, nr_pages);
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_id(id);
+diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+index 7f34343c075a..08c3246f9269 100644
+--- a/mm/swap_cgroup.c
++++ b/mm/swap_cgroup.c
+@@ -171,6 +171,9 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
+ 	unsigned long length;
+ 	struct swap_cgroup_ctrl *ctrl;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	length = DIV_ROUND_UP(max_pages, SC_PER_PAGE);
+ 	array_size = length * sizeof(void *);
+ 
+@@ -206,6 +209,9 @@ void swap_cgroup_swapoff(int type)
+ 	unsigned long i, length;
+ 	struct swap_cgroup_ctrl *ctrl;
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	mutex_lock(&swap_cgroup_mutex);
+ 	ctrl = &swap_cgroup_ctrl[type];
+ 	map = ctrl->map;
+-- 
+2.30.1
+
