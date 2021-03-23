@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859E53467E9
-	for <lists+cgroups@lfdr.de>; Tue, 23 Mar 2021 19:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0FF34680F
+	for <lists+cgroups@lfdr.de>; Tue, 23 Mar 2021 19:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbhCWSmY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Mar 2021 14:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        id S232128AbhCWSsW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Mar 2021 14:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhCWSmR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Mar 2021 14:42:17 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C9AC061763
-        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:42:17 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id s21so10501416pjq.1
-        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:42:17 -0700 (PDT)
+        with ESMTP id S231901AbhCWSsH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Mar 2021 14:48:07 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DE5C061764
+        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10532868pjv.1
+        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mD61Ls6vzVvQMSeaaF56QK5c7Jjn0dunNUYdNfL29o0=;
-        b=Yxm1As2H3pEmc1Sg12rZKhMnJyeu07K+JLnvdk3QBaxxYlJEzDmemZrDF0Ip283m2n
-         KvVcd/fnExUfAMVMlmsFS66ObnPWv6O00ZWkyipAsvnTig4pl3MO9WFA5Ors5hmGE2+E
-         ITg2Vq10vzklKs4BrsWhXCdPmS6fEjxhlMCCo2GQantmnqtu+FevhJFfJG9IGcDfEmIc
-         eBa34K/i+gPMCtu40dgX+BI7B/YgufwBp+AZzEepmWuDvlPwyqr8MMtabVl1weobp4T4
-         1QkNtv0dJIA+oSu1BPQcgGO/WR+0tCg22lXERtZFxhTmTZH92pb3+dpaCtHTRebJ6M1z
-         2dPA==
+        bh=W0hZGL9ovQy+jWSfLjuO4yiUfJKwclwtM7TKVF346ck=;
+        b=ZV0TRepGN/bTRrghylVvoSE2ass/5JiPwc7sWV/wAQVPb1uoehbKFxYd4S32T2g/0y
+         bi8QRSGC4kiddQG52GuTZgZjLEO4L9GEbm0s0/mkY8Zy6+prXQuZMGBVscsMwTRldNqu
+         lyWIYuzOG0oWrteGqrjaL6MJtGAJiNp/0XVN+6Of7kEDrx+5blNdgrFJEx40IIDQ0W+z
+         cmAArxmrCm2xFu8htn/jaTt9xHXJKScLEwYLKM9GS7/7wd/U7vR/RgVPpaGOSmapqvr1
+         +6LH315iekrNT5vGiRN5yU6KXXK5v2ezMT+076k3qWVhPbW0Geaur0UYFWCw4Pb+1DX3
+         6Vtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mD61Ls6vzVvQMSeaaF56QK5c7Jjn0dunNUYdNfL29o0=;
-        b=kUvyDNfj6CEd0jp6SjRErX8taoaBkRsFjKvDdF+w2g7SNvf2jTwjG0RUT3e6Q3iEv8
-         yrinAYTbRF93SslUCsFtpx7u0kYcjba1Qao0iTQC21Uev6zfoxGOx6aIcKWRYVKTNm5r
-         hnIhrO5iYKVkboNbhGm6AQCWATHKs3ni13qBJchhajORaHaYhbiZt7gZBwdrS0RgP5Ua
-         skmMGseEexVtYp9KKvaKCmnm+ZJbqWGHWF8Y3EZGm0E0Hs14dk+GXVWYbj7jS4bssaT/
-         oQ18ZAseS0uju5NUeCnG7w/9Kuppef3dpdGmUUXmYm7DzYZT1+70MKtlI03++o5PikED
-         /GPA==
-X-Gm-Message-State: AOAM531bWGTPX1GO0iBlcQXeuFj6WMIbfPvtthS6kVGht91ecoctyZ4N
-        Cz3kbXDc5S/OGRLT91YnARhw85L3McdEmYW7ESLXSDD1vgqnxg==
-X-Google-Smtp-Source: ABdhPJygvpHW1+nS6pqN04XtniIKRXltnxLG60Gv6sngXjpNYOucsvIhxX3LDXIdlIDxgmV7t00gIDNVyweZG0ihoMQ=
-X-Received: by 2002:a17:90a:ce0d:: with SMTP id f13mr5731015pju.85.1616524936259;
- Tue, 23 Mar 2021 11:42:16 -0700 (PDT)
+        bh=W0hZGL9ovQy+jWSfLjuO4yiUfJKwclwtM7TKVF346ck=;
+        b=j+tYgXWkzPZQC6ENDxZCbYmxTOPWD2Enf9KXpmNR+M7wADZKSq81zYdvghepgyAt9r
+         YFeYOoUPfZSYmV08Vy8Gaq9x2DpXWaJpRP/JVerKtIoeTj98KabRQStSX7B3x5xtbh2c
+         sCYg9GswGvYwhty1FGuiB1jTnwdqf4K6ou0+rjSphxJ7mwB8BCN/hb8mEM/+uhzNJD2I
+         b5RsL3oT36Pz4mMVLZnEX/b0xAc/VP72Ofd+iPSpcaSq+WF7/3IFT4/lIvtH6/EJcV9o
+         Q1Tjw+vpU+Fi/+lAB6gZTLuqUHqLtdCWS9hEJDKgMxwCYTPCzbntPMwp3M+mFtiL2B7o
+         WZmQ==
+X-Gm-Message-State: AOAM532xlHvLtnrOgKFhVfE4FYI4b44rS0Efl+sSE6S14gcytcdAgpl8
+        EM2YxTYJXHGngSZJMl5228QLL3ux33RuVcnkRs/mTA==
+X-Google-Smtp-Source: ABdhPJy58JffI7SATii7n67BekyxmpIkXD68FhgTDdhjmi8lNU5f3dTxTfW+xxhQJKHw4a/ukBsfSA8VFunC//JWCLg=
+X-Received: by 2002:a17:90b:947:: with SMTP id dw7mr5892929pjb.178.1616525286054;
+ Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
  <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
- <YFoe8BO0JsbXTHHF@cmpxchg.org>
-In-Reply-To: <YFoe8BO0JsbXTHHF@cmpxchg.org>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org> <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
+In-Reply-To: <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
 From:   Arjun Roy <arjunroy@google.com>
-Date:   Tue, 23 Mar 2021 11:42:05 -0700
-Message-ID: <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
+Date:   Tue, 23 Mar 2021 11:47:54 -0700
+Message-ID: <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
 Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         David Miller <davem@davemloft.net>,
         netdev <netdev@vger.kernel.org>,
@@ -64,188 +64,68 @@ Cc:     Arjun Roy <arjunroy.kdev@gmail.com>,
         Eric Dumazet <edumazet@google.com>,
         Soheil Hassas Yeganeh <soheil@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
         Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:01 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Mon, Mar 22, 2021 at 02:35:11PM -0700, Arjun Roy wrote:
-> > To make sure we're on the same page, then, here's a tentative
-> > mechanism - I'd rather get buy in before spending too much time on
-> > something that wouldn't pass muster afterwards.
+> On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
+> [...]
+> > Here is an idea of how it could work:
 > >
-> > A) An opt-in mechanism, that a driver needs to explicitly support, in
-> > order to get properly accounted receive zerocopy.
+> > struct page already has
+> >
+> >                 struct {        /* page_pool used by netstack */
+> >                         /**
+> >                          * @dma_addr: might require a 64-bit value even on
+> >                          * 32-bit architectures.
+> >                          */
+> >                         dma_addr_t dma_addr;
+> >                 };
+> >
+> > and as you can see from its union neighbors, there is quite a bit more
+> > room to store private data necessary for the page pool.
+> >
+> > When a page's refcount hits zero and it's a networking page, we can
+> > feed it back to the page pool instead of the page allocator.
+> >
+> > From a first look, we should be able to use the PG_owner_priv_1 page
+> > flag for network pages (see how this flag is overloaded, we can add a
+> > PG_network alias). With this, we can identify the page in __put_page()
+> > and __release_page(). These functions are already aware of different
+> > types of pages and do their respective cleanup handling. We can
+> > similarly make network a first-class citizen and hand pages back to
+> > the network allocator from in there.
 >
-> Yep, opt-in makes sense. That allows piece-by-piece conversion and
-> avoids us having to have a flag day.
+> For compound pages we have a concept of destructors. Maybe we can extend
+> that for order-0 pages as well. The struct page is heavily packed and
+> compound_dtor shares the storage without other metadata
+>                                         int    pages;    /*    16     4 */
+>                         unsigned char compound_dtor;     /*    16     1 */
+>                         atomic_t   hpage_pinned_refcount; /*    16     4 */
+>                         pgtable_t  pmd_huge_pte;         /*    16     8 */
+>                         void *     zone_device_data;     /*    16     8 */
 >
-> > B) Failure to opt-in (e.g. unchanged old driver) can either lead to
-> > unaccounted zerocopy (ie. existing behaviour) or, optionally,
-> > effectively disabled zerocopy (ie. any call to zerocopy will return
-> > something like EINVAL) (perhaps controlled via some sysctl, which
-> > either lets zerocopy through or not with/without accounting).
+> But none of those should really require to be valid when a page is freed
+> unless I am missing something. It would really require to check their
+> users whether they can leave the state behind. But if we can establish a
+> contract that compound_dtor can be always valid when a page is freed
+> this would be really a nice and useful abstraction because you wouldn't
+> have to care about the specific type of page.
 >
-> I'd suggest letting it fail gracefully (i.e. no -EINVAL) to not
-> disturb existing/working setups during the transition period. But the
-> exact policy is easy to change later on if we change our minds on it.
->
-> > The proposed mechanism would involve:
-> > 1) Some way of marking a page as being allocated by a driver that has
-> > decided to opt into this mechanism. Say, a page flag, or a memcg flag.
->
-> Right. I would stress it should not be a memcg flag or any direct
-> channel from the network to memcg, as this would limit its usefulness
-> while having the same maintenance overhead.
->
-> It should make the network page a first class MM citizen - like an LRU
-> page or a slab page - which can be accounted and introspected as such,
-> including from the memcg side.
->
-> So definitely a page flag.
+> But maybe I am just overlooking the real complexity there.
+> --
 
-Works for me.
-
->
-> > 2) A callback provided by the driver, that takes a struct page*, and
-> > returns a boolean. The value of the boolean being true indicates that
-> > any and all refs on the page are held by the driver. False means there
-> > exists at least one reference that is not held by the driver.
->
-> I was thinking the PageNetwork flag would cover this, but maybe I'm
-> missing something?
->
-
-The main reason for a driver callback is to handle whatever
-driver-specific behaviour needs to be handled (ie. while a driver may
-use code from net/core/page_pool.c, it also may roll its own arbitrary
-behaviour and data structures). And because it's not necessarily the
-case that a driver would take exactly 1 ref of its own on the page.
-
-
-> > 3) A branch in put_page() that, for pages marked thus, will consult
-> > the driver callback and if it returns true, will uncharge the memcg
-> > for the page.
->
-> The way I picture it, put_page() (and release_pages) should do this:
->
-> void __put_page(struct page *page)
-> {
->         if (is_zone_device_page(page)) {
->                 put_dev_pagemap(page->pgmap);
->
->                 /*
->                  * The page belongs to the device that created pgmap. Do
->                  * not return it to page allocator.
->                  */
->                 return;
->         }
-> +
-> +       if (PageNetwork(page)) {
-> +               put_page_network(page);
-> +               /* Page belongs to the network stack, not the page allocator */
-> +               return;
-> +       }
->
->         if (unlikely(PageCompound(page)))
->                 __put_compound_page(page);
->         else
->                 __put_single_page(page);
-> }
->
-> where put_page_network() is the network-side callback that uncharges
-> the page.
->
-> (..and later can be extended to do all kinds of things when informed
-> that the page has been freed: update statistics (mod_page_state), put
-> it on a private network freelist, or ClearPageNetwork() and give it
-> back to the page allocator etc.
->
-
-Yes, this is more or less what I had in mind, though
-put_page_network() would also need to avail itself of the callback
-mentioned previously.
-
-
-> But for starters it can set_page_count(page, 1) after the uncharge to
-> retain the current silent recycling behavior.)
->
-
-This would be one example of where the driver could conceivably have
->1 ref for whatever reason
-(https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/mellanox/mlx4/en_rx.c#L495)
-where it looks like it could take 2 refs on a page, perhaps storing 2
-x 1500B packets on a single 4KB page.
-
-
-
-
-> > The anonymous struct you defined above is part of a union that I think
-> > normally is one qword in length (well, could be more depending on the
-> > typedefs I saw there) and I think that can be co-opted to provide the
-> > driver callback - though, it might require growing the struct by one
-> > more qword since there may be drivers like mlx5 that are already using
-> > the field already in there  for dma_addr.
->
-> The page cache / anonymous struct it's shared with is 5 words (double
-> linked list pointers, mapping, index, private), and the network struct
-> is currently one word, so you can add 4 words to a PageNetwork() page
-> without increasing the size of struct page. That should be plenty of
-> space to store auxiliary data for drivers, right?
->
-
-Ah, I think I was looking more narrowly at an older version of the
-struct. The new one is much easier to parse. :)
-
-4 words should be plenty, I think.
-
-> > Anyways, the callback could then be used by the driver to handle the
-> > other accounting quirks you mentioned, without needing to scan the
-> > full pool.
->
-> Right.
->
-> > Of course there are corner cases and such to properly account for, but
-> > I just wanted to provide a really rough sketch to see if this
-> > (assuming it were properly implemented) was what you had in mind. If
-> > so I can put together a v3 patch.
->
-> Yeah, makes perfect sense. We can keep iterating like this any time
-> you feel you accumulate too many open questions. Not just for MM but
-> also for the networking folks - although I suspect that the first step
-> would be mostly about the MM infrastructure, and I'm not sure how much
-> they care about the internals there ;)
->
-> > Per my response to Andrew earlier, this would make it even more
-> > confusing whether this is to be applied against net-next or mm trees.
-> > But that's a bridge to cross when we get to it.
->
-> The mm tree includes -next, so it should be a safe development target
-> for the time being.
->
-> I would then decide it based on how many changes your patch interacts
-> with on either side. Changes to struct page and the put path are not
-> very frequent, so I suspect it'll be easy to rebase to net-next and
-> route everything through there. And if there are heavy changes on both
-> sides, the -mm tree is the better route anyway.
->
-> Does that sound reasonable?
-
-This sounds good to me.
-
-To summarize then, it seems to me that we're on the same page now.
-I'll put together a tentative v3 such that:
-1. It uses pre-charging, as previously discussed.
-2. It uses a page flag to delineate pages of a certain networking sort
-(ie. this mechanism).
-3. It avails itself of up to 4 words of data inside struct page,
-inside the networking specific struct.
-4. And it sets up this opt-in lifecycle notification for drivers that
-choose to use it, falling back to existing behaviour without.
+For now probably the easiest way is to have network pages be first
+class with a specific flag as previously discussed and have concrete
+handling for it, rather than trying to establish the contract across
+page types.
 
 Thanks,
 -Arjun
+
+> Michal Hocko
+> SUSE Labs
