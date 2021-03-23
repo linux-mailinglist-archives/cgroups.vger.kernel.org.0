@@ -2,130 +2,286 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0FF34680F
-	for <lists+cgroups@lfdr.de>; Tue, 23 Mar 2021 19:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC0E346866
+	for <lists+cgroups@lfdr.de>; Tue, 23 Mar 2021 20:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhCWSsW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Mar 2021 14:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        id S232748AbhCWTC7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Mar 2021 15:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbhCWSsH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Mar 2021 14:48:07 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DE5C061764
-        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10532868pjv.1
-        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
+        with ESMTP id S232828AbhCWTCf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Mar 2021 15:02:35 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01380C061574
+        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 12:02:34 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id f12so15779531qtq.4
+        for <cgroups@vger.kernel.org>; Tue, 23 Mar 2021 12:02:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W0hZGL9ovQy+jWSfLjuO4yiUfJKwclwtM7TKVF346ck=;
-        b=ZV0TRepGN/bTRrghylVvoSE2ass/5JiPwc7sWV/wAQVPb1uoehbKFxYd4S32T2g/0y
-         bi8QRSGC4kiddQG52GuTZgZjLEO4L9GEbm0s0/mkY8Zy6+prXQuZMGBVscsMwTRldNqu
-         lyWIYuzOG0oWrteGqrjaL6MJtGAJiNp/0XVN+6Of7kEDrx+5blNdgrFJEx40IIDQ0W+z
-         cmAArxmrCm2xFu8htn/jaTt9xHXJKScLEwYLKM9GS7/7wd/U7vR/RgVPpaGOSmapqvr1
-         +6LH315iekrNT5vGiRN5yU6KXXK5v2ezMT+076k3qWVhPbW0Geaur0UYFWCw4Pb+1DX3
-         6Vtg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2NS3knvOsVC8w40oRTuJAV1fjp7aGSVyD5f77gkqujA=;
+        b=yS6el+/OtIxurlpnOwHVJYnrbwKbkyYBMbMsL18oFonhgYPFzfpGanTtP6YNhIyUkf
+         TEyNkeOkiDtVts7mqCYfAvg/Lg1EFX8JWMt7cPbFGO1hJH0owEWpRiNRK/S1wPWE36wh
+         YmB0lud4tB4a6GgMDoQKYXdYjDxHDRhg0dMRIlyhbq36/lJ9LlZxuSk0h3h0v4ahykeZ
+         yLwUdUlLL0sNwxT4MTWZwfAuV26ZsmKLPmRTM51g3XNTXtWgJyDHpNlqScOO6W4kvfTx
+         xSJBP0N7kswDxh5FtjlrBso8m9S/JBCbqQd92QMlA6GKxAyd3aCIUmuPh7aKwCZeMrE4
+         INDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W0hZGL9ovQy+jWSfLjuO4yiUfJKwclwtM7TKVF346ck=;
-        b=j+tYgXWkzPZQC6ENDxZCbYmxTOPWD2Enf9KXpmNR+M7wADZKSq81zYdvghepgyAt9r
-         YFeYOoUPfZSYmV08Vy8Gaq9x2DpXWaJpRP/JVerKtIoeTj98KabRQStSX7B3x5xtbh2c
-         sCYg9GswGvYwhty1FGuiB1jTnwdqf4K6ou0+rjSphxJ7mwB8BCN/hb8mEM/+uhzNJD2I
-         b5RsL3oT36Pz4mMVLZnEX/b0xAc/VP72Ofd+iPSpcaSq+WF7/3IFT4/lIvtH6/EJcV9o
-         Q1Tjw+vpU+Fi/+lAB6gZTLuqUHqLtdCWS9hEJDKgMxwCYTPCzbntPMwp3M+mFtiL2B7o
-         WZmQ==
-X-Gm-Message-State: AOAM532xlHvLtnrOgKFhVfE4FYI4b44rS0Efl+sSE6S14gcytcdAgpl8
-        EM2YxTYJXHGngSZJMl5228QLL3ux33RuVcnkRs/mTA==
-X-Google-Smtp-Source: ABdhPJy58JffI7SATii7n67BekyxmpIkXD68FhgTDdhjmi8lNU5f3dTxTfW+xxhQJKHw4a/ukBsfSA8VFunC//JWCLg=
-X-Received: by 2002:a17:90b:947:: with SMTP id dw7mr5892929pjb.178.1616525286054;
- Tue, 23 Mar 2021 11:48:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2NS3knvOsVC8w40oRTuJAV1fjp7aGSVyD5f77gkqujA=;
+        b=XRbAloTgYs1eHBhCJh/Rv2yiHidffdhubjHjRdA/M047YoBA/dOytkTKeCCcIHsdW6
+         nfRMYmRSuARO9gAhWsppTD2vhFJhtkslln0Bu8ZQ6sU90msUie9iXB0WjT78/qv/mzas
+         +CbRTk7/g8A3PjyjHBK/Qa0KB2FDSbyOHSJjlmWfHOApWWCOtMrGa87MHnOSd9/gAV9C
+         4zm84QqGY88ZTnaLsz5gkRYutD3hxpc18NuzFDaY00TSMvoFYfVTyyk8yORb5gSTqu+H
+         VxIVmBaxq+O+JmBEkzBeeixbzK/hgy0WBUeDh3XoApYXxA0yEWgBeGuhDSEZhcWU7f0C
+         UFcg==
+X-Gm-Message-State: AOAM5307Z4g02YjR6XbJ4IB3V8PNAigUjy3LqitQ/QyFINd8SI3QvhvR
+        Q7fo+NW7AUXL6WOHWelCK4mj9g==
+X-Google-Smtp-Source: ABdhPJzbiv3C1ZFr8v4W3JsU+Bf67Fc2zDpcWziC0UPGRKKj/5tbdoYGOS23mNhCfgvAssY9RkmMBg==
+X-Received: by 2002:ac8:7215:: with SMTP id a21mr5870301qtp.199.1616526153240;
+        Tue, 23 Mar 2021 12:02:33 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q2sm14075452qkq.59.2021.03.23.12.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 12:02:32 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 15:02:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <YFo7SOni0s0TbXUm@cmpxchg.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
-In-Reply-To: <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Tue, 23 Mar 2021 11:47:54 -0700
-Message-ID: <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> [...]
-> > Here is an idea of how it could work:
-> >
-> > struct page already has
-> >
-> >                 struct {        /* page_pool used by netstack */
-> >                         /**
-> >                          * @dma_addr: might require a 64-bit value even on
-> >                          * 32-bit architectures.
-> >                          */
-> >                         dma_addr_t dma_addr;
-> >                 };
-> >
-> > and as you can see from its union neighbors, there is quite a bit more
-> > room to store private data necessary for the page pool.
-> >
-> > When a page's refcount hits zero and it's a networking page, we can
-> > feed it back to the page pool instead of the page allocator.
-> >
-> > From a first look, we should be able to use the PG_owner_priv_1 page
-> > flag for network pages (see how this flag is overloaded, we can add a
-> > PG_network alias). With this, we can identify the page in __put_page()
-> > and __release_page(). These functions are already aware of different
-> > types of pages and do their respective cleanup handling. We can
-> > similarly make network a first-class citizen and hand pages back to
-> > the network allocator from in there.
->
-> For compound pages we have a concept of destructors. Maybe we can extend
-> that for order-0 pages as well. The struct page is heavily packed and
-> compound_dtor shares the storage without other metadata
->                                         int    pages;    /*    16     4 */
->                         unsigned char compound_dtor;     /*    16     1 */
->                         atomic_t   hpage_pinned_refcount; /*    16     4 */
->                         pgtable_t  pmd_huge_pte;         /*    16     8 */
->                         void *     zone_device_data;     /*    16     8 */
->
-> But none of those should really require to be valid when a page is freed
-> unless I am missing something. It would really require to check their
-> users whether they can leave the state behind. But if we can establish a
-> contract that compound_dtor can be always valid when a page is freed
-> this would be really a nice and useful abstraction because you wouldn't
-> have to care about the specific type of page.
->
-> But maybe I am just overlooking the real complexity there.
-> --
+On Fri, Mar 19, 2021 at 06:52:58PM -0700, Hugh Dickins wrote:
+> On Fri, 19 Mar 2021, Johannes Weiner wrote:
+> 
+> > When the freeing of a higher-order page block (non-compound) races
+> > with a speculative page cache lookup, __free_pages() needs to leave
+> > the first order-0 page in the chunk to the lookup but free the buddy
+> > pages that the lookup doesn't know about separately.
+> > 
+> > However, if such a higher-order page is charged to a memcg (e.g. !vmap
+> > kernel stack)), only the first page of the block has page->memcg
+> > set. That means we'll uncharge only one order-0 page from the entire
+> > block, and leak the remainder.
+> > 
+> > Add a split_page_memcg() to __free_pages() right before it starts
+> > taking the higher-order page apart and freeing its individual
+> > constituent pages. This ensures all of them will have the memcg
+> > linkage set up for correct uncharging. Also update the comments a bit
+> > to clarify what exactly is happening to the page during that race.
+> > 
+> > This bug is old and has its roots in the speculative page cache patch
+> > and adding cgroup accounting of kernel pages. There are no known user
+> > reports. A backport to stable is therefor not warranted.
+> > 
+> > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> Acked-by: Hugh Dickins <hughd@google.com>
+> 
+> to the split_page_memcg() addition etc, but a doubt just hit me on the
+> original e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages"):
+> see comment below.
+> 
+> > ---
+> >  mm/page_alloc.c | 33 +++++++++++++++++++++++++++------
+> >  1 file changed, 27 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index c53fe4fa10bf..f4bd56656402 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   * the allocation, so it is easy to leak memory.  Freeing more memory
+> >   * than was allocated will probably emit a warning.
+> >   *
+> > - * If the last reference to this page is speculative, it will be released
+> > - * by put_page() which only frees the first page of a non-compound
+> > - * allocation.  To prevent the remaining pages from being leaked, we free
+> > - * the subsequent pages here.  If you want to use the page's reference
+> > + * This function isn't a put_page(). Don't let the put_page_testzero()
+> > + * fool you, it's only to deal with speculative cache references. It
+> > + * WILL free pages directly. If you want to use the page's reference
+> >   * count to decide when to free the allocation, you should allocate a
+> >   * compound page, and use put_page() instead of __free_pages().
+> >   *
+> > @@ -5124,11 +5123,33 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   */
+> >  void __free_pages(struct page *page, unsigned int order)
+> >  {
+> > -	if (put_page_testzero(page))
+> > +	/*
+> > +	 * Drop the base reference from __alloc_pages and free. In
+> > +	 * case there is an outstanding speculative reference, from
+> > +	 * e.g. the page cache, it will put and free the page later.
+> > +	 */
+> > +	if (likely(put_page_testzero(page))) {
+> >  		free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > +		return;
+> > +	}
+> > +
+> > +	/*
+> > +	 * The speculative reference will put and free the page.
+> > +	 *
+> > +	 * However, if the speculation was into a higher-order page
+> > +	 * chunk that isn't marked compound, the other side will know
+> > +	 * nothing about our buddy pages and only free the order-0
+> > +	 * page at the start of our chunk! We must split off and free
+> > +	 * the buddy pages here.
+> > +	 *
+> > +	 * The buddy pages aren't individually refcounted, so they
+> > +	 * can't have any pending speculative references themselves.
+> > +	 */
+> > +	if (!PageHead(page) && order > 0) {
+> 
+> The put_page_testzero() has released our reference to the first
+> subpage of page: it's now under the control of the racing speculative
+> lookup.  So it seems to me unsafe to be checking PageHead(page) here:
+> if it was actually a compound page, PageHead might already be cleared
+> by now, and we doubly free its tail pages below?  I think we need to
+> use a "bool compound = PageHead(page)" on entry to __free_pages().
 
-For now probably the easiest way is to have network pages be first
-class with a specific flag as previously discussed and have concrete
-handling for it, rather than trying to establish the contract across
-page types.
+That's a good point.
 
-Thanks,
--Arjun
+> And would it be wrong to fix that too in this patch?
 
-> Michal Hocko
-> SUSE Labs
+All aboard the mm-page_alloc-fix-stuff.patch!
+
+No, I think it's fine to sqash them and treat it as a supplement to
+Matthew's original patch (although technically it didn't make the
+memcg leak any worse).
+
+> Though it ought then to be backported to 5.10 stable.
+
+Sounds good. It depends on split_page_memcg(), but that patch is
+straight-forward enough to backport as well.
+
+---
+
+From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Fri, 19 Mar 2021 02:17:00 -0400
+Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
+ cache lookup
+
+When the freeing of a higher-order page block (non-compound) races
+with a speculative page cache lookup, __free_pages() needs to leave
+the first order-0 page in the chunk to the lookup but free the buddy
+pages that the lookup doesn't know about separately.
+
+There are currently two problems with it:
+
+1. It checks PageHead() to see whether we're dealing with a compound
+   page after put_page_testzero(). But the speculative lookup could
+   have freed the page after our put and cleared PageHead, in which
+   case we would double free the tail pages.
+
+   To fix this, test PageHead before the put and cache the result for
+   afterwards.
+
+2. If such a higher-order page is charged to a memcg (e.g. !vmap
+   kernel stack)), only the first page of the block has page->memcg
+   set. That means we'll uncharge only one order-0 page from the
+   entire block, and leak the remainder.
+
+   To fix this, add a split_page_memcg() before it starts freeing tail
+   pages, to ensure they all have page->memcg set up.
+
+While at it, also update the comments a bit to clarify what exactly is
+happening to the page during that race.
+
+Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
+Reported-by: Hugh Dickins <hughd@google.com>
+Reported-by: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: <stable@vger.kernel.org> # 5.10+
+---
+ mm/page_alloc.c | 41 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c53fe4fa10bf..8aab1e87fa3c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+  * the allocation, so it is easy to leak memory.  Freeing more memory
+  * than was allocated will probably emit a warning.
+  *
+- * If the last reference to this page is speculative, it will be released
+- * by put_page() which only frees the first page of a non-compound
+- * allocation.  To prevent the remaining pages from being leaked, we free
+- * the subsequent pages here.  If you want to use the page's reference
++ * This function isn't a put_page(). Don't let the put_page_testzero()
++ * fool you, it's only to deal with speculative cache references. It
++ * WILL free pages directly. If you want to use the page's reference
+  * count to decide when to free the allocation, you should allocate a
+  * compound page, and use put_page() instead of __free_pages().
+  *
+@@ -5124,11 +5123,41 @@ static inline void free_the_page(struct page *page, unsigned int order)
+  */
+ void __free_pages(struct page *page, unsigned int order)
+ {
+-	if (put_page_testzero(page))
++	bool compound = PageHead(page);
++
++	/*
++	 * Drop the base reference from __alloc_pages and free. In
++	 * case there is an outstanding speculative reference, from
++	 * e.g. the page cache, it will put and free the page later.
++	 */
++	if (likely(put_page_testzero(page))) {
+ 		free_the_page(page, order);
+-	else if (!PageHead(page))
++		return;
++	}
++
++	/*
++	 * Ok, the speculative reference will put and free the page.
++	 *
++	 * - If this was an order-0 page, we're done.
++	 *
++	 * - If the page was compound, the other side will free the
++	 *   entire page and we're done here as well. Just note that
++	 *   freeing clears PG_head, so it can only be read reliably
++	 *   before the put_page_testzero().
++	 *
++	 * - If the page was of higher order but NOT marked compound,
++	 *   the other side will know nothing about our buddy pages
++	 *   and only free the order-0 page at the start of our block.
++	 *   We must split off and free the buddy pages here.
++	 *
++	 *   The buddy pages aren't individually refcounted, so they
++	 *   can't have any pending speculative references themselves.
++	 */
++	if (order > 0 && !compound) {
++		split_page_memcg(page, 1 << order);
+ 		while (order-- > 0)
+ 			free_the_page(page + (1 << order), order);
++	}
+ }
+ EXPORT_SYMBOL(__free_pages);
+ 
+-- 
+2.31.0
+
