@@ -2,108 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BBF34845A
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 23:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D317A348482
+	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 23:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhCXWKP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Mar 2021 18:10:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:35225 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234960AbhCXWKF (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:10:05 -0400
-IronPort-SDR: 9zxKobfwZxPI+CPFirI8c+VdQGflbVDgBZjm7+dtgAfGNEpqMOGjZXF57LYkCAdi+BiXLTYFS/
- HMUQYqGXJW2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178348424"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="178348424"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 15:10:03 -0700
-IronPort-SDR: DQZSaLihhzL2eMMuOF5/+Gq/kYGub32TVjHTLJr/fySOgtaPJemHSPHFCx7OFGJFZBYCPKhCq1
- tkpDOzoJ4dTA==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="413927681"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 15:10:03 -0700
-Date:   Wed, 24 Mar 2021 15:12:30 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210324151230.466fd47a@jacob-builder>
-In-Reply-To: <20210324170338.GM2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210318172234.3e8c34f7@jacob-builder>
-        <YFR10eeDVf5ZHV5l@myrica>
-        <20210319124645.GP2356281@nvidia.com>
-        <YFSqDNJ5yagk4eO+@myrica>
-        <20210319135432.GT2356281@nvidia.com>
-        <20210319112221.5123b984@jacob-builder>
-        <YFhiMLR35WWMW/Hu@myrica>
-        <20210324100246.4e6b8aa1@jacob-builder>
-        <20210324170338.GM2356281@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S232531AbhCXWVj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Mar 2021 18:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238834AbhCXWVh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 18:21:37 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D87C0613DE
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 15:21:36 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso82024pjb.4
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 15:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jIDPF7ri84OLFsNd4OhxmJPSCi5FNfpE4FjtwEiJamI=;
+        b=RiBXhaenM9VBbNf7Ikof8uRUzpei4NDWIP7Ov/61XaLR+CqRNKdKd7fevMR7JsPQSn
+         dak0k7Il33xba+i95mj9167kOtqh9O/gBnyrBpD3mYXz+NZec2sWUmXXD+jKJMkdYHmZ
+         S+kX+o7ONkaASTwWepkBXvtypIYfNzOTkqHPjiHglI7PlYC22lTTYnLEDwcMwTCgkxec
+         wRO9mcct/h+YU/KkpwyhIU78PUQXyAKvNNIsc77BBuYWU+MYo1EK/fOQTtdF7aj/WVKb
+         qWktnXp87q3dMVTR2qYDoRBCoPIB64pUP9Gyq3wDM/GVZaCK+gv6QQIbZe8N95o3IkGQ
+         IQ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jIDPF7ri84OLFsNd4OhxmJPSCi5FNfpE4FjtwEiJamI=;
+        b=ZQ9oLsDlulD3svYm0fNl695VZX+CG+zbGpN3r2J/YsxI2q0UrPXxjotOIQmAO9CCI5
+         4qYEWq8Iz2C2JExi2z7psza1KFPCBQu0ddG/dZp0cuulWu10UxpQ6Mefoowq7ZAwv6jI
+         Pf0uNbOuKsgTo8J+7O04NbTlHnu/kLxS9nUnMjpV1k20nEQuOxwVWQDnicZ9VxPQfMMG
+         a1HFWAUXA+z7y+bDcB20cX0KvPqpE1pHFjC6AndeX5fjxEj8l8k2PCjh43+hCBg6mg8h
+         8aaKTDV2NzAxqAA631TfqUDgPnJk6nBtqaNDZHkTwJTc6Lz9y38366ujKdlImMUsE8Tt
+         fTRQ==
+X-Gm-Message-State: AOAM533rmdzwn1R8yqKWbREYHvO8knc/lJOf/PiVbqYJ8sCbZ4Gn9YnF
+        Ga2AR2zrdhIREbw5A0C9k+JCrpQUA9dCVPm5eIjtVA==
+X-Google-Smtp-Source: ABdhPJxO78gga38eOSSGkRb7JR3LPL4ca3GN3Kg63kSbnkYrOAUmk+vpnbWzVH0WjGPGdqNPQJZhFiJatpAuCeF1xyw=
+X-Received: by 2002:a17:90b:947:: with SMTP id dw7mr5682193pjb.178.1616624496196;
+ Wed, 24 Mar 2021 15:21:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org> <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
+ <YFoe8BO0JsbXTHHF@cmpxchg.org> <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
+ <CALvZod527EgYmkqWdoLCARj2BD2=YWVCC9Dk87gfQRG8NViX_A@mail.gmail.com>
+In-Reply-To: <CALvZod527EgYmkqWdoLCARj2BD2=YWVCC9Dk87gfQRG8NViX_A@mail.gmail.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Wed, 24 Mar 2021 15:21:25 -0700
+Message-ID: <CAOFY-A0GtpeFUrp+eK1__pOm=gkp3ahNXXkm6rztrz_O2FFfeQ@mail.gmail.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jason,
-
-On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:
-> > > Also wondering about device driver allocating auxiliary domains for
-> > > their private use, to do iommu_map/unmap on private PASIDs (a clean
-> > > replacement to super SVA, for example). Would that go through the
-> > > same path as /dev/ioasid and use the cgroup of current task?  
+On Wed, Mar 24, 2021 at 11:26 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 11:42 AM Arjun Roy <arjunroy@google.com> wrote:
 > >
-> > For the in-kernel private use, I don't think we should restrict based on
-> > cgroup, since there is no affinity to user processes. I also think the
-> > PASID allocation should just use kernel API instead of /dev/ioasid. Why
-> > would user space need to know the actual PASID # for device private
-> > domains? Maybe I missed your idea?  
-> 
-> There is not much in the kernel that isn't triggered by a process, I
-> would be careful about the idea that there is a class of users that
-> can consume a cgroup controlled resource without being inside the
-> cgroup.
-> 
-> We've got into trouble before overlooking this and with something
-> greenfield like PASID it would be best built in to the API to prevent
-> a mistake. eg accepting a cgroup or process input to the allocator.
-> 
-Make sense. But I think we only allow charging the current cgroup, how about
-I add the following to ioasid_alloc():
+> [...]
+> >
+> > To summarize then, it seems to me that we're on the same page now.
+> > I'll put together a tentative v3 such that:
+> > 1. It uses pre-charging, as previously discussed.
+> > 2. It uses a page flag to delineate pages of a certain networking sort
+> > (ie. this mechanism).
+> > 3. It avails itself of up to 4 words of data inside struct page,
+> > inside the networking specific struct.
+> > 4. And it sets up this opt-in lifecycle notification for drivers that
+> > choose to use it, falling back to existing behaviour without.
+> >
+>
+> Arjun, if you don't mind, can you explain how the lifetime of such a
+> page will look like?
+>
+> For example:
+>
+> Driver:
+> page = dev_alloc_page()
+> /* page has 1 ref */
 
-	misc_cg = get_current_misc_cg();
-	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
-	if (ret) {
-		put_misc_cg(misc_cg);
-		return ret;
-	}
+Yes, this is the case.
 
-BTW, IOASID will be one of the resources under the proposed misc cgroup.
+> dev_map_page(page)
+> /* I don't think dev_map_page() takes a ref on page, so the ref remains 1. */
+>
+
+To be clear, do you mean things like DMA setup here? Or specifically
+what do you mean by dev_map_page?
+
+> On incoming traffic the page goes to skb and which then gets assigned
+> to a struct sock. Does the kernel increase refcnt of the page on these
+> operations?
+>
+
+Adding a page to an skb will mean that, when the skb is cleaned up, a
+page ref is dropped:
+https://github.com/torvalds/linux/blob/master/net/core/skbuff.c#L666
+
+So a driver may bump the refcount for the page, before adding it to the skb:
+https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c#L442
+
+
+> The page gets mapped into user space which increments its refcnt.
+>
+Yes.
+
+> After processing the data, the application unmaps the page and its
+> refcnt will be decremented.
+>
+Yes.
+
+
+> __put_page() will be called when refcnt reaches 0, so, the initial
+> refcnt which the driver has acquired, has to be transferred to the
+> next layer. So, I am trying to understand how that will work?
+
+Ah, I see - there was a miscommunication. Johannes mentioned
+__put_page() but I read put_page().
+That is where I was planning on adding the interposition for these
+network pages.
+
+So in put_page(), if it turns out it's a network page, we do our
+handling then as I described in prior emails. Sorry for the confusion.
 
 Thanks,
-
-Jacob
+-Arjun
