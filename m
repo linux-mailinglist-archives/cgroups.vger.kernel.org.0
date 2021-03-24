@@ -2,126 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169C4347C9F
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 16:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C15C347D6B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 17:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236690AbhCXPa7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 24 Mar 2021 11:30:59 -0400
-Received: from mga09.intel.com ([134.134.136.24]:1310 "EHLO mga09.intel.com"
+        id S232848AbhCXQPG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Mar 2021 12:15:06 -0400
+Received: from mga11.intel.com ([192.55.52.93]:57098 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236683AbhCXPaj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:30:39 -0400
-IronPort-SDR: TDT8xas+TqaIoJVkNiEXLLro6tSxpW0oapG8TPTC6sWKawxhr1Y2bBwLEzL0ayTAGLvsVAhDyD
- h+K9Yw2upJzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190823083"
+        id S230035AbhCXQOf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:14:35 -0400
+IronPort-SDR: zfGTiFEjKYvtYdtrDBg2JmPFkHkDM31AVIESN2o4IN/pF8FZLlrYnuAeT6rTbFpQSWc+CyNxmY
+ nhDw2gaHwFyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="187430914"
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="190823083"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:38 -0700
-IronPort-SDR: /4dqq/0JWisBWvhTbTEBIBwFyl3ZwxDSlbNQvn9KHdRvSPPQs9Sb14vUi+jgB7se4K1pbShwF/
- LGKAbJDldGYw==
+   d="scan'208";a="187430914"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:35 -0700
+IronPort-SDR: QSC95SEdrOKTkNAZDK+sqyjUDZsIHx2HWakvGcOAsBjSY6RfDxOQm0tHKN5ZPswqAR2wDcgFXZ
+ I+y6CZWu0a8w==
 X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="415534424"
-Received: from hcarliss-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.54.166])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:27 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Aditya Swarup <aditya.swarup@intel.com>
-Subject: Re: [PATCH 10/11] drm/i915: avoid stringop-overread warning on pri_latency
-In-Reply-To: <20210322160253.4032422-11-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-11-arnd@kernel.org>
-Date:   Wed, 24 Mar 2021 17:30:24 +0200
-Message-ID: <874kh04lin.fsf@intel.com>
+   d="scan'208";a="391356730"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 09:14:34 -0700
+Date:   Wed, 24 Mar 2021 09:17:01 -0700
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        jacob.jun.pan@intel.com
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <20210324091701.63c9ce8e@jacob-builder>
+In-Reply-To: <YFjn7wv/iMO4Isgz@google.com>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+        <20210304231946.2766648-2-vipinsh@google.com>
+        <20210319142801.7dcce403@jacob-builder>
+        <YFjn7wv/iMO4Isgz@google.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 22 Mar 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc-11 warns about what appears to be an out-of-range array access:
->
-> In function ‘snb_wm_latency_quirk’,
->     inlined from ‘ilk_setup_wm_latency’ at drivers/gpu/drm/i915/intel_pm.c:3108:3:
-> drivers/gpu/drm/i915/intel_pm.c:3057:9: error: ‘intel_print_wm_latency’ reading 16 bytes from a region of size 10 [-Werror=stringop-overread]
->  3057 |         intel_print_wm_latency(dev_priv, "Primary", dev_priv->wm.pri_latency);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/i915/intel_pm.c: In function ‘ilk_setup_wm_latency’:
-> drivers/gpu/drm/i915/intel_pm.c:3057:9: note: referencing argument 3 of type ‘const u16 *’ {aka ‘const short unsigned int *’}
-> drivers/gpu/drm/i915/intel_pm.c:2994:13: note: in a call to function ‘intel_print_wm_latency’
->  2994 | static void intel_print_wm_latency(struct drm_i915_private *dev_priv,
->       |             ^~~~~~~~~~~~~~~~~~~~~~
->
-> My guess is that this code is actually safe because the size of the
-> array depends on the hardware generation, and the function checks for
-> that, but at the same time I would not expect the compiler to work it
-> out correctly, and the code seems a little fragile with regards to
-> future changes. Simply increasing the size of the array should help.
+Hi Vipin,
 
-Agreed, I don't think there's an issue, but the code could use a bunch
-of improvements.
+On Mon, 22 Mar 2021 11:54:39 -0700, Vipin Sharma <vipinsh@google.com> wrote:
 
-Like, we have intel_print_wm_latency() for debug logging and
-wm_latency_show() for debugfs, and there's a bunch of duplication and
-ugh.
+> On Fri, Mar 19, 2021 at 02:28:01PM -0700, Jacob Pan wrote:
+> > On Thu,  4 Mar 2021 15:19:45 -0800, Vipin Sharma <vipinsh@google.com>
+> > wrote:  
+> > > +#ifndef _MISC_CGROUP_H_
+> > > +#define _MISC_CGROUP_H_
+> > > +  
+> > nit: should you do #include <linux/cgroup.h>?
+> > Otherwise, css may be undefined.  
+> 
+> User of this controller will use get_curernt_misc_cg() API which returns
+> a pointer. Ideally the user should use this pointer and they shouldn't
+> have any need to access "css" in their code. They also don't need to
+> create a object of 'struct misc_cg{}', because that won't be correct misc
+> cgroup object. They should just declare a pointer like we are doing here
+> in 'struct kvm_sev_info {}'.
+> 
+> If they do need to use "css" then they can include cgroup header in their
+> code.
+> 
+I didn't mean the users of misc_cgroup will use css directly. I meant if I
+want to use misc cgruop in ioasid.c, I have to do the following to avoid
+undefined css:
+#include <linux/cgroup.h>
+#include <linux/misc_cgroup.h>
 
-But this seems like the easiest fix for the warning.
+So it might be simpler if you do #include <linux/cgroup.h> inside
+misc_cgroup.h. Then in ioasid.c, I only need to do
+#include <linux/misc_cgroup.h>.
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+> Let me know if I am overlooking something here.
+> 
+> Thanks
+> Vipin Sharma
 
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/drm/i915/i915_drv.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-> index 26d69d06aa6d..3567602e0a35 100644
-> --- a/drivers/gpu/drm/i915/i915_drv.h
-> +++ b/drivers/gpu/drm/i915/i915_drv.h
-> @@ -1095,11 +1095,11 @@ struct drm_i915_private {
->  		 * in 0.5us units for WM1+.
->  		 */
->  		/* primary */
-> -		u16 pri_latency[5];
-> +		u16 pri_latency[8];
->  		/* sprite */
-> -		u16 spr_latency[5];
-> +		u16 spr_latency[8];
->  		/* cursor */
-> -		u16 cur_latency[5];
-> +		u16 cur_latency[8];
->  		/*
->  		 * Raw watermark memory latency values
->  		 * for SKL for all 8 levels
+Thanks,
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Jacob
