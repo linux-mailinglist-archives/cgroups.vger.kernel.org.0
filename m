@@ -2,106 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDEF347F40
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 18:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA283348074
+	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 19:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236982AbhCXRXJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Mar 2021 13:23:09 -0400
-Received: from mga06.intel.com ([134.134.136.31]:16672 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237098AbhCXRW7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:22:59 -0400
-IronPort-SDR: cQtKDfGSRClLmG3tg20PD7vnKE61zdl5Iy47lu7s8sWzMA5CBf7KgaDKt61tL4HaJj+00Su1S3
- pZ8MXBc748TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="252110427"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="252110427"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 10:22:57 -0700
-IronPort-SDR: q7x5MCG+vkoOU9Zt5AI1qoSHSHC0Zp99QAlPGLHuv2CUXVcGAPnke24VDa6jskQUUfvyu5ceVQ
- Ar5TomltcFSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="443059639"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by FMSMGA003.fm.intel.com with SMTP; 24 Mar 2021 10:22:49 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Wed, 24 Mar 2021 19:22:48 +0200
-Date:   Wed, 24 Mar 2021 19:22:48 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        x86@kernel.org, Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Matt Roper <matthew.d.roper@intel.com>,
-        Aditya Swarup <aditya.swarup@intel.com>
-Subject: Re: [PATCH 10/11] drm/i915: avoid stringop-overread warning on
- pri_latency
-Message-ID: <YFt1aBFwJI+z97g3@intel.com>
-References: <20210322160253.4032422-1-arnd@kernel.org>
- <20210322160253.4032422-11-arnd@kernel.org>
- <874kh04lin.fsf@intel.com>
+        id S237126AbhCXS0U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Mar 2021 14:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237547AbhCXS0C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 14:26:02 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938A6C0613DE
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 11:26:01 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id a198so33418736lfd.7
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 11:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T4N8DBRr0y3pnQ+GYU6PHDcjxPfiucyRsdqMiT4zgqA=;
+        b=G6Mpzu8Fe8xOBs6JczHBtn8H0S8SCoL1f8ofwhnllztiurQZdtRKZfp9fQh5HV+Zha
+         u8r+/u2f70a05QIFYREh/+taoxH++OKNA425bEESIlpfmAPzzV5mU2NydGChVd/0LHxY
+         XEUViqaaHmjCHFqeIrZDAqfMHH8MMp0dHbZE7EKo00GjFbl8Bdqgyja6/NxSJdNGVYBp
+         p4NJfhzdfQ9irpzalC4O5NRVp6DG1A3wZIOSxd0RZ0EMqHYYjg2haX0i1RyhustM4tnU
+         C6LDzJlJpcs47PgnI0rbDzEzYUarNvEY9LvK/4MffNmBCPBazyFFVsd3/7ZhxAiY1+Nh
+         a6OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T4N8DBRr0y3pnQ+GYU6PHDcjxPfiucyRsdqMiT4zgqA=;
+        b=FdaErJ/JUUYhSnKM7Ma/pV44/PQHBAWKf/Pw0+K2VxfsOjrP8plgAlIskH69/sS4S6
+         IrTX7i2fQPGI1x3udEvGpODXkQ9Eg/4bLLPpeyQ0veU34vSYzKLBVKSOhp71RqI0FVTn
+         q/bl/Km2HHaFoK4lhgmTs1JZbIC6lc/nRhhS15+ptY0Q8DkzQVozPi4IMCNiivmmgdA5
+         edZdttiG4Kb7ZiTxHg4+n6irOEUUfAHeTFZW5JkkGqN0QEjQg9sTfhWgZul5K9zPoY0u
+         rybyO4OXFYh1tfBV5tDbHO9L9BTzHPYn4QFPrSaAuZgCDH8j5u5AWODtV/ZJVTFdtDP5
+         8ymA==
+X-Gm-Message-State: AOAM532ozFkHL1wVGpuMPsbBt1r/Iobo4zfKVH/LEecJjQQyHAjAXYO5
+        l2IYow2ZwxOEqow1XgKx5EbWwseDxmrlDbFrTtAVzQ==
+X-Google-Smtp-Source: ABdhPJzU2LObFzD9uVmKqWKo6lDRJghCKK6OF13SkHBoNeLbJ3Nm3c7JlGcLbbioSEdzB+IJyTohlPk5Vn9yuz2lt14=
+X-Received: by 2002:a19:e0d:: with SMTP id 13mr2611590lfo.549.1616610359718;
+ Wed, 24 Mar 2021 11:25:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <874kh04lin.fsf@intel.com>
-X-Patchwork-Hint: comment
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org> <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
+ <YFoe8BO0JsbXTHHF@cmpxchg.org> <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
+In-Reply-To: <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 24 Mar 2021 11:25:47 -0700
+Message-ID: <CALvZod527EgYmkqWdoLCARj2BD2=YWVCC9Dk87gfQRG8NViX_A@mail.gmail.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+To:     Arjun Roy <arjunroy@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 05:30:24PM +0200, Jani Nikula wrote:
-> On Mon, 22 Mar 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc-11 warns about what appears to be an out-of-range array access:
-> >
-> > In function ‘snb_wm_latency_quirk’,
-> >     inlined from ‘ilk_setup_wm_latency’ at drivers/gpu/drm/i915/intel_pm.c:3108:3:
-> > drivers/gpu/drm/i915/intel_pm.c:3057:9: error: ‘intel_print_wm_latency’ reading 16 bytes from a region of size 10 [-Werror=stringop-overread]
-> >  3057 |         intel_print_wm_latency(dev_priv, "Primary", dev_priv->wm.pri_latency);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > drivers/gpu/drm/i915/intel_pm.c: In function ‘ilk_setup_wm_latency’:
-> > drivers/gpu/drm/i915/intel_pm.c:3057:9: note: referencing argument 3 of type ‘const u16 *’ {aka ‘const short unsigned int *’}
-> > drivers/gpu/drm/i915/intel_pm.c:2994:13: note: in a call to function ‘intel_print_wm_latency’
-> >  2994 | static void intel_print_wm_latency(struct drm_i915_private *dev_priv,
-> >       |             ^~~~~~~~~~~~~~~~~~~~~~
-> >
-> > My guess is that this code is actually safe because the size of the
-> > array depends on the hardware generation, and the function checks for
-> > that, but at the same time I would not expect the compiler to work it
-> > out correctly, and the code seems a little fragile with regards to
-> > future changes. Simply increasing the size of the array should help.
-> 
-> Agreed, I don't think there's an issue, but the code could use a bunch
-> of improvements.
-> 
-> Like, we have intel_print_wm_latency() for debug logging and
-> wm_latency_show() for debugfs, and there's a bunch of duplication and
-> ugh.
+On Tue, Mar 23, 2021 at 11:42 AM Arjun Roy <arjunroy@google.com> wrote:
+>
+[...]
+>
+> To summarize then, it seems to me that we're on the same page now.
+> I'll put together a tentative v3 such that:
+> 1. It uses pre-charging, as previously discussed.
+> 2. It uses a page flag to delineate pages of a certain networking sort
+> (ie. this mechanism).
+> 3. It avails itself of up to 4 words of data inside struct page,
+> inside the networking specific struct.
+> 4. And it sets up this opt-in lifecycle notification for drivers that
+> choose to use it, falling back to existing behaviour without.
+>
 
-There is all this ancient stuff in review limbo...
-https://patchwork.freedesktop.org/series/50802/
+Arjun, if you don't mind, can you explain how the lifetime of such a
+page will look like?
 
--- 
-Ville Syrjälä
-Intel
+For example:
+
+Driver:
+page = dev_alloc_page()
+/* page has 1 ref */
+dev_map_page(page)
+/* I don't think dev_map_page() takes a ref on page, so the ref remains 1. */
+
+On incoming traffic the page goes to skb and which then gets assigned
+to a struct sock. Does the kernel increase refcnt of the page on these
+operations?
+
+The page gets mapped into user space which increments its refcnt.
+
+After processing the data, the application unmaps the page and its
+refcnt will be decremented.
+
+__put_page() will be called when refcnt reaches 0, so, the initial
+refcnt which the driver has acquired, has to be transferred to the
+next layer. So, I am trying to understand how that will work?
