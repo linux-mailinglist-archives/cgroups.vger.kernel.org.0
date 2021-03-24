@@ -2,110 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA283348074
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 19:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA11348127
+	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 20:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbhCXS0U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Mar 2021 14:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237547AbhCXS0C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 14:26:02 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938A6C0613DE
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 11:26:01 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a198so33418736lfd.7
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 11:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4N8DBRr0y3pnQ+GYU6PHDcjxPfiucyRsdqMiT4zgqA=;
-        b=G6Mpzu8Fe8xOBs6JczHBtn8H0S8SCoL1f8ofwhnllztiurQZdtRKZfp9fQh5HV+Zha
-         u8r+/u2f70a05QIFYREh/+taoxH++OKNA425bEESIlpfmAPzzV5mU2NydGChVd/0LHxY
-         XEUViqaaHmjCHFqeIrZDAqfMHH8MMp0dHbZE7EKo00GjFbl8Bdqgyja6/NxSJdNGVYBp
-         p4NJfhzdfQ9irpzalC4O5NRVp6DG1A3wZIOSxd0RZ0EMqHYYjg2haX0i1RyhustM4tnU
-         C6LDzJlJpcs47PgnI0rbDzEzYUarNvEY9LvK/4MffNmBCPBazyFFVsd3/7ZhxAiY1+Nh
-         a6OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4N8DBRr0y3pnQ+GYU6PHDcjxPfiucyRsdqMiT4zgqA=;
-        b=FdaErJ/JUUYhSnKM7Ma/pV44/PQHBAWKf/Pw0+K2VxfsOjrP8plgAlIskH69/sS4S6
-         IrTX7i2fQPGI1x3udEvGpODXkQ9Eg/4bLLPpeyQ0veU34vSYzKLBVKSOhp71RqI0FVTn
-         q/bl/Km2HHaFoK4lhgmTs1JZbIC6lc/nRhhS15+ptY0Q8DkzQVozPi4IMCNiivmmgdA5
-         edZdttiG4Kb7ZiTxHg4+n6irOEUUfAHeTFZW5JkkGqN0QEjQg9sTfhWgZul5K9zPoY0u
-         rybyO4OXFYh1tfBV5tDbHO9L9BTzHPYn4QFPrSaAuZgCDH8j5u5AWODtV/ZJVTFdtDP5
-         8ymA==
-X-Gm-Message-State: AOAM532ozFkHL1wVGpuMPsbBt1r/Iobo4zfKVH/LEecJjQQyHAjAXYO5
-        l2IYow2ZwxOEqow1XgKx5EbWwseDxmrlDbFrTtAVzQ==
-X-Google-Smtp-Source: ABdhPJzU2LObFzD9uVmKqWKo6lDRJghCKK6OF13SkHBoNeLbJ3Nm3c7JlGcLbbioSEdzB+IJyTohlPk5Vn9yuz2lt14=
-X-Received: by 2002:a19:e0d:: with SMTP id 13mr2611590lfo.549.1616610359718;
- Wed, 24 Mar 2021 11:25:59 -0700 (PDT)
+        id S237774AbhCXTDN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Wed, 24 Mar 2021 15:03:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:21735 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237772AbhCXTDC (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 24 Mar 2021 15:03:02 -0400
+IronPort-SDR: cabSPKUyXvJu5GSeShXCm/n5wIaaMsU+keX7iUhEFEiw/D5TiZa7/wH6t/pIzQmfHiQqvuIqHk
+ bdDLOlUx/GQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178324120"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="178324120"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 12:03:01 -0700
+IronPort-SDR: vEVuZEgytcldetjUfo6Sl5MqAEoBbiZloTVAaWxshrn8DYwryViiHiE4G3TH6o/qH6X0x6iK7x
+ GHD4R+R+6rhw==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="525345239"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 12:03:01 -0700
+Date:   Wed, 24 Mar 2021 12:05:28 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210324120528.24d82dbd@jacob-builder>
+In-Reply-To: <20210322120300.GU2356281@nvidia.com>
+References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210318172234.3e8c34f7@jacob-builder>
+        <YFR10eeDVf5ZHV5l@myrica>
+        <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <20210322120300.GU2356281@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <CAOFY-A17g-Aq_TsSX8=mD7ZaSAqx3gzUuCJT8K0xwrSuYdP4Kw@mail.gmail.com>
- <YFoe8BO0JsbXTHHF@cmpxchg.org> <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
-In-Reply-To: <CAOFY-A2dfWS91b10R9Pu-5T-uT2qF9h9Lm8GaJfV9shfjP4Wbg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 24 Mar 2021 11:25:47 -0700
-Message-ID: <CALvZod527EgYmkqWdoLCARj2BD2=YWVCC9Dk87gfQRG8NViX_A@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Arjun Roy <arjunroy@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 11:42 AM Arjun Roy <arjunroy@google.com> wrote:
->
-[...]
->
-> To summarize then, it seems to me that we're on the same page now.
-> I'll put together a tentative v3 such that:
-> 1. It uses pre-charging, as previously discussed.
-> 2. It uses a page flag to delineate pages of a certain networking sort
-> (ie. this mechanism).
-> 3. It avails itself of up to 4 words of data inside struct page,
-> inside the networking specific struct.
-> 4. And it sets up this opt-in lifecycle notification for drivers that
-> choose to use it, falling back to existing behaviour without.
->
+Hi Jason,
 
-Arjun, if you don't mind, can you explain how the lifetime of such a
-page will look like?
+On Mon, 22 Mar 2021 09:03:00 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-For example:
+> On Fri, Mar 19, 2021 at 11:22:21AM -0700, Jacob Pan wrote:
+> > Hi Jason,
+> > 
+> > On Fri, 19 Mar 2021 10:54:32 -0300, Jason Gunthorpe <jgg@nvidia.com>
+> > wrote: 
+> > > On Fri, Mar 19, 2021 at 02:41:32PM +0100, Jean-Philippe Brucker
+> > > wrote:  
+> > > > On Fri, Mar 19, 2021 at 09:46:45AM -0300, Jason Gunthorpe wrote:    
+> > > > > On Fri, Mar 19, 2021 at 10:58:41AM +0100, Jean-Philippe Brucker
+> > > > > wrote: 
+> > > > > > Although there is no use for it at the moment (only two upstream
+> > > > > > users and it looks like amdkfd always uses current too), I quite
+> > > > > > like the client-server model where the privileged process does
+> > > > > > bind() and programs the hardware queue on behalf of the client
+> > > > > > process.    
+> > > > > 
+> > > > > This creates a lot complexity, how do does process A get a secure
+> > > > > reference to B? How does it access the memory in B to setup the
+> > > > > HW?    
+> > > > 
+> > > > mm_access() for example, and passing addresses via IPC    
+> > > 
+> > > I'd rather the source process establish its own PASID and then pass
+> > > the rights to use it to some other process via FD passing than try to
+> > > go the other way. There are lots of security questions with something
+> > > like mm_access.
+> > >   
+> > 
+> > Thank you all for the input, it sounds like we are OK to remove mm
+> > argument from iommu_sva_bind_device() and iommu_sva_alloc_pasid() for
+> > now?
+> > 
+> > Let me try to summarize PASID allocation as below:
+> > 
+> > Interfaces	| Usage	|  Limit	| bind¹ |User visible
+> > /dev/ioasid²	| G-SVA/IOVA	|  cgroup	| No
+> > |Yes char dev³	| SVA		|  cgroup	|
+> > Yes	|No iommu driver	| default PASID|  no
+> > | No	|No kernel		| super SVA	| no
+> > 	| yes   |No
+> > 
+> > ¹ Allocated during SVA bind
+> > ² PASIDs allocated via /dev/ioasid are not bound to any mm. But its
+> >   ownership is assigned to the process that does the allocation.  
+> 
+> What does "not bound to a mm" mean?
+> 
+I meant, the IOASID allocated via /dev/ioasid is in a clean state (just a
+number). It's initial state is not bound to an mm. Unlike, sva_bind_device()
+where the IOASID is allocated during bind time.
 
-Driver:
-page = dev_alloc_page()
-/* page has 1 ref */
-dev_map_page(page)
-/* I don't think dev_map_page() takes a ref on page, so the ref remains 1. */
+The use case is to support guest SVA bind, where allocation and bind are in
+two separate steps.
 
-On incoming traffic the page goes to skb and which then gets assigned
-to a struct sock. Does the kernel increase refcnt of the page on these
-operations?
+> IMHO a use created PASID is either bound to a mm (current) at creation
+> time, or it will never be bound to a mm and its page table is under
+> user control via /dev/ioasid.
+> 
+True for PASID used in native SVA bind. But for binding with a guest mm,
+PASID is allocated first (VT-d virtual cmd interface Spec 10.4.44), the
+bind with the host IOMMU when vIOMMU PASID cache is invalidated.
 
-The page gets mapped into user space which increments its refcnt.
+Our intention is to have two separate interfaces:
+1. /dev/ioasid (allocation/free only)
+2. /dev/sva (handles all SVA related activities including page tables)
 
-After processing the data, the application unmaps the page and its
-refcnt will be decremented.
+> I thought the whole point of something like a /dev/ioasid was to get
+> away from each and every device creating its own PASID interface?
+> 
+yes, but only for the use cases that need to expose PASID to the userspace.
+AFAICT, the cases are:
+1. guest SVA (bind guest mm)
+2. full PF/VF assignment(not mediated) where guest driver want to program
+the actual PASID onto the device.
 
-__put_page() will be called when refcnt reaches 0, so, the initial
-refcnt which the driver has acquired, has to be transferred to the
-next layer. So, I am trying to understand how that will work?
+> It maybe somewhat reasonable that some devices could have some easy
+> 'make a SVA PASID on current' interface built in,
+I agree, this is the case PASID is hidden from the userspace, right? e.g.
+uacce.
+
+> but anything more
+> complicated should use /dev/ioasid, and anything consuming PASID
+> should also have an API to import and attach a PASID from /dev/ioasid.
+> 
+Would the above two use cases constitute the "complicated" criteria? Or we
+should say anything that need the explicit PASID value has to through
+/dev/ioasid?
+
+Could you give some highlevel hint on the APIs that hook up IOASID
+allocated from /dev/ioasid and use cases that combine device and domain
+information? Yi is working on /dev/sva RFC, it would be good to have a
+direction check.
+
+> > Currently, the proposed /dev/ioasid interface does not map individual
+> > PASID with an FD. The FD is at the ioasid_set granularity and bond to
+> > the current mm. We could extend the IOCTLs to cover individual PASID-FD
+> > passing case when use cases arise. Would this work?  
+> 
+> Is it a good idea that the FD is per ioasid_set ?
+We were thinking the allocation IOCTL is on a per set basis, then we know
+the ownership of between PASIDs and its set. If per PASID FD is needed, we
+can extend.
+
+> What is the set used
+> for?
+> 
+I tried to document the concept in
+https://lore.kernel.org/lkml/1614463286-97618-2-git-send-email-jacob.jun.pan@linux.intel.com/
+
+In terms of usage for guest SVA, an ioasid_set is mostly tied to a host mm,
+the use case is as the following:
+1. Identify a pool of PASIDs for permission checking (below to the same VM),
+e.g. only allow SVA binding for PASIDs allocated from the same set.
+
+2. Allow different PASID-aware kernel subsystems to associate, e.g. KVM,
+device drivers, and IOMMU driver. i.e. each KVM instance only cares about
+the ioasid_set associated with the VM. Events notifications are also within
+the ioasid_set to synchronize PASID states.
+
+3. Guest-Host PASID look up (each set has its own XArray to store the
+mapping)
+
+4. Quota control (going away once we have cgroup)
+
+> Usually kernel interfaces work nicer with a one fd/one object model.
+> 
+> But even if it is a set, you could pass the set between co-operating
+> processes and the PASID can be created in the correct 'current'. But
+> there is all kinds of security questsions as soon as you start doing
+> anything like this - is there really a use case?
+> 
+We don't see a use case for passing ioasid_set to another process. All the
+four use cases above are for the current process.
+
+> Jason
+
+
+Thanks,
+
+Jacob
