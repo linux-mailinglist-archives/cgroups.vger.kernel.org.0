@@ -2,165 +2,164 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B1F34833E
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 21:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383D5348397
+	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 22:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238197AbhCXUx6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Mar 2021 16:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S238321AbhCXVYY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Mar 2021 17:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237634AbhCXUxs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 16:53:48 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D302FC06174A
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 13:53:47 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id o10so34044779lfb.9
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 13:53:47 -0700 (PDT)
+        with ESMTP id S238318AbhCXVYM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 17:24:12 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F380C06174A
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 14:24:12 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id g15so19650327qkl.4
+        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 14:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9IAjIh7gf44rR4epDI0vFAr+lh0+8IoyQ48EbdutPC4=;
-        b=X+i+XcHts81gTX2YQSoV3UFieH2kepMG7Wygr2n+8tt5NHgaQ+mstmTUI3J5ISoI7U
-         SUl3tiJvsbwRVOLXnmugaf7VxQxxdhAWYfBnAG00WyqH9bu/e4yNA5k3oEymKHyTzkLh
-         TTT+a8G71fKF6cc1A4Vkr/zD4HBlTVppNUf5AaI1iqxq87iXB7fbncGKeplOfgTH82ws
-         hdeCH/aQeXDSvTbv1qPdy2Lh7zjA6lcDs1+f+DHw1q7iu3l5yphxkZpMqeDxCa8CTxyZ
-         5VTmYNZSiJct4WOQqCy68/ZoK5rI3L/qFEYbBPrXDsH1QW2R7QyRDf07jo8vRTObrEez
-         ApCg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CUd0B1oE8UgjwZS/vVWXtycCqy3Z4dx7RtFiDbPwnxk=;
+        b=dbdTgeyCSqFo3yOGJ76gxQ1MbGnyiOl1auHv4991smV1UjVeNvf/EWpQZAUT06hMbh
+         fviRi4ubTSutg+fJ8qUIb7nt1Ooxdtd4d4OiOoAmWjbOFUxf9ZcoS6cEgRcdhetuzqy4
+         P3D8NeWOFUTQq5gw+DUGkMO0L6jrrd8pi+WLcFpqlvmYjrgk1mf/xDqUxiNn+mTr1T53
+         WZ/8QdvoCMP57HFJpuY5In0IPlzv9E5V29+zA+257wug93KmU5ag+lxVHNVOtIIaFZbH
+         iHOslI2xYTIazSjwTxlSPPIN+6fba2t7iBA90mUKLyANKtzbvNniP+4RorV3bHA3qkdA
+         qvTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9IAjIh7gf44rR4epDI0vFAr+lh0+8IoyQ48EbdutPC4=;
-        b=WwjCHKJ55IQbr+GvdqporZdu889EMzk0wn5tJARxZYJuvPUI5mkUQAGFM6U0+JiiCz
-         vUYrDUFh5glzcSGNrW07VfofPh/nHxD3OAlKGRpPn8z1bdkZUjUa6dEFCDZTm96MtvV/
-         OiCRwhOCxEwlJZVTPkF/8AHLYBLPgx7rwB/Mi6KMDqj5VUU7w+vrPKzdKrekTGr6E9en
-         yB4zRfwDnW+E0HsyqOwXVyCnCAO8uuJCWFkpmiuw957X0cZD9KbjUgeWy4aKulRVFM+o
-         1j0A997UPLREnxRCW+zYa/RCvjo5VqvDrFWvIfkzwpOCZ6ZEheThSURr9BKVYw9GZ1p2
-         DMPA==
-X-Gm-Message-State: AOAM53191sEQqP1X420pxfR/ANriRmOCwFy7c7//W6VV7cA4IwzAEXAi
-        wwr+18pXlztQ2RW+PlnSavbKKwAjPK644deHx7SMQqBMAqx2kA==
-X-Google-Smtp-Source: ABdhPJw0lQ/lHICaIcFDzikDJKy0JhvudtbKraeVHNse46qud1jmkyD20uZNubiTW6uoYiF8GjRukNZVynWF7Og7DJA=
-X-Received: by 2002:a19:c14a:: with SMTP id r71mr2932916lff.358.1616619225992;
- Wed, 24 Mar 2021 13:53:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
- <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
- <YFsA78FfzICrnFf7@dhcp22.suse.cz> <CAOFY-A1+TT5EgT0oVEkGgHAaJavbLzbKp5fQx_uOrMtw-7VEiA@mail.gmail.com>
-In-Reply-To: <CAOFY-A1+TT5EgT0oVEkGgHAaJavbLzbKp5fQx_uOrMtw-7VEiA@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 24 Mar 2021 13:53:34 -0700
-Message-ID: <CALvZod6HQ=bG2K1YPofmD=7q3OX+FoRHbzLHcGAMSKOXtfn9dw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Arjun Roy <arjunroy@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CUd0B1oE8UgjwZS/vVWXtycCqy3Z4dx7RtFiDbPwnxk=;
+        b=MBf9Yy1fbFNnOJDcl1riq/GzGmlXsqaUulLw98Q4nmMr2d1BQ/LurBNb0gXDEFfyjj
+         pW2gdWkoTPQk5YmJ7be2HB4pFTRLrj9F2pg2ghf1tviz7hQG7RtQsgLFDD4BykKzU1RB
+         qvVLAiT7BewbbY0+xftuFAGq1dwV6oot/9ZnnCfapYbFOqelp9DedKi9rdGu60cFkS95
+         G4M8eU/IU2Csiz4jphUqd7bXSYKx0K4F/VOqwVQzM5R0Z0MQrSdI3MB/Du0ct71oQN4v
+         8jrU9GuRXQO8sjdg/46ZGiNOoDgUZVQeN/ix0yljgGWZPHKydwAkwr02QOfeX3FqO07g
+         X8KA==
+X-Gm-Message-State: AOAM532l9dM8D1D9HBNsbDJZxD5bhRCXHsXWw7Z+9Z925g2F+7DEx5oV
+        au0aJ6Sgr4R+oBlf2J2p6lAaxA==
+X-Google-Smtp-Source: ABdhPJyuVXA96uvFC0rylaph6WLUCLkqLG17wsg0lww8sgrQ3PZVuyBqDhrrYqkr0wTzgjnd+W8q9g==
+X-Received: by 2002:a05:620a:5b3:: with SMTP id q19mr5317185qkq.98.1616621051819;
+        Wed, 24 Mar 2021 14:24:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:f4a2])
+        by smtp.gmail.com with ESMTPSA id d14sm2313793qtr.55.2021.03.24.14.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 14:24:11 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 17:24:09 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Arjun Roy <arjunroy@google.com>,
         Arjun Roy <arjunroy.kdev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         David Miller <davem@davemloft.net>,
         netdev <netdev@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
         Eric Dumazet <edumazet@google.com>,
         Soheil Hassas Yeganeh <soheil@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <YFut+cZhsJec7Pud@cmpxchg.org>
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org>
+ <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org>
+ <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
+ <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
+ <YFsA78FfzICrnFf7@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFsA78FfzICrnFf7@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 1:39 PM Arjun Roy <arjunroy@google.com> wrote:
->
-> On Wed, Mar 24, 2021 at 2:12 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
-> > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> > > > [...]
-> > > > > Here is an idea of how it could work:
-> > > > >
-> > > > > struct page already has
-> > > > >
-> > > > >                 struct {        /* page_pool used by netstack */
-> > > > >                         /**
-> > > > >                          * @dma_addr: might require a 64-bit value even on
-> > > > >                          * 32-bit architectures.
-> > > > >                          */
-> > > > >                         dma_addr_t dma_addr;
-> > > > >                 };
-> > > > >
-> > > > > and as you can see from its union neighbors, there is quite a bit more
-> > > > > room to store private data necessary for the page pool.
-> > > > >
-> > > > > When a page's refcount hits zero and it's a networking page, we can
-> > > > > feed it back to the page pool instead of the page allocator.
-> > > > >
-> > > > > From a first look, we should be able to use the PG_owner_priv_1 page
-> > > > > flag for network pages (see how this flag is overloaded, we can add a
-> > > > > PG_network alias). With this, we can identify the page in __put_page()
-> > > > > and __release_page(). These functions are already aware of different
-> > > > > types of pages and do their respective cleanup handling. We can
-> > > > > similarly make network a first-class citizen and hand pages back to
-> > > > > the network allocator from in there.
-> > > >
-> > > > For compound pages we have a concept of destructors. Maybe we can extend
-> > > > that for order-0 pages as well. The struct page is heavily packed and
-> > > > compound_dtor shares the storage without other metadata
-> > > >                                         int    pages;    /*    16     4 */
-> > > >                         unsigned char compound_dtor;     /*    16     1 */
-> > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
-> > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
-> > > >                         void *     zone_device_data;     /*    16     8 */
-> > > >
-> > > > But none of those should really require to be valid when a page is freed
-> > > > unless I am missing something. It would really require to check their
-> > > > users whether they can leave the state behind. But if we can establish a
-> > > > contract that compound_dtor can be always valid when a page is freed
-> > > > this would be really a nice and useful abstraction because you wouldn't
-> > > > have to care about the specific type of page.
-> > > >
-> > > > But maybe I am just overlooking the real complexity there.
-> > > > --
+On Wed, Mar 24, 2021 at 10:12:46AM +0100, Michal Hocko wrote:
+> On Tue 23-03-21 11:47:54, Arjun Roy wrote:
+> > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
 > > >
-> > > For now probably the easiest way is to have network pages be first
-> > > class with a specific flag as previously discussed and have concrete
-> > > handling for it, rather than trying to establish the contract across
-> > > page types.
-> >
-> > If you are going to claim a page flag then it would be much better to
-> > have it more generic. Flags are really scarce and if all you care about
-> > is PageHasDestructor() and provide one via page->dtor then the similar
-> > mechanism can be reused by somebody else. Or does anything prevent that?
->
-> The way I see it - the fundamental want here is, for some arbitrary
-> page that we are dropping a reference on, to be able to tell that the
-> provenance of the page is some network driver's page pool. If we added
-> an enum target to compound_dtor, if we examine that offset in the page
-> and look at that value, what guarantee do we have that the page isn't
-> instead some other kind of page, and the byte value there was just
-> coincidentally the one we were looking for (but it wasn't a network
-> driver pool page)?
->
-> Existing users of compound_dtor seem to check first that a
-> PageCompound() or PageHead() return true - the specific scenario here,
-> of receiving network packets, those pages will tend to not be compound
-> (and more specifically, compound pages are explicitly disallowed for
-> TCP receive zerocopy).
->
-> Given that's the case, the options seem to be:
-> 1) Use a page flag - with the downside that they are a severely
-> limited resource,
-> 2) Use some bits inside page->memcg_data - this I believe Johannes had
-> reasons against, and it isn't always the case that MEMCG support is
-> enabled.
-> 3) Use compound_dtor - but I think this would have problems for the
-> prior reasons.
+> > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
+> > > [...]
+> > > > Here is an idea of how it could work:
+> > > >
+> > > > struct page already has
+> > > >
+> > > >                 struct {        /* page_pool used by netstack */
+> > > >                         /**
+> > > >                          * @dma_addr: might require a 64-bit value even on
+> > > >                          * 32-bit architectures.
+> > > >                          */
+> > > >                         dma_addr_t dma_addr;
+> > > >                 };
+> > > >
+> > > > and as you can see from its union neighbors, there is quite a bit more
+> > > > room to store private data necessary for the page pool.
+> > > >
+> > > > When a page's refcount hits zero and it's a networking page, we can
+> > > > feed it back to the page pool instead of the page allocator.
+> > > >
+> > > > From a first look, we should be able to use the PG_owner_priv_1 page
+> > > > flag for network pages (see how this flag is overloaded, we can add a
+> > > > PG_network alias). With this, we can identify the page in __put_page()
+> > > > and __release_page(). These functions are already aware of different
+> > > > types of pages and do their respective cleanup handling. We can
+> > > > similarly make network a first-class citizen and hand pages back to
+> > > > the network allocator from in there.
+> > >
+> > > For compound pages we have a concept of destructors. Maybe we can extend
+> > > that for order-0 pages as well. The struct page is heavily packed and
+> > > compound_dtor shares the storage without other metadata
+> > >                                         int    pages;    /*    16     4 */
+> > >                         unsigned char compound_dtor;     /*    16     1 */
+> > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
+> > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
+> > >                         void *     zone_device_data;     /*    16     8 */
+> > >
+> > > But none of those should really require to be valid when a page is freed
+> > > unless I am missing something. It would really require to check their
+> > > users whether they can leave the state behind. But if we can establish a
+> > > contract that compound_dtor can be always valid when a page is freed
+> > > this would be really a nice and useful abstraction because you wouldn't
+> > > have to care about the specific type of page.
 
-I don't think Michal is suggesting to use PageCompound() or
-PageHead(). He is suggesting to add a more general page flag
-(PageHasDestructor) and corresponding page->dtor, so other potential
-users can use it too.
+Yeah technically nobody should leave these fields behind, but it
+sounds pretty awkward to manage an overloaded destructor with a
+refcounted object:
+
+Either every put would have to check ref==1 before to see if it will
+be the one to free the page, and then set up the destructor before
+putting the final ref. But that means we can't support lockless
+tryget() schemes like we have in the page cache with a destructor.
+
+Or you'd have to set up the destructor every time an overloaded field
+reverts to its null state, e.g. hpage_pinned_refcount goes back to 0.
+
+Neither of those sound practical to me.
+
+> > > But maybe I am just overlooking the real complexity there.
+> > > --
+> > 
+> > For now probably the easiest way is to have network pages be first
+> > class with a specific flag as previously discussed and have concrete
+> > handling for it, rather than trying to establish the contract across
+> > page types.
+> 
+> If you are going to claim a page flag then it would be much better to
+> have it more generic. Flags are really scarce and if all you care about
+> is PageHasDestructor() and provide one via page->dtor then the similar
+> mechanism can be reused by somebody else. Or does anything prevent that?
+
+I was suggesting to alias PG_owner_priv_1, which currently isn't used
+on network pages. We don't need to allocate a brandnew page flag.
+
+I agree that a generic destructor for order-0 pages would be nice, but
+due to the decentralized nature of refcounting the only way I think it
+would work in practice is by adding a new field to struct page that is
+not in conflict with any existing ones.
+
+Comparably, creating a network type page consumes no additional space.
