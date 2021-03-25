@@ -2,185 +2,256 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C07E3484E8
-	for <lists+cgroups@lfdr.de>; Wed, 24 Mar 2021 23:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE9A348993
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 07:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234107AbhCXWth (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Mar 2021 18:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S229744AbhCYG6Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 02:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234083AbhCXWt1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Mar 2021 18:49:27 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B6EC06175F
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 15:49:26 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so3310814pjb.1
-        for <cgroups@vger.kernel.org>; Wed, 24 Mar 2021 15:49:26 -0700 (PDT)
+        with ESMTP id S229676AbhCYG6C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 02:58:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD647C06174A;
+        Wed, 24 Mar 2021 23:58:01 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id l123so1046358pfl.8;
+        Wed, 24 Mar 2021 23:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CnG9+rCYeZJOIO9wMA1OXXczz9AhODbjeHBnYJ2S+dQ=;
-        b=eTp2wE3KCcGL21ofZv6+GyxjukrFrzM4orBTTCdTZi62hw3w9tW9Q7zv2c01Al6gsO
-         97oQPxXzoeZKpLW8VSCq8NNFKYBlBiUZmZNJp3pJdLjTKwSJ8zzLXffVO6p/zEuJ+lp9
-         Wqw+/wIvYMInmyLsmfJ2b4PEDWD58m2Ihzg4GKOgh6D3ydDkAE1KZEBCxIUEnIxM3pHH
-         PfHP/whaBXAVlYcwax2Ci/U2I1x3kFfXHFXSdNYCZxR5WQZ0jns6WPKbBk4oZWTel0k7
-         ro/niqhhCx94gnqMkOkn1iAWzkkLRUs7mXITMVx5WaYhy391bq59krI9cSMJSzYUaFMr
-         ocAQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y0HAQH9S7BYME7xDrrfAGZHnKbsUU3U5GDi3mcyHwUY=;
+        b=ghPXClxqYWb2AdpDYWC1Z/AJsylFh3gBBPzyIZFVKCVWHDNg+l3ozpCD3UwuX7CC+n
+         TnhnNfVtwOvvBUGr6Deg+KI2oCjO+kBuL5oJFvPVNHDhncTGln/i6mtVGdWDsDc8jr2w
+         nzyfacn4VJM+NOOt+ZHiWK5WENii+qwmkCvIBYtQkqM3yacAFMYC5tHMurqF147ys2bQ
+         ANIegMB5gk1zE/3b0DdgYbISokZB0BhlKKhTUyFZbi2bFNBoIIHXLUTJ75Sux4NiL9zT
+         bO5ixe7zO8VOiHwbMR/fkY7xs5ra2A4IPIuxJlXHq6khuak2NyAsNsV6GU6tH5RtIib4
+         4S5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CnG9+rCYeZJOIO9wMA1OXXczz9AhODbjeHBnYJ2S+dQ=;
-        b=nE83Myhffne5n67gjew+8mvChIMglmjS3n9ALkRztUfpWoBJAgp8//DluzLDjkrHYX
-         3utTtgNsuO4aZJuIVypaS12/njbMeg77q9ovGfOpsWONr0w1WEQcFgTK5mLr6CBDEBr6
-         pFCafbS+0ov3Bjkt+FNkunNTWuxz4Ff30QFmuSkoD6qk/LrXnG9jCA4328QsQzjwAV6k
-         WjED+fOs08y8n3pxd+fFybC2ot+BVofR8zMaHs/6JHtadEpgGUWs4jGVpvcN2QmgppdG
-         hXWqW2hS236quJPgZXDEhKW9sdYvF4GvZ0UKy8fNMbZw/CQyMOdgLml0q9nXQXe/3MS9
-         MPCg==
-X-Gm-Message-State: AOAM530jT8t01D0xkPeJGN/oiAN0M5afpae2iCWWlJhNvWhhQteLPF/I
-        w9pvCRmXi9TH73aYknQ/BUc2CzK2U8tUVg4xfau1Bw==
-X-Google-Smtp-Source: ABdhPJyPb44Fh9aB04e0tm1x3uWtjFBWj7OBBB88nVTq2jx4ZXu57a+iK6vqBVVgTjATsZexfmrkBxnckZ2oyfpH3Mg=
-X-Received: by 2002:a17:90a:9d82:: with SMTP id k2mr5507894pjp.48.1616626166323;
- Wed, 24 Mar 2021 15:49:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y0HAQH9S7BYME7xDrrfAGZHnKbsUU3U5GDi3mcyHwUY=;
+        b=gQF2+QTWthBwGRuekqED9h7bd5Sf1Dne2apBqHa91VeNyb0VR5SOX/zF3DDbwwDbuO
+         Z0z0GCscok+Ls/VN8QJlfjT/Yr6oPPfABhHKc1ZQUko/komJrQDxQy4UkdiWKP0fuNpF
+         Ogx5I8OyQgWS7cc20NvqJIco4HkBy1SyWyR1AjS1h44IH+/HKISlPiOyxQCt0DNpMf0b
+         gJM3rgxNHOiFs00LDjgxPX5/8c1pe3SPa6YqsGflUXd2yX4w5bcb+1TscPPAo95TR8m8
+         JuuR1uuih4ZEraZX+Ho/u91p1dLYzh/WZbDMnXa67cos1wLH5uHNAm7Yqv7Zfs175pFn
+         lGWA==
+X-Gm-Message-State: AOAM533IEHRsmMdc0TS8Jbl07/KZlX56/HNbRvbOh0KqZd6sTy6G8fH6
+        PuTMWIio22S+qhJVSLwRqvLF8gstT8QFWw==
+X-Google-Smtp-Source: ABdhPJw96zxjSYdVKFYe0+o7SJQSpRJ56/BCjNvRk6WHEqB+Fv2lFBBpzzMJPmTZ3DOWo6HL6cYoFg==
+X-Received: by 2002:a62:6451:0:b029:20e:f351:f1e with SMTP id y78-20020a6264510000b029020ef3510f1emr6709995pfb.54.1616655481015;
+        Wed, 24 Mar 2021 23:58:01 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.57.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Mar 2021 23:58:00 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/14] bfq: introduce bfq.ioprio for cgroup
+Date:   Thu, 25 Mar 2021 14:57:44 +0800
+Message-Id: <cover.1616649216.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
- <YFCH8vzFGmfFRCvV@cmpxchg.org> <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org> <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
- <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
- <YFsA78FfzICrnFf7@dhcp22.suse.cz> <YFut+cZhsJec7Pud@cmpxchg.org>
-In-Reply-To: <YFut+cZhsJec7Pud@cmpxchg.org>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Wed, 24 Mar 2021 15:49:15 -0700
-Message-ID: <CAOFY-A0Y0ye74bnpcWsKOPZMJSrFW8mJxVJrpwiy2dcGgUJ5Tw@mail.gmail.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 2:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Mar 24, 2021 at 10:12:46AM +0100, Michal Hocko wrote:
-> > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
-> > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> > > > [...]
-> > > > > Here is an idea of how it could work:
-> > > > >
-> > > > > struct page already has
-> > > > >
-> > > > >                 struct {        /* page_pool used by netstack */
-> > > > >                         /**
-> > > > >                          * @dma_addr: might require a 64-bit value even on
-> > > > >                          * 32-bit architectures.
-> > > > >                          */
-> > > > >                         dma_addr_t dma_addr;
-> > > > >                 };
-> > > > >
-> > > > > and as you can see from its union neighbors, there is quite a bit more
-> > > > > room to store private data necessary for the page pool.
-> > > > >
-> > > > > When a page's refcount hits zero and it's a networking page, we can
-> > > > > feed it back to the page pool instead of the page allocator.
-> > > > >
-> > > > > From a first look, we should be able to use the PG_owner_priv_1 page
-> > > > > flag for network pages (see how this flag is overloaded, we can add a
-> > > > > PG_network alias). With this, we can identify the page in __put_page()
-> > > > > and __release_page(). These functions are already aware of different
-> > > > > types of pages and do their respective cleanup handling. We can
-> > > > > similarly make network a first-class citizen and hand pages back to
-> > > > > the network allocator from in there.
-> > > >
-> > > > For compound pages we have a concept of destructors. Maybe we can extend
-> > > > that for order-0 pages as well. The struct page is heavily packed and
-> > > > compound_dtor shares the storage without other metadata
-> > > >                                         int    pages;    /*    16     4 */
-> > > >                         unsigned char compound_dtor;     /*    16     1 */
-> > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
-> > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
-> > > >                         void *     zone_device_data;     /*    16     8 */
-> > > >
-> > > > But none of those should really require to be valid when a page is freed
-> > > > unless I am missing something. It would really require to check their
-> > > > users whether they can leave the state behind. But if we can establish a
-> > > > contract that compound_dtor can be always valid when a page is freed
-> > > > this would be really a nice and useful abstraction because you wouldn't
-> > > > have to care about the specific type of page.
->
-> Yeah technically nobody should leave these fields behind, but it
-> sounds pretty awkward to manage an overloaded destructor with a
-> refcounted object:
->
-> Either every put would have to check ref==1 before to see if it will
-> be the one to free the page, and then set up the destructor before
-> putting the final ref. But that means we can't support lockless
-> tryget() schemes like we have in the page cache with a destructor.
->
+From: Chunguang Xu <brookxu@tencent.com>
 
-Ah, I think I see what you were getting at with your prior email - at
-first I thought your suggestion was that, since the driver may have
-its own refcount, every put would need to check ref == 1 and call into
-the driver if need be.
+Any suggestions or discussions are welcome, thank you every much.
 
-Instead, and correct me if I'm wrong, it seems like what you're advocating is:
-1) The (opted in) driver no longer hangs onto the ref,
-2) Now refcount can go all the way to 0,
-3) And when it does, due to the special destructor this page has, it
-goes back to the driver, rather than the system?
+BACKGROUND:
+In the container scenario, in addition to throughput, we also pay
+attention to Qos of each group. Based on hierarchical scheduling,
+EMQ, IO Injection, bfq.weight and other mechanisms, we can achieve
+better IO isolation, better throughput, better avoiding priority
+inversion. However, we still have something to be optimized.
 
+OPTIMIZATION:
 
-> Or you'd have to set up the destructor every time an overloaded field
-> reverts to its null state, e.g. hpage_pinned_refcount goes back to 0.
->
-> Neither of those sound practical to me.
->
+We try to do something to make bfq work better in the container scene.
 
+1. Introduce bfq.ioprio
+Tasks in the production environment can be roughly divided into
+three categories: emergency, ordinary and offline. Emergency tasks
+need to be scheduled in real time, such as system agents. Offline
+tasks do not need to guarantee QoS, but can improve system resource
+utilization during system idle periods, such as background tasks.
 
+At present, we can use weights to simulate IO preemption, but since
+weights are more of a share concept, they cannot be simulated well.
+Using ioprio class for group, we can solve the above problems more
+easier. In this way, in hierarchical scheduling, we can ensure that
+RT and IDLE group can be scheduled correctly. In addition, we also
+introduce ioprio for group, so we realize a weight value through
+ioprio class and ioprio. In scenarios where only simple weights are
+needed, we can achieve IO preemption and weight isolation only
+through bfq.ioprio. 
 
+After the introduction of bfq.ioprio, in order to better adapt to
+the actual container environment. When scheduling within a group,
+we use task ioprio class. But outside of group, we use group ioprio
+class. For example, when counting bfqd->busy_queues[], tasks from the
+CLASS_IDLE group are always regarded as CLASS_IDLE, and the ioprio
+class of the task is ignored.
 
-> > > > But maybe I am just overlooking the real complexity there.
-> > > > --
-> > >
-> > > For now probably the easiest way is to have network pages be first
-> > > class with a specific flag as previously discussed and have concrete
-> > > handling for it, rather than trying to establish the contract across
-> > > page types.
-> >
-> > If you are going to claim a page flag then it would be much better to
-> > have it more generic. Flags are really scarce and if all you care about
-> > is PageHasDestructor() and provide one via page->dtor then the similar
-> > mechanism can be reused by somebody else. Or does anything prevent that?
->
-> I was suggesting to alias PG_owner_priv_1, which currently isn't used
-> on network pages. We don't need to allocate a brandnew page flag.
->
+2. Introduce better_faireness mode
+Better Qos control needs to sacrifice throughput, and this is not
+suitable for all scenarios. For this, we added a switch called
+better_fairness. After better_fairness is enabled, we will make
+the following restrictions:
 
-Just to be certain, is there any danger of having a page, that would
-not be a network driver page originally, being inside __put_page(),
-such that PG_owner_priv_1 is set (but with one of its other overloaded
-meanings)?
+Guarantee group Qos:
+1. Cooperator queue can only come from the same group and the same class.
+2. Waker queue can only come from the same group and the same class.
+3. Inject queue can only come from the same group of the same class.
 
-Thanks,
--Arjun
+Guarantee RT tasks Qos:
+1. Async_queue cannot inject RT queue.
+2. Traverse the upper schedule domain to determine whether
+   in_service_queue needs to be preempted.
+3. If in_service_queue marked prio_expire, disable idle.
 
-> I agree that a generic destructor for order-0 pages would be nice, but
-> due to the decentralized nature of refcounting the only way I think it
-> would work in practice is by adding a new field to struct page that is
-> not in conflict with any existing ones.
->
-> Comparably, creating a network type page consumes no additional space.
+Better Buffer IO control:
+1. Except for the CLASS_IDLE queue, other queues allow idle by default.
+
+INTERFACE:
+
+The bfq.ioprio interface now is available for cgroup v1 and cgroup
+v2. Users can configure the ioprio for cgroup through this
+interface, as shown below:
+
+echo "1 2"> blkio.bfq.ioprio
+
+The above two values respectively represent the values of ioprio
+class and ioprio for cgroup.
+
+EXPERIMENT:
+
+The test process is as follows:
+# prepare data disk
+mount /dev/sdb /data1
+
+# prepare IO scheduler
+echo bfq > /sys/block/sdb/queue/scheduler
+echo 0 > /sys/block/sdb/queue/iosched/low_latency
+echo 1 > /sys/block/sdb/queue/iosched/better_fairness
+
+It is worth noting here that nr_requests limits the number of
+requests, and it does not perceive priority. If nr_requests is
+too small, it may cause a serious priority inversion problem.
+Therefore, we can increase the size of nr_requests based on
+the actual situation.
+
+# create cgroup v1 hierarchy
+cd /sys/fs/cgroup/blkio
+mkdir rt be0 be1 be2 idle
+
+# prepare cgroup
+echo "1 0" > rt/blkio.bfq.ioprio
+echo "2 0" > be0/blkio.bfq.ioprio
+echo "2 4" > be1/blkio.bfq.ioprio
+echo "2 7" > be2/blkio.bfq.ioprio
+echo "3 0" > idle/blkio.bfq.ioprio
+
+# run fio test
+fio fio.ini
+
+# generate svg graph
+fio_generate_plots res
+
+The contents of fio.ini are as follows:
+[global]
+ioengine=libaio
+group_reporting=1
+log_avg_msec=3000
+direct=1
+time_based=1
+iodepth=16
+size=100M
+rw=write
+bs=1M
+[rt]
+name=rt
+write_bw_log=rt
+write_lat_log=rt
+write_iops_log=rt
+filename=/data1/rt.bin
+cgroup=rt
+runtime=30s
+nice=-10
+[be0]
+name=be0
+write_bw_log=be0
+write_lat_log=be0
+write_iops_log=be0
+filename=/data1/be0.bin
+cgroup=be0
+runtime=60s
+[be1]
+name=be1
+write_bw_log=be1
+write_lat_log=be1
+write_iops_log=be1
+filename=/data1/be1.bin
+cgroup=be1
+runtime=60s
+[be2]
+name=be2
+write_bw_log=be2
+write_lat_log=be2
+write_iops_log=be2
+filename=/data1/be2.bin
+cgroup=be2
+runtime=60s
+[idle]
+name=idle
+write_bw_log=idle
+write_lat_log=idle
+write_iops_log=idle
+filename=/data1/idle.bin
+cgroup=idle
+runtime=90s
+
+V3:
+1. introdule prio_expire for bfqq.
+2. introduce better_fairness mode.
+3. optimize the processing of task ioprio and group ioprio. 
+4. optimize some small points
+
+V2:
+1. Optmise bfq_select_next_class().
+2. Introduce bfq_group [] to track the number of groups for each CLASS.
+3. Optimse IO injection, EMQ and Idle mechanism for CLASS_RT.
+
+Chunguang Xu (14):
+  bfq: introduce bfq_entity_to_bfqg helper method
+  bfq: convert the type of bfq_group.bfqd to bfq_data*
+  bfq: introduce bfq.ioprio for cgroup
+  bfq: introduce bfq_ioprio_class to get ioprio class
+  bfq: limit the IO depth of CLASS_IDLE to 1
+  bfq: keep the minimun bandwidth for CLASS_BE
+  bfq: introduce better_fairness for container scene
+  bfq: introduce prio_expire flag for bfq_queue
+  bfq: expire in_serv_queue for prio_expire under better_fairness
+  bfq: optimize IO injection under better_fairness
+  bfq: disable idle for prio_expire under better_fairness
+  bfq: disable merging between different groups under better_fairness
+  bfq: remove unnecessary initialization logic
+  bfq: optimize the calculation of bfq_weight_to_ioprio()
+
+ block/bfq-cgroup.c  |  99 ++++++++++++++++++++++++++---
+ block/bfq-iosched.c | 119 +++++++++++++++++++++++++++++++---
+ block/bfq-iosched.h |  36 +++++++++--
+ block/bfq-wf2q.c    | 180 ++++++++++++++++++++++++++++++++++++++++++----------
+ 4 files changed, 376 insertions(+), 58 deletions(-)
+
+-- 
+1.8.3.1
+
