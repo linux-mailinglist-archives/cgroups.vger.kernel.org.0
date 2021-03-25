@@ -2,133 +2,166 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BCC348B1A
-	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 09:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7530348C22
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 10:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCYIFZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 25 Mar 2021 04:05:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:34351 "EHLO mga09.intel.com"
+        id S229592AbhCYJCn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 05:02:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38958 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229962AbhCYIFW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:05:22 -0400
-IronPort-SDR: fhSYScwTavgQKe1dCnryrywzUrSmsao/0sARx65F6Qc4V+nDgydgykkDivnsdXhbeLeqxMIzyu
- KiZ9BeCeZE7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190971098"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="190971098"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 01:05:21 -0700
-IronPort-SDR: YSlh8X6JrYCAgcFAjL5XZMs9hqgR3pcWRIp1+nLDHbTGxn8DfB0UC8NvUc6Fyh2eKqFMEpwwEz
- JeibtqsaiX5Q==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="415886752"
-Received: from jweber-mobl.ger.corp.intel.com (HELO localhost) ([10.252.39.244])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 01:05:09 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Animesh Manna <animesh.manna@intel.com>,
-        Sean Paul <seanpaul@chromium.org>
-Subject: Re: [PATCH 11/11] [RFC] drm/i915/dp: fix array overflow warning
-In-Reply-To: <20210322160253.4032422-12-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-12-arnd@kernel.org>
-Date:   Thu, 25 Mar 2021 10:05:06 +0200
-Message-ID: <87wntv3bgt.fsf@intel.com>
+        id S229448AbhCYJCa (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:02:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616662949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4KPBFe0XybqKsFmMmUb7cVLIpaMGEswxqCxAFWNw8sM=;
+        b=Nb7XPpOuVRDN3w6eNmTUhnynRp9xVASYQCH5sOuzsTCxTi8EBOJus9BNROk8Y+uw8/71Jm
+        vvy3H7614dTf4N43U50ZNRjc026/j3m7CVjESgZCffKsRHPWNDxPNR1DjWYMRNOEc16W4E
+        jrPliVKNSqfRLthmUwuSmCKoJAaENcs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F2918AC16;
+        Thu, 25 Mar 2021 09:02:28 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 10:02:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Arjun Roy <arjunroy@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Arjun Roy <arjunroy.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <YFxRpKfwQwobt7IK@dhcp22.suse.cz>
+References: <20210316041645.144249-1-arjunroy.kdev@gmail.com>
+ <YFCH8vzFGmfFRCvV@cmpxchg.org>
+ <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
+ <YFJ+5+NBOBiUbGWS@cmpxchg.org>
+ <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
+ <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
+ <YFsA78FfzICrnFf7@dhcp22.suse.cz>
+ <YFut+cZhsJec7Pud@cmpxchg.org>
+ <CAOFY-A0Y0ye74bnpcWsKOPZMJSrFW8mJxVJrpwiy2dcGgUJ5Tw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOFY-A0Y0ye74bnpcWsKOPZMJSrFW8mJxVJrpwiy2dcGgUJ5Tw@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 22 Mar 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc-11 warns that intel_dp_check_mst_status() has a local array of
-> fourteen bytes and passes the last four bytes into a function that
-> expects a six-byte array:
->
-> drivers/gpu/drm/i915/display/intel_dp.c: In function ‘intel_dp_check_mst_status’:
-> drivers/gpu/drm/i915/display/intel_dp.c:4556:22: error: ‘drm_dp_channel_eq_ok’ reading 6 bytes from a region of size 4 [-Werror=stringop-overread]
->  4556 |                     !drm_dp_channel_eq_ok(&esi[10], intel_dp->lane_count)) {
->       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/i915/display/intel_dp.c:4556:22: note: referencing argument 1 of type ‘const u8 *’ {aka ‘const unsigned char *’}
-> In file included from drivers/gpu/drm/i915/display/intel_dp.c:38:
-> include/drm/drm_dp_helper.h:1459:6: note: in a call to function ‘drm_dp_channel_eq_ok’
->  1459 | bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
->       |      ^~~~~~~~~~~~~~~~~~~~
->
-> Clearly something is wrong here, but I can't quite figure out what.
-> Changing the array size to 16 bytes avoids the warning, but is
-> probably the wrong solution here.
+On Wed 24-03-21 15:49:15, Arjun Roy wrote:
+> On Wed, Mar 24, 2021 at 2:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Wed, Mar 24, 2021 at 10:12:46AM +0100, Michal Hocko wrote:
+> > > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
+> > > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
+> > > > > [...]
+> > > > > > Here is an idea of how it could work:
+> > > > > >
+> > > > > > struct page already has
+> > > > > >
+> > > > > >                 struct {        /* page_pool used by netstack */
+> > > > > >                         /**
+> > > > > >                          * @dma_addr: might require a 64-bit value even on
+> > > > > >                          * 32-bit architectures.
+> > > > > >                          */
+> > > > > >                         dma_addr_t dma_addr;
+> > > > > >                 };
+> > > > > >
+> > > > > > and as you can see from its union neighbors, there is quite a bit more
+> > > > > > room to store private data necessary for the page pool.
+> > > > > >
+> > > > > > When a page's refcount hits zero and it's a networking page, we can
+> > > > > > feed it back to the page pool instead of the page allocator.
+> > > > > >
+> > > > > > From a first look, we should be able to use the PG_owner_priv_1 page
+> > > > > > flag for network pages (see how this flag is overloaded, we can add a
+> > > > > > PG_network alias). With this, we can identify the page in __put_page()
+> > > > > > and __release_page(). These functions are already aware of different
+> > > > > > types of pages and do their respective cleanup handling. We can
+> > > > > > similarly make network a first-class citizen and hand pages back to
+> > > > > > the network allocator from in there.
+> > > > >
+> > > > > For compound pages we have a concept of destructors. Maybe we can extend
+> > > > > that for order-0 pages as well. The struct page is heavily packed and
+> > > > > compound_dtor shares the storage without other metadata
+> > > > >                                         int    pages;    /*    16     4 */
+> > > > >                         unsigned char compound_dtor;     /*    16     1 */
+> > > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
+> > > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
+> > > > >                         void *     zone_device_data;     /*    16     8 */
+> > > > >
+> > > > > But none of those should really require to be valid when a page is freed
+> > > > > unless I am missing something. It would really require to check their
+> > > > > users whether they can leave the state behind. But if we can establish a
+> > > > > contract that compound_dtor can be always valid when a page is freed
+> > > > > this would be really a nice and useful abstraction because you wouldn't
+> > > > > have to care about the specific type of page.
+> >
+> > Yeah technically nobody should leave these fields behind, but it
+> > sounds pretty awkward to manage an overloaded destructor with a
+> > refcounted object:
+> >
+> > Either every put would have to check ref==1 before to see if it will
+> > be the one to free the page, and then set up the destructor before
+> > putting the final ref. But that means we can't support lockless
+> > tryget() schemes like we have in the page cache with a destructor.
 
-Ugh. drm_dp_channel_eq_ok() does not actually require more than
-DP_LINK_STATUS_SIZE - 2 elements in the link_status. It's some other
-related functions that do, and in most cases it's convenient to read all
-those DP_LINK_STATUS_SIZE bytes.
+I do not follow the ref==1 part. I mean to use the hugetlb model where
+the destructore is configured for the whole lifetime until the page is
+freed back to the allocator (see below).
 
-However, here the case is slightly different for DP MST, and the change
-causes reserved DPCD addresses to be read. Not sure it matters, but
-really I think the problem is what drm_dp_channel_eq_ok() advertizes.
+> Ah, I think I see what you were getting at with your prior email - at
+> first I thought your suggestion was that, since the driver may have
+> its own refcount, every put would need to check ref == 1 and call into
+> the driver if need be.
+> 
+> Instead, and correct me if I'm wrong, it seems like what you're advocating is:
+> 1) The (opted in) driver no longer hangs onto the ref,
+> 2) Now refcount can go all the way to 0,
+> 3) And when it does, due to the special destructor this page has, it
+> goes back to the driver, rather than the system?
 
-I also don't like the array notation with sizes in function parameters
-in general, because I think it's misleading. Would gcc-11 warn if a
-function actually accesses the memory out of bounds of the size?
+Yes, this is the model we use for hugetlb pages for example. Have a look
+at free_huge_page path (HUGETLB_PAGE_DTOR destructor). It can either
+enqueue a freed page to its pool or to the page allocator depending on
+the pool state.
+ 
+[...]
+> > > If you are going to claim a page flag then it would be much better to
+> > > have it more generic. Flags are really scarce and if all you care about
+> > > is PageHasDestructor() and provide one via page->dtor then the similar
+> > > mechanism can be reused by somebody else. Or does anything prevent that?
+> >
+> > I was suggesting to alias PG_owner_priv_1, which currently isn't used
+> > on network pages. We don't need to allocate a brandnew page flag.
+> >
+> 
+> Just to be certain, is there any danger of having a page, that would
+> not be a network driver page originally, being inside __put_page(),
+> such that PG_owner_priv_1 is set (but with one of its other overloaded
+> meanings)?
 
-Anyway. I don't think we're going to get rid of the array notation
-anytime soon, if ever, no matter how much I dislike it, so I think the
-right fix would be to at least state the correct required size in
-drm_dp_channel_eq_ok().
+Yeah this is a real question. And from what Johannes is saying this
+might pose some problem for this specific flags. I still need to check
+all the users to be certain. One thing is clear though.  PG_owner_priv_1
+is not a part of PAGE_FLAGS_CHECK_AT_FREE so it is not checked when a
+page is freed so it is possible that the flag is left behind when
+somebody does final put_page which makes things harder.
 
-
-BR,
-Jani.
-
-
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 8c12d5375607..830e2515f119 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -65,7 +65,7 @@
->  #include "intel_vdsc.h"
->  #include "intel_vrr.h"
->  
-> -#define DP_DPRX_ESI_LEN 14
-> +#define DP_DPRX_ESI_LEN 16
->  
->  /* DP DSC throughput values used for slice count calculations KPixels/s */
->  #define DP_DSC_PEAK_PIXEL_RATE			2720000
-
+But that would be the case even when the flag is used for network
+specific handling because you cannot tell it from other potential users
+who are outside of networking...
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+Michal Hocko
+SUSE Labs
