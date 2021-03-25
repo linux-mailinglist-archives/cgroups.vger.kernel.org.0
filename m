@@ -2,58 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687433489AB
-	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 07:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D50E3489B1
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 07:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCYG6u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Mar 2021 02:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        id S230081AbhCYG6v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 02:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhCYG6R (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 02:58:17 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF9AC06174A;
-        Wed, 24 Mar 2021 23:58:17 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id s21so651541pjq.1;
-        Wed, 24 Mar 2021 23:58:17 -0700 (PDT)
+        with ESMTP id S229904AbhCYG6T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 02:58:19 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6933BC06174A;
+        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id e33so826520pgm.13;
+        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=gKQxiL9Ics9FEiHObsHY8UcO0dmLMvnwEV9tZC7Iho0=;
-        b=L/1YxwipDPbGlV3OvtnrF5Zs6ewcstH0eyvCsYmC6jf4Y49EMnKnnS5uVgcAkfF5YT
-         TP0FfChTGF1e/uTdTwDj3DR5rVmo9xiHLMmGtF9ZEErMToKFaOLzTVY7CCqSH6ziQZp0
-         YEwcsC7WkML+ogRIGSh9FUDsVfpDecNXHD1azfiSZEdkgubRsEPNVXnrHfJLQRVgtl0l
-         72YSqMVl8Rz7whfxJ/hSaR5X8PUGA29XnPBOVdGgHWs80xt0NVzNeBBAhMwl9vApvluB
-         tiGWmiRF1T/7YjoY1kJlc7yS9ZEB3oaUmJmT74NCgzcYn0Vlghwfgfs26JnnQJLfX2p7
-         drMQ==
+        bh=DeBrNab0KU7KzKaG5m2cKOd/Gyr3Wt1IGcfHEMz36Qo=;
+        b=Gp+SaexnPkH/P50XCFy/6XBBnQQBLSdHcmjcap9YMg+BTzmyVFYSrHpOXCz5QJyXWo
+         2qa2TcycVdUxzmf/yiC84yw/4NTKRbSwNmv3ef9V9Cuvv5xtlnxi4NDUdDO6pTsEVI+P
+         u3f6OVZRBLLYrGQczOMyCwXQOWjurtcr12+85iVo4J3XTlfCayowMKHno4y7iY7rH1xj
+         SKBxVVQ3GZ9tkGRIL3FQAJQXo0W3u42eDVZKLpHyNbnDC6lrFxN/JXeuSjPthkJlK+Bo
+         UHjgHAodVbbY7BEGztcTi5CYemjF1q+6uURfEFfgkvImU7Sb3m+lPNxq+ZxZKKa0q/S0
+         0A9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=gKQxiL9Ics9FEiHObsHY8UcO0dmLMvnwEV9tZC7Iho0=;
-        b=T7Dcmp2Wm3OKqN6lUfRgXhvfR8SmDb8nd7tCVLX/lRCQwyd8rueCqmPQiu3RyDEj37
-         Fxnz0lJ8HtrKOxf1UzFIFc59FNs8q8efI7ylKsgmBAnFjvh6lZTnNw9hRrjcCGxK9GZE
-         KKP180fPiQdfFCMHG1YB2IID/jd2Nbj2HfoNkmCJnujTQtHUZb+C/c8L9X1Ru71zLvbF
-         2X5d7adXlUCB8sNE76532v//G0zDbPKwIfBB8zIFGn5+J/3OF6N1/TklmYntmvPvY3T2
-         b1cQMlgSZqCmlKydb2ukxjgLx4W8YVjgp/ebB3WCC/ETy7nvPXkKbvxgKxbMo5Fu+hBk
-         xNJg==
-X-Gm-Message-State: AOAM532BdK2sJ9PYfqK4vQC5buJVofd5IDTjijJAVarHW5ditVwauzKB
-        OWJn1nPkcIFqc4OQqW8YbfM=
-X-Google-Smtp-Source: ABdhPJyT2Y/w1fwzEByiwagc82Zln03NFf7G5FQALNO9FZgRzCTVMvn5f2Y+WD/WzQmyQyEUGI2osg==
-X-Received: by 2002:a17:90a:d507:: with SMTP id t7mr7585583pju.54.1616655497101;
-        Wed, 24 Mar 2021 23:58:17 -0700 (PDT)
+        bh=DeBrNab0KU7KzKaG5m2cKOd/Gyr3Wt1IGcfHEMz36Qo=;
+        b=YnQRvIvlR5/ZcNIc8M/WAbcqiSKVujUPJ/PebuUsh4NkOSDoRGwEdE0KEZoXJShfV2
+         JYGeyVwcgYgSvdU1O2B9sKlhH/rjWBcF41Hm0iwcO5kDoM1mXq0neoytf+zo8O9arNuz
+         P4jLVa5MEPRM7DjiMkKCis44yCE9YtakrL5BSz+j3h44e06zGeni/jLT8CyUr+y3JoyF
+         17lK/GoH7x9hQrMNChZezUYt4SJsgpnKF9x3B4E5W2qI5sDYWp1OGu/RvIWpzqFJ6jab
+         exZty209QmJRZD/W8SrHu9UyTIpQ/Mdne3d8aKbVVooYA8YtX+w9BtWL4FzZ0viCwLRQ
+         r/3A==
+X-Gm-Message-State: AOAM533fDTmQ+Q6FGH6oO1rsIUEj0jgXOVC3e61JH56maaC5t58k+e5l
+        D7sz5D5Fcw2TgKbU32oTSRo=
+X-Google-Smtp-Source: ABdhPJwA0LpKsYpBQ026ARMlb0muO0GRft0BxLsd+ZoBLvx3hR/f72NZevVn7tCWtxsbuRaUG+mshg==
+X-Received: by 2002:aa7:808d:0:b029:1ed:993c:3922 with SMTP id v13-20020aa7808d0000b02901ed993c3922mr6384860pff.75.1616655499013;
+        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.58.15
+        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.58.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Mar 2021 23:58:16 -0700 (PDT)
+        Wed, 24 Mar 2021 23:58:18 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
 To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 09/14] bfq: expire in_serv_queue for prio_expire under better_fairness
-Date:   Thu, 25 Mar 2021 14:57:53 +0800
-Message-Id: <f2cb0781623e336d2ac6a6b010d22a8353ed0f83.1616649216.git.brookxu@tencent.com>
+Subject: [PATCH v3 10/14] bfq: optimize IO injection under better_fairness
+Date:   Thu, 25 Mar 2021 14:57:54 +0800
+Message-Id: <d572933d913b4c38808446abe263b24bdac38098.1616649216.git.brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
 References: <cover.1616649216.git.brookxu@tencent.com>
@@ -65,140 +65,76 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-Traverse all schedule domains upward, if there are higher
-priority tasks waiting for service, mark in_service_queue
-prio_expire and then expire it, so the So RT tasks can be
-scheduled in time.
+In order to ensure better Qos of tasks of different groups
+and different classes under better_fairness, we only allow
+the queues of the same class in the same group can be
+injected.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- block/bfq-iosched.c |  7 +++----
- block/bfq-iosched.h |  1 +
- block/bfq-wf2q.c    | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 64 insertions(+), 4 deletions(-)
+ block/bfq-iosched.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 6e19b5a..51192bd 100644
+index 51192bd..be5b1e3 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -4736,10 +4736,9 @@ static struct request *bfq_dispatch_rq_from_bfqq(struct bfq_data *bfqd,
- 	 * belongs to CLASS_IDLE and other queues are waiting for
- 	 * service.
- 	 */
--	if (!(bfq_tot_busy_queues(bfqd) > 1 && bfq_class_idle(bfqq)))
--		goto return_rq;
--
--	bfq_bfqq_expire(bfqd, bfqq, false, BFQQE_BUDGET_EXHAUSTED);
-+	if ((bfq_tot_busy_queues(bfqd) > 1 && bfq_class_idle(bfqq)) ||
-+	    bfq_bfqq_prio_expire(bfqq))
-+		bfq_bfqq_expire(bfqd, bfqq, false, BFQQE_BUDGET_EXHAUSTED);
- 
- return_rq:
- 	return rq;
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 8af5ac0..1406398 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -989,6 +989,7 @@ void bfq_bfqq_expire(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq);
- void bfq_schedule_dispatch(struct bfq_data *bfqd);
- void bfq_put_async_queues(struct bfq_data *bfqd, struct bfq_group *bfqg);
-+bool bfq_may_expire_in_serv_for_prio(struct bfq_entity *entity);
- 
- /* ------------ end of main algorithm interface -------------- */
- 
-diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-index 1f8f3c5..b477a9b 100644
---- a/block/bfq-wf2q.c
-+++ b/block/bfq-wf2q.c
-@@ -161,6 +161,51 @@ struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
- 	return bfq_entity_to_bfqg(group_entity);
+@@ -1900,6 +1900,27 @@ static void bfq_reset_inject_limit(struct bfq_data *bfqd,
+ 	bfqq->decrease_time_jif = jiffies;
  }
  
-+bool bfq_may_expire_in_serv_for_prio(struct bfq_entity *entity)
++static bool bfq_bfqq_may_inject(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
 +{
-+	struct bfq_sched_data *sd;
-+	struct bfq_queue *bfqq;
-+	struct bfq_group *bfqg;
-+	bool ret = false;
++	struct bfq_data *bfqd = bfqq->bfqd;
++	bool ret = true;
 +
-+	sd = entity->sched_data;
-+	bfqg = container_of(sd, struct bfq_group, sched_data);
-+
-+	if (likely(!bfqg->bfqd->better_fairness))
-+		return false;
-+
-+	bfqq = bfqg->bfqd->in_service_queue;
-+	if (bfqq) {
-+		struct bfq_entity *next_in_serv;
-+
++	if (unlikely(bfqd->better_fairness)) {
 +		/*
-+		 * Traverse the upper-level scheduling domain for
-+		 * prio preemption, and expire in_service_queue
-+		 * if necessary.
++		 * In addition to throughput, better_fairness also pays
++		 * attention to Qos. In the container scenario, in order
++		 * to ensure the Qos of each group we only allow tasks
++		 * of the same class in the same group to be injected.
 +		 */
-+		entity = &bfqq->entity;
-+		for_each_entity(entity) {
-+			sd = entity->sched_data;
-+			next_in_serv = sd->next_in_service;
++		if (bfq_class(bfqq) != bfq_class(new_bfqq))
++			ret = false;
 +
-+			if (!next_in_serv)
-+				continue;
-+
-+			/*
-+			 * Expire bfqq, if next_in_serv belongs to
-+			 * a higher class.
-+			 */
-+			if (bfq_class_idx(next_in_serv) <
-+			    bfq_class_idx(entity)) {
-+				bfq_mark_bfqq_prio_expire(bfqq);
-+				ret = true;
-+				break;
-+			}
-+		}
++		if (bfqq_group(bfqq) != bfqq_group(new_bfqq))
++			ret = false;
 +	}
 +	return ret;
 +}
 +
- /*
-  * Returns true if this budget changes may let next_in_service->parent
-  * become the next_in_service entity for its parent entity.
-@@ -244,6 +289,11 @@ struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
- 	return bfqq->bfqd->root_group;
- }
- 
-+bool bfq_may_expire_in_serv_for_prio(struct bfq_entity *entity)
-+{
-+	return false;
-+}
-+
- static bool bfq_update_parent_budget(struct bfq_entity *next_in_service)
+ static void bfq_update_io_intensity(struct bfq_queue *bfqq, u64 now_ns)
  {
- 	return false;
-@@ -1162,6 +1212,7 @@ static void bfq_activate_requeue_entity(struct bfq_entity *entity,
- 					bool non_blocking_wait_rq,
- 					bool requeue, bool expiration)
- {
-+	struct bfq_entity *old_entity = entity;
- 	struct bfq_sched_data *sd;
+ 	u64 tot_io_time = now_ns - bfqq->io_start_time;
+@@ -1985,7 +2006,8 @@ static void bfq_check_waker(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	    bfqd->last_completed_rq_bfqq == bfqq ||
+ 	    bfq_bfqq_has_short_ttime(bfqq) ||
+ 	    now_ns - bfqd->last_completion >= 4 * NSEC_PER_MSEC ||
+-	    bfqd->last_completed_rq_bfqq == bfqq->waker_bfqq)
++	    bfqd->last_completed_rq_bfqq == bfqq->waker_bfqq ||
++	    !bfq_bfqq_may_inject(bfqq, bfqd->last_completed_rq_bfqq))
+ 		return;
  
- 	for_each_entity(entity) {
-@@ -1172,6 +1223,15 @@ static void bfq_activate_requeue_entity(struct bfq_entity *entity,
- 		    !requeue)
- 			break;
- 	}
+ 	if (bfqd->last_completed_rq_bfqq !=
+@@ -4415,6 +4437,9 @@ static bool bfq_bfqq_must_idle(struct bfq_queue *bfqq)
+ 			else
+ 				limit = in_serv_bfqq->inject_limit;
+ 
++			if (!bfq_bfqq_may_inject(in_serv_bfqq, bfqq))
++				continue;
 +
-+	/*
-+	 * Expire in_service_queue, if a task belongs to higher class
-+	 * is added to the upper-level scheduling domain, we should
-+	 * initiate a new schedule. But here is just to mark bfqq
-+	 * prio_expire, the real schedule occurs in
-+	 * bfq_dispatch_rq_from_bfqq().
-+	 */
-+	bfq_may_expire_in_serv_for_prio(old_entity);
- }
- 
- /**
+ 			if (bfqd->rq_in_driver < limit) {
+ 				bfqd->rqs_injected = true;
+ 				return bfqq;
+@@ -4590,6 +4615,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
+ 		 * happen to be served only after other queues.
+ 		 */
+ 		if (async_bfqq &&
++		    !(bfqd->better_fairness && !bfq_class_idx(&bfqq->entity)) &&
+ 		    icq_to_bic(async_bfqq->next_rq->elv.icq) == bfqq->bic &&
+ 		    bfq_serv_to_charge(async_bfqq->next_rq, async_bfqq) <=
+ 		    bfq_bfqq_budget_left(async_bfqq))
 -- 
 1.8.3.1
 
