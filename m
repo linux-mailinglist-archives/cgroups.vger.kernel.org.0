@@ -2,139 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D50E3489B1
-	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 07:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D0B3489B0
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 07:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCYG6v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Mar 2021 02:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S230093AbhCYG6w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 02:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhCYG6T (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 02:58:19 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6933BC06174A;
-        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e33so826520pgm.13;
-        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
+        with ESMTP id S229940AbhCYG6V (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 02:58:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF1CC06174A;
+        Wed, 24 Mar 2021 23:58:20 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so526909pjb.2;
+        Wed, 24 Mar 2021 23:58:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=DeBrNab0KU7KzKaG5m2cKOd/Gyr3Wt1IGcfHEMz36Qo=;
-        b=Gp+SaexnPkH/P50XCFy/6XBBnQQBLSdHcmjcap9YMg+BTzmyVFYSrHpOXCz5QJyXWo
-         2qa2TcycVdUxzmf/yiC84yw/4NTKRbSwNmv3ef9V9Cuvv5xtlnxi4NDUdDO6pTsEVI+P
-         u3f6OVZRBLLYrGQczOMyCwXQOWjurtcr12+85iVo4J3XTlfCayowMKHno4y7iY7rH1xj
-         SKBxVVQ3GZ9tkGRIL3FQAJQXo0W3u42eDVZKLpHyNbnDC6lrFxN/JXeuSjPthkJlK+Bo
-         UHjgHAodVbbY7BEGztcTi5CYemjF1q+6uURfEFfgkvImU7Sb3m+lPNxq+ZxZKKa0q/S0
-         0A9g==
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=IC6S0GoA+Bjxyq4aIxKh/SpT8Ze+znH1bLzroU/O1D0=;
+        b=SPxdsKnog7hbJTjFckkX1eoumaCRAFblwQSCB9HJ7ZRF6kknKczdyVvqZix1IzZs79
+         kvOuqXawdOV4IeoHb5+OD5Nv1gW9Vxs++KWuJSwwl8RNndWoBP5kImZyEWiLz5ioDJYP
+         WxoJt99R1WFWMfrLD0+hbkUWp1OP1AzbV5GuD0+Gf9Fg477xEn/sdqFpwquvwoIQ1qKy
+         Xdgh1aKMEwhRt0ceYGDhPbsTNSZ5PSBxrRzfB3oFtWp6veXSdL/PCX5BxXBM0hPJV+u8
+         UDoyQk2T80gCWtfEVhMgRkst2E29x+RSisP7Zj7dYWNHTnKRWn6qTXflxR0MR2NswveL
+         QpRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=DeBrNab0KU7KzKaG5m2cKOd/Gyr3Wt1IGcfHEMz36Qo=;
-        b=YnQRvIvlR5/ZcNIc8M/WAbcqiSKVujUPJ/PebuUsh4NkOSDoRGwEdE0KEZoXJShfV2
-         JYGeyVwcgYgSvdU1O2B9sKlhH/rjWBcF41Hm0iwcO5kDoM1mXq0neoytf+zo8O9arNuz
-         P4jLVa5MEPRM7DjiMkKCis44yCE9YtakrL5BSz+j3h44e06zGeni/jLT8CyUr+y3JoyF
-         17lK/GoH7x9hQrMNChZezUYt4SJsgpnKF9x3B4E5W2qI5sDYWp1OGu/RvIWpzqFJ6jab
-         exZty209QmJRZD/W8SrHu9UyTIpQ/Mdne3d8aKbVVooYA8YtX+w9BtWL4FzZ0viCwLRQ
-         r/3A==
-X-Gm-Message-State: AOAM533fDTmQ+Q6FGH6oO1rsIUEj0jgXOVC3e61JH56maaC5t58k+e5l
-        D7sz5D5Fcw2TgKbU32oTSRo=
-X-Google-Smtp-Source: ABdhPJwA0LpKsYpBQ026ARMlb0muO0GRft0BxLsd+ZoBLvx3hR/f72NZevVn7tCWtxsbuRaUG+mshg==
-X-Received: by 2002:aa7:808d:0:b029:1ed:993c:3922 with SMTP id v13-20020aa7808d0000b02901ed993c3922mr6384860pff.75.1616655499013;
-        Wed, 24 Mar 2021 23:58:19 -0700 (PDT)
+         :references:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=IC6S0GoA+Bjxyq4aIxKh/SpT8Ze+znH1bLzroU/O1D0=;
+        b=mvwmw3bveuRN5E5nVEljZOyJDkP6B3drdVtntYDasS3s4UheUwg08kYXVCfkpFBQvh
+         1IBSaUS2KGBdtYVIh/At7X8ycSyGXkVcwVElV+kYxh0Y2ifvDPE1/kNS3vgfqDSLU386
+         c4D0gbtZOsvCaoOhxwSNXZIQqjOdi7UnRwCwErhO/DVmNNEqT3pqjMh7NEQI4PfK6NJ8
+         rbEZn3TfuTQg017Vq3BSHr19roKG0ljqPLh/ybXBkuxthwQQhR4ND05n/Qn0teNPICig
+         0sr4l6wnNWsK+SGhdDkEzcJAkl7FZbi+P3HUCXyutMabboKX5o1D9GFgHK4FEwGmERfy
+         JP+A==
+X-Gm-Message-State: AOAM533UDzAt4sGvibUDJ2unxqlfMk0OZDrzigWcizUc31vSGRoEoz2z
+        74j593Vc8svX8xxiTsSrhhc=
+X-Google-Smtp-Source: ABdhPJyVPJpMxDjQLiVfvJvJPbU0v5BFyKvyzCQoPvUbHCY1kHuxzQ3slLVdlwbU3tH+zkejDqH4+w==
+X-Received: by 2002:a17:90a:66c2:: with SMTP id z2mr7792493pjl.139.1616655500625;
+        Wed, 24 Mar 2021 23:58:20 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.58.17
+        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.58.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Mar 2021 23:58:18 -0700 (PDT)
+        Wed, 24 Mar 2021 23:58:20 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
 To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/14] bfq: optimize IO injection under better_fairness
-Date:   Thu, 25 Mar 2021 14:57:54 +0800
-Message-Id: <d572933d913b4c38808446abe263b24bdac38098.1616649216.git.brookxu@tencent.com>
+Subject: [PATCH v3 11/14] bfq: disable idle for prio_expire under better_fairness
+Date:   Thu, 25 Mar 2021 14:57:55 +0800
+Message-Id: <39653b15a904b5658b6fa23ad1021427ab18c15a.1616649216.git.brookxu@tencent.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
 References: <cover.1616649216.git.brookxu@tencent.com>
 In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
 References: <cover.1616649216.git.brookxu@tencent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-In order to ensure better Qos of tasks of different groups
-and different classes under better_fairness, we only allow
-the queues of the same class in the same group can be
-injected.
+Under better_fairness, if higher priority queue is waiting
+for service，disable queue idle, so that a schedule can be
+invoked in time. In addition to CLASS_IDLE, other queues
+allow idle, so that we can better control buffer IO too.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- block/bfq-iosched.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ block/bfq-iosched.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 51192bd..be5b1e3 100644
+index be5b1e3..5aa9c2c 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -1900,6 +1900,27 @@ static void bfq_reset_inject_limit(struct bfq_data *bfqd,
- 	bfqq->decrease_time_jif = jiffies;
- }
+@@ -4307,6 +4307,14 @@ static bool bfq_better_to_idle(struct bfq_queue *bfqq)
+ 		return true;
  
-+static bool bfq_bfqq_may_inject(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
-+{
-+	struct bfq_data *bfqd = bfqq->bfqd;
-+	bool ret = true;
+ 	/*
++	 * In better_fairness mode, we also put emphasis on Qos. The main
++	 * purpose of allowing idle here is to ensure better isolation
++	 * of Buffer IO.
++	 */
++	if (unlikely(bfqd->better_fairness))
++		return !(bfqd->bfq_slice_idle == 0 || bfq_class_idle(bfqq));
 +
-+	if (unlikely(bfqd->better_fairness)) {
-+		/*
-+		 * In addition to throughput, better_fairness also pays
-+		 * attention to Qos. In the container scenario, in order
-+		 * to ensure the Qos of each group we only allow tasks
-+		 * of the same class in the same group to be injected.
-+		 */
-+		if (bfq_class(bfqq) != bfq_class(new_bfqq))
-+			ret = false;
-+
-+		if (bfqq_group(bfqq) != bfqq_group(new_bfqq))
-+			ret = false;
-+	}
-+	return ret;
-+}
-+
- static void bfq_update_io_intensity(struct bfq_queue *bfqq, u64 now_ns)
- {
- 	u64 tot_io_time = now_ns - bfqq->io_start_time;
-@@ -1985,7 +2006,8 @@ static void bfq_check_waker(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 	    bfqd->last_completed_rq_bfqq == bfqq ||
- 	    bfq_bfqq_has_short_ttime(bfqq) ||
- 	    now_ns - bfqd->last_completion >= 4 * NSEC_PER_MSEC ||
--	    bfqd->last_completed_rq_bfqq == bfqq->waker_bfqq)
-+	    bfqd->last_completed_rq_bfqq == bfqq->waker_bfqq ||
-+	    !bfq_bfqq_may_inject(bfqq, bfqd->last_completed_rq_bfqq))
- 		return;
++	/*
+ 	 * Idling is performed only if slice_idle > 0. In addition, we
+ 	 * do not idle if
+ 	 * (a) bfqq is async
+@@ -4318,6 +4326,9 @@ static bool bfq_better_to_idle(struct bfq_queue *bfqq)
+ 	   bfq_class_idle(bfqq))
+ 		return false;
  
- 	if (bfqd->last_completed_rq_bfqq !=
-@@ -4415,6 +4437,9 @@ static bool bfq_bfqq_must_idle(struct bfq_queue *bfqq)
- 			else
- 				limit = in_serv_bfqq->inject_limit;
- 
-+			if (!bfq_bfqq_may_inject(in_serv_bfqq, bfqq))
-+				continue;
++	if (bfq_may_expire_in_serv_for_prio(&bfqq->entity))
++		return false;
 +
- 			if (bfqd->rq_in_driver < limit) {
- 				bfqd->rqs_injected = true;
- 				return bfqq;
-@@ -4590,6 +4615,7 @@ static struct bfq_queue *bfq_select_queue(struct bfq_data *bfqd)
- 		 * happen to be served only after other queues.
- 		 */
- 		if (async_bfqq &&
-+		    !(bfqd->better_fairness && !bfq_class_idx(&bfqq->entity)) &&
- 		    icq_to_bic(async_bfqq->next_rq->elv.icq) == bfqq->bic &&
- 		    bfq_serv_to_charge(async_bfqq->next_rq, async_bfqq) <=
- 		    bfq_bfqq_budget_left(async_bfqq))
+ 	idling_boosts_thr_with_no_issue =
+ 		idling_boosts_thr_without_issues(bfqd, bfqq);
+ 
 -- 
 1.8.3.1
 
