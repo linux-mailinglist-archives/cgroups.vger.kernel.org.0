@@ -2,156 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B0534989C
-	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 18:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C8134996B
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 19:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCYRvB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Mar 2021 13:51:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51262 "EHLO mx2.suse.de"
+        id S229533AbhCYSVn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 14:21:43 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31048 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYRuk (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:50:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616694638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FeCnC7WnMeWEj1gEjR7GjHOI7D/MTEeLRIo3/QZ87I=;
-        b=bZAJb6mLyiAMxcYv0r40lqxfJfIz0ihLWV4bk7vzIJNh5hPJ+eEuKDstI9YikR9cKGp6Ll
-        TcgCo2d5VBwmadG4q4RyCi0yXJ+VP4ewWHYbqcT0TYOGWe0SgOquLhuLOnytimqlhZVJUk
-        2M+e8raAOYjJaSFiw4KyiNuQ+mb6z9I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52C86AC16;
-        Thu, 25 Mar 2021 17:50:38 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 18:50:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Arjun Roy <arjunroy@google.com>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <YFzNZjuYjIgy1Sb9@dhcp22.suse.cz>
-References: <YFCH8vzFGmfFRCvV@cmpxchg.org>
- <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org>
- <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
- <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
- <YFsA78FfzICrnFf7@dhcp22.suse.cz>
- <YFut+cZhsJec7Pud@cmpxchg.org>
- <CAOFY-A0Y0ye74bnpcWsKOPZMJSrFW8mJxVJrpwiy2dcGgUJ5Tw@mail.gmail.com>
- <YFxRpKfwQwobt7IK@dhcp22.suse.cz>
- <YFy+iPiL1YbjjapV@cmpxchg.org>
+        id S230046AbhCYSVR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:21:17 -0400
+IronPort-SDR: DZV6YdxdedK4GmDONw5Mcub2ssAJhiST5sSIQePk5F1nDpAFJmFOEMGf8I82LrKvY/ejVYHnGy
+ bCMZuwcwd2+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="191026142"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="191026142"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 11:21:00 -0700
+IronPort-SDR: iNmYQYa5hzPyJPYl+zaoyyX+P7oJAxSYwM0PTYjXWfpcbrZ4bWNOck+Me3PtDnGWcTcNThyAQI
+ SQuXXWnaR79w==
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="416135927"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 11:21:00 -0700
+Date:   Thu, 25 Mar 2021 11:23:27 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210325112327.24860e3f@jacob-builder>
+In-Reply-To: <20210325171645.GF2356281@nvidia.com>
+References: <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <YFhiMLR35WWMW/Hu@myrica>
+        <20210324100246.4e6b8aa1@jacob-builder>
+        <20210324170338.GM2356281@nvidia.com>
+        <20210324151230.466fd47a@jacob-builder>
+        <YFxkNEz3THJKzW0b@myrica>
+        <20210325100236.17241a1c@jacob-builder>
+        <20210325171645.GF2356281@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFy+iPiL1YbjjapV@cmpxchg.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 25-03-21 12:47:04, Johannes Weiner wrote:
-> On Thu, Mar 25, 2021 at 10:02:28AM +0100, Michal Hocko wrote:
-> > On Wed 24-03-21 15:49:15, Arjun Roy wrote:
-> > > On Wed, Mar 24, 2021 at 2:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Wed, Mar 24, 2021 at 10:12:46AM +0100, Michal Hocko wrote:
-> > > > > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
-> > > > > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> > > > > > > [...]
-> > > > > > > > Here is an idea of how it could work:
-> > > > > > > >
-> > > > > > > > struct page already has
-> > > > > > > >
-> > > > > > > >                 struct {        /* page_pool used by netstack */
-> > > > > > > >                         /**
-> > > > > > > >                          * @dma_addr: might require a 64-bit value even on
-> > > > > > > >                          * 32-bit architectures.
-> > > > > > > >                          */
-> > > > > > > >                         dma_addr_t dma_addr;
-> > > > > > > >                 };
-> > > > > > > >
-> > > > > > > > and as you can see from its union neighbors, there is quite a bit more
-> > > > > > > > room to store private data necessary for the page pool.
-> > > > > > > >
-> > > > > > > > When a page's refcount hits zero and it's a networking page, we can
-> > > > > > > > feed it back to the page pool instead of the page allocator.
-> > > > > > > >
-> > > > > > > > From a first look, we should be able to use the PG_owner_priv_1 page
-> > > > > > > > flag for network pages (see how this flag is overloaded, we can add a
-> > > > > > > > PG_network alias). With this, we can identify the page in __put_page()
-> > > > > > > > and __release_page(). These functions are already aware of different
-> > > > > > > > types of pages and do their respective cleanup handling. We can
-> > > > > > > > similarly make network a first-class citizen and hand pages back to
-> > > > > > > > the network allocator from in there.
-> > > > > > >
-> > > > > > > For compound pages we have a concept of destructors. Maybe we can extend
-> > > > > > > that for order-0 pages as well. The struct page is heavily packed and
-> > > > > > > compound_dtor shares the storage without other metadata
-> > > > > > >                                         int    pages;    /*    16     4 */
-> > > > > > >                         unsigned char compound_dtor;     /*    16     1 */
-> > > > > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
-> > > > > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
-> > > > > > >                         void *     zone_device_data;     /*    16     8 */
-> > > > > > >
-> > > > > > > But none of those should really require to be valid when a page is freed
-> > > > > > > unless I am missing something. It would really require to check their
-> > > > > > > users whether they can leave the state behind. But if we can establish a
-> > > > > > > contract that compound_dtor can be always valid when a page is freed
-> > > > > > > this would be really a nice and useful abstraction because you wouldn't
-> > > > > > > have to care about the specific type of page.
-> > > >
-> > > > Yeah technically nobody should leave these fields behind, but it
-> > > > sounds pretty awkward to manage an overloaded destructor with a
-> > > > refcounted object:
-> > > >
-> > > > Either every put would have to check ref==1 before to see if it will
-> > > > be the one to free the page, and then set up the destructor before
-> > > > putting the final ref. But that means we can't support lockless
-> > > > tryget() schemes like we have in the page cache with a destructor.
+Hi Jason,
+
+On Thu, 25 Mar 2021 14:16:45 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Thu, Mar 25, 2021 at 10:02:36AM -0700, Jacob Pan wrote:
+> > Hi Jean-Philippe,
 > > 
-> > I do not follow the ref==1 part. I mean to use the hugetlb model where
-> > the destructore is configured for the whole lifetime until the page is
-> > freed back to the allocator (see below).
+> > On Thu, 25 Mar 2021 11:21:40 +0100, Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> >   
+> > > On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:  
+> > > > Hi Jason,
+> > > > 
+> > > > On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com>
+> > > > wrote:   
+> > > > > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:    
+> > > > > > > Also wondering about device driver allocating auxiliary
+> > > > > > > domains for their private use, to do iommu_map/unmap on
+> > > > > > > private PASIDs (a clean replacement to super SVA, for
+> > > > > > > example). Would that go through the same path as /dev/ioasid
+> > > > > > > and use the cgroup of current task?      
+> > > > > >
+> > > > > > For the in-kernel private use, I don't think we should restrict
+> > > > > > based on cgroup, since there is no affinity to user processes. I
+> > > > > > also think the PASID allocation should just use kernel API
+> > > > > > instead of /dev/ioasid. Why would user space need to know the
+> > > > > > actual PASID # for device private domains? Maybe I missed your
+> > > > > > idea?      
+> > > > > 
+> > > > > There is not much in the kernel that isn't triggered by a
+> > > > > process, I would be careful about the idea that there is a class
+> > > > > of users that can consume a cgroup controlled resource without
+> > > > > being inside the cgroup.
+> > > > > 
+> > > > > We've got into trouble before overlooking this and with something
+> > > > > greenfield like PASID it would be best built in to the API to
+> > > > > prevent a mistake. eg accepting a cgroup or process input to the
+> > > > > allocator. 
+> > > > Make sense. But I think we only allow charging the current cgroup,
+> > > > how about I add the following to ioasid_alloc():
+> > > > 
+> > > > 	misc_cg = get_current_misc_cg();
+> > > > 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
+> > > > 	if (ret) {
+> > > > 		put_misc_cg(misc_cg);
+> > > > 		return ret;
+> > > > 	}    
+> > > 
+> > > Does that allow PASID allocation during driver probe, in kernel_init
+> > > or modprobe context?
+> > >   
+> > Good point. Yes, you can get cgroup subsystem state in kernel_init for
+> > charging/uncharging. I would think module_init should work also since
+> > it is after kernel_init. I have tried the following:
+> > static int __ref kernel_init(void *unused)
+> >  {
+> >         int ret;
+> > +       struct cgroup_subsys_state *css;
+> > +       css = task_get_css(current, pids_cgrp_id);
+> > 
+> > But that would imply:
+> > 1. IOASID has to be built-in, not as module
+> > 2. IOASIDs charged on PID1/init would not subject to cgroup limit since
+> > it will be in the root cgroup and we don't support migration nor will
+> > migrate.
+> > 
+> > Then it comes back to the question of why do we try to limit in-kernel
+> > users per cgroup if we can't enforce these cases.  
 > 
-> That only works if the destructor field doesn't overlap with a member
-> the page type itself doesn't want to use. Page types that do want to
-> use it would need to keep that field exclusive.
+> Are these real use cases? Why would a driver binding to a device
+> create a single kernel pasid at bind time? Why wouldn't it use
+> untagged DMA?
+> 
+For VT-d, I don't see such use cases. All PASID allocations by the kernel
+drivers has proper process context.
 
-Right.
+> When someone needs it they can rework it and explain why they are
+> doing something sane.
+> 
+Agreed.
 
-> We couldn't use it for LRU pages e.g. because it overlaps with the
-> lru.next pointer.
+> Jason
 
-Dang, I have completely missed this. I was looking at pahole because
-struct page is unreadable in the C code but I tricked myself to only
-look at offset 16. The initial set of candidate looked really
-promissing. But overlapping with list_head is a deal breaker. This makes
-use of dtor for most order-0 pages indeed unfeasible. Maybe dtor can be
-rellocated but that is certain a rabbit hole people (rightfully) avoid
-as much as possible. So you are right and going with networking specific
-way is more reasonable.
 
-[...]
-> So again, yes it would be nice to have generic destructors, but I just
-> don't see how it's practical.
+Thanks,
 
-just to clarify on this. I didn't really mean to use this mechanism to
-all/most pages I just wanted to have PageHasDestructor rather than
-PageNetwork because both would express a special nead for freeing but
-that would require that the dtor would be outside of lru.
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Jacob
