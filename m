@@ -2,162 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67FF348D6B
-	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 10:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10358348DE4
+	for <lists+cgroups@lfdr.de>; Thu, 25 Mar 2021 11:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbhCYJxv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Mar 2021 05:53:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhCYJxc (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:53:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A4E61A24;
-        Thu, 25 Mar 2021 09:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616666011;
-        bh=zDIkwCmITSxBLdjnUtP8aWuLpPIn7yP+onOPa2fWtIM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aw+dq7xqFwszvQn+7YjwXW7/fxugShYPXJjaDJagcTuDAOuB8E9nNiKezq66fA/8m
-         hFuPlB/FQy5OaxdMAZxMHga0tzWzb7PQ6p+xNpG4X8bAN7OAf2G+Qkm0llEzqPMeL1
-         Kid4PdS5VCb6nVOuYhBFHH0Yau0kHvVybsDn9ffxag5/mdTWHzlRYsdW/dxayQNar3
-         KY8Ym1MijDJv/mTgzfTa/iwhfzr2YqelyjbMy1v1O0PJUB5A8eiQqK6LL68YF5Ta8p
-         SByPQKDJncOjrUNNBuwi03nuXQ11JZYKUdMwcj0KubiMCvSEyc/5dYjwzZVUc5ZcXd
-         6uORErooXgDMw==
-Received: by mail-oi1-f174.google.com with SMTP id n140so1511569oig.9;
-        Thu, 25 Mar 2021 02:53:31 -0700 (PDT)
-X-Gm-Message-State: AOAM531+Fc0vPk+snEmfO/sX6kulbyC9mLBlEz92JVW/lZGGQK++d02J
-        xEDrMZrr7OU5O4u3f59H+2m+hy9PpwOT9kGs664=
-X-Google-Smtp-Source: ABdhPJyt+33nuIsqD16dqkOAUJq8r6LTgDPW80yQCvhzID/3JW2uxW7CNu42WWpingJPnDTPb6eqRDMwNCcIjLZ5/jc=
-X-Received: by 2002:aca:5945:: with SMTP id n66mr5293345oib.11.1616666010658;
- Thu, 25 Mar 2021 02:53:30 -0700 (PDT)
+        id S229948AbhCYKWC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Mar 2021 06:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhCYKWA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Mar 2021 06:22:00 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D712AC06175F
+        for <cgroups@vger.kernel.org>; Thu, 25 Mar 2021 03:21:59 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id b9so1688553wrt.8
+        for <cgroups@vger.kernel.org>; Thu, 25 Mar 2021 03:21:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2bl+T//9tmIfvggnKu8W5/72RtiA3Lc/gNcBZ4TaNT0=;
+        b=HDBMmQHjxhDfBDa8NUpbssXQOf02VdhzwNOvL6z/sjlS/ob6nTDjDFdk7Rx19nR1hs
+         SQS1m7CNqJDQUJQrPvFOlRsKplOR4HvnzIgwuwJzay62ap35JEwN/qhpACoPzMAWxfWI
+         XO4MYnlDxfTay5ZNPPLBaE8XvkwnoB0y15l1GoemjCgivvxfYqd4SqDye10bL/U1sDgq
+         2q58EeYToO3fsZktwBu5V51IOdt2ibMB1IaBNKKSb4cr+C+as3JCUfzbgdL92Xba3w9V
+         ql45gXFLeCm10iNBjvSTa/BEbpZQtQ6N4qHGai0lWRLpSVaztsL2TRhlDZbX05OJR9Pk
+         EKxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2bl+T//9tmIfvggnKu8W5/72RtiA3Lc/gNcBZ4TaNT0=;
+        b=CI0TtHhwp48KruRMYx8xxeWSMQv458+dyhWDKkCy6ZCXKqsHwo6aKzsfu0Iva5LloT
+         1Nszb7DbPo1uaHTu9xivY4+Y3fh8r9OdfJp0HhRVxa0yA0EZLC1TnqfnYZ+Vrb85Bxu6
+         oO0q1axdKZgY/DKhxpzUeF7L+hxBl636/p9vCdrWn2aZiQ+LFYZa0qIuYQBdMzxscTgY
+         QU6ydLWoTJu640Juyrlk+jica0JWEQQELyYKjoeLW//jI8DMa33+TBQqzy0tcuLJZEhI
+         VsMAi5i8UIvjNAhzOPtpl9pnJs/UWf1mnsEp6++yvmhxFgBN+Fn+xB4Kr6deogEAxBqW
+         +GHQ==
+X-Gm-Message-State: AOAM531llW3p41VMfRRXCKl4bvSCtzPpIqhFZIzb6cNKhG7eXWrIWxVj
+        dIVO5ZZfL9R0VRl/vL1UtF5/1o0DvRelWA==
+X-Google-Smtp-Source: ABdhPJxdNpCXhheQbUGXl/BE6FBzNDPbXq78nFO9owhDJs9Gl4Mz6+SKSrv2in7tl4ijY3NP8j4Dxw==
+X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr7958343wrx.208.1616667718538;
+        Thu, 25 Mar 2021 03:21:58 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id g15sm5458756wmq.31.2021.03.25.03.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 03:21:58 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:21:40 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YFxkNEz3THJKzW0b@myrica>
+References: <20210318172234.3e8c34f7@jacob-builder>
+ <YFR10eeDVf5ZHV5l@myrica>
+ <20210319124645.GP2356281@nvidia.com>
+ <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder>
+ <YFhiMLR35WWMW/Hu@myrica>
+ <20210324100246.4e6b8aa1@jacob-builder>
+ <20210324170338.GM2356281@nvidia.com>
+ <20210324151230.466fd47a@jacob-builder>
 MIME-Version: 1.0
-References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-12-arnd@kernel.org>
- <87wntv3bgt.fsf@intel.com>
-In-Reply-To: <87wntv3bgt.fsf@intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 25 Mar 2021 10:53:14 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0HGiPQ-k6t6roTgeUvVAMMY=fMnGV0+t48yJjz55XFAA@mail.gmail.com>
-Message-ID: <CAK8P3a0HGiPQ-k6t6roTgeUvVAMMY=fMnGV0+t48yJjz55XFAA@mail.gmail.com>
-Subject: Re: [PATCH 11/11] [RFC] drm/i915/dp: fix array overflow warning
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        tboot-devel@lists.sourceforge.net,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        ath11k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Animesh Manna <animesh.manna@intel.com>,
-        Sean Paul <seanpaul@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324151230.466fd47a@jacob-builder>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 9:05 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
-> > Clearly something is wrong here, but I can't quite figure out what.
-> > Changing the array size to 16 bytes avoids the warning, but is
-> > probably the wrong solution here.
->
-> Ugh. drm_dp_channel_eq_ok() does not actually require more than
-> DP_LINK_STATUS_SIZE - 2 elements in the link_status. It's some other
-> related functions that do, and in most cases it's convenient to read all
-> those DP_LINK_STATUS_SIZE bytes.
->
-> However, here the case is slightly different for DP MST, and the change
-> causes reserved DPCD addresses to be read. Not sure it matters, but
-> really I think the problem is what drm_dp_channel_eq_ok() advertizes.
->
-> I also don't like the array notation with sizes in function parameters
-> in general, because I think it's misleading. Would gcc-11 warn if a
-> function actually accesses the memory out of bounds of the size?
+On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:
+> Hi Jason,
+> 
+> On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:
+> > > > Also wondering about device driver allocating auxiliary domains for
+> > > > their private use, to do iommu_map/unmap on private PASIDs (a clean
+> > > > replacement to super SVA, for example). Would that go through the
+> > > > same path as /dev/ioasid and use the cgroup of current task?  
+> > >
+> > > For the in-kernel private use, I don't think we should restrict based on
+> > > cgroup, since there is no affinity to user processes. I also think the
+> > > PASID allocation should just use kernel API instead of /dev/ioasid. Why
+> > > would user space need to know the actual PASID # for device private
+> > > domains? Maybe I missed your idea?  
+> > 
+> > There is not much in the kernel that isn't triggered by a process, I
+> > would be careful about the idea that there is a class of users that
+> > can consume a cgroup controlled resource without being inside the
+> > cgroup.
+> > 
+> > We've got into trouble before overlooking this and with something
+> > greenfield like PASID it would be best built in to the API to prevent
+> > a mistake. eg accepting a cgroup or process input to the allocator.
+> > 
+> Make sense. But I think we only allow charging the current cgroup, how about
+> I add the following to ioasid_alloc():
+> 
+> 	misc_cg = get_current_misc_cg();
+> 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
+> 	if (ret) {
+> 		put_misc_cg(misc_cg);
+> 		return ret;
+> 	}
 
-Yes, that is the point of the warning. Using an explicit length in an
-array argument type tells gcc that the function will never access
-beyond the end of that bound, and that passing a short array
-is a bug.
+Does that allow PASID allocation during driver probe, in kernel_init or
+modprobe context?
 
-I don't know if this /only/ means triggering a warning, or if gcc
-is also able to make optimizations after classifying this as undefined
-behavior that it would not make for an unspecified length.
+Thanks,
+Jean
 
-> Anyway. I don't think we're going to get rid of the array notation
-> anytime soon, if ever, no matter how much I dislike it, so I think the
-> right fix would be to at least state the correct required size in
-> drm_dp_channel_eq_ok().
-
-Ok. Just to confirm: Changing the declaration to an unspecified length
-avoids the warnings, as does the patch below:
-
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index eedbb48815b7..6ebeec3d88a7 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -46,12 +46,12 @@
-  */
-
- /* Helpers for DP link training */
--static u8 dp_link_status(const u8 link_status[DP_LINK_STATUS_SIZE], int r)
-+static u8 dp_link_status(const u8 link_status[DP_LINK_STATUS_SIZE - 2], int r)
- {
-        return link_status[r - DP_LANE0_1_STATUS];
- }
-
--static u8 dp_get_lane_status(const u8 link_status[DP_LINK_STATUS_SIZE],
-+static u8 dp_get_lane_status(const u8 link_status[DP_LINK_STATUS_SIZE - 2],
-                             int lane)
- {
-        int i = DP_LANE0_1_STATUS + (lane >> 1);
-@@ -61,7 +61,7 @@ static u8 dp_get_lane_status(const u8
-link_status[DP_LINK_STATUS_SIZE],
-        return (l >> s) & 0xf;
- }
-
--bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
-+bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE - 2],
-                          int lane_count)
- {
-        u8 lane_align;
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index edffd1dcca3e..160f7fd127b1 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -1456,7 +1456,7 @@ enum drm_dp_phy {
-
- #define DP_LINK_CONSTANT_N_VALUE 0x8000
- #define DP_LINK_STATUS_SIZE       6
--bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
-+bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE - 2],
-                          int lane_count);
- bool drm_dp_clock_recovery_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
-                              int lane_count);
-
-
-This obviously needs a good explanation in the code and the changelog text,
-which I don't have, but if the above is what you had in mind, please take that
-and add Reported-by/Tested-by: Arnd Bergmann <arnd@arndb.de>.
-
-       Arnd
