@@ -2,172 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7368A34A2F3
-	for <lists+cgroups@lfdr.de>; Fri, 26 Mar 2021 09:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C115B34A6E0
+	for <lists+cgroups@lfdr.de>; Fri, 26 Mar 2021 13:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCZIHI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Mar 2021 04:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
+        id S229915AbhCZMI4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Mar 2021 08:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhCZIHC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Mar 2021 04:07:02 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62ABEC0613B0
-        for <cgroups@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c8so4695666wrq.11
-        for <cgroups@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
-        b=kus60msoSJlwyU1GomSA58McYHQudRjt8lZoUOVyLCyxExYPuQiC/FgDUjEDEdiFJH
-         OtPkVS983YcgkVOZ3NbX19SKHfGojdxWiV+mZsVTfFS3PH2ZKq07YDEns8DQHizqSqjj
-         kAlYqYai0ZCtnRvwuakJexNRFQxOeUsmhfllUZTGd3aMTne5GjehFbclbRF9zPTDvxfr
-         7mUrcCG9VaWh1DWLhfC1B0KnAzLxhwQqcmOk5cN/v/L72Qlm6lRW3AGNrgKkaY+vlaHX
-         i+2MikP0ctvy5L5KCWHU8Q958BKQKlSB4DTgMhSfZv+A2P690PsjqM55+5z0YJQ2NIsx
-         6Bpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
-        b=G1H80Z2hj7IjLhFsnGr6jKvQjvZJAdt2x+i1wxntzo/PWjcM5zlogSQ66REKuAc2Qf
-         aaMz3zJO/zABozUhPj4TLnoolmrnypCc4kHxFakmmkYWGU807DdTMOW9q1pSsiBoO3Mv
-         dC2RoRpaZjQgbHFrs8kjKGG5HhyDu66IerXdedaHoULRCNaLM7F+VzkWEoWRVXRo2PMQ
-         RJOkdE+QBr3B/Jypm7D+dMK8w+7NbsaU/dtvRR4bOzSOf0049Rer+dPdm7uuf+F+od/I
-         JO4tIj4AZ3KEWQ18EGGXm4YzdHorBJYhVTessajsYr5jlooHxGZgohcVxGzYJAkU2DEW
-         FyjQ==
-X-Gm-Message-State: AOAM533ZeYyYC1yPk3mbB5qbucidaPrW8kOf4mMS3O4npldALSVVQyAh
-        IKXWKJ1gE4qd85pprtYa7dv+6g==
-X-Google-Smtp-Source: ABdhPJzrQoMie+cZs+TTXzwMUWiYsj5CUy6yLxtxOwZG8ozx04KgN++aU+MFHI+ixkkVUGXl1VqrvQ==
-X-Received: by 2002:a5d:591a:: with SMTP id v26mr12982847wrd.172.1616746021071;
-        Fri, 26 Mar 2021 01:07:01 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id 7sm9654955wmk.8.2021.03.26.01.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 01:07:00 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 09:06:42 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YF2WEmfXsXKCkCDb@myrica>
-References: <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
- <YFhiMLR35WWMW/Hu@myrica>
- <20210324100246.4e6b8aa1@jacob-builder>
- <20210324170338.GM2356281@nvidia.com>
- <20210324151230.466fd47a@jacob-builder>
- <YFxkNEz3THJKzW0b@myrica>
- <20210325100236.17241a1c@jacob-builder>
- <20210325171645.GF2356281@nvidia.com>
+        with ESMTP id S229866AbhCZMIj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Mar 2021 08:08:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B4EC0613B1;
+        Fri, 26 Mar 2021 05:08:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6CNIiT7q+Ups+0Vc8DJQD9WSyDH1NQMZhuJ6B6CQvG0=; b=AErjpU/dIo4bIDLo86LL6AWQL2
+        HyE8BVIZTayV2FqKgSgtRiLrJF/00Hm954Qx1zGZnzw/zMfyyN4EMfyFqq9MfwZIZNya2ibjjkmQb
+        1dxMOwVOpBScbtr1f4cJaxnSHm3hvyW3qOTGsuXkoQ6zSGilHwK5VhPAfCiRRrdkk/LW3cvrMs+KJ
+        KZOLms9/Wv+Wi22Un8X4Bs+JyeK3GiBEm/99pWtCepRYXol+0gisuuaJ5XzkaNDGgktER4R5wf9j1
+        XrH7alkNmm2/q8hNsInB6CHqj7TbsaaqibnOxe37+AbIWuDgWGwSkKiOSwJaDN9Qa/rwkO9q8NdH9
+        6yRI+fyw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPlFg-00Eljt-Pn; Fri, 26 Mar 2021 12:07:48 +0000
+Date:   Fri, 26 Mar 2021 12:07:44 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <20210326120744.GD1719932@casper.infradead.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
+ <YFo7SOni0s0TbXUm@cmpxchg.org>
+ <alpine.LSU.2.11.2103231310020.5513@eggly.anvils>
+ <alpine.LSU.2.11.2103251716160.12404@eggly.anvils>
+ <20210326025143.GB1719932@casper.infradead.org>
+ <alpine.LSU.2.11.2103252018170.13067@eggly.anvils>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325171645.GF2356281@nvidia.com>
+In-Reply-To: <alpine.LSU.2.11.2103252018170.13067@eggly.anvils>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 02:16:45PM -0300, Jason Gunthorpe wrote:
-> On Thu, Mar 25, 2021 at 10:02:36AM -0700, Jacob Pan wrote:
-> > Hi Jean-Philippe,
-> > 
-> > On Thu, 25 Mar 2021 11:21:40 +0100, Jean-Philippe Brucker
-> > <jean-philippe@linaro.org> wrote:
-> > 
-> > > On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:
-> > > > Hi Jason,
-> > > > 
-> > > > On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > > > wrote: 
-> > > > > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:  
-> > > > > > > Also wondering about device driver allocating auxiliary domains
-> > > > > > > for their private use, to do iommu_map/unmap on private PASIDs (a
-> > > > > > > clean replacement to super SVA, for example). Would that go
-> > > > > > > through the same path as /dev/ioasid and use the cgroup of
-> > > > > > > current task?    
-> > > > > >
-> > > > > > For the in-kernel private use, I don't think we should restrict
-> > > > > > based on cgroup, since there is no affinity to user processes. I
-> > > > > > also think the PASID allocation should just use kernel API instead
-> > > > > > of /dev/ioasid. Why would user space need to know the actual PASID
-> > > > > > # for device private domains? Maybe I missed your idea?    
-> > > > > 
-> > > > > There is not much in the kernel that isn't triggered by a process, I
-> > > > > would be careful about the idea that there is a class of users that
-> > > > > can consume a cgroup controlled resource without being inside the
-> > > > > cgroup.
-> > > > > 
-> > > > > We've got into trouble before overlooking this and with something
-> > > > > greenfield like PASID it would be best built in to the API to prevent
-> > > > > a mistake. eg accepting a cgroup or process input to the allocator.
-> > > > >   
-> > > > Make sense. But I think we only allow charging the current cgroup, how
-> > > > about I add the following to ioasid_alloc():
-> > > > 
-> > > > 	misc_cg = get_current_misc_cg();
-> > > > 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
-> > > > 	if (ret) {
-> > > > 		put_misc_cg(misc_cg);
-> > > > 		return ret;
-> > > > 	}  
+On Thu, Mar 25, 2021 at 09:04:40PM -0700, Hugh Dickins wrote:
+> On Fri, 26 Mar 2021, Matthew Wilcox wrote:
+> > On Thu, Mar 25, 2021 at 06:55:42PM -0700, Hugh Dickins wrote:
+> > > The first reason occurred to me this morning.  I thought I had been
+> > > clever to spot the PageHead race which you fix here.  But now I just feel
+> > > very stupid not to have spotted the very similar memcg_data race.  The
+> > > speculative racer may call mem_cgroup_uncharge() from __put_single_page(),
+> > > and the new call to split_page_memcg() do nothing because page_memcg(head)
+> > > is already NULL.
 > > > 
-> > > Does that allow PASID allocation during driver probe, in kernel_init or
-> > > modprobe context?
-> > > 
-> > Good point. Yes, you can get cgroup subsystem state in kernel_init for
-> > charging/uncharging. I would think module_init should work also since it is
-> > after kernel_init. I have tried the following:
-> > static int __ref kernel_init(void *unused)
+> > > And is it even safe there, to sprinkle memcg_data through all of those
+> > > order-0 subpages, when free_the_page() is about to be applied to a
+> > > series of descending orders?  I could easily be wrong, but I think
+> > > free_pages_prepare()'s check_free_page() will find that is not
+> > > page_expected_state().
+
+I forgot to say earlier; I did add a test (lib/test_free_pages.c).
+Doubling it up to check GFP_KERNEL | GFP_ACCOUNT and GFP_KERNEL |
+GFP_COMP | GFP_ACCOUNT should be reasonable.
+
+> > So back to something more like my original patch then?
+> > 
+> > +++ b/mm/page_alloc.c
+> > @@ -5081,9 +5081,15 @@ void __free_pages(struct page *page, unsigned int order)
 > >  {
-> >         int ret;
-> > +       struct cgroup_subsys_state *css;
-> > +       css = task_get_css(current, pids_cgrp_id);
+> >         if (put_page_testzero(page))
+> >                 free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > -               while (order-- > 0)
+> > -                       free_the_page(page + (1 << order), order);
+> > +       else if (!PageHead(page)) {
+> > +               while (order-- > 0) {
+> > +                       struct page *tail = page + (1 << order);
+> > +#ifdef CONFIG_MEMCG
+> > +                       tail->memcg_data = page->memcg_data;
+> > +#endif
+> > +                       free_the_page(tail, order);
+> > +               }
+> > +       }
+> >  }
+> >  EXPORT_SYMBOL(__free_pages);
 > > 
-> > But that would imply:
-> > 1. IOASID has to be built-in, not as module
+> > We can cache page->memcg_data before calling put_page_testzero(),
+> > just like we cache the Head flag in Johannes' patch.
+> 
+> If I still believed in e320d3012d25, yes, that would look right
+> (but I don't have much faith in my judgement after all this).
+> 
+> I'd fallen in love with split_page_memcg() when you posted that
+> one, and was put off by your #ifdef, so got my priorities wrong
+> and went for the split_page_memcg().
 
-If IOASID is a module, the device driver will probe once the IOMMU module
-is available, which I think always happens in probe deferral kworker.
+Oh, the ifdef was just a strawman.  I wouldn't want to see that upstream;
+something like:
 
-> > 2. IOASIDs charged on PID1/init would not subject to cgroup limit since it
-> > will be in the root cgroup and we don't support migration nor will migrate.
+	unsigned long memcg_data = __get_memcg_data(page);
+...
+			__set_memcg_data(tail, memcg_data);
+
+with the appropriate ifdefs hidden in memcontrol.h would be my preference.
+
+> > > But, after all that, I'm now thinking that Matthew's original
+> > > e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages")
+> > > is safer reverted.  The put_page_testzero() in __free_pages() was
+> > > not introduced for speculative pagecache: it was there in 2.4.0,
+> > > and atomic_dec_and_test() in 2.2, I don't have older trees to hand.
 > > 
-> > Then it comes back to the question of why do we try to limit in-kernel
-> > users per cgroup if we can't enforce these cases.
+> > I think you're confused in that last assertion.  According to
+> > linux-fullhistory, the first introduction of __free_pages was 2.3.29pre3
+> > (September 1999), where it did indeed use put_page_testzero:
+> 
+> Not confused, just pontificating from a misleading subset of the data.
+> I knew there's an even-more-history-than-tglx git tree somewhere, but
+> what I usually look back to is 2.4 trees, plus a 2.2.26 tree - but of
+> course that's a late 2.2, from 2004, around the same time as 2.6.3.
 
-It may be better to explicitly pass a cgroup during allocation as Jason
-suggested. That way anyone using the API will have to be aware of this and
-pass the root cgroup if that's what they want.
+I suspect it got backported ...
+https://github.com/mpe/linux-fullhistory/wiki is what I'm using for my
+archaeology, and it doesn't have the stable branches (1.0, 1.2, 2.0,
+2.2, 2.4), so I don't know for sure.
 
-> Are these real use cases? Why would a driver binding to a device
-> create a single kernel pasid at bind time? Why wouldn't it use
-> untagged DMA?
+Anyway, my point is that the truly ancient drivers *don't* depend on this
+behaviour because the function didn't even exist when they were written.
 
-It's not inconceivable to have a control queue doing DMA tagged with
-PASID. The devices I know either use untagged DMA, or have a choice to use
-a PASID. We're not outright forbidding PASID allocation at boot (I don't
-think we can or should) and we won't be able to check every use of the
-API, so I'm trying to figure out whether it will always default to root
-cgroup, or crash in some corner case.
-
-Thanks,
-Jean
