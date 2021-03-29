@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532F134D2BD
-	for <lists+cgroups@lfdr.de>; Mon, 29 Mar 2021 16:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DC234D2C5
+	for <lists+cgroups@lfdr.de>; Mon, 29 Mar 2021 16:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhC2OtW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Mar 2021 10:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
+        id S231421AbhC2Otw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Mar 2021 10:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbhC2OtH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Mar 2021 10:49:07 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC4AC061574;
-        Mon, 29 Mar 2021 07:49:07 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id q12so6545553qvc.8;
-        Mon, 29 Mar 2021 07:49:07 -0700 (PDT)
+        with ESMTP id S231222AbhC2OtO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Mar 2021 10:49:14 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D544AC061574;
+        Mon, 29 Mar 2021 07:49:12 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 30so6539265qva.9;
+        Mon, 29 Mar 2021 07:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BoEr7WGwjUHLgvmjABjLm7MYZbCdiBk18X5QycU0/Ew=;
-        b=TUXy7wafUgeggnwUoDfH3Aco/jrGDWrtw4dno1RB3ozL8SF8jYTkIsDtlW9vLDbfSy
-         rzKpgMPiil4fYtulGh+2I5pUIXVrQMsJmU9zWEjDpA9W2lI2YXoOKUigJmLKWFQbl4m8
-         GWIsS80exqUtqEFsjQrwLe8009muo2IHzAG6UwGxMxvMPtMglLkS868uVdtRHVGJcP+9
-         IfMa7z0y7b6ztoJkfVpsePU3PlLu3vkHHBWW3khPEhciKHGDceo07CaS2doLqg65+nep
-         o+YabELdVBr5tfv2jaevkQLwvA6Wb5CLmuh7fMqDrSodRyVLYa8Guxf4r0CVKN8X07tA
-         vQmA==
+        bh=Rthy9P0Uh0koEJAABJmO03Eire712vne5xpQyDeAJI4=;
+        b=XZIDOotpCQUmqCUTzgdbM8HJwIVy95s2B1jNzXPmJ4vLobO925VPGi5h2cxuRcOr6m
+         P0Gn0hmTY+Djt+3Br3i5bCY7ohQ0YBNJ+0neLiCdBePj6yBCOQKOPVBI0mpDh/Ylu7HA
+         tTS8doZTk1LNXCgmrl5aJtIkOoLN2CZMqqjTlG7p5PXZ1/3ww3JGfDauAwyMJ4/hcEoz
+         lfw+rrWA2eJ3fp65V/B0T7HVjflxGy0y1HBEStGDoaKwE4Q5xA0TXGVe5gh5Z5blKadd
+         8UaXcRFJVASTjFWpG8SevupS9sLNcFSZlAPrCsiMYIVA8JA0DDpV1hsNdCy7COqs0MsP
+         yMMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BoEr7WGwjUHLgvmjABjLm7MYZbCdiBk18X5QycU0/Ew=;
-        b=pWiYdsjJF5iTjWrKmjrlqwuhqOsz3O01QUOaVMRRMW7HGKom6wKK0MYk9eux29K4k3
-         hILZv7CC2S1rgv0mdELnzvdE08gFtvh/Eesbz+kLXAQCVHc7EhWksaqCVC+Gj5JFKD45
-         ACLB6wMzXfabQ/5LwG5+dvNmB8HqMs7juVPVdL8Ekpn/JM1Ncmax6jdnGaoMmoe1jGc6
-         IL3Xlu6wfMRjoiq3DPYG+likXIcrUdDGxH8oiYEK2B95H3raa8OF58eZbNLt5lPSLGoD
-         o/fnv6laW5CH5lGdpya15+6sojWvPFUwgTqfDtDcLETuAtVq1M9I6ZY2utZKQEjxMxgh
-         5UNA==
-X-Gm-Message-State: AOAM531oHpnGbO7alvsOEa7pBXOznoacNYwfZNb/Yq2C3tBDFYfD7cC2
-        Lh3oGd6E1bKmDs9mmGtkMUU=
-X-Google-Smtp-Source: ABdhPJzSxRMbHr3768Ryko5wzIqRvsiHRmA9C0S8rOoKZePdY55COev8ggirAorBv7qmRa+qVwvqBg==
-X-Received: by 2002:ad4:50d0:: with SMTP id e16mr26048338qvq.37.1617029346580;
-        Mon, 29 Mar 2021 07:49:06 -0700 (PDT)
+        bh=Rthy9P0Uh0koEJAABJmO03Eire712vne5xpQyDeAJI4=;
+        b=GdEKyXFjEAMIJrcZ/eyYgDY6if87hYX8U91XAb9GrneJzPSSCu/I7/9LXIkS2IM0P3
+         cJd7I+aSTOmQ9CPcItyphqGl4YLIA2lN9ODDfSeZXE47XPYiyqFwqa3n13Sh5OvdMy5N
+         a3DDu7rIGyu69YxFivVqJVBwjTFhgBAZsQcAKxC80nIHdr2fjPVuFaIfAIacj/SUQjVX
+         zWjwtg2xTTYxVd3iiUFJd2f8Bkik/tWmRRHfJYkjvnj3mBMxkgcB+4khmO10dtSQry8B
+         dDDEn5f8WOU3e9A963WVmsAq/jpWGvaIiMhbQW5DjMG7BAufa3CqlwoS6qVy6LqgqOs6
+         T/6w==
+X-Gm-Message-State: AOAM531gsA7VRLkPIBnNMH9D7eWGfcoygURMts/JHn/SD/eeMgvYQ43T
+        LdKF5iOVyTHeMlx0Epy2oa4=
+X-Google-Smtp-Source: ABdhPJyrPwiFHe9h8ZF/GhbLu+UwDgiEfytWhwG8ZmTnL/HS3e9ZG9nz3oT6qCsy2JGljwvTpeBPmw==
+X-Received: by 2002:a0c:80ca:: with SMTP id 68mr25705154qvb.12.1617029351737;
+        Mon, 29 Mar 2021 07:49:11 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:6ffc])
-        by smtp.gmail.com with ESMTPSA id y1sm13606011qki.9.2021.03.29.07.49.05
+        by smtp.gmail.com with ESMTPSA id d14sm14255708qkg.33.2021.03.29.07.49.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 07:49:06 -0700 (PDT)
+        Mon, 29 Mar 2021 07:49:11 -0700 (PDT)
 From:   Dan Schatzberg <schatzberg.dan@gmail.com>
 Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
@@ -67,9 +67,9 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
         linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
         Chris Down <chris@chrisdown.name>
-Subject: [PATCH 1/3] loop: Use worker per cgroup instead of kworker
-Date:   Mon, 29 Mar 2021 07:48:23 -0700
-Message-Id: <20210329144829.1834347-2-schatzberg.dan@gmail.com>
+Subject: [PATCH 2/3] mm: Charge active memcg when no mm is set
+Date:   Mon, 29 Mar 2021 07:48:24 -0700
+Message-Id: <20210329144829.1834347-3-schatzberg.dan@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210329144829.1834347-1-schatzberg.dan@gmail.com>
 References: <20210329144829.1834347-1-schatzberg.dan@gmail.com>
@@ -80,368 +80,180 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Existing uses of loop device may have multiple cgroups reading/writing
-to the same device. Simply charging resources for I/O to the backing
-file could result in priority inversion where one cgroup gets
-synchronously blocked, holding up all other I/O to the loop device.
+set_active_memcg() worked for kernel allocations but was silently
+ignored for user pages.
 
-In order to avoid this priority inversion, we use a single workqueue
-where each work item is a "struct loop_worker" which contains a queue of
-struct loop_cmds to issue. The loop device maintains a tree mapping blk
-css_id -> loop_worker. This allows each cgroup to independently make
-forward progress issuing I/O to the backing file.
+This patch establishes a precedence order for who gets charged:
 
-There is also a single queue for I/O associated with the rootcg which
-can be used in cases of extreme memory shortage where we cannot allocate
-a loop_worker.
+1. If there is a memcg associated with the page already, that memcg is
+   charged. This happens during swapin.
 
-The locking for the tree and queues is fairly heavy handed - we acquire
-a per-loop-device spinlock any time either is accessed. The existing
-implementation serializes all I/O through a single thread anyways, so I
-don't believe this is any worse.
+2. If an explicit mm is passed, mm->memcg is charged. This happens
+   during page faults, which can be triggered in remote VMs (eg gup).
 
-Fixes-from: Colin Ian King <colin.king@canonical.com>
+3. Otherwise consult the current process context. If there is an
+   active_memcg, use that. Otherwise, current->mm->memcg.
+
+Previously, if a NULL mm was passed to mem_cgroup_charge (case 3) it
+would always charge the root cgroup. Now it looks up the active_memcg
+first (falling back to charging the root cgroup if not set).
+
 Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Tejun Heo <tj@kernel.org>
+Acked-by: Chris Down <chris@chrisdown.name>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- drivers/block/loop.c | 207 ++++++++++++++++++++++++++++++++++++-------
- drivers/block/loop.h |  12 ++-
- 2 files changed, 182 insertions(+), 37 deletions(-)
+ mm/filemap.c    |  2 +-
+ mm/memcontrol.c | 72 ++++++++++++++++++++++++++++---------------------
+ mm/shmem.c      |  4 +--
+ 3 files changed, 44 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index d58d68f3c7cd..5c18e6b856c2 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -71,7 +71,6 @@
- #include <linux/writeback.h>
- #include <linux/completion.h>
- #include <linux/highmem.h>
--#include <linux/kthread.h>
- #include <linux/splice.h>
- #include <linux/sysfs.h>
- #include <linux/miscdevice.h>
-@@ -84,6 +83,8 @@
+diff --git a/mm/filemap.c b/mm/filemap.c
+index eeeb8e2cc36a..63fd980e863a 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -872,7 +872,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
+ 	page->index = offset;
  
- #include <linux/uaccess.h>
- 
-+#define LOOP_IDLE_WORKER_TIMEOUT (60 * HZ)
-+
- static DEFINE_IDR(loop_index_idr);
- static DEFINE_MUTEX(loop_ctl_mutex);
- 
-@@ -921,27 +922,83 @@ static void loop_config_discard(struct loop_device *lo)
- 	q->limits.discard_alignment = 0;
+ 	if (!huge) {
+-		error = mem_cgroup_charge(page, current->mm, gfp);
++		error = mem_cgroup_charge(page, NULL, gfp);
+ 		if (error)
+ 			goto error;
+ 		charged = true;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 668d1d7c2645..adc618814fd2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -884,13 +884,38 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
  }
+ EXPORT_SYMBOL(mem_cgroup_from_task);
  
--static void loop_unprepare_queue(struct loop_device *lo)
--{
--	kthread_flush_worker(&lo->worker);
--	kthread_stop(lo->worker_task);
--}
-+struct loop_worker {
-+	struct rb_node rb_node;
-+	struct work_struct work;
-+	struct list_head cmd_list;
-+	struct list_head idle_list;
-+	struct loop_device *lo;
-+	struct cgroup_subsys_state *css;
-+	unsigned long last_ran_at;
-+};
- 
--static int loop_kthread_worker_fn(void *worker_ptr)
--{
--	current->flags |= PF_LOCAL_THROTTLE | PF_MEMALLOC_NOIO;
--	return kthread_worker_fn(worker_ptr);
--}
-+static void loop_workfn(struct work_struct *work);
-+static void loop_rootcg_workfn(struct work_struct *work);
-+static void loop_free_idle_workers(struct timer_list *timer);
- 
--static int loop_prepare_queue(struct loop_device *lo)
-+static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
++static __always_inline struct mem_cgroup *active_memcg(void)
++{
++	if (in_interrupt())
++		return this_cpu_read(int_active_memcg);
++	else
++		return current->active_memcg;
++}
++
++static __always_inline struct mem_cgroup *get_active_memcg(void)
++{
++	struct mem_cgroup *memcg;
++
++	rcu_read_lock();
++	memcg = active_memcg();
++	/* remote memcg must hold a ref. */
++	if (memcg && WARN_ON_ONCE(!css_tryget(&memcg->css)))
++		memcg = root_mem_cgroup;
++	rcu_read_unlock();
++
++	return memcg;
++}
++
+ /**
+  * get_mem_cgroup_from_mm: Obtain a reference on given mm_struct's memcg.
+  * @mm: mm from which memcg should be extracted. It can be NULL.
+  *
+- * Obtain a reference on mm->memcg and returns it if successful. Otherwise
+- * root_mem_cgroup is returned. However if mem_cgroup is disabled, NULL is
+- * returned.
++ * Obtain a reference on mm->memcg and returns it if successful. If mm
++ * is NULL, then the memcg is chosen as follows:
++ * 1) The active memcg, if set.
++ * 2) current->mm->memcg, if available
++ * 3) root memcg
++ * If mem_cgroup is disabled, NULL is returned.
+  */
+ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
  {
--	kthread_init_worker(&lo->worker);
--	lo->worker_task = kthread_run(loop_kthread_worker_fn,
--			&lo->worker, "loop%d", lo->lo_number);
--	if (IS_ERR(lo->worker_task))
--		return -ENOMEM;
--	set_user_nice(lo->worker_task, MIN_NICE);
--	return 0;
-+	struct rb_node **node = &(lo->worker_tree.rb_node), *parent = NULL;
-+	struct loop_worker *cur_worker, *worker = NULL;
-+	struct work_struct *work;
-+	struct list_head *cmd_list;
-+
-+	spin_lock_irq(&lo->lo_work_lock);
-+
-+	if (!cmd->css)
-+		goto queue_work;
-+
-+	node = &lo->worker_tree.rb_node;
-+
-+	while (*node) {
-+		parent = *node;
-+		cur_worker = container_of(*node, struct loop_worker, rb_node);
-+		if (cur_worker->css == cmd->css) {
-+			worker = cur_worker;
-+			break;
-+		} else if ((long)cur_worker->css < (long)cmd->css) {
-+			node = &(*node)->rb_left;
-+		} else {
-+			node = &(*node)->rb_right;
-+		}
-+	}
-+	if (worker)
-+		goto queue_work;
-+
-+	worker = kzalloc(sizeof(struct loop_worker), GFP_NOWAIT | __GFP_NOWARN);
+@@ -899,13 +924,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+ 	if (mem_cgroup_disabled())
+ 		return NULL;
+ 
 +	/*
-+	 * In the event we cannot allocate a worker, just queue on the
-+	 * rootcg worker
++	 * Page cache insertions can happen without an
++	 * actual mm context, e.g. during disk probing
++	 * on boot, loopback IO, acct() writes etc.
 +	 */
-+	if (!worker)
-+		goto queue_work;
++	if (unlikely(!mm)) {
++		if (unlikely(active_memcg()))
++			return get_active_memcg();
++		mm = current->mm;
++	}
 +
-+	worker->css = cmd->css;
-+	css_get(worker->css);
-+	INIT_WORK(&worker->work, loop_workfn);
-+	INIT_LIST_HEAD(&worker->cmd_list);
-+	INIT_LIST_HEAD(&worker->idle_list);
-+	worker->lo = lo;
-+	rb_link_node(&worker->rb_node, parent, node);
-+	rb_insert_color(&worker->rb_node, &lo->worker_tree);
-+queue_work:
-+	if (worker) {
-+		/*
-+		 * We need to remove from the idle list here while
-+		 * holding the lock so that the idle timer doesn't
-+		 * free the worker
-+		 */
-+		if (!list_empty(&worker->idle_list))
-+			list_del_init(&worker->idle_list);
-+		work = &worker->work;
-+		cmd_list = &worker->cmd_list;
-+	} else {
-+		work = &lo->rootcg_work;
-+		cmd_list = &lo->rootcg_cmd_list;
-+	}
-+	list_add_tail(&cmd->list_entry, cmd_list);
-+	queue_work(lo->workqueue, work);
-+	spin_unlock_irq(&lo->lo_work_lock);
+ 	rcu_read_lock();
+ 	do {
+-		/*
+-		 * Page cache insertions can happen withou an
+-		 * actual mm context, e.g. during disk probing
+-		 * on boot, loopback IO, acct() writes etc.
+-		 */
+ 		if (unlikely(!mm))
+ 			memcg = root_mem_cgroup;
+ 		else {
+@@ -919,28 +950,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
  }
+ EXPORT_SYMBOL(get_mem_cgroup_from_mm);
  
- static void loop_update_rotational(struct loop_device *lo)
-@@ -1127,12 +1184,27 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	    !file->f_op->write_iter)
- 		lo->lo_flags |= LO_FLAGS_READ_ONLY;
- 
--	error = loop_prepare_queue(lo);
--	if (error)
-+	error = -EFBIG;
-+	size = get_loop_size(lo, file);
-+	if ((loff_t)(sector_t)size != size)
- 		goto out_unlock;
-+	lo->workqueue = alloc_workqueue("loop%d",
-+					WQ_UNBOUND | WQ_FREEZABLE,
-+					0,
-+					lo->lo_number);
-+	if (!lo->workqueue) {
-+		error = -ENOMEM;
-+		goto out_unlock;
-+	}
- 
- 	set_disk_ro(lo->lo_disk, (lo->lo_flags & LO_FLAGS_READ_ONLY) != 0);
- 
-+	INIT_WORK(&lo->rootcg_work, loop_rootcg_workfn);
-+	INIT_LIST_HEAD(&lo->rootcg_cmd_list);
-+	INIT_LIST_HEAD(&lo->idle_worker_list);
-+	lo->worker_tree = RB_ROOT;
-+	timer_setup(&lo->timer, loop_free_idle_workers,
-+		TIMER_DEFERRABLE);
- 	lo->use_dio = lo->lo_flags & LO_FLAGS_DIRECT_IO;
- 	lo->lo_device = bdev;
- 	lo->lo_backing_file = file;
-@@ -1200,6 +1272,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	int err = 0;
- 	bool partscan = false;
- 	int lo_number;
-+	struct loop_worker *pos, *worker;
- 
- 	mutex_lock(&lo->lo_mutex);
- 	if (WARN_ON_ONCE(lo->lo_state != Lo_rundown)) {
-@@ -1219,6 +1292,18 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	/* freeze request queue during the transition */
- 	blk_mq_freeze_queue(lo->lo_queue);
- 
-+	destroy_workqueue(lo->workqueue);
-+	spin_lock_irq(&lo->lo_work_lock);
-+	list_for_each_entry_safe(worker, pos, &lo->idle_worker_list,
-+				idle_list) {
-+		list_del(&worker->idle_list);
-+		rb_erase(&worker->rb_node, &lo->worker_tree);
-+		css_put(worker->css);
-+		kfree(worker);
-+	}
-+	spin_unlock_irq(&lo->lo_work_lock);
-+	del_timer_sync(&lo->timer);
-+
- 	spin_lock_irq(&lo->lo_lock);
- 	lo->lo_backing_file = NULL;
- 	spin_unlock_irq(&lo->lo_lock);
-@@ -1255,7 +1340,6 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 
- 	partscan = lo->lo_flags & LO_FLAGS_PARTSCAN && bdev;
- 	lo_number = lo->lo_number;
--	loop_unprepare_queue(lo);
- out_unlock:
- 	mutex_unlock(&lo->lo_mutex);
- 	if (partscan) {
-@@ -2026,7 +2110,7 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	} else
- #endif
- 		cmd->css = NULL;
--	kthread_queue_work(&lo->worker, &cmd->work);
-+	loop_queue_work(lo, cmd);
- 
- 	return BLK_STS_OK;
- }
-@@ -2056,26 +2140,82 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
+-static __always_inline struct mem_cgroup *active_memcg(void)
+-{
+-	if (in_interrupt())
+-		return this_cpu_read(int_active_memcg);
+-	else
+-		return current->active_memcg;
+-}
+-
+-static __always_inline struct mem_cgroup *get_active_memcg(void)
+-{
+-	struct mem_cgroup *memcg;
+-
+-	rcu_read_lock();
+-	memcg = active_memcg();
+-	/* remote memcg must hold a ref. */
+-	if (memcg && WARN_ON_ONCE(!css_tryget(&memcg->css)))
+-		memcg = root_mem_cgroup;
+-	rcu_read_unlock();
+-
+-	return memcg;
+-}
+-
+ static __always_inline bool memcg_kmem_bypass(void)
+ {
+ 	/* Allow remote memcg charging from any context. */
+@@ -6549,7 +6558,8 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
+  * @gfp_mask: reclaim mode
+  *
+  * Try to charge @page to the memcg that @mm belongs to, reclaiming
+- * pages according to @gfp_mask if necessary.
++ * pages according to @gfp_mask if necessary. if @mm is NULL, try to
++ * charge to the active memcg.
+  *
+  * Do not use this for pages allocated for swapin.
+  *
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 78ab81a62b29..7c09276125d5 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1694,7 +1694,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+ {
+ 	struct address_space *mapping = inode->i_mapping;
+ 	struct shmem_inode_info *info = SHMEM_I(inode);
+-	struct mm_struct *charge_mm = vma ? vma->vm_mm : current->mm;
++	struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
+ 	struct page *page;
+ 	swp_entry_t swap;
+ 	int error;
+@@ -1815,7 +1815,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
  	}
- }
  
--static void loop_queue_work(struct kthread_work *work)
-+static void loop_set_timer(struct loop_device *lo)
-+{
-+	timer_reduce(&lo->timer, jiffies + LOOP_IDLE_WORKER_TIMEOUT);
-+}
-+
-+static void loop_process_work(struct loop_worker *worker,
-+			struct list_head *cmd_list, struct loop_device *lo)
- {
--	struct loop_cmd *cmd =
--		container_of(work, struct loop_cmd, work);
-+	int orig_flags = current->flags;
-+	struct loop_cmd *cmd;
+ 	sbinfo = SHMEM_SB(inode->i_sb);
+-	charge_mm = vma ? vma->vm_mm : current->mm;
++	charge_mm = vma ? vma->vm_mm : NULL;
  
--	loop_handle_cmd(cmd);
-+	current->flags |= PF_LOCAL_THROTTLE | PF_MEMALLOC_NOIO;
-+	spin_lock_irq(&lo->lo_work_lock);
-+	while (!list_empty(cmd_list)) {
-+		cmd = container_of(
-+			cmd_list->next, struct loop_cmd, list_entry);
-+		list_del(cmd_list->next);
-+		spin_unlock_irq(&lo->lo_work_lock);
-+
-+		loop_handle_cmd(cmd);
-+		cond_resched();
-+
-+		spin_lock_irq(&lo->lo_work_lock);
-+	}
-+
-+	/*
-+	 * We only add to the idle list if there are no pending cmds
-+	 * *and* the worker will not run again which ensures that it
-+	 * is safe to free any worker on the idle list
-+	 */
-+	if (worker && !work_pending(&worker->work)) {
-+		worker->last_ran_at = jiffies;
-+		list_add_tail(&worker->idle_list, &lo->idle_worker_list);
-+		loop_set_timer(lo);
-+	}
-+	spin_unlock_irq(&lo->lo_work_lock);
-+	current->flags = orig_flags;
- }
- 
--static int loop_init_request(struct blk_mq_tag_set *set, struct request *rq,
--		unsigned int hctx_idx, unsigned int numa_node)
-+static void loop_workfn(struct work_struct *work)
- {
--	struct loop_cmd *cmd = blk_mq_rq_to_pdu(rq);
-+	struct loop_worker *worker =
-+		container_of(work, struct loop_worker, work);
-+	loop_process_work(worker, &worker->cmd_list, worker->lo);
-+}
- 
--	kthread_init_work(&cmd->work, loop_queue_work);
--	return 0;
-+static void loop_rootcg_workfn(struct work_struct *work)
-+{
-+	struct loop_device *lo =
-+		container_of(work, struct loop_device, rootcg_work);
-+	loop_process_work(NULL, &lo->rootcg_cmd_list, lo);
-+}
-+
-+static void loop_free_idle_workers(struct timer_list *timer)
-+{
-+	struct loop_device *lo = container_of(timer, struct loop_device, timer);
-+	struct loop_worker *pos, *worker;
-+
-+	spin_lock_irq(&lo->lo_work_lock);
-+	list_for_each_entry_safe(worker, pos, &lo->idle_worker_list,
-+				idle_list) {
-+		if (time_is_after_jiffies(worker->last_ran_at +
-+						LOOP_IDLE_WORKER_TIMEOUT))
-+			break;
-+		list_del(&worker->idle_list);
-+		rb_erase(&worker->rb_node, &lo->worker_tree);
-+		css_put(worker->css);
-+		kfree(worker);
-+	}
-+	if (!list_empty(&lo->idle_worker_list))
-+		loop_set_timer(lo);
-+	spin_unlock_irq(&lo->lo_work_lock);
- }
- 
- static const struct blk_mq_ops loop_mq_ops = {
- 	.queue_rq       = loop_queue_rq,
--	.init_request	= loop_init_request,
- 	.complete	= lo_complete_rq,
- };
- 
-@@ -2164,6 +2304,7 @@ static int loop_add(struct loop_device **l, int i)
- 	mutex_init(&lo->lo_mutex);
- 	lo->lo_number		= i;
- 	spin_lock_init(&lo->lo_lock);
-+	spin_lock_init(&lo->lo_work_lock);
- 	disk->major		= LOOP_MAJOR;
- 	disk->first_minor	= i << part_shift;
- 	disk->fops		= &lo_fops;
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index a3c04f310672..9289c1cd6374 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -14,7 +14,6 @@
- #include <linux/blk-mq.h>
- #include <linux/spinlock.h>
- #include <linux/mutex.h>
--#include <linux/kthread.h>
- #include <uapi/linux/loop.h>
- 
- /* Possible states of device */
-@@ -54,8 +53,13 @@ struct loop_device {
- 
- 	spinlock_t		lo_lock;
- 	int			lo_state;
--	struct kthread_worker	worker;
--	struct task_struct	*worker_task;
-+	spinlock_t              lo_work_lock;
-+	struct workqueue_struct *workqueue;
-+	struct work_struct      rootcg_work;
-+	struct list_head        rootcg_cmd_list;
-+	struct list_head        idle_worker_list;
-+	struct rb_root          worker_tree;
-+	struct timer_list       timer;
- 	bool			use_dio;
- 	bool			sysfs_inited;
- 
-@@ -66,7 +70,7 @@ struct loop_device {
- };
- 
- struct loop_cmd {
--	struct kthread_work work;
-+	struct list_head list_entry;
- 	bool use_aio; /* use AIO interface to handle I/O */
- 	atomic_t ref; /* only for aio */
- 	long ret;
+ 	page = pagecache_get_page(mapping, index,
+ 					FGP_ENTRY | FGP_HEAD | FGP_LOCK, 0);
 -- 
 2.30.2
 
