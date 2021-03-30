@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1020D34E045
-	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 06:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A48A34E049
+	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 06:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbhC3Emm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Mar 2021 00:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
+        id S230282AbhC3Eml (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Mar 2021 00:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhC3EmQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Mar 2021 00:42:16 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA764C0613D8
-        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:15 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a19so16131775ybg.10
-        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:15 -0700 (PDT)
+        with ESMTP id S229655AbhC3EmT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Mar 2021 00:42:19 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F409C061764
+        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:19 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id f20so11567674pgj.6
+        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=1np1BegAKf1p/qLgI0qb1yNV9cLibVUUhaOTRhnPJnw=;
-        b=A5tlFUHBnzErekKRYMRnvdWYNIL1OvUkqbUEv0eeZcQEi7ttmhWvkUENOfs0yEf9mG
-         yUeo9jApT8YXWX5UXxrJCJvJjWtFsrQK0uf/nUxj62+JzUkY82HgXMDI8RV3JGCUelDc
-         WaCxw0xPce+SOcVem70HWFFanL8/DxQv+v6I357b/1JJkri1VDIKq93suioLezn6oyZl
-         SSV7sPxCXbvQOS7QPHoHY30B9nhjP34PpRmCABKq3aG4cBVxvjCDnu8YHlnijT6LRQVU
-         r/fDAjq7drtCoSWmu83m3x+h4PIZaRNDx9PXIB/kLxq8I9fXZpmIwMmd5S8FQOu8waJ3
-         INqw==
+        bh=ZG5QUoyChvalUArlsvwS9b7o5aZFFyWCCkEpBVXhtkU=;
+        b=T1kmeXfP5qGSZ6kep4Ip7I39cg7FJgeB41AxNkyrCF1cJOe35DF0q4XjnSJgpguGuy
+         MIoPDeLDnLnIJW92Cs5ZAcj34Gq5hVBp9CMY0asY9O9KXi8o7g1giMP0E+N45eZbeAcI
+         r/cVavsl8GOUfUmhABHZ72n+l3pqapmOQyqs7EL31QmWDr0rbfxsXUBlbg/DmsKC/Fg6
+         OmTWkIykKglteesDu67g4eIeqmQaVa+LnyNv27knRfRh97w7A4Oa43EUO/IyQESpep+m
+         aHhc9lCqpU01mrSoMpZPtkljauQYWkiFbo1Zb29x3QJyFgN3T40x0t2dxtlR0+s3dlK0
+         xrUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=1np1BegAKf1p/qLgI0qb1yNV9cLibVUUhaOTRhnPJnw=;
-        b=qsuY382sjdRO8Ay6Gpf4zn6eW43Hl9WhVqEYhWF+xd3L32+w1PRDDKSA4KDtxT7zqW
-         E1nU+6G6/VV5QVMbdnr0bBOypqdHeziHeCFxf5fU9LwvE4jnI+pJqBqMifZZSe27EJja
-         sh5g8DBGnQzkR+V9sbNts3zb4Q33g14zA/305DDJ19aJ3Zvyg3dhcSAZAeY6SMvIydCO
-         AtUVymBdoJTHSnBKETGuE/G8dAL3T00nzupm8KVThyCCCRJzhEAM7HQxZ3QkfHpEx6D/
-         Ns0UeNH1IG7AXSDBNJ7+gyiQKCIdwOKMEk7hdp41OywepxSZf6V7UNNxr+BV7HWCznC6
-         UA1g==
-X-Gm-Message-State: AOAM532A0sqb0cZUR5SjppsFE/s2Kwol4rnDXXyvjsFo++HI8mGT/lcu
-        6nTza5/yIL9bi/4B8AF0jNiaLR8Yjt5K
-X-Google-Smtp-Source: ABdhPJy9lPu2p4WTjuNjsi58pm7E3mssgnViCFwx4cpXi2yXv9mwI+70MJBnQ3c902v6kfAT9j/I43oB1Hv6
+        bh=ZG5QUoyChvalUArlsvwS9b7o5aZFFyWCCkEpBVXhtkU=;
+        b=hpUxdt3MqsTxYhD1dwk1GI/Cwy+WPU4LjWsueIpI9TMBCFU/tHdb/7sjNA21X4+1H6
+         2MZbewRRGN9FC+s6lu0OVPVGybIBo/O6AvA62ABE1k31wkkptEBDcqtWTq56s01GyatF
+         FcHMOjh8VXD4sAndXGuJURU9S3BkY0m3Rd7q/2yoxwskLTBqear74Vxej214OS//K6F4
+         AcmlzrV7abgELpwoxljggS8xtwALtXQg6x2EpKJfdaOx+VvJ6yhEOwj31MfbmwMLzh8z
+         riI50OAt3I6YIOQQB/yVxo6GBTRi8XWmwaq7wF1vAm4lzEBavpxAH0MxC4t8FdCATa5Y
+         53Xg==
+X-Gm-Message-State: AOAM530mMg3oCgnUzc8mMwJn1MYcc6ak6rRYDLeNbN93IC4ZFjyjnuVz
+        +8oCn3ljkKafDltQp0Mi+Qt/Mfes5NNU
+X-Google-Smtp-Source: ABdhPJyekf3wulIGw97YjVoI8Z+G8BnfjhcUpxO8+ab5IRYZYFOwbJfdnKTZ083dq+vAlt+uvRkuF7UUfTy7
 X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:8048:6a12:bd4f:a453])
- (user=vipinsh job=sendgmr) by 2002:a25:664b:: with SMTP id
- z11mr40587444ybm.437.1617079334996; Mon, 29 Mar 2021 21:42:14 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 21:42:04 -0700
+ (user=vipinsh job=sendgmr) by 2002:a17:90b:2304:: with SMTP id
+ mt4mr2545123pjb.179.1617079338730; Mon, 29 Mar 2021 21:42:18 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 21:42:05 -0700
 In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
-Message-Id: <20210330044206.2864329-2-vipinsh@google.com>
+Message-Id: <20210330044206.2864329-3-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20210330044206.2864329-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v4 1/3] cgroup: Add misc cgroup controller
+Subject: [PATCH v4 2/3] cgroup: Miscellaneous cgroup documentation.
 From:   Vipin Sharma <vipinsh@google.com>
 To:     tj@kernel.org, mkoutny@suse.com, jacob.jun.pan@intel.com,
         rdunlap@infradead.org, thomas.lendacky@amd.com,
@@ -68,661 +68,131 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The Miscellaneous cgroup provides the resource limiting and tracking
-mechanism for the scalar resources which cannot be abstracted like the
-other cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC
-config option.
-
-A resource can be added to the controller via enum misc_res_type{} in
-the include/linux/misc_cgroup.h file and the corresponding name via
-misc_res_name[] in the kernel/cgroup/misc.c file. Provider of the
-resource must set its capacity prior to using the resource by calling
-misc_cg_set_capacity().
-
-Once a capacity is set then the resource usage can be updated using
-charge and uncharge APIs. All of the APIs to interact with misc
-controller are in include/linux/misc_cgroup.h.
-
-Miscellaneous controller provides 3 interface files. If two misc
-resources (res_a and res_b) are registered then:
-
-misc.capacity
-A read-only flat-keyed file shown only in the root cgroup.  It shows
-miscellaneous scalar resources available on the platform along with
-their quantities::
-
-    $ cat misc.capacity
-    res_a 50
-    res_b 10
-
-misc.current
-A read-only flat-keyed file shown in the non-root cgroups.  It shows
-the current usage of the resources in the cgroup and its children::
-
-    $ cat misc.current
-    res_a 3
-    res_b 0
-
-misc.max
-A read-write flat-keyed file shown in the non root cgroups. Allowed
-maximum usage of the resources in the cgroup and its children.::
-
-    $ cat misc.max
-    res_a max
-    res_b 4
-
-Limit can be set by::
-
-    # echo res_a 1 > misc.max
-
-Limit can be set to max by::
-
-    # echo res_a max > misc.max
-
-Limits can be set more than the capacity value in the misc.capacity
-file.
+Documentation of miscellaneous cgroup controller. This new controller is
+used to track and limit the usage of scalar resources.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 Reviewed-by: David Rientjes <rientjes@google.com>
 ---
- include/linux/cgroup_subsys.h |   4 +
- include/linux/misc_cgroup.h   | 126 +++++++++++
- init/Kconfig                  |  14 ++
- kernel/cgroup/Makefile        |   1 +
- kernel/cgroup/misc.c          | 401 ++++++++++++++++++++++++++++++++++
- 5 files changed, 546 insertions(+)
- create mode 100644 include/linux/misc_cgroup.h
- create mode 100644 kernel/cgroup/misc.c
+ Documentation/admin-guide/cgroup-v1/index.rst |  1 +
+ Documentation/admin-guide/cgroup-v1/misc.rst  |  4 +
+ Documentation/admin-guide/cgroup-v2.rst       | 73 ++++++++++++++++++-
+ 3 files changed, 76 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
 
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index acb77dcff3b4..445235487230 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -61,6 +61,10 @@ SUBSYS(pids)
- SUBSYS(rdma)
- #endif
- 
-+#if IS_ENABLED(CONFIG_CGROUP_MISC)
-+SUBSYS(misc)
-+#endif
-+
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+diff --git a/Documentation/admin-guide/cgroup-v1/index.rst b/Documentation/admin-guide/cgroup-v1/index.rst
+index 226f64473e8e..99fbc8a64ba9 100644
+--- a/Documentation/admin-guide/cgroup-v1/index.rst
++++ b/Documentation/admin-guide/cgroup-v1/index.rst
+@@ -17,6 +17,7 @@ Control Groups version 1
+     hugetlb
+     memcg_test
+     memory
++    misc
+     net_cls
+     net_prio
+     pids
+diff --git a/Documentation/admin-guide/cgroup-v1/misc.rst b/Documentation/admin-guide/cgroup-v1/misc.rst
 new file mode 100644
-index 000000000000..1195d36558b4
+index 000000000000..661614c24df3
 --- /dev/null
-+++ b/include/linux/misc_cgroup.h
-@@ -0,0 +1,126 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Miscellaneous cgroup controller.
-+ *
-+ * Copyright 2020 Google LLC
-+ * Author: Vipin Sharma <vipinsh@google.com>
-+ */
-+#ifndef _MISC_CGROUP_H_
-+#define _MISC_CGROUP_H_
-+
-+/**
-+ * Types of misc cgroup entries supported by the host.
-+ */
-+enum misc_res_type {
-+	MISC_CG_RES_TYPES
-+};
-+
-+struct misc_cg;
-+
-+#ifdef CONFIG_CGROUP_MISC
-+
-+#include <linux/cgroup.h>
-+
-+/**
-+ * struct misc_res: Per cgroup per misc type resource
-+ * @max: Maximum limit on the resource.
-+ * @usage: Current usage of the resource.
-+ * @failed: True if charged failed for the resource in a cgroup.
-+ */
-+struct misc_res {
-+	unsigned long max;
-+	atomic_long_t usage;
-+	bool failed;
-+};
-+
-+/**
-+ * struct misc_cg - Miscellaneous controller's cgroup structure.
-+ * @css: cgroup subsys state object.
-+ * @res: Array of misc resources usage in the cgroup.
-+ */
-+struct misc_cg {
-+	struct cgroup_subsys_state css;
-+	struct misc_res res[MISC_CG_RES_TYPES];
-+};
-+
-+unsigned long misc_cg_res_total_usage(enum misc_res_type type);
-+int misc_cg_set_capacity(enum misc_res_type type, unsigned long capacity);
-+int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
-+		       unsigned long amount);
-+void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg,
-+		      unsigned long amount);
-+
-+/**
-+ * css_misc() - Get misc cgroup from the css.
-+ * @css: cgroup subsys state object.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * %NULL - If @css is null.
-+ * * struct misc_cg* - misc cgroup pointer of the passed css.
-+ */
-+static inline struct misc_cg *css_misc(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct misc_cg, css) : NULL;
-+}
-+
-+/*
-+ * get_current_misc_cg() - Find and get the misc cgroup of the current task.
-+ *
-+ * Returned cgroup has its ref count increased by 1. Caller must call
-+ * put_misc_cg() to return the reference.
-+ *
-+ * Return: Misc cgroup to which the current task belongs to.
-+ */
-+static inline struct misc_cg *get_current_misc_cg(void)
-+{
-+	return css_misc(task_get_css(current, misc_cgrp_id));
-+}
-+
-+/*
-+ * put_misc_cg() - Put the misc cgroup and reduce its ref count.
-+ * @cg - cgroup to put.
-+ */
-+static inline void put_misc_cg(struct misc_cg *cg)
-+{
-+	if (cg)
-+		css_put(&cg->css);
-+}
-+
-+#else /* !CONFIG_CGROUP_MISC */
-+
-+unsigned long misc_cg_res_total_usage(enum misc_res_type type)
-+{
-+	return 0;
-+}
-+
-+static inline int misc_cg_set_capacity(enum misc_res_type type,
-+				       unsigned long capacity)
-+{
-+	return 0;
-+}
-+
-+static inline int misc_cg_try_charge(enum misc_res_type type,
-+				     struct misc_cg *cg,
-+				     unsigned long amount)
-+{
-+	return 0;
-+}
-+
-+static inline void misc_cg_uncharge(enum misc_res_type type,
-+				    struct misc_cg *cg,
-+				    unsigned long amount)
-+{
-+}
-+
-+static inline struct misc_cg *get_current_misc_cg(void)
-+{
-+	return NULL;
-+}
-+
-+static inline void put_misc_cg(struct misc_cg *cg)
-+{
-+}
-+
-+#endif /* CONFIG_CGROUP_MISC */
-+#endif /* _MISC_CGROUP_H_ */
-diff --git a/init/Kconfig b/init/Kconfig
-index 5f5c776ef192..18ece598a297 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1110,6 +1110,20 @@ config CGROUP_BPF
- 	  BPF_CGROUP_INET_INGRESS will be executed on the ingress path of
- 	  inet sockets.
++++ b/Documentation/admin-guide/cgroup-v1/misc.rst
+@@ -0,0 +1,4 @@
++===============
++Misc controller
++===============
++Please refer "Misc" documentation in Documentation/admin-guide/cgroup-v2.rst
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 64c62b979f2f..b1e81aa8598a 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -65,8 +65,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
+        5-7-1. RDMA Interface Files
+      5-8. HugeTLB
+        5.8-1. HugeTLB Interface Files
+-     5-8. Misc
+-       5-8-1. perf_event
++     5-9. Misc
++       5.9-1 Miscellaneous cgroup Interface Files
++       5.9-2 Migration and Ownership
++     5-10. Others
++       5-10-1. perf_event
+      5-N. Non-normative information
+        5-N-1. CPU controller root cgroup process behaviour
+        5-N-2. IO controller root cgroup process behaviour
+@@ -2171,6 +2174,72 @@ HugeTLB Interface Files
+ Misc
+ ----
  
-+config CGROUP_MISC
-+	bool "Misc resource controller"
-+	default n
-+	help
-+	  Provides a controller for miscellaneous resources on a host.
++The Miscellaneous cgroup provides the resource limiting and tracking
++mechanism for the scalar resources which cannot be abstracted like the other
++cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC config
++option.
 +
-+	  Miscellaneous scalar resources are the resources on the host system
-+	  which cannot be abstracted like the other cgroups. This controller
-+	  tracks and limits the miscellaneous resources used by a process
-+	  attached to a cgroup hierarchy.
++A resource can be added to the controller via enum misc_res_type{} in the
++include/linux/misc_cgroup.h file and the corresponding name via misc_res_name[]
++in the kernel/cgroup/misc.c file. Provider of the resource must set its
++capacity prior to using the resource by calling misc_cg_set_capacity().
 +
-+	  For more information, please check misc cgroup section in
-+	  /Documentation/admin-guide/cgroup-v2.rst.
++Once a capacity is set then the resource usage can be updated using charge and
++uncharge APIs. All of the APIs to interact with misc controller are in
++include/linux/misc_cgroup.h.
 +
- config CGROUP_DEBUG
- 	bool "Debug controller"
- 	default n
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index 5d7a76bfbbb7..12f8457ad1f9 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -5,4 +5,5 @@ obj-$(CONFIG_CGROUP_FREEZER) += legacy_freezer.o
- obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
-+obj-$(CONFIG_CGROUP_MISC) += misc.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-new file mode 100644
-index 000000000000..4352bc4a3bd5
---- /dev/null
-+++ b/kernel/cgroup/misc.c
-@@ -0,0 +1,401 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Miscellaneous cgroup controller
-+ *
-+ * Copyright 2020 Google LLC
-+ * Author: Vipin Sharma <vipinsh@google.com>
-+ */
++Misc Interface Files
++~~~~~~~~~~~~~~~~~~~~
 +
-+#include <linux/limits.h>
-+#include <linux/cgroup.h>
-+#include <linux/errno.h>
-+#include <linux/atomic.h>
-+#include <linux/slab.h>
-+#include <linux/misc_cgroup.h>
++Miscellaneous controller provides 3 interface files. If two misc resources (res_a and res_b) are registered then:
 +
-+#define MAX_STR "max"
-+#define MAX_NUM ULONG_MAX
++  misc.capacity
++        A read-only flat-keyed file shown only in the root cgroup.  It shows
++        miscellaneous scalar resources available on the platform along with
++        their quantities::
 +
-+/* Miscellaneous res name, keep it in sync with enum misc_res_type */
-+static const char *const misc_res_name[] = {
-+};
++	  $ cat misc.capacity
++	  res_a 50
++	  res_b 10
 +
-+/* Root misc cgroup */
-+static struct misc_cg root_cg;
++  misc.current
++        A read-only flat-keyed file shown in the non-root cgroups.  It shows
++        the current usage of the resources in the cgroup and its children.::
 +
-+/*
-+ * Miscellaneous resources capacity for the entire machine. 0 capacity means
-+ * resource is not initialized or not present in the host.
-+ *
-+ * root_cg.max and capacity are independent of each other. root_cg.max can be
-+ * more than the actual capacity. We are using Limits resource distribution
-+ * model of cgroup for miscellaneous controller.
-+ */
-+static unsigned long misc_res_capacity[MISC_CG_RES_TYPES];
++	  $ cat misc.current
++	  res_a 3
++	  res_b 0
 +
-+/**
-+ * parent_misc() - Get the parent of the passed misc cgroup.
-+ * @cgroup: cgroup whose parent needs to be fetched.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * struct misc_cg* - Parent of the @cgroup.
-+ * * %NULL - If @cgroup is null or the passed cgroup does not have a parent.
-+ */
-+static struct misc_cg *parent_misc(struct misc_cg *cgroup)
-+{
-+	return cgroup ? css_misc(cgroup->css.parent) : NULL;
-+}
++  misc.max
++        A read-write flat-keyed file shown in the non root cgroups. Allowed
++        maximum usage of the resources in the cgroup and its children.::
 +
-+/**
-+ * valid_type() - Check if @type is valid or not.
-+ * @type: misc res type.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * true - If valid type.
-+ * * false - If not valid type.
-+ */
-+static inline bool valid_type(enum misc_res_type type)
-+{
-+	return type >= 0 && type < MISC_CG_RES_TYPES;
-+}
++	  $ cat misc.max
++	  res_a max
++	  res_b 4
 +
-+/**
-+ * misc_cg_res_total_usage() - Get the current total usage of the resource.
-+ * @type: misc res type.
-+ *
-+ * Context: Any context.
-+ * Return: Current total usage of the resource.
-+ */
-+unsigned long misc_cg_res_total_usage(enum misc_res_type type)
-+{
-+	if (valid_type(type))
-+		return atomic_long_read(&root_cg.res[type].usage);
++	Limit can be set by::
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(misc_cg_res_total_usage);
++	  # echo res_a 1 > misc.max
 +
-+/**
-+ * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
-+ * @type: Type of the misc res.
-+ * @capacity: Supported capacity of the misc res on the host.
-+ *
-+ * If capacity is 0 then the charging a misc cgroup fails for that type.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * %0 - Successfully registered the capacity.
-+ * * %-EINVAL - If @type is invalid.
-+ */
-+int misc_cg_set_capacity(enum misc_res_type type, unsigned long capacity)
-+{
-+	if (!valid_type(type))
-+		return -EINVAL;
++	Limit can be set to max by::
 +
-+	WRITE_ONCE(misc_res_capacity[type], capacity);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(misc_cg_set_capacity);
++	  # echo res_a max > misc.max
 +
-+/**
-+ * misc_cg_cancel_charge() - Cancel the charge from the misc cgroup.
-+ * @type: Misc res type in misc cg to cancel the charge from.
-+ * @cg: Misc cgroup to cancel charge from.
-+ * @amount: Amount to cancel.
-+ *
-+ * Context: Any context.
-+ */
-+static void misc_cg_cancel_charge(enum misc_res_type type, struct misc_cg *cg,
-+				  unsigned long amount)
-+{
-+	WARN_ONCE(atomic_long_add_negative(-amount, &cg->res[type].usage),
-+		  "misc cgroup resource %s became less than 0",
-+		  misc_res_name[type]);
-+}
++        Limits can be set higher than the capacity value in the misc.capacity
++        file.
 +
-+/**
-+ * misc_cg_try_charge() - Try charging the misc cgroup.
-+ * @type: Misc res type to charge.
-+ * @cg: Misc cgroup which will be charged.
-+ * @amount: Amount to charge.
-+ *
-+ * Charge @amount to the misc cgroup. Caller must use the same cgroup during
-+ * the uncharge call.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * %0 - If successfully charged.
-+ * * -EINVAL - If @type is invalid or misc res has 0 capacity.
-+ * * -EBUSY - If max limit will be crossed or total usage will be more than the
-+ *	      capacity.
-+ */
-+int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
-+		       unsigned long amount)
-+{
-+	struct misc_cg *i, *j;
-+	int ret;
-+	struct misc_res *res;
-+	int new_usage;
++Migration and Ownership
++~~~~~~~~~~~~~~~~~~~~~~~
 +
-+	if (!(valid_type(type) && cg && READ_ONCE(misc_res_capacity[type])))
-+		return -EINVAL;
++A miscellaneous scalar resource is charged to the cgroup in which it is used
++first, and stays charged to that cgroup until that resource is freed. Migrating
++a process to a different cgroup does not move the charge to the destination
++cgroup where the process has moved.
 +
-+	if (!amount)
-+		return 0;
++Others
++------
 +
-+	for (i = cg; i; i = parent_misc(i)) {
-+		res = &i->res[type];
-+
-+		new_usage = atomic_long_add_return(amount, &res->usage);
-+		if (new_usage > READ_ONCE(res->max) ||
-+		    new_usage > READ_ONCE(misc_res_capacity[type])) {
-+			if (!res->failed) {
-+				pr_info("cgroup: charge rejected by the misc controller for %s resource in ",
-+					misc_res_name[type]);
-+				pr_cont_cgroup_path(i->css.cgroup);
-+				pr_cont("\n");
-+				res->failed = true;
-+			}
-+			ret = -EBUSY;
-+			goto err_charge;
-+		}
-+	}
-+	return 0;
-+
-+err_charge:
-+	for (j = cg; j != i; j = parent_misc(j))
-+		misc_cg_cancel_charge(type, j, amount);
-+	misc_cg_cancel_charge(type, i, amount);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(misc_cg_try_charge);
-+
-+/**
-+ * misc_cg_uncharge() - Uncharge the misc cgroup.
-+ * @type: Misc res type which was charged.
-+ * @cg: Misc cgroup which will be uncharged.
-+ * @amount: Charged amount.
-+ *
-+ * Context: Any context.
-+ */
-+void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg,
-+		      unsigned long amount)
-+{
-+	struct misc_cg *i;
-+
-+	if (!(amount && valid_type(type) && cg))
-+		return;
-+
-+	for (i = cg; i; i = parent_misc(i))
-+		misc_cg_cancel_charge(type, i, amount);
-+}
-+EXPORT_SYMBOL_GPL(misc_cg_uncharge);
-+
-+/**
-+ * misc_cg_max_show() - Show the misc cgroup max limit.
-+ * @sf: Interface file
-+ * @v: Arguments passed
-+ *
-+ * Context: Any context.
-+ * Return: 0 to denote successful print.
-+ */
-+static int misc_cg_max_show(struct seq_file *sf, void *v)
-+{
-+	int i;
-+	struct misc_cg *cg = css_misc(seq_css(sf));
-+	unsigned long max;
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		if (READ_ONCE(misc_res_capacity[i])) {
-+			max = READ_ONCE(cg->res[i].max);
-+			if (max == MAX_NUM)
-+				seq_printf(sf, "%s max\n", misc_res_name[i]);
-+			else
-+				seq_printf(sf, "%s %lu\n", misc_res_name[i],
-+					   max);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * misc_cg_max_write() - Update the maximum limit of the cgroup.
-+ * @of: Handler for the file.
-+ * @buf: Data from the user. It should be either "max", 0, or a positive
-+ *	 integer.
-+ * @nbytes: Number of bytes of the data.
-+ * @off: Offset in the file.
-+ *
-+ * User can pass data like:
-+ * echo sev 23 > misc.max, OR
-+ * echo sev max > misc.max
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * >= 0 - Number of bytes processed in the input.
-+ * * -EINVAL - If buf is not valid.
-+ * * -ERANGE - If number is bigger than the unsigned long capacity.
-+ */
-+static ssize_t misc_cg_max_write(struct kernfs_open_file *of, char *buf,
-+				 size_t nbytes, loff_t off)
-+{
-+	struct misc_cg *cg;
-+	unsigned long max;
-+	int ret = 0, i;
-+	enum misc_res_type type = MISC_CG_RES_TYPES;
-+	char *token;
-+
-+	buf = strstrip(buf);
-+	token = strsep(&buf, " ");
-+
-+	if (!token || !buf)
-+		return -EINVAL;
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		if (!strcmp(misc_res_name[i], token)) {
-+			type = i;
-+			break;
-+		}
-+	}
-+
-+	if (type == MISC_CG_RES_TYPES)
-+		return -EINVAL;
-+
-+	if (!strcmp(MAX_STR, buf)) {
-+		max = MAX_NUM;
-+	} else {
-+		ret = kstrtoul(buf, 0, &max);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	cg = css_misc(of_css(of));
-+
-+	if (READ_ONCE(misc_res_capacity[type]))
-+		WRITE_ONCE(cg->res[type].max, max);
-+	else
-+		ret = -EINVAL;
-+
-+	return ret ? ret : nbytes;
-+}
-+
-+/**
-+ * misc_cg_current_show() - Show the current usage of the misc cgroup.
-+ * @sf: Interface file
-+ * @v: Arguments passed
-+ *
-+ * Context: Any context.
-+ * Return: 0 to denote successful print.
-+ */
-+static int misc_cg_current_show(struct seq_file *sf, void *v)
-+{
-+	int i;
-+	unsigned long usage;
-+	struct misc_cg *cg = css_misc(seq_css(sf));
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		usage = atomic_long_read(&cg->res[i].usage);
-+		if (READ_ONCE(misc_res_capacity[i]) || usage)
-+			seq_printf(sf, "%s %lu\n", misc_res_name[i], usage);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * misc_cg_capacity_show() - Show the total capacity of misc res on the host.
-+ * @sf: Interface file
-+ * @v: Arguments passed
-+ *
-+ * Only present in the root cgroup directory.
-+ *
-+ * Context: Any context.
-+ * Return: 0 to denote successful print.
-+ */
-+static int misc_cg_capacity_show(struct seq_file *sf, void *v)
-+{
-+	int i;
-+	unsigned long cap;
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		cap = READ_ONCE(misc_res_capacity[i]);
-+		if (cap)
-+			seq_printf(sf, "%s %lu\n", misc_res_name[i], cap);
-+	}
-+
-+	return 0;
-+}
-+
-+/* Misc cgroup interface files */
-+static struct cftype misc_cg_files[] = {
-+	{
-+		.name = "max",
-+		.write = misc_cg_max_write,
-+		.seq_show = misc_cg_max_show,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
-+	{
-+		.name = "current",
-+		.seq_show = misc_cg_current_show,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
-+	{
-+		.name = "capacity",
-+		.seq_show = misc_cg_capacity_show,
-+		.flags = CFTYPE_ONLY_ON_ROOT,
-+	},
-+	{}
-+};
-+
-+/**
-+ * misc_cg_alloc() - Allocate misc cgroup.
-+ * @parent_css: Parent cgroup.
-+ *
-+ * Context: Process context.
-+ * Return:
-+ * * struct cgroup_subsys_state* - css of the allocated cgroup.
-+ * * ERR_PTR(-ENOMEM) - No memory available to allocate.
-+ */
-+static struct cgroup_subsys_state *
-+misc_cg_alloc(struct cgroup_subsys_state *parent_css)
-+{
-+	enum misc_res_type i;
-+	struct misc_cg *cg;
-+
-+	if (!parent_css) {
-+		cg = &root_cg;
-+	} else {
-+		cg = kzalloc(sizeof(*cg), GFP_KERNEL);
-+		if (!cg)
-+			return ERR_PTR(-ENOMEM);
-+	}
-+
-+	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-+		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-+		atomic_long_set(&cg->res[i].usage, 0);
-+	}
-+
-+	return &cg->css;
-+}
-+
-+/**
-+ * misc_cg_free() - Free the misc cgroup.
-+ * @css: cgroup subsys object.
-+ *
-+ * Context: Any context.
-+ */
-+static void misc_cg_free(struct cgroup_subsys_state *css)
-+{
-+	kfree(css_misc(css));
-+}
-+
-+/* Cgroup controller callbacks */
-+struct cgroup_subsys misc_cgrp_subsys = {
-+	.css_alloc = misc_cg_alloc,
-+	.css_free = misc_cg_free,
-+	.legacy_cftypes = misc_cg_files,
-+	.dfl_cftypes = misc_cg_files,
-+};
+ perf_event
+ ~~~~~~~~~~
+ 
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
