@@ -2,315 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A4834E04C
-	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 06:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1620A34E35A
+	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 10:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhC3Emn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Mar 2021 00:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhC3EmX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Mar 2021 00:42:23 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1080C0613D8
-        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id u5so6620120plg.2
-        for <cgroups@vger.kernel.org>; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=CIy5ACCF0ofpwh9zYe0S73BRRk0v0OISzt23gHBSsNA=;
-        b=tx1gG07Ck0mnE68/XTiNe7DMvwTmOjF63Ee6rvYBpVtmUo1jx0zb+lJOqCOsnt1hXe
-         bELVj5fbj0lz7PS2TONyKBpXYIg+feIwlb2VQCl1bb726ea+kHs6yTAp4a/TBF1k5cNh
-         WQ7JT51oLru86QmE3Bug1CsPCNupA0AQxQOQpqcQ70fD/3FS6gFl8U/KXywKfbykWixr
-         FLW0fgOQNvjlRhnIMpfTgmDUmGu+0C64hBYrbb0iuGPxZ/r0bhCzaVMdH0iuouV3fY5z
-         CRrv0gWHJDdl+0FnWRe3z8iJedXnrjVHTw6g8/yhbA4D/qPiBYGRKtuMsiyj56DxIK4s
-         rCWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=CIy5ACCF0ofpwh9zYe0S73BRRk0v0OISzt23gHBSsNA=;
-        b=oUXxK95x31CgLC5krhHJzes5yVH0SFCcHVRfeCaycjnkNgX12qxExMjWXDpRDAmeH5
-         zUqUWICWGTMVyXTl188I5hiUD1HPbMZbGPapLBkbKd1CqMvK0UkcPOFm6DNFuUz+fZoF
-         b78u7U9OSIZ4zwnyDMpSlFRVUngr/d11V3t34kGv83YVy+C2EqRjZ+ZSm+zXWEa6waZD
-         RQQNgxMGBq4YtPg1uHmEURlG4WSU6zh718BlmHgOH0UzODpscbpdek9fiozSVhxK0uMR
-         wKf2IqitdZfD/ScztKBNdOWfL5nYtviYIboVs4Ijzzll43+8RcOCF78Zy4POaJDRVS6h
-         ZDqg==
-X-Gm-Message-State: AOAM530KeOmvFfg7U9QJjvW8cS6eThlY2T90OvVMKICp0vhhxd5eBdAb
-        q+T93Iva6AG6bwqq/5weGIgC5a6Ley1h
-X-Google-Smtp-Source: ABdhPJwanaoy2S9Ezkf/flm++wEraYEBntfDjzkoZHgSRvzrtsWUrXoc50qrb0BGZ58rkL39rEm7UGOWdahi
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:8048:6a12:bd4f:a453])
- (user=vipinsh job=sendgmr) by 2002:a17:90a:6708:: with SMTP id
- n8mr2606697pjj.174.1617079342367; Mon, 29 Mar 2021 21:42:22 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 21:42:06 -0700
-In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
-Message-Id: <20210330044206.2864329-4-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20210330044206.2864329-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v4 3/3] svm/sev: Register SEV and SEV-ES ASIDs to the misc controller
-From:   Vipin Sharma <vipinsh@google.com>
-To:     tj@kernel.org, mkoutny@suse.com, jacob.jun.pan@intel.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com
-Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231621AbhC3Ilr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Mar 2021 04:41:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55554 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230224AbhC3Ilj (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 30 Mar 2021 04:41:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617093697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jiLzz+FDg8IDgOr7Ru1IW7IRXYaqlH8yrJkDxBSOd+M=;
+        b=SwyQOSqvaO5avOz2XsxkAeyYpWcAxuEpeTup5y2W/3hjoJIa9VL+ySLWFEDXOGMXYYzaNj
+        yfuPCkvCrHUDqDn4OiHjX+VW5qEwgFf/bjJtmVzQs0eem+tKxgSvbAVrRlz0EIt6ankmR8
+        9g4gU0a0vUOWreF+dSJDr1Ih1BW0A9I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F0DDEB1C1;
+        Tue, 30 Mar 2021 08:41:36 +0000 (UTC)
+Date:   Tue, 30 Mar 2021 10:41:34 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Martin Sebor <msebor@gcc.gnu.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        Ning Sun <ning.sun@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
+Message-ID: <YGLkPjSBdgpriC0E@blackbook>
+References: <20210322160253.4032422-1-arnd@kernel.org>
+ <20210322160253.4032422-7-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Gbn4BprmVLVWv2rO"
+Content-Disposition: inline
+In-Reply-To: <20210322160253.4032422-7-arnd@kernel.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Secure Encrypted Virtualization (SEV) and Secure Encrypted
-Virtualization - Encrypted State (SEV-ES) ASIDs are used to encrypt KVMs
-on AMD platform. These ASIDs are available in the limited quantities on
-a host.
 
-Register their capacity and usage to the misc controller for tracking
-via cgroups.
+--Gbn4BprmVLVWv2rO
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
----
- arch/x86/kvm/svm/sev.c      | 70 +++++++++++++++++++++++++++++++------
- arch/x86/kvm/svm/svm.h      |  1 +
- include/linux/misc_cgroup.h |  6 ++++
- kernel/cgroup/misc.c        |  6 ++++
- 4 files changed, 73 insertions(+), 10 deletions(-)
+On Mon, Mar 22, 2021 at 05:02:44PM +0100, Arnd Bergmann <arnd@kernel.org> w=
+rote:
+> I'm not sure what is expected to happen for such a configuration,
+> presumably these functions are never calls in that case.
+Yes, the functions you patched would only be called from subsystems or
+there should be no way to obtain a struct cgroup_subsys reference
+anyway (hence it's ok to always branch as if ss=3D=3DNULL).
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 874ea309279f..214eefb20414 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -14,6 +14,7 @@
- #include <linux/psp-sev.h>
- #include <linux/pagemap.h>
- #include <linux/swap.h>
-+#include <linux/misc_cgroup.h>
- #include <linux/processor.h>
- #include <linux/trace_events.h>
- #include <asm/fpu/internal.h>
-@@ -28,6 +29,21 @@
- 
- #define __ex(x) __kvm_handle_fault_on_reboot(x)
- 
-+#ifndef CONFIG_KVM_AMD_SEV
-+/*
-+ * When this config is not defined, SEV feature is not supported and APIs in
-+ * this file are not used but this file still gets compiled into the KVM AMD
-+ * module.
-+ *
-+ * We will not have MISC_CG_RES_SEV and MISC_CG_RES_SEV_ES entries in the enum
-+ * misc_res_type {} defined in linux/misc_cgroup.h.
-+ *
-+ * Below macros allow compilation to succeed.
-+ */
-+#define MISC_CG_RES_SEV MISC_CG_RES_TYPES
-+#define MISC_CG_RES_SEV_ES MISC_CG_RES_TYPES
-+#endif
-+
- static u8 sev_enc_bit;
- static int sev_flush_asids(void);
- static DECLARE_RWSEM(sev_deactivate_lock);
-@@ -89,8 +105,19 @@ static bool __sev_recycle_asids(int min_asid, int max_asid)
- 
- static int sev_asid_new(struct kvm_sev_info *sev)
- {
--	int pos, min_asid, max_asid;
-+	int pos, min_asid, max_asid, ret;
- 	bool retry = true;
-+	enum misc_res_type type;
-+
-+	type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
-+	WARN_ON(sev->misc_cg);
-+	sev->misc_cg = get_current_misc_cg();
-+	ret = misc_cg_try_charge(type, sev->misc_cg, 1);
-+	if (ret) {
-+		put_misc_cg(sev->misc_cg);
-+		sev->misc_cg = NULL;
-+		return ret;
-+	}
- 
- 	mutex_lock(&sev_bitmap_lock);
- 
-@@ -108,7 +135,8 @@ static int sev_asid_new(struct kvm_sev_info *sev)
- 			goto again;
- 		}
- 		mutex_unlock(&sev_bitmap_lock);
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto e_uncharge;
- 	}
- 
- 	__set_bit(pos, sev_asid_bitmap);
-@@ -116,6 +144,11 @@ static int sev_asid_new(struct kvm_sev_info *sev)
- 	mutex_unlock(&sev_bitmap_lock);
- 
- 	return pos + 1;
-+e_uncharge:
-+	misc_cg_uncharge(type, sev->misc_cg, 1);
-+	put_misc_cg(sev->misc_cg);
-+	sev->misc_cg = NULL;
-+	return ret;
- }
- 
- static int sev_get_asid(struct kvm *kvm)
-@@ -125,14 +158,15 @@ static int sev_get_asid(struct kvm *kvm)
- 	return sev->asid;
- }
- 
--static void sev_asid_free(int asid)
-+static void sev_asid_free(struct kvm_sev_info *sev)
- {
- 	struct svm_cpu_data *sd;
- 	int cpu, pos;
-+	enum misc_res_type type;
- 
- 	mutex_lock(&sev_bitmap_lock);
- 
--	pos = asid - 1;
-+	pos = sev->asid - 1;
- 	__set_bit(pos, sev_reclaim_asid_bitmap);
- 
- 	for_each_possible_cpu(cpu) {
-@@ -141,6 +175,11 @@ static void sev_asid_free(int asid)
- 	}
- 
- 	mutex_unlock(&sev_bitmap_lock);
-+
-+	type = sev->es_active ? MISC_CG_RES_SEV_ES : MISC_CG_RES_SEV;
-+	misc_cg_uncharge(type, sev->misc_cg, 1);
-+	put_misc_cg(sev->misc_cg);
-+	sev->misc_cg = NULL;
- }
- 
- static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
-@@ -188,19 +227,20 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	asid = sev_asid_new(sev);
- 	if (asid < 0)
- 		return ret;
-+	sev->asid = asid;
- 
- 	ret = sev_platform_init(&argp->error);
- 	if (ret)
- 		goto e_free;
- 
- 	sev->active = true;
--	sev->asid = asid;
- 	INIT_LIST_HEAD(&sev->regions_list);
- 
- 	return 0;
- 
- e_free:
--	sev_asid_free(asid);
-+	sev_asid_free(sev);
-+	sev->asid = 0;
- 	return ret;
- }
- 
-@@ -1315,12 +1355,12 @@ void sev_vm_destroy(struct kvm *kvm)
- 	mutex_unlock(&kvm->lock);
- 
- 	sev_unbind_asid(kvm, sev->handle);
--	sev_asid_free(sev->asid);
-+	sev_asid_free(sev);
- }
- 
- void __init sev_hardware_setup(void)
- {
--	unsigned int eax, ebx, ecx, edx;
-+	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
- 	bool sev_es_supported = false;
- 	bool sev_supported = false;
- 
-@@ -1352,7 +1392,11 @@ void __init sev_hardware_setup(void)
- 	if (!sev_reclaim_asid_bitmap)
- 		goto out;
- 
--	pr_info("SEV supported: %u ASIDs\n", max_sev_asid - min_sev_asid + 1);
-+	sev_asid_count = max_sev_asid - min_sev_asid + 1;
-+	if (misc_cg_set_capacity(MISC_CG_RES_SEV, sev_asid_count))
-+		goto out;
-+
-+	pr_info("SEV supported: %u ASIDs\n", sev_asid_count);
- 	sev_supported = true;
- 
- 	/* SEV-ES support requested? */
-@@ -1367,7 +1411,11 @@ void __init sev_hardware_setup(void)
- 	if (min_sev_asid == 1)
- 		goto out;
- 
--	pr_info("SEV-ES supported: %u ASIDs\n", min_sev_asid - 1);
-+	sev_es_asid_count = min_sev_asid - 1;
-+	if (misc_cg_set_capacity(MISC_CG_RES_SEV_ES, sev_es_asid_count))
-+		goto out;
-+
-+	pr_info("SEV-ES supported: %u ASIDs\n", sev_es_asid_count);
- 	sev_es_supported = true;
- 
- out:
-@@ -1382,6 +1430,8 @@ void sev_hardware_teardown(void)
- 
- 	bitmap_free(sev_asid_bitmap);
- 	bitmap_free(sev_reclaim_asid_bitmap);
-+	misc_cg_set_capacity(MISC_CG_RES_SEV, 0);
-+	misc_cg_set_capacity(MISC_CG_RES_SEV_ES, 0);
- 
- 	sev_flush_asids();
- }
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 39e071fdab0c..9806aaebc37f 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -65,6 +65,7 @@ struct kvm_sev_info {
- 	unsigned long pages_locked; /* Number of pages locked */
- 	struct list_head regions_list;  /* List of registered regions */
- 	u64 ap_jump_table;	/* SEV-ES AP Jump Table address */
-+	struct misc_cg *misc_cg; /* For misc cgroup accounting */
- };
- 
- struct kvm_svm {
-diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-index 1195d36558b4..c5af592481c0 100644
---- a/include/linux/misc_cgroup.h
-+++ b/include/linux/misc_cgroup.h
-@@ -12,6 +12,12 @@
-  * Types of misc cgroup entries supported by the host.
-  */
- enum misc_res_type {
-+#ifdef CONFIG_KVM_AMD_SEV
-+	/* AMD SEV ASIDs resource */
-+	MISC_CG_RES_SEV,
-+	/* AMD SEV-ES ASIDs resource */
-+	MISC_CG_RES_SEV_ES,
-+#endif
- 	MISC_CG_RES_TYPES
- };
- 
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index 4352bc4a3bd5..ec02d963cad1 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -18,6 +18,12 @@
- 
- /* Miscellaneous res name, keep it in sync with enum misc_res_type */
- static const char *const misc_res_name[] = {
-+#ifdef CONFIG_KVM_AMD_SEV
-+	/* AMD SEV ASIDs resource */
-+	"sev",
-+	/* AMD SEV-ES ASIDs resource */
-+	"sev_es",
-+#endif
- };
- 
- /* Root misc cgroup */
--- 
-2.31.0.291.g576ba9dcdaf-goog
+I'd prefer a variant that wouldn't compile the affected codepaths when
+there are no subsystems registered, however, I couldn't come up with a
+way how to do it without some preprocessor ugliness.
 
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--Gbn4BprmVLVWv2rO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBi5DcACgkQia1+riC5
+qSjuqxAAkm/zoS+xvdcQUERzkcuVxIruGtTqOse/NCPQQR9aGuJl6iybyjQw7D+r
+63+BYz7+BdP8zDg+NSTO354Yt0vsWFtCvuZBBabO91wCheLRPaZhHnGByJa0fXyM
+SKC2VSvFHKKiFuCG7mG7/WfDQxTGSaUL2jiFXlA5HAV5dKfkia/Jpuf+KtIy5nBR
+g8g4f44M2wW/TCoBzd5Elt5Cpx6fU2aKuJRCRCE04ts4CQy06/lLcc9H0N7bvgHj
+0oxkHbAjXeEnylnni4pfpmJpInUT2kOZuCjSF/WPw2XeLs00AnBnNB3lDP9Pe2qo
+ippcDc3AFqYMqewKnnxDWoTI3lyMTm8r0yzrDdwpb9Zv28bOCAYiwyoIsFV7+kdN
+C7DnhiL6d+UgKIzCqRuTPXnluthvSmHGzeblqF1vOAaWOFif4CcRmUtsR7v3EyZN
+5aiUTGqVtoKr/pcBNnRU1e2w7ulYpq5sbL/8f9HtnKsZ8MZlLdhdcDoSLjOkuohK
+OlQgS6p+2otxwk3xft0CdFPPHAFb5/WM6IyKdewFGuY0fohxczWJCRI92x94cfe9
+p0JSNLl19JjdM8loYpmBRcmlkoBH+MtkdZiR68b5yX5wcXypubmZPZ9o8ZzQqx1j
+ZX1/nhuyDl6KHuGW7gJXx8FhCLd6nPyKYVu4wbay23oLzdL/1sk=
+=nVTO
+-----END PGP SIGNATURE-----
+
+--Gbn4BprmVLVWv2rO--
