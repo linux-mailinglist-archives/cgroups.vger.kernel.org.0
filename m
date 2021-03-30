@@ -2,34 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1620A34E35A
-	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 10:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C37B134E3D0
+	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 11:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhC3Ilr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Mar 2021 04:41:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55554 "EHLO mx2.suse.de"
+        id S231643AbhC3JBP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Mar 2021 05:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230224AbhC3Ilj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 30 Mar 2021 04:41:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617093697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jiLzz+FDg8IDgOr7Ru1IW7IRXYaqlH8yrJkDxBSOd+M=;
-        b=SwyQOSqvaO5avOz2XsxkAeyYpWcAxuEpeTup5y2W/3hjoJIa9VL+ySLWFEDXOGMXYYzaNj
-        yfuPCkvCrHUDqDn4OiHjX+VW5qEwgFf/bjJtmVzQs0eem+tKxgSvbAVrRlz0EIt6ankmR8
-        9g4gU0a0vUOWreF+dSJDr1Ih1BW0A9I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F0DDEB1C1;
-        Tue, 30 Mar 2021 08:41:36 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 10:41:34 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Martin Sebor <msebor@gcc.gnu.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        id S231626AbhC3JAw (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 30 Mar 2021 05:00:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69DB5619AD;
+        Tue, 30 Mar 2021 09:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617094851;
+        bh=7BKJpJRJJea7jWMl80W5EN9UAj8omc2Cs2r3GAQepzo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wsuslf1aShoCKyVO6hEvzEdZFMLQDIu2sbrH3x69Zj3fzv+Ssz4//dpuMEbWngOUq
+         Zjq5v+sm416E8eDL5lOizTzEa7Erwc/f8fCuW75qsYfDXgJ3oE6b4i2kQYeYtPZd4I
+         FK+fITjA3iXC63XWANkkhj4NvYlqDfeUjJbbuVDoJnM3Z/9egQRLEp8Koxo3BlExlm
+         KJf0GkZPfII5XV5fPTrpbDnwtlOxinHOG65Ikgkmm49iP6nf4qHit/q0d/LnVY5qb5
+         qa+2M5n3XKCJv1Wm+mrJgHL5nAHA2YFzyo0MHv0A+yCW12hqtwqifDnY1PrNFQltR4
+         2Y+g7lZslykhg==
+Received: by mail-oo1-f53.google.com with SMTP id j10-20020a4ad18a0000b02901b677a0ba98so3616658oor.1;
+        Tue, 30 Mar 2021 02:00:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531q1tUjYttWC1Plkfc9XuItgOGcA+fFv0WHfXrMBQvc7MswRNus
+        E9i6o0x2QMgnTmzWwbDN6fRjkSuusGeFcFzGuws=
+X-Google-Smtp-Source: ABdhPJzpNNBXFi0zlX+fSlV+iQuwxA7n7pfSwfoGiIinCD5YA1YpFSD4jDETbIF3gyjCIllkPcG9Qx+cRKe7U+THggk=
+X-Received: by 2002:a4a:304a:: with SMTP id z10mr25148861ooz.26.1617094850520;
+ Tue, 30 Mar 2021 02:00:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-7-arnd@kernel.org>
+ <YGLkPjSBdgpriC0E@blackbook>
+In-Reply-To: <YGLkPjSBdgpriC0E@blackbook>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 30 Mar 2021 11:00:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+Message-ID: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Sebor <msebor@gcc.gnu.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         Ning Sun <ning.sun@intel.com>,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Kalle Valo <kvalo@codeaurora.org>,
@@ -39,70 +54,50 @@ Cc:     linux-kernel@vger.kernel.org, Martin Sebor <msebor@gcc.gnu.org>,
         Anders Larsen <al@alarsen.net>,
         Serge Hallyn <serge@hallyn.com>,
         Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        tboot-devel@lists.sourceforge.net,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
         Roman Gushchin <guro@fb.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
-Message-ID: <YGLkPjSBdgpriC0E@blackbook>
-References: <20210322160253.4032422-1-arnd@kernel.org>
- <20210322160253.4032422-7-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Gbn4BprmVLVWv2rO"
-Content-Disposition: inline
-In-Reply-To: <20210322160253.4032422-7-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, Mar 30, 2021 at 10:41 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
+>
+> On Mon, Mar 22, 2021 at 05:02:44PM +0100, Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+> > I'm not sure what is expected to happen for such a configuration,
+> > presumably these functions are never calls in that case.
+> Yes, the functions you patched would only be called from subsystems or
+> there should be no way to obtain a struct cgroup_subsys reference
+> anyway (hence it's ok to always branch as if ss=3D=3DNULL).
+>
+> I'd prefer a variant that wouldn't compile the affected codepaths when
+> there are no subsystems registered, however, I couldn't come up with a
+> way how to do it without some preprocessor ugliness.
 
---Gbn4BprmVLVWv2rO
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Would it be possible to enclose most or all of kernel/cgroup/cgroup.c
+in an #ifdef CGROUP_SUBSYS_COUNT block? I didn't try that
+myself, but this might be a way to guarantee that there cannot
+be any callers (it would cause a link error).
 
-On Mon, Mar 22, 2021 at 05:02:44PM +0100, Arnd Bergmann <arnd@kernel.org> w=
-rote:
-> I'm not sure what is expected to happen for such a configuration,
-> presumably these functions are never calls in that case.
-Yes, the functions you patched would only be called from subsystems or
-there should be no way to obtain a struct cgroup_subsys reference
-anyway (hence it's ok to always branch as if ss=3D=3DNULL).
+> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-I'd prefer a variant that wouldn't compile the affected codepaths when
-there are no subsystems registered, however, I couldn't come up with a
-way how to do it without some preprocessor ugliness.
+Thanks
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
-
---Gbn4BprmVLVWv2rO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBi5DcACgkQia1+riC5
-qSjuqxAAkm/zoS+xvdcQUERzkcuVxIruGtTqOse/NCPQQR9aGuJl6iybyjQw7D+r
-63+BYz7+BdP8zDg+NSTO354Yt0vsWFtCvuZBBabO91wCheLRPaZhHnGByJa0fXyM
-SKC2VSvFHKKiFuCG7mG7/WfDQxTGSaUL2jiFXlA5HAV5dKfkia/Jpuf+KtIy5nBR
-g8g4f44M2wW/TCoBzd5Elt5Cpx6fU2aKuJRCRCE04ts4CQy06/lLcc9H0N7bvgHj
-0oxkHbAjXeEnylnni4pfpmJpInUT2kOZuCjSF/WPw2XeLs00AnBnNB3lDP9Pe2qo
-ippcDc3AFqYMqewKnnxDWoTI3lyMTm8r0yzrDdwpb9Zv28bOCAYiwyoIsFV7+kdN
-C7DnhiL6d+UgKIzCqRuTPXnluthvSmHGzeblqF1vOAaWOFif4CcRmUtsR7v3EyZN
-5aiUTGqVtoKr/pcBNnRU1e2w7ulYpq5sbL/8f9HtnKsZ8MZlLdhdcDoSLjOkuohK
-OlQgS6p+2otxwk3xft0CdFPPHAFb5/WM6IyKdewFGuY0fohxczWJCRI92x94cfe9
-p0JSNLl19JjdM8loYpmBRcmlkoBH+MtkdZiR68b5yX5wcXypubmZPZ9o8ZzQqx1j
-ZX1/nhuyDl6KHuGW7gJXx8FhCLd6nPyKYVu4wbay23oLzdL/1sk=
-=nVTO
------END PGP SIGNATURE-----
-
---Gbn4BprmVLVWv2rO--
+        Arnd
