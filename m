@@ -2,46 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BE134E977
-	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 15:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E68F34E985
+	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 15:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhC3Nnf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Mar 2021 09:43:35 -0400
-Received: from mail-bn7nam10on2071.outbound.protection.outlook.com ([40.107.92.71]:54490
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S232174AbhC3Nqq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Mar 2021 09:46:46 -0400
+Received: from mail-dm6nam11on2044.outbound.protection.outlook.com ([40.107.223.44]:21217
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229633AbhC3NnR (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:43:17 -0400
+        id S232165AbhC3NqZ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:46:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y4cNzaqpBaWZUdmC340g+xoNbqZjZ2SAxgiZ9OiHyEIhaaNUTEOmsmzdMSxtZJ4CVOmn7HhC9W4iKArEG8W/e/9xdPzaEKowseqGRriLvMSM2qlxigdn2RZgTYNRuCCH0utsgwN2TICEeFHa546gXLk1s/N+HlctPwEP3YQ32X4l2TLIrYoyP/5lNzFN2DpobehhEp2BOaWtUHytIKFJSpvXj0tS+7XjF/hZPIvkQ2tfyicp/OWI+b65GCOPpKdecDQWNtHp2uaVfDogLvLZCUrKnpB3IEmV7t6NgZTNjTaNiZqJrT8yPCkjIwyYy1IzgeKdLl/3iYDvSVyYsvcuvA==
+ b=Kp3LhUC3x8c2OOW/vZ4+J1hwuctRd9cZVl7MWupZGhJBVAGZiQuctsg93ks81PXA9GJi7TM3ANFw3TUp+1GwnGrfBg1jmTiJ3IVxhjKIrLzqrcITGCdSaVRPeiC9zDtH/zUqos2Emp4QonWsL6YhbZ9bUrzzK3QHzXXoLbZLcT9VioLRiqOOJYwGe1499xgq5/1Lo1Mm0VAoibuAXNGOjhGSI7P2YYbd1H0HMF+g7XyzbkF3THeFpWdBKFOclsA/VkLYPNGJ6j92U7Z6j3Io+6jCspnYkVzivEABNZPrULMDdafEfQ66qXSE5FwV+BrhBbffGUioyakW/IWNEfuVxg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQZ3yU6L6mhMe9nejkBp/Bqv223Gaj1HrOxUg5nE3pc=;
- b=SANBrKgycnMFUMOqzOkCC2eVJPITvWJRuIJCPQQbj/+Dsgw7MPdq7cW7ISMt3u/voClfZJYUgsQuqe3FfLvIlZJTlAXQHoTLkRUDyqMsf8xftw9M4mJx2YQfpWJEQqA6dUEHlZHp1P4PUvFhQifNXgMDzRegPVmuwZmjxQLLedoJlYksGm1TwEYRaHZ0FGosv1rIyJ99XkynWL357unul2tU+JG912xS+NY1GoEVuCO6Crhyfak2NpjDwQ+5ShaPrMt2eMiWnyVNoZ5lVEJWn6GMmqhZJdsmNYF6M9+KmqnNhXXaUv0VNtFk5EbQoXjjSrjI/Vmr6Y+HibiCa8SZYA==
+ bh=GzICrweByfFjw+vWK2FIyaa44HA54eR0gh4sxM92Dz4=;
+ b=ftSbXC8VhSegvQ1QaPW2n5DFTTlomRnUeeLp0PQLVY6uET2eqwqzTjm1ou7etneYqSQuiNAtA97QIM66jM8FZkPrsoFRL5GpfwDduOS21QbETBpwUv8859MR0mV8qqLizVF1PagqWrQWG9bKpnyKb+HAAQsN4BPl5W7NviBaAWLc3VqQCIuyDGueUKqyn8OF8EjR/CTRdfXyn/eP7ufxjaQFtodC13jVE7FMrM5PGGiP7S65ejBSPkFUlZGg7meRQsOIt9szMeTj3ZydddpdW4zeF+0U+z/jUIFkeeKmC/L7q1/UfRTmF207PPSEdZNwgdkF1cWtv7BYoEhCaw2hFw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aQZ3yU6L6mhMe9nejkBp/Bqv223Gaj1HrOxUg5nE3pc=;
- b=IcntDo6o8TCXtJfNw+AwdI81ftfw/18UPjCtmdziKabU/d6KFiLfwo0tz2+NgTRvTjkeiU77AxyZfQjyPc+TOz2h/kvnavnw2AJBMw13n1kA1NP8fB2sWo4YgjwHwru1RbGVgmI3Ti/yfCETi12xwY+/hjxVdxYIwPK6BsbtMIP2Y+q3dv54zpZFMbAzeqkGc/rBvxnSAkFhgNzDIXMt2otKyID5FeoHHVVDSzr/younDEMCEzXHxYMqDhmWbgYDGznTzYIA37xq8EPD6AMxtrqw2kr6e9H2P05ge3wl5YiyVIJB3eJhCCtFPGeP1iAaAy9rnjGWcZiv3D8qlmssuA==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+ bh=GzICrweByfFjw+vWK2FIyaa44HA54eR0gh4sxM92Dz4=;
+ b=bq1fFYPuF2Wy8rYG23wbY9SJxFsJKwYasqjmV9GaZOHInfhZOBWc0zUVXBMsdpjdEh9RGRuLknm8D4yBGs3XxF9+pO5hefkwzu6QNpWqcrn1wDIh+MIfM8M5nHdBKdt21lSLjMadKl0XSYieHb3M32w9B1la4drhBfHlD8QJ9KBUsD7fkmOjlq9LfEfxZzus3NmaAdLE8t+6M+tbZmGvqRhgVWgKNU9ueiZHJ2BXDwIiAQgcYwNKoFFeoPdaPBN3qgsdHURfBoeCbjLNgUmwfL3vrwBcDExCrz7NzkinasXupLsJgDOPbtam8QgJF/f8Z7XPbJ+VUrXEja0XZ9SQrw==
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4796.namprd12.prod.outlook.com (2603:10b6:5:16a::14) with
+ by DM5PR12MB1337.namprd12.prod.outlook.com (2603:10b6:3:6e::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.31; Tue, 30 Mar
- 2021 13:43:15 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Tue, 30 Mar
+ 2021 13:46:22 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 13:43:15 +0000
-Date:   Tue, 30 Mar 2021 10:43:13 -0300
+ 13:46:22 +0000
+Date:   Tue, 30 Mar 2021 10:46:21 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Joerg Roedel <joro@8bytes.org>,
         Lu Baolu <baolu.lu@linux.intel.com>,
@@ -58,194 +58,95 @@ Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
 Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
  allocation APIs
-Message-ID: <20210330134313.GP2356281@nvidia.com>
-References: <20210318172234.3e8c34f7@jacob-builder>
- <YFR10eeDVf5ZHV5l@myrica>
- <20210319124645.GP2356281@nvidia.com>
- <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
- <20210322120300.GU2356281@nvidia.com>
- <20210324120528.24d82dbd@jacob-builder>
- <20210329163147.GG2356281@nvidia.com>
- <20210329155526.2ad791a9@jacob-builder>
+Message-ID: <20210330134621.GQ2356281@nvidia.com>
+References: <YFhiMLR35WWMW/Hu@myrica>
+ <20210324100246.4e6b8aa1@jacob-builder>
+ <20210324170338.GM2356281@nvidia.com>
+ <20210324151230.466fd47a@jacob-builder>
+ <YFxkNEz3THJKzW0b@myrica>
+ <20210325100236.17241a1c@jacob-builder>
+ <20210325171645.GF2356281@nvidia.com>
+ <YF2WEmfXsXKCkCDb@myrica>
+ <20210330130755.GN2356281@nvidia.com>
+ <YGMqwPnYjSfV+Cbr@myrica>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329155526.2ad791a9@jacob-builder>
+In-Reply-To: <YGMqwPnYjSfV+Cbr@myrica>
 X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0120.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::35) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR07CA0010.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::20) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0120.namprd13.prod.outlook.com (2603:10b6:208:2b9::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.18 via Frontend Transport; Tue, 30 Mar 2021 13:43:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lREeH-005tc9-Hm; Tue, 30 Mar 2021 10:43:13 -0300
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR07CA0010.namprd07.prod.outlook.com (2603:10b6:208:1a0::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 13:46:22 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lREhJ-005tgV-1N; Tue, 30 Mar 2021 10:46:21 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4864f82a-3ba8-426d-43d1-08d8f381c49b
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4796:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4796250C8570EC5ED9CB6EF2C27D9@DM6PR12MB4796.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: c891ea47-f285-49b7-ba45-08d8f3823463
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1337:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB13370C3FD04C260BF2DFE9ECC27D9@DM5PR12MB1337.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PWNLKAtcdJLBECr+lGndZg8lCJhDmgMW8U0fv271orOKl+HIRkRoL9NwXxG0oI/RuD4dKm0UkNyHYryzxZyw1fIqKtxgLn3guY55SGisR1VKPSLEQtct0MusQ98DC9Ce7euH+vx8sRYXZKK8gO+eLDNlC/mndluukN7Ime9aTEgdJEAgCa6+uNGIDV9ZWzPG7l9oQ2xP7XExf46uM7a668DlT+nq3AX43qxL12z4rMDpCL2iEfxjdzDpfNeyGISz6FmgZ7OHSfyK1qGAg4vURvzsKvua2oCVtx0JaHts18T4ztsGy40i9j464GBQARb3JiYHtoDL+zTFFmv4IiziX5d0tAkg+uYG7uoo7CuOYxdCTTF+REuVoQ4Y+dNrpU4ui7XUGnvs7deTH8JhBkwK4NYU1btSttbP8m5upEQY4GpXqsJvJtEHNeUeyo3wiIjqgxnM0E9EBeaDEjxSNgwWVX5kz5ZXMxH6mLPKPiZhC7OEs/6FN25fnPd3gvup8Q5WceE4m62ZWP188AGN4/ZPNrZHZFXVQvqJQMQ+CU2ddqHuqMypZqZvbWec/5XAytEDohK/7HuklIf5s4cHSlse6JYIbwhNUbwcZIgZL+BmnaRtUiCP6DtoPBeV2sPqNb/kXI8nDC7HKwD2rEGPRvu1bRFJnNOos5+cERrWEFTtnzWEAdNGvoZODFZl2siuNEDVTWVVFfOOyl1QgtORmo3I8sjsm4ZBwJbiR29uYhQy1VuiLlpZ2ywM/puJ6yqiATwW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(66556008)(1076003)(186003)(2906002)(966005)(5660300002)(8936002)(54906003)(426003)(86362001)(38100700001)(7416002)(2616005)(66946007)(9786002)(9746002)(316002)(26005)(8676002)(66476007)(6916009)(33656002)(36756003)(478600001)(83380400001)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?mNAFufbXLUkpeXe5uwY+DHhnOQZhJKtZhJ0U0F82KNyX+luikupzOqTUo4TF?=
- =?us-ascii?Q?qrxo9dpUaoey3Fk6oXDKu47p6Ey3Ug6f8dnayI+pk4JtjhauZL575gF1P7qp?=
- =?us-ascii?Q?n+d9WNe2UjKXW2OsYGA6/3Jk9949H5kqXjxyLbSbHPfLQRBbdQw7DoDrWqS0?=
- =?us-ascii?Q?ivJcwGE/Z79JivwAFy27CEOJ+tQZ5KYqqFTs+nf5Lx6paGsDDEcrEcoeYV5n?=
- =?us-ascii?Q?vDVR1aNAMfKBa+OOqrhdY655l4UXn5I+Rr9ba5sX/zMsiYmYg4hPVVGQnKgn?=
- =?us-ascii?Q?yohbUGOvVPU5ESxcS3BFuuPrIOroiv70KDFsXdYyQJngCwmcrTdsTKNQ/Gsi?=
- =?us-ascii?Q?beHVqHdyLH8RjCQXAjPLiNqj3qPJLr/fQS25aFcrro3g1d/1RMlSLWyvouLp?=
- =?us-ascii?Q?zXJhWqOs7MkX0XU63R3x0xuuYhkillSwoZGoCGdAJuo9reXw1hiec3bxlNsm?=
- =?us-ascii?Q?IQdoilnXc5zlIOhFwkNeDhsArBNWYR2NULFco+iQhHCQH+Z2Us5vIFCfzYEs?=
- =?us-ascii?Q?wdGkmuhpLafxssvgE484940AZNLmH5n6w/ZhO2dkmfaujPUIQ9od7BtPdA9z?=
- =?us-ascii?Q?dEtNgM/sWitIxromzdOtBDocj2n9JyzLI0R3e0jR3hk4gou42d0WbhPdDuKV?=
- =?us-ascii?Q?RwIeqLlrJfi1hK6nk65yUitTFvmdE97QVCs3mCz6PDw2GL/pexsG7LAv9qRq?=
- =?us-ascii?Q?zJXHcEbQ9ab/LH2xpq9pllmWF16pMwsiwFwLdmXqpVtMrlwyUJI3cxyVhvWS?=
- =?us-ascii?Q?x/r5AQBrVBSBdtTU0e7wpLzxbN70DBS+K/XaI7MJS65fOEcOHENucVozCzwz?=
- =?us-ascii?Q?0zpy3zdsuGaHqCwuqv78pR56snoaDyH3MiEz+Keh9oX4MpWwCKsuQ4o+2fmA?=
- =?us-ascii?Q?CGvudEOeaUGsTH0wfkmYeMSly7F4etvA1F0+2h7unEl9HJ6WSlJ09elrpgpf?=
- =?us-ascii?Q?zPH13Q77xFlXqwmMXlI2HB863rNwiil/idyViQulsz95qRuZZrVLUhKyZuuG?=
- =?us-ascii?Q?eW2AsI57MJyYWEVpSPPyzeUKf8ygvA638XKuiakW8P5Dn1UC3yW76tcwl09p?=
- =?us-ascii?Q?nEeMtc6FaIhDKCSHJQcgGaJPZMN7eQ9zoj5LVZvZbQimAr7iCC7W6hAVcAfc?=
- =?us-ascii?Q?xWhGjmLDuEBd3KqpbKrc0YRPsFBFzZauWHwqZ9vBEvSP7WUoTfg70/SLqTXN?=
- =?us-ascii?Q?Mha4albjLy3lr9pSNg5QeIpXtxVR9mm4C8dOOsdb6aCkeC9pogVZ7qRx4MPo?=
- =?us-ascii?Q?7Ypc5J2X8iXM6tVREFSAdwEVxwWm3T3n7n9CAv6oxFd+78qUaF9uCIrJwjlf?=
- =?us-ascii?Q?tciimquBFmAQ0RtJmZf46IfFO0IycvJ9bwmZ2PBL3V0HsA=3D=3D?=
+X-Microsoft-Antispam-Message-Info: 1UgNYu37RlZGxk4zuyKy4PPK8zvxWjukj9eDXYs+acV1r2oIPfTdFvylf5XWCiVO8QZEMZxjjqCiQLa5aVwMlOshqzjs1yJE9fjcD0rbQ+SntCOpNrpoZdG9uiQoe49fT2fjhc+Nz7a62smsCf2qsq21OpyyaubcC0MrfE0mMWnN8bty8nTn3RlkVpzRb4a9+apBHI2Fh1eRloOSKIxE/gKzbX+LWP7GvAuZmp0X3i+oZVqWM0I75M+88l/uK5tG+nVCSYVclCEa6NQjbwB+UKuWMoGterQ2zxCnpxbdEsrH9I4PUv+v89EnqcvT6grKqAZBY75p+ttqrS1S/1aIhFFYlbpF9ZmVYI0pm514YYyTAjZL4LMA1XZ3gDgc6hAgFhihhctn7gvpRexkhsAwN2NxBwiAVrf5Q4Oq2vBhHVMb39DMstDkftuEW2DsJBxRdy9HDd4c7+4jI1QUc5OdjBfpfZm65ec/7cjaSoegpajQp4Fkc6Sog0g6Eh3RWxtdbIuGzw4ATHAktYnq2j3P9bqS6tuBGzA6H1xoqcQ83hF0ZY1rI1xW+50xRglp7GGs2+wX11GSibs1zhlczan4waqS8+fxzk7ouv1ScXXmPYslWJzDOzR1lACxhLD7Nbfqa9z6HViUkLQCiNCqcsLXrX6xz/bdsNLymu+82pQKE8E=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(346002)(396003)(136003)(478600001)(186003)(38100700001)(426003)(316002)(6916009)(1076003)(33656002)(9786002)(2906002)(9746002)(4326008)(54906003)(5660300002)(7416002)(36756003)(8936002)(66556008)(86362001)(66476007)(66946007)(26005)(8676002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tKvH9UDXHeZ1lS3yPeSHPSg1Is2LHuMthqCJxC0shxiUE2PdqsZrEOghYgUm?=
+ =?us-ascii?Q?nX8LJ5D6tTLNgpxhXkEBjg8HV8MEco+AcGL1O3GJCxGaHblENo0d73T0j3gd?=
+ =?us-ascii?Q?wn4CxsFdROdttu6n63rEhWiCAoUpdjqruwurf9JpMOUDt0g+edmDShehMX6H?=
+ =?us-ascii?Q?2XccY8+gLji0/1HkJIjm0zGoNoWtpsGCtf1vbmFg4LmyNty40aS474Iw9eiR?=
+ =?us-ascii?Q?GR1AKRZW7D4dj9rmzuE6Fn5xobEcQUjWEfFW9gGgTsnqeikwamScv8w4a0Dt?=
+ =?us-ascii?Q?7Y461yXse3Yh6W9HLpxqBhjcYpYLKlIDKYcHpzsgMCX+3AbfJyKDf2QLoJ3o?=
+ =?us-ascii?Q?ei+2sq4a6jTdNgaRh+FZQWKBRu4OrPdbtHDjR/McGiDnQ5dhnJ68Q6PGFMRb?=
+ =?us-ascii?Q?Fq9UlyJDdNyXLVAqOXv0ZATjAgT1KaB8jgPF1SCZSqunYtxhCMDAFx2AidFu?=
+ =?us-ascii?Q?MvktR5WNyxNi8djMqOEGs7gsDBv91jEsQs/lK4icO2eSsNsv6trmaNSM7Fq2?=
+ =?us-ascii?Q?9khWJwTsfKXSaictxEgENbux7nl+wMnaf7bvevd/RhaIYb2098RmsvW7LkWA?=
+ =?us-ascii?Q?Znugif01hSX1JO52Or9GF6cDGBWaOdPyHn04rpnaoFqNDiHjnXzWqN2zlXLz?=
+ =?us-ascii?Q?ZVQdwvloKrC5g+S4RDXHLOMsvgXgoFFYhQgd99Sa694bje3SLPTaQuAvMHpb?=
+ =?us-ascii?Q?V+uFG+nSBw3xvih3LXiM5CAGe8hXq9XkIeyBEBEyCD8mOPuZ42Zf+62jZLjK?=
+ =?us-ascii?Q?jMfZv24rKx3mYlw4y2ZPEDkMZNeFyCJhT+5CQhRulqKUvw7jFPiPqs/q8HeG?=
+ =?us-ascii?Q?4yu8rlVtx9wdxNV+pK/h0qCiuOEGj+fRl9ejZFu0kspX0wLFMO2x+FlP7QvS?=
+ =?us-ascii?Q?W+e2N81KAGuEWaIND+vXUrGdvglVCzzoP8ZbseXnBPucscde0nbdoPGwTqwS?=
+ =?us-ascii?Q?FoANj1B7ZpLK8VRnP4D6jbzehLumY7V2XUJgxB6/w7qT1Z44aeK2Ta/iI4bs?=
+ =?us-ascii?Q?It+aIQx3XH+DMI9rc0IMu0Anhz+RERbEl3ivv/BNcS/bBe1Jcp3vUB5a45rR?=
+ =?us-ascii?Q?x8cr+aWohU77vLM0EAevT6qbQkdZdKzvdT5pxL7GV2iJlJe/LtnwhQObrH/b?=
+ =?us-ascii?Q?bPtHZy4vNO93zgBVheHlMt90hiydat1v9zz9JxeewMdf7oHhKfkPnBN3TOBJ?=
+ =?us-ascii?Q?OMY+0QFjaHUkAzH1Qdrg8yKhxf64HMA6uIisDRIYaR1ysYevNEptDfqfX5wO?=
+ =?us-ascii?Q?tJT6g5KmPVAN6WjzJdqBLaOVk8VMGnTgxlKI79T5XaLNsTvSrBXQsk/ru4cP?=
+ =?us-ascii?Q?jiewla9CJeuMK+I3E/g/swo2Ghl6q3Q6VwlNmdzFiRt8BA=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4864f82a-3ba8-426d-43d1-08d8f381c49b
+X-MS-Exchange-CrossTenant-Network-Message-Id: c891ea47-f285-49b7-ba45-08d8f3823463
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 13:43:15.3422
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 13:46:22.5442
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +AsOmUCHsyB4qWeujXgP2vwcaY5WXu7s+8GsftOQuEGxC6UoeAFAq7WOHCuDXLWu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4796
+X-MS-Exchange-CrossTenant-UserPrincipalName: gAC+bgwY1N6sYCKcis4DJPGJU/F6dl60uRX0rr7MNKHLMIpS68f+lfphcliv7LXC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1337
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 03:55:26PM -0700, Jacob Pan wrote:
-
-> In one of the earlier discussions, I was made aware of some use cases (by
-> AMD, iirc) where PASID can be used w/o IOMMU. That is why I tried to keep
-> ioasid a separate subsystem. Other than that, I don't see an issue
-> combining the two.
-
-That sounds like nonsense. A freshly created ioasid should have *NO
-DMA*. Every access to it should result in a PCI error until a mapping
-for the address space is defined. It is called IO *address space* for
-a reason.
-
-So, what exactly do you do with a PASID without an IOMMU? You
-certainly can't expose it through this interface because you can't
-establish the first requirement of *NO DMA*.
-
-While there may be an interesting use case, it looks to be kernel-only
-and not relavent here.
-
-> it matters when it comes to which interface to choose. Use /dev/ioasid to
-> allocate if PASID value cannot be hidden. Use some other interface for bind
-> current and allocate if a PASID is not visible to the user.
-
-I just view it as a shortcut, it has less to do with "hidden" and more
-to do if the shortcut is a valuable savings. If you swap four ioctls
-with one ioctl I'd say that is not enough of a win <shrug>
- 
-> Yes, I think we are on the same page. For example, today's uacce or idxd
-> driver creates a hidden PASID when user does open(), where a new WQ is
-> provisioned and bound to current mm. This is the case where /dev/ioasid is
-> not needed.
-
-So that is a probelm for uacce, they shouldn't have created PASIDs at
-open() time, there is no option to customize what is happening there.
-
-> Sorry, I am not following. In the doc, I have an example to show the
-> ioasid_set to VM/mm mapping. We use mm as the ioasid_set token to identify
-> who the owner of an IOASID is. i.e. who allocated the IOASID. Non-owner
-> cannot perform bind page table or free operations.
-
-As I said to Kevin this seems very over complicated.
-
-Access to the /dev/ioasid FD is the only authorization the kernel
-needs.
-
-> Yes, each PF/VF has its own PASID table. The device can do whatever
-> it wants as long as the PASID is present in the table. Programming of the
-> pIOMMU PASID table entry, however, is controlled by the host.
-> 
-> IMHO, there are two levels of security here:
-> 1. A PASID can only be used by a secure context
-> 2. A device can only use allowed PASIDs (PASID namespace is system-wide but
-> PASID table storage is per PF/VF)
-> 
-> IOASID set is designed for #1.
-
-#1 sounds like the mdev case, and as I said to Kevin each and every
-mdev needs its own allow'd PASID list. There is no need for an ioasid
-set to implement that.
-
-> > If a device is sharing a single PCI function with different security
-> > contexts (eg vfio mdev) then the device itself is responsible to
-> > ensure that only the secure interface can program a PASID and a less
-> > secure context can never self-enroll. 
-> 
-> If two mdevs from the same PF dev are assigned to two VMs, the PASID
-> table will be shared. IOASID set ensures one VM cannot program another VM's
-> PASIDs. I assume 'secure context' is per VM when it comes to host PASID.
-
-No, the mdev device driver must enforce this directly. It is the one
-that programms the physical shared HW, it is the one that needs a list
-of PASID's it is allowed to program *for each mdev*
-
-ioasid_set doesn't seem to help at all, certainly not as a concept
-tied to /dev/ioasid.
-
-> No. the mdev driver consults with IOASID core When the guest programs a
-> guest PASID on to he mdev. VDCM driver does a lookup:
-> host_pasid = ioasid_find_by_spid(ioasid_set, guest_pasid);
-
-This is the wrong layering. Tell the mdev device directly what it is
-allowed to do. Do not pollute the ioasid core with security stuff.
-
-> > I'd say you shoul have a single /dev/ioasid per VM and KVM should
-> > attach to that - it should get all the global events/etc that are not
-> > device specific.
+On Tue, Mar 30, 2021 at 03:42:24PM +0200, Jean-Philippe Brucker wrote:
+> On Tue, Mar 30, 2021 at 10:07:55AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Mar 26, 2021 at 09:06:42AM +0100, Jean-Philippe Brucker wrote:
 > > 
-> You mean a single /dev/ioasid FD per VM and KVM? I think that is what we
-> are doing in this set. A VM process can only open /dev/ioasid once, then
-> use the FD for allocation and pass the PASID for bind page table etc.
-
-Yes, I think that is reasonable.
-
-Tag all the IOCTL's with the IOASID number.
- 
-> > Not sure what guest-host PASID means, these have to be 1:1 for device
-> > assignment to work - why would use something else for mdev?
+> > > It's not inconceivable to have a control queue doing DMA tagged with
+> > > PASID. The devices I know either use untagged DMA, or have a choice to use
+> > > a PASID.
 > > 
-> We have G-H PASID translation. They don't have to be 1:1.
-> IOASID Set Private ID (SPID) is intended as a generic solution for guest PASID.
-> Could you review the secion Section: IOASID Set Private ID (SPID) in the
-> doc patch?
+> > I don't think we should encourage that. A PASID and all the related is
+> > so expensive compared to just doing normal untagged kernel DMA.
+> 
+> How is it expensive?  Low number of PASIDs, or slowing down DMA
+> transactions?  PASIDs aren't a scarce resource on Arm systems, they have
+> almost 1M unused PASIDs per VM.
 
-Again this only works for MDEV? How would you do translation for a
-real PF/VF?
+There may be lots of PASIDs, but they are not without cost. The page
+table behind them costs memory and cache occupancy, doing the lookups
+hurts DMA performance.
 
-So when you 'allow' a mdev to access a PASID you want to say:
- Allow Guest PASID A, map it to host PASID B on this /dev/ioasid FD
-
-?
-
-That seems like a good helper library to provide for drivers to use,
-but it should be a construct entirely contained in the driver.
-
-> We also had some slides from last year. Slide 3s-6 mostly.
-> https://static.sched.com/hosted_files/kvmforum2020/9f/KVM_forum_2020_PASID_MGMT_Yi_Jacob_final.pdf
-
-I think you are trying to put too much into a giant ioasid
-core. Responsibility needs to rest in more logical places, it will
-simplify everything.
+Compare to a physical addressed kernel DMA (like x86 often sets up)
+the runtime overheads from unnecessary PASID use is quite big.
 
 Jason
