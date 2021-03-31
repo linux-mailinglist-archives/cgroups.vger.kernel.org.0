@@ -2,117 +2,151 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753EB34EACC
-	for <lists+cgroups@lfdr.de>; Tue, 30 Mar 2021 16:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E8934F54B
+	for <lists+cgroups@lfdr.de>; Wed, 31 Mar 2021 02:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhC3OpL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Mar 2021 10:45:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36728 "EHLO mx2.suse.de"
+        id S232367AbhCaAI3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Mar 2021 20:08:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34747 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231803AbhC3Oo5 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:44:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617115495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=llTp9KMmNhLgpFrt/A/4gk0SgpNaUf1ZpYpNvho6oEk=;
-        b=iKbol1UC2cYC03I2rvUtoSu92j1pz2tv1L6/9iiw7cxLhRzh90EQvV5vkd5t59I4w79b5z
-        //6Ea77uYBp+fXZGWtXmCr26hrFxJVsTlICwAL4byi52zB9FKuPbHVzN1zqRgW2z3Slp3o
-        4tg7hayC693qItZd+Jni902Xu3F2GZQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EC1C6B315;
-        Tue, 30 Mar 2021 14:44:54 +0000 (UTC)
-Date:   Tue, 30 Mar 2021 16:44:52 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Martin Sebor <msebor@gcc.gnu.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        id S232401AbhCaAIL (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:08:11 -0400
+IronPort-SDR: TvWKEDXpG38ibe2lWWB2Y7LGeAiJPdXO+iZTyIu7pYWRgFPgRivhzuHOAsMd170ZsQZQXxKzsi
+ ypAMSbIKXs9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="171906789"
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="171906789"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 17:08:11 -0700
+IronPort-SDR: HUurJyYDUTND8ozX4erY0t4tlGlrQCC5ScJGMIGUlQMd5+m5YuCEtkemwmeM+oxQ3k2dIQN7sZ
+ ngtIj+/noGFA==
+X-IronPort-AV: E=Sophos;i="5.81,291,1610438400"; 
+   d="scan'208";a="377035543"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 17:08:10 -0700
+Date:   Tue, 30 Mar 2021 17:10:41 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Ning Sun <ning.sun@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        tboot-devel@lists.sourceforge.net,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        ath11k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Odin Ugedal <odin@uged.al>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: Re: [PATCH 06/11] cgroup: fix -Wzero-length-bounds warnings
-Message-ID: <YGM5ZJlK1V7ex9xR@blackbook>
-References: <20210322160253.4032422-1-arnd@kernel.org>
- <20210322160253.4032422-7-arnd@kernel.org>
- <YGLkPjSBdgpriC0E@blackbook>
- <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210330171041.70f2d7d0@jacob-builder>
+In-Reply-To: <20210330134313.GP2356281@nvidia.com>
+References: <20210318172234.3e8c34f7@jacob-builder>
+        <YFR10eeDVf5ZHV5l@myrica>
+        <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <20210322120300.GU2356281@nvidia.com>
+        <20210324120528.24d82dbd@jacob-builder>
+        <20210329163147.GG2356281@nvidia.com>
+        <20210329155526.2ad791a9@jacob-builder>
+        <20210330134313.GP2356281@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9pRQkLwCQMovNrXD"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3nUCGwPpE+E820DniY8Haz1Xx72pA38P6s5MWsbi0iAQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi Jason,
 
---9pRQkLwCQMovNrXD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, 30 Mar 2021 10:43:13 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-On Tue, Mar 30, 2021 at 11:00:36AM +0200, Arnd Bergmann <arnd@kernel.org> wrote:
-> Would it be possible to enclose most or all of kernel/cgroup/cgroup.c
-> in an #ifdef CGROUP_SUBSYS_COUNT block?
-Even without any controllers, there can still be named hierarchies (v1)
-or the default hierarchy (v2) (for instance) for process tracking
-purposes. So only parts of kernel/cgroup/cgroup.c could be ifdef'd.
+> > If two mdevs from the same PF dev are assigned to two VMs, the PASID
+> > table will be shared. IOASID set ensures one VM cannot program another
+> > VM's PASIDs. I assume 'secure context' is per VM when it comes to host
+> > PASID.  
+> 
+> No, the mdev device driver must enforce this directly. It is the one
+> that programms the physical shared HW, it is the one that needs a list
+> of PASID's it is allowed to program *for each mdev*
+> 
+This requires the mdev driver to obtain a list of allowed PASIDs(possibly
+during PASID bind time) prior to do enforcement. IMHO, the PASID enforcement
+points are:
+1. During WQ configuration (e.g.program MSI)
+2. During work submission
 
-Beware that CGROUP_SUBSYS_COUNT is not known at preprocessing stage (you
-could have a macro alternative though).
+For VT-d shared workqueue, there is no way to enforce #2 in mdev driver in
+that the PASID is obtained from PASID MSR from the CPU and submitted w/o
+driver involvement. The enforcement for #2 is in the KVM PASID translation
+table, which is per VM.
 
-> I didn't try that myself, but this might be a way to guarantee that
-> there cannot be any callers (it would cause a link error).
-Such a guarantee would be nicer, I agree. I tried a bit but anandoned it
-when I saw macros proliferate (which I found less readable than your
-current variant). But YMMV.
+For our current VFIO mdev model, bind guest page table does not involve
+mdev driver. So this is a gap we must fill, i.e. include a callback from
+mdev driver?
 
-Michal
+> ioasid_set doesn't seem to help at all, certainly not as a concept
+> tied to /dev/ioasid.
+> 
+Yes, we can take the security role off ioasid_set once we have per mdev
+list. However, ioasid_set being a per VM/mm entity also bridge
+communications among kernel subsystems that don't have direct call path.
+e.g. KVM, VDCM and IOMMU.
 
---9pRQkLwCQMovNrXD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> > No. the mdev driver consults with IOASID core When the guest programs a
+> > guest PASID on to he mdev. VDCM driver does a lookup:
+> > host_pasid = ioasid_find_by_spid(ioasid_set, guest_pasid);  
+> 
+> This is the wrong layering. Tell the mdev device directly what it is
+> allowed to do. Do not pollute the ioasid core with security stuff.
+> 
+> > > I'd say you shoul have a single /dev/ioasid per VM and KVM should
+> > > attach to that - it should get all the global events/etc that are not
+> > > device specific.
+> > >   
+> > You mean a single /dev/ioasid FD per VM and KVM? I think that is what we
+> > are doing in this set. A VM process can only open /dev/ioasid once, then
+> > use the FD for allocation and pass the PASID for bind page table etc.  
+> 
+> Yes, I think that is reasonable.
+> 
+> Tag all the IOCTL's with the IOASID number.
+>  
+> > > Not sure what guest-host PASID means, these have to be 1:1 for device
+> > > assignment to work - why would use something else for mdev?
+> > >   
+> > We have G-H PASID translation. They don't have to be 1:1.
+> > IOASID Set Private ID (SPID) is intended as a generic solution for
+> > guest PASID. Could you review the secion Section: IOASID Set Private ID
+> > (SPID) in the doc patch?  
+> 
+> Again this only works for MDEV? How would you do translation for a
+> real PF/VF?
+> 
+Right, we will need some mediation for PF/VF.
 
------BEGIN PGP SIGNATURE-----
+> So when you 'allow' a mdev to access a PASID you want to say:
+>  Allow Guest PASID A, map it to host PASID B on this /dev/ioasid FD
+> 
+> ?
+> 
+Host and guest PASID value, as well as device info are available through
+iommu_uapi_sva_bind_gpasid(), we just need to feed that info to mdev driver.
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBjOV4ACgkQia1+riC5
-qSgZNQ/9FFBZs5QQqEUHmbWyF9O2R2bGF8WCBz56zh+F2OZf+/GK7z4OGhkKUlEa
-1lPOUoibt4aZZhWD30RcfB3i3qJ8VqY3wqwnS6W9uN9+sU22sgsx/elCqiua3EnM
-4tGDRcLBfSuktgPo1T0oNvGGbFnFJ0kUenLZ6mVkWlSTzx8kp/B8h4S5LkYmRIov
-fVmHURht22FPiA8wwlUb9LAp8ONF+68t6BtMWNmZbqmJ17qHSnLyQQUiHIHytASt
-xgaQCJU8/nrtv2xPfp66aCQLO12b6OxpjPoRxo1hj9IP5HZPukzNDat/VaWyh0iE
-t9GO85K0PVqcuvJpymes0yRT6RvEwlqEna0T+qbh+qih4S3+xRm/Js5IV5m8KfIc
-wWUve4llNT1jq6zzgn28FkXe9coH7ybpwBaWeAdwEM3Wl9GvXimKwIQqg+3ZDnm4
-CbDVh6scYVu3kFYHVy6ld5+fG2GWEKvNL+9AVH+wsXUb6OXtyOtxD3FWyiVVYBkl
-Q4N0KWETd67BNb2NklxTkeC4hYusuHeFvxa9Ki6K6zbdxDxVwdcTWpWFVkTDs45S
-sEVkmsPU9pLu5vm5o9kBCmr6q1lW6yzudcxBvcvcHXGQnkfcmDCo+C3OEwKzKUeh
-8+BhDV9zMpKBpJfuPiI8UNIt8sI7YeTpjdk14YjWYQTgZCHc7WU=
-=iFNx
------END PGP SIGNATURE-----
+> That seems like a good helper library to provide for drivers to use,
+> but it should be a construct entirely contained in the driver.
+why? would it be cleaner if it is in the common code?
 
---9pRQkLwCQMovNrXD--
+Thanks,
+
+Jacob
