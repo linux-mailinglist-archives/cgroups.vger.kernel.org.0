@@ -2,51 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BD03519BD
-	for <lists+cgroups@lfdr.de>; Thu,  1 Apr 2021 20:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC3F351CF3
+	for <lists+cgroups@lfdr.de>; Thu,  1 Apr 2021 20:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbhDAR4G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Apr 2021 13:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59908 "EHLO
+        id S237542AbhDASXG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Apr 2021 14:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbhDARxK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Apr 2021 13:53:10 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2062e.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383A7C0319D8;
-        Thu,  1 Apr 2021 10:26:23 -0700 (PDT)
+        with ESMTP id S234588AbhDASVD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Apr 2021 14:21:03 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20621.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::621])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62AFC05BD13;
+        Thu,  1 Apr 2021 05:54:41 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G7n3eZXagTwg3F6QTliwUyA0m2UTWOWHfZ07O6l+f2n+GlQRjj4F67Oq1qjA400PydCY14GBzFdx5AuO4orBQjqkyCHcepGTLFlVLSXNwxNp3YQcdRu0Tb1KgnIAxCjvdYyyTIz+b6GXINLu/MhcuEumsoyIVdDU5HLQKbPZSUGI7U5rvRa42xjOGVB69vMTJN9pIwCt7LIlQfnJm+aNSSDjpwHQKfKyV+6aSFZ2HVpuQBZckS1BE6nM7VD0kgPGiufbE1blF4zQwEJnsL0QPf1KUHC0BsrDnHAMUL6DOV74VIH1WoQnONOSjLMILT+hykYNiP/ymxYdsRq42nFuwQ==
+ b=PiV/xwtLcLqLB5hg2X6IhR52B1jkYL8VLKgjA1GgacgD+u/Ju5HFfAHP96B9BjNPZsrlGb0jHfto5Vyc/YmyJJZjpoW1/goGnCICeRcOJwDQKylws1+8UvaMvBKYL1hldQ9Bh4df/nWXgzeoODTBRC1vlGph37C0/Zg0MReXj70ie4PGjbMwBfLJYhlMqVT5+u5caQ2ZeV3X0yqv0BFHyspFkuqyiQJ/h+aBET9gMMYFEr+DXLajtKEYBpGoT6t+QSpLiBxZuTnytxHrDTka+Oosk1GJqKnxaFJU1g3KrIX+9cHawjgPMGCkbFFGWHNvPm3L0xgXvD4Tg531VXcALA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ziwf1w5DA8l+3uM9hK6DzOugzV5jzyrNOz7y/RdgICY=;
- b=DwVj2p0U9QoaiQcSP/dxOEdcOQZGVNtcOraaBM6Iw6iawcOuh4jWVjy5s/ZKHHd0svIgvSl6cvFC7dptRXMW4ynvuyLlMc4/7m5EG+qNJvezsnoQsIA3FfUsYOORb7gRE9bu/pLASpqr8/7QunZwUJj9fSxHmNjQds1VNpJ1ipbDxY3pOyaGD09Gcr1QiAdCApdzRNAcN9DMbR1jtk8+9k/oN5NR5OD4VrbdN8XqcsRmbIKYrf9dO8v6/khbybBVVNZ8qOjno/uNi4qEIaYPfc3Sbqk4pb/DZumNS6Mek1pDQkiHziyl/vCKgqLwJKxmypGrgU+D2BHKQbVOJiEiyw==
+ bh=x7N5icP71ZD/v1I/EQgOUCK1AgmVSlEGNRoPkTN5V5k=;
+ b=Xkikj/1stgv9lzBXJU85UfyfmRC6j0ee9Myl6xqm9hJNH2ouAsKrXzxx980O30M2lyTTWs3ey9cpm1NwK5Cry6qNcUDS377qgC6hfCi4ijTpUl9Ovc4DEHiB4O9+XtkzOppoELwusAFIDm/lyN3eEzeZisdCFwG8fbNJ+HDRUe7G0e8PQ4O/4esamA6wNiEjx1/nC6natNG4ol4jcZlhTTdr1rnnivKEZjmo+xNyqjTcQdtdtMP3SLadnbmiff4parnZBihq/bHwglj/7/tqSyXhe2oMnpmWBDHgn6VLkJSmZsHYnhsk8DD+1UA9ZyvkkuI7QuF9jgpkobNbbPIKHg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ziwf1w5DA8l+3uM9hK6DzOugzV5jzyrNOz7y/RdgICY=;
- b=ODGfMh1+QBZDYa/FGBFHjgz5L8qh0H3bOxSDR5QUAA3YbCV9H+bfGlCK4+wr6CiNpEHzvF3y0LqDy0FgACGthypU2LGcNB/wFqHKT4VSE60R8Lr63OYmrlh435wMpJwCi+47ShEqutwZGISH297ecxN59g1yL3JrJ39XAJAbfVnQqe3WsJBjk0RzDP1pelWLr/nkPhZUnDrmJ0hYM6Si1K0XutEYjvhuWDhLbAHNXFR9itvetNrPpQoyg214XK3P5O7xL8pN+hV7z8mRj/IEFb/OMaj2sF2Nia0oq4sClV8BZ7wwEcjUNqNqg6R7VOkhKgcinqBPJ7mv0o76e+499A==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+ bh=x7N5icP71ZD/v1I/EQgOUCK1AgmVSlEGNRoPkTN5V5k=;
+ b=rIqHp5jhJY4wEpOXp2JGc4edsmgedQRL8ekFflVLhIvM/lbXg0+HI/JoVx19qsOZq+7v3TCqNAhTpC0Nqw74WTcS3YXIhd3rEYEdcW+napx6eZTyHIHNUoBN20YAwpZz7Ip4RCcqTtqXiWqNATIb1wJd3LiNkQGuF0J8I6+Oam26VQL5sA4iwdpxSc9ZjBJUlvrimRrbIZeljCPm5WhA2TP12K/7eY/qLN5UO6PUJR2Y5aGMcva2vac/ozOlYJc4yBHgohiqUSWznj4XcAeUUoro0xeUoby8O3u1Q72PRLEusMAYgo/cIJl7DmbJ2JP8Mt4/F1MhrSSojA7QX4d28A==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1435.namprd12.prod.outlook.com (2603:10b6:3:7a::19) with
+ by DM6PR12MB3210.namprd12.prod.outlook.com (2603:10b6:5:185::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 1 Apr
- 2021 17:26:07 +0000
+ 2021 11:54:31 +0000
 Received: from DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
  ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3999.028; Thu, 1 Apr 2021
- 17:26:06 +0000
-Date:   Thu, 1 Apr 2021 14:26:04 -0300
+ 11:54:31 +0000
+Date:   Thu, 1 Apr 2021 08:54:29 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         David Woodhouse <dwmw2@infradead.org>,
         "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
@@ -61,161 +62,182 @@ Cc:     Joerg Roedel <joro@8bytes.org>, "Liu, Yi L" <yi.l.liu@intel.com>,
         "Jiang, Dave" <dave.jiang@intel.com>
 Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
  allocation APIs
-Message-ID: <20210401172604.GK1463678@nvidia.com>
-References: <20210322120300.GU2356281@nvidia.com>
+Message-ID: <20210401115429.GY1463678@nvidia.com>
+References: <20210319112221.5123b984@jacob-builder>
+ <20210322120300.GU2356281@nvidia.com>
  <20210324120528.24d82dbd@jacob-builder>
  <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB18867EC048E3E3FA37F9C38F8C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132740.GB1403691@nvidia.com>
- <BN6PR11MB40688BB2693A657D411E33C8C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331123801.GD1463678@nvidia.com>
- <20210331164621.5f0b0d63@jacob-builder>
- <20210401003705.GS1463678@nvidia.com>
- <20210401102355.38b0b7d7@jacob-builder>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210331124038.GE1463678@nvidia.com>
+ <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401102355.38b0b7d7@jacob-builder>
+In-Reply-To: <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
 X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR17CA0018.namprd17.prod.outlook.com
- (2603:10b6:208:15e::31) To DM6PR12MB3834.namprd12.prod.outlook.com
+X-ClientProxiedBy: MN2PR15CA0049.namprd15.prod.outlook.com
+ (2603:10b6:208:237::18) To DM6PR12MB3834.namprd12.prod.outlook.com
  (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR17CA0018.namprd17.prod.outlook.com (2603:10b6:208:15e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29 via Frontend Transport; Thu, 1 Apr 2021 17:26:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lS152-006opu-Ml; Thu, 01 Apr 2021 14:26:04 -0300
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0049.namprd15.prod.outlook.com (2603:10b6:208:237::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Thu, 1 Apr 2021 11:54:30 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lRvu9-006jCs-3G; Thu, 01 Apr 2021 08:54:29 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94488ce4-964f-4f31-c3d1-08d8f5333b50
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1435:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1435239BD23BD4CD02F54FE9C27B9@DM5PR12MB1435.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Office365-Filtering-Correlation-Id: dac22d92-0fb5-445a-ed2f-08d8f504e8d1
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3210:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB32100BBC92166C64A9A6C459C27B9@DM6PR12MB3210.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dcO05XyPo2OQ2HER4YjIM20HPJtpuh5gnyAP5On4+C1x9PpleitNtkyjin6/7LYcI4ynnkOa2jztkpCMng0xvlTwXyXjJPzbZv5ayvHiSJDh/06tAzoa65bksKUKwl2WXQa1BUaFdclk+JFqWJb97V0Ek19vASOsaDLGo9EmgbU4z3QjZGxNOaCb82POkXoQUExI6omTlKttD0Sl5Ohm4JkWVyaOwBdmtJtDprTVnCdorA6wBdwY6SPB2g6D+3ypMwWQZq/aNxZj1NDxrFJl8i1H0MhONS6QBhiAlu3tT4GKfCZzFbh/YwAB8KybWX/HizhTaXjiRq9RLdFFTE7N+z6B3f8FuHSXuCz1soLa9KQonzCuTNj3fhQzBYJ5jNRDtqMm62jLqhR76v4cwXy7vItk05/bC0+CJ2vQR5irawGGqkbxQ3xnZq3FPbyxaha3ZMimWqEKeIL3EM9iSOzRfTePVpPJaitCR+BZ2XlTSFqc6kxuAHrxPpUSOmGb+8ufscDIyYhgBvtmk5rtj4ULx+nMiUnLCYAXRkGyGEwjLBfbp1pawO3hdx6lj1Zm7di1z7mGjlPEaEnoaDJHFuDwvR8oPzDe2bwndggsnL8RqodqyLfBLRw9CPIB5rtBFslmddhEzCNFfD7GMmaoeIw7KZ4+PIM9oB70UJwq433DjeY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(346002)(376002)(136003)(426003)(1076003)(2616005)(186003)(316002)(2906002)(9786002)(9746002)(54906003)(66556008)(38100700001)(6916009)(66476007)(7416002)(33656002)(86362001)(36756003)(478600001)(8936002)(66946007)(4326008)(5660300002)(8676002)(83380400001)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?swxWzRGqXiiA2mjgOB/bbW6Sk9+yw3nvZ6XVCxGdU37JYefgy2ofVtkCGdS6?=
- =?us-ascii?Q?KCFKPtBvFuxTGyDMVIbFZU3MzQYqVG4USiqUfArBLBQFjqAlEAOeG9XSmuS8?=
- =?us-ascii?Q?HqLVe3tCLD8RJBCg1Gwse7fv4hqDsH+JXs/crnchDbENIznhDDGl9fgoAXHt?=
- =?us-ascii?Q?CqNA3WWqigywQTV/L5bJps8Lvbj9muWBPrcDJjO922DHH7ncHVTiadFE4u2l?=
- =?us-ascii?Q?1aJM+UjWDkRJldGFXkphyINwEzckmlzXojhmIQ5ZDSZQSAIIm5x/1Ok6kN3D?=
- =?us-ascii?Q?+IU4rzKcJezZ9UPt7wq31JTX3ZGlUKfl7jGDYlDqOm1GkQwk/T4kPwr1+c0/?=
- =?us-ascii?Q?3+6kG+hZcDUIvuiUOCgIa8xtXd+bkJg26iimeSyIOEw9uEJB8KY153MjevwB?=
- =?us-ascii?Q?8jPvREtYyEYncUDvhS/1y8uANyVZFYMQQapKImiZQEyZEvLA6TTKdPIQZF4J?=
- =?us-ascii?Q?1g8TPXxq8Mhf6p44z3Yq7kw9Vwch7xVie92n8o4yp4xXvNV4sKjOwnkorF4N?=
- =?us-ascii?Q?YP9218O5n3xai2we/lV6hAcLOIQI1uJkxNvaP+7nEbn0K3B8raR+BAjLjJcB?=
- =?us-ascii?Q?pFybRIx65SleQbsUA58IDXyOwJV1SCKuxbtQQ0A2U5SUz8pPswiJogXq8T7q?=
- =?us-ascii?Q?gPJembTwrIyVTUPYSJMkrQNDQ2v+dAAwfC9hQKxAp7DG8H7irFSrMaE1Qz52?=
- =?us-ascii?Q?q+IDcDcIBcogTOm1cuYYIARm0/9LMG8GboZ5NRSjovsZx5f8EJAxsHXpDO+V?=
- =?us-ascii?Q?FYbTh9ufVvscEPAStJ2+1nZ50ON9Vp1UDPePptgezmSajLQD9EVqkEK4MVaH?=
- =?us-ascii?Q?dkcHf4M2ztJHh/pzTXYZKaaBmfKWqbrxK94J24+QbZcE9z1fZ+1BaNo0BYxK?=
- =?us-ascii?Q?d+5SUwDmim4EUFrSm3vDk03EJKwEAPUO8e7O7ix4BTeQt3h9K/aizFDuL4KR?=
- =?us-ascii?Q?p1k/1XjditFMTsI8SsLtCvrHKAG2voHBrSKBLULUlkZbh6ZXpmLlWbRALnE6?=
- =?us-ascii?Q?wCimucdlLefEH293YZfv61NN44+CJFRotZkvFGpkjBGDefujJug21DGkZM/9?=
- =?us-ascii?Q?ptpklwzm6m7nA5/1fWy/js/QR8FWCXhoiCCoP6NqLimuZAABu9PsU58j3QXk?=
- =?us-ascii?Q?HK0A3bQueKIZjnAnCnUG76hLFKCYqvD4lob+JQG2+DDbwT5kO6JmLJVxQDJP?=
- =?us-ascii?Q?aPRNoPcFVjOeDT1MYvOWrcJc97misJP2pCAyd5or4uFBMk7Clg8sP+RMwH8Y?=
- =?us-ascii?Q?w2ni+PqubtlNU+hD4RJv6qwDD3nlOAeyDh7pEPrOgH5UDp4czlBvMBr9DqxT?=
- =?us-ascii?Q?+zTHIenRMNc8HGrzksttWtvLh+dq/Bbd3DhbKmx/YDNEBw=3D=3D?=
+X-Microsoft-Antispam-Message-Info: xHI572SjzSrVQWFsJ1ln8iyoRlbfOp05m9c5HNSUBwWlwDe+2UnAwyBkbdbE2xPuDMHAg5UGSThSOo6cfKkSjlB6s53RyLnCDDddfHFhLlSo0+5M1l3SEcqGk6RQIBcwle2Oj7alG4s1qVfPC9jt5uQRIoZ+vAnX7BfoA83dXbdtZwZ4YbSd/RWUXLnl/4xiwibV0BAJPzr8DYiE4PVG9O9iU7e8H7oQiOybL1aJcY7yzBW7h92EdP6zaWIvSOt5p4pFV8Liafs8ThGEJB7gix8azOkAxEzNFEl3hhoHif/MpCuVgANUT6E1R7zpuQmXFtWaFjeo4+wrLVdQNdq8ozU2cm227V3YDF1x1QtW48dFeaCIZZXQQnTkxdDuUrxEIOEjgD1NQRRrQpIIG682WlWzb3g/yO6Urf9kjoYIFvrKDm/l7wnz4mz0HuonSA3+jGLA5sd9m1ce+dhIugJz5rez1Y07wjG/iZzgK5m/Ts3tFgrhW4wh9XmKFU/z/kMJH9J2aBsuvUOhDnLcFizhFkvwE8Q/l/koJgVbN463w/jsEaxkhalt8fgX3LVheQi51azbtk1xjMPtkuIZijI8l5p/CgONdEYTcyW+IzLh++biZCq5nWlLy8UL9TcBjx9Lc6lALl1mZRbaXwydYUoLTO6hv3hozaGIdAxLT+d3QAQ0KSQeazVPl/E7ZlmAS7Zw9JPHNJPS2R00RnlK04IvXnks4uh5vm4KB4otS8K21gePLyRKlWvTVi3aN5daaUrt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(366004)(396003)(376002)(33656002)(2616005)(86362001)(54906003)(38100700001)(66946007)(36756003)(1076003)(5660300002)(478600001)(6916009)(186003)(9746002)(316002)(9786002)(426003)(966005)(26005)(83380400001)(8936002)(7416002)(66556008)(8676002)(4326008)(2906002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gOWT3/YPIIi9n4fcaSimZWlf2wSseb0agBmwMW3mZ3UV366j9pkZXbT3ywEJ?=
+ =?us-ascii?Q?QdfQGWYVFW+YnGr+R/YQhS+NEOWNXl01j4huatbEwzr4eWqrOnDF1W06twvy?=
+ =?us-ascii?Q?qHL6kxQ5t/LLNCf2IBlXHqwq2x2SLUGXeJgLRLs0l93Mnlo1kMVSOG0vV2fS?=
+ =?us-ascii?Q?1ZFvCkhEi/lMRiJD1HT17uJ6PB7myTgY3TwPHogCqeMjlMLlicH7EXUZOr4e?=
+ =?us-ascii?Q?JkDZLFVtnQkvgBnM3ymI2T0yq+HS2YiSlqMHYPU6MOUBaoNfFDQmFs1aF7Hc?=
+ =?us-ascii?Q?6x23MPOVHG94J2tclfEUbYHTVe8RRbkeUfEzahy+QkpRIx1wR0u3wiiRuvBZ?=
+ =?us-ascii?Q?zrm+qcXXKTzRKaH3xRtiIXbiSopOGaurMBrk+M9SOFywXwQBmg5byqH9jOqX?=
+ =?us-ascii?Q?JcRdLfZUYMHCSooNZVd+AtXwGR25L6Y1oRN9IeXOR5FPtjG8ZUW3vjWhsF9h?=
+ =?us-ascii?Q?tyov8eu1Rs9BX/y+d6nqyqr/L30ixhb/PnNgXK+VADjHy/0G/Vg+7LiUFrb4?=
+ =?us-ascii?Q?Efw58tj+E2WKnGIaCWUWtGgm4fj2UmwDakBvw/u7orquq5sVddbcQibJbGGz?=
+ =?us-ascii?Q?u27v+6NIpRrZMMzW37ywME0D8cN4NO4/2oexOLr6urJqxp9sp9d863NsI6Wj?=
+ =?us-ascii?Q?ZnM+GmKoZq8E4jnCl+0FRksWJbBy6iYJXQyKQeitbwNDRawusL3kqyTsz+aj?=
+ =?us-ascii?Q?zK7pTKzfwwXFDDKnnloiPXZat/8V2qmUSx5t2KBNbJiZXTGzESKdjUZYn1k9?=
+ =?us-ascii?Q?om1n1DpRWtrbOpQUpkyw9DP+ovwYwfk0+35PEtcCQeBji2pGOBSCV97HdY98?=
+ =?us-ascii?Q?oCfbbs0Ex9IiPpaHEPMPPa4olUGNs5NhQGomdQ1OgvuMmnZ+XH86JZoJPPIg?=
+ =?us-ascii?Q?648FYTDNInOBbxnHTvF/nhgd69vvLL28pU+CxUnvdyz3+V3/dbXOhITYv1AS?=
+ =?us-ascii?Q?cbaAcMCzUzdPB+BD0yjLn1Wf00EN/Q2ybQmzCnnMwkK9XmZfOFeQmfRPhIjG?=
+ =?us-ascii?Q?DGLz+zUK8eqgi6KQTDNGjatXMwVUVh6GdvVAgyI55dxsSa52JyUeEsMIqY1U?=
+ =?us-ascii?Q?KEMVtUjPQgAuC3B3miAvXY9fs7Eo5UpUg/OPqDmF/xM9b7+pY6peru2xA4GW?=
+ =?us-ascii?Q?c0BMDDgxDgZUYMrXmn9LggoxDCD7LCCK+FOX9RSwse3RxjFIzL9inUNOQorD?=
+ =?us-ascii?Q?VVSniLQ5zbHjKu4Jma+acFltwBoXjGDvBh9jfEFjmAPzPsh8NnwLVy0hUaBj?=
+ =?us-ascii?Q?CG8SbasA37zR5S0OSmjQ1lZlUUNmf8iZODoVom5W/6zDUzp4UOKV4Guaeq9y?=
+ =?us-ascii?Q?3nmZf2bPaxlqzjF7/DpxZRccEgE3EW7HUhyHSbRuoo4HTQ=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94488ce4-964f-4f31-c3d1-08d8f5333b50
+X-MS-Exchange-CrossTenant-Network-Message-Id: dac22d92-0fb5-445a-ed2f-08d8f504e8d1
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 17:26:06.2799
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 11:54:31.2178
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lDewsFPi6lcKPsI7BNByD/s9sAv/0YZUJXuEXHZQAfb60F6tqXs/PHVAXxMpbJnb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1435
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7LX3fxe1V7rf1GgGPdsuvdgnt8AoQdGFRbUlnKuJAsqD52LdgfsH+hCC2u5pXuxW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3210
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 10:23:55AM -0700, Jacob Pan wrote:
-> Hi Jason,
-> 
-> On Wed, 31 Mar 2021 21:37:05 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Wed, Mar 31, 2021 at 04:46:21PM -0700, Jacob Pan wrote:
-> > > Hi Jason,
-> > > 
-> > > On Wed, 31 Mar 2021 09:38:01 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > > wrote: 
-> > > > > > Get rid of the ioasid set.
-> > > > > >
-> > > > > > Each driver has its own list of allowed ioasids.    
-> > > >  [...]  
-> > > > 
-> > > > The /dev/ioasid FD replaces this security check. By becoming FD
-> > > > centric you don't need additional kernel security objects.
-> > > > 
-> > > > Any process with access to the /dev/ioasid FD is allowed to control
-> > > > those PASID. The seperation between VMs falls naturally from the
-> > > > seperation of FDs without creating additional, complicated, security
-> > > > infrastrucure in the kernel.
-> > > > 
-> > > > This is why all APIs must be FD focused, and you need to have a
-> > > > logical layering of responsibility.
-> > > > 
-> > > >  Allocate a /dev/ioasid FD
-> > > >  Allocate PASIDs inside the FD
-> Just to be super clear. Do we allocate a FD for each PASID and return the
-> FD to the user? Or return the plain PASID number back to the user space?
+On Thu, Apr 01, 2021 at 07:04:01AM +0000, Liu, Yi L wrote:
 
-I would do multiple PASID's per /dev/ioasid FD because we expect alot
-of PASIDs to be in use and we'd run into FDno limits.
+> After reading your reply in https://lore.kernel.org/linux-iommu/20210331123801.GD1463678@nvidia.com/#t
+> So you mean /dev/ioasid FD is per-VM instead of per-ioasid, so above skeleton
+> doesn't suit your idea.
 
-> > > >  Assign memory to the PASIDS
-> > > > 
-> > > >  Open a device FD, eg from VFIO or VDP
-> > > >  Instruct the device FD to authorize the device to access PASID A in
-> > > >  an ioasid FD  
-> > > How do we know user provided PASID A was allocated by the ioasid FD?  
-> > 
-> > You pass in the ioasid FD and use a 'get pasid from fdno' API to
-> > extract the required kernel structure.
-> > 
-> Seems you are talking about two FDs:
-> - /dev/ioasid FD
+You can do it one PASID per FD or multiple PASID's per FD. Most likely
+we will have high numbers of PASID's in a qemu process so I assume
+that number of FDs will start to be a contraining factor, thus
+multiplexing is reasonable.
 
-No, just this one.
+It doesn't really change anything about the basic flow.
 
-> - per IOASID FD
-> This API ioasid = get_pasid_from_fd(dev_ioasid_fd, ioasid_fd);
-> dev_ioasid_fd will find the xarray for all the PASIDs allocated under it,
-> ioasid_fd wil be the index into the xarray to retrieve the actual ioasid.
-> Correct?
+digging deeply into it either seems like a reasonable choice.
 
-'ioasid_fd' is just the ioasid number in whatever numberspace the
-/dev/ioasid FD's use.
+> +-----------------------------+-----------------------------------------------+
+> |      userspace              |               kernel space                    |
+> +-----------------------------+-----------------------------------------------+
+> | ioasid_fd =                 | /dev/ioasid does below:                       |
+> | open("/dev/ioasid", O_RDWR);|   struct ioasid_fd_ctx {                      |
+> |                             |       struct list_head ioasid_list;           |
+> |                             |       ...                                     |
+> |                             |   } ifd_ctx; // ifd_ctx is per ioasid_fd      |
 
-> > Why only one?  Each interaction with the other FDs should include the
-> > PASID/FD pair. There is no restriction to just one.
+Sure, possibly an xarray not a list
 
-> OK, one per subsystem-VM. For example, if a VM has a VFIO and a VDPA
-> device, it should only two /dev/ioasid FDs respectively. Correct?
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(ioasid_fd,            | /dev/ioasid does below:                       |
+> |       ALLOC, &ioasid);      |   struct ioasid_data {                        |
+> |                             |       ioasid_t ioasid;                        |
+> |                             |       struct list_head device_list;           |
+> |                             |       struct list_head next;                  |
+> |                             |       ...                                     |
+> |                             |   } id_data; // id_data is per ioasid         |
+> |                             |                                               |
+> |                             |   list_add(&id_data.next,                     |
+> |                             |            &ifd_ctx.ioasid_list);
+> |
 
-No, only one.
+Yes, this should have a kref in it too
 
-For something like qemu's use case I mostly expect the vIOMMU driver
-will open /dev/ioasid for each vIOMMU instance it creates (basically
-only one)
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(device_fd,            | VFIO does below:                              |
+> |       DEVICE_ALLOW_IOASID,  | 1) get ioasid_fd, check if ioasid_fd is valid |
+> |       ioasid_fd,            | 2) check if ioasid is allocated from ioasid_fd|
+> |       ioasid);              | 3) register device/domain info to /dev/ioasid |
+> |                             |    tracked in id_data.device_list             |
+> |                             | 4) record the ioasid in VFIO's per-device     |
+> |                             |    ioasid list for future security check      |
 
-> > The act of programming the page tables and the act of authorizing a
-> > PCI BDF to use a PASID are distinct things with two different IOCTLs.
-> > 
-> Why separate? 
+You would provide a function that does steps 1&2 look at eventfd for
+instance.
 
-Because they have different owners and different layers in the
-software.
+I'm not sure we need to register the device with the ioasid. device
+should incr the kref on the ioasid_data at this point.
 
-It is not about use case, it is about putting the control points where
-they naturally belong.
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(ioasid_fd,            | /dev/ioasid does below:                       |
+> |       BIND_PGTBL,           | 1) find ioasid's id_data                      |
+> |       pgtbl_data,           | 2) loop the id_data.device_list and tell iommu|
+> |       ioasid);              |    give ioasid access to the devices
+> |
 
-> For a complex stack like vSVA, I feel we have to reduce moving parts and do
-> some divide and conquer.
+This seems backwards, DEVICE_ALLOW_IOASID should tell the iommu to
+give the ioasid to the device.
 
-uAPI should have all come together with a user and user application.
+Here the ioctl should be about assigning a memory map from the the current
+mm_struct to the pasid
 
-uAPI is hardest and most important part.
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(ioasid_fd,            | /dev/ioasid does below:                       |
+> |       UNBIND_PGTBL,         | 1) find ioasid's id_data                      |
+> |       ioasid);              | 2) loop the id_data.device_list and tell iommu|
+> |                             |    clear ioasid access to the devices         |
+
+Also seems backwards. The ioctl here should be 'destroy ioasid' which
+wipes out the page table, halts DMA access and parks the PASID until
+all users are done.
+
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(device_fd,            | VFIO does below:                              |
+> |      DEVICE_DISALLOW_IOASID,| 1) check if ioasid is associated in VFIO's    |
+> |       ioasid_fd,            |    device ioasid list.                        |
+> |       ioasid);              | 2) unregister device/domain info from         |
+> |                             |    /dev/ioasid, clear in id_data.device_list  |
+
+This should disconnect the iommu and kref_put the ioasid_data
+
+Remember the layering, only the device_fd knows what the pci_device is
+that it is touching, it doesn't make alot of sense to leak that into
+the ioasid world that should only be dealing with the page table
+mapping.
+
+> +-----------------------------+-----------------------------------------------+
+> | ioctl(ioasid_fd,            | /dev/ioasid does below:                       |
+> |       FREE, ioasid);        |  list_del(&id_data.next);                     |
+> +-----------------------------+-----------------------------------------------+
+
+Don't know if we need a free. The sequence above is backwards, the
+page table should be setup, the device authorized, device
+de-authorized then page table destroyed. PASID recycles once everyone
+is released.
+
+Include a sequence showing how the kvm FD is used to program the
+vPASID to pPASID table that ENQCMD uses.
+
+Show how dynamic authorization works based on requests from the
+guest's vIOMMU
 
 Jason
