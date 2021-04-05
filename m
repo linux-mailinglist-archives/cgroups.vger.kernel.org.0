@@ -2,29 +2,29 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0933354699
-	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 20:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C15835469A
+	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 20:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240052AbhDESJ0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Apr 2021 14:09:26 -0400
+        id S234539AbhDESJ1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Apr 2021 14:09:27 -0400
 Received: from mga09.intel.com ([134.134.136.24]:44462 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238390AbhDESJP (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 5 Apr 2021 14:09:15 -0400
-IronPort-SDR: NrZaeHY4DdiNxlAPXNaea0cPqrJeg+0Yk9bRAT5bU7wTBMBwI6KZblg7rKSsOww95sXEFCJV4Y
- FaHk0DLxcoLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193010951"
+        id S239964AbhDESJR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 5 Apr 2021 14:09:17 -0400
+IronPort-SDR: 6+SZBlIoK940qfNjJiaofpHbj6n4Qk4OfTy73HveZL4Thz/qFRrNZNUZ/0ohvLwr5LasojR/Zi
+ 3jFPjfo6rtLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193010980"
 X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="193010951"
+   d="scan'208";a="193010980"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 11:09:08 -0700
-IronPort-SDR: zciwvXhVlJxANCS1RQuETFmvpI/SVAShGiAS1SOFk+fup6XS3eaAdNiHzq00W3PW/LzFQBiUp1
- 11xpUJFo26pQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 11:09:11 -0700
+IronPort-SDR: 0xW5HPtaRmBNDOzGdePrXlWBYYSSOULrHjmoKovNYHXubrBvKHI5PkcdihG+mW6p0cdusOgqex
+ KqVm4nR3S91Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
-   d="scan'208";a="448153935"
+   d="scan'208";a="448153945"
 Received: from skl-02.jf.intel.com ([10.54.74.28])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Apr 2021 11:09:08 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 05 Apr 2021 11:09:10 -0700
 From:   Tim Chen <tim.c.chen@linux.intel.com>
 To:     Michal Hocko <mhocko@suse.cz>
 Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
@@ -36,9 +36,9 @@ Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
         David Rientjes <rientjes@google.com>,
         Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v1 07/11] mm: Account the total top tier memory in use
-Date:   Mon,  5 Apr 2021 10:08:31 -0700
-Message-Id: <9170c90b0f58dee05a2b2c1d3789d674df42ed65.1617642417.git.tim.c.chen@linux.intel.com>
+Subject: [RFC PATCH v1 08/11] mm: Add toptier option for mem_cgroup_soft_limit_reclaim()
+Date:   Mon,  5 Apr 2021 10:08:32 -0700
+Message-Id: <babf74082f450ece2fd55bd5ca9a1857fd32c307.1617642417.git.tim.c.chen@linux.intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617642417.git.tim.c.chen@linux.intel.com>
 References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
@@ -48,161 +48,211 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Track the global top tier memory usage stats. They are used as the basis of
-deciding when to start demoting pages from memory cgroups that have exceeded
-their soft limit.  We start reclaiming top tier memory when the total
-top tier memory is low.
+Add toptier relcaim type in mem_cgroup_soft_limit_reclaim().
+This option reclaims top tier memory from cgroups in the order of its
+excess usage of top tier memory.
 
 Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
 ---
- include/linux/vmstat.h | 18 ++++++++++++++++++
- mm/vmstat.c            | 20 +++++++++++++++++---
- 2 files changed, 35 insertions(+), 3 deletions(-)
+ include/linux/memcontrol.h |  9 ++++---
+ mm/memcontrol.c            | 48 ++++++++++++++++++++++++--------------
+ mm/vmscan.c                |  4 ++--
+ 3 files changed, 39 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index e1a4fa9abb3a..a3ad5a937fd8 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -139,6 +139,7 @@ static inline void vm_events_fold_cpu(int cpu)
-  * Zone and node-based page accounting with per cpu differentials.
-  */
- extern atomic_long_t vm_zone_stat[NR_VM_ZONE_STAT_ITEMS];
-+extern atomic_long_t vm_toptier_zone_stat[NR_VM_ZONE_STAT_ITEMS];
- extern atomic_long_t vm_numa_stat[NR_VM_NUMA_STAT_ITEMS];
- extern atomic_long_t vm_node_stat[NR_VM_NODE_STAT_ITEMS];
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0ed8ddfd5436..c494c4b11ba2 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -21,6 +21,7 @@
+ #include <linux/vmstat.h>
+ #include <linux/writeback.h>
+ #include <linux/page-flags.h>
++#include <linux/nodemask.h>
  
-@@ -175,6 +176,8 @@ static inline void zone_page_state_add(long x, struct zone *zone,
+ struct mem_cgroup;
+ struct obj_cgroup;
+@@ -1003,7 +1004,8 @@ static inline void mod_memcg_lruvec_state(struct lruvec *lruvec,
+ 
+ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 						gfp_t gfp_mask,
+-						unsigned long *total_scanned);
++						unsigned long *total_scanned,
++						enum node_states type);
+ 
+ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+ 			  unsigned long count);
+@@ -1421,8 +1423,9 @@ static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 
+ static inline
+ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+-					    gfp_t gfp_mask,
+-					    unsigned long *total_scanned)
++						gfp_t gfp_mask,
++						unsigned long *total_scanned,
++						enum node_states type)
  {
- 	atomic_long_add(x, &zone->vm_stat[item]);
- 	atomic_long_add(x, &vm_zone_stat[item]);
-+	if (node_state(zone->zone_pgdat->node_id, N_TOPTIER))
-+		atomic_long_add(x, &vm_toptier_zone_stat[item]);
+ 	return 0;
  }
- 
- static inline void node_page_state_add(long x, struct pglist_data *pgdat,
-@@ -212,6 +215,17 @@ static inline unsigned long global_node_page_state(enum node_stat_item item)
- 	return global_node_page_state_pages(item);
- }
- 
-+static inline unsigned long global_toptier_zone_page_state(enum zone_stat_item item)
-+{
-+	long x = atomic_long_read(&vm_toptier_zone_stat[item]);
-+
-+#ifdef CONFIG_SMP
-+	if (x < 0)
-+		x = 0;
-+#endif
-+	return x;
-+}
-+
- static inline unsigned long zone_page_state(struct zone *zone,
- 					enum zone_stat_item item)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8a7648b79635..9f75475ae833 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1875,7 +1875,8 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ static int mem_cgroup_soft_reclaim(struct mem_cgroup *root_memcg,
+ 				   pg_data_t *pgdat,
+ 				   gfp_t gfp_mask,
+-				   unsigned long *total_scanned)
++				   unsigned long *total_scanned,
++				   enum node_states type)
  {
-@@ -325,6 +339,8 @@ static inline void __inc_zone_state(struct zone *zone, enum zone_stat_item item)
- {
- 	atomic_long_inc(&zone->vm_stat[item]);
- 	atomic_long_inc(&vm_zone_stat[item]);
-+	if (node_state(zone->zone_pgdat->node_id, N_TOPTIER))
-+		atomic_long_inc(&vm_toptier_zone_stat[item]);
- }
+ 	struct mem_cgroup *victim = NULL;
+ 	int total = 0;
+@@ -1886,7 +1887,7 @@ static int mem_cgroup_soft_reclaim(struct mem_cgroup *root_memcg,
+ 		.pgdat = pgdat,
+ 	};
  
- static inline void __inc_node_state(struct pglist_data *pgdat, enum node_stat_item item)
-@@ -337,6 +353,8 @@ static inline void __dec_zone_state(struct zone *zone, enum zone_stat_item item)
- {
- 	atomic_long_dec(&zone->vm_stat[item]);
- 	atomic_long_dec(&vm_zone_stat[item]);
-+	if (node_state(zone->zone_pgdat->node_id, N_TOPTIER))
-+		atomic_long_dec(&vm_toptier_zone_stat[item]);
- }
+-	excess = soft_limit_excess(root_memcg, N_MEMORY);
++	excess = soft_limit_excess(root_memcg, type);
  
- static inline void __dec_node_state(struct pglist_data *pgdat, enum node_stat_item item)
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index f299d2e89acb..b59efbcaef4e 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -161,9 +161,11 @@ void vm_events_fold_cpu(int cpu)
-  * vm_stat contains the global counters
-  */
- atomic_long_t vm_zone_stat[NR_VM_ZONE_STAT_ITEMS] __cacheline_aligned_in_smp;
-+atomic_long_t vm_toptier_zone_stat[NR_VM_ZONE_STAT_ITEMS] __cacheline_aligned_in_smp;
- atomic_long_t vm_numa_stat[NR_VM_NUMA_STAT_ITEMS] __cacheline_aligned_in_smp;
- atomic_long_t vm_node_stat[NR_VM_NODE_STAT_ITEMS] __cacheline_aligned_in_smp;
- EXPORT_SYMBOL(vm_zone_stat);
-+EXPORT_SYMBOL(vm_toptier_zone_stat);
- EXPORT_SYMBOL(vm_numa_stat);
- EXPORT_SYMBOL(vm_node_stat);
- 
-@@ -695,7 +697,7 @@ EXPORT_SYMBOL(dec_node_page_state);
-  * Returns the number of counters updated.
-  */
- #ifdef CONFIG_NUMA
--static int fold_diff(int *zone_diff, int *numa_diff, int *node_diff)
-+static int fold_diff(int *zone_diff, int *numa_diff, int *node_diff, int *toptier_diff)
- {
- 	int i;
- 	int changes = 0;
-@@ -717,6 +719,11 @@ static int fold_diff(int *zone_diff, int *numa_diff, int *node_diff)
- 			atomic_long_add(node_diff[i], &vm_node_stat[i]);
- 			changes++;
+ 	while (1) {
+ 		victim = mem_cgroup_iter(root_memcg, victim, &reclaim);
+@@ -1915,7 +1916,7 @@ static int mem_cgroup_soft_reclaim(struct mem_cgroup *root_memcg,
+ 		total += mem_cgroup_shrink_node(victim, gfp_mask, false,
+ 					pgdat, &nr_scanned);
+ 		*total_scanned += nr_scanned;
+-		if (!soft_limit_excess(root_memcg, N_MEMORY))
++		if (!soft_limit_excess(root_memcg, type))
+ 			break;
  	}
+ 	mem_cgroup_iter_break(root_memcg, victim);
+@@ -3524,7 +3525,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+ 
+ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 					    gfp_t gfp_mask,
+-					    unsigned long *total_scanned)
++					    unsigned long *total_scanned,
++					    enum node_states type)
+ {
+ 	unsigned long nr_reclaimed = 0;
+ 	struct mem_cgroup_per_node *mz, *next_mz = NULL;
+@@ -3534,12 +3536,24 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 	unsigned long excess;
+ 	unsigned long nr_scanned;
+ 	int migration_nid;
++	enum node_states sibling_type;
+ 
+ 	if (order > 0)
+ 		return 0;
+ 
+-	mctz = soft_limit_tree_node(pgdat->node_id, N_MEMORY);
+-	mctz_sibling = soft_limit_tree_node(pgdat->node_id, N_TOPTIER);
++	if (type != N_MEMORY && type != N_TOPTIER)
++		return 0;
 +
-+	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-+		if (toptier_diff[i]) {
-+			atomic_long_add(toptier_diff[i], &vm_toptier_zone_stat[i]);
-+	}
- 	return changes;
- }
- #else
-@@ -762,6 +769,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
- 	struct zone *zone;
- 	int i;
- 	int global_zone_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
-+	int global_toptier_diff[NR_VM_ZONE_STAT_ITEMS] = { 0, };
- #ifdef CONFIG_NUMA
- 	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
- #endif
-@@ -779,6 +787,9 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
++	if (type == N_TOPTIER && !node_state(pgdat->node_id, N_TOPTIER))
++		return 0;
++
++	if (type == N_TOPTIER)
++		sibling_type = N_MEMORY;
++	else
++		sibling_type = N_TOPTIER;
++
++	mctz = soft_limit_tree_node(pgdat->node_id, type);
++	mctz_sibling = soft_limit_tree_node(pgdat->node_id, sibling_type);
  
- 				atomic_long_add(v, &zone->vm_stat[i]);
- 				global_zone_diff[i] += v;
-+				if (node_state(zone->zone_pgdat->node_id, N_TOPTIER)) {
-+					global_toptier_diff[i] +=v;
-+				}
- #ifdef CONFIG_NUMA
- 				/* 3 seconds idle till flush */
- 				__this_cpu_write(p->expire, 3);
-@@ -846,7 +857,7 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+ 	/*
+ 	 * Do not even bother to check the largest node if the root
+@@ -3558,11 +3572,11 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 	if (migration_nid != -1) {
+ 		struct mem_cgroup_tree_per_node *mmctz;
  
- #ifdef CONFIG_NUMA
- 	changes += fold_diff(global_zone_diff, global_numa_diff,
--			     global_node_diff);
-+			     global_node_diff, global_toptier_diff);
- #else
- 	changes += fold_diff(global_zone_diff, global_node_diff);
- #endif
-@@ -868,6 +879,7 @@ void cpu_vm_stats_fold(int cpu)
- 	int global_numa_diff[NR_VM_NUMA_STAT_ITEMS] = { 0, };
- #endif
- 	int global_node_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
-+	int global_toptier_diff[NR_VM_NODE_STAT_ITEMS] = { 0, };
- 
- 	for_each_populated_zone(zone) {
- 		struct per_cpu_pageset *p;
-@@ -910,11 +922,13 @@ void cpu_vm_stats_fold(int cpu)
- 				p->vm_node_stat_diff[i] = 0;
- 				atomic_long_add(v, &pgdat->vm_stat[i]);
- 				global_node_diff[i] += v;
-+				if (node_state(pgdat->node_id, N_TOPTIER))
-+					global_toptier_diff[i] +=v;
- 			}
+-		mmctz = soft_limit_tree_node(migration_nid);
++		mmctz = soft_limit_tree_node(migration_nid, type);
+ 		if (mmctz && !RB_EMPTY_ROOT(&mmctz->rb_root)) {
+ 			pgdat = NODE_DATA(migration_nid);
+ 			return mem_cgroup_soft_limit_reclaim(pgdat, order,
+-				gfp_mask, total_scanned);
++				gfp_mask, total_scanned, type);
+ 		}
  	}
  
- #ifdef CONFIG_NUMA
--	fold_diff(global_zone_diff, global_numa_diff, global_node_diff);
-+	fold_diff(global_zone_diff, global_numa_diff, global_node_diff, global_toptier_diff);
- #else
- 	fold_diff(global_zone_diff, global_node_diff);
- #endif
+@@ -3575,17 +3589,17 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 		if (next_mz)
+ 			mz = next_mz;
+ 		else
+-			mz = mem_cgroup_largest_soft_limit_node(mctz, N_MEMORY);
++			mz = mem_cgroup_largest_soft_limit_node(mctz, type);
+ 		if (!mz)
+ 			break;
+ 
+ 		nr_scanned = 0;
+ 		reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
+-						    gfp_mask, &nr_scanned);
++						    gfp_mask, &nr_scanned, type);
+ 		nr_reclaimed += reclaimed;
+ 		*total_scanned += nr_scanned;
+ 		spin_lock_irq(&mctz->lock);
+-		__mem_cgroup_remove_exceeded(mz, mctz, N_MEMORY);
++		__mem_cgroup_remove_exceeded(mz, mctz, type);
+ 
+ 		/*
+ 		 * If we failed to reclaim anything from this memory cgroup
+@@ -3594,9 +3608,9 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 		next_mz = NULL;
+ 		if (!reclaimed)
+ 			next_mz =
+-			   __mem_cgroup_largest_soft_limit_node(mctz, N_MEMORY);
++			   __mem_cgroup_largest_soft_limit_node(mctz, type);
+ 
+-		excess = soft_limit_excess(mz->memcg, N_MEMORY);
++		excess = soft_limit_excess(mz->memcg, type);
+ 		/*
+ 		 * One school of thought says that we should not add
+ 		 * back the node to the tree if reclaim returns 0.
+@@ -3606,17 +3620,17 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 		 * term TODO.
+ 		 */
+ 		/* If excess == 0, no tree ops */
+-		__mem_cgroup_insert_exceeded(mz, mctz, excess, N_MEMORY);
++		__mem_cgroup_insert_exceeded(mz, mctz, excess, type);
+ 		spin_unlock_irq(&mctz->lock);
+ 
+ 		/* update both affected N_MEMORY and N_TOPTIER trees */
+ 		if (mctz_sibling) {
+ 			spin_lock_irq(&mctz_sibling->lock);
+ 			__mem_cgroup_remove_exceeded(mz, mctz_sibling,
+-						     N_TOPTIER);
+-			excess = soft_limit_excess(mz->memcg, N_TOPTIER);
++						     sibling_type);
++			excess = soft_limit_excess(mz->memcg, sibling_type);
+ 			__mem_cgroup_insert_exceeded(mz, mctz, excess,
+-						     N_TOPTIER);
++						     sibling_type);
+ 			spin_unlock_irq(&mctz_sibling->lock);
+ 		}
+ 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 3b200b7170a9..11bb0c6fa524 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3134,7 +3134,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+ 			nr_soft_scanned = 0;
+ 			nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(zone->zone_pgdat,
+ 						sc->order, sc->gfp_mask,
+-						&nr_soft_scanned);
++						&nr_soft_scanned, N_MEMORY);
+ 			sc->nr_reclaimed += nr_soft_reclaimed;
+ 			sc->nr_scanned += nr_soft_scanned;
+ 			/* need some check for avoid more shrink_zone() */
+@@ -3849,7 +3849,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 		sc.nr_scanned = 0;
+ 		nr_soft_scanned = 0;
+ 		nr_soft_reclaimed = mem_cgroup_soft_limit_reclaim(pgdat, sc.order,
+-						sc.gfp_mask, &nr_soft_scanned);
++						sc.gfp_mask, &nr_soft_scanned, N_MEMORY);
+ 		sc.nr_reclaimed += nr_soft_reclaimed;
+ 
+ 		/*
 -- 
 2.20.1
 
