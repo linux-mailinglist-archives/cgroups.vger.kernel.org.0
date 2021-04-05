@@ -2,111 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E28353A35
-	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 02:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C3A353A3D
+	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 02:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhDEA2M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 4 Apr 2021 20:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S231722AbhDEAaY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 4 Apr 2021 20:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhDEA2K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 4 Apr 2021 20:28:10 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EA8C061756
-        for <cgroups@vger.kernel.org>; Sun,  4 Apr 2021 17:28:01 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id i26so15168947lfl.1
-        for <cgroups@vger.kernel.org>; Sun, 04 Apr 2021 17:28:00 -0700 (PDT)
+        with ESMTP id S231709AbhDEAaX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 4 Apr 2021 20:30:23 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2B6C06178C
+        for <cgroups@vger.kernel.org>; Sun,  4 Apr 2021 17:30:17 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id r20so11129532ljk.4
+        for <cgroups@vger.kernel.org>; Sun, 04 Apr 2021 17:30:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZF918p7w2NV7GDL6H66e14qUO918kYzYBoimRTX60mw=;
-        b=B6aS04PjlBqAA2vflWypWTUhJI210MxW1PaPH1BDPRndkBlXgPSIvRcj4swDoEnRfe
-         w+7CBj5c2TykbIXuD7EO51fppLYfu97EaJvdj6CK2LyrV94bYp6YD0UblBLsQE6p3Ujd
-         thmdDtdqEunD6gglL47FCsEe5cOjfs+Bi8SlOdoduJt1/Te3Fq27sXeaEAC37xBME2kN
-         hpoYyPFllmrsv+xns6mHWoOkGLtQ8bm0KAcUnAm22pOvICyBCh2QCsc9B4VOTIcU+9kC
-         Z623CHribd6n+QENTCr/qvwQtpOpWibsePCCtqIrQeH2YhZsNC1Ly3WWV1yzOJPZb2KD
-         SGuw==
+        bh=4djxblumYsM0MYjaTI3gAeclQoo4tMzFZGJUydviNoY=;
+        b=k9XPOH16pkp6wIhN6fUXTfgtf00C1nX1vfWzkAoJCwZhTPryGhPETEbWtKNuql8dcT
+         J66HvvN+nGIGX/hWkB2rtYjC7ogWFD4Rd4IZkQ0bS/rYf5HmIGTyE/ZylI39cDqXlZLQ
+         DrwfgJgtrdAYa4RnReHlFBjkf09I61p5QCpFtdcJBiTqN5do0FBlf/GNBAM4Sa4K9fTt
+         O0Sc6EJP96oqfCYeJaor+ktU4xDDekqEt6oEKns8rGYAeQWl4AQoPK1E7sIISi8w1r2q
+         CU1BS4YW9udqw0T/oEayc0e8nZsTv0pujP4QcRjuay7oCDxyx5293bIck4CW+rAYTTaJ
+         a32w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZF918p7w2NV7GDL6H66e14qUO918kYzYBoimRTX60mw=;
-        b=ulSaRBuePrtP97DJkEneCvgHZk5NNwAMDg009PXxn6R9CoEI8ixwyAtFsT+dwnY/Rx
-         Y+4X3T7vRg938Ata3CbVJoomOw4h/uxUTIGpSPFsO6lgHe71EFvL9lMIVKX52w9DUT1h
-         1Z7r/2jIRqh3qLN7/a4lCJMNfohYpH3fLuz0v50s0zv/lCjIw3rWY+IoL13L8Y9gEZsq
-         11187HLUaJyb28ZfUzNuEhnV800ZkA+lLuL5lVj+c8NrXyaand71L6SiXVOa8jSnEInC
-         G1d0Nhv7X+2XiRf9sZfeHFnSPJ/o32NsrfXojBZGZo473rrCKwMynFHj8xy5vBgoYQ8b
-         hN4w==
-X-Gm-Message-State: AOAM531ptY/IB2n/VmChuqxkCbzWXsNMF/kAKNMZAmZLuaTc5X8RcDfa
-        G3JvS7HpXjCo76ydjqJneklJUBfhlZwomZhoY15P2Q==
-X-Google-Smtp-Source: ABdhPJzwVqup78Vy3hiX8TNtCPQ4y/cXp3hJaHr5DVyeVHS3puE9TBG0zmDMrTWH61c4gOmZlVUFaiPQyYQj3lG0o9c=
-X-Received: by 2002:a19:e210:: with SMTP id z16mr14970547lfg.576.1617582478196;
- Sun, 04 Apr 2021 17:27:58 -0700 (PDT)
+        bh=4djxblumYsM0MYjaTI3gAeclQoo4tMzFZGJUydviNoY=;
+        b=XIClbT1yaSUGBilXc87up4F6/RV5voe6/C6dXT9N3JbY2ZL0ZAFuZTAMyNlVkQ5QCm
+         CgyEfseOQxlcp9hiIA6dNSreaHwc/Jq/kIP9fn8Tw+6i9whu4baO+vx+ak2RrEbVZkMN
+         qh+gufq+OmRg8Ry9oUZMCKgR6CN2bLjQ1TlWHhl7R9bOAcdHxVvPw+sz2ePVHfe+8xMq
+         BVEtBX3RqK5r16UiuqKcyKJiX3UgwKgzxGFI0GMjoMbCmTDtk0mY/24Y0EvZy0eW+S7K
+         vfnVf5wCWbo9p+xVRMBKgdLxpMzbXCOzuwS/xjWNJv3n4ZxigCd1/HsZyOo2sD8m+dc5
+         sQbA==
+X-Gm-Message-State: AOAM5308vDmjP18RcBvPbPKEQqksZnWYG6dlMfbCDMU5+TWVSX0C8iCw
+        7wWtUTwJa0xBAQAY1HUTzpTerN5TjavsB3Nya8RcAg==
+X-Google-Smtp-Source: ABdhPJya1pQ3m+PBzENKSEcDzB6ja6iy+5Hr6CE5/UQqlDXSenL4ol3iYtZBtv3DVLGum6BVeQ8oNUuY6m+mGf4u65w=
+X-Received: by 2002:a2e:87d8:: with SMTP id v24mr14196684ljj.387.1617582615756;
+ Sun, 04 Apr 2021 17:30:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <202104050523.t4Om6TmY-lkp@intel.com> <YGo+f3XoA4CtRAPt@mtj.duckdns.org>
-In-Reply-To: <YGo+f3XoA4CtRAPt@mtj.duckdns.org>
+References: <20210330044206.2864329-1-vipinsh@google.com> <YGn42SKCPg2HWtQc@mtj.duckdns.org>
+In-Reply-To: <YGn42SKCPg2HWtQc@mtj.duckdns.org>
 From:   Vipin Sharma <vipinsh@google.com>
-Date:   Sun, 4 Apr 2021 17:27:41 -0700
-Message-ID: <CAHVum0d1A7pbVEOy8U6iCXCtf8YOfAEkAXwhhyFgkxXHFPGjFQ@mail.gmail.com>
-Subject: Re: [cgroup:for-next 3/3] include/linux/misc_cgroup.h:98:15: warning:
- no previous prototype for function 'misc_cg_res_total_usage'
+Date:   Sun, 4 Apr 2021 17:29:59 -0700
+Message-ID: <CAHVum0fhWSOFRS-t7cF=zCRf_SUoMN5UOYBChWSpmhJVcuMbsg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] cgroup: New misc cgroup controller
 To:     Tejun Heo <tj@kernel.org>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        cgroups@vger.kernel.org, David Rientjes <rientjes@google.com>
+Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
+        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        hannes@cmpxchg.org, Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>, corbet@lwn.net,
+        Sean Christopherson <seanjc@google.com>, vkuznets@redhat.com,
+        wanpengli@tencent.com, Jim Mattson <jmattson@google.com>,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Matt Gingell <gingell@google.com>,
+        David Rientjes <rientjes@google.com>, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 3:32 PM Tejun Heo <tj@kernel.org> wrote:
+On Sun, Apr 4, 2021 at 10:35 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> Applied the following patch to cgroup/for-5.13.
+> Applied to cgroup/for-5.13. If there are further issues, let's address them
+> incrementally.
 >
 > Thanks.
-> ----- 8< -----
-> From dd3f4e4972f146a685930ccfed95e4e1d13d952a Mon Sep 17 00:00:00 2001
-> From: Tejun Heo <tj@kernel.org>
-> Date: Sun, 4 Apr 2021 18:29:37 -0400
-> Subject: [PATCH] cgroup: misc: mark dummy misc_cg_res_total_usage() static
->  inline
 >
-> The dummy implementation was missing static inline triggering the following
-> compile warning on llvm.
->
->    In file included from arch/x86/kvm/svm/sev.c:17:
-> >> include/linux/misc_cgroup.h:98:15: warning: no previous prototype for function 'misc_cg_res_total_usage' [-Wmissing-prototypes]
->    unsigned long misc_cg_res_total_usage(enum misc_res_type type)
->                  ^
->    include/linux/misc_cgroup.h:98:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->    unsigned long misc_cg_res_total_usage(enum misc_res_type type)
->    ^
->    static
->    1 warning generated.
->
-> Add it.
->
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  include/linux/misc_cgroup.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index c5af592481c0..da2367e2ac1e 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -95,7 +95,7 @@ static inline void put_misc_cg(struct misc_cg *cg)
->
->  #else /* !CONFIG_CGROUP_MISC */
->
-> -unsigned long misc_cg_res_total_usage(enum misc_res_type type)
-> +static inline unsigned long misc_cg_res_total_usage(enum misc_res_type type)
->  {
->         return 0;
->  }
 > --
-> 2.31.1
->
+> tejun
 
-Thanks for the quick patch Tejun. Sorry about the issue.
+Thanks Tejun for accepting and guiding through each version of this
+patch series.
