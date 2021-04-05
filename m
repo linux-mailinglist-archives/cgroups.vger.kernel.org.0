@@ -2,189 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A78354142
-	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 12:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D367735468E
+	for <lists+cgroups@lfdr.de>; Mon,  5 Apr 2021 20:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhDEKtg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Apr 2021 06:49:36 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24358 "EHLO mga12.intel.com"
+        id S232935AbhDESJB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Apr 2021 14:09:01 -0400
+Received: from mga09.intel.com ([134.134.136.24]:44452 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232035AbhDEKtg (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 5 Apr 2021 06:49:36 -0400
-IronPort-SDR: VQV/wYokO64i8oP/kz+TzmAvCO/684ImdEOMYvSttLR2ysOqbw0DrwnFavRDoypyx4LiMYN3j6
- VIVulb6TeDKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9944"; a="172288956"
-X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
-   d="scan'208";a="172288956"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 03:49:29 -0700
-IronPort-SDR: 5U3n5+WG7KH7pZbNzazDsK85Y4wBHFANDKspgaDDyg69rzdcOtbJTjqaBiKIzxhje9j+c/e5UB
- iZfgVJS8/4FA==
+        id S230337AbhDESJB (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 5 Apr 2021 14:09:01 -0400
+IronPort-SDR: lm1VF58yJx/j1qK/PIRxDOza5W5ETxeMJIMtf0RsEM+c70RsIF4gEa6l9o0n4dmJujdT8LKn6Y
+ kgKFtUJw5HdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="193010906"
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="193010906"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 11:08:54 -0700
+IronPort-SDR: ppiyaFDCkV1nQdzghDpl80nb90mpZhmi6TgJsW2rkqmdwWxiXUl22phoUg7/f7tWWO10yOkN98
+ DIg4+Pw449TQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,306,1610438400"; 
-   d="scan'208";a="395770665"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 05 Apr 2021 03:49:28 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lTMnP-0009y1-KX; Mon, 05 Apr 2021 10:49:27 +0000
-Date:   Mon, 05 Apr 2021 18:49:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.13] BUILD SUCCESS
- dd3f4e4972f146a685930ccfed95e4e1d13d952a
-Message-ID: <606aeb2d.J7jCUZ1mr8Sb/h/Z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="448153854"
+Received: from skl-02.jf.intel.com ([10.54.74.28])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Apr 2021 11:08:53 -0700
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Michal Hocko <mhocko@suse.cz>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
+Date:   Mon,  5 Apr 2021 10:08:24 -0700
+Message-Id: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
-branch HEAD: dd3f4e4972f146a685930ccfed95e4e1d13d952a  cgroup: misc: mark dummy misc_cg_res_total_usage() static inline
+Traditionally, all memory is DRAM.  Some DRAM might be closer/faster than
+others NUMA wise, but a byte of media has about the same cost whether it
+is close or far.  But, with new memory tiers such as Persistent Memory
+(PMEM).  there is a choice between fast/expensive DRAM and slow/cheap
+PMEM.
 
-elapsed time: 723m
+The fast/expensive memory lives in the top tier of the memory hierachy.
 
-configs tested: 127
-configs skipped: 2
+Previously, the patchset
+[PATCH 00/10] [v7] Migrate Pages in lieu of discard
+https://lore.kernel.org/linux-mm/20210401183216.443C4443@viggo.jf.intel.com/
+provides a mechanism to demote cold pages from DRAM node into PMEM.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+And the patchset
+[PATCH 0/6] [RFC v6] NUMA balancing: optimize memory placement for memory tiering system
+https://lore.kernel.org/linux-mm/20210311081821.138467-1-ying.huang@intel.com/
+provides a mechanism to promote hot pages in PMEM to the DRAM node
+leveraging autonuma.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                         cm_x300_defconfig
-powerpc                      chrp32_defconfig
-arm                           sama5_defconfig
-powerpc                          g5_defconfig
-m68k                         amcore_defconfig
-powerpc                      pasemi_defconfig
-sh                        edosk7760_defconfig
-arm                          badge4_defconfig
-arc                        nsimosci_defconfig
-mips                     cu1000-neo_defconfig
-ia64                        generic_defconfig
-mips                          rb532_defconfig
-m68k                           sun3_defconfig
-arm                           viper_defconfig
-mips                        bcm63xx_defconfig
-mips                           gcw0_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                      obs600_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc                      cm5200_defconfig
-arm                        realview_defconfig
-arm                        spear6xx_defconfig
-sh                         apsh4a3a_defconfig
-openrisc                            defconfig
-arm                            mmp2_defconfig
-sh                             shx3_defconfig
-arm                       imx_v4_v5_defconfig
-mips                           ip28_defconfig
-m68k                       m5249evb_defconfig
-h8300                               defconfig
-arm                      jornada720_defconfig
-arm                         axm55xx_defconfig
-powerpc                     tqm8555_defconfig
-arm                        mini2440_defconfig
-powerpc                      acadia_defconfig
-arm                            dove_defconfig
-arm                         lpc18xx_defconfig
-powerpc                      mgcoge_defconfig
-sh                         microdev_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      makalu_defconfig
-m68k                             alldefconfig
-sh                           se7712_defconfig
-powerpc                        fsp2_defconfig
-powerpc                       ppc64_defconfig
-arm                       versatile_defconfig
-s390                       zfcpdump_defconfig
-mips                           ip27_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210405
-i386                 randconfig-a003-20210405
-i386                 randconfig-a001-20210405
-i386                 randconfig-a004-20210405
-i386                 randconfig-a002-20210405
-i386                 randconfig-a005-20210405
-x86_64               randconfig-a014-20210405
-x86_64               randconfig-a015-20210405
-x86_64               randconfig-a013-20210405
-x86_64               randconfig-a011-20210405
-x86_64               randconfig-a012-20210405
-x86_64               randconfig-a016-20210405
-i386                 randconfig-a016-20210405
-i386                 randconfig-a015-20210405
-i386                 randconfig-a014-20210405
-i386                 randconfig-a011-20210405
-i386                 randconfig-a012-20210405
-i386                 randconfig-a013-20210405
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                              defconfig
-x86_64                                  kexec
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
+The two patchsets together keep the hot pages in DRAM and colder pages
+in PMEM.
 
-clang tested configs:
-x86_64               randconfig-a004-20210405
-x86_64               randconfig-a003-20210405
-x86_64               randconfig-a005-20210405
-x86_64               randconfig-a001-20210405
-x86_64               randconfig-a002-20210405
-x86_64               randconfig-a006-20210405
+To make fine grain cgroup based management of the precious top tier
+DRAM memory possible, this patchset adds a few new features:
+1. Provides memory monitors on the amount of top tier memory used per cgroup 
+   and by the system as a whole.
+2. Applies soft limits on the top tier memory each cgroup uses 
+3. Enables kswapd to demote top tier pages from cgroup with excess top
+   tier memory usages.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This allows us to provision different amount of top tier memory to each
+cgroup according to the cgroup's latency need.
+
+The patchset is based on cgroup v1 interface. One shortcoming of the v1
+interface is the limit on the cgroup is a soft limit, so a cgroup can
+exceed the limit quite a bit before reclaim before page demotion reins
+it in. 
+
+We are also working on a cgroup v2 interface control interface that will will
+have a max limit on the top tier memory per cgroup but requires much
+additional logic to fall back and allocate from non top tier memory when a
+cgroup reaches the maximum limit.  This simpler cgroup v1 implementation
+with all its warts is used to illustrate the concept of cgroup based
+top tier memory management and serves as a starting point of discussions.
+
+The soft limit and soft reclaim logic in this patchset will be similar for what
+we would do for a cgroup v2 interface when we reach the high watermark
+for top tier usage in a cgroup v2 interface. 
+
+This patchset is applied on top of 
+[PATCH 00/10] [v7] Migrate Pages in lieu of discard
+and
+[PATCH 0/6] [RFC v6] NUMA balancing: optimize memory placement for memory tiering system
+
+It is part of a larger patchset.  You can play with the complete set of patches
+using the tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/vishal/tiering.git/log/?h=tiering-0.71
+
+Tim Chen (11):
+  mm: Define top tier memory node mask
+  mm: Add soft memory limit for mem cgroup
+  mm: Account the top tier memory usage per cgroup
+  mm: Report top tier memory usage in sysfs
+  mm: Add soft_limit_top_tier tree for mem cgroup
+  mm: Handle top tier memory in cgroup soft limit memory tree utilities
+  mm: Account the total top tier memory in use
+  mm: Add toptier option for mem_cgroup_soft_limit_reclaim()
+  mm: Use kswapd to demote pages when toptier memory is tight
+  mm: Set toptier_scale_factor via sysctl
+  mm: Wakeup kswapd if toptier memory need soft reclaim
+
+ Documentation/admin-guide/sysctl/vm.rst |  12 +
+ drivers/base/node.c                     |   2 +
+ include/linux/memcontrol.h              |  20 +-
+ include/linux/mm.h                      |   4 +
+ include/linux/mmzone.h                  |   7 +
+ include/linux/nodemask.h                |   1 +
+ include/linux/vmstat.h                  |  18 ++
+ kernel/sysctl.c                         |  10 +
+ mm/memcontrol.c                         | 303 +++++++++++++++++++-----
+ mm/memory_hotplug.c                     |   3 +
+ mm/migrate.c                            |   1 +
+ mm/page_alloc.c                         |  36 ++-
+ mm/vmscan.c                             |  73 +++++-
+ mm/vmstat.c                             |  22 +-
+ 14 files changed, 444 insertions(+), 68 deletions(-)
+
+-- 
+2.20.1
+
