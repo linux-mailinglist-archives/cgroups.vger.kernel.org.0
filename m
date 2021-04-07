@@ -2,119 +2,164 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72093560D8
-	for <lists+cgroups@lfdr.de>; Wed,  7 Apr 2021 03:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F865356150
+	for <lists+cgroups@lfdr.de>; Wed,  7 Apr 2021 04:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347778AbhDGBja (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Apr 2021 21:39:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62074 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347776AbhDGBj3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Apr 2021 21:39:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617759561; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=SMzPWIhKVgVyt+OXV36wrD1CBWot3oCL7BANrZGmW5s=; b=cO9zL63saxu6n6wm4Cfy6jPx2QwV5tCamd+cAm6fP6v4OBUtsrZJVP49MoTaxtPs5HES9Bp5
- Jpkhri3pF66Ac5e0Z3hOQobvYypnAn4t541c7ZUSVvUXd0Bn+6EGmr730ysAnou6BB2+kTMu
- I1xaK+tWC/shWBlm/G16JLA7YEA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI3MmZiMyIsICJjZ3JvdXBzQHZnZXIua2VybmVsLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 606d0d369a9ff96d95415e7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 07 Apr 2021 01:39:02
- GMT
-Sender: pkondeti=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF21BC43465; Wed,  7 Apr 2021 01:39:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233385AbhDGCHD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Apr 2021 22:07:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40265 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239066AbhDGCHD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 6 Apr 2021 22:07:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617761214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTZmJYI/IOE6eZrevZtsuKN2bM+b1mDhI0WPZSfz0LQ=;
+        b=G3TZXjtlMrQ82v2jOE3+uJ4bYtpNVTECX0od4JC59dB8MJNy9wmOHeqZgyM6VNQpZzQN5g
+        vd/A5ApgpUmc4wnoMHJfWU4afwjWOIzIDzHX474Mjo85xkk53yB32Q+teTB3UP2iq+rwrp
+        cL/Tm7f3qjZ5JngN6gNFkJU1bRpCM50=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-QSgasZZhPcmqG8yYOFuXrA-1; Tue, 06 Apr 2021 22:06:50 -0400
+X-MC-Unique: QSgasZZhPcmqG8yYOFuXrA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pkondeti)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F9AEC433C6;
-        Wed,  7 Apr 2021 01:38:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0F9AEC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pkondeti@codeaurora.org
-Date:   Wed, 7 Apr 2021 07:08:56 +0530
-From:   Pavan Kondeti <pkondeti@codeaurora.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB315107ACCD;
+        Wed,  7 Apr 2021 02:06:47 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-182.pek2.redhat.com [10.72.13.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9838910023B5;
+        Wed,  7 Apr 2021 02:06:33 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Quentin Perret <qperret@google.com>, Wei Wang <wvw@google.com>
-Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
- of root cpu cgroup
-Message-ID: <20210407013856.GC21941@codeaurora.org>
-References: <1617714261-18111-1-git-send-email-pkondeti@codeaurora.org>
- <YGxjwKbec68sCcqo@slm.duckdns.org>
- <20210406152715.GB21941@codeaurora.org>
- <YGyJHAlLKqng2WeS@slm.duckdns.org>
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder> <20210322120300.GU2356281@nvidia.com>
+ <20210324120528.24d82dbd@jacob-builder> <20210329163147.GG2356281@nvidia.com>
+ <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210405234230.GF7405@nvidia.com>
+ <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
+ <20210406124251.GO7405@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <acbd03f2-5c7e-d38e-92b6-cedc02429889@redhat.com>
+Date:   Wed, 7 Apr 2021 10:06:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGyJHAlLKqng2WeS@slm.duckdns.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210406124251.GO7405@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 12:15:24PM -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Tue, Apr 06, 2021 at 08:57:15PM +0530, Pavan Kondeti wrote:
-> > Yeah. The workqueue attrs comes in handy to reduce the nice/prio of a
-> > background workqueue if we identify that it is cpu intensive. However, this
-> > needs case by case analysis, tweaking etc. If there is no other alternative,
-> > we might end up chasing the background workers and reduce their nice value.
-> 
-> There shouldn't be that many workqueues that consume a lot of cpu cycles.
-> The usual culprit is kswapd, IO related stuff (writeback, encryption), so it
-> shouldn't be a long list and we want them identified anyway.
-> 
-Sure. I have not done a complete study on which workers in our system can
-compete with important tasks in other cgroups. We will have to do that to
-adjust the workqueue priority so that the impact can be minimized.
 
-> > The problem at our hand (which you might be knowing already) is that, lets say
-> > we have 2 cgroups in our setup and we want to prioritize UX over background.
-> > IOW, reduce the cpu.shares of background cgroup. This helps in prioritizing
-> > Task-A and Task-B over Task-X and Task-Y. However, each individual kworker
-> > can potentially have CPU share equal to the entire UX cgroup.
-> > 
-> > -kworker/0:0
-> > -kworker/1:0
-> > - UX
-> > ----Task-A
-> > ----Task-B
-> > - background
-> > ----Task-X
-> > ----Task-Y
-> > Hence we want to move all kernel threads to another cgroup so that this cgroup
-> > will have CPU share equal to UX.
-> > 
-> > The patch presented here allows us to create the above setup. Any other
-> > alternative approaches to achieve the same without impacting any future
-> > designs/requirements?
-> 
-> Not quite the same but we already have
-> /sys/devices/virtual/workqueue/cpumask which affects all unbound workqueues,
-> so maybe a global default priority knob would help here?
-> 
+ÔÚ 2021/4/6 ÏÂÎç8:42, Jason Gunthorpe Ð´µÀ:
+> On Tue, Apr 06, 2021 at 09:35:17AM +0800, Jason Wang wrote:
+>
+>>> VFIO and VDPA has no buisness having map/unmap interfaces once we have
+>>> /dev/ioasid. That all belongs in the iosaid side.
+>>>
+>>> I know they have those interfaces today, but that doesn't mean we have
+>>> to keep using them for PASID use cases, they should be replaced with a
+>>> 'do dma from this pasid on /dev/ioasid' interface certainly not a
+>>> 'here is a pasid from /dev/ioasid, go ahead and configure it youself'
+>>> interface
+>>   
+>> So it looks like the PASID was bound to SVA in this design. I think it's not
+>> necessairly the case:
+> No, I wish people would stop talking about SVA.
+>
+> SVA and vSVA are a very special narrow configuration of a PASID. There
+> are lots of other PASID configurations! That is the whole point, a
+> PASID is complicated, there are many configuration scenarios, they
+> need to be in one place with a very clearly defined uAPI
 
-yeah, not exactly what we are looking for. It gives us the abiility to restrict
-the priority of all unbound workqueues at the expense of not being able to
-prioritize one workqueue over another workqueue.
 
-Thanks,
-Pavan
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Right, that's my understanding as well.
+
+
+>
+>> 1) PASID can be implemented without SVA, in this case a map/unmap interface
+>> is still required
+> Any interface to manipulate a PASID should be under /dev/ioasid. We do
+> not want to duplicate this into every subsystem.
+
+
+Yes.
+
+
+>
+>> 2) For the case that hypervisor want to do some mediation in the middle for
+>> a virtqueue. e.g in the case of control vq that is implemented in the
+>> VF/ADI/SF itself, the hardware virtqueue needs to be controlled by Qemu,
+>> Though binding qemu's page table to cvq can work but it looks like a
+>> overkill, a small dedicated buffers that is mapped for this PASID seems more
+>> suitalbe.
+> /dev/ioasid should allow userspace to setup any PASID configuration it
+> wants. There are many choices. That is the whole point, instead of
+> copying&pasting all the PASID configuration option into every
+> subsystem we have on place to configure it.
+>
+> If you want a PASID (or generic ioasid) that has the guest physical
+> map, which is probably all that VDPA would ever want, then /dev/ioasid
+> should be able to prepare that.
+>
+> If you just want to map a few buffers into a PASID then it should be
+> able to do that too.
+>
+>> So do you mean the device should not expose the PASID confiugration API to
+>> guest? I think it could happen if we assign the whole device and let guest
+>> to configure it for nested VMs.
+> This always needs co-operating with the vIOMMU driver. We can't have
+> nested PASID use without both parts working together.
+>
+> The vIOMMU driver configures the PASID and assigns the mappings
+> (however complicated that turns out to be)
+>
+> The VDPA/mdev driver authorizes the HW to use the ioasid mapping, eg
+> by authorizing a queue to issue PCIe TLPs with a specific PASID.
+>
+> The authorization is triggered by the guest telling the vIOMMU to
+> allow a vRID to talk to a PASID, which qemu would have to translate to
+> telling something like the VDPA driver under the vRID that it can use
+> a PASID from /dev/ioasid
+>
+> For security a VDPA/mdev device MUST NOT issue PASIDs that the vIOMMU
+> has not authorized its vRID to use. Otherwise the security model of
+> something like VFIO in the guest becomes completely broken.
+
+
+Yes, that's how it should work.
+
+Thanks
+
+
+>
+> Jason
+>
 
