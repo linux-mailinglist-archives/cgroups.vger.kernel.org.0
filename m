@@ -2,179 +2,214 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D017358EBA
-	for <lists+cgroups@lfdr.de>; Thu,  8 Apr 2021 22:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DB4358EC7
+	for <lists+cgroups@lfdr.de>; Thu,  8 Apr 2021 22:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhDHUu5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Apr 2021 16:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHUu5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Apr 2021 16:50:57 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249AEC061760;
-        Thu,  8 Apr 2021 13:50:45 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n2so5252978ejy.7;
-        Thu, 08 Apr 2021 13:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nSkcR4vgYfQ9bCiomxJK4YRcFfPacWHOv81qx13uXCk=;
-        b=S+jRaaDesoRNqSTt0/e0qy7JOw05Ck9EsUF9SiuA3sBxm9U/qNUCvFFH6486LuDeXI
-         wbNusF9mGCJxP1RKbUuQqZLicwrX7SWzwTHnbP4TQzIvUITOnNeD0Fni+HQXSFGGTyI9
-         UnCIiMhdLvmiMjTDDyue4KlFrxDiRrdRhN+RVSF/MKyJ7FwmZ75epJ9C8ekNhEqt+qcm
-         FDppNgO5h5AyDiEFW/JaQ/zL+dZOjnAAnd1shc9Fa7oDWIgJP25tIqTbDj+63aw5aP5Y
-         /BknCfTYUOySH6gHm0TbwTzxonlU2WA5Brrv6BOpjoKpDvBbRSE08NPegH/Tyl7DnsEm
-         OcUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nSkcR4vgYfQ9bCiomxJK4YRcFfPacWHOv81qx13uXCk=;
-        b=pb5dHCRlhruxxXKduiXKFygjKxBAMmNmo7WRR4JODa5hHYsRDtSeKNGZMqXdfJPI3L
-         hDmRTVlgtKrpJFGVKFBk8W0RMu8nVlBexR0vDYjpejznUbvwkFSVplVQTIjQnGBHcMsE
-         RfezCaU+n8NfR2i5uNFc4+kzu6/yvwmw1bp5fggzmOgXDCYsob3L9YwEX3WXya2hP9ec
-         A+mLqs0IvxlocIFevZsZcKdqm9dupN4rpnnzaAVR7sqp83MjdNBzDGjIvXksi0tOWXvr
-         7MrJXBwsS4RBoSrlDSF6+rbp5ZDjmh2m8Gu4KAWGINyg89PQsApv58BWr7qrSd5Xo+tW
-         KBJg==
-X-Gm-Message-State: AOAM5312glkjmHXsO7/m5r0nhlpOUsXD9fZLCx+I9euHKuAfM4NCGLRX
-        c/lJMPLIRuc4lYjX56EcutyeSwtns92kyovcbFg=
-X-Google-Smtp-Source: ABdhPJzDT4h97XJaHF/PbtM16viIv5D560gqJE9uxih1mtbScheWKyhXhZv6JlID3X0eZrK6FPC8CHmEXn9gQ6gyxJg=
-X-Received: by 2002:a17:906:c143:: with SMTP id dp3mr11934552ejc.499.1617915043821;
- Thu, 08 Apr 2021 13:50:43 -0700 (PDT)
+        id S232091AbhDHUyr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Apr 2021 16:54:47 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2332 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231862AbhDHUyq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Apr 2021 16:54:46 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138Knpck002661;
+        Thu, 8 Apr 2021 13:54:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=7ChLymD/Rx15uAsFPHgBsDg9sElJvaFBelRs9fpbN8U=;
+ b=Q2yvZd+teypOYJAZRlO4YFUJIhfihJV9XqvN0uoM3bnfZca7Iy1InWIWGb10Febdhppk
+ F+F1gp3acdeWKR1yorOcXG7aMQ0LLosi/Ll/MEQq2A9tvqZgizLpTXiXDD+zu9mKKu+1
+ VyUyQm3Jde34VFS+mHi3Lfdab0GQyi1YTh8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37t81f0jba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 08 Apr 2021 13:54:28 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 8 Apr 2021 13:53:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FGt0elqA2dR+oh2458oHM1bw+6OoTEan4C5L+urqC35LOVpbz50AcOjN9Sy77P+ChEhTkk+H0O1cRQmADL/eWL/XXOdOKIX0ereEk/IqcKKBpffCVPobq22SW7fWPP/usLjW0iJ5gdETZNkbPLJbMeF1i8s4b9ugX247zUolBI1wHQHSbYaRR6dzJaUUHio6Eoed1bN4YGm6bJNktR4LFFDPRXeGve6X0bChDI1BAwt2ATnbQZHLi6ywuBpZ5oWqAbkyiLjYgXW+cgHFGnhFX1Z56QPKG7rGbPmd0EUa66pjuvmZjEce2KIxEkNo2IRKWb7oENoDIWMyL0pFv1sIpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gzN74j/Z0euFsMCLvPHmSRAfWisVQeR7/5GS+GQm1G0=;
+ b=IWGp5orXdu0FD/OXcQYTm6St2Nn7gk6+ydZGfmmrWZIhiI2Urv9HdtZpavmeDTiKEGikEOkjwVRWup6lHuxu868t95N3FF6brpkFGGBnyctcpe+lQUuAX6pmv3fC/y24n8Q6FQLPH5JPGHOuFr8gmdJR2h7Aef21IivMn5B/e7BGy5CZEQkeq9/iRSM3F9Dvv8lVfOy8gE0sMZh7lPl1r4wIi8RZ2VcbKRMhdyOeIKEqQNOu8wxHqwgtPJ1H/8Ohfs0NMbESlEF+Eq3NS/zmMv8XJ1WM+Yaxmd1dcsb4+sygdMLznwV2ADZGUffUfH+P7/4JiurqFpWKdJU9WV6K3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3523.namprd15.prod.outlook.com (2603:10b6:a03:1ff::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Thu, 8 Apr
+ 2021 20:53:51 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
+ 20:53:51 +0000
+Date:   Thu, 8 Apr 2021 13:53:47 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Masayoshi Mizuma <msys.mizuma@gmail.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: memcg: performance degradation since v5.9
+Message-ID: <YG9tW1h9VSJcir+Y@carbon.dhcp.thefacebook.com>
+References: <20210408193948.vfktg3azh2wrt56t@gabell>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210408193948.vfktg3azh2wrt56t@gabell>
+X-Originating-IP: [2620:10d:c090:400::5:eca2]
+X-ClientProxiedBy: MWHPR08CA0053.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::27) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
- <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com> <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
-In-Reply-To: <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 8 Apr 2021 13:50:32 -0700
-Message-ID: <CAHbLzkoce41b-pJ5x=6nRhex_xBdC-+cYACBw9HKtA87H71A-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:eca2) by MWHPR08CA0053.namprd08.prod.outlook.com (2603:10b6:300:c0::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 20:53:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56d9f863-af9b-46e9-5916-08d8fad06a1f
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3523:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB35237087560A969F0E096E8DBE749@BY5PR15MB3523.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V7MILVgTrajE2PmMY8qdG18zCSsI6B0ohRf58XspCOcY/nA1T8V7AW7ZQgNMQl3gPz4XcqBtEprSXAsgQbxN3ghxEjOQ1JY2aplZc24/7EKsUTZNlasZTNANb8DkOZbB/B/bK6QyTOlSza1QZtefmRRo7MoI+vhFtJzXMIf9jGX2xXFdXO8I7yilUA8S8HJxgTWethCdQ84kwa+Llgl16Lb+ZwazUJbhtlx/pG8xO0vi26668Ff0+WshrF3O/KDn3DJH+j4rOPQUHuzcMhUsx33bOO2/8uXTHXuc1+DfaCRGB3hopUaDgSrzpyeBhx5tjKTkrjzQ1lyX3hzqs44kD5GJbQdwPG9XGevlYjaUt1TRFdPyXbyxGr6QF1GSHZv9Gy5MBPDpaM+9UNkQ9P9oDpEVwf9XuxxhW4agf0yzS4PWoxq2rIzaCQ97thxuGalUTk9qQbIHL4loF7b1gejwUM+gqnaSTc13aK4OfUs74illpddczBbonx7s2jCM86kiOe7kGcdIiufFKyvAH/FHUUn8ZdAmPPKogMXbr42uOUKbj0grV86ULJfqJfHGEW1PcV2OTmdgR3l+0IjViW6OacR2aZyVyWIVqVSgbBmLJn5paiYVHXQPoD5koBVTZIVlNqggJtHkgFmZQ/hSz+2A4gRKukTs8zfdolrUvTMnBOM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(396003)(136003)(376002)(54906003)(8676002)(2906002)(186003)(9686003)(83380400001)(16526019)(5660300002)(8936002)(66556008)(66476007)(6666004)(66946007)(4326008)(6916009)(478600001)(316002)(38100700001)(86362001)(55016002)(6506007)(7696005)(52116002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?9H8CcaQgYTKpbq6QkocVmRDKU/GeEihQKr6b7nG+mfWsi/9Eac+aPzA/FE?=
+ =?iso-8859-1?Q?xyw2BGNQljFpnIur/jPsvG4phkuLfN8Csytel/d94zLvNOdTtALr/68r4K?=
+ =?iso-8859-1?Q?rd3e1r2lkdK9c5s5trk70XpC/OD30UFmXDyuX3e6/qCljB5NnMr++WESvv?=
+ =?iso-8859-1?Q?eh2WQxnR5UmKvIRSLOGZFCYUoUBCsY9QK9XXB5Ktq6GbX27rPT6DVlPvfs?=
+ =?iso-8859-1?Q?FftOKIBf9xlV8nqakoFNsiUQh5W4JImuUfFDVQcyzmHLYcd7d/5sCk2g1c?=
+ =?iso-8859-1?Q?Pwl27tQeebfj40uMScbMhdegs4Eal8rOSi5YI6bbSxzHqmmMHAwZhps0FF?=
+ =?iso-8859-1?Q?Vnpp7awruhJDmZCX71PgvwJjAE9AXkHTzg0fxwaBxPxvL72TdHwsLRVtRu?=
+ =?iso-8859-1?Q?j7KGUfluIW09Z99t+C2/cf6yloLTpJCsiLd+poAJQsd5naXo2wetuu158i?=
+ =?iso-8859-1?Q?2GOG066asjp39J68VXp0pJU7lh5fDDbIYeLilFrkXk6aGXkcsHaSd3R/DI?=
+ =?iso-8859-1?Q?ctWZDsUx1Zq/Jv0CQiU+RlKxuUsxmvumGfdlqDYhQ58S926Wq0VJM0VJl1?=
+ =?iso-8859-1?Q?tI6PcCG7NBUHecgcU3a5+KECb99M+KD6B7Pfpi0cEe44HNMbTSjyfIEOLu?=
+ =?iso-8859-1?Q?Dk8Ep5M+eRgiIQWL6bmEaHRMZx+jrmm9j55Flp84pIzKIv/Kg5GHGimR/Y?=
+ =?iso-8859-1?Q?vQxeSVxT9Y+0klOGTiYHTnCozz+RLshN2lAOmGE5kLhFBim+ahDYyTZVG+?=
+ =?iso-8859-1?Q?yiScvR0WjN6T0Ng57R/75nRn4di1rpdhRXVtUWtkMeyygGX54mXKqRIMY8?=
+ =?iso-8859-1?Q?EFom4V6p59hb1NBlF+Yq3oL8y5n2OLqd1orPWDO8DqP1thRwTSPAIZbU+7?=
+ =?iso-8859-1?Q?FonoYXpzlnNWdQXqnPKyGEffdtMcFBKhYIaLj9ieGXTWBhOrjtP5qqSQZk?=
+ =?iso-8859-1?Q?Z8hO/y30xBqvvm6yLQC95/bnPv/oa15GMB3K1ImWOJgWh4MK06ZQulJmAB?=
+ =?iso-8859-1?Q?A8q9jSSncsm/3R/yfOr3cvptQNSX5gnc7u3o3dCBGVCC/QwW6S53DDsiyS?=
+ =?iso-8859-1?Q?qiUuZ2VLky+og3YOF/At1pdO4OVPQcKeSV9zspxyI22RG9clX4ZYj5JxjO?=
+ =?iso-8859-1?Q?7j+C9jT9Jw0DQsqCF9G+JVLzRsw6gxheAZH2adBhOWwCZShc1xmU5w+1cq?=
+ =?iso-8859-1?Q?6FTs1n8chswODwcyM7TcdXDSo90XpLMtUQkJJ00BKzINn7WRxJuyZZW4wh?=
+ =?iso-8859-1?Q?30CMvg+MzFGb1BVQEXwfuDG08NAhdHf/drhuznSxRq2JSgNj9D5eIkmdYs?=
+ =?iso-8859-1?Q?46JWzPc9ehfkEw86A3twSxU1pk3fz6CXHOGN/Jx3st5JC2UvBA/41AszMU?=
+ =?iso-8859-1?Q?ydQ8G7O3C/DCnhOrNvV+yKks9eXMVKyQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56d9f863-af9b-46e9-5916-08d8fad06a1f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 20:53:51.5115
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /49XdALOzWVNLUvWwLQTyCgkRT6LsHTJWSqx9RQZ2XkQJeyGSge+JSiLAr0sFJgi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3523
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: pDj1BH0JeNClAsKfrvtHs99-sCP_Ioas
+X-Proofpoint-ORIG-GUID: pDj1BH0JeNClAsKfrvtHs99-sCP_Ioas
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_07:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=940 spamscore=0
+ phishscore=0 suspectscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104080139
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 1:29 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > On Thu, Apr 8, 2021 at 10:19 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > Hi Tim,
-> > >
-> > > On Mon, Apr 5, 2021 at 11:08 AM Tim Chen <tim.c.chen@linux.intel.com> wrote:
-> > > >
-> > > > Traditionally, all memory is DRAM.  Some DRAM might be closer/faster than
-> > > > others NUMA wise, but a byte of media has about the same cost whether it
-> > > > is close or far.  But, with new memory tiers such as Persistent Memory
-> > > > (PMEM).  there is a choice between fast/expensive DRAM and slow/cheap
-> > > > PMEM.
-> > > >
-> > > > The fast/expensive memory lives in the top tier of the memory hierachy.
-> > > >
-> > > > Previously, the patchset
-> > > > [PATCH 00/10] [v7] Migrate Pages in lieu of discard
-> > > > https://lore.kernel.org/linux-mm/20210401183216.443C4443@viggo.jf.intel.com/
-> > > > provides a mechanism to demote cold pages from DRAM node into PMEM.
-> > > >
-> > > > And the patchset
-> > > > [PATCH 0/6] [RFC v6] NUMA balancing: optimize memory placement for memory tiering system
-> > > > https://lore.kernel.org/linux-mm/20210311081821.138467-1-ying.huang@intel.com/
-> > > > provides a mechanism to promote hot pages in PMEM to the DRAM node
-> > > > leveraging autonuma.
-> > > >
-> > > > The two patchsets together keep the hot pages in DRAM and colder pages
-> > > > in PMEM.
-> > >
-> > > Thanks for working on this as this is becoming more and more important
-> > > particularly in the data centers where memory is a big portion of the
-> > > cost.
-> > >
-> > > I see you have responded to Michal and I will add my more specific
-> > > response there. Here I wanted to give my high level concern regarding
-> > > using v1's soft limit like semantics for top tier memory.
-> > >
-> > > This patch series aims to distribute/partition top tier memory between
-> > > jobs of different priorities. We want high priority jobs to have
-> > > preferential access to the top tier memory and we don't want low
-> > > priority jobs to hog the top tier memory.
-> > >
-> > > Using v1's soft limit like behavior can potentially cause high
-> > > priority jobs to stall to make enough space on top tier memory on
-> > > their allocation path and I think this patchset is aiming to reduce
-> > > that impact by making kswapd do that work. However I think the more
-> > > concerning issue is the low priority job hogging the top tier memory.
-> > >
-> > > The possible ways the low priority job can hog the top tier memory are
-> > > by allocating non-movable memory or by mlocking the memory. (Oh there
-> > > is also pinning the memory but I don't know if there is a user api to
-> > > pin memory?) For the mlocked memory, you need to either modify the
-> > > reclaim code or use a different mechanism for demoting cold memory.
-> >
-> > Do you mean long term pin? RDMA should be able to simply pin the
-> > memory for weeks. A lot of transient pins come from Direct I/O. They
-> > should be less concerned.
-> >
-> > The low priority jobs should be able to be restricted by cpuset, for
-> > example, just keep them on second tier memory nodes. Then all the
-> > above problems are gone.
-> >
->
-> Yes that's an extreme way to overcome the issue but we can do less
-> extreme by just (hard) limiting the top tier usage of low priority
-> jobs.
->
-> > >
-> > > Basically I am saying we should put the upfront control (limit) on the
-> > > usage of top tier memory by the jobs.
-> >
-> > This sounds similar to what I talked about in LSFMM 2019
-> > (https://lwn.net/Articles/787418/). We used to have some potential
-> > usecase which divides DRAM:PMEM ratio for different jobs or memcgs
-> > when I was with Alibaba.
-> >
-> > In the first place I thought about per NUMA node limit, but it was
-> > very hard to configure it correctly for users unless you know exactly
-> > about your memory usage and hot/cold memory distribution.
-> >
-> > I'm wondering, just off the top of my head, if we could extend the
-> > semantic of low and min limit. For example, just redefine low and min
-> > to "the limit on top tier memory". Then we could have low priority
-> > jobs have 0 low/min limit.
-> >
->
-> The low and min limits have semantics similar to the v1's soft limit
-> for this situation i.e. letting the low priority job occupy top tier
-> memory and depending on reclaim to take back the excess top tier
-> memory use of such jobs.
+On Thu, Apr 08, 2021 at 03:39:48PM -0400, Masayoshi Mizuma wrote:
+> Hello,
+> 
+> I detected a performance degradation issue for a benchmark of PostgresSQL [1],
+> and the issue seems to be related to object level memory cgroup [2].
+> I would appreciate it if you could give me some ideas to solve it.
+> 
+> The benchmark shows the transaction per second (tps) and the tps for v5.9
+> and later kernel get about 10%-20% smaller than v5.8.
+> 
+> The benchmark does sendto() and recvfrom() system calls repeatedly,
+> and the duration of the system calls get longer than v5.8.
+> The result of perf trace of the benchmark is as follows:
+> 
+>   - v5.8
+> 
+>    syscall            calls  errors  total       min       avg       max       stddev
+>                                      (msec)    (msec)    (msec)    (msec)        (%)
+>    --------------- --------  ------ -------- --------- --------- ---------     ------
+>    sendto            699574      0  2595.220     0.001     0.004     0.462      0.03%
+>    recvfrom         1391089 694427  2163.458     0.001     0.002     0.442      0.04%
+> 
+>   - v5.9
+> 
+>    syscall            calls  errors  total       min       avg       max       stddev
+>                                      (msec)    (msec)    (msec)    (msec)        (%)
+>    --------------- --------  ------ -------- --------- --------- ---------     ------
+>    sendto            699187      0  3316.948     0.002     0.005     0.044      0.02%
+>    recvfrom         1397042 698828  2464.995     0.001     0.002     0.025      0.04%
+> 
+>   - v5.12-rc6
+> 
+>    syscall            calls  errors  total       min       avg       max       stddev
+>                                      (msec)    (msec)    (msec)    (msec)        (%)
+>    --------------- --------  ------ -------- --------- --------- ---------     ------
+>    sendto            699445      0  3015.642     0.002     0.004     0.027      0.02%
+>    recvfrom         1395929 697909  2338.783     0.001     0.002     0.024      0.03%
+> 
+> I bisected the kernel patches, then I found the patch series, which add
+> object level memory cgroup support, causes the degradation.
+> 
+> I confirmed the delay with a kernel module which just runs
+> kmem_cache_alloc/kmem_cache_free as follows. The duration is about
+> 2-3 times than v5.8.
+> 
+>    dummy_cache = KMEM_CACHE(dummy, SLAB_ACCOUNT);
+>    for (i = 0; i < 100000000; i++)
+>    {
+>            p = kmem_cache_alloc(dummy_cache, GFP_KERNEL);
+>            kmem_cache_free(dummy_cache, p);
+>    }
+> 
+> It seems that the object accounting work in slab_pre_alloc_hook() and
+> slab_post_alloc_hook() is the overhead.
+> 
+> cgroup.nokmem kernel parameter doesn't work for my case because it disables
+> all of kmem accounting.
+> 
+> The degradation is gone when I apply a patch (at the bottom of this email)
+> that adds a kernel parameter that expects to fallback to the page level
+> accounting, however, I'm not sure it's a good approach though...
 
-I don't get why low priority jobs can *not* use top tier memory? I can
-think of it may incur latency overhead for high priority jobs. If it
-is not allowed, it could be restricted by cpuset without introducing
-in any new interfaces.
+Hello Masayoshi!
 
-I'm supposed the memory utilization could be maximized by allowing all
-jobs allocate memory from all applicable nodes, then let reclaimer (or
-something new if needed) do the job to migrate the memory to proper
-nodes by time. We could achieve some kind of balance between memory
-utilization and resource isolation.
+Thank you for the report!
 
->
-> I have some thoughts on NUMA node limits which I will share in the other thread.
+It's not a secret that per-object accounting is more expensive than a per-page
+allocation. I had micro-benchmark results similar to yours: accounted
+allocations are about 2x slower. But in general it tends to not affect real
+workloads, because the cost of allocations is still low and tends to be only
+a small fraction of the whole cpu load. And because it brings up significant
+benefits: 40%+ slab memory savings, less fragmentation, more stable workingset,
+etc, real workloads tend to perform on pair or better.
 
-Look forward to reading it.
+So my first question is if you see the regression in any real workload
+or it's only about the benchmark?
+
+Second, I'll try to take a look into the benchmark to figure out why it's
+affected so badly, but I'm not sure we can easily fix it. If you have any
+ideas what kind of objects the benchmark is allocating in big numbers,
+please let me know.
+
+Thanks!
