@@ -2,130 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CA9358ED9
-	for <lists+cgroups@lfdr.de>; Thu,  8 Apr 2021 22:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1A6358EF6
+	for <lists+cgroups@lfdr.de>; Thu,  8 Apr 2021 23:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhDHU6s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Apr 2021 16:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53118 "EHLO
+        id S232292AbhDHVIj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Apr 2021 17:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231862AbhDHU6q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Apr 2021 16:58:46 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAA4C061760
-        for <cgroups@vger.kernel.org>; Thu,  8 Apr 2021 13:58:33 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id d13so6255041lfg.7
-        for <cgroups@vger.kernel.org>; Thu, 08 Apr 2021 13:58:33 -0700 (PDT)
+        with ESMTP id S231862AbhDHVIi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Apr 2021 17:08:38 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BEFC061760
+        for <cgroups@vger.kernel.org>; Thu,  8 Apr 2021 14:08:26 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id h19so6273235lfu.9
+        for <cgroups@vger.kernel.org>; Thu, 08 Apr 2021 14:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xkxHhJqNProKhVzizVTFQYR4zVgXz8q4oP2NJJdcs/E=;
-        b=XMaJZNgyutfANSdggd1yIuEbwRbGBdcUhhpTV4tyd52LO06noE0SU+OllRrBcwnLJS
-         m4WRnbwddW+o5lMg+Obk+rHkHQui5eb8ooVFnFJxnx/kMYOXUwobOQ9C9PnIxtyGgXQe
-         hbmxWxwHXWceC0OEUglJz1TOOvw97vEz3lU9SAKjLH1fQ3vo7LrdnM4tFqG7zBnmnp5h
-         GxxuwrQXOrkX7EwCQJeD4bXRy/Rn0rbKTXOlesjAhbPNA+k/7JL851XuMKu0bT/CJucK
-         1fUMWz9xCv5eJ1Mj+D9Cr3GBkWDIp9bgClgJ2x3A7NKe3UOxvPbChFcuLDcxOQTAaD5T
-         EXUw==
+        bh=mHTf5ssdkIiRDssyNc9X1VWJob3DAQAHF/gT3LBrwK4=;
+        b=K/2mj2WZnop4FMfN5auFI3pSXePveJpdMuXsG94EKe79lp0ntZCo4nrOpfAe3cD7zZ
+         EAOCOhkQPiteudf67bLl1Xb5omVMKb0zTVI091C70TA+rMYlc/5Z+JlE/pap0Pun/ZvU
+         OkHlTT9LSMp2KCTY5isvFeg9T4xFaTdXDH6Ip4whYUQsSPvCotnTg6JTG0mwR6eARGV9
+         W/UdSM+Zaxqx7oom4CcfDZpI8lsM0MEFo6eQkuu8SE3Vnhw6LtLXb1q1VWaDh+CyXUeH
+         pbs9Irk0M9erAhjswUFKHAvQJT0Ya4Nwfd+2LK5qoGY+oX7xDjD2DuIVYBmoa/XEWmW/
+         Plqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xkxHhJqNProKhVzizVTFQYR4zVgXz8q4oP2NJJdcs/E=;
-        b=hRrGoz+LNMv7jiZ6qIfzV7MPpUBn41AizYRf/XjfXpeZTuVUkS5yLP9jsKTk8eRKf8
-         7xRu5J35nubEvoDJPvC0aUjuxCaBRp3Il6yIkSjCU34HD04OjhuFXeKUyNM6QoKlU+6C
-         rtEefLrkXvws4QDrEK/6UL0lyXEhLDw/E8EODTbS6x+3chn8HGW/zvbzWcWmErQiTvud
-         bvqIz3GSMfEMWaedhFYuTEQgcnmj9f5wOT+TCZnEbO7XrSe+aBzKpDTiVWzBmLCH0J2J
-         cq+Bi4XoK4WSA+N4peowY1EwwkrLZgZkHADVzsRnDEDfsu8P/HqMzgnJW1rqyQZH4Ilb
-         dpBw==
-X-Gm-Message-State: AOAM530z9giKS0HJtvqLPxrCc5clQEisQYpegsDlqqEk6dvs7L0cSRGR
-        JKCT7Ad3tJ0eScU0M8LEabJt4P6oRJxxgtHLxiYRGg==
-X-Google-Smtp-Source: ABdhPJz5g3ldslC9N0y+VjGINZbsEDiAfTkh3IGxvjMGlc2ui6IdMI+urbfvjVB/rqWU0LnAxGOiYoPTcaA2BzJG5Fo=
-X-Received: by 2002:a05:6512:2356:: with SMTP id p22mr7970038lfu.347.1617915511909;
- Thu, 08 Apr 2021 13:58:31 -0700 (PDT)
+        bh=mHTf5ssdkIiRDssyNc9X1VWJob3DAQAHF/gT3LBrwK4=;
+        b=VVCpEjzgweGyoAEFIVis83fmaI44zlHGtwzZT3zUBstfPri/aNKvnlkQxzEwJrPtwK
+         L3vHuZE8ZzrTUaAIpwZ7q2Xuhh2pWoeXzDHRR4iCZRnVk6AgBP0mT0FhrPQAVpDeWY0a
+         L6bZMT+3w94+TuB4nW7tL9fSFAZtyJUK4f+qGxKl0EOexqAxMDki2J0PJEzg8Laz3htO
+         VWlx+0U6XXvApjxIj85oeWW9Ez7qaQ7WHJi3jnMiTjoe2G0TXWgYypMGuDTnMsKHIcKt
+         nFAb4xf1gL6mjsslOm5qO0kvaGjZZ8ZLeEa5/E5M7PyTZN6WOCHkh4q59rOC+FPsUntF
+         n+sw==
+X-Gm-Message-State: AOAM531D3Oe4nnBY9G/U7sIf+pE8hgKjLOusvkOLvyoXyPnJ/RKsUbX5
+        LT0FXtkTpoNipidwg7qcngPC3Qic+qFfDbgZiPNcRKi3FWlGvQ==
+X-Google-Smtp-Source: ABdhPJyvolIigLxCDZRZlYFjolv6wvU8kltQD0URGdOZg186bPPwq8th2JOzr7NDip7h6wQXMX1mecS1D41flyHh8Eo=
+X-Received: by 2002:a19:3804:: with SMTP id f4mr8369747lfa.117.1617916104718;
+ Thu, 08 Apr 2021 14:08:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1617355387.git.yuleixzhang@tencent.com> <YGn3iHBp5UweFv2/@mtj.duckdns.org>
- <CACZOiM0xA+6kAeM2sk3SfVV9Vu+5dOzC7APoNmB0Zw3jQKbg+w@mail.gmail.com>
-In-Reply-To: <CACZOiM0xA+6kAeM2sk3SfVV9Vu+5dOzC7APoNmB0Zw3jQKbg+w@mail.gmail.com>
+References: <20210408193948.vfktg3azh2wrt56t@gabell> <YG9tW1h9VSJcir+Y@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YG9tW1h9VSJcir+Y@carbon.dhcp.thefacebook.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 8 Apr 2021 13:58:20 -0700
-Message-ID: <CALvZod6JagEjzkn+2hVg+npFp=+X5mv4GLWAH-QbvJFP=udtgA@mail.gmail.com>
-Subject: Re: [RFC 0/1] Introduce new attribute "priority" to control group
-To:     yulei zhang <yulei.kernel@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+Date:   Thu, 8 Apr 2021 14:08:13 -0700
+Message-ID: <CALvZod58NBQLvk2m7Mb=_0oGCApcNeisxVuE1b+qh1OKDSy0Ag@mail.gmail.com>
+Subject: Re: memcg: performance degradation since v5.9
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Masayoshi Mizuma <msys.mizuma@gmail.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <christian@brauner.io>,
-        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>, linussli@tencent.com,
-        herberthbli@tencent.com, lennychen@tencent.com,
-        allanyuliu@tencent.com, Yulei Zhang <yuleixzhang@tencent.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 9:51 AM yulei zhang <yulei.kernel@gmail.com> wrote:
+On Thu, Apr 8, 2021 at 1:54 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> On Mon, Apr 5, 2021 at 1:29 AM Tejun Heo <tj@kernel.org> wrote:
+> On Thu, Apr 08, 2021 at 03:39:48PM -0400, Masayoshi Mizuma wrote:
+> > Hello,
 > >
-> > On Sun, Apr 04, 2021 at 10:51:53PM +0800, yulei.kernel@gmail.com wrote:
-> > > From: Yulei Zhang <yuleixzhang@tencent.com>
-> > >
-> > > This patch is the init patch of a series which we want to present the idea
-> > > of prioritized tasks management. As the cloud computing introduces intricate
-> > > configurations to provide customized infrasturctures and friendly user
-> > > experiences, in order to maximum utilization of sources and improve the
-> > > efficiency of arrangement, we add the new attribute "priority" to control
-> > > group, which could be used as graded factor by subssystems to manipulate
-> > > the behaviors of processes.
-> > >
-> > > Base on the order of priority, we could apply different resource configuration
-> > > strategies, sometimes it will be more accuracy instead of fine tuning in each
-> > > subsystem. And of course to set fundamental rules, for example, high priority
-> > > cgroups could seize the resource from cgroups with lower priority all the time.
-> > >
-> > > The default value of "priority" is set to 0 which means the highest
-> > > priority, and the totally levels of priority is defined by
-> > > CGROUP_PRIORITY_MAX. Each subsystem could register callback to receive the
-> > > priority change notification for their own purposes.
-> > >
-> > > We would like to send out the corresponding features in the coming weeks,
-> > > which are relaying on the priority settings. For example, the prioritized
-> > > oom, memory reclaiming and cpu schedule strategy.
+> > I detected a performance degradation issue for a benchmark of PostgresSQL [1],
+> > and the issue seems to be related to object level memory cgroup [2].
+> > I would appreciate it if you could give me some ideas to solve it.
 > >
-> > We've been trying really hard to give each interface semantics which is
-> > logical and describable independent of the implementation details. This runs
-> > precisely against that.
+> > The benchmark shows the transaction per second (tps) and the tps for v5.9
+> > and later kernel get about 10%-20% smaller than v5.8.
 > >
-> > Thanks.
+> > The benchmark does sendto() and recvfrom() system calls repeatedly,
+> > and the duration of the system calls get longer than v5.8.
+> > The result of perf trace of the benchmark is as follows:
 > >
-> > --
-> > tejun
+> >   - v5.8
+> >
+> >    syscall            calls  errors  total       min       avg       max       stddev
+> >                                      (msec)    (msec)    (msec)    (msec)        (%)
+> >    --------------- --------  ------ -------- --------- --------- ---------     ------
+> >    sendto            699574      0  2595.220     0.001     0.004     0.462      0.03%
+> >    recvfrom         1391089 694427  2163.458     0.001     0.002     0.442      0.04%
+> >
+> >   - v5.9
+> >
+> >    syscall            calls  errors  total       min       avg       max       stddev
+> >                                      (msec)    (msec)    (msec)    (msec)        (%)
+> >    --------------- --------  ------ -------- --------- --------- ---------     ------
+> >    sendto            699187      0  3316.948     0.002     0.005     0.044      0.02%
+> >    recvfrom         1397042 698828  2464.995     0.001     0.002     0.025      0.04%
+> >
+> >   - v5.12-rc6
+> >
+> >    syscall            calls  errors  total       min       avg       max       stddev
+> >                                      (msec)    (msec)    (msec)    (msec)        (%)
+> >    --------------- --------  ------ -------- --------- --------- ---------     ------
+> >    sendto            699445      0  3015.642     0.002     0.004     0.027      0.02%
+> >    recvfrom         1395929 697909  2338.783     0.001     0.002     0.024      0.03%
+> >
+
+Can you please explain how to read these numbers? Or at least put a %
+regression.
+
+> > I bisected the kernel patches, then I found the patch series, which add
+> > object level memory cgroup support, causes the degradation.
+> >
+> > I confirmed the delay with a kernel module which just runs
+> > kmem_cache_alloc/kmem_cache_free as follows. The duration is about
+> > 2-3 times than v5.8.
+> >
+> >    dummy_cache = KMEM_CACHE(dummy, SLAB_ACCOUNT);
+> >    for (i = 0; i < 100000000; i++)
+> >    {
+> >            p = kmem_cache_alloc(dummy_cache, GFP_KERNEL);
+> >            kmem_cache_free(dummy_cache, p);
+> >    }
+> >
+> > It seems that the object accounting work in slab_pre_alloc_hook() and
+> > slab_post_alloc_hook() is the overhead.
+> >
+> > cgroup.nokmem kernel parameter doesn't work for my case because it disables
+> > all of kmem accounting.
+
+The patch is somewhat doing that i.e. disabling memcg accounting for slab.
+
+> >
+> > The degradation is gone when I apply a patch (at the bottom of this email)
+> > that adds a kernel parameter that expects to fallback to the page level
+> > accounting, however, I'm not sure it's a good approach though...
 >
-> Thanks for the feedback. I am afraid that I didn't express myself clearly
-> about the idea of the priority attribute. We don't want to overwrite
-> the semantics
-> for each interface in cgroup, just hope to introduce another factor that could
-> help us apply the management strategy. For example, In our production
-> environment
-> K8s has its own priority class to implement the Qos, and it will be
-> very helpful
-> if control group could provide corresponding priority to assist the
-> implementation.
+> Hello Masayoshi!
+>
+> Thank you for the report!
+>
+> It's not a secret that per-object accounting is more expensive than a per-page
+> allocation. I had micro-benchmark results similar to yours: accounted
+> allocations are about 2x slower. But in general it tends to not affect real
+> workloads, because the cost of allocations is still low and tends to be only
+> a small fraction of the whole cpu load. And because it brings up significant
+> benefits: 40%+ slab memory savings, less fragmentation, more stable workingset,
+> etc, real workloads tend to perform on pair or better.
+>
+> So my first question is if you see the regression in any real workload
+> or it's only about the benchmark?
+>
+> Second, I'll try to take a look into the benchmark to figure out why it's
+> affected so badly, but I'm not sure we can easily fix it. If you have any
+> ideas what kind of objects the benchmark is allocating in big numbers,
+> please let me know.
+>
 
-IMHO the 'priority' is a high level concept mainly to define policies
-and should not be part of user API. The meaning of priority changes
-with each use-case and it can be more than one dimension. For example
-I can have two jobs running on a machine. One is a batch and the
-second is a latency sensitive job, let's say web server. For oom-kill
-use-case, I might prefer to kill the web server as there will be
-multiple instances running and the load balancer will redirect the
-load. However for memory reclaim, I would prefer to reclaim from batch
-as the cost of refaults in the web server is visible to end customers.
-
-Basically we should have mechanisms in the kernel which can be used to
-define and enforce high level priorities. I can set memory.low of the
-web server to prefer reclaim from batch job. For oom-kill, Android's
-lmkd and fb's oomd are the examples of user space oom-killer where
-policies are in user space.
+One idea would be to increase MEMCG_CHARGE_BATCH.
