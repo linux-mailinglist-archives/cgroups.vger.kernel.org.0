@@ -2,244 +2,177 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC8535A931
-	for <lists+cgroups@lfdr.de>; Sat, 10 Apr 2021 01:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F11735A93B
+	for <lists+cgroups@lfdr.de>; Sat, 10 Apr 2021 01:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhDIXUB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 9 Apr 2021 19:20:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54842 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235180AbhDIXT5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Apr 2021 19:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618010383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=VV6+ghNH1/AQ98hZ8A1K9EsRVAqRThkZsOYM3AOhXtQ=;
-        b=ZKFbrfcmVVTZHicbPfReb1uP9O7gruBZgmlfsfPvmSB3OyGXjp8Hhg4TTyu7FHAQdmgiPN
-        JMMGzU/jLWkbgQpjSLwrbMtiA6ZJFGLTPMLXYm2KUWwUvwmwCelpT7yc5RiTIbQRFl7Ls/
-        1LWFjIrupB4eaf3eWY/C1kI46d2TJAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-KuKrdhoMNLmBEUiaohrPzA-1; Fri, 09 Apr 2021 19:19:39 -0400
-X-MC-Unique: KuKrdhoMNLmBEUiaohrPzA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D8931020C20;
-        Fri,  9 Apr 2021 23:19:36 +0000 (UTC)
-Received: from llong.com (ovpn-113-226.rdu2.redhat.com [10.10.113.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B4FC1B400;
-        Fri,  9 Apr 2021 23:19:34 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S235090AbhDIX1J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 9 Apr 2021 19:27:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65425 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234880AbhDIX1I (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:27:08 -0400
+IronPort-SDR: BMHMMRbCYigH1KDjKnmmKvDqz1JEva23+7VC728O6O3h2GZTE7NbqszfXi7OpmepWbRmh7S8V0
+ Ke57gnrBMBZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173944581"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="173944581"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
+IronPort-SDR: xI7fWbzk+7AHdOiloNamNnAumWwQc+RJVrBcMtdpjnse13cIpgOsnTWs9LjI35Of840C0ng4+n
+ zTSVlnJXxY5Q==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="422931465"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 5/5] mm/memcg: Optimize user context object stock access
-Date:   Fri,  9 Apr 2021 19:18:42 -0400
-Message-Id: <20210409231842.8840-6-longman@redhat.com>
-In-Reply-To: <20210409231842.8840-1-longman@redhat.com>
-References: <20210409231842.8840-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
+ <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
+ <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
+Date:   Fri, 9 Apr 2021 16:26:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Most kmem_cache_alloc() calls are from user context. With instrumentation
-enabled, the measured amount of kmem_cache_alloc() calls from non-task
-context was about 0.01% of the total.
 
-The irq disable/enable sequence used in this case to access content
-from object stock is slow.  To optimize for user context access, there
-are now two object stocks for task context and interrupt context access
-respectively.
+On 4/8/21 4:52 AM, Michal Hocko wrote:
 
-The task context object stock can be accessed after disabling preemption
-which is cheap in non-preempt kernel. The interrupt context object stock
-can only be accessed after disabling interrupt. User context code can
-access interrupt object stock, but not vice versa.
+>> The top tier memory used is reported in
+>>
+>> memory.toptier_usage_in_bytes
+>>
+>> The amount of top tier memory usable by each cgroup without
+>> triggering page reclaim is controlled by the
+>>
+>> memory.toptier_soft_limit_in_bytes 
+> 
 
-The mod_objcg_state() function is also modified to make sure that memcg
-and lruvec stat updates are done with interrupted disabled.
+Michal,
 
-The downside of this change is that there are more data stored in local
-object stocks and not reflected in the charge counter and the vmstat
-arrays.  However, this is a small price to pay for better performance.
+Thanks for your comments.  I will like to take a step back and
+look at the eventual goal we envision: a mechanism to partition the 
+tiered memory between the cgroups. 
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 71 +++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 57 insertions(+), 14 deletions(-)
+A typical use case may be a system with two set of tasks.
+One set of task is very latency sensitive and we desire instantaneous
+response from them. Another set of tasks will be running batch jobs
+were latency and performance is not critical.   In this case,
+we want to carve out enough top tier memory such that the working set
+of the latency sensitive tasks can fit entirely in the top tier memory.
+The rest of the top tier memory can be assigned to the background tasks.  
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 69f728383efe..00c9074e42e5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2229,7 +2229,8 @@ struct obj_stock {
- struct memcg_stock_pcp {
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
--	struct obj_stock obj;
-+	struct obj_stock task_obj;
-+	struct obj_stock irq_obj;
- 
- 	struct work_struct work;
- 	unsigned long flags;
-@@ -2254,11 +2255,46 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- }
- #endif
- 
-+/*
-+ * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
-+ * sequence used in this case to access content from object stock is slow.
-+ * To optimize for user context access, there are now two object stocks for
-+ * task context and interrupt context access respectively.
-+ *
-+ * The task context object stock can be accessed by disabling preemption only
-+ * which is cheap in non-preempt kernel. The interrupt context object stock
-+ * can only be accessed after disabling interrupt. User context code can
-+ * access interrupt object stock, but not vice versa.
-+ */
- static inline struct obj_stock *current_obj_stock(void)
- {
- 	struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
- 
--	return &stock->obj;
-+	return in_task() ? &stock->task_obj : &stock->irq_obj;
-+}
-+
-+#define get_obj_stock(flags)			\
-+({						\
-+	struct memcg_stock_pcp *stock;		\
-+	struct obj_stock *obj_stock;		\
-+						\
-+	if (in_task()) {			\
-+		preempt_disable();		\
-+		(flags) = -1L;			\
-+		obj_stock = &stock->task_obj;	\
-+	} else {				\
-+		local_irq_save(flags);		\
-+		obj_stock = &stock->irq_obj;	\
-+	}					\
-+	obj_stock;				\
-+})
-+
-+static inline void put_obj_stock(unsigned long flags)
-+{
-+	if (flags == -1L)
-+		preempt_enable();
-+	else
-+		local_irq_restore(flags);
- }
- 
- /**
-@@ -2327,7 +2363,9 @@ static void drain_local_stock(struct work_struct *dummy)
- 	local_irq_save(flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
--	drain_obj_stock(&stock->obj);
-+	drain_obj_stock(&stock->irq_obj);
-+	if (in_task())
-+		drain_obj_stock(&stock->task_obj);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
- 
-@@ -3183,7 +3221,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
- 	memcg = obj_cgroup_memcg(objcg);
- 	if (pgdat)
- 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
--	__mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
-+	mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
- 	rcu_read_unlock();
- }
- 
-@@ -3193,7 +3231,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 	unsigned long flags;
- 	bool ret = false;
- 
--	local_irq_save(flags);
-+	stock = get_obj_stock(flags);
- 
- 	stock = current_obj_stock();
- 	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
-@@ -3201,7 +3239,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 		ret = true;
- 	}
- 
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- 
- 	return ret;
- }
-@@ -3254,8 +3292,13 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
- 
--	if (stock->obj.cached_objcg) {
--		memcg = obj_cgroup_memcg(stock->obj.cached_objcg);
-+	if (in_task() && stock->task_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->task_obj.cached_objcg);
-+		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
-+			return true;
-+	}
-+	if (stock->irq_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->irq_obj.cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
- 			return true;
- 	}
-@@ -3283,9 +3326,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__refill_obj_stock(objcg, nr_bytes);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- static void __mod_obj_stock_state(struct obj_cgroup *objcg,
-@@ -3325,9 +3368,9 @@ void mod_obj_stock_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__mod_obj_stock_state(objcg, pgdat, idx, nr);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-@@ -3380,10 +3423,10 @@ void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__refill_obj_stock(objcg, size);
- 	__mod_obj_stock_state(objcg, pgdat, idx, -(int)size);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- #endif /* CONFIG_MEMCG_KMEM */
--- 
-2.18.1
+To achieve such cgroup based tiered memory management, we probably want
+something like the following.
 
+For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
+where tier t_0 sits at the top and demotes to the lower tier. 
+We envision for this top tier memory t0 the following knobs and counters 
+in the cgroup memory controller
+
+memory_t0.current 	Current usage of tier 0 memory by the cgroup.
+
+memory_t0.min		If tier 0 memory used by the cgroup falls below this low
+			boundary, the memory will not be subjected to demotion
+			to lower tiers to free up memory at tier 0.  
+
+memory_t0.low		Above this boundary, the tier 0 memory will be subjected
+			to demotion.  The demotion pressure will be proportional
+			to the overage.
+
+memory_t0.high		If tier 0 memory used by the cgroup exceeds this high
+			boundary, allocation of tier 0 memory by the cgroup will
+			be throttled. The tier 0 memory used by this cgroup
+			will also be subjected to heavy demotion.
+
+memory_t0.max		This will be a hard usage limit of tier 0 memory on the cgroup.
+
+If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
+This follows closely with the design of the general memory controller interface.  
+
+Will such an interface looks sane and acceptable with everyone?
+
+The patch set I posted is meant to be a straw man cgroup v1 implementation
+and I readily admits that it falls short of the eventual functionality 
+we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
+memory management should work.
+
+> Are you trying to say that soft limit acts as some sort of guarantee?
+
+No, the soft limit does not offers guarantee.  It will only serves to keep the usage
+of the top tier memory in the vicinity of the soft limits.
+
+> Does that mean that if the memcg is under memory pressure top tiear
+> memory is opted out from any reclaim if the usage is not in excess?
+
+In the prototype implementation, regular memory reclaim is still in effect
+if we are under heavy memory pressure. 
+
+> 
+> From you previous email it sounds more like the limit is evaluated on
+> the global memory pressure to balance specific memcgs which are in
+> excess when trying to reclaim/demote a toptier numa node.
+
+On a top tier node, if the free memory on the node falls below a percentage, then
+we will start to reclaim/demote from the node.
+
+> 
+> Soft limit reclaim has several problems. Those are historical and
+> therefore the behavior cannot be changed. E.g. go after the biggest
+> excessed memcg (with priority 0 - aka potential full LRU scan) and then
+> continue with a normal reclaim. This can be really disruptive to the top
+> user.
+
+Thanks for pointing out these problems with soft limit explicitly.
+
+> 
+> So you can likely define a more sane semantic. E.g. push back memcgs
+> proporitional to their excess but then we have two different soft limits
+> behavior which is bad as well. I am not really sure there is a sensible
+> way out by (ab)using soft limit here.
+> 
+> Also I am not really sure how this is going to be used in practice.
+> There is no soft limit by default. So opting in would effectivelly
+> discriminate those memcgs. There has been a similar problem with the
+> soft limit we have in general. Is this really what you are looing for?
+> What would be a typical usecase?
+
+>> Want to make sure I understand what you mean by NUMA aware limits.
+>> Yes, in the patch set, it does treat the NUMA nodes differently.
+>> We are putting constraint on the "top tier" RAM nodes vs the lower
+>> tier PMEM nodes.  Is this what you mean?
+> 
+> What I am trying to say (and I have brought that up when demotion has been
+> discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
+> The specific technology shouldn't be imprinted into the interface.
+> Fundamentally you are trying to balance memory among NUMA nodes as we do
+> not have other abstraction to use. So rather than talking about top,
+> secondary, nth tier we have different NUMA nodes with different
+> characteristics and you want to express your "priorities" for them.
+
+With node priorities, how would the system reserve enough
+high performance memory for those performance critical task cgroup? 
+
+By priority, do you mean the order of allocation of nodes for a cgroup?
+Or you mean that all the similar performing memory node will be grouped in
+the same priority?
+
+Tim
