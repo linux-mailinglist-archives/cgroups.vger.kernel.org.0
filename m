@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C3835D3AC
-	for <lists+cgroups@lfdr.de>; Tue, 13 Apr 2021 01:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0F235D3B5
+	for <lists+cgroups@lfdr.de>; Tue, 13 Apr 2021 01:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343971AbhDLXDw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 19:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
+        id S240485AbhDLXHd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 19:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343955AbhDLXDv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 19:03:51 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D4DC06138E
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 16:03:31 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id v140so24115483lfa.4
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 16:03:31 -0700 (PDT)
+        with ESMTP id S239629AbhDLXHd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 19:07:33 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D83AC061756
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 16:07:14 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id p23so13637136ljn.0
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 16:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rzJqdflF0WnnM2sRHImKq0cVYdyTkByzLc0YHSLjXyw=;
-        b=l2UdhHrElVUDwH0hdCZbLmqJp9H1jOKWmea9EvpaCTnJg5biZnZtb90GZq56pXCyuL
-         qlITzfF7jqj7p3Lwo2BljksTyDdQntYdb2F6iYN5MWSe2I78ThxWhzTPYt12pd8zQkZa
-         EsBPugLlm71CgY1zGZO46yoGkv140ySoB1/dNn2mPuYmBbgjUZjiqnjW7qyaohgtvdR2
-         kr+fqLblcbKMouw1xITBfF2HuH64dkNcLLgG42WRVITR+ju2d1jxzzyHn+t6WSrO9u4W
-         wtr8cSWu9xge+Hw9P0frVBFEToUDcRKjbOKQNbzfpoNK6N7K/sIMT7uakUFRPOaQuiIR
-         Qx7Q==
+        bh=aTRzEJFSpnM/9p6JIBDLvAw2rNJrlqUIjfDvML3pE+I=;
+        b=EHPYiqK56Fzjbrc/qW5NAyRz0w3Dd7UjTe+Axr6LHCmgrAtap46JcXM/jhRbSqGaqj
+         gELdIQCoZW1yGJ7H6bqgbzih4W9cnGFArn0Rj0j+2c2Q3GbIY+2GgqX5/PEk3shQ3giX
+         3lwvh05R+eQ8cJZSE+I0lFHl8NpHDPVHuC/uwPpK4IBXWJ+59w/w2ofII93zsVvGa8V/
+         8pB0HpV4QPaPPvjSlPmTAq6DQctnDEAsvd5fxTuZs2L8FEl4PFyJqmgPzFtfmpoThlEr
+         5Z5TwK//szee0vkGALcf84NtuKt4j+yXoePUMMGhTUPBYvf/wC7+E0u8EY6RwdWpgrZU
+         Dkiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rzJqdflF0WnnM2sRHImKq0cVYdyTkByzLc0YHSLjXyw=;
-        b=kyMdHPUHKv0ccrqGYykkQqOZc9eDAl0rTiqLwO3hfz9LtDnM4bbvtVJEm04UMMRSRE
-         hsmsSc6SKzHcX8Wk9h5c20XiVyXNe/EKHvdNMr1NQx038GURfOWC9vspxwBHndwUrT1O
-         vFvlpzjRSpURvYe9UgCsCYdpBGbk68SvVb9q/u0R5U5jj5PcYnJAQZ4VQpPtvXEgxOOK
-         yS1q1QL4tRfyyEm9ZMz8mO+3uSkwvHzfihJgJ9cYJGV4uPdlAxVRsBtXEJFp0M1lKgil
-         ZZ8t9d8oWlwzjrN3ahu9nEIvEMpsyY/KIhjGKLktiSffPaRVGfx888Rt4aCg8CQ7i0hb
-         gh6A==
-X-Gm-Message-State: AOAM530S3e8La7AnX2Gqf/z7O91xSeE8PXA/Jd5mOWHYmrrGrnwfTVBw
-        ZPh3dhb+KmeifXRQcM0ppo0MnCNZIJiDeFNCazSIRQ==
-X-Google-Smtp-Source: ABdhPJypa+SCYj5GmItj2Oq0Gj8dAsBY2KumHy25BwOc82qYcbNQS57CLoBVC+4YQ/b431aq9+tnXL+0VywTirWSHok=
-X-Received: by 2002:a19:3804:: with SMTP id f4mr21292851lfa.117.1618268609686;
- Mon, 12 Apr 2021 16:03:29 -0700 (PDT)
+        bh=aTRzEJFSpnM/9p6JIBDLvAw2rNJrlqUIjfDvML3pE+I=;
+        b=WasDq56MnD8gNuV5Ptweu+Z2IzccLhtialm+KUDZJ8VV90Y2ieUA/5GX3mEQ1wfmBF
+         CD/MXzSutYLUlVFzksUnfo5n0Gkk526p0ctQtS1m40riVr2ys+PfT3i0qQBYV96nWUfN
+         xtYQyBnP1thK3qilyWldT+qvhkOVHpVsxDHsz0FoRdCUxgKVZjvAtU8QqGz8TqLUMa6b
+         XVexoYv1Jp3dpSo3u+XN2tPr/qQuynKjrb7v3USwUl6I7ACp3RP1sE8pSw8QGpUBZhIp
+         8zPVSuLGoGQLlduyKUACOwvpL+dNB8hh7PGFeJb+VjSlPOTzSjtHFao8PPlgDZGXF+ND
+         3Odw==
+X-Gm-Message-State: AOAM530qkpXsFkvr/9v6pGen9BOjlfQ08j30kgSnbCmOUo6qjFnFsi+8
+        otwHcIOJM4TBwvVM/BztWO7JwdDIadoAdKErI7zhGQ==
+X-Google-Smtp-Source: ABdhPJzGkUJEltWcM75+iXwmV51kn/P/TwZoP85lVcwyLyK75hqfBjSoBiha6DJxTWXQTkYiFW75dddv0klDmE3JUbM=
+X-Received: by 2002:a2e:8084:: with SMTP id i4mr19954167ljg.122.1618268832376;
+ Mon, 12 Apr 2021 16:07:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210412225503.15119-1-longman@redhat.com> <20210412225503.15119-4-longman@redhat.com>
-In-Reply-To: <20210412225503.15119-4-longman@redhat.com>
+References: <20210412225503.15119-1-longman@redhat.com> <20210412225503.15119-5-longman@redhat.com>
+In-Reply-To: <20210412225503.15119-5-longman@redhat.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 12 Apr 2021 16:03:17 -0700
-Message-ID: <CALvZod7hBvbnF3G_Hxbu3Xmfzdip_BGAh0Nr86vvN2d9xBTaSg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+Date:   Mon, 12 Apr 2021 16:07:01 -0700
+Message-ID: <CALvZod4Rd3arXjJX87dbSoO5iL6HauSfSdWxkreT_ydGYiAHiA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] mm/memcg: Separate out object stock data into its
+ own struct
 To:     Waiman Long <longman@redhat.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -76,26 +77,11 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Mon, Apr 12, 2021 at 3:55 PM Waiman Long <longman@redhat.com> wrote:
 >
-> Before the new slab memory controller with per object byte charging,
-> charging and vmstat data update happen only when new slab pages are
-> allocated or freed. Now they are done with every kmem_cache_alloc()
-> and kmem_cache_free(). This causes additional overhead for workloads
-> that generate a lot of alloc and free calls.
->
-> The memcg_stock_pcp is used to cache byte charge for a specific
-> obj_cgroup to reduce that overhead. To further reducing it, this patch
-> makes the vmstat data cached in the memcg_stock_pcp structure as well
-> until it accumulates a page size worth of update or when other cached
-> data change.
->
-> On a 2-socket Cascade Lake server with instrumentation enabled and this
-> patch applied, it was found that about 17% (946796 out of 5515184) of the
-> time when __mod_obj_stock_state() is called leads to an actual call to
-> mod_objcg_state() after initial boot. When doing parallel kernel build,
-> the figure was about 16% (21894614 out of 139780628). So caching the
-> vmstat data reduces the number of calls to mod_objcg_state() by more
-> than 80%.
+> The object stock data stored in struct memcg_stock_pcp are independent
+> of the other page based data stored there. Separating them out into
+> their own struct to highlight the independency.
 >
 > Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
