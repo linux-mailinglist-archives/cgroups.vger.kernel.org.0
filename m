@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08DB35CEDA
-	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 18:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FD635CEDB
+	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 18:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244668AbhDLQvI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 12:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
+        id S244697AbhDLQvJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 12:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345705AbhDLQrr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 12:47:47 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A285C06138D
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 09:45:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id p67so4610472pfp.10
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 09:45:33 -0700 (PDT)
+        with ESMTP id S1345730AbhDLQrs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 12:47:48 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A2BC06138E
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 09:45:58 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id f29so9851027pgm.8
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 09:45:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rWd8qaffFtx7x0KdjfNiWGmezRnoMswRgKduJuFiO4A=;
-        b=WEvsRmRxGAgXGh1Q+11q9oWawxwjMoAvDbSSeSLffAn+syXlTlKtqPce9hXAFsv1EQ
-         Qb4wTXhTPMBsqKmhqz0/FGvuIwxwgtJg/ztFW9/GLhJ0DMS/jmc+AEkeZTG6K24Bu3oO
-         XOh/0L2v5CfHP3Osp9aiNhDOgLXTApyKFSkZDjb6zsqHDa87D1g77S0vJJ8Oao9Tb0hV
-         WO6V/slUu9coDshH8er9wOtVgm4guloaK/+HnxPUu/OvUSfysY50fvvNRDp16cfDlufZ
-         knvN/TZXW1z20kQLfNVlBKXRGBADo7+gJzufp5eLhx0LmORqOs+NOCEmFRppfBV2DSrm
-         sJyg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=a6x/SVY566QC4XRne/VcnphgwitSAF9FZ0ekSLyRb6U=;
+        b=NrA3V8OYI4PeAa68KkhMvhrCGkESZskjhs8ykqnIV1hnUCHB/9kp/UfHBIz43yBPwk
+         CwVEefr8Hd6/2tbtqq40azEAufA4JpCK9hV5c2vltMEH5X7mizo9OpmaHitn1UUrCkwH
+         vVS4Tt7Ntj+gJ5GM9qSL+5Ww2kysiTZFRxlqt9rzKtcjy1PVRGJv+p1Hovqf0X2d32eZ
+         uEZwIVb/oNyQ4D3Y2U15m3F1ZAAOqun0gk0n6QgpAcYCCoF1cJcJpOeN7i9ROI44vXLq
+         yo7dUOFiiH1P3PrPcAgAyP++vpU3ZQPfLbPFk5AS79s/IP0X8wABMRGkotdHS448aJXX
+         k2Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rWd8qaffFtx7x0KdjfNiWGmezRnoMswRgKduJuFiO4A=;
-        b=f7e8BtyskQyGsdLpx2Ev7JYCK4DZoZEsNi9qlvhSQiDUsxeN69Fz7YW9sAkfQ1LkRJ
-         bNfCmg7iG3B5An/aWEnuFHYYM07wX31wX2dc0TT90WYilpVbZlhrs4e/MW+cVdI5wpCZ
-         9pm95pD8FyJzQpv0GYvZwOMFl0sh2f9TfRT4wkeK2zl1vovbPW+paf9ma2RhcVTKoRwQ
-         ddpwjiROnZfRwCiFAsZeHQM/4IN9MlSlcW+YYMYITM8/yvgm7GS+jjoHf5l551c2jVfJ
-         Ns+PGoBHHYncyZcJpWOEWF+Q/yBYnjTuYT0889Kn599g1mYyVpSIP73BrSS9w5TZIv09
-         7y9g==
-X-Gm-Message-State: AOAM530s9/mnnbI5SPc19roXr2Z/Wr+Nq4+l87k5Rw+u+/NGElqXGIVi
-        VaKTlVRuRTC2cKzbIpxbT2g=
-X-Google-Smtp-Source: ABdhPJxE1QMj5dmFOIHpOhFsicaP2pgieImBKJbesUVQj22RfaT6u8HtADXlZcW4c59RwD4dNaaH3A==
-X-Received: by 2002:a65:40c7:: with SMTP id u7mr27828307pgp.29.1618245932707;
-        Mon, 12 Apr 2021 09:45:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=a6x/SVY566QC4XRne/VcnphgwitSAF9FZ0ekSLyRb6U=;
+        b=pN0xwL3piDPk2OyUhbt/MNPPIdPb6jarff5gjcklzBFGgc/Gw303l9xLwYHD1NhPjC
+         2LoQLADe1uvbzQiD/dfTBETuakDDFJr3GDrjizt4K5r3HA7X6pyvURvSo/sjdP6tCVnK
+         ksY9BVPZvmw/dIi7pPokWldnAhRfb90aESw55bZrUgpEmF6eci4iKj5if6mjIErRtb7L
+         ZBzL5Ktv+iMdqI0XPWSlodVqlxWxImRyOq8+HYV8W3tZnq09S6XM0HIOzmmMea+oPz5u
+         YEULkV7234urVLt+nSlk+hVfm29zLUqwzne8FHz4C9hs8D3FwyTozjr+qM+doaVdMEr/
+         tr6A==
+X-Gm-Message-State: AOAM533gp24WTAb2Hys6U8cnXE58+mv839QN4LVH4wWT2cD5YBBNKY1T
+        2mW5YC2+7hgZes360U+pKgM=
+X-Google-Smtp-Source: ABdhPJzhbk3CiIIK8RBvaDM+oT/jHezfpI9/0kWlb+qCPuJbX+J+2AEynaG+Kz05O2ICCgc/ABU/FQ==
+X-Received: by 2002:a63:5c48:: with SMTP id n8mr27596087pgm.411.1618245957574;
+        Mon, 12 Apr 2021 09:45:57 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id s21sm12704044pgl.36.2021.04.12.09.45.30
+        by smtp.gmail.com with ESMTPSA id g10sm2913844pfj.137.2021.04.12.09.45.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Apr 2021 09:45:32 -0700 (PDT)
+        Mon, 12 Apr 2021 09:45:57 -0700 (PDT)
 From:   yulei.kernel@gmail.com
 X-Google-Original-From: yuleixzhang@tencent.com
 To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
@@ -54,54 +54,202 @@ To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
 Cc:     cgroups@vger.kernel.org, benbjiang@tencent.com,
         kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
         linussli@tencent.com, herberthbli@tencent.com,
+        Lei Chen <lennychen@tencent.com>,
+        Liu Yu <allanyuliu@tencent.com>,
+        Peng Zhiguang <zgpeng@tencent.com>,
         Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC v2 0/2] introduce new attribute "priority" to control group
-Date:   Tue, 13 Apr 2021 00:40:09 +0800
-Message-Id: <cover.1618219939.git.yuleixzhang@tencent.com>
+Subject: [RFC v2 1/2] cgroup: add support for cgroup priority
+Date:   Tue, 13 Apr 2021 00:45:48 +0800
+Message-Id: <2304fff128001ea8962704f1716286d03044ac51.1618219939.git.yuleixzhang@tencent.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1618219939.git.yuleixzhang@tencent.com>
+References: <cover.1618219939.git.yuleixzhang@tencent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yulei Zhang <yuleixzhang@tencent.com>
+From: Lei Chen <lennychen@tencent.com>
 
-Last time we introduce the idea of adding prioritized tasks management
-to control group. Sometimes we may assign the same amount of resources
-to multiple cgroups due to the environment restriction, but we still 
-hope there are preference order to handle the tasks in those cgroups,
-the 'prio' attribute may help to do the ranking jobs. 
+Introduce new attribute "priority" to control group, which
+could be used as scale by subssytem to manipulate the behaviors
+of processes.
+The default value of "priority" is set to 0 which means the
+highest priority, and the totally levels of priority is defined
+by CGROUP_PRIORITY_MAX.
 
-The default value of "priority" is set to 0 which means the highest
-priority, and the totally levels of priority is defined by
-CGROUP_PRIORITY_MAX. Each subsystem could register callback to receive the
-priority change notification for their own purposes. 
-
-In this v2 patch we apply a simple rule to the oom hanlder base on the
-order of priority to demonstrate the intention about adding this attribute.
-When enable the prioritized oom, it will perfer to pick up the victim from the
-memory cgroup with lower priority, and try the best to keep the tasks
-alive in high ranked memcg.
-
-V2->V1:
-1. Introduce prioritized oom in memcg.
-
-Lei Chen (1):
-  cgroup: add support for cgroup priority
-
-Yulei Zhang (1):
-  memcg: introduce prioritized oom in memcg
-
+Signed-off-by: Lei Chen <lennychen@tencent.com>
+Signed-off-by: Liu Yu <allanyuliu@tencent.com>
+Signed-off-by: Peng Zhiguang <zgpeng@tencent.com>
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
  include/linux/cgroup-defs.h |  2 +
  include/linux/cgroup.h      |  2 +
- include/linux/memcontrol.h  | 38 ++++++++++++++
- include/linux/oom.h         |  1 +
- kernel/cgroup/cgroup.c      | 90 +++++++++++++++++++++++++++++++++
- mm/memcontrol.c             | 99 ++++++++++++++++++++++++++++++++++++-
- mm/oom_kill.c               |  6 +--
- 7 files changed, 233 insertions(+), 5 deletions(-)
+ kernel/cgroup/cgroup.c      | 90 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 94 insertions(+)
 
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 559ee05f8..3fa2f28a9 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -417,6 +417,7 @@ struct cgroup {
+ 	u16 subtree_ss_mask;
+ 	u16 old_subtree_control;
+ 	u16 old_subtree_ss_mask;
++	u16 priority;
+ 
+ 	/* Private pointers for each registered subsystem */
+ 	struct cgroup_subsys_state __rcu *subsys[CGROUP_SUBSYS_COUNT];
+@@ -640,6 +641,7 @@ struct cgroup_subsys {
+ 	void (*exit)(struct task_struct *task);
+ 	void (*release)(struct task_struct *task);
+ 	void (*bind)(struct cgroup_subsys_state *root_css);
++	int (*css_priority_change)(struct cgroup_subsys_state *css, u16 old, u16 new);
+ 
+ 	bool early_init:1;
+ 
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de0..734d51aba 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -47,6 +47,7 @@ struct kernel_clone_args;
+ 
+ /* internal flags */
+ #define CSS_TASK_ITER_SKIPPED		(1U << 16)
++#define CGROUP_PRIORITY_MAX		8
+ 
+ /* a css_task_iter should be treated as an opaque object */
+ struct css_task_iter {
+@@ -957,5 +958,6 @@ static inline void cgroup_bpf_get(struct cgroup *cgrp) {}
+ static inline void cgroup_bpf_put(struct cgroup *cgrp) {}
+ 
+ #endif /* CONFIG_CGROUP_BPF */
++ssize_t cgroup_priority(struct cgroup_subsys_state *css);
+ 
+ #endif /* _LINUX_CGROUP_H */
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9153b20e5..aa019ad24 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1892,6 +1892,7 @@ static void init_cgroup_housekeeping(struct cgroup *cgrp)
+ 	cgrp->dom_cgrp = cgrp;
+ 	cgrp->max_descendants = INT_MAX;
+ 	cgrp->max_depth = INT_MAX;
++	cgrp->priority = 0;
+ 	INIT_LIST_HEAD(&cgrp->rstat_css_list);
+ 	prev_cputime_init(&cgrp->prev_cputime);
+ 
+@@ -4783,6 +4784,88 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	return __cgroup_procs_write(of, buf, false) ?: nbytes;
+ }
+ 
++static int cgroup_priority_show(struct seq_file *seq, void *v)
++{
++	struct cgroup *cgrp = seq_css(seq)->cgroup;
++	u16 prio = cgrp->priority;
++
++	seq_printf(seq, "%d\n", prio);
++
++	return 0;
++}
++
++static void cgroup_set_priority(struct cgroup *cgrp, unsigned int priority)
++{
++	u16 old = cgrp->priority;
++	struct cgroup_subsys_state *css;
++	int ssid;
++
++	cgrp->priority = priority;
++	for_each_css(css, ssid, cgrp) {
++		if (css->ss->css_priority_change)
++			css->ss->css_priority_change(css, old, priority);
++	}
++}
++
++static void cgroup_priority_propagate(struct cgroup *cgrp)
++{
++	struct cgroup *dsct;
++	struct cgroup_subsys_state *d_css;
++	u16 priority = cgrp->priority;
++
++	lockdep_assert_held(&cgroup_mutex);
++	cgroup_for_each_live_descendant_pre(dsct, d_css, cgrp) {
++		if (dsct->priority < priority)
++			cgroup_set_priority(dsct, priority);
++	}
++}
++
++static ssize_t cgroup_priority_write(struct kernfs_open_file *of,
++				      char *buf, size_t nbytes, loff_t off)
++{
++	struct cgroup *cgrp, *parent;
++	ssize_t ret;
++	u16 prio, orig;
++
++	buf = strstrip(buf);
++	ret = kstrtou16(buf, 0, &prio);
++	if (ret)
++		return ret;
++
++	if (prio < 0 || prio >= CGROUP_PRIORITY_MAX)
++		return -ERANGE;
++
++	cgrp = cgroup_kn_lock_live(of->kn, false);
++	if (!cgrp)
++		return -ENOENT;
++	parent = cgroup_parent(cgrp);
++	if (parent && prio < parent->priority) {
++		ret = -EINVAL;
++		goto unlock_out;
++	}
++	orig = cgrp->priority;
++	if (prio == orig)
++		goto unlock_out;
++
++	cgroup_set_priority(cgrp, prio);
++	cgroup_priority_propagate(cgrp);
++unlock_out:
++	cgroup_kn_unlock(of->kn);
++
++	return ret ?: nbytes;
++}
++
++ssize_t cgroup_priority(struct cgroup_subsys_state *css)
++{
++	struct cgroup *cgrp = css->cgroup;
++	unsigned int prio = 0;
++
++	if (cgrp)
++		prio = cgrp->priority;
++	return prio;
++}
++EXPORT_SYMBOL(cgroup_priority);
++
+ /* cgroup core interface files for the default hierarchy */
+ static struct cftype cgroup_base_files[] = {
+ 	{
+@@ -4836,6 +4919,12 @@ static struct cftype cgroup_base_files[] = {
+ 		.seq_show = cgroup_max_depth_show,
+ 		.write = cgroup_max_depth_write,
+ 	},
++	{
++		.name = "cgroup.priority",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = cgroup_priority_show,
++		.write = cgroup_priority_write,
++	},
+ 	{
+ 		.name = "cgroup.stat",
+ 		.seq_show = cgroup_stat_show,
+@@ -5178,6 +5267,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	cgrp->self.parent = &parent->self;
+ 	cgrp->root = root;
+ 	cgrp->level = level;
++	cgrp->priority = parent->priority;
+ 
+ 	ret = psi_cgroup_alloc(cgrp);
+ 	if (ret)
 -- 
 2.28.0
 
