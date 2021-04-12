@@ -2,93 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246DF35D268
-	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 23:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEB835D27E
+	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 23:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbhDLVNX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 17:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        id S238051AbhDLVVe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 17:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240610AbhDLVNW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 17:13:22 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCA8C061574
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 14:13:04 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id i9so15816786qka.2
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 14:13:04 -0700 (PDT)
+        with ESMTP id S238709AbhDLVVd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 17:21:33 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EEDC061574;
+        Mon, 12 Apr 2021 14:21:15 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 7so15832753qka.7;
+        Mon, 12 Apr 2021 14:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=VhpeC0PCBKcKFiAl7ppRsOOB3Otxo0lk7Zd3T6AZwNM=;
-        b=WnYKb70Cx5OQVPFK9OAHJNNPUzeGnDdH/lqQWvldpQLwRF0TeKp7OOcCsqrGn3A2fP
-         X7JSCUXEAxdUwX1KHddEf8mdYypYI1Ci6RWcdUntTl6Cw/6sJk8aelTufvyKnaQ7dxCt
-         gz+qtss9qhGqnhFc9LIGH1/YjGDU+0FCDIYLc0s88lmJDCRdb8dZ1X8X5jwIkS6s8951
-         l9UhZ7hwM04XdHi9oH656UT6gi68AWG1vT4xj9tHMWzi5H1bOEKS7ovUc1ein199JqN8
-         fnvCnDLiH4d9OLrWJQQeiWKHVhOW49C0ceMO6WOg1eX7qpsG1s7YVA6ziYsqCv1ijwfB
-         gg7w==
+        bh=MBWhgeDndp0aZntn+ODLCePsN2Avwf3xdPZInGzyS+0=;
+        b=sH8Fchkq/AinteIuXtQiJD7yfb56iqLXEJgwpccdCaz/VKUDWKkOYg8QlTGqlDYVY1
+         AGE8n70N/Nimrb3WC47tDMr7bO3VVaEC2MX7L3NmA9G9FsgyuBDIyvDF45nnFEprQSMj
+         Or8o6NabQPDxsHDAOGyHXuKGBlI2mkIH9ipZbJSq2NlIcky98cfAso1knges3C2LnOxC
+         tFMcjXdvLSuoBnPfjhfz0k5QauvhEB5qivFSeiNcFTybxSdb6PmQV6eICgUhwnK36Mu+
+         1qAl6pW8cUYFFIiBze7ZHlSSvmINlqmxODdfqRv3aj7YZh37X5NNaokZQp2H2hjx+2SW
+         C4eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=VhpeC0PCBKcKFiAl7ppRsOOB3Otxo0lk7Zd3T6AZwNM=;
-        b=W5L5y9GkIzjjFttdsc4tO7qq4mWYTnh2s+e+bi76zDLLIOXQer3Jmyvz2ddtO6EzH/
-         hGALq2EqKMuqlsuRBOAmi3dqZ9oG3H+YeeIcxvdY0mQDd8eB62tWFkKBeiYrMiZIUzKD
-         2kJNlYZmiElRkqhHabAjDr3UQGHRYHKvj1TnxLLfwGZTVtjJDdUBdx5LxJqfAjBJEuux
-         VKhslLvyZWpHXF1Vx3u1eI1iTDc/iGDQqmUIvtrw40p+QZxL68OHhkZ6/HNCCzenuVcO
-         /Bsn05i+bSGdHzkN+IB26BpSJWgHxvxUXBXqrJxlrIzTnluLxhnkbU1ha3AYkpXhQNAU
-         jVaQ==
-X-Gm-Message-State: AOAM532R6P1olaS8tsb3CX4s71Toq89rO6bUDJn6lBHN5oK/4wm8gKpR
-        /ldeoEWfaMUQnnDdqdC56y4=
-X-Google-Smtp-Source: ABdhPJyXuq3MZhkc19WxuNIgTLmh15JIiHWsOLxNHBR8Vh6XavGP/PQFhz30Kb45VFmHIzcIb80VtQ==
-X-Received: by 2002:a37:9b93:: with SMTP id d141mr10050765qke.50.1618261983311;
-        Mon, 12 Apr 2021 14:13:03 -0700 (PDT)
+        bh=MBWhgeDndp0aZntn+ODLCePsN2Avwf3xdPZInGzyS+0=;
+        b=i9721S4Lb2k1ohvXzqkpPFLcsCk4YlsnHgMhXf1YtPJ71ODpeuJQXqZw+/rCMo9ydS
+         Nb+iFFXldssaEDR2QOafu4gw0pgBETWD94dD/VdduLxNOM5D4DlQRXAzdLTjMg3uTV+t
+         RBNmtadiNCVM8+L4rCn4yp+mD9XrW3JhmGRDAWlEzuQRi3SrlNhWeed++7PNGaZ2kBJr
+         3VmpSBFGbu2JSF8h8nrtpFN3RXwl+lQZThbLIjoA7YuePIGLeoXVqEYfooNJJYtRrrsb
+         1Jv7S3RNn0iNLMAnBqprSFR6+kyrZEhlytRT7zETB8dfPFM+zF+jC4+n2aIs5LSzO1qq
+         OD0w==
+X-Gm-Message-State: AOAM532BK715aVw5JrCY0bKN7bALBwdzY3OJcTRtPMpiN35mqxyTlkW7
+        0AZzV4XVnAGLGez64n2lxnu9UMqlL4Boag==
+X-Google-Smtp-Source: ABdhPJyclj9WyOSwD/gMPEtVMelrRMq20Yb6s/3VucFal+qgGfvDWFRfMf5gYfmj9vRLqDzkivcq7Q==
+X-Received: by 2002:a05:620a:714:: with SMTP id 20mr29368966qkc.192.1618262474642;
+        Mon, 12 Apr 2021 14:21:14 -0700 (PDT)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id b83sm3101382qkc.97.2021.04.12.14.13.02
+        by smtp.gmail.com with ESMTPSA id q2sm396929qkj.63.2021.04.12.14.21.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 14:13:02 -0700 (PDT)
+        Mon, 12 Apr 2021 14:21:14 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 12 Apr 2021 17:13:01 -0400
+Date:   Mon, 12 Apr 2021 17:21:12 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     yulei.kernel@gmail.com
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, christian@brauner.io,
-        cgroups@vger.kernel.org, benbjiang@tencent.com,
-        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
-        linussli@tencent.com, herberthbli@tencent.com,
-        Yulei Zhang <yuleixzhang@tencent.com>
-Subject: Re: [RFC v2 0/2] introduce new attribute "priority" to control group
-Message-ID: <YHS33Rsj5xZ+nE3u@slm.duckdns.org>
-References: <cover.1618219939.git.yuleixzhang@tencent.com>
+To:     Lu Jialin <lujialin4@huawei.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup/cpuset: fix typos in comments
+Message-ID: <YHS5yPsuQxPbzNdT@slm.duckdns.org>
+References: <20210408080346.166046-1-lujialin4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1618219939.git.yuleixzhang@tencent.com>
+In-Reply-To: <20210408080346.166046-1-lujialin4@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 12:40:09AM +0800, yulei.kernel@gmail.com wrote:
-> From: Yulei Zhang <yuleixzhang@tencent.com>
+On Thu, Apr 08, 2021 at 04:03:46PM +0800, Lu Jialin wrote:
+> Change hierachy to hierarchy and unrechable to unreachable,
+> no functionality changed.
 > 
-> Last time we introduce the idea of adding prioritized tasks management
-> to control group. Sometimes we may assign the same amount of resources
-> to multiple cgroups due to the environment restriction, but we still 
-> hope there are preference order to handle the tasks in those cgroups,
-> the 'prio' attribute may help to do the ranking jobs. 
-> 
-> The default value of "priority" is set to 0 which means the highest
-> priority, and the totally levels of priority is defined by
-> CGROUP_PRIORITY_MAX. Each subsystem could register callback to receive the
-> priority change notification for their own purposes. 
-> 
-> In this v2 patch we apply a simple rule to the oom hanlder base on the
-> order of priority to demonstrate the intention about adding this attribute.
-> When enable the prioritized oom, it will perfer to pick up the victim from the
-> memory cgroup with lower priority, and try the best to keep the tasks
-> alive in high ranked memcg.
+> Signed-off-by: Lu Jialin <lujialin4@huawei.com>
 
-I don't think the discussion in the previous thread led anywhere. Please
-consider this series nacked for now.
+Applied to cgroup/for-5.13.
 
 Thanks.
 
