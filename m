@@ -2,141 +2,234 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD835C9AC
-	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 17:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63C735CA4E
+	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 17:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240748AbhDLPWg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 11:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
+        id S243009AbhDLPqF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 11:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241439AbhDLPWb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 11:22:31 -0400
+        with ESMTP id S242982AbhDLPqE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 11:46:04 -0400
 Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BE6C061574
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 08:22:13 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id z15so2114832qtj.7
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 08:22:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704B7C061574
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 08:45:45 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id z15so2182480qtj.7
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 08:45:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ERqCI38M3BY/3SOC3pgh5AxFU4XWzgptnCfUipXNgug=;
-        b=gYe5Up3OaU/+pnMLbIoo4fGw8EW/wVqIDfiJjiTGlAuevEjxM8fhcVcYjWLc0Hd4xP
-         hA6vETqs5aigURkzuBOUUcrJ4MqW2iIZ5cg0KuyXY8cdfwDMzNf5JJD/gqlIeb9tz69t
-         H243bX0LV289m2WtQZ/bQCHN7SztQEZBGdUaTI2tC9mBQleVY4txXKniVPtyH+OFYHXm
-         ughPAw0w12CqzIGqmA21Axu1+8CSR2LvwYHJL81CVAbjVQY8aljszWj/80+/lOdtGUav
-         b4tmg4wfnrQrNMktySbmYn6clgC6g+45rMuz+OqwSCpdRoCxHtc+G1Tu9EvbNDyffDjk
-         241Q==
+        bh=Kfoth3DUauDj/zrpRCce8PdDzNFJJLR4/XpIPoAKXQU=;
+        b=Owzv05Whms1oDjuZM/6YbmVlFXK8+Ru+WOmEeTUw67LZ9MzyO3tjJcMFUYIgu8JsB/
+         F+sdUXv/uPOYDFFOuLUXCEhTfHNicqCX2k8/+9mUBv6WL89MISNCnmgx/F/je51Oqvhh
+         ZKfJQzNtFnPaqxkS5robFFOh/ZI2NYKdCGFjCaqgQJrNwko2SThfMxcwbaWyFYSq2cb8
+         87AjDiof+oM9uMz9xSWz3ehvEmrX6eySasPvyQHIVtg+6Vr8Rtwy44bpcBJoyOZx/5yy
+         YgGWHnrkJw2Q77RhyHZxAINS4Z2N8V8UXge4yxiozkuQWMOPCzhfLxSHpwy4L4YjZVW3
+         kZLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ERqCI38M3BY/3SOC3pgh5AxFU4XWzgptnCfUipXNgug=;
-        b=ML2KHzgJe0lerfKnIJr34VKgEcpfKcae7KddnLNBJtE19qYlosLWMdLmp3UDHTu+7d
-         A+IACU1dtPyZDhcZSznwwUZgD/KcPGF8NnF/OAvETA8NmlAij6Riiv5kZvOYX2WypeXS
-         O2GUrrrJ8Of5fIasq9YDpL7TYLsl+mT8ZLDgd2M40tHIfWV1ki6YBbAoyuegD7I7G9os
-         acexEwuQYgVYZep3lYLlQHGJtdWj6rcRMG4iRG1+NrCbZ+y39hPHiBaD7iCZzPfajBKu
-         1eE9imI4/wh5+t4tyqRATzoXno8K/Gnfa5vhuFpDG+uKK8eMAtISMZQVubJZmiTNcJZ3
-         M55g==
-X-Gm-Message-State: AOAM5323fYbkmAQiVsy0DyCb4oe2gMyJERKPIC1It04LddcPSwCXh6/B
-        /sX9ro2GQAc3k33Zd11hHhHOghbn9w==
-X-Google-Smtp-Source: ABdhPJymbpZZrzMCeOaHb6/natGXfsZNfOau++lTB9IrDdCmP1dtFXSCCOxYCzhxwTeeGtbH9vvDwQ==
-X-Received: by 2002:ac8:7fd0:: with SMTP id b16mr26146035qtk.91.1618240932927;
-        Mon, 12 Apr 2021 08:22:12 -0700 (PDT)
-Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
-        by smtp.gmail.com with ESMTPSA id 62sm2469286qtg.70.2021.04.12.08.22.11
+        bh=Kfoth3DUauDj/zrpRCce8PdDzNFJJLR4/XpIPoAKXQU=;
+        b=LA0KV+RSUKOC3Poof3SQeNEw6AQ42arDHY9PySGhRJRF3wR3Hce4GtHHmIHwksx/MX
+         pn9r57PvoDkrZy8L88vAtGMXsvmoFOHCrwCT++tlMRfovdlZaads97s9TXk3DX3+9xEZ
+         G241wuehyIzd/+pWE2it5bqInfZ1wS0SK2lt1BSsNGWt+n9Lg1f+cnOYzVEIT8+qXdaj
+         kpdAv0py1tIBqoGSNZ9ltKeGM4XeKCgS2/f/6LaboYml3PnbOf4NarTUgcY4sPF46VfY
+         KzDsr3gpPhizPyofBWct1uvRRKUHVG29TPKs/pstnltPSZ3rhSSFvkUw4qAcVTOrZApH
+         pwrA==
+X-Gm-Message-State: AOAM530ORwwuwqSb20GOD2U5UTjVizG5dVXWVU5A3Fgy6xEsFMYkarvS
+        e/cQoAyy/bVQXnHP5j7mMVRpsw==
+X-Google-Smtp-Source: ABdhPJzSwMCjv1spq+XPwoOE05F5QsYvsil6qFeaLmk9XyX7HnDQh9QYDRCLEYD4NbHp6gHIPz8mhQ==
+X-Received: by 2002:ac8:4b7b:: with SMTP id g27mr25360040qts.220.1618242344613;
+        Mon, 12 Apr 2021 08:45:44 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id k17sm1523563qtp.26.2021.04.12.08.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 08:22:12 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 11:22:10 -0400
-From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Mon, 12 Apr 2021 08:45:44 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 11:45:43 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Subject: Re: memcg: performance degradation since v5.9
-Message-ID: <20210412152210.y5bizdfbn62sgeqg@gabell>
-References: <20210408193948.vfktg3azh2wrt56t@gabell>
- <YG9tW1h9VSJcir+Y@carbon.dhcp.thefacebook.com>
- <CALvZod58NBQLvk2m7Mb=_0oGCApcNeisxVuE1b+qh1OKDSy0Ag@mail.gmail.com>
- <20210409163539.5374pde3u6gkbg4a@gabell>
- <CALvZod4uRU==p7Z0eP_xO49iA3ShFDHKzyWZbd7RdMso5PHsfA@mail.gmail.com>
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH V12 0/3] Charge loop device i/o to issuing cgroup
+Message-ID: <YHRrJ9V6ivpH2QUN@cmpxchg.org>
+References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod4uRU==p7Z0eP_xO49iA3ShFDHKzyWZbd7RdMso5PHsfA@mail.gmail.com>
+In-Reply-To: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 09:50:45AM -0700, Shakeel Butt wrote:
-> On Fri, Apr 9, 2021 at 9:35 AM Masayoshi Mizuma <msys.mizuma@gmail.com> wrote:
-> >
-> [...]
-> > > Can you please explain how to read these numbers? Or at least put a %
-> > > regression.
-> >
-> > Let me summarize them here.
-> > The total duration ('total' column above) of each system call is as follows
-> > if v5.8 is assumed as 100%:
-> >
-> > - sendto:
-> >   - v5.8         100%
-> >   - v5.9         128%
-> >   - v5.12-rc6    116%
-> >
-> > - revfrom:
-> >   - v5.8         100%
-> >   - v5.9         114%
-> >   - v5.12-rc6    108%
-> >
+It looks like all feedback has been addressed and there hasn't been
+any new activity on it in a while.
+
+As per the suggestion last time [1], Andrew, Jens, could this go
+through the -mm tree to deal with the memcg conflicts?
+
+[1] https://lore.kernel.org/lkml/CALvZod6FMQQC17Zsu9xoKs=dFWaJdMC2Qk3YiDPUUQHx8teLYg@mail.gmail.com/
+
+On Fri, Apr 02, 2021 at 12:16:31PM -0700, Dan Schatzberg wrote:
+> No major changes, rebased on top of latest mm tree
 > 
-> Thanks, that is helpful. Most probably the improvement of 5.12 from
-> 5.9 is due to 3de7d4f25a7438f ("mm: memcg/slab: optimize objcg stock
-> draining").
+> Changes since V12:
 > 
-> [...]
-> > >
-> > > One idea would be to increase MEMCG_CHARGE_BATCH.
-> >
-> > Thank you for the idea! It's hard-corded as 32 now, so I'm wondering it may be
-> > a good idea to make MEMCG_CHARGE_BATCH tunable from a kernel parameter or something.
-> >
+> * Small change to get_mem_cgroup_from_mm to avoid needing
+>   get_active_memcg
 > 
-Hi!
-
-Thank you for your comments!
-
-> Can you rerun the benchmark with MEMCG_CHARGE_BATCH equal 64UL?
-
-Yes, I reran the benchmark with MEMCG_CHARGE_BATCH == 64UL, but it seems that
-it doesn't reduce the duration of system calls...
-
-- v5.12-rc6 vanilla
-
-   syscall      total  
-               (msec) 
-   --------- --------
-   sendto    3049.221
-   recvfrom  2421.601
-
-- v5.12-rc6 with MEMCG_CHARGE_BATCH==64
-
-   syscall      total  
-               (msec) 
-   --------- --------
-   sendto    3071.607
-   recvfrom  2436.488
-
-> I think with memcg stats moving to rstat, the stat accuracy is not an
-> issue if we increase MEMCG_CHARGE_BATCH to 64UL. Not sure if we want
-> this to be tuneable but most probably we do want this to be sync'ed
-> with SWAP_CLUSTER_MAX.
-
-Thanks. I understand that. 
-Waiman posted some patches to reduce the overhead [1]. I'll try the patch.
-
-[1]: https://lore.kernel.org/linux-mm/51ea6b09-b7ee-36e9-a500-b7141bd3a42b@redhat.com/T/#me75806a3555e7a42e793f099b98c42e687962d10
-
-Thanks!
-Masa
+> Changes since V11:
+> 
+> * Removed WQ_MEM_RECLAIM flag from loop workqueue. Technically, this
+>   can be driven by writeback, but this was causing a warning in xfs
+>   and likely other filesystems aren't equipped to be driven by reclaim
+>   at the VFS layer.
+> * Included a small fix from Colin Ian King.
+> * reworked get_mem_cgroup_from_mm to institute the necessary charge
+>   priority.
+> 
+> Changes since V10:
+> 
+> * Added page-cache charging to mm: Charge active memcg when no mm is set
+> 
+> Changes since V9:
+> 
+> * Rebased against linus's branch which now includes Roman Gushchin's
+>   patch this series is based off of
+> 
+> Changes since V8:
+> 
+> * Rebased on top of Roman Gushchin's patch
+>   (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+>   support for setting active memcg. Dropped the patch from this series
+>   that did the same thing.
+> 
+> Changes since V7:
+> 
+> * Rebased against linus's branch
+> 
+> Changes since V6:
+> 
+> * Added separate spinlock for worker synchronization
+> * Minor style changes
+> 
+> Changes since V5:
+> 
+> * Fixed a missing css_put when failing to allocate a worker
+> * Minor style changes
+> 
+> Changes since V4:
+> 
+> Only patches 1 and 2 have changed.
+> 
+> * Fixed irq lock ordering bug
+> * Simplified loop detach
+> * Added support for nesting memalloc_use_memcg
+> 
+> Changes since V3:
+> 
+> * Fix race on loop device destruction and deferred worker cleanup
+> * Ensure charge on shmem_swapin_page works just like getpage
+> * Minor style changes
+> 
+> Changes since V2:
+> 
+> * Deferred destruction of workqueue items so in the common case there
+>   is no allocation needed
+> 
+> Changes since V1:
+> 
+> * Split out and reordered patches so cgroup charging changes are
+>   separate from kworker -> workqueue change
+> 
+> * Add mem_css to struct loop_cmd to simplify logic
+> 
+> The loop device runs all i/o to the backing file on a separate kworker
+> thread which results in all i/o being charged to the root cgroup. This
+> allows a loop device to be used to trivially bypass resource limits
+> and other policy. This patch series fixes this gap in accounting.
+> 
+> A simple script to demonstrate this behavior on cgroupv2 machine:
+> 
+> '''
+> #!/bin/bash
+> set -e
+> 
+> CGROUP=/sys/fs/cgroup/test.slice
+> LOOP_DEV=/dev/loop0
+> 
+> if [[ ! -d $CGROUP ]]
+> then
+>     sudo mkdir $CGROUP
+> fi
+> 
+> grep oom_kill $CGROUP/memory.events
+> 
+> # Set a memory limit, write more than that limit to tmpfs -> OOM kill
+> sudo unshare -m bash -c "
+> echo \$\$ > $CGROUP/cgroup.procs;
+> echo 0 > $CGROUP/memory.swap.max;
+> echo 64M > $CGROUP/memory.max;
+> mount -t tmpfs -o size=512m tmpfs /tmp;
+> dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+> 
+> grep oom_kill $CGROUP/memory.events
+> 
+> # Set a memory limit, write more than that limit through loopback
+> # device -> no OOM kill
+> sudo unshare -m bash -c "
+> echo \$\$ > $CGROUP/cgroup.procs;
+> echo 0 > $CGROUP/memory.swap.max;
+> echo 64M > $CGROUP/memory.max;
+> mount -t tmpfs -o size=512m tmpfs /tmp;
+> truncate -s 512m /tmp/backing_file
+> losetup $LOOP_DEV /tmp/backing_file
+> dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+> losetup -D $LOOP_DEV" || true
+> 
+> grep oom_kill $CGROUP/memory.events
+> '''
+> 
+> Naively charging cgroups could result in priority inversions through
+> the single kworker thread in the case where multiple cgroups are
+> reading/writing to the same loop device. This patch series does some
+> minor modification to the loop driver so that each cgroup can make
+> forward progress independently to avoid this inversion.
+> 
+> With this patch series applied, the above script triggers OOM kills
+> when writing through the loop device as expected.
+> 
+> Dan Schatzberg (3):
+>   loop: Use worker per cgroup instead of kworker
+>   mm: Charge active memcg when no mm is set
+>   loop: Charge i/o to mem and blk cg
+> 
+>  drivers/block/loop.c       | 244 ++++++++++++++++++++++++++++++-------
+>  drivers/block/loop.h       |  15 ++-
+>  include/linux/memcontrol.h |   6 +
+>  kernel/cgroup/cgroup.c     |   1 +
+>  mm/filemap.c               |   2 +-
+>  mm/memcontrol.c            |  49 +++++---
+>  mm/shmem.c                 |   4 +-
+>  7 files changed, 253 insertions(+), 68 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
+> 
