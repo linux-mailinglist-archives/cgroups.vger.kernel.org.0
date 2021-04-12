@@ -2,130 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BAB35D18D
-	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 21:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246DF35D268
+	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 23:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245437AbhDLT7L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 15:59:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245412AbhDLT7L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 15:59:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618257532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ehM6Hadf4JLUdNm4RfG2SBXxOzb5EYXQTf0escn85tQ=;
-        b=FQLmHp9NRV08fCW5MDOhsZ/mClHXI7qOe2HQupmfkfstS8vXCsie9Q8rBuklClUoD4Vjvn
-        PB9fOoJCE8ZuPJk0kPVBV/wU8NmAyhBrH1RSLuOl6GWH+RIYfzuwLXTglHSl7ACTRfwEtz
-        nZC3GjGbCCyv0MwABJIBkH+8Oe8sadk=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-mHRiwGJuNrClB4MC8LpsxQ-1; Mon, 12 Apr 2021 15:58:50 -0400
-X-MC-Unique: mHRiwGJuNrClB4MC8LpsxQ-1
-Received: by mail-qk1-f198.google.com with SMTP id h21so9732144qkl.12
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 12:58:50 -0700 (PDT)
+        id S238332AbhDLVNX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 17:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240610AbhDLVNW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 17:13:22 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FCA8C061574
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 14:13:04 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id i9so15816786qka.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 14:13:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VhpeC0PCBKcKFiAl7ppRsOOB3Otxo0lk7Zd3T6AZwNM=;
+        b=WnYKb70Cx5OQVPFK9OAHJNNPUzeGnDdH/lqQWvldpQLwRF0TeKp7OOcCsqrGn3A2fP
+         X7JSCUXEAxdUwX1KHddEf8mdYypYI1Ci6RWcdUntTl6Cw/6sJk8aelTufvyKnaQ7dxCt
+         gz+qtss9qhGqnhFc9LIGH1/YjGDU+0FCDIYLc0s88lmJDCRdb8dZ1X8X5jwIkS6s8951
+         l9UhZ7hwM04XdHi9oH656UT6gi68AWG1vT4xj9tHMWzi5H1bOEKS7ovUc1ein199JqN8
+         fnvCnDLiH4d9OLrWJQQeiWKHVhOW49C0ceMO6WOg1eX7qpsG1s7YVA6ziYsqCv1ijwfB
+         gg7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ehM6Hadf4JLUdNm4RfG2SBXxOzb5EYXQTf0escn85tQ=;
-        b=HYDR1RRBxgZR190HQvB4qr5yFm/Ed8xczVFXXEaHC75WPEaV678V0zwQV/TS3R+mqw
-         JF/hOUMWF1VAp9vEmenzf47XC6H8uEftII/1/Q8MwxJ70x4bzJZ9fQvWZ+mnbO2hUWvS
-         G3LjTnbdHb7s6wnzNFjGZ5qjgyUJVAWUxrJ1MMdxdkomIGHTQVpaX8wpf0VsoK/R2iAT
-         L6SDjlpJfna/TI1zdB6AUhUXfThoRk1sTQkOeyoTmI9UchWPa5ZYBR1HArxHrCOiK/hY
-         3EvuJGxbuuYDHnF/Y+W7M7CMJ+/OeWOfTyQlGbrIbgQ007EEBq3aODZhdPLBA+utZQl0
-         IY0w==
-X-Gm-Message-State: AOAM530kY1vt8yqrEztfmYrh6fPMfxya117Zsz3oepID6nE/0Vf9E7Zo
-        sb1M7AgTmIwBR2lk6CUyOjbXMS4NK+HL1tCCLZNO/cgvVFzPwvzK3s9cyHxEr3+d3oCYBLi1cHK
-        gxRhK7ojx5dS1qb2oPQ==
-X-Received: by 2002:ae9:e113:: with SMTP id g19mr27687894qkm.480.1618257530278;
-        Mon, 12 Apr 2021 12:58:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyy3YDvoLfNsTaNiMkidhnzNRynhxxwDgzSLooH0YRQviUJityR8hXjC/cQUBoC0G0T80xDvg==
-X-Received: by 2002:ae9:e113:: with SMTP id g19mr27687881qkm.480.1618257530098;
-        Mon, 12 Apr 2021 12:58:50 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id f9sm8594541qkk.115.2021.04.12.12.58.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 12:58:49 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 5/5] mm/memcg: Optimize user context object stock access
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
-References: <20210409231842.8840-1-longman@redhat.com>
- <20210409231842.8840-6-longman@redhat.com>
- <YHSXvQVvzHu26u7H@carbon.dhcp.thefacebook.com>
-Message-ID: <49c03fb0-be46-5288-2c4c-6ad5ad194b4c@redhat.com>
-Date:   Mon, 12 Apr 2021 15:58:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VhpeC0PCBKcKFiAl7ppRsOOB3Otxo0lk7Zd3T6AZwNM=;
+        b=W5L5y9GkIzjjFttdsc4tO7qq4mWYTnh2s+e+bi76zDLLIOXQer3Jmyvz2ddtO6EzH/
+         hGALq2EqKMuqlsuRBOAmi3dqZ9oG3H+YeeIcxvdY0mQDd8eB62tWFkKBeiYrMiZIUzKD
+         2kJNlYZmiElRkqhHabAjDr3UQGHRYHKvj1TnxLLfwGZTVtjJDdUBdx5LxJqfAjBJEuux
+         VKhslLvyZWpHXF1Vx3u1eI1iTDc/iGDQqmUIvtrw40p+QZxL68OHhkZ6/HNCCzenuVcO
+         /Bsn05i+bSGdHzkN+IB26BpSJWgHxvxUXBXqrJxlrIzTnluLxhnkbU1ha3AYkpXhQNAU
+         jVaQ==
+X-Gm-Message-State: AOAM532R6P1olaS8tsb3CX4s71Toq89rO6bUDJn6lBHN5oK/4wm8gKpR
+        /ldeoEWfaMUQnnDdqdC56y4=
+X-Google-Smtp-Source: ABdhPJyXuq3MZhkc19WxuNIgTLmh15JIiHWsOLxNHBR8Vh6XavGP/PQFhz30Kb45VFmHIzcIb80VtQ==
+X-Received: by 2002:a37:9b93:: with SMTP id d141mr10050765qke.50.1618261983311;
+        Mon, 12 Apr 2021 14:13:03 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id b83sm3101382qkc.97.2021.04.12.14.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 14:13:02 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 12 Apr 2021 17:13:01 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     yulei.kernel@gmail.com
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, christian@brauner.io,
+        cgroups@vger.kernel.org, benbjiang@tencent.com,
+        kernellwp@gmail.com, lihaiwei.kernel@gmail.com,
+        linussli@tencent.com, herberthbli@tencent.com,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: Re: [RFC v2 0/2] introduce new attribute "priority" to control group
+Message-ID: <YHS33Rsj5xZ+nE3u@slm.duckdns.org>
+References: <cover.1618219939.git.yuleixzhang@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <YHSXvQVvzHu26u7H@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618219939.git.yuleixzhang@tencent.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/12/21 2:55 PM, Roman Gushchin wrote:
-> On Fri, Apr 09, 2021 at 07:18:42PM -0400, Waiman Long wrote:
->> Most kmem_cache_alloc() calls are from user context. With instrumentation
->> enabled, the measured amount of kmem_cache_alloc() calls from non-task
->> context was about 0.01% of the total.
->>
->> The irq disable/enable sequence used in this case to access content
->> from object stock is slow.  To optimize for user context access, there
->> are now two object stocks for task context and interrupt context access
->> respectively.
->>
->> The task context object stock can be accessed after disabling preemption
->> which is cheap in non-preempt kernel. The interrupt context object stock
->> can only be accessed after disabling interrupt. User context code can
->> access interrupt object stock, but not vice versa.
->>
->> The mod_objcg_state() function is also modified to make sure that memcg
->> and lruvec stat updates are done with interrupted disabled.
->>
->> The downside of this change is that there are more data stored in local
->> object stocks and not reflected in the charge counter and the vmstat
->> arrays.  However, this is a small price to pay for better performance.
-> I agree, the extra memory space is not a significant concern.
-> I'd be more worried about the code complexity, but the result looks
-> nice to me!
->
-> Acked-by: Roman Gushchin <guro@fb.com>
->
-> Btw, it seems that the mm tree ran a bit off, so I had to apply this series
-> on top of Linus's tree to review. Please, rebase.
+On Tue, Apr 13, 2021 at 12:40:09AM +0800, yulei.kernel@gmail.com wrote:
+> From: Yulei Zhang <yuleixzhang@tencent.com>
+> 
+> Last time we introduce the idea of adding prioritized tasks management
+> to control group. Sometimes we may assign the same amount of resources
+> to multiple cgroups due to the environment restriction, but we still 
+> hope there are preference order to handle the tasks in those cgroups,
+> the 'prio' attribute may help to do the ranking jobs. 
+> 
+> The default value of "priority" is set to 0 which means the highest
+> priority, and the totally levels of priority is defined by
+> CGROUP_PRIORITY_MAX. Each subsystem could register callback to receive the
+> priority change notification for their own purposes. 
+> 
+> In this v2 patch we apply a simple rule to the oom hanlder base on the
+> order of priority to demonstrate the intention about adding this attribute.
+> When enable the prioritized oom, it will perfer to pick up the victim from the
+> memory cgroup with lower priority, and try the best to keep the tasks
+> alive in high ranked memcg.
 
-This patchset is based on the code in Linus' tree. I had applied the 
-patchset to linux-next to see if there was any conflicts. Two of the 
-patches had minor fuzzes around the edge but no actual merge conflict 
-for now.
+I don't think the discussion in the previous thread led anywhere. Please
+consider this series nacked for now.
 
-Cheers,
-Longman
+Thanks.
 
-
+-- 
+tejun
