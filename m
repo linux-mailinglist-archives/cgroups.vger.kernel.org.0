@@ -2,160 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED79235D0E8
-	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 21:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3B935D0ED
+	for <lists+cgroups@lfdr.de>; Mon, 12 Apr 2021 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237293AbhDLTU6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Apr 2021 15:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237195AbhDLTU6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 15:20:58 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DB9C061574
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 12:20:35 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b14so23219765lfv.8
-        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 12:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=njLi9+INls9UJu6xo/OSSkdSSq3w2QSnMYDEcop1v+w=;
-        b=E6Csoera0jTVwBjqvhuypbBsJEYw/+XzR+REf5XoXOCW9nP2fSC/MJcGVjsDnKa90T
-         bk1YHPdwhSkhmjMzdnOnZOJWy/R8XS/WHmV61w9P+OwAyU46e7LrRdhPgfrb+v1IMfRU
-         f2nUnjawlUJ+FaLhWS9x3b4/VZbxb7T/ou4E/fqqZqi/7C4RaudewxQdsCBggHQUvsnE
-         yKaZNFtbZtIKwo9Gi03kxEFbuSaK+cfntXwPznqzcJz1p6Mir6oOeWJ2RFqqINVWeJ9D
-         gqA+lMxXvj9aQFgW5DjHDQQexEHddJrpScogfSMuuD83sWwwzty18aqMU61BOw130fsI
-         nzpg==
+        id S245197AbhDLTVM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Apr 2021 15:21:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245202AbhDLTVL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Apr 2021 15:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618255253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oFjHc+GCztqPmJltFlAlQEb4vymDlpph7ymGuFpnTz8=;
+        b=cUU0C334tXxqNdBDs4vJ+4JayPJujnKNRSzU0gLmm2WQ0Av4ztmej+av9zVOqxir+Wyc/2
+        bbuMAf8kgwvvkkxNWycVkMAMPTgbIy/VCtNV/XOkNIHn/JuwnX1HtQD57OZRe20aMEQmRq
+        yXlJHspNypfE/tlJOHmZzd8dEvxGpLU=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-DmInSzyYPrqlVS5JqVkgEQ-1; Mon, 12 Apr 2021 15:20:51 -0400
+X-MC-Unique: DmInSzyYPrqlVS5JqVkgEQ-1
+Received: by mail-qk1-f197.google.com with SMTP id n191so9114412qka.9
+        for <cgroups@vger.kernel.org>; Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=njLi9+INls9UJu6xo/OSSkdSSq3w2QSnMYDEcop1v+w=;
-        b=REiSvP1YwVwzWsCz+jl7TlojbGl+3r5Mjs0RZmWj7HGwE+sVtUJGeSVlhOsfbnY+Ok
-         0sGNsUsD6IrEtNi1VfU0gActggaUnx56lwO3Vv5QD1jJ1PU4RqNBm3usV7onFnE8uBhQ
-         eeP2BQ/xeCIKUiDOj1tD661Y+O+E9aSMFoLTMQTSjs9N7xIlm5fb47t9zPNZXUQWz4T8
-         XIhTCZQi+1w28cYEx2A1BWxmksUiykmOJDwkeUMFHIbJvWCf8SXEd7k6quvfntInOnYv
-         KCpPB+dmEJjKkibCR+Z1imodFgK39wXe1NqdKPu/X4siWYhbtcx/rehdTFAKPi5ewFYp
-         7R7w==
-X-Gm-Message-State: AOAM531uwhA3V353BEkyag8lDEhaXE1YCP5otNcv2zoE2yTD6TQO+eRR
-        0TCCeXX/uzL6VdYCiaZ0F5LhhBkvfCnTgeJnG0Vg6A==
-X-Google-Smtp-Source: ABdhPJyNOJCLrlMIuqzkkDobbCYe2ZeSEPBKfmWexDb42kAbrvSwXQZRN1a3l6xgUTnC1ZNrNVglaPZ7Ol2UF87uSrA=
-X-Received: by 2002:a19:3804:: with SMTP id f4mr20738610lfa.117.1618255233440;
- Mon, 12 Apr 2021 12:20:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <YGwlGrHtDJPQF7UG@dhcp22.suse.cz> <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
- <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz> <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
-In-Reply-To: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 12 Apr 2021 12:20:22 -0700
-Message-ID: <CALvZod4zXB6-3Mshu_TnTsQaDErfYkPTw9REYNRptSvPSRmKVA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oFjHc+GCztqPmJltFlAlQEb4vymDlpph7ymGuFpnTz8=;
+        b=kuOszuZDe3pJcvSsHfx7XBLxESnGoiMi9TDfb63KRfukR183qNf7slGuzPf6Xnon93
+         Ez7g63fW9b4sm7pyIO/wyOFfrDnIrTCihtM6rtxZWBX0OhSdOr4dAcJoLlrmPLj2DJlo
+         daoZ4+aaeFZkbd1xxOh8Or7csSALYsgGVkuteeA7lMeMsj+k3mztnJXgmoEvU8AGpWvc
+         jHax+J4LnjL11dQ9uOZD+hQRM9/qnoF/GBQOKgAm+3rRnqvm+fb1IMYrBbxivUSMq61z
+         9UrdNMDjDDPsT7zlY8r6cS0es7Y8rfv760TiO13qvun+AeNB3ywaLEybS7F0284Kyp3g
+         Jp9A==
+X-Gm-Message-State: AOAM530aCbYYoS9szL/ZJDZ1Dw+c3zIUoQpp97YF8H+7hvIPNS9ceYRm
+        wohVmrrAqtuSJXYnhZAz2dLK0D7XTL5gtoA/3DX6tnAUrU7lr8QRUdtUwwkkeEb+sOFwtFxrQ/m
+        26441Yj6mgTNyp6VWHQ==
+X-Received: by 2002:ac8:5054:: with SMTP id h20mr533145qtm.34.1618255251325;
+        Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDbd5Q9VPCdBtbn+afvB7rGxG6E+MDv4mz/Eiy7TeaQZPVd2IbxALEjPVWVlfoC0zobURBsg==
+X-Received: by 2002:ac8:5054:: with SMTP id h20mr533111qtm.34.1618255251103;
+        Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id y29sm8531386qtm.13.2021.04.12.12.20.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 12:20:50 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+To:     Roman Gushchin <guro@fb.com>, Waiman Long <llong@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+References: <20210409231842.8840-1-longman@redhat.com>
+ <YHEEmGSVy3nl0obM@carbon.dhcp.thefacebook.com>
+ <51ea6b09-b7ee-36e9-a500-b7141bd3a42b@redhat.com>
+ <YHSHqmxyu1DkAMYR@carbon.dhcp.thefacebook.com>
+Message-ID: <339bd1b0-681c-61fa-210b-59f1542431e2@redhat.com>
+Date:   Mon, 12 Apr 2021 15:20:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <YHSHqmxyu1DkAMYR@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 4:26 PM Tim Chen <tim.c.chen@linux.intel.com> wrote:
->
->
-> On 4/8/21 4:52 AM, Michal Hocko wrote:
->
-> >> The top tier memory used is reported in
-> >>
-> >> memory.toptier_usage_in_bytes
-> >>
-> >> The amount of top tier memory usable by each cgroup without
-> >> triggering page reclaim is controlled by the
-> >>
-> >> memory.toptier_soft_limit_in_bytes
-> >
->
-> Michal,
->
-> Thanks for your comments.  I will like to take a step back and
-> look at the eventual goal we envision: a mechanism to partition the
-> tiered memory between the cgroups.
->
-> A typical use case may be a system with two set of tasks.
-> One set of task is very latency sensitive and we desire instantaneous
-> response from them. Another set of tasks will be running batch jobs
-> were latency and performance is not critical.   In this case,
-> we want to carve out enough top tier memory such that the working set
-> of the latency sensitive tasks can fit entirely in the top tier memory.
-> The rest of the top tier memory can be assigned to the background tasks.
->
-> To achieve such cgroup based tiered memory management, we probably want
-> something like the following.
->
-> For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
-> where tier t_0 sits at the top and demotes to the lower tier.
-> We envision for this top tier memory t0 the following knobs and counters
-> in the cgroup memory controller
->
-> memory_t0.current       Current usage of tier 0 memory by the cgroup.
->
-> memory_t0.min           If tier 0 memory used by the cgroup falls below this low
->                         boundary, the memory will not be subjected to demotion
->                         to lower tiers to free up memory at tier 0.
->
-> memory_t0.low           Above this boundary, the tier 0 memory will be subjected
->                         to demotion.  The demotion pressure will be proportional
->                         to the overage.
->
-> memory_t0.high          If tier 0 memory used by the cgroup exceeds this high
->                         boundary, allocation of tier 0 memory by the cgroup will
->                         be throttled. The tier 0 memory used by this cgroup
->                         will also be subjected to heavy demotion.
->
-> memory_t0.max           This will be a hard usage limit of tier 0 memory on the cgroup.
->
-> If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
-> This follows closely with the design of the general memory controller interface.
->
-> Will such an interface looks sane and acceptable with everyone?
->
+On 4/12/21 1:47 PM, Roman Gushchin wrote:
+> On Mon, Apr 12, 2021 at 10:03:13AM -0400, Waiman Long wrote:
+>> On 4/9/21 9:51 PM, Roman Gushchin wrote:
+>>> On Fri, Apr 09, 2021 at 07:18:37PM -0400, Waiman Long wrote:
+>>>> With the recent introduction of the new slab memory controller, we
+>>>> eliminate the need for having separate kmemcaches for each memory
+>>>> cgroup and reduce overall kernel memory usage. However, we also add
+>>>> additional memory accounting overhead to each call of kmem_cache_alloc()
+>>>> and kmem_cache_free().
+>>>>
+>>>> For workloads that require a lot of kmemcache allocations and
+>>>> de-allocations, they may experience performance regression as illustrated
+>>>> in [1].
+>>>>
+>>>> With a simple kernel module that performs repeated loop of 100,000,000
+>>>> kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
+>>>> init. The execution time to load the kernel module with and without
+>>>> memory accounting were:
+>>>>
+>>>>     with accounting = 6.798s
+>>>>     w/o  accounting = 1.758s
+>>>>
+>>>> That is an increase of 5.04s (287%). With this patchset applied, the
+>>>> execution time became 4.254s. So the memory accounting overhead is now
+>>>> 2.496s which is a 50% reduction.
+>>> Hi Waiman!
+>>>
+>>> Thank you for working on it, it's indeed very useful!
+>>> A couple of questions:
+>>> 1) did your config included lockdep or not?
+>> The test kernel is based on a production kernel config and so lockdep isn't
+>> enabled.
+>>> 2) do you have a (rough) estimation how much each change contributes
+>>>      to the overall reduction?
+>> I should have a better breakdown of the effect of individual patches. I
+>> rerun the benchmarking module with turbo-boosting disabled to reduce
+>> run-to-run variation. The execution times were:
+>>
+>> Before patch: time = 10.800s (with memory accounting), 2.848s (w/o
+>> accounting), overhead = 7.952s
+>> After patch 2: time = 9.140s, overhead = 6.292s
+>> After patch 3: time = 7.641s, overhead = 4.793s
+>> After patch 5: time = 6.801s, overhead = 3.953s
+> Thank you! If there will be v2, I'd include this information into commit logs.
 
-I have a couple of questions. Let's suppose we have a two socket
-system. Node 0 (DRAM+CPUs), Node 1 (DRAM+CPUs), Node 2 (PMEM on socket
-0 along with Node 0) and Node 3 (PMEM on socket 1 along with Node 1).
-Based on the tier definition of this patch series, tier_0: {node_0,
-node_1} and tier_1: {node_2, node_3}.
+Yes, I am planning to send out v2 with these information in the 
+cover-letter. I am just waiting a bit to see if there are more feedback.
 
-My questions are:
+-Longman
 
-1) Can we assume that the cost of access within a tier will always be
-less than the cost of access from the tier? (node_0 <-> node_1 vs
-node_0 <-> node_2)
-2) If yes to (1), is that assumption future proof? Will the future
-systems with DRAM over CXL support have the same characteristics?
-3) Will the cost of access from tier_0 to tier_1 be uniform? (node_0
-<-> node_2 vs node_0 <-> node_3). For jobs running on node_0, node_3
-might be third tier and similarly for jobs running on node_1, node_2
-might be third tier.
+>
+>> Patches 1 & 4 are preparatory patches that should affect performance.
+>>
+>> So the memory accounting overhead was reduced by about half.
 
-The reason I am asking these questions is that the statically
-partitioning memory nodes into tiers will inherently add platform
-specific assumptions in the user API.
+BTW, the benchmark that I used is kind of the best case behavior as it 
+as all updates are to the percpu stocks. Real workloads will likely to 
+have a certain amount of update to the memcg charges and vmstats. So the 
+performance benefit will be less.
 
-Assumptions like:
-1) Access within tier is always cheaper than across tier.
-2) Access from tier_i to tier_i+1 has uniform cost.
+Cheers,
+Longman
 
-The reason I am more inclined towards having numa centric control is
-that we don't have to make these assumptions. Though the usability
-will be more difficult. Greg (CCed) has some ideas on making it better
-and we will share our proposal after polishing it a bit more.
+
