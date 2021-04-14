@@ -2,80 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DF735DD78
-	for <lists+cgroups@lfdr.de>; Tue, 13 Apr 2021 13:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3F535EA44
+	for <lists+cgroups@lfdr.de>; Wed, 14 Apr 2021 03:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhDMLLK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Apr 2021 07:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhDMLLG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Apr 2021 07:11:06 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B17BC061574;
-        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id q189so6933385qka.8;
-        Tue, 13 Apr 2021 04:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
-        b=q1ERVVWAx8ubOeUPgRemTV8yO1ywDCn6T6+7Fpn0bEZLD/ykqlxQa4cx5qhKoLFWah
-         9jEY39DodaVFGzguLL6/qtozNbo0KhNSiAzuofUrRZdUoTEHN0MRBxc+1b07Fsq8Atf7
-         Bx7V1si+Tv0Z7WPHcxv64OOElRaYVNjapC0p2hFSYerXzPcOm/bkiW+kqa8LOQR43wqp
-         MZa7lCiDECwiedicR8vDlu5bv/9M/4/dAR6m0Ww/bGGzSw2hEKw7K7pKszV+ToyAmGzL
-         QgEbkKpswzBAQxAJDbnPpBXl2fQnNq5nwV19Y/CURlwAvu6l2pmR/Sau81u+5vqd5N1v
-         sMcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OYmW1UnxxT4rnJ2/1wILvNuSFEnTONzHbfLCHY3gbcc=;
-        b=UERrNXvyZVG5EdYvh6r3/Qas9CRYSJldqNHXDgaf43gVR3PxEEghB6MkjwhPi/PZ3U
-         Z0IKBJ8GNbASjM51GhZFjWHs/fFoA0gtVpBcV/kYu0jFwXCFzyEqKo2rgZVNemdz7lLy
-         FtDTLpWi2bEQn+r6lUigI3qqC0i1qzu4So6iOu+/uacYKm5u+5RHgOFLo/i1S1VRucy+
-         wsISbBGd/cXeYAobprBWHaHh/oZLxYbv0+BXp34kEPQcJL4zp4eZ4NYhPX4xgQJlZONJ
-         FYDTqQ8NkeYUjk6CS6awCD1VrP6Jq1KbhppQ691PqlbbURVqlx64vP47b1xA31JdBL4P
-         jIOg==
-X-Gm-Message-State: AOAM530GQlqP4UKrJznyb3nD4B5b8ybEZgIY4T+e9yLZoPSWh53tSl/z
-        koqvkQVdQ5RluXYC/F/jwM0=
-X-Google-Smtp-Source: ABdhPJxu7+yZw6bHJMJFvSl+K9081V0Oowi4TJZ8e4CVVlGiX7vdVfdTHbF2G84NCSlVJ0LfjquoIw==
-X-Received: by 2002:a37:71c3:: with SMTP id m186mr24873153qkc.453.1618312246533;
-        Tue, 13 Apr 2021 04:10:46 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id p185sm1861834qke.10.2021.04.13.04.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 04:10:45 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 13 Apr 2021 07:10:44 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Relax cpuset validation for cgroup v2
-Message-ID: <YHV8NGTQ480UM+Yh@slm.duckdns.org>
-References: <20210413090235.1903026-1-odin@uged.al>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413090235.1903026-1-odin@uged.al>
+        id S241695AbhDNBVN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Apr 2021 21:21:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231983AbhDNBVL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Apr 2021 21:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618363250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=LSB88EC5/cfTeZcbFM6S4I7akVAT0dRwokU/dRHo8FE=;
+        b=Kb7bEjJRcnEFtPIsAAQDwIa+4C0snTf6vlX6voGGIB3BqtxHIh+eP469Ephea+9wGsYsEO
+        1YAkGqHWPxcnnFzIm7vlMFVJ5k4gdSZCOPjb5qhPaZcTsjqXUiKf6QCNtWoUY4lAqOf+ya
+        UMz5x3rwPAA+4xWtkbx4zb3EkMFsqu4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-IGhgiti5OH-v0rTB_gGvSg-1; Tue, 13 Apr 2021 21:20:48 -0400
+X-MC-Unique: IGhgiti5OH-v0rTB_gGvSg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C41251883520;
+        Wed, 14 Apr 2021 01:20:45 +0000 (UTC)
+Received: from llong.com (ovpn-113-4.rdu2.redhat.com [10.10.113.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C69751F056;
+        Wed, 14 Apr 2021 01:20:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+Date:   Tue, 13 Apr 2021 21:20:22 -0400
+Message-Id: <20210414012027.5352-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:02:33AM +0200, Odin Ugedal wrote:
-> Two small validation relaxations for cgroup v2, making it easier to
-> manage the hierarchy without the current pain points. Both changes
-> work for both mems and cpus (but I have no NUMA machine to test mems).
-> 
-> Hopefully the patches has an ok description about what change they
-> provide, and why they are helpful.
+ v3:
+  - Add missing "inline" qualifier to the alternate mod_obj_stock_state()
+    in patch 3.
+  - Remove redundant current_obj_stock() call in patch 5.
 
-I'm generally in favor of removing configuration constraints but let's hear
-what Li thinks.
+ v2:
+  - Fix bug found by test robot in patch 5.
+  - Update cover letter and commit logs.
 
-Thanks.
+With the recent introduction of the new slab memory controller, we
+eliminate the need for having separate kmemcaches for each memory
+cgroup and reduce overall kernel memory usage. However, we also add
+additional memory accounting overhead to each call of kmem_cache_alloc()
+and kmem_cache_free().
+
+For workloads that require a lot of kmemcache allocations and
+de-allocations, they may experience performance regression as illustrated
+in [1] and [2].
+
+A simple kernel module that performs repeated loop of 100,000,000
+kmem_cache_alloc() and kmem_cache_free() of a 64-byte object at module
+init time is used for benchmarking. The test was run on a CascadeLake
+server with turbo-boosting disable to reduce run-to-run variation.
+
+With memory accounting disable, the run time was 2.848s. With memory
+accounting enabled, the run times with the application of various
+patches in the patchset were:
+
+  Applied patches   Run time   Accounting overhead   Overhead %age
+  ---------------   --------   -------------------   -------------
+       None          10.800s         7.952s              100.0%
+        1-2           9.140s         6.292s               79.1%
+        1-3           7.641s         4.793s               60.3%
+        1-5           6.801s         3.953s               49.7%
+
+Note that this is the best case scenario where most updates happen only
+to the percpu stocks. Real workloads will likely have a certain amount
+of updates to the memcg charges and vmstats. So the performance benefit
+will be less.
+
+It was found that a big part of the memory accounting overhead
+was caused by the local_irq_save()/local_irq_restore() sequences in
+updating local stock charge bytes and vmstat array, at least in x86
+systems. There are two such sequences in kmem_cache_alloc() and two
+in kmem_cache_free(). This patchset tries to reduce the use of such
+sequences as much as possible. In fact, it eliminates them in the common
+case. Another part of this patchset to cache the vmstat data update in
+the local stock as well which also helps.
+
+[1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
+[2] https://lore.kernel.org/lkml/20210114025151.GA22932@xsang-OptiPlex-9020/
+
+Waiman Long (5):
+  mm/memcg: Pass both memcg and lruvec to mod_memcg_lruvec_state()
+  mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
+  mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+  mm/memcg: Separate out object stock data into its own struct
+  mm/memcg: Optimize user context object stock access
+
+ include/linux/memcontrol.h |  14 ++-
+ mm/memcontrol.c            | 199 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   9 +-
+ mm/slab.h                  |  32 +++---
+ 4 files changed, 196 insertions(+), 58 deletions(-)
 
 -- 
-tejun
+2.18.1
+
