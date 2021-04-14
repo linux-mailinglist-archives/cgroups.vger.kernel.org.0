@@ -2,137 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90E435FD83
-	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 00:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FFC35FE5F
+	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 01:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhDNWBb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Apr 2021 18:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhDNWBa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Apr 2021 18:01:30 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C1EC061574
-        for <cgroups@vger.kernel.org>; Wed, 14 Apr 2021 15:01:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id sd23so25057171ejb.12
-        for <cgroups@vger.kernel.org>; Wed, 14 Apr 2021 15:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=UH9r0bLwqpvfnNk2Tt3rk+LCXIhN1P9yRfnJnHjQ3r0=;
-        b=cg12crFQou1yuZGklg3lvMl/mxvNSOoWRHuZwMSshge9hHeV1OLwzSrHN51bDEc6JZ
-         k/iB0Y11pHw9ykAzvJNMw2ZkAgCXMxaEPE/03Z8r3M90okfBUCq+Trp6OOHocfMQ5DF9
-         +L1gQYqaaJNKLSb45ahZgtnf2ryriGm+KP91CMPoXQ3kkd2jWrvDyc44fatGb/B4bE6F
-         fZrFEF3Qaj9LjKLH72J8C9pukSvhyq2YBlV4WXTbrm+KNXuEY6oh2hOm4UAIUFNorzQU
-         fcxxW/ddKBev3nlRXzp156Wd8lGoZWAamKo3ZP2a3tdsI7BdXbwdUuqokrqxNcm/j4me
-         Ibgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=UH9r0bLwqpvfnNk2Tt3rk+LCXIhN1P9yRfnJnHjQ3r0=;
-        b=NY+FQxm9krLEvhHc3CW9c+zFcpBFemz2GBvERvM0jdT91MAtuf9uQr6WwBj62N8hct
-         4r5UNGk4ojlH3rKlwQGna/hh5FHToyc2xgxTgbT9oXVv+/BeW1fL4Eu/H0LqEVBiKRXs
-         0hz5JBvqZnezmCy8j+8tu5htrDNMwSdT6p76KGUYrQFr4v3fPFe9KrRRJudhqPTIboOf
-         F8gOlxCKLBYB+oRXn3UBQRY1niSF7hMAF3IdTPNqz4Qat+i1DbRwSRoRfKWcT2GMH3Sd
-         YRffBQshwTklfjiSesF9Nxl8Fua9Tui/tQ283s74sGbwJT88mQBx6ugLTCAIObVsI/ux
-         wihg==
-X-Gm-Message-State: AOAM5318EwOvL2bZVQFaNRgMjUuRoSDaaMxhOturspg6RDOSxL9Km5DQ
-        TQfx+j3dET76lI64MGBMHSbISXOUWJ5S6QP7OS8EbbLEujCsfpp2
-X-Received: by 2002:a17:906:7c52:: with SMTP id g18mt175849ejp.362.1618437666524;
- Wed, 14 Apr 2021 15:01:06 -0700 (PDT)
+        id S237177AbhDNXW5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Apr 2021 19:22:57 -0400
+Received: from mga11.intel.com ([192.55.52.93]:49778 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232330AbhDNXW5 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 14 Apr 2021 19:22:57 -0400
+IronPort-SDR: +e3cUORvlUZO0kaSOmHTujgSvLV10z9Ahhlwb/XpiNxFhFl3Zr4QqLeMziOD3m/S/Wie44Kc5F
+ OAp2V9JDrOVQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191569719"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="191569719"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 16:22:35 -0700
+IronPort-SDR: yKzHtAmEdZ0kv3rfguUotAqfiqqx8CmwXDFa45EuQRacYxvT5a105gadLWQoJsEHrhvD7gSA7Q
+ vzz7FfRwUpaA==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="389553964"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.63.115])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 16:22:35 -0700
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+To:     Shakeel Butt <shakeelb@google.com>, Yang Shi <shy828301@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
+ <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com>
+ <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <ffa8eb86-27e3-3a46-4977-0d0cf33503fe@linux.intel.com>
+Date:   Wed, 14 Apr 2021 16:22:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <1617714261-18111-1-git-send-email-pkondeti@codeaurora.org>
- <YGxjwKbec68sCcqo@slm.duckdns.org> <20210406152715.GB21941@codeaurora.org>
- <YGyJHAlLKqng2WeS@slm.duckdns.org> <20210407013856.GC21941@codeaurora.org>
-In-Reply-To: <20210407013856.GC21941@codeaurora.org>
-From:   Wei Wang <wvw@google.com>
-Date:   Wed, 14 Apr 2021 15:00:55 -0700
-Message-ID: <CAGXk5yp5sETNM=b4vw8xiCF=YYRhAqSpzHe-0W2Zm-VMnZsnTw@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: Relax restrictions on kernel threads moving out
- of root cpu cgroup
-Cc:     LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 6:39 PM Pavan Kondeti <pkondeti@codeaurora.org> wrote:
->
-> On Tue, Apr 06, 2021 at 12:15:24PM -0400, Tejun Heo wrote:
-> > Hello,
-> >
-> > On Tue, Apr 06, 2021 at 08:57:15PM +0530, Pavan Kondeti wrote:
-> > > Yeah. The workqueue attrs comes in handy to reduce the nice/prio of a
-> > > background workqueue if we identify that it is cpu intensive. However, this
-> > > needs case by case analysis, tweaking etc. If there is no other alternative,
-> > > we might end up chasing the background workers and reduce their nice value.
-> >
-> > There shouldn't be that many workqueues that consume a lot of cpu cycles.
-> > The usual culprit is kswapd, IO related stuff (writeback, encryption), so it
-> > shouldn't be a long list and we want them identified anyway.
-> >
-> Sure. I have not done a complete study on which workers in our system can
-> compete with important tasks in other cgroups. We will have to do that to
-> adjust the workqueue priority so that the impact can be minimized.
->
 
-kswapd0 is actually migratable to subgroup.
 
-But echo what Pavan said, the real world is not ideal and the
-problematice drivers are inactive when the use case is not activated
-in Android, e.g. connectivity, camera, etc. It is tricky sometimes to
-track all of those.
+On 4/8/21 1:29 PM, Shakeel Butt wrote:
+> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
 
-> > > The problem at our hand (which you might be knowing already) is that, lets say
-> > > we have 2 cgroups in our setup and we want to prioritize UX over background.
-> > > IOW, reduce the cpu.shares of background cgroup. This helps in prioritizing
-> > > Task-A and Task-B over Task-X and Task-Y. However, each individual kworker
-> > > can potentially have CPU share equal to the entire UX cgroup.
-> > >
-> > > -kworker/0:0
-> > > -kworker/1:0
-> > > - UX
-> > > ----Task-A
-> > > ----Task-B
-> > > - background
-> > > ----Task-X
-> > > ----Task-Y
-> > > Hence we want to move all kernel threads to another cgroup so that this cgroup
-> > > will have CPU share equal to UX.
-> > >
-> > > The patch presented here allows us to create the above setup. Any other
-> > > alternative approaches to achieve the same without impacting any future
-> > > designs/requirements?
-> >
-> > Not quite the same but we already have
-> > /sys/devices/virtual/workqueue/cpumask which affects all unbound workqueues,
-> > so maybe a global default priority knob would help here?
-> >
->
-> yeah, not exactly what we are looking for. It gives us the abiility to restrict
-> the priority of all unbound workqueues at the expense of not being able to
-> prioritize one workqueue over another workqueue.
->
+> 
+> The low and min limits have semantics similar to the v1's soft limit
+> for this situation i.e. letting the low priority job occupy top tier
+> memory and depending on reclaim to take back the excess top tier
+> memory use of such jobs.
+> 
+> I have some thoughts on NUMA node limits which I will share in the other thread.
+> 
 
-Same here, Android used to have its cgroup setup like this, where the
-BG group can be starved too long potentially (and sometimes PI is not
-inevitable of course,  that's the reason why I removed BG cgroup in
-Android (https://android-review.googlesource.com/q/topic:remove_bg_cgroup)).
+Shakeel,
 
--Task-A
--Task-B
--kworker/0:0
-- background
-----Task-X
-----Task-Y
+Look forward to the proposal on NUMA node limits.  Which thread are
+you going to post it?  Want to make sure I didn't miss it.
 
-So having things left in root will post the same risk,
-
-> Thanks,
-> Pavan
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
->
+Tim
