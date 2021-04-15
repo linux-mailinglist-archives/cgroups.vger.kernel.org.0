@@ -2,61 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFFB36124E
-	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 20:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EBA36128A
+	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 20:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbhDOSr7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Apr 2021 14:47:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234086AbhDOSr7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Apr 2021 14:47:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618512455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YhU7TCQFVSEb9BISH8yUV4uS7YEP0B0LlCGjPhsfIjk=;
-        b=RHiDO3VVOHh2cnqVGwB19qxEhTKswqcaTc1HJSmXceVJ+18iJA+RDSoWlo58AItVpahRxH
-        LHrk50W1b8Zv5NtnlYG7OumxQofHWk22/2MIfH55nRz0ImrJYs+cYCAcZgC0pbbdjazpqM
-        ZjsASs5rzXqXm27NuV9yRR0d/SBsItk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-G6iSqzbBOZSC2LSKXtbfOw-1; Thu, 15 Apr 2021 14:47:34 -0400
-X-MC-Unique: G6iSqzbBOZSC2LSKXtbfOw-1
-Received: by mail-qt1-f197.google.com with SMTP id f6-20020ac80a460000b029019c5295a865so4617057qti.17
-        for <cgroups@vger.kernel.org>; Thu, 15 Apr 2021 11:47:33 -0700 (PDT)
+        id S234583AbhDOSxn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Apr 2021 14:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234481AbhDOSxm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Apr 2021 14:53:42 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1331FC061756
+        for <cgroups@vger.kernel.org>; Thu, 15 Apr 2021 11:53:18 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id i11so6709141qvu.10
+        for <cgroups@vger.kernel.org>; Thu, 15 Apr 2021 11:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=96tuU81fXCkin4WB3Y1v64uEdVONNHvsDjpceLw3bM0=;
+        b=KucSbo71ppmRAwrtk+zE9FdgB87Qc+tda3KCUaEMRGH1MZkW8VY/3PWwvP2IP4pxau
+         FziHIC410OdYUCirJSscKoC+x30M84iaj9fFwF4aQIBMaWpf7Zu1rlM8jArzkSlTXJYg
+         v9hKVGygzsc8f2nO+sHjIiFVZADBkBHZyg2L4d9eH2oz7jdgsdctVIKvxYtts3ZAPy6j
+         GcDaOUmPffy9jfWGe9Nf+xYXMmIuL99ftu/DtIhGM5qj41NGcEgcMGQ+2FF1btH+3Y9A
+         CI6hqs7zAosirfWv49F8TFvyk8deLlV+oIGcFUgxmO7meeRc85l79LRS6BSU6zMn8gP7
+         9RlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YhU7TCQFVSEb9BISH8yUV4uS7YEP0B0LlCGjPhsfIjk=;
-        b=OZ/JdHZQXDfaJXHYEb5uitbORM3gPBZ6LMXtbtO8PlJscSiKeFFnl1cWWlbdLHLqNY
-         Arla07twVSCTbpGfEBVpNl18GIr3tR5Ioo3nISa8XFSw+aWHIOdmUD6DNo95D18vvZ1B
-         Xn3T+omhJwM6HKzrTn1YV9JOF5s105tzfvOPxD3El5ayh9qgThZ51LViv6Ww0ZzPndtF
-         j2/piGxoYn+u2h4HiR1OiVnA7/ggOWHOgINT6ol56p+ehwnZzYCMc+8nk253OpNOkNFL
-         4bbWCGYhqqV6b/t3XQQ6XcAA2fIxTbseShUbaJizF70vze52f2SqJZ6vv6tw/4E5cvug
-         fXZA==
-X-Gm-Message-State: AOAM532kAXNRpJ8qgdYLHyyESMoVx+UGGwXkiwaYZl3cekThxx5XZ8gX
-        YugUjfnm7JJdXtj+N57Xxodriiv8yNPnCLHsAAK4eUe2TJ8ayLLJBQangrtQLxx0PF+xKzuLKMQ
-        wlh1mHyy5t7xXginVRg==
-X-Received: by 2002:a37:46d5:: with SMTP id t204mr4781207qka.211.1618512453594;
-        Thu, 15 Apr 2021 11:47:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUdX6JKkD3hF7Cdh86JsrrLjUwoikG2qPfbSEJduJ0S04O2Lz1qwFCwKtpktu1s8vKKzSdEQ==
-X-Received: by 2002:a37:46d5:: with SMTP id t204mr4781179qka.211.1618512453403;
-        Thu, 15 Apr 2021 11:47:33 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c23sm2489546qkk.24.2021.04.15.11.47.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 11:47:33 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 2/5] mm/memcg: Introduce
- obj_cgroup_uncharge_mod_state()
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <llong@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=96tuU81fXCkin4WB3Y1v64uEdVONNHvsDjpceLw3bM0=;
+        b=gkIiFSOdDtHgSnSwUgpSuNd7flJCEwmowQFifXgdXCTk5CGzOJqXoCh5CFW+BNqrT5
+         sPc45rUadHxMI+c05axC9cyVSYupMFk3WjIahWp73kjBMNThQtDNBTVMK4ORtaGKQHJq
+         9Sk7lkCXnn3F9mW4Q2Z6y9NIiNxzikXwAX6SVw0f2+bQvj9GZHApbeyDy7UCMbx7dImo
+         4VxlhHhjs1bk0I7eZ6fA5PUD8dU8COLtzFFW9AwyQODMD7fcpqtNDR1FhC1GeOAqFMFz
+         gw+c2qZITT29MrTOce49jjn82HANO3wLCcWlNBy9eAlK8XqVtjZBS869xQIT+dM5NFMN
+         8a4w==
+X-Gm-Message-State: AOAM531LMbKXMDfCM1EpQGoFgrkWcgQINYex9eOkcaO+cdZaLpaOCnZD
+        BKC99uSYsp62DMY0TMQ8ShBpfg==
+X-Google-Smtp-Source: ABdhPJw9P8Kpim/vGmjqJwgzAVFTO6UGfsnHmGwxmbB9cfF9fe6Gb8lgaZAMGEoWhGSQ1UF3KctUyw==
+X-Received: by 2002:ad4:4c4a:: with SMTP id cs10mr4836974qvb.14.1618512797099;
+        Thu, 15 Apr 2021 11:53:17 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id z18sm2638060qkg.42.2021.04.15.11.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 11:53:16 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 14:53:15 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <llong@redhat.com>
 Cc:     Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -74,76 +67,88 @@ Cc:     Michal Hocko <mhocko@kernel.org>,
         Wei Yang <richard.weiyang@gmail.com>,
         Masayoshi Mizuma <msys.mizuma@gmail.com>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
+ access
+Message-ID: <YHiLmxE9oCOfmbS3@cmpxchg.org>
 References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-3-longman@redhat.com> <YHhqPYcajI9JgXk/@cmpxchg.org>
- <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
- <YHiBlhUWoCKqQgM7@cmpxchg.org>
-Message-ID: <8a104fd5-64c7-3f41-981c-9cfa977c78a6@redhat.com>
-Date:   Thu, 15 Apr 2021 14:47:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ <20210414012027.5352-6-longman@redhat.com>
+ <YHh9l1+TUIzzFBtO@cmpxchg.org>
+ <8dbd3505-9c51-362f-82d8-5efa5773e020@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YHiBlhUWoCKqQgM7@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dbd3505-9c51-362f-82d8-5efa5773e020@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/15/21 2:10 PM, Johannes Weiner wrote:
-> On Thu, Apr 15, 2021 at 12:35:45PM -0400, Waiman Long wrote:
->> On 4/15/21 12:30 PM, Johannes Weiner wrote:
->>> On Tue, Apr 13, 2021 at 09:20:24PM -0400, Waiman Long wrote:
->>>> In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
->>>> is followed by mod_objcg_state()/mod_memcg_state(). Each of these
->>>> function call goes through a separate irq_save/irq_restore cycle. That
->>>> is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
->>>> that combines them with a single irq_save/irq_restore cycle.
->>>>
->>>> @@ -3292,6 +3296,25 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->>>>    	refill_obj_stock(objcg, size);
->>>>    }
->>>> +void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
->>>> +				   struct pglist_data *pgdat, int idx)
->>> The optimization makes sense.
->>>
->>> But please don't combine independent operations like this into a
->>> single function. It makes for an unclear parameter list, it's a pain
->>> in the behind to change the constituent operations later on, and it
->>> has a habit of attracting more random bools over time. E.g. what if
->>> the caller already has irqs disabled? What if it KNOWS that irqs are
->>> enabled and it could use local_irq_disable() instead of save?
->>>
->>> Just provide an __obj_cgroup_uncharge() that assumes irqs are
->>> disabled, combine with the existing __mod_memcg_lruvec_state(), and
->>> bubble the irq handling up to those callsites which know better.
->>>
->> That will also work. However, the reason I did that was because of patch 5
->> in the series. I could put the get_obj_stock() and put_obj_stock() code in
->> slab.h and allowed them to be used directly in various places, but hiding in
->> one function is easier.
-> Yeah it's more obvious after getting to patch 5.
->
-> But with the irq disabling gone entirely, is there still an incentive
-> to combine the atomic section at all? Disabling preemption is pretty
-> cheap, so it wouldn't matter to just do it twice.
->
-> I.e. couldn't the final sequence in slab code simply be
->
-> 	objcg_uncharge()
-> 	mod_objcg_state()
->
-> again and each function disables preemption (and in the rare case
-> irqs) as it sees fit?
->
-> You lose the irqsoff batching in the cold path, but as you say, hit
-> rates are pretty good, and it doesn't seem worth complicating the code
-> for the cold path.
->
-That does make sense, though a little bit of performance may be lost. I 
-will try that out to see how it work out performance wise.
+On Thu, Apr 15, 2021 at 02:16:17PM -0400, Waiman Long wrote:
+> On 4/15/21 1:53 PM, Johannes Weiner wrote:
+> > On Tue, Apr 13, 2021 at 09:20:27PM -0400, Waiman Long wrote:
+> > > Most kmem_cache_alloc() calls are from user context. With instrumentation
+> > > enabled, the measured amount of kmem_cache_alloc() calls from non-task
+> > > context was about 0.01% of the total.
+> > > 
+> > > The irq disable/enable sequence used in this case to access content
+> > > from object stock is slow.  To optimize for user context access, there
+> > > are now two object stocks for task context and interrupt context access
+> > > respectively.
+> > > 
+> > > The task context object stock can be accessed after disabling preemption
+> > > which is cheap in non-preempt kernel. The interrupt context object stock
+> > > can only be accessed after disabling interrupt. User context code can
+> > > access interrupt object stock, but not vice versa.
+> > > 
+> > > The mod_objcg_state() function is also modified to make sure that memcg
+> > > and lruvec stat updates are done with interrupted disabled.
+> > > 
+> > > The downside of this change is that there are more data stored in local
+> > > object stocks and not reflected in the charge counter and the vmstat
+> > > arrays.  However, this is a small price to pay for better performance.
+> > > 
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > Acked-by: Roman Gushchin <guro@fb.com>
+> > > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> > This makes sense, and also explains the previous patch a bit
+> > better. But please merge those two.
+> The reason I broke it into two is so that the patches are individually
+> easier to review. I prefer to update the commit log of patch 4 to explain
+> why the obj_stock structure is introduced instead of merging the two.
 
-Cheers,
-Longman
+Well I did not find them easier to review separately.
 
+> > > @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
+> > >   	local_irq_save(flags);
+> > >   	stock = this_cpu_ptr(&memcg_stock);
+> > > -	drain_obj_stock(&stock->obj);
+> > > +	drain_obj_stock(&stock->irq_obj);
+> > > +	if (in_task())
+> > > +		drain_obj_stock(&stock->task_obj);
+> > >   	drain_stock(stock);
+> > >   	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> > > @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+> > >   	memcg = obj_cgroup_memcg(objcg);
+> > >   	if (pgdat)
+> > >   		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> > > -	__mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+> > > +	mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+> > >   	rcu_read_unlock();
+> > This is actually a bug introduced in the earlier patch, isn't it?
+> > Calling __mod_memcg_lruvec_state() without irqs disabled...
+> > 
+> Not really, in patch 3, mod_objcg_state() is called only in the stock update
+> context where interrupt had already been disabled. But now, that is no
+> longer the case, that is why i need to update mod_objcg_state() to make sure
+> irq is disabled before updating vmstat data array.
+
+Oh, I see it now. Man, that's subtle. We've had several very hard to
+track down preemption bugs in those stats, because they manifest as
+counter imbalances and you have no idea if there is a leak somewhere.
+
+The convention for these functions is that the __ prefix indicates
+that preemption has been suitably disabled. Please always follow this
+convention, even if the semantic change is temporary.
+
+Btw, is there a reason why the stock caching isn't just part of
+mod_objcg_state()? Why does the user need to choose if they want the
+caching or not? It's not like we ask for this when charging, either.
