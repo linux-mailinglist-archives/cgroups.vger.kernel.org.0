@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190703610A2
-	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 18:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202A63610C5
+	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 19:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhDORAC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Apr 2021 13:00:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37193 "EHLO
+        id S234325AbhDORI7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Apr 2021 13:08:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39371 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233330AbhDORAC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Apr 2021 13:00:02 -0400
+        by vger.kernel.org with ESMTP id S233969AbhDORI5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Apr 2021 13:08:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618505979;
+        s=mimecast20190719; t=1618506514;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=elHrGsyviNRX+T8DndgeK2yskuXfifgVcBuAA2Ta4Ok=;
-        b=ewyXg4zk7G8LPtm97g8uMyScjtrJePy7OCx2SFjFsyU0Z85qgGi7wh+cEV9rB9wSh7TcPW
-        c89zEp/NM3T70m2NioU9smDZgnTGxrZxG6DyNYlbgDMFVdJbz0+APdu34658zc6Fu2kea5
-        /D3XGef37+yY+RPxaTRzDF0PuIHttas=
+        bh=c4bUwdWqx5JUrWJYR1rKkQlIPcDgNW5mI87L7J9m2Ko=;
+        b=HMlDzOBsO9FtPKidhpmYUZVrSl40bs1GxJV36AqBOOk1V+tZclNUIKHHg/j0h4lIGZYKtI
+        khLfF1o2cguWp2JLcYC1YoW+kB+nkw8T24toNmVkF1zlz6qwdFgCeqZPmDyOaeI8R8J0U6
+        DKv2MCqXegXcxLO1SBtZW6FteAQOvTI=
 Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
  [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-521-XtAzQw7bMgyO5LUnPCrAqQ-1; Thu, 15 Apr 2021 12:59:37 -0400
-X-MC-Unique: XtAzQw7bMgyO5LUnPCrAqQ-1
-Received: by mail-qk1-f199.google.com with SMTP id 79so1915643qkm.20
-        for <cgroups@vger.kernel.org>; Thu, 15 Apr 2021 09:59:37 -0700 (PDT)
+ us-mta-335-3H6ADOl5NeWClnsZQ17wIQ-1; Thu, 15 Apr 2021 13:08:32 -0400
+X-MC-Unique: 3H6ADOl5NeWClnsZQ17wIQ-1
+Received: by mail-qk1-f199.google.com with SMTP id w16so1801320qkf.22
+        for <cgroups@vger.kernel.org>; Thu, 15 Apr 2021 10:08:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=elHrGsyviNRX+T8DndgeK2yskuXfifgVcBuAA2Ta4Ok=;
-        b=BpjH41uThSJKBx+GIIqOBeBcLl7mFszJsEsoMjlHZL0GETBG/0pKOK+hn3wFQIA3KW
-         BGsvI8u1TuAx/v85GuKdLvitaLvghlxj7wi4ubcyjDqfeHFssE+aYZdRXlSjwYga8K9e
-         AmSF0lzsvpPDl5DJKXhSGLyz2eEFNr/OncN7yzcRR8cIuFp0RM6gSSuaFPB+pvfGoqgc
-         nCbrJ7UNEIL2sN8OvLD2g2gCI2OjVfeUbh3REeHRtM2GqG5OZ0ysHOurhdmX8SuYfotV
-         AI6ZwGYZTIRZ3pVSx36tGnsqVWZZS3C+yTB/9k3xv/jiSMDbyvs2iODzzlxDwg0Yw3W5
-         aCYA==
-X-Gm-Message-State: AOAM530g6Ir/LmrqQN8DuOH4C3iRfiH79kbubLY1XD7mWnX5UHDiupqd
-        iYGW4sq+uyTntwtUM3IlfqORoNo2cizvD6fDZY9VIv3QGd7UqHHrD2lJiq06jDovS/7ZjaXezwy
-        Uk80ctNbnlW9jVUdwhQ==
-X-Received: by 2002:a37:d4e:: with SMTP id 75mr4203698qkn.457.1618505974857;
-        Thu, 15 Apr 2021 09:59:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvAPNkVJI8wUxitPnbMVkF+NPMJpjx0i3yeexynXZiZOvFXpqTEJad03ray4v6M3SeArr5Zw==
-X-Received: by 2002:a05:620a:13a6:: with SMTP id m6mr4535437qki.64.1618505963716;
-        Thu, 15 Apr 2021 09:59:23 -0700 (PDT)
+        bh=c4bUwdWqx5JUrWJYR1rKkQlIPcDgNW5mI87L7J9m2Ko=;
+        b=oj5/PpUhmgN6ooCBjaf+QgQmdsCfsPTqLrKG+xYnD0gVMjQN2/AUXsrWs8Lj3/Ar3Q
+         lROO1/kdGDNIDu3wyp1hE13YUcEHnUTHmNaF5lJYBw7AOV+uSi5BpAmq6jiEgp7k1Apd
+         ZdI2GDmmqmRn2GpAInaWHGXF/V1o+oy1uZtxfhpm/aWHviuJ15ZtUPNikTHYega78xBZ
+         tjmv8Cgs3WITcdq9oajQ7OGjo/hpXeqQcdwSjzSzGkCsvJpoyy1FPpCwFzy7XgGZvQF7
+         0c7oTX6GbQ1A0PEcoAP4E7ix7oNtcsubC3UafYytxBWNZUDDTi6c9PmpjoP1v8ELyHXZ
+         MKcA==
+X-Gm-Message-State: AOAM5326gZRVaDPy8+E59zu45fV4ZsTbWAM02qcCi8kM50sRCYrsILLE
+        vBfqxku2N3ZAM8yt0wVUbR+gervSsEsm8TulQh0kvXvrGtVGRe8gJf5zmoP7fWPN8XcAjJkIIto
+        CuCT4z4LJOdGT/xj8wA==
+X-Received: by 2002:a0c:e601:: with SMTP id z1mr4249162qvm.62.1618506511990;
+        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyYKgNv627ZQRacj4Z0akpbwf6cDPraxoDdrUd5LGopDdVhUkGCp7HX14SZP2g3PIZr3viwAg==
+X-Received: by 2002:a0c:e601:: with SMTP id z1mr4249129qvm.62.1618506511823;
+        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
 Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h65sm2349848qkc.128.2021.04.15.09.59.22
+        by smtp.gmail.com with ESMTPSA id u21sm2196347qtq.11.2021.04.15.10.08.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 09:59:23 -0700 (PDT)
+        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
 From:   Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 1/5] mm/memcg: Pass both memcg and lruvec to
- mod_memcg_lruvec_state()
+Subject: Re: [PATCH v3 3/5] mm/memcg: Cache vmstat data in percpu
+ memcg_stock_pcp
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
@@ -74,13 +74,13 @@ Cc:     Michal Hocko <mhocko@kernel.org>,
         Masayoshi Mizuma <msys.mizuma@gmail.com>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>
 References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-2-longman@redhat.com> <YHhsapGx3vTlyZvF@cmpxchg.org>
-Message-ID: <59a85df9-3e77-1d43-8673-2ff50a741130@redhat.com>
-Date:   Thu, 15 Apr 2021 12:59:21 -0400
+ <20210414012027.5352-4-longman@redhat.com> <YHhu1BOMj1Ip+sb3@cmpxchg.org>
+Message-ID: <5abe499a-b1ad-fa22-3487-1a6e00e30e17@redhat.com>
+Date:   Thu, 15 Apr 2021 13:08:29 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YHhsapGx3vTlyZvF@cmpxchg.org>
+In-Reply-To: <YHhu1BOMj1Ip+sb3@cmpxchg.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -88,31 +88,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/15/21 12:40 PM, Johannes Weiner wrote:
-> On Tue, Apr 13, 2021 at 09:20:23PM -0400, Waiman Long wrote:
->> The caller of mod_memcg_lruvec_state() has both memcg and lruvec readily
->> available. So both of them are now passed to mod_memcg_lruvec_state()
->> and __mod_memcg_lruvec_state(). The __mod_memcg_lruvec_state() is
->> updated to allow either of the two parameters to be set to null. This
->> makes mod_memcg_lruvec_state() equivalent to mod_memcg_state() if lruvec
->> is null.
+On 4/15/21 12:50 PM, Johannes Weiner wrote:
+> On Tue, Apr 13, 2021 at 09:20:25PM -0400, Waiman Long wrote:
+>> Before the new slab memory controller with per object byte charging,
+>> charging and vmstat data update happen only when new slab pages are
+>> allocated or freed. Now they are done with every kmem_cache_alloc()
+>> and kmem_cache_free(). This causes additional overhead for workloads
+>> that generate a lot of alloc and free calls.
 >>
->> The new __mod_memcg_lruvec_state() function will be used in the next
->> patch as a replacement of mod_memcg_state() in mm/percpu.c for the
->> consolidation of the memory uncharge and vmstat update functions in
->> the kmem_cache_free() path.
-> This requires users who want both to pass a pgdat that can be derived
-> from the lruvec. This is error prone, and we just acked a patch that
-> removes this very thing from mem_cgroup_page_lruvec().
+>> The memcg_stock_pcp is used to cache byte charge for a specific
+>> obj_cgroup to reduce that overhead. To further reducing it, this patch
+>> makes the vmstat data cached in the memcg_stock_pcp structure as well
+>> until it accumulates a page size worth of update or when other cached
+>> data change.
+>>
+>> On a 2-socket Cascade Lake server with instrumentation enabled and this
+>> patch applied, it was found that about 17% (946796 out of 5515184) of the
+>> time when __mod_obj_stock_state() is called leads to an actual call to
+>> mod_objcg_state() after initial boot. When doing parallel kernel build,
+>> the figure was about 16% (21894614 out of 139780628). So caching the
+>> vmstat data reduces the number of calls to mod_objcg_state() by more
+>> than 80%.
+> Right, but mod_objcg_state() is itself already percpu-cached. What's
+> the benefit of avoiding calls to it with another percpu cache?
 >
-> With the suggestion for patch 2, this shouldn't be necessary anymore,
-> though. And sort of underlines my point around that combined function
-> creating akwward code above and below it.
->
-The reason of passing in the pgdat is because of the caching of vmstat 
-data. lruvec may be gone if the corresponding memory cgroup is removed, 
-but pgdat should stay put. That is why I put pgdat in the obj_stock for 
-caching. I could also put the node id instead of pgdat.
+There are actually 2 set of vmstat data that have to be updated. One is 
+associated with the memcg and other one is for each lruvec within the 
+cgroup. Caching it in obj_stock, we replace 2 writes to two colder 
+cachelines with one write to a hot cacheline. If you look at patch 5, I 
+break obj_stock into two - one for task context and one for irq context. 
+Interrupt disable is no longer needed in task context, but that is not 
+possible when writing to the actual vmstat data arrays.
 
 Cheers,
 Longman
