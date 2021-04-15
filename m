@@ -2,158 +2,191 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF69F35FF8D
-	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 03:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B7F360068
+	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 05:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbhDOBak (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Apr 2021 21:30:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229449AbhDOBak (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Apr 2021 21:30:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618450217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
-        b=SKhq/xnRzymw3OROtwY8Am/xi4wnDKFx6mlhKxf3ulA5LZ0UsKhsYL0ilIA/HsK7JbMUFM
-        FfWHcbHQL1OtIZV1bfto5mYPQr+DUpRAxiBQXwK+lhCTMrVGyP275AyoSnogh9+QFPs1uK
-        C5yPAWVNvZHCOLh9hrAryxbpT7ASXVM=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-84JluCp3O-quJ0TioY_paA-1; Wed, 14 Apr 2021 21:30:16 -0400
-X-MC-Unique: 84JluCp3O-quJ0TioY_paA-1
-Received: by mail-lf1-f70.google.com with SMTP id n128-20020a1940860000b0290171d50a7ecbso1755377lfa.11
-        for <cgroups@vger.kernel.org>; Wed, 14 Apr 2021 18:30:15 -0700 (PDT)
+        id S229598AbhDOD1J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Apr 2021 23:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhDOD1I (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Apr 2021 23:27:08 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECAEC061574;
+        Wed, 14 Apr 2021 20:26:46 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id i6so7567577qti.10;
+        Wed, 14 Apr 2021 20:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7ELJgZAB0/MDsT4s31FFYWkqnQ9XSl76WVBBR9IJO1c=;
+        b=t528pCYvS51nm/69P94WlzjraUcBRoYhV1mwN/WUsURBWiaUdqIiJW0x7GvN+c679B
+         2FJpV0XfBUE7PthAYwdSXqkWAhsbL63OuuIrtaTeoO45oFfWY9FahsNxOsRY3lOEuSNU
+         F4TD+03q5Lr6hIVk/ZLD7lx4CDn4DQQEzUul5FgRzHyEiV3WUzWysaKVpVfZLxq8j2u6
+         pLxuQDhGeWAOSltbuPZ5uabQx9R0Qyor4AM/yD2MrU/KYb2Q7aAWP/PhI6KPt1zicqDP
+         UMnt9Gvr1J50tMHcewLTfsUzZjJ5BZYT6OGfvc9HF0Ah2Prk/wB6O72tGHROYyY7CvyZ
+         gE9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
-        b=epmyEpKYUd40v+rBTkBtu8ruP03MRz/WDCSj+pietDeCeHchWaZCLyJEcWLkv7mqLw
-         72+M3TWmxsKoS8FmPuYqtE6m3lUrylEFD8sp7LC9mX+C/ykPeJW0NYkIQXLWfv6GX0xP
-         /ZNDpeJv6t2ZBjfpkogFt039KHohxp9VgR3zCRrkOx05h5djcL37t5l1NP8K5/ZEIrHF
-         06LOEe6WuWDFtqcvXoC11mfha2LRrReYl9q08w8ylVugIFb1+B72JOQHWsvGx4m4wq8a
-         rGi1IHzHWScyvAAl4VdEqxoNmc/8LfVuhQsZQnVznKxVu5ckqNj8dGuKDSMPg3gNrscg
-         Uurg==
-X-Gm-Message-State: AOAM532WxrRoKWpRHtxqqD2NCvYhJDmSdzUVacNpaud/LxVTUM+CqV+m
-        /M5B/IyAJeaY8WekU3DHIPM3xK1D45/zz0DIeG2N+fKB4g6RmN+wkPRr8vaPlMliw6T5fSWZg8g
-        9A6uXm/AJqb5sN9Del/eJ0eSO5wQ6Lzdc4Q==
-X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690483lfu.16.1618450214565;
-        Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDYMlj20wS7v+deB0HVHfODTSDiKREGfFpV6FOtv9WxbYz6e2VspZKd9MIhgzZuDHdRBE8GCKZun9GcIddnGk=
-X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690469lfu.16.1618450214403;
- Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7ELJgZAB0/MDsT4s31FFYWkqnQ9XSl76WVBBR9IJO1c=;
+        b=U+FFtvDNPUzSU0cgjb1s5WST/Aj1F5NsqpdS2rwkUG/Len0BnfOxOybWwehhzfpa4S
+         M8JeMGE6T1Nnzu85+9+028g8G8FazuQ+AMVRRIS89WGDKaL9DVhUCjIPhnUEWl21hqY8
+         KkdkPTD0hOMjAvdhvEKyKW3EoM3HExcLjFhb00ip/R6v+t+b2d/6Vctd4t4KKS7HM9Hs
+         Vch7BBGv+Pthtfub1G103NKlpZLUrp0fYomJLQu8AbVFxFWoAXJnuIGaygVmBLLmli36
+         ysPGd/iFUiL2l+llxsz2YPsKdORWItA3t3NW6mG0aSaNxLWKNglYEkG7yYtseYdlXN2p
+         +1iQ==
+X-Gm-Message-State: AOAM533Ks8zndw4f8dfWTvd9meSEp/9Zr1oLt1oqgcCMkmI5vu8HuIBB
+        r0tU592z7dnGPflf9S3TAQ==
+X-Google-Smtp-Source: ABdhPJx0Sk6gDpGnRm4Yjpl6DGfGoJFQT12r8vPTu63nbz+p7dTlOKQbUqPzTT/FgN3UNEfY5KpD0g==
+X-Received: by 2002:ac8:1098:: with SMTP id a24mr1174748qtj.291.1618457205608;
+        Wed, 14 Apr 2021 20:26:45 -0700 (PDT)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id g3sm904049qth.66.2021.04.14.20.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 20:26:45 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 23:26:42 -0400
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
+ overhead
+Message-ID: <20210415032642.gfaevezaxoj4od3d@gabell>
+References: <20210414012027.5352-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20210317003616.2817418-1-aklimov@redhat.com> <87tuowcnv3.ffs@nanos.tec.linutronix.de>
- <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
-In-Reply-To: <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
-From:   Alexey Klimov <aklimov@redhat.com>
-Date:   Thu, 15 Apr 2021 02:30:03 +0100
-Message-ID: <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com>
-Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael@kernel.org, tj@kernel.org,
-        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414012027.5352-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 3:32 AM Alexey Klimov <klimov.linux@gmail.com> wrote:
->
-> On Sat, Mar 27, 2021 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Tue, Apr 13, 2021 at 09:20:22PM -0400, Waiman Long wrote:
+>  v3:
+>   - Add missing "inline" qualifier to the alternate mod_obj_stock_state()
+>     in patch 3.
+>   - Remove redundant current_obj_stock() call in patch 5.
+> 
+>  v2:
+>   - Fix bug found by test robot in patch 5.
+>   - Update cover letter and commit logs.
+> 
+> With the recent introduction of the new slab memory controller, we
+> eliminate the need for having separate kmemcaches for each memory
+> cgroup and reduce overall kernel memory usage. However, we also add
+> additional memory accounting overhead to each call of kmem_cache_alloc()
+> and kmem_cache_free().
+> 
+> For workloads that require a lot of kmemcache allocations and
+> de-allocations, they may experience performance regression as illustrated
+> in [1] and [2].
+> 
+> A simple kernel module that performs repeated loop of 100,000,000
+> kmem_cache_alloc() and kmem_cache_free() of a 64-byte object at module
+> init time is used for benchmarking. The test was run on a CascadeLake
+> server with turbo-boosting disable to reduce run-to-run variation.
+> 
+> With memory accounting disable, the run time was 2.848s. With memory
+> accounting enabled, the run times with the application of various
+> patches in the patchset were:
+> 
+>   Applied patches   Run time   Accounting overhead   Overhead %age
+>   ---------------   --------   -------------------   -------------
+>        None          10.800s         7.952s              100.0%
+>         1-2           9.140s         6.292s               79.1%
+>         1-3           7.641s         4.793s               60.3%
+>         1-5           6.801s         3.953s               49.7%
+> 
+> Note that this is the best case scenario where most updates happen only
+> to the percpu stocks. Real workloads will likely have a certain amount
+> of updates to the memcg charges and vmstats. So the performance benefit
+> will be less.
+> 
+> It was found that a big part of the memory accounting overhead
+> was caused by the local_irq_save()/local_irq_restore() sequences in
+> updating local stock charge bytes and vmstat array, at least in x86
+> systems. There are two such sequences in kmem_cache_alloc() and two
+> in kmem_cache_free(). This patchset tries to reduce the use of such
+> sequences as much as possible. In fact, it eliminates them in the common
+> case. Another part of this patchset to cache the vmstat data update in
+> the local stock as well which also helps.
+> 
+> [1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
 
-[...]
+Hi Longman,
 
-Now, the patch:
+Thank you for your patches.
+I rerun the benchmark with your patches, it seems that the reduction
+is small... The total duration of sendto() and recvfrom() system call 
+during the benchmark are as follows.
 
->> Subject: cpu/hotplug: Cure the cpusets trainwreck
->> From: Thomas Gleixner <tglx@linutronix.de>
->> Date: Sat, 27 Mar 2021 15:57:29 +0100
->>
->> Alexey and Joshua tried to solve a cpusets related hotplug problem which is
->> user space visible and results in unexpected behaviour for some time after
->> a CPU has been plugged in and the corresponding uevent was delivered.
->>
->> cpusets delegate the hotplug work (rebuilding cpumasks etc.) to a
->> workqueue. This is done because the cpusets code has already a lock
->> nesting of cgroups_mutex -> cpu_hotplug_lock. A synchronous callback or
->> waiting for the work to finish with cpu_hotplug_lock held can and will
->> deadlock because that results in the reverse lock order.
->>
->> As a consequence the uevent can be delivered before cpusets have consistent
->> state which means that a user space invocation of sched_setaffinity() to
->> move a task to the plugged CPU fails up to the point where the scheduled
->> work has been processed.
->>
->> The same is true for CPU unplug, but that does not create user observable
->> failure (yet).
->>
->> It's still inconsistent to claim that an operation is finished before it
->> actually is and that's the real issue at hand. uevents just make it
->> reliably observable.
->>
->> Obviously the problem should be fixed in cpusets/cgroups, but untangling
->> that is pretty much impossible because according to the changelog of the
->> commit which introduced this 8 years ago:
->>
->>  3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
->>
->> the lock order cgroups_mutex -> cpu_hotplug_lock is a design decision and
->> the whole code is built around that.
->>
->> So bite the bullet and invoke the relevant cpuset function, which waits for
->> the work to finish, in _cpu_up/down() after dropping cpu_hotplug_lock and
->> only when tasks are not frozen by suspend/hibernate because that would
->> obviously wait forever.
->>
->> Waiting there with cpu_add_remove_lock, which is protecting the present
->> and possible CPU maps, held is not a problem at all because neither work
->> queues nor cpusets/cgroups have any lockchains related to that lock.
->>
->> Waiting in the hotplug machinery is not problematic either because there
->> are already state callbacks which wait for hardware queues to drain. It
->> makes the operations slightly slower, but hotplug is slow anyway.
->>
->> This ensures that state is consistent before returning from a hotplug
->> up/down operation. It's still inconsistent during the operation, but that's
->> a different story.
->>
->> Add a large comment which explains why this is done and why this is not a
->> dump ground for the hack of the day to work around half thought out locking
->> schemes. Document also the implications vs. hotplug operations and
->> serialization or the lack of it.
->>
->> Thanks to Alexy and Joshua for analyzing why this temporary
->> sched_setaffinity() failure happened.
->>
->> Reported-by: Alexey Klimov <aklimov@redhat.com>
->> Reported-by: Joshua Baker <jobaker@redhat.com>
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
->> Cc: Qais Yousef <qais.yousef@arm.com>
+- sendto
+  - v5.8 vanilla:                      2576.056 msec (100%)
+  - v5.12-rc7 vanilla:                 2988.911 msec (116%)
+  - v5.12-rc7 with your patches (1-5): 2984.307 msec (115%)
 
-Feel free to use:
-Tested-by: Alexey Klimov <aklimov@redhat.com>
+- recvfrom
+  - v5.8 vanilla:                      2113.156 msec (100%)
+  - v5.12-rc7 vanilla:                 2305.810 msec (109%)
+  - v5.12-rc7 with your patches (1-5): 2287.351 msec (108%)
 
-The bug doesn't reproduce with this change, I had the testcase running
-for ~25 hrs without failing under different workloads.
+kmem_cache_alloc()/kmem_cache_free() are called around 1,400,000 times during
+the benchmark. I ran a loop in a kernel module as following. The duration
+is reduced by your patches actually.
 
-Are you going to submit the patch? Or I can do it on your behalf if you like.
+  ---
+  dummy_cache = KMEM_CACHE(dummy, SLAB_ACCOUNT);
+  for (i = 0; i < 1400000; i++) {
+	p = kmem_cache_alloc(dummy_cache, GFP_KERNEL);
+	kmem_cache_free(dummy_cache, p);
+  }
+  ---
 
-[...]
+- v5.12-rc7 vanilla:                 110 msec (100%)
+- v5.12-rc7 with your patches (1-5):  85 msec (77%)
 
-Best regards,
-Alexey
+It seems that the reduction is small for the benchmark though...
+Anyway, I can see your patches reduce the overhead.
+Please feel free to add:
 
+	Tested-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
+
+Thanks!
+Masa
+
+> [2] https://lore.kernel.org/lkml/20210114025151.GA22932@xsang-OptiPlex-9020/
+> 
+> Waiman Long (5):
+>   mm/memcg: Pass both memcg and lruvec to mod_memcg_lruvec_state()
+>   mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
+>   mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+>   mm/memcg: Separate out object stock data into its own struct
+>   mm/memcg: Optimize user context object stock access
+> 
+>  include/linux/memcontrol.h |  14 ++-
+>  mm/memcontrol.c            | 199 ++++++++++++++++++++++++++++++++-----
+>  mm/percpu.c                |   9 +-
+>  mm/slab.h                  |  32 +++---
+>  4 files changed, 196 insertions(+), 58 deletions(-)
+> 
+> -- 
+> 2.18.1
+> 
