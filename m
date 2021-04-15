@@ -2,158 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F7035FEF8
-	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 02:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF69F35FF8D
+	for <lists+cgroups@lfdr.de>; Thu, 15 Apr 2021 03:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhDOAnF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Apr 2021 20:43:05 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56494 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhDOAnE (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:43:04 -0400
-IronPort-SDR: gbQ6GFFy8fZOM73j00asM+fKi9qPyWTuqLLOkGzPPDAL600Ie5dT4DyOIt3GLwzmEyExdVBkbs
- DcOGKwkN0tKQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="258728973"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="258728973"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:42:40 -0700
-IronPort-SDR: lP90tNN9rJXZ+zZzV/Ob6WFrbiWIsX1Gf3oImAeXo2y42oGv7f/qKBGesrYeacp3vfvicrD5fQ
- E50xgL7dT9IQ==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="389573156"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.63.115])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:42:40 -0700
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
- <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
- <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
- <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
- <CALvZod4zXB6-3Mshu_TnTsQaDErfYkPTw9REYNRptSvPSRmKVA@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <ec5d5da8-bfc8-cd7a-7959-ee86d4e01bfa@linux.intel.com>
-Date:   Wed, 14 Apr 2021 17:42:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229458AbhDOBak (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Apr 2021 21:30:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31557 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229449AbhDOBak (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 14 Apr 2021 21:30:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618450217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
+        b=SKhq/xnRzymw3OROtwY8Am/xi4wnDKFx6mlhKxf3ulA5LZ0UsKhsYL0ilIA/HsK7JbMUFM
+        FfWHcbHQL1OtIZV1bfto5mYPQr+DUpRAxiBQXwK+lhCTMrVGyP275AyoSnogh9+QFPs1uK
+        C5yPAWVNvZHCOLh9hrAryxbpT7ASXVM=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-84JluCp3O-quJ0TioY_paA-1; Wed, 14 Apr 2021 21:30:16 -0400
+X-MC-Unique: 84JluCp3O-quJ0TioY_paA-1
+Received: by mail-lf1-f70.google.com with SMTP id n128-20020a1940860000b0290171d50a7ecbso1755377lfa.11
+        for <cgroups@vger.kernel.org>; Wed, 14 Apr 2021 18:30:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
+        b=epmyEpKYUd40v+rBTkBtu8ruP03MRz/WDCSj+pietDeCeHchWaZCLyJEcWLkv7mqLw
+         72+M3TWmxsKoS8FmPuYqtE6m3lUrylEFD8sp7LC9mX+C/ykPeJW0NYkIQXLWfv6GX0xP
+         /ZNDpeJv6t2ZBjfpkogFt039KHohxp9VgR3zCRrkOx05h5djcL37t5l1NP8K5/ZEIrHF
+         06LOEe6WuWDFtqcvXoC11mfha2LRrReYl9q08w8ylVugIFb1+B72JOQHWsvGx4m4wq8a
+         rGi1IHzHWScyvAAl4VdEqxoNmc/8LfVuhQsZQnVznKxVu5ckqNj8dGuKDSMPg3gNrscg
+         Uurg==
+X-Gm-Message-State: AOAM532WxrRoKWpRHtxqqD2NCvYhJDmSdzUVacNpaud/LxVTUM+CqV+m
+        /M5B/IyAJeaY8WekU3DHIPM3xK1D45/zz0DIeG2N+fKB4g6RmN+wkPRr8vaPlMliw6T5fSWZg8g
+        9A6uXm/AJqb5sN9Del/eJ0eSO5wQ6Lzdc4Q==
+X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690483lfu.16.1618450214565;
+        Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDYMlj20wS7v+deB0HVHfODTSDiKREGfFpV6FOtv9WxbYz6e2VspZKd9MIhgzZuDHdRBE8GCKZun9GcIddnGk=
+X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690469lfu.16.1618450214403;
+ Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALvZod4zXB6-3Mshu_TnTsQaDErfYkPTw9REYNRptSvPSRmKVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210317003616.2817418-1-aklimov@redhat.com> <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+ <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
+In-Reply-To: <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Thu, 15 Apr 2021 02:30:03 +0100
+Message-ID: <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com>
+Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org, tj@kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Sun, Apr 4, 2021 at 3:32 AM Alexey Klimov <klimov.linux@gmail.com> wrote:
+>
+> On Sat, Mar 27, 2021 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 
+[...]
 
-On 4/12/21 12:20 PM, Shakeel Butt wrote:
+Now, the patch:
 
+>> Subject: cpu/hotplug: Cure the cpusets trainwreck
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> Date: Sat, 27 Mar 2021 15:57:29 +0100
 >>
->> memory_t0.current       Current usage of tier 0 memory by the cgroup.
+>> Alexey and Joshua tried to solve a cpusets related hotplug problem which is
+>> user space visible and results in unexpected behaviour for some time after
+>> a CPU has been plugged in and the corresponding uevent was delivered.
 >>
->> memory_t0.min           If tier 0 memory used by the cgroup falls below this low
->>                         boundary, the memory will not be subjected to demotion
->>                         to lower tiers to free up memory at tier 0.
+>> cpusets delegate the hotplug work (rebuilding cpumasks etc.) to a
+>> workqueue. This is done because the cpusets code has already a lock
+>> nesting of cgroups_mutex -> cpu_hotplug_lock. A synchronous callback or
+>> waiting for the work to finish with cpu_hotplug_lock held can and will
+>> deadlock because that results in the reverse lock order.
 >>
->> memory_t0.low           Above this boundary, the tier 0 memory will be subjected
->>                         to demotion.  The demotion pressure will be proportional
->>                         to the overage.
+>> As a consequence the uevent can be delivered before cpusets have consistent
+>> state which means that a user space invocation of sched_setaffinity() to
+>> move a task to the plugged CPU fails up to the point where the scheduled
+>> work has been processed.
 >>
->> memory_t0.high          If tier 0 memory used by the cgroup exceeds this high
->>                         boundary, allocation of tier 0 memory by the cgroup will
->>                         be throttled. The tier 0 memory used by this cgroup
->>                         will also be subjected to heavy demotion.
+>> The same is true for CPU unplug, but that does not create user observable
+>> failure (yet).
 >>
->> memory_t0.max           This will be a hard usage limit of tier 0 memory on the cgroup.
+>> It's still inconsistent to claim that an operation is finished before it
+>> actually is and that's the real issue at hand. uevents just make it
+>> reliably observable.
 >>
->> If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
->> This follows closely with the design of the general memory controller interface.
+>> Obviously the problem should be fixed in cpusets/cgroups, but untangling
+>> that is pretty much impossible because according to the changelog of the
+>> commit which introduced this 8 years ago:
 >>
->> Will such an interface looks sane and acceptable with everyone?
+>>  3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
 >>
-> 
-> I have a couple of questions. Let's suppose we have a two socket
-> system. Node 0 (DRAM+CPUs), Node 1 (DRAM+CPUs), Node 2 (PMEM on socket
-> 0 along with Node 0) and Node 3 (PMEM on socket 1 along with Node 1).
-> Based on the tier definition of this patch series, tier_0: {node_0,
-> node_1} and tier_1: {node_2, node_3}.
-> 
-> My questions are:
-> 
-> 1) Can we assume that the cost of access within a tier will always be
-> less than the cost of access from the tier? (node_0 <-> node_1 vs
-> node_0 <-> node_2)
+>> the lock order cgroups_mutex -> cpu_hotplug_lock is a design decision and
+>> the whole code is built around that.
+>>
+>> So bite the bullet and invoke the relevant cpuset function, which waits for
+>> the work to finish, in _cpu_up/down() after dropping cpu_hotplug_lock and
+>> only when tasks are not frozen by suspend/hibernate because that would
+>> obviously wait forever.
+>>
+>> Waiting there with cpu_add_remove_lock, which is protecting the present
+>> and possible CPU maps, held is not a problem at all because neither work
+>> queues nor cpusets/cgroups have any lockchains related to that lock.
+>>
+>> Waiting in the hotplug machinery is not problematic either because there
+>> are already state callbacks which wait for hardware queues to drain. It
+>> makes the operations slightly slower, but hotplug is slow anyway.
+>>
+>> This ensures that state is consistent before returning from a hotplug
+>> up/down operation. It's still inconsistent during the operation, but that's
+>> a different story.
+>>
+>> Add a large comment which explains why this is done and why this is not a
+>> dump ground for the hack of the day to work around half thought out locking
+>> schemes. Document also the implications vs. hotplug operations and
+>> serialization or the lack of it.
+>>
+>> Thanks to Alexy and Joshua for analyzing why this temporary
+>> sched_setaffinity() failure happened.
+>>
+>> Reported-by: Alexey Klimov <aklimov@redhat.com>
+>> Reported-by: Joshua Baker <jobaker@redhat.com>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
 
-I do assume that higher tier memory offers better performance (or less
-access latency) than a lower tier memory.  Otherwise, this defeats the
-whole purpose of promoting hot memory from lower tier to a higher tier,
-and demoting cold memory to a lower tier.
+Feel free to use:
+Tested-by: Alexey Klimov <aklimov@redhat.com>
 
-Tiers assumption is embedded once we define this promotion/demotion relationship
-between the numa nodes.
+The bug doesn't reproduce with this change, I had the testcase running
+for ~25 hrs without failing under different workloads.
 
-So if 
+Are you going to submit the patch? Or I can do it on your behalf if you like.
 
-  node_m ----demotes----> node_n
-         <---promotes---- 
+[...]
 
-then node_m is one tier higher tier than node_n. This promotion/demotion
-relationship between the nodes is the underpinning of Dave and Ying's
-demotion and promotion patch sets.  
+Best regards,
+Alexey
 
-> 2) If yes to (1), is that assumption future proof? Will the future
-> systems with DRAM over CXL support have the same characteristics?
-
-I think if you configure a promotion/demotion relationship between
-DRAM over CXL and local-socket connected DRAM, you could divide them
-up into separate tiers.  Or you don't care about the difference and
-you will configure them not to have a promotion/demotion relationship
-and they will be at the same tier.  Balance within the same tier
-will be effected by the autonuma mechanism.
-
-> 3) Will the cost of access from tier_0 to tier_1 be uniform? (node_0
-> <-> node_2 vs node_0 <-> node_3). For jobs running on node_0, node_3
-> might be third tier and similarly for jobs running on node_1, node_2
-> might be third tier.
-
-Tier definition is an admin's choice, of where the admin think the
-hot memory should reside after looking at the memory performance.
-It falls out of how the admin construct the promotion/demotion relationship
-between the nodes and OS does not assume the tier relationship from
-memory performance directly. 
-
-> 
-> The reason I am asking these questions is that the statically
-> partitioning memory nodes into tiers will inherently add platform
-> specific assumptions in the user API.
-> 
-> Assumptions like:
-> 1) Access within tier is always cheaper than across tier.
-> 2) Access from tier_i to tier_i+1 has uniform cost.
-> 
-> The reason I am more inclined towards having numa centric control is
-> that we don't have to make these assumptions. Though the usability
-> will be more difficult. Greg (CCed) has some ideas on making it better
-> and we will share our proposal after polishing it a bit more.
-> 
-
-I am still trying to understand how a numa centric control actually
-work. Putting limits on every numa node for each cgroup
-seems to make the system configuration quite complicated.  Looking
-forward to your proposal so I can better understand that perspective.
-
-Tim 
