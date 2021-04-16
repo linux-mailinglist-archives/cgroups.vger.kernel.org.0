@@ -2,96 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A1D36299A
-	for <lists+cgroups@lfdr.de>; Fri, 16 Apr 2021 22:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B383629A4
+	for <lists+cgroups@lfdr.de>; Fri, 16 Apr 2021 22:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237802AbhDPUqK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Apr 2021 16:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
+        id S236547AbhDPUuR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Apr 2021 16:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbhDPUqJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Apr 2021 16:46:09 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B863C061574;
-        Fri, 16 Apr 2021 13:45:41 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id c123so25412402qke.1;
-        Fri, 16 Apr 2021 13:45:41 -0700 (PDT)
+        with ESMTP id S234312AbhDPUuQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Apr 2021 16:50:16 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC8FC061574
+        for <cgroups@vger.kernel.org>; Fri, 16 Apr 2021 13:49:50 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id d15so17277408qkc.9
+        for <cgroups@vger.kernel.org>; Fri, 16 Apr 2021 13:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=AWk2YlZvUGRhuI33/yUiX9atOwnUzYG38aU0FDL42xY=;
-        b=FgYVOoIdZ4sQvOUT1JHrYKUFU+jlAZrX78C0g+MopM30ar0Syn+iLvzEO4VIqddWS1
-         UysK6NZeNoZrgjYV+94LqtBg6zzL4j3YA3ymub+zYiZ7HeXW3eMcsbQNgLEtZbgEAGEd
-         NwCAVBm68ZCQW0pd7nhRSmXyzRUx0qFOpF8n1ks4cGty5hzQZtu4xGt9G3IVGDqP9VrG
-         VTBRVjqLw/87EP9NdCFf6ROhq+1yNH/Xh6Ix7K4uGy2tqn4qFLaaZo1GG5OF2CTo7hEd
-         SIXouwLYFVsVloQAJHhTNhAQXYBEWaadxBljbSdFOBdn/wblVABFvDN+h05QUmQdmsf9
-         Oj/A==
+        bh=DexHDhL9tcMwui87pn8whVm0iHnYGKNPOz+fZd4UKq0=;
+        b=ZHYlqzjKQo+Kf3LZ9lccJtG0B9f4KjhrWnl90sg0iUobj4YCXpTt9TmJp/ASfF2cnh
+         tQqTjcR7IfEnUIdM5WfF+XFkS9m0ti/SRTKzfNzdYsA5kCkFhToO2z1SiLIVJ0oxzUsW
+         LvMOXRMqQangaKL6AvDOCXU/UenN4wSmrg2Q1OtZvspeTfPgRU3EbHxjH0hlgfgEYUjn
+         wkACiS3NUWYlPY8pCI0PhjHSm+Dw6Lml22r+BIdgbqOdp8yENG124sHZ4aR6gwDHUMNC
+         oggMzSM0hDaXGI7lggG1ltlMxML6lbgkPI35zakvgksUHQvLvwHtSjD/CH5Va6yeMAos
+         Z0sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=AWk2YlZvUGRhuI33/yUiX9atOwnUzYG38aU0FDL42xY=;
-        b=THu5hV+PI2o7Y+BiWjZPatXRyslvtLoaYB24V5YY2mlixyqjL2PsKJMztaxi1oSnns
-         XbmuraSgHeMqlhJ/H/aNGodKjZSTiVpXfayQurD8Yy8oLTj6xeYQlj6gfDYgpY6ZFBuf
-         u5JZuTh7kp84tkQo0OJG7KnUNPaIziaL7Bh40Xp+/yrsgkTzFgqV7qyyjhJ7Q1HiHocC
-         oawXWpMVpexEy9Mfx1WdaUK3Ktfa6IPvBUk6yD/Ou7bncJZ8wt/v44L5GUh42BFEbwVF
-         dCKjRLnx55r0c7fztS8SM2baVmDUG+G6h9CSAXIrCTP7buOWAbGy82L2/AX5UTsj1S77
-         cZyw==
-X-Gm-Message-State: AOAM533NVAQHbQoQdjSd8MmRxypL/OFK+QjBwAe1/9ufrM3oAi6xXZOc
-        U5UhlZnYUX41M2hXV2EBzxc=
-X-Google-Smtp-Source: ABdhPJyX8/BQOqDnQxqWydHtq9WFubnpAjgvt6v3UvuDsQ4ggOX+pCilpGTIHgM2bhHS+JSGkl88gg==
-X-Received: by 2002:a05:620a:15c:: with SMTP id e28mr1105610qkn.311.1618605940283;
-        Fri, 16 Apr 2021 13:45:40 -0700 (PDT)
+        bh=DexHDhL9tcMwui87pn8whVm0iHnYGKNPOz+fZd4UKq0=;
+        b=BFGikAHOPJuMMmO1m/lEb62psDk/o3h8Hi3DL0jLxKfWiq3tae7sn3uO1Go8sDYmUz
+         +MoUxeuK0Cpjz7yOxwffJ+oJPj3+iBl/kOfsaRaeWrFgueYt72TqbWL/s4VsR/k+cztL
+         UnGrpHIncV69BEvmLTY/o9cQXB30g5z6BbWXVIxOyMlf0AgFMN3TSpv37l3L4Mlt7vCn
+         wGXgG9AxXZkeKkS+59ZRCHX31cZ17w/FCgqzhlQUy9gE7Ilke8cpRK4pAO18Uk+1IToh
+         YxftVjMqu/AtstLZ91uTtms5x2Y1R3GODn45qZDbASjMYc/DMibGDTceyGfp1r8C7gH8
+         oUyQ==
+X-Gm-Message-State: AOAM533OUTUKFaK6R6ziJtZtZw5Yqo3Ybf9yFebM//xpDXyacyLffCYY
+        8sky3PanofQagHQrTkXKmM4=
+X-Google-Smtp-Source: ABdhPJynxCDNfza0k4abotFiGXBI4fd0MDdFgfd9vFEVj4T54Vbt1TSPRVhERGtDPkV6h4rjXTqzqA==
+X-Received: by 2002:a05:620a:4155:: with SMTP id k21mr1173754qko.266.1618606189634;
+        Fri, 16 Apr 2021 13:49:49 -0700 (PDT)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id p21sm2843517qkp.95.2021.04.16.13.45.39
+        by smtp.gmail.com with ESMTPSA id c27sm4979212qko.71.2021.04.16.13.49.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 13:45:39 -0700 (PDT)
+        Fri, 16 Apr 2021 13:49:48 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 16 Apr 2021 16:45:38 -0400
+Date:   Fri, 16 Apr 2021 16:49:47 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [RFC] docs/admin-guide/cgroup-v2: Add hugetlb rsvd files
-Message-ID: <YHn3cifQv1FUOqfU@slm.duckdns.org>
-References: <20210416141146.542786-1-odin@uged.al>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RESEND PATCH] cgroup: use tsk->in_iowait instead of
+ delayacct_is_task_waiting_on_io()
+Message-ID: <YHn4a4Xdtm6212Wy@slm.duckdns.org>
+References: <7fee39d482a783254379f2419a00b9a9f32d7f2e.1618275776.git.brookxu@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416141146.542786-1-odin@uged.al>
+In-Reply-To: <7fee39d482a783254379f2419a00b9a9f32d7f2e.1618275776.git.brookxu@tencent.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-(cc'ing memcg maintainers)
-
-On Fri, Apr 16, 2021 at 04:11:46PM +0200, Odin Ugedal wrote:
-> Add missing docs about reservation accounting for hugetlb in cgroup v2.
+On Tue, Apr 13, 2021 at 09:39:05AM +0800, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
 > 
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
-> RFC: This is linking from cgroup-v1 docs, and that is probably not
-> optimal. The information about the difference between reservation
-> accounting and page fault accounting is pretty hard to make short.
+> If delayacct is disabled, then delayacct_is_task_waiting_on_io()
+> always returns false, which causes the statistical value to be
+> wrong. Perhaps tsk->in_iowait is better.
 > 
-> I think we have four ways to do it, but I don't know what is
-> most optimal:
-> 
-> - Link from cgroup-v2 to cgroup-v1 (this patch)
-> - Have a separate description for both v1 and v2
-> - Move description from cgroup-v1 to cgroup-v2, and link from v1 to
->   v2.
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 
-This would be my preference but I don't really mind the other way around
-that much.
-
-> - Move info from cgroup-v1 to admin-guide/mm/hugetlbpage or
->   vm/hugetlbfs_reserv, and link from cgroup to them.
-
-What do others think?
+Applied to cgroup/for-5.13.
 
 Thanks.
 
