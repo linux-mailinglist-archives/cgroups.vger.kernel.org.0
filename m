@@ -2,97 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7633619F3
-	for <lists+cgroups@lfdr.de>; Fri, 16 Apr 2021 08:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA21362093
+	for <lists+cgroups@lfdr.de>; Fri, 16 Apr 2021 15:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhDPGjK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Apr 2021 02:39:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38818 "EHLO mx2.suse.de"
+        id S235600AbhDPNKo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Apr 2021 09:10:44 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56177 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239192AbhDPGjH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:39:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618555121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tNhVt/xCfNdMMCLz228vt0HGCkm8dnEvK2GBIRn4xww=;
-        b=A3XQDSlnvdAvpRgcg1dXE3OCdh91lH7XApSAer4PUiCVhhZKjTFGKsC6QBSDpuen/JTu3B
-        JRmk0OKTe0m8kUXM6S1U2eyflLQTW3PLJCQbY+/2pabax/vRN3x70ZVWZnHQogTFu/S+EQ
-        EPkv2uvqoPeVE8NSd6Y+4AJBMjiwg/A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EE4E0AE86;
-        Fri, 16 Apr 2021 06:38:40 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 08:38:40 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Yang Shi <shy828301@gmail.com>,
+        id S235528AbhDPNKn (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:10:43 -0400
+IronPort-SDR: 9z2aWpXI45KDrmBCNLOkinMQK3T8n2Nk6LH9oo+tMVXhLjOKIhUgd5PohIYB1RbdFfvLwJNj9H
+ Nq1l2hO5QP5Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258994681"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="258994681"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:10:18 -0700
+IronPort-SDR: bNdvfTep5YEmj6Da3ykd0jME7lPZtO68SgGihYTvPURY4blc1mzqZfn57deXfbO2oHSXU3vBh9
+ faWSbcPiLvBQ==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="422006223"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:10:18 -0700
+Date:   Fri, 16 Apr 2021 06:12:58 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Auger Eric <eric.auger@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-Message-ID: <YHkw8Ou2VAgHYTjl@dhcp22.suse.cz>
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
- <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com>
- <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
- <YHABLBYU0UgzwOZi@dhcp22.suse.cz>
- <4a864946-a316-3d9c-8780-64c6281276d1@linux.intel.com>
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210416061258.325e762e@jacob-builder>
+In-Reply-To: <20210415230732.GG1370958@nvidia.com>
+References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210331124038.GE1463678@nvidia.com>
+        <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <YGW27KFt9eQB9X2z@myrica>
+        <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401134236.GF1463678@nvidia.com>
+        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401160337.GJ1463678@nvidia.com>
+        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+        <20210415230732.GG1370958@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a864946-a316-3d9c-8780-64c6281276d1@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 15-04-21 15:31:46, Tim Chen wrote:
-> 
-> 
-> On 4/9/21 12:24 AM, Michal Hocko wrote:
-> > On Thu 08-04-21 13:29:08, Shakeel Butt wrote:
-> >> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
-> > [...]
-> >>> The low priority jobs should be able to be restricted by cpuset, for
-> >>> example, just keep them on second tier memory nodes. Then all the
-> >>> above problems are gone.
-> > 
-> > Yes, if the aim is to isolate some users from certain numa node then
-> > cpuset is a good fit but as Shakeel says this is very likely not what
-> > this work is aiming for.
-> > 
-> >> Yes that's an extreme way to overcome the issue but we can do less
-> >> extreme by just (hard) limiting the top tier usage of low priority
-> >> jobs.
-> > 
-> > Per numa node high/hard limit would help with a more fine grained control.
-> > The configuration would be tricky though. All low priority memcgs would
-> > have to be carefully configured to leave enough for your important
-> > processes. That includes also memory which is not accounted to any
-> > memcg. 
-> > The behavior of those limits would be quite tricky for OOM situations
-> > as well due to a lack of NUMA aware oom killer.
-> > 
-> 
-> Another downside of putting limits on individual NUMA
-> node is it would limit flexibility.
+Hi Jason,
 
-Let me just clarify one thing. I haven't been proposing per NUMA limits.
-As I've said above it would be quite tricky to use and the behavior
-would be tricky as well. All I am saying is that we do not want to have
-an interface that is tightly bound to any specific HW setup (fast RAM as
-a top tier and PMEM as a fallback) that you have proposed here. We want
-to have a generic NUMA based abstraction. How that abstraction is going
-to look like is an open question and it really depends on usecase that
-we expect to see.
+On Thu, 15 Apr 2021 20:07:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
--- 
-Michal Hocko
-SUSE Labs
+> On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:
+> > Hi Jason,
+> > 
+> > On 4/1/21 6:03 PM, Jason Gunthorpe wrote:  
+> > > On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
+> > >   
+> > >> DMA page faults are delivered to root-complex via page request
+> > >> message and it is per-device according to PCIe spec. Page request
+> > >> handling flow is:
+> > >>
+> > >> 1) iommu driver receives a page request from device
+> > >> 2) iommu driver parses the page request message. Get the RID,PASID,
+> > >> faulted page and requested permissions etc.
+> > >> 3) iommu driver triggers fault handler registered by device driver
+> > >> with iommu_report_device_fault()  
+> > > 
+> > > This seems confused.
+> > > 
+> > > The PASID should define how to handle the page fault, not the driver.
+> > >  
+> > 
+> > In my series I don't use PASID at all. I am just enabling nested stage
+> > and the guest uses a single context. I don't allocate any user PASID at
+> > any point.
+> > 
+> > When there is a fault at physical level (a stage 1 fault that concerns
+> > the guest), this latter needs to be reported and injected into the
+> > guest. The vfio pci driver registers a fault handler to the iommu layer
+> > and in that fault handler it fills a circ bugger and triggers an eventfd
+> > that is listened to by the VFIO-PCI QEMU device. this latter retrives
+> > the faault from the mmapped circ buffer, it knowns which vIOMMU it is
+> > attached to, and passes the fault to the vIOMMU.
+> > Then the vIOMMU triggers and IRQ in the guest.
+> > 
+> > We are reusing the existing concepts from VFIO, region, IRQ to do that.
+> > 
+> > For that use case, would you also use /dev/ioasid?  
+> 
+> /dev/ioasid could do all the things you described vfio-pci as doing,
+> it can even do them the same way you just described.
+> 
+> Stated another way, do you plan to duplicate all of this code someday
+> for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
+> platform devices, right?
+> 
+> I feel what you guys are struggling with is some choice in the iommu
+> kernel APIs that cause the events to be delivered to the pci_device
+> owner, not the PASID owner.
+> 
+> That feels solvable.
+> 
+Perhaps more of a philosophical question for you and Alex. There is no
+doubt that the direction you guided for /dev/ioasid is a much cleaner one,
+especially after VDPA emerged as another IOMMU backed framework.
+
+The question is what do we do with the nested translation features that have
+been targeting the existing VFIO-IOMMU for the last three years? That
+predates VDPA. Shall we put a stop marker *after* nested support and say no
+more extensions for VFIO-IOMMU, new features must be built on this new
+interface?
+
+If we were to close a checkout line for some unforeseen reasons, should we
+honor the customers already in line for a long time?
+
+This is not a tactic or excuse for not working on the new /dev/ioasid
+interface. In fact, I believe we can benefit from the lessons learned while
+completing the existing. This will give confidence to the new
+interface. Thoughts?
+
+> Jason
+
+
+Thanks,
+
+Jacob
