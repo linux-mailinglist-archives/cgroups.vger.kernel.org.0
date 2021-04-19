@@ -2,59 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433FA364696
-	for <lists+cgroups@lfdr.de>; Mon, 19 Apr 2021 17:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1B73646D5
+	for <lists+cgroups@lfdr.de>; Mon, 19 Apr 2021 17:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239666AbhDSPBG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Apr 2021 11:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        id S240740AbhDSPO5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Apr 2021 11:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239653AbhDSPBG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Apr 2021 11:01:06 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FDC061761
-        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 08:00:35 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u25so1414395ljg.7
-        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 08:00:35 -0700 (PDT)
+        with ESMTP id S239825AbhDSPO4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Apr 2021 11:14:56 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8419FC06174A
+        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 08:14:25 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id dp18so12410973qvb.5
+        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 08:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wJcxPKcW0Veo1gCFL+CuNN37VW8R09vglUBE4v/xI9U=;
-        b=AT/Bs0Z5qEWwjLyYLiTX6W0h7JJDDXlbbH1gNiMaQcF+icW/iFjk2BO/NlULM5/k3R
-         FIQOadrNxR/LQZ/E6LpXhxDsllaWOUj3r7nH7N38qaGsdwqtn2qT6PVPZ+82bMRXeDVE
-         4qkn/DA4HLAd+C+uF7pMGzGwH+1eAqsf2gXlNaEA05Eing9VFkTd9LdNsVdfhWgvaEwS
-         USrRJT6rrfxCyqkI9J5XlVd41fifaNVinnCF7lVTQD93EsE4R6NqIpt16bxDZBqS+cB4
-         cbzzwsMtySElnFgVXYuTAZh/XOp9KBm+yIyWffMzHqtYTKkGMryd1+0PQvmmZabjeCHC
-         AGbg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=55uomXciVSZ6J6HOTB32O4AbktADuhgCDGYMDuRmQxE=;
+        b=RQhB8OjlxbRDagS7zeb7sF3QHZwiZdGpXuuxJSsZOxySpSixsl4FqbgevMPiEdfs5V
+         SRiDYvj2aok3lt+Kb0CaDE3nO0nzdifSCwV5jMfBFJKlVGGw/SPYIp+lJPWdQxVl560T
+         KwQRD7NBYrflCIbsLoFGLGlPICDLLjfLaQ0HYUmIZjCRldM6OI4HbuVdhXzoKRxCpaUo
+         u5u7RbH0I2icI19RuUvEqPq/Xhey6DWAxZzyBlCCemoLeo2zwVbfv8HkjRR7iyIZ652x
+         +zYC+YI6muSdaB8L13xdzgdASaPEkae7oXWHP5rleWZLqiD8bRo2JZNvQKm2o4u1CmOa
+         FsgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wJcxPKcW0Veo1gCFL+CuNN37VW8R09vglUBE4v/xI9U=;
-        b=ih7PBIX3pCSicO8MYzcCN2d5+wVqVZ0fNj+fIy8+EwixAzgq6HfCPLgGtCPBEGl7un
-         GmjvJNjYtBY+fQtZA1gdLovPkchXqTtyOBmPGdPD3TPViKnabflEE7GjzDTzmafNIWah
-         AE2ObjotLveoTy0fQYVi+RWNzpQRXT2ZMFkR/RoFcMSOwcToMugXuZTyTX6tzmTh1aK1
-         c7HFnuiwrV55F2i0O/L2uXGZkerGw6BHw5fBQP1DXuPFRlb3INHURZfqPeoJDE9yFyyH
-         WqR574mpsuTnoj5ELA/SweA0AjxVBAa3+aHf8wAwqKoPzlByP3ibljzmgzPIHfrobwIY
-         FIoA==
-X-Gm-Message-State: AOAM531e2HvfMk8uDD32EmlIlb8hHPkpKc/WVYCnbQm7O9GaGQOsAn18
-        ZjsUJ9v/tmFS9g6r3KxRlbcgBZycQmJx5DHSVwNxjw==
-X-Google-Smtp-Source: ABdhPJywEFDuUbOfS0rzoNWPrDTgirejFKtS/mXoxad8jVvyEBJGI384Qq3EN3fcHWo71sojwD5zaZv8adgeTx7Q6Yc=
-X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr11824695ljj.34.1618844432793;
- Mon, 19 Apr 2021 08:00:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419000032.5432-1-longman@redhat.com> <20210419000032.5432-6-longman@redhat.com>
- <CAMZfGtWX-Gik3i9_wmipuQZf0c-O-Yo_ejJYoN6-sf25vMLfog@mail.gmail.com>
-In-Reply-To: <CAMZfGtWX-Gik3i9_wmipuQZf0c-O-Yo_ejJYoN6-sf25vMLfog@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 19 Apr 2021 08:00:21 -0700
-Message-ID: <CALvZod70htGEyUm0vfOMpufrW4b2c18U3wR8TxsErKpkn=+CGw@mail.gmail.com>
-Subject: Re: [External] [PATCH v4 5/5] mm/memcg: Improve refill_obj_stock() performance
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=55uomXciVSZ6J6HOTB32O4AbktADuhgCDGYMDuRmQxE=;
+        b=aafWjVeBBYL9jbT6R9wE+ml+4Sqi1sfk8hUrHn1p5AQfGKnVRFk95oIk/eh7FXbcDv
+         CN2XDrEhjP5wbTZ8hOx3ZGu3w8EzWoL7HpoflxVcYGMwsl3hKakcni6B1w1BYQbIK0yW
+         8YMydRGdYT58LIVJ+tWAJjqYY8aurBqS164oQSiEEuqHD9EUgE1C5CuSbCQGlkXQwJ0U
+         LNdWVQjG3VFzfXdL4aS3NqRH02jI7etYHv81JyvV8k5OAjMK0UHKIllkOuKnPL5345AN
+         q2y/kSY0SnyxAxAEDmKw0qyYE8pmEJFecFTahEZnjApNWJ9OoV3YllNRXCrRWfy/YLui
+         4zKw==
+X-Gm-Message-State: AOAM530BgLcDZ3hQgXwuXn5zY7dR3rHGMIhzE/BEqedwsS6676aLPDtC
+        Zuw40eaKQ+7xDRbJvC97e1KEYA==
+X-Google-Smtp-Source: ABdhPJxpsSV7l37HtQTRT1SxTkkytlcWsNYVRzMS2JBB0kroc1KQt8l+9N1P/5oyTmVh5BwQvaqBrA==
+X-Received: by 2002:a0c:e24e:: with SMTP id x14mr22422271qvl.33.1618845264783;
+        Mon, 19 Apr 2021 08:14:24 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id o25sm5681249qtl.37.2021.04.19.08.14.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 08:14:23 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 11:14:23 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
@@ -62,9 +58,9 @@ Cc:     Waiman Long <longman@redhat.com>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
         Alex Shi <alex.shi@linux.alibaba.com>,
         Chris Down <chris@chrisdown.name>,
         Yafang Shao <laoar.shao@gmail.com>,
@@ -72,87 +68,53 @@ Cc:     Waiman Long <longman@redhat.com>,
         Masayoshi Mizuma <msys.mizuma@gmail.com>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v4 1/5] mm/memcg: Move mod_objcg_state() to memcontrol.c
+Message-ID: <YH2eT+JCII48hX80@cmpxchg.org>
+References: <20210419000032.5432-1-longman@redhat.com>
+ <20210419000032.5432-2-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419000032.5432-2-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 11:07 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Mon, Apr 19, 2021 at 8:01 AM Waiman Long <longman@redhat.com> wrote:
-> >
-> > There are two issues with the current refill_obj_stock() code. First of
-> > all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
-> > atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
-> > and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
-> > be used again which leads to another call to drain_obj_stock() and
-> > obj_cgroup_get() as well as atomically retrieve the available byte from
-> > obj_cgroup. That is costly. Instead, we should just uncharge the excess
-> > pages, reduce the stock bytes and be done with it. The drain_obj_stock()
-> > function should only be called when obj_cgroup changes.
-> >
-> > Secondly, when charging an object of size not less than a page in
-> > obj_cgroup_charge(), it is possible that the remaining bytes to be
-> > refilled to the stock will overflow a page and cause refill_obj_stock()
-> > to uncharge 1 page. To avoid the additional uncharge in this case,
-> > a new overfill flag is added to refill_obj_stock() which will be set
-> > when called from obj_cgroup_charge().
-> >
-> > Signed-off-by: Waiman Long <longman@redhat.com>
-> > ---
-> >  mm/memcontrol.c | 23 +++++++++++++++++------
-> >  1 file changed, 17 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index a6dd18f6d8a8..d13961352eef 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3357,23 +3357,34 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-> >         return false;
-> >  }
-> >
-> > -static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> > +static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-> > +                            bool overfill)
-> >  {
-> >         unsigned long flags;
-> >         struct obj_stock *stock = get_obj_stock(&flags);
-> > +       unsigned int nr_pages = 0;
-> >
-> >         if (stock->cached_objcg != objcg) { /* reset if necessary */
-> > -               drain_obj_stock(stock);
-> > +               if (stock->cached_objcg)
-> > +                       drain_obj_stock(stock);
-> >                 obj_cgroup_get(objcg);
-> >                 stock->cached_objcg = objcg;
-> >                 stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
-> >         }
-> >         stock->nr_bytes += nr_bytes;
-> >
-> > -       if (stock->nr_bytes > PAGE_SIZE)
-> > -               drain_obj_stock(stock);
-> > +       if (!overfill && (stock->nr_bytes > PAGE_SIZE)) {
-> > +               nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-> > +               stock->nr_bytes &= (PAGE_SIZE - 1);
-> > +       }
-> >
-> >         put_obj_stock(flags);
-> > +
-> > +       if (nr_pages) {
-> > +               rcu_read_lock();
-> > +               __memcg_kmem_uncharge(obj_cgroup_memcg(objcg), nr_pages);
-> > +               rcu_read_unlock();
-> > +       }
->
-> It is not safe to call __memcg_kmem_uncharge() under rcu lock
-> and without holding a reference to memcg. More details can refer
-> to the following link.
->
-> https://lore.kernel.org/linux-mm/20210319163821.20704-2-songmuchun@bytedance.com/
->
-> In the above patchset, we introduce obj_cgroup_uncharge_pages to
-> uncharge some pages from object cgroup. You can use this safe
-> API.
->
+On Sun, Apr 18, 2021 at 08:00:28PM -0400, Waiman Long wrote:
+> The mod_objcg_state() function is moved from mm/slab.h to mm/memcontrol.c
+> so that further optimization can be done to it in later patches without
+> exposing unnecessary details to other mm components.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  mm/memcontrol.c | 13 +++++++++++++
+>  mm/slab.h       | 16 ++--------------
+>  2 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e064ac0d850a..dc9032f28f2e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3150,6 +3150,19 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
+>  	css_put(&memcg->css);
+>  }
+>  
+> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+> +		     enum node_stat_item idx, int nr)
+> +{
+> +	struct mem_cgroup *memcg;
+> +	struct lruvec *lruvec = NULL;
+> +
+> +	rcu_read_lock();
+> +	memcg = obj_cgroup_memcg(objcg);
+> +	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> +	mod_memcg_lruvec_state(lruvec, idx, nr);
+> +	rcu_read_unlock();
+> +}
 
-I would recommend just rebase the patch series over the latest mm tree.
+It would be more naturally placed next to the others, e.g. below
+__mod_lruvec_kmem_state().
+
+But no deal breaker if there isn't another revision.
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
