@@ -2,179 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F28363B43
-	for <lists+cgroups@lfdr.de>; Mon, 19 Apr 2021 08:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDF0364674
+	for <lists+cgroups@lfdr.de>; Mon, 19 Apr 2021 16:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhDSGHm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Apr 2021 02:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
+        id S232974AbhDSOwF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Apr 2021 10:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbhDSGHl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Apr 2021 02:07:41 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69CBC061760
-        for <cgroups@vger.kernel.org>; Sun, 18 Apr 2021 23:07:12 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id n10so5963505plc.0
-        for <cgroups@vger.kernel.org>; Sun, 18 Apr 2021 23:07:12 -0700 (PDT)
+        with ESMTP id S232184AbhDSOwF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Apr 2021 10:52:05 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7402CC061761
+        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 07:51:35 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id m16so25605909qtx.9
+        for <cgroups@vger.kernel.org>; Mon, 19 Apr 2021 07:51:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I/pTwkQPxJMQ6l4p78nod3nlL4rUQvx1xoHYKzDAsFA=;
-        b=f/9cvpFcKS+WzsdiHb4rmMOFg+au1XzMQsLcR+o+IU6et+sCJSDFqPkf4UWHQTocgK
-         EwsvtFzxqSH3X4Rw50ZP+rgTvjC66EZQLWLPkHVdGH6twi1uaJs9Sa9RkH8ivcoPAdfO
-         rGrgu0ShYa+/cLy3Yx0rm8RBR1BJ/8yTy4dt80OjVRULhRd+aU4lZFl99cPOoSj8iMbT
-         GlNOqPSjOdoeEM4l20Eu3948/No0AM01fpPvlxHIQhsqezo4rF4IV6vHoywnqQVlgo5b
-         OT8/q0ChJvd6Oi4rs0BuFiUdEnPrREzhu1Q+gp6bfmhc4osxeOkCDLM9lhHQHF8+OkAw
-         b4mw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YrZItNxcyVF3pVVkQf+v9BtikCFL0HmoCNCAuzegmSI=;
+        b=OeaV6gvLZnnSgBj2hQod5raZF9ZCVqc92fxLKd1/xMoNPJ8BuhLxwWUWh8+peK+69U
+         kI1zU+Mkv29pcKw8ycTns/9U9WSYJ5S0lLXBtik78Ge8J89sTvfInSRg7zaz2ionBo4n
+         4/ZbXtklCKgJQsGKLDrpcG0VEV2Pn/ruArOnhvry0sjLSYDw6YJ4daItO8OQKpLcHcVF
+         Gkx5U9d3BhiKjRxwCBT+XpjpBRWfajJm/aJMQ0cpLWChEy9HUks3monRWvAG7z8qog1B
+         K+tc+tUPSqi9pwkYjzaOVkx0g0o0HyoxeFbTLiTANdgI7pnRZ2wdsg0zn1wIUNs5I7Rm
+         PPeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I/pTwkQPxJMQ6l4p78nod3nlL4rUQvx1xoHYKzDAsFA=;
-        b=LLRIUuJ4P4QLnyrxmwB/wE0fhLT5x8YCENuxZIBuByBKQMe5QL2cL9OhO2lrvf0LR5
-         CdoNSbnyE+iRizdJp/QCeJgEKBXBffY43vT9UCztP1qs0QtGAV+xARv7dnyk5e1cRgJM
-         IflRQpAJgBCZ+qMCmCcDL+cy0CmE582+h9fZunafKLAhf6aPx8Sw2vZJYDWDzeoaiG2T
-         UVtunrJPw8Qq5vznJFv3N1NfkpvEQxrb9dZ66KUqRAgStOtMjV/IduYIOdJrnqKwv/ds
-         VmzuQoxS+MGvUjSOUY/UGypIUXcoTKnKrOaLmZ3zuJoGFKX9wbAnrzwsk5Dpne7NH3CD
-         Q5Ig==
-X-Gm-Message-State: AOAM533vRKyRCZJJzF9yEPIv7hDV6pqhpwyvCPFsTD4p1tWQ8/ApqWBK
-        zNP2sSAGjbKkJ9poXJWzEjnlH0lVShf8YQ00vpkFbQ==
-X-Google-Smtp-Source: ABdhPJxqVdcYpe7OSZvgQprMdb2BqvZpCVSjDbrFb0yJYSh6VapcywSPE+nBf4qt6g7HgeZawAZwNiV/mSt9s9ByV/I=
-X-Received: by 2002:a17:902:ea93:b029:eb:65ee:ddd3 with SMTP id
- x19-20020a170902ea93b02900eb65eeddd3mr21320918plb.24.1618812427191; Sun, 18
- Apr 2021 23:07:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419000032.5432-1-longman@redhat.com> <20210419000032.5432-6-longman@redhat.com>
-In-Reply-To: <20210419000032.5432-6-longman@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 19 Apr 2021 14:06:30 +0800
-Message-ID: <CAMZfGtWX-Gik3i9_wmipuQZf0c-O-Yo_ejJYoN6-sf25vMLfog@mail.gmail.com>
-Subject: Re: [External] [PATCH v4 5/5] mm/memcg: Improve refill_obj_stock() performance
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YrZItNxcyVF3pVVkQf+v9BtikCFL0HmoCNCAuzegmSI=;
+        b=n3BDJM5/dnxFAn96cMYv99YAtQjHLWqfD/aWhRc+4GZ0+u4QQ7qNpYb6QauMePE6qV
+         BLncoLNmJKVKlM4Hkgs7n/SIqz5tFLpkEwbV9M5OMbNG46UzPBKljHKClNigaXewxTYK
+         3tWnfVEbOYP8501iZBgsGufMVS4JUDbAD2AvPyA0juHuz9on0TGoHtaPxuqSUUivLMiG
+         fhnoevUCQhS4Xv47WqG27gRJybPvAyU+hz/qXr6sIppxRlpUOygzffbdSAmjlVyzFTM+
+         tLqohsrNEOZWRbqYbX3Kq39j76tdqVgwxdL+gUjsLpx2k1vKuudzIaaEi1z00b7fc0qC
+         BwZA==
+X-Gm-Message-State: AOAM531yK6KSb+B+h+Bl237reEpyvMn4ZPwkrNuaSN1a+d3H9ciiFh/9
+        BRxrjun99FUIc6csAuJ9pBdv9t+MxMmfcw==
+X-Google-Smtp-Source: ABdhPJwgTtqjUODSsoN7NX5ycISGuptiWvpYG+cMmXmb3M9KNeN2Q10N0BGx/COKRyqsOZNYDEBAGA==
+X-Received: by 2002:a05:622a:8c:: with SMTP id o12mr8561257qtw.367.1618843894148;
+        Mon, 19 Apr 2021 07:51:34 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id y26sm6570901qtf.66.2021.04.19.07.51.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 07:51:33 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 10:51:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Odin Ugedal <odin@uged.al>, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [RFC] docs/admin-guide/cgroup-v2: Add hugetlb rsvd files
+Message-ID: <YH2Y9FucBW2GLLLQ@cmpxchg.org>
+References: <20210416141146.542786-1-odin@uged.al>
+ <YHn3cifQv1FUOqfU@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHn3cifQv1FUOqfU@slm.duckdns.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 8:01 AM Waiman Long <longman@redhat.com> wrote:
->
-> There are two issues with the current refill_obj_stock() code. First of
-> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
-> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
-> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
-> be used again which leads to another call to drain_obj_stock() and
-> obj_cgroup_get() as well as atomically retrieve the available byte from
-> obj_cgroup. That is costly. Instead, we should just uncharge the excess
-> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
-> function should only be called when obj_cgroup changes.
->
-> Secondly, when charging an object of size not less than a page in
-> obj_cgroup_charge(), it is possible that the remaining bytes to be
-> refilled to the stock will overflow a page and cause refill_obj_stock()
-> to uncharge 1 page. To avoid the additional uncharge in this case,
-> a new overfill flag is added to refill_obj_stock() which will be set
-> when called from obj_cgroup_charge().
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/memcontrol.c | 23 +++++++++++++++++------
->  1 file changed, 17 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a6dd18f6d8a8..d13961352eef 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3357,23 +3357,34 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
->         return false;
->  }
->
-> -static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> +static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-> +                            bool overfill)
->  {
->         unsigned long flags;
->         struct obj_stock *stock = get_obj_stock(&flags);
-> +       unsigned int nr_pages = 0;
->
->         if (stock->cached_objcg != objcg) { /* reset if necessary */
-> -               drain_obj_stock(stock);
-> +               if (stock->cached_objcg)
-> +                       drain_obj_stock(stock);
->                 obj_cgroup_get(objcg);
->                 stock->cached_objcg = objcg;
->                 stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
->         }
->         stock->nr_bytes += nr_bytes;
->
-> -       if (stock->nr_bytes > PAGE_SIZE)
-> -               drain_obj_stock(stock);
-> +       if (!overfill && (stock->nr_bytes > PAGE_SIZE)) {
-> +               nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-> +               stock->nr_bytes &= (PAGE_SIZE - 1);
-> +       }
->
->         put_obj_stock(flags);
-> +
-> +       if (nr_pages) {
-> +               rcu_read_lock();
-> +               __memcg_kmem_uncharge(obj_cgroup_memcg(objcg), nr_pages);
-> +               rcu_read_unlock();
-> +       }
+On Fri, Apr 16, 2021 at 04:45:38PM -0400, Tejun Heo wrote:
+> (cc'ing memcg maintainers)
+> 
+> On Fri, Apr 16, 2021 at 04:11:46PM +0200, Odin Ugedal wrote:
+> > Add missing docs about reservation accounting for hugetlb in cgroup v2.
+> > 
+> > Signed-off-by: Odin Ugedal <odin@uged.al>
+> > ---
+> > RFC: This is linking from cgroup-v1 docs, and that is probably not
+> > optimal. The information about the difference between reservation
+> > accounting and page fault accounting is pretty hard to make short.
+> > 
+> > I think we have four ways to do it, but I don't know what is
+> > most optimal:
+> > 
+> > - Link from cgroup-v2 to cgroup-v1 (this patch)
+> > - Have a separate description for both v1 and v2
+> > - Move description from cgroup-v1 to cgroup-v2, and link from v1 to
+> >   v2.
+> 
+> This would be my preference but I don't really mind the other way around
+> that much.
 
-It is not safe to call __memcg_kmem_uncharge() under rcu lock
-and without holding a reference to memcg. More details can refer
-to the following link.
+v1/hugetlb.rst is quite verbose, and some things are implementation
+details. I'm not sure we want all that in the cgroup2 documentation.
 
-https://lore.kernel.org/linux-mm/20210319163821.20704-2-songmuchun@bytedance.com/
+My preference would be to first try to write a version of the doc in
+cgroup2's briefer style, and then, depending on how that works out,
+see whether we can delete (replace with link) the cgroup1 text, or
+keep it for archiving purposes.
 
-In the above patchset, we introduce obj_cgroup_uncharge_pages to
-uncharge some pages from object cgroup. You can use this safe
-API.
+v1/hugetlb doc items that seem unnecesary to keep in v2:
 
-Thanks.
+- how to mount the cgroupfs, create cgroups, and move tasks into it
 
->  }
->
->  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-> @@ -3410,7 +3421,7 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
->
->         ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
->         if (!ret && nr_bytes)
-> -               refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
-> +               refill_obj_stock(objcg, PAGE_SIZE - nr_bytes, true);
->
->         css_put(&memcg->css);
->         return ret;
-> @@ -3418,7 +3429,7 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
->
->  void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->  {
-> -       refill_obj_stock(objcg, size);
-> +       refill_obj_stock(objcg, size, false);
->  }
->
->  #endif /* CONFIG_MEMCG_KMEM */
-> --
-> 2.18.1
->
+- the page fault accounting description could be compressed a
+  bit. maybe drop the part about it being the admin's job to avoid
+  sigbus by being careful with the allocations. that's obvious imo
+  when you simply describe the sigbus semantics.
+
+- likewise, reservation accounting can be briefer too. there is quite
+  a bit of opinion in there that could probably be cut short. maybe a
+  one-liner that says "mmap-time accounting gives userspace easier
+  error handling - if in doubt, use reservation accounting" or so.
+
+- caveats with shared memory: not sure this is needed at all, but if
+  so, it can be a one liner saying "hugetlb uses the same first-hit
+  semantics as the memory controller (see Memory Ownership)"
+
+- Caveats with HugeTLB cgroup offline: this is an implementation
+  detail that i don't think is actionable information for users
