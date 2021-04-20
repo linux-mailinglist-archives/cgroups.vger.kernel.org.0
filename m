@@ -2,275 +2,244 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7688736600F
-	for <lists+cgroups@lfdr.de>; Tue, 20 Apr 2021 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041E836601E
+	for <lists+cgroups@lfdr.de>; Tue, 20 Apr 2021 21:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhDTTKt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Apr 2021 15:10:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233509AbhDTTKr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Apr 2021 15:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618945815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADqf//8Mzh80P94odXSMaff1QLcxK4pUkpeVBlMf/kw=;
-        b=KY66X5Zc0bCRcnDqx1c9gZxKS0AHgSifSwoEcW4ZrSuyzQwOBqOXO5f07+PTOdXquHurxR
-        LkxjZGn9Exvr3vGWLcrMhZq1isRdpd2We0TYAzSmfJ+YkA292VyB+EyncTJR4PTapLkS2v
-        sc0wcxTbWY2SPKmSB9Oyth6RUK04UD8=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-fKSJk6OqOWSnLXzEbdYE9w-1; Tue, 20 Apr 2021 15:09:05 -0400
-X-MC-Unique: fKSJk6OqOWSnLXzEbdYE9w-1
-Received: by mail-qk1-f200.google.com with SMTP id q5-20020a05620a0c85b02902e004d74d8cso7911754qki.16
-        for <cgroups@vger.kernel.org>; Tue, 20 Apr 2021 12:09:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ADqf//8Mzh80P94odXSMaff1QLcxK4pUkpeVBlMf/kw=;
-        b=rdHIEEzqVItQ/CY1Y8UXRbTm+jTsyfViolr+pm5ruYJVTUv/IZNM4Ulff+j9d3fpPc
-         U9vHCfjtHYqf448huBdH1NquI6lluLexUoT7qp01FRiVl8TUdIL4EuqosHfg/MaFf7oY
-         +oZWPYFDbX4cMlJPERoS7LTKqxvb706XdJoFets4GYvar5rvxEb8WJE5CHYRPmhZ+Rb3
-         arYreEwpCde35RNdeBSHGOgeAcveKL/oDUQytae7NmwiuamTE6zWMJhxcsh+iEabC2Uk
-         h2RjH7ElYQPEUcJsLN6vo5xrNBma4rQcaopWltbX4IWyy7rlMM8e6FQl8kFp1xMY22oI
-         FpNQ==
-X-Gm-Message-State: AOAM532VIvu5x1ZIgCB6gWmfZV60SNR1tbuU6sj4mfdqkkNbG/vZ6I9y
-        5fUcyqDrOloykeO/j5B1ZBFNfFweoVh/Mye4QQskFJrp9NRjeMp9KyUlPVGEakxpn0tvsQByVvc
-        o9ciXGIvEPwpWaVkugA==
-X-Received: by 2002:a37:9586:: with SMTP id x128mr18596291qkd.61.1618945744530;
-        Tue, 20 Apr 2021 12:09:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCgyJTAXtU75ZtsvsaHDCgL3huwabplSfyYMhmJMHY2x0E7jTHUedXNA4KApy+WW0YuNx3xQ==
-X-Received: by 2002:a37:9586:: with SMTP id x128mr18596260qkd.61.1618945744221;
-        Tue, 20 Apr 2021 12:09:04 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id r5sm11751930qtp.75.2021.04.20.12.09.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 12:09:03 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 4/5] mm/memcg: Save both reclaimable & unreclaimable
- bytes in object stock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S233548AbhDTTSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Apr 2021 15:18:46 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60202 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233518AbhDTTSp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Apr 2021 15:18:45 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KJ7kE0012685;
+        Tue, 20 Apr 2021 12:18:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=+Nr8aTrUc4EEeXeaW3ifa+be2lW0Pv6b5f+8AnmPVMg=;
+ b=nURjeuHbzPr9pUMcb/MbbeQvkpyHBpADsvmKXvyUHy3d+2yhqsc+GF+dBCMvtBIgqQGS
+ jKduCeahu2kOl7CbNzBNIA9v9rVk7WcQqgxedfFiD7FOjtK0gaaPW/HMh2A4GcPn78kY
+ U7tprq+qwIUafrqDdAK+UMiQUtXu25ThLho= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 381fdfxg6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 20 Apr 2021 12:18:06 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 20 Apr 2021 12:18:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GLLV7o4VlZAM0umpDbz4xiKMT5KqtbluKnMwNRTmKvNrxJLQdgOboseDz67b3tCu4iMhumFksGVrYNzCfKPQWfMhXMysSIZqGP7oFc4V1Q48KexyDj5cNc8+0U8cuq4TJG9w5VHqJKKRmAxD+NS14spIF5p0fvd2hmoVG0j8B2WW6rLmVT2g3DzLpDHy5xPicTFTJ/1NTH4btqFiUjhD9LWYcBWk+OlGALeaxsihc/WahjAOKyLfn6qluzBJ1kn9Cu/Fs58I79gKHPAE/CpbPpeo0Q2qT1+P9i/J+V1tm6Rh3WPdFiF9X0kcl1xVYLVEQJ30NVMB6+N9hPPjyGvgOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+Nr8aTrUc4EEeXeaW3ifa+be2lW0Pv6b5f+8AnmPVMg=;
+ b=PW7KoQnXe3JFmdvksUryhfNdLBt41tHdv6SSKFr0Ycb/MXLP77QMZjihiSTgGzL8JPXiC/zyZU+hpcELhNK9yuMgXud1WpzS8AtaXdm8ovuxddEUQmuJmjRJT7Bdl0Inj0s+vl5aW4l+e4b3AqRR2WZDDN9xYpDy8wIUJbpnkuuNEKZhnj7Isd/mS2Jzv3gVhHxe4lbI11sCjkSrRwPeZAxqqh3uHJQhNYY6Xvek23Tg6O2hc7X8decTIQ8E7tnZ+Ayt6ddd8GF/+A0b24dgcERyENQcjYzcgo0+AHAm2aDJn52wiWkNLiURX+xyjQftuhVNTBTf0xXgEX2FpcRTAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY3PR15MB4866.namprd15.prod.outlook.com (2603:10b6:a03:3c1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
+ 2021 19:18:04 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 19:18:04 +0000
+Date:   Tue, 20 Apr 2021 12:17:58 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
         David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210419000032.5432-1-longman@redhat.com>
- <20210419000032.5432-5-longman@redhat.com> <YH216/wnyEOcxATl@cmpxchg.org>
-Message-ID: <73992e36-376f-b7d3-dde5-d287c7696e72@redhat.com>
-Date:   Tue, 20 Apr 2021 15:09:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+Message-ID: <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:3ae2]
+X-ClientProxiedBy: MWHPR01CA0048.prod.exchangelabs.com (2603:10b6:300:101::34)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <YH216/wnyEOcxATl@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:3ae2) by MWHPR01CA0048.prod.exchangelabs.com (2603:10b6:300:101::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Tue, 20 Apr 2021 19:18:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e94beea0-9aa1-4e98-524c-08d904310551
+X-MS-TrafficTypeDiagnostic: BY3PR15MB4866:
+X-Microsoft-Antispam-PRVS: <BY3PR15MB48668370173667D496E6A260BE489@BY3PR15MB4866.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JE7g6ZAsQPZuM8AAjsFc8aT2MVRHi04AcetrRwuD6enWX1ztrxV+ivaOzT7GjO3kFHjJi8HUet48myRUxCVrMpbAPtZ8vD/k/zKSsT/NR8jGcqmWP7ux07XBxJ/UdQ+uj8aHCSLg3Zjajvcajx1fFLMs+wm1IbNh5b+U7XWZa7puUBW6uxojikfdoUC5zSmPeqWkgsb0GAFw9Y9hpIkpB+Iaw77xOItcscUQrLhyTF0KbKR3rKQZmHg3nbCjJ/GdQ3fXx+mIJV0PnzKMQAXtJPyn6oIxmkHzTNJpG81/6VLpHTLkPfxelHMvN6oqAFxt66009SVTi6j35c9aX/9sI2qZ9KTxMtxwPdpO7/n+U7Jm2GXP/tdENZ1YFQc3WYQ0q115KBtxZV14vhegVYQE7dT0znrU9jMUrPyXU/FgieWSdyPoW7GgoIYFOINNdi1KB/uND580bdOvdUWuLBLBv8OFnJhh2YwvtEQtNDy6YvBC+W+3y1smXALtvzlsF5XFZ23AjvdmQjGvSfvXhPWUbDhyzZ2kwiA/qHH/eZQV5kSHW+bgQZAGddOZXQVL5xWVag9HgCg0gFchYAu0bDFelBKuoo/cz7kOLnIs6FK7kLI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(396003)(39860400002)(376002)(66556008)(6666004)(478600001)(16526019)(7696005)(66946007)(55016002)(52116002)(38100700002)(66476007)(4326008)(2906002)(9686003)(186003)(83380400001)(7416002)(6506007)(316002)(8676002)(8936002)(5660300002)(86362001)(6916009)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?L4CbJiHxV0mNAgWRus8M6DDdGrx/4RJ0p1Q2DDjS6zHgw5k4JuiXZ3219mfp?=
+ =?us-ascii?Q?cwAPk/2GKbJYpyccGsY8eM2DTyv7FGy94ChjcH3mXAJi1qCg0YcP/zw+8KaT?=
+ =?us-ascii?Q?SIWaOTuiSajOAwe4FvuCcNH5rfeYPx2mk8bDDIE54Eg0mqjpEiFFdmAoW9Oi?=
+ =?us-ascii?Q?zMFz2qANNr/JdJtVxfErTst0FDyEcAe6sRSu8yrds1xZEoAXMsQGaWPAsRxk?=
+ =?us-ascii?Q?CRLIg8qETfqBhhEUftPsCI+qsNmsTzXnvIGtaLPydKe8LPCJfsJYTMUt0F+m?=
+ =?us-ascii?Q?S1W8tZBOPau5LY2OE73eodCAn99v9S5ZjKrbxfE2MNOj013EWaBMSXu++FaR?=
+ =?us-ascii?Q?DV17i/uNwzy2HiHSgMVcUtSVGr/vrLORcFWpmqQ5KIYy+nCVHde4nKPBuNBL?=
+ =?us-ascii?Q?ZyANyTo7cvIILTae8P/6qe/E3QZ9yw8deFTmRqVBM5bjTA/WsyVlYeH4YM2z?=
+ =?us-ascii?Q?EJpcO1ItxGv63cgwR7I44Hmobj8s2Fvb2E8e9g5Lkr3Vqo+heOKEh8BifJaY?=
+ =?us-ascii?Q?aIQgUqkdwSsPN0D1Z8IZDpxjST8kwYVV6wKhrNKA+rNTtichIGEStIswO7Th?=
+ =?us-ascii?Q?p6BwZAo9f7RafRgmEjKiH2OFbhPfXHib+uPpkAFkc5DHV3AXAQ31l9yPLB/A?=
+ =?us-ascii?Q?Y4XbynulQIxt9fprxs6qOwfazbOS9l3QgK/gDhnvXLLP8pZzbezsl88s69z9?=
+ =?us-ascii?Q?6h3jtdJwxVwL5yjsq/XSqdM59l5mcoJhJtFfMUFjv8K+Hv4yUcSjQQZ7e0JB?=
+ =?us-ascii?Q?zgmaZXLVMiY+uCBqcQu6ryC5xhXWcLipuyG2ZS5VS5Fhw2dXW1xQFEJMq/11?=
+ =?us-ascii?Q?i1SjviHYnQX/4bgFTKwvIiQj/L+1nNfAvrKDj9J+HVtdoMQR5/NNm4jqY5KV?=
+ =?us-ascii?Q?HDECooUjhVawA11Z6rWsO9+WXRBUvCOuncVQWH2ww1Vf20XFS7SbZ6+4N5c+?=
+ =?us-ascii?Q?0AAbZjqQoHS+hDFY39TXXxpoUWgjmj4kwPEQb2OkwYCmLaeP/nl4KVYCO2gv?=
+ =?us-ascii?Q?a9P2zuL3Nhkuynwqa36WI1ggqRhql6VUK2UWcOCQtDlZdCYs6XIFIgZRnwAY?=
+ =?us-ascii?Q?zkSuMi+6OD08XSltaNeQR+JXxAC4KwtoDlFhg8LRA6C1hTlQBkr7w/WvgqJm?=
+ =?us-ascii?Q?ioCqi9CZgShxokYZ3WrnsUfE+4IkIje6w4MfmW9+cIrCctJ1+jXsrM/lkvI4?=
+ =?us-ascii?Q?T6GYuow1SpJAAxcLWddmHbCMHnXyqXlGjhMkl/A0kcP3lPHXiVKgsKt3Vx2C?=
+ =?us-ascii?Q?vJgMhhNr3PZsoZ3S5U+Eh+RHJlnEBWYX5INSVpKV6DbNqK8sC2FD8VF1zzjE?=
+ =?us-ascii?Q?DCeipR6B6lBNnazQZW/Y/LIYIgumLuLKySv1fm4t7+KfRQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e94beea0-9aa1-4e98-524c-08d904310551
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 19:18:04.0309
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uRbgjQKf1mHJz9tCOTSWy4POJUilFNRWCzxB8iCEYWEZpwY26eCEVGWeI8C3TXL+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4866
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: YkqDQFuS4fkgjv0VVRJjenPfEQZBrzn7
+X-Proofpoint-ORIG-GUID: YkqDQFuS4fkgjv0VVRJjenPfEQZBrzn7
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-20_11:2021-04-20,2021-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 mlxlogscore=999 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104200132
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/19/21 12:55 PM, Johannes Weiner wrote:
-> On Sun, Apr 18, 2021 at 08:00:31PM -0400, Waiman Long wrote:
->> Currently, the object stock structure caches either reclaimable vmstat
->> bytes or unreclaimable vmstat bytes in its object stock structure. The
->> hit rate can be improved if both types of vmstat data can be cached
->> especially for single-node system.
->>
->> This patch supports the cacheing of both type of vmstat data, though
->> at the expense of a slightly increased complexity in the caching code.
->> For large object (>= PAGE_SIZE), vmstat array is done directly without
->> going through the stock caching step.
->>
->> On a 2-socket Cascade Lake server with instrumentation enabled, the
->> miss rates are shown in the table below.
->>
->>    Initial bootup:
->>
->>    Kernel       __mod_objcg_state    mod_objcg_state    %age
->>    ------       -----------------    ---------------    ----
->>    Before patch      634400              3243830        19.6%
->>    After patch       419810              3182424        13.2%
->>
->>    Parallel kernel build:
->>
->>    Kernel       __mod_objcg_state    mod_objcg_state    %age
->>    ------       -----------------    ---------------    ----
->>    Before patch      24329265           142512465       17.1%
->>    After patch       24051721           142445825       16.9%
->>
->> There was a decrease of miss rate after initial system bootup. However,
->> the miss rate for parallel kernel build remained about the same probably
->> because most of the touched kmemcache objects were reclaimable inodes
->> and dentries.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   mm/memcontrol.c | 79 +++++++++++++++++++++++++++++++------------------
->>   1 file changed, 51 insertions(+), 28 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index c13502eab282..a6dd18f6d8a8 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -2212,8 +2212,8 @@ struct obj_stock {
->>   	struct obj_cgroup *cached_objcg;
->>   	struct pglist_data *cached_pgdat;
->>   	unsigned int nr_bytes;
->> -	int vmstat_idx;
->> -	int vmstat_bytes;
->> +	int reclaimable_bytes;		/* NR_SLAB_RECLAIMABLE_B */
->> +	int unreclaimable_bytes;	/* NR_SLAB_UNRECLAIMABLE_B */
-> How about
->
-> 	int nr_slab_reclaimable_b;
-> 	int nr_slab_unreclaimable_b;
->
-> so you don't need the comments?
+On Mon, Apr 19, 2021 at 06:44:02PM -0700, Shakeel Butt wrote:
+> Proposal: Provide memory guarantees to userspace oom-killer.
+> 
+> Background:
+> 
+> Issues with kernel oom-killer:
+> 1. Very conservative and prefer to reclaim. Applications can suffer
+> for a long time.
+> 2. Borrows the context of the allocator which can be resource limited
+> (low sched priority or limited CPU quota).
+> 3. Serialized by global lock.
+> 4. Very simplistic oom victim selection policy.
+> 
+> These issues are resolved through userspace oom-killer by:
+> 1. Ability to monitor arbitrary metrics (PSI, vmstat, memcg stats) to
+> early detect suffering.
+> 2. Independent process context which can be given dedicated CPU quota
+> and high scheduling priority.
+> 3. Can be more aggressive as required.
+> 4. Can implement sophisticated business logic/policies.
+> 
+> Android's LMKD and Facebook's oomd are the prime examples of userspace
+> oom-killers. One of the biggest challenges for userspace oom-killers
+> is to potentially function under intense memory pressure and are prone
+> to getting stuck in memory reclaim themselves. Current userspace
+> oom-killers aim to avoid this situation by preallocating user memory
+> and protecting themselves from global reclaim by either mlocking or
+> memory.min. However a new allocation from userspace oom-killer can
+> still get stuck in the reclaim and policy rich oom-killer do trigger
+> new allocations through syscalls or even heap.
+> 
+> Our attempt of userspace oom-killer faces similar challenges.
+> Particularly at the tail on the very highly utilized machines we have
+> observed userspace oom-killer spectacularly failing in many possible
+> ways in the direct reclaim. We have seen oom-killer stuck in direct
+> reclaim throttling, stuck in reclaim and allocations from interrupts
+> keep stealing reclaimed memory. We have even observed systems where
+> all the processes were stuck in throttle_direct_reclaim() and only
+> kswapd was running and the interrupts kept stealing the memory
+> reclaimed by kswapd.
+> 
+> To reliably solve this problem, we need to give guaranteed memory to
+> the userspace oom-killer. At the moment we are contemplating between
+> the following options and I would like to get some feedback.
+> 
+> 1. prctl(PF_MEMALLOC)
+> 
+> The idea is to give userspace oom-killer (just one thread which is
+> finding the appropriate victims and will be sending SIGKILLs) access
+> to MEMALLOC reserves. Most of the time the preallocation, mlock and
+> memory.min will be good enough but for rare occasions, when the
+> userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
+> protect it from reclaim and let the allocation dip into the memory
+> reserves.
+> 
+> The misuse of this feature would be risky but it can be limited to
+> privileged applications. Userspace oom-killer is the only appropriate
+> user of this feature. This option is simple to implement.
 
-Sure, will make the change.
+Hello Shakeel!
 
+If ordinary PAGE_SIZE and smaller kernel allocations start to fail,
+the system is already in a relatively bad shape. Arguably the userspace
+OOM killer should kick in earlier, it's already a bit too late.
+Allowing to use reserves just pushes this even further, so we're risking
+the kernel stability for no good reason.
 
->>   #else
->>   	int dummy[0];
->>   #endif
->> @@ -3217,40 +3217,56 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->>   		     enum node_stat_item idx, int nr)
->>   {
->>   	unsigned long flags;
->> -	struct obj_stock *stock = get_obj_stock(&flags);
->> +	struct obj_stock *stock;
->> +	int *bytes, *alt_bytes, alt_idx;
->> +
->> +	/*
->> +	 * Directly update vmstat array for big object.
->> +	 */
->> +	if (unlikely(abs(nr) >= PAGE_SIZE))
->> +		goto update_vmstat;
-> This looks like an optimization independent of the vmstat item split?
-It may not be that helpful. I am going to take it out in the next version.
->
->> +	stock = get_obj_stock(&flags);
->> +	if (idx == NR_SLAB_RECLAIMABLE_B) {
->> +		bytes = &stock->reclaimable_bytes;
->> +		alt_bytes = &stock->unreclaimable_bytes;
->> +		alt_idx = NR_SLAB_UNRECLAIMABLE_B;
->> +	} else {
->> +		bytes = &stock->unreclaimable_bytes;
->> +		alt_bytes = &stock->reclaimable_bytes;
->> +		alt_idx = NR_SLAB_RECLAIMABLE_B;
->> +	}
->>   
->>   	/*
->> -	 * Save vmstat data in stock and skip vmstat array update unless
->> -	 * accumulating over a page of vmstat data or when pgdat or idx
->> +	 * Try to save vmstat data in stock and skip vmstat array update
->> +	 * unless accumulating over a page of vmstat data or when pgdat
->>   	 * changes.
->>   	 */
->>   	if (stock->cached_objcg != objcg) {
->>   		/* Output the current data as is */
->> -	} else if (!stock->vmstat_bytes) {
->> -		/* Save the current data */
->> -		stock->vmstat_bytes = nr;
->> -		stock->vmstat_idx = idx;
->> -		stock->cached_pgdat = pgdat;
->> -		nr = 0;
->> -	} else if ((stock->cached_pgdat != pgdat) ||
->> -		   (stock->vmstat_idx != idx)) {
->> -		/* Output the cached data & save the current data */
->> -		swap(nr, stock->vmstat_bytes);
->> -		swap(idx, stock->vmstat_idx);
->> +	} else if (stock->cached_pgdat != pgdat) {
->> +		/* Save the current data and output cached data, if any */
->> +		swap(nr, *bytes);
->>   		swap(pgdat, stock->cached_pgdat);
->> +		if (*alt_bytes) {
->> +			__mod_objcg_state(objcg, pgdat, alt_idx,
->> +					  *alt_bytes);
->> +			*alt_bytes = 0;
->> +		}
-> As per the other email, I really don't think optimizing the pgdat
-> switch (in a percpu cache) is worth this level of complexity.
+But I agree that throttling the oom daemon in direct reclaim makes no sense.
+I wonder if we can introduce a per-task flag which will exclude the task from
+throttling, but instead all (large) allocations will just fail under a
+significant memory pressure more easily. In this case if there is a significant
+memory shortage the oom daemon will not be fully functional (will get -ENOMEM
+for an attempt to read some stats, for example), but still will be able to kill
+some processes and make the forward progress.
+But maybe it can be done in userspace too: by splitting the daemon into
+a core- and extended part and avoid doing anything behind bare minimum
+in the core part.
 
-I am going to simplify it in the next version.
+> 
+> 2. Mempool
+> 
+> The idea is to preallocate mempool with a given amount of memory for
+> userspace oom-killer. Preferably this will be per-thread and
+> oom-killer can preallocate mempool for its specific threads. The core
+> page allocator can check before going to the reclaim path if the task
+> has private access to the mempool and return page from it if yes.
+> 
+> This option would be more complicated than the previous option as the
+> lifecycle of the page from the mempool would be more sophisticated.
+> Additionally the current mempool does not handle higher order pages
+> and we might need to extend it to allow such allocations. Though this
+> feature might have more use-cases and it would be less risky than the
+> previous option.
 
+It looks like an over-kill for the oom daemon protection, but if there
+are other good use cases, maybe it's a good feature to have.
 
->
->>   	} else {
->> -		stock->vmstat_bytes += nr;
->> -		if (abs(stock->vmstat_bytes) > PAGE_SIZE) {
->> -			nr = stock->vmstat_bytes;
->> -			stock->vmstat_bytes = 0;
->> +		*bytes += nr;
->> +		if (abs(*bytes) > PAGE_SIZE) {
->> +			nr = *bytes;
->> +			*bytes = 0;
->>   		} else {
->>   			nr = 0;
->>   		}
->>   	}
->> -	if (nr)
->> -		__mod_objcg_state(objcg, pgdat, idx, nr);
->> -
->>   	put_obj_stock(flags);
->> +	if (!nr)
->> +		return;
->> +update_vmstat:
->> +	__mod_objcg_state(objcg, pgdat, idx, nr);
->>   }
->>   
->>   static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
->> @@ -3303,12 +3319,19 @@ static void drain_obj_stock(struct obj_stock *stock)
->>   	/*
->>   	 * Flush the vmstat data in current stock
->>   	 */
->> -	if (stock->vmstat_bytes) {
->> -		__mod_objcg_state(old, stock->cached_pgdat, stock->vmstat_idx,
->> -				  stock->vmstat_bytes);
->> +	if (stock->reclaimable_bytes || stock->unreclaimable_bytes) {
->> +		int bytes;
->> +
->> +		if ((bytes = stock->reclaimable_bytes))
->> +			__mod_objcg_state(old, stock->cached_pgdat,
->> +					  NR_SLAB_RECLAIMABLE_B, bytes);
->> +		if ((bytes = stock->unreclaimable_bytes))
->> +			__mod_objcg_state(old, stock->cached_pgdat,
->> +					  NR_SLAB_UNRECLAIMABLE_B, bytes);
-> The int bytes indirection isn't necessary. It's easier to read even
-> with the extra lines required to repeat the long stock member names,
-> because that is quite a common pattern (if (stuff) frob(stuff)).
-OK, I will eliminate the bytes variable.
->
-> __mod_objcg_state() also each time does rcu_read_lock() toggling and a
-> memcg lookup that could be batched, which I think is further proof
-> that it should just be inlined here.
->
-I am also thinking that eliminate unnecessary 
-rcu_read_lock/rcu_read_unlock may help performance a bit. However, that 
-will be done in another patch after I have done more performance 
-testing. I am  not going to bother with that in this series.
+> 
+> Another idea I had was to use kthread based oom-killer and provide the
+> policies through eBPF program. Though I am not sure how to make it
+> monitor arbitrary metrics and if that can be done without any
+> allocations.
 
-Cheers,
-Longman
+To start this effort it would be nice to understand what metrics various
+oom daemons use and how easy is to gather them from the bpf side. I like
+this idea long-term, but not sure if it has been settled down enough.
+I imagine it will require a fair amount of work on the bpf side, so we
+need a good understanding of features we need.
 
-
+Thanks!
