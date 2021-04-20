@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99637366035
-	for <lists+cgroups@lfdr.de>; Tue, 20 Apr 2021 21:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF675366038
+	for <lists+cgroups@lfdr.de>; Tue, 20 Apr 2021 21:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhDTTaz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Apr 2021 15:30:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21169 "EHLO
+        id S233769AbhDTTbF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Apr 2021 15:31:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38352 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233758AbhDTTaw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Apr 2021 15:30:52 -0400
+        by vger.kernel.org with ESMTP id S233746AbhDTTbE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Apr 2021 15:31:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618947020;
+        s=mimecast20190719; t=1618947032;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=leP7ynLW/Ya0OWUxwJ+81qaZKo2i+UvXWl8PamMADZY=;
-        b=PARmr/G8zSJA5gp6e6K8Vb146eBxiXC3OK0E5Gh6wPyYxwkGjfMc+VchhLp02atCGZNXlh
-        tMNFuEEEGMywO4l/tnMKzugr5UiF9BnFTSCleDLVfPGTTyKoWEL3sckmZ7iZvrkmNxEYU6
-        o3jYtqMMYy16Eigqc6dgRAN82b9VWNo=
+        bh=V8tpjiZVe9/HPR7EqqmVPxX4+H+yOIDgVesSOM9WmtY=;
+        b=ExXlP/QgRAFDof4pxNIZXaI6bL/bMGwkwhoxdmnolVTNEt9k/UGMQVrncxhLDKe2WMZrdu
+        eLQUjZch3/078FPjwvwXkBAJRTWiL0XIYaypI+qeoLa45GBlDiYGVqdV2omcfjwdg2UlOc
+        yvgjE0B4G+ggrLiEtRm+AopeECRl6HE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-yiUIPRpgPHOGXzsEGvQxhQ-1; Tue, 20 Apr 2021 15:29:52 -0400
-X-MC-Unique: yiUIPRpgPHOGXzsEGvQxhQ-1
+ us-mta-17-BI2hURGfPou-avkkOogtUw-1; Tue, 20 Apr 2021 15:29:56 -0400
+X-MC-Unique: BI2hURGfPou-avkkOogtUw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EAD08030DB;
-        Tue, 20 Apr 2021 19:29:49 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE51C107ACE8;
+        Tue, 20 Apr 2021 19:29:51 +0000 (UTC)
 Received: from llong.com (ovpn-114-123.rdu2.redhat.com [10.10.114.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7878D610F3;
-        Tue, 20 Apr 2021 19:29:47 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BFDFA610F3;
+        Tue, 20 Apr 2021 19:29:49 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -52,9 +52,9 @@ Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v5 2/4] mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
-Date:   Tue, 20 Apr 2021 15:29:05 -0400
-Message-Id: <20210420192907.30880-3-longman@redhat.com>
+Subject: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock() performance
+Date:   Tue, 20 Apr 2021 15:29:06 -0400
+Message-Id: <20210420192907.30880-4-longman@redhat.com>
 In-Reply-To: <20210420192907.30880-1-longman@redhat.com>
 References: <20210420192907.30880-1-longman@redhat.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
@@ -62,160 +62,96 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Before the new slab memory controller with per object byte charging,
-charging and vmstat data update happen only when new slab pages are
-allocated or freed. Now they are done with every kmem_cache_alloc()
-and kmem_cache_free(). This causes additional overhead for workloads
-that generate a lot of alloc and free calls.
+There are two issues with the current refill_obj_stock() code. First of
+all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
+atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
+and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
+be used again which leads to another call to drain_obj_stock() and
+obj_cgroup_get() as well as atomically retrieve the available byte from
+obj_cgroup. That is costly. Instead, we should just uncharge the excess
+pages, reduce the stock bytes and be done with it. The drain_obj_stock()
+function should only be called when obj_cgroup changes.
 
-The memcg_stock_pcp is used to cache byte charge for a specific
-obj_cgroup to reduce that overhead. To further reducing it, this patch
-makes the vmstat data cached in the memcg_stock_pcp structure as well
-until it accumulates a page size worth of update or when other cached
-data change. Caching the vmstat data in the per-cpu stock eliminates two
-writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
-specific vmstat data by a write to a hot local stock cacheline.
+Secondly, when charging an object of size not less than a page in
+obj_cgroup_charge(), it is possible that the remaining bytes to be
+refilled to the stock will overflow a page and cause refill_obj_stock()
+to uncharge 1 page. To avoid the additional uncharge in this case,
+a new overfill flag is added to refill_obj_stock() which will be set
+when called from obj_cgroup_charge().
 
-On a 2-socket Cascade Lake server with instrumentation enabled and this
-patch applied, it was found that about 20% (634400 out of 3243830)
-of the time when mod_objcg_state() is called leads to an actual call
-to __mod_objcg_state() after initial boot. When doing parallel kernel
-build, the figure was about 17% (24329265 out of 142512465). So caching
-the vmstat data reduces the number of calls to __mod_objcg_state()
-by more than 80%.
+A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
+96-thread x86-64 system with 96 testing threads were run.  Before this
+patch, the total number of kilo kmalloc+kfree operations done for a 4k
+large object by all the testing threads per second were 4,304 kops/s
+(cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
+number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
+represents a performance improvement of 1.10X (cgroup v1) and 49.3X
+(cgroup v2).
 
 Signed-off-by: Waiman Long <longman@redhat.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- mm/memcontrol.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7cd7187a017c..292b4783b1a7 100644
+index 292b4783b1a7..2f87d0b05092 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -782,8 +782,9 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
- 	rcu_read_unlock();
+@@ -3153,10 +3153,12 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+ 	return false;
  }
  
--void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
--		     enum node_stat_item idx, int nr)
-+static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
-+				     struct pglist_data *pgdat,
-+				     enum node_stat_item idx, int nr)
- {
- 	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
-@@ -791,7 +792,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 	rcu_read_lock();
- 	memcg = obj_cgroup_memcg(objcg);
- 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
--	mod_memcg_lruvec_state(lruvec, idx, nr);
-+	__mod_memcg_lruvec_state(lruvec, idx, nr);
- 	rcu_read_unlock();
- }
- 
-@@ -2059,7 +2060,10 @@ struct memcg_stock_pcp {
- 
- #ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup *cached_objcg;
-+	struct pglist_data *cached_pgdat;
- 	unsigned int nr_bytes;
-+	int nr_slab_reclaimable_b;
-+	int nr_slab_unreclaimable_b;
- #endif
- 
- 	struct work_struct work;
-@@ -3008,6 +3012,63 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
- 	obj_cgroup_put(objcg);
- }
- 
-+void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
-+		     enum node_stat_item idx, int nr)
-+{
-+	struct memcg_stock_pcp *stock;
-+	unsigned long flags;
-+	int *bytes;
-+
-+	local_irq_save(flags);
-+	stock = this_cpu_ptr(&memcg_stock);
-+
-+	/*
-+	 * Save vmstat data in stock and skip vmstat array update unless
-+	 * accumulating over a page of vmstat data or when pgdat or idx
-+	 * changes.
-+	 */
-+	if (stock->cached_objcg != objcg) {
-+		drain_obj_stock(stock);
-+		obj_cgroup_get(objcg);
-+		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-+				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-+		stock->cached_objcg = objcg;
-+		stock->cached_pgdat = pgdat;
-+	} else if (stock->cached_pgdat != pgdat) {
-+		/* Flush the existing cached vmstat data */
-+		if (stock->nr_slab_reclaimable_b) {
-+			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
-+					  stock->nr_slab_reclaimable_b);
-+			stock->nr_slab_reclaimable_b = 0;
-+		}
-+		if (stock->nr_slab_unreclaimable_b) {
-+			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
-+					  stock->nr_slab_unreclaimable_b);
-+			stock->nr_slab_unreclaimable_b = 0;
-+		}
-+		stock->cached_pgdat = pgdat;
-+	}
-+
-+	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
-+					       : &stock->nr_slab_unreclaimable_b;
-+	if (!*bytes) {
-+		*bytes = nr;
-+		nr = 0;
-+	} else {
-+		*bytes += nr;
-+		if (abs(*bytes) > PAGE_SIZE) {
-+			nr = *bytes;
-+			*bytes = 0;
-+		} else {
-+			nr = 0;
-+		}
-+	}
-+	if (nr)
-+		mod_objcg_mlstate(objcg, pgdat, idx, nr);
-+
-+	local_irq_restore(flags);
-+}
-+
- static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+-static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
++static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
++			     bool overfill)
  {
  	struct memcg_stock_pcp *stock;
-@@ -3055,6 +3116,25 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
- 		stock->nr_bytes = 0;
- 	}
+ 	unsigned long flags;
++	unsigned int nr_pages = 0;
  
-+	/*
-+	 * Flush the vmstat data in current stock
-+	 */
-+	if (stock->nr_slab_reclaimable_b || stock->nr_slab_unreclaimable_b) {
-+		if (stock->nr_slab_reclaimable_b) {
-+			mod_objcg_mlstate(old, stock->cached_pgdat,
-+					  NR_SLAB_RECLAIMABLE_B,
-+					  stock->nr_slab_reclaimable_b);
-+			stock->nr_slab_reclaimable_b = 0;
-+		}
-+		if (stock->nr_slab_unreclaimable_b) {
-+			mod_objcg_mlstate(old, stock->cached_pgdat,
-+					  NR_SLAB_UNRECLAIMABLE_B,
-+					  stock->nr_slab_unreclaimable_b);
-+			stock->nr_slab_unreclaimable_b = 0;
-+		}
-+		stock->cached_pgdat = NULL;
+ 	local_irq_save(flags);
+ 
+@@ -3165,14 +3167,20 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 		drain_obj_stock(stock);
+ 		obj_cgroup_get(objcg);
+ 		stock->cached_objcg = objcg;
+-		stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
++		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
++				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
+ 	}
+ 	stock->nr_bytes += nr_bytes;
+ 
+-	if (stock->nr_bytes > PAGE_SIZE)
+-		drain_obj_stock(stock);
++	if (!overfill && (stock->nr_bytes > PAGE_SIZE)) {
++		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
++		stock->nr_bytes &= (PAGE_SIZE - 1);
 +	}
+ 
+ 	local_irq_restore(flags);
 +
- 	obj_cgroup_put(old);
- 	stock->cached_objcg = NULL;
++	if (nr_pages)
++		obj_cgroup_uncharge_pages(objcg, nr_pages);
  }
+ 
+ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+@@ -3201,14 +3209,14 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+ 
+ 	ret = obj_cgroup_charge_pages(objcg, gfp, nr_pages);
+ 	if (!ret && nr_bytes)
+-		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
++		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes, true);
+ 
+ 	return ret;
+ }
+ 
+ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+ {
+-	refill_obj_stock(objcg, size);
++	refill_obj_stock(objcg, size, false);
+ }
+ 
+ #endif /* CONFIG_MEMCG_KMEM */
 -- 
 2.18.1
 
