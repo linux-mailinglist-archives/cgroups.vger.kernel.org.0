@@ -2,58 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15255366D62
-	for <lists+cgroups@lfdr.de>; Wed, 21 Apr 2021 15:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C532B366DD7
+	for <lists+cgroups@lfdr.de>; Wed, 21 Apr 2021 16:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhDUN6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Apr 2021 09:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S243169AbhDUOOi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Apr 2021 10:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243129AbhDUN6a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 09:58:30 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E985CC06138A
-        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id l22so40470943ljc.9
-        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
+        with ESMTP id S239115AbhDUOOd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 10:14:33 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FD1C06174A
+        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 07:13:58 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id n138so67205567lfa.3
+        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 07:13:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
-        b=mjoh/M3C5zXaRixBaiMGh8FW3jbxldonTsAzJ77oVizAjeOQHKGQiC3i75Wu1umZhX
-         RchEyUx3ji5vKetnRRp26j8o1NQ2RDmlT0MDgmHTFqrnIHTNRA2hOPGLJSlBZ96jGVKf
-         571gU2R/TArQpNfCLUqywHzxY8P+cvMHYJLT1l3UwzGQBXFPMDEgJCSCblnavYn8A5bO
-         JXVBkSCY3RsQl8DJcCt2LB/rX6BfDfUMqitdJacy+e9UK6xr1L491vhp2P7k43GWQnVa
-         XgkwX1mnEErizRWbJD2VriTjvK5e1upblqP8QOGLtZ4cRNo9253JqHD+ovek+QYElz8G
-         tJ7w==
+        bh=KT5Z/sPJXf0qDYy55bMraiO4nEL20VpFAQ+FPYD2/dw=;
+        b=WFAWOqMmzOQnQNVjpAKoR6YqWuxUDxMFdKgszw7Kn8uz7r8hz4pWSNkrWd5wNrvPGp
+         q39wDsrIdJmGWqrYNH8EUO6pO+DVhIsP8AaaNicOjCkRz1CNsoCn+ETNeFl3Q8hL00Ct
+         CI1EzrSnzpp4EWE1LXyyb2yFXfBfV/RmqRZCM6pQdzS7WbVf46BwNckO0u6hNrXyZKcf
+         0nxRN8JIvGm8b0shRuwYStgnyt9mEE0rBE+HLxDOYWOElrfF7Tk4/ZSmZiS4411A4+bU
+         38t+fVT8D6CfEj3lIXI40eG7FQCx5Bzpg1adr0Ij4D6cG3oMI17mt+20w8Tl4tniDdvW
+         Xiag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
-        b=AUAxBfb3c1PZbNvjlbn64cBjWOrsd84/Ye8UW1zxVbN/0nsOBJ3QuqMUvP4FFiQFe5
-         iceRjQIKkuRZSMiCaVXZjRjhXHFMF1ET/mDs5S5OULbRGk6QppaJCmePWLb3fAvT81vi
-         XxsuBrsYSR4hXubGhIm/SV837jn/xv35jCtorTzyYzCRzMyNLKRzVjnVFnJ+V5VEpUdn
-         KShqimwMPMXhy7c7hyPePBMO2+RvioJpNbIDRXS5bf01b3JhHoeELQOlp32ak2E/zvui
-         DWt78PtKUuBNTRiU6FeaOhDGuisNDNR0veonrnP5U/j6iwSDeo49xU5VpPoduMrEyby+
-         Wb6A==
-X-Gm-Message-State: AOAM532QrO653KQT+v/q7/aqn8DYkFxlfpe0e7+l4y85F2ErCyDm8Rpf
-        WMoG1EYryToxXUCYS8V+hqPORCVUvRosxcQVYLyTFA==
-X-Google-Smtp-Source: ABdhPJx1Lm56U6Iaz2d/ewarjkjUGkr/8pRTih0VFjqY53M8ShQv8y5HDqr7v1iWjgb9Db+DYtrST3iPQEA9mNdFn3o=
-X-Received: by 2002:a2e:8118:: with SMTP id d24mr18609060ljg.122.1619013475253;
- Wed, 21 Apr 2021 06:57:55 -0700 (PDT)
+        bh=KT5Z/sPJXf0qDYy55bMraiO4nEL20VpFAQ+FPYD2/dw=;
+        b=YWemZwFOvVMJ+fSFZ0E/tFV8+p11MMxKlN1VUX6JXf3btdNUdJdakyK4h6B6/4+4UX
+         CPwliOQHUq779T/UehYB2Dk33GBkQ6zbLySEEP0YomdaYhuKv1JNSlPUZa7tKzA7fOdi
+         uC2dEHWDdkpC7/q0D9UYyEHExb7eHxtfZVubga+epGN0AAdZhCM/Nr68i0nm+YlUiKA7
+         jforwN5qre7HFeMAsCwn5A8MBi64kd1XmjPLOXpPIt9t0+L2tYSU+fdV9khmoCNDDoEY
+         2INN0iN6cQCoYLBNgGaOhd25WOPDpgsYeW9WrG6glfwLysxOg5F/aFDrCMBPSi0f69SC
+         QSxg==
+X-Gm-Message-State: AOAM532adiMKkMy3QAqtPiMVVAqzU+TwX77haaWVYLSYILISY+lP62H7
+        E+dQxyubq16fCEIkFxxE8iGTI+BviBQ64DyzSCIsLQ==
+X-Google-Smtp-Source: ABdhPJwKfxnLC0EMvkKJWK7JOfls96yUQHQql2a1N5hFMm4auIb20AtzZv8tv5ao9CXlQJFzRhkSNO40dAKrV1P9OBM=
+X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr19348557lfs.358.1619014436354;
+ Wed, 21 Apr 2021 07:13:56 -0700 (PDT)
 MIME-Version: 1.0
 References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
- <YH/RPydqhwXdyG80@dhcp22.suse.cz>
-In-Reply-To: <YH/RPydqhwXdyG80@dhcp22.suse.cz>
+ <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com> <CALvZod7dXuFPeMv5NGu96uCosFpWY_Gy07iDsfSORCA0dT_zsA@mail.gmail.com>
+ <YH/S2dVxk2le8SMw@dhcp22.suse.cz>
+In-Reply-To: <YH/S2dVxk2le8SMw@dhcp22.suse.cz>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 21 Apr 2021 06:57:43 -0700
-Message-ID: <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
+Date:   Wed, 21 Apr 2021 07:13:45 -0700
+Message-ID: <CALvZod6oCBB6tDh5wABSwdHfcDzLX7S7cOTLp_4Qk4DCi50X_A@mail.gmail.com>
 Subject: Re: [RFC] memory reserve for userspace oom-killer
 To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
         Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Cgroups <cgroups@vger.kernel.org>,
@@ -68,81 +68,57 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 12:16 AM Michal Hocko <mhocko@suse.com> wrote:
+On Wed, Apr 21, 2021 at 12:23 AM Michal Hocko <mhocko@suse.com> wrote:
 >
 [...]
-> > To decide when to kill, the oom-killer has to read a lot of metrics.
-> > It has to open a lot of files to read them and there will definitely
-> > be new allocations involved in those operations. For example reading
-> > memory.stat does a page size allocation. Similarly, to perform action
-> > the oom-killer may have to read cgroup.procs file which again has
-> > allocation inside it.
+> > In our observation the global reclaim is very non-deterministic at the
+> > tail and dramatically impacts the reliability of the system. We are
+> > looking for a solution which is independent of the global reclaim.
 >
-> True but many of those can be avoided by opening the file early. At
-> least seq_file based ones will not allocate later if the output size
-> doesn't increase. Which should be the case for many. I think it is a
-> general improvement to push those who allocate during read to an open
-> time allocation.
->
-
-I agree that this would be a general improvement but it is not always
-possible (see below).
-
-> > Regarding sophisticated oom policy, I can give one example of our
-> > cluster level policy. For robustness, many user facing jobs run a lot
-> > of instances in a cluster to handle failures. Such jobs are tolerant
-> > to some amount of failures but they still have requirements to not let
-> > the number of running instances below some threshold. Normally killing
-> > such jobs is fine but we do want to make sure that we do not violate
-> > their cluster level agreement. So, the userspace oom-killer may
-> > dynamically need to confirm if such a job can be killed.
->
-> What kind of data do you need to examine to make those decisions?
+> I believe it is worth purusing a solution that would make the memory
+> reclaim more predictable. I have seen direct reclaim memory throttling
+> in the past. For some reason which I haven't tried to examine this has
+> become less of a problem with newer kernels. Maybe the memory access
+> patterns have changed or those problems got replaced by other issues but
+> an excessive throttling is definitely something that we want to address
+> rather than work around by some user visible APIs.
 >
 
-Most of the time the cluster level scheduler pushes the information to
-the node controller which transfers that information to the
-oom-killer. However based on the freshness of the information the
-oom-killer might request to pull the latest information (IPC and RPC).
+I agree we want to address the excessive throttling but for everyone
+on the machine and most importantly it is a moving target. The reclaim
+code continues to evolve and in addition it has callbacks to diverse
+sets of subsystems.
+
+The user visible APIs is for one specific use-case i.e. oom-killer
+which will indirectly help in reducing the excessive throttling.
 
 [...]
+> > So, the suggestion is to have a per-task flag to (1) indicate to not
+> > throttle and (2) fail allocations easily on significant memory
+> > pressure.
 > >
-> > I was thinking of simply prctl(SET_MEMPOOL, bytes) to assign mempool
-> > to a thread (not shared between threads) and prctl(RESET_MEMPOOL) to
-> > free the mempool.
+> > For (1), the challenge I see is that there are a lot of places in the
+> > reclaim code paths where a task can get throttled. There are
+> > filesystems that block/throttle in slab shrinking. Any process can get
+> > blocked on an unrelated page or inode writeback within reclaim.
+> >
+> > For (2), I am not sure how to deterministically define "significant
+> > memory pressure". One idea is to follow the __GFP_NORETRY semantics
+> > and along with (1) the userspace oom-killer will see ENOMEM more
+> > reliably than stucking in the reclaim.
 >
-> I am not a great fan of prctl. It has become a dumping ground for all
-> mix of unrelated functionality. But let's say this is a minor detail at
-> this stage.
+> Some of the interfaces (e.g. seq_file uses GFP_KERNEL reclaim strength)
+> could be more relaxed and rather fail than OOM kill but wouldn't your
+> OOM handler be effectivelly dysfunctional when not able to collect data
+> to make a decision?
+>
 
-I agree this does not have to be prctl().
-
-> So you are proposing to have a per mm mem pool that would be
-
-I was thinking of per-task_struct instead of per-mm_struct just for simplicity.
-
-> used as a fallback for an allocation which cannot make a forward
-> progress, right?
-
-Correct
-
-> Would that pool be preallocated and sitting idle?
-
-Correct
-
-> What kind of allocations would be allowed to use the pool?
-
-I was thinking of any type of allocation from the oom-killer (or
-specific threads). Please note that the mempool is the backup and only
-used in the slowpath.
-
-> What if the pool is depleted?
-
-This would mean that either the estimate of mempool size is bad or
-oom-killer is buggy and leaking memory.
-
-I am open to any design directions for mempool or some other way where
-we can provide a notion of memory guarantee to oom-killer.
+Yes it would be. Roman is suggesting to have a precomputed kill-list
+(pidfds ready to send SIGKILL) and whenever oom-killer gets ENOMEM, it
+would go with the kill-list. Though we are still contemplating the
+ways and side-effects of preferably returning ENOMEM in slowpath for
+oom-killer and in addition the complexity to maintain the kill-list
+and keeping it up to date.
 
 thanks,
 Shakeel
