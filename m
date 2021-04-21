@@ -2,59 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4460B366CC4
-	for <lists+cgroups@lfdr.de>; Wed, 21 Apr 2021 15:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15255366D62
+	for <lists+cgroups@lfdr.de>; Wed, 21 Apr 2021 15:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241068AbhDUN1Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Apr 2021 09:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        id S239629AbhDUN6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Apr 2021 09:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239158AbhDUN1Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 09:27:24 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4481C06138A
-        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:26:50 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id n138so66983022lfa.3
-        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:26:50 -0700 (PDT)
+        with ESMTP id S243129AbhDUN6a (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 09:58:30 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E985CC06138A
+        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id l22so40470943ljc.9
+        for <cgroups@vger.kernel.org>; Wed, 21 Apr 2021 06:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZywKeowOaZ5VjiR6Xyl1lA10hFbmQYAWAA2LZ4rnjYw=;
-        b=CK1O++Mtfpi16+3yujCdkCfBGjU4sVfzcD13bBfsUdBy4QfY5X0LGDdVSJi7h59uGE
-         CAbgTBgagVouDpUaWZMzdF9CN6uKvmqX57EAYp9CPdLIm2iwV3lrOhiMPNnXnS1UAc3U
-         VOjJ9diIXc6gRimHPoCeH9Hiqca0KFQ/WE/zg2xuxmv7LyUlzY+T+aZvjN/dULKrWWGN
-         AtQZCyKcPiVpNk7gB9XIYbHiTdQe2wVPftF0ZEMKDc8lqANKKd2tbwSEwcHIzZdonz3B
-         mcNDmd8/vG/gsoS8jfvtZABzkpzTRy1JgaOM1Emh/D0bKwhc4dtv2LM7QlFYVIRXeY3A
-         Ulog==
+        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
+        b=mjoh/M3C5zXaRixBaiMGh8FW3jbxldonTsAzJ77oVizAjeOQHKGQiC3i75Wu1umZhX
+         RchEyUx3ji5vKetnRRp26j8o1NQ2RDmlT0MDgmHTFqrnIHTNRA2hOPGLJSlBZ96jGVKf
+         571gU2R/TArQpNfCLUqywHzxY8P+cvMHYJLT1l3UwzGQBXFPMDEgJCSCblnavYn8A5bO
+         JXVBkSCY3RsQl8DJcCt2LB/rX6BfDfUMqitdJacy+e9UK6xr1L491vhp2P7k43GWQnVa
+         XgkwX1mnEErizRWbJD2VriTjvK5e1upblqP8QOGLtZ4cRNo9253JqHD+ovek+QYElz8G
+         tJ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZywKeowOaZ5VjiR6Xyl1lA10hFbmQYAWAA2LZ4rnjYw=;
-        b=CHiaVZalYPuyBrS6KeT7n/OdSzOAi8B54bpmvTxkuCButEOTCzsXVYzpjJhT8XbWJ9
-         cYZUkcx3bAj2vaXxtvduhCYzXHOfDhYjk0VMkfuCOIqYsxJtkGJy2XwGDtTEXlMO7cud
-         0wzqfkHDxkXR/+sV3692fjj9os3qrwIXvBPBkP5j0wmXRx4hYCLdr78KMgOXLzLshf1G
-         74/c3my9qfqCsdQZh/2md9Asszqe36xlgX9mhHcUnXOIbBRbH3klQchY0QMfJoEwNhNJ
-         UZnO3CjM2AtfR7VnKHms65aZGs9vycutejjijrWVLJYvaEKSgoFSz0NertUzKjTI4kmL
-         RovA==
-X-Gm-Message-State: AOAM530PaIiVVPh/U1BLo6fTN4A+3TwUEnpMUTyM674fyXj+4OojRZr9
-        S4KEuzcwp99QDUnRBGaiiBlqtLISHwU7qbeVueBnVw==
-X-Google-Smtp-Source: ABdhPJxOMLDAmh/+OEeo8HE3aBbSOrP23NrZqB40yujPGlQ1kz99f3Qw13cMpn/RLMC5fZO5jwg4a6o5Pylj2lXp574=
-X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr19213599lfs.358.1619011608927;
- Wed, 21 Apr 2021 06:26:48 -0700 (PDT)
+        bh=SzUt8X/WzmqyiQTQOb09ZoIGFmeYojo8TKKWXg5zRNc=;
+        b=AUAxBfb3c1PZbNvjlbn64cBjWOrsd84/Ye8UW1zxVbN/0nsOBJ3QuqMUvP4FFiQFe5
+         iceRjQIKkuRZSMiCaVXZjRjhXHFMF1ET/mDs5S5OULbRGk6QppaJCmePWLb3fAvT81vi
+         XxsuBrsYSR4hXubGhIm/SV837jn/xv35jCtorTzyYzCRzMyNLKRzVjnVFnJ+V5VEpUdn
+         KShqimwMPMXhy7c7hyPePBMO2+RvioJpNbIDRXS5bf01b3JhHoeELQOlp32ak2E/zvui
+         DWt78PtKUuBNTRiU6FeaOhDGuisNDNR0veonrnP5U/j6iwSDeo49xU5VpPoduMrEyby+
+         Wb6A==
+X-Gm-Message-State: AOAM532QrO653KQT+v/q7/aqn8DYkFxlfpe0e7+l4y85F2ErCyDm8Rpf
+        WMoG1EYryToxXUCYS8V+hqPORCVUvRosxcQVYLyTFA==
+X-Google-Smtp-Source: ABdhPJx1Lm56U6Iaz2d/ewarjkjUGkr/8pRTih0VFjqY53M8ShQv8y5HDqr7v1iWjgb9Db+DYtrST3iPQEA9mNdFn3o=
+X-Received: by 2002:a2e:8118:: with SMTP id d24mr18609060ljg.122.1619013475253;
+ Wed, 21 Apr 2021 06:57:55 -0700 (PDT)
 MIME-Version: 1.0
 References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH8o5iIau85FaeLw@carbon.DHCP.thefacebook.com> <CALvZod7dXuFPeMv5NGu96uCosFpWY_Gy07iDsfSORCA0dT_zsA@mail.gmail.com>
- <YH+U4X8PKWZpOpAA@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YH+U4X8PKWZpOpAA@carbon.dhcp.thefacebook.com>
+ <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+ <YH/RPydqhwXdyG80@dhcp22.suse.cz>
+In-Reply-To: <YH/RPydqhwXdyG80@dhcp22.suse.cz>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 21 Apr 2021 06:26:37 -0700
-Message-ID: <CALvZod7x=QR=p73BAxWPbFm+V8KFwYCcxNp-bOBvGaAttxjm7g@mail.gmail.com>
+Date:   Wed, 21 Apr 2021 06:57:43 -0700
+Message-ID: <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
 Subject: Re: [RFC] memory reserve for userspace oom-killer
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
         Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Cgroups <cgroups@vger.kernel.org>,
@@ -69,58 +68,81 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 7:58 PM Roman Gushchin <guro@fb.com> wrote:
+On Wed, Apr 21, 2021 at 12:16 AM Michal Hocko <mhocko@suse.com> wrote:
 >
+[...]
+> > To decide when to kill, the oom-killer has to read a lot of metrics.
+> > It has to open a lot of files to read them and there will definitely
+> > be new allocations involved in those operations. For example reading
+> > memory.stat does a page size allocation. Similarly, to perform action
+> > the oom-killer may have to read cgroup.procs file which again has
+> > allocation inside it.
+>
+> True but many of those can be avoided by opening the file early. At
+> least seq_file based ones will not allocate later if the output size
+> doesn't increase. Which should be the case for many. I think it is a
+> general improvement to push those who allocate during read to an open
+> time allocation.
+>
+
+I agree that this would be a general improvement but it is not always
+possible (see below).
+
+> > Regarding sophisticated oom policy, I can give one example of our
+> > cluster level policy. For robustness, many user facing jobs run a lot
+> > of instances in a cluster to handle failures. Such jobs are tolerant
+> > to some amount of failures but they still have requirements to not let
+> > the number of running instances below some threshold. Normally killing
+> > such jobs is fine but we do want to make sure that we do not violate
+> > their cluster level agreement. So, the userspace oom-killer may
+> > dynamically need to confirm if such a job can be killed.
+>
+> What kind of data do you need to examine to make those decisions?
+>
+
+Most of the time the cluster level scheduler pushes the information to
+the node controller which transfers that information to the
+oom-killer. However based on the freshness of the information the
+oom-killer might request to pull the latest information (IPC and RPC).
+
 [...]
 > >
-> > Michal has suggested ALLOC_OOM which is less risky.
+> > I was thinking of simply prctl(SET_MEMPOOL, bytes) to assign mempool
+> > to a thread (not shared between threads) and prctl(RESET_MEMPOOL) to
+> > free the mempool.
 >
-> The problem is that even if you'll serve the oom daemon task with pages
-> from a reserve/custom pool, it doesn't guarantee anything, because the task
-> still can wait for a long time on some mutex, taken by another process,
-> throttled somewhere in the reclaim.
+> I am not a great fan of prctl. It has become a dumping ground for all
+> mix of unrelated functionality. But let's say this is a minor detail at
+> this stage.
 
-I am assuming here by mutex you are referring to locks which
-oom-killer might have to take to read metrics or any possible lock
-which oom-killer might have to take which some other process can take
-too.
+I agree this does not have to be prctl().
 
-Have you observed this situation happening with oomd on production?
+> So you are proposing to have a per mm mem pool that would be
 
-> You're basically trying to introduce a
-> "higher memory priority" and as always in such cases there will be priority
-> inversion problems.
->
-> So I doubt that you can simple create a common mechanism which will work
-> flawlessly for all kinds of allocations, I anticipate many special cases
-> requiring an individual approach.
->
-[...]
->
-> First, I need to admit that I didn't follow the bpf development too close
-> for last couple of years, so my knowledge can be a bit outdated.
->
-> But in general bpf is great when there is a fixed amount of data as input
-> (e.g. skb) and a fixed output (e.g. drop/pass the packet). There are different
-> maps which are handy to store some persistent data between calls.
->
-> However traversing complex data structures is way more complicated. It's
-> especially tricky if the data structure is not of a fixed size: bpf programs
-> have to be deterministic, so there are significant constraints on loops.
->
-> Just for example: it's easy to call a bpf program for each task in the system,
-> provide some stats/access to some fields of struct task and expect it to return
-> an oom score, which then the kernel will look at to select the victim.
-> Something like this can be done with cgroups too.
->
-> Writing a kthread, which can sleep, poll some data all over the system and
-> decide what to do (what oomd/... does),  will be really challenging.
-> And going back, it will not provide any guarantees unless we're not taking
-> any locks, which is already quite challenging.
->
+I was thinking of per-task_struct instead of per-mm_struct just for simplicity.
 
-Thanks for the info and I agree this direction needs much more thought
-and time to be materialized.
+> used as a fallback for an allocation which cannot make a forward
+> progress, right?
+
+Correct
+
+> Would that pool be preallocated and sitting idle?
+
+Correct
+
+> What kind of allocations would be allowed to use the pool?
+
+I was thinking of any type of allocation from the oom-killer (or
+specific threads). Please note that the mempool is the backup and only
+used in the slowpath.
+
+> What if the pool is depleted?
+
+This would mean that either the estimate of mempool size is bad or
+oom-killer is buggy and leaking memory.
+
+I am open to any design directions for mempool or some other way where
+we can provide a notion of memory guarantee to oom-killer.
 
 thanks,
 Shakeel
