@@ -2,326 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B3D367578
-	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 01:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE7D36758C
+	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 01:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243929AbhDUXDk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Apr 2021 19:03:40 -0400
-Received: from mail-co1nam11on2080.outbound.protection.outlook.com ([40.107.220.80]:22144
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232642AbhDUXDj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:03:39 -0400
+        id S243971AbhDUXKK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Apr 2021 19:10:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31390 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234826AbhDUXKF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 19:10:05 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LN3mbu004620;
+        Wed, 21 Apr 2021 16:08:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=EnFPed14JJKK4kfYWEkFku45rv9aEq2HEWAVsbhS3iE=;
+ b=kKjjkKZtBSFXw1c1zcomGZXMmINz3K8TxO6AmfTTjjEIz283lYCHAVC/25I13aHKNjVZ
+ MLBGcLTlk3Zas520dy9ddEae2m1AVqyyA0jpKCTk5srdYnd4o+IDeXkcz/oOoZHUUNvw
+ 7HoP4JIpqJBExUHPslSqUKzXrlYs9YinxwM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3826yufgjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Apr 2021 16:08:54 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Apr 2021 16:08:53 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cgU7nvZH/IeGc4yMv1KdPYkry7bHmzosK7TRxE2CaiQgeitHlUvjh6G9gURq3lrzGFuMMUFIDtpTK5zJPgopqsWJR91Ao39Or6TYQ9NGdLjp+JA0viNmipiehQyZx3GEF2idF0MQKah6kJrlQmvn0ei2BJpKhMn8EyP7G6iIezr9/QfqEwfRwVkiC+r5u8XT82m4N0Yg3Lfave2Vp8QYg80DFajWeTCC+AZxneg4YeGKiQDpQf2OSLh3eQRpkC002bQFiS7bhbE/UbYu7VHCSnnOPjREhynoYWhW/6j0X0o3rhfk65a9U+bZAiu9bVA9bO7iXxZBMK0yDOvlG9f9Rg==
+ b=DEvtvLWsi/b1UwG707bl9qdcjuGtwIc0J7wHcpU/RfP6lIJwAMwJDlHrVKrYE7MbxjWJlutyzej5STAojzCplaDbJ16zEI6/hXwhqiUXlAD+cDxjtSuO0MHkOEisP0oC5kzKZv+9+LpHSxVRyY0wC/zRemAO2OJ2vFDWxfjk9lmvjsWtwOYgtQQ69Q4cnIPJPeA4D/kL7j9F4AE8oLnqWR5lsdL9HmTkfakIGGG3gTz0qk3loSSQyXjr0fZZdMgX/huzyHIW+O7nEn2L3ii/DR1x35JF+kYzRV19XmMjy+SP1UtJDjEv+KBcn6Vlels5c+W8x4bIyGX66iFwQDUIxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hHy9OoWejvcw0XJuDfiajqiWpMWOLWv8yaffxEbZQmo=;
- b=UgFMLVnbO/a5pyhGQEoB7ZKOq0aqGcRDPh22D/RQO3nqnfE3hEmUlJRUE0CKiICoV4QvIEsAxwDWmcRcC2yTsV9uyc+d0y0AJm/zjSmWtHUHISakr3eSCiuy2Qz4RVhQ5AVLIIXGNSckeyACvoRfzK/dl3wbxdVN98s5/Bcz9CqNbsQNZnG1pHQa5Se2SLQGa15+VFSjeM5uj2d9Jyd0g5mzFx8MBxVvr0wE+nPRxTSfxR9gQ8e35u60+SbgnL8lnWEsHd+tAQDS/PAlqPb23MA4TC6OX3NtYQlNID7Q/3CbFpOVJiXjWJ/yFU9IXqIMWbJJ7hgDzYMHf9EwqlvenA==
+ bh=EnFPed14JJKK4kfYWEkFku45rv9aEq2HEWAVsbhS3iE=;
+ b=e3FtQvo6UM0nvPu3OltXXLFHbK0s+vTa6DsezKIQmNnCLGRhstA9vgJXFfErMs+oETKzZc/EPoo1WX4GGD8bw1qlwMtI/isy1pK4j7DTZGXeUp+9T9j574mFA3TafUEgYyllcUbrtiDUP7N7Ws0CoapBK+aZKDszbYKiCy8Gmz61OYiChKYH8mrBR3Szy6CekHwXCb9g9QmB7yC+sJWAJecJtUS7dAHoPn9rbZQZqr4FQVt5LBRbsYHsm1UyQITr7pGj2Yrc/Yul0IIbB+yRTkhcLeZydV7KYe2IqikJ+AbS0Wq89ReXTEhhVV0B0oC2DBAui5O+I0qZfexw2oR+1A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hHy9OoWejvcw0XJuDfiajqiWpMWOLWv8yaffxEbZQmo=;
- b=HO08NuFMflY8iUhDr6jteD79+aJmwBSp/cD9UhkqUykvqFaQ3egzYWtfrgXuNp3z9RWg5yGR9NT37q6fII33oijwi+kKFhpMQisD0PVfVD5k75vQbkCoqjIx+P8RzMKtVU7MRZNDTBOZBksuahNEzVo6XaLWIErewvgosEixQO1+BTocuJfoCd7Ubii8hhZEhrjhumBz2vXT8Y7KFZVAfhqqOAMdRMohgAIytGR3Wb+FRc8YNnV1ogaouge9G09qwP6txLvn9BGrtWY0xBnbZlU+A22aqco3DKTXLZ6yC63l7fqSOipGWb110iexQxSdOoCbFMEWhxLnPyHvwrbrdg==
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
 Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3305.namprd12.prod.outlook.com (2603:10b6:5:189::29) with
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2984.namprd15.prod.outlook.com (2603:10b6:a03:b5::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Wed, 21 Apr
- 2021 23:03:04 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 23:03:04 +0000
-Date:   Wed, 21 Apr 2021 20:03:01 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210421230301.GP1370958@nvidia.com>
-References: <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
- <20210415230732.GG1370958@nvidia.com>
- <20210416061258.325e762e@jacob-builder>
- <20210416094547.1774e1a3@redhat.com>
- <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210421162307.GM1370958@nvidia.com>
- <20210421105451.56d3670a@redhat.com>
- <20210421175203.GN1370958@nvidia.com>
- <20210421133312.15307c44@redhat.com>
-Content-Type: text/plain; charset=us-ascii
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
+ 2021 23:08:52 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
+ 23:08:52 +0000
+Date:   Wed, 21 Apr 2021 16:08:45 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Waiman Long <longman@redhat.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH-next v5 1/4] mm/memcg: Move mod_objcg_state() to
+ memcontrol.c
+Message-ID: <YICwfY6VmqPbuX1g@carbon.dhcp.thefacebook.com>
+References: <20210420192907.30880-1-longman@redhat.com>
+ <20210420192907.30880-2-longman@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210421133312.15307c44@redhat.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR19CA0033.namprd19.prod.outlook.com
- (2603:10b6:208:178::46) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+In-Reply-To: <20210420192907.30880-2-longman@redhat.com>
+X-Originating-IP: [2620:10d:c090:400::5:a02a]
+X-ClientProxiedBy: CO2PR07CA0050.namprd07.prod.outlook.com (2603:10b6:100::18)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0033.namprd19.prod.outlook.com (2603:10b6:208:178::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 23:03:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lZLs5-009gTo-Ld; Wed, 21 Apr 2021 20:03:01 -0300
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a02a) by CO2PR07CA0050.namprd07.prod.outlook.com (2603:10b6:100::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21 via Frontend Transport; Wed, 21 Apr 2021 23:08:50 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3adefdbb-31a1-43cd-4238-08d905199df0
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3305:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3305354233E9D38EAAA2EA2CC2479@DM6PR12MB3305.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 92b7bdd4-dcad-447c-76d4-08d9051a6ddb
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2984:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2984109ECFF10BC87B731CD2BE479@BYAPR15MB2984.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gmlZ8b5oB0NwMs1aKZow2SJZ5P4UZxLuGexRWIsZATgQV6N9F3XuSOSgbUtCUPMR4Y63xl1kEYBSL0KCvhAwOAIXj6JXgWT+jzTvE7rdzwnupX/hizz6LJ4pXfpziYOqGxS1M41TIjMBVKX/Kph49mkovOdNxBRtFsicMoXLo+T3neNZC5eJaMFBdlxLs2RJyjSNppvenmZrgE7w6u2aozzYvrRVdUrtsNLEwIwVvngnyCR1IHJyzvwaHOXPt7tMWbr7jD4neSQXk//Vxl7e/QSXiQHEjNWxWekkOgQbA8ZhCH9gUJb8EKFM4VCmwOr9b8voE8Olr5fKlhVq2f9z3mhcuSx9BBUJ6l3SwWAa6JJAHMfE/uww109RKyLVlB6Oemj+hKclfshkpe6SULYr+kOxsge0eusMBC5g7d4dMCGPkv1iNbr9al3S8jGVwsUE4QXh05YXVU3ZfzYRzEPkNwDqUkTzYaHiVT3mcJRVFcLBUrGqGFppBskV4gTJjwX60E20/wI3Da/KrkZPnNU3Yi6hsXtKJjfsCqf1qTWrBw4ra0x3Qqc94Fzw2sZRRueNvZwNX+80mZrhYtNaQut4D/u1HHZmkz1ruCV3zOsWo5s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(366004)(136003)(2906002)(54906003)(316002)(4326008)(2616005)(36756003)(66476007)(66556008)(66946007)(426003)(6916009)(86362001)(5660300002)(1076003)(8936002)(38100700002)(33656002)(9746002)(186003)(478600001)(9786002)(83380400001)(8676002)(7416002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sgan8NEYmUMcOo/JIWTNsEDdPjtAqAo5pVTgk6HLOE3fR3kwx4CZH+xtiZRs?=
- =?us-ascii?Q?TTteB+H32SUrnKRFgg/YdrxA7gqWGf2i9uYDzWVbDk3Es0YQHF01H9bCHrWC?=
- =?us-ascii?Q?VAscJDKhB8Nxdr3BlcKE4oLzwQsEZ+89QXwBAB1YQFi4QVKWlS84i1Ug0xTN?=
- =?us-ascii?Q?3/YKjf/ZLeJ09MgoBgQwk2AoMNq26zq9Q3UjKwVLtoglsIfulOhIw+kkYKNS?=
- =?us-ascii?Q?VNxnOPh5ctAZetpEJhtprG6/QjvguCIsUp2HloqrPZ0tcOxsy0DBIScPsczU?=
- =?us-ascii?Q?Va9mQ0dXk0RwfRCYL8emZt2fUfpRDQpa1X6oe95IlVCz/Wsj5m00MbLjm1cO?=
- =?us-ascii?Q?kuH6TGpp7cUznhMRq72yS9ioK4umfhQuEsrg3tx1JXUd1Fm5uRvw9lX7vKzp?=
- =?us-ascii?Q?bFPoxb534FqG3Fq02CQIvNEzyj2cGEYk79K53Zq129qgAyEXJaD2HnaUCD97?=
- =?us-ascii?Q?OXUORcEZHglbp9r+ncxAGFCiPB/GJpabd+eOP2SE07lpUnsWRu0WB6Uee0xx?=
- =?us-ascii?Q?GR5DP6+WPTcwD9NrJPtTLjdSSwkPQU7vz2Vr7v64GzHCBOO4hZJot0i62SYA?=
- =?us-ascii?Q?DbWtYRMNYl1mUKDgwSaCuX92NKBZ7VgJgErkoPCXpywJZjXeEX9ac0LXRTWT?=
- =?us-ascii?Q?9yHaGvx7qoqJLywOc0dWbNaMoLvRNANSI7l5LIvBgG9s2a5ezbWuQ73BzaB1?=
- =?us-ascii?Q?VKnVuR/q7QTz347no+sVu8w7eOuy6QbswTZVIyxswd4COZO9vWuZ/J17VPsE?=
- =?us-ascii?Q?mqhzAUZnj65RGyAMI1Z3y5AKkC4RvHH1T5gTtuiqYzP8BEe9FgBuWSjv9etP?=
- =?us-ascii?Q?R9Zt8zKZV5plJ9ubnQmqlUVneMYSY8yhMRvy6wXIevmYGOpZoqAGG461b1wP?=
- =?us-ascii?Q?r8Eh66GijyZO+nL+M/3vTFAPSM41N8V+MnJqmFt3TsNqRompZAHC1YM+ilNE?=
- =?us-ascii?Q?h1uqW86iw+zJbjwY48FEUGnNivPx9fl0/B745UUTuIM9FEiaYF43zZYAzFZD?=
- =?us-ascii?Q?mrrdGSP/1vyz3al4etFEQsZTQFTqtuqDcBjep1ZExll7cIfjw1utUgoJs7Sc?=
- =?us-ascii?Q?sJncadVHSO660L80dBsXQ2387BEV64AL6B0xz1RKSmbpqAO6JCQafawXCrpO?=
- =?us-ascii?Q?w8sy/aSICII20QsxSQwty8QH0IeE1Yq7mXAsE9psK5uyihuJBXjkbw8Wi4gT?=
- =?us-ascii?Q?KkFSLnwr5mMKAeTW1sgBA9jaVgVmuZLCbqH5igDcrkINNvtdO4SbaQschmkc?=
- =?us-ascii?Q?4UtymdAKkwRztNENpHsJu0Wqb1mwY7M5O02MFRlSEuvUO5I1RWYDOBodosVA?=
- =?us-ascii?Q?4b6gRks1eF4coV6cTqjB50dCVX3XxMxrLWvsu54X0PDoog=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3adefdbb-31a1-43cd-4238-08d905199df0
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: 4mcITcwTUc9mOF0tijCw9nuL3rpRMcVQOGj+bwlQ+478+MtYlYtKBll6hMDScBec4drnXg4jvkE6fZ1DpuFDCR5I/PNR2wYtPvuxgtjXvqrOaDiA+P9it6fpwNr49j4ulfz4b7p2arTEZvfQ1Z0rxa6es6C18Bh3LnrsriZ41AUKK88IEF31iSn36Lr/0RqLvEnu8nguxOODZmQxqYpsQRhgv/6U8X3zXye+6tG9F2PoZlKrYr2ZjCwhdeuWdgmgNFBg1i9GV70dccQUz797YXJGZg/BPbcByqBrZegZ5IuOaCihNO6woWz+AudjTvQ5BJHTnv91SwIhD+FXIUy0iJAxtEo+pCa6dqOxz0qdqQh3ba3+H6Z9wmPL8sH3Z138IOuvtWu5LvfSW7J905gnCw8Ecum3znTE/u4WT40A6q+1n7zdSbfLvx67Xf8nog7dU2rSXtvXwh4cwSmM3cGbRTwjKa2r3WVRkhJ9LOlH3QfEaZqOsg6+MQu7npcJJpqUHsqYUVpjaG5GAb2BqjQziSFMk+08euXe2wI8jeWdZwwtQZmcCnPt42D09qLm/bSAdmU4k+IMFWb18fbOYzod2m/m682w+a1SHJbcE+iMDfU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(396003)(136003)(39860400002)(86362001)(55016002)(316002)(66476007)(9686003)(2906002)(66556008)(6666004)(52116002)(6506007)(8936002)(8676002)(54906003)(7416002)(4326008)(6916009)(5660300002)(7696005)(16526019)(4744005)(38100700002)(186003)(478600001)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?mRZ8pU0b9OKO57UUoEdIe+LN+v19yXSBLsYNuCf/L2ugPr3X9OT7U7veayJv?=
+ =?us-ascii?Q?ticSkA4rMmv2oTQdXcibaN8+KD6xp8f0zjkj+xuUoU9U7mNc/mrudNkIwX14?=
+ =?us-ascii?Q?NBcqsKeiBJdv3gOonYf94gH002k1V5ZAXyPS4noT3SxhhY7a7weTOaYanHMh?=
+ =?us-ascii?Q?Sk+CEvzeEmc1V1/nEitWSE6O+1Gv/rO+bKLP2E8FMLiIhC8UVf5kXT56FaOs?=
+ =?us-ascii?Q?oh8cflTfw4CcHa+JHzBGgR5cIH/elAqdAKG4v9CTLDcn6En+c6im1BD+OMH6?=
+ =?us-ascii?Q?Sf+a36ng6K8bpvKaAJ4qYqc73geW3x/wHAweOF+7mdSTO+spF+twx+JIqTq+?=
+ =?us-ascii?Q?IFl3Ua2gUbLeyh1hyamAsdT23qE9Vt+eofrFiy+Ss5HJrvFBlhhzHTJHEzp3?=
+ =?us-ascii?Q?cMKkW1Wfx2oeJYiKm8rHDntKt9+4YUDD4YO1EV/oZZNtVMgME66VCxMwT2QS?=
+ =?us-ascii?Q?5zls9EJ4V0cVooCp7PkFBqbEJZElsqMwmS+ncleve9CN2NSGSXxo3lWUXvtD?=
+ =?us-ascii?Q?x5/nP+UDaYsG+QLZGEUMUn2u+6k8nsyMH1lCxQlW9zkBqOYi0G/DqMFTIZdT?=
+ =?us-ascii?Q?FagGhhSbwTUfH3fT8lZBISDvohD6W+3vo0Bqcm59Kfxg+Wa4OtIBberZsjoY?=
+ =?us-ascii?Q?d8DjrFyX0HUtGK+GnVCAxNMwbQ2doKIcti0BgaTNTZC41O5rl/19ajjsTtqQ?=
+ =?us-ascii?Q?TlXkyFSVmVT2aiJSfDsUa0s73/Fb2vxL7vime65bQuz9+R5yrzSfApzU4a3a?=
+ =?us-ascii?Q?VUkHKz8hJj9xS9xb702cFEUeUtTJGPYdmEDOUVszc49OkxwtNdthv32a237t?=
+ =?us-ascii?Q?7R5Lk+Gij+wrNVbeUKQdFjH4BeYGOsOvc5omxCCcgS5jH7oMYeqNFsNbjvr4?=
+ =?us-ascii?Q?zkmMNAw/U0ebRXIGFu7NoHlmYotGwzR2evR/YU1MsYSV9jpIDeuqlx34qrYH?=
+ =?us-ascii?Q?ICUsfrpygeorleNbdPxQfmahADizqFv/xiNZt8GX8kfTtqQ+kT3TyWpZDyoG?=
+ =?us-ascii?Q?aIbWtrNuJc+rNu0QJy4sPJ0BoSJtm1ucA8JLFRL4Iv70WYb55PdjrsUNONrI?=
+ =?us-ascii?Q?TAkdBTCD5NnS2Ubbm0v0+COgT7XDH+Mx7NSCsFOsL/MqCdc75KK01rV2Ujcb?=
+ =?us-ascii?Q?TgkYHO4Pl5pIk4D0jhkFClrQetYmkhV6hUDZ0fD9/CEwK8XodCLdMfKYxULt?=
+ =?us-ascii?Q?m40pXco6Q1rZKU/i3yhcq7OUmxQJpoCNQlXSnp3Akf0JtTsZIPe0qWfnTroU?=
+ =?us-ascii?Q?gW3YK+EeTQARNaMN0+2MYMYYEJKBkPKcHbeKUdZRdAN2zS0k7dKtDHpDleGO?=
+ =?us-ascii?Q?Hdpqx7MmDThZAxpmrOP+x+ZSE+OavjQhnjUmPC/KYLHXZA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92b7bdd4-dcad-447c-76d4-08d9051a6ddb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:03:03.8601
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:08:52.2642
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cXrgNoHuzuShJ0K14rrUqH7DFZsh5ix9K2rrGM7tNYIO2MPqKSG2mvhkM6vR58jf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3305
+X-MS-Exchange-CrossTenant-UserPrincipalName: sfrWQ86Mv83gWsGGfSSof2hhc6k6LQW0ZBXIa2qE2WMRPSnudDWiumq16Tj59cCM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2984
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: -KjTOhFLy45JgI3rEqG1WYL69DUVFIYQ
+X-Proofpoint-ORIG-GUID: -KjTOhFLy45JgI3rEqG1WYL69DUVFIYQ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_08:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 mlxscore=0 spamscore=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=904 malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210152
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 01:33:12PM -0600, Alex Williamson wrote:
-
-> > I still expect that VFIO_GROUP_SET_CONTAINER will be used to connect
-> > /dev/{ioasid,vfio} to the VFIO group and all the group and device
-> > logic stays inside VFIO.
+On Tue, Apr 20, 2021 at 03:29:04PM -0400, Waiman Long wrote:
+> The mod_objcg_state() function is moved from mm/slab.h to mm/memcontrol.c
+> so that further optimization can be done to it in later patches without
+> exposing unnecessary details to other mm components.
 > 
-> But that group and device logic is also tied to the container, where
-> the IOMMU backend is the interchangeable thing that provides the IOMMU
-> manipulation for that container.
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I think that is an area where the discussion would need to be focused.
-
-I don't feel very prepared to have it in details, as I haven't dug
-into all the group and iommu micro-operation very much.
-
-But, it does seem like the security concept that VFIO is creating with
-the group also has to be present in the lower iommu layer too.
-
-With different subsystems joining devices to the same ioasid's we
-still have to enforce the security propery the vfio group is creating.
-
-> If you're using VFIO_GROUP_SET_CONTAINER to associate a group to a
-> /dev/ioasid, then you're really either taking that group outside of
-> vfio or you're re-implementing group management in /dev/ioasid. 
-
-This sounds right.
-
-> > Everything can be switched to ioasid_container all down the line. If
-> > it wasn't for PPC this looks fairly simple.
-> 
-> At what point is it no longer vfio?  I'd venture to say that replacing
-> the container rather than invoking a different IOMMU backend is that
-> point.
-
-sorry, which is no longer vfio?
- 
-> > Since getting rid of PPC looks a bit hard, we'd be stuck with
-> > accepting a /dev/ioasid and then immediately wrappering it in a
-> > vfio_container an shimming it through a vfio_iommu_ops. It is not
-> > ideal at all, but in my look around I don't see a major problem if
-> > type1 implementation is moved to live under /dev/ioasid.
-> 
-> But type1 is \just\ an IOMMU backend, not "/dev/vfio".  Given that
-> nobody flinched at removing NVLink support, maybe just deprecate SPAPR
-> now and see if anyone objects ;)
-
-Would simplify this project, but I wonder :)
-
-In any event, it does look like today we'd expect the SPAPR stuff
-would be done through the normal iommu APIs, perhaps enhanced a bit,
-which makes me suspect an enhanced type1 can implement SPAPR.
-
-I say this because the SPAPR looks quite a lot like PASID when it has
-APIs for allocating multiple tables and other things. I would be
-interested to hear someone from IBM talk about what it is doing and
-how it doesn't fit into today's IOMMU API.
-
-It is very old and the iommu world has advanced tremendously lately,
-maybe I'm too optimisitic?
-
-> > We end up with a ioasid.h that basically has the vfio_iommu_type1 code
-> > lightly recast into some 'struct iommu_container' and a set of
-> > ioasid_* function entry points that follow vfio_iommu_driver_ops_type1:
-> >   ioasid_attach_group
-> >   ioasid_detatch_group
-> >   ioasid_<something about user pages>
-> >   ioasid_read/ioasid_write
-> 
-> Again, this looks like a vfio IOMMU backend.  What are we accomplishing
-> by replacing /dev/vfio with /dev/ioasid versus some manipulation of
-> VFIO_SET_IOMMU accepting a /dev/ioasid fd?
-
-The point of all of this is to make the user api for the IOMMU
-cross-subsystem. It is not a vfio IOMMU backend, it is moving the
-IOMMU abstraction from VFIO into the iommu framework and giving the
-iommu framework a re-usable user API.
-
-My ideal outcome would be for VFIO to use only the new iommu/ioasid
-API and have no iommu pluggability at all. The iommu subsystem
-provides everything needed to VFIO, and provides it equally to VDPA
-and everything else.
-
-drivers/vfio/ becomes primarily about 'struct vfio_device' and
-everything related to its IOCTL interface.
-
-drivers/iommu and ioasid.c become all about a pluggable IOMMU
-interface, including a uAPI for it.
-
-IMHO it makes a high level sense, though it may be a pipe dream.
-
-> > If we have this, and /dev/ioasid implements the legacy IOCTLs, then
-> > /dev/vfio == /dev/ioasid and we can compile out vfio_fops and related
-> > from vfio.c and tell ioasid.c to create /dev/vfio instead using the
-> > ops it owns.
-> 
-> Why would we want /dev/ioasid to implement legacy ioctls instead of
-> simply implementing an interface to allow /dev/ioasid to be used as a
-> vfio IOMMU backend?
-
-Only to make our own migration easier. I'd imagine everyone would want
-to sit down and design this new clear ioasid API that can co-exist on
-/dev/ioasid with the legacy once.
-
-> The pseudo code above really suggests you do want to remove
-> /dev/vfio/vfio, but this is only one of the IOMMU backends for vfio, so
-> I can't quite figure out if we're talking past each other.
-
-I'm not quite sure what you mean by "one of the IOMMU backends?" You
-mean type1, right?
- 
-> As I expressed in another thread, type1 has a lot of shortcomings.  The
-> mapping interface leaves userspace trying desperately to use statically
-> mapped buffers because the map/unmap latency is too high.  We have
-> horrible issues with duplicate locked page accounting across
-> containers.  It suffers pretty hard from feature creep in various
-> areas.  A new IOMMU backend is an opportunity to redesign some of these
-> things.
-
-Sure, but also those kinds of transformational things go alot better
-if you can smoothly go from the old to the new and have technical
-co-existance in side the kernel. Having a shim that maps the old APIs
-to new APIs internally to Linux helps keep the implementation from
-becoming too bogged down with compatibility.
-
-> The IOMMU group also abstracts isolation and visibility relative to
-> DMA.  For example, in a PCIe topology a multi-function device may not
-> have isolation between functions, but each requester ID is visible to
-> the IOMMU.  
-
-Okay, I'm glad I have this all right in my head, as I was pretty sure
-this was what the group was about.
-
-My next question is why do we have three things as a FD: group, device
-and container (aka IOMMU interface)?
-
-Do we have container because the /dev/vfio/vfio can hold only a single
-page table so we need to swap containers sometimes?
-
-If we start from a clean sheet and make a sketch..
-
-/dev/ioasid is the IOMMU control interface. It can create multiple
-IOASIDs that have page tables and it can manipulate those page tables.
-Each IOASID is identified by some number.
-
-struct vfio_device/vdpa_device/etc are consumers of /dev/ioasid
-
-When a device attaches to an ioasid userspace gives VFIO/VDPA the
-ioasid FD and the ioasid # in the FD.
-
-The security rule for isolation is that once a device is attached to a
-/dev/ioasid fd then all other devices in that security group must be
-attached to the same ioasid FD or left unused.
-
-Thus /dev/ioasid also becomes the unit of security and the IOMMU
-subsystem level becomes aware of and enforces the group security
-rules. Userspace does not need to "see" the group
-
-In sketch it would be like
-  ioasid_fd = open("/dev/ioasid");
-  vfio_device_fd = open("/dev/vfio/device0")
-  vdpa_device_fd = open("/dev/vdpa/device0")
-  ioctl(vifo_device_fd, JOIN_IOASID_FD, ioasifd)
-  ioctl(vdpa_device_fd, JOIN_IOASID_FD, ioasifd)
-
-  gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
-  ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
-
-  ioctl(vfio_device, ATTACH_IOASID, gpa_ioasid_id)
-  ioctl(vpda_device, ATTACH_IOASID, gpa_ioasid_id)
-
-  .. both VDPA and VFIO see the guest physical map and the kernel has
-     enough info that both could use the same IOMMU page table
-     structure ..
-
-  // Guest viommu turns off bypass mode for the vfio device
-  ioctl(vfio_device, DETATCH_IOASID)
- 
-  // Guest viommu creates a new page table
-  rid_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
-  ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
-
-  // Guest viommu links the new page table to the RID
-  ioctl(vfio_device, ATTACH_IOASID, rid_ioasid_id)
-
-The group security concept becomes implicit and hidden from the
-uAPI. JOIN_IOASID_FD implicitly finds the device's group inside the
-kernel and requires that all members of the group be joined only to
-this ioasid_fd.
-
-Essentially we discover the group from the device instead of the
-device from the group.
-
-Where does it fall down compared to the three FD version we have
-today?
-
-Jason
+Acked-by: Roman Gushchin <guro@fb.com>
