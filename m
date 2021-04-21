@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E623675B1
-	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 01:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64033675F1
+	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 01:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhDUX3a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Apr 2021 19:29:30 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9310 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234681AbhDUX3a (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 19:29:30 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13LNQ2QY002601;
-        Wed, 21 Apr 2021 16:28:35 -0700
+        id S234922AbhDUX4l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Apr 2021 19:56:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43340 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234878AbhDUX4k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Apr 2021 19:56:40 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LNrgIA030760;
+        Wed, 21 Apr 2021 16:55:47 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=qG5Xb259e1bHsz8L6Vvb3G9GI+bwdaQKWdtR2nJOwUA=;
- b=nAN+FvZ6Huj5KXYKrH11b+in+5zKAls2gGQiJIl1UBnLOrrpzPQbWmU6QJx6BQqaTqK5
- AFN7mppo622XOteX7mF7ptS/aDrIAWLvRTbF5nVruaDbq/vu4nptpVipejX7cNeB074u
- 4v80CoUCz0CJpQ3ECRo7yIO9leKOtFWL04I= 
+ mime-version; s=facebook; bh=KXymcwLV1RUhO127TJbcozKUy+8pPOtW5b5KBrtdntQ=;
+ b=BRXxPZJgu3bmq6GKfll8Imb4Qsk7O6PD8vp09GdJs9tfG+UA5DhCtPN5IGjd+DWUTD0G
+ nRdKTbtPJL9MJXg3LZa0rjJ1bRiFA73kEAmNyD1J2IKdFlcvXZugy6T3vEb8d/lPL90s
+ fdqxhhfSU8pf8hyEdZ0C+Bjaj2ZhnDIsFpI= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 382k2uvk62-1
+        by mx0a-00082601.pphosted.com with ESMTP id 3826yufpgg-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 21 Apr 2021 16:28:35 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Wed, 21 Apr 2021 16:55:47 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 21 Apr 2021 16:28:34 -0700
+ 15.1.2176.2; Wed, 21 Apr 2021 16:55:42 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j5VJr2d1NMhkh3r5J0aTODOglmkijMZaqbGk4Yn6Zhf6+QAXRgAsWokhwGB9R0pXg1PdpmPffVnWu0rBCsgooFcaEN5SNvqnB5PUfMaVQfIOUHLT7yo8jdD6i+H4+83ng1G/mro90squLaTOoAFkjK3Izr0AXLJj647ULkcrNZ79ZZh761RlEpig49cMuOTODrY2oqCyOfXbE1BgOr9x1/R+A84J2M8J5dRT9H56cJSsOAt773GhkuloZevuO/XDz+4fmLbHwHdI4J54OTAkUu7UM3XrOcp/4+jP8uyEmhDlYqNsektYC970T1+kal7yWanf53BQLXZkPXya/OXChw==
+ b=IcmZpwL+mvBfDrk7agtQJJmIg+HF88QPQsRBi6cSzandF6+FufKRMx/mo/g01blKDdIyWcmVhEgyT+fw9Ee27J7xAlZEsvJ1HCgaWvfT6Ikwa/P6qAu63GxT3dTWzrzilT7MjUkFHLMYhAK095YMc2Z/LEx/+DnlGqnWe8TB+hClIEntVkq/Uv3ErFWde+1Xd4koau3Pvulu6sTllh9qY1rj0ddfBfjW/uYOmLZD17qRKXVgPjJOOUoD18ZaOyqt4SL2aHyVWyJ2zyhppjskxJ79LE/BvTOJBD3LY444ZMGdwSJgv+AHnkAgUfwww3xEKGbTAC4XGi5jCdRLUH33hw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qG5Xb259e1bHsz8L6Vvb3G9GI+bwdaQKWdtR2nJOwUA=;
- b=cmlNZ8s6IJXHD32JL+cwU7AecOY5ttpXeExBYT+m+XPDz01jynbPNB0oC96dTIZuLHS7HugBuM45KCGTrYjG+M5WOGtYi2t0DNwyBFeJfV6a1ui/WM6kkrl24R9y+qRsKTB4gHSCJkEZ6fvH3BpRO+lxdSQaSyOKyYQFfbC6wcndwuHoP5AAP7q0P8uhZjm6DwtPl2EfDtX58MSJ+GH3s+IP5XMmMzHQDi5U7tqiwKwMBWb1MTQ4G4lJjYE9gw4l7ovqoCIWXn/6M8YIxIJnUAJC6BACXMW7b3EBGmPwU14kS8FmFamB0uDQpcnn7TVi6BsaVk3DTaDCYP+OjZG/kQ==
+ bh=KXymcwLV1RUhO127TJbcozKUy+8pPOtW5b5KBrtdntQ=;
+ b=HMavJNxXHAyoaa4dPvxoqYlE7nPK+v64egw13I0k7hDReO1QNl8P4Oi9h8bwPwAb343HosR3y4sFsoWHpIyFg6GRnU0WAEAU36i/PRYMsOzjLj3Ccm1SOmI46ucCJXiOWKJw8vB4DTvOXvgbpgutjJmh8dRowKyaMwVSe6UstgMhz16tvrrXwEHXoYM2QYtkPN+AY6TBdd95YbuPz6G4/fpKCfWHM1mUGjn0vRNe5IP4ze+Z88f20gFsefcIQVIuKgNWNPMQ9H05KRU+6pX5zfyJ1XBdEk2gG1XmxfOh8ymWKN3KSjpID0GpAQHNbiMyWp3j7P+AgOuN1YX+jGarIw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: redhat.com; dkim=none (message not signed)
  header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY3PR15MB4961.namprd15.prod.outlook.com (2603:10b6:a03:3c4::5) with
+ by SJ0PR15MB4469.namprd15.prod.outlook.com (2603:10b6:a03:372::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Wed, 21 Apr
- 2021 23:28:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Wed, 21 Apr
+ 2021 23:55:40 +0000
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 23:28:33 +0000
-Date:   Wed, 21 Apr 2021 16:28:28 -0700
+ 23:55:40 +0000
+Date:   Wed, 21 Apr 2021 16:55:34 -0700
 From:   Roman Gushchin <guro@fb.com>
 To:     Waiman Long <longman@redhat.com>
 CC:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -71,258 +71,119 @@ CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Masayoshi Mizuma <msys.mizuma@gmail.com>,
         Xing Zhengjun <zhengjun.xing@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH-next v5 2/4] mm/memcg: Cache vmstat data in percpu
- memcg_stock_pcp
-Message-ID: <YIC1HEKF8SQQdnxa@carbon.dhcp.thefacebook.com>
+Subject: Re: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock()
+ performance
+Message-ID: <YIC7dh0+nQDFmU+T@carbon.dhcp.thefacebook.com>
 References: <20210420192907.30880-1-longman@redhat.com>
- <20210420192907.30880-3-longman@redhat.com>
+ <20210420192907.30880-4-longman@redhat.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210420192907.30880-3-longman@redhat.com>
+In-Reply-To: <20210420192907.30880-4-longman@redhat.com>
 X-Originating-IP: [2620:10d:c090:400::5:4579]
-X-ClientProxiedBy: MW2PR2101CA0003.namprd21.prod.outlook.com
- (2603:10b6:302:1::16) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+X-ClientProxiedBy: MW2PR16CA0002.namprd16.prod.outlook.com (2603:10b6:907::15)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4579) by MW2PR2101CA0003.namprd21.prod.outlook.com (2603:10b6:302:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.5 via Frontend Transport; Wed, 21 Apr 2021 23:28:31 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4579) by MW2PR16CA0002.namprd16.prod.outlook.com (2603:10b6:907::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 23:55:38 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f53ea2cb-3d25-4a43-0eea-08d9051d2dc7
-X-MS-TrafficTypeDiagnostic: BY3PR15MB4961:
-X-Microsoft-Antispam-PRVS: <BY3PR15MB496140E2A2A730B276AA3245BE479@BY3PR15MB4961.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 78d83adb-835f-4316-a044-08d90520f787
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4469:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4469C09B11CDAD6C3844A12ABE479@SJ0PR15MB4469.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: itushWobtAU10NR05s/3F5hPT0tYdK/ix7dF9P7zPh4PzdNHtfooRi63EPN1rcFTXJB/Hjo3h1D4xNxjUxwt/hYnKkJ0ZgrS5g3kHBwhQDM/uCWQFQjGVG9eOSUkrrNyV58/bbmQCRAY1tdvjYV2MwVUgfZJKYrQmtZAwNhgpgzYJ14Byq1LGovUPPlRk6Bimhxk7uRQjWWcpCpjgl9KwFjBaQBSeZHCuyTr9hZEzRmsQ2c8Swh2/xhYK4Q4R3qB3Wa4VxQkvTA4sISznvOeYXkvuEjZDP+j5Ufmep3F5tv1l73JOS/oQZeUF7WmU/HRefevLMr7spvlQV5Y7J4sIWj0f/Fu3t7RPmD+OttQyWLvqPdr5f2Mbwe5cr0jQ1ET1M3wfGzf4hZnaDbn7Obc/yYUVQaIH/Jv0TeBS51X5B+wzqPtuMQrdotH9YADZhm84FmJMmDGup8dFGwNFevte+bCRiN48WEFXP8QHRGabTqgFzUKk/aahO3mCJNm8/3w5UxwpIwXaMc1+BST3LV5A/RE7njmlj1sVl2L8Qa4tKiVgNaV2kIyjEzPYSxd46DcfqoPG+yFre0ZGrX/msYvIli4Ql/z/jJnY6Dx3hyACR4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(54906003)(66556008)(8676002)(498600001)(6666004)(7416002)(66946007)(66476007)(38100700002)(6506007)(8936002)(16526019)(7696005)(55016002)(9686003)(52116002)(5660300002)(83380400001)(6916009)(4326008)(2906002)(186003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Iceueo/5VAH0ZcXEAnyf8khGGYbJvQEvYDj5OIamJdbazL+Yk0KWNLHjj8WW?=
- =?us-ascii?Q?RtZYIrQ6w5j+FlOndC0Yj+aAqXzLwOlsErQde0snaIUrCldl38VsIXG2mEab?=
- =?us-ascii?Q?CaLwa21dNtwMpuRJ8Wf/i86FDAd7Rgf2NWgWLL1gyuIx4K5Zx2qt7TTpv7P4?=
- =?us-ascii?Q?1jU8B96S1HBHiGVAKrNQ9qnenhrrfjjv8YgqS1gRCVz9iSU3i/Py0ETLIpj9?=
- =?us-ascii?Q?rLwzwFHjtg71NcFaqP8njyILfbT2EpOGFtHd0S2JjxZ0HTNnkpcSoDarsZ+D?=
- =?us-ascii?Q?wBevvfJB3Wzg2BDF5Utzef6ZywEo6yHYbVWcxnoY3cr5ga4/DkMoco/4NNuY?=
- =?us-ascii?Q?T9CCNEC9o230GrgCiNoMs9hsGCfmQ8oYO1oK270Tqek4y2DEo8hILgsT1VfX?=
- =?us-ascii?Q?+GP+TXO1F66Ar7jK0Gmx5C9YWXtKkYHJFNTqn4RQp4u3pqcConYeRnSBF9xs?=
- =?us-ascii?Q?CVpV0ZOzUVQq+bT7QXCtLZL5kCCys44evGN2EFNxkCtQ8Bq3Ir/6l98/JbFs?=
- =?us-ascii?Q?IrJ1hcuz7XjRJXN6QCeE2PQQEfN3opeFvVuWMd9eoUNBVnGRHXATtulsmII+?=
- =?us-ascii?Q?mJ6+dwc0RJBB9CViNR4cIVUSkfDP1sw/C/asyG0lzFa6/SvYf0b8qcritLPR?=
- =?us-ascii?Q?SSrExn7bEsg1skIIBqFm53HraT/JsRxbrCI8o2QArvjHLs3pAfklrf1BBUjD?=
- =?us-ascii?Q?/ViTsYEle18R5Nlrl6XvDCqjUYf9g4uYgpZfoP5GHp65CgJg1JpXxmG8h5la?=
- =?us-ascii?Q?S+UoYJ7LDDiYjYzCHF8HlV8+xJ49UwUqGlQm16ix7A3IHqsVs8Gb+xwZkBfY?=
- =?us-ascii?Q?g5b1NHPk4Oub3J3zPwL+gCq7TShhZbxHmZ7Y0sCUWh0MceTSPMDasXW8fIYt?=
- =?us-ascii?Q?e3M5gpk0K7XDiIoqU72tuyeusLXVIqH6kKXMN2Bcq8to2vu3lxxuGl35fBxl?=
- =?us-ascii?Q?32LUCvO+DM98C24kWy5ip2U8wblQSvgSpD18CBnQGarW938c4yc3CKgR+Vnd?=
- =?us-ascii?Q?JFe83mAUsRw/KaYPyd1Lmkg/JoGbkLYG3dBBC3IAz8/XT0epYIEGoVJR7S1B?=
- =?us-ascii?Q?0cWGMAoQNEU/zp9+i+W7wUQ5eVJIivS8YQ1YRQT5RD75bejFvZVn3TnXegsD?=
- =?us-ascii?Q?XPG7LtQ0KpsX1eWsyJLbl8cFcDf9HzHC7e/2yGs5vZfBoSdmdl2ePU6aPSTw?=
- =?us-ascii?Q?rJt7qM8w76dXq9ua2uzG9+PO+SYyQi94KRrfasVbKyLMIx+VS2Gab9upTtjf?=
- =?us-ascii?Q?xSb6/JqKYDTJ4yWsov8j2KkLCG8s4913MoWH6vVX+oTBk18kJyhLrtMXpxEw?=
- =?us-ascii?Q?HaOTFsEu6tRq7W+kgh42GslErNjNNzbWwupa5vdITF2VNw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f53ea2cb-3d25-4a43-0eea-08d9051d2dc7
+X-Microsoft-Antispam-Message-Info: UPWg/HNj3Mv7PzqSfYIp4kWomF0/fmsfY64FG6hN3Jj/OyGDC/q6VE33ypCcNWauzrfY+zMwJBl6d8zbYiZpBHbcQ1PoQjQXC84s1dkbYLQDLeLzyh9Txy3d84SFfDHLMNk3i0LS+99lEIy/ykxngrgqN15+5/WRdePUALKpIL7GuFDc2dtZ/XLrnXczM4T5H2O16nXNKjDlLvl2q9LHXsOe+7DZJtxI8KsZcsysxkVcvWxHKbc6NjcvGoHqofncH/hDho1QV7oUayXI56yDhIUhqjf4z3E8iC6ShLof2b6nfzsVFT4br06CKk2PJs263iNd3E55sCt/jojS8qLSA2KMNw1cOQE3vHtDsdkve5c7qiSfwjFoqpm3S+Y863oj1u4bHTqNgq+h1b3hKWNPZ6hW1/QN5y2vdRj3eOwObPKvOK5665SfHnD4KzKZRsiPEJzKeSC3JFNhvobgeZ5AO8qtQwxEOKHBP2wMg1J4EazyCXxc9mNFoZdWRaTce3TsnZdL4w07H4yDj9G/2EuR+aSgj7IvpE13E+or3UDZClW1Bw1uMTzsyB6PZ+nnU20ABbTIqURePYg2+qkl0xwx+pVeGJV9M2VNO3rDSCJgCvc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(136003)(376002)(39860400002)(6666004)(66946007)(54906003)(7696005)(186003)(8936002)(86362001)(52116002)(6506007)(478600001)(38100700002)(16526019)(7416002)(9686003)(66476007)(66556008)(316002)(4326008)(5660300002)(8676002)(6916009)(2906002)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RHjyQZOu4reTBOIX336wtORVINdxnjtLw3Q4gEJyhrD87y651fkiFyJHVkN+?=
+ =?us-ascii?Q?X2pjdpd5Q3L+ykMrHx6ybhXxLw+TGEUOQlUFkfEDZE4ZIZcJVK00F54bwZm6?=
+ =?us-ascii?Q?PoOiU+IoLcPkcFueXvwKWqhLLv5MKs1CRgrC6pA/ohdYfPxTXmjs9ID0Mjh0?=
+ =?us-ascii?Q?YZKZxNpd9PNa9ZzreJ5rpl3HF2wk0H1pgwzCaQ3lYyCSYHZ1bejZMV5WuLEJ?=
+ =?us-ascii?Q?97pdMm2OwgqGxvPvxu0e6GtGHSnsKQpYgVRx2ndfgmDyMeW9GhKhh1/pM478?=
+ =?us-ascii?Q?FNF8Xa/yFHhZtq1hjR3YuGGNW40ZH0lPGebmItvFwERhpkYHCmOGgPIThzC/?=
+ =?us-ascii?Q?1SACh13yjDROgwP7SHPOFkF0e53UWyb/w0xpArQxv+S2zFqI2wInwXnIeCdy?=
+ =?us-ascii?Q?BvvpyitY5pnbJnULf+5hgat5zvEBQOwFDyKbDdt9rw/VblEg7EpxGZZyQI30?=
+ =?us-ascii?Q?2Vvbevxe/3uvriwNEGZJ+p58fFXjqN6od6gCgqCSaCuF09uO5wIzHj9PUk9d?=
+ =?us-ascii?Q?rB3mOkDXYDnLM4neM7NBzUd1DCSvMEm5pgkwE4Xm7lK6685Xmn1CJdY14IGp?=
+ =?us-ascii?Q?+kGnFyUPgATsXMPjZVgyID8Ct6SQYutKrr3Ng7gOu75LedEEfZTt6QBpyNuO?=
+ =?us-ascii?Q?JEDs5DxydjmOi9ypZZSnNLBEi67OR8CrMaCnti30mwcp/JQHBdkNaXGYX9RV?=
+ =?us-ascii?Q?nDIvvaQMslPA38sppngI0Ft2ny5wLz2P6t/+mSJ2Hi4/OSSkicVYC5UF09YK?=
+ =?us-ascii?Q?rKi9j2CMZxhwHXgX5kezu7HLBDs6hFq8S6YMOwf2Sepi9hdmMrzXMyxp/R2I?=
+ =?us-ascii?Q?VdC4vsJy/sZbDasb1PrShUKzLTf4jfFbhi9Hf8GsMCcgtarbevJTq6o6dkL+?=
+ =?us-ascii?Q?DfgybkLrYl5scs+sEBG4HT4IGTG5uM2c7RVMQ+dgglmKy5AKIJ3jcCwNqi/A?=
+ =?us-ascii?Q?lmQb/U8Gj5zSA8ZDpgLPfhePnNWS/4svX1uXv1CScAh/3LbNXXgRfgc3mvV3?=
+ =?us-ascii?Q?m54v1crvWNN+swojitoGw0ppBc9HJtNsvmDS4IKfqMhQgRYEZz1uG5jn1EN/?=
+ =?us-ascii?Q?luyUR6mmSHlOCWnd40UJUZU0jsKu8tmJ7dNa4LWVVDndxQlC2M6NxwKqGxnE?=
+ =?us-ascii?Q?xzeR0H/xkxUWd2awYesyxwFZ4sgKGxxA7KG/qIEzkm/ajr7KxNfxBKVfSevy?=
+ =?us-ascii?Q?+NnVbKV4PBLvFBdy/6oWUKsO/SCf1AEZRlWkjhGtj0MndESfqURxxUn8IRR9?=
+ =?us-ascii?Q?P/gwOOm8bzLMmWTkz0u6KD27HuJXJ/EITDfS/sUOJFTZFU0pj9tP15S5lbse?=
+ =?us-ascii?Q?TagLhUNwMndqiAZljFBOWx801uVQ0ehHiDvnmf/0EKwy9A=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78d83adb-835f-4316-a044-08d90520f787
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:28:33.2954
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 23:55:40.2087
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T7hdsPtMubPSof92BqnIQKN1RoZz7NyFdS3F6zD8p0agIN6PWV0WNqHOeA2RLUT6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4961
+X-MS-Exchange-CrossTenant-UserPrincipalName: MD1Fx7aRDH7VWYfcxnvppYt+0y6UzPKOlHbRwfQ64WhfnSqYzEO/2OTUiBmbPl2i
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4469
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: A4Yndv17khktB_2rHQDp6JYH1koyMAAI
-X-Proofpoint-GUID: A4Yndv17khktB_2rHQDp6JYH1koyMAAI
+X-Proofpoint-GUID: FpGWz8gN1kx6WbjLfCKlKl2Hz129IfEI
+X-Proofpoint-ORIG-GUID: FpGWz8gN1kx6WbjLfCKlKl2Hz129IfEI
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-21_08:2021-04-21,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- bulkscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104210153
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 mlxscore=0 spamscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=893 malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210158
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:29:05PM -0400, Waiman Long wrote:
-> Before the new slab memory controller with per object byte charging,
-> charging and vmstat data update happen only when new slab pages are
-> allocated or freed. Now they are done with every kmem_cache_alloc()
-> and kmem_cache_free(). This causes additional overhead for workloads
-> that generate a lot of alloc and free calls.
+On Tue, Apr 20, 2021 at 03:29:06PM -0400, Waiman Long wrote:
+> There are two issues with the current refill_obj_stock() code. First of
+> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
+> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
+> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
+> be used again which leads to another call to drain_obj_stock() and
+> obj_cgroup_get() as well as atomically retrieve the available byte from
+> obj_cgroup. That is costly. Instead, we should just uncharge the excess
+> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
+> function should only be called when obj_cgroup changes.
+
+I really like this idea! Thanks!
+
+However, I wonder if it can implemented simpler by splitting drain_obj_stock()
+into two functions:
+     empty_obj_stock() will flush cached bytes, but not reset the objcg
+     drain_obj_stock() will call empty_obj_stock() and then reset objcg
+
+Then we simple can replace the second drain_obj_stock() in
+refill_obj_stock() with empty_obj_stock(). What do you think?
+
 > 
-> The memcg_stock_pcp is used to cache byte charge for a specific
-> obj_cgroup to reduce that overhead. To further reducing it, this patch
-> makes the vmstat data cached in the memcg_stock_pcp structure as well
-> until it accumulates a page size worth of update or when other cached
-> data change. Caching the vmstat data in the per-cpu stock eliminates two
-> writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
-> specific vmstat data by a write to a hot local stock cacheline.
+> Secondly, when charging an object of size not less than a page in
+> obj_cgroup_charge(), it is possible that the remaining bytes to be
+> refilled to the stock will overflow a page and cause refill_obj_stock()
+> to uncharge 1 page. To avoid the additional uncharge in this case,
+> a new overfill flag is added to refill_obj_stock() which will be set
+> when called from obj_cgroup_charge().
 > 
-> On a 2-socket Cascade Lake server with instrumentation enabled and this
-> patch applied, it was found that about 20% (634400 out of 3243830)
-> of the time when mod_objcg_state() is called leads to an actual call
-> to __mod_objcg_state() after initial boot. When doing parallel kernel
-> build, the figure was about 17% (24329265 out of 142512465). So caching
-> the vmstat data reduces the number of calls to __mod_objcg_state()
-> by more than 80%.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/memcontrol.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 83 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7cd7187a017c..292b4783b1a7 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -782,8 +782,9 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
->  	rcu_read_unlock();
->  }
->  
-> -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
-> -		     enum node_stat_item idx, int nr)
-> +static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
-> +				     struct pglist_data *pgdat,
-> +				     enum node_stat_item idx, int nr)
->  {
->  	struct mem_cgroup *memcg;
->  	struct lruvec *lruvec;
-> @@ -791,7 +792,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  	rcu_read_lock();
->  	memcg = obj_cgroup_memcg(objcg);
->  	lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -	mod_memcg_lruvec_state(lruvec, idx, nr);
-> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
->  	rcu_read_unlock();
->  }
->  
-> @@ -2059,7 +2060,10 @@ struct memcg_stock_pcp {
->  
->  #ifdef CONFIG_MEMCG_KMEM
->  	struct obj_cgroup *cached_objcg;
-> +	struct pglist_data *cached_pgdat;
+> A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
+> 96-thread x86-64 system with 96 testing threads were run.  Before this
+> patch, the total number of kilo kmalloc+kfree operations done for a 4k
+> large object by all the testing threads per second were 4,304 kops/s
+> (cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
+> number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
+> represents a performance improvement of 1.10X (cgroup v1) and 49.3X
+> (cgroup v2).
 
-I wonder if we want to have per-node counters instead?
-That would complicate the initialization of pcp stocks a bit,
-but might shave off some additional cpu time.
-But we can do it later too.
+This part looks more controversial. Basically if there are N consequent
+allocations of size (PAGE_SIZE + x), the stock will end up with (N * x)
+cached bytes, right? It's not the end of the world, but do we really
+need it given that uncharging a page is also cached?
 
->  	unsigned int nr_bytes;
-> +	int nr_slab_reclaimable_b;
-> +	int nr_slab_unreclaimable_b;
->  #endif
->  
->  	struct work_struct work;
-> @@ -3008,6 +3012,63 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->  	obj_cgroup_put(objcg);
->  }
->  
-> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
-> +		     enum node_stat_item idx, int nr)
-> +{
-> +	struct memcg_stock_pcp *stock;
-> +	unsigned long flags;
-> +	int *bytes;
-> +
-> +	local_irq_save(flags);
-> +	stock = this_cpu_ptr(&memcg_stock);
-> +
-> +	/*
-> +	 * Save vmstat data in stock and skip vmstat array update unless
-> +	 * accumulating over a page of vmstat data or when pgdat or idx
-> +	 * changes.
-> +	 */
-> +	if (stock->cached_objcg != objcg) {
-> +		drain_obj_stock(stock);
-> +		obj_cgroup_get(objcg);
-> +		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-> +				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-> +		stock->cached_objcg = objcg;
-> +		stock->cached_pgdat = pgdat;
-> +	} else if (stock->cached_pgdat != pgdat) {
-> +		/* Flush the existing cached vmstat data */
-> +		if (stock->nr_slab_reclaimable_b) {
-> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
-> +					  stock->nr_slab_reclaimable_b);
-> +			stock->nr_slab_reclaimable_b = 0;
-> +		}
-> +		if (stock->nr_slab_unreclaimable_b) {
-> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
-> +					  stock->nr_slab_unreclaimable_b);
-> +			stock->nr_slab_unreclaimable_b = 0;
-> +		}
-> +		stock->cached_pgdat = pgdat;
-> +	}
-> +
-> +	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
-> +					       : &stock->nr_slab_unreclaimable_b;
-> +	if (!*bytes) {
-> +		*bytes = nr;
-> +		nr = 0;
-> +	} else {
-> +		*bytes += nr;
-> +		if (abs(*bytes) > PAGE_SIZE) {
-> +			nr = *bytes;
-> +			*bytes = 0;
-> +		} else {
-> +			nr = 0;
-> +		}
-> +	}
-
-This part is a little bit hard to follow, how about something like this
-(completely untested):
-
-{
-	stocked = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
-		: &stock->nr_slab_unreclaimable_b;
-	if (abs(*stocked + nr) > PAGE_SIZE) {
-		nr += *stocked;
-		*stocked = 0;
-	} else {
-		*stocked += nr;
-		nr = 0;
-	}
-}
-
-
-
-> +	if (nr)
-> +		mod_objcg_mlstate(objcg, pgdat, idx, nr);
-> +
-> +	local_irq_restore(flags);
-> +}
-> +
->  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
->  {
->  	struct memcg_stock_pcp *stock;
-> @@ -3055,6 +3116,25 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
->  		stock->nr_bytes = 0;
->  	}
->  
-> +	/*
-> +	 * Flush the vmstat data in current stock
-> +	 */
-> +	if (stock->nr_slab_reclaimable_b || stock->nr_slab_unreclaimable_b) {
-> +		if (stock->nr_slab_reclaimable_b) {
-> +			mod_objcg_mlstate(old, stock->cached_pgdat,
-> +					  NR_SLAB_RECLAIMABLE_B,
-> +					  stock->nr_slab_reclaimable_b);
-> +			stock->nr_slab_reclaimable_b = 0;
-> +		}
-> +		if (stock->nr_slab_unreclaimable_b) {
-> +			mod_objcg_mlstate(old, stock->cached_pgdat,
-> +					  NR_SLAB_UNRECLAIMABLE_B,
-> +					  stock->nr_slab_unreclaimable_b);
-> +			stock->nr_slab_unreclaimable_b = 0;
-> +		}
-> +		stock->cached_pgdat = NULL;
-> +	}
-> +
->  	obj_cgroup_put(old);
->  	stock->cached_objcg = NULL;
->  }
-> -- 
-> 2.18.1
-> 
+Thanks!
