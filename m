@@ -2,83 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E47368139
-	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 15:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE361368205
+	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 15:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhDVNJL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Apr 2021 09:09:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51002 "EHLO mx2.suse.de"
+        id S236283AbhDVN7q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Apr 2021 09:59:46 -0400
+Received: from relay.sw.ru ([185.231.240.75]:54390 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236479AbhDVNJH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 22 Apr 2021 09:09:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619096911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ziDd39JRIdWlI/ZncRHR4tPeHFque6IN9ySODF6A6RA=;
-        b=ASiXiYpuhQJ/g3mUwmNQ88KUW3PYI8bbiUz8frlVc4HfAQOrx6zcEuPvAWLydBPThzX1G2
-        mZw1c82Q3w+yMMZ8mF25AIjIRzZApPejrKxB7Dsc17Ce3QtjfOdmwhrc1q8d63JSizP5iT
-        EVok/PSjPGn9pOzVtaBHjrwaBxnCJgs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE617B00E;
-        Thu, 22 Apr 2021 13:08:31 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 15:08:31 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
+        id S236254AbhDVN7p (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 22 Apr 2021 09:59:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=RJzqymK4KdLIflkHg7fNUFw31wIE7fLJRZ1fSy+vabc=; b=N8B30dAs7aOqNLVdf
+        Pa0srpVl2C/DUZIitS8DKW0kYyfVEDKhbVoZUwnyMgTE6eqTAucI0+gS+PYci9Bt8ed2mRP6H7RDN
+        mIzWS40A9nXNBXchcDS2WdywUiQLu4jFtZgs2aCnkUUhnDABY/ChQ338ZFkUxDGG4aWO56rQ9uzl8
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lZZrC-001BRM-2Y; Thu, 22 Apr 2021 16:59:02 +0300
+Subject: Re: [PATCH v3 15/16] memcg: enable accounting for tty-related objects
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     cgroups@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Subject: Re: [RFC] memory reserve for userspace oom-killer
-Message-ID: <YIF1T21wiPq9eeOW@dhcp22.suse.cz>
-References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <699e51ba-825d-b243-8205-4d8cff478a66@sony.com>
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jiri Slaby <jirislaby@kernel.org>
+References: <dddf6b29-debd-dcb5-62d0-74909d610edb@virtuozzo.com>
+ <da450388-2fbc-1bb8-0839-b6480cb0eead@virtuozzo.com>
+ <YIFcqcd4dCiNcILj@kroah.com> <YIFhuwlXKaAaY3IU@dhcp22.suse.cz>
+ <YIFjI3zHVQr4BjHc@kroah.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <6e697a1f-936d-5ffe-d29f-e4dcbe099799@virtuozzo.com>
+Date:   Thu, 22 Apr 2021 16:59:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <699e51ba-825d-b243-8205-4d8cff478a66@sony.com>
+In-Reply-To: <YIFjI3zHVQr4BjHc@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 21-04-21 19:05:49, peter enderborg wrote:
-[...]
-> I think this is the wrong way to go.
+On 4/22/21 2:50 PM, Greg Kroah-Hartman wrote:
+> On Thu, Apr 22, 2021 at 01:44:59PM +0200, Michal Hocko wrote:
+>> On Thu 22-04-21 13:23:21, Greg KH wrote:
+>>> On Thu, Apr 22, 2021 at 01:37:53PM +0300, Vasily Averin wrote:
+>>>> At each login the user forces the kernel to create a new terminal and
+>>>> allocate up to ~1Kb memory for the tty-related structures.
+>>>
+>>> Does this tiny amount of memory actually matter?
+>>
+>> The primary question is whether an untrusted user can trigger an
+>> unbounded amount of these allocations.
 > 
-> I sent a patch for android lowmemorykiller some years ago.
-> 
-> http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2017-February/100319.html
-> 
-> It has been improved since than, so it can act handle oom callbacks, it can act on vmpressure and psi
-> and as a shrinker. The patches has not been ported to resent kernels though.
-> 
-> I don't think vmpressure and psi is that relevant now. (They are what userspace act on)  But the basic idea is to have a priority queue
-> within the kernel. It need pick up new processes and dying process.  And then it has a order, and that
-> is set with oom adj values by activity manager in android.  I see this model can be reused for
-> something that is between a standard oom and userspace.  Instead of vmpressure and psi
-> a watchdog might be a better way.  If userspace (in android the activity manager or lmkd) does not kick the watchdog,
-> the watchdog bite the task according to the priority and kills it.  This priority list does not have to be a list generated 
-> within kernel. But it has the advantage that you inherent parents properties.  We use a rb-tree for that.
-> 
-> All that is missing is the watchdog.
+> Can they?  They are not bounded by some other resource limit?
 
-And this is off topic to the discussion as well. We are not discussing
-how to handle OOM situation best. Shakeel has brought up challenges that
-some userspace based OOM killer implementations are facing. Like it or
-not but different workloads have different requirements and what you are
-using in Android might not be the best fit for everybody. I will not
-comment on the android approach but it doesn't address any of the
-concerns that have been brought up.
--- 
-Michal Hocko
-SUSE Labs
+I'm not ready to provide usecase right now,
+but on the other hand I do not see any related limits.
+Let me take time out to dig this question.
+
+Thank you,
+	Vasily Averin
