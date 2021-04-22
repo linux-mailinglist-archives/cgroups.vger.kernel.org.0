@@ -2,248 +2,337 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D875C36855C
-	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 18:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21C53685A1
+	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 19:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238023AbhDVQ7e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Apr 2021 12:59:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31423 "EHLO
+        id S238301AbhDVROY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Apr 2021 13:14:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45536 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236459AbhDVQ7d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Apr 2021 12:59:33 -0400
+        by vger.kernel.org with ESMTP id S238259AbhDVROY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Apr 2021 13:14:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619110737;
+        s=mimecast20190719; t=1619111629;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tnsoyaxSTba4CLrYhMvvI/m5yaJbsJVCTEUHiT030yM=;
-        b=YFwo06U9PeAeOFN8ZEDBvs8eSs2OkF78pVPHaGFAf3xLctZXWFqI2T15up1kTjfqXxbPaQ
-        Od2OCUsfwCSFdaDwJkewWX01EhmseUgMB+dJix53cIAeZ4ApMyvE42JELbUPbkKAjCcUFf
-        vxKGtSUF/+ae+N73ibFfRYLWHvLTmY0=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-565-S1LMJi7AMUmU16yJe2_KTA-1; Thu, 22 Apr 2021 12:58:55 -0400
-X-MC-Unique: S1LMJi7AMUmU16yJe2_KTA-1
-Received: by mail-qt1-f198.google.com with SMTP id a15-20020a05622a02cfb02901b5e54ac2e5so12652704qtx.4
-        for <cgroups@vger.kernel.org>; Thu, 22 Apr 2021 09:58:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tnsoyaxSTba4CLrYhMvvI/m5yaJbsJVCTEUHiT030yM=;
-        b=PzWV4NgJJunp6V8OB0Tx4tZzHv/FwNcPPehYJWPvhwhBBmUzRfrUWS65STF7c0P9pV
-         aN05zvtR8h/iRrM4psPP1hGc26CGvWc5I5Y4TNmtlBgrmX1vR9eB0dc4NrEzuFjb539j
-         0JzUbfgkUMd/Zb1+2Z3vSaZuytYX7MV/V6BiF5ro3WtlNpsP1WRmnpn7aB+FP26JwVad
-         ms8uDE6gw0Yh6nwQ37GnSDjZC7rrV6YO8eWWh0WXQVg9ipOvQYrXRL2Aa0rPgqZ+xPTU
-         wXY/FxORWqyAIGhlWajtaAW6KKpQhJUI6/CyhTxDT5Dzb8L2HDxUmigdUMKIKHXQF5Yu
-         CzLw==
-X-Gm-Message-State: AOAM530HZYMSBg5yrn1pnlevaneAT+5/gJWuKzUeLuKK4K3p+XQYzA1A
-        IU1de9vTVZKfQhI/DhPH6vzDBsV4x0lSCbM3L8hpn3EQux8WLBYokWq2niygu+wdzWKxUfai/VL
-        BhLvMAxOCm5jA6Oqc1A==
-X-Received: by 2002:a05:622a:301:: with SMTP id q1mr4076313qtw.48.1619110735146;
-        Thu, 22 Apr 2021 09:58:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMMDzwOxnCBIZPqNlb6mS4q+6V6Etx8XVFSoCsq4jewANdy6F+FHMw0/YtsCSFKEaj7MWOhg==
-X-Received: by 2002:a05:622a:301:: with SMTP id q1mr4076276qtw.48.1619110734839;
-        Thu, 22 Apr 2021 09:58:54 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id d68sm2543373qkf.93.2021.04.22.09.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 09:58:54 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH-next v5 2/4] mm/memcg: Cache vmstat data in percpu
- memcg_stock_pcp
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210420192907.30880-1-longman@redhat.com>
- <20210420192907.30880-3-longman@redhat.com>
- <YIC1HEKF8SQQdnxa@carbon.dhcp.thefacebook.com>
-Message-ID: <ded96eba-8c0c-1822-61b5-de0577b7ebab@redhat.com>
-Date:   Thu, 22 Apr 2021 12:58:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        bh=AoLtOKIEaUoGP15b6SEJ+EZN+FEmTqg+4+tHGCyR90Q=;
+        b=DCjmz1YO2gA5c/w+6sqzKHbfufMZ4naBOs265Yw/PKbxnMHg5Y8dPGhC/xam1JmrxFUDNS
+        JzL0KS4GapFzKDSUQZxVKeTUd2SKEELDRK2ChIyldWvmShUH5ClcTdfS1FpA6bqVXwkwJl
+        FVZW6/S6rDFDh7iJ53dc5DcqjP2/WU8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-yByfXrO5Mh6oFQHlAXuS5Q-1; Thu, 22 Apr 2021 13:13:45 -0400
+X-MC-Unique: yByfXrO5Mh6oFQHlAXuS5Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6B551B2C993;
+        Thu, 22 Apr 2021 17:13:40 +0000 (UTC)
+Received: from redhat.com (ovpn-114-21.phx2.redhat.com [10.3.114.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEC2A60938;
+        Thu, 22 Apr 2021 17:13:37 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 11:13:37 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210422111337.6ac3624d@redhat.com>
+In-Reply-To: <20210421230301.GP1370958@nvidia.com>
+References: <20210401160337.GJ1463678@nvidia.com>
+        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+        <20210415230732.GG1370958@nvidia.com>
+        <20210416061258.325e762e@jacob-builder>
+        <20210416094547.1774e1a3@redhat.com>
+        <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210421162307.GM1370958@nvidia.com>
+        <20210421105451.56d3670a@redhat.com>
+        <20210421175203.GN1370958@nvidia.com>
+        <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <YIC1HEKF8SQQdnxa@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/21/21 7:28 PM, Roman Gushchin wrote:
-> On Tue, Apr 20, 2021 at 03:29:05PM -0400, Waiman Long wrote:
->> Before the new slab memory controller with per object byte charging,
->> charging and vmstat data update happen only when new slab pages are
->> allocated or freed. Now they are done with every kmem_cache_alloc()
->> and kmem_cache_free(). This causes additional overhead for workloads
->> that generate a lot of alloc and free calls.
->>
->> The memcg_stock_pcp is used to cache byte charge for a specific
->> obj_cgroup to reduce that overhead. To further reducing it, this patch
->> makes the vmstat data cached in the memcg_stock_pcp structure as well
->> until it accumulates a page size worth of update or when other cached
->> data change. Caching the vmstat data in the per-cpu stock eliminates two
->> writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
->> specific vmstat data by a write to a hot local stock cacheline.
->>
->> On a 2-socket Cascade Lake server with instrumentation enabled and this
->> patch applied, it was found that about 20% (634400 out of 3243830)
->> of the time when mod_objcg_state() is called leads to an actual call
->> to __mod_objcg_state() after initial boot. When doing parallel kernel
->> build, the figure was about 17% (24329265 out of 142512465). So caching
->> the vmstat data reduces the number of calls to __mod_objcg_state()
->> by more than 80%.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Reviewed-by: Shakeel Butt <shakeelb@google.com>
->> ---
->>   mm/memcontrol.c | 86 +++++++++++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 83 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 7cd7187a017c..292b4783b1a7 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -782,8 +782,9 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
->>   	rcu_read_unlock();
->>   }
->>   
->> -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->> -		     enum node_stat_item idx, int nr)
->> +static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
->> +				     struct pglist_data *pgdat,
->> +				     enum node_stat_item idx, int nr)
->>   {
->>   	struct mem_cgroup *memcg;
->>   	struct lruvec *lruvec;
->> @@ -791,7 +792,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->>   	rcu_read_lock();
->>   	memcg = obj_cgroup_memcg(objcg);
->>   	lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> -	mod_memcg_lruvec_state(lruvec, idx, nr);
->> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
->>   	rcu_read_unlock();
->>   }
->>   
->> @@ -2059,7 +2060,10 @@ struct memcg_stock_pcp {
->>   
->>   #ifdef CONFIG_MEMCG_KMEM
->>   	struct obj_cgroup *cached_objcg;
->> +	struct pglist_data *cached_pgdat;
-> I wonder if we want to have per-node counters instead?
-> That would complicate the initialization of pcp stocks a bit,
-> but might shave off some additional cpu time.
-> But we can do it later too.
->
-A per node counter will certainly complicate the code and reduce the 
-performance benefit too. I got a pretty good hit rate of 80%+ with the 
-current code on a 2-socket system. The hit rate will probably drop when 
-there are more nodes. I will do some more investigation, but it will not 
-be for this patchset.
+On Wed, 21 Apr 2021 20:03:01 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
+> On Wed, Apr 21, 2021 at 01:33:12PM -0600, Alex Williamson wrote:
+> 
+> > > I still expect that VFIO_GROUP_SET_CONTAINER will be used to connect
+> > > /dev/{ioasid,vfio} to the VFIO group and all the group and device
+> > > logic stays inside VFIO.  
+> > 
+> > But that group and device logic is also tied to the container, where
+> > the IOMMU backend is the interchangeable thing that provides the IOMMU
+> > manipulation for that container.  
+> 
+> I think that is an area where the discussion would need to be focused.
+> 
+> I don't feel very prepared to have it in details, as I haven't dug
+> into all the group and iommu micro-operation very much.
+> 
+> But, it does seem like the security concept that VFIO is creating with
+> the group also has to be present in the lower iommu layer too.
+> 
+> With different subsystems joining devices to the same ioasid's we
+> still have to enforce the security propery the vfio group is creating.
+> 
+> > If you're using VFIO_GROUP_SET_CONTAINER to associate a group to a
+> > /dev/ioasid, then you're really either taking that group outside of
+> > vfio or you're re-implementing group management in /dev/ioasid.   
+> 
+> This sounds right.
+> 
+> > > Everything can be switched to ioasid_container all down the line. If
+> > > it wasn't for PPC this looks fairly simple.  
+> > 
+> > At what point is it no longer vfio?  I'd venture to say that replacing
+> > the container rather than invoking a different IOMMU backend is that
+> > point.  
+> 
+> sorry, which is no longer vfio?
 
->>   	unsigned int nr_bytes;
->> +	int nr_slab_reclaimable_b;
->> +	int nr_slab_unreclaimable_b;
->>   #endif
->>   
->>   	struct work_struct work;
->> @@ -3008,6 +3012,63 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->>   	obj_cgroup_put(objcg);
->>   }
->>   
->> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->> +		     enum node_stat_item idx, int nr)
->> +{
->> +	struct memcg_stock_pcp *stock;
->> +	unsigned long flags;
->> +	int *bytes;
->> +
->> +	local_irq_save(flags);
->> +	stock = this_cpu_ptr(&memcg_stock);
->> +
->> +	/*
->> +	 * Save vmstat data in stock and skip vmstat array update unless
->> +	 * accumulating over a page of vmstat data or when pgdat or idx
->> +	 * changes.
->> +	 */
->> +	if (stock->cached_objcg != objcg) {
->> +		drain_obj_stock(stock);
->> +		obj_cgroup_get(objcg);
->> +		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
->> +				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
->> +		stock->cached_objcg = objcg;
->> +		stock->cached_pgdat = pgdat;
->> +	} else if (stock->cached_pgdat != pgdat) {
->> +		/* Flush the existing cached vmstat data */
->> +		if (stock->nr_slab_reclaimable_b) {
->> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_RECLAIMABLE_B,
->> +					  stock->nr_slab_reclaimable_b);
->> +			stock->nr_slab_reclaimable_b = 0;
->> +		}
->> +		if (stock->nr_slab_unreclaimable_b) {
->> +			mod_objcg_mlstate(objcg, pgdat, NR_SLAB_UNRECLAIMABLE_B,
->> +					  stock->nr_slab_unreclaimable_b);
->> +			stock->nr_slab_unreclaimable_b = 0;
->> +		}
->> +		stock->cached_pgdat = pgdat;
->> +	}
->> +
->> +	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
->> +					       : &stock->nr_slab_unreclaimable_b;
->> +	if (!*bytes) {
->> +		*bytes = nr;
->> +		nr = 0;
->> +	} else {
->> +		*bytes += nr;
->> +		if (abs(*bytes) > PAGE_SIZE) {
->> +			nr = *bytes;
->> +			*bytes = 0;
->> +		} else {
->> +			nr = 0;
->> +		}
->> +	}
-> This part is a little bit hard to follow, how about something like this
-> (completely untested):
->
-> {
-> 	stocked = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
-> 		: &stock->nr_slab_unreclaimable_b;
-> 	if (abs(*stocked + nr) > PAGE_SIZE) {
-> 		nr += *stocked;
-> 		*stocked = 0;
-> 	} else {
-> 		*stocked += nr;
-> 		nr = 0;
-> 	}
-> }
+I'm suggesting that if we're replacing the container/group model with
+an ioasid then we're effectively creating a new thing that really only
+retains the vfio device uapi.
 
-That was done purposely to make sure that large object (>= 4k) will also 
-be cached once before flushing it out. I should have been more clear 
-about that by adding a comment about it. vmstat data isn't as critical 
-as memory charge and so I am allowing it to cache more than 4k in this case.
+> > > Since getting rid of PPC looks a bit hard, we'd be stuck with
+> > > accepting a /dev/ioasid and then immediately wrappering it in a
+> > > vfio_container an shimming it through a vfio_iommu_ops. It is not
+> > > ideal at all, but in my look around I don't see a major problem if
+> > > type1 implementation is moved to live under /dev/ioasid.  
+> > 
+> > But type1 is \just\ an IOMMU backend, not "/dev/vfio".  Given that
+> > nobody flinched at removing NVLink support, maybe just deprecate SPAPR
+> > now and see if anyone objects ;)  
+> 
+> Would simplify this project, but I wonder :)
+> 
+> In any event, it does look like today we'd expect the SPAPR stuff
+> would be done through the normal iommu APIs, perhaps enhanced a bit,
+> which makes me suspect an enhanced type1 can implement SPAPR.
 
-Cheers,
-Longman
+David Gibson has argued for some time that SPAPR could be handled via a
+converged type1 model.  We has mapped that out at one point,
+essentially a "type2", but neither of us had any bandwidth to pursue it.
+
+> I say this because the SPAPR looks quite a lot like PASID when it has
+> APIs for allocating multiple tables and other things. I would be
+> interested to hear someone from IBM talk about what it is doing and
+> how it doesn't fit into today's IOMMU API.
+
+[Cc David, Alexey]
+
+> It is very old and the iommu world has advanced tremendously lately,
+> maybe I'm too optimisitic?
+> 
+> > > We end up with a ioasid.h that basically has the vfio_iommu_type1 code
+> > > lightly recast into some 'struct iommu_container' and a set of
+> > > ioasid_* function entry points that follow vfio_iommu_driver_ops_type1:
+> > >   ioasid_attach_group
+> > >   ioasid_detatch_group
+> > >   ioasid_<something about user pages>
+> > >   ioasid_read/ioasid_write  
+> > 
+> > Again, this looks like a vfio IOMMU backend.  What are we accomplishing
+> > by replacing /dev/vfio with /dev/ioasid versus some manipulation of
+> > VFIO_SET_IOMMU accepting a /dev/ioasid fd?  
+> 
+> The point of all of this is to make the user api for the IOMMU
+> cross-subsystem. It is not a vfio IOMMU backend, it is moving the
+> IOMMU abstraction from VFIO into the iommu framework and giving the
+> iommu framework a re-usable user API.
+
+Right, but I don't see that implies it cannot work within the vfio
+IOMMU model.  Currently when an IOMMU is set, the /dev/vfio/vfio
+container becomes a conduit for file ops from the container to be
+forwarded to the IOMMU.  But that's in part because the user doesn't
+have another object to interact with the IOMMU.  It's entirely possible
+that with an ioasid shim, the user would continue to interact directly
+with the /dev/ioasid fd for IOMMU manipulation and only use
+VFIO_SET_IOMMU to associate a vfio container to that ioasid.
+
+> My ideal outcome would be for VFIO to use only the new iommu/ioasid
+> API and have no iommu pluggability at all. The iommu subsystem
+> provides everything needed to VFIO, and provides it equally to VDPA
+> and everything else.
+
+As above, we don't necessarily need to have the vfio container be the
+access mechanism for the IOMMU, it can become just an means to
+association the container with an IOMMU.  This has quite a few
+transitional benefits.
+
+> drivers/vfio/ becomes primarily about 'struct vfio_device' and
+> everything related to its IOCTL interface.
+> 
+> drivers/iommu and ioasid.c become all about a pluggable IOMMU
+> interface, including a uAPI for it.
+> 
+> IMHO it makes a high level sense, though it may be a pipe dream.
+
+This is where we've dissolved all but the vfio device uapi, which
+suggests the group and container model were never necessary and I'm not
+sure exactly what that uapi looks like.  We currently make use of an
+IOMMU api that is group aware, but that awareness extends out to the
+vfio uapi.
+
+> > > If we have this, and /dev/ioasid implements the legacy IOCTLs, then
+> > > /dev/vfio == /dev/ioasid and we can compile out vfio_fops and related
+> > > from vfio.c and tell ioasid.c to create /dev/vfio instead using the
+> > > ops it owns.  
+> > 
+> > Why would we want /dev/ioasid to implement legacy ioctls instead of
+> > simply implementing an interface to allow /dev/ioasid to be used as a
+> > vfio IOMMU backend?  
+> 
+> Only to make our own migration easier. I'd imagine everyone would want
+> to sit down and design this new clear ioasid API that can co-exist on
+> /dev/ioasid with the legacy once.
+
+vfio really just wants to be able to attach groups to an address space
+to consider them isolated, everything else about the IOMMU API could
+happen via a new ioasid file descriptor representing that context, ie.
+vfio handles the group ownership and device access, ioasid handles the
+actual mappings.
+
+> > The pseudo code above really suggests you do want to remove
+> > /dev/vfio/vfio, but this is only one of the IOMMU backends for vfio, so
+> > I can't quite figure out if we're talking past each other.  
+> 
+> I'm not quite sure what you mean by "one of the IOMMU backends?" You
+> mean type1, right?
+>  
+> > As I expressed in another thread, type1 has a lot of shortcomings.  The
+> > mapping interface leaves userspace trying desperately to use statically
+> > mapped buffers because the map/unmap latency is too high.  We have
+> > horrible issues with duplicate locked page accounting across
+> > containers.  It suffers pretty hard from feature creep in various
+> > areas.  A new IOMMU backend is an opportunity to redesign some of these
+> > things.  
+> 
+> Sure, but also those kinds of transformational things go alot better
+> if you can smoothly go from the old to the new and have technical
+> co-existance in side the kernel. Having a shim that maps the old APIs
+> to new APIs internally to Linux helps keep the implementation from
+> becoming too bogged down with compatibility.
+
+I'm afraid /dev/ioasid providing type1 compatibility would be just that.
+
+> > The IOMMU group also abstracts isolation and visibility relative to
+> > DMA.  For example, in a PCIe topology a multi-function device may not
+> > have isolation between functions, but each requester ID is visible to
+> > the IOMMU.    
+> 
+> Okay, I'm glad I have this all right in my head, as I was pretty sure
+> this was what the group was about.
+> 
+> My next question is why do we have three things as a FD: group, device
+> and container (aka IOMMU interface)?
+> 
+> Do we have container because the /dev/vfio/vfio can hold only a single
+> page table so we need to swap containers sometimes?
+
+The container represents an IOMMU address space, which can be shared by
+multiple groups, where each group may contain one or more devices.
+Swapping a container would require releasing all the devices (the user
+cannot have access to a non-isolated device), then a group could be
+moved from one container to another.
+
+> If we start from a clean sheet and make a sketch..
+> 
+> /dev/ioasid is the IOMMU control interface. It can create multiple
+> IOASIDs that have page tables and it can manipulate those page tables.
+> Each IOASID is identified by some number.
+> 
+> struct vfio_device/vdpa_device/etc are consumers of /dev/ioasid
+> 
+> When a device attaches to an ioasid userspace gives VFIO/VDPA the
+> ioasid FD and the ioasid # in the FD.
+> 
+> The security rule for isolation is that once a device is attached to a
+> /dev/ioasid fd then all other devices in that security group must be
+> attached to the same ioasid FD or left unused.
+
+Sounds like a group...  Note also that if those other devices are not
+isolated from the user's device, the user could manipulate "unused"
+devices via DMA.  So even unused devices should be within the same
+IOMMU context... thus attaching groups to IOMMU domains.
+
+> Thus /dev/ioasid also becomes the unit of security and the IOMMU
+> subsystem level becomes aware of and enforces the group security
+> rules. Userspace does not need to "see" the group
+
+What tools does userspace have to understand isolation of individual
+devices without groups?
+ 
+> In sketch it would be like
+>   ioasid_fd = open("/dev/ioasid");
+>   vfio_device_fd = open("/dev/vfio/device0")
+>   vdpa_device_fd = open("/dev/vdpa/device0")
+>   ioctl(vifo_device_fd, JOIN_IOASID_FD, ioasifd)
+>   ioctl(vdpa_device_fd, JOIN_IOASID_FD, ioasifd)
+> 
+>   gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
+>   ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
+> 
+>   ioctl(vfio_device, ATTACH_IOASID, gpa_ioasid_id)
+>   ioctl(vpda_device, ATTACH_IOASID, gpa_ioasid_id)
+> 
+>   .. both VDPA and VFIO see the guest physical map and the kernel has
+>      enough info that both could use the same IOMMU page table
+>      structure ..
+> 
+>   // Guest viommu turns off bypass mode for the vfio device
+>   ioctl(vfio_device, DETATCH_IOASID)
+>  
+>   // Guest viommu creates a new page table
+>   rid_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
+>   ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
+> 
+>   // Guest viommu links the new page table to the RID
+>   ioctl(vfio_device, ATTACH_IOASID, rid_ioasid_id)
+> 
+> The group security concept becomes implicit and hidden from the
+> uAPI. JOIN_IOASID_FD implicitly finds the device's group inside the
+> kernel and requires that all members of the group be joined only to
+> this ioasid_fd.
+> 
+> Essentially we discover the group from the device instead of the
+> device from the group.
+> 
+> Where does it fall down compared to the three FD version we have
+> today?
+
+The group concept is explicit today because how does userspace learn
+about implicit dependencies between devices?  For example, if the user
+has a conventional PCI bus with a couple devices on it, how do they
+understand that those devices cannot be assigned to separate userspace
+drivers?  The group fd fills that gap.  Thanks,
+
+Alex
 
