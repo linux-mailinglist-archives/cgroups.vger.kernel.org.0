@@ -2,36 +2,34 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFA5367ED1
+	by mail.lfdr.de (Postfix) with ESMTP id 904C5367ED0
 	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 12:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235634AbhDVKiP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Apr 2021 06:38:15 -0400
-Received: from relay.sw.ru ([185.231.240.75]:33670 "EHLO relay.sw.ru"
+        id S235762AbhDVKiJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Apr 2021 06:38:09 -0400
+Received: from relay.sw.ru ([185.231.240.75]:33656 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235803AbhDVKiO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 22 Apr 2021 06:38:14 -0400
+        id S235634AbhDVKiJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 22 Apr 2021 06:38:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=JNK/tV8LgF3p4F8dPZczQO1z3bcUs4vufDHvwz2ZVgs=; b=d2bYG5XYB39THkm5OL8
-        D0FjRF8AnSPU+obUO/Km0464LEpE3CGqX+zgf3BL34hwvGlbx0ew8jVL0lrRYYxUXh/5DWmFIuERc
-        Vf/0ol7vzukQkqan+xE1+WSLkEQ5xbt3cItvigK0/0HX2JSmMILLqJ6IIARHqF8MQygIeSSGutM=
+        :From; bh=H0noirhKtsT3ob/bQZzage/23G1aDpfbqyt85TTlwvk=; b=A153om+OIW+qY26+tzT
+        h2V69YqGAlQIwmHoelQBmQS9tpR0C+u8saKS5x5bVLk7Ayymhaz6dPYOev1F7mZQGCK8NlCPCi2AY
+        210ee9whPmECcwAN141rMOct/UqrWgQ7bt/YpI/Rjh3yScHOt3iTAY5PDN0EplWq3GDVfXXSKVc=
 Received: from [10.93.0.56]
         by relay.sw.ru with esmtp (Exim 4.94)
         (envelope-from <vvs@virtuozzo.com>)
-        id 1lZWi4-001AMi-6S; Thu, 22 Apr 2021 13:37:24 +0300
+        id 1lZWiB-001AMm-3F; Thu, 22 Apr 2021 13:37:31 +0300
 From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH v3 11/16] memcg: enable accounting for signals
+Subject: [PATCH v3 12/16] memcg: enable accounting for posix_timers_cache slab
 To:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
+Cc:     Roman Gushchin <guro@fb.com>, Thomas Gleixner <tglx@linutronix.de>
 References: <dddf6b29-debd-dcb5-62d0-74909d610edb@virtuozzo.com>
-Message-ID: <18d358e6-8a85-dfb3-dce6-c43236833a49@virtuozzo.com>
-Date:   Thu, 22 Apr 2021 13:37:23 +0300
+Message-ID: <8b03f6c0-5454-9ab7-48ab-ffffe44515d9@virtuozzo.com>
+Date:   Thu, 22 Apr 2021 13:37:30 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
@@ -43,34 +41,36 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When a user send a signal to any another processes it forces the kernel
-to allocate memory for 'struct sigqueue' objects. The number of signals
-is limited by RLIMIT_SIGPENDING resource limit, but even the default
-settings allow each user to consume up to several megabytes of memory.
-Moreover, an untrusted admin inside container can increase the limit or
-create new fake users and force them to sent signals.
+A program may create multiple interval timers using timer_create().
+For each timer the kernel preallocates a "queued real-time signal",
+Consequently, the number of timers is limited by the RLIMIT_SIGPENDING
+resource limit. The allocated object is quite small, ~250 bytes,
+but even the default signal limits allow to consume up to 100 megabytes
+per user.
 
-It makes sense to account for these allocations to restrict the host's
-memory consumption from inside the memcg-limited container.
+It makes sense to account for them to limit the host's memory consumption
+from inside the memcg-limited container.
 
 Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- kernel/signal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/time/posix-timers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f271835..a7fa849 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -4639,7 +4639,7 @@ void __init signals_init(void)
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index bf540f5a..2eee615 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -273,8 +273,8 @@ static int posix_get_hrtimer_res(clockid_t which_clock, struct timespec64 *tp)
+ static __init int init_posix_timers(void)
  {
- 	siginfo_buildtime_checks();
- 
--	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
-+	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
+ 	posix_timers_cache = kmem_cache_create("posix_timers_cache",
+-					sizeof (struct k_itimer), 0, SLAB_PANIC,
+-					NULL);
++					sizeof(struct k_itimer), 0,
++					SLAB_PANIC | SLAB_ACCOUNT, NULL);
+ 	return 0;
  }
- 
- #ifdef CONFIG_KGDB_KDB
+ __initcall(init_posix_timers);
 -- 
 1.8.3.1
 
