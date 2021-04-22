@@ -2,57 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC34367FC5
-	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 13:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2DF367FCF
+	for <lists+cgroups@lfdr.de>; Thu, 22 Apr 2021 13:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235977AbhDVLpf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Apr 2021 07:45:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33110 "EHLO mx2.suse.de"
+        id S235978AbhDVLvh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Apr 2021 07:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhDVLpf (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:45:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619091900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jMEV+geuzllYzFQ8Z/TUZlHiYsSrdySAp1JVDStV2gA=;
-        b=r/6dqE5AP0rYw1YYAbFz66SiZuRW/+7cE1RXdpAHrLWoronP+/qPsCjXgmrL962Qs0ddgu
-        ILhPw+2qe/6j93/kY2gJ/q88mYATZKVh8IkYgfpCDb8H9J+sKBBw53rbMStq9WBppnAcWO
-        RTLcfE1HrMLwb00nEW69gDg40l4Ie6w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EEB4EAEE6;
-        Thu, 22 Apr 2021 11:44:59 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 13:44:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S230510AbhDVLvg (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EDDE6144D;
+        Thu, 22 Apr 2021 11:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1619092262;
+        bh=z3h6YeQAhM+sSuIksdggFIgSAlh6qSpvkJNTNnVlLNo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vYNMr2xWX/yND8JBq0t2hkwmg6pKsHfVnqELHfiuLEDxRGfVkIzHyjzbO6PEkyRKG
+         /GTnVv4ea1HEVpVHzCeKw1dtdzypNko79NspvGYUild9WSNvvSPz4Ojv/2xmbGhDkg
+         PSooLz/SMRl71Pi48iR81HwqtG62zwOG0dwEMvgU=
+Date:   Thu, 22 Apr 2021 13:50:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Vasily Averin <vvs@virtuozzo.com>, cgroups@vger.kernel.org,
         Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Roman Gushchin <guro@fb.com>, Jiri Slaby <jirislaby@kernel.org>
 Subject: Re: [PATCH v3 15/16] memcg: enable accounting for tty-related objects
-Message-ID: <YIFhuwlXKaAaY3IU@dhcp22.suse.cz>
+Message-ID: <YIFjI3zHVQr4BjHc@kroah.com>
 References: <dddf6b29-debd-dcb5-62d0-74909d610edb@virtuozzo.com>
  <da450388-2fbc-1bb8-0839-b6480cb0eead@virtuozzo.com>
  <YIFcqcd4dCiNcILj@kroah.com>
+ <YIFhuwlXKaAaY3IU@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YIFcqcd4dCiNcILj@kroah.com>
+In-Reply-To: <YIFhuwlXKaAaY3IU@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 22-04-21 13:23:21, Greg KH wrote:
-> On Thu, Apr 22, 2021 at 01:37:53PM +0300, Vasily Averin wrote:
-> > At each login the user forces the kernel to create a new terminal and
-> > allocate up to ~1Kb memory for the tty-related structures.
+On Thu, Apr 22, 2021 at 01:44:59PM +0200, Michal Hocko wrote:
+> On Thu 22-04-21 13:23:21, Greg KH wrote:
+> > On Thu, Apr 22, 2021 at 01:37:53PM +0300, Vasily Averin wrote:
+> > > At each login the user forces the kernel to create a new terminal and
+> > > allocate up to ~1Kb memory for the tty-related structures.
+> > 
+> > Does this tiny amount of memory actually matter?
 > 
-> Does this tiny amount of memory actually matter?
+> The primary question is whether an untrusted user can trigger an
+> unbounded amount of these allocations.
 
-The primary question is whether an untrusted user can trigger an
-unbounded amount of these allocations.
--- 
-Michal Hocko
-SUSE Labs
+Can they?  They are not bounded by some other resource limit?
+
+greg k-h
