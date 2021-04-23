@@ -2,95 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF54368DF2
-	for <lists+cgroups@lfdr.de>; Fri, 23 Apr 2021 09:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0FB368E2A
+	for <lists+cgroups@lfdr.de>; Fri, 23 Apr 2021 09:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhDWHfd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 23 Apr 2021 03:35:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
+        id S241184AbhDWHyl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 23 Apr 2021 03:54:41 -0400
+Received: from relay.sw.ru ([185.231.240.75]:33712 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhDWHfd (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 23 Apr 2021 03:35:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4681613CC;
-        Fri, 23 Apr 2021 07:34:55 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 09:34:52 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>
-Subject: Re: [PATCH] memcg: enable accounting for pids in nested pid
- namespaces
-Message-ID: <20210423073452.osm4w7crgfsx4ywj@wittgenstein>
-References: <7b777e22-5b0d-7444-343d-92cbfae5f8b4@virtuozzo.com>
- <YIIcKa/ANkQX07Nf@carbon>
- <38945563-59ad-fb5e-9f7f-eb65ae4bf55e@virtuozzo.com>
- <YIIxPAcdd4p4NTxV@carbon>
- <cd6680e3-edd0-88fa-bb83-b9f2d5a65d5b@virtuozzo.com>
+        id S241192AbhDWHyk (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:54:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=4pwG92yM2fjpXIGTDKC6EZlz3qmdV2q5+hDcSNXiuko=; b=FTAmvpZkjSs4QYU2y
+        yLKl74kOcXThtovkdOC48exCrKIcORnGewNh+shIeW2yv8L8MnKiLCNMhf7uA5WgIyI6+6xcWwC/J
+        zL/gMth+kk+raQ+6pt4UdLeq0CCUCWw7RRJE1unOZh4X135vZy33dymutENczgxF/KgWdd88XRm8w
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1lZqdQ-001DST-ON; Fri, 23 Apr 2021 10:53:56 +0300
+Subject: Re: [PATCH v3 15/16] memcg: enable accounting for tty-related objects
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     cgroups@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jiri Slaby <jirislaby@kernel.org>
+References: <dddf6b29-debd-dcb5-62d0-74909d610edb@virtuozzo.com>
+ <da450388-2fbc-1bb8-0839-b6480cb0eead@virtuozzo.com>
+ <YIFcqcd4dCiNcILj@kroah.com> <YIFhuwlXKaAaY3IU@dhcp22.suse.cz>
+ <YIFjI3zHVQr4BjHc@kroah.com>
+ <6e697a1f-936d-5ffe-d29f-e4dcbe099799@virtuozzo.com>
+Message-ID: <03cb1ce9-143a-1cd0-f34b-d608c3bbc66c@virtuozzo.com>
+Date:   Fri, 23 Apr 2021 10:53:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <6e697a1f-936d-5ffe-d29f-e4dcbe099799@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cd6680e3-edd0-88fa-bb83-b9f2d5a65d5b@virtuozzo.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 05:53:43AM +0300, Vasily Averin wrote:
-> On 4/23/21 5:30 AM, Roman Gushchin wrote:
-> > On Fri, Apr 23, 2021 at 05:09:01AM +0300, Vasily Averin wrote:
-> >> On 4/23/21 4:00 AM, Roman Gushchin wrote:
-> >>> On Thu, Apr 22, 2021 at 08:44:15AM +0300, Vasily Averin wrote:
-> >>>> init_pid_ns.pid_cachep have enabled memcg accounting, though this
-> >>>> setting was disabled for nested pid namespaces.
-> >>>>
-> >>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> >>>> ---
-> >>>>  kernel/pid_namespace.c | 3 ++-
-> >>>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-> >>>> index 6cd6715..a46a372 100644
-> >>>> --- a/kernel/pid_namespace.c
-> >>>> +++ b/kernel/pid_namespace.c
-> >>>> @@ -51,7 +51,8 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
-> >>>>  	mutex_lock(&pid_caches_mutex);
-> >>>>  	/* Name collision forces to do allocation under mutex. */
-> >>>>  	if (!*pkc)
-> >>>> -		*pkc = kmem_cache_create(name, len, 0, SLAB_HWCACHE_ALIGN, 0);
-> >>>> +		*pkc = kmem_cache_create(name, len, 0,
-> >>>> +					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
-> >>>>  	mutex_unlock(&pid_caches_mutex);
-> >>>>  	/* current can fail, but someone else can succeed. */
-> >>>>  	return READ_ONCE(*pkc);
-> >>>> -- 
-> >>>> 1.8.3.1
-> >>>>
-> >>>
-> >>> It looks good to me! It makes total sense to apply the same rules to the root
-> >>> and non-root levels.
-> >>>
-> >>> Acked-by: Roman Gushchin <guro@fb.com>
-> >>>
-> >>> Btw, is there any reason why this patch is not included into the series?
-> >>
-> >> It is a bugfix and I think it should be added to upstream ASAP.
-> > 
-> > Then it would be really useful to add some details on why it's a bug,
-> > what kind of problems it causes, etc. If it has to be backported to
-> > stable, please, add cc stable/fixes tag.
+On 4/22/21 4:59 PM, Vasily Averin wrote:
+> On 4/22/21 2:50 PM, Greg Kroah-Hartman wrote:
+>> On Thu, Apr 22, 2021 at 01:44:59PM +0200, Michal Hocko wrote:
+>>> On Thu 22-04-21 13:23:21, Greg KH wrote:
+>>>> On Thu, Apr 22, 2021 at 01:37:53PM +0300, Vasily Averin wrote:
+>>>>> At each login the user forces the kernel to create a new terminal and
+>>>>> allocate up to ~1Kb memory for the tty-related structures.
+>>>>
+>>>> Does this tiny amount of memory actually matter?
+>>>
+>>> The primary question is whether an untrusted user can trigger an
+>>> unbounded amount of these allocations.
+>>
+>> Can they?  They are not bounded by some other resource limit?
 > 
-> I mean, in this case we already decided to account pids, but forget to do it.
-> In another cases we did not have final decision about accounting.
-> 
-> I doubt we specially denied accounting for pids frem nested pid namespaces,
-> especially because they consumes more memory.
-> We can expect that all pids are accounted -- but it does not happen in fact.
+> I'm not ready to provide usecase right now,
+> but on the other hand I do not see any related limits.
+> Let me take time out to dig this question.
 
-As Roman said you should probably explain this in the cover letter and
-essentially justify why this should be backported. The thing with
-changes such as this is that it's easy for someone to reply and go
-"noone noticed for <n> years so why do we care now?". Otherwise:
+By default it's allowed to create up to 4096 ptys with 1024 reserve for initns only
+and the settings are controlled by host admin. It's OK.
+Though this default is not enough for hosters with thousands of containers per node.
+Host admin can be forced to increase it up to NR_UNIX98_PTY_MAX = 1<<20.
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+By default container is restricted by pty mount_opt.max = 1024, but admin inside container 
+can change it via remount. In result one container can consume almost all allowed ptys 
+and allocate up to 1Gb of unaccounted memory.
 
-Christian
+It is not enough per-se to trigger OOM on host, however anyway, it allows to significantly
+exceed the assigned memcg limit and leads to troubles on the over-committed node.
+So I still think it makes sense to account this memory.
+
+Btw OpenVz have per-container pty accounting and limits, but upstream does not.
+
+Thank you,
+	Vasily Averin.
