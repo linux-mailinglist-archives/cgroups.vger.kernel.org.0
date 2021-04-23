@@ -2,79 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AFB368D0B
-	for <lists+cgroups@lfdr.de>; Fri, 23 Apr 2021 08:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF54368DF2
+	for <lists+cgroups@lfdr.de>; Fri, 23 Apr 2021 09:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhDWGVQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 23 Apr 2021 02:21:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60268 "EHLO mx2.suse.de"
+        id S229993AbhDWHfd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 23 Apr 2021 03:35:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhDWGVP (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 23 Apr 2021 02:21:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619158839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gWQ/jtCp4l7XsOhkZSQRBGSW2Rsfk3107+x/NpXeseg=;
-        b=A7byGxZJ2VZ7pDkLkKRG2KnUM7W0zOh0/5akvuiizh9QecTv8EvXb6ZXZgQ400875Yyrw1
-        ULG9Ds0Q250X6OQ9pboXIPqa/ec2Zt05L4I49u1ONzGQqQTtXVHCGRNj7T9dctJ8Vq/hWA
-        7VY6pYf2p3cVDgQMosqCCZnv7oUa98U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E1CF9B187;
-        Fri, 23 Apr 2021 06:20:38 +0000 (UTC)
-Date:   Fri, 23 Apr 2021 08:20:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        id S229456AbhDWHfd (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 23 Apr 2021 03:35:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4681613CC;
+        Fri, 23 Apr 2021 07:34:55 +0000 (UTC)
+Date:   Fri, 23 Apr 2021 09:34:52 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 16/16] memcg: enable accounting for ldt_struct objects
-Message-ID: <YIJnNfBgp3FK9A0z@dhcp22.suse.cz>
-References: <dddf6b29-debd-dcb5-62d0-74909d610edb@virtuozzo.com>
- <94dd36cb-3abb-53fc-0f23-26c02094ddf4@virtuozzo.com>
- <20210422122615.GA7021@zn.tnic>
- <29fe6b29-d56a-6ea1-2fe7-2b015f6b74ef@virtuozzo.com>
+Cc:     Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH] memcg: enable accounting for pids in nested pid
+ namespaces
+Message-ID: <20210423073452.osm4w7crgfsx4ywj@wittgenstein>
+References: <7b777e22-5b0d-7444-343d-92cbfae5f8b4@virtuozzo.com>
+ <YIIcKa/ANkQX07Nf@carbon>
+ <38945563-59ad-fb5e-9f7f-eb65ae4bf55e@virtuozzo.com>
+ <YIIxPAcdd4p4NTxV@carbon>
+ <cd6680e3-edd0-88fa-bb83-b9f2d5a65d5b@virtuozzo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <29fe6b29-d56a-6ea1-2fe7-2b015f6b74ef@virtuozzo.com>
+In-Reply-To: <cd6680e3-edd0-88fa-bb83-b9f2d5a65d5b@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 23-04-21 06:13:30, Vasily Averin wrote:
-> On 4/22/21 3:26 PM, Borislav Petkov wrote:
-> > On Thu, Apr 22, 2021 at 01:38:01PM +0300, Vasily Averin wrote:
+On Fri, Apr 23, 2021 at 05:53:43AM +0300, Vasily Averin wrote:
+> On 4/23/21 5:30 AM, Roman Gushchin wrote:
+> > On Fri, Apr 23, 2021 at 05:09:01AM +0300, Vasily Averin wrote:
+> >> On 4/23/21 4:00 AM, Roman Gushchin wrote:
+> >>> On Thu, Apr 22, 2021 at 08:44:15AM +0300, Vasily Averin wrote:
+> >>>> init_pid_ns.pid_cachep have enabled memcg accounting, though this
+> >>>> setting was disabled for nested pid namespaces.
+> >>>>
+> >>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> >>>> ---
+> >>>>  kernel/pid_namespace.c | 3 ++-
+> >>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> >>>> index 6cd6715..a46a372 100644
+> >>>> --- a/kernel/pid_namespace.c
+> >>>> +++ b/kernel/pid_namespace.c
+> >>>> @@ -51,7 +51,8 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
+> >>>>  	mutex_lock(&pid_caches_mutex);
+> >>>>  	/* Name collision forces to do allocation under mutex. */
+> >>>>  	if (!*pkc)
+> >>>> -		*pkc = kmem_cache_create(name, len, 0, SLAB_HWCACHE_ALIGN, 0);
+> >>>> +		*pkc = kmem_cache_create(name, len, 0,
+> >>>> +					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
+> >>>>  	mutex_unlock(&pid_caches_mutex);
+> >>>>  	/* current can fail, but someone else can succeed. */
+> >>>>  	return READ_ONCE(*pkc);
+> >>>> -- 
+> >>>> 1.8.3.1
+> >>>>
+> >>>
+> >>> It looks good to me! It makes total sense to apply the same rules to the root
+> >>> and non-root levels.
+> >>>
+> >>> Acked-by: Roman Gushchin <guro@fb.com>
+> >>>
+> >>> Btw, is there any reason why this patch is not included into the series?
+> >>
+> >> It is a bugfix and I think it should be added to upstream ASAP.
 > > 
-> > You have forgotten to Cc LKML on your submission.
-> I think it's OK, patch set is addressed to cgroups subsystem amiling list.
-> Am I missed something and such patches should be sent to LKML anyway?
+> > Then it would be really useful to add some details on why it's a bug,
+> > what kind of problems it causes, etc. If it has to be backported to
+> > stable, please, add cc stable/fixes tag.
+> 
+> I mean, in this case we already decided to account pids, but forget to do it.
+> In another cases we did not have final decision about accounting.
+> 
+> I doubt we specially denied accounting for pids frem nested pid namespaces,
+> especially because they consumes more memory.
+> We can expect that all pids are accounted -- but it does not happen in fact.
 
-Yes, it is preferable to CC all patches to lkml. These patches are not
-cgroup specit much. A specific subsystem knowledge is require to judge
-them and most people are not subscribed to the cgroup ML.
+As Roman said you should probably explain this in the cover letter and
+essentially justify why this should be backported. The thing with
+changes such as this is that it's easy for someone to reply and go
+"noone noticed for <n> years so why do we care now?". Otherwise:
 
-> >> @@ -168,9 +168,10 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
-> >>  	 * than PAGE_SIZE.
-> >>  	 */
-> >>  	if (alloc_size > PAGE_SIZE)
-> >> -		new_ldt->entries = vzalloc(alloc_size);
-> >> +		new_ldt->entries = __vmalloc(alloc_size,
-> >> +					     GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-> > 
-> > You don't have to break that line - just let it stick out.
-> Hmm. I missed that allowed line limit was increased up to 100 bytes,
-> Thank you, I will fix it in next patch version. 
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Line limits are more of a guidance than a hard rule. Also please note
-that different subsystems' maintainers insist on this guidance
-differently.
--- 
-Michal Hocko
-SUSE Labs
+Christian
