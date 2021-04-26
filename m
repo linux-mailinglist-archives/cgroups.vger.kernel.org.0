@@ -2,109 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC6536B9F3
-	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 21:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF1536BA28
+	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 21:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239966AbhDZTY6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Apr 2021 15:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S234781AbhDZTkj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Apr 2021 15:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240283AbhDZTY5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 15:24:57 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D6EC061574
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 12:24:15 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 12so89696189lfq.13
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 12:24:15 -0700 (PDT)
+        with ESMTP id S234387AbhDZTkj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 15:40:39 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55457C061756
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 12:39:57 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id h36so35870323lfv.7
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 12:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r1+fehePF1LQa+ETT3QS1bc9x/S6CdwPnRCT51uHUm4=;
-        b=Iap4Uo88x+wPaxUmMexmQyhYyjf2sL25rylbPddEu+U/hlOmwkIefEtnY9a0lTsa+d
-         DUbgh7t+lOXHdq4VYz0VlwX3lCFYFB9Lm27pp+hlnNM+4iymjU+rWrmDC8hvTSBH4Wv2
-         1CkyEz7xj5NMP4EM/vwkZawFtnVeCrcaL9+ByUY9j70Rdaig1pbM0LyMSpkkbYp1A5lL
-         /mXaVwXO48K5isxqZhn8/7TsMvkeR+0Z9j4PvHF3GxA75g9scTENPeaggakn1ZRNx/nR
-         0GyKQl7X5aA60jsuye9ISomU28l0tO06+F4UFDCPU2V4zz1wWjvJKdL91tRtAT+Rq/2l
-         vsRw==
+         :cc:content-transfer-encoding;
+        bh=uKTFMl2K/jBtlUdprMSpQyuu4jIlYrjBFVJg7lJPhEk=;
+        b=QLHlSH2LL9uXh4sy9QtauiXaoF8OnWxtk9QCSh8791OUvFB4sYoW8jVjCMkGTrtcQL
+         FrGfNwUH0L3V08sKOzFRiJBbxgvswr4ji3xy0XAO/ufgHwMRGO6lR3COBApdiOIM/wk5
+         POZkZIlQVZuug1Bn5mrxSe11DlrX+WEBcb3+u5Ut7b/ygHXvPDZutuvyEZ7HLinkTewW
+         ISOX6S3OTcWbJyAX2Us30EFYhEOiff5QHkx6fv3pKd5//JiqcTwxKiS1xZfFqNrVY4K4
+         it/m5g7kX04xUv8RCDAMnDfVccezvq8wz9ORMKhwhg9p6SAxNBLtvy4KiSRqAZSu+wuD
+         JM3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r1+fehePF1LQa+ETT3QS1bc9x/S6CdwPnRCT51uHUm4=;
-        b=RuxuWft9YGYcwAyj16wdwwH7CCQNiDvdFN58vBZwY02qMR9PeqiMw2OBDolXFUtuKp
-         /d2e9FPMCiVC04rhzeG0mrEDbfKSCF5tIabaUbyr1IO4Ykfu30mtnrO5b05eyos2Xell
-         y3WFYGGtt8Px+mx1Hw/EhoM1Umgd9Eq6UELAKZmTpeKfAQBONhIzgPMSJqhFyQKcgzhK
-         WJPs+G5al2QF12XJ27kLpQwcjy3uXqwArwWCOoyUp8xze950veMLHXv8YMOPhG0zjIE8
-         uKNjTmw16x/iz/04tANcp0511+tpId6fqQvDH8r0BkD/mugO7FPOBZz3wsWxvGoPT7q0
-         7/aw==
-X-Gm-Message-State: AOAM530RCfxXBlVJV3ti+6FeG8zXUZtZ2jeN3aRK2ALuhILuYjJ+hcZu
-        6dcK1IxdBDeftLh37h1kopnqYADgtBOMOdswbkORSg==
-X-Google-Smtp-Source: ABdhPJwJX5X5pWKlvL6trEZIBhuyZeAVdXfLQCF7xC4WYagqNL7GOVc6hyzsmKqZsbWi0D4AiImpjViPhwh2JFpcLIw=
-X-Received: by 2002:a05:6512:2037:: with SMTP id s23mr13515499lfs.358.1619465053738;
- Mon, 26 Apr 2021 12:24:13 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uKTFMl2K/jBtlUdprMSpQyuu4jIlYrjBFVJg7lJPhEk=;
+        b=Nhrs447ss4xmG+9VJG5pReTxalv7UgfpuJU9qykKc0F2Lm63W6f6w36UCWvKvcStr0
+         t9gPlE7ltWTA9IgHrymP4qcG7js+Yh/4R/YaQc2SRSbzCsGOlfFCjL5tbzSCeN4l48Qc
+         ZlpfJfz6kY63a90nzRmTODrSWfJCHulgH1GS4mVCFCgar+5fqgys9IzfxgUF2yJd7xjs
+         CLzgTWYxaPNwMLcectvQb7PyKx2xyFpTDt+iioFOy5mJ2M43r/UqxOkh/GMm9h4Q0lLg
+         hxm2zgC1xOwoCaPU4E9HYpXiiI6HbqGkrLi2h88P4lpgs9ZmDgPPwWkvz7MuxsfpTYIx
+         Cznw==
+X-Gm-Message-State: AOAM531/v4iDfhbMMDULDPTc3iK8kc20uK1VF9dHcM+8fdy0o220lWJA
+        qhsubhaIr6NISno/8e2WGzLyBjaNBglp5HQc7i4+a8MNwko=
+X-Google-Smtp-Source: ABdhPJxuQA1Y5wY99wy7C17n6eTxD1SMFnUX6rYc22m5KHJz1myuJrd/hnlyB35vGzrj9l9cBTvJ5Tb/WNk/8ky1sRs=
+X-Received: by 2002:a19:ed11:: with SMTP id y17mr1253321lfy.117.1619465995569;
+ Mon, 26 Apr 2021 12:39:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210420192907.30880-1-longman@redhat.com> <20210420192907.30880-4-longman@redhat.com>
-In-Reply-To: <20210420192907.30880-4-longman@redhat.com>
+References: <7b777e22-5b0d-7444-343d-92cbfae5f8b4@virtuozzo.com> <8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com>
+In-Reply-To: <8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 26 Apr 2021 12:24:02 -0700
-Message-ID: <CALvZod7_NtptXi=1QdfgyobL-bw72xGeZ9Sm3pn1pxtZ9crTow@mail.gmail.com>
-Subject: Re: [PATCH-next v5 3/4] mm/memcg: Improve refill_obj_stock() performance
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+Date:   Mon, 26 Apr 2021 12:39:44 -0700
+Message-ID: <CALvZod5uw+f5dY=dUmHvdRq-4OfJBQ8zqjT5rZzpKtqQoy+28A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] memcg: enable accounting for pids in nested pid namespaces
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
+        Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Serge Hallyn <serge@hallyn.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:30 PM Waiman Long <longman@redhat.com> wrote:
+On Sat, Apr 24, 2021 at 4:54 AM Vasily Averin <vvs@virtuozzo.com> wrote:
 >
-> There are two issues with the current refill_obj_stock() code. First of
-> all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
-> atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
-> and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
-> be used again which leads to another call to drain_obj_stock() and
-> obj_cgroup_get() as well as atomically retrieve the available byte from
-> obj_cgroup. That is costly. Instead, we should just uncharge the excess
-> pages, reduce the stock bytes and be done with it. The drain_obj_stock()
-> function should only be called when obj_cgroup changes.
+> Commit 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+> enabled memcg accounting for pids allocated from init_pid_ns.pid_cachep,
+> but forgot to adjust the setting for nested pid namespaces.
+> As a result, pid memory is not accounted exactly where it is really neede=
+d,
+> inside memcg-limited containers with their own pid namespaces.
 >
-> Secondly, when charging an object of size not less than a page in
-> obj_cgroup_charge(), it is possible that the remaining bytes to be
-> refilled to the stock will overflow a page and cause refill_obj_stock()
-> to uncharge 1 page. To avoid the additional uncharge in this case,
-> a new overfill flag is added to refill_obj_stock() which will be set
-> when called from obj_cgroup_charge().
+> Pid was one the first kernel objects enabled for memcg accounting.
+> init_pid_ns.pid_cachep marked by SLAB_ACCOUNT and we can expect that
+> any new pids in the system are memcg-accounted.
 >
-> A multithreaded kmalloc+kfree microbenchmark on a 2-socket 48-core
-> 96-thread x86-64 system with 96 testing threads were run.  Before this
-> patch, the total number of kilo kmalloc+kfree operations done for a 4k
-> large object by all the testing threads per second were 4,304 kops/s
-> (cgroup v1) and 8,478 kops/s (cgroup v2). After applying this patch, the
-> number were 4,731 (cgroup v1) and 418,142 (cgroup v2) respectively. This
-> represents a performance improvement of 1.10X (cgroup v1) and 49.3X
-> (cgroup v2).
+> Though recently I've noticed that it is wrong. nested pid namespaces crea=
+tes
+> own slab caches for pid objects, nested pids have increased size because =
+contain
+> id both for all parent and for own pid namespaces. The problem is that th=
+ese slab
+> caches are _NOT_ marked by SLAB_ACCOUNT, as a result any pids allocated i=
+n
+> nested pid namespaces are not memcg-accounted.
 >
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-After incorporating Roman's suggestion, you can add:
+> Pid struct in nested pid namespace consumes up to 500 bytes memory,
+> 100000 such objects gives us up to ~50Mb unaccounted memory,
+> this allow container to exceed assigned memcg limits.
+>
+> Fixes: 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
