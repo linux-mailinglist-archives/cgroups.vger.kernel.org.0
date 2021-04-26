@@ -2,97 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00DC36B527
-	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 16:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05C536B529
+	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 16:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhDZOmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Apr 2021 10:42:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57578 "EHLO mx2.suse.de"
+        id S233471AbhDZOn3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Apr 2021 10:43:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58160 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233884AbhDZOmw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 26 Apr 2021 10:42:52 -0400
+        id S232575AbhDZOn3 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 26 Apr 2021 10:43:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619448129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1619448166; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=gehS6VLlgOM1n0sqUfbTqUuIIQgjLgEpVqlnX5VEuzE=;
-        b=uD0Cy+/FdJ6UxuddtzxiQ5vdeMeTsIRVaTTPrA6MrwHIYNhne51Xo7IKF3qgFRdsyGyP6+
-        WHm5NBe0MCQZyhfOfHmnMDMnMcjzFg8W7BfLKYtMFsBeKWCT7VbbabQ1yBzBomrah97Aol
-        dY6/7ujlNJILvSx2OOyFAifPhM9igcQ=
+        bh=Fv7fFJfffmnznWz0ShWmcyRuQV5/j5m0wpfbC4qng4s=;
+        b=bq85JjIiOgDZ02mjWaswsUw3P93a0eWI8bfyosta+YvU8LQkeYvUEWliWg7VqJYC6xMT/a
+        1oX5V0nxdEXdXQ7f0xt5VC0esdqPc9aMIYUNEyB7FMiYCVv85W2vFPs6lj5B80sh/H3VEu
+        y0tjTTJtXUPVyaMwr25gpxTwboPWIz4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FBA8AB87;
-        Mon, 26 Apr 2021 14:42:09 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 16:42:07 +0200
+        by mx2.suse.de (Postfix) with ESMTP id A360DABB1;
+        Mon, 26 Apr 2021 14:42:46 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 16:42:45 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>
 Subject: Re: [RFC PATCH] cgroup: add cgroup.signal
-Message-ID: <YIbRP5/w1ZD804DL@blackbook>
+Message-ID: <YIbRZeWIl8i6soSN@blackbook>
 References: <20210423171351.3614430-1-brauner@kernel.org>
- <YIMZkjzNFypjZao9@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="t5H9JHlfBVdAGKzg"
+        protocol="application/pgp-signature"; boundary="qrDmmfUlDdo2CPmx"
 Content-Disposition: inline
-In-Reply-To: <YIMZkjzNFypjZao9@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210423171351.3614430-1-brauner@kernel.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---t5H9JHlfBVdAGKzg
+--qrDmmfUlDdo2CPmx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hello.
+Hello Christian,
+I have some questions to understand the motivation here.
 
-On Fri, Apr 23, 2021 at 12:01:38PM -0700, Roman Gushchin <guro@fb.com> wrote:
-> Overall it sounds very reasonable and makes total sense to me.
-I agree this sounds like very desired convenience...
+On Fri, Apr 23, 2021 at 07:13:51PM +0200, Christian Brauner <brauner@kernel.org> wrote:
+> - Signals are specified by writing the signal number into cgroup.signal.
+>   An alternative would be to allow writing the signal name but I don't
+>   think that's worth it. Callers like systemd can easily do a snprintf()
+>   with the signal's define/enum.
+> - Since signaling is a one-time event and we're holding cgroup_mutex()
+>   as we do for freezer we don't need to worry about tasks joining the
+>   cgroup while we're signaling the cgroup. Freezer needed to care about
+>   this because a task could join or leave frozen/non-frozen cgroups.
+>   Since we only support SIGKILL currently and SIGKILL works for frozen
+>   tasks there's also not significant interaction with frozen cgroups.
+> - Since signaling leads to an event and not a state change the
+>   cgroup.signal file is write-only.
+Have you considered accepting a cgroup fd to pidfd_send_signal and
+realize this operation through this syscall? (Just asking as it may
+prevent some of these consequences whereas bring other unclarities.)
 
-> Many userspace applications can use the new interface instead of
-> reading cgroup.procs in a cycle and killing all processes or using the
-> freezer and kill a frozen list of tasks.
-...however, exactly because of this, I'm not convinced it's justifying
-yet another way how to do it and implement that in kernel. (AFAIU, both
-those ways should be reliable too (assuming reading cgroup.procs of the
-_default_ hierarchy), please correct me if I'm wrong.)
 
-> It will simplify the code and make it more reliable.
-It's not cost free though, part of the complexity is moved to the
-kernel.
-As Roman already pointed earlier, there are is unclear situation wrt
-forking tasks. The similar had to be solved for the freezer hence why
-not let uspace rely on that already? Having similar codepaths for
-signalling the cgroups seems like a way to have two similar codepaths
-side by side where one of them serves just to simplify uspace tools.
+> - Since we currently only support SIGKILL we don't need to generate a
+>   separate notification and can rely on the unpopulated notification
+>   meachnism. If we support more signals we can introduce a separate
+>   notification in cgroup.events.
+What kind of notification do you have in mind here?
+
+> - Freezer doesn't care about tasks in different pid namespaces, i.e. if
+>   you have two tasks in different pid namespaces the cgroup would still
+>   be frozen.
+>   The cgroup.signal mechanism should consequently behave the same way,
+>   i.e.  signal all processes and ignore in which pid namespace they
+>   exist. This would obviously mean that if you e.g. had a task from an
+>   ancestor pid namespace join a delegated cgroup of a container in a
+>   child pid namespace the container can kill that task. But I think this
+>   is fine and actually the semantics we want since the cgroup has been
+>   delegated.
+What do you mean by a delegated cgroup in this context?
+
+> - We're holding the read-side of tasklist lock while we're signaling
+>   tasks. That seems fine since kill(-1, SIGKILL) holds the read-side
+>   of tasklist lock walking all processes and is a way for unprivileged
+>   users to trigger tasklist lock being held for a long time. In contrast
+>   it would require a delegated cgroup with lots of processes and a deep
+>   hierarchy to allow for something similar with this interface.
+I'd better not proliferate tasklist_lock users if it's avoidable (such
+as freezer does).
+
+> Fwiw, in addition to the system manager and container use-cases I think
+> this has the potential to be picked up by the "kill" tool. In the future
+> I'd hope we can do: kill -9 --cgroup /sys/fs/cgroup/delegated
+(OT: FTR, there's `systemctl kill` already ;-))
 
 Michal
 
---t5H9JHlfBVdAGKzg
+--qrDmmfUlDdo2CPmx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmCG0TsACgkQia1+riC5
-qSj/Uw/+IQoj2Jh7QG+npIuKITbWSsNTQRw4Y+MjFEa4jP3oGPr1LWiism82uzTh
-HCVXW7BsxOwZF+zKeXCOehMs2W9J/W3AJv6tcBymu8O0irtUIZVuOwrwe0QJChwP
-k0bIXrwQR9yzA0CuC+sqLa8+z6WYfJEcmOWmJBa0T8vfjFBsmNUYl8/AehoNTCGU
-lEO57EOowPqrukvdYzXsLFtC+c9tYCh9UyhuA/eKVeiJKSL4aPKs9gyShtEIOgHe
-PoGGSVcUk23mSDKy0xF0lfvcWuxqlppcxl5SBm9GefW7308J1sOeZzbn4N8av8Hj
-bjmHnjPI3dwGr4nVkNzbgjko7fNWEgnNvzltMjkv3+PNtCpTX3jMcG3WOG0eTUSc
-LL0UzWp3dvnzySdCo0u1NsDzunpoyPhsXDRra/OBvcxCy0hHP2LRL/eveOvQtLZv
-/1r9lVI93Oz2Ac+X+3nG7aWf2/lAKXbVvbltlC7amh+cPsqnf4315gHxJkg5VUl+
-pDK/I5r/YGjhaEJhHL2E2ni2s/9mN5eWJHhCGaCUfC7BB800tuRcluvLhbN2Qhj+
-YHDQHpOFEuPr/VCs5+ZGRmW8o4tY5kSj1IUNljDCjZQFXHCIWLx3nSrecaPK9hlX
-SBfJ4MSVAIZ7WmiyQgfgJXmeHtPj2oAOeZPBf+V8mfL4uptNJRI=
-=Tr1M
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmCG0WQACgkQia1+riC5
+qSjqQw//eblx3JpSs9H+U2TrWvN2FqgxsXKBf6Idm2ECqRMZbGAbf3bkbngpGIUC
+Hvqnq9uIbz5xwNd4eHVRxwGU4XpZ/WIXhKCKCY6pi2U7amOaMJuDr7K8jfTk2Xl+
+KkFk8roye5WmBltsHR5prK1CuY8DiKSQ5dEdaBPZrLK1AhVEJPyzT3I/wuBiv7DF
+EpqOm+gZatQpYegIXdaBCm+BIrRdnQP14PY8Ja+b5Ggp5E+gPAQIKrwRkDBDvQj0
+EAYLMuL+0M7CffQ/jiWcPAKgtVhab0vMfCwzDRu9899YO5GeVcpaGCw6pezSWfbr
+yUwRjxMpTWRWNKXSl/hFUZxkBtaWxnzqGfk7KQy/guO+eCCZBLBqY6Qr3zf2mXri
+R/mjDafPFGYN/gyGzcHleRSj7zrNV8Y5+nGEyiQuRDR9+CPRflGYV7vNCqcxK8Zf
+gRPDE+s/bZ7ENU1etlgU1b+3bCro8tmjBeSYobM6bt/dj226MniNmvCLuQqbef2c
+LBLk/qMWXs7oJcOG6aJfc7oUrAllRqDAghWkYxflLrQ/78WqhIhFbbOy047hgegV
+kxwZAAw+pP5Tw0DlyfGhl2g779cRL983L5M+u0LgIacPXsGEKJ1bttNIRKWwOw11
+udWKhlhfvbVTx53W4ji7vp0ogt0XugECeqd0T7CsJfNAd9ADTNc=
+=6D53
 -----END PGP SIGNATURE-----
 
---t5H9JHlfBVdAGKzg--
+--qrDmmfUlDdo2CPmx--
