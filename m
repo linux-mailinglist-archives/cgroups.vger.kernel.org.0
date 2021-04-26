@@ -2,132 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BED336B5CC
-	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 17:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B0B36B680
+	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 18:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhDZPaW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Apr 2021 11:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233736AbhDZPaW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 26 Apr 2021 11:30:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D2860FE5;
-        Mon, 26 Apr 2021 15:29:37 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 17:29:32 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH] cgroup: add cgroup.signal
-Message-ID: <20210426152932.ekay5rfyqeojzihc@wittgenstein>
-References: <20210423171351.3614430-1-brauner@kernel.org>
- <YIbRZeWIl8i6soSN@blackbook>
+        id S234294AbhDZQJc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Apr 2021 12:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234628AbhDZQJ2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 12:09:28 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717E8C061574
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 09:08:45 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j4so49608179lfp.0
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 09:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vCAc8uLKViQfUk6B9sQWnMNVd4nGJwcjR6PW4cxuT2A=;
+        b=MzCzIiVtMu1qdJI/u9e7KD/8RmMP8y12i8ZSPtKP62d9lMQPum9lvtHdiRC8oHx/qh
+         XffKtPgLq0Su+RJ5q+ESjxgur66Phf9k8nqh+RdvNdoD6KiKthenym8pjlzysAYqMRvC
+         yE2VYwXpeTkAQi9kbB/QfLC3XmyzDBLuBx68WBxljpr74J3xca1Y28ExEDwCa1LPOt7o
+         BO8bwn4beRzTJFNsB4ILYHbHvyPK0hgk9pDcAhk111GosEN6pkXxitqOCD+JcFO3ChkL
+         IWe25tp7V5+Csw1QtUmxLzsIVfvrOV3eS3Mo6KhGSeY9FgLN+KCvIr7TbRmS96MP00Zy
+         TAig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vCAc8uLKViQfUk6B9sQWnMNVd4nGJwcjR6PW4cxuT2A=;
+        b=P8Fszst4+W6sxI8flLoLnfMmEcK/YmFBdZ3xkPfaZSHN8f1HViIA77Xy7/l5J4AJzL
+         lzcIdEoVbpxYNXT4e/iVmTmRGU4V2ljo6AHzG4G5OkTLBYcSAti3yzWHY0OblG1C/C8J
+         XXjGWX+QhlAk3zr6CVuPcMoYzhdYgrNcGMygj0bhhXREcWRVQoy49bxAMtwYfJH4IEx+
+         Men/x4EN3hJnJoWCRtZ9VvpItsxoNvOwT7eiH9+ZBPukYoZcOM+oX3CdL0fEW929w7v3
+         Fq0qTJ1aCGv8j03T8EYA6TTT5M5x4pnJ450mQY248Ow+RXjQhMxRiANR+6KbE2dp1rFD
+         4cdA==
+X-Gm-Message-State: AOAM532sHjASfOEhV9GyXEeybl9n1biwEiYOdbx0jOfGyb9nRWgxHVdy
+        N99jf0/xfhsyhckz3dzVuZpnpLI09XldSAL0UneIsA==
+X-Google-Smtp-Source: ABdhPJzwOgCtG1j8UN9F5jO+xUolC2cySL3zSgj6jyX9FwuliFEWn6HjHjbgdUfK2XnXOEA+5mlYpxIP2uNeVl+BnGY=
+X-Received: by 2002:ac2:58ee:: with SMTP id v14mr13004371lfo.83.1619453323740;
+ Mon, 26 Apr 2021 09:08:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIbRZeWIl8i6soSN@blackbook>
+References: <20210423171351.3614430-1-brauner@kernel.org> <YIbRZeWIl8i6soSN@blackbook>
+ <20210426152932.ekay5rfyqeojzihc@wittgenstein>
+In-Reply-To: <20210426152932.ekay5rfyqeojzihc@wittgenstein>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 26 Apr 2021 09:08:32 -0700
+Message-ID: <CALvZod5=eLQMdVXxuhj9ia=PkoRvT5oBxeqZAVtQpSukZ=tCxA@mail.gmail.com>
+Subject: Re: [RFC PATCH] cgroup: add cgroup.signal
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 04:42:45PM +0200, Michal Koutný wrote:
-> Hello Christian,
-> I have some questions to understand the motivation here.
-> 
-> On Fri, Apr 23, 2021 at 07:13:51PM +0200, Christian Brauner <brauner@kernel.org> wrote:
-> > - Signals are specified by writing the signal number into cgroup.signal.
-> >   An alternative would be to allow writing the signal name but I don't
-> >   think that's worth it. Callers like systemd can easily do a snprintf()
-> >   with the signal's define/enum.
-> > - Since signaling is a one-time event and we're holding cgroup_mutex()
-> >   as we do for freezer we don't need to worry about tasks joining the
-> >   cgroup while we're signaling the cgroup. Freezer needed to care about
-> >   this because a task could join or leave frozen/non-frozen cgroups.
-> >   Since we only support SIGKILL currently and SIGKILL works for frozen
-> >   tasks there's also not significant interaction with frozen cgroups.
-> > - Since signaling leads to an event and not a state change the
-> >   cgroup.signal file is write-only.
-> Have you considered accepting a cgroup fd to pidfd_send_signal and
-> realize this operation through this syscall? (Just asking as it may
-> prevent some of these consequences whereas bring other unclarities.)
+On Mon, Apr 26, 2021 at 8:29 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+>
+[...]
+> > Have you considered accepting a cgroup fd to pidfd_send_signal and
+> > realize this operation through this syscall? (Just asking as it may
+> > prevent some of these consequences whereas bring other unclarities.)
+>
+> That's semantically quite wrong on several fronts, I think.
+> pidfd_send_signal() operates on pidfds (and for a quirky historical
+> reason /proc/<pid> though that should die at some point). Making this
+> operate on cgroup fds is essentially implicit multiplexing which is
+> pretty nasty imho. In addition, this is a cgroup concept not a pidfd
+> concept.
 
-That's semantically quite wrong on several fronts, I think.
-pidfd_send_signal() operates on pidfds (and for a quirky historical
-reason /proc/<pid> though that should die at some point). Making this
-operate on cgroup fds is essentially implicit multiplexing which is
-pretty nasty imho. In addition, this is a cgroup concept not a pidfd
-concept.
-I've also removed the "arbitrary signal" feature from the cgroup.signal
-knob. I think Roman's right that it should simply be cgroup.kill.
-
-> 
-> 
-> > - Since we currently only support SIGKILL we don't need to generate a
-> >   separate notification and can rely on the unpopulated notification
-> >   meachnism. If we support more signals we can introduce a separate
-> >   notification in cgroup.events.
-> What kind of notification do you have in mind here?
-
-This is now irrelevant with dumbing this down to cgroup.kill.
-
-> 
-> > - Freezer doesn't care about tasks in different pid namespaces, i.e. if
-> >   you have two tasks in different pid namespaces the cgroup would still
-> >   be frozen.
-> >   The cgroup.signal mechanism should consequently behave the same way,
-> >   i.e.  signal all processes and ignore in which pid namespace they
-> >   exist. This would obviously mean that if you e.g. had a task from an
-> >   ancestor pid namespace join a delegated cgroup of a container in a
-> >   child pid namespace the container can kill that task. But I think this
-> >   is fine and actually the semantics we want since the cgroup has been
-> >   delegated.
-> What do you mean by a delegated cgroup in this context?
-
-Hm? I mean a cgroup that is delegated to a specific user according to
-the official cgroup2 documentation.
-
-brauner@wittgenstein|/sys/fs/cgroup/payload.f1
-> ls -al
-total 0
-drwxrwxr-x  6 root   100000 0 Apr 25 11:51 .
-dr-xr-xr-x 41 root   root   0 Apr 25 11:51 ..
--r--r--r--  1 root   root   0 Apr 26 17:20 cgroup.controllers
--r--r--r--  1 root   root   0 Apr 26 17:20 cgroup.events
--rw-r--r--  1 root   root   0 Apr 26 17:20 cgroup.freeze
--rw-r--r--  1 root   root   0 Apr 26 17:20 cgroup.max.depth
--rw-r--r--  1 root   root   0 Apr 26 17:20 cgroup.max.descendants
--rw-rw-r--  1 root   100000 0 Apr 25 11:51 cgroup.procs
--r--r--r--  1 root   root   0 Apr 26 17:20 cgroup.stat
--rw-rw-r--  1 root   100000 0 Apr 25 11:51 cgroup.subtree_control
--rw-rw-r--  1 root   100000 0 Apr 25 11:51 cgroup.threads
--rw-r--r--  1 root   root   0 Apr 26 17:20 cgroup.type
--rw-r--r--  1 root   root   0 Apr 26 17:20 cpu.pressure
--r--r--r--  1 root   root   0 Apr 26 17:20 cpu.stat
-drwxr-xr-x  2 100000 100000 0 Apr 25 11:51 init.scope
--rw-r--r--  1 root   root   0 Apr 26 17:20 io.pressure
-drwxr-xr-x  2 100000 100000 0 Apr 25 11:51 .lxc
--rw-r--r--  1 root   root   0 Apr 26 17:20 memory.pressure
-drwxr-xr-x 78 100000 100000 0 Apr 26 15:24 system.slice
-drwxr-xr-x  2 100000 100000 0 Apr 25 11:52 user.slice
-
-> 
-> > - We're holding the read-side of tasklist lock while we're signaling
-> >   tasks. That seems fine since kill(-1, SIGKILL) holds the read-side
-> >   of tasklist lock walking all processes and is a way for unprivileged
-> >   users to trigger tasklist lock being held for a long time. In contrast
-> >   it would require a delegated cgroup with lots of processes and a deep
-> >   hierarchy to allow for something similar with this interface.
-> I'd better not proliferate tasklist_lock users if it's avoidable (such
-> as freezer does).
-> 
-> > Fwiw, in addition to the system manager and container use-cases I think
-> > this has the potential to be picked up by the "kill" tool. In the future
-> > I'd hope we can do: kill -9 --cgroup /sys/fs/cgroup/delegated
-> (OT: FTR, there's `systemctl kill` already ;-))
-
-Not every distro uses systemd. :)
-And actually systemd is one of the users of this feature.
+What's your take on a new syscall cgroupfd_send_signal()? One
+complexity would be potentially different semantics for v1 and v2.
