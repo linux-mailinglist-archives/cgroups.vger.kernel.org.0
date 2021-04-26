@@ -2,153 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C1936B6E6
-	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 18:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F339536B99B
+	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbhDZQee (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Apr 2021 12:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbhDZQee (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 12:34:34 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E45C061574
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 09:33:52 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id l1so2227131qtr.12
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 09:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ugedal.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iYU3lzuppVdnEjezXpekUf6VbkMAR7oBXDRRTrFeQac=;
-        b=jVGo1Sa7XqGytV84u+6tnD2lIJ5BIT515J9lY+r5N7g7tb6GMJ+I2jHONXmQ1B042J
-         MZIDK39PFTvXH8G7ug+0q16h499bgj2xWLUx67SSayZtvHeSXcPspOGV8oXbGoMN/Icn
-         kNZCA4EUvNoTTQkseZojDQ5Vr85IP+YEVPRSqchTyYRc05oJuMwWEyZko4nMI9yXXSkK
-         ZtCurqx+TqG6unHNVxSRdgJSQ83pfp9V55jImmSlQW+3e0DwzdHwLG3KEXmYhTgCAyOk
-         TrhzhZ9J2kX6TgupXj4JKis1fsvw/A4O/SynfoJA0iEXAE7miKKa+uvsbXUr8E9A/eA+
-         p6Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iYU3lzuppVdnEjezXpekUf6VbkMAR7oBXDRRTrFeQac=;
-        b=E2RbPInVufqTujF2uV/lxOamZWpm5s06Krw0Zm4pKB/T6Tbo2IN8saNQPWQkxMhhLT
-         X5qp5Q/zm9hqLQzutsr1Q3eT+5ZOOqCXG7WHpy8j7bPdQuD7S44iiBZIY0SxwzJ3zupk
-         UoBkEMaQG5blTs4ZCk08UsJ3BYqQ/njFxYi6nBp2QB8NA+UdCIx018r1azMEU8twNLfY
-         pHuJBhqNHbANaGC224e5DM7sHnrsTGey+W6+jr90sCzRw2HIY+stFZk5ykjR7GzEgudh
-         H9yuhH2f6dVOzl/AKCG0iBcfhK5FZenLEkru0osYAets6KZ383Cpih0WP7Noce5vbA+U
-         l1uw==
-X-Gm-Message-State: AOAM532OqP5ftptMtxZ7ajYRhdIRao8bnC14zUpMkRTIh569A7Q8iOHb
-        ZiIm/7mYF/2CJIfAW03OccNxNEKJoiZ9uy7ECqm82Q==
-X-Google-Smtp-Source: ABdhPJzLtXr1ZQA0v3QyjQYI8b3zo2ESFH+f2ELt5p1N8zh+x1m+Nqg1SEfAf/YRH5k2xRSaWPj0ZZJmbwDN6WJ0PMw=
-X-Received: by 2002:ac8:5f93:: with SMTP id j19mr5527591qta.49.1619454831756;
- Mon, 26 Apr 2021 09:33:51 -0700 (PDT)
+        id S239899AbhDZTDi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Apr 2021 15:03:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54884 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239888AbhDZTDi (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 26 Apr 2021 15:03:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619463774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgFYiqNfj3cgS9d7z1fKDbD59tWZfAUjneJmcgXrnEA=;
+        b=O8X/cFFgxilTICoeriXpB8nQMWUfJMku1goVn8+88GSzrvTdKP7EejT6iTBC4Zr1PEOf/d
+        vODpfA0slsiD6KVE1h6z3gpc+LkgMFeAu95bo6wX03w9rr6kS0tvmnRPmQl568YJAZdp+0
+        DmQMOqCHFrrxm62E/Go3AtNzB6G1zi4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AD608AE72;
+        Mon, 26 Apr 2021 19:02:54 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 21:02:52 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH] cgroup: add cgroup.signal
+Message-ID: <YIcOXGkEBo10Q1A7@blackbook>
+References: <20210423171351.3614430-1-brauner@kernel.org>
+ <YIMZkjzNFypjZao9@carbon.dhcp.thefacebook.com>
+ <YIbRP5/w1ZD804DL@blackbook>
+ <20210426151514.od5d7bru7fyu24qs@wittgenstein>
 MIME-Version: 1.0
-References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-In-Reply-To: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
-From:   Odin Ugedal <odin@ugedal.com>
-Date:   Mon, 26 Apr 2021 18:33:19 +0200
-Message-ID: <CAFpoUr1FgZhuBmor2vCFqC9z7wao+XSybPxJZKFfK-wvZOagCA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RbsNFjwTQQFEBlJQ"
+Content-Disposition: inline
+In-Reply-To: <20210426151514.od5d7bru7fyu24qs@wittgenstein>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
 
+--RbsNFjwTQQFEBlJQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Have you been able to reproduce this on mainline ?
+(Thanks for your explanations in the other thread.)
 
-Yes. I have been debugging and testing with v5.12-rc8. After I found
-the suspected
-commit in ~v4.8, I compiled both the v4.4.267 and v4.9.267, and was able to
-successfully reproduce it on v4.9.267 and not on v4.4.267. It is also
-reproducible
-on 5.11.16-arch1-1 that my distro ships, and it is reproducible on all
-the machines
-I have tested.
+On Mon, Apr 26, 2021 at 05:15:14PM +0200, Christian Brauner <christian.brau=
+ner@ubuntu.com> wrote:
+> Since cgroups organize and manage resources and processes killing
+> cgroups is arguably a core cgroup feature and in some form was always
+> planned. It just hasn't been high-priority.
 
-> When running the script below on v5.12, I'm not able to reproduce your problem
+This holds for v1 as well, actually, cgroup.signal had been considered
+[1] (but dropped in favor the freezer IIUC).
 
-v5.12 is pretty fresh, so I have not tested on anything before v5.12-rc8. I did
-compile v5.12.0 now, and I am able to reproduce it there as well.
+> We should very much try to make interfaces simpler to use for
+> userspace.
 
-Which version did you try (the one for cgroup v1 or v2)? And/or did you try
-to run the inspection bpftrace script? If you tested the cg v1
-version, it will often
-end up at 50/50, 51/49 etc., and sometimes 60/40+-, making it hard to
-verify without inspection.
+Another way of seeing this is to have one canonical way how to do that
+(i.e. with freezing).
 
-I have attached a version of the "sub cgroup" example for cgroup v1,
-that also force
-the process to start on cpu 1 (CPU_ME), and sends it over to cpu 0
-(CPU) after attaching
-to the new cgroup. That will make it evident each time. This example should also
-always end up with 50/50 per stress process, but "always" ends up more
-like 99/1.
+> In this specific instance the code comes down from an algorithm to
+> recursively kill all cgroups to a single write into a file. Which
+> seems like a good win.
 
-Can you confirm if you are able to reproduce with this version?
+I'm considering the SIGKILL-only implementation now, i.e. the recursion
+would still be needed for other signals.
 
---- bash start
-CGROUP_CPU=/sys/fs/cgroup/cpu/slice
-CGROUP_CPUSET=/sys/fs/cgroup/cpuset/slice
-CGROUP_CPUSET_ME=/sys/fs/cgroup/cpuset/me
-CPU=0
-CPU_ME=1
+> You can kill processes in ancestor or sibling pid namespaces as long
+> as they are encompassed in the same cgroup. And other useful things.
 
-function run_sandbox {
-  local CG_CPUSET="$1"
-  local CG_CPU="$2"
-  local INNER_SHARES="$3"
-  local CMD="$4"
+This seems like the main differentiating point, the ability to pass
+around a suicidal igniter around, that'll blow you up, all your house
+including any privileged or invisible visitors in it. (Rewording just
+for the fun of the simile.)
 
-  local PIPE="$(mktemp -u)"
-  mkfifo "$PIPE"
-  sh -c "read < $PIPE ; exec $CMD" &
-  local TASK="$!"
-  sleep .1
-  mkdir -p "$CG_CPUSET"
-  mkdir -p "$CG_CPU"/sub
-  tee "$CG_CPU"/sub/cgroup.procs <<< "$TASK"
-  tee "$CG_CPU"/sub/cpu.shares <<< "$INNER_SHARES"
+So with the restriction to mere SIGKILL of a cgroup and this reasoning,
+I'll look at the patch itself (replying directly to original message).
 
-  tee "$CG_CPUSET"/cgroup.procs <<< "$TASK"
+> But really, the simplifcation alone is already quite good.
 
-  tee "$PIPE" <<< sandox_done
-  rm "$PIPE"
-}
+Yes, let's keep this a simplification :-)
 
-mkdir -p "$CGROUP_CPU"
-mkdir -p "$CGROUP_CPUSET"
-mkdir -p "$CGROUP_CPUSET_ME"
+Michal
+=20
+[1] https://lore.kernel.org/lkml/CALdu-PBLCNXTaZuODyzw_g_FQNyLqK_FsdObC=3DH=
+jtEp75vkdFQ@mail.gmail.com/
 
-tee "$CGROUP_CPUSET"/cpuset.cpus <<< "$CPU"
-tee "$CGROUP_CPUSET"/cpuset.mems <<< "$CPU"
+--RbsNFjwTQQFEBlJQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-tee "$CGROUP_CPUSET_ME"/cpuset.cpus <<< "$CPU_ME"
-echo $$ | tee "$CGROUP_CPUSET_ME"/cgroup.procs
+-----BEGIN PGP SIGNATURE-----
 
-run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-1" 50000 "stress --cpu 1"
-run_sandbox "$CGROUP_CPUSET" "$CGROUP_CPU/cg-2" 2     "stress --cpu 1"
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmCHDlYACgkQia1+riC5
+qSjuAw//ZNQglsUxw8VYCMmIFgz/l5v4SU2Br2iudkfIG2zWHs3u8G9UTui1N8UO
+wDHHkt4ISZT/MckDr9zb8fCNCbTq+/X4UICPIzvMqvXiYQxKrtZa68kQinxDsXjG
+aFU4gr5TyJdFbf/jg1EYLLArJmUITvN3w67raLY9OQN0SS7ZGDDIygXLU9TF9st7
+JhR/hHz7+qfGw86VjkQiBMQtKSKt8UN40Dn8JqRheE1UPzAdzmwHKuybkDblvEph
+YleZTTfAb1Z0tSTP6c8/PCC6Ui5qtRmFunq2A4iUq9Kezt5aS9ruh247J3pP6DT/
+2Qrz7eoN3QWF3p7Xwlu+42aUqptmoBR3/f1o+3yDoJrGlXDnbNoOvjuidxMzcmdh
+k505jdUFsAaKs1KNql2lovvdUKtWYD2sz1kDiNyjds76hdWBeMAvgK/2fh3HNq4P
+qUA8KlC/sgRuIdxIK2JCswwhTP1OV6jb6nPct1gxdu3jPDSnvjlp577Ad3Tyg0Yz
+EKPJOMhAkY0qGH0uispQ73PxfDBfm05F/x94+XVCtSE5j5Q0B+mOOUG891w5uroO
+jv+/TXkUoFjhuFwrqvknoxJF16RL4FcASxptRsQklY1DjKwajrM8I8REGjS7u9/p
+1aeRZeqmEidjqqmGxgk/moeon+WFVeCRURfFb+8Rh4c//nOpneU=
+=Y1Oc
+-----END PGP SIGNATURE-----
 
-read # click enter to cleanup and stop all stress procs
-killall stress
-sleep .2
-rmdir /sys/fs/cgroup/cpuset/slice/
-rmdir /sys/fs/cgroup/cpu/slice/{cg-{1,2}{/sub,},}
---- bash end
-
-
-Thanks
-Odin
+--RbsNFjwTQQFEBlJQ--
