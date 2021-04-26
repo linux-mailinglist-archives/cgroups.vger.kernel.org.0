@@ -2,98 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6BA36AC8C
-	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 09:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2774636AC8E
+	for <lists+cgroups@lfdr.de>; Mon, 26 Apr 2021 09:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhDZHAr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Apr 2021 03:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S232058AbhDZHAz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Apr 2021 03:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbhDZHAr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 03:00:47 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0ACC061756
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 00:00:06 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id lr7so10281406pjb.2
-        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 00:00:06 -0700 (PDT)
+        with ESMTP id S231968AbhDZHAz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Apr 2021 03:00:55 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BECC06175F
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 00:00:14 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id 10so2877825pfl.1
+        for <cgroups@vger.kernel.org>; Mon, 26 Apr 2021 00:00:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zQJFsnvvf+cAKiYz/Z4RGmPSASOASqem20+Xe3nf8L4=;
-        b=rFbAf5HW/enG9XTTfpSGA0WYelsHsonhsmYHuClYBdPVZc7Gaz9r9Jv5Kx2C0U+HXT
-         ndRKuwV7wVJoAfdW/BUEoKQ7tZZS2bmesu2dGZnFUVeiFRzkAptjEEzGoz4ZrnlXTD1G
-         dwsfvNKLwPRNzbwsrqYUtoCcJZokDMAhf3xxnGxnakGx7zk5k5PN8IRw7QX0QKwh2S64
-         c0aNhW34fLDcrKe6gtm8cb98zhFBxicTjJd6aXNcOmaEzJjiz2ozgTSs5PokG4DCrGsv
-         Fnj1OvqGq7utVziqCVPJTVuCWn7XBZpXwlH000Bghi6grQgWhMsS05alWhoWVS3SWO5J
-         K3yg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZTf4VDhB+vsAlWiKaTvh+bcNfZdV5PiIE39ZO2UyLSc=;
+        b=OzBm0TRrwP0w1UMWiqgYTFsquMLh/ibMx4tparnOh6D5BQP8Vxp5h4x0YzqlDgw/Cx
+         eHFF9TnavfKxRskT7kQ/ZDb08ZSq9/DnjtVv6B9T3C0W1HJhiXenSD7uxwhlSK/707Qg
+         qD4Tdh+ta4TccI/eMNcT5xzXvtMxNciyxefotosU8AiDTbFg7HNkRuEwMcJ/fAy6qo0E
+         dNJJApejzTl0Uisgb6zW6Sv4T9BI3zq10gKu7O/cEHsTpWvZ3jNkBd6QsHw0nCRw5kG9
+         iEwVnQRM13tQgkthHoqe6Zw6RTnXOLQzipsyIW1R1ViNgWbkDbx5H45cRQVUTdE8FUTT
+         z59Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zQJFsnvvf+cAKiYz/Z4RGmPSASOASqem20+Xe3nf8L4=;
-        b=TJlgszQJ6PP/H1SvR9Xr3ddrQt9/hBHQRW/kk+Oyb6nkqDIfoxRWjzpxdNE79oAwi6
-         WEKBVuUBQhaXg2ab/h0fj9hd9BYufw0q9Wr/l+JL1TVl/WWusWyu6CcS+QnK381oBnNB
-         wCFrd9ih9mW0BaX4qlnI0Siss5fqPLqyIfNmRUgcICxAdnAXh12QtHAg/9G5GU+8P8m1
-         hu5hKVJHhzm3Nz54NyYEKx2d/3XAVNkvSnX0Nj2nXEzX8IiFTBnMyQUeMqSze7aeOu5t
-         ZtJ2kHMGkZ+AzfEsRnJ8zPzTmzttJgMMylf2rK1xk9KC48mj6cdROHqQw3RaG/OCoZSE
-         YOAw==
-X-Gm-Message-State: AOAM5308jyw+ac+n2dIHJXNWygTwky8LZbld2aqEdpol6JCN3SpTelRK
-        K9Hy5e5PTpZs+MoGOsjrqtcLxcswlLSIPw==
-X-Google-Smtp-Source: ABdhPJyAhdfGUyej/IOi6zo0QWrwPfJ3xo69/SCuWDJDsQxtMxgPPaknIazk/RwZHxceolGv5fi8Sw==
-X-Received: by 2002:a17:90a:bb13:: with SMTP id u19mr19140620pjr.96.1619420405702;
-        Mon, 26 Apr 2021 00:00:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZTf4VDhB+vsAlWiKaTvh+bcNfZdV5PiIE39ZO2UyLSc=;
+        b=VJrrATrbnWOkdckFfM6cgavINfWF5RbQYpwe8CC6lWpIwq7Et6yL6m9h9B8iHz/42B
+         fbc+OSgE020iYbBGRIPZEqOx7vpGzHxjeR9h+sXQUsIjq6fCBu6H6jpfObm3SSvg7RNC
+         g5Mbr4om17eZPCIyK2nzbaROFNqUV2xyC9v3xDRp7WY5MKHtN7mZ+yHR5URbGboU3ID7
+         E0+CW1egwgj5Y10Tie9Su8uGaSWp2oiaaVCbJgRinbRd4WJUnyAhsUyom19WATxIPpTw
+         6AZmkmKCkfF35Qnm1Z5idcRZGGu6ItMyMo7zm2hmd5g4JSWDG81KD8l+NWqAJH+B6T1r
+         EZvQ==
+X-Gm-Message-State: AOAM531gxBOcYiMCf7eUv3pL+LoZ5TU3W9zx8opI7Ja/OgVqPrTNJrhQ
+        4RdfZ3NMut65UmOPz23NFeY49w==
+X-Google-Smtp-Source: ABdhPJwYFD7MUi/5hvdyxTvyf2M6mrOhvBi5WWkars4S6BedJK7btjVTIZiPp+AcQYhNX7AfppHPPA==
+X-Received: by 2002:a62:194f:0:b029:25c:37cb:2132 with SMTP id 76-20020a62194f0000b029025c37cb2132mr16017661pfz.37.1619420413981;
+        Mon, 26 Apr 2021 00:00:13 -0700 (PDT)
 Received: from C02DV8HUMD6R.bytedance.net ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id w14sm4535047pfn.3.2021.04.26.00.00.02
+        by smtp.gmail.com with ESMTPSA id w14sm4535047pfn.3.2021.04.26.00.00.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Apr 2021 00:00:05 -0700 (PDT)
+        Mon, 26 Apr 2021 00:00:13 -0700 (PDT)
 From:   Abel Wu <wuyun.abel@bytedance.com>
 To:     akpm@linux-foundation.org, lizefan.x@bytedance.com, tj@kernel.org,
         hannes@cmpxchg.org, corbet@lwn.net
 Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Abel Wu <wuyun.abel@bytedance.com>
-Subject: [PATCH 0/3] cgroup2: introduce cpuset.mems.migration
-Date:   Mon, 26 Apr 2021 14:59:43 +0800
-Message-Id: <20210426065946.40491-1-wuyun.abel@bytedance.com>
+Subject: [PATCH 1/3] mm/mempolicy: apply cpuset limits to tasks using default policy
+Date:   Mon, 26 Apr 2021 14:59:44 +0800
+Message-Id: <20210426065946.40491-2-wuyun.abel@bytedance.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210426065946.40491-1-wuyun.abel@bytedance.com>
+References: <20210426065946.40491-1-wuyun.abel@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Some of our services are quite performance sensitive and
-actually NUMA-aware designed, aka numa-service. The SLOs
-can be easily violated when co-locate numa-services with
-other workloads. Thus they are granted to occupy the whole
-NUMA node and when such assignment applies, the workload
-on that node needs to be moved away fast and complete.
+The nodemasks of non-default policies (pol->v) are calculated within
+the restriction of task->mems_allowed, while default policies are not.
+This may lead to improper results of mpol_misplaced(), since it can
+return a target node outside of current->mems_allowed for tasks using
+default policies. Although this is not a bug because migrating pages
+to that out-of-cpuset node will fail eventually due to sanity checks
+in page allocation, it still would be better to avoid such useless
+efforts.
 
-This new cgroup v2 interface is an enhancement of cgroup
-v1 interface cpuset.memory_migrate by adding a new mode
-called "lazy". With the help of the "lazy" mode migration
-we solved the aforementioned problem on fast eviction.
+This patch also changes the behavior of autoNUMA a bit by showing
+a tendency to move pages inside mems_allowed for tasks using default
+policies, which is good for memory isolation.
 
-Patch 1 applies cpusets limits to tasks that using default
-memory policies, which makes pages inside mems_allowed are
-preferred when autoNUMA is enabled. This is also necessary
-for the "lazy" mode of cpuset.mems.migration.
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+---
+ mm/mempolicy.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Patch 2&3 introduce cpuset.mems.migration, see the patches
-for detailed information please.
-
-Abel Wu (3):
-  mm/mempolicy: apply cpuset limits to tasks using default policy
-  cgroup/cpuset: introduce cpuset.mems.migration
-  docs/admin-guide/cgroup-v2: add cpuset.mems.migration
-
- Documentation/admin-guide/cgroup-v2.rst |  36 ++++++++
- kernel/cgroup/cpuset.c                  | 104 +++++++++++++++++++-----
- mm/mempolicy.c                          |   7 +-
- 3 files changed, 124 insertions(+), 23 deletions(-)
-
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index d79fa299b70c..e0ae6997bbfb 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2516,7 +2516,10 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+ 
+ 	/* Migrate the page towards the node whose CPU is referencing it */
+ 	if (pol->flags & MPOL_F_MORON) {
+-		polnid = thisnid;
++		if (node_isset(thisnid, cpuset_current_mems_allowed))
++			polnid = thisnid;
++		else
++			polnid = node_random(&cpuset_current_mems_allowed);
+ 
+ 		if (!should_numa_migrate_memory(current, page, curnid, thiscpu))
+ 			goto out;
 -- 
 2.31.1
 
