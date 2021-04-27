@@ -2,151 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BF336BED0
-	for <lists+cgroups@lfdr.de>; Tue, 27 Apr 2021 07:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6005C36C10D
+	for <lists+cgroups@lfdr.de>; Tue, 27 Apr 2021 10:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhD0FQE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Apr 2021 01:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S235033AbhD0Ihk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Apr 2021 04:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhD0FQD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Apr 2021 01:16:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1796C061763;
-        Mon, 26 Apr 2021 22:15:19 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FTqhc53bFz9sXH; Tue, 27 Apr 2021 15:15:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1619500512;
-        bh=HFGpFkXW8RlYcOPAB0wEMYUjK4DKM74cGeGkNzCmj6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U9ZU8PygQ+gKg4Dw7vVyO8B/ZibWN2WAUIrLKdub8+JGLK39Z6TjSoKCanuVi1+YM
-         0hwW5wA/niQmTfcV6ul0Y99xwmUvhMN+vdlkSQwGrokpZrgV2ARlsQGM4RlWqV/Fcp
-         +6jHzpMuVPFfrsTC35WsndWQ/VCRpN/syLpMOBwM=
-Date:   Tue, 27 Apr 2021 15:15:05 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YIed2X41lAzNrRkn@yekko.fritz.box>
-References: <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <20210423103851.41138791@redhat.com>
- <20210423222803.GK1370958@nvidia.com>
+        with ESMTP id S234775AbhD0Ihk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Apr 2021 04:37:40 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5403AC061756
+        for <cgroups@vger.kernel.org>; Tue, 27 Apr 2021 01:36:57 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id z25so20883227qtn.8
+        for <cgroups@vger.kernel.org>; Tue, 27 Apr 2021 01:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ugedal.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zh33Yh7lW0dlBQiRgpyt2psV9Y8igA+5UjDIZx32BfY=;
+        b=R80hr1wa0Mn4k9VnGUbjc2R4cixMJ5ZgNIsARabk5tPMu6Xepea/w5ho7Xc+BrYwxe
+         RzVMetIIjm8bZYHV94xbetqPI3rgYcmAT7Nrf8Dq39rGvxBcqXoeXnQ7GesBx3HvsUES
+         y8tiElerXVsLUim5FOz5JOxbTJoBMrtc63Y/8T+OOTjI7PYvJ0/xb4rO/cOynbxkZZUf
+         EyqUNqvy6ym8veTJ9KzmuW0L/PJlrPuQ9zJAejiUYWsuDsIUEffKgPUIlE7cYyTAucyZ
+         MW76yf/Qz4jtb3+hk6kV9THp4URfVjGSiTN+UZmk55DKeUifX6PsQ7ZTvUmp9qKKJ+Gl
+         J5yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zh33Yh7lW0dlBQiRgpyt2psV9Y8igA+5UjDIZx32BfY=;
+        b=ZgfIDCtI13Vt/XDivXL7RCKN0NqNGlULfgpUO1J8U1Sx8QKNJmgaQ6RVtpJwJdquoN
+         66n1HjYokDZps7utO3VQ97wx2g2iBIWlLy4ISwxl+z/IdXLCElVcBX+vNTmDPKAWzKDL
+         140dnuazwHG28dHvT4twZTrMIYSesm23gLU5kib7hDFuyEHUCRHU+e9LGc69ODS+qNDR
+         4fWGYATcad+XtSUKqJy/uN1UScS6vBxbnFAixx+KrPS02K4B3m5L2QvduvCMfigP4PBx
+         Xu3NefwglAgqW4hbdE9tgD6CzFZyaKz0wbWK1JVzAGcBmOqwvPVDrgvugW48vRfPXemE
+         9R5g==
+X-Gm-Message-State: AOAM5303D51C/+LOZK7T73GiKWIG2k3Yeafza6wf2Q4+8VpPSjuRoFGn
+        nQAR7HW3xHbe2IQOukQ8zJrUpOpawbcm+vbYMUE0LA==
+X-Google-Smtp-Source: ABdhPJxwEQoqK1+7Zd5/B+YbEcN+q2Fk1MdLCZD6xZP6/yvGxn2Ab8Yj5PTWp5aDdVqeHgbeEB+SAwGmx28MYqZ/ug8=
+X-Received: by 2002:a05:622a:14c9:: with SMTP id u9mr20628968qtx.313.1619512616470;
+ Tue, 27 Apr 2021 01:36:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zaCd5yHFtW9CjF+V"
-Content-Disposition: inline
-In-Reply-To: <20210423222803.GK1370958@nvidia.com>
+References: <20210425080902.11854-1-odin@uged.al> <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
+In-Reply-To: <CAKfTPtBHm+CjBTA614P9F2Vx3Bj7vv9Pt0CGFsiwqcrTFmKzjg@mail.gmail.com>
+From:   Odin Ugedal <odin@ugedal.com>
+Date:   Tue, 27 Apr 2021 10:36:23 +0200
+Message-ID: <CAFpoUr2t0OXLJZi9wJzYg2uOhSLfwRa7sxCxxWzriJgXDsgEdA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] sched/fair: Fix unfairness caused by missing load decay
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Also, instead of bpftrace, one can look at the /proc/sched_debug file,
+and infer from there.
 
---zaCd5yHFtW9CjF+V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Something like:
 
-On Fri, Apr 23, 2021 at 07:28:03PM -0300, Jason Gunthorpe wrote:
-> On Fri, Apr 23, 2021 at 10:38:51AM -0600, Alex Williamson wrote:
-> > On Thu, 22 Apr 2021 20:39:50 -0300
->=20
-> > > /dev/ioasid should understand the group concept somehow, otherwise it
-> > > is incomplete and maybe even security broken.
-> > >=20
-> > > So, how do I add groups to, say, VDPA in a way that makes sense? The
-> > > only answer I come to is broadly what I outlined here - make
-> > > /dev/ioasid do all the group operations, and do them when we enjoin
-> > > the VDPA device to the ioasid.
-> > >=20
-> > > Once I have solved all the groups problems with the non-VFIO users,
-> > > then where does that leave VFIO? Why does VFIO need a group FD if
-> > > everyone else doesn't?
-> >=20
-> > This assumes there's a solution for vDPA that doesn't just ignore the
-> > problem and hope for the best.  I can't speak to a vDPA solution.
->=20
-> I don't think we can just ignore the question and succeed with
-> /dev/ioasid.
->=20
-> Guess it should get answered as best it can for ioasid "in general"
-> then we can decide if it makes sense for VFIO to use the group FD or
-> not when working in ioasid mode.
->=20
-> Maybe a better idea will come up
->=20
-> > an implicit restriction.  You've listed a step in the description about
-> > a "list of devices in the group", but nothing in the pseudo code
-> > reflects that step.
->=20
-> I gave it below with the readdir() - it isn't in the pseudo code
-> because the applications I looked through didn't use it, and wouldn't
-> benefit from it. I tried to show what things were doing today.
+$ cat /proc/sched_debug | grep ":/slice" -A 28 | egrep "(:/slice)|load_avg"
 
-And chance are they will break cryptically if you give them a device
-in a multi-device group.  That's not something we want to encourage.
+gives me the output (when one stress proc gets 99%, and the other one 1%):
 
->=20
-> > I expect it would be a subtly missed by any userspace driver
-> > developer unless they happen to work on a system where the grouping
-> > is not ideal.
->=20
-> I'm still unclear - what are be the consequence if the application
-> designer misses the group detail?=20
->=20
-> Jason
->=20
+cfs_rq[0]:/slice/cg-2/sub
+  .load_avg                      : 1023
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1035
+  .tg_load_avg                   : 1870
+  .se->avg.load_avg              : 56391
+cfs_rq[0]:/slice/cg-1/sub
+  .load_avg                      : 1023
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1024
+  .tg_load_avg                   : 1847
+  .se->avg.load_avg              : 4
+cfs_rq[0]:/slice/cg-1
+  .load_avg                      : 4
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 4
+  .tg_load_avg                   : 794
+  .se->avg.load_avg              : 5
+cfs_rq[0]:/slice/cg-2
+  .load_avg                      : 56401
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 56700
+  .tg_load_avg                   : 57496
+  .se->avg.load_avg              : 1008
+cfs_rq[0]:/slice
+  .load_avg                      : 1015
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1009
+  .tg_load_avg                   : 2314
+  .se->avg.load_avg              : 447
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
 
---zaCd5yHFtW9CjF+V
-Content-Type: application/pgp-signature; name="signature.asc"
+As can be seen here, no other cfs_rq for the relevant cgroups are
+"active" and listed, but they still contribute to eg. the "tg_load_avg". In this
+example, "cfs_rq[0]:/slice/cg-1" has a load_avg of 4, and contributes with 4 to
+tg_load_avg.  However, the total total tg_load_avg is 794. That means
+that the other 790 have to come from somewhere, and in this example,
+they come from the cfs_rq on another cpu.
 
------BEGIN PGP SIGNATURE-----
+Hopefully that clarified a bit.
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCHndgACgkQbDjKyiDZ
-s5JxehAAtYO+RRKc5WVZPWIeDfyXnWi8ml0FoabDxvzajDH8+p17N5be0pdmIfD7
-RwIxa6vsjc6bimUxdIfC2yK87E2H5OCy2k2hFKKPH6eYVl9sl13Z1bYMPku/bvdG
-4SGcpDrqdhVkl3Vf3dvcmdfFPD8WFYN0+Q8rnnteezGmsI2c+xkUVXk+3MeSZ3Sv
-oxtOe1wZm1SQ/pPNGIZlp7hDkGpdVNoxU7rE0B+HBmLatGUbSCIfXdCR2xkkbrDI
-52EyYoXno6q3yAdBdGsMfobaj+Dyza6aL7pINX450Ue4MBtUeQi3h5ymXUE1xBm6
-MDiw0tTvH2lbKFmQ/Z1aQi8UTT0rOdoN0mxstkf+vukt/3j5d5MjB/cZiRDc53uk
-0fTJFsv45cSxig3jzfqSR4nIvjSSwwM3h5EnSsUaauilYpi8PDR5oaJJOlmAqZyH
-f80as4HB9h7qEafiEnyEHeLlGdJLfthr9tsKLsYvvmNsOKgfci+CdwJDl0oVRBQS
-1JnSDAxhmPD2FbBFO6uCP0kpqDmqumsskCkyn6SWmuRHXCliAnSUvi6xHjJ2J2Fo
-3jaj3241cqqLPW6CObh4ERY6YItB24UcwCcq6I8JplSRVtwJG1f4kKevAnnfHJt3
-ejcWCsfAxqmnc8Zo4MHzjBiB8+UyMz40/OxAEiPMCDRqQ4Y2kTU=
-=zpk/
------END PGP SIGNATURE-----
+For reference, here is the output when the issue is not occuring:
+cfs_rq[1]:/slice/cg-2/sub
+  .load_avg                      : 1024
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1039
+  .tg_load_avg                   : 1039
+  .se->avg.load_avg              : 1
+cfs_rq[1]:/slice/cg-1/sub
+  .load_avg                      : 1023
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1034
+  .tg_load_avg                   : 1034
+  .se->avg.load_avg              : 49994
+cfs_rq[1]:/slice/cg-1
+  .load_avg                      : 49998
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 49534
+  .tg_load_avg                   : 49534
+  .se->avg.load_avg              : 1023
+cfs_rq[1]:/slice/cg-2
+  .load_avg                      : 1
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1
+  .tg_load_avg                   : 1
+  .se->avg.load_avg              : 1023
+cfs_rq[1]:/slice
+  .load_avg                      : 2048
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 2021
+  .tg_load_avg                   : 2021
+  .se->avg.load_avg              : 1023
 
---zaCd5yHFtW9CjF+V--
+
+Odin
