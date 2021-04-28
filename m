@@ -2,61 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B9536D069
-	for <lists+cgroups@lfdr.de>; Wed, 28 Apr 2021 04:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726F836D095
+	for <lists+cgroups@lfdr.de>; Wed, 28 Apr 2021 04:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbhD1CG3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Apr 2021 22:06:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47144 "EHLO mail.kernel.org"
+        id S236126AbhD1Cmg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Apr 2021 22:42:36 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53095 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229888AbhD1CG2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 27 Apr 2021 22:06:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 857D161151;
-        Wed, 28 Apr 2021 02:05:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619575544;
-        bh=WA+8HRXIjno8aNkTFxntF+zwDHxIKww14+HYuvd6MIs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=owyYVOeHQ01UZzQBqaUlykhhnTW8z3KGAYjh1gM0IN3CIMWe2y5EZZoor4Zt6r+bu
-         iTgZrAjlCp6pgfkGqx+XuK6zXQqapTMtICrzbOulSXZJM18fTYt4n4Dyq4dDhG8GK1
-         2qDVovQdAEqDCpWCwzUr7p1EjmfzUJyHFf5CJHuJY4qOyl7+n0M7RnEvuoum5slGtk
-         bQ10EjaXtnVfIP91ssx0L32MmEngCc9VzimJHZF/i00LRcCls7GbwMEEi+6fpiF9kU
-         MRJHL5IQHvIDfWbzIlPTtfLHNsfpil2t1q4qnOeZRPV2iFIjwVX3BOpErDqImnbZrf
-         fhNrqXLPkbAvA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A56960A24;
-        Wed, 28 Apr 2021 02:05:44 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup changes for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
-References: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YIgmD4t2UM7lSXYz@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
-X-PR-Tracked-Commit-Id: ffeee417d97f9171bce9f43c22c9f477e4c84f54
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 55e6be657b8d774d9a2e67363e5bcbbaf80fdc28
-Message-Id: <161957554443.21925.17556300526205901198.pr-tracker-bot@kernel.org>
-Date:   Wed, 28 Apr 2021 02:05:44 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
+        id S235422AbhD1Cmg (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 27 Apr 2021 22:42:36 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FVNFB4FRJz9srX; Wed, 28 Apr 2021 12:41:50 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1619577710;
+        bh=gE3cwxeK8l52V3mXQ8Xznwj1fLwrrrjLu8KWJT/DX9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SflghnlghzACtBYRzPNbsCJ+dAV56XMiDSEKz9RA3l5nSe+zufSUmI3DT5EaR/A3T
+         BaKjdbudVH0aFttmCtWqp5/X40LE0tVirFJvWdJVJNqXw6uDi46p2SUUxuf/6kS/HU
+         f/ygGsxHlo7TvpMhoX7/NxFIL1i96S+MJgESlHkE=
+Date:   Wed, 28 Apr 2021 10:49:03 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YIiw/z9ohYavM/aX@yekko.fritz.box>
+References: <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com>
+ <20210422175715.GA1370958@nvidia.com>
+ <20210422133747.23322269@redhat.com>
+ <20210422200024.GC1370958@nvidia.com>
+ <20210422163808.2d173225@redhat.com>
+ <20210422233950.GD1370958@nvidia.com>
+ <MWHPR11MB1886A98D9176B5571530EF1D8C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <YIec/Rt7OxvfFw7W@yekko.fritz.box>
+ <20210427163954.GC1370958@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JQRVQfh5FhbBFvT+"
+Content-Disposition: inline
+In-Reply-To: <20210427163954.GC1370958@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Tue, 27 Apr 2021 10:56:15 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13
+--JQRVQfh5FhbBFvT+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/55e6be657b8d774d9a2e67363e5bcbbaf80fdc28
+On Tue, Apr 27, 2021 at 01:39:54PM -0300, Jason Gunthorpe wrote:
+> On Tue, Apr 27, 2021 at 03:11:25PM +1000, David Gibson wrote:
+>=20
+> > > So your proposal sort of moves the entire container/group/domain=20
+> > > managment into /dev/ioasid and then leaves vfio only provide device
+> > > specific uAPI. An ioasid represents a page table (address space), thu=
+s=20
+> > > is equivalent to the scope of VFIO container.
+> >=20
+> > Right.  I don't really know how /dev/iosasid is supposed to work, and
+> > so far I don't see how it conceptually differs from a container.  What
+> > is it adding?
+>=20
+> There are three motivating topics:
+>  1) /dev/vfio/vfio is only usable by VFIO and we have many interesting
+>     use cases now where we need the same thing usable outside VFIO
+>  2) /dev/vfio/vfio does not support modern stuff like PASID and
+>     updating to support that is going to be a big change, like adding
+>     multiple IOASIDs so they can be modeled as as a tree inside a
+>     single FD
+>  3) I understand there is some desire to revise the uAPI here a bit,
+>     ie Alex mentioned the poor mapping performance.
+>=20
+> I would say it is not conceptually different from what VFIO calls a
+> container, it is just a different uAPI with the goal to be cross
+> subsystem.
 
-Thank you!
+Ok, that makes sense.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--JQRVQfh5FhbBFvT+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCIsP8ACgkQbDjKyiDZ
+s5LRgBAAnUYT4mzHS9z12bEDDjxIJlNISL9eC8ubKY8SIUm+mchxLYgEY3wAkoJL
+eFglIjrPvJD6R2vnpBVT9z8SNbHHULxTcVcLbhb1M0Qf5TrzniLGaBfdJbrgxomz
+lMTL3xTJ/djQcAeE4ulfQheA5Rh5OMmEmrFgzUUkI0y2aHK04YCyjxnxFYMSmIje
+ECTKFFl4sCwH6d7mDfOvz0CcelTIuI4OvpaFPw8jdKCv8rhF56C0En63sSdrGDIm
+iU2d/im/d4d7cnQfUHtcdw9neI4ia2NNYf2tIzLz2Ow9TBavv3VaeHMjUKQueKTE
+Adk6pdb9yZxeKurPYFoU9Cm1mhi4zbd+K48TGAexE57xCDWSEZcr44nM4ALv8YjC
+6ZCU67IEM+J/uM0XYyv99G/ctqQeyQRRw9VtxT2sM/qBiI3S+t+S80LcFXV63La9
+uP/5VvEe+C5+yMatJxFkdMQ92djhlFqFFnu84vhJnQX0U9zJvEx2XvSpoc/cxOUj
+uORn3Pex3YVOoh8SSIM8eJOEZxYy/Zk0EMZgP1Ub0zgD2PaS1DUqYgkVNslUZ1qs
+qhkZttZsxvwsPKBLXoSSarYj6h25ic6a8vGr/GMPxZJ6EDHuivzkqsJY0owcdIus
+AlCuTBNJvmY/5OUSao/MZ/XrbOXP/hCgYagOjMsTsudi3e/WYp8=
+=hSc/
+-----END PGP SIGNATURE-----
+
+--JQRVQfh5FhbBFvT+--
