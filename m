@@ -2,37 +2,37 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A406136E774
-	for <lists+cgroups@lfdr.de>; Thu, 29 Apr 2021 10:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D7336E776
+	for <lists+cgroups@lfdr.de>; Thu, 29 Apr 2021 10:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240048AbhD2Izc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Apr 2021 04:55:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49434 "EHLO
+        id S240019AbhD2I4J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Apr 2021 04:56:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24682 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234041AbhD2Izb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Apr 2021 04:55:31 -0400
+        by vger.kernel.org with ESMTP id S233188AbhD2I4J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Apr 2021 04:56:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619686484;
+        s=mimecast20190719; t=1619686523;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MJmZaciikGlYP7vXYgk4XTNBBfK7yKCOZZwkCAQl4Oc=;
-        b=YHFHI9xACbtR4P1V1SaFn2SRJDmJZKZ8oDP26JmzuOd2CjjrActiOoTVLsM7+ndQJbqVrI
-        My5izHPVkDvlaHAoRWnJUvoUqTS7pa4NrM5tP2YNNrFo/0hPsn+bG7oQU9RKAmp7AIzMZd
-        lAB6Z1NSL2dswlShpWpIB6kGTav1r6o=
+        bh=wrm2+m850R7afyhhET81Q0L5398XLTVE1kihsMtBiKk=;
+        b=acZlrn56YreqWV1OMoNA4kCdid3L1rkaGvYNIrTE+ZwTL+qDL00kZS1PIAGtvIvGMXqFg/
+        xrcIg5LISELEJ0k/uAbaL3CITojKnHNqKPQiYnxqxVXPsAQcr6lC2TCIeggEcJmeM+d6NU
+        9cfC4vrtenwBJ8U5qVX5OiDLnklG8wc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-XMzTNDZLPY-xdejBATNeRQ-1; Thu, 29 Apr 2021 04:54:40 -0400
-X-MC-Unique: XMzTNDZLPY-xdejBATNeRQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-387-X6dhoxYUNiK321ap5a0xWw-1; Thu, 29 Apr 2021 04:55:18 -0400
+X-MC-Unique: X6dhoxYUNiK321ap5a0xWw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D6DA501E3;
-        Thu, 29 Apr 2021 08:54:38 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E990080ED99;
+        Thu, 29 Apr 2021 08:55:15 +0000 (UTC)
 Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 71B161002D71;
-        Thu, 29 Apr 2021 08:54:29 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C4C876E34;
+        Thu, 29 Apr 2021 08:55:03 +0000 (UTC)
 Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
  APIs
 To:     Jason Gunthorpe <jgg@nvidia.com>,
@@ -53,175 +53,121 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
         "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
         "Jiang, Dave" <dave.jiang@intel.com>
-References: <20210416094547.1774e1a3@redhat.com>
+References: <20210415230732.GG1370958@nvidia.com>
+ <20210416061258.325e762e@jacob-builder> <20210416094547.1774e1a3@redhat.com>
  <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
  <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
  <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
  <20210421230301.GP1370958@nvidia.com>
  <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
  <20210422121020.GT1370958@nvidia.com>
- <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210423114944.GF1370958@nvidia.com>
 From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <0d1d0240-865e-c4f0-7b3b-41ac8ae2e550@redhat.com>
-Date:   Thu, 29 Apr 2021 10:54:27 +0200
+Message-ID: <ecc1d434-6fea-5978-03e3-e557ee16cb51@redhat.com>
+Date:   Thu, 29 Apr 2021 10:55:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210423114944.GF1370958@nvidia.com>
+In-Reply-To: <20210422121020.GT1370958@nvidia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 Hi,
 
-On 4/23/21 1:49 PM, Jason Gunthorpe wrote:
-> On Fri, Apr 23, 2021 at 09:06:44AM +0000, Tian, Kevin wrote:
+On 4/22/21 2:10 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 22, 2021 at 08:34:32AM +0000, Tian, Kevin wrote:
 > 
->> Or could we still have just one /dev/ioasid but allow userspace to create
->> multiple gpa_ioasid_id's each associated to a different iommu domain? 
->> Then the compatibility check will be done at ATTACH_IOASID instead of 
->> JOIN_IOASID_FD.
+>> The shim layer could be considered as a new iommu backend in VFIO,
+>> which connects VFIO iommu ops to the internal helpers in
+>> drivers/ioasid.
 > 
-> To my mind what makes sense that that /dev/ioasid presents a single
-> IOMMU behavior that is basically the same. This may ultimately not be
-> what we call a domain today.
+> It may be the best we can do because of SPAPR, but the ideal outcome
+> should be to remove the entire pluggable IOMMU stuff from vfio
+> entirely and have it only use /dev/ioasid
 > 
-> We may end up with a middle object which is a group of domains that
-> all have the same capabilities, and we define capabilities in a way
-> that most platforms have a single group of domains.
+> We should never add another pluggable IOMMU type to vfio - everything
+> should be done through drives/iommu now that it is much more capable.
 > 
-> The key capability of a group of domains is they can all share the HW
-> page table representation, so if an IOASID instantiates a page table
-> it can be assigned to any device on any domain in the gruop of domains.
+>> Another tricky thing is that a container may be linked to multiple iommu
+>> domains in VFIO, as devices in the container may locate behind different
+>> IOMMUs with inconsistent capability (commit 1ef3e2bc). 
 > 
-> If you try to say that /dev/ioasid has many domains and they can't
-> have their HW page tables shared then I think the implementation
-> complexity will explode.
+> Frankly this sounds over complicated. I would think /dev/ioasid should
+> select the IOMMU when the first device is joined, and all future joins
+> must be compatible with the original IOMMU - ie there is only one set
+> of IOMMU capabilities in a /dev/ioasid.
 > 
->> This does impose one burden to userspace though, to understand the 
->> IOMMU compatibilities and figure out which incompatible features may
->> affect the page table management (while such knowledge is IOMMU
->> vendor specific) and then explicitly manage multiple /dev/ioasid's or 
->> multiple gpa_ioasid_id's.
+> This means qemue might have multiple /dev/ioasid's if the system has
+> multiple incompatible IOMMUs (is this actually a thing?) The platform
+> should design its IOMMU domains to minimize the number of
+> /dev/ioasid's required.
 > 
-> Right, this seems very hard in the general case..
->  
->> Alternatively is it a good design by having the kernel return error at
->> attach/join time to indicate that incompatibility is detected then the 
->> userspace should open a new /dev/ioasid or creates a new gpa_ioasid_id
->> for the failing device upon such failure, w/o constructing its own 
->> compatibility knowledge?
+> Is there a reason we need to share IOASID'd between completely
+> divergance IOMMU implementations? I don't expect the HW should be able
+> to physically share page tables??
 > 
-> Yes, this feels workable too
+> That decision point alone might be the thing that just says we can't
+> ever have /dev/vfio/vfio == /dev/ioasid
 > 
->>> This means qemue might have multiple /dev/ioasid's if the system has
->>> multiple incompatible IOMMUs (is this actually a thing?) The platform
->>
->> One example is Intel platform with igd. Typically there is one IOMMU
->> dedicated for igd and the other IOMMU serving all the remaining devices.
->> The igd IOMMU may not support IOMMU_CACHE while the other one
->> does.
+>> Just to confirm. Above flow is for current map/unmap flavor as what
+>> VFIO/vDPA do today. Later when nested translation is supported,
+>> there is no need to detach gpa_ioasid_fd. Instead, a new cmd will
+>> be introduced to nest rid_ioasid_fd on top of gpa_ioasid_fd:
 > 
-> If we can do as above the two domains may be in the same group of
-> domains and the IOMMU_CACHE is not exposed at the /dev/ioasid level.
+> Sure.. The tricky bit will be to define both of the common nested
+> operating modes.
 > 
-> For instance the API could specifiy IOMMU_CACHE during attach, not
-> during IOASID creation.
+>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
+>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
 > 
-> Getting all the data model right in the API is going to be trickiest
-> part of this.
+>    // IOMMU will match on the device RID, no PASID:
+>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
 > 
->> yes, e.g. in vSVA both devices (behind divergence IOMMUs) are bound
->> to a single guest process which has an unique PASID and 1st-level page
->> table. Earlier incompatibility example is only for 2nd-level.
+>    // IOMMU will match on the device RID and PASID:
+>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
 > 
-> Because when we get to here, things become inscrutable as an API if
-> you are trying to say two different IOMMU presentations can actually
-> be nested.
+> Notice that ATTACH (or bind, whatever) is always done on the
+> vfio_device FD. ATTACH tells the IOMMU HW to link the PCI BDF&PASID to
+> a specific page table defined by an IOASID.
 > 
->>> Sure.. The tricky bit will be to define both of the common nested
->>> operating modes.
->>>
->>>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
->>>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
->>>
->>>    // IOMMU will match on the device RID, no PASID:
->>>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
->>>
->>>    // IOMMU will match on the device RID and PASID:
->>>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
->>
->> I'm a bit confused here why we have both pasid and ioasid notations together.
->> Why not use nested_ioasid as pasid directly (i.e. every pasid in nested mode
->> is created by CREATE_NESTED_IOASID)?
+> I expect we have many flavours of IOASID tables, eg we have normal,
+> and 'nested with table controlled by hypervisor'. ARM has 'nested with
+> table controlled by guest' right? So like this?
+yes the PASID table is fully controlled by the guest Same for the stage
+1 table.
 > 
-> The IOASID is not a PASID, it is just a page table.
+>   nested_ioasid = ioctl(ioasid_fd, CREATE_DELGATED_IOASID,
+>                    gpa_ioasid_id, <some kind of viommu_id>)
+>   // PASID now goes to <viommu_id>
+>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
 > 
-> A generic IOMMU matches on either RID or (RID,PASID), so you should
-> specify the PASID when establishing the match.
+> Where <viommu_id> is some internal to the guest handle of the viommu
+> page table scoped within gpa_ioasid_id? Like maybe it is GPA of the
+> base of the page table?
+Yes the GPA of the first level page table + some misc info like the max
+number of IOASIDs.
 > 
-> IOASID only specifies the page table.
-> 
-> So you read the above as configuring the path
-> 
->   PCI_DEVICE -> (RID,PASID) -> nested_ioasid -> gpa_ioasid_id -> physical
-> 
-> Where (RID,PASID) indicate values taken from the PCI packet.
-> 
-> In principle the IOMMU could also be commanded to reuse the same
-> ioasid page table with a different PASID:
-> 
->   PCI_DEVICE_B -> (RID_B,PASID_B) -> nested_ioasid -> gpa_ioasid_id -> physical
-> 
-> This is impossible if the ioasid == PASID in the API.
-> 
->> Below I list different scenarios for ATTACH_IOASID in my view. Here 
->> vfio_device could be a real PCI function (RID), or a subfunction device 
->> (RID+def_ioasid). 
-> 
-> What is RID+def_ioasid? The IOMMU does not match on IOASID's.
-> 
-> A subfunction device always need to use PASID, or an internal IOMMU,
-> confused what you are trying to explain?
-> 
->> If the whole PASID table is delegated to the guest in ARM case, the guest
->> can select its own PASIDs w/o telling the hypervisor. 
-> 
-> The hypervisor has to route the PASID's to the guest at some point - a
-> guest can't just claim a PASID unilaterally, that would not be secure.
-AFAIU On ARM the stage 2 table is uniquely defined per RID and the PASID
-space is local to the RID. in other words all PASIDs used along with a
-given RID share the same stage 2 page table. So the minimum granularity
-for guest assignment still is the RID and not the PASID (there is no
-scalable mode on ARM). on x86, with scalable mode, each RID/PASID can
-have different stage1/stage2 tables which make the minimum granularity
-for guest device assignment the PASID.
-
-So on ARM the guest can allocate PASIDs without interfering with the
-host. We just need to make sure the PASID table format and max entries
-matches the capability of the HW.
-
-If the min granularity for guest assignment were the RID/PASID
-effectively a guest could steal all the PASIDs for a given RID.
+> The guest can't select its own PASIDs without telling the hypervisor,
+> right?
+on ARM there is no system wide IOASID allocator as for x86. So the guest
+can select its own PASID without telling the hyp.
 
 Thanks
 
 Eric
 > 
-> If it is not done with per-PASID hypercalls then the hypervisor has to
-> route all PASID's for a RID to the guest and /dev/ioasid needs to have
-> a nested IOASID object that represents this connection - ie it points
-> to the PASID table of the guest vIOMMU or something.
+>> I also feel hiding group from uAPI is a good thing and is interested in
+>> the rationale behind for explicitly managing group in vfio (which is
+>> essentially the same boundary as provided by iommu group), e.g. for 
+>> better user experience when group security is broken? 
 > 
-> Remember this all has to be compatible with mdev's too and without
-> hypercalls to create PASIDs that will be hard: mdev sharing a RID and
-> slicing the physical PASIDs can't support a 'send all PASIDs to the
-> guest' model, or even a 'the guest gets to pick the PASID' option.
+> Indeed, I can see how things might have just evolved into this, but if
+> it has a purpose it seems pretty hidden.
+> we need it or not seems pretty hidden.
 > 
 > Jason
 > 
