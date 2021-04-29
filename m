@@ -2,390 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E8B36E9EC
-	for <lists+cgroups@lfdr.de>; Thu, 29 Apr 2021 14:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33EA36EB50
+	for <lists+cgroups@lfdr.de>; Thu, 29 Apr 2021 15:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhD2MCk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Apr 2021 08:02:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233922AbhD2MCj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:02:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C1F161418;
-        Thu, 29 Apr 2021 12:01:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619697713;
-        bh=rNYXiueStnMgi44cbI2dYKBwftygGCisRPGvQ9Zjv4U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/iuQWpjUfQgpvzTtXasGYeN+WfEAqYpcdptDk9GCXF0udWYOCZ5N06pgAOtbV7l7
-         /akQNkZASYMMlqWvxYU5bMqzuDadzC6usAbovBezYw9ln9HZvJmVD+vU+m4LCiaE2T
-         ePEActYgaUAFYsQKpg8S0RGfwFvd3zvt5LbCdTvZvNwU/unlrk6BdbzuL1X3h7J//j
-         Qlq+yjAGCKJridPc3tLf3j5J8yX54VGjWCZDKJb8RxOf/hOKcEfx5+kWmSgsU4bt0j
-         sINenjEtH3Z1x9zghcKn1tPflmoSb0VtGy9BgLgcubhsHRzzD40RNzgV/MS/VwMYYc
-         m7KKLhc5ezERA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 5/5] tests/cgroup: test cgroup.kill
-Date:   Thu, 29 Apr 2021 14:01:13 +0200
-Message-Id: <20210429120113.2238065-5-brauner@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210429120113.2238065-1-brauner@kernel.org>
-References: <20210429120113.2238065-1-brauner@kernel.org>
+        id S237357AbhD2N2A (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Apr 2021 09:28:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237338AbhD2N16 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Apr 2021 09:27:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619702831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V1S2l6ltOAUMOqA4QGNdJwZj23ip0m20+cgBzNWZI1I=;
+        b=g5ZFN6ZANqZGBSXiJmLtZtKqkpvYqsPuJrxtBhugKLZIUfjqrdIvBdb72/nK/IPFbJ+N3U
+        x6rhyvj7nRsxjYnWQS16XP7Fu4woTNrWglwDRGotw+JTsUB1yZJ5zAN9LpG4QwDg2xzFgv
+        9PC8ODV6FbTBwwicEcuyZmY9NsSkwJc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-MGyXYiKvNAel8CyKJi4YvQ-1; Thu, 29 Apr 2021 09:27:06 -0400
+X-MC-Unique: MGyXYiKvNAel8CyKJi4YvQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4065B6D256;
+        Thu, 29 Apr 2021 13:27:02 +0000 (UTC)
+Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F7FD5C1A3;
+        Thu, 29 Apr 2021 13:26:56 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210415230732.GG1370958@nvidia.com>
+ <20210416061258.325e762e@jacob-builder> <20210416094547.1774e1a3@redhat.com>
+ <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <6e36797c-799e-074d-f66f-5686a4b37f38@redhat.com>
+Date:   Thu, 29 Apr 2021 15:26:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=oBIHbe+ijtHkI/43k7XYiClzsWtmNv8ACAd1Hl7Tjf8=; m=h2Q2SWl//Wo7SGgfLSG5VhXOswYec3OCjwZXX32UcBE=; p=bttJncTWy6PT2msx/rXL7dCt3gITPHGSPpeU2C+woyg=; g=fb5541b3ad98c40e437a764540241185d5d17999
-X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYIqfXQAKCRCRxhvAZXjcopsvAP9JOl/ Hr1vyp1q8PnXGGj2lu4vYRpmM0SkebeoRkx+SEQD9EOcJwJzvWWi1EDLrM6dUFp0UyqW3gMnLvgu6 W4U/hAY=
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210422121020.GT1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+Hi,
 
-Test that the new cgroup.kill feature works as intended.
+On 4/22/21 2:10 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 22, 2021 at 08:34:32AM +0000, Tian, Kevin wrote:
+> 
+>> The shim layer could be considered as a new iommu backend in VFIO,
+>> which connects VFIO iommu ops to the internal helpers in
+>> drivers/ioasid.
+> 
+> It may be the best we can do because of SPAPR, but the ideal outcome
+> should be to remove the entire pluggable IOMMU stuff from vfio
+> entirely and have it only use /dev/ioasid
+> 
+> We should never add another pluggable IOMMU type to vfio - everything
+> should be done through drives/iommu now that it is much more capable.
+> 
+>> Another tricky thing is that a container may be linked to multiple iommu
+>> domains in VFIO, as devices in the container may locate behind different
+>> IOMMUs with inconsistent capability (commit 1ef3e2bc). 
+> 
+> Frankly this sounds over complicated. I would think /dev/ioasid should
+> select the IOMMU when the first device is joined, and all future joins
+> must be compatible with the original IOMMU - ie there is only one set
+> of IOMMU capabilities in a /dev/ioasid.
+> 
+> This means qemue might have multiple /dev/ioasid's if the system has
+> multiple incompatible IOMMUs (is this actually a thing?) The platform
+> should design its IOMMU domains to minimize the number of
+> /dev/ioasid's required.
+> 
+> Is there a reason we need to share IOASID'd between completely
+> divergance IOMMU implementations? I don't expect the HW should be able
+> to physically share page tables??
+> 
+> That decision point alone might be the thing that just says we can't
+> ever have /dev/vfio/vfio == /dev/ioasid
+> 
+>> Just to confirm. Above flow is for current map/unmap flavor as what
+>> VFIO/vDPA do today. Later when nested translation is supported,
+>> there is no need to detach gpa_ioasid_fd. Instead, a new cmd will
+>> be introduced to nest rid_ioasid_fd on top of gpa_ioasid_fd:
+> 
+> Sure.. The tricky bit will be to define both of the common nested
+> operating modes.
+>
 
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- tools/testing/selftests/cgroup/.gitignore  |   3 +-
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_kill.c | 293 +++++++++++++++++++++
- 3 files changed, 297 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/cgroup/test_kill.c
+From the pseudo code,
 
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
-index 84cfcabea838..be9643ef6285 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -2,4 +2,5 @@
- test_memcontrol
- test_core
- test_freezer
--test_kmem
-\ No newline at end of file
-+test_kmem
-+test_kill
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index f027d933595b..87b7b0d90773 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -9,6 +9,7 @@ TEST_GEN_PROGS = test_memcontrol
- TEST_GEN_PROGS += test_kmem
- TEST_GEN_PROGS += test_core
- TEST_GEN_PROGS += test_freezer
-+TEST_GEN_PROGS += test_kill
- 
- include ../lib.mk
- 
-@@ -16,3 +17,4 @@ $(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
-+$(OUTPUT)/test_kill: cgroup_util.c ../clone3/clone3_selftests.h
-diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
-new file mode 100644
-index 000000000000..c4e7b2e87395
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_kill.c
-@@ -0,0 +1,293 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <stdbool.h>
-+#include <linux/limits.h>
-+#include <sys/ptrace.h>
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <poll.h>
-+#include <stdlib.h>
-+#include <sys/inotify.h>
-+#include <string.h>
-+#include <sys/wait.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+#define DEBUG
-+#ifdef DEBUG
-+#define debug(args...) fprintf(stderr, args)
-+#else
-+#define debug(args...)
-+#endif
-+
-+/*
-+ * Kill the given cgroup and wait for the inotify signal.
-+ * If there are no events in 10 seconds, treat this as an error.
-+ * Then check that the cgroup is in the desired state.
-+ */
-+static int cg_kill_wait(const char *cgroup)
-+{
-+	int fd, ret = -1;
-+
-+	fd = cg_prepare_for_wait(cgroup);
-+	if (fd < 0)
-+		return fd;
-+
-+	ret = cg_write(cgroup, "cgroup.kill", "1");
-+	if (ret) {
-+		debug("Error: cg_write() failed\n");
-+		goto out;
-+	}
-+
-+	ret = cg_wait_for(fd);
-+	if (ret)
-+		goto out;
-+
-+	ret = cg_read_strcmp(cgroup, "cgroup.events", "populated 0\n");
-+out:
-+	close(fd);
-+	return ret;
-+}
-+
-+/*
-+ * A simple process running in a sleep loop until being
-+ * re-parented.
-+ */
-+static int child_fn(const char *cgroup, void *arg)
-+{
-+	int ppid = getppid();
-+
-+	while (getppid() == ppid)
-+		usleep(1000);
-+
-+	return getppid() == ppid;
-+}
-+
-+static int test_cgkill_simple(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cgroup = NULL;
-+	int i;
-+
-+	cgroup = cg_name(root, "cg_test_simple");
-+	if (!cgroup)
-+		goto cleanup;
-+
-+	if (cg_create(cgroup))
-+		goto cleanup;
-+
-+	for (i = 0; i < 100; i++)
-+		cg_run_nowait(cgroup, child_fn, NULL);
-+
-+	if (cg_wait_for_proc_count(cgroup, 100))
-+		goto cleanup;
-+
-+        if (cg_write(cgroup, "cgroup.kill", "1"))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cgroup, "cgroup.events", "populated 1\n"))
-+		goto cleanup;
-+
-+	if (cg_kill_wait(cgroup))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cgroup, "cgroup.events", "populated 0\n"))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup)
-+		cg_destroy(cgroup);
-+	free(cgroup);
-+	return ret;
-+}
-+
-+/*
-+ * The test creates the following hierarchy:
-+ *       A
-+ *    / / \ \
-+ *   B  E  I K
-+ *  /\  |
-+ * C  D F
-+ *      |
-+ *      G
-+ *      |
-+ *      H
-+ *
-+ * with a process in C, H and 3 processes in K.
-+ * Then it tries to kill the whole tree.
-+ */
-+static int test_cgkill_tree(const char *root)
-+{
-+	char *cgroup[10] = {0};
-+	int ret = KSFT_FAIL;
-+	int i;
-+
-+	cgroup[0] = cg_name(root, "cg_test_tree_A");
-+	if (!cgroup[0])
-+		goto cleanup;
-+
-+	cgroup[1] = cg_name(cgroup[0], "B");
-+	if (!cgroup[1])
-+		goto cleanup;
-+
-+	cgroup[2] = cg_name(cgroup[1], "C");
-+	if (!cgroup[2])
-+		goto cleanup;
-+
-+	cgroup[3] = cg_name(cgroup[1], "D");
-+	if (!cgroup[3])
-+		goto cleanup;
-+
-+	cgroup[4] = cg_name(cgroup[0], "E");
-+	if (!cgroup[4])
-+		goto cleanup;
-+
-+	cgroup[5] = cg_name(cgroup[4], "F");
-+	if (!cgroup[5])
-+		goto cleanup;
-+
-+	cgroup[6] = cg_name(cgroup[5], "G");
-+	if (!cgroup[6])
-+		goto cleanup;
-+
-+	cgroup[7] = cg_name(cgroup[6], "H");
-+	if (!cgroup[7])
-+		goto cleanup;
-+
-+	cgroup[8] = cg_name(cgroup[0], "I");
-+	if (!cgroup[8])
-+		goto cleanup;
-+
-+	cgroup[9] = cg_name(cgroup[0], "K");
-+	if (!cgroup[9])
-+		goto cleanup;
-+
-+	for (i = 0; i < 10; i++)
-+		if (cg_create(cgroup[i]))
-+			goto cleanup;
-+
-+	cg_run_nowait(cgroup[2], child_fn, NULL);
-+	cg_run_nowait(cgroup[7], child_fn, NULL);
-+	cg_run_nowait(cgroup[9], child_fn, NULL);
-+	cg_run_nowait(cgroup[9], child_fn, NULL);
-+	cg_run_nowait(cgroup[9], child_fn, NULL);
-+
-+	/*
-+	 * Wait until all child processes will enter
-+	 * corresponding cgroups.
-+	 */
-+
-+	if (cg_wait_for_proc_count(cgroup[2], 1) ||
-+	    cg_wait_for_proc_count(cgroup[7], 1) ||
-+	    cg_wait_for_proc_count(cgroup[9], 3))
-+		goto cleanup;
-+
-+	/*
-+	 * Kill A and check that we get an empty notification.
-+	 */
-+	if (cg_kill_wait(cgroup[0]))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cgroup[0], "cgroup.events", "populated 0\n"))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	for (i = 9; i >= 0 && cgroup[i]; i--) {
-+		cg_destroy(cgroup[i]);
-+		free(cgroup[i]);
-+	}
-+
-+	return ret;
-+}
-+
-+static int forkbomb_fn(const char *cgroup, void *arg)
-+{
-+	int ppid;
-+
-+	fork();
-+	fork();
-+
-+	ppid = getppid();
-+
-+	while (getppid() == ppid)
-+		usleep(1000);
-+
-+	return getppid() == ppid;
-+}
-+
-+/*
-+ * The test runs a fork bomb in a cgroup and tries to kill it.
-+ */
-+static int test_cgkill_forkbomb(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cgroup = NULL;
-+
-+	cgroup = cg_name(root, "cg_forkbomb_test");
-+	if (!cgroup)
-+		goto cleanup;
-+
-+	if (cg_create(cgroup))
-+		goto cleanup;
-+
-+	cg_run_nowait(cgroup, forkbomb_fn, NULL);
-+
-+	usleep(100000);
-+
-+	if (cg_kill_wait(cgroup))
-+		goto cleanup;
-+
-+	if (cg_wait_for_proc_count(cgroup, 0))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	if (cgroup)
-+		cg_destroy(cgroup);
-+	free(cgroup);
-+	return ret;
-+}
-+
-+#define T(x) { x, #x }
-+struct cgkill_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] = {
-+	T(test_cgkill_simple),
-+	T(test_cgkill_tree),
-+	T(test_cgkill_forkbomb),
-+};
-+#undef T
-+
-+int main(int argc, char *argv[])
-+{
-+	char root[PATH_MAX];
-+	int i, ret = EXIT_SUCCESS;
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ret = EXIT_FAILURE;
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
--- 
-2.27.0
+  gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
+  ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
+
+I fail to understand whether the SET_IOASID_PAGE_TABLES would apply to
+the whole IOASIDs within /dev/ioasid or to a specific one.
+
+Also in subsequent emails when you talk about IOASID, is it the
+ioasid_id, just to double check the terminology.
+
+
+>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
+>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
+is the nested_ioasid the allocated PASID id or is it a complete
+different object id.
+> 
+>    // IOMMU will match on the device RID, no PASID:
+>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
+> 
+>    // IOMMU will match on the device RID and PASID:
+>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
+here I see you pass a different pasid, so I guess they are different, in
+which case you would need to have an allocator function for this pasid,
+right?
+
+Thanks
+
+Eric
+> 
+> Notice that ATTACH (or bind, whatever) is always done on the
+> vfio_device FD. ATTACH tells the IOMMU HW to link the PCI BDF&PASID to
+> a specific page table defined by an IOASID.
+> 
+> I expect we have many flavours of IOASID tables, eg we have normal,
+> and 'nested with table controlled by hypervisor'. ARM has 'nested with
+> table controlled by guest' right? So like this?
+> 
+>   nested_ioasid = ioctl(ioasid_fd, CREATE_DELGATED_IOASID,
+>                    gpa_ioasid_id, <some kind of viommu_id>)
+>   // PASID now goes to <viommu_id>
+>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
+
+> 
+> Where <viommu_id> is some internal to the guest handle of the viommu
+> page table scoped within gpa_ioasid_id? Like maybe it is GPA of the
+> base of the page table?
+> 
+> The guest can't select its own PASIDs without telling the hypervisor,
+> right?
+> 
+>> I also feel hiding group from uAPI is a good thing and is interested in
+>> the rationale behind for explicitly managing group in vfio (which is
+>> essentially the same boundary as provided by iommu group), e.g. for 
+>> better user experience when group security is broken? 
+> 
+> Indeed, I can see how things might have just evolved into this, but if
+> it has a purpose it seems pretty hidden.
+> we need it or not seems pretty hidden.
+> 
+> Jason
+> 
 
