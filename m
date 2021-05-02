@@ -2,34 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB54370E5A
-	for <lists+cgroups@lfdr.de>; Sun,  2 May 2021 20:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA09370E5C
+	for <lists+cgroups@lfdr.de>; Sun,  2 May 2021 20:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhEBSJb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 2 May 2021 14:09:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36344 "EHLO
+        id S232367AbhEBSJf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 2 May 2021 14:09:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56547 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231788AbhEBSJb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 2 May 2021 14:09:31 -0400
+        by vger.kernel.org with ESMTP id S231801AbhEBSJe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 2 May 2021 14:09:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619978919;
+        s=mimecast20190719; t=1619978921;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=vyxShKxSh89EB6np4IlWbUt6LchDd4K6ZPvcD0TSg7Y=;
-        b=aN1yKFAyFP15wzc5LL6+7ZcpiU2HkMUn8+O2PcWt6dtGLQkwq6Vc6e3O4QwoF/jcI4AIvP
-        m9CQuT54Hup1d/tcKbKH5bSFlyWkdJUEnkoRsCpeLpscGsfmbLnxfSs01tPCcLTPIe7wAg
-        nxLjUs8ZGr1vIw8pHFeeEERljNEwtV8=
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=kEFyh88t8RjL4Ya/tUcmCMYYCtAJ4jkovquK5V2cmso=;
+        b=ZerIt5R+MVsZ06BNy13VlnPNW9HpjJqVswSmBbFdlqJcNDucTrfNSgOl8bHCTszi8HIvnr
+        APYdJDDDwyazFyXMeivVIHqYAHG9WZgG71PSVFLVTpwEFxnRfq/iMlYmlsrbjkr2TYchuh
+        sm7jkr2RU/KoqaKvIxc0/27tNnm644c=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-6t6b3JrgNQK4dwAPINmdYw-1; Sun, 02 May 2021 14:08:38 -0400
-X-MC-Unique: 6t6b3JrgNQK4dwAPINmdYw-1
+ us-mta-435-TArhv3WIP_WJue1uC6L8Ug-1; Sun, 02 May 2021 14:08:40 -0400
+X-MC-Unique: TArhv3WIP_WJue1uC6L8Ug-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8D6B801B12;
-        Sun,  2 May 2021 18:08:35 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E89E2107ACC7;
+        Sun,  2 May 2021 18:08:37 +0000 (UTC)
 Received: from llong.com (ovpn-112-236.rdu2.redhat.com [10.10.112.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B42CA19D7C;
-        Sun,  2 May 2021 18:08:29 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 40BDE19D7D;
+        Sun,  2 May 2021 18:08:36 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -43,96 +44,72 @@ To:     Johannes Weiner <hannes@cmpxchg.org>,
         Shakeel Butt <shakeelb@google.com>
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH 1/2] mm: memcg/slab: Prevent recursive kfree() loop
-Date:   Sun,  2 May 2021 14:07:54 -0400
-Message-Id: <20210502180755.445-1-longman@redhat.com>
+Subject: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
+Date:   Sun,  2 May 2021 14:07:55 -0400
+Message-Id: <20210502180755.445-2-longman@redhat.com>
+In-Reply-To: <20210502180755.445-1-longman@redhat.com>
+References: <20210502180755.445-1-longman@redhat.com>
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since the merging of the new slab memory controller in v5.9, the
-page structure stores a pointer to obj_cgroup pointer array for
-slab pages. When the slab has no used objects, it can be freed in
-free_slab() which will call kfree() to free the obj_cgroup pointer array
-in memcg_alloc_page_obj_cgroups(). If it happens that the obj_cgroup
-array is the last used object in its slab, that slab may then be freed
-which may caused kfree() to be called again.
+The obj_cgroup array (memcg_data) embedded in the page structure is
+allocated at the first instance an accounted memory allocation happens.
+With the right size object, it is possible that the allocated obj_cgroup
+array comes from the same slab that requires memory accounting. If this
+happens, the slab will never become empty again as there is at least one
+object left (the obj_cgroup array) in the slab.
 
-With the right workload, the slab cache may be set up in a way that
-allows the recursive kfree() calling loop to nest deep enough to
-cause a kernel stack overflow and panic the system. In fact, we have
-a reproducer that can cause kernel stack overflow on a s390 system
-involving kmalloc-rcl-256 and kmalloc-rcl-128 slabs with the following
-kfree() loop recursively called 74 times:
+With instructmentation code added to detect this situation, I got 76
+hits on the kmalloc-192 slab when booting up a test kernel on a VM.
+So this can really happen.
 
-  [  285.520739]  [<000000000ec432fc>] kfree+0x4bc/0x560
-  [  285.520740]  [<000000000ec43466>] __free_slab+0xc6/0x228
-  [  285.520741]  [<000000000ec41fc2>] __slab_free+0x3c2/0x3e0
-  [  285.520742]  [<000000000ec432fc>] kfree+0x4bc/0x560
-					:
+To avoid the creation of these unfreeable slabs, a check is added to
+memcg_alloc_page_obj_cgroups() to detect that and double the size
+of the array in case it happens to make sure that it comes from a
+different kmemcache.
 
-One way to prevent this from happening is to defer the freeing of the
-obj_cgroup array to a later time like using kfree_rcu() even though we
-don't really need rcu protection in this case.
-
-The size of rcu_head is just two pointers. The allocated obj_cgroup
-array should not be less than that. To be safe, however, additional
-code is added to make sure that this is really the case.
+This change, however, does not completely eliminate the presence
+of unfreeable slabs which can still happen if a circular obj_cgroup
+array dependency is formed.
 
 Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- mm/memcontrol.c |  9 ++++++++-
- mm/slab.h       | 11 ++++++++++-
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c100265dc393..b0695d3aa530 100644
+index b0695d3aa530..44852ac048c3 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2866,10 +2866,17 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
- int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 				 gfp_t gfp, bool new_page)
- {
--	unsigned int objects = objs_per_slab_page(s, page);
-+	unsigned int objects;
- 	unsigned long memcg_data;
- 	void *vec;
- 
-+	/*
-+	 * Since kfree_rcu() is used for freeing, we have to make
-+	 * sure that the allocated buffer is big enough for rcu_head.
-+	 */
-+	objects = max(objs_per_slab_page(s, page),
-+		      (int)(sizeof(struct rcu_head)/sizeof(void *)));
-+
+@@ -2876,12 +2876,24 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+ 	 */
+ 	objects = max(objs_per_slab_page(s, page),
+ 		      (int)(sizeof(struct rcu_head)/sizeof(void *)));
+-
++retry:
  	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
  			   page_to_nid(page));
  	if (!vec)
-diff --git a/mm/slab.h b/mm/slab.h
-index 18c1927cd196..6244a00d30ce 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -242,8 +242,17 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+ 		return -ENOMEM;
  
- static inline void memcg_free_page_obj_cgroups(struct page *page)
- {
--	kfree(page_objcgs(page));
-+	struct {
-+		struct rcu_head rcu;
-+	} *objcgs = (void *)page_objcgs(page);
-+
 +	/*
-+	 * We don't actually need to use rcu to protect objcg pointers.
-+	 * kfree_rcu() is used here just to defer the actual freeing to avoid
-+	 * a recursive kfree() loop which may lead to kernel stack overflow.
++	 * The allocated vector should not come from the same slab.
++	 * Otherwise, this slab will never become empty. Double the size
++	 * in this case to make sure that the vector comes from a different
++	 * kmemcache.
 +	 */
- 	page->memcg_data = 0;
-+	kfree_rcu(objcgs, rcu);
- }
- 
- static inline size_t obj_full_size(struct kmem_cache *s)
++	if (unlikely(virt_to_head_page(vec) == page)) {
++		kfree(vec);
++		objects *= 2;
++		goto retry;
++	}
++
+ 	memcg_data = (unsigned long) vec | MEMCG_DATA_OBJCGS;
+ 	if (new_page) {
+ 		/*
 -- 
 2.18.1
 
