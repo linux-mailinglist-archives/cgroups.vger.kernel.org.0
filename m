@@ -2,174 +2,163 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78E5371EE0
-	for <lists+cgroups@lfdr.de>; Mon,  3 May 2021 19:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992EB37212A
+	for <lists+cgroups@lfdr.de>; Mon,  3 May 2021 22:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbhECRuP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 May 2021 13:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhECRuP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 May 2021 13:50:15 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50794C061761
-        for <cgroups@vger.kernel.org>; Mon,  3 May 2021 10:49:20 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id x8so5931922qkl.2
-        for <cgroups@vger.kernel.org>; Mon, 03 May 2021 10:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=px9JwR74/bTPwn0UoWBvquYLMAYEbFs8/lK92VClKzo=;
-        b=dWdCr/MLTjCiUzt2xEIBacRzgkQbmQFG8s2VKZ6dfClQjeqaiwKd9BmmnfQxlwMaZF
-         Gh5/+IT1kb+lec6jYWZsMacsc/0r3uPb2+F5H5VGdBNVxjsA9SY7MR3zZa/vH+gUzycY
-         9w1bVqt1AUKgIrri6H9rlvaRyWpMO7jlJVAHfOVtLurOnc8x8fUQXSaR9AcAKSBurTWo
-         y+RsYuxlna1wMn1exVQ4FhuKWAW2RCOK94XU/nq7WvSU5jfK8Z+EP4ITTLm+EeM1htPb
-         e2uWCQn/TDY0aAah5DWjWUcnG1hQUZ8G9CZjGab4Jf7XuoOUq6e6QZHF+V6S0vsGSq5O
-         jNQg==
+        id S229497AbhECUQN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 May 2021 16:16:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229620AbhECUQM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 May 2021 16:16:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620072918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nqgS52YwzVDVjfWlq3e547UMU0Zz7FIEHtvfbJqFZ2w=;
+        b=i4FfBUB4GUt//9T3APOJrHFKud4c12wtzWR7YK0w5s6jxSpYin2W7iJTG87YzR53DWgoGl
+        s1/YvmqVppOSLGbeJMnFHZC7hC0Glc/RF3zeLNDXLBD7XC15p4vus9B0qWUC3X6gHK31sN
+        GNLrDEBX+BRUP8UyaZ854DjU6ZMUue0=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-e5vQ0uuYOYCnAJa16ZCPsg-1; Mon, 03 May 2021 16:15:14 -0400
+X-MC-Unique: e5vQ0uuYOYCnAJa16ZCPsg-1
+Received: by mail-qv1-f71.google.com with SMTP id i19-20020a0cf3930000b02901c3869f9a1dso5876391qvk.5
+        for <cgroups@vger.kernel.org>; Mon, 03 May 2021 13:15:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=px9JwR74/bTPwn0UoWBvquYLMAYEbFs8/lK92VClKzo=;
-        b=FLm/vOEK8gUxoAastQC60AjZOIrrsucyFHdnRiGR4zGOB3utSAxLxCz28AsSSzv2Vj
-         SNlMpvzfxk/7J3ataB+H+E2C5QKYAcnfSwtt4gqj6SktaCKXL7EE0AwHT+WcgT7wXa7h
-         1wGz9a7/b46jJaqysvEkt+5PEKcVgoHhyhkwfbGKTWFrsvNwFXvJSaI7ZY/q6G9w6Jd+
-         PjWiVh/1vtVlQP8V5T+0OAtjxlvnBiwZCJGz+YV9Nma38pgwj/GzTtoJz3pQQgxS1vMQ
-         v0NcgdTTr8sGnL9773LTjiDWI9rA+psAMGaha51p2UMhVoCsCEEgkYlhpNghz2Y642ZO
-         MdrA==
-X-Gm-Message-State: AOAM533m3Hae9+LV466kF7mkLWQl2c3Mm9/HILjq90pztWc6JsZiOMpx
-        Ri/+l+TU7kOGqOgjkHWL2j5vgw==
-X-Google-Smtp-Source: ABdhPJxZtUYtu1Fnh8n4HEeda1pXYleiv9B79aqQgijBUUCwG2r/ZMz9k5Ouxyll2oi8qNYMUBC60A==
-X-Received: by 2002:a37:992:: with SMTP id 140mr2876078qkj.194.1620064159506;
-        Mon, 03 May 2021 10:49:19 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id c187sm8931704qkd.8.2021.05.03.10.49.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 10:49:18 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Rik van Riel <riel@surriel.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] psi: fix psi state corruption when schedule() races with cgroup move
-Date:   Mon,  3 May 2021 13:49:17 -0400
-Message-Id: <20210503174917.38579-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.31.0
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nqgS52YwzVDVjfWlq3e547UMU0Zz7FIEHtvfbJqFZ2w=;
+        b=JVsnWDkHxAUGqGcpx8JkbSALUqi3JvmLURa3V1chwHg9tXbQX+rcV0A65PaZtmsw3v
+         c3eXPKOX4nl9k8j63Fnm+LgPTMN3c5YMIYHfNdBEdb49Q3E2paPOXMb21hNkU8zTQ5AM
+         OKkCHwWyFnHFQ3hjRPbpc2aJH2osHndYyflyLbPHaYpAyzR6oE4kBy3k33YKHL7j8HXK
+         NPLmM139T9WxHBYfyph39y0qN+oJkhsyklXj4i9PTWrP/tf+7Y+WORhmTe959qIaNIKF
+         jx2QSKSsu4xZmQxv+u/LnPcKJ3FjVh0z8tQmzGVtW4kXHX49wpSRXUh9qAwGOEvXjA9u
+         i+tw==
+X-Gm-Message-State: AOAM5332SQ3FSJd2uDo4rCF5w54Fi2QAqPTj48ISn0PvmGfogJANr5+K
+        DtAk2gN4yIr/DD5+KpUqHIJbVLMshOthFRDL3Vf7SvcjQUDp0wE/xaerrbZRN8supLF9YCJsi/O
+        2VFK/4QFabqm51KEsHg==
+X-Received: by 2002:a0c:fec8:: with SMTP id z8mr22048361qvs.58.1620072914062;
+        Mon, 03 May 2021 13:15:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAkI+kIi2aTR1+TiicexVGxSlGuAs9crPbcBlMV9//3cmTaLpe4A/7vMgqgyaYArxfQOS0uQ==
+X-Received: by 2002:a0c:fec8:: with SMTP id z8mr22048327qvs.58.1620072913834;
+        Mon, 03 May 2021 13:15:13 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id g5sm1010653qtm.2.2021.05.03.13.15.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 13:15:12 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
+To:     Shakeel Butt <shakeelb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Waiman Long <llong@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+References: <20210502180755.445-1-longman@redhat.com>
+ <20210502180755.445-2-longman@redhat.com>
+ <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz>
+ <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
+ <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
+ <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
+ <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
+Message-ID: <59afa489-3db5-3881-92a4-59b5ee82fc1b@redhat.com>
+Date:   Mon, 3 May 2021 16:15:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <fc59cce6-71af-890e-030c-46357e0f0343@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
-introduced a race condition that corrupts internal psi state. This
-manifests as kernel warnings, sometimes followed by bogusly high IO
-pressure:
+On 5/3/21 1:21 PM, Waiman Long wrote:
+> On 5/3/21 12:24 PM, Shakeel Butt wrote:
+>> On Mon, May 3, 2021 at 8:32 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>> On 5/3/21 4:20 PM, Waiman Long wrote:
+>>>> On 5/3/21 8:22 AM, Vlastimil Babka wrote:
+>>>>> On 5/2/21 8:07 PM, Waiman Long wrote:
+>>>>>> The obj_cgroup array (memcg_data) embedded in the page structure is
+>>>>>> allocated at the first instance an accounted memory allocation 
+>>>>>> happens.
+>>>>>> With the right size object, it is possible that the allocated 
+>>>>>> obj_cgroup
+>>>>>> array comes from the same slab that requires memory accounting. 
+>>>>>> If this
+>>>>>> happens, the slab will never become empty again as there is at 
+>>>>>> least one
+>>>>>> object left (the obj_cgroup array) in the slab.
+>>>>>>
+>>>>>> With instructmentation code added to detect this situation, I got 76
+>>>>>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
+>>>>>> So this can really happen.
+>>>>>>
+>>>>>> To avoid the creation of these unfreeable slabs, a check is added to
+>>>>>> memcg_alloc_page_obj_cgroups() to detect that and double the size
+>>>>>> of the array in case it happens to make sure that it comes from a
+>>>>>> different kmemcache.
+>>>>>>
+>>>>>> This change, however, does not completely eliminate the presence
+>>>>>> of unfreeable slabs which can still happen if a circular obj_cgroup
+>>>>>> array dependency is formed.
+>>>>> Hm this looks like only a half fix then.
+>>>>> I'm afraid the proper fix is for kmemcg to create own set of 
+>>>>> caches for the
+>>>>> arrays. It would also solve the recursive kfree() issue.
+>>>> Right, this is a possible solution. However, the objcg pointers 
+>>>> array should
+>>>> need that much memory. Creating its own set of kmemcaches may seem 
+>>>> like an
+>>>> overkill.
+>>> Well if we go that way, there might be additional benefits:
+>>>
+>>> depending of gfp flags, kmalloc() would allocate from:
+>>>
+>>> kmalloc-* caches that never have kmemcg objects, thus can be used 
+>>> for the objcg
+>>> pointer arrays
+>>> kmalloc-cg-* caches that have only kmemcg unreclaimable objects
+>>> kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
+>>> memcg_alloc_page_obj_cgroups()
+>>>
+>>> This way we fully solve the issues that this patchset solves. In 
+>>> addition we get
+>>> better separation between kmemcg and !kmemcg thus save memory - no 
+>>> allocation of
+>>> the array as soon as a single object appears in slab. For 
+>>> "kmalloc-8" we now
+>>> have 8 bytes for the useful data and 8 bytes for the obj_cgroup  
+>>> pointer.
+>>>
+>> Yes this seems like a better approach.
+>>
+> OK, I will try to go this route then if there is no objection from 
+> others.
+>
+> From slabinfo, the objs/slab numbers range from 4-512. That means we 
+> need kmalloc-cg-{32,64,128,256,512,1k,2k,4k}. A init function to set 
+> up the new kmemcaches and an allocation function that use the proper 
+> kmemcaches to allocate from. 
 
-  psi: task underflow! cpu=1 t=2 tasks=[0 0 0 0] clear=c set=0
-  (schedule() decreasing RUNNING and ONCPU, both of which are 0)
+I think I had misinterpreted the kmalloc-* setup. In this case, the 
+kmalloc-cg-* should have the same set of sizes as kmalloc-*.
 
-  psi: incosistent task state! task=2412744:systemd cpu=17 psi_flags=e clear=3 set=0
-  (cgroup_move_task() clearing MEMSTALL and IOWAIT, but task is MEMSTALL | RUNNING | ONCPU)
-
-What the offending commit does is batch the two psi callbacks in
-schedule() to reduce the number of cgroup tree updates. When prev is
-deactivated and removed from the runqueue, nothing is done in psi at
-first; when the task switch completes, TSK_RUNNING and TSK_IOWAIT are
-updated along with TSK_ONCPU.
-
-However, the deactivation and the task switch inside schedule() aren't
-atomic: pick_next_task() may drop the rq lock for load balancing. When
-this happens, cgroup_move_task() can run after the task has been
-physically dequeued, but the psi updates are still pending. Since it
-looks at the task's scheduler state, it doesn't move everything to the
-new cgroup that the task switch that follows is about to clear from
-it. cgroup_move_task() will leak the TSK_RUNNING count in the old
-cgroup, and psi_sched_switch() will underflow it in the new cgroup.
-
-A similar thing can happen for iowait. TSK_IOWAIT is usually set when
-a p->in_iowait task is dequeued, but again this update is deferred to
-the switch. cgroup_move_task() can see an unqueued p->in_iowait task
-and move a non-existent TSK_IOWAIT. This results in the inconsistent
-task state warning, as well as a counter underflow that will result in
-permanent IO ghost pressure being reported.
-
-Fix this bug by making cgroup_move_task() use task->psi_flags instead
-of looking at the potentially mismatching scheduler state.
-
-[ We used the scheduler state historically in order to not rely on
-  task->psi_flags for anything but debugging. But that ship has sailed
-  anyway, and this is simpler and more robust.
-
-  We previously already batched TSK_ONCPU clearing with the
-  TSK_RUNNING update inside the deactivation call from schedule(). But
-  that ordering was safe and didn't result in TSK_ONCPU corruption:
-  unlike most places in the scheduler, cgroup_move_task() only checked
-  task_current() and handled TSK_ONCPU if the task was still queued. ]
-
-Fixes: 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- kernel/sched/psi.c | 36 ++++++++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index db27b69fa92a..cc25a3cff41f 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -972,7 +972,7 @@ void psi_cgroup_free(struct cgroup *cgroup)
-  */
- void cgroup_move_task(struct task_struct *task, struct css_set *to)
- {
--	unsigned int task_flags = 0;
-+	unsigned int task_flags;
- 	struct rq_flags rf;
- 	struct rq *rq;
- 
-@@ -987,15 +987,31 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
- 
- 	rq = task_rq_lock(task, &rf);
- 
--	if (task_on_rq_queued(task)) {
--		task_flags = TSK_RUNNING;
--		if (task_current(rq, task))
--			task_flags |= TSK_ONCPU;
--	} else if (task->in_iowait)
--		task_flags = TSK_IOWAIT;
--
--	if (task->in_memstall)
--		task_flags |= TSK_MEMSTALL;
-+	/*
-+	 * We may race with schedule() dropping the rq lock between
-+	 * deactivating prev and switching to next. Because the psi
-+	 * updates from the deactivation are deferred to the switch
-+	 * callback to save cgroup tree updates, the task's scheduling
-+	 * state here is not coherent with its psi state:
-+	 *
-+	 * schedule()                   cgroup_move_task()
-+	 *   rq_lock()
-+	 *   deactivate_task()
-+	 *     p->on_rq = 0
-+	 *     psi_dequeue() // defers TSK_RUNNING & TSK_IOWAIT updates
-+	 *   pick_next_task()
-+	 *     rq_unlock()
-+	 *                                rq_lock()
-+	 *                                psi_task_change() // old cgroup
-+	 *                                task->cgroups = to
-+	 *                                psi_task_change() // new cgroup
-+	 *                                rq_unlock()
-+	 *     rq_lock()
-+	 *   psi_sched_switch() // does deferred updates in new cgroup
-+	 *
-+	 * Don't rely on the scheduling state. Use psi_flags instead.
-+	 */
-+	task_flags = task->psi_flags;
- 
- 	if (task_flags)
- 		psi_task_change(task, task_flags, 0);
--- 
-2.31.0
+Cheers,
+Longman
 
