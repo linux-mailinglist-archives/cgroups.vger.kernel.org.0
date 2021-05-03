@@ -2,185 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C71371900
-	for <lists+cgroups@lfdr.de>; Mon,  3 May 2021 18:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8634C371933
+	for <lists+cgroups@lfdr.de>; Mon,  3 May 2021 18:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhECQQQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 May 2021 12:16:16 -0400
-Received: from mail-mw2nam12on2042.outbound.protection.outlook.com ([40.107.244.42]:27969
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230518AbhECQQP (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 3 May 2021 12:16:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OdIZzBeuvF0g7hK2h2M2WvH+V0VgQokXPTDx84Wcjt298/eGUzg34j1YF07ptaGgYKpNyfxfJavRYf+TNWV7YSkZqzkD12CMCDkPoPQglWxqCXaWsRKMWyl3qbtTNBV5uiGYL9EThOkMcv2xR5Qidu9qZ+iMQt7eusyEvSYhM4eg+j7LbpvLVMsWAsa5R+RHdZNnuwWS8Iu87oV4ghWnu+doKuri4arwMMmvFTFk/s7QkmW4jOo6p+7kswq1b+v+PWKswN+ulbolhYrs5bxjO6TvXHuk3i+aWSvQE6vwKgS4vbYF4BZrMURSpI7tGXYW+wrz/LKcMNLlFyqMzc4lKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KsrcXyE5y/ppPoLuMeJMZjpz7sz6aBREBdV0KXEjuBU=;
- b=hbv4g7UhiaGB/zHm3VU+7AX4rITVzoyczr3DzbRld5ACBHMXGUWTdOETzW4IsIUUlhDF14hoBqWy+gyuA1KdKCN8eSeSN3qeZyF5UxykL3MtT/4KZ18+qdEopQft/JlHKavYubPOQgUl6urORCfS2syRniTfEoLaV0zqRZvHiHeTcTUX4svXqSnPoUz/6a/siL/pALZRv5WqzbRxUZGMDVGxsRTzQf6mH+GlGhi3UwqUatmoEAH7XYoSrEOI/ud3iBK0IxakzsoHUanBcv2ab5gXE2e1A3+Z4kdz0bh8oh2yfEN5yYZyIksiGxImQfBy6h/Xic8EzfzqmSU9AzgHxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KsrcXyE5y/ppPoLuMeJMZjpz7sz6aBREBdV0KXEjuBU=;
- b=fhriCLjytOTxefQIyrhGbxw7ejvgWd6ZiYWgmDDMtZmMV+6Eg1P1xNKxzjQjFlePEh+GiE9mBTQcq9+FODgn2LFTkGJC9Xs7TnlOQMV6l6oa+zoNY91QrQUW/BU9clqqtSjtcAMG6LMbaTgJWtsL8UMbkWPdNeEjN2q85vGCgqPcHUkvxWHbhbKk1wWNa5kVqYryQj5IvWMG7zrkBxUXmeBphrY97cAu2M2JPvsDTHqAiynJ98SKRdJxHuJTT+7hEfwQcD4We1tdsYjfwpp9Fc0TG0N3aEE28TW6T7gg37HAL9kpVHvCQoI8CEfgo50XOrMjiCqAG8/csCkNHDhhRQ==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4250.namprd12.prod.outlook.com (2603:10b6:5:21a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.26; Mon, 3 May
- 2021 16:15:21 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4087.043; Mon, 3 May 2021
- 16:15:20 +0000
-Date:   Mon, 3 May 2021 13:15:18 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210503161518.GM1370958@nvidia.com>
-References: <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YIoiJRY3FM7xH2bH@yekko>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH0PR03CA0191.namprd03.prod.outlook.com
- (2603:10b6:610:e4::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231189AbhECQZe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 May 2021 12:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhECQZe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 May 2021 12:25:34 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C972C061761
+        for <cgroups@vger.kernel.org>; Mon,  3 May 2021 09:24:41 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id s25so7534331lji.0
+        for <cgroups@vger.kernel.org>; Mon, 03 May 2021 09:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TcATYEvqWtFfx/44txhT0Spsn4kumnm2+a2rXW71+CM=;
+        b=Eaj4rKKhZajb/S9uMXpRE9KCEfy5HuJE+EtOo+Se6CW6ZyQY6bjKa68nq45phIbM8c
+         9TspWHri3VmH+anix1LFL9doASiwyNTqks3Vv/7hIOtmUu9iGOYIp1pDR+mJj140dErP
+         2zdwQ4ZzQCYdtRvlXSW3nT+Oui+b+dcaeR9qAq78qteAVIv+oBCqxsjuJawt+JhI0XDR
+         WSEvmIiMehxJm2M0t2lllY238waLTBfzWXMAcWNGZzTHFzl8495jjZshk4PXeB+VzL88
+         D/Yv7r5Rda77+oUmHrJMYIxfK2ANAzAvW5iNyhVv2B933abB++3JB+BeSQFVVtKcg//l
+         P0nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TcATYEvqWtFfx/44txhT0Spsn4kumnm2+a2rXW71+CM=;
+        b=afXiT2haigsL4+uXv+lMnKw8Nea6Lpq3qj6aKpz5b7UU5bQyJBgiu0xRSULQvYItCQ
+         JxExNk5qiNDhoGHTeAaSsdKpyjHublqwRw1vYfoBG/JOOxfKRVOnBa1gCeBCrC3wwqDK
+         V8T00VzabTavg7HuCheNYxFoDLxxbN+eugpHQnTRCyNw90YOkwp4nVmSwODWAJr9vvlZ
+         4fUtpsw13jFMldUQH4KaHzvtJkbjK4BKPsVaz7SYrj008KB47q8HuZWcLfaglpRKHKHY
+         dMoUCkbRIUZ605FKiG+t9tha+nFh0H9b35MPym78uIPvb2wgr/2WrLAwPDb1ceDXhTA0
+         tuSw==
+X-Gm-Message-State: AOAM530fOGq7vdOugVcESvT2XX3Een4N7u4ke68iFveYIfg6wXSupLKQ
+        faEc2IwYOsnKcWI9TCvmcS6reSDxtwT2QwJh3+wTDw==
+X-Google-Smtp-Source: ABdhPJxwOZF5GNeOtag2xfRjfFSTBwoX7sJqPEbEXnr+f2iHHA67gp9bI5NGIDNieGQOC7JQarf3LW+/cizq2fFp46k=
+X-Received: by 2002:a2e:94d:: with SMTP id 74mr13275855ljj.122.1620059079137;
+ Mon, 03 May 2021 09:24:39 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0191.namprd03.prod.outlook.com (2603:10b6:610:e4::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.39 via Frontend Transport; Mon, 3 May 2021 16:15:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldbE6-00GO53-Vy; Mon, 03 May 2021 13:15:19 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 35d92f31-36f5-44a1-e285-08d90e4ea5dd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4250:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4250EA34963AB196A100A579C25B9@DM6PR12MB4250.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TNMkxlz3Km0BgpGBZRVE7mVgvV73+p4jwTEctTJvlS8RzpJUB4a9Bc0BZRbsx++Dz/bxcdp9G/exJXsbFIUB8hvQGYGTjvTkvTmP2OkidManKQQLLNRJzR7AbI5GtYj4qVj1SJeKpyTxyJEbYe/3Ux/csUpF2Sw0Zz0sAITSoBp5xs/X8D+qXg6td0IUdzQhO0t0PwmFNurNW8P1jb2mn53osJ898+H5zMkzXq3pc30kvodf9pkJCdv1AecqTwpX72PPvgvXLl7/dY/NaKYda/tBpSN0fb9w/uDQTlML3FOqPO22h1dvcFaUZDaKKQpiqI8v8glF5lhH1lxNdDGSBnPG+dii9wG+DaMhHXPPsXGRT1YY00Bnws+vHhQuK10XonUt157NlyQJtThy77yOGzOiP1JyNPMi56nusGBrIJ46ao8oyWK0ibdVFcHnSYom1aSXInFjnda2tjgGG6bykI3KPqIMzwTqE7UmO0WmGLk+KLhVdEl8OlxPGqwkWayBgBBjkJKT+xetanObmPeefOwx+L5bpdDFORlxXlr7SWG+MsaH98RKTShk4O0W2xI8vb1lDg8+ieLf0rt7eezbiyledGx2h0GOSmmu8jWUfP0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(316002)(8936002)(2906002)(83380400001)(36756003)(38100700002)(86362001)(1076003)(478600001)(4326008)(9786002)(54906003)(8676002)(33656002)(66556008)(5660300002)(2616005)(66476007)(426003)(186003)(26005)(6916009)(66946007)(7416002)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lIgkwEH6PEuyKHnAcH6I3GHJIjaMYQ1VPzX1Ba1EgmH44MucOQiwr2NpocRD?=
- =?us-ascii?Q?zyIewNhKLsJODR/hDiM2PC6d7pAabsP6aWYCmZYDgygYuN6kAfQjT9vSXBRq?=
- =?us-ascii?Q?zfMtK68kugF+fauovX4Rfq/U03RsVv+iXKwcJZlKHQ6TvBuIKlKjtmKlTN73?=
- =?us-ascii?Q?KkcW7Lqts25eiiTl0VhWtfC/VZyvKl+RZD2F+6wpezVU20crH0xG1uH3AKyb?=
- =?us-ascii?Q?5IhqYmkc7iAW1M+3In1mhKV1TjRnE+C4EC5+ET3tjcOzbArMpfoYdEN/vWCO?=
- =?us-ascii?Q?tXJvfzSO16uShIu76riA6hnySrnkseDuTrBOV4agO78szktAC/HCTClMSJCi?=
- =?us-ascii?Q?3EDrhAsUsbZehm+bytNT106KNw//4GC34sKiYq+0RV3s16/aS7nuoyZ+Ouga?=
- =?us-ascii?Q?Ss9WLkRiHXbsq3Yr83imhBjVbizndCb8V1ebwu71DPhRDpV7pfAWApjSmaHJ?=
- =?us-ascii?Q?AGJn+PmXJhJtYOGl5qwp0cIsYydAsyk5X1iOWXBX8tlgg+C36p5OTS0CM3nW?=
- =?us-ascii?Q?8/VM6CPV7SJ+EtaJ8dLa1GduqFhXUT/bv7RdRl7JdTvIXgXDtbtZRcvpxe0Q?=
- =?us-ascii?Q?/6ulB0JezIJooUcht9GM8jNbfH6IyUQeJZRkh/bHxDQ8Cve85zzeoA/Gx1c2?=
- =?us-ascii?Q?0kfKL4wdEA08V78DOLOgTpJqLaoqrB2lSpEoLBjEp1ma2r+HcwsxVLPRhutR?=
- =?us-ascii?Q?PMsTrkbZTAKBCIEXU2okwCo+3gRpJGW6bxQj+hdSKVb+KhuqkkDnyfltFeMU?=
- =?us-ascii?Q?jXDCw/oKRIcqVPmg1QevCqY4s99SKul7ef/jc0QW4zVUoKdLt6xDNSk+GYDw?=
- =?us-ascii?Q?iprhxTkatA5cdvUB4N35WZRQ7qfYWF1ZmcDw2lVip1Rx5LCoudH5NtFVpu/v?=
- =?us-ascii?Q?DYHzbzLwmUQiA2bvhhBaGKskuiQHyr4pk2bEmSBd7hapZ3bvwUn0woZKETtn?=
- =?us-ascii?Q?byDZvnjZ4BLta/D4Nxbt89uGZTL67ivLAZSiMVqpehdRJE1bRikdzUp7aPvo?=
- =?us-ascii?Q?02FZhxN7zEKxTaA5X91cU30Cc364jKjg6jqxrjE1HvcyEIBLuA0bTntM6Wgj?=
- =?us-ascii?Q?+p6QIrZPVRODyDFYW6NCbgl/W9ZO0nvcWMM/5B6Gi30iU4QZyL49GCfJeoVV?=
- =?us-ascii?Q?c/v2rUDueXLIshxGnKTUdUye77uy58h7wskOjbpJaQv9Z9B5EA8lmibPN6Bh?=
- =?us-ascii?Q?zgXzRFasafsiGPasfS2FK8UisybTXbMVry+IXStpuq0XMTDJWi6RpG6gWBu3?=
- =?us-ascii?Q?3YpXZgc4585EyHxnQlzHxFoAX4Jm1RsOeWNtK5dfNyaWF+rIK8aZRee42Tgs?=
- =?us-ascii?Q?eKAWF9qJtCj+6xvE4ngy8wTA?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35d92f31-36f5-44a1-e285-08d90e4ea5dd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2021 16:15:20.7283
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1XWANPMcBaquO9MDwkEKFw3o8qO/4gq88R2quI7GHIdLdQ0v/W85QXttinpxYzZ8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4250
+References: <20210502180755.445-1-longman@redhat.com> <20210502180755.445-2-longman@redhat.com>
+ <699e5ac8-9044-d664-f73f-778fe72fd09b@suse.cz> <4c90cf79-9c61-8964-a6fd-2da087893339@redhat.com>
+ <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
+In-Reply-To: <d767ff72-711d-976c-d897-9cea0375c827@suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 3 May 2021 09:24:28 -0700
+Message-ID: <CALvZod4aW0P2a5ZG4JO4YH2oQ8a1kM9_Tsjz-tAGP_-9hLyOpw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: memcg/slab: Don't create unfreeable slab
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Waiman Long <llong@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 01:04:05PM +1000, David Gibson wrote:
-> Again, I don't know enough about VDPA to make sense of that.  Are we
-> essentially talking non-PCI virtual devices here?  In which case you
-> could define the VDPA "bus" to always have one-device groups.
+On Mon, May 3, 2021 at 8:32 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 5/3/21 4:20 PM, Waiman Long wrote:
+> > On 5/3/21 8:22 AM, Vlastimil Babka wrote:
+> >> On 5/2/21 8:07 PM, Waiman Long wrote:
+> >>> The obj_cgroup array (memcg_data) embedded in the page structure is
+> >>> allocated at the first instance an accounted memory allocation happens.
+> >>> With the right size object, it is possible that the allocated obj_cgroup
+> >>> array comes from the same slab that requires memory accounting. If this
+> >>> happens, the slab will never become empty again as there is at least one
+> >>> object left (the obj_cgroup array) in the slab.
+> >>>
+> >>> With instructmentation code added to detect this situation, I got 76
+> >>> hits on the kmalloc-192 slab when booting up a test kernel on a VM.
+> >>> So this can really happen.
+> >>>
+> >>> To avoid the creation of these unfreeable slabs, a check is added to
+> >>> memcg_alloc_page_obj_cgroups() to detect that and double the size
+> >>> of the array in case it happens to make sure that it comes from a
+> >>> different kmemcache.
+> >>>
+> >>> This change, however, does not completely eliminate the presence
+> >>> of unfreeable slabs which can still happen if a circular obj_cgroup
+> >>> array dependency is formed.
+> >> Hm this looks like only a half fix then.
+> >> I'm afraid the proper fix is for kmemcg to create own set of caches for the
+> >> arrays. It would also solve the recursive kfree() issue.
+> >
+> > Right, this is a possible solution. However, the objcg pointers array should
+> > need that much memory. Creating its own set of kmemcaches may seem like an
+> > overkill.
+>
+> Well if we go that way, there might be additional benefits:
+>
+> depending of gfp flags, kmalloc() would allocate from:
+>
+> kmalloc-* caches that never have kmemcg objects, thus can be used for the objcg
+> pointer arrays
+> kmalloc-cg-* caches that have only kmemcg unreclaimable objects
+> kmalloc-rcl-* and dma-kmalloc-* can stay with on-demand
+> memcg_alloc_page_obj_cgroups()
+>
+> This way we fully solve the issues that this patchset solves. In addition we get
+> better separation between kmemcg and !kmemcg thus save memory - no allocation of
+> the array as soon as a single object appears in slab. For "kmalloc-8" we now
+> have 8 bytes for the useful data and 8 bytes for the obj_cgroup  pointer.
+>
 
-It is much worse than that.
-
-What these non-PCI devices need is for the kernel driver to be part of
-the IOMMU group of the underlying PCI device but tell VFIO land that
-"groups don't matter"
-
-Today mdev tries to fake this by using singleton iommu groups, but it
-is really horrible and direcly hacks up the VFIO IOMMU code to
-understand these special cases. Intel was proposing more special
-hacking in the VFIO IOMMU code to extend this to PASID.
-
-When we get to a /dev/ioasid this is all nonsense. The kernel device
-driver is going to have to tell drivers/iommu exactly what kind of
-ioasid it can accept, be it a PASID inside a kernel owned group, a SW
-emulated 'mdev' ioasid, or whatever.
-
-In these cases the "group" idea has become a fiction that just creates
-a pain. "Just reorganize VDPA to do something insane with the driver
-core so we can create a dummy group to satisfy an unnecessary uAPI
-restriction" is not a very compelling argument.
-
-So if the nonsensical groups goes away for PASID/mdev, where does it
-leave the uAPI in other cases?
-
-> I don't think simplified-but-wrong is a good goal.  The thing about
-> groups is that if they're there, you can't just "not care" about them,
-> they affect you whether you like it or not.
-
-You really can. If one thing claims the group then all the other group
-devices become locked out.
-
-The main point to understand is that groups are NOT an application
-restriction! It is a whole system restriction that the operator needs
-to understand and deal with. This is why things like dpdk don't care
-about the group at all - there is nothing they can do with the
-information.
-
-If the operator says to run dpdk on a specific device then the
-operator is the one that has to deal with all the other devices in the
-group getting locked out.
-
-At best the application can make it more obvious that the operator is
-doing something dangerous, but the current kernel API doesn't seem to
-really support that either.
-
-Jason
-
+Yes this seems like a better approach.
