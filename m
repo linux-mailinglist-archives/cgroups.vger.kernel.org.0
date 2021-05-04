@@ -2,338 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DFE372452
-	for <lists+cgroups@lfdr.de>; Tue,  4 May 2021 03:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A3B3724D9
+	for <lists+cgroups@lfdr.de>; Tue,  4 May 2021 06:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhEDB43 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 May 2021 21:56:29 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:46110 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229499AbhEDB43 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 3 May 2021 21:56:29 -0400
-X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 May 2021 21:56:28 EDT
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id E4EC71036; Mon,  3 May 2021 20:47:35 -0500 (CDT)
-Date:   Mon, 3 May 2021 20:47:35 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        containers@lists.linux.dev,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v2 1/5] cgroup: introduce cgroup.kill
-Message-ID: <20210504014735.GA14731@mail.hallyn.com>
-References: <20210503143922.3093755-1-brauner@kernel.org>
+        id S229724AbhEDETQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 May 2021 00:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhEDETP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 May 2021 00:19:15 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DD6C061574;
+        Mon,  3 May 2021 21:18:21 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FZ65j4PK5z9sSs; Tue,  4 May 2021 14:18:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1620101897;
+        bh=GF4kY9gVsGuwV9dXBjYISsLPpgjK/7dHag6l9MAWxKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FFVVpB9WNCZN/OHDK7EFnFAqgxNmT0o6j8dz6VB4dGaDgHpoypxvLCGbts5YHK+rc
+         /0GWhCoUlX/gdFz9pMVsCPN56Kbv7o9hKTFl972XyyuWKzbIa3TPAw6YsykdDcjnop
+         Pv6BeZTFIqQGE9whKr7bxNbIOfV+YYaDGYHwm4S8=
+Date:   Tue, 4 May 2021 13:54:55 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YJDFj+sAv41JRIo4@yekko>
+References: <20210421175203.GN1370958@nvidia.com>
+ <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box>
+ <20210427172432.GE1370958@nvidia.com>
+ <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko>
+ <20210503160530.GL1370958@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XJz7RUBFhCVAE36r"
 Content-Disposition: inline
-In-Reply-To: <20210503143922.3093755-1-brauner@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210503160530.GL1370958@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 03, 2021 at 04:39:19PM +0200, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Introduce the cgroup.kill file. It does what it says on the tin and
-> allows a caller to kill a cgroup by writing "1" into cgroup.kill.
-> The file is available in non-root cgroups.
-> 
-> Killing cgroups is a process directed operation, i.e. the whole
-> thread-group is affected. Consequently trying to write to cgroup.kill in
-> threaded cgroups will be rejected and EOPNOTSUPP returned. This behavior
-> aligns with cgroup.procs where reads in threaded-cgroups are rejected
-> with EOPNOTSUPP.
-> 
-> The cgroup.kill file is write-only since killing a cgroup is an event
-> not which makes it different from e.g. freezer where a cgroup
-> transitions between the two states.
-> 
-> As with all new cgroup features cgroup.kill is recursive by default.
-> 
-> Killing a cgroup is protected against concurrent migrations through the
-> cgroup mutex. To protect against forkbombs and to mitigate the effect of
-> racing forks a new CGRP_KILL css set lock protected flag is introduced
-> that is set prior to killing a cgroup and unset after the cgroup has
-> been killed. We can then check in cgroup_post_fork() where we hold the
-> css set lock already whether the cgroup is currently being killed. If so
-> we send the child a SIGKILL signal immediately taking it down as soon as
-> it returns to userspace. To make the killing of the child semantically
-> clean it is killed after all cgroup attachment operations have been
-> finalized.
-> 
-> There are various use-cases of this interface:
-> - Containers usually have a conservative layout where each container
->   usually has a delegated cgroup. For such layouts there is a 1:1
->   mapping between container and cgroup. If the container in addition
->   uses a separate pid namespace then killing a container usually becomes
->   a simple kill -9 <container-init-pid> from an ancestor pid namespace.
->   However, there are quite a few scenarios where that isn't true. For
->   example, there are containers that share the cgroup with other
->   processes on purpose that are supposed to be bound to the lifetime of
->   the container but are not in the same pidns of the container.
->   Containers that are in a delegated cgroup but share the pid namespace
->   with the host or other containers.
-> - Service managers such as systemd use cgroups to group and organize
->   processes belonging to a service. They usually rely on a recursive
->   algorithm now to kill a service. With cgroup.kill this becomes a
->   simple write to cgroup.kill.
-> - Userspace OOM implementations can make good use of this feature to
->   efficiently take down whole cgroups quickly.
-> - The kill program can gain a new
->   kill --cgroup /sys/fs/cgroup/delegated
->   flag to take down cgroups.
-> 
-> A few observations about the semantics:
-> - If parent and child are in the same cgroup and CLONE_INTO_CGROUP is
->   not specified we are not taking cgroup mutex meaning the cgroup can be
->   killed while a process in that cgroup is forking.
->   If the kill request happens right before cgroup_can_fork() and before
->   the parent grabs its siglock the parent is guaranteed to see the
->   pending SIGKILL. In addition we perform another check in
->   cgroup_post_fork() whether the cgroup is being killed and is so take
->   down the child (see above). This is robust enough and protects gainst
->   forkbombs. If userspace really really wants to have stricter
->   protection the simple solution would be to grab the write side of the
->   cgroup threadgroup rwsem which will force all ongoing forks to
->   complete before killing starts. We concluded that this is not
->   necessary as the semantics for concurrent forking should simply align
->   with freezer where a similar check as cgroup_post_fork() is performed.
-> 
->   For all other cases CLONE_INTO_CGROUP is required. In this case we
->   will grab the cgroup mutex so the cgroup can't be killed while we
->   fork. Once we're done with the fork and have dropped cgroup mutex we
->   are visible and will be found by any subsequent kill request.
-> - We obviously don't kill kthreads. This means a cgroup that has a
->   kthread will not become empty after killing and consequently no
->   unpopulated event will be generated. The assumption is that kthreads
->   should be in the root cgroup only anyway so this is not an issue.
-> - We skip killing tasks that already have pending fatal signals.
-> - Freezer doesn't care about tasks in different pid namespaces, i.e. if
->   you have two tasks in different pid namespaces the cgroup would still
->   be frozen. The cgroup.kill mechanism consequently behaves the same
->   way, i.e. we kill all processes and ignore in which pid namespace they
->   exist.
-> - If the caller is located in a cgroup that is killed the caller will
->   obviously be killed as well.
-> 
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: cgroups@vger.kernel.org
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
+--XJz7RUBFhCVAE36r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
-> 
-> The series can be pulled from
-> 
-> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/cgroup.kill.v5.14
-> 
-> /* v2 */
-> - Roman Gushchin <guro@fb.com>:
->   - Retrieve cgrp->flags only once and check CGRP_* bits on it.
-> ---
->  include/linux/cgroup-defs.h |   3 +
->  kernel/cgroup/cgroup.c      | 127 ++++++++++++++++++++++++++++++++----
->  2 files changed, 116 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index 559ee05f86b2..43fef771009a 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -71,6 +71,9 @@ enum {
->  
->  	/* Cgroup is frozen. */
->  	CGRP_FROZEN,
-> +
-> +	/* Control group has to be killed. */
-> +	CGRP_KILL,
->  };
->  
->  /* cgroup_root->flags */
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 9153b20e5cc6..aee84b99534a 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -3654,6 +3654,80 @@ static ssize_t cgroup_freeze_write(struct kernfs_open_file *of,
->  	return nbytes;
->  }
->  
-> +static void __cgroup_kill(struct cgroup *cgrp)
-> +{
-> +	struct css_task_iter it;
-> +	struct task_struct *task;
-> +
-> +	lockdep_assert_held(&cgroup_mutex);
-> +
-> +	spin_lock_irq(&css_set_lock);
-> +	set_bit(CGRP_KILL, &cgrp->flags);
-> +	spin_unlock_irq(&css_set_lock);
-> +
-> +	css_task_iter_start(&cgrp->self, CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED, &it);
-> +	while ((task = css_task_iter_next(&it))) {
-> +		/* Ignore kernel threads here. */
-> +		if (task->flags & PF_KTHREAD)
-> +			continue;
-> +
-> +		/* Skip tasks that are already dying. */
-> +		if (__fatal_signal_pending(task))
-> +			continue;
-> +
-> +		send_sig(SIGKILL, task, 0);
-> +	}
-> +	css_task_iter_end(&it);
-> +
-> +	spin_lock_irq(&css_set_lock);
-> +	clear_bit(CGRP_KILL, &cgrp->flags);
-> +	spin_unlock_irq(&css_set_lock);
-> +}
-> +
-> +static void cgroup_kill(struct cgroup *cgrp)
-> +{
-> +	struct cgroup_subsys_state *css;
-> +	struct cgroup *dsct;
-> +
-> +	lockdep_assert_held(&cgroup_mutex);
-> +
-> +	cgroup_for_each_live_descendant_pre(dsct, css, cgrp)
-> +		__cgroup_kill(dsct);
-> +}
-> +
-> +static ssize_t cgroup_kill_write(struct kernfs_open_file *of, char *buf,
-> +				 size_t nbytes, loff_t off)
-> +{
-> +	ssize_t ret = 0;
-> +	int kill;
-> +	struct cgroup *cgrp;
-> +
-> +	ret = kstrtoint(strstrip(buf), 0, &kill);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (kill != 1)
-> +		return -ERANGE;
-> +
-> +	cgrp = cgroup_kn_lock_live(of->kn, false);
-> +	if (!cgrp)
-> +		return -ENOENT;
-> +
-> +	/*
-> +	 * Killing is a process directed operation, i.e. the whole thread-group
-> +	 * is taken down so act like we do for cgroup.procs and only make this
-> +	 * writable in non-threaded cgroups.
-> +	 */
-> +	if (cgroup_is_threaded(cgrp))
-> +		ret = -EOPNOTSUPP;
-> +	else
-> +		cgroup_kill(cgrp);
-> +
-> +	cgroup_kn_unlock(of->kn);
-> +
-> +	return ret ?: nbytes;
-> +}
-> +
->  static int cgroup_file_open(struct kernfs_open_file *of)
->  {
->  	struct cftype *cft = of_cft(of);
-> @@ -4846,6 +4920,11 @@ static struct cftype cgroup_base_files[] = {
->  		.seq_show = cgroup_freeze_show,
->  		.write = cgroup_freeze_write,
->  	},
-> +	{
-> +		.name = "cgroup.kill",
-> +		.flags = CFTYPE_NOT_ON_ROOT,
-> +		.write = cgroup_kill_write,
-> +	},
->  	{
->  		.name = "cpu.stat",
->  		.seq_show = cpu_stat_show,
-> @@ -6077,6 +6156,8 @@ void cgroup_post_fork(struct task_struct *child,
->  		      struct kernel_clone_args *kargs)
->  	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
->  {
-> +	unsigned long cgrp_flags = 0;
-> +	bool kill = false;
->  	struct cgroup_subsys *ss;
->  	struct css_set *cset;
->  	int i;
-> @@ -6088,6 +6169,11 @@ void cgroup_post_fork(struct task_struct *child,
->  
->  	/* init tasks are special, only link regular threads */
->  	if (likely(child->pid)) {
-> +		if (kargs->cgrp)
-> +			cgrp_flags = kargs->cgrp->flags;
-> +		else
-> +			cgrp_flags = cset->dfl_cgrp->flags;
-> +
->  		WARN_ON_ONCE(!list_empty(&child->cg_list));
->  		cset->nr_tasks++;
->  		css_set_move_task(child, NULL, cset, false);
-> @@ -6096,23 +6182,32 @@ void cgroup_post_fork(struct task_struct *child,
->  		cset = NULL;
->  	}
->  
-> -	/*
-> -	 * If the cgroup has to be frozen, the new task has too.  Let's set
-> -	 * the JOBCTL_TRAP_FREEZE jobctl bit to get the task into the
-> -	 * frozen state.
-> -	 */
-> -	if (unlikely(cgroup_task_freeze(child))) {
-> -		spin_lock(&child->sighand->siglock);
-> -		WARN_ON_ONCE(child->frozen);
-> -		child->jobctl |= JOBCTL_TRAP_FREEZE;
-> -		spin_unlock(&child->sighand->siglock);
-> +	if (!(child->flags & PF_KTHREAD)) {
-> +		if (test_bit(CGRP_FREEZE, &cgrp_flags)) {
-> +			/*
-> +			 * If the cgroup has to be frozen, the new task has
-> +			 * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
-> +			 * get the task into the frozen state.
-> +			 */
-> +			spin_lock(&child->sighand->siglock);
-> +			WARN_ON_ONCE(child->frozen);
-> +			child->jobctl |= JOBCTL_TRAP_FREEZE;
-> +			spin_unlock(&child->sighand->siglock);
-> +
-> +			/*
-> +			 * Calling cgroup_update_frozen() isn't required here,
-> +			 * because it will be called anyway a bit later from
-> +			 * do_freezer_trap(). So we avoid cgroup's transient
-> +			 * switch from the frozen state and back.
-> +			 */
-> +		}
->  
->  		/*
-> -		 * Calling cgroup_update_frozen() isn't required here,
-> -		 * because it will be called anyway a bit later from
-> -		 * do_freezer_trap(). So we avoid cgroup's transient switch
-> -		 * from the frozen state and back.
-> +		 * If the cgroup is to be killed notice it now and take the
-> +		 * child down right after we finished preparing it for
-> +		 * userspace.
->  		 */
-> +		kill = test_bit(CGRP_KILL, &cgrp_flags);
->  	}
->  
->  	spin_unlock_irq(&css_set_lock);
-> @@ -6135,6 +6230,10 @@ void cgroup_post_fork(struct task_struct *child,
->  		put_css_set(rcset);
->  	}
->  
-> +	/* Cgroup has to be killed so take down child immediately. */
-> +	if (kill)
-> +		send_sig(SIGKILL, child, 0);
-> +
->  	cgroup_css_set_put_fork(kargs);
->  }
->  
-> 
-> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
-> -- 
-> 2.27.0
-> 
+On Mon, May 03, 2021 at 01:05:30PM -0300, Jason Gunthorpe wrote:
+> On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
+> > > There is a certain appeal to having some
+> > > 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
+> > > information like windows that can be optionally called by the viommu
+> > > driver and it remains well defined and described.
+> >=20
+> > Windows really aren't ppc specific.  They're absolutely there on x86
+> > and everything else as well - it's just that people are used to having
+> > a window at 0..<something largish> that you can often get away with
+> > treating it sloppily.
+>=20
+> My point is this detailed control seems to go on to more than just
+> windows. As you say the vIOMMU is emulating specific HW that needs to
+> have kernel interfaces to match it exactly.
+
+It's really not that bad.  The case of emulating the PAPR vIOMMU on
+something else is relatively easy, because all updates to the IO page
+tables go through hypercalls.  So, as long as the backend IOMMU can
+map all the IOVAs that the guest IOMMU can, then qemu's implementation
+of those hypercalls just needs to put an equivalent mapping in the
+backend, which it can do with a generic VFIO_DMA_MAP.
+
+vIOMMUs with page tables in guest memory are harder, but only really
+in the usual ways that a vIOMMU of that type is harder (needs cache
+mode or whatever).  At whatever point you need to shadow from the
+guest IO page tables to the host backend, you can again do that with
+generic maps, as long as the backend supports the necessary IOVAs, and
+has an IO page size that's equal to or a submultiple of the vIOMMU
+page size.
+
+> I'm remarking that trying to unify every HW IOMMU implementation that
+> ever has/will exist into a generic API complete enough to allow the
+> vIOMMU to be created is likely to result in an API too complicated to
+> understand..
+
+Maybe not every one, but I think we can get a pretty wide range with a
+reasonable interface.  Explicitly handling IOVA windows does most of
+it.  And we kind of need to handle that anyway to expose what ranges
+the IOMMU is capable of translating anyway.  I think making handling
+valid IOVA windows explicit makes things simpler than having
+per-backend-family interfaces to expose the limits of their
+translation ranges, which is what's likely to happen without it.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--XJz7RUBFhCVAE36r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCQxY0ACgkQbDjKyiDZ
+s5Ja1Q//brgY0BJodmvSW7+qUlkQBKlmerMDnujEgNgBr6cbpA9hN6ywQDlkXit7
+xrznyLqBx16060E9F6DQqk1aaAj2+iePxmT97vs7MUHmvuXHgTlmU6T6DDC84ICk
+cCIfpXsB5R+pDv0JD/j91cPQBZF1Afnf0KhRLpzjcNKgBoFWi23pAYx3E32nPVtb
+1UeflnMCMdr/rHfQR9/GoJ5FP/QYvqppU7351C0yFKbI5k0Pg7RvO41pejcNKE2W
+q4wmfrzPA9/7G+JtQr03lGXLVy4+xN0UPsRtxkhQtaX+YNKBVL3qb+oO4XeCf7zw
+Zw5vw6Ai8reTK948BEe+S+WJZHHAYBw54ztv7P35XFjR3/avEEPWgSIrba6fAeRZ
+0E+RWhYL4c09hGpbJk6FiwTan+2a7EgB90ZuanWFtJ8HCFOFSDI3IRoLVU7k7JLC
+IQD7LGmsqWzhMf3FtAK++FiVeWu+NpMPGGBx3XXfSl7kWXzf9CUJRFHLv+wPK0vc
+Fln92Fj3HBM3D7keiZ85teYT6G5SacTcmtJTHTfsqqmVlTdVCconk7/y0wQhMDt5
+TAfzd8YH0dq6toDJqOZzqZKwGmgaYe9HviiRWa5+C6Y3QJ0dBBN6cUKKZhTKeicd
+ifZUPO7PC9KjomC7UWcx6g/pN7eNPSZR2YR+Lb0hATzgCVDkcUg=
+=OhAa
+-----END PGP SIGNATURE-----
+
+--XJz7RUBFhCVAE36r--
