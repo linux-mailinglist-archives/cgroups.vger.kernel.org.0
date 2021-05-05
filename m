@@ -2,161 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931DD374900
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 22:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603BD37490D
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 22:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhEEUC4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 16:02:56 -0400
-Received: from mga09.intel.com ([134.134.136.24]:22828 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233223AbhEEUCy (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 5 May 2021 16:02:54 -0400
-IronPort-SDR: bp9vGeSTkEhGnxfbSkfY/A5KiUZaqC5BuXISj5WDcCpq0pL4DS1efZHSds+1FdtRF/dT10RleZ
- cgx33+eSp0Yg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="198374802"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="198374802"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 13:01:56 -0700
-IronPort-SDR: VI2pDIaJ4hHcNspdA1bLZ4OSjm/y7q0dqAdAfbQxIZJ/+0aNwNizzDu2jRjKs8XwRsR7nUF658
- AYEPooNFtQVg==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="406682561"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 13:01:56 -0700
-Date:   Wed, 5 May 2021 13:04:46 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210505130446.3ee2fccd@jacob-builder>
-In-Reply-To: <20210505180023.GJ1370958@nvidia.com>
-References: <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210423114944.GF1370958@nvidia.com>
-        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210426123817.GQ1370958@nvidia.com>
-        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210504084148.4f61d0b5@jacob-builder>
-        <20210504180050.GB1370958@nvidia.com>
-        <20210504151154.02908c63@jacob-builder>
-        <20210504231530.GE1370958@nvidia.com>
-        <20210505102259.044cafdf@jacob-builder>
-        <20210505180023.GJ1370958@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233322AbhEEUHj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 16:07:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233749AbhEEUHi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 16:07:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620245201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=JUmGq2wlaOeze3MXhpw6Yda3Y4YIjTKC44x0gDwnWr8=;
+        b=OKZFA7FDapnuornXpM4L5LPMY9yZI6rAgBqn11GP/cIjUL0RosNs10qc54INAs5Y2BbVzh
+        qUp7EB/aG2Dfv8JqnbwhAtgDDeMR2r5zsIEtwj2KKTmEOG5Y9BtWBsGZot3L9rM2VBPi1w
+        y/vAJ8OgS0077oV64OrLDOJjXHi0Uqk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-JAddeHJ5On-KhEpdV2Purg-1; Wed, 05 May 2021 16:06:37 -0400
+X-MC-Unique: JAddeHJ5On-KhEpdV2Purg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A6DB107ACED;
+        Wed,  5 May 2021 20:06:35 +0000 (UTC)
+Received: from llong.com (ovpn-117-4.rdu2.redhat.com [10.10.117.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D7C5710016FD;
+        Wed,  5 May 2021 20:06:29 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/3] mm: memcg/slab: Fix objcg pointer array handling problem
+Date:   Wed,  5 May 2021 16:06:07 -0400
+Message-Id: <20210505200610.13943-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jason,
+ v4:
+  - Incorporate suggestions from others like setting SLAB_ACCOUNT for
+    KMALLOC_CGROUP caches into patch 2.
+  - Add a new patch 3 to disable caches merging for KMALLOC_NORMAL caches
+    as suggested by Roman.
 
-On Wed, 5 May 2021 15:00:23 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+ v3:
+  - Update patch 2 commit log and rework kmalloc_type() to make it easier
+    to read.
 
-> On Wed, May 05, 2021 at 10:22:59AM -0700, Jacob Pan wrote:
-> 
-> > Global and pluggable are for slightly separate reasons.
-> > - We need global PASID on VT-d in that we need to support shared
-> > workqueues (SWQ). E.g. One SWQ can be wrapped into two mdevs then
-> > assigned to two VMs. Each VM uses its private guest PASID to submit
-> > work but each guest PASID must be translated to a global (system-wide)
-> > host PASID to avoid conflict. Also, since PASID table storage is per
-> > PF, if two mdevs of the same PF are assigned to different VMs, the
-> > PASIDs must be unique.  
-> 
-> From a protocol perspective each RID has a unique PASID table, and
-> RIDs can have overlapping PASIDs.
-> 
-True, per RID or per PF as I was referring to.
+ v2:
+  - Take suggestion from Vlastimil to use a new set of kmalloc-cg-* to
+    handle the objcg pointer array allocation and freeing problems.
 
-> Since your SWQ is connected to a single RID the requirement that
-> PASIDs are unique to the RID ensures they are sufficiently unique.
-> 
-True, but one process can submit work to multiple mdevs from different
-RIDs/PFs. One process uses one PASID and PASID translation table is per VM.
-The same PASID is used for all the PASID tables of each RID.
+Since the merging of the new slab memory controller in v5.9,
+the page structure stores a pointer to objcg pointer array for
+slab pages. When the slab has no used objects, it can be freed in
+free_slab() which will call kfree() to free the objcg pointer array in
+memcg_alloc_page_obj_cgroups(). If it happens that the objcg pointer
+array is the last used object in its slab, that slab may then be freed
+which may caused kfree() to be called again.
 
-For example:
-VM1 has two mdevs: mdev1 and mdev2. mdev1's parent is RID1, mdev2's parent
-is RID2. The guest process A allocates PASID_A and bind to both mdev1 and
-mdev2. PASID_A must be present in the PASID tables for both RID1 and RID2.
+With the right workload, the slab cache may be set up in a way that
+allows the recursive kfree() calling loop to nest deep enough to
+cause a kernel stack overflow and panic the system. In fact, we have
+a reproducer that can cause kernel stack overflow on a s390 system
+involving kmalloc-rcl-256 and kmalloc-rcl-128 slabs with the following
+kfree() loop recursively called 74 times:
 
-If the allocator is per RID, it is not possible to ensure PASID_A is
-available for both RIDs. Right?
+  [  285.520739]  [<000000000ec432fc>] kfree+0x4bc/0x560
+  [  285.520740]  [<000000000ec43466>] __free_slab+0xc6/0x228
+  [  285.520741]  [<000000000ec41fc2>] __slab_free+0x3c2/0x3e0
+  [  285.520742]  [<000000000ec432fc>] kfree+0x4bc/0x560
+					:
+While investigating this issue, I also found an issue on the allocation
+side. If the objcg pointer array happen to come from the same slab or
+a circular dependency linkage is formed with multiple slabs, those
+affected slabs can never be freed again.
 
-Sorry I missed this point in my earlier explanation.
+This patch series addresses these two issues by introducing a new
+set of kmalloc-cg-<n> caches split from kmalloc-<n> caches. The new
+set will only contain non-reclaimable and non-dma objects that are
+accounted in memory cgroups whereas the old set are now for unaccounted
+objects only. By making this split, all the objcg pointer arrays will
+come from the kmalloc-<n> caches, but those caches will never hold any
+objcg pointer array. As a result, deeply nested kfree() call and the
+unfreeable slab problems are now gone.
 
-> If the IOMMU driver has additional restrictions then it should raise
-> the PASID table up higher in the hierarchy than at the RID.
-> 
-That higher level in the hierarchy is global, right? I am a little
-concerned about expanding PASID table sharing from security perspective.
-Even though, VMs already share PASID table for mdevs.
+Waiman Long (3):
+  mm: memcg/slab: Properly set up gfp flags for objcg pointer array
+  mm: memcg/slab: Create a new set of kmalloc-cg-<n> caches
+  mm: memcg/slab: Disable cache merging for KMALLOC_NORMAL caches
 
-> I think what you are trying to explain is that the Intel vIOMMU has a
-> single PASID address space shared globally by the vCPU because ENQCMD
-> uses the global vGPU translation table.
-> 
-Yes, PASID translation table is per VM, global in terms of the guest.
-That combined with the case of two mdevs from different RIDs can be used by
-the same guest process/PASID requires global PASID.
+ include/linux/slab.h | 41 ++++++++++++++++++++++++++++++++---------
+ mm/memcontrol.c      |  8 ++++++++
+ mm/slab.h            |  1 -
+ mm/slab_common.c     | 32 ++++++++++++++++++++++++--------
+ 4 files changed, 64 insertions(+), 18 deletions(-)
 
-> That is fine, but all this stuff should be inside the Intel vIOMMU
-> driver not made into a global resource of the entire iommu subsystem.
-> 
-Intel vIOMMU has to use a generic uAPI to allocate PASID so the generic
-code need to have this option. I guess you are saying we should also have a
-per RID allocation option in addition to global?
+-- 
+2.18.1
 
-> Systems that work this way just cannot have multiple iommu drivers
-> competing for PASID.
-> 
-Sorry, I am not following. There would not be mixed iommu drivers on one
-platform, I must have missed your point. Could you explain a little?
-
-> > - The pluggable allocator is to support the option where the guest
-> > PASIDs are allocated by the hypervisor.   
-> 
-> And if the hypervisor allocates the PASID then again the specific
-> vIOMMU itself is concerned with this and it has nothing to do with
-> global behavior of the iommu subsystem.
-> 
-> > For ARM, since the guest owns the per device PASID table. There is no
-> > need to allocate PASIDs from the host nor the hypervisor. Without SWQ,
-> > there is no need for global PASID/SSID either. So PASID being global
-> > for ARM is for simplicity in case of host PASID/SSID.  
-> 
-> It isn't clear how ARM can support PASID and mdev but that is an
-> unrelated issue..
-> 
-AFAIK, the current SMMU device assignment is per RID, since only one stage2
-page tables per RID, not per PASID. This is equivalent to the older VT-d
-spec. prior to scalable mode.
-
-Eric/Jean, can you help?
-
-> Jason
-
-
-Thanks,
-
-Jacob
