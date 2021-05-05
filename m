@@ -2,57 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC4E37482B
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 20:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD4B374831
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 20:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbhEESrh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 14:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39366 "EHLO mail.kernel.org"
+        id S230380AbhEESuK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 14:50:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233997AbhEESrh (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 5 May 2021 14:47:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 101DF60FD7;
-        Wed,  5 May 2021 18:46:37 +0000 (UTC)
-Date:   Wed, 5 May 2021 20:46:32 +0200
+        id S229810AbhEESuJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 5 May 2021 14:50:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD1661027;
+        Wed,  5 May 2021 18:49:09 +0000 (UTC)
+Date:   Wed, 5 May 2021 20:49:06 +0200
 From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Roman Gushchin <guro@fb.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         containers@lists.linux.dev
 Subject: Re: [PATCH v2 1/5] cgroup: introduce cgroup.kill
-Message-ID: <20210505184632.jvg54r75d5lkdhuf@wittgenstein>
+Message-ID: <20210505184906.ngybltl4knuadags@wittgenstein>
 References: <20210503143922.3093755-1-brauner@kernel.org>
- <YJLcbOtcv8qWtMRQ@carbon.DHCP.thefacebook.com>
+ <m1v97x6niq.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YJLcbOtcv8qWtMRQ@carbon.DHCP.thefacebook.com>
+In-Reply-To: <m1v97x6niq.fsf@fess.ebiederm.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
-> On Mon, May 03, 2021 at 04:39:19PM +0200, Christian Brauner wrote:
+On Wed, May 05, 2021 at 01:31:09PM -0500, Eric W. Biederman wrote:
+> 
+> Please see below this patch uses the wrong function to send SIGKILL.
+> 
+> Eric
+> 
+> 
+> Christian Brauner <brauner@kernel.org> writes:
+> 
 > > From: Christian Brauner <christian.brauner@ubuntu.com>
-> > 
+> >
 > > Introduce the cgroup.kill file. It does what it says on the tin and
 > > allows a caller to kill a cgroup by writing "1" into cgroup.kill.
 > > The file is available in non-root cgroups.
-> > 
+> >
 > > Killing cgroups is a process directed operation, i.e. the whole
 > > thread-group is affected. Consequently trying to write to cgroup.kill in
 > > threaded cgroups will be rejected and EOPNOTSUPP returned. This behavior
 > > aligns with cgroup.procs where reads in threaded-cgroups are rejected
 > > with EOPNOTSUPP.
-> > 
+> >
 > > The cgroup.kill file is write-only since killing a cgroup is an event
 > > not which makes it different from e.g. freezer where a cgroup
 > > transitions between the two states.
-> > 
+> >
 > > As with all new cgroup features cgroup.kill is recursive by default.
-> > 
+> >
 > > Killing a cgroup is protected against concurrent migrations through the
 > > cgroup mutex. To protect against forkbombs and to mitigate the effect of
 > > racing forks a new CGRP_KILL css set lock protected flag is introduced
@@ -63,7 +71,7 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > > it returns to userspace. To make the killing of the child semantically
 > > clean it is killed after all cgroup attachment operations have been
 > > finalized.
-> > 
+> >
 > > There are various use-cases of this interface:
 > > - Containers usually have a conservative layout where each container
 > >   usually has a delegated cgroup. For such layouts there is a 1:1
@@ -85,7 +93,7 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > > - The kill program can gain a new
 > >   kill --cgroup /sys/fs/cgroup/delegated
 > >   flag to take down cgroups.
-> > 
+> >
 > > A few observations about the semantics:
 > > - If parent and child are in the same cgroup and CLONE_INTO_CGROUP is
 > >   not specified we are not taking cgroup mutex meaning the cgroup can be
@@ -101,7 +109,7 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > >   complete before killing starts. We concluded that this is not
 > >   necessary as the semantics for concurrent forking should simply align
 > >   with freezer where a similar check as cgroup_post_fork() is performed.
-> > 
+> >
 > >   For all other cases CLONE_INTO_CGROUP is required. In this case we
 > >   will grab the cgroup mutex so the cgroup can't be killed while we
 > >   fork. Once we're done with the fork and have dropped cgroup mutex we
@@ -118,18 +126,18 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > >   exist.
 > > - If the caller is located in a cgroup that is killed the caller will
 > >   obviously be killed as well.
-> > 
+> >
 > > Cc: Shakeel Butt <shakeelb@google.com>
 > > Cc: Roman Gushchin <guro@fb.com>
 > > Cc: Tejun Heo <tj@kernel.org>
 > > Cc: cgroups@vger.kernel.org
 > > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 > > ---
-> > 
+> >
 > > The series can be pulled from
-> > 
+> >
 > > git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/cgroup.kill.v5.14
-> > 
+> >
 > > /* v2 */
 > > - Roman Gushchin <guro@fb.com>:
 > >   - Retrieve cgrp->flags only once and check CGRP_* bits on it.
@@ -137,7 +145,7 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > >  include/linux/cgroup-defs.h |   3 +
 > >  kernel/cgroup/cgroup.c      | 127 ++++++++++++++++++++++++++++++++----
 > >  2 files changed, 116 insertions(+), 14 deletions(-)
-> > 
+> >
 > > diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
 > > index 559ee05f86b2..43fef771009a 100644
 > > --- a/include/linux/cgroup-defs.h
@@ -182,221 +190,22 @@ On Wed, May 05, 2021 at 10:57:00AM -0700, Roman Gushchin wrote:
 > > +			continue;
 > > +
 > > +		send_sig(SIGKILL, task, 0);
-> > +	}
-> > +	css_task_iter_end(&it);
-> > +
-> > +	spin_lock_irq(&css_set_lock);
-> > +	clear_bit(CGRP_KILL, &cgrp->flags);
-> > +	spin_unlock_irq(&css_set_lock);
-> > +}
-> > +
-> > +static void cgroup_kill(struct cgroup *cgrp)
-> > +{
-> > +	struct cgroup_subsys_state *css;
-> > +	struct cgroup *dsct;
-> > +
-> > +	lockdep_assert_held(&cgroup_mutex);
-> > +
-> > +	cgroup_for_each_live_descendant_pre(dsct, css, cgrp)
-> > +		__cgroup_kill(dsct);
-> > +}
-> > +
-> > +static ssize_t cgroup_kill_write(struct kernfs_open_file *of, char *buf,
-> > +				 size_t nbytes, loff_t off)
-> > +{
-> > +	ssize_t ret = 0;
-> > +	int kill;
-> > +	struct cgroup *cgrp;
-> > +
-> > +	ret = kstrtoint(strstrip(buf), 0, &kill);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (kill != 1)
-> > +		return -ERANGE;
-> > +
-> > +	cgrp = cgroup_kn_lock_live(of->kn, false);
-> > +	if (!cgrp)
-> > +		return -ENOENT;
-> > +
-> > +	/*
-> > +	 * Killing is a process directed operation, i.e. the whole thread-group
-> > +	 * is taken down so act like we do for cgroup.procs and only make this
-> > +	 * writable in non-threaded cgroups.
-> > +	 */
-> > +	if (cgroup_is_threaded(cgrp))
-> > +		ret = -EOPNOTSUPP;
-> > +	else
-> > +		cgroup_kill(cgrp);
-> > +
-> > +	cgroup_kn_unlock(of->kn);
-> > +
-> > +	return ret ?: nbytes;
-> > +}
-> > +
-> >  static int cgroup_file_open(struct kernfs_open_file *of)
-> >  {
-> >  	struct cftype *cft = of_cft(of);
-> > @@ -4846,6 +4920,11 @@ static struct cftype cgroup_base_files[] = {
-> >  		.seq_show = cgroup_freeze_show,
-> >  		.write = cgroup_freeze_write,
-> >  	},
-> > +	{
-> > +		.name = "cgroup.kill",
-> > +		.flags = CFTYPE_NOT_ON_ROOT,
-> > +		.write = cgroup_kill_write,
-> > +	},
-> >  	{
-> >  		.name = "cpu.stat",
-> >  		.seq_show = cpu_stat_show,
-> > @@ -6077,6 +6156,8 @@ void cgroup_post_fork(struct task_struct *child,
-> >  		      struct kernel_clone_args *kargs)
-> >  	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
-> >  {
-> > +	unsigned long cgrp_flags = 0;
-> > +	bool kill = false;
-> >  	struct cgroup_subsys *ss;
-> >  	struct css_set *cset;
-> >  	int i;
-> > @@ -6088,6 +6169,11 @@ void cgroup_post_fork(struct task_struct *child,
-> >  
-> >  	/* init tasks are special, only link regular threads */
-> >  	if (likely(child->pid)) {
-> > +		if (kargs->cgrp)
-> > +			cgrp_flags = kargs->cgrp->flags;
-> > +		else
-> > +			cgrp_flags = cset->dfl_cgrp->flags;
-> > +
-> >  		WARN_ON_ONCE(!list_empty(&child->cg_list));
-> >  		cset->nr_tasks++;
-> >  		css_set_move_task(child, NULL, cset, false);
-> > @@ -6096,23 +6182,32 @@ void cgroup_post_fork(struct task_struct *child,
-> >  		cset = NULL;
-> >  	}
-> >  
-> > -	/*
-> > -	 * If the cgroup has to be frozen, the new task has too.  Let's set
-> > -	 * the JOBCTL_TRAP_FREEZE jobctl bit to get the task into the
-> > -	 * frozen state.
-> > -	 */
-> > -	if (unlikely(cgroup_task_freeze(child))) {
-> > -		spin_lock(&child->sighand->siglock);
-> > -		WARN_ON_ONCE(child->frozen);
-> > -		child->jobctl |= JOBCTL_TRAP_FREEZE;
-> > -		spin_unlock(&child->sighand->siglock);
-> > +	if (!(child->flags & PF_KTHREAD)) {
-> > +		if (test_bit(CGRP_FREEZE, &cgrp_flags)) {
-> > +			/*
-> > +			 * If the cgroup has to be frozen, the new task has
-> > +			 * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
-> > +			 * get the task into the frozen state.
-> > +			 */
-> > +			spin_lock(&child->sighand->siglock);
-> > +			WARN_ON_ONCE(child->frozen);
-> > +			child->jobctl |= JOBCTL_TRAP_FREEZE;
-> > +			spin_unlock(&child->sighand->siglock);
-> > +
-> > +			/*
-> > +			 * Calling cgroup_update_frozen() isn't required here,
-> > +			 * because it will be called anyway a bit later from
-> > +			 * do_freezer_trap(). So we avoid cgroup's transient
-> > +			 * switch from the frozen state and back.
-> > +			 */
-> > +		}
+>                 ^^^^^^^^
+> Using send_sig here is wrong.  The function send_sig
+> is the interface to send a signal to a single task/thread.
 > 
-> I think this part can be optimized a bit further:
-> 1) we don't need atomic test_bit() here
-> 2) all PF_KTHREAD, CGRP_FREEZE and CGRP_KILL cases are very unlikely
+> The signal SIGKILL can not be sent to a single task/thread.
+> So it is never makes sense to use send_sig with SIGKILL.
 > 
-> So something like this could work (completely untested):
+> As this all happens in the context of the process writing
+> to the file this can either be:
 > 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 0965b44ff425..f567ca69119d 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -6190,13 +6190,15 @@ void cgroup_post_fork(struct task_struct *child,
->                 cset = NULL;
->         }
->  
-> -       if (!(child->flags & PF_KTHREAD)) {
-> -               if (test_bit(CGRP_FREEZE, &cgrp_flags)) {
-> -                       /*
-> -                        * If the cgroup has to be frozen, the new task has
-> -                        * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
-> -                        * get the task into the frozen state.
-> -                        */
-> +
-> +       if (unlikely(!(child->flags & PF_KTHREAD) &&
-> +                    cgrp_flags & (CGRP_FREEZE | CGRP_KILL))) {
-
-The unlikely might make sense.
-
-But hm, I'm not a fan of the CGRP_FREEZE and CGRP_KILL check without
-test_bit(). That seems a bit ugly. Especially since nowhere in
-kernel/cgroup.c are these bits checked without test_bit().
-
-Also, this wouldn't work afaict at least not for all values since
-CGRP_FREEZE and CGRP_KILL aren't flags, they're bits defined in an enum.
-(In contrast to cgroup_root->flags which are defined as flags _in an
-enum_.) So it seems they should really be used with test_bit. Otherwise
-this would probably have to be sm like
-
-if (unlikely(!(child->flags & PF_KTHREAD) &&
-	(cgrp_flags & (BIT_ULL(CGRP_FREEZE) | BIT_ULL(CGRP_KILL))) {
-	.
-	.
-	.
-
-which seems unreadable and makes the rest of cgroup.c for these values
-inconsistent.
-Note that before the check was the same for CGRP_FREEZE it was just
-hidden in the helper.
-I really think we should just leave the test_bit() checks.
-
-> +               /*
-> +                * If the cgroup has to be frozen, the new task has
-> +                * too. Let's set the JOBCTL_TRAP_FREEZE jobctl bit to
-> +                * get the task into the frozen state.
-> +                */
-> +               if (cgrp_flags & CGRP_FREEZE) {
->                         spin_lock(&child->sighand->siglock);
->                         WARN_ON_ONCE(child->frozen);
->                         child->jobctl |= JOBCTL_TRAP_FREEZE;
-> @@ -6215,7 +6217,8 @@ void cgroup_post_fork(struct task_struct *child,
->                  * child down right after we finished preparing it for
->                  * userspace.
->                  */
-> -               kill = test_bit(CGRP_KILL, &cgrp_flags);
-> +               if (cgrp_flags & CGRP_KILL)
-> +                       kill = true;
->         }
->  
->         spin_unlock_irq(&css_set_lock);
+> 	group_send_sig_info(SIGKILL, SEND_SIG_NOINFO, task, PIDTYPE_TGID);
 > 
+> Which will check that the caller actually has permissions to kill the
+> specified task.  Or:
 > 
-> >  
-> >  		/*
-> > -		 * Calling cgroup_update_frozen() isn't required here,
-> > -		 * because it will be called anyway a bit later from
-> > -		 * do_freezer_trap(). So we avoid cgroup's transient switch
-> > -		 * from the frozen state and back.
-> > +		 * If the cgroup is to be killed notice it now and take the
-> > +		 * child down right after we finished preparing it for
-> > +		 * userspace.
-> >  		 */
-> > +		kill = test_bit(CGRP_KILL, &cgrp_flags);
-> >  	}
-> >  
-> >  	spin_unlock_irq(&css_set_lock);
-> > @@ -6135,6 +6230,10 @@ void cgroup_post_fork(struct task_struct *child,
-> >  		put_css_set(rcset);
-> >  	}
-> >  
-> > +	/* Cgroup has to be killed so take down child immediately. */
-> > +	if (kill)
-> > +		send_sig(SIGKILL, child, 0);
-> 
-> I think it's better to use do_send_sig_info() here, which skips the check
-> for the signal number, which is obviously valid.
+> 	do_send_sig_info(SIGKILL, SEND_SIG_NOINFO, task, PIDTYPE_TGID);
 
-sure/shrug
+The result should be the same but yes it's better to be explicit about
+that. I'll switch to that.
