@@ -2,23 +2,36 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B84C373967
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 13:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC855373EE1
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 17:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhEELdL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 07:33:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33976 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232909AbhEELdK (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 5 May 2021 07:33:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7EB6B2BE;
-        Wed,  5 May 2021 11:32:13 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] mm: memcg/slab: Properly set up gfp flags for
- objcg pointer array
-To:     Shakeel Butt <shakeelb@google.com>, Waiman Long <llong@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S232410AbhEEPs3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 11:48:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233661AbhEEPsX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 11:48:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620229646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=SaT7Ji+jTKOj/hsJa+VOoJunLiJdoYDfVfwJl9Tkuy8=;
+        b=JgjPCifYStmYuwRpyDfOZ4Obooak9lbn/1JqHDwVi6n1Ng0StvC8g8bUOtj543TSzDyVzI
+        rTjhe65+varfb+835XnA7rlWwu+IjTTMdm1iGX6PZ0vISlxs7358JLgcRrp2E6DBQFiRzy
+        sLXzg8qS2lFe00oL8p0W8w/DqlMmigg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-ddH9diWKObGyhy1l2Jnn2A-1; Wed, 05 May 2021 11:47:25 -0400
+X-MC-Unique: ddH9diWKObGyhy1l2Jnn2A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D853C835DE5;
+        Wed,  5 May 2021 15:47:22 +0000 (UTC)
+Received: from llong.com (ovpn-117-4.rdu2.redhat.com [10.10.117.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E718F5D6AC;
+        Wed,  5 May 2021 15:47:20 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -26,72 +39,70 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-References: <20210504132350.4693-1-longman@redhat.com>
- <20210504132350.4693-2-longman@redhat.com>
- <CALvZod438=YKZtV0qckoaMkdL1seu5PiLnvPPQyRzA0S60-TpQ@mail.gmail.com>
- <267501a0-f416-4058-70d3-e32eeec3d6da@redhat.com>
- <CALvZod5gakHaAZfU2gH6QVNJRcX90MVSmqBpBSgCmF-Zhpz_vw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b85f5b2b-cd5c-74ba-918b-f61ec0e540b0@suse.cz>
-Date:   Wed, 5 May 2021 13:32:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <CALvZod5gakHaAZfU2gH6QVNJRcX90MVSmqBpBSgCmF-Zhpz_vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/2] mm: memcg/slab: Fix objcg pointer array handling problem
+Date:   Wed,  5 May 2021 11:46:11 -0400
+Message-Id: <20210505154613.17214-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/4/21 10:06 PM, Shakeel Butt wrote:
-> On Tue, May 4, 2021 at 1:02 PM Waiman Long <llong@redhat.com> wrote:
->>
->> On 5/4/21 3:37 PM, Shakeel Butt wrote:
->> > On Tue, May 4, 2021 at 6:24 AM Waiman Long <longman@redhat.com> wrote:
->> >> Since the merging of the new slab memory controller in v5.9, the page
->> >> structure may store a pointer to obj_cgroup pointer array for slab pages.
->> >> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
->> >> is not readily reclaimable and doesn't need to come from the DMA buffer.
->> >> So those GFP bits should be masked off as well.
->> >>
->> >> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
->> >> that it is consistently applied no matter where it is called.
->> >>
->> >> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
->> >> Signed-off-by: Waiman Long <longman@redhat.com>
->> >> ---
->> >>   mm/memcontrol.c | 8 ++++++++
->> >>   mm/slab.h       | 1 -
->> >>   2 files changed, 8 insertions(+), 1 deletion(-)
->> >>
->> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> >> index c100265dc393..5e3b4f23b830 100644
->> >> --- a/mm/memcontrol.c
->> >> +++ b/mm/memcontrol.c
->> >> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
->> >>   }
->> >>
->> >>   #ifdef CONFIG_MEMCG_KMEM
->> >> +/*
->> >> + * The allocated objcg pointers array is not accounted directly.
->> >> + * Moreover, it should not come from DMA buffer and is not readily
->> >> + * reclaimable. So those GFP bits should be masked off.
->> >> + */
->> >> +#define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
->> > What about __GFP_DMA32? Does it matter? It seems like DMA32 requests
->> > go to normal caches.
->>
->> I included __GFP_DMA32 in my first draft patch. However, __GFP_DMA32 is
->> not considered in determining the right kmalloc_type() (patch 2), so I
->> took it out to make it consistent. I can certainly add it back.
->>
-> 
-> No this is fine and DMA32 question is unrelated to this patch series.
+ v3:
+  - Update patch 2 commit log and rework kmalloc_type() to make it easier
+    to read.
 
-We never supported them in kmalloc(), only explicit caches with SLAB_CACHE_DMA32
-flag.
+ v2:
+  - Take suggestion from Vlastimil to use a new set of kmalloc-cg-* to
+    handle the objcg pointer array allocation and freeing problems.
+
+Since the merging of the new slab memory controller in v5.9,
+the page structure stores a pointer to objcg pointer array for
+slab pages. When the slab has no used objects, it can be freed in
+free_slab() which will call kfree() to free the objcg pointer array in
+memcg_alloc_page_obj_cgroups(). If it happens that the objcg pointer
+array is the last used object in its slab, that slab may then be freed
+which may caused kfree() to be called again.
+
+With the right workload, the slab cache may be set up in a way that
+allows the recursive kfree() calling loop to nest deep enough to
+cause a kernel stack overflow and panic the system. In fact, we have
+a reproducer that can cause kernel stack overflow on a s390 system
+involving kmalloc-rcl-256 and kmalloc-rcl-128 slabs with the following
+kfree() loop recursively called 74 times:
+
+  [  285.520739]  [<000000000ec432fc>] kfree+0x4bc/0x560
+  [  285.520740]  [<000000000ec43466>] __free_slab+0xc6/0x228
+  [  285.520741]  [<000000000ec41fc2>] __slab_free+0x3c2/0x3e0
+  [  285.520742]  [<000000000ec432fc>] kfree+0x4bc/0x560
+					:
+While investigating this issue, I also found an issue on the allocation
+side. If the objcg pointer array happen to come from the same slab or
+a circular dependency linkage is formed with multiple slabs, those
+affected slabs can never be freed again.
+
+This patch series addresses these two issues by introducing a new
+set of kmalloc-cg-<n> caches split from kmalloc-<n> caches. The new
+set will only contain non-reclaimable and non-dma objects that are
+accounted in memory cgroups whereas the old set are now for unaccounted
+objects only. By making this split, all the objcg pointer arrays will
+come from the kmalloc-<n> caches, but those caches will never hold any
+objcg pointer array. As a result, deeply nested kfree() call and the
+unfreeable slab problems are now gone.
+
+Waiman Long (2):
+  mm: memcg/slab: Properly set up gfp flags for objcg pointer array
+  mm: memcg/slab: Create a new set of kmalloc-cg-<n> caches
+
+ include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
+ mm/memcontrol.c      |  8 ++++++++
+ mm/slab.h            |  1 -
+ mm/slab_common.c     | 23 +++++++++++++++--------
+ 4 files changed, 57 insertions(+), 17 deletions(-)
+
+-- 
+2.18.1
+
