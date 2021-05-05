@@ -2,61 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C4D374BB2
-	for <lists+cgroups@lfdr.de>; Thu,  6 May 2021 01:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F87374BCE
+	for <lists+cgroups@lfdr.de>; Thu,  6 May 2021 01:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhEEXH3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 19:07:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25792 "EHLO
+        id S231183AbhEEXU0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 19:20:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57868 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229488AbhEEXH0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 19:07:26 -0400
+        by vger.kernel.org with ESMTP id S231160AbhEEXUZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 19:20:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620255988;
+        s=mimecast20190719; t=1620256768;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y2UtSfp8BrCUffF0CdlLACo8aqMI+/YAkO0AYQU2b30=;
-        b=NA4FDRR7YR9+lvxBSwDmvobyBDqmrOSoy6dhUCKj4Qh/H5bskuWuNoekxIHut3zN29+mqK
-        4sKvARzHc75hFmpFZwZ6T77jt7o29cMNEMNUTPs3rmTy5odpXRkJrtpiTNv/pFwu1br5Ed
-        Wd0iGvk/WEb5DDsC+DyVopEBd7WMTSI=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-We5XnE7FM6KBwpB0Y6Fu3g-1; Wed, 05 May 2021 19:06:27 -0400
-X-MC-Unique: We5XnE7FM6KBwpB0Y6Fu3g-1
-Received: by mail-qk1-f198.google.com with SMTP id z12-20020a05620a08ccb02902ea1e4a963dso2229520qkz.13
-        for <cgroups@vger.kernel.org>; Wed, 05 May 2021 16:06:27 -0700 (PDT)
+        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
+        b=Mp5X4gw9sAQN1MsvWogvUs6YaqvOl8JIcDFVZmwOEmDSRj6/uot3a43y2L1cgNl2qKrPl3
+        ah30XGb9kbHYVXwZeV3eW+oTSzD9K3Zbc/3OCZLd4F//eufbbgtr+VwgSXzfnBqIbkvHPw
+        Uw3EbOkobrfBkUF/6DOGwzv+PCwV0A0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-94-jH3ZloBVMxKcdqMV2fnc8Q-1; Wed, 05 May 2021 19:19:27 -0400
+X-MC-Unique: jH3ZloBVMxKcdqMV2fnc8Q-1
+Received: by mail-qk1-f199.google.com with SMTP id b19-20020a05620a0893b02902e956b29f5dso2234142qka.16
+        for <cgroups@vger.kernel.org>; Wed, 05 May 2021 16:19:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=Y2UtSfp8BrCUffF0CdlLACo8aqMI+/YAkO0AYQU2b30=;
-        b=Oe7X2tzFP0pZVXoDfbPcZtQxzC4QTbCD4YHU/vJWyqsCVX9gbvX80Lfq2r9O9IHjzg
-         /krV2opYYzD65gpS9ONx6Tusa1uOgU6WLXgsxyBA7etgY91mJ2ikvK+D+/YQVh/GUtOo
-         McdZESlXyYSGhtvm2hYJuMhszESzIYPKnn6s+XVm0YfqYL+2HoLJdYh7WqXy1p5nSnuC
-         +c4ztTL9svr02R0RGX2T79PCfVceUQzu+6tbJHkgZ8UAnC1XIDaAGxKgu09Eq4oP0bVz
-         JFpYL1ZejaIQvGmAOzRSmA/0R32dVx0JZrLVEelRpi/Gi0z0OfQpXAMpZWNfTRaEAWYg
-         oatg==
-X-Gm-Message-State: AOAM533yyNs+7aBc4/SwRsjmHW//y/cmYH0Pmkio1w+TZnq+q/GYWXzj
-        2FodGy3rtM3Ju/r0QEmx+lxbga7A8S5psMTnhhyx+j1lYsgF4LOcBo7QjB0Yx6HoecBFQdOHGFJ
-        T3jKMFj9VjDEbUvKbGA==
-X-Received: by 2002:a05:6214:f6e:: with SMTP id iy14mr1253368qvb.53.1620255986849;
-        Wed, 05 May 2021 16:06:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw3hH/gk/oToXyZz2B9Atla//dvgE163CPVjfB/H70FKKvN99+oSJaI0N0HRHRQQFmidgkzUw==
-X-Received: by 2002:a05:6214:f6e:: with SMTP id iy14mr1253349qvb.53.1620255986621;
-        Wed, 05 May 2021 16:06:26 -0700 (PDT)
+        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
+        b=GIKtc6ZF/mw4Ji//V9Ey5oIF06xBFatcM0c5ehFMIqKuh/FbY5P+8J2rD1754k/1Q6
+         QmY/F4ilrvRriKWfTiKLy+ZFI1vSTMTz7TifB3l9xrPfjYXKAA2dqaHqHqf7oxVX67TE
+         i87xS8Y3HxYiMuHqPPCIDZ+Vm8MrN41YgjJzVen9vXwNzC17rR5jALQ61sqPOMsBpdl9
+         buw9zopFg5+yz5yNgeG8lv72MILltPOMKAqX2+I9S9fhQGkeNzJj3bw2J80/Ow36jbv3
+         d9UN4pc888NUUtZCL4s0mwOlaqyQmLEeWQiM/CXeqYnIhpc8NCLK6KZJw2rfjpeCRQnK
+         YG9Q==
+X-Gm-Message-State: AOAM530nyJXDq5YfVFaWoaydHBTK54JrYzkvuDwQTklyHRXMCPowQVbu
+        2Xem2aaVBy4bMQAYTqM5B9XtMPNrEpc6HanDEcVsDsGSO5qDE5weYqUzLTSihOyphfMXn+SpuQ4
+        4S+m9Y98h9XlxtP7Pgg==
+X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260041qvb.22.1620256766429;
+        Wed, 05 May 2021 16:19:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrf6/P25SquN9SJbJPN+P3WLa7pQBOu70auUucnAsduD5gcjZBVPI39mewNtJuN0YMSZCgHQ==
+X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260019qvb.22.1620256766268;
+        Wed, 05 May 2021 16:19:26 -0700 (PDT)
 Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id j196sm726721qke.25.2021.05.05.16.06.25
+        by smtp.gmail.com with ESMTPSA id i129sm621947qke.103.2021.05.05.16.19.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 16:06:26 -0700 (PDT)
+        Wed, 05 May 2021 16:19:25 -0700 (PDT)
 From:   Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
  caches
-To:     Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -64,22 +64,19 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org
-References: <20210505154613.17214-1-longman@redhat.com>
- <20210505154613.17214-3-longman@redhat.com>
- <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
- <235f45b4-2d99-f32d-ac2b-18b59fea5a25@suse.cz>
- <YJLk1tmDeGed58yr@carbon.dhcp.thefacebook.com>
- <f73cc1c6-2950-c56d-6a57-8cebb23db65b@suse.cz>
- <YJMZ+542NVnbWgat@carbon.dhcp.thefacebook.com>
-Message-ID: <95ab4bdf-f373-f71d-cdf5-05ad6edbb772@redhat.com>
-Date:   Wed, 5 May 2021 19:06:24 -0400
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210505200610.13943-3-longman@redhat.com>
+ <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
+Message-ID: <e27561f4-75ac-77ae-de09-6c7d1cd96967@redhat.com>
+Date:   Wed, 5 May 2021 19:19:23 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <YJMZ+542NVnbWgat@carbon.dhcp.thefacebook.com>
+In-Reply-To: <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -87,41 +84,56 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/5/21 6:19 PM, Roman Gushchin wrote:
-> On Wed, May 05, 2021 at 11:29:54PM +0200, Vlastimil Babka wrote:
->> On 5/5/21 8:32 PM, Roman Gushchin wrote:
->>> On Wed, May 05, 2021 at 08:02:06PM +0200, Vlastimil Babka wrote:
->>>> On 5/5/21 7:30 PM, Roman Gushchin wrote:
->>>>> On Wed, May 05, 2021 at 11:46:13AM -0400, Waiman Long wrote:
->>>>>> With this change, all the objcg pointer array objects will come from
->>>>>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
->>>>>> both the recursive kfree() problem and non-freeable slab problem are
->>>>>> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
->>>>>> have mixed accounted and unaccounted objects, this will slightly reduce
->>>>>> the number of objcg pointer arrays that need to be allocated and save
->>>>>> a bit of memory.
->>>>> Unfortunately the positive effect of this change will be likely
->>>>> reversed by a lower utilization due to a larger number of caches.
->>>>>
->>>>> Btw, I wonder if we also need a change in the slab caches merging procedure?
->>>>> KMALLOC_NORMAL caches should not be merged with caches which can potentially
->>>>> include accounted objects.
->>>> Good point. But looks like kmalloc* caches are extempt from all merging in
->>>> create_boot_cache() via
->>>>
->>>> 	s->refcount = -1;       /* Exempt from merging for now */
->>> Wait, s->refcount is adjusted to 1 in create_kmalloc_cache() after calling
->>> into create_boot_cache?
->> Hmm I missed that
+On 5/5/21 5:41 PM, Vlastimil Babka wrote:
+> On 5/5/21 10:06 PM, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
 >>
->> Now I wonder why all kmalloc caches on my system have 0 aliases :)
->> cat /sys/kernel/slab/kmalloc-*/aliases
-> Yeah, I noticed it too, it's a good question. And I remember a case from
-> the past when it wasn't true (kmalloc-32 was shared with something else).
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and unaccounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone.
+>>
+>> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+>> mixed accounted and unaccounted objects, this will slightly reduce the
+>> number of objcg pointer arrays that need to be allocated and save a bit
+>> of memory. On the other hand, creating a new set of kmalloc caches does
+>> have the effect of reducing cache utilization. So it is properly a wash.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> A last nitpick: the new caches -cg should perhaps not be created when
+> cgroup_memory_nokmem == true because kmemcg was disabled by the respective boot
+> param.
 >
-The criteria for cache merging require close to exact match in all 
-attributes with a size difference of no more than sizeof(void *). So it 
-is not easy to find a close match.
+It is a nice to have feature. However, the nokmem kernel parameter isn't 
+used that often. The cgroup_memory_nokmem variable is private to 
+memcontrol.c and is not directly accessible. I will take a look on that, 
+but it will be a follow-on patch. I am not planning to change the 
+current patchset unless there are other issues coming up.
 
 Cheers,
 Longman
