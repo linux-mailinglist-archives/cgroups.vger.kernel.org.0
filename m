@@ -2,61 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4D9373FDC
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 18:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCBE374040
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 18:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhEEQcM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 12:32:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21150 "EHLO
+        id S234317AbhEEQdf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 12:33:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34176 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234102AbhEEQcL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 12:32:11 -0400
+        by vger.kernel.org with ESMTP id S234320AbhEEQc7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 12:32:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620232274;
+        s=mimecast20190719; t=1620232322;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=81DdwLuppEsne8dGMXcwRqVz38oxfrnLdDs7rg3uPgM=;
-        b=a65U/VOdhBbIQB/m3vpi+3wT15YOxGG0dzzRtZZfhBxSfaVgDcoAUOlb1pS/O8+Mr5gZhJ
-        qzbT2w/eKZAStnpSXcpZ+lEQl9KlnOQjbX3WjHYnd/Ux0Rjz/3eoHwXeKadh0o3CnMAuUe
-        MSzJtk2VTlPGq135IPYOqx0BuCQu9ao=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-CXa1jO9dNdu9DeIMZ4CkLA-1; Wed, 05 May 2021 12:31:12 -0400
-X-MC-Unique: CXa1jO9dNdu9DeIMZ4CkLA-1
-Received: by mail-qt1-f199.google.com with SMTP id d10-20020a05622a100ab02901b8224bae03so1443125qte.2
-        for <cgroups@vger.kernel.org>; Wed, 05 May 2021 09:31:12 -0700 (PDT)
+        bh=zS3Ldg5vG9J3xehl8TqywjLJpgOH5ZU3rYG0PyHSqeM=;
+        b=POFJ/gQjEBY1xU5bQA9R8vDQ7GOZ16bUx230ImEqE7xjy45GMQvtRZ2lTSmGZgeCeJustK
+        lKiW++kMj0CWpZtMc8r8JfXg5vP/fPnnYCRS7ojU2USXj3BxY7vnzuVHSTJtDXh4GAb/1J
+        ZrkQ4xK9OeWpL0Vpzc1YRx6VNTakxAM=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-f4NGcCk3MvmSc2zqzmAdEw-1; Wed, 05 May 2021 12:32:00 -0400
+X-MC-Unique: f4NGcCk3MvmSc2zqzmAdEw-1
+Received: by mail-qv1-f69.google.com with SMTP id l5-20020a0ce0850000b02901c37c281207so2057976qvk.11
+        for <cgroups@vger.kernel.org>; Wed, 05 May 2021 09:32:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=81DdwLuppEsne8dGMXcwRqVz38oxfrnLdDs7rg3uPgM=;
-        b=Qi1TZ1YJ6yYuW10PPJcvK3d1/aWIYb9QA/RySMSjVyNHOaC9nRMzKK+hXvksYHg2oN
-         ULEvX26jETE4ozz2y8FxwmyGr3KboxGJ5ZBoyGP8emZMZdzIOiVQ0XIWNoNzNmDZq9RT
-         50w6avaJdAjjTEjX3OHKZdKMgIKZRsF8AJHbRYuFc18ebPacXtHeCYXtHbJX6pNMj4fO
-         JVAglVCzmCCsVZ84L712HQ+N4aLWTHVSybS7VJdyPFbJzQZFs0/RpgklYHpdhhAUP/wz
-         MaoqGfYLEDsUzVA4jAcywEk//c7XJtdwrpJXbG4S9F64SYhbD3YEtY9LEpcOOcEMn+Fo
-         4aTQ==
-X-Gm-Message-State: AOAM533i4goZe4f8PYYDb/xLqDqlcdTXHfFD6XZVODkcIiSLqZFNkTae
-        hooL5EGy0Jj1CbCAh42gTwG2QnGK3outFQF8qkqBm0Xy2QChwE13FGedInzoPOHL1S3liZN/9sJ
-        UtPnWBwIXo1gj8XtHdA==
-X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr3168437qkm.448.1620232272343;
-        Wed, 05 May 2021 09:31:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTBEKFUN7wXglaJUYSMmAOxWOuFIgMxOXBXNY/vFjUujrx4c1jniCEPsD1GaLRm8BV6S4gDA==
-X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr3168418qkm.448.1620232272090;
-        Wed, 05 May 2021 09:31:12 -0700 (PDT)
+        bh=zS3Ldg5vG9J3xehl8TqywjLJpgOH5ZU3rYG0PyHSqeM=;
+        b=Wa3273X/Vg8PEegngCnSwb86Tkv+/EtUWT77GL1Gxl2m9T/e8T0Zh5jd2gamjuwLb6
+         g1IOqnIOX3Qub1CR27BK56OHfThONwta5Z9ls5BDr/i0T24cSBgLqVpqaLAIOyKFPr+X
+         zTTl38arVAMF2ANTUpnM9SZiHxw0wUmjFUKUhMulvHVk+nhlbfuTXhD4ORqYFcB8mKcR
+         aLbU0hCe666o+k5pVxhdvDp06X+Zuox+6GgOgjpjGV79J2upq9lmjGbl5+L/nzIgmxDa
+         HXhDMychbvliIKJjl5zq2H85bGQdngl8hD4wZCtmY8qOfUM1egkJDUi9L1EoFLS6649z
+         l8Sg==
+X-Gm-Message-State: AOAM530Wg7Ob83/R2iSh/Bem0I8icsm2iQG4T8hUrmqf5DP/rv9nVIIl
+        gT0G1yCipDmk50DWjxo1YaD84dbPyIxEAGMjTbOE2cfx7Ws59FwcESUsM926yjK4ho6QghVHinz
+        FcwchGu+8GraqZSgR3w==
+X-Received: by 2002:a37:ae04:: with SMTP id x4mr30811420qke.245.1620232319469;
+        Wed, 05 May 2021 09:31:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzapoUleiXdFkf8r1cnEmwbpWr9agCgZfPPLWunF6QFzhEPni5JL8P9LUWVyMAcGIOFvgnxQ==
+X-Received: by 2002:a37:ae04:: with SMTP id x4mr30811377qke.245.1620232318969;
+        Wed, 05 May 2021 09:31:58 -0700 (PDT)
 Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c23sm5338915qtm.46.2021.05.05.09.31.10
+        by smtp.gmail.com with ESMTPSA id j9sm6455868qtl.15.2021.05.05.09.31.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 09:31:11 -0700 (PDT)
+        Wed, 05 May 2021 09:31:58 -0700 (PDT)
 From:   Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
 Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
  caches
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -64,19 +64,18 @@ To:     Vlastimil Babka <vbabka@suse.cz>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
 References: <20210505154613.17214-1-longman@redhat.com>
  <20210505154613.17214-3-longman@redhat.com>
- <4c1a0436-2d46-d23a-2eef-d558e37373bf@suse.cz>
-Message-ID: <a93ee868-24ed-73ad-543c-5fba19c934e8@redhat.com>
-Date:   Wed, 5 May 2021 12:31:09 -0400
+ <CALvZod7TzBVdwdCMChFNEZqYHxQUWBVfvWwtuAH-4rh_b4XRKw@mail.gmail.com>
+Message-ID: <dbeb319b-81bb-ac4f-25f4-dd275834cd98@redhat.com>
+Date:   Wed, 5 May 2021 12:31:57 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <4c1a0436-2d46-d23a-2eef-d558e37373bf@suse.cz>
+In-Reply-To: <CALvZod7TzBVdwdCMChFNEZqYHxQUWBVfvWwtuAH-4rh_b4XRKw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -84,8 +83,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/5/21 12:06 PM, Vlastimil Babka wrote:
-> On 5/5/21 5:46 PM, Waiman Long wrote:
+On 5/5/21 12:17 PM, Shakeel Butt wrote:
+> On Wed, May 5, 2021 at 8:47 AM Waiman Long <longman@redhat.com> wrote:
 >> There are currently two problems in the way the objcg pointer array
 >> (memcg_data) in the page structure is being allocated and freed.
 >>
@@ -121,6 +120,10 @@ On 5/5/21 12:06 PM, Vlastimil Babka wrote:
 >>
 >> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
 >> Signed-off-by: Waiman Long <longman@redhat.com>
+> One nit below and after incorporating Vlastimil's suggestions:
+>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
 >> ---
 >>   include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
 >>   mm/slab_common.c     | 23 +++++++++++++++--------
@@ -136,57 +139,11 @@ On 5/5/21 12:06 PM, Vlastimil Babka wrote:
 >>    * create_kmalloc_caches() still work as intended.
 >> + *
 >> + * KMALLOC_NORMAL is for non-accounted objects only whereas KMALLOC_CGROUP
->> + * is for accounted objects only. All the other kmem caches can have both
->> + * accounted and non-accounted objects.
->>    */
->>   enum kmalloc_cache_type {
->>   	KMALLOC_NORMAL = 0,
->> +#ifdef CONFIG_MEMCG_KMEM
->> +	KMALLOC_CGROUP,
->> +#endif
->>   	KMALLOC_RECLAIM,
->>   #ifdef CONFIG_ZONE_DMA
->>   	KMALLOC_DMA,
->> @@ -315,28 +322,47 @@ enum kmalloc_cache_type {
->>   	NR_KMALLOC_TYPES
->>   };
->>   
->> +#ifndef CONFIG_MEMCG_KMEM
->> +#define KMALLOC_CGROUP	KMALLOC_NORMAL
->> +#endif
->> +#ifndef CONFIG_ZONE_DMA
->> +#define KMALLOC_DMA	KMALLOC_NORMAL
->> +#endif
-> You could move this to the enum definition itself? E.g.:
+>> + * is for accounted objects only.
+> I think you can say "KMALLOC_CGROUP is for accounted and unreclaimable
+> objects only".
 >
-> #ifdef CONFIG_MEMCG_KMEM
-> 	KMALLOC_CGROUP,
-> #else
-> 	KMALLOC_CGROUP = KMALLOC_NORMAL,
-> #endif
->
->> +
->>   #ifndef CONFIG_SLOB
->>   extern struct kmem_cache *
->>   kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
->>   
->> +/*
->> + * Define gfp bits that should not be set for KMALLOC_NORMAL.
->> + */
->> +#define KMALLOC_NOT_NORMAL_BITS					\
->> +	(__GFP_RECLAIMABLE |					\
->> +	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
->> +	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
->> +
->>   static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
->>   {
->> -#ifdef CONFIG_ZONE_DMA
->>   	/*
->>   	 * The most common case is KMALLOC_NORMAL, so test for it
->>   	 * with a single branch for both flags.
-> Not "both flags" anymore. Something like "so test with a single branch that
-> there are none of the flags that would select a different type"
-Right. I just left the comment there without taking a deeper look. My bad.
+Thanks for the suggestion. Will incorporate that.
 
 Cheers,
 Longman
