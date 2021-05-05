@@ -2,128 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5313373488
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 07:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEBD3736CA
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhEEFHN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 01:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhEEFHN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 01:07:13 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43077C061761
-        for <cgroups@vger.kernel.org>; Tue,  4 May 2021 22:06:15 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t22so1048886pgu.0
-        for <cgroups@vger.kernel.org>; Tue, 04 May 2021 22:06:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
-        b=hRMfiR1c8aF8nkaibSuLvPsQ8VyCx/qSncGkzxu18vorhQYjFwpROhAEbXYMCNfquk
-         R79aCKblQiB16JvI81QOiFG7hoE+vwWFzuhbV1jcmU/QB6LmQwc8IoHRHHgrHKr1AooE
-         osQlLpZYwvRJRTQEWQKzZE0vUJAkPSCwibEEASukSg4xW9ERGzKZ40/yoQH+95owSb6v
-         iLEPDrI5blgVJviaQyBNxrHi4u/g5MffBYnIDhQOKoi0ygD8CMEeF9UCIMm87nzMRxHJ
-         P8UUlfcrr05jevKCiccoYy4X4FyQ6RYZzLzqVTr8I8qEmKxi4cqZReJU1TEVcBJWusH4
-         /VZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
-        b=CpVImRlNsWQNjKm/jtWow7aXYtBGSzfY9ejc80X3BZZ45bS8X/9TbFDBvA1BFTKtaw
-         sAZxxzB1JX3n0BxVAuZ4cerb8aR++aMVbKb7jfZr8A1CbqsEHyby3gUj5lpEXOt+Zw7A
-         ZNO9w+Nig8RGLyaKQ5xm5n5zwIc+zmH36XnJEij4clcgIGEFkADFM7wW8UddEnF10c29
-         XFwagN0gOhqEFibcUrnjqIkgROYjLexWv/clmE1BWAp+7D25MTS0faAsUBA5J6RkJQeW
-         X68qhR1LgRMKDmVbfepo1Vd7kBjigsL4rQ6f6oqxXO2kbV7F3YPJmbskZHKACXF/Wkzt
-         RiIg==
-X-Gm-Message-State: AOAM530VqU1yPA5/mdMe95+wcfhWU+XXLDe2F5waJ9gvqXReCCPKGqWa
-        cfvgHa3cbQ6K/+FXqW3QubPqUA==
-X-Google-Smtp-Source: ABdhPJz9VCC3PefBm33FrYikAk5yJSpijtIJiHa1jMrpQcN0eALeOoj+FqzHKiLwil2NOY6iXfaG3A==
-X-Received: by 2002:a62:ed0b:0:b029:25c:9ea2:abea with SMTP id u11-20020a62ed0b0000b029025c9ea2abeamr27332089pfh.46.1620191174556;
-        Tue, 04 May 2021 22:06:14 -0700 (PDT)
-Received: from [10.254.93.79] ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id k10sm13420308pff.140.2021.05.04.22.06.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 22:06:14 -0700 (PDT)
-Subject: Re: [Phishing Risk] [External] Re: [PATCH 2/3] cgroup/cpuset:
- introduce cpuset.mems.migration
-To:     Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org
-Cc:     akpm@linux-foundation.org, lizefan.x@bytedance.com, corbet@lwn.net,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210426065946.40491-1-wuyun.abel@bytedance.com>
- <20210426065946.40491-3-wuyun.abel@bytedance.com>
- <YIgjE6CgU4nDsJiR@slm.duckdns.org>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-Message-ID: <55582805-5103-96c0-d8e8-e6d0b01beff3@bytedance.com>
-Date:   Wed, 5 May 2021 13:06:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S232144AbhEEJLu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 05:11:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35122 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229696AbhEEJLu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 05:11:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620205853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d0SQnCbBnNBGtZsOp6MO/Q/qxE8V3SBQW2J1qFEwtZU=;
+        b=Wz1E4tSjMAcxNtyhjov/1s1KqQiWsWqQamzLmhHwPygkrFTtXrb52zMkpeanlCjYh6EZY1
+        MSUFCc9aasUJbVyb9YUiJ5348tELeVZVW00pyA91+WW+iGEc1VpfGV6FVDFKWn9uIZMwD7
+        T5HXHuZLzQtBrjw5cPV56QwWR59ISCo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-MlKJvMw1OS2yDEXnT8O6kw-1; Wed, 05 May 2021 05:10:50 -0400
+X-MC-Unique: MlKJvMw1OS2yDEXnT8O6kw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C59C107ACCA;
+        Wed,  5 May 2021 09:10:47 +0000 (UTC)
+Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7CA7A60CC6;
+        Wed,  5 May 2021 09:10:31 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210416094547.1774e1a3@redhat.com>
+ <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <6e36797c-799e-074d-f66f-5686a4b37f38@redhat.com>
+ <20210429200431.GA1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <17ab53a6-c2d7-c085-6469-ae487b138526@redhat.com>
+Date:   Wed, 5 May 2021 11:10:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YIgjE6CgU4nDsJiR@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210429200431.GA1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ping :)
+Hi Jason,
 
-On 4/27/21 10:43 PM, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Apr 26, 2021 at 02:59:45PM +0800, Abel Wu wrote:
->> When a NUMA node is assigned to numa-service, the workload
->> on that node needs to be moved away fast and complete. The
->> main aspects we cared about on the eviction are as follows:
+On 4/29/21 10:04 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 29, 2021 at 03:26:55PM +0200, Auger Eric wrote:
+>> From the pseudo code,
 >>
->> a) it should complete soon enough so that numa-services
->>     won’t wait too long to hurt user experience
->> b) the workloads to be evicted could have massive usage on
->>     memory, and migrating such amount of memory may lead to
->>     a sudden severe performance drop lasting tens of seconds
->>     that some certain workloads may not afford
->> c) the impact of the eviction should be limited within the
->>     source and destination nodes
->> d) cgroup interface is preferred
+>>   gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
+>>   ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
 >>
->> So we come to a thought that:
->>
->> 1) fire up numa-services without waiting for memory migration
->> 2) memory migration can be done asynchronously by using spare
->>     memory bandwidth
->>
->> AutoNUMA seems to be a solution, but its scope is global which
->> violates c&d. And cpuset.memory_migrate performs in a synchronous
+>> I fail to understand whether the SET_IOASID_PAGE_TABLES would apply to
+>> the whole IOASIDs within /dev/ioasid or to a specific one.
 > 
-> I don't think d) in itself is a valid requirement. How does it violate c)?
+> Sorry, nearly every IOCTL would be scoped to a specific IOASID as one
+> of the arguments.
+
+OK thank you for the clarification.
 > 
->> fashion which breaks a&b. So a mixture of them, the new cgroup2
->> interface cpuset.mems.migration, is introduced.
->>
->> The new cpuset.mems.migration supports three modes:
->>
->>   - "none" mode, meaning migration disabled
->>   - "sync" mode, which is exactly the same as the cgroup v1
->>     interface cpuset.memory_migrate
->>   - "lazy" mode, when walking through all the pages, unlike
->>     cpuset.memory_migrate, it only sets pages to protnone,
->>     and numa faults triggered by later touch will handle the
->>     movement.
+>> Also in subsequent emails when you talk about IOASID, is it the
+>> ioasid_id, just to double check the terminology.
 > 
-> cpuset is already involved in NUMA allocation but it always felt like
-> something bolted on - it's weird to have cpu to NUMA node settings at global
-> level and then to have possibly conflicting direct NUMA configuration via
-> cpuset. My preference would be putting as much configuration as possible on
-> the mm / autonuma side and let cpuset's node confinements further restrict
-> their operations rather than cpuset having its own set of policy
-> configurations.
+> I am refering to IOASID as 'handle of the page table object inside the
+> /dev/ioasid fd'. If that is equal to some HW value or not I think
+> remains as decision point.
+OK
 > 
-> Johannes, what are your thoughts?
+> Basically the fd has an xarray of 'struct [something] *' and the
+> IOASID is index to that FD's private xarray. This is necessary to
+> create proper security as even if we have global PASID numbers or
+> something they still need to be isolated to only the FD that has
+> been authorized access.
 > 
-> Thanks.
+>>>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
+>>>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
+>> is the nested_ioasid the allocated PASID id or is it a complete
+>> different object id.
 > 
+> It is the IOASID handle above.
+ok as per the following emails and below comment IOASID and PASID are
+different.The first would be a logic ID wgile the second the HW ID.
+
+Thanks
+
+Eric
+> 
+>>>
+>>>    // IOMMU will match on the device RID, no PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
+>>>
+>>>    // IOMMU will match on the device RID and PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
+>> here I see you pass a different pasid, so I guess they are different, in
+>> which case you would need to have an allocator function for this pasid,
+>> right?
+> 
+> Yes, the underlying HW ID (PASID or substream id or whatver) is
+> something slightly different
+> 
+> Jason
+> 
+
