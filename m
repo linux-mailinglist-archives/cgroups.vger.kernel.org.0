@@ -2,57 +2,24 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF97E37498C
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 22:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D755374A28
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 23:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbhEEUkg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 16:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbhEEUke (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 16:40:34 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61889C061574
-        for <cgroups@vger.kernel.org>; Wed,  5 May 2021 13:39:36 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id t11so4462357lfl.11
-        for <cgroups@vger.kernel.org>; Wed, 05 May 2021 13:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7vLE3pRIE7DJyqWPEwNMu12YoYQF5DlZNk2exGmPNTg=;
-        b=reGxAsDmGcDNeDbtupo1tbWXa6T9XrjZqX3xyHKEQtoI1PKUnAMqbp4g8ZsJ/CLTb5
-         49+eRQ6l2rhVksKqKYfARh9s6gTXQQY3zw5x5PktHltVzCFFrT8fD6E9tQ1w6fqoUHLQ
-         9VeKmoIRKKa5X8sZVI6cywPDotAAF54/q4y4zxIr+EU5A91PYBnNL9QQ5K/VNQhbm8Wv
-         35TmQ+AJVmjxZiEsJyt0bfVgsoI65T3kYwAHHPmXB9KdNsE+AFrsUBWtqTArNWUuvVqj
-         t52WBgYsk9My43JMjwehdnmbZ3xJO/xvBAUyJo/YYJWoJXOQu/xwY6qrLYyCDvDt0TXX
-         Vssg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7vLE3pRIE7DJyqWPEwNMu12YoYQF5DlZNk2exGmPNTg=;
-        b=nx3KYHCi7qraC46+QsrR/N1OVZcOiTkrmppZvT3vfCWYVjltYOnUirtFcZf8iiC6Jf
-         3DLp7D1F1/77i8885K4mLVvhYsXTMG7OjJV7bJXvnS1E1+KZwnt3Cg5uUxhrdCAYy/nD
-         sPibA9czPDVBKohxXqI6KrCbb8yL3zDP5hqtmkGPinIRFA0Q7TAdwBzYLyIyYbR8zE2F
-         YErLzwkPsE46Oib+P4sn/KfynMAwe+ZM5Nof0uQCnzAVWOqVk9x4PGxzNiQwcOeHCOUd
-         q2s4sjAlZSQJMVEWz0n4u32hsika8dtJ2rp+FKXGKvdDHPCrVxXDsKP8HmqQw06X/B91
-         /9zA==
-X-Gm-Message-State: AOAM531qhOQ7Ri+Lhx4P9a2l26OHqaIvSWNQ7UWqGnCQHkcKhs23+mh7
-        uUMKGCZyqfibExEYv+8LTKrBNROGW4RGhEFB76Ej3g==
-X-Google-Smtp-Source: ABdhPJwyjIJjTM32S0Z6f0x0NjAwi/xcgU0hmTHM9xcAkdHxxrQLvzP7kWQl3Yxthm0XYBQaRaD9jnVAMVmt3TnFO9o=
-X-Received: by 2002:ac2:5b1b:: with SMTP id v27mr417118lfn.549.1620247174619;
- Wed, 05 May 2021 13:39:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210505200610.13943-1-longman@redhat.com> <20210505200610.13943-4-longman@redhat.com>
-In-Reply-To: <20210505200610.13943-4-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 5 May 2021 13:39:23 -0700
-Message-ID: <CALvZod7MnE2WiyxqCpou4+wXmr_dMz3iHf-NnJ5tVZRfyH9Xcw@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] mm: memcg/slab: Disable cache merging for
- KMALLOC_NORMAL caches
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S230228AbhEEVax (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 17:30:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhEEVax (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 5 May 2021 17:30:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 48846AFD5;
+        Wed,  5 May 2021 21:29:55 +0000 (UTC)
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -60,23 +27,62 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
+ <235f45b4-2d99-f32d-ac2b-18b59fea5a25@suse.cz>
+ <YJLk1tmDeGed58yr@carbon.dhcp.thefacebook.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <f73cc1c6-2950-c56d-6a57-8cebb23db65b@suse.cz>
+Date:   Wed, 5 May 2021 23:29:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <YJLk1tmDeGed58yr@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 5, 2021 at 1:06 PM Waiman Long <longman@redhat.com> wrote:
->
-> The KMALLOC_NORMAL (kmalloc-<n>) caches are for unaccounted objects only
-> when CONFIG_MEMCG_KMEM is enabled. To make sure that this condition
-> remains true, we will have to prevent KMALOC_NORMAL caches to merge
-> with other kmem caches. This is now done by setting its refcount to -1
-> right after its creation.
->
-> Suggested-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On 5/5/21 8:32 PM, Roman Gushchin wrote:
+> On Wed, May 05, 2021 at 08:02:06PM +0200, Vlastimil Babka wrote:
+>> On 5/5/21 7:30 PM, Roman Gushchin wrote:
+>> > On Wed, May 05, 2021 at 11:46:13AM -0400, Waiman Long wrote:
+>> >> 
+>> >> With this change, all the objcg pointer array objects will come from
+>> >> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> >> both the recursive kfree() problem and non-freeable slab problem are
+>> >> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
+>> >> have mixed accounted and unaccounted objects, this will slightly reduce
+>> >> the number of objcg pointer arrays that need to be allocated and save
+>> >> a bit of memory.
+>> > 
+>> > Unfortunately the positive effect of this change will be likely
+>> > reversed by a lower utilization due to a larger number of caches.
+>> > 
+>> > Btw, I wonder if we also need a change in the slab caches merging procedure?
+>> > KMALLOC_NORMAL caches should not be merged with caches which can potentially
+>> > include accounted objects.
+>> 
+>> Good point. But looks like kmalloc* caches are extempt from all merging in
+>> create_boot_cache() via
+>> 
+>> 	s->refcount = -1;       /* Exempt from merging for now */
+> 
+> Wait, s->refcount is adjusted to 1 in create_kmalloc_cache() after calling
+> into create_boot_cache?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Hmm I missed that
+
+Now I wonder why all kmalloc caches on my system have 0 aliases :)
+cat /sys/kernel/slab/kmalloc-*/aliases
+
+
+> It means they are not exempt actually.
+> 
+
