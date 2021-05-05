@@ -2,130 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9430B37346C
-	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 06:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5313373488
+	for <lists+cgroups@lfdr.de>; Wed,  5 May 2021 07:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhEEEaB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 May 2021 00:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        id S231478AbhEEFHN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 May 2021 01:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhEEEaB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 00:30:01 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8BBC061574
-        for <cgroups@vger.kernel.org>; Tue,  4 May 2021 21:29:05 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id p4so1165798pfo.3
-        for <cgroups@vger.kernel.org>; Tue, 04 May 2021 21:29:05 -0700 (PDT)
+        with ESMTP id S231126AbhEEFHN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 May 2021 01:07:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43077C061761
+        for <cgroups@vger.kernel.org>; Tue,  4 May 2021 22:06:15 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id t22so1048886pgu.0
+        for <cgroups@vger.kernel.org>; Tue, 04 May 2021 22:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
-        b=j/2/x3IGENqBt1eM/uTRys9FwUAyOd7d1CPrhgnUeDqkdWgk208eetcKGgAwQm0ClS
-         807Quye1hCoirriQHZ8jB6fGbUq8JRjgdvApCO7Sk2LBzgsemv98xXqPqhRBtNTYFbQ2
-         c+pvRacMoE5zUBhZlKz1Zp/I3sP37UVPa/SyFRnF0O9Vv0+UUbY2fjviPRN77nwLubJm
-         WkGzNUwF7P0ucQPk4Bw8kKF/DF8Lt/l4gAxFgApBd4DtEkMPmr//4N1veXHtU6pvce11
-         I2Ygs6SMbnq3+EW7szo7yKB9Z6UagEOZuXHkUZLToFvlJwesJGEXi2KI7w4v+L0cFgNN
-         jqBg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
+        b=hRMfiR1c8aF8nkaibSuLvPsQ8VyCx/qSncGkzxu18vorhQYjFwpROhAEbXYMCNfquk
+         R79aCKblQiB16JvI81QOiFG7hoE+vwWFzuhbV1jcmU/QB6LmQwc8IoHRHHgrHKr1AooE
+         osQlLpZYwvRJRTQEWQKzZE0vUJAkPSCwibEEASukSg4xW9ERGzKZ40/yoQH+95owSb6v
+         iLEPDrI5blgVJviaQyBNxrHi4u/g5MffBYnIDhQOKoi0ygD8CMEeF9UCIMm87nzMRxHJ
+         P8UUlfcrr05jevKCiccoYy4X4FyQ6RYZzLzqVTr8I8qEmKxi4cqZReJU1TEVcBJWusH4
+         /VZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
-        b=BsJF+qq5AgU8epxi7OE4T8DmO5k4WgCYrw+gGdohvMcs8zwT5YiXjaaVhzPgTI17Et
-         boLkUt4FBl1esYSEkkN3ZT0fuvW2KcIZN19hLykgYZi813YlNYd0PBnM3ZMS0u4evnK7
-         QuzXUQ/xteoOgJsIM+9VmXwgVfisjKWQuv5K7q/STm4KY1+kjpJN5eyEuFEKFU6cSh3H
-         lNau9gkiKH9m8knSG1TbBd1hQmwPVwAJcF8PwHGgy2JwdiImKBkIB1wpfsKyBsaDaC8D
-         y+Y4iMjqrXab8CA40vvbZr7GR4r9NCxHFjvrWUDntV6XVCEWP+O/3LVsKU/rQ3Jjj/Dr
-         TYTQ==
-X-Gm-Message-State: AOAM533fbNeAQNwms0/y7+eyxT2p2fYDH0ofTacojeVWxkd4ohQgVn4i
-        qRu86NAvvnJqNN5cYXYESzewiA==
-X-Google-Smtp-Source: ABdhPJwj5l+dKlySIdCGZk4hFYyrFl+frI0ecQuTkJrGFGr2OgKeAZLnUNmYF3pUR0T+bfW0S+MHsg==
-X-Received: by 2002:aa7:8051:0:b029:272:7b9c:cde1 with SMTP id y17-20020aa780510000b02902727b9ccde1mr26211062pfm.55.1620188944813;
-        Tue, 04 May 2021 21:29:04 -0700 (PDT)
-Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
-        by smtp.gmail.com with UTF8SMTPSA id l6sm5170914pgc.68.2021.05.04.21.28.56
+        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
+        b=CpVImRlNsWQNjKm/jtWow7aXYtBGSzfY9ejc80X3BZZ45bS8X/9TbFDBvA1BFTKtaw
+         sAZxxzB1JX3n0BxVAuZ4cerb8aR++aMVbKb7jfZr8A1CbqsEHyby3gUj5lpEXOt+Zw7A
+         ZNO9w+Nig8RGLyaKQ5xm5n5zwIc+zmH36XnJEij4clcgIGEFkADFM7wW8UddEnF10c29
+         XFwagN0gOhqEFibcUrnjqIkgROYjLexWv/clmE1BWAp+7D25MTS0faAsUBA5J6RkJQeW
+         X68qhR1LgRMKDmVbfepo1Vd7kBjigsL4rQ6f6oqxXO2kbV7F3YPJmbskZHKACXF/Wkzt
+         RiIg==
+X-Gm-Message-State: AOAM530VqU1yPA5/mdMe95+wcfhWU+XXLDe2F5waJ9gvqXReCCPKGqWa
+        cfvgHa3cbQ6K/+FXqW3QubPqUA==
+X-Google-Smtp-Source: ABdhPJz9VCC3PefBm33FrYikAk5yJSpijtIJiHa1jMrpQcN0eALeOoj+FqzHKiLwil2NOY6iXfaG3A==
+X-Received: by 2002:a62:ed0b:0:b029:25c:9ea2:abea with SMTP id u11-20020a62ed0b0000b029025c9ea2abeamr27332089pfh.46.1620191174556;
+        Tue, 04 May 2021 22:06:14 -0700 (PDT)
+Received: from [10.254.93.79] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id k10sm13420308pff.140.2021.05.04.22.06.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 21:29:04 -0700 (PDT)
-Message-ID: <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
-Date:   Wed, 5 May 2021 14:28:53 +1000
+        Tue, 04 May 2021 22:06:14 -0700 (PDT)
+Subject: Re: [Phishing Risk] [External] Re: [PATCH 2/3] cgroup/cpuset:
+ introduce cpuset.mems.migration
+To:     Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org
+Cc:     akpm@linux-foundation.org, lizefan.x@bytedance.com, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210426065946.40491-1-wuyun.abel@bytedance.com>
+ <20210426065946.40491-3-wuyun.abel@bytedance.com>
+ <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+Message-ID: <55582805-5103-96c0-d8e8-e6d0b01beff3@bytedance.com>
+Date:   Wed, 5 May 2021 13:06:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
- Thunderbird/88.0
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
+In-Reply-To: <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com> <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box> <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box> <20210429002149.GZ1370958@nvidia.com>
- <YIol9p3z8BTWFRh8@yekko> <20210503160530.GL1370958@nvidia.com>
- <YJDFj+sAv41JRIo4@yekko> <20210504181537.GC1370958@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <20210504181537.GC1370958@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+ping :)
 
-
-On 05/05/2021 04:15, Jason Gunthorpe wrote:
-> On Tue, May 04, 2021 at 01:54:55PM +1000, David Gibson wrote:
->> On Mon, May 03, 2021 at 01:05:30PM -0300, Jason Gunthorpe wrote:
->>> On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
->>>>> There is a certain appeal to having some
->>>>> 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
->>>>> information like windows that can be optionally called by the viommu
->>>>> driver and it remains well defined and described.
->>>>
->>>> Windows really aren't ppc specific.  They're absolutely there on x86
->>>> and everything else as well - it's just that people are used to having
->>>> a window at 0..<something largish> that you can often get away with
->>>> treating it sloppily.
->>>
->>> My point is this detailed control seems to go on to more than just
->>> windows. As you say the vIOMMU is emulating specific HW that needs to
->>> have kernel interfaces to match it exactly.
->>
->> It's really not that bad.  The case of emulating the PAPR vIOMMU on
->> something else is relatively easy, because all updates to the IO page
->> tables go through hypercalls.  So, as long as the backend IOMMU can
->> map all the IOVAs that the guest IOMMU can, then qemu's implementation
->> of those hypercalls just needs to put an equivalent mapping in the
->> backend, which it can do with a generic VFIO_DMA_MAP.
+On 4/27/21 10:43 PM, Tejun Heo wrote:
+> Hello,
 > 
-> So you also want the PAPR vIOMMU driver to run on, say, an ARM IOMMU?
-
-
-This is a good feature in general when let's say there is a linux 
-supported device which has a proprietary device firmware update tool 
-which only exists as an x86 binary and your hardware is not x86 - 
-running qemu + vfio in full emulation would provide a way to run the 
-tool to update a physical device.
-
-
--- 
-Alexey
+> On Mon, Apr 26, 2021 at 02:59:45PM +0800, Abel Wu wrote:
+>> When a NUMA node is assigned to numa-service, the workload
+>> on that node needs to be moved away fast and complete. The
+>> main aspects we cared about on the eviction are as follows:
+>>
+>> a) it should complete soon enough so that numa-services
+>>     won’t wait too long to hurt user experience
+>> b) the workloads to be evicted could have massive usage on
+>>     memory, and migrating such amount of memory may lead to
+>>     a sudden severe performance drop lasting tens of seconds
+>>     that some certain workloads may not afford
+>> c) the impact of the eviction should be limited within the
+>>     source and destination nodes
+>> d) cgroup interface is preferred
+>>
+>> So we come to a thought that:
+>>
+>> 1) fire up numa-services without waiting for memory migration
+>> 2) memory migration can be done asynchronously by using spare
+>>     memory bandwidth
+>>
+>> AutoNUMA seems to be a solution, but its scope is global which
+>> violates c&d. And cpuset.memory_migrate performs in a synchronous
+> 
+> I don't think d) in itself is a valid requirement. How does it violate c)?
+> 
+>> fashion which breaks a&b. So a mixture of them, the new cgroup2
+>> interface cpuset.mems.migration, is introduced.
+>>
+>> The new cpuset.mems.migration supports three modes:
+>>
+>>   - "none" mode, meaning migration disabled
+>>   - "sync" mode, which is exactly the same as the cgroup v1
+>>     interface cpuset.memory_migrate
+>>   - "lazy" mode, when walking through all the pages, unlike
+>>     cpuset.memory_migrate, it only sets pages to protnone,
+>>     and numa faults triggered by later touch will handle the
+>>     movement.
+> 
+> cpuset is already involved in NUMA allocation but it always felt like
+> something bolted on - it's weird to have cpu to NUMA node settings at global
+> level and then to have possibly conflicting direct NUMA configuration via
+> cpuset. My preference would be putting as much configuration as possible on
+> the mm / autonuma side and let cpuset's node confinements further restrict
+> their operations rather than cpuset having its own set of policy
+> configurations.
+> 
+> Johannes, what are your thoughts?
+> 
+> Thanks.
+> 
