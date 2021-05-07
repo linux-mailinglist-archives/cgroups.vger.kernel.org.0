@@ -2,210 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FD2375BB2
-	for <lists+cgroups@lfdr.de>; Thu,  6 May 2021 21:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2544D375EAC
+	for <lists+cgroups@lfdr.de>; Fri,  7 May 2021 04:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhEFTb2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 May 2021 15:31:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36654 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230375AbhEFTbY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 May 2021 15:31:24 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146JOm4u018420;
-        Thu, 6 May 2021 12:30:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=V/1Ervagg+TQPuGHNxagUcUzsInE01N0m8/R8aAIq0M=;
- b=mi87XVbsxWttQ6ukovPqosC2xxRV433HcwKRNOWFLCrc3i8JCixv2ph8NU2MhCbRg1O0
- lGXsft/lMqmM8gxga0sRd7TsdnEBv0oFCGn4RYtu4Pz7DMC0KzKHeZBNEHx6uqM/gwQc
- FkzZR553hP3S8V0MaTHcShhEQ2fePOjL454= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38cn6s8j9s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 06 May 2021 12:30:10 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 6 May 2021 12:30:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PT0opYKzWZBzl1oBlFovhvzguvxw0kl724+MhppW7T8w3EG/v1aiTM0KfPyttZnFH2oqsD8/4mLi4CKOBcDsqCnRamJa0fCYUATJVm/A2qtyafQ2FLr8INh7+pO4sFYgGupYH+oBWBwD9i+ZZjgud43r5HxEkZ/lJkzJmR7hwzP2KFkO6XuWIryTfYp3153f27ghEcRKEb3ygt/UoW0VXnkbsSlzDy6gf5r/OWd3Ucru8UMKLyHDWAYuWmcd1pxaBrzjt7+qgt85vf1o4Qh1F+pbOTwv5WZ2v9fZTLHD5Nzt7YWHYOIgGUMxNqlq2Tv0ZVnFer07MXi5h45Lk7e5QQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V/1Ervagg+TQPuGHNxagUcUzsInE01N0m8/R8aAIq0M=;
- b=Psxph2Ne/It6GkBbnOSdQPzn5CdD9tP6cHCftQLa4oacnnEJgzREP7BU1E1pyaBbu2Jn3eLQ0lqLfNT+M956evPvMVyeriHAgp+SIOB9wZ6UZiocxiPuhhmmusjN/vg92nT0/lodMcKJ8bT+dhkU12jjc1xX8IIDZWIFUM21vNmU8MLe4oO+E3OOiYup5YucdJdFNVki3Px9ZV6A/G2TbQZtERWZ+Wq+P2oHlGsQ0+34rt5e9AZ+g6NQ+jcX/UIAGwoTkLvi7E0lqY3sTJ0YXt3c2PRvAztPEVK/y2sejyqfY2eHDXZRLqjUp8yDpvuuwf9aVFHMyOJlvSb5fDNnQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2440.namprd15.prod.outlook.com (2603:10b6:a02:91::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
- 2021 19:30:08 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4108.026; Thu, 6 May 2021
- 19:30:08 +0000
-Date:   Thu, 6 May 2021 12:30:04 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-CC:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of
- kmalloc-cg-<n> caches
-Message-ID: <YJRDvM6jtvzwHtvA@carbon.dhcp.thefacebook.com>
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-3-longman@redhat.com>
- <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
-X-Originating-IP: [2620:10d:c090:400::5:b72e]
-X-ClientProxiedBy: CO2PR18CA0050.namprd18.prod.outlook.com
- (2603:10b6:104:2::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S233500AbhEGCHp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 May 2021 22:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231288AbhEGCHp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 May 2021 22:07:45 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67330C061574;
+        Thu,  6 May 2021 19:06:45 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id c3so10606096lfs.7;
+        Thu, 06 May 2021 19:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RusZqf2ICrM5fo1RSYd7Qden8l8w86x5qFZgmckN64E=;
+        b=D3bvz8i81tQkrtuQ+d1bkqIKoTdXAZWYYo6Jfm6wspflRIADJqkHwK3Tng54nv8L8j
+         kIUQ4Gd1GX0Mm3MGVRY/Cv0CqOQ2b/SwKrjuqKQ2ZLb42V5VpGDH8k9zdxW5F8jvJyfa
+         oLTIlByZ21h77IN3GiYOi8DRoH5svGBcNiKp/hCtXMH1J7nhMihzdzDioSOcRJ0RARol
+         OVt144Jx1rzUTkCU0vW3daSLf0owrtC0yAdtvCT57MQoOyn7OYD0UppOnItgNU2aQ3lA
+         twFeOWFtx02nENFd16Y5AUuwOe/mWTYJiHeGA8pGRIoA8ogpgcLuy5gafsmAh3Y1WSVg
+         /i3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RusZqf2ICrM5fo1RSYd7Qden8l8w86x5qFZgmckN64E=;
+        b=dzuxIb/VclAj0yuogmf83ZBHjsGXgzGOAb+4ttOOxilWONS43VClxKPlgYsfkFF4u5
+         2k/Yu3C2OHTXpIbSRL0NbPiM6/TIB6teAXptwnX/A8a4nHCnKs4fcTAzotN3wNKZCrLE
+         8aUXNhEITHqlpU/dCNAhzO8NQ+pbyDARoePv7bF4fWaElOBEkXUBQHJx6YNSnqNT3StM
+         UepwSojD7kTtujo8O8Wpcc7nDmFR9LqB5GpMpAMf7aqiPl/P9ydH/TeUOhXRt4oxeCDq
+         Wb8tR2aCGLb/mPI1PBRtb67qXvduxNg65AoBuGRenGLjXTenPEc4QBtz8D91M65H4Acz
+         1TRw==
+X-Gm-Message-State: AOAM532XhTld0J+XddjiBblcuDXrtcRo36oLpmTsO/aFgzmROe1slAJq
+        ZfheZ+YJVDtHfYxUr+U+ZMlfcRx7lLRh1XFfvk4=
+X-Google-Smtp-Source: ABdhPJy6fE0F0maDDYRJg2QRG950fLRhaA0QiW7C6vG6nsHx3tC0UfW9AmOOCNLGEB8W9gmuKKolcqYX/UZkgFF0HoM=
+X-Received: by 2002:a05:6512:c04:: with SMTP id z4mr4820989lfu.167.1620353203882;
+ Thu, 06 May 2021 19:06:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:b72e) by CO2PR18CA0050.namprd18.prod.outlook.com (2603:10b6:104:2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 19:30:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32e6b18b-155a-4141-4a8e-08d910c55b7c
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2440:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2440BDD6C996BE6754215A69BE589@BYAPR15MB2440.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5mIX1Ya4qYCVHPXaTMT3jORAfA3zBjdxCVVwNqjfScqiTjypODUpYd+YOQCyoBDZ+hl1+jxM5HYm42QZ8eVyuIi0j9X0RJO5aWXZlk1emoatZUHda9+X4z2uzwyT7AwdjEXyMon7TAqNnkcFf22q2Jw9CMTcSMJSUgjUFZw62A7SMDVr+c8Qe9rVOlhOPi4Q5UwlpJMZ3e/oUxD3Q8pkfOO9b4YLtQplQFgF8rk1xG9d+0SdSVGkg3PWCsG8e03QuYaM4J67DpRYLwuvWMQryQjK5Sp0lF5Wfq+LiZQIDeLun4ZRBjGiRs2ds1IoDUHbZAjG9ADYJNlQuypdkPntaE5UL5nZvaLT0vq9ubZyx91gSfqD6C/LL/66xYp1c8JddXaiT6V86iQFt++kzxFqyiYa9h1YQtS5FnbRpyZYuElkJfwrmr2XsLVUkdfY84bv3j92JWVkRvoE5VIFU1kSdfXZytHGgNnex2qr8rJSl3RDTy036apQtOwSlqy8SXzz/Tag2XULso15CT+bfLRFbK9WlCGmevYZtv8NL+ScAF3wzy5/cbfM0skzvx6Pzofj7doRlkhJjmsvmE31yfq+UrW+2S4tRBuW1cFiHArgUzY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(396003)(39860400002)(6666004)(86362001)(53546011)(83380400001)(186003)(6916009)(5660300002)(55016002)(9686003)(316002)(54906003)(2906002)(7696005)(4326008)(52116002)(478600001)(16526019)(38100700002)(8936002)(6506007)(7416002)(66556008)(66946007)(8676002)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rkKqe/ozHqMU4poiXWzE62z7iXzCwIbTjipe0b0jkeh1YlAnzcVG0+HfCcdb?=
- =?us-ascii?Q?iL1x6fKaovKIsHsaA+zZn5Vr1bK6IiMmcXZ+w0X8wSCIF6VXXG2rQmTd2n8C?=
- =?us-ascii?Q?AhtNIaLkuyshANV6o54n5NjZ/Kn08Dqz7OZ4Rpe0SbHJ0UY0TDaVSsJBePUF?=
- =?us-ascii?Q?JeHAK+S4hn+8Azb9HFl5jOur/EnQjuffUM/qqV4lYsxko0KdJ8V9OqDDevBg?=
- =?us-ascii?Q?sx3gtkkwdfKPcBHMogIQs986tQGJ13YYfKfuahrvVNCiPCJV3ycqoLfVKBWX?=
- =?us-ascii?Q?uSrM/bH8hZyHELm6oxlMTrZ25Hhd6Hz+zPg2Qo4SCFl7r5aM4YjaGZ8ZfwPl?=
- =?us-ascii?Q?ArXGFdJgoY0jC01Uxv/t4Kh0EoyGs7QcLBti98kpZM2SieidbV9vHXD5cUf7?=
- =?us-ascii?Q?U0+24ZvxdohDlbUL3qLD5ncTnZsSggx/wFm4bbuBqhLThqgz9/yvB04DvVIE?=
- =?us-ascii?Q?f+d1VWePrAHgjpqTN7hXwqGhOfZQ6w1Ps2IdGgR1JTbBn632hTiuiju9BicP?=
- =?us-ascii?Q?DWGacbumtb8zlncXnBvvAFZzmu3ecu4G0FkR4G+Xz+zqXWLW8QNWKGi+Wy6m?=
- =?us-ascii?Q?8Ls6R0JZ5EwrCcW7XU0RcOnjN6cueJQF//BW1ggHgs8tBzo4OdprAEYcERnu?=
- =?us-ascii?Q?SHiGgq5gOkfZKQ2ezexS/TAzaYuBRJJI/4deZ1tXbZVmfmYrTsu/H18VsoG1?=
- =?us-ascii?Q?WwLylWVn1TjbEmAfc4qCe0TLNAJqdOIKlM09iVc7/jsCRNmoQfQL83sLgW7U?=
- =?us-ascii?Q?R9eQLwMh2hWOFGCXhhRDACuj+bOfepd+e+s0FY+OAi0V5IYvflxkQjglwS4M?=
- =?us-ascii?Q?zn+J/iv8g5itGZRG9Q4eoEvupLyjVQ5ZsbpnWSG6NejePkG/xkogC577rl7V?=
- =?us-ascii?Q?Baunq2yk99Xrjvg9mJA6VAsKNqKf+LpxzmtGatagbvUpfjYTOdv4Vx9yqRuS?=
- =?us-ascii?Q?6IYgCcxu+80Ddo74VqOGY7lLC0aVJMB4elFNFIqo3mhBSR1V/y+xCL/RbYnQ?=
- =?us-ascii?Q?Cpn5+d/9sqJvw2MJfULpVzUqsLlDUytRGrL9uueA6FSpWel3EYOgJhUpslmc?=
- =?us-ascii?Q?IBDgQFkixGvnK9vr70CrJHL1C93eIZE6llv8o3QlF9imC5RcF+Z4KWoe0p5O?=
- =?us-ascii?Q?0D4Kz95q6dZJ1c1H+iW8j45ymw8GVHMHAwt8YMUX3+1eO/tTs6DfGymN4za8?=
- =?us-ascii?Q?ngyszDz+vv662VBzIOePoPZXt4c4gIKx0S90rfuG38Oqzs41k/LWrbhp4oJk?=
- =?us-ascii?Q?AVd9JGW3YUMaFI8NrRSc/yMALGJ66QXY7yo+Dp3KIL3T5+M78/6fvQCjakAU?=
- =?us-ascii?Q?p++NiV4krtXeUwQ9H4Ph+JvTNVMON1kBqxL2S4ygBLyajA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32e6b18b-155a-4141-4a8e-08d910c55b7c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 19:30:08.0961
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TsVODHBZXfhFjWY1szfUUMOlrKzoOfmX+HQbA8lYXNDMdKpPBqzSYyISe/+kIigG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2440
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: k3phv586BLoUATQaEqEqt0kjhtU-VxjT
-X-Proofpoint-GUID: k3phv586BLoUATQaEqEqt0kjhtU-VxjT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- malwarescore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 impostorscore=0
- suspectscore=0 adultscore=0 clxscore=1015 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060133
-X-FB-Internal: deliver
+References: <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
+ <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
+ <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
+ <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
+ <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+ <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
+ <YBgU9Vu0BGV8kCxD@phenom.ffwll.local> <CAOWid-eXMqcNpjFxbcuUDU7Y-CCYJRNT_9mzqFYm1jeCPdADGQ@mail.gmail.com>
+ <YBqEbHyIjUjgk+es@phenom.ffwll.local> <CAOWid-c4Nk717xUah19B=z=2DtztbtU=_4=fQdfhqpfNJYN2gw@mail.gmail.com>
+ <CAKMK7uFEhyJChERFQ_DYFU4UCA2Ox4wTkds3+GeyURH5xNMTCA@mail.gmail.com>
+In-Reply-To: <CAKMK7uFEhyJChERFQ_DYFU4UCA2Ox4wTkds3+GeyURH5xNMTCA@mail.gmail.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Thu, 6 May 2021 22:06:32 -0400
+Message-ID: <CAOWid-fL0=OM2XiOH+NFgn_e2L4Yx8sXA-+HicUb9bzhP0t8Bw@mail.gmail.com>
+Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Dave Airlie <airlied@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Brian Welty <brian.welty@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 06, 2021 at 06:00:16PM +0200, Vlastimil Babka wrote:
-> 
-> On 5/5/21 10:06 PM, Waiman Long wrote:
-> > There are currently two problems in the way the objcg pointer array
-> > (memcg_data) in the page structure is being allocated and freed.
-> > 
-> > On its allocation, it is possible that the allocated objcg pointer
-> > array comes from the same slab that requires memory accounting. If this
-> > happens, the slab will never become empty again as there is at least
-> > one object left (the obj_cgroup array) in the slab.
-> > 
-> > When it is freed, the objcg pointer array object may be the last one
-> > in its slab and hence causes kfree() to be called again. With the
-> > right workload, the slab cache may be set up in a way that allows the
-> > recursive kfree() calling loop to nest deep enough to cause a kernel
-> > stack overflow and panic the system.
-> > 
-> > One way to solve this problem is to split the kmalloc-<n> caches
-> > (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
-> > (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
-> > kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
-> > the other caches can still allow a mix of accounted and unaccounted
-> > objects.
-> > 
-> > With this change, all the objcg pointer array objects will come from
-> > KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
-> > both the recursive kfree() problem and non-freeable slab problem are
-> > gone.
-> > 
-> > Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
-> > mixed accounted and unaccounted objects, this will slightly reduce the
-> > number of objcg pointer arrays that need to be allocated and save a bit
-> > of memory. On the other hand, creating a new set of kmalloc caches does
-> > have the effect of reducing cache utilization. So it is properly a wash.
-> > 
-> > The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
-> > KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
-> > will include the newly added caches without change.
-> > 
-> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> > Signed-off-by: Waiman Long <longman@redhat.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> I still believe the cgroup.memory=nokmem parameter should be respected,
-> otherwise the caches are not only created, but also used.
+Sorry for the late reply (I have been working on other stuff.)
 
-+1
+On Fri, Feb 5, 2021 at 8:49 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> So I agree that on one side CU mask can be used for low-level quality
+> of service guarantees (like the CLOS cache stuff on intel cpus as an
+> example), and that's going to be rather hw specific no matter what.
+>
+> But my understanding of AMD's plans here is that CU mask is the only
+> thing you'll have to partition gpu usage in a multi-tenant environment
+> - whether that's cloud or also whether that's containing apps to make
+> sure the compositor can still draw the desktop (except for fullscreen
+> ofc) doesn't really matter I think.
+This is not correct.  Even in the original cgroup proposal, it
+supports both mask and count as a way to define unit(s) of sub-device.
+For AMD, we already have SRIOV that supports GPU partitioning in a
+time-sliced-of-a-whole-GPU fashion.
 
-> I offer this followup
-> for squashing into your patch if you and Andrew agree:
-> 
-> ----8<----
-> From c87378d437d9a59b8757033485431b4721c74173 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Thu, 6 May 2021 17:53:21 +0200
-> Subject: [PATCH] mm: memcg/slab: don't create kmalloc-cg caches with
->  cgroup.memory=nokmem
-> 
-> The caches should not be created when kmemcg is disabled on boot, otherwise
-> they are also filled by kmalloc(__GFP_ACCOUNT) allocations. When booted with
-> cgroup.memory=nokmem, link the kmalloc_caches[KMALLOC_CGROUP] entries to
-> KMALLOC_NORMAL entries instead.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-
-Acked-by: Roman Gushchin <guro@fb.com>
-
-Thanks!
+Kenny
