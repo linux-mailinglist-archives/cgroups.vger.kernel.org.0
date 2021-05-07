@@ -2,181 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC9D3769E9
-	for <lists+cgroups@lfdr.de>; Fri,  7 May 2021 20:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1E1376A23
+	for <lists+cgroups@lfdr.de>; Fri,  7 May 2021 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbhEGSVy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 7 May 2021 14:21:54 -0400
-Received: from mail-dm6nam12on2067.outbound.protection.outlook.com ([40.107.243.67]:40289
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229470AbhEGSVx (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 7 May 2021 14:21:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dKvpdakpA/Q86QvdngQd3ylFGywr9QDoKDA7cyrPerpWeLcWM5TIzvaAYvgCd/h9nk5Zwft+d4f6OWTA3MpfjcVEnUOAFC05/il2BYvL0k68pfDx+GS7Iyb185u87Aw2EAIxpgzqMa/2P8Wv6695olsCD6qfUPeZ+RGpoKYOPkMx+L7eOBLHuEiKXoo/b/h0XUvq8D0sgWqmFTLDP/vr+5Eg+lPSHNyUbj8kXFqV/jUg6dFWtxR84iArA+lEtoNJU8vQ/4xC4ceksA894RW56K8DAqbDMz9D2SDPrM11bg340c1NbAVTa5T49tEZCTKOK4L7/fACf3SMWYK6BFgxcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drhlgwhAro3jEDZ2bf1UkP4l2qgy9Swo2Y2zyqfr8BQ=;
- b=CeVC1h8xbfkO0N7Fd4OCar9Ql6KHYYkPwfS3X2sGo0LlysjALljXAyGeFqk+uLjT39RhC0gYRFYuIcU6vG5q7shZQxrlyiXQ6z5YP7JFC+3DPnpjETyaNunThMlUXZpJ4cHdqnaSV8bGO397YUAoW7wL8lqHWnnG1pcmhb3D7dIaFsd7MFsP+cDjtOVVln3RHRE6RCun4OA5TGmfHPG1PhQDTiSvQbxGI0v86D7+9JIDaW+suq7jX9LVSKa9pPi+mtVEy52Y+b9tlgHmBWMozqiRZmOKf8NJ47EGbZ1lUBsSQGFmP6bNz5bsG/BWQHO+dI5erDKyCJVtWsQLBvkxqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=drhlgwhAro3jEDZ2bf1UkP4l2qgy9Swo2Y2zyqfr8BQ=;
- b=a+ZjnvY2JaGhjB4wabPadcagzBS4uqeFJw0Bqs1T70LhN2JcU13b5M+0np8Io/JElxtjVE+6PO2qcPzLQSE7g+6Giu3Thn+g1AFMshryEPPIi04dx7e5AzTlgmBpH4HtxeUuP33PlSlOQo8JXMvjda5xRIo+DP2U0hjCsabgnYDf8F/ykSDaKlP0KF0svFdEZ3Glr4htYJ8NLNpLA2B9/LtOa3eOfZ/PJ4937wFesmNGwRrvjITypzzxA2rtPlTze2hEBcwr1+9yWHDlUUEDhAajQJraYK9o76ssUSGph3moGOU/eAT+qKqDXEwtROMHAwrOcsj0lNpJ5c8l8/8vOQ==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1145.namprd12.prod.outlook.com (2603:10b6:3:77::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Fri, 7 May
- 2021 18:20:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.030; Fri, 7 May 2021
- 18:20:51 +0000
-Date:   Fri, 7 May 2021 15:20:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        id S229542AbhEGSq4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 7 May 2021 14:46:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229476AbhEGSq4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 7 May 2021 14:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620413155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
+        b=gFun/DhjEmkdhc/B1Dg2kgagl0hbv3uEO4xI/MDTNvH3fAyWbYr4+HoIGVujfQt8HUtn6m
+        SX4ZEmSOatPQLjEcd+mVQctHs4wYn0Py9n1PbveM+FAAw+CH4CAN3c1za0WfaQVp4E5VFE
+        9Q5Mt1oFXoGGq4FF/T2ZRjmoElmssik=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-hRkCPv8vPNSLq0hQF8FfeA-1; Fri, 07 May 2021 14:45:54 -0400
+X-MC-Unique: hRkCPv8vPNSLq0hQF8FfeA-1
+Received: by mail-qv1-f69.google.com with SMTP id 99-20020a0c80ec0000b029017de514d56fso7262590qvb.17
+        for <cgroups@vger.kernel.org>; Fri, 07 May 2021 11:45:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
+        b=F1CYa82/fa6UrdHPuAfPvuXMVZhEpYKjbjAub833yPArb4yN3ZgFyO8f+R0/kMmgM6
+         x+8m5pZ9gxkzQxJISSTO16hXcKxNNY3iISItQJPioFrv1SZm/niP3i0XuIe12TSQwi8N
+         OkzGkdBcX+YdtR0yg12G/cZFwlCr5Rj8p5mkrD1QSwi/EyinKC8vqB65jNe/6AtjC3vD
+         P1agaDQw6XgicDdPL9hMCWaZcERAa7SRQvgmrW/vS7LC+13d/MBiUqUu4DEMQhN3pEfP
+         WTkuCnweef6CbvMm6FR6eSKNletuSR9vGsdxjmVMLb+WHRevQ+QUbQdX+Db5w6SetQwm
+         9Bbg==
+X-Gm-Message-State: AOAM532pWdlN2hSfmh3+tOcRJ61G2PeLHEBg82Kf2mPqsW6Wc6ucDUaz
+        0RLFr52jxhw4lXq8WMFc3lsWB8G3S7yVHtY93PjC15grdgHtsBeIctSXyAgb0FcTXWose57ZHAn
+        YuNMD1mJrhnsJgO2ECg==
+X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946077qke.335.1620413151342;
+        Fri, 07 May 2021 11:45:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQ49EhrBr2VleaOQs5O+9EB+F+312dF6kA9HU6bvLJ0TwDuEEYlFpnBnivl0VUz4k5rpNUrA==
+X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946050qke.335.1620413151104;
+        Fri, 07 May 2021 11:45:51 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id x13sm5553045qtf.32.2021.05.07.11.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 11:45:50 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Vlastimil Babka <vbabka@suse.cz>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210507182050.GX1370958@nvidia.com>
-References: <20210504151154.02908c63@jacob-builder>
- <20210504231530.GE1370958@nvidia.com>
- <20210505102259.044cafdf@jacob-builder>
- <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <YJOZhPGheTSlHtQc@myrica>
- <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
- <20210507172051.GW1370958@nvidia.com>
- <20210507181458.GA73499@otc-nc-03>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507181458.GA73499@otc-nc-03>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR20CA0066.namprd20.prod.outlook.com
- (2603:10b6:208:235::35) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210505200610.13943-3-longman@redhat.com>
+ <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+Message-ID: <d1fb7f38-1a4e-5819-6ccb-691346c7b2a1@redhat.com>
+Date:   Fri, 7 May 2021 14:45:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR20CA0066.namprd20.prod.outlook.com (2603:10b6:208:235::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 7 May 2021 18:20:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lf55m-002wpb-ND; Fri, 07 May 2021 15:20:50 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d4c9104-881c-48a4-b9d0-08d91184d89b
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1145:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1145203BA33E434C3C77E287C2579@DM5PR12MB1145.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DLVrUjSuypIfrTkMpv2tNRI+YMIw0C77hyoEDi7mJcsoeobyi2ryu5VZxumLSb50/rVborZUi9iII1wadrPART81QITpWV+GiPe+tz6mtaXmNH5GopJC89DysoUJqvi8fOj7Z7mw2gGpPRV/Gf9kRMYA7n/s4VkTelyhahs60OQc8skdsuGml1Ek8J3C4CbuaKx0CzBAgFt/Mt27347g2txMYu8GXs1cWz/MTrd3idLocbS0XoFQpowuqnryqm4CfgwaH7L1qxeczGbgpRUHvJG96Jrj01n5cME8PGY71JKlz4sIrc7OjpOzMWvPCmSZyyXmjEx9Iz/YgdRVgA3a4MZlHxMn86yVKVrQSxAxjpcZZEau42+FejGxn4z47FhthVL3nOL7k8s7HlxIKP4j+6HX4CcOrE6QOGzREvXXX1/4i73W2ab83S/EMs308brYQk3SW/iRFFCUNehpbL4PtJvdlmMBIjFw15WR/AGHfbmcTuewMeGxgsVaMYBeTEskYPvw9VXfzNE3lARxA9TQkXYdhu/EIn95w9ySqGNnCSJ4QJZRQWLjAeb3eDYv8DKRp4rKFDHmqjId/q0NYpOy4uLT/uN4OQKxnu1XWzsBfck=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(478600001)(9786002)(83380400001)(2616005)(33656002)(316002)(1076003)(426003)(9746002)(66556008)(66946007)(26005)(38100700002)(5660300002)(7416002)(36756003)(54906003)(4326008)(186003)(2906002)(6916009)(8676002)(8936002)(86362001)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?iZ35n0ri8hvfdQpjxYgxmHRNATjJf5FNIEVpfGt2m9LfxVKij0hgaAr6MXIc?=
- =?us-ascii?Q?nnFBHG6QIGMmJXL6u00T2qdbelbA3slf4fc9xEUiHDMnPrKVyWvm5Wx87/GU?=
- =?us-ascii?Q?MdAxDk+l4n7lmRjxRubVdmQg4ivrErk1XJDUOdhmAENs1Wu9fQRQD2+91Vmd?=
- =?us-ascii?Q?Lyf83BwVEwY/cv/IFsXMx7ggC0TGwFWrXjETcZQdUmQX8WfiNeHS9RtDMv6A?=
- =?us-ascii?Q?g3XKFtDybO/wOFUi7UByfX6Cc44lO0E3uT1C1+xywhawUuqr1TRe+9ZEuItj?=
- =?us-ascii?Q?o3duJd/EgIj4fZ8ShVKS3SeLAjGljaLm92NbGW0+Witon0mTHoZyqKLySQsb?=
- =?us-ascii?Q?Ug9Sm3zAUncPqU1kMKwErARn5kh1Wp5YAh0JqATfnmFY41RhSR/vFr/gkHus?=
- =?us-ascii?Q?y8XYkV2lbP3zwW8wiVaIhq0ftpp5Jfd6ZqXDuZZmK5ccOyfHtJbK0WpuTI/z?=
- =?us-ascii?Q?qkcS5FMgmYVttqoedlqfES/zzlAcCyPEyt0eJs4dK3D1oR3EzewTgWwYSf3F?=
- =?us-ascii?Q?e3MbEJ0H8jn/UVlA0CciRN4B6CfpKtuT5DJ8Ut7/hVv/my4+8EGvIEVh/+lk?=
- =?us-ascii?Q?NRRbgTX0jY+tipu6ZZrmtzYsLLZGSWeo1J1ScAT9cbYEHPybAvKgaeQEeNTU?=
- =?us-ascii?Q?wbgSC+stx0Vk05pyoNA67MB7AbePmO57RFO68wdGwYJTEyq4TWSrRYLFityh?=
- =?us-ascii?Q?loVUsDVOvmOunOAddy5bTm8zxfBsF47VpLZYBMGIlmpr00JBfcv8GUgJNccN?=
- =?us-ascii?Q?IfjMt7gjq22thx61C/IiuSdF4LEjxWoH3pKtx8qDVNIQQdbo1ShHFg5xXcHz?=
- =?us-ascii?Q?7dxTvy5AXzUDE1PHYxNsIEBxLcCiG2LeZx+j0yKMhH3O8RX7wROsMVAlkwxv?=
- =?us-ascii?Q?rrOemCIRkfKRs/HeFANPMFxVmjkcLc8msKYvYO1nh223lZRb0OxsHFg3rydD?=
- =?us-ascii?Q?bE1gvxZb4OtvxUJF1r4Zfn+RdeIY5mIg+fzbFgHFICAXoypbzyIZbJW7TkBH?=
- =?us-ascii?Q?1B2zmjNR6P4C3b2aOy7WS9+CTK/i2EGSrdJuEkmmwr5nOEEmVxDuX7Q0/FaC?=
- =?us-ascii?Q?Nr+zGF2Bp1xwZZX7Ef11fHigQGOZj0IG2Gp1WrrXQq5PMvrTCqhhIvrwfwnx?=
- =?us-ascii?Q?1vVwuP02iXGh0o3kcKITaCCv1lNlMlldaG2WJPrlibc7cMLfOuBuzQ/I+HTS?=
- =?us-ascii?Q?pw2moaGqXEfFf7Vlrm+uYzqo0plMNT1mntnOll0MrrhKR0UXOeSIefxgTRxm?=
- =?us-ascii?Q?4NnoqQyOeqjIRNu4o91T75C8SdyBOSdJ9udXeNrq4QCZI9qXwskDtuIUsz6v?=
- =?us-ascii?Q?TfaZbky/iSPHc5CgICwuHmTk?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d4c9104-881c-48a4-b9d0-08d91184d89b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2021 18:20:51.9014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vTQkOuUvq1g5A+Wv8K2365qhfWK4y/kHUpphRlwewt4uZAgtC6G1GgNPv/84d2d7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1145
+In-Reply-To: <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 07, 2021 at 11:14:58AM -0700, Raj, Ashok wrote:
-> On Fri, May 07, 2021 at 02:20:51PM -0300, Jason Gunthorpe wrote:
-> > On Thu, May 06, 2021 at 09:32:40AM -0700, Raj, Ashok wrote:
-> > 
-> > > For platforms that support ENQCMD, it is required to mandate PASIDs are
-> > > global across the entire system. Maybe its better to call them gPASID for
-> > > guest and hPASID for host. Short reason being gPASID->hPASID is a guest
-> > > wide mapping for ENQCMD and not a per-RID based mapping. (We covered that
-> > > in earlier responses)
-> > 
-> > I don't think it is actually ENQCMD that forces this, ENQCMD can use a
-> > per-RID PASID in the translation table as well.
-> 
-> When using ENQCMD the PASID that needs to be sent on the wire is picked
-> from an MSR setup by kernel. This is context switched along with the
-> process. So each process has only 1 PASID that can go out when using
-> ENQCMD. ENQCMD takes one mmio address specific to the acclerator and a
-> source for the descriptor.
+On 5/6/21 12:00 PM, Vlastimil Babka wrote:
+> On 5/5/21 10:06 PM, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and unaccounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone.
+>>
+>> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+>> mixed accounted and unaccounted objects, this will slightly reduce the
+>> number of objcg pointer arrays that need to be allocated and save a bit
+>> of memory. On the other hand, creating a new set of kmalloc caches does
+>> have the effect of reducing cache utilization. So it is properly a wash.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> I still believe the cgroup.memory=nokmem parameter should be respected,
+> otherwise the caches are not only created, but also used. I offer this followup
+> for squashing into your patch if you and Andrew agree:
+>
+> ----8<----
+>  From c87378d437d9a59b8757033485431b4721c74173 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Thu, 6 May 2021 17:53:21 +0200
+> Subject: [PATCH] mm: memcg/slab: don't create kmalloc-cg caches with
+>   cgroup.memory=nokmem
+>
+> The caches should not be created when kmemcg is disabled on boot, otherwise
+> they are also filled by kmalloc(__GFP_ACCOUNT) allocations. When booted with
+> cgroup.memory=nokmem, link the kmalloc_caches[KMALLOC_CGROUP] entries to
+> KMALLOC_NORMAL entries instead.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>   mm/internal.h    | 5 +++++
+>   mm/memcontrol.c  | 2 +-
+>   mm/slab_common.c | 9 +++++++--
+>   3 files changed, 13 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/internal.h b/mm/internal.h
+> index ef5f336f59bd..b2d60b3403c7 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -135,6 +135,11 @@ extern void putback_lru_page(struct page *page);
+>    */
+>   extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+>   
+> +/*
+> + * in mm/memcontrol.c:
+> + */
+> +extern bool cgroup_memory_nokmem;
+> +
+>   /*
+>    * in mm/page_alloc.c
+>    */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5e3b4f23b830..b9ec01f2b4f6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -83,7 +83,7 @@ DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+>   static bool cgroup_memory_nosocket;
+>   
+>   /* Kernel memory accounting disabled? */
+> -static bool cgroup_memory_nokmem;
+> +bool cgroup_memory_nokmem;
+>   
+>   /* Whether the swap controller is active */
+>   #ifdef CONFIG_MEMCG_SWAP
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index bbaf41a7c77e..363f90215401 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -832,10 +832,15 @@ void __init setup_kmalloc_cache_index_table(void)
+>   static void __init
+>   new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+>   {
+> -	if (type == KMALLOC_RECLAIM)
+> +	if (type == KMALLOC_RECLAIM) {
+>   		flags |= SLAB_RECLAIM_ACCOUNT;
+> -	else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP))
+> +	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
+> +		if (cgroup_memory_nokmem) {
+> +			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
+> +			return;
+> +		}
+>   		flags |= SLAB_ACCOUNT;
+> +	}
+>   
+>   	kmalloc_caches[type][idx] = create_kmalloc_cache(
+>   					kmalloc_info[idx].name[type],
 
-Oh. I forgot this also globally locked the PASID to a single
-MSR. Sigh. That makes the whole mechanism useless for anything except
-whole process SVA.
+Thanks, the patch looks good to me.
 
-It also make it a general kernel problem and not just related to the
-vIOMMU scenario.
+Acked-by: Waiman Long <longman@redhat.com>
 
-> > I think at the uAPI level the callpaths that require allocating a
-> > PASID from a group of RIDs should be explicit in their intention and
-> > not implicitly rely on a certain allocator behavior.
-> 
-> The difficult part I see is, when one application establishes a path
-> to one acclerator, we have no knowledge if its going to connect to a
-> second, third or such. I don't see how this can work reasonably
-> well. What if PASIDx is allocated for one, but the second RID its
-> trying to attach already has this PASID allocated?
+Cheers,
+Longman
 
-You mean like some kind of vIOMMU hot plug?
-
-> > If you want to get a PASID that can be used with every RID on in your
-> > /dev/ioasid then ask for that exactly.
-> 
-> Correct, but how does guest through vIOMMU driver communicate that intent so uAPI
-> plumbing can do this? I mean architecturally via IOMMU interfaces? 
-
-I would have to ask for a PASID that has the property it needs. You
-are saying the property is even bigger than "usable on a group of
-RIDs" but is actually "global for every RID and IOMMU in the system so
-it can go into a MSR". Gross, but fine, ask for that explicitly when
-allocating the PASID.
-
-Jason
