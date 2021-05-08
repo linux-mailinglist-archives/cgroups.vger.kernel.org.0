@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B25377198
-	for <lists+cgroups@lfdr.de>; Sat,  8 May 2021 14:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01228377199
+	for <lists+cgroups@lfdr.de>; Sat,  8 May 2021 14:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhEHMQ4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 8 May 2021 08:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46578 "EHLO mail.kernel.org"
+        id S230447AbhEHMQ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 8 May 2021 08:16:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhEHMQ4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sat, 8 May 2021 08:16:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2528661469;
-        Sat,  8 May 2021 12:15:52 +0000 (UTC)
+        id S230419AbhEHMQ6 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 8 May 2021 08:16:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73E8E6147E;
+        Sat,  8 May 2021 12:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620476155;
-        bh=Z3np8vRR6Fe/+PrLZCrWi/n6U1UYxoqdr9Au8VeyDl4=;
+        s=k20201202; t=1620476157;
+        bh=7eUgs0ekWyt837T6LcGkgs858Rf04B5QX6Bu8MJC1M4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKCG7guD+GJ4pJvZCC7qAcNUTiikvbcWJEM/6HwdG0UqSf8PaVtC/hhRp9J7rCXoD
-         BNuSFJXgdL9qcKPkz+rO/5a5jtPLPmkqitnK6IUof7iM7EM6qfEwTboEKPIS4A4cuJ
-         P+4ZwZ0X72QZHsOgFgEuUf9rkdHkvlryoGSB9hKoyzHW+mvvmgEG2CQqX9HEKq6bH1
-         iZq0DozKQYj46tG8wUD00hM1RtHMIlVorW3OVclJ+GPno1N444rnqqfkIvckNl06h0
-         dvIGTSAYsF76e0HoVbAdOPpVpukFidr1H/8vuRHfClqvc9uA1Ml+SyqUAG0/wqbMrF
-         V1jDyDxgWUQbw==
+        b=qlWtUUcBhcUYyLTFNnIpiQz2INQqQ+j8PvRiTBdB6aT8IHclKvX+sGHML1HcJBVOx
+         KnFt2ksYnEpo5M5mjRbI4fIm3Phqrgfn4muJDdt/hnP1JHX/ZzT7ItKkye3mDXYO5N
+         aUYsu7S3EB4n4SkCTRgR5fvaZHHkoEmDgr8TQeFxH5l/yvIOizdB7ap9gIZiq8PPHh
+         W/Q2Jir97d28xsTG7QGV5VoLS9anCsqPpmV2sCtGR9wA5/BG5B40EcA7Op4VFpVYOh
+         3CTejniEES/tWhIhb+zdZaDxxwdoTxMXzEDqsfBgoHyyiCO9Uykg8dEJ1h5xYtYI92
+         RXpct/e2EjaXA==
 From:   Christian Brauner <brauner@kernel.org>
 To:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>
 Cc:     Shakeel Butt <shakeelb@google.com>,
@@ -30,15 +30,15 @@ Cc:     Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         containers@lists.linux.dev,
         Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v3 2/5] docs/cgroup: add entry for cgroup.kill
-Date:   Sat,  8 May 2021 14:15:39 +0200
-Message-Id: <20210508121542.1269256-2-brauner@kernel.org>
+Subject: [PATCH v3 3/5] tests/cgroup: use cgroup.kill in cg_killall()
+Date:   Sat,  8 May 2021 14:15:40 +0200
+Message-Id: <20210508121542.1269256-3-brauner@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210508121542.1269256-1-brauner@kernel.org>
 References: <20210508121542.1269256-1-brauner@kernel.org>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=zdu4cmCLHejWfxLXMelts0rSpFC8qk9wZuoiNeHiin8=; m=I3MSFmKf1pbbRfbAK7y/Bkq5X38Qg95Sz63m3UUHpxE=; p=y57GkHCBx4K2DRLBiMddNPtk4ONjJhS+uFuQ+wSoBJI=; g=f66b8ed84f77326338a4318eeab17fe419bdcba3
-X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYJaA0AAKCRCRxhvAZXjcoq58AQCHzH4 NQBVzfP7eOVRNJjOzlN4mhDlO5sjuibK8P8VqwgD+ID7dvojR3aoBvCxYt94LSZjuK3LYuLQSiLHr FpWwJQI=
+X-Patch-Hashes: v=1; h=sha256; i=DIB/9pEGy9llyw8JVnB5N3xonNHMlykb1jj0N6tKKZc=; m=AINvc3b3JybbVUtUd5efhWEUs+WExpok1nDwV9EPyE0=; p=DHUt07yqiAMnkkMUKU00TMtgEeY5ceCRlyT9YTuFjfA=; g=f9f764d90d255b615ede51d62b8fdc79385ad80c
+X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYJaA0AAKCRCRxhvAZXjcomliAQCaGV/ jhSrBqNku77s1VvRiYCZ6tdf4oxEd+YuN1z+7fgEAy/WBfg/6Tj0e6t5RHgICoVpUSRBJNGrbRQ3B bxR7agc=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -46,51 +46,39 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Give a brief overview of the cgroup.kill functionality.
+If cgroup.kill file is supported make use of it.
 
-Link: https://lore.kernel.org/r/20210503143922.3093755-2-brauner@kernel.org
-Cc: Roman Gushchin <guro@fb.com>
+Link: https://lore.kernel.org/r/20210503143922.3093755-3-brauner@kernel.org
 Cc: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <guro@fb.com>
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v2 */
 - Roman Gushchin <guro@fb.com>:
-  - Drop sentence that mentions combined useage of cgroup.kill and
-    cgroup.freezer.
+  - Fix whitespace.
 
 /* v3 */
 unchanged
 ---
- Documentation/admin-guide/cgroup-v2.rst | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ tools/testing/selftests/cgroup/cgroup_util.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 64c62b979f2f..6adc749d863e 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -949,6 +949,21 @@ All cgroup core files are prefixed with "cgroup."
- 	it's possible to delete a frozen (and empty) cgroup, as well as
- 	create new sub-cgroups.
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
+index 027014662fb2..f60f7d764690 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/cgroup_util.c
+@@ -252,6 +252,10 @@ int cg_killall(const char *cgroup)
+ 	char buf[PAGE_SIZE];
+ 	char *ptr = buf;
  
-+  cgroup.kill
-+	A write-only single value file which exists in non-root cgroups.
-+	The only allowed value is "1".
++	/* If cgroup.kill exists use it. */
++	if (!cg_write(cgroup, "cgroup.kill", "1"))
++		return 0;
 +
-+	Writing "1" to the file causes the cgroup and all descendant cgroups to
-+	be killed. This means that all processes located in the affected cgroup
-+	tree will be killed via SIGKILL.
-+
-+	Killing a cgroup tree will deal with concurrent forks appropriately and
-+	is protected against migrations.
-+
-+	In a threaded cgroup, writing this file fails with EOPNOTSUPP as
-+	killing cgroups is a process directed operation, i.e. it affects
-+	the whole thread-group.
-+
- Controllers
- ===========
+ 	if (cg_read(cgroup, "cgroup.procs", buf, sizeof(buf)))
+ 		return -1;
  
 -- 
 2.27.0
