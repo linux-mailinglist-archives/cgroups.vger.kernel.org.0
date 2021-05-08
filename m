@@ -2,137 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988F7376D7A
-	for <lists+cgroups@lfdr.de>; Sat,  8 May 2021 01:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7467F376FCD
+	for <lists+cgroups@lfdr.de>; Sat,  8 May 2021 07:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhEGXqi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 7 May 2021 19:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhEGXqi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 7 May 2021 19:46:38 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CE0C061574;
-        Fri,  7 May 2021 16:45:36 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id o1so7907523qta.1;
-        Fri, 07 May 2021 16:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rk5ZF5O3eDY1kMqyU3TfWHx2sPsSACItLLAgyKze1w4=;
-        b=WRCthpiWBtHfvBKo/T251l8U1FYDhxXo7foPARg3JjejHTmSQOooowsVGhiLNOMcQq
-         SEsxajIMgeAvkewvQIU3xgrOHNPR0Z9w1zSYWr8ZUs70zgkyMRMXPTpFsGKP4SdyAs1h
-         gYDTlKwwBVwPfauLYsM/53bjt3mahmc4GsVenCC96iwSpELZA/54Bf6QYhKIYwdbb5z2
-         AHAhzCo2p1w9E/No1NNALqOx7P42N3Pl5AwOysmoxj/mh3p8uYsuFodkyDeZIk0AsCsU
-         MYajtRBmN8d9BC+YYXawJbrQNPVvtBq3Yp3ek+8RBg3AlU9ogvuprYYPRsriM88vgmM3
-         SzVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rk5ZF5O3eDY1kMqyU3TfWHx2sPsSACItLLAgyKze1w4=;
-        b=Lc98UuAgRdI5t1E/0ConFTVDSgK/Ao7nxdbffvWgnrvuz++emiLEOT+kN+OEopUoJg
-         Dd+jaCh9hAkHVbFgTFnQ7o6UxcZrUrptxQLvjxdlQ717u3l6vB51QdkqpyCroEkEEO8F
-         uB1k81OtO5UHgtOJdsvLBbbpBRPD3geLiv10myyhNGND4fl2kf5a2dmv+luM7wY6aISx
-         tqlRIJjUs05n76Y2pJtvmqhN8bNjp32WSsx0V7EdjCdqW62NUca1lbPEkqlMHNE2DZPO
-         Teji3UhECt/hBX4aK7c4B5HHI1lHr7PrDZs8V8bTxnjXH6ebSSsLyhzcSoucCgC/vgkC
-         Y2Wg==
-X-Gm-Message-State: AOAM532cdmM9/FvpcMd9cxmqzfZyacu/d2KFSC6EsMAWWkLCyqm0J/Kt
-        pjt7iiheLetBQ0xHbLf/0jA=
-X-Google-Smtp-Source: ABdhPJzjTDnhrKBnwYTKzTK+SPBDjhjdMBkHM07M5oIZGhHtKq0iDeDFE/rmPDemNN2JQXfuLxum5Q==
-X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr12236002qtv.157.1620431135577;
-        Fri, 07 May 2021 16:45:35 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id 2sm4492640qko.28.2021.05.07.16.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 16:45:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 7 May 2021 19:45:33 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <y2kenny@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Brian Welty <brian.welty@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Network Development <netdev@vger.kernel.org>,
-        KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Dave Airlie <airlied@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <YJXRHXIykyEBdnTF@slm.duckdns.org>
-References: <YJVnO+TCRW83S6w4@phenom.ffwll.local>
- <CADnq5_Pvtj1vb0bak_gUkv9J3+vfsMZxVKTKYeUvwQCajAWoVQ@mail.gmail.com>
- <YJVqL4c6SJc8wdkK@phenom.ffwll.local>
- <CADnq5_PHjiHy=Su_1VKr5ycdnXN-OuSXw0X_TeNqSj+TJs2MGA@mail.gmail.com>
- <CADnq5_OjaPw5iF_82bjNPt6v-7OcRmXmXECcN+Gdg1NcucJiHA@mail.gmail.com>
- <YJVwtS9XJlogZRqv@phenom.ffwll.local>
- <YJWWByISHSPqF+aN@slm.duckdns.org>
- <CADnq5_Mwd-xHZQ4pt34=FPk2Gq3ij1FNHWsEz1LdS7_Dyo00iQ@mail.gmail.com>
- <YJWqIVnX9giaKMTG@slm.duckdns.org>
- <CADnq5_PudV4ufQW=DqrDow_vvMQDCJVxjqZeXeTvM=6Xp+a_RQ@mail.gmail.com>
+        id S229494AbhEHFrQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 8 May 2021 01:47:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46291 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhEHFrP (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 8 May 2021 01:47:15 -0400
+IronPort-SDR: 4cFWoE6RKjxjOCa7HjfUutuA9ciYFfreJeJV6JhRLtShcly/B1xC7nl6aJVdStsn5M8s5VoBZD
+ U5q2yy99NWPA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="186322301"
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="186322301"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 22:46:14 -0700
+IronPort-SDR: gSxN5uXElMsj2qT+yR8CJ4BcwHoUOxd83fYjg+j23bIb2uqUXHiws+hkDqagEo06tt+SJUNHZs
+ QWhqiXmqxGPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="390289653"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga003.jf.intel.com with ESMTP; 07 May 2021 22:46:14 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 7 May 2021 22:46:14 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Fri, 7 May 2021 22:46:14 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 7 May 2021 22:46:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U9lKDO2O9Ot1iksWU6k9V8RP5bpY7YX4Zml6h+btvax0tTfJRxi53Msht38aCjJDwhbevL1iL6t+W8fKn63LzDUJLZ5SVYvzTJvzg/S5FkEQCI1wf59MtljpKZoYjnxLpGrzZ2peADiNdPdm6rD8LukdP7q7wntYRPRLfROdSd3URjZ2JuwBR/H2wzHNDJhIyMezY6HOFJweM8t6Gp5IWhWoIC/voIt8hxsjnFKrPM+VV6UuRdtEpKlFYuOIEeUf5/MFbcRUmajUHMXo9McI2m8JvRmPHmEGc2CBKVIMIEQUCFGKPJtecMNW6upEGXeSLag5a6NDWw9miwST/WCBBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QifxiqKM68aD+Y4zhQAHqfPHngOrU7xs8nSqzNmvdjk=;
+ b=BIbrcw+4F1bvOUfuXmfCIvn92IBiLa6TeBngjx5SsvKqQ7u64xT4Ck6CJ8K61nxD8jYdwGmmKak0p46HdNnKdjIhethPg2ySCRirK5UzV3CV/lypwqnMCxlO3+UAF/84XVipEntHaAVFTItzu/9jPIbIRQWP9TTVRyiLB98UuBWLrdLirV7QjWHaqHnWDjz4nI5bZJuBi+CzrcV5iDHB36SHTHpeB7GP04uxT0g82PFz+l2De0K2j6gZFPaIf9OtfHKhpknKnJPljpPV+L7Gq6PBXAAp74gLAMt6QHscvS+BmeWhXdJXNnjRxBXBpmoqhXtTMBmk6bnaJQkqnUDfyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QifxiqKM68aD+Y4zhQAHqfPHngOrU7xs8nSqzNmvdjk=;
+ b=zMlZqR5yg1Z2aN2Va6OSrmGUVJggjdgzdD8HCMMSwO7CFO0XHtqq109N5y2rgOc0/XIzvnbe4Mr+PRqCxVXwab6AHnuIdIhjbEMNAaUshDkKjBEaL3J1U+ZZU5tpOyRQk6pL8uqVbxVURgGRbdalQbQWCNqOBRUSyyM5DCEniwU=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1935.namprd11.prod.outlook.com (2603:10b6:300:10c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Sat, 8 May
+ 2021 05:46:09 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29%9]) with mapi id 15.20.4108.030; Sat, 8 May 2021
+ 05:46:09 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAACiXgIAAVBgAgAAaMwCAAAESAIAABy2AgAAgOYCAFdCAgIAAppUAgADsNgCAACqygIAHsmaAgAAzsYCAAAjdgIAAD/yAgAAcQgCAADqggIAAk6nQgABIUACAASsnkIAAYWwAgALs9qCAAdeZgIACip7wgAEiVwCADrrawA==
+Date:   Sat, 8 May 2021 05:46:09 +0000
+Message-ID: <MWHPR11MB18861BF1CEA9AEA0B8CB2B0C8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210421175203.GN1370958@nvidia.com>
+ <20210421133312.15307c44@redhat.com> <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210423114944.GF1370958@nvidia.com>
+ <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210426123817.GQ1370958@nvidia.com>
+ <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210428204606.GX1370958@nvidia.com>
+In-Reply-To: <20210428204606.GX1370958@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [101.80.65.46]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 04fb36bc-af60-4673-e5cd-08d911e494e7
+x-ms-traffictypediagnostic: MWHPR11MB1935:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB19352275E4B23ADD601143BF8C569@MWHPR11MB1935.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oqac7lqgG0g0apDgAsNyM5IkIAoLB/fhAPSsHHSk/MSXSDE2OTVLg8ogpGdytWVEKZs0Zqgyu/bU08lEnKU4NTjKiyn6JbJLWpdqFFtrIwfT1ZowNIi0nCnWWMJP5o/7YwGclnMgEufWvcbBxDGtsGPsi67/D5L6zGggx9oP3x3Pn+alrSuilB+plWXIJhPSUEagZ0epwPbaDWJWIdya7yONgSVnYWTKqz7HCzVpTcKI7pFYXFfeL1mP0tZxOqtjolbakCZzW+s0ygxCK+xGI+rOLiv5oX4MgbPWMfk0bPh78/vRmbhvpm8aORr0jvDWaCXao1azuVsFR6uq+u6jMLRWp+6SndUYw2hpsIimlDFmNlS+FtmTv/XNQpRB9AyYPoZjCinZhmLYaixmoOoxZDtFbmkeokv9XNAfS6Mzk3JU8vmrbFAY3KL4IT17lDWMZrr7ankQGcdKOeAiCCJP4uxR2KXMKMVtNSz9FgQ/3vSOyG04VsaHvoce6yMxuBHRd02y7HX5Ysjte3rvtlrQeyY1jijT3nCOSmb8asWYpgewkhl2ijQTXBqcIRF6z1XMXLyYwIIESdGpZRPralSDeCfIvQLE3aCj4C3vmoogSM0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(136003)(346002)(366004)(8676002)(7696005)(6916009)(6506007)(9686003)(66476007)(64756008)(71200400001)(66946007)(76116006)(66556008)(5660300002)(55016002)(4326008)(2906002)(8936002)(86362001)(7416002)(186003)(478600001)(33656002)(38100700002)(26005)(122000001)(54906003)(66446008)(316002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?NUpYbnc0UHkyMlhNbmxmVkpwVURpL0VoN3pMN0FjejhjYnFCTEJ0cEd5ejVR?=
+ =?utf-8?B?TndsbnFlN1MzdlJ0UUlpUll4cGQxcXhIbzFmMjZuRm5aWDA0UnNSZWxkSUdR?=
+ =?utf-8?B?cWkrVFgyKzF0SzNVcGNmT0NvWHl2bTN0K3VLdVRidTRxVGRsV1puK2ZKeTYy?=
+ =?utf-8?B?MWVkVE55VTIrZ01KV1NZdSt1RzZFVU1oZjdxcnkwOVh1ZGVxOERDVmkvOHhW?=
+ =?utf-8?B?Y3VqYWE1YzBkd3F4WFRpak1MOHkxL0pHUlFGSDFZTHV0blpLZUhKUjBTOVQv?=
+ =?utf-8?B?TFNGa3h6eHc2aW9Tb3g1MTVFMkQwU2djNGY4eHlMeXJreWRTc0EycXN3MWdF?=
+ =?utf-8?B?WWtRaFc3VzUyVHIrWkpRdU9weXF5aEZ3eldBQUF0WFBmSTI3aWlDS0htOThR?=
+ =?utf-8?B?SFhyOWRwMkFobDQrSTkzYkQxaXlyMWZIRW1DbEJOcHYwYmdIUGhadzd1d0Fo?=
+ =?utf-8?B?aTZZaUw4S0tvdm1mNGtWR3lIY2hZUCttREZ2RTd5enpoRU1WMGo3MGk0ak1Q?=
+ =?utf-8?B?cE0rZVk1S1V4QWpCcXYxSHFJNVBITlVGcVB2L3hqNEk2L2d3aWtkWTZLYlNK?=
+ =?utf-8?B?enBXSnJwdUxRQ1Fta1Y1VllLaEdRaUdjeXRsZmxnaXJQVlFwdzRza044anlv?=
+ =?utf-8?B?dGtFTEtoZGRLVnYyOVVaZEJ2cXJxSE9tL0Uva2xUSkRlZDFuRzkyK1ZvNzVL?=
+ =?utf-8?B?MDVBSndFcmlvU0krMDMzY1hWM2xNT2Y5K1ZvVy9YbEdnZlFEWXIvK1Y4Zzhn?=
+ =?utf-8?B?TGFmUGlreWQyZGlTempScVI4U2ZNSnRqTUlTZHduMm5wQTNNSUZSMGhjMWhu?=
+ =?utf-8?B?a0IraUV5a2ZTN3JadG5OTUgvakVRNEQ5bnRZck9vY2RKa0JqNzFGRW1lcGpQ?=
+ =?utf-8?B?NERUdGx3bXE0VnRBbzh6cTFyM3o4N2hEVUx1OVVkdWtMNEhwQmNVckhiV0Nr?=
+ =?utf-8?B?N0ducFhzb3pnaDY2RVdXWDFFWklER0lvQThxV085N3hJS2RiZDV0bFAzWU10?=
+ =?utf-8?B?ZWQxL0xlV3B2R0hyTE95NnViZWRNcG9tRzl1TVBCbUNVT0FwdjU2Y3orWmxw?=
+ =?utf-8?B?aU15bis0Vk5Sb2VGZXhjVC9xT0lNNFBtL2w0ZEY5Y1RCL05HcTFHOFljeEdV?=
+ =?utf-8?B?TjVQMDVIQ3gvSFZ5ekU2eStITDM0aDNWZXFkNC9oZGtBT0JoTlovNnFWcEla?=
+ =?utf-8?B?TlpIc3BuM0E3L3BJRVNQd1NVNjdNVkFmN3ZZN0tYdDBOZ0Q4a2ZNNUFlUFhr?=
+ =?utf-8?B?VTlNby9nbnVSeDExYXhNOHd2cU92M1VzUnpDalNNeWgwdk1KSU5HTnBuSGk1?=
+ =?utf-8?B?aWxiTFRKYUMreTd6SnJicytHdVlwY05CYlNEVWhnVGRMV0dSNDk0eFlINDNh?=
+ =?utf-8?B?S0pwNnFjZWw3YWMyVVlzR2czRDBxRjJBNHJqUkw0dHlsSDJybjE5am5mWWtQ?=
+ =?utf-8?B?dXNPL1JoN3pVMlRFYWp5V3htajUzd2pZRkc5czBteUZ6NUpzNk9MWTF0dEZG?=
+ =?utf-8?B?Y3lqQjVoUmdsaUM4ZTNNRzVCdzNhMVlmUHFjSHRQbnBJMHZBdHlkckc4dm14?=
+ =?utf-8?B?T1dBWnE3T2xBdHV4eDFEc0xBR0lTamdxTmlONlZ5QjMrQnFFSjRIYms3T0pt?=
+ =?utf-8?B?OXZ5NktRR3Q1d1ppbnJ6T2xoOGluQ2gyTHdycmsveUpnWC81WTA5OUl4aTRK?=
+ =?utf-8?B?ektLcmRnVWR1UjcvSXB2Q2tlbGhDN1ZySlkvcW1HYnRlb1IxL2ZDYkpMa2dw?=
+ =?utf-8?Q?xTVa/PX/sy/l9peDFE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADnq5_PudV4ufQW=DqrDow_vvMQDCJVxjqZeXeTvM=6Xp+a_RQ@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04fb36bc-af60-4673-e5cd-08d911e494e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2021 05:46:09.6837
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xEEsZJIo0fI5e2LwB26M/BIcV8Ty9zxvVQTNqiC2o20JmqJMtMDMbQxPjAeDYoMycv4RjVlDAPdgub3h/crbFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1935
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Fri, May 07, 2021 at 06:30:56PM -0400, Alex Deucher wrote:
-> Maybe we are speaking past each other.  I'm not following.  We got
-> here because a device specific cgroup didn't make sense.  With my
-> Linux user hat on, that makes sense.  I don't want to write code to a
-> bunch of device specific interfaces if I can avoid it.  But as for
-> temporal vs spatial partitioning of the GPU, the argument seems to be
-> a sort of hand-wavy one that both spatial and temporal partitioning
-> make sense on CPUs, but only temporal partitioning makes sense on
-> GPUs.  I'm trying to understand that assertion.  There are some GPUs
-
-Spatial partitioning as implemented in cpuset isn't a desirable model. It's
-there partly because it has historically been there. It doesn't really
-require dynamic hierarchical distribution of anything and is more of a way
-to batch-update per-task configuration, which is how it's actually
-implemented. It's broken too in that it interferes with per-task affinity
-settings. So, not exactly a good example to follow. In addition, this sort
-of partitioning requires more hardware knowledge and GPUs are worse than
-CPUs in that hardwares differ more.
-
-Features like this are trivial to implement from userland side by making
-per-process settings inheritable and restricting who can update the
-settings.
-
-> that can more easily be temporally partitioned and some that can be
-> more easily spatially partitioned.  It doesn't seem any different than
-> CPUs.
-
-Right, it doesn't really matter how the resource is distributed. What
-matters is how granular and generic the distribution can be. If gpus can
-implement work-conserving proportional distribution, that's something which
-is widely useful and inherently requires dynamic scheduling from kernel
-side. If it's about setting per-vendor affinities, this is way too much
-cgroup interface for a feature which can be easily implemented outside
-cgroup. Just do per-process (or whatever handles gpus use) and confine their
-configurations from cgroup side however way.
-
-While the specific theme changes a bit, we're basically having the same
-discussion with the same conclusion over the past however many months.
-Hopefully, the point is clear by now.
-
-Thanks.
-
--- 
-tejun
+PiBGcm9tOiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPg0KPiBTZW50OiBUaHVyc2Rh
+eSwgQXByaWwgMjksIDIwMjEgNDo0NiBBTQ0KPiANCj4gPiA+IEkgdGhpbmsgdGhlIG5hbWUgSU9B
+U0lEIGlzIGZpbmUgZm9yIHRoZSB1QVBJLCB0aGUga2VybmVsIHZlcnNpb24gY2FuDQo+ID4gPiBi
+ZSBjYWxsZWQgaW9hc2lkX2lkIG9yIHNvbWV0aGluZy4NCj4gPg0KPiA+IGlvYXNpZCBpcyBhbHJl
+YWR5IGFuIGlkIGFuZCB0aGVuIGlvYXNpZF9pZCBqdXN0IGFkZHMgY29uZnVzaW9uLiBBbm90aGVy
+DQo+ID4gcG9pbnQgaXMgdGhhdCBpb2FzaWQgaXMgY3VycmVudGx5IHVzZWQgdG8gcmVwcmVzZW50
+IGJvdGggUENJIFBBU0lEIGFuZA0KPiA+IEFSTSBzdWJzdHJlYW0gSUQgaW4gdGhlIGtlcm5lbC4g
+SXQgaW1wbGllcyB0aGF0IGlmIHdlIHdhbnQgdG8gc2VwYXJhdGUNCj4gPiBpb2FzaWQgYW5kIHBh
+c2lkIGluIHRoZSB1QVBJIHRoZSAncGFzaWQnIGFsc28gbmVlZHMgdG8gYmUgcmVwbGFjZWQgd2l0
+aA0KPiA+IGFub3RoZXIgZ2VuZXJhbCB0ZXJtIHVzYWJsZSBmb3Igc3Vic3RyZWFtIElELiBBcmUg
+d2UgbWFraW5nIHRoZQ0KPiA+IHRlcm1zIHRvbyBjb25mdXNpbmcgaGVyZT8NCj4gDQo+IFRoaXMg
+aXMgd2h5IEkgYWxzbyBhbSBub3Qgc28gc3VyZSBhYm91dCBleHBvc2luZyB0aGUgUEFTSUQgaW4g
+dGhlIEFQSQ0KPiBiZWNhdXNlIGl0IGlzIHVsdGltYXRlbHkgYSBIVyBzcGVjaWZpYyBpdGVtLg0K
+PiANCj4gQXMgSSBzYWlkIHRvIERhdmlkLCBvbmUgYXZlbnVlIGlzIHRvIGhhdmUgc29tZSBnZW5l
+cmljIHVBUEkgdGhhdCBpcw0KPiB2ZXJ5IGdlbmVyYWwgYW5kIGtlZXAgYWxsIHRoaXMgZGVlcGx5
+IGRldGFpbGVkIHN0dWZmLCB0aGF0IHJlYWxseSBvbmx5DQo+IG1hdHRlcnMgZm9yIHFlbXUsIGFz
+IHBhcnQgb2YgYSBtb3JlIEhXIHNwZWNpZmljIHZJT01NVSBkcml2ZXINCj4gaW50ZXJmYWNlLg0K
+PiANCg0KT0ssIHNvIHRoZSBnZW5lcmFsIHVBUEkgd2lsbCBub3QgZXhwb3NlIGh3X2lkIGFuZCBq
+dXN0IHByb3ZpZGUgZXZlcnl0aGluZw0KZ2VuZXJpYyBmb3IgbWFuYWdpbmcgSS9PIHBhZ2UgdGFi
+bGUgKG1hcC91bm1hcCwgbmVzdGluZywgZXRjLikgdGhyb3VnaCANCklPQVNJRCBhbmQgdGhlbiBz
+cGVjaWZpYyB1QVBJIGlzIHByb3ZpZGVkIHRvIGhhbmRsZSBwbGF0Zm9ybSBzcGVjaWZpYw0KcmVx
+dWlyZW1lbnRzIChod19pZCwgaW92YSB3aW5kb3dzLCBldGMuKQ0KDQpUaGFua3MNCktldmluDQo=
