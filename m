@@ -2,159 +2,528 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613223792C3
-	for <lists+cgroups@lfdr.de>; Mon, 10 May 2021 17:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E4C3792E1
+	for <lists+cgroups@lfdr.de>; Mon, 10 May 2021 17:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhEJPcv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 May 2021 11:32:51 -0400
-Received: from mail-dm6nam11on2074.outbound.protection.outlook.com ([40.107.223.74]:19192
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236171AbhEJPcU (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 10 May 2021 11:32:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PZ1XScNC8WxDcJSBGF4fH2x6doXrBkSkkD0U1HV5YPC09ze3kTsfUKGZpfCnNZfTzqNH8DY5rjkDOqjsMNf9gKMfNHDw3flPOcHj2NfhJ5SoUTBrZUIGgg19GuR7/FmP/Yq6EAv/lwBGMVQnDWBQREO+9CjXxozTvk/voXvP0FNsit/1L2n+v1vrRSQYNlqMkV7q9Ab6vPvy1lrE5RiFVoxpeN4v/fCZgBE3takI1eHbkECrIiZO9xU/+8rEdn68XDGPnGWqLn4XqshAvrcXnAtGu+xMdh+E1LfhgPYbQbwLKtoeeVIRv2Ola3GivCZ5+z1PlOfnGELx2RcTmvvhHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=udVIqNaDkwT7Wnxrtq81jU6gH6RKKDUZxI8YbxXrVN8=;
- b=VfSOynSvuoFfaz45rYgu5wO3Ta1xKEqzX/cwZFmgDPrF3ovrDLIJmnSUPdmnrOG0qMixageYZXHxyqjAkGrKNsVUCWhKwB5q023EaxEvL/cVoR7cqPvMQ63QR+tIaWXwUnmTfbZ/+6GiBk/bSQ1XGGgC8tBKPEg776Key0XqRWi4IhTTap5qX1LRjjAkFBpajZR3ze/ILBP5YwWWB0kqDbZcOnFXuWX2T1P7nQuwnCcKpj/mvqdTgATQsJ0EB321bI9kPyHYclhPaZcEnXxgbalrDR5lGlrSSfKsUdqs6zCYCCvCD+uv9baJ+SVSPHbfiHqbALCMe+9ntstdod2jXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=udVIqNaDkwT7Wnxrtq81jU6gH6RKKDUZxI8YbxXrVN8=;
- b=mFsEy5JkekTI80bM85PZUHzWs0zmPmwB/1P3jBfkRBIAW2Stna8fGSwcuqgBI2+CeWBATW8yKdloJnDqvrkcx2AF01IQ2ZuvO6dykVuRETBDh0SxDUtIcjcOXXqXiPsMtLGdlV4UN2aHapnBZBJMAMANKQO4dMJL6+QaeOyNhj7+F7+5U+P1CaHz01fQS27A9nOw74FlIgx2lsicNIwSb3UlXkFV4O9iCRb7hohjLbgCQKrksl/2cl9uigF8OJl8bQYwChjbetw8LL51jr1BLXfr6vl3ya+MeEuREXqDVN60sV2QgSbNkLhH/4NQJczJ4PXm1UgfVN6/ELBTo7jlkA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1241.namprd12.prod.outlook.com (2603:10b6:3:72::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Mon, 10 May
- 2021 15:31:13 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Mon, 10 May 2021
- 15:31:12 +0000
-Date:   Mon, 10 May 2021 12:31:11 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210510153111.GB1002214@nvidia.com>
-References: <20210504231530.GE1370958@nvidia.com>
- <20210505102259.044cafdf@jacob-builder>
- <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <YJOZhPGheTSlHtQc@myrica>
- <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
- <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210510123729.GA1002214@nvidia.com>
- <20210510152502.GA90095@otc-nc-03>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210510152502.GA90095@otc-nc-03>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0193.namprd13.prod.outlook.com
- (2603:10b6:208:2be::18) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S233815AbhEJPiy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 May 2021 11:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232289AbhEJPiM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 May 2021 11:38:12 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D349FC061574
+        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 08:37:07 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u16so16159917oiu.7
+        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 08:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Do8edzyErJYaihzKR9py7tmJleMu0ZxM7nsBRhd5v1o=;
+        b=M5yZpK7qno0uPRV7nNcwJFadQ9ejpXhNY6BtTEGBr9Ei0aC9VIbLaMGCmsO24VbPK+
+         JWr9OWAESZ/rsAS1qkbsCq9U9IblhFCGO2rZwQc5HjYQUqLesQt+ff25kXgP4RhhKkPe
+         ncKrFDLtLuPBHUKmQd6pSnzp7TwZ9AOHSpuOY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Do8edzyErJYaihzKR9py7tmJleMu0ZxM7nsBRhd5v1o=;
+        b=UNPD9goRIwDZkOtoejQvrAOFCnvcu6LuP/1kSee7ApKFXOffMgWl0lTp8xgeAppuz1
+         qOgHwrEVZrNhThyQ4jATRpe1f+Dbhwwo35fhOqSwoNdMPx3sVgNF1y35FYWSrUcIzxSJ
+         V+4ywYTeJsS2P3DmxkKPl7oY1BIbPRvdpO1dZ9ggRm6sVlsoJHMRme4pyFs7DdILBl52
+         oqUKFJE5TLoMPpbT37Phra3XW6Ecx3LLYBgCf3FtVw9n2npF+JbpMpvaPIZYrzQ4lmiL
+         YxA7lxjMX7ltx1/rjfNYImzO4Q/Z1NMSfCeBC1Y8lM9pUz5Nuve7884eQRoIq+x30CqS
+         Tx2A==
+X-Gm-Message-State: AOAM532pQs5NfusYQt0C+CCFoT13bTLUoAWMzYmZhZ5MtEhJIeiEN2pd
+        +SvBJbpVl8OHgXbJ16mBuiPSXbYenk065KtXuEMrMA==
+X-Google-Smtp-Source: ABdhPJwAo+uLmeDXpUAOdnejF1LBfkHSkpVX1VDAgWv3+nMAFZqVnQ4HTOERpl1Rucbvw20AOqkleZzAtXbyI+C5FHM=
+X-Received: by 2002:aca:df87:: with SMTP id w129mr18562550oig.128.1620661027115;
+ Mon, 10 May 2021 08:37:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0193.namprd13.prod.outlook.com (2603:10b6:208:2be::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Mon, 10 May 2021 15:31:12 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lg7sF-004axe-76; Mon, 10 May 2021 12:31:11 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 53ab3455-20b2-4f63-814b-08d913c8a496
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1241:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB12412481168F8F4151DFACAAC2549@DM5PR12MB1241.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pkoCTtkKKuNtkd2sHpMgYF2xHYZKECcnEU9ohj3NYxyncclkuInXgsenfSsz5ARR8q2kBUCUIrOJ3D1R7yCBV0lRIA3scVAfR3H2UAEWOUWe2mhtMk79w12e2REjo25wGz4AngbJof4yLDGCJ26PW2Zxh0ZO0M0TCZRw83ud4c7Mbe/YwXsOrAMRT7ueoGFV/UVG3PrgrRCpUcya5LnYIoPGBwBaXNbRy1r7Nv4kf1U6uTLHTTqvK7wEommoI27R79ajUWzqPrZO5oOArmqTJuSTbp/TnBKam2jt20MDtLNWIltBo3UBKYFbVkT04BcR6tlur/gLM6h4sBw6x9q40Hsp2jga/aR5wIvtBiZHzrocaV0VYRFDJj4tYzsVoUTq1a9hg3pI4vCGOKzfKeTc5IjGb+s+XhyNgn0t60u5fW0Bcc74Yts5SPtN+9BtsbVSNSBtg6qSTwJVXRqq5S/YA7gPYNE+QfDVBLwQQs6YcntcneQuhe33zRhGN2nXRQcHtA9PAaayKBoFTqvDngTurFA3UXNy1hBnWRkn0BRFoaEohmPP8+JBdpLQdeGCgDVItHBF4yvMFgUqjipvLZeZbVSXA84H2r/gQgw2L6JzbBg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(136003)(366004)(346002)(426003)(9746002)(9786002)(26005)(66556008)(2906002)(8936002)(66476007)(7416002)(66946007)(38100700002)(6916009)(5660300002)(186003)(1076003)(54906003)(33656002)(4326008)(478600001)(36756003)(86362001)(8676002)(2616005)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/FoYh/WBZIguh1RA1qdpWf/EA1zsu/m1UGRYEId0lCPUxnxd6Fe1euZ+fI2Z?=
- =?us-ascii?Q?qKI3erQY700VmgqtyA1oZc5p5cjwdMs4x8fGTHxckFPCgtOwMqCc/C8Gk9zP?=
- =?us-ascii?Q?HXcJHuNP3RTDx3Jd7SL3Fns+vqL7QyPMb2o0ORHosdG28U8z/YNc3st/95jT?=
- =?us-ascii?Q?djEpjcMBaJ1auMj410FEFF0Zgd9cI1N7gYyPegdp/ol7JKAPmKiKjG1nmGGV?=
- =?us-ascii?Q?Ln5P5PTCjidanyjf2gWv+vy9UXA9TVHMpOdCleHkaBf18TydfVPo8xWSwk8g?=
- =?us-ascii?Q?UD7aGX3uduoVxw/jOrrtdMgZ7KpSbjnwexV8x1mZKs1ANeMYrN+2Se3m/96w?=
- =?us-ascii?Q?dMmiqsAQaqnNciXI4yrv50rkFmZJPxacVRpT2zwfcnEvVIADOMPkvHXNFAeQ?=
- =?us-ascii?Q?pIiYiVICllL4xgOycjU9fnlhhSFtBKA0MAtsSa63vZN4v50s6KYw8064sRn9?=
- =?us-ascii?Q?k50cOZ2J4ffGHAtE+9dyvLJB8336/Cxh0D6bVyI4DVgWtBx1S64HD4Pt7S6t?=
- =?us-ascii?Q?hikM/bH4K068YEew8TpdMdoYD7o6PB2Nll7C9OlSZK387nOoQfiRQosOZ95Y?=
- =?us-ascii?Q?/Xty9FHBDEFK6b9XygEd7MVPBWoGJInd5CcnHQrmkf/X17cSKtDBfz9LNKGA?=
- =?us-ascii?Q?P8WcB8xbXGZzOIr1Q1HkXqEPhntzOxRakcCDcWlGDhU59FvMknKju8mES8hW?=
- =?us-ascii?Q?/96+p7gyltABftyZ4gUWZag0uhJnY0LL6n/K8iifGTV37mojsf8Mylga9J/0?=
- =?us-ascii?Q?ps1hApOrd9RDenkoJyW7NSUzAMp/aExnwum1cfdRpVFqMlm0HTefs71TSCNm?=
- =?us-ascii?Q?x+MBbci0ebCCshkZMsVB83W+PQ1JkkWLEhhvOM3SM/oSvHvU5yc/1qpeSSB7?=
- =?us-ascii?Q?k1ozfnrG7/tvS6+gBpQ33lIH85DsHOyCqL1PDDHZRcIZXDT/43G1nUaUg616?=
- =?us-ascii?Q?Tc67ouDvCSDNCkDV77RpHgTcr4096De3In3aUnr50gToeYhlhuezFR+n1vaK?=
- =?us-ascii?Q?lfb6Ob9uhZaM9WA7LeudCA0qLcB/rlMhJkzC9nnb2bso29OCn2guxwQIDitX?=
- =?us-ascii?Q?lXxu7dAN81TwV771IoEBkaLRljcHKFJu3ypjnEj0dyA9HPExa6A5Wd5b4h/6?=
- =?us-ascii?Q?bgnt3V5Y/92bV8z4FVO4SKgipNowYS4x6mGzf8reN/seEritjua4hAuhMMsC?=
- =?us-ascii?Q?tj/k8Z/IJh8EA/Qijg4RnwvZf03dsOZudPUYBxx1O7aaT7ZS7KXlkQktwZve?=
- =?us-ascii?Q?Frdj8u64pPw0z+2ayNWwJd/YyZ/MxfjFPbPbfaCKHLzc0p+uMxPYnstvuTej?=
- =?us-ascii?Q?CkJANvnyL4wu2W1HzZNgru5R?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53ab3455-20b2-4f63-814b-08d913c8a496
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2021 15:31:12.8088
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +0rnepl0bQAdj7c5AO4Yiq5n2Vm2P2YnBn/y00H42rP3AICPdqRiE3H+bumN/C1f
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1241
+References: <20210126214626.16260-1-brian.welty@intel.com> <20210126214626.16260-9-brian.welty@intel.com>
+ <YCJp//kMC7YjVMXv@phenom.ffwll.local> <dffeb6a7-90f1-e17c-9695-44678e7a39cb@intel.com>
+ <YCVOl8/87bqRSQei@phenom.ffwll.local> <89a71735-aae5-2617-c017-310207c5873b@intel.com>
+ <CAKMK7uG2PFMWXa9o4LzsF1r0Mc-M8KqD-PKZkCj+m7XeO5wCyg@mail.gmail.com> <67867078-4f4b-0a6a-e55d-453b973d8b7c@intel.com>
+In-Reply-To: <67867078-4f4b-0a6a-e55d-453b973d8b7c@intel.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 10 May 2021 17:36:56 +0200
+Message-ID: <CAKMK7uG7EWv93EbRcMRCm+opi=7fQPMOv2z1R6GBhJXb6--28w@mail.gmail.com>
+Subject: Re: [RFC PATCH 8/9] drm/gem: Associate GEM objects with drm cgroup
+To:     Brian Welty <brian.welty@intel.com>
+Cc:     "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Kenny Ho <Kenny.Ho@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 10, 2021 at 08:25:02AM -0700, Raj, Ashok wrote:
+The other thread about how to manage gpu compute resources reminded me
+of this one about gpu memory splitting.
 
-> Global PASID doesn't break anything, but giving that control to vIOMMU
-> doesn't seem right. When we have mixed uses cases like hardware that
-> supports shared wq and SRIOV devices that need PASIDs we need to 
-> comprehend how they will work without having a backend to migrate PASIDs 
-> to new destination.
+On Thu, Mar 18, 2021 at 8:20 PM Brian Welty <brian.welty@intel.com> wrote:
+>
+>
+> On 3/18/2021 3:16 AM, Daniel Vetter wrote:
+> > On Sat, Mar 6, 2021 at 1:44 AM Brian Welty <brian.welty@intel.com> wrote:
+> >>
+> >>
+> >> On 2/11/2021 7:34 AM, Daniel Vetter wrote:
+> >>> On Wed, Feb 10, 2021 at 02:00:57PM -0800, Brian Welty wrote:
+> >>>>
+> >>>> On 2/9/2021 2:54 AM, Daniel Vetter wrote:
+> >>>>> On Tue, Jan 26, 2021 at 01:46:25PM -0800, Brian Welty wrote:
+> >>>>>> This patch adds tracking of which cgroup to make charges against for a
+> >>>>>> given GEM object.  We associate the current task's cgroup with GEM objects
+> >>>>>> as they are created.  First user of this is for charging DRM cgroup for
+> >>>>>> device memory allocations.  The intended behavior is for device drivers to
+> >>>>>> make the cgroup charging calls at the time that backing store is allocated
+> >>>>>> or deallocated for the object.
+> >>>>>>
+> >>>>>> Exported functions are provided for charging memory allocations for a
+> >>>>>> GEM object to DRM cgroup. To aid in debugging, we store how many bytes
+> >>>>>> have been charged inside the GEM object.  Add helpers for setting and
+> >>>>>> clearing the object's associated cgroup which will check that charges are
+> >>>>>> not being leaked.
+> >>>>>>
+> >>>>>> For shared objects, this may make the charge against a cgroup that is
+> >>>>>> potentially not the same cgroup as the process using the memory.  Based
+> >>>>>> on the memory cgroup's discussion of "memory ownership", this seems
+> >>>>>> acceptable [1].
+> >>>>>>
+> >>>>>> [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt, "Memory Ownership"
+> >>>>>>
+> >>>>>> Signed-off-by: Brian Welty <brian.welty@intel.com>
+> >>>>>
+> >>>>> Since for now we only have the generic gpu/xpu/bikeshed.memory bucket that
+> >>>>> counts everything, why don't we also charge in these gem functions?
+> >>>>
+> >>>> I'm not sure what you mean exactly.  You want to merge/move the charging logic
+> >>>> proposed in patch #5 (drm_cgroup_try_charge in kernel/cgroup/drm.c) into
+> >>>> drm_gem_object_charge_mem() ?
+> >>>>
+> >>>> Or reading below, I think you are okay keeping the logic separated as is, but
+> >>>> you want much of the code in kernel/cgroup/drm.c moved to drivers/gpu/cgroup ?
+> >>>> Yes, I see that should allow to reduce number of exported functions.
+> >>>
+> >>> Both. I mean we'd need to look at the code again when it's shuffled, but
+> >>> I'd say:
+> >>>
+> >>> - cgroup code and the charging for general gpu memory moves to
+> >>>   drivers/gpu/cgroup, so dma-buf heaps can use it too.
+> >>>
+> >>> - the charging for gem buffers moves into core gem code, so it happens for
+> >>>   all gpu drivers and all gem buffer allocations.
+> >>
+> >> Daniel, I'm not sure we're in sync on what 'charging for general gpu memory'
+> >> means.  Thus far, I have been proposing to charge/uncharge when backing store is
+> >> allocated/freed.  And thus, this would be done in DRM driver (so then also in
+> >> the dma-buf exporter).
+> >> I can't see how we'd hoist this part into drm gem code.
+> >> The memory limit in this series is for VRAM usage/limit not GEM buffers...
+> >
+> > Yes this would be at gem buffer creation time. And just to get cgroups
+> > for drm up&running.
+>
+> Okay, but it's not of the ones in Tejun's list to start with:
+>    https://lists.freedesktop.org/archives/dri-devel/2020-April/262141.html
+> I hoped we would start by pursuing those (gpu.weight and gpu.memory.high)
+> as first step.
+>
+> Limiting GEM buffers is essentially controlling virtual memory size, which
+> tend to just always get set to unlimited.
+> Would be nice to get consensus from maintainers before proceeding to implement
+> this.
 
-Why wouldn't there be a backend? SRIOV live migration is a real thing
-now (see Max's VFIO patches). The PASID space of the entire dedicated
-RID needs to be migratable, which means the destination vIOMMU must be
-able to program its local hardware with the same PASID numbers and any
-kind of global PASID scheme at all will interfere with it.
+Hm I missed this one from Tejun.
 
-> When we have both SRIOV and shared WQ exposed to the same guest, we 
-> do have an issue. The simplest way that I thought was to have a guest 
-> and host PASID separation.  Where the guest has its own PASID  space 
-> and host has its own carved out.  Guest can do what ever it wants within 
-> that allocated space without fear of any collition with any other device. 
+The problem with just assuming that dma-buf in system memory are
+included as part of the overall memcg is that when we throw a buffer
+out of vram, it needs to go somewhere. So from that pov keeping all
+the dma-buf in their separate hierarchy, outside of what memcg sees,
+simplifies a lot of things. Unlike e.g. numa migration gpu vram
+migration is often required for correctness (some buffers _have_ to be
+in in VRAM on some gpus, or the workload just doesn't work), so if we
+allow admins to misconfigure stuff then there could be a lot of bad
+surprises.
 
-And how do you reliably migrate if the target kernel has a PASID
-already allocated in that range?
+I'm also expecting more hierarchies like this, e.g. if you have a
+bunch of GPUs connected with a fast interconnect, then you might want
+to set an overall limit for VRAM across all gpus, and then maybe
+additional limits on each gpu node.
 
-ENQCMD must not assume it is the only thing in the platform. It needs
-to be compartmentalized to specific participating RIDs and made
-explicit because it has a bad special requirement for cross-device
-PASIDs
+This is entirely different if we manage the VRAM as ZONE_DEVICE
+memory, but in that case I expect memcg will be able to take care of
+all the managing needs.
 
-Jason 
+Another case to consider is CMA allocations, where it's a zone in
+normal memory we need to allocate from, so again strange issues with
+double counting are to be expected.
+
+Or am I worrying about something that shouldn't be a problem? I.e. if
+workload fail because admins didn't reserve enough main memory in
+their memcg then we just shrug?
+
+> >> Unless you are talking about charging for GEM buffer creation?  But this is
+> >> more of a 'soft resource' more along lines of Kenny's earlier GEM buffer limit
+> >> control.
+> >> I raised issue with this then, and at the time, Tejun agreed we should keep to
+> >> 'hard resource' controls, see [1] and [2].
+> >>
+> >> [1] https://lists.freedesktop.org/archives/dri-devel/2019-May/218071.html
+> >> [2] https://lists.freedesktop.org/archives/dri-devel/2020-April/262141.html
+> >>
+> >>>
+> >>> - this might or might not mean a bunch less exported stuff from the
+> >>>   cgroups files (since you don't need separate steps for linking a gem
+> >>>   object to a cgroup from the actual charging), and probably no exports
+> >>>   anymore for drivers (since they charge nothing). That will change
+> >>>   when we add charging for specific memory pools I guess, but we add that
+> >>>   when we add tha functionality.
+> >>
+> >> ... so considering VRAM charging, then yes, we very much need to have exported
+> >> functions for drivers to do the charging.
+> >> But these can be exported from drm.ko (or new .ko?) instead of kernel.  Is
+> >> that still preference?   Also, if number of exported functions is concern, we
+> >> can replace some of it with use of function pointers.
+> >
+> > So the reason I suggested we drop all this is because we won't charge
+> > in drivers, we'll charge in ttm buffer management code. Which we'll
+> > adopt for dg1 in upstream. But it will take some time.
+>
+> Okay, thanks for clarifying.
+> I'm not familiar with where try_charge/uncharge would fit into the ttm model.
+> Will need to look into it more....
+>
+> >
+> >> So then returning to this comment of yours:
+> >>
+> >>> - cgroup code and the charging for general gpu memory moves to
+> >>>   drivers/gpu/cgroup, so dma-buf heaps can use it too.
+> >>
+> >> If you agree that we are charging just at backing-store level, then I think
+> >> logic belongs in drivers/gpu/drm/cgroup ??  As charging is done in DRM driver
+> >> (also dma-buf exporter).  In other words, part of drm.
+> >> If I understand, dma-buf heaps is exporter of system memory and doesn't
+> >> need to charge against gpu controller??
+> >> Will need some help to understand the dma-buf heap use case a bit more.
+> >
+> > Well we also need to track system gpu memory somehow. Currently that
+> > flies under the radar, and nasty userspace can just easily exhaust all
+> > of system memory with gpu buffers, even if there's otherwise cgroup
+> > limits in place. Which is not good. Hence also the overall limit for
+> > buffers.
+>
+>
+> If DRM allows user-space to exhaust all of system memory, this seems
+> to be a gap in enforcement of MEMCG limits for system memory.
+> I tried to look into it when this was discussed in the past....
+> My guess is that shmem_read_mapping_page_gfp() ->
+> shmem_getpage_gfp() is not choosing the correct MM to charge against
+> in the use case of drivers using shmemfs for backing gem buffers.
+
+Yeah we know about this one since forever. The bug report is roughly
+as old as the gem/ttm memory managers :-/ So another problem might be
+that if we now suddenly include gpu memory in the memcg accounting, we
+start breaking a bunch of workloads that worked just fine beforehand.
+-Daniel
+
+>
+> -Brian
+>
+>
+> > -Daniel
+> >
+> >>
+> >>
+> >> Thanks,
+> >> -Brian
+> >>
+> >>>
+> >>>>> Also, that would remove the need for all these functions exported to
+> >>>>> drivers. Plus the cgroups setup could also move fully into drm core code,
+> >>>>> since all drivers (*) support it
+> >>>>> That way this would really be a fully
+> >>>>> generic cgroups controller, and we could land it.
+> >>>>
+> >>>>
+> >>>> Patch #2 proposed to have a few setup functions called during drm device
+> >>>> registration.
+> >>>> You are suggesting to have this more tightly integrated?
+> >>>
+> >>> Yeah essentially if DRIVER_GEM is set drm core would simply set this all
+> >>> up. Since with this we'd always account all gem buffers in cgroups, and it
+> >>> would make basic cgroup support a non-optional part of drm drivers.
+> >>>
+> >>>> Okay, can see what that looks like.  It's true most of the exported functions from
+> >>>> kernel/cgroup/drm.c were taking a struct drm_device pointer, so seems it can be
+> >>>> restructured as you suggest.  But I guess we will always need some logic in
+> >>>> kernel/cgroup/drm.c to encapsulate the allocation of the 'struct cgroup_subsys_state'
+> >>>> for this new controller.
+> >>>> But I'm not sure I see how this makes the controller 'fully generic' as you describe.
+> >>>
+> >>> All DRIVER_GEM would automatacially support it. And yes there'll still be
+> >>> some encapsulation ofc.
+> >>>
+> >>>>> The other things I'd do:
+> >>>>> - drop gpu scheduling controller from the initial patch series. Yes we'll
+> >>>>>   need it, but we also need vram limits and all these things for full
+> >>>>>   featured controller. Having the minimal viable cgroup controller in
+> >>>>>   upstream would unblock all these other things, and we could discuss them
+> >>>>>   in separate patch series, instead of one big bikeshed that never reaches
+> >>>>>   full consensus.
+> >>>>>
+> >>>>> - the xpu thing is probably real, I just chatted with Android people for
+> >>>>>   their gpu memory accounting needs, and cgroups sounds like a solution
+> >>>>>   for them too. But unlike on desktop/server linux, on Android all shared
+> >>>>>   buffers are allocated from dma-buf heaps, so outside of drm, and hence a
+> >>>>>   cgroup controller that's tightly tied to drm isn't that useful. So I
+> >>>>>   think we should move the controller/charge functions up one level into
+> >>>>>   drivers/gpu/cgroups.
+> >>>>
+> >>>> Hmm, so for this, you are asking for the cgroup logic to not directly use
+> >>>> DRM data structures?  Okay, that's why you suggest drivers/gpu/cgroups and
+> >>>> not drivers/gpu/drm/cgroups.  So this is your angle to make it 'fully
+> >>>> generic' then.....
+> >>>
+> >>> This is another flavour of "generic", maybe need to split them up:
+> >>> - make it more generic by rolling it out for all DRIVER_GEM
+> >>> - make it more generic by allowing non-drm code to charge gpu memory
+> >>>   (android's dma-buf heaps will need that, maybe v4l eventually too)
+> >>>
+> >>>>>   On the naming bikeshed I think gpu is perfectly fine, just explain in
+> >>>>>   the docs that the G stands for "general" :-) Otherwise we might need to
+> >>>>>   rename drivers/gpu to drivers/xpu too, and that's maybe one bikeshed too
+> >>>>>   far. Plus, right now it really is the controller for gpu related memory,
+> >>>>>   even if we extend it to Android (where it would also include
+> >>>>>   video/camera allocatioons). Extending this cgroup controller to
+> >>>>>   accelerators in general is maybe a bit too much.
+> >>>>>
+> >>>>> - The other disambiguation is how we account dma-buf (well, buffer based)
+> >>>>>   gpu allocations vs HMM gpu memory allocations, that might be worth
+> >>>>>   clarifying in the docs.
+> >>>>>
+> >>>>> - Finally to accelerate this further, I think it'd be good to pull out the
+> >>>>>   cgroup spec for this more minimized series into patch 1, as a draft.
+> >>>>>   That way we could get all stakeholders to ack on that ack, so hopefully
+> >>>>>   we're building something that will work for everyone. That way we can
+> >>>>>   hopefully untangle the controller design discussions from the
+> >>>>>   implementation bikeshedding as much as possible.
+> >>>>
+> >>>> Okay, thanks for all the inputs.
+> >>>> I agree the 'cgroup spec' should be in first patch.  Can redo this way as well.
+> >>>>
+> >>>> As much of the code here for the controller was Kenny's work...
+> >>>> Kenny, any input on Daniel's suggestions?
+> >>>> Otherwise, I can proceed to rework as suggested.
+> >>>
+> >>> If you're worried about acknowledgement if you end up fully rewriting
+> >>> code: Reference an old version from Kenny from archive and mention in the
+> >>> commit log it's based on that work. There's no requirement that you can
+> >>> only reuse patches from other people entirely unchanged, this kind of
+> >>> collaborative patch development mode happens all the time.
+> >>>
+> >>> Cheers, Daniel
+> >>>
+> >>>>
+> >>>> Thanks,
+> >>>> -Brian
+> >>>>
+> >>>>
+> >>>>>
+> >>>>> Cheers, Daniel
+> >>>>>
+> >>>>> *: vmwgfx is the only non-gem driver, but there's plans to move at least
+> >>>>> vmwgfx internals (maybe not the uapi, we'll see) over to gem. Once that's
+> >>>>> done it's truly all gpu memory.
+> >>>>>> ---
+> >>>>>>  drivers/gpu/drm/drm_gem.c | 89 +++++++++++++++++++++++++++++++++++++++
+> >>>>>>  include/drm/drm_gem.h     | 17 ++++++++
+> >>>>>>  2 files changed, 106 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+> >>>>>> index c2ce78c4edc3..a12da41eaafe 100644
+> >>>>>> --- a/drivers/gpu/drm/drm_gem.c
+> >>>>>> +++ b/drivers/gpu/drm/drm_gem.c
+> >>>>>> @@ -29,6 +29,7 @@
+> >>>>>>  #include <linux/slab.h>
+> >>>>>>  #include <linux/mm.h>
+> >>>>>>  #include <linux/uaccess.h>
+> >>>>>> +#include <linux/cgroup_drm.h>
+> >>>>>>  #include <linux/fs.h>
+> >>>>>>  #include <linux/file.h>
+> >>>>>>  #include <linux/module.h>
+> >>>>>> @@ -112,6 +113,89 @@ drm_gem_init(struct drm_device *dev)
+> >>>>>>    return drmm_add_action(dev, drm_gem_init_release, NULL);
+> >>>>>>  }
+> >>>>>>
+> >>>>>> +/**
+> >>>>>> + * drm_gem_object_set_cgroup - associate GEM object with a cgroup
+> >>>>>> + * @obj: GEM object which is being associated with a cgroup
+> >>>>>> + * @task: task associated with process control group to use
+> >>>>>> + *
+> >>>>>> + * This will acquire a reference on cgroup and use for charging GEM
+> >>>>>> + * memory allocations.
+> >>>>>> + * This helper could be extended in future to migrate charges to another
+> >>>>>> + * cgroup, print warning if this usage occurs.
+> >>>>>> + */
+> >>>>>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
+> >>>>>> +                         struct task_struct *task)
+> >>>>>> +{
+> >>>>>> +  /* if object has existing cgroup, we migrate the charge... */
+> >>>>>> +  if (obj->drmcg) {
+> >>>>>> +          pr_warn("DRM: need to migrate cgroup charge of %lld\n",
+> >>>>>> +                  atomic64_read(&obj->drmcg_bytes_charged));
+> >>>>>> +  }
+> >>>>>> +  obj->drmcg = drmcg_get(task);
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL(drm_gem_object_set_cgroup);
+> >>>>>> +
+> >>>>>> +/**
+> >>>>>> + * drm_gem_object_unset_cgroup - clear GEM object's associated cgroup
+> >>>>>> + * @obj: GEM object
+> >>>>>> + *
+> >>>>>> + * This will release a reference on cgroup.
+> >>>>>> + */
+> >>>>>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj)
+> >>>>>> +{
+> >>>>>> +  WARN_ON(atomic64_read(&obj->drmcg_bytes_charged));
+> >>>>>> +  drmcg_put(obj->drmcg);
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL(drm_gem_object_unset_cgroup);
+> >>>>>> +
+> >>>>>> +/**
+> >>>>>> + * drm_gem_object_charge_mem - try charging size bytes to DRM cgroup
+> >>>>>> + * @obj: GEM object which is being charged
+> >>>>>> + * @size: number of bytes to charge
+> >>>>>> + *
+> >>>>>> + * Try to charge @size bytes to GEM object's associated DRM cgroup.  This
+> >>>>>> + * will fail if a successful charge would cause the current device memory
+> >>>>>> + * usage to go above the cgroup's GPU memory maximum limit.
+> >>>>>> + *
+> >>>>>> + * Returns 0 on success.  Otherwise, an error code is returned.
+> >>>>>> + */
+> >>>>>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size)
+> >>>>>> +{
+> >>>>>> +  int ret;
+> >>>>>> +
+> >>>>>> +  ret = drm_cgroup_try_charge(obj->drmcg, obj->dev,
+> >>>>>> +                              DRMCG_TYPE_MEM_CURRENT, size);
+> >>>>>> +  if (!ret)
+> >>>>>> +          atomic64_add(size, &obj->drmcg_bytes_charged);
+> >>>>>> +  return ret;
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL(drm_gem_object_charge_mem);
+> >>>>>> +
+> >>>>>> +/**
+> >>>>>> + * drm_gem_object_uncharge_mem - uncharge size bytes from DRM cgroup
+> >>>>>> + * @obj: GEM object which is being uncharged
+> >>>>>> + * @size: number of bytes to uncharge
+> >>>>>> + *
+> >>>>>> + * Uncharge @size bytes from the DRM cgroup associated with specified
+> >>>>>> + * GEM object.
+> >>>>>> + *
+> >>>>>> + * Returns 0 on success.  Otherwise, an error code is returned.
+> >>>>>> + */
+> >>>>>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size)
+> >>>>>> +{
+> >>>>>> +  u64 charged = atomic64_read(&obj->drmcg_bytes_charged);
+> >>>>>> +
+> >>>>>> +  if (WARN_ON(!charged))
+> >>>>>> +          return;
+> >>>>>> +  if (WARN_ON(size > charged))
+> >>>>>> +          size = charged;
+> >>>>>> +
+> >>>>>> +  atomic64_sub(size, &obj->drmcg_bytes_charged);
+> >>>>>> +  drm_cgroup_uncharge(obj->drmcg, obj->dev, DRMCG_TYPE_MEM_CURRENT,
+> >>>>>> +                      size);
+> >>>>>> +}
+> >>>>>> +EXPORT_SYMBOL(drm_gem_object_uncharge_mem);
+> >>>>>> +
+> >>>>>>  /**
+> >>>>>>   * drm_gem_object_init - initialize an allocated shmem-backed GEM object
+> >>>>>>   * @dev: drm_device the object should be initialized for
+> >>>>>> @@ -156,6 +240,8 @@ void drm_gem_private_object_init(struct drm_device *dev,
+> >>>>>>    obj->dev = dev;
+> >>>>>>    obj->filp = NULL;
+> >>>>>>
+> >>>>>> +  drm_gem_object_set_cgroup(obj, current);
+> >>>>>> +
+> >>>>>>    kref_init(&obj->refcount);
+> >>>>>>    obj->handle_count = 0;
+> >>>>>>    obj->size = size;
+> >>>>>> @@ -950,6 +1036,9 @@ drm_gem_object_release(struct drm_gem_object *obj)
+> >>>>>>
+> >>>>>>    dma_resv_fini(&obj->_resv);
+> >>>>>>    drm_gem_free_mmap_offset(obj);
+> >>>>>> +
+> >>>>>> +  /* Release reference on cgroup used with GEM object charging */
+> >>>>>> +  drm_gem_object_unset_cgroup(obj);
+> >>>>>>  }
+> >>>>>>  EXPORT_SYMBOL(drm_gem_object_release);
+> >>>>>>
+> >>>>>> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> >>>>>> index 240049566592..06ea10fc17bc 100644
+> >>>>>> --- a/include/drm/drm_gem.h
+> >>>>>> +++ b/include/drm/drm_gem.h
+> >>>>>> @@ -37,6 +37,7 @@
+> >>>>>>  #include <linux/kref.h>
+> >>>>>>  #include <linux/dma-resv.h>
+> >>>>>>
+> >>>>>> +#include <drm/drm_cgroup.h>
+> >>>>>>  #include <drm/drm_vma_manager.h>
+> >>>>>>
+> >>>>>>  struct dma_buf_map;
+> >>>>>> @@ -222,6 +223,17 @@ struct drm_gem_object {
+> >>>>>>     */
+> >>>>>>    struct file *filp;
+> >>>>>>
+> >>>>>> +  /**
+> >>>>>> +   * @drmcg:
+> >>>>>> +   *
+> >>>>>> +   * cgroup used for charging GEM object page allocations against. This
+> >>>>>> +   * is set to the current cgroup during GEM object creation.
+> >>>>>> +   * Charging policy is up to the DRM driver to implement and should be
+> >>>>>> +   * charged when allocating backing store from device memory.
+> >>>>>> +   */
+> >>>>>> +  struct drmcg *drmcg;
+> >>>>>> +  atomic64_t drmcg_bytes_charged;
+> >>>>>> +
+> >>>>>>    /**
+> >>>>>>     * @vma_node:
+> >>>>>>     *
+> >>>>>> @@ -417,4 +429,9 @@ int drm_gem_fence_array_add_implicit(struct xarray *fence_array,
+> >>>>>>  int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+> >>>>>>                        u32 handle, u64 *offset);
+> >>>>>>
+> >>>>>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
+> >>>>>> +                         struct task_struct *task);
+> >>>>>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj);
+> >>>>>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size);
+> >>>>>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size);
+> >>>>>>  #endif /* __DRM_GEM_H__ */
+> >>>>>> --
+> >>>>>> 2.20.1
+> >>>>>>
+> >>>>>
+> >>>
+> >
+> >
+> >
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
