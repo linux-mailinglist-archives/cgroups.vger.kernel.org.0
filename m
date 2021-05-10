@@ -2,76 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203A379995
-	for <lists+cgroups@lfdr.de>; Tue, 11 May 2021 00:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11E5379A07
+	for <lists+cgroups@lfdr.de>; Tue, 11 May 2021 00:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhEJWEn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 May 2021 18:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhEJWEj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 May 2021 18:04:39 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB24C061574
-        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id z9so25612354lfu.8
-        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
-        b=dIK3ZtfyVSK/2JyhHVbLHvpO175CBFwmAuHrOWRfTZFvJNS7aVPDYfvS8vsgzreQfo
-         Tk8wzdEV9Ofvm+h6RH+61Aq2wfnsqh2F8uVLezaNiu4FQ1b4TErhFnznIrA/p4zCRTqu
-         xEOpxTLeh6QuhQhHeYjI8rBnLkVmtcbpzioz0OAdKfaRLKau49CYRc3w1tkRITK0l37s
-         ukasPeDm2Ycqv5nz4Ch8YoHUx87x0PlcbmoCH79UaeYz2qaDnqBU87H/87FrI4bwFBii
-         Mhzxr93A8of7z71kPsEhBsucuYQXcWOXE/FHmcgO3muv2dsSvihJmlGDVhe2QokLfofZ
-         j78g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
-        b=dYoIR/MF8tyooeUG100JwtHHXzmxY4shRViA0FSWx1Q7kcK1JFTYmLHT7dDFz1G2HG
-         Os5nZqCgzBUTHreUldJNLNJkuNbE/tYxXgNgUe+K5ERHuaNOPg59Ry9FCRoSlLvArjbM
-         TsH+MeCq/oxe1Dwt3NOmqY6UDWHao0+sFnhNh3KBTxCVPT4i9Ou2R8OeAchvAdXPgI0G
-         B4PicJtkkOZcdc5OnC3YQmuL30JdwAAcRvWzw+T0dTALZeEbRW1V+ZWfEpR12HA3ou7N
-         WS/PrDlPHIU2B0iBLJaPTvMBvKpHMunpzmWf4LVpCI2I6oMkSn9X3mrzhcn/0mQpP4eb
-         x1Dw==
-X-Gm-Message-State: AOAM531m4hmJrOcsGhwvpWblrPlfb2+VHThRKSgOvzqrA/vvRzciCYxD
-        qRYvsCMa/13EUcGYI631KyNhSwSs6pRcCPU/fA4riBImNaboOA==
-X-Google-Smtp-Source: ABdhPJwH9NDUEbITCLratMangmuSCZMAh8LBZRXFn6wipm1zvjC0orG5FJLtySwdzp9n/A6mdx/l6tsaKUQ1eDizbPc=
-X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr18581406lfr.117.1620684210724;
- Mon, 10 May 2021 15:03:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210510213946.1667103-1-guro@fb.com>
-In-Reply-To: <20210510213946.1667103-1-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 10 May 2021 15:03:19 -0700
-Message-ID: <CALvZod6VaGu3CDSamCpjsj7m2uz9KSefjiaF8Ni4=wPY_6ewnQ@mail.gmail.com>
-Subject: Re: [PATCH v2] cgroup: inline cgroup_task_freeze()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        id S231316AbhEJW1n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 May 2021 18:27:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65501 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231368AbhEJW1f (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 10 May 2021 18:27:35 -0400
+IronPort-SDR: ACj4mbbfIcAwS4u1dCJGNoEOCL41bCs1O8kcJy1hngtYf7Q95vMzHM5U2u07QRsooR43Xi0zQB
+ lj8bM/YwYZ9w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9980"; a="199370758"
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="199370758"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
+IronPort-SDR: yCwHeJ6rRkGtKNof8GEjqbaKxAz/e7UvMdOJ0H5gQ+/vROArz2qCNRf+ThKjmZy9CsF3QLI59T
+ YjeHavqKiVRA==
+X-IronPort-AV: E=Sophos;i="5.82,288,1613462400"; 
+   d="scan'208";a="430065112"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2021 15:26:29 -0700
+Date:   Mon, 10 May 2021 15:28:54 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210510152854.793ee594@jacob-builder>
+In-Reply-To: <20210510163956.GD1002214@nvidia.com>
+References: <20210505180023.GJ1370958@nvidia.com>
+        <20210505130446.3ee2fccd@jacob-builder>
+        <YJOZhPGheTSlHtQc@myrica>
+        <20210506122730.GQ1370958@nvidia.com>
+        <20210506163240.GA9058@otc-nc-03>
+        <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210510123729.GA1002214@nvidia.com>
+        <20210510152502.GA90095@otc-nc-03>
+        <20210510153111.GB1002214@nvidia.com>
+        <20210510162212.GB90095@otc-nc-03>
+        <20210510163956.GD1002214@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 10, 2021 at 2:40 PM Roman Gushchin <guro@fb.com> wrote:
->
-> After the introduction of the cgroup.kill there is only one call site
-> of cgroup_task_freeze() left: cgroup_exit(). cgroup_task_freeze() is
-> currently taking rcu_read_lock() to read task's cgroup flags, but
-> because it's always called with css_set_lock locked, the rcu protection
-> is excessive.
->
-> Simplify the code by inlining cgroup_task_freeze().
->
-> v2: fix build
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+Hi Jason,
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+On Mon, 10 May 2021 13:39:56 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> I still think it is smarter to push a group of RID's into a global
+> allocation group and accept there are potential downsides with that
+> than to try to force a global allocation group on every RID and then
+> try to fix the mess that makes for non-ENQCMD devices.
+The proposed ioasid_set change in this set has a token for each set of
+IOASIDs.
+
+/**
+ * struct ioasid_set - Meta data about ioasid_set
+ * @nh:		List of notifiers private to that set
+ * @xa:		XArray to store ioasid_set private IDs, can be used for
+ *		guest-host IOASID mapping, or just a private IOASID namespace.
+ * @token:	Unique to identify an IOASID set
+ * @type:	Token types
+ * @quota:	Max number of IOASIDs can be allocated within the set
+ * @nr_ioasids:	Number of IOASIDs currently allocated in the set
+ * @id:		ID of the set
+ */
+struct ioasid_set {
+	struct atomic_notifier_head nh;
+	struct xarray xa;
+	void *token;
+	int type;
+	int quota;
+	atomic_t nr_ioasids;
+	int id;
+	struct rcu_head rcu;
+	struct misc_cg *misc_cg; /* For misc cgroup accounting */
+};
+
+To satisfy your "give me a PASID for this RID" proposal, can we just use
+the RID's struct device as the token? Also add a type field to explicitly
+indicate global vs per-set(per-RID). i.e.
+
+ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min, ioasid_t max,
+		       int type, void *private)
+Where flags can be:
+enum ioasid_hwid_type {
+	IOASID_HWID_GLOBAL,
+	IOASID_HWID_PER_SET,
+};
+
+We are really talking about the HW IOASID, just a reminder.
+
+Thanks,
+
+Jacob
