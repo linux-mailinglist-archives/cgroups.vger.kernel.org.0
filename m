@@ -2,76 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69AC379994
-	for <lists+cgroups@lfdr.de>; Tue, 11 May 2021 00:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5203A379995
+	for <lists+cgroups@lfdr.de>; Tue, 11 May 2021 00:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhEJWEJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 May 2021 18:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53194 "EHLO
+        id S230463AbhEJWEn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 May 2021 18:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhEJWEJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 10 May 2021 18:04:09 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16DEC061574
-        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:03 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id e11so9126167ljn.13
-        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:03 -0700 (PDT)
+        with ESMTP id S230229AbhEJWEj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 May 2021 18:04:39 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB24C061574
+        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id z9so25612354lfu.8
+        for <cgroups@vger.kernel.org>; Mon, 10 May 2021 15:03:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xEEZ8t7f0Q20wXtDGcovj3/jFYFaAmR7f82EcXq4W5E=;
-        b=Hf/Y6EU13veGHo0Ee/3Us0ThFP69fYhIWpWPeEAEnFGaowsbpvX0f3mNwLvfKkh5Cd
-         GyWiWrN6TuNOaqFOq+H8VApUy0CL3ov965gx81tmgJ1z/21CSMMHodjtmOrHfV5o5JkU
-         jjgez6QzICn/DZqYB8VEg16OonQiMpXhqDNebyVd4weEOVG78LhqJNPVpoCD7XBYa+uA
-         Jpj2GT7mcB5er8odCcjADqa/835doJ3jp2st3CCnPnoayDiuWi9WOoPBCy34PVIaSsGm
-         5P0eyqCAcykTddALOI2aBXjXNB+FNrjk36Hqt2pZKoPvHVAozX6CDSXrrD8nHFMy3p7N
-         hCLQ==
+        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
+        b=dIK3ZtfyVSK/2JyhHVbLHvpO175CBFwmAuHrOWRfTZFvJNS7aVPDYfvS8vsgzreQfo
+         Tk8wzdEV9Ofvm+h6RH+61Aq2wfnsqh2F8uVLezaNiu4FQ1b4TErhFnznIrA/p4zCRTqu
+         xEOpxTLeh6QuhQhHeYjI8rBnLkVmtcbpzioz0OAdKfaRLKau49CYRc3w1tkRITK0l37s
+         ukasPeDm2Ycqv5nz4Ch8YoHUx87x0PlcbmoCH79UaeYz2qaDnqBU87H/87FrI4bwFBii
+         Mhzxr93A8of7z71kPsEhBsucuYQXcWOXE/FHmcgO3muv2dsSvihJmlGDVhe2QokLfofZ
+         j78g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xEEZ8t7f0Q20wXtDGcovj3/jFYFaAmR7f82EcXq4W5E=;
-        b=auRwAhuXUWETmmVns8ua0RaqINoTyVvGLGgdDIgdEGcc85x1MqG9RbkFYVRpKzvxYe
-         i5TzpibgqKX2ARQbawQhbtJxbKISD6+prggjuuy14bjlriRGeVdBBy5RLVQeAm7BHxpt
-         k5lN6yj6v2CS85SIQvKKasaECoxd+N7Jki9OGEvkFfEjiCOtA3Cydbpgq8k8W1KTsQ7i
-         C/OmfY7v2k9CGkxh7vNFWUg0smCcYQXKdUd4d2KAAOfDYZEpKyl67BMYLpwL5kGma/qO
-         crTh+LUYwE6LkPzaUdQlNr8JXtS5sXx8TddaoJcapFyJNvIp/sE4F4RWYPMPtzMHAHDf
-         GppQ==
-X-Gm-Message-State: AOAM530cGJukTS9dsYK6+gtYcIYTJ43Oc8sHX114ooLv6qmt+rQsjP8L
-        8PddADKzWoJ5CVA0ePeAnkJZyxfniSWsHJNZ6l/nIg==
-X-Google-Smtp-Source: ABdhPJx+u9RuRo22VMZhaiasP1ubQyf0AjHX0Q/UuWEF7ZR+H9hQnDZNMOf/z3bR++hDwZPaaIkEX8R3q5b6IoYH5j8=
-X-Received: by 2002:a05:651c:210f:: with SMTP id a15mr21026933ljq.160.1620684181812;
- Mon, 10 May 2021 15:03:01 -0700 (PDT)
+        bh=eF6mHXnyQO/5Hgp+d/GWBsHQqZJ5DW8+q46yqFcmkgU=;
+        b=dYoIR/MF8tyooeUG100JwtHHXzmxY4shRViA0FSWx1Q7kcK1JFTYmLHT7dDFz1G2HG
+         Os5nZqCgzBUTHreUldJNLNJkuNbE/tYxXgNgUe+K5ERHuaNOPg59Ry9FCRoSlLvArjbM
+         TsH+MeCq/oxe1Dwt3NOmqY6UDWHao0+sFnhNh3KBTxCVPT4i9Ou2R8OeAchvAdXPgI0G
+         B4PicJtkkOZcdc5OnC3YQmuL30JdwAAcRvWzw+T0dTALZeEbRW1V+ZWfEpR12HA3ou7N
+         WS/PrDlPHIU2B0iBLJaPTvMBvKpHMunpzmWf4LVpCI2I6oMkSn9X3mrzhcn/0mQpP4eb
+         x1Dw==
+X-Gm-Message-State: AOAM531m4hmJrOcsGhwvpWblrPlfb2+VHThRKSgOvzqrA/vvRzciCYxD
+        qRYvsCMa/13EUcGYI631KyNhSwSs6pRcCPU/fA4riBImNaboOA==
+X-Google-Smtp-Source: ABdhPJwH9NDUEbITCLratMangmuSCZMAh8LBZRXFn6wipm1zvjC0orG5FJLtySwdzp9n/A6mdx/l6tsaKUQ1eDizbPc=
+X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr18581406lfr.117.1620684210724;
+ Mon, 10 May 2021 15:03:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508121542.1269256-1-brauner@kernel.org> <20210508121542.1269256-5-brauner@kernel.org>
-In-Reply-To: <20210508121542.1269256-5-brauner@kernel.org>
+References: <20210510213946.1667103-1-guro@fb.com>
+In-Reply-To: <20210510213946.1667103-1-guro@fb.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 10 May 2021 15:02:51 -0700
-Message-ID: <CALvZod4mOdiPzHzCi3LKoNheKY7j4rDfYipeuXQa7tCUpDi1cQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] tests/cgroup: test cgroup.kill
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+Date:   Mon, 10 May 2021 15:03:19 -0700
+Message-ID: <CALvZod6VaGu3CDSamCpjsj7m2uz9KSefjiaF8Ni4=wPY_6ewnQ@mail.gmail.com>
+Subject: Re: [PATCH v2] cgroup: inline cgroup_task_freeze()
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Cgroups <cgroups@vger.kernel.org>, containers@lists.linux.dev,
-        Christian Brauner <christian.brauner@ubuntu.com>
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 8, 2021 at 5:16 AM Christian Brauner <brauner@kernel.org> wrote:
+On Mon, May 10, 2021 at 2:40 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> From: Christian Brauner <christian.brauner@ubuntu.com>
+> After the introduction of the cgroup.kill there is only one call site
+> of cgroup_task_freeze() left: cgroup_exit(). cgroup_task_freeze() is
+> currently taking rcu_read_lock() to read task's cgroup flags, but
+> because it's always called with css_set_lock locked, the rcu protection
+> is excessive.
 >
-> Test that the new cgroup.kill feature works as intended.
+> Simplify the code by inlining cgroup_task_freeze().
 >
-> Link: https://lore.kernel.org/r/20210503143922.3093755-5-brauner@kernel.org
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: cgroups@vger.kernel.org
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> v2: fix build
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
