@@ -2,185 +2,237 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B5B37B2B5
-	for <lists+cgroups@lfdr.de>; Wed, 12 May 2021 01:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C79C37B2FB
+	for <lists+cgroups@lfdr.de>; Wed, 12 May 2021 02:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhEKXlB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 May 2021 19:41:01 -0400
-Received: from mail-mw2nam10on2061.outbound.protection.outlook.com ([40.107.94.61]:56641
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229637AbhEKXlA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 11 May 2021 19:41:00 -0400
+        id S229784AbhELAWj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 May 2021 20:22:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:13618 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhELAWi (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 11 May 2021 20:22:38 -0400
+IronPort-SDR: C2Sg/73Hd0AFf2XUEHcRlh2NOjXYxtDah2nymdgBheBKh5PpN1CNb1v6Rjsb6XLidpmJlJ4c48
+ BjCPaQmmE8pQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="199264489"
+X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
+   d="scan'208";a="199264489"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 17:21:30 -0700
+IronPort-SDR: rM7zeb9+stx+bgPkZ2OaWPPFKRgQubvw+1mQDheiayUvSaOInIZ50YHbi/JNnS0WhENyCrrA0H
+ RXyVpmoTAmRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
+   d="scan'208";a="622066382"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga006.fm.intel.com with ESMTP; 11 May 2021 17:21:30 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 11 May 2021 17:21:30 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Tue, 11 May 2021 17:21:30 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.108)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 11 May 2021 17:21:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nuT7G+DLt/pkGOuNcceTGDQzkn1xqZ6WJOpSDhh3fWE/M4Cej50lTz966/xM6joyHSzJVA+ptDJKOmuionp6Afc/8cgT/7e44HtQC2Dm1WJO8DrS+3nFc5agt4V4c5McVT9E6PfGS8GKKFD7Fo2LskKWiUe2tT9ZHP1aZUaQa9dbOke2T83D+VrcTywBjPZXjE4w4nT/K4B+qvUBM7g/vOnp93Cg3aqIB5T8xQVahZ/ZMYUNoljDYiyMezEE/Vu/whtz2I6J4zRQpAZr8WO5mk7BQg+lPZ+5Qmeff821PsX+HHkamJAtvtVLVknyqyQ0J1djqdQr11fXF5+4QZaoAQ==
+ b=cqIjJwibx+I8amnUHus9gxVOPw3E+0qelTDbASlh9wjxEt5mN+YlCVI6bTYR48nqs83c9LR9QYb/Kybr7nP1kZ0lp9DiC6eiB6YRFkMdKndJX+oCks6+cE4GIVpQpue5eYTVOwr/fU4k/dyDlFvhx3AxUT3g2ivVSYjr4cUlnUdqM2b5DYTnGbvYENT2Sl5R9ARTeuMGwr/gg7UZTAZRVkkQPilwlPzv0OMtAFv23Kp40y/svyUIaRzcNm2/HBN3nMB0oexWJVJlmzUPy2Ezib9lpwPedzlAOOnD5/ilBbEBiBuQUO5Hw7abWRpHPIFwqtYsfSGnSiQMbJVqZ+NEOg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9yFf9oBiF+IfeQtTwhzHIGoSytVOO+uNqoNQSTPubAo=;
- b=PY9PkQlJC5j7O3VPoajqqLlUcWtvbtWEV4bRoK3VKiPQArfGumlaQPiSBxCpWrmzsnpJv8MQHmcpv48+S5EOolZa0QDrNh3WPvT4Ce610H6vDM89knP+DoQq+YtScxJmm91T6/cfaBTKIwKkxlAL4VLuoMxJ5FY0BwDOLxuXbH1XKJaKi/2uVWGq43UA23ZIB78Xj5aBWVZMDWqcnJh6K5WKLep5w+NkOeEul0elA5mgUdvhfmV8y43ZYGjg+OfHQMgY8uRe2F0NROAYOAfcI85PzKUbUxjoElWv29/mtDU/iVhVACwT/H7eT6HcU/PUm8pFzOw3ADSt+94HRaw7+A==
+ bh=4OHOCCzWfjeTLJO++P6b1F+xs1LwTd11q0EmTgb8ww4=;
+ b=NHfPUxVCUJ3hrG0IPdbPonisz5cKVOK0u0pCHldmp5NWwOarrc8Hsoe3sj8nM62f0jQ3P6DYPThYTGUat1NimoCkXfN9eruun9SIzlnYsBUtQ8c3gbO4TPp1Qw+oBGZ41ClLHZybb1/JeDjRC56ki+dFMuLYrqMpssV8DD08qIKhL9f3U8z3AFvqEuoRVqJ/AxoMYazaOGNAKN9Lx4XP51UJl0RvVY0K/ZZn8azZwUbr+OwY8lZ3Dq2MS21L4fY6rtJ+liKl8qzIvsRYRg5Q65NAE9IBFZfmRDYT+EOUQb1w97ts2ZKxKkFd/xZpXk2eOc6pYlHO46YH8wLzcbeBRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9yFf9oBiF+IfeQtTwhzHIGoSytVOO+uNqoNQSTPubAo=;
- b=ZXKiuUMn9Afmbx0SEf4DdoBUcgj6Uh+kqktECMqUFL8nDOYHAzXTdBlSsj4FSXztevfyA9lsw1qfkm5MUrld7mq1zdVzjo5gQoMijiBdgybCF1r2ynBID/wTRwrqqPk6GH6KJaxxZeN+EncreNh1xLdwyxXOERc2mmEHCpiPJdVCSNkIZKwv1ugTxCs3DHqG+dAf84b8JsbBhCkyHZck/rQb0YjOPCCGr9fpf/2Vvxe2uBQkVzrD6D/cp+h2s/J9XHuAhjRDisYkn4sKE5ztsgqX+FVx4WNt7rxz3dPU8Y8mMM8lHO/dStquRdZULbT/wk6PxTJiz5JEqSctLYvvCQ==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1660.namprd12.prod.outlook.com (2603:10b6:4:9::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.25; Tue, 11 May 2021 23:39:52 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 23:39:52 +0000
-Date:   Tue, 11 May 2021 20:39:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ bh=4OHOCCzWfjeTLJO++P6b1F+xs1LwTd11q0EmTgb8ww4=;
+ b=ZR8guL5VR9yjD8FtuQmYH6U7QhhMNh/EEgH8vj4pf1kHHIT+QmP9PiFDYm2sBLiZRnb929eWsV24xydrHfOXw/MtqQS95ix9XL5+pWzjCgW6eFfzsLqHUBn+YdNGiCJ2zrV2AgGyYKHPrOIZ9MscDYCJ556Tm9zD8N8VUMd1P6Q=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1839.namprd11.prod.outlook.com (2603:10b6:300:10e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 12 May
+ 2021 00:21:24 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::75b0:a8e9:60cb:7a29%9]) with mapi id 15.20.4108.032; Wed, 12 May 2021
+ 00:21:24 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Li Zefan <lizefan@huawei.com>,
         "Jiang, Dave" <dave.jiang@intel.com>,
         "Raj, Ashok" <ashok.raj@intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
         LKML <linux-kernel@vger.kernel.org>,
         "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        "Alex Williamson" <alex.williamson@redhat.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Tejun Heo <tj@kernel.org>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
  allocation APIs
-Message-ID: <20210511233950.GQ1002214@nvidia.com>
+Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAACiXgIAAVBgAgAAaMwCAAAESAIAABy2AgAAgOYCAFdCAgIAAppUAgADsNgCAACqygIAHsmaAgAAzsYCAAAjdgIAAD/yAgAAcQgCAADqggIAAk6nQgABIUACAASsnkIAAYWwAgALs9qCAAdeZgIACip7wgAo7TwCAACbZAIAARiUAgAARxQCAAS/XgIAACnOAgAAiwQCAAL24AIAAVNoAgABEgACAAo33AIADeaeAgAESCjCAAKImAIAAgzaAgAAT/gCAAAjoUA==
+Date:   Wed, 12 May 2021 00:21:24 +0000
+Message-ID: <MWHPR11MB188623FB741481D489D259798C529@MWHPR11MB1886.namprd11.prod.outlook.com>
 References: <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <YJOZhPGheTSlHtQc@myrica>
- <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
+ <20210505130446.3ee2fccd@jacob-builder> <YJOZhPGheTSlHtQc@myrica>
+ <20210506122730.GQ1370958@nvidia.com> <20210506163240.GA9058@otc-nc-03>
  <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
  <20210510123729.GA1002214@nvidia.com>
  <MWHPR11MB1886E22D03B14EE0D5725CE08C539@MWHPR11MB1886.namprd11.prod.outlook.com>
  <20210511143840.GL1002214@nvidia.com>
  <MWHPR11MB188601321993CA43E3058C4D8C539@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB188601321993CA43E3058C4D8C539@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0008.namprd13.prod.outlook.com
- (2603:10b6:208:256::13) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+ <20210511233950.GQ1002214@nvidia.com>
+In-Reply-To: <20210511233950.GQ1002214@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.218]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2ceb8081-8c4d-4567-47cb-08d914dbe041
+x-ms-traffictypediagnostic: MWHPR11MB1839:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB183995330AEFA55CF95BBE128C529@MWHPR11MB1839.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 114AIOE0F80iq/EyBcnssPzEvuucjqLBJQKKKs0xJToQis9bfcumMKWXVpNP5hNfrz/2CYQOE5a8TKjx17hE11Njho40IbsvR6r/4+RbOx1KYRXcFS+dNGqEtYHpnMLiYyAoomIzg1UixVTwegY8sfTdH2Y0e7q88oSRTEBwJxD+FFsnFqg1DNsm6nCB+rIEKAouWtab9V/3XuL1DTsS7r41B7XGhEFF3sKjhimNY1U85JuJODELzjhmI/dtTBAp0ALw3+62ItvuOWTUHTuLfQRCvqDEHSWZGiJ/iC0+q1ySNmX/o53qm2u4uLmGRIeIJghBDOZSfYBtXkB17YV25jK6l34bMNVXroP2SBbU6PQftyL9kKqaAAooz/d/YiZWsvdNiXHwtzU3BQvX1Ju1cI54HbpxZB3S6s4cdkPXniDSKwo2+2xAxg7e1pReEbheAwk6wqBOPAHbBs6Z8THyTDHdbwd4xKHMwajIEJZUInkTwKuI88cii5vj6KzYIxlWNXXwbiw/VTC5gLuKbUGXacNXYCOgKqH8MWxcuRq7ytNNc2WN4neO1IJFxvl6i0Wm/Y15h+A8ExKKHb223TyPlblrjqJznWHIM5qaz3qDhKA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(366004)(39860400002)(8936002)(7696005)(76116006)(66556008)(64756008)(478600001)(66446008)(186003)(52536014)(66476007)(6506007)(66946007)(316002)(54906003)(55016002)(4326008)(6916009)(71200400001)(122000001)(2906002)(9686003)(38100700002)(5660300002)(7416002)(33656002)(8676002)(26005)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?o5IDbt0hLLvxGknoI64cEu2eGi0jHq+A9Kq8Qg3vcbtZt1HKRqWp9rW95my0?=
+ =?us-ascii?Q?53dVTYTcgKIK7j1r+BL42IbN4Ii9/y7eQvAqISDaZI6QIogDtzS1/y20Wob8?=
+ =?us-ascii?Q?9Yve1uKqD9+lxfzBiTyLxjBVz98lvgeizUvcmolaCg2h4RV2apwVP7mxr1S4?=
+ =?us-ascii?Q?6W9EfC9zNkVGBTonwdcJ+O/XE7EpfQk48SHtkZh29Ev3J9a+N1x3sf43z9rj?=
+ =?us-ascii?Q?J0c9Y7jT5Mk5YeQaMsLWDVGBjOVGC4WXhxT28orbahtx4k1C9A9iaFiPYv20?=
+ =?us-ascii?Q?jhgqExF14hIIYN7k+PY1HOGH8UdZ1nbf6qO5ZneaArzOPppNLyPKPpmYs9o8?=
+ =?us-ascii?Q?2jPnFTb/u5EbIiUhYw9n3bqB9RLraFJS/aBISEylqL8VtKm2FlNoWXpBDmYe?=
+ =?us-ascii?Q?XBRFLoo5624wlxWXeLHZOr+ARCkiFpGe67AM3At6FnRKQ5xE8wjyMAa4zgx1?=
+ =?us-ascii?Q?geTN4u/t9HcqTn/v6dOvYbGhAMvpzTRLjo0RIF7QhHlffeL6Nc2au3SLhkFO?=
+ =?us-ascii?Q?cti96E4TPBIONKwaKuEe0vuuaisf26KcI1syT5SAxIni31eHhyfqhxG49SLT?=
+ =?us-ascii?Q?yIgbQqA9VksmtqOO9FQlMH9o4NMd35/SbhOhFM5DhzWzlbVNYnrSyON+aQDi?=
+ =?us-ascii?Q?gqRhvX7fXLL6Yg6F/+12lx8Bl1XldAkOioDsyseZxEBU86OAD84BNebQoHA9?=
+ =?us-ascii?Q?3m9/aT7nHMN05LR/B7xZIxV4+WaHIh7XsPIECWnZrR4pMremKHs3WvkutaiP?=
+ =?us-ascii?Q?J/FCB9NI9lGBqpoC1gQF2lni/EBb004Fsv1kNKwmp0hmFIH4YFmb5pgp+gth?=
+ =?us-ascii?Q?7hDrz0eqPDdtlF+7VfMyFvc/lypg1xL/28n2CP50U9aM5vZxI+OEymvJMERN?=
+ =?us-ascii?Q?LE2iZkBxCgJQtB7xz7B2mRV64vQtBSfNoTLBRr62gproFuIrYZ93l5eG2Sab?=
+ =?us-ascii?Q?HaQTcGkm4v9wUZZQLjm7QtXxWZw6rXR5YlyAnAOHxPP5XEfMTD2HL2uF5guV?=
+ =?us-ascii?Q?oaRuUG4kO7QqHwBkRG6J/xXE6aORfrbZVfbcDC21/c5uDcDBzj917GP8br+1?=
+ =?us-ascii?Q?mRyzEdhqiSXn0fYs8iOYSeQ9dPn3sPpfT0j3qPRluon2SyDC9Y7WLsO7gW2i?=
+ =?us-ascii?Q?vbeZaBEgaJ6OUchhrNUQMrPkgU0AHedmZmXg6Jiz/Akg3p5ofj7p5nSTaCMW?=
+ =?us-ascii?Q?457RueCro+dZ18aWm/69AyFb6QgNyjh4KRyLdKmLc+yvzr7VHnpJBVLnvNmo?=
+ =?us-ascii?Q?kPy1Y/JUNPDOpzjBTfnbb6rGWTS2WVQ2NTJ0P5NE4j4GTw7xozMx+PW0IT1q?=
+ =?us-ascii?Q?VcNx+/6Mbz8/CAf+tKqWMSYR?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0008.namprd13.prod.outlook.com (2603:10b6:208:256::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.11 via Frontend Transport; Tue, 11 May 2021 23:39:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgbyg-005cBd-Ao; Tue, 11 May 2021 20:39:50 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3413b0e7-24d0-4b04-a6f8-08d914d6129b
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1660:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1660768DFFE5D24C9D1D1EE6C2539@DM5PR12MB1660.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NPogXDylVhdhuUY03M6jtizBgiC653NM04fCNW1F6UB5YNiMDOj2b7ZIou3nZmk/oofBTbFoTgzEYMqRNxl6UA8mfj+Ezs1pMyyitkS4YsyrgNApHtytgfyZ3/nCkH6+SJYV4TmMH+y0aKSfU55Gx4iyI4QMQ0uSIG/mAybwJJvcKynejEjCJWf4LdCOeH42fv04TNMoy11Gm1GqPopM1mEAPte1lSOsKGdgeZQpSvW2Emy41wlaO7auihYDNx6k9dF8EJJbCWVVokLxailOri3GbC3R43LIjEnQGKpsVXuFpdM3MW0wOh5B90rJ4t3i8UEWflm7Lh93PD6iaB2McXq3V6Dnmpj2Zt0IGQDkX8NZ/dudkL2o/gBHLiEW+OIqOFsrEvmq4vW0Szw1wFLbLwQ0Cednc6QAMDceDgUpaC6NeDd/acCRHb5tq2JOyO3wU58ySPopLMb+JJFz/jBkl9LvnBVTZsE3KTjwKKNg69p1EqzPUL+jT7CWqdXjQsu7xzE6d9HTLL978KFTmlB7+Qr2roCkeFqYtjT0R7Pf8syNM76zAVz1iaR+y998KTR+kCmkaEopqGSCR1qHbajrpO85MKfHYgLMVdoKIEwYE1g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(186003)(54906003)(9786002)(36756003)(5660300002)(86362001)(316002)(478600001)(7416002)(9746002)(33656002)(66556008)(2906002)(8936002)(6916009)(8676002)(38100700002)(426003)(26005)(66946007)(2616005)(4326008)(1076003)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?41O70AiSH3N84LgbHBxhwz0h20c8C8bhZjTyNPEmvBDaqEo6SlKj/v6pz9JM?=
- =?us-ascii?Q?zvxpAsJtPojmdtT4jD2ohNXeAQnmF7EmXH7WQGvAp03hS624KPnjpxq5kGXy?=
- =?us-ascii?Q?1awyaHXXzhMlte0BwP3M/WbMPhYy/gjycaWpqDdxTKHXlPuhKLbdhexWIyIW?=
- =?us-ascii?Q?PixRonaUfWbUDfpmelJDCdhXu6fKZgcwwMlL2vdMe9anBhfN7jLIpktKAYWM?=
- =?us-ascii?Q?Mdw1kBTsOgPB8/CP+0Hb5n1H7FZBukkE/FTF/urneCpvOr+3akgv1yH2P6iX?=
- =?us-ascii?Q?8TFey3+35wWLUMc/VC7fPc5O+dlsJRG4OmumR9+UrGlQuzv40QVdWiuszJg4?=
- =?us-ascii?Q?jt+ha7v8xI7IPO+7V9ZHXSKdCZ2ppnBKbuRdAIJdoYTd2Lko+8G79Vi1c2ML?=
- =?us-ascii?Q?SaaJqVTB0D7thQ48S2vK8LaurVQQHQlxaM1rluprX7FEo8Ypamrdc6L7oguv?=
- =?us-ascii?Q?qs/mNGjk6ra4itdZYZsC4vfhdJktXu/I0olJki10nCLxUw3hHN2V63Prne2V?=
- =?us-ascii?Q?ofSqvrKd2mjrf5FcLZVbsARAUkYsKmVJYjPPuhjCSBIQsFxNWX8a/h+iczMY?=
- =?us-ascii?Q?X/ejPjO+PJIRvxLS7UwlsIkk6499696ImStBcqwT211gRfSrjww4KK1mv9CS?=
- =?us-ascii?Q?ckq2EFGUdXv08r1jL3t4fBbI+BkMKOkx0UP5WKzzMgCbEmt3vGKRbj2zhc7c?=
- =?us-ascii?Q?J8kdUBeWl8i0q2qa4bB54nu34gl6sODGs2JZqDe1yhOQTF8dsh+1pdJK8C14?=
- =?us-ascii?Q?5HfB2SnKwcPDnjoL0jZDevw8/h2DNaQ0WoywG5r8C3WBRNXGn4yUTi6WQtyv?=
- =?us-ascii?Q?QvQcFiPDkEKdnpM89qDuxF5hPdeRM+OIth1T0GuWze7rGYVREDl4xETcZV04?=
- =?us-ascii?Q?X0aEtmGaO/9ThM6AyrpLCSKGaIUFhxeBunCahn64aWQ4JoSWHMxEDkNy3dNf?=
- =?us-ascii?Q?Q0VPz4rBMW9FZJsq+ALuiai5QPvlj5BsGIfVpUWt2pmtbXfQjkT6s2iHVSuc?=
- =?us-ascii?Q?ShvhpwWuLYYAa496cY7+dX7xzQwyZ95w7mhIi17RNxKC6T7EPwhR6CZcSFR+?=
- =?us-ascii?Q?Fy+fUZMd8fWgCZZXppYKugq/EDWefM5u6dYehThaIE9u6gqTL7a3w4D78v3h?=
- =?us-ascii?Q?TGRTXS3hHrUNKwZmsyVyvzqbdsQOKzMIns8nVOzI2K4o9z7Fa+uY/y3pCkxS?=
- =?us-ascii?Q?/K3r49pfIwTYUPHWL21Gq0nhZsWTtjAnUOdO3o9Xu92ibgEOyjCuPatjDOrW?=
- =?us-ascii?Q?UG+DBM8mFJl51ey5jQWhGMnCvmiQjQpXMfsKPGmPyCk+lfejzDhCsvYUcNr/?=
- =?us-ascii?Q?DGi/Duz3fb+QGlaYGjqHHNnb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3413b0e7-24d0-4b04-a6f8-08d914d6129b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 23:39:52.1151
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ceb8081-8c4d-4567-47cb-08d914dbe041
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 00:21:24.1594
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4ox0kEkNqVpj0+ATBmFwIltQlV3NSOVkHpjA7OMt5jGJpi+ellz6iN6iP/cj4wbg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1660
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hkTdt3Pw0N88QBVk+2bpXxr1R9lPXPC0OvKqSpx2eHiFgSeoo60ejC20sCBBlAdd5jvBM+Oz6gqAbsudEYJ9qQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1839
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:51:40PM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Tuesday, May 11, 2021 10:39 PM
-> > 
-> > On Tue, May 11, 2021 at 09:10:03AM +0000, Tian, Kevin wrote:
-> > 
-> > > 3) SRIOV, ENQCMD (Intel):
-> > > 	- "PASID global" with host-allocated PASIDs;
-> > > 	- PASID table managed by host (in HPA space);
-> > > 	- all RIDs bound to this ioasid_fd use the global pool;
-> > > 	- however, exposing global PASID into guest breaks migration;
-> > > 	- hybrid scheme: split local PASID range and global PASID range;
-> > > 	- force guest to use only local PASID range (through vIOMMU);
-> > > 	- for ENQCMD, configure CPU to translate local->global;
-> > > 	- for non-ENQCMD, setup both local/global pasid entries;
-> > > 	- uAPI for range split and CPU pasid mapping:
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Wednesday, May 12, 2021 7:40 AM
+>=20
+> On Tue, May 11, 2021 at 10:51:40PM +0000, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Tuesday, May 11, 2021 10:39 PM
 > > >
-> > >     // set to "PASID global"
-> > >     ioctl(ioasid_fd, IOASID_SET_HWID_MODE, IOASID_HWID_GLOBAL);
+> > > On Tue, May 11, 2021 at 09:10:03AM +0000, Tian, Kevin wrote:
 > > >
-> > >     // split local/global range, applying to all RIDs in this fd
-> > >     // Example: local [0, 1024), global [1024, max)
-> > >     // local PASID range is managed by guest and migrated as VM state
-> > >     // global PASIDs are re-allocated and mapped to local PASIDs post
-> > migration
-> > >     ioctl(ioasid_fd, IOASID_HWID_SET_GLOBAL_MIN, 1024);
-> > 
-> > I'm still not sold that ranges are the best idea here, it just adds
-> > more state that has to match during migration. Keeping the
-> > global/local split per RID seems much cleaner to me
-> 
-> With ENQCMD the PASID is kept in CPU MSR, making it a process
-> context within the guest. When a guest process is bound to two
-> devices, the same local PASID must be usable on both devices.
-> Having per RID split cannot guarantee it.
+> > > > 3) SRIOV, ENQCMD (Intel):
+> > > > 	- "PASID global" with host-allocated PASIDs;
+> > > > 	- PASID table managed by host (in HPA space);
+> > > > 	- all RIDs bound to this ioasid_fd use the global pool;
+> > > > 	- however, exposing global PASID into guest breaks migration;
+> > > > 	- hybrid scheme: split local PASID range and global PASID range;
+> > > > 	- force guest to use only local PASID range (through vIOMMU);
+> > > > 	- for ENQCMD, configure CPU to translate local->global;
+> > > > 	- for non-ENQCMD, setup both local/global pasid entries;
+> > > > 	- uAPI for range split and CPU pasid mapping:
+> > > >
+> > > >     // set to "PASID global"
+> > > >     ioctl(ioasid_fd, IOASID_SET_HWID_MODE, IOASID_HWID_GLOBAL);
+> > > >
+> > > >     // split local/global range, applying to all RIDs in this fd
+> > > >     // Example: local [0, 1024), global [1024, max)
+> > > >     // local PASID range is managed by guest and migrated as VM sta=
+te
+> > > >     // global PASIDs are re-allocated and mapped to local PASIDs po=
+st
+> > > migration
+> > > >     ioctl(ioasid_fd, IOASID_HWID_SET_GLOBAL_MIN, 1024);
+> > >
+> > > I'm still not sold that ranges are the best idea here, it just adds
+> > > more state that has to match during migration. Keeping the
+> > > global/local split per RID seems much cleaner to me
+> >
+> > With ENQCMD the PASID is kept in CPU MSR, making it a process
+> > context within the guest. When a guest process is bound to two
+> > devices, the same local PASID must be usable on both devices.
+> > Having per RID split cannot guarantee it.
+>=20
+> That is only for ENQCMD. All drivers know if they are ENQCMD
+> compatible drivers and can ensure they use the global allocator
+> consistently for their RIDs.
+>=20
+> Basically each RID knows based on its kernel drivers if it is a local
+> or global RID and the ioasid knob can further fine tune this for any
+> other specialty cases.
 
-That is only for ENQCMD. All drivers know if they are ENQCMD
-compatible drivers and can ensure they use the global allocator
-consistently for their RIDs.
+It's fine if you insist on this way. Then we leave it to userspace to
+ensure same split range is used across devices when vIOMMU is
+concerned. Please note such range split has to be enforced through
+vIOMMU which (e.g. on VT-d) includes a register to report available
+PASID space size (applying to all devices behind this vIOMMU) to=20
+the guest. The kernel just follows per-RID split info. If anything broken,
+the userspace just shoots its own foot.
 
-Basically each RID knows based on its kernel drivers if it is a local
-or global RID and the ioasid knob can further fine tune this for any
-other specialty cases.
+>=20
+> > > It does need some user visible difference because SIOV/mdev is not
+> > > migratable. Only the kernel can select a PASID, userspace (and hence
+> > > the guest) shouldn't have the option to force a specific PASID as the
+> > > PASID space is shared across the entire RID to all VMs using the mdev=
+.
+> >
+> > not migratable only when you choose exposing host-allocated PASID
+> > into guest. However in the entire this proposal we actually virtualize
+> > PASIDs, letting the guest manage its own PASID space in all
+> > scenarios
+>=20
+> PASID cannot be virtualized without also using ENQCMD.
+>=20
+> A mdev that is using PASID without ENQCMD is non-migratable and this
+> needs to be make visiable in the uAPI.
+>=20
 
-> > It does need some user visible difference because SIOV/mdev is not
-> > migratable. Only the kernel can select a PASID, userspace (and hence
-> > the guest) shouldn't have the option to force a specific PASID as the
-> > PASID space is shared across the entire RID to all VMs using the mdev.
-> 
-> not migratable only when you choose exposing host-allocated PASID
-> into guest. However in the entire this proposal we actually virtualize
-> PASIDs, letting the guest manage its own PASID space in all
-> scenarios
+No. without ENQCMD the PASID must be programmed to a mdev MMIO
+register. This operation is mediated then mdev driver can translate the
+PASID from virtual to real.
 
-PASID cannot be virtualized without also using ENQCMD.
-
-A mdev that is using PASID without ENQCMD is non-migratable and this
-needs to be make visiable in the uAPI.
-
-Jason
+Thanks
+Kevin
