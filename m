@@ -2,243 +2,163 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D94B37F565
-	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 12:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8834337F916
+	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 15:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbhEMKNw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 May 2021 06:13:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46596 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhEMKNu (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 May 2021 06:13:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E5D77AFD5;
-        Thu, 13 May 2021 10:12:39 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AAE351F2C62; Thu, 13 May 2021 12:12:39 +0200 (CEST)
-Date:   Thu, 13 May 2021 12:12:39 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v4] cgroup, blkcg: prevent dirty inodes to pin dying
- memory cgroups
-Message-ID: <20210513101239.GE2734@quack2.suse.cz>
-References: <20210513004258.1610273-1-guro@fb.com>
-MIME-Version: 1.0
+        id S234180AbhEMNs5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 May 2021 09:48:57 -0400
+Received: from mail-co1nam11on2051.outbound.protection.outlook.com ([40.107.220.51]:7521
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234149AbhEMNsn (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 May 2021 09:48:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g7G55PvY4AZfH6YBAg0lLk3J6fxdIuyJ3AijzPFmN3TMaoeUpmoCCEsDi0tTuhwt8l5sLYspNKMs61/axbJUByL38wArFQiNNestcMUZg3M8tBBrAV2YobaklYPhLOLLEB5k+mZMC3vS9UH2uAD0doj0FXmhdwBxJHFKfcjeGMH/LCj4/YyWrXlAu2qSDLhRtKuc42XyUjxXnQcD4Xt4FbuKTAC0K/3XtZg/pmi/wMEbaoNFNW1mCvDdLxH8HN2XHzce7PcSznx0InpBY3KPJLt5lb1GrJ2XDtJwebG1XubT0c+w+2WtbGvnUCu48sYUj4bbvYs9EasC+VnVuQLCLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yn6P6jydaDq74ixTmQS68qfeXyTOdSo8M/DaBA5Bh78=;
+ b=XMVAVCPZFjikFFVuDSlkmNFvJC0wNwbIo8FAIBQDSNzcfaZl+PLXJnC6zhPv+AENofJNa6M1C64RQ+QcLhKwgspXFjxQV7Bmqt6k1SVHsucY/AEazR/MK1/k+lnGGVxmYnkXxUsCOw6LTc4i6cjim5rja8wDoqN4tiqyxd+8JD1Hmwf1ooNbqAYq7Eo96PVNyPVpAsyH0Uf1jmmpqsd/odt2HGWhF0gj3cYa302nlu1PhZpm1mY3USmHCowS9Lowg+IWsfUIaBNPzNsfiPjGKtzPwZ4BsDgxITN7JfTQYXAA8izraemWIEdchUrWvObpBt6Auvkt5RRhRabq9+VeiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yn6P6jydaDq74ixTmQS68qfeXyTOdSo8M/DaBA5Bh78=;
+ b=FIlpBqZwj/3A0tCksE+4DSDLM/n7i/3slGK5HuQ8bgUCYggc1Ye/CTwjTxxo37SKZ3XuMbFI4BV9AOuJ6RRb9kA0U0DS/hs4ZT1XPrGNmUotpdhtXvAhSqNapKPc8X3LAoRPqe3LE2KhX3TNv3pApc0GMyEmLRruF95EA5tZcj/tzBHi5WIdw2l3CQDazaEwSI4riss2+5+9tBuIbVe7C7WNHOz4zdsU6mDz2/wfaAETqO7QItqLovJQqBLQGzWqa3jzgv/imEYlIbT5fb78q+hmT/kc3WpsKE2Lc5C6+UF4co2EF4qvfM2hxX6APccIeW6kLDocmAlg1CCB5qad8w==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4499.namprd12.prod.outlook.com (2603:10b6:5:2ab::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
+ 2021 13:47:30 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 13:47:30 +0000
+Date:   Thu, 13 May 2021 10:47:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210513134728.GE1002214@nvidia.com>
+References: <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box>
+ <20210427172432.GE1370958@nvidia.com>
+ <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko>
+ <20210503160530.GL1370958@nvidia.com>
+ <YJDFj+sAv41JRIo4@yekko>
+ <20210504181537.GC1370958@nvidia.com>
+ <YJzAsBNF1irJxRGg@yekko>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513004258.1610273-1-guro@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJzAsBNF1irJxRGg@yekko>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 13:47:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhBgW-006pPa-DE; Thu, 13 May 2021 10:47:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f5649297-d03c-41d7-ffc7-08d91615a6e2
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4499:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4499E5CBE1A783DBDA1B0F2BC2519@DM6PR12MB4499.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5YoT0kjxGWI5ESgbYxYcR+oF5eq5sm8EgtrN8QJxDY5jicOXKRthjInO82bHsc+J8y0EMAxh9ZTciI40lyuAcDVJsCbVg0JkNBbPrriSLmsNM1IZjYc9an9l1744qhIYYq0XcKYm3826gD1Q83cA7ZeqYBCrDmAVOoA8LcU7jq6WGyPWtJ+qM2OmUZh5mtNRWop/SGiamG+aOHuz8r/kgJ84+/h7aHBe/jTwmqUB7wR1fLv2Rh5G0g4fAjtO0hPa09PcT9oZLUihsXJGUpwvU/acE6HSB9fbEFMWLFyE0su/m+LJPZJMGp3lmNcAtyHuUCgdnAjP6WBp4vsThY4shDbJM/ICGm2NIKRQRWNB1xE394Ku/ZJEoo+w0qsvuX8B2GvPgJKziq+UmIjAfGBtjZKMGsXInTTefwlEwZlHCmIBFMJ2l6PfROZmdNrri8hBpJi9Cv85vqrwSFTSH2c9ONA8RbjMKWdBFY6iBdQL7UEBH3nYt/rwEqVaBIxh4wD6ojVZm8GsD7oD6pmwXPdZk8iyZx8e8ufc/HkYg9+b2+x/kRXD2g+2i+EA9cH5nr0KnIzPp0c3Gvg+NpifXAECs4NW00W8GMQGhBoYF3BvWyA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(136003)(39850400004)(5660300002)(2906002)(1076003)(66556008)(7416002)(186003)(316002)(38100700002)(26005)(2616005)(86362001)(426003)(6916009)(478600001)(36756003)(66476007)(66946007)(33656002)(8936002)(8676002)(9786002)(9746002)(4326008)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?g50ZP4mVxyhXICNrv8cOn4kK0qQjFDPB7g/r9pcJHYk/FL5gMj8kbBcK4O9J?=
+ =?us-ascii?Q?uZAFxyj0auBj58BAvS88jBmHREvEz0a+q/SItd/92sMTfhR2S5NidRTXPb4d?=
+ =?us-ascii?Q?gz3KBh1DKaQtHlTkKrlzmFBBLDFL51b+DX8jdWIXk0smertsKrmUtLi+WYIb?=
+ =?us-ascii?Q?UKxKv5BY8YFuRL+bL09gy1UTLcaNOb5rVg2UDbR/0QfEuuS+XLNnBEiRziZj?=
+ =?us-ascii?Q?ixyK61otsODzELmItUAQ19gnMCdDRYSs/iHKJqKzGqmvvE/xFbE/YPS7aahc?=
+ =?us-ascii?Q?08ZCjbNIDRV0IB7E+Un/D0UBcqXhYBm+K8M8eLcs4NGVtgE5/lyulAm3gCdV?=
+ =?us-ascii?Q?uqa1dumD6jRzpc6JKXnicCxMLWDoMnrf+rxm0cMlmpehaEA6ZGUj8dXIkHym?=
+ =?us-ascii?Q?Nh0HRydLcPe0u9ZMO//q7GqZvU19/GyP7PwXD3l4iqU+zRSJGgAzn75lN6cW?=
+ =?us-ascii?Q?30Ig/TtpAUZorqGzN5W6niV+toobVW1u3UkCqGtXxOcd1Vlgo59IpKJNs5ol?=
+ =?us-ascii?Q?YZFquqgJYX/fPrWjNIWbuyHDLOKyyO4vx6bvPJAwMsX9e47ileN1lgwqMCLF?=
+ =?us-ascii?Q?yOOmujv1rqtWr+OLztYOj1VMPSQaBzR6b0fao0NX7c53BcC//JhevgeFhl0x?=
+ =?us-ascii?Q?TNW/TaYOogw/DBarNIM2ebwuoTGRZsgyIAXpShccqJqfPz4t1D9T86UMjCox?=
+ =?us-ascii?Q?XrMfaGhJXzjS+O9TYmj7Gv5U7SgLvVFNxJrcxVYMrYsOJyt9FzUXIzUETGiq?=
+ =?us-ascii?Q?C9n3dQLS3Xx9H1Tlzkf8Qgu4k7eI0Epb4SfhyjGHoZbkSQnSbeSgzFO82pIF?=
+ =?us-ascii?Q?FFcbhtpEy6Wapzacwr/y+fBNTWEQpYv30S7JcuJKO7rfJE6ONjFUcNVmGMHl?=
+ =?us-ascii?Q?jPOMQYsAlpGp2OQmMeco9IL9FzUor7yUtbTNndWLFuRYy/P1+cSlK0VhaJUp?=
+ =?us-ascii?Q?TA2Hc1cvAo8S8Fk/LqufATTngoA6UiUDE4mF+faKFpUme5MMBUm1A2gF7uJv?=
+ =?us-ascii?Q?eeEccDZoDYSRp1DzydeDIGVq6MJoI04adF1LYWVrH2aWOkR8Oq2KXo04fGem?=
+ =?us-ascii?Q?qyIadoone4AmJVToeLsTxU1FdL9UvnFfUPVRWPatv3xyDd5PJZbYmrhMBuAc?=
+ =?us-ascii?Q?hfhKuzz2KcL7Ev9OVboGmpFpRdKD8Ik6KBuk5lsTELc1Chf5ob7VlBvB9dls?=
+ =?us-ascii?Q?6ZOCGBuoos1+WHoRe45hCzJ3TaCiHb0k9jTTHomKgcFsHwdcLCPseUb6Sl5o?=
+ =?us-ascii?Q?OA420x6o1M1bdofXCcAGfZHTt2bCYyjpEaI1syEIyE9axba/YjYLaolkr8SR?=
+ =?us-ascii?Q?RvGW0skURnSP6CO21dioc/1A?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5649297-d03c-41d7-ffc7-08d91615a6e2
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 13:47:30.2692
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OmbE8GxA+vLZ2l9p54bYFM/axlpkqxhWTEnIrr4aP1f2wsi/m3jjAiIkJ5jZnrxt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4499
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 12-05-21 17:42:58, Roman Gushchin wrote:
-> When an inode is getting dirty for the first time it's associated
-> with a wb structure (see __inode_attach_wb()). It can later be
-> switched to another wb (if e.g. some other cgroup is writing a lot of
-> data to the same inode), but otherwise stays attached to the original
-> wb until being reclaimed.
-> 
-> The problem is that the wb structure holds a reference to the original
-> memory and blkcg cgroups. So if an inode has been dirty once and later
-> is actively used in read-only mode, it has a good chance to pin down
-> the original memory and blkcg cgroups. This is often the case with
-> services bringing data for other services, e.g. updating some rpm
-> packages.
-> 
-> In the real life it becomes a problem due to a large size of the memcg
-> structure, which can easily be 1000x larger than an inode. Also a
-> really large number of dying cgroups can raise different scalability
-> issues, e.g. making the memory reclaim costly and less effective.
-> 
-> To solve the problem inodes should be eventually detached from the
-> corresponding writeback structure. It's inefficient to do it after
-> every writeback completion. Instead it can be done whenever the
-> original memory cgroup is offlined and writeback structure is getting
-> killed. Scanning over a (potentially long) list of inodes and detach
-> them from the writeback structure can take quite some time. To avoid
-> scanning all inodes, attached inodes are kept on a new list (b_attached).
-> To make it less noticeable to a user, the scanning is performed from a
-> work context.
-> 
-> Big thanks to Jan Kara and Dennis Zhou for their ideas and
-> contribution to the previous iterations of this patch.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On Thu, May 13, 2021 at 04:01:20PM +1000, David Gibson wrote:
 
-Thanks for the patch! On a general note maybe it would be better to split
-this patch into two - the first one which introduces b_attached list and
-its handling and the second one which uses it to detach inodes from
-bdi_writeback structures. Some more comments below.
+> But.. even if you're exposing page tables to userspace.. with hardware
+> that has explicit support for nesting you can probably expose the hw
+> tables directly which is great for the cases that works for.  But
+> surely for older IOMMUs which don't do nesting you must have some way
+> of shadowing guest IO page tables to host IO page tables to translate
+> GPA to HPA at least?
 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index e91980f49388..3deba686d3d4 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -123,12 +123,17 @@ static bool inode_io_list_move_locked(struct inode *inode,
->  
->  	list_move(&inode->i_io_list, head);
->  
-> -	/* dirty_time doesn't count as dirty_io until expiration */
-> -	if (head != &wb->b_dirty_time)
-> -		return wb_io_lists_populated(wb);
-> +	if (head == &wb->b_dirty_time || head == &wb->b_attached) {
-> +		/*
-> +		 * dirty_time doesn't count as dirty_io until expiration,
-> +		 * attached list keeps a list of clean inodes, which are
-> +		 * attached to wb.
-> +		 */
-> +		wb_io_lists_depopulated(wb);
-> +		return false;
-> +	}
->  
-> -	wb_io_lists_depopulated(wb);
-> -	return false;
-> +	return wb_io_lists_populated(wb);
->  }
->  
->  /**
-> @@ -545,6 +550,37 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
->  	kfree(isw);
->  }
+I expect this would be in quemu and would be part of the expensive
+emulation I suggested. Converting the guest's page table structure
+into a sequence of map/unmaps to a non-nestable IOASID.
 
-I suppose the list_empty(&inode->i_io_list) case in
-inode_switch_wbs_work_fn() is impossible with your changes now? Can you
-perhaps add a WARN_ON_ONCE there for this? Also I don't think we want to
-move clean inodes to dirty list so perhaps we need to be more careful about
-the selection of target writeback list in that function?
+> If you're doing that, I don't see that converting page table format
+> is really any harder
 
-> +/**
-> + * cleanup_offline_wb - detach attached clean inodes
-> + * @wb: target wb
-> + *
-> + * Clear the ->i_wb pointer of the attached inodes and drop
-> + * the corresponding wb reference. Skip inodes which are dirty,
-> + * freeing, switching or in the active writeback process.
-> + *
-> + */
-> +void cleanup_offline_wb(struct bdi_writeback *wb)
-> +{
-> +	struct inode *inode, *tmp;
-> +
-> +	spin_lock(&wb->list_lock);
-> +	list_for_each_entry_safe(inode, tmp, &wb->b_attached, i_io_list) {
-> +		if (!spin_trylock(&inode->i_lock))
-> +			continue;
-> +		xa_lock_irq(&inode->i_mapping->i_pages);
-> +		if (!(inode->i_state &
-> +		      (I_FREEING | I_CLEAR | I_SYNC | I_DIRTY | I_WB_SWITCH))) {
+It isn't, but it is a completely different flow and custom from the
+normal HW accelerated nesting.
 
-Use I_DIRTY_ALL here instead of I_DIRTY? We don't want to touch
-I_DIRTY_TIME inodes either I'd say... Also I think you don't want to touch
-I_WILL_FREE inodes either.
+> It might not be a theoretically complete emulation of the vIOMMU, but
+> it can support in-practice usage.  In particular it works pretty well
+> if your backend has a nice big IOVA range (like x86 IOMMUS) but your
+> guest platform typically uses relatively small IOVA windows.  PAPR on
+> x86 is exactly that... well.. possibly not the 64-bit window, but
+> because of old PAPR platforms that didn't support that, we can choose
+> not to advertise that and guests will cope.
 
-> +			WARN_ON_ONCE(inode->i_wb != wb);
-> +			inode->i_wb = NULL;
-> +			wb_put(wb);
-> +			list_del_init(&inode->i_io_list);
+So maybe this multi-window thing is generic API somehow. You'll have
+to check what Kevin comes up with to ensure it fits in
 
-So I was thinking about this and I'm still a bit nervous that setting i_wb
-to NULL is going to cause subtle crashes somewhere. Granted you are very
-careful when not to touch the inode but still, even stuff like
-inode_to_bdi() is not safe to call with inode->i_wb is NULL. So I'm afraid
-that some place in the writeback code will be looking at i_wb without
-having any of those bits set and boom. E.g. inode_to_wb() call in
-test_clear_page_writeback() - what protects that one?
-
-I forgot what possibilities did we already discuss in the past but cannot
-we just switch inode->i_wb to inode_to_bdi(inode)->wb (i.e., root cgroup
-writeback structure)? That would be certainly safer...
-
-> +		}
-> +		xa_unlock_irq(&inode->i_mapping->i_pages);
-> +		spin_unlock(&inode->i_lock);
-> +	}
-> +	spin_unlock(&wb->list_lock);
-> +}
-> +
-...
-> @@ -386,6 +395,10 @@ static void cgwb_release_workfn(struct work_struct *work)
->  	mutex_lock(&wb->bdi->cgwb_release_mutex);
->  	wb_shutdown(wb);
->  
-> +	spin_lock_irq(&cgwb_lock);
-> +	list_del(&wb->offline_node);
-> +	spin_unlock_irq(&cgwb_lock);
-> +
->  	css_put(wb->memcg_css);
->  	css_put(wb->blkcg_css);
->  	mutex_unlock(&wb->bdi->cgwb_release_mutex);
-> @@ -413,6 +426,7 @@ static void cgwb_kill(struct bdi_writeback *wb)
->  	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
->  	list_del(&wb->memcg_node);
->  	list_del(&wb->blkcg_node);
-> +	list_add(&wb->offline_node, &offline_cgwbs);
->  	percpu_ref_kill(&wb->refcnt);
->  }
-
-I think you need to be a bit more careful with the wb->offline_node.
-cgwb_create() can end up destroying half-created bdi_writeback structure on
-error and then you'd see cgwb_release_workfn() called without cgwb_kill()
-called and you'd likely crash or corrupt memory.
-
->  
-> @@ -633,6 +647,48 @@ static void cgwb_bdi_unregister(struct backing_dev_info *bdi)
->  	mutex_unlock(&bdi->cgwb_release_mutex);
->  }
->  
-> +/**
-> + * cleanup_offline_cgwbs - try to release dying cgwbs
-> + *
-> + * Try to release dying cgwbs by switching attached inodes to the wb
-> + * belonging to the root memory cgroup. Processed wbs are placed at the
-> + * end of the list to guarantee the forward progress.
-> + *
-> + * Should be called with the acquired cgwb_lock lock, which might
-> + * be released and re-acquired in the process.
-> + */
-> +static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-> +{
-> +	struct bdi_writeback *wb;
-> +	LIST_HEAD(processed);
-> +
-> +	spin_lock_irq(&cgwb_lock);
-> +
-> +	while (!list_empty(&offline_cgwbs)) {
-> +		wb = list_first_entry(&offline_cgwbs, struct bdi_writeback,
-> +				      offline_node);
-> +
-> +		list_move(&wb->offline_node, &processed);
-> +
-> +		if (wb_has_dirty_io(wb))
-> +			continue;
-> +
-> +		if (!percpu_ref_tryget(&wb->refcnt))
-> +			continue;
-> +
-> +		spin_unlock_irq(&cgwb_lock);
-> +		cleanup_offline_wb(wb);
-> +		spin_lock_irq(&cgwb_lock);
-> +
-> +		wb_put(wb);
-> +	}
-> +
-> +	if (!list_empty(&processed))
-> +		list_splice_tail(&processed, &offline_cgwbs);
-> +
-> +	spin_unlock_irq(&cgwb_lock);
-
-Shouldn't we reschedule this work with some delay if offline_cgwbs is
-non-empty? Otherwise we can end up with non-empty &offline_cgwbs and no
-cleaning scheduled...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jason
