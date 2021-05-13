@@ -2,200 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC7D37F945
-	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 16:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E18C37FB66
+	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 18:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234312AbhEMOBI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 May 2021 10:01:08 -0400
-Received: from mail-dm6nam12on2067.outbound.protection.outlook.com ([40.107.243.67]:24704
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234317AbhEMOAw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 May 2021 10:00:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g99g8q4qeb6aqiIXWyVAcKCg5qo/wmUmYe5DGBxbjhzzwm7KoIrhG49W3vlwW5q5yuUmnXBX6bNr6GNhGT++n26xftHtv8EedLAh+KW2Tam/a2LuFCLd0E0gOME7zH8IkSTI4BpRstolfr7i6fB3WA9xnpQhZMolvPRYAkpZXn58AbYpnrpArzUPlqCFsgyLghwfA1Vs5zhqzyxsx1x8XGkCsQr1N0bYQ5qDTbZkL7dk9X5JNk3+iLK35Jr0yWteA8QndUea2hdnyCCpidhx7AHKyYRDoYHQodUfcqjSD9H2619fC2jEdrq0ohS1Gpb/9qYUzFpAg0z2wjsdw/yR6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VxUAgRWq6rQGjwNbnUqXypkAkkQ4cafn78SEI8kEswE=;
- b=g0OAumj9ZF4a+8V1bw8dwCeEV7zpEg/sCBRwbMB/8hWf64duP+GQwfpccxSfrJI/hVmlMcPBaXWcc7R17Q9OGtRxYOrBO1p3CmwLcqkaMXPhE07BbWGdQf3KbYBwm9+g3joLHAUr7StICgExHs8Au6kzVrJI7LMysCTO9QUM7vZS6jJ0RMgr8/1W06PWxISh53xpNBssQD2b6m0G3og4G6frWjoLXky31emSne7Z4TL0yv+hRHTdyUJJIbXRDFvYnKtq21FU8bPkrvT1qvQWwX9C8lSWAxB3QvFwpDRl9VMcbQxU2WvHa3mhOD+jTlPnD1+nc4wpkhvY/E7eX/ZwoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VxUAgRWq6rQGjwNbnUqXypkAkkQ4cafn78SEI8kEswE=;
- b=AK6aHuSWIwgfikM0i2PZh2yJWU8VHz8ofU4eFWm5aZPmC2B5xhlfMGJcA4A38bHeKiQre3uL1yQKyLUmgX+oQ1d3V1izBVlvazEhVAn0e6EzPuRHbCvHN+SntRLf1kZAA42uNjZYx5Stch1+vn/bRQvAFXD0g99qqpbc3asA8W7C2gwy1ml8NgleCQIMWNp+cdvEMHhF47PXMiPT2P9A+OV66OtUQOPsuZC8TdEXs+jExwdyCRCvbXYiwdeqXiNSFEW4IxfnjH/i/3PGW2dcNZqKVhYf94cmTIwxKQWg9u9A5jdGehc3W561Tu+xCpsyb0osPBa1RtChFPkZyxNO2w==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1340.namprd12.prod.outlook.com (2603:10b6:3:76::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.30; Thu, 13 May
- 2021 13:59:40 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 13:59:40 +0000
-Date:   Thu, 13 May 2021 10:59:38 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210513135938.GG1002214@nvidia.com>
-References: <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJy9o8uEZs42/qDM@yekko>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0041.namprd13.prod.outlook.com
- (2603:10b6:208:257::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S235103AbhEMQXi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 May 2021 12:23:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232251AbhEMQXh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 May 2021 12:23:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620922947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
+        b=Wt2+8A75VoKCIPASPxc80SoVSw8cZytTHtULbzlwCLOWMVEKJMRYVDaBXvB3+oDt7SsUbd
+        AlTIFC1bbBNTc+GA9c9CUqClSnCo7XAbOEG5LekO2Wj+04gUb3oBZOvukzVBU+dwYVImKc
+        elZTXr6oj2u5G4ZM0EImK3sK9isO2W0=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-Ki6PLpQ4M_2BdH2L5QAKZQ-1; Thu, 13 May 2021 12:22:24 -0400
+X-MC-Unique: Ki6PLpQ4M_2BdH2L5QAKZQ-1
+Received: by mail-qt1-f199.google.com with SMTP id o15-20020a05622a138fb02901e0ac29f6b2so6697224qtk.11
+        for <cgroups@vger.kernel.org>; Thu, 13 May 2021 09:22:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
+        b=e/WEVWPnVLJILwU6x0FM2qW/vmu7NjxCGhUJdSkRsbQKqrX5UkVQpgizM9Vezy+WjC
+         pRHknktlmHzmqHXvqYUuVPHL9nSVuLp194yTRgk+4D8dXYg0702Z+iVRGE14049jfmH1
+         B3W+T9wT3fiwf0R1mUKuLV1JrU01IDO1pYBzn5AqZmaAaW00dAEyfyEo32r/P7q0fB/d
+         kg2Pa9sSd+tOVSXuWdN/yjsIOFzuWWir4FWnS3KEt2+V9qepDOd5I+2PUJ81iV5vlntM
+         Bt8Gg/Mr1o1vFFBemOGoMLNQlBHwX94fFgu/IDpz+ukR9U6407GReyJoDVdmkIbM55C+
+         havw==
+X-Gm-Message-State: AOAM531vc1PbSp1FyJO+/pY7B92ciFDxNzepv7D4KsuBXyBmOFQZpJw5
+        ZlAN73SADu7Yoc3KHwttJ4heryicn0c3AVYTnYqIas5XWYurj2JtPA3Knlc83FEhgEkW6JkTF9C
+        /Y30OtZFgUU6jptbPUg==
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002729qkk.133.1620922944361;
+        Thu, 13 May 2021 09:22:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypW52z4koXjDm+vseDa/OGAuJKFw35V6mcwKGIJDY6x7ocwRRUfji64raykrWzMhJogEoz0Q==
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002717qkk.133.1620922944166;
+        Thu, 13 May 2021 09:22:24 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id c20sm2816714qtm.52.2021.05.13.09.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 09:22:23 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v5 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <llong@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210512145107.6208-1-longman@redhat.com>
+ <0919aaab-cc08-f86d-1f9a-8ddfeed7bb31@redhat.com>
+ <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
+Message-ID: <5b853795-6583-8527-93d2-68ff0b9b5457@redhat.com>
+Date:   Thu, 13 May 2021 12:22:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0041.namprd13.prod.outlook.com (2603:10b6:208:257::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Thu, 13 May 2021 13:59:40 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhBsJ-006pZw-06; Thu, 13 May 2021 10:59:39 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1533b63c-c975-4f01-b522-08d916175a3e
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1340:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB13402F46CEFBC9E08DB82796C2519@DM5PR12MB1340.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jWjgYZ1f202a11lBPZTLmM/NTNmtofIhmSzbL1KK0JPckZQKo/sRR4I4PEQ7IS0LmaUBa1bHkLz2Ta9bLjnI0QfzIXgizuB7qh3bPO8JHaGMG1UHLakxyua8dS9yzvSzIL6d5DvVueyE56QCQKegF3BjmXRtnCJlCVsq21fBigMh+AxSf2U1PYKfPZ9aBmQUhYAQGjfbNd5kBb+zhn3VuIUwczVjkcwJWU7JX0lKdTqPImf8NCK8maR1FyDAk/gVeYh+X1Cc/YHITZzeER136+TgDicjO/BkkJ8t8LiBGZWxbVO2uPDg3ZNQQKTHeplSIMb9du7XIDj4hrwH1vvQuvfoHtBGsUsOsFA167+2+rOi9jT/FVOWLHr3bOvj4goOaRx6+F47COS+wLEG+LQs1FesrSL4BtPQqGQGcudivt08+tVW2ogfoC66CmTRT6F7Ex7Gx9y9Uw2C+fMLZd+2f4Aut3d/gUZU6saqEw/ZM3L/IScrdCXkKnk3kbElK/+8SWXuqB+21uEsOG1/lOJ14N6SJWd0xqSXUU1nzYV9OR5HzUsUCvZvjMNbRh/vdtHOn0ykakDZ/7vxql8PRGYIo0BZomnGqS6eVAUEAaJuhYg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(2616005)(9786002)(26005)(9746002)(8676002)(8936002)(4326008)(33656002)(478600001)(86362001)(6916009)(186003)(66476007)(66946007)(66556008)(54906003)(7416002)(36756003)(5660300002)(316002)(38100700002)(2906002)(1076003)(426003)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?AEKSmJXmaajtadU/sj82eQ1vJmhprYKkxmlNBRHLMY7PCULGyf+Fs6HAy3lV?=
- =?us-ascii?Q?TE91H4vudiBt5ebKybclAdFDp543+vgRmyLEszBOCIp4hOLI/gR/GYUeEGLy?=
- =?us-ascii?Q?RL9H1+mU1pg8cqunVDXwHwqipdmEOhHDdynSBbrQSfUMip0TSQpkisGSgHZl?=
- =?us-ascii?Q?l/2O4ZiRTJTt9ghc812ZBRQpAlStfxDuWAmVKarJgrCR6EN7bCLLhSXanmuC?=
- =?us-ascii?Q?nTkD7j1l8DHxM4aS+AR7nDgxicHTdVbK3BvaTY/W/2URPhmg87hQPYRgmLy7?=
- =?us-ascii?Q?ieWVljjMzEhQiebFBJWXIa5izuYD/11PP/INo2om3YOB4YuEVZAh0F5KYbgh?=
- =?us-ascii?Q?a2b6Yo1dW4TBF+SQEbti/3YH/nIPw8SkKGvQmCL5ILwrFG/rewfugU1XRLNl?=
- =?us-ascii?Q?LcVcT57q6lZW5dVn5jwbvC9uySMvLXqbYcKcs+Rnza6m9KrPXGOkra+I7z7b?=
- =?us-ascii?Q?XhUGygm1Mv9aWKKELhPKqhqu1uUdhRossUfBQ8WjGffAFqQKtC8HNoUATVZO?=
- =?us-ascii?Q?23xr76e2jlrLjdiWXx6+MSYs2xdQerhIWAIM5AkaOM1uBuPvvQDWYdhFDiyM?=
- =?us-ascii?Q?uTt09pqL1IentVALxcpq/lFxDYyHuIc1BbC6SZPqza8PkiUbc6XEEb9r5kpc?=
- =?us-ascii?Q?hzc/Na+wC2PR7J5ZKRWzY4CDZweTdHJK7qVRfypfZ079clNu05deUfSluDov?=
- =?us-ascii?Q?ENXU4RHerl79eRZFAc2c+JdtELK2j0Nnfoj3+4dm1CGFUB/xiHY/ZrZBr9oO?=
- =?us-ascii?Q?EPNi5A019QvS+XeXnciisEv7G0+D/kh/DY+IbaGJHeHTHY0gPyS12YvmIeyI?=
- =?us-ascii?Q?8N4Fv3e8UhxUba+p13Ewc92duCGiwEV18Av2rYrfeDpdhi6D4QKKvRov3iGV?=
- =?us-ascii?Q?5x2ozvR+g1robvlGnOfUk5Fqr+JoyFZynbpW45csEkSBYYtToJYWhqhEc11X?=
- =?us-ascii?Q?wIRl/OXOOud5K0zb7rQTQV9/jIqy/sn0/4RYActK4L0250VN4p9Mp3sDbBz5?=
- =?us-ascii?Q?/BJZdq+h4t7/BrgDt2ItufvwrL9Y5aZE2Q9RwKU5lOQvJ/OOjmj/LFgxAq5g?=
- =?us-ascii?Q?6JrKSMzSNwNGnMf3Jy11QeRAuKuWsvHY+CdJeWcbch/R8uayjSNuwiZ/vsDG?=
- =?us-ascii?Q?bm8pti/R08+DZhmbuUyxeHZ1uszTCLTOvl2j2INswlvjuCW57QMedpXL0zrm?=
- =?us-ascii?Q?WGIlVxAiAVBg9jOD4oF4bINX7msCjblbHVhV0aOZ4wGvNXE/5e0XRJRC7QB1?=
- =?us-ascii?Q?5/trL5Aw1FNDe3q3oeiAIkPtk7H7FxKC0szZXhTrqclwDhoMYmDy54Sm4ksO?=
- =?us-ascii?Q?0rr1cqn5zD3L5ltG+hESOTM/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1533b63c-c975-4f01-b522-08d916175a3e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 13:59:40.6072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HM4VFYNb70juCl497m5Qv7Ax7LCxnrkh2EHktjsbBe9z+ptMX5YiOw6e1GnvMKlt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1340
+In-Reply-To: <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 13, 2021 at 03:48:19PM +1000, David Gibson wrote:
-> On Mon, May 03, 2021 at 01:15:18PM -0300, Jason Gunthorpe wrote:
-> > On Thu, Apr 29, 2021 at 01:04:05PM +1000, David Gibson wrote:
-> > > Again, I don't know enough about VDPA to make sense of that.  Are we
-> > > essentially talking non-PCI virtual devices here?  In which case you
-> > > could define the VDPA "bus" to always have one-device groups.
-> > 
-> > It is much worse than that.
-> > 
-> > What these non-PCI devices need is for the kernel driver to be part of
-> > the IOMMU group of the underlying PCI device but tell VFIO land that
-> > "groups don't matter"
-> 
-> I don't really see a semantic distinction between "always one-device
-> groups" and "groups don't matter".  Really the only way you can afford
-> to not care about groups is if they're singletons.
+On 5/12/21 8:32 PM, Andrew Morton wrote:
+> On Wed, 12 May 2021 10:54:19 -0400 Waiman Long <llong@redhat.com> wrote:
+>
+>>>    include/linux/slab.h | 42 +++++++++++++++++++++++++++++++++---------
+>>>    mm/slab_common.c     | 25 +++++++++++++++++--------
+>>>    2 files changed, 50 insertions(+), 17 deletions(-)
+>> The following are the diff's from previous version. It turns out that
+>> the previous patch doesn't work if CONFIG_ZONE_DMA isn't defined.
+>>
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index a51cad5f561c..aa7f6c222a60 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -312,16 +312,17 @@ static inline void __check_heap_object(const void
+>> *ptr, un
+>> signed long n,
+>>     */
+>>    enum kmalloc_cache_type {
+>>        KMALLOC_NORMAL = 0,
+>> -#ifdef CONFIG_MEMCG_KMEM
+>> -    KMALLOC_CGROUP,
+>> -#else
+>> +#ifndef CONFIG_ZONE_DMA
+>> +    KMALLOC_DMA = KMALLOC_NORMAL,
+>> +#endif
+>> +#ifndef CONFIG_MEMCG_KMEM
+>>        KMALLOC_CGROUP = KMALLOC_NORMAL,
+>> +#else
+>> +    KMALLOC_CGROUP,
+>>    #endif
+>>        KMALLOC_RECLAIM,
+>>    #ifdef CONFIG_ZONE_DMA
+>>        KMALLOC_DMA,
+>> -#else
+>> -    KMALLOC_DMA = KMALLOC_NORMAL,
+>>    #endif
+>>        NR_KMALLOC_TYPES
+>>    };
+> I assume this fixes
+> https://lkml.kernel.org/r/20210512152806.2492ca42@canb.auug.org.au?
+>
+Yes.
 
-The kernel driver under the mdev may not be in an "always one-device"
-group.
+Cheers,
+Longman
 
-It is a kernel driver so the only thing we know and care about is that
-all devices in the HW group are bound to kernel drivers.
-
-The vfio device that spawns from this kernel driver is really a
-"groups don't matter" vfio device because at the IOMMU layer it should
-be riding on the physical group of the kernel driver.  At the VFIO
-layer we no longer care about the group abstraction because the system
-guarentees isolation in some other way.
-
-The issue is a software one of tightly coupling IOMMU HW groups to
-VFIO's API and then introducing an entire class of VFIO mdev devices
-that no longer care about IOMMU HW groups at all.
-
-Currently mdev tries to trick this by creating singleton groups, but
-it is very ugly and very tightly coupled to a specific expectation of
-the few existing mdev drivers. Trying to add PASID made it alot worse.
-
-> Aside: I'm primarily using "group" to mean the underlying hardware
-> unit, not the vfio construct on top of it, I'm not sure that's been
-> clear throughout.
-
-Sure, that is obviously fixed, but I'm not interested in that.
-
-I'm interested in having a VFIO API that makes sense for vfio-pci
-which has a tight coupling to the HW notion of a IOMMU and also vfio
-mdev's that have no concept of a HW IOMMU group.
-
-> So.. your model assumes that every device has a safe quiescent state
-> where it won't do any harm until poked, whether its group is
-> currently kernel owned, or owned by a userspace that doesn't know
-> anything about it.
-
-This is today's model, yes. When you run dpdk on a multi-group device
-vfio already ensures that all the device groups remained parked and
-inaccessible.
- 
-> At minimum this does mean that in order to use one device in the group
-> you must have permission to use *all* the devices in the group -
-> otherwise you may be able to operate a device you don't have
-> permission to by DMAing to its registers from a device you do have
-> permission to.
-
-If the administator configures the system with different security
-labels for different VFIO devices then yes removing groups makes this
-more tricky as all devices in the group should have the same label.
-
-Jason
