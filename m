@@ -2,486 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A78837F09E
-	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 02:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0899037F2C5
+	for <lists+cgroups@lfdr.de>; Thu, 13 May 2021 08:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235497AbhEMArA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 May 2021 20:47:00 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29958 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236368AbhEMAoX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 May 2021 20:44:23 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14D0VaD9015395
-        for <cgroups@vger.kernel.org>; Wed, 12 May 2021 17:43:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=XVKZCM0hTdKOjDP1wMWYQBm0tSdwZVIy/h93ls22Sxc=;
- b=KTioC8sMXIyEGXyrdf7UWTFJG1swRldbb1EYbrxI8M9fXEVNwOq8WI9beOVJoIKtBxj/
- S7Dr1r0UOFMevhsnH87X/I7frB415xSBGIEQ/W0nbcc7i3+avGqqlca3oZhJSp46kNdC
- /FvU8wvlUCDHOSxw3SiANr6XowpnfrnvaFw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38gpm8s0t1-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <cgroups@vger.kernel.org>; Wed, 12 May 2021 17:43:08 -0700
-Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 12 May 2021 17:43:05 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 6893A73472C7; Wed, 12 May 2021 17:43:01 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v4] cgroup, blkcg: prevent dirty inodes to pin dying memory cgroups
-Date:   Wed, 12 May 2021 17:42:58 -0700
-Message-ID: <20210513004258.1610273-1-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S229951AbhEMGIX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 May 2021 02:08:23 -0400
+Received: from ozlabs.org ([203.11.71.1]:51273 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhEMGIX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 May 2021 02:08:23 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4Fgh5D5rYVz9sWc; Thu, 13 May 2021 16:07:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1620886032;
+        bh=Mzje6I+4XJ3y6Iby/DAYOwVFavVRAAtc7j9XmkVCAVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fP8u4nZiemlt/gTVvVqI6DnRAk7mDCvbaRIlDJrKeD5SvLwwmy+GW6TfJFQ2/gSHB
+         EqigWrZpgStjiMYr1jY37zqkpZhEn9oghhaM+wAfRTSiOW9d+b6/s2r17OOjmh2koT
+         YjPtcV1K73vL8uyeJRjiE+vbeFX1lv+Y/RkyWHWk=
+Date:   Thu, 13 May 2021 15:48:19 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YJy9o8uEZs42/qDM@yekko>
+References: <20210422133747.23322269@redhat.com>
+ <20210422200024.GC1370958@nvidia.com>
+ <20210422163808.2d173225@redhat.com>
+ <20210422233950.GD1370958@nvidia.com>
+ <YIecXkaEGNgICePO@yekko.fritz.box>
+ <20210427171212.GD1370958@nvidia.com>
+ <YIizNdbA0+LYwQbI@yekko.fritz.box>
+ <20210428145622.GU1370958@nvidia.com>
+ <YIoiJRY3FM7xH2bH@yekko>
+ <20210503161518.GM1370958@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aFbOfLs__7GQeHEq4-V8bAJXWcR3i2MB
-X-Proofpoint-GUID: aFbOfLs__7GQeHEq4-V8bAJXWcR3i2MB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_13:2021-05-12,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- phishscore=0 bulkscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130001
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ArI7kS42Lc+0E4RS"
+Content-Disposition: inline
+In-Reply-To: <20210503161518.GM1370958@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When an inode is getting dirty for the first time it's associated
-with a wb structure (see __inode_attach_wb()). It can later be
-switched to another wb (if e.g. some other cgroup is writing a lot of
-data to the same inode), but otherwise stays attached to the original
-wb until being reclaimed.
 
-The problem is that the wb structure holds a reference to the original
-memory and blkcg cgroups. So if an inode has been dirty once and later
-is actively used in read-only mode, it has a good chance to pin down
-the original memory and blkcg cgroups. This is often the case with
-services bringing data for other services, e.g. updating some rpm
-packages.
+--ArI7kS42Lc+0E4RS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the real life it becomes a problem due to a large size of the memcg
-structure, which can easily be 1000x larger than an inode. Also a
-really large number of dying cgroups can raise different scalability
-issues, e.g. making the memory reclaim costly and less effective.
+On Mon, May 03, 2021 at 01:15:18PM -0300, Jason Gunthorpe wrote:
+> On Thu, Apr 29, 2021 at 01:04:05PM +1000, David Gibson wrote:
+> > Again, I don't know enough about VDPA to make sense of that.  Are we
+> > essentially talking non-PCI virtual devices here?  In which case you
+> > could define the VDPA "bus" to always have one-device groups.
+>=20
+> It is much worse than that.
+>=20
+> What these non-PCI devices need is for the kernel driver to be part of
+> the IOMMU group of the underlying PCI device but tell VFIO land that
+> "groups don't matter"
 
-To solve the problem inodes should be eventually detached from the
-corresponding writeback structure. It's inefficient to do it after
-every writeback completion. Instead it can be done whenever the
-original memory cgroup is offlined and writeback structure is getting
-killed. Scanning over a (potentially long) list of inodes and detach
-them from the writeback structure can take quite some time. To avoid
-scanning all inodes, attached inodes are kept on a new list (b_attached).
-To make it less noticeable to a user, the scanning is performed from a
-work context.
+I don't really see a semantic distinction between "always one-device
+groups" and "groups don't matter".  Really the only way you can afford
+to not care about groups is if they're singletons.
 
-Big thanks to Jan Kara and Dennis Zhou for their ideas and
-contribution to the previous iterations of this patch.
+> Today mdev tries to fake this by using singleton iommu groups, but it
+> is really horrible and direcly hacks up the VFIO IOMMU code to
+> understand these special cases. Intel was proposing more special
+> hacking in the VFIO IOMMU code to extend this to PASID.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- fs/fs-writeback.c                | 84 ++++++++++++++++++++++++--------
- include/linux/backing-dev-defs.h |  4 ++
- include/linux/backing-dev.h      | 17 -------
- include/linux/writeback.h        |  1 +
- mm/backing-dev.c                 | 68 ++++++++++++++++++++++++--
- 5 files changed, 132 insertions(+), 42 deletions(-)
+At this stage I don't really understand why that would end up so
+horrible.
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index e91980f49388..3deba686d3d4 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -109,10 +109,10 @@ static void wb_io_lists_depopulated(struct bdi_writ=
-eback *wb)
-  * inode_io_list_move_locked - move an inode onto a bdi_writeback IO lis=
-t
-  * @inode: inode to be moved
-  * @wb: target bdi_writeback
-- * @head: one of @wb->b_{dirty|io|more_io|dirty_time}
-+ * @head: one of @wb->b_{dirty|io|more_io|dirty_time|attached}
-  *
-  * Move @inode->i_io_list to @list of @wb and set %WB_has_dirty_io.
-- * Returns %true if @inode is the first occupant of the !dirty_time IO
-+ * Returns %true if @inode is the first occupant of the dirty, io or mor=
-e_io
-  * lists; otherwise, %false.
-  */
- static bool inode_io_list_move_locked(struct inode *inode,
-@@ -123,12 +123,17 @@ static bool inode_io_list_move_locked(struct inode =
-*inode,
-=20
- 	list_move(&inode->i_io_list, head);
-=20
--	/* dirty_time doesn't count as dirty_io until expiration */
--	if (head !=3D &wb->b_dirty_time)
--		return wb_io_lists_populated(wb);
-+	if (head =3D=3D &wb->b_dirty_time || head =3D=3D &wb->b_attached) {
-+		/*
-+		 * dirty_time doesn't count as dirty_io until expiration,
-+		 * attached list keeps a list of clean inodes, which are
-+		 * attached to wb.
-+		 */
-+		wb_io_lists_depopulated(wb);
-+		return false;
-+	}
-=20
--	wb_io_lists_depopulated(wb);
--	return false;
-+	return wb_io_lists_populated(wb);
- }
-=20
- /**
-@@ -545,6 +550,37 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	kfree(isw);
- }
-=20
-+/**
-+ * cleanup_offline_wb - detach attached clean inodes
-+ * @wb: target wb
-+ *
-+ * Clear the ->i_wb pointer of the attached inodes and drop
-+ * the corresponding wb reference. Skip inodes which are dirty,
-+ * freeing, switching or in the active writeback process.
-+ *
-+ */
-+void cleanup_offline_wb(struct bdi_writeback *wb)
-+{
-+	struct inode *inode, *tmp;
-+
-+	spin_lock(&wb->list_lock);
-+	list_for_each_entry_safe(inode, tmp, &wb->b_attached, i_io_list) {
-+		if (!spin_trylock(&inode->i_lock))
-+			continue;
-+		xa_lock_irq(&inode->i_mapping->i_pages);
-+		if (!(inode->i_state &
-+		      (I_FREEING | I_CLEAR | I_SYNC | I_DIRTY | I_WB_SWITCH))) {
-+			WARN_ON_ONCE(inode->i_wb !=3D wb);
-+			inode->i_wb =3D NULL;
-+			wb_put(wb);
-+			list_del_init(&inode->i_io_list);
-+		}
-+		xa_unlock_irq(&inode->i_mapping->i_pages);
-+		spin_unlock(&inode->i_lock);
-+	}
-+	spin_unlock(&wb->list_lock);
-+}
-+
- /**
-  * wbc_attach_and_unlock_inode - associate wbc with target inode and unl=
-ock it
-  * @wbc: writeback_control of interest
-@@ -779,19 +815,18 @@ EXPORT_SYMBOL_GPL(wbc_account_cgroup_owner);
-  */
- int inode_congested(struct inode *inode, int cong_bits)
- {
--	/*
--	 * Once set, ->i_wb never becomes NULL while the inode is alive.
--	 * Start transaction iff ->i_wb is visible.
--	 */
--	if (inode && inode_to_wb_is_valid(inode)) {
-+	if (inode) {
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie lock_cookie =3D {};
- 		bool congested;
-=20
- 		wb =3D unlocked_inode_to_wb_begin(inode, &lock_cookie);
--		congested =3D wb_congested(wb, cong_bits);
-+		if (wb) {
-+			congested =3D wb_congested(wb, cong_bits);
-+			unlocked_inode_to_wb_end(inode, &lock_cookie);
-+			return congested;
-+		}
- 		unlocked_inode_to_wb_end(inode, &lock_cookie);
--		return congested;
- 	}
-=20
- 	return wb_congested(&inode_to_bdi(inode)->wb, cong_bits);
-@@ -1436,8 +1471,13 @@ static void requeue_inode(struct inode *inode, str=
-uct bdi_writeback *wb,
- 		inode_io_list_move_locked(inode, wb, &wb->b_dirty_time);
- 		inode->i_state &=3D ~I_SYNC_QUEUED;
- 	} else {
--		/* The inode is clean. Remove from writeback lists. */
--		inode_io_list_del_locked(inode, wb);
-+		/*
-+		 * The inode is clean. Remove from writeback lists and
-+		 * move it to the attached list, because the inode is
-+		 * still attached to wb.
-+		 */
-+		inode_io_list_move_locked(inode, wb, &wb->b_attached);
-+		inode->i_state &=3D ~I_SYNC_QUEUED;
- 	}
- }
-=20
-@@ -1584,12 +1624,14 @@ static int writeback_single_inode(struct inode *i=
-node,
- 	wb =3D inode_to_wb_and_lock_list(inode);
- 	spin_lock(&inode->i_lock);
- 	/*
--	 * If the inode is now fully clean, then it can be safely removed from
--	 * its writeback list (if any).  Otherwise the flusher threads are
--	 * responsible for the writeback lists.
-+	 * If inode is clean, remove it from writeback lists and put into
-+	 * the attached list. Otherwise don't touch it. See comment above
-+	 * for explanation.
- 	 */
--	if (!(inode->i_state & I_DIRTY_ALL))
--		inode_io_list_del_locked(inode, wb);
-+	if (!(inode->i_state & I_DIRTY_ALL)) {
-+		inode_io_list_move_locked(inode, wb, &wb->b_attached);
-+		inode->i_state &=3D ~I_SYNC_QUEUED;
-+	}
- 	spin_unlock(&wb->list_lock);
- 	inode_sync_complete(inode);
- out:
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-index fff9367a6348..fb49434be4eb 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -114,6 +114,9 @@ struct bdi_writeback {
- 	struct list_head b_io;		/* parked for writeback */
- 	struct list_head b_more_io;	/* parked for more writeback */
- 	struct list_head b_dirty_time;	/* time stamps are dirty */
-+	struct list_head b_attached;	/* clean inodes pinning this wb
-+					 * though inode->i_wb
-+					 */
- 	spinlock_t list_lock;		/* protects the b_* lists */
-=20
- 	struct percpu_counter stat[NR_WB_STAT_ITEMS];
-@@ -154,6 +157,7 @@ struct bdi_writeback {
- 	struct cgroup_subsys_state *blkcg_css; /* and blkcg */
- 	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
- 	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
-+	struct list_head offline_node;
-=20
- 	union {
- 		struct work_struct release_work;
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 44df4fcef65c..cca7eb0e602d 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -257,18 +257,6 @@ wb_get_create_current(struct backing_dev_info *bdi, =
-gfp_t gfp)
- 	return wb;
- }
-=20
--/**
-- * inode_to_wb_is_valid - test whether an inode has a wb associated
-- * @inode: inode of interest
-- *
-- * Returns %true if @inode has a wb associated.  May be called without a=
-ny
-- * locking.
-- */
--static inline bool inode_to_wb_is_valid(struct inode *inode)
--{
--	return inode->i_wb;
--}
--
- /**
-  * inode_to_wb - determine the wb of an inode
-  * @inode: inode of interest
-@@ -356,11 +344,6 @@ wb_get_create_current(struct backing_dev_info *bdi, =
-gfp_t gfp)
- 	return &bdi->wb;
- }
-=20
--static inline bool inode_to_wb_is_valid(struct inode *inode)
--{
--	return true;
--}
--
- static inline struct bdi_writeback *inode_to_wb(struct inode *inode)
- {
- 	return &inode_to_bdi(inode)->wb;
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 8e5c5bb16e2d..8ed76e7d54db 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -221,6 +221,7 @@ void wbc_account_cgroup_owner(struct writeback_contro=
-l *wbc, struct page *page,
- int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pa=
-ges,
- 			   enum wb_reason reason, struct wb_completion *done);
- void cgroup_writeback_umount(void);
-+void cleanup_offline_wb(struct bdi_writeback *wb);
-=20
- /**
-  * inode_attach_wb - associate an inode with its wb
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 576220acd686..2176c5199c0d 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -53,10 +53,10 @@ static int bdi_debug_stats_show(struct seq_file *m, v=
-oid *v)
- 	unsigned long background_thresh;
- 	unsigned long dirty_thresh;
- 	unsigned long wb_thresh;
--	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time;
-+	unsigned long nr_dirty, nr_io, nr_more_io, nr_dirty_time, nr_attached;
- 	struct inode *inode;
-=20
--	nr_dirty =3D nr_io =3D nr_more_io =3D nr_dirty_time =3D 0;
-+	nr_dirty =3D nr_io =3D nr_more_io =3D nr_dirty_time =3D nr_attached =3D=
- 0;
- 	spin_lock(&wb->list_lock);
- 	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
- 		nr_dirty++;
-@@ -67,6 +67,8 @@ static int bdi_debug_stats_show(struct seq_file *m, voi=
-d *v)
- 	list_for_each_entry(inode, &wb->b_dirty_time, i_io_list)
- 		if (inode->i_state & I_DIRTY_TIME)
- 			nr_dirty_time++;
-+	list_for_each_entry(inode, &wb->b_attached, i_io_list)
-+		nr_attached++;
- 	spin_unlock(&wb->list_lock);
-=20
- 	global_dirty_limits(&background_thresh, &dirty_thresh);
-@@ -85,6 +87,7 @@ static int bdi_debug_stats_show(struct seq_file *m, voi=
-d *v)
- 		   "b_io:               %10lu\n"
- 		   "b_more_io:          %10lu\n"
- 		   "b_dirty_time:       %10lu\n"
-+		   "b_attached:         %10lu\n"
- 		   "bdi_list:           %10u\n"
- 		   "state:              %10lx\n",
- 		   (unsigned long) K(wb_stat(wb, WB_WRITEBACK)),
-@@ -99,6 +102,7 @@ static int bdi_debug_stats_show(struct seq_file *m, vo=
-id *v)
- 		   nr_io,
- 		   nr_more_io,
- 		   nr_dirty_time,
-+		   nr_attached,
- 		   !list_empty(&bdi->bdi_list), bdi->wb.state);
-=20
- 	return 0;
-@@ -291,6 +295,7 @@ static int wb_init(struct bdi_writeback *wb, struct b=
-acking_dev_info *bdi,
- 	INIT_LIST_HEAD(&wb->b_io);
- 	INIT_LIST_HEAD(&wb->b_more_io);
- 	INIT_LIST_HEAD(&wb->b_dirty_time);
-+	INIT_LIST_HEAD(&wb->b_attached);
- 	spin_lock_init(&wb->list_lock);
-=20
- 	wb->bw_time_stamp =3D jiffies;
-@@ -371,12 +376,16 @@ static void wb_exit(struct bdi_writeback *wb)
- #include <linux/memcontrol.h>
-=20
- /*
-- * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_=
-list.
-- * bdi->cgwb_tree is also RCU protected.
-+ * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs an=
-d
-+ * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
-  */
- static DEFINE_SPINLOCK(cgwb_lock);
- static struct workqueue_struct *cgwb_release_wq;
-=20
-+static LIST_HEAD(offline_cgwbs);
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-+static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_wo=
-rkfn);
-+
- static void cgwb_release_workfn(struct work_struct *work)
- {
- 	struct bdi_writeback *wb =3D container_of(work, struct bdi_writeback,
-@@ -386,6 +395,10 @@ static void cgwb_release_workfn(struct work_struct *=
-work)
- 	mutex_lock(&wb->bdi->cgwb_release_mutex);
- 	wb_shutdown(wb);
-=20
-+	spin_lock_irq(&cgwb_lock);
-+	list_del(&wb->offline_node);
-+	spin_unlock_irq(&cgwb_lock);
-+
- 	css_put(wb->memcg_css);
- 	css_put(wb->blkcg_css);
- 	mutex_unlock(&wb->bdi->cgwb_release_mutex);
-@@ -413,6 +426,7 @@ static void cgwb_kill(struct bdi_writeback *wb)
- 	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
- 	list_del(&wb->memcg_node);
- 	list_del(&wb->blkcg_node);
-+	list_add(&wb->offline_node, &offline_cgwbs);
- 	percpu_ref_kill(&wb->refcnt);
- }
-=20
-@@ -633,6 +647,48 @@ static void cgwb_bdi_unregister(struct backing_dev_i=
-nfo *bdi)
- 	mutex_unlock(&bdi->cgwb_release_mutex);
- }
-=20
-+/**
-+ * cleanup_offline_cgwbs - try to release dying cgwbs
-+ *
-+ * Try to release dying cgwbs by switching attached inodes to the wb
-+ * belonging to the root memory cgroup. Processed wbs are placed at the
-+ * end of the list to guarantee the forward progress.
-+ *
-+ * Should be called with the acquired cgwb_lock lock, which might
-+ * be released and re-acquired in the process.
-+ */
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-+{
-+	struct bdi_writeback *wb;
-+	LIST_HEAD(processed);
-+
-+	spin_lock_irq(&cgwb_lock);
-+
-+	while (!list_empty(&offline_cgwbs)) {
-+		wb =3D list_first_entry(&offline_cgwbs, struct bdi_writeback,
-+				      offline_node);
-+
-+		list_move(&wb->offline_node, &processed);
-+
-+		if (wb_has_dirty_io(wb))
-+			continue;
-+
-+		if (!percpu_ref_tryget(&wb->refcnt))
-+			continue;
-+
-+		spin_unlock_irq(&cgwb_lock);
-+		cleanup_offline_wb(wb);
-+		spin_lock_irq(&cgwb_lock);
-+
-+		wb_put(wb);
-+	}
-+
-+	if (!list_empty(&processed))
-+		list_splice_tail(&processed, &offline_cgwbs);
-+
-+	spin_unlock_irq(&cgwb_lock);
-+}
-+
- /**
-  * wb_memcg_offline - kill all wb's associated with a memcg being offlin=
-ed
-  * @memcg: memcg being offlined
-@@ -648,6 +704,10 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
- 	list_for_each_entry_safe(wb, next, memcg_cgwb_list, memcg_node)
- 		cgwb_kill(wb);
- 	memcg_cgwb_list->next =3D NULL;	/* prevent new wb's */
-+
-+	if (!list_empty(&offline_cgwbs))
-+		schedule_work(&cleanup_offline_cgwbs_work);
-+
- 	spin_unlock_irq(&cgwb_lock);
- }
-=20
+> When we get to a /dev/ioasid this is all nonsense. The kernel device
+> driver is going to have to tell drivers/iommu exactly what kind of
+> ioasid it can accept, be it a PASID inside a kernel owned group, a SW
+> emulated 'mdev' ioasid, or whatever.
+>=20
+> In these cases the "group" idea has become a fiction that just creates
+> a pain.
+
+I don't see how the group is a fiction in this instance.  You can
+still have devices that can't be isolated, therefore you can have
+non-singleton groups.
+
+> "Just reorganize VDPA to do something insane with the driver
+> core so we can create a dummy group to satisfy an unnecessary uAPI
+> restriction" is not a very compelling argument.
+>=20
+> So if the nonsensical groups goes away for PASID/mdev, where does it
+> leave the uAPI in other cases?
+>=20
+> > I don't think simplified-but-wrong is a good goal.  The thing about
+> > groups is that if they're there, you can't just "not care" about them,
+> > they affect you whether you like it or not.
+>=20
+> You really can. If one thing claims the group then all the other group
+> devices become locked out.
+
+Aside: I'm primarily using "group" to mean the underlying hardware
+unit, not the vfio construct on top of it, I'm not sure that's been
+clear throughout.
+
+So.. your model assumes that every device has a safe quiescent state
+where it won't do any harm until poked, whether its group is
+currently kernel owned, or owned by a userspace that doesn't know
+anything about it.
+
+At minimum this does mean that in order to use one device in the group
+you must have permission to use *all* the devices in the group -
+otherwise you may be able to operate a device you don't have
+permission to by DMAing to its registers from a device you do have
+permission to.
+
+Whatever scripts are managing ownership of devices also need to know
+about groups, because they need to put all the devices into that
+quiescent state before the group can change ownership.
+
+> The main point to understand is that groups are NOT an application
+> restriction! It is a whole system restriction that the operator needs
+> to understand and deal with. This is why things like dpdk don't care
+> about the group at all - there is nothing they can do with the
+> information.
+>=20
+> If the operator says to run dpdk on a specific device then the
+> operator is the one that has to deal with all the other devices in the
+> group getting locked out.
+
+Ok, I think I see your point there.
+
+> At best the application can make it more obvious that the operator is
+> doing something dangerous, but the current kernel API doesn't seem to
+> really support that either.
+>=20
+> Jason
+>=20
+
 --=20
-2.30.2
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
+--ArI7kS42Lc+0E4RS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCcvaAACgkQbDjKyiDZ
+s5L5IRAAg97CW+pGNxknG14IgrfUjPSBK7pDccMXtD7eVUa3BEynUYKrHHTYj7q/
+EzRpFRjsIwkC8NT7lBlsCrZIL/sS1LD+zveqDYNaBIs46681UKlg5enXxZoEcTGi
+WRUmWMgXhOnhrVQMB/G1TZLanViDvzHpBau0ALyX0buvg1bpkvToX7AiKvqNzv07
+IKaeG23DeXI9o2M0Jh6v5UFDLA90LktEqtxsvfbqQPYY+JJWtdV3WBcYOKsHe3j4
+ZFfIqOlBOsGA27BWZQucmyxtFjQfNbCB9QQO28MAcOs+A1fIwtRi4ZVNuBEQos38
+3cN5riTTE4+p63WU4kEWiP3nTX3irEKQD3W5aMy1Yk8STxgBwuL5FerquBssnV4i
+h362Q9JPTadeDOX1sVmDFM2Ms/WLh1fG2zGvRtOwsTwCYhWoDAziz8BYLWoHFCYY
+y3DctIOZxQaK5NZjiABNbxW9y14zFWzq9aqAfyb06Cz/rDgkSBMAclfD4/DOF7ic
+s0gPcVm/xFk7d4KvOD8u3tf9Q4Uk2s3jcJmXmblPF88nAjSknZj3o4/H7o1feD9x
+ym2WSkkHYfC2Yq+FFCNyeXNDUQVH7PUA5DfcAaV8jygtdNo/edcZNI2pKwuRxVyU
+KL0RtZY77wWQF88q+iSxIjeVgRbBxSslOVSXH40O0aJsO8+cNAQ=
+=S7A7
+-----END PGP SIGNATURE-----
+
+--ArI7kS42Lc+0E4RS--
