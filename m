@@ -2,114 +2,252 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D68381F62
-	for <lists+cgroups@lfdr.de>; Sun, 16 May 2021 16:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60B93820AF
+	for <lists+cgroups@lfdr.de>; Sun, 16 May 2021 21:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhEPO6y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 16 May 2021 10:58:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40431 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbhEPO6y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 16 May 2021 10:58:54 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <juerg.haefliger@canonical.com>)
-        id 1liID4-0006xC-IU
-        for cgroups@vger.kernel.org; Sun, 16 May 2021 14:57:38 +0000
-Received: by mail-ej1-f70.google.com with SMTP id cs18-20020a170906dc92b02903a8adf202d6so371990ejc.23
-        for <cgroups@vger.kernel.org>; Sun, 16 May 2021 07:57:38 -0700 (PDT)
+        id S233085AbhEPTyA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 16 May 2021 15:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhEPTyA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 16 May 2021 15:54:00 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5BDC061756
+        for <cgroups@vger.kernel.org>; Sun, 16 May 2021 12:52:45 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id f9so5815648ybo.6
+        for <cgroups@vger.kernel.org>; Sun, 16 May 2021 12:52:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Ary7evgK4Fh3+VZ9pLClSDOtxVZVMHZj5tal7jSEQk=;
+        b=f9VUOZsjcrG9gjdHkeYERV0/ckFtVT8c6UIwDfhXIlDktIPZZROcEeDXLSZn+Rzckl
+         GQuEkBLZJ2SNsfBTMA/UP3HSllQWaUswDdeqKWbiVObO2Nr9H3iikelavi383mc8T42z
+         dGnsJc/P+rAZzMoHtAFuhG+pZeBBqiEH73CaSfOFhJhd+DV48OZ96919RGvuGTtfkvMd
+         0eZkjT3P26nh0t7/MNn3TGoMPU6Ig64h2kVlmW3+3egHz+LqfBhxjbjsydygU7PN/cAl
+         4MUcUN340G/9KRVoPwaQ/8a1SmJLC1DEAqpk4EyoU7kmRSLYwIJEgxUyVED14iVjsCTN
+         clZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XTCfpt/56FbqDOoQ8sUsaMXNebh06g9CZvsUJW9+jNY=;
-        b=VuORlwBYUxmix272cMg0V825weh+xbWEsjopCTrJr5i4E9CJW60HF90xfu2Jeq7sZs
-         w0vNtiTNOI7INs+1DDInC6u9s490FANPWiIlv6l7R4iksaJcu1zSYMR50EQfAK9jjTfm
-         glFpn4M9L0/ZRSLPw7GJjANLyPD1K6W24J1TBGaQg1q0EiJFs6A/EYh2LdGrMelzyg2u
-         7SRn3iSSERISxMclsYVSp/kW1Q37qFP7b6ZV4/m52qrNQqZ5aKEiiQ29BqVklLJkMTny
-         qk3987Oq/F4G0WgRTfL2Uj9HSix9b6stN9fIz2kAoH7x094TjFm84lRfw/UVCyDi5ygC
-         wZdA==
-X-Gm-Message-State: AOAM532FviqzzOtUq5frvMrW6dQepTOHRAmrLXlQJeH+a17YCNQwu4n0
-        EW05s1y3HLAB5CgzuCHg+mTNIWneUXW6UuBXyNM1UFj1EcaW+am0Cf/htuI2WzTJJRKqGZ6dcrc
-        gnaJdGy1eKhzB1MSqdvMHx05iNrhNyjdiWfg=
-X-Received: by 2002:aa7:c781:: with SMTP id n1mr30536213eds.108.1621177058174;
-        Sun, 16 May 2021 07:57:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzgjPgNxbUF7hm+COhC/ooKGZrl9JgiTHUHstCcL7r40Cj4zYM5f1bEMCKhdjiXTEnIoj121A==
-X-Received: by 2002:aa7:c781:: with SMTP id n1mr30536192eds.108.1621177057984;
-        Sun, 16 May 2021 07:57:37 -0700 (PDT)
-Received: from gollum.fritz.box ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id q26sm7164708ejc.3.2021.05.16.07.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 07:57:37 -0700 (PDT)
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
-To:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@canonical.com>
-Subject: [PATCH] init/Kconfig: Fix BLK_CGROUP help text indentation
-Date:   Sun, 16 May 2021 16:57:31 +0200
-Message-Id: <20210516145731.61253-1-juergh@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Ary7evgK4Fh3+VZ9pLClSDOtxVZVMHZj5tal7jSEQk=;
+        b=GFQcwplAIAocoba4vqV9Wr6Drt5Xm9G5p4aJJAhiYh17TLUkF/HjWTxE513Mb5pLhO
+         jO/ZnF8oxvS9VsCoLIhmBLjsAXo+TFXhoz6EFz+Izfs0mbmn1Ffeeekv+2XCf1wiIhxB
+         NvfNsRNRpfaYliy9bKKNVxsANLqhSvm1ks/BqRp69vu0JoK9i53DoCyA4RLlIhglBzX6
+         Y3pO2cXJN6RWXDbwwUL86CIJ/NtqD6UFu5aRsWTrhFqQPn8b9yoyoUD9Ukd4nxGKZdDJ
+         cTwjUZ7NxU1DXjpVcwTZSI6Hx0JmQiPUP4jHroy3BUWRx3s8SfHXhwhTxxNpCaTFi5ZW
+         1iQQ==
+X-Gm-Message-State: AOAM533RQ0EFzuK8MpQNlEUq8ymuH/We+w1Dj+ohvoFP7syEcqQjGBQe
+        hk1ObMBlfj3PtBMkk49jmotKwZOoFbp+URcINj0X0A==
+X-Google-Smtp-Source: ABdhPJwfGwZ2UTn/G2RMe7lKFZ6wNjVtknbYnmx3uaedE35QmNaaKDKPFa0bVuEpjOCvc/CFOhUwT0ycqr6d9SGnYng=
+X-Received: by 2002:a25:9c88:: with SMTP id y8mr58063072ybo.294.1621194763585;
+ Sun, 16 May 2021 12:52:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+ <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+ <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net> <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
+ <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
+In-Reply-To: <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 16 May 2021 12:52:32 -0700
+Message-ID: <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The convention for help text indentation seems to be tab + 2 spaces.
-Do that for BLK_CGROUP which currently only uses a single tab.
+On Fri, May 14, 2021 at 11:50 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Fri, May 14, 2021 at 11:20 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Fri, May 14, 2021 at 10:52 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Fri, May 14, 2021 at 08:54:47AM -0700, Suren Baghdasaryan wrote:
+> > >
+> > > > Correct, for this function CONFIG_CGROUPS=n and
+> > > > cgroup_disable=pressure are treated the same. True, from the code it's
+> > > > not very obvious. Do you have some refactoring in mind that would make
+> > > > it more explicit?
+> > >
+> > > Does this make sense?
+> > >
+> > > --- a/kernel/sched/psi.c
+> > > +++ b/kernel/sched/psi.c
+> > > @@ -744,24 +744,26 @@ static void psi_group_change(struct psi_
+> > >
+> > >  static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > >  {
+> > > +       if (cgroup_psi_enabled()) {
+> > >  #ifdef CONFIG_CGROUPS
+> > > -       struct cgroup *cgroup = NULL;
+> > > +               struct cgroup *cgroup = NULL;
+> > >
+> > > -       if (!*iter)
+> > > -               cgroup = task->cgroups->dfl_cgrp;
+> > > -       else if (*iter == &psi_system)
+> > > -               return NULL;
+> > > -       else
+> > > -               cgroup = cgroup_parent(*iter);
+> > > +               if (!*iter)
+> > > +                       cgroup = task->cgroups->dfl_cgrp;
+> > > +               else if (*iter == &psi_system)
+> > > +                       return NULL;
+> > > +               else
+> > > +                       cgroup = cgroup_parent(*iter);
+> > >
+> > > -       if (cgroup && cgroup_parent(cgroup)) {
+> > > -               *iter = cgroup;
+> > > -               return cgroup_psi(cgroup);
+> > > -       }
+> > > -#else
+> > > -       if (*iter)
+> > > -               return NULL;
+> > > +               if (cgroup && cgroup_parent(cgroup)) {
+> > > +                       *iter = cgroup;
+> > > +                       return cgroup_psi(cgroup);
+> > > +               }
+> > >  #endif
+> > > +       } else {
+> > > +               if (*iter)
+> > > +                       return NULL;
+> > > +       }
+> > >         *iter = &psi_system;
+> > >         return &psi_system;
+> > >  }
+> >
+> > Hmm. Looks like the case when cgroup_psi_enabled()==true and
+> > CONFIG_CGROUPS=n would miss the "if (*iter) return NULL;" condition.
+> > Effectively with CONFIG_CGROUPS=n this becomes:
+> >
+> >        if (cgroup_psi_enabled()) {           <== assume this is true
+> > #ifdef CONFIG_CGROUPS                <== compiled out
+> > #endif
+> >        } else {
+> >                if (*iter)                                  <== this
+> > statement will never execute
+> >                        return NULL;
+> >        }
+> >        *iter = &psi_system;
+> >         return &psi_system;
+> >
+>
+> Ah, sorry. I forgot that CONFIG_CGROUPS=n would force
+> cgroup_psi_enabled()==false (the way function is defined in cgroup.h),
+> so (CONFIG_CGROUPS=n && cgroup_psi_enabled()==true) is an invalid
+> configuration. I think adding a comment to your suggestion would make
+> it more clear.
+> So your suggestion seems to work. I'll test it and include it in the
+> next revision. Thanks!
 
-Signed-off-by: Juerg Haefliger <juergh@canonical.com>
----
- init/Kconfig | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+After reworking the code to add a static key I had to expand the
+#ifdef CONFIG_CGROUPS section, so I think a code refactoring below
+would make sense. It localizes config-specific code and it has the
+same exact code for CONFIG_CGROUPS=n and for
+cgroup_psi_enabled()==false. WDYT?:
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 9f1cde503739..5beaa0249071 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -926,22 +926,23 @@ config BLK_CGROUP
- 	depends on BLOCK
- 	default n
- 	help
--	Generic block IO controller cgroup interface. This is the common
--	cgroup interface which should be used by various IO controlling
--	policies.
--
--	Currently, CFQ IO scheduler uses it to recognize task groups and
--	control disk bandwidth allocation (proportional time slice allocation)
--	to such task groups. It is also used by bio throttling logic in
--	block layer to implement upper limit in IO rates on a device.
--
--	This option only enables generic Block IO controller infrastructure.
--	One needs to also enable actual IO controlling logic/policy. For
--	enabling proportional weight division of disk bandwidth in CFQ, set
--	CONFIG_BFQ_GROUP_IOSCHED=y; for enabling throttling policy, set
--	CONFIG_BLK_DEV_THROTTLING=y.
--
--	See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more information.
-+	  Generic block IO controller cgroup interface. This is the common
-+	  cgroup interface which should be used by various IO controlling
-+	  policies.
-+
-+	  Currently, CFQ IO scheduler uses it to recognize task groups and
-+	  control disk bandwidth allocation (proportional time slice allocation)
-+	  to such task groups. It is also used by bio throttling logic in
-+	  block layer to implement upper limit in IO rates on a device.
-+
-+	  This option only enables generic Block IO controller infrastructure.
-+	  One needs to also enable actual IO controlling logic/policy. For
-+	  enabling proportional weight division of disk bandwidth in CFQ, set
-+	  CONFIG_BFQ_GROUP_IOSCHED=y; for enabling throttling policy, set
-+	  CONFIG_BLK_DEV_THROTTLING=y.
-+
-+	  See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more
-+	  information.
- 
- config CGROUP_WRITEBACK
- 	bool
--- 
-2.27.0
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -181,6 +181,7 @@ struct psi_group psi_system = {
+ };
 
+ static void psi_avgs_work(struct work_struct *work);
++static void cgroup_iterator_init(void);
+
+ static void group_init(struct psi_group *group)
+ {
+@@ -211,6 +212,8 @@ void __init psi_init(void)
+                 return;
+         }
+
++        cgroup_iterator_init();
++
+         psi_period = jiffies_to_nsecs(PSI_FREQ);
+         group_init(&psi_system);
+ }
+@@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
+*group, int cpu,
+                 schedule_delayed_work(&group->avgs_work, PSI_FREQ);
+ }
+
+-static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
++static inline struct psi_group *sys_group_iterator(struct task_struct *task,
++                                                   void **iter)
+ {
++        *iter = &psi_system;
++        return &psi_system;
++}
++
+ #ifdef CONFIG_CGROUPS
++
++DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
++
++static void cgroup_iterator_init(void)
++{
++        if (!cgroup_psi_enabled())
++                static_branch_enable(&psi_cgroups_disabled);
++}
++
++static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
++{
+         struct cgroup *cgroup = NULL;
+
++        /* Skip to psi_system if per-cgroup accounting is disabled */
++        if (static_branch_unlikely(&psi_cgroups_disabled))
++                return *iter ? NULL : sys_group_iterator(task, iter);
++
+         if (!*iter)
+                 cgroup = task->cgroups->dfl_cgrp;
+         else if (*iter == &psi_system)
+@@ -758,14 +781,20 @@ static struct psi_group *iterate_groups(struct
+task_struct *task, void **iter)
+                 *iter = cgroup;
+                 return cgroup_psi(cgroup);
+         }
+-#else
+-        if (*iter)
+-                return NULL;
+-#endif
+-        *iter = &psi_system;
+-        return &psi_system;
++
++        return sys_group_iterator(task, iter);
+ }
+
++#else /* CONFIG_CGROUPS */
++static inline void cgroup_iterator_init(void) {}
++
++static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
++{
++        return *iter ? NULL : sys_group_iterator(task, iter);
++}
++
++#endif /* CONFIG_CGROUPS */
++
+
+
+>
+>
+> > >
+> > > --
+> > > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> > >
