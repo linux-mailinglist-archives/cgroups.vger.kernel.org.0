@@ -2,330 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF587386FC6
-	for <lists+cgroups@lfdr.de>; Tue, 18 May 2021 04:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96845386FCA
+	for <lists+cgroups@lfdr.de>; Tue, 18 May 2021 04:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235741AbhERCDY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 May 2021 22:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
+        id S242409AbhERCGb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 May 2021 22:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346187AbhERCDX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 May 2021 22:03:23 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552A4C061756
-        for <cgroups@vger.kernel.org>; Mon, 17 May 2021 19:02:05 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id h2-20020a05622a1702b02901b9123889b0so6397530qtk.10
-        for <cgroups@vger.kernel.org>; Mon, 17 May 2021 19:02:05 -0700 (PDT)
+        with ESMTP id S240339AbhERCGb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 May 2021 22:06:31 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B19BC06175F
+        for <cgroups@vger.kernel.org>; Mon, 17 May 2021 19:05:14 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id l7so11143612ybf.8
+        for <cgroups@vger.kernel.org>; Mon, 17 May 2021 19:05:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=T5li4zeXiPCAmRKCyOCQp3Ojk3ZxPKqc9P5sUfpNB/s=;
-        b=jsy3oKqlvCk+RurZn+gnlKuQETG7vG57mbjApt2SzF3MvVcH9lZNL8bVQtMhR/dZpY
-         A1jZdzfNB1I0iZa/sJXZeEWA0nJM7fSgC65eTiW8LfQQC7gQk0VJUgKLzddUiPRNzvn8
-         7giosJduSiSa2rUuizgrWWPJTmpMVh5OWG2gfMJOzgbFsooWALw4/0Qqica36rweIkIT
-         F2te8OckCha4anXWGZWWw0azzdtCUpB6Ac7tqKpA5nQXzCvoqzO7i7E3X7Xh4BmCw8AV
-         Rl+itAK552njhYDDraHFmXC+ZnTW9vbAOk53Bw0chK3dGkYgvB3ffi+vCpIVTwZBMr63
-         uKEg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sZm5cS0Op3FLJ1htgR1p5EodcjeArnY0szqtWe/bTlE=;
+        b=tEsQCNpKqbPJ1GszI9UYQvdpTWUwJRo9+c8TdRSFGjJe3xvNWN3/+5mYVQeYZeGTUl
+         E9LPTljYrGwLHHt61jU+BYYBIWqzvc4vK4WS6xT/3zBzRobwN1Zn3TMxyS8KFshdbLQ6
+         nEIwYDMLI4Bwn/FySzkjuwj5E0TLAZ8bwpacmcIAXzs5fsz9JFvr2EPbFPAGN0TZGA81
+         qs1lBPSuRUW3CCNJiykAbRDYU/rI12igKQ+VTvSpwNjcu5irlWe7VuhtqRsKRUiUKCFC
+         wLFWgq1rFqojnSW7oSNlv8nZFr+OtGgsJhZB58KTWLUoxlWABUCQy1yDWE/cZYFdp7Q7
+         thZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=T5li4zeXiPCAmRKCyOCQp3Ojk3ZxPKqc9P5sUfpNB/s=;
-        b=rsnWiJfY8FYRB7uU/dDbroBCYzaBr3cUSeUUrZnpH9/xs2tmfQfErCwKPyPkkoMHzg
-         tLsAyH8+q0sQKLr9wqNkxqzhAF9ymLF6Fnkr0phatZJeoumwJ3aC8ucgwr2XgCHQKCv8
-         2098ehMl9wGKGVFGhh1xq5Y6hLMg2RrcrFSxj8Jq026+ehGaKGC9+pVx4uOyqASZjBo0
-         86em+d+tnIiY8OyQBj9yKOrMOr7JvcQzxlk6VSKTd5u9GpsrQdHngnZ/GZvmXJD1wzJt
-         Ha21ltmtO4TRsEQb69LpOuItOlWy1m8lLEw0Vn083X0bckvDvELyc1VwlMme/G+epIiO
-         F0Tw==
-X-Gm-Message-State: AOAM530JL2EU2/YKzmRT14mvJ+sQual0WjJt/kBKqjVPRbu60YPhwCKx
-        fRlCBBpWYblzHJxW/AFKr+sICb8KUyE=
-X-Google-Smtp-Source: ABdhPJyWJZn1IQMwFZTUIQyajZyzZJ/An7rI9Lxp1ehxkMQhiF6t6d9ZQHc67M3GDg0wX4O2bAGY4IYP2ns=
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:13e2:8aa6:de41:f251])
- (user=surenb job=sendgmr) by 2002:a05:6214:13f2:: with SMTP id
- ch18mr2978786qvb.42.1621303324494; Mon, 17 May 2021 19:02:04 -0700 (PDT)
-Date:   Mon, 17 May 2021 19:02:00 -0700
-Message-Id: <20210518020200.1790058-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v2 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sZm5cS0Op3FLJ1htgR1p5EodcjeArnY0szqtWe/bTlE=;
+        b=JeZEKPHqb6zJhR4pBpbse4hg9YzCzbDSW7A+3NgVh5OltZaOxe4ngD+8VHYtkybIft
+         57yson2NyG0GSwJMRtPNQ7xbSa1qdA0wFTsMRpKj4v9JOO51bcTNX53NoiyohBfRB/2O
+         KFbXKVAjb0ckGc2gwdYzT07uDSyE5bm0ziPHYKIkl/PV+UplPFUNJtyB+77Btk52ILsw
+         muGSbmDAMoUAQFKjq7efMGRFTXGBhoCTfkrPuV0ZXEsbdW4WDExFwwQ0DS7Pu+AScE9f
+         6esVuo5DT3bPZ6wYfH+5l/Milin1IJRNfkh3OEsdWLdfZTevLOFJYAyLgMCc8yxa0JMT
+         Ekwg==
+X-Gm-Message-State: AOAM531uo8iE3bozbezX3aEltrBbOT9hLiBrpclDfdrtTyQEAJtG77Lq
+        fOT4hxp1Hs1oJl7PvRBGKx+KvgiiuGHnr/tM48qaAA==
+X-Google-Smtp-Source: ABdhPJydZNdAGwNtBFRCQVuhsrhElqwRPaQ029byznL53KiS6oGv0a5CCtO+wcXRe+c4GA3NHpDoofI7SgXJZBgKuXE=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr4033359ybq.190.1621303513064;
+ Mon, 17 May 2021 19:05:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+ <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+ <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net> <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
+ <CAJuCfpH2X47_3VvfZXs_eWhYDziOh13qdUwcfxPJe=Zg_Nkvqw@mail.gmail.com>
+ <CAJuCfpEznCYhjbM+1=dMdEn1J2NVw88M+4AThD99PBKg41RgTw@mail.gmail.com>
+ <YKK2ZumDWcaGWvBj@cmpxchg.org> <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
+In-Reply-To: <CAJuCfpGx7w2E8Bq7jcq7HS41i40r4Lp+-z9m1P095B+MkAOWqg@mail.gmail.com>
 From:   Suren Baghdasaryan <surenb@google.com>
-To:     tj@kernel.org
-Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
-        paulmck@kernel.org, rdunlap@infradead.org,
-        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
-        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, surenb@google.com, kernel-team@android.com
+Date:   Mon, 17 May 2021 19:05:02 -0700
+Message-ID: <CAJuCfpFW_LkqcmC_0FE8fyBY75yXYAjeLnOxU0-0R8WxksYoSA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
+        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-PSI accounts stalls for each cgroup separately and aggregates it at each
-level of the hierarchy. This causes additional overhead with psi_avgs_work
-being called for each cgroup in the hierarchy. psi_avgs_work has been
-highly optimized, however on systems with large number of cgroups the
-overhead becomes noticeable.
-Systems which use PSI only at the system level could avoid this overhead
-if PSI can be configured to skip per-cgroup stall accounting.
-Add "cgroup_disable=pressure" kernel command-line option to allow
-requesting system-wide only pressure stall accounting. When set, it
-keeps system-wide accounting under /proc/pressure/ but skips accounting
-for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
+On Mon, May 17, 2021 at 1:02 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Mon, May 17, 2021 at 11:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Sun, May 16, 2021 at 12:52:32PM -0700, Suren Baghdasaryan wrote:
+> > > After reworking the code to add a static key I had to expand the
+> > > #ifdef CONFIG_CGROUPS section, so I think a code refactoring below
+> > > would make sense. It localizes config-specific code and it has the
+> > > same exact code for CONFIG_CGROUPS=n and for
+> > > cgroup_psi_enabled()==false. WDYT?:
+> > >
+> > > --- a/kernel/sched/psi.c
+> > > +++ b/kernel/sched/psi.c
+> > > @@ -181,6 +181,7 @@ struct psi_group psi_system = {
+> > >  };
+> > >
+> > >  static void psi_avgs_work(struct work_struct *work);
+> > > +static void cgroup_iterator_init(void);
+> > >
+> > >  static void group_init(struct psi_group *group)
+> > >  {
+> > > @@ -211,6 +212,8 @@ void __init psi_init(void)
+> > >                  return;
+> > >          }
+> > >
+> > > +        cgroup_iterator_init();
+> > > +
+> > >          psi_period = jiffies_to_nsecs(PSI_FREQ);
+> > >          group_init(&psi_system);
+> > >  }
+> > > @@ -742,11 +745,31 @@ static void psi_group_change(struct psi_group
+> > > *group, int cpu,
+> > >                  schedule_delayed_work(&group->avgs_work, PSI_FREQ);
+> > >  }
+> > >
+> > > -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > > +static inline struct psi_group *sys_group_iterator(struct task_struct *task,
+> > > +                                                   void **iter)
+> > >  {
+> > > +        *iter = &psi_system;
+> > > +        return &psi_system;
+> > > +}
+> > > +
+> > >  #ifdef CONFIG_CGROUPS
+> > > +
+> > > +DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
+> > > +
+> > > +static void cgroup_iterator_init(void)
+> > > +{
+> > > +        if (!cgroup_psi_enabled())
+> > > +                static_branch_enable(&psi_cgroups_disabled);
+> > > +}
+> > > +
+> > > +static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > > +{
+> > >          struct cgroup *cgroup = NULL;
+> > >
+> > > +        /* Skip to psi_system if per-cgroup accounting is disabled */
+> > > +        if (static_branch_unlikely(&psi_cgroups_disabled))
+> > > +                return *iter ? NULL : sys_group_iterator(task, iter);
+> > > +
+> > >          if (!*iter)
+> > >                  cgroup = task->cgroups->dfl_cgrp;
+> >
+> > That looks over-engineered. You have to check iter whether cgroups are
+> > enabled or not. Pulling the jump label check up doesn't save anything,
+> > but it ends up duplicating code.
+> >
+> > What you had in the beginning was better, it just had the system label
+> > in an unexpected place where it would check iter twice in a row.
+> >
+> > The (*iter == &psi_system) check inside the cgroups branch has the
+> > same purpose as the (*iter) check in the else branch. We could
+> > consolidate that by pulling it up front.
+> >
+> > If we wrap the entire cgroup iteration block into the static branch,
+> > IMO it becomes a bit clearer as well.
+> >
+> > How about this?
+> >
+> > static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> > {
+> >         if (*iter == &psi_system)
+> >                 return NULL;
+> >
+> > #ifdef CONFIG_CGROUPS
+> >         if (!static_branch_likely(&psi_cgroups_disabled)) {
+> >                 struct cgroup *cgroup = NULL;
+> >
+> >                 if (!*iter)
+> >                         cgroup = task->cgroups->dfl_cgrp;
+> >                 else
+> >                         cgroup = cgroup_parent(*iter);
+> >
+> >                 if (cgroup && cgroup_parent(cgroup)) {
+> >                         *iter = cgroup;
+> >                         return cgroup_psi(cgroup);
+> >                 }
+> >         }
+> > #endif
+> >
+> >         *iter = &psi_system;
+> >         return &psi_system;
+> > }
+>
+> This looks great to me. Will use it in the next version. Thanks!
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
-changes in v2:
-- Added psi_cgroups_disabled static key, per PeterZ
-- Refactored iterate_groups, per Johannes
-
- .../admin-guide/kernel-parameters.txt         |  9 +++-
- include/linux/cgroup-defs.h                   |  1 +
- include/linux/cgroup.h                        |  7 +++
- kernel/cgroup/cgroup.c                        | 46 +++++++++++++++++++
- kernel/sched/psi.c                            | 30 ++++++------
- 5 files changed, 78 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbdedc46..653c62142f07 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -497,16 +497,21 @@
- 	ccw_timeout_log	[S390]
- 			See Documentation/s390/common_io.rst for details.
- 
--	cgroup_disable=	[KNL] Disable a particular controller
--			Format: {name of the controller(s) to disable}
-+	cgroup_disable=	[KNL] Disable a particular controller or optional feature
-+			Format: {name of the controller(s) or feature(s) to disable}
- 			The effects of cgroup_disable=foo are:
- 			- foo isn't auto-mounted if you mount all cgroups in
- 			  a single hierarchy
- 			- foo isn't visible as an individually mountable
- 			  subsystem
-+			- if foo is an optional feature then the feature is
-+			  disabled and corresponding cgroup files are not
-+			  created
- 			{Currently only "memory" controller deal with this and
- 			cut the overhead, others just disable the usage. So
- 			only cgroup_disable=memory is actually worthy}
-+			Specifying "pressure" disables per-cgroup pressure
-+			stall information accounting feature
- 
- 	cgroup_no_v1=	[KNL] Disable cgroup controllers and named hierarchies in v1
- 			Format: { { controller | "all" | "named" }
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 559ee05f86b2..671f55cac0f0 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -110,6 +110,7 @@ enum {
- 	CFTYPE_NO_PREFIX	= (1 << 3),	/* (DON'T USE FOR NEW FILES) no subsys prefix */
- 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
- 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
-+	CFTYPE_PRESSURE		= (1 << 6),	/* only if pressure feature is enabled */
- 
- 	/* internal flags, do not use outside cgroup core proper */
- 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..b929f589968b 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -676,6 +676,8 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
- 	return &cgrp->psi;
- }
- 
-+bool cgroup_psi_enabled(void);
-+
- static inline void cgroup_init_kthreadd(void)
- {
- 	/*
-@@ -735,6 +737,11 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
- 	return NULL;
- }
- 
-+static inline bool cgroup_psi_enabled(void)
-+{
-+	return false;
-+}
-+
- static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
- 					       struct cgroup *ancestor)
- {
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e049edd66776..c4b16c82e199 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -209,6 +209,22 @@ struct cgroup_namespace init_cgroup_ns = {
- static struct file_system_type cgroup2_fs_type;
- static struct cftype cgroup_base_files[];
- 
-+/* cgroup optional features */
-+enum cgroup_opt_features {
-+#ifdef CONFIG_PSI
-+	OPT_FEATURE_PRESSURE,
-+#endif
-+	OPT_FEATURE_COUNT
-+};
-+
-+static const char *cgroup_opt_feature_names[OPT_FEATURE_COUNT] = {
-+#ifdef CONFIG_PSI
-+	"pressure",
-+#endif
-+};
-+
-+static u16 cgroup_feature_disable_mask __read_mostly;
-+
- static int cgroup_apply_control(struct cgroup *cgrp);
- static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
- static void css_task_iter_skip(struct css_task_iter *it,
-@@ -3631,6 +3647,18 @@ static void cgroup_pressure_release(struct kernfs_open_file *of)
- {
- 	psi_trigger_replace(&of->priv, NULL);
- }
-+
-+bool cgroup_psi_enabled(void)
-+{
-+	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
-+}
-+
-+#else /* CONFIG_PSI */
-+bool cgroup_psi_enabled(void)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_PSI */
- 
- static int cgroup_freeze_show(struct seq_file *seq, void *v)
-@@ -3881,6 +3909,8 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
- restart:
- 	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
- 		/* does cft->flags tell us to skip this file on @cgrp? */
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
- 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
- 			continue;
- 		if ((cft->flags & __CFTYPE_NOT_ON_DFL) && cgroup_on_dfl(cgrp))
-@@ -3958,6 +3988,9 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
- 
- 		WARN_ON(cft->ss || cft->kf_ops);
- 
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
-+
- 		if (cft->seq_start)
- 			kf_ops = &cgroup_kf_ops;
- 		else
-@@ -4866,6 +4899,7 @@ static struct cftype cgroup_base_files[] = {
- #ifdef CONFIG_PSI
- 	{
- 		.name = "io.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_io_pressure_show,
- 		.write = cgroup_io_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -4873,6 +4907,7 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "memory.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_memory_pressure_show,
- 		.write = cgroup_memory_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -4880,6 +4915,7 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "cpu.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_cpu_pressure_show,
- 		.write = cgroup_cpu_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -6216,6 +6252,13 @@ static int __init cgroup_disable(char *str)
- 				continue;
- 			cgroup_disable_mask |= 1 << i;
- 		}
-+
-+		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
-+			if (strcmp(token, cgroup_opt_feature_names[i]))
-+				continue;
-+			cgroup_feature_disable_mask |= 1 << i;
-+			break;
-+		}
- 	}
- 	return 1;
- }
-@@ -6514,6 +6557,9 @@ static ssize_t show_delegatable_files(struct cftype *files, char *buf,
- 		if (!(cft->flags & CFTYPE_NS_DELEGATABLE))
- 			continue;
- 
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
-+
- 		if (prefix)
- 			ret += snprintf(buf + ret, size - ret, "%s.", prefix);
- 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3cff41f..4b8e72640ac9 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -148,6 +148,7 @@
- static int psi_bug __read_mostly;
- 
- DEFINE_STATIC_KEY_FALSE(psi_disabled);
-+DEFINE_STATIC_KEY_FALSE(psi_cgroups_disabled);
- 
- #ifdef CONFIG_PSI_DEFAULT_DISABLED
- static bool psi_enable;
-@@ -211,6 +212,9 @@ void __init psi_init(void)
- 		return;
- 	}
- 
-+	if (!cgroup_psi_enabled())
-+		static_branch_enable(&psi_cgroups_disabled);
-+
- 	psi_period = jiffies_to_nsecs(PSI_FREQ);
- 	group_init(&psi_system);
- }
-@@ -744,23 +748,23 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 
- static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
- {
-+	if (*iter == &psi_system)
-+		return NULL;
-+
- #ifdef CONFIG_CGROUPS
--	struct cgroup *cgroup = NULL;
-+	if (!static_branch_likely(&psi_cgroups_disabled)) {
-+		struct cgroup *cgroup = NULL;
- 
--	if (!*iter)
--		cgroup = task->cgroups->dfl_cgrp;
--	else if (*iter == &psi_system)
--		return NULL;
--	else
--		cgroup = cgroup_parent(*iter);
-+		if (!*iter)
-+			cgroup = task->cgroups->dfl_cgrp;
-+		else
-+			cgroup = cgroup_parent(*iter);
- 
--	if (cgroup && cgroup_parent(cgroup)) {
--		*iter = cgroup;
--		return cgroup_psi(cgroup);
-+		if (cgroup && cgroup_parent(cgroup)) {
-+			*iter = cgroup;
-+			return cgroup_psi(cgroup);
-+		}
- 	}
--#else
--	if (*iter)
--		return NULL;
- #endif
- 	*iter = &psi_system;
- 	return &psi_system;
--- 
-2.31.1.751.gd2f1c929bd-goog
-
+V2 is posted at https://lore.kernel.org/patchwork/patch/1430980
