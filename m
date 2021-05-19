@@ -2,97 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAE8388985
-	for <lists+cgroups@lfdr.de>; Wed, 19 May 2021 10:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9862A388D27
+	for <lists+cgroups@lfdr.de>; Wed, 19 May 2021 13:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244736AbhESIft (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 May 2021 04:35:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50629 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243285AbhESIft (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 May 2021 04:35:49 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <juerg.haefliger@canonical.com>)
-        id 1ljHeu-0001AT-Jf
-        for cgroups@vger.kernel.org; Wed, 19 May 2021 08:34:28 +0000
-Received: by mail-ej1-f71.google.com with SMTP id p25-20020a1709061419b0290378364a6464so3403432ejc.15
-        for <cgroups@vger.kernel.org>; Wed, 19 May 2021 01:34:28 -0700 (PDT)
+        id S1352136AbhESLp2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 May 2021 07:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234661AbhESLp2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 May 2021 07:45:28 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0408CC06175F
+        for <cgroups@vger.kernel.org>; Wed, 19 May 2021 04:44:08 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso11521812ote.1
+        for <cgroups@vger.kernel.org>; Wed, 19 May 2021 04:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=KvQEt0Pbe3v9Z/6IbeJxPBUgmCm+xqGUBv92hphBoAs=;
+        b=KMYlpNlJawOoZQ0mx8WQC9BeQdHxhNu+IsxGWLcMeAAlzLp0G7i1RZsY/s8sQbPxKk
+         bSHbS/D3idx1OTwd0CIRoMdlcdlN4YXf9iGsHONkkiyI+5DSRmsFiakMAcatzFdzUyKp
+         Qnw1xV/dWCGKs2o9a5r3nrtTGa7CV8ex/+Tu81qsRNk1miaRPS59GGeJT1eWv7b24ghE
+         XCcW19WfGNAjCYP6RUi5Vjxi60DYJUUECjTA+lqZjaZ2boRDQM3mqiY1pyyYxiuw4Odg
+         GzJ5etm2QP/gISftGDQQSQjohyfq2pI1MBvRv9jWNnv/rvB/aCIApyUKKCkXfFX3dfyr
+         uKtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version;
-        bh=/rqttwSxsFbE91XKvOMRrGI+lNxhzxHzD33u7hukyrk=;
-        b=TlBawEp7Lf6P7bBuvSdMzqhp1iMikFGLFefng/+C3j5XjDxYqN2E+WhwvbtuFQ9k48
-         wW/i5ZHkfOjFqCn+dGQSaFzhnhFv7WzrKmSUM2ekwhZw/GOQTzy5Rduu7FvwXWUwn0x9
-         aIIfAFocmarO2H1E2fskTUT3Sj8NuQvdwnff63fBY+MRIZIWYue+mC5Mgj0kX2KREyYr
-         iMddml80LxFCcRIFOtkS7qFPSXhS1+6athy5TYEcf72hMg/A2qYdWzKoR63l0/PmvFx5
-         fBXdWzUmsawg36PfK8Tb8xF0u0HgOLVCXH/826n9cyPHzNGm5FOfJMeMZL2ZU0mUZM0V
-         rkjw==
-X-Gm-Message-State: AOAM533s1o+WN9SNyumJmSctNnQPXnsUuzWuBW4xJ8cj8BjV2DFFFkOB
-        y1juJo//c0dkhWwSxrf/FljUKOx408BBcRX3UeNY5mJLqTT8u4fF38WtLT5dNq4NH5DiRkWH1vA
-        gjRMoAOn1vAfA4ZZYNyibUR583BZa1IZGnx8=
-X-Received: by 2002:a17:907:78c5:: with SMTP id kv5mr11420916ejc.146.1621413268342;
-        Wed, 19 May 2021 01:34:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOT3BxYhJ2DqVWi4123MvR17PeikVOi4v+vRZhj0ew58iTyrY64WwZRptdD2ONbaMHcEi9UQ==
-X-Received: by 2002:a17:907:78c5:: with SMTP id kv5mr11420901ejc.146.1621413268177;
-        Wed, 19 May 2021 01:34:28 -0700 (PDT)
-Received: from gollum ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id jt11sm12042285ejb.83.2021.05.19.01.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 01:34:27 -0700 (PDT)
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
-Date:   Wed, 19 May 2021 10:34:26 +0200
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Juerg Haefliger <juerg.haefliger@canonical.com>, tj@kernel.org,
-        axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init/Kconfig: Fix BLK_CGROUP help text indentation
-Message-ID: <20210519103426.71b81635@gollum>
-In-Reply-To: <YKJHGbmRMcs/e+pm@infradead.org>
-References: <20210516145731.61253-1-juergh@canonical.com>
-        <YKJHGbmRMcs/e+pm@infradead.org>
-Organization: Canonical Ltd
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=KvQEt0Pbe3v9Z/6IbeJxPBUgmCm+xqGUBv92hphBoAs=;
+        b=Lj6mCmtT6mRcQPfugseriVJc8UpAWfDsjLTOf54PqhtbIfIiGWs6FWctfRlaY0kzRS
+         lSrRRMqodlTLT+Vk3K0LRy6SmtP+3XxST4suQaYRd6e+9nVkxfnn9/dZvHxPIlF2+fk2
+         mq4Alr4lF+6L3v9oxufU4N3JP3UDHxZqiw6Or+IpO78xBKcx51xCc1//YHr5baZSq0tz
+         R0pj20iIwrDLkmr5ueSn8DLDtuvNSAiqZBM2V1WqE49tfuWAuI1Oy/L8BfaUXy9TwbcW
+         aWgGuPUBKvuHbf0haJLFXuvRXlns4XkmIUr2to+wlWTo+t31vUz6DCW9SZS3ueK2OdsW
+         V0zQ==
+X-Gm-Message-State: AOAM532+biujWegXeU06V8UKP0pwbwsqDbvMNKp1fIKD9swHZEaWivnq
+        /pSZSOunlVhhIP9XMPetXf89BJfUBQikQh9fqD0=
+X-Google-Smtp-Source: ABdhPJzsq90iErWPu0ErB1vYn/Jjk+dgbA9u7AoYKOjnee1YYCru/u+xXPEWiTDexJd4Xy6EjyJjNSwGXjJbTg+ixGU=
+X-Received: by 2002:a05:6830:1205:: with SMTP id r5mr8839995otp.359.1621424647414;
+ Wed, 19 May 2021 04:44:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dd=2BC0fBiQ13nk4axeNujy";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+From:   Glaive Neo <nglaive@gmail.com>
+Date:   Wed, 19 May 2021 19:43:56 +0800
+Message-ID: <CAELef9p42mQ5fvde3A7RSRZDNoDPP+VkR_3TJ5OPQYWsSQk07g@mail.gmail.com>
+Subject: Fw: User-controllable memcg-unaccounted objects of time namespace
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "shenwenbo@zju.edu.cn" <shenwenbo@zju.edu.cn>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        "mhocko@kernel.org" <mhocko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---Sig_/dd=2BC0fBiQ13nk4axeNujy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+CC reply. Sorry for occupying your time. I was unaware that I had to
+use plain text e-mail to make public mailing list accept it, and I
+omitted these addresses to avoid rejecting notification.
 
-On Mon, 17 May 2021 11:36:09 +0100
-Christoph Hellwig <hch@infradead.org> wrote:
+Yutian Yang,
+Zhejiang University
 
-> While you're at it, please move the symbol to block/Kconfig.
 
-Will send a v2.
-
---Sig_/dd=2BC0fBiQ13nk4axeNujy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmCkzZIACgkQD9OLCQum
-Qre8bw//WRU2lUHD5LhdAfhoJ4sBtkzZE74f3dQ75icmYfrzKOq9P5L4npCSRKTP
-g2QICMuyDJh4V464F5i+A4iKpYAalyHsG/O+K2Qvf5MHveOibI2zDUSbCj27Gvh3
-KNBtKATAyY7lX8Cm3Q/e6wgFYpX3dHWlNFV+H1832PyiDgrlRNMHb/kM+q6KF0ua
-KVJC26Veqr/+27HbX8ttLF3WwbK0RH+FXlW2Tw1fcdqvhw6SXsc0t1AD1ZMRSVTz
-yDCAErGGu+1DrliBSRm7Wv0JYX4sHE6XDRgNfr1CAx5pksj05+Qe6WOXAj3mAojg
-2g9muTOGex5iubXzgA6cXdOBil0bO+Ee60UPCVyc7MUWd1yJXtRqfUaEeuwzzkgB
-qtHIzBduiDzPW8LqC258xrmNp2wUTKmlUQiU0S4EHLybpmGmBVWyC766caRhn0Hv
-5Mc/vzGbPCSMJo8xHAKe15bBLYo3+rrXkOb8VtSasBFFrKec47JnSm8QaawEej3+
-Nk0HReZJyZNvaZUeSrylS6ec5f03IQBxRtckxMpdL7Z+dHtQy9YTam9Aq8b31HBr
-eprtQ/qXF0SSHti7QzdB9Q2eModNgIeoD7G0mdRU9qp9+dplcGPHt9oskkDIEAdV
-65WifXocv1qXcG/QAH/rtZIbenolpvXj5RFoJjGlW1pDU9Jy7Nk=
-=fQvJ
------END PGP SIGNATURE-----
-
---Sig_/dd=2BC0fBiQ13nk4axeNujy--
+> -----Original Messages-----
+> From: "Michal Hocko" <mhocko@suse.com>
+> Sent Time: 2021-05-19 17:18:45 (Wednesday)
+> To: "Yutian Yang" <ytyang@zju.edu.cn>
+> Cc:
+> Subject: Re: Fw: Re: Re: User-controllable memcg-unaccounted objects of t=
+ime namespace
+>
+> Did you plan to post this reply to the mailing list with the whole
+> original CC list?
+>
+> On Wed 19-05-21 16:56:27, Yutian Yang wrote:
+> >
+> >
+> >
+> > -----Original Messages-----
+> > From: "Yutian Yang" <ytyang@zju.edu.cn>
+> > Sent Time: 2021-05-18 19:29:40 (Tuesday)
+> > To: "Michal Hocko" <mhocko@suse.com>
+> > Cc: tglx@linutronix.de, "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.co=
+m>, "shenwenbosmile@gmail.com" <shenwenbosmile@gmail.com>
+> > Subject: Re: Re: User-controllable memcg-unaccounted objects of time na=
+mespace
+> >
+> > Sorry for the delayed response. I believe our patches are necessary and=
+ will answer your questions piece by piece.
+> >
+> > For the practicality of our concerns, we have confirmed that repeatedly=
+ creating new namespaces could lead to breaking memcg limit. Although the n=
+umber of namespaces could be limited by per-user quota (e.g., max_time_name=
+spaces), depending on per-user quota to limit memory usage is unsafe and im=
+practical as users may have their own considerations when setting these lim=
+its. In fact, limitation on memory usage is more foundamental than limitati=
+on on various kernel objects. I believe this is also the reason why the fd =
+tables and pipe buffers have been accounted by memcg even if they are also =
+under per-user quota's limitation. The same reason applies to limitation of=
+ pid cgroups. Moreover, both net and uts namespaces are properly accounted =
+while the others are not, which shows inconsistencies.
+> >
+> > For other unaccounted allocations (proc_alloc_inum, vvar_page and likel=
+y others), we have not reached them yet as our detecting tool reported many=
+ results which require much manual effort to go through. To me, it seems th=
+at these allocations also need patches.
+> >
+> > Lastly, our work is based on a detecting tool and we only report missin=
+g-charging sites that are manually confirmed to be triggerable from syscall=
+s. The results that are obviously unexploitable like uncharged ldt_struct, =
+which is allocated per process, are also filtered out. We would like to con=
+tinuously contribute to memcg and we are planning to submit more patches in=
+ the future.
+> >
+> > Thanks!
+> >
+> > Yutian Yang,
+> > Zhejiang University
+> >
+> >
+> > > -----Original Messages-----
+> > > From: "Michal Hocko" <mhocko@suse.com>
+> > > Sent Time: 2021-04-16 14:29:52 (Friday)
+> > > To: "Yutian Yang" <ytyang@zju.edu.cn>
+> > > Cc: tglx@linutronix.de, "shenwenbo@zju.edu.cn" <shenwenbo@zju.edu.cn>=
+, "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>
+> > > Subject: Re: User-controllable memcg-unaccounted objects of time name=
+space
+> > >
+> > > Thank you for this and other reports which are trying to track memcg
+> > > unaccounted objects. I have few remarks/questions.
+> > >
+> > >
+> > > On Thu 15-04-21 21:29:57, Yutian Yang wrote:
+> > > > Hi, our team has found bugs in time namespace module on Linux kerne=
+l v5.10.19, which leads to user-controllable memcg-unaccounted objects.
+> > > > They are caused by the code snippets listed below:
+> > > >
+> > > > /*--------------- kernel/time/namespace.c --------------------*/
+> > > > ......
+> > > > 91ns =3D kmalloc(sizeof(*ns), GFP_KERNEL);
+> > > > 92if (!ns)
+> > > > 93goto fail_dec;
+> > > > ......
+> > > > /*----------------------------- end -------------------------------=
+*/
+> > > >
+> > > >
+> > > > The code at line 91 could be triggered by syscall clone if
+> > > > CLONE_NEWTIME flag is set in the parameter. A user could repeatedly
+> > > > make the clone syscall and trigger the bugs to occupy more and
+> > > > more unaccounted memory. In fact, time namespaces objects could be
+> > > > allocated by users and are also controllable by users. As a result,
+> > > > they need to be accounted and we suggest the following patch:
+> > >
+> > > Is this a practical concern? I am not really deeply familiar with
+> > > namespaces but isn't there any cap on how many of them can be created=
+ by
+> > > user? If not, isn't that contained by the pid cgroup controller? If e=
+ven
+> > > that is not the case, care to explain why?
+> > >
+> > > You are referring to struct time_namespace above (that is 88B) but I =
+can
+> > > see there are other unaccounted allocations (proc_alloc_inum, vvar_pa=
+ge
+> > > and likely others) so why the above is more important than those?
+> > >
+> > > Btw. a similar feedback applies to other reports similar to this one.=
+ I
+> > > assume you have some sort of tool to explore those potential run away=
+s
+> > > and that is really great but it would be really helpful and highly
+> > > appreciated to analyze those reports and try to provide some sort of
+> > > risk assessment.
+> > >
+> > > Thanks!
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
+>
+> --
+> Michal Hocko
+> SUSE Labs
