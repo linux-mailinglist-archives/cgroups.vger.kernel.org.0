@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BD938BDEC
+	by mail.lfdr.de (Postfix) with ESMTP id 5324A38BDED
 	for <lists+cgroups@lfdr.de>; Fri, 21 May 2021 07:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhEUFiG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 May 2021 01:38:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:54669 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230488AbhEUFiF (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        id S229634AbhEUFiF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Fri, 21 May 2021 01:38:05 -0400
-IronPort-SDR: zeCUEZoXo28wnofPm7HJg01atOgyjnTtcaEUMpYXBASnIWdHgEt1IGVyipfP8pBtKq/V6tdkQp
- E0t20xAZCbMQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="181699206"
+Received: from mga18.intel.com ([134.134.136.126]:57342 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230409AbhEUFiF (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 21 May 2021 01:38:05 -0400
+IronPort-SDR: EgulwtGeuGQOmomzSILNDYrWK+bS5O0KBJucPDpnSa7I9435OOoQShzy6c2Mua8KIQgLB4ri/6
+ 9XoV4h9aRobg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="188808043"
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="181699206"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 22:36:43 -0700
-IronPort-SDR: jCIIEkprV8/SD72q3VFjsdyGeCP8lB/T+yEmKaX7D7pKzc0nvThG+59zm51ySd5iZ0E32iRBaI
- PU8rIxJZX65A==
+   d="scan'208";a="188808043"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 22:36:42 -0700
+IronPort-SDR: w0y2AtLcn3K/9GJLICqv36rwx9PNHcifZVMFIgBRknVXaO1UrqgWbFurCoV4myEMznWtgqU7zg
+ ULp/FyBZiveA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="474363443"
+   d="scan'208";a="395195385"
 Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 20 May 2021 22:36:41 -0700
+  by orsmga003.jf.intel.com with ESMTP; 20 May 2021 22:36:41 -0700
 Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1ljxpw-0000xW-VU; Fri, 21 May 2021 05:36:40 +0000
-Date:   Fri, 21 May 2021 13:36:01 +0800
+        id 1ljxpw-0000xY-Vr; Fri, 21 May 2021 05:36:40 +0000
+Date:   Fri, 21 May 2021 13:36:04 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.13-fixes] BUILD SUCCESS
- 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251
-Message-ID: <60a746c1.u8rafKLMsa4zKHK7%lkp@intel.com>
+Subject: [cgroup:for-next] BUILD SUCCESS
+ b0565a089634e364bfe83e0ea06e3b1094f1b55c
+Message-ID: <60a746c4.fwH9Qr+2n6IHEOOV%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,8 +43,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13-fixes
-branch HEAD: 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251  cgroup: disable controllers at parse time
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: b0565a089634e364bfe83e0ea06e3b1094f1b55c  Merge branch 'for-5.13-fixes' into for-next
 
 elapsed time: 722m
 
