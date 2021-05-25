@@ -2,121 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2C83903EF
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 16:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD8D39063C
+	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 18:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhEYOcs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 10:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
+        id S231449AbhEYQLK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 12:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbhEYOcl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 10:32:41 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFD9C061574
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id w7so25034670lji.6
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
+        with ESMTP id S230150AbhEYQLJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 12:11:09 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB55BC061574;
+        Tue, 25 May 2021 09:09:39 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h16so36865167edr.6;
+        Tue, 25 May 2021 09:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
-        b=F4A75JkMsGy+mU4xkQ+hrRir1o9AbYLExHPfcQfFnUXIO6DE/5641VeHIyAalgivCo
-         N/kqbRtpIl8KaXs/NPtXGmOEUNdo8CVx47T8HCgN+GKM0k1wSbGnmY0ybIGqTJxaxmhD
-         Oku336dpO2ktfatK/DKwpF72MdpjA+uz3NyTix8H0hCjxR2a3OHIXjMz9SZvMKgzJua6
-         t4/+hW/krEvXJkvFk+i8+iI3iXeYAnNSgdL5bbX0zDLCbpg08A7YMYpfM/RHIQ6wv+eA
-         L4ZgOJslSk1zsLpXvaxJ02QWV5j1YVGO8LXSADULytLj7TtLIVSxtXEsfJoQ0k9UlqE9
-         FemA==
+        bh=E6s3ZtPWtmcbcuCeFGZbGrPYTepr+v29FJOymW4C+CY=;
+        b=TI96WuRxMj8Pb/NY0nygtA/+Bl5w6M+BxwVGoRPlVAqEaxjSm8XSyTA6izGFX12/Ul
+         cswyq/6GOFnWHlaXm4bu6LPk+ZzqOPk5SiHTvUcpQuoxIAwlqwh1WddtcFBrJOe0RfyK
+         /HLD3j1Ll/Zxl6eplQ+KPIWGpaeF9WD5jXehoNlTNCB40w5+BKhNYiih8iFIdIKtrtKv
+         CTJIdfSIqH972mbqjwxz1Oeq4ZN3cQef5wSyjbxhHryWuwexoCXy1NUJ7qpkrTckbo6p
+         xYy7uy2ul+TARuzDwtX+4jJLB+V/Wz/jZEuoSCcq714rDsQfvcQFU1miuWz7Wl+KuGfO
+         1Thg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
-        b=SoQZ1P+MtF3uV1EMLumVsysRB3qEbh8qWvm2QJlU+EEu+HXf+9lvZERnzcBs/pePsX
-         JhvmiTHWaDnPjbvlSpFZEFswcgZBIwMc7Hu8lD0h6Jf52hn0PItuAyaRDOj1iOgc+sHW
-         AESpLEUIUf3wagcG9AEUey1srC6jtMDZEeRUfVBkYCM7dvSgpEop1e421iZcq8rcVwRL
-         pITmPqaarmTlNU+3Fy/+zPbe4+dFOWS/5XQqHE0y7BhA4gkoltU+RVj/8zGKUw2151s1
-         +A3hEnihMKoKG5WbY1SVPPjQdGt6nP0PS12cMerNBVd3qPY6ZIHwuM7bYL9LONw33KM9
-         4g/Q==
-X-Gm-Message-State: AOAM5329CppI/Np1/xJnqf59evMKIkaxNtmT4CHk+5E28rg6FjrEllsI
-        TNMS/5ZdQ2aRqKeLu4H6HfW70m+//ttFJeF/MtU6Nw==
-X-Google-Smtp-Source: ABdhPJzflWL8WFPLlqF2nqn88esxiz7UOtN3WY7NEPE9rRP/KyQ0T/B/OYaUBhxDA8Z6jvZO0I2929MAH7rE8RMqI2o=
-X-Received: by 2002:a2e:8557:: with SMTP id u23mr20793221ljj.221.1621953067483;
- Tue, 25 May 2021 07:31:07 -0700 (PDT)
+        bh=E6s3ZtPWtmcbcuCeFGZbGrPYTepr+v29FJOymW4C+CY=;
+        b=MrqdkXNvQ8j/vURUgQenZ26183FnN88upzqeSJN21jchUb6s2e+/OCR7hXofMCnut8
+         lF1xZM/T4HaELqaYMiSTOargtWaqPaERjMbXjzdGgEnW7R+Mm/OnCr2D8RiqEn1F8918
+         YOaoI4KKFPF8G0PDHYNOINgKTmbWI7QLzxtDDsCy29MsdoGViC2whWtGnHPNFUqRPFG8
+         mT9jfvaH/ZXAa6RFLLKJKM8z12jzUqRB9mG9XqJBz68gMORfFZKYLU/NpbY/Cayt+u6w
+         E0s19bgSMkaM7atRGW5zWUg5drBoicI8lyvPcCNwS95Fnik+matuPry9AwupeqJLTGxV
+         usOg==
+X-Gm-Message-State: AOAM531cUr8A+6m/DaKydmaD5b91xXC1IC1Z4/hjBgKcUfaxDRyQfEJ1
+        svEeMeSeuZqdV0jr/3xxAqKWzlpWAUCptlCejoU=
+X-Google-Smtp-Source: ABdhPJwL63jd+Bw4iwsElTHxLE0xRt0eK9TsXFTrEfzZ9Mb+cpq5NYWjUWMfGLevpfJq0ciG8uGZDIqu8ilR/pnmr9U=
+X-Received: by 2002:a05:6402:3513:: with SMTP id b19mr31060270edd.137.1621958978427;
+ Tue, 25 May 2021 09:09:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com> <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
-In-Reply-To: <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 25 May 2021 16:30:56 +0200
-Message-ID: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com> <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
+In-Reply-To: <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 25 May 2021 09:09:26 -0700
+Message-ID: <CAHbLzkr1rUM7M5uv=LgCQtOngpwg-tUGMj9MUp7CkirDLMSwHw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: fix kernel-doc
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
+On Tue, May 25, 2021 at 1:34 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Hi,
->
-> tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
-> > Could you give more details about how cfs_rq->avg.load_avg = 4 but
-> > cfs_rq->avg.load_sum = 0 ?
-
+> On Mon 24-05-21 18:24:22, Yang Li wrote:
+> > Fix function name in mm/memcontrol.c kernel-doc comment
+> > to remove a warning.
 > >
-> > cfs_rq->avg.load_sum is decayed and can become null when crossing
-> > period which implies an update of cfs_rq->avg.load_avg.  This means
-> > that your case is generated by something outside the pelt formula ...
-> > like maybe the propagation of load in the tree. If this is the case,
-> > we should find the error and fix it
+> > mm/memcontrol.c:6546: warning: expecting prototype for
+> > mem_cgroup_protected(). Prototype was for
+> > mem_cgroup_calculate_protection() instead.
+> >
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 >
-> Ahh, yeah, that could probably be described better.
->
-> It is (as far as I have found out) because the pelt divider is changed,
-> and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
-> in a different value being removed than added.
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-ok so IIUC, it happens during the adding/removing/propagating
-entities' load in the cfs_rq.
+It seems this has been covered by Mel's W=1 warning cleanup series,
+see https://lore.kernel.org/linux-mm/20210520084809.8576-7-mgorman@techsingularity.net/.
 
 >
-> Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
-> recalculates the load_avg based on load_sum, and not the delta, afaik.
+> Thanks!
 >
-> And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
-> how the pelt divider is changed, I assume it is hard to pinpoint where the issue
-> is. I can try to find a clear path where where we can see what is added
-> and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
-> to better be able to pinpoint what is happening.
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 64ada9e..030c1dc 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6456,7 +6456,7 @@ static unsigned long effective_protection(unsigned long usage,
+> >  }
+> >
+> >  /**
+> > - * mem_cgroup_protected - check if memory consumption is in the normal range
+> > + * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
+> >   * @root: the top ancestor of the sub-tree being checked
+> >   * @memcg: the memory cgroup to check
+> >   *
+> > --
+> > 1.8.3.1
 >
-> Previously I thought this was a result of precision loss due to division and
-> multiplication during load add/remove inside fair.c, but I am not sure that
-> is the issue, or is it?
-
-I don't think the precision looss is the problem because
-adding/removing load in fair.c could truncate load_sum but it stays
-sync with load_avg. I will have a llo to see if i can see something
-weird
-
+> --
+> Michal Hocko
+> SUSE Labs
 >
-> If my above line of thought makes sense, do you still view this as an error
-> outside PELT, or do you see another possible/better solution?
->
-> Will investigate further.
-
-Thanks
-
->
-> Thanks
-> Odin
