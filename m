@@ -2,149 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289CF390B27
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 23:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901FC390C76
+	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 00:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhEYVTq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 17:19:46 -0400
-Received: from mail-dm6nam08on2057.outbound.protection.outlook.com ([40.107.102.57]:7360
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232526AbhEYVTq (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 25 May 2021 17:19:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fg2QllQSAFbUWgY+b+/qYKfQnlitIV9IYcze/vbaWEh6Ohphhzxc9DGsF2IgELS93AWRLqFXRZ513tATv5uc0R8vP8ZuQvGjxpl3VUWj6hxmnb625w+GiTQX0W1840czVn0/WF7mq8ZdTeYXXU4arSOxSMYpjbhhdMf36/NyPzS9fWk4h4YTURWUlMrqTAXBwxmwqFJ4kqaxFE1WCPvDnCMLq+hEMr154WvULoCp9A+9gDihtZuxl52kHPqtExr34FSAgPdzo/49nFWxeA01GeT2GgV3URx4bRvnuVxG8dYOwoTOCgkrQAa57O/d5XGkORQMFiQPBNllHjW9pcN1aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RG+TkWyAjgSfV57JTYBN5pfP9qi8Aer6pL70Iw1rpRc=;
- b=QIkQAut1orWelc9nyHhIHH0Fnmjy6Di5UAwt/0vZSkl8EcSEOoLKM9o1+5oZY2dgo2gvfZk4dM0C+F4PVRhO89Gj9QKknE9DpWSsw5MaVmjNz9ZkwnDeATSz9qbGz8qQm9XGDD2UGqDYi3In/TxifWPsoM2O8Xf68QEY/68q39DTXoDYo6vMUMq1TyZajSSwZx9snMB4OV+8uQZx4tDrKoGvnL2wqiHUj3QsWCinrEYruWnZWwz/MHC9orPOyrkHNfRJlQhPhClhgX4UrVwPLmXlNMngva/P0epL6j71HNjw8j5uj9fUqJpIb35M/Q1J2P0Vu3W0xlXTji58TgMc8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RG+TkWyAjgSfV57JTYBN5pfP9qi8Aer6pL70Iw1rpRc=;
- b=FLxNl4gntkYbUALm1qMFLZkQDuzm9x8AEpHHvFDu8F4xdDQT7csGgwLVECogKcF1Zay+1gG846omCt2RZm9SUBb4lQR0lMLLt8uoejDpg1t4bcWHg+laA0eregegOJCLZipIQKiJuPDXwZ28QV9OiyKO0WR826Y1PSp57DF9VO0qlVbGUtgkptcCAzBZeOQ0Ieb63Z3Rw8+cgqT+u4fA9QzNOzTYEcVtvV2fylgLSqYaIT/N21AIMrB4HicKcTDEwcRHrzMDYzXvdKcPW6il8sfzt5ktufenjzPbVZsbw5fWAoVfedHakZiQvQ7RIXxbOfxljpJ75Uvu/Gohg6kO9w==
-Received: from DM5PR07CA0073.namprd07.prod.outlook.com (2603:10b6:4:ad::38) by
- CY4PR12MB1864.namprd12.prod.outlook.com (2603:10b6:903:11c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Tue, 25 May
- 2021 21:18:14 +0000
-Received: from DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:ad:cafe::ef) by DM5PR07CA0073.outlook.office365.com
- (2603:10b6:4:ad::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
- Transport; Tue, 25 May 2021 21:18:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT062.mail.protection.outlook.com (10.13.173.40) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Tue, 25 May 2021 21:18:14 +0000
-Received: from [10.40.101.125] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 25 May
- 2021 21:18:07 +0000
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     David Gibson <david@gibson.dropbear.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
+        id S231377AbhEYWyb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 18:54:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230288AbhEYWy3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 18:54:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621983178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SBoHc3TMtFMMXyl4OvwN2G9ZYTn+3x2tRvNpJ1JHSJM=;
+        b=UlJW6Sb9QNkeNpXYKehd0mbsylm2Zak31zHX6VaU22y2n0cVITp5rn9sJ7wfwrDEoyyH1O
+        dovAHmdGpkVESjME514gFxIAieT8Afm9A9SgjuPXbrhK9CNK0Bc4RbWRdhxjCeFZ6bBwCD
+        jQmIbHdreLowKSNNfp1qVzkSs5TGqIo=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-_zA53Kd-MACMLXFxSFKNdw-1; Tue, 25 May 2021 18:52:57 -0400
+X-MC-Unique: _zA53Kd-MACMLXFxSFKNdw-1
+Received: by mail-oo1-f71.google.com with SMTP id w8-20020a4ae4c80000b02901f88dd1b75dso20977546oov.5
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 15:52:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SBoHc3TMtFMMXyl4OvwN2G9ZYTn+3x2tRvNpJ1JHSJM=;
+        b=fnbDqodSpn7yA4U690pPQKvWLjmkXKx269sepp3Hvrqz7WUnQxxHkIuvudaLiD8+hw
+         UqCWz6mUERXwu5W8I2s+ik9KTYQi7O2YhIDOdVMxyZl/beua4Bta8u/hujk4QYHwjK6P
+         RGPG9UYcekm9d1Wds863fUtoIE+AvHSWxbVNbZrmwIZMNwaK+IhVnXx9TRQrXR/IzvQl
+         qd4GAzUc9nRiP9g/eiablHUHRBHv/FLSSEPywv8WXjyUHMr5W/Y40MZfygbo7QBqxwLT
+         SxozhxbLkEBFfnkBozbtNvgmDTYHf9DgTaBiWcwxx6hmTcFNxYdTxrHPreqjhaC0DYfF
+         xQtg==
+X-Gm-Message-State: AOAM531xOHZJHG2vrjjubiSXadbGJn5Mi96IPEdpiF0L6gMvbUHJuNGT
+        HkSZDu8Qpbyor2cSL+gM22w5g12xOW3GdFXTQQM4DjmF/6lkzeDaMTM0TZzDNMT4/MQVqrk2oPT
+        nOB9rlnmMWw1qKe8TnA==
+X-Received: by 2002:a9d:6457:: with SMTP id m23mr5135otl.11.1621983176608;
+        Tue, 25 May 2021 15:52:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRjs1O3WclZbbD9WDAdj+hJXQH5q9/JRXCUepCdSgt9KXIP4TuN1LyaOo7T20Cp8BhXQC/OQ==
+X-Received: by 2002:a9d:6457:: with SMTP id m23mr5122otl.11.1621983176368;
+        Tue, 25 May 2021 15:52:56 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id r7sm3833207oom.46.2021.05.25.15.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 15:52:55 -0700 (PDT)
+Date:   Tue, 25 May 2021 16:52:52 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Kirti Wankhede <kwankhede@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
         "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, Neo Jia <cjia@nvidia.com>
-References: <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box> <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko> <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko> <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko> <20210524233744.GT1002214@nvidia.com>
- <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
- <20210525195257.GG1002214@nvidia.com>
-X-Nvconfidentiality: public
-From:   Kirti Wankhede <kwankhede@nvidia.com>
-Message-ID: <6b13399d-cf03-1e71-3624-c39d4d05e958@nvidia.com>
-Date:   Wed, 26 May 2021 02:48:03 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Li Zefan <lizefan@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210525165252.6959d9da.alex.williamson@redhat.com>
+In-Reply-To: <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+References: <20210422233950.GD1370958@nvidia.com>
+        <YIecXkaEGNgICePO@yekko.fritz.box>
+        <20210427171212.GD1370958@nvidia.com>
+        <YIizNdbA0+LYwQbI@yekko.fritz.box>
+        <20210428145622.GU1370958@nvidia.com>
+        <YIoiJRY3FM7xH2bH@yekko>
+        <20210503161518.GM1370958@nvidia.com>
+        <YJy9o8uEZs42/qDM@yekko>
+        <20210513135938.GG1002214@nvidia.com>
+        <YKtbWo7PwIlXjFIV@yekko>
+        <20210524233744.GT1002214@nvidia.com>
+        <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210525195257.GG1002214@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ef9629e-7a3c-4064-ad31-08d91fc29bb5
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1864:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB18648DA00528620B567A6840DC259@CY4PR12MB1864.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q8Stdjbau3RHOHmQ3/1eiexTyTeCPe0TdRJsvBhZ7weHf365a+pPTHXFbGDggld5HhfyZqzhpDRWno4lcrcitEHN+GUNcp7CQGszUOppor1gJuM64cBcHzvkb4sCpZfx8BR2vjdMS0v7ubZ1y/Qz/XgyX2o7WcK62psALW8hX3Q2vX6jkf273tMEyTD0ELmA7mind6Bw3XHb9PzY9jLW/zZtS3W46K8X21ANv4kS0nNjeh3Ks2Q9//SsCNFcgzxFecQgsPOykQ29mFJiHfwXtjgwdUIAFfG/qEXouQyZNiQPlloBkxnrvkuDBxnhA4/WPMTEz/YT+PNS1smichO3LUVxuQ2RL6ozW0o1KS8lLayqA874ZOmrGe0/1C34D1/AXIFcuRdF08eAeNtVem/dIRSh5jkLjdcwnaU7TWoINC/aal6H1cz2YP6UuzdfJK0MXheoqGqtUrD3tIPaI7ACioHhRmBVDAWwZWAm6tm/WBq0Jpd8kMdfJ3nfpVm5fiX4FU6Cd9+bKGA8CL5ENFt/Wkx1tx2uQQETaNIeM0RYb7yuJxFawDMxkLf7xUMf/ENobaEa9IN6j8OGk69aUVm74okVZMVf3ErBrTvYdXWPpKAWaxAVlzWpVP7l+KpdsLzoXvR8su+Rb4bTYHRFpqRQz1tOAzgWRwkWgMUNhzF5CwXDpa8pV6B1qiykBsWigmCE
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(36840700001)(46966006)(6636002)(8936002)(8676002)(6862004)(2906002)(4326008)(47076005)(26005)(36756003)(107886003)(478600001)(70206006)(82310400003)(83380400001)(70586007)(356005)(186003)(6666004)(82740400003)(336012)(2616005)(86362001)(31696002)(426003)(4744005)(16526019)(54906003)(5660300002)(53546011)(7416002)(36860700001)(36906005)(316002)(31686004)(16576012)(37006003)(7636003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 21:18:14.5097
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef9629e-7a3c-4064-ad31-08d91fc29bb5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1864
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, 26 May 2021 00:56:30 +0530
+Kirti Wankhede <kwankhede@nvidia.com> wrote:
 
+> On 5/25/2021 5:07 AM, Jason Gunthorpe wrote:
+> > On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
+> >   
+> >>>> I don't really see a semantic distinction between "always one-device
+> >>>> groups" and "groups don't matter".  Really the only way you can afford
+> >>>> to not care about groups is if they're singletons.  
+> >>>
+> >>> The kernel driver under the mdev may not be in an "always one-device"
+> >>> group.  
+> >>
+> >> I don't really understand what you mean by that.  
+> > 
+> > I mean the group of the mdev's actual DMA device may have multiple
+> > things in it.
+> >     
+> >>> It is a kernel driver so the only thing we know and care about is that
+> >>> all devices in the HW group are bound to kernel drivers.
+> >>>
+> >>> The vfio device that spawns from this kernel driver is really a
+> >>> "groups don't matter" vfio device because at the IOMMU layer it should
+> >>> be riding on the physical group of the kernel driver.  At the VFIO
+> >>> layer we no longer care about the group abstraction because the system
+> >>> guarentees isolation in some other way.  
+> >>
+> >> Uh.. I don't really know how mdevs are isolated from each other.  I
+> >> thought it was because the physical device providing the mdevs
+> >> effectively had an internal IOMMU (or at least DMA permissioning) to
+> >> isolate the mdevs, even though the physical device may not be fully
+> >> isolated.
+> >>
+> >> In that case the virtual mdev is effectively in a singleton group,
+> >> which is different from the group of its parent device.  
+> >   
+> 
+> That's correct.
+> 
+> > That is one way to view it, but it means creating a whole group
+> > infrastructure and abusing the IOMMU stack just to create this
+> > nonsense fiction.  
+> 
+> I really didn't get how this abuse the IOMMU stack.
+> mdev can be used in 3 different ways:
+> 1. non-iommu backed mdev devices where mdev vendor driver takes care to
+> DMA map (iommu_map) and isolation is through device hardware internal
+> MMU. Here vfio_iommu_type1 module provides a way to validate and pin
+> pages required by mdev device for DMA mapping. Then IOMMU mapping is
+> done by mdev vendor driver which is owner driver of physical device.
+> 
+> 2. iommu backed mdev devices for SRIOV where mdev device is created per
+> VF (mdev device == VF device) then that mdev device has same iommu
+> protection scope as VF associated to it. Here mdev device is virtual
+> device which uses features of mdev and represents underlying VF device,
+> same as vfio-pci but with additional mdev features.
 
-On 5/26/2021 1:22 AM, Jason Gunthorpe wrote:
-> On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
-> 
->> 2. iommu backed mdev devices for SRIOV where mdev device is created per
->> VF (mdev device == VF device) then that mdev device has same iommu
->> protection scope as VF associated to it.
-> 
-> This doesn't require, and certainly shouldn't create, a fake group.
-> 
-> Only the VF's real IOMMU group should be used to model an iommu domain
-> linked to a VF. Injecting fake groups that are proxies for real groups
-> only opens the possibility of security problems like David is
-> concerned with.
-> 
+What features would those be?  There are no mdev specific parts of the
+vfio uAPI.
 
-I think this security issue should be addressed by letting mdev device 
-inherit its parent's iommu_group, i.e. VF's iommu_group here.
+The mdev device is a virtual device, by why it it virtual in this case?
+Aren't we effectively assigning the VF itself (mdev device == VF device)
+with a bunch of extra support code to fill in the gaps of the VF
+implementing the complete device model in hardware?
 
-Kirti
+We're effectively creating this virtual device, creating a fake IOMMU
+group, and trying to create this association of this virtual device to
+the real VF in order to shoehorn it into the mdev model.  What do we
+get from that model other than lifecycle management (ie. type selection)
+and re-use of a bunch of code from the driver supporting the 1) model
+above?
 
-> Max's series approaches this properly by fully linking the struct
-> pci_device of the VF throughout the entire VFIO scheme, including the
-> group and container, while still allowing override of various VFIO
-> operations.
-> 
-> Jason
-> 
+This specific model seems better served by a device specific peer
+driver to vfio-pci (ie. a "vfio-pci variant").  You effectively already
+have the code for this driver, it's just in the format of an mdev
+driver rather than a vfio "bus driver".  The work Jason references
+relative to Max aims to make these kinds of drivers easier to implement
+through re-use of vfio-pci code.
+
+There are certainly other solutions we could come up with for selecting
+a specific device type for a vfio-pci variant driver to implement other
+than pretending this model actually belongs in mdev, right?  Thanks,
+
+Alex
+
