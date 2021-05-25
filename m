@@ -2,89 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5FB39017C
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 15:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2C83903EF
+	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 16:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhEYNCE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 09:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        id S233973AbhEYOcs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 10:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhEYNCD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 09:02:03 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40B0C061574
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 06:00:33 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id j184so8183225qkd.6
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 06:00:33 -0700 (PDT)
+        with ESMTP id S233967AbhEYOcl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 10:32:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFD9C061574
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id w7so25034670lji.6
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 07:31:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y28saWW4RbQx7WFyioP30Xg1gnMSgGnjvex8TrgoAmQ=;
-        b=SmfdiXxkr36Ea/32dUzc9goah/P/GDAmfDbfC23QxapWU+TYijU+tfipqVELo7UnNb
-         kCjW74Q30JDB5fgFGsHqgJCEmxBDKG9IApVbKABuX/KOwPBR0S9vlJjymq+MrMGk51h3
-         6ydpK/iuWp9N2XdHcbwhGAfcdpizobjsabPIpm0tzrNvmu9Bxekatij9qaP2uru6JWkm
-         9Q/bdYcBQsR1yN1XYUK+IHclcbpDWwfEhDxrstMqMj+GfnNWOoDjxxvTrZpSn3pYUBV+
-         tBirFOf/cNxOyaXXED4cDuzfXDrAdEmlM6leYVvOPcAJrsNxmqDTUvm5putYq5K3bzNj
-         AP8g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
+        b=F4A75JkMsGy+mU4xkQ+hrRir1o9AbYLExHPfcQfFnUXIO6DE/5641VeHIyAalgivCo
+         N/kqbRtpIl8KaXs/NPtXGmOEUNdo8CVx47T8HCgN+GKM0k1wSbGnmY0ybIGqTJxaxmhD
+         Oku336dpO2ktfatK/DKwpF72MdpjA+uz3NyTix8H0hCjxR2a3OHIXjMz9SZvMKgzJua6
+         t4/+hW/krEvXJkvFk+i8+iI3iXeYAnNSgdL5bbX0zDLCbpg08A7YMYpfM/RHIQ6wv+eA
+         L4ZgOJslSk1zsLpXvaxJ02QWV5j1YVGO8LXSADULytLj7TtLIVSxtXEsfJoQ0k9UlqE9
+         FemA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y28saWW4RbQx7WFyioP30Xg1gnMSgGnjvex8TrgoAmQ=;
-        b=SnPjYh9CST15OfIHdyJ6MrsLv71vEZqpMBrjCE3rC3vnhac+LaJ7QdlWS15ZggnZaK
-         8YjmqOmbQtCOOOMfFxuz/4t4jn0WsH6ZcciwrdSlMPlWjhrGt5dAHWP85TkJIpyPAWUo
-         jW03HIpzdgdDubYHMgeh/KRM7vpwgCImNe9epwfw+euUjXrG/9Ad2OlxlriKaIO0qo69
-         dw9onebZDJIa62D+gpyTlKo2ujKvuGOz7OCwePggucad2MuIy2oqBhEDtHEJNwr1Ulj0
-         h0bOJGPzuTXBcw47SxNMBqsStXsCv/sieHAEChNw/5OEDKs2UuTdCkkj0VfwdCfWW6G/
-         F7Aw==
-X-Gm-Message-State: AOAM531nSSvGxz0Zsfxh0d9zue0r37UmliEZazeT27baxmZeluaIl3EE
-        hmL3PEqxIB3c23rMEq/Wp4pSpQ==
-X-Google-Smtp-Source: ABdhPJweYIK4QVt1oGBJstiLAQCOmbfbqmVA42aSLZNXQ/Hhy/JZ23PoCnqA1TrO1jkKqaIdstwAUA==
-X-Received: by 2002:a37:9a44:: with SMTP id c65mr23489338qke.152.1621947632397;
-        Tue, 25 May 2021 06:00:32 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:4f4e])
-        by smtp.gmail.com with ESMTPSA id o5sm4565264qkl.25.2021.05.25.06.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 06:00:31 -0700 (PDT)
-Date:   Tue, 25 May 2021 09:00:30 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, mingo@redhat.com,
-        peterz@infradead.org, shakeelb@google.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
-        paulmck@kernel.org, rdunlap@infradead.org,
-        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
-        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v3 1/1] cgroup: make per-cgroup pressure stall tracking
- configurable
-Message-ID: <YKz07nx3E8UEo1xa@cmpxchg.org>
-References: <20210524195339.1233449-1-surenb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uIo7/iOcEYFUfIFZkRcOL5riddbVvAIMJ8wGs/EdkRc=;
+        b=SoQZ1P+MtF3uV1EMLumVsysRB3qEbh8qWvm2QJlU+EEu+HXf+9lvZERnzcBs/pePsX
+         JhvmiTHWaDnPjbvlSpFZEFswcgZBIwMc7Hu8lD0h6Jf52hn0PItuAyaRDOj1iOgc+sHW
+         AESpLEUIUf3wagcG9AEUey1srC6jtMDZEeRUfVBkYCM7dvSgpEop1e421iZcq8rcVwRL
+         pITmPqaarmTlNU+3Fy/+zPbe4+dFOWS/5XQqHE0y7BhA4gkoltU+RVj/8zGKUw2151s1
+         +A3hEnihMKoKG5WbY1SVPPjQdGt6nP0PS12cMerNBVd3qPY6ZIHwuM7bYL9LONw33KM9
+         4g/Q==
+X-Gm-Message-State: AOAM5329CppI/Np1/xJnqf59evMKIkaxNtmT4CHk+5E28rg6FjrEllsI
+        TNMS/5ZdQ2aRqKeLu4H6HfW70m+//ttFJeF/MtU6Nw==
+X-Google-Smtp-Source: ABdhPJzflWL8WFPLlqF2nqn88esxiz7UOtN3WY7NEPE9rRP/KyQ0T/B/OYaUBhxDA8Z6jvZO0I2929MAH7rE8RMqI2o=
+X-Received: by 2002:a2e:8557:: with SMTP id u23mr20793221ljj.221.1621953067483;
+ Tue, 25 May 2021 07:31:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524195339.1233449-1-surenb@google.com>
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com> <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+In-Reply-To: <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 25 May 2021 16:30:56 +0200
+Message-ID: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:53:39PM -0700, Suren Baghdasaryan wrote:
-> PSI accounts stalls for each cgroup separately and aggregates it at each
-> level of the hierarchy. This causes additional overhead with psi_avgs_work
-> being called for each cgroup in the hierarchy. psi_avgs_work has been
-> highly optimized, however on systems with large number of cgroups the
-> overhead becomes noticeable.
-> Systems which use PSI only at the system level could avoid this overhead
-> if PSI can be configured to skip per-cgroup stall accounting.
-> Add "cgroup_disable=pressure" kernel command-line option to allow
-> requesting system-wide only pressure stall accounting. When set, it
-> keeps system-wide accounting under /proc/pressure/ but skips accounting
-> for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
+>
+> Hi,
+>
+> tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> > Could you give more details about how cfs_rq->avg.load_avg = 4 but
+> > cfs_rq->avg.load_sum = 0 ?
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >
+> > cfs_rq->avg.load_sum is decayed and can become null when crossing
+> > period which implies an update of cfs_rq->avg.load_avg.  This means
+> > that your case is generated by something outside the pelt formula ...
+> > like maybe the propagation of load in the tree. If this is the case,
+> > we should find the error and fix it
+>
+> Ahh, yeah, that could probably be described better.
+>
+> It is (as far as I have found out) because the pelt divider is changed,
+> and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
+> in a different value being removed than added.
+
+ok so IIUC, it happens during the adding/removing/propagating
+entities' load in the cfs_rq.
+
+>
+> Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
+> recalculates the load_avg based on load_sum, and not the delta, afaik.
+>
+> And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
+> how the pelt divider is changed, I assume it is hard to pinpoint where the issue
+> is. I can try to find a clear path where where we can see what is added
+> and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
+> to better be able to pinpoint what is happening.
+>
+> Previously I thought this was a result of precision loss due to division and
+> multiplication during load add/remove inside fair.c, but I am not sure that
+> is the issue, or is it?
+
+I don't think the precision looss is the problem because
+adding/removing load in fair.c could truncate load_sum but it stays
+sync with load_avg. I will have a llo to see if i can see something
+weird
+
+>
+> If my above line of thought makes sense, do you still view this as an error
+> outside PELT, or do you see another possible/better solution?
+>
+> Will investigate further.
+
+Thanks
+
+>
+> Thanks
+> Odin
