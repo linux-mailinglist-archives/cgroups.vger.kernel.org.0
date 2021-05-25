@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0452A38FE4F
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 11:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8934238FF5C
+	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 12:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhEYKA2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 06:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
+        id S230012AbhEYKi2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 06:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbhEYKA0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 06:00:26 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15274C061574
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 02:58:56 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id q3so15020886lfu.2
-        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 02:58:55 -0700 (PDT)
+        with ESMTP id S229798AbhEYKiW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 06:38:22 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823A3C06138D
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 03:34:16 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id c15so884160qte.6
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 03:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
-        b=DWqjd2ZKj4VEhFiAqyMPJlky9QQ+735WWEjgMnIsSYMqSpSjQkNUbljyLplf0Od0++
-         AcFT7Wo+/xrlCoOjIpU4QFDDsG5S1mGxrZDAHommxfpUHh8DJ/TAdiEiOLvXSXHZhq0T
-         9ebM5TkLnRx5Q8XHH73oSzJD7pANRwp0lRmbAoZkAC8J74Zs+a4SsR0l21gK8XmDyGh3
-         9aj1WThK7gWR9z7zgseDW46BDdp4/W+CFfeMILarc2aDIwm1U1lN8X0y3gZhuEV4LnwT
-         EXZFzHfumREOHr42Ls1/R0I8LrZTrDvKEiP30kBUCl8UOwxVF2N+dhp1FdPCckhKA5Zx
-         u6Ew==
+        bh=UD1f1G9Ex4FwbzHzbUArz7WZFjqV4ALpCGYlosc7pFs=;
+        b=rkN2FqQcIKdfrkPyeXVV+a3SZSWeeezHAFurF3wfm7k7x4cdKt9YJPMOwuxYJkYVnW
+         0p/uzXKTTQ8BicHVNLs//N5duQlo3qK5C/6gMDSNen9WXVFn6UZ1Og2D2WHiDeQ6ZnGO
+         pHyJnrV6PB0Eep3Z+tgRiR6wAKeVpJPNprZ8ZBHEvFC5s4o/M4Zdu5ysFXUIS2H8VIqf
+         lS6jE/CKBPrqTseC0B9ICNfTJL9ejNkWFFox2jJRzuJDPPToeQWVRC70eZtE/zWw1Vtc
+         carGqY2HC448jpHA4LhJjVKYKLWZF7dQlxTH9XNS+1WG5rnCJuLpx3es6o5KcAFz3ZjN
+         8C6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
-        b=obrva3PEw7gFq6OrXS4lClDYjTRLG49czlg9ZdYe59KUV+qXrnIk0/3F3rkohjgyB0
-         WNNHLLWAIfr1pKxTr3CYU4tpwApjZA/5GeGPRjxyPd/dq8KpZ//BlLos3Iy76vrQLNAx
-         wyeLTGbIP0M9sejTEsQrdglg7xeToV4BUHHGlKFkZOVJsYZh/UlxAjhQdMdyxn0s1I8R
-         HlBJ8ytbzW/bVy4MMPIxFwZXo0vRdhuGUVynxCgsyFcCdQtj2HGW9w8XSb/74RmGDndC
-         lZKW/+yGOmCxjJqDTY7sDqZBR0lSuH685mBrbIrXdVPPojwpU5ggg6ozU4VBkAUKTaHr
-         HjiA==
-X-Gm-Message-State: AOAM531bz+2gir1n01CEk+LM9oxVZyX/wbd6WyuAYGtWCc+qcyUZvO8k
-        fEYFVy0sPGUWn5u8R0Oi/HIbF5i6MuAhoeSqDl2I5eewtnDZTg==
-X-Google-Smtp-Source: ABdhPJymEHH3L6C2Dr9IFjs4dvQW51E+pLbDYgD29AlubRHXAG2hE6qTDbkp8Lkz7Md6B6iTjqHJcKnLiiwsXO3MSnY=
-X-Received: by 2002:a05:6512:2205:: with SMTP id h5mr13907940lfu.233.1621936734446;
- Tue, 25 May 2021 02:58:54 -0700 (PDT)
+        bh=UD1f1G9Ex4FwbzHzbUArz7WZFjqV4ALpCGYlosc7pFs=;
+        b=kE4RaysUa1IiHepKs9eFaQU8FqaAji49MIt9BkpIHB/TZgfvHmykpdSzJjFQwqyLsO
+         G0GeFOCwivfk1/bHWztkkp4hyU9wHSmg3tnaaGsWDdGg2gp2LW482TdefjVhgbu+2ZQW
+         AbM2dazYMc9jXJgvyBQUp3zihiaXN/8pVlFI62zoZ4WCTGvpldsPlPiq4B+9vcJZ3oUu
+         kG+xebpaPb9LvXT+vb7Q1EP3k7eod+DfCM2T5PbLUk6aRC4vqCog3qJ9f/5O5xb5g4nR
+         IOjFoFM5c6HgChAwuRIl1Uq4CaVLtYJhTz2yXp0Butnq8ClGhJ3wy1irHGT+CkkcYz93
+         fXYw==
+X-Gm-Message-State: AOAM532K9FLTRvoytNmr5iyrwiccRUG1m4l99i6cSvF2H9PWs3TyYvm4
+        Fewrir1LFd6eI+k7lAol9/N/ap1CYe7BSW8vKbZWEg==
+X-Google-Smtp-Source: ABdhPJyXrTAW1sZtIFXE71qO3tx2YGgvBBW5Pt9i94EQ9WAr9BCFfbRKwmHd1UlCVcGcxTZxtKriQ7jYs5+QJA4zKcE=
+X-Received: by 2002:ac8:5a0f:: with SMTP id n15mr31803414qta.313.1621938855655;
+ Tue, 25 May 2021 03:34:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
-In-Reply-To: <20210518125202.78658-2-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 25 May 2021 11:58:43 +0200
-Message-ID: <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+In-Reply-To: <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Tue, 25 May 2021 12:33:35 +0200
+Message-ID: <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
 Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -65,54 +66,41 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 18 May 2021 at 14:54, Odin Ugedal <odin@uged.al> wrote:
->
-> Make sure cfs_rq does not contribute to task group load avg when
-> checking if it is decayed. Due to how the pelt tracking works,
-> the divider can result in a situation where:
->
-> cfs_rq->avg.load_sum = 0
-> cfs_rq->avg.load_avg = 4
+Hi,
 
-Could you give more details about how cfs_rq->avg.load_avg = 4 but
-cfs_rq->avg.load_sum = 0 ?
+tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> Could you give more details about how cfs_rq->avg.load_avg = 4 but
+> cfs_rq->avg.load_sum = 0 ?
+>
+> cfs_rq->avg.load_sum is decayed and can become null when crossing
+> period which implies an update of cfs_rq->avg.load_avg.  This means
+> that your case is generated by something outside the pelt formula ...
+> like maybe the propagation of load in the tree. If this is the case,
+> we should find the error and fix it
 
-cfs_rq->avg.load_sum is decayed and can become null when crossing
-period which implies an update of cfs_rq->avg.load_avg.  This means
-that your case is generated by something outside the pelt formula ...
-like maybe the propagation of load in the tree. If this is the case,
-we should find the error and fix it
+Ahh, yeah, that could probably be described better.
 
-> cfs_rq->avg.tg_load_avg_contrib = 4
->
-> If pelt tracking in this case does not cross a period, there is no
-> "change" in load_sum, and therefore load_avg is not recalculated, and
-> keeps its value.
->
-> If this cfs_rq is then removed from the leaf list, it results in a
-> situation where the load is never removed from the tg. If that happen,
-> the fiarness is permanently skewed.
->
-> Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
->  kernel/sched/fair.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3248e24a90b0..ceda53c2a87a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8004,6 +8004,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->         if (cfs_rq->avg.runnable_sum)
->                 return false;
->
-> +       if (cfs_rq->tg_load_avg_contrib)
-> +               return false;
-> +
->         return true;
->  }
->
-> --
-> 2.31.1
->
+It is (as far as I have found out) because the pelt divider is changed,
+and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
+in a different value being removed than added.
+
+Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
+recalculates the load_avg based on load_sum, and not the delta, afaik.
+
+And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
+how the pelt divider is changed, I assume it is hard to pinpoint where the issue
+is. I can try to find a clear path where where we can see what is added
+and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
+to better be able to pinpoint what is happening.
+
+Previously I thought this was a result of precision loss due to division and
+multiplication during load add/remove inside fair.c, but I am not sure that
+is the issue, or is it?
+
+If my above line of thought makes sense, do you still view this as an error
+outside PELT, or do you see another possible/better solution?
+
+Will investigate further.
+
+Thanks
+Odin
