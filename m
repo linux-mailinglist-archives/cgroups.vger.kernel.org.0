@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D9938F9E4
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 07:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C2038F9E5
+	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 07:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhEYF0M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 01:26:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14902 "EHLO mga03.intel.com"
+        id S230491AbhEYF0U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 01:26:20 -0400
+Received: from mga18.intel.com ([134.134.136.126]:48680 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhEYF0M (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 25 May 2021 01:26:12 -0400
-IronPort-SDR: WyzRJq3ms6Cd9A03j81sXdVixrn1mdEHe+znH/Qeiv9baHmYJCa48I2O4yu45xGqsj+PplqiYN
- qVdMalzxuQqg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="202144568"
+        id S230218AbhEYF0U (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 25 May 2021 01:26:20 -0400
+IronPort-SDR: 1xsEcnXvNZAEaNjVTx5f3/qUesFrNNj13Y3pXkI79QyFlD7y1MIktDbuY4l3b8oIFE3F8VZ20+
+ MswZZPkR7i4w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9994"; a="189484969"
 X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="202144568"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 22:24:42 -0700
-IronPort-SDR: TaRJo+048IFFbho4OGBE6JHGZSv3smMNBYHmtseMCDHFg6a9f6ww//qK3NryFAeSybxYqmbh+3
- n0C1pVKjCPxA==
+   d="scan'208";a="189484969"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 22:24:42 -0700
+IronPort-SDR: 0Pk6BSgCjrHfje8pj58ZqzhfXp1jc4/FWGihNqnx6pgU0QTE1uXgX2mcwa3aNB98I3Ooi7y/k+
+ 1PAvZVvwL9xg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,327,1613462400"; 
-   d="scan'208";a="435560223"
+   d="scan'208";a="464017957"
 Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 May 2021 22:24:41 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 24 May 2021 22:24:41 -0700
 Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1llPYW-0001VF-Lg; Tue, 25 May 2021 05:24:40 +0000
-Date:   Tue, 25 May 2021 13:23:39 +0800
+        id 1llPYW-0001VC-L7; Tue, 25 May 2021 05:24:40 +0000
+Date:   Tue, 25 May 2021 13:23:43 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.13-fixes] BUILD SUCCESS
- 08b2b6fdf6b26032f025084ce2893924a0cdb4a2
-Message-ID: <60ac89db.DYGPKXWOyGIP+POr%lkp@intel.com>
+Subject: [cgroup:for-next] BUILD SUCCESS
+ 6962681ee8c6efdc6288568f35245803c165f713
+Message-ID: <60ac89df.2G4gM+AsEyJ2DkJU%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,8 +43,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13-fixes
-branch HEAD: 08b2b6fdf6b26032f025084ce2893924a0cdb4a2  cgroup: fix spelling mistakes
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 6962681ee8c6efdc6288568f35245803c165f713  Merge branch 'for-5.13-fixes' into for-next
 
 elapsed time: 726m
 
@@ -121,10 +121,10 @@ mips                        bcm47xx_defconfig
 sh                           se7705_defconfig
 arm                        vexpress_defconfig
 mips                  cavium_octeon_defconfig
+sparc                               defconfig
 csky                             alldefconfig
 h8300                    h8300h-sim_defconfig
 sh                        edosk7705_defconfig
-sparc                               defconfig
 sh                         ap325rxa_defconfig
 powerpc                 mpc8313_rdb_defconfig
 mips                         db1xxx_defconfig
