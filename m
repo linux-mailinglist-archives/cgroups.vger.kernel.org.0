@@ -2,79 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7483A38FCF8
-	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 10:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0452A38FE4F
+	for <lists+cgroups@lfdr.de>; Tue, 25 May 2021 11:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhEYIh2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 04:37:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48880 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231690AbhEYIgO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 25 May 2021 04:36:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621931684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bjnsL2peeOiwWaK94JCXPWqqFm70yQEu/wWcJgX6mj8=;
-        b=Y7rk0GEZ2G5BRETie8/EcGewGFpOb/F+H5mMaKQIz01KT1HN37phtRqsK5uKgMqra2IBtc
-        c7RUPp8fYAzoG/lcS4F+KVbnNYp50GLWBtd6+1XHQ66//RWJ+IbkA7I8N2M78qdbMN14yg
-        5onv36M08g1DIF7KwxmO4au0Xiqa2UE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3CF9DAE1F;
-        Tue, 25 May 2021 08:34:44 +0000 (UTC)
-Date:   Tue, 25 May 2021 10:34:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: fix kernel-doc
-Message-ID: <YKy2o2WGRcD7vht8@dhcp22.suse.cz>
-References: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S232736AbhEYKA2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 May 2021 06:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232635AbhEYKA0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 06:00:26 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15274C061574
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 02:58:56 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id q3so15020886lfu.2
+        for <cgroups@vger.kernel.org>; Tue, 25 May 2021 02:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
+        b=DWqjd2ZKj4VEhFiAqyMPJlky9QQ+735WWEjgMnIsSYMqSpSjQkNUbljyLplf0Od0++
+         AcFT7Wo+/xrlCoOjIpU4QFDDsG5S1mGxrZDAHommxfpUHh8DJ/TAdiEiOLvXSXHZhq0T
+         9ebM5TkLnRx5Q8XHH73oSzJD7pANRwp0lRmbAoZkAC8J74Zs+a4SsR0l21gK8XmDyGh3
+         9aj1WThK7gWR9z7zgseDW46BDdp4/W+CFfeMILarc2aDIwm1U1lN8X0y3gZhuEV4LnwT
+         EXZFzHfumREOHr42Ls1/R0I8LrZTrDvKEiP30kBUCl8UOwxVF2N+dhp1FdPCckhKA5Zx
+         u6Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sjbcK+Lm3wd8drmc6dOvHnavMF6nKfqCuTFG5UI3Qd8=;
+        b=obrva3PEw7gFq6OrXS4lClDYjTRLG49czlg9ZdYe59KUV+qXrnIk0/3F3rkohjgyB0
+         WNNHLLWAIfr1pKxTr3CYU4tpwApjZA/5GeGPRjxyPd/dq8KpZ//BlLos3Iy76vrQLNAx
+         wyeLTGbIP0M9sejTEsQrdglg7xeToV4BUHHGlKFkZOVJsYZh/UlxAjhQdMdyxn0s1I8R
+         HlBJ8ytbzW/bVy4MMPIxFwZXo0vRdhuGUVynxCgsyFcCdQtj2HGW9w8XSb/74RmGDndC
+         lZKW/+yGOmCxjJqDTY7sDqZBR0lSuH685mBrbIrXdVPPojwpU5ggg6ozU4VBkAUKTaHr
+         HjiA==
+X-Gm-Message-State: AOAM531bz+2gir1n01CEk+LM9oxVZyX/wbd6WyuAYGtWCc+qcyUZvO8k
+        fEYFVy0sPGUWn5u8R0Oi/HIbF5i6MuAhoeSqDl2I5eewtnDZTg==
+X-Google-Smtp-Source: ABdhPJymEHH3L6C2Dr9IFjs4dvQW51E+pLbDYgD29AlubRHXAG2hE6qTDbkp8Lkz7Md6B6iTjqHJcKnLiiwsXO3MSnY=
+X-Received: by 2002:a05:6512:2205:: with SMTP id h5mr13907940lfu.233.1621936734446;
+ Tue, 25 May 2021 02:58:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+In-Reply-To: <20210518125202.78658-2-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 25 May 2021 11:58:43 +0200
+Message-ID: <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 24-05-21 18:24:22, Yang Li wrote:
-> Fix function name in mm/memcontrol.c kernel-doc comment
-> to remove a warning.
-> 
-> mm/memcontrol.c:6546: warning: expecting prototype for
-> mem_cgroup_protected(). Prototype was for
-> mem_cgroup_calculate_protection() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+On Tue, 18 May 2021 at 14:54, Odin Ugedal <odin@uged.al> wrote:
+>
+> Make sure cfs_rq does not contribute to task group load avg when
+> checking if it is decayed. Due to how the pelt tracking works,
+> the divider can result in a situation where:
+>
+> cfs_rq->avg.load_sum = 0
+> cfs_rq->avg.load_avg = 4
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Could you give more details about how cfs_rq->avg.load_avg = 4 but
+cfs_rq->avg.load_sum = 0 ?
 
-Thanks!
+cfs_rq->avg.load_sum is decayed and can become null when crossing
+period which implies an update of cfs_rq->avg.load_avg.  This means
+that your case is generated by something outside the pelt formula ...
+like maybe the propagation of load in the tree. If this is the case,
+we should find the error and fix it
 
+> cfs_rq->avg.tg_load_avg_contrib = 4
+>
+> If pelt tracking in this case does not cross a period, there is no
+> "change" in load_sum, and therefore load_avg is not recalculated, and
+> keeps its value.
+>
+> If this cfs_rq is then removed from the leaf list, it results in a
+> situation where the load is never removed from the tg. If that happen,
+> the fiarness is permanently skewed.
+>
+> Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
+> Signed-off-by: Odin Ugedal <odin@uged.al>
 > ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 64ada9e..030c1dc 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6456,7 +6456,7 @@ static unsigned long effective_protection(unsigned long usage,
+>  kernel/sched/fair.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 3248e24a90b0..ceda53c2a87a 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8004,6 +8004,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+>         if (cfs_rq->avg.runnable_sum)
+>                 return false;
+>
+> +       if (cfs_rq->tg_load_avg_contrib)
+> +               return false;
+> +
+>         return true;
 >  }
->  
->  /**
-> - * mem_cgroup_protected - check if memory consumption is in the normal range
-> + * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
->   * @root: the top ancestor of the sub-tree being checked
->   * @memcg: the memory cgroup to check
->   *
-> -- 
-> 1.8.3.1
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> --
+> 2.31.1
+>
