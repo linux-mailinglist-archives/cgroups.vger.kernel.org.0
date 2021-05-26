@@ -2,277 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639B93922AA
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 00:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869B93922B6
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 00:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233971AbhEZW1f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 May 2021 18:27:35 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3212 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhEZW1f (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 18:27:35 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QMGl9K012054
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 15:26:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=upg3t5shzXRGgTa68wVqIPfFpLcD5pG4JjjszPkvr3s=;
- b=pXmMxe1EcrBE6Auo/Et4S0yZjyZTd8RcDj6U9hkGzzsAn71VE/KiEsvXtVmVZLAzQNi+
- WCldWrLZAgkoHU/D+Jwf/tuXmbD1fbxqXGqCMrxjh7bhunQ3XE04SrRgW8eenkIdzB91
- awrqNZTU8gOmelDl+h3a1vdu9ejJIyDZ0NU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38sm3fvckt-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 15:26:03 -0700
-Received: from intmgw001.27.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 15:26:02 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id ABC017B6ABB7; Wed, 26 May 2021 15:25:58 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v5 2/2] writeback, cgroup: release dying cgwbs by switching attached inodes
-Date:   Wed, 26 May 2021 15:25:57 -0700
-Message-ID: <20210526222557.3118114-3-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210526222557.3118114-1-guro@fb.com>
-References: <20210526222557.3118114-1-guro@fb.com>
+        id S234374AbhEZWaj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 May 2021 18:30:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229624AbhEZWai (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 18:30:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622068146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KJRZ7Xr9eE1StDnH/ATVl1uLoI8ZB4qRKeY2WD/qOD0=;
+        b=RYS3otLmKgkK9XXdcQQynoE1AomxeYvgoT7dz5ecDcd1J9yb2f9o/wfXzKvUpL3XWA5UBI
+        oHeZZk+WbFtfGvMYZ+46CUTjz+IAoTn9nLBOWsPuNpPh2fbDQhtqQ9FuowCHEcuXRz6UpJ
+        ouNnhdfxi9tF3zn/PSMcn0+PDl51fv0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-mx7BgZrwN3mr23GV7WMjqw-1; Wed, 26 May 2021 18:29:04 -0400
+X-MC-Unique: mx7BgZrwN3mr23GV7WMjqw-1
+Received: by mail-qv1-f70.google.com with SMTP id f17-20020a0cf3d10000b02901eda24e6b92so2427583qvm.1
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 15:29:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KJRZ7Xr9eE1StDnH/ATVl1uLoI8ZB4qRKeY2WD/qOD0=;
+        b=sXM+ckpsn534ZmthKV64svbmQJpordDdiBsAJr+MDzu6qXmQYac2EPZyKB3yJ8gP/U
+         4yMkeGoXCanHjG51mRJwqKUPv5wzoGtMy+pR8WLhiLrOJI1htbPdu2MQJVg7tj+ZkUBe
+         4ITAnVlbAvN8R8RpHTf2Yfdj42iOiBpC90rAeLHYdNxUCGwju8m2C+vQ+4dhgy7ZfQee
+         HAQ69/9Yln69eWXmUGFDn6suM+Wg2u1OrlWGQ5f9PdJZidDaDCQR0fiZJXbsdFeRyHip
+         XDq/ryzcMg5/g75CzA4/pEpd53nbWdCThcdaNzu1fM1HJsANdxpfKtdJCSYVv3xTsrpP
+         sisg==
+X-Gm-Message-State: AOAM530dir+SzpqVmSc0cNm/zY/MTCMb7Hvv8p6A1Rq9try4/e81Pfba
+        CHmYIOayZ814NuIRQ5Wrj8q9o0eYxmcKSEktq5XEkgD9IKbdP2YxjGGD53rcfRGlS91Z8JeYMoN
+        o1RnekAV+0fY98ck/Yw==
+X-Received: by 2002:a37:e11:: with SMTP id 17mr364054qko.499.1622068144280;
+        Wed, 26 May 2021 15:29:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzYClyKpygSkxiLgjGmd4Z0WDwgsAIxTAfrAxM/4Ef8VZM6cO98o6XMM6GieLiHaSuGLwpCg==
+X-Received: by 2002:a37:e11:: with SMTP id 17mr364043qko.499.1622068144117;
+        Wed, 26 May 2021 15:29:04 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id v17sm203783qta.77.2021.05.26.15.29.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 15:29:03 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH-next] mm/memcontrol.c: Fix potential uninitialized
+ variable warning
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+References: <20210526193602.8742-1-longman@redhat.com>
+ <20210526134321.42bbd4a9dcbcf53e855c5b1b@linux-foundation.org>
+Message-ID: <9fb60ba4-258d-2bb5-57af-c174df9b1a31@redhat.com>
+Date:   Wed, 26 May 2021 18:29:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LIKBFfuxS_kY21vJ8FBWqNbcqPfcYAwS
-X-Proofpoint-GUID: LIKBFfuxS_kY21vJ8FBWqNbcqPfcYAwS
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_12:2021-05-26,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 bulkscore=0 adultscore=0 clxscore=1015 mlxlogscore=684
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105260151
-X-FB-Internal: deliver
+In-Reply-To: <20210526134321.42bbd4a9dcbcf53e855c5b1b@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Asynchronously try to release dying cgwbs by switching clean attached
-inodes to the bdi's wb. It helps to get rid of per-cgroup writeback
-structures themselves and of pinned memory and block cgroups, which
-are way larger structures (mostly due to large per-cpu statistics
-data). It helps to prevent memory waste and different scalability
-problems caused by large piles of dying cgroups.
+On 5/26/21 4:43 PM, Andrew Morton wrote:
+> On Wed, 26 May 2021 15:36:02 -0400 Waiman Long <longman@redhat.com> wrote:
+>
+>> If the -Wno-maybe-uninitialized gcc option is not specified, compilation
+>> of memcontrol.c may generate the following warnings:
+>>
+>> mm/memcontrol.c: In function ‘refill_obj_stock’:
+>> ./arch/x86/include/asm/irqflags.h:127:17: warning: ‘flags’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>>    return !(flags & X86_EFLAGS_IF);
+>>            ~~~~~~~^~~~~~~~~~~~~~~~
+>> mm/memcontrol.c:3216:16: note: ‘flags’ was declared here
+>>    unsigned long flags;
+>>                  ^~~~~
+>> In file included from mm/memcontrol.c:29:
+>> mm/memcontrol.c: In function ‘uncharge_page’:
+>> ./include/linux/memcontrol.h:797:2: warning: ‘objcg’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+>>    percpu_ref_put(&objcg->refcnt);
+>>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Fix that by properly initializing *pflags in get_obj_stock() and
+>> introducing a use_objcg bool variable in uncharge_page() to avoid
+>> potentially accessing the struct page data twice.
+>>
+> Thanks.  I'll queue this as a fix against your "mm/memcg: optimize user
+> context object stock access".
+>
+Thanks for that.
 
-A cgwb cleanup operation can fail due to different reasons (e.g. the
-cgwb has in-glight/pending io, an attached inode is locked or isn't
-clean, etc). In this case the next scheduled cleanup will make a new
-attempt. An attempt is made each time a new cgwb is offlined (in other
-words a memcg and/or a blkcg is deleted by a user). In the future an
-additional attempt scheduled by a timer can be implemented.
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- fs/fs-writeback.c                | 35 ++++++++++++++++++
- include/linux/backing-dev-defs.h |  1 +
- include/linux/writeback.h        |  1 +
- mm/backing-dev.c                 | 61 ++++++++++++++++++++++++++++++--
- 4 files changed, 96 insertions(+), 2 deletions(-)
-
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 631ef6366293..8fbcd50844f0 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -577,6 +577,41 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	kfree(isw);
- }
-=20
-+/**
-+ * cleanup_offline_wb - detach associated clean inodes
-+ * @wb: target wb
-+ *
-+ * Switch the inode->i_wb pointer of the attached inodes to the bdi's wb=
- and
-+ * drop the corresponding per-cgroup wb's reference. Skip inodes which a=
-re
-+ * dirty, freeing, in the active writeback process or are in any way bus=
-y.
-+ */
-+void cleanup_offline_wb(struct bdi_writeback *wb)
-+{
-+	struct inode *inode, *tmp;
-+
-+	spin_lock(&wb->list_lock);
-+restart:
-+	list_for_each_entry_safe(inode, tmp, &wb->b_attached, i_io_list) {
-+		if (!spin_trylock(&inode->i_lock))
-+			continue;
-+		xa_lock_irq(&inode->i_mapping->i_pages);
-+		if ((inode->i_state & I_REFERENCED) !=3D I_REFERENCED) {
-+			struct bdi_writeback *bdi_wb =3D &inode_to_bdi(inode)->wb;
-+
-+			WARN_ON_ONCE(inode->i_wb !=3D wb);
-+
-+			inode->i_wb =3D bdi_wb;
-+			list_del_init(&inode->i_io_list);
-+			wb_put(wb);
-+		}
-+		xa_unlock_irq(&inode->i_mapping->i_pages);
-+		spin_unlock(&inode->i_lock);
-+		if (cond_resched_lock(&wb->list_lock))
-+			goto restart;
-+	}
-+	spin_unlock(&wb->list_lock);
-+}
-+
- /**
-  * wbc_attach_and_unlock_inode - associate wbc with target inode and unl=
-ock it
-  * @wbc: writeback_control of interest
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-index e5dc238ebe4f..07d6b6d6dbdf 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -155,6 +155,7 @@ struct bdi_writeback {
- 	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
- 	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
- 	struct list_head b_attached;	/* attached inodes, protected by list_lock=
- */
-+	struct list_head offline_node;	/* anchored at offline_cgwbs */
-=20
- 	union {
- 		struct work_struct release_work;
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 572a13c40c90..922f15fe6ad4 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -222,6 +222,7 @@ void wbc_account_cgroup_owner(struct writeback_contro=
-l *wbc, struct page *page,
- int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pa=
-ges,
- 			   enum wb_reason reason, struct wb_completion *done);
- void cgroup_writeback_umount(void);
-+void cleanup_offline_wb(struct bdi_writeback *wb);
-=20
- /**
-  * inode_attach_wb - associate an inode with its wb
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 54c5dc4b8c24..92a00bcaa504 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -371,12 +371,16 @@ static void wb_exit(struct bdi_writeback *wb)
- #include <linux/memcontrol.h>
-=20
- /*
-- * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_=
-list.
-- * bdi->cgwb_tree is also RCU protected.
-+ * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs an=
-d
-+ * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
-  */
- static DEFINE_SPINLOCK(cgwb_lock);
- static struct workqueue_struct *cgwb_release_wq;
-=20
-+static LIST_HEAD(offline_cgwbs);
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-+static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_wo=
-rkfn);
-+
- static void cgwb_release_workfn(struct work_struct *work)
- {
- 	struct bdi_writeback *wb =3D container_of(work, struct bdi_writeback,
-@@ -395,6 +399,7 @@ static void cgwb_release_workfn(struct work_struct *w=
-ork)
-=20
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- 	percpu_ref_exit(&wb->refcnt);
-+	WARN_ON(!list_empty(&wb->offline_node));
- 	wb_exit(wb);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
-@@ -414,6 +419,10 @@ static void cgwb_kill(struct bdi_writeback *wb)
- 	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
- 	list_del(&wb->memcg_node);
- 	list_del(&wb->blkcg_node);
-+	if (!list_empty(&wb->b_attached))
-+		list_add(&wb->offline_node, &offline_cgwbs);
-+	else
-+		INIT_LIST_HEAD(&wb->offline_node);
- 	percpu_ref_kill(&wb->refcnt);
- }
-=20
-@@ -635,6 +644,50 @@ static void cgwb_bdi_unregister(struct backing_dev_i=
-nfo *bdi)
- 	mutex_unlock(&bdi->cgwb_release_mutex);
- }
-=20
-+/**
-+ * cleanup_offline_cgwbs - try to release dying cgwbs
-+ *
-+ * Try to release dying cgwbs by switching attached inodes to the wb
-+ * belonging to the root memory cgroup. Processed wbs are placed at the
-+ * end of the list to guarantee the forward progress.
-+ *
-+ * Should be called with the acquired cgwb_lock lock, which might
-+ * be released and re-acquired in the process.
-+ */
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-+{
-+	struct bdi_writeback *wb;
-+	LIST_HEAD(processed);
-+
-+	spin_lock_irq(&cgwb_lock);
-+
-+	while (!list_empty(&offline_cgwbs)) {
-+		wb =3D list_first_entry(&offline_cgwbs, struct bdi_writeback,
-+				      offline_node);
-+		list_move(&wb->offline_node, &processed);
-+
-+		if (wb_has_dirty_io(wb))
-+			continue;
-+
-+		if (!percpu_ref_tryget(&wb->refcnt))
-+			continue;
-+
-+		spin_unlock_irq(&cgwb_lock);
-+		cleanup_offline_wb(wb);
-+		spin_lock_irq(&cgwb_lock);
-+
-+		if (list_empty(&wb->b_attached))
-+			list_del_init(&wb->offline_node);
-+
-+		wb_put(wb);
-+	}
-+
-+	if (!list_empty(&processed))
-+		list_splice_tail(&processed, &offline_cgwbs);
-+
-+	spin_unlock_irq(&cgwb_lock);
-+}
-+
- /**
-  * wb_memcg_offline - kill all wb's associated with a memcg being offlin=
-ed
-  * @memcg: memcg being offlined
-@@ -650,6 +703,10 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
- 	list_for_each_entry_safe(wb, next, memcg_cgwb_list, memcg_node)
- 		cgwb_kill(wb);
- 	memcg_cgwb_list->next =3D NULL;	/* prevent new wb's */
-+
-+	if (!list_empty(&offline_cgwbs))
-+		schedule_work(&cleanup_offline_cgwbs_work);
-+
- 	spin_unlock_irq(&cgwb_lock);
- }
-=20
---=20
-2.31.1
+Cheers,
+Longman
 
