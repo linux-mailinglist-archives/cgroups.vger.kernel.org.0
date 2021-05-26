@@ -2,76 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8146390E7B
-	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 04:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F5E39155E
+	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 12:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbhEZCup (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 May 2021 22:50:45 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:55969 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231128AbhEZCuo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 May 2021 22:50:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ua7n0eQ_1621997351;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Ua7n0eQ_1621997351)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 May 2021 10:49:12 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     tj@kernel.org
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] cgroup: Fix kernel-doc
-Date:   Wed, 26 May 2021 10:49:09 +0800
-Message-Id: <1621997349-118999-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234163AbhEZKwV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 May 2021 06:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234157AbhEZKwV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 06:52:21 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B3C061756
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 03:50:48 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id w33so1826880lfu.7
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 03:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
+        b=W7ACPeZH4mHcLJAc3onzzyQBdYO+yWJLn8U4NnEbfyyrevdPs7eGiBBaBJKjpIGiQQ
+         t0UuGUteJrsDx740gUwtvZGCzAmQe+f2P9lMXvnR2pZ0CclcncvSyemLGLD818a9mmnA
+         1YVK5xLuVpMqGWyLJxbDWLw5/Y4iZYcv7T//+v9ZgBvQIoFjD7GwjZUKb6V+u5W9lv/k
+         66/euatPKQGBhPFmbWGGK2X5jSQA+02KH1FxLX10/YEkB8mqmLFcX6jsCUue+F4feyMF
+         ILDDa6oBWVRIv4d5fM99VzmwD3TF8IBA3KLCzdevDS2wcI8/3A8KAqVPliFGDNIHX1ML
+         hskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
+        b=Hy0/JkipNJSfasGFt4NrBG/mteGt03Z4SFgF0KTZh9ksfyZ/pBok3FKz2iB9FBASA1
+         PBdG5MtNQDWB1llwxJEeQJmGfv5nQ6V/RghsRcxUeVTuj49VMTmCMtu2PyxC09z/1nOA
+         /cnrJBxIOqLY64sSBppaE5hhUyVN6zgRonpNB6WlSzLj9kKYNt2G+D0KK48ilRl51kpc
+         aZEfIxT8hPTIJwySv/w6gQhS56fnZ/BXvpEBTtCYUbH+60fNsOfQAU9nPxeGDeieHQyi
+         UIBbI2wKAi9xwQXC3eRoROacxP9hHgoqj7VUgfN1J8rZ3pXcQZlfBSLej6nGNf70721A
+         U+hQ==
+X-Gm-Message-State: AOAM533Al2PKi1+sxGLC7wWuumMHHFjxLTgDJVEcA1OCLb6ysfY7pbMX
+        fXzjt3+mud9itoCRd6bZ221TttVzuoasQNBsselgAQ==
+X-Google-Smtp-Source: ABdhPJyfv0WEyeZXk3AAT6zl1wP2o9QDP21PxMxXMSAhtuWxY3Q7MUlj6y83KPcPg+szFWk8pYl7eRAN3ITPsHyzvgw=
+X-Received: by 2002:ac2:5111:: with SMTP id q17mr1727611lfb.277.1622026246960;
+ Wed, 26 May 2021 03:50:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com> <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+In-Reply-To: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 26 May 2021 12:50:35 +0200
+Message-ID: <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Fix function name in cgroup.c and rstat.c kernel-doc comment
-to remove these warnings found by clang_w1.
+On Tue, 25 May 2021 at 16:30, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
+> >
+> > Hi,
+> >
+> > tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
+> > > Could you give more details about how cfs_rq->avg.load_avg = 4 but
+> > > cfs_rq->avg.load_sum = 0 ?
+>
+> > >
+> > > cfs_rq->avg.load_sum is decayed and can become null when crossing
+> > > period which implies an update of cfs_rq->avg.load_avg.  This means
+> > > that your case is generated by something outside the pelt formula ...
+> > > like maybe the propagation of load in the tree. If this is the case,
+> > > we should find the error and fix it
+> >
+> > Ahh, yeah, that could probably be described better.
+> >
+> > It is (as far as I have found out) because the pelt divider is changed,
+> > and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
+> > in a different value being removed than added.
+>
+> ok so IIUC, it happens during the adding/removing/propagating
+> entities' load in the cfs_rq.
+>
+> >
+> > Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
+> > recalculates the load_avg based on load_sum, and not the delta, afaik.
+> >
+> > And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
+> > how the pelt divider is changed, I assume it is hard to pinpoint where the issue
+> > is. I can try to find a clear path where where we can see what is added
+> > and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
+> > to better be able to pinpoint what is happening.
+> >
+> > Previously I thought this was a result of precision loss due to division and
+> > multiplication during load add/remove inside fair.c, but I am not sure that
+> > is the issue, or is it?
+>
+> I don't think the precision looss is the problem because
+> adding/removing load in fair.c could truncate load_sum but it stays
+> sync with load_avg. I will have a llo to see if i can see something
+> weird
 
-kernel/cgroup/cgroup.c:2401: warning: expecting prototype for
-cgroup_taskset_migrate(). Prototype was for cgroup_migrate_execute()
-instead.
-kernel/cgroup/rstat.c:233: warning: expecting prototype for
-cgroup_rstat_flush_begin(). Prototype was for cgroup_rstat_flush_hold()
-instead.
+I have added a trace in cfs_rq_is_decayed() but I'm not able to
+reproduce a situation where load_sum == 0 but not load_avg  even with
+the script in the cover letter
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 'commit e595cd706982 ("cgroup: track migration context in cgroup_mgctx")'
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- kernel/cgroup/cgroup.c | 2 +-
- kernel/cgroup/rstat.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 21ecc6e..fc344f4 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2389,7 +2389,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
- }
- 
- /**
-- * cgroup_taskset_migrate - migrate a taskset
-+ * cgroup_migrate_execute - migrate a taskset
-  * @mgctx: migration context
-  *
-  * Migrate tasks in @mgctx as setup by migration preparation functions.
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index cee265c..7f0e589 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -220,7 +220,7 @@ void cgroup_rstat_flush_irqsafe(struct cgroup *cgrp)
- }
- 
- /**
-- * cgroup_rstat_flush_begin - flush stats in @cgrp's subtree and hold
-+ * cgroup_rstat_flush_hold - flush stats in @cgrp's subtree and hold
-  * @cgrp: target cgroup
-  *
-  * Flush stats in @cgrp's subtree and prevent further flushes.  Must be
--- 
-1.8.3.1
-
+>
+> >
+> > If my above line of thought makes sense, do you still view this as an error
+> > outside PELT, or do you see another possible/better solution?
+> >
+> > Will investigate further.
+>
+> Thanks
+>
+> >
+> > Thanks
+> > Odin
