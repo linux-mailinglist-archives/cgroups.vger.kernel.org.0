@@ -2,60 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9407A391CD7
-	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 18:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAA8391CDA
+	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 18:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhEZQUM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 May 2021 12:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S233766AbhEZQUS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 May 2021 12:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233212AbhEZQUM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 12:20:12 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4535C061756
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id y202so1304632pfc.6
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:40 -0700 (PDT)
+        with ESMTP id S233109AbhEZQUR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 12:20:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFECC061574
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:45 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d16so1287152pfn.12
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7jHJGvj/WunXhmGaK7ypZOWSz/zhiqTHcN3tpdvjCAw=;
-        b=ngG0ihAClNo2fzXIbvlPnBmLwfBE7y16n8auMPGCMtFfHMyTNpElOHxPpHVgcAzt5o
-         1OUWctHEbMTDeUIIWIbodxS2MDIcXepDUjQuOesYx9I/ov4uoB01HtRiCsgyhp7YbPU+
-         pojYfFVVqN0kKt23gxLlcKlyJgDGnFdlXXeoaNDTYPQ6f9PBDGDm1dZKyvZrzHG9KPN4
-         l8syiplNm6BInR7jIy81nCUv0qNU1Hcq1V/eL/kWZV7HisyIaVyxVkY4MsAkQw2LPFVz
-         c7OWb20kJiNYNXsD88lo1gBy4jJaTS1HaLoe4vc1ZrtZiCqpPEphwgkz/BPmriD7Eapc
-         HnHg==
+        bh=Aj0wDGrf3506OWqgGnOpLsSVIAl44mT2D54DwojMHLc=;
+        b=IpoTU6bBMLNJIY/bJBfraSLZcBrMG0J8S0TSD8IAYkrQ5gUi0gAOi/qWF1AuG7PiED
+         X9oir5M8gFV/WO1qgS4Tqu9M2uZHFnQYlZza9124S5ZW3c7jAl2OhFTE+dyJLSVJzq8Q
+         AAQRKsjhgDvqRr/qhfMwqD+dz1ArA7BCnw1xBjrhAzrZrrWwe11+PhO8nqnQH3TI6RjF
+         J1KzlSjqSyishnFJaI8BnG+KxKnBwLpbjSKfJGIkV7+mSl1MsHo8J3aXLZ2odyjhm/gA
+         2yxKmDmD7msHP9+Zu4oDLgui9oTK0FdPQhKzwp1NPtt4CGTgibiD5Lsat5b7VQf5BLoZ
+         mQbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7jHJGvj/WunXhmGaK7ypZOWSz/zhiqTHcN3tpdvjCAw=;
-        b=Z7K3+DxqQ/a+wug/b9NnMnNNg2hnEeCyDH/PmsVjBJQ53kx2Po1c2eENOrjdUszzBW
-         RSXXFZmx5IGSMMvqGcKI/1eLCHlrnHEPlyhsHGkJLCGEwZU74DvEi2XDyzpxjoKpflwT
-         6w1AlkRNXVhSnJjxi5X/7Kb3tyC4cgWRL+Dnvf+AKv2+YHcc0+H2MEyIrgiH5e7viEp3
-         vP9g3KHZklOV4oJGFfeGMVExCUueQtpvIV4vIsnn4AVBrntTZOLt6PDObXE4ehT9+Cwv
-         CHPIkvJHpwy4VaOWAKx5dNiUlg/jvshLyHnVPlXs+GJzNS9BhDUccOO5x0eAX4o2lWox
-         mvXw==
-X-Gm-Message-State: AOAM5315ptWKoY0UDBdNRe6DPXAE7Pp9eshnttlOtzPGnWM00GIoUp5R
-        /15LGgnSa1K6s3ZitQdqnQg=
-X-Google-Smtp-Source: ABdhPJwp4Qvi6Fv8jZzgrtiLLoDxP7JFP7Elol+L1o6q+gobx8eUqag1lj8Wog3hVvychfm/eilQIA==
-X-Received: by 2002:a62:31c7:0:b029:2e9:2c05:52d3 with SMTP id x190-20020a6231c70000b02902e92c0552d3mr3222357pfx.78.1622045920552;
-        Wed, 26 May 2021 09:18:40 -0700 (PDT)
+        bh=Aj0wDGrf3506OWqgGnOpLsSVIAl44mT2D54DwojMHLc=;
+        b=nDtBQiq1iBLcxKujaaIIz8+zIMUrhqayVuHOqNZjwpoHhhkek6rEN12g1YXqbpSSvg
+         GlsmcN/uneaEhYPBSs6kvbU82n3PVd1AFyyO4+/upYQVVFmyapMWDVuIRajX/BxRrCVQ
+         jcKjXhksBfsfeZ+ge41EMgrBW43u1k8c68k0tfPyW6lgBVW5pxzk9sDY37piOwJs3wxs
+         VuKut6TWZ4fZ7NN3HZxG6kLDKOtX+WdW1GcxiHJyqyiztjLyT2rDNc1pLPWfkkthtzwW
+         kst97uwIaIsVXDZREFfF7ZBwoxCnOo+mDKR7GTKLPmcMCPK7ftpzSkQ+RMlCXTTVNCuL
+         4snA==
+X-Gm-Message-State: AOAM530JnEp5I8nSf8bL8yxKF6nHQg4QVMcuf2a3GDHe8n70dbSo7GbE
+        CvJ1HGlFXBcyYwox0mmoGc0=
+X-Google-Smtp-Source: ABdhPJxlVaCl5O5obm7j8dnu6HBuGIbgV2RYMx6LJNhhFgyepBYcElNyl/j099GZMycmNiq21KtjtQ==
+X-Received: by 2002:a63:f156:: with SMTP id o22mr25966853pgk.385.1622045925091;
+        Wed, 26 May 2021 09:18:45 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id v2sm15950447pfm.134.2021.05.26.09.18.38
+        by smtp.gmail.com with ESMTPSA id v2sm15950447pfm.134.2021.05.26.09.18.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 09:18:40 -0700 (PDT)
+        Wed, 26 May 2021 09:18:44 -0700 (PDT)
 From:   yulei.kernel@gmail.com
 X-Google-Original-From: yuleixzhang@tencent.com
 To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
         christian@brauner.io
 Cc:     cgroups@vger.kernel.org, benbjiang@tencent.com,
         kernellwp@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC 3/7] mm: memory allocation speed throttle setup in hierarchy
-Date:   Thu, 27 May 2021 00:18:00 +0800
-Message-Id: <5607e3530bc25307dd0e77bd73ae70fc6f33a146.1622043596.git.yuleixzhang@tencent.com>
+Subject: [RFC 4/7] mm: introduce slice analysis into memory speed throttle mechanism
+Date:   Thu, 27 May 2021 00:18:01 +0800
+Message-Id: <5b82f959fb0ae1b0c5a830262c8a455a81da98ad.1622043596.git.yuleixzhang@tencent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1622043596.git.yuleixzhang@tencent.com>
 References: <cover.1622043596.git.yuleixzhang@tencent.com>
@@ -67,124 +67,84 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yulei Zhang <yuleixzhang@tencent.com>
 
-Init the memory allocation speed throttle parametersi to
-make sure the throttle feature works in hierarchy structure.
+We separate the statistical period into 10 slices, count the memory
+charge in each slice, and compare to the slice speed limit to determine
+to turn on the throttle or not.
 
 Signed-off-by: Jiang Biao <benbjiang@tencent.com>
 Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
 ---
- include/linux/memcontrol.h |  1 +
- mm/memcontrol.c            | 50 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 50 insertions(+), 1 deletion(-)
+ include/linux/memcontrol.h |  4 ++++
+ mm/memcontrol.c            | 25 +++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 4938397f321d..435515b1a709 100644
+index 435515b1a709..230acdc635b5 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -233,6 +233,7 @@ struct obj_cgroup {
+@@ -231,8 +231,12 @@ struct obj_cgroup {
+ };
+ 
  #ifdef CONFIG_MEM_SPEED_THROTTLE
++#define MST_SLICE		(HZ/10)
  struct mem_spd_ctl {
  	unsigned long mem_spd_lmt;
-+	int has_lmt;
++	unsigned long slice_lmt;
++	unsigned long prev_thl_jifs;
++	unsigned long prev_chg;
+ 	int has_lmt;
  };
  #endif
- 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d59abe15d89d..9d7a86f7f51c 100644
+index 9d7a86f7f51c..05bf4ba0da15 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1393,6 +1393,35 @@ static int memcg_page_state_unit(int item)
+@@ -1403,6 +1403,9 @@ static void mem_cgroup_mst_msc_reset(struct mem_cgroup *memcg)
+ 	msc = &memcg->msc;
+ 	msc->has_lmt = 0;
+ 	msc->mem_spd_lmt = 0;
++	msc->slice_lmt = 0;
++	msc->prev_chg = 0;
++	msc->prev_thl_jifs = 0;
  }
  
- #ifdef CONFIG_MEM_SPEED_THROTTLE
-+static void mem_cgroup_mst_msc_reset(struct mem_cgroup *memcg)
-+{
-+	struct mem_spd_ctl *msc;
-+
-+	if (mem_cgroup_is_root(memcg))
-+		return;
-+
-+	msc = &memcg->msc;
-+	msc->has_lmt = 0;
-+	msc->mem_spd_lmt = 0;
-+}
-+
-+static void mem_cgroup_mst_has_lmt_init(struct mem_cgroup *memcg)
-+{
-+	struct mem_cgroup *iter = memcg;
-+	struct cgroup_subsys_state *css = &memcg->css;
-+
-+	rcu_read_lock();
-+	while (!mem_cgroup_is_root(iter)) {
-+		if (iter->msc.mem_spd_lmt != 0) {
-+			memcg->msc.has_lmt = 1;
-+			return;
-+		}
-+		css = css->parent;
-+		iter = mem_cgroup_from_css(css);
-+	}
-+	rcu_read_unlock();
-+}
-+
- static u64 mem_cgroup_mem_spd_lmt_read(struct cgroup_subsys_state *css,
- 				       struct cftype *cft)
- {
-@@ -1404,7 +1433,7 @@ static u64 mem_cgroup_mem_spd_lmt_read(struct cgroup_subsys_state *css,
- static int mem_cgroup_mem_spd_lmt_write(struct cgroup_subsys_state *css,
- 					struct cftype *cft, u64 val)
- {
--	struct mem_cgroup *memcg;
-+	struct mem_cgroup *memcg, *iter;
- 	unsigned long lmt;
- 
- 	memcg = mem_cgroup_from_css(css);
-@@ -1412,6 +1441,14 @@ static int mem_cgroup_mem_spd_lmt_write(struct cgroup_subsys_state *css,
+ static void mem_cgroup_mst_has_lmt_init(struct mem_cgroup *memcg)
+@@ -1440,6 +1443,7 @@ static int mem_cgroup_mem_spd_lmt_write(struct cgroup_subsys_state *css,
+ 	lmt = val >> PAGE_SHIFT;
  
  	memcg->msc.mem_spd_lmt = lmt;
++	memcg->msc.slice_lmt = lmt * MST_SLICE / HZ;
  
-+	/* Sync with mst_has_lmt_init*/
-+	synchronize_rcu();
-+
-+	if (lmt) {
-+		for_each_mem_cgroup_tree(iter, memcg)
-+			iter->msc.has_lmt = 1;
-+	}
-+
+ 	/* Sync with mst_has_lmt_init*/
+ 	synchronize_rcu();
+@@ -1452,6 +1456,27 @@ static int mem_cgroup_mem_spd_lmt_write(struct cgroup_subsys_state *css,
  	return 0;
  }
  
-@@ -1439,6 +1476,14 @@ static void mem_cgroup_mst_show_mem_spd_max(struct mem_cgroup *memcg,
- 		   mem_cgroup_mst_get_mem_spd_max(memcg));
- }
- #else /* CONFIG_MEM_SPEED_THROTTLE */
-+static void mem_cgroup_mst_has_lmt_init(struct mem_cgroup *memcg)
++/*
++ * Update the memory speed throttle slice window.
++ * Return 0 when we still in the previous slice window
++ * Return 1 when we start a new slice window
++ */
++static int mem_cgroup_update_mst_slice(struct mem_cgroup *memcg)
 +{
++	unsigned long total_charge;
++	struct mem_spd_ctl *msc = &memcg->msc;
++
++	if (msc->prev_thl_jifs &&
++	    time_before(jiffies, (msc->prev_thl_jifs + MST_SLICE)))
++		return 0;
++
++	total_charge = atomic_long_read(&memcg->memory.total_chg);
++	msc->prev_chg = total_charge;
++	msc->prev_thl_jifs = jiffies;
++
++	return 1;
 +}
 +
-+static void mem_cgroup_mst_msc_reset(struct mem_cgroup *memcg)
-+{
-+}
-+
- static void mem_cgroup_mst_show_mem_spd_max(struct mem_cgroup *memcg,
- 					    struct seq_file *m)
+ static unsigned long mem_cgroup_mst_get_mem_spd_max(struct mem_cgroup *memcg)
  {
-@@ -5198,6 +5243,8 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	/* Online state pins memcg ID, memcg ID pins CSS */
- 	refcount_set(&memcg->id.ref, 1);
- 	css_get(css);
-+	mem_cgroup_mst_has_lmt_init(memcg);
-+
- 	return 0;
- }
- 
-@@ -5287,6 +5334,7 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
- 	memcg->soft_limit = PAGE_COUNTER_MAX;
- 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
- 	memcg_wb_domain_size_changed(memcg);
-+	mem_cgroup_mst_msc_reset(memcg);
- }
- 
- static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct page_counter *c = &memcg->memory;
 -- 
 2.28.0
 
