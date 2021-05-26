@@ -2,131 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F5E39155E
-	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 12:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A108F391CD2
+	for <lists+cgroups@lfdr.de>; Wed, 26 May 2021 18:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhEZKwV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 May 2021 06:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S232213AbhEZQTx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 May 2021 12:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234157AbhEZKwV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 06:52:21 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B3C061756
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 03:50:48 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id w33so1826880lfu.7
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 03:50:48 -0700 (PDT)
+        with ESMTP id S231622AbhEZQTw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 12:19:52 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6B2C061574
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:20 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso637080pjq.3
+        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 09:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
-        b=W7ACPeZH4mHcLJAc3onzzyQBdYO+yWJLn8U4NnEbfyyrevdPs7eGiBBaBJKjpIGiQQ
-         t0UuGUteJrsDx740gUwtvZGCzAmQe+f2P9lMXvnR2pZ0CclcncvSyemLGLD818a9mmnA
-         1YVK5xLuVpMqGWyLJxbDWLw5/Y4iZYcv7T//+v9ZgBvQIoFjD7GwjZUKb6V+u5W9lv/k
-         66/euatPKQGBhPFmbWGGK2X5jSQA+02KH1FxLX10/YEkB8mqmLFcX6jsCUue+F4feyMF
-         ILDDa6oBWVRIv4d5fM99VzmwD3TF8IBA3KLCzdevDS2wcI8/3A8KAqVPliFGDNIHX1ML
-         hskw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A0w/o3IkjMbtzBP+G5B7RkNRxwztBrjISmACawCMzhc=;
+        b=BzhDZu2ZZfru6U5oCb5BuNBaDkOXDDmaGoh9ZU4xsSlhADs1QRoctIFAj4OB+56NtW
+         cS3vx8lvM1pT3lqCZOeMHAGgGF85CNGH7vd8UxYSKanRD288+mz2AXdrCZTmKTqjJiVj
+         hN/7NL6lGceX+7YklcQSnP29WGQ2s4ezLgmhy9Jed5XTpz/IKptb8Y1KlnPC0crLxCbN
+         IknFuUNLAa19NEvBu/HG8POdOBtEPWtIZKo9yhZPnobFAFOICR6e3KO+FAiDU81jOGyb
+         velQ4TlIMO7c62fcM8fZvocIaWL3ZmwYTYE7vTGccl/ex2qts0mDyDqTXNh1vXmEuE/n
+         kExw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rg+rDpurdjxV2F5rZP7XGzElnxCtpiLCvqo9sV8uwTg=;
-        b=Hy0/JkipNJSfasGFt4NrBG/mteGt03Z4SFgF0KTZh9ksfyZ/pBok3FKz2iB9FBASA1
-         PBdG5MtNQDWB1llwxJEeQJmGfv5nQ6V/RghsRcxUeVTuj49VMTmCMtu2PyxC09z/1nOA
-         /cnrJBxIOqLY64sSBppaE5hhUyVN6zgRonpNB6WlSzLj9kKYNt2G+D0KK48ilRl51kpc
-         aZEfIxT8hPTIJwySv/w6gQhS56fnZ/BXvpEBTtCYUbH+60fNsOfQAU9nPxeGDeieHQyi
-         UIBbI2wKAi9xwQXC3eRoROacxP9hHgoqj7VUgfN1J8rZ3pXcQZlfBSLej6nGNf70721A
-         U+hQ==
-X-Gm-Message-State: AOAM533Al2PKi1+sxGLC7wWuumMHHFjxLTgDJVEcA1OCLb6ysfY7pbMX
-        fXzjt3+mud9itoCRd6bZ221TttVzuoasQNBsselgAQ==
-X-Google-Smtp-Source: ABdhPJyfv0WEyeZXk3AAT6zl1wP2o9QDP21PxMxXMSAhtuWxY3Q7MUlj6y83KPcPg+szFWk8pYl7eRAN3ITPsHyzvgw=
-X-Received: by 2002:ac2:5111:: with SMTP id q17mr1727611lfb.277.1622026246960;
- Wed, 26 May 2021 03:50:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=A0w/o3IkjMbtzBP+G5B7RkNRxwztBrjISmACawCMzhc=;
+        b=chBFXwjrW4m51eXYbpSns8oZIGnvprZhDw15c6RTq/1wTOM3JPGR2w88XwHd7ib2WX
+         +mvI2L2bU0VOC8ZlSSMvklykESnNg805ObMfxlPIQ2+ImuNKS2Lx9O2bh5w5mq4FG83D
+         f4ax+BxeNIWgMObrw13MJ/znsQrZzWB1z3xw6i1cdcUvrMonlTLhEZn3BwW1+DUQzoOh
+         kGGuK8TxfVHR5lES1MDMUmfcfMEeBqVsR9JIshgCz1N0SkYx2krEOQq7EraJU4QyLxbz
+         Db81sxT1iO97p6wYc9oe1j3p2hRiw7gaJZx92c/sg/qRFkqOhOsdMDIj6wFh6D/BFXpa
+         OQuQ==
+X-Gm-Message-State: AOAM533qKNsIGp48ZuCqZwS7DsIeJbHHPFl+xeGKrhMbmD2xNteDYOYp
+        3xATYQp9vGpG4nZiK4BqnRY=
+X-Google-Smtp-Source: ABdhPJwrN7XZ2/n8hYqla7p4gVwOog4RkAolnECvlGaju4zXuMKijaBkkHnQKSmxjvWsPDeZxQE3vQ==
+X-Received: by 2002:a17:90a:9704:: with SMTP id x4mr4646032pjo.202.1622045900059;
+        Wed, 26 May 2021 09:18:20 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id v2sm15950447pfm.134.2021.05.26.09.18.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 09:18:19 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        christian@brauner.io
+Cc:     cgroups@vger.kernel.org, benbjiang@tencent.com,
+        kernellwp@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC 0/7] Introduce memory allocation speed throttle in memcg
+Date:   Thu, 27 May 2021 00:17:57 +0800
+Message-Id: <cover.1622043596.git.yuleixzhang@tencent.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
- <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com> <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-In-Reply-To: <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 26 May 2021 12:50:35 +0200
-Message-ID: <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 25 May 2021 at 16:30, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Tue, 25 May 2021 at 12:34, Odin Ugedal <odin@uged.al> wrote:
-> >
-> > Hi,
-> >
-> > tir. 25. mai 2021 kl. 11:58 skrev Vincent Guittot <vincent.guittot@linaro.org>:
-> > > Could you give more details about how cfs_rq->avg.load_avg = 4 but
-> > > cfs_rq->avg.load_sum = 0 ?
->
-> > >
-> > > cfs_rq->avg.load_sum is decayed and can become null when crossing
-> > > period which implies an update of cfs_rq->avg.load_avg.  This means
-> > > that your case is generated by something outside the pelt formula ...
-> > > like maybe the propagation of load in the tree. If this is the case,
-> > > we should find the error and fix it
-> >
-> > Ahh, yeah, that could probably be described better.
-> >
-> > It is (as far as I have found out) because the pelt divider is changed,
-> > and the output from "get_pelt_divider(&cfs_rq->avg)" is changed, resulting
-> > in a different value being removed than added.
->
-> ok so IIUC, it happens during the adding/removing/propagating
-> entities' load in the cfs_rq.
->
-> >
-> > Inside pelt itself, this cannot happen. When pelt changes the load_sum, it
-> > recalculates the load_avg based on load_sum, and not the delta, afaik.
-> >
-> > And as you say, the "issue" therefore (as I see it) outside of PELT. Due to
-> > how the pelt divider is changed, I assume it is hard to pinpoint where the issue
-> > is. I can try to find a clear path where where we can see what is added
-> > and what is removed from both cfs_rq->avg.load_sum and cfs_rq->avg.load_avg,
-> > to better be able to pinpoint what is happening.
-> >
-> > Previously I thought this was a result of precision loss due to division and
-> > multiplication during load add/remove inside fair.c, but I am not sure that
-> > is the issue, or is it?
->
-> I don't think the precision looss is the problem because
-> adding/removing load in fair.c could truncate load_sum but it stays
-> sync with load_avg. I will have a llo to see if i can see something
-> weird
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
-I have added a trace in cfs_rq_is_decayed() but I'm not able to
-reproduce a situation where load_sum == 0 but not load_avg  even with
-the script in the cover letter
+In this patch set we present the idea to suppress the memory allocation
+speed in memory cgroup, which aims to avoid direct reclaim caused by
+memory allocation burst while under memory pressure.
 
+As minimum watermark could be easily broken if certain tasks allocate
+massive amount of memory in a short period of time, in that case it will
+trigger the direct memory reclaim and cause unacceptable jitters for
+latency critical tasks, such as guaranteed pod task in K8s.
 
->
-> >
-> > If my above line of thought makes sense, do you still view this as an error
-> > outside PELT, or do you see another possible/better solution?
-> >
-> > Will investigate further.
->
-> Thanks
->
-> >
-> > Thanks
-> > Odin
+With memory allocation speed throttle(mst) mechanism we could lower the
+memory allocation speed in certian cgroup, usually for low priority tasks,
+so that could avoid the direct memory reclaim in time.
+
+And per-memcg interfaces are introduced under memcg tree, not visiable for
+root memcg.
+- <cgroup_root>/<cgroup_name>/memory.alloc_bps
+ - 0 -> means memory speed throttle disabled
+ - non-zero -> value in bytes for memory allocation speed limits
+
+- <cgroup_root>/<cgroup_name>/memory.stat:mst_mem_spd_max
+  it records the max memory allocation speed of the memory cgroup in the
+  last period of time slice
+
+- <cgroup_root>/<cgroup_name>/memory.stat:mst_nr_throttled
+  it represents the number of times for allocation throttling
+
+Yulei Zhang (7):
+  mm: record total charge and max speed counter in memcg
+  mm: introduce alloc_bps to memcg for memory allocation speed throttle
+  mm: memory allocation speed throttle setup in hierarchy
+  mm: introduce slice analysis into memory speed throttle mechanism
+  mm: introduce memory allocation speed throttle
+  mm: record the numbers of memory allocation throttle
+  mm: introduce mst low and min watermark
+
+ include/linux/memcontrol.h   |  23 +++
+ include/linux/page_counter.h |   8 +
+ init/Kconfig                 |   8 +
+ mm/memcontrol.c              | 295 +++++++++++++++++++++++++++++++++++
+ mm/page_counter.c            |  39 +++++
+ 5 files changed, 373 insertions(+)
+
+-- 
+2.28.0
+
