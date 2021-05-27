@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE0B392E1F
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC52392E21
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhE0MjE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 08:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        id S235445AbhE0MkK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 08:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbhE0MjD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:39:03 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7C0C061574
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:37:29 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x38so5751622lfa.10
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:37:29 -0700 (PDT)
+        with ESMTP id S234573AbhE0MkK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:40:10 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2ACC061760
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:38:37 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 124so394635qkh.10
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:38:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EJtMUFIym4MCDsWc5krrIjsPhEBu67mDqVvWhXVdI7Q=;
-        b=BaSCvx5P5J1/saPMpI2Hpv6tsMqa5H6pRd0iDGSEctw6X2Hvkt6JrbGoa3kwwTs7eX
-         +fCKFH2JTP39JFuhDKAPYXJWiKZRu3YG5LKH0aoZ8krUMsp8iPhCwsrq1ulhUaNMqdaC
-         isgXd2dPzQxJAhQGHyBqnGkgPTxqG3cslM6ByeSqP1hCrwdSSHo5242HJKTBr9QZfzWE
-         n51fBmRVwURVenXx4Qmix59IlOSV14CWACBj4KesIk7qqxjv9EwzBRrzqCRSbu5PhtgD
-         ocqgLwfsR9YlgMH5G9cbiyrkEyEKzU2cycb06RhI/BlXg7oMCjI3N49stuGLMzG+1ODU
-         cVgw==
+        bh=ZwvbasvBOX0hzBGm5Zl9wzQzyyw7RNsFGaMnYzuAUBc=;
+        b=U4DejL5EQrp4AVnlNyPMNfq3M6zCVPE3epzkWBDinKSXB8K1yi9zqxIRHw4ARtt0cy
+         8BowHOAC+R4vGcbmbv4LzoFHvJvxReKO/TKnhHCNcfr6Z+OWRcr6oSbxaW/qsBGC3gDS
+         zAqHLVvYQEHefC/I1q2sz81CdFH7xki6LnCUXrNg/cd9qdXsRsEZO1mOpeL0mjD419fd
+         8+L7myRumMth515bFh17f2YmkrBphiQqErllSKgOEpx2Vz8t4deHVbTRlTvq/g5foknQ
+         bBPEQFsL2VpuEHSpAVx7BPfZ0gFt91v8+7QtMwPJFHoLSE79vRy4DLvLYObbbOS4YTIf
+         OiMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EJtMUFIym4MCDsWc5krrIjsPhEBu67mDqVvWhXVdI7Q=;
-        b=p141AHEDyf7cfGl7SUU4GRx2UjTA14th6GvfwlQRoWUHgafo3Ax8jnVmariEtmpqai
-         vPBsaPCiYmi6woRoQxyu2parqRQfrt1BOHs70c0oCFyHAEFq49laXb2g998WaIqHUYx+
-         /2RoiSKCrjEqXgl5+x6dI3XqudgJGNiOKCSvhqM5vAI+OS1fclORXYI2r1Z5lrZevWKU
-         oHDcznSEXpPxCkiSw7xIjr6MGpWZPwNKR29zbP3OKgm1w7d1w80rIlqdq3RKIU+CkVIn
-         xm2MbWcfkLElBt8JnXhV1G1J0PXDEVRD550WjyNcveYqVtf0e8luF4sF8+VpRNCfyF/W
-         hLpQ==
-X-Gm-Message-State: AOAM5320/HtaKj8XXV5lJ44PnlhcNadPOq5kJtpGcUCZX937wM+kCu2W
-        I766xUFzdB34E7ceID2eYTe2fppb3UmVFX2hQLHJJQ==
-X-Google-Smtp-Source: ABdhPJw1CZTF2VZBOlDqbR2wk/nxPBT1sQTg8SPezTCILIi6JptloJO4DeLYp/OLq67Tvrlq2fE4ziX1k+3iR25bWdo=
-X-Received: by 2002:a19:e017:: with SMTP id x23mr2214851lfg.254.1622119047977;
- Thu, 27 May 2021 05:37:27 -0700 (PDT)
+        bh=ZwvbasvBOX0hzBGm5Zl9wzQzyyw7RNsFGaMnYzuAUBc=;
+        b=omPGs5RoitCfKWh9fmuea9HQp7dJfdhg4PU9/AM5HtYsmVWPS6+qa8/mHJnwCMDyNT
+         sbMMl0ZFZi1/Xnu1SjBUpW/zxEVJHi/0jyIdl8cU20TGa7lfG2cB7TT3fUh0KCbux1dg
+         5gzz/UF8/QIJ0tO+ENWb9zWTpNBghdrqNt8alWofXg1ihKk/ZLeM6H3CCBD3xgPF6zcH
+         7pqPWkMFyF/b4cMh5a8RhfcpCTbd7j3jZr2CphDIXA6+ntQIcdTe6duJVDsdviX6RSfl
+         jPO+2eIXPyJsJUvUgy75eQQqHUaFv+PvMxz7KfMxg7zs07jFw0Itj0+75ouffFuy1Zhs
+         SiMw==
+X-Gm-Message-State: AOAM531Qr8rNQnXxdb8haRM7w3AiPB5qUxfiaMJIngQBCn0VJUD8/oJu
+        IWs46m77sn9lDaolzwcpvKejkqF/d0T1VI83AUzELw==
+X-Google-Smtp-Source: ABdhPJzxot1fMgytftsD2mbMkecwS+naTojpGHrJMb28VI+moQKg8jpov8X0D99Gt2yncegr3RT15V73daV5zi2E5ZM=
+X-Received: by 2002:a05:620a:56a:: with SMTP id p10mr3212767qkp.238.1622119116303;
+ Thu, 27 May 2021 05:38:36 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
  <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
@@ -51,15 +51,14 @@ References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@u
  <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
  <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
  <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
- <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
- <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com> <CAFpoUr0PTYs+CSiWt3WOXnxq=wN3uEyC=h+_3kDc9wLoqaRC_Q@mail.gmail.com>
-In-Reply-To: <CAFpoUr0PTYs+CSiWt3WOXnxq=wN3uEyC=h+_3kDc9wLoqaRC_Q@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 27 May 2021 14:37:16 +0200
-Message-ID: <CAKfTPtA5NxDpG194zAF9CjchJ5hm-7fOBOPGJZG4+z4-+32qGw@mail.gmail.com>
+ <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com> <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com>
+In-Reply-To: <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Thu, 27 May 2021 14:37:57 +0200
+Message-ID: <CAFpoUr2NM9RHE=jdbi5aNj2LeVr4iKJ3thMPUNhp_SnCe7tnfg@mail.gmail.com>
 Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -73,35 +72,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 27 May 2021 at 13:04, Odin Ugedal <odin@uged.al> wrote:
->
-> > 1st : ensure that cfs_rq->load_sum is not null if cfs_rq-> load_isn't too
-> > 2nd : call update_tg_load_avg() during child update so we will be sure
-> > to update tg_load_avg_contrib before removing the cfs from the list
->
-> Ahh, yeah, with "1st" that would work. Yeah, that was my initial
-> implementation of the change, but I thought that it was better to keep
-> the logic away from the "hot path". We can verify this in
-> update_tg_cfs_load(), and then force update_tg_load_avg() inside
+Hi again,
 
-For 1st problem, the way we were updating load_avg and load_sum, we
-were losing the sync between both value
+Saw your patchset now, and that is essentially the same as I did. I
+guess you want to keep that patchset instead of me updating this
+series then?
 
-> __update_blocked_fair() when avg.load_avg is 0. (Given that this is
-> the only place where we can end up in this situation. I can update
-> this patch to do that instead.
+Also, could you take a look at patch 2 and 3 in this series? Should I
+resend those in a new series, or?
 
-In fact, the update was already there but not always called (see the
-patchset i just sent)
-
-
->
-> Another solution is to update avg.load_avg
-> inside__update_blocked_fair() when load_sum is 0, and then propagate
-> that with update_tg_load_avg(). This removes the logic from the hot
-> path all together.
->
-> Not sure what the preferred way is. I have not found any other places
-> where this situation _should_ occur, but who knows..
->
-> Odin
+Odin
