@@ -2,108 +2,214 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869B93922B6
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 00:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD4F392836
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 09:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhEZWaj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 May 2021 18:30:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229624AbhEZWai (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 May 2021 18:30:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622068146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KJRZ7Xr9eE1StDnH/ATVl1uLoI8ZB4qRKeY2WD/qOD0=;
-        b=RYS3otLmKgkK9XXdcQQynoE1AomxeYvgoT7dz5ecDcd1J9yb2f9o/wfXzKvUpL3XWA5UBI
-        oHeZZk+WbFtfGvMYZ+46CUTjz+IAoTn9nLBOWsPuNpPh2fbDQhtqQ9FuowCHEcuXRz6UpJ
-        ouNnhdfxi9tF3zn/PSMcn0+PDl51fv0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-mx7BgZrwN3mr23GV7WMjqw-1; Wed, 26 May 2021 18:29:04 -0400
-X-MC-Unique: mx7BgZrwN3mr23GV7WMjqw-1
-Received: by mail-qv1-f70.google.com with SMTP id f17-20020a0cf3d10000b02901eda24e6b92so2427583qvm.1
-        for <cgroups@vger.kernel.org>; Wed, 26 May 2021 15:29:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KJRZ7Xr9eE1StDnH/ATVl1uLoI8ZB4qRKeY2WD/qOD0=;
-        b=sXM+ckpsn534ZmthKV64svbmQJpordDdiBsAJr+MDzu6qXmQYac2EPZyKB3yJ8gP/U
-         4yMkeGoXCanHjG51mRJwqKUPv5wzoGtMy+pR8WLhiLrOJI1htbPdu2MQJVg7tj+ZkUBe
-         4ITAnVlbAvN8R8RpHTf2Yfdj42iOiBpC90rAeLHYdNxUCGwju8m2C+vQ+4dhgy7ZfQee
-         HAQ69/9Yln69eWXmUGFDn6suM+Wg2u1OrlWGQ5f9PdJZidDaDCQR0fiZJXbsdFeRyHip
-         XDq/ryzcMg5/g75CzA4/pEpd53nbWdCThcdaNzu1fM1HJsANdxpfKtdJCSYVv3xTsrpP
-         sisg==
-X-Gm-Message-State: AOAM530dir+SzpqVmSc0cNm/zY/MTCMb7Hvv8p6A1Rq9try4/e81Pfba
-        CHmYIOayZ814NuIRQ5Wrj8q9o0eYxmcKSEktq5XEkgD9IKbdP2YxjGGD53rcfRGlS91Z8JeYMoN
-        o1RnekAV+0fY98ck/Yw==
-X-Received: by 2002:a37:e11:: with SMTP id 17mr364054qko.499.1622068144280;
-        Wed, 26 May 2021 15:29:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzYClyKpygSkxiLgjGmd4Z0WDwgsAIxTAfrAxM/4Ef8VZM6cO98o6XMM6GieLiHaSuGLwpCg==
-X-Received: by 2002:a37:e11:: with SMTP id 17mr364043qko.499.1622068144117;
-        Wed, 26 May 2021 15:29:04 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id v17sm203783qta.77.2021.05.26.15.29.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 15:29:03 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH-next] mm/memcontrol.c: Fix potential uninitialized
- variable warning
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-References: <20210526193602.8742-1-longman@redhat.com>
- <20210526134321.42bbd4a9dcbcf53e855c5b1b@linux-foundation.org>
-Message-ID: <9fb60ba4-258d-2bb5-57af-c174df9b1a31@redhat.com>
-Date:   Wed, 26 May 2021 18:29:02 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234684AbhE0HOK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 03:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234706AbhE0HOD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 03:14:03 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4CEC061760;
+        Thu, 27 May 2021 00:12:25 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FrJsx3L8Cz9sXG; Thu, 27 May 2021 17:12:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1622099541;
+        bh=q2H5aSayYZmCdH2b9xpnmQ/7FqSCaVqs53HOObLxnRA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jEwVCcUONIAnyb/P2jI7GBeihwirasiXWjARYzW4I85zhlWvC2TGRqELP3uDTLsTa
+         Us+5eJYQI/MotzMh8d+E8kxLFNd6GereguIYwXvx1PLJtJ3jdDlEmFGPpLOWAvoczA
+         14jsdic9Q6A0H19LoO46U6myhUnjqs34kFS5Jnew=
+Date:   Thu, 27 May 2021 14:53:42 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YK8l1mZ0NVggAVUO@yekko>
+References: <YIecXkaEGNgICePO@yekko.fritz.box>
+ <20210427171212.GD1370958@nvidia.com>
+ <YIizNdbA0+LYwQbI@yekko.fritz.box>
+ <20210428145622.GU1370958@nvidia.com>
+ <YIoiJRY3FM7xH2bH@yekko>
+ <20210503161518.GM1370958@nvidia.com>
+ <YJy9o8uEZs42/qDM@yekko>
+ <20210513135938.GG1002214@nvidia.com>
+ <YKtbWo7PwIlXjFIV@yekko>
+ <20210524233744.GT1002214@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210526134321.42bbd4a9dcbcf53e855c5b1b@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jHax4+77yf7k37tQ"
+Content-Disposition: inline
+In-Reply-To: <20210524233744.GT1002214@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/26/21 4:43 PM, Andrew Morton wrote:
-> On Wed, 26 May 2021 15:36:02 -0400 Waiman Long <longman@redhat.com> wrote:
->
->> If the -Wno-maybe-uninitialized gcc option is not specified, compilation
->> of memcontrol.c may generate the following warnings:
->>
->> mm/memcontrol.c: In function ‘refill_obj_stock’:
->> ./arch/x86/include/asm/irqflags.h:127:17: warning: ‘flags’ may be used uninitialized in this function [-Wmaybe-uninitialized]
->>    return !(flags & X86_EFLAGS_IF);
->>            ~~~~~~~^~~~~~~~~~~~~~~~
->> mm/memcontrol.c:3216:16: note: ‘flags’ was declared here
->>    unsigned long flags;
->>                  ^~~~~
->> In file included from mm/memcontrol.c:29:
->> mm/memcontrol.c: In function ‘uncharge_page’:
->> ./include/linux/memcontrol.h:797:2: warning: ‘objcg’ may be used uninitialized in this function [-Wmaybe-uninitialized]
->>    percpu_ref_put(&objcg->refcnt);
->>    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Fix that by properly initializing *pflags in get_obj_stock() and
->> introducing a use_objcg bool variable in uncharge_page() to avoid
->> potentially accessing the struct page data twice.
->>
-> Thanks.  I'll queue this as a fix against your "mm/memcg: optimize user
-> context object stock access".
->
-Thanks for that.
 
-Cheers,
-Longman
+--jHax4+77yf7k37tQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, May 24, 2021 at 08:37:44PM -0300, Jason Gunthorpe wrote:
+> On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
+>=20
+> > > > I don't really see a semantic distinction between "always one-device
+> > > > groups" and "groups don't matter".  Really the only way you can aff=
+ord
+> > > > to not care about groups is if they're singletons.
+> > >=20
+> > > The kernel driver under the mdev may not be in an "always one-device"
+> > > group.
+> >=20
+> > I don't really understand what you mean by that.
+>=20
+> I mean the group of the mdev's actual DMA device may have multiple
+> things in it.
+> =20
+> > > It is a kernel driver so the only thing we know and care about is that
+> > > all devices in the HW group are bound to kernel drivers.
+> > >=20
+> > > The vfio device that spawns from this kernel driver is really a
+> > > "groups don't matter" vfio device because at the IOMMU layer it should
+> > > be riding on the physical group of the kernel driver.  At the VFIO
+> > > layer we no longer care about the group abstraction because the system
+> > > guarentees isolation in some other way.
+> >=20
+> > Uh.. I don't really know how mdevs are isolated from each other.  I
+> > thought it was because the physical device providing the mdevs
+> > effectively had an internal IOMMU (or at least DMA permissioning) to
+> > isolate the mdevs, even though the physical device may not be fully
+> > isolated.
+> >=20
+> > In that case the virtual mdev is effectively in a singleton group,
+> > which is different from the group of its parent device.
+>=20
+> That is one way to view it, but it means creating a whole group
+> infrastructure and abusing the IOMMU stack just to create this
+> nonsense fiction.
+
+It's a nonsense fiction until it's not, at which point it will bite
+you in the arse.
+
+> We also abuse the VFIO container stuff to hackily
+> create several different types pf IOMMU uAPIs for the mdev - all of
+> which are unrelated to drivers/iommu.
+>=20
+> Basically, there is no drivers/iommu thing involved, thus is no really
+> iommu group, for mdev it is all a big hacky lie.
+
+Well, "iommu" group might not be the best name, but hardware isolation
+is still a real concern here, even if it's not entirely related to the
+IOMMU.
+
+> > If the physical device had a bug which meant the mdevs *weren't*
+> > properly isolated from each other, then those mdevs would share a
+> > group, and you *would* care about it.  Depending on how the isolation
+> > failed the mdevs might or might not also share a group with the parent
+> > physical device.
+>=20
+> That isn't a real scenario.. mdevs that can't be isolated just
+> wouldn't be useful to exist
+
+Really?  So what do you do when you discover some mdevs you thought
+were isolated actually aren't due to a hardware bug?  Drop support
+=66rom the driver entirely?  In which case what do you say to the people
+who understandably complain "but... we had all the mdevs in one guest
+anyway, we don't care if they're not isolated"?
+
+> > > This is today's model, yes. When you run dpdk on a multi-group device
+> > > vfio already ensures that all the device groups remained parked and
+> > > inaccessible.
+> >=20
+> > I'm not really following what you're saying there.
+> >=20
+> > If you have a multi-device group, and dpdk is using one device in it,
+> > VFIO *does not* (and cannot) ensure that other devices in the group
+> > are parked and inaccessible. =20
+>=20
+> I mean in the sense that no other user space can open those devices
+> and no kernel driver can later be attached to them.
+
+Ok.
+
+> > It ensures that they're parked at the moment the group moves from
+> > kernel to userspace ownership, but it can't prevent dpdk from
+> > accessing and unparking those devices via peer to peer DMA.
+>=20
+> Right, and adding all this group stuff did nothing to alert the poor
+> admin that is running DPDK to this risk.
+
+Didn't it?  Seems to me the admin that in order to give the group to
+DPDK, the admin had to find and unbind all the things in it... so is
+therefore aware that they're giving everything in it to DPDK.
+
+> > > If the administator configures the system with different security
+> > > labels for different VFIO devices then yes removing groups makes this
+> > > more tricky as all devices in the group should have the same label.
+> >=20
+> > That seems a bigger problem than "more tricky".  How would you propose
+> > addressing this with your device-first model?
+>=20
+> You put the same security labels you'd put on the group to the devices
+> that consitute the group. It is only more tricky in the sense that the
+> script that would have to do this will need to do more than ID the
+> group to label but also ID the device members of the group and label
+> their char nodes.
+
+Well, I guess, if you take the view that root is allowed to break the
+kernel.  I tend to prefer that although root can obviously break the
+kernel if they intend do, we should make it hard to do by accident -
+which in this case would mean the kernel *enforcing* that the devices
+in the group have the same security labels, which I can't really see
+how to do without an exposed group.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--jHax4+77yf7k37tQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJdQACgkQbDjKyiDZ
+s5LX5g//Tg6h2fX9WzW87g+SOHMeJIsvjlnyefT9P0m1W0y4+uqrIluiR7HIjtPt
+xWcBK1QgEyq5HZFQaGF790FhMoZxATnu3357ej2Ib7PPyxTYSvzZrHnTsReFoJrz
+ePbXbiROS/BgQF81CZ/lo39pOvBBBVTgC5VJSoUPm0MZTAGIyQfdbbLk9a4h2Pau
+TwrhMLEBi3npUTNA8GoCdFOrQzQHQ2DybL3/WKMGzUGVE/z+4kCOFsumwNx31C8C
+L2wODxykBEKwWNUz4Sky4TNQtkeKXmnujRhgSFo03BqnbigFgSmTUu7Zvv8LYlxB
+qW6V8ZRLdakvN+n5HFoHTsKC68jcx5lv6kHlcwYu3vbeTjapxpYLfUFMWh5tRLzT
+TN6KnEgls6dkjcd0LHNf3xz4HZKuUgr5gBDJRyaG12SBxGNnvnhJ7FXouOLotN/W
+AAmcBogVG21wiqZvRX1BJSaQGlmF0gFNbJIiNzUgX0Yp0ybrnX1nDjtod+2sVtIF
+t71/dV84+idXo/bP0oix0NVj5yzU7SgnxngoDeVNDZ9bgyCfvUwnpDI1YJ1HgkEx
+Gmi1E8OI9JoNp7AGVde6S/EGojYApBBkNHOQqjG2mU+k1g428wrVz1iGrytk3aoG
+IiU4/pNk1+BEgmyQ5jKlmOsIQTIp1Zh8f+ZS9dvXJZj1cGHEF1k=
+=pDjM
+-----END PGP SIGNATURE-----
+
+--jHax4+77yf7k37tQ--
