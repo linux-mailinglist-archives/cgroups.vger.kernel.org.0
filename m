@@ -2,43 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F52392FE1
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 15:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CF63930A0
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 16:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhE0NjJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 09:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S236424AbhE0OU7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 10:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236394AbhE0NjG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 09:39:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54823C061574;
-        Thu, 27 May 2021 06:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3bZ/LkqfBhJhawvK2heoarmGy4iJoc0yGvgh3vim5Nw=; b=FXZPg1F1fbulTYZ8znR1bssXMq
-        dpYlRBnqpR0h7cS53Eg4LcmPAxiBL0BOOdoZR/Hiz5bBrsw29gzEadYLNwOSCoQPG8YcANlxcrASc
-        OFmr82sMAAgEpMhlknstrfPqaci2qAi5oUPrA1wihuDgPJ0G2R2qWVwM954Rp6XhPgDQG4mLWqCZI
-        sXKtxYdumvMRJcrDKkwKdI/kmbsx74dh9A61k2k1jILx4aTbhC8cBcqNgkAcB9M8bZhqlS6rBsL4q
-        ZsQHBgz22fMF0GzFwpiHnPniApiedCiKYQFR7kAeM8PBYnO3NMEaHyC4wv0YeRm4d3S8IVSLoGHp3
-        13FhhmAA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmGCC-0010fO-86; Thu, 27 May 2021 13:37:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5DE8230022C;
-        Thu, 27 May 2021 15:37:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A5D0201DEF0D; Thu, 27 May 2021 15:37:13 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:37:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        with ESMTP id S236395AbhE0OU4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 10:20:56 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788FDC061763
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 07:19:21 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f30so396760lfj.1
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 07:19:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=LatqtaP/aGx6woxQl/xZuLro5ci8AMLtHb6rQktXh24=;
+        b=M7YJUkv0b9ZqkYCDwgcBFIcG5MN4CKndmPnWQdY2RJQHhZFVfdRUJHVRnhKAumFP7L
+         xB0gbKrxCsAVajM8z2yvoA1bc7kvVBybZX48Htc446q/1kNtqtm5hoaVse9MYQh660Wv
+         E56HXbe9YBGsOWvDV03VnedvUY8Mat1bdqAGkqtC0LuSynuSgH8hjijzLj+Xy6bhjsK/
+         5u/9h3epeiMaAH7QNiIm4MIhBuom/9p5Fw+VhVhcAg3mg0GxMNmAPhNCio3HOiAC+6U5
+         oM94F79Pvp3i6mfXvE8WGMbW0XSv7cApEYZHQ4BeedsDydhMkYNurUGs9FfJ6NnDhxvv
+         QHOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=LatqtaP/aGx6woxQl/xZuLro5ci8AMLtHb6rQktXh24=;
+        b=SyFdR0Hk7taTLXaV/Tqm35OxL+Ay4OKGe4/VbYg7UmzIdLKZXTSFnpigJGIp72XwU2
+         DMkr9aYg+5Nyoc1nldsaHqjDf5tYF8yYpIqQgTAEyUKxMytU6oH6vpoK9LUsGdv7SjVX
+         f3zCiEve71B3tx1vz0bHXG4ia6Ju06zgTSVgO7dIPiSLd0eyp3d/DyBzP8c0GUYUlpKR
+         XSx9mLxHC7nhvZzUHv9VS4zjIAkxggdNYiN0AODmqFpHsxaqF+QvrtMZaUaxiWiPPZ4l
+         yyCuLD5BzwFDG6gygWEQDfN/5p+ZL6S1P6GfhnBQ+0ruZqd/YWqwpmXcEVuqV3bG1xrF
+         pmHg==
+X-Gm-Message-State: AOAM530h78qlJKubn+HcsVStu7KDKhiEvLLVa8+Lir5Y9d5qxsX1c/sG
+        7ySBoYjQpILEkiYF7axcqyX+243IhrYLKrmHXvsuCkpk9qI=
+X-Google-Smtp-Source: ABdhPJwsOlsV0ZytuPo8dcabW8+vOtf/l++7R/XvOwxqJ9HGcHO+jMzLXJOXXcOg7S38dSjqEO5I6lMj20DMgZ1RfXc=
+X-Received: by 2002:a19:e017:: with SMTP id x23mr2549190lfg.254.1622125159781;
+ Thu, 27 May 2021 07:19:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210527122916.27683-1-vincent.guittot@linaro.org>
+In-Reply-To: <20210527122916.27683-1-vincent.guittot@linaro.org>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 27 May 2021 16:19:08 +0200
+Message-ID: <CAKfTPtAK2fkzhzKA8iFT8cEcCG6Q=8WfLskPYADvTrQ=nF7kDA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] schd/fair: fix stalled cfs_rq->tg_load_avg_contrib
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
@@ -46,35 +59,46 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Odin Ugedal <odin@uged.al>,
         "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sched/fair: keep load_avg and load_sum synced
-Message-ID: <YK+giS1pPECFZ+oU@hirez.programming.kicks-ass.net>
-References: <20210527122916.27683-1-vincent.guittot@linaro.org>
- <20210527122916.27683-2-vincent.guittot@linaro.org>
- <YK+ZGlfPxK3JCySS@hirez.programming.kicks-ass.net>
- <CAKfTPtAE6DJTwxZ996BJoUJF++fFHdFk-C2bpUQ8aG0NQusApA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAE6DJTwxZ996BJoUJF++fFHdFk-C2bpUQ8aG0NQusApA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 27, 2021 at 03:18:35PM +0200, Vincent Guittot wrote:
-> > -       delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
-> > -       delta_avg = load_avg - se->avg.load_avg;
-> > -
-> >         se->avg.load_sum = runnable_sum;
-> >         se->avg.load_avg = load_avg;
-> > -       add_positive(&cfs_rq->avg.load_avg, delta_avg);
-> > -       add_positive(&cfs_rq->avg.load_sum, delta_sum);
-> > +
-> > +       add_positive(&cfs_rq->avg.load_avg, (long)(load_avg - se->avg.load_avg));
-> 
-> you have to keep:
-> delta_avg = load_avg - se->avg.load_avg
-> or move se->avg.load_avg = load_avg after
-> add_positive(&cfs_rq->avg.load_avg, ..);
-> because otherwise (load_avg - se->avg.load_avg) == 0
+Hi Odin,
 
-Duh. /me goes fix.
+On Thu, 27 May 2021 at 14:29, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> Odin reported some fairness problem between cgroup because of stalled
+> value in cfs_rq->tg_load_avg_contrib:
+>
+> https://lkml.org/lkml/2021/5/18/566
+>
+>
+> 2 problems generated this situation:
+> -1st: After propagating load in the hierarchy, load_sum can be null
+>  whereas load_avg isn't so the cfs_rq is removed whereas it still
+>  contribute to th tg's load
+> -2nd: cfs_rq->tg_load_avg_contrib was not always updated after
+>  significant changes like becoming null because cfs_rq had already
+>  been updated when propagating a child load.
+>
+
+This series fixes the problem triggered by your 1st script on my test
+machine. But could you confirm that this patchset also fixes the
+problem on yours
+
+Regards,
+Vincent
+
+>
+> Vincent Guittot (2):
+>   sched/fair: keep load_avg and load_sum synced
+>   sched/fair: make sure to update tg contrib for blocked load
+>
+>  kernel/sched/fair.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> --
+> 2.17.1
+>
