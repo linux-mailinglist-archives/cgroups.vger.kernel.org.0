@@ -2,31 +2,29 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD4F392836
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 09:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4A1392831
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 09:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbhE0HOK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 03:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234706AbhE0HOD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 03:14:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4CEC061760;
-        Thu, 27 May 2021 00:12:25 -0700 (PDT)
+        id S234696AbhE0HNz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 03:13:55 -0400
+Received: from ozlabs.org ([203.11.71.1]:57533 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234684AbhE0HNz (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 27 May 2021 03:13:55 -0400
 Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FrJsx3L8Cz9sXG; Thu, 27 May 2021 17:12:21 +1000 (AEST)
+        id 4FrJsx2tB6z9sWp; Thu, 27 May 2021 17:12:21 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
         d=gibson.dropbear.id.au; s=201602; t=1622099541;
-        bh=q2H5aSayYZmCdH2b9xpnmQ/7FqSCaVqs53HOObLxnRA=;
+        bh=/Vk6QIsfClarCnHuWF3h00g/TTHnE4TtoS0mH61nSvk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jEwVCcUONIAnyb/P2jI7GBeihwirasiXWjARYzW4I85zhlWvC2TGRqELP3uDTLsTa
-         Us+5eJYQI/MotzMh8d+E8kxLFNd6GereguIYwXvx1PLJtJ3jdDlEmFGPpLOWAvoczA
-         14jsdic9Q6A0H19LoO46U6myhUnjqs34kFS5Jnew=
-Date:   Thu, 27 May 2021 14:53:42 +1000
+        b=PBJfr7UYZPAGjibTLx3tnWLHnRpaUShxpkGQgtqAMqSU1cRDoZa5GzhsXCRFM76n6
+         /2dBtWmxbyYYr4V+CxP4PSVzAwF4AD4T2TGF1pIXK0c44UNAZyDsnE8zGdVBo4KZpb
+         3ivmm4aCrXG/e3Jm6+/nRQqIJ3rfH7ZWRNAOeov4=
+Date:   Thu, 27 May 2021 14:58:30 +1000
 From:   David Gibson <david@gibson.dropbear.id.au>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         "Liu, Yi L" <yi.l.liu@intel.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>,
         Auger Eric <eric.auger@redhat.com>,
@@ -47,10 +45,8 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         Alexey Kardashevskiy <aik@ozlabs.ru>
 Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
  allocation APIs
-Message-ID: <YK8l1mZ0NVggAVUO@yekko>
-References: <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
+Message-ID: <YK8m9jNuvEzlXWlu@yekko>
+References: <YIizNdbA0+LYwQbI@yekko.fritz.box>
  <20210428145622.GU1370958@nvidia.com>
  <YIoiJRY3FM7xH2bH@yekko>
  <20210503161518.GM1370958@nvidia.com>
@@ -58,133 +54,58 @@ References: <YIecXkaEGNgICePO@yekko.fritz.box>
  <20210513135938.GG1002214@nvidia.com>
  <YKtbWo7PwIlXjFIV@yekko>
  <20210524233744.GT1002214@nvidia.com>
+ <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+ <20210525195257.GG1002214@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jHax4+77yf7k37tQ"
+        protocol="application/pgp-signature"; boundary="rKeY89V0ifZRRhP6"
 Content-Disposition: inline
-In-Reply-To: <20210524233744.GT1002214@nvidia.com>
+In-Reply-To: <20210525195257.GG1002214@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---jHax4+77yf7k37tQ
+--rKeY89V0ifZRRhP6
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 24, 2021 at 08:37:44PM -0300, Jason Gunthorpe wrote:
-> On Mon, May 24, 2021 at 05:52:58PM +1000, David Gibson wrote:
+On Tue, May 25, 2021 at 04:52:57PM -0300, Jason Gunthorpe wrote:
+> On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
 >=20
-> > > > I don't really see a semantic distinction between "always one-device
-> > > > groups" and "groups don't matter".  Really the only way you can aff=
-ord
-> > > > to not care about groups is if they're singletons.
-> > >=20
-> > > The kernel driver under the mdev may not be in an "always one-device"
-> > > group.
-> >=20
-> > I don't really understand what you mean by that.
+> > 2. iommu backed mdev devices for SRIOV where mdev device is created per
+> > VF (mdev device =3D=3D VF device) then that mdev device has same iommu
+> > protection scope as VF associated to it.=20
 >=20
-> I mean the group of the mdev's actual DMA device may have multiple
-> things in it.
-> =20
-> > > It is a kernel driver so the only thing we know and care about is that
-> > > all devices in the HW group are bound to kernel drivers.
-> > >=20
-> > > The vfio device that spawns from this kernel driver is really a
-> > > "groups don't matter" vfio device because at the IOMMU layer it should
-> > > be riding on the physical group of the kernel driver.  At the VFIO
-> > > layer we no longer care about the group abstraction because the system
-> > > guarentees isolation in some other way.
-> >=20
-> > Uh.. I don't really know how mdevs are isolated from each other.  I
-> > thought it was because the physical device providing the mdevs
-> > effectively had an internal IOMMU (or at least DMA permissioning) to
-> > isolate the mdevs, even though the physical device may not be fully
-> > isolated.
-> >=20
-> > In that case the virtual mdev is effectively in a singleton group,
-> > which is different from the group of its parent device.
+> This doesn't require, and certainly shouldn't create, a fake group.
+
+It's only fake if you start with a narrow view of what a group is.  A
+group is a set of devices (in the kernel sense of "device", not
+necessarily the hardware sense) which can't be isolated from each
+other.  The mdev device is a kernel device, and if working as intended
+it can be isolated from everything else, and is therefore in an
+absolute bona fide group of its own.
+
+> Only the VF's real IOMMU group should be used to model an iommu domain
+> linked to a VF. Injecting fake groups that are proxies for real groups
+> only opens the possibility of security problems like David is
+> concerned with.
+
+It's not a proxy for a real group, it's a group of its own.  If you
+discover that (due to a hardware bug, for example) the mdev is *not*
+properly isolated from its parent PCI device, then both the mdev
+virtual device *and* the physical PCI device are in the same group.
+Groups including devices of different types and on different buses
+were considered from the start, and are precedented, if rare.
+
+> Max's series approaches this properly by fully linking the struct
+> pci_device of the VF throughout the entire VFIO scheme, including the
+> group and container, while still allowing override of various VFIO
+> operations.
 >=20
-> That is one way to view it, but it means creating a whole group
-> infrastructure and abusing the IOMMU stack just to create this
-> nonsense fiction.
-
-It's a nonsense fiction until it's not, at which point it will bite
-you in the arse.
-
-> We also abuse the VFIO container stuff to hackily
-> create several different types pf IOMMU uAPIs for the mdev - all of
-> which are unrelated to drivers/iommu.
+> Jason
 >=20
-> Basically, there is no drivers/iommu thing involved, thus is no really
-> iommu group, for mdev it is all a big hacky lie.
-
-Well, "iommu" group might not be the best name, but hardware isolation
-is still a real concern here, even if it's not entirely related to the
-IOMMU.
-
-> > If the physical device had a bug which meant the mdevs *weren't*
-> > properly isolated from each other, then those mdevs would share a
-> > group, and you *would* care about it.  Depending on how the isolation
-> > failed the mdevs might or might not also share a group with the parent
-> > physical device.
->=20
-> That isn't a real scenario.. mdevs that can't be isolated just
-> wouldn't be useful to exist
-
-Really?  So what do you do when you discover some mdevs you thought
-were isolated actually aren't due to a hardware bug?  Drop support
-=66rom the driver entirely?  In which case what do you say to the people
-who understandably complain "but... we had all the mdevs in one guest
-anyway, we don't care if they're not isolated"?
-
-> > > This is today's model, yes. When you run dpdk on a multi-group device
-> > > vfio already ensures that all the device groups remained parked and
-> > > inaccessible.
-> >=20
-> > I'm not really following what you're saying there.
-> >=20
-> > If you have a multi-device group, and dpdk is using one device in it,
-> > VFIO *does not* (and cannot) ensure that other devices in the group
-> > are parked and inaccessible. =20
->=20
-> I mean in the sense that no other user space can open those devices
-> and no kernel driver can later be attached to them.
-
-Ok.
-
-> > It ensures that they're parked at the moment the group moves from
-> > kernel to userspace ownership, but it can't prevent dpdk from
-> > accessing and unparking those devices via peer to peer DMA.
->=20
-> Right, and adding all this group stuff did nothing to alert the poor
-> admin that is running DPDK to this risk.
-
-Didn't it?  Seems to me the admin that in order to give the group to
-DPDK, the admin had to find and unbind all the things in it... so is
-therefore aware that they're giving everything in it to DPDK.
-
-> > > If the administator configures the system with different security
-> > > labels for different VFIO devices then yes removing groups makes this
-> > > more tricky as all devices in the group should have the same label.
-> >=20
-> > That seems a bigger problem than "more tricky".  How would you propose
-> > addressing this with your device-first model?
->=20
-> You put the same security labels you'd put on the group to the devices
-> that consitute the group. It is only more tricky in the sense that the
-> script that would have to do this will need to do more than ID the
-> group to label but also ID the device members of the group and label
-> their char nodes.
-
-Well, I guess, if you take the view that root is allowed to break the
-kernel.  I tend to prefer that although root can obviously break the
-kernel if they intend do, we should make it hard to do by accident -
-which in this case would mean the kernel *enforcing* that the devices
-in the group have the same security labels, which I can't really see
-how to do without an exposed group.
 
 --=20
 David Gibson			| I'll have my music baroque, and my code
@@ -192,24 +113,24 @@ david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
 				| _way_ _around_!
 http://www.ozlabs.org/~dgibson
 
---jHax4+77yf7k37tQ
+--rKeY89V0ifZRRhP6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJdQACgkQbDjKyiDZ
-s5LX5g//Tg6h2fX9WzW87g+SOHMeJIsvjlnyefT9P0m1W0y4+uqrIluiR7HIjtPt
-xWcBK1QgEyq5HZFQaGF790FhMoZxATnu3357ej2Ib7PPyxTYSvzZrHnTsReFoJrz
-ePbXbiROS/BgQF81CZ/lo39pOvBBBVTgC5VJSoUPm0MZTAGIyQfdbbLk9a4h2Pau
-TwrhMLEBi3npUTNA8GoCdFOrQzQHQ2DybL3/WKMGzUGVE/z+4kCOFsumwNx31C8C
-L2wODxykBEKwWNUz4Sky4TNQtkeKXmnujRhgSFo03BqnbigFgSmTUu7Zvv8LYlxB
-qW6V8ZRLdakvN+n5HFoHTsKC68jcx5lv6kHlcwYu3vbeTjapxpYLfUFMWh5tRLzT
-TN6KnEgls6dkjcd0LHNf3xz4HZKuUgr5gBDJRyaG12SBxGNnvnhJ7FXouOLotN/W
-AAmcBogVG21wiqZvRX1BJSaQGlmF0gFNbJIiNzUgX0Yp0ybrnX1nDjtod+2sVtIF
-t71/dV84+idXo/bP0oix0NVj5yzU7SgnxngoDeVNDZ9bgyCfvUwnpDI1YJ1HgkEx
-Gmi1E8OI9JoNp7AGVde6S/EGojYApBBkNHOQqjG2mU+k1g428wrVz1iGrytk3aoG
-IiU4/pNk1+BEgmyQ5jKlmOsIQTIp1Zh8f+ZS9dvXJZj1cGHEF1k=
-=pDjM
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJvYACgkQbDjKyiDZ
+s5IEqBAAp3p5NH8nnJVVcGSVZxbNrLeTTJqPwhNtEEsveVKJd5BmHf3EvT4BqqnK
+rXisyd2ygrY8fO1DiLJOa/WM6FDA05WD0XkqyDJ2XUFAOEHpyY0EesSw7CqSl1zz
+V2dbprWQAD9nJoPG/fidBsmuYEwpxjvptttrf1yEgFe+isfJLdalJbA+k/kfZOdd
+F4BL6+mtySC2DoKnQqoDQYCsXrSNzsYgv6SDbj4W7izUuOqYFADN7qawINcxAEBa
+I43JXW3Dhx3aLzL0JeEjFf2j/f1YMQo/RfkfLg9OWuHdsF+SF8+5lcikGWtjBZKT
+pC443P1CHOmJkW0TMr9Pz2lHJfjlcTaIq35qpaEP23tKmS60FDoLIvWPlFJYidaz
+tWDNMtMmS8UbcyzF868ZJiRc94+A8RTFFW7hSmHQoqLnxMqNnUoyOKrZ2ehaqg+j
+JjbsxFq37+jun2Fb2BxwPg+F2jFQmaw7l6FCdhePKc/h/HeCRPpZ+jTqF6AEqdU1
+KrET9bw9TE3euBNQK62gJNfdIdrkBelfcUjKluxCWamoHFeJBEnBKbqGR4wn0Jqg
+QucFQtoKZyEIXVKFtK0Pedz46dzxc5iH1hj+eIAGLw92/SIjWzVYEp6vCZYHxNSk
+VQFvdHTLJJ8vRVhLGJlo5Ji4EX+jgb9i7eIufxgqD+SxhzOoRvo=
+=ygK9
 -----END PGP SIGNATURE-----
 
---jHax4+77yf7k37tQ--
+--rKeY89V0ifZRRhP6--
