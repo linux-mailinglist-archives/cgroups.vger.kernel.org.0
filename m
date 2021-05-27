@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D0D392E26
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA6E392E44
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhE0MmO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 08:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S235731AbhE0MvP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 08:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234466AbhE0MmM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:42:12 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26CDC061760
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:40:38 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id eb9so2473662qvb.6
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:40:38 -0700 (PDT)
+        with ESMTP id S235712AbhE0MvO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:51:14 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A66C061761
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:49:39 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id t17so612759ljd.9
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eNiQoWn/9OHCszXvyBqQo+oFAxQxF89SUvYeB9IA70I=;
-        b=jyNj5GwSxQNwfAKTy3gtmVCcmwrkUBb3JuWQPt37kUBY8+vtkcmYgiu6qbIlKFTffk
-         E/9Irp8l8MnV9c+4Eoe/NM1V233e6y5vOr2tVdKvQHoU4HsM69G1quOBvLYRII2JV/Ki
-         RSI6U3EtNmFREjJ82VIQ/njctZuuFWI9M9cq/fSU0e9Y2nCC6ZCUPnzBr4p2TMxlxLnE
-         DG+c+1zleTR+YOJpCDBCMA5rll/J9LOTxmGXfZ7cf2SJ3WH4rlbTGibikytVWLcnXUBa
-         K6MNzLl6hzbefsereyfuX4gBRygBS7Z48hBSUooL1cHMkUxZkgKQ5Fpbz86P8QLRt0bO
-         akFg==
+        bh=IPDKpeQP85lIS4gYU8UwCGKlha6ptbLg1ETtgq9iJMw=;
+        b=Ouf7cM44WCMGrm8fB7veWn15pNkwVEiXKb0QxbC/6bj4dPtrlIsZS6zoutiY35TfzI
+         097B1D3YFkZQHZXtjwhlPzC7cnD/hcK6Gx76hJSk5ndux2q8TKdfmr/2rKgU+JCq5NAa
+         +GaUfLpKW3nyxIqagUzfXa/jw4H5busK3vFCzgxEl0I0auWr0J5HUinZofrnBMWE5y4W
+         hGRAAXGOtKWEIlygch53DVVQy9oVM9rxXKCQ7MXY0oJcmGjMEITpWB15GeMYmjKMkgxR
+         4zx3LshbFTI5tj2f4NtzO2jfN7lCeQF83EC0Os2tkkbgr9N0opi955P1EZIa0/u6tKVu
+         QUww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eNiQoWn/9OHCszXvyBqQo+oFAxQxF89SUvYeB9IA70I=;
-        b=r2/44wjfU6gZAS+DZ0MzhFPYeoQv+eX/KPDkcvi4OfdGcekFxHqU06LWHEmV19GgYL
-         AreuxWFmN5+m+usCeLICzYQQbgsRJTzzEXJc8Nf16a04WLzSrGcrlLWFQwbFOZMqHZxC
-         lAklXahW2GmC4a2v3c8PDT0xuZkc7u9Z5LFtXKxkqjr0lod3rZtJGXh30fMNbef9645W
-         Q+fT3cLYRxx1FIhL82/Y7ZmA9i7nvaIYEXcHm8tWeA5weQcwhqcrz9zCEQOG1KK3M/td
-         jlU8jUicR8FijrbKSA79ngHER/hFMs5zSKd++5UXTgA72rC34D2dknZocXYjp3DHUFZn
-         6mLw==
-X-Gm-Message-State: AOAM5307uNfPWEXp78giYBLUGoa4pw9T+JR6S2hk00Pant43rUmX2M59
-        lgtYBLrdxhgX73ZB7uVrjYjjTsMPDmksiQ/92DZmEA==
-X-Google-Smtp-Source: ABdhPJx+MEW0CnUf1F8oex/JTgIpam9ZjnGBwdbyusEV5nw1jR1q2ZnyzDK2NqKAuuCcEqUrWBUKMkArkBfDXyRn5VY=
-X-Received: by 2002:ad4:420b:: with SMTP id k11mr3590073qvp.18.1622119238064;
- Thu, 27 May 2021 05:40:38 -0700 (PDT)
+        bh=IPDKpeQP85lIS4gYU8UwCGKlha6ptbLg1ETtgq9iJMw=;
+        b=ueoy6cA9BFNlcN1DquRKGuF1Mis+fsnGS2IthNMAuXxseUnOWrSr/UVZ/oaL1pKRnL
+         BpWjDzeWFqmxXGTLvOMWGHZxc1oIY/pEv7xfVnFH3ngqz7JCuJ6hbdLHIFGMzUG9+eQZ
+         lGpcfHgi9er13tGfj5/hBceLKJUTMYD+eXAtA9KW9NFqXF+61HljpmzK803SNhmx/uzh
+         hAvD1hx8/mMRYHPepuTMicYU7aiaOqqVKst95I0ZVNZ2umCFDssPrZZJAUrl4ZbeSRI3
+         1D/xDRrRw5bBfYLxYOCtR1BO8LLqbHAKbU142V+d2FNijvbaW2Pyl8AkXP+8ngiLQXQR
+         Wv7Q==
+X-Gm-Message-State: AOAM531HYXQ/uUaETIuB18clI5K6DNoJeUATsqWWWx/eFtNo6mGsVola
+        XMpqcKk+4uJouZtGGRZMLC1Y3e8yp29PxddIYeCPXg==
+X-Google-Smtp-Source: ABdhPJy6E1hwcPnCbYx4uzIR9f/0MRVEBTzZQDezVp1GRC7qp2MOnioF0GkK5BSepkqjHk9K4LAvMcDr7Gx32vB6nr0=
+X-Received: by 2002:a05:651c:1408:: with SMTP id u8mr2394954lje.401.1622119778226;
+ Thu, 27 May 2021 05:49:38 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
  <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
@@ -54,13 +54,12 @@ References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@u
  <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
  <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com> <CAFpoUr2NM9RHE=jdbi5aNj2LeVr4iKJ3thMPUNhp_SnCe7tnfg@mail.gmail.com>
 In-Reply-To: <CAFpoUr2NM9RHE=jdbi5aNj2LeVr4iKJ3thMPUNhp_SnCe7tnfg@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Thu, 27 May 2021 14:39:59 +0200
-Message-ID: <CAFpoUr0mTQym4cmN98Er=4byRo9wqYcuOsbMLDJEnjvD-2ZbMg@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 27 May 2021 14:49:27 +0200
+Message-ID: <CAKfTPtC50AkBcm-AQf63XQOFE3w5ZbRS7Sh=yDDSG1hM1wBhvg@mail.gmail.com>
 Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
 To:     Odin Ugedal <odin@uged.al>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
+Cc:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -74,14 +73,21 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> For 1st problem, the way we were updating load_avg and load_sum, we
-> were losing the sync between both value
+On Thu, 27 May 2021 at 14:38, Odin Ugedal <odin@uged.al> wrote:
+>
+> Hi again,
+>
+> Saw your patchset now, and that is essentially the same as I did. I
+> guess you want to keep that patchset instead of me updating this
+> series then?
 
-Yeah, that would be a natural way to fix that.
+yes
 
-> In fact, the update was already there but not always called (see the
-> patchset i just sent)
+>
+> Also, could you take a look at patch 2 and 3 in this series? Should I
 
-Yeah, that was my exact point.
+Yes, I'm going to have a look at patch 2 and 3
 
-Odin
+> resend those in a new series, or?
+>
+> Odin
