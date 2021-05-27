@@ -2,92 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA6E392E44
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BF4392F17
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 15:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235731AbhE0MvP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 08:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
+        id S236334AbhE0NIG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 09:08:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235712AbhE0MvO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:51:14 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A66C061761
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:49:39 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id t17so612759ljd.9
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:49:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IPDKpeQP85lIS4gYU8UwCGKlha6ptbLg1ETtgq9iJMw=;
-        b=Ouf7cM44WCMGrm8fB7veWn15pNkwVEiXKb0QxbC/6bj4dPtrlIsZS6zoutiY35TfzI
-         097B1D3YFkZQHZXtjwhlPzC7cnD/hcK6Gx76hJSk5ndux2q8TKdfmr/2rKgU+JCq5NAa
-         +GaUfLpKW3nyxIqagUzfXa/jw4H5busK3vFCzgxEl0I0auWr0J5HUinZofrnBMWE5y4W
-         hGRAAXGOtKWEIlygch53DVVQy9oVM9rxXKCQ7MXY0oJcmGjMEITpWB15GeMYmjKMkgxR
-         4zx3LshbFTI5tj2f4NtzO2jfN7lCeQF83EC0Os2tkkbgr9N0opi955P1EZIa0/u6tKVu
-         QUww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IPDKpeQP85lIS4gYU8UwCGKlha6ptbLg1ETtgq9iJMw=;
-        b=ueoy6cA9BFNlcN1DquRKGuF1Mis+fsnGS2IthNMAuXxseUnOWrSr/UVZ/oaL1pKRnL
-         BpWjDzeWFqmxXGTLvOMWGHZxc1oIY/pEv7xfVnFH3ngqz7JCuJ6hbdLHIFGMzUG9+eQZ
-         lGpcfHgi9er13tGfj5/hBceLKJUTMYD+eXAtA9KW9NFqXF+61HljpmzK803SNhmx/uzh
-         hAvD1hx8/mMRYHPepuTMicYU7aiaOqqVKst95I0ZVNZ2umCFDssPrZZJAUrl4ZbeSRI3
-         1D/xDRrRw5bBfYLxYOCtR1BO8LLqbHAKbU142V+d2FNijvbaW2Pyl8AkXP+8ngiLQXQR
-         Wv7Q==
-X-Gm-Message-State: AOAM531HYXQ/uUaETIuB18clI5K6DNoJeUATsqWWWx/eFtNo6mGsVola
-        XMpqcKk+4uJouZtGGRZMLC1Y3e8yp29PxddIYeCPXg==
-X-Google-Smtp-Source: ABdhPJy6E1hwcPnCbYx4uzIR9f/0MRVEBTzZQDezVp1GRC7qp2MOnioF0GkK5BSepkqjHk9K4LAvMcDr7Gx32vB6nr0=
-X-Received: by 2002:a05:651c:1408:: with SMTP id u8mr2394954lje.401.1622119778226;
- Thu, 27 May 2021 05:49:38 -0700 (PDT)
+        with ESMTP id S236336AbhE0NIC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 09:08:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C04BC061760;
+        Thu, 27 May 2021 06:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ta5zzhet5s6C63/o89LSX98k9lWRcXUPZemLvb4KNvQ=; b=HfZz8BRqIZXWTWn2p5hFQrTao1
+        iZJDgiZEi8Vmr//6oJzinMu3kuu4Ml+cC6TbN1ZUZbFoneVoVqYU6ToKxiVj+zmnsHgM0n9x/C6gi
+        YskpjrBH3Iy4bfMKsgzjbw6nrOQZUsOq/w8OhTbVYCG1L22P8iKayEM1QBSpxKe7xfMmeKTwXKJaQ
+        Y70SXnvSfe2Onl36lQFJPV7gs1cMho/hn+fSKLpy9EKVyHKktR0iNePLo7wbjftr+8ONOWeuQI/sJ
+        JaL11rfLez3fAapFrYnmnCpl8yvk5haitSvJF4/24ddTToylmg0qN15ojjibz7eUrHp+UnwCNLCV1
+        9om/d5IQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmFhc-005YSv-1T; Thu, 27 May 2021 13:05:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12A2B300268;
+        Thu, 27 May 2021 15:05:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D2920202492E9; Thu, 27 May 2021 15:05:30 +0200 (CEST)
+Date:   Thu, 27 May 2021 15:05:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org, odin@uged.al,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/fair: keep load_avg and load_sum synced
+Message-ID: <YK+ZGlfPxK3JCySS@hirez.programming.kicks-ass.net>
+References: <20210527122916.27683-1-vincent.guittot@linaro.org>
+ <20210527122916.27683-2-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
- <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
- <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
- <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
- <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
- <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
- <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
- <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com> <CAFpoUr2NM9RHE=jdbi5aNj2LeVr4iKJ3thMPUNhp_SnCe7tnfg@mail.gmail.com>
-In-Reply-To: <CAFpoUr2NM9RHE=jdbi5aNj2LeVr4iKJ3thMPUNhp_SnCe7tnfg@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 27 May 2021 14:49:27 +0200
-Message-ID: <CAKfTPtC50AkBcm-AQf63XQOFE3w5ZbRS7Sh=yDDSG1hM1wBhvg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527122916.27683-2-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 27 May 2021 at 14:38, Odin Ugedal <odin@uged.al> wrote:
->
-> Hi again,
->
-> Saw your patchset now, and that is essentially the same as I did. I
-> guess you want to keep that patchset instead of me updating this
-> series then?
+On Thu, May 27, 2021 at 02:29:15PM +0200, Vincent Guittot wrote:
 
-yes
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3509,7 +3509,8 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
+>  	se->avg.load_sum = runnable_sum;
+>  	se->avg.load_avg = load_avg;
+>  	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+> -	add_positive(&cfs_rq->avg.load_sum, delta_sum);
+> +	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
 
->
-> Also, could you take a look at patch 2 and 3 in this series? Should I
+If I'm not mistaken, this makes delta_sum unused, so we can remove it
+entirely, see below.
 
-Yes, I'm going to have a look at patch 2 and 3
+> +
 
-> resend those in a new series, or?
->
-> Odin
+This extra blank space, we really need that? :-)
+
+>  }
+
+---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 161b92aa1c79..2b99e687fe7a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3453,10 +3453,9 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cf
+ static inline void
+ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
+ {
+-	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
++	long running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
+ 	unsigned long load_avg;
+ 	u64 load_sum = 0;
+-	s64 delta_sum;
+ 	u32 divider;
+ 
+ 	if (!runnable_sum)
+@@ -3503,13 +3502,11 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
+ 	load_sum = (s64)se_weight(se) * runnable_sum;
+ 	load_avg = div_s64(load_sum, divider);
+ 
+-	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
+-	delta_avg = load_avg - se->avg.load_avg;
+-
+ 	se->avg.load_sum = runnable_sum;
+ 	se->avg.load_avg = load_avg;
+-	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+-	add_positive(&cfs_rq->avg.load_sum, delta_sum);
++
++	add_positive(&cfs_rq->avg.load_avg, (long)(load_avg - se->avg.load_avg));
++	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+ }
+ 
+ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
