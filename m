@@ -2,117 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD5A392DF5
-	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE0B392E1F
+	for <lists+cgroups@lfdr.de>; Thu, 27 May 2021 14:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235219AbhE0MbF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 May 2021 08:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S235528AbhE0MjE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 May 2021 08:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235127AbhE0MbD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:31:03 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465A1C061763
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:29:28 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id m18so4596783wrv.2
-        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:29:28 -0700 (PDT)
+        with ESMTP id S235440AbhE0MjD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 May 2021 08:39:03 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7C0C061574
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:37:29 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x38so5751622lfa.10
+        for <cgroups@vger.kernel.org>; Thu, 27 May 2021 05:37:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=m34kWJFts+JlvhgMEqzYFI86nqtKcI/eABSZJKWdva0=;
-        b=kuYbHjMyYaX7A1hL/W1Dafd7/P3r7j1djEoge4gerT9ds8ebtZpggipN//3meNIYDP
-         H3iQ+WtGvA4nH8D5I1Ru1+OODIKfUQJ8iIGorDWT+9LxeGMuHcBcWwKvsfVjQF4R9ZJx
-         iWosXULEC6chunZkDSG3YOacsMp1SzVqRbFk7zMQyQxcuu1tRoVYXmr3I/mb8wSNETJz
-         qnyItuDi/nn2FdxCKLY6pPtOkj+Z0pK5RPzIc7uGXs7mT2ztDJ4l04DcXFKVJNYiXvWm
-         KBKQsmHNoWu1ED+J6aPE2EHGvS+TeN/9SHszVg51Anjv8IwJrvbn0U96EVNBH1RXoS/K
-         uefw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EJtMUFIym4MCDsWc5krrIjsPhEBu67mDqVvWhXVdI7Q=;
+        b=BaSCvx5P5J1/saPMpI2Hpv6tsMqa5H6pRd0iDGSEctw6X2Hvkt6JrbGoa3kwwTs7eX
+         +fCKFH2JTP39JFuhDKAPYXJWiKZRu3YG5LKH0aoZ8krUMsp8iPhCwsrq1ulhUaNMqdaC
+         isgXd2dPzQxJAhQGHyBqnGkgPTxqG3cslM6ByeSqP1hCrwdSSHo5242HJKTBr9QZfzWE
+         n51fBmRVwURVenXx4Qmix59IlOSV14CWACBj4KesIk7qqxjv9EwzBRrzqCRSbu5PhtgD
+         ocqgLwfsR9YlgMH5G9cbiyrkEyEKzU2cycb06RhI/BlXg7oMCjI3N49stuGLMzG+1ODU
+         cVgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=m34kWJFts+JlvhgMEqzYFI86nqtKcI/eABSZJKWdva0=;
-        b=a+JHyLyBu9FeikKWpd8MptTu9icdQa+GwLrv3n/2keWAh/kqZDFoBEhHN28AhGsfC1
-         97nZ//xKQcIi7/PyiWZvoo3iYG8yCE1WJNUE+JsObSJKmu13f9jkfYhf86XMUMSLnupf
-         HPyqeJSsPPrDUBXOvk1gZ+xve+ApZm0GLeOzftUwOIOPdaYIj3ovWIM0YkPLNRapgquJ
-         8qkmjhBK4h9zBnfkrwuFxxZvITk4luDiLkP+pLFyhcqI8qHL3SkRpbNluTlj0s6ZBzSn
-         FSodeoJNQPX5x4zXll3EQ80bjHgo1NaBRNv/Li/ZE9c/y8+9mchCszLpboY78WyeBFtO
-         d8/w==
-X-Gm-Message-State: AOAM530iRhtweZhasG8rNyQ+zGf31WqemGgOWNFdaurNMSbifpyJ7bmy
-        6EpLDJl5E7Wy3xzNnqlD0uyIUw==
-X-Google-Smtp-Source: ABdhPJx062mWr3x4RL9DZFSGhNrOYmJPw2rA3JqtR1uStbo70U0iaVv8c9wmio9awzP6QGvinME+0w==
-X-Received: by 2002:a05:6000:137a:: with SMTP id q26mr3097476wrz.216.1622118566791;
-        Thu, 27 May 2021 05:29:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:3db3:bb86:bbaa:56ab])
-        by smtp.gmail.com with ESMTPSA id z3sm2917721wrq.42.2021.05.27.05.29.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 05:29:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EJtMUFIym4MCDsWc5krrIjsPhEBu67mDqVvWhXVdI7Q=;
+        b=p141AHEDyf7cfGl7SUU4GRx2UjTA14th6GvfwlQRoWUHgafo3Ax8jnVmariEtmpqai
+         vPBsaPCiYmi6woRoQxyu2parqRQfrt1BOHs70c0oCFyHAEFq49laXb2g998WaIqHUYx+
+         /2RoiSKCrjEqXgl5+x6dI3XqudgJGNiOKCSvhqM5vAI+OS1fclORXYI2r1Z5lrZevWKU
+         oHDcznSEXpPxCkiSw7xIjr6MGpWZPwNKR29zbP3OKgm1w7d1w80rIlqdq3RKIU+CkVIn
+         xm2MbWcfkLElBt8JnXhV1G1J0PXDEVRD550WjyNcveYqVtf0e8luF4sF8+VpRNCfyF/W
+         hLpQ==
+X-Gm-Message-State: AOAM5320/HtaKj8XXV5lJ44PnlhcNadPOq5kJtpGcUCZX937wM+kCu2W
+        I766xUFzdB34E7ceID2eYTe2fppb3UmVFX2hQLHJJQ==
+X-Google-Smtp-Source: ABdhPJw1CZTF2VZBOlDqbR2wk/nxPBT1sQTg8SPezTCILIi6JptloJO4DeLYp/OLq67Tvrlq2fE4ziX1k+3iR25bWdo=
+X-Received: by 2002:a19:e017:: with SMTP id x23mr2214851lfg.254.1622119047977;
+ Thu, 27 May 2021 05:37:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+ <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+ <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+ <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
+ <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
+ <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
+ <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com> <CAFpoUr0PTYs+CSiWt3WOXnxq=wN3uEyC=h+_3kDc9wLoqaRC_Q@mail.gmail.com>
+In-Reply-To: <CAFpoUr0PTYs+CSiWt3WOXnxq=wN3uEyC=h+_3kDc9wLoqaRC_Q@mail.gmail.com>
 From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        odin@uged.al, cgroups@vger.kernel.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 2/2] sched/fair: make sure to update tg contrib for blocked load
-Date:   Thu, 27 May 2021 14:29:16 +0200
-Message-Id: <20210527122916.27683-3-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527122916.27683-1-vincent.guittot@linaro.org>
-References: <20210527122916.27683-1-vincent.guittot@linaro.org>
+Date:   Thu, 27 May 2021 14:37:16 +0200
+Message-ID: <CAKfTPtA5NxDpG194zAF9CjchJ5hm-7fOBOPGJZG4+z4-+32qGw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-During the update of fair blocked load (__update_blocked_fair()), we update
-the contribution of the cfs in tg->load_avg if cfs_rq's pelt has decayed.
-Nevertheless, the pelt values of a cfs_rq could have been recently updated
-while propagating the change of a child. In uchthis case, cfs_rq's pelt will
-not decayed because it has already been updated and we don't update
-tg->load_avg.
+On Thu, 27 May 2021 at 13:04, Odin Ugedal <odin@uged.al> wrote:
+>
+> > 1st : ensure that cfs_rq->load_sum is not null if cfs_rq-> load_isn't too
+> > 2nd : call update_tg_load_avg() during child update so we will be sure
+> > to update tg_load_avg_contrib before removing the cfs from the list
+>
+> Ahh, yeah, with "1st" that would work. Yeah, that was my initial
+> implementation of the change, but I thought that it was better to keep
+> the logic away from the "hot path". We can verify this in
+> update_tg_cfs_load(), and then force update_tg_load_avg() inside
 
-__update_blocked_fair
-  ...
-  for_each_leaf_cfs_rq_safe: child cfs_rq
-    update cfs_rq_load_avg() for child cfs_rq
-    ...
-    update_load_avg(cfs_rq_of(se), se, 0)
-      ...
-      update cfs_rq_load_avg() for parent cfs_rq
-		-propagation of child's load makes parent cfs_rq->load_sum
-		 becoming null
-        -UPDATE_TG is not set so it doesn't update parent
-		 cfs_rq->tg_load_avg_contrib
-  ..
-  for_each_leaf_cfs_rq_safe: parent cfs_rq
-    update cfs_rq_load_avg() for parent cfs_rq
-      - nothing to do because parent cfs_rq has already been updated
-		recently so cfs_rq->tg_load_avg_contrib is not updated
-    ...
-    parent cfs_rq is decayed
-      list_del_leaf_cfs_rq parent cfs_rq
-	  - but it still contibutes to tg->load_avg
+For 1st problem, the way we were updating load_avg and load_sum, we
+were losing the sync between both value
 
-we must set UPDATE_TG flags when propagting pending load to the parent
+> __update_blocked_fair() when avg.load_avg is 0. (Given that this is
+> the only place where we can end up in this situation. I can update
+> this patch to do that instead.
 
-Fixes: 039ae8bcf7a5 ("sched/fair: Fix O(nr_cgroups) in the load balancing path")
-Reported-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In fact, the update was already there but not always called (see the
+patchset i just sent)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2859545d95fb..dcb3b1a6813c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -8048,7 +8048,7 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
- 		/* Propagate pending load changes to the parent, if any: */
- 		se = cfs_rq->tg->se[cpu];
- 		if (se && !skip_blocked_update(se))
--			update_load_avg(cfs_rq_of(se), se, 0);
-+			update_load_avg(cfs_rq_of(se), se, UPDATE_TG);
- 
- 		/*
- 		 * There can be a lot of idle CPU cgroups.  Don't let fully
--- 
-2.17.1
 
+>
+> Another solution is to update avg.load_avg
+> inside__update_blocked_fair() when load_sum is 0, and then propagate
+> that with update_tg_load_avg(). This removes the logic from the hot
+> path all together.
+>
+> Not sure what the preferred way is. I have not found any other places
+> where this situation _should_ occur, but who knows..
+>
+> Odin
