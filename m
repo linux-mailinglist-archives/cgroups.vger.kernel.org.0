@@ -2,193 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9138339432B
-	for <lists+cgroups@lfdr.de>; Fri, 28 May 2021 15:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B039442D
+	for <lists+cgroups@lfdr.de>; Fri, 28 May 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhE1NHV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 May 2021 09:07:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60786 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234224AbhE1NHT (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 28 May 2021 09:07:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622207143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qP6qh/m621ZycGy72wfyobP44v85NyyRRCeimgviInw=;
-        b=pEo1UPtzuo+xqh+4/GraukeK5luXAt5NJpAxW4+TnRsKs72SBewhYgcixhEkGZaBNqFfNB
-        NqshIvYeSVfq2s2NnS/VO04PjPRxX1AfhKG/6+KiMGA4cJ6diF2+b5QUOJORK+hZkt/yFq
-        lvlEZLtPQDajD+1YBUSV6WBgSNgKI/U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622207143;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qP6qh/m621ZycGy72wfyobP44v85NyyRRCeimgviInw=;
-        b=OHtutEfVEsUUJ06h8/TcKQkBsUOJiYeRs4pLknxFYYOEkTWs419PxE+nFXXL1c0nKIbnwI
-        lvBaNmZ7Dw6YohAA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 97338AD80;
-        Fri, 28 May 2021 13:05:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 59BD81E0D30; Fri, 28 May 2021 15:05:43 +0200 (CEST)
-Date:   Fri, 28 May 2021 15:05:43 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <20210528130543.GB28653@quack2.suse.cz>
-References: <20210526222557.3118114-1-guro@fb.com>
- <20210526222557.3118114-3-guro@fb.com>
- <20210527112403.GC24486@quack2.suse.cz>
- <YK/bi1OU7bNgPBab@carbon.DHCP.thefacebook.com>
+        id S235710AbhE1O0L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 May 2021 10:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhE1O0L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 May 2021 10:26:11 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A3AC06174A
+        for <cgroups@vger.kernel.org>; Fri, 28 May 2021 07:24:35 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id v8so5567277lft.8
+        for <cgroups@vger.kernel.org>; Fri, 28 May 2021 07:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0qB23gabRSVjg16uX7Swp2PUtcfjaqZT0ss7Q1VTLtc=;
+        b=IvyyHPQK78oRsjX1trLtzkEWbZQcBcxDmBNKDEIV+TWkLXpTAhEGYGhUT825yUWDe3
+         HOvyK8czIZ8a/ziv8VdJNnsD9f+hyMTaBr5Z+11W2jfphSAUBUxWQl/JWAt3zOXKWK6+
+         6WUWRnllmUwqo5uppaUBK2Cq3Rv0mk1NHU+hMS8DvwcBKuUtoI1WQEn+wFV1v1D7FR0h
+         R2FBAsikMQO2RkiEx0k/I7Q6IjnpFTWHC+wDb7pTIoo6GmvpGAtbG/NQcT5d/sPtZGxB
+         iedBqp2shjY21Mr6l5/B2DiYGmsxz8ofmdNn4UGqxsp/a7/6//BIkloKnws+EG6oNOB2
+         sx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0qB23gabRSVjg16uX7Swp2PUtcfjaqZT0ss7Q1VTLtc=;
+        b=g8dO03T+plXkgDO39L6nxseLYosAWKH1fjI9COOfmw6vvD/7zhxfYO3cGocT7o5wNs
+         ZQyB85KXhw7wbHLMzTfZkCKdz5C8stB6C0RaMAyDJiIebKsRjzM8/T9fuaDqrBPX16VI
+         4vYQoXkA33v8sCT8SD01ohNU6dcAdkrz+ypWZD5D0TPGPkgizRoD1TXiVFhD8t61TEv2
+         kZuN0naaUe5DDb3QC7rLnyM4e8PYsyfDOrhYLPynR7ssAgo94b1nRSQFD8NvOpUcD8e9
+         jgzb9Ore8I3e+7E2ve2zMnejefd9Lrg9zrDrMkR2RAWKGJxFsnyLv6slKm47nhbocAIG
+         rOWw==
+X-Gm-Message-State: AOAM530KyI5N1HH/cptlR9vB5R47oLZCScRhgSUpcDHoqasZg6OXVEwM
+        OMcChQ5yfb8xiNRwR60jG4ArPIYNGweuL2VQDTuwX/FIajiXYA==
+X-Google-Smtp-Source: ABdhPJy0F/Mm6KcZwDdOCTk1XjyjllVwhD7rJDCScs/W95trYbOm2PhE+XQkRRJf8qLMPSwvPnMGq4ehF/H4gBq/Jbk=
+X-Received: by 2002:ac2:5111:: with SMTP id q17mr6128288lfb.277.1622211873614;
+ Fri, 28 May 2021 07:24:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK/bi1OU7bNgPBab@carbon.DHCP.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-3-odin@uged.al>
+In-Reply-To: <20210518125202.78658-3-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 28 May 2021 16:24:22 +0200
+Message-ID: <CAKfTPtCiV5LMoXBQVdSsvNq-vurFVVd4aVWW-C=8Tza8uJTCjg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 27-05-21 10:48:59, Roman Gushchin wrote:
-> On Thu, May 27, 2021 at 01:24:03PM +0200, Jan Kara wrote:
-> > On Wed 26-05-21 15:25:57, Roman Gushchin wrote:
-> > > Asynchronously try to release dying cgwbs by switching clean attached
-> > > inodes to the bdi's wb. It helps to get rid of per-cgroup writeback
-> > > structures themselves and of pinned memory and block cgroups, which
-> > > are way larger structures (mostly due to large per-cpu statistics
-> > > data). It helps to prevent memory waste and different scalability
-> > > problems caused by large piles of dying cgroups.
-> > > 
-> > > A cgwb cleanup operation can fail due to different reasons (e.g. the
-> > > cgwb has in-glight/pending io, an attached inode is locked or isn't
-> > > clean, etc). In this case the next scheduled cleanup will make a new
-> > > attempt. An attempt is made each time a new cgwb is offlined (in other
-> > > words a memcg and/or a blkcg is deleted by a user). In the future an
-> > > additional attempt scheduled by a timer can be implemented.
-> > > 
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > ---
-> > >  fs/fs-writeback.c                | 35 ++++++++++++++++++
-> > >  include/linux/backing-dev-defs.h |  1 +
-> > >  include/linux/writeback.h        |  1 +
-> > >  mm/backing-dev.c                 | 61 ++++++++++++++++++++++++++++++--
-> > >  4 files changed, 96 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > > index 631ef6366293..8fbcd50844f0 100644
-> > > --- a/fs/fs-writeback.c
-> > > +++ b/fs/fs-writeback.c
-> > > @@ -577,6 +577,41 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> > >  	kfree(isw);
-> > >  }
-> > >  
-> > > +/**
-> > > + * cleanup_offline_wb - detach associated clean inodes
-> > > + * @wb: target wb
-> > > + *
-> > > + * Switch the inode->i_wb pointer of the attached inodes to the bdi's wb and
-> > > + * drop the corresponding per-cgroup wb's reference. Skip inodes which are
-> > > + * dirty, freeing, in the active writeback process or are in any way busy.
-> > 
-> > I think the comment doesn't match the function anymore.
-> > 
-> > > + */
-> > > +void cleanup_offline_wb(struct bdi_writeback *wb)
-> > > +{
-> > > +	struct inode *inode, *tmp;
-> > > +
-> > > +	spin_lock(&wb->list_lock);
-> > > +restart:
-> > > +	list_for_each_entry_safe(inode, tmp, &wb->b_attached, i_io_list) {
-> > > +		if (!spin_trylock(&inode->i_lock))
-> > > +			continue;
-> > > +		xa_lock_irq(&inode->i_mapping->i_pages);
-> > > +		if ((inode->i_state & I_REFERENCED) != I_REFERENCED) {
-> > 
-> > Why the I_REFERENCED check here? That's just inode aging bit and I have
-> > hard time seeing how it would relate to whether inode should switch wbs...
-> 
-> What I tried to say (and failed :) ) was that I_REFERENCED is the only accepted
-> flag here. So there must be
-> 	if ((inode->i_state | I_REFERENCED) != I_REFERENCED)
-> 
-> Does this look good or I am wrong and there are other flags acceptable here?
+On Tue, 18 May 2021 at 14:54, Odin Ugedal <odin@uged.al> wrote:
+>
+> This fixes an issue where fairness is decreased since cfs_rq's can
+> end up not being decayed properly. For two sibling control groups with
+> the same priority, this can often lead to a load ratio of 99/1 (!!).
+>
+> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+> will be removed from the leaf list. When they initial cfs_rq is
+> unthrottled, it will currently only re add descendant cfs_rq's if they
+> have one or more entities enqueued. This is not a perfect heuristic.
 
-Ah, I see. That makes more sense. I guess you could also exclude I_DONTCACHE
-and I_OVL_INUSE but that's not that important.
+What would be the other condition in addition to the current one
+:cfs_rq->nr_running >= 1 ?
+We need to add a cfs_rq in the list if it still contributes to the
+tg->load_avg and the split of the share. Can't we add a condition for
+this instead of adding a new field ?
 
-> > > +			struct bdi_writeback *bdi_wb = &inode_to_bdi(inode)->wb;
-> > > +
-> > > +			WARN_ON_ONCE(inode->i_wb != wb);
-> > > +
-> > > +			inode->i_wb = bdi_wb;
-> > > +			list_del_init(&inode->i_io_list);
-> > > +			wb_put(wb);
-> > 
-> > I was kind of hoping you'll use some variant of inode_switch_wbs() here.
-> 
-> My reasoning was that by definition inode_switch_wbs() handles dirty inodes,
-> while in the cleanup case we can deal only with clean inodes and clean wb's.
-> Hopefully this can make the whole procedure simpler/cheaper. Also, the number
-> of simultaneous switches is limited and I don't think cleanups should share
-> this limit.
-> However I agree that it would be nice to share at least some code.
-
-I agree limits on parallel switches should not apply. Otherwise I agree
-some bits of inode_switch_wbs_work_fn() should not be strictly necessary
-but they should be pretty cheap anyway.
-
-> > That way we have single function handling all the subtleties of switching
-> > inode->i_wb of an active inode. Maybe it isn't strictly needed here because
-> > you detach only from b_attached list and move to bdi_wb so things are
-> > indeed simpler here. But you definitely miss transferring WB_WRITEBACK stat
-> > and I'd also like to have a comment here explaining why this cannot race
-> > with other writeback handling or wb switching in a harmful way.
-> 
-> If we'll check under wb->list_lock that wb has no inodes on any writeback
-> lists (excluding b_attached), doesn't it mean that WB_WRITEBACK must be
-> 0?
-
-No, pages under writeback are not reflected in inode->i_state in any way.
-You would need to check mapping_tagged(inode->i_mapping,
-PAGECACHE_TAG_WRITEBACK) to find that out. But if you'd use
-inode_switch_wbs_work_fn() you wouldn't even have to be that careful when
-switching inodes as it can handle alive inodes just fine...
-
-> Re racing: my logic here was that we're taking all possible locks before doing
-> anything and then we check that the inode is entirely clean, so this must be
-> safe:
-> 	spin_lock(&wb->list_lock);
-> 	spin_trylock(&inode->i_lock);
-> 	xa_lock_irq(&inode->i_mapping->i_pages);
-> 	...
-> 
-> But now I see that the unlocked inode's wb access mechanism
-> (unlocked_inode_to_wb_begin()/end()) probably requires additional care.
-
-Yeah, exactly corner case like this were not quite clear to me whether you
-have them correct or not.
-
-> Repeating the mechanism with scheduling the switching of each inode separately
-> after an rcu grace period looks too slow. Maybe we can mark all inodes at once
-> and then switch them all at once, all in two steps. I need to think more.
-> Do you have any ideas/suggestions here?
-
-Nothing really bright. As you say I'd do this in batches - i.e., tag all
-inodes for switching with I_WB_SWITCH, then synchronize_rcu(), then call
-inode_switch_wbs_work_fn() for each inode (or probably some helper function
-that has guts of inode_switch_wbs_work_fn() as we probably don't want to
-acquire wb->list_lock's and wb_switch_rwsem repeatedly unnecessarily).
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> This fix change this behavior to save what cfs_rq's was removed from the
+> list, and readds them properly on unthrottle.
+>
+> Can often lead to sutiations like this for equally weighted control
+> groups:
+>
+> $ ps u -C stress
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+>
+> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>  kernel/sched/fair.c  | 11 ++++++-----
+>  kernel/sched/sched.h |  1 +
+>  2 files changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ceda53c2a87a..e7423d658389 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -376,7 +376,8 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>         return false;
+>  }
+>
+> -static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+> +/* Returns 1 if cfs_rq was present in the list and removed */
+> +static inline bool list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>  {
+>         if (cfs_rq->on_list) {
+>                 struct rq *rq = rq_of(cfs_rq);
+> @@ -393,7 +394,9 @@ static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>
+>                 list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
+>                 cfs_rq->on_list = 0;
+> +               return 1;
+>         }
+> +       return 0;
+>  }
+>
+>  static inline void assert_list_leaf_cfs_rq(struct rq *rq)
+> @@ -4742,9 +4745,7 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+>                                              cfs_rq->throttled_clock_task;
+> -
+> -               /* Add cfs_rq with already running entity in the list */
+> -               if (cfs_rq->nr_running >= 1)
+> +               if (cfs_rq->insert_on_unthrottle)
+>                         list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>
+> @@ -4759,7 +4760,7 @@ static int tg_throttle_down(struct task_group *tg, void *data)
+>         /* group is entering throttled state, stop time */
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task = rq_clock_task(rq);
+> -               list_del_leaf_cfs_rq(cfs_rq);
+> +               cfs_rq->insert_on_unthrottle = list_del_leaf_cfs_rq(cfs_rq);
+>         }
+>         cfs_rq->throttle_count++;
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index a189bec13729..12a707d99ee6 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -602,6 +602,7 @@ struct cfs_rq {
+>         u64                     throttled_clock_task_time;
+>         int                     throttled;
+>         int                     throttle_count;
+> +       int                     insert_on_unthrottle;
+>         struct list_head        throttled_list;
+>  #endif /* CONFIG_CFS_BANDWIDTH */
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
+> --
+> 2.31.1
+>
