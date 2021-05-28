@@ -2,117 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E40F394505
-	for <lists+cgroups@lfdr.de>; Fri, 28 May 2021 17:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1FC3945CA
+	for <lists+cgroups@lfdr.de>; Fri, 28 May 2021 18:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhE1P2w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 May 2021 11:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbhE1P2w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 May 2021 11:28:52 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABAFC061574
-        for <cgroups@vger.kernel.org>; Fri, 28 May 2021 08:27:17 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i9so5820675lfe.13
-        for <cgroups@vger.kernel.org>; Fri, 28 May 2021 08:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OiBjppiA9FauptN85KvTMqQNccpsOQtc4MdQUyiisUU=;
-        b=PrLpoLgQH2uoXy+cpWxi30XMNBXflM62zlDxEVygSH0AfIdt7LXr0IPyg2takB7LxZ
-         wbT80B3Gm/NTVCarVTWzjI8vFG1NsiX18VTQxjzCpjsNWIb9l3cX3iTvcaDpFUOjWJUz
-         i7WFw3zqqS2kUk4SviW7uWTrRLtn+quxOsjhBM6Y82WyRE1qrkNHTZcoJl0fWJz04+Ay
-         302v/Ep7yZhWxdYTxzjkYSwHw5zYH5z46BlUY4Y+kFEsic2xIFbnBBAIPSZCpyzV8FSA
-         ATB6Om4KQoEqmxxgph7e4cGgnrPcEX0RSStY7CCHKXlk/6NptQIQxKf13j3cNEf7YTTy
-         hldg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OiBjppiA9FauptN85KvTMqQNccpsOQtc4MdQUyiisUU=;
-        b=iUArKgK15/ltkBd/m8ZFifQ5GlHjTLhI+vBibmOuW1XAcuZxW+npwESk812+wY/N12
-         TuRgvNS/RZCV3vn/0UQtozHx2pph5jLdmDLRk0bQB20J6xkTqPwoUVvN4wmB+oKP54pV
-         p2dG8dHJFqvtdM8xcvcHVFO2lwNhlKDEDlU3llxNzsQf1b0XCIiH0VCui8usZbeooTFa
-         zCA2YlPIrsTYrVmN2EGaT8NiQbxUoipCUEt0iopfBifxLI1/tj/SsvcL18ThkFbyWney
-         7QYhs4VQTldbN/ISFOgwVRH1v9YL5cZesGfvxxI3BA9JhlOTEEk+AkwlLBtK7EYCp5Zh
-         bGow==
-X-Gm-Message-State: AOAM5307gEkVeQcOwtda6uxG92QBbakghzGs7b6xBDAdyPJx8yqEewmI
-        y8W8W02/SFBxlfnxOgbfoOMWPVySV4v0wbKYuQq28Q==
-X-Google-Smtp-Source: ABdhPJxUdEPjBZRzpm8p0VTDKH5oHUTT/OOg632voTXDolal8RCA788nZKN+9pNEyifqfRd9POr0NV7s/paPYf3Tm4E=
-X-Received: by 2002:ac2:5f44:: with SMTP id 4mr6326007lfz.154.1622215635810;
- Fri, 28 May 2021 08:27:15 -0700 (PDT)
+        id S235859AbhE1QYe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 May 2021 12:24:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:65326 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230243AbhE1QYd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 May 2021 12:24:33 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 14SG8D0U005399;
+        Fri, 28 May 2021 09:22:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=YgXMFdH8CoZiTcSy9Dt4dq5N4bl/MNaWtdxCkfr4ojk=;
+ b=orlYUHuV54UHcos61P8lmieM7T3n/uET9Wvs0BEm43dr7/qmbkr1CfFd+BZMCL8c++QG
+ JJ0zgJ/Rqx9R8qdSr5WF3MGVeX/dfeHJ6nQdx3MH3RPVKstjHyRS7QiVWc8Foy9ubF6A
+ 06LbT7HuOqAlaZ676JJNJzXSMGbO1SAXME8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 38ttrxjuqe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 28 May 2021 09:22:52 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 09:22:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L3mB85b+X7sb/TOZuq5zNHtlqN4VS7HVpmZduWzSu/MC0h6e4c5rzuOrqIbsIjW5amXWcKAVU9viHc8B0IGKpGL893L7A7NU7RyMONYEEfq682x6DJ/eCDc3rhWxc14f/5i8GO5SjbPWWOO8zHFa1lsf/v/ouFOzpdl2JgKxmRrOnaEeUiyjOIxw0LS7kCpiB5Wi4vPjKibEiZpEMWYfi18clGb2nqk9x7D3bQQGPaZ71xPYeiL2/18oOO2cGHD5TLYw7ZSLed1yneKK2JgQlKESRIOsymOpcyKEt7W3QkRfFwHtmj9GJIiy6z9QIZFe0B7L/IUiEH7BX5dJg3TjFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YgXMFdH8CoZiTcSy9Dt4dq5N4bl/MNaWtdxCkfr4ojk=;
+ b=h8QIZb2/wClPiJiXJ1Nw0T1ldHF9a+J/ResVTUoC+Oi7FZuS7YoOAskXbZO/Xyi5rZHWGx48vw0fVHiQJ9GX+fjBWO5YOVpghWY9AZ2Zm+DO1B9T0nBaSOAou3AihbiJO8z8Lc6LVNrFXgNmKlDOemduCc2/nP4oe+xgH4/E5UIBL96S39veZja1nBJy0+PL/jcv8x0riIQ90PcGXPoE01YCJQKJOYMb9gPAo3YyrICZ+EHuOySaB3D9HZxQcfX6Q1odQO4FKzxC7KFn9WWbz6UCPp+FHGEKwlCVRLm+E1lo13D1JJ9T4XP7ryla1sFEuN5vaYjylHoxLIUnOkzN8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3477.namprd15.prod.outlook.com (2603:10b6:a03:10e::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
+ 2021 16:22:50 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4173.024; Fri, 28 May 2021
+ 16:22:50 +0000
+Date:   Fri, 28 May 2021 09:22:45 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>
+Subject: Re: [PATCH v5 2/2] writeback, cgroup: release dying cgwbs by
+ switching attached inodes
+Message-ID: <YLEY1RX3FhR9eWrv@carbon.DHCP.thefacebook.com>
+References: <20210526222557.3118114-1-guro@fb.com>
+ <20210526222557.3118114-3-guro@fb.com>
+ <YLBcPCHJOYH4YGl6@T590>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YLBcPCHJOYH4YGl6@T590>
+X-Originating-IP: [2620:10d:c090:400::5:fc1a]
+X-ClientProxiedBy: MWHPR1401CA0006.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::16) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-3-odin@uged.al>
- <CAKfTPtCiV5LMoXBQVdSsvNq-vurFVVd4aVWW-C=8Tza8uJTCjg@mail.gmail.com> <CAFpoUr0x=tgayPWYPORR+-h8gNhiE1t12Ko2o15Y8JwOCLp=yw@mail.gmail.com>
-In-Reply-To: <CAFpoUr0x=tgayPWYPORR+-h8gNhiE1t12Ko2o15Y8JwOCLp=yw@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 28 May 2021 17:27:04 +0200
-Message-ID: <CAKfTPtA6AyL2f-KqHXecZrYKmZ9r9mT=Ks6BeNLjV9dfbSZJxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:fc1a) by MWHPR1401CA0006.namprd14.prod.outlook.com (2603:10b6:301:4b::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22 via Frontend Transport; Fri, 28 May 2021 16:22:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d44e5827-286e-4478-b9a3-08d921f4d67a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3477:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3477D6E73AC066A2428B37B8BE229@BYAPR15MB3477.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AkGUu6XD823MhC0rvtjbF9hV9YNlcnXnBFGvogqzuRF5jjcd7iv98SxC4l1VCaZ/jPjLT7gBAWLzNrsMooYZ4eugHlBx7dotrDVdoCECNCAUXQ6LASAMi3wd5mimRA0W2hFIgSu40sY28tk4ls6ok+VKZ3zx9fWy7e+RwlMjlVYHTsllpgJ0VL5Qcu7eQs3N9mC63NrEf3rO0YD7u8K1cvMJwneZZsfzX9gM+pz9py/gqH1cCWrV7lZjTe7qrvnlZk5Itps5RNzUZNs6fjqnHMOEruK4RIhrbP+tsjWbl2Kb8cmY2IdBhND+GxYNc72bIHnUPB9GXZTPttmXlmp3nv/cTBMprHYfy3pRhc2R6d5zkQaYYx4ks5pLAOFjshdpZ2e7cYCXgHAxJtnfayu2Cjuy7HL4axIGLwI7bwzHNEAaOOnPJ0WpmGWtHvCnnkGau3ExDA50yO7BHmoMzCNpQntSYEH0ieenkaxjPosUgKCaR2s/4n6+w7JnKaygmLzHO7cOnxx+PjXI9QnfPmdI/5p2FdSv2V3qCdfLWm1HEcWZi75yPGxaexraSGcPx9Vq1BvMr+wQGb0+BEpx75QAq6jOHC62HE13cU8ndnm+MNA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(5660300002)(7696005)(66556008)(66476007)(52116002)(6506007)(55016002)(16526019)(7416002)(38100700002)(186003)(498600001)(8676002)(66946007)(54906003)(83380400001)(4326008)(9686003)(2906002)(6666004)(86362001)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?eIjyYd+wsv7LZta9B5NEGVxVo2n/JKAWZWqvgHCu+LS9UAmsdyzl4UymDYyF?=
+ =?us-ascii?Q?Zrm8DxCXx3pR16AglqwHsUZrWJJC0cv5nAbsPaOb3Pjt8TczYNe1utMp4LxE?=
+ =?us-ascii?Q?8WFAZZ6SGIjgUbCXUAXii+yOmWfxjaETUhZpclp17gOZmXvPm6mkiiN8EVuP?=
+ =?us-ascii?Q?56jX074TujDq68cJmzBg/RFCULiRbi5JjxE2CJ37p+selMzeFPkbYKnmKo4C?=
+ =?us-ascii?Q?QJI9mvbRYp20p7U6jKpOgQkFd03YBqRTYDVuB5kMxL0Up6D74arQ7B5ECqju?=
+ =?us-ascii?Q?/dL/UsMxJq7r0EyuM2GIpItNfvCI4aM6zjKEATi83Zm7W1jxh4V/m7Z9nrjq?=
+ =?us-ascii?Q?Cjp0TiZtx/ZUc30OtWP3gwXAyZUwzC6y+AhHu8XbMnY4AlX7Ns93rs5yiH4a?=
+ =?us-ascii?Q?N7inRteoSn9U+msp7AnHBz9pjDIl7fBvsaUWFw833UkYIkHr/55GJhxDpKCj?=
+ =?us-ascii?Q?Z2ADMI3En2oLOMHLiW1wLK1hhYRQg/LQkXnAHD2z0dLpVC8h/7RJwjmizJC0?=
+ =?us-ascii?Q?1jesYDcnpaj1cLhjzH3J29Jev5C0v4eUflO+cb3ENyifLe9IertF1khj4YPK?=
+ =?us-ascii?Q?ElIr6mzlS712trnQK5AzRSpanHFpbpqpptX/ujbmdHVQaCaGlWcraBSX5j5w?=
+ =?us-ascii?Q?eXe38CBG6EZ3Ef62Ho7smGe1VH/2qpbFk2K+aEXls3lI6bss2SEoNADCws2z?=
+ =?us-ascii?Q?PFDEwn2fzAVTLdrLtPL3+FTktuhdeDsjA/hj/YXW2dl4XumFXVF2458vznlT?=
+ =?us-ascii?Q?ltv5LembxgesodC5wc0Njp7qTKilYZ07ELQdNXCCobil4fau0R4M4aORXfRU?=
+ =?us-ascii?Q?KxgdXBQ4MghnBAZJhUFJ4h14sK/nYCeqTvQG3Nsg2EhZ651q9H0xG6gLitw/?=
+ =?us-ascii?Q?IM0frcZfUBRHXoteCFZZuZ5JBiW1kwHUBGZMy2iUrjLoVE15R4chBQBrJNVK?=
+ =?us-ascii?Q?F5G/s7ghLQufckiAaz2WZw3cHuXmytjSoNnuje3vR1bTVOOXRgs+0gWHR+5G?=
+ =?us-ascii?Q?dclDnx732OuexAOsyPTmrTZF1MJgXUYp5viyQDJD3WpGV3hhFj7Y0vh7lo92?=
+ =?us-ascii?Q?1XEs6AhTDH0OFht9KBgghPIWLqKu/PWSRsXJinVF15mVwBuGIs3p9ZJtk+TQ?=
+ =?us-ascii?Q?8vLsRCKQ4JsCjhP+75zn8nsSYjF7vXq2NzJt/aNfKfcxTF9Y1qAT4SO4IVOG?=
+ =?us-ascii?Q?eZliDMBF5Sj3eTJfkMV5rWo0MybZ4Oomk2QRhieUkaM3MZNgfDGaCFODw/UB?=
+ =?us-ascii?Q?4Ociql32XfS0qqGDMyV581BLZNPxbxjKSmCnigLBnRaYtcJwF1oC2pEcCz5F?=
+ =?us-ascii?Q?95bxireJdPB9EtbGy5YKalPzIZVyjxRlZy2tuYLNXbXX0Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d44e5827-286e-4478-b9a3-08d921f4d67a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 16:22:50.6295
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eP30q3dks0fVZUNkF9gyCFigrFIhZrtE/wc7gAhbba9K3GthXRLA/VPKwrNOhkvd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3477
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: rI9puzIEh1YmMZ7eQs-AxnirlJHd7MdE
+X-Proofpoint-ORIG-GUID: rI9puzIEh1YmMZ7eQs-AxnirlJHd7MdE
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_05:2021-05-27,2021-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 mlxlogscore=454 clxscore=1011 lowpriorityscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105280109
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, 28 May 2021 at 17:07, Odin Ugedal <odin@uged.al> wrote:
->
-> Hi,
->
-> > What would be the other condition in addition to the current one
-> > :cfs_rq->nr_running >= 1 ?
->
-> The condition is that if it has load, we should add it (I don't have
-> 100% control on util_avg and runnable_avg tho.). Using
-> "!cfs_rq_is_decayed()" is another way, but imo. that is a bit
-> overkill.
+On Fri, May 28, 2021 at 10:58:04AM +0800, Ming Lei wrote:
+> On Wed, May 26, 2021 at 03:25:57PM -0700, Roman Gushchin wrote:
+> > Asynchronously try to release dying cgwbs by switching clean attached
+> > inodes to the bdi's wb. It helps to get rid of per-cgroup writeback
+> > structures themselves and of pinned memory and block cgroups, which
+> > are way larger structures (mostly due to large per-cpu statistics
+> > data). It helps to prevent memory waste and different scalability
+> > problems caused by large piles of dying cgroups.
+> > 
+> > A cgwb cleanup operation can fail due to different reasons (e.g. the
+> > cgwb has in-glight/pending io, an attached inode is locked or isn't
+> > clean, etc). In this case the next scheduled cleanup will make a new
+> > attempt. An attempt is made each time a new cgwb is offlined (in other
+> > words a memcg and/or a blkcg is deleted by a user). In the future an
+> > additional attempt scheduled by a timer can be implemented.
+> > 
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > ---
+> >  fs/fs-writeback.c                | 35 ++++++++++++++++++
+> >  include/linux/backing-dev-defs.h |  1 +
+> >  include/linux/writeback.h        |  1 +
+> >  mm/backing-dev.c                 | 61 ++++++++++++++++++++++++++++++--
+> >  4 files changed, 96 insertions(+), 2 deletions(-)
+> > 
+> 
+> Hello Roman,
+> 
+> The following kernel panic is triggered by this patch:
 
-normally tg_load_avg_contrib should be null when cfs_rq_is_decayed()
+Hello Ming!
 
->
-> > We need to add a cfs_rq in the list if it still contributes to the
-> > tg->load_avg and the split of the share. Can't we add a condition for
-> > this instead of adding a new field ?
->
-> Yes, using cfs_rq->tg_load_avg_contrib as below would also work the
-> same way. I still think being explicit that we insert it if we have
-> removed it is cleaner in a way, as it makes it consistent with the
-> other use of list_add_leaf_cfs_rq() and list_del_leaf_cfs_rq(), but
+Thank you for the report and for trying my patches!
+I think I know what it is and will fix in the next version.
 
-The reason of this list is to ensure that the load of all cfs_rq are
-periodically updated  as it is then used to share the runtime between
-groups so we should keep to use the rule whenever possible.
-
-> that is about preference I guess. I do however think that using
-> tg_load_avg_contrib will work just fine, as it should always be
-> positive in case the cfs_rq has some load. I can resent v2 of this
-> patch using this instead;
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ad7556f99b4a..969ae7f930f5 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4720,7 +4720,7 @@ static int tg_unthrottle_up(struct task_group
-> *tg, void *data)
->                                              cfs_rq->throttled_clock_task;
->
->                 /* Add cfs_rq with already running entity in the list */
-> -               if (cfs_rq->nr_running >= 1)
-> +               if (cfs_rq->tg_load_avg_contrib)
-
-we probably need to keep (cfs_rq->nr_running >= 1) as we can have case
-where tg_load_avg_contrib is null but a task is enqueued
-
->                         list_add_leaf_cfs_rq(cfs_rq);
->         }
+Thanks!
