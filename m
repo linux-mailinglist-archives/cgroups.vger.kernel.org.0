@@ -2,28 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5674E399409
-	for <lists+cgroups@lfdr.de>; Wed,  2 Jun 2021 21:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B5339963C
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 01:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhFBT5E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Jun 2021 15:57:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56402 "EHLO
+        id S229952AbhFBXRr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Jun 2021 19:17:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38426 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhFBT5C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 15:57:02 -0400
+        with ESMTP id S229880AbhFBXRp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 19:17:45 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F276A219C3;
-        Wed,  2 Jun 2021 19:55:15 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 43EC1219D7;
+        Wed,  2 Jun 2021 23:16:00 +0000 (UTC)
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id CF189118DD;
-        Wed,  2 Jun 2021 19:55:03 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 4AECA118DD;
+        Wed,  2 Jun 2021 23:15:48 +0000 (UTC)
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id 3FtyJhfit2AuEAAALh3uQQ
-        (envelope-from <dave@stgolabs.net>); Wed, 02 Jun 2021 19:55:03 +0000
-Date:   Wed, 2 Jun 2021 12:54:58 -0700
+        id VMCuCCQRuGAfYQAALh3uQQ
+        (envelope-from <dave@stgolabs.net>); Wed, 02 Jun 2021 23:15:48 +0000
+Date:   Wed, 2 Jun 2021 16:15:42 -0700
 From:   Davidlohr Bueso <dave@stgolabs.net>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -73,8 +73,8 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         kgdb-bugreport@lists.sourceforge.net,
         linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
         rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 5/6] sched,timer: Use __set_current_state()
-Message-ID: <20210602195458.uj3rsci4suz4mufj@offworld>
+Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
+Message-ID: <20210602231542.ejrjbilfggq4whg7@offworld>
 Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
@@ -118,11 +118,11 @@ Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
         linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
         rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
 References: <20210602131225.336600299@infradead.org>
- <20210602133040.524487671@infradead.org>
+ <20210602133040.334970485@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210602133040.524487671@infradead.org>
+In-Reply-To: <20210602133040.334970485@infradead.org>
 User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -130,11 +130,29 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Wed, 02 Jun 2021, Peter Zijlstra wrote:
 
--ENOCHANGELONG
-
-But yeah, I thought we had gotten rid of all these.
-
+>Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
+>task_is_running(p).
 >
 >Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Acked-by: Davidlohr Bueso
+
+But afaict ....
+
+>---
+> arch/x86/kernel/process.c |    4 ++--
+> block/blk-mq.c            |    2 +-
+> include/linux/sched.h     |    2 ++
+> kernel/locking/lockdep.c  |    2 +-
+> kernel/rcu/tree_plugin.h  |    2 +-
+> kernel/sched/core.c       |    6 +++---
+> kernel/sched/stats.h      |    2 +-
+> kernel/signal.c           |    2 +-
+> kernel/softirq.c          |    3 +--
+> mm/compaction.c           |    2 +-
+> 10 files changed, 14 insertions(+), 13 deletions(-)
+
+there are also (on top of the already mentioned arch/):
+
+kernel/kcsan/report.c:  const bool is_running = current->state == TASK_RUNNING;
+kernel/locking/lockdep.c:       if (p->state == TASK_RUNNING && p != current)
