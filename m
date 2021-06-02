@@ -2,129 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6413F398DFA
-	for <lists+cgroups@lfdr.de>; Wed,  2 Jun 2021 17:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6007398ED8
+	for <lists+cgroups@lfdr.de>; Wed,  2 Jun 2021 17:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhFBPMO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Jun 2021 11:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhFBPML (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 2 Jun 2021 11:12:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73C1A61182;
-        Wed,  2 Jun 2021 15:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622646628;
-        bh=MmmB5edNPbRN/+c+2On4lV0BgwteW7Cw405ip5Z8YuI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eoW8oxXoywj95HF19beDzh3Wa+WhWkiyj9FjvvSEw7ScJ8OuGQbEy6+2TGjP0xVYN
-         XSSJAJXvhI5MOj1+GRdHIbg46k9rJSpJMlo/HDJefXpEwJPCDFcYn8COIR/VQO5DZl
-         47yzM30C6QaWLqEpy6LeVNCLBHEk+aKjfkrC6CQ5ViDR3bMQ0fCKMIt+zFjJNZMY+v
-         SNl2CwOo9QKvwQF6AUEFLQH9ccSyIziiULTl3YApDUWutkiYOLv0+Q04TM9wwWdkfx
-         bdsysjlbcoFBsmj9C1l84fr+oHwMhBsnHonyI6jC2MFd17CoX0BlIS16/UkYyFRS6U
-         MochfZ+/mAepQ==
-Date:   Wed, 2 Jun 2021 16:10:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 6/6] sched: Change task_struct::state
-Message-ID: <20210602151010.GE31179@willie-the-truck>
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.587042016@infradead.org>
+        id S231618AbhFBPl5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Jun 2021 11:41:57 -0400
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:45799 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhFBPl5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 11:41:57 -0400
+Received: by mail-lf1-f50.google.com with SMTP id j10so4038330lfb.12
+        for <cgroups@vger.kernel.org>; Wed, 02 Jun 2021 08:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=674c29vRdYAk6FicWWelzpFqgoTb+93XHQAYD/1H3Rk=;
+        b=bMiDXVuqX3MZ1ebHXMXAnz4i1FuII1AA/TtaUU/88MAika1cxyLKtGEw4MIsREXO+X
+         CmZ71Pfe+P+ouAxW5F5HeR1iDagoaN3GJttsjpbjfSz1LSg+IuI4e5UNdn4UjORrl6K+
+         XaPqXvgdw8TLFvyMzqZtVFtQS5SFrFKGudfhr+uc9hUomLbUqgFFrFiu3w55ZZk1jP39
+         hr35swpMuqa9ALpJR7bmDsxEZlhrUqP02UN7iDrYy5z5MKkj0qrIrk3lCYyl/p4apSad
+         EUvuVDgHsnEQqx5zQ1pjEdTpkGHpon7Q8wHvorS7CxXoxpEp+I2oZctN6bdA2OPFk2si
+         DWRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=674c29vRdYAk6FicWWelzpFqgoTb+93XHQAYD/1H3Rk=;
+        b=FfW7SGmZOuKtW/yMSW4D++tCopY8fq8N7ROUHqs0Sx1nsrOCmIxEP5I+VhSdHjhyVH
+         hXnYjA+G4cxofKHKYtQ9Blf7W1rS/i1X1tXypNWluhAeZ0zGgGTVbyt1qxVheg//+5HV
+         cseuf54uoE2t4auDeP8LqSxNoGJMSkjbv+jUk/s/zT4cCMwJBPwWQl3b6d5/AR7bhyeZ
+         TdsCv8isnLtoWKEXgeulw7W3l14odn6a+eernGOL0U1k6Q7F4sEm4IgjSN3a7tyPM/hL
+         bx8zGI8our4IUj96Z4yrii+p1pzNaL1souoSzbEY8LRcN8wyeDCkF1ByeQ4D1Wden98L
+         8EOA==
+X-Gm-Message-State: AOAM533HHjxFrRz6JQJ5ImMjPdz1jc+wpgt35mE570IA6+SfT6f8zNMp
+        GbrOkKzC0eP/WWLR5Kyfyf7CLGFOv7LFKfx6ULDNNA==
+X-Google-Smtp-Source: ABdhPJzUw8dMj8EA8JBuJZCLP1LL+HR9H3i2lXbH4Cv+UfaMzKjX96HEn5EaYGeRejpEEFOwMIB0RqQcUBfhNXWuomM=
+X-Received: by 2002:a05:6512:531:: with SMTP id o17mr10519925lfc.358.1622648353129;
+ Wed, 02 Jun 2021 08:39:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210602133040.587042016@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1622043596.git.yuleixzhang@tencent.com> <CALvZod4SoCS6ym8ELTxWd6UwzUp8m_UUdw7oApAhW2WRq0BXqw@mail.gmail.com>
+ <CACZOiM3VhYyzCTx4FbW=FF8WB=X46xaV53abqOVL+eHQOs8Reg@mail.gmail.com>
+ <YLZIBpJFkKNBCg2X@chrisdown.name> <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
+In-Reply-To: <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 2 Jun 2021 08:39:02 -0700
+Message-ID: <CALvZod7w1tzxvYCP54KHEo=k=qUd02UTkr+1+b5rTdn-tJt45w@mail.gmail.com>
+Subject: Re: [RFC 0/7] Introduce memory allocation speed throttle in memcg
+To:     yulei zhang <yulei.kernel@gmail.com>
+Cc:     Chris Down <chris@chrisdown.name>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <christian@brauner.io>,
+        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 03:12:31PM +0200, Peter Zijlstra wrote:
-> Change the type and name of task_struct::state. Drop the volatile and
-> shrink it to an 'unsigned int'. Rename it in order to find all uses
-> such that we can use READ_ONCE/WRITE_ONCE as appropriate.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  block/blk-mq.c                 |    2 -
->  drivers/md/dm.c                |    6 ++--
->  fs/binfmt_elf.c                |    8 +++---
->  fs/userfaultfd.c               |    4 +--
->  include/linux/sched.h          |   31 +++++++++++------------
->  include/linux/sched/debug.h    |    2 -
->  include/linux/sched/signal.h   |    2 -
->  init/init_task.c               |    2 -
->  kernel/cgroup/cgroup-v1.c      |    2 -
->  kernel/debug/kdb/kdb_support.c |   18 +++++++------
->  kernel/fork.c                  |    4 +--
->  kernel/hung_task.c             |    2 -
->  kernel/kthread.c               |    4 +--
->  kernel/locking/mutex.c         |    6 ++--
->  kernel/locking/rtmutex.c       |    4 +--
->  kernel/locking/rwsem.c         |    2 -
->  kernel/ptrace.c                |   12 ++++-----
->  kernel/rcu/rcutorture.c        |    4 +--
->  kernel/rcu/tree_stall.h        |   12 ++++-----
->  kernel/sched/core.c            |   53 +++++++++++++++++++++--------------------
->  kernel/sched/deadline.c        |   10 +++----
->  kernel/sched/fair.c            |   11 +++++---
->  lib/syscall.c                  |    4 +--
->  net/core/dev.c                 |    2 -
->  24 files changed, 108 insertions(+), 99 deletions(-)
+On Wed, Jun 2, 2021 at 2:11 AM yulei zhang <yulei.kernel@gmail.com> wrote:
+>
+> On Tue, Jun 1, 2021 at 10:45 PM Chris Down <chris@chrisdown.name> wrote:
+> >
+> > yulei zhang writes:
+> > >Yep, dynamically adjust the memory.high limits can ease the memory pressure
+> > >and postpone the global reclaim, but it can easily trigger the oom in
+> > >the cgroups,
+> >
+> > To go further on Shakeel's point, which I agree with, memory.high should
+> > _never_ result in memcg OOM. Even if the limit is breached dramatically, we
+> > don't OOM the cgroup. If you have a demonstration of memory.high resulting in
+> > cgroup-level OOM kills in recent kernels, then that needs to be provided. :-)
+>
+> You are right, I mistook it for max. Shakeel means the throttling
+> during context switch
+> which uses memory.high as threshold to calculate the sleep time.
+> Currently it only applies
+> to cgroupv2.  In this patchset we explore another idea to throttle the
+> memory usage, which
+> rely on setting an average allocation speed in memcg. We hope to
+> suppress the memory
+> usage in low priority cgroups when it reaches the system watermark and
+> still keep the activities
+> alive.
 
-I think this makes the code a _lot_ easier to understand, so:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-on the assumption that you'll fix get_wchan() for !x86 as well.
-
-Cheers,
-
-Will
+I think you need to make the case: why should we add one more form of
+throttling? Basically why memory.high is not good for your use-case
+and the proposed solution works better. Though IMO it would be a hard
+sell.
