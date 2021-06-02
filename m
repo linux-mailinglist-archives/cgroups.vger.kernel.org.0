@@ -2,90 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DC4398502
-	for <lists+cgroups@lfdr.de>; Wed,  2 Jun 2021 11:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC716398ACC
+	for <lists+cgroups@lfdr.de>; Wed,  2 Jun 2021 15:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFBJN1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Jun 2021 05:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+        id S229640AbhFBNff (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Jun 2021 09:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhFBJN0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 05:13:26 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D537BC061574
-        for <cgroups@vger.kernel.org>; Wed,  2 Jun 2021 02:11:43 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id x15so1971087oic.13
-        for <cgroups@vger.kernel.org>; Wed, 02 Jun 2021 02:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiAxINQdIi7+HKRfHkFG9l2vkzASih/fGHAjPl9o30o=;
-        b=Lfml9qG8E5om9EGGt1K9NrtEPh3JmhHemfh/T9ecn4hRxiACaf+qtqZDkwaOb9trMG
-         ixX+y+wRuf9EwKeYGeMFgWmTx4j4EFKRvSYA0T9z4yZrOudlee98LFKNYwrCY3zjbdkC
-         yQQQEGXE9yiZwWEN3sZma/nlj+w6IZ+I+qQMga77fgthsNu9DMlV21wJIUt5FhABt4JQ
-         8HcqQe7gyou6nJbv/rShsG5Mf/3ioXoGQkS3DDgwQ54l46DBN0WZbM8JMiodb55t0ppq
-         I9dFPFDNvA7BTLTCQVG/Q3qItNTBfcihwoRp5Zum/8gMvXIPSUYGLALNE+vB3aSk88YP
-         KodA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiAxINQdIi7+HKRfHkFG9l2vkzASih/fGHAjPl9o30o=;
-        b=i/3BKB4434tUEhc6cvcYryK8zBF3NMkFCWC7D3QgGwIRp5Esost/AQIAjh/AIjaHtr
-         kRGC6KtrGEX4RE6L9RlAc6dVHWQ1GkK6oGG6kR8j4zMUxYyKTL6GPGlBPIUUVFkOWygk
-         MUi20J0W5klYJLVspS0HG3K6jj2UpzJqiUqyve2gf+0selD+mzXlxI+h2qWDwvrLj7Oa
-         /8nLyXsYJ9wGS69HW7xw+bozMGddiCMkKa+/oBTtid2QTGDXVNEi0fPrsQ8nfakAFT/Q
-         ob19GLcNu0RycMZTdIl2ciFTXH3rFBjZgIeY4nDItZsV3NeyeRsECUsIsE8vEMZ4cd8Q
-         +YHA==
-X-Gm-Message-State: AOAM530V7EHTpkqG+tDCBaDFEl3BXUFR89g9LUkIt+lQiZ5coZKoqvIL
-        pUVUgseQpPSquQ0BLOfyTn5ZsQtIxw5BsKcJI8o=
-X-Google-Smtp-Source: ABdhPJxt0e62W0fleD+lVbVQs4PUfIpjRBhm4weeIQP47c+R5HbP+Sq1IvFsgmUWw4T7ULWm3dqQvJYL0ozfi+QiIqI=
-X-Received: by 2002:aca:fcca:: with SMTP id a193mr3306773oii.40.1622625103325;
- Wed, 02 Jun 2021 02:11:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1622043596.git.yuleixzhang@tencent.com> <CALvZod4SoCS6ym8ELTxWd6UwzUp8m_UUdw7oApAhW2WRq0BXqw@mail.gmail.com>
- <CACZOiM3VhYyzCTx4FbW=FF8WB=X46xaV53abqOVL+eHQOs8Reg@mail.gmail.com> <YLZIBpJFkKNBCg2X@chrisdown.name>
-In-Reply-To: <YLZIBpJFkKNBCg2X@chrisdown.name>
-From:   yulei zhang <yulei.kernel@gmail.com>
-Date:   Wed, 2 Jun 2021 17:11:32 +0800
-Message-ID: <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
-Subject: Re: [RFC 0/7] Introduce memory allocation speed throttle in memcg
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S229794AbhFBNfd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 09:35:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E97C061574;
+        Wed,  2 Jun 2021 06:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=+0GJIyUeezLFp/ym4/vP+fC11EDSc+9M3QstIcNFnoM=; b=HwUP711Hi7fk/GRlHwhhfYuQB5
+        K5vYCOeQPuOhkpRqo74FjxBE7Qmwx8Wj6GWtoLKoGosJHAwdRgo9jNLQy1TmIkJWwpfsGoVcLemhp
+        yE/DBMFhvtilIfo4dv1JJaSo/mfYt/uX/LfisWcd+3wnlJLAvfkdTdiO1+HtsYKFPZ/tV6bjzqFeK
+        4bo4vY52aoMqPrC7we688zYhvu7+dOw4A1kcJpeVTuCoCOtBGxbR88VN+otXu+yI9l3xV+f66r/TA
+        vzFWO4ght7JIQB07yN0JwJ0Lzx83FvV5EUgJ9xU0ODmz2KYDDLO3n44qTW1zqH17jqyBTMXum4Ngk
+        tEM+eMIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1loQxh-00B8o5-Il; Wed, 02 Jun 2021 13:31:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4DFC30008D;
+        Wed,  2 Jun 2021 15:31:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 90C662C08A5B8; Wed,  2 Jun 2021 15:31:04 +0200 (CEST)
+Message-ID: <20210602131225.336600299@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 02 Jun 2021 15:12:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <christian@brauner.io>,
-        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: [PATCH 0/6] sched: Cleanup task_struct::state
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 10:45 PM Chris Down <chris@chrisdown.name> wrote:
->
-> yulei zhang writes:
-> >Yep, dynamically adjust the memory.high limits can ease the memory pressure
-> >and postpone the global reclaim, but it can easily trigger the oom in
-> >the cgroups,
->
-> To go further on Shakeel's point, which I agree with, memory.high should
-> _never_ result in memcg OOM. Even if the limit is breached dramatically, we
-> don't OOM the cgroup. If you have a demonstration of memory.high resulting in
-> cgroup-level OOM kills in recent kernels, then that needs to be provided. :-)
+Hi!
 
-You are right, I mistook it for max. Shakeel means the throttling
-during context switch
-which uses memory.high as threshold to calculate the sleep time.
-Currently it only applies
-to cgroupv2.  In this patchset we explore another idea to throttle the
-memory usage, which
-rely on setting an average allocation speed in memcg. We hope to
-suppress the memory
-usage in low priority cgroups when it reaches the system watermark and
-still keep the activities
-alive.
+The task_struct::state variable is a bit odd in a number of ways:
+
+ - it's declared 'volatile' (against current practises);
+ - it's 'unsigned long' which is a weird size;
+ - it's type is inconsistent when used for function arguments.
+
+These patches clean that up by making it consistently 'unsigned int', and
+replace (almost) all accesses with READ_ONCE()/WRITE_ONCE(). In order to not
+miss any, the variable is renamed, ensuring a missed conversion results in a
+compile error.
+
+The first few patches fix a number of pre-existing errors and introduce a few
+helpers to make the final conversion less painful.
+
+
