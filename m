@@ -2,96 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE01399FF6
-	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 13:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C60439A192
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 14:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhFCLko (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Jun 2021 07:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhFCLko (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 07:40:44 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59F6C06174A
-        for <cgroups@vger.kernel.org>; Thu,  3 Jun 2021 04:38:59 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id z8so5479176wrp.12
-        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 04:38:59 -0700 (PDT)
+        id S230313AbhFCMzA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Jun 2021 08:55:00 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:39627 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhFCMzA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 08:55:00 -0400
+Received: by mail-lf1-f45.google.com with SMTP id p17so7877241lfc.6
+        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 05:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wiKfBxTb65s9ryPk0mFCpTofRIT4fNKHgWxxNUTFSrY=;
-        b=LEUQzE+TXNrsF7VkTKq1fOZ1V0WA+d+HQMLVNnkA/g+4Qw712FXlgXSf8/gadK8Bro
-         Kz2E5md4HlTtFR6XSPmsArHCMFvNKKbUz8s6bvVZ8h3VmtAvpACaB0RAtlLg2BQA0irt
-         RAl3xa49jeclb3y6buUFOf1iCnIe8lU5lINRo=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
+        b=mkYMalVHjpfomaWeFWDWX9glGkJHhsdYkZIp8eFDb0kxyUonE980Dq+4l3iVMucOKv
+         /EIKyQCKHFCEZXAQDj6hIR8Ot8arkMF1kblq7fAHcIzO+4g4wLM3PDocDRqhRHl1i4o4
+         Laj2syzgyAjKpRqxjAPRCDZ8NpA6G/G8D5H8ie7sgttBLI1fdVjZuX87mGAX+BQXBavf
+         lBCM2WVLrwLAC+pRRcQuAZ/tS0nAbzaUyaL7fKysEiKgSpXmeNuRqZniBgHzeaG7nSE1
+         tkyZocErWj3cgE18KuwIy6uNfE6LUmri061DG2AeTM1pS6luFQPo6Fwb84sGOLr6ctSW
+         nlUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wiKfBxTb65s9ryPk0mFCpTofRIT4fNKHgWxxNUTFSrY=;
-        b=BCbPeHuszmigo/fUWi2vFrM5cmuXtchmVBsKtJbADq0oPrMCTS+SqBICOLWzc0sxFH
-         kHGBNjmtsvBhpEZUpkHTOH3j/CtzfjAAA1OOumcsWFQ3n/smLezNZWzQ+A07EO/jQwZW
-         4Qp19kDIwS0Yj1SJZUCLL7RKmpRxyaHsDaZdPn3ywQjFaK8Pl7NgIRq7e5mNHw4zRXVq
-         /I2kj0NGma8Pu942u3cwyksRFwyL4A54cvOPPzistIuGdbYi+YswJvzTgIXqpMMDDvsu
-         yDaHMlraBq7jNPw6UOxI522akLP0rWwmFXr8H6mIzqFPM9kl4VwRRbuDztFe6xqMc67+
-         2xWQ==
-X-Gm-Message-State: AOAM530kLmr174JZ4xvOF6fb3uB7Kp+Bb2Z80fFu9YADTyj9v46LG/Fs
-        RJnzeKhEv2b6vixzwEwcrjvruA==
-X-Google-Smtp-Source: ABdhPJyiojPkL7BvnHVWyvRKsGmV8JltIBBNsXo803sUgldDWytbvs4czs072QurGSSHveY7DFRu1g==
-X-Received: by 2002:a5d:4c48:: with SMTP id n8mr8853436wrt.327.1622720338313;
-        Thu, 03 Jun 2021 04:38:58 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:6726])
-        by smtp.gmail.com with ESMTPSA id t14sm2962551wra.60.2021.06.03.04.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 04:38:57 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 12:38:57 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     yulei zhang <yulei.kernel@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <christian@brauner.io>,
-        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: Re: [RFC 0/7] Introduce memory allocation speed throttle in memcg
-Message-ID: <YLi/UeS71mk12VZ3@chrisdown.name>
-References: <cover.1622043596.git.yuleixzhang@tencent.com>
- <CALvZod4SoCS6ym8ELTxWd6UwzUp8m_UUdw7oApAhW2WRq0BXqw@mail.gmail.com>
- <CACZOiM3VhYyzCTx4FbW=FF8WB=X46xaV53abqOVL+eHQOs8Reg@mail.gmail.com>
- <YLZIBpJFkKNBCg2X@chrisdown.name>
- <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
- <CALvZod7w1tzxvYCP54KHEo=k=qUd02UTkr+1+b5rTdn-tJt45w@mail.gmail.com>
- <CACZOiM3g6GhJgXurMPeE3A7zO8eUhoUPyUvyT3p2Kw98WkX8+g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
+        b=pV0aor/Oi62TGlYWwa7Uoy8JZD2/G8PWlFnJOTxY1aETVSLVGqoAiNy2I4Tdwv7OW6
+         m/bQzeSCVf/xQrn/BZQv/4gYgZLAeWt6FMgWjqIZlC9iiNeAxzlqgGbI3wNfCrIGdBXq
+         r+d1BDSNi08tJDeIAsLLLf4ME2FNWbYaFaKRUqJmERbP+ORb5yNEe6OBYH3asM2t17we
+         ZS1fm5bcYzaCm463+Ckc8BDtowSHBT6dq85RvHNFWcIqt48CMDD8/uIpbCn1esGsA9B8
+         Ja5shNVTqSOJ6hxhB/ifupTcLL4o3VTeYDnIRmwk0NmMIa2Sadj1q0lMBwMRM5aYCD8d
+         j8Ew==
+X-Gm-Message-State: AOAM530p0IspMX+2GdMQ4s+orL4G/HxMYDarWV0LLOUx07R0QLkfLQDT
+        LiPt/5SbtPZgaqo03lvwzVy7FCixOqbqO6mLiOiLyQ==
+X-Google-Smtp-Source: ABdhPJzeE0g2LtPg9P10vFEg0O/PtJxa3icrm3fDoEs1X0A5mi9Y9C/b8U/rqC9xceoyXFnUDn0hLMXtzITAqfeurG0=
+X-Received: by 2002:a19:4810:: with SMTP id v16mr9307733lfa.254.1622724721651;
+ Thu, 03 Jun 2021 05:52:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CACZOiM3g6GhJgXurMPeE3A7zO8eUhoUPyUvyT3p2Kw98WkX8+g@mail.gmail.com>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+References: <20210603113847.163512-1-odin@uged.al>
+In-Reply-To: <20210603113847.163512-1-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 3 Jun 2021 14:51:50 +0200
+Message-ID: <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-yulei zhang writes:
->Thanks. IMHO, there are differences between these two throttlings.
->memory.high is a per-memcg throttle which targets to limit the memory
->usage of the tasks in the cgroup. For the memory allocation speed throttle(MST),
->the purpose is to avoid the memory burst in cgroup which would trigger
->the global reclaim and affects the timing sensitive workloads in other cgroup.
->For example, we have two pods with memory overcommit enabled, one includes
->online tasks and the other has offline tasks, if we restrict the memory usage of
->the offline pod with memory.high, it will lose the benefit of memory overcommit
->when the other workloads are idle. On the other hand, if we don't
->limit the memory
->usage, it will easily break the system watermark when there suddenly has massive
->memory operations. If enable MST in this case, we will be able to
->avoid the direct
->reclaim and leverage the overcommit.
+On Thu, 3 Jun 2021 at 13:41, Odin Ugedal <odin@uged.al> wrote:
+>
+> This fixes an issue where fairness is decreased since cfs_rq's can
+> end up not being decayed properly. For two sibling control groups with
+> the same priority, this can often lead to a load ratio of 99/1 (!!).
+>
+> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+> will be removed from the leaf list. When they initial cfs_rq is
+> unthrottled, it will currently only re add descendant cfs_rq's if they
+> have one or more entities enqueued. This is not a perfect heuristic.
+>
+> Insted, we insert all cfs_rq's that contain one or more enqueued
+> entities, or contributes to the load of the task group.
+>
+> Can often lead to sutiations like this for equally weighted control
+> groups:
+>
+> $ ps u -C stress
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+>
+> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>
+> Original thread: https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/
+> Changes since v1:
+>  - Replaced cfs_rq field with using tg_load_avg_contrib
+>  - Went from 3 to 1 pathces; one is merged and one is replaced
+>    by a new patchset.
+>
+>  kernel/sched/fair.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 794c2cb945f8..0f1b39ca5ca8 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4719,8 +4719,11 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+>                                              cfs_rq->throttled_clock_task;
+>
+> -               /* Add cfs_rq with already running entity in the list */
+> -               if (cfs_rq->nr_running >= 1)
+> +               /*
+> +                * Add cfs_rq with tg load avg contribution or one or more
+> +                * already running entities to the list
+> +                */
+> +               if (cfs_rq->tg_load_avg_contrib || cfs_rq->nr_running)
 
-Having a speed throttle is a very primitive knob: it's hard to know what the 
-correct values are for a user. That's one of the reasons why we've moved away 
-from that kind of tunable for blkio.
+Out of curiosity, why did you decide to use
+cfs_rq->tg_load_avg_contrib instead of !cfs_rq_is_decayed(cfs_rq)
+which is used to delete the cfs_rq from the list when updating blocked
+load ?
 
-Ultimately, if you want work-conserving behaviour, why not use memory.low?
+>                         list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>
+> --
+> 2.31.1
+>
