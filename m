@@ -2,157 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B5339963C
-	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 01:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBAB39974A
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 02:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhFBXRr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Jun 2021 19:17:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38426 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhFBXRp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 19:17:45 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 43EC1219D7;
-        Wed,  2 Jun 2021 23:16:00 +0000 (UTC)
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 4AECA118DD;
-        Wed,  2 Jun 2021 23:15:48 +0000 (UTC)
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id VMCuCCQRuGAfYQAALh3uQQ
-        (envelope-from <dave@stgolabs.net>); Wed, 02 Jun 2021 23:15:48 +0000
-Date:   Wed, 2 Jun 2021 16:15:42 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/6] sched: Introduce task_is_running()
-Message-ID: <20210602231542.ejrjbilfggq4whg7@offworld>
-Mail-Followup-To: Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>,
-        dm-devel@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
-        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
-References: <20210602131225.336600299@infradead.org>
- <20210602133040.334970485@infradead.org>
+        id S229702AbhFCA5e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Jun 2021 20:57:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7560 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229663AbhFCA5d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Jun 2021 20:57:33 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1530sQVf013225
+        for <cgroups@vger.kernel.org>; Wed, 2 Jun 2021 17:55:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=yiPoD68+sDtq2panK610F9d/gT/Vb3ovaQ8YE52c+AY=;
+ b=dzP4JXPpVUqk4YZb1QBDC1odmdtkSp9HM0WR//9FfGhTUK+um4cxrx8i0zEN1DutA+Pz
+ xeKXynsxLRNc7Fbhxq2xam8BV2LwNGGQ//+CpWntFgxe6GncJKMRZbXPKRvqAr6p+kg5
+ FTz9fAFn7ZE/3+vhMMEC8nl+sv54dJJlu7E= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 38xj5k8yxd-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <cgroups@vger.kernel.org>; Wed, 02 Jun 2021 17:55:49 -0700
+Received: from intmgw001.46.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 2 Jun 2021 17:55:23 -0700
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id 934D17F192A2; Wed,  2 Jun 2021 17:55:22 -0700 (PDT)
+From:   Roman Gushchin <guro@fb.com>
+To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v6 0/5] cgroup, blkcg: prevent dirty inodes to pin dying memory cgroups
+Date:   Wed, 2 Jun 2021 17:55:12 -0700
+Message-ID: <20210603005517.1403689-1-guro@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210602133040.334970485@infradead.org>
-User-Agent: NeoMutt/20201120
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: IzAQEZu5s4jYo-e-WEuB5gkQbqqoPc_f
+X-Proofpoint-ORIG-GUID: IzAQEZu5s4jYo-e-WEuB5gkQbqqoPc_f
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-06-02_11:2021-06-02,2021-06-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ mlxlogscore=337 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106030004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 02 Jun 2021, Peter Zijlstra wrote:
+When an inode is getting dirty for the first time it's associated
+with a wb structure (see __inode_attach_wb()). It can later be
+switched to another wb (if e.g. some other cgroup is writing a lot of
+data to the same inode), but otherwise stays attached to the original
+wb until being reclaimed.
 
->Replace a bunch of 'p->state == TASK_RUNNING' with a new helper:
->task_is_running(p).
->
->Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+The problem is that the wb structure holds a reference to the original
+memory and blkcg cgroups. So if an inode has been dirty once and later
+is actively used in read-only mode, it has a good chance to pin down
+the original memory and blkcg cgroups forewer. This is often the case wit=
+h
+services bringing data for other services, e.g. updating some rpm
+packages.
 
-Acked-by: Davidlohr Bueso
+In the real life it becomes a problem due to a large size of the memcg
+structure, which can easily be 1000x larger than an inode. Also a
+really large number of dying cgroups can raise different scalability
+issues, e.g. making the memory reclaim costly and less effective.
 
-But afaict ....
+To solve the problem inodes should be eventually detached from the
+corresponding writeback structure. It's inefficient to do it after
+every writeback completion. Instead it can be done whenever the
+original memory cgroup is offlined and writeback structure is getting
+killed. Scanning over a (potentially long) list of inodes and detach
+them from the writeback structure can take quite some time. To avoid
+scanning all inodes, attached inodes are kept on a new list (b_attached).
+To make it less noticeable to a user, the scanning and switching is perfo=
+rmed
+from a work context.
 
->---
-> arch/x86/kernel/process.c |    4 ++--
-> block/blk-mq.c            |    2 +-
-> include/linux/sched.h     |    2 ++
-> kernel/locking/lockdep.c  |    2 +-
-> kernel/rcu/tree_plugin.h  |    2 +-
-> kernel/sched/core.c       |    6 +++---
-> kernel/sched/stats.h      |    2 +-
-> kernel/signal.c           |    2 +-
-> kernel/softirq.c          |    3 +--
-> mm/compaction.c           |    2 +-
-> 10 files changed, 14 insertions(+), 13 deletions(-)
+Big thanks to Jan Kara, Dennis Zhou and Hillf Danton for their ideas and
+contribution to this patchset.
 
-there are also (on top of the already mentioned arch/):
 
-kernel/kcsan/report.c:  const bool is_running = current->state == TASK_RUNNING;
-kernel/locking/lockdep.c:       if (p->state == TASK_RUNNING && p != current)
+v6:
+  - extended and reused wbs switching functionality to switch inodes
+    on cgwb cleanup
+  - fixed offline_list handling
+  - switched to the unbound_wq
+  - other minor fixes
+
+v5:
+  - switch inodes to bdi->wb instead of zeroing inode->i_wb
+  - split the single patch into two
+  - only cgwbs maintain lists of attached inodes
+  - added cond_resched()
+  - fixed !CONFIG_CGROUP_WRITEBACK handling
+  - extended list of prohibited inodes flag
+  - other small fixes
+
+
+Roman Gushchin (5):
+  writeback, cgroup: switch to rcu_work API in inode_switch_wbs()
+  writeback, cgroup: keep list of inodes attached to bdi_writeback
+  writeback, cgroup: split out the functional part of
+    inode_switch_wbs_work_fn()
+  writeback, cgroup: support switching multiple inodes at once
+  writeback, cgroup: release dying cgwbs by switching attached inodes
+
+ fs/fs-writeback.c                | 201 ++++++++++++++++++++++---------
+ include/linux/backing-dev-defs.h |   2 +
+ include/linux/writeback.h        |   1 +
+ mm/backing-dev.c                 |  60 ++++++++-
+ 4 files changed, 204 insertions(+), 60 deletions(-)
+
+--=20
+2.31.1
+
