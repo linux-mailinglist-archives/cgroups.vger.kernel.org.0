@@ -2,53 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C60439A192
-	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 14:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E7839A1F0
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 15:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFCMzA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Jun 2021 08:55:00 -0400
-Received: from mail-lf1-f45.google.com ([209.85.167.45]:39627 "EHLO
-        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbhFCMzA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 08:55:00 -0400
-Received: by mail-lf1-f45.google.com with SMTP id p17so7877241lfc.6
-        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 05:53:02 -0700 (PDT)
+        id S231300AbhFCNPA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Jun 2021 09:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhFCNPA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 09:15:00 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C5CC061756
+        for <cgroups@vger.kernel.org>; Thu,  3 Jun 2021 06:13:15 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id i68so2242949qke.3
+        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 06:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
-        b=mkYMalVHjpfomaWeFWDWX9glGkJHhsdYkZIp8eFDb0kxyUonE980Dq+4l3iVMucOKv
-         /EIKyQCKHFCEZXAQDj6hIR8Ot8arkMF1kblq7fAHcIzO+4g4wLM3PDocDRqhRHl1i4o4
-         Laj2syzgyAjKpRqxjAPRCDZ8NpA6G/G8D5H8ie7sgttBLI1fdVjZuX87mGAX+BQXBavf
-         lBCM2WVLrwLAC+pRRcQuAZ/tS0nAbzaUyaL7fKysEiKgSpXmeNuRqZniBgHzeaG7nSE1
-         tkyZocErWj3cgE18KuwIy6uNfE6LUmri061DG2AeTM1pS6luFQPo6Fwb84sGOLr6ctSW
-         nlUw==
+        bh=CBnvtPJLdU3kbekuheh4qc6OMIUkdKF2nOgchdFq6rc=;
+        b=YydysQuJcuB2zxLOLbU7aPah7Lb9RIs2OcRo39zEyZjr57DV83DYJnlesShXVJ/QiQ
+         OE6cEKWBwFj9wQk7+c5zcnkWBG54Kkxqbl0M6gEgwbP9dS/rvWFPp4cub55w8/YvXPJ4
+         ZFERiNBM+Cd4rd+RFXXpgR98D4/TL67NEbVKyJ7BLxl8fkqjOVGC9YvpCzEnyREsUAnS
+         bf0nyIKcT8C8/5soIFtGyBGiTRiG2Xgvl7Y2a20N9wXoTizrqKcrnvflGNSAUbTT4s/8
+         dL3l5XRaR6DQt5pW+i0CaDjUpMTGsww5MQnDP1M6A+xnZIp6AK3AxMIRKWCDgTRszgzh
+         7H0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KXSPFYUv+frq5B31P2+9676MnBddW3+j4BZ+XqvE/IU=;
-        b=pV0aor/Oi62TGlYWwa7Uoy8JZD2/G8PWlFnJOTxY1aETVSLVGqoAiNy2I4Tdwv7OW6
-         m/bQzeSCVf/xQrn/BZQv/4gYgZLAeWt6FMgWjqIZlC9iiNeAxzlqgGbI3wNfCrIGdBXq
-         r+d1BDSNi08tJDeIAsLLLf4ME2FNWbYaFaKRUqJmERbP+ORb5yNEe6OBYH3asM2t17we
-         ZS1fm5bcYzaCm463+Ckc8BDtowSHBT6dq85RvHNFWcIqt48CMDD8/uIpbCn1esGsA9B8
-         Ja5shNVTqSOJ6hxhB/ifupTcLL4o3VTeYDnIRmwk0NmMIa2Sadj1q0lMBwMRM5aYCD8d
-         j8Ew==
-X-Gm-Message-State: AOAM530p0IspMX+2GdMQ4s+orL4G/HxMYDarWV0LLOUx07R0QLkfLQDT
-        LiPt/5SbtPZgaqo03lvwzVy7FCixOqbqO6mLiOiLyQ==
-X-Google-Smtp-Source: ABdhPJzeE0g2LtPg9P10vFEg0O/PtJxa3icrm3fDoEs1X0A5mi9Y9C/b8U/rqC9xceoyXFnUDn0hLMXtzITAqfeurG0=
-X-Received: by 2002:a19:4810:: with SMTP id v16mr9307733lfa.254.1622724721651;
- Thu, 03 Jun 2021 05:52:01 -0700 (PDT)
+        bh=CBnvtPJLdU3kbekuheh4qc6OMIUkdKF2nOgchdFq6rc=;
+        b=BYyiIkKM3JXCB6ww0OIvoFRriihAON5S69/jQjqNBtaaIKdx26CKs02jXgWtek9fPA
+         6072WdY/m3gADc0yAYAfeQm7n2LT6GTQqyoRqBTQxnQDPa+nlCHZZV3YcPhjD+houNXF
+         P7w63beatTqp+zPdX2gBiyCscHSK5V//RY6Leh04h0SskqqL+a1scKDU4P90su2RRcau
+         53oRSSfDmOev09bK2wM8fRrcFqwrZNCcp3TQsvIPZTF4eGNzIVK5cdf07iAY1sWUQFkN
+         gG83ZrVidpbIKqnhsBo74hKAPngf7/85hzIqCDaQ7CbpBz5w363ShounQQVoWasS6ZN8
+         QIqQ==
+X-Gm-Message-State: AOAM532jmSuGUFkBZupSsAHCpYfT0rv815NIc2/jvJilxVaNoSa32yCb
+        H7Rsiv7+hhz+DC5b/bR8VXNdFBzfm/r/9OzpTfky2g==
+X-Google-Smtp-Source: ABdhPJy3fg1eAKeZKx3roYQlvpzvGEXbvbyAsV6pgVkJRFM2NKaW6ztQcywMc9i70oYtHcwhz5ThuxN3kRbAY9Jf8wE=
+X-Received: by 2002:a37:8b47:: with SMTP id n68mr4054613qkd.209.1622725994875;
+ Thu, 03 Jun 2021 06:13:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210603113847.163512-1-odin@uged.al>
-In-Reply-To: <20210603113847.163512-1-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 3 Jun 2021 14:51:50 +0200
-Message-ID: <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+References: <20210603113847.163512-1-odin@uged.al> <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+In-Reply-To: <CAKfTPtAK3gEqChUmoUXo7KLqPAFo=shH4Yi=QLjrwpuu6Ow6-Q@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Thu, 3 Jun 2021 15:12:35 +0200
+Message-ID: <CAFpoUr2HBexs5784nU7hyDSs0eNiEut=-4wWcnpMtSVtFeaLLA@mail.gmail.com>
 Subject: Re: [PATCH v2] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -62,65 +65,35 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 3 Jun 2021 at 13:41, Odin Ugedal <odin@uged.al> wrote:
->
-> This fixes an issue where fairness is decreased since cfs_rq's can
-> end up not being decayed properly. For two sibling control groups with
-> the same priority, this can often lead to a load ratio of 99/1 (!!).
->
-> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
-> will be removed from the leaf list. When they initial cfs_rq is
-> unthrottled, it will currently only re add descendant cfs_rq's if they
-> have one or more entities enqueued. This is not a perfect heuristic.
->
-> Insted, we insert all cfs_rq's that contain one or more enqueued
-> entities, or contributes to the load of the task group.
->
-> Can often lead to sutiations like this for equally weighted control
-> groups:
->
-> $ ps u -C stress
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
-> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
->
-> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
->
-> Original thread: https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/
-> Changes since v1:
->  - Replaced cfs_rq field with using tg_load_avg_contrib
->  - Went from 3 to 1 pathces; one is merged and one is replaced
->    by a new patchset.
->
->  kernel/sched/fair.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 794c2cb945f8..0f1b39ca5ca8 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4719,8 +4719,11 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
->                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
->                                              cfs_rq->throttled_clock_task;
->
-> -               /* Add cfs_rq with already running entity in the list */
-> -               if (cfs_rq->nr_running >= 1)
-> +               /*
-> +                * Add cfs_rq with tg load avg contribution or one or more
-> +                * already running entities to the list
-> +                */
-> +               if (cfs_rq->tg_load_avg_contrib || cfs_rq->nr_running)
+Hi,
 
-Out of curiosity, why did you decide to use
-cfs_rq->tg_load_avg_contrib instead of !cfs_rq_is_decayed(cfs_rq)
-which is used to delete the cfs_rq from the list when updating blocked
-load ?
+> Out of curiosity, why did you decide to use
+> cfs_rq->tg_load_avg_contrib instead of !cfs_rq_is_decayed(cfs_rq)
+> which is used to delete the cfs_rq from the list when updating blocked
+> load ?
 
->                         list_add_leaf_cfs_rq(cfs_rq);
->         }
->
-> --
-> 2.31.1
->
+Well, the main reason was that it is currently (without the other in
+flight patches) not safe to just use "cfs_rq_is_decayed" directly,
+since that could result in
+a situation where tg_load_avg_contrib!=0 while
+cfs_rq_is_decayed()==true. I guess we can use cfs_rq_is_decayed() if
+you prefer that,
+and all the other PELT patches are merged. (This was initially why I
+thought a new field was a simpler and more elegant solution to make
+sure we book-keep correctly,
+but when the PELT stuff is fixed properly, that should be no real
+issue as long it works as we expect).
+
+I was also thinking about the cfs_rq->nr_running part; is there a
+chance of a situation where a cfs_rq->nr_running==1 and it has no
+load, resulting in it being decayed and
+removed from the list in "__update_blocked_fair"? I have not looked
+properly at it, but just wondering if that is actually possible..
+
+
+Also, out of curiosity, are there some implications of a situation
+where tg_load_avg_contrib=0 while *_load!=0, or would that not cause
+fairness issues?
+
+Thanks
+Odin
