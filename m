@@ -2,92 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF91539A64E
-	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 18:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2F639A6EE
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 19:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhFCQ4O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Jun 2021 12:56:14 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:46873 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFCQ4O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 12:56:14 -0400
-Received: by mail-lj1-f177.google.com with SMTP id e11so7952085ljn.13
-        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 09:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t0rBINIjyYVjiWlKA6CZdf8Cu1m85/b95NW0HipMWEw=;
-        b=RT6DDw3hX0Vd0D9y8P1+wlBANWRsJKcOTL5XNuqjuoqdcO+eVWb3h5lPuPBdWbpXRP
-         qS7RpEK9U4hewHkB9ReHFH0CpGE6xxnLud53HxAhqun48esVrJ2Tsyp+XW2wrFLkrwHK
-         lH/KFiL4LHRVHxBi+EJaxQ1OcbONA/XKS1BDaSuddZH/u57dzNoDmqyVp/ACKK8Zo9xA
-         GYN86bl7bcGB1HAkjN9u3Li/fE5sVQbAL/zx25EkFYVTSn2KJIenbUvhjj/7OSdYsqOj
-         aF8pnMaxmokmARnSb/3P9IcKdc1ySVi+6IVr0FK6l431NPIU5pv9T8uTmzgRjZmKVxX7
-         SuIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t0rBINIjyYVjiWlKA6CZdf8Cu1m85/b95NW0HipMWEw=;
-        b=iFYeAGSKwk34U0RjzHP6eYncpWA1Lxl1rKDGyVIbUCFTzu8mFebd8O+OW31UB+NtNW
-         RmMxRuO0T/kc1ZMKF//Wd1DBRYmqW07WlWqwwWS/VGjedOKeH9h0LTs3FrKvDcf90Pk7
-         ykHvOFRZs4aWf/t7VWy2b9tH2+nfzX08tBXg0EZzRZjSRCRTifWflrCiPPxfQtlzV9+F
-         23W2AJrbUJ/fn2in2MTjMDaYmfeXOWR001NJFoXKolwT019I8Y7YyU+XHShZGfk1eCN6
-         iFF541+o2E5yHH8ZOlF05X3h4AGUlGgOW1DK1cfFdDgBCzQ8sn6FRx/LJ+HHZWWWOVwJ
-         NDxg==
-X-Gm-Message-State: AOAM533rOhHvsQmUq+LW4aqE3T24D2rlFHXI/SF9o6S/XPc2lARNgXTB
-        OcwmZyDN/COuzlbkT3dlfn5RzECkZsvR9q3b12fKvg==
-X-Google-Smtp-Source: ABdhPJzeDeSBqXYAQ4z4rfvcdsvKYnRBUfk/V02cbzoITVb8r8bIa3oFG903QpB57v+azcbplWWae+BaY+2ulj+HrVI=
-X-Received: by 2002:a05:651c:210f:: with SMTP id a15mr235460ljq.160.1622739208042;
- Thu, 03 Jun 2021 09:53:28 -0700 (PDT)
+        id S231371AbhFCRJw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Jun 2021 13:09:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231262AbhFCRJr (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:09:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70DB1613F4;
+        Thu,  3 Jun 2021 17:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622740082;
+        bh=gK/PIRaPplH2AOarruFJFMSYjmI7TyAu/ZGffVNZ/Hg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nca+oe/32a5jCNb0Wp5FU913YPNKWEdMqt8gATMhemYoqF4vUo3ymLXyzoNz/jRQW
+         LkUkxEwdghUv9r7CNne419Ac4rHZCpuJHU11h0+kIU/co7tfUSvPPYqxeCCba/5XZ8
+         k9ThfIT+OepRhtXDFlf0J/8Vw48vtrYi7PeJ9/hCecPhJrZADInkykRhv+0MPGlxyZ
+         ZvCKRCqK73qAvUrKpEpsQCWPu42DQ5xYUFMczYQwnzs6TIPpcLhih42PeLw+GLLcTU
+         ifFllCyrk8kOXX7vQ5LBKTd+qYXZrxPR8xADKkUd9I7pC3qNzqVIn7sbvb/5NiiVap
+         sO4irEXoD4Crw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        NOMURA JUNICHI <junichi.nomura@nec.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 22/43] cgroup: disable controllers at parse time
+Date:   Thu,  3 Jun 2021 13:07:12 -0400
+Message-Id: <20210603170734.3168284-22-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
+References: <20210603170734.3168284-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210603145707.4031641-1-schatzberg.dan@gmail.com> <20210603145707.4031641-3-schatzberg.dan@gmail.com>
-In-Reply-To: <20210603145707.4031641-3-schatzberg.dan@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 3 Jun 2021 09:53:16 -0700
-Message-ID: <CALvZod5=-Q_xFP3-8hUe4dzJ5_U+omi2R7Leen2s_sqn2+5VbA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: Charge active memcg when no mm is set
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Chris Down <chris@chrisdown.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 7:57 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
->
-> set_active_memcg() worked for kernel allocations but was silently
-> ignored for user pages.
->
-> This patch establishes a precedence order for who gets charged:
->
-> 1. If there is a memcg associated with the page already, that memcg is
->    charged. This happens during swapin.
->
-> 2. If an explicit mm is passed, mm->memcg is charged. This happens
->    during page faults, which can be triggered in remote VMs (eg gup).
->
-> 3. Otherwise consult the current process context. If there is an
->    active_memcg, use that. Otherwise, current->mm->memcg.
->
-> Previously, if a NULL mm was passed to mem_cgroup_charge (case 3) it
-> would always charge the root cgroup. Now it looks up the active_memcg
-> first (falling back to charging the root cgroup if not set).
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Acked-by: Chris Down <chris@chrisdown.name>
-> Acked-by: Jens Axboe <axboe@kernel.dk>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+From: Shakeel Butt <shakeelb@google.com>
 
-Can you please rebase over the latest mm tree? Specifically over
-Muchun's patch "mm: memcontrol: bail out early when !mm in
-get_mem_cgroup_from_mm".
+[ Upstream commit 45e1ba40837ac2f6f4d4716bddb8d44bd7e4a251 ]
+
+This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+too early usage of static_branch_disable()"). The commit 6041186a3258
+("init: initialize jump labels before command line option parsing") has
+moved the jump_label_init() before parse_args() which has made the
+commit a3e72739b7a7 unnecessary. On the other hand there are
+consequences of disabling the controllers later as there are subsystems
+doing the controller checks for different decisions. One such incident
+is reported [1] regarding the memory controller and its impact on memory
+reclaim code.
+
+[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
+
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Tested-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/cgroup/cgroup.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9153b20e5cc6..2529d1f88330 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5626,8 +5626,6 @@ int __init cgroup_init_early(void)
+ 	return 0;
+ }
+ 
+-static u16 cgroup_disable_mask __initdata;
+-
+ /**
+  * cgroup_init - cgroup initialization
+  *
+@@ -5686,12 +5684,8 @@ int __init cgroup_init(void)
+ 		 * disabled flag and cftype registration needs kmalloc,
+ 		 * both of which aren't available during early_init.
+ 		 */
+-		if (cgroup_disable_mask & (1 << ssid)) {
+-			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
+-			printk(KERN_INFO "Disabling %s control group subsystem\n",
+-			       ss->name);
++		if (!cgroup_ssid_enabled(ssid))
+ 			continue;
+-		}
+ 
+ 		if (cgroup1_ssid_disabled(ssid))
+ 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
+@@ -6206,7 +6200,10 @@ static int __init cgroup_disable(char *str)
+ 			if (strcmp(token, ss->name) &&
+ 			    strcmp(token, ss->legacy_name))
+ 				continue;
+-			cgroup_disable_mask |= 1 << i;
++
++			static_branch_disable(cgroup_subsys_enabled_key[i]);
++			pr_info("Disabling %s control group subsystem\n",
++				ss->name);
+ 		}
+ 	}
+ 	return 1;
+-- 
+2.30.2
+
