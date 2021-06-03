@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B531A39A7A7
-	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 19:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADBC39A7E8
+	for <lists+cgroups@lfdr.de>; Thu,  3 Jun 2021 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbhFCRMI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Jun 2021 13:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43496 "EHLO mail.kernel.org"
+        id S233061AbhFCRNH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Jun 2021 13:13:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhFCRLW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:11:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F2F761407;
-        Thu,  3 Jun 2021 17:09:36 +0000 (UTC)
+        id S232806AbhFCRMY (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:12:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A82C361415;
+        Thu,  3 Jun 2021 17:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622740177;
-        bh=qpzCxJU6gGdp8PmXCeRvdS+WsY4pcy0YsDZTgRqQe5E=;
+        s=k20201202; t=1622740212;
+        bh=ltkAMp0vmOJzY3BoABuav09F7Gg6qRL7Ett2gEoitts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rik/ZsmIIMp7b0UNWsmPpVb2Z+YqJGRlcb+p4TbkqETS0zzGpipR+o6DHeiMS4njG
-         s0s47Y5cPO0XzqEDfrLyZRicSFJIF/yOlMB0+ihmWoCC36h3fugpqOm1gsNoE/MoO+
-         wTc2zgR3TtZcj8C+GzzTZ8Ts8Lj1CnZikjnWG4BGeDUKpMDYT4+q4awRhRDJzMtkft
-         OJ8Remx1afQ2xqbp/KzBwSYbPiJfsJMraGcTW0N0Im5CrYkX34aMGrJ9WFFYeKEpGa
-         aAHySyoZ+F0BcyrNv/IYliUpfRDzBYF/KX2a4msUq3n+2VO2hvOrJH9ZBjobtTq5he
-         6ppAQBsTv3Gzw==
+        b=R4eVUxGkh8fsdpRFUZTnp+r87JXUJnlvrCGbif98pqXiu83YLQVNv9/mpSbs1JOjt
+         ew0GPT1mA1vmX+1Aevqg0CUIaGUuii+SCCp0zacLUSEpLoDUBqRO6Ki54NApkfXQ5C
+         o8OySDAf3BxHHm2H3Ajib1alTu6PJvHTCxR43Nn7rqux3dpaUGm2tK2e5MNNogjPvO
+         3tBeqwLPyJ1l5BQ5vNG0wbaghQ4eoGwzoF/UbUKlK59gX4NfDq/PKGpBBJtj2+VXhC
+         d5H2Z2dg8lmPR7w7WrU1AoVNt4U2iRmHpcUMxbrJnIh8AQw/luFD5OFOU7AVQuqB6I
+         x06IcZg4I7zkQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Shakeel Butt <shakeelb@google.com>,
         NOMURA JUNICHI <junichi.nomura@nec.com>,
         Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
         cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 14/31] cgroup: disable controllers at parse time
-Date:   Thu,  3 Jun 2021 13:09:02 -0400
-Message-Id: <20210603170919.3169112-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 10/23] cgroup: disable controllers at parse time
+Date:   Thu,  3 Jun 2021 13:09:46 -0400
+Message-Id: <20210603170959.3169420-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210603170919.3169112-1-sashal@kernel.org>
-References: <20210603170919.3169112-1-sashal@kernel.org>
+In-Reply-To: <20210603170959.3169420-1-sashal@kernel.org>
+References: <20210603170959.3169420-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -70,10 +70,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 37db8eba149a..ede370ec245d 100644
+index 2a879d34bbe5..a74549693e7f 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -5721,8 +5721,6 @@ int __init cgroup_init_early(void)
+@@ -5347,8 +5347,6 @@ int __init cgroup_init_early(void)
  	return 0;
  }
  
@@ -82,7 +82,7 @@ index 37db8eba149a..ede370ec245d 100644
  /**
   * cgroup_init - cgroup initialization
   *
-@@ -5781,12 +5779,8 @@ int __init cgroup_init(void)
+@@ -5408,12 +5406,8 @@ int __init cgroup_init(void)
  		 * disabled flag and cftype registration needs kmalloc,
  		 * both of which aren't available during early_init.
  		 */
@@ -96,7 +96,7 @@ index 37db8eba149a..ede370ec245d 100644
  
  		if (cgroup1_ssid_disabled(ssid))
  			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
-@@ -6173,7 +6167,10 @@ static int __init cgroup_disable(char *str)
+@@ -5772,7 +5766,10 @@ static int __init cgroup_disable(char *str)
  			if (strcmp(token, ss->name) &&
  			    strcmp(token, ss->legacy_name))
  				continue;
