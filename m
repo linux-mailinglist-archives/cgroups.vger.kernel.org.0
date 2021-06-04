@@ -2,287 +2,370 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F3A39AFEF
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 03:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD2739B019
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 03:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhFDBiW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Jun 2021 21:38:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51798 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230002AbhFDBiV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 21:38:21 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1541aJ4t028894;
-        Thu, 3 Jun 2021 18:36:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=S1L0ue23Urr+6rn6rGgKO/9RSY4H5BcOTxUoz+3/F4A=;
- b=d3NNls/gIASXFqKhk+fx2Jmx3T+vse5sUCGPPWV2731JjogLiqVxIQMlLz4YXTCqbU/H
- nizg36QInYQrsO5s0PlhYwIIBHojoft6kv1b2sWuFnrL4X/s+gZiC43c8QH1ETEebXAy
- jbQjxEixOO8D97ACDMwnbqfFXoW2Saa2az4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38xedh9kwa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 03 Jun 2021 18:36:19 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 3 Jun 2021 18:36:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VEzxm2gVYahX7npiRfFA1pvJiVpL60xh1j25y2gzLhVQBr45pryHkDG/XIVwKMOG+qKYdh7rJI5iLYr33nCmqgzM4cMQm7lahqe3NmqDINp0veMsUXD76R1js6YJez9QvvJDhejLzNqyucQVlLNMsHh51RbYtN6ar7Op/51gDR30wv6Iyz1ScZG2Cn/pD0J1XUHHA5vNMGbhmmWjeZXM3yWL2oCaEABGHqO9O7NeljxilJyIOY+ty7LDNtFWaxuZfHBonCW5mcJjLJjv28WEj6DvYTwcalzu68mZJRX67LKAwR4UP5mfTSkK2iVVAWOcNxN5xm7WE1pUI6VXBSopyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S1L0ue23Urr+6rn6rGgKO/9RSY4H5BcOTxUoz+3/F4A=;
- b=oJxV0cVIPK0gyE78Md2Mk3+71sjdREz7TDEbA9OcPVS8kuh7rzE+mnR38gP4kbP2s9R8ACYrwXQgfnYzeNEh9HnX/Asj8/K3P0yejq+Owi/4fGYbRW8uuM2mEzvYAGk2yJX0ZbC6VRFQmJLWLqyvWiHVI774uRdD5/tXIVouBfuFgSN8nyE86xbguS6WHfUz0+EVlGWdhFup5jfsW7LwTVrcJmAGoOhHkgMMmzSlBDjPsPrZqNN7eKsFy7R/nlydToq0mle4y7s2o6UYVQE9VG4wCUqOXClueBbx8gW89Bdz1S3Q17jJd+XrZPMTBQDzmBgFpe4qq8p3AzVBtXR7VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4186.namprd15.prod.outlook.com (2603:10b6:a03:2e7::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Fri, 4 Jun
- 2021 01:36:16 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4195.020; Fri, 4 Jun 2021
- 01:36:16 +0000
-Date:   Thu, 3 Jun 2021 18:36:11 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     Tejun Heo <tj@kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v6 5/5] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <YLmDi27fSD4bRbQM@carbon.lan>
-References: <20210603005517.1403689-1-guro@fb.com>
- <20210603005517.1403689-6-guro@fb.com>
- <20210603100233.GG23647@quack2.suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210603100233.GG23647@quack2.suse.cz>
-X-Originating-IP: [2620:10d:c090:400::5:dee6]
-X-ClientProxiedBy: MWHPR2201CA0051.namprd22.prod.outlook.com
- (2603:10b6:301:16::25) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:dee6) by MWHPR2201CA0051.namprd22.prod.outlook.com (2603:10b6:301:16::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23 via Frontend Transport; Fri, 4 Jun 2021 01:36:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0957c8a-0854-4529-c481-08d926f924fd
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4186:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB418607A35249B151A8A660F6BE3B9@SJ0PR15MB4186.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c2ldB4FTwtyyJPKfoTsHSkeS08ipORkqU/QMdB1Ee69W4IhRSdsIfZ3qbFbW/khVkfYA1uPWJoNU5YiQvDHeCKJ4PMtLxvoL3Grf4xoGgwfL7plkVzNEvxM7oOMapdHaUnpEp8IhL2HTH+rT9JvcJmuWPMN/aR5TpsNgepJMx1ooi9mg11fuzQNaYa5ntyytRzLw54NxTaVBw5jTeVCL/XaoQ9fzZRJBCUheDmpSxoCtra/ic/AvCxnPvK27+2LkUQStgALnpzijBqh8pxiyE6gzNpF+uvsrFsI1QHl9JaMpLf0vwqk+ddZODkubEMtnrM/H263C3zSRQpcI6xKrDW8JhYuqRAeza8+VU03scGGgwjFJRqIiAD0I5ZiH44p5piWBYqHy1Q58pfrMYa3Avi1g4mE/ssdasa9yCe5g4AeSmPwtFR5G5tpP3hsPxixhxCmxh8UtaoI7+5x8YelrC4f15U41qzYHtosPaB9enQUBw/JYAEIf/X1wCANTt7noLkYD3VyCC9JTV4Sgz+n8S2FQ3iVTj1kQr6k+30OymA/gnRGxZzX/bYMTQOZmH8thhROlk8/LETScB3Fy1Ihq1A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(39860400002)(396003)(52116002)(6506007)(6916009)(83380400001)(7696005)(478600001)(4326008)(8886007)(38100700002)(6666004)(5660300002)(2906002)(36756003)(16526019)(186003)(316002)(54906003)(66556008)(66476007)(66946007)(55016002)(86362001)(8676002)(9686003)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jxepmd96rARZpGCbSt+K7MtvsXIHRV+2FOcnwx5FzpTVsPxXoV8s2utRjdlo?=
- =?us-ascii?Q?HulIcHTMp8HK1nNuD3Um24xQMuObEpLYzC7i9vS9eFinsa3hNC9t4cEPbmoP?=
- =?us-ascii?Q?LL0i3jM6LpaS9d/mOYV76H6ehE4HZYs2F1dt4WAGKSIYWHd/QVoiDRQIsDo5?=
- =?us-ascii?Q?bvSR1/LCKKzn4KU1i12p+FUL1a2ZHMwkYerLHe7Bc9Pbav8Na8fMdNXZ3AgZ?=
- =?us-ascii?Q?Lr6zA08QQDdbg30msmCJe/MWugj4yOV4xo8LCSnkKi/x2Dg3TOr0xENl1/Hc?=
- =?us-ascii?Q?IV6pWUPZ6kCvWgVaX7Qyp8ZUo3u0uarNlVXWbjVXoFpwd2tGlzIrQKRMIBIN?=
- =?us-ascii?Q?+Z6MrCvBl4vVPqcjAvBCPtPcEHtiB1fMGpPWP9llkouhNJF5GnAX087EoucC?=
- =?us-ascii?Q?v8gaAxnX6DoZZ5t2n5ZoPkMvr/PzLnOarnhon5iaOndh++228PUCSAN0Vz7v?=
- =?us-ascii?Q?bDUEOeMX8dXz6g+xQm6jZPbptJS6a0/lDai2WnyAPPD/TFhWCVVXI7N4FPtK?=
- =?us-ascii?Q?m3cB5jYJqLXIGc4ClJtS07Q66/QY9qf1KsTyF7KSuJjqNojxAg07GFqiPZ8H?=
- =?us-ascii?Q?L0XJzoykMrA6bEndD6YhsRwj1i1afLhKh6ee1HU42JvUOl3T11wlx0EnqA0D?=
- =?us-ascii?Q?G36e3f6mvvIsiE15ioVpCZocuquNaM9xSwvCw4aGZtaN8m2bYtjPChRrjWz3?=
- =?us-ascii?Q?M/vIGbK4HFC7d1mxmDALR/z9+ohK6w7XLcn2wQeRT80b8UV4aj/QMzVZm9cO?=
- =?us-ascii?Q?ayKc5BXgSQKEBcGJfavfYwlaipd2cs9pBcOClTc+gmtXgVLSBYpIo4ufmg9i?=
- =?us-ascii?Q?aso4Lm9zccoP19hQs3WHhopuTkb6IHyy8J+e36konKZBkhzmwKcVbPxrLLnr?=
- =?us-ascii?Q?xb1Me6fbHfNrJOeNdy40XH+G/P93tKgWoNsQ008Uzj906MuzHYtG6k7mzNFc?=
- =?us-ascii?Q?7cdy4aNbtkYRTVjDZGcXYFKFMFB9abNakBWLYQ4O+2ItMdYd8WIEjjGLjNvN?=
- =?us-ascii?Q?gKrrgtrlwgiiQNXnv+G3qWwoetT1VcJW+5kMeSNHBJ/Rcojt8JG/1K4KnAnj?=
- =?us-ascii?Q?lG2t3+6qWYbjiaoyfjZdJg08StIlBFPikyzDo5JoK3t34XqtwXzzc8SisFxL?=
- =?us-ascii?Q?mJMaFrlb+/sX6JwgEVogXKMwmx/2cBsKJS6I8tpHb4coh+O/EnvFacey+Vnk?=
- =?us-ascii?Q?cp6f0P+sXURLZrxpAdyQa4ukrpEP7VlY7nTShmIca/b5U7ZFYhBrQy0LbhzY?=
- =?us-ascii?Q?qp0iewwS3T+vNAGIOQzXe4M7X5KgvM3Plzf6+LN5PWCZBqomeBTeW5v1sQe0?=
- =?us-ascii?Q?/hUwlSHxDPevQmZ4O82tChsnbt+PPgKQWdGwnkP68y7TVw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0957c8a-0854-4529-c481-08d926f924fd
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 01:36:16.0797
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 94kgEmAmzTT5+QJIWMW0oQMHbNNxMPt0mCdU5miLlpW/2KTVq6b2gysGr5WsWVGs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4186
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: FPmamfTctut1hbgXQZdnY-_qJhvw8cwY
-X-Proofpoint-ORIG-GUID: FPmamfTctut1hbgXQZdnY-_qJhvw8cwY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-04_01:2021-06-04,2021-06-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- lowpriorityscore=0 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 mlxscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106040010
-X-FB-Internal: deliver
+        id S229973AbhFDB7C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Jun 2021 21:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFDB7C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Jun 2021 21:59:02 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4193C061760
+        for <cgroups@vger.kernel.org>; Thu,  3 Jun 2021 18:57:01 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id 2-20020a1709020202b02900eecb50c2deso3448827plc.0
+        for <cgroups@vger.kernel.org>; Thu, 03 Jun 2021 18:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bv2HXAmGAwf1OCVRda73ecPrrSIpyQRMd6cgUbsrMv0=;
+        b=eFloSTVUQU9IkUU1DSNboTys4VUnQayFEX47/s3Gd1NDNoewr73Ghhjd88xCDQjiC+
+         gPpsMGcRGrou7m/vgdY1MfO4evGSmw3olKrXEHTk3VNKnRWl7TSHV5Rabkd+dCP8YMTv
+         tyVd8NSX7jyVd4u+djCYOI3b3RVWe5YY6mnxCrpwmw3X+liuwb5CqtZTl2u3fvYpY+iV
+         lXw2umisbk4ZxK4QNPOm8aekEaXQdY597VziUYvsKW2W1/QazgYxLWMM+YuMRsa3fjSl
+         M5oVkOo0R9pperVTplkLvY+K/h9OMaHttfvG+oW1XiW+J2IIVbZ0Xrclq2HymEgOl7y8
+         7J0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bv2HXAmGAwf1OCVRda73ecPrrSIpyQRMd6cgUbsrMv0=;
+        b=N+72A474mzziRbqNWU9DF9uGqf5oW4x7zH/56RkojH6P1wfQ6vXRnk+xR6wuiw4k1b
+         h/5ujIZlhWGBMashVAnT8YevKSFROxHr6LUsY+uZa5962I5/T+jo1S60GK90zSg+uwO0
+         8pPZURS19qlumZ6BHWmkRAqsGErVikETx5hviBRDOuqtFLD5XrKcykpY7EnFYL/BVCkx
+         AExrRA4+xVOJyGhTgJHAhxlJF3dbjLBmXVaF9q5+WVBLslCzU9n4/JS0NH2WZWC5C9su
+         AJ1wtvTkFc4OEIxLX1brYsPfJ60WzVN3y0nSvSTaLGfD3sCj/PxPomLbHQCvSLDFRBoP
+         xCDg==
+X-Gm-Message-State: AOAM532hN9nRfGIBiUMlbfm3NqEM2658qF62P5og6YPhBYoQuDb1eCbt
+        zYE5QIJY7XjhWyRZX21yoNdgEm308q1hlA==
+X-Google-Smtp-Source: ABdhPJw87L3hPfWHiAVUQbhQVpGz0rUbJiIjQSnWEoq4bNXhysfDZhBKtC/yTn3SWVaN10/7zQzMcdMQzx33cA==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:1d16:daf:7a47:a348])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:5b0c:: with SMTP id
+ o12mr14449879pji.108.1622771818195; Thu, 03 Jun 2021 18:56:58 -0700 (PDT)
+Date:   Thu,  3 Jun 2021 18:56:39 -0700
+Message-Id: <20210604015640.2586269-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc1.229.g3e70b5a671-goog
+Subject: [PATCH 1/2] memcg: switch lruvec stats to rstat
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 12:02:33PM +0200, Jan Kara wrote:
-> On Wed 02-06-21 17:55:17, Roman Gushchin wrote:
-> > Asynchronously try to release dying cgwbs by switching attached inodes
-> > to the bdi's wb. It helps to get rid of per-cgroup writeback
-> > structures themselves and of pinned memory and block cgroups, which
-> > are significantly larger structures (mostly due to large per-cpu
-> > statistics data). This prevents memory waste and helps to avoid
-> > different scalability problems caused by large piles of dying cgroups.
-> > 
-> > Reuse the existing mechanism of inode switching used for foreign inode
-> > detection. To speed things up batch up to 115 inode switching in a
-> > single operation (the maximum number is selected so that the resulting
-> > struct inode_switch_wbs_context can fit into 1024 bytes). Because
-> > every switching consists of two steps divided by an RCU grace period,
-> > it would be too slow without batching. Please note that the whole
-> > batch counts as a single operation (when increasing/decreasing
-> > isw_nr_in_flight). This allows to keep umounting working (flush the
-> > switching queue), however prevents cleanups from consuming the whole
-> > switching quota and effectively blocking the frn switching.
-> > 
-> > A cgwb cleanup operation can fail due to different reasons (e.g. not
-> > enough memory, the cgwb has an in-flight/pending io, an attached inode
-> > in a wrong state, etc). In this case the next scheduled cleanup will
-> > make a new attempt. An attempt is made each time a new cgwb is offlined
-> > (in other words a memcg and/or a blkcg is deleted by a user). In the
-> > future an additional attempt scheduled by a timer can be implemented.
-> > 
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> 
-> I think we are getting close :). Some comments are below.
+The commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat") but skipped
+the conversion of the lruvec stats as such stats are read in the
+performance critical code paths and flushing stats may have impacted the
+performances of the applications. This patch converts the lruvec stats
+to rstat and later patch adds the periodic flushing of the stats and
+thus remove the need to synchronously flushing the stats in the
+performance critical code paths.
 
-Great! Thank for reviewing the code!
+The rstat conversion comes with the price i.e. memory cost. Effectively
+this patch reverts the savings done by the commit f3344adf38bd ("mm:
+memcontrol: optimize per-lruvec stats counter memory usage"). However
+this cost is justified due to negative impact of the inaccurate lruvec
+stats on many heuristics. One such case is reported in [1].
 
-> 
-> > ---
-> >  fs/fs-writeback.c                | 68 ++++++++++++++++++++++++++++++++
-> >  include/linux/backing-dev-defs.h |  1 +
-> >  include/linux/writeback.h        |  1 +
-> >  mm/backing-dev.c                 | 58 ++++++++++++++++++++++++++-
-> >  4 files changed, 126 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > index 49d7b23a7cfe..e8517ad677eb 100644
-> > --- a/fs/fs-writeback.c
-> > +++ b/fs/fs-writeback.c
-> > @@ -225,6 +225,8 @@ void wb_wait_for_completion(struct wb_completion *done)
-> >  					/* one round can affect upto 5 slots */
-> >  #define WB_FRN_MAX_IN_FLIGHT	1024	/* don't queue too many concurrently */
-> >  
-> > +#define WB_MAX_INODES_PER_ISW	116	/* maximum inodes per isw */
-> > +
-> 
-> Why this number? Please add an explanation here...
+The memory reclaim code is filled with plethora of heuristics and many
+of those heuristics reads the lruvec stats. So, inaccurate stats can
+make such heuristics ineffective. [1] reports the impact of inaccurate
+lruvec stats on the "cache trim mode" heuristic. Inaccurate lruvec stats
+can impact the deactivation and aging anon heuristics as well.
 
-Added.
+[1] https://lore.kernel.org/linux-mm/20210311004449.1170308-1-ying.huang@intel.com/
 
-> 
-> >  static atomic_t isw_nr_in_flight = ATOMIC_INIT(0);
-> >  static struct workqueue_struct *isw_wq;
-> >  
-> > @@ -552,6 +554,72 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> >  	kfree(isw);
-> >  }
-> >  
-> > +/**
-> > + * cleanup_offline_cgwb - detach associated inodes
-> > + * @wb: target wb
-> > + *
-> > + * Switch all inodes attached to @wb to the bdi's root wb in order to eventually
-> > + * release the dying @wb.  Returns %true if not all inodes were switched and
-> > + * the function has to be restarted.
-> > + */
-> > +bool cleanup_offline_cgwb(struct bdi_writeback *wb)
-> > +{
-> > +	struct inode_switch_wbs_context *isw;
-> > +	struct inode *inode;
-> > +	int nr;
-> > +	bool restart = false;
-> > +
-> > +	isw = kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-> > +		      sizeof(struct inode *), GFP_KERNEL);
-> > +	if (!isw)
-> > +		return restart;
-> > +
-> > +	/* no need to call wb_get() here: bdi's root wb is not refcounted */
-> > +	isw->new_wb = &wb->bdi->wb;
-> > +
-> > +	nr = 0;
-> > +	spin_lock(&wb->list_lock);
-> > +	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
-> > +		spin_lock(&inode->i_lock);
-> > +		if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
-> > +		    inode->i_state & (I_WB_SWITCH | I_FREEING) ||
-> > +		    inode_to_wb(inode) == isw->new_wb) {
-> > +			spin_unlock(&inode->i_lock);
-> > +			continue;
-> > +		}
-> > +		inode->i_state |= I_WB_SWITCH;
-> > +		__iget(inode);
-> > +		spin_unlock(&inode->i_lock);
-> 
-> This hunk is identical with the one in inode_switch_wbs(). Maybe create a
-> helper for it like inode_prepare_wb_switch() or something like that. Also
-> we need to check for I_WILL_FREE flag as well as I_FREEING (see the code in
-> iput_final()) - that's actually a bug in inode_switch_wbs() as well so
-> probably a separate fix for that should come earlier in the series.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/memcontrol.h |  42 +++++++------
+ mm/memcontrol.c            | 118 +++++++++++++------------------------
+ 2 files changed, 60 insertions(+), 100 deletions(-)
 
-Good point, added in v7.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3cc18c2176e7..81d65d32ec2a 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -105,14 +105,6 @@ struct mem_cgroup_reclaim_iter {
+ 	unsigned int generation;
+ };
+ 
+-struct lruvec_stat {
+-	long count[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+-struct batched_lruvec_stat {
+-	s32 count[NR_VM_NODE_STAT_ITEMS];
+-};
+-
+ /*
+  * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+  * shrinkers, which have elements charged to this memcg.
+@@ -123,24 +115,30 @@ struct shrinker_info {
+ 	unsigned long *map;
+ };
+ 
++struct lruvec_stats_percpu {
++	/* Local (CPU and cgroup) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
++
++	/* Delta calculation for lockless upward propagation */
++	long state_prev[NR_VM_NODE_STAT_ITEMS];
++};
++
++struct lruvec_stats {
++	/* Aggregated (CPU and subtree) state */
++	long state[NR_VM_NODE_STAT_ITEMS];
++
++	/* Pending child counts during tree propagation */
++	long state_pending[NR_VM_NODE_STAT_ITEMS];
++};
++
+ /*
+  * per-node information in memory controller.
+  */
+ struct mem_cgroup_per_node {
+ 	struct lruvec		lruvec;
+ 
+-	/*
+-	 * Legacy local VM stats. This should be struct lruvec_stat and
+-	 * cannot be optimized to struct batched_lruvec_stat. Because
+-	 * the threshold of the lruvec_stat_cpu can be as big as
+-	 * MEMCG_CHARGE_BATCH * PAGE_SIZE. It can fit into s32. But this
+-	 * filed has no upper limit.
+-	 */
+-	struct lruvec_stat __percpu *lruvec_stat_local;
+-
+-	/* Subtree VM stats (batched updates) */
+-	struct batched_lruvec_stat __percpu *lruvec_stat_cpu;
+-	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
++	struct lruvec_stats_percpu __percpu	*lruvec_stats_percpu;
++	struct lruvec_stats			lruvec_stats;
+ 
+ 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+ 
+@@ -965,7 +963,7 @@ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	x = atomic_long_read(&pn->lruvec_stat[idx]);
++	x = READ_ONCE(pn->lruvec_stats.state[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -985,7 +983,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stat_local->count[idx], cpu);
++		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b9a6db6a7d4f..d48f727bec05 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -665,46 +665,20 @@ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ 	return x;
+ }
+ 
+-static struct mem_cgroup_per_node *
+-parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
+-{
+-	struct mem_cgroup *parent;
+-
+-	parent = parent_mem_cgroup(pn->memcg);
+-	if (!parent)
+-		return NULL;
+-	return parent->nodeinfo[nid];
+-}
+-
+ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val)
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	struct mem_cgroup *memcg;
+-	long x, threshold = MEMCG_CHARGE_BATCH;
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	memcg = pn->memcg;
+ 
+-	/* Update memcg */
+-	__mod_memcg_state(memcg, idx, val);
+-
+ 	/* Update lruvec */
+-	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
++	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+ 
+-	if (vmstat_item_in_bytes(idx))
+-		threshold <<= PAGE_SHIFT;
+-
+-	x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
+-	if (unlikely(abs(x) > threshold)) {
+-		pg_data_t *pgdat = lruvec_pgdat(lruvec);
+-		struct mem_cgroup_per_node *pi;
+-
+-		for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
+-			atomic_long_add(x, &pi->lruvec_stat[idx]);
+-		x = 0;
+-	}
+-	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
++	/* Update memcg */
++	__mod_memcg_state(memcg, idx, val);
+ }
+ 
+ /**
+@@ -2271,40 +2245,13 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+ 	mutex_unlock(&percpu_charge_mutex);
+ }
+ 
+-static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
+-{
+-	int nid;
+-
+-	for_each_node(nid) {
+-		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
+-		unsigned long stat[NR_VM_NODE_STAT_ITEMS];
+-		struct batched_lruvec_stat *lstatc;
+-		int i;
+-
+-		lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
+-		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+-			stat[i] = lstatc->count[i];
+-			lstatc->count[i] = 0;
+-		}
+-
+-		do {
+-			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+-				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
+-		} while ((pn = parent_nodeinfo(pn, nid)));
+-	}
+-}
+-
+ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+ {
+ 	struct memcg_stock_pcp *stock;
+-	struct mem_cgroup *memcg;
+ 
+ 	stock = &per_cpu(memcg_stock, cpu);
+ 	drain_stock(stock);
+ 
+-	for_each_mem_cgroup(memcg)
+-		memcg_flush_lruvec_page_state(memcg, cpu);
+-
+ 	return 0;
+ }
+ 
+@@ -5108,17 +5055,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return 1;
+ 
+-	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
+-						 GFP_KERNEL_ACCOUNT);
+-	if (!pn->lruvec_stat_local) {
+-		kfree(pn);
+-		return 1;
+-	}
+-
+-	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct batched_lruvec_stat,
+-					       GFP_KERNEL_ACCOUNT);
+-	if (!pn->lruvec_stat_cpu) {
+-		free_percpu(pn->lruvec_stat_local);
++	pn->lruvec_stats_percpu = alloc_percpu_gfp(struct lruvec_stats_percpu,
++						   GFP_KERNEL_ACCOUNT);
++	if (!pn->lruvec_stats_percpu) {
+ 		kfree(pn);
+ 		return 1;
+ 	}
+@@ -5139,8 +5078,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	if (!pn)
+ 		return;
+ 
+-	free_percpu(pn->lruvec_stat_cpu);
+-	free_percpu(pn->lruvec_stat_local);
++	free_percpu(pn->lruvec_stats_percpu);
+ 	kfree(pn);
+ }
+ 
+@@ -5156,15 +5094,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+ 
+ static void mem_cgroup_free(struct mem_cgroup *memcg)
+ {
+-	int cpu;
+-
+ 	memcg_wb_domain_exit(memcg);
+-	/*
+-	 * Flush percpu lruvec stats to guarantee the value
+-	 * correctness on parent's and all ancestor levels.
+-	 */
+-	for_each_online_cpu(cpu)
+-		memcg_flush_lruvec_page_state(memcg, cpu);
+ 	__mem_cgroup_free(memcg);
+ }
+ 
+@@ -5397,7 +5327,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+ 	long delta, v;
+-	int i;
++	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+ 
+@@ -5445,6 +5375,36 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (parent)
+ 			parent->vmstats.events_pending[i] += delta;
+ 	}
++
++	for_each_node_state(nid, N_MEMORY) {
++		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
++		struct mem_cgroup_per_node *ppn = NULL;
++		struct lruvec_stats_percpu *lstatc;
++
++		if (parent)
++			ppn = parent->nodeinfo[nid];
++
++		lstatc = per_cpu_ptr(pn->lruvec_stats_percpu, cpu);
++
++		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
++			delta = pn->lruvec_stats.state_pending[i];
++			if (delta)
++				pn->lruvec_stats.state_pending[i] = 0;
++
++			v = READ_ONCE(lstatc->state[i]);
++			if (v != lstatc->state_prev[i]) {
++				delta += v - lstatc->state_prev[i];
++				lstatc->state_prev[i] = v;
++			}
++
++			if (!delta)
++				continue;
++
++			pn->lruvec_stats.state[i] += delta;
++			if (ppn)
++				ppn->lruvec_stats.state_pending[i] += delta;
++		}
++	}
+ }
+ 
+ #ifdef CONFIG_MMU
+@@ -6378,6 +6338,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+ 	int i;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
++	cgroup_rstat_flush(memcg->css.cgroup);
++
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		int nid;
+ 
+-- 
+2.32.0.rc1.229.g3e70b5a671-goog
 
-> 
-> > +
-> > +		isw->inodes[nr++] = inode;
-> 
-> At first it seemed a bit silly to allocate an array of inode pointers when
-> we have them in the list. But after some thought I agree that dealing with
-> other switching being triggered from other sources in parallel would be
-> really difficult so your decision makes sense. Just maybe add an
-> explanation in a comment somewhere about this design decision.
-
-Added in v7.
-
-> 
-> > +
-> > +		if (nr >= WB_MAX_INODES_PER_ISW - 1) {
-> > +			restart = true;
-> > +			break;
-> > +		}
-> > +	}
-> > +	spin_unlock(&wb->list_lock);
-> 
-> ...
-> 
-> > +static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-> > +{
-> > +	struct bdi_writeback *wb;
-> > +	LIST_HEAD(processed);
-> > +
-> > +	spin_lock_irq(&cgwb_lock);
-> > +
-> > +	while (!list_empty(&offline_cgwbs)) {
-> > +		wb = list_first_entry(&offline_cgwbs, struct bdi_writeback,
-> > +				      offline_node);
-> > +		list_move(&wb->offline_node, &processed);
-> > +
-> > +		if (wb_has_dirty_io(wb))
-> > +			continue;
-> 
-> Maybe explain in a comment why skipping wbs with dirty inodes is fine?
-> Because honestly, I'm not sure... I guess the rationale is that inodes
-> should get cleaned eventually and if they are getting redirtied, they will
-> be switched to another wb anyway?
-
-The main rationale here is that the deletion of a memory/blkcg cgroup by a user
-shouldn't affect the io distribution. In other words, the remaining io shouldn't
-be performed faster than it could be finished had the cgroup remain existing.
