@@ -2,87 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3EE39B857
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 13:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA0539B929
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 14:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhFDLyE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Jun 2021 07:54:04 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:38517 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhFDLyE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 07:54:04 -0400
-Received: by mail-wr1-f50.google.com with SMTP id c9so335838wrt.5
-        for <cgroups@vger.kernel.org>; Fri, 04 Jun 2021 04:52:02 -0700 (PDT)
+        id S229980AbhFDMr0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Jun 2021 08:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhFDMr0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 08:47:26 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE4CC06174A;
+        Fri,  4 Jun 2021 05:45:23 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id t9so354562qtw.7;
+        Fri, 04 Jun 2021 05:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nmP5AGQDJHyblHijhBlqQ7scqZzB+IznwgL38+TeSNM=;
-        b=ZAlxWVBtcKxrDjkMXih764aGrC3O08Yb/bplxtTlgEtkni/fyJgyzoe3B8nvwoL2kj
-         +4EaZPbiAzOhyGJyPs+QB3gqOY/lA5qhbBXOyrYwKIV16Taqm4Qfi6/spb3pKc255DS4
-         rmhTOzbc725b2O8qU5ltrkbJWQRadCm5lQl60=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Nx4sy3vKThPKrptN4SMiBtntPC6yuGT09cDORxlv+yc=;
+        b=QOs7/5IzXSeBRJVY8zaGVanRYpvfw+wNNeX6TADPr1JFXUcUSD5iD0dAZI2adwPip3
+         +qO2zMkh9wMFvUo+egv7LH5RPSTZ11HVCcMh0cMsVN/yDUqdfp7rMRpWmvksZVmvRAB+
+         8bW8EJ461T0mcIzy/gDkyRL1xDGsmPa93cHTr4qBaNv5yIXecqsbYZKSdiIkl5j3ssM4
+         E4o76gBHi1BEKYJjwM+XASMdkUZVHKSO7ZKuV6d6SLljBD+wwUYyTb2xLmMqbmMiRtRW
+         z52UFs0wlzbp+zBcmKQ8/+C8x0akJCFCU4MV2OuVKTpKhvI3ODu9mL15KUZNKGTqdKua
+         yjOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nmP5AGQDJHyblHijhBlqQ7scqZzB+IznwgL38+TeSNM=;
-        b=Hh2sM3IHVNV1Ohb+oCbadyqfuCGAStM+1Ed2EBce8qq8WhlJ1BMQq3x5F0Gcs8p6v1
-         b46/bHecg2tPSzf9a+z+ygZKkvsw/uiy/dIzS9pBh73WKvalRFMst2GKDB6wWovTGvZq
-         YYNMP+c7vpol0q/MMMFvOC7ppJbPibKo5XMPw7pF+V/rKUXOqf5inffMmJM4LrCnbnlh
-         PjqNH/eaIXVXE7seEFrnuOOQv0Pizv+sh44H5cASFgW4XuFbEf/YKxlUfhxL97VigRN4
-         nY0rqjoSNkg5MTB6ij3sriH+vFYqLISSkp0yuZ5SuM5hOax5Cw+NkER9UhntwPrFjDOC
-         ykIg==
-X-Gm-Message-State: AOAM533uQ7Wi78RYzWj6YG1VDwIXQ7aUiUIM6xxflxhTCU1vx7mRQfPw
-        aTzzplExsVuXz+oHE1Rubuqexw==
-X-Google-Smtp-Source: ABdhPJyZYMdm9ao/cla2kqJl+X6Uax9vqT0cMOWJ5115PjwBviWGzoJllV3Br2cjPFhJ8L/Dm9mRhA==
-X-Received: by 2002:adf:8b9a:: with SMTP id o26mr3481350wra.96.1622807461449;
-        Fri, 04 Jun 2021 04:51:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:fc89])
-        by smtp.gmail.com with ESMTPSA id z10sm5649645wmb.26.2021.06.04.04.51.00
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Nx4sy3vKThPKrptN4SMiBtntPC6yuGT09cDORxlv+yc=;
+        b=ZntctbSDkZ3VO0qGbtbGHT3yetk6Yr0R9iFX2UEbPyX4HzSzOUllVSDVo23OIwL3O0
+         bBO1Rn6UYBU7RAUWV18/BkM1RX2RZxnkYfMjyriJQdmuXjcW2BOdYfnJ9BDcamufNAF5
+         8I9mByZNehLfjtaWdRdGH3bwRzmcMnZAEfy/EyCzWJIJCFNl0nzpmXaMrb1kA+XhK152
+         gw+WjN7UlhWVLhWk7f4O5kInf9NrBVlghgPSPAMd3VmUAuoqY3Rhv9BjDu2oiOpenvuH
+         rV9yqAUqJfyHoHYFmRNA3mO/hH+XGUOLGyT9eSzopeJLu+b3+G0Xc1j6sqlTellyxjwH
+         7D6g==
+X-Gm-Message-State: AOAM5336Jk5iCiUx5By558tuef8OKJRFdI3vb/TjNp/d9MtWZW+kGq4F
+        9NDBoNn9Qi6Q3eZDKYpD+To=
+X-Google-Smtp-Source: ABdhPJx2XiseyJVJGjcQc4ShBR0Xc6XR53wuqdFXWkA89vMY73axIT+SbV5m1xvrv8QF3nY3EvWmjg==
+X-Received: by 2002:ac8:5f8f:: with SMTP id j15mr4465156qta.116.1622810720672;
+        Fri, 04 Jun 2021 05:45:20 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id f11sm3375209qtf.30.2021.06.04.05.45.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 04:51:00 -0700 (PDT)
-Date:   Fri, 4 Jun 2021 12:51:00 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     yulei zhang <yulei.kernel@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        Fri, 04 Jun 2021 05:45:20 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 4 Jun 2021 08:45:19 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <christian@brauner.io>,
-        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: Re: [RFC 0/7] Introduce memory allocation speed throttle in memcg
-Message-ID: <YLoTpLnmiIKBzpfh@chrisdown.name>
-References: <cover.1622043596.git.yuleixzhang@tencent.com>
- <CALvZod4SoCS6ym8ELTxWd6UwzUp8m_UUdw7oApAhW2WRq0BXqw@mail.gmail.com>
- <CACZOiM3VhYyzCTx4FbW=FF8WB=X46xaV53abqOVL+eHQOs8Reg@mail.gmail.com>
- <YLZIBpJFkKNBCg2X@chrisdown.name>
- <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
- <CALvZod7w1tzxvYCP54KHEo=k=qUd02UTkr+1+b5rTdn-tJt45w@mail.gmail.com>
- <CACZOiM3g6GhJgXurMPeE3A7zO8eUhoUPyUvyT3p2Kw98WkX8+g@mail.gmail.com>
- <YLi/UeS71mk12VZ3@chrisdown.name>
- <CACZOiM03toiqcbtEd8LT26T2GtPsDaFj89o8rjEfELTw=KPvfg@mail.gmail.com>
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] memcg: periodically flush the memcg stats
+Message-ID: <YLogX+4YSMacgbGH@slm.duckdns.org>
+References: <20210604015640.2586269-1-shakeelb@google.com>
+ <20210604061816.3110-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACZOiM03toiqcbtEd8LT26T2GtPsDaFj89o8rjEfELTw=KPvfg@mail.gmail.com>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+In-Reply-To: <20210604061816.3110-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-yulei zhang writes:
->> Having a speed throttle is a very primitive knob: it's hard to know what the
->> correct values are for a user. That's one of the reasons why we've moved away
->> from that kind of tunable for blkio.
->>
->> Ultimately, if you want work-conserving behaviour, why not use memory.low?
+On Fri, Jun 04, 2021 at 02:18:16PM +0800, Hillf Danton wrote:
+> On Thu,  3 Jun 2021 18:56:40 -0700 Shakeel Butt wrote:
+> >  
+> > +static void flush_memcg_stats(struct work_struct *w)
+> > +{
+> > +	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> > +	schedule_delayed_work(&stats_flush, round_jiffies(2UL*HZ));
+> > +}
+> 
+> Given flush may block, the unbound wq is what you need.
 >
->Thanks. But currently low and high are for cgroup v2 setting, do you
->think we'd better
->extend the same mechanism to cgroup v1?
+> 	queue_delayed_work(system_unbound_wq, &stats_flush, 2 * HZ);
 
-The cgroup v1 interface is frozen and in pure maintenance mode -- we're not 
-adding new features there and haven't done so for some time.
+Default per-cpu workqueue can block just fine. I don't see a strong reason
+why this would need to be unbound.
+
+-- 
+tejun
