@@ -2,97 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F3839B6DA
-	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 12:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CD239B702
+	for <lists+cgroups@lfdr.de>; Fri,  4 Jun 2021 12:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhFDKRN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Jun 2021 06:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhFDKRN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 06:17:13 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A680C06174A
-        for <cgroups@vger.kernel.org>; Fri,  4 Jun 2021 03:15:14 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id z3so9260418oib.5
-        for <cgroups@vger.kernel.org>; Fri, 04 Jun 2021 03:15:14 -0700 (PDT)
+        id S229674AbhFDK3H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Jun 2021 06:29:07 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:41761 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhFDK3H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 06:29:07 -0400
+Received: by mail-lj1-f175.google.com with SMTP id p20so10877981ljj.8
+        for <cgroups@vger.kernel.org>; Fri, 04 Jun 2021 03:27:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kXNZFynTVd7Tj+4yCTxPtCHUxkYVTA9YmlhLOcTv9i4=;
-        b=dEDQHphBkeNVUUe/39lXpjzvRnF/sgMO3KCzRZcCyvEN5dcy6fameRkVnBdx5YMW9D
-         F6S17iSrJMCDdY4PEat3HygCOzxMJQUYE/xZ2V/31MxzglUH8ATcba4Wj7BCxrlk3/jQ
-         4lyIvJ8ao3l5q7NZQ0+z3C75iW9wobbdtOaZMNvT5RZUZHHiJbfREJoKWO8l8fdtUoNj
-         0e8htveobhzcJ9iNG7nf6DYSY1sLMYNsnMcKkmxFHcMAdf6vUFLNau2pGGAjLegxisJQ
-         K6Ai+UdGN9nQ8bh2lXQnzZaqMyDvE74QJXHgzVIbAcJsNQSFQ6Gh57SZPaBHxS/KBBxr
-         fRvQ==
+        d=uged.al; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Bs3XH4WZd6E/C1uTgCierdB67bFqe7Y81Sb7TkTn2M=;
+        b=gbFYhwn8pOM/7ph23QfoO3M+4l04YwAWr2awCxogavPFl/D4bhWDJamyo33F0xQSWm
+         xBTJa+57nUaVtoY/P+yk9mIeh9vwa/jzw7/WnoKkkGJCPkehsPBDsrv517LUWVxDvbFl
+         P1Gc0zxDggAg1kbe3iI3a9QV8PxV/AEloCb/s1GD/0rV0JvSCGWfy8yZ6vrCJYI9Kpz5
+         2XcvxSVnHhT9W1CaLhUh5KuzJRWZn5Ua/2Et2hUoxW0zk6tM1W00KE4i0XK+XS6W/3A1
+         q5tjFIGbWzEwloT3XMgFvAXj0aRL49NNSWj3B6ADCVjhzQe6DEfCfCwvUI6gIlJkBomc
+         cV5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kXNZFynTVd7Tj+4yCTxPtCHUxkYVTA9YmlhLOcTv9i4=;
-        b=L8Uwc0oBLjK3ZG4jRLtCT/vR4HWysLrftYfbzYLvn8Ut006W5/jAVZVGVVZusu5Rgk
-         PZFt2h+KMTK+aIgJPR7wK/vPIJAUU5Y1II2sPLFYVzxUjqEHX6QDFpGWcbQzc18z45wu
-         WY+N0HqS3jEyxDmYo5MJXWHVTAmQ3hT3n/Latx9ETb4BW4phhe80/3Dsgzia9r7W+nDt
-         zV26Z24IQpqpMkq5cHNADFuX4O6INDjhLVsdOy8w7DePnXUoVQoUDVH0j89KNZUMkOxg
-         c6pMeVCePIE9BHzJhhK1p9yc+KAn1bfAZqpZcSy6/mOXczEnmS1TtUSiR9qi+29JL7fo
-         d6dA==
-X-Gm-Message-State: AOAM5333Ps5A7qxizYO4JggPPq0lleEuv369c8ocbdX3c0U0udDW9q53
-        bkNGm9qy04ngGOHWkecCGvW+17TvIEi0TeYtrwM=
-X-Google-Smtp-Source: ABdhPJwJ/Emo2MVhtgktwC7wSZnmnR53U7Rv0ZOTYYt25aE++p9ooPfh+CjDF6KsRnp+bIFL9TztPhrgAo2P9GvcIfI=
-X-Received: by 2002:a05:6808:10d6:: with SMTP id s22mr10466980ois.96.1622801713604;
- Fri, 04 Jun 2021 03:15:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Bs3XH4WZd6E/C1uTgCierdB67bFqe7Y81Sb7TkTn2M=;
+        b=N31/CIgONj0/xkVTfJiEUyKNGYPQ53VfX715Z5eVtoyVV/oZeLw7912QEjLFUpd+q/
+         p+i7QcAgD73W71pXGBTQ3pVPDBLLfVg/AtDpVB0x4V+xy/5XY5OUVtYrooM+B4Dr7ZFD
+         cS7nrjeSwcPRa5UgfXw6ymGAQidv/7TnzauW+7MdSP42TX983O0k8nBZtsn5q4nz6GmL
+         fd/RQSoLIjkOBU+4yepEbJTfUaKZ/wbxY4Tc+JGOMw7W3eHoh59E2rjR2Uf1G45dgFRC
+         pReZw1x4JG317WXLrnLnNtj6qJNJ3NYIti4/sASbAOQBgAQPeiCSSpJt5TeY0AC1XJYn
+         psGQ==
+X-Gm-Message-State: AOAM530c3sDRWcev8TbAHpOe2+6K3bueRNVGugP3/3JX5NCnq9LNX09s
+        M5fUDMUKvm+t6GkOwgMn58g5pg==
+X-Google-Smtp-Source: ABdhPJzMylnxjSIKf3ULGlogKwNTUlCj5lHRUbaiKtam3Y+kDoD9ibL+SBUryZ7kygxDpLk9aBs+fg==
+X-Received: by 2002:a2e:8e63:: with SMTP id t3mr2910818ljk.71.1622802368510;
+        Fri, 04 Jun 2021 03:26:08 -0700 (PDT)
+Received: from localhost.localdomain (ti0005a400-2351.bb.online.no. [80.212.254.60])
+        by smtp.gmail.com with ESMTPSA id t8sm576262lfr.194.2021.06.04.03.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Jun 2021 03:26:07 -0700 (PDT)
+From:   Odin Ugedal <odin@uged.al>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Odin Ugedal <odin@uged.al>
+Subject: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+Date:   Fri,  4 Jun 2021 12:23:14 +0200
+Message-Id: <20210604102314.697749-1-odin@uged.al>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1622043596.git.yuleixzhang@tencent.com> <CALvZod4SoCS6ym8ELTxWd6UwzUp8m_UUdw7oApAhW2WRq0BXqw@mail.gmail.com>
- <CACZOiM3VhYyzCTx4FbW=FF8WB=X46xaV53abqOVL+eHQOs8Reg@mail.gmail.com>
- <YLZIBpJFkKNBCg2X@chrisdown.name> <CACZOiM21STLrZgcnEwm8w2t82Qj3Ohy-BGbD5u62gTn=z4X3Lw@mail.gmail.com>
- <CALvZod7w1tzxvYCP54KHEo=k=qUd02UTkr+1+b5rTdn-tJt45w@mail.gmail.com>
- <CACZOiM3g6GhJgXurMPeE3A7zO8eUhoUPyUvyT3p2Kw98WkX8+g@mail.gmail.com> <YLi/UeS71mk12VZ3@chrisdown.name>
-In-Reply-To: <YLi/UeS71mk12VZ3@chrisdown.name>
-From:   yulei zhang <yulei.kernel@gmail.com>
-Date:   Fri, 4 Jun 2021 18:15:02 +0800
-Message-ID: <CACZOiM03toiqcbtEd8LT26T2GtPsDaFj89o8rjEfELTw=KPvfg@mail.gmail.com>
-Subject: Re: [RFC 0/7] Introduce memory allocation speed throttle in memcg
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <christian@brauner.io>,
-        Cgroups <cgroups@vger.kernel.org>, benbjiang@tencent.com,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 7:38 PM Chris Down <chris@chrisdown.name> wrote:
->
-> yulei zhang writes:
-> >Thanks. IMHO, there are differences between these two throttlings.
-> >memory.high is a per-memcg throttle which targets to limit the memory
-> >usage of the tasks in the cgroup. For the memory allocation speed throttle(MST),
-> >the purpose is to avoid the memory burst in cgroup which would trigger
-> >the global reclaim and affects the timing sensitive workloads in other cgroup.
-> >For example, we have two pods with memory overcommit enabled, one includes
-> >online tasks and the other has offline tasks, if we restrict the memory usage of
-> >the offline pod with memory.high, it will lose the benefit of memory overcommit
-> >when the other workloads are idle. On the other hand, if we don't
-> >limit the memory
-> >usage, it will easily break the system watermark when there suddenly has massive
-> >memory operations. If enable MST in this case, we will be able to
-> >avoid the direct
-> >reclaim and leverage the overcommit.
->
-> Having a speed throttle is a very primitive knob: it's hard to know what the
-> correct values are for a user. That's one of the reasons why we've moved away
-> from that kind of tunable for blkio.
->
-> Ultimately, if you want work-conserving behaviour, why not use memory.low?
+This fixes an issue where fairness is decreased since cfs_rq's can
+end up not being decayed properly. For two sibling control groups with
+the same priority, this can often lead to a load ratio of 99/1 (!!).
 
-Thanks. But currently low and high are for cgroup v2 setting, do you
-think we'd better
-extend the same mechanism to cgroup v1?
+This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+will be removed from the leaf list. When they initial cfs_rq is
+unthrottled, it will currently only re add descendant cfs_rq's if they
+have one or more entities enqueued. This is not a perfect heuristic.
+
+Instead, we insert all cfs_rq's that contain one or more enqueued
+entities, or it its load is not completely decayed.
+
+Can often lead to situations like this for equally weighted control
+groups:
+
+$ ps u -C stress
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+
+Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+Signed-off-by: Odin Ugedal <odin@uged.al>
+---
+Changes since v1:
+ - Replaced cfs_rq field with using tg_load_avg_contrib
+ - Went from 3 to 1 patches; one is merged and one is replaced
+   by a new patchset.
+Changes since v2:
+ - Use !cfs_rq_is_decayed() instead of tg_load_avg_contrib
+ - Moved cfs_rq_is_decayed to above its new use
+Changes since v3:
+ - (hopefully) Fix config for !CONFIG_SMP
+ kernel/sched/fair.c | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..eec32f214ff8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -712,6 +712,25 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 	return calc_delta_fair(sched_slice(cfs_rq, se), se);
+ }
+ 
++static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
++{
++	if (cfs_rq->load.weight)
++		return false;
++
++#ifdef CONFIG_SMP
++	if (cfs_rq->avg.load_sum)
++		return false;
++
++	if (cfs_rq->avg.util_sum)
++		return false;
++
++	if (cfs_rq->avg.runnable_sum)
++		return false;
++#endif
++
++	return true;
++}
++
+ #include "pelt.h"
+ #ifdef CONFIG_SMP
+ 
+@@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+ 		cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+ 					     cfs_rq->throttled_clock_task;
+ 
+-		/* Add cfs_rq with already running entity in the list */
+-		if (cfs_rq->nr_running >= 1)
++		/* Add cfs_rq with load or one or more already running entities to the list */
++		if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+ 			list_add_leaf_cfs_rq(cfs_rq);
+ 	}
+ 
+@@ -7895,23 +7914,6 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 
+-static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+-{
+-	if (cfs_rq->load.weight)
+-		return false;
+-
+-	if (cfs_rq->avg.load_sum)
+-		return false;
+-
+-	if (cfs_rq->avg.util_sum)
+-		return false;
+-
+-	if (cfs_rq->avg.runnable_sum)
+-		return false;
+-
+-	return true;
+-}
+-
+ static bool __update_blocked_fair(struct rq *rq, bool *done)
+ {
+ 	struct cfs_rq *cfs_rq, *pos;
+-- 
+2.31.1
+
