@@ -2,90 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4182139C3EB
-	for <lists+cgroups@lfdr.de>; Sat,  5 Jun 2021 01:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32DB39C52B
+	for <lists+cgroups@lfdr.de>; Sat,  5 Jun 2021 04:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhFDXd1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Jun 2021 19:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhFDXd1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 19:33:27 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DD3C061766;
-        Fri,  4 Jun 2021 16:31:28 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id t20so8285378qtx.8;
-        Fri, 04 Jun 2021 16:31:28 -0700 (PDT)
+        id S231282AbhFECgO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Jun 2021 22:36:14 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:42613 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230297AbhFECgN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Jun 2021 22:36:13 -0400
+Received: by mail-qk1-f177.google.com with SMTP id o27so11307454qkj.9;
+        Fri, 04 Jun 2021 19:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=PBin/z5hDFW5Ve3aQTiLIRlzSaeQ8qcQu0zCFdQd6Xk=;
-        b=dcMTWnaxBb8HqPgSlERDybmkGVPSERJa5XsZkRkOJKVXEv7XdwyKi3DzPZpyNf40Xo
-         quGAkBPx8ZVc/3Bcx+BMyWV9rZJFbs2z/GavWxo2d+THJ78dWVz4nv7KMA/0qgPFYI2P
-         dcMn3Lan262LT0207JXa8/U5/tKFy+lFDCb1KwTiFE+sAaWrgHMCHETBkmjJAjOxGQxG
-         M5giSsIIVthqiY9y4C/sdi3JoPcugXqpLjEblEM7GCVbADPvNplLK31nWXTs7dN692vV
-         mKsjabRpe9KFGbw6Sf+FjBv61ldBmvMN89MN3rxr0vRNv2mDrtahiVuwUAEYQ9RskaB3
-         ATiw==
+        bh=29lRJsQjuBV2gkxHmcl0YVsXyBr/DK6wvVETfCNeSS8=;
+        b=aSH8OR3l/TfW20lHlGMmlBEnNYwKTY0v8ReDqkEYtQHu5zJs4KWJRoMClaKHyHg94b
+         2KRQPJX8RvzkJsaPljq1XDIm2Q1SXes1rxRAhzxPRJMmLJwIch/xhYeRd2V0Hofxhxn6
+         HUNSe5Tra7C39A9YWrS3wPH4b+4O2NE/qdQ1b4aE+HlNwIY2FzAwj6pFFiX2LtZBHLA3
+         0PCeTq/zQXTKAwYhvjf/RTO9AJWfyeivntfDgfjMcihsdvv5Z55jRj+QLHeJjV5mVpj4
+         P1+QKq6Oi/8KH06mJJNfSYgiqQ08a8ndd+4HVD6xQ/ARs0mB1nqIlRWVeS0gXkAutKck
+         p69Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=PBin/z5hDFW5Ve3aQTiLIRlzSaeQ8qcQu0zCFdQd6Xk=;
-        b=mV49LB3qyHhejVOreyUJcGY1agIgcNSP9VOrJFlyBDQWAlPdjWN7BhlGKjkhXle+Un
-         wEQ1HPB91kBmBg5AEuNRRFV0otLS+8xIW1eOrsERq4+76C6SW9xSbGQUls4nr452XW2o
-         n1SRgUANWAsNWc4e2P6+S9ynayFmyd75F/QAXK9BWUk3SlQdOpUyugJZsKyKg18Agymw
-         XVA09ttY/GP+TGYWCrWVSG3vl5h2ewdbw6yxv7aNwXBce2Qbi8H9paM5MY2GiE+HpBbQ
-         a5Alf6N6rNlJ5pUwtuKIZ03JWm2tvd0McI4Zv9bweVf/oBZ9gmrxFbG2DGiy9RBd0zcz
-         YGQw==
-X-Gm-Message-State: AOAM530jf3X4gFUYInVJRXuwCaAfzdEDai5skOZN2vAzy3c4JRzFLdt9
-        7SoKH+Mb28cb0JhXWwhkXe0XghFjza22VA==
-X-Google-Smtp-Source: ABdhPJwLzcLKnmeK6XHbRK8vPlXURJGXvfE1X2WfrGfnVyW8141trKgAjOXLo81aKfbaRBnPaCoQTA==
-X-Received: by 2002:ac8:75d4:: with SMTP id z20mr6836726qtq.265.1622849487309;
-        Fri, 04 Jun 2021 16:31:27 -0700 (PDT)
+        bh=29lRJsQjuBV2gkxHmcl0YVsXyBr/DK6wvVETfCNeSS8=;
+        b=pgNIM1rQQ2qwNMu9cjFvX+NPDOIkAYpAp4UQFPx/Z7DjBr2bWHRITkayt7Xg6Exi09
+         xNL82G8CcTPu4edCaKPyZ7jrS7a9RgAqH5XXH4JcRrcPT87Tk85FTL5IO+xdD05j0dd4
+         aoZ8EqcBTIh8YtOEZ0pOr5pyE04CrC96eQSqjM1gXZqUasrBF5MXXPuTFD6XP7IWABoB
+         2wflTa5QoW5F9s8+NTLJR2F8BdiB/5xEJAI+GYHFW7ZqB7cSlebQJi0leetvdfsff39K
+         XTlaCFF06T5FQmOAhRI+aydyS7kjGINviePW3re0pMlaTyyFY0+zCBIhPeq/RSI4owK6
+         FzgA==
+X-Gm-Message-State: AOAM530IxdyWU9CYMD5GsOrDaRhYUDw2XfjOhjupsBEfqZ+iz1BktuYo
+        gmwVGSd0k3G5sYn/V92d+Yo=
+X-Google-Smtp-Source: ABdhPJwhKwm6a4V61vXZJdslM1kmfF6HFy08XQlmG5ri4zgtEbaCRSZHp+P0I6+EbWNCbzzzfNK4Aw==
+X-Received: by 2002:a37:cc5:: with SMTP id 188mr7169959qkm.112.1622860393300;
+        Fri, 04 Jun 2021 19:33:13 -0700 (PDT)
 Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id g5sm1904915qth.39.2021.06.04.16.31.26
+        by smtp.gmail.com with ESMTPSA id a134sm3536688qkg.114.2021.06.04.19.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Jun 2021 16:31:26 -0700 (PDT)
+        Fri, 04 Jun 2021 19:33:12 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 4 Jun 2021 19:31:25 -0400
+Date:   Fri, 4 Jun 2021 22:33:11 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] cgroup, blkcg: prevent dirty inodes to pin dying
- memory cgroups
-Message-ID: <YLq3zb4saO9AMYCi@slm.duckdns.org>
-References: <20210604013159.3126180-1-guro@fb.com>
- <YLpMXmWvPsIK97ZE@slm.duckdns.org>
- <YLqoJn/FmyqjQs0M@carbon.lan>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] memcg: periodically flush the memcg stats
+Message-ID: <YLriZxiWo+2hMI7g@slm.duckdns.org>
+References: <20210604015640.2586269-1-shakeelb@google.com>
+ <20210604061816.3110-1-hdanton@sina.com>
+ <20210605015421.5096-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YLqoJn/FmyqjQs0M@carbon.lan>
+In-Reply-To: <20210605015421.5096-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Sat, Jun 05, 2021 at 09:54:21AM +0800, Hillf Danton wrote:
+> The cond_resched() in cgroup_rstat_flush_locked() matches its appearence in
+> your post [1]. So does unbound IMHO.
 
-On Fri, Jun 04, 2021 at 03:24:38PM -0700, Roman Gushchin wrote:
-> I agree that switching to the nearest ancestor makes sense. If I remember
-> correctly, I was doing this in v1 (or at least planned to do), but then
-> switched to zeroing the pointer and then to bdi's wb.
->
-> I fixed it in v8 and pushed it here: https://github.com/rgushchin/linux/tree/cgwb.8 .
-> I'll wait a bit for Jan's and others feedback and will post v8 on Monday.
-> Hopefully, it will be the final version.
+Ah yeah, this either needs CPU_INTENSIVE or UNBOUND, prolly the latter is
+better.
 
-Sounds great.
+> And the short stuff [2] looks to me like it is incorrect to queue a work
+> acquiring mutex lock on to the system_wq. IOW the unbound wq is the right
+> thing for any work that might sleep.
 
-> Btw, how are such patches usually routed? Through Jens's tree?
-
-I think the past writeback patches went through -mm.
+This part doesn't make sense. Blocking from per-cpu workqueue is completely
+fine. What's not fine is consuming a lot of CPU cycles.
 
 Thanks.
 
