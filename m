@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB8439DDA6
-	for <lists+cgroups@lfdr.de>; Mon,  7 Jun 2021 15:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909BB39DDC7
+	for <lists+cgroups@lfdr.de>; Mon,  7 Jun 2021 15:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhFGNcq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Jun 2021 09:32:46 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:38817 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhFGNcn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Jun 2021 09:32:43 -0400
-Received: by mail-lj1-f176.google.com with SMTP id s22so1799382ljg.5
-        for <cgroups@vger.kernel.org>; Mon, 07 Jun 2021 06:30:52 -0700 (PDT)
+        id S230200AbhFGNjm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Jun 2021 09:39:42 -0400
+Received: from mail-qv1-f48.google.com ([209.85.219.48]:46684 "EHLO
+        mail-qv1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhFGNjm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Jun 2021 09:39:42 -0400
+Received: by mail-qv1-f48.google.com with SMTP id w9so8780433qvi.13
+        for <cgroups@vger.kernel.org>; Mon, 07 Jun 2021 06:37:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7pMeBbJnHe0dT56aBjX+SG8tgBkU1RFs5WrTELGr21w=;
-        b=S/bfEag7I89zOTS/86dOO6jC4cob1/NUn22kCuKmb2B1z8hvctiuJzA9rY/gEG4b46
-         uCDehsvTljcTN45kv7qc+PiPfHVPLL33aKkCVYW/hhbHPi2NrIb3HgmuwO+aZyB5ziJm
-         vrMfArzkFmt32vDk+p2RNUzAwaFvWldu76G9Bf3//0WUXjZdOOrGYavx+pit0/8fi/PM
-         12vAMOuBoy/HAMNETrGn8p//nNwKorc6LgGQxYNygMcA4kbAytF8+YXmaYqzSgKFTnKs
-         NVw2ENxozeJigZymVLo63ReaHlbvhwZDm9gfh2YrzMoB/olyKutSLj7kYbGLimIy1Y6o
-         90lQ==
+        bh=igiYe7SwyKBt7A5QKk3rIAjajnn7ad4fy0OWQQgiPI4=;
+        b=AL0ARjGG2d5UzLScoqRAbXYinCmVuWXQBcHoLRgl5VkHuKhtrwKqmto+JNVUYgKPl2
+         b3k4tNPWnwv4RcbyMRhhfOdEm01keBZ51WwEy3xtnoGWJHdy0O9oVdSCYKB9gJalztcE
+         1O17QCIDR4emE/ABvZa7F4Pk6t48ADo7f1xfiGv8qs/T5cpIWZlrxkMA5GxlvBrTWGM9
+         rljNNoAyIx9MkJQ75F6YKWrBtHge3WmRDRtPJ9xyNH6bSTE4P+sjkFPsXDjcZH35ArlB
+         4T+hETApzFiQSXxIXIyMMdJXcT5Oa1Db+FDW7mQa13hipnaroVt4L8oh7MhuQxDfEgyH
+         4MZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7pMeBbJnHe0dT56aBjX+SG8tgBkU1RFs5WrTELGr21w=;
-        b=O9lg1bw+wJdWz+wLmvAKxemsVXwrcjOJoqn/9WSyWIGmLpNKXXX5+ADOGxf99g+dPt
-         dV2qRpeB1Wxgb0i96OSb4R038+uly2XO6D0ygsylFS6MUGIZpzPPCNLfDclqzKuaWQ6t
-         hWvFZM01tueKaIheAbc0EogMazk7lz/nWd+S6Ql5ODeMOM7Vj5W7LsrI2yLpw+wk4Cny
-         cUp9ZuO0UwUco9GWQ21SzVbU+oFD1bd3fR678qsHG4e4FdQpIdXz5rPbb2u8uXDBY5w4
-         A1NjhFCytdIlYmiHNhFfRiB+xc/3vdj9OyffCh2FjdR+zot1lukKuR2U6qaVu+jB9xzI
-         O4TA==
-X-Gm-Message-State: AOAM533dbN0YqD7wvz6TN5HQzfy9n+gn9FIV1fFRK0cxUhapCkw7RodZ
-        0/hf0XvyVIXAoYFk0Yg8GuCXLfrqTaZHvYThcHF/ug==
-X-Google-Smtp-Source: ABdhPJyynPB60BGVh3pTGL9cuYERwmpP/tCiHXNF18eK0N8QEvX+6+NT5menbwA+NAmxn9IyhLYNKn5DboBOEdFSVRU=
-X-Received: by 2002:a2e:858a:: with SMTP id b10mr14594374lji.445.1623072591497;
- Mon, 07 Jun 2021 06:29:51 -0700 (PDT)
+        bh=igiYe7SwyKBt7A5QKk3rIAjajnn7ad4fy0OWQQgiPI4=;
+        b=Mbzr/U9c82kt0UNnHgdtqit2CVXUWFY+UDlvypeHCW9yjE0KxuRrw5iIVChJVA8dWs
+         P7BpyXCTwv732Cj5kqwMEITLZ4rhnYGKAOtW9WaqpRZLjbjgp+NbgV1zxolFW52/ECXL
+         ekk+dq3yGJjlcnACPG0IZzYii4PQOFty5Y2t32raN7HnsfDJWMbe+44gXcE8RPd1L3uk
+         cZmJMrXP9WlvVxqvRyqbnwmSoTvcUPMf35rUcw9Rc2m+bIdsUy/ZEkErQqkLJC0wrg3D
+         frc8vCeifA53c2rNqBVhmI3uok0jqqB/+MKnDf7QKegc4RXOEe0O728+CD7r9dRovG/F
+         TIOQ==
+X-Gm-Message-State: AOAM532eD5LZtvm+ocmXf217Q+tJ5kDg0mqdvGwiRuC5ErwcZwp5tQaj
+        tD7awnsGQwdc2nTyPg7f7zRivnPTXaPcdklR6YiLfQ==
+X-Google-Smtp-Source: ABdhPJxFAkP9Wrb9vGOGQ6bJTtZQhPUtesD4SeHIY7iDN560TIEUUvDnhf/P/AaRfgHMP2UWNREA0Y6d103uy9WzAeg=
+X-Received: by 2002:a0c:eac3:: with SMTP id y3mr18247355qvp.9.1623073010586;
+ Mon, 07 Jun 2021 06:36:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210604102314.697749-1-odin@uged.al>
-In-Reply-To: <20210604102314.697749-1-odin@uged.al>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 7 Jun 2021 15:29:40 +0200
-Message-ID: <CAKfTPtDHrD_QGoLeUkR0ALRakWH+KOopHZk=29fyi-oonerd9g@mail.gmail.com>
+References: <20210604102314.697749-1-odin@uged.al> <CAKfTPtDHrD_QGoLeUkR0ALRakWH+KOopHZk=29fyi-oonerd9g@mail.gmail.com>
+In-Reply-To: <CAKfTPtDHrD_QGoLeUkR0ALRakWH+KOopHZk=29fyi-oonerd9g@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Mon, 7 Jun 2021 15:36:12 +0200
+Message-ID: <CAFpoUr1vta7F7PhzsTazqwrehhiySmD71veOxTo=PTBrGhpvLg@mail.gmail.com>
 Subject: Re: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -62,119 +62,17 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, 4 Jun 2021 at 12:26, Odin Ugedal <odin@uged.al> wrote:
+> It's not the best place for this function:
+> - pelt.h header file is included below but cfs_rq_is_decayed() uses PELT
+> - CONFIG_SMP is already defined few lines below
+> - cfs_rq_is_decayed() is only used with CONFIG_FAIR_GROUP_SCHED and
+> now with CONFIG_CFS_BANDWIDTH which depends on the former
 >
-> This fixes an issue where fairness is decreased since cfs_rq's can
-> end up not being decayed properly. For two sibling control groups with
-> the same priority, this can often lead to a load ratio of 99/1 (!!).
->
-> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
-> will be removed from the leaf list. When they initial cfs_rq is
-> unthrottled, it will currently only re add descendant cfs_rq's if they
-> have one or more entities enqueued. This is not a perfect heuristic.
->
-> Instead, we insert all cfs_rq's that contain one or more enqueued
-> entities, or it its load is not completely decayed.
->
-> Can often lead to situations like this for equally weighted control
-> groups:
->
-> $ ps u -C stress
-> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
-> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
->
-> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
-> Signed-off-by: Odin Ugedal <odin@uged.al>
-> ---
-> Changes since v1:
->  - Replaced cfs_rq field with using tg_load_avg_contrib
->  - Went from 3 to 1 patches; one is merged and one is replaced
->    by a new patchset.
-> Changes since v2:
->  - Use !cfs_rq_is_decayed() instead of tg_load_avg_contrib
->  - Moved cfs_rq_is_decayed to above its new use
-> Changes since v3:
->  - (hopefully) Fix config for !CONFIG_SMP
->  kernel/sched/fair.c | 40 +++++++++++++++++++++-------------------
->  1 file changed, 21 insertions(+), 19 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 794c2cb945f8..eec32f214ff8 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -712,6 +712,25 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
->         return calc_delta_fair(sched_slice(cfs_rq, se), se);
->  }
->
-> +static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+> so moving cfs_rq_is_decayed() just above update_tg_load_avg() with
+> other functions used for propagating and updating tg load seems a
+> better place
 
-It's not the best place for this function:
-- pelt.h header file is included below but cfs_rq_is_decayed() uses PELT
-- CONFIG_SMP is already defined few lines below
-- cfs_rq_is_decayed() is only used with CONFIG_FAIR_GROUP_SCHED and
-now with CONFIG_CFS_BANDWIDTH which depends on the former
+Ack. When looking at it now, your suggestion makes more sense. Will fix it.
 
-so moving cfs_rq_is_decayed() just above update_tg_load_avg() with
-other functions used for propagating and updating tg load seems a
-better place
-
-> +{
-> +       if (cfs_rq->load.weight)
-> +               return false;
-> +
-> +#ifdef CONFIG_SMP
-> +       if (cfs_rq->avg.load_sum)
-> +               return false;
-> +
-> +       if (cfs_rq->avg.util_sum)
-> +               return false;
-> +
-> +       if (cfs_rq->avg.runnable_sum)
-> +               return false;
-> +#endif
-> +
-> +       return true;
-> +}
-> +
->  #include "pelt.h"
->  #ifdef CONFIG_SMP
->
-> @@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
->                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
->                                              cfs_rq->throttled_clock_task;
->
-> -               /* Add cfs_rq with already running entity in the list */
-> -               if (cfs_rq->nr_running >= 1)
-> +               /* Add cfs_rq with load or one or more already running entities to the list */
-> +               if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
->                         list_add_leaf_cfs_rq(cfs_rq);
->         }
->
-> @@ -7895,23 +7914,6 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->
->  #ifdef CONFIG_FAIR_GROUP_SCHED
->
-> -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> -{
-> -       if (cfs_rq->load.weight)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.load_sum)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.util_sum)
-> -               return false;
-> -
-> -       if (cfs_rq->avg.runnable_sum)
-> -               return false;
-> -
-> -       return true;
-> -}
-> -
->  static bool __update_blocked_fair(struct rq *rq, bool *done)
->  {
->         struct cfs_rq *cfs_rq, *pos;
-> --
-> 2.31.1
->
+Thanks
+Odin
