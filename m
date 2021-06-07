@@ -2,139 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB5639CB44
-	for <lists+cgroups@lfdr.de>; Sat,  5 Jun 2021 23:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCDB39D7DC
+	for <lists+cgroups@lfdr.de>; Mon,  7 Jun 2021 10:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhFEVjo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 5 Jun 2021 17:39:44 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:42516 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhFEVjn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 5 Jun 2021 17:39:43 -0400
-Received: by mail-il1-f180.google.com with SMTP id a8so11300949ilv.9;
-        Sat, 05 Jun 2021 14:37:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f0JYFWLbU1K2WU+3KcY+euQ65dBHJZ+TcnqUBRn+Ixw=;
-        b=rYrH/iCtcdSFI9Wp5XTB6rFjWGy65dCezviNROeFN5cdB0KuU3jaMkNAp0pDyCoq54
-         KgM2DUOGWR77jZBGQD9hinqSyumCsRmLJjPL7R6tUyVmPJLLI0eEmWbq/Pm9181ZafLV
-         A2BG6OKnk6daBcrFcYP3eYwc9hUx43esDCNL7F+71MaauBn7g//3eA5hs0UfG9wColS3
-         DnBKqTZ3hXekmtn2C2/O2V9evrvH5YogK92Vao0LPpfCqiyQotPy9RH35sbV6dNEZ0CO
-         nK1un+b/bx/r3Hgu5mUnilxldWv9NsZEhFVNcD+cXYCMQY3n/+hLPqUmxDtnrUgpb0V0
-         svBA==
-X-Gm-Message-State: AOAM5326Inj7PmUlImMzAgbReo2Wbl2tupkCgO9yfref3yByoW3Bq+0Z
-        4c8xY2luC6mrZJCpDsPETzU=
-X-Google-Smtp-Source: ABdhPJwMLOVVfaiNYKItkPtUrVqfpfgw6YBhzHcDjMO92/yapMMAIYYVBoDqFzfAUq9CFL3+jjmLaA==
-X-Received: by 2002:a92:c611:: with SMTP id p17mr8862502ilm.166.1622929059076;
-        Sat, 05 Jun 2021 14:37:39 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id 15sm3666647ilt.66.2021.06.05.14.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Jun 2021 14:37:38 -0700 (PDT)
-Date:   Sat, 5 Jun 2021 21:37:37 +0000
-From:   Dennis Zhou <dennis@kernel.org>
+        id S229545AbhFGIuY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Jun 2021 04:50:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48628 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhFGIuY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Jun 2021 04:50:24 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4BB2021A86;
+        Mon,  7 Jun 2021 08:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623055712; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2naVyNld0ZhkvsKE1x+NGtELQ4K5HYayJF8p+hq+SbA=;
+        b=tlwLnyGH7VawMI7TcGGozb5AZI4f7IC46ovtT2AQ/LyWGYibtVAvNF61Pouzn6rmQe9dnK
+        XB60/c9yqXN5aYWMOfzBtQqDArsCUjRLtBa9BYxnUdt+gGzSHAfHj4zcmH3Tls8GUWaGSZ
+        NKxENUvyEJ91B0t2QNZlD3DoWNZyw+I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623055712;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2naVyNld0ZhkvsKE1x+NGtELQ4K5HYayJF8p+hq+SbA=;
+        b=VO25FqWanA88lV8Aezh36mNO3tBqzGfACUq9loSFJ3S7BQUk14Om3e22ixlhnFVZDCMHfi
+        2L0GG4lBbKUVk4DQ==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 31231A3B81;
+        Mon,  7 Jun 2021 08:48:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E41891F2CA8; Mon,  7 Jun 2021 10:48:31 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 10:48:31 +0200
+From:   Jan Kara <jack@suse.cz>
 To:     Roman Gushchin <guro@fb.com>
 Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dennis Zhou <dennis@kernel.org>,
         Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] cgroup, blkcg: prevent dirty inodes to pin dying
- memory cgroups
-Message-ID: <YLvuofB0xMuz/wz9@google.com>
+Subject: Re: [PATCH v7 1/6] writeback, cgroup: do not switch inodes with
+ I_WILL_FREE flag
+Message-ID: <20210607084831.GA30275@quack2.suse.cz>
 References: <20210604013159.3126180-1-guro@fb.com>
+ <20210604013159.3126180-2-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210604013159.3126180-1-guro@fb.com>
+In-Reply-To: <20210604013159.3126180-2-guro@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Thu 03-06-21 18:31:54, Roman Gushchin wrote:
+> If an inode's state has I_WILL_FREE flag set, the inode will be
+> freed soon, so there is no point in trying to switch the inode
+> to a different cgwb.
+> 
+> I_WILL_FREE was ignored since the introduction of the inode switching,
+> so it looks like it doesn't lead to any noticeable issues for a user.
+> This is why the patch is not intended for a stable backport.
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-On Thu, Jun 03, 2021 at 06:31:53PM -0700, Roman Gushchin wrote:
-> When an inode is getting dirty for the first time it's associated
-> with a wb structure (see __inode_attach_wb()). It can later be
-> switched to another wb (if e.g. some other cgroup is writing a lot of
-> data to the same inode), but otherwise stays attached to the original
-> wb until being reclaimed.
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/fs-writeback.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> The problem is that the wb structure holds a reference to the original
-> memory and blkcg cgroups. So if an inode has been dirty once and later
-> is actively used in read-only mode, it has a good chance to pin down
-> the original memory and blkcg cgroups forewer. This is often the case with
-> services bringing data for other services, e.g. updating some rpm
-> packages.
-> 
-> In the real life it becomes a problem due to a large size of the memcg
-> structure, which can easily be 1000x larger than an inode. Also a
-> really large number of dying cgroups can raise different scalability
-> issues, e.g. making the memory reclaim costly and less effective.
-> 
-> To solve the problem inodes should be eventually detached from the
-> corresponding writeback structure. It's inefficient to do it after
-> every writeback completion. Instead it can be done whenever the
-> original memory cgroup is offlined and writeback structure is getting
-> killed. Scanning over a (potentially long) list of inodes and detach
-> them from the writeback structure can take quite some time. To avoid
-> scanning all inodes, attached inodes are kept on a new list (b_attached).
-> To make it less noticeable to a user, the scanning and switching is performed
-> from a work context.
-> 
-> Big thanks to Jan Kara, Dennis Zhou and Hillf Danton for their ideas and
-> contribution to this patchset.
-> 
-> v7:
->   - shared locking for multiple inode switching
->   - introduced inode_prepare_wbs_switch() helper
->   - extended the pre-switch inode check for I_WILL_FREE
->   - added comments here and there
-> 
-> v6:
->   - extended and reused wbs switching functionality to switch inodes
->     on cgwb cleanup
->   - fixed offline_list handling
->   - switched to the unbound_wq
->   - other minor fixes
-> 
-> v5:
->   - switch inodes to bdi->wb instead of zeroing inode->i_wb
->   - split the single patch into two
->   - only cgwbs maintain lists of attached inodes
->   - added cond_resched()
->   - fixed !CONFIG_CGROUP_WRITEBACK handling
->   - extended list of prohibited inodes flag
->   - other small fixes
-> 
-> 
-> Roman Gushchin (6):
->   writeback, cgroup: do not switch inodes with I_WILL_FREE flag
->   writeback, cgroup: switch to rcu_work API in inode_switch_wbs()
->   writeback, cgroup: keep list of inodes attached to bdi_writeback
->   writeback, cgroup: split out the functional part of
->     inode_switch_wbs_work_fn()
->   writeback, cgroup: support switching multiple inodes at once
->   writeback, cgroup: release dying cgwbs by switching attached inodes
-> 
->  fs/fs-writeback.c                | 302 +++++++++++++++++++++----------
->  include/linux/backing-dev-defs.h |  20 +-
->  include/linux/writeback.h        |   1 +
->  mm/backing-dev.c                 |  69 ++++++-
->  4 files changed, 293 insertions(+), 99 deletions(-)
-> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index e91980f49388..bd99890599e0 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -389,10 +389,10 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
+>  	xa_lock_irq(&mapping->i_pages);
+>  
+>  	/*
+> -	 * Once I_FREEING is visible under i_lock, the eviction path owns
+> -	 * the inode and we shouldn't modify ->i_io_list.
+> +	 * Once I_FREEING or I_WILL_FREE are visible under i_lock, the eviction
+> +	 * path owns the inode and we shouldn't modify ->i_io_list.
+>  	 */
+> -	if (unlikely(inode->i_state & I_FREEING))
+> +	if (unlikely(inode->i_state & (I_FREEING | I_WILL_FREE)))
+>  		goto skip_switch;
+>  
+>  	trace_inode_switch_wbs(inode, old_wb, new_wb);
+> @@ -517,7 +517,7 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+>  	/* while holding I_WB_SWITCH, no one else can update the association */
+>  	spin_lock(&inode->i_lock);
+>  	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+> -	    inode->i_state & (I_WB_SWITCH | I_FREEING) ||
+> +	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
+>  	    inode_to_wb(inode) == isw->new_wb) {
+>  		spin_unlock(&inode->i_lock);
+>  		goto out_free;
 > -- 
 > 2.31.1
 > 
-
-I too am a bit late to the party. Feel free to add mine as well to the
-series.
-
-Acked-by: Dennis Zhou <dennis@kernel.org>
-
-I left my one comment on the last patch regarding a possible future
-extension.
-
-Thanks,
-Dennis
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
