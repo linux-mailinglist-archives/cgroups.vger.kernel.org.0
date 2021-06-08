@@ -2,389 +2,195 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC36E39EB62
-	for <lists+cgroups@lfdr.de>; Tue,  8 Jun 2021 03:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006CE39EBF0
+	for <lists+cgroups@lfdr.de>; Tue,  8 Jun 2021 04:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhFHBd1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Jun 2021 21:33:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41998 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230483AbhFHBd0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Jun 2021 21:33:26 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1581Qxsn007447
-        for <cgroups@vger.kernel.org>; Mon, 7 Jun 2021 18:31:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=8vVsF4NhFYvxeA8c3rS941mvaZo23pY4FS9VEgZCS+M=;
- b=mkh4ShnRaGH2ygTMCp4gDPvGEbJ+cxHehTfONkNYVy4gbfmk0zjZW/8I9REGDtE1BrTN
- H7Q0yeqg7UEGuGXmrBYMmynE6BgFwUbY2UEi06X8uu4tbFUKcHf+tpjTDO/YtjbQae81
- l/ogFDuUc6UirLefFGXrEHNrVPVO9py6MCQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 391pw5tw03-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <cgroups@vger.kernel.org>; Mon, 07 Jun 2021 18:31:34 -0700
-Received: from intmgw002.48.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 7 Jun 2021 18:31:33 -0700
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id B1A3C81D6D51; Mon,  7 Jun 2021 18:31:29 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v8 8/8] writeback, cgroup: release dying cgwbs by switching attached inodes
-Date:   Mon, 7 Jun 2021 18:31:23 -0700
-Message-ID: <20210608013123.1088882-9-guro@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210608013123.1088882-1-guro@fb.com>
-References: <20210608013123.1088882-1-guro@fb.com>
+        id S231517AbhFHC1s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Jun 2021 22:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230233AbhFHC1s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Jun 2021 22:27:48 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF58C061574;
+        Mon,  7 Jun 2021 19:25:55 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FzYxm587Wz9sW6; Tue,  8 Jun 2021 12:25:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1623119148;
+        bh=BfDwkutWpzapXBdIlZKGNCG1leAlzqjIngBn196F5gg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m1SLTyqUMO4+KhHYOxfVORgnMrOWsONeaA45MhiKtfSW8JDg45KNm6nR41R+oEiev
+         UlDmkCGDDWzHqD0YCPPjl83zOA9/iVA686sdbop727n8xMpdGwDWxrVblu6PmAfATa
+         Tey4MXyubvyWNP6C93VgQYXqdgx2NJlieNy7ztG8=
+Date:   Tue, 8 Jun 2021 10:44:31 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YL69b0UuDm72QbDO@yekko>
+References: <YJy9o8uEZs42/qDM@yekko>
+ <20210513135938.GG1002214@nvidia.com>
+ <YKtbWo7PwIlXjFIV@yekko>
+ <20210524233744.GT1002214@nvidia.com>
+ <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+ <20210525195257.GG1002214@nvidia.com>
+ <YK8m9jNuvEzlXWlu@yekko>
+ <20210527184847.GI1002214@nvidia.com>
+ <YLWxlZC4AXJPOngB@yekko>
+ <20210601125712.GA4157739@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: EfQqkMqy0enI3uiydJSXYEfp6ajzeHHx
-X-Proofpoint-ORIG-GUID: EfQqkMqy0enI3uiydJSXYEfp6ajzeHHx
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-08_01:2021-06-04,2021-06-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
- impostorscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=362 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106080007
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="NNPfhi/moTf9NG6z"
+Content-Disposition: inline
+In-Reply-To: <20210601125712.GA4157739@nvidia.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Asynchronously try to release dying cgwbs by switching attached inodes
-to the nearest living ancestor wb. It helps to get rid of per-cgroup
-writeback structures themselves and of pinned memory and block cgroups,
-which are significantly larger structures (mostly due to large per-cpu
-statistics data). This prevents memory waste and helps to avoid
-different scalability problems caused by large piles of dying cgroups.
 
-Reuse the existing mechanism of inode switching used for foreign inode
-detection. To speed things up batch up to 115 inode switching in a
-single operation (the maximum number is selected so that the resulting
-struct inode_switch_wbs_context can fit into 1024 bytes). Because
-every switching consists of two steps divided by an RCU grace period,
-it would be too slow without batching. Please note that the whole
-batch counts as a single operation (when increasing/decreasing
-isw_nr_in_flight). This allows to keep umounting working (flush the
-switching queue), however prevents cleanups from consuming the whole
-switching quota and effectively blocking the frn switching.
+--NNPfhi/moTf9NG6z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A cgwb cleanup operation can fail due to different reasons (e.g. not
-enough memory, the cgwb has an in-flight/pending io, an attached inode
-in a wrong state, etc). In this case the next scheduled cleanup will
-make a new attempt. An attempt is made each time a new cgwb is offlined
-(in other words a memcg and/or a blkcg is deleted by a user). In the
-future an additional attempt scheduled by a timer can be implemented.
+On Tue, Jun 01, 2021 at 09:57:12AM -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 01, 2021 at 02:03:33PM +1000, David Gibson wrote:
+> > On Thu, May 27, 2021 at 03:48:47PM -0300, Jason Gunthorpe wrote:
+> > > On Thu, May 27, 2021 at 02:58:30PM +1000, David Gibson wrote:
+> > > > On Tue, May 25, 2021 at 04:52:57PM -0300, Jason Gunthorpe wrote:
+> > > > > On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
+> > > > >=20
+> > > > > > 2. iommu backed mdev devices for SRIOV where mdev device is cre=
+ated per
+> > > > > > VF (mdev device =3D=3D VF device) then that mdev device has sam=
+e iommu
+> > > > > > protection scope as VF associated to it.=20
+> > > > >=20
+> > > > > This doesn't require, and certainly shouldn't create, a fake grou=
+p.
+> > > >=20
+> > > > It's only fake if you start with a narrow view of what a group is.=
+=20
+> > >=20
+> > > A group is connected to drivers/iommu. A group object without *any*
+> > > relation to drivers/iommu is just a complete fiction, IMHO.
+> >=20
+> > That might be where we differ.  As I've said, my group I'm primarily
+> > meaning the fundamental hardware unit of isolation.  *Usually* that's
+> > determined by the capabilities of an IOMMU, but in some cases it might
+> > not be.  In either case, the boundaries still matter.
+>=20
+> As in my other email we absolutely need a group concept, it is just a
+> question of how the user API is designed around it.
+>=20
+> > > The group mdev implicitly creates is just a fake proxy that comes
+> > > along with mdev API. It doesn't do anything and it doesn't mean
+> > > anything.
+> >=20
+> > But.. the case of multiple mdevs managed by a single PCI device with
+> > an internal IOMMU also exists, and then the mdev groups are *not*
+> > proxies but true groups independent of the parent device.  Which means
+> > that the group structure of mdevs can vary, which is an argument *for*
+> > keeping it, not against.
+>=20
+> If VFIO becomes more "vfio_device" centric then the vfio_device itself
+> has some properties. One of those can be "is it inside a drivers/iommu
+> group, or not?".
+>=20
+> If the vfio_device is not using a drivers/iommu IOMMU interface then
+> it can just have no group at all - no reason to lie. This would mean
+> that the device has perfect isolation.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Dennis Zhou <dennis@kernel.org>
----
- fs/fs-writeback.c                | 102 ++++++++++++++++++++++++++++---
- include/linux/backing-dev-defs.h |   1 +
- include/linux/writeback.h        |   1 +
- mm/backing-dev.c                 |  67 +++++++++++++++++++-
- 4 files changed, 159 insertions(+), 12 deletions(-)
+When you say "not using a drivers/iommu IOMMU interface" do you
+basically mean the device doesn't do DMA?  I can see some benefit to
+that, but some drawbacks too.  The *main* form of isolation (or lack
+thereof) that groups is about the IOMMU, but groups can also represent
+other forms of isolation failure: e.g. a multifunction device, where
+function 0 has some debug registers which affect other functions.
+That's relevant whether or not any of those functions use DMA.
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 737ac27adb77..96eb6e6cdbc2 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -225,6 +225,12 @@ void wb_wait_for_completion(struct wb_completion *do=
-ne)
- 					/* one round can affect upto 5 slots */
- #define WB_FRN_MAX_IN_FLIGHT	1024	/* don't queue too many concurrently *=
-/
-=20
-+/*
-+ * Maximum inodes per isw.  A specific value has been chosen to make
-+ * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-+ */
-+#define WB_MAX_INODES_PER_ISW	115
-+
- static atomic_t isw_nr_in_flight =3D ATOMIC_INIT(0);
- static struct workqueue_struct *isw_wq;
-=20
-@@ -503,6 +509,24 @@ static void inode_switch_wbs_work_fn(struct work_str=
-uct *work)
- 	atomic_dec(&isw_nr_in_flight);
- }
-=20
-+static bool inode_prepare_wbs_switch(struct inode *inode,
-+				     struct bdi_writeback *new_wb)
-+{
-+	/* while holding I_WB_SWITCH, no one else can update the association */
-+	spin_lock(&inode->i_lock);
-+	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
-+	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
-+	    inode_to_wb(inode) =3D=3D new_wb) {
-+		spin_unlock(&inode->i_lock);
-+		return false;
-+	}
-+	inode->i_state |=3D I_WB_SWITCH;
-+	__iget(inode);
-+	spin_unlock(&inode->i_lock);
-+
-+	return true;
-+}
-+
- /**
-  * inode_switch_wbs - change the wb association of an inode
-  * @inode: target inode
-@@ -540,17 +564,8 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	if (!isw->new_wb)
- 		goto out_free;
-=20
--	/* while holding I_WB_SWITCH, no one else can update the association */
--	spin_lock(&inode->i_lock);
--	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
--	    inode->i_state & (I_WB_SWITCH | I_FREEING | I_WILL_FREE) ||
--	    inode_to_wb(inode) =3D=3D isw->new_wb) {
--		spin_unlock(&inode->i_lock);
-+	if (!inode_prepare_wbs_switch(inode, isw->new_wb))
- 		goto out_free;
--	}
--	inode->i_state |=3D I_WB_SWITCH;
--	__iget(inode);
--	spin_unlock(&inode->i_lock);
-=20
- 	isw->inodes[0] =3D inode;
-=20
-@@ -571,6 +586,73 @@ static void inode_switch_wbs(struct inode *inode, in=
-t new_wb_id)
- 	kfree(isw);
- }
-=20
-+/**
-+ * cleanup_offline_cgwb - detach associated inodes
-+ * @wb: target wb
-+ *
-+ * Switch all inodes attached to @wb to a nearest living ancestor's wb i=
-n order
-+ * to eventually release the dying @wb.  Returns %true if not all inodes=
- were
-+ * switched and the function has to be restarted.
-+ */
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb)
-+{
-+	struct cgroup_subsys_state *memcg_css;
-+	struct inode_switch_wbs_context *isw;
-+	struct inode *inode;
-+	int nr;
-+	bool restart =3D false;
-+
-+	isw =3D kzalloc(sizeof(*isw) + WB_MAX_INODES_PER_ISW *
-+		      sizeof(struct inode *), GFP_KERNEL);
-+	if (!isw)
-+		return restart;
-+
-+	atomic_inc(&isw_nr_in_flight);
-+
-+	for (memcg_css =3D wb->memcg_css->parent; memcg_css;
-+	     memcg_css =3D memcg_css->parent) {
-+		isw->new_wb =3D wb_get_lookup(wb->bdi, memcg_css);
-+		if (isw->new_wb)
-+			break;
-+	}
-+	if (unlikely(!isw->new_wb))
-+		isw->new_wb =3D &wb->bdi->wb; /* wb_get() is noop for bdi's wb */
-+
-+	nr =3D 0;
-+	spin_lock(&wb->list_lock);
-+	list_for_each_entry(inode, &wb->b_attached, i_io_list) {
-+		if (!inode_prepare_wbs_switch(inode, isw->new_wb))
-+			continue;
-+
-+		isw->inodes[nr++] =3D inode;
-+
-+		if (nr >=3D WB_MAX_INODES_PER_ISW - 1) {
-+			restart =3D true;
-+			break;
-+		}
-+	}
-+	spin_unlock(&wb->list_lock);
-+
-+	/* no attached inodes? bail out */
-+	if (nr =3D=3D 0) {
-+		atomic_dec(&isw_nr_in_flight);
-+		wb_put(isw->new_wb);
-+		kfree(isw);
-+		return restart;
-+	}
-+
-+	/*
-+	 * In addition to synchronizing among switchers, I_WB_SWITCH tells
-+	 * the RCU protected stat update paths to grab the i_page
-+	 * lock so that stat transfer can synchronize against them.
-+	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
-+	 */
-+	INIT_RCU_WORK(&isw->work, inode_switch_wbs_work_fn);
-+	queue_rcu_work(isw_wq, &isw->work);
-+
-+	return restart;
-+}
-+
- /**
-  * wbc_attach_and_unlock_inode - associate wbc with target inode and unl=
-ock it
-  * @wbc: writeback_control of interest
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev=
--defs.h
-index 63f52ad2ce7a..1d7edad9914f 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -155,6 +155,7 @@ struct bdi_writeback {
- 	struct list_head memcg_node;	/* anchored at memcg->cgwb_list */
- 	struct list_head blkcg_node;	/* anchored at blkcg->cgwb_list */
- 	struct list_head b_attached;	/* attached inodes, protected by list_lock=
- */
-+	struct list_head offline_node;	/* anchored at offline_cgwbs */
-=20
- 	union {
- 		struct work_struct release_work;
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 8e5c5bb16e2d..95de51c10248 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -221,6 +221,7 @@ void wbc_account_cgroup_owner(struct writeback_contro=
-l *wbc, struct page *page,
- int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pa=
-ges,
- 			   enum wb_reason reason, struct wb_completion *done);
- void cgroup_writeback_umount(void);
-+bool cleanup_offline_cgwb(struct bdi_writeback *wb);
-=20
- /**
-  * inode_attach_wb - associate an inode with its wb
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 54c5dc4b8c24..faa45027c854 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -371,12 +371,16 @@ static void wb_exit(struct bdi_writeback *wb)
- #include <linux/memcontrol.h>
-=20
- /*
-- * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, and memcg->cgwb_=
-list.
-- * bdi->cgwb_tree is also RCU protected.
-+ * cgwb_lock protects bdi->cgwb_tree, blkcg->cgwb_list, offline_cgwbs an=
-d
-+ * memcg->cgwb_list.  bdi->cgwb_tree is also RCU protected.
-  */
- static DEFINE_SPINLOCK(cgwb_lock);
- static struct workqueue_struct *cgwb_release_wq;
-=20
-+static LIST_HEAD(offline_cgwbs);
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work);
-+static DECLARE_WORK(cleanup_offline_cgwbs_work, cleanup_offline_cgwbs_wo=
-rkfn);
-+
- static void cgwb_release_workfn(struct work_struct *work)
- {
- 	struct bdi_writeback *wb =3D container_of(work, struct bdi_writeback,
-@@ -395,6 +399,11 @@ static void cgwb_release_workfn(struct work_struct *=
-work)
-=20
- 	fprop_local_destroy_percpu(&wb->memcg_completions);
- 	percpu_ref_exit(&wb->refcnt);
-+
-+	spin_lock_irq(&cgwb_lock);
-+	list_del(&wb->offline_node);
-+	spin_unlock_irq(&cgwb_lock);
-+
- 	wb_exit(wb);
- 	WARN_ON_ONCE(!list_empty(&wb->b_attached));
- 	kfree_rcu(wb, rcu);
-@@ -414,6 +423,7 @@ static void cgwb_kill(struct bdi_writeback *wb)
- 	WARN_ON(!radix_tree_delete(&wb->bdi->cgwb_tree, wb->memcg_css->id));
- 	list_del(&wb->memcg_node);
- 	list_del(&wb->blkcg_node);
-+	list_add(&wb->offline_node, &offline_cgwbs);
- 	percpu_ref_kill(&wb->refcnt);
- }
-=20
-@@ -635,6 +645,57 @@ static void cgwb_bdi_unregister(struct backing_dev_i=
-nfo *bdi)
- 	mutex_unlock(&bdi->cgwb_release_mutex);
- }
-=20
-+/**
-+ * cleanup_offline_cgwbs - try to release dying cgwbs
-+ *
-+ * Try to release dying cgwbs by switching attached inodes to the neares=
-t
-+ * living ancestor's writeback. Processed wbs are placed at the end
-+ * of the list to guarantee the forward progress.
-+ *
-+ * Should be called with the acquired cgwb_lock lock, which might
-+ * be released and re-acquired in the process.
-+ */
-+static void cleanup_offline_cgwbs_workfn(struct work_struct *work)
-+{
-+	struct bdi_writeback *wb;
-+	LIST_HEAD(processed);
-+
-+	spin_lock_irq(&cgwb_lock);
-+
-+	while (!list_empty(&offline_cgwbs)) {
-+		wb =3D list_first_entry(&offline_cgwbs, struct bdi_writeback,
-+				      offline_node);
-+		list_move(&wb->offline_node, &processed);
-+
-+		/*
-+		 * If wb is dirty, cleaning up the writeback by switching
-+		 * attached inodes will result in an effective removal of any
-+		 * bandwidth restrictions, which isn't the goal.  Instead,
-+		 * it can be postponed until the next time, when all io
-+		 * will be likely completed.  If in the meantime some inodes
-+		 * will get re-dirtied, they should be eventually switched to
-+		 * a new cgwb.
-+		 */
-+		if (wb_has_dirty_io(wb))
-+			continue;
-+
-+		if (!wb_tryget(wb))
-+			continue;
-+
-+		spin_unlock_irq(&cgwb_lock);
-+		while ((cleanup_offline_cgwb(wb)))
-+			cond_resched();
-+		spin_lock_irq(&cgwb_lock);
-+
-+		wb_put(wb);
-+	}
-+
-+	if (!list_empty(&processed))
-+		list_splice_tail(&processed, &offline_cgwbs);
-+
-+	spin_unlock_irq(&cgwb_lock);
-+}
-+
- /**
-  * wb_memcg_offline - kill all wb's associated with a memcg being offlin=
-ed
-  * @memcg: memcg being offlined
-@@ -651,6 +712,8 @@ void wb_memcg_offline(struct mem_cgroup *memcg)
- 		cgwb_kill(wb);
- 	memcg_cgwb_list->next =3D NULL;	/* prevent new wb's */
- 	spin_unlock_irq(&cgwb_lock);
-+
-+	queue_work(system_unbound_wq, &cleanup_offline_cgwbs_work);
- }
-=20
- /**
+Now, we could represent those different sorts of isolation separately,
+but at the time our thinking was that we should group together devices
+that can't be safely isolated for *any* reason, since the practical
+upshot is the same: you can't safely split those devices between
+different owners.
+
+> What I don't like is forcing certain things depending on how the
+> vfio_device was created - for instance forcing a IOMMU group as part
+> and forcing an ugly "SW IOMMU" mode in the container only as part of
+> mdev_device.
+
+I don't really see how this is depending on how the device is created.
+The current VFIO model is that every device always belongs to a group
+- but that group might be a singleton.  That seems less complicated to
+me that some devices do and some don't have a group.
+
+> These should all be properties of the vfio_device itself.
+>=20
+> Again this is all about the group fd - and how to fit in with the
+> /dev/ioasid proposal from Kevin:
+>=20
+> https://lore.kernel.org/kvm/MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR1=
+1MB1886.namprd11.prod.outlook.com/
+>=20
+> Focusing on vfio_device and skipping the group fd smooths out some
+> rough edges.
+>=20
+> Code wise we are not quite there, but I have mapped out eliminating
+> the group from the vfio_device centric API and a few other places it
+> has crept in.
+>=20
+> The group can exist in the background to enforce security without
+> being a cornerstone of the API design.
+>=20
+> Jason
+>=20
+
 --=20
-2.31.1
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
+--NNPfhi/moTf9NG6z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmC+vW0ACgkQbDjKyiDZ
+s5IOsg//SaXn8DtoOss3fbhVvxiLeL2e9xl4aXIn0e0aMnU7+/E6Wshc3icrv+lC
+RbBTFv2C/wMuKOi+ZSg7mfmyF2fdupI6jk0BX1fWZ1LNjHwZQI4ER4yvRmN25nOn
+eJbPvSl/l8gyQzwzK4Fr05+USYY1N+uQ81jA7ok6K34Q35T7aBe1tvUic53jV5SQ
+/Ezr1jCg7nGfobOVcVw0oZt0nNGE2WRT3WlPyAAcmgOKdW45Z/+9nH0tgmoCSKz+
+kU8lO8if0vaOf+6xwdhltZhmcuiuzxVNTwmjfG4RvkzSzAAbkfopg7cpTo+y56du
+5y0iJm3LL8SeIdfR9Fn2a95cnLsdiaTigwp7bBXR9fIRU88q6gDo6lmlLX5j4XoX
+KuPULmWx6hc67XOBZctd3Z8GbSd02OkdfKOl+KC2SQNWaRnSujyIWfs4P/hkEp+l
+JB+TQW7yBNVJHOorZCNuww11jPMgtoxwZLiTBnVnZ17t/vk7dsbKpyKYcUggyMME
+57MHB3u73a457ZcDQSzJRkYlnNt5CY8ThRRf915x5uXAvb/OHHHkpDe4tI2pvuEs
+98oAKDwDttXIhE2CBrp/CBct2k6d5ZwHKeqv0boM01FjjUWp/kyyWbeo5+PI8t1S
+PhIr3XflfPANDRNp1Y81OGao2wUwg4qcE5KBXsLCC/vahPyd+18=
+=e7fV
+-----END PGP SIGNATURE-----
+
+--NNPfhi/moTf9NG6z--
