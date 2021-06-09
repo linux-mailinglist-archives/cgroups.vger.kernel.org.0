@@ -2,237 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3265E3A0D37
-	for <lists+cgroups@lfdr.de>; Wed,  9 Jun 2021 09:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482233A0D98
+	for <lists+cgroups@lfdr.de>; Wed,  9 Jun 2021 09:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhFIHJs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Jun 2021 03:09:48 -0400
-Received: from mga02.intel.com ([134.134.136.20]:33321 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234730AbhFIHJf (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:09:35 -0400
-IronPort-SDR: nrKPNBlZeVnVnqtja30b3JXLU/dzf/0qzwMOGMZgSwGy2saGuNsngPC549RpaN4gM5K9Ve3IcC
- Jcinny5pJcOw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192127376"
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="192127376"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 00:07:36 -0700
-IronPort-SDR: V+onGy/6DzUCtyd9Dt/4cvW3QY92N1DSDRmRBNu/FgRVAxwh1rKV20D/ZTsy6eqALpUeCDMPh2
- SMz2Q9RNdWXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="485619735"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2021 00:07:35 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lqsJK-0009UB-Nw; Wed, 09 Jun 2021 07:07:34 +0000
-Date:   Wed, 09 Jun 2021 15:07:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.14] BUILD SUCCESS
- 3958e2d0c34e18c41b60dc01832bd670a59ef70f
-Message-ID: <60c068a7.KB5fWGQn+5N2gw4O%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S235150AbhFIHVJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Jun 2021 03:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235549AbhFIHVI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Jun 2021 03:21:08 -0400
+X-Greylist: delayed 99 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Jun 2021 00:19:14 PDT
+Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAB7C061574
+        for <cgroups@vger.kernel.org>; Wed,  9 Jun 2021 00:19:14 -0700 (PDT)
+Received: from sas1-6b1512233ef6.qloud-c.yandex.net (sas1-6b1512233ef6.qloud-c.yandex.net [IPv6:2a02:6b8:c14:44af:0:640:6b15:1223])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 8B5932E14A4
+        for <cgroups@vger.kernel.org>; Wed,  9 Jun 2021 10:17:29 +0300 (MSK)
+Received: from sas2-d40aa8807eff.qloud-c.yandex.net (sas2-d40aa8807eff.qloud-c.yandex.net [2a02:6b8:c08:b921:0:640:d40a:a880])
+        by sas1-6b1512233ef6.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 318fp9ia5Z-HS1a1tcl;
+        Wed, 09 Jun 2021 10:17:29 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1623223049; bh=S7Jlb+iv+KHJKh1j38RnlbemQ1r5YpudVR63I/AHP4g=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=LcAPHm6KcvWyTPgYpN1ov4qiG2AxRpwbRbWE5UjFP42/uAcjKEOBwj8ppR5mWdf0m
+         fAFEzaTFf1rqpYf11DLSax+ERn0rArOZf84jo/Rsddo29Mz0sdRPIwSabKsPDRE3UF
+         2eYodyV4wOpDx0/ekFAdJQ9QuWSJ5W5TnE6TtPWM=
+Authentication-Results: sas1-6b1512233ef6.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from wwfq3.sas.yp-c.yandex.net (wwfq3.sas.yp-c.yandex.net [2a02:6b8:c1b:2907:0:696:4f1c:0])
+        by sas2-d40aa8807eff.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id CFH2I7bFe8-HRo0lCpZ;
+        Wed, 09 Jun 2021 10:17:27 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Alexander Kuznetsov <wwfq@yandex-team.ru>
+To:     cgroups@vger.kernel.org
+Cc:     zeil@yandex-team.ru, dmtrmonakhov@yandex-team.ru
+Subject: [PATCH] cgroup1: don't allow '\n' in renaming
+Date:   Wed,  9 Jun 2021 10:17:19 +0300
+Message-Id: <1623223039-35764-1-git-send-email-wwfq@yandex-team.ru>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
-branch HEAD: 3958e2d0c34e18c41b60dc01832bd670a59ef70f  cgroup: make per-cgroup pressure stall tracking configurable
+cgroup_mkdir() have restriction on newline usage in names:
+$ mkdir $'/sys/fs/cgroup/cpu/test\ntest2'
+mkdir: cannot create directory
+'/sys/fs/cgroup/cpu/test\ntest2': Invalid argument
 
-elapsed time: 725m
+But in cgroup1_rename() such check is missed.
+This allows us to make /proc/<pid>/cgroup unparsable:
+$ mkdir /sys/fs/cgroup/cpu/test
+$ mv /sys/fs/cgroup/cpu/test $'/sys/fs/cgroup/cpu/test\ntest2'
+$ echo $$ > $'/sys/fs/cgroup/cpu/test\ntest2'
+$ cat /proc/self/cgroup
+11:pids:/
+10:freezer:/
+9:hugetlb:/
+8:cpuset:/
+7:blkio:/user.slice
+6:memory:/user.slice
+5:net_cls,net_prio:/
+4:perf_event:/
+3:devices:/user.slice
+2:cpu,cpuacct:/test
+test2
+1:name=systemd:/
+0::/
 
-configs tested: 175
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         rt305x_defconfig
-nios2                            allyesconfig
-mips                      malta_kvm_defconfig
-powerpc                     asp8347_defconfig
-arm                           spitz_defconfig
-sparc                       sparc32_defconfig
-h8300                       h8s-sim_defconfig
-arm                   milbeaut_m10v_defconfig
-xtensa                           alldefconfig
-mips                          ath79_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                           se7722_defconfig
-sh                           se7724_defconfig
-sh                          sdk7786_defconfig
-arc                          axs103_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                     loongson2k_defconfig
-powerpc                     taishan_defconfig
-xtensa                          iss_defconfig
-powerpc                     pseries_defconfig
-parisc                generic-32bit_defconfig
-h8300                    h8300h-sim_defconfig
-mips                      loongson3_defconfig
-ia64                      gensparse_defconfig
-m68k                            q40_defconfig
-openrisc                            defconfig
-mips                     cu1000-neo_defconfig
-arc                        nsim_700_defconfig
-arm                       versatile_defconfig
-sh                         microdev_defconfig
-sh                             espt_defconfig
-powerpc                 mpc837x_rdb_defconfig
-h8300                            allyesconfig
-mips                      fuloong2e_defconfig
-xtensa                  audio_kc705_defconfig
-arm                         lpc32xx_defconfig
-sh                           se7343_defconfig
-mips                         tb0226_defconfig
-arm                      integrator_defconfig
-arm                         cm_x300_defconfig
-arm                         bcm2835_defconfig
-mips                            ar7_defconfig
-arm64                            alldefconfig
-arm                           tegra_defconfig
-sh                           se7206_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                 linkstation_defconfig
-xtensa                  nommu_kc705_defconfig
-i386                             allyesconfig
-ia64                        generic_defconfig
-powerpc                        warp_defconfig
-powerpc                   currituck_defconfig
-mips                  cavium_octeon_defconfig
-sh                          sdk7780_defconfig
-arm                             mxs_defconfig
-mips                             allmodconfig
-mips                       rbtx49xx_defconfig
-arc                         haps_hs_defconfig
-powerpc                         wii_defconfig
-arm                         s3c2410_defconfig
-mips                       lemote2f_defconfig
-arm                       aspeed_g4_defconfig
-mips                           ip27_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         s5pv210_defconfig
-nios2                         3c120_defconfig
-powerpc                    mvme5100_defconfig
-csky                                defconfig
-arm                        cerfcube_defconfig
-mips                      maltaaprp_defconfig
-powerpc                    gamecube_defconfig
-um                           x86_64_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7619_defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                       imx_v6_v7_defconfig
-um                             i386_defconfig
-arm                       netwinder_defconfig
-powerpc                     tqm5200_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      bamboo_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                        workpad_defconfig
-nds32                             allnoconfig
-powerpc                     mpc83xx_defconfig
-arm                      jornada720_defconfig
-arc                           tb10x_defconfig
-microblaze                          defconfig
-powerpc                     kilauea_defconfig
-sh                        edosk7760_defconfig
-s390                             allyesconfig
-sh                   sh7770_generic_defconfig
-arm                     am200epdkit_defconfig
-powerpc                      pmac32_defconfig
-mips                      bmips_stb_defconfig
-um                               alldefconfig
-arm                          pxa168_defconfig
-h8300                               defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210608
-x86_64               randconfig-a002-20210608
-x86_64               randconfig-a003-20210608
-x86_64               randconfig-a006-20210608
-x86_64               randconfig-a005-20210608
-x86_64               randconfig-a001-20210608
-i386                 randconfig-a003-20210608
-i386                 randconfig-a006-20210608
-i386                 randconfig-a004-20210608
-i386                 randconfig-a001-20210608
-i386                 randconfig-a005-20210608
-i386                 randconfig-a002-20210608
-i386                 randconfig-a015-20210608
-i386                 randconfig-a013-20210608
-i386                 randconfig-a016-20210608
-i386                 randconfig-a011-20210608
-i386                 randconfig-a012-20210608
-i386                 randconfig-a014-20210608
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a002-20210607
-x86_64               randconfig-a004-20210607
-x86_64               randconfig-a003-20210607
-x86_64               randconfig-a006-20210607
-x86_64               randconfig-a005-20210607
-x86_64               randconfig-a001-20210607
-x86_64               randconfig-a015-20210608
-x86_64               randconfig-a012-20210608
-x86_64               randconfig-a014-20210608
-x86_64               randconfig-a011-20210608
-x86_64               randconfig-a016-20210608
-x86_64               randconfig-a013-20210608
-
+Signed-off-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
+Reported-by: Andrey Krasichkov <buglloc@yandex-team.ru>
+Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ kernel/cgroup/cgroup-v1.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 391aa57..cf2a3e8 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -820,6 +820,10 @@ static int cgroup1_rename(struct kernfs_node *kn, struct kernfs_node *new_parent
+ 	struct cgroup *cgrp = kn->priv;
+ 	int ret;
+ 
++	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
++	if (strchr(new_name_str, '\n'))
++		return -EINVAL;
++
+ 	if (kernfs_type(kn) != KERNFS_DIR)
+ 		return -ENOTDIR;
+ 	if (kn->parent != new_parent)
+-- 
+2.7.4
+
