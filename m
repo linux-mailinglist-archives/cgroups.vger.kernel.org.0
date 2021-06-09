@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3B73A0D38
-	for <lists+cgroups@lfdr.de>; Wed,  9 Jun 2021 09:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3265E3A0D37
+	for <lists+cgroups@lfdr.de>; Wed,  9 Jun 2021 09:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhFIHKE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Jun 2021 03:10:04 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16340 "EHLO mga18.intel.com"
+        id S234956AbhFIHJs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Jun 2021 03:09:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:33321 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhFIHJ7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 9 Jun 2021 03:09:59 -0400
-IronPort-SDR: S9abKyUkOwrt2amKa77lyAGYoZvMTONjoC8/6WyuncbeDE6W1eSAvmBhNZbYH/oloTU0Qztrhu
- x+i/HSVZiU2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192335665"
+        id S234730AbhFIHJf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 9 Jun 2021 03:09:35 -0400
+IronPort-SDR: nrKPNBlZeVnVnqtja30b3JXLU/dzf/0qzwMOGMZgSwGy2saGuNsngPC549RpaN4gM5K9Ve3IcC
+ Jcinny5pJcOw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10009"; a="192127376"
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="192335665"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 00:07:39 -0700
-IronPort-SDR: L5/mvXKmHl1hq+920ujPH/yaRQZX+k2wEFCEfhg0D+nDwJ1odAAiyHHmgDE1kJu3vppvIusHm5
- 6vgT/emNajfg==
+   d="scan'208";a="192127376"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2021 00:07:36 -0700
+IronPort-SDR: V+onGy/6DzUCtyd9Dt/4cvW3QY92N1DSDRmRBNu/FgRVAxwh1rKV20D/ZTsy6eqALpUeCDMPh2
+ SMz2Q9RNdWXQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,260,1616482800"; 
-   d="scan'208";a="482272884"
+   d="scan'208";a="485619735"
 Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 09 Jun 2021 00:07:35 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2021 00:07:35 -0700
 Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lqsJK-0009UF-OX; Wed, 09 Jun 2021 07:07:34 +0000
-Date:   Wed, 09 Jun 2021 15:07:16 +0800
+        id 1lqsJK-0009UB-Nw; Wed, 09 Jun 2021 07:07:34 +0000
+Date:   Wed, 09 Jun 2021 15:07:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-next] BUILD SUCCESS
- d42132d940a719371f837fa87b8bfbcea57abbd0
-Message-ID: <60c068a4.U4J3oNGSx7R4mae5%lkp@intel.com>
+Subject: [cgroup:for-5.14] BUILD SUCCESS
+ 3958e2d0c34e18c41b60dc01832bd670a59ef70f
+Message-ID: <60c068a7.KB5fWGQn+5N2gw4O%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: d42132d940a719371f837fa87b8bfbcea57abbd0  Merge branch 'for-5.14' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
+branch HEAD: 3958e2d0c34e18c41b60dc01832bd670a59ef70f  cgroup: make per-cgroup pressure stall tracking configurable
 
 elapsed time: 725m
 
-configs tested: 181
+configs tested: 175
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -93,12 +93,6 @@ sh                         microdev_defconfig
 sh                             espt_defconfig
 powerpc                 mpc837x_rdb_defconfig
 h8300                            allyesconfig
-powerpc                      ep88xc_defconfig
-m68k                          atari_defconfig
-powerpc                      cm5200_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                       eiger_defconfig
-powerpc                     tqm8560_defconfig
 mips                      fuloong2e_defconfig
 xtensa                  audio_kc705_defconfig
 arm                         lpc32xx_defconfig
