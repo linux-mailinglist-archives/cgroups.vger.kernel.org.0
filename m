@@ -2,102 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A20E3A24BE
-	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 08:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD41E3A24DA
+	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 08:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhFJGvt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Jun 2021 02:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhFJGvt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 02:51:49 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66600C061574
-        for <cgroups@vger.kernel.org>; Wed,  9 Jun 2021 23:49:53 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id f30so1458110lfj.1
-        for <cgroups@vger.kernel.org>; Wed, 09 Jun 2021 23:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
-        b=po0rea81p6koLdoj90+BpTqr297m34vqZiDHl35MFKN5HmBo/cINMskvg8Rj1AiXCD
-         P/mX6NsU8ilK5hyP7AW2r0V1bwvN2iVAetVFInJHL3ulhputAR1fbbnR8g/j+kgSLQRN
-         iXciNRcfQNWXmevrvU/V5C2Ds7I+9bLqYeVGkHSoUKiLnS7CZ/zFob00D4OF3VknComV
-         +qQqQK4kXsp5qjvVU5KnImu/nnQ+tNK8McFDo2o+UIVNatGM0GWVemlGxwcDZQAGmctV
-         Yi8SxUDNO9ks7NLikMTm/51IqsXk6A361yvzd5VwX3BuQ5o0Bb4YtgNKJRMi3H4g+gpU
-         x25A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=67pgjCx8vmxJvqmbawagxHeBDG9F0WOXi380k50exuo=;
-        b=JbidD4F+J3GeQokEON/3VQo5ElaoTSTf15cav4ailvxIScHIoSl5amc+nJW8LBRbJB
-         3j5ubxV8W2ox1AO9K2bkHlVyon4JX9ZDr1Usw6iLC5j1ZR+boKags/fgX/Ionwv7vcIK
-         E88bnUpxJGQjPMdRpf93BKcAegNIt8zcV1bYiNB5zEfRHrJN97/2SKmcStt3t/CHixin
-         gQQ0uPymRwZON+LZN4qDkhLELb9IXQtuKs9utsv+GIIixM6t3M9Ohvo3dhZDzsjlVqAL
-         /5DjEvhTFI66Sgw/YUejU41MdsJ1Clx+bqkqYawTvRcAT6sPmXZVt8i8y+Mio19Tsp9X
-         nXNw==
-X-Gm-Message-State: AOAM532P7jGji6CRAoZPhyxMgwB2rDD+6dmEcEtpbrn4lzkO3e/4DcXU
-        BZ0DG9zhPQLtvbomLlYsyG0QTaCl647vdKcYGl4i5Q==
-X-Google-Smtp-Source: ABdhPJz6FaRyzkyT5JROY4fDMVlcASzRb2xRU5K+8ShUxTZ08+8Qwr8pCgPa1FkXe3u+pAUYQeCllBc3ABd61aq8ik8=
-X-Received: by 2002:a05:6512:3b84:: with SMTP id g4mr969823lfv.277.1623307791024;
- Wed, 09 Jun 2021 23:49:51 -0700 (PDT)
+        id S229778AbhFJG7S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Jun 2021 02:59:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46195 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229634AbhFJG7R (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 02:59:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623308241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2xI9DhwUbPIwsok2RGKHqBDnQZkdygy7sVBmHeixOo0=;
+        b=caabeBX53LFseGeLuONcHfQNlTJ21BOR2Nit0B9s+k1lnSiL34SVzMvnNO2ieIxIQC+d5F
+        NqrW+iiXT7OWms1/hgDJQGpPNKSnk2iwNGniFTh8v0n88MCpnwKh9QrHoskNwqRsKtnSOy
+        ZvoZzB+q2S1nD0lmeORwnmjBoaz5mnM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-K_zC0YpLOs6gHmmqGjcAbg-1; Thu, 10 Jun 2021 02:57:20 -0400
+X-MC-Unique: K_zC0YpLOs6gHmmqGjcAbg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE5DD100C662;
+        Thu, 10 Jun 2021 06:57:18 +0000 (UTC)
+Received: from T590 (ovpn-13-145.pek2.redhat.com [10.72.13.145])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BE5760937;
+        Thu, 10 Jun 2021 06:57:07 +0000 (UTC)
+Date:   Thu, 10 Jun 2021 14:57:03 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org,
+        Jan Kara <jack@suse.com>
+Subject: Re: [PATCH v9 3/8] writeback, cgroup: increment isw_nr_in_flight
+ before grabbing an inode
+Message-ID: <YMG3v13caUW5BX8n@T590>
+References: <20210608230225.2078447-1-guro@fb.com>
+ <20210608230225.2078447-4-guro@fb.com>
+ <YMA2XEnJrHyVLWrD@T590>
+ <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20210604102314.697749-1-odin@uged.al> <YL+dTtsCtZjMeZWn@blackbook>
-In-Reply-To: <YL+dTtsCtZjMeZWn@blackbook>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 10 Jun 2021 08:49:39 +0200
-Message-ID: <CAKfTPtBEZZo9fHDxe7viLyZmCe=4NTLLtBFyWM_UuJ1nmqxGvA@mail.gmail.com>
-Subject: Re: [PATCH v4] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 8 Jun 2021 at 18:39, Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> Hello.
->
-> On Fri, Jun 04, 2021 at 12:23:14PM +0200, Odin Ugedal <odin@uged.al> wrot=
-e:
->
-> > @@ -4719,8 +4738,8 @@ static int tg_unthrottle_up(struct task_group *tg=
-, void *data)
-> >               cfs_rq->throttled_clock_task_time +=3D rq_clock_task(rq) =
--
-> >                                            cfs_rq->throttled_clock_task=
-;
-> >
-> > -             /* Add cfs_rq with already running entity in the list */
-> > -             if (cfs_rq->nr_running >=3D 1)
-> > +             /* Add cfs_rq with load or one or more already running en=
-tities to the list */
-> > +             if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
-> >                       list_add_leaf_cfs_rq(cfs_rq);
-> >       }
->
-> Can there be a decayed cfs_rq with positive nr_running?
-> I.e. can the condition be simplified to just the decayed check?
+On Wed, Jun 09, 2021 at 05:21:14PM -0700, Roman Gushchin wrote:
+> On Wed, Jun 09, 2021 at 11:32:44AM +0800, Ming Lei wrote:
+> > On Tue, Jun 08, 2021 at 04:02:20PM -0700, Roman Gushchin wrote:
+> > > isw_nr_in_flight is used do determine whether the inode switch queue
+> > > should be flushed from the umount path. Currently it's increased
+> > > after grabbing an inode and even scheduling the switch work. It means
+> > > the umount path can be walked past cleanup_offline_cgwb() with active
+> > > inode references, which can result in a "Busy inodes after unmount."
+> > > message and use-after-free issues (with inode->i_sb which gets freed).
+> > > 
+> > > Fix it by incrementing isw_nr_in_flight before doing anything with
+> > > the inode and decrementing in the case when switching wasn't scheduled.
+> > > 
+> > > The problem hasn't yet been seen in the real life and was discovered
+> > > by Jan Kara by looking into the code.
+> > > 
+> > > Suggested-by: Jan Kara <jack@suse.com>
+> > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > ---
+> > >  fs/fs-writeback.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > > index b6fc13a4962d..4413e005c28c 100644
+> > > --- a/fs/fs-writeback.c
+> > > +++ b/fs/fs-writeback.c
+> > > @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+> > >  	if (!isw)
+> > >  		return;
+> > >  
+> > > +	atomic_inc(&isw_nr_in_flight);
+> > 
+> > smp_mb() may be required for ordering the WRITE in 'atomic_inc(&isw_nr_in_flight)'
+> > and the following READ on 'inode->i_sb->s_flags & SB_ACTIVE'. Otherwise,
+> > cgroup_writeback_umount() may observe zero of 'isw_nr_in_flight' because of
+> > re-order of the two OPs, then miss the flush_workqueue().
+> > 
+> > Also this barrier should serve as pair of the one added in cgroup_writeback_umount(),
+> > so maybe this patch should be merged with 2/8.
+> 
+> Hi Ming!
+> 
+> Good point, I agree. How about a patch below?
+> 
+> Thanks!
+> 
+> --
+> 
+> From 282861286074c47907759d80c01419f0d0630dae Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Wed, 9 Jun 2021 14:14:26 -0700
+> Subject: [PATCH] cgroup, writeback: add smp_mb() to inode_prepare_wbs_switch()
+> 
+> Add a memory barrier between incrementing isw_nr_in_flight
+> and checking the sb's SB_ACTIVE flag and grabbing an inode in
+> inode_prepare_wbs_switch(). It's required to prevent grabbing
+> an inode before incrementing isw_nr_in_flight, otherwise
+> 0 can be obtained as isw_nr_in_flight in cgroup_writeback_umount()
+> and isw_wq will not be flushed, potentially leading to a memory
+> corruption.
+> 
+> Added smp_mb() will work in pair with smp_mb() in
+> cgroup_writeback_umount().
+> 
+> Suggested-by: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  fs/fs-writeback.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 545fce68e919..6332b86ca4ed 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -513,6 +513,14 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
+>  static bool inode_prepare_wbs_switch(struct inode *inode,
+>  				     struct bdi_writeback *new_wb)
+>  {
+> +	/*
+> +	 * Paired with smp_mb() in cgroup_writeback_umount().
+> +	 * isw_nr_in_flight must be increased before checking SB_ACTIVE and
+> +	 * grabbing an inode, otherwise isw_nr_in_flight can be observed as 0
+> +	 * in cgroup_writeback_umount() and the isw_wq will be not flushed.
+> +	 */
+> +	smp_mb();
+> +
+>  	/* while holding I_WB_SWITCH, no one else can update the association */
+>  	spin_lock(&inode->i_lock);
+>  	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
 
-Yes, nothing prevent a task with a null load to be enqueued on a
-throttle cfs as an example
+Looks fine, you may have to merge this one with 2/8 & 3/8, so the memory
+barrier use can be correct & intact for avoiding the race between switching
+cgwb and generic_shutdown_super().
 
->
-> (I'm looking at account_entity_enqueue() but I don't know if an entity's
-> weight can be zero in some singular cases.)
->
-> Thanks,
-> Michal
+
+Thanks,
+Ming
+
