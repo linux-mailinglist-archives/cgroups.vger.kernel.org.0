@@ -2,106 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295863A2DF6
-	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 16:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ED53A2E22
+	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 16:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhFJOWH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Jun 2021 10:22:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27518 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231325AbhFJOWG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 10:22:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623334810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vPeoXcqrS3MIzkBmzsxPXiPd+AVSGxxS032+qPVyFQc=;
-        b=T6qdBr3FPLk20HMihxZe2RAAurUjN3YdouD4OHt5s7i1lfUAxBlGQivFhGG47hnZMX4Zer
-        OFCWpWLy8SJDw4kkbAgyvdGLS103JyusaOpgfxVYMEO/knyRLfn/UgtHcybC81Sk+1Ijw6
-        WW4cl0Ki/moQI7j6GLTXqsqFrY+e94U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-4Iz9mnYoM26GMVnPmhD8sw-1; Thu, 10 Jun 2021 10:20:06 -0400
-X-MC-Unique: 4Iz9mnYoM26GMVnPmhD8sw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB3378030A0;
-        Thu, 10 Jun 2021 14:20:01 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.8.122])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 95DAB60C5E;
-        Thu, 10 Jun 2021 14:19:49 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 10:19:47 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 0/5] cgroup/cpuset: Enable cpuset partition with no load
- balancing
-Message-ID: <YMIfg0Aa2HZQPEy+@lorien.usersys.redhat.com>
-References: <20210603212416.25934-1-longman@redhat.com>
+        id S230487AbhFJO3U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Jun 2021 10:29:20 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:35429 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhFJO3T (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 10:29:19 -0400
+Received: by mail-io1-f49.google.com with SMTP id d9so27203770ioo.2;
+        Thu, 10 Jun 2021 07:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=YYyA+u2JrqmC9amIVXsT8BB5KdG2CQQsjkKxF0Ahoms=;
+        b=dssxtbkSR9bCMY/1rfIRMRk1bu9I0aZD611EoRiJJlUeBPt50BdypNazxvdeuaM5+p
+         XG2rykNMHVnJfDPHmFTF1RUHwjeXDcY6rdfLwbAH2Ob48Fl9DqwCM9ur0EHnskj0OSzW
+         SBNMAt+XXHV2zqfUBTlI/aRRv3MLm7FDd/uTUSvtlMYWntF5c/q1oW2RL63T8UxgU6/9
+         yRi6bx6jxwddTXg/exchgebgpfqFFDoI5EHT66y3UUdJiJc1m/fpNBEKHRreVZ119kTC
+         nn8OWUOdVRyPKA9kZv0a7XORSD98YTo/VFm5LTze4UGfyMnH090KBytCJJJpNjkshgC0
+         FOig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=YYyA+u2JrqmC9amIVXsT8BB5KdG2CQQsjkKxF0Ahoms=;
+        b=GV1cScXxa3ULqkP6cBsarKzf/dHpT2uYe+VdgBw5AHay+YglwZQp9I/NajDGwkKdkD
+         HQqFkTwE10hGdOdiSBJZVDWdsUnla3/EQCQv1yB/wNRrqIWOU7fsPppIZjmHNEDIvnlQ
+         H3w961d2AG/S7kSvtqDFyaLXzJl/x9cHC6X/YUoIA4C2F3W1LP5VLtJuDp73hcX3saKE
+         Q6YJl7UAEE7AqFDoaH0NSLQOLw39qon/GQEY/fsw4smW80KLSIWRcU3dyQoZianq08o8
+         nR8WXaFLVccSLTFPwwOtdechrV+LtrZ86edYe4SSuYieARwiOOacYzILf+KpJLzdxOpN
+         ns3A==
+X-Gm-Message-State: AOAM530aoF45Lv5oGgpBW46opYEOPsv9qOHNT+S/7EzmIy+tYSygDeKl
+        C8zIZ7ykxmCqUFxq7YRi7xUzZwIPUGlKEw==
+X-Google-Smtp-Source: ABdhPJxVBG1F/aIpEqMFdjnrOuXnhSCzlG0TOzkCufIT3N8u79qpz7zaHOdIBW31Zf6XpWwCV0L3PA==
+X-Received: by 2002:a02:a815:: with SMTP id f21mr4931178jaj.118.1623335167618;
+        Thu, 10 Jun 2021 07:26:07 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id r14sm1951382iod.41.2021.06.10.07.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 07:26:07 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 10 Jun 2021 10:26:06 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup fixes for v5.13-rc5
+Message-ID: <YMIg/rC1TQwEbabA@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210603212416.25934-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Waiman,
+Hello, Linus.
 
-On Thu, Jun 03, 2021 at 05:24:11PM -0400 Waiman Long wrote:
-> This patchset makes the following two major changes to the cpuset v2 code:
-> 
->  Patch 2: Add a new partition state "root-nolb" to create a partition
->  root with load balancing disabled. This is for handling intermitten
->  workloads that have a strict low latency requirement.
-> 
->  Patch 3: Allow partition roots that are not the top cpuset to distribute
->  all its cpus to child partitions as long as there is no task associated
->  with that partition root. This allows more flexibility for middleware
->  to manage multiple partitions.
+This is a high priority but low risk fix for a cgroup1 bug where rename(2)
+can change a cgroup's name to something which can break parsing of
+/proc/PID/cgroup.
 
-Thanks!  This looks like it will be a usable replacement for the functionality
-lost when SD_LOAD_BALANCE went away.
+Thanks.
 
+The following changes since commit 08b2b6fdf6b26032f025084ce2893924a0cdb4a2:
 
-Cheers,
-Phil
+  cgroup: fix spelling mistakes (2021-05-24 12:45:26 -0400)
 
-> 
-> Patch 4 updates the cgroup-v2.rst file accordingly. Patch 5 adds a test
-> to test the new cpuset partition code.
-> 
-> Waiman Long (5):
->   cgroup/cpuset: Don't call validate_change() for some flag changes
->   cgroup/cpuset: Add new cpus.partition type with no load balancing
->   cgroup/cpuset: Allow non-top parent partition root to distribute out
->     all CPUs
->   cgroup/cpuset: Update description of cpuset.cpus.partition in
->     cgroup-v2.rst
->   kselftest/cgroup: Add cpuset v2 partition root state test
-> 
->  Documentation/admin-guide/cgroup-v2.rst       |  19 ++-
->  kernel/cgroup/cpuset.c                        | 124 +++++++++++----
->  tools/testing/selftests/cgroup/Makefile       |   2 +-
->  .../selftests/cgroup/test_cpuset_prs.sh       | 141 ++++++++++++++++++
->  4 files changed, 247 insertions(+), 39 deletions(-)
->  create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> 
-> -- 
-> 2.18.1
-> 
+are available in the Git repository at:
 
--- 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.13-fixes
 
+for you to fetch changes up to b7e24eb1caa5f8da20d405d262dba67943aedc42:
+
+  cgroup1: don't allow '\n' in renaming (2021-06-10 09:58:50 -0400)
+
+----------------------------------------------------------------
+Alexander Kuznetsov (1):
+      cgroup1: don't allow '\n' in renaming
+
+ kernel/cgroup/cgroup-v1.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 8190b6bfc978..1f274d7fc934 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -820,6 +820,10 @@ static int cgroup1_rename(struct kernfs_node *kn, struct kernfs_node *new_parent
+ 	struct cgroup *cgrp = kn->priv;
+ 	int ret;
+ 
++	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
++	if (strchr(new_name_str, '\n'))
++		return -EINVAL;
++
+ 	if (kernfs_type(kn) != KERNFS_DIR)
+ 		return -ENOTDIR;
+ 	if (kn->parent != new_parent)
