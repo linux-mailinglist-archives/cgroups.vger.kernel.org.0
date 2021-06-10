@@ -2,158 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD41E3A24DA
-	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 08:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD08F3A2AFD
+	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 14:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhFJG7S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Jun 2021 02:59:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229634AbhFJG7R (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 02:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623308241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2xI9DhwUbPIwsok2RGKHqBDnQZkdygy7sVBmHeixOo0=;
-        b=caabeBX53LFseGeLuONcHfQNlTJ21BOR2Nit0B9s+k1lnSiL34SVzMvnNO2ieIxIQC+d5F
-        NqrW+iiXT7OWms1/hgDJQGpPNKSnk2iwNGniFTh8v0n88MCpnwKh9QrHoskNwqRsKtnSOy
-        ZvoZzB+q2S1nD0lmeORwnmjBoaz5mnM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-K_zC0YpLOs6gHmmqGjcAbg-1; Thu, 10 Jun 2021 02:57:20 -0400
-X-MC-Unique: K_zC0YpLOs6gHmmqGjcAbg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE5DD100C662;
-        Thu, 10 Jun 2021 06:57:18 +0000 (UTC)
-Received: from T590 (ovpn-13-145.pek2.redhat.com [10.72.13.145])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BE5760937;
-        Thu, 10 Jun 2021 06:57:07 +0000 (UTC)
-Date:   Thu, 10 Jun 2021 14:57:03 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: Re: [PATCH v9 3/8] writeback, cgroup: increment isw_nr_in_flight
- before grabbing an inode
-Message-ID: <YMG3v13caUW5BX8n@T590>
-References: <20210608230225.2078447-1-guro@fb.com>
- <20210608230225.2078447-4-guro@fb.com>
- <YMA2XEnJrHyVLWrD@T590>
- <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
+        id S230236AbhFJMFT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Jun 2021 08:05:19 -0400
+Received: from mail.chalver.com.ec ([186.3.12.10]:19714 "EHLO
+        mail.chalver.com.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFJMFT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 08:05:19 -0400
+Received: from mail.chalver.com.ec (localhost.localdomain [127.0.0.1])
+        by mail.chalver.com.ec (Postfix) with ESMTPS id 061711F24FEA;
+        Thu, 10 Jun 2021 03:07:33 -0500 (ECT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.chalver.com.ec (Postfix) with ESMTP id 8EEB31F25000;
+        Thu, 10 Jun 2021 02:25:44 -0500 (ECT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.chalver.com.ec 8EEB31F25000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chalver.com.ec;
+        s=E2A417BC-DDA7-11E6-85F6-38495636B764; t=1623309944;
+        bh=PxMh0SAMbBGlctefOH2OhvTlJNlHw25bONEEE7Ldp0I=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=lgKQKKQfnVC2HAXTvnmJV4TSn6AlDXbBxbYuKlw96KcFV6SyncZFyAjPCXfotiOiQ
+         hHSyWrwf10DY4JuekLNKtaNDm3R3UPoucgQqxh3PVxdSCWS+fNAezL1hj11ng/is2H
+         7P1qAUfO5JOxEAijMvpQoCG6LL1761UdUV/b3yr84uPSvujyIidr960DdxasAKOYMB
+         nbrexTM40BQvbbcJTjprL1rzAOVS5Cwhe4H+PMp2qucXkOEHGgUg5Pyf2Q4w/h5kqy
+         kmVmyRAHiGJfN625l5P8r9Xp2wBqxLmk6CSR3oIYo29eQGCtCoq8MIiVZ+IFuqCvse
+         JHo37zhiK500g==
+X-Virus-Scanned: amavisd-new at chalver.com.ec
+Received: from mail.chalver.com.ec ([127.0.0.1])
+        by localhost (mail.chalver.com.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id frNo1DyceDjn; Thu, 10 Jun 2021 02:25:44 -0500 (ECT)
+Received: from cris-PC.wifi (unknown [105.9.120.116])
+        by mail.chalver.com.ec (Postfix) with ESMTPSA id 296F21F24FE7;
+        Thu, 10 Jun 2021 02:25:29 -0500 (ECT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients <mpaucar@chalver.com.ec>
+From:   ''Tayeb souami'' <mpaucar@chalver.com.ec>
+Date:   Thu, 10 Jun 2021 09:32:40 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20210610072530.296F21F24FE7@mail.chalver.com.ec>
+X-Laboratorios-Chalver-MailScanner-Information: Please contact the ISP for more information
+X-Laboratorios-Chalver-MailScanner-ID: 296F21F24FE7.A2C36
+X-Laboratorios-Chalver-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 05:21:14PM -0700, Roman Gushchin wrote:
-> On Wed, Jun 09, 2021 at 11:32:44AM +0800, Ming Lei wrote:
-> > On Tue, Jun 08, 2021 at 04:02:20PM -0700, Roman Gushchin wrote:
-> > > isw_nr_in_flight is used do determine whether the inode switch queue
-> > > should be flushed from the umount path. Currently it's increased
-> > > after grabbing an inode and even scheduling the switch work. It means
-> > > the umount path can be walked past cleanup_offline_cgwb() with active
-> > > inode references, which can result in a "Busy inodes after unmount."
-> > > message and use-after-free issues (with inode->i_sb which gets freed).
-> > > 
-> > > Fix it by incrementing isw_nr_in_flight before doing anything with
-> > > the inode and decrementing in the case when switching wasn't scheduled.
-> > > 
-> > > The problem hasn't yet been seen in the real life and was discovered
-> > > by Jan Kara by looking into the code.
-> > > 
-> > > Suggested-by: Jan Kara <jack@suse.com>
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > ---
-> > >  fs/fs-writeback.c | 5 +++--
-> > >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> > > index b6fc13a4962d..4413e005c28c 100644
-> > > --- a/fs/fs-writeback.c
-> > > +++ b/fs/fs-writeback.c
-> > > @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
-> > >  	if (!isw)
-> > >  		return;
-> > >  
-> > > +	atomic_inc(&isw_nr_in_flight);
-> > 
-> > smp_mb() may be required for ordering the WRITE in 'atomic_inc(&isw_nr_in_flight)'
-> > and the following READ on 'inode->i_sb->s_flags & SB_ACTIVE'. Otherwise,
-> > cgroup_writeback_umount() may observe zero of 'isw_nr_in_flight' because of
-> > re-order of the two OPs, then miss the flush_workqueue().
-> > 
-> > Also this barrier should serve as pair of the one added in cgroup_writeback_umount(),
-> > so maybe this patch should be merged with 2/8.
-> 
-> Hi Ming!
-> 
-> Good point, I agree. How about a patch below?
-> 
-> Thanks!
-> 
-> --
-> 
-> From 282861286074c47907759d80c01419f0d0630dae Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Wed, 9 Jun 2021 14:14:26 -0700
-> Subject: [PATCH] cgroup, writeback: add smp_mb() to inode_prepare_wbs_switch()
-> 
-> Add a memory barrier between incrementing isw_nr_in_flight
-> and checking the sb's SB_ACTIVE flag and grabbing an inode in
-> inode_prepare_wbs_switch(). It's required to prevent grabbing
-> an inode before incrementing isw_nr_in_flight, otherwise
-> 0 can be obtained as isw_nr_in_flight in cgroup_writeback_umount()
-> and isw_wq will not be flushed, potentially leading to a memory
-> corruption.
-> 
-> Added smp_mb() will work in pair with smp_mb() in
-> cgroup_writeback_umount().
-> 
-> Suggested-by: Ming Lei <ming.lei@redhat.com>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  fs/fs-writeback.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 545fce68e919..6332b86ca4ed 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -513,6 +513,14 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
->  static bool inode_prepare_wbs_switch(struct inode *inode,
->  				     struct bdi_writeback *new_wb)
->  {
-> +	/*
-> +	 * Paired with smp_mb() in cgroup_writeback_umount().
-> +	 * isw_nr_in_flight must be increased before checking SB_ACTIVE and
-> +	 * grabbing an inode, otherwise isw_nr_in_flight can be observed as 0
-> +	 * in cgroup_writeback_umount() and the isw_wq will be not flushed.
-> +	 */
-> +	smp_mb();
-> +
->  	/* while holding I_WB_SWITCH, no one else can update the association */
->  	spin_lock(&inode->i_lock);
->  	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
 
-Looks fine, you may have to merge this one with 2/8 & 3/8, so the memory
-barrier use can be correct & intact for avoiding the race between switching
-cgwb and generic_shutdown_super().
+Lieber Freund,
+
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
+Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
+f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
+il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
+meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
+und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
+Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
+ spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
+ou Tube Seite unten.
+
+UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
 
 
-Thanks,
-Ming
 
+Das ist dein Spendencode: [TS530342018]
+
+
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+
+Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
+
+Gr=C3=BC=C3=9Fe
+Herr Tayeb Souami
