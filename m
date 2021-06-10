@@ -2,83 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD08F3A2AFD
-	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 14:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8613A2DAE
+	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 16:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhFJMFT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Jun 2021 08:05:19 -0400
-Received: from mail.chalver.com.ec ([186.3.12.10]:19714 "EHLO
-        mail.chalver.com.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFJMFT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 08:05:19 -0400
-Received: from mail.chalver.com.ec (localhost.localdomain [127.0.0.1])
-        by mail.chalver.com.ec (Postfix) with ESMTPS id 061711F24FEA;
-        Thu, 10 Jun 2021 03:07:33 -0500 (ECT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.chalver.com.ec (Postfix) with ESMTP id 8EEB31F25000;
-        Thu, 10 Jun 2021 02:25:44 -0500 (ECT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.chalver.com.ec 8EEB31F25000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chalver.com.ec;
-        s=E2A417BC-DDA7-11E6-85F6-38495636B764; t=1623309944;
-        bh=PxMh0SAMbBGlctefOH2OhvTlJNlHw25bONEEE7Ldp0I=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=lgKQKKQfnVC2HAXTvnmJV4TSn6AlDXbBxbYuKlw96KcFV6SyncZFyAjPCXfotiOiQ
-         hHSyWrwf10DY4JuekLNKtaNDm3R3UPoucgQqxh3PVxdSCWS+fNAezL1hj11ng/is2H
-         7P1qAUfO5JOxEAijMvpQoCG6LL1761UdUV/b3yr84uPSvujyIidr960DdxasAKOYMB
-         nbrexTM40BQvbbcJTjprL1rzAOVS5Cwhe4H+PMp2qucXkOEHGgUg5Pyf2Q4w/h5kqy
-         kmVmyRAHiGJfN625l5P8r9Xp2wBqxLmk6CSR3oIYo29eQGCtCoq8MIiVZ+IFuqCvse
-         JHo37zhiK500g==
-X-Virus-Scanned: amavisd-new at chalver.com.ec
-Received: from mail.chalver.com.ec ([127.0.0.1])
-        by localhost (mail.chalver.com.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id frNo1DyceDjn; Thu, 10 Jun 2021 02:25:44 -0500 (ECT)
-Received: from cris-PC.wifi (unknown [105.9.120.116])
-        by mail.chalver.com.ec (Postfix) with ESMTPSA id 296F21F24FE7;
-        Thu, 10 Jun 2021 02:25:29 -0500 (ECT)
-Content-Type: text/plain; charset="utf-8"
+        id S229941AbhFJOGk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Jun 2021 10:06:40 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:42966 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231251AbhFJOGk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 10:06:40 -0400
+Received: by mail-qt1-f179.google.com with SMTP id v6so12093566qta.9
+        for <cgroups@vger.kernel.org>; Thu, 10 Jun 2021 07:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uSsccOa0ekLtQf+hjaaxgyVTpWcAkGjfjGCSWyqjUOg=;
+        b=p+uFJn94QQUXOOtDh05HomeTNaioo2qs4MgUtE/BgEbOOymvokye9OWZZ6USc/gkix
+         C3LmNlDP8EsLhpowFNdRa8lgOcWkWd0+2liquUXTo8FkQIMSeufT+JYW3IdTKbSFhTG4
+         qP0cRqnA/g0BAFxkJuCQJaK5lM3JKvckL9qA0xPQJbHM5Qm+W8eb/UzE46XudJarXxAU
+         TTsdaYbZpwwRZXJeukfOpFSdHaXQh0M1Ce56IrC3ysLqdUPzSPuK1ntKs6STEyTE1n/L
+         0iPAmFIQ3YbicX4g8ZpkyMVgoWR7tNbU1WGZHL1ESGQSIo9ugwp8KfTFHwwawRO6u1zw
+         R07Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=uSsccOa0ekLtQf+hjaaxgyVTpWcAkGjfjGCSWyqjUOg=;
+        b=LLtfubWQWdQ3WpxGSj0b2dzK0UF8AtsdD4/4P00etBMUpHfZlG/Jfh1uWmC6+0AK3k
+         xozC36MdrS/A13e/2sslPuB+8wEN9dnc6c95mVKV10Foqv7rf+gIq5EhFnBnYp+h/3KV
+         tXFaY4iVWQ8EduCCwYdOS6uYvumknUG1DNhoeYcYCXuuEnAIpwBbT+/Mmznhr3AI/MRz
+         EZPt4JN5IMD0i1d94IXs2Ow3HTIvpd+Sea6ySKd1oeGxVfZslKnQJYvSal25Zs1kMaaq
+         J7pZAZ0XK/AAnov695vp1kjEF3n37zErnEPF488GjGbS+UjZn4XDUZ5pUAYo0X/xrBv8
+         gL1g==
+X-Gm-Message-State: AOAM530FBDo3Ef1L2EWZRzh/Ivc6ZdYBo8blaW/Z3W94iNjNbtNuoi33
+        IVB90X0l9544Abf00vZg8IeDjUVii9He8Q==
+X-Google-Smtp-Source: ABdhPJyogGJve5thu4jx3zEeMAQmG+o1jm4Lln/vsNb/p9zn216ZxGl0/0FN7ijgQms9QAvHqQv0cA==
+X-Received: by 2002:ac8:684:: with SMTP id f4mr5271352qth.79.1623333807886;
+        Thu, 10 Jun 2021 07:03:27 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id f5sm2172147qkm.124.2021.06.10.07.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 07:03:26 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 10 Jun 2021 10:03:25 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexander Kuznetsov <wwfq@yandex-team.ru>
+Cc:     cgroups@vger.kernel.org, zeil@yandex-team.ru,
+        dmtrmonakhov@yandex-team.ru
+Subject: Re: [PATCH] cgroup1: don't allow '\n' in renaming
+Message-ID: <YMIbrRdktYmolPXZ@slm.duckdns.org>
+References: <1623223039-35764-1-git-send-email-wwfq@yandex-team.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-To:     Recipients <mpaucar@chalver.com.ec>
-From:   ''Tayeb souami'' <mpaucar@chalver.com.ec>
-Date:   Thu, 10 Jun 2021 09:32:40 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20210610072530.296F21F24FE7@mail.chalver.com.ec>
-X-Laboratorios-Chalver-MailScanner-Information: Please contact the ISP for more information
-X-Laboratorios-Chalver-MailScanner-ID: 296F21F24FE7.A2C36
-X-Laboratorios-Chalver-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1623223039-35764-1-git-send-email-wwfq@yandex-team.ru>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 10:17:19AM +0300, Alexander Kuznetsov wrote:
+> cgroup_mkdir() have restriction on newline usage in names:
+> $ mkdir $'/sys/fs/cgroup/cpu/test\ntest2'
+> mkdir: cannot create directory
+> '/sys/fs/cgroup/cpu/test\ntest2': Invalid argument
+> 
+> But in cgroup1_rename() such check is missed.
+> This allows us to make /proc/<pid>/cgroup unparsable:
+> $ mkdir /sys/fs/cgroup/cpu/test
+> $ mv /sys/fs/cgroup/cpu/test $'/sys/fs/cgroup/cpu/test\ntest2'
+> $ echo $$ > $'/sys/fs/cgroup/cpu/test\ntest2'
+> $ cat /proc/self/cgroup
+> 11:pids:/
+> 10:freezer:/
+> 9:hugetlb:/
+> 8:cpuset:/
+> 7:blkio:/user.slice
+> 6:memory:/user.slice
+> 5:net_cls,net_prio:/
+> 4:perf_event:/
+> 3:devices:/user.slice
+> 2:cpu,cpuacct:/test
+> test2
+> 1:name=systemd:/
+> 0::/
+> 
+> Signed-off-by: Alexander Kuznetsov <wwfq@yandex-team.ru>
+> Reported-by: Andrey Krasichkov <buglloc@yandex-team.ru>
+> Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
 
-Lieber Freund,
+Applied to cgroup/for-5.13-fixes
 
-Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der =
-Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zu=
-f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
-il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
-meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
-und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
-Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
- spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen, sehen Sie bitte meine Y=
-ou Tube Seite unten.
+Thanks.
 
-UHR MICH HIER: https://www.youtube.com/watch?v=3DZ6ui8ZDQ6Ks
-
-
-
-Das ist dein Spendencode: [TS530342018]
-
-
-
-Antworten Sie mit dem SPENDE-CODE an diese
-
-E-Mail:Tayebsouam.spende@gmail.com
-
-
-Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
-
-Gr=C3=BC=C3=9Fe
-Herr Tayeb Souami
+-- 
+tejun
