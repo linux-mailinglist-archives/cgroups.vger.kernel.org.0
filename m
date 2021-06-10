@@ -2,214 +2,227 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0B83A1DD9
-	for <lists+cgroups@lfdr.de>; Wed,  9 Jun 2021 21:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAFE3A2145
+	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 02:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbhFITzz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Jun 2021 15:55:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11902 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229472AbhFITzy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Jun 2021 15:55:54 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 159JrqCK024727;
-        Wed, 9 Jun 2021 12:53:52 -0700
+        id S229972AbhFJAX1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Jun 2021 20:23:27 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48780 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229957AbhFJAX0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Jun 2021 20:23:26 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15A0FgFW020551;
+        Wed, 9 Jun 2021 17:21:20 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=FQeSwqBYlXX2OUV6btAidyxpfyqTQcv817nZY36nqhg=;
- b=gSW2qH32u0MX2MrW1l/n4k7ywmmO7fG3RjuGz5kbDTDMxla6xDiIryrP9i1Y3gquJ2O6
- ZNdHQ1nQQ3DGh7o3KvTCumtgFdTcu+TkTFfKzWCpnYJXNeD9t4F3NrMRFY+w7bVN3jp+
- 3wqf3/0PgAxGgrLtofNlQLOipkBIcx/IMg8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 392wj330tt-2
+ mime-version; s=facebook; bh=TpK1cdobo9o7wKCHVN2XbKA1lu3rGsD869bUAtYau8w=;
+ b=k/2l+fZ5vvfGbMqv4qfFYUW2YzWyA5kDEJDH8d5ZOzxro+78YefJKW3k48uLoh4ESc6u
+ nMkL2lrZQVgw7s69ZMUtLaDkRFb3sIYaPMFXt7MzKDhMc9KR6Z/Zngz7bpWKnEtsA//X
+ lhVEvIEi+HlajwQ0J8Jhk42I0jscqpsoKi0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3925y2vgt5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 09 Jun 2021 12:53:52 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+        Wed, 09 Jun 2021 17:21:20 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 9 Jun 2021 12:53:50 -0700
+ 15.1.2176.2; Wed, 9 Jun 2021 17:21:18 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c0dj/G1nDY8Y2LUeHndY7WfErLkbD8xv7idWW4S+gGLFX3auStV87mrCJqFZuGqNdqTfHVv0Jfg2zCKc5FVkmCOm5730hZwOTU5nW3yMGmbkq/Vd3AUGjCAGsvDbQ7MEX0WZ2vOvbOW2nXMnIpUMF+/J+YqjkTBZ/zvgAxDMUV9zRn0DL85orCHyLQAhxRaU2xO8neXoIc5ZuQHWdz7S4YL0AozLZYPkL9er0WnTTbN2hBUjG6XO6dLFuIUANB+vv9Zt3rHldFQ/JbeIfhc2Gg8U1sH81CMATKp1OZWUMA/I6y7RjqXpwc6YIul2Un8a70E3QFRkwHvOmJ1GNWCWaw==
+ b=LoXcGS2cSf6A0kDXiN/fLy1MAf+4lkeUIZMCUvwuZAikEW65hrHfwj8OfDn1SU6sUEMfOoWvOYvsMaUtX7OHq5qB7ASyu1ybMtMYUtyNRmz49dpaceSvPlWbAbefGgxpKZ+svUkKNwOVuSYvahH9/ObrkZZshj2GFS5TXXeBUd+TTDcMmlVi5our8R3YCr4dQ9SB0pcX5Fg15Mi43rBu3rxBE/4YCxjMUCvdMrG52LOw8HReQxH04gRXG8SMtGk05SBjyOTXp0t0T8oDPyQ+MthawUT9qJKU7oxyFtywDtmITgGF9MSDfsNoKg0kDf8yDOcULM/BmsN9q39SN+mjmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FQeSwqBYlXX2OUV6btAidyxpfyqTQcv817nZY36nqhg=;
- b=FLUucPbrI+5DnsNt/ydkHNXo6YrE/aD1geUwoGwR54OzocxhgjRk4srdQ1X6tbCfEZqFcsYPTLuyJ+ECZPqp095ipnVnkYl5pkuyaS9PbC8kftgg3ZTHcXnXL7y44EfjC8bjjz8HUwrjkFzhd8/4tEBohhioChB7jrNGfro0c0dGz6vk1h7Lr+Nxhxs+kBJnWgYEr5UIGmX5MVm5+wR9meQsGOB2tjgdB0ROqUPJ9Pq+V7TXWzKO2DWmOLPTQQ1CASQA0SKT9IQS+cSgPuCYZrPezcAcPG0PumxgOWSoZpJV7gXRmVaMJNigbNjfEE4Nplx7nVCDvH7JkXWt2XddvQ==
+ bh=TpK1cdobo9o7wKCHVN2XbKA1lu3rGsD869bUAtYau8w=;
+ b=BfbPlHuvfr7CoH+dllkScm+W3sg9E4NQjT/3NavjfB9eyZaWbtbHKzBFR2WHPuvQRRBGDAvbgT1hrsuHvpVfWk8BurXV/aiIdkr9HFghSpvxGs/qok4gBjNbJrkoyF+xIfVSYzUuwgf43ylIenfFuIrXoWh/0Qcbd/jHFabf29r03SxH94eqPIjFWJ4YPVpsPDziIK90wdl04M9pcYT+syazWuus1+4o0ZZMvmGNHymFIupncWBUBBKyEupQwLa0ifuVkynR/oZIFH8eZQ51IIs2aGA4+9eVL44X8EIcFTsZU863IgEwC33JLmLQJL1gHPiK0thAvBnsdOYlVbgCGw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=fb.com;
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4357.namprd15.prod.outlook.com (2603:10b6:a03:380::21) with
+ by BYAPR15MB3288.namprd15.prod.outlook.com (2603:10b6:a03:108::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22; Wed, 9 Jun
- 2021 19:53:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Thu, 10 Jun
+ 2021 00:21:17 +0000
 Received: from BYAPR15MB4136.namprd15.prod.outlook.com
  ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4219.021; Wed, 9 Jun 2021
- 19:53:49 +0000
-Date:   Wed, 9 Jun 2021 12:53:44 -0700
+ ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4219.021; Thu, 10 Jun 2021
+ 00:21:17 +0000
+Date:   Wed, 9 Jun 2021 17:21:14 -0700
 From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-        <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v9 8/8] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <YMEcSBcq/VXMiPPO@carbon.dhcp.thefacebook.com>
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Dennis Zhou <dennis@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>, <cgroups@vger.kernel.org>,
+        Jan Kara <jack@suse.com>
+Subject: Re: [PATCH v9 3/8] writeback, cgroup: increment isw_nr_in_flight
+ before grabbing an inode
+Message-ID: <YMFa+guFw7OFjf3X@carbon.dhcp.thefacebook.com>
 References: <20210608230225.2078447-1-guro@fb.com>
- <20210608230225.2078447-9-guro@fb.com>
- <20210608171237.be2f4223de89458841c10fd4@linux-foundation.org>
- <YMAKBgVgOhYHhB3N@carbon.dhcp.thefacebook.com>
- <YMANNhixU0QUqZIJ@google.com>
- <20210608223434.25efb827a66f10ad36f7fe0b@linux-foundation.org>
+ <20210608230225.2078447-4-guro@fb.com>
+ <YMA2XEnJrHyVLWrD@T590>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210608223434.25efb827a66f10ad36f7fe0b@linux-foundation.org>
+In-Reply-To: <YMA2XEnJrHyVLWrD@T590>
 X-Originating-IP: [2620:10d:c090:400::5:4d50]
-X-ClientProxiedBy: MW4PR03CA0278.namprd03.prod.outlook.com
- (2603:10b6:303:b5::13) To BYAPR15MB4136.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0129.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::14) To BYAPR15MB4136.namprd15.prod.outlook.com
  (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4d50) by MW4PR03CA0278.namprd03.prod.outlook.com (2603:10b6:303:b5::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Wed, 9 Jun 2021 19:53:48 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:4d50) by SJ0PR03CA0129.namprd03.prod.outlook.com (2603:10b6:a03:33c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Thu, 10 Jun 2021 00:21:16 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 243ae537-4482-4d3c-313f-08d92b804c8d
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4357:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB43573B17F663561F7D00E435BE369@SJ0PR15MB4357.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: cdb4613c-1038-48e8-4112-08d92ba5a9d0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3288:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB32886CDB1CC71072D916ABE1BE359@BYAPR15MB3288.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Oob-TLC-OOBClassifiers: OLM:250;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qY0Ol64g0EY97gMeNjEe5E8SpoDTtgUqVWwu68jV2EKlBVWQ59tV9y3W8yohxmXNlH4bIZvAOkJXGspMDAmXzmma/i9C5vykw2uLfLgGAB+gfHyfBN8bxa37u1fA7Hr20M2lSJt8fgP98dD2/vV1fRSgRLx4S0izyjL9wtuJqM2+silsBlTbio9NqeD6kiBaMrW3/wsNAi59rnPSDrzSlTPTHTbY89yPvB50cHajLkOYV+tDp66a6kft/ZyEDnGeAidriDbDW4do1IgM8/EYgRg8p2Cq9S3uzk3iEZGDBXffrDg6qUUsuZBMSp4KIz88iVuDmm8vCEo5Zr2pGk4FWopmQStOLLKWy5E30pGffQViGQXmoaJ4ivx3LlDHPeohiSY04emp7i9n1YrVPD3TdsJ+JDwrex60UR5Ouy8nIipqRn+6LU5Oe4gxCxCirXHi83qBrfa2ne0G+HOcsUGe4Bnk9vdU93SP82wzhK4ZA3eGtIFctmB3FukCTw8CVM6uLyxLIW0r0O9EmDoPENcDaey/mBBCLlICNtB+pT3vYgOBuW76TwXXNcRKuBd6JwZTH+dCmxC+qjTNxQExAmP3Hw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(366004)(376002)(136003)(9686003)(6506007)(7696005)(52116002)(55016002)(186003)(16526019)(66556008)(54906003)(8676002)(5660300002)(316002)(7416002)(66946007)(38100700002)(86362001)(2906002)(83380400001)(6916009)(478600001)(6666004)(66476007)(8936002)(4326008);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 04W54hqiGmcJak8cQqEJC06XQW2V3fcLEiO8Kcw05SWig8ZdDELBnyVvyAHYcpZm46LMUndVYBpe/8YqxnzT02HfWSq+EDD3xkXI7+tBB87o60XGCGxahR+/5eMZ5bEebeKwTatbeBECWLYhKlXvrIa7BXOwruxnyMa866oseBprDOetVE3KTv2UBHSx10qcCTwnMSVYRvvS4vjJGfKc/X5oNBORWNChrNXO1+NvLgMfuoYy7/vdFOdMiyf/jnjNNFWCYP+m7b7vKEpEqmsaNiWOByxeGqJoCELPSEpqHVZqOE2aBgYsAZ3fgqwjeNaVyg28333xD9ax0AHh9jva/pajaVlfpHyXc6EZ61SUuMrZVa+mX0whjkeyS7StPAlbPBNqA5/vriOs/jj2N5ubb9cIN+Lh1NccQWjVP5cThXQXs/7Dga/Cj7/5BFjvqq0pdU7uWOGU+6Tkjhfga7aLX9nQBTWcNt85XvOr7Voa6alUqoJPVhPd8FNUJVIUGsbtBA8xuK5KNLCxGoIMgSImTgpg+338Kd3IlJNDHISjNuM+U3AQ4x3+OWkqKs5ds8HZl/RQg7ABEZ4APDphPwhequoktOMaTnwKtKefGD5ukjoqRaZKAJGTLfPicJF2/75vPj0n5M9buQP+Io0mkAghTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(8676002)(186003)(6506007)(86362001)(66556008)(9686003)(478600001)(38100700002)(8936002)(66946007)(66476007)(53546011)(316002)(6916009)(7696005)(5660300002)(4326008)(55016002)(52116002)(83380400001)(2906002)(54906003)(16526019)(7416002)(67856001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?z2bla81Fu8zB6KPISGErgG4KXHRjeLo6DpesjMUVJ2wC5RI2vnEkyo3auWss?=
- =?us-ascii?Q?QPUnHS8yR6siojagqoYf4xmYayPXEO5M4LvYiXAoS9cvmNoDKMm6pl/kEB/w?=
- =?us-ascii?Q?+eI4SoECxhDBT9NU8pPyndKtZNkp7K1dIOUB8AKyRrJtninQw0FA+Nyjz9Lx?=
- =?us-ascii?Q?/clyXlTgJB+1knDPHo3CGdlvm7VE3rcyLUuFVCXfokCqE+y1BRCPpT5BZRav?=
- =?us-ascii?Q?bEAWwVWLAYtQCMBvhgnvS5CnGGjbk1VehaLOEqP5nZ4lTcYKvxnfhIbsDDuU?=
- =?us-ascii?Q?eg9Z/aQoFEEvzfpD0n0PX5GblhAXNFpB/fDA9tZMXeEBc1Ep4UauGYYau5/P?=
- =?us-ascii?Q?ZQq25CRVigD2fIVCv7I3SxCIti/8k1HIU2anDdPmw7+sIdpQ9LUSvsgLl+yO?=
- =?us-ascii?Q?CsO8QxDUARQXJBwpQXNerWbzaWAoTyXnUgo3J24RT4XsrNvl366KVdS8KasC?=
- =?us-ascii?Q?xuVuawpVbeR5JC60Gxw8nH0y6xWclIok8uj5OK7Dt3zDT2KvN3w+U5MlVfVw?=
- =?us-ascii?Q?EhHktk7wdBiNrdzUdbd66jWF+E9ZRyxVtKAPEkS4V9kDS1NVoAeiyFNJyTIr?=
- =?us-ascii?Q?Y62q+0bmSAHD/+WD/fVEwzTcvULCQnPnt8eAF+1n9OtpLTM+IrQPBPl48Ykv?=
- =?us-ascii?Q?fA2CimtybIoXmaa9ePHOUG2MHozt6+P9ihc1vKQHx/wI4U/aN/Sdn6b/AOUG?=
- =?us-ascii?Q?TvVWwGYXk6avT4EIoVjIyqPk2mXOPmA3nFYwB4lHLpdwJzjIplCc10seu7Q3?=
- =?us-ascii?Q?quvJbGkbrg1IBcai7rTL6/8fjgPjOXfb+CfiQFQz7Ke1N6kdVy3SUqemtCLG?=
- =?us-ascii?Q?BdHIBjXE1bx3fIL9pWPoZUG5Ywf04gus/CA3C0c75GmzzosjEUs7nYVkQYcm?=
- =?us-ascii?Q?pCtWC91X9iV5Gi0j3e5TQXMQL8NELb8tKJJm9MvBTVW5xj4G6p3osQM8PlUp?=
- =?us-ascii?Q?e8hygvfFYNiHmNtnMRZRdSAV5P9cYNW4DAFwJ8q5+/1fUnO9MFoy/LZuPdSV?=
- =?us-ascii?Q?l0J+ukChBiayFy3O7i2O60wm/Glav/NA9EVZanMKc2KbZcpvSbRGxSjeQkCZ?=
- =?us-ascii?Q?K7/2MvGLYGE7BWRGQRJxuCB3rd2zBcbrJu/txdafAVFD3Wc0EET6FSPN7qMJ?=
- =?us-ascii?Q?IRZvOIMPNqHKonpYwzUDW2QaCGkRWON1yejZph58ZSFL96elKNn0qItEoXw9?=
- =?us-ascii?Q?Gbovpy7xlKISaBCGEtuBteWzD7ZEVcU80fqe45Myyyw1pcpdpO9FFQgfIuYI?=
- =?us-ascii?Q?WPO65OG7C2rjIaw82daaVdsry1goRIbXnxlZovZKRERTaEoMbeJD3+BjxC+Q?=
- =?us-ascii?Q?mGE3LXno+dHx+y8YbN3yTJw+zFt2EWwigFu91Qb21Jx8vA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 243ae537-4482-4d3c-313f-08d92b804c8d
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jgwd+etnhlU2chyfMY/HWV/rvcTCaJj0Sp/6jQAWzwuR/9Ijie00cGlf3ZQ0?=
+ =?us-ascii?Q?sBA7pwlGtPG4X+qrGwPM68vePL03Cj+C1O319w0jFzx24bbDgBo9jRPs9Jaq?=
+ =?us-ascii?Q?/+vobUdelLmpTpcChQPAfukVHpRZYj+6TcA2+5TU7tiXESckcR77ZL+5TbCN?=
+ =?us-ascii?Q?Nac0jQII3nsN2VbKOmyeRMTqzzIwseA5VnaqtJE2ZRLa0HVMXmYwqVODOVfB?=
+ =?us-ascii?Q?J3WvB4cR/QmWiqGGuYKU0V6e85H3CTpP563c7Nlbbw423jSb0gJ3jxqtc+O9?=
+ =?us-ascii?Q?KBidFzXiEGLWc77KosiKjPJsBM1Wg7P7UNSToG1l2tFoRF97jf9mD3YlJPJt?=
+ =?us-ascii?Q?Jd/rhEIPVg+bi+pcLUVURGX3kk8ilQfRtxNqJ5wsMQlYUYzYzvMCdx0O1ITY?=
+ =?us-ascii?Q?UlTRdl9Z63bEuDq8RREFVarXE/oOi9Npd9EnZSKkIvOtIfUZQTkoLT5ouctT?=
+ =?us-ascii?Q?WumPvUePGGz9thwkh93vTQYSL/ktk78ZbTUcuKFBZQ3dTV6DB+AUWXxPb0u7?=
+ =?us-ascii?Q?DToZoy5vgJnONu0XrSeq6mvs6jK2e38PRMPSS1iU5wZT8wzY4KKiI5jBRrz1?=
+ =?us-ascii?Q?bdSsMr/PVzhgOcKwSRM/m8ensJRmKneYfsWqVtrlECb1IUqGQc67oqE8k7df?=
+ =?us-ascii?Q?DJtU2FHz9Fe0SVTCuzE0/nC2c6dkIEch1MmL4wYIR2Jc/r7vjrSCwGX3AOVv?=
+ =?us-ascii?Q?LV1J0lM1QI8T+bNJ7rOyX/9ZhVKaf9liD3R3d2HCYCxgEfflYpVi5rEVm2eU?=
+ =?us-ascii?Q?ayUXxpBE4BWAkeH6VbDtSFUQt7QDDTHfm7OnXjKW1Pt92G7INVZ0WBwHe8N6?=
+ =?us-ascii?Q?MDMvGtlacrEY/w65PdX4RyUHTWeM7SEb5gzyDKMVrApn3FTQe+QJWLK/ckX9?=
+ =?us-ascii?Q?WQeEHsgc8/m4mHfxoZ1YGwyMJtfNp2Zy1zKjHZVFqOZAJhXRZIC2XKuozZci?=
+ =?us-ascii?Q?k7CCy4QSKN+yuAcVpFjIZmI689OTbf0mJ+F/JdN8oqQPSs7EryerEdQ8J5SM?=
+ =?us-ascii?Q?yV2ExmkINkDXAyr1deyHJ9jpVW4W10P+LK6rJaM3CvY/R+zAYS7QD0Y369p2?=
+ =?us-ascii?Q?787tAiN5pW9jVGwkInLpQ63YN4EsFzNzMtGDCm+q2HEKHNraGZSaxMyk0GYx?=
+ =?us-ascii?Q?FIO5EyKwM7pe8jV0PuxauRLZ5dP97n7q6lbcUgNKodZugJqSBM8x8mN0nm1f?=
+ =?us-ascii?Q?Yp3ucCVEQiViuLCWo0yW+6Ympl6rYVB8Jtswt8b1/kOFcnivMQgykWKIGCzI?=
+ =?us-ascii?Q?hgLVAA5G8DjHq3ddSHo9/RKllg7ktBNI77W8EVbEC8ucpGHvPBdX5bcMrLeG?=
+ =?us-ascii?Q?rD1bkzoDiZgHncrnvCQwpd2xkctmAqdCcRPCfSJmVJcXLQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdb4613c-1038-48e8-4112-08d92ba5a9d0
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2021 19:53:49.1861
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2021 00:21:17.0237
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bgkJiTKzNf2OQCfx/8LVoR9KvHds0lshk61OaLZyFBtYtO18/iigNhraa9J8iQJx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4357
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0uNyR9K77Yec6XizboG4zBhepmV1P9FrWXGyLmMbVmICLM7iJtv3wRMfEGZFcFbE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3288
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 7jafD61RtPESkdK6WvBAJ7sPP6Ty41pN
-X-Proofpoint-ORIG-GUID: 7jafD61RtPESkdK6WvBAJ7sPP6Ty41pN
+X-Proofpoint-GUID: K5BhMUB4VNTlPxlc9AlMkzgA8oyP45_Z
+X-Proofpoint-ORIG-GUID: K5BhMUB4VNTlPxlc9AlMkzgA8oyP45_Z
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-06-09_07:2021-06-04,2021-06-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 mlxscore=0 clxscore=1015 phishscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=932 adultscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106090103
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 mlxlogscore=999 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106100000
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:34:34PM -0700, Andrew Morton wrote:
-> On Wed, 9 Jun 2021 00:37:10 +0000 Dennis Zhou <dennis@kernel.org> wrote:
+On Wed, Jun 09, 2021 at 11:32:44AM +0800, Ming Lei wrote:
+> On Tue, Jun 08, 2021 at 04:02:20PM -0700, Roman Gushchin wrote:
+> > isw_nr_in_flight is used do determine whether the inode switch queue
+> > should be flushed from the umount path. Currently it's increased
+> > after grabbing an inode and even scheduling the switch work. It means
+> > the umount path can be walked past cleanup_offline_cgwb() with active
+> > inode references, which can result in a "Busy inodes after unmount."
+> > message and use-after-free issues (with inode->i_sb which gets freed).
+> > 
+> > Fix it by incrementing isw_nr_in_flight before doing anything with
+> > the inode and decrementing in the case when switching wasn't scheduled.
+> > 
+> > The problem hasn't yet been seen in the real life and was discovered
+> > by Jan Kara by looking into the code.
+> > 
+> > Suggested-by: Jan Kara <jack@suse.com>
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/fs-writeback.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > index b6fc13a4962d..4413e005c28c 100644
+> > --- a/fs/fs-writeback.c
+> > +++ b/fs/fs-writeback.c
+> > @@ -505,6 +505,8 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+> >  	if (!isw)
+> >  		return;
+> >  
+> > +	atomic_inc(&isw_nr_in_flight);
 > 
-> > On Tue, Jun 08, 2021 at 05:23:34PM -0700, Roman Gushchin wrote:
-> > > On Tue, Jun 08, 2021 at 05:12:37PM -0700, Andrew Morton wrote:
-> > > > On Tue, 8 Jun 2021 16:02:25 -0700 Roman Gushchin <guro@fb.com> wrote:
-> > > > 
-> > > > > Asynchronously try to release dying cgwbs by switching attached inodes
-> > > > > to the nearest living ancestor wb. It helps to get rid of per-cgroup
-> > > > > writeback structures themselves and of pinned memory and block cgroups,
-> > > > > which are significantly larger structures (mostly due to large per-cpu
-> > > > > statistics data). This prevents memory waste and helps to avoid
-> > > > > different scalability problems caused by large piles of dying cgroups.
-> > > > > 
-> > > > > Reuse the existing mechanism of inode switching used for foreign inode
-> > > > > detection. To speed things up batch up to 115 inode switching in a
-> > > > > single operation (the maximum number is selected so that the resulting
-> > > > > struct inode_switch_wbs_context can fit into 1024 bytes). Because
-> > > > > every switching consists of two steps divided by an RCU grace period,
-> > > > > it would be too slow without batching. Please note that the whole
-> > > > > batch counts as a single operation (when increasing/decreasing
-> > > > > isw_nr_in_flight). This allows to keep umounting working (flush the
-> > > > > switching queue), however prevents cleanups from consuming the whole
-> > > > > switching quota and effectively blocking the frn switching.
-> > > > > 
-> > > > > A cgwb cleanup operation can fail due to different reasons (e.g. not
-> > > > > enough memory, the cgwb has an in-flight/pending io, an attached inode
-> > > > > in a wrong state, etc). In this case the next scheduled cleanup will
-> > > > > make a new attempt. An attempt is made each time a new cgwb is offlined
-> > > > > (in other words a memcg and/or a blkcg is deleted by a user). In the
-> > > > > future an additional attempt scheduled by a timer can be implemented.
-> > > > > 
-> > > > > ...
-> > > > >
-> > > > > +/*
-> > > > > + * Maximum inodes per isw.  A specific value has been chosen to make
-> > > > > + * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-> > > > > + */
-> > > > > +#define WB_MAX_INODES_PER_ISW	115
-> > > > 
-> > > > Can't we do 1024/sizeof(struct inode_switch_wbs_context)?
-> > > 
-> > > It must be something like
-> > > DIV_ROUND_DOWN_ULL(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)) + 1
-> > 
-> > Sorry to keep popping in for 1 offs but maybe this instead? I think the
-> > above would result in > 1024 kzalloc() call.
-> > 
-> > DIV_ROUND_DOWN_ULL(max(1024 - sizeof(struct inode_switch_wbs_context), sizeof(struct inode *)),
-> >                    sizeof(struct inode *))
-> > 
-> > might need max_t not sure.
+> smp_mb() may be required for ordering the WRITE in 'atomic_inc(&isw_nr_in_flight)'
+> and the following READ on 'inode->i_sb->s_flags & SB_ACTIVE'. Otherwise,
+> cgroup_writeback_umount() may observe zero of 'isw_nr_in_flight' because of
+> re-order of the two OPs, then miss the flush_workqueue().
 > 
-> Unclear to me why plain old division won't work, but whatever.  Please
-> figure it out?  "115" is too sad to live!
+> Also this barrier should serve as pair of the one added in cgroup_writeback_umount(),
+> so maybe this patch should be merged with 2/8.
 
-You're totally right, plain division is fine here!
-Please, squash the following chunk into the last commit in the series.
+Hi Ming!
 
-Thank you!
+Good point, I agree. How about a patch below?
+
+Thanks!
 
 --
 
+From 282861286074c47907759d80c01419f0d0630dae Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <guro@fb.com>
+Date: Wed, 9 Jun 2021 14:14:26 -0700
+Subject: [PATCH] cgroup, writeback: add smp_mb() to inode_prepare_wbs_switch()
+
+Add a memory barrier between incrementing isw_nr_in_flight
+and checking the sb's SB_ACTIVE flag and grabbing an inode in
+inode_prepare_wbs_switch(). It's required to prevent grabbing
+an inode before incrementing isw_nr_in_flight, otherwise
+0 can be obtained as isw_nr_in_flight in cgroup_writeback_umount()
+and isw_wq will not be flushed, potentially leading to a memory
+corruption.
+
+Added smp_mb() will work in pair with smp_mb() in
+cgroup_writeback_umount().
+
+Suggested-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ fs/fs-writeback.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
 diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 49b33300b1b8..545fce68e919 100644
+index 545fce68e919..6332b86ca4ed 100644
 --- a/fs/fs-writeback.c
 +++ b/fs/fs-writeback.c
-@@ -229,7 +229,8 @@ void wb_wait_for_completion(struct wb_completion *done)
-  * Maximum inodes per isw.  A specific value has been chosen to make
-  * struct inode_switch_wbs_context fit into 1024 bytes kmalloc.
-  */
--#define WB_MAX_INODES_PER_ISW  115
-+#define WB_MAX_INODES_PER_ISW  ((1024UL - sizeof(struct inode_switch_wbs_context)) \
-+                                / sizeof(struct inode *))
- 
- static atomic_t isw_nr_in_flight = ATOMIC_INIT(0);
- static struct workqueue_struct *isw_wq;
+@@ -513,6 +513,14 @@ static void inode_switch_wbs_work_fn(struct work_struct *work)
+ static bool inode_prepare_wbs_switch(struct inode *inode,
+ 				     struct bdi_writeback *new_wb)
+ {
++	/*
++	 * Paired with smp_mb() in cgroup_writeback_umount().
++	 * isw_nr_in_flight must be increased before checking SB_ACTIVE and
++	 * grabbing an inode, otherwise isw_nr_in_flight can be observed as 0
++	 * in cgroup_writeback_umount() and the isw_wq will be not flushed.
++	 */
++	smp_mb();
++
+ 	/* while holding I_WB_SWITCH, no one else can update the association */
+ 	spin_lock(&inode->i_lock);
+ 	if (!(inode->i_sb->s_flags & SB_ACTIVE) ||
+-- 
+2.31.1
+
