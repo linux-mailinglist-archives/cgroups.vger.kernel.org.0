@@ -2,96 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4243A3432
-	for <lists+cgroups@lfdr.de>; Thu, 10 Jun 2021 21:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5403A3A1C
+	for <lists+cgroups@lfdr.de>; Fri, 11 Jun 2021 05:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhFJTmJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Jun 2021 15:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        id S231342AbhFKDJv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Jun 2021 23:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbhFJTmJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 15:42:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F589C061574;
-        Thu, 10 Jun 2021 12:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dFVbMgHSVXeqKN6P1dJ+5aGTI7wSx+DxBg16yiPD+NU=; b=jLWPqrtTHgNShn8IpLGkd6FVZ3
-        izj6LMj2aFyZzsEkle6f5RA+iQCJVb9B2PjXWPNQtwI7lOQfDhA07umz1wQEi89AcaF/T3JA5MdQP
-        U3PE/a9COCNVIXjSrn6TYJgtyiBpWeJVmsgb0/O83RY1Lwybg5rDDktCwQI0h4MwYYS2N18/wc3Lf
-        i7qeN9Mfj4Ux1UzKetZKr2BUtH1JMEiJqcWxv0/E1OhXjMVlpZXEphZ/8r9LGCLa6xboy6Jq0ABya
-        eG/+sh4cdiXw55XeyETHRsXU/l6jlFvf2G6lBGetSMirYQJI1sTMe1W6EWeguc9qbkJNm8jNA0+iN
-        OOYGIErQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lrQWe-00228z-HP; Thu, 10 Jun 2021 19:39:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5EDD3001E4;
-        Thu, 10 Jun 2021 21:39:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6379721AB0AC0; Thu, 10 Jun 2021 21:39:35 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 21:39:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 2/5] cgroup/cpuset: Add new cpus.partition type with no
- load balancing
-Message-ID: <YMJqd1JJcFTThH8j@hirez.programming.kicks-ass.net>
-References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-3-longman@redhat.com>
- <YMJfDHr1+xxm6SBi@hirez.programming.kicks-ass.net>
- <820aff72-fce2-ac2f-88e6-787249e04308@redhat.com>
+        with ESMTP id S231309AbhFKDJu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Jun 2021 23:09:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F63C0617AD;
+        Thu, 10 Jun 2021 20:07:43 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id n12so1290272pgs.13;
+        Thu, 10 Jun 2021 20:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cww4YAD4W8e5YtVsLar88kpQ76E3chRpXf1PGNQpk6o=;
+        b=CKh9czTQUO98TR4VM0uad4kJNDB2x3J1rSXbP6I44BFYVmJ6GmxdfInEAcbD4BpPOX
+         582qg9ZY1jJ6wjehaPMUgl2e5RXTiBwg2Q9oREu6xzi16d9WJTGJZaeZCIa38rsWU4w4
+         utJEeCOEX2O0+Kd4iRyO7/vy9auXrQOxKSOnGF5+kyMiaGxe48DS+zAk0pmZbdXavPfN
+         Fi2k0UlNBT8HqJu8T0/JoVrY4HPiWp42Wz/qtUZ/N6bcauusj5gYb0YuhVxUhGf9VCDX
+         IrZljKbEq/gay+39QXhstMBVlPNIVpKBpZGgTYin/BMHz2m3JPd3iagprl1p831bC3yc
+         U8wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cww4YAD4W8e5YtVsLar88kpQ76E3chRpXf1PGNQpk6o=;
+        b=LOQSJkuVU0FPzuRMVG/MFVGIVyhpcSxtmjrQxH14ZvR2rSdQ17Qlmj2u1CtXlQOLUu
+         5CHYd12Ob6Ct5BtbU0+BFdUXd/9kb0DlB+86a0wIJLGRMmCdk7Qwz8605CqsXzFBLehF
+         8Op/wPv5fmoOnaeVCbprVqw9Vdyn8gHMoqD0jY5jVrAW0wUmUCAn/HHB1psLWq+N1399
+         eTAE5jZyPSQAa8w12XLpidqs8mkIm8x7zp6xT3/ikK1BpPPUXc9ryW5wrVeu7xJv6ssL
+         f/fRqCmAq3cq31LEtc5uKAbjTMMgxhVa2WCUNp+nzNZQQhEprs4AfKoolyQcPBje5DFp
+         SyYA==
+X-Gm-Message-State: AOAM533Gd39nURlP8NdNZh0AOwj937GsNQ7CbKIUoxrwyhQ6tXJLDghZ
+        JjXruWxwGQ3xPIi0T+7Yyl/S6Mudqj+LDw==
+X-Google-Smtp-Source: ABdhPJy9/Pdgs6aaraNzkW4nMF2MydCn+C/5NccebOlL6iiLq7UONo5Baog4APKzANDauh7vAcjfkw==
+X-Received: by 2002:a63:f13:: with SMTP id e19mr1444328pgl.112.1623380861398;
+        Thu, 10 Jun 2021 20:07:41 -0700 (PDT)
+Received: from kir-rhat.redhat.com (c-76-104-243-248.hsd1.wa.comcast.net. [76.104.243.248])
+        by smtp.gmail.com with ESMTPSA id q2sm3774319pje.50.2021.06.10.20.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Jun 2021 20:07:40 -0700 (PDT)
+From:   Kir Kolyshkin <kolyshkin@gmail.com>
+To:     linux-doc@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, tj@kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, cgroups@vger.kernel.org,
+        Kir Kolyshkin <kolyshkin@gmail.com>
+Subject: [PATCH 0/3] add/update/fix BFQ docs
+Date:   Thu, 10 Jun 2021 20:07:34 -0700
+Message-Id: <20210611030737.1984343-1-kolyshkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <820aff72-fce2-ac2f-88e6-787249e04308@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 03:16:29PM -0400, Waiman Long wrote:
-> On 6/10/21 2:50 PM, Peter Zijlstra wrote:
-> > On Thu, Jun 03, 2021 at 05:24:13PM -0400, Waiman Long wrote:
-> > > Cpuset v1 uses the sched_load_balance control file to determine if load
-> > > balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
-> > > as its use may require disabling load balancing at cgroup root.
-> > > 
-> > > For workloads that require very low latency like DPDK, the latency
-> > > jitters caused by periodic load balancing may exceed the desired
-> > > latency limit.
-> > > 
-> > > When cpuset v2 is in use, the only way to avoid this latency cost is to
-> > > use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
-> > > the kernel boot, however, there is no way to add or remove CPUs from
-> > > this isolated set. For workloads that are more dynamic in nature, that
-> > > means users have to provision enough CPUs for the worst case situation
-> > > resulting in excess idle CPUs.
-> > > 
-> > > To address this issue for cpuset v2, a new cpuset.cpus.partition type
-> > > "root-nolb" is added which allows the creation of a cpuset partition with
-> > > no load balancing. This will allow system administrators to dynamically
-> > > adjust the size of the no load balancing partition to the current need
-> > > of the workload without rebooting the system.
-> > I'm confused, why do you need this? Just create a parition for each cpu.
-> > 
-> From a management point of view, it is more cumbersome to do one cpu per
-> partition. I have suggested this idea of 1 cpu per partition to the
-> container developers, but they don't seem to like it.
+Improve BFQ docs: fix formatting, adding a missing piece.
 
-Oh, because it then creates a cgroup tree per CPU and you get to move
-tasks between cgroups?
+Fix cgroup v1 blkio docs which are not updated for CFQ -> BFQ.
 
-OK I suppose.
+Patches are on top of the latest docs-next (commit acda97acb2e98c97895).
+
+Kir Kolyshkin (3):
+  docs: block/bfq: describe per-device weight
+  docs/cgroup-v1/blkio: stop abusing itemized list
+  docs/cgroup-v1/blkio: update for 5.x kernels
+
+ .../cgroup-v1/blkio-controller.rst            | 155 +++++++++---------
+ Documentation/block/bfq-iosched.rst           |  38 +++--
+ 2 files changed, 107 insertions(+), 86 deletions(-)
+
+-- 
+2.31.1
+
