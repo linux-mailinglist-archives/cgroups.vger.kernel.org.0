@@ -2,90 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4D53A6E15
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jun 2021 20:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE553A70AD
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jun 2021 22:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbhFNSRH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Jun 2021 14:17:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24908 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235045AbhFNSRH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Jun 2021 14:17:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623694503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XoLLCXJLmHm9xP9JVi6L/4crsU3Bp6fWjhRZ5/p958Y=;
-        b=NvqhF2j4hVetN7H5/8FCaawGOlj264250DN3QfNc+OvVrbxElRLNEHRlrJfNqMSQFavTf6
-        MTHX4AuTr3gi4M1faiiiOF2wywk0YutUie6zccuQgf8kRtT8tg7ambG3zP8GILBmjViWjK
-        mwRS7PcT95/Kxh4JEaZU8F1XB+tTS80=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-z3QcK7ybOkqZwgQrXxv6XA-1; Mon, 14 Jun 2021 14:15:01 -0400
-X-MC-Unique: z3QcK7ybOkqZwgQrXxv6XA-1
-Received: by mail-lj1-f199.google.com with SMTP id j2-20020a2e6e020000b02900f2f75a122aso5061421ljc.19
-        for <cgroups@vger.kernel.org>; Mon, 14 Jun 2021 11:15:01 -0700 (PDT)
+        id S235652AbhFNUqn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Jun 2021 16:46:43 -0400
+Received: from mail-qv1-f49.google.com ([209.85.219.49]:44787 "EHLO
+        mail-qv1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235172AbhFNUqn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Jun 2021 16:46:43 -0400
+Received: by mail-qv1-f49.google.com with SMTP id w4so13748298qvr.11;
+        Mon, 14 Jun 2021 13:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=212ymYp7XEu+lKWxduC+83kiaUY3pqkgv+9qi3641iU=;
+        b=ixpntEdyk4n4XpQDDgnK92G2u3+1O1Oz3Fhqal4MiqoQVAoZmarGQIzc1x7iSob77H
+         vNzXG5bd7M3JsZPRBHsXNtIVpqpYxAYq+61TxPuyQ2oIhCrqzlXqISfPCgYra4nCNfqe
+         3ZOn/WS3+/CArQyHi0AV2aVcy9uk70efLQEPWgAhEPlRauDD66xs/Y6hQMIJHKL/WPub
+         zDUT31VW3Eg+meHPP+2TiyzfeRmRBuu7np35feeIqu4XIlmy8etcfa3bgsE6fdmv2EjM
+         i/k4a2r3HqU8po5AySg1+/Ss7DP0P4H6lFmsNslpuivserxT92ZaxeqvB0U+0s1x8iJv
+         qtBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XoLLCXJLmHm9xP9JVi6L/4crsU3Bp6fWjhRZ5/p958Y=;
-        b=BeISGY9Ohm8pep+62cJ2nFvr22+9q7Dse4KzLifLrC8hxerftUjletAXm3IFe+XI/F
-         7N9T0IS6bmjTZZzaEcSVZlG+kXJiWab2jNSt2Jr3w3NdpmkRjNLmta/VSt/6b6M1veLO
-         DzlbUZmqnWXCudd2LHlqTOQYeZc0JtEsXauHX8kPxndMAaQtDQaoLSPHD40QJLigwlf+
-         W5BfhlrCdRB6qZQ94Lg5Rck96jhFCYApgbvDj3XynPN54+ITXr5fKUsMdn0O0rI9PC2j
-         BFa7/xle1EMKSfcEQaf2QNZ9E7bJ7EGwxN5r69h9IgwpSCghniidEWxXtP3MGNLWMXUj
-         jI4w==
-X-Gm-Message-State: AOAM533utCi8KyWgGhlntZ4jC2IPzPPrA2Z6xpqo6CeflqW92WCo8sfl
-        0HmPbmZYg84Pvvj22GFaZiXbGrR/MjJ2u+cf7Ggn7vcvq/VmohESgzQZBK0hkxxKOn8GnxZifTj
-        HPXl4sbQQe7bH6YZU9v62H1yQgLURAvKVhQ==
-X-Received: by 2002:a05:651c:383:: with SMTP id e3mr14751185ljp.220.1623694499478;
-        Mon, 14 Jun 2021 11:14:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzZpUwO131yESALYO7EwB89ztq7Jn+0azFobN4Jb1kH1ikJSy93T4qoJVCiH217Mn8G6kgyD4lpDRQotg36Oc=
-X-Received: by 2002:a05:651c:383:: with SMTP id e3mr14751171ljp.220.1623694499323;
- Mon, 14 Jun 2021 11:14:59 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=212ymYp7XEu+lKWxduC+83kiaUY3pqkgv+9qi3641iU=;
+        b=LBOjIf6grfMI7R/vmi3ZqJZ4ZPMfmHVDPLX1PN+Wjt0xtN+ekHNRkV8rBY3SlsWiBu
+         yww4d3DdBPoAEeyrpUqYGgvGYGj88yWvn8pyyzXv/FZs/6C2qKrK7P0DG+yEZ2Sh+Vv/
+         SDJvy9LO1UiwE6+lUDkTozL9uzVdD68k8msFF5fdsQpy3Sv93dFZ1tklDboVeLeMDnYk
+         G0ZYUWWdYgktn776IJJg3Z29+PvfPRaRcMOuz5BCcVW3HxyW5TV5/2X7m0JOZXsYdT4y
+         F6v8VaT3k57A+Sp6mU+6llHn8usoozTyr15wB+3t/oz0uF1JqUOggYokWvxWvLJFTQIS
+         Gjsg==
+X-Gm-Message-State: AOAM533S+khh9UmAQiLB4f1JK0nIBEomqkykKO+otecCsTZItXBMASvs
+        1dmjmg9r5yVyACKQL706ugk=
+X-Google-Smtp-Source: ABdhPJyZiBT2UFA22fxY80PwV97uk8Cilfx14IlToy0lDB7LgmWsIjbP5LulDlyiivN3X3IgnTCUKA==
+X-Received: by 2002:a05:6214:1909:: with SMTP id er9mr1028714qvb.13.1623703410350;
+        Mon, 14 Jun 2021 13:43:30 -0700 (PDT)
+Received: from localhost ([199.192.137.73])
+        by smtp.gmail.com with ESMTPSA id d16sm10271682qtj.69.2021.06.14.13.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Jun 2021 13:43:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 14 Jun 2021 16:43:28 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin <hpa@zytor.com>, Greg Kroah-Hartman
+        <gregkh@linuxfoundation.org>, Rafael J. Wysocki " <rafael@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/4] cgroup/cpuset: Allow cpuset to bound displayed cpu
+ info
+Message-ID: <YMe/cGV4JPbzFRk0@slm.duckdns.org>
+References: <20210614152306.25668-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20210317003616.2817418-1-aklimov@redhat.com> <87tuowcnv3.ffs@nanos.tec.linutronix.de>
- <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com> <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com>
-In-Reply-To: <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com>
-From:   Alexey Klimov <aklimov@redhat.com>
-Date:   Mon, 14 Jun 2021 19:14:48 +0100
-Message-ID: <CAFBcO+9wLjDW6n-ZSean_UQHSJ44Tpw9XBz-3UMoVCeUridj4Q@mail.gmail.com>
-Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael@kernel.org, tj@kernel.org,
-        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614152306.25668-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thomas,
-Just gentle ping.
+Hello,
 
-On Thu, Apr 15, 2021 at 2:30 AM Alexey Klimov <aklimov@redhat.com> wrote:
->
-> On Sun, Apr 4, 2021 at 3:32 AM Alexey Klimov <klimov.linux@gmail.com> wrote:
-> >
-> > On Sat, Mar 27, 2021 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Mon, Jun 14, 2021 at 11:23:02AM -0400, Waiman Long wrote:
+> The current container management system is able to create the illusion
+> that applications running within a container have limited resources and
+> devices available for their use. However, one thing that is hard to hide
+> is the number of CPUs available in the system. In fact, the container
+> developers are asking for the kernel to provide such capability.
+> 
+> There are two places where cpu information are available for the
+> applications to see - /proc/cpuinfo and /sys/devices/system/cpu sysfs
+> directory.
+> 
+> This patchset introduces a new sysctl parameter cpuset_bound_cpuinfo
+> which, when set, will limit the amount of information disclosed by
+> /proc/cpuinfo and /sys/devices/system/cpu.
 
-[...]
+The goal of cgroup has never been masquerading system information so that
+applications can pretend that they own the whole system and the proposed
+solution requires application changes anyway. The information being provided
+is useful but please do so within the usual cgroup interface - e.g.
+cpuset.stat. The applications (or libraries) that want to determine its
+confined CPU availability can locate the file through /proc/self/cgroup.
 
-> Are you going to submit the patch? Or I can do it on your behalf if you like.
+Thanks.
 
-Are you going to send out this to lkml as a separate patch or do you
-want me to do this on your behalf?
-
-Best regards,
-Alexey
-
+-- 
+tejun
