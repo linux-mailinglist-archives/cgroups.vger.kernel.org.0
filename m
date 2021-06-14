@@ -2,89 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694983A6A68
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jun 2021 17:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED093A6AF5
+	for <lists+cgroups@lfdr.de>; Mon, 14 Jun 2021 17:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbhFNPdL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Jun 2021 11:33:11 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:38690 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhFNPdG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Jun 2021 11:33:06 -0400
-Received: by mail-lf1-f50.google.com with SMTP id r5so21806502lfr.5
-        for <cgroups@vger.kernel.org>; Mon, 14 Jun 2021 08:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=bNme+EzHVzrIQEXwYwbnMcehdQ/ZaTsor5me0kGBI+A=;
-        b=NFSC8hXLt1UmmA/yEyGFseJidXegBmq+NZ1BAg51wCEhbt0II8ZiQJ7Hzdz9go8FTH
-         NpLqfJX2qL3XCZLJzAq6VacSqe/Y03/2x8Ah+7Lp7n7wZmUgWyA7r/dMcyGq2SeO+67R
-         2WN62J/Bdx/CNxOvPDRuuQ2fdUQDuRm3YH1lGQP+Or4Gg+0lKYpALATDdu6vW/O1PflW
-         tRpOkmvwkJR9TicaaFYpjXLr3ivh8HapLJToWvTarG+yjI2c2blLNy8+jOs4DeWna9jn
-         l91YIPY7iBP7PC1FZO/XHSOZcCnA/Xl49xGiEGtZDDrmVwC0lTmgfw3HCKvg7vq5gl35
-         Qk7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=bNme+EzHVzrIQEXwYwbnMcehdQ/ZaTsor5me0kGBI+A=;
-        b=UCCctNw2ybjDyvsvTB+cW58Ssgovzm/WRrmDZkDykmP6gPIC6Fahi0seOFjyFtAD0H
-         MN4vCtPjNwmu12mdt5H0rHjR6Ke7zGJvc+o6UHM0EnfhsF4OuTbLZOmpJSpGQp1yGQkA
-         98gHZBXvICF83gElv6DyO/l2yU3/mI3Z+0PSOxG/quohv41YkWxhRLOIUgkgglSFoJyH
-         axNDp1s7cpfL4PJUkOtBhmA+26WOJZyhXwSqeOkLQG2XkaDOERpDfozWufhNswwFjBZ3
-         drQxmGuauZYN/ex8KjtBxcPiNVUTolEpxyJk9FVLwc9FUzzRWnk2lf1dbFqa7f1J90tK
-         i/9A==
-X-Gm-Message-State: AOAM533/IzWSm9iLHOqAYnTHOsfW7lp6XLGhrSyPyJXee2lESRQ1mpB5
-        lOStml/xy9LUUbDuoQvAshMym1D439VW2++/TklcDuosO+CU/6aU
-X-Google-Smtp-Source: ABdhPJygBg5yGh+Fh5lkbZUkHhRwXvoQ7j62FCdfmA8OfJDx2+SonVvGkb+JPOa5iUxG88v1+7Zz2rBqgVXoZPjDrvo=
-X-Received: by 2002:a19:6e41:: with SMTP id q1mr12214333lfk.409.1623684587682;
- Mon, 14 Jun 2021 08:29:47 -0700 (PDT)
+        id S234138AbhFNPye (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Jun 2021 11:54:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233894AbhFNPyd (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 14 Jun 2021 11:54:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6292860FEE;
+        Mon, 14 Jun 2021 15:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623685950;
+        bh=trCbMGPAbt9/hzrWlV6LYuE+SaIgEDWh+DuiywOoDhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1BXHD7aM5xf8LRFVUUHxCZ+Yl93ZkZLcH9KouwmBEbG/fCvejrJXDiOYN0Js5XS8k
+         8TSvta5Pm1Po7SmLwZ4YqKncEIcqI9CPnPZFqhyjRpq9PRPWzHmdwLp460+PGcldi9
+         pwUibem6vahztLNFxVphy+pMq5W1O681ZGxp+Bbg=
+Date:   Mon, 14 Jun 2021 17:52:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin <hpa@zytor.com>, Greg Kroah-Hartman
+        <gregkh@linuxfoundation.org>, Rafael J. Wysocki " <rafael@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 4/4] driver core: Allow showing cpu as offline if not
+ valid in cpuset context
+Message-ID: <YMd7PEU0KPulsgMz@kroah.com>
+References: <20210614152306.25668-1-longman@redhat.com>
+ <20210614152306.25668-5-longman@redhat.com>
 MIME-Version: 1.0
-From:   Ronny Meeus <ronny.meeus@gmail.com>
-Date:   Mon, 14 Jun 2021 17:29:35 +0200
-Message-ID: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
-Subject: Short process stall after assigning it to a cgroup
-To:     cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210614152306.25668-5-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello
+On Mon, Jun 14, 2021 at 11:23:06AM -0400, Waiman Long wrote:
+> Make /sys/devices/system/cpu/cpu<n>/online file to show a cpu as
+> offline if it is not a valid cpu in a proper cpuset context when the
+> cpuset_bound_cpuinfo sysctl parameter is turned on.
 
-I want to use cgroups to control my heavy cpuload consuming applications.
-All apps are running in the realtime domain and I'm using kernel 4.9
-and cgroup v1.
+This says _what_ you are doing, but I do not understand _why_ you want
+to do this.
 
-I created a small application that monitors the CPU load (by reading
-the /proc filesystem) and when it enters a full load condition, I
-dynamically start to put the high consuming processes into a cgroup
-(which were created during system start-up). Each process will have
-it's own cgroup created under the root-cgroup.
+What is going to use this information?  And now you are showing more
+files than you previously did, so what userspace tool is now going to
+break?
 
-The budget I assign to the process is equal to the budget it has
-consumed in the previous measurement interval (for example 5s). As
-long as the load continues to be high, I start to gradually reduce the
-budget of the cgroup until the system is idle enough.
 
-This works reasonably well, but in some cases I see that a very high
-load consuming application is stopped completely at the moment it is
-put in a cgroup, although the budget allocated to it is correctly
-calculated based on the load it consumed in my previous interval.
 
-An example:
-- cpu.rt_period_us = 1000000
-- cpu.rt_runtime_us = 400000
-I would assume that an application put in a cgroup with this
-configuration can consume 40% of the CPU and it actually does. But
-sometimes, immediately after the process assignment, it stops for a
-short period (something like 1 or 2s) and then starts to consume 40%
-again.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  drivers/base/core.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 54ba506e5a89..176b927fade2 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/sched/mm.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
+> +#include <linux/cpuset.h>
+>  
+>  #include "base.h"
+>  #include "power/power.h"
+> @@ -2378,11 +2379,24 @@ static ssize_t uevent_store(struct device *dev, struct device_attribute *attr,
+>  }
+>  static DEVICE_ATTR_RW(uevent);
+>  
+> +static bool is_device_cpu(struct device *dev)
+> +{
+> +	return dev->bus && dev->bus->dev_name
+> +			&& !strcmp(dev->bus->dev_name, "cpu");
+> +}
 
-Is that expected behavior?
+No, this is not ok, there is a reason we did not put RTTI in struct
+devices, so don't try to fake one here please.
 
-It looks like the "budget" it has consumed in the root-cgroup is taken
-into account when it is moved to its own group and this results in the
-stall.
+> +
+>  static ssize_t online_show(struct device *dev, struct device_attribute *attr,
+>  			   char *buf)
+>  {
+>  	bool val;
+>  
+> +	/*
+> +	 * Show a cpu as offline if the cpu number is not valid in a
+> +	 * proper cpuset bounding cpuinfo context.
+> +	 */
+> +	if (is_device_cpu(dev) && !cpuset_current_cpu_valid(dev->id))
+> +		return sysfs_emit(buf, "0\n");
 
-Best regards,
-Ronny
+Why are you changing the driver core for a single random, tiny set of
+devices?  The device code for those devices can handle this just fine,
+do NOT modify the driver core for each individual driver type, that way
+lies madness.
+
+This change is not ok, sorry.
+
+greg k-h
