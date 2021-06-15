@@ -2,130 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CB23A717C
-	for <lists+cgroups@lfdr.de>; Mon, 14 Jun 2021 23:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A453A746F
+	for <lists+cgroups@lfdr.de>; Tue, 15 Jun 2021 04:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhFNVnR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Jun 2021 17:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhFNVnQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Jun 2021 17:43:16 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21A7C061574;
-        Mon, 14 Jun 2021 14:41:13 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id q25so11628729pfh.7;
-        Mon, 14 Jun 2021 14:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8uYjRxtO7dpbOnz1w0p+p8tt+5BlKO/GjM8j1UYITWU=;
-        b=rxyYh4BVOhTXfNAeJAnxJHtfIZSR+IFpzZ5ve/j41adnEnMSOoIlFcHv0nHL+aFMK0
-         Uh/eJeE/NZFp6DwHFLs8h+LIVAsj8YPWY7HOg9l52EqSuheS/r9oIEoruUI2/2tKorcV
-         4JRKjkiaW/50XSn3rqVc6jB/RevZ3C4cXq8BVf364EHV304Q3hNeyEa0KzpyhX9YI6FR
-         q+Hq/GS/bmTlyI0uVPOtRteKrhGuBlMI/0DYMZy87X8/2pdmQW1vgo7FsNmBw0qtpRyA
-         gRzwrtwvFfZJadtUqZe8M4806BhwfQ08JIK0qOq2DP+hmi3AlCU4TJAAvjYltf9aXM9p
-         Psgw==
+        id S229811AbhFOC4C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Jun 2021 22:56:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59024 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229613AbhFOC4C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Jun 2021 22:56:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623725638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QdYxDbQWiJKAKMyRdXqAnaZNwtk+EcbNLD508mdqaII=;
+        b=SnRF/3WapR3gHUhk/TYsu52nKeEZgnGutfGZsSrfuGKIgJgA2HJ17okApRwUsIPxBHzu9i
+        WrFYbkIQIfWhQJjV1vlbdEzSbi9GrH0JOdz8j3uwDptla0OwQnvKN1JvXffW3B7xS7zh3z
+        z+3zGtN5X0UgTuvwmsCMeOrVM5uiAL0=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-Y9-uZreDPWuDYyKMeVBH3Q-1; Mon, 14 Jun 2021 22:53:56 -0400
+X-MC-Unique: Y9-uZreDPWuDYyKMeVBH3Q-1
+Received: by mail-qk1-f197.google.com with SMTP id c3-20020a37b3030000b02903ad0001a2e8so5663248qkf.3
+        for <cgroups@vger.kernel.org>; Mon, 14 Jun 2021 19:53:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8uYjRxtO7dpbOnz1w0p+p8tt+5BlKO/GjM8j1UYITWU=;
-        b=Xqu34AOTwws/AN58C35653Vhprp3GNeDygqfl6mzePmAaBUUglFpUIx2kzQ/jWTP7f
-         ieZ9PdG1/J71VJnyRjRxudeh9D1Ob/NALeji12rphZbS8jk1xOVumBDFawZMoDzXp+pv
-         4ws7O3FPmJ2hpGurpvaUyZA9OpPMy5swZgypzyfTkA0LIPdNgoOMI4ecZq4J5ozUb0h5
-         nQEkjI5pnRaj3KBI2b7yMksQLMCgGkyBoQfZI5vHAXsQqWrv+NT+CAdsVkztT+Ce6s2P
-         sEU626UqZmW3BtbP8I21tJNVOS9yIqY3z6heifB2hL7lvhfhPSLKqCWLRz10wBCmdR0S
-         gwkg==
-X-Gm-Message-State: AOAM530G2IuzuJmw0bwU56qhWkTeNurA194m36C2g/j60+3CRX6yk1DY
-        NNtg63erZs2znZQV1eD203ria7be6KemVg==
-X-Google-Smtp-Source: ABdhPJzxRJbkGB4i9GQuKgaxsMaXCnlbiAs2TIL+OLDqaewubC6gW0ib2Gi+kPP6luKV6yY2xeHPoA==
-X-Received: by 2002:aa7:8bd6:0:b029:2ec:7dc9:77e3 with SMTP id s22-20020aa78bd60000b02902ec7dc977e3mr980739pfd.62.1623706873100;
-        Mon, 14 Jun 2021 14:41:13 -0700 (PDT)
-Received: from kir-rhat.lan (c-76-104-243-248.hsd1.wa.comcast.net. [76.104.243.248])
-        by smtp.gmail.com with ESMTPSA id q16sm4821221pfk.209.2021.06.14.14.41.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 14:41:12 -0700 (PDT)
-From:   Kir Kolyshkin <kolyshkin@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     tj@kernel.org, axboe@kernel.dk, paolo.valente@linaro.org,
-        cgroups@vger.kernel.org, Kir Kolyshkin <kolyshkin@gmail.com>
-Subject: [PATCH v2] docs: block/bfq: describe per-device weight
-Date:   Mon, 14 Jun 2021 14:41:09 -0700
-Message-Id: <20210614214109.207430-1-kolyshkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <8735tlbbml.fsf@meer.lwn.net>
-References: <8735tlbbml.fsf@meer.lwn.net>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=QdYxDbQWiJKAKMyRdXqAnaZNwtk+EcbNLD508mdqaII=;
+        b=B1OKC96Im0uLOkzUFWt7nMYzdGFJSCQguGP2fffXllAS+1UVoaYX9KukbIm+VFJwId
+         tmrwhrSPi6UtaekBvNKEW1q+CBKt5SExtK5PFyGALeWjFLAlJGLuK9X08s6Od7xl+IHw
+         QDruZOiKg/OCHQBYiDYtF/cvsYilfz2RoXcJBEYXdHQ8eV+eEseEiaquUKXZl3CwE+pU
+         kKcxDtgv4klnR9nNhu68BVY9lw6/WV1IUIf38jRFfXAyTXo3JEKrItqsGje/A/LWgqgr
+         tz9WpNj7dbAxmpEgNVkjchQ/ppA5zHa0fraiwa68Kdd80heAZ1+AZ3GMQ94JD4jFYr8L
+         aQqg==
+X-Gm-Message-State: AOAM531Fosv9087/0irvacifu6B+yt9IhV1V2HhvvZCQB8UuDxpc2mtm
+        NQnQvr8ZU+uUeUr/QDt0gRtF7+FfpaJeTYq0g50vrSvGAnufwLfvqyJZuAx04VJlR9NqMjkQAMG
+        pV4NRBgQV6E1clvgiyQ==
+X-Received: by 2002:a05:6214:d8e:: with SMTP id e14mr2632187qve.15.1623725636536;
+        Mon, 14 Jun 2021 19:53:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR4D5lIHl7MJuKgEWLvfkxmSWyUHGOXkAt4S7/aewovmlU2fF1+6INdneT3NVj66tHWWQPJA==
+X-Received: by 2002:a05:6214:d8e:: with SMTP id e14mr2632175qve.15.1623725636385;
+        Mon, 14 Jun 2021 19:53:56 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id b10sm11457721qkh.45.2021.06.14.19.53.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Jun 2021 19:53:55 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 0/4] cgroup/cpuset: Allow cpuset to bound displayed cpu
+ info
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20210614152306.25668-1-longman@redhat.com>
+ <YMe/cGV4JPbzFRk0@slm.duckdns.org>
+Message-ID: <0e21f16d-d91b-7cec-d832-4c401a713b10@redhat.com>
+Date:   Mon, 14 Jun 2021 22:53:53 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMe/cGV4JPbzFRk0@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The functionality of setting per-device weight for BFQ was added
-in v5.4 (commit 795fe54c2a828099), but the documentation was never
-updated.
+On 6/14/21 4:43 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Mon, Jun 14, 2021 at 11:23:02AM -0400, Waiman Long wrote:
+>> The current container management system is able to create the illusion
+>> that applications running within a container have limited resources and
+>> devices available for their use. However, one thing that is hard to hide
+>> is the number of CPUs available in the system. In fact, the container
+>> developers are asking for the kernel to provide such capability.
+>>
+>> There are two places where cpu information are available for the
+>> applications to see - /proc/cpuinfo and /sys/devices/system/cpu sysfs
+>> directory.
+>>
+>> This patchset introduces a new sysctl parameter cpuset_bound_cpuinfo
+>> which, when set, will limit the amount of information disclosed by
+>> /proc/cpuinfo and /sys/devices/system/cpu.
+> The goal of cgroup has never been masquerading system information so that
+> applications can pretend that they own the whole system and the proposed
+> solution requires application changes anyway. The information being provided
+> is useful but please do so within the usual cgroup interface - e.g.
+> cpuset.stat. The applications (or libraries) that want to determine its
+> confined CPU availability can locate the file through /proc/self/cgroup.
 
-While at it, improve formatting a bit.
+Thanks for your comment. I understand your point making change via 
+cgroup interface files. However, this is not what the customers are 
+asking for. They are using tools that look at /proc/cpuinfo and the 
+sysfs files. It is a much bigger effort to make all those tools look at 
+a new cgroup file interface instead. It can be more efficiently done at 
+the kernel level.
 
-Signed-off-by: Kir Kolyshkin <kolyshkin@gmail.com>
----
- Documentation/block/bfq-iosched.rst | 38 ++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 11 deletions(-)
+Anyway, I am OK if the consensus is that it is not a kernel problem and 
+have to be handled in userspace.
 
-diff --git a/Documentation/block/bfq-iosched.rst b/Documentation/block/bfq-iosched.rst
-index 66c5a4e54130..df3a8a47f58c 100644
---- a/Documentation/block/bfq-iosched.rst
-+++ b/Documentation/block/bfq-iosched.rst
-@@ -553,20 +553,36 @@ throughput sustainable with bfq, because updating the blkio.bfq.*
- stats is rather costly, especially for some of the stats enabled by
- CONFIG_BFQ_CGROUP_DEBUG.
- 
--Parameters to set
-------------------
-+Parameters
-+----------
- 
--For each group, there is only the following parameter to set.
-+For each group, the following parameters can be set:
- 
--weight (namely blkio.bfq.weight or io.bfq-weight): the weight of the
--group inside its parent. Available values: 1..1000 (default 100). The
--linear mapping between ioprio and weights, described at the beginning
--of the tunable section, is still valid, but all weights higher than
--IOPRIO_BE_NR*10 are mapped to ioprio 0.
-+  weight
-+        This specifies the default weight for the cgroup inside its parent.
-+        Available values: 1..1000 (default: 100).
- 
--Recall that, if low-latency is set, then BFQ automatically raises the
--weight of the queues associated with interactive and soft real-time
--applications. Unset this tunable if you need/want to control weights.
-+        For cgroup v1, it is set by writing the value to `blkio.bfq.weight`.
-+
-+        For cgroup v2, it is set by writing the value to `io.bfq.weight`.
-+        (with an optional prefix of `default` and a space).
-+
-+        The linear mapping between ioprio and weights, described at the beginning
-+        of the tunable section, is still valid, but all weights higher than
-+        IOPRIO_BE_NR*10 are mapped to ioprio 0.
-+
-+        Recall that, if low-latency is set, then BFQ automatically raises the
-+        weight of the queues associated with interactive and soft real-time
-+        applications. Unset this tunable if you need/want to control weights.
-+
-+  weight_device
-+        This specifies a per-device weight for the cgroup. The syntax is
-+        `minor:major weight`. A weight of `0` may be used to reset to the default
-+        weight.
-+
-+        For cgroup v1, it is set by writing the value to `blkio.bfq.weight_device`.
-+
-+        For cgroup v2, the file name is `io.bfq.weight`.
- 
- 
- [1]
--- 
-2.31.1
+BTW, do you have any comment on another cpuset patch that I sent a week 
+earlier?
+
+https://lore.kernel.org/lkml/20210603212416.25934-1-longman@redhat.com/
+
+I am looking forward for your feedback.
+
+Cheers,
+Longman
 
