@@ -2,55 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2FF3AA5C8
-	for <lists+cgroups@lfdr.de>; Wed, 16 Jun 2021 22:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93DF3AA930
+	for <lists+cgroups@lfdr.de>; Thu, 17 Jun 2021 04:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhFPU76 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Jun 2021 16:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233809AbhFPU76 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Jun 2021 16:59:58 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188ADC061574;
-        Wed, 16 Jun 2021 13:57:51 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id u20so3043347qtx.1;
-        Wed, 16 Jun 2021 13:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0iilFTHgmXaTXAf6PQ61qLrXDecfzvIQCA1PI6ZGIUk=;
-        b=oyRewv+gWuxpGQqbIhsiFhNSMFx6Xkb/xzs5BOkb6l2nIp9JNBfojd/BzYFbariNjU
-         VrAVVfRYwnapm+gqPr9j190GX/pRQrtENyn+vfWbzcuC/H+E4DuhyU25h2vW0cfZFsmO
-         C+5XADaN8bc1nLLsL+rmeWvciuy42OJwFRC9cKoPDgRfF55b4v51bi7tivO3FyFRqvhJ
-         EpfIhumP5stdswSGz6ZQcou99fKE6MAqohAMMDUJMlslhnAZZnihoSYx34VcBPB/dKf6
-         BzGvgnP7+BujnS2mL/lHYx6axjpjgFjXX7UEB9Ur4M0YsellXNx1AvuKz/pDjscG7wyu
-         Reyg==
+        id S229868AbhFQC4C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Jun 2021 22:56:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26293 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229614AbhFQC4C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Jun 2021 22:56:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623898434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yS1nM3ylxqu4LGWweeetnOJWhjHjFKRHgCRdFTmCJkE=;
+        b=gXpmwFOIduk2/9ckK6uOz5f62UA4v+vegnUu/PmMFzPvbwjb033oqPmZTdebjvVXBnTapl
+        4g5+lUivfYA8eFf20LhDQxtgWCKC6A9oxKjL/KBRPpj5i2d5XtHq48/KaZWbKGEuplHb25
+        bZoeEh9wfoEbyyX/oC8o00i9h13PoUY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-GnCiU8vnPGOIyzSzQhj6AQ-1; Wed, 16 Jun 2021 22:53:51 -0400
+X-MC-Unique: GnCiU8vnPGOIyzSzQhj6AQ-1
+Received: by mail-wr1-f69.google.com with SMTP id d5-20020a0560001865b0290119bba6e1c7so2257860wri.20
+        for <cgroups@vger.kernel.org>; Wed, 16 Jun 2021 19:53:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=0iilFTHgmXaTXAf6PQ61qLrXDecfzvIQCA1PI6ZGIUk=;
-        b=aKz8XMft8YTkaQLPanRRnRTfYvpUoaaNHEoccePH/YndBVSySPi7Do1QnuKpC2zJH2
-         XHXEHfV6u/giKBiVcPsC6fz7T6nJifHCfBUfymzhlOUZGRdvQAvEGIC9f5XdhiYYH6HL
-         4H5dyiZqub6TLukSOLNSQTG3H9yxbz+kpkplXHXOViJCE/Zd0hcgmc119NQe2fvdf/4J
-         ZJohV1+LMeHCjcSY0/qp2d9+PmHPA2iLhRxc5SOBKbNwj8OLYgVMAoNtthervCm6aMdz
-         bXiBo8Bfaz6E95HbLSBT3YR2ZYfHJl0Ztz77XGp0mt/1ilaG0tj5/+0hPdwEJv/FZMSx
-         /VoA==
-X-Gm-Message-State: AOAM530KxQDBO/WttkZfCBMLpP6sbNxA9s83AUTJveXGm/+xDcIlgBKp
-        4JSSRD+SKj1ScvAQ72vt4Ck=
-X-Google-Smtp-Source: ABdhPJz91zoIoDlN1Hg7r1LlZ/SPcwrLhUJ1/5TZnr7SE6bXr14GfG9kzeOXitdJ+oY4z5xqxHuX0g==
-X-Received: by 2002:ac8:dc9:: with SMTP id t9mr1694199qti.293.1623877069261;
-        Wed, 16 Jun 2021 13:57:49 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id p199sm294606qka.128.2021.06.16.13.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:57:48 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Jun 2021 16:57:48 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=yS1nM3ylxqu4LGWweeetnOJWhjHjFKRHgCRdFTmCJkE=;
+        b=kjfX82bzML6xHG02U01QNpHjm8OIP+kIdRmOsLQSL6x5o5N54jT/YY/o+ekDGW/7TT
+         NDJNDStx7R3fkfFg3KzNvq/QECK6u663/iQcHeIVsiFMGvUkIiL4PhYWrkmtt2d0kMjv
+         ePTvC5RMqssWDYsrJ1nEgTTD7L6HV3an3g5B5p5NxEeZkbHVoMIf+u4LR/9w7AOy8Ljz
+         uxnVBrB4sqTxzCp13flhebQjjLeNbNxekn5l+XkSdW1pGEJm/NGjySXH4b9nFcMwn2bn
+         2NqUh3jc42yfeHfqYi7F4oPInEIcA72elFf6J+Sa6EG4JfPfkHrJY7NAlDKC/T7fFktQ
+         xbjg==
+X-Gm-Message-State: AOAM530NvaqDzrMrvuBF8l9fl11SRyTx8jkwf/c16uLDWrDS2gBjOpIh
+        EnzCPZi1HZNoj1nKFFgujMsbJQ1pEUvHiifGDkRpmD19Uzgupjk2A/CKFsJyhpkqJQO7mUpFUAo
+        X8y24IKFhczzBeGXHYw==
+X-Received: by 2002:a7b:c446:: with SMTP id l6mr583741wmi.171.1623898430240;
+        Wed, 16 Jun 2021 19:53:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJycogHw1ABakuf4er+UbRreN9lkhiUZ8wnSoK8E3G9KFZOhpUS4fGgk6OHwkh2KfEcm5Rr5Lw==
+X-Received: by 2002:a7b:c446:: with SMTP id l6mr583714wmi.171.1623898430048;
+        Wed, 16 Jun 2021 19:53:50 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id n12sm3783427wrw.83.2021.06.16.19.53.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Jun 2021 19:53:49 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 1/5] cgroup/cpuset: Don't call validate_change() for some
+ flag changes
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -61,39 +66,42 @@ Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 3/5] cgroup/cpuset: Allow non-top parent partition root
- to distribute out all CPUs
-Message-ID: <YMplzNzg7mMCU4JJ@slm.duckdns.org>
 References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-4-longman@redhat.com>
+ <20210603212416.25934-2-longman@redhat.com>
+ <YMphhLAzmRRyD+cm@slm.duckdns.org>
+Message-ID: <4e4da272-ae34-4ff8-18bc-253e9c14a14c@redhat.com>
+Date:   Wed, 16 Jun 2021 22:53:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603212416.25934-4-longman@redhat.com>
+In-Reply-To: <YMphhLAzmRRyD+cm@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 6/16/21 4:39 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Thu, Jun 03, 2021 at 05:24:12PM -0400, Waiman Long wrote:
+>> The update_flag() is called with one flag bit change and without change
+>> in the various cpumasks in the cpuset. Moreover, not all changes in the
+>> flag bits are validated in validate_change().  In particular, the load
+>> balance flag and the two spread flags are not checked there. So there
+>> is no point in calling validate_change() if those flag bits change.
+> The fact that it's escaping validation conditionally from caller side is
+> bothersome given that the idea is to have self-contained verifier to ensure
+> correctness. I'd prefer to make the validation more complete and optimized
+> (ie. detect or keep track of what changed) if really necessary rather than
+> escaping partially because certain conditions aren't checked.
 
-On Thu, Jun 03, 2021 at 05:24:14PM -0400, Waiman Long wrote:
-> @@ -2181,6 +2192,13 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->  	    (cpumask_empty(cs->cpus_allowed) || nodes_empty(cs->mems_allowed)))
->  		goto out_unlock;
->  
-> +	/*
-> +	 * On default hierarchy, task cannot be moved to a cpuset with empty
-> +	 * effective cpus.
-> +	 */
-> +	if (is_in_v2_mode() && cpumask_empty(cs->effective_cpus))
-> +		goto out_unlock;
-> +
+Thanks for the comments.
 
-This is inconsistent with how other events which leave a root partition
-empty is handled. Woudln't it be more consistent to switch the parent to
-PRS_ERROR and behave accordingly but allow it to have valid child roots?
+You are right. I will leave out this patch. Anyway, the rests of the 
+patchset don't have a strict dependency on it.
 
-Thanks.
+Cheers,
+Longman
 
--- 
-tejun
