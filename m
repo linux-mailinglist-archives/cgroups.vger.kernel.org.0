@@ -2,84 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B2D3AD0E3
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jun 2021 19:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873EC3AD3C8
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jun 2021 22:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235865AbhFRRGM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Jun 2021 13:06:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34876 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhFRRGL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Jun 2021 13:06:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8F91D21B30;
-        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624035840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S233979AbhFRUpB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Jun 2021 16:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233859AbhFRUov (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Jun 2021 16:44:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2E0C061574;
+        Fri, 18 Jun 2021 13:42:41 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624048959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LHiaEznjsNUF4rAZuGixsJoeW9b4ApvWTouIw4rKRH4=;
-        b=tgHGhNEKrHZIfPRywKhTgPlChh7xLffPyPR5uJQIyb2HBLC33ASKcSFidv7iUXQuxGLrdO
-        QdOiHPnVfrHBtcaU5QDujIs7RYUaN384TX7ibRbgCaNtSFWkCsF/3uDa9b3b5Fcwl+Y/mS
-        XOpL0ncJouDsLGkucN3EQci1LHh56bs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4EB9CA3BCE;
-        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 19:03:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        bh=viaF2+vzF8yGuceHiGdcXmR+KhaApSpPdBORO7fsb08=;
+        b=ezsxCMn96b+2rHdzRATVpDVBpAYMddpcAvBC98rFOdITrLchNFKuyjWGTqiD/peJdjfyZo
+        9uA2SACZ7MDy7RW/rBDSPjsl2GGYfeESMBAKGPmDMR4ZLxDMQmS9JRSgoiTdHgKzEYCA7D
+        0fAwkVCTrOBU59v1jzl5McNQQNJ3p/rhehvTGnWJEzlHBUzdoN7aS303gjP3spWP7G5SWh
+        ok/HPjFbxtVYnv1cMLG8UEqBdXEujEWCyqYYoB7pWpTPWqBlc8VdE/cR1EqGjaCBnteb3s
+        iVmZgxZGlmKicLxoqfVSOyzZNaJs/Rs1Ug91LJmtPT/PUyTsAQAPvUaoSq+7Vw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624048959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=viaF2+vzF8yGuceHiGdcXmR+KhaApSpPdBORO7fsb08=;
+        b=vMq4tRHu7ixDGl3mtG0JpRgtNMAsZHXhoKJUnNyvBYVWnj1SLFxNFsZoD5kQMCDWRCTerB
+        6JPjgWDDW4WzKbBQ==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-Message-ID: <YMzR/0QyP9BR7DtN@dhcp22.suse.cz>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <20210615113222.edzkaqfvrris4nth@wittgenstein>
- <20210615124715.nzd5we5tl7xc2n2p@example.org>
- <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
- <87zgvpg4wt.fsf@disp2133>
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-perf-users@vger.kernel.org, linux-pm@vger.kernel.org,
+        rcu@vger.kernel.org, linux-mm@kvack.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 5/6] sched,timer: Use __set_current_state()
+In-Reply-To: <20210602133040.524487671@infradead.org>
+References: <20210602131225.336600299@infradead.org> <20210602133040.524487671@infradead.org>
+Date:   Fri, 18 Jun 2021 22:42:38 +0200
+Message-ID: <87sg1eewg1.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zgvpg4wt.fsf@disp2133>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 16-06-21 11:17:38, Eric W. Biederman wrote:
-[...]
-> MemAvailable seems to have a good definition.  Roughly the amount of
-> memory that can be allocated without triggering swapping.  Updated
-> to include not trigger memory cgroup based swapping and I sounds good.
+On Wed, Jun 02 2021 at 15:12, Peter Zijlstra wrote:
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-yes this definition is at least understandable but how do you want to
-define it in the memcg scope? There are two different source of memory
-pressure when dealing with memcgs. Internal one when a limit is hit and
-and external when the source of the reclaim comes from higher the
-hierarchy (including the global memory pressure). The former one would
-be quite easy to mimic with the global semantic but the later will get
-much more complex very quickly - a) you would need a snapshot of the
-whole cgroup tree and evaluate it against the global memory state b) you
-would have to consider memory reclaim protection c) the external memory
-pressure is distributed proportionaly to the size most of the time which
-is yet another complication. And more other challenges that have been
-already discussed.
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-That being said, this might be possible to implement but I am not really
-sure this is viable and I strongly suspect that it will get unreliable
-in many situations in context of "how much you can allocate without
-swapping".
--- 
-Michal Hocko
-SUSE Labs
