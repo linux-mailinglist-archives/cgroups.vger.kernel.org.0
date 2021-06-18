@@ -2,112 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8ED3ABDAF
-	for <lists+cgroups@lfdr.de>; Thu, 17 Jun 2021 22:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C941B3AC2DD
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jun 2021 07:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhFQUrs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Jun 2021 16:47:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45508 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231853AbhFQUrr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Jun 2021 16:47:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623962738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vpTnIUemqOshEpd//f5xMntFtlQkGOaInP6j17WpXWI=;
-        b=iTflhj/coDAw8So9pBsifMvIWEP4HGtkRlNesWPk36aeADUcubbNOKRbiv6yjd2rpDgf8j
-        Scf7FcxGWql1ds1GoqgKR4LsU8OFoCW0GTJ5DhHJ1nAMFqN2q5V5S4l4zFC9FV2zNov9F2
-        bZJ97k2LjCfyv8vpJFXjsa/gEsLQ75o=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-236-AQDMOatfM2-U5MHls8sOcQ-1; Thu, 17 Jun 2021 16:45:37 -0400
-X-MC-Unique: AQDMOatfM2-U5MHls8sOcQ-1
-Received: by mail-qk1-f200.google.com with SMTP id b125-20020a3799830000b02903ad1e638ccaso3206559qke.4
-        for <cgroups@vger.kernel.org>; Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
+        id S232467AbhFRFfV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Jun 2021 01:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232456AbhFRFfU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Jun 2021 01:35:20 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BECC061574
+        for <cgroups@vger.kernel.org>; Thu, 17 Jun 2021 22:33:10 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id p7so14407535lfg.4
+        for <cgroups@vger.kernel.org>; Thu, 17 Jun 2021 22:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=uWO1hK3ZXvOVh7b8YIGuK4UjnlgoPUKf+n3eG1ZZy9I=;
+        b=tTF2w6u94nDeH6OQs79EePuzBVO4u511wVqE9LUkHs2Xz2SMGJSGAkzsQkLitLTsm6
+         T9T1jDDKCu22/q8q14stHvaFAeuM3IS2Ona4qENUX94BvmxcRzjqNr7fY+8sqXfzkxsw
+         i/TQya1wwe4B+SGkbXaP65nA4zZLkFontPXuaa+D7AzDb9s21x5kjNtuVy9mUHIoexa5
+         +JjDIMFNWHPQgr2VJFIRC5JeQ9e9mQst5o/JuFC57wmFVpDl/oZUAPo5cCa5jMg8qm4A
+         zIAcNHHcYWZYpNYmfGS3RVEP1CsnsKyPrz7N9ZhbAjccQla4ecfp6Kpg2EbHU1Fhp1BH
+         eARA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=vpTnIUemqOshEpd//f5xMntFtlQkGOaInP6j17WpXWI=;
-        b=F+5junO8B8WREB4CPjk9zERfWiG8aQ7E2D/C+/nXt8VjSigtNuIKhhfTGE7gkJM0cc
-         nenMFDrC4Qu8H/mgdUxMRkS5dP4kYrHWdWH6uvKv4S2EjalqSKhR8rmFqn9f/bnfc5Ii
-         nfmv05NLPa+Qz4b44HFitz9Xh9alV7A/x6+kO91wTcFP9oeYs2SDDhUZ4SwOfr8e7if/
-         n3T+KOP1vblLiYzyUesI3gA1E64LrbxK6aApkycsZKSSp6JxS/gos0fuJqf/wFktLAEj
-         rdmxavyvVR9gndcHR/zPyAOHRiF6cjizpwbTrcwp1Si+K+RwPEQHdL5lnltTfF5y4PSh
-         5uPA==
-X-Gm-Message-State: AOAM531hvl0Yb4WMz0sgKsmzoLPy0HWGWzOy6VRzPmFhowk1EZGq1dKI
-        vVfjWF7JVMQcciVKKU6h1nnCf2ljCzMFlEiSKTe2sK58/6XQaF/468ZlWXKCIDbG4clDl1vknjz
-        R74uod7vQ6683kK1VnA==
-X-Received: by 2002:ac8:5e87:: with SMTP id r7mr1753320qtx.325.1623962737278;
-        Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz+oHpsqIx+NBzTLes07czJPTW873K6oP8vENp+xLmoU04jdAkKJ4RFfNYLnjvR6dWKWFFv/g==
-X-Received: by 2002:ac8:5e87:: with SMTP id r7mr1753310qtx.325.1623962737068;
-        Thu, 17 Jun 2021 13:45:37 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id t196sm2477328qke.50.2021.06.17.13.45.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 13:45:36 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 3/5] cgroup/cpuset: Allow non-top parent partition root to
- distribute out all CPUs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210603212416.25934-1-longman@redhat.com>
- <20210603212416.25934-4-longman@redhat.com>
- <YMplzNzg7mMCU4JJ@slm.duckdns.org>
-Message-ID: <7f0a0f23-3fcd-a1a3-341a-2dbbde1f25ec@redhat.com>
-Date:   Thu, 17 Jun 2021 16:45:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=uWO1hK3ZXvOVh7b8YIGuK4UjnlgoPUKf+n3eG1ZZy9I=;
+        b=Y1NYuh4NaDzyuIDDbDe8bL41PzLiKeOwXZePZn8GtthNuHVhLOY8CbtcVOK1P4S3q1
+         tN96LSJofXR9u5LX1Nm1+WNne87ipOVhz9S7v6sDQ1VOxfYwQ+s9OvTeVqWV4SnFQ/O8
+         XQvevsuiqQYzbQ1+P68O7HCuiN0cnOxv9/t0DQlk3cQ1AEv5v75c/acb/eEbAW53yCO9
+         HCTSBrHNyVvt8F3yL+UC2ipgZKMLHkPZjqPMHCR/v5VBqYxAdML7aUngDv209Sau9OV1
+         vaSU8qEtNJovT7geFjJvjhu0+Bupj1P4nVVvpWC/pQ4F7myO381u7/3kcmxld6hOKxHK
+         6CHg==
+X-Gm-Message-State: AOAM5303j1kbhBQpm4LqML2bzFhP0oxJFGDJPPz7SCFGGln1hfZ2fYaA
+        wN2ylYleh2zDJ0WyiCQxO5CpWpUA4tZtAtnZg2Momip+5f6yzQ==
+X-Google-Smtp-Source: ABdhPJzegTKTzGKbfTmL1sHt4w+pXhJO/CU2y+p3K3t3UBeGbQRvbqdLBy/P5jO3p6CYsUdXpPxcBKmjaJLdeLXGJ1U=
+X-Received: by 2002:a19:6e41:: with SMTP id q1mr1635100lfk.409.1623994388817;
+ Thu, 17 Jun 2021 22:33:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMplzNzg7mMCU4JJ@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
+In-Reply-To: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
+From:   Ronny Meeus <ronny.meeus@gmail.com>
+Date:   Fri, 18 Jun 2021 07:32:56 +0200
+Message-ID: <CAMJ=MEfjxBXWxR6PPbeoQGKc6aXQCoDjyfiOinKamR3u2xwS7w@mail.gmail.com>
+Subject: Re: Short process stall after assigning it to a cgroup
+To:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/16/21 4:57 PM, Tejun Heo wrote:
-> Hello,
+Op ma 14 jun. 2021 om 17:29 schreef Ronny Meeus <ronny.meeus@gmail.com>:
 >
-> On Thu, Jun 03, 2021 at 05:24:14PM -0400, Waiman Long wrote:
->> @@ -2181,6 +2192,13 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->>   	    (cpumask_empty(cs->cpus_allowed) || nodes_empty(cs->mems_allowed)))
->>   		goto out_unlock;
->>   
->> +	/*
->> +	 * On default hierarchy, task cannot be moved to a cpuset with empty
->> +	 * effective cpus.
->> +	 */
->> +	if (is_in_v2_mode() && cpumask_empty(cs->effective_cpus))
->> +		goto out_unlock;
->> +
-> This is inconsistent with how other events which leave a root partition
-> empty is handled. Woudln't it be more consistent to switch the parent to
-> PRS_ERROR and behave accordingly but allow it to have valid child roots?
+> Hello
+>
+> I want to use cgroups to control my heavy cpuload consuming applications.
+> All apps are running in the realtime domain and I'm using kernel 4.9
+> and cgroup v1.
+>
+> I created a small application that monitors the CPU load (by reading
+> the /proc filesystem) and when it enters a full load condition, I
+> dynamically start to put the high consuming processes into a cgroup
+> (which were created during system start-up). Each process will have
+> it's own cgroup created under the root-cgroup.
+>
+> The budget I assign to the process is equal to the budget it has
+> consumed in the previous measurement interval (for example 5s). As
+> long as the load continues to be high, I start to gradually reduce the
+> budget of the cgroup until the system is idle enough.
+>
+> This works reasonably well, but in some cases I see that a very high
+> load consuming application is stopped completely at the moment it is
+> put in a cgroup, although the budget allocated to it is correctly
+> calculated based on the load it consumed in my previous interval.
+>
+> An example:
+> - cpu.rt_period_us = 1000000
+> - cpu.rt_runtime_us = 400000
+> I would assume that an application put in a cgroup with this
+> configuration can consume 40% of the CPU and it actually does. But
+> sometimes, immediately after the process assignment, it stops for a
+> short period (something like 1 or 2s) and then starts to consume 40%
+> again.
+>
+> Is that expected behavior?
+>
+> It looks like the "budget" it has consumed in the root-cgroup is taken
+> into account when it is moved to its own group and this results in the
+> stall.
+>
+> Best regards,
+> Ronny
 
- From my point of view, PRS_ERROR is used when cpus are gone because of 
-cpu hotplug (offline). It can be a temporary condition that will be 
-corrected later on. I don't want to use PRS_ERROR for the particular 
-case that the users have explicitly distributed out all the cpus to 
-child partitions. I will clarify it in the next version and double check 
-to make sure that this rule is consistently apply.
-
-Thanks,
-Longman
-
+Note that this is a dual-core CPU and the process that is doing the cgroup
+updates is running in a single thread. So that other core will most
+probably running the application that is moved into the child cgroup.
