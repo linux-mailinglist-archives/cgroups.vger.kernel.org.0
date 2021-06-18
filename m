@@ -2,101 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C941B3AC2DD
-	for <lists+cgroups@lfdr.de>; Fri, 18 Jun 2021 07:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B2D3AD0E3
+	for <lists+cgroups@lfdr.de>; Fri, 18 Jun 2021 19:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhFRFfV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Jun 2021 01:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhFRFfU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Jun 2021 01:35:20 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BECC061574
-        for <cgroups@vger.kernel.org>; Thu, 17 Jun 2021 22:33:10 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id p7so14407535lfg.4
-        for <cgroups@vger.kernel.org>; Thu, 17 Jun 2021 22:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=uWO1hK3ZXvOVh7b8YIGuK4UjnlgoPUKf+n3eG1ZZy9I=;
-        b=tTF2w6u94nDeH6OQs79EePuzBVO4u511wVqE9LUkHs2Xz2SMGJSGAkzsQkLitLTsm6
-         T9T1jDDKCu22/q8q14stHvaFAeuM3IS2Ona4qENUX94BvmxcRzjqNr7fY+8sqXfzkxsw
-         i/TQya1wwe4B+SGkbXaP65nA4zZLkFontPXuaa+D7AzDb9s21x5kjNtuVy9mUHIoexa5
-         +JjDIMFNWHPQgr2VJFIRC5JeQ9e9mQst5o/JuFC57wmFVpDl/oZUAPo5cCa5jMg8qm4A
-         zIAcNHHcYWZYpNYmfGS3RVEP1CsnsKyPrz7N9ZhbAjccQla4ecfp6Kpg2EbHU1Fhp1BH
-         eARA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=uWO1hK3ZXvOVh7b8YIGuK4UjnlgoPUKf+n3eG1ZZy9I=;
-        b=Y1NYuh4NaDzyuIDDbDe8bL41PzLiKeOwXZePZn8GtthNuHVhLOY8CbtcVOK1P4S3q1
-         tN96LSJofXR9u5LX1Nm1+WNne87ipOVhz9S7v6sDQ1VOxfYwQ+s9OvTeVqWV4SnFQ/O8
-         XQvevsuiqQYzbQ1+P68O7HCuiN0cnOxv9/t0DQlk3cQ1AEv5v75c/acb/eEbAW53yCO9
-         HCTSBrHNyVvt8F3yL+UC2ipgZKMLHkPZjqPMHCR/v5VBqYxAdML7aUngDv209Sau9OV1
-         vaSU8qEtNJovT7geFjJvjhu0+Bupj1P4nVVvpWC/pQ4F7myO381u7/3kcmxld6hOKxHK
-         6CHg==
-X-Gm-Message-State: AOAM5303j1kbhBQpm4LqML2bzFhP0oxJFGDJPPz7SCFGGln1hfZ2fYaA
-        wN2ylYleh2zDJ0WyiCQxO5CpWpUA4tZtAtnZg2Momip+5f6yzQ==
-X-Google-Smtp-Source: ABdhPJzegTKTzGKbfTmL1sHt4w+pXhJO/CU2y+p3K3t3UBeGbQRvbqdLBy/P5jO3p6CYsUdXpPxcBKmjaJLdeLXGJ1U=
-X-Received: by 2002:a19:6e41:: with SMTP id q1mr1635100lfk.409.1623994388817;
- Thu, 17 Jun 2021 22:33:08 -0700 (PDT)
+        id S235865AbhFRRGM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Jun 2021 13:06:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34876 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233581AbhFRRGL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Jun 2021 13:06:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8F91D21B30;
+        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624035840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LHiaEznjsNUF4rAZuGixsJoeW9b4ApvWTouIw4rKRH4=;
+        b=tgHGhNEKrHZIfPRywKhTgPlChh7xLffPyPR5uJQIyb2HBLC33ASKcSFidv7iUXQuxGLrdO
+        QdOiHPnVfrHBtcaU5QDujIs7RYUaN384TX7ibRbgCaNtSFWkCsF/3uDa9b3b5Fcwl+Y/mS
+        XOpL0ncJouDsLGkucN3EQci1LHh56bs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4EB9CA3BCE;
+        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 19:03:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Down <chris@chrisdown.name>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
+Message-ID: <YMzR/0QyP9BR7DtN@dhcp22.suse.cz>
+References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+ <20210615113222.edzkaqfvrris4nth@wittgenstein>
+ <20210615124715.nzd5we5tl7xc2n2p@example.org>
+ <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
+ <87zgvpg4wt.fsf@disp2133>
 MIME-Version: 1.0
-References: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
-In-Reply-To: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
-From:   Ronny Meeus <ronny.meeus@gmail.com>
-Date:   Fri, 18 Jun 2021 07:32:56 +0200
-Message-ID: <CAMJ=MEfjxBXWxR6PPbeoQGKc6aXQCoDjyfiOinKamR3u2xwS7w@mail.gmail.com>
-Subject: Re: Short process stall after assigning it to a cgroup
-To:     cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zgvpg4wt.fsf@disp2133>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Op ma 14 jun. 2021 om 17:29 schreef Ronny Meeus <ronny.meeus@gmail.com>:
->
-> Hello
->
-> I want to use cgroups to control my heavy cpuload consuming applications.
-> All apps are running in the realtime domain and I'm using kernel 4.9
-> and cgroup v1.
->
-> I created a small application that monitors the CPU load (by reading
-> the /proc filesystem) and when it enters a full load condition, I
-> dynamically start to put the high consuming processes into a cgroup
-> (which were created during system start-up). Each process will have
-> it's own cgroup created under the root-cgroup.
->
-> The budget I assign to the process is equal to the budget it has
-> consumed in the previous measurement interval (for example 5s). As
-> long as the load continues to be high, I start to gradually reduce the
-> budget of the cgroup until the system is idle enough.
->
-> This works reasonably well, but in some cases I see that a very high
-> load consuming application is stopped completely at the moment it is
-> put in a cgroup, although the budget allocated to it is correctly
-> calculated based on the load it consumed in my previous interval.
->
-> An example:
-> - cpu.rt_period_us = 1000000
-> - cpu.rt_runtime_us = 400000
-> I would assume that an application put in a cgroup with this
-> configuration can consume 40% of the CPU and it actually does. But
-> sometimes, immediately after the process assignment, it stops for a
-> short period (something like 1 or 2s) and then starts to consume 40%
-> again.
->
-> Is that expected behavior?
->
-> It looks like the "budget" it has consumed in the root-cgroup is taken
-> into account when it is moved to its own group and this results in the
-> stall.
->
-> Best regards,
-> Ronny
+On Wed 16-06-21 11:17:38, Eric W. Biederman wrote:
+[...]
+> MemAvailable seems to have a good definition.  Roughly the amount of
+> memory that can be allocated without triggering swapping.  Updated
+> to include not trigger memory cgroup based swapping and I sounds good.
 
-Note that this is a dual-core CPU and the process that is doing the cgroup
-updates is running in a single thread. So that other core will most
-probably running the application that is moved into the child cgroup.
+yes this definition is at least understandable but how do you want to
+define it in the memcg scope? There are two different source of memory
+pressure when dealing with memcgs. Internal one when a limit is hit and
+and external when the source of the reclaim comes from higher the
+hierarchy (including the global memory pressure). The former one would
+be quite easy to mimic with the global semantic but the later will get
+much more complex very quickly - a) you would need a snapshot of the
+whole cgroup tree and evaluate it against the global memory state b) you
+would have to consider memory reclaim protection c) the external memory
+pressure is distributed proportionaly to the size most of the time which
+is yet another complication. And more other challenges that have been
+already discussed.
+
+That being said, this might be possible to implement but I am not really
+sure this is viable and I strongly suspect that it will get unreliable
+in many situations in context of "how much you can allocate without
+swapping".
+-- 
+Michal Hocko
+SUSE Labs
