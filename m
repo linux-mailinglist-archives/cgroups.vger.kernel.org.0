@@ -2,103 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502CA3ADE87
-	for <lists+cgroups@lfdr.de>; Sun, 20 Jun 2021 15:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829AD3AF4E1
+	for <lists+cgroups@lfdr.de>; Mon, 21 Jun 2021 20:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhFTNcL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 20 Jun 2021 09:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhFTNcJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 20 Jun 2021 09:32:09 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B23C061767
-        for <cgroups@vger.kernel.org>; Sun, 20 Jun 2021 06:29:56 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so5820364pji.0
-        for <cgroups@vger.kernel.org>; Sun, 20 Jun 2021 06:29:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=RMwvA+fx8yuBcbVHWSzLn2T8DJx/nm2zPa3ftW7g9Za2Rg/qcnGzbKxOIk01B0ct8J
-         A2DXDDtUl77oRF1jlp+UqZV3QkQWqK73gQnJIBFIZh8a0JY8h3Wd17attDMmaE9Eektt
-         dbYWFfWf5cl05f4gP6uMT4yAzlLz/0pOHTpHVkC4owmE193/nw/D/cZVbgRk6/osy3s1
-         DnGQFecC0XvEkZZkg6LrX5GcMSopSKtDGJD00+K0CUvUgLoPOa4nDOFTb4RfTUBJWjOm
-         u9k/aQdXe/n1UgGqdsl74mwqb1PrBCtQjehO40uXXX9Ck6N2T+Xlf2wSdnMJ3kf6n1Yz
-         rffg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=O/AQSgDUMBsvO9twgpZzMHD3MrvDc7SuA6agm2LgIBgVi+hhcRFYV3bieaJMbi9nbK
-         2LxAKWx/JPpCu+Zym9QHJQmCnc22TE6sJU3DrzhHoJDj+1n1wIG5+FODN3Gj7pI6LIfY
-         6If+EFocyr/8Bj4sa2voDP8N+3YQep/WsYyHh1JijfsW94R66+IMjXtKIT6LGuIUsezI
-         5DWuiOMCV0JV5IfB0OUfVsf7Zw0aSzxyxeK8S82+nGguEebOwrnrxDDIx6SRdXrA6yt7
-         3HPvsh9wMeWrH8Ccs6sryBXadY9XBXFAXP8Yfz93SG0UmVtcaUXs/9j1D3jWa/58GoRX
-         Fy6w==
-X-Gm-Message-State: AOAM5304OrofKe05Q5b+PjGi/XdqhG5SNrPA0tfRzRD7jRD/TKYHArY8
-        3adQFVLqkifvjMP3aEcsbQ742sE2hsgSJ9JzS6E=
-X-Google-Smtp-Source: ABdhPJzgDrNg1DyUylXnidEBopNlsbArXjkRcY8wb5NnP9kfhEmzqLJgKwQYVCOss+XLPiqKGQvsKQh595VG0LwJsuQ=
-X-Received: by 2002:a17:90b:3842:: with SMTP id nl2mr32179442pjb.227.1624195795850;
- Sun, 20 Jun 2021 06:29:55 -0700 (PDT)
+        id S231432AbhFUSXY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Jun 2021 14:23:24 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:60917 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhFUSXP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Jun 2021 14:23:15 -0400
+Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M6URd-1ltRf50Vq5-006z5z; Mon, 21 Jun 2021 20:20:30 +0200
+Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
+To:     Shakeel Butt <shakeelb@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Cgroups <cgroups@vger.kernel.org>
+References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+ <20210615113222.edzkaqfvrris4nth@wittgenstein>
+ <20210615124715.nzd5we5tl7xc2n2p@example.org>
+ <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
+ <87zgvpg4wt.fsf@disp2133>
+ <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <d1eb12ec-8e6a-11c1-ea0a-b36dcf354d16@metux.net>
+Date:   Mon, 21 Jun 2021 20:20:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a17:90b:38c4:0:0:0:0 with HTTP; Sun, 20 Jun 2021 06:29:55
- -0700 (PDT)
-Reply-To: sarahkoffi389@yahoo.co.jp
-From:   Sarah Koffi <william.p15179@gmail.com>
-Date:   Sun, 20 Jun 2021 15:29:55 +0200
-Message-ID: <CAGDeiXG8WBVXJqvFe9cEXbPzs3H0OWzxYsQ+6tVqsOpuD-B29Q@mail.gmail.com>
-Subject: Greetings From Mrs. Sarah Koffi
-To:     sarahkoffi389@yahoo.co.jp
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:KY5lFpctxJysfXmhr3/0X4zPaX01gE0qcAW6kk87sRpyKEYXmIY
+ +ioYSFHPqsL79BjDqd51LuP8noghOU0I9UrvywQknlRF+T8gQUcJA/9N83NxVwLnT5sVvPa
+ 30JyPuBrqYb+mmoKIv6LxCoRHdFreiuYJqn1pfZrZUksad7kcd2my/Uz+pzDMWLULmfuWXk
+ xVp+EcUhYxfrvdhV1WeDQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y6Z7D6wns+k=:dLaF925qRKNlyiRknu3bK0
+ HvCcCi7AixtiNj4exjyjcGLOHeCbSoibsN+zPViJ1fWok5J8zKwgogQkBy9zBZpmitM9UJA/p
+ 6GZ+YuBinrXPHIUmq3QAjoVJwIlHBmenMh9lbF1AWExg7cSuR09dxhZCc6TCLtDm+qEdCz46D
+ SVxFrhxqAdR5wt5X3o85zt+ObpE5fYQhvZfy5fxUzt+MGOsbabAAeZzzJsmtO1N4j6Aw6B7LP
+ hBIl+hFDQkfuQse7XzM2ujo0QipO51QzHPDLWngzbjv8aRZyvCKD8EEz56ob2uxHEwcjyiYDm
+ MPFkFhmgejWCBfBocnAUGrDxk/hVpqUiAGAxLAMdqGCnTm4YNGTJu06osh81ePI+7br+HxYh6
+ pqyhYsy0+vKNqNN8oRSInY+sYGDj5afnKpdM4UN0TRCAZtOU/bKzsGuUbyqX/5RjTlZzCfkuv
+ AEwvjmNH2FveEOPw0VHnfrxOs3qRQDr7nWnR8yeMp7HMaWQ45ZBZJmMiwQW3Z+b9P8kIKKGFl
+ sdoQfOQGu3fgPHuzGQfkg8=
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Greetings From Mrs. Sarah Koffi
+On 19.06.21 01:38, Shakeel Butt wrote:
 
-I'm contacting you based on your good profiles I read and for a good
-reasons, I am in search of a property to buy in your country as I
-intended to come over to your
-country for investment, Though I have not meet with you before but I
-believe that one has to risk confiding in someone to succeed sometimes
-in life.
+> Nowadays, I don't think MemAvailable giving "amount of memory that can
+> be allocated without triggering swapping" is even roughly accurate.
+> Actually IMO "without triggering swap" is not something an application
+> should concern itself with where refaults from some swap types
+> (zswap/swap-on-zram) are much faster than refaults from disk.
 
-My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
-Federal Government of Sudan and he has a personal Oil firm in Bentiu
-Oil zone town and Upper
-Nile city. What I have experience physically, I don't wish to
-experience it again in my life due to the recent civil Ethnic war
-cause by our President Mr. Salva Kiir
-and the rebel leader Mr Riek Machar, I have been Under United Nation
-refuge camp in chad to save my life and that of my little daughter.
+If we're talking about things like database workloads, there IMHO isn't
+anything really better than doing measurements with the actual loads
+and tuning incrementally.
 
-Though, I do not know how you will feel to my proposal, but the truth
-is that I sneaked into Chad our neighboring country where I am living
-now as a refugee.
-I escaped with my little daughter when the rebels bust into our house
-and killed my husband as one of the big oil dealers in the country,
-ever since then, I have being on the run.
+But: what is the actual optimization goal, why an application might
+want to know where swapping begins ? Computing performance ? Caching +
+IO Latency or throughput ? Network traffic (e.g. w/ iscsi) ? Power
+consumption ?
 
-I left my country and move to Chad our neighboring country with the
-little ceasefire we had, due to the face to face peace meeting accord
-coordinated by the US Secretary of State, Mr John Kerry and United
-Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
-and the rebel leader Mr Riek Machar to stop this war.
+>> I do know that hiding the implementation details and providing userspace
+>> with information it can directly use seems like the programming model
+>> that needs to be explored.  Most programs should not care if they are in
+>> a memory cgroup, etc.  Programs, load management systems, and even
+>> balloon drivers have a legitimately interest in how much additional load
+>> can be placed on a systems memory.
 
-I want to solicit for your partnership with trust to invest the $8
-million dollars deposited by my late husband in Bank because my life
-is no longer safe in our country, since the rebels are looking for the
-families of all the oil business men in the country to kill, saying
-that they are they one that is milking the country dry.
+What kind of load exactly ? CPU ? disk IO ? network ?
 
-I will offer you 20% of the total fund for your help while I will
-partner with you for the investment in your country.
-If I get your reply.
+> How much additional load can be placed on a system *until what*. I
+> think we should focus more on the "until" part to make the problem
+> more tractable.
 
-I will wait to hear from you so as to give you details.With love from
+ACK. The interesting question is what to do in that case.
 
- i need you to contact me here sarahkoffi389@yahoo.co.jp
+An obvious move by an database system could be eg. filling only so much
+caches as there's spare physical RAM, in order to avoid useless swapping
+(since we'd potentiall produce more IO load when a cache is written
+out to swap, instead of just discarding it)
 
-Mrs. Sarah Koffi
+But, this also depends ...
+
+#1: the application doesn't know the actual performance of the swap
+device, eg. the already mentioned zswap+friends, or some fast nvmem
+for swap vs disk for storage.
+
+#2: caches might also be implemented indirectly by mmap()ing the storage
+file/device and so using the kernel's cache here. in that case, the
+kernel would automatically discard the pages w/o going to swap. of
+course that only works if the cache is nothing but copying pages from
+storage into ram.
+
+A completely different scenario would be load management on a cluster
+like k8s. Here we usually care of cluster performance (dont care about
+individual nodes so muck), but wanna prevent individual nodes from being
+overloaded. Since we usually don't know much about the indivdual
+workload, we probably don't have much other chance than contigous
+monitoring and acting when a node is getting too busy - or trying to
+balance when new workloads are started, on current system load (and
+other metrics). In that case, I don't see where this new proc file
+should be of much help.
+
+> Second, is the reactive approach acceptable? Instead of an upfront
+> number representing the room for growth, how about just grow and
+> backoff when some event (oom or stall) which we want to avoid is about
+> to happen? This is achievable today for oom and stall with PSI and
+> memory.high and it avoids the hard problem of reliably estimating the
+> reclaimable memory.
+
+I tend to believe that for certain use cases it would be helpful if an
+application gets notified if some of its pages are soon getting swapped
+out due memory pressure. Then it could decide on its own which whether
+it should drop certain caches in order to prevent swapping.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
