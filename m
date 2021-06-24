@@ -2,87 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451FC3B321E
-	for <lists+cgroups@lfdr.de>; Thu, 24 Jun 2021 17:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F153B3279
+	for <lists+cgroups@lfdr.de>; Thu, 24 Jun 2021 17:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhFXPDF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Jun 2021 11:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbhFXPDF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Jun 2021 11:03:05 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83376C061756
-        for <cgroups@vger.kernel.org>; Thu, 24 Jun 2021 08:00:45 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x24so10746467lfr.10
-        for <cgroups@vger.kernel.org>; Thu, 24 Jun 2021 08:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VEtW/m2G4JMnkRazKy7NH/xx9Lmp9+147gFKq1PM9Yg=;
-        b=WAWI8So/qhhVeppsIvdijPvUzdKdS80W6KrQW/YiWqHSSLQfZqqWsi1EBJnzuaRtvQ
-         uwilI74b1Rj2CMfhicSt0oPI4F1Xekqj4XfrQLsepNL76BJ8xBCOBMSkY3Y1x6Gqw2sj
-         7lvnVcUcP93CrANK0OjxaCB9Zt34DH2PHf5vKOMNRYu5V5fvB00/TP3EnPOIhIxca6Zl
-         P+N/bo1Uu48b6MI43s1/NQYwIej3Cl/5IKT4nCsxBXfmhsKkx3WsExXRF4YkWlBeBjCu
-         K43gwfpaWSvIznaF14eSVUglFjETBkIwB6IrOSXTcfm8yUGeHyxDJ3fgOm99lLecLaBD
-         MiWw==
+        id S231708AbhFXP0J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Jun 2021 11:26:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41771 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232227AbhFXP0I (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Jun 2021 11:26:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624548229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V6782uv/lR78IFZdWPlWYnzNvjYHBRQ4Y4k+rewPDws=;
+        b=cCJrE5diLfQTcZvUvuxVxrqaiOl4tKRDuZ7QNo3pMQzvXzERM3riKOa5h3B0Fhn0umEzmI
+        1an5aPee9f+xm+C3k7DTEClH2veWkXtcyQIrL9zZdxp7zymd/gt8s8EXbTGnIX3zhFrRyP
+        Ndnf0lQttVe4cck7T5M3MYbKwIGbFQg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-NszVqRl0Pm2aNszrpEQOWw-1; Thu, 24 Jun 2021 11:23:47 -0400
+X-MC-Unique: NszVqRl0Pm2aNszrpEQOWw-1
+Received: by mail-qk1-f200.google.com with SMTP id t131-20020a37aa890000b02903a9f6c1e8bfso7406258qke.10
+        for <cgroups@vger.kernel.org>; Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VEtW/m2G4JMnkRazKy7NH/xx9Lmp9+147gFKq1PM9Yg=;
-        b=uD+Td3zJNzdpKmKxo1n8mIyfD5vkPk2/AqVM2RXGXnEHzxYBpE7/Qcb39GeJGOk2Jy
-         kNeUbzSktHUcanSa57A3ehSFGaZhWo/4ZzQhqihAM4D0Kn87asLuB2F3zPd69uNa2O+O
-         sR0unjoLv9gXhdNRbb267gsm6qmbuKSR84Xje2/3lLZJRy0Loo8X2EEYKuFY880SI1BE
-         aD6IKfDeFxiH8CUGZy0LogSZR094WkhvlDGQmRLWn6uiMAyOTAJY2ZmEKwK1klJ78bXP
-         rGDmMTa6mS2f/xq/BFT5md4UU26q0Eh0finSNs2K+L/Yp4a/rjrDPBymPMiiOI5bvuXI
-         4I/A==
-X-Gm-Message-State: AOAM533MVE7XjJqtCJKmV2reM199O47HztszCrnXhrF+AXjcWzGtKUyc
-        vK5q9Waqtl8YXwRVWIW5ZW2TcEKWpLFdBCRPf/W85g==
-X-Google-Smtp-Source: ABdhPJycOg00GNdG4YJ4aGl9RCigJVkD9ALTczBVbkVgHKy7VLUFW33L9S9Uoh8460AKd9LLPMgakQpyXeA4ZPVT9aA=
-X-Received: by 2002:ac2:545a:: with SMTP id d26mr4103361lfn.83.1624546843227;
- Thu, 24 Jun 2021 08:00:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210615174435.4174364-1-shakeelb@google.com> <20210615174435.4174364-2-shakeelb@google.com>
- <YNSQNu4ZW7mEX6LW@blackbook>
-In-Reply-To: <YNSQNu4ZW7mEX6LW@blackbook>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 24 Jun 2021 08:00:31 -0700
-Message-ID: <CALvZod4zaJZ1VjSQNvV7oUDZ58VYWvEUBa5WsGU4SYWnT70vbw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] memcg: periodically flush the memcg stats
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Huang Ying <ying.huang@intel.com>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=V6782uv/lR78IFZdWPlWYnzNvjYHBRQ4Y4k+rewPDws=;
+        b=Ym9iUOGkp6tnEmQ1W/ltqbPq4o1QI55ZTKCTPqeajJHDPgHl+cNZPb5J2+3L0m+VWb
+         N0iV60w80I34Kg9ozUU8UfQCzATVSu0l/gr8ZixaL3bzrCZ15gr/WeikhBWDvCow6Bg9
+         ycPkE1zMpgs8aWiOCPcZPrRzIcrgmViEonX+fT3eUiD3xIAroUSjfDduLgkLYv1g9CFN
+         UNA9fY0kDJEzR/LVzkwzcsGltV3gCAzXFeGF0b/vFVExdzPR1BQAJsXI4sJCrRZBLxgm
+         llX2m+lDaqLpwS8EygUqEfHTzX5cRDorEYpwtTvsFV4uTyFIpcTy/vzv7Lrng80qlfFs
+         dKCQ==
+X-Gm-Message-State: AOAM533DDZtP6DP4fBt7IjLrn9kWJRzi7dVqaKw6csIwrPGMHZtcqP20
+        4B6gFFUMuFBBnKilLONeR41SAWNc6Ockvi+nc7meZGz4h3Aj1Jml+mlpyvwcySwxBhNl1jL0QeR
+        dzcA0RhjV66cm9lUABw==
+X-Received: by 2002:ac8:58c5:: with SMTP id u5mr5197970qta.173.1624548227375;
+        Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyYuNEZN+9M5YXJudVbsP8p1092eOJS1bJJ8jW9TETrlaT7t2iO4Ywmwh2AvAPDOjtmD90/qw==
+X-Received: by 2002:ac8:58c5:: with SMTP id u5mr5197943qta.173.1624548227156;
+        Thu, 24 Jun 2021 08:23:47 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id k1sm2096694qtm.49.2021.06.24.08.23.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Jun 2021 08:23:46 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 3/6] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-4-longman@redhat.com> <YNR/3fydXvAi3OsN@blackbook>
+Message-ID: <58c87587-417b-1498-185f-1db6bb612c82@redhat.com>
+Date:   Thu, 24 Jun 2021 11:23:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <YNR/3fydXvAi3OsN@blackbook>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 7:01 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
+On 6/24/21 8:51 AM, Michal Koutný wrote:
+> Hello.
 >
-> Hello Shakeel.
+> On Mon, Jun 21, 2021 at 02:49:21PM -0400, Waiman Long <longman@redhat.com> wrote:
+>>      cgroup/cpuset: Add a new isolated cpus.partition type
+>>
+>>      Cpuset v1 uses the sched_load_balance control file to determine if load
+>>      balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
+>>      as its use may require disabling load balancing at cgroup root.
+>>
+>>      For workloads that require very low latency like DPDK, the latency
+>>      jitters caused by periodic load balancing may exceed the desired
+>>      latency limit.
+>>
+>>      When cpuset v2 is in use, the only way to avoid this latency cost is to
+>>      use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
+>>      the kernel boot, however, there is no way to add or remove CPUs from
+>>      this isolated set. For workloads that are more dynamic in nature, that
+>>      means users have to provision enough CPUs for the worst case situation
+>>      resulting in excess idle CPUs.
+>>
+>>      To address this issue for cpuset v2, a new cpuset.cpus.partition type
+>>      "isolated" is added which allows the creation of a cpuset partition
+>>      without load balancing. This will allow system administrators to
+>>      dynamically adjust the size of isolated partition to the current need
+>>      of the workload without rebooting the system.
+> I like this work.
+> Would it be worth generalizing the API to be on par with what isolcpus=
+> can configure? (I.e. not only load balancing but the other dimensions of
+> isolation (like the flags nohz and managed_irq now).)
+Good point, the isolated partition is equivalent to isolcpus=domain. I 
+will need to evaluate the nohz and managed_irq options to see if they 
+can be done dynamically without adding a lot of overhead. If so, we can 
+extend the functionality to cover that in future patches. Right now, 
+this is for the domain functionality only. If we can cover the nohz and 
+managed_irq options, we can deprecate isolcpus and advocate the use of 
+cgroup instead.
 >
-> On Tue, Jun 15, 2021 at 10:44:35AM -0700, Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > At the moment memcg stats are read in four contexts:
-> >
-> > 1. memcg stat user interfaces
-> > 2. dirty throttling
-> > 3. page fault
-> > 4. memory reclaim
+> I don't know if all such behaviors could be implemented dynamically
+> (likely not easy) but the API could initially implement just what you do
+> here with the "isolated" partition type.
 >
-> Sorry for being dense or ignorant -- what do you refer to with the point
-> no. 3 (memcg stats reader during page fault)?
+> The variant I'm thinking of would keep just the "root" and "member"
+> partitions type and the "root" type could be additionally configured via
+> cpuset.cpus.partition.flags (for example).
 >
+> WDYT?
 
-Yes, specifically workingset_refault() which reads lruvec stats
-directly through lruvec_page_state and indirectly through
-lru_note_cost_page.
+What I am thinking is that "isolated" means "isolated:domain" or one can 
+do "isolated:nohz,domain,manged_irq" just like the current isolcpus boot 
+option. I don't think we really need to add an extra flags control file.
+
+Cheers,
+Longman
+
+
