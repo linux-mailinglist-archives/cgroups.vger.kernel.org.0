@@ -2,90 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BA13B3E2B
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jun 2021 10:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1BA3B3FCD
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jun 2021 10:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhFYIH6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Jun 2021 04:07:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59804 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhFYIH6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Jun 2021 04:07:58 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 073A81FE4B;
-        Fri, 25 Jun 2021 08:05:37 +0000 (UTC)
+        id S229974AbhFYIzG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Jun 2021 04:55:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45842 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhFYIzF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Jun 2021 04:55:05 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BAD7621C2F;
+        Fri, 25 Jun 2021 08:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624608337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624611164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zcKRugiQvtyy62Ukgu1W5M8aUXyIgtq7LR6SD9mke1g=;
-        b=XtVADPq0THcmtBiqyCLp58Xj8c1uHH3YCFEiYP7MRwbd4BP++b68Cj95158F+4ZlVsuX8L
-        ETJoDakF1T7ntRNQrNIs08+qqanBR6SleRr7CTXpExPvUV88U7IDJh704Khsw+G5pJOV10
-        JnJxNb+Gcx5LlcnV0uB97EbjEb5LD+Q=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C0CA2A3BEB;
-        Fri, 25 Jun 2021 08:05:36 +0000 (UTC)
-Date:   Fri, 25 Jun 2021 10:05:35 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 12/46] mm/memcg: Use the node id in
- mem_cgroup_update_tree()
-Message-ID: <YNWOT2iAyo6xtR17@dhcp22.suse.cz>
-References: <20210622121551.3398730-1-willy@infradead.org>
- <20210622121551.3398730-13-willy@infradead.org>
- <YNLs+CXPpULk8Y/3@infradead.org>
- <YNSwqfX1EwJccIeu@casper.infradead.org>
+        bh=GZMmoA41VC0zJ2L7yVVFYP5vkEgxoLw5HFmrgFw5BSc=;
+        b=uebnGotChiEZ7PcTW2XnEcODhZSeP0O4eZS/q61OQgYD8biMzVBvyR97w+c9fnniDvXYPp
+        7UHxF6fpQbWgA5t60Zp6wf3uEwaAJA7Rj97zf3qWiQoAy963S99nVE7aoCl+y5EMno45X5
+        7Gbl2YelSm0ZKSUBoBqmnn5Kt3FfEqE=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 8D68C11A97;
+        Fri, 25 Jun 2021 08:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624611164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GZMmoA41VC0zJ2L7yVVFYP5vkEgxoLw5HFmrgFw5BSc=;
+        b=uebnGotChiEZ7PcTW2XnEcODhZSeP0O4eZS/q61OQgYD8biMzVBvyR97w+c9fnniDvXYPp
+        7UHxF6fpQbWgA5t60Zp6wf3uEwaAJA7Rj97zf3qWiQoAy963S99nVE7aoCl+y5EMno45X5
+        7Gbl2YelSm0ZKSUBoBqmnn5Kt3FfEqE=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 6AAjIVyZ1WB2WwAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Fri, 25 Jun 2021 08:52:44 +0000
+Date:   Fri, 25 Jun 2021 10:52:43 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Ronny Meeus <ronny.meeus@gmail.com>
+Cc:     cgroups@vger.kernel.org
+Subject: Re: Short process stall after assigning it to a cgroup
+Message-ID: <YNWZW/WhdP50F4xy@blackbook>
+References: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
+ <YNNvK0koEdkuD/z3@blackbook>
+ <CAMJ=MEfMSX06-mcKuv54T7_VCCrv8uZsN-e-QiHe8-sx-sXVoA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XKHtlNgGHYTuc56p"
 Content-Disposition: inline
-In-Reply-To: <YNSwqfX1EwJccIeu@casper.infradead.org>
+In-Reply-To: <CAMJ=MEfMSX06-mcKuv54T7_VCCrv8uZsN-e-QiHe8-sx-sXVoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 24-06-21 17:19:53, Matthew Wilcox wrote:
-> On Wed, Jun 23, 2021 at 10:12:40AM +0200, Christoph Hellwig wrote:
-> > On Tue, Jun 22, 2021 at 01:15:17PM +0100, Matthew Wilcox (Oracle) wrote:
-> > >  static struct mem_cgroup_per_node *
-> > > -mem_cgroup_page_nodeinfo(struct mem_cgroup *memcg, struct page *page)
-> > > +mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
-> > >  {
-> > > -	int nid = page_to_nid(page);
-> > > -
-> > >  	return memcg->nodeinfo[nid];
-> > >  }
-> > 
-> > I'd just kill this function entirely and open code it into the only
-> > caller
-> 
-> Done.
 
-This makes sense.
+--XKHtlNgGHYTuc56p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > -	mctz = soft_limit_tree_from_page(page);
-> > > +	mctz = soft_limit_tree_node(nid);
-> > 
-> > And while were at it, soft_limit_tree_node seems like a completely
-> > pointless helper that does nothing but obsfucating the code.  While
-> > you touch this area it might be worth to spin another patch to just
-> > remove it as well.
+On Fri, Jun 25, 2021 at 09:32:59AM +0200, Ronny Meeus <ronny.meeus@gmail.co=
+m> wrote:
+> The application does not have strict RT requirements.
 
-Yeah, the whole soft limit reclaim code is kinda pain to even look at.
-Opencoding those two will certainly not make it worse so fine with me.
+Can you even use the normal non-RT scheduling policy? ...
 
-> I'm scared that if I touch this file too much, people will start to
-> think I know something about memcgs.  Happy to add it on; cc'ing
-> maintainers.
+> We were working with fixed croups initially but this has the big
+> disadvantage that the unused budget configured in one group cannot be
+> used by another group and as such the processing power is basically
+> lost.
 
-get_maintainers will surely notice ;)
+=2E..then your problem may be solvable with mere weights to adjust prioriti=
+es
+of competitors. (Or if you need to stick with RT policies you can assign
+different priorities on task basis, I wouldn't use RT groups for that.)
 
--- 
-Michal Hocko
-SUSE Labs
+> About the stack: it is difficult to know from the SW when the issue
+> happens so dumping the stack is not easy I think but it is a good
+> idea.
+> I will certainly think about it.
+
+You may sample it periodically or start prior a migration to get more
+insights what's causing the delay.=20
+
+Regards,
+Michal
+
+
+--XKHtlNgGHYTuc56p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDVmVcACgkQia1+riC5
+qSj4NQ/9GVs17yCzEg2MYsOf/nr3/Ye5kDUy3JQ7tEeF05wLhEaeXikKa04y5Uxi
+jUrDkmqSoZX/KbDJqv5u+1JLy5m76h8POHjc0fSG6bEhfZuttGWEZ0cQoEAqyJ74
+69u3wTYcfuUeaE3uUSGwvGbWbvUMGTmYKykjrCp7oimZCQI9yaZ7XidDFVDysPCA
+iEDX27yyC1RnheZsspMGkW429HgikPGg6nHsEtTTuywWxQvKfxY4c7r1LGRuk4ow
+k2tZ9R20xgUCdLED/OCVB1DbVZ4Jv5X1wEgp0Ftz4QnYtsEd6TjXsG343CROBV4X
+i9eSuUO+z8hWeB5noeIQSzavb8cH9yU+9+J9vWP6mjxBVb2wen9QQrQS2YWW658f
+Y9NJ7acqSzNuGsW9oqW4fMTCXLzit9D87kZ7RXmldn1KgiBFuTGhdvY7lxgV/Eb6
+YH5fyL/aqzvWGxPvLLjmUXkh92pyE2eREFdKefixG0B83flM5QyyJ6SvrR0nlQ2Z
+08WLjrCRAcyIvCpnMO1jhJEFesVlClmwSRAQsRXOdmu0xw18y4tTSIgidN4maY3d
+W6Kw+lin5+GBtDw4mXcaPiV7TUy15LAgekP4LVAG0+Mh3fC7pncdHFfDMkbE4fIw
+L0K2LgKqYxXQ0bIe6bBYr9WZ32Jt1a6IQDytTflGuB8wjZbT1nk=
+=GaAf
+-----END PGP SIGNATURE-----
+
+--XKHtlNgGHYTuc56p--
