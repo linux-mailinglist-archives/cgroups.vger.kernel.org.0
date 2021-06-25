@@ -2,115 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEBC3B3D71
-	for <lists+cgroups@lfdr.de>; Fri, 25 Jun 2021 09:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA13B3E2B
+	for <lists+cgroups@lfdr.de>; Fri, 25 Jun 2021 10:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhFYHfv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Jun 2021 03:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhFYHff (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Jun 2021 03:35:35 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63087C061766
-        for <cgroups@vger.kernel.org>; Fri, 25 Jun 2021 00:33:13 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id c16so11259541ljh.0
-        for <cgroups@vger.kernel.org>; Fri, 25 Jun 2021 00:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bRwf8isjvoYl83x2OClryu7P0IJp28cVtw0kzUaoiqE=;
-        b=J5TXfJKrChnx0Kw8UzbBdOYLoeBRXpK0qQg/BlZzemDnd7n7Atjv8ZFVzG0luzgVDN
-         RV5SpCPBHXnJa7nB+vzotBodPhwU7XAV7rG4RppTJnbhnVMdHSbWOMKr99FLasoEOHxh
-         j/lsD3IyuhjRU/oM/cuHScn+4wOceam19hQVGGRhB64YSaAozksVUz1Y/wIwqW0M5VH8
-         fRdL0HbAr9ioXLnesQYMPlSM3gk2VvemM8m5J6YXvgfvBq9LuUAd8r1Em/eVytdUFEQU
-         e2hJvtPjeUqiNTFprcaBDI0wnPrZaUiHiP5mPlGtll9xFtX3j0LxLwDuUvS3FbXjSdXr
-         tpRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bRwf8isjvoYl83x2OClryu7P0IJp28cVtw0kzUaoiqE=;
-        b=M5h7u+FNFlbABg5rFJXEKK9uoCidbICvyDlWOU2uaDPAcc1vos/PrvewZLFcDdr5eN
-         VWZC1gDmh5jEfyP1/HeJ8sfi9Qjk/UPkzfNOj+uF3jLo0J9H99MoNOK43kLg/Oap3J8C
-         u0w0iFiE/nNLb7UEhxlXrrC7PDmTJrCOMhk8EGNudy0ehlFfmq8ov8HNW7gqxOwpX2jM
-         4CGE2+7mAlv8V5eyaDmKh/zBL998heMKAr+fBAIwEFNP4dZVelYUbG8vGG0ZndleTLbw
-         y8B0OH9ijfAtpwjUhFbvG6iavMZubJHNTyI25Yd1VPBFHt3TY4A5XJ2+gGUghWKHOxlN
-         jJFQ==
-X-Gm-Message-State: AOAM533RSX6qfOnKv/8Qtz0TEhOI2jsN4NNRHCWhrM8STtQ6+Lfe36tZ
-        Yn0FtA6aPoPVHD/4eO/3U7Fpyopo7mxSwY6aWWk=
-X-Google-Smtp-Source: ABdhPJz166+LeKo+oc42XQry1+XHqovUOgCdktYSUwINlsnbhaP1X9nsK4t828w3LIP2rR8dszJv4RCFtrfQKk80jyQ=
-X-Received: by 2002:a2e:1453:: with SMTP id 19mr7254373lju.62.1624606391101;
- Fri, 25 Jun 2021 00:33:11 -0700 (PDT)
+        id S229671AbhFYIH6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Jun 2021 04:07:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59804 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhFYIH6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Jun 2021 04:07:58 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 073A81FE4B;
+        Fri, 25 Jun 2021 08:05:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624608337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zcKRugiQvtyy62Ukgu1W5M8aUXyIgtq7LR6SD9mke1g=;
+        b=XtVADPq0THcmtBiqyCLp58Xj8c1uHH3YCFEiYP7MRwbd4BP++b68Cj95158F+4ZlVsuX8L
+        ETJoDakF1T7ntRNQrNIs08+qqanBR6SleRr7CTXpExPvUV88U7IDJh704Khsw+G5pJOV10
+        JnJxNb+Gcx5LlcnV0uB97EbjEb5LD+Q=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C0CA2A3BEB;
+        Fri, 25 Jun 2021 08:05:36 +0000 (UTC)
+Date:   Fri, 25 Jun 2021 10:05:35 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 12/46] mm/memcg: Use the node id in
+ mem_cgroup_update_tree()
+Message-ID: <YNWOT2iAyo6xtR17@dhcp22.suse.cz>
+References: <20210622121551.3398730-1-willy@infradead.org>
+ <20210622121551.3398730-13-willy@infradead.org>
+ <YNLs+CXPpULk8Y/3@infradead.org>
+ <YNSwqfX1EwJccIeu@casper.infradead.org>
 MIME-Version: 1.0
-References: <CAMJ=MEegYBi_G=_nk1jaJh-dtJj59EFs6ehCwP5qSBqEKseQ-Q@mail.gmail.com>
- <YNNvK0koEdkuD/z3@blackbook>
-In-Reply-To: <YNNvK0koEdkuD/z3@blackbook>
-From:   Ronny Meeus <ronny.meeus@gmail.com>
-Date:   Fri, 25 Jun 2021 09:32:59 +0200
-Message-ID: <CAMJ=MEfMSX06-mcKuv54T7_VCCrv8uZsN-e-QiHe8-sx-sXVoA@mail.gmail.com>
-Subject: Re: Short process stall after assigning it to a cgroup
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNSwqfX1EwJccIeu@casper.infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Op wo 23 jun. 2021 om 19:28 schreef Michal Koutn=C3=BD <mkoutny@suse.com>:
->
-> Hello Ronny.
->
-> On Mon, Jun 14, 2021 at 05:29:35PM +0200, Ronny Meeus <ronny.meeus@gmail.=
-com> wrote:
-> > All apps are running in the realtime domain and I'm using kernel 4.9
-> > and cgroup v1. [...]  when it enters a full load condition [...]
-> > I start to gradually reduce the budget of the cgroup until the system
-> > is idle enough.
->
-> Has your application some RT requirements or is there other reason why
-> you use group RT allocations? (When your app seems to require all CPU
-> time, you decide to curb it. And it still fullfills RT requirements?)
->
+On Thu 24-06-21 17:19:53, Matthew Wilcox wrote:
+> On Wed, Jun 23, 2021 at 10:12:40AM +0200, Christoph Hellwig wrote:
+> > On Tue, Jun 22, 2021 at 01:15:17PM +0100, Matthew Wilcox (Oracle) wrote:
+> > >  static struct mem_cgroup_per_node *
+> > > -mem_cgroup_page_nodeinfo(struct mem_cgroup *memcg, struct page *page)
+> > > +mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+> > >  {
+> > > -	int nid = page_to_nid(page);
+> > > -
+> > >  	return memcg->nodeinfo[nid];
+> > >  }
+> > 
+> > I'd just kill this function entirely and open code it into the only
+> > caller
+> 
+> Done.
 
-The application does not have strict RT requirements.
-The main reason for using cgroups is to reduce the load of the high
-consumer applications when the system is under high load so that also
-lower prio apps can have a portion of the CPU.
-We were working with fixed croups initially but this has the big
-disadvantage that the unused budget configured in one group cannot be
-used by another group and as such the processing power is basically
-lost.
+This makes sense.
 
->
-> > But sometimes, immediately after the process assignment, it stops for
-> > a short period (something like 1 or 2s) and then starts to consume 40%
-> > again.
->
-> What if you reduce cpu.rt_period_us (and cpu.rt_runtime_us
-> proportionally)? (Are the pauses shorter?) Is there any useful info in
-> /proc/$PID/stack during these periods?
->
+> > > -	mctz = soft_limit_tree_from_page(page);
+> > > +	mctz = soft_limit_tree_node(nid);
+> > 
+> > And while were at it, soft_limit_tree_node seems like a completely
+> > pointless helper that does nothing but obsfucating the code.  While
+> > you touch this area it might be worth to spin another patch to just
+> > remove it as well.
 
-I tried to use shorter periods like 100ms instead of 1s but the
-problem is still observed.
-Using a proportionally reducing algo is more complex to implement and
-I think would not solve the issue either.
+Yeah, the whole soft limit reclaim code is kinda pain to even look at.
+Opencoding those two will certainly not make it worse so fine with me.
 
-About the stack: it is difficult to know from the SW when the issue
-happens so dumping the stack is not easy I think but it is a good
-idea.
-I will certainly think about it.
-To observe the system I use a spirent traffic generator which shows me
-the number of processed packets in a nice graph. In this way it is
-easy to see that there are short peaks when the system is not
-returning any packets.
+> I'm scared that if I touch this file too much, people will start to
+> think I know something about memcgs.  Happy to add it on; cc'ing
+> maintainers.
 
-> > Is that expected behavior?
->
-> Someone with RT group schedulling knowledge may tell :-)
->
-> HTH,
-> Michal
+get_maintainers will surely notice ;)
+
+-- 
+Michal Hocko
+SUSE Labs
