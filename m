@@ -2,121 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF82D3B5EB0
-	for <lists+cgroups@lfdr.de>; Mon, 28 Jun 2021 15:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7664B3B5EE6
+	for <lists+cgroups@lfdr.de>; Mon, 28 Jun 2021 15:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhF1NJV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Jun 2021 09:09:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46650 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232598AbhF1NJU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Jun 2021 09:09:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624885614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S230256AbhF1NdL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Jun 2021 09:33:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40034 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhF1NdI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Jun 2021 09:33:08 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 03B8522443;
+        Mon, 28 Jun 2021 13:30:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624887042; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3Wsog/UA6NQRm36wrbUHXM3ftcSt/9+OFEW6vcsabAY=;
-        b=ZDni8AkrinQUwWeEVSBbJlYqCj45qnB3NNjuieklN5F7tOwja4lZc0EzHgCduVgFE4PSNm
-        hIjNzkykekrOJaDlA3B8elnFJTUi10yU3CLMZGbPimt5YEgir+Z3oTNihQhSYVhlttApm6
-        G/O+MsxduOzEZW3bCTQVC8lhZ54g87Q=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-r3jsrpxJMSSPmbEwyVXMGg-1; Mon, 28 Jun 2021 09:06:53 -0400
-X-MC-Unique: r3jsrpxJMSSPmbEwyVXMGg-1
-Received: by mail-qt1-f197.google.com with SMTP id 5-20020ac859450000b029024ba4a903ccso12719805qtz.6
-        for <cgroups@vger.kernel.org>; Mon, 28 Jun 2021 06:06:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=3Wsog/UA6NQRm36wrbUHXM3ftcSt/9+OFEW6vcsabAY=;
-        b=Lr62lBDhlF0+b3yhGllwlTKPTAj4jNlsm+gDgDkDYzunycl6bt2J7z034J7ZUKKyRE
-         mV+cF++pRd6s5gX+WNPcutmMiokZSU5twAurNaFk3wUyMBxl7817ps+PgtFElcoDf2bR
-         aE2LtOB6fE96U2cYEAvEXfHFEgCX7HFQSvYqrb8AcnMygSC5vmbjNZMdbVfjn4AmjOPN
-         xbtyD+KEk8gjQb6IfYi35Vtz1E52L43ofOl07iDHRvNZRA0N+3cjUHCS/vMqQtg89rL6
-         Y+Bav1/LfGpJwy0OQqQxTrnC62M6RhuXWgI1MtbuwmxGw7EMIAUFbe6PXWU9NsT4Lxkh
-         LILw==
-X-Gm-Message-State: AOAM533TKL4Hnmj0rP59hxMThw5pWyIN3H8e/W0s/Tyw07dpKkI8NsG+
-        QNXGKCDBgOKrFt7fIsL7W81RCjpi8Mr6pXATfLZs7FFBGfqk4jr/ln38aii+Py2dKrdv23Xy/Aa
-        DGDclsHOSxz3hhlo35A==
-X-Received: by 2002:a37:9986:: with SMTP id b128mr25711690qke.485.1624885612616;
-        Mon, 28 Jun 2021 06:06:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUlJHxYKkE1I0xN1vBM5amAltWfY9ckZGLT37Njz1aTkLclF02YuG2OEJBVFBBcLl/BywiTA==
-X-Received: by 2002:a37:9986:: with SMTP id b128mr25711669qke.485.1624885612428;
-        Mon, 28 Jun 2021 06:06:52 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h128sm10222579qkc.94.2021.06.28.06.06.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 06:06:51 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
-Message-ID: <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
-Date:   Mon, 28 Jun 2021 09:06:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        bh=zyfn/kWlkauY+pHbZcSX9v7/QNEs3F9SnoD6jJx438E=;
+        b=KSOivs4rN9bmnqLxszIaB+3+XkCnzZKpu5DMGBLHO+Dr6Db1aFtuUh1+/+HNJ5ILN5qQhw
+        rO8UARV6w+8hpVJXv9UsODf3qcM98tmM9lM9gli6ZmNVeffvFPBwCnsp8Uhk8eimicLkXL
+        1ta4rcGPmuSUHVKM4UpL+bhEdxW4TPY=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id CAC2211906;
+        Mon, 28 Jun 2021 13:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624887041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zyfn/kWlkauY+pHbZcSX9v7/QNEs3F9SnoD6jJx438E=;
+        b=Uvigr1rGojU5z9c4mfvyFMH+cAQxsvYAV0S8Cm3SiFjHpgI3bNx1I3gPUyqm97wXVSYnlG
+        w4JQ9fXf6dOLPDieNJ2WpbvjT8wHaJW28Bjk+7CY33B2Pypp/aa0cWbhD/s3cmKLDGSBw/
+        kg+O1+wtWohABmyGy6ToUmd8ypScQwU=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id iRC2LwHP2WBnagAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Mon, 28 Jun 2021 13:30:41 +0000
+Date:   Mon, 28 Jun 2021 15:30:40 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Philipp Hahn <pmhahn+lkml@pmhahn.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: Prevent inode/dentry trashing?
+Message-ID: <YNnPAJ4HNoN6g6T9@blackbook>
+References: <ce330972-78e6-4347-9735-72ee7bb21ef5@pmhahn.de>
+ <YNX8anv2yCnkVPXy@blackbook>
+ <88451906-e537-0ac3-b8f2-16bfc4d77ea6@metux.net>
 MIME-Version: 1.0
-In-Reply-To: <YNcHOe3o//pIiByh@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="23tDw59TYEHMEItr"
+Content-Disposition: inline
+In-Reply-To: <88451906-e537-0ac3-b8f2-16bfc4d77ea6@metux.net>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/26/21 6:53 AM, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Mon, Jun 21, 2021 at 02:49:20PM -0400, Waiman Long wrote:
->>   1) A partition root can't be changed to member if it has child partition
->>      roots.
->>   2) Removing CPUs from cpuset.cpus that causes it to become invalid is
->>      not allowed.
-> I'm not a fan of this approach. No matter what we have to be able to handle
-> CPU removals which are user-iniated operations anyway, so I don't see why
-> we're adding a different way of handling a different set of operations. Just
-> handle them the same?
 
-The main reason for doing this is because normal cpuset control file 
-actions are under the direct control of the cpuset code. So it is up to 
-us to decide whether to grant it or deny it. Hotplug, on the other hand, 
-is not under the control of cpuset code. It can't deny a hotplug 
-operation. This is the main reason why the partition root error state 
-was added in the first place.
+--23tDw59TYEHMEItr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Normally, users can set cpuset.cpus to whatever value they want even 
-though they are not actually granted. However, turning on partition root 
-is under more strict control. You can't turn on partition root if the 
-CPUs requested cannot actually be granted. The problem with setting the 
-state to just partition error is that users may not be aware that the 
-partition creation operation fails.  We can't assume all users will do 
-the proper error checking. I would rather let them know the operation 
-fails rather than relying on them doing the proper check afterward.
+On Mon, Jun 28, 2021 at 11:40:39AM +0200, "Enrico Weigelt, metux IT consult" <lkml@metux.net> wrote:
+> Could you please tell a bit more how this really works ?
+> (maybe some pointers to the code)
 
-Yes, I agree that it is a different philosophy than the original cpuset 
-code, but I thought one reason of doing cgroup v2 is to simplify the 
-interface and make it a bit more erorr-proof. Since partition root 
-creation is a relatively rare operation, we can afford to make it more 
-strict than the other operations.
+When cgroup's consumption is about to cross the configured limit,
+reclaim is started
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/memcontrol.c?id=62fb9874f5da54fdb243003b386128037319b219#n2579
 
-Cheers,
-Longman
+that may evict old entries
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/vmscan.c?id=62fb9874f5da54fdb243003b386128037319b219#n2852
 
+and if there's still no success freeing some space the dentry allocation
+can fail
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/slab.h?id=62fb9874f5da54fdb243003b386128037319b219#n277
+
+(This describes just one code path, the subject isn't always a dentry.)
+
+> I'm curios what happens if those cache objects are used by different
+> cgroups - are they accounted to multiple times (once per cgroup) ?
+> What happens when one cgroup using some cache object reaching its limit,
+> wile another one does not ?
+
+That's explained here
+https://www.kernel.org/doc/html/v5.13/admin-guide/cgroup-v2.html#memory-ownership
+
+Michal
+
+--23tDw59TYEHMEItr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDZzv0ACgkQia1+riC5
+qSgmvBAAmj9Nu4YOqC+vW3bzkl/j1kAtpQrjZBdeOxRZv4OVMm6twWDtZOPavLXK
+5f9YRIDaRjfJGlPInMR+OqHmwhATTlI0kJFEWTzM8Q3P0i548NJRxF/sIb5cSUjV
+oI0BBcbNvXLb/O2XWMVmltHNAk9EDD1ivMY8EOKVGJ4mCoAsYMC0QdCgb8CkIcC/
+xAok5nosUFy098U2BuTY6hWR9RwZcdto2l/257F2xz/08BIabrrlSpi+nfBvtXTr
+c7/sLHN3ewG5TxhxfUGl6iZjgUVCaWMVHsOxad5BXFfqMpGC6eY2H/Ayiokzc/BD
+L6/B5GeUndYrEeyu+MV1ZMgvpeh8KasTAVTpTDWPHvC7cLgAxLVT3CHHv7Kssi4U
+TQWMny5EREhC2ZzA3UDiE2AnCIqh7xGK/qMmTYyzPwX4SdRfyYbJ4Dk08hPW8doD
+nF/Iq3SqdoG7y5Zm+2EKitiEY8YBH3LPo/ZCCC/5KF9DnxVZlgZHFueMCI3JruL+
+ZU5EOn7YFRaKrXHqX4p6u4+PpY3H/Q4aElEazoFsGX+fmeMIY43GSXZLbAb+aiRE
+qDxuJQjAKfF+7G8nj7ezXV9vFnrm2h8BJLV4/adTA09b5zTteHiAdsPeffoR7rAr
+auuQ3Jl2Hzb7gi/BrpQyfJtKjOrP5wDTVs4VBLyvTZVjeReshx8=
+=5TgM
+-----END PGP SIGNATURE-----
+
+--23tDw59TYEHMEItr--
