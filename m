@@ -2,82 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873C83B6BAF
-	for <lists+cgroups@lfdr.de>; Tue, 29 Jun 2021 02:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B702E3B7098
+	for <lists+cgroups@lfdr.de>; Tue, 29 Jun 2021 12:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhF2A1K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Jun 2021 20:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbhF2A1J (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Jun 2021 20:27:09 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604E3C061574
-        for <cgroups@vger.kernel.org>; Mon, 28 Jun 2021 17:24:42 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g22so24600349iom.1
-        for <cgroups@vger.kernel.org>; Mon, 28 Jun 2021 17:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=AdjC2hO+eH5TkyqfQ3BiLYZ6jv/+FhBBu7F+RgSm63o=;
-        b=tJdkjPGtDSkDvvZ4MqVjO7gp1vpLF3MJCHottt1iANWwOVZsHAXq9EFd1AUhcHN7dU
-         M7P9+O7hz5Nv6AyO5Yo89mQOaXtRoHZ/u6+MceCXanAQSjibTckXq0q955Tmmn3hbwn1
-         NWmgOanJYIlKVKWloteqIxySslF/nhkiFp9btZSlUGYigev+cVdT9Z0InBGc07dVr6vU
-         Z9ZfphAmodHD41M2Qot39N0/eOua0unSRrcWMMYaIfKJr/3hOR/4vnruAT9qmiJN6NI6
-         ecTQA3GX9aXgmejcp40xJQgwFQzLb5oTRCFP91Cc/6wOr8b8O3D+3a+jnzcdBz82scQE
-         pmRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=AdjC2hO+eH5TkyqfQ3BiLYZ6jv/+FhBBu7F+RgSm63o=;
-        b=CefgP9IztKDaEL1Ov3H506MLW/5ljdMrjFp7Xit1cvhdYG6rWCEvEE0mAU4/d45cfB
-         NK0TWYyqyc8OTpQzK8BB9HFZ7CikIQUjJeCg0vg8lZmtsNK8GIlqVsUpv9byvjgbkQDB
-         Pl8WfcwXm3sheQBJYOys2NjKFCc9VXHLOfVqXQ+3lkRi1OejmyjiAXpLyI1gZqCVpVSj
-         9TOJeMygNnr1rdHdT5CgM58w5MG+e0uYrisDAU33ZoYUYbs6INRK8kkftFUA4vNNXgFg
-         SC0H3mMM+1nljdQRt7ehidM5GHjq6xzsX5a2Gnenzf8LNTxCjvlM+Jf92qLRTBj65E82
-         ha8Q==
-X-Gm-Message-State: AOAM530rSBLKi6GvrTmmGExvwGxotAs8xJt/ihkC/DUExyN4040ucQwW
-        R7psTbfGktYzdO/UFQS7TCdeIUEQ0kOsr5/N1Ig=
-X-Google-Smtp-Source: ABdhPJyX4rWGVmPQfvlTTHMtph3bIhmQgcdwR8ueIGSCr2/uwwaS6mez0vcGd4SSAr6SvVa1RZjY7ePu7aJeD0H128Q=
-X-Received: by 2002:a5e:d70e:: with SMTP id v14mr1644325iom.33.1624926281833;
- Mon, 28 Jun 2021 17:24:41 -0700 (PDT)
+        id S232804AbhF2K2v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Jun 2021 06:28:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60660 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhF2K2v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Jun 2021 06:28:51 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8F0B9203CD;
+        Tue, 29 Jun 2021 10:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624962382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4nnJd/WQSpUTtWERcTYMKjk7Xm3bTS7VSG5SjPdv9Bc=;
+        b=SIOiyfS7XfAvoPmQiyHYe5i2CqhxV09toMQQiEzN+oosnPqqz8XsULnowsgVFUZwJqTTwP
+        GUzX0vNQaS1ETRJIiLWMUmwhOELlrPWsRhQL2Zvfmw1QaOY5z3ckCm/xaKpIfv9AaWwOgM
+        LUKvYk0acBAFboy9Nt9XSeD/pPvh0Qk=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 5572711906;
+        Tue, 29 Jun 2021 10:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624962382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4nnJd/WQSpUTtWERcTYMKjk7Xm3bTS7VSG5SjPdv9Bc=;
+        b=SIOiyfS7XfAvoPmQiyHYe5i2CqhxV09toMQQiEzN+oosnPqqz8XsULnowsgVFUZwJqTTwP
+        GUzX0vNQaS1ETRJIiLWMUmwhOELlrPWsRhQL2Zvfmw1QaOY5z3ckCm/xaKpIfv9AaWwOgM
+        LUKvYk0acBAFboy9Nt9XSeD/pPvh0Qk=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id G6qnE0712mDMAwAALh3uQQ
+        (envelope-from <mkoutny@suse.com>); Tue, 29 Jun 2021 10:26:22 +0000
+Date:   Tue, 29 Jun 2021 12:26:21 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
+Message-ID: <YNr1TYfBwR/tEpEJ@blackbook>
+References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
+ <20210610173944.1203706-4-schatzberg.dan@gmail.com>
+ <YNXvr81YFzbaTxCb@blackbook>
+ <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
 MIME-Version: 1.0
-Reply-To: muhammadrawani80@gmail.com
-Sender: freedouglas6@gmail.com
-Received: by 2002:a02:9f05:0:0:0:0:0 with HTTP; Mon, 28 Jun 2021 17:24:41
- -0700 (PDT)
-From:   Dr Muhammad Rawani <rawanimuhammad0@gmail.com>
-Date:   Mon, 28 Jun 2021 17:24:41 -0700
-X-Google-Sender-Auth: 6cyg6oUbWXLtlEjR9m4pspp-wVI
-Message-ID: <CAC73SDZnCGW-9MTQHMdz7W6-wkP8=pn7E4gKx_-HfKMkMPCNxw@mail.gmail.com>
-Subject: Hello Dearest
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8xak29pAuRs/xS4S"
+Content-Disposition: inline
+In-Reply-To: <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-My dearest,
 
-Please forgive me for stressing you with this mail, as I know that my
-mail will come to you as a surprise. My Name is Dr.Muhammad Rawani, I
-am from Burkina Faso, a Burkina be by nationality, in West Africa,
-working with Bank of Africa.I Discovered the sum of seven million, two
-hundred thousand dollars (usd7.2) belonging to deceased customer of
-this bank the fund has been lying in a suspense account without
-anybody coming to put claim over the money since the account late
-owner from Lebanese who died in accident with his family.
+--8xak29pAuRs/xS4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Therefore, I am soliciting for your assistance to come forward as the
-next of kin. I have agreed that 40% of this money will be for you as
-the beneficiary respect of the provision of your account and service
-rendered, 60% will be for me. Then immediately the money transferred
-to your account from this bank, I will proceed to your country for the
-sharing of the fund. If you think you are capable and will be
-committed to making this deal successes send me an email as soon as
-possible to confirm your interest.
+On Mon, Jun 28, 2021 at 10:17:18AM -0400, Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+> Agreed that exporting int_active_memcg is an implementation detail,
+> but would this prevent set_active_memcg from being inlined?
 
-Thanks.
-Yours faithful,
-Dr.Muhammad Rawani
+Non-inlining in the loop module doesn't seem like a big trouble. OTOH,
+other callers may be more sensitive and would need to rely on inlining.
+I can't currently think of a nice way to have both the exported and the
+exlicitly inlined variant at once. It seems it's either API or perf
+craft in the end but both are uncertain, so I guess the current approach
+is fine in the end.
+
+> Yes it is intentional. All requests (not just aio) go through the loop
+> worker which grabs the blkcg reference in loop_queue_work() on
+> construction. So I believe grabbing a reference per request is
+> unnecessary.
+
+Isn't there a window without the reference between loop_queue_rq and
+loop_queue_work? I don't know, you seem to know better, so I'd suggest
+dropping a comment line into the code explaining this.
+
+Thanks,
+Michal
+
+--8xak29pAuRs/xS4S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmDa9UkACgkQia1+riC5
+qShOvQ/+IAbayEL5mDzde7avlf2IctIAGpgzfJMiT0f2HjZlZvc+wZyRZtbY48+f
+qQvyKrqzoa8urrykaJOPImzej1n5/+LPnxg/EdPXMLf3GP69aeRWx/UFSkiPpCeJ
+jw5r2FbQE29yfQYAtuHbL6IPnfa1JDkQXroHwN+MIsNqayGiz2FbE4fxPJxR8hkt
+xCYjCyNMzBEw1b334gUvj8XrFRbzfgIJokZ3UNVIrRcv/rbYKs4LplelQ5dGEjpp
+uzFAC5QDabn78+SJ6c7h5ReTx4zdPC+9A3FlZXBWxkpSPiPEPO6b0Qdo86p4v4eA
+MGT8fNcfyvjQZdzckZ1oHylUCBbDhCIons6PmEqpEDd5ZFA5taD9G6YRGyH1G7Kb
+EieXPoCynJWRCdHat3PeqTpnf9oYPsaiBXozn2UXdK2Rvv2+g9A5am/AKN+I2Y+J
+xgzp9FPA5nRx5Z8oIAl9iqvb8mfrlYPn0CsNnzo+eHE13Zh7nxlFQrrqJsnjaQ2J
+45wPm24rg9XrKoTIpLs0O1INWqNjkweqPRLs5I/ClXRWkqXkfJ5cUchEjsLqksVJ
+SunkIX+LxIWE/Fb23d2jio51pC26W4gcAtOTTe6MZ/Iqq7LI7cpKX9bGW1dkrKgB
+nWkJth7TDCL8bIeOjDMMsNVW05el1qQcPei4GZ4sfBjJu6FlikM=
+=q9SM
+-----END PGP SIGNATURE-----
+
+--8xak29pAuRs/xS4S--
