@@ -2,110 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710B53B73BB
-	for <lists+cgroups@lfdr.de>; Tue, 29 Jun 2021 16:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B3F3B7C56
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 06:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhF2OGE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Jun 2021 10:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
+        id S229548AbhF3EEa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Jun 2021 00:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbhF2OGD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Jun 2021 10:06:03 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A30C061760;
-        Tue, 29 Jun 2021 07:03:36 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id y29so29567524qky.12;
-        Tue, 29 Jun 2021 07:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=epo3zKiTfhS1s7uCWxNYZiOm+vo3zbXKhTVM1Kqzmbg=;
-        b=BvAsn6V+lEebL9543XNZN8ZgjQb+osEKHPTuXHALEL19Dqb6/zJ1xRDLLweEL6wFZe
-         nCCZ9qgxxMvqfBg0PIRP27jmbc8ViBnRr2O1g5R9fD2B8DKZbSkVH6hdzgMoPIUWzHeV
-         u9B76ZOBRd9zRYeaOAP24ARezCGz/5LgXUOcEzlvE1OffxKOhgMBdA+uNkK66LNl3be2
-         4qSEXMtzyF67GlNoC0wg7jZ+nuozmqOqplCuU3fIEYFxurWmsax7mrIOp7Vt3dLHEqxZ
-         NEM5Qmqlf4GdsA+ghm9u58I4sopLY1RF+S0SNXXwMWYDVwaevKsyyuATbPEouicRln0n
-         JZow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=epo3zKiTfhS1s7uCWxNYZiOm+vo3zbXKhTVM1Kqzmbg=;
-        b=k8ghkFCGTFs7p+XjM5WuTay9icRHM6gOMBgdeWskAA1aIISS+ZRrn6EeSKN6vHoalH
-         1KVzeyVFSYzhXLvuyTOvnihKg2vOb6BNWXlSxEe0h7EBr9w/ehL6a+SY25AEUgFeapKn
-         lbbQZgLdoXiwMc5eTEXGGc2Omv0gfDRHQVg4murpNL7tEGR4NId8suJajuEUHn2chMfB
-         yh2Jy3euOSLvIbM4LJLJeRikwwWQxHR5aHbW4d/stzW3IiG1b31ykWcgBkawrsD2SWia
-         fXmcULAJNQMMvYTxWRL5O4J79dQ/oh0S8PEx50f3MYzWdbc5TUr7c9RuRYrccLf2Z0AS
-         VeYw==
-X-Gm-Message-State: AOAM5310FsEF8Qs2UnH4DVM1SZxNYfFaFRQjgaOxDB8CQ4BcxrwFRhmq
-        bU4ks4MyM5/6lJvYr8uY4MubYd5wYw7B1g==
-X-Google-Smtp-Source: ABdhPJwF1jHHpUGYvGSGqrM20Y/wdjXItsUPDnGvL02uIcUIMmbhuYPgIoI1h5EDhETkH9lFL4LviA==
-X-Received: by 2002:a37:9b4b:: with SMTP id d72mr16414129qke.10.1624975415813;
-        Tue, 29 Jun 2021 07:03:35 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:85ab])
-        by smtp.gmail.com with ESMTPSA id n128sm845772qkd.93.2021.06.29.07.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Jun 2021 07:03:35 -0700 (PDT)
-Date:   Tue, 29 Jun 2021 10:03:33 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        with ESMTP id S229446AbhF3EEa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 00:04:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BBDC061760
+        for <cgroups@vger.kernel.org>; Tue, 29 Jun 2021 21:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=H55xh5V+oHUYRXdg7je8cyh7ajXB8JcmTsj7ZvoBfcc=; b=VkugjUnYwnT8jLypOv8A1Ln+V/
+        J//Nq0lYkLXx52J2+WEN6cSvPIY1sY/q1Qjq7Y+y/eQ9RWv0FovaBQmOjaE1kwNGJyc+E6BpfGext
+        55e9UWOYQctGBZTK7kPeUl1NUnrWs5vtsCt/LjVxIJhZTyt8kSN5iAFAenePRULX8nY7eAIsFXVn/
+        VUASdirBJ8n0NHCXucK6x+g6QMF8/A2AfJ4bNCF5qzrwLVfKzATQ+d2pljaxZfRYNeF4ulNef8vxL
+        GLLkYB0smy0U8EIrZWDXAiGnwpwHExeDEpBkonDL1X72PHNIe3pKJEQKeu4LTaEFvDOn05YkqtGlT
+        oJ7sXmAw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lyROy-004qiJ-92; Wed, 30 Jun 2021 04:00:55 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org, cgroups@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
- <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
- <YNr1TYfBwR/tEpEJ@blackbook>
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: [PATCH v3 00/18] Folio conversion of memcg
+Date:   Wed, 30 Jun 2021 05:00:16 +0100
+Message-Id: <20210630040034.1155892-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNr1TYfBwR/tEpEJ@blackbook>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> Non-inlining in the loop module doesn't seem like a big trouble. OTOH,
-> other callers may be more sensitive and would need to rely on inlining.
+After Michel's comments on "Folio-enabling the page cache", I thought it
+best to split out the memcg patches from the rest of the page cache folio
+patches and redo them to focus on correctness (ie always passing a folio).
 
-Yes, this is my concern as well.
+This is fundamentally for review rather than application.  I've rebased
+on Linus' current tree, which includes the recent patchbomb from akpm.
+That upstream version won't boot on any system I have available, and I'm
+not comfortable asking for patches to be applied unless I can actually
+try them.  That said, these patches were fine on top of 5.13.
 
-> I can't currently think of a nice way to have both the exported and the
-> exlicitly inlined variant at once. It seems it's either API or perf
-> craft in the end but both are uncertain, so I guess the current approach
-> is fine in the end.
-> 
-> > Yes it is intentional. All requests (not just aio) go through the loop
-> > worker which grabs the blkcg reference in loop_queue_work() on
-> > construction. So I believe grabbing a reference per request is
-> > unnecessary.
-> 
-> Isn't there a window without the reference between loop_queue_rq and
-> loop_queue_work?
+There are still a few functions which take pages, but they rely on other
+conversions happening first, which in turn rely on this set of patches,
+so I think this is a good place to stop, with the understanding that
+there will be more patches later.
 
-Hmm, perhaps I'm not understanding how the reference counting works,
-but my understanding is that we enter loop_queue_rq with presumably
-some code earlier holding a reference to the blkcg, we only need to
-acquire a reference sometime before returning from loop_queue_rq. The
-"window" between loop_queue_rq and loop_queue_work is all
-straight-line code so there's no possibility for the earlier code to
-get control back and drop the reference.
+Some of the commit logs may be garbled ... I haven't fully taken into
+account all of Muchun's recent rework.  All of this work is visible in
+context in a git tree here:
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
 
-> I don't know, you seem to know better, so I'd suggest
-> dropping a comment line into the code explaining this.
+Matthew Wilcox (Oracle) (18):
+  mm: Add folio_nid()
+  mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
+  mm/memcg: Use the node id in mem_cgroup_update_tree()
+  mm/memcg: Remove soft_limit_tree_node()
+  mm/memcg: Convert memcg_check_events to take a node ID
+  mm/memcg: Add folio_memcg() and related functions
+  mm/memcg: Convert commit_charge() to take a folio
+  mm/memcg: Convert mem_cgroup_charge() to take a folio
+  mm/memcg: Convert uncharge_page() to uncharge_folio()
+  mm/memcg: Convert mem_cgroup_uncharge() to take a folio
+  mm/memcg: Convert mem_cgroup_migrate() to take folios
+  mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
+  mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
+  mm/memcg: Convert mem_cgroup_move_account() to use a folio
+  mm/memcg: Add mem_cgroup_folio_lruvec()
+  mm/memcg: Add folio_lruvec_lock() and similar functions
+  mm/memcg: Add folio_lruvec_relock_irq() and
+    folio_lruvec_relock_irqsave()
+  mm/workingset: Convert workingset_activation to take a folio
 
-I wouldn't be so sure that I know any better here :D - I'm fairly
-inexperienced in this domain.
+ include/linux/memcontrol.h       | 249 +++++++++++++++----------
+ include/linux/mm.h               |   5 +
+ include/linux/swap.h             |   2 +-
+ include/trace/events/writeback.h |   8 +-
+ kernel/events/uprobes.c          |   3 +-
+ mm/compaction.c                  |   2 +-
+ mm/filemap.c                     |   8 +-
+ mm/huge_memory.c                 |   2 +-
+ mm/khugepaged.c                  |   8 +-
+ mm/ksm.c                         |   3 +-
+ mm/memcontrol.c                  | 311 +++++++++++++++----------------
+ mm/memory-failure.c              |   2 +-
+ mm/memory.c                      |   9 +-
+ mm/memremap.c                    |   2 +-
+ mm/migrate.c                     |   6 +-
+ mm/page_alloc.c                  |   2 +-
+ mm/shmem.c                       |   7 +-
+ mm/swap.c                        |   4 +-
+ mm/userfaultfd.c                 |   2 +-
+ mm/vmscan.c                      |   2 +-
+ mm/workingset.c                  |  10 +-
+ 21 files changed, 355 insertions(+), 292 deletions(-)
 
-Where would you suggest putting such a comment? The change in question
-removed a particular case where we explicitly grab a reference to the
-blkcg because now we do it uniformly in one place. Would you like a
-comment explaining why we acquire a reference for all loop workers or
-one explaining specifically why we don't need to acquire one for aio?
+-- 
+2.30.2
+
