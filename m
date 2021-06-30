@@ -2,111 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D313B855B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 16:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C165A3B86DC
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 18:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235245AbhF3Owd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Jun 2021 10:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbhF3Owc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 10:52:32 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2055CC061756;
-        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id p7so1218037qvn.5;
-        Wed, 30 Jun 2021 07:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
-        b=gGD9BAtpYOeepZdTbE3KHgAiQMcPPfpnG9JJlnbUMfEhlC8BfSFmt8miSEvOuIEZiB
-         3rzRcjaUvadqxpFG1/UCWQxX3S4rZ592U9H9rz8afxfdqc1r2Rde8c8BEn9i7xgMhNDv
-         JPyYE28nZZUx9+NLzRiuD3VmblJGAy13TwSeiDfi41Y1wHRqNK+gLcQjTZxfG2M1YsUZ
-         0c2kCQtqWyTPbUPzKbLyuJMbmCzox2eNsaFegX5bjW/wN/jIK4/VDB9Z58im/s+xDGmz
-         cCYbg8XIqnEdiJwNjEYwVOBbY9TWqJad9qQ5AqQ/TxIfy00Mt1Ykar5zkLmd3VYYunt6
-         2M3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7non7Ht3wU/Vgs0c/H0HW+wlwkdFp/0NZ1g7sAhRaEc=;
-        b=PDPMaTjq1k6GTeER9af4SASAxCKlnBWzj4eWr85gENLUVdWfEPb/76p1xLSBpApgxi
-         hwnwadc+2ybQbM+RQzxyTvO8WQZyMOdEauz3cOoxH5ZejXmq2Ny4ev7oqCOLV7OXhGig
-         cc4Qq4L+QlpoJ7EWHSMtrtvP4fmKVNir/IhAcqRKdN4TNDl77jM0SEIy1Z4u3ZsqW5E9
-         ueU2sn7+XFPtW0YImxYzusV6rOZijeJ0iE1vA+Peao7tvRyYWyVtSz02jmP3XjgVKbDa
-         cLtFp1nSIF+1NjYWCfn1sWz1pez1r8RfxSqlzJqgdBjvx+5N9+CkrimHGwwUdCBSU2vW
-         F/Dg==
-X-Gm-Message-State: AOAM532pvOHYbQWWMx5EqsDRJs0NrCkb2xGUs2VPNSxWhhmkGXF65/M1
-        4VWHC2j7tVN9P+2dLJD1Nc0=
-X-Google-Smtp-Source: ABdhPJzThHMaJANHAXxziTuH+SOn3cwvDIkQnU3dUtRtaQNsiFdcVi7NPiUTXYnhp8pT1LY+NU4BrQ==
-X-Received: by 2002:a05:6214:21ab:: with SMTP id t11mr21581134qvc.26.1625064602268;
-        Wed, 30 Jun 2021 07:50:02 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN ([2620:10d:c091:480::1:1008])
-        by smtp.gmail.com with ESMTPSA id g4sm5047069qtb.50.2021.06.30.07.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 07:50:01 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 10:49:58 -0400
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 3/3] loop: Charge i/o to mem and blk cg
-Message-ID: <YNyEltLABd17spxy@dschatzberg-fedora-PC0Y6AEN>
-References: <20210610173944.1203706-1-schatzberg.dan@gmail.com>
- <20210610173944.1203706-4-schatzberg.dan@gmail.com>
- <YNXvr81YFzbaTxCb@blackbook>
- <YNnZ7hIRIk9dJDry@dschatzberg-fedora-PC0Y6AEN>
- <YNr1TYfBwR/tEpEJ@blackbook>
- <YNsoNeQNMmdplmtp@dschatzberg-fedora-PC0Y6AEN>
- <YNw8kRpT6R2emuhI@blackbook>
+        id S230005AbhF3QNf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Jun 2021 12:13:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231698AbhF3QNd (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 30 Jun 2021 12:13:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD926147E;
+        Wed, 30 Jun 2021 16:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1625069464;
+        bh=M8ldAZIlZPdkE4DDxEruz+BeSbuNAZmJGY4VXeQhPbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kIjuafd9ucIniC22otKPC7dmUd41/MK9JTkA5XhaP2hGAPC8vMIPbB/Iu1OSSc2dk
+         DxfvR+O3ck+BZSti2bbWuzQrwEvWclOyEQKty9sFsjxFBs62NQgBRmu6gcwAMcIpEm
+         mvajycTioH9jrZ/J9T1KeSnToXafODz5fWYHIW8ZalubsHD0Izbws22VHEhEFfBrWF
+         Iz9RHbV4c/1RNTeK7ppH+8PpS1DtpefTIshaALX4o1ThUlajT7qcVQy/nRccFwVEBq
+         tijIGsoeqDQa29G9WhnITxk2L8aEzcoly2Cj1/zbnFkQaMtVDPkRBAn0Td4vfEMQa0
+         l+wAGTzJlqLjg==
+Date:   Wed, 30 Jun 2021 17:10:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
+        Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
+ deref in LTP
+Message-ID: <20210630161036.GA43693@sirena.org.uk>
+References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
+ <YMoXdljfOFjoVO93@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
 Content-Disposition: inline
-In-Reply-To: <YNw8kRpT6R2emuhI@blackbook>
+In-Reply-To: <YMoXdljfOFjoVO93@slm.duckdns.org>
+X-Cookie: I demand IMPUNITY!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> This is how I understand it:
-> 
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -996,6 +996,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
->         rb_insert_color(&worker->rb_node, &lo->worker_tree);
->  queue_work:
->         if (worker) {
-> +               WARN_ON_ONCE(worker->blkcg_css != cmd->blkcg_css);
 
-Yes, this is correct. Though the check here seems a bit obvious to me
-- it must be correct because we assign worker above:
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-if (cur_worker->blkcg_css == cmd->blkcg_css) {
-        worker = cur_worker;
-        break;
+On Wed, Jun 16, 2021 at 11:23:34AM -0400, Tejun Heo wrote:
+> On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
 
-or when we construct the worker:
+> > A fix would be to not leave the stale reference in fc->root as follows:
 
-worker->blkcg_css = cmd->blkcg_css;
+> >    --------------
+> >   =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0dput(fc->root);
+> >   +               fc->root =3D NULL;
+> >   =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0deactivate_locked_sup=
+er(sb);
+> >    --------------
 
-I think this WARN_ON_ONCE check might be more interesting in
-loop_process_work which invokes loop_handle_cmd and actually uses
-cmd->blkcg_css. In any event, your understanding is correct here.
+> > ...but then we are just open-coding a duplicate of fc_drop_locked() so =
+we
+> > simply use that instead.
 
->                 /*
->                  * We need to remove from the idle list here while
->                  * holding the lock so that the idle timer doesn't
-> @@ -2106,6 +2107,8 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
->         cmd->memcg_css = NULL;
->  #ifdef CONFIG_BLK_CGROUP
->         if (rq->bio && rq->bio->bi_blkg) {
-> +               /* reference to blkcg_css will be held by loop_worker (outlives
-> +                * cmd) or it is the eternal root css */
+> As this is unlikely to be a real-world problem both in probability and
+> circumstances, I'm applying this to cgroup/for-5.14 instead of
+> cgroup/for-5.13-fixes.
 
-Yes, this is correct. Feel free to add my Acked-by to such a patch
+FWIW at Arm we've started seeing what appears to be this issue blow up
+very frequently in some of our internal LTP CI runs against -next, seems
+to be mostly on lower end platforms.  We seem to have started finding it
+at roughly the same time that the Yocto people did, I guess some other
+change made it more likely to trigger.  Not exactly real world usage
+obviously but it's creating quite a bit of noise in testing which is
+disruptive so it'd be good to get it into -next as a fix.
+
+--9jxsPFA5p3P2qPhR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDcl3sACgkQJNaLcl1U
+h9DHcgf/cG+zirVPNAyg/RyU6eO8RRZ/Fsde5H0M1tr3tybVB/GuciKOhNSBdU8p
+MEnEvuPHRVsq8o5KTMvo+lxmNdBy/OHVK/LnU6CyqkDaU9l5a9+JOc+N+Ljn9JyJ
+wBzeFmiAeMdcnCzaPYCGHXzgILY8j0vs2agj/hI3sdP/GNMMQ3URQmKeTsB1YtCO
+GICcKyAPHeVy5GZwfaWDJGEJhFXOIW7d20+cuKpx335WsTg+aORft+rwPDHvfH6+
+mJF34H7wfckprBzWdA8v+fPrYINjeiLFSWJsXLdWHfy6F3BAAiDKxT0Pm9fVwZ5Q
+e0VJUxXvl2KHT//hLYrTSETDFuiMwg==
+=vGg1
+-----END PGP SIGNATURE-----
+
+--9jxsPFA5p3P2qPhR--
