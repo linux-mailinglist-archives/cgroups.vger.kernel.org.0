@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A031F3B7C5D
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 06:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE673B7C5E
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 06:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhF3EGp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Jun 2021 00:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S230115AbhF3EHU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Jun 2021 00:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhF3EGp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 00:06:45 -0400
+        with ESMTP id S229572AbhF3EHU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 00:07:20 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B73C061760
-        for <cgroups@vger.kernel.org>; Tue, 29 Jun 2021 21:04:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF41C061760
+        for <cgroups@vger.kernel.org>; Tue, 29 Jun 2021 21:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=PwsSA74q8jzQkF60ZcOSZIYYGpRCVr7nhS/J6QbnC8s=; b=Qi1z/+jkseioZ7eFE1HwqIaJK7
-        mRtcW1jc9s+65POwMrRHHKi6gRQ5P0x5/+G5inWeDfLGFPlWY2MP05cZzdXhew6BePbvBgc10D4l9
-        f3d2tAYn2pSFaRv3TyqN3ilt0S+1QtHjAZSg5CdYmgPiSB2BnkyUMG2CL/9r3A0KZh7EbSY/DK3Ir
-        /JLUFlWTLEHs8AB1JzUHs9Pg7W+Yz4EPmaF0+Kfrohbnpu6jvWPUdsMQ/JMchFIFVjuluVXz8VdkN
-        CaP7bYSyzrpr1/S1AXn8vwZlB49O+pCzeEVJUGzYMGTXSWQaxUW12rIG+HJCYQhM9dQJ9pCsWcHG2
-        wB/w9Wug==;
+        bh=MPvBRvoA+lVjGYcBT1v6tGu4QtgMR9ceT5UjEW39UbU=; b=uvP2jhH1pd1n+xqgse8zq2VjRM
+        bI5UKTYOqu+MvrP1XastqesPZxl+wtn/9e8o/iO0gQ/vAzmnbUPczl2z/m4KsyR8+TG1F6qJIH5NZ
+        hYFcs3vjznfGR8mo/UPM9bPvFwWuSPvgRMBJqhtL7QhQgaqW2iWQPTsJiqd1MJwTeWX0tY2m2d1X5
+        ivfxnRstvAx5aLn64MT0K3LrFOi2d0gKV3Wiz06idtCwFVt1w3gpFSTWP+HKdbXB0giVoW+NesqV5
+        03tZJ38K6dcd1RJSKw8di3c2EHha9PQF9ECMyt7mK+F0GTnK7lCapcQleyCrMIHqgjEhObnacPOQO
+        4IMoHV/A==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyRRS-004qt4-CH; Wed, 30 Jun 2021 04:03:24 +0000
+        id 1lyRS2-004qv0-Iy; Wed, 30 Jun 2021 04:03:59 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     linux-mm@kvack.org, cgroups@vger.kernel.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: [PATCH v3 04/18] mm/memcg: Remove soft_limit_tree_node()
-Date:   Wed, 30 Jun 2021 05:00:20 +0100
-Message-Id: <20210630040034.1155892-5-willy@infradead.org>
+Subject: [PATCH v3 05/18] mm/memcg: Convert memcg_check_events to take a node ID
+Date:   Wed, 30 Jun 2021 05:00:21 +0100
+Message-Id: <20210630040034.1155892-6-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210630040034.1155892-1-willy@infradead.org>
 References: <20210630040034.1155892-1-willy@infradead.org>
@@ -44,57 +44,115 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Opencode this one-line function in its three callers.
+memcg_check_events only uses the page's nid, so call page_to_nid in the
+callers to make the folio conversion easier.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- mm/memcontrol.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ mm/memcontrol.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 29b28a050707..29fdb70dca42 100644
+index 29fdb70dca42..5d143d46a8a4 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -446,12 +446,6 @@ ino_t page_cgroup_ino(struct page *page)
- 	return ino;
+@@ -846,7 +846,7 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgroup *memcg,
+  * Check events in order.
+  *
+  */
+-static void memcg_check_events(struct mem_cgroup *memcg, struct page *page)
++static void memcg_check_events(struct mem_cgroup *memcg, int nid)
+ {
+ 	/* threshold event is triggered in finer grain than soft limit */
+ 	if (unlikely(mem_cgroup_event_ratelimit(memcg,
+@@ -857,7 +857,7 @@ static void memcg_check_events(struct mem_cgroup *memcg, struct page *page)
+ 						MEM_CGROUP_TARGET_SOFTLIMIT);
+ 		mem_cgroup_threshold(memcg);
+ 		if (unlikely(do_softlimit))
+-			mem_cgroup_update_tree(memcg, page_to_nid(page));
++			mem_cgroup_update_tree(memcg, nid);
+ 	}
  }
  
--static struct mem_cgroup_tree_per_node *
--soft_limit_tree_node(int nid)
--{
--	return soft_limit_tree.rb_tree_per_node[nid];
--}
--
- static void __mem_cgroup_insert_exceeded(struct mem_cgroup_per_node *mz,
- 					 struct mem_cgroup_tree_per_node *mctz,
- 					 unsigned long new_usage_in_excess)
-@@ -528,7 +522,7 @@ static void mem_cgroup_update_tree(struct mem_cgroup *memcg, int nid)
- 	struct mem_cgroup_per_node *mz;
- 	struct mem_cgroup_tree_per_node *mctz;
+@@ -5573,7 +5573,7 @@ static int mem_cgroup_move_account(struct page *page,
+ 	struct lruvec *from_vec, *to_vec;
+ 	struct pglist_data *pgdat;
+ 	unsigned int nr_pages = compound ? thp_nr_pages(page) : 1;
+-	int ret;
++	int nid, ret;
  
--	mctz = soft_limit_tree_node(nid);
-+	mctz = soft_limit_tree.rb_tree_per_node[nid];
- 	if (!mctz)
- 		return;
- 	/*
-@@ -567,7 +561,7 @@ static void mem_cgroup_remove_from_trees(struct mem_cgroup *memcg)
+ 	VM_BUG_ON(from == to);
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+@@ -5662,12 +5662,13 @@ static int mem_cgroup_move_account(struct page *page,
+ 	__unlock_page_memcg(from);
  
- 	for_each_node(nid) {
- 		mz = memcg->nodeinfo[nid];
--		mctz = soft_limit_tree_node(nid);
-+		mctz = soft_limit_tree.rb_tree_per_node[nid];
- 		if (mctz)
- 			mem_cgroup_remove_exceeded(mz, mctz);
- 	}
-@@ -3415,7 +3409,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 	if (order > 0)
- 		return 0;
+ 	ret = 0;
++	nid = page_to_nid(page);
  
--	mctz = soft_limit_tree_node(pgdat->node_id);
-+	mctz = soft_limit_tree.rb_tree_per_node[pgdat->node_id];
+ 	local_irq_disable();
+ 	mem_cgroup_charge_statistics(to, nr_pages);
+-	memcg_check_events(to, page);
++	memcg_check_events(to, nid);
+ 	mem_cgroup_charge_statistics(from, -nr_pages);
+-	memcg_check_events(from, page);
++	memcg_check_events(from, nid);
+ 	local_irq_enable();
+ out_unlock:
+ 	unlock_page(page);
+@@ -6688,7 +6689,7 @@ static int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
  
- 	/*
- 	 * Do not even bother to check the largest node if the root
+ 	local_irq_disable();
+ 	mem_cgroup_charge_statistics(memcg, nr_pages);
+-	memcg_check_events(memcg, page);
++	memcg_check_events(memcg, page_to_nid(page));
+ 	local_irq_enable();
+ out:
+ 	return ret;
+@@ -6796,7 +6797,7 @@ struct uncharge_gather {
+ 	unsigned long nr_memory;
+ 	unsigned long pgpgout;
+ 	unsigned long nr_kmem;
+-	struct page *dummy_page;
++	int nid;
+ };
+ 
+ static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+@@ -6820,7 +6821,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+ 	local_irq_save(flags);
+ 	__count_memcg_events(ug->memcg, PGPGOUT, ug->pgpgout);
+ 	__this_cpu_add(ug->memcg->vmstats_percpu->nr_page_events, ug->nr_memory);
+-	memcg_check_events(ug->memcg, ug->dummy_page);
++	memcg_check_events(ug->memcg, ug->nid);
+ 	local_irq_restore(flags);
+ 
+ 	/* drop reference from uncharge_page */
+@@ -6861,7 +6862,7 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+ 			uncharge_gather_clear(ug);
+ 		}
+ 		ug->memcg = memcg;
+-		ug->dummy_page = page;
++		ug->nid = page_to_nid(page);
+ 
+ 		/* pairs with css_put in uncharge_batch */
+ 		css_get(&memcg->css);
+@@ -6979,7 +6980,7 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+ 
+ 	local_irq_save(flags);
+ 	mem_cgroup_charge_statistics(memcg, nr_pages);
+-	memcg_check_events(memcg, newpage);
++	memcg_check_events(memcg, page_to_nid(newpage));
+ 	local_irq_restore(flags);
+ }
+ 
+@@ -7209,7 +7210,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	 */
+ 	VM_BUG_ON(!irqs_disabled());
+ 	mem_cgroup_charge_statistics(memcg, -nr_entries);
+-	memcg_check_events(memcg, page);
++	memcg_check_events(memcg, page_to_nid(page));
+ 
+ 	css_put(&memcg->css);
+ }
 -- 
 2.30.2
 
