@@ -2,149 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E1B3B8A18
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 23:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF8D3B8A74
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 00:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhF3VXq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Jun 2021 17:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
+        id S232124AbhF3Wdm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Jun 2021 18:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhF3VXq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 17:23:46 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44A5C061756
-        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 14:21:16 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so5256998pjs.2
-        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 14:21:16 -0700 (PDT)
+        with ESMTP id S229881AbhF3Wdm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 18:33:42 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAA9C0617AD
+        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 15:31:12 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id o33-20020a05600c5121b02901e360c98c08so5493474wms.5
+        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 15:31:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fr9/V6zIlyWck7HPPeS/TCISALLUxUMSsg+X8S97SXI=;
-        b=IHSBJTW86/4n83zVuVdOYB3dXkYzVbUh3RZq3+9raR0OesfrwlcgGpsCSG22rwBLa8
-         5tZM0tz7yNIlyQ+UukH++/9forrJNhx71wU56uudMVEHfT2eTLz5FuzvcvabzL/b3DgS
-         FaexCwnP9dqgR81LBpnq6dPUvVokwVh5E20tfSclZYpmarmNA7Gv6IwQbkZPafS7J2cv
-         gjjX251lVq3VJrcWOK821GgzrLCMxir0gtU9TFP6uyc3qbggepQByhTqmPgI3rZWGAFn
-         jIGyjmjG4ynnEbfjtC52ENZpDkYsnDVjrCdguiGd9tq6+9bvVAiI+DQbWD3QWATYCWbp
-         Pf/w==
+        d=linuxfoundation.org; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=GMyVPuFMxYNbLMHQBfZilBl/NBmnN5vmlOEDJDVgikA=;
+        b=H6lxDxqfFalvZBt10BgprhpbLvdq+DLerLRsXowgxYS2LE3FLuoCBt5dBBadg0Xghf
+         KNDj9akhByJUB+imIU+sZmgZhWGTlhLfIXeCi6ADK574Zg1+4THNfr254tFvYlWUE2m7
+         g3kxUdJVWLcLarbekZcB5Ay6FOh7hXYRuMJZU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fr9/V6zIlyWck7HPPeS/TCISALLUxUMSsg+X8S97SXI=;
-        b=fXeqsZCBqbjPEZirht2omT/zT2c1JrzzJYYPDspgFmaFwReL7ppZcIl1bsGK1K0KTE
-         7sLkhGfyMghHchCBEs2itUVeyYbf9IGodU4Fiu/squCrSCOZKKf0IxibGu+X3hKGq3Qg
-         HyFTrzWSX64mVxUKBRLherqB6WYO3/BopUg32LavOXMIYG2TfKH2rh1srhXJ7XxfEtk5
-         sbQbfbXphdQOWVVBJHlsSU5S9urb/VZ+9dhJN2GDulAq6sM2kMmumDaBgboYqsJpCSsd
-         tNuhic7rsoLRFObC/AsqDTZZwi8Nm2chIy4+OwMGWBrpgR8T+/JkAbYGwra0xAzvYjGb
-         ZeGA==
-X-Gm-Message-State: AOAM532GtkpoDCj/CvjNbUJW/5ImdAJpOI3enKij2LPx/nG5PaWqY279
-        e+cvDN9UsQN6H/0dDZQA7KxJGQ==
-X-Google-Smtp-Source: ABdhPJzg0SlYb5DEfXzjiZKgf2sG7J7p/O1fYQHzHmIAbYU6pKKs+GWIUg5CMb3JadmDuddP0koIuQ==
-X-Received: by 2002:a17:90a:3fcd:: with SMTP id u13mr6639295pjm.182.1625088076271;
-        Wed, 30 Jun 2021 14:21:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:14ba])
-        by smtp.gmail.com with ESMTPSA id i18sm10900990pfa.37.2021.06.30.14.21.14
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=GMyVPuFMxYNbLMHQBfZilBl/NBmnN5vmlOEDJDVgikA=;
+        b=iIWnjq8hrHaNZ5+6GCGSj+QgC9GNlXlsAa+3A7xb5eWg+Zug9982+6fNZfRt7fyf5H
+         LVYUmZ6iH1X4Np5Bm/atxZunNBIQM2jnfRv2GM723PoNOoe6ThLStz55JmhKIJ5htWP7
+         99rS1aBociCJZKXp0y7SoLqKFNkDT8BWZBYu67lRS/HsWTCkvGBboVyNv+MLfm9BbM/H
+         bXwfeRTxF5NrVaOn0PXDW2YTeL+dpv30wYLC/8JqC6ONJgeJPWrMmHXunBys9Wqq/Trx
+         CxME7vqgbd8Pbigxsr2ioQD6NQNl5lVM77zuSO7hoRWC2JSX4AxBG54bS4vzPHk0hx+S
+         eJjw==
+X-Gm-Message-State: AOAM533DIB3soSdUgU/zMNZkNdrgdhtNw9oxw/BY3dEpb4Nfnpm5rSQR
+        0tCWH86AV7UdhS8Gqm1DcAOBsg==
+X-Google-Smtp-Source: ABdhPJy+CBMlPBMOCn9DqrFiuK/2gDYg8Q4k6hyOxw0ZdBbgaxtH1RipwSDFUB/kwHiOL8sYZTnBPw==
+X-Received: by 2002:a7b:ce82:: with SMTP id q2mr6904410wmj.60.1625092269984;
+        Wed, 30 Jun 2021 15:31:09 -0700 (PDT)
+Received: from ?IPv6:2001:8b0:aba:5f3c:a683:959f:4ccb:54d6? ([2001:8b0:aba:5f3c:a683:959f:4ccb:54d6])
+        by smtp.gmail.com with ESMTPSA id t11sm23408362wrz.7.2021.06.30.15.31.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Jun 2021 14:21:15 -0700 (PDT)
-Date:   Wed, 30 Jun 2021 17:21:12 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH v3 15/18] mm/memcg: Add mem_cgroup_folio_lruvec()
-Message-ID: <YNzgSOkl77FHdfhV@cmpxchg.org>
-References: <20210630040034.1155892-1-willy@infradead.org>
- <20210630040034.1155892-16-willy@infradead.org>
- <YNzDiTFZpRgKY0CE@casper.infradead.org>
+        Wed, 30 Jun 2021 15:31:09 -0700 (PDT)
+Message-ID: <696dc58209707ce364616430673998d0124a9a31.camel@linuxfoundation.org>
+Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
+ deref in LTP
+From:   Richard Purdie <richard.purdie@linuxfoundation.org>
+To:     Mark Brown <broonie@kernel.org>, Tejun Heo <tj@kernel.org>
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org
+Date:   Wed, 30 Jun 2021 23:31:06 +0100
+In-Reply-To: <20210630161036.GA43693@sirena.org.uk>
+References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
+         <YMoXdljfOFjoVO93@slm.duckdns.org> <20210630161036.GA43693@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNzDiTFZpRgKY0CE@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 08:18:33PM +0100, Matthew Wilcox wrote:
-> On Wed, Jun 30, 2021 at 05:00:31AM +0100, Matthew Wilcox (Oracle) wrote:
-> > This is the folio equivalent of mem_cgroup_page_lruvec().
+On Wed, 2021-06-30 at 17:10 +0100, Mark Brown wrote:
+> On Wed, Jun 16, 2021 at 11:23:34AM -0400, Tejun Heo wrote:
+> > On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
 > 
-> I'm just going through and removing the wrappers.
+> > > A fix would be to not leave the stale reference in fc->root as follows:
 > 
-> Why is this function called this?  There's an odd mix of
+> > >    --------------
+> > >                   dput(fc->root);
+> > >   +               fc->root = NULL;
+> > >                   deactivate_locked_super(sb);
+> > >    --------------
 > 
-> lock_page_memcg()
+> > > ...but then we are just open-coding a duplicate of fc_drop_locked() so we
+> > > simply use that instead.
+> 
+> > As this is unlikely to be a real-world problem both in probability and
+> > circumstances, I'm applying this to cgroup/for-5.14 instead of
+> > cgroup/for-5.13-fixes.
+> 
+> FWIW at Arm we've started seeing what appears to be this issue blow up
+> very frequently in some of our internal LTP CI runs against -next, seems
+> to be mostly on lower end platforms.  We seem to have started finding it
+> at roughly the same time that the Yocto people did, I guess some other
+> change made it more likely to trigger.  Not exactly real world usage
+> obviously but it's creating quite a bit of noise in testing which is
+> disruptive so it'd be good to get it into -next as a fix.
 
-This was chosen to match lock_page().
+It is a horrible bug to debug as you end up with "random" failures on the 
+systems which are hard to pin down. Along with the RCU stall hangs it
+was all a bit of a nightmare.
 
-> page_memcg()
+Out of interest are you also seeing the proc01 test hang on a non-blocking
+read of /proc/kmsg periodically?
 
-And this to match page_mapping(), page_zone() etc.
+https://bugzilla.yoctoproject.org/show_bug.cgi?id=14460
 
-> count_memcg_page_event()
+I've not figured out a way to reproduce it at will yet and it seems strace
+was enough to unblock it. It seems arm specific.
 
-count_vm_event()
+Cheers,
 
-> split_page_memcg()
+Richard
 
-split_page(), split_page_owner()
 
-> mem_cgroup_charge()
-> mem_cgroup_swapin_charge_page()
 
-These are larger, heavier subsystem API calls that modify all kinds of
-state, not just the page. Hence the namespacing.
-
-With the smaller getter/setter type functions on pages we have
-traditionally used <verb>_<object> rather than page_<verb>, simply
-because the page is such a low-level object and many functions do
-sequences of page manipulations. Namespacing would turn them into:
-
-	page_do_this(page);
-	page_set_that(page);
-	page_lock(page);
-	if (page_is_blah(page))
-		page_mark_foo(page);
-	page_unlock(page);
-	page_put(page);
-
-which is hard on the reader because it obscures the salient part of
-each line behind repetetive boiler plate.
-
-> mem_cgroup_lruvec()
-
-This is arguably not a namespace prefix, but rather an accessor
-function to look up the memcg's lruvec.
-
-> mem_cgroup_from_task()
-
-This is a pattern to look up memcgs from various objects:
-
-- mem_cgroup_from_css()
-- mem_cgroup_from_counter()
-- mem_cgroup_from_id()
-- mem_cgroup_from_seq()
-- mem_cgroup_from_obj()
-
-and we used to have mem_cgroup_from_page() at some point...
-
-> I'd really like to call this function folio_lruvec().
-
-That would be a better name indeed.
-
-However, pairing renames with conversion is worrisome because it means
-having two unintuitively diverging names for the same operation in the
-API during a time where everybody has to relearn the code base already.
-
-Please either precede it with a rename to page_lruvec(), or keep the
-existing naming pattern in the conversion.
-
-> It happens to behave differently if the folio is part of a memcg,
-> but conceptually, lruvecs aren't particularly tied to memcgs.
-
-Conceptually, lruvecs are always tied to a memcg. On !CONFIG_MEMCG
-kernels that just happens to be the root cgroup.
-
-But because it's an accessor to a page attribute, dropping the
-namespacing prefix is in line with things like page_memcg().
