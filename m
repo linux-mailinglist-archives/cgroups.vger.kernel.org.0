@@ -2,98 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBEE3B825C
-	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 14:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6913A3B84ED
+	for <lists+cgroups@lfdr.de>; Wed, 30 Jun 2021 16:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbhF3MsD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Jun 2021 08:48:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35898 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234455AbhF3MsD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 08:48:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2201C225A1;
-        Wed, 30 Jun 2021 12:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625057134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=95yU7azCR9vrMUUQnIiZZ2YMD6UkK2dFrLDtadQtmOU=;
-        b=EOoyWKwYBEWeOZVNOd4TZb8SKU8Uz1SwSHS+ebntuPIXR0lqulrlkuIDtG/mscBaLPtlkV
-        BFO4i7lcUXk9mkcrkXfKll1Rihe4cfpKKjgNfsFOjG4/Q7xuzJUtcHmS50+7ZNs56hEdJT
-        TCzeB5OW/m/JCuLuS7z0Z8jsIxgEmug=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E93CBA3B8C;
-        Wed, 30 Jun 2021 12:45:33 +0000 (UTC)
-Date:   Wed, 30 Jun 2021 14:45:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
+        id S235051AbhF3OUH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Jun 2021 10:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235034AbhF3OUH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Jun 2021 10:20:07 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F90EC061756
+        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 07:17:38 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id u14so2382657pga.11
+        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 07:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5fNIFXYQI7TvZny7BzFwsgeK80xRoPJ6rxa13naW5Mw=;
+        b=teRsrW5ftbOQTTpZQ41lXoQW13k4U4jqQtusMwiMeetCR789nTMf35ZMVYuJ9tM3Y8
+         N56uC5ewiwmRYwx+5eL+p9qBD+COF/anx6cWOGGXH3c9nrX0mzSVaYqNSXq+MtFXBZX7
+         Z976/QYHRm0yqG7OBoqy3GA/HlQTwBSl8OBP0Xwdaph3qaRkFNKnspVn2x2R0LAgpu1F
+         NXZ+HZ5bHUHdC8JbIawg0O8PHZq2AgDmTbnkP9E60CAqfncly+gxWmRiUpzWMOnNny9+
+         Qe99mN+f99wA9XkJv6R6jqXLU+64iSnRjyROE7EQABE2ql6yB9w1KNJMvkE4KWtbB/zP
+         pbxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5fNIFXYQI7TvZny7BzFwsgeK80xRoPJ6rxa13naW5Mw=;
+        b=lE4lZJ2sCxuQyvJeiNEKkjya1rsKXa8nedPeezrjKZO7gjTkm6YEwJTUnAwXbusylw
+         ix+RyzgGB+THxdUueqmdW5rupAMgOxe9LAKMSwX6XPTkQbgJw/flfPyaermoHrlWfiSD
+         5Mu1GMYslNEOVbpFcrc6kdJJ40pijHFpdc4yN4XEpt9CMG2E6tDhzglHP2DC7sfZ2Lz/
+         nj8T8VR9Rp2UnHWTVa6voCwsXnamuWf+FflAwKjayxUl9TaLuNqmWEKOmT6uzP8zdBD3
+         EfAd/6iIzzhWOvLAMT9OndRiDPnqKukcyK9QzpP0CZUmgCQ3LsGsxDWul1CglsjYI6ls
+         q1hA==
+X-Gm-Message-State: AOAM5316JebbJ76El8E5GyD4wH2BCIHT0nt7/5hsZjPiv39xBRKWfct/
+        GOt6OxLtC2VAcQM/Rq7eTyS4bQ==
+X-Google-Smtp-Source: ABdhPJyn8XeXTZrY/DcyDSy3p4CP6mkFu5UVfXv0eFaDExJFSXtVwosgbiM/4FGppcnx8fRZ5PF0Ug==
+X-Received: by 2002:aa7:8154:0:b029:310:70d:a516 with SMTP id d20-20020aa781540000b0290310070da516mr3267536pfn.63.1625062658223;
+        Wed, 30 Jun 2021 07:17:38 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:14ba])
+        by smtp.gmail.com with ESMTPSA id e13sm21224345pfd.8.2021.06.30.07.17.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Jun 2021 07:17:37 -0700 (PDT)
+Date:   Wed, 30 Jun 2021 10:17:35 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH v3 14/18] mm/memcg: Convert mem_cgroup_move_account() to
- use a folio
-Message-ID: <YNxnbTNAeNB9Isie@dhcp22.suse.cz>
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v3 02/18] mm/memcg: Remove 'page' parameter to
+ mem_cgroup_charge_statistics()
+Message-ID: <YNx8/3FmctUIMR5x@cmpxchg.org>
 References: <20210630040034.1155892-1-willy@infradead.org>
- <20210630040034.1155892-15-willy@infradead.org>
- <YNwrrl6cn48t6w5B@dhcp22.suse.cz>
- <YNxUCLt/scn1d5jQ@casper.infradead.org>
- <YNxhlr4d7Nl0vCz0@dhcp22.suse.cz>
- <YNxkFSGUoaSzZ/36@casper.infradead.org>
+ <20210630040034.1155892-3-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNxkFSGUoaSzZ/36@casper.infradead.org>
+In-Reply-To: <20210630040034.1155892-3-willy@infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 30-06-21 13:31:17, Matthew Wilcox wrote:
-> On Wed, Jun 30, 2021 at 02:20:38PM +0200, Michal Hocko wrote:
-> > On Wed 30-06-21 12:22:48, Matthew Wilcox wrote:
-> > > We need to decide what 'NR_ANON_THPS' means in a folio-based world where
-> > > we have folios of all orders.  Does it count only the number of pages
-> > > in folios >= HPAGE_PMD_SIZE?  Or does it count the number of pages in
-> > > folios > PAGE_SIZE?
-> > 
-> > At this stage we only have PMD based, right? I believe it would be
-> > simpler to stick with that at the moment and change that to a more
-> > generic way along with other places which need updating.
-> > 
-> > Wrt. counters they do count pages so in this case this shouldn't be a
-> > problem. But we do have counters for pmd mappings and that might need
-> > some care.
+On Wed, Jun 30, 2021 at 05:00:18AM +0100, Matthew Wilcox (Oracle) wrote:
+> The last use of 'page' was removed by commit 468c398233da ("mm:
+> memcontrol: switch to native NR_ANON_THPS counter"), so we can now remove
+> the parameter from the function.
 > 
-> Looking at how these are reported:
-> 
->         show_val_kb(m, "AnonHugePages:  ",
->                     global_node_page_state(NR_ANON_THPS));
->         show_val_kb(m, "ShmemHugePages: ",
->                     global_node_page_state(NR_SHMEM_THPS));
->         show_val_kb(m, "ShmemPmdMapped: ",
->                     global_node_page_state(NR_SHMEM_PMDMAPPED));
->         show_val_kb(m, "FileHugePages:  ",
->                     global_node_page_state(NR_FILE_THPS));
->         show_val_kb(m, "FilePmdMapped:  ",
->                     global_node_page_state(NR_FILE_PMDMAPPED));
-> 
-> it specifically refers to 'HugePages', so I think we need to only
-> count folios with order >= PMD_ORDER.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Why? The presented value is in kB. It gives us a cumulative number of
-transparent large pages.  Sure breakdown to respective orders would be
-impossible in general but the same would be the case if order > PMD_ORDER.
-
-I am not really sure how useful that information is in practice but that
-is a different story.
-
-> I'll make that change to
-> folio_transhuge() and use folio_transhuge() here.
-
-Thanks!
-
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
