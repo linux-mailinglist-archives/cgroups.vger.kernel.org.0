@@ -2,68 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0213B95B2
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 19:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BB73B97D1
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 22:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhGARyp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 1 Jul 2021 13:54:45 -0400
-Received: from imsantv71.netvigator.com ([210.87.250.171]:38127 "EHLO
-        imsantv71.netvigator.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhGARyo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 13:54:44 -0400
-Received: from wbironout1c.netvigator.com (wbironout1c.netvigator.com [210.87.247.28])
-        by imsantv71.netvigator.com (8.14.4/8.14.4) with ESMTP id 161HpOLD021018;
-        Fri, 2 Jul 2021 01:51:24 +0800
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AE8aMHKMnn3Kvr8BcTsSjsMiBIKoaSvp037Hj?=
- =?us-ascii?q?v3oBKyC9Ffbo9PxG/c576feX4Ax6Nk3I9urwXpVoLUmskqKdgrNwAV7dZnifhI?=
- =?us-ascii?q?LAFugLhueM/9SHIVyGygc379YET0ERMqyVMbGkt6vH3DU=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0D//wAhAN5g/6Q6UspaHAEBATwBAQQEA?=
- =?us-ascii?q?QECAQEHAQEVCRaBMAcBAQMBgTsCAQEBARIBNwEBAQEBAxWBTgEBJhIXAQEYlDB?=
- =?us-ascii?q?gAYEogTeCAIIzhGYDgkyBZIE7EAF8GhULgX2BL4Y5DIFcCwEBASEvBAEBgRkBg?=
- =?us-ascii?q?y4FA1UBAQEBBgGCGAElOQUNAgQVAQEFAwIBBgRxE4V1YgEBAQECgQY3AQEBhBA?=
- =?us-ascii?q?BAQEGAQEBEyBGMFoOAQ4BHgoJNQEBAQEBAoI2RwEBAQGCCgEBAQklBQGZeYc8h?=
- =?us-ascii?q?WaBbYE0DQ0CZYRTgwQEChoNdQEdJoENgTgCAQEBAQEBjgsWBoINgUuCQAGCPU6?=
- =?us-ascii?q?BagUBEQIBg22CLgSCKIEcgWgtX4U7jjOCV4ciZIEqWZwfWwcDgyGIUIxBgzGEU?=
- =?us-ascii?q?XUaKxeDOAERi0GGAR0Dg2cOASeBRYp8pUqWH4EmOiNpcHsKgVkKCxqBHFAZjgM?=
- =?us-ascii?q?BAQGOeD4BATA4AgYKAQEDCYlUgiEBAQ?=
-X-IronPort-AV: E=Sophos;i="5.83,315,1616428800"; 
-   d="scan'208";a="241552604"
-X-MGA-submission: =?us-ascii?q?MDG7rkb1acnMJOnj5rpcbZjgVuGEVO+AcpowW1?=
- =?us-ascii?q?oE8v7c9BStPdpA67Fg34XAXlNgj8xeUeoDVHTfLydxOz4eTPNrarkKEe?=
- =?us-ascii?q?ifuBxo3ZkTs9GsEVqwJwQvD4LZSA4KvFjwOKP2x/QKH3D42iPAfPWeVs?=
- =?us-ascii?q?qU?=
-Received: from unknown (HELO mail.easerich.com) ([202.82.58.164])
-  by wbironout1v2.netvigator.com with ESMTP; 02 Jul 2021 01:51:13 +0800
-Received: from localhost (localhost [127.0.0.1])
-        by mail.easerich.com (Postfix) with ESMTP id BD5134123C;
-        Fri,  2 Jul 2021 01:45:03 +0800 (HKT)
-DKIM-Filter: OpenDKIM Filter v2.9.1 mail.easerich.com BD5134123C
-X-Virus-Scanned: Debian amavisd-new at mail
-Received: from mail.easerich.com ([127.0.0.1])
-        by localhost (mail.easerich.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fvFSeaGu7QaC; Fri,  2 Jul 2021 01:45:02 +0800 (HKT)
-Received: from IP-135-155.dataclub.eu (unknown [84.38.135.155])
-        (Authenticated sender: david@applebb.net)
-        by mail.easerich.com (Postfix) with ESMTPA id 8A3E241241;
-        Fri,  2 Jul 2021 01:44:57 +0800 (HKT)
-DKIM-Filter: OpenDKIM Filter v2.9.1 mail.easerich.com 8A3E241241
-Content-Type: text/plain; charset="iso-8859-1"
+        id S234127AbhGAU6Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Jul 2021 16:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232637AbhGAU6P (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 16:58:15 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BF2C061762;
+        Thu,  1 Jul 2021 13:55:45 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id i13so4344433plb.10;
+        Thu, 01 Jul 2021 13:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=TQW637DJWCb83mxa1TulL3O+huq6X3gVUkozf2I06Ng=;
+        b=gfZSgzXRqgwx54Zblgxw7Xi9NZcW0FpG16mhu1b5ogzLFdIrYmuD6V8X8ax2hz6YdP
+         3s1+mx46q6P3hMQGw1rNAw9t3775zD+SZXrYP9krYeVzI2FIDHeCmWlQFaBKzvYE3EUD
+         4MxbJRqvVZLYPx2r9+02tsEj09Ys1OQS97u04r9IRwLHm4+FEtBZ/MRiM3EY5lXTlpLe
+         /lAIW6fPLkg33RvZdWC5jQyIN5T2zglMEHGdZ5467wV21ekrLDm5ZT+Q6l/7HDJD59WU
+         x+UrMAZildRvNBQx3VeD0z3K+FNKXKekGMd3JOk4XsgVkJBmvCRXt8yBruhzdKDhlJT4
+         KZyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=TQW637DJWCb83mxa1TulL3O+huq6X3gVUkozf2I06Ng=;
+        b=b7eYVuUseyCKbf6wXZ2p4DtwOjrMNpoH7eyhSclNhLcyaWm0MGUrbggjCRuYEHU1wI
+         zBHGfCYBnZr6yFJ/DBl3moCpXp0TAQ71ZLPN+MMfDQki0rnWbp8vZS2jhYy4J08snJYp
+         xAGOuyb+z2hmirQM19ewAIufws/2l2mNvxRwavM/dA6NLiN94mbHd8N9ezeOOAojogPP
+         xJyuEriTk4u/ZrSxx4UHUDzyr1ZGx8ndqA41670smDKOOXoAl72sgYuPWLoindQQVjTq
+         79sV+fmtaNV3MVGy0FGsc7MPnIIuZh+I9Crav4PXlAWWQ+SUvvqR4YXUPuIIzIOOmOc2
+         vyrQ==
+X-Gm-Message-State: AOAM531aGO8wTso3QxJRMoB59bYKlRzlzw2LRe9IO06mbWCYV3NtOkN/
+        hABQEVHFMwwnpbGbTdpidwXZhDb/MCuxkw==
+X-Google-Smtp-Source: ABdhPJxjLG8SAhUEhMHCo+vg0dklXUdaMnIKBJCTSuLYDhLQo5H2cxShu3ZD2aAXP0ZBZnxukroLaA==
+X-Received: by 2002:a17:90a:3ccf:: with SMTP id k15mr1464917pjd.226.1625172944439;
+        Thu, 01 Jul 2021 13:55:44 -0700 (PDT)
+Received: from localhost ([2600:380:7547:7ebc:47d6:2ed3:f5f0:d329])
+        by smtp.gmail.com with ESMTPSA id o34sm862453pgm.6.2021.07.01.13.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Jul 2021 13:55:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 1 Jul 2021 10:55:40 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.14-rc1
+Message-ID: <YN4rzCdUR+/2LgaP@mtj.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: My dear friend
-To:     Recipients <david@applebb.net>
-From:   "Barr. Pascal Simon" <david@applebb.net>
-Date:   Thu, 01 Jul 2021 20:45:06 +0300
-Reply-To: willclark2618@gmail.com
-Message-Id: <20210701174503.BD5134123C@mail.easerich.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear Friend
+Hello, Linus.
 
-I hope you are well
+* cgroup.kill is added which implements atomic killing of the whole subtree.
+  Down the line, this should be able to replace the multiple userland
+  implementations of "keep killing till empty".
 
-Thank you for your efforts. I know your hands were tied, no worries. the fund is transfered.Your Donation cheque is ready please contact my secretary on email Dr Will drwillclark16@gmail.com and re-confirm your name ,address and phone/fax number to him to mail your cheque. I am busy at the moment with the new business partner here in Russia. Best wishes  Pascal 
+* PSI can now be turned off at boot time to avoid overhead for
+  configurations which don't care about PSI.
+
+Thank you.
+
+The following changes since commit 08b2b6fdf6b26032f025084ce2893924a0cdb4a2:
+
+  cgroup: fix spelling mistakes (2021-05-24 12:45:26 -0400)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14
+
+for you to fetch changes up to 3958e2d0c34e18c41b60dc01832bd670a59ef70f:
+
+  cgroup: make per-cgroup pressure stall tracking configurable (2021-06-08 14:59:02 -0400)
+
+----------------------------------------------------------------
+Christian Brauner (5):
+      cgroup: introduce cgroup.kill
+      docs/cgroup: add entry for cgroup.kill
+      tests/cgroup: use cgroup.kill in cg_killall()
+      tests/cgroup: move cg_wait_for(), cg_prepare_for_wait()
+      tests/cgroup: test cgroup.kill
+
+Roman Gushchin (1):
+      cgroup: inline cgroup_task_freeze()
+
+Suren Baghdasaryan (1):
+      cgroup: make per-cgroup pressure stall tracking configurable
+
+Tejun Heo (1):
+      Merge branch 'for-5.13-fixes' into for-5.14
+
+Yang Li (1):
+      cgroup: Fix kernel-doc
+
+ Documentation/admin-guide/cgroup-v2.rst         |  15 ++
+ Documentation/admin-guide/kernel-parameters.txt |   9 +-
+ include/linux/cgroup-defs.h                     |   4 +
+ include/linux/cgroup.h                          |  25 +-
+ kernel/cgroup/cgroup.c                          | 180 ++++++++++++--
+ kernel/cgroup/rstat.c                           |   2 +-
+ kernel/sched/psi.c                              |  30 +--
+ tools/testing/selftests/cgroup/.gitignore       |   3 +-
+ tools/testing/selftests/cgroup/Makefile         |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c    |  51 ++++
+ tools/testing/selftests/cgroup/cgroup_util.h    |   2 +
+ tools/testing/selftests/cgroup/test_freezer.c   |  57 -----
+ tools/testing/selftests/cgroup/test_kill.c      | 297 ++++++++++++++++++++++++
+ 13 files changed, 569 insertions(+), 108 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_kill.c
+
+-- 
+tejun
