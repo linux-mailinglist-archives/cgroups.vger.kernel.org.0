@@ -2,49 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FAF3B8DF0
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 08:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2C03B8DFC
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 08:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhGAG7b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Jul 2021 02:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S234723AbhGAHBU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 1 Jul 2021 03:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbhGAG7b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 02:59:31 -0400
+        with ESMTP id S234633AbhGAHBT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 03:01:19 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20204C061756
-        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 23:57:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED9BC061756
+        for <cgroups@vger.kernel.org>; Wed, 30 Jun 2021 23:58:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=AgYv3eVv0xvsLDo0HnmAr3kYRe
-        l0WMswRmdCB1AuL9DPWQ42bnc0vdylSbP0rYvlA6GhuF64OTAacVA9qh0Kav/P9Y8yCw8m5UjvQPW
-        L1oFEYscb7roSY8GdSTm29ktTnFIPeRtB83l6WgIIHraMOX9MfhB6u+PeQRLshnfqTFctjLtTUJPw
-        ROh/SQFtX/pg6kLYJMG0ESvdEMdvwL/3+t3ivtG6A5cMRKxsjbzJ7v6bmvIjM8JYMrODh430qK3Ck
-        6AlphtOVKCF6evmOovPOc4A/1ZLlBWfRlplYw8Qyr5xMVwLHRtlF4OHDVgwoKAaXgAXiPyfbHYpys
-        46BAXDMw==;
+        bh=BSVgnYAxe2R8PoaegIcaOoM7XZhNbeX1pTTSxEBVoac=; b=t2TBq0380ll/0c0dnlNJtyZH4Q
+        pZ3uqtk2mYqILxxYvHtGcznBcCHp0665VeItnTBAzfFHNF3MBv7Fbg6qF+X0RZJGPqitmulCAESR8
+        +yUfMbKqkpwCHAT+t5yQJ764GhUa5eoV2iO2rybbGnSK4BAEQOnfJOxKpoewRHjXSqbOZ7A30wLzb
+        VK2FDWW602qB1Pnp7QK6g/y7oJd18Dj9OgPOUDt2VvOoCqFrbK3sYJg3wGpmotD5Em8lCMvht0Axu
+        LQlBP8UbAZPT5raIsKeXxztu6i8DFuVQWh6y1F6TL4T475qRkSW0oCA5c9XTVG+JHdpVNsySgfvCw
+        Uu9os80Q==;
 Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lyqcY-006GkW-HG; Thu, 01 Jul 2021 06:56:29 +0000
-Date:   Thu, 1 Jul 2021 07:56:22 +0100
+        id 1lyqdr-006GrK-EC; Thu, 01 Jul 2021 06:58:00 +0000
+Date:   Thu, 1 Jul 2021 07:57:43 +0100
 From:   Christoph Hellwig <hch@infradead.org>
 To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH v3 01/18] mm: Add folio_nid()
-Message-ID: <YN1nFlmsBe0d10nX@infradead.org>
+Subject: Re: [PATCH v3 03/18] mm/memcg: Use the node id in
+ mem_cgroup_update_tree()
+Message-ID: <YN1nZ2O86Qa9DOk2@infradead.org>
 References: <20210630040034.1155892-1-willy@infradead.org>
- <20210630040034.1155892-2-willy@infradead.org>
+ <20210630040034.1155892-4-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210630040034.1155892-2-willy@infradead.org>
+In-Reply-To: <20210630040034.1155892-4-willy@infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
+
+On Wed, Jun 30, 2021 at 05:00:19AM +0100, Matthew Wilcox (Oracle) wrote:
+> By using the node id in mem_cgroup_update_tree(), we can delete
+> soft_limit_tree_from_page() and mem_cgroup_page_nodeinfo().  Saves 42
+> bytes of kernel text on my config.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
 Looks good,
 
