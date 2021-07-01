@@ -2,95 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810053B91BB
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 14:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0213B95B2
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jul 2021 19:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhGAMpz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Jul 2021 08:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236432AbhGAMpz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 08:45:55 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8148C0617A8
-        for <cgroups@vger.kernel.org>; Thu,  1 Jul 2021 05:43:23 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id r9-20020a7bc0890000b02901f347b31d55so3902283wmh.2
-        for <cgroups@vger.kernel.org>; Thu, 01 Jul 2021 05:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=mo6oA/XnbDUGfk8NTnLtsX2Oxt2DjcL5ZEyjcIbXJxE=;
-        b=ZoT209PloXnbOEhL1QU7auZZ8wiKaoDhkCY5o/ymMMMc54wtJgZRSBBst/6uWhboWC
-         HJUkHBzw6bANDxSgtGj3yL1oQE4Q6Lxw9ITAw68rg6FgsGIcy5ANlDp5PbqojKIES3/e
-         ZlmYBBAluT51L1CqtjRWPvBnwPN/vR35iWVlA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=mo6oA/XnbDUGfk8NTnLtsX2Oxt2DjcL5ZEyjcIbXJxE=;
-        b=EDdh3eKFs/EHlJZX0APCNCr6UlllLH8sHfnevKR0U6tsksI3CZQnm6XMJ77qRIM79U
-         ShgbQza9ActLD1JBczfebj04osqK2AY4BUVsOAAezFwgHNOZhIVVFcsTsaIfIR5DAzCb
-         4SgAbh3ebWzAj226Aho2Aznl0ACB9jKUE3TbtdIJmyv76lv8oERGYYjIBMOpJt+VLuCK
-         uARnqUrcWHLUDfvKR+6BzUs+ggt8MGerkuA7iecg4NBlWOfX1Pi8t53mgkOJKLSR3MLP
-         CY8eU+9GerhpUmvLcIJXAfsNNv7x8pD7i7F+QgDye4fBF8pqVicSW9kDO6E7KPLqXWMi
-         LjkQ==
-X-Gm-Message-State: AOAM531g4R9Ty1o4d6D/8ZTxtam1r6m88/GYgaN5xtWvUa0HF5jVNUqz
-        x437sC+FMC1VWh5jzqQ1ms6lFg==
-X-Google-Smtp-Source: ABdhPJzTAwPPPR6L6P6uS3+LRZi3ZK1wPBHWPVvFvkqIsj03BGz5+yt7Zwi0kIGdB+vlNRETEs5OjQ==
-X-Received: by 2002:a1c:7314:: with SMTP id d20mr42940651wmb.167.1625143402298;
-        Thu, 01 Jul 2021 05:43:22 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:aba:5f3c:a683:959f:4ccb:54d6? ([2001:8b0:aba:5f3c:a683:959f:4ccb:54d6])
-        by smtp.gmail.com with ESMTPSA id f6sm8278917wrs.13.2021.07.01.05.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jul 2021 05:43:21 -0700 (PDT)
-Message-ID: <8f20f2edd60fbff426b086599ae943ff09195b9c.camel@linuxfoundation.org>
-Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
- deref in LTP
-From:   Richard Purdie <richard.purdie@linuxfoundation.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org
-Date:   Thu, 01 Jul 2021 13:43:19 +0100
-In-Reply-To: <20210701121133.GA4641@sirena.org.uk>
-References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
-         <YMoXdljfOFjoVO93@slm.duckdns.org> <20210630161036.GA43693@sirena.org.uk>
-         <696dc58209707ce364616430673998d0124a9a31.camel@linuxfoundation.org>
-         <20210701121133.GA4641@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S229812AbhGARyp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Thu, 1 Jul 2021 13:54:45 -0400
+Received: from imsantv71.netvigator.com ([210.87.250.171]:38127 "EHLO
+        imsantv71.netvigator.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhGARyo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 13:54:44 -0400
+Received: from wbironout1c.netvigator.com (wbironout1c.netvigator.com [210.87.247.28])
+        by imsantv71.netvigator.com (8.14.4/8.14.4) with ESMTP id 161HpOLD021018;
+        Fri, 2 Jul 2021 01:51:24 +0800
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AE8aMHKMnn3Kvr8BcTsSjsMiBIKoaSvp037Hj?=
+ =?us-ascii?q?v3oBKyC9Ffbo9PxG/c576feX4Ax6Nk3I9urwXpVoLUmskqKdgrNwAV7dZnifhI?=
+ =?us-ascii?q?LAFugLhueM/9SHIVyGygc379YET0ERMqyVMbGkt6vH3DU=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0D//wAhAN5g/6Q6UspaHAEBATwBAQQEA?=
+ =?us-ascii?q?QECAQEHAQEVCRaBMAcBAQMBgTsCAQEBARIBNwEBAQEBAxWBTgEBJhIXAQEYlDB?=
+ =?us-ascii?q?gAYEogTeCAIIzhGYDgkyBZIE7EAF8GhULgX2BL4Y5DIFcCwEBASEvBAEBgRkBg?=
+ =?us-ascii?q?y4FA1UBAQEBBgGCGAElOQUNAgQVAQEFAwIBBgRxE4V1YgEBAQECgQY3AQEBhBA?=
+ =?us-ascii?q?BAQEGAQEBEyBGMFoOAQ4BHgoJNQEBAQEBAoI2RwEBAQGCCgEBAQklBQGZeYc8h?=
+ =?us-ascii?q?WaBbYE0DQ0CZYRTgwQEChoNdQEdJoENgTgCAQEBAQEBjgsWBoINgUuCQAGCPU6?=
+ =?us-ascii?q?BagUBEQIBg22CLgSCKIEcgWgtX4U7jjOCV4ciZIEqWZwfWwcDgyGIUIxBgzGEU?=
+ =?us-ascii?q?XUaKxeDOAERi0GGAR0Dg2cOASeBRYp8pUqWH4EmOiNpcHsKgVkKCxqBHFAZjgM?=
+ =?us-ascii?q?BAQGOeD4BATA4AgYKAQEDCYlUgiEBAQ?=
+X-IronPort-AV: E=Sophos;i="5.83,315,1616428800"; 
+   d="scan'208";a="241552604"
+X-MGA-submission: =?us-ascii?q?MDG7rkb1acnMJOnj5rpcbZjgVuGEVO+AcpowW1?=
+ =?us-ascii?q?oE8v7c9BStPdpA67Fg34XAXlNgj8xeUeoDVHTfLydxOz4eTPNrarkKEe?=
+ =?us-ascii?q?ifuBxo3ZkTs9GsEVqwJwQvD4LZSA4KvFjwOKP2x/QKH3D42iPAfPWeVs?=
+ =?us-ascii?q?qU?=
+Received: from unknown (HELO mail.easerich.com) ([202.82.58.164])
+  by wbironout1v2.netvigator.com with ESMTP; 02 Jul 2021 01:51:13 +0800
+Received: from localhost (localhost [127.0.0.1])
+        by mail.easerich.com (Postfix) with ESMTP id BD5134123C;
+        Fri,  2 Jul 2021 01:45:03 +0800 (HKT)
+DKIM-Filter: OpenDKIM Filter v2.9.1 mail.easerich.com BD5134123C
+X-Virus-Scanned: Debian amavisd-new at mail
+Received: from mail.easerich.com ([127.0.0.1])
+        by localhost (mail.easerich.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fvFSeaGu7QaC; Fri,  2 Jul 2021 01:45:02 +0800 (HKT)
+Received: from IP-135-155.dataclub.eu (unknown [84.38.135.155])
+        (Authenticated sender: david@applebb.net)
+        by mail.easerich.com (Postfix) with ESMTPA id 8A3E241241;
+        Fri,  2 Jul 2021 01:44:57 +0800 (HKT)
+DKIM-Filter: OpenDKIM Filter v2.9.1 mail.easerich.com 8A3E241241
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: My dear friend
+To:     Recipients <david@applebb.net>
+From:   "Barr. Pascal Simon" <david@applebb.net>
+Date:   Thu, 01 Jul 2021 20:45:06 +0300
+Reply-To: willclark2618@gmail.com
+Message-Id: <20210701174503.BD5134123C@mail.easerich.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 2021-07-01 at 13:11 +0100, Mark Brown wrote:
-> On Wed, Jun 30, 2021 at 11:31:06PM +0100, Richard Purdie wrote:
-> 
-> > Out of interest are you also seeing the proc01 test hang on a non-blocking
-> > read of /proc/kmsg periodically?
-> 
-> > https://bugzilla.yoctoproject.org/show_bug.cgi?id=14460
-> 
-> > I've not figured out a way to reproduce it at will yet and it seems strace
-> 
-> I've been talking to Ross, he mentioned it but no, rings no bells.
-> 
-> > was enough to unblock it. It seems arm specific.
-> 
-> If it's 32 bit I'm not really doing anything that looks at it.
+Dear Friend
 
-Its aarch64 in qemu running on aarch64 hardware with KVM.
+I hope you are well
 
-If you do happen to see anything let us know!
-
-Cheers,
-
-Richard
-
-
+Thank you for your efforts. I know your hands were tied, no worries. the fund is transfered.Your Donation cheque is ready please contact my secretary on email Dr Will drwillclark16@gmail.com and re-confirm your name ,address and phone/fax number to him to mail your cheque. I am busy at the moment with the new business partner here in Russia. Best wishes  Pascal 
