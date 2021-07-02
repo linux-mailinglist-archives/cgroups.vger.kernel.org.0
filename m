@@ -2,179 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725163B9B2F
-	for <lists+cgroups@lfdr.de>; Fri,  2 Jul 2021 05:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34683B9D1D
+	for <lists+cgroups@lfdr.de>; Fri,  2 Jul 2021 09:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhGBD6q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 1 Jul 2021 23:58:46 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6034 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbhGBD6q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 1 Jul 2021 23:58:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GGLhn56mGzXlyS;
-        Fri,  2 Jul 2021 11:50:49 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 2 Jul 2021 11:56:11 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 2 Jul
- 2021 11:56:11 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] blk-cgroup: prevent rcu_sched detected stalls warnings while iterating blkgs
-Date:   Fri, 2 Jul 2021 12:04:44 +0800
-Message-ID: <20210702040444.1917834-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S230185AbhGBHw6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 2 Jul 2021 03:52:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53163 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhGBHw5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 2 Jul 2021 03:52:57 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lzDwP-00036b-C0
+        for cgroups@vger.kernel.org; Fri, 02 Jul 2021 07:50:25 +0000
+Received: by mail-ed1-f69.google.com with SMTP id df18-20020a05640230b2b0290397ebdc6c03so586734edb.7
+        for <cgroups@vger.kernel.org>; Fri, 02 Jul 2021 00:50:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=LX1dRRvVTSSNV393pCWC9nqJdkpuDd2IbpTb7ntZCBA=;
+        b=Ns/3R4CNMXqJQX16bVBXBnses+R4cqKuaLX78BKPWGnqvJ+yzMOC32NQYosHh3+p9v
+         PObO5w5eHTiY6XHwbrpEz3suKyTqRN7Y4zsFs+PoNWN5/2LQ1Qe56Y6F9AN70LhGEt5b
+         CrVqqcLqTO25IJdGO+0KZlnrT5PyFi7dh8zT0Wfl2QRt8Lns+M6chE8nl5VGMAg1sXX+
+         ZT9njlQBC3p7iQk1XcWy29uTqMsU7oXCyOyaN4FkL54j3mZq2Yuprb/LO9xVk4HAR+Ii
+         BZrG+jlRYnOTUJnRN1RZyq/YRMlQ28JbT8PcVKD7hucut6PxuRESpsN7GMrQu9vFM5Ub
+         io+g==
+X-Gm-Message-State: AOAM533AMWQ0b0kKXBQomS5MIa3O24batRf9EuPk5EDWJDsbJSNdo28l
+        NQZ5+sL+OouRpO4ZUEU4MDnxOXI4hnjKU/5MHJb5jmSEtJV/dxPcqHyNn2FsyvpN2IXo7SymGxe
+        HEHtk3TVeuHDHzcYpFh649DJzNsiybZxz3ug=
+X-Received: by 2002:a17:906:5408:: with SMTP id q8mr4057381ejo.2.1625212223855;
+        Fri, 02 Jul 2021 00:50:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzn3Pz/ECVwptULHgdrkCP2GgJ+VIt489u9XMjxuKy+7r78kAJb6kJJzZa8Og93DSoXHL2MuA==
+X-Received: by 2002:a17:906:5408:: with SMTP id q8mr4057372ejo.2.1625212223633;
+        Fri, 02 Jul 2021 00:50:23 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id v24sm940031eds.39.2021.07.02.00.50.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Jul 2021 00:50:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Process memory accounting (cgroups) accuracy
+Message-ID: <69ffd3a0-2cb7-8baa-17d0-ae45a52595af@canonical.com>
+Date:   Fri, 2 Jul 2021 09:50:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We run a test that create millions of cgroups and blkgs, and then trigger
-blkg_destroy_all(). blkg_destroy_all() will hold spin lock for a long
-time in such situation. Thus release the lock when a batch of blkgs are
-destroyed.
+Hi,
 
-blkcg_activate_policy() and blkcg_deactivate_policy() might have the
-same problem, fix them the same way.
+Since some time I am trying to fix Linux Test Project tests around
+memory cgroups:
+https://lists.linux.it/pipermail/ltp/2021-June/023259.html
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-cgroup.c | 56 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 50 insertions(+), 6 deletions(-)
+The trouble I have, for example with memcg_max_usage_in_bytes_test.sh is
+that on recent kernels (v4.15+) on x86_64, the memory group reports max
+usage as higher than process' anonymous mapping.
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 7b06a5fa3cac..1d26b58d7c25 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -56,6 +56,8 @@ static LIST_HEAD(all_blkcgs);		/* protected by blkcg_pol_mutex */
- bool blkcg_debug_stats = false;
- static struct workqueue_struct *blkcg_punt_bio_wq;
- 
-+#define BLKG_BATCH_OP_NUM 64
-+
- static bool blkcg_policy_enabled(struct request_queue *q,
- 				 const struct blkcg_policy *pol)
- {
-@@ -422,7 +424,9 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- static void blkg_destroy_all(struct request_queue *q)
- {
- 	struct blkcg_gq *blkg, *n;
-+	int count = BLKG_BATCH_OP_NUM;
- 
-+restart:
- 	spin_lock_irq(&q->queue_lock);
- 	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
- 		struct blkcg *blkcg = blkg->blkcg;
-@@ -430,6 +434,17 @@ static void blkg_destroy_all(struct request_queue *q)
- 		spin_lock(&blkcg->lock);
- 		blkg_destroy(blkg);
- 		spin_unlock(&blkcg->lock);
-+
-+		/*
-+		 * in order to avoid holding the spin lock for too long, release
-+		 * it when a batch of blkgs are destroyed.
-+		 */
-+		if (!(--count)) {
-+			count = BLKG_BATCH_OP_NUM;
-+			spin_unlock_irq(&q->queue_lock);
-+			cond_resched();
-+			goto restart;
-+		}
- 	}
- 
- 	q->root_blkg = NULL;
-@@ -1291,6 +1306,7 @@ int blkcg_activate_policy(struct request_queue *q,
- {
- 	struct blkg_policy_data *pd_prealloc = NULL;
- 	struct blkcg_gq *blkg, *pinned_blkg = NULL;
-+	int count;
- 	int ret;
- 
- 	if (blkcg_policy_enabled(q, pol))
-@@ -1299,6 +1315,7 @@ int blkcg_activate_policy(struct request_queue *q,
- 	if (queue_is_mq(q))
- 		blk_mq_freeze_queue(q);
- retry:
-+	count = BLKG_BATCH_OP_NUM;
- 	spin_lock_irq(&q->queue_lock);
- 
- 	/* blkg_list is pushed at the head, reverse walk to allocate parents first */
-@@ -1342,6 +1359,16 @@ int blkcg_activate_policy(struct request_queue *q,
- 		blkg->pd[pol->plid] = pd;
- 		pd->blkg = blkg;
- 		pd->plid = pol->plid;
-+
-+		/*
-+		 * in order to avoid holding the spin lock for too long, release
-+		 * it when a batch of blkgs are activated.
-+		 */
-+		if (!(--count)) {
-+			spin_unlock_irq(&q->queue_lock);
-+			cond_resched();
-+			goto retry;
-+		}
- 	}
- 
- 	/* all allocated, init in the same order */
-@@ -1389,6 +1416,7 @@ void blkcg_deactivate_policy(struct request_queue *q,
- 			     const struct blkcg_policy *pol)
- {
- 	struct blkcg_gq *blkg;
-+	int count;
- 
- 	if (!blkcg_policy_enabled(q, pol))
- 		return;
-@@ -1397,15 +1425,31 @@ void blkcg_deactivate_policy(struct request_queue *q,
- 		blk_mq_freeze_queue(q);
- 
- 	spin_lock_irq(&q->queue_lock);
--
- 	__clear_bit(pol->plid, q->blkcg_pols);
-+retry:
-+	count = BLKG_BATCH_OP_NUM;
- 
- 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
--		if (blkg->pd[pol->plid]) {
--			if (pol->pd_offline_fn)
--				pol->pd_offline_fn(blkg->pd[pol->plid]);
--			pol->pd_free_fn(blkg->pd[pol->plid]);
--			blkg->pd[pol->plid] = NULL;
-+		if (!blkg->pd[pol->plid])
-+			continue;
-+
-+		if (pol->pd_offline_fn) {
-+			pol->pd_offline_fn(blkg->pd[pol->plid]);
-+			count--;
-+		}
-+
-+		pol->pd_free_fn(blkg->pd[pol->plid]);
-+		blkg->pd[pol->plid] = NULL;
-+
-+		/*
-+		 * in order to avoid holding the spin lock for too long, release
-+		 * it when a batch of blkgs are deactivated.
-+		 */
-+		if (!count) {
-+			spin_unlock_irq(&q->queue_lock);
-+			cond_resched();
-+			spin_lock_irq(&q->queue_lock);
-+			goto retry;
- 		}
- 	}
- 
--- 
-2.31.1
+The test works like this:
+1. Fork a process, signal it to mmap 4 MB (PROT_WRITE | PROT_READ,
+AP_PRIVATE | MAP_ANONYMOUS) and touch the memory.
+2. Add the process to control group.
+3. Signal it to munmap the region and immediately mmap again the same 4
+MB (with touching the memory).
+4. Check the counters and reset them.
+5. munmap
+6. Check the counters
 
+Mentioned memcg_max_usage_in_bytes_test.sh checks the counters of
+memory.memsw.max_usage_in_bytes which are:
+a. early kernels: 4 MB (so only the mmap)
+b. v4.15, v5.4 kernel: 4 MB + 32 pages
+c. v5.11 kernel: 4 MB + 32 pages + 2 pages
+
+I tweaked the mmap() size to smaller values and then the accounting is
+even different. For example mmap of 1 up to 32 pages the
+memory.memsw.max_usage_in_bytes is always 131072.
+
+After final munmap (point 5 above), the test expects the
+memcg_max_usage_in_bytes to be =0, however it is usually 8 or 132 kB.
+Which kind of points that process is charged for something not related
+to that memory map directly.
+
+The questions: How accurate are now the cgroup counters?
+I understood they should charge only pages allocated by the process, so
+why mmap(4 kB) causes max_usage_in_bytes=132 kB?
+Why mmap(4 MB) causes max_usage_in_bytes=4 MB + 34 pages?
+What is being accounted there (stack guards?)?
+
+Or maybe the entire LTP test checking so carefully memcg limits is useless?
+
+The v5.4 kernel config is here:
+https://kernel.ubuntu.com/~kernel-ppa/config/focal/linux-azure/5.4.0-1039.41/amd64-config.flavour.azure
+
+Best regards,
+Krzysztof
