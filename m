@@ -2,63 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD553BA96B
-	for <lists+cgroups@lfdr.de>; Sat,  3 Jul 2021 18:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40C83BA973
+	for <lists+cgroups@lfdr.de>; Sat,  3 Jul 2021 18:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbhGCQVN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 3 Jul 2021 12:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
+        id S229829AbhGCQXK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 3 Jul 2021 12:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhGCQVN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Jul 2021 12:21:13 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BA3C061762;
-        Sat,  3 Jul 2021 09:18:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id i20so21287262ejw.4;
-        Sat, 03 Jul 2021 09:18:38 -0700 (PDT)
+        with ESMTP id S229818AbhGCQXK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Jul 2021 12:23:10 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6318CC061762;
+        Sat,  3 Jul 2021 09:20:35 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h2so17593883edt.3;
+        Sat, 03 Jul 2021 09:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/SFx0l3EFfXNlGfyI4GVdZzRabxV5Q5+sQtiSDXNWyA=;
-        b=Y89WEwsifC2v0VdErRLJjYeyJmIWBXHrtZzhT6IZHQdx/2Nsemmeil8SulvH9KRj22
-         A0Z4KglyhDv0BfV7EQtbvIGrJd6mAagDmlsICgrwU5UCwcSFBcz/ZNLIh/YNAaxYbqM0
-         7Y3SJFoXL6FokOSyo/uTlcMKTOk+lfmlRIn6oDp9MqwiiFZRpYHHtcaceEaWiTrKZxQj
-         clRa0/2TAIx0uSBeawIVdmNqtU2GiIjfR6AQBbCIZIR1+tayHXy02exYi5VQNqPzKnbU
-         fBY3jKfCTAPHStRotUekp2kOWYZ3Ml8xGNHDMLpd7CRelawB2FnloxzSY0Opt5YAojyg
-         UpKQ==
+        bh=1fwH/bw6YM2VK2ZtZ+qfS4I4lbDV6J5Z7VDXRCzZF+8=;
+        b=kjom6xz7C8co4aNRq3MLNCpCMu8G68k59CdktcehnAQmR/Hcb85++xJt7nxZC60RZO
+         RS5hUu8jzwKfthYPb1XR7t2+H/49WiYqU0UxIIP50cdZzl/D2ISQmNO22d+u0RSqPHzP
+         HP+J8431QOFBmlNCNy/XkPMg3hqVqSRi51ZJbpdEm6gCjkMsXSBnyolRceavcIqh73ZS
+         vU/DCTjfSEmvztJ4DEEuq9zARLU6MpQ4d/QEQEic2LJ5/xbJgd5njXMAJRvkKKsie48W
+         tH28MCMX0cFMm9NDlDU05S2Yy84KBuU79Y++ZSJ6/JW3QCaX86mhStPVg4gARRTOrT1V
+         piGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/SFx0l3EFfXNlGfyI4GVdZzRabxV5Q5+sQtiSDXNWyA=;
-        b=h//x6c/FvXGPJ1pbHBxxaiJPyFwA1bHT8PWfcOKvuiu8Yqfy/rBtAvLghxMkQx9Q7y
-         7+8tQVQAZF8yHBOX0nKo0ZCZYkAoODtwG2tB5fb9YSOEKG7ZAmhDGXilIpCpxNVm+o3E
-         9mtGRfCl0Cx+4jE+WJ8lTOYGHP8HCkbcyKW50hjP1E1hWb97/WD90IcaqVgg67RcCRgg
-         70mu8jsX0IBPT9dDNEt9l5ggtrFuZD3UbRoCmy31RI1I0vaaZarzcUatCdRiq0pjiN1Q
-         Y3anwpFuE903rVBfzhnqctLcNqb5GQWIiOUUAt1xukl6CDWReJdhnxzB1MiATAzSghaI
-         xFFg==
-X-Gm-Message-State: AOAM530NJVrD51BHngenJ12B1ruxVYBqJ/nR0MPJYFQ8kgrurX3DM7Vc
-        8MQ2/2/Hrw+StplEEHuSnD32kyPEa/8eMA0pojh710prtGEk+A==
-X-Google-Smtp-Source: ABdhPJyIW/gHmhWZpraIEnHpbIr8igMFbgS3aJkgvRtJleUmEjWgSls5GThsHsT/TQjnxCxv5qi9q8Jw2YfdfeIdlIA=
-X-Received: by 2002:a17:906:15c2:: with SMTP id l2mr5335696ejd.348.1625329116880;
- Sat, 03 Jul 2021 09:18:36 -0700 (PDT)
+        bh=1fwH/bw6YM2VK2ZtZ+qfS4I4lbDV6J5Z7VDXRCzZF+8=;
+        b=MtUMy2FdjmE5mE+fBVTDj9F2YOCqwdH2HSFckyiyIyVGxISe9tx2FvZ7IL98jHsUGh
+         vUM3VLkutigGZqkV8Ux++Gd4vqO9lNuBUXGl6rsjYxLk5qB2U/o9zRqPClOVVmaH2CeD
+         yPAujGXE7QUsGrf1hRCpyqGBy3R9CGMMI1aGNCdMJAC2ku1Nat296Th7Yx+Dn4EpCgMu
+         RO0GOBc5xm9uJtRxcp9L+te0LkZRcfoKNOkYpbvgDDiQJd3LRnctL53tnVqNOvTtCcBw
+         p7UEEq+ioOtYQkU4iv6ryhuyWp40/6tUCu+hv7ns9V8s0KdVaMfpM82OaHgEULeWkQpd
+         zVAw==
+X-Gm-Message-State: AOAM532PatCzC0xkaujXVooVzKBrwWeap5Og+Of5ZqrN8JSfqB4UAEag
+        G/2CGIUzw+ITw7LJjm4T+2wArgfw7LRWrX/ywUE=
+X-Google-Smtp-Source: ABdhPJzPOPW3EqpRtjT2JSNDs7F2atl1lP9Aq1DUPe62mCaTGmPy5cgHkV7cQP7J0uuUOTIELAqyzK7Yo2ncZ4j2yoU=
+X-Received: by 2002:a05:6402:2154:: with SMTP id bq20mr3310642edb.111.1625329233993;
+ Sat, 03 Jul 2021 09:20:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <60decdb6.1c69fb81.6130e.7642@mx.google.com> <20210702200742.wuhdg4dhpolher3t@oracle.com>
-In-Reply-To: <20210702200742.wuhdg4dhpolher3t@oracle.com>
+References: <60decdb6.1c69fb81.6130e.7642@mx.google.com> <YN+Sne76dhKBzV/R@mtj.duckdns.org>
+In-Reply-To: <YN+Sne76dhKBzV/R@mtj.duckdns.org>
 From:   Hao Lee <haolee.swjtu@gmail.com>
-Date:   Sun, 4 Jul 2021 00:18:22 +0800
-Message-ID: <CA+PpKPmN2E5zCjP3mkurNA2GANtLCUmoPG+_4mUq3E8cxOhuhQ@mail.gmail.com>
+Date:   Sun, 4 Jul 2021 00:20:19 +0800
+Message-ID: <CA+PpKPkau-b0df5i4kpJ_RTXW1Fje4Ms0T2hGJCOE31u+BU7zg@mail.gmail.com>
 Subject: Re: [Question] Do we need remote charging for cpu and cpuacct subsys?
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Tejun Heo <tj@kernel.org>
 Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tj@kernel.org
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jul 3, 2021 at 4:07 AM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
+On Sat, Jul 3, 2021 at 6:26 AM Tejun Heo <tj@kernel.org> wrote:
 >
 > Hello,
 >
@@ -69,72 +69,21 @@ On Sat, Jul 3, 2021 at 4:07 AM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
 > > In our environment, we need to account the cpu usage consumed by some kworkers
 > > to a specific cgroup. Thus, we want to introduce a remote-charging mechanism to
 > > cpu and cpuacct subsys in our kernel.
->
-> I also want to see this upstream, and am actually working on it right
-> now, have been for some time.
->
-> So far, this is needed to properly account multithreaded padata jobs,
-> memory reclaim, and net rx. Android folks have raised this issue in the
-> past too, though I'm not aware of the specific kthreads that are giving
-> them problems.
->
-> So naturally, I'm curious about your use case and how it may be
-> different from these others. What kworkers would you like to account?
-
-Thanks. We use a workqueue to perform asynchronous reclaim for cgroups.
-The kworker may consume lots of CPU cycles if the cgroup memory pressure
-is extremely high, so we want to charge the cpu usage to the related
-cgroup for which the kworker works. Otherwise, the reclaim kworker will
-steal cpu time from the system level, which breaks the resource isolation.
-
->
+> >
 > > I want to know if the community has a plan to do this?
 > > What will the community approach look like?
 >
-> There has been discussion about this here,
->
->    https://lore.kernel.org/lkml/20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com/
->
+> Yeah, we need sth like this to account for cpu cycles spent in commont path
+> but caused by specific cgroups - e.g. memory reclaim, net packet rx and so
+> on. There were some mentions of needing somthing like that but haven't been
+> any patchsets or concrete efforts that I know of.
 
-Yes, our work is very similar to Johannes'.
-
-> more recently here,
->
->    https://lore.kernel.org/lkml/YGxjwKbec68sCcqo@slm.duckdns.org/
->
-> and we may talk about it at LPC:
->
->    https://www.linuxplumbersconf.org/event/11/page/104-accepted-microconferences#cont-perform
-
-I also found that you posted a patchset in 2019 to introduce a
-cgroup-aware workqueue. In that discussion, back-charging is considered
-to be a suitable solution.
-    https://lore.kernel.org/lkml/20190611195549.GL3341036@devbig004.ftw2.facebook.com/
-
-I also have a question here. Are the back-charging and remote charging
-the same thing?
+Thanks for this reply. I am interested in this area because this feature
+would be very useful in our containerized environment. I will track related
+discussions and want to do some work related to remote charging.
 
 >
-> > I think we need to move the active_memcg to a separated active_cgroup struct,
-> > and the latter will contain active_memcg, active_tg, and active_cpuacct.
+> Thanks.
 >
-> I'm not seeing how that could work for cases that don't know the cgroup
-> when the remote charging period begins.
-
-This is indeed a problem. Neither cgroup-aware kthread nor remote
-charging can address this. Maybe this is the biggest obstacle hindering
-fine-grained charging.
-
-> The only one I'm aware of
-> that's like that is net rx, where the work to process packets has to
-> start before their ultimate destination, and therefore cgroup, is known.
-
-Sorry. Is this a typo? It seems the word "known" should be "unknown"...
-
-
-Regards,
-Hao Lee
-
->
-> thanks,
-> Daniel
+> --
+> tejun
