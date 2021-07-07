@@ -2,84 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B333BEB19
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 17:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB303BECD4
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 19:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhGGPlj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jul 2021 11:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
+        id S230351AbhGGRLg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jul 2021 13:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhGGPli (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 11:41:38 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6F4C061760
-        for <cgroups@vger.kernel.org>; Wed,  7 Jul 2021 08:38:57 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id w74so3804340oiw.8
-        for <cgroups@vger.kernel.org>; Wed, 07 Jul 2021 08:38:57 -0700 (PDT)
+        with ESMTP id S230467AbhGGRLf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 13:11:35 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17072C061574
+        for <cgroups@vger.kernel.org>; Wed,  7 Jul 2021 10:08:54 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id j13so2678894qka.8
+        for <cgroups@vger.kernel.org>; Wed, 07 Jul 2021 10:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H/u+AYAwK9mJcG4oUWcnUGsuenx4nlYeOD13u9gKYw4=;
-        b=hBe29YUOrYgfT6USN8t15IXPOdsaxaWTgbrLieT0ub7LIuxZQLgx28SKSKI2NneYaX
-         3TfqswY3vdTXnPYj/gn7E2GPnw3fzQoZ4/2cKo2U8yYmk5UOaMGBZQV4FkLxJmLZXtVU
-         WvhFUSJeZJD0jCIgSkOooNBIcaNQ9PF6I4tHzvnb41Q+vpQ2njGA69DOrhrmQUVwdRRi
-         Sh9D/0WnPlX9q+V7H0eoW9RNCAufgJnb+iMaMGxTsP5RGsfxe2RomDZSsmI9qPJ6eHFr
-         413hVjj1elDDIYi4tiXFVKvlOELXOGD7sQNBIzlhRADjBFfQJmRxGkGU8TIJv3VJCVld
-         rESw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zKFzxaicRuEWN6JDVuwxf/5fHNRnvOJNXCo8RqlfnUo=;
+        b=K07Xb99QcriEOisR00l22wLQPQEOIpOXNJAf9NhgVco/oZ9jwUnQ0BR4m/V9l2aVu3
+         7Ue85P+ZxUFOf7SP+RuJxDYfEyBUPkLCBoJ2Tbjlh0beKAnJ/INjxQ6Fkx+jJqhYaVGT
+         RjMT0XF4LKj/9H7bu0nqsgCsRncfO3IsCb6RKkdDyvHJKow5YHLgaVkGWPoyOig8rF7q
+         u37fNGzarIMgfy9mJlnW7SqjOVYt3o9RJ+FxXglVlM5PGmawY/NT4yBDQxiPBNUMYhNM
+         7eUk/7LFiyrGoo6WBmJpGhK+MbzOdBSwOgaZRXJY+665Xnpq9Ws4ZIiUBCaYBAKXhqZ0
+         Bv+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H/u+AYAwK9mJcG4oUWcnUGsuenx4nlYeOD13u9gKYw4=;
-        b=heTZfCXVCoxwNqE39XNnaZLe9Za6ElJ8t41hgItviW7WyAmMu22B5BPvqJOuPLNPtM
-         +G2ShHfTtIBfchSk59WpYfIOpCcBPgTL3XVhVXFOxsR0YoodwWp9ieZ/GHvIZzH/oXtD
-         M0DVilTyYnwU5qsLTGB5jOBixwjjmaserYBMwh8gtusxUBVUChRYR4SPmWXwb+goB83I
-         RK1FtVw766mdK8gTO+//5T7u5CdtZ1n495+QiChZte1Qi5n4fGn3qHD7fqzojiiiPhBC
-         8+ksjRFl9/egud9pIciCwN3C9xt0OpnFRyfV/NJFKn2TlCHxWI69tlBjZSnoYJhOw/AQ
-         +ldg==
-X-Gm-Message-State: AOAM530Vfm+7/crJzEXZaksSF9+XyJNWPZt7GlSN7k5+Oz8sj50avbId
-        VFGh3oOwN+HlnnKrckTwVq+AhQ==
-X-Google-Smtp-Source: ABdhPJxfpHgxHg2b3kqBMIvAO3jc3igdIVCQdUBIWCICtzLhDSXduDYBwRAIqIfJAgkrJZQnFRiyqg==
-X-Received: by 2002:aca:d641:: with SMTP id n62mr154422oig.77.1625672336548;
-        Wed, 07 Jul 2021 08:38:56 -0700 (PDT)
-Received: from [192.168.1.170] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id o189sm4241409oif.54.2021.07.07.08.38.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jul 2021 08:38:56 -0700 (PDT)
-Subject: Re: [PATCH V2] blk-cgroup: prevent rcu_sched detected stalls warnings
- while iterating blkgs
-To:     Yu Kuai <yukuai3@huawei.com>, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-References: <20210707015649.1929797-1-yukuai3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <dc715155-f936-16ef-bcc4-3063988402ba@kernel.dk>
-Date:   Wed, 7 Jul 2021 09:38:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zKFzxaicRuEWN6JDVuwxf/5fHNRnvOJNXCo8RqlfnUo=;
+        b=ZaC1Nmn+h6JLMWCdeYBpziienvMF5d7g4CkOCEki2Wfy4NXghPdlTjdpynC8YgXzu7
+         Ifls3q1D3PT2cT9e7bMUEzsUw4jIf8uhCkbOQ1REJJEJ73UisG5Uot85+5/CuMgO9b54
+         y3aCtLXWh/KZBrJEdkoW4vzvzm8ux0xALwrd76x53X4Hl26nWkPXtFfHSMjds7EVp0pw
+         nasn6r/6g+Ca8uq4GulbbkmdNS4EvRF/d8MZ111Rn9hJDFsttRniOSTIWVRSPAJMRYqF
+         4u7ebSTR4H7xqWOznDs+s4munDjnOSjaOF5Shz+/ogGHQ/WYIetXV0uhhsooCv0WsLav
+         Rx0g==
+X-Gm-Message-State: AOAM5311XtMz9BD+b/F9kJ0l5mqGxCsi7VP542hSLjywWVqcZnmrMYnK
+        NDWNp6AC4HMp4HZ1VCFBTiJPzQ==
+X-Google-Smtp-Source: ABdhPJyvpaXGsh/M091lO5PbRxD+WGM/34+NjN7awp7C4IyKjHFJo9WpZyAbacwM83XKvBQQYw8UWA==
+X-Received: by 2002:ae9:e8cd:: with SMTP id a196mr23914727qkg.225.1625677733331;
+        Wed, 07 Jul 2021 10:08:53 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id g1sm8474122qkm.58.2021.07.07.10.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 10:08:52 -0700 (PDT)
+Date:   Wed, 7 Jul 2021 13:08:51 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH v3 13/18] mm/memcg: Add folio_memcg_lock() and
+ folio_memcg_unlock()
+Message-ID: <YOXfozcU8M/x2RQ4@cmpxchg.org>
+References: <20210630040034.1155892-1-willy@infradead.org>
+ <20210630040034.1155892-14-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210707015649.1929797-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210630040034.1155892-14-willy@infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/6/21 7:56 PM, Yu Kuai wrote:
-> We run a test that create millions of cgroups and blkgs, and then trigger
-> blkg_destroy_all(). blkg_destroy_all() will hold spin lock for a long
-> time in such situation. Thus release the lock when a batch of blkgs are
-> destroyed.
-> 
-> blkcg_activate_policy() and blkcg_deactivate_policy() might have the
-> same problem, however, as they are basically only called from module
-> init/exit paths, let's leave them alone for now.
+On Wed, Jun 30, 2021 at 05:00:29AM +0100, Matthew Wilcox (Oracle) wrote:
+> -static void __unlock_page_memcg(struct mem_cgroup *memcg)
+> +static void __memcg_unlock(struct mem_cgroup *memcg)
 
-Applied, thanks.
-
--- 
-Jens Axboe
-
+This is too generic a name. There are several locks in the memcg, and
+this one only locks the page->memcg bindings in the group.
