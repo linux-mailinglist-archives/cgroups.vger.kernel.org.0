@@ -2,85 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C94B83BEA76
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 17:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E70E3BEAA5
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 17:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhGGPOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jul 2021 11:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
+        id S232212AbhGGP2L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jul 2021 11:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhGGPOV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 11:14:21 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50086C061574;
-        Wed,  7 Jul 2021 08:11:39 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id x16so359013plg.3;
-        Wed, 07 Jul 2021 08:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GNDXNaZYGbMBdcYFq4ONE/0GjhVExMKqksA5/1NNflY=;
-        b=LvrF+NLV2Gy3fvh0Cp5ddJeIkz+lg/q2D1FlVmFj5Jkxj1g5kvXlTZcePJo7FPdLbj
-         lKFaGXeMxMwc73KD9WtJOg4I85I1QqKZCGrTyvBk5Y2evPdtYBrS2jOp4pf/t8d6f1K6
-         ddi7qZM+7PlvZ9QU2nzr0XnVim+klirwv4P58eNHr4INOxvVfBWrAmSzoNqvZldGgPcX
-         cJ2ox2pYtvFIXXAqsy7C3regM90zc2o1hZ2pLNxIJoRHcnP/6D4UM5U0uXE+OMk4CSR7
-         TS00FHzfDMcY8/hOaBnDEbjpA7X2iEBODNaGG15YDGU2xPnzW4GfvNAGYhHnvJCYiyyc
-         TuyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=GNDXNaZYGbMBdcYFq4ONE/0GjhVExMKqksA5/1NNflY=;
-        b=oA47QWWrtL4XUS2MiNUCF+J0I/w3THCZXwzX+ZsdnZy6+0BKHeQQjJjSCCXBlqZ7h+
-         +FgPnOa+l+mMqZW+BqlKMXZZ214xbkHlzvQeP6WXc4UDn5hTrDUH57+3VpX0oIS77HHH
-         6+4BGjdme9ytp5P2GdlTRI4AUg/3aprz2SH9kSbodtjaLLCvnglSYbphKpiFECy/18sK
-         HtATRoCeyuOvM6K0lGb+sCKVt0QctNmL8r+Ar+y9RB9RNFkWO3OFTdMrZTe7fVocs8Vp
-         Ylc2w/a2tNolgyQ8Bq6gJgjHduyXf/yqyzG/EhXlzR9txdlbLP4UTiXLWLuBjgRilhmm
-         5wPw==
-X-Gm-Message-State: AOAM5339WNRv/OHsDT/R1n0j3WGty/YWEdEhpFfPG9mHFJ2pwUxn8b74
-        gjdlITiLiRUWDxWS0iFhxkw=
-X-Google-Smtp-Source: ABdhPJwfPq97U1rGRYVrYZ1fgykOXnND9H35Tl077Tp8RuyyoPLyZr9lYn5FFTpa7OVSrObVm3rylQ==
-X-Received: by 2002:a17:90a:c595:: with SMTP id l21mr89869pjt.200.1625670698675;
-        Wed, 07 Jul 2021 08:11:38 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:da0b])
-        by smtp.gmail.com with ESMTPSA id c10sm19784889pfo.129.2021.07.07.08.11.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 08:11:38 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 7 Jul 2021 05:11:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH V2] blk-cgroup: prevent rcu_sched detected stalls
- warnings while iterating blkgs
-Message-ID: <YOXEJTI7qOY6QBjy@mtj.duckdns.org>
-References: <20210707015649.1929797-1-yukuai3@huawei.com>
+        with ESMTP id S232050AbhGGP2L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 11:28:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC46C061574
+        for <cgroups@vger.kernel.org>; Wed,  7 Jul 2021 08:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+zsfdjVgnxMHynCmmkxrnBrhGlR05KkOhD40pFea5wU=; b=Z9ayHCnfITRQ1mdzMiod9N4wJN
+        gkqu78BKwwH+WTEGKQBlvGfBqxkuiQtrk6O5m/hcpdFnUoaJ7+QIO0rihEDbbw6GIqdItItUW+pFz
+        PU+N6hlENMCsFFhXmUzFlJAwqkpjwsjkky8OvTom7sNkmnz6P8S9JbjgSAOcJANQQZvuqq6RTzRDQ
+        ZuYVH8UDXUNo875q7ASLMaIiPN5+GecbcQ9LYxtWHurgTQnnicgLpu8ihymPSVD3e9I1aImDT6pJF
+        vqaIZ34Y8d/YEccLfC8cLa+ofuzNEUHpTwMU4X3OgET9hchOR+KahhkARtbIXYB/LVX8FfuqkY7s3
+        mF7kOJdg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m19QB-00CWal-PX; Wed, 07 Jul 2021 15:25:11 +0000
+Date:   Wed, 7 Jul 2021 16:25:07 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH v3 14/18] mm/memcg: Convert mem_cgroup_move_account() to
+ use a folio
+Message-ID: <YOXHU42efcFGF/D4@casper.infradead.org>
+References: <20210630040034.1155892-1-willy@infradead.org>
+ <20210630040034.1155892-15-willy@infradead.org>
+ <YNwrrl6cn48t6w5B@dhcp22.suse.cz>
+ <YNxUCLt/scn1d5jQ@casper.infradead.org>
+ <YNxhlr4d7Nl0vCz0@dhcp22.suse.cz>
+ <YNxkFSGUoaSzZ/36@casper.infradead.org>
+ <YNxnbTNAeNB9Isie@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707015649.1929797-1-yukuai3@huawei.com>
+In-Reply-To: <YNxnbTNAeNB9Isie@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 09:56:49AM +0800, Yu Kuai wrote:
-> We run a test that create millions of cgroups and blkgs, and then trigger
-> blkg_destroy_all(). blkg_destroy_all() will hold spin lock for a long
-> time in such situation. Thus release the lock when a batch of blkgs are
-> destroyed.
+On Wed, Jun 30, 2021 at 02:45:33PM +0200, Michal Hocko wrote:
+> On Wed 30-06-21 13:31:17, Matthew Wilcox wrote:
+> > On Wed, Jun 30, 2021 at 02:20:38PM +0200, Michal Hocko wrote:
+> > > On Wed 30-06-21 12:22:48, Matthew Wilcox wrote:
+> > > > We need to decide what 'NR_ANON_THPS' means in a folio-based world where
+> > > > we have folios of all orders.  Does it count only the number of pages
+> > > > in folios >= HPAGE_PMD_SIZE?  Or does it count the number of pages in
+> > > > folios > PAGE_SIZE?
+> > > 
+> > > At this stage we only have PMD based, right? I believe it would be
+> > > simpler to stick with that at the moment and change that to a more
+> > > generic way along with other places which need updating.
+> > > 
+> > > Wrt. counters they do count pages so in this case this shouldn't be a
+> > > problem. But we do have counters for pmd mappings and that might need
+> > > some care.
+> > 
+> > Looking at how these are reported:
+> > 
+> >         show_val_kb(m, "AnonHugePages:  ",
+> >                     global_node_page_state(NR_ANON_THPS));
+> >         show_val_kb(m, "ShmemHugePages: ",
+> >                     global_node_page_state(NR_SHMEM_THPS));
+> >         show_val_kb(m, "ShmemPmdMapped: ",
+> >                     global_node_page_state(NR_SHMEM_PMDMAPPED));
+> >         show_val_kb(m, "FileHugePages:  ",
+> >                     global_node_page_state(NR_FILE_THPS));
+> >         show_val_kb(m, "FilePmdMapped:  ",
+> >                     global_node_page_state(NR_FILE_PMDMAPPED));
+> > 
+> > it specifically refers to 'HugePages', so I think we need to only
+> > count folios with order >= PMD_ORDER.
 > 
-> blkcg_activate_policy() and blkcg_deactivate_policy() might have the
-> same problem, however, as they are basically only called from module
-> init/exit paths, let's leave them alone for now.
+> Why? The presented value is in kB. It gives us a cumulative number of
+> transparent large pages.  Sure breakdown to respective orders would be
+> impossible in general but the same would be the case if order > PMD_ORDER.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> I am not really sure how useful that information is in practice but that
+> is a different story.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+The scenario I'm thinking about is a situation where we have gigabytes
+of memory in the page cache in 16k-64k chunks and we'll see
+FileHugePages: 5219348 kB
+FilePmdMapped:       0 kB
 
-Thanks.
-
--- 
-tejun
+which might cause the slightly-too-clever user to think there's a
+problem.
