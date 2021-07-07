@@ -2,73 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085A73BEA71
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 17:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94B83BEA76
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 17:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhGGPNo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jul 2021 11:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        id S232234AbhGGPOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Jul 2021 11:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbhGGPNn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 11:13:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABC6C061574
-        for <cgroups@vger.kernel.org>; Wed,  7 Jul 2021 08:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YBvoj0p+cw7rNWFJS293btY7G2SyLG5QlTGqGbKgJpE=; b=VfkYhMTWxTWXcvH47VoE0W62zb
-        vxX7UJxvehXclaKrJGBbR/w9f8g0PtOMhxuJeQFCAKaGe+Ve/syaYom0T/RPHaB9yz4YtKlUYgo8c
-        MnQycktnLj7xzcRGfdRVc4S7VVudEY0N6hyZUZqrAHokbRLZUEreEIBCKHhzcLqth8PKj/Jfhvf+V
-        bPByt0Gw0Qq6bYg1AMSxnHoN+WJWgxKdr9zbV8KDyTu2sb5fHi4RdX+NeiIOfCZPr1LQRCsxE4zo2
-        0GWaFiIKBBZ70y/UcpkgXIUYJzWLACYoBMpWuhXMetEzaVaKsGsZ6kbuWi1aUgMdrgLnj2a72Qphv
-        0TB944Ng==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m19CL-00CW1H-1Y; Wed, 07 Jul 2021 15:10:50 +0000
-Date:   Wed, 7 Jul 2021 16:10:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH v3 13/18] mm/memcg: Add folio_memcg_lock() and
- folio_memcg_unlock()
-Message-ID: <YOXD+TVkAeWmjLxX@casper.infradead.org>
-References: <20210630040034.1155892-1-willy@infradead.org>
- <20210630040034.1155892-14-willy@infradead.org>
- <YNwsAh5u2h34tGDb@dhcp22.suse.cz>
+        with ESMTP id S232250AbhGGPOV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 11:14:21 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50086C061574;
+        Wed,  7 Jul 2021 08:11:39 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id x16so359013plg.3;
+        Wed, 07 Jul 2021 08:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GNDXNaZYGbMBdcYFq4ONE/0GjhVExMKqksA5/1NNflY=;
+        b=LvrF+NLV2Gy3fvh0Cp5ddJeIkz+lg/q2D1FlVmFj5Jkxj1g5kvXlTZcePJo7FPdLbj
+         lKFaGXeMxMwc73KD9WtJOg4I85I1QqKZCGrTyvBk5Y2evPdtYBrS2jOp4pf/t8d6f1K6
+         ddi7qZM+7PlvZ9QU2nzr0XnVim+klirwv4P58eNHr4INOxvVfBWrAmSzoNqvZldGgPcX
+         cJ2ox2pYtvFIXXAqsy7C3regM90zc2o1hZ2pLNxIJoRHcnP/6D4UM5U0uXE+OMk4CSR7
+         TS00FHzfDMcY8/hOaBnDEbjpA7X2iEBODNaGG15YDGU2xPnzW4GfvNAGYhHnvJCYiyyc
+         TuyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GNDXNaZYGbMBdcYFq4ONE/0GjhVExMKqksA5/1NNflY=;
+        b=oA47QWWrtL4XUS2MiNUCF+J0I/w3THCZXwzX+ZsdnZy6+0BKHeQQjJjSCCXBlqZ7h+
+         +FgPnOa+l+mMqZW+BqlKMXZZ214xbkHlzvQeP6WXc4UDn5hTrDUH57+3VpX0oIS77HHH
+         6+4BGjdme9ytp5P2GdlTRI4AUg/3aprz2SH9kSbodtjaLLCvnglSYbphKpiFECy/18sK
+         HtATRoCeyuOvM6K0lGb+sCKVt0QctNmL8r+Ar+y9RB9RNFkWO3OFTdMrZTe7fVocs8Vp
+         Ylc2w/a2tNolgyQ8Bq6gJgjHduyXf/yqyzG/EhXlzR9txdlbLP4UTiXLWLuBjgRilhmm
+         5wPw==
+X-Gm-Message-State: AOAM5339WNRv/OHsDT/R1n0j3WGty/YWEdEhpFfPG9mHFJ2pwUxn8b74
+        gjdlITiLiRUWDxWS0iFhxkw=
+X-Google-Smtp-Source: ABdhPJwfPq97U1rGRYVrYZ1fgykOXnND9H35Tl077Tp8RuyyoPLyZr9lYn5FFTpa7OVSrObVm3rylQ==
+X-Received: by 2002:a17:90a:c595:: with SMTP id l21mr89869pjt.200.1625670698675;
+        Wed, 07 Jul 2021 08:11:38 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:da0b])
+        by smtp.gmail.com with ESMTPSA id c10sm19784889pfo.129.2021.07.07.08.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jul 2021 08:11:38 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 7 Jul 2021 05:11:33 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH V2] blk-cgroup: prevent rcu_sched detected stalls
+ warnings while iterating blkgs
+Message-ID: <YOXEJTI7qOY6QBjy@mtj.duckdns.org>
+References: <20210707015649.1929797-1-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNwsAh5u2h34tGDb@dhcp22.suse.cz>
+In-Reply-To: <20210707015649.1929797-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 30, 2021 at 10:32:02AM +0200, Michal Hocko wrote:
-> On Wed 30-06-21 05:00:29, Matthew Wilcox wrote:
-> > These are the folio equivalents of lock_page_memcg() and
-> > unlock_page_memcg().  Reimplement them as wrappers.
+On Wed, Jul 07, 2021 at 09:56:49AM +0800, Yu Kuai wrote:
+> We run a test that create millions of cgroups and blkgs, and then trigger
+> blkg_destroy_all(). blkg_destroy_all() will hold spin lock for a long
+> time in such situation. Thus release the lock when a batch of blkgs are
+> destroyed.
 > 
-> Is there any reason why you haven't followed the same approach as for
-> the previous patches. I mean callers can call page_folio and then
-> lock_page_memcg wrapper shouldn't be really needed.
+> blkcg_activate_policy() and blkcg_deactivate_policy() might have the
+> same problem, however, as they are basically only called from module
+> init/exit paths, let's leave them alone for now.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-At this point in the patch series there are ~20 places which call
-lock_page_memcg().  I think it makes more sense to leave the wrapper
-in place, and then we can remove the wrapper once all/most of these
-places are converted to use folios.  There are another 5 conversions
-already in the patch series, eg here:
+Acked-by: Tejun Heo <tj@kernel.org>
 
-https://git.infradead.org/users/willy/pagecache.git/commitdiff/a41c942c8e4b41df30be128ef6998ff1849fa36a
+Thanks.
 
-> I do not really want to be annoying here but I have to say that I like
-> the conversion by previous patches much better than this wrapper
-> approach as mentioned during the previous review already. If you have
-> some reasons to stick with this approach for this particular case then
-> make it explicit in the changelog.
-
-OK, I can point to the number of callers as a reason to keep the
-wrappers in place.  I intended to just do the conversion here, but
-seeing the number of callers made me reconsider.
+-- 
+tejun
