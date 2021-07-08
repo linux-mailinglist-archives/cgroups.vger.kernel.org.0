@@ -2,73 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2B13BF553
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jul 2021 07:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935053BF643
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jul 2021 09:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhGHFzQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 8 Jul 2021 01:55:16 -0400
-Received: from mail8.turbodal.cl ([200.27.120.195]:42971 "EHLO
-        debian.turbodal.cl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229608AbhGHFzQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jul 2021 01:55:16 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 01:55:15 EDT
-Received: from mail4.turbodal.cl (unknown [192.100.110.128])
-        by debian.turbodal.cl (Postfix) with ESMTPS id A9FCF165D7F;
-        Thu,  8 Jul 2021 01:38:13 -0400 (-04)
-Received: from mail4.turbodal.cl (localhost [127.0.0.1])
-        by mail4.turbodal.cl (Postfix) with ESMTPS id 6485B62E0565;
-        Thu,  8 Jul 2021 01:38:39 -0400 (-04)
-Received: from localhost (localhost [127.0.0.1])
-        by mail4.turbodal.cl (Postfix) with ESMTP id 4AD9A62E06F1;
-        Thu,  8 Jul 2021 01:38:39 -0400 (-04)
-Received: from mail4.turbodal.cl ([127.0.0.1])
-        by localhost (mail4.turbodal.cl [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id kwtL_G5tfUVT; Thu,  8 Jul 2021 01:38:39 -0400 (-04)
-Received: from cris-PC.wifi (unknown [105.9.19.190])
-        by mail4.turbodal.cl (Postfix) with ESMTPSA id 005BC62E048F;
-        Thu,  8 Jul 2021 01:38:30 -0400 (-04)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S229845AbhGHHbE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Jul 2021 03:31:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38570 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhGHHbE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jul 2021 03:31:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4E0CD220D2;
+        Thu,  8 Jul 2021 07:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625729302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=17LWgY1lhwnG10GPb9Rqj76fsBzvfjmM5lbcUo6gvVI=;
+        b=Uw4AoXNSjnjAxhH0BbMXmIpo5cwyH7inw0BupZ8ZrmMINW5o3MMukZRtAyUTtg0uLnFh/x
+        TFUwG0oFkek/lO57V9WITuUkWQfTIi4XJ4g9+sBzLLpC8JTMf31+0sAiWr1ik/nXg4i8g5
+        ZlDm3yNFJw+mbnmEXIbO3Z1LSUhdqIk=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1E28EA3B84;
+        Thu,  8 Jul 2021 07:28:22 +0000 (UTC)
+Date:   Thu, 8 Jul 2021 09:28:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH v3 13/18] mm/memcg: Add folio_memcg_lock() and
+ folio_memcg_unlock()
+Message-ID: <YOapFVzNhSgnN/tM@dhcp22.suse.cz>
+References: <20210630040034.1155892-1-willy@infradead.org>
+ <20210630040034.1155892-14-willy@infradead.org>
+ <YNwsAh5u2h34tGDb@dhcp22.suse.cz>
+ <YOXD+TVkAeWmjLxX@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsfonds_von_2=2C000=2C000_euro?=
-To:     Recipients <fae.eva@ptt.cl>
-From:   ''Charles jackson'' <fae.eva@ptt.cl>
-Date:   Thu, 08 Jul 2021 07:38:15 +0200
-Reply-To: charlesjacksonjr001@gmail.com
-Message-Id: <20210708053831.005BC62E048F@mail4.turbodal.cl>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOXD+TVkAeWmjLxX@casper.infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Lieber Freund,
+On Wed 07-07-21 16:10:49, Matthew Wilcox wrote:
+[...]
+> > I do not really want to be annoying here but I have to say that I like
+> > the conversion by previous patches much better than this wrapper
+> > approach as mentioned during the previous review already. If you have
+> > some reasons to stick with this approach for this particular case then
+> > make it explicit in the changelog.
+> 
+> OK, I can point to the number of callers as a reason to keep the
+> wrappers in place.  I intended to just do the conversion here, but
+> seeing the number of callers made me reconsider.
 
+OK, fair enough. My worry is that we will have this lingering for way
+too long. People simply tend to copy code... Anyway, please add a
+comment warning that the wrapper shouldn't be used in any new code at
+least.
 
-
- Ich bin Herr Charles W Jackson, North Carolina, Vereinigte Staaten von
-Amerika, der Mega-Gewinner von 344 Millionen US-Dollar. Beim
-Mega-Millions-Jackpot spende ich an 5 zuf&auml;llige Personen. Wenn
-Sie diese E-Mail erhalten, wurde Ihre E-Mail zu einem Spinball, den ich
-am h&auml;ufigsten verteilt habe von meinem Verm&ouml;gen an
-eine Reihe von Wohlt&auml;tigkeitsorganisationen. Ich habe mich
- freiwillig entschlossen, Ihnen als einer der ausgew&auml;hlten 5
-einen Betrag von &euro; 2.000.000,00 zu spenden, um meine Gewinne zu
- &uuml;berpr&uuml;fen.
-
- Dies ist Ihr Spendencode: [CJ530342019]
-
-
-
- www.youtube.com/watch?v=BSr8myiLPMQ
-
-
-
-Antworten Sie auf diese E-Mail mit dem SPENDER-CODE:
-
-charlesjacksonjr001@gmail.com
-
- Ich hoffe, Sie und Ihre Familie gl&uuml;cklich zu machen
-
- Sch&ouml;ne Gr&uuml;&szlig;e
-
- Mr. Charles Jackson 
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
