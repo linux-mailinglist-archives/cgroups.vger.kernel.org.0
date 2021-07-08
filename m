@@ -2,102 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1213BF0E4
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jul 2021 22:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2B13BF553
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jul 2021 07:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231522AbhGGUnu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Jul 2021 16:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhGGUnu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Jul 2021 16:43:50 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CD4C061574
-        for <cgroups@vger.kernel.org>; Wed,  7 Jul 2021 13:41:08 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso2395948pjp.5
-        for <cgroups@vger.kernel.org>; Wed, 07 Jul 2021 13:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R4P0KNfgWIHNUMQeKArxNiZXWY4TL6SD38burZdGtmU=;
-        b=jxcBI4tRdXz8lueNWijVft6b8D9Bs/Ztrx6y/abhbFp/1koc4S09E5BLEuvjihUSlV
-         44gQzlL6BNXxn1NhWf9bM3ZwXXByfzIj6qfBavenyQQO3BW04/c/oW9WpaXTwr72wHDe
-         XExZc+OZQbvQ3SXVOqOqpyz+Og2mAaCFUCZxpVI6siymiro/itdnoB54RINqCWRif1rO
-         xVd0QlGQZIh7EwKTD2c0uw86WIX7r06KfxDLxql/OR1hpgtjsYfAtRpBiaNtAVSBC2EI
-         8wJ+ynVom4czdgqpPyT7yKvBv97YH5anfQkzZ6mhgQ7k5d0MZL66cw3TcC9AvwtB7JFZ
-         f0Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R4P0KNfgWIHNUMQeKArxNiZXWY4TL6SD38burZdGtmU=;
-        b=QWnfVgWbDjIKKnvET98i9pG91dLjHz9S0EvpAsjqQqaPpyBEDZnUgEQ2RXU3oCTT63
-         /w6ZlDIl1PtSDEGh5i/P6FBhHRGVHeSOKVQ+aT0/s+Z8Ry2GHibQzZl/n2KxbmvRUpM5
-         EE+5Ss8+36DtLWg5fYqz/WNP//v2jNPWB98lgYz0pS/YfQGCE/MHgyTxqiACdDt8mP7t
-         AFt/MATrXvlBHbq84TOx9SaGBKNH+qk073pp5K9l9IAa7TGn0VcDkg0t0rG/6jzMDIr6
-         Hwa/Qdy0J2vtGLu4R320NMfiI7HkoD7T+Dfpvkjm5cuiXu51y4M1C2Kq4wLtKxTHEwI6
-         FRQw==
-X-Gm-Message-State: AOAM531IZ/WTiYs0kZ8Ewz4tuWEzUCdgYY2DEl57r6UM/gGHhJaHaYdj
-        QNUP9qxUgJu2nrKyjV+gd50HWM7Czft2Mg==
-X-Google-Smtp-Source: ABdhPJxNV60mHk9QdfMdqDZ9XuKOsJOhvCk+yXfJMgYynl0hy+ru6RNPGsji0WHlpZpAAKl4l39XBw==
-X-Received: by 2002:a17:90a:1749:: with SMTP id 9mr4905468pjm.97.1625690468414;
-        Wed, 07 Jul 2021 13:41:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:e0c7])
-        by smtp.gmail.com with ESMTPSA id d25sm105765pgn.42.2021.07.07.13.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jul 2021 13:41:07 -0700 (PDT)
-Date:   Wed, 7 Jul 2021 16:41:05 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH v3 13/18] mm/memcg: Add folio_memcg_lock() and
- folio_memcg_unlock()
-Message-ID: <YOYRYXATm2gHoGGq@cmpxchg.org>
-References: <20210630040034.1155892-1-willy@infradead.org>
- <20210630040034.1155892-14-willy@infradead.org>
- <YOXfozcU8M/x2RQ4@cmpxchg.org>
- <YOYAZ5+xDFK0Slc8@casper.infradead.org>
+        id S229647AbhGHFzQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Thu, 8 Jul 2021 01:55:16 -0400
+Received: from mail8.turbodal.cl ([200.27.120.195]:42971 "EHLO
+        debian.turbodal.cl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229608AbhGHFzQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Jul 2021 01:55:16 -0400
+X-Greylist: delayed 600 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 01:55:15 EDT
+Received: from mail4.turbodal.cl (unknown [192.100.110.128])
+        by debian.turbodal.cl (Postfix) with ESMTPS id A9FCF165D7F;
+        Thu,  8 Jul 2021 01:38:13 -0400 (-04)
+Received: from mail4.turbodal.cl (localhost [127.0.0.1])
+        by mail4.turbodal.cl (Postfix) with ESMTPS id 6485B62E0565;
+        Thu,  8 Jul 2021 01:38:39 -0400 (-04)
+Received: from localhost (localhost [127.0.0.1])
+        by mail4.turbodal.cl (Postfix) with ESMTP id 4AD9A62E06F1;
+        Thu,  8 Jul 2021 01:38:39 -0400 (-04)
+Received: from mail4.turbodal.cl ([127.0.0.1])
+        by localhost (mail4.turbodal.cl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kwtL_G5tfUVT; Thu,  8 Jul 2021 01:38:39 -0400 (-04)
+Received: from cris-PC.wifi (unknown [105.9.19.190])
+        by mail4.turbodal.cl (Postfix) with ESMTPSA id 005BC62E048F;
+        Thu,  8 Jul 2021 01:38:30 -0400 (-04)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOYAZ5+xDFK0Slc8@casper.infradead.org>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsfonds_von_2=2C000=2C000_euro?=
+To:     Recipients <fae.eva@ptt.cl>
+From:   ''Charles jackson'' <fae.eva@ptt.cl>
+Date:   Thu, 08 Jul 2021 07:38:15 +0200
+Reply-To: charlesjacksonjr001@gmail.com
+Message-Id: <20210708053831.005BC62E048F@mail4.turbodal.cl>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 08:28:39PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 07, 2021 at 01:08:51PM -0400, Johannes Weiner wrote:
-> > On Wed, Jun 30, 2021 at 05:00:29AM +0100, Matthew Wilcox (Oracle) wrote:
-> > > -static void __unlock_page_memcg(struct mem_cgroup *memcg)
-> > > +static void __memcg_unlock(struct mem_cgroup *memcg)
-> > 
-> > This is too generic a name. There are several locks in the memcg, and
-> > this one only locks the page->memcg bindings in the group.
-> 
-> Fair.  __memcg_move_unlock looks like the right name to me?
+Lieber Freund,
 
-Could you please elaborate what the problem with the current name is?
 
-mem_cgroup_move_account() does this:
 
-	lock_page_memcg(page);
-	page->memcg = to;
-	__unlock_page_memcg(from);
+ Ich bin Herr Charles W Jackson, North Carolina, Vereinigte Staaten von
+Amerika, der Mega-Gewinner von 344 Millionen US-Dollar. Beim
+Mega-Millions-Jackpot spende ich an 5 zuf&auml;llige Personen. Wenn
+Sie diese E-Mail erhalten, wurde Ihre E-Mail zu einem Spinball, den ich
+am h&auml;ufigsten verteilt habe von meinem Verm&ouml;gen an
+eine Reihe von Wohlt&auml;tigkeitsorganisationen. Ich habe mich
+ freiwillig entschlossen, Ihnen als einer der ausgew&auml;hlten 5
+einen Betrag von &euro; 2.000.000,00 zu spenden, um meine Gewinne zu
+ &uuml;berpr&uuml;fen.
 
-It locks and unlocks the page->memcg binding which can be done coming
-from the page or the memcg. The current names are symmetrical to
-reflect that it's the same lock.
+ Dies ist Ihr Spendencode: [CJ530342019]
 
-We could switch them both to move_lock, but as per the other email,
-lock_page_memcg() was chosen to resemble lock_page(). Because from a
-memcg POV they're interchangeable - the former is just a more narrowly
-scoped version for contexts that don't hold the page lock. It used to
-be called something else and we had several contexts taking redundant
-locks on accident because this hierarchy wasn't clear.
 
-I don't mind fixing poorly chosen or misleading naming schemes, but I
-think we need better explanations to overcome the reasoning behind the
-existing names, not just the assumption that there weren't any.
+
+ www.youtube.com/watch?v=BSr8myiLPMQ
+
+
+
+Antworten Sie auf diese E-Mail mit dem SPENDER-CODE:
+
+charlesjacksonjr001@gmail.com
+
+ Ich hoffe, Sie und Ihre Familie gl&uuml;cklich zu machen
+
+ Sch&ouml;ne Gr&uuml;&szlig;e
+
+ Mr. Charles Jackson 
