@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7755E3C263A
-	for <lists+cgroups@lfdr.de>; Fri,  9 Jul 2021 16:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE233C2643
+	for <lists+cgroups@lfdr.de>; Fri,  9 Jul 2021 16:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhGIOvf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 9 Jul 2021 10:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
+        id S232075AbhGIOwc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 9 Jul 2021 10:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbhGIOvf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Jul 2021 10:51:35 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CC4C0613E5
-        for <cgroups@vger.kernel.org>; Fri,  9 Jul 2021 07:48:51 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d1so7756363qto.4
-        for <cgroups@vger.kernel.org>; Fri, 09 Jul 2021 07:48:51 -0700 (PDT)
+        with ESMTP id S232023AbhGIOwb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Jul 2021 10:52:31 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECC9C0613E5
+        for <cgroups@vger.kernel.org>; Fri,  9 Jul 2021 07:49:47 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 77so7762280qkk.11
+        for <cgroups@vger.kernel.org>; Fri, 09 Jul 2021 07:49:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Zc2BPQuzaGpps9hYR6A1SS6spRlObwvCzaY7uIl0fFs=;
-        b=JjjnbfYvxPo1NWSBJyvtgC3bk+XjiBXa9XnURKljN5acQnzH15vHkDQMcFUrMK1kKy
-         dllvEWiXreEpZ2IYRdzBgVDviwe/+oDhuJ+32k7xARC6sIYWxqYM47UBp/Jr2KMNe/im
-         Yv1AaH5yzrL2BdSCcFsOcnLsrzO9jBE5in/utMROdxyYfh83hIDL0edY5lWunZJz4qRL
-         jNzVXVUCxw6Wkf51faXzwe6+bYtOPb6hmCIqBp5dsq1c+zYiFrRDb72JlDhrA/BWwgSz
-         obYUN0vGYbcCmC9EWi6WCsqUSZdvbUh5wwq6Th1zP1Jr74QYDo0ogJBNdI143IfDTXXH
-         LUCw==
+        bh=sl7zNgfOy4Ks0Fk6pkfy9FhpGYHd/QTs7j+H3rSlVoM=;
+        b=QA6tQE9mCvmjOaTfcc2lhfJ7BmUP0CTjYUCkE42z/dXIUmI+XlkPMDOIo3wA9Ewd8i
+         TJcT0Rjq4p0GKVFYWW4j9Z1BcCOpXN4vxlhh0bU60qcdL/HIkNQKC8c3XQYi+hCe6xVR
+         7LkNosRmU6md/syD7lrW9ODys7pLAhmCYjFS3RlKMHmbyHNwnwns2S+NrAp/9socbAT1
+         UV55cIljPhKM/izeG48aY0Wy97a79OseJ1N8UaBbkZTZ1fslg1hFWwkdoblX5UjI3Lc6
+         uzOf7aOyTsRBNkJWX+cX40JVq0JY0KnTTyyXoH1lR6JySxF1VylzyMoTh1CsWjQnkLg+
+         1TJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Zc2BPQuzaGpps9hYR6A1SS6spRlObwvCzaY7uIl0fFs=;
-        b=UW4zLjWYiSTkxdnFQch4A2M3y9BbE2ZcqpVBEeXuAkb6Xc+9zMCzTP6RA0UYb0WJ4K
-         EIcws37Sju3J+uMcKQmt4tJGSyxomi4RSgSVxY+SpgR/VrLNFK36fcnNAEC2Q0YRSABH
-         GrpdWwKNAOEZ7bDuXlXM3MMZ37lOOlYQQchdBOsLaeUeBvr7zFijswEfOZBaVm61pSWx
-         wE5dlYm96lw8im+NvXQm2wUB0xhiDm7O1V2C5KwMU6nh/wzqkiTKv4TSgjg5l/HD2wHY
-         0RC4psy/UNJ/UlH0QdqvYlwtdQIonLEUV4tS3uAu+uJcfHon4D3FqKsf1Mvdu13mrdFj
-         DVlA==
-X-Gm-Message-State: AOAM533CpN90CL7lpLTavojtfzFPrhUn+YV/m8sid1apdDcJCZKO/sHW
-        bD0Ys1+AaW6VTro9NSUqdFNVHg==
-X-Google-Smtp-Source: ABdhPJymN1G1/IcEEKsYsC76uVcFFA+vVSUTNwGP91lvr0dxcWNiE3iRXktWTxmOtZ7K1vS9aeSNmQ==
-X-Received: by 2002:a05:622a:449:: with SMTP id o9mr34293601qtx.272.1625842130626;
-        Fri, 09 Jul 2021 07:48:50 -0700 (PDT)
+        bh=sl7zNgfOy4Ks0Fk6pkfy9FhpGYHd/QTs7j+H3rSlVoM=;
+        b=RZeSuLazzJ+1dE9vhX+5PKOAVyh0e2AsxF9UcPB3o5rXn3+fYCxaPddSaF5/8skzWH
+         /wW6SwzV9+Sfd7h+1fgnvMXN6OtZu0f7W+W62uk4KHlo9jKNP1pS8KPy53LkKFFiOEYR
+         rAtiOj9dzHPHjJh0sOUJuQlYKNdXpKOjhoBwmbxtRiAmmpVlONEECFQkZtQgfH5KaAzr
+         8Xi0wWGArmMFXVP2mVG7MUJC0d5ZRD2cWC14Zxfy2N+NCbiCxiQifFX9o7WPwMxT18o2
+         EKmOGKcrE5c12qVYnc3p0HqF9w1eUraHQHe/Awgvp/zkL7x0faxGkjZYu/371AgPiI1T
+         SJ5A==
+X-Gm-Message-State: AOAM532kuyJxm5ybF9beNuKk9XJFeTn0KrIemb8FHIaQDUKFvfoLHJS9
+        ZQRf8E3g7+YaLcEgZrmxLlTDzA==
+X-Google-Smtp-Source: ABdhPJxVjlU9+Tbsjk5O64L0DrdYKOqi50sg11zdiPNqvEJpCOIPUhs2uVvO7S1pUh3kMex5WXyFrw==
+X-Received: by 2002:ae9:f44c:: with SMTP id z12mr15623147qkl.265.1625842186810;
+        Fri, 09 Jul 2021 07:49:46 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:8649])
-        by smtp.gmail.com with ESMTPSA id l5sm2573791qkb.62.2021.07.09.07.48.49
+        by smtp.gmail.com with ESMTPSA id x9sm2329117qtf.76.2021.07.09.07.49.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jul 2021 07:48:49 -0700 (PDT)
-Date:   Fri, 9 Jul 2021 10:48:48 -0400
+        Fri, 09 Jul 2021 07:49:46 -0700 (PDT)
+Date:   Fri, 9 Jul 2021 10:49:45 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Suren Baghdasaryan <surenb@google.com>
 Cc:     tj@kernel.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
@@ -59,90 +59,31 @@ Cc:     tj@kernel.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         minchan@kernel.org, linmiaohe@huawei.com,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, kernel-team@android.com
-Subject: Re: [PATCH 2/3] mm, memcg: inline mem_cgroup_{charge/uncharge} to
- improve disabled memcg config
-Message-ID: <YOhh0IabpRk/W/qR@cmpxchg.org>
+Subject: Re: [PATCH 3/3] mm, memcg: inline swap-related functions to improve
+ disabled memcg config
+Message-ID: <YOhiCbrBjWnJaJMt@cmpxchg.org>
 References: <20210709000509.2618345-1-surenb@google.com>
- <20210709000509.2618345-3-surenb@google.com>
+ <20210709000509.2618345-4-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709000509.2618345-3-surenb@google.com>
+In-Reply-To: <20210709000509.2618345-4-surenb@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 05:05:08PM -0700, Suren Baghdasaryan wrote:
-> Inline mem_cgroup_{charge/uncharge} and mem_cgroup_uncharge_list functions
-> functions to perform mem_cgroup_disabled static key check inline before
-> calling the main body of the function. This minimizes the memcg overhead
-> in the pagefault and exit_mmap paths when memcgs are disabled using
-> cgroup_disable=memory command-line option.
-> This change results in ~0.4% overhead reduction when running PFT test
+On Thu, Jul 08, 2021 at 05:05:09PM -0700, Suren Baghdasaryan wrote:
+> Inline mem_cgroup_try_charge_swap, mem_cgroup_uncharge_swap and
+> cgroup_throttle_swaprate functions to perform mem_cgroup_disabled static
+> key check inline before calling the main body of the function. This
+> minimizes the memcg overhead in the pagefault and exit_mmap paths when
+> memcgs are disabled using cgroup_disable=memory command-line option.
+> This change results in ~1% overhead reduction when running PFT test
 > comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
-> configurationon on an 8-core ARM64 Android device.
+> configuration on an 8-core ARM64 Android device.
 > 
 > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Sounds reasonable to me as well. One comment:
+Looks reasonable to me as well.
 
-> @@ -693,13 +693,59 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
->  		page_counter_read(&memcg->memory);
->  }
->  
-> -int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-> +struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
-> +
-> +int __mem_cgroup_charge(struct page *page, struct mem_cgroup *memcg,
-> +			gfp_t gfp);
-> +/**
-> + * mem_cgroup_charge - charge a newly allocated page to a cgroup
-> + * @page: page to charge
-> + * @mm: mm context of the victim
-> + * @gfp_mask: reclaim mode
-> + *
-> + * Try to charge @page to the memcg that @mm belongs to, reclaiming
-> + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
-> + * charge to the active memcg.
-> + *
-> + * Do not use this for pages allocated for swapin.
-> + *
-> + * Returns 0 on success. Otherwise, an error code is returned.
-> + */
-> +static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> +				    gfp_t gfp_mask)
-> +{
-> +	struct mem_cgroup *memcg;
-> +	int ret;
-> +
-> +	if (mem_cgroup_disabled())
-> +		return 0;
-> +
-> +	memcg = get_mem_cgroup_from_mm(mm);
-> +	ret = __mem_cgroup_charge(page, memcg, gfp_mask);
-> +	css_put(&memcg->css);
-> +
-> +	return ret;
-
-Why not do
-
-int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-			gfp_t gfp_mask);
-
-static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-				    gfp_t gfp_mask)
-{
-	if (mem_cgroup_disabled())
-		return 0;
-
-	return __mem_cgroup_charge(page, memcg, gfp_mask);
-}
-
-like in the other cases as well?
-
-That would avoid inlining two separate function calls into all the
-callsites...
-
-There is an (internal) __mem_cgroup_charge() already, but you can
-rename it charge_memcg().
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
