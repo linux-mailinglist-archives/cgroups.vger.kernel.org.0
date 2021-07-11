@@ -2,97 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C473C3450
-	for <lists+cgroups@lfdr.de>; Sat, 10 Jul 2021 13:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5BC3C3D98
+	for <lists+cgroups@lfdr.de>; Sun, 11 Jul 2021 17:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhGJLWX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 10 Jul 2021 07:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbhGJLWX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 10 Jul 2021 07:22:23 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FB6C0613DD
-        for <cgroups@vger.kernel.org>; Sat, 10 Jul 2021 04:19:38 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id q10so11245562pfj.12
-        for <cgroups@vger.kernel.org>; Sat, 10 Jul 2021 04:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Fxzax5cpRXuDAgNVxBd/5Ht8jrK3NBiBX9Z3Z3en2A=;
-        b=Nd2YCVkKoDLy3hEtStCKbIcb6+F7OwCpW5WNUXe41pujO9UWnItUfazYVV0AUIWnx0
-         V5Qqf8UukAsVyB2gF/oVZghm6cWIM7/NTpp6BdhzmerA1z1YSmFRUoACKPA01k6wkc8K
-         ZzDsu5CNXZIfn5YNrREUIcuet1/Eh3NMpstMmVR/vb5ckoeb0n91CRhjIZRUNl82jK8o
-         z8fXtNc4rn/I2DI5plmBilqgX7EOxK5exQQw/Qyw7jNkKHwRVwm/AzTC54Gq1FHjYihW
-         QJ7SE5HzfbbFCdjB44ohBfXhQAyPRakHcorVvbATqCZvWebbY3zOPwgqS8GJQHOzePx7
-         7YPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Fxzax5cpRXuDAgNVxBd/5Ht8jrK3NBiBX9Z3Z3en2A=;
-        b=Q3pwyIAS7o3luI3Wv7jib3pgNPPygTXcPfRcCFHIwcEAguXEGVDYL3tlgycvkLe5gj
-         C2C2A+C3GRRO9CFWGxZIkiEDKVRy0vk2xRYBkMoL9ZFZ2fkPoU26EwXHeIEIbyIz/Zm+
-         FUhWclhbIHdM3lLCnD6+6ggk3vhwT85pcLJEtHHAUKrCAMGjAzXXsQ+pHDFsETB1kU3y
-         SELdlNwj5UC7Ju9o1vDXOWH9KFGjKRdecPr9yyINhM7vD17SvW+nQ6eTwEHZ2yIPf2Bd
-         +OcssDJsGtD7sVOQ8JdvXw4NOsJJmvtSShsnUSAjhE+S3NqjZK/5noKy9KmOBcgWgUmN
-         mASw==
-X-Gm-Message-State: AOAM531U0YydhAbOePVDM1Y+uneJd8/grWAJoFuGyVMtuVfRO+n5xi2z
-        ZtDh3N+K/jRC395pV8oGh/KpGE8bCNKVIlCZIMdCjg==
-X-Google-Smtp-Source: ABdhPJxBKM/bMTrpxWLVfJMl8Ma7Ym0dkHhsHvo5jn8cO7rhfOTIBhgL4kuypJe0wyhc8mEHOfV5RaTljowAneyuwHI=
-X-Received: by 2002:a05:6a00:23c7:b029:323:3d55:68c0 with SMTP id
- g7-20020a056a0023c7b02903233d5568c0mr26127249pfc.2.1625915977569; Sat, 10 Jul
- 2021 04:19:37 -0700 (PDT)
+        id S235359AbhGKPXl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Sun, 11 Jul 2021 11:23:41 -0400
+Received: from mail.07d05.mspz7.gob.ec ([186.46.59.139]:57584 "EHLO
+        mail.07d05.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235370AbhGKPXl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 11 Jul 2021 11:23:41 -0400
+X-Greylist: delayed 3132 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Jul 2021 11:23:40 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTP id CAEC21846029;
+        Sun, 11 Jul 2021 09:05:50 -0500 (-05)
+Received: from mail.07d05.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.07d05.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id dya1f8UleCjZ; Sun, 11 Jul 2021 09:05:50 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTP id 9608B1845FDE;
+        Sun, 11 Jul 2021 09:05:50 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 07d05.mspz7.gob.ec
+Received: from mail.07d05.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.07d05.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id at05gJQcV33g; Sun, 11 Jul 2021 09:05:50 -0500 (-05)
+Received: from cris-PC.wifi (unknown [105.9.79.139])
+        by mail.07d05.mspz7.gob.ec (Postfix) with ESMTPSA id C64861846389;
+        Sun, 11 Jul 2021 09:05:42 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20210710003626.3549282-1-surenb@google.com> <20210710003626.3549282-3-surenb@google.com>
-In-Reply-To: <20210710003626.3549282-3-surenb@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 10 Jul 2021 19:19:01 +0800
-Message-ID: <CAMZfGtWCHm4is0Z16tc1WQN+jwJc6PNqyasNxVMRp_dQsFjrkg@mail.gmail.com>
-Subject: Re: [External] [PATCH v3 3/3] mm, memcg: inline swap-related
- functions to improve disabled memcg config
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, apopple@nvidia.com,
-        Minchan Kim <minchan@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: spende von 2,000,000 euro
+To:     Recipients <maria.coronel@07d05.mspz7.gob.ec>
+From:   ''Tayeb souami'' <maria.coronel@07d05.mspz7.gob.ec>
+Date:   Sun, 11 Jul 2021 16:05:33 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20210711140542.C64861846389@mail.07d05.mspz7.gob.ec>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jul 10, 2021 at 8:36 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> Inline mem_cgroup_try_charge_swap, mem_cgroup_uncharge_swap and
-> cgroup_throttle_swaprate functions to perform mem_cgroup_disabled static
-> key check inline before calling the main body of the function. This
-> minimizes the memcg overhead in the pagefault and exit_mmap paths when
-> memcgs are disabled using cgroup_disable=memory command-line option.
-> This change results in ~1% overhead reduction when running PFT test
-> comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
-> configuration on an 8-core ARM64 Android device.
->
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hallo mein lieber Freund
+Mein Name ist Tayeb Souami aus New Jersey in Amerika und ich habe den America Lottery Jackpot von 315 Millionen Euro gewonnen. Ich habe mich entschlossen, die Summe von 2.000.000 Euro an fünf glückliche Personen zu spenden, und Sie wurden als einer der Begünstigten ausgewählt. Bitte klicken Sie auf diesen Link, um mehr über meinen Gewinn zu erfahren.
 
-LGTM.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-Thanks.
+Bitte kontaktieren Sie mich über diese E-Mail:Tayebsouam.spende@gmail.com
+
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
