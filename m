@@ -2,38 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A713C6452
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jul 2021 21:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7C33C6458
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jul 2021 21:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhGLT6Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Jul 2021 15:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S230254AbhGLT7E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Jul 2021 15:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhGLT6Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Jul 2021 15:58:24 -0400
+        with ESMTP id S236692AbhGLT7B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Jul 2021 15:59:01 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF025C0613DD;
-        Mon, 12 Jul 2021 12:55:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36488C0613E5;
+        Mon, 12 Jul 2021 12:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=f1kL7tHacjw0givde1BnRTMMDsXMhuTsAIVPryc8kEo=; b=pjYyx6pu3IpmiWUquHFGq16EFi
-        9b+1l+r37KyZTGzMSRWflQri2kbwe9qCNvFP/ahf6UtDJdRyqEA9R9KbC74YFJyfTXQ0E7ychh8pA
-        UKSPemfRwmIrxSPK0i8+AvGvSxqVGVcHPaBSiv9b3zmybU9q2kWE02U86ALvyLi/CgoGZ9jPPzIs4
-        YSfNb1HHXjxfcPJIfpEjY1ZkjBJpJM35JwZzv94lRWKWSNLBtE0/vjb3XEGETabM4KjDCbAWLyhyh
-        Ch29Kl1ZLtUKvqBpplg4YvzzWi15pNledygu6co0H0uGcxByjltq9hkeA8O38bqGtZZkxP9E93xBu
-        9Sh23Ecg==;
+        bh=2vhZlOdcq3zLt9VVVyRnzOfxOMomDSCQmvA/+EiX9RM=; b=pu4bHcfKYW/p+k6tiF66YjhDlv
+        A8qYhBxb35CW8IfbOXkRD637p2/zyosc9e7iR/ddFxYLG3Ng0h9ZGrlMRmuJzPz8BlESXoZNkyiXA
+        DTVzKuv3jSCYPt/uV2cfIV/E/ytVJawbYELn3grtMSUlsiapP+rStYWWOhv3vDCcg74ZTLNSuEJxD
+        puiSDKUuhrcFFNa2tnaaNnAirptVxn0uhfWIUupKJb9EUIlfqWCVkmQ01FuBsrhz9nrVYaamLPCBT
+        R8pDqHM3H5wDFsy7zMbQszA6TKLkvfgJkZcSPksh3s1mD+iJNmWikLYUkSapAClHgqxqyRv5Zh445
+        6S9Ww6Bw==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m320Z-000OZJ-7q; Mon, 12 Jul 2021 19:54:34 +0000
+        id 1m3213-000ObY-N3; Mon, 12 Jul 2021 19:55:13 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     akpm@linux-foundation.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH v13 17/18] mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
-Date:   Mon, 12 Jul 2021 20:45:50 +0100
-Message-Id: <20210712194551.91920-18-willy@infradead.org>
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v13 18/18] mm/workingset: Convert workingset_activation to take a folio
+Date:   Mon, 12 Jul 2021 20:45:51 +0100
+Message-Id: <20210712194551.91920-19-willy@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210712194551.91920-1-willy@infradead.org>
 References: <20210712194551.91920-1-willy@infradead.org>
@@ -43,170 +44,121 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-These are the folio equivalents of relock_page_lruvec_irq() and
-folio_lruvec_relock_irqsave().  Also convert page_matches_lruvec()
-to folio_matches_lruvec().
+This function already assumed it was being passed a head page.  No real
+change here, except that thp_nr_pages() compiles away on kernels with
+THP compiled out while folio_nr_pages() is always present.  Also convert
+page_memcg_rcu() to folio_memcg_rcu().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/memcontrol.h | 17 ++++++++---------
- mm/mlock.c                 |  3 ++-
- mm/swap.c                  | 11 +++++++----
- mm/vmscan.c                |  5 +++--
- 4 files changed, 20 insertions(+), 16 deletions(-)
+ include/linux/memcontrol.h | 18 +++++++++---------
+ include/linux/swap.h       |  2 +-
+ mm/swap.c                  |  2 +-
+ mm/workingset.c            | 11 ++++-------
+ 4 files changed, 15 insertions(+), 18 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 57b1bf457f51..469e5473bdfb 100644
+index 469e5473bdfb..42fec3af745d 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -1529,19 +1529,19 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
+@@ -461,19 +461,19 @@ static inline struct mem_cgroup *page_memcg(struct page *page)
  }
  
- /* Test requires a stable page->memcg binding, see page_memcg() */
--static inline bool page_matches_lruvec(struct page *page, struct lruvec *lruvec)
-+static inline bool folio_matches_lruvec(struct folio *folio,
-+		struct lruvec *lruvec)
+ /*
+- * page_memcg_rcu - locklessly get the memory cgroup associated with a page
+- * @page: a pointer to the page struct
++ * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
++ * @folio: Pointer to the folio.
+  *
+- * Returns a pointer to the memory cgroup associated with the page,
+- * or NULL. This function assumes that the page is known to have a
++ * Returns a pointer to the memory cgroup associated with the folio,
++ * or NULL. This function assumes that the folio is known to have a
+  * proper memory cgroup pointer. It's not safe to call this function
+- * against some type of pages, e.g. slab pages or ex-slab pages.
++ * against some type of folios, e.g. slab folios or ex-slab folios.
+  */
+-static inline struct mem_cgroup *page_memcg_rcu(struct page *page)
++static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
  {
--	return lruvec_pgdat(lruvec) == page_pgdat(page) &&
--	       lruvec_memcg(lruvec) == page_memcg(page);
-+	return lruvec_pgdat(lruvec) == folio_pgdat(folio) &&
-+	       lruvec_memcg(lruvec) == folio_memcg(folio);
+-	unsigned long memcg_data = READ_ONCE(page->memcg_data);
++	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
+ 
+-	VM_BUG_ON_PAGE(PageSlab(page), page);
++	VM_BUG_ON_FOLIO(folio_slab(folio), folio);
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 
+ 	if (memcg_data & MEMCG_DATA_KMEM) {
+@@ -1129,7 +1129,7 @@ static inline struct mem_cgroup *page_memcg(struct page *page)
+ 	return NULL;
  }
  
- /* Don't lock again iff page's lruvec locked */
--static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
-+static inline struct lruvec *folio_lruvec_relock_irq(struct folio *folio,
- 		struct lruvec *locked_lruvec)
+-static inline struct mem_cgroup *page_memcg_rcu(struct page *page)
++static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
  {
--	struct folio *folio = page_folio(page);
- 	if (locked_lruvec) {
--		if (page_matches_lruvec(page, locked_lruvec))
-+		if (folio_matches_lruvec(folio, locked_lruvec))
- 			return locked_lruvec;
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	return NULL;
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 8394716a002b..989d8f78c256 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -330,7 +330,7 @@ static inline swp_entry_t folio_swap_entry(struct folio *folio)
+ void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages);
+ void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg);
+ void workingset_refault(struct page *page, void *shadow);
+-void workingset_activation(struct page *page);
++void workingset_activation(struct folio *folio);
  
- 		unlock_page_lruvec_irq(locked_lruvec);
-@@ -1551,12 +1551,11 @@ static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
- }
- 
- /* Don't lock again iff page's lruvec locked */
--static inline struct lruvec *relock_page_lruvec_irqsave(struct page *page,
-+static inline struct lruvec *folio_lruvec_relock_irqsave(struct folio *folio,
- 		struct lruvec *locked_lruvec, unsigned long *flags)
- {
--	struct folio *folio = page_folio(page);
- 	if (locked_lruvec) {
--		if (page_matches_lruvec(page, locked_lruvec))
-+		if (folio_matches_lruvec(folio, locked_lruvec))
- 			return locked_lruvec;
- 
- 		unlock_page_lruvec_irqrestore(locked_lruvec, *flags);
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 16d2ee160d43..e263d62ae2d0 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -271,6 +271,7 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
- 	/* Phase 1: page isolation */
- 	for (i = 0; i < nr; i++) {
- 		struct page *page = pvec->pages[i];
-+		struct folio *folio = page_folio(page);
- 
- 		if (TestClearPageMlocked(page)) {
- 			/*
-@@ -278,7 +279,7 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
- 			 * so we can spare the get_page() here.
- 			 */
- 			if (TestClearPageLRU(page)) {
--				lruvec = relock_page_lruvec_irq(page, lruvec);
-+				lruvec = folio_lruvec_relock_irq(folio, lruvec);
- 				del_page_from_lru_list(page, lruvec);
- 				continue;
- 			} else
+ /* Only track the nodes of mappings with shadow entries */
+ void workingset_update_node(struct xa_node *node);
 diff --git a/mm/swap.c b/mm/swap.c
-index a82812caf409..42222653e6ef 100644
+index 42222653e6ef..5c681c01e3fa 100644
 --- a/mm/swap.c
 +++ b/mm/swap.c
-@@ -211,12 +211,13 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 
- 	for (i = 0; i < pagevec_count(pvec); i++) {
- 		struct page *page = pvec->pages[i];
-+		struct folio *folio = page_folio(page);
- 
- 		/* block memcg migration during page moving between lru */
- 		if (!TestClearPageLRU(page))
- 			continue;
- 
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-+		lruvec = folio_lruvec_relock_irqsave(folio, lruvec, &flags);
- 		(*move_fn)(page, lruvec);
- 
- 		SetPageLRU(page);
-@@ -907,6 +908,7 @@ void release_pages(struct page **pages, int nr)
- 
- 	for (i = 0; i < nr; i++) {
- 		struct page *page = pages[i];
-+		struct folio *folio = page_folio(page);
- 
- 		/*
- 		 * Make sure the IRQ-safe lock-holding time does not get
-@@ -918,7 +920,7 @@ void release_pages(struct page **pages, int nr)
- 			lruvec = NULL;
- 		}
- 
--		page = compound_head(page);
-+		page = &folio->page;
- 		if (is_huge_zero_page(page))
- 			continue;
- 
-@@ -957,7 +959,7 @@ void release_pages(struct page **pages, int nr)
- 		if (PageLRU(page)) {
- 			struct lruvec *prev_lruvec = lruvec;
- 
--			lruvec = relock_page_lruvec_irqsave(page, lruvec,
-+			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
- 									&flags);
- 			if (prev_lruvec != lruvec)
- 				lock_batch = 0;
-@@ -1061,8 +1063,9 @@ void __pagevec_lru_add(struct pagevec *pvec)
- 
- 	for (i = 0; i < pagevec_count(pvec); i++) {
- 		struct page *page = pvec->pages[i];
-+		struct folio *folio = page_folio(page);
- 
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-+		lruvec = folio_lruvec_relock_irqsave(folio, lruvec, &flags);
- 		__pagevec_lru_add_fn(page, lruvec);
+@@ -451,7 +451,7 @@ void mark_page_accessed(struct page *page)
+ 		else
+ 			__lru_cache_activate_page(page);
+ 		ClearPageReferenced(page);
+-		workingset_activation(page);
++		workingset_activation(page_folio(page));
  	}
- 	if (lruvec)
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 0d48306d37dc..7a2f25b904d9 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2075,7 +2075,7 @@ static unsigned int move_pages_to_lru(struct lruvec *lruvec,
- 		 * All pages were isolated from the same lruvec (and isolation
- 		 * inhibits memcg migration).
- 		 */
--		VM_BUG_ON_PAGE(!page_matches_lruvec(page, lruvec), page);
-+		VM_BUG_ON_PAGE(!folio_matches_lruvec(page_folio(page), lruvec), page);
- 		add_page_to_lru_list(page, lruvec);
- 		nr_pages = thp_nr_pages(page);
- 		nr_moved += nr_pages;
-@@ -4514,6 +4514,7 @@ void check_move_unevictable_pages(struct pagevec *pvec)
+ 	if (page_is_idle(page))
+ 		clear_page_idle(page);
+diff --git a/mm/workingset.c b/mm/workingset.c
+index e62c0f2084a2..39bb60d50217 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -392,13 +392,11 @@ void workingset_refault(struct page *page, void *shadow)
  
- 	for (i = 0; i < pvec->nr; i++) {
- 		struct page *page = pvec->pages[i];
-+		struct folio *folio = page_folio(page);
- 		int nr_pages;
+ /**
+  * workingset_activation - note a page activation
+- * @page: page that is being activated
++ * @folio: Folio that is being activated.
+  */
+-void workingset_activation(struct page *page)
++void workingset_activation(struct folio *folio)
+ {
+-	struct folio *folio = page_folio(page);
+ 	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
  
- 		if (PageTransTail(page))
-@@ -4526,7 +4527,7 @@ void check_move_unevictable_pages(struct pagevec *pvec)
- 		if (!TestClearPageLRU(page))
- 			continue;
- 
--		lruvec = relock_page_lruvec_irq(page, lruvec);
-+		lruvec = folio_lruvec_relock_irq(folio, lruvec);
- 		if (page_evictable(page) && PageUnevictable(page)) {
- 			del_page_from_lru_list(page, lruvec);
- 			ClearPageUnevictable(page);
+ 	rcu_read_lock();
+ 	/*
+@@ -408,11 +406,10 @@ void workingset_activation(struct page *page)
+ 	 * XXX: See workingset_refault() - this should return
+ 	 * root_mem_cgroup even for !CONFIG_MEMCG.
+ 	 */
+-	memcg = page_memcg_rcu(page);
++	memcg = folio_memcg_rcu(folio);
+ 	if (!mem_cgroup_disabled() && !memcg)
+ 		goto out;
+-	lruvec = folio_lruvec(folio);
+-	workingset_age_nonresident(lruvec, thp_nr_pages(page));
++	workingset_age_nonresident(folio_lruvec(folio), folio_nr_pages(folio));
+ out:
+ 	rcu_read_unlock();
+ }
 -- 
 2.30.2
 
