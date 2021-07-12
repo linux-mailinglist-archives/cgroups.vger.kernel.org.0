@@ -2,233 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142F33C5FEB
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jul 2021 17:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1056E3C6205
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jul 2021 19:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhGLQAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Jul 2021 12:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
+        id S233824AbhGLRhJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Jul 2021 13:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhGLQAb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Jul 2021 12:00:31 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ABCC0613EE
-        for <cgroups@vger.kernel.org>; Mon, 12 Jul 2021 08:57:43 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id g5so29713289ybu.10
-        for <cgroups@vger.kernel.org>; Mon, 12 Jul 2021 08:57:43 -0700 (PDT)
+        with ESMTP id S230033AbhGLRhJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Jul 2021 13:37:09 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74124C0613DD;
+        Mon, 12 Jul 2021 10:34:20 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d12so17098350pfj.2;
+        Mon, 12 Jul 2021 10:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N9Vsyf7u0V+Ft7+096/kMzSi5iobK3XqcnGMJrpg+tE=;
-        b=hhSy8Vnz1wd1BsEaHB/mm4pUGxueHg3H9aiR6qpV6lk+8ysJ6SCoL1MmYSCqJpIqwh
-         0tplbTJre0RBWmYNVtwpwimDV7DAezCaVKE1azllWzTzWLM4PePeeTHUK121IsBn6HGc
-         GiMAc5r+QlaMlUo4+8m8cUYOjWvevJmJ1WljFQPI9rjP2VyKtvNAM9tPRTTsIgoLQ97l
-         N32TyopBfSih3yP0Dci9auCmEQLajZkCwYnEXtq1IKrcaBK5GpjeqTP0XUoLZcN7eLIo
-         fcOqysFdLZ4cMmkqV5fQ1x0SqtryUzk8ylJbhukP0eXS5gmwKr1EVpusI5lE+Ylh17Dx
-         7yCg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dq1jvDdXTK3hPVpaflQY/7pmeNVzVpqqMkyrGDnxofw=;
+        b=Xutdy37M5pl0qFk6+hXl+vOgxLdLFCTRAj4GAgtIQr9f/JGHN1SUCqafTq7GC3fJJZ
+         jNofrMKljnNlSUTeihaCuJOyvZadgSHtTjrQlPpQj28Ng/YPym5cAin3UkVdsXOPZ0m6
+         /9Cf5i/HQ8ODSJBuF1Ka+o+HPyHbzyWqdCjoqAk1jRm/aI0RxO9Ea6maU4L/3GNi69R+
+         6c5KyhsMJmudDz+IMyngx2FlVmPHXdE0pEZS0XWe+Wv7FmSAylo+HjUihYJKdttMwid9
+         +g8AobcYGNmnq+2LgfD0oTUJo9sAjV2zBGcCXQvo6XDNkjFT+Qa5ZPIRyr2wfyp9/rh+
+         9uyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N9Vsyf7u0V+Ft7+096/kMzSi5iobK3XqcnGMJrpg+tE=;
-        b=KeeuEz02xiEC4wT1LHu0/xtRgy1tyZCZN9Rn6/NdScfRlfiyxKB9Z0dsLsT7q18lSc
-         OmD07DQQmURQBsjHhVMvCGPA8tURA9HVPoXfUKbZLQfbryIdregq82w1cNamG8rxCD9Z
-         /IOvfPaUwer42iRg6lojpxRfpXofauHxd+G11/v3LnAdlTnxCbYjTuVdF/EpYSjWLjC3
-         amYdwPDbA5FGgtcR7JNJMW9C3UZ8/pDQeGGi4qdGbw0ipslFUXBngz4rv9Jdq5OjFww+
-         NTkFGlGwNK6ShBUjVrOFvscfzNCrV58B3Z/sxe9nZ6UholLmjt+QcdXgTPEeQguYJwUQ
-         vOiQ==
-X-Gm-Message-State: AOAM532KN0QXU+MYMeT9Ps/i6cDyFtYA47ts/FZOEAXMhaAksjDVbxb3
-        lkHOL8SWruGcjoRisEADKVqWCddtyiP3VL2T3oFNqA==
-X-Google-Smtp-Source: ABdhPJxnPb3hMIEwwz5tXpcaGMusf44U+ZBIftbm795emnO5AN+nrSWWqPh/RwkOCFqgAmSZB1kaEa6h/m0jHrIrRyM=
-X-Received: by 2002:a25:ba08:: with SMTP id t8mr66449426ybg.111.1626105462122;
- Mon, 12 Jul 2021 08:57:42 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=dq1jvDdXTK3hPVpaflQY/7pmeNVzVpqqMkyrGDnxofw=;
+        b=b7dz4+hmediBNPOd1OllbWOvWTYj3CsBSXN2iYGMQOYSye+QqlwKw6N3HieWcSonRG
+         KxaQ15nQGYa1qo2VGHAUXtogidp9Rqmyz6v2t8fM8uHL8Z7P2K34sg9jmnLVLYYSgg82
+         ZN5YaxYUxSgK67SmaOX8bUyyFKQJIe6b5irtHor5BIoC8Ombw/BWR5QWw/yyFTUmPrBb
+         P/3+VRLPxlV4HAsfQQN0fZMdaCbXuquBgl4//2rbIhrczn5E4lOP9nUjvwbaxtkEQ7RR
+         CClXmBnFHEYhfGxuCSh6M7DTN8pOPYPriUvVld63F5FnhjOl2swPqG1Qj4lVjOwlzfNa
+         phIw==
+X-Gm-Message-State: AOAM530JdUfhRSDmbIwjjKOLLEXSNL8u1s7JIWfAXR30Fpiojo8Tj2gO
+        dedaTAMHhnB6FSJ2JqAw9eA=
+X-Google-Smtp-Source: ABdhPJwGuhmZbl66NISYxIJVtk4a88Di26Sndf15pXESQwz+E7Vj2LYtt4yqabiGahmyMWv5adrZeQ==
+X-Received: by 2002:a62:e80f:0:b029:320:ae39:24fc with SMTP id c15-20020a62e80f0000b0290320ae3924fcmr187965pfi.18.1626111259841;
+        Mon, 12 Jul 2021 10:34:19 -0700 (PDT)
+Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
+        by smtp.gmail.com with ESMTPSA id 5sm18866487pgv.25.2021.07.12.10.34.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jul 2021 10:34:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 12 Jul 2021 07:34:18 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
+        Richard Purdie <richard.purdie@linuxfoundation.org>
+Subject: Re: [PATCH] cgroup1: fix leaked context root causing sporadic NULL
+ deref in LTP
+Message-ID: <YOx9GkxAGwAb3Yyr@slm.duckdns.org>
+References: <20210616125157.438837-1-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-References: <20210710003626.3549282-1-surenb@google.com> <20210710003626.3549282-3-surenb@google.com>
- <YOvsijKufJzjHuvd@dhcp22.suse.cz>
-In-Reply-To: <YOvsijKufJzjHuvd@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 12 Jul 2021 08:57:31 -0700
-Message-ID: <CAJuCfpHO7ZGfCcbTWGvmJtSEHzxDJLHFYShm=rVxXJju_LOa7w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] mm, memcg: inline swap-related functions to
- improve disabled memcg config
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        vdavydov.dev@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, songmuchun@bytedance.com,
-        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
-        richard.weiyang@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, apopple@nvidia.com,
-        Minchan Kim <minchan@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210616125157.438837-1-paul.gortmaker@windriver.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:17 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 09-07-21 17:36:26, Suren Baghdasaryan wrote:
-> > Inline mem_cgroup_try_charge_swap, mem_cgroup_uncharge_swap and
-> > cgroup_throttle_swaprate functions to perform mem_cgroup_disabled static
-> > key check inline before calling the main body of the function. This
-> > minimizes the memcg overhead in the pagefault and exit_mmap paths when
-> > memcgs are disabled using cgroup_disable=memory command-line option.
-> > This change results in ~1% overhead reduction when running PFT test
-> > comparing {CONFIG_MEMCG=n} against {CONFIG_MEMCG=y, cgroup_disable=memory}
-> > configuration on an 8-core ARM64 Android device.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->
-> I find it a bit surprising to see such a big difference over a function
-> call in a slow path like swap in/out.
+On Wed, Jun 16, 2021 at 08:51:57AM -0400, Paul Gortmaker wrote:
+> Richard reported sporadic (roughly one in 10 or so) null dereferences and
+> other strange behaviour for a set of automated LTP tests.  Things like:
+> 
+>    BUG: kernel NULL pointer dereference, address: 0000000000000008
+>    #PF: supervisor read access in kernel mode
+>    #PF: error_code(0x0000) - not-present page
+>    PGD 0 P4D 0
+>    Oops: 0000 [#1] PREEMPT SMP PTI
+>    CPU: 0 PID: 1516 Comm: umount Not tainted 5.10.0-yocto-standard #1
+>    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+>    RIP: 0010:kernfs_sop_show_path+0x1b/0x60
+> 
+> ...or these others:
+> 
+>    RIP: 0010:do_mkdirat+0x6a/0xf0
+>    RIP: 0010:d_alloc_parallel+0x98/0x510
+>    RIP: 0010:do_readlinkat+0x86/0x120
+> 
+> There were other less common instances of some kind of a general scribble
+> but the common theme was mount and cgroup and a dubious dentry triggering
+> the NULL dereference.  I was only able to reproduce it under qemu by
+> replicating Richard's setup as closely as possible - I never did get it
+> to happen on bare metal, even while keeping everything else the same.
+> 
+> In commit 71d883c37e8d ("cgroup_do_mount(): massage calling conventions")
+> we see this as a part of the overall change:
+> 
+>    --------------
+>            struct cgroup_subsys *ss;
+>    -       struct dentry *dentry;
+> 
+>    [...]
+> 
+>    -       dentry = cgroup_do_mount(&cgroup_fs_type, fc->sb_flags, root,
+>    -                                CGROUP_SUPER_MAGIC, ns);
+> 
+>    [...]
+> 
+>    -       if (percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
+>    -               struct super_block *sb = dentry->d_sb;
+>    -               dput(dentry);
+>    +       ret = cgroup_do_mount(fc, CGROUP_SUPER_MAGIC, ns);
+>    +       if (!ret && percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
+>    +               struct super_block *sb = fc->root->d_sb;
+>    +               dput(fc->root);
+>                    deactivate_locked_super(sb);
+>                    msleep(10);
+>                    return restart_syscall();
+>            }
+>    --------------
+> 
+> In changing from the local "*dentry" variable to using fc->root, we now
+> export/leave that dentry pointer in the file context after doing the dput()
+> in the unlikely "is_dying" case.   With LTP doing a crazy amount of back to
+> back mount/unmount [testcases/bin/cgroup_regression_5_1.sh] the unlikely
+> becomes slightly likely and then bad things happen.
+> 
+> A fix would be to not leave the stale reference in fc->root as follows:
+> 
+>    --------------
+>                   dput(fc->root);
+>   +               fc->root = NULL;
+>                   deactivate_locked_super(sb);
+>    --------------
+> 
+> ...but then we are just open-coding a duplicate of fc_drop_locked() so we
+> simply use that instead.
+> 
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: stable@vger.kernel.org      # v5.1+
+> Reported-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+> Fixes: 71d883c37e8d ("cgroup_do_mount(): massage calling conventions")
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-Might be due to the nature of the test. It is designed to generate an
-avalanche of anonymous pagefaults and that might be the reason swap
-functions are hit this hard.
+I dropped the ball on this and this didn't get pushed. Re-applied to
+for-5.14-fixes. Will send out in a few days.
 
->
-> Anyway the change makes sense.
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
->
-> Thanks!
->
-> > ---
-> >  include/linux/swap.h | 26 +++++++++++++++++++++++---
-> >  mm/memcontrol.c      | 14 ++++----------
-> >  mm/swapfile.c        |  5 +----
-> >  3 files changed, 28 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index 6f5a43251593..f30d26b0f71d 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -721,7 +721,13 @@ static inline int mem_cgroup_swappiness(struct mem_cgroup *mem)
-> >  #endif
-> >
-> >  #if defined(CONFIG_SWAP) && defined(CONFIG_MEMCG) && defined(CONFIG_BLK_CGROUP)
-> > -extern void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask);
-> > +extern void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask);
-> > +static inline  void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> > +{
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +     __cgroup_throttle_swaprate(page, gfp_mask);
-> > +}
-> >  #else
-> >  static inline void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> >  {
-> > @@ -730,8 +736,22 @@ static inline void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> >
-> >  #ifdef CONFIG_MEMCG_SWAP
-> >  extern void mem_cgroup_swapout(struct page *page, swp_entry_t entry);
-> > -extern int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry);
-> > -extern void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
-> > +extern int __mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry);
-> > +static inline int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
-> > +{
-> > +     if (mem_cgroup_disabled())
-> > +             return 0;
-> > +     return __mem_cgroup_try_charge_swap(page, entry);
-> > +}
-> > +
-> > +extern void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
-> > +static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
-> > +{
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +     __mem_cgroup_uncharge_swap(entry, nr_pages);
-> > +}
-> > +
-> >  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> >  extern bool mem_cgroup_swap_full(struct page *page);
-> >  #else
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index cdaf7003b43d..0b05322836ec 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -7234,7 +7234,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
-> >  }
-> >
-> >  /**
-> > - * mem_cgroup_try_charge_swap - try charging swap space for a page
-> > + * __mem_cgroup_try_charge_swap - try charging swap space for a page
-> >   * @page: page being added to swap
-> >   * @entry: swap entry to charge
-> >   *
-> > @@ -7242,16 +7242,13 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
-> >   *
-> >   * Returns 0 on success, -ENOMEM on failure.
-> >   */
-> > -int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
-> > +int __mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
-> >  {
-> >       unsigned int nr_pages = thp_nr_pages(page);
-> >       struct page_counter *counter;
-> >       struct mem_cgroup *memcg;
-> >       unsigned short oldid;
-> >
-> > -     if (mem_cgroup_disabled())
-> > -             return 0;
-> > -
-> >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> >               return 0;
-> >
-> > @@ -7287,18 +7284,15 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
-> >  }
-> >
-> >  /**
-> > - * mem_cgroup_uncharge_swap - uncharge swap space
-> > + * __mem_cgroup_uncharge_swap - uncharge swap space
-> >   * @entry: swap entry to uncharge
-> >   * @nr_pages: the amount of swap space to uncharge
-> >   */
-> > -void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
-> > +void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
-> >  {
-> >       struct mem_cgroup *memcg;
-> >       unsigned short id;
-> >
-> > -     if (mem_cgroup_disabled())
-> > -             return;
-> > -
-> >       id = swap_cgroup_record(entry, 0, nr_pages);
-> >       rcu_read_lock();
-> >       memcg = mem_cgroup_from_id(id);
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 707fa0481bb4..04a0c83f1313 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -3773,14 +3773,11 @@ static void free_swap_count_continuations(struct swap_info_struct *si)
-> >  }
-> >
-> >  #if defined(CONFIG_MEMCG) && defined(CONFIG_BLK_CGROUP)
-> > -void cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> > +void __cgroup_throttle_swaprate(struct page *page, gfp_t gfp_mask)
-> >  {
-> >       struct swap_info_struct *si, *next;
-> >       int nid = page_to_nid(page);
-> >
-> > -     if (mem_cgroup_disabled())
-> > -             return;
-> > -
-> >       if (!(gfp_mask & __GFP_IO))
-> >               return;
-> >
-> > --
-> > 2.32.0.93.g670b81a890-goog
->
-> --
-> Michal Hocko
-> SUSE Labs
+Thanks.
+
+-- 
+tejun
