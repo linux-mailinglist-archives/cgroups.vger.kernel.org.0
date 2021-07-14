@@ -2,51 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F294A3C7B1C
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jul 2021 03:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713C03C7B1E
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jul 2021 03:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbhGNBmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Jul 2021 21:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S237258AbhGNBnK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Jul 2021 21:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237249AbhGNBmw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Jul 2021 21:42:52 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C51C0613DD
-        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:01 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id k3-20020a6568c30000b029022887377adeso241636pgt.15
-        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:01 -0700 (PDT)
+        with ESMTP id S237335AbhGNBmz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Jul 2021 21:42:55 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5015BC0613E9
+        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:04 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id t10-20020a170902b20ab029011b9ceafaafso445559plr.11
+        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AavxPO4wMlqTs8bDIN0GFYiKk69Xkxiv2X8B1/QDwlE=;
-        b=Z2ISWtgcpEpQj/dzyZ58bm0t4HFLzTogj7ZWoP7NjUhaQOlt1sAXVoja7tux0madc/
-         z8KYgCiFiwqKsMYq+/E59vW0btAR/aPEUnoz4VZHQIXeSu29/+f62JDUxDbc3510yTEd
-         HyAxaz1CRJsXRFMmk+F9EAslRmRFMQ8Kvcw0s9g7phLGe+u3kb/8PX8QzufZrK0EPNjO
-         zunbBLOHb7mvfA1ZC2+k7H7jgoUUpISkLpSnrPl5LvmQ2lUEtjAywrTVTjQ7+8WZifYf
-         oDxgDrqHbKBBKThOTBOcsuPDc6yuNJF+J15vrbGS5CfjZysAaAGkA/YjxvN3CL67s2Pe
-         50qw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=jLscKY8MsULms0fvtcTak+GIEHQetCwpE1fAuvW3yyY=;
+        b=PaLGOBkWv7L7oDiKIQHgLWDy9I2orfI9UkJ8egtWmvzjTcESIBurojiEXUoKI0LR17
+         rLqOXqPd7J6PUH656jeqHI5WROAb7PVyCxY7k/uLWIC4XouzyX8Te+eZTnneAqWaM+Gd
+         6NyOaTR/UpFHr1ty9GcWTQsNJL+bylqan9AjcDVcr/8HayY7zj5m+YqUM9JmxzLGzxb+
+         RJA/tENjEafeav126UVIj3mzIDDhMvGx5NGQbyWIw2xUDy5JoC1oJEEcwJjJrz/z2Dun
+         qeQKDkzzYbGcM1KMrUTodrlNOMW/xU/u3W4oP/hqqi01pQaRM9yw0C70ibzgSd9j4TMe
+         92YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AavxPO4wMlqTs8bDIN0GFYiKk69Xkxiv2X8B1/QDwlE=;
-        b=SN+FJoADQ///Cm/nlX5dRtYcyovTjo3bbg68svSXDmjcv1iQFm9UCfvKqxrlOMpsR4
-         zok0KGP0eC+3dCzoaWWpdll8yE27FH4MT6Z6sRu6Sp0GaH6LiM6pAdRPbQGC89c/e9LY
-         vg8mLpxNn4x2afpq25c1f/vH7Q127mnkHNO15CstxYvm0I4IWlWuVt0EBWeTRwYMc3uZ
-         hozII2Dxc2lX45xa4PFKJBqmC4ymQabd4O3tOOY94//WAk9xtis6LUHt7HibEINlabH3
-         In1As5UyQ5T1sToWJeBGCyeQOYR0hHnzk3Zet8UdCxhiCrd3EexHGtqmjqYQB6o6Z1rV
-         89yw==
-X-Gm-Message-State: AOAM533OvLOXB4nvMlr2yLPaebSApWD4dE4q0L68Qe4MpQoyfzModUr0
-        5jFwaiVerBuG4VUZTpqLF1vf1wuY8CukqA==
-X-Google-Smtp-Source: ABdhPJyGknWXQmJCSc6OliWSLHvZToljApe89R8GXFu81DER3Fq002ZUpbUxGzP2I2eScSHO6LXizBt7PEa8Cg==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=jLscKY8MsULms0fvtcTak+GIEHQetCwpE1fAuvW3yyY=;
+        b=lzGnhY7rcFUsx3t90AlxY+iT2ic5csQkFCT5ETr3zYCU9Q+7VwpMDHtqA7s9i+1oQc
+         QiZf7WpvJ3j1+j5pIdTZGv/773js9bnW3RRqUgkCAPB4ouLmGgWjLQM31QOsZeWrEo+n
+         DqSXmEYJhsOqIZTcA11TN7ech18QEfwoRnxi7rc10wdgelUzYjr2kQ/mlyNf8+XyYcg3
+         cIjbEnSZyJjOWjqU5/F7Aza3pGokJONs13utSzo/8JFu2OhaUoG3zbSLz9ysqVswuPc0
+         XX9TNJ5wX40qblhoVloT/NfSZmyHrBOW8wfK5Las4ioabFpiU4DPS4UAK0s+7EiYo0y5
+         CDUw==
+X-Gm-Message-State: AOAM531YIZEfpmfcwVcfV+568cJbk5UdwI70aUlZY5orxzbAFMo6qOIx
+        /UzhQXnMRPrT2SWt4ISn9yEdz6NlWTJwtQ==
+X-Google-Smtp-Source: ABdhPJwA3thbvsSzPhr/MAHXPgK7qlEBeXwubW3WCFqJt49b9sDIh57ZwUKHKKQKWI4da5mzLkJNQ3MwZvE3Qg==
 X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:c6c:5381:cc6a:6baa])
- (user=shakeelb job=sendgmr) by 2002:a17:90a:710a:: with SMTP id
- h10mr1177731pjk.103.1626226800792; Tue, 13 Jul 2021 18:40:00 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 18:39:47 -0700
-Message-Id: <20210714013948.270662-1-shakeelb@google.com>
+ (user=shakeelb job=sendgmr) by 2002:a63:5117:: with SMTP id
+ f23mr6887746pgb.200.1626226803521; Tue, 13 Jul 2021 18:40:03 -0700 (PDT)
+Date:   Tue, 13 Jul 2021 18:39:48 -0700
+In-Reply-To: <20210714013948.270662-1-shakeelb@google.com>
+Message-Id: <20210714013948.270662-2-shakeelb@google.com>
 Mime-Version: 1.0
+References: <20210714013948.270662-1-shakeelb@google.com>
 X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v4 1/2] memcg: switch lruvec stats to rstat
+Subject: [PATCH v4 2/2] memcg: infrastructure to flush memcg stats
 From:   Shakeel Butt <shakeelb@google.com>
 To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Muchun Song <songmuchun@bytedance.com>
@@ -62,316 +66,163 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat") switched
-memcg stats to rstat infrastructure but skipped the conversion of the
-lruvec stats as such stats are read in the performance critical code
-paths and flushing stats may have impacted the performances of the
-applications. This patch converts the lruvec stats to rstat and later
-patches add mechanisms to keep the performance impact to minimum.
+At the moment memcg stats are read in four contexts:
 
-The rstat conversion comes with the price i.e. memory cost. Effectively
-this patch reverts the savings done by the commit f3344adf38bd ("mm:
-memcontrol: optimize per-lruvec stats counter memory usage"). However
-this cost is justified due to negative impact of the inaccurate lruvec
-stats on many heuristics. One such case is reported in [1].
+1. memcg stat user interfaces
+2. dirty throttling
+3. page fault
+4. memory reclaim
 
-The memory reclaim code is filled with plethora of heuristics and many
-of those heuristics reads the lruvec stats. So, inaccurate stats can
-make such heuristics ineffective. [1] reports the impact of inaccurate
-lruvec stats on the "cache trim mode" heuristic. Inaccurate lruvec stats
-can impact the deactivation and aging anon heuristics as well.
+Currently the kernel flushes the stats for first two cases. Flushing the
+stats for remaining two casese may have performance impact. Always
+flushing the memcg stats on the page fault code path may negatively
+impacts the performance of the applications. In addition flushing in the
+memory reclaim code path, though treated as slowpath, can become the
+source of contention for the global lock taken for stat flushing because
+when system or memcg is under memory pressure, many tasks may enter the
+reclaim path.
 
-[1] https://lore.kernel.org/linux-mm/20210311004449.1170308-1-ying.huang@intel.com/
+This patch uses following mechanisms to solve these challenges:
+
+1. Periodically flush the stats from root memcg every 2 seconds. This
+will time limit the out of sync stats.
+
+2. Asynchronously flush the stats after fixed number of stat updates.
+In the worst case the stat can be out of sync by O(nr_cpus * BATCH) for
+2 seconds.
+
+3. For avoiding thundering herd to flush the stats particularly from the
+memory reclaim context, introduce memcg local spinlock and let only one
+flusher active at a time. This could have been done through
+cgroup_rstat_lock lock but that lock is used by other subsystem and for
+userspace reading memcg stats. So, it is better to keep flushers
+introduced by this patch decoupled from cgroup_rstat_lock.
 
 Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
 Changes since v3:
-- Add back the signoff
+- Add back the sigoff
 
 Changes since v2:
-- updated commit message
+- Changed the subject of the patch
+- Added mechanism to bound errors to nr_cpus instead of nr_cgroups
+- memcg local lock to let one active flusher
 
 Changes since v1:
-- None
+- use system_unbound_wq for flushing the memcg stats
 
- include/linux/memcontrol.h |  42 +++++++-------
- mm/memcontrol.c            | 114 +++++++++++++------------------------
- 2 files changed, 58 insertions(+), 98 deletions(-)
+ include/linux/memcontrol.h |  6 ++++++
+ mm/memcontrol.c            | 34 ++++++++++++++++++++++++++++++++++
+ mm/vmscan.c                |  6 ++++++
+ 3 files changed, 46 insertions(+)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index bfe5c486f4ad..0bfa0409af22 100644
+index 0bfa0409af22..fa095a94ae56 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -105,14 +105,6 @@ struct mem_cgroup_reclaim_iter {
- 	unsigned int generation;
- };
- 
--struct lruvec_stat {
--	long count[NR_VM_NODE_STAT_ITEMS];
--};
--
--struct batched_lruvec_stat {
--	s32 count[NR_VM_NODE_STAT_ITEMS];
--};
--
- /*
-  * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-  * shrinkers, which have elements charged to this memcg.
-@@ -123,24 +115,30 @@ struct shrinker_info {
- 	unsigned long *map;
- };
- 
-+struct lruvec_stats_percpu {
-+	/* Local (CPU and cgroup) state */
-+	long state[NR_VM_NODE_STAT_ITEMS];
-+
-+	/* Delta calculation for lockless upward propagation */
-+	long state_prev[NR_VM_NODE_STAT_ITEMS];
-+};
-+
-+struct lruvec_stats {
-+	/* Aggregated (CPU and subtree) state */
-+	long state[NR_VM_NODE_STAT_ITEMS];
-+
-+	/* Pending child counts during tree propagation */
-+	long state_pending[NR_VM_NODE_STAT_ITEMS];
-+};
-+
- /*
-  * per-node information in memory controller.
-  */
- struct mem_cgroup_per_node {
- 	struct lruvec		lruvec;
- 
--	/*
--	 * Legacy local VM stats. This should be struct lruvec_stat and
--	 * cannot be optimized to struct batched_lruvec_stat. Because
--	 * the threshold of the lruvec_stat_cpu can be as big as
--	 * MEMCG_CHARGE_BATCH * PAGE_SIZE. It can fit into s32. But this
--	 * filed has no upper limit.
--	 */
--	struct lruvec_stat __percpu *lruvec_stat_local;
--
--	/* Subtree VM stats (batched updates) */
--	struct batched_lruvec_stat __percpu *lruvec_stat_cpu;
--	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
-+	struct lruvec_stats_percpu __percpu	*lruvec_stats_percpu;
-+	struct lruvec_stats			lruvec_stats;
- 
- 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
- 
-@@ -965,7 +963,7 @@ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
- 		return node_page_state(lruvec_pgdat(lruvec), idx);
- 
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
--	x = atomic_long_read(&pn->lruvec_stat[idx]);
-+	x = READ_ONCE(pn->lruvec_stats.state[idx]);
- #ifdef CONFIG_SMP
- 	if (x < 0)
- 		x = 0;
-@@ -985,7 +983,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 	for_each_possible_cpu(cpu)
--		x += per_cpu(pn->lruvec_stat_local->count[idx], cpu);
-+		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
- #ifdef CONFIG_SMP
- 	if (x < 0)
- 		x = 0;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ae1f5d0cb581..848d711bf576 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -671,23 +671,11 @@ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+@@ -991,6 +991,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
  	return x;
  }
  
--static struct mem_cgroup_per_node *
--parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
--{
--	struct mem_cgroup *parent;
--
--	parent = parent_mem_cgroup(pn->memcg);
--	if (!parent)
--		return NULL;
--	return parent->nodeinfo[nid];
--}
--
++void mem_cgroup_flush_stats(void);
++
  void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val)
- {
- 	struct mem_cgroup_per_node *pn;
- 	struct mem_cgroup *memcg;
--	long x, threshold = MEMCG_CHARGE_BATCH;
+ 			      int val);
+ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
+@@ -1400,6 +1402,10 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ 	return node_page_state(lruvec_pgdat(lruvec), idx);
+ }
  
- 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 	memcg = pn->memcg;
-@@ -696,21 +684,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 	__mod_memcg_state(memcg, idx, val);
++static inline void mem_cgroup_flush_stats(void)
++{
++}
++
+ static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+ 					    enum node_stat_item idx, int val)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 848d711bf576..39a00991fc80 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -103,6 +103,14 @@ static bool do_memsw_account(void)
+ 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap;
+ }
+ 
++/* memcg and lruvec stats flushing */
++static void flush_memcg_stats_dwork(struct work_struct *w);
++static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
++static void flush_memcg_stats_work(struct work_struct *w);
++static DECLARE_WORK(stats_flush_work, flush_memcg_stats_work);
++static DEFINE_PER_CPU(unsigned int, stats_flush_threshold);
++static DEFINE_SPINLOCK(stats_flush_lock);
++
+ #define THRESHOLDS_EVENTS_TARGET 128
+ #define SOFTLIMIT_EVENTS_TARGET 1024
+ 
+@@ -685,6 +693,8 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
  
  	/* Update lruvec */
--	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
--
--	if (vmstat_item_in_bytes(idx))
--		threshold <<= PAGE_SHIFT;
--
--	x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
--	if (unlikely(abs(x) > threshold)) {
--		pg_data_t *pgdat = lruvec_pgdat(lruvec);
--		struct mem_cgroup_per_node *pi;
--
--		for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
--			atomic_long_add(x, &pi->lruvec_stat[idx]);
--		x = 0;
--	}
--	__this_cpu_write(pn->lruvec_stat_cpu->count[idx], x);
-+	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
++	if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
++		queue_work(system_unbound_wq, &stats_flush_work);
  }
  
  /**
-@@ -2289,40 +2263,13 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
- 	mutex_unlock(&percpu_charge_mutex);
- }
- 
--static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
--{
--	int nid;
--
--	for_each_node(nid) {
--		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
--		unsigned long stat[NR_VM_NODE_STAT_ITEMS];
--		struct batched_lruvec_stat *lstatc;
--		int i;
--
--		lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
--		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
--			stat[i] = lstatc->count[i];
--			lstatc->count[i] = 0;
--		}
--
--		do {
--			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
--				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
--		} while ((pn = parent_nodeinfo(pn, nid)));
--	}
--}
--
- static int memcg_hotplug_cpu_dead(unsigned int cpu)
- {
- 	struct memcg_stock_pcp *stock;
--	struct mem_cgroup *memcg;
- 
- 	stock = &per_cpu(memcg_stock, cpu);
- 	drain_stock(stock);
- 
--	for_each_mem_cgroup(memcg)
--		memcg_flush_lruvec_page_state(memcg, cpu);
--
+@@ -5248,6 +5258,10 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+ 	/* Online state pins memcg ID, memcg ID pins CSS */
+ 	refcount_set(&memcg->id.ref, 1);
+ 	css_get(css);
++
++	if (unlikely(mem_cgroup_is_root(memcg)))
++		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
++				   2UL*HZ);
  	return 0;
  }
  
-@@ -5126,17 +5073,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 	if (!pn)
- 		return 1;
- 
--	pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
--						 GFP_KERNEL_ACCOUNT);
--	if (!pn->lruvec_stat_local) {
--		kfree(pn);
--		return 1;
--	}
--
--	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct batched_lruvec_stat,
--					       GFP_KERNEL_ACCOUNT);
--	if (!pn->lruvec_stat_cpu) {
--		free_percpu(pn->lruvec_stat_local);
-+	pn->lruvec_stats_percpu = alloc_percpu_gfp(struct lruvec_stats_percpu,
-+						   GFP_KERNEL_ACCOUNT);
-+	if (!pn->lruvec_stats_percpu) {
- 		kfree(pn);
- 		return 1;
- 	}
-@@ -5157,8 +5096,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 	if (!pn)
- 		return;
- 
--	free_percpu(pn->lruvec_stat_cpu);
--	free_percpu(pn->lruvec_stat_local);
-+	free_percpu(pn->lruvec_stats_percpu);
- 	kfree(pn);
+@@ -5339,6 +5353,26 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+ 	memcg_wb_domain_size_changed(memcg);
  }
  
-@@ -5174,15 +5112,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
- 
- static void mem_cgroup_free(struct mem_cgroup *memcg)
++void mem_cgroup_flush_stats(void)
++{
++	if (!spin_trylock(&stats_flush_lock))
++		return;
++
++	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
++	spin_unlock(&stats_flush_lock);
++}
++
++static void flush_memcg_stats_dwork(struct work_struct *w)
++{
++	mem_cgroup_flush_stats();
++	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
++}
++
++static void flush_memcg_stats_work(struct work_struct *w)
++{
++	mem_cgroup_flush_stats();
++}
++
+ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
  {
--	int cpu;
--
- 	memcg_wb_domain_exit(memcg);
--	/*
--	 * Flush percpu lruvec stats to guarantee the value
--	 * correctness on parent's and all ancestor levels.
--	 */
--	for_each_online_cpu(cpu)
--		memcg_flush_lruvec_page_state(memcg, cpu);
- 	__mem_cgroup_free(memcg);
- }
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index a7602f71ec04..1cc05ab8ca15 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2893,6 +2893,12 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
  
-@@ -5415,7 +5345,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
- 	struct memcg_vmstats_percpu *statc;
- 	long delta, v;
--	int i;
-+	int i, nid;
+ again:
++	/*
++	 * Flush the memory cgroup stats, so that we read accurate per-memcg
++	 * lruvec stats for heuristics.
++	 */
++	mem_cgroup_flush_stats();
++
+ 	memset(&sc->nr, 0, sizeof(sc->nr));
  
- 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
- 
-@@ -5463,6 +5393,36 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- 		if (parent)
- 			parent->vmstats.events_pending[i] += delta;
- 	}
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-+		struct mem_cgroup_per_node *ppn = NULL;
-+		struct lruvec_stats_percpu *lstatc;
-+
-+		if (parent)
-+			ppn = parent->nodeinfo[nid];
-+
-+		lstatc = per_cpu_ptr(pn->lruvec_stats_percpu, cpu);
-+
-+		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-+			delta = pn->lruvec_stats.state_pending[i];
-+			if (delta)
-+				pn->lruvec_stats.state_pending[i] = 0;
-+
-+			v = READ_ONCE(lstatc->state[i]);
-+			if (v != lstatc->state_prev[i]) {
-+				delta += v - lstatc->state_prev[i];
-+				lstatc->state_prev[i] = v;
-+			}
-+
-+			if (!delta)
-+				continue;
-+
-+			pn->lruvec_stats.state[i] += delta;
-+			if (ppn)
-+				ppn->lruvec_stats.state_pending[i] += delta;
-+		}
-+	}
- }
- 
- #ifdef CONFIG_MMU
-@@ -6396,6 +6356,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
-+	cgroup_rstat_flush(memcg->css.cgroup);
-+
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
- 
+ 	nr_reclaimed = sc->nr_reclaimed;
 -- 
 2.32.0.93.g670b81a890-goog
 
