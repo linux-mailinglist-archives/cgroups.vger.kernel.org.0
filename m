@@ -2,227 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713C03C7B1E
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jul 2021 03:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ECD3C7E8C
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jul 2021 08:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhGNBnK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Jul 2021 21:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237335AbhGNBmz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Jul 2021 21:42:55 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5015BC0613E9
-        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:04 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id t10-20020a170902b20ab029011b9ceafaafso445559plr.11
-        for <cgroups@vger.kernel.org>; Tue, 13 Jul 2021 18:40:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=jLscKY8MsULms0fvtcTak+GIEHQetCwpE1fAuvW3yyY=;
-        b=PaLGOBkWv7L7oDiKIQHgLWDy9I2orfI9UkJ8egtWmvzjTcESIBurojiEXUoKI0LR17
-         rLqOXqPd7J6PUH656jeqHI5WROAb7PVyCxY7k/uLWIC4XouzyX8Te+eZTnneAqWaM+Gd
-         6NyOaTR/UpFHr1ty9GcWTQsNJL+bylqan9AjcDVcr/8HayY7zj5m+YqUM9JmxzLGzxb+
-         RJA/tENjEafeav126UVIj3mzIDDhMvGx5NGQbyWIw2xUDy5JoC1oJEEcwJjJrz/z2Dun
-         qeQKDkzzYbGcM1KMrUTodrlNOMW/xU/u3W4oP/hqqi01pQaRM9yw0C70ibzgSd9j4TMe
-         92YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=jLscKY8MsULms0fvtcTak+GIEHQetCwpE1fAuvW3yyY=;
-        b=lzGnhY7rcFUsx3t90AlxY+iT2ic5csQkFCT5ETr3zYCU9Q+7VwpMDHtqA7s9i+1oQc
-         QiZf7WpvJ3j1+j5pIdTZGv/773js9bnW3RRqUgkCAPB4ouLmGgWjLQM31QOsZeWrEo+n
-         DqSXmEYJhsOqIZTcA11TN7ech18QEfwoRnxi7rc10wdgelUzYjr2kQ/mlyNf8+XyYcg3
-         cIjbEnSZyJjOWjqU5/F7Aza3pGokJONs13utSzo/8JFu2OhaUoG3zbSLz9ysqVswuPc0
-         XX9TNJ5wX40qblhoVloT/NfSZmyHrBOW8wfK5Las4ioabFpiU4DPS4UAK0s+7EiYo0y5
-         CDUw==
-X-Gm-Message-State: AOAM531YIZEfpmfcwVcfV+568cJbk5UdwI70aUlZY5orxzbAFMo6qOIx
-        /UzhQXnMRPrT2SWt4ISn9yEdz6NlWTJwtQ==
-X-Google-Smtp-Source: ABdhPJwA3thbvsSzPhr/MAHXPgK7qlEBeXwubW3WCFqJt49b9sDIh57ZwUKHKKQKWI4da5mzLkJNQ3MwZvE3Qg==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:c6c:5381:cc6a:6baa])
- (user=shakeelb job=sendgmr) by 2002:a63:5117:: with SMTP id
- f23mr6887746pgb.200.1626226803521; Tue, 13 Jul 2021 18:40:03 -0700 (PDT)
-Date:   Tue, 13 Jul 2021 18:39:48 -0700
-In-Reply-To: <20210714013948.270662-1-shakeelb@google.com>
-Message-Id: <20210714013948.270662-2-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20210714013948.270662-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890-goog
-Subject: [PATCH v4 2/2] memcg: infrastructure to flush memcg stats
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238035AbhGNGed (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 14 Jul 2021 02:34:33 -0400
+Received: from relay.sw.ru ([185.231.240.75]:34486 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238003AbhGNGed (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 14 Jul 2021 02:34:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=CmW4WEPrBYc9JkO1ZpHwc4AZ/QqQIR1GbHwoX4kgVJY=; b=o6m5sOcYtTchWFIWd
+        TJWZ1yyazhKhz8n6I4Mzq8WRrP5nncMBYc4zFUWIYbiTxTH7Ggl7xiv/7LteuVnDqRbTsUdZd+E0o
+        dgPq+uUl7Y4KhHVL6YmNtWaNe/uNpa865AZKZ+sqKfeq73BLmfg/ZQHSUyLCLQU8wEFCuWjR5H5HI
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m3YQh-003uXN-Pc; Wed, 14 Jul 2021 09:31:35 +0300
+Subject: Re: [PATCH v2 1/1] memcg: enable accounting for pids in nested pid
+ namespaces
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Serge Hallyn <serge@hallyn.com>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>
+References: <7b777e22-5b0d-7444-343d-92cbfae5f8b4@virtuozzo.com>
+ <8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com>
+Message-ID: <21db0c2c-45ea-fded-9633-7b76ab2b1083@virtuozzo.com>
+Date:   Wed, 14 Jul 2021 09:31:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-At the moment memcg stats are read in four contexts:
+Dear Andrew,
+could you please pick up this patch and add
+ Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-1. memcg stat user interfaces
-2. dirty throttling
-3. page fault
-4. memory reclaim
+Thank you,
+	Vasily Averin
 
-Currently the kernel flushes the stats for first two cases. Flushing the
-stats for remaining two casese may have performance impact. Always
-flushing the memcg stats on the page fault code path may negatively
-impacts the performance of the applications. In addition flushing in the
-memory reclaim code path, though treated as slowpath, can become the
-source of contention for the global lock taken for stat flushing because
-when system or memcg is under memory pressure, many tasks may enter the
-reclaim path.
-
-This patch uses following mechanisms to solve these challenges:
-
-1. Periodically flush the stats from root memcg every 2 seconds. This
-will time limit the out of sync stats.
-
-2. Asynchronously flush the stats after fixed number of stat updates.
-In the worst case the stat can be out of sync by O(nr_cpus * BATCH) for
-2 seconds.
-
-3. For avoiding thundering herd to flush the stats particularly from the
-memory reclaim context, introduce memcg local spinlock and let only one
-flusher active at a time. This could have been done through
-cgroup_rstat_lock lock but that lock is used by other subsystem and for
-userspace reading memcg stats. So, it is better to keep flushers
-introduced by this patch decoupled from cgroup_rstat_lock.
-
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changes since v3:
-- Add back the sigoff
-
-Changes since v2:
-- Changed the subject of the patch
-- Added mechanism to bound errors to nr_cpus instead of nr_cgroups
-- memcg local lock to let one active flusher
-
-Changes since v1:
-- use system_unbound_wq for flushing the memcg stats
-
- include/linux/memcontrol.h |  6 ++++++
- mm/memcontrol.c            | 34 ++++++++++++++++++++++++++++++++++
- mm/vmscan.c                |  6 ++++++
- 3 files changed, 46 insertions(+)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0bfa0409af22..fa095a94ae56 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -991,6 +991,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return x;
- }
- 
-+void mem_cgroup_flush_stats(void);
-+
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val);
- void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
-@@ -1400,6 +1402,10 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return node_page_state(lruvec_pgdat(lruvec), idx);
- }
- 
-+static inline void mem_cgroup_flush_stats(void)
-+{
-+}
-+
- static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
- 					    enum node_stat_item idx, int val)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 848d711bf576..39a00991fc80 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -103,6 +103,14 @@ static bool do_memsw_account(void)
- 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap;
- }
- 
-+/* memcg and lruvec stats flushing */
-+static void flush_memcg_stats_dwork(struct work_struct *w);
-+static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
-+static void flush_memcg_stats_work(struct work_struct *w);
-+static DECLARE_WORK(stats_flush_work, flush_memcg_stats_work);
-+static DEFINE_PER_CPU(unsigned int, stats_flush_threshold);
-+static DEFINE_SPINLOCK(stats_flush_lock);
-+
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
- 
-@@ -685,6 +693,8 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
-+	if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
-+		queue_work(system_unbound_wq, &stats_flush_work);
- }
- 
- /**
-@@ -5248,6 +5258,10 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	/* Online state pins memcg ID, memcg ID pins CSS */
- 	refcount_set(&memcg->id.ref, 1);
- 	css_get(css);
-+
-+	if (unlikely(mem_cgroup_is_root(memcg)))
-+		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
-+				   2UL*HZ);
- 	return 0;
- }
- 
-@@ -5339,6 +5353,26 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
- 	memcg_wb_domain_size_changed(memcg);
- }
- 
-+void mem_cgroup_flush_stats(void)
-+{
-+	if (!spin_trylock(&stats_flush_lock))
-+		return;
-+
-+	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	spin_unlock(&stats_flush_lock);
-+}
-+
-+static void flush_memcg_stats_dwork(struct work_struct *w)
-+{
-+	mem_cgroup_flush_stats();
-+	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
-+}
-+
-+static void flush_memcg_stats_work(struct work_struct *w)
-+{
-+	mem_cgroup_flush_stats();
-+}
-+
- static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index a7602f71ec04..1cc05ab8ca15 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2893,6 +2893,12 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
- 
- again:
-+	/*
-+	 * Flush the memory cgroup stats, so that we read accurate per-memcg
-+	 * lruvec stats for heuristics.
-+	 */
-+	mem_cgroup_flush_stats();
-+
- 	memset(&sc->nr, 0, sizeof(sc->nr));
- 
- 	nr_reclaimed = sc->nr_reclaimed;
--- 
-2.32.0.93.g670b81a890-goog
+On 4/24/21 2:54 PM, Vasily Averin wrote:
+> Commit 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+> enabled memcg accounting for pids allocated from init_pid_ns.pid_cachep,
+> but forgot to adjust the setting for nested pid namespaces.
+> As a result, pid memory is not accounted exactly where it is really needed,
+> inside memcg-limited containers with their own pid namespaces.
+> 
+> Pid was one the first kernel objects enabled for memcg accounting.
+> init_pid_ns.pid_cachep marked by SLAB_ACCOUNT and we can expect that
+> any new pids in the system are memcg-accounted.
+> 
+> Though recently I've noticed that it is wrong. nested pid namespaces creates 
+> own slab caches for pid objects, nested pids have increased size because contain 
+> id both for all parent and for own pid namespaces. The problem is that these slab
+> caches are _NOT_ marked by SLAB_ACCOUNT, as a result any pids allocated in 
+> nested pid namespaces are not memcg-accounted.
+> 
+> Pid struct in nested pid namespace consumes up to 500 bytes memory, 
+> 100000 such objects gives us up to ~50Mb unaccounted memory,
+> this allow container to exceed assigned memcg limits.
+> 
+> Fixes: 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> ---
+>  kernel/pid_namespace.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> index 6cd6715..a46a372 100644
+> --- a/kernel/pid_namespace.c
+> +++ b/kernel/pid_namespace.c
+> @@ -51,7 +51,8 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
+>  	mutex_lock(&pid_caches_mutex);
+>  	/* Name collision forces to do allocation under mutex. */
+>  	if (!*pkc)
+> -		*pkc = kmem_cache_create(name, len, 0, SLAB_HWCACHE_ALIGN, 0);
+> +		*pkc = kmem_cache_create(name, len, 0,
+> +					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
+>  	mutex_unlock(&pid_caches_mutex);
+>  	/* current can fail, but someone else can succeed. */
+>  	return READ_ONCE(*pkc);
+> 
 
