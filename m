@@ -2,76 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789713CA3EC
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jul 2021 19:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF793CA4C0
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jul 2021 19:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhGOR1o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Jul 2021 13:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        id S235928AbhGORxh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jul 2021 13:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhGOR1n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jul 2021 13:27:43 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A29FC06175F
-        for <cgroups@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id g8-20020a1c9d080000b02901f13dd1672aso5664677wme.0
-        for <cgroups@vger.kernel.org>; Thu, 15 Jul 2021 10:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=o95sP91j4SYQ4F4yMZkQdklAh0tECHyOVF4RDJjtqUpxjOk9jlE6ak/li2a6dEdoLY
-         Cu/4ATPM6l+UKUPlRyWzSRojszX9yymc830gEsDRmUXSoUg/Rt0JgeXoLMPluA8yAQzV
-         tgYcEDkVdB6I1RTRWNmVbZdNwU+JgEnhbRNrDkpgFSyF6uYMYuDUAp7PtM2OWYu6SrQv
-         AbCNlo2HlF3yBytq1BuPSqTZ1Ek1L09vpfuSz7qHTp/F56F/hGXEvrRbmsWaboXcgfGZ
-         gSnfdLo206nrfXwsKAgJ943zzqbKUAZEaUZVVZFqFq77Qxw37mHpsJz1ncHU4WIQMQOg
-         ewxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Ibb5KNEw1DKqJEg9n4gJy5KnzVasBofn6QaWYsu9UCQ=;
-        b=hFIZ7zghEUbcvObaov3Cq8aMhAW0ZOD+hl4pY9k8wK2E6luIeaVfkkDo4Z0O6jA5w1
-         N2ksMS9uQKsIP12IQq8g+rLXqdBmxfcVMclyE3rgRei6Gw2GAnnurnKuDRKple6medvW
-         7zBkmO8Ay4L9p8xWRp6SP++sic4f+7BX89iZNGcuWRITYHjn/v1Om9cdk81lRju0Zfg9
-         oWS8TcJsBlEPUXWyCEkoaAKIX3f8lxAhG0k4D6dRjmvjcvxispbecMFkgRdR/prneImi
-         EYwCu3QuWx0XRJelh0/yLE1s7dhgUbbTQG2G10AQpRHYHSkjOWDyPg84RE4BaiqEac92
-         HyUQ==
-X-Gm-Message-State: AOAM532JNoN25JFV025hQ+e8W6wNEol4BE4bG+Tgrd1lCsigeinOBLc0
-        t4082xZoLzI70nEzb9BgWp8tEq93Wtm1CX5lXXo=
-X-Google-Smtp-Source: ABdhPJz1M/hHf7BdBz3GK7XR8mhZC4pBBhAF+fLnwTSbvlF4nAAEeZ3GSVXKADw3h1fGJ9uaWaIZdjj3kCo2gQ1U7qM=
-X-Received: by 2002:a1c:416:: with SMTP id 22mr11923787wme.59.1626369888523;
- Thu, 15 Jul 2021 10:24:48 -0700 (PDT)
+        with ESMTP id S235772AbhGORxh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jul 2021 13:53:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EE9C06175F
+        for <cgroups@vger.kernel.org>; Thu, 15 Jul 2021 10:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=INGSnpl1UpF6CdwmxMLPgOIu/v7mSG58jf2OlaWN2WI=; b=I3elTLEKAqHwyiShzj/pAC4cdj
+        loGG8gASgYQuRt8tigUzu7jKCXIIchfjOEQKJ4zotfEnlnm02Nm4Q4gMMVPhFM6fqwOWDaLxEDVri
+        pIXgQ7ogB8LVZ2ivfcStsBpCktqX8DthN8Rd9SUTdszdJJ9j22PwQX2k9jWTdkIhsLt4sJUODpIus
+        2Cj4shRfDtqsNCfRjET45e9wvbkRvq2p4IJfLB0pelAedzrQoF4OUHiYlnmS3iVB5RCemKQwbm6HN
+        HCdGV7Z343mVYcaWLc0ZfkBezLidn5096fEal0EuIS5v7XxHP/vahh0f86qSzBbpKO9oYHwexdYuZ
+        fm4d4pNw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m45Ts-003ahC-4d; Thu, 15 Jul 2021 17:49:17 +0000
+Date:   Thu, 15 Jul 2021 18:49:04 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yutian Yang <nglaive@gmail.com>
+Cc:     mhocko@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, shenwenbo@zju.edu.cn
+Subject: Re: [PATCH] memcg: charge semaphores and sem_undo objects
+Message-ID: <YPB1EPaunr5587h5@casper.infradead.org>
+References: <1626333284-1404-1-git-send-email-nglaive@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:adf:f30c:0:0:0:0:0 with HTTP; Thu, 15 Jul 2021 10:24:47
- -0700 (PDT)
-Reply-To: faty.muhamad@gmail.com
-From:   Fatima Muhammad <rallispeterrallie@gmail.com>
-Date:   Thu, 15 Jul 2021 17:24:47 +0000
-Message-ID: <CAG5NioepHT-5D-VOA-wEcKyXRgSxA1SHew6MMS7cLtWEG6fXmw@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626333284-1404-1-git-send-email-nglaive@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Dear,
+On Thu, Jul 15, 2021 at 03:14:44AM -0400, Yutian Yang wrote:
+> This patch adds accounting flags to semaphores and sem_undo allocation
+> sites so that kernel could correctly charge these objects. 
+> 
+> A malicious user could take up more than 63GB unaccounted memory under 
+> default sysctl settings by exploiting the unaccounted objects. She could 
+> allocate up to 32,000 unaccounted semaphore sets with up to 32,000 
+> unaccounted semaphore objects in each set. She could further allocate one 
+> sem_undo unaccounted object for each semaphore set.
 
-My name is Ms.Fatima Muhammad., Please forgive me for stressing you
-with my predicaments and I sorry to approach you through this media
-because is serves the fastest means of  my communication right now,
+Do we really have to account every object that's allocated on behalf of
+userspace?  ie how seriously do we take this kind of thing?  Are memcgs
+supposed to be a hard limit, or are they just a rough accounting thing?
 
-I came across your Email from my personal search and I decided to
-contact you believing you will be honest to fulfill my business
-proposal which I believe that will be a very good opportunity for both
-of us. Please it is my pleasure to contact you today for a business
-partnership investments projects worth $4.6 million USD which I intend
-to establish in your country..
-
-Pls If this business proposal offends your moral and ethic values do
-accept my apology. therefore kindly contact me immediately if you are
-interested for more details.
-
-Thank you for your wiliness to help me
-Yours Sincerely Fatima Muhammad
+There could be a very large stream of patches turning GFP_KERNEL into
+GFP_KERNEL_ACCOUNT.  For example, file locks (fs/locks.c) are only
+allocated with GFP_KERNEL and you can allocate one lock per byte of a
+file.  I'm sure there are hundreds more places where we do similar things.
