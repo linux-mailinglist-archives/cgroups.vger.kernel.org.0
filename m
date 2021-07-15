@@ -2,131 +2,143 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8EFD3C94C5
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jul 2021 02:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C053C9976
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jul 2021 09:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhGOAKB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 14 Jul 2021 20:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhGOAKB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 14 Jul 2021 20:10:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D3461377;
-        Thu, 15 Jul 2021 00:07:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626307629;
-        bh=sQiUghkEbe9wGspdd7HcqAwfIHqM9cHT4CiACu2qHWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iuiPo90pIDHpl1iiP7GksND+AF0jAueEosqdRUNoPz4VM8xl7y0PhRE+Az7kU86+p
-         o+4YY3Ks0RBOenHoacnVY1tPKJV9GwV0tzPFJEvYIoK742NEw8m4eyRJ5GRWiJRfkP
-         R2Kx0ETZd0VkCX/v/P7LzFS558Xn3iItzKrNXp1ygzA8Elr5k0Df6bkmZCsob2YvK9
-         VkRyQkHNUIGcNOXPe/TNj7UiAwV8s3jqmf1g3wUxz1F5HZx47nH8Az6+t5edbahg8L
-         u4+4p2Xy9E79ZToB+lr8LvGrp9eu6NNvR6dUa/GtHe0E+lKt6bXRcGfpsrxe+JsUja
-         YiQZIqFh+PjjA==
-Date:   Thu, 15 Jul 2021 02:07:06 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
-Message-ID: <20210715000706.GA75036@lothringen>
-References: <20210714135420.69624-1-frederic@kernel.org>
- <20210714135420.69624-7-frederic@kernel.org>
- <YO8WWxWBmNuI0iUW@hirez.programming.kicks-ass.net>
- <20210714231338.GA65963@lothringen>
- <87o8b4mpfb.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8b4mpfb.mognet@arm.com>
+        id S236350AbhGOHRs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Jul 2021 03:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhGOHRs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Jul 2021 03:17:48 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172F0C06175F
+        for <cgroups@vger.kernel.org>; Thu, 15 Jul 2021 00:14:56 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id h4so5093573pgp.5
+        for <cgroups@vger.kernel.org>; Thu, 15 Jul 2021 00:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mRV8T0Y7cNn0dZ1dErTOtwAnuaw6Z0Qy+uCvTtEyaTo=;
+        b=vFtzqUBvmddAmZZqsG14TK4QWHXiT5KHj9HFC8vgyb5hrS2/dp1iWg8Xn9XR1PVMje
+         RIbuEwx43xdyXeI3tmOlilqZnDIMbgOibBHvyTaSmaYLNFfz2oMkQob1ZXlRZZgYAiHs
+         LAWwumRlpNxmON9Cq1aD18fpN9qTntofk5f4ADQCynWnEUntwteGhIwMTNjFhLb2B2Pp
+         RrRlj7VYqj1N5iCTLftMz9i9xbHl3a97tsOyOvXouaXjECHyX8oaT2ZY3RwNha4UXRXn
+         DZRDhgqamNZ6gJTGd1MdLTgr+mK1B1IgPwiOyw+z8nyzSw8v+r/TPT9r8sR0xVgUuY+n
+         gGCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mRV8T0Y7cNn0dZ1dErTOtwAnuaw6Z0Qy+uCvTtEyaTo=;
+        b=pXWjkVxCXgzknpvZYhj9pP/21wRGQk+7PtZ5vYY2zpf4GTf+VcokXydzZKvRpfhN48
+         qIr4R6pFxjoe7IF+xIqu9eprErMWPiystMbavzBUOIPTkZAobZW9ISB3AnptsUoXoUXt
+         rbEJSdFvFgnBMva5RNy0x/pMMxjyhCdumDz4hU4iz3MK+Sl7zb02AH9WRnTd9sBWGPVx
+         WsGT8NSK/o7TOlibwfGW6aDqSzGHdCdaVDYv8gAN6r7NFDcWpArj2M1x8/lIXdJBgXBw
+         cYghaeDwelGVOZz4x/q8h2yhwp4XNtvU1Qzu85fzs8R2J/hev4LoQEcIoO8pP0LDVyTS
+         csig==
+X-Gm-Message-State: AOAM532O9Bbl60n/mDYZJ5AgPF9G+Rv6khln61A36qNWj2SfBM0dE5qI
+        ErvMiw9q5iGk9l8J8RG8DvnzZ2ItlGeHCAPajLY=
+X-Google-Smtp-Source: ABdhPJz818Bcq5pfeU3/6FZn1KLD0IfUeAgA8NMe1CCFxf4XMCMK1xoX8WZMVpDI7FABGnk6AvlfXQ==
+X-Received: by 2002:a63:e0c:: with SMTP id d12mr1311771pgl.386.1626333295725;
+        Thu, 15 Jul 2021 00:14:55 -0700 (PDT)
+Received: from honest-machine-1.localdomain.localdomain (80.251.213.191.16clouds.com. [80.251.213.191])
+        by smtp.gmail.com with ESMTPSA id o25sm5912494pgd.21.2021.07.15.00.14.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Jul 2021 00:14:55 -0700 (PDT)
+From:   Yutian Yang <nglaive@gmail.com>
+To:     mhocko@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org, shenwenbo@zju.edu.cn,
+        Yutian Yang <nglaive@gmail.com>
+Subject: [PATCH] memcg: charge semaphores and sem_undo objects
+Date:   Thu, 15 Jul 2021 03:14:44 -0400
+Message-Id: <1626333284-1404-1-git-send-email-nglaive@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 12:44:08AM +0100, Valentin Schneider wrote:
-> On 15/07/21 01:13, Frederic Weisbecker wrote:
-> > On Wed, Jul 14, 2021 at 06:52:43PM +0200, Peter Zijlstra wrote:
-> >>
-> >> cpusets already has means to create paritions; why are you creating
-> >> something else?
-> >
-> > I was about to answer that the semantics of isolcpus, which reference
-> > a NULL domain, are different from SD_LOAD_BALANCE implied by
-> > cpuset.sched_load_balance. But then I realize that SD_LOAD_BALANCE has
-> > been removed.
-> >
-> > How cpuset.sched_load_balance is implemented then? Commit
-> > e669ac8ab952df2f07dee1e1efbf40647d6de332 ("sched: Remove checks against
-> > SD_LOAD_BALANCE") advertize that setting cpuset.sched_load_balance to 0
-> > ends up creating NULL domain but that's not what I get. For example if I
-> > mount a single cpuset root (no other cpuset mountpoints):
-> >
-> > $ mount -t cgroup none ./cpuset -o cpuset
-> > $ cd cpuset
-> > $ cat cpuset.cpus
-> > 0-7
-> > $ cat cpuset.sched_load_balance
-> > 1
-> > $ echo 0 > cpuset.sched_load_balance
-> > $ ls /sys/kernel/debug/domains/cpu1/
-> > domain0  domain1
-> >
-> > I still get the domains on all CPUs...
-> 
-> Huh. That's on v5.14-rc1 with an automounted cpuset:
-> 
-> $ cat /sys/fs/cgroup/cpuset/cpuset.cpus
-> 0-5
-> $ cat /sys/fs/cgroup/cpuset/cpuset.sched_load_balance
-> 1
-> 
-> $ ls /sys/kernel/debug/sched/domains/cpu*
-> /sys/kernel/debug/sched/domains/cpu0:
-> domain0  domain1
-> 
-> /sys/kernel/debug/sched/domains/cpu1:
-> domain0  domain1
-> 
-> /sys/kernel/debug/sched/domains/cpu2:
-> domain0  domain1
-> 
-> /sys/kernel/debug/sched/domains/cpu3:
-> domain0  domain1
-> 
-> /sys/kernel/debug/sched/domains/cpu4:
-> domain0  domain1
-> 
-> /sys/kernel/debug/sched/domains/cpu5:
-> domain0  domain1
-> 
-> $ echo 0 > /sys/fs/cgroup/cpuset/cpuset.sched_load_balance
-> $ ls /sys/kernel/debug/sched/domains/cpu*
-> /sys/kernel/debug/sched/domains/cpu0:
-> 
-> /sys/kernel/debug/sched/domains/cpu1:
-> 
-> /sys/kernel/debug/sched/domains/cpu2:
-> 
-> /sys/kernel/debug/sched/domains/cpu3:
-> 
-> /sys/kernel/debug/sched/domains/cpu4:
-> 
-> /sys/kernel/debug/sched/domains/cpu5:
-> 
-> 
-> I also checked that you can keep cpuset.sched_load_balance=0 at the root
-> and create exclusive child cpusets with different values of
-> sched_load_balance, giving you some CPUs attached to the NULL domain and
-> some others with a sched_domain hierarchy that stays within the cpuset span.
+This patch adds accounting flags to semaphores and sem_undo allocation
+sites so that kernel could correctly charge these objects. 
 
-Ok I must have done something wrong somewhere, I'll check further tomorrow.
+A malicious user could take up more than 63GB unaccounted memory under 
+default sysctl settings by exploiting the unaccounted objects. She could 
+allocate up to 32,000 unaccounted semaphore sets with up to 32,000 
+unaccounted semaphore objects in each set. She could further allocate one 
+sem_undo unaccounted object for each semaphore set.
+
+The following code shows a PoC that takes ~63GB unaccounted memory, while 
+it is charged for only less than 1MB memory usage. We evaluate the PoC on 
+QEMU x86_64 v5.2.90 + Linux kernel v5.10.19 + Debian buster. 
+
+/*------------------------- POC code ----------------------------*/
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sched.h>
+
+#define errExit(msg)    do { perror(msg); exit(EXIT_FAILURE); \
+                        } while (0)
+
+int main(int argc, char *argv[]) {
+  int err, semid;
+  struct sembuf sops;
+  for (int i = 0; i < 31200; ++i) {
+    semid = semget(IPC_PRIVATE, 31200, IPC_CREAT);
+    if (semid == -1) {
+      errExit("semget");
+    }
+    sops.sem_num = 0;
+    sops.sem_op = 1;
+    sops.sem_flg = SEM_UNDO;
+    err = semop(semid, &sops, 1);
+    if (err == -1) {
+      errExit("semop");
+    }
+  }
+  while(1);
+  return 0;
+}
+/*-------------------------- end --------------------------------*/
 
 Thanks!
+
+Yutian Yang,
+Zhejiang University
+
+Signed-off-by: Yutian Yang <nglaive@gmail.com>
+---
+ ipc/sem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ipc/sem.c b/ipc/sem.c
+index f6c30a85d..6860de0b1 100644
+--- a/ipc/sem.c
++++ b/ipc/sem.c
+@@ -511,7 +511,7 @@ static struct sem_array *sem_alloc(size_t nsems)
+ 	if (nsems > (INT_MAX - sizeof(*sma)) / sizeof(sma->sems[0]))
+ 		return NULL;
+ 
+-	sma = kvzalloc(struct_size(sma, sems, nsems), GFP_KERNEL);
++	sma = kvzalloc(struct_size(sma, sems, nsems), GFP_KERNEL_ACCOUNT);
+ 	if (unlikely(!sma))
+ 		return NULL;
+ 
+@@ -1935,7 +1935,7 @@ static struct sem_undo *find_alloc_undo(struct ipc_namespace *ns, int semid)
+ 	rcu_read_unlock();
+ 
+ 	/* step 2: allocate new undo structure */
+-	new = kzalloc(sizeof(struct sem_undo) + sizeof(short)*nsems, GFP_KERNEL);
++	new = kzalloc(sizeof(struct sem_undo) + sizeof(short)*nsems, GFP_KERNEL_ACCOUNT);
+ 	if (!new) {
+ 		ipc_rcu_putref(&sma->sem_perm, sem_rcu_free);
+ 		return ERR_PTR(-ENOMEM);
+-- 
+2.25.1
+
