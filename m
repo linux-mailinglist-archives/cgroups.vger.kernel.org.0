@@ -2,110 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7C3CBE9C
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jul 2021 23:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3613CBF98
+	for <lists+cgroups@lfdr.de>; Sat, 17 Jul 2021 01:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhGPVb6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Jul 2021 17:31:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58536 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235125AbhGPVb5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jul 2021 17:31:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626470941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
-        b=L6e5tkVhaRSc5L4Z++0GnAfZ9RkQMD1kWHT4uI2smNMQh0paOnoeztbcvxl/7PRaKnVnVK
-        EJHhxoHtg2T7oalrLidI+Ys7hx/qRfFLDrjQgIBfqSPG+WjIv7Ve5gWuL51O7PBkrBX5KR
-        CxRHTlNXJaS+LcXlXOKpuZQb0rRU2l8=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-542-EUIsBtWlP_CTj_qCYpLrFQ-1; Fri, 16 Jul 2021 17:29:00 -0400
-X-MC-Unique: EUIsBtWlP_CTj_qCYpLrFQ-1
-Received: by mail-qk1-f198.google.com with SMTP id i190-20020a3786c70000b02903b54f40b442so7389053qkd.0
-        for <cgroups@vger.kernel.org>; Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
+        id S237805AbhGPXKY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Jul 2021 19:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237305AbhGPXKX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jul 2021 19:10:23 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F82CC06175F;
+        Fri, 16 Jul 2021 16:07:28 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t9so11450890pgn.4;
+        Fri, 16 Jul 2021 16:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=P6K+M5gqphiIlNgiFVLzyTugz5hPofZVAtQFiBp7d9s=;
+        b=ullVU331i6gIy4bDcdWB3Z/mYU0uuO8Zz4+zTPF4DwwlLYBpWuoLo8phBHSXV0zQ7I
+         SnHGjhyqsblUks+TDqDyRg4ZJkN2L9qsQLpMeWKT7t2h8zLaPWdo1UYACdUf3Xt6tIwd
+         xB4cZZL3MNrmfbw7bGVtnvkjs5Vu7ZmfUO4pZ8XbSiiJeBdR3nAAJ+Su2ue+vfNRElSD
+         5PG0YGgodlVwx9uT7QnwAZcpoSzxV7h1nEUvVATn3P0i1EsFusZbwh3n3m8MC2cgND5M
+         fw4uP+kNHZBoBmDmHLFdtj6j4Wj3usLgezpO6JfVgH0i+0WPB26yOjAL/vNUUtDFWces
+         mi6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
-        b=MxZQa1ON8TOBGPBDyJok0AGjrV6uh0jSwkrQ2jhPt3KM7Gg7VnVdiPqnFh65oLb/WC
-         WA49HvmF+1QaSYv8vaEZP2bSYM0fV9ShHdCtvfunXf1qtM555VsHkmaUMhUJcrlHOBPk
-         oa2m1DSn9rIP3BjjW7He7HHOq3fEp58S2tWvrfomDNGdZ9fEudGBkNlBpXszVQYEVzEM
-         y2Bd/3VMOmqX6jQCMSLrdIYWU1m5KCdCOmtOuLeiBvplzsGNG/yLx+/F3+kCT2M02XMN
-         yw7VA7pA9iVOplJdsNyoUbBImwbguBPyVxgodUieYZXfZHa0FNOtu3vK+u1CQ0MZzsnh
-         Sb1g==
-X-Gm-Message-State: AOAM531egxR84lifCjIzwsiy8iNNpU58dIhR1ppK+v0vBaNBVfC/vnhV
-        8NkJx87GqFG0LrsphTOaYzOGrdOZXxQ13+7ABqk8JDiiAA+oZsZ9vKVkUX+7XLwASTm06ElptH/
-        Mkfv3ONyHA9Z6rgLarQ==
-X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059654qtv.294.1626470940409;
-        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/rGIlMZXPU7T3qfOnTizDJI9I0dX2kqwDbKljo69VftMGZBefLuWX+uvFXWRvzofzBsFBCg==
-X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059637qtv.294.1626470940260;
-        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p3sm3716072qti.31.2021.07.16.14.28.59
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=P6K+M5gqphiIlNgiFVLzyTugz5hPofZVAtQFiBp7d9s=;
+        b=DCAmJcFxMsNX9bzvKg58M7Zek3nOEPQgb4VI+Hfv9IuM/7oKAZns1p/3eSRq5iU+E7
+         qkvRI8NwZhLcAoWGt8jRPko1nc+QIGaNFq9KHBT5Im5F1YVZVrjd+npsz/Vv/P7HBwrx
+         dwMszhxWW6EUWmGj4ESwYdgEqMTvc6hRSbAcuZ+dMWBzuNoNoigBbLcG2qkAGkGp5vJc
+         bPmBTIJmEzpAgKEhy0K8E3jCAt2NrPK0R+2q5z+LwgUYohJuoVMbn8wAIqklMeMfRjuW
+         7X6U1/TkohH6VgREq+YGpL1RyVx1d35MEdeYRbxaHBaNBuvIBMjsoSNxno1gAM8AdJE1
+         s2OA==
+X-Gm-Message-State: AOAM530a2QseeSPzAIcrfprp0WGS7S8gUm7KMD0irA/3M5mtUJUxwY7F
+        T070NeV5Wbl1oaEkTKji72R8RAUlmiwROeDr
+X-Google-Smtp-Source: ABdhPJw9dJ72rSe9XLZ950WY6ydjbUXyufvsG1vehWYDSoNNiFiTRd6IP+Ld9+E2/C3EdBToTL1ZlA==
+X-Received: by 2002:a63:d811:: with SMTP id b17mr12203456pgh.286.1626476847524;
+        Fri, 16 Jul 2021 16:07:27 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id x9sm11224635pfd.100.2021.07.16.16.07.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Jul 2021 14:28:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
- partition root
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20210621184924.27493-1-longman@redhat.com>
- <20210621184924.27493-3-longman@redhat.com>
- <YNcHOe3o//pIiByh@mtj.duckdns.org>
- <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
- <YONGk3iw/zrNzwLK@mtj.duckdns.org>
- <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
- <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
- <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
- <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
- <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
- <YPH3sF56gK71CxXY@mtj.duckdns.org>
-Message-ID: <4a804edc-17ec-d8fa-d8c1-273252ba0ee4@redhat.com>
-Date:   Fri, 16 Jul 2021 17:28:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Fri, 16 Jul 2021 16:07:27 -0700 (PDT)
+Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
+ <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <9d8b584a-738b-a0a8-ea8c-e617c2f79408@gmail.com>
+Date:   Sat, 17 Jul 2021 07:07:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YPH3sF56gK71CxXY@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/16/21 5:18 PM, Tejun Heo wrote:
+
+
+Tejun Heo wrote on 2021/7/17 0:09:
 > Hello,
->
-> On Fri, Jul 16, 2021 at 05:12:17PM -0400, Waiman Long wrote:
->> Are you suggesting that we add a cpuset.cpus.events file that allows
->> processes to be notified if an event (e.g. hotplug) that changes a partition
->> root to invalid partition happens or when explicit change to a partition
->> root fails? Will that be enough to satisfy your requirement?
-> Yeah, something like that or make the current state file generate events on
-> state transitions.
+> 
+> On Fri, Jul 16, 2021 at 02:22:49PM +0800, brookxu wrote:
+>> diff --git a/block/blk-merge.c b/block/blk-merge.c
+>> index a11b3b5..86ff943 100644
+>> --- a/block/blk-merge.c
+>> +++ b/block/blk-merge.c
+>> @@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
+>>  		trace_block_split(split, (*bio)->bi_iter.bi_sector);
+>>  		submit_bio_noacct(*bio);
+>>  		*bio = split;
+>> +
+>> +		blk_throtl_recharge_bio(*bio);
+> 
+> I don't think we're holding the queue lock here.
 
+sorry, some kind of synchronization mechanism is really needed here. But the use of queue_lock
+here may be unsafe, since it is difficult for us to control the lock on the split path.
 
-Sure. I will change the patch to make cpuset.cpus.partition generates 
-event when its state change. Thanks for the suggestion. It definitely 
-makes it better.
+>>  	}
+>>  }
+>>  
+>> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+>> index b1b22d8..1967438 100644
+>> --- a/block/blk-throttle.c
+>> +++ b/block/blk-throttle.c
+>> @@ -2176,6 +2176,40 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
+>>  }
+>>  #endif
+>>  
+>> +void blk_throtl_recharge_bio(struct bio *bio)
+>> +{
+>> +	bool rw = bio_data_dir(bio);
+>> +	struct blkcg_gq *blkg = bio->bi_blkg;
+>> +	struct throtl_grp *tg = blkg_to_tg(blkg);
+>> +	u32 iops_limit = tg_iops_limit(tg, rw);
+>> +
+>> +	if (iops_limit == UINT_MAX)
+>> +		return;
+>> +
+>> +	/*
+>> +	 * If previous slice expired, start a new one otherwise renew/extend
+>> +	 * existing slice to make sure it is at least throtl_slice interval
+>> +	 * long since now. New slice is started only for empty throttle group.
+>> +	 * If there is queued bio, that means there should be an active
+>> +	 * slice and it should be extended instead.
+>> +	 */
+>> +	if (throtl_slice_used(tg, rw) && !(tg->service_queue.nr_queued[rw]))
+>> +		throtl_start_new_slice(tg, rw);
+>> +	else {
+>> +		if (time_before(tg->slice_end[rw],
+>> +		    jiffies + tg->td->throtl_slice))
+>> +			throtl_extend_slice(tg, rw,
+>> +				jiffies + tg->td->throtl_slice);
+>> +	}
+>> +
+>> +	/* Recharge the bio to the group, as some BIOs will be further split
+>> +	 * after passing through the throttle, causing the actual IOPS to
+>> +	 * be greater than the expected value.
+>> +	 */
+>> +	tg->last_io_disp[rw]++;
+>> +	tg->io_disp[rw]++;
+>> +}
+> 
+> But blk-throtl expects queue lock to be held.
+> 
+> How about doing something simpler? Just estimate how many bios a given bio
+> is gonna be and charge it outright? The calculation will be duplicated
+> between the split path but that seems like the path of least resistance
+> here.
 
-Cheers,
-Longman
+I have tried this method, the code redundancy is indeed a bit high, it may not be
+very convenient for code maintenance. In addition to this problem, since we add
+a large value at a time, the fluctuation of IOPS will be relatively large. Since
+blk_throtl_recharge_bio() does not need to participate in the maintenance of the
+state machine, we only need to protect some fields of tg, so can we add a new
+spin_lock to tg instead of queue_lock to solve the synchronization problem ? Just
+a idea, Thanks.
 
+> Thanks.
+> 
