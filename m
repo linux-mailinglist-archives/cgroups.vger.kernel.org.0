@@ -2,237 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A483CBE65
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jul 2021 23:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B7C3CBE9C
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jul 2021 23:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhGPVYs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Jul 2021 17:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235677AbhGPVYr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jul 2021 17:24:47 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE3C06175F
-        for <cgroups@vger.kernel.org>; Fri, 16 Jul 2021 14:21:51 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id u8-20020a6345480000b0290227a64be361so7907476pgk.9
-        for <cgroups@vger.kernel.org>; Fri, 16 Jul 2021 14:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=fk4tAuPxyFd0FobDfqVGnEYc2NrI1vYM+OgM2ictzdU=;
-        b=OXccDO+93T+Duotqx23iOxbpOH2hC+t2wyXy/iHa5ryp9TQZRDeoCQhISflgiYg7tM
-         M5RPsBIx4rTn+Esxk4YCBgUaupjIoT7QD7xFkyCVDOvHoFEEcFPiYTffQKjMcFmw4uWy
-         QoEjHRAItFobqeqb2dfK4NviepC1QqWeio3br37scL6Ah/VHUDwACET67NB6gts4o4nE
-         7Iw/p5Klw84ubiS67x6n7NG5WEisOg/FoVaAjpQkWqppTH2F73WnfdUspG0maB7oYER0
-         ECDU32zKKRH2D6+oBmL/CuOeM0Yqgefpg+6EXVGy2KHYi4r36htIHXXorL+8WVsRmeLX
-         l31w==
+        id S235209AbhGPVb6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Jul 2021 17:31:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58536 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235125AbhGPVb5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Jul 2021 17:31:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626470941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
+        b=L6e5tkVhaRSc5L4Z++0GnAfZ9RkQMD1kWHT4uI2smNMQh0paOnoeztbcvxl/7PRaKnVnVK
+        EJHhxoHtg2T7oalrLidI+Ys7hx/qRfFLDrjQgIBfqSPG+WjIv7Ve5gWuL51O7PBkrBX5KR
+        CxRHTlNXJaS+LcXlXOKpuZQb0rRU2l8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-EUIsBtWlP_CTj_qCYpLrFQ-1; Fri, 16 Jul 2021 17:29:00 -0400
+X-MC-Unique: EUIsBtWlP_CTj_qCYpLrFQ-1
+Received: by mail-qk1-f198.google.com with SMTP id i190-20020a3786c70000b02903b54f40b442so7389053qkd.0
+        for <cgroups@vger.kernel.org>; Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=fk4tAuPxyFd0FobDfqVGnEYc2NrI1vYM+OgM2ictzdU=;
-        b=qeN53nZGFdl5/zCwGfHCgYyHKsxaCBCaXjFaQyAZSN2kQ1Ss3YtpraIlRiEdS8Gn6+
-         7yl69i+owMG2xuriGtLFEOW47zbXqYLpnYVkEBa4/7asl9QcJ9uClGDF1zqi2GHl4vyB
-         ANjZqFPFnyDbaCpEqEthr9zu49AapwYzTja/cBKj4xapPSvgZoDFaj+pUk9b8fp9k34n
-         6xzlJMrxR9UOGqvr5mlS9ZtTUESIdltyvAH071k0PqGAfBKVSfNBBruiuSZdFth9Kj0Z
-         W9xErbKlGIgRnqtE7zu7qLJLeZ0zEeNLQi7zYygM5WYGHb0C8zkmTMGSnSSlKJSRaGJF
-         hWJg==
-X-Gm-Message-State: AOAM530oG6huOpghicSB/TUj6sHM1JIaQ611tQt7nQWAnCO+gH/++yvY
-        +DTVpFnGjxldb4bpCyrD3gWIJiHDm/b/3A==
-X-Google-Smtp-Source: ABdhPJwdhB+OPsjljhxCtg0io1DcatEsiYa5v6bw4qqoVEDz7s9GO+vvFJMxbUFkcKoNe0CqLZMXM0h49ePVow==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:7bfd:347c:6059:d68a])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:15c9:: with SMTP id
- lh9mr10582743pjb.111.1626470511140; Fri, 16 Jul 2021 14:21:51 -0700 (PDT)
-Date:   Fri, 16 Jul 2021 14:21:37 -0700
-In-Reply-To: <20210716212137.1391164-1-shakeelb@google.com>
-Message-Id: <20210716212137.1391164-2-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20210716212137.1391164-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.32.0.402.g57bb445576-goog
-Subject: [PATCH v5 2/2] memcg: infrastructure to flush memcg stats
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=YABHDSw9b5sWUS8tb4/mSbwzJgD3Ug0F6zV+ryBO8W8=;
+        b=MxZQa1ON8TOBGPBDyJok0AGjrV6uh0jSwkrQ2jhPt3KM7Gg7VnVdiPqnFh65oLb/WC
+         WA49HvmF+1QaSYv8vaEZP2bSYM0fV9ShHdCtvfunXf1qtM555VsHkmaUMhUJcrlHOBPk
+         oa2m1DSn9rIP3BjjW7He7HHOq3fEp58S2tWvrfomDNGdZ9fEudGBkNlBpXszVQYEVzEM
+         y2Bd/3VMOmqX6jQCMSLrdIYWU1m5KCdCOmtOuLeiBvplzsGNG/yLx+/F3+kCT2M02XMN
+         yw7VA7pA9iVOplJdsNyoUbBImwbguBPyVxgodUieYZXfZHa0FNOtu3vK+u1CQ0MZzsnh
+         Sb1g==
+X-Gm-Message-State: AOAM531egxR84lifCjIzwsiy8iNNpU58dIhR1ppK+v0vBaNBVfC/vnhV
+        8NkJx87GqFG0LrsphTOaYzOGrdOZXxQ13+7ABqk8JDiiAA+oZsZ9vKVkUX+7XLwASTm06ElptH/
+        Mkfv3ONyHA9Z6rgLarQ==
+X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059654qtv.294.1626470940409;
+        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/rGIlMZXPU7T3qfOnTizDJI9I0dX2kqwDbKljo69VftMGZBefLuWX+uvFXWRvzofzBsFBCg==
+X-Received: by 2002:ac8:6ec1:: with SMTP id f1mr11059637qtv.294.1626470940260;
+        Fri, 16 Jul 2021 14:29:00 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id p3sm3716072qti.31.2021.07.16.14.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 14:28:59 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 2/6] cgroup/cpuset: Clarify the use of invalid
+ partition root
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20210621184924.27493-1-longman@redhat.com>
+ <20210621184924.27493-3-longman@redhat.com>
+ <YNcHOe3o//pIiByh@mtj.duckdns.org>
+ <6ea1ac38-73e1-3f78-a5d2-a4c23bcd8dd1@redhat.com>
+ <YONGk3iw/zrNzwLK@mtj.duckdns.org>
+ <c6ae2d9b-ad6e-9bbd-b25c-f52b0ff6fb9b@redhat.com>
+ <1bb119a1-d94a-6707-beac-e3ae5c03fae5@redhat.com>
+ <8c44b659-3fe4-b14f-fac1-cbd5b23010c3@redhat.com>
+ <YPHwG61qGDa3h6Wg@mtj.duckdns.org>
+ <e8c538a8-bf5c-b04c-1b21-ac22cd158dd1@redhat.com>
+ <YPH3sF56gK71CxXY@mtj.duckdns.org>
+Message-ID: <4a804edc-17ec-d8fa-d8c1-273252ba0ee4@redhat.com>
+Date:   Fri, 16 Jul 2021 17:28:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YPH3sF56gK71CxXY@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-At the moment memcg stats are read in four contexts:
+On 7/16/21 5:18 PM, Tejun Heo wrote:
+> Hello,
+>
+> On Fri, Jul 16, 2021 at 05:12:17PM -0400, Waiman Long wrote:
+>> Are you suggesting that we add a cpuset.cpus.events file that allows
+>> processes to be notified if an event (e.g. hotplug) that changes a partition
+>> root to invalid partition happens or when explicit change to a partition
+>> root fails? Will that be enough to satisfy your requirement?
+> Yeah, something like that or make the current state file generate events on
+> state transitions.
 
-1. memcg stat user interfaces
-2. dirty throttling
-3. page fault
-4. memory reclaim
 
-Currently the kernel flushes the stats for first two cases. Flushing the
-stats for remaining two casese may have performance impact. Always
-flushing the memcg stats on the page fault code path may negatively
-impacts the performance of the applications. In addition flushing in the
-memory reclaim code path, though treated as slowpath, can become the
-source of contention for the global lock taken for stat flushing because
-when system or memcg is under memory pressure, many tasks may enter the
-reclaim path.
+Sure. I will change the patch to make cpuset.cpus.partition generates 
+event when its state change. Thanks for the suggestion. It definitely 
+makes it better.
 
-This patch uses following mechanisms to solve these challenges:
-
-1. Periodically flush the stats from root memcg every 2 seconds. This
-will time limit the out of sync stats.
-
-2. Asynchronously flush the stats after fixed number of stat updates.
-In the worst case the stat can be out of sync by O(nr_cpus * BATCH) for
-2 seconds.
-
-3. For avoiding thundering herd to flush the stats particularly from the
-memory reclaim context, introduce memcg local spinlock and let only one
-flusher active at a time. This could have been done through
-cgroup_rstat_lock lock but that lock is used by other subsystem and for
-userspace reading memcg stats. So, it is better to keep flushers
-introduced by this patch decoupled from cgroup_rstat_lock. However we
-would have to use irqsafe version of rstat flush but that is fine as
-this code path will be flushing for whole tree and do the work for
-everyone. No one will be waiting for that worker.
-
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changes since v4:
-- Fixed the sleep-in-wrong context bug report by Yang Yingliang
-  <yangyingliang@huawei.com> and Marek Szyprowski
-  <m.szyprowski@samsung.com>.
-
-Changes since v3:
-- Add back the sigoff
-
-Changes since v2:
-- Changed the subject of the patch
-- Added mechanism to bound errors to nr_cpus instead of nr_cgroups
-- memcg local lock to let one active flusher
-
-Changes since v1:
-- use system_unbound_wq for flushing the memcg stats
-
- include/linux/memcontrol.h |  6 ++++++
- mm/memcontrol.c            | 34 ++++++++++++++++++++++++++++++++++
- mm/vmscan.c                |  6 ++++++
- 3 files changed, 46 insertions(+)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0bfa0409af22..fa095a94ae56 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -991,6 +991,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return x;
- }
- 
-+void mem_cgroup_flush_stats(void);
-+
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val);
- void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
-@@ -1400,6 +1402,10 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return node_page_state(lruvec_pgdat(lruvec), idx);
- }
- 
-+static inline void mem_cgroup_flush_stats(void)
-+{
-+}
-+
- static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
- 					    enum node_stat_item idx, int val)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 848d711bf576..0a05ce5cd045 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -103,6 +103,14 @@ static bool do_memsw_account(void)
- 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap;
- }
- 
-+/* memcg and lruvec stats flushing */
-+static void flush_memcg_stats_dwork(struct work_struct *w);
-+static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
-+static void flush_memcg_stats_work(struct work_struct *w);
-+static DECLARE_WORK(stats_flush_work, flush_memcg_stats_work);
-+static DEFINE_PER_CPU(unsigned int, stats_flush_threshold);
-+static DEFINE_SPINLOCK(stats_flush_lock);
-+
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
- 
-@@ -685,6 +693,8 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
-+	if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
-+		queue_work(system_unbound_wq, &stats_flush_work);
- }
- 
- /**
-@@ -5248,6 +5258,10 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	/* Online state pins memcg ID, memcg ID pins CSS */
- 	refcount_set(&memcg->id.ref, 1);
- 	css_get(css);
-+
-+	if (unlikely(mem_cgroup_is_root(memcg)))
-+		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
-+				   2UL*HZ);
- 	return 0;
- }
- 
-@@ -5339,6 +5353,26 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
- 	memcg_wb_domain_size_changed(memcg);
- }
- 
-+void mem_cgroup_flush_stats(void)
-+{
-+	if (!spin_trylock(&stats_flush_lock))
-+		return;
-+
-+	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
-+	spin_unlock(&stats_flush_lock);
-+}
-+
-+static void flush_memcg_stats_dwork(struct work_struct *w)
-+{
-+	mem_cgroup_flush_stats();
-+	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
-+}
-+
-+static void flush_memcg_stats_work(struct work_struct *w)
-+{
-+	mem_cgroup_flush_stats();
-+}
-+
- static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index a7602f71ec04..1cc05ab8ca15 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2893,6 +2893,12 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
- 
- again:
-+	/*
-+	 * Flush the memory cgroup stats, so that we read accurate per-memcg
-+	 * lruvec stats for heuristics.
-+	 */
-+	mem_cgroup_flush_stats();
-+
- 	memset(&sc->nr, 0, sizeof(sc->nr));
- 
- 	nr_reclaimed = sc->nr_reclaimed;
--- 
-2.32.0.402.g57bb445576-goog
+Cheers,
+Longman
 
