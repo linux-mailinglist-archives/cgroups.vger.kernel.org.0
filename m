@@ -2,124 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F1A3CE981
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 19:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0E83CEC6F
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 22:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351229AbhGSQ5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jul 2021 12:57:08 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:58980 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357721AbhGSQwQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 12:52:16 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:57914)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m5X8Q-00C5r8-9k; Mon, 19 Jul 2021 11:32:54 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34170 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m5X8P-003nal-5j; Mon, 19 Jul 2021 11:32:53 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
-References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
-        <cover.1626688654.git.vvs@virtuozzo.com>
-        <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
-Date:   Mon, 19 Jul 2021 12:32:46 -0500
-In-Reply-To: <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com> (Vasily
-        Averin's message of "Mon, 19 Jul 2021 13:45:44 +0300")
-Message-ID: <87k0lmryyp.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1349000AbhGSRcT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jul 2021 13:32:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1380527AbhGSR3Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 13:29:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626718205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WvxmU6C3e5BEm26OJjFVoh44JOCamNiazeqRDjQ7ySA=;
+        b=KXaz6IxWPikrtLzLSJvSLDwGoYKEUNg0InLZe3KuoNsGNlq4pOV2ucdDs29f6pHibLpg+D
+        utsN1CKi0hfOQAUMvCIeuQVudRQq50qt2t4eLTHZrRWTwR1kdLmR/dbVruzFPABXK+LNyy
+        JGITRI203G6JnZWQPY/DfSbQTlaOYDU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-x1HkTEs-One2jo_3Q7kvsA-1; Mon, 19 Jul 2021 14:10:01 -0400
+X-MC-Unique: x1HkTEs-One2jo_3Q7kvsA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E779A192D785;
+        Mon, 19 Jul 2021 18:09:59 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E78B5D6A1;
+        Mon, 19 Jul 2021 18:09:54 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 503A54172EDE; Mon, 19 Jul 2021 12:41:28 -0300 (-03)
+Date:   Mon, 19 Jul 2021 12:41:28 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
+Message-ID: <20210719154128.GB27911@fuller.cnet>
+References: <20210714135420.69624-1-frederic@kernel.org>
+ <20210714135420.69624-7-frederic@kernel.org>
+ <20210714163157.GA140679@fuller.cnet>
+ <20210719132649.GB116346@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m5X8P-003nal-5j;;;mid=<87k0lmryyp.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19riCDlCttkz1EHUrkai0JB6kWYfxt9MHc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Vasily Averin <vvs@virtuozzo.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 538 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.4%), parse: 1.00 (0.2%),
-        extract_message_metadata: 11 (2.1%), get_uri_detail_list: 1.27 (0.2%),
-        tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.24 (0.2%),
-        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 188 (35.0%), check_bayes:
-        184 (34.2%), b_tokenize: 10 (1.8%), b_tok_get_all: 6 (1.1%),
-        b_comp_prob: 3.7 (0.7%), b_tok_touch_all: 161 (29.9%), b_finish: 0.88
-        (0.2%), tests_pri_0: 298 (55.3%), check_dkim_signature: 1.73 (0.3%),
-        check_dkim_adsp: 10 (1.9%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
-        2.4 (0.4%), tests_pri_500: 19 (3.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719132649.GB116346@lothringen>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Vasily Averin <vvs@virtuozzo.com> writes:
+On Mon, Jul 19, 2021 at 03:26:49PM +0200, Frederic Weisbecker wrote:
+> On Wed, Jul 14, 2021 at 01:31:57PM -0300, Marcelo Tosatti wrote:
+> > On Wed, Jul 14, 2021 at 03:54:20PM +0200, Frederic Weisbecker wrote:
+> > > Add a new cpuset.isolation_mask file in order to be able to modify the
+> > > housekeeping cpumask for each individual isolation feature on runtime.
+> > > In the future this will include nohz_full, unbound timers,
+> > > unbound workqueues, unbound kthreads, managed irqs, etc...
+> > > 
+> > > Start with supporting domain exclusion and CPUs passed through
+> > > "isolcpus=".
+> > 
+> > It is possible to just add return -ENOTSUPPORTED for the features 
+> > whose support is not present?
+> 
+> Maybe, although that looks like a specialized error for corner cases.
 
-> When a user send a signal to any another processes it forces the kernel
-> to allocate memory for 'struct sigqueue' objects. The number of signals
-> is limited by RLIMIT_SIGPENDING resource limit, but even the default
-> settings allow each user to consume up to several megabytes of memory.
-> Moreover, an untrusted admin inside container can increase the limit or
-> create new fake users and force them to sent signals.
+Well, are you going to implement runtime enablement for all features,
+including nohz_full, in the first patch set?
 
-Not any more.  Currently the number of sigqueue objects is limited
-by the rlimit of the creator of the user namespace of the container.
+From my POV returning -ENOTSUPPORTED would allow for a gradual 
+implementation of the features.
 
-> It makes sense to account for these allocations to restrict the host's
-> memory consumption from inside the memcg-limited container.
+> > > CHECKME: Should we have individual cpuset.isolation.$feature files for
+> > >          each isolation feature instead of a single mask file?
+> > 
+> > Yes, guess that is useful, for example due to the -ENOTSUPPORTED
+> > comment above.
+> > 
+> > 
+> > Guarantees on updates
+> > =====================
+> > 
+> > Perhaps start with a document with:
+> > 
+> > On return to the write to the cpumask file, what are the guarantees?
+> > 
+> > For example, for kthread it is that any kernel threads from that point
+> > on should start with the new mask. Therefore userspace should 
+> > respect the order:
+> > 
+> > 1) Change kthread mask.
+> > 2) Move threads.
+> > 
+> 
+> Yep.
+> 
+> > Updates to interface
+> > ====================
+> > 
+> > Also, thinking about updates to the interface (which today are one
+> > cpumask per isolation feature) might be useful. What can happen:
+> > 
+> > 1) New isolation feature is added, feature name added to the interface.
+> > 
+> > Userspace must support new filename. If not there, then thats an 
+> > old kernel without support for it.
+> > 
+> > 2) If an isolation feature is removed, a file will be gone. What should
+> > be the behaviour there? Remove the file? (userspace should probably 
+> > ignore the failure in that case?) (then features names should not be
+> > reused, as that can confuse #1 above).
+> 
+> Heh, yeah that's complicated. I guess we should use one flag per file as that
+> fits well within the current cpuset design. But we must carefully choose the new
+> files to make sure they have the least chances to be useless in the long term.
+> 
+> > Or maybe have a versioned scheme?
+> 
+> I suspect we should avoid that at all costs :-)
+> 
+> Thanks!
 
-Does it?  Why?  The given justification appears to have bit-rotted
-since -rc1.
+Makes sense.
 
-I know a lot of these things only really need a limit just to catch a
-program that starts malfunctioning.  If that is indeed the case
-reasonable per-resource limits are probably better than some great big
-group limit that can be exhausted with any single resource in the group.
-
-Is there a reason I am not aware of that where it makes sense to group
-all of the resources together and only count the number of bytes
-consumed?
-
-Eric
-
-
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  kernel/signal.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index a3229ad..8921c4a 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -4663,7 +4663,7 @@ void __init signals_init(void)
->  {
->  	siginfo_buildtime_checks();
->  
-> -	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
-> +	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
->  }
->  
->  #ifdef CONFIG_KGDB_KDB
