@@ -2,166 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011C53CD0D2
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 11:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE033CD275
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 12:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbhGSItB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jul 2021 04:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234868AbhGSItB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 04:49:01 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD8CC061574
-        for <cgroups@vger.kernel.org>; Mon, 19 Jul 2021 01:31:05 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id c197so19986151oib.11
-        for <cgroups@vger.kernel.org>; Mon, 19 Jul 2021 02:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=K5p2P65+i0AweYuQiub8/5cfx7UmoYj8p7cwzEMV0lA=;
-        b=mqvhVWGbyd07WM7+503sKbpv85x3i1UGUD9R4uaoA+lOdh75nu3Iyh7XRPbrDit0ED
-         cUJ1W5evqyynyTzM/e/me/MIk4b1n1QGZldsIMjor+iHcvGjV9e3Q2O+lahXAdwG+5bM
-         GGof7BwxTVnVor7FeV1Gq3Ytfcuc2nKtyb0gWBR3/+0yMAqPHhx6yD/4wRSplbLwrbHu
-         IIOkq2sDJQwhLMhdW6oJo6He/h1fRNJef068oNTRNfBFDnEBWHkA45f5SoqhR7gCqmt4
-         X89TnEP64tNr4si2FcuTBg6wjZTHfayl6rRaT6OJPQy8/O7NrkL3rMv1nTbCrF2sMR0a
-         2s/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=K5p2P65+i0AweYuQiub8/5cfx7UmoYj8p7cwzEMV0lA=;
-        b=DbD3i8xBw6nsVl7YFCgTPxlaKmX5HO2F+InYMA1DCnzo32liK1kCZpF67kDlPLHr8M
-         dpAoc/YjluyANYM6IsNO1aX4XGYFATKbi36Y/2YLvHW4vNUfHCAJImaCrzS7fymQTE7D
-         Cey0L0Scf33Fz4QtJT478tHudj5SkQRiqX8r+bhiEckI/dMvc0hGRAJuiCTG4DAes1Mj
-         v4eq3VoSsHpCYOAf7jr1oznlg/kqszQRHNM+seb6BXt5OPTcqe6kIdzgh03j7yPM8Bjm
-         SGVfpdjV29uei7gZrbZ5d1IQLpr0YjAhbVnrGK79cfOC8gXAKPjISjlZdFbhjTJZgTcC
-         KIDA==
-X-Gm-Message-State: AOAM533Q0vBKm0aspul5Il2fOou5uoQbVbaGzfWQ5k++JQRce77yrQi8
-        6SNmfk/9/xAb+lspWJPlSS0N8yzeLlTW3iMPQ3I=
-X-Google-Smtp-Source: ABdhPJwKDzS/MakDwUq1pJi6jRa3rOuOd6E5xqWWgYfoMYcnYqsNMbGcM1qinHnnzvdhPSbgulAGDw==
-X-Received: by 2002:a17:90b:806:: with SMTP id bk6mr24297010pjb.13.1626682680800;
-        Mon, 19 Jul 2021 01:18:00 -0700 (PDT)
-Received: from honest-machine-1.localdomain.localdomain (80.251.213.191.16clouds.com. [80.251.213.191])
-        by smtp.gmail.com with ESMTPSA id u24sm19373612pfm.156.2021.07.19.01.17.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Jul 2021 01:18:00 -0700 (PDT)
-From:   Yutian Yang <nglaive@gmail.com>
-To:     shakeelb@google.com, dhowells@redhat.com, jarkko@kernel.org,
-        mhocko@kernel.org
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, shenwenbo@zju.edu.cn,
-        Yutian Yang <nglaive@gmail.com>
-Subject: [PATCH] memcg: enable accounting in keyctl subsys
-Date:   Mon, 19 Jul 2021 04:17:47 -0400
-Message-Id: <1626682667-10771-1-git-send-email-nglaive@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S236416AbhGSKDu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jul 2021 06:03:50 -0400
+Received: from relay.sw.ru ([185.231.240.75]:44462 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235975AbhGSKDt (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 19 Jul 2021 06:03:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=iZ1ynByuioCDoTi2cQJPPrkVfNJCOxOFIYdlfBM1PN0=; b=k76dwmG/+ikvsiuwlWE
+        U2ephl4PQhMvGh2Y09udetgUKUe64bpUurFHaVD1zRCRHPgKPiDw0euvVnw3gmGqgiA1KbgUd1+S3
+        RPj1WAz6bwfvkHo4bNwF0P7uyBEFWrsjJuWH73tHy+fQnwndffiMpXH33Q+9UcEpuAAq6JBQAHw=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m5Qkx-004Rc7-T6; Mon, 19 Jul 2021 13:44:15 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v5 00/16] memcg accounting from OpenVZ
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        netdev <netdev@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+Message-ID: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
+Date:   Mon, 19 Jul 2021 13:44:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch enables accounting for key objects and auth record objects.
-Allocation of the objects are triggerable by syscalls from userspace.
+OpenVZ uses memory accounting 20+ years since v2.2.x linux kernels. 
+Initially we used our own accounting subsystem, then partially committed
+it to upstream, and a few years ago switched to cgroups v1.
+Now we're rebasing again, revising our old patches and trying to push
+them upstream.
 
-We have written a PoC to show that the missing-charging objects lead to
-breaking memcg limits. The PoC program takes around 2.2GB unaccounted
-memory, while it is charged for only 24MB memory usage. We evaluate the
-PoC on QEMU x86_64 v5.2.90 + Linux kernel v5.10.19 + Debian buster. All
-the limitations including ulimits and sysctl variables are set as default.
-Specifically, we set kernel.keys.maxbytes = 20000 and 
-kernel.keys.maxkeys = 200.
+We try to protect the host system from any misuse of kernel memory 
+allocation triggered by untrusted users inside the containers.
 
-/*------------------------- POC code ----------------------------*/
+Patch-set is addressed mostly to cgroups maintainers and cgroups@ mailing
+list, though I would be very grateful for any comments from maintainersi
+of affected subsystems or other people added in cc:
 
-#include <asm/unistd.h>
-#include <linux/keyctl.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <time.h>
+Compared to the upstream, we additionally account the following kernel objects:
+- network devices and its Tx/Rx queues
+- ipv4/v6 addresses and routing-related objects
+- inet_bind_bucket cache objects
+- VLAN group arrays
+- ipv6/sit: ip_tunnel_prl
+- scm_fp_list objects used by SCM_RIGHTS messages of Unix sockets 
+- nsproxy and namespace objects itself
+- IPC objects: semaphores, message queues and share memory segments
+- mounts
+- pollfd and select bits arrays
+- signals and posix timers
+- file lock
+- fasync_struct used by the file lease code and driver's fasync queues 
+- tty objects
+- per-mm LDT
 
-char desc[4000];
-void alloc_key_user(int id) {
-  int i = 0, times = -1;
-  __s32 serial = 0;
-  int err = seteuid(id);
-  if (err == 0)
-    printf("uid allocation success on id %d!\n", id);
-  else {
-    printf("err reason is %s.\n", strerror(errno));
-    return;
-  }
-  srand(time(0));
-  while (serial != -1) {
-    ++times;
-    for (i = 0; i < 3900; ++i)
-      desc[i] = rand()%255 + 1;
-    desc[i] = '\0';
-    serial = syscall(__NR_add_key, "user", desc, "payload",
-      strlen("payload"), KEY_SPEC_SESSION_KEYRING);
-  }
-  printf("allocation happened %d times.\n", times);
-  seteuid(0);
-}
+We have an incorrect/incomplete/obsoleted accounting for few other kernel
+objects: sk_filter, af_packets, netlink and xt_counters for iptables.
+They require rework and probably will be dropped at all.
 
-int main() {
-  int loop_times = 100000;
-  int start_uid = 33001;
-  for (int i = 0; i < loop_times; ++i) {
-    alloc_key_user(i+start_uid);
-  }
-  while(1);
-  return 0;
-}
+Also we're going to add an accounting for nft, however it is not ready yet.
 
-/*-------------------------- end --------------------------------*/
+We have not tested performance on upstream, however, our performance team
+compares our current RHEL7-based production kernel and reports that
+they are at least not worse as the according original RHEL7 kernel.
 
-Signed-off-by: Yutian Yang <nglaive@gmail.com>
----
- security/keys/key.c              | 4 ++--
- security/keys/request_key_auth.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+v5:
+- rebased to v5.14-rc1
+- updated ack tags
 
-diff --git a/security/keys/key.c b/security/keys/key.c
-index e282c6179..925d85c2e 100644
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -279,7 +279,7 @@ struct key *key_alloc(struct key_type *type, const char *desc,
- 		goto no_memory_2;
- 
- 	key->index_key.desc_len = desclen;
--	key->index_key.description = kmemdup(desc, desclen + 1, GFP_KERNEL);
-+	key->index_key.description = kmemdup(desc, desclen + 1, GFP_KERNEL_ACCOUNT);
- 	if (!key->index_key.description)
- 		goto no_memory_3;
- 	key->index_key.type = type;
-@@ -1198,7 +1198,7 @@ void __init key_init(void)
- {
- 	/* allocate a slab in which we can store keys */
- 	key_jar = kmem_cache_create("key_jar", sizeof(struct key),
--			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
-+			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT, NULL);
- 
- 	/* add the special key types */
- 	list_add_tail(&key_type_keyring.link, &key_types_list);
-diff --git a/security/keys/request_key_auth.c b/security/keys/request_key_auth.c
-index 41e973500..ed50a100a 100644
---- a/security/keys/request_key_auth.c
-+++ b/security/keys/request_key_auth.c
-@@ -171,10 +171,10 @@ struct key *request_key_auth_new(struct key *target, const char *op,
- 	kenter("%d,", target->serial);
- 
- 	/* allocate a auth record */
--	rka = kzalloc(sizeof(*rka), GFP_KERNEL);
-+	rka = kzalloc(sizeof(*rka), GFP_KERNEL_ACCOUNT);
- 	if (!rka)
- 		goto error;
--	rka->callout_info = kmemdup(callout_info, callout_len, GFP_KERNEL);
-+	rka->callout_info = kmemdup(callout_info, callout_len, GFP_KERNEL_ACCOUNT);
- 	if (!rka->callout_info)
- 		goto error_free_rka;
- 	rka->callout_len = callout_len;
+v4:
+- improved description for tty patch
+- minor cleanup in LDT patch
+- rebased to v5.12
+- resent to lkml@
+
+v3:
+- added new patches for other kind of accounted objects
+- combined patches for ip address/routing-related objects
+- improved description
+- re-ordered and rebased for linux 5.12-rc8
+
+v2:
+- squashed old patch 1 "accounting for allocations called with disabled BH"
+   with old patch 2 "accounting for fib6_nodes cache" used such kind of memory allocation 
+- improved patch description
+- subsystem maintainers added to cc:
+
+Vasily Averin (16):
+  memcg: enable accounting for net_device and Tx/Rx queues
+  memcg: enable accounting for IP address and routing-related objects
+  memcg: enable accounting for inet_bin_bucket cache
+  memcg: enable accounting for VLAN group array
+  memcg: ipv6/sit: account and don't WARN on ip_tunnel_prl structs
+    allocation
+  memcg: enable accounting for scm_fp_list objects
+  memcg: enable accounting for mnt_cache entries
+  memcg: enable accounting for pollfd and select bits arrays
+  memcg: enable accounting for file lock caches
+  memcg: enable accounting for fasync_cache
+  memcg: enable accounting for new namesapces and struct nsproxy
+  memcg: enable accounting of ipc resources
+  memcg: enable accounting for signals
+  memcg: enable accounting for posix_timers_cache slab
+  memcg: enable accounting for tty-related objects
+  memcg: enable accounting for ldt_struct objects
+
+ arch/x86/kernel/ldt.c      | 6 +++---
+ drivers/tty/tty_io.c       | 4 ++--
+ fs/fcntl.c                 | 3 ++-
+ fs/locks.c                 | 6 ++++--
+ fs/namespace.c             | 7 ++++---
+ fs/select.c                | 4 ++--
+ ipc/msg.c                  | 2 +-
+ ipc/namespace.c            | 2 +-
+ ipc/sem.c                  | 9 +++++----
+ ipc/shm.c                  | 2 +-
+ kernel/cgroup/namespace.c  | 2 +-
+ kernel/nsproxy.c           | 2 +-
+ kernel/pid_namespace.c     | 2 +-
+ kernel/signal.c            | 2 +-
+ kernel/time/namespace.c    | 4 ++--
+ kernel/time/posix-timers.c | 4 ++--
+ kernel/user_namespace.c    | 2 +-
+ mm/memcontrol.c            | 2 +-
+ net/8021q/vlan.c           | 2 +-
+ net/core/dev.c             | 6 +++---
+ net/core/fib_rules.c       | 4 ++--
+ net/core/scm.c             | 4 ++--
+ net/dccp/proto.c           | 2 +-
+ net/ipv4/devinet.c         | 2 +-
+ net/ipv4/fib_trie.c        | 4 ++--
+ net/ipv4/tcp.c             | 4 +++-
+ net/ipv6/addrconf.c        | 2 +-
+ net/ipv6/ip6_fib.c         | 4 ++--
+ net/ipv6/route.c           | 2 +-
+ net/ipv6/sit.c             | 5 +++--
+ 30 files changed, 57 insertions(+), 49 deletions(-)
+
 -- 
-2.25.1
+1.8.3.1
 
