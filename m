@@ -2,275 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC6B3CE716
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F1A3CE981
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 19:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346289AbhGSQUq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jul 2021 12:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352853AbhGSQPV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 12:15:21 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8990C06B8D7;
-        Mon, 19 Jul 2021 09:12:52 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id o4so14931972pgs.6;
-        Mon, 19 Jul 2021 09:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4kEVl6RJazubuVOQxY7IzYyGCt4KpCBPiq4YuJI+gH0=;
-        b=oeV8OB0zNpfctE1iyccIC6jgn//DX4QmA9LN0GC6Rqa+8zpdljbixJg3iW+45USJZD
-         r/Wz5KpcKpEJeTLhJkPS5THvVX7y5LQnTpruroAi/sylF+DE9Vj3qPSzyxwW8Lp5Bppb
-         KhBG20IIpg6LMd/j75wOvB3fEYic1otHQOnwWNORRkATtnMNVQzNk/iDkWUMDTdU9V1D
-         1ePAs6vJ0Ugaa11j5DF+1+FOZD1KNuqS0JW+TliD24dbD17cQI0Q84Bk4TaqWfayGlvU
-         62Tval56Sxu+q3kMMzqsAKHMGov7Tvl0liYj3LALyteXbsIhddyq/mdHpGXo+HGQEdYW
-         6NYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4kEVl6RJazubuVOQxY7IzYyGCt4KpCBPiq4YuJI+gH0=;
-        b=tkXtqzLSpE5gKF1RNPauzqydxDlY+85rj472hnmxb7lhdeFEVEkpgEbF/itm0nXWs7
-         CbeSEjyliV7uqOIWI2xwOjRIwHgodqC2OfrsYI9vbCxWPIPOE6Vte/thIFGcejttSjL1
-         tz6TIyrQt2r9Li3oDFoD3mgnfzMJHWN/jmfFvWqGZDlkUQNfvGMt0AHCoCJTTFfyz9dF
-         5aVcIL+xEG2PGYJzKecj7b4qrT77Efs3k/OLQM1yMMb27yCM0kPw6fBG0OZKdftkeU77
-         HWzRZM7HFVYwghpLp5PtoiOUzd5qMDc5RUPg94TYmgaVXKw0rvgaUo2po93OqCvjbTyv
-         bRlg==
-X-Gm-Message-State: AOAM531MIzlFQTqiXdkKvNJywHUgBtF9Uev8LdkZZLsW6WzM35Kz5S3C
-        fNkOtg2DRX3tHNZpvqyF06Tgh883EyrZWQ==
-X-Google-Smtp-Source: ABdhPJzLJ1Ul1yuCxNQA+XcWG7iOF0bdfMi1t+xEN0Sd7oSusWhZo+FAnd0o/v2vbUFTvM6gPCqFlw==
-X-Received: by 2002:a63:1e57:: with SMTP id p23mr25985149pgm.41.1626712556839;
-        Mon, 19 Jul 2021 09:35:56 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id d25sm23513131pgn.42.2021.07.19.09.35.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 09:35:56 -0700 (PDT)
-Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
- <YPGvIzZUI+QxP1js@mtj.duckdns.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
-Date:   Tue, 20 Jul 2021 00:35:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1351229AbhGSQ5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Jul 2021 12:57:08 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:58980 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357721AbhGSQwQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 12:52:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:57914)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X8Q-00C5r8-9k; Mon, 19 Jul 2021 11:32:54 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:34170 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m5X8P-003nal-5j; Mon, 19 Jul 2021 11:32:53 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+        <cover.1626688654.git.vvs@virtuozzo.com>
+        <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
+Date:   Mon, 19 Jul 2021 12:32:46 -0500
+In-Reply-To: <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com> (Vasily
+        Averin's message of "Mon, 19 Jul 2021 13:45:44 +0300")
+Message-ID: <87k0lmryyp.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YPGvIzZUI+QxP1js@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1m5X8P-003nal-5j;;;mid=<87k0lmryyp.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19riCDlCttkz1EHUrkai0JB6kWYfxt9MHc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Vasily Averin <vvs@virtuozzo.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 538 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.4%), parse: 1.00 (0.2%),
+        extract_message_metadata: 11 (2.1%), get_uri_detail_list: 1.27 (0.2%),
+        tests_pri_-1000: 5 (1.0%), tests_pri_-950: 1.24 (0.2%),
+        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 188 (35.0%), check_bayes:
+        184 (34.2%), b_tokenize: 10 (1.8%), b_tok_get_all: 6 (1.1%),
+        b_comp_prob: 3.7 (0.7%), b_tok_touch_all: 161 (29.9%), b_finish: 0.88
+        (0.2%), tests_pri_0: 298 (55.3%), check_dkim_signature: 1.73 (0.3%),
+        check_dkim_adsp: 10 (1.9%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
+        2.4 (0.4%), tests_pri_500: 19 (3.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun:
+Vasily Averin <vvs@virtuozzo.com> writes:
 
-In order to avoid code duplication and IOPS stability problems caused by estimating
-the equivalent number of IOs, and to avoid potential deadlock problems caused by
-synchronization through queue_lock. I tried to count the number of splited IOs in
-the current window through two atomic counters. Add the value of the atomic variable
-when calculating io_disp[rw], which can also avoid the problem of inaccurate IOPS in
-large IO scenarios. How do you think of this approach? Thanks for your time.
+> When a user send a signal to any another processes it forces the kernel
+> to allocate memory for 'struct sigqueue' objects. The number of signals
+> is limited by RLIMIT_SIGPENDING resource limit, but even the default
+> settings allow each user to consume up to several megabytes of memory.
+> Moreover, an untrusted admin inside container can increase the limit or
+> create new fake users and force them to sent signals.
 
-The following are related changes. If that is ok, I will send the v2 version later.
+Not any more.  Currently the number of sigqueue objects is limited
+by the rlimit of the creator of the user namespace of the container.
 
----
- block/blk-merge.c    |  2 ++
- block/blk-throttle.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++-----
- block/blk.h          |  2 ++
- 3 files changed, 64 insertions(+), 6 deletions(-)
+> It makes sense to account for these allocations to restrict the host's
+> memory consumption from inside the memcg-limited container.
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index a11b3b5..86ff943 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
- 		trace_block_split(split, (*bio)->bi_iter.bi_sector);
- 		submit_bio_noacct(*bio);
- 		*bio = split;
-+
-+		blk_throtl_recharge_bio(*bio);
- 	}
- }
- 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index b1b22d8..a0daa15 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -178,6 +178,9 @@ struct throtl_grp {
- 	unsigned int bad_bio_cnt; /* bios exceeding latency threshold */
- 	unsigned long bio_cnt_reset_time;
- 
-+	atomic_t io_split_cnt[2];
-+	atomic_t last_io_split_cnt[2];
-+
- 	struct blkg_rwstat stat_bytes;
- 	struct blkg_rwstat stat_ios;
- };
-@@ -293,6 +296,16 @@ static uint64_t throtl_adjusted_limit(uint64_t low, struct throtl_data *td)
- 	return low + (low >> 1) * td->scale;
- }
- 
-+static inline unsigned int tg_io_disp(struct throtl_grp *tg, int rw)
-+{
-+	return tg->io_disp[rw] + atomic_read(&tg->io_split_cnt[rw]);
-+}
-+
-+static inline unsigned int tg_last_io_disp(struct throtl_grp *tg, int rw)
-+{
-+	return tg->last_io_disp[rw] + atomic_read(&tg->last_io_split_cnt[rw]);
-+}
-+
- static uint64_t tg_bps_limit(struct throtl_grp *tg, int rw)
- {
- 	struct blkcg_gq *blkg = tg_to_blkg(tg);
-@@ -524,6 +537,11 @@ static struct blkg_policy_data *throtl_pd_alloc(gfp_t gfp,
- 	tg->idletime_threshold = DFL_IDLE_THRESHOLD;
- 	tg->idletime_threshold_conf = DFL_IDLE_THRESHOLD;
- 
-+	atomic_set(&tg->io_split_cnt[0], 0);
-+	atomic_set(&tg->io_split_cnt[1], 0);
-+	atomic_set(&tg->last_io_split_cnt[0], 0);
-+	atomic_set(&tg->last_io_split_cnt[1], 0);
-+
- 	return &tg->pd;
- 
- err_exit_stat_bytes:
-@@ -777,6 +795,8 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
- 	tg->bytes_disp[rw] = 0;
- 	tg->io_disp[rw] = 0;
- 
-+	atomic_set(&tg->io_split_cnt[rw], 0);
-+
- 	/*
- 	 * Previous slice has expired. We must have trimmed it after last
- 	 * bio dispatch. That means since start of last slice, we never used
-@@ -799,6 +819,9 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
- 	tg->io_disp[rw] = 0;
- 	tg->slice_start[rw] = jiffies;
- 	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
-+
-+	atomic_set(&tg->io_split_cnt[rw], 0);
-+
- 	throtl_log(&tg->service_queue,
- 		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
- 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
-@@ -877,10 +900,19 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- 	else
- 		tg->bytes_disp[rw] = 0;
- 
--	if (tg->io_disp[rw] >= io_trim)
-+	if (tg_io_disp(tg, rw) >= io_trim) {
-+		int cnt = atomic_read(&tg->io_split_cnt[rw]);
-+
-+		if (cnt) {
-+			atomic_set(&tg->io_split_cnt[rw], 0);
-+			tg->io_disp[rw] += cnt;
-+		}
-+
- 		tg->io_disp[rw] -= io_trim;
--	else
-+	} else {
-+		atomic_set(&tg->io_split_cnt[rw], 0);
- 		tg->io_disp[rw] = 0;
-+	}
- 
- 	tg->slice_start[rw] += nr_slices * tg->td->throtl_slice;
- 
-@@ -924,7 +956,7 @@ static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
- 	else
- 		io_allowed = tmp;
- 
--	if (tg->io_disp[rw] + 1 <= io_allowed) {
-+	if (tg_io_disp(tg, rw) + 1 <= io_allowed) {
- 		if (wait)
- 			*wait = 0;
- 		return true;
-@@ -2052,13 +2084,13 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
- 	}
- 
- 	if (tg->iops[READ][LIMIT_LOW]) {
--		iops = tg->last_io_disp[READ] * HZ / elapsed_time;
-+		iops = tg_last_io_disp(tg, READ) * HZ / elapsed_time;
- 		if (iops >= tg->iops[READ][LIMIT_LOW])
- 			tg->last_low_overflow_time[READ] = now;
- 	}
- 
- 	if (tg->iops[WRITE][LIMIT_LOW]) {
--		iops = tg->last_io_disp[WRITE] * HZ / elapsed_time;
-+		iops = tg_last_io_disp(tg, WRITE) * HZ / elapsed_time;
- 		if (iops >= tg->iops[WRITE][LIMIT_LOW])
- 			tg->last_low_overflow_time[WRITE] = now;
- 	}
-@@ -2074,6 +2106,9 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
- 	tg->last_bytes_disp[WRITE] = 0;
- 	tg->last_io_disp[READ] = 0;
- 	tg->last_io_disp[WRITE] = 0;
-+
-+	atomic_set(&tg->last_io_split_cnt[READ], 0);
-+	atomic_set(&tg->last_io_split_cnt[WRITE], 0);
- }
- 
- static void blk_throtl_update_idletime(struct throtl_grp *tg)
-@@ -2176,6 +2211,25 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
- }
- #endif
- 
-+void blk_throtl_recharge_bio(struct bio *bio)
-+{
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+	struct throtl_grp *parent = blkg_to_tg(blkg);
-+	struct throtl_service_queue *parent_sq;
-+	bool rw = bio_data_dir(bio);
-+
-+	if (!parent->has_rules[rw])
-+		return;
-+
-+	do {
-+		atomic_inc(&parent->io_split_cnt[rw]);
-+		atomic_inc(&parent->last_io_split_cnt[rw]);
-+
-+		parent_sq = parent->service_queue.parent_sq;
-+		parent = sq_to_tg(parent_sq);
-+	} while (parent);
-+}
-+
- bool blk_throtl_bio(struct bio *bio)
- {
- 	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
-@@ -2263,7 +2317,7 @@ bool blk_throtl_bio(struct bio *bio)
- 		   rw == READ ? 'R' : 'W',
- 		   tg->bytes_disp[rw], bio->bi_iter.bi_size,
- 		   tg_bps_limit(tg, rw),
--		   tg->io_disp[rw], tg_iops_limit(tg, rw),
-+		   tg_io_disp(tg, rw), tg_iops_limit(tg, rw),
- 		   sq->nr_queued[READ], sq->nr_queued[WRITE]);
- 
- 	tg->last_low_overflow_time[rw] = jiffies;
-diff --git a/block/blk.h b/block/blk.h
-index 4b885c0..9e925bf 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -293,11 +293,13 @@ struct io_cq *ioc_create_icq(struct io_context *ioc, struct request_queue *q,
- extern int blk_throtl_init(struct request_queue *q);
- extern void blk_throtl_exit(struct request_queue *q);
- extern void blk_throtl_register_queue(struct request_queue *q);
-+extern void blk_throtl_recharge_bio(struct bio *bio);
- bool blk_throtl_bio(struct bio *bio);
- #else /* CONFIG_BLK_DEV_THROTTLING */
- static inline int blk_throtl_init(struct request_queue *q) { return 0; }
- static inline void blk_throtl_exit(struct request_queue *q) { }
- static inline void blk_throtl_register_queue(struct request_queue *q) { }
-+static inline void blk_throtl_recharge_bio(struct bio *bio) { }
- static inline bool blk_throtl_bio(struct bio *bio) { return false; }
- #endif /* CONFIG_BLK_DEV_THROTTLING */
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
--- 
-1.8.3.1
+Does it?  Why?  The given justification appears to have bit-rotted
+since -rc1.
+
+I know a lot of these things only really need a limit just to catch a
+program that starts malfunctioning.  If that is indeed the case
+reasonable per-resource limits are probably better than some great big
+group limit that can be exhausted with any single resource in the group.
+
+Is there a reason I am not aware of that where it makes sense to group
+all of the resources together and only count the number of bytes
+consumed?
+
+Eric
 
 
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  kernel/signal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index a3229ad..8921c4a 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -4663,7 +4663,7 @@ void __init signals_init(void)
+>  {
+>  	siginfo_buildtime_checks();
+>  
+> -	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC);
+> +	sigqueue_cachep = KMEM_CACHE(sigqueue, SLAB_PANIC | SLAB_ACCOUNT);
+>  }
+>  
+>  #ifdef CONFIG_KGDB_KDB
