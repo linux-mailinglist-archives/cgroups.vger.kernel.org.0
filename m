@@ -2,137 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0E83CEC6F
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jul 2021 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE673CF63C
+	for <lists+cgroups@lfdr.de>; Tue, 20 Jul 2021 10:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349000AbhGSRcT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 19 Jul 2021 13:32:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380527AbhGSR3Z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Jul 2021 13:29:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626718205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WvxmU6C3e5BEm26OJjFVoh44JOCamNiazeqRDjQ7ySA=;
-        b=KXaz6IxWPikrtLzLSJvSLDwGoYKEUNg0InLZe3KuoNsGNlq4pOV2ucdDs29f6pHibLpg+D
-        utsN1CKi0hfOQAUMvCIeuQVudRQq50qt2t4eLTHZrRWTwR1kdLmR/dbVruzFPABXK+LNyy
-        JGITRI203G6JnZWQPY/DfSbQTlaOYDU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-x1HkTEs-One2jo_3Q7kvsA-1; Mon, 19 Jul 2021 14:10:01 -0400
-X-MC-Unique: x1HkTEs-One2jo_3Q7kvsA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E779A192D785;
-        Mon, 19 Jul 2021 18:09:59 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E78B5D6A1;
-        Mon, 19 Jul 2021 18:09:54 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 503A54172EDE; Mon, 19 Jul 2021 12:41:28 -0300 (-03)
-Date:   Mon, 19 Jul 2021 12:41:28 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] cpuset: Add cpuset.isolation_mask file
-Message-ID: <20210719154128.GB27911@fuller.cnet>
-References: <20210714135420.69624-1-frederic@kernel.org>
- <20210714135420.69624-7-frederic@kernel.org>
- <20210714163157.GA140679@fuller.cnet>
- <20210719132649.GB116346@lothringen>
+        id S234864AbhGTH4q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Jul 2021 03:56:46 -0400
+Received: from relay.sw.ru ([185.231.240.75]:47922 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234449AbhGTHzA (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 20 Jul 2021 03:55:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=GCfwuXuzQlyWhoFqI2bAb5C2O3u0V1H4t9sAk8gyaiU=; b=o2x2uM9kxU9Ii8mcM
+        ngv33zeb7qweb0P3mK2R8eAhFqaxQt6ZcEaksmqdwoZYzXdctpdlMovEX+oZSjSFpM8uxJ6gLHMkO
+        Mu0Ncl43GqGbeSSpHpKFig1cIERZbIr86yVht+RnKUlNXocFFbYkh9yY1cEeu5YE7PC2U+Mx7Foi8
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m5lDk-004YDr-BU; Tue, 20 Jul 2021 11:35:20 +0300
+Subject: Re: [PATCH v5 13/16] memcg: enable accounting for signals
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+ <cover.1626688654.git.vvs@virtuozzo.com>
+ <b19f065e-f3c9-2b20-2798-b60f0fc6b05f@virtuozzo.com>
+ <87k0lmryyp.fsf@disp2133>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <56816a9d-c2e5-127d-4d90-5d7d17782c8a@virtuozzo.com>
+Date:   Tue, 20 Jul 2021 11:35:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719132649.GB116346@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <87k0lmryyp.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 03:26:49PM +0200, Frederic Weisbecker wrote:
-> On Wed, Jul 14, 2021 at 01:31:57PM -0300, Marcelo Tosatti wrote:
-> > On Wed, Jul 14, 2021 at 03:54:20PM +0200, Frederic Weisbecker wrote:
-> > > Add a new cpuset.isolation_mask file in order to be able to modify the
-> > > housekeeping cpumask for each individual isolation feature on runtime.
-> > > In the future this will include nohz_full, unbound timers,
-> > > unbound workqueues, unbound kthreads, managed irqs, etc...
-> > > 
-> > > Start with supporting domain exclusion and CPUs passed through
-> > > "isolcpus=".
-> > 
-> > It is possible to just add return -ENOTSUPPORTED for the features 
-> > whose support is not present?
+On 7/19/21 8:32 PM, Eric W. Biederman wrote:
+> Vasily Averin <vvs@virtuozzo.com> writes:
 > 
-> Maybe, although that looks like a specialized error for corner cases.
+>> When a user send a signal to any another processes it forces the kernel
+>> to allocate memory for 'struct sigqueue' objects. The number of signals
+>> is limited by RLIMIT_SIGPENDING resource limit, but even the default
+>> settings allow each user to consume up to several megabytes of memory.
+>> Moreover, an untrusted admin inside container can increase the limit or
+>> create new fake users and force them to sent signals.
+> 
+> Not any more.  Currently the number of sigqueue objects is limited
+> by the rlimit of the creator of the user namespace of the container.
+> 
+>> It makes sense to account for these allocations to restrict the host's
+>> memory consumption from inside the memcg-limited container.
+> 
+> Does it?  Why?  The given justification appears to have bit-rotted
+> since -rc1.
 
-Well, are you going to implement runtime enablement for all features,
-including nohz_full, in the first patch set?
+Could you please explain what was changed in rc1?
+From my POV accounting is required to help OOM-killer to select proper target.
 
-From my POV returning -ENOTSUPPORTED would allow for a gradual 
-implementation of the features.
+> I know a lot of these things only really need a limit just to catch a
+> program that starts malfunctioning.  If that is indeed the case
+> reasonable per-resource limits are probably better than some great big
+> group limit that can be exhausted with any single resource in the group.
+> 
+> Is there a reason I am not aware of that where it makes sense to group
+> all of the resources together and only count the number of bytes
+> consumed?
 
-> > > CHECKME: Should we have individual cpuset.isolation.$feature files for
-> > >          each isolation feature instead of a single mask file?
-> > 
-> > Yes, guess that is useful, for example due to the -ENOTSUPPORTED
-> > comment above.
-> > 
-> > 
-> > Guarantees on updates
-> > =====================
-> > 
-> > Perhaps start with a document with:
-> > 
-> > On return to the write to the cpumask file, what are the guarantees?
-> > 
-> > For example, for kthread it is that any kernel threads from that point
-> > on should start with the new mask. Therefore userspace should 
-> > respect the order:
-> > 
-> > 1) Change kthread mask.
-> > 2) Move threads.
-> > 
-> 
-> Yep.
-> 
-> > Updates to interface
-> > ====================
-> > 
-> > Also, thinking about updates to the interface (which today are one
-> > cpumask per isolation feature) might be useful. What can happen:
-> > 
-> > 1) New isolation feature is added, feature name added to the interface.
-> > 
-> > Userspace must support new filename. If not there, then thats an 
-> > old kernel without support for it.
-> > 
-> > 2) If an isolation feature is removed, a file will be gone. What should
-> > be the behaviour there? Remove the file? (userspace should probably 
-> > ignore the failure in that case?) (then features names should not be
-> > reused, as that can confuse #1 above).
-> 
-> Heh, yeah that's complicated. I guess we should use one flag per file as that
-> fits well within the current cpuset design. But we must carefully choose the new
-> files to make sure they have the least chances to be useless in the long term.
-> 
-> > Or maybe have a versioned scheme?
-> 
-> I suspect we should avoid that at all costs :-)
-> 
-> Thanks!
+Any new limits:
+a) should be set properly depending on huge number of incoming parameters.
+b) should properly notify about hits
+c) should be updated properly after b) 
+d) do a)-c) automatically if possible
 
-Makes sense.
+In past OpenVz had own accounting subsystem, user beancounters (UBC).
+It accounted and limited 20+ resources  per-container: numfiles, file locks,
+signals, netfilter rules, socket buffers and so on.
+I assume you want to do something similar, so let me share our experience. 
 
+We had a lot of problems with UBC:
+- it's quite hard to set up the limit. 
+  Why it's good to consume N entities of some resource but it's bad to consume N+1 ones? 
+  per-process? per-user? per-thread? per-task? per-namespace? if nested? per-container? per-host?
+  To answer the questions host admin should have additional knowledge and skills.
+
+- Ok, we have set all limits. Some application hits it and fails.
+  It's quite hard to understand that application hits the limit, and failed due to this reason.
+  From users point of view, if some application does not work (stable enough)
+  inside container => containers are guilty.
+
+- It's quite hard to understand that failed application just want to increase limit X up to N entities.
+
+As result both host admins and container users was unhappy.
+So after years of such fights we decided just to limit accounted memory instead.
+
+Anyway, OOM-killer must know who consumed memory to select proper target.
+
+Thank you,
+	vasily Averin
+ 
