@@ -2,74 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF103D1155
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jul 2021 16:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32A03D1949
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jul 2021 23:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237799AbhGUNsQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Jul 2021 09:48:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:55980 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235762AbhGUNsQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 21 Jul 2021 09:48:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A15331B;
-        Wed, 21 Jul 2021 07:28:52 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC7453F73D;
-        Wed, 21 Jul 2021 07:28:50 -0700 (PDT)
-Date:   Wed, 21 Jul 2021 15:28:45 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        Nitesh Lal <nilal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nicolas Saenz <nsaenzju@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 5/6] sched/isolation: Make HK_FLAG_DOMAIN mutable
-Message-ID: <20210721142726.GA206211@e120877-lin.cambridge.arm.com>
-References: <20210714135420.69624-1-frederic@kernel.org>
- <20210714135420.69624-6-frederic@kernel.org>
+        id S229660AbhGUUxA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Jul 2021 16:53:00 -0400
+Received: from [175.7.199.234] ([175.7.199.234]:41170 "EHLO 1ndax.top"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S229625AbhGUUw7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 21 Jul 2021 16:52:59 -0400
+X-Greylist: delayed 1202 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Jul 2021 16:52:59 EDT
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=1ndax; d=1ndax.top;
+ h=Message-ID:From:To:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding; i=etc-maisei@1ndax.top;
+ bh=26/9kiHV4VR/kj+AVOueDcIM+tM=;
+ b=ikqPEDuQLLDcflGvKaaLWU3JcSAmAvsO78/LNWnFXdo1bhPfvCWPyLVHjzX6nkCcRlpiR31YVQKu
+   kAKeko5HuJar5Ljf5tx4APqzClzo7IV7JfWQv72wica+pn5LoOPkQYB6p3mUywO6YLvTJoEYu5oJ
+   oFOo4dqqI2SZKvGgfV4=
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=1ndax; d=1ndax.top;
+ b=aiVhJXhSjL6RlUuDeSI0Fm+DirOFj0BjU0oQB5aVepdKRdXwoMCylPHWw7e1hAx3HGqPvz8uq00a
+   YIQxQWWZkzsBJDQzXFIajEcgEgNrDgqcOhYHGOLAw/NNAlMMMYPENHLt3vegkrgoiglB0ge9SgbV
+   O9UA+3i0iUMFZ7/d7xA=;
+Message-ID: <C06AA08BDAEA8A57744031216E7C2734@wklawegq>
+From:   =?utf-8?B?RVRD5oOF5aCx?= <etc-maisei@1ndax.top>
+To:     <cgroups@vger.kernel.org>
+Subject: =?utf-8?B?44K144O844OT44K56YCa55+l?=
+Date:   Thu, 22 Jul 2021 05:13:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714135420.69624-6-frederic@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2900.5512
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.5512
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Frederic,
+RVRD44K144O844OT44K544KS44GU5Yip55So44Gu44GK5a6i5qeYOg0KDQoNCkVUQ+OCteODvOOD
+k+OCueOBr+eEoeWKueOBq+OBquOCiuOBvuOBl+OBn+OAgg0K5byV44GN57aa44GN44K144O844OT
+44K544KS44GU5Yip55So44GE44Gf44Gg44GN44Gf44GE5aC05ZCI44Gv44CB5LiL6KiY44Oq44Oz
+44Kv44KI44KK6Kmz57Sw44KS44GU56K66KqN44GP44Gg44GV44GE44CCDQoNCg0K5LiL6KiY44Gu
+5o6l57aa44GL44KJ5YGc5q2i5Y6f5Zug44KS56K66KqN44GX44Gm44GP44Gg44GV44GEDQpodHRw
+czovL2V0Yy1tZWxmYWktanAucmFkaW8uYW0NCg0KKOebtOaOpeOCouOCr+OCu+OCueOBp+OBjeOB
+quOBhOWgtOWQiOOBr+OAgeaJi+WLleOBp+ODluODqeOCpuOCtuOBq+OCs+ODlOODvOOBl+OBpumW
+i+OBhOOBpuOBj+OBoOOBleOBhCkNCg0KDQoNCuKAu+OBk+OBruODoeODvOODq+OBr+mAgeS/oeWw
+gueUqOOBp+OBmeOAgg0K44CA44GT44Gu44Ki44OJ44Os44K544Gr6YCB5L+h44GE44Gf44Gg44GE
+44Gm44KC6L+U5L+h44GE44Gf44GX44GL44Gt44G+44GZ44Gu44Gn44CB44GC44KJ44GL44GY44KB
+44GU5LqG5om/6aGY44GE44G+44GZ44CCDQrigLvjgarjgYrjgIHjgZTkuI3mmI7jgarngrnjgavj
+gaTjgY3jgb7jgZfjgabjga/jgIHjgYrmiYvmlbDjgafjgZnjgYzjgIENCsOLVEPjgrXjg7zjg5Pj
+grnkuovli5nlsYDjgavjgYrllY/jgYTlkIjjgo/jgZvjgY/jgaDjgZXjgYTjgIINCg0KDQoNCuKW
+oEVUQ+WIqeeUqOeFp+S8muOCteODvOODk+OCueS6i+WLmeWxgA0K5bm05Lit54Sh5LyR44CAOTow
+MO+9njE4OjAwDQrjg4rjg5Pjg4DjgqTjg6Tjg6vjgIAwNTcwLTAxMDEzOQ0K77yI44OK44OT44OA
+44Kk44Ok44Or44GM44GU5Yip55So44GE44Gf44Gg44GR44Gq44GE44GK5a6i44GV44G+44CAMDQ1
+LTc0NC0xMzcy77yJDQo=
 
-[...]
 
->  
-> +// Only support HK_FLAG_DOMAIN for now
-> +// TODO: propagate the changes through all interested subsystems:
-> +// workqueues, net, pci; ...
-> +void housekeeping_cpumask_set(struct cpumask *mask, enum hk_flags flags)
-> +{
-> +	/* Only HK_FLAG_DOMAIN change supported for now */
-> +	if (WARN_ON_ONCE(flags != HK_FLAG_DOMAIN))
-> +		return;
->  
-> +	if (!static_key_enabled(&housekeeping_overridden.key)) {
-> +		if (cpumask_equal(mask, cpu_possible_mask))
-> +			return;
-> +		if (WARN_ON_ONCE(!alloc_cpumask_var(&hk_domain_mask, GFP_KERNEL)))
-> +			return;
-> +		cpumask_copy(hk_domain_mask, mask);
-> +		static_branch_enable(&housekeeping_overridden);
-
-I get a warning here. static_branch_enable() is trying to take cpus_read_lock().
-But the same lock is already taken by cpuset_write_u64().
-
-Also, shouldn't it set HK_FLAG_DOMAIN in housekeeping_flags to enable
-housekeeping if the kernel started without isolcpus="" ?
-
--- 
-Vincent
