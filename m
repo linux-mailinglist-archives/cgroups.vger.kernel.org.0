@@ -2,81 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5993D0250
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jul 2021 21:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF103D1155
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jul 2021 16:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhGTTIt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Jul 2021 15:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhGTTIc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Jul 2021 15:08:32 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6DCC061762
-        for <cgroups@vger.kernel.org>; Tue, 20 Jul 2021 12:39:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id s13so16005189lfi.12
-        for <cgroups@vger.kernel.org>; Tue, 20 Jul 2021 12:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L+MjaH1R1E0F0RWN0i5cSWeDaZRVcDk5Z+roBLBaQww=;
-        b=SZzRTqY+pX1aPq5w/WdqDiLB176GplKJ66paQIBWPcVU2KYjcig77AvWa8ubb9Jt8p
-         7x/G+AWlv+nLASckmvWWav9PPCbmOqfdl1tOlLC6Q6igjzYwMhYYbsKhVCtbneYxGIVK
-         HNrMuYnL6TNDY6EkyhfX17PrbaPZpVYf/YkF93m66+0SJgEZJx5GrPBuJN6CsVV0Q0oL
-         pYGUZ181yxFFld48EYPQi+Yx4ypEMf3hgUjhjd9AnIKI6jylx0pjPBVpDES/dXF9JxAR
-         OR/SwlcnoT/YOiRLp/zEcZ8gzMy+FBSnB9YbHgJ0g2Ol/G7V4z/QVJngwpcq1lI4tqlO
-         oaGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L+MjaH1R1E0F0RWN0i5cSWeDaZRVcDk5Z+roBLBaQww=;
-        b=CNXdNoT5ma1BKdJkqfU+RTluWA7Z7KwPc30uShSbgVt84Z2W7KZGCRf4BEI7ZdXVDk
-         Tceb9ubM8INtsZWHNkCbsP1h2TTHKgov08aM0HtvkinjMjPObyg/0CbqmNb2JdcNWpUc
-         ncC/GjZqD+7WuFwelT9dgLQ4Evc2jZACLqCMoqALippVUYuy1Bxg2CE5KQaeO2Ol6B9g
-         qhI1gZqlhKK2zkZrQmH18EFRpALfUasUoROVzPPlF19PfIQWi+yOPwxZxFbVxm/A51Y7
-         Q+Gz1e1k+et+l7OMxPk9n0vFmE+eChS5EMuY6xMaHQfKWnwNew3DJUvz2ixMh5WKiF9V
-         QKHg==
-X-Gm-Message-State: AOAM530KxK+HUk1SiyMcIJi9XZc0iHInRa74btsIJYGgxoj9MS5fVa6V
-        HMBLXr+qSt9U7Fjr89JauN5JAvEvUy+XgVDqTHEojg==
-X-Google-Smtp-Source: ABdhPJzG+1FC3rXExMyn/9M/NI+Kx7wgorWIv2GRtmMHPbZt5j+QFFKreGl7OQgcpzc6KGbjJgoMmvmXzE9vriGn/fk=
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr23349025lfc.117.1626809982091;
- Tue, 20 Jul 2021 12:39:42 -0700 (PDT)
+        id S237799AbhGUNsQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Jul 2021 09:48:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:55980 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235762AbhGUNsQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 21 Jul 2021 09:48:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A15331B;
+        Wed, 21 Jul 2021 07:28:52 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC7453F73D;
+        Wed, 21 Jul 2021 07:28:50 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 15:28:45 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Nitesh Lal <nilal@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicolas Saenz <nsaenzju@redhat.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 5/6] sched/isolation: Make HK_FLAG_DOMAIN mutable
+Message-ID: <20210721142726.GA206211@e120877-lin.cambridge.arm.com>
+References: <20210714135420.69624-1-frederic@kernel.org>
+ <20210714135420.69624-6-frederic@kernel.org>
 MIME-Version: 1.0
-References: <1626675625-9883-1-git-send-email-nglaive@gmail.com>
-In-Reply-To: <1626675625-9883-1-git-send-email-nglaive@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 20 Jul 2021 12:39:31 -0700
-Message-ID: <CALvZod5RGZwta+Dpeak9McQd=n_QShzooALCsYrMLbz3ihSiBQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg: charge io_uring related objects
-To:     Yutian Yang <nglaive@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        shenwenbo@zju.edu.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714135420.69624-6-frederic@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 11:20 PM Yutian Yang <nglaive@gmail.com> wrote:
->
-> This patch is a more complete version than the previous one, adding
-> accounting flags to nearly all syscall-triggerable kernel object
-> allocations. The patch does not account for temporary objects, i.e.,
-> objects that are freed soon after allocation, to avoid meaningless
-> performance penalty.
->
-> Thanks!
->
-> Yutian Yang,
-> Zhejiang University
->
->
-> Signed-off-by: Yutian Yang <nglaive@gmail.com>
+Hi Frederic,
 
-Can you please bring back the commit message of the previous version
-(which has the program to trigger the unaccounted allocations) and can
-add the details on this one to that?
+[...]
+
+>  
+> +// Only support HK_FLAG_DOMAIN for now
+> +// TODO: propagate the changes through all interested subsystems:
+> +// workqueues, net, pci; ...
+> +void housekeeping_cpumask_set(struct cpumask *mask, enum hk_flags flags)
+> +{
+> +	/* Only HK_FLAG_DOMAIN change supported for now */
+> +	if (WARN_ON_ONCE(flags != HK_FLAG_DOMAIN))
+> +		return;
+>  
+> +	if (!static_key_enabled(&housekeeping_overridden.key)) {
+> +		if (cpumask_equal(mask, cpu_possible_mask))
+> +			return;
+> +		if (WARN_ON_ONCE(!alloc_cpumask_var(&hk_domain_mask, GFP_KERNEL)))
+> +			return;
+> +		cpumask_copy(hk_domain_mask, mask);
+> +		static_branch_enable(&housekeeping_overridden);
+
+I get a warning here. static_branch_enable() is trying to take cpus_read_lock().
+But the same lock is already taken by cpuset_write_u64().
+
+Also, shouldn't it set HK_FLAG_DOMAIN in housekeeping_flags to enable
+housekeeping if the kernel started without isolcpus="" ?
+
+-- 
+Vincent
