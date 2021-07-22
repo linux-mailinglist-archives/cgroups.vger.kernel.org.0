@@ -2,92 +2,214 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4EE3D2683
-	for <lists+cgroups@lfdr.de>; Thu, 22 Jul 2021 17:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453DC3D2BE7
+	for <lists+cgroups@lfdr.de>; Thu, 22 Jul 2021 20:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbhGVOkr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Jul 2021 10:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S229928AbhGVRp7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Jul 2021 13:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhGVOkN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Jul 2021 10:40:13 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0420CC0613CF;
-        Thu, 22 Jul 2021 08:20:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so4840549pjb.0;
-        Thu, 22 Jul 2021 08:20:25 -0700 (PDT)
+        with ESMTP id S229914AbhGVRp7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Jul 2021 13:45:59 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABC0C061575
+        for <cgroups@vger.kernel.org>; Thu, 22 Jul 2021 11:26:34 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id f62-20020a17090a28c4b02901733dbfa29cso3749780pjd.0
+        for <cgroups@vger.kernel.org>; Thu, 22 Jul 2021 11:26:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=rWoKywolpsLaO+fLwhS065JQ8TxoNqZcLux7FKVCf+E=;
-        b=FNAmnyHz9OF8cO1mwm6/P6LMeRdqR/kMONKBrzlhaASHy8MgXpZDGIsxAo+CwZFedV
-         OIcWvC/gE/9qAxQTRHnvXPQowGT2zM0Y5E8BgTAc/CW53WD6k0HafIjpvoUv97k7l0ZC
-         /4EhjxgP5rFsNx5oE1i0SYMNZ+j74e1BnwNeOnwEaDO66drHOkY74qyTbi7520LNmW7x
-         LhT/5RBZT3BBMtj2mRIbTd4/VQEJpLSVNlht/A7N7jpk+03VDqjctGWtE8nwiduHWmDx
-         DFPK+0Ps65ovBu9sMq21h1r+ydRiOxuQVgHoXUms6d5imMVhyfJSsstqF3fonCdBoD7s
-         FRug==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zdafpjZOpX7w6ukm7UkyAJ9U3xYdHtSO79XymBUPu/o=;
+        b=sdJPsNKSHYFbC/G+xIVl3Qk4+Rvo57mP9IEXixCOWBzjsFotznwfryTn0zYl4yGHpT
+         5FbXMLAs09OWq4xdRxZEWNwM37C7Yfl0z+VPM7fkn95Nvhi0H/e7MguHjswI8IY9Mp7G
+         S6uyExEloYAuxSMXUTRs7RX59i0LVbF7Y35beGZ/Cq6/wSnj/Bp2XIkL3GESUE28Aunf
+         KymWbsI5an9Me7Ud4ap2MSa3GHzDYoWngDnUwCY+tiKKQooheZHW4YdNkkQqGdw3zMrw
+         0j77ZArAzNLojl5RKH3amMWjXtdz+m2PmxAghXCgrthIgKOW1jpZ2r9FucoCbdjaNPhi
+         DxiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=rWoKywolpsLaO+fLwhS065JQ8TxoNqZcLux7FKVCf+E=;
-        b=PZ9XikxX8cKgRWTUSGlIM3pFxvSDCP7WVqf9LSIQuk14t6h+M4KU2GEncDW6pCDqbY
-         hERq08MtlfHFR1JonZ7/+3P8B37rwd1Gpt0h1/2uwON++iJn3pclaalBbV3dqpSeNsYE
-         U2IcwhzUl65j1G/jEGWjsvU6kPl+I5RFGH3e0SaAhulsFNG0RqBQvvJoKwlNhRinnwnp
-         rjG+fAGn3StsatYybc5+zeDqZJfs7bMfF9KzO5DaxevotIL6BYe2BWvngxZTWu8yNiyb
-         toZjkVrMgv1XBy3Ap9vgx7DIb0eqI1EaJDxBvEVVh0tLFfhcXuhSbOeW2ek0iU42MRRi
-         89nQ==
-X-Gm-Message-State: AOAM533VjmvVRfJugWzRMOFLn+dlMat5bx1tbLG4psDglp4aoEeHb+BT
-        IQmfRHg6+2fqUVrj5cVozzk=
-X-Google-Smtp-Source: ABdhPJzI2YstmX9Sr8akgUiD7CUc9KWdSM2OtnbOCbvr/aCcrY/u0Jjlg+ASZUbHXuLaY/lwowzXxg==
-X-Received: by 2002:a17:902:b707:b029:12a:d3d7:a82c with SMTP id d7-20020a170902b707b029012ad3d7a82cmr136167pls.24.1626967225624;
-        Thu, 22 Jul 2021 08:20:25 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id 11sm30768663pfl.41.2021.07.22.08.20.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Jul 2021 08:20:25 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     viro@zeniv.linux.org.uk, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: [RFC PATCH v2 3/3] misc_cgroup: delete failed logs to avoid log flooding
-Date:   Thu, 22 Jul 2021 23:20:19 +0800
-Message-Id: <e2b0dd55908750bfb0a97efae4f4e2dff2ab6a4a.1626966339.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
-References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
-In-Reply-To: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
-References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zdafpjZOpX7w6ukm7UkyAJ9U3xYdHtSO79XymBUPu/o=;
+        b=AH23NvwPEJmK6VBKlY3PQWF3AE8j7C/fsyqa95TpCgaqcmwooCQkIh7URcLNTib8px
+         nlkEJW3bPPizjZDuqbs0GIZ3fNMauPHdKDKH+/Bqx2FwpDUsynpUaSZn41PmTs11ZZgx
+         Kb9ArgG+LCdzY/JJPbzlqWl3XHArcMWbT6mr+OqSUXdJA6vcBNrC6q+hWUGkmjMfEtzs
+         mZQU/6pAwBrKDiswsY6wz756Tb+fjZqEKR5hEWehCDZ+nntUrwbBXKXLlzgDn/Z118Py
+         4/EBYRfDH/MBcN+XwNSMxgPP0i0SiB2agLBAFsg/BtpiUY1U1l7alvkRiW9XX3FZIdaO
+         JVHw==
+X-Gm-Message-State: AOAM5305U7uHVCM3v0ML9sTN+PQ/mEzfDYqu/oMU2J8lxbX1zH5J6LHt
+        G0qMT3UJ4VcTZWId8LNapn6neGLNF010rA==
+X-Google-Smtp-Source: ABdhPJwcAqY66M07KTVd1PIwkXpHctb2IIw+Mqa4e3ZiMuTmqXewQLqvt4qbhgjgAWx4ur65ahffx9kXqjiLIQ==
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:eee8:d6f7:9645:48ee])
+ (user=shakeelb job=sendgmr) by 2002:a63:5118:: with SMTP id
+ f24mr1257023pgb.34.1626978393555; Thu, 22 Jul 2021 11:26:33 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 11:26:27 -0700
+Message-Id: <20210722182627.2267368-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] writeback: memcg: simplify cgroup_writeback_by_id
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Jan Kara <jack@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+Currently cgroup_writeback_by_id calls mem_cgroup_wb_stats() to get
+dirty pages for a memcg. However mem_cgroup_wb_stats() does a lot more
+than just get the number of dirty pages. Just directly get the number of
+dirty pages instead of calling mem_cgroup_wb_stats(). Also
+cgroup_writeback_by_id() is only called for best-effort dirty flushing,
+so remove the unused 'nr' parameter and no need to explicitly flush
+memcg stats.
 
-Since the upper-level logic will constantly retry when it fails, in
-high-stress scenarios, a large number of failure logs may affect
-performance. Therefore, we can replace it with the failcnt counter.
-
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
- kernel/cgroup/misc.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/fs-writeback.c          | 20 +++++++++-----------
+ include/linux/memcontrol.h | 15 +++++++++++++++
+ include/linux/writeback.h  |  2 +-
+ mm/memcontrol.c            | 13 +------------
+ 4 files changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index 7c568b619f82..b7de0fafa48a 100644
---- a/kernel/cgroup/misc.c
-+++ b/kernel/cgroup/misc.c
-@@ -159,8 +159,6 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
- 		if (new_usage > READ_ONCE(res->max) ||
- 		    new_usage > READ_ONCE(misc_res_capacity[type])) {
- 			if (!res->failed) {
--				pr_info("cgroup: charge rejected by the misc controller for %s resource in ",
--					misc_res_name[type]);
- 				pr_cont_cgroup_path(i->css.cgroup);
- 				pr_cont("\n");
- 				res->failed = true;
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 867984e778c3..35894a2dba75 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -1039,20 +1039,20 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+  * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
+  * @bdi_id: target bdi id
+  * @memcg_id: target memcg css id
+- * @nr: number of pages to write, 0 for best-effort dirty flushing
+  * @reason: reason why some writeback work initiated
+  * @done: target wb_completion
+  *
+  * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
+  * with the specified parameters.
+  */
+-int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+ 			   enum wb_reason reason, struct wb_completion *done)
+ {
+ 	struct backing_dev_info *bdi;
+ 	struct cgroup_subsys_state *memcg_css;
+ 	struct bdi_writeback *wb;
+ 	struct wb_writeback_work *work;
++	unsigned long dirty;
+ 	int ret;
+ 
+ 	/* lookup bdi and memcg */
+@@ -1081,24 +1081,22 @@ int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+ 	}
+ 
+ 	/*
+-	 * If @nr is zero, the caller is attempting to write out most of
++	 * The caller is attempting to write out most of
+ 	 * the currently dirty pages.  Let's take the current dirty page
+ 	 * count and inflate it by 25% which should be large enough to
+ 	 * flush out most dirty pages while avoiding getting livelocked by
+ 	 * concurrent dirtiers.
++	 *
++	 * BTW the memcg stats are flushed periodically and this is best-effort
++	 * estimation, so some potential error is ok.
+ 	 */
+-	if (!nr) {
+-		unsigned long filepages, headroom, dirty, writeback;
+-
+-		mem_cgroup_wb_stats(wb, &filepages, &headroom, &dirty,
+-				      &writeback);
+-		nr = dirty * 10 / 8;
+-	}
++	dirty = memcg_page_state(mem_cgroup_from_css(memcg_css), NR_FILE_DIRTY);
++	dirty = dirty * 10 / 8;
+ 
+ 	/* issue the writeback work */
+ 	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
+ 	if (work) {
+-		work->nr_pages = nr;
++		work->nr_pages = dirty;
+ 		work->sync_mode = WB_SYNC_NONE;
+ 		work->range_cyclic = 1;
+ 		work->reason = reason;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index b4c6b613e162..7028d8e4a3d7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -989,6 +989,16 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+ 	local_irq_restore(flags);
+ }
+ 
++static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
++{
++	long x = READ_ONCE(memcg->vmstats.state[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
++}
++
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+@@ -1444,6 +1454,11 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+ {
+ }
+ 
++static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
++{
++	return 0;
++}
++
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+index 1f34ddf284dc..109e0dcd1d21 100644
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -218,7 +218,7 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+ void wbc_detach_inode(struct writeback_control *wbc);
+ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+ 			      size_t bytes);
+-int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+ 			   enum wb_reason reason, struct wb_completion *done);
+ void cgroup_writeback_umount(void);
+ bool cleanup_offline_cgwb(struct bdi_writeback *wb);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 35bb5f8f9ea8..6580c2381a3e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -631,17 +631,6 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ 	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
+ }
+ 
+-/* idx can be of type enum memcg_stat_item or node_stat_item. */
+-static unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+-{
+-	long x = READ_ONCE(memcg->vmstats.state[idx]);
+-#ifdef CONFIG_SMP
+-	if (x < 0)
+-		x = 0;
+-#endif
+-	return x;
+-}
+-
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ {
+@@ -4609,7 +4598,7 @@ void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
+ 		    atomic_read(&frn->done.cnt) == 1) {
+ 			frn->at = 0;
+ 			trace_flush_foreign(wb, frn->bdi_id, frn->memcg_id);
+-			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id, 0,
++			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
+ 					       WB_REASON_FOREIGN_FLUSH,
+ 					       &frn->done);
+ 		}
 -- 
-2.30.0
+2.32.0.432.gabb21c7263-goog
 
