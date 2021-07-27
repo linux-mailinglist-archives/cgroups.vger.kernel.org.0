@@ -2,127 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3203D810E
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 23:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68993D81EC
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 23:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhG0VOc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 17:14:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39595 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232596AbhG0VOb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 17:14:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627420471;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HTTYyPAE0g/if8d0gvKRc9AYw/duV58RDsVIEQdGHsg=;
-        b=MmkBaBOuV1AUKpXcAGXaLo/TeoW4gQqCDymf0l637stY7WqPGA86SYbuh+wtcQ7hpYt7MT
-        hUTp6iLOSanU7p/9clCUsJ64XRMc4aaHAO4uHlGU6ffxKiELIorxd9ypOLe7sYtp8sfOpx
-        n04zqWTT+p13i3Tbjb2ksU5G5lD4PYQ=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-PQ3xgddOOxS2xrsO3MHdZw-1; Tue, 27 Jul 2021 17:14:29 -0400
-X-MC-Unique: PQ3xgddOOxS2xrsO3MHdZw-1
-Received: by mail-qv1-f69.google.com with SMTP id a2-20020a0562141302b02903303839b843so514526qvv.13
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
+        id S231445AbhG0Vjh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 17:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231339AbhG0Vjg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 17:39:36 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B7AC061757
+        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:39:36 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id m13so24244366lfg.13
+        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=586qQ0VfqS2t1FgawENmqvW9B/cgMqgnCEiHKLyzI/E=;
+        b=u1/MVJO4zcfaei7PD7eWb+709nz15VrWARci7ePDMDFolJNUERP2wsbjom+4NbVKF7
+         ssCxzxA0a2UMxu67QqmKkzf8Ut6ydxeIlIqw2blw57FpMzpCZ3PC+AX7TZdUAx0tipyl
+         G8luFgvQvburMncuoSBNoiciSrzOHj4b5hjw5HfttQCJX69lVCqpmjGkRnGShNJwduXw
+         Zh8TM0wbJKBTwe0RiYKQ6DlcLgR+hq+p9L+JSK8/8r1bCXiy6mY+G/ZI55irmnQDLRxC
+         ZeISUoXD1z4L5Wyc48m90u3UbQaFELITPkCenCYevX5lJ/OgtMDHFVm6vd5w9iw29W+4
+         Bw0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HTTYyPAE0g/if8d0gvKRc9AYw/duV58RDsVIEQdGHsg=;
-        b=KDomlho2B8fTv7vQ7JrjP3sPXeDFrkYU4RFuCPVEh6R41Oh0gAEktWHZPE0R4AhRsu
-         NzLp9EKGdwXolcKLeGxVJ/CARviFPKSbpp1xMUg0GOGLHE0QKJ+hp1HLIxourmhGQGUc
-         eO1FvZ7P02IIcjS5IwN970W4ofDDkH6DxEuNohfDU2RnCtvfec9qn8gZeeMJ4fo012bA
-         F2h62Ar/6A9+jUyNQ3ArwE8BJVhAN3ouVAnuRuI6Rr0adMLVUl3AKE15ei0P0vcOEQC/
-         qPp5ITjdpxAmazIv5Xf2HlSefW32Sh4WxmZUMCeQxzaX9fHQGmd+VLtKfmHZV4Tak1Uq
-         pQFA==
-X-Gm-Message-State: AOAM530p/Lomq/NQp2SvgH0fz/Oe/wXsgawRGFqumSkSvul5G34ab5D/
-        i5L+LWRfWrBgetGsKrstX/QyrpsPFw2BWu/S7rEtrQwCuuE9IWF7UZsgOjzdo4oNi8FJk9Dv8K9
-        lNymoQ4cDKGDRX2D59A==
-X-Received: by 2002:ae9:f30e:: with SMTP id p14mr4710199qkg.412.1627420469420;
-        Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz21PRLExOooxNoN1eIO3l2I/Tqj7X6DVLfqcyC+i2GacI9azNipKAbtqXgsR/XOpGArUqZBQ==
-X-Received: by 2002:ae9:f30e:: with SMTP id p14mr4710180qkg.412.1627420469234;
-        Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p22sm1908465qtq.64.2021.07.27.14.14.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 14:14:28 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 0/9] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210720141834.10624-1-longman@redhat.com>
- <YP9ChFvrGrDMGzbe@slm.duckdns.org>
-Message-ID: <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
-Date:   Tue, 27 Jul 2021 17:14:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=586qQ0VfqS2t1FgawENmqvW9B/cgMqgnCEiHKLyzI/E=;
+        b=ZkmHkd7YjIj5rCJi3KZMm7/td0FljaA9ayM02PY/ciqh2CJfW/OR2w7FUQ8MLSFuHf
+         QECFzZDh5wifiivNNjhWcCm/BFiXf1yCfIkzaYotk+lXAtDwEwQJV4xTOPmCWPAZVHzQ
+         BxR2u0FoJD2lH3jf+QMsZAajjgTnWhqsJoS0hPzlOYTS+ZpZhcepJ/K+5xd+CHTGgz9I
+         2ULWsUa6Kure15Cq0RQSWwQQ7ijXsdhgmvl6zUnFJxVnmI+7EWbiiLmhkn06Ho8w7Dq2
+         ILydcJ/vhq458GH2VjDhwnZf/DFoAWQZaqUt/nV4T2CyPUmWt4njCCRt75Ome5Hte+X2
+         eu0g==
+X-Gm-Message-State: AOAM530wLjxwOcrt3ve0LDitPfyTwg8a7Gn9zKcojWakAAslgvvC3GXn
+        tD7CN7wVckVYI/BZCzWN7ynD2fgiskCxHxl5sPmQ9HlfbdPrxA==
+X-Google-Smtp-Source: ABdhPJwwdSCswMAky7kROjCs9+RNQPi2B9KOACTRASBYz1YEPyZkM5BZYLuBNqCTFu4siT0t1TDHb1BYSgpDsRxP1UA=
+X-Received: by 2002:a19:ae0f:: with SMTP id f15mr18055453lfc.117.1627421974281;
+ Tue, 27 Jul 2021 14:39:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YP9ChFvrGrDMGzbe@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
+ <cover.1627362057.git.vvs@virtuozzo.com> <56e31cb5-6e1e-bdba-d7ca-be64b9842363@virtuozzo.com>
+In-Reply-To: <56e31cb5-6e1e-bdba-d7ca-be64b9842363@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 27 Jul 2021 14:39:23 -0700
+Message-ID: <CALvZod7e8pNhCU-o8-dFwn5v4aVoUrxxjGamfbaqK83d3UL1Mw@mail.gmail.com>
+Subject: Re: [PATCH v7 02/10] memcg: enable accounting for pollfd and select
+ bits arrays
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/26/21 7:17 PM, Tejun Heo wrote:
-> Hello,
+On Mon, Jul 26, 2021 at 10:33 PM Vasily Averin <vvs@virtuozzo.com> wrote:
 >
-> On Tue, Jul 20, 2021 at 10:18:25AM -0400, Waiman Long wrote:
->> v3:
->>   - Add two new patches (patches 2 & 3) to fix bugs found during the
->>     testing process.
->>   - Add a new patch to enable inotify event notification when partition
->>     become invalid.
->>   - Add a test to test event notification when partition become invalid.
-> I applied parts of the series. I think there was a bit of miscommunication.
-> I meant that we should use the invalid state as the only way to indicate
-> errors as long as the error state is something which can be reached through
-> hot unplug or other uncontrollable changes, and require users to monitor the
-> state transitions for confirmation and error handling.
+> User can call select/poll system calls with a large number of assigned
+> file descriptors and force kernel to allocate up to several pages of memory
+> till end of these sleeping system calls. We have here long-living
+> unaccounted per-task allocations.
+>
+> It makes sense to account for these allocations to restrict the host's
+> memory consumption from inside the memcg-limited container.
+>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  fs/select.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/select.c b/fs/select.c
+> index 945896d..e83e563 100644
+> --- a/fs/select.c
+> +++ b/fs/select.c
+> @@ -655,7 +655,7 @@ int core_sys_select(int n, fd_set __user *inp, fd_set __user *outp,
+>                         goto out_nofds;
+>
+>                 alloc_size = 6 * size;
+> -               bits = kvmalloc(alloc_size, GFP_KERNEL);
+> +               bits = kvmalloc(alloc_size, GFP_KERNEL_ACCOUNT);
 
-Yes, that is the point of adding the event notification patch.
+What about the similar allocation in compat_core_sys_select()? Also
+what about the allocation in poll_get_entry()?
 
-In the current code, direct write to cpuset.cpus.partition are strictly 
-controlled and invalid transitions are rejected. However, changes to 
-cpuset.cpus that do not break the cpu exclusivity rule or cpu hot plug 
-may cause a partition to changed to invalid. What is currently done in 
-this patchset is to add extra guards to reject those cpuset.cpus change 
-that cause the partition to become invalid since changes that break cpu 
-exclusivity rule will be rejected anyway. I can leave out those extra 
-guards and allow those invalid cpuset.cpus change to go forward and 
-change the partition to invalid instead if this is what you want.
-
-However, if we have a complicated partition setup with multiple child 
-partitions. Invalid cpuset.cpus change in a parent partition will cause 
-all the child partitions to become invalid too. That is the scenario 
-that I don't want to happen inadvertently. Alternatively, we can 
-restrict those invalid changes if a child partition exist and let it 
-pass through and make it invalid if it is a standalone partition.
-
-Please let me know which approach do you want me to take.
-
-Cheers,
-Longman
-
-
-
+>                 if (!bits)
+>                         goto out_nofds;
+>         }
+> @@ -1000,7 +1000,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+>
+>                 len = min(todo, POLLFD_PER_PAGE);
+>                 walk = walk->next = kmalloc(struct_size(walk, entries, len),
+> -                                           GFP_KERNEL);
+> +                                           GFP_KERNEL_ACCOUNT);
+>                 if (!walk) {
+>                         err = -ENOMEM;
+>                         goto out_fds;
+> --
+> 1.8.3.1
+>
