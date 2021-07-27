@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2C3D740F
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 13:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A393D7413
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 13:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbhG0LNX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 07:13:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30496 "EHLO mga06.intel.com"
+        id S236318AbhG0LOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 07:14:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:42467 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235837AbhG0LNW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:13:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="273499534"
+        id S236284AbhG0LOX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:14:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="297996097"
 X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
-   d="scan'208";a="273499534"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:13:22 -0700
+   d="scan'208";a="297996097"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:14:22 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
-   d="scan'208";a="662604393"
+   d="scan'208";a="580177267"
 Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Jul 2021 04:13:20 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 27 Jul 2021 04:14:21 -0700
 Received: from kbuild by d053b881505b with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m8L1Q-0006jg-Ii; Tue, 27 Jul 2021 11:13:16 +0000
-Date:   Tue, 27 Jul 2021 19:12:57 +0800
+        id 1m8L2T-0006jm-5K; Tue, 27 Jul 2021 11:14:21 +0000
+Date:   Tue, 27 Jul 2021 19:13:00 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.15] BUILD SUCCESS
- 15d428e6fe77fffc3f4fff923336036f5496ef17
-Message-ID: <60ffea39.IfZo+3PtdgNz7qOv%lkp@intel.com>
+Subject: [cgroup:test-merge-for-5.14-fixes] BUILD SUCCESS
+ 4cdbdc40f6399de911db4fd3b8e699f5ece560b7
+Message-ID: <60ffea3c.I4Iu5zyqhqEfRmvy%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.15
-branch HEAD: 15d428e6fe77fffc3f4fff923336036f5496ef17  cgroup/cpuset: Fix a partition bug with hotplug
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge-for-5.14-fixes
+branch HEAD: 4cdbdc40f6399de911db4fd3b8e699f5ece560b7  Merge branch 'for-5.14-fixes' into test-merge-for-5.14-fixes
 
 elapsed time: 721m
 
-configs tested: 152
+configs tested: 153
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -56,6 +56,7 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
+i386                 randconfig-c001-20210726
 i386                 randconfig-c001-20210727
 arm                            zeus_defconfig
 arm                             mxs_defconfig
@@ -88,9 +89,9 @@ sh                   rts7751r2dplus_defconfig
 powerpc                 mpc8313_rdb_defconfig
 powerpc                          g5_defconfig
 mips                           rs90_defconfig
+riscv                    nommu_virt_defconfig
 m68k                        mvme147_defconfig
 sh                     magicpanelr2_defconfig
-riscv                    nommu_virt_defconfig
 powerpc                 linkstation_defconfig
 sh                          r7785rp_defconfig
 ia64                          tiger_defconfig
