@@ -2,74 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A96E3D720D
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 11:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F2C3D740F
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 13:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhG0JcJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 05:32:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
+        id S236169AbhG0LNX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 07:13:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:30496 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236125AbhG0JcJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:32:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A30760E09;
-        Tue, 27 Jul 2021 09:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627378329;
-        bh=5Ez4IXemr8M6FoN3lv3kTwfLMCVrpyMcVjl7PW1H/ls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUPRPfJGcA1bM6D58QeUAcuHwuh4hTPgHONhJ4hMVTUbs4zthrO/+R1Nd/jGKB0GY
-         cyW6nGQbFKuu0V+3K1AOOMTFOpLeu6W+2MVXw00LUiUBb8r6Hxo6sQ1//wCkA84Jbj
-         H5qGKbffQbrfOnP6ID5NNBkygNmzIHPnOvEDEC/k=
-Date:   Tue, 27 Jul 2021 11:32:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH TTY] memcg: drop GFP_KERNEL_ACCOUNT use in
- tty_save_termios()
-Message-ID: <YP/Sl8a5PqUFZAi5@kroah.com>
-References: <d42bd2a3-74a0-163f-6e3a-ad702f6d2817@virtuozzo.com>
- <afbaec7c-1872-d43a-1240-e077adc0d6d9@virtuozzo.com>
+        id S235837AbhG0LNW (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:13:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="273499534"
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="273499534"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:13:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="662604393"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Jul 2021 04:13:20 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m8L1Q-0006jg-Ii; Tue, 27 Jul 2021 11:13:16 +0000
+Date:   Tue, 27 Jul 2021 19:12:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [cgroup:for-5.15] BUILD SUCCESS
+ 15d428e6fe77fffc3f4fff923336036f5496ef17
+Message-ID: <60ffea39.IfZo+3PtdgNz7qOv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afbaec7c-1872-d43a-1240-e077adc0d6d9@virtuozzo.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 12:26:12PM +0300, Vasily Averin wrote:
-> Jiri Slaby pointed that termios are not saved for PTYs and for other
-> terminals used inside containers. Therefore accounting for saved
-> termios have near to zero impact in real life scenarios.
-> 
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Fixes: 854dd8a572a0 ("memcg: enable accounting for tty-related objects")
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  drivers/tty/tty_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> index e787f6f..a6230b2 100644
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -1493,7 +1493,7 @@ void tty_save_termios(struct tty_struct *tty)
->  	/* Stash the termios data */
->  	tp = tty->driver->termios[idx];
->  	if (tp == NULL) {
-> -		tp = kmalloc(sizeof(*tp), GFP_KERNEL_ACCOUNT);
-> +		tp = kmalloc(sizeof(*tp), GFP_KERNEL);
->  		if (tp == NULL)
->  			return;
->  		tty->driver->termios[idx] = tp;
-> -- 
-> 1.8.3.1
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.15
+branch HEAD: 15d428e6fe77fffc3f4fff923336036f5496ef17  cgroup/cpuset: Fix a partition bug with hotplug
 
-I can just drop the original patch from my tree, it has not gone into my
-unmutable branch yet.
+elapsed time: 721m
 
-thanks,
+configs tested: 152
+configs skipped: 3
 
-greg k-h
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210727
+arm                            zeus_defconfig
+arm                             mxs_defconfig
+mips                          ath25_defconfig
+arm                       spear13xx_defconfig
+um                                  defconfig
+arm                         lpc18xx_defconfig
+powerpc                    socrates_defconfig
+powerpc                       holly_defconfig
+xtensa                          iss_defconfig
+sh                        dreamcast_defconfig
+xtensa                              defconfig
+powerpc                     mpc5200_defconfig
+sh                      rts7751r2d1_defconfig
+h8300                     edosk2674_defconfig
+powerpc                      cm5200_defconfig
+mips                         mpc30x_defconfig
+powerpc                         wii_defconfig
+arm64                            alldefconfig
+parisc                generic-64bit_defconfig
+arm                           omap1_defconfig
+arm                             ezx_defconfig
+arc                          axs103_defconfig
+nds32                             allnoconfig
+arc                        vdk_hs38_defconfig
+m68k                       m5249evb_defconfig
+sh                          sdk7786_defconfig
+arm                         mv78xx0_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                          g5_defconfig
+mips                           rs90_defconfig
+m68k                        mvme147_defconfig
+sh                     magicpanelr2_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                 linkstation_defconfig
+sh                          r7785rp_defconfig
+ia64                          tiger_defconfig
+arm                           spitz_defconfig
+ia64                             alldefconfig
+sparc                               defconfig
+parisc                              defconfig
+mips                      pic32mzda_defconfig
+xtensa                  audio_kc705_defconfig
+mips                           ci20_defconfig
+arm                      jornada720_defconfig
+mips                     cu1830-neo_defconfig
+sh                          urquell_defconfig
+mips                        bcm47xx_defconfig
+arm                          exynos_defconfig
+powerpc                     stx_gp3_defconfig
+arm                  colibri_pxa300_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                     ep8248e_defconfig
+mips                           ip27_defconfig
+mips                         bigsur_defconfig
+sh                        sh7763rdp_defconfig
+x86_64                              defconfig
+openrisc                  or1klitex_defconfig
+sh                             espt_defconfig
+s390                             allmodconfig
+sh                              ul2_defconfig
+mips                        nlm_xlp_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210726
+x86_64               randconfig-a006-20210726
+x86_64               randconfig-a001-20210726
+x86_64               randconfig-a005-20210726
+x86_64               randconfig-a004-20210726
+x86_64               randconfig-a002-20210726
+i386                 randconfig-a005-20210726
+i386                 randconfig-a003-20210726
+i386                 randconfig-a004-20210726
+i386                 randconfig-a002-20210726
+i386                 randconfig-a001-20210726
+i386                 randconfig-a006-20210726
+i386                 randconfig-a005-20210727
+i386                 randconfig-a003-20210727
+i386                 randconfig-a004-20210727
+i386                 randconfig-a002-20210727
+i386                 randconfig-a001-20210727
+i386                 randconfig-a006-20210727
+x86_64               randconfig-a011-20210727
+x86_64               randconfig-a016-20210727
+x86_64               randconfig-a013-20210727
+x86_64               randconfig-a014-20210727
+x86_64               randconfig-a012-20210727
+x86_64               randconfig-a015-20210727
+i386                 randconfig-a016-20210727
+i386                 randconfig-a013-20210727
+i386                 randconfig-a012-20210727
+i386                 randconfig-a011-20210727
+i386                 randconfig-a014-20210727
+i386                 randconfig-a015-20210727
+i386                 randconfig-a016-20210726
+i386                 randconfig-a013-20210726
+i386                 randconfig-a012-20210726
+i386                 randconfig-a011-20210726
+i386                 randconfig-a014-20210726
+i386                 randconfig-a015-20210726
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210726
+x86_64               randconfig-a011-20210726
+x86_64               randconfig-a016-20210726
+x86_64               randconfig-a013-20210726
+x86_64               randconfig-a014-20210726
+x86_64               randconfig-a012-20210726
+x86_64               randconfig-a015-20210726
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
