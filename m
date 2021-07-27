@@ -2,119 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318793D7B82
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 19:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9123D7EF6
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 22:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhG0RAR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 13:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhG0RAO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 13:00:14 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4F2C061757
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 10:00:10 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id m13so22831784lfg.13
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 10:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kvve0PvD+BG/Fg4YS9gRmkOVtrJzBbhe3AaQP2JrJi8=;
-        b=BamPGKxkayrhztUhyIbCPdfJ8zOowXYiQvF4Ibi4hR0BXtMIs0NGaC5lPTvZHBn0Bj
-         mzTVS882/CQo5XFnXL+kJORZmjlCxYKwnGheT0Mr4xI5I3Yz7pWttn2GW7k6ri8BGFj4
-         /tuUI5A98uxjuAqFl1H6Cg6ALu6Gctc66YS0ZJ2uTIrJXzhfOvU5KfgqpqJhu7maJu/a
-         NVk17jZ4yzeksCWzllgFbNe9pAgPx0k9n0jdpRhENWB/kHvVMJT0VhWqYjXiQR6GW3yz
-         Y5xlnUlSP02eTGvm9lLHUxGDrXWl29SGfFf709MaMb2bdgYobYPeSAp+9ixsNYkmIs2a
-         3dOQ==
+        id S230486AbhG0URC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 16:17:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46750 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230409AbhG0URB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 16:17:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627417020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
+        b=iIPYqXhCxCQ/tI2aYQFlODE1F3UluJwhMLsCtJIL6dxTpUc6duCZErA/0NMrf/FQ9v6VYQ
+        kVXxAUsNLVyGRANNgGGwZuA/kcpiszOqAO1LQ4eAMpIY3IBJLke102HomkElsJgcSwK3U4
+        9oeGI14kIdPEi0z3L79v7iom4+LBXQw=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-ldgkFSIfMmWOr7mscJ9BHA-1; Tue, 27 Jul 2021 16:16:59 -0400
+X-MC-Unique: ldgkFSIfMmWOr7mscJ9BHA-1
+Received: by mail-qk1-f198.google.com with SMTP id h5-20020a05620a0525b02903b861bec838so1661qkh.7
+        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 13:16:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kvve0PvD+BG/Fg4YS9gRmkOVtrJzBbhe3AaQP2JrJi8=;
-        b=K2B6S3lJqJVlLQvrfoCsNfvAO/ZQ81Sf0Oi8obiYxkK4ULl43VB1pKAHahMHydL5qR
-         o4BBiirtD1csAaq/fLVqxEYje7XWSmJHMZ2AQb3q3gzBarrUXTT195Hxzb36SryiW2g4
-         lLV24wZ7kUSdFOQF06gq4tl+kgJD1jYAhQk37TMXZb/SHXgvlmYHtTbUuiGjDllYsFcH
-         WlL3MKPk3VoT2Zic9zqO7SfP5OXyfNOsDwuss42cGp8UKTOfo2eU40NML2OZOexuWDZ/
-         6rOqM+XDQkSrQs8JLk7J+Af196ritgUvDBEBS3UvyErvcam/GrXo5kXkst+Qwbox3Q21
-         DrmA==
-X-Gm-Message-State: AOAM531E2fCCoOBlfyiiiy1nkIHUYTu+VH7clVKR9V2kMrVCNVzsJzyA
-        H4JNYxlxJbIbfJdOl/rgnl2q+qLupb+qZCCwaepW5Q==
-X-Google-Smtp-Source: ABdhPJw3HT5zZziCLyixwFiw0R8p8dngZ62UL76GxgmYW/TEr3P9n8CI/cqFloMXIxXkKLzFLg/dz8VKxewa+txr/zw=
-X-Received: by 2002:a19:dc50:: with SMTP id f16mr17009143lfj.347.1627405208894;
- Tue, 27 Jul 2021 10:00:08 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
+        b=TjEGgk6WUdDf8vbz/OyCR1jlhPUOLx7q9Ka0lT0QOk2Y6iCzYa89LpdNA95tL3vmbT
+         F03ErYjfdsir4d7AjmZdTRyQLS31fE02A7UowlvGlcMKCymsHyvwwjnbCtotvj6lu9ql
+         UI/RlI8T0cKBfOrQPW1bQMDn9TVKRu5ILnQC0HK9Nt+9PJDyXXzPY8NnI+x2LoEOvBP7
+         NsHgiBDG2eYO54cdGlW+pZ36rQMYj5v/hFNPus2orfaq23mvoRQezR/j4uiY1Izr7Ts5
+         aGD9w5S7s4rZ9MfPPy0uLPVV7rRWc/C/cYkhlCRQJfcOEizNk70oP7qOQuC8nwReKyeJ
+         /rEw==
+X-Gm-Message-State: AOAM532jpOiUaTMsoa0sRDye7xrbuvwjy/dpDH8pvKr1R/H1yriryKG4
+        fWBpAU/JnTSaySX0R0dl6wS0O+Y0W30s0TwicNlKsJsbOUiRPfyMz/VkH1++ToKwqWcWM1ie8ig
+        AwSDaGatEHHAQYb1xIw==
+X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424398qkb.176.1627417018993;
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkKaLGiPqMLIncbtDqJyUsjY34972lfs0JJ1TJHQSJbPBkHyyv8W+CXGcrtPiJOkaTxPBjIQ==
+X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424373qkb.176.1627417018811;
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id g10sm1910136qtp.67.2021.07.27.13.16.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/9] cgroup/cpuset: Fix a partition bug with hotplug
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-3-longman@redhat.com>
+ <YP8+ajTnvrha+0O6@mtj.duckdns.org>
+Message-ID: <2173a00b-504a-1932-877d-d26775e4775c@redhat.com>
+Date:   Tue, 27 Jul 2021 16:16:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210726150019.251820-1-hannes@cmpxchg.org>
-In-Reply-To: <20210726150019.251820-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 27 Jul 2021 09:59:57 -0700
-Message-ID: <CALvZod434VzPru+wcO=PgMDeCs6KPgR06MuGVttaDD64_z3QMw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: fix blocking rstat function called from
- atomic cgroup1 thresholding code
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YP8+ajTnvrha+0O6@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 8:01 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On 7/26/21 6:59 PM, Tejun Heo wrote:
+> On Tue, Jul 20, 2021 at 10:18:27AM -0400, Waiman Long wrote:
+>> In cpuset_hotplug_workfn(), the detection of whether the cpu list
+>> has been changed is done by comparing the effective cpus of the top
+>> cpuset with the cpu_active_mask. However, in the rare case that just
+>> all the CPUs in the subparts_cpus are offlined, the detection fails
+>> and the partition states are not updated correctly. Fix it by forcing
+>> the cpus_updated flag to true in this particular case.
+>>
+>> Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Applied to cgroup/for-5.15 w/ a minor update to the comment (I dropped
+> "just" before "all". It read weird to me.)
 >
-> Dan Carpenter reports:
+> Thanks.
 >
->     The patch 2d146aa3aa84: "mm: memcontrol: switch to rstat" from Apr
->     29, 2021, leads to the following static checker warning:
->
->             kernel/cgroup/rstat.c:200 cgroup_rstat_flush()
->             warn: sleeping in atomic context
->
->     mm/memcontrol.c
->       3572  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->       3573  {
->       3574          unsigned long val;
->       3575
->       3576          if (mem_cgroup_is_root(memcg)) {
->       3577                  cgroup_rstat_flush(memcg->css.cgroup);
->                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->     This is from static analysis and potentially a false positive.  The
->     problem is that mem_cgroup_usage() is called from __mem_cgroup_threshold()
->     which holds an rcu_read_lock().  And the cgroup_rstat_flush() function
->     can sleep.
->
->       3578                  val = memcg_page_state(memcg, NR_FILE_PAGES) +
->       3579                          memcg_page_state(memcg, NR_ANON_MAPPED);
->       3580                  if (swap)
->       3581                          val += memcg_page_state(memcg, MEMCG_SWAP);
->       3582          } else {
->       3583                  if (!swap)
->       3584                          val = page_counter_read(&memcg->memory);
->       3585                  else
->       3586                          val = page_counter_read(&memcg->memsw);
->       3587          }
->       3588          return val;
->       3589  }
->
-> __mem_cgroup_threshold() indeed holds the rcu lock. In addition, the
-> thresholding code is invoked during stat changes, and those contexts
-> have irqs disabled as well. If the lock breaking occurs inside the
-> flush function, it will result in a sleep from an atomic context.
->
-> Use the irsafe flushing variant in mem_cgroup_usage() to fix this.
->
-> Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks for fixing the wording.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Cheers,
+Longman
 
-BTW what do you think of removing stat flushes from the read side
-(kernel and userspace) completely after periodic flushing and async
-flushing from update side? Basically with "memcg: infrastructure to
-flush memcg stats".
