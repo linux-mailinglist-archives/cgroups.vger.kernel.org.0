@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724613D81F7
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 23:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4713D821C
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 23:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhG0Vlk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 17:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S232134AbhG0VvE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 17:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbhG0Vlj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 17:41:39 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986FCC061765
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:41:36 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a26so24184144lfr.11
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:41:36 -0700 (PDT)
+        with ESMTP id S232022AbhG0VvE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 17:51:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC42C061757
+        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:51:03 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id m13so24294555lfg.13
+        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 14:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s93ky4F/jioIoNmdtZvpaIjb8/udfZPafTlFZjDMqHQ=;
-        b=R8iLQFVMijNvae4GMHQsDyKNJF1x6r0W7+1jWZhTLpPYX7jpQldHzHrpSGKdSGe8OB
-         2dUeA4EQCX8Qhh8ndamI5LuUzwNaMLGiIjV/goZKSMkcQeDY81ehXZ907DPyaA0k6eyk
-         6JSfkAPSRjslQzjF22lcu5/hizvGfzsfq/oP3Hl5uzqq6QpEGU03LVJIFm0ek2RbdTBS
-         QHPA2SP83GMPrVFBySAAhlD43A1Qaxjb6vifSAvDl9b1vwStGPYCvohj3pP/l3Bx1MpG
-         RkuHnFM0MrGqkZWeNzKMpd8+6OK2JCZPEBFaJe5l7sjk5VRrvv/O5G5IePluX4xby4R+
-         xbog==
+        bh=5GJDqmdaLtkaW7Otz+OuKF+u9n9yLDONH7a1pUz+R4g=;
+        b=vU99ZBKDzMVUNqf5sfsmKOTh7f/nFBljme/8vZdWEh6VMl+6pjjr+Fh1/llaa1Tmu6
+         E9e293cJN6TpD5hWLPrX7NX8k8plP1ci4gLMwOoW9HRfOhn/zBJTz95wIGo8wmUwy72t
+         Q8tIijJECxZZ/W7XHUlaS1CYRF5ZbobafO8eG4ZXzbODrSoQrWT+KHtcnPJ+eTgQiKCN
+         PGhFkiev0aEVZ+yPmByqlCAKbem3VGZ8EI60BhFe7uveUqq3jRNUoMwJTeq236JUuDip
+         Qoxh+xV/V4nysMXdXY/TVCpkHGqeXFqXWYC3SFsVAGOZZIfMsH+Nw6n2bnmPy0sihGCH
+         GWEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s93ky4F/jioIoNmdtZvpaIjb8/udfZPafTlFZjDMqHQ=;
-        b=rtk3DLTLZ956NnxgXH8ouGPmN5L2fETiwn0xS98kLBHzG/onWmYz0Lm4fYPjJcLlRW
-         1Xkol372BM8F6x1/ZjhewZPvUPE5LlCD0dr5hnxkrd7AiCO3FKhEPQ3EsPvc6eHxmLt4
-         uiXXCWleiAFoyy8ey3BOLtJnyli4Bd1gxcL5JAZVkmEVmC4AmxOYYuo+9oqE/zb8Up/N
-         02J2aob8yuI/qa9Rw3QPSLJ66TWRkCppb/aojrYYxA87BD/EfAvODq5Y0eowy7AKVaYa
-         hQ3lIAXe1acYgQKvjGRNUFkFb2WItvUR4peZAD5sC19FD2HpdnatCZgrWiP7gb5FKJZ7
-         Oa9w==
-X-Gm-Message-State: AOAM531oz9ryJi7XS/5Jme/JINS9NEEvp4RdjT1vbKRL+X25E0NEd7CK
-        DqtC0q2v1q3Am6gi4Rpi/UVjERhyjn8kPZ6Y6KZrqMRqeFA=
-X-Google-Smtp-Source: ABdhPJxr8Yyt8L0du5zCgYW2LNbT/Y9UwNtbKzX2hkrtXXoTu7RlfDx5JR0o5i2oAGspuWvPpzMgLwQgDU2+wEK13Rc=
-X-Received: by 2002:ac2:4d86:: with SMTP id g6mr17764047lfe.549.1627422094752;
- Tue, 27 Jul 2021 14:41:34 -0700 (PDT)
+        bh=5GJDqmdaLtkaW7Otz+OuKF+u9n9yLDONH7a1pUz+R4g=;
+        b=HcgtF53UQmVGu2iQ268JkBa/7lzw52GMBumJevF+blWfrvyU8qpE13PcrUvJRM3a9U
+         0KS6XAonym/0X+VLEOTtBgW6vMwotjnc51UwMZLlwDKCV9Q6sX5o85jViTHDw49mAakH
+         ei5xoeKR+RR71qGsQZdwqpFyuvTzpJhan8v8PHyjQI6r7P93rh4E5sACkqgNKig0hmTp
+         vYSSwrlfM5veJ6TynC65zn4p+y+VhCcKbAczoiMabrJu3tuVgwkVyPaEx9R9fvmycpAA
+         R+z3OPIyskdJwfZwpKq9L6tYBPBL+jtGHgilePPyjdW1OMjjBhIprQ7wQF7Ve1uNqCLK
+         Ja5w==
+X-Gm-Message-State: AOAM533t+TED9s4LOgf2WHQyM9Zay8uBQPqvHypsudEbiDWxv4NdQJwO
+        m/N7EcJV5atIGIZ44wIAWkkCbMbwmtF0q2SReaV4d8p4zU8=
+X-Google-Smtp-Source: ABdhPJxiF7JZ1IzEl8lQTFbT71fuPW6s9e8dyJcfiNsanpiLLZSmPVXEg1YBkBDYHl4Ww2jWkxptQzPlLISmcGv/3S0=
+X-Received: by 2002:ac2:4d86:: with SMTP id g6mr17787703lfe.549.1627422661756;
+ Tue, 27 Jul 2021 14:51:01 -0700 (PDT)
 MIME-Version: 1.0
 References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
- <cover.1627362057.git.vvs@virtuozzo.com> <b009f4c7-f0ab-c0ec-8e83-918f47d677da@virtuozzo.com>
-In-Reply-To: <b009f4c7-f0ab-c0ec-8e83-918f47d677da@virtuozzo.com>
+ <cover.1627362057.git.vvs@virtuozzo.com> <1b408625-d71c-0b26-b0b6-9baf00f93e69@virtuozzo.com>
+In-Reply-To: <1b408625-d71c-0b26-b0b6-9baf00f93e69@virtuozzo.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 27 Jul 2021 14:41:23 -0700
-Message-ID: <CALvZod6xT-Hh3Jndh4uY_YXstjk18Lq_kLxo1huBPnb8A84Wew@mail.gmail.com>
-Subject: Re: [PATCH v7 03/10] memcg: enable accounting for file lock caches
+Date:   Tue, 27 Jul 2021 14:50:50 -0700
+Message-ID: <CALvZod6H8atu5k3xhKf11SEMjyVjXMYFGWKBLsXStYhYs3FNCw@mail.gmail.com>
+Subject: Re: [PATCH v7 04/10] memcg: enable accounting for fasync_cache
 To:     Vasily Averin <vvs@virtuozzo.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Cgroups <cgroups@vger.kernel.org>,
@@ -70,11 +70,13 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Mon, Jul 26, 2021 at 10:33 PM Vasily Averin <vvs@virtuozzo.com> wrote:
 >
-> User can create file locks for each open file and force kernel
-> to allocate small but long-living objects per each open file.
+> fasync_struct is used by almost all character device drivers to set up
+> the fasync queue, and for regular files by the file lease code.
+> This structure is quite small but long-living and it can be assigned
+> for any open file.
 >
-> It makes sense to account for these objects to limit the host's memory
-> consumption from inside the memcg-limited container.
+> It makes sense to account for its allocations to restrict the host's
+> memory consumption from inside the memcg-limited container.
 >
 > Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
