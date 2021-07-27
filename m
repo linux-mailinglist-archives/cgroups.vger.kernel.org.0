@@ -2,137 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A513D7A45
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 17:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF543D7AD1
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 18:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhG0P4a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 11:56:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32719 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229712AbhG0P43 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 11:56:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627401389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M3++Uh/orxff5EIZBKy/srZv4TUlnGzA4HSvE27QDsA=;
-        b=A8b2TbZd0oiRs1et6u0tkufC8um05yBWjj1hy5MbxtGAvDGwvB5ZfzgMUZMZoQ6HbXqJlJ
-        CilyZ55K2oTdXPWHb1EMNG9tfzbUUtSV9ni05BMmDwX2HfpNK4117XPt3NS/ErVSqENJlX
-        IZnagZuSizTEwaWwelIC+i2PjPWhkK0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-DbWR3aHZMNmvECQCUlzkJQ-1; Tue, 27 Jul 2021 11:56:27 -0400
-X-MC-Unique: DbWR3aHZMNmvECQCUlzkJQ-1
-Received: by mail-qv1-f69.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so10850495qvt.20
-        for <cgroups@vger.kernel.org>; Tue, 27 Jul 2021 08:56:27 -0700 (PDT)
+        id S229489AbhG0QVR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Jul 2021 12:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhG0QVR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 12:21:17 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2246AC061757;
+        Tue, 27 Jul 2021 09:21:16 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id k1so16233982plt.12;
+        Tue, 27 Jul 2021 09:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aKSXNwDjopSziuCU/tjPk+z1jeKEq3gWP1NdV3AtHro=;
+        b=p0y3P4/22F5hQkn3WFmpiaZsoG3SjwD9e4gQmaK7VA6kHL2uLm//Kv2uEa3ojTXZNc
+         XwxeYKIpE5ECCXztRDAzRUyUY77SSexmcB38ytVKWg1dgKp45Xmej1t+YsnnliSFzJrn
+         OMWdfRoXs218uT6SCOfCikE7/9GtnIjPzbP5jfRCTY/w4wdQALgtYlxSHXUg36/a3LD6
+         UG2gADHwg1LleP2jxPRM6H5sstIO4THOD1fXqD8HDzZL5G6K4D2/cXHaRE7XxHZNtsPj
+         Y8DwM8N0T7h/cyO8ZJvBnyoSnmLpeX9JZUw0cyBA7pKQpBWkqVwoJhkAmgfrqnyXzsQn
+         S8ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=M3++Uh/orxff5EIZBKy/srZv4TUlnGzA4HSvE27QDsA=;
-        b=GWKmya46M5cavMf1dweGAzJSUa4QBWJPCWLY2KH3FcqDQVS3N1C/Mxd779+2SCEvmR
-         rblv61suqso2UE1AS3NXzzekX8d398ozQD/mte7sPCx60nttg5ETfnKOQZjKscgdCJfM
-         qfnR6moeOWMdDi+k6E4K1PRHYsIqriGNHagRqnn2LBV9D964ciARTjnPkCm+tKztULO7
-         AEHKOIyk4x4W5Syg+2MbYiT8mvH9ksBCWZHp9fEm4DnxImk6j5qeM5b1yAmto5rEhfSW
-         SBP/ZfksnUXNH5bPijtfb+P5vWgI+BaOyrCEWf5K7//BFCTBrtgIpJGlLusDZ2mvbQDY
-         mquQ==
-X-Gm-Message-State: AOAM533FvuQ/V19fRagjx7XsfRoRMrm5jWnNzdBw/No7KeLhpxcDY99D
-        54LWywIfhheAefFLcCkHRabWzSlQHZiEoowUy3iMmXP1bEyWgfcXvrEV8Gn6d0KXcTvfvjpETz4
-        EMxnW/D0hMfBqqt8zew==
-X-Received: by 2002:a05:620a:144f:: with SMTP id i15mr2554920qkl.141.1627401387486;
-        Tue, 27 Jul 2021 08:56:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyeSFpy0BYRIiUW3L3SoYPBsJAPD4HjQ8IIUy8HhXP2xL5mg/BQ8YvSLnsUaQvb4IAEoafshA==
-X-Received: by 2002:a05:620a:144f:: with SMTP id i15mr2554890qkl.141.1627401387211;
-        Tue, 27 Jul 2021 08:56:27 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id 12sm1879417qkr.10.2021.07.27.08.56.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 08:56:26 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
- type
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210720141834.10624-1-longman@redhat.com>
- <20210720141834.10624-7-longman@redhat.com>
- <20210727114241.GA283787@lothringen>
-Message-ID: <fe3d9fcb-c3af-9214-c69f-00ef36521c5c@redhat.com>
-Date:   Tue, 27 Jul 2021 11:56:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=aKSXNwDjopSziuCU/tjPk+z1jeKEq3gWP1NdV3AtHro=;
+        b=kPCqjhI2qeKN4F2w5UubIzA8/4zVJvnLs05o5yFDtcusP4S+LeUhWQsyD4aTF76tCa
+         46OAxTfGIRyzW9IWtfcPpuyVLoMJwnrULlqmdD3EpGHLeQWfdENRYv+2t796Vx9qSJ8c
+         Fxz5F9A2M0hUFk1mLWlwe0gifp8b4cRfdrQzF5+VPIgTaELOkD4y9TF6w/KbCbeBsao+
+         R5BpRjfpQVSsRVUia2Tm+jrrA9pHDtLn1uUk+6oiV4756RqMcHMfNe9m5W0MmhGGiT8k
+         8mXMDWXWFIwcxt3KJIg+NumQsyPF+j/Px4wT8ppOXyFiRafM4rkSRfhpgTU/ItNMGdhZ
+         OcdA==
+X-Gm-Message-State: AOAM530yis899O0G3Dn1jTj1rdq7rpMA/klRtY04sanvgJyiWdKRCYbc
+        DsDrqs/dc4N1KdMiDFsi6SY=
+X-Google-Smtp-Source: ABdhPJweTq3Ojivolqcy6qYNEBQsLjn3/pc/Xj+J0oNtgS/8KrT/DtNGDcD88buZ9HFONA/Y+oJFUg==
+X-Received: by 2002:a17:90a:d595:: with SMTP id v21mr23649976pju.50.1627402875481;
+        Tue, 27 Jul 2021 09:21:15 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:7502])
+        by smtp.gmail.com with ESMTPSA id 78sm4291181pfw.189.2021.07.27.09.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 09:21:15 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 27 Jul 2021 06:21:11 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+Message-ID: <YQAydzEhZfPUpzWI@mtj.duckdns.org>
+References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
+ <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+ <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
+ <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+ <34a6f4b5-9055-e519-5693-068f8dcb169c@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210727114241.GA283787@lothringen>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34a6f4b5-9055-e519-5693-068f8dcb169c@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/27/21 7:42 AM, Frederic Weisbecker wrote:
-> On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long wrote:
->> Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=TBD
->>
->> commit 994fb794cb252edd124a46ca0994e37a4726a100
->> Author: Waiman Long <longman@redhat.com>
->> Date:   Sat, 19 Jun 2021 13:28:19 -0400
->>
->>      cgroup/cpuset: Add a new isolated cpus.partition type
->>
->>      Cpuset v1 uses the sched_load_balance control file to determine if load
->>      balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
->>      as its use may require disabling load balancing at cgroup root.
->>
->>      For workloads that require very low latency like DPDK, the latency
->>      jitters caused by periodic load balancing may exceed the desired
->>      latency limit.
->>
->>      When cpuset v2 is in use, the only way to avoid this latency cost is to
->>      use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
->>      the kernel boot, however, there is no way to add or remove CPUs from
->>      this isolated set. For workloads that are more dynamic in nature, that
->>      means users have to provision enough CPUs for the worst case situation
->>      resulting in excess idle CPUs.
->>
->>      To address this issue for cpuset v2, a new cpuset.cpus.partition type
->>      "isolated" is added which allows the creation of a cpuset partition
->>      without load balancing. This will allow system administrators to
->>      dynamically adjust the size of isolated partition to the current need
->>      of the workload without rebooting the system.
->>
->>      Signed-off-by: Waiman Long <longman@redhat.com>
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> Nice! And while we are adding a new ABI, can we take advantage of that and
-> add a specific semantic that if a new isolated partition matches a subset of
-> "isolcpus=", it automatically maps to it. This means that any further
-> modification to that isolated partition will also modify the associated
-> isolcpus= subset.
->
-> Or to summarize, when we create a new isolated partition, remove the associated
-> CPUs from isolcpus= ?
+Hello,
 
-We can certainly do that as a follow-on. Another idea that I have been 
-thinking about is to automatically generating a isolated partition under 
-root to match the given isolcpus parameter when the v2 filesystem is 
-mounted. That needs more experimentation and testing to verify that it 
-can work.
+On Tue, Jul 27, 2021 at 11:06:18AM +0800, brookxu wrote:
+> Make blk-throttle use rq-qos may be more elegant. But I found that there may be at least
+> one problem that is difficult to solve. blk-throttle supports separate throttle for read
+> and write IOs, which means that we cannot suspend tasks during throttle, but rq-qos
+> throttle IOs by suspending tasks.
 
-Cheers,
-Longman
+Ah, right, I forgot about that.
 
+> We may be able to relocate the blk-throttle hooks to the rq-qos hooks. Since we may not
+> be able to replace the throttle hook, in this case, if we register a rq-qos to the system,
+> part of the blk-throttle hooks is in rq-qos and part hooks not, which feels a bit confusing.
+> In addition, we may need to implement more hooks, such as IO merge hook.
+
+Would it be possible to just move the blk-throtl throttling hook right next
+to the rq-qos hook so that it gets throttled after splitting?
+
+Thanks.
+
+-- 
+tejun
