@@ -2,67 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B243D6C50
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 05:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9773D6C70
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jul 2021 05:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbhG0CZ6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Jul 2021 22:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        id S234708AbhG0Chh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Jul 2021 22:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234677AbhG0CZ6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Jul 2021 22:25:58 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AA9C061757;
-        Mon, 26 Jul 2021 20:06:25 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b6so15769049pji.4;
-        Mon, 26 Jul 2021 20:06:25 -0700 (PDT)
+        with ESMTP id S234513AbhG0Chh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Jul 2021 22:37:37 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C553C061760;
+        Mon, 26 Jul 2021 20:18:04 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id e21so9669193pla.5;
+        Mon, 26 Jul 2021 20:18:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ChIcbIgLJX/+eQRpKvWif40abxApwvOjyIFA0z+RMsM=;
-        b=MU3drwGpgkx0vfwBNTNFP3MytUOGuJQ3j50dvYOId0AswZfumYMStyl+z6WjZn8xss
-         wI9eMWl1JEQ+vqomHrTtUT/LVF3rDed6w82f5LQfMDYZSoekPsqtQzVGOYDovAlJE/TC
-         VmCmyIum9y/x/IVwYRAdiqmJLu3EsPtXbTxre38qt9Ba5523aYlhBBqBbuqnNS9dl9WU
-         0qAJP+FHqHlfzwOWW5nLyuWaDTso5jq165pKxv+ahBbkeq34+qjQdiCu8UtMRhU80vmt
-         IsXYvdC6U0ZF0PIu/yOZitNgkmXGyW1foxBDYZ2E01JWlM+Hf4G/MzKs0AKlOj/msRsB
-         gpEA==
+        bh=BkpKJMj8n2tdrlAotNsD2n9oh289k/hxpaSEx0/2fUg=;
+        b=gClIL7RqcSfXHukQYD9GBLkJ5ekF74p/wtUCDp6gVra+KFApFR/73C09AhdgVrIwrT
+         D0/JYWqPoCVnbHlIyWzWbCfUa130s1dDr1A7IfJEhCpoRRFhUhlE9v9z9HKXgcMlMOQX
+         4kjHirEqaVL9lk+vlRNvQpF8q8RExMDX4aPwfy0Y/GyoX5CvFVffxMKq3OoFwk6ODcwm
+         /T28KX7ISkGoqJ31UyWZXYmTOdUMTJVztqa2yLVlxI/JFI7kLejlrdRcMhgLi3cBK1gv
+         0i08p53OxpYSC6uZt9ycuqOG1UrZEWsZYUcB1Saf5BOLGH9wOKawTK2tIkg64YCE28AD
+         PlCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ChIcbIgLJX/+eQRpKvWif40abxApwvOjyIFA0z+RMsM=;
-        b=Qghna7UGMn0X971c7g5ZmH6XMNw1e+V6kw9fpz9G3NwbpOx/usIHfdYSokVSMz1K+s
-         JWp/VnViXPQUNiqVGGTTsEaW7rkdoC86buFQK1PBuIOlBzj//b5VG9YNCJqmhnqdY7Cs
-         MTmMVlR28siLW5dqFiJEEAA948P7W53WL8c5g13P2nkvWdRqrMgMxfvEkHWldL6afgfP
-         tPJQEWlHPzm5/LQta2Bc3VD/ZzbwXYmcBHVY0yo9JcvDPzB8fTEyPne30/t5HNf8SsA1
-         NoE6CWpFBkbHOzrPCXpAGOaV6ciuVKAJVZRzryVU982x4yI/vxaHFdJiJnYJKRplHI2+
-         qdIQ==
-X-Gm-Message-State: AOAM5307D3tFIueSZqiPAcPpSO4Ik53tkyBQVpTDmERDckuQE9ANWQrF
-        U84obVqBDLXiz+dDAh3ziQhRBhtpY8K+iw==
-X-Google-Smtp-Source: ABdhPJwG7wwIxzZ6bDxr27zwilvp6TmOlIGZfFSYIAhf6kFR471Ry7M3LO0iXAqErBPXXMCu8Ra0Kg==
-X-Received: by 2002:a63:455e:: with SMTP id u30mr8136269pgk.401.1627355184784;
-        Mon, 26 Jul 2021 20:06:24 -0700 (PDT)
+        bh=BkpKJMj8n2tdrlAotNsD2n9oh289k/hxpaSEx0/2fUg=;
+        b=BIOU1PKkOp+Ht+x65/4X+oZ8mnx5H9L5OWJNqecnfzJXtylRPom14VpIhEIUBVbGrW
+         Hun+k9qboROS+x7xOqV1md3rkv2+C9+dcLfa/U+GA4H5iCm2oP/ziQPWe0vpNVgcCm6o
+         nnqJ4uLGiUci6tm+SSSgBXgnIKrvNLCPFPH1CvPrrbr0zQHVwZ6ettf4mSPWdx+Eo1Fd
+         DKlfDZQgeEBPYBjQTv6PflFyVJ60nKYSJZ+Jz0nd6hF8vRlcSHbjn8jFb/vK7CT4BJZJ
+         0afYK0Vv3a31v6HDAUptgdnhQ2gvU4AQdUPcz/vCn6IULTrxOp1n4d9R+q8gaIznl/I0
+         9tTA==
+X-Gm-Message-State: AOAM531CUIIIfBYR7zzgo1to+T7SqjuLAKrpoX0vyX5O2Q2GwogForgX
+        H5QixJSckZ7sE+sQbQT7ys8RctCiPDcXTQ==
+X-Google-Smtp-Source: ABdhPJwgcfRPYWQ5eC571yMwDz5qMcUDpqXvinWK75aYuwcM2CJD+cj5lfaBXoKQy3Us8ccPeT2NZA==
+X-Received: by 2002:a17:90a:3b82:: with SMTP id e2mr2151317pjc.49.1627355883763;
+        Mon, 26 Jul 2021 20:18:03 -0700 (PDT)
 Received: from [127.0.0.1] ([203.205.141.116])
-        by smtp.gmail.com with ESMTPSA id p3sm913781pjt.0.2021.07.26.20.06.20
+        by smtp.gmail.com with ESMTPSA id j128sm1562725pfd.38.2021.07.26.20.18.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 20:06:24 -0700 (PDT)
-Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+        Mon, 26 Jul 2021 20:18:03 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
 To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
- <YPGvIzZUI+QxP1js@mtj.duckdns.org>
- <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
- <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
+ <YP8ovYqISzKC43mt@mtj.duckdns.org>
 From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <34a6f4b5-9055-e519-5693-068f8dcb169c@gmail.com>
-Date:   Tue, 27 Jul 2021 11:06:18 +0800
+Message-ID: <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
+Date:   Tue, 27 Jul 2021 11:18:00 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+In-Reply-To: <YP8ovYqISzKC43mt@mtj.duckdns.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,37 +70,33 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
+Thanks for your time.
 
-Tejun Heo wrote on 2021/7/27 5:46:
-> Hello,
+Tejun Heo wrote on 2021/7/27 5:27:
+> On Thu, Jul 22, 2021 at 11:20:17PM +0800, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> Since the global open files are limited, in order to avoid the
+>> abnormal behavior of some containers from generating too many
+>> files, causing other containers to be unavailable, we need to
+>> limit the open files of some containers.
+>>
+>> v2: fix compile error while CONFIG_CGROUP_MISC not set.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> On Tue, Jul 20, 2021 at 12:35:54AM +0800, brookxu wrote:
->> In order to avoid code duplication and IOPS stability problems caused by estimating
->> the equivalent number of IOs, and to avoid potential deadlock problems caused by
->> synchronization through queue_lock. I tried to count the number of splited IOs in
->> the current window through two atomic counters. Add the value of the atomic variable
->> when calculating io_disp[rw], which can also avoid the problem of inaccurate IOPS in
->> large IO scenarios. How do you think of this approach? Thanks for your time.
-> 
-> I guess it's okay but am still not a big fan of adding another hook. This is
-> primarily because blk-throtl is sitting too early in the stack - e.g. rq_qos
-> is doing the same thing but sits after the split path - and it's a bit nasty
-> to add an additional hook for it.
-> 
-> Do you think it can be an option to relocate the blk-throtl hooks to the
-> same spots as rq-qos or, even better, make it use rq-qos?
+> This is different from pid in that there's no actual limit on how many open
+> files there can be in the system other than the total amount of available
+> memory. I don't see why this would need a separate limit outside of memory
+> control. A couple machines I looked at all have file-max at LONG_MAX by
+> default too.
 
-Make blk-throttle use rq-qos may be more elegant. But I found that there may be at least
-one problem that is difficult to solve. blk-throttle supports separate throttle for read
-and write IOs, which means that we cannot suspend tasks during throttle, but rq-qos
-throttle IOs by suspending tasks.
-
-We may be able to relocate the blk-throttle hooks to the rq-qos hooks. Since we may not
-be able to replace the throttle hook, in this case, if we register a rq-qos to the system,
-part of the blk-throttle hooks is in rq-qos and part hooks not, which feels a bit confusing.
-In addition, we may need to implement more hooks, such as IO merge hook.
-
-Thanks for you time.
+According to files_maxfiles_init(), we only allow about 10% of free memory to
+create filps, and each filp occupies about 1K of cache. In this way, on a 16G
+memory machine, the maximum usable filp is about 1,604,644. In general
+scenarios, this may not be a big problem, but if the task is abnormal, it will
+very likely become a bottleneck and affect other modules. 
 
 > Thanks.
 > 
