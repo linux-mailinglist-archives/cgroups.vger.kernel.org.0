@@ -2,87 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BECB3D923E
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 17:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34B53D92CC
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 18:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhG1Pis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Jul 2021 11:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhG1Pis (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 11:38:48 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3AFC061757;
-        Wed, 28 Jul 2021 08:38:45 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso10666963pjq.2;
-        Wed, 28 Jul 2021 08:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DHb1viiq/M1erLr2X07zcQ77mhbJoJfUhPFzGDRbbgk=;
-        b=eCuSx67rfqyMOyriSQb1ffa/WuN7WKoJYkCifLb4icEiL3Na9lr1lgBva/EV3IsW1j
-         SC9BTzDRtxiJrFSJabc9C2jIqi0Mtyl42GPLBULan6SY56jK364YbFbOJwS4pR5ae3Ts
-         azWrICO+Ts7LoJwkmgYNcXI6IS6OqjD5CA9ohdhhq3ob/kql5wHVkXBi5alr5MqT4tg+
-         NWm0++pZ/XJbL04cDL4YZR6SS/6TqRu82e98h8+C6Q9DdnxJNxiK73ypXVpVYAmrCnko
-         GgOoPUP/0ncWvxHFncNrSuribzkOrjsWtplELgnujfG+9iWLyn1es1Q6WMNsem+f7lWO
-         X0tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=DHb1viiq/M1erLr2X07zcQ77mhbJoJfUhPFzGDRbbgk=;
-        b=UJ38o5uygs222FsvRi0w229j2dnnRhdQUb3o4CkCL5tyo/9prtS4qWIg87zV7D/ZRy
-         rRfBrMLesNqxvjl8Jz74mGNLP3X3OJJJ6ATzx2HuuQsTZLtElpvsVQRv3F4NehKVFQ2Z
-         T6MmAduVWcu0eR6c1ukfMXOhaOdqeMvSyiNaI64ewM3muDL9s8uXw4nVgCEWA820R2nL
-         ZJ/VvmrASN63N3ivXX+C+AU3Kf5LDjSmYUMKadfFDKT5cgbJ93KVReCI837BbmON0WRE
-         PXyz+lqGYQtUArdlAbkNmGcpVAqM3DdF6NchmG/p4y5EV3B9zOAhQMBqZJJZlkMyVRUH
-         kmsw==
-X-Gm-Message-State: AOAM5320GXcoj2YKr3R014bt/gtsUHv2wfROxTdgnOeeUcXo3+9DHbdf
-        rK2b7Qcg7OvglzPYYw9iIxE=
-X-Google-Smtp-Source: ABdhPJxAJ6n0FO1TcmsdoSCEaC1XspNv7XkZHHNHeyT9JJfKfQxQ+5RKqYotOFj+A5tEEgr7BH8fCQ==
-X-Received: by 2002:a63:6f8c:: with SMTP id k134mr387286pgc.35.1627486724843;
-        Wed, 28 Jul 2021 08:38:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:3784])
-        by smtp.gmail.com with ESMTPSA id f4sm82823pgi.68.2021.07.28.08.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Jul 2021 08:38:44 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 28 Jul 2021 05:38:39 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
-Message-ID: <YQF5/8Zb/iY5DS7f@mtj.duckdns.org>
-References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
- <YP8ovYqISzKC43mt@mtj.duckdns.org>
- <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
- <YQA1D1GRiF9+px/s@mtj.duckdns.org>
- <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
- <YQEKNPrrOuyxTarN@mtj.duckdns.org>
- <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
+        id S229897AbhG1QJG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Jul 2021 12:09:06 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42516 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhG1QJF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 12:09:05 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 63D321FFF2;
+        Wed, 28 Jul 2021 16:09:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627488542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V8WnBgopJa2lvYyrEcrAnfZx6ZFCWG157aEnC0Y6NwA=;
+        b=XGstFWI8zd51oMVV0Rhav655K/8yZmB7A4B4T+F5pJlClVmdjDnW5BP0Fqrw/uWBQbPqO8
+        CSumfaEsmAzaM0iivIaFbkPbHEBF9CTHxwORQ4FXKdf3yDtydPCCFBJgGx26BuLMPczxQu
+        /zhArJcocOT3a64BzFiasgfYE/BEtsA=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3113B13AAE;
+        Wed, 28 Jul 2021 16:09:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id MJ1fCx6BAWE0GwAAGKfGzw
+        (envelope-from <mkoutny@suse.com>); Wed, 28 Jul 2021 16:09:02 +0000
+Date:   Wed, 28 Jul 2021 18:09:00 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+Message-ID: <20210728160900.GA8905@blackbody.suse.cz>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-7-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
 Content-Disposition: inline
-In-Reply-To: <ed8824d5-0557-7d38-97bd-18d6795faa55@gmail.com>
+In-Reply-To: <20210720141834.10624-7-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
 
-On Wed, Jul 28, 2021 at 05:47:05PM +0800, brookxu wrote:
-> But considering stability issues(k8s), There are still many production environments use
-> cgroup v1 without kmem. If kmem is enabled, due to the relatively large granularity
-> of kmem, this feature can also prevent the abnormal open behavior from making the entire
-> container unavailable? but I currently do not have this scenario.
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Now we are repeating the same points. This simply doesn't justify adding a
-user-facing feature that we have to maintain for eternity.
+Hello Waiman.
 
-Thanks.
+On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long <longman@redhat.com> wrote:
+> @@ -2026,6 +2036,22 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+> [...]
+> +	} else if (old_prs && new_prs) {
 
--- 
-tejun
+If an isolated root partition becomes invalid (new_prs == PRS_ERROR)...
+
+> +		/*
+> +		 * A change in load balance state only, no change in cpumasks.
+> +		 */
+> +		update_flag(CS_SCHED_LOAD_BALANCE, cs, (new_prs != PRS_ISOLATED));
+
+...this seems to erase information about CS_SCHED_LOAD_BALANCE zeroness.
+
+IOW, if there's an isolated partition that becomes invalid and later
+valid again (a cpu is (re)added), it will be a normal root partition
+without the requested isolation, which is IMO undesired.
+
+I may have overlooked something in broader context but it seems to me
+the invalidity should be saved independently of the root/isolated type.
+
+Regards,
+Michal
+
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmEBgRgACgkQia1+riC5
+qSgO0Q//QBaFMt0GNk3zGOjGT2DTaib+z3zKvfq4mFSgCEx1VORHT4EnrEH7NOES
+zoqFY30U5Cgi/9JO655nCgAJKeG/hwdxvbOcztKOAkzQFi3ts0KxGRQufwf+ajkt
+n0Xi5Eb8XOzHA+q2QQFiTttopulxIVe2qt6FXtVsl2MVr3W0rZq5mJ0BQbTdfN8r
+I3QPoCIpgy1+4JLgBIWr4nFAn16TpfxBFzAkTpidXLarNhp7vzbqUuEsuBXIhJ2w
+dQtFunPBdOsdAVMC4WnCwxDt2XFiRpteY8j0ZOK6R1eGEdMbNagqTwN+ShlWYsT4
+ymBZLfS1z3B9wXIJvzVFwimjMIQI6z7JrDfCnm6qGdCkxnLq6RSqpmqobF+liQU0
+44HaXSoEM+rNI+Ss9tbF9URJEKDKwACtGozM257YAB4Vo/zteIKRVsL8WBWfRuB9
+qELxjaR3uAGQ4i3UgpXxxph98pNBxxOM39iEU+3L6e0d/VO+/Yt0cnscLPJwIxbt
+JybmN1c9a7bn3asILIX2hAxPcn3csQV3enWsVx8ARZcV3kMne7eRGTTQshZ1W56o
+XektiwwjgzDtwQdO5Fv7wQGp352ikUorXU35JP+f8gqb8f4HPtgIf2AUBxisT/oa
+zqBTCXZGwBWOSDleRR4/UvafoT4HVD8DaDw740LYDpdffOT3HyI=
+=ZMPH
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
