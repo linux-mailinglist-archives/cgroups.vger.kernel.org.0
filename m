@@ -2,60 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442793D9339
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 18:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1233D943D
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 19:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhG1Q2G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Jul 2021 12:28:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229793AbhG1Q2G (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 12:28:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627489684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S229603AbhG1RZ0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Jul 2021 13:25:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52168 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhG1RZZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 13:25:25 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AE0541FD69;
+        Wed, 28 Jul 2021 17:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627493122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
-        b=G+30XAoTXOrQAWFgslbghUfJgf1J6KRiGTHAcr5hk8PZG1g41T76S7odW9A4aW4TEEdPKt
-        Lpy3Pz+a+ixS0qF1NF0vSXZAl+I7JlhrQ+QhNtwoAjeOWDd/XonZyU2k0mOfOw26opBbaN
-        VLZ1BgmxXFp6m4i8rn1bkOoDFMEt2+U=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-ukpvGnusO9uUQt0Z8x_Sxw-1; Wed, 28 Jul 2021 12:28:00 -0400
-X-MC-Unique: ukpvGnusO9uUQt0Z8x_Sxw-1
-Received: by mail-qt1-f198.google.com with SMTP id e19-20020ac84b530000b0290251f0b91196so1294336qts.14
-        for <cgroups@vger.kernel.org>; Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
-        b=SzKg8KNGUuiG199TbxZC+K7NQUvdwKeo7nDo6p3J+TQHdW7gcZdGJ3W9vBiWdX6Vlo
-         12zDlcBGLWnrk0AyWH1lRlmRSSDnRYFtkuDpsh+709hKsm7n5gI9jfJgWM/mllzOTqC8
-         pZCNfoD4LrGaH93nII0FaikwLxmvEwAKGuoB1g+cYeiMwXokyCkTXih70cHOU76TLCab
-         fP6TUnb8ccp6VN9psijpdEUfMfpERduuti0aLgWlVElF49gKZ58Uo1WfI1RDKt6ecKFY
-         D2JmAKiwsIRs8ko4Bj7bHHoyudqWWvIpYm9OFVfKyl3IKrx6T1NoGnl4CLKq36+apbSY
-         10/Q==
-X-Gm-Message-State: AOAM530o3gKhl1n39stkYyeyYkY3xS5Gzvp1iDVV+8mAzDvDBH/ZvG44
-        Nnxa38SE0BWYmOUOygMlD+7J7yMleMrymecIRp3Nswi3UoMxzsck/4u4IZ3iswwVHRipghHnlmf
-        l8D8g8Wnj/khHnbOUHA==
-X-Received: by 2002:a37:9244:: with SMTP id u65mr520014qkd.46.1627489680044;
-        Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZRqP37sqJcrPzK/iLTHBFFo1TykeaKOBzeN4NCV6nY6od2hic7g0uzGrV0SdRcBpcBj9h2w==
-X-Received: by 2002:a37:9244:: with SMTP id u65mr519993qkd.46.1627489679827;
-        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p13sm236018qkk.87.2021.07.28.09.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
- type
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+        bh=4z+d2ZwNRoqxW73+AMa5bSmFlzTgfCxptCbaDT+hb/U=;
+        b=W2eTPAugUxJczVRyP2sMAeHaks8tARW0o11sV3lPJ0De6/bEmVKvCzl4+lxdv61v3KWrj5
+        qmfjL6DjgtwwBYcvLbmzBaJ16HGAXTAH21b7yrUV2xli1avXSggtcKoSyfogCik+fm8eMY
+        qyYSjIVo+fZcp95VHyImHRtliCGiGuM=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 783ED13318;
+        Wed, 28 Jul 2021 17:25:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2vE2HAKTAWEALwAAGKfGzw
+        (envelope-from <mkoutny@suse.com>); Wed, 28 Jul 2021 17:25:22 +0000
+Date:   Wed, 28 Jul 2021 19:25:21 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <llong@redhat.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -68,50 +50,66 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+Message-ID: <20210728172521.GE7584@blackbody.suse.cz>
 References: <20210720141834.10624-1-longman@redhat.com>
  <20210720141834.10624-7-longman@redhat.com>
  <20210728160900.GA8905@blackbody.suse.cz>
-Message-ID: <f1afbd9e-d16b-c972-c3c0-022a05cec2a6@redhat.com>
-Date:   Wed, 28 Jul 2021 12:27:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <f1afbd9e-d16b-c972-c3c0-022a05cec2a6@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210728160900.GA8905@blackbody.suse.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="k4f25fnPtRuIRUb3"
+Content-Disposition: inline
+In-Reply-To: <f1afbd9e-d16b-c972-c3c0-022a05cec2a6@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/28/21 12:09 PM, Michal Koutný wrote:
-> Hello Waiman.
->
-> On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long <longman@redhat.com> wrote:
->> @@ -2026,6 +2036,22 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->> [...]
->> +	} else if (old_prs && new_prs) {
-> If an isolated root partition becomes invalid (new_prs == PRS_ERROR)...
->
->> +		/*
->> +		 * A change in load balance state only, no change in cpumasks.
->> +		 */
->> +		update_flag(CS_SCHED_LOAD_BALANCE, cs, (new_prs != PRS_ISOLATED));
-> ...this seems to erase information about CS_SCHED_LOAD_BALANCE zeroness.
->
-> IOW, if there's an isolated partition that becomes invalid and later
-> valid again (a cpu is (re)added), it will be a normal root partition
-> without the requested isolation, which is IMO undesired.
->
-> I may have overlooked something in broader context but it seems to me
-> the invalidity should be saved independently of the root/isolated type.
 
-PRS_ERROR cannot be passed to update_prstate(). For this patchset, 
-PRS_ERROR can only be set by changes in hotplug. The current design will 
-maintain the set flag (CS_SCHED_LOAD_BALANCE) and use it to decide to 
-switch back to PRS_ENABLED or PRS_ISOLATED when the cpus are available 
-again.
+--k4f25fnPtRuIRUb3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Longman
+On Wed, Jul 28, 2021 at 12:27:58PM -0400, Waiman Long <llong@redhat.com> wr=
+ote:
+> PRS_ERROR cannot be passed to update_prstate(). For this patchset, PRS_ER=
+ROR
+> can only be set by changes in hotplug. The current design will maintain t=
+he
+> set flag (CS_SCHED_LOAD_BALANCE) and use it to decide to switch back to
+> PRS_ENABLED or PRS_ISOLATED when the cpus are available again.
 
+I see it now, thanks. (I still find a bit weird that the "isolated"
+partition will be shown as "root invalid" when it's lacking cpus
+(instead of "isolated invalid" and returning to "isolated") but I can
+understand the approach of having just one "root invalid" for all.)
+
+This patch can have
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+
+--k4f25fnPtRuIRUb3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmEBkvoACgkQia1+riC5
+qSjxqg/8DOuQ6BV0vUCrSyyP0k+Wyx7QwrY7UHosDiAVrUYlzfd0NEhckQf7fDr4
+faf5/E/Y0t99oRaBYnPqtaqUjtiUUB4e7L/uTxrfGaeOT2SyAHjq5QHtFcdSOHgz
+OfinfqEGFuMQLo2vbWtuKaPs6avaPT6443FT/WpG29FHkB7wRPuBAS0f3USLQ/F4
+/GqawCdjKCZ4pP59LQpb5jSELNtQKaxe6MpZJ0tcj9JpFgnR6XZcwmxe0FP2hHtY
+JzcnXUfMW3CU4yynukd5rEwrCiVS1T5w9XLh0d/MrvbamMEfwBMY8hoVH3md32X4
+oTVdlW1IrKkm+VXoW/71WTzKTlkXof/MxMe52QigiOj25g+W/R2CTAoaCKVY5Ou3
+RgQNljmvKmN7kh14Zc469PLC8R8t+FYVdMM4xmK+HjbFOBAaymWx6eUHejfQNba0
+sgulNpYQjzeR+OBqqt7NI+KLu9s1yag6ZY+N2bUtOWxsdMjuU4vY0yWuHw+SnrTF
+itkJg/NIkUmFccnq1ToOAxHyC5vA6ux8rUDBPnJduXr1czXZKi8zoy31h4uq6CAF
+iWqDZdmi9dOB9A3rbjOm8BP0vHrs7s3tSLc0c4tu6VncM0mosp6dDGC8RCam3YCG
+mnFetTKvSLbNBN/6k3f6nKLX6AGzNHs45EiSi7ut17NMVk5/5EU=
+=i07x
+-----END PGP SIGNATURE-----
+
+--k4f25fnPtRuIRUb3--
