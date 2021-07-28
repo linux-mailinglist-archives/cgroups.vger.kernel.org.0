@@ -2,102 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DCE3D8608
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 05:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627243D8903
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 09:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhG1DRT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Jul 2021 23:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S233324AbhG1Hlo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Jul 2021 03:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhG1DRS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Jul 2021 23:17:18 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3066C061757;
-        Tue, 27 Jul 2021 20:17:16 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so2360195pjd.0;
-        Tue, 27 Jul 2021 20:17:16 -0700 (PDT)
+        with ESMTP id S233277AbhG1Hln (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 03:41:43 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2DCC061757;
+        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so2962240pjh.3;
+        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I4bD52HQNVCYUp+mhhWgz8FNJ8BrE2vk1IbUNpEx9mc=;
-        b=O8vdbtiSSnF7huzNnfIfptHg4BK2bgYcoQEclIsnGfmOOra4Xdk/QITTy+84+9kitx
-         BYp/Sh5ewo+8bf4AJC/P0Q3U71IPe5HMptnSED42dGXWQLpHDPAIPhX1bguUnlZBnKgB
-         aB2kecaHynHcaIXmEvnRg/G+0aET27nYjz9g3UGIpLWkw1q0dbTRHfXC/5CfsCDz4uXW
-         ewgCEvqemZc+Ov93GmBN5AB9uTpFGRjHiUqfyqI16jZ8Czu3kW1dAmstrpgNb4SF+kqX
-         oO1KbPFuqiSo1ZH3QZGC0coDcFt4AnZXvxc37pSgmdHNPlAsBCVh4BPL96npS4gCVwAJ
-         nVsw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3gyKs31H8DmWFPMAtNTmsj5Y1115XQKa+6v265+MF98=;
+        b=QPu+Xan/QfEel2lNwA6ZQhbMilq9UteGKnrllrkZPvNwLRhg0S3qj4s90qHn2xz5l8
+         gTSMklmYaUeB6fQPHQZHVY9jPgtLDojxLzKnpdRSZioEB7reKaZgUPaMaIZ9eed02LuH
+         PpJy0MsbsyXcon9DIIBmRgTe4UZ9bSc93nUgMeheh7F99nvyA5VCd4LCEPyJf1lSRwf0
+         xjzGAPFL+1bDLKkPhTczAZtX5/upHfbIdvsDahSHga7KNj7W1A6bfjRrtqgHIHX30G4z
+         8CaicVMaFgOhxTm1spcOTKAuqHil3FpknfxE9g0U9NbnlUOPYHw65wPWYlaNKuR8ueZH
+         OxTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I4bD52HQNVCYUp+mhhWgz8FNJ8BrE2vk1IbUNpEx9mc=;
-        b=byZ6I65iGn9cyWbbRK/WnnTy+VtKUUbvfFQie9bbxaiZDgMuuS0P5cV8ehH+M5LyPx
-         EuptAugGpI2c/5NTK/BE0B4KC2FM4StCfXjIPGnerpmJYZxzETZd+iztZwlAW4YX6yaj
-         H4+0RCNU7RBn63u0EBNeeB19mEidt4PLt3+egCTj0Aizm1Vs9+YITItEV29kND6a5Zas
-         VG1Doh+wSvdfpJxhR+F90HeU8kQR6EXpzl34jCypf9j/J7ij/uqJXrw3MUOhQL0OEp31
-         UFTLYDoQBggyDuUOyM3DDLceA98W62lJCKj0mpxChfjn/HrdnHXs6bs8+3ZyAMiyApFY
-         YJkg==
-X-Gm-Message-State: AOAM532GWwCRzAUKlmz9eQw6pZatPbc4IV4/N2kW+wedIyC/rTqcWv9Q
-        CBDJ2ssi9tGudoYm3J3J1qziSChn7Z4FgQ==
-X-Google-Smtp-Source: ABdhPJzts8MDkebguIrKuEo2Mf7Fx/AxDKnceNtdB8dlpgbg5FjJsoG0NmlSjh+uCI/aKrnf5iiFFw==
-X-Received: by 2002:a63:d34e:: with SMTP id u14mr7960675pgi.244.1627442236125;
-        Tue, 27 Jul 2021 20:17:16 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.110])
-        by smtp.gmail.com with ESMTPSA id l10sm4363284pjg.11.2021.07.27.20.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 20:17:15 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
-To:     Tejun Heo <tj@kernel.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3gyKs31H8DmWFPMAtNTmsj5Y1115XQKa+6v265+MF98=;
+        b=RixPIpWngY0omGymjCT/WJZbAcgVrTX0Bq+DgW6Kcp3TuckkFOW8Zig3fpNf5YX2EX
+         ArvnVe6VNq8URdlfWOBtexFvUn0GGetd02HirfdqwizxbtNnQtemEVodxNayNozO1eJZ
+         quPFMjC5roTeQjfj3sU2wmoLM4yD8KtannJZ1+WI3bKjMODEtv/BDHI6kgKNjvvX7uTd
+         WmgPhtHiS/iwjKK7CVfCfEUMATx90V2FGfP2Cumco5Q+LnG+iYJvT6eqGHlLi6bxGCXU
+         Pz7m9hVe6cvlCnXamsJwvi/zDgGDW06hZQEnetK7obQ95QrtSZnWVWhBm9kZiPIDsJYW
+         +A/w==
+X-Gm-Message-State: AOAM530258c8U3cR4oGzhC/R7Qe+xlQGpLZTQoiNFey+D2eccIIhNdjT
+        UuV4+4Zo9oyIFp+rLrQu9OY=
+X-Google-Smtp-Source: ABdhPJzlHENqMVVGhp6QfQiRNFBo4bVChcVgOZ4iDyoLYi5WaZre5bP2oK0YfEh38riCyflQczQMBQ==
+X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr22168302plt.4.1627458102256;
+        Wed, 28 Jul 2021 00:41:42 -0700 (PDT)
+Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
+        by smtp.gmail.com with ESMTPSA id x14sm6540101pfq.143.2021.07.28.00.41.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jul 2021 00:41:41 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 27 Jul 2021 21:41:40 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
 Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
         hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
+Message-ID: <YQEKNPrrOuyxTarN@mtj.duckdns.org>
 References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
  <YP8ovYqISzKC43mt@mtj.duckdns.org>
  <b2ff6f80-8ec6-e260-ec42-2113e8ce0a18@gmail.com>
  <YQA1D1GRiF9+px/s@mtj.duckdns.org>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
-Date:   Wed, 28 Jul 2021 11:17:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+ <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YQA1D1GRiF9+px/s@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca2bdc60-f117-e917-85b1-8c9ec0c6942f@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, Jul 28, 2021 at 11:17:08AM +0800, brookxu wrote:
+> Yeah we can adjust file-max through sysctl, but in many cases we adjust it according
+> to the actual load of the machine, not for abnormal tasks. Another problem is that in
+> practical applications, kmem_limit will cause some minor problems. In many cases,
+> kmem_limit is disabled. Limit_in_bytes mainly counts user pages and pagecache, which
+> may cause files_cache to be out of control. In this case, if file-max is set to MAX,
+> we may have a risk in the abnormal scene, which prevents us from recovering from the
+> abnormal scene. Maybe I missed something.
 
+Kmem control is always on in cgroup2 and has been in wide production use for
+years now. If there are problems with it, we need to fix them. That really
+doesn't justify adding another feature.
 
-Tejun Heo wrote on 2021/7/28 12:32 上午:
-> Hello,
-> 
-> On Tue, Jul 27, 2021 at 11:18:00AM +0800, brookxu wrote:
->> According to files_maxfiles_init(), we only allow about 10% of free memory to
->> create filps, and each filp occupies about 1K of cache. In this way, on a 16G
->> memory machine, the maximum usable filp is about 1,604,644. In general
->> scenarios, this may not be a big problem, but if the task is abnormal, it will
->> very likely become a bottleneck and affect other modules. 
-> 
-> Yeah but that can be configured trivially through sysfs. The reason why the
-> default limit is lowered is because we wanna prevent a part of system to
-> consume all the memory through fds. With cgroups, we already have that
-> protection and at least some systems already configure file-max to maximum,
-> so I don't see a point in adding another interface to subdivide the
-> artificial limit.
-> 
+Thanks.
 
-Yeah we can adjust file-max through sysctl, but in many cases we adjust it according
-to the actual load of the machine, not for abnormal tasks. Another problem is that in
-practical applications, kmem_limit will cause some minor problems. In many cases,
-kmem_limit is disabled. Limit_in_bytes mainly counts user pages and pagecache, which
-may cause files_cache to be out of control. In this case, if file-max is set to MAX,
-we may have a risk in the abnormal scene, which prevents us from recovering from the
-abnormal scene. Maybe I missed something.
-
-> Thanks.
-> 
+-- 
+tejun
