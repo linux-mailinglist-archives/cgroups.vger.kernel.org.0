@@ -2,42 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34B53D92CC
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 18:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442793D9339
+	for <lists+cgroups@lfdr.de>; Wed, 28 Jul 2021 18:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhG1QJG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Jul 2021 12:09:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42516 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhG1QJF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 12:09:05 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 63D321FFF2;
-        Wed, 28 Jul 2021 16:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627488542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S229880AbhG1Q2G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Jul 2021 12:28:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35029 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhG1Q2G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Jul 2021 12:28:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627489684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V8WnBgopJa2lvYyrEcrAnfZx6ZFCWG157aEnC0Y6NwA=;
-        b=XGstFWI8zd51oMVV0Rhav655K/8yZmB7A4B4T+F5pJlClVmdjDnW5BP0Fqrw/uWBQbPqO8
-        CSumfaEsmAzaM0iivIaFbkPbHEBF9CTHxwORQ4FXKdf3yDtydPCCFBJgGx26BuLMPczxQu
-        /zhArJcocOT3a64BzFiasgfYE/BEtsA=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3113B13AAE;
-        Wed, 28 Jul 2021 16:09:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id MJ1fCx6BAWE0GwAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Wed, 28 Jul 2021 16:09:02 +0000
-Date:   Wed, 28 Jul 2021 18:09:00 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
+        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
+        b=G+30XAoTXOrQAWFgslbghUfJgf1J6KRiGTHAcr5hk8PZG1g41T76S7odW9A4aW4TEEdPKt
+        Lpy3Pz+a+ixS0qF1NF0vSXZAl+I7JlhrQ+QhNtwoAjeOWDd/XonZyU2k0mOfOw26opBbaN
+        VLZ1BgmxXFp6m4i8rn1bkOoDFMEt2+U=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-ukpvGnusO9uUQt0Z8x_Sxw-1; Wed, 28 Jul 2021 12:28:00 -0400
+X-MC-Unique: ukpvGnusO9uUQt0Z8x_Sxw-1
+Received: by mail-qt1-f198.google.com with SMTP id e19-20020ac84b530000b0290251f0b91196so1294336qts.14
+        for <cgroups@vger.kernel.org>; Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oVx/5yrmyZbbRVeN3LD+d66Q2FozCvKMMwaCU5JpwKA=;
+        b=SzKg8KNGUuiG199TbxZC+K7NQUvdwKeo7nDo6p3J+TQHdW7gcZdGJ3W9vBiWdX6Vlo
+         12zDlcBGLWnrk0AyWH1lRlmRSSDnRYFtkuDpsh+709hKsm7n5gI9jfJgWM/mllzOTqC8
+         pZCNfoD4LrGaH93nII0FaikwLxmvEwAKGuoB1g+cYeiMwXokyCkTXih70cHOU76TLCab
+         fP6TUnb8ccp6VN9psijpdEUfMfpERduuti0aLgWlVElF49gKZ58Uo1WfI1RDKt6ecKFY
+         D2JmAKiwsIRs8ko4Bj7bHHoyudqWWvIpYm9OFVfKyl3IKrx6T1NoGnl4CLKq36+apbSY
+         10/Q==
+X-Gm-Message-State: AOAM530o3gKhl1n39stkYyeyYkY3xS5Gzvp1iDVV+8mAzDvDBH/ZvG44
+        Nnxa38SE0BWYmOUOygMlD+7J7yMleMrymecIRp3Nswi3UoMxzsck/4u4IZ3iswwVHRipghHnlmf
+        l8D8g8Wnj/khHnbOUHA==
+X-Received: by 2002:a37:9244:: with SMTP id u65mr520014qkd.46.1627489680044;
+        Wed, 28 Jul 2021 09:28:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZRqP37sqJcrPzK/iLTHBFFo1TykeaKOBzeN4NCV6nY6od2hic7g0uzGrV0SdRcBpcBj9h2w==
+X-Received: by 2002:a37:9244:: with SMTP id u65mr519993qkd.46.1627489679827;
+        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id p13sm236018qkk.87.2021.07.28.09.27.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 09:27:59 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -50,72 +68,50 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
- type
-Message-ID: <20210728160900.GA8905@blackbody.suse.cz>
 References: <20210720141834.10624-1-longman@redhat.com>
  <20210720141834.10624-7-longman@redhat.com>
+ <20210728160900.GA8905@blackbody.suse.cz>
+Message-ID: <f1afbd9e-d16b-c972-c3c0-022a05cec2a6@redhat.com>
+Date:   Wed, 28 Jul 2021 12:27:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
-Content-Disposition: inline
-In-Reply-To: <20210720141834.10624-7-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210728160900.GA8905@blackbody.suse.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 7/28/21 12:09 PM, Michal Koutný wrote:
+> Hello Waiman.
+>
+> On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long <longman@redhat.com> wrote:
+>> @@ -2026,6 +2036,22 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+>> [...]
+>> +	} else if (old_prs && new_prs) {
+> If an isolated root partition becomes invalid (new_prs == PRS_ERROR)...
+>
+>> +		/*
+>> +		 * A change in load balance state only, no change in cpumasks.
+>> +		 */
+>> +		update_flag(CS_SCHED_LOAD_BALANCE, cs, (new_prs != PRS_ISOLATED));
+> ...this seems to erase information about CS_SCHED_LOAD_BALANCE zeroness.
+>
+> IOW, if there's an isolated partition that becomes invalid and later
+> valid again (a cpu is (re)added), it will be a normal root partition
+> without the requested isolation, which is IMO undesired.
+>
+> I may have overlooked something in broader context but it seems to me
+> the invalidity should be saved independently of the root/isolated type.
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+PRS_ERROR cannot be passed to update_prstate(). For this patchset, 
+PRS_ERROR can only be set by changes in hotplug. The current design will 
+maintain the set flag (CS_SCHED_LOAD_BALANCE) and use it to decide to 
+switch back to PRS_ENABLED or PRS_ISOLATED when the cpus are available 
+again.
 
-Hello Waiman.
+Cheers,
+Longman
 
-On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long <longman@redhat.com> wrote:
-> @@ -2026,6 +2036,22 @@ static int update_prstate(struct cpuset *cs, int new_prs)
-> [...]
-> +	} else if (old_prs && new_prs) {
-
-If an isolated root partition becomes invalid (new_prs == PRS_ERROR)...
-
-> +		/*
-> +		 * A change in load balance state only, no change in cpumasks.
-> +		 */
-> +		update_flag(CS_SCHED_LOAD_BALANCE, cs, (new_prs != PRS_ISOLATED));
-
-...this seems to erase information about CS_SCHED_LOAD_BALANCE zeroness.
-
-IOW, if there's an isolated partition that becomes invalid and later
-valid again (a cpu is (re)added), it will be a normal root partition
-without the requested isolation, which is IMO undesired.
-
-I may have overlooked something in broader context but it seems to me
-the invalidity should be saved independently of the root/isolated type.
-
-Regards,
-Michal
-
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmEBgRgACgkQia1+riC5
-qSgO0Q//QBaFMt0GNk3zGOjGT2DTaib+z3zKvfq4mFSgCEx1VORHT4EnrEH7NOES
-zoqFY30U5Cgi/9JO655nCgAJKeG/hwdxvbOcztKOAkzQFi3ts0KxGRQufwf+ajkt
-n0Xi5Eb8XOzHA+q2QQFiTttopulxIVe2qt6FXtVsl2MVr3W0rZq5mJ0BQbTdfN8r
-I3QPoCIpgy1+4JLgBIWr4nFAn16TpfxBFzAkTpidXLarNhp7vzbqUuEsuBXIhJ2w
-dQtFunPBdOsdAVMC4WnCwxDt2XFiRpteY8j0ZOK6R1eGEdMbNagqTwN+ShlWYsT4
-ymBZLfS1z3B9wXIJvzVFwimjMIQI6z7JrDfCnm6qGdCkxnLq6RSqpmqobF+liQU0
-44HaXSoEM+rNI+Ss9tbF9URJEKDKwACtGozM257YAB4Vo/zteIKRVsL8WBWfRuB9
-qELxjaR3uAGQ4i3UgpXxxph98pNBxxOM39iEU+3L6e0d/VO+/Yt0cnscLPJwIxbt
-JybmN1c9a7bn3asILIX2hAxPcn3csQV3enWsVx8ARZcV3kMne7eRGTTQshZ1W56o
-XektiwwjgzDtwQdO5Fv7wQGp352ikUorXU35JP+f8gqb8f4HPtgIf2AUBxisT/oa
-zqBTCXZGwBWOSDleRR4/UvafoT4HVD8DaDw740LYDpdffOT3HyI=
-=ZMPH
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
