@@ -2,199 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952223DA103
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 12:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4733DA1B8
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 13:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhG2KZE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Jul 2021 06:25:04 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28634 "EHLO mga14.intel.com"
+        id S236457AbhG2LDh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Jul 2021 07:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235510AbhG2KZD (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Jul 2021 06:25:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10059"; a="212575857"
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="212575857"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2021 03:25:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,278,1620716400"; 
-   d="scan'208";a="438187660"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 29 Jul 2021 03:24:59 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m93Dm-00094e-HU; Thu, 29 Jul 2021 10:24:58 +0000
-Date:   Thu, 29 Jul 2021 18:24:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.14-fixes] BUILD SUCCESS
- c3df5fb57fe8756d67fd56ed29da65cdfde839f9
-Message-ID: <610281d9.f1sdnYVaDqfQiUof%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236430AbhG2LDh (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 29 Jul 2021 07:03:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8081A60BD3;
+        Thu, 29 Jul 2021 11:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627556614;
+        bh=uCbW9J3YqEIQSJj9wEXdcOHPabjCeLFizZzIoZQFBfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SKygjhxSpGxVYxPyQT8pgYAj5pGx1nIbzlIHdu7B9Trjb3QHSwOaL+8n6erSy1qE8
+         QwzIK8PqMKm8mB3l4dYF/xwSkYjM2S2gyiPRuFV1H4LTpxRfZ/dm4UtX7Sd0SmtuiW
+         0axwvVBceoswzdjQm9BCZ51E4X6sN9W5mWYFKTVbfZ8TXvUOLuESoyOLQSGqavi7j6
+         219KxzvEYwR+NGJLwraQsdv1Rs+E9hjAYXGAEldiDRBIxdWtGfqINqe0ibgR6BFCX4
+         7WeToS/NGh84MK9S0t8xV8QixU+1N2j/FYfVo2tUDsvBx3AalVLDlMxFbSB4uYslAz
+         rLFvVKYv7AYpw==
+Date:   Thu, 29 Jul 2021 13:03:31 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
+ type
+Message-ID: <20210729110331.GC301667@lothringen>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-7-longman@redhat.com>
+ <20210727114241.GA283787@lothringen>
+ <fe3d9fcb-c3af-9214-c69f-00ef36521c5c@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <fe3d9fcb-c3af-9214-c69f-00ef36521c5c@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.14-fixes
-branch HEAD: c3df5fb57fe8756d67fd56ed29da65cdfde839f9  cgroup: rstat: fix A-A deadlock on 32bit around u64_stats_sync
+On Tue, Jul 27, 2021 at 11:56:25AM -0400, Waiman Long wrote:
+> On 7/27/21 7:42 AM, Frederic Weisbecker wrote:
+> > On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long wrote:
+> > > Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=TBD
+> > > 
+> > > commit 994fb794cb252edd124a46ca0994e37a4726a100
+> > > Author: Waiman Long <longman@redhat.com>
+> > > Date:   Sat, 19 Jun 2021 13:28:19 -0400
+> > > 
+> > >      cgroup/cpuset: Add a new isolated cpus.partition type
+> > > 
+> > >      Cpuset v1 uses the sched_load_balance control file to determine if load
+> > >      balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
+> > >      as its use may require disabling load balancing at cgroup root.
+> > > 
+> > >      For workloads that require very low latency like DPDK, the latency
+> > >      jitters caused by periodic load balancing may exceed the desired
+> > >      latency limit.
+> > > 
+> > >      When cpuset v2 is in use, the only way to avoid this latency cost is to
+> > >      use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
+> > >      the kernel boot, however, there is no way to add or remove CPUs from
+> > >      this isolated set. For workloads that are more dynamic in nature, that
+> > >      means users have to provision enough CPUs for the worst case situation
+> > >      resulting in excess idle CPUs.
+> > > 
+> > >      To address this issue for cpuset v2, a new cpuset.cpus.partition type
+> > >      "isolated" is added which allows the creation of a cpuset partition
+> > >      without load balancing. This will allow system administrators to
+> > >      dynamically adjust the size of isolated partition to the current need
+> > >      of the workload without rebooting the system.
+> > > 
+> > >      Signed-off-by: Waiman Long <longman@redhat.com>
+> > > 
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > Nice! And while we are adding a new ABI, can we take advantage of that and
+> > add a specific semantic that if a new isolated partition matches a subset of
+> > "isolcpus=", it automatically maps to it. This means that any further
+> > modification to that isolated partition will also modify the associated
+> > isolcpus= subset.
+> > 
+> > Or to summarize, when we create a new isolated partition, remove the associated
+> > CPUs from isolcpus= ?
+> 
+> We can certainly do that as a follow-on.
 
-elapsed time: 2063m
+I'm just concerned that this feature gets merged before we add that new
+isolcpus= implicit mapping, which technically is a new ABI. Well I guess I
+should hurry up and try to propose a patchset quickly once I'm back from
+vacation :-)
 
-configs tested: 141
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210727
-i386                 randconfig-c001-20210728
-powerpc                    mvme5100_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         palmz72_defconfig
-mips                       rbtx49xx_defconfig
-arc                        nsimosci_defconfig
-s390                          debug_defconfig
-arm                         lpc18xx_defconfig
-m68k                        mvme16x_defconfig
-sh                        sh7763rdp_defconfig
-riscv                          rv32_defconfig
-arm                      jornada720_defconfig
-powerpc                     akebono_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          urquell_defconfig
-powerpc                      cm5200_defconfig
-sh                   sh7770_generic_defconfig
-arm                           tegra_defconfig
-mips                         rt305x_defconfig
-powerpc                       holly_defconfig
-arm                      pxa255-idp_defconfig
-sh                         ecovec24_defconfig
-xtensa                    xip_kc705_defconfig
-arm                        mini2440_defconfig
-arc                           tb10x_defconfig
-h8300                            alldefconfig
-x86_64                           allyesconfig
-powerpc                      arches_defconfig
-mips                       capcella_defconfig
-alpha                               defconfig
-sh                              ul2_defconfig
-nios2                            alldefconfig
-powerpc                      ppc40x_defconfig
-mips                            gpr_defconfig
-mips                      maltasmvp_defconfig
-sh                           se7721_defconfig
-arm                       aspeed_g5_defconfig
-arm                            mmp2_defconfig
-powerpc                      katmai_defconfig
-x86_64                              defconfig
-powerpc                       eiger_defconfig
-mips                      pistachio_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210728
-x86_64               randconfig-a003-20210728
-x86_64               randconfig-a001-20210728
-x86_64               randconfig-a004-20210728
-x86_64               randconfig-a005-20210728
-x86_64               randconfig-a002-20210728
-i386                 randconfig-a005-20210728
-i386                 randconfig-a003-20210728
-i386                 randconfig-a004-20210728
-i386                 randconfig-a002-20210728
-i386                 randconfig-a001-20210728
-i386                 randconfig-a006-20210728
-i386                 randconfig-a005-20210727
-i386                 randconfig-a003-20210727
-i386                 randconfig-a004-20210727
-i386                 randconfig-a002-20210727
-i386                 randconfig-a001-20210727
-i386                 randconfig-a006-20210727
-x86_64               randconfig-a011-20210727
-x86_64               randconfig-a016-20210727
-x86_64               randconfig-a013-20210727
-x86_64               randconfig-a014-20210727
-x86_64               randconfig-a012-20210727
-x86_64               randconfig-a015-20210727
-i386                 randconfig-a016-20210728
-i386                 randconfig-a012-20210728
-i386                 randconfig-a013-20210728
-i386                 randconfig-a014-20210728
-i386                 randconfig-a011-20210728
-i386                 randconfig-a015-20210728
-i386                 randconfig-a016-20210727
-i386                 randconfig-a013-20210727
-i386                 randconfig-a012-20210727
-i386                 randconfig-a011-20210727
-i386                 randconfig-a014-20210727
-i386                 randconfig-a015-20210727
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+> Another idea that I have been
+> thinking about is to automatically generating a isolated partition under
+> root to match the given isolcpus parameter when the v2 filesystem is
+> mounted. That needs more experimentation and testing to verify that it can
+> work.
 
-clang tested configs:
-x86_64               randconfig-c001-20210727
-x86_64               randconfig-c001-20210728
-x86_64               randconfig-a003-20210727
-x86_64               randconfig-a006-20210727
-x86_64               randconfig-a001-20210727
-x86_64               randconfig-a005-20210727
-x86_64               randconfig-a004-20210727
-x86_64               randconfig-a002-20210727
-x86_64               randconfig-a016-20210728
-x86_64               randconfig-a011-20210728
-x86_64               randconfig-a014-20210728
-x86_64               randconfig-a013-20210728
-x86_64               randconfig-a012-20210728
-x86_64               randconfig-a015-20210728
+I thought about that too, mounting an "isolcpus" subdirectory withing the top
+cpuset but I was worried it could break userspace that wouldn't expect that new
+thing to show up.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks.
