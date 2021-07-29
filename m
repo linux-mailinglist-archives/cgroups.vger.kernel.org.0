@@ -2,118 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4733DA1B8
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 13:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E9C3DA384
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 14:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhG2LDh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Jul 2021 07:03:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236430AbhG2LDh (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Jul 2021 07:03:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8081A60BD3;
-        Thu, 29 Jul 2021 11:03:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627556614;
-        bh=uCbW9J3YqEIQSJj9wEXdcOHPabjCeLFizZzIoZQFBfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SKygjhxSpGxVYxPyQT8pgYAj5pGx1nIbzlIHdu7B9Trjb3QHSwOaL+8n6erSy1qE8
-         QwzIK8PqMKm8mB3l4dYF/xwSkYjM2S2gyiPRuFV1H4LTpxRfZ/dm4UtX7Sd0SmtuiW
-         0axwvVBceoswzdjQm9BCZ51E4X6sN9W5mWYFKTVbfZ8TXvUOLuESoyOLQSGqavi7j6
-         219KxzvEYwR+NGJLwraQsdv1Rs+E9hjAYXGAEldiDRBIxdWtGfqINqe0ibgR6BFCX4
-         7WeToS/NGh84MK9S0t8xV8QixU+1N2j/FYfVo2tUDsvBx3AalVLDlMxFbSB4uYslAz
-         rLFvVKYv7AYpw==
-Date:   Thu, 29 Jul 2021 13:03:31 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v3 6/9] cgroup/cpuset: Add a new isolated cpus.partition
- type
-Message-ID: <20210729110331.GC301667@lothringen>
-References: <20210720141834.10624-1-longman@redhat.com>
- <20210720141834.10624-7-longman@redhat.com>
- <20210727114241.GA283787@lothringen>
- <fe3d9fcb-c3af-9214-c69f-00ef36521c5c@redhat.com>
+        id S237226AbhG2M56 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Jul 2021 08:57:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16026 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234245AbhG2M56 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jul 2021 08:57:58 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gb9TX6lyMzZqVV;
+        Thu, 29 Jul 2021 20:54:24 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 29
+ Jul 2021 20:57:53 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>
+CC:     <shakeelb@google.com>, <guro@fb.com>, <willy@infradead.org>,
+        <alexs@kernel.org>, <richard.weiyang@gmail.com>,
+        <songmuchun@bytedance.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH 0/5] Cleanups and fixup for memcontrol
+Date:   Thu, 29 Jul 2021 20:57:50 +0800
+Message-ID: <20210729125755.16871-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe3d9fcb-c3af-9214-c69f-00ef36521c5c@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:56:25AM -0400, Waiman Long wrote:
-> On 7/27/21 7:42 AM, Frederic Weisbecker wrote:
-> > On Tue, Jul 20, 2021 at 10:18:31AM -0400, Waiman Long wrote:
-> > > Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=TBD
-> > > 
-> > > commit 994fb794cb252edd124a46ca0994e37a4726a100
-> > > Author: Waiman Long <longman@redhat.com>
-> > > Date:   Sat, 19 Jun 2021 13:28:19 -0400
-> > > 
-> > >      cgroup/cpuset: Add a new isolated cpus.partition type
-> > > 
-> > >      Cpuset v1 uses the sched_load_balance control file to determine if load
-> > >      balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
-> > >      as its use may require disabling load balancing at cgroup root.
-> > > 
-> > >      For workloads that require very low latency like DPDK, the latency
-> > >      jitters caused by periodic load balancing may exceed the desired
-> > >      latency limit.
-> > > 
-> > >      When cpuset v2 is in use, the only way to avoid this latency cost is to
-> > >      use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
-> > >      the kernel boot, however, there is no way to add or remove CPUs from
-> > >      this isolated set. For workloads that are more dynamic in nature, that
-> > >      means users have to provision enough CPUs for the worst case situation
-> > >      resulting in excess idle CPUs.
-> > > 
-> > >      To address this issue for cpuset v2, a new cpuset.cpus.partition type
-> > >      "isolated" is added which allows the creation of a cpuset partition
-> > >      without load balancing. This will allow system administrators to
-> > >      dynamically adjust the size of isolated partition to the current need
-> > >      of the workload without rebooting the system.
-> > > 
-> > >      Signed-off-by: Waiman Long <longman@redhat.com>
-> > > 
-> > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > Nice! And while we are adding a new ABI, can we take advantage of that and
-> > add a specific semantic that if a new isolated partition matches a subset of
-> > "isolcpus=", it automatically maps to it. This means that any further
-> > modification to that isolated partition will also modify the associated
-> > isolcpus= subset.
-> > 
-> > Or to summarize, when we create a new isolated partition, remove the associated
-> > CPUs from isolcpus= ?
-> 
-> We can certainly do that as a follow-on.
+Hi all,
+This series contains cleanups to remove unused functions, narrow the
+scope of mutex and so on. Also this fix the possible NULL pointer
+dereferencing and possible wrong percpu operation. More details can
+be found in the respective changelogs. Thanks!
 
-I'm just concerned that this feature gets merged before we add that new
-isolcpus= implicit mapping, which technically is a new ABI. Well I guess I
-should hurry up and try to propose a patchset quickly once I'm back from
-vacation :-)
+Miaohe Lin (5):
+  mm, memcg: remove unused functions
+  mm, memcg: narrow the scope of percpu_charge_mutex
+  mm, memcg: save some atomic ops when flush is already true
+  mm, memcg: avoid possible NULL pointer dereferencing in
+    mem_cgroup_init()
+  mm, memcg: always call __mod_node_page_state() with preempt disabled
 
+ include/linux/memcontrol.h | 12 ------------
+ mm/memcontrol.c            |  8 +++++---
+ 2 files changed, 5 insertions(+), 15 deletions(-)
 
+-- 
+2.23.0
 
-> Another idea that I have been
-> thinking about is to automatically generating a isolated partition under
-> root to match the given isolcpus parameter when the v2 filesystem is
-> mounted. That needs more experimentation and testing to verify that it can
-> work.
-
-I thought about that too, mounting an "isolcpus" subdirectory withing the top
-cpuset but I was worried it could break userspace that wouldn't expect that new
-thing to show up.
-
-Thanks.
