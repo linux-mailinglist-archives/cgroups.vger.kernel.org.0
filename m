@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9307E3DA5EA
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 16:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BBE3DA6A4
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jul 2021 16:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239049AbhG2OKF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Jul 2021 10:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S236945AbhG2Oj3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Jul 2021 10:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239420AbhG2OIk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jul 2021 10:08:40 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04F3C0617A0
-        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id bp1so11339596lfb.3
-        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 07:08:10 -0700 (PDT)
+        with ESMTP id S236309AbhG2Oj0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jul 2021 10:39:26 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9D5C0613C1
+        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id m9so7834174ljp.7
+        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 07:39:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
-        b=ca8DsYUc24s41ooMqz6bT/mgYTru4NdbtwqBEbRuShpsTGyE31LKnPMoDmbN6HJgae
-         T3XclT4Mp6G2PVuj3pAxbeBDiW8zQ5b0M8gOBAbQQ1kKb1evXN8CQOArbqXjCeQrNh4t
-         5Fwwt93YDujobI3MgwpyuzQeNcJpOFC0A3R5AHrfpGp5BwqrXLaohpnhngja/9BPCg8K
-         ATNtt/CjGXQp82sXcI8UXuSlFo3fBTtskkQWH/euvVFcgTl++V+fKe9hXFQK4G97jmxE
-         G0PzqU3GabBA13Y0IQ40/T8ckbx6nKyWZ+69XG8cWNXqy/h3FzpZ74FKsD4xvbT5Z7q0
-         NpkA==
+        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
+        b=R23L4N03E0Cp8DvPNPKl1idmWh2CJdaYEmaLa1zbfrqP6vbUf+kVIxIr+waUl74KJ7
+         Mphdxreoppmm+jRPzPzsh1BxrZm8LVudhznf1T4QIzuK2yPi+akMMez82h2jumMlbVBf
+         S4s7yiBKeS5xYqWyj6/0VB0Gc5h/lkfbSVQ8/wSDflor4uoM7saLwFNOPaGtfgypCOj/
+         +WIjAxfYsT6tTBO/q53IY7HCwDcgVv78qaKosze2J5wD59XRmrOEtTa4h7EmF5Pf5cK0
+         nkmiVrgBr2zJPDiZ0MD0JZ5mxei1/97cIXhT5vYsbRVqwrZO7WrhQf5r9ywwwTopzLvU
+         jR6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lwNLTldvysoG6tP7eIB3Yg8TEfTEJ3xDLJQLZ28G+x0=;
-        b=rLjlvtX9fM4AG+hiKxJcZbcCG4fpZ1KyOP5a1iKtaggiyPgLMywVGVtq/wix6y90Qs
-         +Q1dTnnnENpPTqcKswR8TSeBW1fOOoiOZB24VK7YoD8fRzmrFeEl53M0cOJINH9XV8R1
-         XmL1NEHzEX9uu4lim40TSd2XWz9j3MXgac5JNQizGKtX/aZOqT4T4yXEbJN01Qoyuxgh
-         JOLPfM1CZp5fpZYYKZLV3ntU6+GmT1q8Zxwh5DQJns/Mtf0N98pQ9PbKOilPtuuMIT/g
-         Q4K/up2TTaT77hN9FaTF6pP2HrMusb4pox7i4I0i67z3EEQ0vuwtSnAhqnvATn5vB69A
-         EDcg==
-X-Gm-Message-State: AOAM532DWbbBW2iyIJYXX1EHx4nAoB6XNTIJJj/IIHnWvtHPnbfYroKd
-        OLNgLQOgoWCuWKylJfsAwvh+dnWSRbyljs77RWmoTg==
-X-Google-Smtp-Source: ABdhPJxzsVh6pp93QiKfxjIjrrpuuxS478uv8YrBKf6UNnyMlYtAAsGPSXEFCrLUZI+jfZaQNNAx9za8VUvfFCwbV3M=
-X-Received: by 2002:a19:ae0f:: with SMTP id f15mr4037438lfc.117.1627567688416;
- Thu, 29 Jul 2021 07:08:08 -0700 (PDT)
+        bh=pQ+TosWiDAdG8+90eQclOC0l7J20f+GG4ER7QwTBKX8=;
+        b=E6+gcIl/1iLZGcIt0mWFOsIo5H8bA6QDpSxctQ+P/J/smXZrLhTOAaUnjeC26nUDbq
+         p+1wBBwpzyY/NhzWQoFF8+eeMPBHBaCBLjqZepXY+b7ity5w4snzp0xhHeV0zZQUylb+
+         PjD8jbuim36LVrLHBv+7933LTg0jS46QJ4WpJ2xLPJa3rD1Mlg3BmYIVtZ7kyOTncoiT
+         QBNIpm0xsP5VtvCbNes/kD+EEdLYBfF7suKQ+GW4y+PkZXQyT/r3cIaWjWuA1epWnZ3f
+         tjCqvQEPuvxPHGz0+TIHKnfK4PGlbc4I3XZ/VWFZa13fuTkHjmhZ1WA+mnqD0UQBuFJ8
+         Mt1A==
+X-Gm-Message-State: AOAM5300L57aQzZcqldkKJ4pPDIT3tCrZAhx0M7zFYkhNSpB0bj5KkX3
+        mfT+DlchVxJIRUg/tfYYjzFUtMADDD9iEjcGYv0NFA==
+X-Google-Smtp-Source: ABdhPJysPj8T1T/jC1N62guQJtz/h9nWJSh3QUau+BzFLvn4bSnqGN64gK1+jXKEM+irMoznNKLcgVOnxOJpvkYACmY=
+X-Received: by 2002:a2e:85d7:: with SMTP id h23mr3111083ljj.279.1627569560514;
+ Thu, 29 Jul 2021 07:39:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-2-linmiaohe@huawei.com>
-In-Reply-To: <20210729125755.16871-2-linmiaohe@huawei.com>
+References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-6-linmiaohe@huawei.com>
+In-Reply-To: <20210729125755.16871-6-linmiaohe@huawei.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Jul 2021 07:07:57 -0700
-Message-ID: <CALvZod7Z0MNqDOVGEJSjXKmJdKYM2V4U7R1j0Z7vbW9Fn0TpJg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm, memcg: remove unused functions
+Date:   Thu, 29 Jul 2021 07:39:08 -0700
+Message-ID: <CALvZod6n1EwcyLTi=Eb8t=NVVPLRh9=Ng=VJ93pQyCRkOcLo9Q@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mm, memcg: always call __mod_node_page_state() with
+ preempt disabled
 To:     Miaohe Lin <linmiaohe@huawei.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -67,14 +68,35 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 5:57 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Thu, Jul 29, 2021 at 5:58 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
 >
-> Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
-> of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
-> vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
-> declaration of mem_cgroup_select_victim_node() is remained here. Remove
-> them.
+> We should always ensure __mod_node_page_state() is called with preempt
+> disabled or percpu ops may manipulate the wrong cpu when preempt happened.
 >
+> Fixes: b4e0b68fbd9d ("mm: memcontrol: use obj_cgroup APIs to charge kmem pages")
 > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 70a32174e7c4..616d1a72ece3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -697,8 +697,8 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
+>         memcg = page_memcg(head);
+>         /* Untracked pages have no memcg, no lruvec. Update only the node */
+>         if (!memcg) {
+> -               rcu_read_unlock();
+>                 __mod_node_page_state(pgdat, idx, val);
+> +               rcu_read_unlock();
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+This rcu is for page_memcg. The preemption and interrupts are disabled
+across __mod_lruvec_page_state().
+
+>                 return;
+>         }
+>
+> --
+> 2.23.0
+>
