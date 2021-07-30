@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C6E3DB13E
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jul 2021 04:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774C33DB148
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jul 2021 04:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhG3Cjr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Jul 2021 22:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        id S235717AbhG3CnO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Jul 2021 22:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhG3Cjq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jul 2021 22:39:46 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB32DC061765
-        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 19:39:41 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id mt6so13047089pjb.1
-        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 19:39:41 -0700 (PDT)
+        with ESMTP id S230200AbhG3CnO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Jul 2021 22:43:14 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ACDC061765
+        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 19:43:10 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j1so13009406pjv.3
+        for <cgroups@vger.kernel.org>; Thu, 29 Jul 2021 19:43:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P+arnXaTaJFGxX6D4lzafx9633DBfkJpPAK5Nf+O5Qw=;
-        b=cBgyvqCISrEPhMOzj61PGUaSCvJs1xoa9d/Yx1CcLHIYtPm60B0d7pcJ7ynvT4w3I6
-         se5akXAXqk5sZBpgoxuQXLy3LYgQZpIfK7dW/YFHdCWQd3lShO0vNt/hoEUZ5rtwQPfu
-         BqAnum2fv6J8DX+qHj8ylDP9eXCw/rtQvCyWD/GyQG58JLNadwSrSURiX8L6vQNOi6wM
-         BqCwpB2w+S8vdyG9+4r4PyDKTpxHtm7OOzw6kahoIDyUclDGepEOplKqWnrWqSYJJfY2
-         bEv3Ip6h9ZSOwIJVzdXY4RZX8AYvZy7geUw2GguQgD9iQViLc9qSAq5H0LdjwxFOt0g3
-         jrIg==
+        bh=2k7fEyFu7zGXyqWbkTSjvJ6JOYMr8rw/z8q7mEIUc8A=;
+        b=JgClgnU9EdwSANU8A5FerpxJDoCmKESOX5v+FZM6r2TrDY8Hsmgx4fSSGUaIChBFJW
+         nJ4E/ZBbz1I3MA/8EDBPDxWMF5E3u1sHgvJuQ0NooOw3kwGeUDjcHTC+SoVHq9wRE0PY
+         V4+8QyMzbmoBDl3xFidcOKambkn17SDAQFg8woP+NP1uNpxlfm+hNQguFbWO9M9rTIVj
+         MwfqoK+BfnglDvvyR3no3rQ73c+0mKGVgwByOa85doAmoI1ui4CnZ0yfBRS+cazSq3l2
+         5gkMKx8CC8QVd/AoL8jHejUm2ApZHIr/tSINLrhVkby6HYZ5KngrD4z7/lZ6WSX0Me4t
+         aXPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P+arnXaTaJFGxX6D4lzafx9633DBfkJpPAK5Nf+O5Qw=;
-        b=ZU8GC8exsh31mnEsZMbH/tV9VuKem2VstNdZw8JteHozBTDldY0EkUCkFSeOnxyqqm
-         0DKQAskJZCSOaW3QCGVG6aEysTiwv1X4x5xRr/OUsxqSHc28F8hBsMueMx9u4Ka0FCOo
-         JpD4otpjJfBW5behsLHbBdpTKZenoSn7Eakzk0CWZ0puCCIc9Ai/0V/btjTwGZFgfdRb
-         6WFkfkwZSUhS/on0tBVl/jC6ZGNAxQRW/1X2SYaKrtdT4Ms5OKar3vYmn2XsY3aLn5b2
-         ETtO5XSDQ5TmdSTMw4yz2rjBF6awqXwuUClvRiN+3FhhBVH4rGIGoUdKOWxcjqbqaUmr
-         0WoQ==
-X-Gm-Message-State: AOAM531AMV5C/+yYTbtXgIOQlred/cdWEhVcuHugBkh3MUoqFHf0can9
-        KOms2/v9isKPre85UHjpfTtJVPe8kD85Bx+ay/Lkvw==
-X-Google-Smtp-Source: ABdhPJyu6dYRgQSLMyns1xiXublTREAjgu6OWdiz8ZH+NI8kpIyrJjuNnQfnjrMvIura6sul1XMUxaqQ9+EJu6hrhSs=
-X-Received: by 2002:a63:cd4b:: with SMTP id a11mr195024pgj.273.1627612781609;
- Thu, 29 Jul 2021 19:39:41 -0700 (PDT)
+        bh=2k7fEyFu7zGXyqWbkTSjvJ6JOYMr8rw/z8q7mEIUc8A=;
+        b=j0dS8MoXX3JAOo897H7YY2++F9eYe9GfAYnC4Tpa6LCbT8Q6O7Nv3GO6Iys9OfZztV
+         6on7ZroMiPGUnzUcKrOTsKeklSKAsz2EweCrU8+3ZQYgmUhUqa9AF1Q63aJymCUJ4FMY
+         PTWIki2qJ7shyQTpLqd0DY4+FKFfMKJ+jFXpeXJib4sbFuEnsTx9KsJw717jNX2iXwqV
+         a83RbTNwY3JZAeDLpdmwvlyvR19kcCRd6I7MZBlzWzGDxUKNANf0GrVEfeAqv8OdVAnS
+         U400O17/wk4uEHxIYXWIy3k7yMKpo7/aRobYY1fdFDDDXL1lfq+fvqhs0pfm+hPD3WIu
+         cJDg==
+X-Gm-Message-State: AOAM530vwPmW00XEFAnanut/pU6SUqZv8JSmI/6M2z+LPUXOWTV/k5dP
+        PsTt19gcrOSNk0Y5HahYnZZf8C98A+Ee7m67gY543A==
+X-Google-Smtp-Source: ABdhPJyKMjwJtks3kZrAExse5sOaTz+Y2l4NgrwbHMWIdimiFgom2e4JKhi5i2WQTiXiZnf08teTGdgENzry63QbeGo=
+X-Received: by 2002:a17:902:6ac9:b029:12c:3bac:8d78 with SMTP id
+ i9-20020a1709026ac9b029012c3bac8d78mr348102plt.34.1627612989962; Thu, 29 Jul
+ 2021 19:43:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-2-linmiaohe@huawei.com>
-In-Reply-To: <20210729125755.16871-2-linmiaohe@huawei.com>
+References: <20210729125755.16871-1-linmiaohe@huawei.com> <20210729125755.16871-3-linmiaohe@huawei.com>
+In-Reply-To: <20210729125755.16871-3-linmiaohe@huawei.com>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 30 Jul 2021 10:39:01 +0800
-Message-ID: <CAMZfGtUon=R1EEW4Y33DQ1_DQg9ciUyyTJnxgUH5=MyAWLU+=w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm, memcg: remove unused functions
+Date:   Fri, 30 Jul 2021 10:42:29 +0800
+Message-ID: <CAMZfGtWESFeDgV7H4N6ch+PpwYAkV+=qPJKiamnZ7sX=6t3e4g@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
 To:     Miaohe Lin <linmiaohe@huawei.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -68,14 +69,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 8:57 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Thu, Jul 29, 2021 at 8:58 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
 >
-> Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
-> of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
-> vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
-> declaration of mem_cgroup_select_victim_node() is remained here. Remove
-> them.
+> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
+> narrow the scope of percpu_charge_mutex by moving it here.
 >
 > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+
+LGTM.
 
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
