@@ -2,98 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508833DBCD0
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jul 2021 18:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758A23DBCD4
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jul 2021 18:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhG3QHN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Jul 2021 12:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhG3QHM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Jul 2021 12:07:12 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8161C061765;
-        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mt6so15912440pjb.1;
-        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3CUKiPjVhRqbcpNjTZQwL56wlHZezFNK9/SuBkCMsYo=;
-        b=Vitr0fqnQypj1qamhMaglBiB17MtNukUrISqQJQNwvJadI4SCPnZhFi5tVzRGDziQL
-         TzZG/rVZrnvwJfYIY7xVlSslwlEWcoIQl1bnmZLvpmUQExTJ7SmC5cI7Tm7l+nxlcbax
-         McUoJYyyJLoaFecRt8ixolN7evBlu7UTi+yRS5E3stLpmQNPgyd+MAzfxPyS9e3LxRca
-         eYAUm7mr0WFq9XGmpHtFu5eKuRF6SCw1Mmc5QEJnkrj/jNRGXoX9mzSmq/GZsMc1ikh2
-         rVj66/ueTDslhkUmgwR1VnvDvPE7wNwj4StGN/KdPrDF1PgpDFzFt6lMx/5gCpBw+dFo
-         JeKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3CUKiPjVhRqbcpNjTZQwL56wlHZezFNK9/SuBkCMsYo=;
-        b=fZIuRmGPBwvURLpp0fyh7VLqmEPpDh7mXUUh0meOtSfgSaHfbUnZR5/5jjWVG9Ha80
-         wmkOvULI94GIns3nzX8cN8pZmpjv39uK2PAsESUIfy6Uh3tDsOTZGcLi7jo2r6CgzMvy
-         38HIttImsWQ2ekTys1zGiEZj0q5mPmFEuC6PhgOcNB/T5e+txYMCb3VXE9MhgNjx5Pi6
-         VYMQK/OMnijWkbnUgqGA+0Su2b/QA/H+7PwrgDHnN+WmUBDI1ZIsA/ab9YDc/DxmQK9+
-         VcYVtQ9vrK6oVhK26MFGv8KFkpQOI0894X/42unchYdxZqo8OqugGj8y5jPYHbEhaHbz
-         UUGA==
-X-Gm-Message-State: AOAM533g+G0wyITP1mI2XZwRnYVOLkgWpJ+jd/OibTaFAJCP0eBMMTe5
-        Ac5G8p4WcBmOKuTeJMaAnLI=
-X-Google-Smtp-Source: ABdhPJwCYY5sKLZ7W+Fx+QYea/+AFAuvAgAFpz9bWR4bmHin8WeVYlz4vm0b+Dvj94m5Pdg7vFYv/w==
-X-Received: by 2002:a17:90a:748f:: with SMTP id p15mr2671143pjk.179.1627661226174;
-        Fri, 30 Jul 2021 09:07:06 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:5ec3])
-        by smtp.gmail.com with ESMTPSA id x7sm2966394pfc.96.2021.07.30.09.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 09:07:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 30 Jul 2021 06:07:01 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] blk-throtl: optimize IOPS throttle for large IO
- scenarios
-Message-ID: <YQQjpQEBbdAgMUM7@mtj.duckdns.org>
-References: <40915233274d31bb0659ff9f3be8900a5a0e81ba.1627462548.git.brookxu@tencent.com>
- <YQLhRrkZrmKTzfbP@mtj.duckdns.org>
- <1ce9bcbb-8eea-f51f-f80a-22caf5f2e0d8@gmail.com>
+        id S229698AbhG3QHa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Jul 2021 12:07:30 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:23291 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229581AbhG3QHa (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 30 Jul 2021 12:07:30 -0400
+X-Greylist: delayed 8607 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Jul 2021 12:07:29 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=O4d9n4ICcjZvP1yV8qsRv3XRzfx7tCTKYQ2aa
+        0KXtu8=; b=Kz4eDKI7BEwhgD2daN1cegtO+OEbsoT205wytpeIjj9CSchmTT0e+
+        bHH8q0RfPEfWtbgEI+JXjNxWSXRZe4msCTeTDejCzJrJSadgrf+d6NRIbsiMXcFi
+        pS7VpR48hWwHGbJps9cq7hklUjHUSedirXK5lp/jmQmKwS2IY6aQuo=
+Received: from [0.0.0.0] (unknown [113.251.12.143])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgAXJAOpIwRhiQYPAA--.21639S3;
+        Sat, 31 Jul 2021 00:07:06 +0800 (CST)
+Subject: Re: [PATCH] cgroup: Fix typo in comments and documents
+To:     "Cai,Huoqing" <caihuoqing@baidu.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Cgroups <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210730051605.2626-1-caihuoqing@baidu.com>
+ <0516372e-0120-ff52-bf9a-cf1cda9a633f@email.cn>
+ <CALvZod6sUh0XQGVb4wEfzGNDcrLabgmjEdu+wh0g1c=cvvci4Q@mail.gmail.com>
+ <437db356f1b44a19837dc7f24f9adfcb@baidu.com>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <a46dfadc-6615-cc5d-84ac-4e31def00bf3@email.cn>
+Date:   Sat, 31 Jul 2021 00:07:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ce9bcbb-8eea-f51f-f80a-22caf5f2e0d8@gmail.com>
+In-Reply-To: <437db356f1b44a19837dc7f24f9adfcb@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: LCKnCgAXJAOpIwRhiQYPAA--.21639S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw17GF4xZFykCr4Dtw47Jwb_yoWfWrc_ua
+        yjyF1xCr1UZFW8Ka1vvrs3Zry5Ka1xKF97X39Fy3yav3ZrArW8ZFn3tr9a9wn8WF1fCryD
+        K3Z5Xa97X3srujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbFkYjsxI4VW3JwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+        8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
+        87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWxJr1U
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8w
+        CY02Avz4vE14v_JwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
+        vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
+        JVW8JbIYCTnIWIevJa73UjIFyTuYvjxUOpnQUUUUU
+X-Originating-IP: [113.251.12.143]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 10:09:34AM +0800, brookxu wrote:
-> >> @@ -877,10 +900,19 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
-> >>  	else
-> >>  		tg->bytes_disp[rw] = 0;
-> >>  
-> >> -	if (tg->io_disp[rw] >= io_trim)
-> >> +	if (tg_io_disp(tg, rw) >= io_trim) {
-> > 
-> > Instead of checking this in multiple places, would it be simpler to transfer
-> > the atomic counters to the existing counters whenever we enter blk-throtl
-> > and leave the rest of the code as-is?
-> 
-> If we do this, we need to do similar processing on the bio submission path and the bio
-> resubmission path in pending_timer. It seems that the code is more complicated?
 
-Yeah, basically whenever we enter blk-throtl. Factored to a function,
-calling it on entry should be fairly clean, right? I wonder whether it'd be
-better to consolidate all atomic counter handling in a single location and
-all it does is transferring whatever's accumulated to the usual counters.
-Also, when you're reading & resetting the atomic counters, can you use a
-pattern like the following?
+在 2021/7/30 下午10:54, Cai,Huoqing 写道:
+> Forget it - -
+>
+> -----Original Message-----
+> From: Shakeel Butt <shakeelb@google.com> 
+> Sent: 2021年7月30日 22:53
+> To: Hu Haowen <src.res@email.cn>
+> Cc: Cai,Huoqing <caihuoqing@baidu.com>; Tejun Heo <tj@kernel.org>; Zefan Li <lizefan.x@bytedance.com>; Johannes Weiner <hannes@cmpxchg.org>; Jonathan Corbet <corbet@lwn.net>; Cgroups <cgroups@vger.kernel.org>; linux-doc@vger.kernel.org; LKML <linux-kernel@vger.kernel.org>
+> Subject: Re: [PATCH] cgroup: Fix typo in comments and documents
+>
+> On Fri, Jul 30, 2021 at 6:44 AM Hu Haowen <src.res@email.cn> wrote:
+>>
+>> 在 2021/7/30 下午1:16, Cai Huoqing 写道:
+>>> Fix typo: iff  ==> if
+> This is not a typo. 'iff' means 'if and only if'. For details see https://en.wikipedia.org/wiki/If_and_only_if.
 
-  main_counter += atomic_xchg(counter, 0);
 
-Right now, there's a race window between reading and resetting.
+Sorry, my mistake.
 
-Thanks.
 
--- 
-tejun
+Thx,
+
+Hu Haowen
+
