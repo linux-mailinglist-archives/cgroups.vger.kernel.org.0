@@ -2,122 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F133DC2B7
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jul 2021 04:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7223DC97F
+	for <lists+cgroups@lfdr.de>; Sun,  1 Aug 2021 05:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231682AbhGaCaB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Jul 2021 22:30:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7769 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhGaCaB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Jul 2021 22:30:01 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gc7P62Cc9zYjb7;
-        Sat, 31 Jul 2021 10:23:54 +0800 (CST)
-Received: from [10.174.178.209] (10.174.178.209) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 31 Jul 2021 10:29:53 +0800
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-To:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>
-CC:     <hannes@cmpxchg.org>, <vdavydov.dev@gmail.com>,
-        <akpm@linux-foundation.org>, <shakeelb@google.com>,
-        <willy@infradead.org>, <alexs@kernel.org>,
-        <richard.weiyang@gmail.com>, <songmuchun@bytedance.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com> <YQNsxVPsRSBZcfGG@carbon.lan>
- <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <4a3c23c4-054c-2896-29c5-8cf9a4deee98@huawei.com>
-Date:   Sat, 31 Jul 2021 10:29:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230364AbhHADjl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 31 Jul 2021 23:39:41 -0400
+Received: from m32-153.88.com ([43.250.32.153]:13690 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230353AbhHADjk (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 31 Jul 2021 23:39:40 -0400
+X-Greylist: delayed 136505 seconds by postgrey-1.27 at vger.kernel.org; Sat, 31 Jul 2021 23:39:40 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=HPiF0gjTXrWW3nXeBh9k7on9SjUI9wWXMvbjR
+        vl/P0s=; b=HvX+utebY+tIz7tKyXgj3yYl7sEtTDCcHjUifi7grxwiQ82gm2oC8
+        GbC5V5ewEsdND8UzhtTE3OPJQnCKAQgQAxiGzjwouegOOVEoXZ4SrfrNxqBTUGeV
+        DGG5zpVhqjyzZ22BA1uAunVMc2EWDnUVjBiOXEYMjz4wCzYLm0Uc+I=
+Received: from [0.0.0.0] (unknown [117.132.196.23])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAnpqZbFwZhN7cUAA--.61115S3;
+        Sun, 01 Aug 2021 11:39:11 +0800 (CST)
+Subject: Re: [PATCH] cgroup: Fix typo in comments and documents
+To:     Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20210730051605.2626-1-caihuoqing@baidu.com>
+ <87lf5nc0su.fsf@meer.lwn.net> <YQQUwX+/1N9utKEN@casper.infradead.org>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <4f44c9b2-15ae-1ed9-0c0a-f0cef648c416@email.cn>
+Date:   Sun, 1 Aug 2021 11:39:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <YQQUwX+/1N9utKEN@casper.infradead.org>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.209]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-CM-TRANSID: GiKnCgAnpqZbFwZhN7cUAA--.61115S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF45ur47Aw4fJryruFykZrb_yoWfurcEyF
+        WkAFWvyw1UtryktanayFW3ZFZ2kFy09FyUX3s5AF4aq3s8A3yvkr1Dtw4xZr18tFW7Aw1a
+        qrn8Xas2vrZF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbo8YjsxI4VWkKwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+        8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
+        87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4
+        CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY4
+        87MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Y
+        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+        AF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+        xhVjvjDU0xZFpf9x07jHBTOUUUUU=
+X-Originating-IP: [117.132.196.23]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021/7/30 14:50, Michal Hocko wrote:
-> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
->> On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
->>> Since percpu_charge_mutex is only used inside drain_all_stock(), we can
->>> narrow the scope of percpu_charge_mutex by moving it here.
->>>
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>  mm/memcontrol.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index 6580c2381a3e..a03e24e57cd9 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
->>>  #define FLUSHING_CACHED_CHARGE	0
->>>  };
->>>  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
->>> -static DEFINE_MUTEX(percpu_charge_mutex);
->>>  
->>>  #ifdef CONFIG_MEMCG_KMEM
->>>  static void drain_obj_stock(struct obj_stock *stock);
->>> @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->>>   */
->>>  static void drain_all_stock(struct mem_cgroup *root_memcg)
->>>  {
->>> +	static DEFINE_MUTEX(percpu_charge_mutex);
->>>  	int cpu, curcpu;
+
+ÔÚ 2021/7/30 ÏÂÎç11:03, Matthew Wilcox Ð´µÀ:
+> On Fri, Jul 30, 2021 at 08:51:29AM -0600, Jonathan Corbet wrote:
+>> Cai Huoqing <caihuoqing@baidu.com> writes:
 >>
->> It's considered a good practice to protect data instead of code paths. After
->> the proposed change it becomes obvious that the opposite is done here: the mutex
->> is used to prevent a simultaneous execution of the code of the drain_all_stock()
->> function.
-> 
-> The purpose of the lock was indeed to orchestrate callers more than any
-> data structure consistency.
->  
->> Actually we don't need a mutex here: nobody ever sleeps on it. So I'd replace
->> it with a simple atomic variable or even a single bitfield. Then the change will
->> be better justified, IMO.
-> 
-> Yes, mutex can be replaced by an atomic in a follow up patch.
-> 
+>>> Fix typo: iff  ==> if
+>>>
+>>> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+>> This is becoming an FAQ ...  "iff" in mathematical English means "if and
+>> only if"; its usage in these documents is correct.
+> ... and yet it's clearly not understood.  Similarly to the [start..end)
+> convention (also the [start..end[ convention).  Should we deprecate
+> use of it in kernel documentation, and if so, what should we replace it
+> with?
 
-Thanks for both of you. It's a really good suggestion. What do you mean is something like belowï¼Ÿ
+What about establishing a documentation section which gives clear
+definitions to each words whose meaning isn't easy to understand for
+common people, such as this situation? In this case readers are able to
+get rid of their questions on their own, instead of asking maintainers
+for any explanation.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 616d1a72ece3..508a96e80980 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2208,11 +2208,11 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-  */
- static void drain_all_stock(struct mem_cgroup *root_memcg)
- {
--       static DEFINE_MUTEX(percpu_charge_mutex);
-        int cpu, curcpu;
-+       static atomic_t drain_all_stocks = ATOMIC_INIT(-1);
+Regards,
+Hu Haowen
 
-        /* If someone's already draining, avoid adding running more workers. */
--       if (!mutex_trylock(&percpu_charge_mutex))
-+       if (!atomic_inc_not_zero(&drain_all_stocks))
-                return;
-        /*
-         * Notify other cpus that system-wide "drain" is running
-@@ -2244,7 +2244,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
-                }
-        }
-        put_cpu();
--       mutex_unlock(&percpu_charge_mutex);
-+       atomic_dec(&drain_all_stocks);
- }
-
- static int memcg_hotplug_cpu_dead(unsigned int cpu)
