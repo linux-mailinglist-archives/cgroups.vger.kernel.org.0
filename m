@@ -2,194 +2,244 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCCF3DEFCD
-	for <lists+cgroups@lfdr.de>; Tue,  3 Aug 2021 16:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9D13DEFD4
+	for <lists+cgroups@lfdr.de>; Tue,  3 Aug 2021 16:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbhHCOPw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Aug 2021 10:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S236234AbhHCOQt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Aug 2021 10:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236213AbhHCOPw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Aug 2021 10:15:52 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39C7C06175F
-        for <cgroups@vger.kernel.org>; Tue,  3 Aug 2021 07:15:39 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id 184so19979429qkh.1
-        for <cgroups@vger.kernel.org>; Tue, 03 Aug 2021 07:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CGoeGrlFI9+sWcEgQCmH+4Ac0VkTcA2bJ22N5ENTdDg=;
-        b=YmkBhg7ZSy7zgRJs7+RhL2ezlEmxraLZ3H2cJIYpUtE5/DhGGXsw2HieBlgdMN6bq1
-         h/bjAxt/o7MfkLY3uZFogmdlJU+K6JOaAxZTrufTGGuve3u8FdGoSL+SO88OdUNTiugX
-         vr69LKfFslTGNh1JT+km+Nk6dxeOdrjCifl0RIxQAuCCfjxOCIlwM/1oLnAEl9/CSaxj
-         E2ladtVMDDGUY5n04jsimXPRC/LuYM5yA2dNEQ8xfZfDmZcZYupXzyU1BmvVGFCHf1Ys
-         N+/rXzScbRO8X31ZPN4Ho4fJWw9OIZylMuVBiYpyouhTKZ93m1To3Hh5Cm4GqaEHOh6Y
-         lc7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CGoeGrlFI9+sWcEgQCmH+4Ac0VkTcA2bJ22N5ENTdDg=;
-        b=n6ziLbS7boogdkZUn0Ow5M9Wh6CoogKqxYUXDc9D7PVAGqRfmAAPpa6FvI5IpJer9Q
-         VYLzjVxHsOWGS49UfXqEO0uo94PR40FPuhaEw0ndsvNQ7+2uuXHRkib06Y2qtCS5rMdP
-         /yMYwbdTZZC2D54WKqoe0gQ9b/sECHaknTtFkpHRE7ErNpp06w77gQ91msBT7qhoww3G
-         cCIzfOCrZcsRFNK7lpR/YTIJjtZL0QZthzwzMpFYulBPgWORjxHFkArCzJ3iQUetbfcz
-         j8QL11jliEbv0z23l0FpJVyn4HzfeAJAKEoDbHZ3pxdN7E8XXmj1V/nSEtG+00rhMA04
-         4lXA==
-X-Gm-Message-State: AOAM532OjzZjdmiyFV8+TwBsqM5Ph3e+lBgOgRfibMq0yzd+/zCTnOmI
-        uSVVhF2uJDqBSQGUI6UmQfbHvg==
-X-Google-Smtp-Source: ABdhPJzPp08cKt2Oi+NdOsTC+m7W0qzcKhjVfmuOxdm6waljOoR6RYCG9IzK3VHVfWTXN+mJjH+ywQ==
-X-Received: by 2002:ae9:e515:: with SMTP id w21mr20559520qkf.169.1628000139086;
-        Tue, 03 Aug 2021 07:15:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:7bfe])
-        by smtp.gmail.com with ESMTPSA id 143sm7935158qkf.3.2021.08.03.07.15.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 07:15:38 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 10:15:36 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Miaohe Lin <linmiaohe@huawei.com>,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, willy@infradead.org, alexs@kernel.org,
-        richard.weiyang@gmail.com, songmuchun@bytedance.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-Message-ID: <YQlPiLY0ieRb704V@cmpxchg.org>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com>
- <YQNsxVPsRSBZcfGG@carbon.lan>
- <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+        with ESMTP id S236205AbhHCOQs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Aug 2021 10:16:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3671AC061757;
+        Tue,  3 Aug 2021 07:16:37 -0700 (PDT)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628000193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qkfc7lxCqn4p3B20wjfjiLsyLpuZIa2kIlbDitBY8sw=;
+        b=fStBYY9cDOofnMkMc6JUcZVYcNWx/eg2N05Pb/o7ef6JJTcTG48t+GioJgBl+eXKMJGEgi
+        TVCeDR+EwHJjgdulnpLwVy12sseYnaixefw5o14vk+2PAOm/LUlJHLssIOZ+nJyuRxaM3r
+        fCCG5ZeBAdz/Q3kIzOJQstWW7ST+mFehWQwEJk+hKZizcoepZD/zOgz+f7GO7oZ2MtK2DY
+        wm7slubFVtLqvtY6o7cEl9ZIw3mvJ35go7HuaiPxyi+ESejsT+e0qaP6D0Fis4EUqsKcRu
+        JGNGT0BYA9PAUGHVfsb3cVOtZwFCr59O6V6ObVy+T4OF395mknhLgwpLJFiGUg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628000193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Qkfc7lxCqn4p3B20wjfjiLsyLpuZIa2kIlbDitBY8sw=;
+        b=pGmFmcj1u+vX59p9gWCClfCslb9a1WxY2Pwa8q+HwkfzdAY6X/r9JgYaxIXaCJOpPNDW2W
+        rceMZSe2cSwuwVDA==
+To:     linux-kernel@vger.kernel.org
+Cc:     tglx@linutronix.de, Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Ben Segall <bsegall@google.com>,
+        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        coresight@lists.linaro.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gonglei <arei.gonglei@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jiri Kosina <jikos@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>, kvm-ppc@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Len Brown <lenb@kernel.org>, Len Brown <len.brown@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, live-patching@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Namhyung Kim <namhyung@kernel.org>, netdev@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        platform-driver-x86@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, rcu@vger.kernel.org,
+        Robin Holt <robinmholt@gmail.com>, Song Liu <song@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH 00/38] Replace deprecated CPU-hotplug
+Date:   Tue,  3 Aug 2021 16:15:43 +0200
+Message-Id: <20210803141621.780504-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 08:50:02AM +0200, Michal Hocko wrote:
-> On Thu 29-07-21 20:06:45, Roman Gushchin wrote:
-> > On Thu, Jul 29, 2021 at 08:57:52PM +0800, Miaohe Lin wrote:
-> > > Since percpu_charge_mutex is only used inside drain_all_stock(), we can
-> > > narrow the scope of percpu_charge_mutex by moving it here.
-> > > 
-> > > Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> > > ---
-> > >  mm/memcontrol.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 6580c2381a3e..a03e24e57cd9 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2050,7 +2050,6 @@ struct memcg_stock_pcp {
-> > >  #define FLUSHING_CACHED_CHARGE	0
-> > >  };
-> > >  static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
-> > > -static DEFINE_MUTEX(percpu_charge_mutex);
-> > >  
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > >  static void drain_obj_stock(struct obj_stock *stock);
-> > > @@ -2209,6 +2208,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
-> > >   */
-> > >  static void drain_all_stock(struct mem_cgroup *root_memcg)
-> > >  {
-> > > +	static DEFINE_MUTEX(percpu_charge_mutex);
-> > >  	int cpu, curcpu;
-> > 
-> > It's considered a good practice to protect data instead of code paths. After
-> > the proposed change it becomes obvious that the opposite is done here: the mutex
-> > is used to prevent a simultaneous execution of the code of the drain_all_stock()
-> > function.
-> 
-> The purpose of the lock was indeed to orchestrate callers more than any
-> data structure consistency.
+This is a tree wide replacement of the deprecated CPU hotplug functions
+which are only wrappers around the actual functions.
 
-It doesn't seem like we need the lock at all.
+Each patch is independent and can be picked up by the relevant maintainer.
 
-The comment says it's so we don't spawn more workers when flushing is
-already underway. But a work cannot be queued more than once - if it
-were just about that, we'd needlessly duplicate the
-test_and_set_bit(WORK_STRUCT_PENDING_BIT) in queue_work_on().
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Amit Kucheria <amitk@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: cgroups@vger.kernel.org
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: coresight@lists.linaro.org
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Joe Lawrence <joe.lawrence@redhat.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Julian Wiedmann <jwi@linux.ibm.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Karol Herbst <karolherbst@gmail.com>
+Cc: Karsten Graul <kgraul@linux.ibm.com>
+Cc: kvm-ppc@vger.kernel.org
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Len Brown <len.brown@intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-edac@vger.kernel.org
+Cc: linux-hwmon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-pm@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-raid@vger.kernel.org
+Cc: linux-s390@vger.kernel.org
+Cc: live-patching@vger.kernel.org
+Cc: Mark Gross <mgross@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Mike Travis <mike.travis@hpe.com>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: nouveau@lists.freedesktop.org
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Pekka Paalanen <ppaalanen@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: platform-driver-x86@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: rcu@vger.kernel.org
+Cc: Robin Holt <robinmholt@gmail.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Steve Wahl <steve.wahl@hpe.com>
+Cc: Stuart Hayes <stuart.w.hayes@gmail.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: virtualization@lists.linux-foundation.org
+Cc: x86@kernel.org
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Zhang Rui <rui.zhang@intel.com>
 
-git history shows we tried to remove it once:
+Sebastian
 
-commit 8521fc50d433507a7cdc96bec280f9e5888a54cc
-Author: Michal Hocko <mhocko@suse.cz>
-Date:   Tue Jul 26 16:08:29 2011 -0700
-
-    memcg: get rid of percpu_charge_mutex lock
-
-but it turned out that the lock did in fact protect a data structure:
-the stock itself. Specifically stock->cached:
-
-commit 9f50fad65b87a8776ae989ca059ad6c17925dfc3
-Author: Michal Hocko <mhocko@suse.cz>
-Date:   Tue Aug 9 11:56:26 2011 +0200
-
-    Revert "memcg: get rid of percpu_charge_mutex lock"
-
-    This reverts commit 8521fc50d433507a7cdc96bec280f9e5888a54cc.
-
-    The patch incorrectly assumes that using atomic FLUSHING_CACHED_CHARGE
-    bit operations is sufficient but that is not true.  Johannes Weiner has
-    reported a crash during parallel memory cgroup removal:
-
-      BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
-      IP: [<ffffffff81083b70>] css_is_ancestor+0x20/0x70
-      Oops: 0000 [#1] PREEMPT SMP
-      Pid: 19677, comm: rmdir Tainted: G        W   3.0.0-mm1-00188-gf38d32b #35 ECS MCP61M-M3/MCP61M-M3
-      RIP: 0010:[<ffffffff81083b70>]  css_is_ancestor+0x20/0x70
-      RSP: 0018:ffff880077b09c88  EFLAGS: 00010202
-      Process rmdir (pid: 19677, threadinfo ffff880077b08000, task ffff8800781bb310)
-      Call Trace:
-       [<ffffffff810feba3>] mem_cgroup_same_or_subtree+0x33/0x40
-       [<ffffffff810feccf>] drain_all_stock+0x11f/0x170
-       [<ffffffff81103211>] mem_cgroup_force_empty+0x231/0x6d0
-       [<ffffffff811036c4>] mem_cgroup_pre_destroy+0x14/0x20
-       [<ffffffff81080559>] cgroup_rmdir+0xb9/0x500
-       [<ffffffff81114d26>] vfs_rmdir+0x86/0xe0
-       [<ffffffff81114e7b>] do_rmdir+0xfb/0x110
-       [<ffffffff81114ea6>] sys_rmdir+0x16/0x20
-       [<ffffffff8154d76b>] system_call_fastpath+0x16/0x1b
-
-    We are crashing because we try to dereference cached memcg when we are
-    checking whether we should wait for draining on the cache.  The cache is
-    already cleaned up, though.
-
-    There is also a theoretical chance that the cached memcg gets freed
-    between we test for the FLUSHING_CACHED_CHARGE and dereference it in
-    mem_cgroup_same_or_subtree:
-
-            CPU0                    CPU1                         CPU2
-      mem=stock->cached
-      stock->cached=NULL
-                                  clear_bit
-                                                            test_and_set_bit
-      test_bit()                    ...
-      <preempted>             mem_cgroup_destroy
-      use after free
-
-    The percpu_charge_mutex protected from this race because sync draining
-    is exclusive.
-
-    It is safer to revert now and come up with a more parallel
-    implementation later.
-
-I didn't remember this one at all!
-
-However, when you look at the codebase from back then, there was no
-rcu-protection for memcg lifetime, and drain_stock() didn't double
-check stock->cached inside the work. Hence the crash during a race.
-
-The drain code is different now: drain_local_stock() disables IRQs
-which holds up rcu, and then calls drain_stock() and drain_obj_stock()
-which both check stock->cached one more time before the deref.
-
-With workqueue managing concurrency, and rcu ensuring memcg lifetime
-during the drain, this lock indeed seems unnecessary now.
-
-Unless I'm missing something, it should just be removed instead.
