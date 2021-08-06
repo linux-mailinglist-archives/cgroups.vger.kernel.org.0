@@ -2,83 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7719D3E1A38
-	for <lists+cgroups@lfdr.de>; Thu,  5 Aug 2021 19:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055A33E2C37
+	for <lists+cgroups@lfdr.de>; Fri,  6 Aug 2021 16:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238988AbhHERSr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Aug 2021 13:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S237035AbhHFOLX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Aug 2021 10:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhHERSr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Aug 2021 13:18:47 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C90C061798
-        for <cgroups@vger.kernel.org>; Thu,  5 Aug 2021 10:18:32 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id r16-20020a0568304190b02904f26cead745so5514889otu.10
-        for <cgroups@vger.kernel.org>; Thu, 05 Aug 2021 10:18:32 -0700 (PDT)
+        with ESMTP id S237233AbhHFOLB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Aug 2021 10:11:01 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F969C0617A3
+        for <cgroups@vger.kernel.org>; Fri,  6 Aug 2021 07:10:43 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n17so15505781lft.13
+        for <cgroups@vger.kernel.org>; Fri, 06 Aug 2021 07:10:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TKSj5MEKQ1gY7W+Z56fm3tBU4l2c5F1+7f+LZW3AUsU=;
-        b=zivu60W0yaKjYq5/hhB/huyMwFYdeelDeUjyL0qp3DD+0K7L/go4Z3nDl0GQRtFyKe
-         qSffhuvA506oDOgV0MKV0n41Jw8Syhq6XEecfm1IbdfBP0KzK4IWHtg0AOT2wi6ty7ks
-         r/YKE9peMteV//iWCIyEXvjfEQc/jOT15hwK2NWoIOlacGShn9+xkUWzJcmivGd1OYlr
-         vYEvYjtgN2iVuP1QbzVGlHV1k3NspAppkSSujeiJLeTZdbu5hyyvSOEbrYz5Vt9wFZGH
-         O5nIWgLxYXJ/D3yrdoWibTH4/G1yj58wW+ieQ47QA7drwpspMScYTkZhZpJttXBNfmgS
-         d3dw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
+        b=q3xyYt1HrVQnyL1KZndhIFKim0Z6RZXWCajZa6+jKaUt/xPBmWrU2b2TpwIqgxHoY3
+         6sUeXJPoUC3zz+xqx5Y/7bh16ON7BcCcP2liy5jl/yv+hyxVGmxIcBCDJXoapuOO0RIl
+         REN9Zv+ClhtVVEMybVDTEUTnyt+YraWqvgNO4CiPEvSNbjJp0ymaQzc4FwPALfOqM4La
+         f+KzIMXFoGuca5XlZdCXXnnqi+xUiOGsem/cV9JUjNFonSZWOzEGazowyEr2eG3dp5DR
+         pLBa7cN2FmOkeXw/dSFAaB7k29Eu0Yivashc8iQbXHlro4ZoI7aiyRP21+G8wGDlMmu6
+         HPDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TKSj5MEKQ1gY7W+Z56fm3tBU4l2c5F1+7f+LZW3AUsU=;
-        b=ILHBVIH70bFLYhjbrowsM8Xu3S+8clXlB9OAWR1NSd4XSqdkYQSl1lYVp0FZgs/Lci
-         Pl2uOKPgZf/YiJYfEcBJgYU13J8+WXxJ7mUhrqqQ+eJSbbwWgjpdIxcke/qj7YtwWKZ0
-         Ib5SPwKATD8VhluMi6cCqtXZRe94xLo+/ITLWvY1mdEbJEbO1sr+uMp03FNJXScRaPqc
-         7t0nQuXMDWf5DfzsLFEUMUz7yOZyfUOMauWWojww6sfPEd9KqPt25IXMEU15HGzvH85Q
-         AQqmUGKDaOqV3rP/W+w8es67A5nzRkS1SvdWSXx58AqngtFbEAUvI8m8SNTRZtb3I5nh
-         8RKQ==
-X-Gm-Message-State: AOAM533+b5th2AZyETAeWc+ynfnoYePEenG39jPMIws4k64cqojRafnX
-        meONxEElnbR5r+VrNAUg53FAmw==
-X-Google-Smtp-Source: ABdhPJxolQGHX33BhFVxOHNUJigO83RZCrOZqwSVJ58y3V/1yWMSlOhErcMobw6CSpIV+zJtbRCO7w==
-X-Received: by 2002:a9d:2f09:: with SMTP id h9mr1709993otb.248.1628183912276;
-        Thu, 05 Aug 2021 10:18:32 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id q63sm887354ooq.4.2021.08.05.10.18.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 10:18:30 -0700 (PDT)
-Subject: Re: [PATCH] blk-iolatency: error out if blk_get_queue() failed in
- iolatency_set_limit()
-To:     Yu Kuai <yukuai3@huawei.com>, tj@kernel.org,
-        bo.liu@linux.alibaba.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-References: <20210805124645.543797-1-yukuai3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cb9833b1-be92-1b52-86cb-a45a85b18c00@kernel.dk>
-Date:   Thu, 5 Aug 2021 11:18:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
+        b=eGLBzZcrEvu2b86pZsZuB846VeZPsqF1mgcAK+DYZ+JCga8vMvhLLXqJg2I8hlwvKQ
+         aeFUDy+JBV7tyjb5nclbSGF2q/zJTFxd9S2Yg7PnxyUaaLj0HAOty7t0sEADQDS7+jVO
+         +YGQWbVAieT2qm2ie2lr1i1FqClJQ+xJx6f4qA/fWMAm5ag2/4ZSTRC8VSJZV6uUp5EO
+         T0cexVkookJ/4alfw24pbYzeiJnVP8iXSGVSM8WChaeduKnG5uDJgR4neJYLP53LJ3lX
+         FQxD855tepx5T6PND/ASFidSvezHEiL3YtXe9kEKm3ECTbcwj+0A7dVxKLT+oE+61AfG
+         vJ6w==
+X-Gm-Message-State: AOAM532UWEqr4c0NjLXH8o11/wNMZ8UVGB9nQLApUKwhs2SEsFxtfThl
+        /StgiRGsP7dPt9LkKMmxl8silJkku48XAiNodGPkYPVB3KYNU4MxJQ==
+X-Google-Smtp-Source: ABdhPJx229jhz+o+nQwdgIkoqR5HwLh3S4+JGHt0eG+5fB4X3WTmNmInTj1ZpuXDIVm9CYEhhFZzLyuZYbLrplGdX6A=
+X-Received: by 2002:a05:6402:3094:: with SMTP id de20mr13526197edb.272.1628259031175;
+ Fri, 06 Aug 2021 07:10:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210805124645.543797-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a54:26cf:0:0:0:0:0 with HTTP; Fri, 6 Aug 2021 07:10:30 -0700 (PDT)
+Reply-To: mrmaxwellwatford@gmail.com
+From:   Maxwell Watford <orchowskiruthi@gmail.com>
+Date:   Fri, 6 Aug 2021 14:10:30 +0000
+Message-ID: <CA+q9Q6OJB6Z0+y=5_3MBDNGkAUG9rVxg7bZVma38uDOvJ+sOGw@mail.gmail.com>
+Subject: i need your reply
+To:     orchowskiruthi@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/5/21 6:46 AM, Yu Kuai wrote:
-> If queue is dying while iolatency_set_limit() is in progress,
-> blk_get_queue() won't increment the refcount of the queue. However,
-> blk_put_queue() will still decrement the refcount later, which will
-> cause the refcout to be unbalanced.
-> 
-> Thus error out in such case to fix the problem.
+Greetings,
 
-Applied, thanks.
+We are writing to you from Ecowas Finance Controller Office Lome Togo,
+because we have received a file from the Ministry of Finance Lome-
+Togo, concerning an Inherited Fund bearing your name on it, And after
+our verifications, we found out that the funds belong to you.
 
--- 
-Jens Axboe
+It has been awarded and I will like to guide you to claim the funds.
+Please contact me at my private email address
+(mrmaxwellwatford@gmail.com) for more information and directive
 
+I am looking forward to your urgent reply,
+Best regards
+Mr Maxwell Watford
