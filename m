@@ -2,70 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055A33E2C37
-	for <lists+cgroups@lfdr.de>; Fri,  6 Aug 2021 16:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED523E3417
+	for <lists+cgroups@lfdr.de>; Sat,  7 Aug 2021 10:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbhHFOLX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Aug 2021 10:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237233AbhHFOLB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Aug 2021 10:11:01 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F969C0617A3
-        for <cgroups@vger.kernel.org>; Fri,  6 Aug 2021 07:10:43 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id n17so15505781lft.13
-        for <cgroups@vger.kernel.org>; Fri, 06 Aug 2021 07:10:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
-        b=q3xyYt1HrVQnyL1KZndhIFKim0Z6RZXWCajZa6+jKaUt/xPBmWrU2b2TpwIqgxHoY3
-         6sUeXJPoUC3zz+xqx5Y/7bh16ON7BcCcP2liy5jl/yv+hyxVGmxIcBCDJXoapuOO0RIl
-         REN9Zv+ClhtVVEMybVDTEUTnyt+YraWqvgNO4CiPEvSNbjJp0ymaQzc4FwPALfOqM4La
-         f+KzIMXFoGuca5XlZdCXXnnqi+xUiOGsem/cV9JUjNFonSZWOzEGazowyEr2eG3dp5DR
-         pLBa7cN2FmOkeXw/dSFAaB7k29Eu0Yivashc8iQbXHlro4ZoI7aiyRP21+G8wGDlMmu6
-         HPDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/oMubRmlLM5EZ/UdY6Fj3wsfS2kyoMzN9ASXgZ3xneY=;
-        b=eGLBzZcrEvu2b86pZsZuB846VeZPsqF1mgcAK+DYZ+JCga8vMvhLLXqJg2I8hlwvKQ
-         aeFUDy+JBV7tyjb5nclbSGF2q/zJTFxd9S2Yg7PnxyUaaLj0HAOty7t0sEADQDS7+jVO
-         +YGQWbVAieT2qm2ie2lr1i1FqClJQ+xJx6f4qA/fWMAm5ag2/4ZSTRC8VSJZV6uUp5EO
-         T0cexVkookJ/4alfw24pbYzeiJnVP8iXSGVSM8WChaeduKnG5uDJgR4neJYLP53LJ3lX
-         FQxD855tepx5T6PND/ASFidSvezHEiL3YtXe9kEKm3ECTbcwj+0A7dVxKLT+oE+61AfG
-         vJ6w==
-X-Gm-Message-State: AOAM532UWEqr4c0NjLXH8o11/wNMZ8UVGB9nQLApUKwhs2SEsFxtfThl
-        /StgiRGsP7dPt9LkKMmxl8silJkku48XAiNodGPkYPVB3KYNU4MxJQ==
-X-Google-Smtp-Source: ABdhPJx229jhz+o+nQwdgIkoqR5HwLh3S4+JGHt0eG+5fB4X3WTmNmInTj1ZpuXDIVm9CYEhhFZzLyuZYbLrplGdX6A=
-X-Received: by 2002:a05:6402:3094:: with SMTP id de20mr13526197edb.272.1628259031175;
- Fri, 06 Aug 2021 07:10:31 -0700 (PDT)
+        id S231564AbhHGI2z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Aug 2021 04:28:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16059 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhHGI2z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Aug 2021 04:28:55 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ghb4W5l9XzZxqb;
+        Sat,  7 Aug 2021 16:24:59 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 7 Aug
+ 2021 16:28:35 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <guro@fb.com>, <songmuchun@bytedance.com>
+CC:     <willy@infradead.org>, <alexs@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2 0/3] Cleanups and fixup for memcontrol
+Date:   Sat, 7 Aug 2021 16:28:32 +0800
+Message-ID: <20210807082835.61281-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Received: by 2002:a54:26cf:0:0:0:0:0 with HTTP; Fri, 6 Aug 2021 07:10:30 -0700 (PDT)
-Reply-To: mrmaxwellwatford@gmail.com
-From:   Maxwell Watford <orchowskiruthi@gmail.com>
-Date:   Fri, 6 Aug 2021 14:10:30 +0000
-Message-ID: <CA+q9Q6OJB6Z0+y=5_3MBDNGkAUG9rVxg7bZVma38uDOvJ+sOGw@mail.gmail.com>
-Subject: i need your reply
-To:     orchowskiruthi@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Greetings,
+Hi all,
+This series contains cleanups to remove unused functions, save some
+atomic ops and get rid of unneeded lock. More details can be found
+in the respective changelogs. Thanks!
 
-We are writing to you from Ecowas Finance Controller Office Lome Togo,
-because we have received a file from the Ministry of Finance Lome-
-Togo, concerning an Inherited Fund bearing your name on it, And after
-our verifications, we found out that the funds belong to you.
+Miaohe Lin (3):
+  mm, memcg: remove unused functions
+  mm, memcg: save some atomic ops when flush is already true
+  mm, memcg: get rid of percpu_charge_mutex lock
 
-It has been awarded and I will like to guide you to claim the funds.
-Please contact me at my private email address
-(mrmaxwellwatford@gmail.com) for more information and directive
+v1-->v2:
+  drop mm, memcg: avoid possible NULL pointer dereferencing in
+mem_cgroup_init()
+  drop mm, memcg: always call __mod_node_page_state() with preempt
+disabled
+  collect Reviewed-by and Acked-by tag
+  get rid of percpu_charge_mutex instead of narrowing the scope
 
-I am looking forward to your urgent reply,
-Best regards
-Mr Maxwell Watford
+ include/linux/memcontrol.h | 12 ------------
+ mm/memcontrol.c            |  7 +------
+ 2 files changed, 1 insertion(+), 18 deletions(-)
+
+-- 
+2.23.0
+
