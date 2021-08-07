@@ -2,18 +2,18 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED523E3417
-	for <lists+cgroups@lfdr.de>; Sat,  7 Aug 2021 10:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8F93E3419
+	for <lists+cgroups@lfdr.de>; Sat,  7 Aug 2021 10:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhHGI2z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Aug 2021 04:28:55 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16059 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbhHGI2z (ORCPT
+        id S229636AbhHGI24 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Aug 2021 04:28:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8374 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231556AbhHGI2z (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Sat, 7 Aug 2021 04:28:55 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ghb4W5l9XzZxqb;
-        Sat,  7 Aug 2021 16:24:59 +0800 (CST)
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Ghb4B5mfDz82vZ;
+        Sat,  7 Aug 2021 16:24:42 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
  (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 7 Aug
@@ -26,10 +26,12 @@ CC:     <willy@infradead.org>, <alexs@kernel.org>,
         <richard.weiyang@gmail.com>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
         <linmiaohe@huawei.com>
-Subject: [PATCH v2 0/3] Cleanups and fixup for memcontrol
-Date:   Sat, 7 Aug 2021 16:28:32 +0800
-Message-ID: <20210807082835.61281-1-linmiaohe@huawei.com>
+Subject: [PATCH v2 1/3] mm, memcg: remove unused functions
+Date:   Sat, 7 Aug 2021 16:28:33 +0800
+Message-ID: <20210807082835.61281-2-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210807082835.61281-1-linmiaohe@huawei.com>
+References: <20210807082835.61281-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -41,28 +43,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi all,
-This series contains cleanups to remove unused functions, save some
-atomic ops and get rid of unneeded lock. More details can be found
-in the respective changelogs. Thanks!
+Since commit 2d146aa3aa84 ("mm: memcontrol: switch to rstat"), last user
+of memcg_stat_item_in_bytes() is gone. And since commit fa40d1ee9f15 ("mm:
+vmscan: memcontrol: remove mem_cgroup_select_victim_node()"), only the
+declaration of mem_cgroup_select_victim_node() is remained here. Remove
+them.
 
-Miaohe Lin (3):
-  mm, memcg: remove unused functions
-  mm, memcg: save some atomic ops when flush is already true
-  mm, memcg: get rid of percpu_charge_mutex lock
-
-v1-->v2:
-  drop mm, memcg: avoid possible NULL pointer dereferencing in
-mem_cgroup_init()
-  drop mm, memcg: always call __mod_node_page_state() with preempt
-disabled
-  collect Reviewed-by and Acked-by tag
-  get rid of percpu_charge_mutex instead of narrowing the scope
-
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
  include/linux/memcontrol.h | 12 ------------
- mm/memcontrol.c            |  7 +------
- 2 files changed, 1 insertion(+), 18 deletions(-)
+ 1 file changed, 12 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 7028d8e4a3d7..04437504444f 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -606,13 +606,6 @@ static inline bool PageMemcgKmem(struct page *page)
+ 	return folio_memcg_kmem(page_folio(page));
+ }
+ 
+-static __always_inline bool memcg_stat_item_in_bytes(int idx)
+-{
+-	if (idx == MEMCG_PERCPU_B)
+-		return true;
+-	return vmstat_item_in_bytes(idx);
+-}
+-
+ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+ {
+ 	return (memcg == root_mem_cgroup);
+@@ -916,11 +909,6 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
+ 	return !!(memcg->css.flags & CSS_ONLINE);
+ }
+ 
+-/*
+- * For memory reclaim.
+- */
+-int mem_cgroup_select_victim_node(struct mem_cgroup *memcg);
+-
+ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+ 		int zid, int nr_pages);
+ 
 -- 
 2.23.0
 
