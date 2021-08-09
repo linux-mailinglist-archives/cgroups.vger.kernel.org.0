@@ -2,40 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A263E488B
-	for <lists+cgroups@lfdr.de>; Mon,  9 Aug 2021 17:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555ED3E491A
+	for <lists+cgroups@lfdr.de>; Mon,  9 Aug 2021 17:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbhHIPSm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Aug 2021 11:18:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51678 "EHLO
+        id S235609AbhHIPrw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Aug 2021 11:47:52 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56086 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232717AbhHIPSm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Aug 2021 11:18:42 -0400
+        with ESMTP id S230095AbhHIPrw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Aug 2021 11:47:52 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 059912000C;
-        Mon,  9 Aug 2021 15:18:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3473620022;
+        Mon,  9 Aug 2021 15:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628522301; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1628524049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+7LQfr+QS70hPlEzdXU5UNfASl0hm6MYjCpn/TJE3Bc=;
-        b=R4vTQk1xooDBp9mWzIXzqhwLD4CIHqYAxE00uuxm9oLbJhzDcwNh6qmud4FPuBHxoWpTKs
-        /uupXehqAF9P9KZgz9j+mFeb0T4LfBlR3IfbjX03lQLinlhL1epZQVP3/ha2pv01dqhbhx
-        Q4tSeteWdiPwWSpi+KBAapfqQhD7tok=
+        bh=qmshEYCepuicqe7nGBsgApKga31dwcT/zEh+RqblNMs=;
+        b=agM0VX0VPGuoPOIl/2H+VcE1o5AGK3BCM4UnBUI6MYNqlkRAI/3H4VoB5qA84W3kjSlTfD
+        Z9ggSkT9XnFWSO25m6csQs3+JNzxpFQnZJeOuJ1+mk1sBUpUe2/ceH/SsQh8Hr5QZ8dKFK
+        jN+xSHRj4A3B7EHDhGEf6s7R+YbGGrA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628522301;
+        s=susede2_ed25519; t=1628524049;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+7LQfr+QS70hPlEzdXU5UNfASl0hm6MYjCpn/TJE3Bc=;
-        b=dm/cqvOl95qsMUroycYmEaR6xavGIMxMc49ZUMkfh0XYG2GNLNuYmbuk7HNcvA2Psn69/P
-        q05ZLbbK32ovACDg==
+        bh=qmshEYCepuicqe7nGBsgApKga31dwcT/zEh+RqblNMs=;
+        b=XLUJqXiPPDvzdKKUd1LQ7osqEEWYNMxwNToii1Ge7QTyGP+5QXUiWk9L9Qv6u3Ke1QAWD4
+        0w33iFAws9hdA+DA==
 Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id EAE89A3B81;
-        Mon,  9 Aug 2021 15:18:20 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 1FCC2A3B81;
+        Mon,  9 Aug 2021 15:47:29 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D3AB21E3BFC; Mon,  9 Aug 2021 17:18:20 +0200 (CEST)
-Date:   Mon, 9 Aug 2021 17:18:20 +0200
+        id F2C0A1E3BFC; Mon,  9 Aug 2021 17:47:28 +0200 (CEST)
+Date:   Mon, 9 Aug 2021 17:47:28 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
@@ -43,49 +43,91 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: Re: [PATCH 3/5] block: add a queue_has_disk helper
-Message-ID: <20210809151820.GG30319@quack2.suse.cz>
+Subject: Re: [PATCH 4/5] block: move the bdi from the request_queue to the
+ gendisk
+Message-ID: <20210809154728.GH30319@quack2.suse.cz>
 References: <20210809141744.1203023-1-hch@lst.de>
- <20210809141744.1203023-4-hch@lst.de>
+ <20210809141744.1203023-5-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809141744.1203023-4-hch@lst.de>
+In-Reply-To: <20210809141744.1203023-5-hch@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 09-08-21 16:17:42, Christoph Hellwig wrote:
-> Add a helper to check if a gendisk is associated with a request_queue.
+On Mon 09-08-21 16:17:43, Christoph Hellwig wrote:
+> The backing device information only makes sense for file system I/O,
+> and thus belongs into the gendisk and not the lower level request_queue
+> structure.  Move it there.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Looks fine. Feel free to add:
+Looks mostly good. I'm just unsure whether some queue_to_disk() calls are
+safe.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 2c4ac51e54eb..d2725f94491d 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -525,7 +525,7 @@ void blk_mq_free_request(struct request *rq)
+>  		__blk_mq_dec_active_requests(hctx);
+>  
+>  	if (unlikely(laptop_mode && !blk_rq_is_passthrough(rq)))
+> -		laptop_io_completion(q->backing_dev_info);
+> +		laptop_io_completion(queue_to_disk(q)->bdi);
+> 
+
+E.g. cannot this get called for a queue that is without a disk?
+
+> diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+> index 3ed71b8da887..31086afaad9c 100644
+> --- a/block/blk-wbt.c
+> +++ b/block/blk-wbt.c
+> @@ -97,7 +97,7 @@ static void wb_timestamp(struct rq_wb *rwb, unsigned long *var)
+>   */
+>  static bool wb_recent_wait(struct rq_wb *rwb)
+>  {
+> -	struct bdi_writeback *wb = &rwb->rqos.q->backing_dev_info->wb;
+> +	struct bdi_writeback *wb = &queue_to_disk(rwb->rqos.q)->bdi->wb;
+>  
+>  	return time_before(jiffies, wb->dirty_sleep + HZ);
+>  }
+> @@ -234,7 +234,7 @@ enum {
+>  
+>  static int latency_exceeded(struct rq_wb *rwb, struct blk_rq_stat *stat)
+>  {
+> -	struct backing_dev_info *bdi = rwb->rqos.q->backing_dev_info;
+> +	struct backing_dev_info *bdi = queue_to_disk(rwb->rqos.q)->bdi;
+>  	struct rq_depth *rqd = &rwb->rq_depth;
+>  	u64 thislat;
+>  
+> @@ -287,7 +287,7 @@ static int latency_exceeded(struct rq_wb *rwb, struct blk_rq_stat *stat)
+>  
+>  static void rwb_trace_step(struct rq_wb *rwb, const char *msg)
+>  {
+> -	struct backing_dev_info *bdi = rwb->rqos.q->backing_dev_info;
+> +	struct backing_dev_info *bdi = queue_to_disk(rwb->rqos.q)->bdi;
+>  	struct rq_depth *rqd = &rwb->rq_depth;
+>  
+>  	trace_wbt_step(bdi, msg, rqd->scale_step, rwb->cur_win_nsec,
+> @@ -359,8 +359,8 @@ static void wb_timer_fn(struct blk_stat_callback *cb)
+>  
+>  	status = latency_exceeded(rwb, cb->stat);
+>  
+> -	trace_wbt_timer(rwb->rqos.q->backing_dev_info, status, rqd->scale_step,
+> -			inflight);
+> +	trace_wbt_timer(queue_to_disk(rwb->rqos.q)->bdi, status,
+> +			rqd->scale_step, inflight);
+>  
+>  	/*
+>  	 * If we exceeded the latency target, step down. If we did not,
+
+Or all these calls - is wbt guaranteed to only be setup for a queue with
+disk?
 
 								Honza
-
-> ---
->  include/linux/blkdev.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index ac3642c88a4d..96f3d9617cd8 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -664,6 +664,7 @@ extern void blk_clear_pm_only(struct request_queue *q);
->  	dma_map_page_attrs(dev, (bv)->bv_page, (bv)->bv_offset, (bv)->bv_len, \
->  	(dir), (attrs))
->  
-> +#define queue_has_disk(q)	((q)->kobj.parent != NULL)
->  #define queue_to_disk(q)	(dev_to_disk(kobj_to_dev((q)->kobj.parent)))
->  
->  static inline bool queue_is_mq(struct request_queue *q)
-> -- 
-> 2.30.2
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
