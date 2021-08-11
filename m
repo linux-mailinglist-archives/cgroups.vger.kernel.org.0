@@ -2,81 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F693E972E
-	for <lists+cgroups@lfdr.de>; Wed, 11 Aug 2021 19:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB74A3E9740
+	for <lists+cgroups@lfdr.de>; Wed, 11 Aug 2021 20:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhHKR63 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Aug 2021 13:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        id S229790AbhHKSE6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Aug 2021 14:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHKR62 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Aug 2021 13:58:28 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7D8C061765;
-        Wed, 11 Aug 2021 10:58:04 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d1so3709954pll.1;
-        Wed, 11 Aug 2021 10:58:04 -0700 (PDT)
+        with ESMTP id S229473AbhHKSE5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Aug 2021 14:04:57 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E357AC061765;
+        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so10891531pjn.4;
+        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=rk1BWpuiJ39JmRSvLcCw9Ka+QLQwce0JveS233i7okU=;
-        b=hXnfg+THbnp0MKwZoNSddpaouYeIdGFdgzY/kWmV1W0dFINKA6zmdPGuCd61wUNmsW
-         3cVCn2qhEFihFcbfDwynXSVL7bP//tFXHdBEBve6IlBr4wuvMMaoM7pjo0m0ct+U+5wG
-         eBvOe/8osuVPBGFwBQP8SBu6GUCRZn5k+mU6JjrQH4pjmYt0F9lZuejHR3ZJuw76ZoNw
-         JzMI8IelJtmcqVDpay4LUvfNH6Iw1Ejsq8zqRnFzmmkbYhOdHdjLsgL+5lEqjcjHewZh
-         pUnNqfVA7PBFh/pE7amqpUtEGSblnSQL0buFL/irH8vtxiKXPsHGbcIEBrOncOeVt87Q
-         hW0g==
+        bh=OiO20UHglT1NPC5OUbJaD10lEfkdZcWqGJoPTWQxoOU=;
+        b=jd8jqbBx9YTWzOvvdMy5jg2ItpkiGKByB0gZfqiqlaARW76DkXmvqaRoGwQ79Jjkvu
+         1KguaVTlcK8NDQFqc5bQ+gu3GX9ofT3kUKrMsMVwhJ+ZT2Ml8o/CYmARQXEvkIFiwMhZ
+         k/eGDoEkLtJmBVFOdO+M+Wi9m3VG/BTPvWh075Xzsb25oGdsR2YBf3WdEL9FIKZ6l41H
+         YSdcXTbTaW3yMF0OiUJTPG/n9zOadpO9ebDwe2HZfSnW8wHZO9E3eoS8wd3UsxmyXKMD
+         +f8l7vo5ZilYaWchBBQxT1RfO/NcGKtSbwK5mgcfBidu4JMgafuRJ1Eo86nMU/lylfUu
+         dzKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=rk1BWpuiJ39JmRSvLcCw9Ka+QLQwce0JveS233i7okU=;
-        b=ZkZsnXTfn9txkw9wZpgLDlaDzyxoQtFcJb4xIGLwZ+Phb3mVUJixAjL01h2MuNSDry
-         XS5xt7fdXXJ79mXX0mL4rPysO1Y2UXfzlSyuLCr6MpX1qdeHi67hNbxXVn136XnKvndC
-         nWvRpw13nPUIon63S+JbhCQ1WawXIXmDH3BoBdaCew0H0eQFS8jqsOMnRHm5sINnqA2g
-         j7beFtVjda8EEYNdbRvdiyzn8yISc3c75+M3xm7yj+Z/e1CXuH2qroKQ0rYk4tet8iku
-         TBKqJmtF9jqBxNNDN6XeSz/3kKBBch+O4iyi7ziAG0Qpr3PK+ULceye6kfWyX4kCRYKs
-         jrPg==
-X-Gm-Message-State: AOAM531mKvgXDhHsoF1iAABFBbI9Mok7q1S1P06U1gwXC4qkq8iz4xaV
-        gp1ViS5ydppRJKm7jwJFVKI=
-X-Google-Smtp-Source: ABdhPJyOXI7ZO4/o/AYgtWU/vzaN6JrfVL0TFjyuaLSBlXKARxSi2kobnLQ26lP6XIb2mx5wFxDOTA==
-X-Received: by 2002:a17:902:7243:b029:12d:3d23:f9b3 with SMTP id c3-20020a1709027243b029012d3d23f9b3mr112361pll.0.1628704684424;
-        Wed, 11 Aug 2021 10:58:04 -0700 (PDT)
+        bh=OiO20UHglT1NPC5OUbJaD10lEfkdZcWqGJoPTWQxoOU=;
+        b=NqDfyPSZpWK7iHlX5BgT+wL4+mAQqRQVmCf+BeujhnFHTnsQOv0OUbXWTi+WdHo3y6
+         li86V00FBzjAE22bKR4+Sd8KPBAkMQgnGGDQ/ZOzGsbpDPZBBIlV2LfdpUa0GB7WHHJL
+         D/1MsgGnQGnb+XeTQupz+iKrfNPvAB5OJue6LT2ngjQIr1w/M/fTbAeR41ugkwoa8YfP
+         fsmaPkByzu1I9UG1QMHpRUHygV0FayG+kBeEiGwCHsbHKZq3QxRXMYaU1DntlAfJzj16
+         m17cI0mk5IG3VgRg85/iIdkyJLvEakQYQplXVYkmitNxr0mx1/YO2c2AwaJNisVU2Abk
+         LBSQ==
+X-Gm-Message-State: AOAM531BjM7yyNC2yWXbHaobFIwRxHPG2IJhjMZMXQigVUPzk30AKpoB
+        LpeHi6nqdrMqzHNUilgccEo=
+X-Google-Smtp-Source: ABdhPJxNmdN6SPNK6ttpWpEps6y/muZWcUeT9JaqAcfxDLw/qA7GAxVt8LTKjYUKRs398wxE4PloYA==
+X-Received: by 2002:a17:90a:8809:: with SMTP id s9mr11711271pjn.44.1628705073315;
+        Wed, 11 Aug 2021 11:04:33 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id y4sm7479535pjg.9.2021.08.11.10.58.03
+        by smtp.gmail.com with ESMTPSA id j6sm170548pfn.107.2021.08.11.11.04.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 10:58:04 -0700 (PDT)
+        Wed, 11 Aug 2021 11:04:32 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 11 Aug 2021 07:58:02 -1000
+Date:   Wed, 11 Aug 2021 08:04:31 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup: cgroup-v1: clean up kernel-doc notation
-Message-ID: <YRQPqk8YrsSLB1tk@slm.duckdns.org>
-References: <20210811000349.32645-1-rdunlap@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v4 1/6] cgroup/cpuset: Enable event notification when
+ partition state changes
+Message-ID: <YRQRL0M5SAKugVQ6@slm.duckdns.org>
+References: <20210811030607.13824-1-longman@redhat.com>
+ <20210811030607.13824-2-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811000349.32645-1-rdunlap@infradead.org>
+In-Reply-To: <20210811030607.13824-2-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 05:03:49PM -0700, Randy Dunlap wrote:
-> Fix kernel-doc warnings found in cgroup-v1.c:
+On Tue, Aug 10, 2021 at 11:06:02PM -0400, Waiman Long wrote:
+> A valid cpuset partition can become invalid if all its CPUs are offlined
+> or somehow removed. This can happen through external events without
+> "cpuset.cpus.partition" being touched at all.
 > 
-> kernel/cgroup/cgroup-v1.c:55: warning: No description found for return value of 'cgroup_attach_task_all'
-> kernel/cgroup/cgroup-v1.c:94: warning: expecting prototype for cgroup_trasnsfer_tasks(). Prototype was for cgroup_transfer_tasks() instead
-> cgroup-v1.c:96: warning: No description found for return value of 'cgroup_transfer_tasks'
-> kernel/cgroup/cgroup-v1.c:687: warning: No description found for return value of 'cgroupstats_build'
+> Users that rely on the property of a partition being present do not
+> currently have a simple way to get such an event notified other than
+> constant periodic polling which is both inefficient and cumbersome.
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Zefan Li <lizefan.x@bytedance.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: cgroups@vger.kernel.org
+> To make life easier for those users, event notification is now enabled
+> for "cpuset.cpus.partition" whenever its state changes.
+> 
+> Suggested-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
 Applied to cgroup/for-5.15.
 
