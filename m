@@ -2,131 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701173E85BF
-	for <lists+cgroups@lfdr.de>; Tue, 10 Aug 2021 23:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E823E86F3
+	for <lists+cgroups@lfdr.de>; Wed, 11 Aug 2021 02:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbhHJV4u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Aug 2021 17:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S235604AbhHKAEP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Aug 2021 20:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbhHJV4u (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Aug 2021 17:56:50 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE8EC061765;
-        Tue, 10 Aug 2021 14:56:24 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id bj40so1322688oib.6;
-        Tue, 10 Aug 2021 14:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JhQsCvjsX4aQ7AO0EcBhog4UmHjKzja8YKewWn/brBE=;
-        b=NW6MnPyrxBCjdUNnbAdmDsnldUDzEXZD36UQwc7aL97R33BDGIc/OHc9ppOitiH2lE
-         0jYNPSNPthFpMB5rIgY+POar807qjsE8bwv7pAFb82Ia4c0eakrMfq0ioZth6y5tKnJy
-         2UzPnKG2J95PKPW+dC6i8cXlP5EWxfcc8UDn4Vdhh4dF50iyqL7Q6HIVEQZ91mtwI8dK
-         qZkcKgmA1qvebHnr9ZAWPW0pLDjaygLbXIm+jrPc7EJZENzxE/FrF69cg/uhoeivFIIu
-         kifuuPta/ThocQD8ZiJyb2UxrmtwUtyLRXTzLs7x0InuuhV8u5AHFtZM6+8HZrcGAXxn
-         vO2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=JhQsCvjsX4aQ7AO0EcBhog4UmHjKzja8YKewWn/brBE=;
-        b=RWSC/ImwisAg40J+qVUHcig7HJifKrcp8sBhETIX4Qvoq0kPNT3g7Yi334DHkLLLlA
-         6okmIZPZoxCOHo6m0M6rehg7uWLrWxPsTgl5PuVfN//kZG+lf1avhcO342kUucVyTHGf
-         2mxkowHru8qMVXW/bLCFBGFcMLkIYZtWPMJUbECFXnxzBgeIwr0byLSn/V5cBz1P0/w7
-         tIjlyfyKYlYd3y/ExGekED8oVBGDmUzrkKXDAeGwcdQe4edCGfJWB4/Lk1fKTojRogRM
-         qylCLaHApAMv21BAGaqB9GjoYk8TMictQJTZZG5caVcDeWd4FwJjo5t243TURyVCYX2D
-         NqwQ==
-X-Gm-Message-State: AOAM532BhsZH9WzyRH1cIwyxs9mCxWE58GeouLm1pwuAwCixXPqwRpSg
-        vK+eroYpOOlMqwyS51uUFE8=
-X-Google-Smtp-Source: ABdhPJw6/9eEqccmAinCUXjeXr3qCuw+fiIj44SxsWN9sSw4bECkVmOOmTmRzmqaEcSTW0NcExehIg==
-X-Received: by 2002:a54:468d:: with SMTP id k13mr5181021oic.125.1628632584113;
-        Tue, 10 Aug 2021 14:56:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c26sm4129659otu.38.2021.08.10.14.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Aug 2021 14:56:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 10 Aug 2021 14:56:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Jan Kara <jack@suse.cz>, linux-block@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/5] mm: hide laptop_mode_wb_timer entirely behind the
- BDI API
-Message-ID: <20210810215622.GA874076@roeck-us.net>
-References: <20210809141744.1203023-1-hch@lst.de>
- <20210809141744.1203023-2-hch@lst.de>
+        with ESMTP id S234289AbhHKAEP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Aug 2021 20:04:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F732C061765;
+        Tue, 10 Aug 2021 17:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=oEMWLoJ15XGTU1uDxOZTCeL7G0nFB55u5+5nltWOW/w=; b=mow1pUdqDHxWhPTLIo9hCoo34w
+        SAo9lQlbuzaQI5wjDic//GPlEVhLzWGU8B4EEG0FiwKpS+p+uha7f4sqhOv4yx9ocWp1Lf7SVSwwp
+        hlv3Ijmyap8sBxBmDMHSGwD63dy+Rk7sY5Bv9HqWr6jjno4AxFlDKZWoYxCLfF9mphlOHp56H23az
+        //tRCYlw9XLhGeCYNLAEs3qL3GSQqO8zqQixzAsRgbu1z5AcTDzb11PpEEFgKVwAdpUB+g/35Ayvj
+        CV/QW18zmB7KrBpnq3zl4y/1jhT1S1OaGvr33ceh5JryBCowDnEdbNRt+fVAJW3SRyFVa+uNmyMxL
+        97Bfe2Wg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mDbio-0054h5-I1; Wed, 11 Aug 2021 00:03:50 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH] cgroup: cgroup-v1: clean up kernel-doc notation
+Date:   Tue, 10 Aug 2021 17:03:49 -0700
+Message-Id: <20210811000349.32645-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210809141744.1203023-2-hch@lst.de>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 04:17:40PM +0200, Christoph Hellwig wrote:
-> Don't leak the detaіls of the timer into the block layer, instead
-> initialize the timer in bdi_alloc and delete it in bdi_unregister.
-> Note that this means the timer is initialized (but not armed) for
-> non-block queues as well now.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+Fix kernel-doc warnings found in cgroup-v1.c:
 
-Just in case this hasn't been reported yet.
-This patch results in a widespread build failure. Example:
+kernel/cgroup/cgroup-v1.c:55: warning: No description found for return value of 'cgroup_attach_task_all'
+kernel/cgroup/cgroup-v1.c:94: warning: expecting prototype for cgroup_trasnsfer_tasks(). Prototype was for cgroup_transfer_tasks() instead
+cgroup-v1.c:96: warning: No description found for return value of 'cgroup_transfer_tasks'
+kernel/cgroup/cgroup-v1.c:687: warning: No description found for return value of 'cgroupstats_build'
 
-Building x86_64:tinyconfig ... failed
---------------
-Error log:
-mm/page-writeback.c:2044:6: error: redefinition of 'laptop_sync_completion'
- 2044 | void laptop_sync_completion(void)
-      |      ^~~~~~~~~~~~~~~~~~~~~~
-In file included from include/linux/memcontrol.h:22,
-                 from include/linux/swap.h:9,
-                 from mm/page-writeback.c:20:
-include/linux/writeback.h:345:20: note: previous definition of 'laptop_sync_completion' with type 'void(void)'
-  345 | static inline void laptop_sync_completion(void) { }
-      |                    ^~~~~~~~~~~~~~~~~~~~~~
-make[2]: *** [scripts/Makefile.build:272: mm/page-writeback.o] Error 1
-
-Guenter
-
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
 ---
-bisect log:
+ kernel/cgroup/cgroup-v1.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-# bad: [92d00774360dfd4151f15ab9905c643347b9f242] Add linux-next specific files for 20210810
-# good: [36a21d51725af2ce0700c6ebcb6b9594aac658a6] Linux 5.14-rc5
-git bisect start 'HEAD' 'v5.14-rc5'
-# good: [01dda625c9b7cfd3bf5ac05f73da8c512792f94c] Merge remote-tracking branch 'crypto/master'
-git bisect good 01dda625c9b7cfd3bf5ac05f73da8c512792f94c
-# bad: [75cadd49361c6650764d35bcbb6c9cb9f0a9d9a3] Merge remote-tracking branch 'irqchip/irq/irqchip-next'
-git bisect bad 75cadd49361c6650764d35bcbb6c9cb9f0a9d9a3
-# good: [511b0c991c9d49fd6d8188f799b10aa0465cecf3] Merge remote-tracking branch 'drm-intel/for-linux-next'
-git bisect good 511b0c991c9d49fd6d8188f799b10aa0465cecf3
-# good: [f3b48aa06fb8b4384b90e41220da8be5a4013a6d] Merge remote-tracking branch 'input/next'
-git bisect good f3b48aa06fb8b4384b90e41220da8be5a4013a6d
-# bad: [87470038c43f9577a300a29ba6c2c95d28039464] Merge remote-tracking branch 'regulator/for-next'
-git bisect bad 87470038c43f9577a300a29ba6c2c95d28039464
-# bad: [e1796683109e4ba27c73f099486555a36820b175] Merge remote-tracking branch 'device-mapper/for-next'
-git bisect bad e1796683109e4ba27c73f099486555a36820b175
-# bad: [a11d7fc2d05fb509cd9e33d4093507d6eda3ad53] block: remove the bd_bdi in struct block_device
-git bisect bad a11d7fc2d05fb509cd9e33d4093507d6eda3ad53
-# good: [a291bb43e5c9fdedc4be3dfd496e64e7c5a78b1f] block: use the %pg format specifier in show_partition
-git bisect good a291bb43e5c9fdedc4be3dfd496e64e7c5a78b1f
-# good: [2112f5c1330a671fa852051d85cb9eadc05d7eb7] loop: Select I/O scheduler 'none' from inside add_disk()
-git bisect good 2112f5c1330a671fa852051d85cb9eadc05d7eb7
-# good: [ba30585936b0b88f0fb2b19be279b346a6cc87eb] dm: move setting md->type into dm_setup_md_queue
-git bisect good ba30585936b0b88f0fb2b19be279b346a6cc87eb
-# bad: [5ed964f8e54eb3191b8b7b45aeb52672a0c995dc] mm: hide laptop_mode_wb_timer entirely behind the BDI API
-git bisect bad 5ed964f8e54eb3191b8b7b45aeb52672a0c995dc
-# good: [d1254a8749711e0d7441036a74ce592341f89697] block: remove support for delayed queue registrations
-git bisect good d1254a8749711e0d7441036a74ce592341f89697
-# first bad commit: [5ed964f8e54eb3191b8b7b45aeb52672a0c995dc] mm: hide laptop_mode_wb_timer entirely behind the BDI API
+--- linux-next-20210809.orig/kernel/cgroup/cgroup-v1.c
++++ linux-next-20210809/kernel/cgroup/cgroup-v1.c
+@@ -50,6 +50,8 @@ bool cgroup1_ssid_disabled(int ssid)
+  * cgroup_attach_task_all - attach task 'tsk' to all cgroups of task 'from'
+  * @from: attach to all cgroups of a given task
+  * @tsk: the task to be attached
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
+ {
+@@ -80,7 +82,7 @@ int cgroup_attach_task_all(struct task_s
+ EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
+ 
+ /**
+- * cgroup_trasnsfer_tasks - move tasks from one cgroup to another
++ * cgroup_transfer_tasks - move tasks from one cgroup to another
+  * @to: cgroup to which the tasks will be moved
+  * @from: cgroup in which the tasks currently reside
+  *
+@@ -89,6 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all
+  * is guaranteed to be either visible in the source cgroup after the
+  * parent's migration is complete or put into the target cgroup.  No task
+  * can slip out of migration through forking.
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+ {
+@@ -682,6 +686,8 @@ int proc_cgroupstats_show(struct seq_fil
+  *
+  * Build and fill cgroupstats so that taskstats can export it to user
+  * space.
++ *
++ * Return: %0 on success or a negative errno code on failure
+  */
+ int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry)
+ {
