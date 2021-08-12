@@ -2,59 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B343EA525
-	for <lists+cgroups@lfdr.de>; Thu, 12 Aug 2021 15:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B478A3EAC9F
+	for <lists+cgroups@lfdr.de>; Thu, 12 Aug 2021 23:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhHLNJT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Aug 2021 09:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        id S237954AbhHLVlo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Aug 2021 17:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234824AbhHLNJT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Aug 2021 09:09:19 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC28C061765
-        for <cgroups@vger.kernel.org>; Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id b1so5134488qtx.0
-        for <cgroups@vger.kernel.org>; Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
+        with ESMTP id S237921AbhHLVlo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Aug 2021 17:41:44 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B205C061756;
+        Thu, 12 Aug 2021 14:41:18 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e15so9127628plh.8;
+        Thu, 12 Aug 2021 14:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
-        b=B5u5MqvyKhZf+vJdh29wKQ5uSD8KVQ0z4A9dz5siLPjFNEs9Fu1QKsbl48q8OWNNvx
-         X4ln3uTu9KiU3bN7egPX0wn4rWzwnfWkD4P/g0gFBxGIu9O1Sf6TYSlH8mdfIAz8mErj
-         6/PWaHr3fn5iEEtxLtwNcIJeYC4V2tN09GGiDZBWut3fVYh8EYt2ccqvTrlQ5K+ifegP
-         zuYsHO0Nxi7bVcC2bq4BgAnOB6jAhAvKK9q6TdUr1otRZFE0dUqedOfPUNXl6r1YTguv
-         vzFlBzPdQoSt6hcHDg2ohSM7NHejJkya7sFheFmnpVXUhaFzy2qGyo66NHt9MGVM9GaM
-         Q/yA==
+        bh=TAC7usbSxJAj4Uf52V6UWSOyNZ0nwEBnpPn4ZOBy98U=;
+        b=N19jAu7ypTXt6WK7cfJ0LMDOqywRj+Jwavt99QhQohJWtN4D3MU5t9zGcqaItP0Gt6
+         Z8wkY6LhQhZ61HOWBUtfY8d6PLtkaMY7xGmmmvr8Q9vgQXi2lDBhCXzPedrMqMgy44OX
+         BkCZfXCvjlGo8duK1PJTdKuhu5tQcgvVwNQBFvscXnfMVEdjPgs8BfJ7v3ApWfkBzeYZ
+         Qur5/Wv9akKhyJn+x3QOE1D2tDZdUkTO9cnK+qC4Wx6QdnHDzbAkoCgDQD5PIYXDJ8V/
+         NoZnEZ2VEhJWtk8/WwgZ6qImb4PDaCBvAiornHAvrL+UcURc6q3EwSf2JVxrxaN9q47j
+         FyYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
-        b=sswRelannx/AlTfh8IN3pQQc6ycfny29DKQoEf7+7RR/tZNE23D911G5Kw7gm/oYsk
-         TOsCi8bdguzmn5UT59aS8tXFrLFE7JfxkRdTSkMBM0EuO5nLxAPma2KMfyyNJnMg3X4S
-         NqaVfPiZR3w1IRw5+xF1okAfENHEsotQZb+8KJHOqWbFEW//J2tkSz7fOgkhOpZ3yPds
-         zs/25rOb3ft4LO4Jx5lk3Nf5QIBNc+kVVsjF1hEaqWCFMz2PX8tFT63/1+HzR5u45fKG
-         MnIv/qaHtoZif3qdHhXw8kZm3ySK4IQvynuT9igmzJoivSwVu2tgDErjRkG2GM2vs6Kf
-         NeTg==
-X-Gm-Message-State: AOAM5313L0vnj5CeedjrlvUI/7bXB6mgTe0BUnLGoUTk7mNXWta54BK9
-        2WvumU599ud4Y0Gstcgn7hckQQ==
-X-Google-Smtp-Source: ABdhPJyD1sQnwutEBQEi934zsMk0rmVovkjcAHalsbe125JSWOsOzFGplbTIi19IH9KQ5jnc9Xrcvg==
-X-Received: by 2002:ac8:6b19:: with SMTP id w25mr3752598qts.222.1628773733005;
-        Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d9fa])
-        by smtp.gmail.com with ESMTPSA id d16sm1036744qte.3.2021.08.12.06.08.50
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=TAC7usbSxJAj4Uf52V6UWSOyNZ0nwEBnpPn4ZOBy98U=;
+        b=Uut3HTwLQBjAt4+2b/5nvg1j3xcTKy/qt3Gd878eIDMh7zVUeBgIWsNILfOWMyCG/x
+         c5Vd2AUpPhI+DtK1JsGazLGSCymfQmVHKfrMksszObfxH9uzhiWXMMCN5z2nU2tglEDh
+         Legwi/drxl6MSx8vD+ZgALUx0+6ZukbshnKYoY/djWzZx7cUdM+OGH4X0sQFdPM1K5Vd
+         nxMBcUlycNH6lXEjJE8+wg+C83X2ICyY4MSQZCp/x3d4tz7ZrsXUXs7fkeM4IXtzqdwT
+         BbRtGKdPTJN42blgSZFfT+/AEtaBlu/lL3mSa+h1W8kMO/YZ29ZTBEc6LWGhRlxN8Te6
+         vMOg==
+X-Gm-Message-State: AOAM530YZ0x5I39kAT7FiqZIAxdz8lbQATYOosFXeqAqYOVKPdWFC8KJ
+        kB9qNisSJAOGqUBkG5d1V54=
+X-Google-Smtp-Source: ABdhPJy3pQeWEPeVupAuFxBDvjFrN6aPESruOg+x2WRkhnEUCUEDHySfROWKgUilKid5hosVOf5Ciw==
+X-Received: by 2002:a63:4d18:: with SMTP id a24mr5550376pgb.324.1628804477955;
+        Thu, 12 Aug 2021 14:41:17 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id v10sm11118067pjd.29.2021.08.12.14.41.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Aug 2021 06:08:51 -0700 (PDT)
-Date:   Thu, 12 Aug 2021 09:08:49 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        Thu, 12 Aug 2021 14:41:17 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 Aug 2021 11:41:15 -1000
+From:   Tejun Heo <tj@kernel.org>
 To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 Subject: Re: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
-Message-ID: <YRUdYQzxj8rswNyz@cmpxchg.org>
+Message-ID: <YRWVe5j8G2LLvTt4@slm.duckdns.org>
 References: <20210811195707.30851-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -86,6 +88,9 @@ On Wed, Aug 11, 2021 at 03:57:07PM -0400, Waiman Long wrote:
 > 
 > Signed-off-by: Waiman Long <longman@redhat.com>
 
-LGTM.
+Applied to cgroup/for-5.15.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Thanks.
+
+-- 
+tejun
