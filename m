@@ -2,117 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203463E9948
-	for <lists+cgroups@lfdr.de>; Wed, 11 Aug 2021 21:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B343EA525
+	for <lists+cgroups@lfdr.de>; Thu, 12 Aug 2021 15:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhHKT6Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Aug 2021 15:58:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229991AbhHKT6Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Aug 2021 15:58:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628711880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=WxdcaYuyKYoi6tYy6rnNj7AJtwXW/DVftZFjymOGA2c=;
-        b=c5lcvTKVGt+/wwgvMdYJ0ARA5hOF/ipJ7dKb/78lq1BiqvfHMbSQ5LUvXOHGzytGqMlEYu
-        pK1DeMFmdVdFfC6ago9W3ypyOFRCiDc+SsEXgihnf4wk5Az9IqjbGeJNWdtOq3S5b7spzR
-        Lwm5e/5O+sD82A6/1i0TCLUUlWCxi8U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-THlbMnEaOlCLFHARtJeTbg-1; Wed, 11 Aug 2021 15:57:56 -0400
-X-MC-Unique: THlbMnEaOlCLFHARtJeTbg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D109192D78F;
-        Wed, 11 Aug 2021 19:57:41 +0000 (UTC)
-Received: from llong.com (unknown [10.22.18.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98E29797C8;
-        Wed, 11 Aug 2021 19:57:17 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
-Date:   Wed, 11 Aug 2021 15:57:07 -0400
-Message-Id: <20210811195707.30851-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S235262AbhHLNJT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Aug 2021 09:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234824AbhHLNJT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Aug 2021 09:09:19 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC28C061765
+        for <cgroups@vger.kernel.org>; Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id b1so5134488qtx.0
+        for <cgroups@vger.kernel.org>; Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
+        b=B5u5MqvyKhZf+vJdh29wKQ5uSD8KVQ0z4A9dz5siLPjFNEs9Fu1QKsbl48q8OWNNvx
+         X4ln3uTu9KiU3bN7egPX0wn4rWzwnfWkD4P/g0gFBxGIu9O1Sf6TYSlH8mdfIAz8mErj
+         6/PWaHr3fn5iEEtxLtwNcIJeYC4V2tN09GGiDZBWut3fVYh8EYt2ccqvTrlQ5K+ifegP
+         zuYsHO0Nxi7bVcC2bq4BgAnOB6jAhAvKK9q6TdUr1otRZFE0dUqedOfPUNXl6r1YTguv
+         vzFlBzPdQoSt6hcHDg2ohSM7NHejJkya7sFheFmnpVXUhaFzy2qGyo66NHt9MGVM9GaM
+         Q/yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xs8EmBt7Wwwk0rDo3WH++ioTrTW94g/xJg4dS2VTU70=;
+        b=sswRelannx/AlTfh8IN3pQQc6ycfny29DKQoEf7+7RR/tZNE23D911G5Kw7gm/oYsk
+         TOsCi8bdguzmn5UT59aS8tXFrLFE7JfxkRdTSkMBM0EuO5nLxAPma2KMfyyNJnMg3X4S
+         NqaVfPiZR3w1IRw5+xF1okAfENHEsotQZb+8KJHOqWbFEW//J2tkSz7fOgkhOpZ3yPds
+         zs/25rOb3ft4LO4Jx5lk3Nf5QIBNc+kVVsjF1hEaqWCFMz2PX8tFT63/1+HzR5u45fKG
+         MnIv/qaHtoZif3qdHhXw8kZm3ySK4IQvynuT9igmzJoivSwVu2tgDErjRkG2GM2vs6Kf
+         NeTg==
+X-Gm-Message-State: AOAM5313L0vnj5CeedjrlvUI/7bXB6mgTe0BUnLGoUTk7mNXWta54BK9
+        2WvumU599ud4Y0Gstcgn7hckQQ==
+X-Google-Smtp-Source: ABdhPJyD1sQnwutEBQEi934zsMk0rmVovkjcAHalsbe125JSWOsOzFGplbTIi19IH9KQ5jnc9Xrcvg==
+X-Received: by 2002:ac8:6b19:: with SMTP id w25mr3752598qts.222.1628773733005;
+        Thu, 12 Aug 2021 06:08:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:d9fa])
+        by smtp.gmail.com with ESMTPSA id d16sm1036744qte.3.2021.08.12.06.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Aug 2021 06:08:51 -0700 (PDT)
+Date:   Thu, 12 Aug 2021 09:08:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup/cpuset: Enable memory migration for cpuset v2
+Message-ID: <YRUdYQzxj8rswNyz@cmpxchg.org>
+References: <20210811195707.30851-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811195707.30851-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
-to one of the new cpus if it is not there already. For memory, however,
-they won't be migrated to the new nodes when cpuset.mems changes. This is
-an inconsistency in behavior.
+On Wed, Aug 11, 2021 at 03:57:07PM -0400, Waiman Long wrote:
+> When a user changes cpuset.cpus, each task in a v2 cpuset will be moved
+> to one of the new cpus if it is not there already. For memory, however,
+> they won't be migrated to the new nodes when cpuset.mems changes. This is
+> an inconsistency in behavior.
+> 
+> In cpuset v1, there is a memory_migrate control file to enable such
+> behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
+> for cpuset v2 so that we have a consistent set of behavior for both
+> cpus and memory.
+> 
+> There is certainly a cost to make memory migration the default, but it
+> is a one time cost that shouldn't really matter as long as cpuset.mems
+> isn't changed frequenty.  Update the cgroup-v2.rst file to document the
+> new behavior and recommend against changing cpuset.mems frequently.
+> 
+> Since there won't be any concurrent access to the newly allocated cpuset
+> structure in cpuset_css_alloc(), we can use the cheaper non-atomic
+> __set_bit() instead of the more expensive atomic set_bit().
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-In cpuset v1, there is a memory_migrate control file to enable such
-behavior by setting the CS_MEMORY_MIGRATE flag. Make it the default
-for cpuset v2 so that we have a consistent set of behavior for both
-cpus and memory.
+LGTM.
 
-There is certainly a cost to make memory migration the default, but it
-is a one time cost that shouldn't really matter as long as cpuset.mems
-isn't changed frequenty.  Update the cgroup-v2.rst file to document the
-new behavior and recommend against changing cpuset.mems frequently.
-
-Since there won't be any concurrent access to the newly allocated cpuset
-structure in cpuset_css_alloc(), we can use the cheaper non-atomic
-__set_bit() instead of the more expensive atomic set_bit().
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 11 +++++++++++
- kernel/cgroup/cpuset.c                  |  6 +++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5c7377b5bd3e..babbe04c8d37 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2056,6 +2056,17 @@ Cpuset Interface Files
- 	The value of "cpuset.mems" stays constant until the next update
- 	and won't be affected by any memory nodes hotplug events.
- 
-+	Setting a non-empty value to "cpuset.mems" causes memory of
-+	tasks within the cgroup to be migrated to the designated nodes if
-+	they are currently using memory outside of the designated nodes.
-+
-+	There is a cost for this memory migration.  The migration
-+	may not be complete and some memory pages may be left behind.
-+	So it is recommended that "cpuset.mems" should be set properly
-+	before spawning new tasks into the cpuset.  Even if there is
-+	a need to change "cpuset.mems" with active tasks, it shouldn't
-+	be done frequently.
-+
-   cpuset.mems.effective
- 	A read-only multiple values file which exists on all
- 	cpuset-enabled cgroups.
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index adb5190c4429..d151e1de93d4 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2737,12 +2737,16 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
-+	__set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
- 	nodes_clear(cs->mems_allowed);
- 	nodes_clear(cs->effective_mems);
- 	fmeter_init(&cs->fmeter);
- 	cs->relax_domain_level = -1;
- 
-+	/* Set CS_MEMORY_MIGRATE for default hierarchy */
-+	if (cgroup_subsys_on_dfl(cpuset_cgrp_subsys))
-+		__set_bit(CS_MEMORY_MIGRATE, &cs->flags);
-+
- 	return &cs->css;
- }
- 
--- 
-2.18.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
