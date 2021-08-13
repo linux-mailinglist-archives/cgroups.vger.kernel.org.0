@@ -2,94 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AE23EB9C1
-	for <lists+cgroups@lfdr.de>; Fri, 13 Aug 2021 18:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7764C3EB9DF
+	for <lists+cgroups@lfdr.de>; Fri, 13 Aug 2021 18:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhHMQHk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 Aug 2021 12:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
+        id S231263AbhHMQRP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 Aug 2021 12:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhHMQHk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Aug 2021 12:07:40 -0400
+        with ESMTP id S229471AbhHMQRO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Aug 2021 12:17:14 -0400
 Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26CEC061756;
-        Fri, 13 Aug 2021 09:07:13 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso16633190pjy.5;
-        Fri, 13 Aug 2021 09:07:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B883C061756;
+        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id bo18so16110867pjb.0;
+        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2HZmfNWRvGEoCRS06cZMTLlzgFfVxMJbsV7IaJqnVhg=;
-        b=InkfaLY0ZCFXGoifgEOs48VdU5Jc2nx9zdixJj7MXoz71NPOd9R/5Djc+ydBfpFtC4
-         U7i7R7lQHGegengPSWbI6FBgclDyJ+QYg9Y3rQAL5n4XXy6FmCv4P2ja1DedF1M1k566
-         3sQ7P/9K4G8wvzRsUlBkW+9SrhtPKBNAMQIUziuOLTeiSRAaIgzdb+NO+xIj9Dhc1DlX
-         +GT31B2T0I3oFoJ4SlosCJtzNHRwgl6oRkFCvuePaOQ06nPvp5u1k73RPa/4MkwkiXja
-         NzXKhkthXwFpZyoJSqkiBLKSmxL/qsBDP4SY9Uou84ybT+2MWIlJibdv8EG0Y4da47oA
-         xN3A==
+         :content-disposition:in-reply-to;
+        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
+        b=V7sQT4KCgtnVpRX90o4X/FqgPaiKH4o6jvDypjFYfwZyXYnhyjnUb9+Vr2WelHEk5j
+         vKp0QRk2LjsafSp8wmQnVcd8Jr+SLzWSIpm6D3zG7wHIY/2QhFG+hcMKN9Oo7cMohrQ3
+         4VDmKxdS+hvcvZaD4CqmrMUkFnc0G1D2uv1dimHQxWaZhfckfKU6bgwFI0vppyBb2Rov
+         EM9/BZvvM9mQdaGuHaGQiWojIjIQOhUAkPHecWSjpnLOvOOJYgGizkAkDKs4lPCSzcIl
+         w3KLTLRQiWy2NcYDeRgvVG5JOstQQEuwPwpXB2oPZ59inEn7N1OKKfx6ibt+J1XyLfH8
+         gJmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=2HZmfNWRvGEoCRS06cZMTLlzgFfVxMJbsV7IaJqnVhg=;
-        b=kt4mDW6R4NqNa5Tr1tihvo+ph0uqh/p6rY6D9mWDG0WnJul1nOtGBTMN5/GP6Q37/2
-         Hc2ocBJ+eM8e8DhpHgIGf6MTNhK6vqL6D3uVvYnSB8CQlh8cRPJu8S2KPtjisnKFc+94
-         HC4KaPplyhZoeLMliN1rWgjcTvqS6Yviacc+z2FSAr8smjKXL/LFH/YjRc6IbJqMsKjm
-         T10oD83FT9aa2JSAUmlZyU3RfElKJRkFLlyRua7zJU5FfDMRsroxbq24iVa8SveAtcbG
-         BvpWP0zrjpYth3ZhC3IdON1Fl/yjzPB4j6tUaZ7iYZqateYIMSAfPNgp95fVuMtFzyzd
-         Y5OA==
-X-Gm-Message-State: AOAM533BBUwPyMt/OanlHwRVtpm60KkXfJMQWr6qakZtndrtZPbF0IKG
-        CB1ECgIFvy+Nqza25r3fRzY=
-X-Google-Smtp-Source: ABdhPJz3R1A5NO638+ZUp0B36ATcaFEx5Zr17zv5kMxc2MYB1KhFNEa2YyDRNNu12Zcj44Ualq+Yqg==
-X-Received: by 2002:a17:902:c40d:b0:12d:97e1:e19b with SMTP id k13-20020a170902c40d00b0012d97e1e19bmr1978773plk.45.1628870833217;
-        Fri, 13 Aug 2021 09:07:13 -0700 (PDT)
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
+        b=JsHo0JhO+yTtyYSm+vExpQJ336lVpuBqo0zm9NvZfT3e6itNgoTskyD35KDfFuzl4U
+         l2JftkcBanqzvsHH+s+yw5giOAfRsxgew+xJBzeHJV8ZaJi6AWqqDFENPXRL91EFod8M
+         fQyh+5P7iRzUR8LGWGdRrUOzuJS4XSEvBcXqVJJTxzh6CeSHE0B4jT+BOQenkdgrMlSn
+         NQS2oc/CdunehSfbWqNWm4GdPfp35e1bHGsXUYK8V9wJDCrPhVS7EVRJ2zaGoSqtb7vH
+         edfFX2ebI0RgzJFf7wo6hhw+tU8zghnB/6a7afQZLoJ0BfwPK2UrCT2zXmRoQUTwSVif
+         Kw4Q==
+X-Gm-Message-State: AOAM533GDDAYD3B3yBd5WxqUB0Tn672kIR7RwC8Bm26lu0ugznrJG5xk
+        LWn83WuLWpg0Xy3M66uEnHA=
+X-Google-Smtp-Source: ABdhPJyOkGJkNHePuKgw0Vmur+Cdhb4/TaV0LrXCv5Qr6uulsRr4xwxhUaKi3FuwQKHCRThl7jPXvg==
+X-Received: by 2002:a62:cf01:0:b029:3cd:ee82:2ee with SMTP id b1-20020a62cf010000b02903cdee8202eemr3118320pfg.78.1628871407407;
+        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-44e6-6a58-44be-40a6.res6.spectrum.com. [2603:800c:1a02:1bae:44e6:6a58:44be:40a6])
-        by smtp.gmail.com with ESMTPSA id m2sm3277407pgu.15.2021.08.13.09.07.12
+        by smtp.gmail.com with ESMTPSA id 66sm2968564pfu.67.2021.08.13.09.16.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 09:07:12 -0700 (PDT)
+        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 13 Aug 2021 06:07:11 -1000
+Date:   Fri, 13 Aug 2021 06:16:45 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v4 2/6] cgroup/cpuset: Properly handle partition root tree
-Message-ID: <YRaYr0sf9L1GY7i5@mtj.duckdns.org>
-References: <20210811030607.13824-1-longman@redhat.com>
- <20210811030607.13824-3-longman@redhat.com>
- <YRQSKZB8rQUsfF2K@slm.duckdns.org>
- <b7897818-8fe6-8dd8-3ff6-6b15401162ba@redhat.com>
- <YRWeQH6gY5PqIanD@slm.duckdns.org>
- <55f61b66-5159-7e13-6e41-33df042612b0@redhat.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] misc_cgroup: use a counter to count the number of
+ failures
+Message-ID: <YRaa7R6niNQMpqZm@mtj.duckdns.org>
+References: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <55f61b66-5159-7e13-6e41-33df042612b0@redhat.com>
+In-Reply-To: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 06:56:00PM -0400, Waiman Long wrote:
-> That sounds reasonable. My current idea is to add invalid partition reason
-> string to cpuset. So when users read cpuset.cpus.partition of an invalid
-> partition, it will read something like "root invalid  (<reason>)".
-> 
-> What do you think?
+Hello,
 
-Sounds good to me.
+On Fri, Aug 13, 2021 at 01:26:11PM +0800, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> For a container, we only print an error log when the resource
+> charge fails. There may be some problems here:
+> 
+> 1. If a large number of containers are created and deleted,
+>    there will be a lot of error logs.
+> 2. According to an error log, we cannot better understand
+>    the actual pressure of resources.
+> 
+> Therefore, perhaps we should use a failcnt counter to count
+> the number of failures, so that we can easily understand the
+> actual pressure of resources and avoid too many error log..
+> 
+> This is a partial patch of the previous serial, which may
+> be useful, so I resend it.
+
+I think this approach is fine but can you please
+
+* Cc the original author of the misc cgroup who added the warning
+  messages.
+
+* Rename failcnt to nr_fails?
 
 Thanks.
 
