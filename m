@@ -2,97 +2,171 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7764C3EB9DF
-	for <lists+cgroups@lfdr.de>; Fri, 13 Aug 2021 18:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110AB3EBEEC
+	for <lists+cgroups@lfdr.de>; Sat, 14 Aug 2021 02:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhHMQRP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 Aug 2021 12:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        id S235628AbhHNAPs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 Aug 2021 20:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhHMQRO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Aug 2021 12:17:14 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B883C061756;
-        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id bo18so16110867pjb.0;
-        Fri, 13 Aug 2021 09:16:48 -0700 (PDT)
+        with ESMTP id S235330AbhHNAPs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Aug 2021 20:15:48 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00064C061756;
+        Fri, 13 Aug 2021 17:15:20 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id a8so17689883pjk.4;
+        Fri, 13 Aug 2021 17:15:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
-        b=V7sQT4KCgtnVpRX90o4X/FqgPaiKH4o6jvDypjFYfwZyXYnhyjnUb9+Vr2WelHEk5j
-         vKp0QRk2LjsafSp8wmQnVcd8Jr+SLzWSIpm6D3zG7wHIY/2QhFG+hcMKN9Oo7cMohrQ3
-         4VDmKxdS+hvcvZaD4CqmrMUkFnc0G1D2uv1dimHQxWaZhfckfKU6bgwFI0vppyBb2Rov
-         EM9/BZvvM9mQdaGuHaGQiWojIjIQOhUAkPHecWSjpnLOvOOJYgGizkAkDKs4lPCSzcIl
-         w3KLTLRQiWy2NcYDeRgvVG5JOstQQEuwPwpXB2oPZ59inEn7N1OKKfx6ibt+J1XyLfH8
-         gJmw==
+        h=from:to:cc:subject:date:message-id;
+        bh=Xt4LhTfmIYJLNZv3Sql9WLAUI0QXOS6TD45Qib/plF0=;
+        b=ULyQNxlRZbk30c63JGFG/iifhh8sARTJ8DYHaOoSdNw2OeOTtETxedxvne9rsjblxq
+         fj0PylvbXCqT3p78s4MP/QxC5qMIerNDPcKU1B5wcdgl8iaf4QPvG7N3JDpuuRWlHv+X
+         ZsFvhB+NM4/cNcFSSKLd9T077hHwf4CdsYAF1Ge9oO+LNerug25AYR/WXp+b740DXX9T
+         ybdPuC62p8+hJinbaN5lhSS7p3bnN1Aa9Auuu19xOhvlWQLGhA8pPvG1Dvv89WbD5BFL
+         rXMrlLkvQOK+1llQsgpaF3NurZ2G7JrdHF0A+dZEAdOkdBH8yCJyB1HJjOi/rxo/BdY9
+         Xvhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JeOfnYXXUD0uawQ0bVzU2z5A2fd7nhB1MsbBkE12QoU=;
-        b=JsHo0JhO+yTtyYSm+vExpQJ336lVpuBqo0zm9NvZfT3e6itNgoTskyD35KDfFuzl4U
-         l2JftkcBanqzvsHH+s+yw5giOAfRsxgew+xJBzeHJV8ZaJi6AWqqDFENPXRL91EFod8M
-         fQyh+5P7iRzUR8LGWGdRrUOzuJS4XSEvBcXqVJJTxzh6CeSHE0B4jT+BOQenkdgrMlSn
-         NQS2oc/CdunehSfbWqNWm4GdPfp35e1bHGsXUYK8V9wJDCrPhVS7EVRJ2zaGoSqtb7vH
-         edfFX2ebI0RgzJFf7wo6hhw+tU8zghnB/6a7afQZLoJ0BfwPK2UrCT2zXmRoQUTwSVif
-         Kw4Q==
-X-Gm-Message-State: AOAM533GDDAYD3B3yBd5WxqUB0Tn672kIR7RwC8Bm26lu0ugznrJG5xk
-        LWn83WuLWpg0Xy3M66uEnHA=
-X-Google-Smtp-Source: ABdhPJyOkGJkNHePuKgw0Vmur+Cdhb4/TaV0LrXCv5Qr6uulsRr4xwxhUaKi3FuwQKHCRThl7jPXvg==
-X-Received: by 2002:a62:cf01:0:b029:3cd:ee82:2ee with SMTP id b1-20020a62cf010000b02903cdee8202eemr3118320pfg.78.1628871407407;
-        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-44e6-6a58-44be-40a6.res6.spectrum.com. [2603:800c:1a02:1bae:44e6:6a58:44be:40a6])
-        by smtp.gmail.com with ESMTPSA id 66sm2968564pfu.67.2021.08.13.09.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 09:16:47 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 13 Aug 2021 06:16:45 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <YRaa7R6niNQMpqZm@mtj.duckdns.org>
-References: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1628832371-16382-1-git-send-email-brookxu.cn@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Xt4LhTfmIYJLNZv3Sql9WLAUI0QXOS6TD45Qib/plF0=;
+        b=hwjwVO+Q3I2Zp3/vwZxM0rhxukjgpyhCw37fzyLL7L1cDOsE7/L+8PTBbNysjgHWLZ
+         /PFRzyAk/NmZYxDtq+r0VI0joYpA3jaJCLDblmYkyNDkmzuvuRgcCzHVLEwh7Bb9UQr2
+         iSMYDxvL3kaAvUGMEWqD0Y6BwwIT3BXbnP+zcu2cocBEf2O7TddYqOdpkbUw9BNPHqLW
+         yzS4fK4cEiCY/MaU5vcxZZoyDPhWAaBfqe49OtZ6G7P+x+Ch08mpxfan1LeI8ZpCc//4
+         RUmN6o6APx7KrQH9sBwbuzZwHqK/P7qjVIkRDPskqjr7hHfLl5uI0cbFmer9l1wbSWWH
+         7rjw==
+X-Gm-Message-State: AOAM532E+GfbAq6H7DdX75Z5P70nONxA1ypUfh73eSpd0xWT1M4WgBn3
+        /90r1ImYHBK5OAhVl7ZZgbQ=
+X-Google-Smtp-Source: ABdhPJx5KhgPakcYFeAGWF0JsYxfx2LmRTMucKWwZ9I0i11X1O288s2gxovW011/l9jgwXbXO7plwg==
+X-Received: by 2002:a62:6042:0:b029:3cd:d392:643 with SMTP id u63-20020a6260420000b02903cdd3920643mr4835199pfb.43.1628900120478;
+        Fri, 13 Aug 2021 17:15:20 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id d134sm3551557pfd.60.2021.08.13.17.15.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Aug 2021 17:15:18 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     vipinsh@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: [PATCH v2] misc_cgroup: use a counter to count the number of failures
+Date:   Sat, 14 Aug 2021 08:15:16 +0800
+Message-Id: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+From: Chunguang Xu <brookxu@tencent.com>
 
-On Fri, Aug 13, 2021 at 01:26:11PM +0800, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
-> 
-> For a container, we only print an error log when the resource
-> charge fails. There may be some problems here:
-> 
-> 1. If a large number of containers are created and deleted,
->    there will be a lot of error logs.
-> 2. According to an error log, we cannot better understand
->    the actual pressure of resources.
-> 
-> Therefore, perhaps we should use a failcnt counter to count
-> the number of failures, so that we can easily understand the
-> actual pressure of resources and avoid too many error log..
-> 
-> This is a partial patch of the previous serial, which may
-> be useful, so I resend it.
+For a container, we only print an error log when the resource
+charge fails. There may be some problems here:
 
-I think this approach is fine but can you please
+1. If a large number of containers are created and deleted,
+   there will be a lot of error logs.
+2. According to an error log, we cannot better understand
+   the actual pressure of resources.
 
-* Cc the original author of the misc cgroup who added the warning
-  messages.
+Therefore, perhaps we should use a failcnt counter to count
+the number of failures, so that we can easily understand the
+actual pressure of resources and avoid too many error log..
 
-* Rename failcnt to nr_fails?
+v2: rename failcnt to nr_fails.
 
-Thanks.
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ include/linux/misc_cgroup.h |  4 ++--
+ kernel/cgroup/misc.c        | 37 ++++++++++++++++++++++++++++++-------
+ 2 files changed, 32 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+index da2367e..59706b2 100644
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -31,12 +31,12 @@ enum misc_res_type {
+  * struct misc_res: Per cgroup per misc type resource
+  * @max: Maximum limit on the resource.
+  * @usage: Current usage of the resource.
+- * @failed: True if charged failed for the resource in a cgroup.
++ * @nr_fails: Failure count of the resource
+  */
+ struct misc_res {
+ 	unsigned long max;
+ 	atomic_long_t usage;
+-	bool failed;
++	atomic_long_t nr_fails;
+ };
+ 
+ /**
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index ec02d96..c35477e 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -157,13 +157,7 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
+ 		new_usage = atomic_long_add_return(amount, &res->usage);
+ 		if (new_usage > READ_ONCE(res->max) ||
+ 		    new_usage > READ_ONCE(misc_res_capacity[type])) {
+-			if (!res->failed) {
+-				pr_info("cgroup: charge rejected by the misc controller for %s resource in ",
+-					misc_res_name[type]);
+-				pr_cont_cgroup_path(i->css.cgroup);
+-				pr_cont("\n");
+-				res->failed = true;
+-			}
++			atomic_long_inc(&res->nr_fails);
+ 			ret = -EBUSY;
+ 			goto err_charge;
+ 		}
+@@ -312,6 +306,29 @@ static int misc_cg_current_show(struct seq_file *sf, void *v)
+ }
+ 
+ /**
++ * misc_cg_failcnt_show() - Show the fail count of the misc cgroup.
++ * @sf: Interface file
++ * @v: Arguments passed
++ *
++ * Context: Any context.
++ * Return: 0 to denote successful print.
++ */
++static int misc_cg_failcnt_show(struct seq_file *sf, void *v)
++{
++	int i;
++	unsigned long nr_fails;
++	struct misc_cg *cg = css_misc(seq_css(sf));
++
++	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
++		nr_fails = atomic_long_read(&cg->res[i].nr_fails);
++		if (READ_ONCE(misc_res_capacity[i]) || nr_fails)
++			seq_printf(sf, "%s %lu\n", misc_res_name[i], nr_fails);
++	}
++
++	return 0;
++}
++
++/**
+  * misc_cg_capacity_show() - Show the total capacity of misc res on the host.
+  * @sf: Interface file
+  * @v: Arguments passed
+@@ -349,6 +366,11 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 	},
+ 	{
++		.name = "failcnt",
++		.seq_show = misc_cg_failcnt_show,
++		.flags = CFTYPE_NOT_ON_ROOT,
++	},
++	{
+ 		.name = "capacity",
+ 		.seq_show = misc_cg_capacity_show,
+ 		.flags = CFTYPE_ONLY_ON_ROOT,
+@@ -382,6 +404,7 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
+ 		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+ 		atomic_long_set(&cg->res[i].usage, 0);
++		atomic_long_set(&cg->res[i].nr_fails, 0);
+ 	}
+ 
+ 	return &cg->css;
 -- 
-tejun
+1.8.3.1
+
