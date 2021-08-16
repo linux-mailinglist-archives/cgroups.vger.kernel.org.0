@@ -2,100 +2,220 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA503EC697
-	for <lists+cgroups@lfdr.de>; Sun, 15 Aug 2021 03:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77403ED419
+	for <lists+cgroups@lfdr.de>; Mon, 16 Aug 2021 14:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233613AbhHOBPK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 14 Aug 2021 21:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbhHOBPK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 14 Aug 2021 21:15:10 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7B1C0617AD
-        for <cgroups@vger.kernel.org>; Sat, 14 Aug 2021 18:14:41 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id q16so16042486ioj.0
-        for <cgroups@vger.kernel.org>; Sat, 14 Aug 2021 18:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x2b3137Hg3O35wl4KvAg3fkN/4EPjZhVIIFocKDpOzw=;
-        b=JNP1gkSDmAye92b824CW/SUEX+EdwwaqZtDqtnkJAUmkDBHjTHWSIsBYNlIXQxvqR1
-         XYt2ztX4SxZcsvu1LwvlEZKlL0f84LHRTyNUYRg5hfqTLTt8MDuCIoRdZ/diOGS2zvrV
-         vcX4KXpOItr26LiTEAMxsjoDzStZ1sE+BvhUhEblVe92CKn7WnJFf1VDJc8QaH9DMnkc
-         wMNYXBeQeE020Q2qe+xZXJYzhou1sIJ2mrWoXjqNSXTDoxtKOhDtH4UmPW98ZFjTbvOS
-         L/KLNSVZ72TBI3xSYdZnf3/IcyWwpZeIxzRFXyPSXOHUbEDE5mLyKwm3Gixuy2HUgfVb
-         k14w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x2b3137Hg3O35wl4KvAg3fkN/4EPjZhVIIFocKDpOzw=;
-        b=Pyuzr1EQ1fK3v88xBcqoOoHhYuRjzmTAhcwzjtxlE2/ZO3K3qJTpoYKV5fByvJ7Zdi
-         Yi+MJuDFIpwEtpgolP9Ei8M+Y17A0S871hgYWYYWM9jfJPn05VB6Z5HVFpXBLXrC9F9O
-         N1VBqJqwjry30feb4a71eiREa9mhsx6Ej6YRHtu8wVsAq+gSdy9gmKm1W1XlxmCPSu2q
-         y3wJFD+t9elDV0STNQWvgVO9obTQSGvP6Q4qwwLl6V9wuuIod7NBbtxYjVn7/8YtzOwU
-         6tSz+b95ECBWJMGxl1wAPwPaBCpyLUvslWFuOyZgRxZVMx9AiEuePk1mIXbEII/OpwX0
-         evSw==
-X-Gm-Message-State: AOAM531IfEaE8t/wK4oZFmHLKtBvArlMUIIIXebPHJRr04GMFytfqmJ2
-        tA8mvcLBF+lXxvN+o7cLsJ9fZyclSV2UfERw
-X-Google-Smtp-Source: ABdhPJxw9puQIiXvkgw1FjEIRiEMA52YP5gYHEPETTSDjcPlzFAj2ZwJrD/Smwt/BykmuqTeN/vHcw==
-X-Received: by 2002:a02:cc22:: with SMTP id o2mr8769511jap.26.1628990080703;
-        Sat, 14 Aug 2021 18:14:40 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id u14sm2730446iol.24.2021.08.14.18.14.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Aug 2021 18:14:39 -0700 (PDT)
-Subject: Re: [PATCH v3] blk-throtl: optimize IOPS throttle for large IO
- scenarios
-To:     brookxu <brookxu.cn@gmail.com>, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-References: <65869aaad05475797d63b4c3fed4f529febe3c26.1627876014.git.brookxu@tencent.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <53196a1f-9fdc-269d-801b-ce1ff2963cb0@kernel.dk>
-Date:   Sat, 14 Aug 2021 19:14:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230167AbhHPMk4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Aug 2021 08:40:56 -0400
+Received: from verein.lst.de ([213.95.11.211]:54281 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232086AbhHPMkH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 16 Aug 2021 08:40:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 556A968AFE; Mon, 16 Aug 2021 14:39:02 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 14:39:02 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     axboe@kernel.dk
+Cc:     tj@kernel.org, cgroups@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 1/2] blk-cgroup: refactor blkcg_print_stat
+Message-ID: <20210816123902.GA18478@lst.de>
+References: <20210810152623.1796144-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <65869aaad05475797d63b4c3fed4f529febe3c26.1627876014.git.brookxu@tencent.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210810152623.1796144-1-hch@lst.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/1/21 9:51 PM, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
+ping.
+
+On Tue, Aug 10, 2021 at 05:26:22PM +0200, Christoph Hellwig wrote:
+> Factor out a helper to deal with a single blkcg_gq to make the code a
+> little bit easier to follow.
 > 
-> After patch 54efd50 (block: make generic_make_request handle
-> arbitrarily sized bios), the IO through io-throttle may be larger,
-> and these IOs may be further split into more small IOs. However,
-> IOPS throttle does not seem to be aware of this change, which
-> makes the calculation of IOPS of large IOs incomplete, resulting
-> in disk-side IOPS that does not meet expectations. Maybe we should
-> fix this problem.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/blk-cgroup.c | 148 ++++++++++++++++++++++-----------------------
+>  1 file changed, 74 insertions(+), 74 deletions(-)
 > 
-> We can reproduce it by set max_sectors_kb of disk to 128, set
-> blkio.write_iops_throttle to 100, run a dd instance inside blkio
-> and use iostat to watch IOPS:
-> 
-> dd if=/dev/zero of=/dev/sdb bs=1M count=1000 oflag=direct
-> 
-> As a result, without this change the average IOPS is 1995, with
-> this change the IOPS is 98.
-
-Applied for 5.15, thanks.
-
-> v3: Optimize the use of atomic variables.
-> v2: Use atomic variables to solve synchronization problems.
-
-Just a note for the future, changelog stuff goes below the ---
-line.
-
--- 
-Jens Axboe
-
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index db034e35ae20..52aa0540ccaf 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -870,97 +870,97 @@ static void blkcg_fill_root_iostats(void)
+>  	}
+>  }
+>  
+> -static int blkcg_print_stat(struct seq_file *sf, void *v)
+> +static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+>  {
+> -	struct blkcg *blkcg = css_to_blkcg(seq_css(sf));
+> -	struct blkcg_gq *blkg;
+> -
+> -	if (!seq_css(sf)->parent)
+> -		blkcg_fill_root_iostats();
+> -	else
+> -		cgroup_rstat_flush(blkcg->css.cgroup);
+> -
+> -	rcu_read_lock();
+> +	struct blkg_iostat_set *bis = &blkg->iostat;
+> +	u64 rbytes, wbytes, rios, wios, dbytes, dios;
+> +	bool has_stats = false;
+> +	const char *dname;
+> +	unsigned seq;
+> +	char *buf;
+> +	size_t size = seq_get_buf(s, &buf), off = 0;
+> +	int i;
+>  
+> -	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
+> -		struct blkg_iostat_set *bis = &blkg->iostat;
+> -		const char *dname;
+> -		char *buf;
+> -		u64 rbytes, wbytes, rios, wios, dbytes, dios;
+> -		size_t size = seq_get_buf(sf, &buf), off = 0;
+> -		int i;
+> -		bool has_stats = false;
+> -		unsigned seq;
+> +	if (!blkg->online)
+> +		return;
+>  
+> -		spin_lock_irq(&blkg->q->queue_lock);
+> +	dname = blkg_dev_name(blkg);
+> +	if (!dname)
+> +		return;
+>  
+> -		if (!blkg->online)
+> -			goto skip;
+> +	/*
+> +	 * Hooray string manipulation, count is the size written NOT
+> +	 * INCLUDING THE \0, so size is now count+1 less than what we
+> +	 * had before, but we want to start writing the next bit from
+> +	 * the \0 so we only add count to buf.
+> +	 */
+> +	off += scnprintf(buf+off, size-off, "%s ", dname);
+>  
+> -		dname = blkg_dev_name(blkg);
+> -		if (!dname)
+> -			goto skip;
+> +	do {
+> +		seq = u64_stats_fetch_begin(&bis->sync);
+> +
+> +		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+> +		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+> +		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+> +		rios = bis->cur.ios[BLKG_IOSTAT_READ];
+> +		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+> +		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+> +	} while (u64_stats_fetch_retry(&bis->sync, seq));
+> +
+> +	if (rbytes || wbytes || rios || wios) {
+> +		has_stats = true;
+> +		off += scnprintf(buf+off, size-off,
+> +			"rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
+> +			rbytes, wbytes, rios, wios,
+> +			dbytes, dios);
+> +	}
+>  
+> -		/*
+> -		 * Hooray string manipulation, count is the size written NOT
+> -		 * INCLUDING THE \0, so size is now count+1 less than what we
+> -		 * had before, but we want to start writing the next bit from
+> -		 * the \0 so we only add count to buf.
+> -		 */
+> -		off += scnprintf(buf+off, size-off, "%s ", dname);
+> +	if (blkcg_debug_stats && atomic_read(&blkg->use_delay)) {
+> +		has_stats = true;
+> +		off += scnprintf(buf+off, size-off, " use_delay=%d delay_nsec=%llu",
+> +			atomic_read(&blkg->use_delay),
+> +			atomic64_read(&blkg->delay_nsec));
+> +	}
+>  
+> -		do {
+> -			seq = u64_stats_fetch_begin(&bis->sync);
+> +	for (i = 0; i < BLKCG_MAX_POLS; i++) {
+> +		struct blkcg_policy *pol = blkcg_policy[i];
+> +		size_t written;
+>  
+> -			rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+> -			wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+> -			dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+> -			rios = bis->cur.ios[BLKG_IOSTAT_READ];
+> -			wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+> -			dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+> -		} while (u64_stats_fetch_retry(&bis->sync, seq));
+> +		if (!blkg->pd[i] || !pol->pd_stat_fn)
+> +			continue;
+>  
+> -		if (rbytes || wbytes || rios || wios) {
+> +		written = pol->pd_stat_fn(blkg->pd[i], buf+off, size-off);
+> +		if (written)
+>  			has_stats = true;
+> -			off += scnprintf(buf+off, size-off,
+> -					 "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
+> -					 rbytes, wbytes, rios, wios,
+> -					 dbytes, dios);
+> -		}
+> +		off += written;
+> +	}
+>  
+> -		if (blkcg_debug_stats && atomic_read(&blkg->use_delay)) {
+> -			has_stats = true;
+> -			off += scnprintf(buf+off, size-off,
+> -					 " use_delay=%d delay_nsec=%llu",
+> -					 atomic_read(&blkg->use_delay),
+> -					(unsigned long long)atomic64_read(&blkg->delay_nsec));
+> +	if (has_stats) {
+> +		if (off < size - 1) {
+> +			off += scnprintf(buf+off, size-off, "\n");
+> +			seq_commit(s, off);
+> +		} else {
+> +			seq_commit(s, -1);
+>  		}
+> +	}
+> +}
+>  
+> -		for (i = 0; i < BLKCG_MAX_POLS; i++) {
+> -			struct blkcg_policy *pol = blkcg_policy[i];
+> -			size_t written;
+> -
+> -			if (!blkg->pd[i] || !pol->pd_stat_fn)
+> -				continue;
+> +static int blkcg_print_stat(struct seq_file *sf, void *v)
+> +{
+> +	struct blkcg *blkcg = css_to_blkcg(seq_css(sf));
+> +	struct blkcg_gq *blkg;
+>  
+> -			written = pol->pd_stat_fn(blkg->pd[i], buf+off, size-off);
+> -			if (written)
+> -				has_stats = true;
+> -			off += written;
+> -		}
+> +	if (!seq_css(sf)->parent)
+> +		blkcg_fill_root_iostats();
+> +	else
+> +		cgroup_rstat_flush(blkcg->css.cgroup);
+>  
+> -		if (has_stats) {
+> -			if (off < size - 1) {
+> -				off += scnprintf(buf+off, size-off, "\n");
+> -				seq_commit(sf, off);
+> -			} else {
+> -				seq_commit(sf, -1);
+> -			}
+> -		}
+> -	skip:
+> +	rcu_read_lock();
+> +	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
+> +		spin_lock_irq(&blkg->q->queue_lock);
+> +		blkcg_print_one_stat(blkg, sf);
+>  		spin_unlock_irq(&blkg->q->queue_lock);
+>  	}
+> -
+>  	rcu_read_unlock();
+>  	return 0;
+>  }
+> -- 
+> 2.30.2
+---end quoted text---
