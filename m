@@ -2,114 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB00F3F1C1C
-	for <lists+cgroups@lfdr.de>; Thu, 19 Aug 2021 17:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C574B3F1C20
+	for <lists+cgroups@lfdr.de>; Thu, 19 Aug 2021 17:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240635AbhHSPCR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Aug 2021 11:02:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33612 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhHSPCR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Aug 2021 11:02:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4F16B22035;
-        Thu, 19 Aug 2021 15:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629385299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZQw3aQLXjbGr24aoUzdui2AtIu+xn1XQqrKU4F2ntFA=;
-        b=e0Gy5MxNWI0jxmMgbRDddx64OBNlnVKh6x2MNkmWrtDZn8njNPyac2b4yfRE1B26nwA/GB
-        RKkpeQ31uiHC+/i5OWborImMWZPMA9jeGQ6czSwfnNHvIEzHFUZDBJBZnqmGDZDSbzxzfM
-        wdj7yVvsCFBSAACHHxca877k1HIi7+8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 15B2DA3BA2;
-        Thu, 19 Aug 2021 15:01:39 +0000 (UTC)
-Date:   Thu, 19 Aug 2021 17:01:38 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Leon Yang <lnyng@fb.com>, Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
- memory.low reclaim
-Message-ID: <YR5yUolPN+hSsUgJ@dhcp22.suse.cz>
-References: <20210817180506.220056-1-hannes@cmpxchg.org>
+        id S240672AbhHSPDY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Aug 2021 11:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240652AbhHSPDX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Aug 2021 11:03:23 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E63BC061575
+        for <cgroups@vger.kernel.org>; Thu, 19 Aug 2021 08:02:47 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 1so1672275vkk.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Aug 2021 08:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ovRohL0S09O0g2yqlE9MP24xrDvA30mKbGD9YeR3sEY=;
+        b=HySdqSoW6vC5vNTWVf5OA/1CIgpVFQGLDcH3ZyDA8s/YCVom6i9N5My0zGwdVv4gKF
+         oDtaeA11DpdPzgAILj/FcK13ofOmddzIPRFi8hCPFPrSxO0RoNKYc/QYBpvLmvBYW0MR
+         Mb+6pwSNotHNXaoumk6dHo3O4BGvpGuD8afPO/nVx8Jsv3qI//ZtuDoBn0UPJFWunD80
+         4c/Mmd1EKN3L1uiwOTCfxxU0bXdFfv6+WQVe+ToiKkA5xkK7Zozg8o0gon7NADbpQBan
+         x8cxOJWjg2CzjTjn6rwHxAP/rHdvqpeiHguzhYI7fP+mPBPZ3ZSIek8PfsdHTfK7gOMy
+         Hwow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ovRohL0S09O0g2yqlE9MP24xrDvA30mKbGD9YeR3sEY=;
+        b=Ang3mkpecQ7TAT+bqwNNcd1ntqBQfdZTRWKN68mJZjjfPCYQK3GiiDYRt5MOXnW12d
+         ewE3m6jhAfi6mSlcnPkRmTcd+SE3PkyUvCtJxIQxix6g6FhtjtrjmB5bJSE4YC9474ux
+         qYvJ8RXYsPZGMkO4PqAxoOND8xJ8YIkozDd5DBncdjjVeEpx3JxeFLew8rzhXBmEG/J+
+         wmQEOOBlFGAOcBtSeEiDtpiDycUtVkt5uNM3tvOh93EnVXq4Riy9nLyRYF/0/LwoHtcb
+         1dgCbWe6uUXXdEohFXFQpjgKm6psA0reAokGlqKt8lT5k/d44WnEev7KuQT7PacgeMU4
+         DhRg==
+X-Gm-Message-State: AOAM530B/umMHzqB/CsimptnZ1kOPfTH3JgjiGYD5rbmsSrEd5KnOOBR
+        3RQEV5W2BtnTdzktfczqMlgproAJjBwe0TudHnI=
+X-Google-Smtp-Source: ABdhPJwL7rrbK60LUxg854teaXvJZg3xQqWzerSUkyVCP4eKcS+45hufIJWbT9OIB2gPbUQ3oOycT3RQtJCiNc4cyWM=
+X-Received: by 2002:a1f:308d:: with SMTP id w135mr11513253vkw.15.1629385366678;
+ Thu, 19 Aug 2021 08:02:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817180506.220056-1-hannes@cmpxchg.org>
+Received: by 2002:a67:cb08:0:0:0:0:0 with HTTP; Thu, 19 Aug 2021 08:02:46
+ -0700 (PDT)
+Reply-To: rraya9989@gmail.com
+From:   Louisa Besson <mrsraya001@gmail.com>
+Date:   Thu, 19 Aug 2021 15:02:46 +0000
+Message-ID: <CAGq9nGNfF8ytUc2coHDOS7gsLpL3LLMDNUfVrWZcvsJOOhvPqA@mail.gmail.com>
+Subject: DECISION
+To:     rraya9989@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 17-08-21 14:05:06, Johannes Weiner wrote:
-> We've noticed occasional OOM killing when memory.low settings are in
-> effect for cgroups. This is unexpected and undesirable as memory.low
-> is supposed to express non-OOMing memory priorities between cgroups.
-> 
-> The reason for this is proportional memory.low reclaim. When cgroups
-> are below their memory.low threshold, reclaim passes them over in the
-> first round, and then retries if it couldn't find pages anywhere else.
-> But when cgroups are slighly above their memory.low setting, page scan
-> force is scaled down and diminished in proportion to the overage, to
-> the point where it can cause reclaim to fail as well - only in that
-> case we currently don't retry, and instead trigger OOM.
-> 
-> To fix this, hook proportional reclaim into the same retry logic we
-> have in place for when cgroups are skipped entirely. This way if
-> reclaim fails and some cgroups were scanned with dimished pressure,
-> we'll try another full-force cycle before giving up and OOMing.
-> 
-> Reported-by: Leon Yang <lnyng@fb.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+MY SINCERE GREETINGS,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+HOW ARE YOU DOING TODAY? I AM MRS.LOUISA BESSON FROM FRANCE; I HAVE
+DECIDED TO DONATE WHAT I HAVE TO YOU /CHURCHES/ MOTHERLESS BABIES/LESS
+PRIVILEGED/WIDOWS' BECAUSE I AM DYING AND DIAGNOSED WITH CANCER. I
+HAVE BEEN TOUCHED BY GOD ALMIGHTY TO DONATE FROM WHAT I HAVE INHERITED
+FROM MY LATE HUSBAND TO YOU FOR THE GOOD WORK OF GOD ALMIGHTY. I HAVE
+ASKED ALMIGHTY GOD TO FORGIVE ME AND BELIEVE HE HAS, BECAUSE HE IS A
+MERCIFUL GOD I WILL BE GOING IN FOR AN OPERATION SOON.
 
-Although I have to say that the code is quite tricky and it deserves
-more comments. See below.
+I DECIDED TO DONATE THE SUM OF ($8.5 MILLION DOLLARS) TO YOU FOR THE
+GOOD WORK OF GOD ALMIGHTY, AND ALSO TO HELP THE MOTHERLESS AND LESS
+PRIVILEGED AND ALSO FOR ASSISTANCE OF THE WIDOWS. AS SOON AS I READ
+FROM YOU, I SHALL GIVE YOU INFO ON WHAT I NEED FROM YOU, THEN YOU WILL
+CONTACT THE BANK AND TELL THEM I HAVE WILLED MY INHERITANCE TO YOU BY
+QUOTING MY PERSONAL FILE ROUTING AND ACCOUNT INFORMATION TO YOU FOR
+GOOD, EFFECTIVE AND PRUDENT WORK. I KNOW I DON'T KNOW YOU BUT I HAVE
+BEEN DIRECTED TO DO THIS BY GOD ALMIGHTY.
 
-[...]
-> @@ -2576,6 +2578,15 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->  			 * hard protection.
->  			 */
->  			unsigned long cgroup_size = mem_cgroup_size(memcg);
-> +			unsigned long protection;
-> +
-> +			/* memory.low scaling, make sure we retry before OOM */
-> +			if (!sc->memcg_low_reclaim && low > min) {
-> +				protection = low;
-> +				sc->memcg_low_skipped = 1;
-> +			} else {
-> +				protection = min;
-> +			}
+PLEASE I WILL NEED YOU TO RESPECT MY DECISION AND KEEP EVERY PROCESS
+OF THIS TRANSFER CONFIDENTIAL / TOP SECRET UNTIL EVERY PROCESS IS
+FINALIZED, BEFORE TAKING FAMILY AND FRIENDS FOR THANKSGIVING. IF YOU
+ARE INTERESTED IN CARRYING OUT THIS TASK, I WILL NEED YOU TO GET BACK
+TO ME AND ANSWER THE BELOW QUESTIONS,
 
-Just by looking at this in isolation one could be really curious how
-does this not break the low memory protection altogether. The logic is
-spread over 3 different places.
+1). THAT YOU ARE IN A POSITION TO BE TRUSTED WITH SUCH A LARGE AMOUNT
+OF FUNDS, AND THAT YOU HAVE A HEART FOR CHARITY AND THUS WOULD NOT
+HAVE ANY PROBLEMS LOCATING THE RIGHT CHARITY AND HUMAN AID GROUPS TO
+DISBURSE THE FUND TO. IT WOULD BE NICE TO KNOW WHAT CHARITIES YOU HAVE
+IN MIND TO DONATE THE MONEY TO?
 
-Would something like the following be more understandable?
+2). THAT YOU ARE WILLING TO CONTACT THE BANK HOLDING THE DEPOSIT TO
+DISCUSS THE TERMS OF RELEASING THE FUNDS TO YOU?
 
-			/*
-			 * Low limit protected memcgs are already excluded at
-			 * a higher level (shrink_node_memcgs) but scaling
-			 * down the reclaim target can result in hard to
-			 * reclaim and premature OOM. We do not have a full
-			 * picture here so we cannot really judge this
-			 * sutuation here but pro-actively flag this scenario
-			 * and let do_try_to_free_pages to retry if
-			 * there is no progress.
-			 */
->  
->  			/* Avoid TOCTOU with earlier protection check */
->  			cgroup_size = max(cgroup_size, protection);
-> -- 
-> 2.32.0
+3). THAT YOU PROMISE TO RESPECT MY DECISION AND KEEP EVERY PROCESS OF
+THIS TRANSFER CONFIDENTIAL / TOP SECRET UNTIL EVERY PROCESS IS
+FINALIZED?
 
--- 
-Michal Hocko
-SUSE Labs
+4). THAT YOU FULLY UNDERSTAND THIS TRANSACTION AND YOU ARE READY TO
+PROCEED UNDER THESE TERMS?
+
+I WISH YOU ALL THE BEST AND MAY THE GOOD LORD BLESS YOU ABUNDANTLY.
+
+YOURS FAITHFULLY,
+MRS.LOUISA BESSON
