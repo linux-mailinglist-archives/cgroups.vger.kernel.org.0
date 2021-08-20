@@ -2,147 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FDB3F2FBA
-	for <lists+cgroups@lfdr.de>; Fri, 20 Aug 2021 17:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2443F2FE3
+	for <lists+cgroups@lfdr.de>; Fri, 20 Aug 2021 17:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241196AbhHTPmt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Aug 2021 11:42:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45030 "EHLO
+        id S241020AbhHTPpe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Aug 2021 11:45:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45460 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241045AbhHTPms (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Aug 2021 11:42:48 -0400
+        with ESMTP id S241019AbhHTPpe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Aug 2021 11:45:34 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CAAE21FE2C;
-        Fri, 20 Aug 2021 15:42:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 76D541FE2C;
+        Fri, 20 Aug 2021 15:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629474129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629474295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IvfDF5eMx9B1DGeIPF2eXAnu9j+546SJreXX4X/2/LM=;
-        b=C5IT/PW1hmbH61XIjN7Wc8SbyMIvagbJL2zGwVShR9zzsjkQRtKGAC85D9AhbS5PM/r/SX
-        Q1MANu0muX1nsJwo5+SvI+3h3LVOew+eE86kVRkT93DMgacaQWSR0GVtEuA7n44G23prmR
-        JcaLFXEvnXE+yBZGph5yVDTbFq1/Z5U=
+        bh=ogYunvpZVJ/3GqmU2H+7Y5oXqBsYG05vVrhz9e8RiVA=;
+        b=lp6617sFBwYD2Nii4xorvJxfjYSV8LrclKGB2WTnYrAWOtQilQXMmz/haWyv08xcbodjuG
+        XYmUagb/VEJLqdlM0wrNEZzi1NgMpx5AweF9G0PDh7fS1trGoqV3CCCSy8q6aEsZ2bLdYa
+        p7TbUYkg28fW0xG3j7ydNOkRrrnhMWM=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 163BFA3B9B;
-        Fri, 20 Aug 2021 15:42:08 +0000 (UTC)
-Date:   Fri, 20 Aug 2021 17:41:56 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id 2D26AA3B87;
+        Fri, 20 Aug 2021 15:44:55 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 17:44:54 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     yong w <yongw.pur@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
-Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
- notifier is enabled
-Message-ID: <YR/NRJEhPKRQ1r22@dhcp22.suse.cz>
-References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
- <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
- <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Leon Yang <lnyng@fb.com>, Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
+ memory.low reclaim
+Message-ID: <YR/N9lrUROSd6TCV@dhcp22.suse.cz>
+References: <20210817180506.220056-1-hannes@cmpxchg.org>
+ <YR5yUolPN+hSsUgJ@dhcp22.suse.cz>
+ <YR7BY2Z0cXvW/uTO@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
+In-Reply-To: <YR7BY2Z0cXvW/uTO@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 20-08-21 23:20:40, yong w wrote:
-> Michal Hocko <mhocko@suse.com> 于2021年8月20日周五 下午7:26写道：
-> >
-> > On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
-> > > From: wangyong <wang.yong@zte.com.cn>
-> > >
-> > > Inspired by PSI features, vmpressure inotifier function should
-> > > also be configured to decide whether it is used, because it is an
-> > > independent feature which notifies the user of memory pressure.
-> >
-> > Yes, it is an independent feature indeed but what is the actual reason
-> > to put a more configuration space here. Config options are not free both
-> > from the user experience POV as well as the code maintenance. Why do we
-> > need to disable this feature. Who can benefit from such a setup?
-> >
-> > > So we add configuration to control whether vmpressure notifier is
-> > > enabled, and provide a boot parameter to use vmpressure notifier
-> > > flexibly.
-> >
-> > Flexibility is nice but not free as mentioned above.
-> >
-> > > Use Christoph Lamenter’s pagefault tool
-> > > (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
-> > > Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
-> > > To ensure that the vmpressure function is executed, we enable zram
-> > > and let the program occupy memory so that some memory is swapped out
-> > >
-> > > unpatched:
-> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
-> > > 2     1       1       1       0.1     0.97    1.13    485490.062      463533.34
-> > > 2     1       1       1       0.11    0.96    1.12    483086.072      465309.495
-> > > 2     1       1       1       0.1     0.95    1.11    496687.098      469887.643
-> > > 2     1       1       1       0.09    0.97    1.11    489711.434      468402.102
-> > > 2     1       1       1       0.13    0.94    1.12    484159.415      466080.941
-> > > average                               0.106   0.958   1.118   487826.8162     466642.7042
-> > >
-> > > patched and CONFIG_MEMCG_VMPRESSURE is not set:
-> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
-> > > 2     1       1       1       0.1     0.96    1.1     490942.682      473125.98
-> > > 2     1       1       1       0.08    0.99    1.13    484987.521      463161.975
-> > > 2     1       1       1       0.09    0.96    1.09    498824.98       476696.066
-> > > 2     1       1       1       0.1     0.97    1.12    484127.673      465951.238
-> > > 2     1       1       1       0.1     0.97    1.11    487032          468964.662
-> > > average                               0.094   0.97    1.11    489182.9712     469579.9842
-> > >
-> > > According to flt/cpu/s, performance improved by 0.2% which is not obvious.
-> >
-> > I haven't checked how are those numbers calculated but from a very brief
-> > look it seems like the variation between different runs is higher than
-> > 0.2%. Have you checked the average against standard deviation to get a
-> > better idea whether the difference is really outside of the noise?
-> > --
-> > Michal Hocko
-> > SUSE Labs
+On Thu 19-08-21 16:38:59, Johannes Weiner wrote:
+> On Thu, Aug 19, 2021 at 05:01:38PM +0200, Michal Hocko wrote:
+[...]
+> > The logic is spread over 3 different places.
+> > 
+> > Would something like the following be more understandable?
+> > 
+> > 			/*
+> > 			 * Low limit protected memcgs are already excluded at
+> > 			 * a higher level (shrink_node_memcgs) but scaling
+> > 			 * down the reclaim target can result in hard to
+> > 			 * reclaim and premature OOM. We do not have a full
+> > 			 * picture here so we cannot really judge this
+> > 			 * sutuation here but pro-actively flag this scenario
+> > 			 * and let do_try_to_free_pages to retry if
+> > 			 * there is no progress.
+> > 			 */
 > 
-> Thanks for your reply.
-> The reason for adding configuration is as follows：
-
-All those reasons should be a part of the changelog.
-
-> 1. Referring to [PATCH] psi: make disabling/enabling easier for vendor
-> kernels, the modification
-> is also applicable to vmpressure.
+> I've been drafting around with this, but it seems to say the same
+> thing as the comment I put into struct scan_control already:
 > 
-> 2. With the introduction of psi into the kernel, there are two memory
-> pressure monitoring methods，
-> it is not necessary to use both and it makes sense to make vmpressure
-> configurable.
+> 	/*
+> 	 * Cgroup memory below memory.low is protected as long as we
+> 	 * don't threaten to OOM. If any cgroup is reclaimed at
+> 	 * reduced force or passed over entirely due to its memory.low
+> 	 * setting (memcg_low_skipped), and nothing is reclaimed as a
+> 	 * result, then go back back for one more cycle that reclaims
+> 	 * the protected memory (memcg_low_reclaim) to avert OOM.
+> 	 */
+> 
+> How about a brief version of this with a pointer to the original?
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 701106e1829c..c32d686719d5 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2580,7 +2580,12 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  			unsigned long cgroup_size = mem_cgroup_size(memcg);
+>  			unsigned long protection;
+>  
+> -			/* memory.low scaling, make sure we retry before OOM */
+> +			/*
+> +			 * Soft protection must not cause reclaim failure. Let
+> +			 * the upper level know if we skipped pages during the
+> +			 * first pass, so it can retry if necessary. See the
+> +			 * struct scan_control definition of those flags.
+> +			 */
+>  			if (!sc->memcg_low_reclaim && low > min) {
+>  				protection = low;
+>  				sc->memcg_low_skipped = 1;
+> @@ -2853,16 +2858,16 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>  
+>  		if (mem_cgroup_below_min(memcg)) {
+>  			/*
+> -			 * Hard protection.
+> -			 * If there is no reclaimable memory, OOM.
+> +			 * Hard protection. Always respected. If there is not
+> +			 * enough reclaimable memory elsewhere, it's an OOM.
+>  			 */
+>  			continue;
+>  		} else if (mem_cgroup_below_low(memcg)) {
+>  			/*
+> -			 * Soft protection.
+> -			 * Respect the protection only as long as
+> -			 * there is an unprotected supply
+> -			 * of reclaimable memory from other cgroups.
+> +			 * Soft protection must not cause reclaim failure. Let
+> +			 * the upper level know if we skipped pages during the
+> +			 * first pass, so it can retry if necessary. See the
+> +			 * struct scan_control definition of those flags.
+>  			 */
+>  			if (!sc->memcg_low_reclaim) {
+>  				sc->memcg_low_skipped = 1;
 
-I am not sure these are sufficient justifications but that is something
-to discuss. And hence it should be a part of the changelog.
+Yes, this makes the situation more explicit. I still see some advantage
+to be explicit about those other layers as this will be easier to follow
+the code but I will certainly not insist.
 
-> 3. In the case where the user does not need vmpressure,  vmpressure
-> calculation is additional overhead.
+Andrew has already sent your original patch to Linus so this will need
+to go as a separate patch. For that
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-You should quantify that and argue why that overhead cannot be further
-reduced without config/boot time knobs.
+Thanks!
 
-> In some special scenes with tight memory, vmpressure will be executed
-> frequently.we use "likely" and "inline"
-> to improve the performance of the kernel, why not reduce some
-> unnecessary calculations?
-
-I am all for improving the code. Is it possible to do it by other means?
-E.g. reduce a potential overhead when there no events registered?
 -- 
 Michal Hocko
 SUSE Labs
