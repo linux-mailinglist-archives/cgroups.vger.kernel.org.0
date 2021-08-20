@@ -2,78 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BAD3F29BD
-	for <lists+cgroups@lfdr.de>; Fri, 20 Aug 2021 12:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70D33F2B2E
+	for <lists+cgroups@lfdr.de>; Fri, 20 Aug 2021 13:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237139AbhHTKDG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Aug 2021 06:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237006AbhHTKDF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Aug 2021 06:03:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EB9C061575
-        for <cgroups@vger.kernel.org>; Fri, 20 Aug 2021 03:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=nzUrzTYf+SxA9DhkR1ixsQBSLVoS1UsUtkY4TuBivPg=; b=JoPBlcJiFqV74veGWFe1sBI6Ng
-        sSqpzCCSwBgVyHB08j9McLOlR3cKFBhyMcM5xzEaYClvs4XfWxXAuSHiC9pg7sCuqkRwfYygAa5gd
-        qy3YJIAzot89NYNSk2ntP5jTiUBj05ROneWiPfxBo6F3HTFopgpp+RWecy19gWmSuafxTkyxR9CRh
-        X+sYrZArif2/DzhEAuXF4thtO+TjEybpgk7bks4HCQuY9KPg4zHXxwbG96bBpDUDCdX97Sb9OsYHF
-        iz3omvxWYed9N8aa6GScN9rCBQXVl7aWy9JbdSH0rob2x6BHLJ6atPqy2+vd5l9hz03G3V9AUFw3n
-        FTiz/57w==;
-Received: from [2001:4bb8:188:1b1:43a3:4b88:ec18:d4de] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mH1Jw-006LLa-Tk; Fri, 20 Aug 2021 10:00:42 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 2/2] mm: unexport {,un}lock_page_memcg
-Date:   Fri, 20 Aug 2021 11:58:15 +0200
-Message-Id: <20210820095815.445392-3-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210820095815.445392-1-hch@lst.de>
-References: <20210820095815.445392-1-hch@lst.de>
+        id S239324AbhHTL10 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Aug 2021 07:27:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42918 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232681AbhHTL1Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Aug 2021 07:27:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B6E2322176;
+        Fri, 20 Aug 2021 11:26:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629458806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DjkvT2NEndnW8rVNpc3XomY8rLqZ81An0wqzo8QeK40=;
+        b=vXeKWUgjEdvh/lzioOhY2eg1/DJt11NZzQwemLxBb1KWhRBfFMi6b7QTuZ1JdbPS1eepSt
+        1nQrFTETcDceXccTyi4TY0XNMakY7IZtrUwJJQteJvjs2CtVzVOdRGLDG1RK9kh9PKHJIY
+        rjQHUKHLxdKpIC0jRmQ7N8EZAtLzABo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id E63C2A3B88;
+        Fri, 20 Aug 2021 11:26:45 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 13:26:43 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     yongw.pur@gmail.com
+Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
+        vdavydov.dev@gmail.com, tglx@linutronix.de, peterz@infradead.org,
+        shakeelb@google.com, guro@fb.com, alexs@kernel.org,
+        richard.weiyang@gmail.com, sh_def@163.com, sfr@canb.auug.org.au,
+        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, yang.yang29@zte.com.cn,
+        wangyong <wang.yong@zte.com.cn>
+Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
+ notifier is enabled
+Message-ID: <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
+References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-These are only used in built-in core mm code.
+On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
+> From: wangyong <wang.yong@zte.com.cn>
+> 
+> Inspired by PSI features, vmpressure inotifier function should
+> also be configured to decide whether it is used, because it is an
+> independent feature which notifies the user of memory pressure.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- mm/memcontrol.c | 2 --
- 1 file changed, 2 deletions(-)
+Yes, it is an independent feature indeed but what is the actual reason
+to put a more configuration space here. Config options are not free both
+from the user experience POV as well as the code maintenance. Why do we
+need to disable this feature. Who can benefit from such a setup?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4cb4349065931..6a74a180e3eae 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2019,7 +2019,6 @@ void lock_page_memcg(struct page *page)
- {
- 	folio_memcg_lock(page_folio(page));
- }
--EXPORT_SYMBOL(lock_page_memcg);
- 
- static void __folio_memcg_unlock(struct mem_cgroup *memcg)
- {
-@@ -2052,7 +2051,6 @@ void unlock_page_memcg(struct page *page)
- {
- 	folio_memcg_unlock(page_folio(page));
- }
--EXPORT_SYMBOL(unlock_page_memcg);
- 
- struct obj_stock {
- #ifdef CONFIG_MEMCG_KMEM
+> So we add configuration to control whether vmpressure notifier is
+> enabled, and provide a boot parameter to use vmpressure notifier
+> flexibly.
+
+Flexibility is nice but not free as mentioned above.
+
+> Use Christoph Lamenter’s pagefault tool
+> (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
+> Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
+> To ensure that the vmpressure function is executed, we enable zram
+> and let the program occupy memory so that some memory is swapped out
+> 
+> unpatched:
+> Gb	Rep	Thr	CLine	User(s)	System(s) Wall(s) flt/cpu/s	fault/wsec
+> 2	1	1	1	0.1	0.97	1.13	485490.062	463533.34
+> 2	1	1	1	0.11	0.96	1.12	483086.072	465309.495
+> 2	1	1	1	0.1	0.95	1.11	496687.098	469887.643
+> 2	1	1	1	0.09	0.97	1.11	489711.434	468402.102
+> 2	1	1	1	0.13	0.94	1.12	484159.415	466080.941
+> average				0.106	0.958	1.118	487826.8162	466642.7042
+> 
+> patched and CONFIG_MEMCG_VMPRESSURE is not set:
+> Gb	Rep	Thr	CLine	User(s)	System(s) Wall(s) flt/cpu/s	fault/wsec
+> 2	1	1	1	0.1	0.96	1.1	490942.682	473125.98
+> 2	1	1	1	0.08	0.99	1.13	484987.521	463161.975
+> 2	1	1	1	0.09	0.96	1.09	498824.98	476696.066
+> 2	1	1	1	0.1	0.97	1.12	484127.673	465951.238
+> 2	1	1	1	0.1	0.97	1.11	487032		468964.662
+> average				0.094	0.97	1.11	489182.9712	469579.9842
+> 
+> According to flt/cpu/s, performance improved by 0.2% which is not obvious.
+
+I haven't checked how are those numbers calculated but from a very brief
+look it seems like the variation between different runs is higher than
+0.2%. Have you checked the average against standard deviation to get a
+better idea whether the difference is really outside of the noise?
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
