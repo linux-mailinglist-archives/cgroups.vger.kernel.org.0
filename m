@@ -2,97 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B043F698B
-	for <lists+cgroups@lfdr.de>; Tue, 24 Aug 2021 21:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EBD3F6BC3
+	for <lists+cgroups@lfdr.de>; Wed, 25 Aug 2021 00:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhHXTJh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Aug 2021 15:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
+        id S229482AbhHXWjX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Aug 2021 18:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhHXTJg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Aug 2021 15:09:36 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1726AC061757;
-        Tue, 24 Aug 2021 12:08:52 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id w6so12829753plg.9;
-        Tue, 24 Aug 2021 12:08:52 -0700 (PDT)
+        with ESMTP id S230016AbhHXWjW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Aug 2021 18:39:22 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DB1C061757
+        for <cgroups@vger.kernel.org>; Tue, 24 Aug 2021 15:38:38 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id e15so13147944plh.8
+        for <cgroups@vger.kernel.org>; Tue, 24 Aug 2021 15:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5v85tm4s0OVyrps1zXJuM/Q2kA3ef4+GfrXQL7ocGJo=;
-        b=eTWbKzVS+hWBZeRV4rxr+xSLbNZizV0nGboZUx/ayYMgYbiorgrctYYHDhadFmbZ6j
-         ta27nCsuAXS45M4Hjepp5eNSlYePNL+isUtTNjkiqXEh72tx089E1GZEtyuXb7SCM2Q5
-         iVPQr9ONqTQ7ApxFfWgeXjYx0NiXkgad2MW2TFs4lglI00xLqY+sB/hjQ2MlZyXvIK7e
-         61noAFQP4Cy8YqlDhsSx/O5BE2hxojhA5vib+QI4CX5QKb/cMgQzoytSSc500sHAiUzE
-         gQj+df8XIAWM0EcfJNj7vYwD3sD4xEaA3KHZiaR9RujEAW+GdI/lK0RW+bpGaPl/FiV6
-         qhvQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=fGh5kZcvAnxjmcxtT+MRwb9HIN9tIveHu2/+/A1PARg=;
+        b=jKg19U1vmUguY1Chc0WPzORnJhgJg/jRLWAk0uz2+quajj8OjrgmxwR0q5gatGCyhh
+         XUtBPYLlYfT0Dk0xO/HGI2N6+Ql53waDJ/7GtEeE5g2rQkQtxRF0UA7AAe5VH7aRq/Tt
+         HgoHmdpcLcPwVYpsT7/uyPKBs18Wa4U8OSxiX4l1XIf1HmnOc3MCrPx/5xbRJHLCaRvf
+         qZ4e1FvPBz2Fqq7k99XuKIgzK7MDp6i5I7U7nzIaH49w2w1mRAxZHeg47EC85/tU2Kgq
+         8mJJet9Q3gwIu9l196NZL+SLkTvTncp1hPT9khNNHRj7ofmpgz7fdmCTQAydDd2+/Yks
+         jnjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=5v85tm4s0OVyrps1zXJuM/Q2kA3ef4+GfrXQL7ocGJo=;
-        b=ZGepcOZm20qpS7LFtn0ylLWNvvnbjB+lIpWhzGa79Qq96Q9v/vnXTW86Jtf9XR4W8g
-         RT9Ado9QMhS9itAapwWCMsIOEFGtjfjAgNLRuaUjlB5UKoYYK6Z5ShYfyM7cW0BnowtL
-         cb/qQ+ScfHeTcnUrl/WPfhKhtcGsyKxK1AFNZX3/T6+EaDE58daiq8kXneCA//VLQ5gA
-         I5FCZEuHts74yz6iAoiQ160RGcIeQTv0tHGJaXR18pgRFiiiHcpeqvjaSS3Y8ar844NB
-         hDeI1Ejwhr1AjJNslEOW5oqm7hqGmlo6Ca3eotwmK7vDWiuXZyFYsbkUuySvwvZ+osmq
-         v6qw==
-X-Gm-Message-State: AOAM530Lm8r2EOP2NL+cBgRYVe7WQf+EW9EYKKygg/Zqrbc27GMpR9Gt
-        HYx42Nk67zwwbrEddHlIGWtgGZSEYfSDYg==
-X-Google-Smtp-Source: ABdhPJxKr33I/iZkaQWWR7IIGlvx+4TSVio521c+MFyplGVepWDFf2pfz/EveoDnK388RU3KlE33Vw==
-X-Received: by 2002:a17:90a:af8f:: with SMTP id w15mr5944488pjq.90.1629832131447;
-        Tue, 24 Aug 2021 12:08:51 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id q102sm3150182pjq.54.2021.08.24.12.08.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 12:08:51 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 24 Aug 2021 09:08:49 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     brookxu <brookxu.cn@gmail.com>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, vipinsh@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <YSVDwc/1sEmXdOK9@slm.duckdns.org>
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
- <20210824164423.GA11859@blackbody.suse.cz>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=fGh5kZcvAnxjmcxtT+MRwb9HIN9tIveHu2/+/A1PARg=;
+        b=QnQAVqjB79ytGDzFCrpeSOBnKjVHyjE+EUYQSllczh4+NpQkhCE87QQY0RuZDCRxWj
+         ZbQa9P/lK1FiAETqTiThzIeJ08ZeJSG1lKSx5eqDs24pn83ymCw0fMiQQSj0DCWsiN6T
+         69rfqmq9ISls8AG7FD+Onw+mA1hWvvvdlt0OvAagzp79fjUZ6qjRqISRNSId2Q9gdVIY
+         4gYjtF3xSkXlCyJ5a8yTfnxxqio8xm5AZTrJjDpurZQ05zaAhNuljlMwIflBJk4zoiWn
+         Sr/GDhnps7d8p0hZfwXQOIOY8nesjBTtlLxWoO4taWND2rDgNFIgXDx61rHXrnX0Nq9k
+         5Srw==
+X-Gm-Message-State: AOAM5305LZ0QVYHU7jJ810E9xSrjCSl8p9kPfKVCSD2XPVgzw7FtKJfq
+        LgCrIIeU50x8LM25hF6Un/DSVyJlljrnHYZrzw==
+X-Google-Smtp-Source: ABdhPJytVhXyz95CgeOVZnAzP65VXLfKEiGWL5IfutciixrCXiyTgsvXwIwSGkHISoMLcTNzQwMvJY7kk9WIahbkY7A=
+X-Received: by 2002:a17:902:be0d:b0:12d:cb3c:3e7f with SMTP id
+ r13-20020a170902be0d00b0012dcb3c3e7fmr35061069pls.0.1629844717768; Tue, 24
+ Aug 2021 15:38:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210824164423.GA11859@blackbody.suse.cz>
+Received: by 2002:a05:6a11:48aa:0:0:0:0 with HTTP; Tue, 24 Aug 2021 15:38:37
+ -0700 (PDT)
+Reply-To: mrstambarker01@gmail.com
+From:   "Mrs. Tamara Barker" <adisonamelie0303@gmail.com>
+Date:   Tue, 24 Aug 2021 15:38:37 -0700
+Message-ID: <CACTNVQnAvep37WEsrw+FAtKZ-zSBVZiC2t8SkEL29yefhFj_Qg@mail.gmail.com>
+Subject: From Mrs.Tamara Barker
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+From Mrs.Tamara Barker
 
-On Tue, Aug 24, 2021 at 06:44:23PM +0200, Michal Koutný wrote:
-> However, the non-hierarchical failcnt interface looks like v1ism to me
-> (I think new features should come with v2 first in mind).
-> What about exposing this in misc.events file with max.$res_name entries? 
+ I am Mrs.  Tamara Barker, American citizen, married to a British
+citizen, I am suffering from breast cancer. I came to you because of
+my health, and to join hands with me to use my late husband's funds
+of usd$5M to help the less privileged.
 
-Ah yeah, good point. misc.events sounds like a good spot to put these.
-
-> Or if the hierarchical reporting is unnecessary now, there can be just
-> misc.events.local for starters.
-
-I'd prefer to stick with hierarchical counting as the first step at least.
-
-> (That reminds me the forgotten pids.events[.local] rework [1], oops.)
-> 
-> https://lore.kernel.org/lkml/20191128172612.10259-1-mkoutny@suse.com/#t
-
-I think both counters are useful - the number of failures due to this type
-of limit in this subhierarchy, and the number of failures caused by this
-particular limit in this subhierarchy. It's a pretty subtle difference to
-encapsulate in a counter name tho.
-
-Thanks.
-
--- 
-tejun
+I will be delighted to hear from you and explain further Thanks and
+God bless you
+Mrs.  Tamara Barker
+mrstambarker01@gmail.com
