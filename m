@@ -2,83 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECF93F630C
-	for <lists+cgroups@lfdr.de>; Tue, 24 Aug 2021 18:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42AE3F697C
+	for <lists+cgroups@lfdr.de>; Tue, 24 Aug 2021 21:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhHXQpK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Aug 2021 12:45:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50060 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhHXQpK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Aug 2021 12:45:10 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 78C621FDB4;
-        Tue, 24 Aug 2021 16:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629823464; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z2MS98YdJwtJG8FeEq/L2x2vYouQos57GNWyqg6QJyA=;
-        b=hglYmTZ0ibs1kipNcDW5ppNCm78oIvq31YUQTGxYE8JL/H3Wp8stjoxc6XSfbVqbCPZWyt
-        dASzpF/UoW3GZDFju1KQQEVfGEgc/19+HZjo10yyqbLoV3XhjN/WiOCz7eUY3CydwdrSeP
-        hjtEnkPekDuCd/Wzr5eXZa4izsSh76k=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 522C113A5B;
-        Tue, 24 Aug 2021 16:44:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id iTNtE+ghJWG1XQAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Tue, 24 Aug 2021 16:44:24 +0000
-Date:   Tue, 24 Aug 2021 18:44:23 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        vipinsh@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
- failures
-Message-ID: <20210824164423.GA11859@blackbody.suse.cz>
-References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
+        id S233900AbhHXTFT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Aug 2021 15:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhHXTFS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Aug 2021 15:05:18 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E11C061757;
+        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q3so998131plx.4;
+        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
+        b=InWzEdcms5aFyJNybcPjVBSg4/YyHC4fs7zj6R3+Yv8npQ+KHDzLn7itVIJu+p0sHT
+         Q6/AUyTgYzD4VmqdR9mT1dT/7tCLVlhkqQ/1fiIhbCTjlCBCkR0yPpVP4Ca8n7w2ruLK
+         XWlTNoMagLkN9eGT4Cw2YtHTD8+Z3VwnEmanlqU5CZ0xTq6kvLeWtXHeIAqIeABYjt0f
+         d3erx68+4v5ESugAEzgpSqPJvh3Y/ygsLs1WR4yWXbCmSqKrnG7ph4qWLPKhvlxAPqQn
+         sKyLbd5GGKgF0NFzQJ/4M8M/eNrdTnpp2PZvqEyxbd5bFuVuIpnAOVFlYGR1lUTG1JJ5
+         CFDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
+        b=lS4W5pM2Wl0BBsmO52qQMvrliPU6rbS8gxrMsakpZONEcSGQcPqgserR6rOkgXmprY
+         +/dmMVWjswUy83IcdTSVaG7JKe4H9l6QPJGOlftdakPHVAmPdMqw0kl8TB0tKjXP5oEf
+         uDDj+W+IpnKauHAdbEpIY94nqIrgJXlo6MxGciKlLhCYZUhsRQ9phQZCW7JzqG/5TGDW
+         jGeZS9bANaqUJwAVqwcL2gRIVnrPNlkOa0daunmXMROy0LKJTmajuesUoe05PTSvCdtT
+         nBmocAlmLqo0nP+i1l06W2WBxR4GdgMzGtLj2RHuwPh3/vkd2gQPc2CaYQqWgnk2XZdY
+         lUwQ==
+X-Gm-Message-State: AOAM530vvaKQzfH/jFhSQZY2Yv8Btzl/TS5JfV2etjXK/wKGV3b3pM2V
+        S9o4nawErxQR9SSaG8TAoAo=
+X-Google-Smtp-Source: ABdhPJyhbBipA6XjYTSx4y0PY5Ht0XzmDWNUtPlnqLHfabUjvvNeTCPw9WKJzvTRd4sM/RPuAgOVYw==
+X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr6071898pjm.178.1629831873686;
+        Tue, 24 Aug 2021 12:04:33 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id y12sm19425378pfa.25.2021.08.24.12.04.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 12:04:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 24 Aug 2021 09:04:31 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YSVCv0WjTzwPUWUN@slm.duckdns.org>
+References: <20210814205743.3039-1-longman@redhat.com>
+ <20210814205743.3039-6-longman@redhat.com>
+ <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
+ <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+Hello,
 
-On Sat, Aug 14, 2021 at 08:15:16AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> 1. If a large number of containers are created and deleted,
->    there will be a lot of error logs.
-> 2. According to an error log, we cannot better understand
->    the actual pressure of resources.
-> 
-> Therefore, perhaps we should use a failcnt counter to count
-> the number of failures, so that we can easily understand the
-> actual pressure of resources and avoid too many error log..
+On Tue, Aug 24, 2021 at 01:35:33AM -0400, Waiman Long wrote:
+> Sorry for the late reply as I was on vacation last week.
 
-This is an understandable use case and generally the implementation via
-the counter is good as well.
+No worries. Hope you enjoyed the vacation. :)
 
-However, the non-hierarchical failcnt interface looks like v1ism to me
-(I think new features should come with v2 first in mind).
-What about exposing this in misc.events file with max.$res_name entries? 
+> > All the above ultimately says is that "a new task cannot be moved to a
+> > partition root with no effective cpu", but I don't understand why this would
+> > be a separate rule. Shouldn't the partition just stop being a partition when
+> > it doesn't have any exclusive cpu? What's the benefit of having multiple its
+> > own failure mode?
+>
+> A partition with 0 cpu can be considered as a special partition type for
+> spawning child partitions. This can be temporary as the cpus will be given
+> back when a child partition is destroyed.
 
-Or if the hierarchical reporting is unnecessary now, there can be just
-misc.events.local for starters.
+But it can also happen by cpus going offline while the partition is
+populated, right? Am I correct in thinking that a partition without cpu is
+valid if its subtree contains cpus and invalid otherwise? If that's the
+case, it looks like the rules can be made significantly simpler. The parent
+cgroups never have processes anyway, so a partition is valid if its subtree
+contains cpus, invalid otherwise.
 
-(That reminds me the forgotten pids.events[.local] rework [1], oops.)
+> > So, I think this definitely is a step in the right direction but still seems
+> > to be neither here or there. Before, we pretended that we could police the
+> > input when we couldn't. Now, we're changing the interface so that it
+> > includes configuration failures as an integral part; however, we're still
+> > policing some particular inputs while letting other inputs pass through and
+> > trigger failures and why one is handled one way while the other differently
+> > seems rather arbitrary.
+> > 
+> The cpu_exclusive and load_balance flags are attributes associated directly
+> with the partition type. They are not affected by cpu availability or
+> changing of cpu list. That is why they are kept even when the partition
+> become invalid. If we have to remove them, it will be equivalent to changing
+> partition back to member and we may not need an invalid partition type at
+> all. Also, we will not be able to revert back to partition again when the
+> cpus becomes available.
 
-Michal
+Oh, yeah, I'm not saying to lose those states. What I'm trying to say is
+that the rules and failure modes seem a lot more complicated than they need
+to be. If the configuration becomes invalid for whatever reason, transition
+the partition into invalid state and report why. If the situation resolves
+for whatever reason, transition it back to valid state. Shouldn't that work?
 
-https://lore.kernel.org/lkml/20191128172612.10259-1-mkoutny@suse.com/#t
+Thanks.
 
+-- 
+tejun
