@@ -2,60 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5BA3F7CA5
-	for <lists+cgroups@lfdr.de>; Wed, 25 Aug 2021 21:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A683F7CAC
+	for <lists+cgroups@lfdr.de>; Wed, 25 Aug 2021 21:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhHYTWy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Aug 2021 15:22:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20020 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237397AbhHYTWy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Aug 2021 15:22:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629919327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7z03hZuDBTQ0h38/Oi8p6IqjEpIuhunBdpC+bYuyK4g=;
-        b=IAVFLM0a/FgICHYJlrZ559UWshNFTf9WDcxTRcKNHOr5L0KLWvePc2T/TESA/d7dv/lZTx
-        hDUYnL4rGRywX/bi66mVSjt6cgneTXiqiieYfUiIubTuuJLJ9neW/M6TJJYxIXEMi60LQ3
-        YWl0d+1+tdtRQg5xHsMXqMl8nuRNvGE=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-xnTU3DDaMAaC2g5i-qe09w-1; Wed, 25 Aug 2021 15:22:06 -0400
-X-MC-Unique: xnTU3DDaMAaC2g5i-qe09w-1
-Received: by mail-qk1-f197.google.com with SMTP id v21-20020a05620a0a9500b003d5c1e2f277so293649qkg.13
-        for <cgroups@vger.kernel.org>; Wed, 25 Aug 2021 12:22:06 -0700 (PDT)
+        id S239220AbhHYTZP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Aug 2021 15:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236654AbhHYTZO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Aug 2021 15:25:14 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2154CC061757;
+        Wed, 25 Aug 2021 12:24:28 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so4815082pjb.3;
+        Wed, 25 Aug 2021 12:24:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:84;0;0cto;
+        bh=PGxtjBFxPgG3Jd9Zpl37bDstSoJ0Gj+kNpbO5xi0BEw=;
+        b=SqsbO1EwGVFKKZI4L7H6CKN1OWwR+R4V6j6RZ/XwrfaNg7tatBfXGORpM/dsXhuRWX
+         1gGcpWO7f4fzfSW3sYTHcJzW74XYyF/lnRct3FlyvJdYRLeERW2cbhTE0121qCKQhbkO
+         j7cUUVCjDL+r+QJMGc2QBnOeQwaVJ1fwStUtZWPCRkJLYsxEG1Dp8np9JLU5bnFM7d7n
+         JMkhwIhU48DZ9uOPs5cIaW6cr8mIltTcfJ+woL5GfhljTDGhcYWcRo2CWIeqOs5u4FKh
+         9LH75bTT9EP48nvcrzlGn1TH5wICzP5ov/p/cyLPTf8oZ1yMh/9k78X3Zi1L4UjoNDm7
+         T0+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=7z03hZuDBTQ0h38/Oi8p6IqjEpIuhunBdpC+bYuyK4g=;
-        b=bIZdFVlXrlXJO5bxMaGHNKcGE9gbV6i93nGiAYy7n7y1Ifijp69ukEMRYNgb83w3pL
-         AYdsZD6ZtilRqOdMwCKSQovYxVfMqW1dNhPbkB2vMHD+udyfPb2UdxVtcjIs87Mpxi24
-         Hrgg67cGFGLCEPBUOxm5kjKoVm/I3gxCd9PELCv+6i9VzCIQm8zs5Wg0DWWfksmEqYKW
-         qm7xA+6oA2W+IErmmBnIDlM11reAMM8o/AIaIRWFNUF/z3sYWiCcZ8ibDg33YIAeN+zr
-         eG7xfSxdUOKoY0Lc0AyeuuviIaep7bVgogdVEj5WltAjfLNc1RX9vGMnNkgiN1GRTE97
-         p8kw==
-X-Gm-Message-State: AOAM533VQIQznHNtlFUTFiEm1JryN+gf6kkgpJOiilxHb0VdBKh+9JUn
-        BRrxUb7qC7VBP7thWEruHpaw3iX2d4tBCpPRcFjXlroepumjHoOD4ylSqNN7e1QKRarZL5nTCEN
-        crpPdevHDjqsc7utC9w==
-X-Received: by 2002:a05:620a:ce6:: with SMTP id c6mr112441qkj.384.1629919321888;
-        Wed, 25 Aug 2021 12:22:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw+HJledI458RfarxWz1CFx7kJ5Fy8JunQsfebD6su3xj4Q/BGYlb0USIlJYWgzjRHqzajaAg==
-X-Received: by 2002:a05:620a:ce6:: with SMTP id c6mr112402qkj.384.1629919321194;
-        Wed, 25 Aug 2021 12:22:01 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id m187sm652139qkd.131.2021.08.25.12.21.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Aug 2021 12:22:00 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
+        h=x-gm-message-state:sender:date:from:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:84;0;0cto;
+        bh=PGxtjBFxPgG3Jd9Zpl37bDstSoJ0Gj+kNpbO5xi0BEw=;
+        b=piUhJwUhpgYf9yKt4O7nnPp000Oz+yh+7jFGMHR7jINHSQkTATk9Lu8znnrUbYQpXx
+         O92i1l7hrVEexoAbp3CY5LMZrS7BwVRb488K6dAEFOqesRygNDc/QXC8HF+enuEiQjHT
+         KTbYFHP1AKi6sSVOaSlvZJz4UMGQ6IuM5kuiE5TqwkPtStfjOVst8cCID1bdbZYFvJpz
+         T7wwKRBX8Fj9UufQ3slhnMZzEBaKQDZthLFJqw1n1vO4F8Ia96HkzOJjZEChfK1b6KmT
+         9ZwL+QX8OahZgHrf1CIYIaACG302130hqbWTXQigdTt87uB0EC20VhdO5EjfStPZ2STm
+         Cmug==
+X-Gm-Message-State: AOAM533T63x83Kh8uvI7CPmMSJtmwcUZt1cENrNU8ORS68qxra0iS747
+        YZty03cmvAw8SNHI+jObfXY=
+X-Google-Smtp-Source: ABdhPJzcYsvA9r2rerZdhGMEavTs6kvS9wilCSHl3DkaXZchE9YYxbWlcghNlLlUYImzSpqn+Spu4A==
+X-Received: by 2002:a17:902:b084:b029:12b:6caa:7d9e with SMTP id p4-20020a170902b084b029012b6caa7d9emr176051plr.57.1629919467563;
+        Wed, 25 Aug 2021 12:24:27 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id x4sm504283pfu.65.2021.08.25.12.24.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Aug 2021 12:24:26 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 25 Aug 2021 09:24:25 -1000
+From:   Tejun Heo <tj@kernel.org>
 Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -68,72 +62,37 @@ Cc:     Zefan Li <lizefan.x@bytedance.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YSaY6SbKMD2b3Oec@slm.duckdns.org>
 References: <20210814205743.3039-1-longman@redhat.com>
- <20210814205743.3039-6-longman@redhat.com> <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
+ <20210814205743.3039-6-longman@redhat.com>
+ <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
  <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
  <YSVCv0WjTzwPUWUN@slm.duckdns.org>
-Message-ID: <af7ad628-62f4-848b-7eaa-1c9eb62355b6@redhat.com>
-Date:   Wed, 25 Aug 2021 15:21:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <af7ad628-62f4-848b-7eaa-1c9eb62355b6@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YSVCv0WjTzwPUWUN@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <af7ad628-62f4-848b-7eaa-1c9eb62355b6@redhat.com>
+84;0;0cTo: Waiman Long <llong@redhat.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/24/21 3:04 PM, Tejun Heo wrote:
-> Hello,
->
-> On Tue, Aug 24, 2021 at 01:35:33AM -0400, Waiman Long wrote:
->> Sorry for the late reply as I was on vacation last week.
-> No worries. Hope you enjoyed the vacation. :)
->
->>> All the above ultimately says is that "a new task cannot be moved to a
->>> partition root with no effective cpu", but I don't understand why this would
->>> be a separate rule. Shouldn't the partition just stop being a partition when
->>> it doesn't have any exclusive cpu? What's the benefit of having multiple its
->>> own failure mode?
->> A partition with 0 cpu can be considered as a special partition type for
->> spawning child partitions. This can be temporary as the cpus will be given
->> back when a child partition is destroyed.
-> But it can also happen by cpus going offline while the partition is
-> populated, right? Am I correct in thinking that a partition without cpu is
-> valid if its subtree contains cpus and invalid otherwise? If that's the
-> case, it looks like the rules can be made significantly simpler. The parent
-> cgroups never have processes anyway, so a partition is valid if its subtree
-> contains cpus, invalid otherwise.
-Yes, that is true. Thanks for the simplification.
->
->>> So, I think this definitely is a step in the right direction but still seems
->>> to be neither here or there. Before, we pretended that we could police the
->>> input when we couldn't. Now, we're changing the interface so that it
->>> includes configuration failures as an integral part; however, we're still
->>> policing some particular inputs while letting other inputs pass through and
->>> trigger failures and why one is handled one way while the other differently
->>> seems rather arbitrary.
->>>
->> The cpu_exclusive and load_balance flags are attributes associated directly
->> with the partition type. They are not affected by cpu availability or
->> changing of cpu list. That is why they are kept even when the partition
->> become invalid. If we have to remove them, it will be equivalent to changing
->> partition back to member and we may not need an invalid partition type at
->> all. Also, we will not be able to revert back to partition again when the
->> cpus becomes available.
-> Oh, yeah, I'm not saying to lose those states. What I'm trying to say is
-> that the rules and failure modes seem a lot more complicated than they need
-> to be. If the configuration becomes invalid for whatever reason, transition
-> the partition into invalid state and report why. If the situation resolves
-> for whatever reason, transition it back to valid state. Shouldn't that work?
+Hello,
 
-I agree that the current description is probably more complicated than 
-it should be. I will try to fix that.
+On Wed, Aug 25, 2021 at 03:21:59PM -0400, Waiman Long wrote:
+> I agree that the current description is probably more complicated than it
+> should be. I will try to fix that.
 
-Thanks,
-Longman
+To avoid repeating back-and-forth with all the code changes, would it help
+if you first describe the intended behaviors whether that's in the form of
+doc patch or just informal description?
 
+Thank you.
 
+-- 
+tejun
