@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE273F81EE
-	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 07:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A6B3F81FE
+	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 07:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238100AbhHZFHm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Aug 2021 01:07:42 -0400
-Received: from mga05.intel.com ([192.55.52.43]:62324 "EHLO mga05.intel.com"
+        id S233575AbhHZFXn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Aug 2021 01:23:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34224 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235468AbhHZFHm (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 26 Aug 2021 01:07:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="303247324"
+        id S229753AbhHZFXm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 26 Aug 2021 01:23:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217672121"
 X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="scan'208";a="303247324"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 22:06:55 -0700
+   d="scan'208";a="217672121"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 22:22:55 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="scan'208";a="686813399"
+   d="scan'208";a="598362636"
 Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 25 Aug 2021 22:06:54 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 25 Aug 2021 22:22:54 -0700
 Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mJ7bJ-0000mS-Jc; Thu, 26 Aug 2021 05:06:53 +0000
-Date:   Thu, 26 Aug 2021 13:06:25 +0800
+        id 1mJ7qn-0000n9-RX; Thu, 26 Aug 2021 05:22:53 +0000
+Date:   Thu, 26 Aug 2021 13:22:36 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.15] BUILD SUCCESS
- 9f72daf7edfa8f7e86ce8940d52266b5e931dcb0
-Message-ID: <61272151.le20PzJD/+scJcQD%lkp@intel.com>
+Subject: [cgroup:for-next] BUILD SUCCESS
+ a057486e0fc1cb169d6888f28292300126329766
+Message-ID: <6127251c.zSNuiEMbhNDhGztI%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.15
-branch HEAD: 9f72daf7edfa8f7e86ce8940d52266b5e931dcb0  cgroup/cpuset: Avoid memory migration when nodemasks match
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: a057486e0fc1cb169d6888f28292300126329766  Merge branch 'for-5.15' into for-next
 
-elapsed time: 720m
+elapsed time: 736m
 
-configs tested: 153
+configs tested: 143
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -67,11 +67,6 @@ arm                       aspeed_g4_defconfig
 mips                      bmips_stb_defconfig
 arm                            xcep_defconfig
 arm                            mps2_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                      katmai_defconfig
-xtensa                  audio_kc705_defconfig
-powerpc                    gamecube_defconfig
-mips                      maltasmvp_defconfig
 powerpc                   microwatt_defconfig
 arm                         assabet_defconfig
 sh                           se7343_defconfig
@@ -93,12 +88,11 @@ powerpc                 mpc8540_ads_defconfig
 arm                             mxs_defconfig
 arm                            pleb_defconfig
 sh                            shmin_defconfig
-sh                               j2_defconfig
-powerpc                      arches_defconfig
-arc                            hsdk_defconfig
-mips                         tb0226_defconfig
-arm                        neponset_defconfig
+xtensa                    xip_kc705_defconfig
+sparc                            alldefconfig
+mips                    maltaup_xpa_defconfig
 powerpc                 mpc837x_mds_defconfig
+arm                        multi_v7_defconfig
 powerpc                     ksi8560_defconfig
 riscv                          rv32_defconfig
 sh                            titan_defconfig
@@ -112,10 +106,6 @@ sparc                       sparc32_defconfig
 mips                        vocore2_defconfig
 arm                        oxnas_v6_defconfig
 powerpc                 mpc8315_rdb_defconfig
-arm                            zeus_defconfig
-sh                 kfr2r09-romimage_defconfig
-powerpc                     tqm8555_defconfig
-arm                         lpc32xx_defconfig
 arm                             pxa_defconfig
 powerpc                     tqm8540_defconfig
 microblaze                      mmu_defconfig
