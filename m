@@ -2,137 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41D83F886C
-	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 15:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209093F8CF1
+	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 19:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhHZNNC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Aug 2021 09:13:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52518 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhHZNNC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Aug 2021 09:13:02 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 38A931FD3F;
-        Thu, 26 Aug 2021 13:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629983534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yDDVzWBIyA6YbwDsNboXLU1D63o94APUAg+7fxjXrqw=;
-        b=VAOrEfSZ5nMlMZoT/Qz9t7idhIUjt4cLZY8SfRvhsPnZTAhFV9+EP0/MZ+H8rmA7OftVbg
-        6vfwMGGbezOhvVj5sjYrW60KgbsxYRIcqDysh5haTXPn7fHQOretWUo0EIChjlBuNU3aNY
-        CNi5tkMwK/fhXl51m7AXITTZRL3Vits=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1E74A132FD;
-        Thu, 26 Aug 2021 13:12:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id FGlkBi6TJ2GMTwAAGKfGzw
-        (envelope-from <mkoutny@suse.com>); Thu, 26 Aug 2021 13:12:14 +0000
-Date:   Thu, 26 Aug 2021 15:12:12 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
+        id S243103AbhHZR0S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Aug 2021 13:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232775AbhHZR0Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Aug 2021 13:26:16 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789F0C0613C1;
+        Thu, 26 Aug 2021 10:25:28 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id k24so3635333pgh.8;
+        Thu, 26 Aug 2021 10:25:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wg3NGSKG8aeY7CfUKjajWr4BQ6jE7IKLYam6kXWpQR4=;
+        b=FatKQJFGvF/uj4c0Nq7U98B9Wxi4EGgW/sF5kqboMN0PeaRo4s0JRHucj7JtTUJziS
+         CEyuGxH/MDGiBkM8ahWO1ogWn/STms5ZQtaBM1ux/7Knf2VDDuICgA+frGaQgoyTdlAl
+         MMuZuPWQw5Hu81El1wEZCOGc66b3/dRY5veu07iWn+9DHz7i42pEGCu5m66ZJHkgzoE2
+         vsOpCTUTrDCNQlUnCXishzRWxHnU9G89l0IDTrEnadjFvl6GcrkvHnGdeUuaqPDzN3LY
+         owiA4Hhm5e/61zLicZIProXx/hS7Tg55CE+iNcSBbnK/wH2Fol6jBvvGmPHoxUu+gyd4
+         fGoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=wg3NGSKG8aeY7CfUKjajWr4BQ6jE7IKLYam6kXWpQR4=;
+        b=GyTAOSwbCyX1RzytElh3EgNOxVHssaZdfTwUZNzqINU/iL439nHcCGotqf3b3eIiLd
+         3TDrMB85ju6Ch/jWJb7DBdRXNvrXC3wCSDJUJ29EzffQAjAfpybmei+umhthyPfe/2E2
+         4A86MXItIaNPljIKYCFyg9ajkboRjijB6s3CPk7AZLKkn0tGQ6swzLdJ1CCZJUFt4Nq/
+         XUDYd9vA4o5JPP137WHvKpc9HXPTWDj0CgBP+M35WZ5jdEqHziZEJLCRvcm2PbYg6qRX
+         cY05uLlmmHqdwb1EQAbNbbWJwWN/s/AfbXpdQNjdazxTwSvCqNEvNrkUARzwS1fyg3Os
+         G03g==
+X-Gm-Message-State: AOAM533X7VAbAS0ExqbRpAOgUsKMJ9cW+MWarx5k5y4NkrrSIIJCexKz
+        wnzsQILtwKkdPeQVMDkUA/w=
+X-Google-Smtp-Source: ABdhPJxoLQ2Vjm9jEu975SKkK2f6C/Bx7IXPRMdhI++8Dm9G1SmRWFfX0y/Mh8AX3aboTF+uItwGPg==
+X-Received: by 2002:a65:6487:: with SMTP id e7mr4208082pgv.27.1629998727774;
+        Thu, 26 Aug 2021 10:25:27 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:a096])
+        by smtp.gmail.com with ESMTPSA id p3sm9547728pjt.0.2021.08.26.10.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 10:25:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 26 Aug 2021 07:25:24 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>,
         linux-block <linux-block@vger.kernel.org>,
         Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org
 Subject: Re: BFQ cgroup weights range
-Message-ID: <20210826131212.GE4520@blackbody.suse.cz>
+Message-ID: <YSfOhM9+uJ5/FzY2@mtj.duckdns.org>
 References: <20210824105626.GA11367@blackbody.suse.cz>
  <EC36D67F-D7CC-4059-8D3B-E0E64DFC3ADB@linaro.org>
+ <20210826131212.GE4520@blackbody.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <EC36D67F-D7CC-4059-8D3B-E0E64DFC3ADB@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210826131212.GE4520@blackbody.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 02:51:47PM +0200, Paolo Valente <paolo.valente@linaro.org> wrote:
-> BFQ inherited these constants when we forked it from CFQ.  I'm ok with
-> increasing max weight to 10000.  I only wonder whether this would
-> break some configuration, as the currently maximum weight would not be
-> the maximum weight any longer.
+On Thu, Aug 26, 2021 at 03:12:12PM +0200, Michal Koutný wrote:
+> On Tue, Aug 24, 2021 at 02:51:47PM +0200, Paolo Valente <paolo.valente@linaro.org> wrote:
+> > BFQ inherited these constants when we forked it from CFQ.  I'm ok with
+> > increasing max weight to 10000.  I only wonder whether this would
+> > break some configuration, as the currently maximum weight would not be
+> > the maximum weight any longer.
+> 
+> Thanks for the reply. Let me form the idea as a patch (and commit
+> message) and discuss based on that if needed (+ccrosspost into cgroups
+> ML).
+> 
+> -- >8 --
+> From: Michal Koutný <mkoutny@suse.com>
+> Subject: [PATCH] block, bfq: Accept symmetric weight adjustments
+> 
+> The allowed range for BFQ weights is currently 1..1000 with 100 being
+> the default. There is no apparent reason to not accept weight
+> adjustments of same ratio on both sides of the default. This change
+> makes the attribute domain consistent with other cgroup (v2) knobs with
+> the weight semantics.
+> 
+> This extension of the range does not restrict existing configurations
+> (quite the opposite). This may affect setups where weights >1000 were
+> attempted to be set but failed with the default 100. Such cgroups would
+> attain their intended weight now. This is a changed behavior but it
+> rectifies the situation (similar intention to the commit 69d7fde5909b
+> ("blkcg: use CGROUP_WEIGHT_* scale for io.weight on the unified
+> hierarchy") for CFQ formerly (and v2 only)).
+> 
+> Additionally, the changed range does not imply all IO workloads can be
+> really controlled to achieve the widest possible ratio 1:10^4.
+> 
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-Thanks for the reply. Let me form the idea as a patch (and commit
-message) and discuss based on that if needed (+ccrosspost into cgroups
-ML).
+Looks fine to me.
 
--- >8 --
-From: Michal Koutný <mkoutny@suse.com>
-Subject: [PATCH] block, bfq: Accept symmetric weight adjustments
+Acked-by: Tejun Heo <tj@kernel.org>
 
-The allowed range for BFQ weights is currently 1..1000 with 100 being
-the default. There is no apparent reason to not accept weight
-adjustments of same ratio on both sides of the default. This change
-makes the attribute domain consistent with other cgroup (v2) knobs with
-the weight semantics.
+Thanks.
 
-This extension of the range does not restrict existing configurations
-(quite the opposite). This may affect setups where weights >1000 were
-attempted to be set but failed with the default 100. Such cgroups would
-attain their intended weight now. This is a changed behavior but it
-rectifies the situation (similar intention to the commit 69d7fde5909b
-("blkcg: use CGROUP_WEIGHT_* scale for io.weight on the unified
-hierarchy") for CFQ formerly (and v2 only)).
-
-Additionally, the changed range does not imply all IO workloads can be
-really controlled to achieve the widest possible ratio 1:10^4.
-
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- Documentation/admin-guide/cgroup-v1/blkio-controller.rst | 2 +-
- Documentation/block/bfq-iosched.rst                      | 2 +-
- block/bfq-iosched.h                                      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/blkio-controller.rst b/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
-index 16253eda192e..48559541c9d8 100644
---- a/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
-+++ b/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
-@@ -102,7 +102,7 @@ Proportional weight policy files
- 	  on all the devices until and unless overridden by per device rule
- 	  (see `blkio.bfq.weight_device` below).
- 
--	  Currently allowed range of weights is from 1 to 1000. For more details,
-+	  Currently allowed range of weights is from 1 to 10000. For more details,
-           see Documentation/block/bfq-iosched.rst.
- 
-   blkio.bfq.weight_device
-diff --git a/Documentation/block/bfq-iosched.rst b/Documentation/block/bfq-iosched.rst
-index df3a8a47f58c..88b5251734ce 100644
---- a/Documentation/block/bfq-iosched.rst
-+++ b/Documentation/block/bfq-iosched.rst
-@@ -560,7 +560,7 @@ For each group, the following parameters can be set:
- 
-   weight
-         This specifies the default weight for the cgroup inside its parent.
--        Available values: 1..1000 (default: 100).
-+        Available values: 1..10000 (default: 100).
- 
-         For cgroup v1, it is set by writing the value to `blkio.bfq.weight`.
- 
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 99c2a3cb081e..786b7f926dd2 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -16,7 +16,7 @@
- #define BFQ_CL_IDLE_TIMEOUT	(HZ/5)
- 
- #define BFQ_MIN_WEIGHT			1
--#define BFQ_MAX_WEIGHT			1000
-+#define BFQ_MAX_WEIGHT			10000
- #define BFQ_WEIGHT_CONVERSION_COEFF	10
- 
- #define BFQ_DEFAULT_QUEUE_IOPRIO	4
 -- 
-2.32.0
-
+tejun
