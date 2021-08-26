@@ -2,201 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A6B3F81FE
-	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 07:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F65A3F8685
+	for <lists+cgroups@lfdr.de>; Thu, 26 Aug 2021 13:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhHZFXn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Aug 2021 01:23:43 -0400
-Received: from mga09.intel.com ([134.134.136.24]:34224 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhHZFXm (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 26 Aug 2021 01:23:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10087"; a="217672121"
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="scan'208";a="217672121"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2021 22:22:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,352,1620716400"; 
-   d="scan'208";a="598362636"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Aug 2021 22:22:54 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mJ7qn-0000n9-RX; Thu, 26 Aug 2021 05:22:53 +0000
-Date:   Thu, 26 Aug 2021 13:22:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-next] BUILD SUCCESS
- a057486e0fc1cb169d6888f28292300126329766
-Message-ID: <6127251c.zSNuiEMbhNDhGztI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S241905AbhHZLao (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Aug 2021 07:30:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37246 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233829AbhHZLan (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Aug 2021 07:30:43 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CA87020192;
+        Thu, 26 Aug 2021 11:29:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629977395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IN2Dtsa48cpPIFgznxW6CFNis9T0sGloZqOdQstyxAo=;
+        b=M+31mAg0zGIMPzDxcdU19Pxt7nwlp+rrH9dYqxplbi8iG3GiPB7PHCSVgk3FfheCJFRxXg
+        ulMuwr76znAH/IGQnRHgKr2k5NYpeW4BiHjWEndgG7ZBZl/bbwAi80S00H/GjH7PlxevmC
+        /esdDomCduAV0AEL4GdMz040vAT3Fag=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AB94613318;
+        Thu, 26 Aug 2021 11:29:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id y9nSKDN7J2HENwAAGKfGzw
+        (envelope-from <mkoutny@suse.com>); Thu, 26 Aug 2021 11:29:55 +0000
+Date:   Thu, 26 Aug 2021 13:29:54 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, vipinsh@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] misc_cgroup: use a counter to count the number of
+ failures
+Message-ID: <20210826112954.GD4520@blackbody.suse.cz>
+References: <a09f381462b1ce9c506a22713b998e21b459f7e9.1628899295.git.brookxu@tencent.com>
+ <20210824164423.GA11859@blackbody.suse.cz>
+ <YSVDwc/1sEmXdOK9@slm.duckdns.org>
+ <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <4ed67493-e595-e002-69f9-1f53662ba189@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: a057486e0fc1cb169d6888f28292300126329766  Merge branch 'for-5.15' into for-next
+On Thu, Aug 26, 2021 at 09:34:45AM +0800, brookxu <brookxu.cn@gmail.com> wrote:
+> The core logic of pids cgroup and misc cgroup is similar.
 
-elapsed time: 736m
+Yes, the latter is conceptually a generalization of the former and it can
+be tempting to use the general form. Beware that pids controller would
+need to retain its existing API (and the behavior of being an
+independent controller) and that would be IMO exceptions
+counterweighting the generalization.
 
-configs tested: 143
-configs skipped: 3
+> Is it possible for us to merge pids cgroup into misc cgroup?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Technically it might be possible but I can't see the benefit (but maybe
+you envisioned something else where my reasoning won't apply).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210825
-powerpc                       ebony_defconfig
-arm                           sama5_defconfig
-m68k                          amiga_defconfig
-m68k                          sun3x_defconfig
-xtensa                       common_defconfig
-h8300                               defconfig
-arm                       aspeed_g4_defconfig
-mips                      bmips_stb_defconfig
-arm                            xcep_defconfig
-arm                            mps2_defconfig
-powerpc                   microwatt_defconfig
-arm                         assabet_defconfig
-sh                           se7343_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      ep88xc_defconfig
-alpha                            alldefconfig
-sh                          r7780mp_defconfig
-powerpc                     tqm5200_defconfig
-arm                           tegra_defconfig
-arm                         axm55xx_defconfig
-mips                         tb0219_defconfig
-arm                          moxart_defconfig
-mips                     decstation_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                            migor_defconfig
-h8300                     edosk2674_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                             mxs_defconfig
-arm                            pleb_defconfig
-sh                            shmin_defconfig
-xtensa                    xip_kc705_defconfig
-sparc                            alldefconfig
-mips                    maltaup_xpa_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                        multi_v7_defconfig
-powerpc                     ksi8560_defconfig
-riscv                          rv32_defconfig
-sh                            titan_defconfig
-arm                             rpc_defconfig
-sparc                       sparc64_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arm                         cm_x300_defconfig
-arc                        vdk_hs38_defconfig
-sparc                       sparc32_defconfig
-mips                        vocore2_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                             pxa_defconfig
-powerpc                     tqm8540_defconfig
-microblaze                      mmu_defconfig
-arm                       netwinder_defconfig
-arm                          imote2_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                     tqm8541_defconfig
-sh                   sh7770_generic_defconfig
-arm                       imx_v4_v5_defconfig
-sh                          sdk7786_defconfig
-powerpc                        icon_defconfig
-sh                          urquell_defconfig
-mips                        qi_lb60_defconfig
-arm                        magician_defconfig
-arm                      jornada720_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a014-20210825
-x86_64               randconfig-a015-20210825
-x86_64               randconfig-a016-20210825
-x86_64               randconfig-a013-20210825
-x86_64               randconfig-a012-20210825
-x86_64               randconfig-a011-20210825
-i386                 randconfig-a011-20210825
-i386                 randconfig-a016-20210825
-i386                 randconfig-a012-20210825
-i386                 randconfig-a014-20210825
-i386                 randconfig-a013-20210825
-i386                 randconfig-a015-20210825
-arc                  randconfig-r043-20210825
-riscv                randconfig-r042-20210825
-s390                 randconfig-r044-20210825
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a005-20210825
-x86_64               randconfig-a001-20210825
-x86_64               randconfig-a006-20210825
-x86_64               randconfig-a003-20210825
-x86_64               randconfig-a004-20210825
-x86_64               randconfig-a002-20210825
-i386                 randconfig-a006-20210825
-i386                 randconfig-a001-20210825
-i386                 randconfig-a002-20210825
-i386                 randconfig-a005-20210825
-i386                 randconfig-a004-20210825
-i386                 randconfig-a003-20210825
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Michal
