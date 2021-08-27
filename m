@@ -2,155 +2,165 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E713F9AC2
-	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 16:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E623F9B6C
+	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 17:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhH0OT5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 Aug 2021 10:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
+        id S245459AbhH0PF1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Aug 2021 11:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbhH0OTk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Aug 2021 10:19:40 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4909C0613CF
-        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 07:18:50 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id a15so8691069iot.2
-        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 07:18:50 -0700 (PDT)
+        with ESMTP id S245446AbhH0PFS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Aug 2021 11:05:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA8CC0613CF
+        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 2so5907691pfo.8
+        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uZsEs/8kjOigJb/9CIkKujcCvyTVtquxdPpsZWziM2Y=;
-        b=nDreCI/xOmeEf6Q9hlgH9sBVSs7+vcBblHdWls/D5MIdQYK11J66jrdchuffKwpj8C
-         1o3lk6jlwlTOK56KNKiiiyOjFoKruwTSoajZTB3fuo9zVy3pPU6vWUOALr3jpwMlUK8f
-         260rhgUH086HtMkMBvnlnRTPFhhs4JZlqGZDSXjmdqcoBgh0IsA6Yjrpxcxsm+716fuz
-         5R+Maws6hyrjzYhIQomTkgmne+0ovh8TRXZhp8+XBN0W+abiP6wKq20Gy0NKuCFAOdce
-         BIJC94PeCehqW8tMPlzD7Xxe2lRDWlZoc7cKR2d/cICtbQ/FYlr4DEfmMhn+2CkRaO1s
-         7eqA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
+        b=eOcsJSkR3Tcwg/sysGWZjHB3j7i5r7/PV9NeUpJgrJbmyULq0nH9YQOHu6OfxzbHKe
+         +pqjyGtX5lbERmDoDn0TFryW9eiklpbv+vwxUDsCmYqm2vAmc+UOnTUPjndIWDtzZGE6
+         1I4m3oFj3B4WBm9sPNSoqOuPlO6sKlxv2tj0U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uZsEs/8kjOigJb/9CIkKujcCvyTVtquxdPpsZWziM2Y=;
-        b=WPPGwKSgQgaNWb/mbUTetA7tsxA20oKcQArlF23tN+v6BRfs2/zRNOebY5lxq0oa5I
-         8zQVMVNPmQMA7KfRtgZ7mpNMhnzG0tSHyFtO2SNuKoCOFUcqcL2lqn+YzaMIMNIqG6Tt
-         ljnapEQF5y8/+q5ws/yC8GRAGsm3NBtpWF8tn2HektIZ2FBeTu/XtFlRjmAVqWmCsJnn
-         kGHEZ8VyZJu9MY6h98e04Tq3Cz+l8xf5MJDwOnxsWyhfoapK/tia2sqQXO9XZ/qB7mh+
-         h8cO80hevUGEKuv5T7X/2fsnwAmtpiybB94ARoz3op43FGCQxsbZFQbnXbt88LNpntBH
-         dSyQ==
-X-Gm-Message-State: AOAM531+pOudMvNigBRsqh93/+TL+GAiqgpqlSuI1Zg7FusWE50/9iVg
-        v10ciDfhGb4aAn9rW8L8AiavQg==
-X-Google-Smtp-Source: ABdhPJzVZ4K+foFu/Z+mrhKMyU1ClfLehrYaZ5lhgApZKunvqvBxp9yM9iuRSJRwMYomwbTS1SqdQg==
-X-Received: by 2002:a02:cc30:: with SMTP id o16mr1355140jap.101.1630073930301;
-        Fri, 27 Aug 2021 07:18:50 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id h10sm3390577ilj.71.2021.08.27.07.18.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 07:18:49 -0700 (PDT)
-Subject: Re: [PATCH for-5.15 v2] io_uring: consider cgroup setting when
- binding sqpoll cpu
-To:     Hao Xu <haoxu@linux.alibaba.com>,
-        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, cgroups@vger.kernel.org,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-References: <20210827141315.235974-1-haoxu@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0988b0dc-232f-80cd-c984-2364c0dee69f@kernel.dk>
-Date:   Fri, 27 Aug 2021 08:18:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
+        b=AcihAduLA97A+kJ8B5FwzmPLS3cPlxh1oyOWBGK2T/r0MHCxAL00H2zM5trgON4+CV
+         DpZTQAqqQOmA8WWn9TyRpp/YHEo7JUsFDz7kk9QCdBfV8l8N8JwOPoYCB+Ff7vtKhnxL
+         mdCnG+ZEBBNPgF6Pb6F9vUAabbgqo6+WT89QKFsbSol7/x4rpwFbYouGIuwPu+ttwmSm
+         OXHUQSgEXyUF9IaTuyk/vr5TjxRzP/E8onr5cWnCMgfVg23g2HNtrjYSVc1qEgi607Pj
+         vIGOrjqkLdD1REPx+QF6LxXXeT86CdueENWhhxnLSFgAFGNPaeNHGfsdyR53t7aiItrb
+         e1Og==
+X-Gm-Message-State: AOAM533GVhMxhD9xRzKHUCqb71qKwjI78jvjAccJQ95C8ADiJ5ueyKq2
+        JkEzZI0ViDR9p6OjpCvLDTW1pg==
+X-Google-Smtp-Source: ABdhPJx3Th/aWz4EKkeULbF3x4SNVKUYkcYbm9Af9rvuqm06QYk8iV99LuIHbCBgC2+RnLK8ojmnXw==
+X-Received: by 2002:aa7:850c:0:b0:3e2:edf3:3d09 with SMTP id v12-20020aa7850c000000b003e2edf33d09mr9710410pfn.42.1630076668808;
+        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q3sm7411290pgf.18.2021.08.27.08.04.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v2] cgroup: Avoid compiler warnings with no subsystems
+Date:   Fri, 27 Aug 2021 08:04:24 -0700
+Message-Id: <20210827150424.2729274-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210827141315.235974-1-haoxu@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3945; h=from:subject; bh=GFK3BETQmfQB9ONseeh+QxRF9yf/a6MqKtjDJoZzqeA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKP74SaubLPqskWOEDTayM2+b9dEi4jnuGNQvHGBR dbuO1zCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSj++AAKCRCJcvTf3G3AJs/ZD/ 4nZI7nyxeKoS/vLqeVHPIvoLfK1l5E/MD6+mX9oxiTv2+rWvwB+LEqyQsAeWZhefkPXXtHMlSKlfZf wfngNKG3xBkDUzhHgrPH6rw0jXrzoxLQ+RziHvHD05OqAzdfEn9rqkpTRMDklEEuWtApzTu7d+e6Dk +MXPDo7l+RrVk3CHNyjvM5sz5dHE4Yx8J9WISnfgMxfKymmCsm9hW/ekMILXJhLObzsCBxtpLrhJA6 X7ghcNxXlrFlvwnteEiSYkz+8Lo5+rKXwL8DagDfwkxuCGzDQ0G86atUitohjKT70bvqKK3XlpUl+A R3/njlqqexcL9f1UoODTtGPU0rnYsj2GXoOH/iRX1wJD95tG9hOa/h7/FDkVUC8E7RhboN/0EyX57/ oswoRaZlkjUWKfHZQXYzFCl6vYIdPX8bCzqqvVXNMkwojxLHqCJ521sBuGKKMmfo86PbNOQAq6OcSW fWhNjsjZ/pgqnROVQGFyXA/Yu+9P7F34MJlrpzItf55SYOtML5fiObXzJPoG7AU6woH0md7QjAJW1i lfXc9OGmU3RqAyGV6XEo7tjbUGZ4uxhAqtQVnBdTva2n88emli1eqk6j111Hb1uEhqkLJhey4K96QQ 42Myh/Q9bRh4WDV+hP4sfQ0Aub1+R4QMdLj+6ppDmC0jhcsvC/gDYadUhqig==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/27/21 8:13 AM, Hao Xu wrote:
-> Since sqthread is userspace like thread now, it should respect cgroup
-> setting, thus we should consider current allowed cpuset when doing
-> cpu binding for sqthread.
+As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
+for_each_subsys"), avoid compiler warnings for the pathological case of
+having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
+hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
 
-In general, this looks way better than v1. Just a few minor comments
-below.
+In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+                 from include/linux/compiler.h:264,
+                 from include/uapi/linux/swab.h:6,
+                 from include/linux/swab.h:5,
+                 from arch/arm/include/asm/opcodes.h:86,
+                 from arch/arm/include/asm/bug.h:7,
+                 from include/linux/bug.h:5,
+                 from include/linux/thread_info.h:13,
+                 from include/asm-generic/current.h:5,
+                 from ./arch/arm/include/generated/asm/current.h:1,
+                 from include/linux/sched.h:12,
+                 from include/linux/cgroup.h:12,
+                 from kernel/cgroup/cgroup-internal.h:5,
+                 from kernel/cgroup/cgroup.c:31:
+kernel/cgroup/cgroup.c: In function 'of_css':
+kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
+interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
 
-> @@ -7000,6 +7001,16 @@ static bool io_sqd_handle_event(struct io_sq_data *sqd)
->  	return did_sig || test_bit(IO_SQ_THREAD_SHOULD_STOP, &sqd->state);
->  }
->  
-> +static int io_sq_bind_cpu(int cpu)
-> +{
-> +	if (!test_cpu_in_current_cpuset(cpu))
-> +		pr_warn("sqthread %d: bound cpu not allowed\n", current->pid);
-> +	else
-> +		set_cpus_allowed_ptr(current, cpumask_of(cpu));
-> +
-> +	return 0;
-> +}
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v2: avoid "converting the enum constant to a boolean" warnings
+    https://lore.kernel.org/lkml/202108271524.oOIHtG9S-lkp@intel.com/
+v1: https://lore.kernel.org/lkml/20210827034741.2214318-1-keescook@chromium.org/
+---
+ kernel/cgroup/cgroup.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-This should not be triggerable, unless the set changes between creation
-and the thread being created. Hence maybe the warn is fine. I'd probably
-prefer terminating the thread at that point, which would result in an
--EOWNERDEAD return when someone attempts to wake the thread.
-
-Which is probably OK, as we really should not hit this path.
-
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index 04c20de66afc..fad77c91bc1f 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -116,6 +116,8 @@ static inline int cpuset_do_slab_mem_spread(void)
->  
->  extern bool current_cpuset_is_being_rebound(void);
->  
-> +extern bool test_cpu_in_current_cpuset(int cpu);
-> +
->  extern void rebuild_sched_domains(void);
->  
->  extern void cpuset_print_current_mems_allowed(void);
-> @@ -257,6 +259,11 @@ static inline bool current_cpuset_is_being_rebound(void)
->  	return false;
->  }
->  
-> +static inline bool test_cpu_in_current_cpuset(int cpu)
-> +{
-> +	return false;
-> +}
-> +
->  static inline void rebuild_sched_domains(void)
->  {
->  	partition_sched_domains(1, NULL, NULL);
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index adb5190c4429..a63c27e9430e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1849,6 +1849,17 @@ bool current_cpuset_is_being_rebound(void)
->  	return ret;
->  }
->  
-> +bool test_cpu_in_current_cpuset(int cpu)
-> +{
-> +	bool ret;
-> +
-> +	rcu_read_lock();
-> +	ret = cpumask_test_cpu(cpu, task_cs(current)->effective_cpus);
-> +	rcu_read_unlock();
-> +
-> +	return ret;
-> +}
-> +
->  static int update_relax_domain_level(struct cpuset *cs, s64 val)
->  {
->  #ifdef CONFIG_SMP
-
-In terms of review and so forth, I'd split this into a prep patch. Then
-patch 2 just becomes the io_uring consumer of it.
-
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d0725c1a8db5..76693a86e8b7 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -472,7 +472,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
+ static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
+ 					      struct cgroup_subsys *ss)
+ {
+-	if (ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && ss)
+ 		return rcu_dereference_check(cgrp->subsys[ss->id],
+ 					lockdep_is_held(&cgroup_mutex));
+ 	else
+@@ -550,6 +550,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
++
+ 	do {
+ 		css = cgroup_css(cgrp, ss);
+ 
+@@ -577,6 +580,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
++
+ 	rcu_read_lock();
+ 
+ 	do {
+@@ -647,7 +653,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
+ 	 * the matching css from the cgroup's subsys table is guaranteed to
+ 	 * be and stay valid until the enclosing operation is complete.
+ 	 */
+-	if (cft->ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && cft->ss)
+ 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+ 	else
+ 		return &cgrp->self;
+@@ -2372,7 +2378,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
+ 	struct css_set *cset = tset->cur_cset;
+ 	struct task_struct *task = tset->cur_task;
+ 
+-	while (&cset->mg_node != tset->csets) {
++	while (CGROUP_SUBSYS_COUNT > 0 && &cset->mg_node != tset->csets) {
+ 		if (!task)
+ 			task = list_first_entry(&cset->mg_tasks,
+ 						struct task_struct, cg_list);
+@@ -4643,7 +4649,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
+ 	it->ss = css->ss;
+ 	it->flags = flags;
+ 
+-	if (it->ss)
++	if (CGROUP_SUBSYS_COUNT > 0 && it->ss)
+ 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
+ 	else
+ 		it->cset_pos = &css->cgroup->cset_links;
 -- 
-Jens Axboe
+2.30.2
 
