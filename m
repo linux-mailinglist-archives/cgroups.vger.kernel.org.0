@@ -2,165 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E623F9B6C
-	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 17:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59A53F9B80
+	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 17:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245459AbhH0PF1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 Aug 2021 11:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245446AbhH0PFS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Aug 2021 11:05:18 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA8CC0613CF
-        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id 2so5907691pfo.8
-        for <cgroups@vger.kernel.org>; Fri, 27 Aug 2021 08:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
-        b=eOcsJSkR3Tcwg/sysGWZjHB3j7i5r7/PV9NeUpJgrJbmyULq0nH9YQOHu6OfxzbHKe
-         +pqjyGtX5lbERmDoDn0TFryW9eiklpbv+vwxUDsCmYqm2vAmc+UOnTUPjndIWDtzZGE6
-         1I4m3oFj3B4WBm9sPNSoqOuPlO6sKlxv2tj0U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KAECcBr13A7/Y2OTRwW1tphAS3RtXLfsmJpN2+1wV/g=;
-        b=AcihAduLA97A+kJ8B5FwzmPLS3cPlxh1oyOWBGK2T/r0MHCxAL00H2zM5trgON4+CV
-         DpZTQAqqQOmA8WWn9TyRpp/YHEo7JUsFDz7kk9QCdBfV8l8N8JwOPoYCB+Ff7vtKhnxL
-         mdCnG+ZEBBNPgF6Pb6F9vUAabbgqo6+WT89QKFsbSol7/x4rpwFbYouGIuwPu+ttwmSm
-         OXHUQSgEXyUF9IaTuyk/vr5TjxRzP/E8onr5cWnCMgfVg23g2HNtrjYSVc1qEgi607Pj
-         vIGOrjqkLdD1REPx+QF6LxXXeT86CdueENWhhxnLSFgAFGNPaeNHGfsdyR53t7aiItrb
-         e1Og==
-X-Gm-Message-State: AOAM533GVhMxhD9xRzKHUCqb71qKwjI78jvjAccJQ95C8ADiJ5ueyKq2
-        JkEzZI0ViDR9p6OjpCvLDTW1pg==
-X-Google-Smtp-Source: ABdhPJx3Th/aWz4EKkeULbF3x4SNVKUYkcYbm9Af9rvuqm06QYk8iV99LuIHbCBgC2+RnLK8ojmnXw==
-X-Received: by 2002:aa7:850c:0:b0:3e2:edf3:3d09 with SMTP id v12-20020aa7850c000000b003e2edf33d09mr9710410pfn.42.1630076668808;
-        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q3sm7411290pgf.18.2021.08.27.08.04.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Aug 2021 08:04:28 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] cgroup: Avoid compiler warnings with no subsystems
-Date:   Fri, 27 Aug 2021 08:04:24 -0700
-Message-Id: <20210827150424.2729274-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S233912AbhH0PNH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Aug 2021 11:13:07 -0400
+Received: from smtp4-g21.free.fr ([212.27.42.4]:23054 "EHLO smtp4-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233816AbhH0PNH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 27 Aug 2021 11:13:07 -0400
+Received: from bender.morinfr.org (unknown [82.64.86.27])
+        by smtp4-g21.free.fr (Postfix) with ESMTPS id 43B1F19F5A6;
+        Fri, 27 Aug 2021 17:11:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
+        ; s=20170427; h=Content-Type:MIME-Version:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=06iKxfQtqJXVLpRlR7LWKmLmFcpIOGMecFYnWhLpQEE=; b=Wa6SCVBVJZ0cLWpcPda/VQ+9HY
+        1imhfnBlVTUYXXAelZoLnKRwDBip33ZVvuuQs14d0H/0uUdQd216nfoucw8bYeLPS53nIEOXZN+RN
+        WTLedplPpvJzZp2zcfUKonyWm+niy2wPuMYKHVreHDNW9hIMOTWwJXco611tPWffGEmU=;
+Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
+        (envelope-from <guillaume@morinfr.org>)
+        id 1mJdWE-0007N1-V5; Fri, 27 Aug 2021 17:11:47 +0200
+Date:   Fri, 27 Aug 2021 17:11:46 +0200
+From:   Guillaume Morin <guillaume@morinfr.org>
+To:     Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     cgroups@vger.kernel.org
+Subject: [BUG] potential hugetlb css refcounting issues
+Message-ID: <20210827151146.GA25472@bender.morinfr.org>
+Mail-Followup-To: Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, cgroups@vger.kernel.org
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3945; h=from:subject; bh=GFK3BETQmfQB9ONseeh+QxRF9yf/a6MqKtjDJoZzqeA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKP74SaubLPqskWOEDTayM2+b9dEi4jnuGNQvHGBR dbuO1zCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSj++AAKCRCJcvTf3G3AJs/ZD/ 4nZI7nyxeKoS/vLqeVHPIvoLfK1l5E/MD6+mX9oxiTv2+rWvwB+LEqyQsAeWZhefkPXXtHMlSKlfZf wfngNKG3xBkDUzhHgrPH6rw0jXrzoxLQ+RziHvHD05OqAzdfEn9rqkpTRMDklEEuWtApzTu7d+e6Dk +MXPDo7l+RrVk3CHNyjvM5sz5dHE4Yx8J9WISnfgMxfKymmCsm9hW/ekMILXJhLObzsCBxtpLrhJA6 X7ghcNxXlrFlvwnteEiSYkz+8Lo5+rKXwL8DagDfwkxuCGzDQ0G86atUitohjKT70bvqKK3XlpUl+A R3/njlqqexcL9f1UoODTtGPU0rnYsj2GXoOH/iRX1wJD95tG9hOa/h7/FDkVUC8E7RhboN/0EyX57/ oswoRaZlkjUWKfHZQXYzFCl6vYIdPX8bCzqqvVXNMkwojxLHqCJ521sBuGKKMmfo86PbNOQAq6OcSW fWhNjsjZ/pgqnROVQGFyXA/Yu+9P7F34MJlrpzItf55SYOtML5fiObXzJPoG7AU6woH0md7QjAJW1i lfXc9OGmU3RqAyGV6XEo7tjbUGZ4uxhAqtQVnBdTva2n88emli1eqk6j111Hb1uEhqkLJhey4K96QQ 42Myh/Q9bRh4WDV+hP4sfQ0Aub1+R4QMdLj+6ppDmC0jhcsvC/gDYadUhqig==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
-for_each_subsys"), avoid compiler warnings for the pathological case of
-having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
-hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
+Hi,
 
-In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
-                 from include/linux/compiler.h:264,
-                 from include/uapi/linux/swab.h:6,
-                 from include/linux/swab.h:5,
-                 from arch/arm/include/asm/opcodes.h:86,
-                 from arch/arm/include/asm/bug.h:7,
-                 from include/linux/bug.h:5,
-                 from include/linux/thread_info.h:13,
-                 from include/asm-generic/current.h:5,
-                 from ./arch/arm/include/generated/asm/current.h:1,
-                 from include/linux/sched.h:12,
-                 from include/linux/cgroup.h:12,
-                 from kernel/cgroup/cgroup-internal.h:5,
-                 from kernel/cgroup/cgroup.c:31:
-kernel/cgroup/cgroup.c: In function 'of_css':
-kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
-interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
-  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+After upgrading to 5.10 from 5.4 (though I believe that these issues are
+still present in 5.14), we noticed some refcount count warning
+pertaining a corrupted reference count of the hugetlb css, e.g
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2: avoid "converting the enum constant to a boolean" warnings
-    https://lore.kernel.org/lkml/202108271524.oOIHtG9S-lkp@intel.com/
-v1: https://lore.kernel.org/lkml/20210827034741.2214318-1-keescook@chromium.org/
----
- kernel/cgroup/cgroup.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+[  704.259734] percpu ref (css_release) <= 0 (-1) after switching to atomic
+[  704.259755] WARNING: CPU: 23 PID: 130 at lib/percpu-refcount.c:196 percpu_ref_switch_to_atomic_rcu+0x127/0x130
+[  704.259911] CPU: 23 PID: 130 Comm: ksoftirqd/23 Kdump: loaded Tainted: G           O      5.10.60 #1
+[  704.259916] RIP: 0010:percpu_ref_switch_to_atomic_rcu+0x127/0x130
+[  704.259920] Code: eb b1 80 3d 37 4f 0a 01 00 0f 85 5d ff ff ff 49 8b 55 e0 48 c7 c7 38 57 0d 94 c6 05 1f 4f 0a 01 01 49 8b 75 e8 e8 a9 e5 c1 ff <0f> 0b e9 3b ff ff ff 66 90 55 48 89 e5 41 56 49 89 f6 41 55 49 89
+[  704.259922] RSP: 0000:ffffb19b4684bdd0 EFLAGS: 00010282
+[  704.259924] RAX: 0000000000000000 RBX: 7ffffffffffffffe RCX: 0000000000000027
+[  704.259926] RDX: 0000000000000000 RSI: ffff9a81ffb58b40 RDI: ffff9a81ffb58b48
+[  704.259927] RBP: ffffb19b4684bde8 R08: 0000000000000003 R09: 0000000000000001
+[  704.259929] R10: 0000000000000003 R11: ffffb19b4684bb70 R12: 0000370946a03b50
+[  704.259931] R13: ffff9a72c9ceb860 R14: 0000000000000000 R15: ffff9a72c42f4000
+[  704.259933] FS:  0000000000000000(0000) GS:ffff9a81ffb40000(0000) knlGS:0000000000000000
+[  704.259935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  704.259936] CR2: 0000000001416318 CR3: 000000011e1ac003 CR4: 00000000003706e0
+[  704.259938] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  704.259939] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  704.259941] Call Trace:
+[  704.259950]  rcu_core+0x30f/0x530
+[  704.259955]  rcu_core_si+0xe/0x10
+[  704.259959]  __do_softirq+0x103/0x2a2
+[  704.259964]  ? sort_range+0x30/0x30
+[  704.259968]  run_ksoftirqd+0x2b/0x40
+[  704.259971]  smpboot_thread_fn+0x11a/0x170
+[  704.259975]  kthread+0x10a/0x140
+[  704.259978]  ? kthread_create_worker_on_cpu+0x70/0x70
+[  704.259983]  ret_from_fork+0x22/0x30
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d0725c1a8db5..76693a86e8b7 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -472,7 +472,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
- static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
- 					      struct cgroup_subsys *ss)
- {
--	if (ss)
-+	if (CGROUP_SUBSYS_COUNT > 0 && ss)
- 		return rcu_dereference_check(cgrp->subsys[ss->id],
- 					lockdep_is_held(&cgroup_mutex));
- 	else
-@@ -550,6 +550,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
- {
- 	struct cgroup_subsys_state *css;
- 
-+	if (!CGROUP_SUBSYS_COUNT)
-+		return NULL;
-+
- 	do {
- 		css = cgroup_css(cgrp, ss);
- 
-@@ -577,6 +580,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- {
- 	struct cgroup_subsys_state *css;
- 
-+	if (!CGROUP_SUBSYS_COUNT)
-+		return NULL;
-+
- 	rcu_read_lock();
- 
- 	do {
-@@ -647,7 +653,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
- 	 * the matching css from the cgroup's subsys table is guaranteed to
- 	 * be and stay valid until the enclosing operation is complete.
- 	 */
--	if (cft->ss)
-+	if (CGROUP_SUBSYS_COUNT > 0 && cft->ss)
- 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
- 	else
- 		return &cgrp->self;
-@@ -2372,7 +2378,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
- 	struct css_set *cset = tset->cur_cset;
- 	struct task_struct *task = tset->cur_task;
- 
--	while (&cset->mg_node != tset->csets) {
-+	while (CGROUP_SUBSYS_COUNT > 0 && &cset->mg_node != tset->csets) {
- 		if (!task)
- 			task = list_first_entry(&cset->mg_tasks,
- 						struct task_struct, cg_list);
-@@ -4643,7 +4649,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
- 	it->ss = css->ss;
- 	it->flags = flags;
- 
--	if (it->ss)
-+	if (CGROUP_SUBSYS_COUNT > 0 && it->ss)
- 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
- 	else
- 		it->cset_pos = &css->cgroup->cset_links;
+The box would soon crash due to some GPF or NULL pointer deference
+either in cgroups_destroy or in the kill_css path. We confirmed the
+issue was specific to the hugetlb css by manually disabling its use and
+verifying that the box then stayed up and happy.
+
+I believe there might be 2 distinct bugs leading to this. I am not
+familiar with the cgroup code so I might be off base here. I did my best
+to track this and understand the logic. Any feedback will be welcome.
+
+I have not provided patches because if I am correct, they're fairly
+trivial and since I am unfamiliar with this code, I am afraid they could
+not be that helpful.  But I could provide them if anybody is interested.
+
+1. Since e9fe92ae0cd2, hugetlb_vm_op_close() decreases the refcount of
+the css (if present) through the hugetlb_cgroup_uncharge_counter() call
+if a resv map is set on the vma and the owner flag is present (i.e
+private mapping).  In the most basic case, the corresponding refcount
+increase is done in hugetlb_reserve_pages().
+However when sibling vmas are opened, hugetlb_vm_op_open() is called,
+the resv map reference count is increased (if vma_resv_map(vma) is not
+NULL for private mappings), but not for a potential resv->css (i.e if
+resv->css != NULL).
+When these siblings vmas are closed, the refcount will still be
+decreased once per such vma, leading to an underflow and premature
+release (potentially use after free) of the hugetlb css.  The fix would
+be to call css_get() if resv->css != NULL in hugetlb_vm_op_open()
+
+2. After 08cf9faf75580, __free_huge_page() decrements the css refcount
+for _each_ page unconditionally by calling
+hugetlb_cgroup_uncharge_page_rsvd().
+But a per-page reference count is only taken *per page* outside the
+reserve case in alloc_huge_page() (i.e
+hugetlb_cgroup_charge_cgroup_rsvd() is called only if deferred_reserve
+is true).  In the reserve case, there is only one css reference linked
+to the resv map (taken in hugetlb_reserve_pages()).
+This also leads to an underflow of the counter.  A similar scheme to
+HPageRestoreReserve can be used to track which pages were allocated in
+the deferred_reserve case and call hugetlb_cgroup_uncharge_page_rsvd()
+only for these during freeing.
+
+HTH,
+
+Guillaume.
+
 -- 
-2.30.2
-
+Guillaume Morin <guillaume@morinfr.org>
