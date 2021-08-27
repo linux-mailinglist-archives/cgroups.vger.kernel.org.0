@@ -2,135 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B04D3F9296
-	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 05:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB613F9321
+	for <lists+cgroups@lfdr.de>; Fri, 27 Aug 2021 05:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244104AbhH0DCY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Aug 2021 23:02:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23630 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232197AbhH0DCX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Aug 2021 23:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630033295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K4jOE7EOyJEUtyvbzwon/FpGiE9ELVYRNObVBK/Xg7Q=;
-        b=I4Krasr7KLrpSkNAg5+wq0d12gkVocEvCi8tf7hTdukjeAEkUAfqn5kxGTkqOXW5nNLYdk
-        msSqeFPon0VCAeMg2ZDyiapytq6S/fi3BlQwXBRlWx88tkcNHbscTjD2Asyjsw3GDeUVRY
-        7NrOJNh0cw0jPjgPuCkYInW2FkoD0SY=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-iXQGbt-zMIqnL5_xNs8xHg-1; Thu, 26 Aug 2021 23:01:33 -0400
-X-MC-Unique: iXQGbt-zMIqnL5_xNs8xHg-1
-Received: by mail-qv1-f70.google.com with SMTP id i7-20020a056214030700b0036b565ee6c0so2266048qvu.3
-        for <cgroups@vger.kernel.org>; Thu, 26 Aug 2021 20:01:33 -0700 (PDT)
+        id S244194AbhH0Dsi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Aug 2021 23:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244187AbhH0Dsh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Aug 2021 23:48:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679FFC0613C1
+        for <cgroups@vger.kernel.org>; Thu, 26 Aug 2021 20:47:49 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id h1so3648353pjs.2
+        for <cgroups@vger.kernel.org>; Thu, 26 Aug 2021 20:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3iDBnZHVbEreWWuomxF6GQM4vK4iHAWwR63HQF/eKNk=;
+        b=Ztu+t6Jzw25jWNOhI/V3DOe8lvDY109i896qfsl54W3uGIWvCVdH53Euxq2HM6Tuk/
+         Y+jdZbhhGlJm37zPL7iY+cEg2VI0KDz+0/a2D3gmDi7ywcCTU5bn7vdlWxHMo6YtQY1t
+         rA5/Fmx3IUYQhpMhgYOQnrb070ajKlIE3vnRw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=K4jOE7EOyJEUtyvbzwon/FpGiE9ELVYRNObVBK/Xg7Q=;
-        b=lf/0H0GH1vhNDqJc+Ugtn6a3jx767iUqFP9ZI1vQlaTjn1rRWfRPPC8PLVLI/MIGZS
-         u8xYvbVQm5zxn0FL9ulBcLrtpibL5BzYdTeHYOv/cfXDAPVXWozhG7BWL0yS7yjB1G2U
-         Kt+GaiSjg/Nvi2gjpiU6VYhm/i9Dnewq3q+gH6+taIfQm8c6uJ+PMsKu8fPWmMQYG4By
-         MKdtyxkIwsGzf53ZNXRWLSYP15agobK5zMi6PFVs+orGeGIR8ETBJOWnUhdjIsms9f5Z
-         DckL5Dq1Qf1/NlC2SzdvmnJqBhPpmAGVAG9SH4CYXe8YCotpUJQwF1Ha2Sd/dxWXd8R1
-         wCXA==
-X-Gm-Message-State: AOAM5304t6fDwe+DvQO7PHqx0Fg5ChoyyzzPEnuoYTeVBvyS9TmDS/9l
-        jA1AEsz7zSZu4JWT9b0mxLhgcjlEqS3l7i5neMk6R/lLA/OHJq/N2L/OZVUCj7Idzt35PI/55Cw
-        xx3RkMoHEEynxP5LSqQ==
-X-Received: by 2002:a05:620a:2492:: with SMTP id i18mr7242244qkn.57.1630033293057;
-        Thu, 26 Aug 2021 20:01:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwH38hLETGQM+sg7xDFhHxk8Ho4XlE30avAUmXfRuimCPma+GJB5ntZuUwdTw7Cewi7vQSA0g==
-X-Received: by 2002:a05:620a:2492:: with SMTP id i18mr7242217qkn.57.1630033292764;
-        Thu, 26 Aug 2021 20:01:32 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id v128sm4003899qkh.27.2021.08.26.20.01.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Aug 2021 20:01:32 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3iDBnZHVbEreWWuomxF6GQM4vK4iHAWwR63HQF/eKNk=;
+        b=lBrQXlu8cRwZLJ1JajpM47k/eSHn+SZG1RbFB56lMD9dlIAv5dyp400+hQU+cjdA2w
+         ZjNEM2YPaPlu2+vjHNCd8arS0Lz+h7XQ74hbrXSe6ZM2vINu1tz02dzJqn0+EnEGdqFT
+         Ug9WLYSAYCJGsunowMgY8wRtn7TH70IAGj5yLQogNImEHgKlRaznWqLuJtOGniqhj3WL
+         78ktPXWWTbJKT7/N3DsL2/FK9K1T3dM8ovalIQWl4WN8mROWC7A5ZBvQRCYIp1f7lVgc
+         /6fZPVwn+lGsNP1te4jSr9o6X8EkK2cYPSSjGJPc1bqpLNIJh+NE17pCAICdg9QaPwte
+         taKw==
+X-Gm-Message-State: AOAM532IqO1GoysW0gpPxxmIWXxaKDMJiYwT0L0ta3ZUzfC65JUsDVbT
+        r+NyXTIdyX06Oz+rvvoIRrcdWQ==
+X-Google-Smtp-Source: ABdhPJykH/tLG4lI0FS4eGLtIMm9iMYAanogiPcMmvjyOaUZyMJ4OMAQ8QXUlc6fL8kMiQwyB3W27A==
+X-Received: by 2002:a17:90b:3547:: with SMTP id lt7mr8117562pjb.23.1630036068938;
+        Thu, 26 Aug 2021 20:47:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c17sm10338947pjq.16.2021.08.26.20.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Aug 2021 20:47:48 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
-Message-ID: <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
-Date:   Thu, 26 Aug 2021 23:01:30 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Cc:     Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] cgroup: Avoid compiler warnings with no subsystems
+Date:   Thu, 26 Aug 2021 20:47:41 -0700
+Message-Id: <20210827034741.2214318-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3707; h=from:subject; bh=W8mrDHl6epGwfALLfDZy6bZIPBPKmiqLtY/kJ0d40/A=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhKGBc5sJcW17N6yaoeIVynlA7aGik+aP71/c/fDv0 xr4JJdGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYShgXAAKCRCJcvTf3G3AJrc+D/ 9GISUvm+dHrhuWYcVAsCuC9AzNUkDwO8OJTJXICqteYG3BwwSvrG3Mh4Z9uc6qsgDjjyJk41wjZHAM 7yf4zprKt89GB47h9ijavum+/hDi5gXsuRJgWrJpRhsOm2HvDG3vMztKCWf8gVyLaVpWb8T4sb4YAI 3hdHs9DA8SHKzfmIGXlJ+YXSXFuMccQrZBRtP0yDG3wF8u7jsgy/nsq8CwI4h1RSARnn2EcH5gQEgB hgeseVGuNtSLugNVQAZlGiunuknJoR9lv1fptLJI3czdxeXU4ossMUZeuEere6n2Q+l2cp0bAfAjDV yKJavzHz6UGE4t7EplPrTou/M9hLuYzZD4ng9HaAX3TiyOmHNgDarS1swdUBS8YLw/vZlj7tq45nXZ RQBwcaqf2Cl3HBY0V9LMB8uEbGUtbMsZf7kjGEMENK8CiFkFxMEl8QRp6k301INBscWxuyR9Kyp40F NXRLzFsRtWOdBipI/Yqhi1yTvFekX6w3DVtGPa7vP7RXhN4Efr9252LkeSPEJZMiBvXsMmYagotiqq lef/jTeqjkmpYx/AHoVlVbxJl8Y06orD0C1FrGQ11qwudw0P/SaK9PY4FBkzxGD98mncCP9clL/R0Q ia9506zycqIh505uQfuYU2VWXdIasbNiJ6aHy4dqOUdaPPu4HT0JoXIFXp7w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/26/21 1:35 PM, Tejun Heo wrote:
-> Hello, Waiman.
->
-> Let's stop iterating on the patchset until we reach a consensus.
->
-> On Wed, Aug 25, 2021 at 05:37:49PM -0400, Waiman Long wrote:
->>   	1) The "cpuset.cpus" is not empty and the list of CPUs are
->>   	   exclusive, i.e. they are not shared by any of its siblings.
-> Part of it can be reached by cpus going offline.
->
->>   	2) The parent cgroup is a partition root.
-> This condition can happen if a parent stop being a partition.
->
->> -	3) The "cpuset.cpus" is also a proper subset of the parent's
->> +	3) The "cpuset.cpus" is a subset of the parent's
->>   	   "cpuset.cpus.effective".
-> This can happen if cpus go offline.
->
->>   	4) There is no child cgroups with cpuset enabled.  This is for
->>   	   eliminating corner cases that have to be handled if such a
->>   	   condition is allowed.
-> This may make sense as a short cut for us but doesn't really stem from
-> interface or behavior requirements.
->
-> Of the four conditions listed, two are bogus (the states can be
-> reached through a different path and the configuration success or
-> failure can be timing dependent if configuration racaes against cpu
-> hotplug operations) and one maybe makes sense half-way and one is more
-> of a shortcut.
->
-> Can't we just replace these with transitions to invalid state with
-> proper explanation? That'd get rid of the error handling duplications
-> from both the kernel and user side, make automated configurations
-> which may race against hot plug operations reliable, and consistently
-> provide users with why something failed.
+As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
+for_each_subsys"), avoid compiler warnings for the pathological case of
+having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
+hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
 
-What I am doing here is setting a high bar for transitioning from member 
-to either "root" or "isolated". Once it becomes a partition, there are 
-multiple ways that can make it invalid. I am fine with that. However, I 
-am not sure it is a good idea to allow users to echo "root" to 
-cpuset.cpus.partition anywhere in the cgroup hierarchy and require them 
-to read it back to see if it succeed.
+In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+                 from include/linux/compiler.h:264,
+                 from include/uapi/linux/swab.h:6,
+                 from include/linux/swab.h:5,
+                 from arch/arm/include/asm/opcodes.h:86,
+                 from arch/arm/include/asm/bug.h:7,
+                 from include/linux/bug.h:5,
+                 from include/linux/thread_info.h:13,
+                 from include/asm-generic/current.h:5,
+                 from ./arch/arm/include/generated/asm/current.h:1,
+                 from include/linux/sched.h:12,
+                 from include/linux/cgroup.h:12,
+                 from kernel/cgroup/cgroup-internal.h:5,
+                 from kernel/cgroup/cgroup.c:31:
+kernel/cgroup/cgroup.c: In function 'of_css':
+kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
+interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+  651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
 
-All the checking are done with cpuset_rwsem held. So there shouldn't be 
-any racing. Of course, a hotplug can immediately follow and make the 
-partition invalid.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/cgroup/cgroup.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-Cheers,
-Longman
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d0725c1a8db5..d23100878002 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -472,7 +472,7 @@ static u16 cgroup_ss_mask(struct cgroup *cgrp)
+ static struct cgroup_subsys_state *cgroup_css(struct cgroup *cgrp,
+ 					      struct cgroup_subsys *ss)
+ {
+-	if (ss)
++	if (CGROUP_SUBSYS_COUNT && ss)
+ 		return rcu_dereference_check(cgrp->subsys[ss->id],
+ 					lockdep_is_held(&cgroup_mutex));
+ 	else
+@@ -550,6 +550,9 @@ struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
++
+ 	do {
+ 		css = cgroup_css(cgrp, ss);
+ 
+@@ -577,6 +580,9 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
+ {
+ 	struct cgroup_subsys_state *css;
+ 
++	if (!CGROUP_SUBSYS_COUNT)
++		return NULL;
++
+ 	rcu_read_lock();
+ 
+ 	do {
+@@ -647,7 +653,7 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
+ 	 * the matching css from the cgroup's subsys table is guaranteed to
+ 	 * be and stay valid until the enclosing operation is complete.
+ 	 */
+-	if (cft->ss)
++	if (CGROUP_SUBSYS_COUNT && cft->ss)
+ 		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+ 	else
+ 		return &cgrp->self;
+@@ -2372,7 +2378,7 @@ struct task_struct *cgroup_taskset_next(struct cgroup_taskset *tset,
+ 	struct css_set *cset = tset->cur_cset;
+ 	struct task_struct *task = tset->cur_task;
+ 
+-	while (&cset->mg_node != tset->csets) {
++	while (CGROUP_SUBSYS_COUNT && &cset->mg_node != tset->csets) {
+ 		if (!task)
+ 			task = list_first_entry(&cset->mg_tasks,
+ 						struct task_struct, cg_list);
+@@ -4643,7 +4649,7 @@ void css_task_iter_start(struct cgroup_subsys_state *css, unsigned int flags,
+ 	it->ss = css->ss;
+ 	it->flags = flags;
+ 
+-	if (it->ss)
++	if (CGROUP_SUBSYS_COUNT && it->ss)
+ 		it->cset_pos = &css->cgroup->e_csets[css->ss->id];
+ 	else
+ 		it->cset_pos = &css->cgroup->cset_links;
+-- 
+2.30.2
 
