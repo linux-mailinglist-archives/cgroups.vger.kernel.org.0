@@ -2,95 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8E03FA1A8
-	for <lists+cgroups@lfdr.de>; Sat, 28 Aug 2021 00:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60893FA1DD
+	for <lists+cgroups@lfdr.de>; Sat, 28 Aug 2021 01:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhH0XAG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 Aug 2021 19:00:06 -0400
-Received: from smtp4-g21.free.fr ([212.27.42.4]:9032 "EHLO smtp4-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232301AbhH0XAF (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 27 Aug 2021 19:00:05 -0400
-Received: from bender.morinfr.org (unknown [82.64.86.27])
-        by smtp4-g21.free.fr (Postfix) with ESMTPS id 9E29819F4EA;
-        Sat, 28 Aug 2021 00:58:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-        ; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:Message-ID:Subject:To:
-        From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7DJVtMpzm9oxuyqntlCJVVhZoeJfYs38uQ3cZd0skFs=; b=4rlRF3Hd5lDAg9L8xjFB/XxBl8
-        k1Mmg1v5cHtDuzaaYMcznDw4/DDEOGB3yNMe9scXQmd32494EbEXscjyb0dajfSnWIwpeR11/pufy
-        aZpJf7iVXLCTGi4Q6qkXqQnASllosSdNLgXpKv3HZp+xp/Xnnt0RlkQItUEgiR7FlH4U=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
-        (envelope-from <guillaume@morinfr.org>)
-        id 1mJko7-0008O4-B4; Sat, 28 Aug 2021 00:58:43 +0200
-Date:   Sat, 28 Aug 2021 00:58:43 +0200
-From:   Guillaume Morin <guillaume@morinfr.org>
-To:     almasrymina@google.com, mike.kravetz@oracle.com,
-        cgroups@vger.kernel.org, guillaume@morinfr.org, linux-mm@kvack.org
-Subject: Re: [BUG] potential hugetlb css refcounting issues
-Message-ID: <20210827225841.GA30891@bender.morinfr.org>
-Mail-Followup-To: almasrymina@google.com, mike.kravetz@oracle.com,
-        cgroups@vger.kernel.org, guillaume@morinfr.org, linux-mm@kvack.org
+        id S232513AbhH0Xgc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Aug 2021 19:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232458AbhH0Xgb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Aug 2021 19:36:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CB3C0613D9;
+        Fri, 27 Aug 2021 16:35:42 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id w6so4904441plg.9;
+        Fri, 27 Aug 2021 16:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=prQGEZISCROhNVrZYgfW+RC/t0atKeeXslehrhwqbKM=;
+        b=JVKQMqIk5zflT5U8YILqRhxIh0RbHGgU2gJ/VgQiRBTi+AYzDW0B+/RartoyZkUvtv
+         0aIPVgKqWSag9KjmoSmL9tIWHn1wBjacgIraxFnfDb5qGOZIUWO89s/DReEueEyUwyCU
+         xBvOq80P4g1ck6ZkFkbUuJXgJhQXW8bc4jx0W3R6bkzBf/GFgpdxXOI9qR3i3aZM7gd5
+         k1QK34eoX7chwVUadq/Zz9w7KcoJP7gm1tTl686YBb5Wf7RXf5lNfYrYfB7UEh+SWZtl
+         YKdr/zTz3TNPmZM45KKMPXB5YYh4yXEr6TJ8VDPPtbo+4L2n3eYoWYI/mfPVR3fadHXs
+         3a4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=prQGEZISCROhNVrZYgfW+RC/t0atKeeXslehrhwqbKM=;
+        b=aNrFd0lBYtpLjnaB+Tl95tcX8/jTev+EWJUIe24+Q1fq4alqPHJqhW3BZrVAQahCO8
+         lU97VFibutqea4xSFuXwl8skDACIKX4Rg7X72bCsYiTS0Y3d8Jm1NcThormu4x7rqIE1
+         EPbCrG8OHChZBtKb8oC32CSi+mTkVUvJhlkQA25OUFouc/ayfZyjbaI1hjZS2N5krTKI
+         QI8IAN3Fa9nnCw/oTzAGpvBkuEs/5vTKDkgYtscbMr0rvn3W1JFmM4p8LS+6hudujb5e
+         ZPLY+0HIBwi0rI98tNHZQF6Sa8dZLjsG1BjAa2SmSY1SWMMVUO8/gvwZ4orOIKhGbMF8
+         /3cg==
+X-Gm-Message-State: AOAM531EW13cTGXbJIbZLNSpxmA5TLGdqndatJYgwjOmk4j1PEl3E4e5
+        DAOPO0o5eUm5YSiik3tkRFc=
+X-Google-Smtp-Source: ABdhPJzo7GAeRh/+rDxJrGaqKZmEyAUpP2yYvivtS9vTqfphRN1U2J0Hf3TZwmuAb4OjGHDeVSyHJg==
+X-Received: by 2002:a17:902:6f16:b0:138:a3fa:1b7 with SMTP id w22-20020a1709026f1600b00138a3fa01b7mr3393031plk.60.1630107341560;
+        Fri, 27 Aug 2021 16:35:41 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id z3sm6973962pjn.43.2021.08.27.16.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Aug 2021 16:35:40 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 27 Aug 2021 13:35:39 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YSl2yxEvnDrPxzUV@slm.duckdns.org>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com>
+ <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+ <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+ <YShjb2WwvuB4s4gX@slm.duckdns.org>
+ <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+ <YSlY0H/qeXQIGOfk@slm.duckdns.org>
+ <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a4f2fbc-76e8-b67b-f110-30beff2228f5@oracle-com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Mike,
+Hello,
 
-I really appreciate the quick reply
+On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long wrote:
+> The cpu exclusivity rule is due to the setting of CPU_EXCLUSIVE bit. This is
+> a pre-existing condition unless you want to change how the
+> cpuset.cpu_exclusive works.
+>
+> So the new rules will be:
+> 
+> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
 
-Mike Kravets wrote: 
-> There have been other hugetlb cgroup fixes since 5.10.  I do not believe
-> they are related to the underflow issue you have seen.  Just FYI.
+Empty cpu list can be considered an exclusive one.
 
-Yes, I am aware. Actually I did my best to look at all recent changes
-not backported to 5.10 and couldn't find anything related. I tried to
-cherry-pick a couple of fixes in case but the bug did not go away.
+> 2) The parent cgroup is a partition root (can be an invalid one).
 
-> However, when a vma is split both resulting vmas would be 'owners' of
-> private mapping reserves without incrementing the refcount which would
-> lead to the underflow you describe.
+Does this mean a partition parent can't stop being a partition if one or
+more of its children become partitions? If so, it violates the rule that a
+descendant shouldn't be able to restrict what its ancestors can do.
 
-Indeed and I do know that programs running on my reproducer machines do
-split vmas.
+> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
 
->> 2. After 08cf9faf75580, __free_huge_page() decrements the css
->> refcount for _each_ page unconditionally by calling
->> hugetlb_cgroup_uncharge_page_rsvd().  But a per-page reference count
->> is only taken *per page* outside the reserve case in
->> alloc_huge_page() (i.e hugetlb_cgroup_charge_cgroup_rsvd() is called
->> only if deferred_reserve is true).  In the reserve case, there is
->> only one css reference linked to the resv map (taken in
->> hugetlb_reserve_pages()).  This also leads to an underflow of the
->> counter.  A similar scheme to HPageRestoreReserve can be used to
->> track which pages were allocated in the deferred_reserve case and
->> call hugetlb_cgroup_uncharge_page_rsvd() only for these during
->> freeing.
+Why not just go by effective? This would mean that a parent can't withdraw
+CPUs from its allowed set once descendants are configured. Restrictions like
+this are fine when the entire hierarchy is configured by a single entity but
+become awkward when configurations are multi-tiered, automated and dynamic.
 
-> I am not sure about the above analysis.  It is true that
-> hugetlb_cgroup_uncharge_page_rsvd is called unconditionally in
-> free_huge_page.  However, IIUC hugetlb_cgroup_uncharge_page_rsvd will
-> only decrement the css refcount if there is a non-NULL hugetlb_cgroup
-> pointer in the page.  And, the pointer in the page would only be set
-> in the 'deferred_reserve' path of alloc_huge_page.  Unless I am
-> missing something, they seem to balance.
+> 4) No child cgroup with cpuset enabled.
 
-Now that you explain, I am pretty sure that you're right and I was
-wrong.
+idk, maybe? I'm having a hard time seeing the point in adding these
+restrictions when the state transitions are asynchronous anyway. Would it
+help if we try to separate what's absoluately and technically necessary and
+what seems reasonable or high bar and try to justify why each of the latter
+should be added?
 
-I'll confirm that I can't reproduce without my change for 2.
-
-Thank you,
-
-Guillaume.
+Thanks.
 
 -- 
-Guillaume Morin <guillaume@morinfr.org>
+tejun
