@@ -2,132 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6C33FBB55
-	for <lists+cgroups@lfdr.de>; Mon, 30 Aug 2021 19:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57BC3FBB83
+	for <lists+cgroups@lfdr.de>; Mon, 30 Aug 2021 20:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238265AbhH3SAk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 Aug 2021 14:00:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51556 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238134AbhH3SAk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Aug 2021 14:00:40 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4B61222121;
-        Mon, 30 Aug 2021 17:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630346385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fjtm8tVefXUCT0rdTzMn/o5zpc91NrF6pXy1z50nDUM=;
-        b=TyI+3u+QEneileBnDmwJhe/7GU/cZ4f+Sj8PsvZ9ugakdDVaT8ur0+WioUJKotS8fyURo0
-        Mm12eWM1b0hCFWGb0F0M+ECUj56MCl6ARx+3TzD2Y8ZHaqgpxOq8DgRVIyvlvXxef349Py
-        dUMXeDS74InyxljMGcbhds/MtAMoLJk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D6D6F13A98;
-        Mon, 30 Aug 2021 17:59:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 74kZM5AcLWEBdAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 30 Aug 2021 17:59:44 +0000
-Date:   Mon, 30 Aug 2021 19:59:43 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YS0cj+0thCHmXw/M@blackbook>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com>
- <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
- <YSlY0H/qeXQIGOfk@slm.duckdns.org>
- <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+        id S238280AbhH3SLc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 Aug 2021 14:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238150AbhH3SLc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Aug 2021 14:11:32 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D43C061575;
+        Mon, 30 Aug 2021 11:10:38 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id m17so9015597plc.6;
+        Mon, 30 Aug 2021 11:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hD0xppJLT6aEBN2umsxRQUAtIA9VVamYDNavPG9ZrFA=;
+        b=nUGFYmCE9vU9tp3VIixtY28HUGWuJn0CQpFrlaTEOAG5ks+zzZg7SYZJ7uVTIEYh5+
+         4nwFaQDapsEvEUbOOxE1L7PC+rlnZ0lvvjt2qL/4R+L5rcV1GC+aBRDkCLipRuN5pKbQ
+         a//RaTkbMnyB/xZJiFJUbubqXtIBczqDj8PFZY6ncK0LISWmPHX9QrJ62gOBuTZaMZOM
+         jy+MFzlTkYm3+OIERk1+WlY2Q1yZyk6qT1s7z+Eq6qXeFk5BMssrLaiszlG/yqNM7lad
+         5YwMiZKgSh+rPPv8N0Wn3G5qNGleu5StVthZpta/ubqWJCw4jsZIZEhzlpTZbnAYZoZe
+         4zwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hD0xppJLT6aEBN2umsxRQUAtIA9VVamYDNavPG9ZrFA=;
+        b=amweqRAFCEI5APX3N9d5xBBdROEaS6MU5lV+FEqxsi9YaLS6/rgdqRH2U7eJqFiRWb
+         2s6prQmLk+0Dn3xbyqtLzEm2yIif//z8LqJTJ1aJKemRF1N5MNUrgOPW1+NZbCr4nZxK
+         WMwCjSgeIh7jUT+c7dEVUW3n5oSKnC8384gFbYsq+Afa60NZySSZj1aQGsWirnNgR7l5
+         SZ88sn2PupucKg4sCkPPM7YJUHu5snoeQJfr1rsfZ9Q64NcbEFPBeIE9aA1gD4HOO3dy
+         PyOWhPtr66woQRnB8mpO1UkbsF8AuGqmeKf1CbYhPLVskKio+tsYH7WV4oKFav5X4Hhr
+         iUlg==
+X-Gm-Message-State: AOAM532YpBd7oyZBVJ0bqVrjMu68hZTCb6xhAXXKZaQ4ct6PH2M5UTvc
+        ypccRYbye9n6iudXzQwe+Eg=
+X-Google-Smtp-Source: ABdhPJwHT36Iw7KT3WkTeq49AqdYspMrghtvyqmmodTda4K6CfH1jSY+9quPI5YV6oO8G3yiLR6uDA==
+X-Received: by 2002:a17:90a:da02:: with SMTP id e2mr378666pjv.89.1630347037205;
+        Mon, 30 Aug 2021 11:10:37 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-44e6-6a58-44be-40a6.res6.spectrum.com. [2603:800c:1a02:1bae:44e6:6a58:44be:40a6])
+        by smtp.gmail.com with ESMTPSA id z9sm15038224pfa.2.2021.08.30.11.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Aug 2021 11:10:36 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 30 Aug 2021 08:10:34 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] cgroup: Avoid compiler warnings with no subsystems
+Message-ID: <YS0fGvwqLWKpcejZ@mtj.duckdns.org>
+References: <20210828000255.3213497-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+In-Reply-To: <20210828000255.3213497-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+On Fri, Aug 27, 2021 at 05:02:55PM -0700, Kees Cook wrote:
+> As done before in commit cb4a31675270 ("cgroup: use bitmask to filter
+> for_each_subsys"), avoid compiler warnings for the pathological case of
+> having no subsystems (i.e. CGROUP_SUBSYS_COUNT == 0). This condition is
+> hit for the arm multi_v7_defconfig config under -Wzero-length-bounds:
+> 
+> In file included from ./arch/arm/include/generated/asm/rwonce.h:1,
+>                  from include/linux/compiler.h:264,
+>                  from include/uapi/linux/swab.h:6,
+>                  from include/linux/swab.h:5,
+>                  from arch/arm/include/asm/opcodes.h:86,
+>                  from arch/arm/include/asm/bug.h:7,
+>                  from include/linux/bug.h:5,
+>                  from include/linux/thread_info.h:13,
+>                  from include/asm-generic/current.h:5,
+>                  from ./arch/arm/include/generated/asm/current.h:1,
+>                  from include/linux/sched.h:12,
+>                  from include/linux/cgroup.h:12,
+>                  from kernel/cgroup/cgroup-internal.h:5,
+>                  from kernel/cgroup/cgroup.c:31:
+> kernel/cgroup/cgroup.c: In function 'of_css':
+> kernel/cgroup/cgroup.c:651:42: warning: array subscript '<unknown>' is outside the bounds of an
+> interior zero-length array 'struct cgroup_subsys_state *[0]' [-Wzero-length-bounds]
+>   651 |   return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: cgroups@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-On Fri, Aug 27, 2021 at 06:50:10PM -0400, Waiman Long <llong@redhat.com> wrote:
-> So the new rules will be:
+Applied to cgroup/for-5.15.
 
-When I followed the thread, it seemed to me you're talking past each
-other a bit. I'd suggest the following terminology:
+Thanks.
 
-- config space: what's written by the user and saved,
-
-- reality space: what's currently available (primarily subject to
-  on-/offlinng but I think it'd be helpful to consider here also what's
-  given by the parent),
-
-- effect space: what's actually possible and happening.
-
-Not all elements of config_space x reality_space (Cartesian product) can
-be represented in the effect_space (e.g. root partition with no
-(effective) cpus).
-
-IIUC, Waiman's "high bar" is supposed to be defined over transitions in
-the config_space. However, there can be independent changes in the
-reality_space so the rules should be actually formulated in the
-effect_space:
-
-The conditions for being a valid partition root rewritten into the effect
-space:
-
-> 1) The "cpuset.cpus" is not empty and the list of CPUs are exclusive.
-- effective CPUs are non-empty and exclusive wrt siblings
-- (E.g. setting empty cpuset.cpus might be possible but it invalidates
-  the partition root, same as offlining or removal by an ancestor.)
-
-> 2) The parent cgroup is a partition root (can be an invalid one).
-- parent cgroup is a (valid) partition
-- (Being valid partition means owning "stolen" cpus from the parent, if
-  the parent is not valid partition itself, you can't steal what is not
-  owned.)
-- (And I think it's OK that: "the child partitions will stay invalid
-  forever unless the parent become a valid partition again" [1].)
-
-> 3) The "cpuset.cpus" is a subset of the parent's cpuset.cpus.allowed.
-- I'm not sure what is the use of this condition (together with the
-  rewrite of the 1st condition which covers effective cpus). I think it
-  would make sense if being a valid parition root guaranteed that all
-  configured cpuset.cpus will be available, however, that's not the case
-  IIUC (e.g. due to offlining).
-
-> 4) No child cgroup with cpuset enabled.
-- A child cgroup with cpuset enabled is OK in the effect space
-  (achievable by switching first and creating children later).
-- For technical reasons this may be a condition on the transitions in
-  the config_space.
-
-Generally, most config changes should succeed and user should check (or
-watch) how they landed in combination with the reality_space.
-
-Regards,
-Michal
-
-[1] This follows the general model where ancestors can "preempt"
-resources from their subtree.
+-- 
+tejun
