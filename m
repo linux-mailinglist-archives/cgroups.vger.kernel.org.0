@@ -2,97 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18B33FD748
-	for <lists+cgroups@lfdr.de>; Wed,  1 Sep 2021 11:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFC73FD782
+	for <lists+cgroups@lfdr.de>; Wed,  1 Sep 2021 12:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhIAJ6C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Sep 2021 05:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhIAJ57 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Sep 2021 05:57:59 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D96C061575
-        for <cgroups@vger.kernel.org>; Wed,  1 Sep 2021 02:57:02 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id j4so5172372lfg.9
-        for <cgroups@vger.kernel.org>; Wed, 01 Sep 2021 02:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=rcmwuZyyo1lD2RX8on1x0ZbOpR9iZYztDEtutBdrdIVf05vug2o/2D/Af/GsD63vqp
-         H79/5IJUNVjmQl6m7x6SJKF+O04EegyDyT4TTLmNxLW4weacSXKK17WSUdEmgsfuWOyu
-         iiYtlkjb+NxK9Lx8cjA80/gMugLqNn28pnDI2lqTc+iW7X5VOb3vVApCM6brF0cbq3Lw
-         /8NOL0qHZj0kEJlM5CGq68WXKXdop1fIOpnFKDMSVIhR8M4a/vxiUmIQpNvHoSxEqfPN
-         cw33ywM4dcOgQH3l8inbh+F6T8AfURArGFJsa0PJrpKb3/ZFrcyiZNyucTyzIXrOhVko
-         rRWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=S29LqfXd0KJyYHdvb0lZkYYe1CLBuqYNKOYVaJGj5PsZdbjIrSOnTmuxYsN4bOZ89X
-         PbZhzfBIP+LikFz7aoWlh4Xy50SuxUKIT/iI30tNoQcrqOaQYo3HaMQbN/fpzNuI/so9
-         z7WBaURxqOI5akyeWDftrjA4Cgbc0N0zTUqU4q2Gx+XDdmKk88mFFfBj1iAhC1j0YQAl
-         kWdNOQZa2knSF2wKITlTJDuVZ3bQ9ul+TygOdcRGU9pibzqcS9xtAjZLohLIsqhXzKLD
-         6VWEfXkW631jA6qqWuviwmzQCymXBxfuKjvjJq7bddFg1Zu9k0prKhwrCOcU4Biwto27
-         07uQ==
-X-Gm-Message-State: AOAM533kvFenmlgdIAYm+d5oJmiHbSkMWMrJBPJid42ZAzl3ptxhCg8Z
-        e6roFP2RSB3mTcu19IclbgC/DJ1gsle/FOxLAcc=
-X-Google-Smtp-Source: ABdhPJxYPxFlUOuX2BifKS7/VWE1x3VA25NLt7Qmgm3QMHCyg5mif1jVBZQO9QsKtgfwuPiku576nWlRYNUUSbom/Wc=
-X-Received: by 2002:a05:6512:ad1:: with SMTP id n17mr1586210lfu.247.1630490220832;
- Wed, 01 Sep 2021 02:57:00 -0700 (PDT)
+        id S233171AbhIAKTm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Sep 2021 06:19:42 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:51920 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232662AbhIAKTi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Sep 2021 06:19:38 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UmvU9H3_1630491513;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0UmvU9H3_1630491513)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 01 Sep 2021 18:18:40 +0800
+From:   Hao Xu <haoxu@linux.alibaba.com>
+To:     Jens Axboe <axboe@kernel.dk>, Zefan Li <lizefan.x@bytedance.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, cgroups@vger.kernel.org,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: [PATCH v3 0/2] refactor sqthread cpu binding logic
+Date:   Wed,  1 Sep 2021 18:18:31 +0800
+Message-Id: <20210901101833.69535-1-haoxu@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-Received: by 2002:a05:651c:1193:0:0:0:0 with HTTP; Wed, 1 Sep 2021 02:57:00
- -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uchenna <robertandersonhappy2@gmail.com>
-Date:   Wed, 1 Sep 2021 02:57:00 -0700
-Message-ID: <CABzJeR-+qO8TLdrie641ZA3tU+4OMnqR+N1-jntCY-SeudETyg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Attention Please,
+This patchset is to enhance sqthread cpu binding logic, we didn't
+consider cgroup setting before. In container environment, theoretically
+sqthread is in its container's task group, it shouldn't occupy cpu out
+of its container. Otherwise it may cause some problems, for example:
+resource balancer may controll cpu resource allocation by a container's
+current cpu usage, here sqthread should be counted in.
 
-I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
-healthy? This is to inform you that i have concluded the transaction
-successfully with the help of a new partner from Venezuela and now the
-fund has been transferred to Venezuela into the bank account of the
-new partner.
+v1-->v2
+ - add helper to do cpu in current-cpuset test
 
-Meanwhile, I have decided to compensate you with the sum of
-US$350,000.00 (thiree Hundred and Fifty Thousand United States
-Dollars) due to your past effort, though you disappointed me along the
-line. But nevertheless I am very happy for the successful ending of
-the transaction without any problem and that is the reason why i have
-decided to compensate you with the sum of US$350,000.00 so that you
-will share the joy with me.
+v2-->v3
+ - split it to 2 patches, first as prep one, second as comsumer
+ - remove warnning, since cpuset may change anytime, we cannot catch
+   all cases, so make the behaviour consistent.
 
-I advise you to contact my secretary for Atm Card of US$350.000.00,
-which I kept for you. Contact him now without any delay.
+Hao Xu (2):
+  cpuset: add a helper to check if cpu in cpuset of current task
+  io_uring: consider cgroup setting when binding sqpoll cpu
 
-Name: solomon brandy
+ fs/io_uring.c          | 19 ++++++++++++++-----
+ include/linux/cpuset.h |  7 +++++++
+ kernel/cgroup/cpuset.c | 11 +++++++++++
+ 3 files changed, 32 insertions(+), 5 deletions(-)
 
-Email:solomonbrandyfiveone@gmail.com
+-- 
+2.24.4
 
-Kindly reconfirm to him the following below information:
-
-Your full name_________________________
-Your address__________________________
-Your country___________________________
-Your age______________________________
-Your occupation________________________
-Your cell Phone number______________________
-
-Note that if you did not send him the above information complete, he
-will not release the Atm card to you because he has to be sure that it
-is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
-which I kept for you.
-
-Best regards,
-
-Mr. uchenna ilobi
