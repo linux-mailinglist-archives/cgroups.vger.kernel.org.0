@@ -2,74 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AB6400168
-	for <lists+cgroups@lfdr.de>; Fri,  3 Sep 2021 16:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967994001AD
+	for <lists+cgroups@lfdr.de>; Fri,  3 Sep 2021 17:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244601AbhICOpC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Sep 2021 10:45:02 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50565 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349502AbhICOpC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Sep 2021 10:45:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Un6xNvp_1630680239;
-Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0Un6xNvp_1630680239)
+        id S231959AbhICPFK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Sep 2021 11:05:10 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:49378 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229997AbhICPFK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Sep 2021 11:05:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=haoxu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Un7GxII_1630681447;
+Received: from B-25KNML85-0107.local(mailfrom:haoxu@linux.alibaba.com fp:SMTPD_---0Un7GxII_1630681447)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 03 Sep 2021 22:43:59 +0800
-Subject: Re: [PATCH v4 0/2] refactor sqthread cpu binding logic
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+          Fri, 03 Sep 2021 23:04:07 +0800
+Subject: Re: [PATCH 2/2] io_uring: consider cgroup setting when binding sqpoll
+ cpu
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Jens Axboe <axboe@kernel.dk>, Zefan Li <lizefan.x@bytedance.com>,
-        Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Pavel Begunkov <asml.silence@gmail.com>,
         io-uring@vger.kernel.org, cgroups@vger.kernel.org,
         Joseph Qi <joseph.qi@linux.alibaba.com>
 References: <20210901124322.164238-1-haoxu@linux.alibaba.com>
- <20210902164808.GA10014@blackbody.suse.cz>
+ <20210901124322.164238-3-haoxu@linux.alibaba.com>
+ <YS+tPq1eiQLx4P3M@slm.duckdns.org>
 From:   Hao Xu <haoxu@linux.alibaba.com>
-Message-ID: <b78d63d1-1cd8-a6d0-c26e-3d6c270abbb4@linux.alibaba.com>
-Date:   Fri, 3 Sep 2021 22:43:59 +0800
+Message-ID: <c49d9b26-1c74-316a-c933-e6964695a286@linux.alibaba.com>
+Date:   Fri, 3 Sep 2021 23:04:07 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210902164808.GA10014@blackbody.suse.cz>
+In-Reply-To: <YS+tPq1eiQLx4P3M@slm.duckdns.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2021/9/3 上午12:48, Michal Koutný 写道:
-> Hello Hao.
+在 2021/9/2 上午12:41, Tejun Heo 写道:
+Hi Tejun,
+> Hello,
 > 
-> On Wed, Sep 01, 2021 at 08:43:20PM +0800, Hao Xu <haoxu@linux.alibaba.com> wrote:
->> This patchset is to enhance sqthread cpu binding logic, we didn't
->> consider cgroup setting before. In container environment, theoretically
->> sqthread is in its container's task group, it shouldn't occupy cpu out
->> of its container.
+> On Wed, Sep 01, 2021 at 08:43:22PM +0800, Hao Xu wrote:
+>> @@ -7112,11 +7113,9 @@ static int io_sq_thread(void *data)
+>>   
+>>   	snprintf(buf, sizeof(buf), "iou-sqp-%d", sqd->task_pid);
+>>   	set_task_comm(current, buf);
+>> +	if (sqd->sq_cpu != -1 && test_cpu_in_current_cpuset(sqd->sq_cpu))
+>>   		set_cpus_allowed_ptr(current, cpumask_of(sqd->sq_cpu));
+>> +
 > 
-> I see in the discussions that there's struggle to make
-> set_cpus_allowed_ptr() do what's intended under the given constraints.
+> Would it make sense to just test whether set_cpus_allowed_ptr() succeeded
+> afterwards?
+Do you mean: if (sqd->sq_cpu != -1 && !set_cpus_allowed_ptr(current, 
+cpumask_of(sqd->sq_cpu)))
+
+I'm not familiar with set_cpus_allowed_ptr(), you mean it contains the
+similar logic of test_cpu_in_current_cpuset?
 > 
-> IIUC, set_cpus_allowed_ptr() is conventionally used for kernel threads
-> [1]. But does the sqthread fall into this category? You want to have it
-> _directly_ associated with a container and its cgroups. It looks to me
-sqthread is in it's creator's task group, so it is like a userspace
-thread from this perspective. When it comes to container environemt
-sqthread naturely belongs to a container which also contains its creator
-And it has same cgroup setting with it's creator by default.
-> more like a userspace thread (from this perspective, not literally). Or
-> is there a different intention?
+>> @@ -8310,8 +8309,10 @@ static int io_sq_offload_create(struct io_ring_ctx *ctx,
+>>   			int cpu = p->sq_thread_cpu;
+>>   
+>>   			ret = -EINVAL;
+>> -			if (cpu >= nr_cpu_ids || !cpu_online(cpu))
+>> +			if (cpu >= nr_cpu_ids || !cpu_online(cpu) ||
+>> +			    !test_cpu_in_current_cpuset(cpu))
+>>   				goto err_sqpoll;
+>> +
 > 
-> It seems to me that reusing the sched_setaffinity() (with all its
-> checks and race pains/solutions) would be a more universal approach.
-> (I don't mean calling sched_setaffinity() directly, some parts would
-> need to be factored separately to this end.) WDYT?
+> Failing operations on transient conditions like this may be confusing. Let's
+> ignore cpuset for now. CPU hotplug is sometimes driven automatically for
+> power saving purposes, so failing operation based on whether a cpu is online
+> means that the success or failure of the operation can seem arbitrary. If
+> the operation takes place while the cpu happens to be online, it succeeds
+> and the thread gets unbound and rebound automatically as the cpu goes
+This is a bit beyond of my knowledge, so you mean if the cpu back
+online, the task will automatically schedule to this cpu? if it's true,
+I think the code logic here is fine.
+> offline and online. If the operation takes place while the cpu happens to be
+> offline, the operation fails.
+It's ok that it fails, we leave the option of retry to users themselves.
 > 
+> I don't know what the intended behavior here should be and we haven't been
+> pretty bad at defining reasonable behavior around cpu hotplug, so it'd
+> probably be worthwhile to consider what the behavior should be.
 > 
-> Regards,
-> Michal
+> Thanks.
 > 
-> [1] Not only spending their life in kernel but providing some
-> delocalized kernel service.
-> 
+Thanks,
+Hao
 
