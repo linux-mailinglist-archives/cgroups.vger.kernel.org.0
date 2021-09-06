@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69804401305
-	for <lists+cgroups@lfdr.de>; Mon,  6 Sep 2021 03:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFDC401387
+	for <lists+cgroups@lfdr.de>; Mon,  6 Sep 2021 03:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239413AbhIFBXk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 5 Sep 2021 21:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38826 "EHLO mail.kernel.org"
+        id S240800AbhIFB0i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 5 Sep 2021 21:26:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238638AbhIFBWl (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:22:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF4A3610F9;
-        Mon,  6 Sep 2021 01:21:15 +0000 (UTC)
+        id S239419AbhIFBY4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:24:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E74F36113E;
+        Mon,  6 Sep 2021 01:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630891276;
-        bh=5a2B2wEQdX4iBESIH14jy80cKIeGSwVc0TLqChQrICo=;
+        s=k20201202; t=1630891335;
+        bh=G4Xs0378pV3JQ26bxd3847WEUgweyiHUNcrvm3obI/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hzL1TmIlViNSVuC2ZZVXthuVwRUpne2m8T7MY0H7vpBuMpgLWrM3M432KEBEjjCln
-         acdDoMwsOd5Wje490IbzgO68N3/8BNaD+vpY2qbVFGHfNnXapJcCBBhoWVuImOwKdm
-         ug1ywoKpu2EYyfCcFkI3SN9vQkIYasbKNvyvMOqCVIo2PnE6dfyk3umMzvZEhef6V6
-         YHP+/563oe3GZGSmyzOk9C/09tRechAnxhIF2WJFX74UGNgjPmLZ83KRpn8GMr+svr
-         36z8I39yOgKParjoJDfbVAmnea5+u2ZWIUHS1nh1vVlgO9Qjcc0tiza6ZdWnXirkso
-         AM0fCNKnUKH4w==
+        b=Vj7n2rlcjnNcBpnYSQUNuViIzyMJ0D2hsSd1i+TWMvInibPnDRgzKg4aqbmHmdC85
+         Pf+6IyOw4awIVWrY0CU/DMYhf6SWriZTz+l81EdzC4vtkBAOB1Nh+sdQiA7RwrAWfb
+         kvWLEica29NFke0fIDCJ01LmdWHCBP92bnOR3EtGWe6hgUv+Zugl9pLQaqtt4srazT
+         eu5F0GCUGi1B1M+77Hy223xzC4X6PH0pyT904kvvqaf2PpNDEYe5IVucT1l6GmRFLP
+         WNvcGStmji6q12DICSIy2suu7Gsnx430HRsSAI6t0HthI6z8EDNzxrVaBHhcjb6TlO
+         Vm0ersrCYgPYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Chunguang Xu <brookxu@tencent.com>, Tejun Heo <tj@kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.13 19/46] blk-throtl: optimize IOPS throttle for large IO scenarios
-Date:   Sun,  5 Sep 2021 21:20:24 -0400
-Message-Id: <20210906012052.929174-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 18/39] blk-throtl: optimize IOPS throttle for large IO scenarios
+Date:   Sun,  5 Sep 2021 21:21:32 -0400
+Message-Id: <20210906012153.929962-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210906012052.929174-1-sashal@kernel.org>
-References: <20210906012052.929174-1-sashal@kernel.org>
+In-Reply-To: <20210906012153.929962-1-sashal@kernel.org>
+References: <20210906012153.929962-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -75,11 +75,11 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 36 insertions(+)
 
 diff --git a/block/blk-merge.c b/block/blk-merge.c
-index bcdff1879c34..410ea45027c9 100644
+index 349cd7d3af81..110db636d230 100644
 --- a/block/blk-merge.c
 +++ b/block/blk-merge.c
-@@ -348,6 +348,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
- 		trace_block_split(split, (*bio)->bi_iter.bi_sector);
+@@ -341,6 +341,8 @@ void __blk_queue_split(struct bio **bio, unsigned int *nr_segs)
+ 		trace_block_split(q, split, (*bio)->bi_iter.bi_sector);
  		submit_bio_noacct(*bio);
  		*bio = split;
 +
@@ -88,7 +88,7 @@ index bcdff1879c34..410ea45027c9 100644
  }
  
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index b1b22d863bdf..55c49015e533 100644
+index b771c4299982..63e9d00a0832 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
 @@ -178,6 +178,9 @@ struct throtl_grp {
@@ -101,7 +101,7 @@ index b1b22d863bdf..55c49015e533 100644
  	struct blkg_rwstat stat_bytes;
  	struct blkg_rwstat stat_ios;
  };
-@@ -777,6 +780,8 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
+@@ -771,6 +774,8 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
  	tg->bytes_disp[rw] = 0;
  	tg->io_disp[rw] = 0;
  
@@ -110,7 +110,7 @@ index b1b22d863bdf..55c49015e533 100644
  	/*
  	 * Previous slice has expired. We must have trimmed it after last
  	 * bio dispatch. That means since start of last slice, we never used
-@@ -799,6 +804,9 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
+@@ -793,6 +798,9 @@ static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
  	tg->io_disp[rw] = 0;
  	tg->slice_start[rw] = jiffies;
  	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
@@ -120,7 +120,7 @@ index b1b22d863bdf..55c49015e533 100644
  	throtl_log(&tg->service_queue,
  		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
  		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
-@@ -1031,6 +1039,9 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
+@@ -1025,6 +1033,9 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
  				jiffies + tg->td->throtl_slice);
  	}
  
@@ -130,7 +130,7 @@ index b1b22d863bdf..55c49015e533 100644
  	if (tg_with_in_bps_limit(tg, bio, bps_limit, &bps_wait) &&
  	    tg_with_in_iops_limit(tg, bio, iops_limit, &iops_wait)) {
  		if (wait)
-@@ -2052,12 +2063,14 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
+@@ -2046,12 +2057,14 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
  	}
  
  	if (tg->iops[READ][LIMIT_LOW]) {
@@ -145,7 +145,7 @@ index b1b22d863bdf..55c49015e533 100644
  		iops = tg->last_io_disp[WRITE] * HZ / elapsed_time;
  		if (iops >= tg->iops[WRITE][LIMIT_LOW])
  			tg->last_low_overflow_time[WRITE] = now;
-@@ -2176,6 +2189,25 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
+@@ -2170,6 +2183,25 @@ static inline void throtl_update_latency_buckets(struct throtl_data *td)
  }
  #endif
  
@@ -170,12 +170,12 @@ index b1b22d863bdf..55c49015e533 100644
 +
  bool blk_throtl_bio(struct bio *bio)
  {
- 	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
+ 	struct request_queue *q = bio->bi_disk->queue;
 diff --git a/block/blk.h b/block/blk.h
-index 8b3591aee0a5..6cff1af51c57 100644
+index dfab98465db9..a15f0b65dee4 100644
 --- a/block/blk.h
 +++ b/block/blk.h
-@@ -294,11 +294,13 @@ int create_task_io_context(struct task_struct *task, gfp_t gfp_mask, int node);
+@@ -303,11 +303,13 @@ int create_task_io_context(struct task_struct *task, gfp_t gfp_mask, int node);
  extern int blk_throtl_init(struct request_queue *q);
  extern void blk_throtl_exit(struct request_queue *q);
  extern void blk_throtl_register_queue(struct request_queue *q);
