@@ -2,112 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BF04035E4
-	for <lists+cgroups@lfdr.de>; Wed,  8 Sep 2021 10:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518CA403990
+	for <lists+cgroups@lfdr.de>; Wed,  8 Sep 2021 14:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347469AbhIHIJx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Sep 2021 04:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235106AbhIHIJw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Sep 2021 04:09:52 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488A2C061575;
-        Wed,  8 Sep 2021 01:08:44 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso860179wmb.2;
-        Wed, 08 Sep 2021 01:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y+Q+aEeekHfF1o1bJCRwVNKDlh1bJxhJjIkMXUIhHF8=;
-        b=VpWYEJ2o4h481bAFIQ5qyBeYNfgFYaJLk+dCVV0gzxsAsUFZtIphsslnx9UiWQiAFu
-         1FjXww2jU/tAdltUiT83KbiCXks5DsJgVc8aOS4Uit2qf774Np8ZHOJIn9cFc+aeZgOL
-         VzHyAPqtEM0eKlZztGvC5JxEPZIAQqurzu06+/THFGdXluUo+goGHbgptXxFBaiHM7rx
-         MLSpMngYM9VDUUaBX4zK0N0ni0EU7TXXHfa/9EeNhmM1LOPkPjNex0FtOcaHRRM8a5FM
-         65+UyXxeel4G9bOwbNpujyP3R8G20vTYLKcXEqwaNAilpmPK6jlaIyMSC/5gInI2T3SJ
-         AmBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y+Q+aEeekHfF1o1bJCRwVNKDlh1bJxhJjIkMXUIhHF8=;
-        b=Ceh8gZ0ryasYh8GLeWIGHBd5ZTQ4Jsy7muQ7qpH5IKIB9izsHOKft8F/Q9FoA6pOVg
-         hKxYUhtSiE68IakCZxyLdGiTgRqfqZr7kLfUbNmEccQw2VEdAN3noF/4RPd0bEaQZhQg
-         nokpo1cqZEUIFZmkeAK45cMmowe0fAqm2+wBmXHXhd60+Et1FGeRNKCXV4MRdsru62OC
-         3Wrn6AJXhyDaQnhJx8Ru0yTToOzRWCd9X/Usg+kyBCkOQBEkb3bfGkTWb/UG2QGN8cMs
-         rfXN7q2nxxNbzJSsOdtPplMdaurGVkQQhEUcC3TpWbaIZERLf/Nq07O93P+DvdcCy1Rs
-         +zew==
-X-Gm-Message-State: AOAM531vSxLc5c5vT8I3hVKfzsD6ryTBoGnIUAkpYem+A+1WRiTjNOxd
-        Kzufjwr1c6tupKmVzx3e4cAHIflQ1wyzlbLZ
-X-Google-Smtp-Source: ABdhPJwdt0QosFeR1ZRVauFFD2WNLUQ4nlHUVghZiHRZ+TPdDL3xecyeUKQ9nqfdwwpJ976DOqAPtg==
-X-Received: by 2002:a05:600c:3584:: with SMTP id p4mr2167325wmq.39.1631088522722;
-        Wed, 08 Sep 2021 01:08:42 -0700 (PDT)
-Received: from localhost.localdomain ([45.251.105.183])
-        by smtp.gmail.com with ESMTPSA id i5sm1191566wmq.17.2021.09.08.01.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 01:08:42 -0700 (PDT)
-From:   ArthurChiao <sjtuyananzhao@gmail.com>
-X-Google-Original-From: ArthurChiao <arthurchiao@hotmail.com>
-To:     cgroups@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, ArthurChiao <arthurchiao@hotmail.com>
-Subject: [PATCH RESEND] cgroupv2, docs: fix misinformation in "device controller" section
-Date:   Wed,  8 Sep 2021 16:08:15 +0800
-Message-Id: <20210908080815.130952-1-arthurchiao@hotmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235195AbhIHMQn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Sep 2021 08:16:43 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54381 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231372AbhIHMQn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Sep 2021 08:16:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Ungmnr5_1631103332;
+Received: from localhost(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0Ungmnr5_1631103332)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 08 Sep 2021 20:15:32 +0800
+From:   Yi Tao <escape@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, shanpeic@linux.alibaba.com
+Subject: [RFC PATCH 0/2] support cgroup pool in v1
+Date:   Wed,  8 Sep 2021 20:15:11 +0800
+Message-Id: <cover.1631102579.git.escape@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hotmail was rejected by the mailing list, switched to gmail to resend.
+In a scenario where containers are started with high concurrency, in
+order to control the use of system resources by the container, it is
+necessary to create a corresponding cgroup for each container and
+attach the process. The kernel uses the cgroup_mutex global lock to
+protect the consistency of the data, which results in a higher
+long-tail delay for cgroup-related operations during concurrent startup.
+For example, long-tail delay of creating cgroup under each subsystems
+is 900ms when starting 400 containers, which becomes bottleneck of
+performance. The delay is mainly composed of two parts, namely the
+time of the critical section protected by cgroup_mutex and the
+scheduling time of sleep. The scheduling time will increase with
+the increase of the cpu overhead.
 
-1. Clarify cgroup BPF program type and attach type;
-2. Fix file path broken.
+In order to solve this long-tail delay problem, we designed a cgroup
+pool. The cgroup pool will create a certain number of cgroups in advance.
+When a user creates a cgroup through the mkdir system call, a clean cgroup
+can be quickly obtained from the pool. Cgroup pool draws on the idea of
+cgroup rename. By creating pool and rename in advance, it reduces the
+critical area of cgroup creation, and uses a spinlock different from
+cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
+competition with attaching processes on the other hand.
 
-Signed-off-by: ArthurChiao <arthurchiao@hotmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 26 ++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+The core idea of implementing a cgroup pool is to create a hidden kernfs
+tree. Cgroup is implemented based on the kernfs file system. The user
+manipulates the cgroup through the kernfs file. Therefore, we can create
+a cgroup in advance and place it in a hidden kernfs tree, so that the user
+can not operate the cgroup. When the user needs to create one, move the
+cgroup to its original location. Because this only needs to remove a node
+from one kernfs tree and move it to another tree, it does not affect other
+data of the cgroup and related subsystems, so this operation is very
+efficient and fast, and there is no need to hold cgroup_mutex. In this
+way, we get rid of the limitation of cgroup_mutex and reduce the time
+consumption of the critical section, but the kernfs_rwsem is still
+protecting the kernfs-related data structure, and the scheduling time
+of sleep still exists.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5c7377b5bd3e..ad83f87a042c 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2159,19 +2159,19 @@ existing device files.
- 
- Cgroup v2 device controller has no interface files and is implemented
- on top of cgroup BPF. To control access to device files, a user may
--create bpf programs of the BPF_CGROUP_DEVICE type and attach them
--to cgroups. On an attempt to access a device file, corresponding
--BPF programs will be executed, and depending on the return value
--the attempt will succeed or fail with -EPERM.
--
--A BPF_CGROUP_DEVICE program takes a pointer to the bpf_cgroup_dev_ctx
--structure, which describes the device access attempt: access type
--(mknod/read/write) and device (type, major and minor numbers).
--If the program returns 0, the attempt fails with -EPERM, otherwise
--it succeeds.
--
--An example of BPF_CGROUP_DEVICE program may be found in the kernel
--source tree in the tools/testing/selftests/bpf/progs/dev_cgroup.c file.
-+create bpf programs of type BPF_PROG_TYPE_CGROUP_DEVICE and attach
-+them to cgroups with BPF_CGROUP_DEVICE flag. On an attempt to access a
-+device file, corresponding BPF programs will be executed, and depending
-+on the return value the attempt will succeed or fail with -EPERM.
-+
-+A BPF_PROG_TYPE_CGROUP_DEVICE program takes a pointer to the
-+bpf_cgroup_dev_ctx structure, which describes the device access attempt:
-+access type (mknod/read/write) and device (type, major and minor numbers).
-+If the program returns 0, the attempt fails with -EPERM, otherwise it
-+succeeds.
-+
-+An example of BPF_PROG_TYPE_CGROUP_DEVICE program may be found in
-+tools/testing/selftests/bpf/progs/dev_cgroup.c in the kernel source tree.
- 
- 
- RDMA
+In order to avoid the use of kernfs_rwsem, we introduced a pinned state for
+the kernfs node. When the pinned state of this node is true, the lock that
+protects the data of this node is changed from kernfs_rwsem to a lock that
+can be set. In the scenario of a cgroup pool, the parent cgroup will have a
+corresponding spinlock. When the pool is enabled, the kernfs nodes of all
+cgroups under the parent cgroup are set to the pinned state. Create,
+delete, and move these kernfs nodes are protected by the spinlock of the
+parent cgroup, so data consistency will not be a problem.
+
+After opening the pool, the user creates a cgroup will take the fast path
+and obtain it from the cgroup pool. Deleting cgroups still take the slow
+path. When resources in the pool are insufficient, a delayed task will be
+triggered, and the pool will be replenished after a period of time. This
+is done to avoid competition with the current creation of cgroups and thus
+affect performance. When the resources in the pool are exhausted and not
+replenished in time, the creation of a cgroup will take a slow path,
+so users need to set an appropriate pool size and supplementary delay time.
+
+What we did in the patches are:
+	1.add pinned flags for kernfs nodes, so that they can get rid of
+	kernfs_rwsem and choose to be protected by other locks.
+	2.add pool_size interface which used to open cgroup pool and
+	close cgroup pool.
+	3.add extra kernfs tree which used to hide cgroup in pool.
+	4.add spinlock to protect kernfs nodes of cgroup in pool
+
+
+Yi Tao (2):
+  add pinned flags for kernfs node
+  support cgroup pool in v1
+
+ fs/kernfs/dir.c             |  74 ++++++++++++++++-------
+ include/linux/cgroup-defs.h |  16 +++++
+ include/linux/cgroup.h      |   2 +
+ include/linux/kernfs.h      |  14 +++++
+ kernel/cgroup/cgroup-v1.c   | 139 ++++++++++++++++++++++++++++++++++++++++++++
+ kernel/cgroup/cgroup.c      | 113 ++++++++++++++++++++++++++++++++++-
+ kernel/sysctl.c             |   8 +++
+ 7 files changed, 345 insertions(+), 21 deletions(-)
+
 -- 
-2.25.1
+1.8.3.1
 
