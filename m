@@ -2,90 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8194E403DA1
-	for <lists+cgroups@lfdr.de>; Wed,  8 Sep 2021 18:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F423405227
+	for <lists+cgroups@lfdr.de>; Thu,  9 Sep 2021 14:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhIHQgW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Sep 2021 12:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343833AbhIHQgV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Sep 2021 12:36:21 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80493C061575;
-        Wed,  8 Sep 2021 09:35:13 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pi15-20020a17090b1e4f00b00197449fc059so1591888pjb.0;
-        Wed, 08 Sep 2021 09:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
-        b=cEO/E0Ry4JDv4NAoZWlVwP4k205lyAd9w0Jc/1E0rCsSXw3qxpjooAnEo5b0LiZ/xh
-         1cmfhhXIkymzyYy74CxqfFRkcGkxEeqgtwbcmUmMOkNEgfNyZNECXRyYhdC3TWU3C1wr
-         RYo72dsDHQjeUlpJ7ZxqIgnRC0i4WwnJja8UvQ7EAgxQKkXrN4eymCpiHcJPG6g0QGA8
-         1fdL5abIwfzLj6FxUwYFP5fiwW7rZUSkCJFGZOaOTXRaWkmRkbrJ+7uEWs7JEQ0dy4ji
-         /jGHumraXj/+ujT5+g4BougNm+Fbf7wvpHnEOR+SoWoel7IC/QoSVu1xTlgMd7VHAL2l
-         7/XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OcymaPtn2yQq8RdWF6BFH20bMyFtxjOxZMFIB1OMhb4=;
-        b=lEId6/rcLwTgnpWKqEg+WWPDN/ctdwXKdvLofL2WZSubx8jnak5nxV5DU2yO5RQnKO
-         qpmUPT0WLxVQ1EWXbzgn2zuRvtnRQnhOqpyoc7jDreihuHmUeOsQiixAONZC4tCsdXIA
-         5r27ePBJ3T1hWxetihS6Oka+FZUHv71rSEqmBJcWJ1ARES2Ee4XleezTfM1tNbfQXUuR
-         Qj/ERb1x8FZfGHcqRILWq5LTCuFW9wdAIKgqEv7E5y07nsAK6ZpYQLOorYVUMQrurzgR
-         if9QbwVYq2j06DYISF78fr43v7UsnNXUHaky7nBjVT6Ed+GFj60gmQATp4uHZjdmnySm
-         WJdw==
-X-Gm-Message-State: AOAM533xLShQSj71FDIqSQzXtRM6pUGdr6z3maxkAtxzAdzQBVtLXfT2
-        AXGdgmAC5iel5pqDrgGCNohMVqvWAWg=
-X-Google-Smtp-Source: ABdhPJwFoJ0ZNwF7ymnYu6dtcblvKpIG0O6/JViZFf+murQhyKST6yt150dDOceRGyev6kDMMDs6UQ==
-X-Received: by 2002:a17:90a:e009:: with SMTP id u9mr5000361pjy.218.1631118912916;
-        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id q20sm3798099pgu.31.2021.09.08.09.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 09:35:12 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 8 Sep 2021 06:35:11 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yi Tao <escape@linux.alibaba.com>
-Cc:     gregkh@linuxfoundation.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-Message-ID: <YTjmP0EGEWGYhroM@slm.duckdns.org>
-References: <cover.1631102579.git.escape@linux.alibaba.com>
+        id S1353335AbhIIMlO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Sep 2021 08:41:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38024 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354495AbhIIMfS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Sep 2021 08:35:18 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 40B0A21B13;
+        Thu,  9 Sep 2021 12:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631190848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=otlEKKTKaxtvvMLg6ergurTGZ0izRkiNu8lIiQOoJG8=;
+        b=pafa6rOLfy8b6s0LOtgRFEyJrgMHk2KL8oMKsBNZqMIZBfwqiSjy0lZ7HvQn9lCFIa0Def
+        3I/YVOWFpRHNDb+lcKi49HsIXhj7fESeGM/4jkVBGp0o6almfudRW5jGBLok/fvcJn3Fx1
+        m+3/6IVrYh3limVU1shkb/0FMRtdzdA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D69CC13C53;
+        Thu,  9 Sep 2021 12:34:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Gv1XMT//OWF8eQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 12:34:07 +0000
+Date:   Thu, 9 Sep 2021 14:34:05 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Jens Axboe <axboe@kernel.dk>, Hao Xu <haoxu@linux.alibaba.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, cgroups@vger.kernel.org,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: [PATCH v4 0/2] refactor sqthread cpu binding logic
+Message-ID: <20210909123405.GA7872@blackbody.suse.cz>
+References: <20210901124322.164238-1-haoxu@linux.alibaba.com>
+ <20210902164808.GA10014@blackbody.suse.cz>
+ <efd3c387-9c7c-c0d8-1306-f722da2a9ba1@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1631102579.git.escape@linux.alibaba.com>
+In-Reply-To: <efd3c387-9c7c-c0d8-1306-f722da2a9ba1@kernel.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Thanks for the answer and the context explanations.
 
-On Wed, Sep 08, 2021 at 08:15:11PM +0800, Yi Tao wrote:
-> In order to solve this long-tail delay problem, we designed a cgroup
-> pool. The cgroup pool will create a certain number of cgroups in advance.
-> When a user creates a cgroup through the mkdir system call, a clean cgroup
-> can be quickly obtained from the pool. Cgroup pool draws on the idea of
-> cgroup rename. By creating pool and rename in advance, it reduces the
-> critical area of cgroup creation, and uses a spinlock different from
-> cgroup_mutex, which reduces scheduling overhead on the one hand, and eases
-> competition with attaching processes on the other hand.
+On Thu, Sep 02, 2021 at 12:00:33PM -0600, Jens Axboe <axboe@kernel.dk> wrote:
+> We already have this API to set the affinity based on when these were
+> regular kernel threads, so it needs to work with that too. As such they
+> are marked PF_NO_SETAFFINITY.
 
-I'm not sure this is the right way to go about it. There are more
-conventional ways to improve scalability - making locking more granular and
-hunting down specific operations which take long time. I don't think cgroup
-management operations need the level of scalability which requires front
-caching.
+I see the current implementation "allows" at most one binding (by the
+passed sq_cpu arg) to a CPU and then "locks" it by setting
+PF_NO_SETAFFINITY subsequently (after set_cpus_allowed_ptr).
+And actually doesn't check whether it succeeded or not (Hao suggests in
+another subthread sq_cpu is a mere hint).
 
-Thanks.
+Nevertheless, you likely don't want to "trespass" the boundary of a
+cpuset and I think that it'll end up with a loop checking against
+hotplug races. That is already implemented in __sched_affinity, it'd be
+IMO good to have it in one place only.
 
--- 
-tejun
+> > [1] Not only spending their life in kernel but providing some
+> > delocalized kernel service.
+> 
+> That's what they do...
+
+(I assume that answer to "life in kernel" and the IO threads serve only
+the originating cpuset (container) i.e. are (co)localized to it (not
+delocalized as some kernel workers).)
+
+Cheers,
+Michal
