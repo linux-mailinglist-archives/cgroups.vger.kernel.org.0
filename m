@@ -2,87 +2,211 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F423405227
-	for <lists+cgroups@lfdr.de>; Thu,  9 Sep 2021 14:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EDA40558E
+	for <lists+cgroups@lfdr.de>; Thu,  9 Sep 2021 15:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353335AbhIIMlO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Sep 2021 08:41:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38024 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354495AbhIIMfS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Sep 2021 08:35:18 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 40B0A21B13;
-        Thu,  9 Sep 2021 12:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631190848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=otlEKKTKaxtvvMLg6ergurTGZ0izRkiNu8lIiQOoJG8=;
-        b=pafa6rOLfy8b6s0LOtgRFEyJrgMHk2KL8oMKsBNZqMIZBfwqiSjy0lZ7HvQn9lCFIa0Def
-        3I/YVOWFpRHNDb+lcKi49HsIXhj7fESeGM/4jkVBGp0o6almfudRW5jGBLok/fvcJn3Fx1
-        m+3/6IVrYh3limVU1shkb/0FMRtdzdA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D69CC13C53;
-        Thu,  9 Sep 2021 12:34:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Gv1XMT//OWF8eQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 09 Sep 2021 12:34:07 +0000
-Date:   Thu, 9 Sep 2021 14:34:05 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Jens Axboe <axboe@kernel.dk>, Hao Xu <haoxu@linux.alibaba.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, cgroups@vger.kernel.org,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: Re: [PATCH v4 0/2] refactor sqthread cpu binding logic
-Message-ID: <20210909123405.GA7872@blackbody.suse.cz>
-References: <20210901124322.164238-1-haoxu@linux.alibaba.com>
- <20210902164808.GA10014@blackbody.suse.cz>
- <efd3c387-9c7c-c0d8-1306-f722da2a9ba1@kernel.dk>
+        id S1350708AbhIINLX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Sep 2021 09:11:23 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19020 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355446AbhIIM6v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Sep 2021 08:58:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H4zTF5YQKzbmDw;
+        Thu,  9 Sep 2021 20:53:37 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Thu, 9 Sep 2021 20:57:39 +0800
+Received: from localhost.huawei.com (10.175.124.27) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 9 Sep 2021 20:57:38 +0800
+From:   Li Jinlin <lijinlin3@huawei.com>
+To:     <paolo.valente@linaro.org>, <^C@kernel.org>, <axboe@kernel.dk>,
+        <fchecconi@gmail.com>, <avanzini.arianna@gmail.com>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linfeilong@huawei.com>,
+        <louhongxiang@huawei.com>
+Subject: [PATCH] fix UAF in bfq_io_set_weight_legacy()
+Date:   Thu, 9 Sep 2021 21:26:46 +0800
+Message-ID: <20210909132646.1921280-1-lijinlin3@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efd3c387-9c7c-c0d8-1306-f722da2a9ba1@kernel.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for the answer and the context explanations.
+From: Li Jinlin <lijinlin3@huawei.com>
 
-On Thu, Sep 02, 2021 at 12:00:33PM -0600, Jens Axboe <axboe@kernel.dk> wrote:
-> We already have this API to set the affinity based on when these were
-> regular kernel threads, so it needs to work with that too. As such they
-> are marked PF_NO_SETAFFINITY.
+KASAN reports a use-after-free report when doing fuzz test:
 
-I see the current implementation "allows" at most one binding (by the
-passed sq_cpu arg) to a CPU and then "locks" it by setting
-PF_NO_SETAFFINITY subsequently (after set_cpus_allowed_ptr).
-And actually doesn't check whether it succeeded or not (Hao suggests in
-another subthread sq_cpu is a mere hint).
+[693354.104835] ==================================================================
+[693354.105094] BUG: KASAN: use-after-free in bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105336] Read of size 4 at addr ffff888be0a35664 by task sh/1453338
 
-Nevertheless, you likely don't want to "trespass" the boundary of a
-cpuset and I think that it'll end up with a loop checking against
-hotplug races. That is already implemented in __sched_affinity, it'd be
-IMO good to have it in one place only.
+[693354.105607] CPU: 41 PID: 1453338 Comm: sh Kdump: loaded Not tainted 4.18.0-147
+[693354.105610] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.81 07/02/2018
+[693354.105612] Call Trace:
+[693354.105621]  dump_stack+0xf1/0x19b
+[693354.105626]  ? show_regs_print_info+0x5/0x5
+[693354.105634]  ? printk+0x9c/0xc3
+[693354.105638]  ? cpumask_weight+0x1f/0x1f
+[693354.105648]  print_address_description+0x70/0x360
+[693354.105654]  kasan_report+0x1b2/0x330
+[693354.105659]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105665]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105670]  bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105675]  ? bfq_cpd_init+0x20/0x20
+[693354.105683]  cgroup_file_write+0x3aa/0x510
+[693354.105693]  ? ___slab_alloc+0x507/0x540
+[693354.105698]  ? cgroup_file_poll+0x60/0x60
+[693354.105702]  ? 0xffffffff89600000
+[693354.105708]  ? usercopy_abort+0x90/0x90
+[693354.105716]  ? mutex_lock+0xef/0x180
+[693354.105726]  kernfs_fop_write+0x1ab/0x280
+[693354.105732]  ? cgroup_file_poll+0x60/0x60
+[693354.105738]  vfs_write+0xe7/0x230
+[693354.105744]  ksys_write+0xb0/0x140
+[693354.105749]  ? __ia32_sys_read+0x50/0x50
+[693354.105760]  do_syscall_64+0x112/0x370
+[693354.105766]  ? syscall_return_slowpath+0x260/0x260
+[693354.105772]  ? do_page_fault+0x9b/0x270
+[693354.105779]  ? prepare_exit_to_usermode+0xf9/0x1a0
+[693354.105784]  ? enter_from_user_mode+0x30/0x30
+[693354.105793]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-> > [1] Not only spending their life in kernel but providing some
-> > delocalized kernel service.
-> 
-> That's what they do...
+[693354.105875] Allocated by task 1453337:
+[693354.106001]  kasan_kmalloc+0xa0/0xd0
+[693354.106006]  kmem_cache_alloc_node_trace+0x108/0x220
+[693354.106010]  bfq_pd_alloc+0x96/0x120
+[693354.106015]  blkcg_activate_policy+0x1b7/0x2b0
+[693354.106020]  bfq_create_group_hierarchy+0x1e/0x80
+[693354.106026]  bfq_init_queue+0x678/0x8c0
+[693354.106031]  blk_mq_init_sched+0x1f8/0x460
+[693354.106037]  elevator_switch_mq+0xe1/0x240
+[693354.106041]  elevator_switch+0x25/0x40
+[693354.106045]  elv_iosched_store+0x1a1/0x230
+[693354.106049]  queue_attr_store+0x78/0xb0
+[693354.106053]  kernfs_fop_write+0x1ab/0x280
+[693354.106056]  vfs_write+0xe7/0x230
+[693354.106060]  ksys_write+0xb0/0x140
+[693354.106064]  do_syscall_64+0x112/0x370
+[693354.106069]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-(I assume that answer to "life in kernel" and the IO threads serve only
-the originating cpuset (container) i.e. are (co)localized to it (not
-delocalized as some kernel workers).)
+[693354.106114] Freed by task 1453336:
+[693354.106225]  __kasan_slab_free+0x130/0x180
+[693354.106229]  kfree+0x90/0x1b0
+[693354.106233]  blkcg_deactivate_policy+0x12c/0x220
+[693354.106238]  bfq_exit_queue+0xf5/0x110
+[693354.106241]  blk_mq_exit_sched+0x104/0x130
+[693354.106245]  __elevator_exit+0x45/0x60
+[693354.106249]  elevator_switch_mq+0xd6/0x240
+[693354.106253]  elevator_switch+0x25/0x40
+[693354.106257]  elv_iosched_store+0x1a1/0x230
+[693354.106261]  queue_attr_store+0x78/0xb0
+[693354.106264]  kernfs_fop_write+0x1ab/0x280
+[693354.106268]  vfs_write+0xe7/0x230
+[693354.106271]  ksys_write+0xb0/0x140
+[693354.106275]  do_syscall_64+0x112/0x370
+[693354.106280]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-Cheers,
-Michal
+[693354.106329] The buggy address belongs to the object at ffff888be0a35580
+                 which belongs to the cache kmalloc-1k of size 1024
+[693354.106736] The buggy address is located 228 bytes inside of
+                 1024-byte region [ffff888be0a35580, ffff888be0a35980)
+[693354.107114] The buggy address belongs to the page:
+[693354.107273] page:ffffea002f828c00 count:1 mapcount:0 mapping:ffff888107c17080 index:0x0 compound_mapcount: 0
+[693354.107606] flags: 0x17ffffc0008100(slab|head)
+[693354.107760] raw: 0017ffffc0008100 ffffea002fcbc808 ffffea0030bd3a08 ffff888107c17080
+[693354.108020] raw: 0000000000000000 00000000001c001c 00000001ffffffff 0000000000000000
+[693354.108278] page dumped because: kasan: bad access detected
+
+[693354.108511] Memory state around the buggy address:
+[693354.108671]  ffff888be0a35500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[693354.116396]  ffff888be0a35580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.124473] >ffff888be0a35600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.132421]                                                        ^
+[693354.140284]  ffff888be0a35680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.147912]  ffff888be0a35700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.155281] ==================================================================
+
+Freeing bfqg is protected by queue lock in blkcg_deactivate_policy(), 
+but getting/using bfqg is protected by blkcg lock in
+bfq_io_set_weight_legacy(). If bfq_io_set_weight_legacy() get bfqg
+before freeing bfqg and use bfqg in the after, the use-after-free
+will occur.
+
+CPU0                             CPU1
+blkcg_deactivate_policy
+  spin_lock_irq(&q->queue_lock)
+                                 bfq_io_set_weight_legacy  
+                                   spin_lock_irq(&blkcg->lock)
+                                   blkg_to_bfqg(blkg)
+                                     pd_to_bfqg(blkg->pd[pol->plid])
+                                     ^^^^^^blkg->pd[pol->plid] != NULL
+                                           bfqg != NULL
+  pol->pd_free_fn(blkg->pd[pol->plid])
+    pd_to_bfqg(blkg->pd[pol->plid])
+    bfqg_put(bfqg)
+      kfree(bfqg)
+  blkg->pd[pol->plid] = NULL
+  spin_unlock_irq(q->queue_lock);
+                                   bfq_group_set_weight(bfqg, val, 0)
+                                     bfqg->entity.new_weight
+                                     ^^^^^^trigger uaf here 
+                                   spin_unlock_irq(&blkcg->lock);
+
+To fix this use-after-free, instead of holding blkcg->lock while
+walking ->blkg_list and getting/using bfqg, RCU walk ->blkg_list and
+hold the blkg's queue lock while getting/using bfqg.
+
+Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+---
+ block/bfq-cgroup.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index e2f14508f2d6..7209060caa90 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -1025,21 +1025,25 @@ static int bfq_io_set_weight_legacy(struct cgroup_subsys_state *css,
+ 	struct blkcg *blkcg = css_to_blkcg(css);
+ 	struct bfq_group_data *bfqgd = blkcg_to_bfqgd(blkcg);
+ 	struct blkcg_gq *blkg;
++	struct bfq_group *bfqg;
+ 	int ret = -ERANGE;
+ 
+ 	if (val < BFQ_MIN_WEIGHT || val > BFQ_MAX_WEIGHT)
+ 		return ret;
+ 
+ 	ret = 0;
+-	spin_lock_irq(&blkcg->lock);
+ 	bfqgd->weight = (unsigned short)val;
+-	hlist_for_each_entry(blkg, &blkcg->blkg_list, blkcg_node) {
+-		struct bfq_group *bfqg = blkg_to_bfqg(blkg);
++
++	rcu_read_lock();
++	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
++		spin_lock_irq(&blkg->q->queue_lock);
++		bfqg = blkg_to_bfqg(blkg);
+ 
+ 		if (bfqg)
+ 			bfq_group_set_weight(bfqg, val, 0);
++		spin_unlock_irq(&blkg->q->queue_lock);
+ 	}
+-	spin_unlock_irq(&blkcg->lock);
++	rcu_read_unlock();
+ 
+ 	return ret;
+ }
+-- 
+2.27.0
+
