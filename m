@@ -2,67 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DEF40684A
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 10:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9111B406A2A
+	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhIJIY2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 04:24:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:40633 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231750AbhIJIY2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:24:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="306592052"
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="306592052"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:23:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="504974445"
-Received: from kailun-nuc9i9qnx.sh.intel.com ([10.239.160.139])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2021 01:23:12 -0700
-From:   Kailun Qin <kailun.qin@intel.com>
-To:     tj@kernel.org, bsegall@google.com, linux-kernel@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, changhuaixin@linux.alibaba.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, Kailun Qin <kailun.qin@intel.com>
-Subject: [PATCH] sched/core: Fix wrong burst unit in cgroup2 cpu.max write
-Date:   Fri, 10 Sep 2021 12:25:09 -0400
-Message-Id: <20210910162509.622222-1-kailun.qin@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S232215AbhIJKeT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Sep 2021 06:34:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51734 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232157AbhIJKeT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 06:34:19 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 88BEE20056;
+        Fri, 10 Sep 2021 10:33:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631269987; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VuD6HYOFCTA+t/pZ+ukbmTtyDG3QvPABmFJv2yqsIU4=;
+        b=mMe6RbfGZXixrP2ucNxm8af8RpQwXsefvWROdXE9QrJXQ1N8d+PdYmk7IX7odV5t47MMYm
+        qROWOWAEmimRcB8UkU/UoV/PuBnm8MJFn7T2ZUMfimW7SgwWWuxfHy8Af42BcLwXWTmbH3
+        t9PPGInQY8hUuPUIxeudI2/7po/voNQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6915413D29;
+        Fri, 10 Sep 2021 10:33:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4PcyGWM0O2GEFQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 10 Sep 2021 10:33:07 +0000
+Date:   Fri, 10 Sep 2021 12:33:06 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     brookxu <brookxu.cn@gmail.com>, tj@kernel.org
+Cc:     Vipin Sharma <vipinsh@google.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] misc_cgroup: introduce misc.events and
+ misc_events.local
+Message-ID: <20210910103306.GA24156@blackbody.suse.cz>
+References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
+ <20210909143702.GA13761@blackbody.suse.cz>
+ <CAHVum0eGN=v1kLqHQg7HBESp8Kg4aGZFNd4XTpxfeyToXPmPVg@mail.gmail.com>
+ <8259b666-f3a4-6788-880c-38d679414bcb@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8259b666-f3a4-6788-880c-38d679414bcb@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-In cpu_max_write(), as the eventual tg_set_cfs_bandwidth() operates on
-the burst in nsec which is input from tg_get_cfs_burst() in usec, it
-should be converted into nsec accordingly.
+On Fri, Sep 10, 2021 at 01:20:37PM +0800, brookxu <brookxu.cn@gmail.com> wr=
+ote:
+> Yeah, this is more reasonable. But there is still one question, whether we
+> need to be consistent with other cgroup subsystems, events and events.loc=
+al
+> under v1 should not support hierarchy=EF=BC=9F
 
-If not, this may cause a write into cgroup2 cpu.max to unexpectedly
-change an already set cpu.max.burst.
+My take is that it's acceptable to present the v2-like files in v1 too
+for the sake of simplicity since:
+- this is not used yet,
+- the v1 is less conventional and
+- the presence of events.local would cater even to cases with tasks in
+  inner nodes.
 
-This patch addresses the above issue.
+It'd be good to have Tejun's insight on this too.
 
-Signed-off-by: Kailun Qin <kailun.qin@intel.com>
----
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c4462c454ab9..fc9fcc56149f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -10711,7 +10711,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
- {
- 	struct task_group *tg = css_tg(of_css(of));
- 	u64 period = tg_get_cfs_period(tg);
--	u64 burst = tg_get_cfs_burst(tg);
-+	u64 burst = (u64)tg_get_cfs_burst(tg) * NSEC_PER_USEC;
- 	u64 quota;
- 	int ret;
- 
--- 
-2.25.1
-
+Michal
