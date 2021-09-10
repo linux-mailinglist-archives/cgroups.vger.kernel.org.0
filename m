@@ -2,33 +2,33 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481DE406824
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 10:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DEF40684A
+	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 10:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhIJIIS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 04:08:18 -0400
-Received: from mga14.intel.com ([192.55.52.115]:61054 "EHLO mga14.intel.com"
+        id S231751AbhIJIY2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Sep 2021 04:24:28 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40633 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231685AbhIJIFg (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 10 Sep 2021 04:05:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="220695806"
+        id S231750AbhIJIY2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 10 Sep 2021 04:24:28 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10102"; a="306592052"
 X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="220695806"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:04:24 -0700
+   d="scan'208";a="306592052"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2021 01:23:17 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,282,1624345200"; 
-   d="scan'208";a="540339100"
+   d="scan'208";a="504974445"
 Received: from kailun-nuc9i9qnx.sh.intel.com ([10.239.160.139])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Sep 2021 01:04:21 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2021 01:23:12 -0700
 From:   Kailun Qin <kailun.qin@intel.com>
-To:     tj@kernel.org, bsegall@google.com
+To:     tj@kernel.org, bsegall@google.com, linux-kernel@vger.kernel.org
 Cc:     cgroups@vger.kernel.org, changhuaixin@linux.alibaba.com,
         mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         vincent.guittot@linaro.org, Kailun Qin <kailun.qin@intel.com>
 Subject: [PATCH] sched/core: Fix wrong burst unit in cgroup2 cpu.max write
-Date:   Fri, 10 Sep 2021 12:06:03 -0400
-Message-Id: <20210910160603.606711-1-kailun.qin@intel.com>
+Date:   Fri, 10 Sep 2021 12:25:09 -0400
+Message-Id: <20210910162509.622222-1-kailun.qin@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
