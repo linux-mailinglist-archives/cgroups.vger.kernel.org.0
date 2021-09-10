@@ -2,119 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B8F406D9E
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 16:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15331406DCE
+	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhIJOah (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 10:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbhIJOag (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 10:30:36 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6632DC061574;
-        Fri, 10 Sep 2021 07:29:25 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d17so1245449plr.12;
-        Fri, 10 Sep 2021 07:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o86Ela2dKbz2GzHznXe/g7ScOOJeqlE0Zm5503NyBDQ=;
-        b=Bxn804R0i4B8zYlx7gxgC59R+MuM6Dyg5UPT8+rmC10z0AGCD6J3RNEhD4t8PqcsUy
-         XjMywQShlJsNUa+mJ9R3hTGfLxIvIo07GAicJZuvELS7AJouCi2m6hd1QT85YqLEVt3P
-         XXQ9urfO7RBljpYSWvgX9x2iQRIUdVRgj0X77MuEt+hZ/M168SMbUg/Y5X/r+BBhbaSo
-         V4w3Y1lCO9+JsoJHPpuhPazv6MIKsYMSV0vY+xb/4+r2sN927yPTM5HUm5qXYPk881E2
-         dIWPDgI/Ph4IXh9dIIRKZ8jG0g/FhwDO8RHAg45Co+dMRiaSOo7umTTON+QCRPQJZ3Sq
-         ZVcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o86Ela2dKbz2GzHznXe/g7ScOOJeqlE0Zm5503NyBDQ=;
-        b=XOqeU5aFyZX4rMXX/vZK6tDA61/qV1B3D3CipjHAFc41W39+asr+t0a0a/RDJSVZdk
-         S5rBTGtLBnOaFmePXk373EtJWqF5xNDqNbiPY+nG6PvHSLrRDZIZJoglGFZl+GpP1sAS
-         fbwWxSh3MsmquS1zKgnMnYCH0ZNtKXhcMQmv5P7h3W+w+1C+PmdeuQNWLV8OpSzn+sqp
-         h8q2uRiL8xW+Ey9i7+1uPCryGGQxe3SxuPb4Litl4O1Ls6n/SuQ7p67VDRlqtbDr1bkS
-         3ySF5jT4QvbzvCBYDb0re47wNnu4LiiWvvKEUPO++GDgDE5RnuiLdMykYl5NlMWddeQV
-         sTUw==
-X-Gm-Message-State: AOAM533YJq3FyHTYZyf7spEpMkJzzctBGYAPqVEu2OLtIh93aSF3eeJ9
-        VD1OQuqezNIXI4PIImppMF0g+ULd1ew=
-X-Google-Smtp-Source: ABdhPJyoIdwdFlmc48GY7GWGq03DQnpSMhTFP0FoOvjB+9/36dIF4EcDA+56SuktLEAMcBU/i3W8wA==
-X-Received: by 2002:a17:902:e5cb:b0:13a:f7fd:cba2 with SMTP id u11-20020a170902e5cb00b0013af7fdcba2mr3855598plf.85.1631284164660;
-        Fri, 10 Sep 2021 07:29:24 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.116])
-        by smtp.gmail.com with ESMTPSA id s17sm5134942pfg.4.2021.09.10.07.29.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 07:29:24 -0700 (PDT)
-Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
- <20210909143720.GA14709@blackbody.suse.cz>
- <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
- <YTpY0G3+IJYmGbdd@blackbook> <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
- <20210910092310.GA18084@blackbody.suse.cz>
-From:   "brookxu.cn" <brookxu.cn@gmail.com>
-Message-ID: <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
-Date:   Fri, 10 Sep 2021 22:29:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S233539AbhIJO4p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Sep 2021 10:56:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41358 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhIJO4m (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 10:56:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1E3F51FE4B;
+        Fri, 10 Sep 2021 14:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631285730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+I/RKyAZdBWnkeMlKqYdgK786I94mbT861DCEwjnivU=;
+        b=iGS3pLMze+lTPJhBlasZr9bVa4g7NW57UckT4cRZ55LS2Hw2TJduxe9gy2IZBOyMjE7ESl
+        bh8JVvw24sutkXOH1Kx1aKew708anymj55P6qFBjGvEUhN1QfOOgTRuljZdEHgTXd7l6F1
+        hzv3VW98ejTQsu6YOPPwP2cvjzEsJo4=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BD22CA3B8A;
+        Fri, 10 Sep 2021 14:55:29 +0000 (UTC)
+Date:   Fri, 10 Sep 2021 16:55:26 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
+ of dying tasks
+Message-ID: <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
+References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
+ <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
+ <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210910092310.GA18084@blackbody.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for your time.
+On Fri 10-09-21 16:20:58, Vasily Averin wrote:
+> On 9/10/21 4:04 PM, Tetsuo Handa wrote:
+> > On 2021/09/10 21:39, Vasily Averin wrote:
+> >> The kernel currently allows dying tasks to exceed the memcg limits.
+> >> The allocation is expected to be the last one and the occupied memory
+> >> will be freed soon.
+> >> This is not always true because it can be part of the huge vmalloc
+> >> allocation. Allowed once, they will repeat over and over again.
+> >> Moreover lifetime of the allocated object can differ from
+> >> In addition the lifetime of the dying task.
+> > 
+> > Can't we add fatal_signal_pending(current) test to vmalloc() loop?
 
-On 2021/9/10 5:23 PM, Michal Koutný wrote:
-> On Fri, Sep 10, 2021 at 01:30:46PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
->> I am a bit confused here. For misc_cgroup, we can only be rejected when the count
->> touch Limit, but there may be other more reasons for other subsystems.
-> 
-> Sorry, I wasn't clear about that -- the failures I meant to be counted
-> here were only the ones caused by (an ancestor) limit. Maybe there's a
-> better naem for that.
-> 
->> Therefore, when we are rejected, does it mean that we have touch
->> Limit? If so, do we still need to distinguish between max and fail?
->> (for misc_cgroup)
-> 
-> r
-> `- c1
->     `- c2.max
->         `- c3
->            `- c4.max
-> 	     `- task t
->            `- c5
-> 
-> Assuming c2.max < c4.max, when a task t calls try_charge and it fails
-> because of c2.max, then the 'max' event is counted to c2 (telling that
-> the limit is perhaps low) and the 'fail' event is counted to c4 (telling
-> you where the troubles originated). That is my idea. Although in the
-> case of short-lived cgroups, you'd likely only get the hierarchically
-> aggregated 'fail' events from c3 or higher with lower (spatial)
-> precision.
-> What would be the type of information useful for your troubleshooting?
+We can and we should.
 
-Through events and events.local, we can determine which node has 
-insufficient resources. For example, when the ‘events’ is large, we 
-traverse down and use events.local to determine which node has 
-insufficient resources. 'fail' counter does not seem to provide more 
-effective information in this regard. When 'fail' is big, it seems that 
-we still need to use events and events.local to determine the node of 
-insufficient resources. I am not very sure what details can we learn 
-through 'fail' counter.
+> 1) this has been done in the past but has been reverted later.
 
-> 
-> Cheers,
-> Michal
-> 
+The reason for that should be addressed IIRC.
+
+> 2) any vmalloc changes will affect non-memcg allocations too.
+>  If we're doing memcg-related checks it's better to do it in one place.
+
+I think those two things are just orthogonal. Bailing out from vmalloc
+early sounds reasonable to me on its own. Allocating a large thing that
+is likely to go away with the allocating context is just a waste of
+resources and potential reason to disruptions to others.
+
+> 3) it is not vmalloc-only issue. Huge number of  kmalloc page allocations 
+> from N concurrent threads will lead to the same problem. 
+
+Agreed. I do not think it is viable to sprinkle fatal_signal_pending or
+similar checks all over the code. This should better be limited to
+allocators and the charging function.
+
+Our assumption that is described in the code simply doesn't hold and it
+is close to impossible to check all charging paths to bail out properly
+so I think we should just remove that optimistic attitude and do not
+force charges unless that is absolutely necessary (e.g. __GFP_NOFAIL) or
+impractical (e.g. atomic allocations) and bound.
+
+I didn't get to review the patch yet. This is a tricky area with many
+unobvious corner cases. I will try find some time next week.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
