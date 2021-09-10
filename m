@@ -2,97 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15331406DCE
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 16:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B1A406E45
+	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 17:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhIJO4p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 10:56:45 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41358 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhIJO4m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 10:56:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1E3F51FE4B;
-        Fri, 10 Sep 2021 14:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631285730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+I/RKyAZdBWnkeMlKqYdgK786I94mbT861DCEwjnivU=;
-        b=iGS3pLMze+lTPJhBlasZr9bVa4g7NW57UckT4cRZ55LS2Hw2TJduxe9gy2IZBOyMjE7ESl
-        bh8JVvw24sutkXOH1Kx1aKew708anymj55P6qFBjGvEUhN1QfOOgTRuljZdEHgTXd7l6F1
-        hzv3VW98ejTQsu6YOPPwP2cvjzEsJo4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S234509AbhIJPh1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Sep 2021 11:37:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49546 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhIJPhX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 11:37:23 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BD22CA3B8A;
-        Fri, 10 Sep 2021 14:55:29 +0000 (UTC)
-Date:   Fri, 10 Sep 2021 16:55:26 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-Message-ID: <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
- <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5204021CC0;
+        Fri, 10 Sep 2021 15:36:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631288171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBZRN9N1d5pyu4AdCx2wOykUXfyS79SPRhnX7ttZWoI=;
+        b=iyD4aQR13XtpyGuJ53I7aLFdhysvYSWSxVBZgnn7ZhwG3yVUitIv/qbfIUccgDvq7+i/13
+        M8/VtCPWPMg6CAslB/UzZsWpp8LGEPSL8AmuhZWP0ytWUTXcyj5NMnybRWgCLZyiyIX+y8
+        dHBUCVW0U6qmGCL5JxUEjKUpH+qJPvM=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 398B4133D0;
+        Fri, 10 Sep 2021 15:36:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id C413DWt7O2F3FgAAGKfGzw
+        (envelope-from <mkoutny@suse.com>); Fri, 10 Sep 2021 15:36:11 +0000
+Date:   Fri, 10 Sep 2021 17:36:09 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     "brookxu.cn" <brookxu.cn@gmail.com>
+Cc:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] misc_cgroup: remove error log to avoid log flood
+Message-ID: <20210910153609.GC24156@blackbody.suse.cz>
+References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
+ <86e89df640f2b4a65dd77bdbab8152fa8e8f5bf1.1631077837.git.brookxu@tencent.com>
+ <20210909143720.GA14709@blackbody.suse.cz>
+ <CAHVum0ffLr+MsF0O+yEWKcdpR0J0TQx6GdDxeZFZY7utZT8=KA@mail.gmail.com>
+ <YTpY0G3+IJYmGbdd@blackbook>
+ <478e986c-bc69-62b8-936e-5b075f9270b4@gmail.com>
+ <20210910092310.GA18084@blackbody.suse.cz>
+ <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1679f995-5a6f-11b8-7870-54318db07d0d@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 10-09-21 16:20:58, Vasily Averin wrote:
-> On 9/10/21 4:04 PM, Tetsuo Handa wrote:
-> > On 2021/09/10 21:39, Vasily Averin wrote:
-> >> The kernel currently allows dying tasks to exceed the memcg limits.
-> >> The allocation is expected to be the last one and the occupied memory
-> >> will be freed soon.
-> >> This is not always true because it can be part of the huge vmalloc
-> >> allocation. Allowed once, they will repeat over and over again.
-> >> Moreover lifetime of the allocated object can differ from
-> >> In addition the lifetime of the dying task.
-> > 
-> > Can't we add fatal_signal_pending(current) test to vmalloc() loop?
+On Fri, Sep 10, 2021 at 10:29:21PM +0800, "brookxu.cn" <brookxu.cn@gmail.com> wrote:
+> Through events and events.local, we can determine which node has
+> insufficient resources. For example, when the ‘events’ is large, we traverse
+> down and use events.local to determine which node has insufficient
+> resources.
 
-We can and we should.
+IIUC, this works in situations when the limits are set in decreasing
+fashion (from root down) till very (controller) leaves. That's a valid
+config and you're right that following 'max' events gets you to the
+misbehaving/underprovisioned cgroup.
 
-> 1) this has been done in the past but has been reverted later.
+> 'fail' counter does not seem to provide more effective
+> information in this regard. When 'fail' is big, it seems that we still need
+> to use events and events.local to determine the node of insufficient
+> resources.
+> I am not very sure what details can we learn through 'fail' counter.
 
-The reason for that should be addressed IIRC.
+If there's a limit on certain level with otherwise unconstrained cgroup
+structure below (a valid config too), the 'fail' counter would help
+determining what the affected cgroup is. Does that make sense to you?
 
-> 2) any vmalloc changes will affect non-memcg allocations too.
->  If we're doing memcg-related checks it's better to do it in one place.
+The log messages as implemented currently, aren't as useful as proposed
+'fail' counter (they would need report 'cg' path, not 'i').
 
-I think those two things are just orthogonal. Bailing out from vmalloc
-early sounds reasonable to me on its own. Allocating a large thing that
-is likely to go away with the allocating context is just a waste of
-resources and potential reason to disruptions to others.
+I see justification for 'fail' events as a replacement for the dropped
+log messages. Although it's not a complete replacement due to longer
+persistence of the log, illustrated e.g. with the short-lived containers
+whose cgroups/fail counts are gone).
 
-> 3) it is not vmalloc-only issue. Huge number of  kmalloc page allocations 
-> from N concurrent threads will lead to the same problem. 
 
-Agreed. I do not think it is viable to sprinkle fatal_signal_pending or
-similar checks all over the code. This should better be limited to
-allocators and the charging function.
-
-Our assumption that is described in the code simply doesn't hold and it
-is close to impossible to check all charging paths to bail out properly
-so I think we should just remove that optimistic attitude and do not
-force charges unless that is absolutely necessary (e.g. __GFP_NOFAIL) or
-impractical (e.g. atomic allocations) and bound.
-
-I didn't get to review the patch yet. This is a tricky area with many
-unobvious corner cases. I will try find some time next week.
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Michal
