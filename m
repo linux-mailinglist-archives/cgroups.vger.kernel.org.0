@@ -2,102 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810FD406FB5
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 18:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8F3406FF0
+	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 18:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229466AbhIJQd4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 12:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
+        id S229531AbhIJQul (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Sep 2021 12:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhIJQdz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 12:33:55 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534FBC061574;
-        Fri, 10 Sep 2021 09:32:44 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so1010146pjb.5;
-        Fri, 10 Sep 2021 09:32:44 -0700 (PDT)
+        with ESMTP id S229466AbhIJQuk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 12:50:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9E0C061574;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id w6so1522789pll.3;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=tgXe1DESruN+/rTizBx5p8iE+/E14BLor/fcAtYbb1Y=;
-        b=JuMs70r+VpXKmfURn7r1xAkHa84J7MIyXxrJkKqeGRSLmcEHeI6eBYHRj/UlwtCdzT
-         tLuzHwmJ9HIREMcgiVTeB0/5kfb+2ErkdRQLAp5Abzt2CIgawsp6KCa+/x/nJgz2sKxE
-         S70frEvrS6JAwVg0zTv9BzJDl/0YytEaj82TLB5AbjAB6cilXZ3nhzAnzwJwMHyzL6DT
-         XdmrQ9PcZ8mbVvUigWepdGNjzfdEAr29KT03oozkZhUIfJOCtZI5DODbwWmtTpjcD//X
-         OKv9R0gJdnYpeSAFMA6JK4X3AyZRf/3SHjAj883RH1wneUsLki+feIcHSowtHFWucbeb
-         tOzg==
+         :content-disposition:in-reply-to;
+        bh=ycLk39mqr2VW20gmuwiS1O96iwebvsbUDKPqz1r4HLs=;
+        b=SwFAicqGFHYDPBgQbXLMJQ0UcmZY8lvUK61PawM7D0Nd1XWOmic8A7dtlSBGftYXPp
+         xi3UTO+1z1xbIjIbsiLJ8Q/9xUUKAh0J4i3hAOX/qhS/9pi0c9P6bG7g8G0gM0uAkb6P
+         K7S/4G77KHQ4gsQHrP+7672jpkYyigpoj8a+VGveTJ/c/oUqO6Gd3qDKWw+OVXuKg4IK
+         4qcpP/7Ha7F4kKM6LtlzziDVjx5YW6ESH4ILyPv5J8P1YHi9ghGRcFADXvv22+gJsMX0
+         P7S2+oxpmBjT4bpeQbiwz4FR8BkP7FZ5aViXGFWZfpnrMbegmWV4S2CLRrM0IKHIePu2
+         9anA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=tgXe1DESruN+/rTizBx5p8iE+/E14BLor/fcAtYbb1Y=;
-        b=Iyw/ofn8hPloeDay3T8q41bm1AuKcKSf+x//lFwPByhJvcI8te07IyIJuFiU0hGjMx
-         9S53O99J5il5WQXLpDrj6LKmDww/Y9v+jI0SYfJBtSDZHSPR+AnxKyyphSQqYKn7ZCc6
-         1B4y3theycU82mE4xjRLfWJSjj1F24pbVqCluEDuvV44/BCKLX8PXHxUPP1LDdLMX5w2
-         6gWd1MeEXzYI7eIAfQ4R7uVo+2T1WpCrg8Ap4qQtd5pQQ8DxQ3YDVsghnD1M9MdDJ1H1
-         gFysWPk4Lg24/OYejFADuiPr7hf2scCgER2qTO8sjY4lVF74mp1nT5aTl1KoWTPD9Q3+
-         79YQ==
-X-Gm-Message-State: AOAM531Ts8Av40fIe4wVhEsKvprEaYikq7EsapdXBt5O1wLzPUvO3D40
-        8viSfqjM0VEyVv0vDcwyBMw=
-X-Google-Smtp-Source: ABdhPJwAB+ZqfvMWnfvJ2jXzVt7EtKEwT3dbc8Bbn1e/ypFOlipg1TVHRfQlVGHpav8AVh2r14CDZg==
-X-Received: by 2002:a17:902:724b:b0:131:ab33:1e4e with SMTP id c11-20020a170902724b00b00131ab331e4emr8437154pll.12.1631291563520;
-        Fri, 10 Sep 2021 09:32:43 -0700 (PDT)
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ycLk39mqr2VW20gmuwiS1O96iwebvsbUDKPqz1r4HLs=;
+        b=z/QQBv/Djc1pBH3QleAZAYC2QUJm5p+c2mKqzm3reBffFBMSMdQN5062jITwIMtBSj
+         z/IuNYgg1rDMP6DZyqJfYFFV0Q4fzOkGcKWihhQTlfhhJ5XNoqEaSobs6sOhcHKjUpSq
+         M9b7eY6wS64DZpDHId4k/xlxkbP1JYhjrNpQPg+ej6GZ8j8y87t3so7OlH8dTIRzf4vj
+         6VJAIOBjxBXUjzHZACDUORQ2NvgZVZkRrJ8Ag0BGBJ3ckZto2MlUOmTQLNqyKcg6DUdM
+         loOGI92a2fqpgCh7L2sQywnPvnpIDd0qqlUNNmFrh4BQhKTq5X16XUpifN+6jbri2m2K
+         83HQ==
+X-Gm-Message-State: AOAM530KY1VfTUqvv40UBHY7FFier9EjVSERusCNTK2Bb1NDET78ekF7
+        Q3Cmo0vg6X6aJeW6Hk5eIh8=
+X-Google-Smtp-Source: ABdhPJx6HayHTsEYB+vEWqNfBLiFbx5o1vkHH89e13ig1jxEYIceWRXoq8Ca5ZyyZw58QBDwmVSJ6A==
+X-Received: by 2002:a17:90b:4b51:: with SMTP id mi17mr616793pjb.120.1631292569014;
+        Fri, 10 Sep 2021 09:49:29 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id p9sm5526834pfn.97.2021.09.10.09.32.42
+        by smtp.gmail.com with ESMTPSA id l185sm5569198pfd.62.2021.09.10.09.49.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 09:32:42 -0700 (PDT)
+        Fri, 10 Sep 2021 09:49:28 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 10 Sep 2021 06:32:41 -1000
+Date:   Fri, 10 Sep 2021 06:49:27 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     brookxu <brookxu.cn@gmail.com>, Vipin Sharma <vipinsh@google.com>,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] misc_cgroup: introduce misc.events and
- misc_events.local
-Message-ID: <YTuIqecqjPKEZcrn@slm.duckdns.org>
-References: <988f340462a1a3c62b7dc2c64ceb89a4c0a00552.1631077837.git.brookxu@tencent.com>
- <20210909143702.GA13761@blackbody.suse.cz>
- <CAHVum0eGN=v1kLqHQg7HBESp8Kg4aGZFNd4XTpxfeyToXPmPVg@mail.gmail.com>
- <8259b666-f3a4-6788-880c-38d679414bcb@gmail.com>
- <20210910103306.GA24156@blackbody.suse.cz>
+To:     "taoyi.ty" <escape@linux.alibaba.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+ <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210910103306.GA24156@blackbody.suse.cz>
+In-Reply-To: <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Fri, Sep 10, 2021 at 12:33:06PM +0200, Michal Koutný wrote:
-> On Fri, Sep 10, 2021 at 01:20:37PM +0800, brookxu <brookxu.cn@gmail.com> wrote:
-> > Yeah, this is more reasonable. But there is still one question, whether we
-> > need to be consistent with other cgroup subsystems, events and events.local
-> > under v1 should not support hierarchy？
-> 
-> My take is that it's acceptable to present the v2-like files in v1 too
-> for the sake of simplicity since:
-> - this is not used yet,
-> - the v1 is less conventional and
-> - the presence of events.local would cater even to cases with tasks in
->   inner nodes.
-> 
-> It'd be good to have Tejun's insight on this too.
+On Fri, Sep 10, 2021 at 10:11:53AM +0800, taoyi.ty wrote:
+> The scenario is the function computing of the public
+> cloud. Each instance of function computing will be
+> allocated about 0.1 core cpu and 100M memory. On
+> a high-end server, for example, 104 cores and 384G,
+> it is normal to create hundreds of containers at the
+> same time if burst of requests comes.
 
-My general appraoch is
+This type of use case isn't something cgroup is good at, at least not
+currently. The problem is that trying to scale management operations like
+creating and destroying cgroups has implications on how each controller is
+implemented - we want the hot paths which get used while cgroups are running
+actively to be as efficient and scalable as possible even if that requires a
+lot of extra preparation and lazy cleanup operations. We don't really want
+to push for cgroup creation / destruction efficiency at the cost of hot path
+overhead.
 
-* If it's trivial both in terms of complexity and effort to add support for
-  cgroup1, oh well, why not?
+This has implications for use cases like you describe. Even if the kernel
+pre-prepare cgroups to low latency for cgroup creation, it means that the
+system would be doing a *lot* of managerial extra work creating and
+destroying cgroups constantly for not much actual work.
 
-* Otherwise, don't bother.
+Usually, the right solution for this sort of situations is pooling cgroups
+from the userspace which usually has a lot better insight into which cgroups
+can be recycled and can also adjust the cgroup hierarchy to better fit the
+use case (e.g. some rapid-cycling cgroups can benefit from higher-level
+resource configurations).
 
-* cgroup1 interface is wildly inconsistent anyway, so I wouldn't worry much
-  about that.
+So, it'd be great to make the managerial operations more efficient from
+cgroup core side but there are inherent architectural reasons why
+rapid-cycling use cases aren't and won't be prioritized.
 
 Thanks.
 
