@@ -2,107 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779874072A9
-	for <lists+cgroups@lfdr.de>; Fri, 10 Sep 2021 22:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3783407575
+	for <lists+cgroups@lfdr.de>; Sat, 11 Sep 2021 09:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhIJUpD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Sep 2021 16:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhIJUpC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Sep 2021 16:45:02 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08878C061574
-        for <cgroups@vger.kernel.org>; Fri, 10 Sep 2021 13:43:51 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id q22so2956364pfu.0
-        for <cgroups@vger.kernel.org>; Fri, 10 Sep 2021 13:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=lKqAYpYNlQ9hkuyrKjXk6bTpMchdOnzhQvx8SF/LD7o=;
-        b=DlpN4wySBad/y9SQPx+P71ThJSo7FqyruNXODlhEZ1s3VW+7183RRa/2RPQdKA+x3C
-         xHLFetRomChjnZ3c9CXts4FhRjtnNUDGvp7l9/XhuzSR31sm0fhUne3+cv1xX3y+Q4RT
-         vnIiVPDc31WJZb8SkH5yokzl7SaZ1uqJS9NKc3tenwZeDy3QiLXYxoaP4efDPlRISMC+
-         CYlX2+VJMkBkFXQBbBCTN9lLugiwuTAGkFQCLmpjlnMnC59LKz04aqsuDFkGQEPCI3L5
-         9pIEOFG7qghiV+TfkNgunDkPDacmtSqxhqnLpI/X8vvrmedAWnxwvoBdNXFXB/Q9BWpF
-         y48w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=lKqAYpYNlQ9hkuyrKjXk6bTpMchdOnzhQvx8SF/LD7o=;
-        b=dozSqA6HiUE0mDvnkZGeFM9WGzQ8OybkBpaNFGMr1GlbTxOAgx3TqWme0zZhJ/Sr6V
-         aZYxBLcVgX7c+aQ7jefOWytGW3E9kBJmQoU0woYHRIgXPwDKEWTWLIt824N1u4+MFwFK
-         tTSIqA3FudgUdOUG6NwDUv2wtBIAX3LHDg33px9y3Ah+tkEHV7cthF1VKwE9VNkLMBEs
-         xIHbtd3ASxUDXAcUnqhzSzZPAU/A9kpZGi4zY0PSTXExebFaS5jOruabZyWigHEgnIKg
-         r3aUElIeDedYxQYBlYI7ORU9QVpvOQ/1ZHJ/1Kha84NAAnJT5OvSYZf76giPP1Xsxf++
-         QykA==
-X-Gm-Message-State: AOAM530eztlPRGxAjvZrrbOusl8tbDfLY/A5OcBDtviRi/uQKw+oyqJV
-        HJ/ZzwYYN2ltkOed4fWoGhLFBA==
-X-Google-Smtp-Source: ABdhPJwiFdCSpFHUVrxWhGBdkE/BHmxDqiwoStULK3QICSNhV57xCRT2ou2cu/HVzHN00h72WGl6aA==
-X-Received: by 2002:a63:555c:: with SMTP id f28mr8943790pgm.340.1631306630358;
-        Fri, 10 Sep 2021 13:43:50 -0700 (PDT)
-Received: from bsegall-glaptop.localhost (c-73-71-82-80.hsd1.ca.comcast.net. [73.71.82.80])
-        by smtp.gmail.com with ESMTPSA id o10sm5950482pgp.68.2021.09.10.13.43.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Sep 2021 13:43:48 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Kailun Qin <kailun.qin@intel.com>
-Cc:     tj@kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, changhuaixin@linux.alibaba.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH] sched/core: Fix wrong burst unit in cgroup2 cpu.max write
-References: <20210910162509.622222-1-kailun.qin@intel.com>
-Date:   Fri, 10 Sep 2021 13:43:39 -0700
-In-Reply-To: <20210910162509.622222-1-kailun.qin@intel.com> (Kailun Qin's
-        message of "Fri, 10 Sep 2021 12:25:09 -0400")
-Message-ID: <xm267dfonouc.fsf@google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S235383AbhIKHlZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 11 Sep 2021 03:41:25 -0400
+Received: from relay.sw.ru ([185.231.240.75]:43196 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235384AbhIKHlY (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 11 Sep 2021 03:41:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=Sj1B4dxxEgCYUObVr5tn3EBz2yvfW+//sFIcOOUDc5U=; b=SUiOHBCKVqMzFtBCHuo
+        +yEezW7VXZzWxFfxvZosB5l1ohptlc/j68xDJ/3kIXPlYJhoBSeNVe4QD0JhinidYSrsN4t7/7h5P
+        gb8CBcZz1ZoSDepWoa+IZWpsc2wLZd0Mj3DFK0TK2g3mhmgH48DiFhaiJVGWM9v6VZ4Nt1uMKUs=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mOxcP-001awD-Ot; Sat, 11 Sep 2021 10:40:09 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH] ipc: remove memcg accounting for sops objects in
+ do_semtimedop()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
+        cgroups@vger.kernel.org
+Message-ID: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
+Date:   Sat, 11 Sep 2021 10:40:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Kailun Qin <kailun.qin@intel.com> writes:
+Linus proposes to revert an accounting for sops objects in
+do_semtimedop() because it's really just a temporary buffer
+for a single semtimedop() system call.
 
-> In cpu_max_write(), as the eventual tg_set_cfs_bandwidth() operates on
-> the burst in nsec which is input from tg_get_cfs_burst() in usec, it
-> should be converted into nsec accordingly.
->
-> If not, this may cause a write into cgroup2 cpu.max to unexpectedly
-> change an already set cpu.max.burst.
->
-> This patch addresses the above issue.
->
-> Signed-off-by: Kailun Qin <kailun.qin@intel.com>
+This object can consume up to 2 pages, syscall is sleeping one,
+size and duration can be controlled by user, and this allocation
+can be repeated by many thread at the same time.
 
-Oh, huh, cpu_period_quota_parse is confusing and changes the units in
-period. (It might make more sense to make all that interaction clearer
-somehow, but this is probably fine)
+However Shakeel Butt pointed that there are much more popular objects
+with the same life time and similar memory consumption, the accounting
+of which was decided to be rejected for performance reasons.
 
-It's probably also better to just use tg->cfs_bandwidth.burst directly
-rather than do an unnecessary div+multiply.
+In addition, any usual task consumes much more accounted memory,
+so 2 pages of this temporal buffer can be safely ignored.
 
-For whichever version:
+Link: https://patchwork.kernel.org/project/linux-fsdevel/patch/20171005222144.123797-1-shakeelb@google.com/
 
-Reviewed-by: Ben Segall <bsegall@google.com>
+Fixes: 18319498fdd4 ("memcg: enable accounting of ipc resources")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ ipc/sem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  kernel/sched/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index c4462c454ab9..fc9fcc56149f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -10711,7 +10711,7 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
->  {
->  	struct task_group *tg = css_tg(of_css(of));
->  	u64 period = tg_get_cfs_period(tg);
-> -	u64 burst = tg_get_cfs_burst(tg);
-> +	u64 burst = (u64)tg_get_cfs_burst(tg) * NSEC_PER_USEC;
->  	u64 quota;
->  	int ret;
+diff --git a/ipc/sem.c b/ipc/sem.c
+index f833238df1ce..6693daf4fe11 100644
+--- a/ipc/sem.c
++++ b/ipc/sem.c
+@@ -2238,7 +2238,7 @@ static long do_semtimedop(int semid, struct sembuf __user *tsops,
+ 		return -EINVAL;
+ 
+ 	if (nsops > SEMOPM_FAST) {
+-		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL_ACCOUNT);
++		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL);
+ 		if (sops == NULL)
+ 			return -ENOMEM;
+ 	}
+-- 
+2.25.1
+
