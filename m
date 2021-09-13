@@ -2,88 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8277E407E67
-	for <lists+cgroups@lfdr.de>; Sun, 12 Sep 2021 18:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81FE4083A3
+	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 07:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhILQHL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 12 Sep 2021 12:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
+        id S229879AbhIMFCV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 01:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhILQHK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 12 Sep 2021 12:07:10 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333D6C061757
-        for <cgroups@vger.kernel.org>; Sun, 12 Sep 2021 09:05:56 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id i28so12549063ljm.7
-        for <cgroups@vger.kernel.org>; Sun, 12 Sep 2021 09:05:56 -0700 (PDT)
+        with ESMTP id S229571AbhIMFCV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 01:02:21 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20E5C061574;
+        Sun, 12 Sep 2021 22:01:05 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so5593805pjq.1;
+        Sun, 12 Sep 2021 22:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=08mAPjyxBKrJAINcSHI5DwIe03TZTttNNN61qA9Q5BI=;
-        b=WGHGy2wTwEa24xnd0LxtlPuE1NdaZtAac70TQ59rf4FCpLXG4snXCOzj26Eq9wc+ZH
-         UMZSXdGP4oVIKywhZS0qlnqoWJBgiq3kFoRaOnLu6yCW1OjYKGSYnKbq8CF6T09LUNzG
-         bG5Qlt8g/l/0FRrCFdRHREY54BGmwMQhd+BDMp1cIDM+GZ32/dQsjKGpcpio31T6PtPl
-         Mhdu/isuIxrUBMg3L5hMWxUo1lhPHjDP0xpe50er80KHRN5LL84pMoNlommMKYVl5N4/
-         mFPnJSR3HVCa8OgAe1tpUVSQ/hMCufYdKoMUNoopOXSCLZPaujn8u78vA5lM1tX7xh5e
-         OkFg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=p95e/fLIqizunh8aVzrIkU+lkS+VG6a/DFmD/UL31WA=;
+        b=kWVAhqy7hBfobbxIHKiMtNj+2uESLvNw+6E5pBQDAE0r64WgxfwoYbp6DIlgJfBw7Q
+         oDSkodBHPPv3nqm/n3MvDVgYC1oCeU9jl3fYGQfaJcIMbT2TTi2ZP9OGudk9TAwqrHUh
+         NODRUAi7rrTrLCUWVGE/mG2qrrXnW6sGjZinPzomcn822l1YVhydCDWbHyVSKvybw0s8
+         a8uieL7ycUtEJGh+ckikLsn7lpuMNV0ccaKm5xpFbufq/F36ACsIoH4qp5fU4coCDC0z
+         ffi/wDiwruAKZw31hcvihcBtBHl3rmSg+hN88LEWIBM9oYXlTCv4G6NrdX5hrRchDiax
+         ZL7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=08mAPjyxBKrJAINcSHI5DwIe03TZTttNNN61qA9Q5BI=;
-        b=zpZvomZdWLYaCB5LLMP4SzizlTGEQh0RKv90SFEmLPAEL9lBGt6az9FkGjmY4i981g
-         SWi/SAlMzLux7Jym9Sb6+wkrZQ6KDf0svo8toMcNp2e8cCo3dQcwCDjtEW8U8it/JwJd
-         t78ZzdDwVXnND8MSOLmkt6FpKvInyvC5r9JhODwRUExVqt++H4eryKKMkuosGdtq6yjL
-         Sxcs0aoFN7OmLUNDdacfKui3jHVVd/caPYUgucykTAFxjqvw9WRFOijrfU2U3o+p56ar
-         Au9AG1l/NGxD74k3zk4I8rwEfdn9pRUxESH8t/Lz0W7ozSFVg+qQnFKS0BuOkgMIi9mt
-         MQhQ==
-X-Gm-Message-State: AOAM531VyD3yV0LjPnlsB/6OOPs88NpyxM9Foad2GbapOJBfaZn+7ZN0
-        /HGuOA/n7CIlUzQB03PtxlUYrDc3KjIluRtsRKwMRg==
-X-Google-Smtp-Source: ABdhPJxvhpwJG6MZq1Om4/zWjIcDhz3EmGkbn5UXz3sCnHFftIBd5W2WMMXVlu3GmhLJQ+mCrpUB1mJmVs3xf28f6G0=
-X-Received: by 2002:a05:651c:385:: with SMTP id e5mr6436000ljp.35.1631462753264;
- Sun, 12 Sep 2021 09:05:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
-In-Reply-To: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 12 Sep 2021 09:05:41 -0700
-Message-ID: <CALvZod5vBkoJ5PpXTW7CCMD9UjMkqK2sQuxK_LXn+W8ddDP5Nw@mail.gmail.com>
-Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in do_semtimedop()
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=p95e/fLIqizunh8aVzrIkU+lkS+VG6a/DFmD/UL31WA=;
+        b=Vizza3gN+U3B8rsreW/B5+TZdm9zTWK5zgAikYXL1autzeRzClgAAmKdwdHiPoBGHR
+         lTLkvslcMtX2wXqWgW07fjWbITKV9xX5xiO8uz8zWkJVQQxFfMoO2312DbXDt8PVZQoE
+         7RGrq+vWtkI0fBR340+aA8B0I7PHTn1zau1U3ljzm6Bl6uNghpIP35KplCNJqVH9Rlg/
+         3xhjJ1LXq3rohRC4v8O+FOSLpqevd5iXYi5dV4/TPJ5Bw+c0PSWs55ePzsi28vKkUXqQ
+         9CFlbbg9zY/Go1xCgHgja0vQah1bOVNo3di8DwxW/yi+47qJCRmKxUh0ajrEqYd+RGgq
+         LG5Q==
+X-Gm-Message-State: AOAM532tLuKzFaQWWjSPiKHk+9nCifBJaYcq0wU7k39A/X9FPVJ+0X9a
+        jB4DGjnHo/EhpoAKprpWlo8=
+X-Google-Smtp-Source: ABdhPJwbqFYKFpm0cksps9AOYCq0/bPmPKWN2Kahppdy8hgkqxCUv3LHlzaBp4Hm4WMv35JIzlvpow==
+X-Received: by 2002:a17:902:f68a:b0:13b:9142:5c5b with SMTP id l10-20020a170902f68a00b0013b91425c5bmr3994588plg.54.1631509265194;
+        Sun, 12 Sep 2021 22:01:05 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id n38sm291879pfv.198.2021.09.12.22.01.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 12 Sep 2021 22:01:04 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     vipinsh@google.com, mkoutny@suse.com, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v2 1/3] misc_cgroup: introduce misc.events and misc_events.local
+Date:   Mon, 13 Sep 2021 13:00:59 +0800
+Message-Id: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 12:40 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> Linus proposes to revert an accounting for sops objects in
-> do_semtimedop() because it's really just a temporary buffer
-> for a single semtimedop() system call.
->
-> This object can consume up to 2 pages, syscall is sleeping one,
-> size and duration can be controlled by user, and this allocation
-> can be repeated by many thread at the same time.
->
-> However Shakeel Butt pointed that there are much more popular objects
-> with the same life time and similar memory consumption, the accounting
-> of which was decided to be rejected for performance reasons.
->
-> In addition, any usual task consumes much more accounted memory,
-> so 2 pages of this temporal buffer can be safely ignored.
->
-> Link: https://patchwork.kernel.org/project/linux-fsdevel/patch/20171005222144.123797-1-shakeelb@google.com/
->
-> Fixes: 18319498fdd4 ("memcg: enable accounting of ipc resources")
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+From: Chunguang Xu <brookxu@tencent.com>
 
-Thanks Vasily.
+Introduce misc.events and misc.events.local to make it easier for
+us to understand the pressure of resources. The main idea comes
+from mem_cgroup. Currently only the 'max' event is implemented,
+which indicates the times the resource exceeds the limit.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ include/linux/misc_cgroup.h | 13 ++++++++++
+ kernel/cgroup/misc.c        | 58 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 70 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+index da2367e..602fc11 100644
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -21,6 +21,11 @@ enum misc_res_type {
+ 	MISC_CG_RES_TYPES
+ };
+ 
++enum misc_event_type {
++	MISC_CG_EVENT_MAX,
++	MISC_CG_EVENT_TYPES
++};
++
+ struct misc_cg;
+ 
+ #ifdef CONFIG_CGROUP_MISC
+@@ -36,6 +41,8 @@ enum misc_res_type {
+ struct misc_res {
+ 	unsigned long max;
+ 	atomic_long_t usage;
++	atomic_long_t events[MISC_CG_EVENT_TYPES];
++	atomic_long_t events_local[MISC_CG_EVENT_TYPES];
+ 	bool failed;
+ };
+ 
+@@ -46,6 +53,12 @@ struct misc_res {
+  */
+ struct misc_cg {
+ 	struct cgroup_subsys_state css;
++
++	/* misc.events */
++	struct cgroup_file events_file;
++	/* misc.events.local */
++	struct cgroup_file events_local_file;
++
+ 	struct misc_res res[MISC_CG_RES_TYPES];
+ };
+ 
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index ec02d96..5f06b2a 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -26,6 +26,10 @@
+ #endif
+ };
+ 
++static const char *const misc_event_name[] = {
++	"max"
++};
++
+ /* Root misc cgroup */
+ static struct misc_cg root_cg;
+ 
+@@ -140,7 +144,7 @@ static void misc_cg_cancel_charge(enum misc_res_type type, struct misc_cg *cg,
+ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
+ 		       unsigned long amount)
+ {
+-	struct misc_cg *i, *j;
++	struct misc_cg *i, *j, *k;
+ 	int ret;
+ 	struct misc_res *res;
+ 	int new_usage;
+@@ -171,6 +175,14 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
+ 	return 0;
+ 
+ err_charge:
++	atomic_long_inc(&i->res[type].events_local[MISC_CG_EVENT_MAX]);
++	cgroup_file_notify(&i->events_local_file);
++
++	for (k = i; k; k = parent_misc(k)) {
++		atomic_long_inc(&k->res[type].events[MISC_CG_EVENT_MAX]);
++		cgroup_file_notify(&k->events_file);
++	}
++
+ 	for (j = cg; j != i; j = parent_misc(j))
+ 		misc_cg_cancel_charge(type, j, amount);
+ 	misc_cg_cancel_charge(type, i, amount);
+@@ -335,6 +347,38 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 	return 0;
+ }
+ 
++static int misc_events_show(struct seq_file *sf, void *v)
++{
++	struct misc_cg *cg = css_misc(seq_css(sf));
++	unsigned long events, i, j;
++
++	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
++		for (j = 0; j < MISC_CG_EVENT_TYPES; j++) {
++			events = atomic_long_read(&cg->res[i].events[j]);
++			if (READ_ONCE(misc_res_capacity[i]) || events)
++				seq_printf(sf, "%s.%s %lu\n", misc_res_name[i],
++					   misc_event_name[j], events);
++		}
++	}
++	return 0;
++}
++
++static int misc_events_local_show(struct seq_file *sf, void *v)
++{
++	struct misc_cg *cg = css_misc(seq_css(sf));
++	unsigned long events, i, j;
++
++	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
++		for (j = 0; j < MISC_CG_EVENT_TYPES; j++) {
++			events = atomic_long_read(&cg->res[i].events_local[j]);
++			if (READ_ONCE(misc_res_capacity[i]) || events)
++				seq_printf(sf, "%s.%s %lu\n", misc_res_name[i],
++					   misc_event_name[j], events);
++		}
++	}
++	return 0;
++}
++
+ /* Misc cgroup interface files */
+ static struct cftype misc_cg_files[] = {
+ 	{
+@@ -353,6 +397,18 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 		.seq_show = misc_cg_capacity_show,
+ 		.flags = CFTYPE_ONLY_ON_ROOT,
+ 	},
++	{
++		.name = "events",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.file_offset = offsetof(struct misc_cg, events_file),
++		.seq_show = misc_events_show,
++	},
++	{
++		.name = "events.local",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.file_offset = offsetof(struct misc_cg, events_local_file),
++		.seq_show = misc_events_local_show,
++	},
+ 	{}
+ };
+ 
+-- 
+1.8.3.1
+
