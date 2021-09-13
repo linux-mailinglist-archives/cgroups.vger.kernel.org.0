@@ -2,112 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E254098F8
-	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 18:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E57D409A08
+	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 18:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237265AbhIMQZs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 12:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        id S240630AbhIMQxj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 12:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbhIMQZr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 12:25:47 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B969C061760;
-        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id h3so9945135pgb.7;
-        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
+        with ESMTP id S240613AbhIMQxi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 12:53:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DA0C061762
+        for <cgroups@vger.kernel.org>; Mon, 13 Sep 2021 09:52:22 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id g1so10974535lfj.12
+        for <cgroups@vger.kernel.org>; Mon, 13 Sep 2021 09:52:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
-        b=KMn3oOOQ7z+gZHnSi7tKwT8HQswrmQXWn3lkFw+yHY0rKS9MNHhd4wHGCJKSgBUW+n
-         T9tyboH4kQf5n8hqLQ+QVZjkSSb3UmHmDfhwVZGsusChykPhGMmDVApFEBhgyaEKxcqF
-         nQx/BCeW80UOUgD50aLnXPiX4V3x1A3k2VOFzTxgJQqUhtnAXDX5LCWind7N0Ph7r5JS
-         YIiLJlvawJQq8N+/L4ad49VBtsL/uFJZK9EarxpeaZCD8dgARJnrDmUwzUoTfpYQ/chd
-         wHvBmuxhJWuabByUsiQ+4Bj5XEDk3RaSHUx98oQLvBABSE9710epxsKIwebP8rwgN8I+
-         YMNQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h7Yl//dy5tlfXJpNjGw/RwytM2u2c4Gl1NK7VqTyQik=;
+        b=KNPJ8GcEHSQYCyweuG+VxPhO+NQJEAV5rGoLEtdlZyPcGARXJQ4RTZmYrXPQfJq0v+
+         JanZlPaQbOkPRxSWiNI7mgttz1ig7R1UWK98/qdxhmYcIdlNdL9m9uVRXNb+ON8CCUur
+         Vi9ROjD9c/UG3PSZEYPWnZvIs+mpSkp1gAPlYOOV1lg1vbFVacUc2xpLTvh/AmsP+JgO
+         4CrYqxGaCg/pOU8W4zn7fgOltRuocCUBGyxISE3mCIfbIKI1U3Q4O+bntohv6KwRgW+T
+         qOJmtLwKuZdVpRejUHOK+0Qj6SFpB03AyU99MOkQ/8LtIFscGQ+9aG4sMtPZh+ra5Rex
+         hqhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
-        b=UWbRY3N6UULWw2HpJkRVP03vsudtg+/KudBZcHXgENc+qQJ+TRXKv3N7PkBp39KDh9
-         24XFc0pyV3umAC3Tuw6P+OjoWMUFshSHqIgLpTu4/j2ZTKBQDU1xaF9GbS6Mia/Now6X
-         NcSdPMqg2Q9G2+ML3lcgyNJ1/EOkImeGz2StWvUxhS71g+JSozEa0mJDh8TFLu5dNMgt
-         yCuNpVEfqrR4awdeh2K35iuiDHTsGt0HEjBPy5TBNkoRL2ZxEMJ/eGcpan9H/nYANjTf
-         oDcnEQek6Y7ht6rX9Xqa6VxDeEv12JEVPuXo4QMrqrN3b15dZdnjamSnsxHJ24V8+mfv
-         Mqjw==
-X-Gm-Message-State: AOAM531WEOUqI1Bo8lRwkz2PpqLvN1hKZYo0vYyXw4I/Wf7l3BBwRqZp
-        vm8nDvibEVel6UyOZpozDMk=
-X-Google-Smtp-Source: ABdhPJwcRXRk6qz0DRNFCw//xgAu2bkBeEvp9KWsb6qS7ho6P+WnajXyZjSblVMrpMHi4+apDU5iag==
-X-Received: by 2002:a65:648b:: with SMTP id e11mr11675333pgv.138.1631550270967;
-        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id g8sm7169782pfv.51.2021.09.13.09.24.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 06:24:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "taoyi.ty" <escape@linux.alibaba.com>,
-        Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-Message-ID: <YT97PAm6kaecvXLX@slm.duckdns.org>
-References: <cover.1631102579.git.escape@linux.alibaba.com>
- <YTiugxO0cDge47x6@kroah.com>
- <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
- <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
- <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h7Yl//dy5tlfXJpNjGw/RwytM2u2c4Gl1NK7VqTyQik=;
+        b=CR5pID7cDi+sFPJtHcdq2Va74xAuQVdw9MtuzaByay+fE9BRAsMRDk/4DOX8n/t88R
+         GO+G2ZDjqurLIwGFXI6x9nFoQfgf8FXX+L2zTF1SIWUUjuGFGQ4xqKqJ3LBHkVZB+bx2
+         VdS+Etpn/6kfClupauVfA5ay9l+RoJqm4b/9/INtmxraYzoBjLK6Io0HeWXvNe/vrHJX
+         A1V5i3+3hcggXXvsIDIAgq8w72PEju7xlpQUveOPbnIiH4EVn2cvKx+ZVnllK8SXSbOD
+         aN19edIdPlE1i+GJlmupooX9Td3Odcpkv0APUZJP8erHhUsO/Lozb6gnA0ibYpEoTPzw
+         xbKw==
+X-Gm-Message-State: AOAM530zSc1AnxGawwee3GXuVIkWEo2zvWvevEXWI9s0+TPYLMdP5XRd
+        k74zP+vTYRxqOSwy2rmjUriqr4UOCkjPMLYccbWH/Q==
+X-Google-Smtp-Source: ABdhPJzCAM1ELjBbRxjqidCSeOp6uM/bwe4+ZcMAmINHRMWKcX6tqFGPCAcCIcI3Cvdy9FWpXQH7U/5uwggj7OdIvNY=
+X-Received: by 2002:ac2:5c4b:: with SMTP id s11mr9909008lfp.368.1631551940275;
+ Mon, 13 Sep 2021 09:52:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
+References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+In-Reply-To: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Mon, 13 Sep 2021 09:51:44 -0700
+Message-ID: <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] misc_cgroup: introduce misc.events and misc_events.local
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mkoutny@suse.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Sun, Sep 12, 2021 at 10:01 PM brookxu <brookxu.cn@gmail.com> wrote:
+>
+> From: Chunguang Xu <brookxu@tencent.com>
+>
+> Introduce misc.events and misc.events.local to make it easier for
 
-On Mon, Sep 13, 2021 at 04:20:59PM +0200, Christian Brauner wrote:
-> Afaict, there is currently now way to prevent the deletion of empty
-> cgroups, especially newly created ones. So for example, if I have a
-> cgroup manager that prunes the cgroup tree whenever they detect empty
-> cgroups they can delete cgroups that were pre-allocated. This is
-> something we have run into before.
+I thought Tejun only gave go ahead for misc.events and not for
+misc.events.local.
 
-systemd doesn't mess with cgroups behind a delegation point.
+> us to understand the pressure of resources. The main idea comes
+> from mem_cgroup. Currently only the 'max' event is implemented,
+> which indicates the times the resource exceeds the limit.
+>
 
-> A related problem is a crashed or killed container manager 
-> (segfault, sigkill, etc.). It might not have had the chance to cleanup
-> cgroups it allocated for the container. If the container manager is
-> restarted it can't reuse the existing cgroup it found because it has no
-> way of guaranteeing whether in between the time it crashed and got
-> restarted another program has just created a cgroup with the same name.
-> We usually solve this by just creating another cgroup with an index
-> appended until we we find an unallocated one setting an arbitrary cut
-> off point until we require manual intervention by the user (e.g. 1000).
-> 
-> Right now iirc, one can rmdir() an empty cgroup while someone still
-> holds a file descriptor open for it. This can lead to situation where a
-> cgroup got created but before moving into the cgroup (via clone3() or
-> write()) someone else has deleted it. What would already be helpful is
-> if one had a way to prevent the deletion of cgroups when someone still
-> has an open reference to it. This would allow a pool of cgroups to be
-> created that can't simply be deleted.
+For future emails, please provide the links to previous discussions
+like [1], [2],...
 
-The above are problems common for any entity managing cgroup hierarchy.
-Beyond the permission and delegation based access control, cgroup doesn't
-have a mechanism to grant exclusive managerial operations to a specific
-application. It's the userspace's responsibility to coordinate these
-operations like in most other kernel interfaces.
+> @@ -36,6 +41,8 @@ enum misc_res_type {
+>  struct misc_res {
+>         unsigned long max;
+>         atomic_long_t usage;
+> +       atomic_long_t events[MISC_CG_EVENT_TYPES];
 
-Thanks.
+Since there is only one event type for now, my recommendation is to
+not use the array and just use a single atomic_long_t.
 
--- 
-tejun
+>
+> +static const char *const misc_event_name[] = {
+> +       "max"
+> +};
+> +
+
+We will not need it if you remove the array in struct misc_res.
+
+Thanks
+Vipin
