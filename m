@@ -2,110 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C101409C81
-	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 20:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463EB40A194
+	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 01:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhIMSrZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 14:47:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240520AbhIMSrY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 14:47:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631558768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j/URbjttbgh/qE1agh24JiENV0g90v5EslC9AJDtoVI=;
-        b=RKysiDFKcvko/M+htPF8E9xQxbmZnGO7lD2F0vnmLwFQVTjoeOgCYUOdYnuPioeT32XlJc
-        S0ovkqa2kONyR6tyqS3J4v0a65fov7F9Nrlt/BCY9cNbvE4Mu8fAG3bpt9FxlUyWaFT2e9
-        IEe5hL4lLESTwvl/kRV2imXfGt/s2w4=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-DXUHuv7DOeWXdT71JBTsXg-1; Mon, 13 Sep 2021 14:46:07 -0400
-X-MC-Unique: DXUHuv7DOeWXdT71JBTsXg-1
-Received: by mail-qk1-f199.google.com with SMTP id k9-20020a05620a138900b003d59b580010so41943944qki.18
-        for <cgroups@vger.kernel.org>; Mon, 13 Sep 2021 11:46:07 -0700 (PDT)
+        id S242283AbhIMX3m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 19:29:42 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:50019 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242160AbhIMX3l (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 19:29:41 -0400
+Received: by mail-io1-f70.google.com with SMTP id k6-20020a6b3c060000b0290568c2302268so14963356iob.16
+        for <cgroups@vger.kernel.org>; Mon, 13 Sep 2021 16:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=j/URbjttbgh/qE1agh24JiENV0g90v5EslC9AJDtoVI=;
-        b=K+BJDC7il9nuNnMg194K/5Jq35CWPtuki8f6C6J6j6BRzIq7bKftW6BItSQVjztTTF
-         Ywj0WaXuDTf2lldirJ5XJxCvBrMCC7UDo3OQhKDAik5vmK1HPtEDtvYeZVJDQS40vNum
-         Kkq9alvawy+VZm1QgT2hR+BLc4KdujIP2Pw8kaxV33H8r5g2lEa6tvTqE0zUNkCiZWXS
-         glVuY6XUIN0jkXewzUxG2Rk+nqIbozrYJdgK8Q/Ll0wSLfTrEmOZR4WomcynP/HUFBGe
-         foqtxRkKNIKzN8HK3GuOR0573QBRf12nm49EEij2oPHRBaz1Fb8yeFfq0N3oTWhzj9h8
-         ghMQ==
-X-Gm-Message-State: AOAM530x+B7VW8yn7WBPDMVUFsUkLAJhOXDzpQd0rjroEIKTYT8IBJmm
-        Mvh/FMaPNpAf0jeydPhCoQuyW0n0meI3DVXhbuj+xS6xp3mcaqpHwyAOj4ddGqfb3hbYjjiE37R
-        tQMiUzO5DQPIBX2BN5w==
-X-Received: by 2002:a05:620a:2e4:: with SMTP id a4mr1076398qko.288.1631558766948;
-        Mon, 13 Sep 2021 11:46:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfX00oXtW3TpE4cR7tFJDu/VKjM6MMAOeUkfZHdsIs+TOtMYZvnnkkIGQGHcMsFFf8+hRQwg==
-X-Received: by 2002:a05:620a:2e4:: with SMTP id a4mr1076383qko.288.1631558766792;
-        Mon, 13 Sep 2021 11:46:06 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id l126sm5983384qke.96.2021.09.13.11.46.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 11:46:06 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 1/2] cgroup: Fix incorrect warning from
- cgroup_apply_control_disable()
-To:     Tejun Heo <tj@kernel.org>, Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Juri Lelli <juri.lelli@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210910024256.7615-1-longman@redhat.com>
- <YT+TA6ItnF9xM3cR@slm.duckdns.org>
- <125c4202-68d1-1a4e-03d6-2b18f0794ba4@redhat.com>
- <dbb1a221-b3d2-5086-e47b-8a2c764d60ad@redhat.com>
- <YT+cPPyDPimHibSC@slm.duckdns.org>
-Message-ID: <e1190877-f5b7-b052-cd80-a7e558c379a4@redhat.com>
-Date:   Mon, 13 Sep 2021 14:46:05 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zoiyz9yumUb2OwDpSUzdanvEqwi+zK0yBV9E9brBk3c=;
+        b=PtXMP1tg0pGM/tuytc7zGZg+ipnhzbxrGFdXrsAQD9MpMVx16TgfqFrmOXXGBIBuC4
+         B8QzGTU/xq+108+8bNKHK5rF5YwHt/wpjCv7eubNjt9ODOIocRefBacIcvIDyzIMoI/a
+         DY/ifMPcHYPFBa4BQe7V6spV7z/YsBURmA1uRkeNoIlISgoeox1VIan4pCXJGtModRRS
+         RR2LEQfbOb7EEg5sNVI4xL7/bjtlEU4Py5cBxuOwQlX+maAhGCNCuIyxjoQFZYwApCk2
+         e+8Q0XzwrEAXHeX6PfC78l2E42J+1+HMjuKoyAXnSRLFHdxXTvyiT97aTdbhYW8eOM0i
+         5tnw==
+X-Gm-Message-State: AOAM531mXfxMaMbOTFkVO51jA0nLBVuiQM/aFYhsd7WLbChubNbWaI5C
+        KHcRG6C+/7PQFHP579tdCgCVEnIAH1CPT8VdNpmd7X70oA3m
+X-Google-Smtp-Source: ABdhPJxq8rbwHAG7zj/ETr+Yck5PBsq65xMiCa044uwkatUumATKS1ZpToFPv45jns8Qhr7aUYOjfD52RGCgkvDjpsqprS85LWog
 MIME-Version: 1.0
-In-Reply-To: <YT+cPPyDPimHibSC@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a02:b0d1:: with SMTP id w17mr11996507jah.46.1631575704786;
+ Mon, 13 Sep 2021 16:28:24 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:28:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004ee28405cbe8d287@google.com>
+Subject: [syzbot] memory leak in blk_iolatency_init
+From:   syzbot <syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/13/21 2:45 PM, Tejun Heo wrote:
-> On Mon, Sep 13, 2021 at 02:43:44PM -0400, Waiman Long wrote:
->>> The problem with percpu_ref_is_dying() is the fact that it becomes true
->>> after percpu_ref_exit() is called in css_free_rwork_fn() which has an
->>> RCU delay. If you want to catch the fact that kill_css() has been
->>> called, we can check the CSS_DYING flag which is set in kill_css() by
->>> commit 33c35aa481786 ("cgroup: Prevent kill_css() from being called more
->>> than once"). Will that be an acceptable alternative?
->> Something like
->>
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 881ce1470beb..851e54800ad8 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -3140,6 +3140,9 @@ static void cgroup_apply_control_disable(struct cgroup
->> *cg
->>                          if (!css)
->>                                  continue;
->>
->> +                       if (css->flags & CSS_DYING)
->> +                               continue;
->> +
-> So, I don't think this would be correct. It is assumed that there are no
-> dying csses when control reaches this point. The right fix is making sure
-> that remount path clears up dying csses before calling into this path.
+Hello,
 
-Thanks for the suggestion. I will look into that.
+syzbot found the following issue on:
 
-Cheers,
-Longman
+HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b4a5b3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9ee3a4c022ccbbca
+dashboard link: https://syzkaller.appspot.com/bug?extid=01321b15cc98e6bf96d6
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148c170b300000
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
+
+2021/09/09 22:14:31 executed programs: 444
+BUG: memory leak
+unreferenced object 0xffff888129acdb80 (size 96):
+  comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
+  hex dump (first 32 bytes):
+    20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
+    [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
+    [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
+    [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
+    [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
+    [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
+    [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
+    [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
+    [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
+    [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
+    [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
