@@ -2,79 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A833640867E
-	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 10:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89415408724
+	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 10:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237831AbhIMIa4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 04:30:56 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56614 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234575AbhIMIa4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=hQgKXyWNPvle3hQKqsfae85Qw8UvU0A7uIpON9jfF6c=; b=S66sreVvkhtAHXlkX
-        3SJin2YhAz6QeFhEq7J7kxn/rGoVZWl2UkW9Eu3DJAfRVRKeHYZoR6NOCDu/WxkuytAfsKdYnQUk1
-        ZILk96zL8+M9MErZOpzrFJv0js8EdDQdJhzo8qlnfrLleAeUvEbpKSjx5c37qiI4EgHaSkT2AHxzo
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mPhLO-001nZm-35; Mon, 13 Sep 2021 11:29:38 +0300
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        id S238184AbhIMIis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 04:38:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47108 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238029AbhIMIiY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 04:38:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BD6661FFAA;
+        Mon, 13 Sep 2021 08:37:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631522227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UKSu3yTv+TX0tXlcSUO37sd0/aOo8J1xv19A7FZ7+Ig=;
+        b=ZMT+0AgcgH+hRJCL2ffTYbCzZn/BEVzdgyChbAJf+WYp+HMrwdkFDOqIR/wbhIEDQaJ3dS
+        VDxQV9ERlW08pJz64yBgAYXVsCo2ljnNryj8wTbreIMQM32Ehb0ZAbbPkmtK1oYCdaCbCq
+        22d+IBxpaQQO5LXBt5yF+0v5WHrDATY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8874EA3B81;
+        Mon, 13 Sep 2021 08:37:07 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 10:37:02 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
         linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
- <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
- <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <9556c2ae-2dc8-9d0a-55de-002d674680bf@virtuozzo.com>
-Date:   Mon, 13 Sep 2021 11:29:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        kernel@openvz.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in
+ do_semtimedop()
+Message-ID: <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
+References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/10/21 5:55 PM, Michal Hocko wrote:
-> On Fri 10-09-21 16:20:58, Vasily Averin wrote:
->> On 9/10/21 4:04 PM, Tetsuo Handa wrote:
->>> Can't we add fatal_signal_pending(current) test to vmalloc() loop?
+On Sat 11-09-21 10:40:08, Vasily Averin wrote:
+> Linus proposes to revert an accounting for sops objects in
+> do_semtimedop() because it's really just a temporary buffer
+> for a single semtimedop() system call.
 > 
-> We can and we should.
+> This object can consume up to 2 pages, syscall is sleeping one,
+> size and duration can be controlled by user, and this allocation
+> can be repeated by many thread at the same time.
+
+Is there any upper bound or is it just bounded by the number of
+tasks/threads (that can be controlled by pid controller at least)?
+
+> However Shakeel Butt pointed that there are much more popular objects
+> with the same life time and similar memory consumption, the accounting
+> of which was decided to be rejected for performance reasons.
+
+Is there any measurable performance impact in this particular case?
+ 
+> In addition, any usual task consumes much more accounted memory,
+> so 2 pages of this temporal buffer can be safely ignored.
 > 
->> 1) this has been done in the past but has been reverted later.
+> Link: https://patchwork.kernel.org/project/linux-fsdevel/patch/20171005222144.123797-1-shakeelb@google.com/
 > 
-> The reason for that should be addressed IIRC.
-
-I don't know the details of this, and I need some time to investigate it.
-
->> 2) any vmalloc changes will affect non-memcg allocations too.
->>  If we're doing memcg-related checks it's better to do it in one place.
+> Fixes: 18319498fdd4 ("memcg: enable accounting of ipc resources")
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  ipc/sem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I think those two things are just orthogonal. Bailing out from vmalloc
-> early sounds reasonable to me on its own. Allocating a large thing that
-> is likely to go away with the allocating context is just a waste of
-> resources and potential reason to disruptions to others.
+> diff --git a/ipc/sem.c b/ipc/sem.c
+> index f833238df1ce..6693daf4fe11 100644
+> --- a/ipc/sem.c
+> +++ b/ipc/sem.c
+> @@ -2238,7 +2238,7 @@ static long do_semtimedop(int semid, struct sembuf __user *tsops,
+>  		return -EINVAL;
+>  
+>  	if (nsops > SEMOPM_FAST) {
+> -		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL_ACCOUNT);
+> +		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL);
+>  		if (sops == NULL)
+>  			return -ENOMEM;
+>  	}
+> -- 
+> 2.25.1
 
-I doubt that fatal signal should block any vmalloc allocations.
-I assume there are situations where rollback of some cancelled operation uses vmalloc.
-Or coredump saving on some remote storage can uses vmalloc.
-
-However for me it's abnormal that even OOM-killer cannot cancel huge vmalloc allocation.
-So I think tsk_is_oom_victim(current) check should be added to vm_area_alloc_pages() 
-to break vmalloc cycle.
-
-Thank you,
-	Vasily Averin
+-- 
+Michal Hocko
+SUSE Labs
