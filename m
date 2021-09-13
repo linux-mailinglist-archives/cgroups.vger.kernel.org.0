@@ -2,107 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146BB4083A8
-	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 07:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2E94083B2
+	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 07:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236965AbhIMFC1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 01:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
+        id S229571AbhIMFKd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 01:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231458AbhIMFCZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 01:02:25 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B55C061574;
-        Sun, 12 Sep 2021 22:01:10 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id 5so5008366plo.5;
-        Sun, 12 Sep 2021 22:01:10 -0700 (PDT)
+        with ESMTP id S229563AbhIMFKd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 01:10:33 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D580C061574;
+        Sun, 12 Sep 2021 22:09:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id bg1so5004685plb.13;
+        Sun, 12 Sep 2021 22:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=No9Cu1y2zqzL5EFePgwVsxeseV9YVFbZD57If/1JFIs=;
-        b=QPhkIP4EuaDwd0g0Cpi2Seb9O+M/uDEpUGfJLKmy39jucLuWEfQDYmlS6DG7m6hkYm
-         QoECCAR3Kz8hTTgbNuquGD8HoegtSz1wuf0f4aml11Tpo4TF611EyFcfPsriGFFvP2aS
-         ViYSNGgC/ZSwQLA7rPf1tibRH9yDPn21ZKVbBVEvbKKlTBIHnaepEJxNYNJmXCNy90pj
-         zgnlJWcGE/Mt0aQzyaiFoMuYybsgBosa7cLKFjGnW67YUIHlRNhnXduV0Xs7pVXK1GNE
-         OHsfLKp6ywHxtz91bqbXeGPlQNyLiTdidtr1d8vRyrBOcaOBrGjtcfcpLXlNE8i0vr8Z
-         Wd4A==
+        h=from:to:cc:subject:date:message-id;
+        bh=HNyXcYZACqdPsANRJk2PRQjj527jHromuW2y01xPu04=;
+        b=TYcC/3cpnYl4dRBe8dBz15FbZuelXpYwy22omwmbevheMUwjU+VhGpGYKn19xLTl2k
+         /MIDBMueGpPVyDBjzxCRafVXMZlloTUMXlZhT12HM/gSZkmafQPql5hREsO4orJLgnNH
+         ArgHHRYjZ7lgXJzenIRduqXgs3tkoQCtj4r2yBAEbqlO7dabyyg3m4vSWTHc0UPRRmHl
+         7Us+VcdkgFXy7/f5126iBYaEWV/d/jlZUleY0SEVklrmXM0rPnOVolKGd3Es89UqzWKO
+         zwvoGx/DptZ+rbJ2R6A0Un9FF8kOYWgZzzfLL5uvJpgiFhWpZuTFPTjyez+oUQYTZbW5
+         ALow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=No9Cu1y2zqzL5EFePgwVsxeseV9YVFbZD57If/1JFIs=;
-        b=T7ppfb9Ujn4E4DnjMX87g+kG8faddjShqh1mwruWrAc0bgRh34Ysk1OZ6UtyqEu7Dh
-         3orNwvCfcQrLtM6lMs6LY5XkRHYXTbVjAxoJGBHBTlz45jV9L3yvo46CG01FQ+dC/Vtn
-         KGpD/ZPfA9k53kS6Q2oZGRCc3244T4h9LZ/X84y/MqV8gHgpZTtv/2YchHp2Eg4z+Trg
-         XtiB9lAZxTuf1tHFRvw1NDXQBPAi5caxe2ub1WIMN8nfkOY18TEXMEr4hdkpDeXwBiUG
-         mRWqk6pmiA29ZGZlfq4QUXH8TL272+OkHGcpPfdrrAJggQ1V2HhIecfV3N0MetLstf3e
-         T/Lg==
-X-Gm-Message-State: AOAM533IulBJxEb5zWeU4hv77hT25oqxI4nDMxrdk+we0N7bCeZSZUpz
-        MEDyVQKqoxNMIHSDu1EiAS8=
-X-Google-Smtp-Source: ABdhPJy4ZWVGVTo3sphzaSEAE2U404JvJ2MPxbpLgbZdIYS/9b4hJUCxO7paXWH92v5O9BSqGfjLlQ==
-X-Received: by 2002:a17:90a:342:: with SMTP id 2mr10854602pjf.99.1631509269684;
-        Sun, 12 Sep 2021 22:01:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HNyXcYZACqdPsANRJk2PRQjj527jHromuW2y01xPu04=;
+        b=QwtBC7dfSsw4yVZr+cSw+lalmblCD8KEYjRTJ8DXnLO0pnk0Y6B7BIQ0Ee0CTB0ugI
+         9zW8b5fdkAhV0E+bra15g9efPuR6YPwfWi8LBKoQ0uDlbIpYwJ7UAOcpLGoVMaeeoLKf
+         HGmutCjvmtNe8Wa+WlYNklYQI89QxIm5mURVosV1gCdJV6DTHtlyUj7mveppJTL0H4DU
+         LT1dbbdYcr2Bt8nLBVpALW6pkuKNy4G7GaEzipdw85yBzdzIXp32gun8rtGNGkPKIPDK
+         dEloWvQQdjShkHoYFfB7HfKQhj5vEGMQyKOHd2K2u1FwOY5oZmxvtZ0+hgMPIGFjSwei
+         WLQw==
+X-Gm-Message-State: AOAM532g+qvS0r+NCC6M1sq0pKpPtDXTqjuxiUpUrIdtECAUik03CFCp
+        u4J1d7BKDOAjIfiPB+QXJ/U9LIGZMcc/rA==
+X-Google-Smtp-Source: ABdhPJyBhRJA9mEOAUHc7S2NuJk/+E1s4xhnV/gvdscL/HkDv/kcuXoTwCMj1L9bGUhWhhk+Q+DcfA==
+X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr10845274pju.227.1631509757790;
+        Sun, 12 Sep 2021 22:09:17 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id n38sm291879pfv.198.2021.09.12.22.01.07
+        by smtp.gmail.com with ESMTPSA id x13sm2136934pfp.133.2021.09.12.22.09.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 12 Sep 2021 22:01:09 -0700 (PDT)
+        Sun, 12 Sep 2021 22:09:16 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
 To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     vipinsh@google.com, mkoutny@suse.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v2 3/3] docs/cgroup: add entry for misc.events and misc.events.local
-Date:   Mon, 13 Sep 2021 13:01:01 +0800
-Message-Id: <8dd0636659c55fe9db16f8d19af745c185cc4fdb.1631504710.git.brookxu@tencent.com>
+Cc:     corbet@lwn.net, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] docs/cgroup: remove some duplicate words
+Date:   Mon, 13 Sep 2021 13:09:14 +0800
+Message-Id: <1631509754-21485-1-git-send-email-brookxu.cn@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
-References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
-In-Reply-To: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
-References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-Added descriptions of misc.events and misc.events.local.
+When I tried to add some new entries to cgroup-v2.rst, I found that
+the description of memory.events had some repetitive words, so I
+tried to delete them.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ Documentation/admin-guide/cgroup-v2.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index babbe04..90a36ae 100644
+index 90a36ae..a6201a99 100644
 --- a/Documentation/admin-guide/cgroup-v2.rst
 +++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2310,6 +2310,25 @@ Miscellaneous controller provides 3 interface files. If two misc resources (res_
-         Limits can be set higher than the capacity value in the misc.capacity
-         file.
+@@ -1226,7 +1226,7 @@ PAGE_SIZE multiple when read back.
  
-+  misc.events
-+	A read-only flat-keyed file which exists on non-root cgroups.
-+	The following entries are defined.  Unless specified otherwise,
-+	a value change in this file generates a file modified event.
-+
-+	Note that all fields in this file are hierarchical and the
-+	file modified event can be generated due to an event down the
+ 	Note that all fields in this file are hierarchical and the
+ 	file modified event can be generated due to an event down the
+-	hierarchy. For for the local events at the cgroup level see
 +	hierarchy. For the local events at the cgroup level see
-+	misc.events.local.
-+
-+	  max
-+		The number of times the cgroup's resource usage was
-+		about to go over the max boundary.
-+
-+  misc.events.local
-+	Similar to misc.events but the fields in the file are local
-+	to the cgroup i.e. not hierarchical. The file modified event
-+	generated on this file reflects only the local events.
-+
- Migration and Ownership
- ~~~~~~~~~~~~~~~~~~~~~~~
+ 	memory.events.local.
  
+ 	  low
 -- 
 1.8.3.1
 
