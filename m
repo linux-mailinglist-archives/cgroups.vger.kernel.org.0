@@ -2,79 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A908F409B55
-	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 19:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B119D409BB7
+	for <lists+cgroups@lfdr.de>; Mon, 13 Sep 2021 20:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239619AbhIMR6H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 13:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
+        id S239405AbhIMSHO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 14:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239541AbhIMR6H (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 13:58:07 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0983DC061574;
-        Mon, 13 Sep 2021 10:56:51 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id 5so6355054plo.5;
-        Mon, 13 Sep 2021 10:56:51 -0700 (PDT)
+        with ESMTP id S235056AbhIMSHN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 14:07:13 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32A8C061574;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so49103pjc.3;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gSVJ2eIM6ASF+/M1pUdi7A7u/9wBqdKyPf+MuRt4P3o=;
-        b=Q5ZThgVUFT2XJy9ZZ3JHUMd3INTVtkMLE2tXoNIME6xo30Bw5fDiF0A0WqMV2fdkZV
-         BtZ7myHUs0imcosnzwMnUq/q2JJsNmF9burZEPbMTfpuPHjMkKRT7raxg56pxr+QuzDJ
-         USkCq2o5S5nOGPi9GYHJBfHMi8uF2+J3rdZnTj/NocsKytqfpuldL87dU+fVK6k03sLF
-         xYvhVXyZSA6fGGvfpydGgNsWRGAsakrFG1rhVIlKfXrmx8ejdb9Xq8LUDB6DMh9r9hSQ
-         LHjD9wDUCrLi+U8jQR1RRVW4AYr12LLlcnuHkKNbaQg9DT2rLf5lCE90J5GlOFVmVsYv
-         m+jw==
+        bh=lTZVobgM/3IcweDVBRrPU9HP9E4rGk6Uc/SK3CeJgbs=;
+        b=hz+MNqFoGnCqooN4pC0ZNqbr8/ZDMZ29FkRELhIRuC5hKGL9L9J9cPYqbJJJ9EeVlD
+         uieVwHvuZtCzWv2i9+5nUuSYWc6YHpCTvW/uCVKVWanM3bGO9clHLlZDJTRQdh+vStXT
+         JebR147UMte2xKNSG766+KWPqjmormL7wvrfV4Oo6q7tYf9OBdp3Q9Sgyp+cXVXKPhd2
+         LZbVzW+nhGFJ8DywljsBashi5kxWlbVV3SrTxrThfU+pfx9HknFRDPUv/2nBqsbfr0kF
+         mIB2JcID3JCKEdZYv1v67prapGM5itGUbWpzNfCUP+Gqx5xyBuRbv2pPH1Nx8ieaI2kr
+         VBnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=gSVJ2eIM6ASF+/M1pUdi7A7u/9wBqdKyPf+MuRt4P3o=;
-        b=Fym2pWkbKG6xuYaIvbNvvIpYevLgYE6oMqNa2/ijQuHzCKC5nEcXEIyhWjIDPDM5R2
-         PiVASAGR+TUgut4JYmZMJuSr6CmEGumOmsVUzlDPPb8XVb9MWWXgWqk2C8ZztBggRxJG
-         jRShhP2SXy3RUz+a0Kdek7WqQQjQ3SJxOQz4+G7kOpMdJbfmn6HooThMwojhpklbuyQI
-         Mb/ueDECLszPf/CyxyZrEDlyxkfrJ+SZGrvDUMMbBZl2hyfLxi+Gqui/sDS5jJj9CC5I
-         dq2Fmr5KX1COIG6zwWA5ZgI6IszPky0GG3K3atiGSQwqJXWfThsUGI3Mv9d2fM+E1rZn
-         xKXw==
-X-Gm-Message-State: AOAM533j9FhHYQk2crZxDDUGdQnE0DZ/ArQoNRnZhDPK1F3Adz1ALida
-        MOBNtCAeiD6gkv2o6a6I8nE=
-X-Google-Smtp-Source: ABdhPJwtDcUg39mwwF/D8YbWMstFXMVh+eKxdXmlOmUlK+VWyUxulXfLPxZu6UGS+UAWqZp/7jSc4Q==
-X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr792160pjj.189.1631555810344;
-        Mon, 13 Sep 2021 10:56:50 -0700 (PDT)
+        bh=lTZVobgM/3IcweDVBRrPU9HP9E4rGk6Uc/SK3CeJgbs=;
+        b=o+L+HeTT+4nDG++RZe2DkiGASmrOV4JgHtpG+TzpPcF9lQYZf3wWHtCMJ7WteUPdaa
+         cOaawNpa6t3sqS42UMvJAKlc2OzPeMyWpWaq1fRkqFSFahnPKCbTk4ukLqAMw3MssUBk
+         molGsGdILJwrR9a8jNxUR9jW89ZxThxGF6uZ+fdMRbckt05e5DOGcwt/EL3lbM+sck/T
+         /UfjMtjrEjDgOcaPtu7dZosKLh5b2Db9ZIlHkGCM+5A5f+Zl/5AQueGslPkq/asOnOhr
+         c5K8wiR1rAPIUYd6zUf9CI5LRNUtFePT/6t6rDQOEhb4slppwtePbAAdjNpWRCEvf7ms
+         gNag==
+X-Gm-Message-State: AOAM532AuTmUNGTmZtcAPt0Fj8kx0VcvoDgbPfMHy8umnKFC+04AvNoa
+        t63Gq6ksCWWjMCUm8YJoTA8=
+X-Google-Smtp-Source: ABdhPJwyUpLIfNUMvoWs8sNgwzlqizBHfnN+mQ+oZCTgPHX/7QjouVw56wymPnKahxjrFxQSQ7uEuQ==
+X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr6143553plo.19.1631556357279;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id k190sm7942168pfd.211.2021.09.13.10.56.49
+        by smtp.gmail.com with ESMTPSA id ch19sm7823993pjb.33.2021.09.13.11.05.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 10:56:49 -0700 (PDT)
+        Mon, 13 Sep 2021 11:05:56 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 07:56:48 -1000
+Date:   Mon, 13 Sep 2021 08:05:55 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] docs/cgroup: remove some duplicate words
-Message-ID: <YT+Q4Gr7Ky1Tt9w8@slm.duckdns.org>
-References: <1631509754-21485-1-git-send-email-brookxu.cn@gmail.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Juri Lelli <juri.lelli@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cgroup: Fix incorrect warning from
+ cgroup_apply_control_disable()
+Message-ID: <YT+TA6ItnF9xM3cR@slm.duckdns.org>
+References: <20210910024256.7615-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1631509754-21485-1-git-send-email-brookxu.cn@gmail.com>
+In-Reply-To: <20210910024256.7615-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 01:09:14PM +0800, brookxu wrote:
-> From: Chunguang Xu <brookxu@tencent.com>
-> 
-> When I tried to add some new entries to cgroup-v2.rst, I found that
-> the description of memory.events had some repetitive words, so I
-> tried to delete them.
-> 
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Hello,
 
-Applied to cgroup/for-5.15-fixes.
+On Thu, Sep 09, 2021 at 10:42:55PM -0400, Waiman Long wrote:
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 881ce1470beb..e31bca9fcd46 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3140,7 +3140,16 @@ static void cgroup_apply_control_disable(struct cgroup *cgrp)
+>  			if (!css)
+>  				continue;
+>  
+> -			WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt));
+> +			/*
+> +			 * A kill_css() might have been called previously, but
+> +			 * the css may still linger for a while before being
+> +			 * removed. Skip it in this case.
+> +			 */
+> +			if (percpu_ref_is_dying(&css->refcnt)) {
+> +				WARN_ON_ONCE(css->parent &&
+> +					cgroup_ss_mask(dsct) & (1 << ss->id));
+> +				continue;
+> +			}
+
+This warning did help me catch some gnarly bugs. Any chance we can keep it
+for normal cases and elide it just for remounting?
 
 Thanks.
 
