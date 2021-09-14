@@ -2,168 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A280D40B540
-	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 18:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6164A40B8BD
+	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 22:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhINQuc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Sep 2021 12:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S233353AbhINUMZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Sep 2021 16:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhINQu1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Sep 2021 12:50:27 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2371C061574
-        for <cgroups@vger.kernel.org>; Tue, 14 Sep 2021 09:49:09 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso2659050wme.4
-        for <cgroups@vger.kernel.org>; Tue, 14 Sep 2021 09:49:09 -0700 (PDT)
+        with ESMTP id S232545AbhINUMY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Sep 2021 16:12:24 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E847C061764
+        for <cgroups@vger.kernel.org>; Tue, 14 Sep 2021 13:11:06 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x27so982901lfu.5
+        for <cgroups@vger.kernel.org>; Tue, 14 Sep 2021 13:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8cZjnBfKQ98RvNo+t8dXEqCfexHSNrNgQFLczr/dzUw=;
-        b=ZIQJC39PqdNfy6y886PfF/Xyv2QsZ3DqnoJ0S5ozQT5AMmPORdXwJF0cgGxR1S51r3
-         gipsEbV0W+CTKwig18Aid5zMp4RYSRvdqQYmr6PPuQTB/g14jrFlsq00X+H7aoLp4CvG
-         NSESuAgGbCn+bU1oZspQ0hEyU8eCwIaHXmNCE=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WNWKwD/mZ8dmcHnPyLauepOSjhSOQ4h/50JmWkiv3s0=;
+        b=EcGBNwXJXCtEjbiAqZ5SCobVNFat6cwVYl7UZrpcqRZjt6YQEX6uXqQn+h8Hur7RBP
+         6Lf5fTjpJCmj8IvaaOplqMgXBBuH+tHM8BEY2eJbEt2CZkmxcK439Q5LYO665Vl+hepx
+         U9uY2EfFCOyAcN720RTBPvT3JSy7zWXr5WL7kA4HRZZKTZaGILl/Fuo6ZgtZz8wkakTE
+         bKU8KjiEsTo2dhRmKNviX8IQnNZk8d6Rla/TZwPNDuABbhWsQCKglo8WsadZhoars8AK
+         wy5nMe2NRGbjEAOl5/WMffpVQdI12t6deZP3nc/5+R5qrjM6c9cJZ73AeuPhuI6PD293
+         OWAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8cZjnBfKQ98RvNo+t8dXEqCfexHSNrNgQFLczr/dzUw=;
-        b=OJNwUaIdGbCxjZfzEe9/exsWyaUm9VlVMjw6T75pQoVOTh3UK2d1kvInrQEJGFp+pJ
-         /yFH/GoHloilFSzyYNnF96VX/3h+FeMq3oW1mXe6Am0uJ0hJpgS8zbS9fRoiHWkvzPLN
-         ShIIqFcPrmrovTbrPMzJLkaAr8bLerJ9YEoH/odw+FKlQTeU2PO2rFzcY1ng8MA6lOMi
-         zIJdr6Ij6w2KGcwpD5hjniI5dIGu8Buz3VGBoPI/ZXcu8wxWID1UbyWWEM1D+hxdbMxO
-         QKsHTSsa5kf7FEZk+Mdy2SbJT+NRfho1lZQx/agkNzP++QceHU+Dki4tPZpIG6ieUcKI
-         4pSQ==
-X-Gm-Message-State: AOAM5315abQebTzGZyQ9h5bHzk42FvFDliNfjxxBetSCigg+d1Hnv5s5
-        Etnm7TF+/7ooOvkk5+jsP/mH/g==
-X-Google-Smtp-Source: ABdhPJzqeHEMXP/9pTdykDN6ru9xN7OB6P1teNNIhylfS1EyHKmQABixQp5Mj6EOHF/9gkP8sXVegg==
-X-Received: by 2002:a05:600c:2193:: with SMTP id e19mr54963wme.38.1631638148124;
-        Tue, 14 Sep 2021 09:49:08 -0700 (PDT)
-Received: from localhost ([194.207.141.245])
-        by smtp.gmail.com with ESMTPSA id z79sm310798wmc.17.2021.09.14.09.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 09:49:07 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 17:49:06 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     yongw.pur@gmail.com
-Cc:     tj@kernel.org, mhocko@suse.com, peterz@infradead.org,
-        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.yang29@zte.com.cn
-Subject: Re: [PATCH v2] vmpressure: wake up work only when there is
- registration event
-Message-ID: <YUDSgr+iwVz7iFBN@chrisdown.name>
-References: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WNWKwD/mZ8dmcHnPyLauepOSjhSOQ4h/50JmWkiv3s0=;
+        b=ATCXVz0sZtVSlnR0xX42NcI/fJ3iTQCvU/AgapILIhIh4DmQXB24IDYbknYlgvRSMm
+         JxFvj8vX0pXoeyoztMkfGPPQWgufDaPNrYVMT7IUvQNedP3rTWhCWQKmYc1q14i0tKux
+         gnFsT3k21LH3jC5lHI7QyqWWSxhD3o0lnwg5CsX3ztzQBDMbpvwCKJNDNBiQZkfTLvOe
+         1VtCnwRepdlzbIh19iZIjoc8BvbKMjk/pcuMpTXWy4wexggHU+WPdez4NK4Mw9V3uXCS
+         C1ZQowbT3WGXREk0bgpYpSwEUIXHQjqZwV7ZwDq1Dt/DP7U0de2PyayTYougvwgOLXPB
+         VCTA==
+X-Gm-Message-State: AOAM531I1jnH0saJI/zEZvCi+DJGKqTOEKixRPpxTVwfJ9P1wXvcQEve
+        xvKJEeMsgav6blmtPx+WqF0Tpsmjd66Lg/nv6GnnaA==
+X-Google-Smtp-Source: ABdhPJwJhIZ7snNccUlf5HKWs3aKulgAz8Bz80UW1co9+ZsFlqTZY3qTz0PjV970lQ+di9xtI/9sOs58qbg+Py7MwnA=
+X-Received: by 2002:a05:6512:31d3:: with SMTP id j19mr1698923lfe.368.1631650264534;
+ Tue, 14 Sep 2021 13:11:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
-User-Agent: Mutt/2.1.2 (9a92dba0) (2021-08-24)
+References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+ <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com> <b62597e9-72c4-563e-fdc7-3315569502f0@gmail.com>
+In-Reply-To: <b62597e9-72c4-563e-fdc7-3315569502f0@gmail.com>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Tue, 14 Sep 2021 13:10:28 -0700
+Message-ID: <CAHVum0dd5dw1rkcf0U7OjW2GX4VTZi4RCcbTph99qDftd=2taA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] misc_cgroup: introduce misc.events and misc_events.local
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mkoutny@suse.com, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-yongw.pur@gmail.com writes:
->From: wangyong <wang.yong12@zte.com.cn>
+On Mon, Sep 13, 2021 at 7:24 PM brookxu <brookxu.cn@gmail.com> wrote:
 >
->Use the global variable num_events to record the number of vmpressure
->events registered by the system, and wake up work only when there is
->registration event.
->Usually, the vmpressure event is not registered in the system, this patch
->can avoid waking up work and doing nothing.
+> Thanks for your time.
 >
->Test with 5.14.0-rc5-next-20210813 on x86_64 4G ram.
->Consume cgroup memory until it is about to be reclaimed, then execute
->"perf stat -I 2000 malloc.out" command to trigger memory reclamation
->and get performance results.
->The context-switches is reduced by about 20 times.
+> Vipin Sharma wrote on 2021/9/14 12:51 =E4=B8=8A=E5=8D=88:
+> > On Sun, Sep 12, 2021 at 10:01 PM brookxu <brookxu.cn@gmail.com> wrote:
+> >>
+> >> From: Chunguang Xu <brookxu@tencent.com>
+> >>
+> >> Introduce misc.events and misc.events.local to make it easier for
+> >
+> > I thought Tejun only gave go ahead for misc.events and not for
+> > misc.events.local.
+> >
 >
->unpatched:
->Average of 10 test results
->582.4674048	task-clock(msec)
->19910.8		context-switches
->0		cpu-migrations
->1292.9		page-faults
->414784733.1	cycles
-><not supported>	stalled-cycles-frontend
-><not supported>	stalled-cycles-backend
->580070698.4	instructions
->125572244.7	branches
->2073541.2	branch-misses
->
->patched
->Average of 10 test results
->973.6174796	task-clock(msec)
->988.6		context-switches
->0		cpu-migrations
->1785.2		page-faults
->772883602.4	cycles
-><not supported>	stalled-cycles-frontend
-><not supported>	stalled-cycles-backend
->1360280911	instructions
->290519434.9	branches
->3378378.2	branch-misses
->
->Tested-by: Zeal Robot <zealci@zte.com.cn>
+> Maybe I missed something. I think events.local is somewhat useful. For
+> example, the events of node A is large. If we need to determine whether
+> it is caused by the max of node A, if there is no events.local, then we
+> need to traverse the events of the child nodes and compare them with
+> node A. This is a bit complicated. If there is events.local, we can do
+> it very easily. Should we keep the events.local interface=EF=BC=9F
 
-That's not how Tested-by works. Tested-by is for human testers who have 
-actively understand and have validated the effects of the code, not CI: please 
-remove the tag.
+Tejun mentioned in his previous email that he prefers the hierarchical
+one. https://lore.kernel.org/lkml/YTuX6Cpv1kg+DHmJ@slm.duckdns.org/
 
->Signed-off-by: wangyong <wang.yong12@zte.com.cn>
->---
->
->Changes since v1:
->-Use static_key type data as global variable
->-Make event registration judgment earlier
->
-> mm/vmpressure.c | 10 ++++++++++
-> 1 file changed, 10 insertions(+)
->
->diff --git a/mm/vmpressure.c b/mm/vmpressure.c
->index 76518e4..6f4e984 100644
->--- a/mm/vmpressure.c
->+++ b/mm/vmpressure.c
->@@ -67,6 +67,11 @@ static const unsigned int vmpressure_level_critical = 95;
->  */
-> static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
->
->+/*
->+ * Count the number of vmpressure events registered in the system.
->+ */
->+DEFINE_STATIC_KEY_FALSE(num_events);
->+
-> static struct vmpressure *work_to_vmpressure(struct work_struct *work)
-> {
-> 	return container_of(work, struct vmpressure, work);
->@@ -272,6 +277,9 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
-> 		return;
->
-> 	if (tree) {
->+		if (!static_branch_unlikely(&num_events))
->+			return;
->+
-> 		spin_lock(&vmpr->sr_lock);
-> 		scanned = vmpr->tree_scanned += scanned;
-> 		vmpr->tree_reclaimed += reclaimed;
->@@ -407,6 +415,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
-> 	mutex_lock(&vmpr->events_lock);
-> 	list_add(&ev->node, &vmpr->events);
-> 	mutex_unlock(&vmpr->events_lock);
->+	static_branch_inc(&num_events);
-> 	ret = 0;
-> out:
-> 	kfree(spec_orig);
->@@ -435,6 +444,7 @@ void vmpressure_unregister_event(struct mem_cgroup *memcg,
-> 		if (ev->efd != eventfd)
-> 			continue;
-> 		list_del(&ev->node);
->+		static_branch_dec(&num_events);
-> 		kfree(ev);
-> 		break;
-> 	}
->-- 
->2.7.4
->
->
+I agree with you that it's easier to identify the constraint cgroup
+with the local file. However, there is one downside also, which is if
+a cgroup gets deleted then that local information is lost, we will
+need a hierarchical reporting to observe the resource constraint. I
+will be fine with both files but if I have to choose one I am now more
+inclined towards hierarchical (events).
+
+Thanks
+Vipin
