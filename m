@@ -2,96 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463EB40A194
-	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 01:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFB440A386
+	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 04:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242283AbhIMX3m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 19:29:42 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50019 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242160AbhIMX3l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 19:29:41 -0400
-Received: by mail-io1-f70.google.com with SMTP id k6-20020a6b3c060000b0290568c2302268so14963356iob.16
-        for <cgroups@vger.kernel.org>; Mon, 13 Sep 2021 16:28:25 -0700 (PDT)
+        id S236938AbhINCZU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 22:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235213AbhINCZT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 22:25:19 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C33C061574;
+        Mon, 13 Sep 2021 19:24:03 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w19so6315586pfn.12;
+        Mon, 13 Sep 2021 19:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6bHeWjV3HGfhLob3U0wkIQ8wiGJnN6iWzgMWgki4WRA=;
+        b=KDkT9e32/Y9iJjHHqek7M4egxwe+SRvGz5YRzUEkoBI+GO2NmGzFfAIzOi1trat/2d
+         iC6xrRNW6XHGrwX5yKWRp4xAO575uxyYMHEyAKHtl37YY/360gEy3hx/UvRKMqJU14th
+         4Nd1+yHQkAxwbvrkLPmPn2TJviUwPvGGpSMipipQB6C3j1Gbs4iPSeodJf+WEqzCoTqY
+         v8+OfagxpSQPqhkwIh1pfZr4u+jC7zZXyL4r3mAvH81vHNIbKHMJs9RGsIkomamQCaQq
+         cZghOvUn9cFgiLkWwNpcMIN6TDKV1FMq21JNGH5uf9tFd0e/t0C2NfOAs+vGO2+tM6yn
+         jEHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zoiyz9yumUb2OwDpSUzdanvEqwi+zK0yBV9E9brBk3c=;
-        b=PtXMP1tg0pGM/tuytc7zGZg+ipnhzbxrGFdXrsAQD9MpMVx16TgfqFrmOXXGBIBuC4
-         B8QzGTU/xq+108+8bNKHK5rF5YwHt/wpjCv7eubNjt9ODOIocRefBacIcvIDyzIMoI/a
-         DY/ifMPcHYPFBa4BQe7V6spV7z/YsBURmA1uRkeNoIlISgoeox1VIan4pCXJGtModRRS
-         RR2LEQfbOb7EEg5sNVI4xL7/bjtlEU4Py5cBxuOwQlX+maAhGCNCuIyxjoQFZYwApCk2
-         e+8Q0XzwrEAXHeX6PfC78l2E42J+1+HMjuKoyAXnSRLFHdxXTvyiT97aTdbhYW8eOM0i
-         5tnw==
-X-Gm-Message-State: AOAM531mXfxMaMbOTFkVO51jA0nLBVuiQM/aFYhsd7WLbChubNbWaI5C
-        KHcRG6C+/7PQFHP579tdCgCVEnIAH1CPT8VdNpmd7X70oA3m
-X-Google-Smtp-Source: ABdhPJxq8rbwHAG7zj/ETr+Yck5PBsq65xMiCa044uwkatUumATKS1ZpToFPv45jns8Qhr7aUYOjfD52RGCgkvDjpsqprS85LWog
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6bHeWjV3HGfhLob3U0wkIQ8wiGJnN6iWzgMWgki4WRA=;
+        b=RktSgj0Wm64Fsc5DMKj5FqiPywwKHV1V0npIEVOFZW9IslkYBlkIM3f81iwTOAr17t
+         iGVv7BTKlXwipLlKWJC6itRZXMCq7nP1Hk1qCZHr4oZ2BupjyBfkaDe3f49Tx1g/x7Si
+         q1LE5qhMWbiJfAguEzFvkBxEdc+isynjYID5sHvTTq3Hor8o/uj/5DFcUk07tzC/fk8f
+         KRkQrOGFiE8ZCsYwA9SBUgDw1FbNxFqPKVRRLjXlNtVReYJgBXaKq5WeOz9GyKQ07F1U
+         NAWS7YPY40ku7ed88+LO7e/d8AWLT5WQxW2BfWtAxMvlYpxJjDEw9QXZ8aijJVL1URFh
+         cxyg==
+X-Gm-Message-State: AOAM532Ahaa3kU4BwecbRipVCkv0LQk1isCxgJgyPgwuMPC0/Y1/GVoF
+        MUqu1hm1lgvBv/75v31nwd3ChpQCxCtfbQ==
+X-Google-Smtp-Source: ABdhPJznYYgoZbjQNv8p8/lJ1ILows+/lwtewj9vGKlUNhcTZ5D5Ve/FSOR7smfZ5r7yfwXXaluIhw==
+X-Received: by 2002:a62:ddd8:0:b0:435:4de8:2652 with SMTP id w207-20020a62ddd8000000b004354de82652mr2424526pff.53.1631586242271;
+        Mon, 13 Sep 2021 19:24:02 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.116])
+        by smtp.gmail.com with ESMTPSA id r4sm8012126pjm.50.2021.09.13.19.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 19:24:01 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] misc_cgroup: introduce misc.events and
+ misc_events.local
+To:     Vipin Sharma <vipinsh@google.com>, Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
+References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+ <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <b62597e9-72c4-563e-fdc7-3315569502f0@gmail.com>
+Date:   Tue, 14 Sep 2021 10:23:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:b0d1:: with SMTP id w17mr11996507jah.46.1631575704786;
- Mon, 13 Sep 2021 16:28:24 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 16:28:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ee28405cbe8d287@google.com>
-Subject: [syzbot] memory leak in blk_iolatency_init
-From:   syzbot <syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Thanks for your time.
 
-syzbot found the following issue on:
+Vipin Sharma wrote on 2021/9/14 12:51 上午:
+> On Sun, Sep 12, 2021 at 10:01 PM brookxu <brookxu.cn@gmail.com> wrote:
+>>
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> Introduce misc.events and misc.events.local to make it easier for
+> 
+> I thought Tejun only gave go ahead for misc.events and not for
+> misc.events.local.
+> 
 
-HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b4a5b3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9ee3a4c022ccbbca
-dashboard link: https://syzkaller.appspot.com/bug?extid=01321b15cc98e6bf96d6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148c170b300000
+Maybe I missed something. I think events.local is somewhat useful. For
+example, the events of node A is large. If we need to determine whether
+it is caused by the max of node A, if there is no events.local, then we
+need to traverse the events of the child nodes and compare them with
+node A. This is a bit complicated. If there is events.local, we can do
+it very easily. Should we keep the events.local interface？
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
+>> us to understand the pressure of resources. The main idea comes
+>> from mem_cgroup. Currently only the 'max' event is implemented,
+>> which indicates the times the resource exceeds the limit.
+>>
+> 
+> For future emails, please provide the links to previous discussions
+> like [1], [2],...
+> 
+>> @@ -36,6 +41,8 @@ enum misc_res_type {
+>>  struct misc_res {
+>>         unsigned long max;
+>>         atomic_long_t usage;
+>> +       atomic_long_t events[MISC_CG_EVENT_TYPES];
+> 
+> Since there is only one event type for now, my recommendation is to
+> not use the array and just use a single atomic_long_t.
+> 
+>>
+>> +static const char *const misc_event_name[] = {
+>> +       "max"
+>> +};
+>> +
+> 
+> We will not need it if you remove the array in struct misc_res.
 
-2021/09/09 22:14:31 executed programs: 444
-BUG: memory leak
-unreferenced object 0xffff888129acdb80 (size 96):
-  comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
-  hex dump (first 32 bytes):
-    20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
-    [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
-    [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
-    [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
-    [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
-    [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
-    [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
-    [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
-    [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
-    [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
-    [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
-    [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+All right, thanks.
 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> Thanks
+> Vipin
+> 
