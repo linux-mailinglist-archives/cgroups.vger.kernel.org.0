@@ -2,262 +2,218 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6718D40A4AA
-	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 05:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2E40A4F7
+	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 05:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhINDlu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Sep 2021 23:41:50 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60416 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238834AbhINDlt (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:41:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209095050"
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="209095050"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 20:40:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="507664161"
-Received: from shbuild999.sh.intel.com ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Sep 2021 20:40:29 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset and bail out early
-Date:   Tue, 14 Sep 2021 11:40:28 +0800
-Message-Id: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S239052AbhIND6k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Sep 2021 23:58:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19971 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238366AbhIND6k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Sep 2021 23:58:40 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7qFQ4kZ7zbmF1;
+        Tue, 14 Sep 2021 11:53:14 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 11:57:19 +0800
+Received: from localhost.huawei.com (10.175.124.27) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 11:57:19 +0800
+From:   Li Jinlin <lijinlin3@huawei.com>
+To:     <axboe@kernel.dk>, <tj@kernel.org>
+CC:     <paolo.valente@linaro.org>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linfeilong@huawei.com>, <louhongxiang@huawei.com>
+Subject: [PATCH v3] blk-cgroup: fix UAF by grabbing blkcg lock before destroying blkg pd
+Date:   Tue, 14 Sep 2021 12:26:05 +0800
+Message-ID: <20210914042605.3260596-1-lijinlin3@huawei.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-There was report that starting an Ubuntu in docker while using cpuset
-to bind it to movable nodes (a node only has movable zone, like a node
-for hotplug or a Persistent Memory  node in normal usage) will fail
-due to memory allocation failure, and then OOM is involved and many
-other innocent processes got killed. It can be reproduced with command:
-$docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
-"grep Mems_allowed /proc/self/status" (node 4 is a movable node)
+KASAN reports a use-after-free report when doing fuzz test:
 
-  runc:[2:INIT] invoked oom-killer: gfp_mask=0x500cc2(GFP_HIGHUSER|__GFP_ACCOUNT), order=0, oom_score_adj=0
-  CPU: 8 PID: 8291 Comm: runc:[2:INIT] Tainted: G        W I E     5.8.2-0.g71b519a-default #1 openSUSE Tumbleweed (unreleased)
-  Hardware name: Dell Inc. PowerEdge R640/0PHYDR, BIOS 2.6.4 04/09/2020
-  Call Trace:
-   dump_stack+0x6b/0x88
-   dump_header+0x4a/0x1e2
-   oom_kill_process.cold+0xb/0x10
-   out_of_memory.part.0+0xaf/0x230
-   out_of_memory+0x3d/0x80
-   __alloc_pages_slowpath.constprop.0+0x954/0xa20
-   __alloc_pages_nodemask+0x2d3/0x300
-   pipe_write+0x322/0x590
-   new_sync_write+0x196/0x1b0
-   vfs_write+0x1c3/0x1f0
-   ksys_write+0xa7/0xe0
-   do_syscall_64+0x52/0xd0
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[693354.104835] ==================================================================
+[693354.105094] BUG: KASAN: use-after-free in bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105336] Read of size 4 at addr ffff888be0a35664 by task sh/1453338
 
-  Mem-Info:
-  active_anon:392832 inactive_anon:182 isolated_anon:0
-   active_file:68130 inactive_file:151527 isolated_file:0
-   unevictable:2701 dirty:0 writeback:7
-   slab_reclaimable:51418 slab_unreclaimable:116300
-   mapped:45825 shmem:735 pagetables:2540 bounce:0
-   free:159849484 free_pcp:73 free_cma:0
-  Node 4 active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB all_unreclaimable? no
-  Node 4 Movable free:130021408kB min:9140kB low:139160kB high:269180kB reserved_highatomic:0KB active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:130023424kB managed:130023424kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:292kB local_pcp:84kB free_cma:0kB
-  lowmem_reserve[]: 0 0 0 0 0
-  Node 4 Movable: 1*4kB (M) 0*8kB 0*16kB 1*32kB (M) 0*64kB 0*128kB 1*256kB (M) 1*512kB (M) 1*1024kB (M) 0*2048kB 31743*4096kB (M) = 130021156kB
+[693354.105607] CPU: 41 PID: 1453338 Comm: sh Kdump: loaded Not tainted 4.18.0-147
+[693354.105610] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.81 07/02/2018
+[693354.105612] Call Trace:
+[693354.105621]  dump_stack+0xf1/0x19b
+[693354.105626]  ? show_regs_print_info+0x5/0x5
+[693354.105634]  ? printk+0x9c/0xc3
+[693354.105638]  ? cpumask_weight+0x1f/0x1f
+[693354.105648]  print_address_description+0x70/0x360
+[693354.105654]  kasan_report+0x1b2/0x330
+[693354.105659]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105665]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105670]  bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105675]  ? bfq_cpd_init+0x20/0x20
+[693354.105683]  cgroup_file_write+0x3aa/0x510
+[693354.105693]  ? ___slab_alloc+0x507/0x540
+[693354.105698]  ? cgroup_file_poll+0x60/0x60
+[693354.105702]  ? 0xffffffff89600000
+[693354.105708]  ? usercopy_abort+0x90/0x90
+[693354.105716]  ? mutex_lock+0xef/0x180
+[693354.105726]  kernfs_fop_write+0x1ab/0x280
+[693354.105732]  ? cgroup_file_poll+0x60/0x60
+[693354.105738]  vfs_write+0xe7/0x230
+[693354.105744]  ksys_write+0xb0/0x140
+[693354.105749]  ? __ia32_sys_read+0x50/0x50
+[693354.105760]  do_syscall_64+0x112/0x370
+[693354.105766]  ? syscall_return_slowpath+0x260/0x260
+[693354.105772]  ? do_page_fault+0x9b/0x270
+[693354.105779]  ? prepare_exit_to_usermode+0xf9/0x1a0
+[693354.105784]  ? enter_from_user_mode+0x30/0x30
+[693354.105793]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-  oom-kill:constraint=CONSTRAINT_CPUSET,nodemask=(null),cpuset=docker-9976a269caec812c134fa317f27487ee36e1129beba7278a463dd53e5fb9997b.scope,mems_allowed=4,global_oom,task_memcg=/system.slice/containerd.service,task=containerd,pid=4100,uid=0
-  Out of memory: Killed process 4100 (containerd) total-vm:4077036kB, anon-rss:51184kB, file-rss:26016kB, shmem-rss:0kB, UID:0 pgtables:676kB oom_score_adj:0
-  oom_reaper: reaped process 8248 (docker), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 2054 (node_exporter), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 1452 (systemd-journal), now anon-rss:0kB, file-rss:8564kB, shmem-rss:4kB
-  oom_reaper: reaped process 2146 (munin-node), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 8291 (runc:[2:INIT]), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+[693354.105875] Allocated by task 1453337:
+[693354.106001]  kasan_kmalloc+0xa0/0xd0
+[693354.106006]  kmem_cache_alloc_node_trace+0x108/0x220
+[693354.106010]  bfq_pd_alloc+0x96/0x120
+[693354.106015]  blkcg_activate_policy+0x1b7/0x2b0
+[693354.106020]  bfq_create_group_hierarchy+0x1e/0x80
+[693354.106026]  bfq_init_queue+0x678/0x8c0
+[693354.106031]  blk_mq_init_sched+0x1f8/0x460
+[693354.106037]  elevator_switch_mq+0xe1/0x240
+[693354.106041]  elevator_switch+0x25/0x40
+[693354.106045]  elv_iosched_store+0x1a1/0x230
+[693354.106049]  queue_attr_store+0x78/0xb0
+[693354.106053]  kernfs_fop_write+0x1ab/0x280
+[693354.106056]  vfs_write+0xe7/0x230
+[693354.106060]  ksys_write+0xb0/0x140
+[693354.106064]  do_syscall_64+0x112/0x370
+[693354.106069]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-The reason is, in the case, the target cpuset nodes only have movable
-zone, while the creation of an OS in docker sometimes needs to allocate
-memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
-the cpuset limit forbids the allocation, then out-of-memory killing is
-involved even when normal nodes and movable nodes both have many free
-memory.
+[693354.106114] Freed by task 1453336:
+[693354.106225]  __kasan_slab_free+0x130/0x180
+[693354.106229]  kfree+0x90/0x1b0
+[693354.106233]  blkcg_deactivate_policy+0x12c/0x220
+[693354.106238]  bfq_exit_queue+0xf5/0x110
+[693354.106241]  blk_mq_exit_sched+0x104/0x130
+[693354.106245]  __elevator_exit+0x45/0x60
+[693354.106249]  elevator_switch_mq+0xd6/0x240
+[693354.106253]  elevator_switch+0x25/0x40
+[693354.106257]  elv_iosched_store+0x1a1/0x230
+[693354.106261]  queue_attr_store+0x78/0xb0
+[693354.106264]  kernfs_fop_write+0x1ab/0x280
+[693354.106268]  vfs_write+0xe7/0x230
+[693354.106271]  ksys_write+0xb0/0x140
+[693354.106275]  do_syscall_64+0x112/0x370
+[693354.106280]  entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-The OOM killer cannot help to resolve the situation as there is no
-usable memory for the request in the cpuset scope. The only reasonable
-measure to take is to fail the allocation right away and have the caller
-to deal with it.
+[693354.106329] The buggy address belongs to the object at ffff888be0a35580
+                 which belongs to the cache kmalloc-1k of size 1024
+[693354.106736] The buggy address is located 228 bytes inside of
+                 1024-byte region [ffff888be0a35580, ffff888be0a35980)
+[693354.107114] The buggy address belongs to the page:
+[693354.107273] page:ffffea002f828c00 count:1 mapcount:0 mapping:ffff888107c17080 index:0x0 compound_mapcount: 0
+[693354.107606] flags: 0x17ffffc0008100(slab|head)
+[693354.107760] raw: 0017ffffc0008100 ffffea002fcbc808 ffffea0030bd3a08 ffff888107c17080
+[693354.108020] raw: 0000000000000000 00000000001c001c 00000001ffffffff 0000000000000000
+[693354.108278] page dumped because: kasan: bad access detected
 
-So add a check for cases like this in the slowpath of allocation, and
-bail out early returning NULL for the allocation.
+[693354.108511] Memory state around the buggy address:
+[693354.108671]  ffff888be0a35500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[693354.116396]  ffff888be0a35580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.124473] >ffff888be0a35600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.132421]                                                        ^
+[693354.140284]  ffff888be0a35680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.147912]  ffff888be0a35700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.155281] ==================================================================
 
-As page allocation is one of the hottest path in kernel, this check
-will hurt all users with sane cpuset configuration, add a static branch
-check and detect the abnormal config in cpuset memory binding setup so
-that the extra check in page allocation is not paid by everyone.
+blkgs are protected by both queue and blkcg locks and holding
+either should stabilize them. However, the path of destroying
+blkg policy data is only protected by queue lock in
+blkcg_activate_policy()/blkcg_deactivate_policy(). Other tasks
+can get the blkg policy data before the blkg policy data is
+destroyed, and use it after destroyed, which will result in a 
+use-after-free.
 
-[thanks to Micho Hocko and David Rientjes for suggesting not handle
- it inside OOM code, adding cpuset check, refining comments]
+CPU0                             CPU1
+blkcg_deactivate_policy
+  spin_lock_irq(&q->queue_lock)
+                                 bfq_io_set_weight_legacy  
+                                   spin_lock_irq(&blkcg->lock)
+                                   blkg_to_bfqg(blkg)
+                                     pd_to_bfqg(blkg->pd[pol->plid])
+                                     ^^^^^^blkg->pd[pol->plid] != NULL
+                                           bfqg != NULL
+  pol->pd_free_fn(blkg->pd[pol->plid])
+    pd_to_bfqg(blkg->pd[pol->plid])
+    bfqg_put(bfqg)
+      kfree(bfqg)
+  blkg->pd[pol->plid] = NULL
+  spin_unlock_irq(q->queue_lock);
+                                   bfq_group_set_weight(bfqg, val, 0)
+                                     bfqg->entity.new_weight
+                                     ^^^^^^trigger uaf here 
+                                   spin_unlock_irq(&blkcg->lock);
 
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Feng Tang <feng.tang@intel.com>
+Fix by garbbing the matching blkcg lock before trying to
+destroy blkg policy data.
+
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
 ---
-Changelog:
-  
-  v3:
-  * refine the movable_only_nodes() and the nodemask check
-    in cpuset code (Michal Hocko)
-  * fix a compiling problem (0day test robot)
+changes since v2 send with Message-ID:
+20210910034642.2838054-1-lijinlin3@huawei.com
 
-  v2:
-  * add a static branch detection in cpuset code to reduce
-    the overhead in allocation hotpath (Michal Hocko)
+ - grab the matching blkcg lock before trying to destroy
+   blkg policy data as suggested by Tejun
+ - modify the subject and message to match the content
 
-  v1 (since RFC):
-  * move the handling from oom code to page allocation 
-    path (Michal/David)
+ block/blk-cgroup.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- include/linux/cpuset.h | 17 +++++++++++++++++
- include/linux/mmzone.h | 16 ++++++++++++++++
- kernel/cgroup/cpuset.c | 15 +++++++++++++++
- mm/page_alloc.c        | 13 +++++++++++++
- 4 files changed, 61 insertions(+)
-
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index d2b9c41..d58e047 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -34,6 +34,8 @@
-  */
- extern struct static_key_false cpusets_pre_enable_key;
- extern struct static_key_false cpusets_enabled_key;
-+extern struct static_key_false cpusets_insane_config_key;
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3c88a79a319b..6c17ee6db20f 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1364,10 +1364,14 @@ int blkcg_activate_policy(struct request_queue *q,
+ 	/* alloc failed, nothing's initialized yet, free everything */
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
++		struct blkcg *blkcg = blkg->blkcg;
 +
- static inline bool cpusets_enabled(void)
- {
- 	return static_branch_unlikely(&cpusets_enabled_key);
-@@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
- 	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
- }
++		spin_lock(&blkcg->lock);
+ 		if (blkg->pd[pol->plid]) {
+ 			pol->pd_free_fn(blkg->pd[pol->plid]);
+ 			blkg->pd[pol->plid] = NULL;
+ 		}
++		spin_unlock(&blkcg->lock);
+ 	}
+ 	spin_unlock_irq(&q->queue_lock);
+ 	ret = -ENOMEM;
+@@ -1399,12 +1403,16 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 	__clear_bit(pol->plid, q->blkcg_pols);
  
-+/*
-+ * This will get enabled whenever a cpuset configuration is considered
-+ * unsupportable in general. E.g. movable only node which cannot satisfy
-+ * any non movable allocations (see update_nodemask). Page allocator
-+ * needs to make additional checks for those configurations and this
-+ * check is meant to guard those checks without any overhead for sane
-+ * configurations.
-+ */
-+static inline bool cpusets_insane_config(void)
-+{
-+	return static_branch_unlikely(&cpusets_insane_config_key);
-+}
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
++		struct blkcg *blkcg = blkg->blkcg;
 +
- extern int cpuset_init(void);
- extern void cpuset_init_smp(void);
- extern void cpuset_force_rebuild(void);
-@@ -167,6 +182,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
++		spin_lock(&blkcg->lock);
+ 		if (blkg->pd[pol->plid]) {
+ 			if (pol->pd_offline_fn)
+ 				pol->pd_offline_fn(blkg->pd[pol->plid]);
+ 			pol->pd_free_fn(blkg->pd[pol->plid]);
+ 			blkg->pd[pol->plid] = NULL;
+ 		}
++		spin_unlock(&blkcg->lock);
+ 	}
  
- static inline bool cpusets_enabled(void) { return false; }
- 
-+static inline bool cpusets_insane_config(void) { return false; }
-+
- static inline int cpuset_init(void) { return 0; }
- static inline void cpuset_init_smp(void) {}
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 6a1d79d..a455333 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1220,6 +1220,22 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
- #define for_each_zone_zonelist(zone, z, zlist, highidx) \
- 	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
- 
-+/* Whether the 'nodes' are all movable nodes */
-+static inline bool movable_only_nodes(nodemask_t *nodes)
-+{
-+	struct zonelist *zonelist;
-+	struct zoneref *z;
-+
-+	if (nodes_empty(*nodes))
-+		return false;
-+
-+	zonelist =
-+	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
-+	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-+	return (!z->zone) ? true : false;
-+}
-+
-+
- #ifdef CONFIG_SPARSEMEM
- #include <asm/sparsemem.h>
- #endif
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index df1ccf4..7fa633e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -69,6 +69,13 @@
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
- 
-+/*
-+ * There could be abnormal cpuset configurations for cpu or memory
-+ * node binding, add this key to provide a quick low-cost judgement
-+ * of the situation.
-+ */
-+DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
-+
- /* See "Frequency meter" comments, below. */
- 
- struct fmeter {
-@@ -1868,6 +1875,14 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (retval < 0)
- 		goto done;
- 
-+	if (!cpusets_insane_config() &&
-+		movable_only_nodes(&trialcs->mems_allowed)) {
-+		static_branch_enable(&cpusets_insane_config_key);
-+		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
-+			"Cpuset allocations might fail even with a lot of memory available.\n",
-+			nodemask_pr_args(&trialcs->mems_allowed));
-+	}
-+
- 	spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = trialcs->mems_allowed;
- 	spin_unlock_irq(&callback_lock);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b37435c..a7e0854 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	if (!ac->preferred_zoneref->zone)
- 		goto nopage;
- 
-+	/*
-+	 * Check for insane configurations where the cpuset doesn't contain
-+	 * any suitable zone to satisfy the request - e.g. non-movable
-+	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
-+	 */
-+	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
-+		struct zoneref *z = first_zones_zonelist(ac->zonelist,
-+					ac->highest_zoneidx,
-+					&cpuset_current_mems_allowed);
-+		if (!z->zone)
-+			goto nopage;
-+	}
-+
- 	if (alloc_flags & ALLOC_KSWAPD)
- 		wake_all_kswapds(order, gfp_mask, ac);
- 
+ 	spin_unlock_irq(&q->queue_lock);
 -- 
-2.7.4
+2.27.0
 
