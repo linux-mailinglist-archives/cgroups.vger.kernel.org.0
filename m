@@ -2,87 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B36940B0AE
-	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 16:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0216940B428
+	for <lists+cgroups@lfdr.de>; Tue, 14 Sep 2021 18:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhINOdk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Sep 2021 10:33:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58200 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbhINOdj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Sep 2021 10:33:39 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A6C1822100;
-        Tue, 14 Sep 2021 14:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631629940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H8cl6i/Xuxe8x3+G+xdschhZeDxTx8TVhW/IfLYXe8g=;
-        b=ic/UhyEZIPK10iNW01IYfzvu+rOZxxQP19bKkTCbeUetDCBq7x25/tljIRbq7E9Xf9yWGs
-        s1bw70mn5grnjbE5rrWFcN1ivU/qIVXWNtsGAW1jnxtmK4IQ+JdSTcoHnFf1puZhFpQT/B
-        Uv5QTCrnI+Y9RByFJ7YrBZRk/5q8nU4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7AAB1A3B9F;
-        Tue, 14 Sep 2021 14:32:20 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 16:32:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in
- do_semtimedop()
-Message-ID: <YUCydCo+N8XFdyTU@dhcp22.suse.cz>
-References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
- <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
- <CALvZod7Y4pC4XvqVp+tJ==CnS5Ay8YPqrxeUzA8tMLu+0U3hjQ@mail.gmail.com>
- <YUBLrJOL6DGxmira@dhcp22.suse.cz>
- <20210914142316.GA23024@blackbody.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210914142316.GA23024@blackbody.suse.cz>
+        id S232983AbhINQHV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Sep 2021 12:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235300AbhINQHU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Sep 2021 12:07:20 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E02EC061764;
+        Tue, 14 Sep 2021 09:06:03 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id f129so13178926pgc.1;
+        Tue, 14 Sep 2021 09:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id;
+        bh=s5oUww/KW0dwIowi5W2rJXOaMiXlxCDKY0oBpmzbqzw=;
+        b=XNrj+vkp8TdMcL+diFidKiPuX7g/Eoa/0pzMB+yNwjiIwQAr4bkGqspPavHrz7GpRQ
+         MziRNMfi0znxPuVdVPxwvv9+v7wo6qHOzG3ogD7u9i/MbRmA7Dj0JVLZ5hUDStlDwrHq
+         5brNW89diOHl547VwRfBWjP/70q9IiyepW0X2BomJCAKbF1rzhe89iBPKRUfMekhg55G
+         tcw6QgPWuPgC0TieK1r2ltDQrDKxxh5jTFDqKF++7iuTvtWutLm2uhmm892RGj0113Rp
+         5/RqeZkRQvRokQqqt0YbvIsIbaJRxVfd1ife8WllzJf+Xm8mtTVuSZs/4t6Aq1OEMYMd
+         Lf/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=s5oUww/KW0dwIowi5W2rJXOaMiXlxCDKY0oBpmzbqzw=;
+        b=YDZSL7xYpci0ORqOeKZG+8DYUVDb+GeKxJ2Oy6XMp86BtjRMI6kFYrFmYH+SWijz4/
+         GmBGiOQUPt8CLhwJm/OazuV1k5SM6WBK9cu9Le+382AQYtnCWZOgSIlLe3BabR3b6kZg
+         RX6pN/SPx1lLz8DiBg3SJ7wy7LHZegk5Z7SOuNae42Xexh2wYv44PMqBdAYVZCSpSR9H
+         lQBXfnlm3bmCc8VyTa+cspTkMbVse0bfWPGc3pRZmIDCTSsnvqo1z7jSIZSnUY28KMW1
+         7UbUftLFhnWP1dsLX4YOgNHKAIpGnRPJZUTKK4bUk5GBMx39WimjxK/JMfUQbrmbJtRl
+         pYYw==
+X-Gm-Message-State: AOAM533Kt6o/3W8GKiAQtBKe5COdgRktm8+jpWQq+jlE7kSCOg+99H/i
+        agdDeWS92nJbKTDH1YdAKas=
+X-Google-Smtp-Source: ABdhPJy1ERBGfrwXU5csdCVVaihFZaGcXMLE2+avw8seOIH5zLLGB8jX0VYdACP47Dxbb36RmKVoXw==
+X-Received: by 2002:a63:3545:: with SMTP id c66mr16043185pga.377.1631635562572;
+        Tue, 14 Sep 2021 09:06:02 -0700 (PDT)
+Received: from localhost.localdomain ([192.154.103.190])
+        by smtp.gmail.com with ESMTPSA id cp17sm2132963pjb.3.2021.09.14.09.05.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Sep 2021 09:06:02 -0700 (PDT)
+From:   yongw.pur@gmail.com
+X-Google-Original-From: wang.yong12@zte.com.cn
+To:     tj@kernel.org, mhocko@suse.com, peterz@infradead.org,
+        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.yang29@zte.com.cn
+Subject: [PATCH v2] vmpressure: wake up work only when there is registration event
+Date:   Tue, 14 Sep 2021 09:05:51 -0700
+Message-Id: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 14-09-21 16:23:16, Michal Koutny wrote:
-> On Tue, Sep 14, 2021 at 09:13:48AM +0200, Michal Hocko <mhocko@suse.com> wrote:
-> > "
-> > This object can consume up to 2 pages, syscall is sleeping one,
-> > size and duration can be controlled by user, and this allocation
-> > can be repeated by many thread at the same time.
-> > "
-> > 
-> > It sounds like a problem, except it is not because? A worst case
-> > scenario evaluation would be beneficial for example
-> 
-> AFAICS, the offending allocation is in place only during the duration of
-> the syscall. So it's basically O(#tasks).
-> Considering at least 2 pages for task_struct + 2 pages for kernel stack,
-> back of the envelope calculation gives me the footprint amplification is
-> <1.5.
-> The factor would IMO be interesting if it was >> 2 (from the PoV of
-> excessive (ab)use, fine-grained accounting seems to be currently
-> unfeasible due to performance impact).
+From: wangyong <wang.yong12@zte.com.cn>
 
-Yes this sounds exactly like something I would appreciate in the
-changelog. With that or similar feel free to add
-Acked-by: Michal Hocko <mhocko@suse.com>
+Use the global variable num_events to record the number of vmpressure
+events registered by the system, and wake up work only when there is
+registration event.
+Usually, the vmpressure event is not registered in the system, this patch
+can avoid waking up work and doing nothing.
 
-Thanks a lot Michal for this clarification! 
+Test with 5.14.0-rc5-next-20210813 on x86_64 4G ram.
+Consume cgroup memory until it is about to be reclaimed, then execute
+"perf stat -I 2000 malloc.out" command to trigger memory reclamation
+and get performance results.
+The context-switches is reduced by about 20 times.
 
-> The commit message can be more explicit about this but to the patch
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+unpatched:
+Average of 10 test results
+582.4674048	task-clock(msec)
+19910.8		context-switches
+0		cpu-migrations
+1292.9		page-faults
+414784733.1	cycles
+<not supported>	stalled-cycles-frontend
+<not supported>	stalled-cycles-backend
+580070698.4	instructions
+125572244.7	branches
+2073541.2	branch-misses
+
+patched
+Average of 10 test results
+973.6174796	task-clock(msec)
+988.6		context-switches
+0		cpu-migrations
+1785.2		page-faults
+772883602.4	cycles
+<not supported>	stalled-cycles-frontend
+<not supported>	stalled-cycles-backend
+1360280911	instructions
+290519434.9	branches
+3378378.2	branch-misses
+
+Tested-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: wangyong <wang.yong12@zte.com.cn>
+---
+
+Changes since v1:
+-Use static_key type data as global variable
+-Make event registration judgment earlier
+
+ mm/vmpressure.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index 76518e4..6f4e984 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -67,6 +67,11 @@ static const unsigned int vmpressure_level_critical = 95;
+  */
+ static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
+ 
++/*
++ * Count the number of vmpressure events registered in the system.
++ */
++DEFINE_STATIC_KEY_FALSE(num_events);
++
+ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
+ {
+ 	return container_of(work, struct vmpressure, work);
+@@ -272,6 +277,9 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 		return;
+ 
+ 	if (tree) {
++		if (!static_branch_unlikely(&num_events))
++			return;
++
+ 		spin_lock(&vmpr->sr_lock);
+ 		scanned = vmpr->tree_scanned += scanned;
+ 		vmpr->tree_reclaimed += reclaimed;
+@@ -407,6 +415,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
+ 	mutex_lock(&vmpr->events_lock);
+ 	list_add(&ev->node, &vmpr->events);
+ 	mutex_unlock(&vmpr->events_lock);
++	static_branch_inc(&num_events);
+ 	ret = 0;
+ out:
+ 	kfree(spec_orig);
+@@ -435,6 +444,7 @@ void vmpressure_unregister_event(struct mem_cgroup *memcg,
+ 		if (ev->efd != eventfd)
+ 			continue;
+ 		list_del(&ev->node);
++		static_branch_dec(&num_events);
+ 		kfree(ev);
+ 		break;
+ 	}
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
