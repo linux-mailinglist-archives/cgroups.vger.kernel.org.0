@@ -2,98 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38D640BDB3
-	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 04:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246A240BF5A
+	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 07:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhIOCUS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Sep 2021 22:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhIOCUR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Sep 2021 22:20:17 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C725AC061574;
-        Tue, 14 Sep 2021 19:18:59 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id s11so1161218pgr.11;
-        Tue, 14 Sep 2021 19:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=mjJOq2l9/1TGAZpwrREsl45rYpK7gUexDrTF0O7TVOE=;
-        b=FrgumB802lOc8B4BExnulAfH/g8d9tm7wO15QrXk0LDXtE47qb9MIVHVN174MQleXg
-         tWy2fhx311YpXG5MN4WCSd1YFTCxkR3xcqX2GLGx+0kbULFYrkj2C7KLBGlDaB+SmLJV
-         G71mBdKxZRU8psK/fl2/GL09fSFygV+APEhVrRpv3AnYiYf0g4ajh+lN3wIvfyIVvBkL
-         DmSVqKOVw5LYQYY5O7b5hb4FroGN2uK/k1T9j1WvXaEJj2QpxHz+lM7hiT9Xgi5znScP
-         mdY4VMueqOX1aNTYavIOHfg8gEkaAEha2x7UT29Zu9rhp17GTo9Nnx7yUsqy1uEUxWo5
-         03pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=mjJOq2l9/1TGAZpwrREsl45rYpK7gUexDrTF0O7TVOE=;
-        b=J3AEAdYjn6TPfBphz83qiGYbAji7mbqS0DWiy3G1zfqEpV/DzuQB0rBbh666SvB9nv
-         RbemexqTv3eiIPIIN/XnqdFG8rwzjWb7s813vXoBcvofV6R4rFHcgWCAcvnKdhc6An1O
-         kLzqBJX5lCh/6k87gf+XkDsscCCQI9fGVfZABpwYNP+387MzGEfjJ9cidpkFSkuEtrDx
-         Yw0l93/zigDz2kPEjpCaUc77gEjFXlNXf3B9dh5wINXCcDEjXgBL+Oq8+ZuMSQTCT5Rb
-         Gm9trEmbGYt9IpgHu5gEH2IBtaA3mhMKvuzBjjx6Cx2DnfnsxhZBa0zaACbFBO7s3jGC
-         iQ1A==
-X-Gm-Message-State: AOAM532gWYpjancUIbJSy2MYMUfCY/swW40Cs2JEityBvVlZbsSc8t0z
-        rsdzC8t0bnhSfll9+UBlK3s=
-X-Google-Smtp-Source: ABdhPJwBlQvpjTzVeZqgq4WJCdd/i02DUHHbojD0SowAolcBIM8ObomiR0VS2ckuLKaSOaR/fClSYw==
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr18023710pgj.47.1631672339408;
-        Tue, 14 Sep 2021 19:18:59 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id h4sm3297645pjc.28.2021.09.14.19.18.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 19:18:59 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     vipinsh@google.com, mkoutny@suse.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v3 3/3] docs/cgroup: add entry for misc.events
-Date:   Wed, 15 Sep 2021 10:18:51 +0800
-Message-Id: <7cb32b92b77188f50b46bb47eb728bcacf18c17f.1631671936.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
+        id S230312AbhIOFeT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Sep 2021 01:34:19 -0400
+Received: from mga03.intel.com ([134.134.136.65]:12090 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230304AbhIOFeS (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 15 Sep 2021 01:34:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="222278693"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="222278693"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 22:32:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="552927349"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Sep 2021 22:32:47 -0700
+Date:   Wed, 15 Sep 2021 13:32:47 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <20210915053247.GG56674@shbuild999.sh.intel.com>
+References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+ <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
+> On Tue, 14 Sep 2021, Feng Tang wrote:
+> 
+> > diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> > index d2b9c41..d58e047 100644
+> > --- a/include/linux/cpuset.h
+> > +++ b/include/linux/cpuset.h
+> > @@ -34,6 +34,8 @@
+> >   */
+> >  extern struct static_key_false cpusets_pre_enable_key;
+> >  extern struct static_key_false cpusets_enabled_key;
+> > +extern struct static_key_false cpusets_insane_config_key;
+> > +
+> >  static inline bool cpusets_enabled(void)
+> >  {
+> >  	return static_branch_unlikely(&cpusets_enabled_key);
+> > @@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
+> >  	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+> >  }
+> >  
+> > +/*
+> > + * This will get enabled whenever a cpuset configuration is considered
+> > + * unsupportable in general. E.g. movable only node which cannot satisfy
+> > + * any non movable allocations (see update_nodemask). Page allocator
+> > + * needs to make additional checks for those configurations and this
+> > + * check is meant to guard those checks without any overhead for sane
+> > + * configurations.
+> > + */
+> > +static inline bool cpusets_insane_config(void)
+> > +{
+> > +	return static_branch_unlikely(&cpusets_insane_config_key);
+> > +}
+> > +
+> >  extern int cpuset_init(void);
+> >  extern void cpuset_init_smp(void);
+> >  extern void cpuset_force_rebuild(void);
+> > @@ -167,6 +182,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+> >  
+> >  static inline bool cpusets_enabled(void) { return false; }
+> >  
+> > +static inline bool cpusets_insane_config(void) { return false; }
+> > +
+> >  static inline int cpuset_init(void) { return 0; }
+> >  static inline void cpuset_init_smp(void) {}
+> >  
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index 6a1d79d..a455333 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -1220,6 +1220,22 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
+> >  #define for_each_zone_zonelist(zone, z, zlist, highidx) \
+> >  	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
+> >  
+> > +/* Whether the 'nodes' are all movable nodes */
+> > +static inline bool movable_only_nodes(nodemask_t *nodes)
+> > +{
+> > +	struct zonelist *zonelist;
+> > +	struct zoneref *z;
+> > +
+> > +	if (nodes_empty(*nodes))
+> > +		return false;
+> > +
+> > +	zonelist =
+> > +	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
+> > +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
+> > +	return (!z->zone) ? true : false;
+> > +}
+> > +
+> > +
+> >  #ifdef CONFIG_SPARSEMEM
+> >  #include <asm/sparsemem.h>
+> >  #endif
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index df1ccf4..7fa633e 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -69,6 +69,13 @@
+> >  DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
+> >  DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
+> >  
+> > +/*
+> > + * There could be abnormal cpuset configurations for cpu or memory
+> > + * node binding, add this key to provide a quick low-cost judgement
+> > + * of the situation.
+> > + */
+> > +DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
+> > +
+> >  /* See "Frequency meter" comments, below. */
+> >  
+> >  struct fmeter {
+> > @@ -1868,6 +1875,14 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+> >  	if (retval < 0)
+> >  		goto done;
+> >  
+> > +	if (!cpusets_insane_config() &&
+> > +		movable_only_nodes(&trialcs->mems_allowed)) {
+> > +		static_branch_enable(&cpusets_insane_config_key);
+> > +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
+> > +			"Cpuset allocations might fail even with a lot of memory available.\n",
+> > +			nodemask_pr_args(&trialcs->mems_allowed));
+> > +	}
+> > +
+> >  	spin_lock_irq(&callback_lock);
+> >  	cs->mems_allowed = trialcs->mems_allowed;
+> >  	spin_unlock_irq(&callback_lock);
+> 
+> Is this the only time that the state of the nodemask may change?
+> 
+> I'm wondering about a single node nodemask, for example, where all 
+> ZONE_NORMAL memory is hot-removed.
 
-Added descriptions of misc.events.
+Thanks for the reminding! Yes, memory hot remove can change the
+cpuset's effective nodemask, we may need to add similar check inside
+cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
+something like below?
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index babbe04..e7acc55 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2310,6 +2310,16 @@ Miscellaneous controller provides 3 interface files. If two misc resources (res_
-         Limits can be set higher than the capacity value in the misc.capacity
-         file.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 7fa633e..d5f6776 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+ 	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
  
-+  misc.events
-+	A read-only flat-keyed file which exists on non-root cgroups. The
-+	following entries are defined. Unless specified otherwise, a value
-+	change in this file generates a file modified event. All fields in
-+	this file are hierarchical.
++	if (mems_updated && !cpusets_insane_config() &&
++		movable_only_nodes(new_mems)) {
++		static_branch_enable(&cpusets_insane_config_key);
++		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
++			"Cpuset allocations might fail even with a lot of memory available.\n",
++			nodemask_pr_args(new_mems);
++	}
 +
-+	  max
-+		The number of times the cgroup's resource usage was
-+		about to go over the max boundary.
-+
- Migration and Ownership
- ~~~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-1.8.3.1
+ 	if (is_in_v2_mode())
+ 		hotplug_update_tasks(cs, &new_cpus, &new_mems,
+ 				     cpus_updated, mems_updated);
 
+Thanks,
+Feng
