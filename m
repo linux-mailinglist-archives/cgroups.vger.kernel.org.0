@@ -2,156 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992C640CB61
-	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 19:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E930F40CBD8
+	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 19:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbhIORGP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Sep 2021 13:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S230035AbhIORol (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Sep 2021 13:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIORGP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Sep 2021 13:06:15 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B1CC061574
-        for <cgroups@vger.kernel.org>; Wed, 15 Sep 2021 10:04:56 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id c8so7432040lfi.3
-        for <cgroups@vger.kernel.org>; Wed, 15 Sep 2021 10:04:55 -0700 (PDT)
+        with ESMTP id S229479AbhIORol (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Sep 2021 13:44:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11A8C061574;
+        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id i19so2652498pjv.4;
+        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QiL7YfwCSR7LokE5J56usk6i2TFHnfpVhu2pbczR/rY=;
-        b=YjgBRMW6BxNZ9RQ3OrB64PcgAbpzCvURuVzS2ChPGQ9FOfcjAuiJ7nOYupy9eB316J
-         1NZt9Ps0lkvdwH0tDss0B+Lg5rtk1l4NTDZwUiJsDF4T3zxmRk1zqgBcgsBqAFfdu7/5
-         6l9Ztk6P9WF+a8hA1jgJj9VOxjhHhOx9y4kPo54MY7fqix74AHRoTUQ1EDWkE0j4G377
-         2uJ8qxBYEA1cW8jAd8iVorR13sx3cItzUFzoj07UXEzzHRNn6hyAlkBex7PDCLU8gQSA
-         vhVIZn+mQpAee7wuK8C4+KrKqs7KOrVZN55UAlWSX2/Z/zzfWt1i78uNilaLmN6eLC4B
-         yUrw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=txWtxQmy07MGdoAs+OedOZn1lzXrGQuZ/mk3Eu7b5aE=;
+        b=XT7A2WHPULRNXUNb/JMXgeVo8IlX8TrZbm5PZPkwTjgr81LV9uQEXKdQ0n/osyUULc
+         cC7Ha3t/6YDIOi5ukEtv0Jr/c7kwuq3nv8RoPyC0WjPjap7MdLzjDe16ChgeYXpFbtMg
+         NfiLpio76Zn/sJvUETMKKk4LlWuAWz9aQNbA1xG9FY0vAafQXisAXSNUp55oVyAY2eYp
+         krWT3nWHJ7ADp5KNQTtZmMBK6F6+nQa7loQIIySYfo7lthI47DxMGGsRMFbCIlPr6McN
+         XIvOxf7L1zjQLcdbZxLI2sRYYAhkbf61nonH0Ax5CgAAqok+l5EeaCV0GlZpum+TAvLv
+         9QBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QiL7YfwCSR7LokE5J56usk6i2TFHnfpVhu2pbczR/rY=;
-        b=51SwfPJPiJZFRftI49tjTIalbrqC0EFOy+vKs0qG2BkJiaX7HIk7ru3acg7vrepkCy
-         QG/Lgdc2LRL5ipHu6RrpHnk0/aTSsqAfuSzclvfUZT2CukMrnf42EeOyXC80uw14f6pS
-         Kz66LLuqSwp2GRVmYSwcQdMY99exMXt2B9kPX9fFZqhd7Rq5dm1m+RZ1VBTT6lHbkNFm
-         oqKKBa45OPYWZLl77goX2kSxKSQovD2BMKDZbxeF4eXck1QeueqcgFadBrT3j5hJ8FKb
-         SNG4LzNjvUqkY2HEWKNG+A1W+Fv76Qp4sWyLqTb2K4kNlFFI55bEu8j2SBrNbeDMuSxj
-         PWhQ==
-X-Gm-Message-State: AOAM532C/HGtZ91lb7E+jo6/WWzR/6TsFmClXsoNFXeKiLitkYLPnMwE
-        SOCFu+lzicA53lzADuwMBNyiUir22jsjSdrpdiw80Q==
-X-Google-Smtp-Source: ABdhPJyPOjV0ZpbMt3W6lj6EoQRoL7MRqeIFJLX3H5JfFbprdhI8dXfa7UQ0YFUHuvKQmtzNEFB6m5Zf2bMrT45EqbM=
-X-Received: by 2002:ac2:5fb2:: with SMTP id s18mr730787lfe.580.1631725493981;
- Wed, 15 Sep 2021 10:04:53 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=txWtxQmy07MGdoAs+OedOZn1lzXrGQuZ/mk3Eu7b5aE=;
+        b=LdN1tXMHcGPVatrY1rIET7AWYAcHZRmxJ1Bo1ot0Y6L24rv9jxZu5nyMQZ/juCNmd8
+         z0MJ5Q8FZCWHA2SPMeulfM4dHQG7+9l7qE8g1E/5QGx7fLEP/tPrrFmZ0B5x3CMI2qPs
+         ZeyKfJA2unuEDKsIYNDjcgeEfwn3F+SrEzo/mOusd8ZacpthfmWhlZCHh6tIkfJ3sPxq
+         Kf9tPw4Rfr+rzR2WNckFnkEwWkoav8prKvpeLWdTwnUzgJhkW8PwAWOVp2FIMsQkKSY0
+         0M7VFldWl/kzR6PnpIYONvgMIHo3FlfUfLSzkLsYww2BCAjHVD4jUZh8tLHOgNet562E
+         M3yQ==
+X-Gm-Message-State: AOAM530txFZSlXEDoFaUXA3fkFQDZxIPZQ5/9icnvm+iYj70XsR0mAew
+        W62c7Fv4/4GJzlolGaeZnZq7hX5Bbjs=
+X-Google-Smtp-Source: ABdhPJyQk44WeFqXUH2P1s4Bk4G6YwfvzNmmeA3tdZ3AQHwqblXHrymUzjk+5QY98qRK8huUcmH0ug==
+X-Received: by 2002:a17:90a:7d03:: with SMTP id g3mr1038185pjl.242.1631727801101;
+        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id v25sm486542pfm.202.2021.09.15.10.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 10:43:20 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 15 Sep 2021 07:43:18 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yanfei Xu <yanfei.xu@windriver.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] blkcg: fix memory leak in blk_iolatency_init
+Message-ID: <YUIwtsaJeisezVBI@slm.duckdns.org>
+References: <20210915072426.4022924-1-yanfei.xu@windriver.com>
 MIME-Version: 1.0
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Wed, 15 Sep 2021 10:04:18 -0700
-Message-ID: <CAHVum0d657HeoSyXS9RGW8YHkwJFmvLQ6ebwYy_wVnR0gM8uPQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] misc_cgroup: introduce misc.events to count failures
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mkoutny@suse.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915072426.4022924-1-yanfei.xu@windriver.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 7:18 PM brookxu <brookxu.cn@gmail.com> wrote:
->
-> From: Chunguang Xu <brookxu@tencent.com>
->
-> Introduce misc.events to make it easier for us to understand
-> the pressure of resources. Currently only the 'max' event is
-> implemented, which indicates the times the resource is about
-> to exceeds the max limit.
->
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> ---
->
-> v3: remove misc.events.local.
-> v2: remove cgroup v1 files.
->
->  include/linux/misc_cgroup.h |  5 +++++
->  kernel/cgroup/misc.c        | 24 ++++++++++++++++++++++++
->  2 files changed, 29 insertions(+)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index da2367e..091f2d2 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -36,6 +36,7 @@ enum misc_res_type {
->  struct misc_res {
->         unsigned long max;
->         atomic_long_t usage;
-> +       atomic_long_t events;
->         bool failed;
->  };
->
-> @@ -46,6 +47,10 @@ struct misc_res {
->   */
->  struct misc_cg {
->         struct cgroup_subsys_state css;
-> +
-> +       /* misc.events */
-> +       struct cgroup_file events_file;
-> +
->         struct misc_res res[MISC_CG_RES_TYPES];
->  };
->
-> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> index ec02d96..4b2b492 100644
-> --- a/kernel/cgroup/misc.c
-> +++ b/kernel/cgroup/misc.c
-> @@ -171,6 +171,11 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
->         return 0;
->
->  err_charge:
-> +       for (j = i; j; j = parent_misc(j)) {
-> +               atomic_long_inc(&j->res[type].events);
-> +               cgroup_file_notify(&j->events_file);
-> +       }
-> +
->         for (j = cg; j != i; j = parent_misc(j))
->                 misc_cg_cancel_charge(type, j, amount);
->         misc_cg_cancel_charge(type, i, amount);
-> @@ -335,6 +340,19 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
->         return 0;
->  }
->
-> +static int misc_events_show(struct seq_file *sf, void *v)
-> +{
-> +       struct misc_cg *cg = css_misc(seq_css(sf));
-> +       unsigned long events, i;
-> +
-> +       for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-> +               events = atomic_long_read(&cg->res[i].events);
-> +               if (READ_ONCE(misc_res_capacity[i]) || events)
-> +                       seq_printf(sf, "%s.max %lu\n", misc_res_name[i], events);
-> +       }
-> +       return 0;
-> +}
-> +
->  /* Misc cgroup interface files */
->  static struct cftype misc_cg_files[] = {
->         {
-> @@ -353,6 +371,12 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
->                 .seq_show = misc_cg_capacity_show,
->                 .flags = CFTYPE_ONLY_ON_ROOT,
->         },
-> +       {
-> +               .name = "events",
-> +               .flags = CFTYPE_NOT_ON_ROOT,
-> +               .file_offset = offsetof(struct misc_cg, events_file),
-> +               .seq_show = misc_events_show,
-> +       },
->         {}
->  };
->
-> --
-> 1.8.3.1
->
+On Wed, Sep 15, 2021 at 03:24:26PM +0800, Yanfei Xu wrote:
+> BUG: memory leak
+> unreferenced object 0xffff888129acdb80 (size 96):
+>   comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
+>   hex dump (first 32 bytes):
+>     20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
+>     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
+>     [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+>     [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
+>     [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
+>     [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
+>     [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
+>     [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
+>     [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
+>     [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
+>     [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
+>     [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
+>     [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
+>     [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Once blk_throtl_init() queue init failed, blkcg_iolatency_exit() will
+> not be invoked for cleanup. That leads a memory leak. Swap the
+> blk_throtl_init() and blk_iolatency_init() calls can solve this.
+> 
+> Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
+> Fixes: 19688d7f9592 (block/blk-cgroup: Swap the blk_throtl_init() and blk_iolatency_init() calls)
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
 
-Reviewed-by: Vipin Sharma <vipinsh@google.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
