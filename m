@@ -2,69 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E930F40CBD8
-	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 19:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFFD40CC16
+	for <lists+cgroups@lfdr.de>; Wed, 15 Sep 2021 19:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhIORol (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Sep 2021 13:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S230259AbhIOR7b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Sep 2021 13:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhIORol (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Sep 2021 13:44:41 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11A8C061574;
-        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id i19so2652498pjv.4;
-        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
+        with ESMTP id S230045AbhIOR7a (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Sep 2021 13:59:30 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C26C061764
+        for <cgroups@vger.kernel.org>; Wed, 15 Sep 2021 10:58:11 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id a15so4595190iot.2
+        for <cgroups@vger.kernel.org>; Wed, 15 Sep 2021 10:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=txWtxQmy07MGdoAs+OedOZn1lzXrGQuZ/mk3Eu7b5aE=;
-        b=XT7A2WHPULRNXUNb/JMXgeVo8IlX8TrZbm5PZPkwTjgr81LV9uQEXKdQ0n/osyUULc
-         cC7Ha3t/6YDIOi5ukEtv0Jr/c7kwuq3nv8RoPyC0WjPjap7MdLzjDe16ChgeYXpFbtMg
-         NfiLpio76Zn/sJvUETMKKk4LlWuAWz9aQNbA1xG9FY0vAafQXisAXSNUp55oVyAY2eYp
-         krWT3nWHJ7ADp5KNQTtZmMBK6F6+nQa7loQIIySYfo7lthI47DxMGGsRMFbCIlPr6McN
-         XIvOxf7L1zjQLcdbZxLI2sRYYAhkbf61nonH0Ax5CgAAqok+l5EeaCV0GlZpum+TAvLv
-         9QBg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VOwjbYzeXD/cfrrWWmcbH4Jm4bi4xHQwCqaQ6FZ72ds=;
+        b=ksUgv0z/jK1fFxqRkilF0js7nEYkh82ulyizoIIjjlMADlDRxN98LP8vqWZXqOfpUK
+         rebMq7gdURQp/KGTbbtu3cj1dg/jPWmMq3LH+IXBQWeI5sbTSNCSMQbadXmNQ4IevXJZ
+         4qiXITXxiQDdecLKSYyRoEuQFeBZZCYHTltDeLZ2LhPhcjmWNmHuWBYrO7wuoOAJjk8C
+         WI6+DvREQZoXFARaGGcO+aGjvN5QK4bpqHsKiNX9mNgjfkz3+PHsTBLPP6wmDJjvvqxx
+         DyTURT5ZDZJyRXsp8VsxQylRyTN+12LCG83wNy3h9wOX08uKegm2RfsPDzkV5vXYOe8B
+         vS0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=txWtxQmy07MGdoAs+OedOZn1lzXrGQuZ/mk3Eu7b5aE=;
-        b=LdN1tXMHcGPVatrY1rIET7AWYAcHZRmxJ1Bo1ot0Y6L24rv9jxZu5nyMQZ/juCNmd8
-         z0MJ5Q8FZCWHA2SPMeulfM4dHQG7+9l7qE8g1E/5QGx7fLEP/tPrrFmZ0B5x3CMI2qPs
-         ZeyKfJA2unuEDKsIYNDjcgeEfwn3F+SrEzo/mOusd8ZacpthfmWhlZCHh6tIkfJ3sPxq
-         Kf9tPw4Rfr+rzR2WNckFnkEwWkoav8prKvpeLWdTwnUzgJhkW8PwAWOVp2FIMsQkKSY0
-         0M7VFldWl/kzR6PnpIYONvgMIHo3FlfUfLSzkLsYww2BCAjHVD4jUZh8tLHOgNet562E
-         M3yQ==
-X-Gm-Message-State: AOAM530txFZSlXEDoFaUXA3fkFQDZxIPZQ5/9icnvm+iYj70XsR0mAew
-        W62c7Fv4/4GJzlolGaeZnZq7hX5Bbjs=
-X-Google-Smtp-Source: ABdhPJyQk44WeFqXUH2P1s4Bk4G6YwfvzNmmeA3tdZ3AQHwqblXHrymUzjk+5QY98qRK8huUcmH0ug==
-X-Received: by 2002:a17:90a:7d03:: with SMTP id g3mr1038185pjl.242.1631727801101;
-        Wed, 15 Sep 2021 10:43:21 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id v25sm486542pfm.202.2021.09.15.10.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 10:43:20 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 15 Sep 2021 07:43:18 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yanfei Xu <yanfei.xu@windriver.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VOwjbYzeXD/cfrrWWmcbH4Jm4bi4xHQwCqaQ6FZ72ds=;
+        b=XnANE1gQBixddJqcTQcWmb7lkN5QPsyk4GOp1eXQKsTKt89T/98PwIIh0PXUuAlm4l
+         hCjPxDpWW8c+zUf39VLJn8N371zPQwJoTG4DlO1KtXnhn1ZmDGIJGmIQEgsmSvpnKsid
+         NZBg0Pz6RJPt5JVuu60J7AY5FOqfqARBLGcYGH7J3o8w80NW+j/2zCg8e2WwP4QSAZHZ
+         rkU+VnWJpLjjOrN4brVw1dNiRLi8MxVbFNh5uUwxIN7mHxo5zQcmYgZKunE8U0MDxIJS
+         moZm9PeP3I5c4+K/mCM0oABgscCUJ67mBv51DWH0EUDYj6S29pmZ+l9dw8cDpjVT7YHe
+         OQcw==
+X-Gm-Message-State: AOAM533xfyfpj64bdGUvAC8Go+tJmZE0WDrIc30X1f9c3rP+wG/UKgVe
+        882xvPMu07kFRiOlVDvfxCTXYVWXVTJZyCHvKGo=
+X-Google-Smtp-Source: ABdhPJzPPThW3ISQZYCmaCPGxqexmco/UmMS5KLRar/rZQJrYtCxsoQ9xoUCuBaRinX0DsZZeFiaJA==
+X-Received: by 2002:a05:6602:1696:: with SMTP id s22mr1106420iow.198.1631728690936;
+        Wed, 15 Sep 2021 10:58:10 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id z16sm331378ile.72.2021.09.15.10.58.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 10:58:10 -0700 (PDT)
 Subject: Re: [PATCH] blkcg: fix memory leak in blk_iolatency_init
-Message-ID: <YUIwtsaJeisezVBI@slm.duckdns.org>
+To:     Yanfei Xu <yanfei.xu@windriver.com>, tj@kernel.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
 References: <20210915072426.4022924-1-yanfei.xu@windriver.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <db4a41c9-9ba6-ea8e-8ebe-cf292d796308@kernel.dk>
+Date:   Wed, 15 Sep 2021 11:58:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20210915072426.4022924-1-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:24:26PM +0800, Yanfei Xu wrote:
+On 9/15/21 1:24 AM, Yanfei Xu wrote:
 > BUG: memory leak
 > unreferenced object 0xffff888129acdb80 (size 96):
 >   comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
@@ -93,14 +96,9 @@ On Wed, Sep 15, 2021 at 03:24:26PM +0800, Yanfei Xu wrote:
 > Once blk_throtl_init() queue init failed, blkcg_iolatency_exit() will
 > not be invoked for cleanup. That leads a memory leak. Swap the
 > blk_throtl_init() and blk_iolatency_init() calls can solve this.
-> 
-> Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
-> Fixes: 19688d7f9592 (block/blk-cgroup: Swap the blk_throtl_init() and blk_iolatency_init() calls)
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
+Applied, thanks.
 
 -- 
-tejun
+Jens Axboe
+
