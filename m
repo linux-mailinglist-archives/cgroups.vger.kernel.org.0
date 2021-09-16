@@ -2,121 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB3940D3D4
-	for <lists+cgroups@lfdr.de>; Thu, 16 Sep 2021 09:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC8540D44D
+	for <lists+cgroups@lfdr.de>; Thu, 16 Sep 2021 10:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhIPHfW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Sep 2021 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234799AbhIPHfV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Sep 2021 03:35:21 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A70C061574;
-        Thu, 16 Sep 2021 00:34:01 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id x2so5656611ila.11;
-        Thu, 16 Sep 2021 00:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Bb9J2o84T3V9+Tf1rBXjmsTxCOrWhxebCsVPY9V9H3Q=;
-        b=o7Hc/0r4/rqQZyDLh4oEdpb5eQFXFhD0EjPpk5hn/2A+g/usJSxSnLmJafVUoT38Zj
-         8053Lv2OJY+wJyx+T0HEQgk3aFYMyzIw1m+wWScYol/9TSMGOTP/A1VCHz0yCXVOp9Io
-         LzwSUt3Eqyfb9klM81ai+mwwcLv89gsJTUm30A8VQZpgs3tdG2nyb5yB+tOqxPfV5Yz4
-         0TySfqplMUy9HvWeFvDi1pe+KyceI3mU/9146Shy6A8qUTYXeVgz6bn6Zu6L/aTARQwd
-         4YJtIfql+wrNd11IzdnxdSk7yBqGnmPAMWP5VTHc7nrZ7PeI/dsinYip+3qzTTuBTK74
-         hPaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Bb9J2o84T3V9+Tf1rBXjmsTxCOrWhxebCsVPY9V9H3Q=;
-        b=tHTMq22fqK0BENcVw2qFz9n5V0ke1IbUYkyumMtkFzazvltLqee1vicvcwKCiA6nks
-         OXQFKnmhHnjIesMB89KyZBupajmQUaZGH1RSqEO8T5cU4bcKgLq2XsQTVQvVtupOMVGa
-         1ZVD0TGjsrJNBXo2zUgaYX2eS98qem6h+nPP8TZrZgQGxX/DP+kcY99yObxelGpFU6jm
-         Fbz+BWc5/Vsr8YiYQvWtENLB45dAyPZb3TY+Q2KpE1DZJQlkLshLWLyYLIhUyBr3sPx0
-         +sKepywqIHIpPp9Gf0INXoDs0nELknG69xucbmbm2zj3Hc5LKGNyTBFjPvS5M9JQmXNt
-         1Oow==
-X-Gm-Message-State: AOAM531pwqWXsVk8vRxfzfzUE8b4LZ+pkF3QDXxdEOBl+lAQnkwHQSJR
-        BSU7dz2md+g6BiNWGeiKc/2ZvGEtpSZ/1cOS1g==
-X-Google-Smtp-Source: ABdhPJzBldoABAd0mQx4RYFCK9R0TKe0g7vuNfqtxhDSFNs9+wMSula/2OxLKG+UrVNXt59GkbHp7qUHRfGcOnH+fvY=
-X-Received: by 2002:a92:db0b:: with SMTP id b11mr2935465iln.275.1631777640713;
- Thu, 16 Sep 2021 00:34:00 -0700 (PDT)
+        id S234893AbhIPIMq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Sep 2021 04:12:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57558 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229908AbhIPIMq (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 16 Sep 2021 04:12:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="222551855"
+X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
+   d="scan'208";a="222551855"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2021 01:11:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,297,1624345200"; 
+   d="scan'208";a="698775843"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Sep 2021 01:11:12 -0700
+Date:   Thu, 16 Sep 2021 16:11:12 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <20210916081112.GA41645@shbuild999.sh.intel.com>
+References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+ <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
+ <20210915053247.GG56674@shbuild999.sh.intel.com>
+ <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
 MIME-Version: 1.0
-From:   Jinmeng Zhou <jjjinmeng.zhou@gmail.com>
-Date:   Thu, 16 Sep 2021 15:33:49 +0800
-Message-ID: <CAA-qYXjxht4+GhTjNb0xmr4dLQYDVpDbO1R_FDcWtnsrQC=VNQ@mail.gmail.com>
-Subject: A missing check bug in cgroup1_reconfigure()
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     shenwenbosmile@gmail.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear maintainers,
-hi, our team has found a missing check bug on Linux kernel v5.10.7
-using static analysis.
-There is a checking path where cgroup1_get_tree() calls cgroup1_root_to_use=
-()
-to mount cgroup_root after checking capability.
-However, another no-checking path exists, cgroup1_reconfigure() calls
-trace_cgroup_remount()
-to remount without checking capability.
-We think there is a missing check bug before mounting cgroup_root in
-cgroup1_reconfigure().
+On Wed, Sep 15, 2021 at 01:30:27PM +0200, Michal Hocko wrote:
+> On Wed 15-09-21 13:32:47, Feng Tang wrote:
+> > On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
+> [...]
+> > > I'm wondering about a single node nodemask, for example, where all 
+> > > ZONE_NORMAL memory is hot-removed.
+> 
+> While this is theoretically possible it is highly unlikely to happen.
+> Non movable memory just takes one kernel allocation to prevent any
+> hotremove operation to finish. I have to say I was not aware of the
+> hotplug callback. It all seems rather suspicious. I will have a look.
+> 
+> Anyway something worth having covered "just in case". Thanks for
+> pointing it out.
+>  
+> > Thanks for the reminding! Yes, memory hot remove can change the
+> > cpuset's effective nodemask, we may need to add similar check inside
+> > cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
+> > something like below?
+> > 
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index 7fa633e..d5f6776 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+> >  	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+> >  	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
+> >  
+> > +	if (mems_updated && !cpusets_insane_config() &&
+> > +		movable_only_nodes(new_mems)) {
+> > +		static_branch_enable(&cpusets_insane_config_key);
+> > +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
+> > +			"Cpuset allocations might fail even with a lot of memory available.\n",
+> > +			nodemask_pr_args(new_mems);
+> > +	}
+> 
+> Please create a helper rather than two copies of the same. Thanks!
 
-Specifically, cgroup1_get_tree() uses ns_capable(ctx->ns->user_ns,
-CAP_SYS_ADMIN) to check
-the permission before calling the critical function
-cgroup1_root_to_use() to mount.
+Sure. Some draft add-on patch below.
 
-1. // check ns_capable() ////////////////////////////
-2. int cgroup1_get_tree(struct fs_context *fc)
-3. {
-4.  struct cgroup_fs_context *ctx =3D cgroup_fc2context(fc);
-5.  int ret;
-6.  /* Check if the caller has permission to mount. */
-7.  if (!ns_capable(ctx->ns->user_ns, CAP_SYS_ADMIN))
-8.    return -EPERM;
-9.  cgroup_lock_and_drain_offline(&cgrp_dfl_root.cgrp);
-10. ret =3D cgroup1_root_to_use(fc);
-11. ...
-12. }
+Thanks,
+Feng
 
-trace_cgroup_remount() is called to remount cgroup_root in
-cgroup1_reconfigure().
-However, it lacks the check.
-1. int cgroup1_reconfigure(struct fs_context *fc)
-2. {
-3.  struct cgroup_fs_context *ctx =3D cgroup_fc2context(fc);
-4.  struct kernfs_root *kf_root =3D kernfs_root_from_sb(fc->root->d_sb);
-5.  struct cgroup_root *root =3D cgroup_root_from_kf(kf_root);
-6.  int ret =3D 0;
-7.  u16 added_mask, removed_mask;
-8.  ...
-9.  trace_cgroup_remount(root);
-10. ...
-11. }
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 7fa633e..3bb9f4ea 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -391,6 +391,18 @@ static inline bool is_in_v2_mode(void)
+ 	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
+ }
+ 
++static inline void check_insane_mems_config(nodemask_t *nodes)
++{
++	if (!cpusets_insane_config() &&
++		movable_only_nodes(nodes)) {
++		static_branch_enable(&cpusets_insane_config_key);
++		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
++			"Cpuset allocations might fail even with a lot of memory available.\n",
++			nodemask_pr_args(nodes));
++	}
++}
++
+ /*
+  * Return in pmask the portion of a task's cpusets's cpus_allowed that
+  * are online and are capable of running the task.  If none are found,
+@@ -1875,13 +1887,7 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval < 0)
+ 		goto done;
+ 
+-	if (!cpusets_insane_config() &&
+-		movable_only_nodes(&trialcs->mems_allowed)) {
+-		static_branch_enable(&cpusets_insane_config_key);
+-		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
+-			"Cpuset allocations might fail even with a lot of memory available.\n",
+-			nodemask_pr_args(&trialcs->mems_allowed));
+-	}
++	check_insane_mems_config(&trialcs->mems_allowed);
+ 
+ 	spin_lock_irq(&callback_lock);
+ 	cs->mems_allowed = trialcs->mems_allowed;
+@@ -3186,6 +3192,9 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+ 	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+ 	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
+ 
++	if (mems_updated)
++		check_insane_mems_config(&new_mems);
++
+ 	if (is_in_v2_mode())
+ 		hotplug_update_tasks(cs, &new_cpus, &new_mems,
+ 				     cpus_updated, mems_updated);
 
-We find cgroup1_reconfigure() is only used in a variable initialization.
-Function cgroup1_get_tree() is also used in this initialization.
-Both functions are indirectly called which is hard to trace.
-We reasonably consider that the two functions can be equally reached
-by the user,
-therefore, there is a missing check bug.
-1. static const struct fs_context_operations cgroup1_fs_context_ops =3D {
-2. =E2=80=A6
-3.  .get_tree =3D cgroup1_get_tree,
-4.  .reconfigure =3D cgroup1_reconfigure,
-5. };
-
-
-Thanks!
-
-
-Best regards,
-Jinmeng Zhou
