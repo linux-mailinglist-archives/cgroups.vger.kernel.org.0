@@ -2,75 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD6840EFBF
-	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 04:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC31540F18A
+	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 07:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243976AbhIQChs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Sep 2021 22:37:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243028AbhIQCgd (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 16 Sep 2021 22:36:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC8CE611C8;
-        Fri, 17 Sep 2021 02:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631846112;
-        bh=6aH8dp9T3XgSjhg9I796aCVMOowHmzCeAiNWxh0Ub2c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NZUrFoYFXviw/YlbmWbQXHTwtg1ayCbDwuiCtRoevnKlRd3XtDTALTP7IUS/bThHY
-         Z/V+8UHMX035EuwDDlxcRxyWvXLRksnoTmC9UPqW4jdBg+pgzCvm0J5zc07WOGDZcC
-         Wonu9Cd08UBWr9Yz6FhEkWmRC035Zrw267Qf+FHauBkj5vProCbd7+/sKzCgTrYEww
-         wOb9J1xxtO4UUJUklGAa6Z2dRYjSXY81HV4mtx6SXaCgrsGMV9t2wtoCPTZx9HCsNP
-         5a64gOFcIis71biBY976WOfogHZcSTfD79jmBxQ5/Ncn+4ExXpUW1nUw761OmSjK1F
-         s3B9ldGW/gD/w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Li Jinlin <lijinlin3@huawei.com>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, tj@kernel.org,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4] blk-throttle: fix UAF by deleteing timer in blk_throtl_exit()
-Date:   Thu, 16 Sep 2021 22:35:10 -0400
-Message-Id: <20210917023510.817042-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S244735AbhIQFP1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Sep 2021 01:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhIQFP1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 01:15:27 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA50C061574
+        for <cgroups@vger.kernel.org>; Thu, 16 Sep 2021 22:14:05 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id i4so27873643lfv.4
+        for <cgroups@vger.kernel.org>; Thu, 16 Sep 2021 22:14:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=RzIkdEm5aJl66a3p0t6hmEQ+Qv+8MFJLxj5JlLxnEbs=;
+        b=BkoLZCRrsPghhWYeWHaUXChEqPmEkb0et9CUiIKGE3sI19HF3nTJuF+ZbBCaYku2A2
+         BfSF0I7fcIl8wEydWa1VoB1opcxthQUmujIZZwZeQz2nivbff+xXVo+ZUXCYTAg6B2sC
+         E23Lo9OkGRdT8Na8IqmGjngoOH32hZpqifgLZ+2cSb0iwrmAzhlJ7Vp+CRhXlL2xXj2T
+         LrqjkeLynEE+IG5+2uSR7OBlKgv7fANzUxB8DjWMRgzR/cBlhhhdHYA6jyceXxdHrWx5
+         1PKBIHqGYpCaIVAYx3LSxRk0BhFyR4Fwd5j0SJiB+GxsDYmQXcNmtYwCbmZ+9pU4rA5O
+         GcvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=RzIkdEm5aJl66a3p0t6hmEQ+Qv+8MFJLxj5JlLxnEbs=;
+        b=F+G7WnrS2HEwbWzUnc+YD3QSJDK2ecHJWzlBcq0NS+f6rlAQi6ZHjlMD+bLFFQeIx8
+         LcGVzrPJC2Bwe4s0SaQdsfDfs6M3j0J76fv5qvmj7NxSkvBuErDhb/kxPbuI0PapsGTM
+         g4fNLXALRAyYmlMmomkivPrwe7lfLEVZXW/waKlxVG7iL7OeswwhFeSFBzr7v4tk9IOm
+         Jfz+jexCtplQO0voc9NUGMv8Ofbp/aQ0DE8EIQ20jQ5NWCVR+GFRQcNOO9zRYP9gzRep
+         kcN4Iqax5d1UYXSnM7CGz9OyQ2tFSvvLMr5UlDLWb3AjXuclo4mA3lKdwV78xb3hyoYX
+         Gh1Q==
+X-Gm-Message-State: AOAM530XCl4eE1DbCs2vqKF3E4ejLCJ6LVGKfwYS11+kaMuTcSFawaz5
+        peWLuIOUQQriKDFwd2oC5n8OqlFdHFAYsMoSGgs=
+X-Google-Smtp-Source: ABdhPJyU5q0ab86kAQJ3Q5T/Q6/n878IMwbv2W8UEqxESiyaTM29utHrwA6Iw18voVO6EU3YrTGEcAZdJ0FNNYs+Nvw=
+X-Received: by 2002:ac2:4435:: with SMTP id w21mr6669046lfl.269.1631855643609;
+ Thu, 16 Sep 2021 22:14:03 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Reply-To: godwinppter@gmail.com
+Sender: maxwellagusdin8@gmail.com
+Received: by 2002:a05:6520:47c4:b0:139:1b10:ad9d with HTTP; Thu, 16 Sep 2021
+ 22:14:03 -0700 (PDT)
+From:   Godwin Pete <godwinnpeter@gmail.com>
+Date:   Fri, 17 Sep 2021 07:14:03 +0200
+X-Google-Sender-Auth: S2TfFqKuSG4eAL_uLAKCj56Nols
+Message-ID: <CAK5X1Sdn6n84dztNBiEfGieJUybpYYUhRosBfTNQckp-p1owWw@mail.gmail.com>
+Subject: I want to use this opportunity to inform you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+Hi,
 
-[ Upstream commit 884f0e84f1e3195b801319c8ec3d5774e9bf2710 ]
+I just want to use this little opportunity to inform you about my
+success towards the transfer. I'm currently out of the country for an
+investment with part of my share, after completing the transfer with
+an Indian business man. But i will visit your country, next year.
+After the completion of my project. Please, contact my secretary to
+send you the (ATM) card which I've already credited with the sum of
+($500,000.00). Just contact her to help you in receiving the (ATM)
+card. I've explained everything to her before my trip. This is what I
+can do for you because, you couldn't help in the transfer, but for the
+fact that you're the person whom I've contacted initially, for the
+transfer. I decided to give this ($500,000.00) as a compensation for
+being contacted initially for the transfer. I always try to make the
+difference, in dealing with people any time I come in contact with
+them. I'm also trying to show that I'm quite a different person from
+others whose may have a different purpose within them. I believe that
+you will render some help to me when I, will visit your country, for
+another investment there. So contact my secretary for the card, Her
+contact are as follows,
 
-The pending timer has been set up in blk_throtl_init(). However, the
-timer is not deleted in blk_throtl_exit(). This means that the timer
-handler may still be running after freeing the timer, which would
-result in a use-after-free.
+Full name: Mrs, Jovita Dumuije,
+Country: Burkina Faso
+Email: jovitadumuije@gmail.com
 
-Fix by calling del_timer_sync() to delete the timer in blk_throtl_exit().
+Thanks, and hope for a good corporation with you in future.
 
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Link: https://lore.kernel.org/r/20210907121242.2885564-1-lijinlin3@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/blk-throttle.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 17bdd6b55beb..fbd08c4569ce 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1588,6 +1588,7 @@ int blk_throtl_init(struct request_queue *q)
- void blk_throtl_exit(struct request_queue *q)
- {
- 	BUG_ON(!q->td);
-+	del_timer_sync(&q->td->service_queue.pending_timer);
- 	throtl_shutdown_wq(q);
- 	blkcg_deactivate_policy(q, &blkcg_policy_throtl);
- 	kfree(q->td);
--- 
-2.30.2
-
+Godwin Peter,
