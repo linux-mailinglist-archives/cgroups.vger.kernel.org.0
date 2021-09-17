@@ -2,103 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7CB40F837
-	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 14:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D440C40F8A9
+	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 15:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236050AbhIQMps (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Sep 2021 08:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        id S239181AbhIQNER (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Sep 2021 09:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235213AbhIQMpr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 08:45:47 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF9DC061574;
-        Fri, 17 Sep 2021 05:44:25 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id 5so6122525plo.5;
-        Fri, 17 Sep 2021 05:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=EiFaqxi/eMHI447ra+FWT3fM5Oq58Q8AgI3FLcLHOAk=;
-        b=lE/hBth4NSTIJYnhOU8/q6QQoji0WAiiMiQlUlzCPKOIEiuWqYCdA76+fB9r00FtqV
-         6osBE4goQE2YTrzuignkcFCXu2VjGV4A7zRu/JuA8GzPM7AgzsaEw0HEXeWjnoLWH8BS
-         2zrW3Ek2IwTGZCuKgk3Hdjpmo21EZ8mwxXXnQiQuuNQBvaIATtR+TYLFZTU9EJ+Mq/vb
-         DChLAY/+A8PVej5zTgHYxg7ksBLoeIBh8mXbkshfrQViBP3Ncxm3/JRLCD4Q7ZiyX+G6
-         ecsYLjFNcsqS3HRSmBijqBrDQP7De4FGMNFW5zXWtxC9dBzSDbgapbg/UNvgGgtNVrGF
-         +Pyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=EiFaqxi/eMHI447ra+FWT3fM5Oq58Q8AgI3FLcLHOAk=;
-        b=CD+tufqCu3a1BnDwK6slnPtzBaETOHcaTyw/ni1uGHxnvuJKLqSkKefLjnX+HLdvFw
-         EQK1xmlc56me+UOtS+h6xuIyLgGKbOpdM0r8DM5ErywvTJo6PPh1NduMzTSzCD3eXWIs
-         rFhcf5ZTUOkfH04ZNITMZFixVDhm7+rcvItwTWiFyMYpdrq+QDObOvV8znTQZ1xMhujO
-         O3tFuNwFZiNijlnJNWON9abbjOMoVtdyf9UHc+7+sUXFWIw8wwRxz22NAtxFTcRttAEz
-         xW/LY3FZRLw8Rhn9V37/RKrdI9Qd1ENW9OVFjmUZXH0x++5haWfGmMYGlzksrRWTdx26
-         8tyg==
-X-Gm-Message-State: AOAM532cKjEeWyBSJ4Z+HtV9T7Qjz+trJtd2gqmI0sgvW/Bgc+1N4NHs
-        qm9QAIWjnENmeGjp0mI9zM8=
-X-Google-Smtp-Source: ABdhPJww0lTIRQxBF0JHclBT1Y516JTZsbmPq5RYMXx40KmVhGe90WXWR9ouVqdqDDWk/GW+Ex+1Ew==
-X-Received: by 2002:a17:90b:78d:: with SMTP id l13mr12250113pjz.239.1631882664814;
-        Fri, 17 Sep 2021 05:44:24 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id n185sm6570299pfn.171.2021.09.17.05.44.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Sep 2021 05:44:24 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     vipinsh@google.com, mkoutny@suse.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH v4 3/3] docs/cgroup: add entry for misc.events
-Date:   Fri, 17 Sep 2021 20:44:16 +0800
-Message-Id: <41b702e0e9ae88b5806f4253ed30e2f2c8e70776.1631881726.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631881726.git.brookxu@tencent.com>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631881726.git.brookxu@tencent.com>
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631881726.git.brookxu@tencent.com>
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631881726.git.brookxu@tencent.com>
+        with ESMTP id S235265AbhIQNEI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 09:04:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDE4C061574;
+        Fri, 17 Sep 2021 06:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/rZz1r8xXREUazeDrzdFdL0EcUy/UUby58bFIJOi0A0=; b=r/AfEsfrDvBads4CkLPNVdmVgN
+        YmZ7tAS6VQTIS26ucECW/cgtPnh1nzChv3KEIXdE4TPaIIJkglxPHAXXOXHs+puJvGTuXid9ZfcqX
+        IXtUT5yFJJnKINP4cnaC/e7m/lDU9ySoCq25uftbN+M/F2PziqZzx412M7a8vgmNwUubwGZI3oJr2
+        jlEm5scesU9I0F4UKhBwC3tbpWrQ/wSKiGbezE81+1/cZMEABogIEB5J+LF74PPpLGTQyOzc1/Orm
+        uUKtXo4MzGcJr8OB1ESnSort7alvZpcKPjhr3EGKFxnSk89hIoll2Dvqo7zjItfgJ7TiBeSaqTbVf
+        RQj4s+Gw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mRDUi-000GFn-Hj; Fri, 17 Sep 2021 13:01:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4AB8A30031A;
+        Fri, 17 Sep 2021 15:01:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D4E6285DCA77; Fri, 17 Sep 2021 15:01:31 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 15:01:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Memcached with cfs quota 400% performance boost after bind to 4
+ cpus
+Message-ID: <YUSRqyfE2DjJhtHc@hirez.programming.kicks-ass.net>
+References: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Fri, Sep 17, 2021 at 08:35:36PM +0800, Wang Jianchao wrote:
+> Hi list
+> 
+> I have a test environment with following,
 
-Added descriptions of misc.events.
-
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index babbe04..e7acc55 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2310,6 +2310,16 @@ Miscellaneous controller provides 3 interface files. If two misc resources (res_
-         Limits can be set higher than the capacity value in the misc.capacity
-         file.
- 
-+  misc.events
-+	A read-only flat-keyed file which exists on non-root cgroups. The
-+	following entries are defined. Unless specified otherwise, a value
-+	change in this file generates a file modified event. All fields in
-+	this file are hierarchical.
-+
-+	  max
-+		The number of times the cgroup's resource usage was
-+		about to go over the max boundary.
-+
- Migration and Ownership
- ~~~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-1.8.3.1
-
+(forgets to specify the actual hardware...)
