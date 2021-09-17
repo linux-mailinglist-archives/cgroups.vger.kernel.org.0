@@ -2,139 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DA940F7C7
-	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 14:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00DD40F831
+	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244319AbhIQMhE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Sep 2021 08:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        id S232332AbhIQMpq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Sep 2021 08:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244280AbhIQMhE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 08:37:04 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B93DC061574;
-        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id n18so9475748pgm.12;
-        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
+        with ESMTP id S234955AbhIQMpo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 08:45:44 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A78C061574;
+        Fri, 17 Sep 2021 05:44:21 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so9957766pjr.1;
+        Fri, 17 Sep 2021 05:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=FQwsk9IkT0pkz1OAyTjWRN8LUZCcAJQlWnRYcpAJ/2Q=;
-        b=Sx/8TbZu6minR3UE7ZYVFXTcIGWZUEpJK6hYotKjO+I8XS7A1yMD49OlB/Q5HA9p0A
-         OR7JhxxZ2tjLlQb7P3zdiTor4NgjpZlyNI9pZxJOFZ7W2Cty13tkZjRaqWq2DMn9fxyu
-         MQ4oJ9s3SpkoHeFwYpQRjXqT7JLkp8iJertAQtRIbMDt6GJBxxNRWdZU6q08XGQ1cL1c
-         PMSQn0n014I4xKq7RpqUKyNzdKJbHRxC9zoLK2C7rS0i+n+wVwMZOnydT7cqFpJryeZW
-         VXf6DJO6WaJtMb7baT6Kd/hDxhK7CiMkwn0LhgO4IsQlIP1u6Lj2Cd6fCeZEyA6jWgHE
-         u6TA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OSzpO0eGAMHb0t+Lo/U/QAbo5rkAO22JEZ3SR4zIPhU=;
+        b=F2twX6VgReOw1YqbdLwsv0Q5AKWCE1HmHVnz9MObbwagIuG7WHu0SkblkxjJcKmG4M
+         fAPL52/v52E/3lS9Iyku3hmzBrW57ZsbWXd4k5prUjR1wJ00L0zAydCtnTZHmuOUa+RB
+         FguENUUAqHmi1uoKxF6PulKMAp/HyO54/SbzzF6W7KY9rTMjNTV2AuqKnoHZ+ITF/a1+
+         cWtf3rsA8/GWOTvdSZndYXXsNUULeO20IZIBF/n/WuSND7sZ95b/J0APgrxG0yNEQL1a
+         hGo4NRYBBqpUCjbDIufI3vnHNPGEeGFo/l3bdaxVE3whW3Z9fgJVUo72Jq9q3D8AZTlZ
+         k59Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=FQwsk9IkT0pkz1OAyTjWRN8LUZCcAJQlWnRYcpAJ/2Q=;
-        b=kccfYsrK1K/x2+ZT00WudYilmE7k7qBBhNsgZ2PV5svtd2KvMzvyYUMRuh+GEjx2jW
-         Y2jztNP7zNYSeITTNqZvXtywhyYWNGT+fCh7bO8DcIgiWOavKpFX2+AQI4jz7cyJJuoQ
-         eJSJ5FgHLB2irQl3+zWaUckEz3UzTYKj89/4m5IQOJTHGLnkJdxG8isVdValzC5hCBze
-         pvBg24v8GA/2+cgcqMwviiac74T4r+wPCIYKJjwbIxeqqXIbn4uAoChtHENYTJglkQ6d
-         1EpyrbhVppd2z973P1ElazYWk7l5Ex/NFSfD/zffH7en9v9wSSVxjPHauCTFA58LLxqp
-         65Rw==
-X-Gm-Message-State: AOAM531L/gc5E4+ZX3UDcigmGhCRD3TP1owsuCya91zepVNwqa+Br/Hk
-        oo4TMgyIIabkZvRgQi5l3a2svqrhoZM=
-X-Google-Smtp-Source: ABdhPJxCH73iJYKo0T3q5XrhKiIVmn4fy25vZqxIlIajJWs0YHCtuUmv+z96HBvtqL0XuUuIjj+EWQ==
-X-Received: by 2002:a63:4b24:: with SMTP id y36mr9745652pga.230.1631882142005;
-        Fri, 17 Sep 2021 05:35:42 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([154.86.159.245])
-        by smtp.gmail.com with ESMTPSA id j6sm6293403pgq.0.2021.09.17.05.35.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Sep 2021 05:35:41 -0700 (PDT)
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Subject: Memcached with cfs quota 400% performance boost after bind to 4 cpus
-Message-ID: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
-Date:   Fri, 17 Sep 2021 20:35:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OSzpO0eGAMHb0t+Lo/U/QAbo5rkAO22JEZ3SR4zIPhU=;
+        b=x/V/KyL2HO4pzsfH8EXuqeN5P3JHpOyTystr7iunaZdlA2ckac1+iZ9qBTj1AIZ7uh
+         OacTV4gd2tRcMel1gTRM6b5yoO/bpseJ/6mW5l1BXRQ4N1I08YebiSH1VYyRXW9rnMLk
+         kFrq0hKBE/x9yFhUKBivyhH5WF7Mc2TAEmCC1gCMp8oaB1NMe/9Awo11SKDeUskmoh0l
+         3h4I+9w/B49mSNLpkJfOE3NhiDRQScVTma8ZS4K22el5ebljYeLZBTemhLy+UhmNLZU8
+         EyElp3rHgLfHNEDv2yDz7R0G4YgIi9unpGQ0l0r4AN+OAUbO5M+Jpt+jU+4raD6aHDLk
+         7jbQ==
+X-Gm-Message-State: AOAM530sCWoOdJWBxCSlfVsQ+VMs1z8Rz3dbBqHsKcNTQqjaTO3RvfdX
+        9rlIWAn/rVcWnp+/5Q+25TU=
+X-Google-Smtp-Source: ABdhPJzQ3Ug6J7niWxEloNTUHKEEErgNiMyODgetlkwucZ7KgLg5GfHYZpUnLgI8uPG71oVLuxCOYg==
+X-Received: by 2002:a17:90a:1009:: with SMTP id b9mr12147441pja.184.1631882660813;
+        Fri, 17 Sep 2021 05:44:20 -0700 (PDT)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id n185sm6570299pfn.171.2021.09.17.05.44.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Sep 2021 05:44:20 -0700 (PDT)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     vipinsh@google.com, mkoutny@suse.com, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v4 1/3] misc_cgroup: introduce misc.events to count failures
+Date:   Fri, 17 Sep 2021 20:44:14 +0800
+Message-Id: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631881726.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi list
+From: Chunguang Xu <brookxu@tencent.com>
 
-I have a test environment with following,
-A memcached (memcached -d -m 50000 -u root -p 12301 -c 1000000 -t 16) in cpu cgroup with following config,
-cpu.cfs_quota_us = 400000
-cpu.cfs_period_us = 100000
+Introduce misc.events to make it easier for us to understand
+the pressure of resources. Currently only the 'max' event is
+implemented, which indicates the times the resource is about
+to exceeds the max limit.
 
-And a mutilate loop (mutilate -s x.x.x.x:12301 -T 40 -c 20 -t 60 -W 5 -q 1000000) running on another host
-w/o any cgroup config,
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Reviewed-by: Vipin Sharma <vipinsh@google.com>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
+---
+v3: remove misc.events.local
+v2: remove cgroup v1 files.
 
-When bind memcached to  0-15 with cpuset, 
-==========================================
-mutilate showed,
-#type       avg     std     min     5th    10th    90th    95th    99th
-read     1275.8  6358.9    49.8   378.2   418.5   767.2   841.4 53998.5
-update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
-op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
+ include/linux/misc_cgroup.h |  5 +++++
+ kernel/cgroup/misc.c        | 24 ++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+)
 
-Total QPS = 626566.2 (37594133 / 60.0s)
+diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+index da2367e..091f2d2 100644
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -36,6 +36,7 @@ enum misc_res_type {
+ struct misc_res {
+ 	unsigned long max;
+ 	atomic_long_t usage;
++	atomic_long_t events;
+ 	bool failed;
+ };
+ 
+@@ -46,6 +47,10 @@ struct misc_res {
+  */
+ struct misc_cg {
+ 	struct cgroup_subsys_state css;
++
++	/* misc.events */
++	struct cgroup_file events_file;
++
+ 	struct misc_res res[MISC_CG_RES_TYPES];
+ };
+ 
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index ec02d96..4b2b492 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -171,6 +171,11 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
+ 	return 0;
+ 
+ err_charge:
++	for (j = i; j; j = parent_misc(j)) {
++		atomic_long_inc(&j->res[type].events);
++		cgroup_file_notify(&j->events_file);
++	}
++
+ 	for (j = cg; j != i; j = parent_misc(j))
+ 		misc_cg_cancel_charge(type, j, amount);
+ 	misc_cg_cancel_charge(type, i, amount);
+@@ -335,6 +340,19 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 	return 0;
+ }
+ 
++static int misc_events_show(struct seq_file *sf, void *v)
++{
++	struct misc_cg *cg = css_misc(seq_css(sf));
++	unsigned long events, i;
++
++	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
++		events = atomic_long_read(&cg->res[i].events);
++		if (READ_ONCE(misc_res_capacity[i]) || events)
++			seq_printf(sf, "%s.max %lu\n", misc_res_name[i], events);
++	}
++	return 0;
++}
++
+ /* Misc cgroup interface files */
+ static struct cftype misc_cg_files[] = {
+ 	{
+@@ -353,6 +371,12 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+ 		.seq_show = misc_cg_capacity_show,
+ 		.flags = CFTYPE_ONLY_ON_ROOT,
+ 	},
++	{
++		.name = "events",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.file_offset = offsetof(struct misc_cg, events_file),
++		.seq_show = misc_events_show,
++	},
+ 	{}
+ };
+ 
+-- 
+1.8.3.1
 
-Misses = 0 (0.0%)
-Skipped TXs = 0 (0.0%)
-
-RX 9288150851 bytes :  147.6 MB/s
-TX 1353390552 bytes :   21.5 MB/s
-
-And perf on memcached showed,
-   635,602,955,852      cycles                                                        (30.07%)
-   479,554,401,177      instructions              #    0.75  insn per cycle           (40.02%)
-    12,585,059,799      L1-dcache-load-misses     #    9.31% of all L1-dcache hits    (50.07%)
-   135,140,424,785      L1-dcache-loads                                               (49.96%)
-    76,849,156,759      L1-dcache-stores                                              (50.02%)
-    45,700,267,543      L1-icache-load-misses                                         (49.97%)
-       495,149,862      LLC-load-misses           #   24.96% of all LL-cache hits     (39.95%)
-     1,984,134,589      LLC-loads                                                     (39.97%)
-       327,130,920      LLC-store-misses                                              (20.06%)
-     1,397,111,117      LLC-stores                                                    (20.06%)
-
-
-When bind memcached to 0-3 with cpuset,
-========================================
-mutilate showed,
-#type       avg     std     min     5th    10th    90th    95th    99th
-read      934.7  3669.3    41.1   112.8   129.5   385.3  3321.9 21923.7
-update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
-op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
-
-Total QPS = 852885.6 (51173140 / 60.0s)
-
-Misses = 0 (0.0%)
-Skipped TXs = 0 (0.0%)
-
-RX 12642165580 bytes :  200.9 MB/s
-TX 1842259932 bytes :   29.3 MB/s
-
-And perf on memcached showed,
-
-   621,311,916,151      cycles                                                        (30.01%)
-   599,835,965,997      instructions              #    0.97  insn per cycle           (40.02%)
-    12,585,889,988      L1-dcache-load-misses     #    7.59% of all L1-dcache hits    (50.00%)
-   165,750,518,361      L1-dcache-loads                                               (50.01%)
-    93,588,611,989      L1-dcache-stores                                              (50.00%)
-    44,445,213,037      L1-icache-load-misses                                         (50.01%)
-       568,410,466      LLC-load-misses           #   26.91% of all LL-cache hits     (40.03%)
-     2,112,218,392      LLC-loads                                                     (40.00%)
-       261,202,604      LLC-store-misses                                              (19.97%)
-     1,484,886,714      LLC-stores 
-
-
-We can see the IPC raised from 0.75 to 0.97, this should be the reason of the performance boost.
-What does cause the IPC boost ?
-
-Thanks a million for any help
-Jianchao
