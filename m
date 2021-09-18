@@ -2,146 +2,177 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F27410086
-	for <lists+cgroups@lfdr.de>; Fri, 17 Sep 2021 23:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A989241028F
+	for <lists+cgroups@lfdr.de>; Sat, 18 Sep 2021 03:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244553AbhIQVHt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Sep 2021 17:07:49 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:46035 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244441AbhIQVHs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 17:07:48 -0400
-Received: by mail-io1-f70.google.com with SMTP id d23-20020a056602281700b005b5b34670c7so22028006ioe.12
-        for <cgroups@vger.kernel.org>; Fri, 17 Sep 2021 14:06:26 -0700 (PDT)
+        id S233056AbhIRBUl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Sep 2021 21:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhIRBUk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Sep 2021 21:20:40 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D1DC061574;
+        Fri, 17 Sep 2021 18:19:17 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id u18so11309462pgf.0;
+        Fri, 17 Sep 2021 18:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zyJvMDxoHAwCNjMlc0L2z6IcTBSzl1epSdqJhT+EKUA=;
+        b=QhnXKrJbOO4zesM9YlaaYQ/sqQel7Z+oBxBZ2yp9Fqbv6gyLGpecz3bAVayyihvEiE
+         rautM/r6vn2xUpBZ13Y4qZx/h3gFFMOrx03UE4jIC0dHmBm4ooUbtQVZuxrKco/Gf7Do
+         mkfRyO2EJRDCb1NFSo4vLqSQw3N1SbF8leWzYzmychtf3uGHbbKqgjYcmnDQvGwiqxP6
+         lGftKAe/GeZkjPXl7lcLnKtf/iyo94JYmi43R9joFwd7l85CONKVHdZ25i3HQicAoXoB
+         kwPPzzrZgkw/z8zANMamqIUUiyYAXXPAQ7MK5By/I9l9wPtEMYdbJL8zdU/S4TQpDTMH
+         31lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9AAfy8vz7X48RakX5qmvtJuCqlgc04FLdAAg8dZbBmw=;
-        b=xGUmSSMU3oKbCWnWIFoxDnJLMn6Dbhb87YS4o9j+do3em0inv6fSGF6hE5I6aMe/qt
-         0pUDSGyTNjouJVJ4FJNJ6YLD7zHJ+gOzOQIrEK7XqW/AUv0Bhf1B7NF7wBjGjwm9stCD
-         0Rl4oM/tuYNNdxNFP6V1sExJXVN4F0dXMhUmlPN1QJkuGA10P7FwV72hlnrvrtIjHUrL
-         jDjqfj6oci8Ec3Y8ZBSyHTN21VqQUX2HybombIAhAcw4XfXXphgCYKzRlmeU5k0soBgA
-         w7QH6gddfd2uDKBgUfMkhRWsu39CRGeae95iwLUwfw9RT9owpCKujrgOejwlNzaV890u
-         R4dQ==
-X-Gm-Message-State: AOAM530Z6VbTWJPQDJEfOasee2FjrsFE/1qrT0psGt7LtgMr7HcGhFv2
-        GE7LARAd1eGhO3P7yi+gOZzUDxc2wVkpfNyk0otL+4KZyc2o
-X-Google-Smtp-Source: ABdhPJwnFJXimuA11CmjR/rNYsxW5yhJaAHznH4tp4EsiIzIRSTp5/JxSbdQN5K1yC/AQRm6uXHmIZu1l1UChKWebgRMGb2AKWX7
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zyJvMDxoHAwCNjMlc0L2z6IcTBSzl1epSdqJhT+EKUA=;
+        b=7QIo15/88DIVPVwDMa7xmIemxNUgKTqb7ZhwIyz91rat9f26oEf8ho3Ni5OH/s1WLc
+         YqWOT09hk1aJGWFWZqKu4jINv+zNE2UhMU2NJNZoxBVZ4kzcsx+ntx/o5i2L6pQWECK2
+         Ta/JunQrVci8/GVzKFaLGykP5m/OmFnB7VTQUmALtpGoalZkcGMPWr659wuwUgJUNISd
+         fqwhvJcmyVeuwtrbDv4J9bPmogonzdjXh7ex1h8NMAkujMp+oR+ANjdDFwOoK00kRK0N
+         EDRMBteU7aHhsAiVuiyQN8dQ/3qWlSOdExPYpjpWG8dQr1dGYGAMRpWTWVYgdiPJvirh
+         ziYw==
+X-Gm-Message-State: AOAM5337SZj7WZELelGYOCGTBJ4IVWNIhQxkADSMwu0lW6Myw4661rNQ
+        Iil9WJ1kgd6I8f6mEtSSmadaGNHVJqPJsw==
+X-Google-Smtp-Source: ABdhPJxczip+vNbFI2q+OxE87t9KMyH64KNT1qb3fARwZlJBHusUPg5tM6tm9Kz8wrrcRh1IPKOYBA==
+X-Received: by 2002:a63:5663:: with SMTP id g35mr12409627pgm.368.1631927956983;
+        Fri, 17 Sep 2021 18:19:16 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([162.219.34.244])
+        by smtp.gmail.com with ESMTPSA id b85sm7432505pfb.0.2021.09.17.18.19.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 18:19:16 -0700 (PDT)
+Subject: Re: Memcached with cfs quota 400% performance boost after bind to 4
+ cpus
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
+Message-ID: <a5404b12-b1f1-db87-2836-7974a6878cb3@gmail.com>
+Date:   Sat, 18 Sep 2021 09:19:11 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5c17:: with SMTP id z23mr9946530ioh.3.1631912785943;
- Fri, 17 Sep 2021 14:06:25 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 14:06:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e9239405cc374d5c@google.com>
-Subject: [syzbot] general protection fault in cgroup_sk_free
-From:   syzbot <syzbot+df709157a4ecaf192b03@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9f907d99-1cdb-37db-49ae-8e31c7ea8fe7@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi Peter
 
-syzbot found the following issue on:
+The hardware information is as following
 
-HEAD commit:    7366c23ff492 ptp: dp83640: don't define PAGE0
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15af7951300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c31c0936547df9ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=df709157a4ecaf192b03
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f2b28d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1656e7c7300000
+On 2021/9/17 8:35 下午, Wang Jianchao wrote:
+> Hi list
+> 
+> I have a test environment with following,> A memcached (memcached -d -m 50000 -u root -p 12301 -c 1000000 -t 16) in cpu cgroup with following config,
+> cpu.cfs_quota_us = 400000
+> cpu.cfs_period_us = 100000
+Model name:            Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz
+Stepping:              7
+CPU MHz:               2800.033
+CPU max MHz:           3900.0000
+CPU min MHz:           1000.0000
+BogoMIPS:              4600.00
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              22528K
+NUMA node0 CPU(s):     0-15,32-47
+NUMA node1 CPU(s):     16-31,48-63
+> 
+> And a mutilate loop (mutilate -s x.x.x.x:12301 -T 40 -c 20 -t 60 -W 5 -q 1000000) running on another host
+> w/o any cgroup config,
+Model name:            Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz
+Stepping:              7
+CPU MHz:               2900.155
+CPU max MHz:           4000.0000
+CPU min MHz:           800.0000
+BogoMIPS:              4200.00
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              1024K
+L3 cache:              28160K
+NUMA node0 CPU(s):     0-19,40-59
+NUMA node1 CPU(s):     20-39,60-79
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df709157a4ecaf192b03@syzkaller.appspotmail.com
+The memory on both machine is bigger than 100G and most of them is free.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000182: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000c10-0x0000000000000c17]
-CPU: 0 PID: 10393 Comm: syz-executor023 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__ref_is_percpu include/linux/percpu-refcount.h:174 [inline]
-RIP: 0010:percpu_ref_put_many include/linux/percpu-refcount.h:319 [inline]
-RIP: 0010:percpu_ref_put include/linux/percpu-refcount.h:338 [inline]
-RIP: 0010:cgroup_bpf_put include/linux/cgroup.h:926 [inline]
-RIP: 0010:cgroup_sk_free+0x8d/0x570 kernel/cgroup/cgroup.c:6613
-Code: 0e 06 00 40 84 ed 5a 0f 84 42 01 00 00 e8 0b 08 06 00 4c 8d ab 10 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48 c1 ea 03 <80> 3c 02 00 0f 85 6f 04 00 00 48 8b ab 10 0c 00 00 31 ff 49 89 ec
-RSP: 0018:ffffc9000cef79c0 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000182 RSI: ffffffff81700755 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff81700746 R11: 0000000000000000 R12: ffff888017463000
-R13: 0000000000000c10 R14: ffffffff8d0d318c R15: ffff888017463060
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000080 CR3: 000000000b68e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- sk_prot_free net/core/sock.c:1852 [inline]
- __sk_destruct+0x579/0x900 net/core/sock.c:1943
- sk_destruct+0xbd/0xe0 net/core/sock.c:1958
- __sk_free+0xef/0x3d0 net/core/sock.c:1969
- sk_free+0x78/0xa0 net/core/sock.c:1980
- sock_put include/net/sock.h:1815 [inline]
- nr_release+0x392/0x450 net/netrom/af_netrom.c:554
- __sock_release+0xcd/0x280 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1314
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbae/0x2a30 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x443559
-Code: Unable to access opcode bytes at RIP 0x44352f.
-RSP: 002b:00007fff3922f8c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002b
-RAX: 0000000000000003 RBX: 0000000000000003 RCX: 0000000000443559
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 0000000000000003 R08: 000000000000000d R09: 000000000000000d
-R10: 000000000000000d R11: 0000000000000246 R12: 00000000009db2c0
-R13: 0000000000000000 R14: 00000000004b8018 R15: 00000000004004b8
-Modules linked in:
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	00 40 84             	add    %al,-0x7c(%rax)
-   3:	ed                   	in     (%dx),%eax
-   4:	5a                   	pop    %rdx
-   5:	0f 84 42 01 00 00    	je     0x14d
-   b:	e8 0b 08 06 00       	callq  0x6081b
-  10:	4c 8d ab 10 0c 00 00 	lea    0xc10(%rbx),%r13
-  17:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1e:	fc ff df
-  21:	4c 89 ea             	mov    %r13,%rdx
-  24:	48 c1 ea 03          	shr    $0x3,%rdx
-* 28:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2c:	0f 85 6f 04 00 00    	jne    0x4a1
-  32:	48 8b ab 10 0c 00 00 	mov    0xc10(%rbx),%rbp
-  39:	31 ff                	xor    %edi,%edi
-  3b:	49 89 ec             	mov    %rbp,%r12
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> 
+> When bind memcached to  0-15 with cpuset, 
+> ==========================================
+> mutilate showed,
+> #type       avg     std     min     5th    10th    90th    95th    99th
+> read     1275.8  6358.9    49.8   378.2   418.5   767.2   841.4 53998.5
+> update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+> op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
+> 
+> Total QPS = 626566.2 (37594133 / 60.0s)
+> 
+> Misses = 0 (0.0%)
+> Skipped TXs = 0 (0.0%)
+> 
+> RX 9288150851 bytes :  147.6 MB/s
+> TX 1353390552 bytes :   21.5 MB/s
+> 
+> And perf on memcached showed,
+>    635,602,955,852      cycles                                                        (30.07%)
+>    479,554,401,177      instructions              #    0.75  insn per cycle           (40.02%)
+>     12,585,059,799      L1-dcache-load-misses     #    9.31% of all L1-dcache hits    (50.07%)
+>    135,140,424,785      L1-dcache-loads                                               (49.96%)
+>     76,849,156,759      L1-dcache-stores                                              (50.02%)
+>     45,700,267,543      L1-icache-load-misses                                         (49.97%)
+>        495,149,862      LLC-load-misses           #   24.96% of all LL-cache hits     (39.95%)
+>      1,984,134,589      LLC-loads                                                     (39.97%)
+>        327,130,920      LLC-store-misses                                              (20.06%)
+>      1,397,111,117      LLC-stores                                                    (20.06%)
+> 
+> 
+> When bind memcached to 0-3 with cpuset,
+> ========================================
+> mutilate showed,
+> #type       avg     std     min     5th    10th    90th    95th    99th
+> read      934.7  3669.3    41.1   112.8   129.5   385.3  3321.9 21923.7
+> update      0.0     0.0     0.0     0.0     0.0     0.0     0.0     0.0
+> op_q        1.0     0.0     1.0     1.0     1.0     1.1     1.1     1.1
+> 
+> Total QPS = 852885.6 (51173140 / 60.0s)
+> 
+> Misses = 0 (0.0%)
+> Skipped TXs = 0 (0.0%)
+> 
+> RX 12642165580 bytes :  200.9 MB/s
+> TX 1842259932 bytes :   29.3 MB/s
+> 
+> And perf on memcached showed,
+> 
+>    621,311,916,151      cycles                                                        (30.01%)
+>    599,835,965,997      instructions              #    0.97  insn per cycle           (40.02%)
+>     12,585,889,988      L1-dcache-load-misses     #    7.59% of all L1-dcache hits    (50.00%)
+>    165,750,518,361      L1-dcache-loads                                               (50.01%)
+>     93,588,611,989      L1-dcache-stores                                              (50.00%)
+>     44,445,213,037      L1-icache-load-misses                                         (50.01%)
+>        568,410,466      LLC-load-misses           #   26.91% of all LL-cache hits     (40.03%)
+>      2,112,218,392      LLC-loads                                                     (40.00%)
+>        261,202,604      LLC-store-misses                                              (19.97%)
+>      1,484,886,714      LLC-stores 
+> 
+> 
+> We can see the IPC raised from 0.75 to 0.97, this should be the reason of the performance boost.
+> What does cause the IPC boost ?
+> 
+> Thanks a million for any help
+> Jianchao
+> 
