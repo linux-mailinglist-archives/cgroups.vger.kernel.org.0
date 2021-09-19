@@ -2,95 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974D8410B25
-	for <lists+cgroups@lfdr.de>; Sun, 19 Sep 2021 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8B7410DD1
+	for <lists+cgroups@lfdr.de>; Mon, 20 Sep 2021 01:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhISKdI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 19 Sep 2021 06:33:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9895 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhISKdI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Sep 2021 06:33:08 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HC3ld73fSz8yRT;
-        Sun, 19 Sep 2021 18:27:09 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Sun, 19 Sep 2021 18:31:39 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sun, 19 Sep 2021 18:31:39 +0800
-Subject: Re: [RFC PATCH] blk-throttle: enable io throttle for root in cgroup
- v2
-To:     Khazhy Kumykov <khazhy@google.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-CC:     <tj@kernel.org>, <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20210909140815.2600858-1-yukuai3@huawei.com>
- <20210917174103.GC13346@blackbody.suse.cz>
- <CACGdZYJiLuh6kED_tdWkYqbHDXc_18m-XJbevp-ri5ansvbtYg@mail.gmail.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <37f8c687-8549-104a-2501-532a0cfc9a48@huawei.com>
-Date:   Sun, 19 Sep 2021 18:31:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <CACGdZYJiLuh6kED_tdWkYqbHDXc_18m-XJbevp-ri5ansvbtYg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+        id S232142AbhISXcz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 19 Sep 2021 19:32:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229517AbhISXcy (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 19 Sep 2021 19:32:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1E6260F9D;
+        Sun, 19 Sep 2021 23:31:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632094288;
+        bh=zyJGiIuWE5OLgrUwe9tcbx/tG63SoIirkujQLHeuHsk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ueCIGMa2UqDW7NZYr2xH1V1f2uLeYgpzucwCUQsgrMzW1PofIQ59as8TZpWnli+P9
+         EUKAVZXzAPzg4ZiWrxiQio7O2cU+4X6QoXL6rhQZrPG/m1WGOposi9Gb1c6ei6SMNY
+         QyzFxQUkv59B/4V5H9uH6lYE0kxYf0t55rngF3Sg=
+Date:   Sun, 19 Sep 2021 16:31:26 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is
+ OOM-killed
+Message-Id: <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
+In-Reply-To: <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+        <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021/09/18 3:58, Khazhy Kumykov wrote:
-> On Fri, Sep 17, 2021 at 10:41 AM Michal Koutný <mkoutny@suse.com> wrote:
->>
->> Hello Yu.
->>
->> On Thu, Sep 09, 2021 at 10:08:15PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
->>> I'm not sure why this feature is disabled in the first place, is
->>> there any problem or design constraint?
->>
->> The idea for v2 is that in the root cgroup remain only kernel threads that
->> provide "global" services and any user workload that should be
->> constrained is put into non-root cgroups. Additionally, if kernel
->> threads carry out work associated with a cgroup they can charge it to
->> the respective cgroup.
->>
->> [snip]
->>> We want to limit the overall iops/bps of the device in cgroup v2,
->>
->> Cui bono? (I mean what is the reason for throttling on the global level
->> when there's no other entity utiliting the residual?
->> <joke>Your drives are too fast?</joke>)
+On Fri, 17 Sep 2021 11:06:49 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+
+> Huge vmalloc allocation on heavy loaded node can lead to a global
+> memory shortage. A task called vmalloc can have the worst badness
+> and be chosen by OOM-killer, however received fatal signal and
+> oom victim mark does not interrupt allocation cycle. Vmalloc will
+> continue allocating pages over and over again, exacerbating the crisis
+> and consuming the memory freed up by another killed tasks.
 > 
-> We'd be interested in something like this as well. (at least for
-> io.max). Our use case is providing remote devices which are a shared
-> resource. A "global" throttle like this (which is set by a local
-
-Our use case is similair to this, a host can provide several remote
-devices to difierent client. If one client is under high io pressure,
-other client might be affected. Thus we want to limit the overall
-iops/bps from the client.
-
-Thanks,
-Kuai
-
-> management daemon) allows for throttling before sending network
-> traffic. It's also useful since we can put this throttle on a dm, so
-> we can enforce an aggregate throttle without needing backchannels to
-> coordinate multiple targets.
-> (This does also bring up: if this is a useful thing, would it make
-> sense to tie to the device, vs. requiring cgroup. We happen to use
-> cgroups so that requirement doesn't affect us).
+> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
+> effective and avoid host panic.
 > 
-> Khazhy
->>
->> Michal
+> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
+> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+> the current task is killed"") due to some vmalloc callers did not handled
+> failures properly. Found issues was resolved, however, there may
+> be other similar places.
+
+Well that was lame of us.
+
+I believe that at least one of the kernel testbots can utilize fault
+injection.  If we were to wire up vmalloc (as we have done with slab
+and pagealloc) then this will help to locate such buggy vmalloc callers.
+
+> Such failures may be acceptable for emergencies, such as OOM. On the other
+> hand, we would like to detect them earlier. However they are quite rare,
+> and will be hidden by OOM messages, so I'm afraid they wikk have quite
+> small chance of being noticed and reported.
+> 
+> To improve the detection of such places this patch also interrupts the vmalloc
+> allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
+> config option to do not break unaware production kernels.
+
+This sounds like a pretty sad half-measure?
+
