@@ -2,92 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14BB413A62
-	for <lists+cgroups@lfdr.de>; Tue, 21 Sep 2021 20:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78485413B92
+	for <lists+cgroups@lfdr.de>; Tue, 21 Sep 2021 22:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhIUS4x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Sep 2021 14:56:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232142AbhIUS4x (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:56:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 449AB61186;
-        Tue, 21 Sep 2021 18:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632250524;
-        bh=4nfKbEEvnuIK73VTBrjV7lsPLdW7d5cR0/3cZDpflDE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XQ+uwo9Ce+qeUe704wH19OCWWpxZTbGGZupNJ9QAWTxokV6Pl54kFG8CGUjfSin5P
-         2qTK4wVyhoeLepL7/wCyWf9SYbghTbeZ9lU9z7iIS+ZxtmF1wiEpq6H4d9beaaP3bG
-         FCxw6qzVjGkphbM53CO0re/aquN3en7e4TUSt7NY=
-Date:   Tue, 21 Sep 2021 11:55:23 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is
- OOM-killed
-Message-Id: <20210921115523.8606cea0b2f0a5ca4e79cbd0@linux-foundation.org>
-In-Reply-To: <c9d43874-138e-54a9-3222-a08c269eeeb5@virtuozzo.com>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
-        <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
-        <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
-        <bb5616b0-faa6-e12a-102b-b9c402e27ec1@i-love.sakura.ne.jp>
-        <c9d43874-138e-54a9-3222-a08c269eeeb5@virtuozzo.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230365AbhIUUmL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Sep 2021 16:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhIUUmK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Sep 2021 16:42:10 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DD7C061574
+        for <cgroups@vger.kernel.org>; Tue, 21 Sep 2021 13:40:41 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id d207so2164277qkg.0
+        for <cgroups@vger.kernel.org>; Tue, 21 Sep 2021 13:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=iTGoqFM8qijEpuvk9WwIalanNU02ORS6d7bs4+cIQLs=;
+        b=oJNTwlTo8W8I0X+CZ2Pgzp40bkFJ6q69BHrxvEJLF/ahy9aH63EJE/qyKU6/DGHlxN
+         4LKU//FQlI1uD4nSwW4sv4ypRtmTZUnkKOqbRXK8SJQwB96qpUXhJ+Rmvvviv8UDOfli
+         5PfTOJH87dwy2Bd+blanJ4cWKwmlv9mzXApGCK82rCrjaPqqGQcWqQyinQRZwEmVYlaR
+         TAjfJlGa5+Ynu/551yFtXu8eHLuPjmeyoHuRwG0nbiTetzvdwRxmqHM+0ZH2u7M/Ejaa
+         WETTtDeFIpu1ja7aB+1JP4HR8lY3PKpMVy242T0uniavICRKzYVVJjk/tXoklmXA5dZV
+         gjag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=iTGoqFM8qijEpuvk9WwIalanNU02ORS6d7bs4+cIQLs=;
+        b=4ComfJkvX20nQgLrEWOBeI1n5VO9AsrRNiQEwdRYLpI3rdfSGsEoBMi/1YGbCydfqN
+         pfNb1TEPh4R31cuVoLEW/54RXqsJBuM9rlXSbXvA5vvNMMPhljduKGMwaltAAvi+ma/7
+         KHdjXx3cb0EeE7JH4OK6MnUGMRRz0HwdcAtmLTrFsT+EZoLUem5KK7SwuyOMwRdOQZEg
+         SQTNAFxDSBLfDhvXynH1OvpScdXzyLkauHG0qmT7/hDtkwq+ZPHVRrOBpx19I9tlBe/y
+         Rk1FnoCUul+148BFQPeLbEZNrAqA6qjsnheE9iW1SMe0jux61otQvuf0F9lQxBJAPjyb
+         0pLQ==
+X-Gm-Message-State: AOAM532PfxoM5VMrkX8uv1bcrnpAn9M7Xjc2SwBOO5Xj6BswvJj74che
+        n/9AB78klr6EMKXmn/bTSZ8fcqaSnqKgmbGr4u8=
+X-Google-Smtp-Source: ABdhPJx5ShmtMwWCl3dRuH0JVGSVHkTUngYIRmcK8eUMLN7i7DJygM6p0o+5ds7REz6J1/mzklSbxxdTIE0UNdjS+JE=
+X-Received: by 2002:a37:68c8:: with SMTP id d191mr5737258qkc.446.1632256840737;
+ Tue, 21 Sep 2021 13:40:40 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ad4:4e71:0:0:0:0:0 with HTTP; Tue, 21 Sep 2021 13:40:39
+ -0700 (PDT)
+From:   susan wong <susanwong972@gmail.com>
+Date:   Tue, 21 Sep 2021 13:40:39 -0700
+Message-ID: <CANnc9YA7H4gax7rYetA=LMKv7mzzNkcyKEww_cspxodj-p3oUw@mail.gmail.com>
+Subject: Dear Beloved,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 20 Sep 2021 13:59:35 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+Dear Beloved,
 
-> On 9/20/21 4:22 AM, Tetsuo Handa wrote:
-> > On 2021/09/20 8:31, Andrew Morton wrote:
-> >> On Fri, 17 Sep 2021 11:06:49 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
-> >>
-> >>> Huge vmalloc allocation on heavy loaded node can lead to a global
-> >>> memory shortage. A task called vmalloc can have the worst badness
-> >>> and be chosen by OOM-killer, however received fatal signal and
-> >>> oom victim mark does not interrupt allocation cycle. Vmalloc will
-> >>> continue allocating pages over and over again, exacerbating the crisis
-> >>> and consuming the memory freed up by another killed tasks.
-> >>>
-> >>> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> >>> effective and avoid host panic.
-> >>>
-> >>> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
-> >>> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-> >>> the current task is killed"") due to some vmalloc callers did not handled
-> >>> failures properly. Found issues was resolved, however, there may
-> >>> be other similar places.
-> >>
-> >> Well that was lame of us.
-> >>
-> >> I believe that at least one of the kernel testbots can utilize fault
-> >> injection.  If we were to wire up vmalloc (as we have done with slab
-> >> and pagealloc) then this will help to locate such buggy vmalloc callers.
-> 
-> Andrew, could you please clarify how we can do it?
-> Do you mean we can use exsiting allocation fault injection infrastructure to trigger
-> such kind of issues? Unfortunately I found no ways to reach this goal.
-> It  allows to emulate single faults with small probability, however it is not enough,
-> we need to completely disable all vmalloc allocations. 
+I am writing this mail to you with heavy tears in my eyes and great
+sorrow in my heart. I am Mrs. Susan Wong. A widow to late Mr. Hamson
+Wong; I am 63 years old, suffering from long time Cancer of the
+breast.
 
-I don't see why there's a problem?  You're saying "there might still be
-vmalloc() callers which don't correctly handle allocation failures",
-yes?
+From all indications my condition is really deteriorating and it's
+quite obvious that I won't live more than 2 months according to my
+doctors. I have some funds I inherited from my late loving husband Mr.
+Hamson, the sum of (4,500,000.00 Million Dollars) which he deposited
+in a bank here and I need honest, truthful and God fearing person that
+can use these funds for Charity work, helping the less privileges, and
+30% of this money will be for your time and effort, while 70% goes to
+charities.
 
-I'm suggesting that we use fault injection to cause a small proportion
-of vmalloc() calls to artificially fail, so such buggy callers will
-eventually be found and fixed.  Why does such a scheme require that
-*all* vmalloc() calls fail?
+1) For the sick, less-privileged
+2) For the Widows and the motherless babies
+3) Orphanages or Charity Home.
 
+I look forward to your prompt reply from you for more details.
 
+I will like you to write me on my Email address;
+sosanwong123@gmail.com , to enable us discuss in details. I hope
+hearing from you soonest. Thanks for your understanding.
+
+Yours sincerely
+
+Mrs. Susan Wong
