@@ -2,219 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF44441566B
-	for <lists+cgroups@lfdr.de>; Thu, 23 Sep 2021 05:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C72B415873
+	for <lists+cgroups@lfdr.de>; Thu, 23 Sep 2021 08:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239517AbhIWDlR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Sep 2021 23:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        id S239407AbhIWGvd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Sep 2021 02:51:33 -0400
+Received: from relay.sw.ru ([185.231.240.75]:39560 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239203AbhIWDkl (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 22 Sep 2021 23:40:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AA561211;
-        Thu, 23 Sep 2021 03:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632368350;
-        bh=5VBc0BUxdCNAtKCXiV8HNhWDXedtDtqZT8E0HsMp2G4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dTYbUkijYOPmit0xZwom4PFrI5h/iQpKoVEIrdP8KRj+C9/BIkovQLjzMkspWU7Yg
-         HD9IU5ZtAZUHceQu4/aU9f41DSLTgD4qVeoO2EpH+zmkZNTD3eyBRgstCGH7mDPkH0
-         V4LbJBKTRGiEE6J3Je2WQB8WCmJzvvKNN429zz08HFjtIY3GUYkesXzSKiOzDS2a+t
-         lAoxhgzauyl9JJe+jH1Nm6gr4SvfJFV61yRk557hcTCa1R+MTRQtI4Lo8BYbft67Iv
-         0Vc9toe60mBCs5tVBqa6X1VxeK91gqSrPVZhJknRJI98+otmSMnqsCFlKQHkBnIzPV
-         8hW1KetOnI0ag==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Li Jinlin <lijinlin3@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 10/19] blk-cgroup: fix UAF by grabbing blkcg lock before destroying blkg pd
-Date:   Wed, 22 Sep 2021 23:38:44 -0400
-Message-Id: <20210923033853.1421193-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210923033853.1421193-1-sashal@kernel.org>
-References: <20210923033853.1421193-1-sashal@kernel.org>
+        id S239373AbhIWGvd (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 23 Sep 2021 02:51:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=vtROa+P4fLarhoo5zHVgaO07dFJHZ8lgd6rV14a23N4=; b=mm4NFGv1WorRzXdvb
+        0fANICC/P0JNGuqguha1XOl3FMrxkIIzBvMJSgQ8zZnnDu2HTxwDLxRe7NnFrR6Xq4TES1kfjz3TK
+        n2Sa4PWBllcqGfzkEBCw+TTHgQm2HluKwcynBwEyDlKHKB6tpN3mAqO4PbI9bP0hQL8okJfjtZqeY
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mTIYP-002xdr-JG; Thu, 23 Sep 2021 09:49:57 +0300
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+ <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+ <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
+Date:   Thu, 23 Sep 2021 09:49:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+On 9/22/21 3:27 PM, Michal Hocko wrote:
+> On Fri 17-09-21 11:06:49, Vasily Averin wrote:
+>> Huge vmalloc allocation on heavy loaded node can lead to a global
+>> memory shortage. A task called vmalloc can have the worst badness
+>> and be chosen by OOM-killer, however received fatal signal and
+>> oom victim mark does not interrupt allocation cycle. Vmalloc will
+>> continue allocating pages over and over again, exacerbating the crisis
+>> and consuming the memory freed up by another killed tasks.
+>>
+>> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
+>> effective and avoid host panic.
+>>
+>> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
+>> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+>> the current task is killed"") due to some vmalloc callers did not handled
+>> failures properly. Found issues was resolved, however, there may
+>> be other similar places.
+>>
+>> Such failures may be acceptable for emergencies, such as OOM. On the other
+>> hand, we would like to detect them earlier. However they are quite rare,
+>> and will be hidden by OOM messages, so I'm afraid they wikk have quite
+>> small chance of being noticed and reported.
+>>
+>> To improve the detection of such places this patch also interrupts the vmalloc
+>> allocation cycle for all fatal signals. The checks are hidden under DEBUG_VM
+>> config option to do not break unaware production kernels.
+> 
+> I really dislike this. We shouldn't have a sementically different
+> behavior for a debugging kernel.
 
-[ Upstream commit 858560b27645e7e97aca37ee8f232cccd658fbd2 ]
+Yes, you're right, thank you.
 
-KASAN reports a use-after-free report when doing fuzz test:
+> Is there any technical reason to not do fatal_signal_pending bailout
+> unconditionally? OOM victim based check will make it less likely and
+> therefore any potential bugs are just hidden more. So I think we should
+> really go with fatal_signal_pending check here.
 
-[693354.104835] ==================================================================
-[693354.105094] BUG: KASAN: use-after-free in bfq_io_set_weight_legacy+0xd3/0x160
-[693354.105336] Read of size 4 at addr ffff888be0a35664 by task sh/1453338
+I'm agree, oom_victim == fatal_signal_pending.
+I'm agree that vmalloc callers should expect and handle single vnalloc failures.
+I think it is acceptable to enable fatal_signal_pending check to quickly
+detect such kind of iussues.
+However fatal_signal_pending check can cause serial vmalloc failures
+and I doubt it is acceptable. 
 
-[693354.105607] CPU: 41 PID: 1453338 Comm: sh Kdump: loaded Not tainted 4.18.0-147
-[693354.105610] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.81 07/02/2018
-[693354.105612] Call Trace:
-[693354.105621]  dump_stack+0xf1/0x19b
-[693354.105626]  ? show_regs_print_info+0x5/0x5
-[693354.105634]  ? printk+0x9c/0xc3
-[693354.105638]  ? cpumask_weight+0x1f/0x1f
-[693354.105648]  print_address_description+0x70/0x360
-[693354.105654]  kasan_report+0x1b2/0x330
-[693354.105659]  ? bfq_io_set_weight_legacy+0xd3/0x160
-[693354.105665]  ? bfq_io_set_weight_legacy+0xd3/0x160
-[693354.105670]  bfq_io_set_weight_legacy+0xd3/0x160
-[693354.105675]  ? bfq_cpd_init+0x20/0x20
-[693354.105683]  cgroup_file_write+0x3aa/0x510
-[693354.105693]  ? ___slab_alloc+0x507/0x540
-[693354.105698]  ? cgroup_file_poll+0x60/0x60
-[693354.105702]  ? 0xffffffff89600000
-[693354.105708]  ? usercopy_abort+0x90/0x90
-[693354.105716]  ? mutex_lock+0xef/0x180
-[693354.105726]  kernfs_fop_write+0x1ab/0x280
-[693354.105732]  ? cgroup_file_poll+0x60/0x60
-[693354.105738]  vfs_write+0xe7/0x230
-[693354.105744]  ksys_write+0xb0/0x140
-[693354.105749]  ? __ia32_sys_read+0x50/0x50
-[693354.105760]  do_syscall_64+0x112/0x370
-[693354.105766]  ? syscall_return_slowpath+0x260/0x260
-[693354.105772]  ? do_page_fault+0x9b/0x270
-[693354.105779]  ? prepare_exit_to_usermode+0xf9/0x1a0
-[693354.105784]  ? enter_from_user_mode+0x30/0x30
-[693354.105793]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
+even properly handled such serial failures can cause troubles.
 
-[693354.105875] Allocated by task 1453337:
-[693354.106001]  kasan_kmalloc+0xa0/0xd0
-[693354.106006]  kmem_cache_alloc_node_trace+0x108/0x220
-[693354.106010]  bfq_pd_alloc+0x96/0x120
-[693354.106015]  blkcg_activate_policy+0x1b7/0x2b0
-[693354.106020]  bfq_create_group_hierarchy+0x1e/0x80
-[693354.106026]  bfq_init_queue+0x678/0x8c0
-[693354.106031]  blk_mq_init_sched+0x1f8/0x460
-[693354.106037]  elevator_switch_mq+0xe1/0x240
-[693354.106041]  elevator_switch+0x25/0x40
-[693354.106045]  elv_iosched_store+0x1a1/0x230
-[693354.106049]  queue_attr_store+0x78/0xb0
-[693354.106053]  kernfs_fop_write+0x1ab/0x280
-[693354.106056]  vfs_write+0xe7/0x230
-[693354.106060]  ksys_write+0xb0/0x140
-[693354.106064]  do_syscall_64+0x112/0x370
-[693354.106069]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+Hypothetically, cancelled vmalloc called inside some filesystem's transaction
+forces its rollback, that in own turn it can call own vmalloc.
+Any failures on this path can break the filesystem.
+I doubt it is acceptable, especially for non-OOM fatal signals.
+On the other hand I cannot say that it is a 100% bug.
 
-[693354.106114] Freed by task 1453336:
-[693354.106225]  __kasan_slab_free+0x130/0x180
-[693354.106229]  kfree+0x90/0x1b0
-[693354.106233]  blkcg_deactivate_policy+0x12c/0x220
-[693354.106238]  bfq_exit_queue+0xf5/0x110
-[693354.106241]  blk_mq_exit_sched+0x104/0x130
-[693354.106245]  __elevator_exit+0x45/0x60
-[693354.106249]  elevator_switch_mq+0xd6/0x240
-[693354.106253]  elevator_switch+0x25/0x40
-[693354.106257]  elv_iosched_store+0x1a1/0x230
-[693354.106261]  queue_attr_store+0x78/0xb0
-[693354.106264]  kernfs_fop_write+0x1ab/0x280
-[693354.106268]  vfs_write+0xe7/0x230
-[693354.106271]  ksys_write+0xb0/0x140
-[693354.106275]  do_syscall_64+0x112/0x370
-[693354.106280]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+Another scenario:
+as you know failed vmalloc calls pr_warn. According message should be sent
+to remote terminal or netconsole. I'm not sure about execution context,
+however if this is done in task context it may call vmalloc either in terminal
+or in network subsystems. Even handled, such failures are not fatal,
+but this behaviour is at least unexpected.
 
-[693354.106329] The buggy address belongs to the object at ffff888be0a35580
-                 which belongs to the cache kmalloc-1k of size 1024
-[693354.106736] The buggy address is located 228 bytes inside of
-                 1024-byte region [ffff888be0a35580, ffff888be0a35980)
-[693354.107114] The buggy address belongs to the page:
-[693354.107273] page:ffffea002f828c00 count:1 mapcount:0 mapping:ffff888107c17080 index:0x0 compound_mapcount: 0
-[693354.107606] flags: 0x17ffffc0008100(slab|head)
-[693354.107760] raw: 0017ffffc0008100 ffffea002fcbc808 ffffea0030bd3a08 ffff888107c17080
-[693354.108020] raw: 0000000000000000 00000000001c001c 00000001ffffffff 0000000000000000
-[693354.108278] page dumped because: kasan: bad access detected
+Should we perhaps interrupt the first vmalloc only?
 
-[693354.108511] Memory state around the buggy address:
-[693354.108671]  ffff888be0a35500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[693354.116396]  ffff888be0a35580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[693354.124473] >ffff888be0a35600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[693354.132421]                                                        ^
-[693354.140284]  ffff888be0a35680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[693354.147912]  ffff888be0a35700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[693354.155281] ==================================================================
+>> Vmalloc uses new alloc_pages_bulk subsystem, so newly added checks can
+>> affect other users of this subsystem.
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/page_alloc.c | 5 +++++
+>>  mm/vmalloc.c    | 6 ++++++
+>>  2 files changed, 11 insertions(+)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index b37435c274cf..133d52e507ff 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -5288,6 +5288,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>>  			continue;
+>>  		}
+>>  
+>> +		if (tsk_is_oom_victim(current) ||
+>> +		    (IS_ENABLED(CONFIG_DEBUG_VM) &&
+>> +		     fatal_signal_pending(current)))
+>> +			break;
+> 
+> This allocator interface is used in some real hot paths. It is also
+> meant to be fail fast interface (e.g. it only allocates from pcp
+> allocator) so it shouldn't bring any additional risk to memory depletion
+> under heavy memory pressure.
+> 
+> In other words I do not see any reason to bail out in this code path.
 
-blkgs are protected by both queue and blkcg locks and holding
-either should stabilize them. However, the path of destroying
-blkg policy data is only protected by queue lock in
-blkcg_activate_policy()/blkcg_deactivate_policy(). Other tasks
-can get the blkg policy data before the blkg policy data is
-destroyed, and use it after destroyed, which will result in a
-use-after-free.
+Thank you for the explanation, let's drop this check at all.
 
-CPU0                             CPU1
-blkcg_deactivate_policy
-  spin_lock_irq(&q->queue_lock)
-                                 bfq_io_set_weight_legacy
-                                   spin_lock_irq(&blkcg->lock)
-                                   blkg_to_bfqg(blkg)
-                                     pd_to_bfqg(blkg->pd[pol->plid])
-                                     ^^^^^^blkg->pd[pol->plid] != NULL
-                                           bfqg != NULL
-  pol->pd_free_fn(blkg->pd[pol->plid])
-    pd_to_bfqg(blkg->pd[pol->plid])
-    bfqg_put(bfqg)
-      kfree(bfqg)
-  blkg->pd[pol->plid] = NULL
-  spin_unlock_irq(q->queue_lock);
-                                   bfq_group_set_weight(bfqg, val, 0)
-                                     bfqg->entity.new_weight
-                                     ^^^^^^trigger uaf here
-                                   spin_unlock_irq(&blkcg->lock);
-
-Fix by grabbing the matching blkcg lock before trying to
-destroy blkg policy data.
-
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20210914042605.3260596-1-lijinlin3@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/blk-cgroup.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index cb3d44d20005..dde8d0acfb34 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1462,10 +1462,14 @@ int blkcg_activate_policy(struct request_queue *q,
- 	/* alloc failed, nothing's initialized yet, free everything */
- 	spin_lock_irq(&q->queue_lock);
- 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
-+		struct blkcg *blkcg = blkg->blkcg;
-+
-+		spin_lock(&blkcg->lock);
- 		if (blkg->pd[pol->plid]) {
- 			pol->pd_free_fn(blkg->pd[pol->plid]);
- 			blkg->pd[pol->plid] = NULL;
- 		}
-+		spin_unlock(&blkcg->lock);
- 	}
- 	spin_unlock_irq(&q->queue_lock);
- 	ret = -ENOMEM;
-@@ -1497,12 +1501,16 @@ void blkcg_deactivate_policy(struct request_queue *q,
- 	__clear_bit(pol->plid, q->blkcg_pols);
- 
- 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
-+		struct blkcg *blkcg = blkg->blkcg;
-+
-+		spin_lock(&blkcg->lock);
- 		if (blkg->pd[pol->plid]) {
- 			if (pol->pd_offline_fn)
- 				pol->pd_offline_fn(blkg->pd[pol->plid]);
- 			pol->pd_free_fn(blkg->pd[pol->plid]);
- 			blkg->pd[pol->plid] = NULL;
- 		}
-+		spin_unlock(&blkcg->lock);
- 	}
- 
- 	spin_unlock_irq(&q->queue_lock);
--- 
-2.30.2
-
+Thank you,
+	Vasily Averin
