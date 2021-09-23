@@ -2,23 +2,24 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B4E41623A
-	for <lists+cgroups@lfdr.de>; Thu, 23 Sep 2021 17:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D6F416235
+	for <lists+cgroups@lfdr.de>; Thu, 23 Sep 2021 17:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242014AbhIWPl7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Sep 2021 11:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        id S242073AbhIWPkw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Sep 2021 11:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241995AbhIWPl6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Sep 2021 11:41:58 -0400
+        with ESMTP id S233143AbhIWPku (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Sep 2021 11:40:50 -0400
+X-Greylist: delayed 213 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Sep 2021 08:39:19 PDT
 Received: from rockwork.org (rockwork.org [IPv6:2001:19f0:6001:1139:5400:2ff:feee:29a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909B0C061574;
-        Thu, 23 Sep 2021 08:40:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46865C061574;
+        Thu, 23 Sep 2021 08:39:19 -0700 (PDT)
 Received: from [IPV6:2409:8a28:c70:7540:bfbe:7940:90e7:5b7] (unknown [IPv6:2409:8a28:c70:7540:bfbe:7940:90e7:5b7])
-        by rockwork.org (Postfix) with ESMTPSA id 015D2169A07;
-        Thu, 23 Sep 2021 15:38:25 +0000 (UTC)
-Message-ID: <084bfa50-649e-5247-1c4a-b398e55e7c15@rockwork.org>
-Date:   Thu, 23 Sep 2021 23:35:08 +0800
+        by rockwork.org (Postfix) with ESMTPSA id 8A1F11692DB;
+        Thu, 23 Sep 2021 15:42:02 +0000 (UTC)
+Message-ID: <f1955267-c009-4dea-970e-9145c7cd6dbc@rockwork.org>
+Date:   Thu, 23 Sep 2021 23:38:49 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:93.0) Gecko/20100101
  Thunderbird/93.0
@@ -39,14 +40,12 @@ References: <20210330044206.2864329-1-vipinsh@google.com>
 From:   Xingyou Chen <rockrush@rockwork.org>
 In-Reply-To: <20210330044206.2864329-1-vipinsh@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-在 2021/3/30 12:42, Vipin Sharma 写道:
+On 2021/3/30 12:42, Vipin Sharma wrote:
 > Hello,
 > 
 > This patch series is creating a new misc cgroup controller for limiting
@@ -86,16 +85,16 @@ X-Mailing-List: cgroups@vger.kernel.org
 > Misc controller is a generic controller which can be used by these
 > kinds of resources.
 
-Will we make this dynamic? Let resources be registered via something 
-like misc_cg_res_{register,unregister}, at compile time or runtime, 
+Will we make this dynamic? Let resources be registered via something
+like misc_cg_res_{register,unregister}, at compile time or runtime,
 instead of hard coded into misc_res_name/misc_res_capacity etc.
 
 There are needs as noted in drmcg session earlier this year. We may
 make misc cgroup stable, and let device drivers to register their
 own resources.
 
-This may make misc cgroup controller more complex than expected, but
-simpler than adding multiple similar controllers.
+This may make misc cgroup controller more complex than expected,
+but simpler than adding multiple similar controllers.
 
 > 
 > One suggestion was to use BPF for this purpose, however, there are
