@@ -2,124 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F51416CB0
-	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 09:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B21D416D31
+	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 09:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244284AbhIXHT0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Sep 2021 03:19:26 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50860 "EHLO
+        id S244505AbhIXH4q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Sep 2021 03:56:46 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58268 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244324AbhIXHT0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 03:19:26 -0400
+        with ESMTP id S244495AbhIXH4o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 03:56:44 -0400
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A5F0622420;
-        Fri, 24 Sep 2021 07:17:52 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 41DDE22416;
+        Fri, 24 Sep 2021 07:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632467872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1632470111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=h/xNUhf/YAAfEBLYbmN30IOswNJKEbij/dzXJ1d79KM=;
-        b=G1cdx9jma92fDdbcKp5DT/9xi4SVGP8sPLb8LJwbQxxgwr6wUWPAlDbwTIAQZO4bQBnzMN
-        rfTlQZe27fVS7CYHqxOq59hhqHzUaLz3bUB4DlTtaTJh71pDy0bVhb1nyZRPYfNRA3P++Q
-        5z9fCqb4HIcwRLesLHhPYS8MXjb4QDo=
+        bh=6+5dT0e/LVnNHHcl0ABQyeUOLyC28rt8o7MtGQJ16Wk=;
+        b=KWiNL3UHQbuoAkuBsiy3YSQftN/E2jhVDCGJVJ4SuDi14ga6EYTPLdskYk6XwXRICZFsXG
+        bEWK+3mJ2tb2wipT9UFRw4dJv04b+FFJK7rjY3eOiFx60uVYVav5B3hKKV06bppDfRyf6C
+        q8TEmpzdS0lmOTDDH+ryD1WOMtFlK0k=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id 15AEC25D3F;
-        Fri, 24 Sep 2021 07:17:51 +0000 (UTC)
-Date:   Fri, 24 Sep 2021 09:17:49 +0200
+        by relay1.suse.de (Postfix) with ESMTPS id C507B25CCD;
+        Fri, 24 Sep 2021 07:55:10 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:55:08 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-Message-ID: <YU17nUx+yE8ie38s@dhcp22.suse.cz>
-References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
- <YUBiYgXWSoKSG7f2@dhcp22.suse.cz>
- <20210924061054.GA72911@shbuild999.sh.intel.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
+Message-ID: <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
+References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+ <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
+ <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
+ <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210924061054.GA72911@shbuild999.sh.intel.com>
+In-Reply-To: <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 24-09-21 14:10:54, Feng Tang wrote:
-> Hi Michal,
+On Thu 23-09-21 09:49:57, Vasily Averin wrote:
+[...]
+> I'm agree that vmalloc callers should expect and handle single vnalloc failures.
+> I think it is acceptable to enable fatal_signal_pending check to quickly
+> detect such kind of iussues.
+> However fatal_signal_pending check can cause serial vmalloc failures
+> and I doubt it is acceptable. 
 > 
-> On Tue, Sep 14, 2021 at 10:50:42AM +0200, Michal Hocko wrote:
-> > On Tue 14-09-21 11:40:28, Feng Tang wrote:
-> [SPIN]
-> > > The OOM killer cannot help to resolve the situation as there is no
-> > > usable memory for the request in the cpuset scope. The only reasonable
-> > > measure to take is to fail the allocation right away and have the caller
-> > > to deal with it.
-> > > 
-> > > So add a check for cases like this in the slowpath of allocation, and
-> > > bail out early returning NULL for the allocation.
-> > > 
-> > > As page allocation is one of the hottest path in kernel, this check
-> > > will hurt all users with sane cpuset configuration, add a static branch
-> > > check and detect the abnormal config in cpuset memory binding setup so
-> > > that the extra check in page allocation is not paid by everyone.
-> > > 
-> > > [thanks to Micho Hocko and David Rientjes for suggesting not handle
-> > >  it inside OOM code, adding cpuset check, refining comments]
-> > > 
-> > > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > 
-> > Acked-by: Michal Hocko <mhocko@suse.com>
->  
-> Thank you!
-> 
-> > Minor nit below
-> > [...]
-> > > +/* Whether the 'nodes' are all movable nodes */
-> > > +static inline bool movable_only_nodes(nodemask_t *nodes)
-> > > +{
-> > > +	struct zonelist *zonelist;
-> > > +	struct zoneref *z;
-> > > +
-> > > +	if (nodes_empty(*nodes))
-> > > +		return false;
-> > > +
-> > > +	zonelist =
-> > > +	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
-> > > +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-> > > +	return (!z->zone) ? true : false;
-> > 
-> > This would read easier to me
-> > 	/*
-> > 	 * We can chose arbitrary node from the nodemask to get a
-> > 	 * zonelist as they are interlinked. We just need to find
-> > 	 * at least one zone that can satisfy kernel allocations.
-> > 	 */
-> > 	node = NODE_DATA(first_node(*nodes));
-> > 	zonelist = node_zonelist(node, GFP_KERNEL);
-> > 	z = first_zones_zonelist(zonelist, ZONE_NORMAL, nodes);
-> 
-> When working on the v4 patch, I see some compile warning
-> that 'node_zonelist()' and 'GFP_KERNEL' are either implicit
-> or undeclared, as they are from "gfp.h".
-> 
-> So we may need to move this function to gfp.h or keep the
-> current code with slight modification?
-> 
-> 	nid = first_node(*nodes);
-> 	zonelist = &NODE_DATA(nid)->node_zonelists[ZONELIST_FALLBACK];
-> 	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-> 	return (!z->zone) ? true : false;
+> Rollback after failed vmalloc can call new vmalloc calls that will be failed too, 
+> even properly handled such serial failures can cause troubles.
 
-I would put it into gfp.h but I can see how this might be not really
-loved there. Both ways work with me.
+Could you be more specific? Also how would this be any different from
+similar failures for an oom victim? Except that the later is less likely
+so (as already mentioend) any potential bugs would be just lurking there
+for a longer time.
+
+> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
+> forces its rollback, that in own turn it can call own vmalloc.
+
+Do you have any specific example?
+
+> Any failures on this path can break the filesystem.
+> I doubt it is acceptable, especially for non-OOM fatal signals.
+> On the other hand I cannot say that it is a 100% bug.
+> 
+> Another scenario:
+> as you know failed vmalloc calls pr_warn. According message should be sent
+> to remote terminal or netconsole. I'm not sure about execution context,
+> however if this is done in task context it may call vmalloc either in terminal
+> or in network subsystems. Even handled, such failures are not fatal,
+> but this behaviour is at least unexpected.
+
+I do not think we want to shape the vmalloc bahavior based on
+printk/console behavior.
+
+> Should we perhaps interrupt the first vmalloc only?
+
+This doesn't make much sense to me TBH. It doesn't address the very
+problem you are describing in the changelog.
 -- 
 Michal Hocko
 SUSE Labs
