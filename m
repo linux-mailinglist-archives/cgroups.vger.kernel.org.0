@@ -2,121 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD24416C0D
-	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 08:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93190416C10
+	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 08:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244182AbhIXGr7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Sep 2021 02:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
+        id S244259AbhIXGsB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Sep 2021 02:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244211AbhIXGr7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 02:47:59 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA235C061574;
-        Thu, 23 Sep 2021 23:46:26 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id m21so8919642pgu.13;
-        Thu, 23 Sep 2021 23:46:26 -0700 (PDT)
+        with ESMTP id S244211AbhIXGsA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 02:48:00 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C315C061574;
+        Thu, 23 Sep 2021 23:46:28 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m26so8085609pff.3;
+        Thu, 23 Sep 2021 23:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=H3OrsFf3LDF8kSA9N72sHEwF/fijXJFJCQiPZi5ceNI=;
-        b=G5C/0K7kIPn/uiaKVOaxliCn+ouk/2e/osVmj23SnCpR85VvwHouKbfuHaBSy+boIb
-         NrLyylleC0PA3Lue5lGpx20aF/ecY5JzRgsujH9BvrKqT4te1OHXzpPJZ9i3onCiy4CL
-         P3v/TRdjiy3NOnOGjTVCdu41amLOzx6RPNRP+8ZtPsgZ+TNPy6XL3YQc5n6mDBAIWbQX
-         Q2+K4iqYoXamQjcW2JSVR9CscB+QuxHR2BheEYgKHm8ImCecNHgWDH9uYNaPwbbDpkMI
-         V1BRTrN/Vy08LtJ58RWLyMgw9w3gXQymyllFJ9ffvuIof7yQjH2eKxZ+6a8rwo/kXmR/
-         xpnw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=f0GxVaNbVW0DvbjS40nByrp5JbLVkqcqCJ/2Z3nsHrQ=;
+        b=KumeSPyep1PPko2skk0eqpAVVSFetiWqeAAclpxM6br9aBNY8UZ8HoRNhWJt6dq4l7
+         DRGK4F0m1dv7vyCNkpWdtUDJyDW+hkyAAlj3zMFof7bL81tqd8GDGjD90+ALVa+4UYUf
+         6FMs2h5X4jYNZ3iPHrGfooduiRDtrbu/taZ/wFQWushFmSxXf0ZsHKUup+5eZnOsl0KB
+         1VSbhX833c7Iy64o+my5fT3ImlXC9hJ88ZWfrLkL0CEcTzp2SMYINwUi4srGg4hk6KZ9
+         kfjY4T8MD/aNuc51L+/6neQbOOfxq9CcLzOxvs1HIpwVUOJ2DKNRd40CaSm1ws8GpnJw
+         Euew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=H3OrsFf3LDF8kSA9N72sHEwF/fijXJFJCQiPZi5ceNI=;
-        b=xThpVOzvnJn6CwJrKY6UUFACPj556DXSpzVRGJ2rybeT2o+ocCbgUgg/PNb1Nnz94V
-         N6zoT9vTY9+UVKP/DyR7ygyzysmLc2J4PwG0cpvigrPxSIbd/wXZeDQ4iod61MOa+rJU
-         dnl6mUHTIIQk+hxJPui3bdwmWu54jwjFiTf9MvAzCl5nh+ClTl2OJFs5JL60pyBnBvIP
-         T8VFjC6KgwWSkof8rFcDq04Nlb35sG9xcC2NrnSDNCFBNVKvcBSersArP5ArQ8csjwwA
-         iMAixrTU5IGhCEJte1Jr4NCFEbn7N//Kl1GXAjdVRDdBb8gwi7EVgzmn3CTrJN6uW7wI
-         7b0Q==
-X-Gm-Message-State: AOAM533gz5BAcuLK+PtZ733zODry7Y5HC8RUy3bnItX2K9CyucIj4R/7
-        +lG43OBjAnPRf9vF+yPDz/8=
-X-Google-Smtp-Source: ABdhPJwlOV2dYDrKjWgQc4v6KA8VJC7pFS3+WF10ir4vYU21T1tvKetc/uxk/HdNl64mig1aoLhoSg==
-X-Received: by 2002:a63:f5b:: with SMTP id 27mr2386085pgp.302.1632465986239;
-        Thu, 23 Sep 2021 23:46:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=f0GxVaNbVW0DvbjS40nByrp5JbLVkqcqCJ/2Z3nsHrQ=;
+        b=g+W2jB6nznB/at/pmx/iC6S1PhwhVBjy7nKWjiPYRE/k6NOcNYa8/3P2r1OoofnK9L
+         gcpOZNuKOb8y3ntb1nJkVonfEbky0NC6BTh2ux8gkQ05R6q5TwjcUHflcgWDxwl+hd2e
+         Ohj2CTHW1h5KPnvJLGrDjEsxfjFj5wZrWhZpI1ERjOm3KP1eE6accRua6NQ4dteMs8yd
+         g8e7je70bfchIzvChZ3ffBE66+bfuy6SCdEqYzNUQJ7dSSpAHaOBf0zAxZSMdbsq6Up1
+         8Q2Dhy0TjVYNsNLE1jUQFR07r9PLgKnL4G38VGr1jFLiMaRJy/J87eG05I2zTrJPUvsX
+         f0YA==
+X-Gm-Message-State: AOAM532ngHTOYzK4hz8n143TDqYGudd6LzhSDUx0242lj6jDR1e2CgsA
+        +CBdMYGt1Cp1ldWk7chugXbAAoaZHWhGow==
+X-Google-Smtp-Source: ABdhPJy4MKlz14srcviUr/+8Aipp+9PwQ1diUE7a6FKNXV3qce1UNzEw7NlbEofTk75dvMF6gWo9ww==
+X-Received: by 2002:a65:6251:: with SMTP id q17mr2499581pgv.416.1632465987869;
+        Thu, 23 Sep 2021 23:46:27 -0700 (PDT)
 Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id q20sm7978818pfc.57.2021.09.23.23.46.24
+        by smtp.gmail.com with ESMTPSA id q20sm7978818pfc.57.2021.09.23.23.46.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Sep 2021 23:46:25 -0700 (PDT)
+        Thu, 23 Sep 2021 23:46:27 -0700 (PDT)
 From:   brookxu <brookxu.cn@gmail.com>
 To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         akpm@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH 1/2] mem_cgroup: optimize the atomic count of wb_completion
-Date:   Fri, 24 Sep 2021 14:46:22 +0800
-Message-Id: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+Subject: [PATCH 2/2] mem_cgroup: introduce foreign_writeback_in_process() function
+Date:   Fri, 24 Sep 2021 14:46:23 +0800
+Message-Id: <1632465983-30525-2-git-send-email-brookxu.cn@gmail.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+References: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 From: Chunguang Xu <brookxu@tencent.com>
 
-In order to track inflight foreign writeback, we init
-wb_completion.cnt to 1. For normal writeback, this cause
-wb_wait_for_completion() to perform meaningless atomic
-operations. Since foreign writebacks rarely occur in most
-scenarios, we can init wb_completion.cnt to 0 and set
-frn.done.cnt to 1. In this way we can avoid unnecessary
-atomic operations.
+Directly use atomic_read(&frn->done.cnt) == 1 to check whether frn
+is issued, which makes the code a bit obscure. Maybe we should
+replace it with a more understandable function.
 
 Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- fs/fs-writeback.c                | 1 -
- include/linux/backing-dev-defs.h | 2 +-
- mm/memcontrol.c                  | 7 ++++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ mm/memcontrol.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 81ec192..1ef10f2 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -186,7 +186,6 @@ static void wb_queue_work(struct bdi_writeback *wb,
-  */
- void wb_wait_for_completion(struct wb_completion *done)
- {
--	atomic_dec(&done->cnt);		/* put down the initial count */
- 	wait_event(*done->waitq, !atomic_read(&done->cnt));
- }
- 
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 3320700..38bd571 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -71,7 +71,7 @@ struct wb_completion {
- };
- 
- #define __WB_COMPLETION_INIT(_waitq)	\
--	(struct wb_completion){ .cnt = ATOMIC_INIT(1), .waitq = (_waitq) }
-+	(struct wb_completion){ .cnt = ATOMIC_INIT(0), .waitq = (_waitq) }
- 
- /*
-  * If one wants to wait for one or more wb_writeback_works, each work's
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b762215..3e1384a6 100644
+index 3e1384a6..464745b 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -5168,9 +5168,10 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- #endif
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	INIT_LIST_HEAD(&memcg->cgwb_list);
--	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
--		memcg->cgwb_frn[i].done =
--			__WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
-+	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
-+		atomic_set(&memcg->cgwb_frn[i].done.cnt, 1);
-+		memcg->cgwb_frn[i].done.waitq = &memcg_cgwb_frn_waitq;
-+	}
- #endif
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
+@@ -4542,6 +4542,12 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+  * As being wrong occasionally doesn't matter, updates and accesses to the
+  * records are lockless and racy.
+  */
++
++static inline bool foreign_writeback_in_process(struct memcg_cgwb_frn *frn)
++{
++	return atomic_read(&frn->done.cnt) != 1;
++}
++
+ void mem_cgroup_track_foreign_dirty_slowpath(struct page *page,
+ 					     struct bdi_writeback *wb)
+ {
+@@ -4565,7 +4571,7 @@ void mem_cgroup_track_foreign_dirty_slowpath(struct page *page,
+ 		    frn->memcg_id == wb->memcg_css->id)
+ 			break;
+ 		if (time_before64(frn->at, oldest_at) &&
+-		    atomic_read(&frn->done.cnt) == 1) {
++		    !foreign_writeback_in_process(frn)) {
+ 			oldest = i;
+ 			oldest_at = frn->at;
+ 		}
+@@ -4612,7 +4618,7 @@ void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
+ 		 * already one in flight.
+ 		 */
+ 		if (time_after64(frn->at, now - intv) &&
+-		    atomic_read(&frn->done.cnt) == 1) {
++		    !foreign_writeback_in_process(frn)) {
+ 			frn->at = 0;
+ 			trace_flush_foreign(wb, frn->bdi_id, frn->memcg_id);
+ 			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
 -- 
 1.8.3.1
 
