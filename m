@@ -2,110 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93190416C10
-	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 08:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F51416CB0
+	for <lists+cgroups@lfdr.de>; Fri, 24 Sep 2021 09:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244259AbhIXGsB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Sep 2021 02:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244211AbhIXGsA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 02:48:00 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C315C061574;
-        Thu, 23 Sep 2021 23:46:28 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so8085609pff.3;
-        Thu, 23 Sep 2021 23:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=f0GxVaNbVW0DvbjS40nByrp5JbLVkqcqCJ/2Z3nsHrQ=;
-        b=KumeSPyep1PPko2skk0eqpAVVSFetiWqeAAclpxM6br9aBNY8UZ8HoRNhWJt6dq4l7
-         DRGK4F0m1dv7vyCNkpWdtUDJyDW+hkyAAlj3zMFof7bL81tqd8GDGjD90+ALVa+4UYUf
-         6FMs2h5X4jYNZ3iPHrGfooduiRDtrbu/taZ/wFQWushFmSxXf0ZsHKUup+5eZnOsl0KB
-         1VSbhX833c7Iy64o+my5fT3ImlXC9hJ88ZWfrLkL0CEcTzp2SMYINwUi4srGg4hk6KZ9
-         kfjY4T8MD/aNuc51L+/6neQbOOfxq9CcLzOxvs1HIpwVUOJ2DKNRd40CaSm1ws8GpnJw
-         Euew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=f0GxVaNbVW0DvbjS40nByrp5JbLVkqcqCJ/2Z3nsHrQ=;
-        b=g+W2jB6nznB/at/pmx/iC6S1PhwhVBjy7nKWjiPYRE/k6NOcNYa8/3P2r1OoofnK9L
-         gcpOZNuKOb8y3ntb1nJkVonfEbky0NC6BTh2ux8gkQ05R6q5TwjcUHflcgWDxwl+hd2e
-         Ohj2CTHW1h5KPnvJLGrDjEsxfjFj5wZrWhZpI1ERjOm3KP1eE6accRua6NQ4dteMs8yd
-         g8e7je70bfchIzvChZ3ffBE66+bfuy6SCdEqYzNUQJ7dSSpAHaOBf0zAxZSMdbsq6Up1
-         8Q2Dhy0TjVYNsNLE1jUQFR07r9PLgKnL4G38VGr1jFLiMaRJy/J87eG05I2zTrJPUvsX
-         f0YA==
-X-Gm-Message-State: AOAM532ngHTOYzK4hz8n143TDqYGudd6LzhSDUx0242lj6jDR1e2CgsA
-        +CBdMYGt1Cp1ldWk7chugXbAAoaZHWhGow==
-X-Google-Smtp-Source: ABdhPJy4MKlz14srcviUr/+8Aipp+9PwQ1diUE7a6FKNXV3qce1UNzEw7NlbEofTk75dvMF6gWo9ww==
-X-Received: by 2002:a65:6251:: with SMTP id q17mr2499581pgv.416.1632465987869;
-        Thu, 23 Sep 2021 23:46:27 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id q20sm7978818pfc.57.2021.09.23.23.46.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Sep 2021 23:46:27 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH 2/2] mem_cgroup: introduce foreign_writeback_in_process() function
-Date:   Fri, 24 Sep 2021 14:46:23 +0800
-Message-Id: <1632465983-30525-2-git-send-email-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
-References: <1632465983-30525-1-git-send-email-brookxu.cn@gmail.com>
+        id S244284AbhIXHT0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Sep 2021 03:19:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50860 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244324AbhIXHT0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Sep 2021 03:19:26 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A5F0622420;
+        Fri, 24 Sep 2021 07:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632467872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h/xNUhf/YAAfEBLYbmN30IOswNJKEbij/dzXJ1d79KM=;
+        b=G1cdx9jma92fDdbcKp5DT/9xi4SVGP8sPLb8LJwbQxxgwr6wUWPAlDbwTIAQZO4bQBnzMN
+        rfTlQZe27fVS7CYHqxOq59hhqHzUaLz3bUB4DlTtaTJh71pDy0bVhb1nyZRPYfNRA3P++Q
+        5z9fCqb4HIcwRLesLHhPYS8MXjb4QDo=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay1.suse.de (Postfix) with ESMTPS id 15AEC25D3F;
+        Fri, 24 Sep 2021 07:17:51 +0000 (UTC)
+Date:   Fri, 24 Sep 2021 09:17:49 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <YU17nUx+yE8ie38s@dhcp22.suse.cz>
+References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+ <YUBiYgXWSoKSG7f2@dhcp22.suse.cz>
+ <20210924061054.GA72911@shbuild999.sh.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924061054.GA72911@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Fri 24-09-21 14:10:54, Feng Tang wrote:
+> Hi Michal,
+> 
+> On Tue, Sep 14, 2021 at 10:50:42AM +0200, Michal Hocko wrote:
+> > On Tue 14-09-21 11:40:28, Feng Tang wrote:
+> [SPIN]
+> > > The OOM killer cannot help to resolve the situation as there is no
+> > > usable memory for the request in the cpuset scope. The only reasonable
+> > > measure to take is to fail the allocation right away and have the caller
+> > > to deal with it.
+> > > 
+> > > So add a check for cases like this in the slowpath of allocation, and
+> > > bail out early returning NULL for the allocation.
+> > > 
+> > > As page allocation is one of the hottest path in kernel, this check
+> > > will hurt all users with sane cpuset configuration, add a static branch
+> > > check and detect the abnormal config in cpuset memory binding setup so
+> > > that the extra check in page allocation is not paid by everyone.
+> > > 
+> > > [thanks to Micho Hocko and David Rientjes for suggesting not handle
+> > >  it inside OOM code, adding cpuset check, refining comments]
+> > > 
+> > > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > 
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+>  
+> Thank you!
+> 
+> > Minor nit below
+> > [...]
+> > > +/* Whether the 'nodes' are all movable nodes */
+> > > +static inline bool movable_only_nodes(nodemask_t *nodes)
+> > > +{
+> > > +	struct zonelist *zonelist;
+> > > +	struct zoneref *z;
+> > > +
+> > > +	if (nodes_empty(*nodes))
+> > > +		return false;
+> > > +
+> > > +	zonelist =
+> > > +	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
+> > > +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
+> > > +	return (!z->zone) ? true : false;
+> > 
+> > This would read easier to me
+> > 	/*
+> > 	 * We can chose arbitrary node from the nodemask to get a
+> > 	 * zonelist as they are interlinked. We just need to find
+> > 	 * at least one zone that can satisfy kernel allocations.
+> > 	 */
+> > 	node = NODE_DATA(first_node(*nodes));
+> > 	zonelist = node_zonelist(node, GFP_KERNEL);
+> > 	z = first_zones_zonelist(zonelist, ZONE_NORMAL, nodes);
+> 
+> When working on the v4 patch, I see some compile warning
+> that 'node_zonelist()' and 'GFP_KERNEL' are either implicit
+> or undeclared, as they are from "gfp.h".
+> 
+> So we may need to move this function to gfp.h or keep the
+> current code with slight modification?
+> 
+> 	nid = first_node(*nodes);
+> 	zonelist = &NODE_DATA(nid)->node_zonelists[ZONELIST_FALLBACK];
+> 	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
+> 	return (!z->zone) ? true : false;
 
-Directly use atomic_read(&frn->done.cnt) == 1 to check whether frn
-is issued, which makes the code a bit obscure. Maybe we should
-replace it with a more understandable function.
-
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- mm/memcontrol.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3e1384a6..464745b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4542,6 +4542,12 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
-  * As being wrong occasionally doesn't matter, updates and accesses to the
-  * records are lockless and racy.
-  */
-+
-+static inline bool foreign_writeback_in_process(struct memcg_cgwb_frn *frn)
-+{
-+	return atomic_read(&frn->done.cnt) != 1;
-+}
-+
- void mem_cgroup_track_foreign_dirty_slowpath(struct page *page,
- 					     struct bdi_writeback *wb)
- {
-@@ -4565,7 +4571,7 @@ void mem_cgroup_track_foreign_dirty_slowpath(struct page *page,
- 		    frn->memcg_id == wb->memcg_css->id)
- 			break;
- 		if (time_before64(frn->at, oldest_at) &&
--		    atomic_read(&frn->done.cnt) == 1) {
-+		    !foreign_writeback_in_process(frn)) {
- 			oldest = i;
- 			oldest_at = frn->at;
- 		}
-@@ -4612,7 +4618,7 @@ void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
- 		 * already one in flight.
- 		 */
- 		if (time_after64(frn->at, now - intv) &&
--		    atomic_read(&frn->done.cnt) == 1) {
-+		    !foreign_writeback_in_process(frn)) {
- 			frn->at = 0;
- 			trace_flush_foreign(wb, frn->bdi_id, frn->memcg_id);
- 			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
+I would put it into gfp.h but I can see how this might be not really
+loved there. Both ways work with me.
 -- 
-1.8.3.1
-
+Michal Hocko
+SUSE Labs
