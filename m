@@ -2,247 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6762641847B
-	for <lists+cgroups@lfdr.de>; Sat, 25 Sep 2021 22:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB35141872E
+	for <lists+cgroups@lfdr.de>; Sun, 26 Sep 2021 09:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhIYUrc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 25 Sep 2021 16:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        id S231157AbhIZHhW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 26 Sep 2021 03:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhIYUrb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Sep 2021 16:47:31 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B937BC061570
-        for <cgroups@vger.kernel.org>; Sat, 25 Sep 2021 13:45:56 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id u8so55704790lff.9
-        for <cgroups@vger.kernel.org>; Sat, 25 Sep 2021 13:45:56 -0700 (PDT)
+        with ESMTP id S230035AbhIZHhV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Sep 2021 03:37:21 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEC6C061570
+        for <cgroups@vger.kernel.org>; Sun, 26 Sep 2021 00:35:45 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so19762776otj.2
+        for <cgroups@vger.kernel.org>; Sun, 26 Sep 2021 00:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to:cc;
-        bh=4uS3HBDLrNVH5OQU2j6dDHcKqPuLsmrUNZZ6YSb7PBg=;
-        b=d/uTxYEYeqJ2+l/8hTE5bTj5SEuXMq/EBeRLi2SG307hDbyPQHuGO5sDaGHRwwyI0n
-         46IRki/tbyw4F1KTHm0ErJ9jcQZoEpNvjYT/FAeRStH9u92Ef/Pj74Z0tLBKrl9Jz1EM
-         edcHW+eL1LC9YPQV6PDRl0B8Wfd/P5hmFyv/JydLLxMj2U+AcdKMG1PZNUC1L3J0fFnS
-         lkJ5S8NfzBTY2U1LLivepGT/z9nnvHnTqHzjeZv32iJMq05GMcgMHna264IeO5Q/bIxs
-         s0MQugc1w4n29ZDeIM8hQdp0KCJFDCCIrSFV9cCq/H6DmQH5oyU78fGDkyypsyY4mdvl
-         JEBw==
+        bh=Sb0engf5YAW0rLpuy9gVSDhYbZE2i/wvwLZEgTdAMSM=;
+        b=cx7/UfjAmHfby9ohbkgrVDoMiokDFk6S+GDY/Ux7skpOmmp/yHR7ezm8j+9jnnm1ej
+         rCGyCtLAf6xOBt3Otqdg78LIc7Tiwx6cwEIWIFQtZhQQp3s32sXq93RVtCDuEHT4Hg+S
+         DWmqgyrzRbTtlWAN2fQ2NKC5/YtqFK+ntPzPLuLK2OjWumsuDvnb7dxrRv7nVoReltLv
+         Hzpl/XCI98c6EribS5aQiTECullt+Ls/SiiVpLUTAp6udHqwdyc+f2sP7Z2zG3oB1Qnc
+         fY6q1rqsLXhBPY4PjLJGEdWg7xzTarQxaO8kUfVxg0MWXlMj5gEISh3f8ZPikodaN4DM
+         TMJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=4uS3HBDLrNVH5OQU2j6dDHcKqPuLsmrUNZZ6YSb7PBg=;
-        b=iNIs502QzPxFXL0Y6NOc8j14FsOL/l1bho0G02kP58EY2cNabc28aAYuw0yK4ftSQq
-         5J9uSfvaqj5EZefR5As48pNB4h3cjONgwloTXF/UpLUrvvbHwXBp8cLiqc39zY/bbReN
-         V2xQvL9aInsE8L5IS5+frVSDtus1JSGwzWkxUlMWkXBJD6f3ZSzjFuQHM5oxY2h2xZej
-         yI+8cHqFHtW1+moWga8IUDe53sGqqCVj7XrjlLZIKjvgGmCdPlkJW7Q/O3KpL3OP7beT
-         ERd40D36ox2o7JBCAQzJ2VVJgWsXQ5lC3SKysdI9+9MWl8RHCwlpd/wWvPgp7eDwzaDt
-         PWuw==
-X-Gm-Message-State: AOAM530JLx729iI7vmvyQ/iseWmclG1b0DvUjGy9qSn58J0e1kpSELgp
-        JiNZI1f7vDs1xzqIolNx5nOEUh7sEvCeN7/irDzvRuYS28Q=
-X-Google-Smtp-Source: ABdhPJy3TfgBUaDS+CRSeR+djo2+W0qqal3l7Vz/9xhBfs0KSn0sMM9Fc5tpQUKq5bqNcTYt22aKuuZd/M8cy3QxnOI=
-X-Received: by 2002:a05:6512:781:: with SMTP id x1mr15957626lfr.231.1632602754678;
- Sat, 25 Sep 2021 13:45:54 -0700 (PDT)
+        bh=Sb0engf5YAW0rLpuy9gVSDhYbZE2i/wvwLZEgTdAMSM=;
+        b=dkxDxak50xMzdqqVQlViCIryAEfYGqBewJjdQ7MDquaMrB7dR0jKj/ePonKqv/ml7q
+         hIzzuBopLfwengJPgVicO1orLC8l2YS7Ck+uGAhsatc/N7Qu5SPSLB/gQ4RVJRueJWO3
+         M2lGf7p3UwDBHCx/QnUbxcTOxQXk/jUr3+SjNkCgdtI2KsbqdtxmmeJWC+l8VsaYGay8
+         cBL75YW4eHzTeVOAw9UbW4r+oM25eCxkEOwIccUipAznuMmS2N+P/Uy5q3n8OUwMTpKn
+         Y4oVPUL9fLCTl3TaNYimLAkoDNcw/fkWDlbODQbh8Gij5Y4K581KMf0LLpkCDZtlxgPX
+         nFHA==
+X-Gm-Message-State: AOAM532w2iKgCOA2hNQ1gMgOF5M2sJi4YF1G1+K5FzpJ+l3QhuH9/H9p
+        TvDQ2QbHQJyTTvy6NQHIN1xGmRv9CEb5nbh9E60=
+X-Google-Smtp-Source: ABdhPJysFmNqtv74irFeFG1Ugv0SrSTRN9Pa7geQflNUx2jOccedSfcL1jgLANf+vecM4ztF07w1QIXw8SWBWl9GV1U=
+X-Received: by 2002:a9d:7257:: with SMTP id a23mr11851796otk.311.1632641745137;
+ Sun, 26 Sep 2021 00:35:45 -0700 (PDT)
 MIME-Version: 1.0
-From:   Hans-Jacob Enemark <hjenemark@gmail.com>
-Date:   Sat, 25 Sep 2021 22:45:43 +0200
-Message-ID: <CAFx0Op3b7KeAT0_Dd_eAMKh85=6qY_X6-BHGJdS2TN8UtJMytg@mail.gmail.com>
-Subject: pthread_setschedparam returns 1 (Operation Not Permitted) after
- including docker in yocto build
-To:     cgroups@vger.kernel.org
-Cc:     Hans-Jacob Enemark <hjenemark@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+From:   =?UTF-8?B?5Y+w6L+Q5pa5?= <yunfangtai09@gmail.com>
+Date:   Sun, 26 Sep 2021 15:35:34 +0800
+Message-ID: <CAHKqYaa7H=M4E-=ObO0ecj+NE2KwZN5d7QSz4_b6tXz2vOo+VA@mail.gmail.com>
+Subject: [BUG] The usage of memory cgroup is not consistent with processes
+ when using THP
+To:     hannes@cmpxchg.org
+Cc:     hughd@google.com, tj@kernel.org, vdavydov@parallels.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Type: multipart/mixed; boundary="00000000000043c54105cce10702"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi
-In a yocto build for a multicore system, pulling in docker through the
-meta-virtualization layer from open-embedded, a multi-threaded app
-suddenly starts failing.
-For some reason it is no longer possible to set the priority and the
-scheduling policy of a running pthread inside the thread function
-itself - even with the app running as root..
-The kernel configuration changed with the addition of the
-meta-virtualization layer.
-I hope to get docker running on the build to be able to build on that.
-So I hope you can help as this is beyond me
-Best regards
-Hans-Jacob S. Enemark
+--00000000000043c54105cce10702
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Appendices:
-1) The minimal code that fails on the yocto build with docker but runs
-fine on the old build without the docker modifications.
-2) Kernel config diffs. Left has docker included. Right is the one
-without. Several cgroup configs has been enabled and the reason why I
-post to this mailing list.
-3) A small snippet of the strace output that shows the issue I am facing.
+Hi folks=EF=BC=8C
+We found that the usage counter of containers with memory cgroup v1 is
+not consistent with the  memory usage of processes when using THP.
 
+It is  introduced in upstream 0a31bc97c80 patch and still exists in
+Linux 5.14.5.
+The root cause is that mem_cgroup_uncharge is moved to the final
+put_page(). When freeing parts of huge pages in THP, the memory usage
+of process is updated  when pte unmapped  and the usage counter of
+memory cgroup is updated when  splitting huge pages in
+deferred_split_scan. This causes the inconsistencies and we could find
+more than 30GB memory difference in our daily usage.
 
-1) ---------------------------------------------------------
-#include <stdio.h>
-#include <pthread.h>
-#include <string.h>
-#include <sys/resource.h>
+It is reproduced with the following program and script.
+The program named "eat_memory_release" allocates every 8 MB memory and
+releases the last 1 MB memory using madvise.
+The script "test_thp.sh" creates a memory cgroup, runs
+"eat_memory_release  500" in it and loops the proceed by 10 times. The
+output shows the changing of memory, which should be about 500M memory
+less in theory.
+The outputs are varying randomly when using THP, while adding  "echo 2
+> /proc/sys/vm/drop_caches" before accounting can avoid this.
 
-#define POLICY SCHED_FIFO
-static void *thread_routine(void *arg)
-{
-  int ret;
-  struct sched_param param;
-  param.sched_priority = sched_get_priority_max(POLICY) - 2;
+Are there any patches to fix it or is it normal by design?
 
-  ret = pthread_setschedparam(pthread_self(), POLICY, &param);
+Thanks,
+Yunfang Tai
 
-  printf("%s: pthread_setschedparam result: [%d] %s\n", __func__, ret,
-strerror(ret));
+--00000000000043c54105cce10702
+Content-Type: text/x-c-code; charset="US-ASCII"; name="eat_release_memory.c"
+Content-Disposition: attachment; filename="eat_release_memory.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ku0py5fu0>
+X-Attachment-Id: f_ku0py5fu0
 
-  return NULL;
-}
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHVuaXN0ZC5o
+PgojaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiNpbmNsdWRlIDxzeXMvbW1hbi5oPgoKCmludCBtYWlu
+KGludCBhcmdjLCBjaGFyKiBhcmd2W10pCnsKICAgIGNoYXIqIG1lbWluZGV4WzEwMDBdID0gezB9
+OwogICAgaW50IGVhdCA9IDA7CiAgICBpbnQgd2FpdCA9IDA7CiAgICBpbnQgaSA9IDA7CgogICAg
+aWYgKGFyZ2MgPCAyKSAgewogICAgICAgIHByaW50ZigiVXNhZ2U6IC4vZWF0X3JlbGVhc2VfbWVt
+b3J5IDxudW0+ICAgI2FsbG9jYXRlIG51bSAqIDggTUIgYW5kIGZyZWUgbnVtIE1CIG1lbW9yeVxu
+Iik7CiAgICAgICAgcmV0dXJuOwogICAgfQoKICAgIHNzY2FuZihhcmd2WzFdLCAiJWQiLCAmZWF0
+KTsKICAgIGlmIChlYXQgPD0gMCB8fCBlYXQgPj0gMTAwMCkgewogICAgICAgIHByaW50ZigibnVt
+IHNob3VsZCBsYXJnZXIgdGhhbiAwIGFuZCBsZXNzIHRoYW4gMTAwMFxuIik7CiAgICAgICAgcmV0
+dXJuOwogICAgfQogICAgcHJpbnRmKCJBbGxvY2F0ZSBtZW1vcnkgaW4gTUIgc2l6ZTogJWRcbiIs
+IGVhdCAqIDgpOwoKICAgIHByaW50ZigiQWxsb2NhdGlvbiBtZW1vcnkgQmVnaW4hXG4iKTsKICAg
+IGZvciAoaSA9IDA7IGkgPCBlYXQ7IGkrKykgewogICAgICAgIG1lbWluZGV4W2ldID0gKGNoYXIq
+KW1tYXAoTlVMTCwgOCoxMDI0KjEwMjQsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfQU5PTllN
+T1VTfE1BUF9QUklWQVRFLCAtMSwgMCk7CiAgICAgICAgbWVtc2V0KG1lbWluZGV4W2ldLCAwLCA4
+KjEwMjQqMTAyNCk7CiAgICB9CgogICAgcHJpbnRmKCJBbGxvY2F0aW9uIG1lbW9yeSBEb25lIVxu
+Iik7CiAgICBzbGVlcCgyKTsKICAgIHByaW50ZigiTm93IGJlZ2luIHRvIG1hZHZpc2UgZnJlZSBt
+ZW1vcnkhXG4iKTsKICAgIGZvciAoaSA9IDA7IGkgPCBlYXQ7IGkrKykgewogICAgICAgIG1hZHZp
+c2UobWVtaW5kZXhbaV0gKyA3KjEwMjQqMTAyNCwgMTAyNCoxMDI0LCBNQURWX0RPTlRORUVEKTsK
+ICAgIH0KICAgIHNsZWVwKDUpOwogICAgcHJpbnRmKCJOb3cgYmVnaW4gdG8gcmVsZWFzZSBtZW1v
+cnkhXG4iKTsKICAgIGZvciAoaSA9IDA7IGkgPCBlYXQ7IGkrKykgewogICAgICAgIG11bm1hcCht
+ZW1pbmRleFtpXSwgOCoxMDI0KjEwMjQpOwogICAgfQoKfQo=
+--00000000000043c54105cce10702
+Content-Type: application/x-sh; name="test_thp.sh"
+Content-Disposition: attachment; filename="test_thp.sh"
+Content-Transfer-Encoding: base64
+Content-ID: <f_ku0vyq7e1>
+X-Attachment-Id: f_ku0vyq7e1
 
-int main(int argc, char* argv[])
-{
-  pthread_t threadId;
-
-  printf("Starting main\n");
-  if(pthread_create(&threadId, NULL, thread_routine, NULL)){
-    printf("%s: Thread creation failed\n", __func__);
-  }
-  pthread_join(threadId, NULL);
-  printf("Done with main\n");
-  return 0;
-}
-
-2) ---------------------------------------------------------
-140,143c140
-< CONFIG_PAGE_COUNTER=y
-< CONFIG_MEMCG=y
-< CONFIG_MEMCG_SWAP=y
-< CONFIG_MEMCG_SWAP_ENABLED=y
----
-> # CONFIG_MEMCG is not set
-149c146
-< CONFIG_CGROUP_PIDS=y
----
-> # CONFIG_CGROUP_PIDS is not set
-153c150
-< CONFIG_CGROUP_DEVICE=y
----
-> # CONFIG_CGROUP_DEVICE is not set
-155c152
-< CONFIG_CGROUP_PERF=y
----
-> # CONFIG_CGROUP_PERF is not set
-157c154
-< CONFIG_SOCK_CGROUP_DATA=y
----
-> # CONFIG_SOCK_CGROUP_DATA is not set
-163c160
-< CONFIG_USER_NS=y
----
-> # CONFIG_USER_NS is not set
-227d223
-< # CONFIG_SLUB_MEMCG_SYSFS_ON is not set
-791c787
-< CONFIG_BRIDGE_NETFILTER=y
----
-> CONFIG_BRIDGE_NETFILTER=m
-877c873
-< CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y
----
-> # CONFIG_NETFILTER_XT_MATCH_ADDRTYPE is not set
-898d893
-< CONFIG_NETFILTER_XT_MATCH_IPVS=y
-923,962c918
-< CONFIG_IP_VS=y
-< # CONFIG_IP_VS_IPV6 is not set
-< # CONFIG_IP_VS_DEBUG is not set
-< CONFIG_IP_VS_TAB_BITS=12
-<
-< #
-< # IPVS transport protocol load balancing support
-< #
-< # CONFIG_IP_VS_PROTO_TCP is not set
-< # CONFIG_IP_VS_PROTO_UDP is not set
-< # CONFIG_IP_VS_PROTO_AH_ESP is not set
-< # CONFIG_IP_VS_PROTO_ESP is not set
-< # CONFIG_IP_VS_PROTO_AH is not set
-< # CONFIG_IP_VS_PROTO_SCTP is not set
-<
-< #
-< # IPVS scheduler
-< #
-< # CONFIG_IP_VS_RR is not set
-< # CONFIG_IP_VS_WRR is not set
-< # CONFIG_IP_VS_LC is not set
-< # CONFIG_IP_VS_WLC is not set
-< # CONFIG_IP_VS_FO is not set
-< # CONFIG_IP_VS_OVF is not set
-< # CONFIG_IP_VS_LBLC is not set
-< # CONFIG_IP_VS_LBLCR is not set
-< # CONFIG_IP_VS_DH is not set
-< # CONFIG_IP_VS_SH is not set
-< # CONFIG_IP_VS_SED is not set
-< # CONFIG_IP_VS_NQ is not set
-<
-< #
-< # IPVS SH scheduler
-< #
-< CONFIG_IP_VS_SH_TAB_BITS=8
-<
-< #
-< # IPVS application helper
-< #
-< # CONFIG_IP_VS_NFCT is not set
----
-> # CONFIG_IP_VS is not set
-1115c1071
-< CONFIG_NET_CLS_CGROUP=y
----
-> # CONFIG_NET_CLS_CGROUP is not set
-1164,1165c1120,1121
-< CONFIG_CGROUP_NET_PRIO=y
-< CONFIG_CGROUP_NET_CLASSID=y
----
-> # CONFIG_CGROUP_NET_PRIO is not set
-> # CONFIG_CGROUP_NET_CLASSID is not set
-1632c1588
-< CONFIG_VETH=y
----
-> # CONFIG_VETH is not set
-4347,4352c4303
-< CONFIG_BTRFS_FS=y
-< CONFIG_BTRFS_FS_POSIX_ACL=y
-< # CONFIG_BTRFS_FS_CHECK_INTEGRITY is not set
-< # CONFIG_BTRFS_FS_RUN_SANITY_TESTS is not set
-< # CONFIG_BTRFS_DEBUG is not set
-< # CONFIG_BTRFS_ASSERT is not set
----
-> # CONFIG_BTRFS_FS is not set
-4376,4378c4327
-< CONFIG_OVERLAY_FS=y
-< # CONFIG_OVERLAY_FS_REDIRECT_DIR is not set
-< # CONFIG_OVERLAY_FS_INDEX is not set
----
-> # CONFIG_OVERLAY_FS is not set
-4776d4724
-< CONFIG_XOR_BLOCKS=y
-
-4944d4891
-< CONFIG_RAID6_PQ=y
-4968d4914
-< CONFIG_XXHASH=y
-4977,4978d4922
-< CONFIG_ZSTD_COMPRESS=y
-< CONFIG_ZSTD_DECOMPRESS=y
-
-3) ---------------------------------------------------------
-write(1, "Starting main\n", 14)         = 14
-mmap2(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK,
--1, 0) = 0xb65cb000
-mprotect(0xb65cc000, 8388608, PROT_READ|PROT_WRITE) = 0
-clone(child_stack=0xb6dcaf98,
-flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID,
-parent_tidptr=0xb6dcb4c8, tls=0xb6dcb920, child_tidptr=0xb6dcb4c8) =
-2779
-futex(0xb6dcb4c8, FUTEX_WAIT, 2779, NULL) = -1 EAGAIN (Resource
-temporarily unavailable)
-write(1, "Done with main\n", 15)        = 15
+IyEgL2Jpbi9iYXNoCgptZW09NTAwCm1rZGlyIC9zeXMvZnMvY2dyb3VwL21lbW9yeS90aHB0ZXN0
+Cmxvb3A9MAp3aGlsZSAoKGxvb3AgPCAxMCkpOwpkbwoJY2dleGVjIC1nIG1lbW9yeTovdGhwdGVz
+dCAuL2VhdF9yZWxlYXNlX21lbW9yeSAkbWVtID4gL2Rldi9udWxsJgoJbnVtPWBjYXQgL3N5cy9m
+cy9jZ3JvdXAvbWVtb3J5L3RocHRlc3QvbWVtb3J5LnVzYWdlX2luX2J5dGVzYAoJKChudW0gPSBu
+dW0vMTAyNC8xMDI0KSkKCWVjaG8gImJlZm9yZSBtZW1vcnk6ICRudW0gTSIKCXNsZWVwIDUKCSNl
+Y2hvIDIgPiAvcHJvYy9zeXMvdm0vZHJvcF9jYWNoZXMKCW51bTE9YGNhdCAvc3lzL2ZzL2Nncm91
+cC9tZW1vcnkvdGhwdGVzdC9tZW1vcnkudXNhZ2VfaW5fYnl0ZXNgCgkoKG51bTEgPSBudW0xLzEw
+MjQvMTAyNCkpCgllY2hvICJhZnRlciBtZW1vcnk6ICRudW0xIE0iCgkoKG51bTEgPSBudW0xIC0g
+bnVtKSkKCXJldD0wCgkoKHJldD1tZW0qOCAtIG51bTEpKQoJZWNobyAibWVtb3J5IGxlc3M6ICRy
+ZXQgTSwgc3RhbmRhcmQ6JG1lbSBNIgogICAgICAgIHdhaXQKICAgICAgICAoKGxvb3ArKykpCmRv
+bmUKY2dkZWxldGUgbWVtb3J5Oi90aHB0ZXN0Cg==
+--00000000000043c54105cce10702--
