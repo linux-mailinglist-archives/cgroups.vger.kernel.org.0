@@ -2,89 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8846A4192C7
-	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 13:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E900941976D
+	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 17:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhI0LKO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Sep 2021 07:10:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53012 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233959AbhI0LKN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 07:10:13 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 7EB52220A1;
-        Mon, 27 Sep 2021 11:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632740914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0gN5P8Lx7ZyiqATEPAc473z/z83jxXVuqiEZE6U3VQ=;
-        b=kre7iUxOWUIgYgzzKUhzw0x2WCHgHzMCUOqVIBpZ+x/aVr1dRjiWLufEXpDi/CmGC1TYI1
-        px71aSp6Y8Zv4RfWxdoH2HFaiQnu6Shv0Ar9v2hzsX4tQvCY2YXDp53YHRpvaMi3o5GqQV
-        TZ9vAVbHiIdSUzPF8ML3FYKqjacgdVY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay1.suse.de (Postfix) with ESMTPS id EC5EB25D3C;
-        Mon, 27 Sep 2021 11:08:33 +0000 (UTC)
-Date:   Mon, 27 Sep 2021 13:08:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-Message-ID: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <YUsg4j8gEt+WOCzi@dhcp22.suse.cz>
- <fa29c6f9-a53c-83bd-adcb-1e09d4387024@virtuozzo.com>
- <YU2EXP5wrSKv+b/8@dhcp22.suse.cz>
- <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
+        id S235007AbhI0PO3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Sep 2021 11:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235002AbhI0PO3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 11:14:29 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E67C061575;
+        Mon, 27 Sep 2021 08:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8XzwjHs843zXfH+an8ktBMeno92g9Ry3oPa0mEU0F9Y=; b=yl6jRQe2sVgWrVgWeBgFJ+S7oR
+        /e90qkak+HPKGyulGJm90XMNsFK/zfGqhgLeooNqscTavy6evL0HHFNge1Zzq2VrXwArcH6vbiw4z
+        3Q6j+sxPlW8GcIiHNRkx4xwKkp+wy696/EKhiGyZais1OM6i0hJjjx9qbfYBhuUQt4SKr6zuTQu45
+        F/FuoRActMgjTHcotZ+9bHWMAaDx37a7TEZpkeobrqw45MbXni9GhYrCB553/ALZwxOFsVSQJeeQR
+        bOJ86jrRrPfXU12tbNZQCps3ePRpwisKB7zfcqv5hmEWBJn93+QesNl3X42AveF9ZHUVHrpIrmKmh
+        cZHPP/IQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUsID-00344C-ET; Mon, 27 Sep 2021 15:11:45 +0000
+Date:   Mon, 27 Sep 2021 08:11:45 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        rdunlap@infradead.org, rafael@kernel.org, masahiroy@kernel.org,
+        ndesaulniers@google.com, yzaikin@google.com, nathan@kernel.org,
+        ojeda@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
+        vitor@massaru.org, elver@google.com, jarkko@kernel.org,
+        glider@google.com, rf@opensource.cirrus.com,
+        stephen@networkplumber.org, David.Laight@aculab.com,
+        bvanassche@acm.org, jolsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, trishalfonso@google.com,
+        andreyknvl@gmail.com, jikos@kernel.org, mbenes@suse.com,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        reinette.chatre@intel.com, fenghua.yu@intel.com, bp@alien8.de,
+        x86@kernel.org, hpa@zytor.com, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, daniel.vetter@ffwll.ch, bhelgaas@google.com,
+        kw@linux.com, dan.j.williams@intel.com, senozhatsky@chromium.org,
+        hch@lst.de, joe@perches.com, hkallweit1@gmail.com, axboe@kernel.dk,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH v7 00/12 (RESEND)] syfs: generic deadlock fix with module
+ removal
+Message-ID: <YVHfMVmy8Lo0J3vR@bombadil.infradead.org>
+References: <20210918050430.3671227-1-mcgrof@kernel.org>
+ <YUjLAbnEB5qPfnL8@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <508abe37-a044-7180-ac67-b4ce5e4cc149@virtuozzo.com>
+In-Reply-To: <YUjLAbnEB5qPfnL8@slm.duckdns.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 27-09-21 12:36:15, Vasily Averin wrote:
-> On 9/24/21 10:55 AM, Michal Hocko wrote:
-> > On Thu 23-09-21 09:49:57, Vasily Averin wrote:
-[...]
-> >> Hypothetically, cancelled vmalloc called inside some filesystem's transaction
-> >> forces its rollback, that in own turn it can call own vmalloc.
-> > 
-> > Do you have any specific example?
+On Mon, Sep 20, 2021 at 07:55:13AM -1000, Tejun Heo wrote:
+> On Fri, Sep 17, 2021 at 10:04:18PM -0700, Luis Chamberlain wrote:
+> > In this v7 I've decided it is best to merge all the effort together into
+> > one patch set because communication was being lost when I split the
+> > patches up. This was not helping in any way to either fix the zram
+> > issues or come to consensus on a generic solution. The patches are also
+> > merged now because they are all related now.
 > 
-> No, it was pure hypothetical assumption.
-> I was thinking about it over the weekend, and decided that:
-> a) such kind of issue (i.e. vmalloc call in rollback after failed vmalloc)
->    is very unlikely
-> b) if it still exists -- it must have own failback with kmalloc(NOFAIL) 
->    or just accept/ignore such failure and should not lead to critical failures.
->    If this still happen -- ihis is a bug, we should detect and fix it ASAP.
+> Building up all the testing framewoork is really great. I have no opinions
+> about the license related stuff but all other changes generally look good to
+> me.
 
-I would even argue that nobody should rely on vmalloc suceeding. The
-purpose of the allocator is to allow larger allocations and we do not
-guarantee anything even for small reqests.
+OK I am going to send a v8 shortly with the changes from folks addressed.
+I'm going to trim the Cc list considerbly for that v8 as the list is already
+quite large and I think it may appear as spam to some lists, I'll drop the
+copyleft-next folks as hopefully the license stuff is out of the way.
 
-> >> Should we perhaps interrupt the first vmalloc only?
-> > 
-> > This doesn't make much sense to me TBH. It doesn't address the very
-> > problem you are describing in the changelog.
-> 
-> Last question:
-> how do you think, should we perhaps, instead, detect such vmallocs 
-> (called in rollback after failed vmalloc) and generate a warnings,
-> to prevent such kind of problems in future?
+  Luis
 
-We do provide an allocation failure splat unless the request is
-explicitly __GFP_NOWARN IIRC.
--- 
-Michal Hocko
-SUSE Labs
