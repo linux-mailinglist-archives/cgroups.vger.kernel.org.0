@@ -2,112 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63590419D06
-	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 19:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D322E419D3A
+	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 19:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238088AbhI0RjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Sep 2021 13:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S236594AbhI0Rqg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Sep 2021 13:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237776AbhI0RhY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 13:37:24 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1CFC02C30A;
-        Mon, 27 Sep 2021 10:08:54 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id l6so12208976plh.9;
-        Mon, 27 Sep 2021 10:08:54 -0700 (PDT)
+        with ESMTP id S236382AbhI0Rq2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 13:46:28 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F323C01C1D0
+        for <cgroups@vger.kernel.org>; Mon, 27 Sep 2021 10:28:25 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id y35so21140889ede.3
+        for <cgroups@vger.kernel.org>; Mon, 27 Sep 2021 10:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=icdhatsIVMpVj9yFW17RwQuR1S0u1I+iYgg1GU5p9cg=;
-        b=ZMz3hfxwpz4U36m5O/CYL7j1TR5S3j0rERHxQWLDXoJkRLldkBdniIGZLVHf9Iit5d
-         Ecfe2rMtWI53lH6H7AXxEgdRL/M1bsKthqaf1i/A3XJEpNQqe9UzQLfrrxOboq/hOvYI
-         4Bwuza8gO3r6TeSr6m+M5Eiv2gzQYeRvyeuwXV7M2uZeVy1hj8m0O3vGG9v8kzUD4MTB
-         PY7nVeQM2AX4z265SOWlctIjaPzpr9PjGT+KrvnYle0zWd5ZXTp1jpaIhwgYWcCLy3HW
-         V0akiE9PrGLppPnC6Lp5xh4hKko3DuVWP7aJ9iISiwNuJbM0Xk/jhJDPOjfOFFbnm7+q
-         AYiQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GvswBwCE1hBWGNhCX7mBzDB5cCZTD4rBxUPDGl7SjQ4=;
+        b=luTsp91hJW5aSmAVu3g2RH1xaosBUC7NSs5ERIXPp2H/bas6zXC4JdXKepZLKG45Lb
+         YlcU8EV/oseObIB4+8oP3ysu1nKQ7JEsMvweYCIIk4Y5BJFh5grmwu0VYXHQFxlfsYGx
+         mYnBI0xFisC0ks7cUH7BMaEqD8zOUbzpwdbYKzdoxuLTyCusde5i4WOlaEPp0vR1XI5y
+         59T453vMTu5KJ5rEqhquFj9PCqd1RN7+oELDkotMOyw1Ij7K3amcCruKl5TV6fq8W9Xk
+         LxdTnCbClHRI18ryyR8TkOxVoa+Ypa8Fv+ygLeIsSoTVjioUJaC/dTv6zYICnRw1vh2G
+         An5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=icdhatsIVMpVj9yFW17RwQuR1S0u1I+iYgg1GU5p9cg=;
-        b=NJuyGIPqOWJDps/otVJqUJHLq9Bn92tXwXa6+mmXTskp8WKhbpfhVG729aAxTE0/Xl
-         oIVPILOVsj3iS9JnzoSs5mbMu0kSd/z/CwVSOBv3HMYIpqZm31YcugfyTamHZtV7nmZy
-         7IE+HShOQ4isrxxgknf1FcAI7EnREleNceZLhs1h7r7F9w7gNOCyj1fdPu7IxfokK2kg
-         1T+qKN0Mnyu8DRH1QG45WwogLn1PP/RW6NEIFYDGAYq/ejBSD0MhvLYRgmVApfPdC2i9
-         r5FuxYpxZzZ3XVnfWwgIhU00CwLtGzhUBT5zuvPtRRhg5VFdGA2CDnYc69zVCzQ+2CNU
-         ba8A==
-X-Gm-Message-State: AOAM533TUIoHa8N720EQvFsC58QLYaHTGrm95gjbeijcnXCBq8G00Jbx
-        2CjvGRh1xigFacWuQ4gNsww=
-X-Google-Smtp-Source: ABdhPJyjoDWsLl88srnjDSeCTyY4vJVqnDVBwMnKif2pCakeEaOeDgBGKPQVQt2Y0SHa7GNcYXjAyg==
-X-Received: by 2002:a17:90a:1a42:: with SMTP id 2mr174835pjl.202.1632762533935;
-        Mon, 27 Sep 2021 10:08:53 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id k25sm3666216pgt.49.2021.09.27.10.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 10:08:53 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 27 Sep 2021 07:08:52 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     "yukuai (C)" <yukuai3@huawei.com>,
-        Khazhy Kumykov <khazhy@google.com>, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [RFC PATCH] blk-throttle: enable io throttle for root in cgroup
- v2
-Message-ID: <YVH6pLUONhmvhTMK@slm.duckdns.org>
-References: <20210909140815.2600858-1-yukuai3@huawei.com>
- <20210917174103.GC13346@blackbody.suse.cz>
- <CACGdZYJiLuh6kED_tdWkYqbHDXc_18m-XJbevp-ri5ansvbtYg@mail.gmail.com>
- <37f8c687-8549-104a-2501-532a0cfc9a48@huawei.com>
- <20210921134414.GE4091@blackbody.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GvswBwCE1hBWGNhCX7mBzDB5cCZTD4rBxUPDGl7SjQ4=;
+        b=eMq5TXjSmUBDxUqalAovauHkT4jmE6UJtyi9hDERppoDszk76HqaEf9BudpWuuIq+k
+         xu6DH5q9mu9yOavW7TDNCpynT5O6W1jZLt1YtqqsrSZ0+27DGZAE3uC3mgGNELRcTSHy
+         YdQKc9QjxflL1mRNJakq2B12/lCmBn/+OnF7+fuQRT6uAqaTpJChGFXwuiO3EvIrs8QQ
+         HJ4qdjqiP8kdW5Q6FzV+pxHkhm59PpLcHZcAq+UTeUkocw38OBnflGGUIBoHEDIr6JGx
+         cLf3QtrcyTYUhGqLWx6vYqHh9YM8mNk4H86SCUQmnlfro7WvTcm/L1GXuotacAU1l4fX
+         enDw==
+X-Gm-Message-State: AOAM530i9TctZpFA4LD6ViPxPOR4rbcdf+XATPzEJ3kDdEeGawUhgfC0
+        +qdkDpVNHlelfre+eC1Q1oX6vSIxNi7dTYIO4wM=
+X-Google-Smtp-Source: ABdhPJyE5pS2Z5liHh8dmEoUIxz9amCIzT55Zl8dQS4CcfX97HnESTJfKtpUBFWFaH95iDa1rc8OoTEjA+RZNJn/15w=
+X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr1445172ejc.62.1632763704099;
+ Mon, 27 Sep 2021 10:28:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210921134414.GE4091@blackbody.suse.cz>
+References: <CAHKqYaa7H=M4E-=ObO0ecj+NE2KwZN5d7QSz4_b6tXz2vOo+VA@mail.gmail.com>
+In-Reply-To: <CAHKqYaa7H=M4E-=ObO0ecj+NE2KwZN5d7QSz4_b6tXz2vOo+VA@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 27 Sep 2021 10:28:10 -0700
+Message-ID: <CAHbLzkpBCQp7UGK_WPJ-akdQ7HqkOEMtE6+9qX5ciu3DU-ZVrg@mail.gmail.com>
+Subject: Re: [BUG] The usage of memory cgroup is not consistent with processes
+ when using THP
+To:     =?UTF-8?B?5Y+w6L+Q5pa5?= <yunfangtai09@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>, Tejun Heo <tj@kernel.org>,
+        vdavydov@parallels.com, Cgroups <cgroups@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Sun, Sep 26, 2021 at 12:35 AM =E5=8F=B0=E8=BF=90=E6=96=B9 <yunfangtai09@=
+gmail.com> wrote:
+>
+> Hi folks=EF=BC=8C
+> We found that the usage counter of containers with memory cgroup v1 is
+> not consistent with the  memory usage of processes when using THP.
+>
+> It is  introduced in upstream 0a31bc97c80 patch and still exists in
+> Linux 5.14.5.
+> The root cause is that mem_cgroup_uncharge is moved to the final
+> put_page(). When freeing parts of huge pages in THP, the memory usage
+> of process is updated  when pte unmapped  and the usage counter of
+> memory cgroup is updated when  splitting huge pages in
+> deferred_split_scan. This causes the inconsistencies and we could find
+> more than 30GB memory difference in our daily usage.
 
-On Tue, Sep 21, 2021 at 03:44:14PM +0200, Michal Koutný wrote:
-> On 2021/09/18 3:58, Khazhy Kumykov wrote:
-> > (This does also bring up: if this is a useful thing, would it make
-> > sense to tie to the device, vs. requiring cgroup. We happen to use
-> > cgroups so that requirement doesn't affect us).
-> 
-> Good point, That's IMO a better idea, it'd be more consistent with other
-> resources for which there exist global (cgroup independent) kernel
-> constraints (e.g. threads-max sysctl, mem= cmdline, cpu hotplug) that
-> double the root cgroup contraint role.
+IMHO I don't think this is a bug. The disparity reflects the
+difference in how the page life cycle is viewed between process and
+cgroup. The usage of process comes from the rss_counter of mm. It
+tracks the per-process mapped memory usage. So it is updated once the
+page is zapped.
 
-This is why I usually try to push root-cgroup level features outside cgroup
-because it really doesn't have much to do with cgroups at the root level.
-For visibility stuff, we do replicate quite a bit in the root level because
-not doing so becomes too painful for users but for control I'm more
-hesitant.
+But from the point of cgroup, the page is charged when it is allocated
+and uncharged when it is freed. The page may be zapped by one process,
+but there might be other users pin the page to prevent it from being
+freed. The pin may be very transient or may be indefinite. THP is one
+of the pins. It is gone when the THP is split, but the split may
+happen a long time after the page is zapped due to deferred split.
 
-One side-way solution could be using iocost. It doesn't have root-level
-control per-se but it does configure per-device attributes which define what
-the device can and is allowed to do so that it can be used as the basis for
-weighted fair distribution. Even if IO control is disabled from the root
-level, it'll still modulate the device according to the parameters.
-
-> OTOH, this also deepens the precedent of init NS root cgroup being
-> special (more special than a container's root cgroup).
-
-While it does seem like an aesthetical wrinkle, I don't think this is a
-practical problem. System root being different is a given whether
-aesthetically pleasing or not (not the most important but we have
-CONFIG_CGROUPS after all). I don't think it'll lead anywhere good to try to
-mask the differences.
-
-Thanks.
-
--- 
-tejun
+>
+> It is reproduced with the following program and script.
+> The program named "eat_memory_release" allocates every 8 MB memory and
+> releases the last 1 MB memory using madvise.
+> The script "test_thp.sh" creates a memory cgroup, runs
+> "eat_memory_release  500" in it and loops the proceed by 10 times. The
+> output shows the changing of memory, which should be about 500M memory
+> less in theory.
+> The outputs are varying randomly when using THP, while adding  "echo 2
+> > /proc/sys/vm/drop_caches" before accounting can avoid this.
+>
+> Are there any patches to fix it or is it normal by design?
+>
+> Thanks,
+> Yunfang Tai
