@@ -2,86 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF8D41996B
-	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63590419D06
+	for <lists+cgroups@lfdr.de>; Mon, 27 Sep 2021 19:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhI0QpR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Sep 2021 12:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        id S238088AbhI0RjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Sep 2021 13:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235481AbhI0QpR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 12:45:17 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2DBC061575;
-        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 145so16367562pfz.11;
-        Mon, 27 Sep 2021 09:43:39 -0700 (PDT)
+        with ESMTP id S237776AbhI0RhY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Sep 2021 13:37:24 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1CFC02C30A;
+        Mon, 27 Sep 2021 10:08:54 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id l6so12208976plh.9;
+        Mon, 27 Sep 2021 10:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
-        b=N6U4tHO7NsJPCAI0pl2qLjHILOWVWb0tMyq2HluBHcliYns5+8xvPinnRPTqZLH0Vp
-         mjDwUGERqM+OLJEABbwAol4NPWVJezO6I0MZVTKNORmd/B+h34NEDOcb68rAv0YmupuZ
-         8bkK3aG6reOpZDr0tyJ84dzBfEbp0AIADBf+YFz/B8Xh37dd+8jayjQ++afsnikievA0
-         hyvk7st00zP25LRpCvBlwq0w0Of4Sop9JeO9VLHlA21sz70pV4PKeb1VbDW6QVCFsBW/
-         aU+qGeKRdcYyDOavIovSgSbh4pdi9nQFhqQMkv5AQdDHphByKFQ2pvBbQxKAG4mdMzWO
-         aPpg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=icdhatsIVMpVj9yFW17RwQuR1S0u1I+iYgg1GU5p9cg=;
+        b=ZMz3hfxwpz4U36m5O/CYL7j1TR5S3j0rERHxQWLDXoJkRLldkBdniIGZLVHf9Iit5d
+         Ecfe2rMtWI53lH6H7AXxEgdRL/M1bsKthqaf1i/A3XJEpNQqe9UzQLfrrxOboq/hOvYI
+         4Bwuza8gO3r6TeSr6m+M5Eiv2gzQYeRvyeuwXV7M2uZeVy1hj8m0O3vGG9v8kzUD4MTB
+         PY7nVeQM2AX4z265SOWlctIjaPzpr9PjGT+KrvnYle0zWd5ZXTp1jpaIhwgYWcCLy3HW
+         V0akiE9PrGLppPnC6Lp5xh4hKko3DuVWP7aJ9iISiwNuJbM0Xk/jhJDPOjfOFFbnm7+q
+         AYiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Mpp3yt5UlhJzcT0WXNiNQ5zDVt3UnhzU5xESPpUlLrY=;
-        b=UUbcANZf7DBFeJhnD9u1A4GaBTOFLeXsTZMxzq6RGSWQKWN+k2IFQQkQL/9WqmO4/K
-         WcUtYFXYS0oXArPU5EQPZIqsq7Sxm1HNAnp64Ku4SgS7Lm0dkne9vVUl0C7NPU7B1Y0h
-         ecXmkOxXlmzx3LVxq2T6lGlrTSvbTFzrgD0ARw6YO6XGAivo6EMQ/daGFuCm2qQAXC1x
-         qDgKvgOwIhIqx+egcLN3N7IRezhE0ZVjKWuRpY1DbHMVSpEnvJWxex/4zT+ETzHAah2n
-         M7onxWwGuTCI1qIle7k8I355h+vPFhCBs8by96hDZRuGau/1o0aTguo+WiO5xbSgSh6/
-         T5bQ==
-X-Gm-Message-State: AOAM53113vx5DhiJduI5lhtq1zF/O7LTAvGNALxbxyj49/pFRzmYSmhs
-        gJaQxLmNAeHwwEkvkUlXnYnV24+P2A0=
-X-Google-Smtp-Source: ABdhPJwmazHB15zxzDX59vC+eDNU/75kvTpRv3bXs6Y+Knr3x5h8A8K7naXV8ZUXyy79WUEHnmSA6g==
-X-Received: by 2002:a63:334c:: with SMTP id z73mr570514pgz.160.1632761018498;
-        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=icdhatsIVMpVj9yFW17RwQuR1S0u1I+iYgg1GU5p9cg=;
+        b=NJuyGIPqOWJDps/otVJqUJHLq9Bn92tXwXa6+mmXTskp8WKhbpfhVG729aAxTE0/Xl
+         oIVPILOVsj3iS9JnzoSs5mbMu0kSd/z/CwVSOBv3HMYIpqZm31YcugfyTamHZtV7nmZy
+         7IE+HShOQ4isrxxgknf1FcAI7EnREleNceZLhs1h7r7F9w7gNOCyj1fdPu7IxfokK2kg
+         1T+qKN0Mnyu8DRH1QG45WwogLn1PP/RW6NEIFYDGAYq/ejBSD0MhvLYRgmVApfPdC2i9
+         r5FuxYpxZzZ3XVnfWwgIhU00CwLtGzhUBT5zuvPtRRhg5VFdGA2CDnYc69zVCzQ+2CNU
+         ba8A==
+X-Gm-Message-State: AOAM533TUIoHa8N720EQvFsC58QLYaHTGrm95gjbeijcnXCBq8G00Jbx
+        2CjvGRh1xigFacWuQ4gNsww=
+X-Google-Smtp-Source: ABdhPJyjoDWsLl88srnjDSeCTyY4vJVqnDVBwMnKif2pCakeEaOeDgBGKPQVQt2Y0SHa7GNcYXjAyg==
+X-Received: by 2002:a17:90a:1a42:: with SMTP id 2mr174835pjl.202.1632762533935;
+        Mon, 27 Sep 2021 10:08:53 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id b3sm17339636pfo.23.2021.09.27.09.43.37
+        by smtp.gmail.com with ESMTPSA id k25sm3666216pgt.49.2021.09.27.10.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 09:43:38 -0700 (PDT)
+        Mon, 27 Sep 2021 10:08:53 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 27 Sep 2021 06:43:36 -1000
+Date:   Mon, 27 Sep 2021 07:08:52 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/debug: Fix lockdep splat with "%pK" format
- specifier
-Message-ID: <YVH0uKGGmRjrIlFy@slm.duckdns.org>
-References: <20210927025807.26918-1-longman@redhat.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     "yukuai (C)" <yukuai3@huawei.com>,
+        Khazhy Kumykov <khazhy@google.com>, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [RFC PATCH] blk-throttle: enable io throttle for root in cgroup
+ v2
+Message-ID: <YVH6pLUONhmvhTMK@slm.duckdns.org>
+References: <20210909140815.2600858-1-yukuai3@huawei.com>
+ <20210917174103.GC13346@blackbody.suse.cz>
+ <CACGdZYJiLuh6kED_tdWkYqbHDXc_18m-XJbevp-ri5ansvbtYg@mail.gmail.com>
+ <37f8c687-8549-104a-2501-532a0cfc9a48@huawei.com>
+ <20210921134414.GE4091@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210927025807.26918-1-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921134414.GE4091@blackbody.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Sun, Sep 26, 2021 at 10:58:07PM -0400, Waiman Long wrote:
-> The lockdep splat is caused by the fact that the debug controller use the
-> "%pK" format specifier to print out address of cset's with css_set_lock
-> held. Under some circumstances, the use of "%pK" format specifier may
-> acquire the selinux_ss.policy_rwlock.
+On Tue, Sep 21, 2021 at 03:44:14PM +0200, Michal Koutný wrote:
+> On 2021/09/18 3:58, Khazhy Kumykov wrote:
+> > (This does also bring up: if this is a useful thing, would it make
+> > sense to tie to the device, vs. requiring cgroup. We happen to use
+> > cgroups so that requirement doesn't affect us).
 > 
-> To avoid this possible deadlock scenario, we have to abandon the use of
-> the "%pK" format specifier and just use "%p" to always hash the cset
-> addresses. The actual cset addresses aren't that important as long as
-> they are unique for matching purpose.
+> Good point, That's IMO a better idea, it'd be more consistent with other
+> resources for which there exist global (cgroup independent) kernel
+> constraints (e.g. threads-max sysctl, mem= cmdline, cpu hotplug) that
+> double the root cgroup contraint role.
 
-Isn't the right thing to do here making the selinux rwlock an irqsafe one?
-It's a bit crazy to have printf specifier to have restrictive locking
-requirements.
+This is why I usually try to push root-cgroup level features outside cgroup
+because it really doesn't have much to do with cgroups at the root level.
+For visibility stuff, we do replicate quite a bit in the root level because
+not doing so becomes too painful for users but for control I'm more
+hesitant.
+
+One side-way solution could be using iocost. It doesn't have root-level
+control per-se but it does configure per-device attributes which define what
+the device can and is allowed to do so that it can be used as the basis for
+weighted fair distribution. Even if IO control is disabled from the root
+level, it'll still modulate the device according to the parameters.
+
+> OTOH, this also deepens the precedent of init NS root cgroup being
+> special (more special than a container's root cgroup).
+
+While it does seem like an aesthetical wrinkle, I don't think this is a
+practical problem. System root being different is a given whether
+aesthetically pleasing or not (not the most important but we have
+CONFIG_CGROUPS after all). I don't think it'll lead anywhere good to try to
+mask the differences.
 
 Thanks.
 
