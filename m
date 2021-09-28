@@ -2,121 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC58941AB6A
-	for <lists+cgroups@lfdr.de>; Tue, 28 Sep 2021 11:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FCA41B9FA
+	for <lists+cgroups@lfdr.de>; Wed, 29 Sep 2021 00:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239716AbhI1JGV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Sep 2021 05:06:21 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25401 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239840AbhI1JGU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Sep 2021 05:06:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632819881; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=09C7+Iq0CKL2hGEdanYSFMJLK30HPDjpfQExa8Wp094=;
- b=PiUM174Ly7HdyeLsznIknLhhqy9eMMmPJ+O4FHKzj1lwvKKlzzIyckxQNXa7hhrTO95jkDC9
- eJXYhBC2q9rFzOyHvvtBxd1SpmUFxCxNoS9XNsfJ0hgrJtR53wpCmBQmi8ZaUkreWHFIHK2c
- 72L9OlL5Cx2b7XWcAPA4cf+0I3g=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI3MmZiMyIsICJjZ3JvdXBzQHZnZXIua2VybmVsLm9yZyIsICJiZTllNGEiXQ==
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6152da83713d5d6f968b2812 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Sep 2021 09:04:03
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 42913C43638; Tue, 28 Sep 2021 09:04:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E798C4338F;
-        Tue, 28 Sep 2021 09:03:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6E798C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S242958AbhI1WQL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Sep 2021 18:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242622AbhI1WQK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Sep 2021 18:16:10 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D424BC06161C
+        for <cgroups@vger.kernel.org>; Tue, 28 Sep 2021 15:14:30 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id dn26so696027edb.13
+        for <cgroups@vger.kernel.org>; Tue, 28 Sep 2021 15:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=x9zDwJRWIm139eLhv6Qo7TZGdOTE27JLM+druYyg5ZI=;
+        b=qYa6jC0CPO7v3mfxhwIs9R3Pwvt+6UQsr/69yWr3RX8Q0Qy1yfDrgSUOJ6L0aCi5AH
+         AWgvQKSfEkR9/nBtB3gJhn82TWy84/sbaRg2a0UIo9UHrpZf4jGRaGcZXf/fr4BKwigU
+         XCciR7+dbBgdzzNvOxm2Oi4LXlbcYAgvEYSqyHxXSbUe184l4EFPk01aWIAWUFknnFJW
+         cFgir3Hbv8hMcOLsfcDKgpuqNjyvvpCb63jHiZ7vw4MlX1av11n+wLVuVe+ZT1pOZ4g3
+         /OJIQWe5OyFjz2vauklQqXnSN1DM9OZuVtTrO+1vWWam1kkYvWtY9ovmbPB13155558R
+         7qBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=x9zDwJRWIm139eLhv6Qo7TZGdOTE27JLM+druYyg5ZI=;
+        b=ApL3STcjcFGPEFNgc2ggEOyVWGOiB9m0EJYI7oleowR2lVe6+FAMxCUZ9X+oqj+S7U
+         sk9KMQ4TkXuCK3/iZICtmDUdqsljSyYGo0WraAp1GbPBTN+RmVA8LjZhqdPxYpIUpgZE
+         6fcU8P9jbkB6X/jztPdmUk3TGi8lSg+ex9Ejla5Np4HqLSImgf0uS5oUE8NzFXDtwzaF
+         wB4qNXLfS/+N/WxT8O+bdibOkuL9Rd1SgvNsX5MkmFzAFGw2Q9SLlcm2my06nmndPEGJ
+         uPeorGfwBsAKrWEQMVlVkEKFjHDb3drqWuMKWY1p7ZYRrerX34y5gvgLODg4TiYt/gZy
+         NJvQ==
+X-Gm-Message-State: AOAM530g7D7P6LYTHPQEOot0zwZHjKf4xSuiSD04Tpd+WYd1MKRCp+HQ
+        Rdfb/62boJlt3WSYdV394GBypqdy+sLWNj0SFnUI6T1W
+X-Google-Smtp-Source: ABdhPJxeEO9O5JCyltmbwDuJH0dZza+zpUnIZ/I0Jy1+CdC9cqDxCKq0g+oPsfHKrMj138CvyRCNMq5qlx1HIMBxqGQ=
+X-Received: by 2002:a50:e044:: with SMTP id g4mr10497027edl.46.1632867269412;
+ Tue, 28 Sep 2021 15:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 04/11] ath11: Wstringop-overread warning
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210322160253.4032422-5-arnd@kernel.org>
-References: <20210322160253.4032422-5-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Martin Sebor <msebor@gcc.gnu.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        Ning Sun <ning.sun@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Carl Huang <cjhuang@codeaurora.org>,
-        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
-        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ritesh Singh <ritesi@codeaurora.org>,
-        Rajkumar Manoharan <rmanohar@codeaurora.org>,
-        Aloka Dixit <alokad@codeaurora.org>,
-        Felix Fietkau <nbd@nbd.name>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210928090402.42913C43638@smtp.codeaurora.org>
-Date:   Tue, 28 Sep 2021 09:04:02 +0000 (UTC)
+References: <CAHKqYaa7H=M4E-=ObO0ecj+NE2KwZN5d7QSz4_b6tXz2vOo+VA@mail.gmail.com>
+ <CAHbLzkpBCQp7UGK_WPJ-akdQ7HqkOEMtE6+9qX5ciu3DU-ZVrg@mail.gmail.com> <CAHKqYaZAnz4wiHksKSZMLNEbk9eUUQ1z8iQCLwFgNW40ejByYQ@mail.gmail.com>
+In-Reply-To: <CAHKqYaZAnz4wiHksKSZMLNEbk9eUUQ1z8iQCLwFgNW40ejByYQ@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 28 Sep 2021 15:14:17 -0700
+Message-ID: <CAHbLzkpjRV_32V3AGCsDku8JckeFKvEWd=w2-ZkQ2hbcOAChAA@mail.gmail.com>
+Subject: Re: [BUG] The usage of memory cgroup is not consistent with processes
+ when using THP
+To:     =?UTF-8?B?5Y+w6L+Q5pa5?= <yunfangtai09@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>, Tejun Heo <tj@kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+On Tue, Sep 28, 2021 at 12:15 AM =E5=8F=B0=E8=BF=90=E6=96=B9 <yunfangtai09@=
+gmail.com> wrote:
+>
+> Yang Shi <shy828301@gmail.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8828=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=881:28=E5=86=99=E9=81=93=EF=BC=9A
+> > IMHO I don't think this is a bug. The disparity reflects the
+> > difference in how the page life cycle is viewed between process and
+> > cgroup. The usage of process comes from the rss_counter of mm. It
+> > tracks the per-process mapped memory usage. So it is updated once the
+> > page is zapped.
+> >
+> > But from the point of cgroup, the page is charged when it is allocated
+> > and uncharged when it is freed. The page may be zapped by one process,
+> > but there might be other users pin the page to prevent it from being
+> > freed. The pin may be very transient or may be indefinite. THP is one
+> > of the pins. It is gone when the THP is split, but the split may
+> > happen a long time after the page is zapped due to deferred split.
+> Thank you for reply. I agree that it reflects the difference between
+> process and cgroup. The memory usage of cgroup is usually used to
+> indicate the memory usage of the container. It can be used to avoid
+> the OOM and etc. The disparity will cause that the memory usage of
+> containers with the same processes are randomly different (we found
+> more than 30GB different). It is hard to manage them. Of course,
+> disable THP is a way to solve it. Can it have another way to solve it
+> ?
 
-> gcc-11 with the kernel address sanitizer prints a warning for this
-> driver:
-> 
-> In function 'ath11k_peer_assoc_h_vht',
->     inlined from 'ath11k_peer_assoc_prepare' at drivers/net/wireless/ath/ath11k/mac.c:1632:2:
-> drivers/net/wireless/ath/ath11k/mac.c:1164:13: error: 'ath11k_peer_assoc_h_vht_masked' reading 16 bytes from a region of size 4 [-Werror=stringop-overread]
->  1164 |         if (ath11k_peer_assoc_h_vht_masked(vht_mcs_mask))
->       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath11k/mac.c: In function 'ath11k_peer_assoc_prepare':
-> drivers/net/wireless/ath/ath11k/mac.c:1164:13: note: referencing argument 1 of type 'const u16 *' {aka 'const short unsigned int *'}
-> drivers/net/wireless/ath/ath11k/mac.c:969:1: note: in a call to function 'ath11k_peer_assoc_h_vht_masked'
->   969 | ath11k_peer_assoc_h_vht_masked(const u16 vht_mcs_mask[NL80211_VHT_NSS_MAX])
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> According to analysis from gcc developers, this is a glitch in the
-> way gcc tracks the size of struct members. This should really get
-> fixed in gcc, but it's also easy to work around this instance
-> by changing the function prototype to no include the length of
-> the array.
-> 
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99673
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-
-Patch applied to ath-next branch of ath.git, thanks.
-
-eb19efed836a ath11k: Wstringop-overread warning
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210322160253.4032422-5-arnd@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+I don't quite get what exactly you want to manage. If you want to get
+rid of the disparity, I don't have good idea other than splitting THP
+in place instead of using deferred split. But AFAIK it is not quite
+feasible due to some locking problems.
