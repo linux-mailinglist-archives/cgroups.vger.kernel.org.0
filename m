@@ -2,53 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3216F41F54C
-	for <lists+cgroups@lfdr.de>; Fri,  1 Oct 2021 21:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E98B941F554
+	for <lists+cgroups@lfdr.de>; Fri,  1 Oct 2021 21:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239138AbhJATCd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Oct 2021 15:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S1355284AbhJATCz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Oct 2021 15:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234084AbhJATCc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Oct 2021 15:02:32 -0400
+        with ESMTP id S1355926AbhJATCn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Oct 2021 15:02:43 -0400
 Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC75C061775
-        for <cgroups@vger.kernel.org>; Fri,  1 Oct 2021 12:00:48 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id t28-20020a63461c000000b00252078b83e4so6787755pga.15
-        for <cgroups@vger.kernel.org>; Fri, 01 Oct 2021 12:00:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0762C06177E
+        for <cgroups@vger.kernel.org>; Fri,  1 Oct 2021 12:00:58 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id h10-20020a65404a000000b00253122e62a0so6837072pgp.0
+        for <cgroups@vger.kernel.org>; Fri, 01 Oct 2021 12:00:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=6eaOrx6B9WTfA79dzFjS+JPlNyBUQULetUEsCbO4l+A=;
-        b=gBoqBjumM+ARyiIKWQvUhK9hG+lBFscSv/woVNTb0aHmNmPO90ZO9aLhckcOu1nx6Z
-         kVncrTjjIVtsO6zP4Puly78rWvi5zI4syAoJg4/QIv4c4j8JhOwD5de25nNbf3s31hW9
-         vi3+1L86KkqQjIo144G+PdtXoCTd/6Q7Di62QOjw/PxHnJx3Hk0PMSZhnEh7NcaPxB0D
-         wO52jucST0sPnaoXOGm89E8yqaj94mu0DhdcF8yZE0pkec7Q8IUwsEBsxqbyJN41GLgo
-         NzechnLrbZvDq37r4XMfh7ag1p11dGoXLZ3K9KRG33RIg0CCOZVbukr4KuYbpRKGdLKl
-         ISrg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc:content-transfer-encoding;
+        bh=oA4D6jdogE7b/uxQa2O7tT0f2ZE2oMjI4z42jgRtcc8=;
+        b=CwC2586zm2KkYzc/zO4TibKRvuGJhARCs0kdLQas3WOjM5X9DtAUcCSoLuF/k0hEsf
+         Qud32VB81TbVE69nvAZnu/lgmWXRqUHZu/l5m1DD8yVCvRg2BkOk8Lh03i7d4azOgwpb
+         k24FlBtLBbtPAiKELRevmpnJJOM0fSEVyyEu714vSz7JBVobN4ZXo0ibB2fuHo0v+1zE
+         qkOw61zTfTidMcwKd8zyQSdHVPDEe23/Ls5YK2dVGWsVoV5I6WEIKNQ5M6ko8dRb/Qy8
+         kzC1BhoUajYaJ6MPwXM67juENfPQvzXTiRCBlfmuSt9qn+6M4EVnyaPf5aYX2hBpKhaX
+         aqcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=6eaOrx6B9WTfA79dzFjS+JPlNyBUQULetUEsCbO4l+A=;
-        b=2Sssk/hg3jyrlh+5j/HYOb7K2kI17Ik6vh6sat5W+amtAnWmlDUAlgoKt2YyE3zVT1
-         KFMl4+HsGr7tn4ncxMV+OK+/ekm6oPDcPt74bKhnLSBycLuCxC9mVeFdrP9zuVUcBPNB
-         fZ46P7Z4S9+Yv1fIxZ/yKQoJT5zZAo+15pltOMNFyW6uLLPDWNjWIUwWsJtffs5xZorb
-         ulRWvw+gaYhpT52hmdymfgyUF5MCpfDVDCM+K1twXTe/Z2rGyVvaHV4EBBRDb4K/7V5v
-         Xh1nlJ+SpNXScMsSheePLIsAYTVArK8B1wklaXGH7BfQbGCl5cqeaNugefxWEZh1AjSV
-         fYqA==
-X-Gm-Message-State: AOAM533TC9VfWuiqLGIDtNT88EX9zWDde7zCNxkpsDIYCtEW4bAiAo99
-        DQAzmYzSR3Pjg4/VzdM+FvtEvcNr9PenTQ==
-X-Google-Smtp-Source: ABdhPJx6IgvBeYEk+UPLwvs9Zhx5drq1IwkilKeIvGG35/M5gj+3M4JrFlVfvTWWs6+j9lVZmuYqGmq0Gg2hVg==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=oA4D6jdogE7b/uxQa2O7tT0f2ZE2oMjI4z42jgRtcc8=;
+        b=ptXdRQiKD9Z4cbeXyDYRVFB3++xm2HenJ0TTkIGC3Pw+25q8YgWmqswRERWD/orbwa
+         3xh3U+1yTJ/irFZ9LktILar1qV6TDcyHydHo+Oe5jkzKzCjDihdzUNeouOTKzE8Ty46j
+         55Lc2YBlm0icIlprAV4JPN+Q566iNvXKIYkhZzSCi21a1VXxzqOTw4t7Bg99hN/KTW1W
+         hbtc0npvoLSxD++ucF3YFc9C5T9coE9eJCaIMmfR3Uw0VFQz4y4hJ80+uxJhwmXPJUOa
+         CgOyLunXDKVcFxOuXTTV5lsQUB5xR5TWdtpVbN3aBws1RaKu3Id45RZnxOTNe08lsRmJ
+         9VQg==
+X-Gm-Message-State: AOAM5321uaM2C5vlyiuzZFAraV3Ft7hhUD9EgGcn6WQj7Z2Mpi98kxJJ
+        1Xt3LvmupZpybw7LxHWc5g9xC/c1gKmnJA==
+X-Google-Smtp-Source: ABdhPJwPCkuJXkhCP4l5CIoXIN1d+5YKvrNGYw0bdo919HksBNmuVFGnfbbFfUCgWYWvrM3bDJKTfBFFUUIeiw==
 X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:af1a:f1cd:5283:aa67])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:1258:: with SMTP id
- gx24mr5127236pjb.205.1633114847633; Fri, 01 Oct 2021 12:00:47 -0700 (PDT)
-Date:   Fri,  1 Oct 2021 12:00:39 -0700
-Message-Id: <20211001190040.48086-1-shakeelb@google.com>
+ (user=shakeelb job=sendgmr) by 2002:a17:90b:4ac1:: with SMTP id
+ mh1mr21669147pjb.238.1633114858394; Fri, 01 Oct 2021 12:00:58 -0700 (PDT)
+Date:   Fri,  1 Oct 2021 12:00:40 -0700
+In-Reply-To: <20211001190040.48086-1-shakeelb@google.com>
+Message-Id: <20211001190040.48086-2-shakeelb@google.com>
 Mime-Version: 1.0
+References: <20211001190040.48086-1-shakeelb@google.com>
 X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
-Subject: [PATCH v2 1/2] memcg: flush stats only if updated
+Subject: [PATCH v2 2/2] memcg: unify memcg stat flushing
 From:   Shakeel Butt <shakeelb@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -62,29 +64,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-At the moment, the kernel flushes the memcg stats on every refault and
-also on every reclaim iteration.  Although rstat maintains per-cpu update
-tree but on the flush the kernel still has to go through all the cpu rstat
-update tree to check if there is anything to flush.  This patch adds the
-tracking on the stats update side to make flush side more clever by
-skipping the flush if there is no update.
-
-The stats update codepath is very sensitive performance wise for many
-workloads and benchmarks.  So, we can not follow what the commit
-aa48e47e3906 ("memcg: infrastructure to flush memcg stats") did which was
-triggering async flush through queue_work() and caused a lot performance
-regression reports.  That got reverted by the commit 1f828223b799 ("memcg:
-flush lruvec stats in the refault").
-
-In this patch we kept the stats update codepath very minimal and let the
-stats reader side to flush the stats only when the updates are over a
-specific threshold.  For now the threshold is (nr_cpus * CHARGE_BATCH).
-
-To evaluate the impact of this patch, an 8 GiB tmpfs file is created on a
-system with swap-on-zram and the file was pushed to swap through
-memory.force_empty interface.  On reading the whole file, the memcg stat
-flush in the refault code path is triggered.  With this patch, we observed
-63% reduction in the read time of 8 GiB file.
+The memcg stats can be flushed in multiple context and potentially in
+parallel too.  For example multiple parallel user space readers for memcg
+stats will contend on the rstat locks with each other.  There is no need
+for that.  We just need one flusher and everyone else can benefit.  In
+addition after aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
+the kernel periodically flush the memcg stats from the root, so, the other
+flushers will potentially have much less work to do.
 
 Signed-off-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
@@ -93,153 +79,95 @@ Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
 Changelog since v1:
-- Moved code and comment added as suggested by Johannes Weiner
+- N/A
 
- mm/memcontrol.c | 78 ++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 55 insertions(+), 23 deletions(-)
+ mm/memcontrol.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7c9d5703700e..25f55636ca37 100644
+index 25f55636ca37..22d905f30a30 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -103,11 +103,6 @@ static bool do_memsw_account(void)
- 	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_noswap=
-;
- }
+@@ -638,12 +638,14 @@ static inline void memcg_rstat_updated(struct mem_cgr=
+oup *memcg)
 =20
--/* memcg and lruvec stats flushing */
--static void flush_memcg_stats_dwork(struct work_struct *w);
--static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork)=
-;
--static DEFINE_SPINLOCK(stats_flush_lock);
--
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
-=20
-@@ -613,6 +608,56 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_t=
-ree_per_node *mctz)
- 	return mz;
- }
-=20
-+/*
-+ * memcg and lruvec stats flushing
-+ *
-+ * Many codepaths leading to stats update or read are performance sensitiv=
-e and
-+ * adding stats flushing in such codepaths is not desirable. So, to optimi=
-ze the
-+ * flushing the kernel does:
-+ *
-+ * 1) Periodically and asynchronously flush the stats every 2 seconds to n=
-ot let
-+ *    rstat update tree grow unbounded.
-+ *
-+ * 2) Flush the stats synchronously on reader side only when there are mor=
-e than
-+ *    (MEMCG_CHARGE_BATCH * nr_cpus) update events. Though this optimizati=
-on
-+ *    will let stats be out of sync by atmost (MEMCG_CHARGE_BATCH * nr_cpu=
-s) but
-+ *    only for 2 seconds due to (1).
-+ */
-+static void flush_memcg_stats_dwork(struct work_struct *w);
-+static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork)=
-;
-+static DEFINE_SPINLOCK(stats_flush_lock);
-+static DEFINE_PER_CPU(unsigned int, stats_updates);
-+static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
-+
-+static inline void memcg_rstat_updated(struct mem_cgroup *memcg)
-+{
-+	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-+	if (!(__this_cpu_inc_return(stats_updates) % MEMCG_CHARGE_BATCH))
-+		atomic_inc(&stats_flush_threshold);
-+}
-+
-+static void __mem_cgroup_flush_stats(void)
-+{
-+	if (!spin_trylock(&stats_flush_lock))
-+		return;
-+
-+	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
-+	atomic_set(&stats_flush_threshold, 0);
-+	spin_unlock(&stats_flush_lock);
-+}
-+
-+void mem_cgroup_flush_stats(void)
-+{
-+	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
-+		__mem_cgroup_flush_stats();
-+}
-+
-+static void flush_memcg_stats_dwork(struct work_struct *w)
-+{
-+	mem_cgroup_flush_stats();
-+	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
-+}
-+
- /**
-  * __mod_memcg_state - update cgroup memory statistics
-  * @memcg: the memory cgroup
-@@ -625,7 +670,7 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int id=
-x, int val)
- 		return;
-=20
- 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
--	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-+	memcg_rstat_updated(memcg);
- }
-=20
- /* idx can be of type enum memcg_stat_item or node_stat_item. */
-@@ -653,10 +698,12 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, =
-enum node_stat_item idx,
- 	memcg =3D pn->memcg;
-=20
- 	/* Update memcg */
--	__mod_memcg_state(memcg, idx, val);
-+	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
-=20
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
-+
-+	memcg_rstat_updated(memcg);
- }
-=20
- /**
-@@ -758,7 +805,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enu=
-m vm_event_item idx,
- 		return;
-=20
- 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
--	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-+	memcg_rstat_updated(memcg);
- }
-=20
- static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
-@@ -5342,21 +5389,6 @@ static void mem_cgroup_css_reset(struct cgroup_subsy=
-s_state *css)
- 	memcg_wb_domain_size_changed(memcg);
- }
-=20
--void mem_cgroup_flush_stats(void)
--{
--	if (!spin_trylock(&stats_flush_lock))
--		return;
--
--	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
--	spin_unlock(&stats_flush_lock);
--}
--
--static void flush_memcg_stats_dwork(struct work_struct *w)
--{
--	mem_cgroup_flush_stats();
--	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
--}
--
- static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, in=
-t cpu)
+ static void __mem_cgroup_flush_stats(void)
  {
- 	struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+-	if (!spin_trylock(&stats_flush_lock))
++	unsigned long flag;
++
++	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
+ 		return;
+=20
+ 	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
+ 	atomic_set(&stats_flush_threshold, 0);
+-	spin_unlock(&stats_flush_lock);
++	spin_unlock_irqrestore(&stats_flush_lock, flag);
+ }
+=20
+ void mem_cgroup_flush_stats(void)
+@@ -1462,7 +1464,7 @@ static char *memory_stat_format(struct mem_cgroup *me=
+mcg)
+ 	 *
+ 	 * Current memory state:
+ 	 */
+-	cgroup_rstat_flush(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+=20
+ 	for (i =3D 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		u64 size;
+@@ -3566,8 +3568,7 @@ static unsigned long mem_cgroup_usage(struct mem_cgro=
+up *memcg, bool swap)
+ 	unsigned long val;
+=20
+ 	if (mem_cgroup_is_root(memcg)) {
+-		/* mem_cgroup_threshold() calls here from irqsafe context */
+-		cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
++		mem_cgroup_flush_stats();
+ 		val =3D memcg_page_state(memcg, NR_FILE_PAGES) +
+ 			memcg_page_state(memcg, NR_ANON_MAPPED);
+ 		if (swap)
+@@ -3948,7 +3949,7 @@ static int memcg_numa_stat_show(struct seq_file *m, v=
+oid *v)
+ 	int nid;
+ 	struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+=20
+-	cgroup_rstat_flush(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+=20
+ 	for (stat =3D stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+ 		seq_printf(m, "%s=3D%lu", stat->name,
+@@ -4020,7 +4021,7 @@ static int memcg_stat_show(struct seq_file *m, void *=
+v)
+=20
+ 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) !=3D ARRAY_SIZE(memcg1_stats))=
+;
+=20
+-	cgroup_rstat_flush(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+=20
+ 	for (i =3D 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+@@ -4523,7 +4524,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, un=
+signed long *pfilepages,
+ 	struct mem_cgroup *memcg =3D mem_cgroup_from_css(wb->memcg_css);
+ 	struct mem_cgroup *parent;
+=20
+-	cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+=20
+ 	*pdirty =3D memcg_page_state(memcg, NR_FILE_DIRTY);
+ 	*pwriteback =3D memcg_page_state(memcg, NR_WRITEBACK);
+@@ -6408,7 +6409,7 @@ static int memory_numa_stat_show(struct seq_file *m, =
+void *v)
+ 	int i;
+ 	struct mem_cgroup *memcg =3D mem_cgroup_from_seq(m);
+=20
+-	cgroup_rstat_flush(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+=20
+ 	for (i =3D 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		int nid;
 --=20
 2.33.0.800.g4c38ced690-goog
 
