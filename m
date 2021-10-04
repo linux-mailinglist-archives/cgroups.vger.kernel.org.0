@@ -2,86 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E75342144B
-	for <lists+cgroups@lfdr.de>; Mon,  4 Oct 2021 18:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAFA421450
+	for <lists+cgroups@lfdr.de>; Mon,  4 Oct 2021 18:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237241AbhJDQmF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Oct 2021 12:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
+        id S237247AbhJDQnb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Oct 2021 12:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237240AbhJDQmF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Oct 2021 12:42:05 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204D2C061745
-        for <cgroups@vger.kernel.org>; Mon,  4 Oct 2021 09:40:16 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h3so6450906pgb.7
-        for <cgroups@vger.kernel.org>; Mon, 04 Oct 2021 09:40:16 -0700 (PDT)
+        with ESMTP id S237288AbhJDQna (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Oct 2021 12:43:30 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D466CC061746;
+        Mon,  4 Oct 2021 09:41:41 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id b22so305603pls.1;
+        Mon, 04 Oct 2021 09:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=augfsTXb1EqvWcbD8kMG8Mmo1E+4/qJhNfszNseO99c=;
-        b=hsSNN+UJ6NnGshSkpom3FjtmdE+DbH8x9DAgnM1PuqqlMQrpzGIdTtoIPKr940w9Nr
-         PcEtV+ka2MnEV19RdJ4Hhn4xvp4EI1ggXEKh0vKP/V48uTCf4Ybg6OcsE3Jad5ViaBQw
-         7Zpdw7pd+PrAIct7CcloJQnlX4sE9JMGM3Th1ZdhDNqdxXkxUgbHY2pTWHI/HB56GpeE
-         sUg0X0NwLREDGoaflyojm8yN6hrwpmzOWsX8HvKK9QEvhOy9PCQgNDFw79mFbLaCaBlB
-         fSeUWa6jYdveegPdcucCE9C2YoWT6cExHjsq4czsR40QDqO3sJxXYzkxj3UYMDH1ip5Q
-         7V5g==
+        bh=DaLvQvhsWsf+s4lKV5/UMhvRlT3UszqwQeMdAkp1K3Y=;
+        b=quXUJID1FdabBGz7mwElEsxPvEcN27h5uU84QFos6CG76Q06RyCwmCRrgwdJ/NtBSe
+         eI4YUiwaxF8nBTgUyf0Eapc+zxNNJHBe1gG+O0Kr+uf1lk4zedFsGmcJp8foUlAnk9qF
+         ZaKp6+1M+vsx1Vykw52NXb3FwgFrlIfaERdI+0fCUn2Dt8HTz0rp1OxrcLDBbCTkQtcH
+         Zw/QwqmiIcpMerEn2QnER5fJkHTlgAQeBEHR3rzdbS8TMMmMzP13C33iHchRML/2fJPj
+         d7qvROcOuYc8A14dJR3AIYR7r5o3jQRTeRo9bsfCA0gmgpIZPs22J6pCCFqhdJgpDbp/
+         q9Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=augfsTXb1EqvWcbD8kMG8Mmo1E+4/qJhNfszNseO99c=;
-        b=74f7Fj91zVZHhdgjPSyKoT2HWZz6GM+hX/71rG7HpmzLSQ4U/zJsWsJfs1oC6L4wA5
-         AurBk1IFqP5AkHR4s7p70tlPBICNJOzy4KeJeCYNhtFCFcntSbW10G9NSFfTzqqT9Q4B
-         rH7h46+2nA4Zvq7hJ80hrEul79yWBpfoqM03AiF5bAqU6NUX1a6+BWJ+pca/cIj/r+jK
-         1gvgvEEQr62DXdGqvD4iCNiEVft+M+XY6oY5OeOOIcbjQIwgiNPc1dWnUTbAY31kY0rO
-         VLqMYoNofauSa82O7z5Bkl+xdzCwlq6e/UTpJeLKFqaC42L4tlBAbs6riUYwJyHDrxhi
-         a1Tw==
-X-Gm-Message-State: AOAM530L+N8FLRhw/6NYopOzDFFetc2vlzVBpdOQ5cvbR77b+mBCTElB
-        kqROFTpjT4cad/u4zmqsGfs=
-X-Google-Smtp-Source: ABdhPJzYsn/B14xsBlk5FdFDPPCfQVYGtyKeyIBxLE5JHPQTntGfTCL+0J0eKQrKIDMatLMkZSzHXw==
-X-Received: by 2002:a65:62d1:: with SMTP id m17mr11679715pgv.370.1633365615392;
-        Mon, 04 Oct 2021 09:40:15 -0700 (PDT)
+        bh=DaLvQvhsWsf+s4lKV5/UMhvRlT3UszqwQeMdAkp1K3Y=;
+        b=vR3Dx6eIcNwdsnogfwA38Q45w86Hgyg5r4h7yrUfx1wjLFv2jZnWpZDiwwV1hB5+F1
+         NaVS7nkYAR5UNs9Jccu+k2/oPyBm41aJ5KhYFiZVI+MTCYhevvcTlvwJw2eTQZ8f+no6
+         mSAZ2pNOqxo7BB4gsGDj0EojmfT+VPdw0w4ztQ7MiLAPdqavFLN+kF87JtkIlD88qhef
+         YeCGBu+zbEwhz0hA43GXJhVG8VN7NnzY3K9rlUT89ZxU1tn2gGnOf8vFSrhTuRXY+zgd
+         IXHKgJtKgrWYcquv1iqHVcPUT+P8077GX/aqb+JfiYFXi8kuDW5TThVr0IGLNiKw5Z/c
+         AV7Q==
+X-Gm-Message-State: AOAM533GXnsWtiQU/OYyDsTAzkJgLRQBMaRje10B0Eqh7sr56kz6zZ8X
+        5qUYOGaQVzUaJoUeWdWK40A=
+X-Google-Smtp-Source: ABdhPJziQ7qIPqhOqCNQxobX3HiRWlGbAVTG4Ptfmt3FZB8v97Nv21tHKuAmJRbQzy2BjS3gECSUiQ==
+X-Received: by 2002:a17:903:31cd:b0:134:5b6f:2ff8 with SMTP id v13-20020a17090331cd00b001345b6f2ff8mr619707ple.46.1633365701300;
+        Mon, 04 Oct 2021 09:41:41 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id o16sm14584921pgv.29.2021.10.04.09.40.14
+        by smtp.gmail.com with ESMTPSA id o3sm7214892pfu.126.2021.10.04.09.41.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 09:40:14 -0700 (PDT)
+        Mon, 04 Oct 2021 09:41:40 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 4 Oct 2021 06:40:13 -1000
+Date:   Mon, 4 Oct 2021 06:41:39 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Odin Hultgren van der Horst <odin@digitalgarden.no>
-Cc:     cgroups@vger.kernel.org
-Subject: Re: [Question] io cgroup subsystem threaded support
-Message-ID: <YVsubc0I4tBmnudM@slm.duckdns.org>
-References: <20211001110645.uzw2w5t4rknwqhma@T580.localdomain>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 1/1] cgroup-v1: Grant CAP_SYS_NICE holders permission to
+ move tasks between cgroups
+Message-ID: <YVsuw+UBZDY6Rkzd@slm.duckdns.org>
+References: <20210617090941.340135-1-lee.jones@linaro.org>
+ <YMs08Ij8PZ/gemLL@slm.duckdns.org>
+ <YMs5ssb50B208Aad@dell>
+ <CAJuCfpHvRuapSMa2KMdF4_-8fKdqtx_gYVKyw5dYT6XjfRrDfg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211001110645.uzw2w5t4rknwqhma@T580.localdomain>
+In-Reply-To: <CAJuCfpHvRuapSMa2KMdF4_-8fKdqtx_gYVKyw5dYT6XjfRrDfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 01:06:45PM +0200, Odin Hultgren van der Horst wrote:
-> Posted to both cgroups and linux-block
-> 
-> Hi i read though some of the source code for cgroups, and from my understanding
-> the io cgroup subsystem does not support threaded cgroups. So i had some questions
-> regarding this.
-> 
->  - Is there any future plans for supporting threaded?
+On Thu, Sep 30, 2021 at 02:20:53PM -0700, Suren Baghdasaryan wrote:
+> Some of the controllers are moving to cgroup v2 but not all of them
+> are there yet. For example, there are still some issues with moving
+> the cpu controller to v2 which I believe were discussed during Android
+> Microconference at LPC 2021.
 
-Not at the moment.
-
->  - What are the main hurdles in adding threaded support to the io cgroup subsystem?
-
-The biggest is the fact that page cache pagse are owned by processes not
-threads. A related issue is that writeback tracks ownership per inode with a
-mechanism for transferring ownership when majority writer changes. Splitting
-IO control per-thread would increase friction there. So, the summary is that
-the kernel doesn't track related resource consumptions at thread
-granularity.
+Care to provide a summary?
 
 Thanks.
 
