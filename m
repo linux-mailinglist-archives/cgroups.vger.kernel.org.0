@@ -2,127 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE785421849
-	for <lists+cgroups@lfdr.de>; Mon,  4 Oct 2021 22:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDD54228F3
+	for <lists+cgroups@lfdr.de>; Tue,  5 Oct 2021 15:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbhJDUVl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Oct 2021 16:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233877AbhJDUVl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Oct 2021 16:21:41 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F1BC061745
-        for <cgroups@vger.kernel.org>; Mon,  4 Oct 2021 13:19:51 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id y197so21787190iof.11
-        for <cgroups@vger.kernel.org>; Mon, 04 Oct 2021 13:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=LQGXlr8JsxYTcOQMokcqY9RnbuNcOY4TaFS93GsjX5s=;
-        b=gBaPYPFr2c8ulT+/+JaIiT+5iPPcLGSJfTfBfJQwCOvCrhUQsImxweBvZ8n0PSx2Ar
-         9Hp5BCLgzXUucupqyOZjZuddMIjkxzRYWduE0FxjN1TZHe4f6SvzdXLQnN5xEdw1IY8w
-         rFEOyyNFQ+h0uIql+JqmelRn/dI30R5/EUF20=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LQGXlr8JsxYTcOQMokcqY9RnbuNcOY4TaFS93GsjX5s=;
-        b=1zvfMJHILhFyr1B9pF8FFZmDiUxsPZdSvKqgdJiPuLXKJNdWDbR5BV/W2w8e7NEbvV
-         O9TwrxHWbyD09QwhxS5uFz0t4zHAmiISNstzqzQRH42NHrCsoqOoywnuvVn1R7bqaBP7
-         rFFo+BYWmDxG3dpd8Q2CrlhhrRjj0wWuOK73OpbeiKtfysqr9f1hlQ77Jkkx2fkOpd1g
-         hKVaiSX7o9hoRYTzIf5g0AYrPIeIPLuW4wh+mJf1cozS3Ft8Tb9LdSa0ADeoOnivSMSD
-         tqwzYZk2OjMKgxPfnVZd7aqFbY8J4q2Q/hu6hjY5Y5oG65xUPcg6JasW1rPvOxFYtdDM
-         6Qfg==
-X-Gm-Message-State: AOAM532Qfz1grm2m54AqTskCGam32MYbdqUQxALJvr/OfQ3MET0JX2T2
-        WEIrbIsjGN/mBRh4hO2O+Ab3HQ==
-X-Google-Smtp-Source: ABdhPJxYQKpknv4hTYke8msZTxTHfBsYuRDBRViJ8kaP6N0/aWjqLf9YfRmen8FVOoVFvS//wotfLg==
-X-Received: by 2002:a05:6602:2cd5:: with SMTP id j21mr10878773iow.22.1633378791402;
-        Mon, 04 Oct 2021 13:19:51 -0700 (PDT)
-Received: from vverma-s2-cbrunner ([162.243.188.99])
-        by smtp.gmail.com with ESMTPSA id r6sm223184ilm.71.2021.10.04.13.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Oct 2021 13:19:51 -0700 (PDT)
-From:   Vishal Verma <vverma@digitalocean.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org
-Cc:     Vishal Verma <vverma@digitalocean.com>
-Subject: [PATCH] cgroup: cgroup-v1: do not exclude cgrp_dfl_root
-Date:   Mon,  4 Oct 2021 20:19:48 +0000
-Message-Id: <20211004201948.20293-1-vverma@digitalocean.com>
-X-Mailer: git-send-email 2.17.1
+        id S235398AbhJENzu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Oct 2021 09:55:50 -0400
+Received: from relay.sw.ru ([185.231.240.75]:57714 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236196AbhJENyc (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 5 Oct 2021 09:54:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=+lz1/go95FssiI/cLhtGGYl9CHp3b3jFYmH54jsnHyI=; b=rBz4zQKu+pNWpq26plJ
+        RkQg2gp595jIucfIjkMZBtUSmOs7SZEeLs/KfOtT7dvCvuI4YGwpxKVCV0hfRpVgnc6odjOAERqd9
+        RDwgjl9weNDyd/9ehQYG1gUZcHLtkcBrdO3cBXBa97CLsy2Gv1+8QEYTvGE+/1oTS0lNJbEEM60=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mXkrw-0054Ue-Qr; Tue, 05 Oct 2021 16:52:32 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg v3] memcg: prohibit unconditional exceeding the limit of
+ dying tasks
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <YUM+saaJEce0TJyF@dhcp22.suse.cz>
+Message-ID: <b89715b5-6df7-34a3-f7b9-efa8e0eefd3e@virtuozzo.com>
+Date:   Tue, 5 Oct 2021 16:52:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YUM+saaJEce0TJyF@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Found an issue within cgroup_attach_task_all() fn which seem
-to exclude cgrp_dfl_root (cgroupv2) while attaching tasks to
-the given cgroup. This was noticed when the system was running
-qemu/kvm with kernel vhost helper threads. It appears that the
-vhost layer which uses cgroup_attach_task_all() fn to assign the
-vhost kthread to the right qemu cgroup works fine with cgroupv1
-based configuration but not in cgroupv2. With cgroupv2, the vhost
-helper thread ends up just belonging to the root cgroup as is
-shown below:
+Memory cgroup charging allows killed or exiting tasks to exceed the hard
+limit. It is assumed that the amount of the memory charged by those
+tasks is bound and most of the memory will get released while the task
+is exiting. This is resembling a heuristic for the global OOM situation
+when tasks get access to memory reserves. There is no global memory
+shortage at the memcg level so the memcg heuristic is more relieved.
 
-$ stat -fc %T /sys/fs/cgroup/
-cgroup2fs
-$ sudo pgrep qemu
-1916421
-$ ps -eL | grep 1916421
-1916421 1916421 ?        00:00:01 qemu-system-x86
-1916421 1916431 ?        00:00:00 call_rcu
-1916421 1916435 ?        00:00:00 IO mon_iothread
-1916421 1916436 ?        00:00:34 CPU 0/KVM
-1916421 1916439 ?        00:00:00 SPICE Worker
-1916421 1916440 ?        00:00:00 vnc_worker
-1916433 1916433 ?        00:00:00 vhost-1916421
-1916437 1916437 ?        00:00:00 kvm-pit/1916421
-$ cat /proc/1916421/cgroup
-0::/machine.slice/machine-qemu\x2d18\x2dDroplet\x2d7572850.scope/emulator
-$ cat /proc/1916439/cgroup
-0::/machine.slice/machine-qemu\x2d18\x2dDroplet\x2d7572850.scope/emulator
-$ cat /proc/1916433/cgroup
-0::/
+The above assumption is overly optimistic though. E.g. vmalloc can scale
+to really large requests and the heuristic would allow that. We used to
+have an early break in the vmalloc allocator for killed tasks but this
+has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+the current task is killed""). There are likely other similar code paths
+which do not check for fatal signals in an allocation&charge loop.
+Also there are some kernel objects charged to a memcg which are not
+bound to a process life time.
 
-From above, it can be seen that the vhost kthread (PID: 1916433)
-doesn't seem to belong the qemu cgroup like other qemu PIDs.
+It has been observed that it is not really hard to trigger these
+bypasses and cause global OOM situation.
 
-After applying this patch:
+One potential way to address these runaways would be to limit the amount
+of excess (similar to the global OOM with limited oom reserves). This is
+certainly possible but it is not really clear how much of an excess is
+desirable and still protects from global OOMs as that would have to
+consider the overall memcg configuration.
 
-$ pgrep qemu
-1643
-$ ps -eL | grep 1643
-   1643    1643 ?        00:00:00 qemu-system-x86
-   1643    1645 ?        00:00:00 call_rcu
-   1643    1648 ?        00:00:00 IO mon_iothread
-   1643    1649 ?        00:00:00 CPU 0/KVM
-   1643    1652 ?        00:00:00 SPICE Worker
-   1643    1653 ?        00:00:00 vnc_worker
-   1647    1647 ?        00:00:00 vhost-1643
-   1651    1651 ?        00:00:00 kvm-pit/1643
-$ cat /proc/1647/cgroup
-0::/machine.slice/machine-qemu\x2d18\x2dDroplet\x2d7572850.scope/emulator
+This patch is addressing the problem by removing the heuristic
+altogether. Bypass is only allowed for requests which either cannot fail
+or where the failure is not desirable while excess should be still
+limited (e.g. atomic requests). Implementation wise a killed or dying
+task fails to charge if it has passed the OOM killer stage. That should
+give all forms of reclaim chance to restore the limit before the
+failure (ENOMEM) and tell the caller to back off.
 
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Vishal Verma <vverma@digitalocean.com>
+In addition, this patch renames should_force_charge() helper
+to task_is_dying() because now its use is not associated witch forced
+charging.
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- kernel/cgroup/cgroup-v1.c | 3 ---
- 1 file changed, 3 deletions(-)
+v3: no functional changes, just improved patch description
+v2: swicthed to patch version proposed by mhocko@
+---
+ mm/memcontrol.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 35b920328344..f6cc5f8484dc 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -63,9 +63,6 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
- 	for_each_root(root) {
- 		struct cgroup *from_cgrp;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6da5020a8656..87e41c3cac10 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -239,7 +239,7 @@ enum res_type {
+ 	     iter != NULL;				\
+ 	     iter = mem_cgroup_iter(NULL, iter, NULL))
  
--		if (root == &cgrp_dfl_root)
--			continue;
+-static inline bool should_force_charge(void)
++static inline bool task_is_dying(void)
+ {
+ 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+ 		(current->flags & PF_EXITING);
+@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = should_force_charge() || out_of_memory(&oc);
++	ret = task_is_dying() || out_of_memory(&oc);
+ 
+ unlock:
+ 	mutex_unlock(&oom_lock);
+@@ -2530,6 +2530,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	struct page_counter *counter;
+ 	enum oom_status oom_status;
+ 	unsigned long nr_reclaimed;
++	bool passed_oom = false;
+ 	bool may_swap = true;
+ 	bool drained = false;
+ 	unsigned long pflags;
+@@ -2564,15 +2565,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_ATOMIC)
+ 		goto force;
+ 
+-	/*
+-	 * Unlike in global OOM situations, memcg is not in a physical
+-	 * memory shortage.  Allow dying and OOM-killed tasks to
+-	 * bypass the last charges so that they can exit quickly and
+-	 * free their memory.
+-	 */
+-	if (unlikely(should_force_charge()))
+-		goto force;
 -
- 		spin_lock_irq(&css_set_lock);
- 		from_cgrp = task_cgroup_from_root(from, root);
- 		spin_unlock_irq(&css_set_lock);
+ 	/*
+ 	 * Prevent unbounded recursion when reclaim operations need to
+ 	 * allocate memory. This might exceed the limits temporarily,
+@@ -2630,8 +2622,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+ 		goto nomem;
+ 
+-	if (fatal_signal_pending(current))
+-		goto force;
++	/* Avoid endless loop for tasks bypassed by the oom killer */
++	if (passed_oom && task_is_dying())
++		goto nomem;
+ 
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+@@ -2640,14 +2633,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 */
+ 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+-	switch (oom_status) {
+-	case OOM_SUCCESS:
++	if (oom_status == OOM_SUCCESS) {
++		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+-	case OOM_FAILED:
+-		goto force;
+-	default:
+-		goto nomem;
+ 	}
+ nomem:
+ 	if (!(gfp_mask & __GFP_NOFAIL))
 -- 
-2.17.1
+2.31.1
 
