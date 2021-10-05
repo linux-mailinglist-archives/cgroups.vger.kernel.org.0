@@ -2,82 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E629F4229D5
-	for <lists+cgroups@lfdr.de>; Tue,  5 Oct 2021 16:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDC8422B8C
+	for <lists+cgroups@lfdr.de>; Tue,  5 Oct 2021 16:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbhJEOCi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Oct 2021 10:02:38 -0400
-Received: from relay.sw.ru ([185.231.240.75]:33224 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235734AbhJEOB6 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 5 Oct 2021 10:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=Ed1xsp8lTrCrW27f1J4vH57YUUHw0q5d5pOknhx3OhI=; b=dlg9oxUUL9ON2P7NI
-        FPotPplwDm0pN9yRtW6uR6cImMJygenILBxuPbXKwHqwkrR4Xsm7PM70jOo1HQjb2RHaPSRAf8sNN
-        43yHyfSpf5DwKO2Vlo3GxDZ1spky8JiojDNWL2JimTvGua0MPzIGIEIvEsmMJTyevyQJZawJhUsLI
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mXkzF-0054Yv-SG; Tue, 05 Oct 2021 17:00:05 +0300
-Subject: Re: [PATCH mm v2] vmalloc: back off when the current task is
- OOM-killed
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Michal Hocko <mhocko@kernel.org>
+        id S235401AbhJEO5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Oct 2021 10:57:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45018 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235685AbhJEO5G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Oct 2021 10:57:06 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id AC306223A3;
+        Tue,  5 Oct 2021 14:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633445714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S16oNrBuFcWuNh85hYkjoulTN4cPTW6zAgP9R8WFY7g=;
+        b=KRM3Clmotf21/ys7DEwncqQlncDujGhwquNy00mM6atBKUGyELdWliY5ZR0P0QUP1a58Xl
+        tngzGvs0v2qeAcZ+gK67gAhzUTwx+5jpEwqM0Jy8rAQ+qtBdGUvA+8OuvJ5xj48KltS8qo
+        /rrWjruydyulK56D7kfWPCJN2nJ2ATw=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 13AB2A3B84;
+        Tue,  5 Oct 2021 14:55:13 +0000 (UTC)
+Date:   Tue, 5 Oct 2021 16:55:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
- <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-Message-ID: <dd6f3cc5-70f3-4275-6458-118c463bf38a@virtuozzo.com>
-Date:   Tue, 5 Oct 2021 17:00:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: [PATCH memcg v3] memcg: prohibit unconditional exceeding the
+ limit of dying tasks
+Message-ID: <YVxnUZzR+rjRrGU3@dhcp22.suse.cz>
+References: <YUM+saaJEce0TJyF@dhcp22.suse.cz>
+ <b89715b5-6df7-34a3-f7b9-efa8e0eefd3e@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b89715b5-6df7-34a3-f7b9-efa8e0eefd3e@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/5/21 4:52 PM, Vasily Averin wrote:
-> Huge vmalloc allocation on heavy loaded node can lead to a global
-> memory shortage. Task called vmalloc can have worst badness and
-> be selected by OOM-killer, however taken fatal signal does not
-> interrupt allocation cycle. Vmalloc repeat page allocaions
-> again and again, exacerbating the crisis and consuming the memory
-> freed up by another killed tasks.
-> 
-> After a successful completion of the allocation procedure, a fatal
-> signal will be processed and task will be destroyed finally.
-> However it may not release the consumed memory, since the allocated
-> object may have a lifetime unrelated to the completed task.
-> In the worst case, this can lead to the host will panic
-> due to "Out of memory and no killable processes..."
-> 
-> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> effective and avoid host panic. It does not check oom condition directly,
-> however, and breaks page allocation cycle when fatal signal was received.
-> 
-> This may trigger some hidden problems, when caller does not handle
-> vmalloc failures, or when rollaback after failed vmalloc calls own
-> vmallocs inside. However all of these scenarios are incorrect:
-> vmalloc does not guarantee successful allocation, it has never been called
-> with __GFP_NOFAIL and threfore either should not be used for any rollbacks
-> or should handle such errors correctly and not lead to critical
-> failures.
+On Tue 05-10-21 16:52:31, Vasily Averin wrote:
+> v3: no functional changes, just improved patch description
 
-I briefly checked this patch together with 
- v3 memcg: prohibit unconditional exceeding the limit of dying tasks
- over v5.15-rc4.
-I executed LTP on host, all oom, cgroup and memcg tests was successfully finished.
-and then experimented with memcg limited LXC containers.
-I did not noticed any troubles on my test node.
-Thank you,
-	Vasily Averin
+You haven't addressed my review feedback regarding the oom invocation.
+Let me paste it here again:
+: > @@ -1607,7 +1607,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+: >        * A few threads which were not waiting at mutex_lock_killable() can
+: >        * fail to bail out. Therefore, check again after holding oom_lock.
+: >        */
+: > -     ret = should_force_charge() || out_of_memory(&oc);
+: > +     ret = task_is_dying() || out_of_memory(&oc);
+: 
+: task_is_dying check will prevent the oom killer for dying tasks. There
+: is an additional bail out at out_of_memory layer. These checks are now
+: leading to a completely different behavior. Currently we simply use
+: "unlimited" reserves and therefore we do not have to kill any task. Now
+: the charge fails without using all reclaim measures. So I believe we
+: should drop those checks for memcg oom paths. I have to think about this
+: some more because I might be missing some other side effects.
+-- 
+Michal Hocko
+SUSE Labs
