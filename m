@@ -2,72 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDC8422B8C
-	for <lists+cgroups@lfdr.de>; Tue,  5 Oct 2021 16:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0653422D98
+	for <lists+cgroups@lfdr.de>; Tue,  5 Oct 2021 18:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhJEO5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Oct 2021 10:57:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45018 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbhJEO5G (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Oct 2021 10:57:06 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id AC306223A3;
-        Tue,  5 Oct 2021 14:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633445714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S16oNrBuFcWuNh85hYkjoulTN4cPTW6zAgP9R8WFY7g=;
-        b=KRM3Clmotf21/ys7DEwncqQlncDujGhwquNy00mM6atBKUGyELdWliY5ZR0P0QUP1a58Xl
-        tngzGvs0v2qeAcZ+gK67gAhzUTwx+5jpEwqM0Jy8rAQ+qtBdGUvA+8OuvJ5xj48KltS8qo
-        /rrWjruydyulK56D7kfWPCJN2nJ2ATw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 13AB2A3B84;
-        Tue,  5 Oct 2021 14:55:13 +0000 (UTC)
-Date:   Tue, 5 Oct 2021 16:55:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg v3] memcg: prohibit unconditional exceeding the
- limit of dying tasks
-Message-ID: <YVxnUZzR+rjRrGU3@dhcp22.suse.cz>
-References: <YUM+saaJEce0TJyF@dhcp22.suse.cz>
- <b89715b5-6df7-34a3-f7b9-efa8e0eefd3e@virtuozzo.com>
+        id S236030AbhJEQQT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Oct 2021 12:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236078AbhJEQQQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Oct 2021 12:16:16 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F22C061749
+        for <cgroups@vger.kernel.org>; Tue,  5 Oct 2021 09:14:25 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id m21so20182532pgu.13
+        for <cgroups@vger.kernel.org>; Tue, 05 Oct 2021 09:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sWV3eCSW91vjz0ZnFEdePdyFv0khCWAXj63KXD3BxX4=;
+        b=m9fVw7Q4ARqPYCSirL0dcKTTY9WiiGEUQx/SHaP6js1Ej2mc3rFteVrje7naDzeB6w
+         k2u+A+0jUEbEI6P3EcTkTW93cOpQAQdP5Dic8C2Gyw2W1jNspuMSujON6JiDhr+w7i22
+         xflC2ZH1aT+3JYPgtUjbxZ8ASpXrFp9G7PEfBfw/QPAOuzWepkByV8l6h3WOT0xWW6CW
+         /CGh1qZtmK36Fjgg8juAgUp48tMVF5076wGTM9yG4oXs24AL/uhbtz37bTq0as3WIgS7
+         eb7EvA6L5SdU7YE/i+1PXymvJ252kYhyy/n8iUblDtBwlkbXz2xF5WZYDwOJsr/rKUc2
+         q+Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=sWV3eCSW91vjz0ZnFEdePdyFv0khCWAXj63KXD3BxX4=;
+        b=6IHmHUDlig5U1rBkp/UuGDPM/ET0Z++iD6CzS5m9tCxGWRsRhP4fBkZvHtSa1mFGf0
+         SuBhS6NSmd4gY4hio2EMwGLGYnGXXjUZZY+q5FCn6EiMs549TIF9aTzBkuPdutSoqpV9
+         k5qW0OclBYNU7bdIqqPdmcNsED6T0fIQggeZnxOFwWOfWaOWky3P4iCvEPRQSrn+qzfU
+         K9vQs46hGjD0vjiWwCd1kBHNw7jwFosdRDkPCUbgjFZgg3XSforSlmEQQuD60HpY//pC
+         +waeBaKmf0RsqhrYPz2l7FOsFsNfBE+NoNtDnX+00xEmqmY48jVRdKselQVywjcGZIky
+         8gUg==
+X-Gm-Message-State: AOAM531hFUym3UhpvIKKFC9uRZ8gsFgLxnp5VAyKTbH82h5aszwjsObV
+        FyOCNSVxCxvxrj/KNHs6X8g=
+X-Google-Smtp-Source: ABdhPJzZw/EkntCRu3SQDw6ex3wB+0LAeXeP06pKMIGvF7b33dG+H+SmN8Z83MgSiLqTaiOp3Rch3g==
+X-Received: by 2002:a62:8f87:0:b0:44c:620b:df63 with SMTP id n129-20020a628f87000000b0044c620bdf63mr11449343pfd.61.1633450464856;
+        Tue, 05 Oct 2021 09:14:24 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id u12sm17648714pgi.21.2021.10.05.09.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Oct 2021 09:14:24 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 5 Oct 2021 06:14:23 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Vishal Verma <vverma@digitalocean.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] cgroup: cgroup-v1: do not exclude cgrp_dfl_root
+Message-ID: <YVx5342KvJ1RFoL+@slm.duckdns.org>
+References: <20211004201948.20293-1-vverma@digitalocean.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b89715b5-6df7-34a3-f7b9-efa8e0eefd3e@virtuozzo.com>
+In-Reply-To: <20211004201948.20293-1-vverma@digitalocean.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 05-10-21 16:52:31, Vasily Averin wrote:
-> v3: no functional changes, just improved patch description
+On Mon, Oct 04, 2021 at 08:19:48PM +0000, Vishal Verma wrote:
+> Found an issue within cgroup_attach_task_all() fn which seem
+> to exclude cgrp_dfl_root (cgroupv2) while attaching tasks to
+> the given cgroup. This was noticed when the system was running
+> qemu/kvm with kernel vhost helper threads. It appears that the
+> vhost layer which uses cgroup_attach_task_all() fn to assign the
+> vhost kthread to the right qemu cgroup works fine with cgroupv1
+> based configuration but not in cgroupv2. With cgroupv2, the vhost
+> helper thread ends up just belonging to the root cgroup as is
+> shown below:
+...
+> Suggested-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Vishal Verma <vverma@digitalocean.com>
 
-You haven't addressed my review feedback regarding the oom invocation.
-Let me paste it here again:
-: > @@ -1607,7 +1607,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
-: >        * A few threads which were not waiting at mutex_lock_killable() can
-: >        * fail to bail out. Therefore, check again after holding oom_lock.
-: >        */
-: > -     ret = should_force_charge() || out_of_memory(&oc);
-: > +     ret = task_is_dying() || out_of_memory(&oc);
-: 
-: task_is_dying check will prevent the oom killer for dying tasks. There
-: is an additional bail out at out_of_memory layer. These checks are now
-: leading to a completely different behavior. Currently we simply use
-: "unlimited" reserves and therefore we do not have to kill any task. Now
-: the charge fails without using all reclaim measures. So I believe we
-: should drop those checks for memcg oom paths. I have to think about this
-: some more because I might be missing some other side effects.
+Applied to cgroup/for-5.16.
+
+Thanks.
+
 -- 
-Michal Hocko
-SUSE Labs
+tejun
