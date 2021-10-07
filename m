@@ -2,48 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B722D424E86
-	for <lists+cgroups@lfdr.de>; Thu,  7 Oct 2021 10:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DFC424EF6
+	for <lists+cgroups@lfdr.de>; Thu,  7 Oct 2021 10:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhJGIGk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Oct 2021 04:06:40 -0400
-Received: from relay.sw.ru ([185.231.240.75]:49364 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232550AbhJGIGj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:06:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=0BFtNW+uAic/gbXLZdgsDlSO4sw6Ifw/xoJaDaI55bU=; b=sFxVuxGF/K/sI9yRXtt
-        iHelb55imrMwNRi00EL//AAgf9cXXhmdFaqfFlGjfOH9hCddiUk7c5W6sI2GLrh9HN41qQSKv/n/U
-        WDKnaXDE6Fhh1q7If9NFVKPoW5fKf3hJ/EOgpbOJ+ver0iKgznhwp8QFOo0n5dKpOnV3Cr46vYA=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mYOOQ-005Ivp-TU; Thu, 07 Oct 2021 11:04:42 +0300
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S232589AbhJGIPS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Oct 2021 04:15:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51582 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhJGIPS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Oct 2021 04:15:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE2F51FF45;
+        Thu,  7 Oct 2021 08:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633594403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6kWPeAL5YdhKOgGiPm0d0ACf2LYS8mjdOECzh1wZutw=;
+        b=SwzZDw98grNFIGy/1P65glPZG+dWl9idjalCyIqFu2qTCnRYtiatBwG3vqjPjLctW7ORql
+        bbPf5k2lOY29DT+MUNU+fq9PAEA84G+KTQyuqB8/VUKqtedYbR7SCDZvfnMWKXc+lh2BIp
+        /VEESlmkT/m7HLy9D2jbyCv3z5reyvE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AD7C2A3B83;
+        Thu,  7 Oct 2021 08:13:23 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 10:13:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         kernel@openvz.org
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: memcg memory accounting in vmalloc is broken
-Message-ID: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
-Date:   Thu, 7 Oct 2021 11:04:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: memcg memory accounting in vmalloc is broken
+Message-ID: <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
+References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+On Thu 07-10-21 11:04:40, Vasily Averin wrote:
+> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+> 
+> Is it known issue perhaps?
 
-Is it known issue perhaps?
-
-thank you,
-	Vasily Averin
+No, I think this was just overlooked. Definitely doesn't look
+intentional to me.
+-- 
+Michal Hocko
+SUSE Labs
