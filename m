@@ -2,103 +2,213 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D43426A16
-	for <lists+cgroups@lfdr.de>; Fri,  8 Oct 2021 13:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2511C426FA3
+	for <lists+cgroups@lfdr.de>; Fri,  8 Oct 2021 19:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243032AbhJHLtZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Oct 2021 07:49:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39580 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243771AbhJHLtP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Oct 2021 07:49:15 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6A0E320120;
-        Fri,  8 Oct 2021 11:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633693621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YoxW4EUonCWf2lBt5f9S3iKvB1ejzJVPxoUC2rO4AkI=;
-        b=1ZcyaUI9xL0W6i8yX8fh3JwbqEunlXFB9R5Hp4A3vr8ms486M4COzbyQRsWP+KlLwyB6dh
-        dGaXSFSFDN4d5nEVPhN+r4zSGmKnNwJv+aM9LS/ZyZArn593oBkmU1FM8LbR8KuVBUobD1
-        yNeUmEVBsrzS2avT2ueUr8fTq1gAZDE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633693621;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YoxW4EUonCWf2lBt5f9S3iKvB1ejzJVPxoUC2rO4AkI=;
-        b=97hilA7zf9D+z7paBomgPpHZSwUGYILNLuMasBPsLrjC2yAu9fTQr3pifWwzZtN5UvLFl5
-        +se0dSDU+VEB5VBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36BDC13EC3;
-        Fri,  8 Oct 2021 11:47:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id PXuXCrUvYGE2QAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 08 Oct 2021 11:47:01 +0000
-Message-ID: <29155011-f884-b0e5-218e-911039568acb@suse.cz>
-Date:   Fri, 8 Oct 2021 13:47:00 +0200
+        id S234255AbhJHRhd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 Oct 2021 13:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhJHRha (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Oct 2021 13:37:30 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2279FC061755
+        for <cgroups@vger.kernel.org>; Fri,  8 Oct 2021 10:35:35 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u18so42009224lfd.12
+        for <cgroups@vger.kernel.org>; Fri, 08 Oct 2021 10:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
+        b=FP13VZlniV+IoAFJLmoJcHDk8TtBwY9o9QaWTcNjuF8LFUXGyt1e/yMPp3IoW8c2gR
+         h2tWPVg9GWcbfFqHlFtA/6vMWP722nIhlOQQsfcKCkHlOVBYGfHb7KCX2OvGmygbbPA6
+         F2OmrLBLWpZx4Z6RLVeQuQmUDaUduMxFGdKKqAXBlegzGQ+WiQqNONZf8JCekyjfyQpG
+         739Ax5rs3sQkenq+RyBXTG78iNV/QEP71fwJtzKfR7BS5CtcFUjreZrNjOGRj2HtvebZ
+         9z4sTg9p9sZXq/V3B16Gt/puPG+04xXdXW66RHRfeZf2+aik86F6qhonX2ZN10Qyo3H8
+         ugUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
+        b=SKIpVHeq3GPm+DCkt7ycXQF2JHfAxCXIZ/Cai2c4b2wr15xrmQTJkRnPycZTSpvRUm
+         0vW0TNDmO035FrwhA4bG0LzTBDZTCh1Pib6LmocoF/OHDeoGPNimK85Y5RYck+G31i8p
+         eVchYUT56GwZD2sGOAaUaQRa1EKnFvbM/6JQAyB4xPaBwYbGdvm1EG0LycaiFd42p28l
+         4QK/ERGygwkSTYsDc50cv2xCtkv8dtz5P/nckNu4M4iDOxYqds+1DBmncD041jpTpLPo
+         RtFvr3dXXSCLHEmKfYgAuTV9UslG+xqvszzIQ4cxo6iKuUDbt3vjjvMpELvdjgd+3RTY
+         2AKA==
+X-Gm-Message-State: AOAM533/nsiEMUxmLdtOE5nMtdJRmTEuAV7zoU705SBthGnuckA4/dJe
+        4YX+t9nxH1biava7pTiKd/+8uIImlJjq6HhVzDFbrA==
+X-Google-Smtp-Source: ABdhPJxTtyAXfkAipUU4ESl6gqg/Ep1F4KNHDSMcJQ8tpbjaqzt14nLv+k4NrYKPJyLs75yL8bFgsN8pHG51/LwsIow=
+X-Received: by 2002:a05:651c:1793:: with SMTP id bn19mr4749093ljb.475.1633714533204;
+ Fri, 08 Oct 2021 10:35:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH memcg] mm/page_alloc.c: avoid statistic update with 0
-Content-Language: en-US
-To:     Vasily Averin <vvs@virtuozzo.com>, Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+References: <6411d3f7-b3a4-23a8-14fc-fcf6b9c5b73a@virtuozzo.com> <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
+In-Reply-To: <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 8 Oct 2021 10:35:22 -0700
+Message-ID: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
+Subject: Re: [PATCH memcg] memcg: enable memory accounting in __alloc_pages_bulk
+To:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
         Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>
-References: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <b2371951-bb8a-e62e-8d33-10830bbf6275@virtuozzo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/8/21 11:24, Vasily Averin wrote:
-> __alloc_pages_bulk can call __count_zid_vm_events and zone_statistics
-> with nr_account = 0.
++Roman
 
-But that's not a bug, right? Just an effective no-op that's not commonly
-happening, so is it worth the check?
-
-> Fixes: 3e23060b2d0b ("mm/page_alloc: batch the accounting updates in the bulk allocator")
+On Fri, Oct 8, 2021 at 2:23 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>
+> Enable memory accounting for bulk page allocator.
+>
+> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+> Cc: <stable@vger.kernel.org>
 > Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 > ---
->  mm/page_alloc.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
+>  mm/page_alloc.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 62 insertions(+), 2 deletions(-)
+>
 > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 602819a232e5..e67113452ee8 100644
+> index b37435c274cf..602819a232e5 100644
 > --- a/mm/page_alloc.c
 > +++ b/mm/page_alloc.c
-> @@ -5364,9 +5364,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	}
->  
->  	local_unlock_irqrestore(&pagesets.lock, flags);
-> -
-> -	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
-> -	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
-> +	if (nr_account) {
-> +		__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
-> +		zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
-> +	}
->  	if (objcg)
->  		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
->  
-> 
+> @@ -5172,6 +5172,55 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+>         return true;
+>  }
+>
 
+Please move the following memcg functions to memcontrol.[h|c] files.
+
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +                                       unsigned int nr_pages)
+> +{
+> +       struct obj_cgroup *objcg = NULL;
+> +
+> +       if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
+> +               return true;
+> +
+> +       objcg = get_obj_cgroup_from_current();
+> +
+> +       if (objcg && obj_cgroup_charge(objcg, gfp, nr_pages << PAGE_SHIFT)) {
+
+Please use obj_cgroup_charge_pages() when you move this code to memcontrol.c
+
+> +               obj_cgroup_put(objcg);
+> +               return false;
+> +       }
+> +       obj_cgroup_get_many(objcg, nr_pages);
+> +       *objcgp = objcg;
+> +       return true;
+> +}
+> +
+> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcg,
+> +                                       struct page *page)
+> +{
+> +       page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
+> +}
+> +
+> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +                                       unsigned int nr_pages)
+> +{
+> +       obj_cgroup_uncharge(objcg, nr_pages << PAGE_SHIFT);
+> +       percpu_ref_put_many(&objcg->refcnt, nr_pages + 1);
+
+Introduce the obj_cgroup_put_many() and you don't need to keep the
+extra ref from the pre hook i.e. put the ref in the pre hook.
+
+> +}
+> +#else
+> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +                                       unsigned int nr_pages)
+> +{
+> +       return true;
+> +}
+> +
+> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcgp,
+> +                                       struct page *page)
+> +{
+> +}
+> +
+> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +                                       unsigned int nr_pages)
+> +{
+> +}
+> +#endif
+>  /*
+>   * __alloc_pages_bulk - Allocate a number of order-0 pages to a list or array
+>   * @gfp: GFP flags for the allocation
+> @@ -5207,6 +5256,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>         gfp_t alloc_gfp;
+>         unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>         int nr_populated = 0, nr_account = 0;
+> +       unsigned int nr_pre_charge = 0;
+> +       struct obj_cgroup *objcg = NULL;
+>
+>         /*
+>          * Skip populated array elements to determine if any pages need
+> @@ -5275,6 +5326,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>         if (unlikely(!zone))
+>                 goto failed;
+>
+> +       nr_pre_charge = nr_pages - nr_populated;
+> +       if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
+> +               goto failed;
+> +
+>         /* Attempt the batch allocation */
+>         local_lock_irqsave(&pagesets.lock, flags);
+>         pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> @@ -5287,9 +5342,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>                         nr_populated++;
+>                         continue;
+>                 }
+> -
+>                 page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+>                                                                 pcp, pcp_list);
+> +
+>                 if (unlikely(!page)) {
+>                         /* Try and get at least one page */
+>                         if (!nr_populated)
+> @@ -5297,6 +5352,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>                         break;
+>                 }
+>                 nr_account++;
+> +               if (objcg)
+> +                       memcg_bulk_charge_hook(objcg, page);
+
+Logically this above should be after prep_new_page().
+
+>
+>                 prep_new_page(page, 0, gfp, 0);
+>                 if (page_list)
+> @@ -5310,13 +5367,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>
+>         __count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>         zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+> +       if (objcg)
+> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+>
+>  out:
+>         return nr_populated;
+>
+>  failed_irq:
+>         local_unlock_irqrestore(&pagesets.lock, flags);
+> -
+> +       if (objcg)
+> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+>  failed:
+>         page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+>         if (page) {
+> --
+> 2.31.1
+>
