@@ -2,79 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4065C427DEC
-	for <lists+cgroups@lfdr.de>; Sun, 10 Oct 2021 00:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC829427F4A
+	for <lists+cgroups@lfdr.de>; Sun, 10 Oct 2021 08:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhJIWnt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 9 Oct 2021 18:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        id S230237AbhJJGCI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 10 Oct 2021 02:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhJIWnt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 9 Oct 2021 18:43:49 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D8AC061570;
-        Sat,  9 Oct 2021 15:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=irb6FRwPU2dQSsNxYUCgkPV+9G3ES5Ac2nbK8COEBzU=; b=DXMGHD/JX7AFdlaWO/D2GkVpwP
-        QHCWfAPEgda5tzNYUSnnKZKCGkQknXnodDJbMYotyD8jaVhs69KREgh7jIBPVJ/5E16H/9bcgXTKD
-        IroinWzWCbs73n5/onzduuOpL3gxMExtapMVaQDRRpCm+DFsvm9c3Pm+SfhOnfW5wzJefTXiU1YGc
-        VgkiiMjqM65eIxzikDCe9D2I1XruRKUFEougWAdwFo2xqTsuoZ/gbloLdtivYIomIPmuJTli09DRS
-        c3QhGj6d23zWxNrWup/YMnbaDJBwo5HH6sd5/tN9kVP1mZSgoEURfTGx2vX/FVt2MFL7+d9egwyvg
-        cVv9mw4Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZL2B-008uuN-8R; Sat, 09 Oct 2021 22:41:39 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D30FD9811D4; Sun, 10 Oct 2021 00:41:38 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 00:41:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
-Cc:     bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
-        lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, juri.lelli@redhat.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, containers@lists.linux.dev,
-        containers@lists.linux-foundation.org, pratik.r.sampat@gmail.com
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-Message-ID: <20211009224138.GZ174703@worktop.programming.kicks-ass.net>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
+        with ESMTP id S230215AbhJJGCI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 10 Oct 2021 02:02:08 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048B7C061570
+        for <cgroups@vger.kernel.org>; Sat,  9 Oct 2021 23:00:09 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so2418179otk.3
+        for <cgroups@vger.kernel.org>; Sat, 09 Oct 2021 23:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=p/SVY/QI4M4v6pM0u8YgYD2lKEPxB48+bwBCoXh9Fbq4kVvoQzzixbJFjWajvJJbEl
+         IW9ykDOEhASB+KMVLlXgl7VOKpBFYCtSZHr14Vt/qTYwpmNufz9l5Vs1jFLGgN2h437b
+         ykI+I1/3gnRH0IGO5u6e1SCsHGZg0U5rOJynJu78TYJ+TPVoajuXtJA1XmT1amVc+c2R
+         PZWsppvJGi98ypWwrg5AMSscd7z2MXgkJiyyCUwap0guhBslAsC57rCek/I/Vkl7ooT5
+         YReUvRl2cLRpn0PK6YJKKXCkdQs+owKmB3y83bCSGGJQO9XpSfV3onR0L9GYy/a8r7zK
+         QD7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
+        b=jRdfR9kcNCitMW89BrttaoWCvsK2PGRI2+EC0iwWrey+gtDipF5fftRsBynDO0j2Mz
+         0dYNfdYsyb9hdt4s5PMdhj1cFH9K0WNpUXgtD1BZDt49ap5rFh5AeZqMSDCctXTXpkCs
+         H+r5VRSJzsrJQFwMj1Ywa18eLDQ3BsHtgV07cY0y2fiCF1IKExEDHkJjSa+7RiZTEdMC
+         JZr8PHwJDkfqZ2xiJNHr15x5t83cZKK6zr/b0h9DhTdRd/LpIM4WqigX7InlsJHYCaLD
+         Azh42L+Esl1Es17NSpRc6JbT0v8dB2Ga12R8/8EeJjEiSycRxfZ6Teuo0DZmtxUmkkdg
+         mmbQ==
+X-Gm-Message-State: AOAM533v7e91s6iRy+bqp7Vn4Rf3Gw7O8PuIphQcJ5AKD45fbRxGODPa
+        297LI2oYPWmRetK/NNawG3ho8vFvEDYQlwj23gg=
+X-Google-Smtp-Source: ABdhPJyZZ6YxZgrt0KU9Q7380oB1aHEsrDysiDwXxUObs/8O6Q/aMSoc4XfBE2URuNj42VTs9oP2qyO1XMpT3y1pzg4=
+X-Received: by 2002:a9d:19e3:: with SMTP id k90mr15453672otk.99.1633845609370;
+ Sat, 09 Oct 2021 23:00:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211009151243.8825-1-psampat@linux.ibm.com>
+Received: by 2002:a8a:4a:0:0:0:0:0 with HTTP; Sat, 9 Oct 2021 23:00:09 -0700 (PDT)
+Reply-To: monica43brown@gmail.com
+From:   monicabrown <nagannoura@gmail.com>
+Date:   Sun, 10 Oct 2021 06:00:09 +0000
+Message-ID: <CALq25Smm1MpJJXFodt=Z4L9UxKvzQoBTCY5kxBOy0jHHJ8iEiQ@mail.gmail.com>
+Subject: Hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 08:42:38PM +0530, Pratik R. Sampat wrote:
-
-> Current shortcomings in the prototype:
-> --------------------------------------
-> 1. Containers also frequently use cfs period and quotas to restrict CPU
->    runtime also known as millicores in modern container runtimes.
->    The RFC interface currently does not account for this in
->    the scheme of things.
-> 2. While /proc/stat is now namespace aware and userspace programs like
->    top will see the CPU utilization for their view of virtual CPUs;
->    if the system or any other application outside the namespace
->    bumps up the CPU utilization it will still show up in sys/user time.
->    This should ideally be shown as stolen time instead.
->    The current implementation plugs into the display of stats rather
->    than accounting which causes incorrect reporting of stolen time.
-> 3. The current implementation assumes that no hotplug operations occur
->    within a container and hence the online and present cpus within a CPU
->    namespace are always the same and query the same CPU namespace mask
-> 4. As this is a proof of concept, currently we do not differentiate
->    between cgroup cpus_allowed and effective_cpus and plugs them into
->    the same virtual CPU map of the namespace
-> 5. As described in a fair use implication earlier, knowledge of the
->    CPU topology can potentially be taken an misused with a flood.
->    While scrambling the CPUset in the namespace can help by
->    obfuscation of information, the topology can still be roughly figured
->    out with the use of IPI latencies to determine siblings or far away
->    cores
-
-6. completely destroys and ignores any machine topology information.
+Greetings from me
+My name is Monica Brown and how are you today, please I have something that
+i will like to share with you okay please try and get back.
