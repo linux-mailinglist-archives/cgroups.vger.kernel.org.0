@@ -2,51 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5C9429379
-	for <lists+cgroups@lfdr.de>; Mon, 11 Oct 2021 17:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB07429466
+	for <lists+cgroups@lfdr.de>; Mon, 11 Oct 2021 18:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237749AbhJKPgT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Oct 2021 11:36:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46416 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231967AbhJKPgS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Oct 2021 11:36:18 -0400
+        id S231583AbhJKQXb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Oct 2021 12:23:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46736 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhJKQXb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Oct 2021 12:23:31 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0CBEC1FED2;
-        Mon, 11 Oct 2021 15:34:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BAA7722132;
+        Mon, 11 Oct 2021 16:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633966458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1633969289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZL4FlCU5ckfxXlCQEcdiVJas2l+qPTW/K1inX6vWtpY=;
-        b=ZaVEyJ2OYsHCWHcdHtNktV8SP1RE4O5Hm9uc2Y8bLSEQ8tGgVWSeMa9/vwvfVALILKo2ms
-        WoTZtyamBomNpEvlr0MrPn3NnsfP0Cm46gvQwuCmllDkGxNsCG+nyP6yKr+Fq1FNHfWTDW
-        XylMA3SzpDtokKMxBgtByuYAUWiDlIc=
+        bh=j8grqsuiDa1p2LSXgYDqekInnTQ7Jhon0WjFTDwZwJs=;
+        b=TQj0MIlN7mg/iFLoicMLPRRgjwJjxnKhDlzHKKsy5eqTNIlGKN4X2cGLnM6joCpLDt5M+Y
+        8z3ZR6vJy9LB/YIcpGArNopx9B96owXx4jG48I2mk3pUG7kSYpzcyRk/wBJYBipHQYdVgt
+        0S7T4dqGiuFhd6SlWtRhBszhQgwdkp8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2AE913BCB;
-        Mon, 11 Oct 2021 15:34:17 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90FAA13BC0;
+        Mon, 11 Oct 2021 16:21:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id SOHWOnlZZGGYVAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 11 Oct 2021 15:34:17 +0000
-Date:   Mon, 11 Oct 2021 17:34:16 +0200
+        id 8ae4IolkZGGqawAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 11 Oct 2021 16:21:29 +0000
+Date:   Mon, 11 Oct 2021 18:21:28 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Odin Hultgren van der Horst <odin@digitalgarden.no>
-Cc:     tj@kernel.org, cgroups@vger.kernel.org
-Subject: Re: Re: [Question] io cgroup subsystem threaded support
-Message-ID: <20211011153416.GB61605@blackbody.suse.cz>
-References: <20211001110645.uzw2w5t4rknwqhma@T580.localdomain>
- <20211007133916.mgk6qb65d2r57fc2@T580.localdomain>
+To:     quanyang.wang@windriver.com
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <20211011162128.GC61605@blackbody.suse.cz>
+References: <20211007121603.1484881-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211007133916.mgk6qb65d2r57fc2@T580.localdomain>
+In-Reply-To: <20211007121603.1484881-1-quanyang.wang@windriver.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -54,15 +62,39 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello.
 
-On Thu, Oct 07, 2021 at 03:39:16PM +0200, Odin Hultgren van der Horst <odin@digitalgarden.no> wrote:
-> So mainly the writeback functionality or is it ingrained in all
-> functionality like latency and priority?
+On Thu, Oct 07, 2021 at 08:16:03PM +0800, quanyang.wang@windriver.com wrote:
+> This is because that root_cgrp->bpf.refcnt.data is allocated by the
+> function percpu_ref_init in cgroup_bpf_inherit which is called by
+> cgroup_setup_root when mounting, but not freed along with root_cgrp
+> when umounting.
 
-What do you want to achieve actually?
+Good catch!
 
-> If not, is there a subset of io cgroup subsys that could easily support threading?
+> Adding cgroup_bpf_offline which calls percpu_ref_kill to
+> cgroup_kill_sb can free root_cgrp->bpf.refcnt.data in umount path.
 
-I'd say such a subset would be similar to what can be done with
-ioprio_set(2).
+That is sensible.
 
-Michal
+> Fixes: 2b0d3d3e4fcfb ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+
+Why this Fixes:? Is the leak absent before the percpu_ref refactoring?
+I guess the embedded data are free'd together with cgroup. Makes me
+wonder why struct cgroup_bpf has a separate percpu_ref counter from
+struct cgroup...
+
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -2147,8 +2147,10 @@ static void cgroup_kill_sb(struct super_block *sb)
+>  	 * And don't kill the default root.
+>  	 */
+>  	if (list_empty(&root->cgrp.self.children) && root != &cgrp_dfl_root &&
+> -	    !percpu_ref_is_dying(&root->cgrp.self.refcnt))
+> +			!percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
+> +		cgroup_bpf_offline(&root->cgrp);
+
+(You made some unnecessary whitespace here breaking indention :-)
+
+>  		percpu_ref_kill(&root->cgrp.self.refcnt);
+> +	}
+>  	cgroup_put(&root->cgrp);
+>  	kernfs_kill_sb(sb);
+>  }
