@@ -2,95 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAA142AC53
-	for <lists+cgroups@lfdr.de>; Tue, 12 Oct 2021 20:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D4542AF83
+	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 00:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhJLStd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Oct 2021 14:49:33 -0400
-Received: from relay.sw.ru ([185.231.240.75]:43718 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233972AbhJLStd (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:49:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=64IcsFb8bBS4pFgFI9KVjfapZy7rEeNKQF8dCkvviYY=; b=pcmeKt+OWhafIWGl+
-        Rsq0UqWHt6l2z4rGEpWKXORZXiSDMKTtmftnTOedW5rwjcVI2qepA2vleNRBTivfqynFbNdjJVz9i
-        rxsu0SoUkl2/uSmisuOWf21E9oDhshP6OrjfrNC1n8SV04Qxku1PBM1OKoscx4JNdBmVKnrZn6siY
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1maMml-005pmF-PE; Tue, 12 Oct 2021 21:45:59 +0300
-Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
- __alloc_pages_bulk
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
- <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
- <YWWrai/ChIgycgCo@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <3467508f-0f0f-fc28-c973-ad9f0eeb9818@virtuozzo.com>
-Date:   Tue, 12 Oct 2021 21:45:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235639AbhJLWLS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Oct 2021 18:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234110AbhJLWLR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Oct 2021 18:11:17 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B516C061745
+        for <cgroups@vger.kernel.org>; Tue, 12 Oct 2021 15:09:15 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id d125so570796iof.5
+        for <cgroups@vger.kernel.org>; Tue, 12 Oct 2021 15:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
+        b=URBTfdNwpUSWvtrPTODaB7vJFPkhRo1Rkd9rNodo5Kt6uwiqdXAMbU5viCLd51sE2x
+         ki0UTxvWlL1Z94dU99QQMKtmkRg3s6M4bgKVG++31/w0Q6hmDONC9Ob9PIDPl6t3X/AK
+         IyYWmt1Le8Cd1JXrkupI2CsJ0KmkyX1Us7ZkwjnKtYxBcBuNBSrUBumdmY2EI+HSxtij
+         lYj9F/O2cQmafshbyFI+ayJ7tTBtlYN91XsJix2kaWHZqGimxeKfvSGAzeuGi9Un83L8
+         2127/jAgWPBIT3ArdW4YlNO7w/upI95SOH+HNOW3AEXtZh90CS1F8HJRCoRcIjB/EfwZ
+         lDug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
+        b=790FJkIwJTYUd+GhAfNFhrXqtqQa6Qbi5TRaS8ZC3PUqikMok73dujwL5oARjRn02K
+         /xMnsT8RpJaweWT54PbQYMceITqXAd9d/0xiIqyfjptqdHTuyJPKMbzDifq0vqEgRym1
+         nvtd5iAPj+Bns2o37+hpexe8XEwjjSOd/Yw1dKEmjE2ffsE+ndZ81rUnLgmg5rwhooJC
+         FY60NzPhO2md7tjDQyinw6uiO+X24kWBZE36817StZ94pBJk948gUWZ4EO3IMFz4pdR0
+         +t5MoqeVfpptmL2YvNbf9IW0ZSOFuWA9PzdUbVRtPgNcl3pOhBKEK95aVueVuLBgUCw3
+         PFtw==
+X-Gm-Message-State: AOAM531sd9uWq1+EJhy9aY22Hi+Hvrs25sOxDgYJvE/EeZavCxN/3ePz
+        Cx2O3NNhvfnqz7TpM1xIyefHIemCpT1Mfox2+Hs=
+X-Google-Smtp-Source: ABdhPJzyC+CynmQiBj+/GHdgA3gm6fobJNXyo9hJSjKraTUjszhs0FRwTm+Il35h8FqKcpDPupo9Z4JcbsKcgPJO/jM=
+X-Received: by 2002:a05:6602:1542:: with SMTP id h2mr15243521iow.198.1634076554846;
+ Tue, 12 Oct 2021 15:09:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWWrai/ChIgycgCo@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6e04:228a:0:0:0:0 with HTTP; Tue, 12 Oct 2021 15:09:14
+ -0700 (PDT)
+Reply-To: patzengu@outlook.com
+From:   Patrice Zengu <rm2568590@gmail.com>
+Date:   Wed, 13 Oct 2021 00:09:14 +0200
+Message-ID: <CADgyfhaUNt8wOZbU=RqdwWbGaP7378NevThfddd7bzsntf=4Hg@mail.gmail.com>
+Subject: i need your co-operation
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12.10.2021 18:36, Michal Hocko wrote:
-> On Tue 12-10-21 17:58:21, Vasily Averin wrote:
->> Enable memory accounting for bulk page allocator.
-> 
-> ENOCHANGELOG
->  
-> And I have to say I am not very happy about the solution. It adds a very
-> tricky code where it splits different charging steps apart.
-> 
-> Would it be just too inefficient to charge page-by-page once all pages
-> are already taken away from the pcp lists? This bulk should be small so
-> this shouldn't really cause massive problems. I mean something like
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..8bcd69195ef5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5308,6 +5308,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  
->  	local_unlock_irqrestore(&pagesets.lock, flags);
->  
-> +	if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) {
-> +		/* charge pages here */
-> +	}
-> +
->  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
-> 
+-- 
+Dear Friend,
 
-In general it looks like we can do it.
+I am Mr.Patrice Zengu ,from Burkina Faso and i am the new bank telex
+manager of our bank here in Africa.
 
-We can traverse via filled page_array or page_list.
-For page_array we need to check is the page already accounted 
-(incoming array can contain some pages already, both in the beginning and in middle)
-For each taken page we can try to charge it.
-If it was charges successfully -- we will process next page in list/array.
-When charge fails we need to remove rest of pages from list/array and somehow release them. 
-At present I do not understand how to do it correctly -- perhaps just call free_page() ?
-Finally, we'll need to adjust nr_account and nr_populated properly.
+I have the opportunity to transfer the sum of US$ 10.5Million to your
+bank account which i personally placed on an Escrow account without a
+name.
 
-I'll try to implement this tomorrow.
+I must tell you that after revision of files both old and new as the
+new telex manager ,i discovered that if these funds remains here
+without transferring it offshore,it will be lawfully recovered
+andmoved to the  Government of Burkina Faso treasury as an abandoned
+funds without any name.
 
-Thank you,
-	Vasily Averin
+I want to let you know that a Burkinabe cannot stand as the depositor
+of these US dollars  since we are not allowed to operate on foreign
+currrency.I do not intend to work  and stay in Africa till the rest of
+my life.
+
+Moreso,i will not want my bank to know about these funds and if they
+happens to know probably,the funds will be moved to the Burkina Faso
+Government public treasury as an abandoned funds.
+
+I will furnish you with more details of this transfer and how it ca
+nbe perfectly and legally executed without any hitch since i am now in
+control.
+
+I am waiting to hear from you urgently to proceed.
+
+
+Yours sincerely,
+Mr.Patrice Zengu.
