@@ -2,226 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B317042A5ED
-	for <lists+cgroups@lfdr.de>; Tue, 12 Oct 2021 15:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7E142A76D
+	for <lists+cgroups@lfdr.de>; Tue, 12 Oct 2021 16:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbhJLNnI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Oct 2021 09:43:08 -0400
-Received: from relay.sw.ru ([185.231.240.75]:40460 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236956AbhJLNnI (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 12 Oct 2021 09:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=m1S1D0BOHHl8xO22dPdxOubNSxbBt34TOe4ZNsgxgG4=; b=Ufns1m00Soru9p/iT
-        WBqn/k/N0pCyPOHMnjsGEght0QH1wQgKn05EwmfpQEMbzai0lNl6clEU5IoC04i1KRYjOwhSxnjYf
-        QT4ssJ/9xPM9uYOJMoQj1rjgAoF4EzipBAAzI4WmfRw8aU/2ACV5pRdvrG5rtfMwKEniEo02rCBGY
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1maI1e-005oE5-NL; Tue, 12 Oct 2021 16:41:02 +0300
-Subject: Re: [PATCH mm v2] memcg: enable memory accounting in
- __alloc_pages_bulk
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Michal Hocko <mhocko@kernel.org>,
+        id S236846AbhJLOlS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Oct 2021 10:41:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34144 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235422AbhJLOlS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Oct 2021 10:41:18 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3999D220B0;
+        Tue, 12 Oct 2021 14:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634049555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XU/0uGfOl2ynUsla9eoZ3FW3nLryazaxQqK6ENWJUQ0=;
+        b=fJoHljkl2jbF1HPvtdzcv7yYel+n7lwsY82K2WwEUKxlQybhUzs9iJvt12zgD5VSWFOakO
+        pCOlQqGZeLsViMQg7qcTtNEyZf3kRUPyWpLjutrBZdqAahpQKwLiE8TCklhU6Hkp8JjmNG
+        sIGnKWNUHOsI/l32VId0aiVdBc7J5fU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 096FA13BEC;
+        Tue, 12 Oct 2021 14:39:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BPu1AROeZWHGDAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 12 Oct 2021 14:39:15 +0000
+Date:   Tue, 12 Oct 2021 16:39:13 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
- <2410e99a-087c-3f89-9bdf-b62a7d5df725@virtuozzo.com>
- <20211012131019.GV3959@techsingularity.net>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
-Date:   Tue, 12 Oct 2021 16:40:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20211012143913.GA22036@blackbody.suse.cz>
+References: <20210825213750.6933-1-longman@redhat.com>
+ <20210825213750.6933-6-longman@redhat.com>
+ <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
+ <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
+ <YShjb2WwvuB4s4gX@slm.duckdns.org>
+ <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
+ <YSlY0H/qeXQIGOfk@slm.duckdns.org>
+ <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
+ <YSl2yxEvnDrPxzUV@slm.duckdns.org>
+ <3533e4f9-169c-d13c-9c4e-d9ec6bdc78f0@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211012131019.GV3959@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3533e4f9-169c-d13c-9c4e-d9ec6bdc78f0@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12.10.2021 16:10, Mel Gorman wrote:
-> On Tue, Oct 12, 2021 at 01:18:39PM +0300, Vasily Averin wrote:
->> Enable memory accounting for bulk page allocator.
->>
->> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->> v2: modified according to Shakeel Butt's remarks
->> ---
->>  include/linux/memcontrol.h | 11 +++++++++
->>  mm/memcontrol.c            | 48 +++++++++++++++++++++++++++++++++++++-
->>  mm/page_alloc.c            | 14 ++++++++++-
->>  3 files changed, 71 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index 3096c9a0ee01..990acd70c846 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -810,6 +810,12 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
->>  	percpu_ref_put(&objcg->refcnt);
->>  }
->>  
->> +static inline void obj_cgroup_put_many(struct obj_cgroup *objcg,
->> +				       unsigned long nr)
->> +{
->> +	percpu_ref_put_many(&objcg->refcnt, nr);
->> +}
->> +
->>  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
->>  {
->>  	if (memcg)
->> @@ -1746,4 +1752,9 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
->>  
->>  #endif /* CONFIG_MEMCG_KMEM */
->>  
->> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
->> +				unsigned int nr_pages);
->> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page);
->> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
->> +				 unsigned int nr_pages);
->>  #endif /* _LINUX_MEMCONTROL_H */
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 87e41c3cac10..16fe3384c12c 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -3239,7 +3239,53 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
->>  	refill_obj_stock(objcg, size, true);
->>  }
->>  
->> -#endif /* CONFIG_MEMCG_KMEM */
->> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
->> +				unsigned int nr_pages)
->> +{
->> +	struct obj_cgroup *objcg = NULL;
->> +
->> +	if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
->> +		return true;
->> +
->> +	objcg = get_obj_cgroup_from_current();
->> +
->> +	if (objcg && obj_cgroup_charge_pages(objcg, gfp, nr_pages)) {
->> +		obj_cgroup_put(objcg);
->> +		return false;
->> +	}
->> +	obj_cgroup_get_many(objcg, nr_pages - 1);
->> +	*objcgp = objcg;
->> +	return true;
->> +}
->> +
+On Wed, Oct 06, 2021 at 02:21:03PM -0400, Waiman Long <llong@redhat.com> wrote:
+> Sorry for not following up with this patchset sooner as I was busy on other
+> tasks.
+
+Thanks for continuing with this.
+
+> 	1) The "cpuset.cpus" is not empty and the list of CPUs are
+> 	   exclusive, i.e. they are not shared by any of its siblings.
+> 	2) The parent cgroup is a partition root.
+> 	3) The "cpuset.cpus" is a subset of the union of parent's
+> 	   "cpuset.cpus.effective" and offlined CPUs in parent's
+> 	   "cpuset.cpus".
+> 	4) There is no child cgroups with cpuset enabled.  This avoids
+> 	   cpu migrations of multiple cgroups simultaneously which can
+> 	   be problematic.
 > 
-> This is probably a stupid question but why is it necessary to get many
-> references instead of taking one reference here and dropping it in
-> memcg_bulk_post_charge_hook?
+>         A partition, when enabled, can be in an invalid state. An example
+>         is when its parent is also an invalid partition.
 
-Each allocated page keeps the referenece and releases it on free.
+You say:
+"it can only be enabled in a cgroup if all the following conditions are met.",
+"2) The parent cgroup is a partition root."
 
->> +void memcg_bulk_charge_hook(struct obj_cgroup *objcg, struct page *page)
->> +{
->> +	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
->> +}
->> +
->> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
->> +				 unsigned int nr_pages)
->> +{
->> +	obj_cgroup_uncharge_pages(objcg, nr_pages);
->> +	obj_cgroup_put_many(objcg, nr_pages);
->> +}
-> 
-> And are you sure obj_cgroup_uncharge_pages should be called here? I
-> thought the pages get uncharged on free.
+and then the example:
+"A partition, when enabled, can be in an invalid state. An example is
+when its parent is also an invalid partition."
 
-Here we decrement counters for non-allocated but pre-charged pages.
-If all pre-chared pages are allocated we release noting.
-However in this case we will be called with nr_pages = 0,
-and I think this time it makes sense to add this check.
-I will do it in next patch version.
+But the first two statements imply you can't have enabled the partition
+in such a case.
 
->> +#else /* !CONFIG_MEMCG_KMEM */
->> +bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
->> +				unsigned int nr_pages)
->> +{
->> +	return true;
->> +}
->> +
->> +void memcg_bulk_charge_hook(struct obj_cgroup *objcgp, struct page *page)
->> +{
->> +}
->> +
->> +void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
->> +				 unsigned int nr_pages)
->> +{
->> +}
->> +#endif
->> +
->>  
->>  /*
->>   * Because page_memcg(head) is not set on tails, set it now.
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index b37435c274cf..eb37177bf507 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -5207,6 +5207,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  	gfp_t alloc_gfp;
->>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
->>  	int nr_populated = 0, nr_account = 0;
->> +	unsigned int nr_pre_charge = 0;
->> +	struct obj_cgroup *objcg = NULL;
->>  
->>  	/*
->>  	 * Skip populated array elements to determine if any pages need
->> @@ -5275,6 +5277,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  	if (unlikely(!zone))
->>  		goto failed;
->>  
->> +	nr_pre_charge = nr_pages - nr_populated;
->> +	if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
->> +		goto failed;
->> +
->>  	/* Attempt the batch allocation */
->>  	local_lock_irqsave(&pagesets.lock, flags);
->>  	pcp = this_cpu_ptr(zone->per_cpu_pageset);
->> @@ -5299,6 +5305,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  		nr_account++;
->>  
->>  		prep_new_page(page, 0, gfp, 0);
->> +		if (objcg)
->> +			memcg_bulk_charge_hook(objcg, page);
->> +
->>  		if (page_list)
->>  			list_add(&page->lru, page_list);
->>  		else
->> @@ -5310,13 +5319,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->>  
->>  	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->>  	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
->> +	if (objcg)
->> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
->>  
->>  out:
->>  	return nr_populated;
->>  
->>  failed_irq:
->>  	local_unlock_irqrestore(&pagesets.lock, flags);
->> -
->> +	if (objcg)
->> +		memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
->>  failed:
->>  	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
->>  	if (page) {
->> -- 
->> 2.31.1
->>
-> 
+I think there is still mixup of partition validity conditions and
+transition conditions, yours would roughly divide into (not precisely,
+just to share my understanding):
 
+Validity conditions
+ 	1) The "cpuset.cpus" is not empty and the list of CPUs are
+ 	   exclusive, i.e. they are not shared by any of its siblings.
+ 	2) The parent cgroup is a partition root.
+
+Transition conditions:
+ 	3) The "cpuset.cpus" is a subset of the union of parent's
+ 	   "cpuset.cpus.effective" and offlined CPUs in parent's
+ 	   "cpuset.cpus".
+ 	4) There is no child cgroups with cpuset enabled.  This avoids
+ 	   cpu migrations of multiple cgroups simultaneously which can
+ 	   be problematic.
+
+(I've put no. 3 into transition conditions because _after_ the
+transition parent's cpuset.cpus.effective are subtracted the new root's
+cpuset.cpus but I'd like to have something similar as a validity
+condition but I haven't come up with that yet.)
+
+I consider the following situation:
+
+r		// all cpus 0-7
+`- part1	cpus=0-3	root >partition
+   ` subpart1	cpus=0-1	root >partition
+   ` subpart2	cpus=2-3	root >partition
+`- other	cpus=4-7	// member by default
+
+Both subpart1 and subpart2 are valid partition roots.
+Look at actions listed below (as alternatives, not a sequence):
+
+a) hotplug offlines cpu 3
+  - would part1 still be considered a valid root? 
+    - perhaps not
+  - would subpart1 still be considered a valid root? 
+    - it could be, but its parent is invalid so no?
+  - would subpart2 still be considered a valid root? 
+    - perhaps not
+    
+b) administrative change writes 0-2 into part1 cpus
+  - would part1 still be considered a valid root? 
+    - yes
+  - would subpart1 still be considered a valid root? 
+    - yes
+  - would subpart2 still be considered a valid root? 
+    - perhaps not
+
+c) administrative change writes 3-7 into `other` cpus
+  - should this fail or invalidate a root partition part1?
+    - perhaps fail since the same "owner" manages all siblings and
+      should reduce part1 first
+
+The answers above are just my "natural" responses, the ideal may be
+different. The issue I want to illustrate is that if all the conditions
+are formed as transition conditions only, they can't be used to reason
+about hotplug or config changes (except for cpuset.cpus.partitions
+writes).
+
+What would help me with the understanding -- the invalid root partition is defined as
+1) such a cgroup where no cpus are granted from the top (and thus has to fall back to ancestors)
+or
+2) such a cgroup where cpus requested in cpuset.cpus can't be fulfilled (i.e. any missing invalidates)?
+
+Furthermore, another example (motivated by the patch 4/6)
+
+r		// all cpus 0-7
+`- part1	cpus=0-4	root >partition
+   ` subpart1	cpus=0-1	root >partition
+   ` subpart2	cpus=2-3	root >partition
+   ` task
+`- other	cpus=5-7	// member by default
+
+It's a valid and achievable state (even on v2 since cpuset is a threaded
+controller). 
+
+a) cpu 4 is offlined
+  - this should invalidate part1 (and propagate invalidation into
+    subpart1 and subpart2).
+b) administrative write 0-3 into part1 cpus
+  - should this invalidate part1 or be rejected?
+
+
+In conclusion, it'd be good to have validity conditions separate from
+transition conditions (since hotplug transition can't be rejected) and
+perhaps treat administrative changes from an ancestor equally as a
+hotplug.
+
+Thanks,
+Michal
