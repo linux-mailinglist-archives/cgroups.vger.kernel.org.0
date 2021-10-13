@@ -2,251 +2,173 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F1E42CD08
-	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 23:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC96A42CD39
+	for <lists+cgroups@lfdr.de>; Thu, 14 Oct 2021 00:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbhJMVr0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Oct 2021 17:47:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229904AbhJMVr0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Oct 2021 17:47:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634161522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U8NktTL+j+V52ocu5gAgw2ZAwNJbWDWLL3JUp269XtE=;
-        b=hkyrG9L37t4H5WpQv3tQDlAo0lTNPU5BlHchEKRDMIoA1FRjC5YnULs3SKdKNGvoBIDLGW
-        IY02fwQf6BuyNXxCoaceBO00eyqg6duSFZdfbRlfHvbCPTHCiIILlQGhGJ1UVh6XI2FyCJ
-        L13JT20ArjB4o4azqEIDyvxICSsaDR8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-4-HEbvF4OhqmW0k-j3CjBA-1; Wed, 13 Oct 2021 17:45:19 -0400
-X-MC-Unique: 4-HEbvF4OhqmW0k-j3CjBA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D70E2101F7BC;
-        Wed, 13 Oct 2021 21:45:16 +0000 (UTC)
-Received: from llong.remote.csb (unknown [10.22.33.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7407719D9B;
-        Wed, 13 Oct 2021 21:45:14 +0000 (UTC)
-Subject: Re: [PATCH v7 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Waiman Long <llong@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
+        id S229821AbhJMWGB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Oct 2021 18:06:01 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50592 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229754AbhJMWGA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Oct 2021 18:06:00 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19DLsQdg011337;
+        Wed, 13 Oct 2021 15:03:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=2yYmfk642mQwFFUimUIRHFvXhzSEK0e061gZFS0gQHk=;
+ b=P6i+TaxJlkDvVcrWf7MB+2xKvB2v9riQYOWt/JLZ0IHUUcWMeI/A3esUvPcl+1kb67rV
+ 78baaQPr14u0rX5R2cd+070irVvpeijG28ZODqbo5UuoZ7Wbu4bQ38vsUSatndVXRP0m
+ Fp4Tl12YumSIFts5wicj17A43md9WV73nQ8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3bp5tt13qv-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 13 Oct 2021 15:03:50 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Wed, 13 Oct 2021 15:03:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W5iAzgx+1Ju4vAlsMV1WUi9KzQ+Yp6mZQ1zY8I/OIZEebX3L36MZ8pk+Wj3p5t5NNAIKAL0zXjx0aBQAJ9KalFmvKV1yYukoDO/i7r9Q/Bg73AyuqR0HznNIoAkuoyH/sdgC+Vxj49w+W4fGd/VXKOoDqiqBH0LY52rkWXLSXCe2JM9YgQreoApQAX9lzl0xLNgfHJtGyqj0kDpQzY/Q3VV0cco5DriI9aliL4Yp8Sj8cyMQFsgMHfb0s2hs+lijjhFP+GLwlQ0+ez6Y5Vcf5fNwqkQKk2nnqoDpPfkUTJCIrAyxhoR2cMlorPiRHoKVBJS9Q0IPrHx0rGntNDLxXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2yYmfk642mQwFFUimUIRHFvXhzSEK0e061gZFS0gQHk=;
+ b=YZJrEqd0exJZ7ngkZj3u1Ll9lymhz+Y2fdHzvUnaKK6yhT1ktcQagPLix0R2f27YovITW0XcYoZfVpCI7/0WN+dvmntLU2p5Tu521aiHwgPwTETLdrio9c1/zNrPOm4AavxsMcbBzJHKVD+YzzSyLe/Q8i+FDLZFuG9CrxKnhns47ZMtsbZf+gNOxzR2sxKHaW98JgriM0a5hbengTAJ+cgJ6nufOy4hmR2KRm9UWo3pjBIuAjfs0B+HWLPMYQGb0rjbT8bNBlsYE1uyz165eKR2Bu266X8TLw0R5Nhho/ll2q1IYeFi+264xVufBaRDkPJFWbIG/Ri+1wbNPxrP/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY3PR15MB4932.namprd15.prod.outlook.com (2603:10b6:a03:3c7::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Wed, 13 Oct
+ 2021 22:03:47 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
+ 22:03:47 +0000
+Date:   Wed, 13 Oct 2021 15:03:43 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20210825213750.6933-1-longman@redhat.com>
- <20210825213750.6933-6-longman@redhat.com> <YSfQ0mYWs2zUyqGY@mtj.duckdns.org>
- <32e27fcc-32f1-b26c-ae91-9e03f7e433af@redhat.com>
- <YShjb2WwvuB4s4gX@slm.duckdns.org>
- <d22ea3be-2429-5923-a80c-5af3b384def9@redhat.com>
- <YSlY0H/qeXQIGOfk@slm.duckdns.org>
- <392c3724-f583-c7fc-cfa1-a3f1665114c9@redhat.com>
- <YSl2yxEvnDrPxzUV@slm.duckdns.org>
- <3533e4f9-169c-d13c-9c4e-d9ec6bdc78f0@redhat.com>
- <20211012143913.GA22036@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Message-ID: <5eacfdcc-148b-b599-3111-4f2971e7ddc0@redhat.com>
-Date:   Wed, 13 Oct 2021 17:45:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
+Message-ID: <YWdXv+RBjXvdmsK+@carbon.DHCP.thefacebook.com>
+References: <20211013194338.1804247-1-shakeelb@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211013194338.1804247-1-shakeelb@google.com>
+X-ClientProxiedBy: CO2PR06CA0074.namprd06.prod.outlook.com
+ (2603:10b6:104:3::32) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20211012143913.GA22036@blackbody.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:284f) by CO2PR06CA0074.namprd06.prod.outlook.com (2603:10b6:104:3::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 22:03:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1cef49df-27fe-4810-8288-08d98e955466
+X-MS-TrafficTypeDiagnostic: BY3PR15MB4932:
+X-Microsoft-Antispam-PRVS: <BY3PR15MB4932D4B7E9D16A2D3931CECBBEB79@BY3PR15MB4932.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H5O9JgRWFKu/AaNtzIY0KbAAx7kP4e7rN9S+VDBTliRwAQHzWnyqaLHuIZk0M+/ClUPBlwLsmK0T10DihALjiMnaWk8cdI2v9E4GKyhXWp63ytTmiErnEg29bNvPE8pWUL/hBIq+g3ALpQ7xu5IQRS3sbO9XtPnCjBXDVjDpoRpgOr/tpu1vXSRTiJYszj4AxFj0vQxGgxCp53gLsxBYlA+/GsI54IN2BXEEqOLLJf6ZpyH/HDnLhLorlLgVM94vQ8bUPDs4h465EsKOcQdyyVgo7+4+lKvpPgzmGJz2GWbPR7JTWN0sJTCpotC0IGF9Q2tPCfnicZ+4y4SkVg9MI+hwGo7QxDegK8gOd4CpHGjBI7oKsAIlrsM6khrjjPGZtfyrIVybbrg6iOyVMz0KMuVdAJ9SBLO+WFJhbti7UgUuO1HNHqWzfdOI35agNc+CUz8ocx1WB//xBPDLwm1hCI13fvv6wZOl0EJcOduM0I96saaKRYCwq1hk+OPhHKJ9vPOxNRBgzWjaYUriguYshwNtHiv0VYQg0plPsbz8OygBZWZXxNvn+kwRAGpIvtAeP2Ik1NN9eAkkddwuqz/+FOW1sr2NEqEqQ7aiWHVegT42bP2pgEopOJG3gNwd2iE138+LtBvvhXtxdcrzwQ4w+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(55016002)(186003)(8676002)(7696005)(6916009)(6506007)(83380400001)(9686003)(52116002)(4326008)(86362001)(7416002)(508600001)(2906002)(8936002)(6666004)(54906003)(38100700002)(66476007)(66946007)(66556008)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SDknYSziR/oSpiHB1UyDxYAy/ngCTT9g80m2KuDkqd+ZCo8kOINNK8dB+d5M?=
+ =?us-ascii?Q?CB6q4uMLkZT/wbJVmh48i8K79gUu/s9KtwdUk6lxmxDTR32T2RQMgjgt85+u?=
+ =?us-ascii?Q?B8fJQNRs1E5O2EMEgrFWHEKf3QiFCyp/6/CTxspM1iezJWVNw5rEyzZ6jrp0?=
+ =?us-ascii?Q?6iLOvbFCwRtGhKe3hekVRhnyIp/K7c64LCUZH/Vvwjz24YNoXP2BEPclDgPL?=
+ =?us-ascii?Q?sV651p/o1k0EbMY6Yk1b1+H/jf49f0hY0oDbXglhva8ilsWg3KN7GcoE0HMo?=
+ =?us-ascii?Q?78U1wm160UxPwcj6AHg+KgKQPkrX3OWLo1IHse+ZkrprJQS5EyP1SweDp/Ud?=
+ =?us-ascii?Q?17yeYPfS9YYFHAAlBeAFqxeMi9XBV4trihTcK5wJmSnyqNAR+Acq6jVcPnfx?=
+ =?us-ascii?Q?/g1ePrV6Lixk8qCLL5LPuInSq0w0nAehPmWeM6IYxpzqXOQS36bQ52srh7W+?=
+ =?us-ascii?Q?El8bkY0JvK+h3uMmZNa1/HhG8QAU/WpBRl3hZQJL98PcsszrHH+aCyBQkR4z?=
+ =?us-ascii?Q?iQ6ii90mvb5alIqsSKgvFXXBUCwW6IBw0RMcDL02XAK0OJPdJA+jn+KgGca0?=
+ =?us-ascii?Q?wOpvMDVjXxLc5z0MSnU+y7mVmXgGKgaiHvJR/uXXjNFCCd0Z6e81y1nFygpA?=
+ =?us-ascii?Q?DjUi7KFEcLcpjAq5u+6scvh8ACNYfuGmqjYOTnF+ElSCD+w+nVoH4IyRv9kr?=
+ =?us-ascii?Q?gFbSz8yg2S5LxJAQy2pOZRVnr0ajd9P9jVmccd2og/7lGJIlhUjG2qSEbF86?=
+ =?us-ascii?Q?g+mW2bg/s6B4I07PiQDKYWGV/H8GtP47W0y/fv+RyTox+o8jyl+8qFXFgcGa?=
+ =?us-ascii?Q?V3V4Q0rIQGn0w1RlQnxsdg42JK81z0wV7eOWjcP7sMQpYWe/6YnNteSW4P9h?=
+ =?us-ascii?Q?5ILfWHtL96fkZ2FQODRvM1/WSzgkkzk8Mjri/+tJfpMlWEhI0HmvV8ER3Mvw?=
+ =?us-ascii?Q?w7oqAm7zr+V3w6725sRMeJvO9dZ3NOR1mEbHyWUOLfNp0o1b+hQcMTxbECgj?=
+ =?us-ascii?Q?oaGN+AlVenzwbAuOykCJS9L66IUlmPq3lXkcTxQljh5l2CTfDhCG4w7cnMjK?=
+ =?us-ascii?Q?yPWElc3cuR7dO6daOl2SaAYoLlP+p/x9kUA8XIRegkEmuRG833cqjEe1+dJJ?=
+ =?us-ascii?Q?54Q+eFNOOKDFyrOC5zQchd2BIl4TjyvIQjD8vCXaG2qREPOeJ6B3egdNTsoS?=
+ =?us-ascii?Q?91Z9iUXF0sSVJls1+Z8QiH6nh8kZB+4xyJYXHplRLg5bGUdi3zexb810ontT?=
+ =?us-ascii?Q?chMhbq+G3yuEhqc/gPLdHwV8q8QanMQ9rGeyJD4KWUiDte2bgRJZj3E8JuJk?=
+ =?us-ascii?Q?66d1emhPlcJDg9cuPZhXDJNnF5sIVbFX7RqUJ77VqRWsbA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cef49df-27fe-4810-8288-08d98e955466
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 22:03:46.8700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hJgdxJv1/G1nA8ahGzS0eUkQj11fObrWVJ7VuUVGqIK+VN8ih3BvBzPYSR0G5UIP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4932
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 2Ep601Gw28405jULmG8o8Iz2hvOnM7Vx
+X-Proofpoint-GUID: 2Ep601Gw28405jULmG8o8Iz2hvOnM7Vx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-13_08,2021-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=758 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 clxscore=1011 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110130133
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 12:43:38PM -0700, Shakeel Butt wrote:
+> The commit 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in
+> __vmalloc_area_node()") switched to bulk page allocator for order 0
+> allocation backing vmalloc. However bulk page allocator does not support
+> __GFP_ACCOUNT allocations and there are several users of
+> kvmalloc(__GFP_ACCOUNT).
+> 
+> For now make __GFP_ACCOUNT allocations bypass bulk page allocator. In
+> future if there is workload that can be significantly improved with the
+> bulk page allocator with __GFP_ACCCOUNT support, we can revisit the
+> decision.
+> 
+> Fixes: 5c1f4e690eec ("mm/vmalloc: switch to bulk allocator in __vmalloc_area_node()")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  mm/page_alloc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 668edb16446a..b3acad4615d3 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5215,6 +5215,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>  	int nr_populated = 0, nr_account = 0;
+>  
+> +	/* Bulk allocator does not support memcg accounting. */
+> +	if (unlikely(gfp & __GFP_ACCOUNT))
+> +		goto out;
+> +
 
-On 10/12/21 10:39 AM, Michal Koutný wrote:
-> On Wed, Oct 06, 2021 at 02:21:03PM -0400, Waiman Long <llong@redhat.com> wrote:
->> Sorry for not following up with this patchset sooner as I was busy on other
->> tasks.
-> Thanks for continuing with this.
->
->> 	1) The "cpuset.cpus" is not empty and the list of CPUs are
->> 	   exclusive, i.e. they are not shared by any of its siblings.
->> 	2) The parent cgroup is a partition root.
->> 	3) The "cpuset.cpus" is a subset of the union of parent's
->> 	   "cpuset.cpus.effective" and offlined CPUs in parent's
->> 	   "cpuset.cpus".
->> 	4) There is no child cgroups with cpuset enabled.  This avoids
->> 	   cpu migrations of multiple cgroups simultaneously which can
->> 	   be problematic.
->>
->>          A partition, when enabled, can be in an invalid state. An example
+Isn't it a bit too aggressive?
 
-Thanks for the comments.
+How about
+    if (WARN_ON_ONCE(gfp & __GFP_ACCOUNT))
+       gfp &= ~__GFP_ACCOUNT;
 
+And maybe with some explanatory message?
 
->>          is when its parent is also an invalid partition.
-> You say:
-> "it can only be enabled in a cgroup if all the following conditions are met.",
-> "2) The parent cgroup is a partition root."
->
-> and then the example:
-> "A partition, when enabled, can be in an invalid state. An example is
-> when its parent is also an invalid partition."
->
-> But the first two statements imply you can't have enabled the partition
-> in such a case.
-
-Yes, you are right. We should not allow enabling partition when the 
-parent is an invalid right. I will fix that.
-
-
-> I think there is still mixup of partition validity conditions and
-> transition conditions, yours would roughly divide into (not precisely,
-> just to share my understanding):
->
-> Validity conditions
->   	1) The "cpuset.cpus" is not empty and the list of CPUs are
->   	   exclusive, i.e. they are not shared by any of its siblings.
->   	2) The parent cgroup is a partition root.
->
-> Transition conditions:
->   	3) The "cpuset.cpus" is a subset of the union of parent's
->   	   "cpuset.cpus.effective" and offlined CPUs in parent's
->   	   "cpuset.cpus".
-
-I am going to change this condition to just "cpuset.cpus" is a subset of 
-parent's "cpuset.cpus". After some deliberation, I  had concluded it 
-doesn't make sense from the system partition planning point of view to 
-allow a valid partition to contain cpus that are not in the designated 
-"cpuset.cpus". That will automatically included offlined cpus in 
-parent's "cpuset.cpus".
-
-
->   	4) There is no child cgroups with cpuset enabled.  This avoids
->   	   cpu migrations of multiple cgroups simultaneously which can
->   	   be problematic.
->
-> (I've put no. 3 into transition conditions because _after_ the
-> transition parent's cpuset.cpus.effective are subtracted the new root's
-> cpuset.cpus but I'd like to have something similar as a validity
-> condition but I haven't come up with that yet.)
->
-> I consider the following situation:
->
-> r		// all cpus 0-7
-> `- part1	cpus=0-3	root >partition
->     ` subpart1	cpus=0-1	root >partition
->     ` subpart2	cpus=2-3	root >partition
-> `- other	cpus=4-7	// member by default
->
-> Both subpart1 and subpart2 are valid partition roots.
-> Look at actions listed below (as alternatives, not a sequence):
->
-> a) hotplug offlines cpu 3
->    - would part1 still be considered a valid root?
->      - perhaps not
->    - would subpart1 still be considered a valid root?
->      - it could be, but its parent is invalid so no?
->    - would subpart2 still be considered a valid root?
->      - perhaps not
->      
-
-They will all be valid roots. They will become invalid only when their 
-effective cpus are empty and there are tasks in the partition.
-
-> b) administrative change writes 0-2 into part1 cpus
-
-That is actually not allowed because of the following code in 
-validate_change():
-
-static int validate_change(struct cpuset *cur, struct cpuset *trial)
-{
-     :
-         /* Each of our child cpusets must be a subset of us */
-         ret = -EBUSY;
-         cpuset_for_each_child(c, css, cur)
-                 if (!is_cpuset_subset(c, trial))
-                         goto out;
-
->    - would part1 still be considered a valid root?
->      - yes
->    - would subpart1 still be considered a valid root?
->      - yes
->    - would subpart2 still be considered a valid root?
->      - perhaps not
->
-> c) administrative change writes 3-7 into `other` cpus
->    - should this fail or invalidate a root partition part1?
->      - perhaps fail since the same "owner" manages all siblings and
->        should reduce part1 first
-Again, this will not be allowed because of the CPU_EXCLUSIVE flag set in 
-part1.
->
-> The answers above are just my "natural" responses, the ideal may be
-> different. The issue I want to illustrate is that if all the conditions
-> are formed as transition conditions only, they can't be used to reason
-> about hotplug or config changes (except for cpuset.cpus.partitions
-> writes).
->
-> What would help me with the understanding -- the invalid root partition is defined as
-> 1) such a cgroup where no cpus are granted from the top (and thus has to fall back to ancestors)
-> or
-> 2) such a cgroup where cpus requested in cpuset.cpus can't be fulfilled (i.e. any missing invalidates)?
-For a valid partition, "cpuset.cpus.effective" is always a subset of 
-"cpuset.cpus". When "cpuset.cpus.effective" becomes empty and there are 
-tasks in the partition, it becomes invalid and inherent the non-empty 
-cpuset.cpus.effective of the nearest ancestor. The condition that causes 
-"cpuset.cpus.effective" to become empty can be hotplug or changes to 
-"cpuset.cpus".
-> Furthermore, another example (motivated by the patch 4/6)
->
-> r		// all cpus 0-7
-> `- part1	cpus=0-4	root >partition
->     ` subpart1	cpus=0-1	root >partition
->     ` subpart2	cpus=2-3	root >partition
->     ` task
-> `- other	cpus=5-7	// member by default
->
-> It's a valid and achievable state (even on v2 since cpuset is a threaded
-> controller).
->
-> a) cpu 4 is offlined
->    - this should invalidate part1 (and propagate invalidation into
->      subpart1 and subpart2).
-
-That is subject to design. My current thought is to keep part1 as valid 
-but invalidate the child partitions (subpart1 and subpart2).
-
-
-> b) administrative write 0-3 into part1 cpus
->    - should this invalidate part1 or be rejected?
-
-The result should be the same as (a).
-
->
-> In conclusion, it'd be good to have validity conditions separate from
-> transition conditions (since hotplug transition can't be rejected) and
-> perhaps treat administrative changes from an ancestor equally as a
-> hotplug.
-
-I am trying to make the result of changing "cpuset.cpus" as close to 
-hotplug as possible but there are cases where the "cpuset.cpus" change 
-is prohibited but hotplug can still happen to remove the cpu.
-
-Hope this will help to clarify the current design.
-
-Cheers,
-Longman
-
+Thanks!
