@@ -2,91 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D4542AF83
-	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 00:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8113242BF29
+	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 13:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235639AbhJLWLS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Oct 2021 18:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhJLWLR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Oct 2021 18:11:17 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B516C061745
-        for <cgroups@vger.kernel.org>; Tue, 12 Oct 2021 15:09:15 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id d125so570796iof.5
-        for <cgroups@vger.kernel.org>; Tue, 12 Oct 2021 15:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
-        b=URBTfdNwpUSWvtrPTODaB7vJFPkhRo1Rkd9rNodo5Kt6uwiqdXAMbU5viCLd51sE2x
-         ki0UTxvWlL1Z94dU99QQMKtmkRg3s6M4bgKVG++31/w0Q6hmDONC9Ob9PIDPl6t3X/AK
-         IyYWmt1Le8Cd1JXrkupI2CsJ0KmkyX1Us7ZkwjnKtYxBcBuNBSrUBumdmY2EI+HSxtij
-         lYj9F/O2cQmafshbyFI+ayJ7tTBtlYN91XsJix2kaWHZqGimxeKfvSGAzeuGi9Un83L8
-         2127/jAgWPBIT3ArdW4YlNO7w/upI95SOH+HNOW3AEXtZh90CS1F8HJRCoRcIjB/EfwZ
-         lDug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=psPAB9NqHofPPQuOtyDnz2jywzmWciM0sLALrIheAbI=;
-        b=790FJkIwJTYUd+GhAfNFhrXqtqQa6Qbi5TRaS8ZC3PUqikMok73dujwL5oARjRn02K
-         /xMnsT8RpJaweWT54PbQYMceITqXAd9d/0xiIqyfjptqdHTuyJPKMbzDifq0vqEgRym1
-         nvtd5iAPj+Bns2o37+hpexe8XEwjjSOd/Yw1dKEmjE2ffsE+ndZ81rUnLgmg5rwhooJC
-         FY60NzPhO2md7tjDQyinw6uiO+X24kWBZE36817StZ94pBJk948gUWZ4EO3IMFz4pdR0
-         +t5MoqeVfpptmL2YvNbf9IW0ZSOFuWA9PzdUbVRtPgNcl3pOhBKEK95aVueVuLBgUCw3
-         PFtw==
-X-Gm-Message-State: AOAM531sd9uWq1+EJhy9aY22Hi+Hvrs25sOxDgYJvE/EeZavCxN/3ePz
-        Cx2O3NNhvfnqz7TpM1xIyefHIemCpT1Mfox2+Hs=
-X-Google-Smtp-Source: ABdhPJzyC+CynmQiBj+/GHdgA3gm6fobJNXyo9hJSjKraTUjszhs0FRwTm+Il35h8FqKcpDPupo9Z4JcbsKcgPJO/jM=
-X-Received: by 2002:a05:6602:1542:: with SMTP id h2mr15243521iow.198.1634076554846;
- Tue, 12 Oct 2021 15:09:14 -0700 (PDT)
+        id S229836AbhJMLta (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Oct 2021 07:49:30 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:25182 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhJMLta (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Oct 2021 07:49:30 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HTrMs4sSqz8tdj;
+        Wed, 13 Oct 2021 19:46:17 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 13 Oct 2021 19:47:24 +0800
+Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
+ blkg_create()
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20211008072720.797814-1-yukuai3@huawei.com>
+ <YWRxi2OaIHhG9rOc@slm.duckdns.org>
+ <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
+Message-ID: <68bd1b2c-f4a6-664c-0812-30cb458d0f15@huawei.com>
+Date:   Wed, 13 Oct 2021 19:47:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6e04:228a:0:0:0:0 with HTTP; Tue, 12 Oct 2021 15:09:14
- -0700 (PDT)
-Reply-To: patzengu@outlook.com
-From:   Patrice Zengu <rm2568590@gmail.com>
-Date:   Wed, 13 Oct 2021 00:09:14 +0200
-Message-ID: <CADgyfhaUNt8wOZbU=RqdwWbGaP7378NevThfddd7bzsntf=4Hg@mail.gmail.com>
-Subject: i need your co-operation
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9d9ac88b-43e6-5b50-bc0b-98ad4704eca5@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
--- 
-Dear Friend,
+On 2021/10/12 9:39, yukuai (C) wrote:
+> On 2021/10/12 1:16, Tejun Heo wrote:
+>> On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
+>>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+>>> index eb48090eefce..00e1d97621ea 100644
+>>> --- a/block/blk-cgroup.c
+>>> +++ b/block/blk-cgroup.c
+>>> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct 
+>>> blkcg *blkcg,
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
+>>> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq 
+>>> *blkg)
+>>> +{
+>>> +    int i;
+>>> +
+>>> +    for (i = 0; i < BLKCG_MAX_POLS; i++) {
+>>> +        struct blkcg_policy *pol = blkcg_policy[i];
+>>> +
+>>> +        if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
+>>> +            pol->pd_free_fn(blkg->pd[i]);
+>>> +            blkg->pd[i] = NULL;
+>>> +        }
+>>> +    }
+>>> +}
+>>> +
+>>>   /*
+>>>    * If @new_blkg is %NULL, this function tries to allocate a new one as
+>>>    * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on 
+>>> return.
+>>> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg 
+>>> *blkcg,
+>>>           goto err_free_blkg;
+>>>       }
+>>> +    if (new_blkg)
+>>> +        blkg_check_pd(q, new_blkg);
+>>> +
+>>
+>> Can't this happen the other way around too? ie. Linking a pd which 
+>> doesn't
+>> have an entry for a policy which got enabled inbetween? And what if an
+>> existing policy was de-registered and another policy got the policy id
+>> inbetween? I think the correct solution here would be synchronizing 
+>> alloc -
+>> create blocks against policy deactivation rather than trying to patch an
+>> allocated blkg later. Deactivation being a really slow path, there are
+>> plenty of options. The main challenge would making it difficult to make
+>> mistakes with, I guess.
+> 
+> For the case policy was de-registered, I think there won't be a problem
+> because pd_init_fn() is not called yet, and the blkg is not at
+> blkg_list, it's fine to use this blkg for the new policy.
+> 
+> For the case policy got enabled inbetween, the problem is that the pd
+> still doesn't have an entry for the policy, perhaps we can call
+> pd_alloc_fn() additionally in blkg_create?
+> 
+> If checking the blkg in blkg_create() is not a good solution, and we
+> decide to synchronize alloc-create blkg against policy deactivation.
+> Since only bfq policy can be deactivated or activated while queue is
+> not dying, and queue is freezed during activation and deactivation,
+> can we get a q->q_usage_counter and put it after blkg_create() is done
+> to prevent concurrent bfq policy activation and deactivation?
 
-I am Mr.Patrice Zengu ,from Burkina Faso and i am the new bank telex
-manager of our bank here in Africa.
+Just found that blkcg_deactivate_policy() will call
+blk_mq_freeze_queue(), thus get q->q_usage_counter is wrong...
 
-I have the opportunity to transfer the sum of US$ 10.5Million to your
-bank account which i personally placed on an Escrow account without a
-name.
-
-I must tell you that after revision of files both old and new as the
-new telex manager ,i discovered that if these funds remains here
-without transferring it offshore,it will be lawfully recovered
-andmoved to the  Government of Burkina Faso treasury as an abandoned
-funds without any name.
-
-I want to let you know that a Burkinabe cannot stand as the depositor
-of these US dollars  since we are not allowed to operate on foreign
-currrency.I do not intend to work  and stay in Africa till the rest of
-my life.
-
-Moreso,i will not want my bank to know about these funds and if they
-happens to know probably,the funds will be moved to the Burkina Faso
-Government public treasury as an abandoned funds.
-
-I will furnish you with more details of this transfer and how it ca
-nbe perfectly and legally executed without any hitch since i am now in
-control.
-
-I am waiting to hear from you urgently to proceed.
-
-
-Yours sincerely,
-Mr.Patrice Zengu.
+Thanks,
+Kuai
