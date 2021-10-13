@@ -2,34 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D9D42C765
-	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 19:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9081842C7A0
+	for <lists+cgroups@lfdr.de>; Wed, 13 Oct 2021 19:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237935AbhJMRSi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Oct 2021 13:18:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43876 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234083AbhJMRSg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Oct 2021 13:18:36 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0D37A21A1E;
-        Wed, 13 Oct 2021 17:16:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634145391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/zEsRXmAZrCKtzPcm6tYZaLnIWbf4/HEIHx/3hXRrA=;
-        b=CiciIxvn36QlEyV9EzgU3lo8Sh9+Q+9OSO4PP9EFH7QREFnrsp5lIFmdQgR+6SbdFsawxz
-        JcouaancYdkpi34W539NgTOqpe6RDOJpphs60LND9NNE5O9AfM55yFHBis1V3N/KT2HyvE
-        KnjD8z1Menw7asLknSWNkTZYeQ3hbGw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 26179A3B8F;
-        Wed, 13 Oct 2021 17:16:30 +0000 (UTC)
-Date:   Wed, 13 Oct 2021 19:16:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
+        id S232682AbhJMRcX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Oct 2021 13:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhJMRcX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Oct 2021 13:32:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F902C061570
+        for <cgroups@vger.kernel.org>; Wed, 13 Oct 2021 10:30:19 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id t9so14979606lfd.1
+        for <cgroups@vger.kernel.org>; Wed, 13 Oct 2021 10:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aQOoabUNu0R7IbgTfWQ9QRtHLdgX6BHbDT/1BhoTe9M=;
+        b=btRQMBymcZokHMewh1RWraDTkJdKm+n2ddZG7Lw2znxC/GSJbWy87egZvb6rXSdldy
+         IDXCUqPWaFPmQafIM46OPWdnNjB9VuaJcU33bm66NfS7PNnHNh1b+TblPKadHz2CoEMD
+         OePatUFeM/gA764CLWpwIycRbUOXojpKlgVbJwF8yAqXJsZil9DrYE602MkiWjzKEAiV
+         JxApHT16J9oA9iZW5O/MGbMxz40m7i6boNVwWnxXxV4GLBMC9wMEpT1pvXcbwFxSBbU1
+         Vg8PN+eyytYs/gund8DNu5b4r0AxEaZ153lRDvRPVV4ruMrlDJeTr+sbnEsxtXA9oiOC
+         gwog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aQOoabUNu0R7IbgTfWQ9QRtHLdgX6BHbDT/1BhoTe9M=;
+        b=zgQTODPSmz/vLyOCk6uVOc/fkH4ObqsT4rzaFuGScK1VC28JKK4nvjp8lHatN9T9RN
+         rPdzGGiYbb0+krXu1nYyDR91yU8XlI3E45ullgetDSv5EXhpA+v1GoEXgca+Lctp/VDf
+         zWmn36R51mjNlsCVoHGozkJBw/kGy7uj0hMoRdHEfa486Af5xLUzR6v2vPA1Xndkl9Ql
+         WFRiinsevWzlRabh/AgEcAGub+BcpuZlfDx+uU/fcww7x0SA1F6gyJrpbAZzVWQANzHq
+         THhrr4yeTr7E/x8oF5FBFvALdpHuPArMp5wQbvBDMjrYeVQUnvZMWskDPz4100UBYi3b
+         Y5tQ==
+X-Gm-Message-State: AOAM532jGNrwKPk6oSXiH2XKvCeNYbjTUfSW3x6DLaRhV0Wij7lAK4Ln
+        8UYftYvYty337LRFH9Vr0+bp/uO9bDqm4o7iNhBGzA==
+X-Google-Smtp-Source: ABdhPJwBVo0irDBA2p+/ESUMoecZY8cZKZzIBcJI3jBVFqJ0bJoi/XVS3EPY/CfSxfGkwfEteH52y76Fxi9rAACnhkU=
+X-Received: by 2002:a05:6512:2204:: with SMTP id h4mr315095lfu.494.1634146216834;
+ Wed, 13 Oct 2021 10:30:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+ <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com> <YWWrai/ChIgycgCo@dhcp22.suse.cz>
+ <CALvZod7LpEY98r=pD-k=WbOT-z=Ux16Mfmv3s7PDtJg6=ZStgw@mail.gmail.com>
+ <YWXS09ZBhZSy6FQQ@dhcp22.suse.cz> <CALvZod6K6UXxDrkHp=mVDV7O-fAtmRkgMDngPazBhcyDUNxy_Q@mail.gmail.com>
+ <YWcUbXfBsbNzYIad@dhcp22.suse.cz>
+In-Reply-To: <YWcUbXfBsbNzYIad@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 13 Oct 2021 10:30:05 -0700
+Message-ID: <CALvZod5V_NK_mVFY7ik6wSWPxqSqRrhzJkdtuyQjzMB-0yjHGw@mail.gmail.com>
+Subject: Re: [PATCH mm v3] memcg: enable memory accounting in __alloc_pages_bulk
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Vasily Averin <vvs@virtuozzo.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
@@ -40,74 +65,31 @@ Cc:     Vasily Averin <vvs@virtuozzo.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
-Subject: Re: [PATCH mm v3] memcg: enable memory accounting in
- __alloc_pages_bulk
-Message-ID: <YWcUbXfBsbNzYIad@dhcp22.suse.cz>
-References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
- <60df0efd-f458-a13c-7c89-749bdab21d1d@virtuozzo.com>
- <YWWrai/ChIgycgCo@dhcp22.suse.cz>
- <CALvZod7LpEY98r=pD-k=WbOT-z=Ux16Mfmv3s7PDtJg6=ZStgw@mail.gmail.com>
- <YWXS09ZBhZSy6FQQ@dhcp22.suse.cz>
- <CALvZod6K6UXxDrkHp=mVDV7O-fAtmRkgMDngPazBhcyDUNxy_Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6K6UXxDrkHp=mVDV7O-fAtmRkgMDngPazBhcyDUNxy_Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 13-10-21 09:41:15, Shakeel Butt wrote:
-> On Tue, Oct 12, 2021 at 11:24 AM Michal Hocko <mhocko@suse.com> wrote:
+On Wed, Oct 13, 2021 at 10:16 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[...]
+> > > If this is really that complicated (I haven't tried) then it would be
+> > > much more simple to completely skip the bulk allocator for __GFP_ACCOUNT
+> > > rather than add a tricky code. The bulk allocator is meant to be used
+> > > for ultra hot paths and memcg charging along with the reclaim doesn't
+> > > really fit into that model anyway. Or are there any actual users who
+> > > really need bulk allocator optimization and also need memcg accounting?
 > >
-> > On Tue 12-10-21 09:08:38, Shakeel Butt wrote:
-> > > On Tue, Oct 12, 2021 at 8:36 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Tue 12-10-21 17:58:21, Vasily Averin wrote:
-> > > > > Enable memory accounting for bulk page allocator.
-> > > >
-> > > > ENOCHANGELOG
-> > > >
-> > > > And I have to say I am not very happy about the solution. It adds a very
-> > > > tricky code where it splits different charging steps apart.
-> > > >
-> > > > Would it be just too inefficient to charge page-by-page once all pages
-> > > > are already taken away from the pcp lists? This bulk should be small so
-> > > > this shouldn't really cause massive problems. I mean something like
-> > > >
-> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > > index b37435c274cf..8bcd69195ef5 100644
-> > > > --- a/mm/page_alloc.c
-> > > > +++ b/mm/page_alloc.c
-> > > > @@ -5308,6 +5308,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> > > >
-> > > >         local_unlock_irqrestore(&pagesets.lock, flags);
-> > > >
-> > > > +       if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) {
-> > > > +               /* charge pages here */
-> > > > +       }
-> > >
-> > > It is not that simple because __alloc_pages_bulk only allocate pages
-> > > for empty slots in the page_array provided by the caller.
-> > >
-> > > The failure handling for post charging would be more complicated.
-> >
-> > If this is really that complicated (I haven't tried) then it would be
-> > much more simple to completely skip the bulk allocator for __GFP_ACCOUNT
-> > rather than add a tricky code. The bulk allocator is meant to be used
-> > for ultra hot paths and memcg charging along with the reclaim doesn't
-> > really fit into that model anyway. Or are there any actual users who
-> > really need bulk allocator optimization and also need memcg accounting?
-> 
-> Bulk allocator is being used for vmalloc and we have several
-> kvmalloc() with __GFP_ACCOUNT allocations.
+> > Bulk allocator is being used for vmalloc and we have several
+> > kvmalloc() with __GFP_ACCOUNT allocations.
+>
+> Do we really need to use bulk allocator for these allocations?
+> Bulk allocator is an bypass of the page allocator for performance reason
+> and I can see why that can be useful but considering that the charging
+> path can imply some heavy lifting is all the code churn to make bulk
+> allocator memcg aware really worth it? Why cannot we simply skip over
+> bulk allocator for __GFP_ACCOUNT. That would be a trivial fix.
+> --
 
-Do we really need to use bulk allocator for these allocations?
-Bulk allocator is an bypass of the page allocator for performance reason
-and I can see why that can be useful but considering that the charging
-path can imply some heavy lifting is all the code churn to make bulk
-allocator memcg aware really worth it? Why cannot we simply skip over
-bulk allocator for __GFP_ACCOUNT. That would be a trivial fix.
--- 
-Michal Hocko
-SUSE Labs
+Actually that might be the simplest solution and I agree to skip bulk
+allocator for __GFP_ACCOUNT allocations.
