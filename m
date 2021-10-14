@@ -2,81 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DC942D35A
-	for <lists+cgroups@lfdr.de>; Thu, 14 Oct 2021 09:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B8442D364
+	for <lists+cgroups@lfdr.de>; Thu, 14 Oct 2021 09:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhJNHSN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Oct 2021 03:18:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44022 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbhJNHSM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Oct 2021 03:18:12 -0400
+        id S230054AbhJNHUR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Oct 2021 03:20:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42070 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhJNHUN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Oct 2021 03:20:13 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E700B20285;
-        Thu, 14 Oct 2021 07:16:06 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A3D9521A75;
+        Thu, 14 Oct 2021 07:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634195766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1634195887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=psDL5nan6SZCy/ZgVLbapa/8v4HIAOlEqUtXE6YYjOI=;
-        b=ZtNJuUPQ0p6nym5BoNWMIVPfO/mXnStoFPNKokOO/JFTZ9io30gEh7DhAICNABbrvjr8hx
-        RtFXUn0KBjSiUJHxZra5XdLtPbcvgswlq4KIpSpjK6BprtvbIGbNBUJrOzbOfQ2dUyiaoq
-        pO+FgmBolTc78KoobQwspZnzuD5cx5w=
+        bh=ItroEyfCjdn2jjHo+KgVNqOCeGtBLeeRzaYF2ey/Y8Q=;
+        b=VfMKwkcQxdhoIzXhSYvkSm5ku7ugoTIPQVOo+JxVkpz/QxhwL/Po2BnNIQE8tm4as/wMbN
+        S5oH/v78OyHEvUfHBoe4nVgfGedVIE5BtuoePId8+oLCWf/4EVJCEXyDsURoyy63WUne46
+        6hmbURCIwobyelAtwxmnd6qGC94sRWw=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 6B021A3B89;
-        Thu, 14 Oct 2021 07:16:06 +0000 (UTC)
-Date:   Thu, 14 Oct 2021 09:16:04 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id 8F5C9A3B84;
+        Thu, 14 Oct 2021 07:18:07 +0000 (UTC)
+Date:   Thu, 14 Oct 2021 09:18:07 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Mel Gorman <mgorman@techsingularity.net>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
         Roman Gushchin <guro@fb.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] memcg: page_alloc: skip bulk allocator for __GFP_ACCOUNT
-Message-ID: <YWfZNF7T7Fm69sik@dhcp22.suse.cz>
+Message-ID: <YWfZr+lL2lrBhSc/@dhcp22.suse.cz>
 References: <20211013194338.1804247-1-shakeelb@google.com>
+ <4c92e227-2abc-c3cb-93eb-f5c45bef7fc6@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013194338.1804247-1-shakeelb@google.com>
+In-Reply-To: <4c92e227-2abc-c3cb-93eb-f5c45bef7fc6@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 13-10-21 12:43:38, Shakeel Butt wrote:
+On Thu 14-10-21 10:05:21, Vasily Averin wrote:
 [...]
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 668edb16446a..b3acad4615d3 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5215,6 +5215,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  	unsigned int alloc_flags = ALLOC_WMARK_LOW;
->  	int nr_populated = 0, nr_account = 0;
->  
-> +	/* Bulk allocator does not support memcg accounting. */
-> +	if (unlikely(gfp & __GFP_ACCOUNT))
-> +		goto out;
+> > +	/* Bulk allocator does not support memcg accounting. */
+> > +	if (unlikely(gfp & __GFP_ACCOUNT))
+> > +		goto out;
+> > +
+> 
+> May be (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT)) check is better here?
 
-Did you mean goto failed here? This would break some which do not
-have any fallback. E.g. xfs_buf_alloc_pages but likely more.
-
-Sorry I could have been more specific when talking about bypassing the
-bulk allocator. It is quite confusing because the bulk allocator
-interface consists of the bulk allocator and the fallback to the normal
-page allocator.
-
-> +
->  	/*
->  	 * Skip populated array elements to determine if any pages need
->  	 * to be allocated before disabling IRQs.
-> -- 
-> 2.33.0.882.g93a45727a2-goog
+Yes please
 
 -- 
 Michal Hocko
