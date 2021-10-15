@@ -2,110 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB9042FA97
-	for <lists+cgroups@lfdr.de>; Fri, 15 Oct 2021 19:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B6742FD7E
+	for <lists+cgroups@lfdr.de>; Fri, 15 Oct 2021 23:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242360AbhJOR5n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Oct 2021 13:57:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48750 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242303AbhJOR5l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Oct 2021 13:57:41 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 17DF21FD4F;
-        Fri, 15 Oct 2021 17:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634320533; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jBn2VNfaCZDHefss5Z1r9mqIdP3xRVwotwlK+Rm7xY=;
-        b=n1K8M3Dt3d5TeTHwFKotWO6NgpCUxVj9yloDRCzY2ACk+N04k0IsJk9kqYAIr5CkXCtahO
-        nlU9a0EBiwuhBPySCxctmkoH2iaJWzcfoYspQAfFg6jbjBTLBTW345dDdKwJR+lFFJ2ZBN
-        k3qq64TE8yeQUYARubZvGlGdIcnGP1c=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F13F413C6F;
-        Fri, 15 Oct 2021 17:55:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id d+pMOpTAaWHgJQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 15 Oct 2021 17:55:32 +0000
-Date:   Fri, 15 Oct 2021 19:55:31 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org
-Subject: Re: [PATCH v2 1/2] memcg: flush stats only if updated
-Message-ID: <20211015175531.GB46263@blackbody.suse.cz>
-References: <20211013180130.GB22036@blackbody.suse.cz>
- <20211014163146.2177266-1-shakeelb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014163146.2177266-1-shakeelb@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S243138AbhJOVgP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Oct 2021 17:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243079AbhJOVgP (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 15 Oct 2021 17:36:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A42DB60EE2;
+        Fri, 15 Oct 2021 21:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634333648;
+        bh=2tyMLoz7LKioqYzGr2VimJ9SCcxFOLwmrLyZHfNoTNw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lZ8cYv7MXOGE5rKlvl0Do+7ZT7bSOjmWHroiiJBLfDCL6UeFaGIzT70s7XAJH5fks
+         +8JKp9BXhuxBMHZZHmwEfGqkAdlB7NSmh88Rr/Vf++ZVs7WjILD8ypwD2bPFaita53
+         mqQ+VLZNgENPu9qhJneMQi8dw6fXy4mtb9+AzkoQ=
+Date:   Fri, 15 Oct 2021 14:34:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH mm v5] memcg: enable memory accounting in
+ __alloc_pages_bulk
+Message-Id: <20211015143405.b7d54e4afa4ca7b2d57b6140@linux-foundation.org>
+In-Reply-To: <65c1afaf-7947-ce28-55b7-06bde7aeb278@virtuozzo.com>
+References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
+        <65c1afaf-7947-ce28-55b7-06bde7aeb278@virtuozzo.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 09:31:46AM -0700, Shakeel Butt <shakeelb@google.com> wrote:
-> Thanks for your review. This forces me to think more on this because each
-> update does not necessarily be a single page sized update e.g. adding a hugepage
-> to an LRU.
+On Thu, 14 Oct 2021 11:02:57 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
 
-Aha, hugepages... (I also noticed that on the opposite size scale are
-NR_SLAB_{UN,}RECLAIMABLE_B, the complementary problem to too big error
-would be too frequent flushes.)
+> Bulk page allocator is used in vmalloc where it can be called
+> with __GFP_ACCOUNT and must charge allocated pages into memory cgroup.
 
-> Though I think the error is time bounded by 2 seconds but in those 2 seconds
-> mathematically the error can be large.
+Is this problem serious enough to justify -stable backporting?  Some
+words which explaining reasoning for the backport would be helpful.
 
-Honestly, I can't tell how much the (transient) errors in various
-node_stat_item entries will or won't affect MM behavior. But having some
-guards on it sounds practical when some problems to troubleshoot arise.
-
-> What do you think of the following change? It will bound the error
-> better within the 2 seconds window.
-> [...]
-> -static inline void memcg_rstat_updated(struct mem_cgroup *memcg)
-> +static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  {
-> +	unsigned int x;
-> +
->  	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
-> -	if (!(__this_cpu_inc_return(stats_updates) % MEMCG_CHARGE_BATCH))
-> -		atomic_inc(&stats_flush_threshold);
-> +
-> +	x = abs(__this_cpu_add_return(stats_diff, val));
-> +	if (x > MEMCG_CHARGE_BATCH) {
-> +		atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
-> +		__this_cpu_write(stats_diff, 0);
-> +	}
->  }
-
-Looks better wrt meaningful error calculation (and hopefully still
-doesn't add too much to the hot path).
-
-> @@ -807,7 +813,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
->  		return;
->  
->  	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
-> -	memcg_rstat_updated(memcg);
-> +	memcg_rstat_updated(memcg, val);
-
-s/val/count/
-
-(Just thinking loudly.) At one moment I thought, it could
-effectively be even s/val/0/ since events aren't(?) inputs for reclaim
-calculations. But with the introduced stats_diff it may happen
-stats_diff flickers (its abs value) within the MEMCG_CHARGE_BATCH and
-stats_flush_threshold would never be incremented. Basically disabling
-the periodic flush. Therefore the events must also increment the
-stats_diff.
-
+This patch makes Shakeel's "memcg: page_alloc: skip bulk allocator for
+__GFP_ACCOUNT" unnecessary.  Which should we use?
