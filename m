@@ -2,94 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DC1430DDA
-	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 04:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70DD43112C
+	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 09:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237657AbhJRCgS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 17 Oct 2021 22:36:18 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14385 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbhJRCgO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Oct 2021 22:36:14 -0400
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HXgmh2M9qz906X;
-        Mon, 18 Oct 2021 10:29:08 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggeme756-chm.china.huawei.com
- (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 18
- Oct 2021 10:34:02 +0800
-From:   Zheng Liang <zhengliang6@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <paolo.valente@linaro.org>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <zhengliang6@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v2] block, bfq: fix UAF problem in bfqg_stats_init()
-Date:   Mon, 18 Oct 2021 10:42:25 +0800
-Message-ID: <20211018024225.1493938-1-zhengliang6@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S230374AbhJRHLt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Oct 2021 03:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhJRHLl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Oct 2021 03:11:41 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAC2C061745;
+        Mon, 18 Oct 2021 00:09:30 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so796849otq.12;
+        Mon, 18 Oct 2021 00:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=O/OZJC0HIUE3DNP74CA6ob2Ysy1RgHmyhS2ZxyEPXFQ=;
+        b=SSUOD1uC9IodrXjZW/i5EdgxkEgrD955N9s4FpbRkuCr8XDDCmVTbVqRPHDNRSENmQ
+         iz9t4oURkPyAIYFZ3pF4/7pS+eNQ6jTzoIb8Ev4KENA7b6ItNIiOxdYyMocXP4myvfsj
+         15woTtJGjmSTDkC3/6mQkEhMkSU7psQwGbmQfHehlpJMH3yHUwtWBcHFxxkAXVoKt9Ts
+         nBaKJ59mpV+je8EW4XMdc2rrfQz96tlTmC0TJu+NT3nZuvW7kx11mUXZ9afwkITGFFTH
+         VJ4YFQqqQCqqqoGqQaTuKHkzbE+8N/bVbWwHgsEX8SSO9yDK5OStQK0VbKm5QKeo1bcd
+         is/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=O/OZJC0HIUE3DNP74CA6ob2Ysy1RgHmyhS2ZxyEPXFQ=;
+        b=o8R9Zwf5hdwuKPbYH+P5uvqFSeWG4wP90FJPDQIW51egpvFSJDqef2OObmZJxjrsdD
+         AeK3v4FxfgmBsjthzdgqAte61LSAzRXH3dqVtEyv8ZjeFAA3O23ebOyXOpZUU2+xq4ox
+         tTeN7F1dUPO5xNsI+MnCDgyhcVYO8XFl+d9vVC/K1Gq3Z4HyJn6fPHs8CM1sqMiu15kf
+         ShOVPwPHZLs5GWC+8abZQQCLzv19g50ACkFd1ysaHixr6Vt/YFu1BmrgYnUVRPyphXOv
+         IllF5BywSs+UMBTuv3vRAIs9BA7w3IJV0kFyLOWjCqG6cdcYV7gCKgnLiv5lJkBUlFUy
+         OCew==
+X-Gm-Message-State: AOAM531hSPMfvHxOIxLl6Qhc8t5KZ3DfEydgo3OgKHGqEzRCqlsqcyHq
+        K5t5s0lXiA7xa8qlgANF+mEBBALkSSYI7znu6jakZipkDQU=
+X-Google-Smtp-Source: ABdhPJyVC+RTqo8zzXghqNePAGY9z5PgIv0+b0z2Csc9EVNystgb5c+HnaMTxR7F/tuzIl8oNOgfX2djHgX3uGTMNIE=
+X-Received: by 2002:a05:6830:92:: with SMTP id a18mr12269184oto.307.1634540969155;
+ Mon, 18 Oct 2021 00:09:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+From:   Youfu Zhang <zhangyoufu@gmail.com>
+Date:   Mon, 18 Oct 2021 15:08:53 +0800
+Message-ID: <CAEKhA2x1Qi3Ywaj9fzdsaChabqDSMe2m2441wReg_V=39_Cuhg@mail.gmail.com>
+Subject: [BUG] blk-throttle panic on 32bit machine after startup
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-In bfq_pd_alloc(), the function bfqg_stats_init() init bfqg. If
-blkg_rwstat_init() init bfqg_stats->bytes successful and init
-bfqg_stats->ios failed, bfqg_stats_init() return failed, bfqg will
-be freed. But blkg_rwstat->cpu_cnt is not deleted from the list of
-percpu_counters. If we traverse the list of percpu_counters, It will
-have UAF problem.
+Hi,
 
-we should use blkg_rwstat_exit() to cleanup bfqg_stats bytes in the
-above scenario.
+I ran into a kernel bug related to blk-throttle on CentOS 7 AltArch for i386.
+Userspace programs may panic the kernel if they hit the I/O limit
+within 5 minutes after startup.
 
-Fixes: commit fd41e60331b ("bfq-iosched: stop using blkg->stat_bytes and ->stat_ios")
-Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
----
-Changes since v1:
-    Change some description for this patch
----
- block/bfq-cgroup.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Root cause:
+1. jiffies was initialized to -300HZ during boot on 32bit machines
+2. enable blkio cgroup hierarchy
+   __DEVEL__sane_behavior for cgroup v1 or default hierarchy for cgroup v2
+   EL7 kernel modified throtl_pd_init and always enable hierarchical throttling
+3. enable & trigger blkio throttling within 5 minutes after startup
+   bio propagated from child tg to parent
+4. enter throtl_start_new_slice_with_credit
+   if(time_after_eq(start, tg->slice_start[rw]))
+   aka. time_after_eq(0xFFFxxxxx, 0) does not hold
+   parent tg->slice_start[rw] was zero-initialized and not updated
+5. enter throtl_trim_slice
+   BUG_ON(time_before(tg->slice_end[rw], tg->slice_start[rw]))
+   aka. time_before(0xFFFxxxxx, 0) triggers a panic
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index e2f14508f2d6..243ffbc1f106 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -463,7 +463,7 @@ static int bfqg_stats_init(struct bfqg_stats *stats, gfp_t gfp)
- {
- 	if (blkg_rwstat_init(&stats->bytes, gfp) ||
- 	    blkg_rwstat_init(&stats->ios, gfp))
--		return -ENOMEM;
-+		goto error;
- 
- #ifdef CONFIG_BFQ_CGROUP_DEBUG
- 	if (blkg_rwstat_init(&stats->merged, gfp) ||
-@@ -476,13 +476,15 @@ static int bfqg_stats_init(struct bfqg_stats *stats, gfp_t gfp)
- 	    bfq_stat_init(&stats->dequeue, gfp) ||
- 	    bfq_stat_init(&stats->group_wait_time, gfp) ||
- 	    bfq_stat_init(&stats->idle_time, gfp) ||
--	    bfq_stat_init(&stats->empty_time, gfp)) {
--		bfqg_stats_exit(stats);
--		return -ENOMEM;
--	}
-+	    bfq_stat_init(&stats->empty_time, gfp))
-+		goto error;
- #endif
- 
- 	return 0;
-+
-+error:
-+	bfqg_stats_exit(stats);
-+	return -ENOMEM;
- }
- 
- static struct bfq_group_data *cpd_to_bfqgd(struct blkcg_policy_data *cpd)
--- 
-2.25.4
-
+Reproducer: (tested on Alpine Linux x86 kernel 5.10.X)
+#!/bin/sh
+CGROUP_PATH="$(mktemp -d)"
+mount -t cgroup2 none "$CGROUP_PATH"
+echo +io >"$CGROUP_PATH/cgroup.subtree_control"
+mkdir "$CGROUP_PATH/child"
+echo "7:0 riops=2" >"$CGROUP_PATH/child/io.max"
+echo 0 >"$CGROUP_PATH/child/cgroup.procs"
+echo 3 >/proc/sys/vm/drop_caches
+dd if=/dev/loop0 of=/dev/null count=3
