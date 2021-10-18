@@ -2,97 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1A9432200
-	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 17:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C796432313
+	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 17:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhJRPKC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Oct 2021 11:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbhJRPJw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Oct 2021 11:09:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2C0C0613EC
-        for <cgroups@vger.kernel.org>; Mon, 18 Oct 2021 08:07:34 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y26so318514lfa.11
-        for <cgroups@vger.kernel.org>; Mon, 18 Oct 2021 08:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6bRJbqa6xT34/h7NxHqqr/Wrj4ooiVPcZ2S2RE7msX0=;
-        b=tD7pGpPfZPhaSJpFmCQHjE8kNfwVnGkla3JDhKVEXmEq1jfKNyRz9nnFit+58lszlJ
-         WlNab+RrKfHDmFdjRl05B7+DTrm4zLtlznOneffVIV5/jMgTSknMxa2PQ4hVjTUZEafw
-         PhNcTjrFsTpdCPYFrDGtdBqvhUenjTpujzRQp2/tEhySHtn5hsSzVvpD3r+E4feXnuW5
-         eAWFmBWQ1CB5tiJDO2xUyzQazBKDDNjpnCkkjdhpwhdMMuBERyvKVr5dr672S9Pq/0hL
-         g8+zyVv0DxEwLoun1bQvj9ls/CruLgbDWQl+p7d2GS92pO6OHGf7RefsBkcTzHavFLOR
-         KMog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6bRJbqa6xT34/h7NxHqqr/Wrj4ooiVPcZ2S2RE7msX0=;
-        b=Rwzmbr1FURgOy9BvdM59yrbTYKfSM57cEb5fgfpvgtWCJCU+Jma4J8D5ggvmWQikDI
-         oQJFb+2qjFIcOh1ZVvHiWkwpVRPakyjLcg4bGXWUiMbt5eqZ2wMC5TX202/XlpVIPeYA
-         1Rimcp5Zac5W+1yAIXUn7h/HkPwZzjRqs6a+K+D0D0bxruem8FHJJcZF40isyxnlvWOa
-         eyI2Dog4Uji2EYskTFvXD4PLUYDxaGqCrXhnF6y0tSPzIxLOkcIHQK4z+wvo4T8vNwQ3
-         piJhJBm6wL+1bU0i0DaYxh2KGUDpht4eCx0E03uwb1kq8Fe0/L+ARheF8X5Hc+MFaQla
-         EqIg==
-X-Gm-Message-State: AOAM530QHRsez8ontEQnxIPPormR6dSCcl3kPrL/0eaYSgqC5qBT1++p
-        yjlYrTDbeT7m7kwxDN34urf5Z19J/D5iket1Et1U9Q==
-X-Google-Smtp-Source: ABdhPJzkcQbJmHIcmsSv23CmJ8pvuIgse7txYaY63YZogGKFZIVhvM5S+K8nNQYkOLgWxlGU6DrXAruX57i0Qu7+Z9s=
-X-Received: by 2002:ac2:5a0b:: with SMTP id q11mr327244lfn.40.1634569652473;
- Mon, 18 Oct 2021 08:07:32 -0700 (PDT)
+        id S232585AbhJRPkT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Oct 2021 11:40:19 -0400
+Received: from sender4-op-o18.zoho.com ([136.143.188.18]:17899 "EHLO
+        sender4-op-o18.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhJRPkQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Oct 2021 11:40:16 -0400
+X-Greylist: delayed 907 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Oct 2021 11:40:16 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1634570567; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=SIztRUc9OQz6SZ051eIl/GUuuVi6UQupUR1dRGjXznCaZ8l9bplFLwtW353jA4hc6dDbxyVgm5eT69cjFKuu2IiHRBPqmSjoSdx7YCAusel16d+vq4MMzj8JE3mImBzkFyi5FqzBzixJ3qrG3Fh+OC0Ucnn3XyD7lFn4nbq9MKE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1634570567; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=kZhtruoVwNb47EYcsxuzHngcaBNhwqEKuTTcZhdi/HE=; 
+        b=cYe4rVsidMUiSQijOj3zGKiTs6fGGlGD98uIHB8iQZ1AtnwyjIGUY7xovPVPvN6ebwWCdZpPtNa4NoGqNl/KoaIjHT5oFDWXgF6RzXEkIkxqhD0kf+o1INuZOC6UgKrV78+a2GOp+egHZOVWmQ3LCw5tlB6w2bFDU9F08x+W/z4=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=librazy.org;
+        spf=pass  smtp.mailfrom=im@librazy.org;
+        dmarc=pass header.from=<im@librazy.org>
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
+  s=zoho; d=librazy.org; 
+  h=message-id:date:mime-version:user-agent:from:subject:to:cc:references:in-reply-to:content-type; 
+  b=TgijLkBzZ7Q/RMm2R9BF2LVqca7CTy+7KrSxYKdcFG+sSjpE5ei9w2qLu3ltiAVqRzUOoYskSVXR
+    sJXnKMRgJRS0/EdWoc+RNVOksV7LizPRPMGhTDoebLKW/Rpse5NO2TirtU5MHMwMTYoNK1bkf1gv
+    /CQRxyoT1OQyaxKOZRc=  
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1634570567;
+        s=mx; d=librazy.org; i=im@librazy.org;
+        h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=kZhtruoVwNb47EYcsxuzHngcaBNhwqEKuTTcZhdi/HE=;
+        b=e7gJw8grFe/k7pDLAMOlujFTGoN08nc2CVJ0B/nMAud9K5h962WRHocctzMz8bYP
+        oTQsTq5HURE01HdTv9jGiA/yyr3VmDKTpa3cninBpo9msJugpIzgT6/XPkpz+jq0Uzr
+        pDOV9nbkncx0MNUNPbKGdFrVnGkpzvamFM2Ma52s=
+Received: from [192.168.8.8] (112.10.216.114 [112.10.216.114]) by mx.zohomail.com
+        with SMTPS id 1634570563689491.1625136176144; Mon, 18 Oct 2021 08:22:43 -0700 (PDT)
+Message-ID: <e726813b-4f6d-3a5d-6adb-8407a9b4c7f7@librazy.org>
+Date:   Mon, 18 Oct 2021 23:22:27 +0800
 MIME-Version: 1.0
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz> <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz> <27dc0c49-a0d6-875b-49c6-0ef5c0cc3ac8@virtuozzo.com>
- <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
-In-Reply-To: <YW1oMxNkUCaAimmg@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 18 Oct 2021 08:07:20 -0700
-Message-ID: <CALvZod42uwgrg83CCKn6JgYqAQtR1RLJSuybNYjtkFo4wVgT1w@mail.gmail.com>
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited task
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+From:   Liqueur Librazy <im@librazy.org>
+Subject: Re: [BUG] blk-throttle panic on 32bit machine after startup
+To:     zhangyoufu@gmail.com
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, tj@kernel.org
+References: <CAEKhA2x1Qi3Ywaj9fzdsaChabqDSMe2m2441wReg_V=39_Cuhg@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAEKhA2x1Qi3Ywaj9fzdsaChabqDSMe2m2441wReg_V=39_Cuhg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 5:27 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> [restore the cc list]
->
-> On Mon 18-10-21 15:14:26, Vasily Averin wrote:
-> > On 18.10.2021 14:53, Michal Hocko wrote:
-> > > On Mon 18-10-21 13:05:35, Vasily Averin wrote:
-> > >> On 18.10.2021 12:04, Michal Hocko wrote:
-> > >> Here we call try_charge_memcg() that return success and approve the allocation,
-> > >> however then we hit into kmem limit and fail the allocation.
-> > >
-> > > Just to make sure I understand this would be for the v1 kmem explicit
-> > > limit, correct?
-> >
-> > yes, I mean this limit.
->
-> OK, thanks for the clarification. This is a known problem. Have a look
-> at I think we consider that one to 0158115f702b ("memcg, kmem: deprecate
-> kmem.limit_in_bytes"). We are reporting the deprecated and to-be removed
-> status since 2019 without any actual report sugested by the kernel
-> message. Maybe we should try and remove it and see whether that prompts
-> some pushback.
->
+Hi,
 
-Yes, I think now should be the right time to take the next step for
-deprecation of kmem limits:
-https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
+Yet another colleague of the reporter here. I found that some 
+precondition maybe not sound when tg->slice_end[rw] is initialized with 
+0, which time_before(INITIAL_JIFFIES, 0) holds true in 32-bit Linux.
+
+As in v5.15-rc6/block/blk-throttle.c
+
+1. L833
+
+	/* Determine if previously allocated or extended slice is complete or 
+not */
+	static bool throtl_slice_used(struct throtl_grp *tg, bool rw)
+	{
+		if (time_in_range(jiffies, tg->slice_start[rw], tg->slice_end[rw]))
+			return false;
+
+		return true;
+	}
+
+throtl_slice_used will always return true for a newly initialized slice.
+This may be intentional behavior but not mentioned in comment.
+(except when jiffies == 0, which is another topic: will 
+time_in_range_open do better here?)
+
+2. L791, in throtl_start_new_slice_with_credit
+
+	/*
+	 * Previous slice has expired. We must have trimmed it after last
+	 * bio dispatch. That means since start of last slice, we never used
+	 * that bandwidth. Do try to make use of that bandwidth while giving
+	 * credit.
+	 */
+	if (time_after_eq(start, tg->slice_start[rw]))
+		tg->slice_start[rw] = start;
+
+As mentioned in my colleague Haoran Luo's reply, time_after_eq(start, 
+tg->slice_start[rw]) is falsy when the jiffies had not wrapped around.
+A easy solution is to add a check for tg->slice_start[rw] == 0, or we 
+should initialize tg->slice_start[rw] and tg->slice_end[rw] with 
+INITIAL_JIFFIES.
