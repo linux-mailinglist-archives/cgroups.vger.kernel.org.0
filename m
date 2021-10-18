@@ -2,59 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD5E431369
-	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 11:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08892431411
+	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 12:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhJRJ1o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Oct 2021 05:27:44 -0400
-Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21462 "EHLO
-        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbhJRJ1o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Oct 2021 05:27:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1634549128; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=P16/MXRb00Y1dFyKfnzWMlMgWGq4Y9+dSDHmHTDPjjEOLpTcnVXPNKCMtuhJOHHILM/TmStARK6cfJxGEmYYwLTVOrXHflJY5i6GEu7dp4v1JKhhkyrRyInGOemxc7DhyXBYijfJhDec3H27HBTsmO2B3pXt4ZKIi+V9OO0+x+s=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1634549128; h=Content-Type:Cc:Date:From:MIME-Version:Message-ID:Reply-To:Subject:To; 
-        bh=otTsBZa70MX6QghBvUt6YAtmdC1HkIcx0ZEGFPr2XNI=; 
-        b=ZWaC0RF9YkiviKUgt8qxYfh65TmyKJjmgE3nBFJ+f53DoqoQbKIXXgu4fiHVFijwJRaC0KsCKy730e9WLX4vlp2wClPIq3U6Zsl0UFToYNupmySNxf324cUbp5SXw6B2r8SnE8oFLx6123etKNJ5Sh/T4KJbXmQmj8slDhC3gkY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        spf=pass  smtp.mailfrom=www@aegistudio.net;
-        dmarc=pass header.from=<www@aegistudio.net>
-Received: from aegistudio (115.216.104.229 [115.216.104.229]) by mx.zohomail.com
-        with SMTPS id 1634549123491906.7996972076187; Mon, 18 Oct 2021 02:25:23 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 09:25:11 +0000
-From:   Haoran Luo <www@aegistudio.net>
-To:     Haoran Luo <www@aegistudio.net>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, tj@kernel.org, zhangyoufu@gmail.com
-Subject: Re: [BUG] blk-throttle panic on 32bit machine after startup
-Message-ID: <YW09dxyhhsMwaO7T@aegistudio>
-Reply-To: YW0pm5xcxgWnW98f@aegistudio
+        id S229473AbhJRKIN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Oct 2021 06:08:13 -0400
+Received: from relay.sw.ru ([185.231.240.75]:49164 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229929AbhJRKIN (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 18 Oct 2021 06:08:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=v4LeNmv3SwkPyguGAt7spZmFtAAdvhXagti3/HiYcJM=; b=r4Z5e0aOk/6+/4aZs
+        d7663+ojeE6T0F6uJmOyL5Pz4218rmSSlZlOHAF0M1+A5jfWkm9VZQCR2reaIs6T5hlleLq2aGsdg
+        /Lhhr8JbHMWL41nqvxptFCnM/ocSlQ/Z1BSsugLOrY81bJhOtJymU6dG8cwLy0kVZ+3C9JuHXUfjs
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mcPWm-006Kzj-DN; Mon, 18 Oct 2021 13:05:56 +0300
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
+Date:   Mon, 18 Oct 2021 13:05:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-ZohoMailClient: External
+In-Reply-To: <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Pardon me for elaborating some of my opinions.
+On 18.10.2021 12:04, Michal Hocko wrote:
+> On Mon 18-10-21 11:13:52, Vasily Averin wrote:
+> [...]
+>> How could this happen?
+>>
+>> User-space task inside the memcg-limited container generated a page fault,
+>> its handler do_user_addr_fault() called handle_mm_fault which could not
+>> allocate the page due to exceeding the memcg limit and returned VM_FAULT_OOM.
+>> Then do_user_addr_fault() called pagefault_out_of_memory() which executed
+>> out_of_memory() without set of memcg.
+>>
+>> Partially this problem depends on one of my recent patches, disabled unlimited
+>> memory allocation for dying tasks. However I think the problem can happen
+>> on non-killed tasks too, for example because of kmem limit.
+> 
+> Could you be more specific on how this can happen without your patch? I
+> have to say I haven't realized this side effect when discussing it.
 
-> I think this piece of code presumes all jiffies values are greater than
-> 0, which is the initial value assigned when kzalloc-ing throtl_grp. It
-> fails on 32-bit linux for the first 5 minutes after booting, since the
-> jiffies value then will be less than 0.
+We can reach obj_cgroup_charge_pages() for example via
 
-Expressing the jiffies value as greater or less than 0 is a mistake of vagueness. I actually means that comparison in macro "time_after_eq", which written as below in "5.16-rc2" in "include/linux/jiffies.h" at around line 110.
+do_user_addr_fault
+handle_mm_fault
+__handle_mm_fault
+p4d_alloc
+__p4d_alloc
+p4d_alloc_one
+get_zeroed_page
+__get_free_pages
+alloc_pages
+__alloc_pages
+__memcg_kmem_charge_page
+obj_cgroup_charge_pages
 
-	#define time_after_eq(a,b)	\
-		(typecheck(unsigned long, a) && \
-		 typecheck(unsigned long, b) && \
-		 ((long)((a) - (b)) >= 0))
+Here we call try_charge_memcg() that return success and approve the allocation,
+however then we hit into kmem limit and fail the allocation.
 
-The "INITIAL_JIFFIES" which is defined as "((unsigned long)(unsigned int)-300*HZ)", converts to "((long)-300*HZ)" and is smaller than "((long)0)". And similarily "timer_after_eq(x, 0)" being evaluated to false holds for x ranged from `INITIAL_JIFFIES <= x <= MAX_LONG` on 32-bit linux.
+If required I can try to search how try_charge_memcg() can reject page allocation 
+of non-dying task too.
 
-The same thing will not happen for 64-bit linux, since "((unsigned long)(unsigned int)-300*HZ)" is evaluated to a value greater than zero in the macro above.
+> I will be honest that I am not really happy about pagefault_out_of_memory.
+> I have tried to remove it in the past. Without much success back then,
+> unfortunately[1]. 
+> Maybe we should get rid of it finally. The OOM is always triggered from
+> inside the allocator where we have much more infromation about the
+> allocation context. A first step would be to skip pagefault_out_of_memory
+> for killed or exiting processes.
 
-I actually cannot figure out a fix for this problem on 32-bit, if it presumes the jiffies value in "tg->slice_start[rw]" to be either "0" or jiffies "x" holding property of "time_after_eq(x, 0)".
+I like this idea, however it may be not enough, at least in scenario described above.
+
+> [1] I do not have msg-id so I cannot provide a lore link but google
+> pointed me to https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1400402.html
+
+Thank you, I'll read this discussion.
+	Vasily Averin
