@@ -2,72 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C177743007B
-	for <lists+cgroups@lfdr.de>; Sat, 16 Oct 2021 08:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DC1430DDA
+	for <lists+cgroups@lfdr.de>; Mon, 18 Oct 2021 04:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239654AbhJPGGm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 Oct 2021 02:06:42 -0400
-Received: from relay.sw.ru ([185.231.240.75]:60208 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233998AbhJPGGm (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sat, 16 Oct 2021 02:06:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=xI7kQGX5KyJoY+1LjCTdHRnFhsACsaLASZrxq3vB3gA=; b=xKcMUdmxkPpA+p6rh
-        y0D0ZcC/9R6ITj2oAfdNBB1Ds822WSFnZaFiCfyqVwUYngECrTruzlLlgI2pGWTgLd5XfYJ4s5k0B
-        Iqdr/wHa7dhaA72qYTc0GAVDXaCmbT6HC4eh6JqXmW7Na6pFF5y/sQJnUPvKhJkfsAG21VQopb12g
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mbco1-006BWm-9a; Sat, 16 Oct 2021 09:04:29 +0300
-Subject: Re: [PATCH mm v5] memcg: enable memory accounting in
- __alloc_pages_bulk
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <0baa2b26-a41b-acab-b75d-72ec241f5151@virtuozzo.com>
- <65c1afaf-7947-ce28-55b7-06bde7aeb278@virtuozzo.com>
- <20211015143405.b7d54e4afa4ca7b2d57b6140@linux-foundation.org>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <12d991ba-1702-c648-c4c7-5f9bd507582d@virtuozzo.com>
-Date:   Sat, 16 Oct 2021 09:04:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237657AbhJRCgS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Oct 2021 22:36:18 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14385 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhJRCgO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Oct 2021 22:36:14 -0400
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HXgmh2M9qz906X;
+        Mon, 18 Oct 2021 10:29:08 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggeme756-chm.china.huawei.com
+ (10.3.19.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.15; Mon, 18
+ Oct 2021 10:34:02 +0800
+From:   Zheng Liang <zhengliang6@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <paolo.valente@linaro.org>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <zhengliang6@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH v2] block, bfq: fix UAF problem in bfqg_stats_init()
+Date:   Mon, 18 Oct 2021 10:42:25 +0800
+Message-ID: <20211018024225.1493938-1-zhengliang6@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20211015143405.b7d54e4afa4ca7b2d57b6140@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 16.10.2021 00:34, Andrew Morton wrote:
-> On Thu, 14 Oct 2021 11:02:57 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
-> 
->> Bulk page allocator is used in vmalloc where it can be called
->> with __GFP_ACCOUNT and must charge allocated pages into memory cgroup.
-> 
-> Is this problem serious enough to justify -stable backporting?  Some
-> words which explaining reasoning for the backport would be helpful.
-> 
-> This patch makes Shakeel's "memcg: page_alloc: skip bulk allocator for
-> __GFP_ACCOUNT" unnecessary.  Which should we use?
+In bfq_pd_alloc(), the function bfqg_stats_init() init bfqg. If
+blkg_rwstat_init() init bfqg_stats->bytes successful and init
+bfqg_stats->ios failed, bfqg_stats_init() return failed, bfqg will
+be freed. But blkg_rwstat->cpu_cnt is not deleted from the list of
+percpu_counters. If we traverse the list of percpu_counters, It will
+have UAF problem.
 
-Please use Shakeel's patch.
+we should use blkg_rwstat_exit() to cleanup bfqg_stats bytes in the
+above scenario.
 
-My patch at least requires review, so at present it should be delayed.
-I've submitted it because it may be useful later.
-Moreover  Currently it have minor issue, function in !MEMCG_KMEM branch
-in of memcontrol.h should be declare as static inline.
+Fixes: commit fd41e60331b ("bfq-iosched: stop using blkg->stat_bytes and ->stat_ios")
+Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
+---
+Changes since v1:
+    Change some description for this patch
+---
+ block/bfq-cgroup.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Thank you,
-	Vasily Averin
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index e2f14508f2d6..243ffbc1f106 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -463,7 +463,7 @@ static int bfqg_stats_init(struct bfqg_stats *stats, gfp_t gfp)
+ {
+ 	if (blkg_rwstat_init(&stats->bytes, gfp) ||
+ 	    blkg_rwstat_init(&stats->ios, gfp))
+-		return -ENOMEM;
++		goto error;
+ 
+ #ifdef CONFIG_BFQ_CGROUP_DEBUG
+ 	if (blkg_rwstat_init(&stats->merged, gfp) ||
+@@ -476,13 +476,15 @@ static int bfqg_stats_init(struct bfqg_stats *stats, gfp_t gfp)
+ 	    bfq_stat_init(&stats->dequeue, gfp) ||
+ 	    bfq_stat_init(&stats->group_wait_time, gfp) ||
+ 	    bfq_stat_init(&stats->idle_time, gfp) ||
+-	    bfq_stat_init(&stats->empty_time, gfp)) {
+-		bfqg_stats_exit(stats);
+-		return -ENOMEM;
+-	}
++	    bfq_stat_init(&stats->empty_time, gfp))
++		goto error;
+ #endif
+ 
+ 	return 0;
++
++error:
++	bfqg_stats_exit(stats);
++	return -ENOMEM;
+ }
+ 
+ static struct bfq_group_data *cpd_to_bfqgd(struct blkcg_policy_data *cpd)
+-- 
+2.25.4
+
