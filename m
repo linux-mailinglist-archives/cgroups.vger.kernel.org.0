@@ -2,97 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC7C433CEE
-	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 19:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A5E433D12
+	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 19:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhJSRF3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Oct 2021 13:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhJSRF2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 13:05:28 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DB9C06161C;
-        Tue, 19 Oct 2021 10:03:16 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v20so14101036plo.7;
-        Tue, 19 Oct 2021 10:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cb9GiFttJIShHLaHyamc/d4toGTaUJ3k9crbveF7gg0=;
-        b=BOmxdUfCMIyD2fZr8/EH5QtzCVoYpqEgfRrF3aH/hGloS6T1vl6Tdvj6YFM6KkUavy
-         RiUXbbMRJjlY/7JW6N+rgYfOaijFtrV2a2N5RWQjGjYI85VTkaXw4F6dEJMh/rwPnErE
-         9QvDSK3qqn5jZQmbFWAY01uZ8ra8GZSHVmcG88sibvQ4RKTsqXh8NXIegJhSOCJ96AsF
-         Vno+Bp3O5ZCNCbjIws4ckNImT7MTuDSOuciaJjDvQf91B2i9lFqT1X4AItb1f1dlFh6m
-         cHO+YPJKuZP4eSgU0q6J694zr7qbycHQ+3esEoDmKGhX7LfHVRQP9bFkEsGD61GBLbS7
-         QdNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=cb9GiFttJIShHLaHyamc/d4toGTaUJ3k9crbveF7gg0=;
-        b=ETgsbm93EFGKz6m3nPxdnQ2muuEV+HZi4u2PS3aCExetrPgc7NvAV3GLy5fjuEjSGe
-         Vv7CLTLvdK5MMpcQ7JZ3C+SFzc0c/5I3GmZYTkYpXgYl+fGPTCHdd1fdmyPcXiOSb5z7
-         u4D7Q62CzVxQLvv9Z2mNvUQaE0Sdp1Mhjbabh0hRRtH1WZi4couG4P1Nqhwgp+l2qoEd
-         NQuBVbx6ehJCwRnFstVG1j7tc52Xxyn+Gd86zPJic7CZCNFM/qHv2of5un8Sh/72j/MI
-         HzYPCcSjovZUrDdLaQ5esC36mGUcRIzLSMPoH1J/wsBwN6WHrpO45TlwUy8++mRgSKYd
-         mbuw==
-X-Gm-Message-State: AOAM531HOi9HqoaVYQ+jcVOteokmCez2h6DIDuW4JAkHhGmIUB8g12CQ
-        4Qes99WWhvZlNpB7m8BJVYQ=
-X-Google-Smtp-Source: ABdhPJz66mdTpBEd9DTd8aqGMXjA5dOYLLbqdtqrA/PRHKQ6nTHF2vOhfbwm/tGwEIFakJGrtN1MaQ==
-X-Received: by 2002:a17:90a:e64a:: with SMTP id ep10mr1219201pjb.124.1634662995400;
-        Tue, 19 Oct 2021 10:03:15 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id c9sm15935346pgq.58.2021.10.19.10.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 10:03:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 19 Oct 2021 07:03:13 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, paolo.valente@linaro.org,
-        avanzini.arianna@gmail.com, fchecconi@gmail.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v3 -next 2/2] blk-cgroup: synchoronize blkg creation
- against policy deactivation
-Message-ID: <YW76UThK20WaCWO6@slm.duckdns.org>
-References: <20211019024132.432458-1-yukuai3@huawei.com>
- <20211019024132.432458-3-yukuai3@huawei.com>
+        id S232507AbhJSRMn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Oct 2021 13:12:43 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36142 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhJSRMm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 13:12:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 65A2E21A76;
+        Tue, 19 Oct 2021 17:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634663428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1eyKSX2/7swyCKXn7z9fVjzybvXll+tbtLpZFqDx1m8=;
+        b=RVz/tL02sPQdjtNeumX2ZM+VtIFyIcTOEASFvv6I0/FVlHvZ4o9I/0RJ7QO2xcZDmai6xU
+        4h/KSMw/yrIULI7jwk8EkRvwcpYQFzka8UE4eirJd7G1eClI5pV5rYNy+uIttiWykEFB+n
+        aMD35+up03LH+YwZPGz6j/iIN4qa1fE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F310A13E8E;
+        Tue, 19 Oct 2021 17:10:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YBKFOQP8bmGfIgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 19 Oct 2021 17:10:27 +0000
+Date:   Tue, 19 Oct 2021 19:10:26 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Quanyang Wang <quanyang.wang@windriver.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <YW78AohHqgqM9Cuw@blackbook>
+References: <20211018075623.26884-1-quanyang.wang@windriver.com>
+ <YW04Gqqm3lDisRTc@T590>
+ <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
+ <YW1vuXh4C4tX9ZHP@T590>
+ <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019024132.432458-3-yukuai3@huawei.com>
+In-Reply-To: <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi.
 
-Some nitpicks.
+On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
+> So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
+> different issues.
 
-On Tue, Oct 19, 2021 at 10:41:32AM +0800, Yu Kuai wrote:
-...
-> Because blkcg_deactivate_policy() require queue to be freezed, thus grab
-                                    ^                   ^        ^
-                                    requires            frozen   we can grab
+AFAIU, both the changes are needed to cause the leak, a single patch
+alone won't cause the issue. Is that correct? (Perhaps not as I realize,
+see below.)
 
-> q_usage_counter to synchoronize blkg_conf_prep() against
-> blkcg_deactivate_policy().
-...
-> +	/*
-> +	 * blkcg_deactivate_policy() require queue to be freezed, thus grab
-> +	 * q_usage_counter to prevent concurrent with blkcg_deactivate_policy().
-> +	 */
+But on second thought, the problem is the missing percpu_ref_exit() in
+the (root) cgroup release path and percpu counter would allocate the
+percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
+visible. Is this correct?
 
-Same here.
+I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
+percpu_ref in fast path") alone did nothing wrong.
 
-Looks good otherwise. Please feel free to add
+[On a related (but independent) note, there seems to be an optimization
+opportunity in not dealing with cgroup_bpf at all on the non-default
+hierarchies.]
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Regards,
+Michal
