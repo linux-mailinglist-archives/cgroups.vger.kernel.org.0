@@ -2,129 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929E3433F02
-	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 21:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC733433F79
+	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 21:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhJSTMC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Oct 2021 15:12:02 -0400
-Received: from relay.sw.ru ([185.231.240.75]:59846 "EHLO relay.sw.ru"
+        id S230432AbhJSTyD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Oct 2021 15:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhJSTMB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:12:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=Yqr1YShrQcBCidEtPOA9sMOR94IFy+dgIlzbwZ5QLM0=; b=hmWnZiptUY0gW9Ixx
-        F3iAf57vhvo+PH2jLrgp3MwAYAFI8HIJaGCey++5FcHdvnDNHuBaz5vYYRiGRkSJvnoKV5HLs30ES
-        ap16a4SDbcsjwIAEnIJvKsavVyn44eyjZqFjeB/JlipTbu6UfhyqHrlTBG0a1RypKzEgx5lsCjKXI
-        =;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mcuUX-006Vw6-6X; Tue, 19 Oct 2021 22:09:41 +0300
-Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
- task
-To:     Michal Hocko <mhocko@suse.com>
+        id S230147AbhJSTyD (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 19 Oct 2021 15:54:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D30336113B;
+        Tue, 19 Oct 2021 19:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1634673110;
+        bh=jGj86H0JaCzg0FpU/IIjOqXur5MOCHmg5HVDErAlS9c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TE+8q5G6fg7FTvw+yGNn9m1udm/EaXQQxjSdnl2DK2j9ru/LUmoehpNnHbrC3ahjC
+         L3ozhy5L4vY9OfwgTE/VfwTdlx7EA2Oi0pPjdAPUIGoqSfE9cYyVqOgIumoSSkTTZc
+         rqu3KbK+HyM8WLPftcSg3LwtyGTSq5mEdyEezJdg=
+Date:   Tue, 19 Oct 2021 12:51:47 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
- <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
- <6b751abe-aa52-d1d8-2631-ec471975cc3a@virtuozzo.com>
- <YW1gRz0rTkJrvc4L@dhcp22.suse.cz>
- <339ae4b5-6efd-8fc2-33f1-2eb3aee71cb2@virtuozzo.com>
- <YW6GoZhFUJc1uLYr@dhcp22.suse.cz>
- <687bf489-f7a7-5604-25c5-0c1a09e0905b@virtuozzo.com>
- <YW6yAeAO+TeS3OdB@dhcp22.suse.cz> <YW60Rs1mi24sJmp4@dhcp22.suse.cz>
- <6c422150-593f-f601-8f91-914c6c5e82f4@virtuozzo.com>
- <YW7SfkZR/ZsabkXV@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
-Date:   Tue, 19 Oct 2021 22:09:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YW7SfkZR/ZsabkXV@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Michal Hocko <mhocko@kernel.org>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v3] memcg, kmem: further deprecate kmem.limit_in_bytes
+Message-Id: <20211019125147.0ad010f318bbd8233cadcdae@linux-foundation.org>
+In-Reply-To: <20211019153408.2916808-1-shakeelb@google.com>
+References: <20211019153408.2916808-1-shakeelb@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 19.10.2021 17:13, Michal Hocko wrote:
-> On Tue 19-10-21 16:26:50, Vasily Averin wrote:
->> On 19.10.2021 15:04, Michal Hocko wrote:
->>> On Tue 19-10-21 13:54:42, Michal Hocko wrote:
->>>> On Tue 19-10-21 13:30:06, Vasily Averin wrote:
->>>>> On 19.10.2021 11:49, Michal Hocko wrote:
->>>>>> On Tue 19-10-21 09:30:18, Vasily Averin wrote:
->>>>>> [...]
->>>>>>> With my patch ("memcg: prohibit unconditional exceeding the limit of dying tasks") try_charge_memcg() can fail:
->>>>>>> a) due to fatal signal
->>>>>>> b) when mem_cgroup_oom -> mem_cgroup_out_of_memory -> out_of_memory() returns false (when select_bad_process() found nothing)
->>>>>>>
->>>>>>> To handle a) we can follow to your suggestion and skip excution of out_of_memory() in pagefault_out_of memory()
->>>>>>> To handle b) we can go to retry: if mem_cgroup_oom() return OOM_FAILED.
->>>>>
->>>>>> How is b) possible without current being killed? Do we allow remote
->>>>>> charging?
->>>>>
->>>>> out_of_memory for memcg_oom
->>>>>  select_bad_process
->>>>>   mem_cgroup_scan_tasks
->>>>>    oom_evaluate_task
->>>>>     oom_badness
->>>>>
->>>>>         /*
->>>>>          * Do not even consider tasks which are explicitly marked oom
->>>>>          * unkillable or have been already oom reaped or the are in
->>>>>          * the middle of vfork
->>>>>          */
->>>>>         adj = (long)p->signal->oom_score_adj;
->>>>>         if (adj == OOM_SCORE_ADJ_MIN ||
->>>>>                         test_bit(MMF_OOM_SKIP, &p->mm->flags) ||
->>>>>                         in_vfork(p)) {
->>>>>                 task_unlock(p);
->>>>>                 return LONG_MIN;
->>>>>         }
->>>>>
->>>>> This time we handle userspace page fault, so we cannot be kenrel thread,
->>>>> and cannot be in_vfork().
->>>>> However task can be marked as oom unkillable, 
->>>>> i.e. have p->signal->oom_score_adj == OOM_SCORE_ADJ_MIN
->>>>
->>>> You are right. I am not sure there is a way out of this though. The task
->>>> can only retry for ever in this case. There is nothing actionable here.
->>>> We cannot kill the task and there is no other way to release the memory.
->>>
->>> Btw. don't we force the charge in that case?
->>
->> We should force charge for allocation from inside page fault handler,
->> to prevent endless cycle in retried page faults.
->> However we should not do it for allocations from task context,
->> to prevent memcg-limited vmalloc-eaters from to consume all host memory.
+On Tue, 19 Oct 2021 08:34:08 -0700 Shakeel Butt <shakeelb@google.com> wrote:
+
+> The deprecation process of kmem.limit_in_bytes started with the commit
+> 0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
+> explains in detail the motivation behind the deprecation. To summarize,
+> it is the unexpected behavior on hitting the kmem limit. This patch
+> moves the deprecation process to the next stage by disallowing to set
+> the kmem limit. In future we might just remove the kmem.limit_in_bytes
+> file completely.
 > 
-> I don't see a big difference between those two. Because the #PF could
-> result into the very same situation depleting all the memory by
-> overcharging. A different behavior just leads to a confusion and
-> unexpected behavior. E.g. in the past we only triggered memcg OOM killer
-> from the #PF path and failed the charge otherwise. That is something
-> different but it shows problems we haven't anticipated and had user
-> visible problems. See 29ef680ae7c2 ("memcg, oom: move out_of_memory back
-> to the charge path").
+> ...
+>
+> @@ -3791,10 +3766,8 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+>  			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
+>  			break;
+>  		case _KMEM:
+> -			pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
+> -				     "Please report your usecase to linux-mm@kvack.org if you "
+> -				     "depend on this functionality.\n");
+> -			ret = memcg_update_kmem_max(memcg, nr_pages);
+> +			/* kmem.limit_in_bytes is deprecated. */
+> +			ret = -ENOTSUPP;
+>  			break;
+>  		case _TCP:
+>  			ret = memcg_update_tcp_max(memcg, nr_pages);
 
-In this case I think we should fail this allocation.
-It's better do not allow overcharge, neither in #PF not in regular allocations.
-
-However this failure will trigger false global OOM in pagefault_out_of_memory(),
-and we need to find some way to prevent it.
-
-Thank you,
-	Vasily Averin
+checkpatch said "ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"?
