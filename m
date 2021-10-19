@@ -2,98 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E4A433F8E
-	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 22:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB18434060
+	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 23:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231355AbhJSUF7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Oct 2021 16:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        id S229537AbhJSVU7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Oct 2021 17:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhJSUF7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 16:05:59 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059F5C061746
-        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 13:03:45 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id g8so8319950ljn.4
-        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 13:03:45 -0700 (PDT)
+        with ESMTP id S229547AbhJSVU5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 17:20:57 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D37C06161C
+        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 14:18:44 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id i76so1056607pfe.13
+        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 14:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DfGhAHT9HhtqeTpI2TYryH6uFTCkzU6q0SGRJXp8/6w=;
-        b=gCRm1I8UHyDh7Mi8CTU+K3MIul4qxwvNzh0Ij1H6xm95MW00t7BiwXquwR0X7cgHwj
-         ArlZ0SIMAiyoiWadSJTfCevxdOFU84GJu+4mFCD3CSATO/QwyMDx/UJy35eBz9r7qzft
-         QuGRgjjA4D9Dq69peRhx0vqHfiIGricAiY1wmqvS9F5zKst3bh3NzKlkt4dDmPZ0TT3I
-         j9bsZL1/TnO5QKdZcJ8SdlN4xT3yvpSGbw3FXc6ypi5maL3g4PBHM220xi+XS0bYuzaL
-         +qqGzod2mROnt/MeAxtoA895HOcPk7PqDA8Td3He8iv4+glZAzLW2Ena2Is1cvXFZmWt
-         7BZQ==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0GzA7XiYabDpwlwEkodpA4g2HW2PvdLTHL9by9i3zr0=;
+        b=am9XbdWtSLAePsczf6sAyeuwlXGvpSs5OQQIudZxRB/oqzI0RbsoMVyASyiVYTCgfD
+         XH28hBa/DiNO8YZxs6ZykFLeuLUBcnJDvlRLydt3YzQF6MTBw7ulb0eIne/AuoF4SiAD
+         KwO6uvfqoin/Ez4BBQQHPODPByn9J5+y2qWtaFU9/T7k3lBpecrEXCXAW8asuyp67Zgx
+         o6fY7qN36vKduaYKy6tN9E/0Kq5XHepbFSNCW8zW4h4SERn9niStfgTQYfgwhlCnM+EC
+         orv/RSIadrJ0iFMYNmdXTRHXBuicW6m6YcGUsItcajeVbHrgjhs3YljdWV912FEjXDxO
+         PWvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DfGhAHT9HhtqeTpI2TYryH6uFTCkzU6q0SGRJXp8/6w=;
-        b=clatTw/EUEjCKcDZIHHVPOgxUP2nsxJfNWsmr4SPwvV0Y543R0xDi5ijREw+StYDvP
-         8PtmTh2qa9nWcsQRxgge983sVBnn/7wXCoaRB7qPWhavx9LnRNYOc1bmbYy40Vzy7uqS
-         wfy12X6gN6jS+vHghYZ2gfu0BjJEXpumZm6dPGzb6xJyci2wf2CODQaXdk4ES9YvP/RA
-         UH68KQ5nPJ7l/Rf7QwjKl+kppFboF8K+ErWtnGwNFrFG3TTTvkixkN1XsTk0fzI8tdSj
-         g3RGvSOsnvQeEuqrCEHn2AJ4aeuMgVrpNV7u7dVUqd9dEWrzKYfnlujAlSFF++isPK2X
-         zk9g==
-X-Gm-Message-State: AOAM5319Z+Ldb+IfP4996jz5ZbPDj/HS4FuKkUFm7JJ7Cq1yLmdy/Yiz
-        TLSMxsMZ5p+bynZvFOvJmdjeFaDkhqUYTGxHPvMa1r0VD3+jkw==
-X-Google-Smtp-Source: ABdhPJzd3sf9ZX+bEMFP3ZIWLmMCxMegHItpioGJBTww8iDfLZtbroMLSbgbN9AmLjemI+SHFKSwrT2Bf6BlAifbDEg=
-X-Received: by 2002:a05:651c:1793:: with SMTP id bn19mr8820477ljb.475.1634673823685;
- Tue, 19 Oct 2021 13:03:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0GzA7XiYabDpwlwEkodpA4g2HW2PvdLTHL9by9i3zr0=;
+        b=0GOuEYeMf2ZVu7L5QfLXsjWtlNu7JYJnTXszDq4gCfWBmWwYac3YBfRiNT2ovHI3oD
+         4E7hxlK9AbzSGEuQDUmO4+Shwz4FPRMuZumtaKRJjNoyTFCskfwgN1ssKWJ++ZcjkBGj
+         vodV8zkNKtBYqmujvQjzsUu+1lyI7cZbO0FuxFwDq3KWwZQySGT0ifmuFTW0COGWXm2X
+         LbVlqnxL/Z1u4Fbhxl89opZVQXK+0j91/8ay4wVfrrfre7WBbRr5pyRrK3ztOY7Rn2NS
+         b1ilNTnH3GqwE/7ExBzQggarOs6V1vz4O3PWRrppdIOjqFL3zBlppO6m7VtRrol4cNeG
+         7ujg==
+X-Gm-Message-State: AOAM532zK7njGpuQHciTKE53ZkLTuXBDc0Z81O1bHjVcI7prpwxLct+z
+        SadZZ5419gC7rTZ8O4S6tgfdoEkh0WnG7aH+
+X-Google-Smtp-Source: ABdhPJz/DcsvtuL8T8dwhFh1dn+y1UcohlesbtecLLZ8Xj8y+X4tJwvdjbmMFWoHU6Dlh1i4lOoevQ==
+X-Received: by 2002:a63:3fc5:: with SMTP id m188mr683394pga.20.1634678324313;
+        Tue, 19 Oct 2021 14:18:44 -0700 (PDT)
+Received: from localhost.localdomain ([2600:380:4a4d:b380:2bae:905e:e9f1:2cb8])
+        by smtp.gmail.com with ESMTPSA id d14sm146599pfu.124.2021.10.19.14.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 14:18:43 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Zheng Liang <zhengliang6@huawei.com>, tj@kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, paolo.valente@linaro.org,
+        yi.zhang@huawei.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH v2] block, bfq: fix UAF problem in bfqg_stats_init()
+Date:   Tue, 19 Oct 2021 15:18:38 -0600
+Message-Id: <163467831594.699544.8918304401816350071.b4-ty@kernel.dk>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211018024225.1493938-1-zhengliang6@huawei.com>
+References: <20211018024225.1493938-1-zhengliang6@huawei.com>
 MIME-Version: 1.0
-References: <20211019153408.2916808-1-shakeelb@google.com> <20211019125147.0ad010f318bbd8233cadcdae@linux-foundation.org>
-In-Reply-To: <20211019125147.0ad010f318bbd8233cadcdae@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 19 Oct 2021 13:03:32 -0700
-Message-ID: <CALvZod7QPR1Zz3XcN1CJvm_DuWomoR7MrS7uEyCBHNMX5c8AiQ@mail.gmail.com>
-Subject: Re: [PATCH v3] memcg, kmem: further deprecate kmem.limit_in_bytes
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 12:51 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Tue, 19 Oct 2021 08:34:08 -0700 Shakeel Butt <shakeelb@google.com> wrote:
->
-> > The deprecation process of kmem.limit_in_bytes started with the commit
-> > 0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
-> > explains in detail the motivation behind the deprecation. To summarize,
-> > it is the unexpected behavior on hitting the kmem limit. This patch
-> > moves the deprecation process to the next stage by disallowing to set
-> > the kmem limit. In future we might just remove the kmem.limit_in_bytes
-> > file completely.
-> >
-> > ...
-> >
-> > @@ -3791,10 +3766,8 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
-> >                       ret = mem_cgroup_resize_max(memcg, nr_pages, true);
-> >                       break;
-> >               case _KMEM:
-> > -                     pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
-> > -                                  "Please report your usecase to linux-mm@kvack.org if you "
-> > -                                  "depend on this functionality.\n");
-> > -                     ret = memcg_update_kmem_max(memcg, nr_pages);
-> > +                     /* kmem.limit_in_bytes is deprecated. */
-> > +                     ret = -ENOTSUPP;
-> >                       break;
-> >               case _TCP:
-> >                       ret = memcg_update_tcp_max(memcg, nr_pages);
->
-> checkpatch said "ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"?
+On Mon, 18 Oct 2021 10:42:25 +0800, Zheng Liang wrote:
+> In bfq_pd_alloc(), the function bfqg_stats_init() init bfqg. If
+> blkg_rwstat_init() init bfqg_stats->bytes successful and init
+> bfqg_stats->ios failed, bfqg_stats_init() return failed, bfqg will
+> be freed. But blkg_rwstat->cpu_cnt is not deleted from the list of
+> percpu_counters. If we traverse the list of percpu_counters, It will
+> have UAF problem.
+> 
+> [...]
 
-I should have run checkpatch and Andrew, please replace ENOTSUPP with
-EOPNOTSUPP. Thanks for catching this.
+Applied, thanks!
+
+[1/1] block, bfq: fix UAF problem in bfqg_stats_init()
+      commit: 2fc428f6b7ca80794cb9928c90d4de524366659f
+
+Best regards,
+-- 
+Jens Axboe
+
+
