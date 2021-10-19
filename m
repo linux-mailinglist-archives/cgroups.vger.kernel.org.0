@@ -2,190 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1674433A94
-	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 17:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2BF433CE8
+	for <lists+cgroups@lfdr.de>; Tue, 19 Oct 2021 19:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhJSPge (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Oct 2021 11:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        id S234319AbhJSRDF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Oct 2021 13:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhJSPgd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 11:36:33 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25731C061749
-        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 08:34:21 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id x123-20020a626381000000b0044da6d19df6so166508pfb.3
-        for <cgroups@vger.kernel.org>; Tue, 19 Oct 2021 08:34:21 -0700 (PDT)
+        with ESMTP id S230158AbhJSRDF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Oct 2021 13:03:05 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4D5C06161C;
+        Tue, 19 Oct 2021 10:00:52 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id e5-20020a17090a804500b001a116ad95caso382404pjw.2;
+        Tue, 19 Oct 2021 10:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=b4zuBMQ6rB3BJhMbiTI+bHBlQbKmGojFin0ETDqCqgs=;
-        b=rFMa8vwet/lkvToH0oW1p+K5cFqa7WZrolQyzwr5vqQX//r/Z65baLysr7T2GaQULv
-         8oJpbjYqV+ZCU+f10JFaYReHzKzhhZMU97gcW/GVrw0J8EMgaRITnTZ+aDP3YD2jzivp
-         bFdR3kTffPL94z08NhW7pOPcUf/BaP2+SVGmhUUMzQa4d8rtdoIHuxUUl7t4Y/MM6bND
-         EOPoxl6N3Yn+nPGBCM68QnnxI1FaOgkfjOS21e7UQtf8kEOiEpa1fC3pm11DahghiWu2
-         EYOjMMffkS3e9gi+9DLre4UUmxC4X9vAJLvcmd/cX2GLBvCG7XLopZw5lF7JHX72a0il
-         3NKw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5oDh6wY5mxgjBgRFmj6OpdKqeAcazi57fngXpPsPLWE=;
+        b=lRts9Q2QN5BocnpFjJPqpBK3Fxaxv4kEBoF/rHLBeWaGIYwAxlKsPIhkQCB7sNAmRj
+         UERoxRYtgRGMzur8k2GM5Y/uFfigfGYqd1hcqOryGHOglz1dxWtZNVUYhgx0tD+hilKq
+         V8/oWKqn3J2sTUprRMG/t7pLpLgbMEIoyy/+Yyr6FKU3FUd/0I1Urd0FLCulQCkhKyz8
+         4TLlu7kFoFyRAEOHLSuV4dkq9oUAiIfZuvxmu4RCbRc28MpW7etPuuxUZLeetNOmIejx
+         9MpRHH231nr3EYgiUBiOpX+2Z1SpFRYcJy86zemrDgVuzLz5/JQWebAYxJqNe4SaNEB/
+         rBww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=b4zuBMQ6rB3BJhMbiTI+bHBlQbKmGojFin0ETDqCqgs=;
-        b=eQW7zC+SrJjBOcSxwRLBL0EE0UjuR86VXIfT0H9WQbBFkRopc8OyWKSH6mUlGtSoVG
-         GUOsNba3SmCoRFfc2104Y3o1a6fMa8XiF4M5wIVwJIJ5Na4VuUNpYsPYlZeIW/439SFK
-         cKY6TwiqE5m79Xv+E6fUdSzN2QArTIClROieyiHDUku5RRekCr+N8PZTUx5MLVUc07O7
-         9Wa5O2UusDSoUWsnVOHyI3dXFlq8ERg6+U94ZRKxPO53R3DNQyI8YTm2mVkAkdnRuLeZ
-         2iA9XQrwE7BV9xtdVpgQrnu4PlNUIkLaRNMwFSM7Y4Ms0+JeYuiCIZJnvY3vGUoz/LP5
-         U13g==
-X-Gm-Message-State: AOAM531D7giJNim0KCzYzjKaWRXsH0M++m+Mccw6bDKRRAT9pGRWhQaP
-        nlCjjg+QZebQEpYJ8JWJub0D+IqimhBvJQ==
-X-Google-Smtp-Source: ABdhPJzz98WCn/tuXSCa52LIqDLVgmNtS4YTmeUTfl/rTTpuMN7stUpDc5QRcbsmesVGqSTReq6GbDy03xs1LQ==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:6d48:cae4:d5cb:a596])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:1c06:: with SMTP id
- oc6mr660557pjb.204.1634657660555; Tue, 19 Oct 2021 08:34:20 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 08:34:08 -0700
-Message-Id: <20211019153408.2916808-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH v3] memcg, kmem: further deprecate kmem.limit_in_bytes
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5oDh6wY5mxgjBgRFmj6OpdKqeAcazi57fngXpPsPLWE=;
+        b=j+/sT10d7Kmyk1NLXKKnjsj1T7gQ/gSjhAEZOG/oNP/KWILgAsbWR+8hmypzvQGScz
+         0nDq6oQfxT1r/qkz34+jqTk1IGaL0ActKV5pYnYdjMQhFUeFP9C50WEav3jDvzPetlSw
+         z4OiwZ6xY0v6fGZ+sHEtcDj6fU8Uhrp4bnbCIbcvihoOOs45KTlYvRLynlMtezOuYp/w
+         r1bjoCiE13EX68qggPPqC0qO2DBw4mxldSQD1mAUxszaI+n0kziYJP9FIsURqBzil/Z4
+         0GWaU2N3/o4C3tG8ceZ55X4W0HMOA1W0maI9DxSwjPd3LpY7ELJw5MR+NLiA4nHqUTo+
+         m5qg==
+X-Gm-Message-State: AOAM532A4F/NOZujYTYIdskqkXkb1HYdN4grMr+PRWvyvcKFHh4cuoT6
+        F9LEjn4Pa1IwADd1Q9NsSvRtdy27rn4BYw==
+X-Google-Smtp-Source: ABdhPJz2Txw4Iyq0OpTfOKDWQ5EPgZrJEgJ5wmiLGj6rOynX5rPquD2dOQEYI7PZZR0bLUwKgFAVJg==
+X-Received: by 2002:a17:902:c942:b0:13f:d1c:819a with SMTP id i2-20020a170902c94200b0013f0d1c819amr34461656pla.64.1634662851444;
+        Tue, 19 Oct 2021 10:00:51 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id i123sm16894060pfg.157.2021.10.19.10.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 10:00:50 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Oct 2021 07:00:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, paolo.valente@linaro.org,
+        avanzini.arianna@gmail.com, fchecconi@gmail.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v3 -next 1/2] blk-cgroup: don't call
+ blk_mq_freeze_queue() in blkcg_deactivate_policy()
+Message-ID: <YW75wUcf9CcmqdD5@slm.duckdns.org>
+References: <20211019024132.432458-1-yukuai3@huawei.com>
+ <20211019024132.432458-2-yukuai3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019024132.432458-2-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The deprecation process of kmem.limit_in_bytes started with the commit
-0158115f702 ("memcg, kmem: deprecate kmem.limit_in_bytes") which also
-explains in detail the motivation behind the deprecation. To summarize,
-it is the unexpected behavior on hitting the kmem limit. This patch
-moves the deprecation process to the next stage by disallowing to set
-the kmem limit. In future we might just remove the kmem.limit_in_bytes
-file completely.
+Hello,
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Cc: Vasily Averin <vvs@virtuozzo.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
-Changes since v2:
-- Updated the documentation
+On Tue, Oct 19, 2021 at 10:41:31AM +0800, Yu Kuai wrote:
+> blkcg_deactivate_policy() can be called from either
+> blk_cleanup_queue() for all policies or elevator_switch() for bfq
+> policy. Thus there is no need to freeze queue in
+> blkcg_deactivate_policy() since the caller freeze the queue aready.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Changes since v1:
-- Replaced EINVAL with ENOTSUPP on setting kmem limits.
-- V1 was posted last year at [0].
+I would just keep the calls. The operation requires the q to be frozen and
+there isn't a good way to annotate that the caller must be holding a usage
+count, so it's useful even just as documentation.
 
-[0] https://lore.kernel.org/all/20201118175726.2453120-1-shakeelb@google.com/
+Thanks.
 
- .../admin-guide/cgroup-v1/memory.rst          | 11 ++----
- mm/memcontrol.c                               | 35 +++----------------
- 2 files changed, 6 insertions(+), 40 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 41191b5fb69d..faac50149a22 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -87,10 +87,8 @@ Brief summary of control files.
-  memory.oom_control		     set/show oom controls.
-  memory.numa_stat		     show the number of memory usage per numa
- 				     node
-- memory.kmem.limit_in_bytes          set/show hard limit for kernel memory
--                                     This knob is deprecated and shouldn't be
--                                     used. It is planned that this be removed in
--                                     the foreseeable future.
-+ memory.kmem.limit_in_bytes          This knob is deprecated and writing to
-+                                     it will return -ENOTSUPP.
-  memory.kmem.usage_in_bytes          show current kernel memory allocation
-  memory.kmem.failcnt                 show the number of kernel memory usage
- 				     hits limits
-@@ -518,11 +516,6 @@ will be charged as a new owner of it.
-   charged file caches. Some out-of-use page caches may keep charged until
-   memory pressure happens. If you want to avoid that, force_empty will be useful.
- 
--  Also, note that when memory.kmem.limit_in_bytes is set the charges due to
--  kernel pages will still be seen. This is not considered a failure and the
--  write will still return success. In this case, it is expected that
--  memory.kmem.usage_in_bytes == memory.usage_in_bytes.
--
- 5.2 stat file
- -------------
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8f1d9c028897..49a76049a885 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2999,7 +2999,6 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
- static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
- 				   unsigned int nr_pages)
- {
--	struct page_counter *counter;
- 	struct mem_cgroup *memcg;
- 	int ret;
- 
-@@ -3009,21 +3008,8 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
- 	if (ret)
- 		goto out;
- 
--	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
--	    !page_counter_try_charge(&memcg->kmem, nr_pages, &counter)) {
--
--		/*
--		 * Enforce __GFP_NOFAIL allocation because callers are not
--		 * prepared to see failures and likely do not have any failure
--		 * handling code.
--		 */
--		if (gfp & __GFP_NOFAIL) {
--			page_counter_charge(&memcg->kmem, nr_pages);
--			goto out;
--		}
--		cancel_charge(memcg, nr_pages);
--		ret = -ENOMEM;
--	}
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+		page_counter_charge(&memcg->kmem, nr_pages);
- out:
- 	css_put(&memcg->css);
- 
-@@ -3715,17 +3701,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- }
- #endif /* CONFIG_MEMCG_KMEM */
- 
--static int memcg_update_kmem_max(struct mem_cgroup *memcg,
--				 unsigned long max)
--{
--	int ret;
--
--	mutex_lock(&memcg_max_mutex);
--	ret = page_counter_set_max(&memcg->kmem, max);
--	mutex_unlock(&memcg_max_mutex);
--	return ret;
--}
--
- static int memcg_update_tcp_max(struct mem_cgroup *memcg, unsigned long max)
- {
- 	int ret;
-@@ -3791,10 +3766,8 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
- 			ret = mem_cgroup_resize_max(memcg, nr_pages, true);
- 			break;
- 		case _KMEM:
--			pr_warn_once("kmem.limit_in_bytes is deprecated and will be removed. "
--				     "Please report your usecase to linux-mm@kvack.org if you "
--				     "depend on this functionality.\n");
--			ret = memcg_update_kmem_max(memcg, nr_pages);
-+			/* kmem.limit_in_bytes is deprecated. */
-+			ret = -ENOTSUPP;
- 			break;
- 		case _TCP:
- 			ret = memcg_update_tcp_max(memcg, nr_pages);
 -- 
-2.33.0.1079.g6e70778dc9-goog
-
+tejun
