@@ -2,134 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24CD434AFD
-	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 14:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2B2434B3B
+	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 14:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhJTMRG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Oct 2021 08:17:06 -0400
-Received: from relay.sw.ru ([185.231.240.75]:44326 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhJTMRE (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=vKfgRv2zJEAoAS/QMp8Ojy3ytr5x5Kwda6HCzY+o9dY=; b=piFq4YJOVCzthmB9i6b
-        NgU9AF9sxMXuXUshwNGUqc8UUt7jOsEyjWpz7crmMVUVecu7tMqQloOLCOHVflMvVpfVsy94enpjs
-        38aVbuXoEwvwIBMuS1SZMSPcfMeMLX5W7o9phEpjbW/bnnHEfFKouHYb3wZ6hDngTOJJSojLDVQ=;
-Received: from [172.29.1.17]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mdAUa-006bCw-9o; Wed, 20 Oct 2021 15:14:48 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg 3/3] memcg: handle memcg oom failures
-To:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S229911AbhJTMgD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Oct 2021 08:36:03 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32988 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJTMgD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Oct 2021 08:36:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DEDB81F770;
+        Wed, 20 Oct 2021 12:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634733227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3UnTu9zwwf8NSgpDXIex/EQbixB3GG5nxeC27rFUoo4=;
+        b=hwW3FoF7Q9xQQ6c9C6pXKQVXDvbM5O97PBXyMbMq/0FtzqbRYEDMmNIeYhYMEUaH3bEmzm
+        e2K72qTnlyNHrXAyZr3ANBJ4k6blJ6/7Ec3Cat8TdGd6Dwmgwtco8FNx3KQ/ipePD4qRPB
+        QWwPiXvrmlfaVryc15mzcCx4y1j93vs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 52F47A3C5F;
+        Wed, 20 Oct 2021 12:33:47 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 14:33:43 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Shakeel Butt <shakeelb@google.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, kernel@openvz.org
+Subject: Re: [PATCH memcg 1/3] mm: do not firce global OOM from inside dying
+ tasks
+Message-ID: <YXAMpxjuV/h2awqG@dhcp22.suse.cz>
 References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
  <cover.1634730787.git.vvs@virtuozzo.com>
-Message-ID: <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 15:14:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ <2c13c739-7282-e6f4-da0a-c0b69e68581e@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1634730787.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2c13c739-7282-e6f4-da0a-c0b69e68581e@virtuozzo.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-mem_cgroup_oom() can fail if current task was marked unkillable
-and oom killer cannot find any victim.
+s@firce@force@
 
-Currently we force memcg charge for such allocations,
-however it allow memcg-limited userspace task in to overuse assigned limits
-and potentially trigger the global memory shortage.
+On Wed 20-10-21 15:12:19, Vasily Averin wrote:
+> There is no sense to force global OOM if current task is dying.
 
-Let's fail the memory charge in such cases.
+This really begs for much more information. Feel free to get an
+inspiration from my previous attempt to achieve something similar.
+In minimum it is important to mention that the OOM killer is already
+handled at the page allocator level for the global OOM and at the
+charging level for the memcg one. Both have much more information
+about the scope of allocation/charge request. This means that either the
+OOM killer has been invoked properly and didn't lead to the allocation
+success or it has been skipped because it couldn't have been invoked.
+In both cases triggering it from here is pointless and even harmful.
 
-This failure should be somehow recognised in #PF context,
-so let's use current->memcg_in_oom == (struct mem_cgroup *)OOM_FAILED
+Another argument is that it is more reasonable to let killed task die
+rather than hit the oom killer and retry the allocation.
 
-ToDo: what is the best way to notify pagefault_out_of_memory() about 
-    mem_cgroup_out_of_memory failure ?
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  mm/oom_kill.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index 831340e7ad8b..1deef8c7a71b 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+>  	if (mem_cgroup_oom_synchronize(true))
+>  		return;
+>  
+> +	if (fatal_signal_pending(current))
+> +		return;
+> +
+>  	if (!mutex_trylock(&oom_lock))
+>  		return;
+>  	out_of_memory(&oc);
+> -- 
+> 2.32.0
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- mm/memcontrol.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 74a7379dbac1..b09d3c64f63f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
- 		mem_cgroup_oom_notify(memcg);
- 
- 	mem_cgroup_unmark_under_oom(memcg);
--	if (mem_cgroup_out_of_memory(memcg, mask, order))
-+	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
- 		ret = OOM_SUCCESS;
--	else
-+	} else {
- 		ret = OOM_FAILED;
--
-+		/*
-+		 * In some rare cases mem_cgroup_out_of_memory() can return false.
-+		 * If it was called from #PF it forces handle_mm_fault()
-+		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
-+		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
-+		 * that it was a memcg-related failure and not allow to run
-+		 * global OOM.
-+		 */
-+		if (current->in_user_fault)
-+			current->memcg_in_oom = (struct mem_cgroup *)ret;
-+	}
- 	if (locked)
- 		mem_cgroup_oom_unlock(memcg);
- 
-@@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
- 	if (!memcg)
- 		return false;
- 
-+	/* OOM is memcg, however out_of_memory() found no victim */
-+	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
-+		/*
-+		 * Should be called from pagefault_out_of_memory() only,
-+		 * where it is used to prevent false global OOM.
-+		 */
-+		current->memcg_in_oom = NULL;
-+		return true;
-+	}
- 	if (!handle)
- 		goto cleanup;
- 
-@@ -2633,15 +2652,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 */
- 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
--	switch (oom_status) {
--	case OOM_SUCCESS:
-+	if (oom_status == OOM_SUCCESS) {
- 		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
--	case OOM_FAILED:
--		goto force;
--	default:
--		goto nomem;
- 	}
- nomem:
- 	if (!(gfp_mask & __GFP_NOFAIL))
 -- 
-2.32.0
-
+Michal Hocko
+SUSE Labs
