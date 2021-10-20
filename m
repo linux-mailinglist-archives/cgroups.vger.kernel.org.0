@@ -2,153 +2,199 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219434347A7
-	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 11:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C08A434932
+	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 12:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhJTJLX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Oct 2021 05:11:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51196 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhJTJLX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Oct 2021 05:11:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 43A7F21A99;
-        Wed, 20 Oct 2021 09:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634720948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WzT2qLfgG2YscoUI3YxI8UvAi7PcCu5x/9bxVFCIq4Y=;
-        b=L/b71nckSReAW33br6iQV/D3eWZe+zZam/HeZAB7HEH8mEr2zRLZfzDAuYI9dj8FUIdC+6
-        aCbzJCsDVpxsWew0OwDp6xm39XRNiV/0G5jaGz5tmxst4ijN2YgQnP1iwWu8RZODJXz4RG
-        JYpB2Ud9leVEYpiCFrpqNdOTT0LNwGY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9611FA3C38;
-        Wed, 20 Oct 2021 09:09:07 +0000 (UTC)
-Date:   Wed, 20 Oct 2021 11:09:07 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Roman Gushchin <songmuchun@bytedance.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hugh Dickins <hughd@google.com>, Tejun Heo <tj@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>, cgroups@vger.kernel.org,
-        riel@surriel.com
-Subject: Re: [RFC Proposal] Deterministic memcg charging for shared memory
-Message-ID: <YW/cs51K/GyhhJDk@dhcp22.suse.cz>
-References: <CAHS8izMpzTvd5=x_xMhDJy1toV-eT3AS=GXM2ObkJoCmbDtz6w@mail.gmail.com>
- <YW13pS716ajeSgXj@dhcp22.suse.cz>
- <CAHS8izMnkiHtNLEzJXL64zNinbEp0oU96dPCJYfqJqk4AEQW2A@mail.gmail.com>
+        id S230137AbhJTKrB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Oct 2021 06:47:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49490 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230059AbhJTKrA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Oct 2021 06:47:00 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19KAM0vJ030303;
+        Wed, 20 Oct 2021 06:44:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=SD+SCg0skNn/G8bPIH66EtOVwTbj3NFy6mI+5VN/Q5s=;
+ b=PZZppYkh/ARYtQF6DTllxaxC2TsLrFX66Zh88bWos3rMX2NYk5Q2jZsEAY7M5L7hsz90
+ 4MCfmaeeBUIQi8wDabhMjZ+GvPLNh9c4jqFmdvZXznQFyDNf4JHe2mSeA2PpiEKYmbMk
+ WIiQFsuEUMBlsyB8tqoyfc4/NU9JtUM6sVrbr3KEUWKZdmyB7pxIuiZcB6s7mZf+Ga2N
+ 9NuKu1p7TIhplQ6/Jeivs8OGZj7XE2Dyyupj11TrgsAKScodKsFr5GRuTaj3xwyxGBmb
+ LtZ+RXQkhbnGMAnAdGSekEDjtpJYMpiV4vFEcmdCkQj9wMnbFDszulmjpGpyx88Ud0RI JQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btha10d6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 06:44:37 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19KAOWXh010381;
+        Wed, 20 Oct 2021 06:44:36 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3btha10d5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 06:44:36 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19KAfbdo010873;
+        Wed, 20 Oct 2021 10:44:34 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bqp0k3hmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Oct 2021 10:44:33 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19KAce5L58786244
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Oct 2021 10:38:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E5F44C094;
+        Wed, 20 Oct 2021 10:44:31 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0CEF04C092;
+        Wed, 20 Oct 2021 10:44:27 +0000 (GMT)
+Received: from [9.43.80.161] (unknown [9.43.80.161])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 20 Oct 2021 10:44:26 +0000 (GMT)
+Message-ID: <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
+Date:   Wed, 20 Oct 2021 16:14:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izMnkiHtNLEzJXL64zNinbEp0oU96dPCJYfqJqk4AEQW2A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        containers@lists.linux.dev, containers@lists.linux-foundation.org,
+        pratik.r.sampat@gmail.com
+References: <20211009151243.8825-1-psampat@linux.ibm.com>
+ <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+ <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+ <YWirxCjschoRJQ14@slm.duckdns.org>
+ <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
+ <YW2g73Lwmrhjg/sv@slm.duckdns.org>
+From:   Pratik Sampat <psampat@linux.ibm.com>
+In-Reply-To: <YW2g73Lwmrhjg/sv@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qofvCjSGBUthVgmc6TULavD9beXS2nWn
+X-Proofpoint-GUID: BVgdVM-XcBH6D1Jw3sM_tkPAuXMRp7Sv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-20_04,2021-10-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 spamscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110200060
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 18-10-21 07:31:58, Mina Almasry wrote:
-> On Mon, Oct 18, 2021 at 6:33 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 13-10-21 12:23:19, Mina Almasry wrote:
-> > > Below is a proposal for deterministic charging of shared memory.
-> > > Please take a look and let me know if there are any major concerns:
-> > >
-> > > Problem:
-> > > Currently shared memory is charged to the memcg of the allocating
-> > > process. This makes memory usage of processes accessing shared memory
-> > > a bit unpredictable since whichever process accesses the memory first
-> > > will get charged. We have a number of use cases where our userspace
-> > > would like deterministic charging of shared memory:
-> > >
-> > > 1. System services allocating memory for client jobs:
-> > > We have services (namely a network access service[1]) that provide
-> > > functionality for clients running on the machine and allocate memory
-> > > to carry out these services. The memory usage of these services
-> > > depends on the number of jobs running on the machine and the nature of
-> > > the requests made to the service, which makes the memory usage of
-> > > these services hard to predict and thus hard to limit via memory.max.
-> > > These system services would like a way to allocate memory and instruct
-> > > the kernel to charge this memory to the client’s memcg.
-> > >
-> > > 2. Shared filesystem between subtasks of a large job
-> > > Our infrastructure has large meta jobs such as kubernetes which spawn
-> > > multiple subtasks which share a tmpfs mount. These jobs and its
-> > > subtasks use that tmpfs mount for various purposes such as data
-> > > sharing or persistent data between the subtask restarts. In kubernetes
-> > > terminology, the meta job is similar to pods and subtasks are
-> > > containers under pods. We want the shared memory to be
-> > > deterministically charged to the kubernetes's pod and independent to
-> > > the lifetime of containers under the pod.
-> > >
-> > > 3. Shared libraries and language runtimes shared between independent jobs.
-> > > We’d like to optimize memory usage on the machine by sharing libraries
-> > > and language runtimes of many of the processes running on our machines
-> > > in separate memcgs. This produces a side effect that one job may be
-> > > unlucky to be the first to access many of the libraries and may get
-> > > oom killed as all the cached files get charged to it.
-> > >
-> > > Design:
-> > > My rough proposal to solve this problem is to simply add a
-> > > ‘memcg=/path/to/memcg’ mount option for filesystems (namely tmpfs):
-> > > directing all the memory of the file system to be ‘remote charged’ to
-> > > cgroup provided by that memcg= option.
-> >
-> > Could you be more specific about how this matches the above mentioned
-> > usecases?
-> >
-> 
-> For the use cases I've listed respectively:
-> 1. Our network service would mount a tmpfs with 'memcg=<path to
-> client's memcg>'. Any memory the service is allocating on behalf of
-> the client, the service will allocate inside of this tmpfs mount, thus
-> charging it to the client's memcg without risk of hitting the
-> service's limit.
-> 2. The large job (kubernetes pod) would mount a tmpfs with
-> 'memcg=<path to large job's memcg>. It will then share this tmpfs
-> mount with the subtasks (containers in the pod). The subtasks can then
-> allocate memory in the tmpfs, having it charged to the kubernetes job,
-> without risk of hitting the container's limit.
 
-There is still a risk that the limit is hit for the memcg of shmem
-owner, right? What happens then? Isn't any of the shmem consumer a
-DoS attack vector for everybody else consuming from that same target
-memcg? In other words aren't all of them in the same memory resource
-domain effectively? If we allow target memcg to live outside of that
-resource domain then this opens interesting questions about resource
-control in general, no? Something the unified hierarchy was aiming to
-fix wrt cgroup v1.
 
-You are saying that it is hard to properly set limits for
-respective services but this would simply allow to hide a part of the
-consumption somewhere else. Aren't you just shifting the problem
-elsewhere? How do configure the target memcg?
+On 18/10/21 9:59 pm, Tejun Heo wrote:
+> (cc'ing Johannes for memory sizing part)
+>
+> Hello,
+>
+> On Mon, Oct 18, 2021 at 08:59:16PM +0530, Pratik Sampat wrote:
+> ...
+>> Also, I agree with your point about variability of requirements. If the
+>> interface we give even though it is in conjunction with the limits set,
+>> if the applications have to derive metrics from this or from other
+>> kernel information regardless; then the interface would not be useful.
+>> If the solution to this problem lies in userspace, then I'm all for it
+>> as well. However, the intention is to probe if this could potentially be
+>> solved in cleanly in the kernel.
+> Just to be clear, avoiding application changes would have to involve
+> userspace (at least parameterization from it), and I think to set that as a
+> goal for kernel would be more of a distraction. Please note that we should
+> definitely provide metrics which actually capture what's going on in terms
+> of resource availability in a way which can be used to size workloads
+> automatically.
+>
+>> Yes, these shortcomings exist even without containerization, on a
+>> dynamically loaded multi-tenant system it becomes very difficult to
+>> determine what is the maximum amount resource that can be requested
+>> before we hurt our own performance.
+> As I mentioned before, feedback loop on PSI can work really well in finding
+> the saturation points for cpu/mem/io and regulating workload size
+> automatically and dynamically. While such dynamic sizing can work without
+> any other inputs, it sucks to have to probe the entire range each time and
+> it'd be really useful if the kernel can provide ballpark numbers that are
+> needed to estimate the saturation points.
+>
+> What gets challenging is that there doesn't seem to be a good way to
+> consistently describe availability for each of the three resources and the
+> different distribution rules they may be under.
+>
+> e.g. For CPU, the affinity restrictions from cpuset determines the maximum
+> number of threads that a workload would need to saturate the available CPUs.
+> However, conveying the results of cpu.max and cpu.weight controls isn't as
+> straight-fowrads.
+>
+> For memory, it's even trickier because in a lot of cases it's impossible to
+> tell how much memory is actually available without trying to use them as
+> active workingset can only be learned by trying to reclaim memory.
+>
+> IO is in somewhat similar boat as CPU in that there are both io.max and
+> io.weight. However, if io.cost is in use and configured according to the
+> hardware, we can map those two in terms iocost.
+>
+> Another thing is that the dynamic nature of these control mechanisms means
+> that the numbers can keep changing moment to moment and we'd need to provide
+> some time averaged numbers. We can probably take the same approach as PSI
+> and load-avgs and provide running avgs of a few time intervals.
 
-Do you have any numbers about the consumption variation and how big of a
-problem that is in practice?
+As you have elucidated, it doesn't like an easy feat to
+define metrics like ballpark numbers as there are many variables
+involved.
 
-> 3. We would need to extend this functionality to other file systems of
-> persistent disk, then mount that file system with 'memcg=<dedicated
-> shared library memcg>'. Jobs can then use the shared library and any
-> memory allocated due to loading the shared library is charged to a
-> dedicated memcg, and not charged to the job using the shared library.
+For the CPU example, cpusets control the resource space whereas
+period-quota control resource time. These seem like two vectors on
+different axes.
+Conveying these restrictions in one metric doesn't seem easy. Some
+container runtime convert the period-quota time dimension to X CPUs
+worth of runtime space dimension. However, we need to carefully model
+what a ballpark metric in this sense would be and provide clearer
+constraints as both of these restrictions can be active at a given
+point in time and can influence how something is run.
 
-This is more of a question for fs people. My understanding is rather
-limited so I cannot even imagine all the possible setups but just from
-a very high level understanding bind mounts can get really interesting.
-Can those disagree on the memcg? 
+Restrictions for memory are even more complicated to model as you have
+pointed out as well.
 
-I am pretty sure I didn't get to think through this very deeply, my gut
-feeling tells me that this will open many interesting questions and I am
-not sure whether it solves more problems than it introduces at this moment.
-I would be really curious what others think about this.
--- 
-Michal Hocko
-SUSE Labs
+I would also request using this mail thread to suggest if there are
+more such metrics which would be useful to expose from the kernel?
+This would probably not solve the coherency problem but maybe it could
+help entice the userspace applications to look at the cgroup interface
+as there could be more relevant metrics that would help them tune for
+performance.
+
+>
+>> The question that I have essentially tries to understand the
+>> implications of overloading existing interface's definitions to be
+>> context sensitive.
+>> The way that the prototype works today is that it does not interfere
+>> with the information when the system boots or even when it is run in a
+>> new namespace.
+>> The effects are only observed when restrictions are applied to it.
+>> Therefore, what would potentially break if interfaces like these are
+>> made to divulge information based on restrictions rather than the whole
+>> system view?
+> I don't think the problem is that something would necessarily break by doing
+> that. It's more that it's a dead-end approach which won't get us far for all
+> the reasons that have been discussed so far. It'd be more productive to
+> focus on long term solutions and leave backward compatibility to the domains
+> where they can actually be solved by applying the necessary local knoweldge
+> to emulate and fake whatever necessary numbers.
+
+Sure, understood. If the only goal is backward compatibility then its
+best to let existing solutions help emulate and/or fake this
+information to the applications.
+
+Thank you again for all the feedback.
+
