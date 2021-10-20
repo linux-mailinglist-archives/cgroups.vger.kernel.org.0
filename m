@@ -2,27 +2,26 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684A6434AE3
-	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 14:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F12E434AE9
+	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 14:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhJTMOU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Oct 2021 08:14:20 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41610 "EHLO relay.sw.ru"
+        id S230217AbhJTMO4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Oct 2021 08:14:56 -0400
+Received: from relay.sw.ru ([185.231.240.75]:42218 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhJTMOR (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:14:17 -0400
+        id S230092AbhJTMO4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 20 Oct 2021 08:14:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=Ogt0vQ4+gupep/lvDlFo1PXQW0DADnBHbHdATcZzm20=; b=bAVEJIxgSYk7Fvn45dl
-        zabDL0FPXFzAupZNKZRT+F3njJTT6tY9TEmQJfiWXuyPNfiAgrA40jD02Ij0xywkyAmFyWwkgp9WE
-        ArvtFI3nv6lb059uOy/T3Eck744pZCN7U6fYnWGjpyp72IRxDyJtspl6cWMLMCGZo3CyD2VdEsg=;
+        :From; bh=zCii9TAKFxPwpgbC2GK8kQRHiFyLfuYpBkR6wq1K544=; b=YA4A3B4VF1+nFZ0rGP3
+        RW6fx/vlidgUELNJqxLSSMjROlO+5ORXrIjobCBiutx+Rzi4Gpj3dIChnj9ANaIk8UuoaQugEQs2H
+        mmO+fyIjeY6wEK2Y8m/P2+a4GbOJnRlVPqjWTPDKKR1Lh5aR54tEKAritk9BQ46GWDnQYzj5ng4=;
 Received: from [172.29.1.17]
         by relay.sw.ru with esmtp (Exim 4.94.2)
         (envelope-from <vvs@virtuozzo.com>)
-        id 1mdARo-006b83-7l; Wed, 20 Oct 2021 15:11:56 +0300
+        id 1mdASW-006b94-0Q; Wed, 20 Oct 2021 15:12:40 +0300
 From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH memcg RFC 0/3] memcg: prohibit unconditional exceeding the
- limit of dying tasks
+Subject: [PATCH memcg 1/3] mm: do not firce global OOM from inside dying tasks
 To:     Michal Hocko <mhocko@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
@@ -35,12 +34,13 @@ Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, kernel@openvz.org
 References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
-Message-ID: <fe1d45a1-276d-b0f4-fb71-8f5c1a9e8872@virtuozzo.com>
-Date:   Wed, 20 Oct 2021 15:11:35 +0300
+ <cover.1634730787.git.vvs@virtuozzo.com>
+Message-ID: <2c13c739-7282-e6f4-da0a-c0b69e68581e@virtuozzo.com>
+Date:   Wed, 20 Oct 2021 15:12:19 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
+In-Reply-To: <cover.1634730787.git.vvs@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,33 +48,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear Michal,
-as you requested, I splited v4 patch version into 3 separate parts.
-Let's discuss each of them.
+There is no sense to force global OOM if current task is dying.
 
-Open questions/ToDo:
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/oom_kill.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-- Update patch descriptions (and add some comments) 
-
-- in part 2 aka "memcg: remove charge forcinig for dying tasks":
-  should we keep task_is_dying() in mem_cgroup_out_of_memory() ?
-
-- in part 3 aka "memcg: handle memcg oom failures"
-   what is the best way to notify pagefault_out_of_memory() about 
-    mem_cgroup_out_of_memory failure ?
-    
-- what is the best way to handle memcg failure doe to kmem limit,
-    it can trigger false global OOM
-
-Vasily Averin (3):
-  mm: do not firce global OOM from inside dying tasks
-  memcg: remove charge forcinig for dying tasks
-  memcg: handle memcg oom failures
-
- mm/memcontrol.c | 52 ++++++++++++++++++++++++++++---------------------
- mm/oom_kill.c   |  3 +++
- 2 files changed, 33 insertions(+), 22 deletions(-)
-
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 831340e7ad8b..1deef8c7a71b 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
+ 
++	if (fatal_signal_pending(current))
++		return;
++
+ 	if (!mutex_trylock(&oom_lock))
+ 		return;
+ 	out_of_memory(&oc);
 -- 
 2.32.0
 
