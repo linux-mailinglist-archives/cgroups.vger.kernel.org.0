@@ -2,183 +2,236 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2704344A1
-	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 07:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8691F434677
+	for <lists+cgroups@lfdr.de>; Wed, 20 Oct 2021 10:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhJTFY5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Oct 2021 01:24:57 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:40436 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230005AbhJTFY5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Oct 2021 01:24:57 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19K5IgSI017313;
-        Wed, 20 Oct 2021 05:22:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=subject : to : cc
- : references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=PPS06212021;
- bh=M3zj3HR38ju4gp1SZHrNW/BA6M77hV0CkGIcQsrcsK0=;
- b=crGWu1huM+TIIna967vieg/UKP8sGSVESCR3YhUBXa3FYNlpHcQkTohcggmHzoMgisrt
- BDo9k5kHMlnrMdT237+b69G9trrewnowx5GbJDefq1qPOoPVBXenf0WgQBslSJOq004m
- xbVJtUPvNg8ISxYEQcTVt6Oty2WivXABfu/7c6eEFkQMRMJxMkIxA9t6zgsoyRcZoHAB
- RgtE/txvhI3kRZVTetucI2FH6DDF5y5Js81cTcc0x7kzPkVDyuvbEuCj7Q3IHogRi7pD
- t+qUWTJEdngwGnedgTr4z4e64aQkq8713KbmmrUvd+OrFciUV0MLUTyXnkDc6nky9M0d RQ== 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3bt6pg874p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 20 Oct 2021 05:22:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XlJxjXDggoOeYSjSXblPsAW2NJWbMuDwFMhWN8P04u8AXsfeItCTEwkE/uqqauFo69XiUihuhwNQ2cYKA6YBqxVl3PYGrNKiuwZ+vMYew1EurRpXN1satJU4kxoOklAg0uyP+Gff2DBPvAdY5ZPGivnqjb9vFEqrwV4doelsSLhhtMljiCXtvbQ3gyooT/SAIRB45e8v8M5bQiE9p3dWGmEYcR5UJfnyCqGwAZ1ZD77dy4VlziG7OOlw8feJifq4XbocGyjAa6hVbNhr61norf0lyAjWDMN31OlF24vqaEEjUC07vCyMgeiQAiMISIXwStczW5EpBBQv12s/5YmUiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M3zj3HR38ju4gp1SZHrNW/BA6M77hV0CkGIcQsrcsK0=;
- b=U/vIYeK1kpAwXuUw7GMGdTPy63mqZzMGkHKlmNlrPzaC7FX1bVodB2e8lVrh8ZoF8EtsG14ZNIDO+5pE7gcL+Zon2aRCBUCiW4rU8b8o4bP554e9l6e0/xJy18fsQcQbDXo5odekQPIES+BYi0h17WsnqsQ998ZUJ3VyvvuOwVYIq1OVfAXJJJP0juAUPj6ehGbodbohe0DWe2+4zEdgkmaG0FLqSTkof/v9BDyg7Q9uTMRFLqjO33iVUTZG7gkuTezVE0CPX2fLWn6iZJllhG0XKxFCXIcu2oYEn2ulSFjUjEYleLfeCw69VSUU5X7FtXPll0clJbg+0J/f9e0tVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com (2603:10b6:510:13b::9)
- by PH0PR11MB4854.namprd11.prod.outlook.com (2603:10b6:510:35::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.15; Wed, 20 Oct
- 2021 05:22:15 +0000
-Received: from PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c]) by PH7PR11MB5819.namprd11.prod.outlook.com
- ([fe80::3508:ff4c:362d:579c%6]) with mapi id 15.20.4608.018; Wed, 20 Oct 2021
- 05:22:15 +0000
-Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
- cgroup_bpf_offline
-To:     Ming Lei <ming.lei@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        id S229600AbhJTIJn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Oct 2021 04:09:43 -0400
+Received: from relay.sw.ru ([185.231.240.75]:54762 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhJTIJm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:09:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=YevvvMCiVzqy7JB/kdiCKehop5AjB5KIhCsQIr9tEAc=; b=NAreMZ+5hH/sWOc1gxX
+        2mH912t5b4sW5Wf2EthHkT/c49tt/iyxt1ZmyZf3SR6o37YHs1tRRGDpmXYHPLxgDBdLUHK6O9aRA
+        Monh6lpkMbpPhLL2k3UE/1qO6tiwuSKzN4CaesJdLSkcrbKYSPtB+LcUFHCP1jKSosW7g17Wd1s=;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1md6d9-006ZO7-NW; Wed, 20 Oct 2021 11:07:23 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg v4] memcg: prohibit unconditional exceeding the limit of
+ dying tasks
+To:     Michal Hocko <mhocko@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Roman Gushchin <guro@fb.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20211018075623.26884-1-quanyang.wang@windriver.com>
- <YW04Gqqm3lDisRTc@T590> <8fdcaded-474e-139b-a9bc-5ab6f91fbd4f@windriver.com>
- <YW1vuXh4C4tX9ZHP@T590> <a84aedfe-6ecf-7f48-505e-a11acfd6204c@windriver.com>
- <YW78AohHqgqM9Cuw@blackbook> <YW98RTBdzqin+9Ko@T590>
-From:   Quanyang Wang <quanyang.wang@windriver.com>
-Message-ID: <7a21a20d-eb12-e491-4e69-4e043b3b6d8d@windriver.com>
-Date:   Wed, 20 Oct 2021 13:22:06 +0800
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
+Message-ID: <f40cd82c-f03a-4d36-e953-f89399cb8f58@virtuozzo.com>
+Date:   Wed, 20 Oct 2021 11:07:02 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-In-Reply-To: <YW98RTBdzqin+9Ko@T590>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: HK2PR06CA0006.apcprd06.prod.outlook.com
- (2603:1096:202:2e::18) To PH7PR11MB5819.namprd11.prod.outlook.com
- (2603:10b6:510:13b::9)
 MIME-Version: 1.0
-Received: from [128.224.162.199] (60.247.85.82) by HK2PR06CA0006.apcprd06.prod.outlook.com (2603:1096:202:2e::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18 via Frontend Transport; Wed, 20 Oct 2021 05:22:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b9413d2d-568f-4167-69fe-08d9938993da
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4854:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB48542D655748045B16E9F9AEF0BE9@PH0PR11MB4854.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I+Q3uuIp9PKA5incH1pEWGHR80wZFEkHvhK644d39Uo9E+3lU+WxCop0YAj2m+pHCWwDjtI2WSFByrOjnVxBDpya/lVkF2ObJqtTKbESCl7iPh3AKutxCtUbRRbDlXJhYgLOhLzsFa6aO2Vg/zT686GCRjxVIGNdsMHBbpddoJf1Nh2uYn31nB1T2ahLZcZrXYHSA0F5AB9OTO01q8vb6IGUi/STErDxL24GeuGa8HNQ5MUOnstRtBZrpe3FbJuetPYKWlSmpc3lJew5tog3LhCH20gJ+eS+lv6PJO1HiuqGuCj0Bt8P97deFrik9DNiFUdPjJcrzSL7Dz2z2/HaKr7xY/bUKWMS7sj4kWki1aTDnbPo55BIk5inGm8rMc9YkjZwhfm0QvuBdmbNZqitibLElwu/amXs78zpRR/iHjthLWMptuTBtFbsff9mX/uDPovq+cIQ/T/lwPGiihij56vz3st8sZ7zo+8omQtcGh5uJVRx+8oJKVeuK4cWI2DMNzDnvdBzKt0cjXeLMybt/+nUFFvTq8LkH5iar1eNHojweNT7S4K1WKzyo6mE/1olFos7SFOfJd2N+R1CDYYxJm7mJHfiXCwF+PrMXleqCeMe68UJw/5zc6Fzji4NYmPog6e11SxI+s1ckGRaHoDXADuK4qJVPX53OBBX+5Cdsfk7Z2Jc1lc4uvkF8P71EpTGs0LsWcmcqnihfUJ0kBF441jZRyqf4xJ6Tf3ldSBbSpG7vbrHcYW3LmVI1d7x+64TNI19T/660gbIqf12N/j6GauZy1zC3m8BGXG0nr1CFSw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(7416002)(6666004)(53546011)(316002)(38350700002)(31696002)(16576012)(110136005)(54906003)(5660300002)(38100700002)(52116002)(2906002)(44832011)(8936002)(66946007)(31686004)(956004)(508600001)(86362001)(66476007)(2616005)(6486002)(186003)(26005)(6706004)(8676002)(4326008)(66556008)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cVpmNGM0M2wvbDB4YitYV2g1MVRlQWxWSlJPSTViM3FyOEdEWmZFeTd6ODRQ?=
- =?utf-8?B?R203SmlJaTZmcW9pV21UNE16WXlYZnI1TUh6dk0vKy9kNW9CcmN1NUNrSGg1?=
- =?utf-8?B?SkhsU2VaTkh4bmpGczNqd2NIMnVPV3BZRWtOdS95c1oveWFhTXlQYXg0eW91?=
- =?utf-8?B?M3hxM0ZjNDhYRW0zbFRDRXMwRzdSNVk3YnFkTlQxbEQvSEdIMDIxYk0zdC9a?=
- =?utf-8?B?V1BiOWg1YnpkcnFzQkRNdmMvNDNFSVpQNW51N2V0emk5QkNtb2ZweW5DdEIv?=
- =?utf-8?B?aVJMSEF3ek0zQUlYWHY3WWZUM3pXd1FaaXhLZmFGZy9yZUtGY1VWeElyVnIr?=
- =?utf-8?B?SlVNNFNqWDcyQ1pBaXVBN3N5c3NvblQraWZGdm1KeG95WU81TnFqMWxTNW9O?=
- =?utf-8?B?R3BBbkxKdFlkd25GWXdPdkhNUkkyYitBeXVneHlCMHo3bHVtVll0OEo3UkQ2?=
- =?utf-8?B?WTdvTG1nR1A5QTlaaWFYanh4eHp0ODIrWXd4Zm9ZRUE2V1pWU1Zpamx1YmpT?=
- =?utf-8?B?c1lQYlh0TTRvRnliQ3p2bWVmK21oZjg3UnFSWkQvV2FWcWY1cmJLeUZlcE81?=
- =?utf-8?B?VEFBMGh0RUlIbkxzV2tJMmJSZithK0w0ekJDVEY2OE11eEhtWUc2aEFJVGVa?=
- =?utf-8?B?QzdSY3BwT3FKWFRHcmJCT1g4eGl2clZrK2I4ME9mM0hYMDViMkVZMUwybDVK?=
- =?utf-8?B?VEpYdmFmSjFGcE4wNXpucmVUTW5HNWJlVEREMkdPdDBGWFpmcFFkTlhHbnhv?=
- =?utf-8?B?THhySTVNQWh2ZC9PVjZSQzhjSHNiOVZiYjgvZUJHNTBPQ0JhR3AwTmZGbjB2?=
- =?utf-8?B?d21lbEtleGU4YTc5Q2pKWkpKOExCQSs4S0czRVZ0YlNtaWp1M01CYkM3Nnlw?=
- =?utf-8?B?dUFDOUNNeEt6Vkl2ZjFwb2hCa0p3bFplS1d3T0FsNTFuckFPTjM2cmF0d3hq?=
- =?utf-8?B?T0lVVGE5UW9iVDdqUXdCM2Z2N2tiaXZRdDUrZEVlNENWaHp1dUlYVkxtWVh1?=
- =?utf-8?B?bHo4Z1hVOWRqc0dnbW9jT1dtMEV6K0QrWlZveFZtenV5dmZvcWY2WkxCclNL?=
- =?utf-8?B?K2kva3VzcmFEMlo2T2JZWFpnWXNjQmMrV2RoVVo3RTQ2WjRYN3JkOVdjYTNK?=
- =?utf-8?B?RDFZRnowZitCVlg5dERWUlhPMHkvMGg3QlZTTXBHdHZlYWVhb0JEZm9xVkxV?=
- =?utf-8?B?YUdrTXN6aGpsL3NoQmpsK1JJRHRpRDFSQ1orelgxOHdoSFRuaS9IZ3JYNWZK?=
- =?utf-8?B?UlZPSXZ1WkdLeFV2Nnh1NW40VnFhdVBoajdkclhXVG45MnhsSXV4eEFwaDho?=
- =?utf-8?B?VE1pRXZxVlFPU3lUUktRQkRadXFmWW0vTHV1WnZLb01jNTRXcXpwaEVTQnhH?=
- =?utf-8?B?MlBOWGtLTjNlbDNaY3lJZU5xSDBnRU4xZklrMW5EQTQ2UDk5LzJJbDBBbnpj?=
- =?utf-8?B?K3p5azhVSzhGT1VRY0hOeDg2WUQyL2FGcFIyMis0cFpRNzNSblNLeVZGcVU5?=
- =?utf-8?B?NmdUcEVkQStTV0xTaUdKMU9lK21kdlpEY09pZ0daVjl4K2JPZ3MvR0VQUFZr?=
- =?utf-8?B?RzJJR0plbGc1T01uMGpBQVFSaVptejRHVEc3MVlFSm43TnVpMUNieCtnaThi?=
- =?utf-8?B?RUk1SXpxdTZQV0FvL01Wdk1NUVhkdGh6RXVqclBmWlZ4V1dTRlR5a3UzVytJ?=
- =?utf-8?B?d2JJS0V6VjkwVHN3UWZWT1FsTWNla1BGWTdXc0dIV1prNUZlYWVrU3NVZ0Iz?=
- =?utf-8?B?b3Z4QzJtVW9pSEU0bmFjc0hkVVZCOVg5YmlqSVRBUjlFdDFJUi9kMXRkdWRU?=
- =?utf-8?B?emEzbjNJMmFWK1BEWXpneWtOSm55SUNPUG5VeThRUnRDcUFSaytLcWtiUnBW?=
- =?utf-8?B?U09VcldIUk5VdEVMdTVOUExuV3Y3T3VNVTRDcGN6Q21nZ0ZZZlNnOHhKeEJq?=
- =?utf-8?Q?ArcOFLSIcCsjgfaAAlrd/4vpCYIUu86n?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9413d2d-568f-4167-69fe-08d9938993da
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2021 05:22:15.2492
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: quanyang.wang@windriver.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4854
-X-Proofpoint-GUID: M3j9pFuZwwfb_6i5xzJn-giQYN7vy4zD
-X-Proofpoint-ORIG-GUID: M3j9pFuZwwfb_6i5xzJn-giQYN7vy4zD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-20_01,2021-10-19_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- adultscore=0 impostorscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- bulkscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=603 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110200027
+In-Reply-To: <3c76e2d7-e545-ef34-b2c3-a5f63b1eff51@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Ming,
+Memory cgroup charging allows killed or exiting tasks to exceed the hard
+limit. It is assumed that the amount of the memory charged by those
+tasks is bound and most of the memory will get released while the task
+is exiting. This is resembling a heuristic for the global OOM situation
+when tasks get access to memory reserves. There is no global memory
+shortage at the memcg level so the memcg heuristic is more relieved.
 
-On 10/20/21 10:17 AM, Ming Lei wrote:
-> On Tue, Oct 19, 2021 at 07:10:26PM +0200, Michal Koutný wrote:
->> Hi.
->>
->> On Tue, Oct 19, 2021 at 06:41:14PM +0800, Quanyang Wang <quanyang.wang@windriver.com> wrote:
->>> So I add 2 "Fixes tags" here to indicate that 2 commits introduce two
->>> different issues.
->>
->> AFAIU, both the changes are needed to cause the leak, a single patch
->> alone won't cause the issue. Is that correct? (Perhaps not as I realize,
->> see below.)
->>
->> But on second thought, the problem is the missing percpu_ref_exit() in
->> the (root) cgroup release path and percpu counter would allocate the
->> percpu_count_ptr anyway, so 4bfc0bb2c60e is only making the leak more
->> visible. Is this correct?
->>
->> I agree the commit 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
->> percpu_ref in fast path") alone did nothing wrong.
-> 
-> If only precpu_ref data is leaked, it is fine to add "Fixes: 2b0d3d3e4fcf",
-> I thought cgroup_bpf_release() needs to release more for root cgroup, but
-> looks not true.
-For now, I can only observe that precpu_ref data is leaked when running 
-ltp testsuite.
-Thanks,
-Quanyang
-> 
-> 
-> Thanks,
-> Ming
-> 
+The above assumption is overly optimistic though. E.g. vmalloc can scale
+to really large requests and the heuristic would allow that. We used to
+have an early break in the vmalloc allocator for killed tasks but this
+has been reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
+the current task is killed""). There are likely other similar code paths
+which do not check for fatal signals in an allocation&charge loop.
+Also there are some kernel objects charged to a memcg which are not
+bound to a process life time.
+
+It has been observed that it is not really hard to trigger these
+bypasses and cause global OOM situation.
+
+One potential way to address these runaways would be to limit the amount
+of excess (similar to the global OOM with limited oom reserves). This is
+certainly possible but it is not really clear how much of an excess is
+desirable and still protects from global OOMs as that would have to
+consider the overall memcg configuration.
+
+This patch is addressing the problem by removing the heuristic
+altogether. Bypass is only allowed for requests which either cannot fail
+or where the failure is not desirable while excess should be still
+limited (e.g. atomic requests). Implementation wise a killed or dying
+task fails to charge if it has passed the OOM killer stage. That should
+give all forms of reclaim chance to restore the limit before the
+failure (ENOMEM) and tell the caller to back off.
+
+In addition, this patch renames should_force_charge() helper
+to task_is_dying() because now its use is not associated witch forced
+charging.
+
+If try_charge_memcg() is called from #PF, its new failres can force
+pagefault_out_of_memory() to execute the global OOM. To prevent it
+pagefault_out_of_memory() was updated to properly handle memcg-related
+restrictions.
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+v4: updated pagefault_out_of_memory() to properly handle new memcg-related 
+     restrictions and not allow false global OOM 
+v3: no functional changes, just improved patch description
+v2: swicthed to patch version proposed by mhocko@
+
+ mm/memcontrol.c | 52 ++++++++++++++++++++++++++++---------------------
+ mm/oom_kill.c   |  3 +++
+ 2 files changed, 33 insertions(+), 22 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6da5020a8656..b09d3c64f63f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -239,7 +239,7 @@ enum res_type {
+ 	     iter != NULL;				\
+ 	     iter = mem_cgroup_iter(NULL, iter, NULL))
+ 
+-static inline bool should_force_charge(void)
++static inline bool task_is_dying(void)
+ {
+ 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+ 		(current->flags & PF_EXITING);
+@@ -1575,7 +1575,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = should_force_charge() || out_of_memory(&oc);
++	ret = task_is_dying() || out_of_memory(&oc);
+ 
+ unlock:
+ 	mutex_unlock(&oom_lock);
+@@ -1810,11 +1810,21 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+ 		mem_cgroup_oom_notify(memcg);
+ 
+ 	mem_cgroup_unmark_under_oom(memcg);
+-	if (mem_cgroup_out_of_memory(memcg, mask, order))
++	if (mem_cgroup_out_of_memory(memcg, mask, order)) {
+ 		ret = OOM_SUCCESS;
+-	else
++	} else {
+ 		ret = OOM_FAILED;
+-
++		/*
++		 * In some rare cases mem_cgroup_out_of_memory() can return false.
++		 * If it was called from #PF it forces handle_mm_fault()
++		 * return VM_FAULT_OOM and executes pagefault_out_of_memory().
++		 * memcg_in_oom is set here to notify pagefault_out_of_memory()
++		 * that it was a memcg-related failure and not allow to run
++		 * global OOM.
++		 */
++		if (current->in_user_fault)
++			current->memcg_in_oom = (struct mem_cgroup *)ret;
++	}
+ 	if (locked)
+ 		mem_cgroup_oom_unlock(memcg);
+ 
+@@ -1848,6 +1858,15 @@ bool mem_cgroup_oom_synchronize(bool handle)
+ 	if (!memcg)
+ 		return false;
+ 
++	/* OOM is memcg, however out_of_memory() found no victim */
++	if (memcg == (struct mem_cgroup *)OOM_FAILED) {
++		/*
++		 * Should be called from pagefault_out_of_memory() only,
++		 * where it is used to prevent false global OOM.
++		 */
++		current->memcg_in_oom = NULL;
++		return true;
++	}
+ 	if (!handle)
+ 		goto cleanup;
+ 
+@@ -2530,6 +2549,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	struct page_counter *counter;
+ 	enum oom_status oom_status;
+ 	unsigned long nr_reclaimed;
++	bool passed_oom = false;
+ 	bool may_swap = true;
+ 	bool drained = false;
+ 	unsigned long pflags;
+@@ -2564,15 +2584,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_ATOMIC)
+ 		goto force;
+ 
+-	/*
+-	 * Unlike in global OOM situations, memcg is not in a physical
+-	 * memory shortage.  Allow dying and OOM-killed tasks to
+-	 * bypass the last charges so that they can exit quickly and
+-	 * free their memory.
+-	 */
+-	if (unlikely(should_force_charge()))
+-		goto force;
+-
+ 	/*
+ 	 * Prevent unbounded recursion when reclaim operations need to
+ 	 * allocate memory. This might exceed the limits temporarily,
+@@ -2630,8 +2641,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+ 		goto nomem;
+ 
+-	if (fatal_signal_pending(current))
+-		goto force;
++	/* Avoid endless loop for tasks bypassed by the oom killer */
++	if (passed_oom && task_is_dying())
++		goto nomem;
+ 
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+@@ -2640,14 +2652,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 */
+ 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+-	switch (oom_status) {
+-	case OOM_SUCCESS:
++	if (oom_status == OOM_SUCCESS) {
++		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+-	case OOM_FAILED:
+-		goto force;
+-	default:
+-		goto nomem;
+ 	}
+ nomem:
+ 	if (!(gfp_mask & __GFP_NOFAIL))
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 831340e7ad8b..1deef8c7a71b 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1137,6 +1137,9 @@ void pagefault_out_of_memory(void)
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
+ 
++	if (fatal_signal_pending(current))
++		return;
++
+ 	if (!mutex_trylock(&oom_lock))
+ 		return;
+ 	out_of_memory(&oc);
+-- 
+2.32.0
+
