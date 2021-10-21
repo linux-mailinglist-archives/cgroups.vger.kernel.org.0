@@ -2,162 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69A7435C49
-	for <lists+cgroups@lfdr.de>; Thu, 21 Oct 2021 09:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01BD435C91
+	for <lists+cgroups@lfdr.de>; Thu, 21 Oct 2021 10:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhJUHqt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Oct 2021 03:46:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58300 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230385AbhJUHqt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 03:46:49 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L7JnJS032012;
-        Thu, 21 Oct 2021 03:44:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=uT4wjLPIFzFEl8waL4bVFZNbPI9aXaW6qIoccd8uwWI=;
- b=PCvLitr3hW5l+7lcPhGe/8CR/U6UXAwL2M1QTEvym95Tq+InQsB5zuAGQfjypEorIbeQ
- bqzhGC9crxX/i7nOwTgTWxeIppcaa9pMWuN5XK+liS2YKCQW9nXWYQRpQjOQNyNEqXIw
- JG1KDKMfYn1lgw571Zq0e8Vjow9bYTUzTlhCiE9f90LJU77DSREsyqS+6M1psCSQIb0t
- DI5Wver4FUvZX1OBHPVBESzPRsoAXBHCPLuqbb3Ote/6zvsndKITNM7LuM6v8StBM+yS
- 8UGgiEiLsJFOZ/cCWgUSu2eAxsM25LXQlZcOPFsngxf4fRKtENVexxK+9ggi1zzIopr1 ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu14yknmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 03:44:19 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19L7Q9Jl020050;
-        Thu, 21 Oct 2021 03:44:18 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bu14yknmb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 03:44:18 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19L7iCBE022910;
-        Thu, 21 Oct 2021 07:44:16 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 3bqpca8we7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Oct 2021 07:44:16 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19L7iEkn56164676
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 07:44:14 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 026B452050;
-        Thu, 21 Oct 2021 07:44:14 +0000 (GMT)
-Received: from [9.43.57.91] (unknown [9.43.57.91])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 4DA1B5204F;
-        Thu, 21 Oct 2021 07:44:11 +0000 (GMT)
-Message-ID: <bd1811cc-0e04-9e44-0b46-02689ff9a238@linux.ibm.com>
-Date:   Thu, 21 Oct 2021 13:14:10 +0530
+        id S231336AbhJUIG0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Oct 2021 04:06:26 -0400
+Received: from relay.sw.ru ([185.231.240.75]:43262 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231158AbhJUIG0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 21 Oct 2021 04:06:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=nC/QVr0jtd67Au3q+jnUAluZhpYLLVaIrvqIUdLTEDo=; b=Wtw08hMyX+W4NLre+
+        n9xyyyWTQ+7yVckdtj4NgGGt3H07Uadf+aq/kXQ0s9YmKasnSl8h0WaWckzAzJbaxdJDikq3o2EtK
+        PjakBSQeCbhcuQsyynQ5dQ/mJmVCGoPXQEHuzCe+/lntmiujD0qXlJrOGynXblB6Roux8XZG5w2DY
+        =;
+Received: from [172.29.1.17]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mdT3V-006gm0-IB; Thu, 21 Oct 2021 11:04:05 +0300
+Subject: Re: [PATCH memcg 0/1] false global OOM triggered by memcg-limited
+ task
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <9d10df01-0127-fb40-81c3-cc53c9733c3e@virtuozzo.com>
+ <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <496ed57e-61c6-023a-05fd-4ef21b0294cf@virtuozzo.com>
+Date:   Thu, 21 Oct 2021 11:03:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+In-Reply-To: <YW04jWSv6pQb2Goe@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        containers@lists.linux.dev, containers@lists.linux-foundation.org,
-        pratik.r.sampat@gmail.com
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
- <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
- <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
- <YWirxCjschoRJQ14@slm.duckdns.org>
- <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
- <YW2g73Lwmrhjg/sv@slm.duckdns.org>
- <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
- <YXBFVCc61nCG5rto@slm.duckdns.org>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-In-Reply-To: <YXBFVCc61nCG5rto@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Gc_TayJknDDmKIXUNB03r6RBPa3r0NsN
-X-Proofpoint-GUID: HLLSO8PhqTXa-MESQiD8vmVBt6EMpA0U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-21_02,2021-10-20_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 malwarescore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110210035
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Tejun,
+On 18.10.2021 12:04, Michal Hocko wrote:
+> On Mon 18-10-21 11:13:52, Vasily Averin wrote:
+> [...]
+>> How could this happen?
+>>
+>> User-space task inside the memcg-limited container generated a page fault,
+>> its handler do_user_addr_fault() called handle_mm_fault which could not
+>> allocate the page due to exceeding the memcg limit and returned VM_FAULT_OOM.
+>> Then do_user_addr_fault() called pagefault_out_of_memory() which executed
+>> out_of_memory() without set of memcg.
 
+> I will be honest that I am not really happy about pagefault_out_of_memory.
+> I have tried to remove it in the past. Without much success back then,
+> unfortunately[1]. 
+> 
+> [1] I do not have msg-id so I cannot provide a lore link but google
+> pointed me to https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1400402.html
 
-On 20/10/21 10:05 pm, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Oct 20, 2021 at 04:14:25PM +0530, Pratik Sampat wrote:
->> As you have elucidated, it doesn't like an easy feat to
->> define metrics like ballpark numbers as there are many variables
->> involved.
-> Yeah, it gets tricky and we want to get the basics right from the get go.
->
->> For the CPU example, cpusets control the resource space whereas
->> period-quota control resource time. These seem like two vectors on
->> different axes.
->> Conveying these restrictions in one metric doesn't seem easy. Some
->> container runtime convert the period-quota time dimension to X CPUs
->> worth of runtime space dimension. However, we need to carefully model
->> what a ballpark metric in this sense would be and provide clearer
->> constraints as both of these restrictions can be active at a given
->> point in time and can influence how something is run.
-> So, for CPU, the important functional number is the number of threads needed
-> to saturate available resources and that one is pretty easy.
+I re-read this discussion and in general I support your position.
+As far as I understand your opponents cannot explain why "random kill" is mandatory here,
+they are just afraid that it might be useful here and do not want to remove it completely.
 
-I'm speculating, and please correct correct me if I'm wrong; suggesting
-an optimal number of threads to spawn to saturate the available
-resources can get convoluted right?
+Ok, let's allow him to do it. Moreover I'm ready to keep it as default behavior.
 
-In the nginx example illustrated in the cover patch, it worked best
-when the thread count was N+1 (N worker threads 1 master thread),
-however different applications can work better with a different
-configuration of threads spawned based on its usecase and
-multi-threading requirements.
+However I would like to have some choice in this point.
 
-Eventually looking at the load we maybe able to suggest more/less
-threads to spawn, but initially we may have to have to suggest threads
-to spawn as direct function of N CPUs available or N CPUs worth of
-runtime available?
+In general we can:
+- continue to use "random kill" and rely on the wisdom of the ancestors.
+- do nothing, repeat #PF and rely on fate: "nothing bad will happen if we do it again".
+- add some (progressive) killable delay, rely on good will of (unkillable) neighbors and wait for them to release required memory.
+- mark the current task as cycled in #PF and somehow use this mark in allocator
+- make sure that the current task is really cycled, have no progress, send him fatal signal to kill it and break the cycle.
+- implement any better ideas,
+- use any combination of previous points
 
-> The other
-> metric would be the maximum available fractions of CPUs available to the
-> cgroup subtree if the cgroup stays saturating. This number is trickier as it
-> has to consider how much others are using but would be determined by the
-> smaller of what would be available through cpu.weight and cpu.max.
+We can select required strategy for example via sysctl.
 
-I agree, this would be a very useful metric to have. Having the
-knowledge for how much further we can scale when we're saturating our
-limits keeping in mind of the other running applications can possibly
-be really useful not just for the applications itself but also for the
-container orchestrators as well.
+For me "random kill" is worst choice, 
+Why can't we just kill the looped process instead?
+It can be marked as oom-unkillable, so OOM-killer was unable to select it.
+However I doubt it means "never kill it", for me it is something like "last possible victim" priority.
 
-> IO likely is in a similar boat. We can calculate metrics showing the
-> rbps/riops/wbps/wiops available to a given cgroup subtree. This would factor
-> in the limits from io.max and the resulting distribution from io.weight in
-> iocost's case (iocost will give a % number but we can translate that to
-> bps/iops numbers).
-
-Yes, that's a useful metric to expose this way as well.
-
->> Restrictions for memory are even more complicated to model as you have
->> pointed out as well.
-> Yeah, this one is the most challenging.
->
-> Thanks.
->
 Thank you,
-Pratik
-
+	Vasily Averin
