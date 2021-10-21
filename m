@@ -2,134 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8FD436846
-	for <lists+cgroups@lfdr.de>; Thu, 21 Oct 2021 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768E54368B7
+	for <lists+cgroups@lfdr.de>; Thu, 21 Oct 2021 19:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhJUQtt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Oct 2021 12:49:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55740 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhJUQts (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 12:49:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E86202199D;
-        Thu, 21 Oct 2021 16:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634834851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=++iA8+uhip7K2PBGESkJUKSkd2b03fx9ioYV7M+4ADc=;
-        b=hW3ymvnHy/zIjqEGz83CLNjmBv0TkMYAecEBj9ZicauP81r1HFWZ1zXmQBDdateXmP6kUp
-        mtbGbyRFsaIHg764GPo8VMrUN+e05/45ZU7+3dDBD60xJXN36r8xEaTA6nM84CnyhJB6Tt
-        gEEGzt8067R6EwrCFARVP0xMDJPvyPQ=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1AF66A3B84;
-        Thu, 21 Oct 2021 16:47:31 +0000 (UTC)
-Date:   Thu, 21 Oct 2021 18:47:29 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH memcg 3/3] memcg: handle memcg oom failures
-Message-ID: <YXGZoVhROdFG2Wym@dhcp22.suse.cz>
-References: <YW/WoJDFM3ddHn7Y@dhcp22.suse.cz>
- <cover.1634730787.git.vvs@virtuozzo.com>
- <fb33f4bd-34cd-2187-eff4-7c1c11d5ae94@virtuozzo.com>
- <YXATW7KsUZzbbGHy@dhcp22.suse.cz>
- <d3b32c72-6375-f755-7599-ab804719e1f6@virtuozzo.com>
- <YXFPSvGFV539OcEk@dhcp22.suse.cz>
- <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
+        id S232202AbhJURIZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Oct 2021 13:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231921AbhJURIY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 13:08:24 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7BBC061764;
+        Thu, 21 Oct 2021 10:06:08 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id o4-20020a17090a3d4400b001a1c8344c3fso1505230pjf.3;
+        Thu, 21 Oct 2021 10:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jrhIGZEqu0h/B8SeVSRWWn+zXKY1Hb4XraNoMEue39w=;
+        b=OA705iIhr1YeBmH3LY1wuCrgfL3CUIvPxUFSRUYOFLixDWJ9TtX9x0pjMdukts/TdN
+         aqXY23DJC+n0Mhx1JwFCNmnb0QvKL+AkBtOPdksPbpodAsZGKpKUp/R3Pr6QRt0IuSzr
+         KS/WNb+Mvv5CVTVbuIdcK/5ZHYS6cN/etcx16Rc1NzHhH0IZGcAECTbnQfbgk3UY9FEG
+         HnsSFWAfHrLCWehkpvqtY8RYoCWngNQoyPpeHfkAEHxTnNraxY2i52QEePbjkdpoglgM
+         +cveexLYdYNMeRr61ZopCZ1boXOX6XShZbQEOJSZRz/3xBePCVgxaMhNi+E8oUdgznBY
+         JOvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jrhIGZEqu0h/B8SeVSRWWn+zXKY1Hb4XraNoMEue39w=;
+        b=0zP4ijNBDQZz0WBlLTD4B0hP6uIjha53X97I9MbaYGszKnhG0VSHwJanfrImBbDNkH
+         SoLau7ZayX+TQYb2amEVy/h4N+NAl9Vxt+i6H58uoDNXzdLNPbhkIhQ0Lj5RFcxKbi1G
+         uOqLhc8oj4cjTf982J2eIXK4pgeYIXVJHNkhaW2DujW8ff4voh6y+jcN3vmFnUxAa1n2
+         S3Tvs15fRrtrKPwW7iTGy3ueWccGcsJ4vFstuY4OSbGbZpRBRoGIbKMx55/cS8Rme36C
+         KNPxx62V5nq+WbHma3CknGNMQhO9V9McaTQxbH+u5oQIuf4gm7XMdhIy7n0GCLvTqkn8
+         IYiw==
+X-Gm-Message-State: AOAM530kQfhz2t7kObYsdwteWpcwtIgRGOwdo/F5DaeP+Qdfq9pjjXa4
+        jjaosoT81UI9pPWb2pKy3Zo=
+X-Google-Smtp-Source: ABdhPJxNnBJ3A4oS8et0paTH4JI99DT0N0T5gYetTWhMgLWDBcJGMtkZJiafBFFyVFt1ubfsfcrmAw==
+X-Received: by 2002:a17:90a:c913:: with SMTP id v19mr3805112pjt.117.1634835967957;
+        Thu, 21 Oct 2021 10:06:07 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id z24sm6310084pgu.54.2021.10.21.10.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 10:06:07 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 21 Oct 2021 07:06:05 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Pratik Sampat <psampat@linux.ibm.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
+        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        containers@lists.linux.dev, containers@lists.linux-foundation.org,
+        pratik.r.sampat@gmail.com
+Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
+Message-ID: <YXGd/T0YHG/xEAkw@slm.duckdns.org>
+References: <20211009151243.8825-1-psampat@linux.ibm.com>
+ <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
+ <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
+ <YWirxCjschoRJQ14@slm.duckdns.org>
+ <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
+ <YW2g73Lwmrhjg/sv@slm.duckdns.org>
+ <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
+ <YXBFVCc61nCG5rto@slm.duckdns.org>
+ <bd1811cc-0e04-9e44-0b46-02689ff9a238@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b618ac5c-e982-c4af-ecf3-564b8de52c8c@virtuozzo.com>
+In-Reply-To: <bd1811cc-0e04-9e44-0b46-02689ff9a238@linux.ibm.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 21-10-21 18:05:28, Vasily Averin wrote:
-> On 21.10.2021 14:49, Michal Hocko wrote:
-> > I do understand that handling a very specific case sounds easier but it
-> > would be better to have a robust fix even if that requires some more
-> > head scratching. So far we have collected several reasons why the it is
-> > bad to trigger oom killer from the #PF path. There is no single argument
-> > to keep it so it sounds like a viable path to pursue. Maybe there are
-> > some very well hidden reasons but those should be documented and this is
-> > a great opportunity to do either of the step.
-> > 
-> > Moreover if it turns out that there is a regression then this can be
-> > easily reverted and a different, maybe memcg specific, solution can be
-> > implemented.
+Hello,
+
+On Thu, Oct 21, 2021 at 01:14:10PM +0530, Pratik Sampat wrote:
+> I'm speculating, and please correct correct me if I'm wrong; suggesting
+> an optimal number of threads to spawn to saturate the available
+> resources can get convoluted right?
 > 
-> Now I'm agree,
-> however I still have a few open questions.
+> In the nginx example illustrated in the cover patch, it worked best
+> when the thread count was N+1 (N worker threads 1 master thread),
+> however different applications can work better with a different
+> configuration of threads spawned based on its usecase and
+> multi-threading requirements.
+
+Yeah, I mean, the number would have to be based an ideal conditions - ie.
+the cgroup needs N always-runnable threads to saturate all the available
+CPUs and then applications can do what they need to do based on that
+information. Note that this is equivalent to making these decisions based on
+number of CPUs.
+
+> Eventually looking at the load we maybe able to suggest more/less
+> threads to spawn, but initially we may have to have to suggest threads
+> to spawn as direct function of N CPUs available or N CPUs worth of
+> runtime available?
+
+That kind of dynamic tuning is best done with PSI which can reliably
+indicate saturation and the degree of contention.
+
+> > The other
+> > metric would be the maximum available fractions of CPUs available to the
+> > cgroup subtree if the cgroup stays saturating. This number is trickier as it
+> > has to consider how much others are using but would be determined by the
+> > smaller of what would be available through cpu.weight and cpu.max.
 > 
-> 1) VM_FAULT_OOM may be triggered w/o execution of out_of_memory()
-> for exampel it can be caused by incorrect vm fault operations, 
-> (a) which can return this error without calling allocator at all.
+> I agree, this would be a very useful metric to have. Having the
+> knowledge for how much further we can scale when we're saturating our
+> limits keeping in mind of the other running applications can possibly
+> be really useful not just for the applications itself but also for the
+> container orchestrators as well.
 
-I would argue this to be a bug. How can that particular code tell
-whether the system is OOM and the oom killer is the a reasonable measure
-to take?
+Similarly, availability metrics would be useful in ballpark sizing so that
+applications don't have to dynamically tune across the entire range, the
+actual adustments to stay saturated is likely best done through PSI, which
+is the direct metric indicating resource saturation.
 
-> (b) or which can provide incorrect gfp flags and allocator can fail without execution of out_of_memory.
+Thanks.
 
-I am not sure I can see any sensible scenario where pagefault oom killer
-would be an appropriate fix for that.
-
-> (c) This may happen on stable/LTS kernels when successful allocation was failed by hit into limit of legacy memcg-kmem contoller.
-> We'll drop it in upstream kernels, however how to handle it in old kenrels?
-
-Triggering the global oom killer for legacy kmem charge failure is
-clearly wrong. Removing oom killer from #PF would fix that problem.
-
-> We can make sure that out_of_memory or alocator was called by set of some per-task flags.
-
-I am not sure I see how that would be useful other than reporting a
-dubious VM_FAULT_OOM usage. I am also not sure how that would be
-implemented as allocator can be called several times not to mention that
-the allocation itself could have been done from a different context -
-e.g. WQ.
-
-> Can pagefault_out_of_memory() send itself a SIGKILL in all these cases?
-
-In principle it can as sending signal is not prohibited. I would argue
-it should not though because it is just wrong thing to do in all those
-cases.
-
-> If not -- task will be looped. 
-
-Yes, but it will be killable from userspace. So this is not an
-unrecoverable situation.
-> It is much better than execution of global OOM, however it would be even better to avoid it somehow.
-
-How?
-
-> You said: "We cannot really kill the task if we could we would have done it by the oom killer already".
-> However what to do if we even not tried to use oom-killer? (see (b) and (c)) 
-> or if we did not used the allocator at all (see (a))
-
-See above
-
-> 2) in your patch we just exit from pagefault_out_of_memory(). and restart new #PF.
-> We can call schedule_timeout() and wait some time before a new #PF restart.
-> Additionally we can increase this delay in each new cycle. 
-> It helps to save CPU time for other tasks.
-> What do you think about?
-
-I do not have a strong opinion on this. A short sleep makes sense. I am
-not sure a more complex implementation is really needed.
 -- 
-Michal Hocko
-SUSE Labs
+tejun
