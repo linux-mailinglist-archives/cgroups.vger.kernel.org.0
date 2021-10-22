@@ -2,161 +2,205 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C671436F5F
-	for <lists+cgroups@lfdr.de>; Fri, 22 Oct 2021 03:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3394436F65
+	for <lists+cgroups@lfdr.de>; Fri, 22 Oct 2021 03:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhJVBay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Oct 2021 21:30:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13969 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJVBax (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 21:30:53 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hb6Bt24RgzZcRd;
-        Fri, 22 Oct 2021 09:26:46 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.15; Fri, 22 Oct 2021 09:28:33 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.15; Fri, 22 Oct 2021 09:28:33 +0800
-Subject: Re: [PATCH v4] blk-cgroup: synchoronize blkg creation against policy
- deactivation
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
-        <avanzini.arianna@gmail.com>, <fchecconi@gmail.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211020014036.2141723-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <461fa6c1-fbc3-2c66-ed11-8d035c45975a@huawei.com>
-Date:   Fri, 22 Oct 2021 09:28:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S231652AbhJVBdI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Oct 2021 21:33:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48506 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230288AbhJVBdH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 21:33:07 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19LJb1r1028264;
+        Thu, 21 Oct 2021 18:30:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ZAI4ALD3IOPkn/ZDv37bBcofWD94RVNJhCNAaLserkY=;
+ b=BrffFq0QvdYXJy+HxkHv0ZIPDi9j6kg74RNMLpiG70tGCk/HmQCUQwYzwOjKeFrDgl3V
+ ZIVpOyZ7BmjjGar/4aVr73medsuvqwoqBxQLIQyrKwbt3NqPEv57uKLzyKtSqzDRlHS0
+ Rv+VCrOq/rYYjXU6G83miRIITzyhX8p8FXY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3btxd3sk4d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 21 Oct 2021 18:30:32 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Thu, 21 Oct 2021 18:30:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jWBI7ZdfPX/1eKBljyFXdVFtTSF+oCMAMgnnf2XMo0ocxrXlPGa8sd+zRECOCpeI3MLOjH9MSLQnqpVjenr+vEQ6RBeu7WyXPuY2Jto/w+CLSjLm6fxV0kYvNVxloVefDIA1WkMoLGH0eWKUo3BbNTqsqKxqzurHavz9XNHiuq9ig7HgoMhJMFCQjQRMuAV8juTPf6lw3XuRLjT2iXV4CedkagaQdYQuY7OOA2Maiski8HE0Ck255PIl8IyhQBjn0nM2D8X45p1dyWFasilLzV2QKfDur1lC18bKfAyJQK2SYaQshm4bZakrc6KVUG6ea1E8TMSO9gnJ/l0ncu/opQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZAI4ALD3IOPkn/ZDv37bBcofWD94RVNJhCNAaLserkY=;
+ b=Pyu1UXvdPZO2HxZJZlu5rMUTKL8GVwtmXUCyChCELIU2y8y/johS7Eq4wektBzQf47VhM3H5omTseDNmpA7SdT9vV01lOhLefS1vB9uFnmJ/6XVXpQUfB3vEku/o94WwJyQrOhNqAVZ7eo55628xRyu4gy7NeOOQHN2nDxlAOBNxrWMg3Yx4LVincTqmfvo5YDUPzT+x6CssOe144DhBcbYWcnXU/XuowxG845OG0AKR/0d9UrPAfdxPWdZEJEgM48BwxnKbxzHMyjSP+PDM5gonc64vtODoaX8forhSTRVtkwwHTnK5UdF4TuvLXtRuo8d6Muh1FoxdFF/Fuh9tMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: windriver.com; dkim=none (message not signed)
+ header.d=none;windriver.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2343.namprd15.prod.outlook.com (2603:10b6:a02:8b::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Fri, 22 Oct
+ 2021 01:30:29 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::1052:c025:1e48:7f94%5]) with mapi id 15.20.4628.018; Fri, 22 Oct 2021
+ 01:30:28 +0000
+Date:   Thu, 21 Oct 2021 18:30:24 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     <quanyang.wang@windriver.com>
+CC:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        <mkoutny@suse.com>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: [V2][PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <YXIUMJWrXUcrvZf5@carbon.DHCP.thefacebook.com>
+References: <20211018075623.26884-1-quanyang.wang@windriver.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211018075623.26884-1-quanyang.wang@windriver.com>
+X-ClientProxiedBy: MW2PR2101CA0008.namprd21.prod.outlook.com
+ (2603:10b6:302:1::21) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20211020014036.2141723-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:9a55) by MW2PR2101CA0008.namprd21.prod.outlook.com (2603:10b6:302:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.1 via Frontend Transport; Fri, 22 Oct 2021 01:30:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78992110-7157-4156-29fc-08d994fb87d7
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2343:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2343B8A9BF9CC05C24FEE14BBE809@BYAPR15MB2343.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dr5YdvoZ37kGfZISM8Bk7Fjm7wYxFS+tDgcdeUdRaBLcp+8OxQzgnnbElmPXbg7KWc6j4penZhSUFjw4LRndATJCOVuhE5nA5sbK5XgRnfb9Nr0m8eFRJE25ArYqIxBvI2QFLvmw8LsyBTKyFKJornd3P5mOCv53LfqkifT+5thtfJTelFJ1IphOpq/sWPwOab93pdMxlHLynIkerw1/jjTAy71537T8GjQvXSnVrPgyppTK4VIV/6oN/qhGD6Bri0gzYbEudBXafPsg+k36F38ECFhzPSoO6CdbReE6uRRP0ZH7Cm7ggHLOFffnfDNagy3AC0+uAAAStpVKhL5Crv9C6PWMFLnkKzMz08ahVM0hnBFDyd2oSCfuRoeLtm3JIxIL10QxPZurYxkb2V7lp9cIlewGMEQpd62vHBuSDCYBKOutdONZLwZQD8eim6heRsDAonBe5bIXyiR0wyhj29bZXCAMgNJl6bm7yksZJHDmDdqQHdVT0ak7Nw13Eb1KASnuq0W+obXCZBUD6ird+rR/K49DZhZaR0UZzCf9fqDCzMP0U21ccYa/fGOe6o6K8siUz3MurSSBhQe8+oAc/Qct9hPLD2fCu5gj5SSp9M2LFDDGagUe/WB+QIWXDK7jg6sbVvcAta/AIWRuWk8KYQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(4326008)(55016002)(5660300002)(6666004)(86362001)(66946007)(54906003)(186003)(6916009)(316002)(66556008)(7696005)(2906002)(7416002)(8936002)(52116002)(508600001)(8676002)(6506007)(38100700002)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?msSRbHbenpTw3geXZA7bctjBX3fg+5RKAgLlZ7wYE1SB+HfojjU4MZ2B7a/e?=
+ =?us-ascii?Q?GagZbIrez60Tv5HtcS6PM1K+jNVvD6HDeJbdn+WU4XT/JMDvWUaa+fHNojI8?=
+ =?us-ascii?Q?zQd6nHKi6u512LwsAg7DjRmYnzIZxX8/AejnWSrE7Eg/YQWKmDfbTc1GJu/d?=
+ =?us-ascii?Q?9IslU9efjr0/Byy2CJqwYcYI8nuGNUcBkzX/LosRBoR1Z57G3xo2KJdQDkgi?=
+ =?us-ascii?Q?NbArAYON8/CUhqcVrvPpvSKJTylZGgm5/Ta0XFw2RNGjQjkMZUKYR+sfa2f2?=
+ =?us-ascii?Q?0aFUvWD2IdFQ9MtzB9+W5SQp9g3ZOC0Lr6f3dpsmmDtTCeGU3icwmgHhLTp4?=
+ =?us-ascii?Q?KkHt0ll4r0C2ZypAeTVIp2gSrclZAYX1Z0JVeVfhXVGOOXusKjKMAw1lgs3F?=
+ =?us-ascii?Q?91S+aIo3uSNVi4Q3WmyBcnoIu5mO9phFqQTiKligR6rxO+u8QQ+dye6FdCq0?=
+ =?us-ascii?Q?n9wLe6cjisQpooHCWit5IAG7xkLiSK5Xh6RayTO4OJfqfnyvMcIZrZ7DL/OH?=
+ =?us-ascii?Q?MhGZ/OuS23Khh6i7ZtvbO6ylQSqOnF/H6pXxC8jM7PCcgPlwZopiS1fRxMXu?=
+ =?us-ascii?Q?/yS8/m45RWNlS2lsTJRlkOvZv1/1uyB5EMQXCjxRfuWpHM86ffQgLiQp/ZUX?=
+ =?us-ascii?Q?QEGy/rhsMvCa8Qp/G6S1FPrUhlaBnHn2DD55W7A3Tc/lhPb2GGy46Mt2w/NF?=
+ =?us-ascii?Q?N26sIE3WYCbRfk7vt6l3cpVqaFfj+j98w7hv+1ivI5cSBWoLmacvvOn/TpyH?=
+ =?us-ascii?Q?q4DagCglTRjmG6bIciUhaPqaDJ9ypYck2UvytXpQ9BZvTUaRUm5DjiQvXdb8?=
+ =?us-ascii?Q?HNTB0I4RmOZ9loDdwOlGGOAr6SkqLqXn0XKoGLLtzVEPFIA9OLZiMMXyhpAw?=
+ =?us-ascii?Q?oI265mzSS5vZTTjGEDAcYtNk6psM7spf1LR3JoG9sPanKA2/5UrgzwyarQWd?=
+ =?us-ascii?Q?S/kWZ8Nas+XcsIxYdPDJY7UsC+067PlmObpGK0CaS/GizAe4ifXKD7GIuXE0?=
+ =?us-ascii?Q?Y+lj8IGTEPOcZqgmunu8FTajGKb323o0olJ30y4DyPjwOm+Gjn02BxEbb9Wf?=
+ =?us-ascii?Q?/7aCwTHMwJ780OtDR3EK/oIZbiNxvPQZo1FCRKXln6kpJ3dVvwvM5Qqcvumn?=
+ =?us-ascii?Q?ycIhsWsbqoDDGME/Xjsw088fEFkj2zFvfs+HxRPpwgMoKgpzrvBmOmodtkzl?=
+ =?us-ascii?Q?9DuTLchbyhP4sy42YqvDXSZXnLvYbSE9t9nWheYMtV82K0Mp/a28X/zzPcwM?=
+ =?us-ascii?Q?xocHJKmB+yFubiDDwJjnPJWHJQUpn2gEtYhRhuPTaWLYlocpRWH64abTjXa3?=
+ =?us-ascii?Q?ijLOCKgZUI+dyQ6jZ1c1Z6sWuhM5N/0cJruxXYhTxytUgKVp04392xteUf3M?=
+ =?us-ascii?Q?WVkDXItqd0uIBRUbcgwBlq2u85IqbF5EjdJc96jqqFIKElrVvNbzP1k/LFPq?=
+ =?us-ascii?Q?ngjkd/ZYskjtNhzuiyke1+nYXeSE/0A+?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78992110-7157-4156-29fc-08d994fb87d7
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2021 01:30:28.8242
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2343
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 3yJ8CL-sXNzCGi8IuvyRfeP4QBAneYwo
+X-Proofpoint-GUID: 3yJ8CL-sXNzCGi8IuvyRfeP4QBAneYwo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-21_07,2021-10-21_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110220006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi 2021/10/20 9:40, Yu Kuai wrote:
-> Out test report a null pointer dereference:
+On Mon, Oct 18, 2021 at 03:56:23PM +0800, quanyang.wang@windriver.com wrote:
+> From: Quanyang Wang <quanyang.wang@windriver.com>
 > 
-> [  168.534653] ==================================================================
-> [  168.535614] Disabling lock debugging due to kernel taint
-> [  168.536346] BUG: kernel NULL pointer dereference, address: 0000000000000008
-> [  168.537274] #PF: supervisor read access in kernel mode
-> [  168.537964] #PF: error_code(0x0000) - not-present page
-> [  168.538667] PGD 0 P4D 0
-> [  168.539025] Oops: 0000 [#1] PREEMPT SMP KASAN
-> [  168.539656] CPU: 13 PID: 759 Comm: bash Tainted: G    B             5.15.0-rc2-next-202100
-> [  168.540954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
-> [  168.542736] RIP: 0010:bfq_pd_init+0x88/0x1e0
-> [  168.543318] Code: 98 00 00 00 e8 c9 e4 5b ff 4c 8b 65 00 49 8d 7c 24 08 e8 bb e4 5b ff 4d0
-> [  168.545803] RSP: 0018:ffff88817095f9c0 EFLAGS: 00010002
-> [  168.546497] RAX: 0000000000000001 RBX: ffff888101a1c000 RCX: 0000000000000000
-> [  168.547438] RDX: 0000000000000003 RSI: 0000000000000002 RDI: ffff888106553428
-> [  168.548402] RBP: ffff888106553400 R08: ffffffff961bcaf4 R09: 0000000000000001
-> [  168.549365] R10: ffffffffa2e16c27 R11: fffffbfff45c2d84 R12: 0000000000000000
-> [  168.550291] R13: ffff888101a1c098 R14: ffff88810c7a08c8 R15: ffffffffa55541a0
-> [  168.551221] FS:  00007fac75227700(0000) GS:ffff88839ba80000(0000) knlGS:0000000000000000
-> [  168.552278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  168.553040] CR2: 0000000000000008 CR3: 0000000165ce7000 CR4: 00000000000006e0
-> [  168.554000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  168.554929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  168.555888] Call Trace:
-> [  168.556221]  <TASK>
-> [  168.556510]  blkg_create+0x1c0/0x8c0
-> [  168.556989]  blkg_conf_prep+0x574/0x650
-> [  168.557502]  ? stack_trace_save+0x99/0xd0
-> [  168.558033]  ? blkcg_conf_open_bdev+0x1b0/0x1b0
-> [  168.558629]  tg_set_conf.constprop.0+0xb9/0x280
-> [  168.559231]  ? kasan_set_track+0x29/0x40
-> [  168.559758]  ? kasan_set_free_info+0x30/0x60
-> [  168.560344]  ? tg_set_limit+0xae0/0xae0
-> [  168.560853]  ? do_sys_openat2+0x33b/0x640
-> [  168.561383]  ? do_sys_open+0xa2/0x100
-> [  168.561877]  ? __x64_sys_open+0x4e/0x60
-> [  168.562383]  ? __kasan_check_write+0x20/0x30
-> [  168.562951]  ? copyin+0x48/0x70
-> [  168.563390]  ? _copy_from_iter+0x234/0x9e0
-> [  168.563948]  tg_set_conf_u64+0x17/0x20
-> [  168.564467]  cgroup_file_write+0x1ad/0x380
-> [  168.565014]  ? cgroup_file_poll+0x80/0x80
-> [  168.565568]  ? __mutex_lock_slowpath+0x30/0x30
-> [  168.566165]  ? pgd_free+0x100/0x160
-> [  168.566649]  kernfs_fop_write_iter+0x21d/0x340
-> [  168.567246]  ? cgroup_file_poll+0x80/0x80
-> [  168.567796]  new_sync_write+0x29f/0x3c0
-> [  168.568314]  ? new_sync_read+0x410/0x410
-> [  168.568840]  ? __handle_mm_fault+0x1c97/0x2d80
-> [  168.569425]  ? copy_page_range+0x2b10/0x2b10
-> [  168.570007]  ? _raw_read_lock_bh+0xa0/0xa0
-> [  168.570622]  vfs_write+0x46e/0x630
-> [  168.571091]  ksys_write+0xcd/0x1e0
-> [  168.571563]  ? __x64_sys_read+0x60/0x60
-> [  168.572081]  ? __kasan_check_write+0x20/0x30
-> [  168.572659]  ? do_user_addr_fault+0x446/0xff0
-> [  168.573264]  __x64_sys_write+0x46/0x60
-> [  168.573774]  do_syscall_64+0x35/0x80
-> [  168.574264]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  168.574960] RIP: 0033:0x7fac74915130
-> [  168.575456] Code: 73 01 c3 48 8b 0d 58 ed 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 444
-> [  168.577969] RSP: 002b:00007ffc3080e288 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [  168.578986] RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007fac74915130
-> [  168.579937] RDX: 0000000000000009 RSI: 000056007669f080 RDI: 0000000000000001
-> [  168.580884] RBP: 000056007669f080 R08: 000000000000000a R09: 00007fac75227700
-> [  168.581841] R10: 000056007655c8f0 R11: 0000000000000246 R12: 0000000000000009
-> [  168.582796] R13: 0000000000000001 R14: 00007fac74be55e0 R15: 00007fac74be08c0
-> [  168.583757]  </TASK>
-> [  168.584063] Modules linked in:
-> [  168.584494] CR2: 0000000000000008
-> [  168.584964] ---[ end trace 2475611ad0f77a1a ]---
+> When enabling CONFIG_CGROUP_BPF, kmemleak can be observed by running
+> the command as below:
 > 
-> This is because blkg_alloc() is called from blkg_conf_prep() without
-> holding 'q->queue_lock', and elevator is exited before blkg_create():
+>     $mount -t cgroup -o none,name=foo cgroup cgroup/
+>     $umount cgroup/
 > 
-> thread 1                            thread 2
-> blkg_conf_prep
->   spin_lock_irq(&q->queue_lock);
->   blkg_lookup_check -> return NULL
->   spin_unlock_irq(&q->queue_lock);
+> unreferenced object 0xc3585c40 (size 64):
+>   comm "mount", pid 425, jiffies 4294959825 (age 31.990s)
+>   hex dump (first 32 bytes):
+>     01 00 00 80 84 8c 28 c0 00 00 00 00 00 00 00 00  ......(.........
+>     00 00 00 00 00 00 00 00 6c 43 a0 c3 00 00 00 00  ........lC......
+>   backtrace:
+>     [<e95a2f9e>] cgroup_bpf_inherit+0x44/0x24c
+>     [<1f03679c>] cgroup_setup_root+0x174/0x37c
+>     [<ed4b0ac5>] cgroup1_get_tree+0x2c0/0x4a0
+>     [<f85b12fd>] vfs_get_tree+0x24/0x108
+>     [<f55aec5c>] path_mount+0x384/0x988
+>     [<e2d5e9cd>] do_mount+0x64/0x9c
+>     [<208c9cfe>] sys_mount+0xfc/0x1f4
+>     [<06dd06e0>] ret_fast_syscall+0x0/0x48
+>     [<a8308cb3>] 0xbeb4daa8
 > 
->   blkg_alloc
->    blkcg_policy_enabled -> true
->    pd = ->pd_alloc_fn
->    blkg->pd[i] = pd
->                                     blk_mq_exit_sched
->                                      bfq_exit_queue
->                                       blkcg_deactivate_policy
->                                        spin_lock_irq(&q->queue_lock);
->                                        __clear_bit(pol->plid, q->blkcg_pols);
->                                        spin_unlock_irq(&q->queue_lock);
->                                      q->elevator = NULL;
->    spin_lock_irq(&q->queue_lock);
->     blkg_create
->      if (blkg->pd[i])
->       ->pd_init_fn -> q->elevator is NULL
->    spin_unlock_irq(&q->queue_lock);
+> This is because that since the commit 2b0d3d3e4fcf ("percpu_ref: reduce
+> memory footprint of percpu_ref in fast path") root_cgrp->bpf.refcnt.data
+> is allocated by the function percpu_ref_init in cgroup_bpf_inherit which
+> is called by cgroup_setup_root when mounting, but not freed along with
+> root_cgrp when umounting. Adding cgroup_bpf_offline which calls
+> percpu_ref_kill to cgroup_kill_sb can free root_cgrp->bpf.refcnt.data in
+> umount path.
 > 
-> Because blkcg_deactivate_policy() requires queue to be frozen, we can
-> grab q_usage_counter to synchoronize blkg_conf_prep() against
-> blkcg_deactivate_policy().
+> This patch also fixes the commit 4bfc0bb2c60e ("bpf: decouple the lifetime
+> of cgroup_bpf from cgroup itself"). A cgroup_bpf_offline is needed to do a
+> cleanup that frees the resources which are allocated by cgroup_bpf_inherit
+> in cgroup_setup_root. 
 > 
-> Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
+> And inside cgroup_bpf_offline, cgroup_get() is at the beginning and
+> cgroup_put is at the end of cgroup_bpf_release which is called by
+> cgroup_bpf_offline. So cgroup_bpf_offline can keep the balance of
+> cgroup's refcount.
+> 
+> Fixes: 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
+> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+> ---
+> V1 ---> V2:
+> 1. As per Daniel's suggestion, add description to commit msg about the
+> balance of cgroup's refcount in cgroup_bpf_offline.
+> 2. As per Michal's suggestion, add tag "Fixes: 4bfc0bb2c60e" and add
+> description about it.
+> 3. Fix indentation on the percpu_ref_is_dying line.
 
-Hi, jens
+Acked-by: Roman Gushchin <guro@fb.com>
 
-Can you please apply this patch?
+The fix looks correct, two fixes tag are fine too, if only it won't
+confuse scripts picking up patches for stable backports.
 
-Thanks,
-Kuai
+In fact, it's a very cold path, which is arguably never hit in the real
+life. On cgroup v2 it's not an issue. I'm not sure we need a stable
+backport at all, only if it creates a noise for some automation tests.
+
+Quanyang, out of curiosity, how did you find it?
+
+Anyway, thanks for catching and fixing it!
+
+Roman
