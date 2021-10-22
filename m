@@ -2,110 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1DA4368D6
-	for <lists+cgroups@lfdr.de>; Thu, 21 Oct 2021 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C671436F5F
+	for <lists+cgroups@lfdr.de>; Fri, 22 Oct 2021 03:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhJURRt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Oct 2021 13:17:49 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:33636 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhJURRt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 13:17:49 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:37160)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbf9-000AMa-Iy; Thu, 21 Oct 2021 11:15:31 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:57708 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mdbf8-004CFX-64; Thu, 21 Oct 2021 11:15:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        bristot@redhat.com, christian@brauner.io, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mingo@kernel.org, juri.lelli@redhat.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, containers@lists.linux.dev,
-        containers@lists.linux-foundation.org, pratik.r.sampat@gmail.com,
-        Alexey Gladkov <legion@kernel.org>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
-        <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
-        <a0f9ed06-1e5d-d3d0-21a5-710c8e27749c@linux.ibm.com>
-        <YWirxCjschoRJQ14@slm.duckdns.org>
-        <b5f8505c-38d5-af6f-0de7-4f9df7ae9b9b@linux.ibm.com>
-        <YW2g73Lwmrhjg/sv@slm.duckdns.org>
-        <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com>
-Date:   Thu, 21 Oct 2021 12:15:22 -0500
-In-Reply-To: <77854748-081f-46c7-df51-357ca78b83b3@linux.ibm.com> (Pratik
-        Sampat's message of "Wed, 20 Oct 2021 16:14:25 +0530")
-Message-ID: <87tuha7105.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231443AbhJVBay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Oct 2021 21:30:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13969 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230190AbhJVBax (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Oct 2021 21:30:53 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hb6Bt24RgzZcRd;
+        Fri, 22 Oct 2021 09:26:46 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:28:33 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 09:28:33 +0800
+Subject: Re: [PATCH v4] blk-cgroup: synchoronize blkg creation against policy
+ deactivation
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <avanzini.arianna@gmail.com>, <fchecconi@gmail.com>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20211020014036.2141723-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <461fa6c1-fbc3-2c66-ed11-8d035c45975a@huawei.com>
+Date:   Fri, 22 Oct 2021 09:28:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mdbf8-004CFX-64;;;mid=<87tuha7105.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+k81XzcFL3nUOkF05szMGteN8T3vDwHqg=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4940]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Pratik Sampat <psampat@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 387 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 14 (3.5%), b_tie_ro: 12 (3.0%), parse: 1.39
-        (0.4%), extract_message_metadata: 4.4 (1.1%), get_uri_detail_list:
-        1.49 (0.4%), tests_pri_-1000: 6 (1.6%), tests_pri_-950: 1.85 (0.5%),
-        tests_pri_-900: 1.45 (0.4%), tests_pri_-90: 120 (31.0%), check_bayes:
-        118 (30.4%), b_tokenize: 8 (2.1%), b_tok_get_all: 7 (1.8%),
-        b_comp_prob: 2.6 (0.7%), b_tok_touch_all: 96 (24.9%), b_finish: 1.14
-        (0.3%), tests_pri_0: 211 (54.6%), check_dkim_signature: 0.71 (0.2%),
-        check_dkim_adsp: 3.1 (0.8%), poll_dns_idle: 0.58 (0.2%), tests_pri_10:
-        4.0 (1.0%), tests_pri_500: 11 (2.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <20211020014036.2141723-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Pratik Sampat <psampat@linux.ibm.com> writes:
+Hi 2021/10/20 9:40, Yu Kuai wrote:
+> Out test report a null pointer dereference:
+> 
+> [  168.534653] ==================================================================
+> [  168.535614] Disabling lock debugging due to kernel taint
+> [  168.536346] BUG: kernel NULL pointer dereference, address: 0000000000000008
+> [  168.537274] #PF: supervisor read access in kernel mode
+> [  168.537964] #PF: error_code(0x0000) - not-present page
+> [  168.538667] PGD 0 P4D 0
+> [  168.539025] Oops: 0000 [#1] PREEMPT SMP KASAN
+> [  168.539656] CPU: 13 PID: 759 Comm: bash Tainted: G    B             5.15.0-rc2-next-202100
+> [  168.540954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_0738364
+> [  168.542736] RIP: 0010:bfq_pd_init+0x88/0x1e0
+> [  168.543318] Code: 98 00 00 00 e8 c9 e4 5b ff 4c 8b 65 00 49 8d 7c 24 08 e8 bb e4 5b ff 4d0
+> [  168.545803] RSP: 0018:ffff88817095f9c0 EFLAGS: 00010002
+> [  168.546497] RAX: 0000000000000001 RBX: ffff888101a1c000 RCX: 0000000000000000
+> [  168.547438] RDX: 0000000000000003 RSI: 0000000000000002 RDI: ffff888106553428
+> [  168.548402] RBP: ffff888106553400 R08: ffffffff961bcaf4 R09: 0000000000000001
+> [  168.549365] R10: ffffffffa2e16c27 R11: fffffbfff45c2d84 R12: 0000000000000000
+> [  168.550291] R13: ffff888101a1c098 R14: ffff88810c7a08c8 R15: ffffffffa55541a0
+> [  168.551221] FS:  00007fac75227700(0000) GS:ffff88839ba80000(0000) knlGS:0000000000000000
+> [  168.552278] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  168.553040] CR2: 0000000000000008 CR3: 0000000165ce7000 CR4: 00000000000006e0
+> [  168.554000] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  168.554929] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  168.555888] Call Trace:
+> [  168.556221]  <TASK>
+> [  168.556510]  blkg_create+0x1c0/0x8c0
+> [  168.556989]  blkg_conf_prep+0x574/0x650
+> [  168.557502]  ? stack_trace_save+0x99/0xd0
+> [  168.558033]  ? blkcg_conf_open_bdev+0x1b0/0x1b0
+> [  168.558629]  tg_set_conf.constprop.0+0xb9/0x280
+> [  168.559231]  ? kasan_set_track+0x29/0x40
+> [  168.559758]  ? kasan_set_free_info+0x30/0x60
+> [  168.560344]  ? tg_set_limit+0xae0/0xae0
+> [  168.560853]  ? do_sys_openat2+0x33b/0x640
+> [  168.561383]  ? do_sys_open+0xa2/0x100
+> [  168.561877]  ? __x64_sys_open+0x4e/0x60
+> [  168.562383]  ? __kasan_check_write+0x20/0x30
+> [  168.562951]  ? copyin+0x48/0x70
+> [  168.563390]  ? _copy_from_iter+0x234/0x9e0
+> [  168.563948]  tg_set_conf_u64+0x17/0x20
+> [  168.564467]  cgroup_file_write+0x1ad/0x380
+> [  168.565014]  ? cgroup_file_poll+0x80/0x80
+> [  168.565568]  ? __mutex_lock_slowpath+0x30/0x30
+> [  168.566165]  ? pgd_free+0x100/0x160
+> [  168.566649]  kernfs_fop_write_iter+0x21d/0x340
+> [  168.567246]  ? cgroup_file_poll+0x80/0x80
+> [  168.567796]  new_sync_write+0x29f/0x3c0
+> [  168.568314]  ? new_sync_read+0x410/0x410
+> [  168.568840]  ? __handle_mm_fault+0x1c97/0x2d80
+> [  168.569425]  ? copy_page_range+0x2b10/0x2b10
+> [  168.570007]  ? _raw_read_lock_bh+0xa0/0xa0
+> [  168.570622]  vfs_write+0x46e/0x630
+> [  168.571091]  ksys_write+0xcd/0x1e0
+> [  168.571563]  ? __x64_sys_read+0x60/0x60
+> [  168.572081]  ? __kasan_check_write+0x20/0x30
+> [  168.572659]  ? do_user_addr_fault+0x446/0xff0
+> [  168.573264]  __x64_sys_write+0x46/0x60
+> [  168.573774]  do_syscall_64+0x35/0x80
+> [  168.574264]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  168.574960] RIP: 0033:0x7fac74915130
+> [  168.575456] Code: 73 01 c3 48 8b 0d 58 ed 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 444
+> [  168.577969] RSP: 002b:00007ffc3080e288 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> [  168.578986] RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007fac74915130
+> [  168.579937] RDX: 0000000000000009 RSI: 000056007669f080 RDI: 0000000000000001
+> [  168.580884] RBP: 000056007669f080 R08: 000000000000000a R09: 00007fac75227700
+> [  168.581841] R10: 000056007655c8f0 R11: 0000000000000246 R12: 0000000000000009
+> [  168.582796] R13: 0000000000000001 R14: 00007fac74be55e0 R15: 00007fac74be08c0
+> [  168.583757]  </TASK>
+> [  168.584063] Modules linked in:
+> [  168.584494] CR2: 0000000000000008
+> [  168.584964] ---[ end trace 2475611ad0f77a1a ]---
+> 
+> This is because blkg_alloc() is called from blkg_conf_prep() without
+> holding 'q->queue_lock', and elevator is exited before blkg_create():
+> 
+> thread 1                            thread 2
+> blkg_conf_prep
+>   spin_lock_irq(&q->queue_lock);
+>   blkg_lookup_check -> return NULL
+>   spin_unlock_irq(&q->queue_lock);
+> 
+>   blkg_alloc
+>    blkcg_policy_enabled -> true
+>    pd = ->pd_alloc_fn
+>    blkg->pd[i] = pd
+>                                     blk_mq_exit_sched
+>                                      bfq_exit_queue
+>                                       blkcg_deactivate_policy
+>                                        spin_lock_irq(&q->queue_lock);
+>                                        __clear_bit(pol->plid, q->blkcg_pols);
+>                                        spin_unlock_irq(&q->queue_lock);
+>                                      q->elevator = NULL;
+>    spin_lock_irq(&q->queue_lock);
+>     blkg_create
+>      if (blkg->pd[i])
+>       ->pd_init_fn -> q->elevator is NULL
+>    spin_unlock_irq(&q->queue_lock);
+> 
+> Because blkcg_deactivate_policy() requires queue to be frozen, we can
+> grab q_usage_counter to synchoronize blkg_conf_prep() against
+> blkcg_deactivate_policy().
+> 
+> Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
 
-> On 18/10/21 9:59 pm, Tejun Heo wrote:
->> (cc'ing Johannes for memory sizing part)
->>
->> For memory, it's even trickier because in a lot of cases it's impossible to
->> tell how much memory is actually available without trying to use them as
->> active workingset can only be learned by trying to reclaim memory.
->
-> Restrictions for memory are even more complicated to model as you have
-> pointed out as well.
+Hi, jens
 
-For memory sizing we currently have MemAvailable in /proc/meminfo which
-makes a global guess at that.
+Can you please apply this patch?
 
-We still need roughly that same approximation from an applications
-perspective that takes cgroups into account.
-
-There was another conversation not too long ago and it was tenatively
-agreed that it could make sense to provide such a number.  However it
-was very much requested that an application that would actually use
-that number be found so it would be possible to tell what makes a
-difference in practice rather than what makes a difference in theory.
-
-Eric
-
-
-
+Thanks,
+Kuai
