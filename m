@@ -2,82 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1F44383FB
-	for <lists+cgroups@lfdr.de>; Sat, 23 Oct 2021 17:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0834384D5
+	for <lists+cgroups@lfdr.de>; Sat, 23 Oct 2021 20:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhJWPEG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Oct 2021 11:04:06 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:64545 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhJWPEG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Oct 2021 11:04:06 -0400
-Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 19NF18CF008358;
-        Sun, 24 Oct 2021 00:01:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
- Sun, 24 Oct 2021 00:01:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 19NF17p2008355
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 24 Oct 2021 00:01:07 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-To:     Vasily Averin <vvs@virtuozzo.com>, Michal Hocko <mhocko@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
-Date:   Sun, 24 Oct 2021 00:01:07 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231167AbhJWTAr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Oct 2021 15:00:47 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:57327 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhJWTAq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Oct 2021 15:00:46 -0400
+Received: by mail-io1-f70.google.com with SMTP id d7-20020a056602228700b005ddba37de42so5670465iod.23
+        for <cgroups@vger.kernel.org>; Sat, 23 Oct 2021 11:58:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=eCivDOpGNwJ3PvYvmEJEwXEnX0U6KVVQYKAd0WYoqUQ=;
+        b=rs0WflzpzNGz0vhGMKyrg8fp/ubQQ2fp4AKh3BCsydaQXx+604OPk6AqnRjWYcSP8S
+         rSriMDDq1uc0yGK991hFUnvLcDX3VfGBpbjtWcnsEOwYrLfiAJMvQwffmqgr85Y7IKf8
+         Tf8EbK/sMFZvTPhsm7tq0Pwg/sEr2WBNC4OGCqEVAnPEsg1ygbLL6GOTTJ0+4bFIP663
+         NEDGqfJA+f86l7+MAaXQTKtyLV6kQ2PGna+kCXuKteYuiTcBxwPXCYyeQdSVHua0p6Sk
+         odZ/8Jh55j4BlQcol74/OJg5iuUE5hWG1hVvqAgSwtuC7vgRMJzSGftpZ6XSw1K1qhNX
+         XK3w==
+X-Gm-Message-State: AOAM5331+zHZxkRSnDS+OunOCJ4J2KleuFDTnxUEiB2fBcS0VCvjiMfE
+        qkpoQe73K9TU6AmOrqTZxdtEpWBZVWjSPQlEw14Rzve3aEJV
+X-Google-Smtp-Source: ABdhPJyZbEzHvvsdjRIXP2qZL+wuOQzbRZUt+s8X3dbAGfjjAKRHhxTl5dVi75AjMydIXvOQA7+15tTKrqxbyZ5CyLURN3WIHJSN
 MIME-Version: 1.0
-In-Reply-To: <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1ba5:: with SMTP id n5mr1803268ili.249.1635015507189;
+ Sat, 23 Oct 2021 11:58:27 -0700 (PDT)
+Date:   Sat, 23 Oct 2021 11:58:27 -0700
+In-Reply-To: <0000000000004ee28405cbe8d287@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000082261505cf09b69c@google.com>
+Subject: Re: [syzbot] memory leak in blk_iolatency_init
+From:   syzbot <syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        noreply@bizcloud-server.changyang.com.tw, sashal@kernel.org,
+        stable@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yanfei.xu@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021/10/23 22:20, Vasily Averin wrote:
->  /*
-> - * The pagefault handler calls here because it is out of memory, so kill a
-> - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
-> - * killing is already in progress so do nothing.
-> + * The pagefault handler calls here because some allocation has failed. We have
-> + * to take care of the memcg OOM here because this is the only safe context without
-> + * any locks held but let the oom killer triggered from the allocation context care
-> + * about the global OOM.
->   */
+syzbot has found a reproducer for the following issue on:
 
-Excuse me for a stupid question. I consider
+HEAD commit:    9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1709f5c4b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d25eeb482b0f99b
+dashboard link: https://syzkaller.appspot.com/bug?extid=01321b15cc98e6bf96d6
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102280acb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144b96f8b00000
 
-  if (!mutex_trylock(&oom_lock))
-    return;
-  out_of_memory(&oc);
-  mutex_unlock(&oom_lock);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
 
-here as the last resort (safeguard) when neither __alloc_pages_may_oom()
-nor mem_cgroup_out_of_memory() can make progress. This patch says
+BUG: memory leak
+unreferenced object 0xffff888104729800 (size 96):
+  comm "kworker/u4:2", pid 156, jiffies 4294937755 (age 219.670s)
+  hex dump (first 32 bytes):
+    00 49 c9 85 ff ff ff ff e0 b0 8b 03 81 88 ff ff  .I..............
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82268cf8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82268cf8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82268cf8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225f71e>] blkcg_init_queue+0xee/0x1c0 block/blk-cgroup.c:1193
+    [<ffffffff82228fca>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:584
+    [<ffffffff8223ee35>] blk_mq_init_queue_data block/blk-mq.c:3119 [inline]
+    [<ffffffff8223ee35>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3143
+    [<ffffffff826a187f>] floppy_alloc_disk+0x2f/0x130 drivers/block/floppy.c:4495
+    [<ffffffff86f2aaa9>] do_floppy_init drivers/block/floppy.c:4566 [inline]
+    [<ffffffff86f2aaa9>] floppy_async_init+0x10f/0x1329 drivers/block/floppy.c:4731
+    [<ffffffff81277354>] async_run_entry_fn+0x24/0xf0 kernel/async.c:127
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-  let the oom killer triggered from the allocation context care
-  about the global OOM.
+BUG: memory leak
+unreferenced object 0xffff888104729400 (size 96):
+  comm "kworker/u4:2", pid 156, jiffies 4294937755 (age 219.670s)
+  hex dump (first 32 bytes):
+    00 49 c9 85 ff ff ff ff 90 a8 8b 03 81 88 ff ff  .I..............
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82268cf8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82268cf8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82268cf8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225f71e>] blkcg_init_queue+0xee/0x1c0 block/blk-cgroup.c:1193
+    [<ffffffff82228fca>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:584
+    [<ffffffff8223ee35>] blk_mq_init_queue_data block/blk-mq.c:3119 [inline]
+    [<ffffffff8223ee35>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3143
+    [<ffffffff826a187f>] floppy_alloc_disk+0x2f/0x130 drivers/block/floppy.c:4495
+    [<ffffffff86f2aaa9>] do_floppy_init drivers/block/floppy.c:4566 [inline]
+    [<ffffffff86f2aaa9>] floppy_async_init+0x10f/0x1329 drivers/block/floppy.c:4731
+    [<ffffffff81277354>] async_run_entry_fn+0x24/0xf0 kernel/async.c:127
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-but what if the OOM killer cannot be invoked from the allocation context?
-Is there a guarantee that all memory allocations which might result in
-VM_FAULT_OOM can invoke the OOM killer?
+BUG: memory leak
+unreferenced object 0xffff888104767e00 (size 96):
+  comm "kworker/u4:2", pid 156, jiffies 4294937755 (age 219.670s)
+  hex dump (first 32 bytes):
+    00 49 c9 85 ff ff ff ff 40 a0 8b 03 81 88 ff ff  .I......@.......
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82268cf8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82268cf8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82268cf8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225f71e>] blkcg_init_queue+0xee/0x1c0 block/blk-cgroup.c:1193
+    [<ffffffff82228fca>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:584
+    [<ffffffff8223ee35>] blk_mq_init_queue_data block/blk-mq.c:3119 [inline]
+    [<ffffffff8223ee35>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3143
+    [<ffffffff826a187f>] floppy_alloc_disk+0x2f/0x130 drivers/block/floppy.c:4495
+    [<ffffffff86f2aaa9>] do_floppy_init drivers/block/floppy.c:4566 [inline]
+    [<ffffffff86f2aaa9>] floppy_async_init+0x10f/0x1329 drivers/block/floppy.c:4731
+    [<ffffffff81277354>] async_run_entry_fn+0x24/0xf0 kernel/async.c:127
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+BUG: memory leak
+unreferenced object 0xffff888104767500 (size 96):
+  comm "kworker/u4:2", pid 156, jiffies 4294937755 (age 219.670s)
+  hex dump (first 32 bytes):
+    00 49 c9 85 ff ff ff ff 60 31 88 03 81 88 ff ff  .I......`1......
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82268cf8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82268cf8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82268cf8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225f71e>] blkcg_init_queue+0xee/0x1c0 block/blk-cgroup.c:1193
+    [<ffffffff82228fca>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:584
+    [<ffffffff8223ee35>] blk_mq_init_queue_data block/blk-mq.c:3119 [inline]
+    [<ffffffff8223ee35>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3143
+    [<ffffffff826a187f>] floppy_alloc_disk+0x2f/0x130 drivers/block/floppy.c:4495
+    [<ffffffff86f2aaa9>] do_floppy_init drivers/block/floppy.c:4566 [inline]
+    [<ffffffff86f2aaa9>] floppy_async_init+0x10f/0x1329 drivers/block/floppy.c:4731
+    [<ffffffff81277354>] async_run_entry_fn+0x24/0xf0 kernel/async.c:127
+    [<ffffffff81265dbf>] process_one_work+0x2cf/0x620 kernel/workqueue.c:2297
+    [<ffffffff812666c9>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2444
+    [<ffffffff8126fc48>] kthread+0x188/0x1d0 kernel/kthread.c:319
+    [<ffffffff810022cf>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+
