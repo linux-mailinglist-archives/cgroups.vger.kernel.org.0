@@ -2,111 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BFA438F4C
-	for <lists+cgroups@lfdr.de>; Mon, 25 Oct 2021 08:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFBB4390C9
+	for <lists+cgroups@lfdr.de>; Mon, 25 Oct 2021 10:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhJYGWP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Oct 2021 02:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhJYGWP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Oct 2021 02:22:15 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA3BC061745
-        for <cgroups@vger.kernel.org>; Sun, 24 Oct 2021 23:19:53 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id c2-20020a63d5020000b029023ae853b72cso5717621pgg.18
-        for <cgroups@vger.kernel.org>; Sun, 24 Oct 2021 23:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=RvvgnIVJ5IfhyMI13kBptnFJgKfIo/YKqj1muP3uFSI=;
-        b=aZ8ak0XSK/nUIpVaIxYsqvQ3bOgvICTgXeDUq5NeDeyr5OL7iUyvWts44akfikGFMn
-         1aspFDXj9W11lkB0NYioB51giV7uGch6f5v0x3OT6iQNLR/94F1Q9CfGiv5uJETPK3Wo
-         RRNHaOTJwxbXyS/U62bh0IfOpVfp/MIyVQf0ZW7p3kUyjf0LKjh2h1ARVySaMSbTyMe7
-         fA1J+fHVAQrVVtfefQBHFwfSBMuFXgCIbm5oT2pCpy38ZaGkIqX1DuqV9iahGkUIKOjS
-         auBFJhXgVautfW4go+wrMVBb33tzy+CoC1yxOEPEifacHzz2s5Hoc259+ifLMsOwWif1
-         QPXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RvvgnIVJ5IfhyMI13kBptnFJgKfIo/YKqj1muP3uFSI=;
-        b=POu/axS0dJVxyi3682dUYCXQSNihxQJiUhgww2IHMqcOADIBZMfoE8mZqho7WI8eqQ
-         BOZVTaHhhwRDwkQA6eZgO4wTWWLY6xE/DQK0eirhKaNG1/6yVsyazQOGV7+EryxFrkno
-         kkw7r+9gAnSWE7Hbt01hVS+b5QdVDAmA/9TnxicwEM5OSeCmjPK2vBE9P3TXrGrFAll9
-         M3a89xecQQ9JvOksRzy05z147FHN7hFtgQO0Wy8IwuUqkrZQKJvP0JvSjUjOrJYTHR0O
-         qXseXZ1de62sXLOPFKQ+JsNKUyph8DML6rkCp5kZFU4j0Uhn5IM6D9QsTZcPbOah+MPc
-         RtMw==
-X-Gm-Message-State: AOAM530gCMI4Rngot4BLP6fvz5PDc7yLrQP9UYT9lh554gbGgPvik3Qb
-        F+J+NUsI4IRFTaB1UuQO66+9KOvgMooLEQ==
-X-Google-Smtp-Source: ABdhPJyzSiJVC0kHoKpRCObivFMdwsAEy5pGKIQtbDLvinjevJBkq5zez11JkasNwjxjPzVuvufvQd/e7GCSkQ==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:faf1:73d1:a656:9f7e])
- (user=shakeelb job=sendgmr) by 2002:a63:1d53:: with SMTP id
- d19mr12000107pgm.85.1635142792991; Sun, 24 Oct 2021 23:19:52 -0700 (PDT)
-Date:   Sun, 24 Oct 2021 23:19:16 -0700
-In-Reply-To: <20211025061916.3853623-1-shakeelb@google.com>
-Message-Id: <20211025061916.3853623-3-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20211025061916.3853623-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.33.0.1079.g6e70778dc9-goog
-Subject: [PATCH 3/3] cgroup: no need for cgroup_mutex for /proc/cgroups
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230059AbhJYIG3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Oct 2021 04:06:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45486 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhJYIG2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Oct 2021 04:06:28 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AC29C1FD34;
+        Mon, 25 Oct 2021 08:04:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635149045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l21SlX/9kh43Ic37AW53KRYg/QWXqmopDdPfmAH/kdc=;
+        b=eMrOCgSaFdI3lzR7WkVsSne/0Whu14mXXOGHTE5EXC7LHFchVV5T3UBKFzMCbaDaY613w1
+        ikdq4RNXE7zyGDMnT3jKdP2gKvt6jH33g8ZZPjWfjj8njf3MaNH5I51wDnqQYTCASz7FRd
+        r6Jz1WJWiRfnNmBh7Dku+xmZFCp0kl0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 09D93A3B81;
+        Mon, 25 Oct 2021 08:04:04 +0000 (UTC)
+Date:   Mon, 25 Oct 2021 10:04:04 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
+ the #PF
+Message-ID: <YXZk9Lr217e+saSM@dhcp22.suse.cz>
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+ <cover.1634994605.git.vvs@virtuozzo.com>
+ <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
+ <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On the real systems, the cgroups hierarchies are setup early and just
-once by the node controller, so, other than number of cgroups, all
-information in /proc/cgroups remain same for the system uptime. Let's
-remove the cgroup_mutex usage on reading /proc/cgroups. There is a
-chance of inconsistent number of cgroups for co-mounted cgroups while
-printing the information from /proc/cgroups but that is not a big
-issue. In addition /proc/cgroups is a v1 specific interface, so the
-dependency on it should reduce over time.
+On Sun 24-10-21 00:01:07, Tetsuo Handa wrote:
+> On 2021/10/23 22:20, Vasily Averin wrote:
+> >  /*
+> > - * The pagefault handler calls here because it is out of memory, so kill a
+> > - * memory-hogging task. If oom_lock is held by somebody else, a parallel oom
+> > - * killing is already in progress so do nothing.
+> > + * The pagefault handler calls here because some allocation has failed. We have
+> > + * to take care of the memcg OOM here because this is the only safe context without
+> > + * any locks held but let the oom killer triggered from the allocation context care
+> > + * about the global OOM.
+> >   */
+> 
+> Excuse me for a stupid question. I consider
+> 
+>   if (!mutex_trylock(&oom_lock))
+>     return;
+>   out_of_memory(&oc);
+>   mutex_unlock(&oom_lock);
+> 
+> here as the last resort (safeguard) when neither __alloc_pages_may_oom()
+> nor mem_cgroup_out_of_memory() can make progress. This patch says
+> 
+>   let the oom killer triggered from the allocation context care
+>   about the global OOM.
+> 
+> but what if the OOM killer cannot be invoked from the allocation context?
+> Is there a guarantee that all memory allocations which might result in
+> VM_FAULT_OOM can invoke the OOM killer?
 
-The main motivation for removing the cgroup_mutex from /proc/cgroups is
-to reduce the avenues of its contention. On our fleet, we have observed
-buggy application hammering on /proc/cgroups and drastically slowing
-down the node controller on the system which have many negative
-consequences on other workloads running on the system.
+I do not think there is any guarantee. This code has meant to be a
+safeguard but it turns out to be adding more harm than a safety. There
+are several scenarios mentioned in this thread where this would be
+counter productive or outright wrong thing to do.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- kernel/cgroup/cgroup-v1.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index fd14a60379c1..81c9e0685948 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -659,11 +659,9 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 
- 	seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
- 	/*
--	 * ideally we don't want subsystems moving around while we do this.
--	 * cgroup_mutex is also necessary to guarantee an atomic snapshot of
--	 * subsys/hierarchy state.
-+	 * Grab the subsystems state racily. No need to add avenue to
-+	 * cgroup_mutex contention.
- 	 */
--	mutex_lock(&cgroup_mutex);
- 
- 	for_each_subsys(ss, i)
- 		seq_printf(m, "%s\t%d\t%d\t%d\n",
-@@ -671,7 +669,6 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 			   atomic_read(&ss->root->nr_cgrps),
- 			   cgroup_ssid_enabled(i));
- 
--	mutex_unlock(&cgroup_mutex);
- 	return 0;
- }
- 
+On the other hand it is hard to imagine any legitimate situation where
+this would be a right thing to do. Maybe you have something more
+specific in mind? What would be the legit code to rely on OOM handling
+out of the line (where the details about the allocation scope is lost)?
 -- 
-2.33.0.1079.g6e70778dc9-goog
-
+Michal Hocko
+SUSE Labs
