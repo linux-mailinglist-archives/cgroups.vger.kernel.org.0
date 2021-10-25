@@ -2,90 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CBF439D95
-	for <lists+cgroups@lfdr.de>; Mon, 25 Oct 2021 19:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4CB43A604
+	for <lists+cgroups@lfdr.de>; Mon, 25 Oct 2021 23:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhJYR3a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Oct 2021 13:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
+        id S231331AbhJYVjP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Oct 2021 17:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhJYR30 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Oct 2021 13:29:26 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734E1C061220;
-        Mon, 25 Oct 2021 10:27:04 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id u6-20020a17090a3fc600b001a00250584aso12007095pjm.4;
-        Mon, 25 Oct 2021 10:27:04 -0700 (PDT)
+        with ESMTP id S235278AbhJYViV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Oct 2021 17:38:21 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63189C061767
+        for <cgroups@vger.kernel.org>; Mon, 25 Oct 2021 14:35:58 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z14so14138734wrg.6
+        for <cgroups@vger.kernel.org>; Mon, 25 Oct 2021 14:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aCZMd4lnZUOWP3HuMJZrRTDzuvD7CVVCcTZfYmmmVYQ=;
-        b=jB5xsxczN9t/FAMcQj8CtRTnmhHtZXcl5SVodMk6K4L0F+P8ivxWvi/7AOYRNNw2c5
-         KgPQbGuOcYNZKx1m7ZpDeJVGp9IyLAFuM1H1CS7mMqU+ISDG24Qh2p6Eob0J9QViMiM4
-         u9ctfqMNOaSDV55qSmdjPIGyT64q4bwDb4sA/bO1X/PUCNARks1jSVYH+BdU1XvlLLjF
-         g/hIj+1qJQAWhQ72vovkRU8MFKxf0eTuqGdobXFdu51L2ZK1vyfZA/GQti8M8RJwq6DV
-         9TzFRGA8MWJ0er52eshkuUVcHxxcwY7IHlTAZOqrkJrskNDDBpzTj2Cr2VGyPEXE9fwZ
-         37Tg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
+        b=FwV2sQx/ElduCYDrOaVnZnzNOd+/77dvHF+wfTJT5kMY9Oy/tZI7XHA7oGrAOcJW9i
+         VN9mgMOxQrmDlTJrPCnnuoDhejsaJXiZ9yqgHVbye38QJZMldYDiBMDQzfBYfqp3jY4X
+         HWbBRKhcAyWYWdaifR7MK0E1Aii5QK3R59poKtKUDyl1JS/9J73yZFk3fHwvZ4fNTymz
+         c8Vy8vbyyclYTTaJGIg1d0sFZAmj1ARrYwQJYQ9PbSBaQYdaP10CZ/3irkDCNZlkdX5M
+         A2UkBBAUnI9OIB3S7HIaUCP8zVCxb5NLo62M1c8LPTEtVlhl9HSWkrxuJpxukjan/mRe
+         ajGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aCZMd4lnZUOWP3HuMJZrRTDzuvD7CVVCcTZfYmmmVYQ=;
-        b=cOx3f95/gJ7dgV9empV725HxLC929SZyB+l92T32KPWe05lreQmy1KGcQbxNwsVADt
-         yxVV9LA0WN0SzRw1582Z5iixJsH5x5mCtnefg6RRIbxiQBWAToWYgK8QPuLItsGuvRuK
-         8FdT/xGUNGTyDdjmxlYUspBz/bDmfX22SbLctrkBCLAaO+nqr11rV+Xprh9wqX5iGmkp
-         rwwOpl6cZWuL7OWVtUdbdQVGgYYogvGYIJ+mXdz4+6RduqhT//gELevLk/8OHIy6jv41
-         Pm6OeNR0DCYPLs3D2jFCBl71NL8bOvHcDpTeI3SUAC29MfGK8FuTHXEua8DRpJLF/on+
-         //0w==
-X-Gm-Message-State: AOAM531hr16zM58RX01D+L7gi9F+7VwBtMs5PyRgZJBpouyRmPLpZa7V
-        Y4vETOOlMz7RrcbqodItBBwCajVwvzWhUQ==
-X-Google-Smtp-Source: ABdhPJwmiPVKv0R8Ef+ST6u2Ao5/iO3yRxb9hxL+s6APNWSvdah+WdOyk2J8yvuVFayQk7ILd/IxOg==
-X-Received: by 2002:a17:902:aa82:b0:140:4655:b211 with SMTP id d2-20020a170902aa8200b001404655b211mr9918872plr.38.1635182823755;
-        Mon, 25 Oct 2021 10:27:03 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id d13sm21078439pfu.196.2021.10.25.10.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 10:27:03 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 25 Oct 2021 07:27:02 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] cgroup: no need for cgroup_mutex for /proc/cgroups
-Message-ID: <YXbo5sKj0wgPTaMp@slm.duckdns.org>
-References: <20211025061916.3853623-1-shakeelb@google.com>
- <20211025061916.3853623-3-shakeelb@google.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
+        b=C4y0LNPA3FhccEpW5ZNj/XL/aVPj02e5aScz1fs3MhwhUizCQZg8lHST3oFd1+qhsJ
+         R3wEwueEMO1CO6e45fhv0zSagIPFfJ8SwFeT++gKeqM57a/PKTmDzmgw82HHuuopHRlC
+         hB37UIBnUpU5n0HyVvE13y0RhbrGEkjsSnNnoaDOQztH/dpLjHQ/6coUGK8J6PcdqaDF
+         SHgFeWdsUdUQ5bp2xs4e+v1xZYDjwdm6r+Ds0b5nB0CN1aEE8ZMIYbHuUc7+l6UoKqkY
+         F5B2PTMDuhKfXTpKnBQLFtda+SDlm0xTLCPE0BC7hvUkl8LMBY6tEtgz/RKrUeC8mzln
+         /rOg==
+X-Gm-Message-State: AOAM532ggHqMD3IeUooNAzSlQ2WvEPRJh4fqN0mx1MU8+TKzKrC6S7+S
+        xU3ZOwEIZKTHFfYfRddcYNct6HBgNaIUCYWaBQ==
+X-Google-Smtp-Source: ABdhPJz5/J5b8B45zGNgaKCH9yu4N+ttXRqaQQ1BCy4QetVgQLE2GFlCs4f1ZBU0QJ2+YpLZoVbT8OyCRQLIWc89B8k=
+X-Received: by 2002:adf:b748:: with SMTP id n8mr26454910wre.133.1635197756967;
+ Mon, 25 Oct 2021 14:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025061916.3853623-3-shakeelb@google.com>
+Sender: ds8873959@gmail.com
+Received: by 2002:a7b:c381:0:0:0:0:0 with HTTP; Mon, 25 Oct 2021 14:35:56
+ -0700 (PDT)
+From:   "Mr. Mustafa Ali." <muafalia@gmail.com>
+Date:   Mon, 25 Oct 2021 22:35:56 +0100
+X-Google-Sender-Auth: ma2BX3fg0mnAL5QtCE1lO-gtwFs
+Message-ID: <CAJB8rUhNQbad_neU4ib1mNQ04TuFpdX0Wk9Cm6wO92Txg9TSqw@mail.gmail.com>
+Subject: Greetings Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Oct 24, 2021 at 11:19:16PM -0700, Shakeel Butt wrote:
-> On the real systems, the cgroups hierarchies are setup early and just
-> once by the node controller, so, other than number of cgroups, all
-> information in /proc/cgroups remain same for the system uptime. Let's
-> remove the cgroup_mutex usage on reading /proc/cgroups. There is a
-> chance of inconsistent number of cgroups for co-mounted cgroups while
-> printing the information from /proc/cgroups but that is not a big
-> issue. In addition /proc/cgroups is a v1 specific interface, so the
-> dependency on it should reduce over time.
-> 
-> The main motivation for removing the cgroup_mutex from /proc/cgroups is
-> to reduce the avenues of its contention. On our fleet, we have observed
-> buggy application hammering on /proc/cgroups and drastically slowing
-> down the node controller on the system which have many negative
-> consequences on other workloads running on the system.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Hello Friend,
 
-Applied 1-3 to cgroup/for-5.16.
+This message might meet you in utmost surprise. However, It's just my
+urgent need for a foreign partner that made me contact you for this
+transaction. I assured you of honesty and reliability to champion this
+business opportunity. I am a banker by profession in Turkey, and
+currently holding the post of Auditor in Standard Chartered Bank.
 
-Thanks.
+I have the opportunity of transferring the leftover funds ($15 Million
+Dollars) of one of my clients who died along with his entire family in
+a crisis in Myanmar Asia. I am inviting you for a business deal where
+this money can be shared between us if you agree to my business
+proposal.
 
--- 
-tejun
+Further details of the transfer will be forwarded to you immediately
+after I receive your return letter.
+
+Best Regards,
+Mr. Mustafa Ali.
+mustafa.ali@rahroco.com
