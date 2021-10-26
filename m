@@ -2,102 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B5D43B39B
-	for <lists+cgroups@lfdr.de>; Tue, 26 Oct 2021 16:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD04543B9B6
+	for <lists+cgroups@lfdr.de>; Tue, 26 Oct 2021 20:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236375AbhJZOKI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Oct 2021 10:10:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34714 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhJZOKI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Oct 2021 10:10:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 50F5C1F770;
-        Tue, 26 Oct 2021 14:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635257263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sW8fX/bIkRavS2IM2SW67s4/k2HA13rrU7KuzOI/OYA=;
-        b=XLQpg2KAcIM7gQTqzvrzY5Igd4UdGIws6JdRiIfbJQ8F1ubXcXk+95Wocng0fDJL/i/Ivg
-        +OQ//LuLM9kDN56S0F6gBVNZDMP9o95FO5Zp3iFWP01ds7iy0/TOwJlitIe5kfi10yAwSG
-        408Z8qmYPv7D5KNsFCV4RRii8RLmGfk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C6A66A3B85;
-        Tue, 26 Oct 2021 14:07:41 +0000 (UTC)
-Date:   Tue, 26 Oct 2021 16:07:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH memcg v3 2/3] mm, oom: do not trigger out_of_memory from
- the #PF
-Message-ID: <YXgLrQwC/gKZAusv@dhcp22.suse.cz>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
- <cover.1634994605.git.vvs@virtuozzo.com>
- <f5fd8dd8-0ad4-c524-5f65-920b01972a42@virtuozzo.com>
- <e2a847a2-a414-2535-e3d1-b100a023b9d1@i-love.sakura.ne.jp>
- <YXZk9Lr217e+saSM@dhcp22.suse.cz>
- <62a326bc-37d2-b8c9-ddbf-7adaeaadf341@i-love.sakura.ne.jp>
+        id S238341AbhJZSkh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Oct 2021 14:40:37 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45025 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235794AbhJZSkf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 26 Oct 2021 14:40:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="217157818"
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="217157818"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 11:38:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
+   d="scan'208";a="486308311"
+Received: from lkp-server01.sh.intel.com (HELO 072b454ebba8) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2021 11:38:09 -0700
+Received: from kbuild by 072b454ebba8 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mfRKq-0000J3-Ff; Tue, 26 Oct 2021 18:38:08 +0000
+Date:   Wed, 27 Oct 2021 02:37:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 822bc9bac9e9a2f76a772a34f745962dfc223353
+Message-ID: <61784b02.7zcVbz6kPkSL2Xkb%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62a326bc-37d2-b8c9-ddbf-7adaeaadf341@i-love.sakura.ne.jp>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 26-10-21 22:56:44, Tetsuo Handa wrote:
-> On 2021/10/25 17:04, Michal Hocko wrote:
-> > I do not think there is any guarantee. This code has meant to be a
-> > safeguard but it turns out to be adding more harm than a safety. There
-> > are several scenarios mentioned in this thread where this would be
-> > counter productive or outright wrong thing to do.
-> 
-> Setting PR_IO_FLUSHER via prctl(PR_SET_IO_FLUSHER) + hitting legacy kmem
-> charge limit might be an unexpected combination?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 822bc9bac9e9a2f76a772a34f745962dfc223353  cgroup: no need for cgroup_mutex for /proc/cgroups
 
-I am not sure I follow or why PR_SET_IO_FLUSHER should be relevant. But
-triggering the global OOM killer on kmem charge limit failure is
-certainly not the right thing to do. Quite opposite because this would
-be effectivelly a global DoS as a result of a local memory constrain.
- 
-> > On the other hand it is hard to imagine any legitimate situation where
-> > this would be a right thing to do. Maybe you have something more
-> > specific in mind? What would be the legit code to rely on OOM handling
-> > out of the line (where the details about the allocation scope is lost)?
-> 
-> I don't have specific scenario, but I feel that it might be a chance to
-> retry killable vmalloc(). Commit b8c8a338f75e ("Revert "vmalloc: back off
-> when the current task is killed"") was 4.5 years ago, and fuzz testing found
-> many bugs triggered by memory allocation fault injection. Thus, I think that
-> the direction is going towards "we can fail memory allocation upon SIGKILL
-> (rather than worrying about depleting memory reserves and/or escalating to
-> global OOM killer invocations)". Most memory allocation requests which
-> allocate memory for userspace process are willing to give up upon SIGKILL.
-> 
-> Like you are trying to add NOFS, NOIO, NOFAIL support to vmalloc(), you could
-> consider KILLABLE support as well. Of course, direct reclaim makes it difficult
-> to immediately give up upon SIGKILL, but killable allocation sounds still nice
-> even if best-effort basis.
+elapsed time: 1504m
 
-This is all fine but I am not sure how this is realated to this patch.
-The previous patch already gives up in pagefault_out_of_memory on fatal
-signal pending. So this code is not really reachable.
+configs tested: 52
+configs skipped: 3
 
-Also alowing more allocations to fail doesn't really suggest that we
-should trigger OOM killer from #PF. I would argue that the opposite is
-the case actually. Or I just haven't understood your concern?
--- 
-Michal Hocko
-SUSE Labs
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+s390                             allmodconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
