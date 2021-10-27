@@ -2,71 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCCD43D6BF
-	for <lists+cgroups@lfdr.de>; Thu, 28 Oct 2021 00:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0910C43D726
+	for <lists+cgroups@lfdr.de>; Thu, 28 Oct 2021 01:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhJ0Wig (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Oct 2021 18:38:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229484AbhJ0Wig (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 27 Oct 2021 18:38:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F29610CB;
-        Wed, 27 Oct 2021 22:36:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1635374170;
-        bh=zeRXlf3fAzntvGnBMpDwMgonqEP9pBriRbcBLNzhnE8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=voGDb2zXrSVNrVTxvYv+5pMhCPRA3F8fwGVSJ7e4sGicSa89iz8fbmPQ5IDUj6bbB
-         /7BX5p6IZvMH1BZP+4LX56HqXYw5bE76pXVRLoi98OHqHA5a8vD16kOneRNlBRbsGG
-         uykElR9RFUVO+G11QXqJr8RFcQrPCNZlTWAsud4Q=
-Date:   Wed, 27 Oct 2021 15:36:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        id S230081AbhJ0XIP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Oct 2021 19:08:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57477 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229836AbhJ0XIP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Oct 2021 19:08:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635375949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fSEXEHxW0XKJ3A0RuRyJ3sw6tXP96RKh+PO7m5ry7Bs=;
+        b=R7LPsrqNqhzlYxxwwFk8C3/PNv1VU7ulKfY1WanzXggOnerZKysHYLKV5jIo9GTz1yXR2P
+        EjkOaWBUgnk7/s4KHlbF0Gh9bi3QTubZ4d5Ir0yrOySaPYTqj5FE9qViPPdLGDVgzp1KaB
+        wejPn0ZVtVz+r/5YZ6MWdwsmOuUtamQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-41idCAuGM4-fWbQACjNl8A-1; Wed, 27 Oct 2021 19:05:46 -0400
+X-MC-Unique: 41idCAuGM4-fWbQACjNl8A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 257C88026AD;
+        Wed, 27 Oct 2021 23:05:44 +0000 (UTC)
+Received: from llong.remote.csb (unknown [10.22.9.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9FB15C1C5;
+        Wed, 27 Oct 2021 23:05:36 +0000 (UTC)
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH memcg v3 3/3] memcg: prohibit unconditional exceeding
- the limit of dying tasks
-Message-Id: <20211027153608.9910f7db99d5ef574045370e@linux-foundation.org>
-In-Reply-To: <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
-References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
-        <cover.1634994605.git.vvs@virtuozzo.com>
-        <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
-        <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20211018143619.205065-1-longman@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+Message-ID: <55402d20-c23e-bb56-6a7a-6e208c08280a@redhat.com>
+Date:   Wed, 27 Oct 2021 19:05:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211018143619.205065-1-longman@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 25 Oct 2021 11:36:41 +0200 Michal Hocko <mhocko@suse.com> wrote:
+On 10/18/21 10:36 AM, Waiman Long wrote:
+> v8:
+>   - Reorganize the patch series and rationalize the features and
+>     constraints of a partition.
+>   - Update patch descriptions and documentation accordingly.
+>
+> v7:
+>   - Simplify the documentation patch (patch 5) as suggested by Tejun.
+>   - Fix a typo in patch 2 and improper commit log in patch 3.
+>
+> v6:
+>   - Remove duplicated tmpmask from update_prstate() which should fix the
+>     frame size too large problem reported by kernel test robot.
+>
+> This patchset makes four enhancements to the cpuset v2 code.
+>
+>   Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
+>
+>   Patch 2: Refining the features and constraints of a cpuset partition
+>   clarifying what changes are allowed.
+>
+>   Patch 3: Add a new partition state "isolated" to create a partition
+>   root without load balancing. This is for handling intermitten workloads
+>   that have a strict low latency requirement.
+>
+>   Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
+>   that causes invalid partition like "root invalid (No cpu available
+>   due to hotplug)".
+>
+> Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
+> cpuset test to test the new cpuset partition code.
+>
+> Waiman Long (6):
+>    cgroup/cpuset: Allow no-task partition to have empty
+>      cpuset.cpus.effective
+>    cgroup/cpuset: Refining features and constraints of a partition
+>    cgroup/cpuset: Add a new isolated cpus.partition type
+>    cgroup/cpuset: Show invalid partition reason string
+>    cgroup/cpuset: Update description of cpuset.cpus.partition in
+>      cgroup-v2.rst
+>    kselftest/cgroup: Add cpuset v2 partition root state test
+>
+>   Documentation/admin-guide/cgroup-v2.rst       | 153 ++--
+>   kernel/cgroup/cpuset.c                        | 393 +++++++----
+>   tools/testing/selftests/cgroup/Makefile       |   5 +-
+>   .../selftests/cgroup/test_cpuset_prs.sh       | 664 ++++++++++++++++++
+>   tools/testing/selftests/cgroup/wait_inotify.c |  87 +++
+>   5 files changed, 1115 insertions(+), 187 deletions(-)
+>   create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
+>   create mode 100644 tools/testing/selftests/cgroup/wait_inotify.c
 
-> My view on stable backport is similar to the previous patch. If we want
-> to have it there then let's wait for some time to see whether there are
-> any fallouts as this patch depends on the PF_OOM change.
+Any feedback on this patch series?
 
-It's strange that [1/3] doesn't have cc:stable, but [2/3] and [3/3] do
-not.  What is the thinking here?
+Thanks,
+Longman
 
-I expect we'd be OK with merging these into 5.16-rc1.  This still gives
-another couple of months in -rc to shake out any problems.  But I
-suspect the -stable maintainers will merge and release the patches
-before they are released in 5.16.
-
-In which case an alternative would be not to mark these patches
-cc:stable and to somehow remember to ask the -stable maintainers to
-merge them after 5.16 has been on the streets for a suitable period.
-
-Greg, thoughts?
