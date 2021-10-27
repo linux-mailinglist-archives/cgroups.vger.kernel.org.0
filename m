@@ -2,66 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE6743CEA7
-	for <lists+cgroups@lfdr.de>; Wed, 27 Oct 2021 18:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCCD43D6BF
+	for <lists+cgroups@lfdr.de>; Thu, 28 Oct 2021 00:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhJ0QYp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Oct 2021 12:24:45 -0400
-Received: from relay.rsaweb.co.za ([41.74.187.153]:57108 "EHLO
-        relay.rsaweb.co.za" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238167AbhJ0QYo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Oct 2021 12:24:44 -0400
-X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Oct 2021 12:24:44 EDT
-Received: from relay.rsaweb.co.za (localhost [127.0.0.1])
-        by relay.rsaweb.co.za (Postfix) with ESMTP id 77A653E2E5E;
-        Wed, 27 Oct 2021 18:12:19 +0200 (SAST)
-Received: from mailnode2.rsaweb.co.za (unknown [41.74.182.203])
-        by relay.rsaweb.co.za (Postfix) with ESMTP;
-        Wed, 27 Oct 2021 18:12:19 +0200 (SAST)
-Received: from mail.rsaweb.co.za (mailnode2.rsaweb.co.za [10.0.0.112])
-        by mailnode2.rsaweb.co.za (Postfix) with ESMTP id 8E09760556;
-        Wed, 27 Oct 2021 18:12:20 +0200 (SAST)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S229755AbhJ0Wig (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Oct 2021 18:38:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhJ0Wig (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 27 Oct 2021 18:38:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F29610CB;
+        Wed, 27 Oct 2021 22:36:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1635374170;
+        bh=zeRXlf3fAzntvGnBMpDwMgonqEP9pBriRbcBLNzhnE8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=voGDb2zXrSVNrVTxvYv+5pMhCPRA3F8fwGVSJ7e4sGicSa89iz8fbmPQ5IDUj6bbB
+         /7BX5p6IZvMH1BZP+4LX56HqXYw5bE76pXVRLoi98OHqHA5a8vD16kOneRNlBRbsGG
+         uykElR9RFUVO+G11QXqJr8RFcQrPCNZlTWAsud4Q=
+Date:   Wed, 27 Oct 2021 15:36:08 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH memcg v3 3/3] memcg: prohibit unconditional exceeding
+ the limit of dying tasks
+Message-Id: <20211027153608.9910f7db99d5ef574045370e@linux-foundation.org>
+In-Reply-To: <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
+References: <YXJ/63kIpTq8AOlD@dhcp22.suse.cz>
+        <cover.1634994605.git.vvs@virtuozzo.com>
+        <8f5cebbb-06da-4902-91f0-6566fc4b4203@virtuozzo.com>
+        <YXZ6qaMJBomVfV8O@dhcp22.suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 27 Oct 2021 09:12:20 -0700
-From:   jeremiah mamabolo <rob@netprophet.org.za>
-To:     undisclosed-recipients:;
-Subject: INVESTMENT
-Reply-To: jeremiahmamabolo55@gmail.com
-Mail-Reply-To: jeremiahmamabolo55@gmail.com
-Message-ID: <eef35556f2d9f2aef5e5a5a2df4f8ec2@netprophet.org.za>
-X-Sender: rob@netprophet.org.za
-User-Agent: Roundcube Webmail/1.3.1 
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Mon, 25 Oct 2021 11:36:41 +0200 Michal Hocko <mhocko@suse.com> wrote:
 
-Hello sir,
-  I am Ambassador Jeremiah .N. Kingsley Mamabolo.
-Special Representative And Head of The African Union, United Nations 
-HYBRID Operation In Darfur, Sudan.
-I got your contact online for a joint investment purpose. I am in United 
-Kingdom London, presently. I made some money in over invoice of supply 
-contract of covid 19 vaccine and other materials in the Middle East. 
-10.2million U.S dollars has been mapped out for the joint venture.
-for safe keeping the money has been deposited into the Bank of Africa 
-until I find a reliable business partner. Because of my work and 
-position in the United Nations, I can not invest or save this money in 
-my country until I retired. So I need you to help me to receive it and 
-to invest it into a lucrative business in your country.
-I agree to offer you 10% of the total sum for your assistance to receive 
-the money and to invest it in your country. After receiving the money I 
-am going to quit my job and come over to your country for sharing.
-More details will be giving to you as you respond to indicate your 
-interest.
+> My view on stable backport is similar to the previous patch. If we want
+> to have it there then let's wait for some time to see whether there are
+> any fallouts as this patch depends on the PF_OOM change.
 
-  Regards.
+It's strange that [1/3] doesn't have cc:stable, but [2/3] and [3/3] do
+not.  What is the thinking here?
 
-whatsApp:+447452180785
+I expect we'd be OK with merging these into 5.16-rc1.  This still gives
+another couple of months in -rc to shake out any problems.  But I
+suspect the -stable maintainers will merge and release the patches
+before they are released in 5.16.
 
-Ambassador Jeremiah .N. Kingsley Mamabolo
+In which case an alternative would be not to mark these patches
+cc:stable and to somehow remember to ask the -stable maintainers to
+merge them after 5.16 has been on the streets for a suitable period.
 
-https://www.africa-newsroom.com/press/secretarygeneral-african-union-commission-chairperson-appoint-jeremiah-kingsley-mamabolo-of-south-africa-acting-joint-special-representative-for-darfur
+Greg, thoughts?
