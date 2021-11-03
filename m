@@ -2,76 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D3444475E
-	for <lists+cgroups@lfdr.de>; Wed,  3 Nov 2021 18:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C49444932
+	for <lists+cgroups@lfdr.de>; Wed,  3 Nov 2021 20:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhKCRlz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Nov 2021 13:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
+        id S230243AbhKCT6h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Nov 2021 15:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhKCRly (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Nov 2021 13:41:54 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4CFC061714
-        for <cgroups@vger.kernel.org>; Wed,  3 Nov 2021 10:39:17 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id v23so5154483ljk.5
-        for <cgroups@vger.kernel.org>; Wed, 03 Nov 2021 10:39:17 -0700 (PDT)
+        with ESMTP id S229697AbhKCT6g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Nov 2021 15:58:36 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2DFC061714
+        for <cgroups@vger.kernel.org>; Wed,  3 Nov 2021 12:56:00 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id u17so3321439plg.9
+        for <cgroups@vger.kernel.org>; Wed, 03 Nov 2021 12:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8w2VytewPeRX4QkQuUg/BDVtpcxVWCV69c3Z6Wv2sj4=;
-        b=kWIx5CS8nvY10TsruGTm4C3fKrM9wXsuvooi2CRs+RYshqzqTzNF0+zH+R36YM1KlG
-         SXfOVbgb6TD5u3JxH7olKllrHzG6It7/DWNDjtiH6i7IGeC8VO26drKULHHoTboLtZqr
-         qt6acogm5Cw/YIO1D0fm+BHOtNKGbrIkhMajJNiNOM0CHv3OUXeA/JAyXansys5U55At
-         D5CyNObB1Mxv4G39O+PuDZVtGKecvzxA0M5Hd3/Weo/TEztQZP5T57VuPaX/aGBBGdHw
-         VMOGod5Y4HRwZSVvrWpcFL9AePxL6Vmq4JCuYYm2vgg9x9JX2Ecxpqz7znCnzZDjLfYT
-         QOEw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4vUof8fUQpZayqZUZwKxDEJwhK3uZOTyNtJzrd1K0WM=;
+        b=L26WkAAVUZVdUfAJtXCCxuRI2Pkmd7pFVi+n+yBIelVGLwgjOZPW65+XN5+WPNFfGr
+         5s0YKMnTrKsz1Wkukv6L1TvwpAvqtrPCTJl/8coga2fHRMcFUr/YaD2G0U4LbmyeKDje
+         LY4sr3UExPm73ZD8aqFhQpDIn+/4In2O/I37n42ZEzOhrlaNK5C08RMnBqSUugrZ4XP4
+         sDnGGd5QCDSbVHLMc4czhZErfXnI0VWwAVQf0CQjI6tUmRwHGNRmcMVjmPcMoL+i5743
+         hH5GeEDWwlAXt6+0oJEHZNvPk+DQVs/OYnKSq2mu0zZwLHjeTZpjU5mI2QtstmydE4Bu
+         4X+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8w2VytewPeRX4QkQuUg/BDVtpcxVWCV69c3Z6Wv2sj4=;
-        b=5M4BGbLaYaAj2caZxTixI8uKg4P96j6sNP65u8vxwpzRly5+vqa5YScLytq/D3n26r
-         xeLnohfv/rPoFdsQppVKWXTrOXA4zWKdwNhgooEWWl4X6rS7VpEQaZmzxsUuPUVRZMpP
-         LfL1isUvecZIkzwUbVh8To18SVsfsLVDHE4YygKqYQcZjzfo2yMpWtQBRl9PaZ+beGPF
-         VcycmpraC8C9ZVCBanCzwqTkQF9yXS0gXPw9vLgobHWNILlRBNxPk+8D+cV1e3Sc82uS
-         i5Ivf2x9i2V8MewWwWQHxmiCeuC7Jmtcu4xLMkEBjlB2sqFqvAHZwpj1FbXgMhFsLlCD
-         xL8g==
-X-Gm-Message-State: AOAM533w9vFxAPlZxJ1JJZeeMwACS4aGoF3zNFiqxWdzyBJ7RTzMfuGO
-        7ipiLDmC7XlcDuEpc2oA5rPio/dSpoe3FKlH+KJQ2g==
-X-Google-Smtp-Source: ABdhPJzUCQIup4ruIL/7766bJS+Rza0zAtfSCrmG5NSCBtA3dlfznEo/Y1F1YkhwSdQG0ID0DZhtkuT6jhtObbURHpk=
-X-Received: by 2002:a05:651c:551:: with SMTP id q17mr18274510ljp.202.1635961155911;
- Wed, 03 Nov 2021 10:39:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=4vUof8fUQpZayqZUZwKxDEJwhK3uZOTyNtJzrd1K0WM=;
+        b=F2zXnW39nIiNMMYSheQjmBaFEcqpZWFa9lg57h8dLCGvWJK1S4/g+gkbz2MBKZYZAy
+         8fr7TRcH8XuF+vqNYzr1qLbrpmclZQxkABONIVc36ujVsIcGQEMWqcgY45yLxx0MUi67
+         mbDBGGjFzByD1z+jWy3xln/j2Rf9mVPiY3EqXLssdwtpuw3FHcmJsNw+1fhPV7T6okRV
+         bbHM/pf+XZNtW/n1znCljba6MRhhzFWhCvDC7BClXCgPgqdi3VR5ngbQRHxroQn+Qhoi
+         Lt2iyZOuyXE28gQwUncoRDb3ByIvorHOoqwZk/xEUcTxH7uM4nTALzcnqYrDs5IT/M+N
+         f0wQ==
+X-Gm-Message-State: AOAM531GOm2uVBs2eEQbs+V6B/yAG+Zyjz+q3l4LCGxgdNX8eo63Zbdt
+        YnUQCOozAsWZUalhRZ36htoyBT/wSI32UnOjAVk=
+X-Google-Smtp-Source: ABdhPJzVUpoELrY5okyqRXSG3zQjoXjZVz1o+5frnmatOizwvrsxB6+I7rCa4TsA+WcGLGf+qA5VxTOUdZc6p9gUr6w=
+X-Received: by 2002:a17:90b:1d0d:: with SMTP id on13mr17012675pjb.36.1635969359592;
+ Wed, 03 Nov 2021 12:55:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211103165845.38226-1-mkoutny@suse.com>
-In-Reply-To: <20211103165845.38226-1-mkoutny@suse.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 3 Nov 2021 10:39:04 -0700
-Message-ID: <CALvZod5yLyuagfmG4LpAkNihMhisioYXnruKL7GA3owOTSvy-g@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: rstat: Mark benign data race to silence KCSAN
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>, linux-kernel@vger.kernel.org
+Received: by 2002:a05:6a10:fd88:0:0:0:0 with HTTP; Wed, 3 Nov 2021 12:55:59
+ -0700 (PDT)
+Reply-To: greogebrown@gmail.com
+From:   george brown <eddywilliam0002@gmail.com>
+Date:   Wed, 3 Nov 2021 20:55:59 +0100
+Message-ID: <CAP8Jzx+pjdBfoo0k=_gb6VCnyHPgUMUv1BCP7WUzRrERVTaLew@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 3, 2021 at 9:59 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> There is a race between updaters and flushers (flush can possibly miss
-> the latest update(s)). This is expected as explained in
-> cgroup_rstat_updated() comment, add also machine readable annotation so
-> that KCSAN results aren't noisy.
->
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> Link: https://lore.kernel.org/r/CACkBjsbPVdkub=3De-E-p1WBOLxS515ith-53SFd=
-mFHWV_QMo40w@mail.gmail.com
-> Suggested-by: Hao Sun <sunhao.th@gmail.com>
->
-> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+Hallo
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Mein Name ist George Brown. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+dir anbieten
+der n=C3=A4chste Angeh=C3=B6rige meines Klienten. Sie erben die Summe von (=
+8,5
+Millionen US-Dollar)
+Dollar, die mein Mandant vor seinem Tod auf der Bank hinterlie=C3=9F.
+
+Mein Mandant ist ein B=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall gestorben ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
+50% dies tun werden
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Details:greogebrown@gmail.com
+
+Vielen Dank im Voraus,
+Herr George Brown,
