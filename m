@@ -2,116 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6F3445C05
-	for <lists+cgroups@lfdr.de>; Thu,  4 Nov 2021 23:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7103C446241
+	for <lists+cgroups@lfdr.de>; Fri,  5 Nov 2021 11:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhKDWML (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Nov 2021 18:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbhKDWMK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Nov 2021 18:12:10 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141A7C061203
-        for <cgroups@vger.kernel.org>; Thu,  4 Nov 2021 15:09:32 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id y26so14789273lfa.11
-        for <cgroups@vger.kernel.org>; Thu, 04 Nov 2021 15:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ODhjY+JjkYpUpFv09zJB9aBghMhLyhOS/H4FgA78QU8=;
-        b=JHVS8Ow1HVeUipVMLT11yHlvnxUVD2nceGQ5AKOw+p77/NeUjmgxc/oFiHSOxrbrpy
-         Is/GwTZWZuoxrsC80rpbv/2Y8AaAq/cFI3MhtzhNbqZ2SeltjziPfSnhXJUAjXXzuneh
-         06pZbRk62NEQyFwifnDmYhpdXaj5WIbqygNh018AToErjr1rpOAMHzMlLBgBnFYYWmsM
-         n3epCtFUKoO951mcxkIQfDT2Ez/LVEgPNqs68kV3L8jvbEOgor4J5JFG089J8+xV4Vwu
-         lLYjqTpUdsD5O3nUSnHNlw2U5elxiK5a1njy2kFnY+pVVBcnd9VbIH0GJWibXuXHxCHT
-         qOTQ==
+        id S233162AbhKEKiJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Nov 2021 06:38:09 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:47101 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233149AbhKEKiC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Nov 2021 06:38:02 -0400
+Received: by mail-io1-f70.google.com with SMTP id 7-20020a5d9c47000000b005e1e3672ac7so5484395iof.13
+        for <cgroups@vger.kernel.org>; Fri, 05 Nov 2021 03:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ODhjY+JjkYpUpFv09zJB9aBghMhLyhOS/H4FgA78QU8=;
-        b=bpGsmWNQb9JgpvVXIM7nK0IqCO3JG820Pi5bc08E2ETZeGtwkrOfUzW4qCIRA65Km9
-         x6X/6BWFZDdoejZG32r8YdFuCakLb4Unec9sI9I3BlK5VUwKIHcC/YcZp9agwCpeL0QL
-         tEg2diSj7u8cJJC2WWVozOxigXbHT4OlZuM0IcaegX4SXrPvUtI4DZwC6m3noQb38AG5
-         Ff/XUnnxDFxDBAZh9unt9FwGG1eL4h/tgegZ7A3DPG+/YH+lGBSr0qZyg/sIZGh/Rbhm
-         M9hCqskLLKLfQvMxCo0TEWQ7wYH3DMLKLP3MiyXBNsxg3Xg0irUzOqb+/YpQYq/0L74l
-         wLVw==
-X-Gm-Message-State: AOAM533qYl03qeC+qrXXdXjt2iZN2+6wvwJnbqi+FBp3iUDPrzCOupo9
-        h0knSDHi7QhrFm4BreadRMV+mPOY6WMguoHSQgfqNg==
-X-Google-Smtp-Source: ABdhPJyCySNfwv75WoGWFSPYJQ9LqbdrCPdqJpHKt8D7zE+l3mpEMxyt3SFexC6VWMES75d4HEuprj4x5ybvSm5jjD4=
-X-Received: by 2002:a19:740f:: with SMTP id v15mr29475880lfe.184.1636063770123;
- Thu, 04 Nov 2021 15:09:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cNB+tE4AKA8z8YAxBjN+ixj7uS5g86EAeIE4JxHKPoo=;
+        b=g5WaXrbZe6rFyzsB4AczhsH+H30mPJAETHat5ieazLq42l+6EHjXdv4b/zcP5vUH3+
+         4fC8/EYW3Lk9oVLrkDx+f3CT4YCZmiBwXoRkKJW5Lj2lIABWGERhk+f5na46Cn5cQqt7
+         7vVAE2akKvsAfJBe1/4drFZYP42hkp/sO/KW/RWmrNBjdgR4OUS+mOjw1WSgAYJgr5h+
+         24T16lBJuKS4MjVuE4NyZGmvSqoTYNLaR9qXJk/XtK6Ls0B8++5PXcw6mc9iXawXHId6
+         30U0DsB9KedXbxY/AJEuKJ7wh7UfuUv4Msejdmj5DEtupG5NMzBrsSygweD+olcuFqgq
+         VZ8Q==
+X-Gm-Message-State: AOAM532ofjv21rzP56VaheY+h7Hg4WKnm5h7mLgD1WmXQynpgDrmUmHf
+        ZHFRNa4sLl9VvXepltmui3RDYrQHoaxPkNrsKdN2RghQjQ5a
+X-Google-Smtp-Source: ABdhPJwZyhCRYGxypk9hITyt4FJuVw8c6uF2lWTTkViU6A1fb9h1Z8EvFd7jxNjiaE0qXkiFQwmStZY/sok1Z366jRHSVsrE291r
 MIME-Version: 1.0
-References: <20211013180130.GB22036@blackbody.suse.cz> <20211014163146.2177266-1-shakeelb@google.com>
- <20211104142751.5ab290d5cf4be1749c9c87ed@linux-foundation.org>
-In-Reply-To: <20211104142751.5ab290d5cf4be1749c9c87ed@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 4 Nov 2021 15:09:18 -0700
-Message-ID: <CALvZod5xT2Mi2wktD-OTS0xkChNzArnMCLBNy7cg0dVupSOhXw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] memcg: flush stats only if updated
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     mkoutny@suse.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org
+X-Received: by 2002:a05:6e02:933:: with SMTP id o19mr6913868ilt.92.1636108522273;
+ Fri, 05 Nov 2021 03:35:22 -0700 (PDT)
+Date:   Fri, 05 Nov 2021 03:35:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000048c15c05d0083397@google.com>
+Subject: [syzbot] general protection fault in cgroup_file_write
+From:   syzbot <syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        lizefan.x@bytedance.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 2:27 PM Andrew Morton <akpm@linux-foundation.org> wr=
-ote:
->
-> On Thu, 14 Oct 2021 09:31:46 -0700 Shakeel Butt <shakeelb@google.com> wro=
-te:
->
-> > Hi Michal,
-> >
-> > On Wed, Oct 13, 2021 at 11:01 AM Michal Koutn=C3=BD <mkoutny@suse.com> =
-wrote:
-> > >
-> > > On Fri, Oct 01, 2021 at 12:00:39PM -0700, Shakeel Butt <shakeelb@goog=
-le.com> wrote:
-> > > > In this patch we kept the stats update codepath very minimal and le=
-t the
-> > > > stats reader side to flush the stats only when the updates are over=
- a
-> > > > specific threshold.  For now the threshold is (nr_cpus * CHARGE_BAT=
-CH).
-> > >
-> > > BTW, a noob question -- are the updates always single page sized?
-> > >
-> > > This is motivated by apples vs oranges comparison since the
-> > >         nr_cpus * MEMCG_CHARGE_BATCH
-> > > suggests what could the expected error be in pages (bytes). But it's =
-mostly
-> > > wrong since: a) uncertain single-page updates, b) various counter
-> > > updates summed together. I wonder whether the formula can serve to
-> > > provide at least some (upper) estimate.
-> > >
-> >
-> > Thanks for your review. This forces me to think more on this because ea=
-ch
-> > update does not necessarily be a single page sized update e.g. adding a=
- hugepage
-> > to an LRU.
-> >
-> > Though I think the error is time bounded by 2 seconds but in those 2 se=
-conds
-> > mathematically the error can be large.
->
-> Sounds significant?
+Hello,
 
-Yes it can be.
+syzbot found the following issue on:
 
->
-> > What do you think of the following
-> > change? It will bound the error better within the 2 seconds window.
->
-> This didn't seem to go anywhere.  I'll send "memcg: flush stats only if
-> updated" Linuswards, but please remember to resurrect this idea soonish
-> (this month?) if you think such a change is desirable.
->
+HEAD commit:    d4439a1189f9 Merge tag 'hsi-for-5.16' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1656d30ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff3ea6b218615239
+dashboard link: https://syzkaller.appspot.com/bug?extid=50f5cf33a284ce738b62
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Yes, I will follow up on this soon.
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+50f5cf33a284ce738b62@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000008: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000040-0x0000000000000047]
+CPU: 1 PID: 11182 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
+Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
+RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
+RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
+RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
+R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
+R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe6fd24a1b8 CR3: 000000002c740000 CR4: 00000000003526e0
+Call Trace:
+ <TASK>
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ __kernel_write+0x5d1/0xaf0 fs/read_write.c:535
+ do_acct_process+0x112a/0x17b0 kernel/acct.c:518
+ acct_pin_kill+0x27/0x130 kernel/acct.c:173
+ pin_kill+0x2a6/0x940 fs/fs_pin.c:44
+ mnt_pin_kill+0xc1/0x170 fs/fs_pin.c:81
+ cleanup_mnt+0x4bc/0x510 fs/namespace.c:1130
+ task_work_run+0x146/0x1c0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0x705/0x24f0 kernel/exit.c:832
+ do_group_exit+0x168/0x2d0 kernel/exit.c:929
+ get_signal+0x16b0/0x2090 kernel/signal.c:2820
+ arch_do_signal_or_restart+0x9c/0x730 arch/x86/kernel/signal.c:868
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x2e/0x70 kernel/entry/common.c:300
+ do_syscall_64+0x53/0xd0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f0054d5fae9
+Code: Unable to access opcode bytes at RIP 0x7f0054d5fabf.
+RSP: 002b:00007f00522d5218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f0054e72f68 RCX: 00007f0054d5fae9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f0054e72f68
+RBP: 00007f0054e72f60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0054e72f6c
+R13: 00007ffd99a378af R14: 00007f00522d5300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 54fd0e4a1cf7068c ]---
+RIP: 0010:cgroup_file_write+0xbe/0x790 kernel/cgroup/cgroup.c:3831
+Code: 81 c3 88 08 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 c0 5c 52 00 48 8b 1b 48 83 c3 40 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 a3 5c 52 00 48 8b 03 48 89 44 24
+RSP: 0018:ffffc9000a79f2a0 EFLAGS: 00010202
+RAX: 0000000000000008 RBX: 0000000000000040 RCX: ffff888074320000
+RDX: 0000000000000000 RSI: ffff88801d008980 RDI: ffff88806b48ac00
+RBP: ffffc9000a79f390 R08: ffffffff8207dab3 R09: fffffbfff1fedffb
+R10: fffffbfff1fedffb R11: 0000000000000000 R12: 1ffff920014f3e5c
+R13: ffff88806b48ac00 R14: ffff88806b48ac00 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe6fd24a1b8 CR3: 000000000c88e000 CR4: 00000000003526e0
+----------------
+Code disassembly (best guess):
+   0:	81 c3 88 08 00 00    	add    $0x888,%ebx
+   6:	48 89 d8             	mov    %rbx,%rax
+   9:	48 c1 e8 03          	shr    $0x3,%rax
+   d:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+  12:	74 08                	je     0x1c
+  14:	48 89 df             	mov    %rbx,%rdi
+  17:	e8 c0 5c 52 00       	callq  0x525cdc
+  1c:	48 8b 1b             	mov    (%rbx),%rbx
+  1f:	48 83 c3 40          	add    $0x40,%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 a3 5c 52 00       	callq  0x525cdc
+  39:	48 8b 03             	mov    (%rbx),%rax
+  3c:	48                   	rex.W
+  3d:	89                   	.byte 0x89
+  3e:	44                   	rex.R
+  3f:	24                   	.byte 0x24
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
