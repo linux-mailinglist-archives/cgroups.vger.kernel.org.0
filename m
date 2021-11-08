@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B78449DF1
-	for <lists+cgroups@lfdr.de>; Mon,  8 Nov 2021 22:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12481449DF4
+	for <lists+cgroups@lfdr.de>; Mon,  8 Nov 2021 22:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240025AbhKHVW4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Nov 2021 16:22:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
+        id S240067AbhKHVXC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Nov 2021 16:23:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240035AbhKHVWy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Nov 2021 16:22:54 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC99C061714
-        for <cgroups@vger.kernel.org>; Mon,  8 Nov 2021 13:20:09 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id x20-20020aa79414000000b0049f9cb19a5fso6530077pfo.17
-        for <cgroups@vger.kernel.org>; Mon, 08 Nov 2021 13:20:09 -0800 (PST)
+        with ESMTP id S240032AbhKHVW5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Nov 2021 16:22:57 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7071AC061714
+        for <cgroups@vger.kernel.org>; Mon,  8 Nov 2021 13:20:12 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id i3-20020a170902c94300b0014287dc7dcbso1068530pla.16
+        for <cgroups@vger.kernel.org>; Mon, 08 Nov 2021 13:20:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=ZMz9mAglfr0087cpLEYUjV++mI1ePPikWKx3K/Mi3/g=;
-        b=eQWejA7DFPbb3XHQdQsO1O81F5j5nVRtuzAWVptvU8ipbvidXvGHeRvBEGV3TQkuZF
-         N3LeJhdmJgoOx/k2uvb5EIouPRu3C7cFY65zSv0oTcZDXNgPzd9eSIlizIPrInInwDtL
-         5wXMuiLX4K8Rno4G9cb4cN98D3aUBpOCjdLKD7ujQGYDACFdBqyO7WYQ8GMQND9QCR1b
-         PT/05SKYcgXAKhwmuBt6ectzJBGyMkfPIcH5RzlDAwmZhGPxX78FC3ZWaoJFPUNPmRdk
-         oYfNA+dmEwc22B5Pd6dhT5v9UApeCz8JPwyof+w2wq84JtHlW6pTHqan783jaEiRQAA9
-         bi0A==
+        bh=HuOsUesI41VMxHbd9WL9Fs5X3h8wZbAlymoJuWa+M0o=;
+        b=mgCbALj0RzI1y7dYKpXbyaiAMLfsKBudFfa7Ub2nVulXL0OgGprL2nvZQ5jgnYWFQk
+         FyRwZRuXkDXDZQg/EmG5RPSKJ0THWJP0Gn8tavb7JhK0Lx6F7Dj9+4l1egra+m7YtrPy
+         lpmGx4XlaWZ9qtVHp2GizypVKABYErQ15IN9nQhWjo3/L/uwJ8MJb1L7MoiMNoVeyH0V
+         iwZn7AfMAJUXEPjwLeaNB9ZvVpm0reoL4Ua4Yl6E+SYJvPNIlcuk4x63koSryTbpjh2C
+         Dfoc/LjYIFQeWJUEHu9QP2jJta84c10T9HT3Jpk5hQhWEHbsuURruitDfys71o4MWJGi
+         BxHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=ZMz9mAglfr0087cpLEYUjV++mI1ePPikWKx3K/Mi3/g=;
-        b=MVvCBpaiW1r8sRYNeZxQzN658iWt/Bzq5lFzSzWHJTcAYTk4rX4tASizv1m2JC1MBK
-         VZ5Xw1edcb8g7aVVi/3fheL+tPDJHkmWGfiPIZ7jYux+wcs7KglAOValZEmDImM00OEs
-         8si+sFlVU66Ikjq+wz5/sqSqEe0Bkv7zzV75k1cxbPD6eZvNBotWNf51JR9fS/CHFomS
-         XGOo3BZN1iu+Xk6h9C9dCDwRyEMvgLGbEEVoQypGvkMDJc/QIQuIzc2P1CgEVzIRucoF
-         /xmnqQcgoLyJLjeAxaaUF9uLmzgjHgckFUsD+KzHZo0iTeM8S4gWwnEYxNCrkJZqYUEd
-         CMcA==
-X-Gm-Message-State: AOAM531CHXgqPWALpGH36cAOZK0qey7KhDXpb8BLrfW7Mc2fak0oOmq4
-        sStFbQI/99i+G5+0dJB5+6cJa0F5KP5pPEoh0w==
-X-Google-Smtp-Source: ABdhPJyqUdcqHHS5ZEYdqfLkpdwzUGFGnjlm/Fxt/QXzAUvg/F+LJxhmAcpzJ6AmbPdNMFtj9kgXoLfmK/WLh9sHaQ==
+        bh=HuOsUesI41VMxHbd9WL9Fs5X3h8wZbAlymoJuWa+M0o=;
+        b=bEDSMmPvywFGFXLmcFmtoJ8rYrLQxYC8vR+2lzMua5lwd2mcNdhybADcrb+aMdHvqD
+         xMNROW9wnRh6wRUqIN8w8IuRX3SfMmPLs0t3n+FmLcT003LqhVo2OZCz/PJKmrQpObIk
+         8q0yQOl8vJz+0qTCnGkJ9Lvjz6WWTBfhEtDrExCk7jH3KXj5aUUyFTxRH32JXavhGPx9
+         BcI9Iy7lG8DhhLZjs0HPKgO1iEyRKOuzj6uHqEjcZ/BlPy/1Nl1CtbMlGbfkVlmaCKH6
+         7IJ8X3P2MC7sseTJJir323iSgtxjMUIFcivIWnf4JOuhqN8wvLqm/5P5Xlm1txLQkMGL
+         iRqQ==
+X-Gm-Message-State: AOAM5324LUGno5MrYUKfM9fSjsg6/NacFGCyDxR6zJAsVS5Bw7EIKq4E
+        SL2JijfQeM0cfn7SvHeB6yxDvdyKWYhqZIEaPg==
+X-Google-Smtp-Source: ABdhPJxtKMCyalpwo6Rk4XPSadnMPMqQz4M27ofn10pg+q/fy4JS+sm19K/CP1QUZKWIjfQ6AuvOtu9HpgCeOuOOeQ==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:8717:7707:fb59:664e])
- (user=almasrymina job=sendgmr) by 2002:a17:902:bb96:b0:13f:b181:58ef with
- SMTP id m22-20020a170902bb9600b0013fb18158efmr2368937pls.2.1636406409232;
- Mon, 08 Nov 2021 13:20:09 -0800 (PST)
-Date:   Mon,  8 Nov 2021 13:19:56 -0800
+ (user=almasrymina job=sendgmr) by 2002:aa7:88cb:0:b0:49f:ad17:c08 with SMTP
+ id k11-20020aa788cb000000b0049fad170c08mr2017245pff.19.1636406411895; Mon, 08
+ Nov 2021 13:20:11 -0800 (PST)
+Date:   Mon,  8 Nov 2021 13:19:57 -0800
 In-Reply-To: <20211108211959.1750915-1-almasrymina@google.com>
-Message-Id: <20211108211959.1750915-3-almasrymina@google.com>
+Message-Id: <20211108211959.1750915-4-almasrymina@google.com>
 Mime-Version: 1.0
 References: <20211108211959.1750915-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v1 2/5] mm: add tmpfs memcg= permissions check
+Subject: [PATCH v1 3/5] mm/oom: handle remote ooms
 From:   Mina Almasry <almasrymina@google.com>
 Cc:     Mina Almasry <almasrymina@google.com>,
         Michal Hocko <mhocko@suse.com>,
@@ -70,14 +70,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Restricts the mounting of tmpfs:
+On remote ooms (OOMs due to remote charging), the oom-killer will attempt
+to find a task to kill in the memcg under oom, if the oom-killer
+is unable to find one, the oom-killer should simply return ENOMEM to the
+allocating process.
 
-mount -t tmpfs -o memcg=<cgroup>
-
-Only if the mounting task is allowed to open <cgroup>/cgroup.procs file
-and allowed to enter the cgroup. Thus, processes are allowed to direct
-tmpfs changes to a cgroup that they themselves can enter and allocate
-memory in.
+If we're in pagefault path and we're unable to return ENOMEM to the
+allocating process, we instead kill the allocating process.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 
@@ -99,54 +98,73 @@ Cc: linux-fsdevel@vger.kernel.org
 Cc: cgroups@vger.kernel.org
 
 ---
- mm/memcontrol.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 21 +++++++++++++++++++++
+ mm/oom_kill.c   | 21 +++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 389d2f2be9674..2e4c20d09f959 100644
+index 2e4c20d09f959..fc9c6280266b6 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -62,6 +62,7 @@
- #include <linux/tracehook.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/string.h>
- #include "internal.h"
- #include <net/sock.h>
- #include <net/ip.h>
-@@ -2585,9 +2586,32 @@ void mem_cgroup_handle_over_high(void)
-  */
- struct mem_cgroup *mem_cgroup_get_from_path(const char *path)
- {
--	struct file *file;
-+	static const char procs_filename[] = "/cgroup.procs";
-+	struct file *file, *procs;
- 	struct cgroup_subsys_state *css;
- 	struct mem_cgroup *memcg;
-+	char *procs_path =
-+		kmalloc(strlen(path) + sizeof(procs_filename), GFP_KERNEL);
+@@ -2664,6 +2664,27 @@ int mem_cgroup_get_name_from_sb(struct super_block *sb, char *buf, size_t len)
+ 	return ret < 0 ? ret : 0;
+ }
+
++/*
++ * Returns true if current's mm is a descendant of the memcg_under_oom (or
++ * equal to it). False otherwise. This is used by the oom-killer to detect
++ * ooms due to remote charging.
++ */
++bool is_remote_oom(struct mem_cgroup *memcg_under_oom)
++{
++	struct mem_cgroup *current_memcg;
++	bool is_remote_oom;
 +
-+	if (procs_path == NULL)
-+		return ERR_PTR(-ENOMEM);
-+	strcpy(procs_path, path);
-+	strcat(procs_path, procs_filename);
++	if (!memcg_under_oom)
++		return false;
 +
-+	procs = filp_open(procs_path, O_WRONLY, 0);
-+	kfree(procs_path);
++	current_memcg = get_mem_cgroup_from_mm(current->mm);
++	is_remote_oom =
++		!mem_cgroup_is_descendant(current_memcg, memcg_under_oom);
++	css_put(&current_memcg->css);
++
++	return is_remote_oom;
++}
++
+ /*
+  * Set or clear (if @memcg is NULL) charge association from file system to
+  * memcg.  If @memcg != NULL, then a css reference must be held by the caller to
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 0a7e16b16b8c3..556329dee273f 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1106,6 +1106,27 @@ bool out_of_memory(struct oom_control *oc)
+ 	}
+
+ 	select_bad_process(oc);
 +
 +	/*
-+	 * Restrict the capability for tasks to mount with memcg charging to the
-+	 * cgroup they could not join. For example, disallow:
-+	 *
-+	 * mount -t tmpfs -o memcg=root-cgroup nodev <MOUNT_DIR>
-+	 *
-+	 * if it is a non-root task.
++	 * For remote ooms in userfaults, we have no choice but to kill the
++	 * allocating process.
 +	 */
-+	if (IS_ERR(procs))
-+		return (struct mem_cgroup *)procs;
-+	fput(procs);
-
- 	file = filp_open(path, O_DIRECTORY | O_RDONLY, 0);
- 	if (IS_ERR(file))
++	if (!oc->chosen && is_remote_oom(oc->memcg) && current->in_user_fault &&
++	    !oom_unkillable_task(current)) {
++		get_task_struct(current);
++		oc->chosen = current;
++		oom_kill_process(
++			oc, "Out of memory (Killing remote allocating task)");
++		return true;
++	}
++
++	/*
++	 * For remote ooms in non-userfaults, simply return ENOMEM to the
++	 * caller.
++	 */
++	if (!oc->chosen && is_remote_oom(oc->memcg))
++		return false;
++
+ 	/* Found nothing?!?! */
+ 	if (!oc->chosen) {
+ 		dump_header(oc, NULL);
 --
 2.34.0.rc0.344.g81b53c2807-goog
