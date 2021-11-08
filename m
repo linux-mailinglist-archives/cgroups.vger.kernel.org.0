@@ -2,55 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12481449DF4
+	by mail.lfdr.de (Postfix) with ESMTP id 5E648449DF6
 	for <lists+cgroups@lfdr.de>; Mon,  8 Nov 2021 22:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240067AbhKHVXC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Nov 2021 16:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S240036AbhKHVXD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Nov 2021 16:23:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240032AbhKHVW5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Nov 2021 16:22:57 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7071AC061714
-        for <cgroups@vger.kernel.org>; Mon,  8 Nov 2021 13:20:12 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id i3-20020a170902c94300b0014287dc7dcbso1068530pla.16
-        for <cgroups@vger.kernel.org>; Mon, 08 Nov 2021 13:20:12 -0800 (PST)
+        with ESMTP id S240033AbhKHVW7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Nov 2021 16:22:59 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA85C061764
+        for <cgroups@vger.kernel.org>; Mon,  8 Nov 2021 13:20:14 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id w4-20020a1709029a8400b00138e222b06aso7165845plp.12
+        for <cgroups@vger.kernel.org>; Mon, 08 Nov 2021 13:20:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=HuOsUesI41VMxHbd9WL9Fs5X3h8wZbAlymoJuWa+M0o=;
-        b=mgCbALj0RzI1y7dYKpXbyaiAMLfsKBudFfa7Ub2nVulXL0OgGprL2nvZQ5jgnYWFQk
-         FyRwZRuXkDXDZQg/EmG5RPSKJ0THWJP0Gn8tavb7JhK0Lx6F7Dj9+4l1egra+m7YtrPy
-         lpmGx4XlaWZ9qtVHp2GizypVKABYErQ15IN9nQhWjo3/L/uwJ8MJb1L7MoiMNoVeyH0V
-         iwZn7AfMAJUXEPjwLeaNB9ZvVpm0reoL4Ua4Yl6E+SYJvPNIlcuk4x63koSryTbpjh2C
-         Dfoc/LjYIFQeWJUEHu9QP2jJta84c10T9HT3Jpk5hQhWEHbsuURruitDfys71o4MWJGi
-         BxHw==
+        bh=9WU77qiyFJ2kLEsta1yGwcYoFr6WpwZMlTN2QvzNdcQ=;
+        b=XoZ7JWwmBewgPmGjnm10qp+RIw/NVsOqlra/8f6lrdUWEv3z88BW5xl/BmGAZkkpVX
+         z4V26/l0vtZObekIpNQ9FfYR1y+YMbCt1PFXx5zNa2pn3Yras1kBCHo2liM5OI4tMNeS
+         DTeMxphjd6Da/3anBbATiQQCseQmZwrNVBDA7y3+umUoYpuLIvfwNqTR+NH5tPb2JkCw
+         MA5Xi0MH83tKnMBDAkMTLh1Ly8kWbBsL0dWZ5d4jGWmF27bPoDNZHLRR9nffqgmAflmV
+         79e58VzLJDhg/VKpYqz92xR5sXSmywy2IKW+8FrUBL0lHHTPO3pM0UH/67MUSsX4G/Xa
+         Y1QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:cc;
-        bh=HuOsUesI41VMxHbd9WL9Fs5X3h8wZbAlymoJuWa+M0o=;
-        b=bEDSMmPvywFGFXLmcFmtoJ8rYrLQxYC8vR+2lzMua5lwd2mcNdhybADcrb+aMdHvqD
-         xMNROW9wnRh6wRUqIN8w8IuRX3SfMmPLs0t3n+FmLcT003LqhVo2OZCz/PJKmrQpObIk
-         8q0yQOl8vJz+0qTCnGkJ9Lvjz6WWTBfhEtDrExCk7jH3KXj5aUUyFTxRH32JXavhGPx9
-         BcI9Iy7lG8DhhLZjs0HPKgO1iEyRKOuzj6uHqEjcZ/BlPy/1Nl1CtbMlGbfkVlmaCKH6
-         7IJ8X3P2MC7sseTJJir323iSgtxjMUIFcivIWnf4JOuhqN8wvLqm/5P5Xlm1txLQkMGL
-         iRqQ==
-X-Gm-Message-State: AOAM5324LUGno5MrYUKfM9fSjsg6/NacFGCyDxR6zJAsVS5Bw7EIKq4E
-        SL2JijfQeM0cfn7SvHeB6yxDvdyKWYhqZIEaPg==
-X-Google-Smtp-Source: ABdhPJxtKMCyalpwo6Rk4XPSadnMPMqQz4M27ofn10pg+q/fy4JS+sm19K/CP1QUZKWIjfQ6AuvOtu9HpgCeOuOOeQ==
+        bh=9WU77qiyFJ2kLEsta1yGwcYoFr6WpwZMlTN2QvzNdcQ=;
+        b=KzfXDJKoCui172dsrSyHuoc1ZQkLSHAvEj6zgGka17ORaVayFP6xI1SgWyrOCeslec
+         QWHJ5ZI8Ff+gznz8wjwlGHWQ0lwiEXcAkAHb7ywbjMBr+c6yRUxEcLEp9A5b8R/z+rzH
+         2BsCFktGDS1v6JaAh7h732e65j4VE2lPuS6ea6ad0zTJ9NWOuqKGzM+tHV0r3Z/dhV2F
+         +NZ+ykCPlUXx9G+x9vR+2N/R44LebCIkAIuMIQBsUcSMUBVLkBsGacIK3lBur42clgKt
+         Zg6q6RUhi7nMbOOM5tPELfw2dizcHD3vdFuSoBJKZGSWQi94oN1HmfRQfvtAXY+d2Wrk
+         NySQ==
+X-Gm-Message-State: AOAM5306DwKsJY9Ubv5YPv+dfWKA6b1IgfOJINOCO/TPyE3gBfvEiUNU
+        6Pgl8GD/ibhMvnT6jvD3QvDKkqvFJppHGNW4Uw==
+X-Google-Smtp-Source: ABdhPJyiMnEsbTg2euGguvqj93KbzV4NSrI0GvzmkEHj4Gpa1PgsADOPZu4SL6FQIysaNjHUxKEEy6x0bm2X74pFeg==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:8717:7707:fb59:664e])
- (user=almasrymina job=sendgmr) by 2002:aa7:88cb:0:b0:49f:ad17:c08 with SMTP
- id k11-20020aa788cb000000b0049fad170c08mr2017245pff.19.1636406411895; Mon, 08
- Nov 2021 13:20:11 -0800 (PST)
-Date:   Mon,  8 Nov 2021 13:19:57 -0800
+ (user=almasrymina job=sendgmr) by 2002:a63:82c6:: with SMTP id
+ w189mr1873879pgd.469.1636406414317; Mon, 08 Nov 2021 13:20:14 -0800 (PST)
+Date:   Mon,  8 Nov 2021 13:19:58 -0800
 In-Reply-To: <20211108211959.1750915-1-almasrymina@google.com>
-Message-Id: <20211108211959.1750915-4-almasrymina@google.com>
+Message-Id: <20211108211959.1750915-5-almasrymina@google.com>
 Mime-Version: 1.0
 References: <20211108211959.1750915-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v1 3/5] mm/oom: handle remote ooms
+Subject: [PATCH v1 4/5] mm, shmem: add tmpfs memcg= option documentation
 From:   Mina Almasry <almasrymina@google.com>
 Cc:     Mina Almasry <almasrymina@google.com>,
         Michal Hocko <mhocko@suse.com>,
@@ -69,14 +68,6 @@ To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
-
-On remote ooms (OOMs due to remote charging), the oom-killer will attempt
-to find a task to kill in the memcg under oom, if the oom-killer
-is unable to find one, the oom-killer should simply return ENOMEM to the
-allocating process.
-
-If we're in pagefault path and we're unable to return ENOMEM to the
-allocating process, we instead kill the allocating process.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 
@@ -98,73 +89,36 @@ Cc: linux-fsdevel@vger.kernel.org
 Cc: cgroups@vger.kernel.org
 
 ---
- mm/memcontrol.c | 21 +++++++++++++++++++++
- mm/oom_kill.c   | 21 +++++++++++++++++++++
- 2 files changed, 42 insertions(+)
+ Documentation/filesystems/tmpfs.rst | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2e4c20d09f959..fc9c6280266b6 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2664,6 +2664,27 @@ int mem_cgroup_get_name_from_sb(struct super_block *sb, char *buf, size_t len)
- 	return ret < 0 ? ret : 0;
- }
+diff --git a/Documentation/filesystems/tmpfs.rst b/Documentation/filesystems/tmpfs.rst
+index 0408c245785e3..1ab04e8fa9222 100644
+--- a/Documentation/filesystems/tmpfs.rst
++++ b/Documentation/filesystems/tmpfs.rst
+@@ -137,6 +137,23 @@ mount options.  It can be added later, when the tmpfs is already mounted
+ on MountPoint, by 'mount -o remount,mpol=Policy:NodeList MountPoint'.
 
-+/*
-+ * Returns true if current's mm is a descendant of the memcg_under_oom (or
-+ * equal to it). False otherwise. This is used by the oom-killer to detect
-+ * ooms due to remote charging.
-+ */
-+bool is_remote_oom(struct mem_cgroup *memcg_under_oom)
-+{
-+	struct mem_cgroup *current_memcg;
-+	bool is_remote_oom;
-+
-+	if (!memcg_under_oom)
-+		return false;
-+
-+	current_memcg = get_mem_cgroup_from_mm(current->mm);
-+	is_remote_oom =
-+		!mem_cgroup_is_descendant(current_memcg, memcg_under_oom);
-+	css_put(&current_memcg->css);
-+
-+	return is_remote_oom;
-+}
-+
- /*
-  * Set or clear (if @memcg is NULL) charge association from file system to
-  * memcg.  If @memcg != NULL, then a css reference must be held by the caller to
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 0a7e16b16b8c3..556329dee273f 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -1106,6 +1106,27 @@ bool out_of_memory(struct oom_control *oc)
- 	}
 
- 	select_bad_process(oc);
++If CONFIG_MEMCG is enabled, tmpfs has a mount option to specify the memory
++cgroup to be charged for page allocations.
 +
-+	/*
-+	 * For remote ooms in userfaults, we have no choice but to kill the
-+	 * allocating process.
-+	 */
-+	if (!oc->chosen && is_remote_oom(oc->memcg) && current->in_user_fault &&
-+	    !oom_unkillable_task(current)) {
-+		get_task_struct(current);
-+		oc->chosen = current;
-+		oom_kill_process(
-+			oc, "Out of memory (Killing remote allocating task)");
-+		return true;
-+	}
++memcg=/sys/fs/cgroup/unified/test/: data page allocations are charged to
++cgroup /sys/fs/cgroup/unified/test/.
 +
-+	/*
-+	 * For remote ooms in non-userfaults, simply return ENOMEM to the
-+	 * caller.
-+	 */
-+	if (!oc->chosen && is_remote_oom(oc->memcg))
-+		return false;
++When charging memory to the remote memcg (memcg specified with memcg=) and
++hitting the limit, the oom-killer will be invoked and will attempt to kill
++a process in the remote memcg. If no such processes are found, the remote
++charging process gets an ENOMEM. If the remote charging process is in the
++pagefault path, it gets killed.
 +
- 	/* Found nothing?!?! */
- 	if (!oc->chosen) {
- 		dump_header(oc, NULL);
++Only processes that have access to /sys/fs/cgroup/unified/test/cgroup.procs can
++mount a tmpfs with memcg=/sys/fs/cgroup/unified/test. Thus, a process is able
++to charge memory to a cgroup only if it itself is able to enter that cgroup.
++
++
+ To specify the initial root directory you can use the following mount
+ options:
+
 --
 2.34.0.rc0.344.g81b53c2807-goog
