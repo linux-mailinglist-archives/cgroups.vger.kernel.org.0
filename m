@@ -2,316 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D04944CB35
-	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 22:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B5C44D119
+	for <lists+cgroups@lfdr.de>; Thu, 11 Nov 2021 06:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhKJVW5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Nov 2021 16:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233220AbhKJVW4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Nov 2021 16:22:56 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E43C0613F5
-        for <cgroups@vger.kernel.org>; Wed, 10 Nov 2021 13:20:08 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id g142-20020a625294000000b004946d789d14so2662201pfb.3
-        for <cgroups@vger.kernel.org>; Wed, 10 Nov 2021 13:20:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=XWUyVcqFDorfkxK8BmUlQ2jLw5lcWmVuPPsoovex71Y=;
-        b=G2nMJLGxPIMyEeUfb/vaasX85o5Sfnbuzq+2YEd/YK686uuZTNaruqnosc1t/nwbaF
-         m5N05wjs10IyzymZE1gJ6SWhZ1AMTcdNqaVe9/ePQ2lp28a0MtFXaJFaLSD8rvEzo5Wh
-         arhruu4iKXYXKUfbZPe5gNtak87IS9WUPyWzKzMJN8Yxwl5hewD/kaNYM4lIxyeTf+fa
-         nBx6tWsFO5qj9ltm0CS79xcUMAQAurs6zyFOmzCmBBqH4fRRF/TfEkkeKLL+FAEsaSzs
-         RtO8Yf1co/HOZQINwy2CIqTxLQgBoMSO3o/5uxwPDjYidsajo4DRAO7ZTOxHZhxVZTK5
-         Ornw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=XWUyVcqFDorfkxK8BmUlQ2jLw5lcWmVuPPsoovex71Y=;
-        b=HgH2RPmvXQE4d0XZCezLd0ZQ5W8DBkoMSWF101sdxaHMM/Dn0KDo+6gehtBI/UC8qb
-         IKGY4el2h9IpNbZ0OlMN57b2Sz38CyNzrnndmt29x8EF7WllmXZCJUYJSWuv/eWr1mXV
-         AQwjZH7I9EG303OTRuUdtgt9VtIxDYI+DGl+vT9P5S48TLkMkafASueikMwlbRgesd/R
-         SJ3WcNtj2o0k4QxVLAAYDGVex+t2/d5XYKivzuyZK8aetyBanXV9KvR2axiunrQkul+/
-         3jOvbYTj0PCrrR3KbLzkBSHDAsMzJ0O0oadh5Kgvrt1RWyjvx3d4w01DygDo5VeXJSUX
-         DJ2g==
-X-Gm-Message-State: AOAM5307G3DvkdK5qJVmjlZfM3dQTCTYC6cz73RJutrhXwoNDUl4nQ+T
-        R+xeISnJvswxWxb3wQxcBdGe0GfqspIEpJbpxQ==
-X-Google-Smtp-Source: ABdhPJwgK2AbRmOmsVL7fZ0uDB5Xq1S64WUY/kQU6kiEqA95TWLlPwwtuaHfqsCtshAjZpFdVr+GfBeRh9uNMzO7/w==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:59c8:7b4e:e859:9db0])
- (user=almasrymina job=sendgmr) by 2002:a62:4e87:0:b0:47b:dbbf:c6f0 with SMTP
- id c129-20020a624e87000000b0047bdbbfc6f0mr2005596pfb.47.1636579207325; Wed,
- 10 Nov 2021 13:20:07 -0800 (PST)
-Date:   Wed, 10 Nov 2021 13:19:50 -0800
-In-Reply-To: <20211110211951.3730787-1-almasrymina@google.com>
-Message-Id: <20211110211951.3730787-5-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20211110211951.3730787-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.34.0.rc0.344.g81b53c2807-goog
-Subject: [PATCH v2 4/4] mm, shmem, selftests: add tmpfs memcg= mount option tests
-From:   Mina Almasry <almasrymina@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S229668AbhKKFJW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Thu, 11 Nov 2021 00:09:22 -0500
+Received: from host-200-90-157-143.netpc.ec ([200.90.157.143]:51786 "EHLO
+        mail.gruponetpc.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhKKFJU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Nov 2021 00:09:20 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gruponetpc.com (Postfix) with ESMTP id 58903E0FB29;
+        Wed, 10 Nov 2021 08:37:06 -0500 (-05)
+Received: from mail.gruponetpc.com ([127.0.0.1])
+        by localhost (mail.gruponetpc.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uQVs6cJIZhVE; Wed, 10 Nov 2021 08:37:05 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gruponetpc.com (Postfix) with ESMTP id 62E338667C8;
+        Tue,  9 Nov 2021 22:21:55 -0500 (-05)
+X-Virus-Scanned: amavisd-new at gruponetpc.com
+Received: from mail.gruponetpc.com ([127.0.0.1])
+        by localhost (mail.gruponetpc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qs_LApJ6uYqI; Tue,  9 Nov 2021 22:21:54 -0500 (-05)
+Received: from [192.168.0.108] (unknown [93.182.105.113])
+        by mail.gruponetpc.com (Postfix) with ESMTPSA id C8D9F8667B3;
+        Tue,  9 Nov 2021 15:25:13 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: donation
+To:     Recipients <ecouso@mail.gruponetpc.com>
+From:   ecouso@mail.gruponetpc.com
+Date:   Tue, 09 Nov 2021 20:24:41 +0000
+Reply-To: stefanopessina35@gmail.com
+Message-Id: <20211109202513.C8D9F8667B3@mail.gruponetpc.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Greg Thelen <gthelen@google.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Dave Chinner <david@fromorbit.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Cc: riel@surriel.com
-Cc: linux-mm@kvack.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: cgroups@vger.kernel.org
 
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/mmap_write.c   | 103 ++++++++++++++++++++++
- tools/testing/selftests/vm/tmpfs-memcg.sh |  87 ++++++++++++++++++
- 3 files changed, 191 insertions(+)
- create mode 100644 tools/testing/selftests/vm/mmap_write.c
- create mode 100755 tools/testing/selftests/vm/tmpfs-memcg.sh
+Hallo,
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 2e7e86e852828..cb229974c5f15 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -19,6 +19,7 @@ madv_populate
- userfaultfd
- mlock-intersect-test
- mlock-random-test
-+mmap_write
- virtual_address_range
- gup_test
- va_128TBswitch
-diff --git a/tools/testing/selftests/vm/mmap_write.c b/tools/testing/selftests/vm/mmap_write.c
-new file mode 100644
-index 0000000000000..88a8468f2128c
---- /dev/null
-+++ b/tools/testing/selftests/vm/mmap_write.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This program faults memory in tmpfs
-+ */
-+
-+#include <err.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/shm.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+
-+/* Global definitions. */
-+
-+/* Global variables. */
-+static const char *self;
-+static char *shmaddr;
-+static int shmid;
-+
-+/*
-+ * Show usage and exit.
-+ */
-+static void exit_usage(void)
-+{
-+	printf("Usage: %s -p <path to tmpfs file> -s <size to map>\n", self);
-+	exit(EXIT_FAILURE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int fd = 0;
-+	int key = 0;
-+	int *ptr = NULL;
-+	int c = 0;
-+	int size = 0;
-+	char path[256] = "";
-+	int want_sleep = 0, private = 0;
-+	int populate = 0;
-+	int write = 0;
-+	int reserve = 1;
-+
-+	/* Parse command-line arguments. */
-+	setvbuf(stdout, NULL, _IONBF, 0);
-+	self = argv[0];
-+
-+	while ((c = getopt(argc, argv, ":s:p:")) != -1) {
-+		switch (c) {
-+		case 's':
-+			size = atoi(optarg);
-+			break;
-+		case 'p':
-+			strncpy(path, optarg, sizeof(path));
-+			break;
-+		default:
-+			errno = EINVAL;
-+			perror("Invalid arg");
-+			exit_usage();
-+		}
-+	}
-+
-+	printf("%s\n", path);
-+	if (strncmp(path, "", sizeof(path)) != 0) {
-+		printf("Writing to this path: %s\n", path);
-+	} else {
-+		errno = EINVAL;
-+		perror("path not found");
-+		exit_usage();
-+	}
-+
-+	if (size != 0) {
-+		printf("Writing this size: %d\n", size);
-+	} else {
-+		errno = EINVAL;
-+		perror("size not found");
-+		exit_usage();
-+	}
-+
-+	fd = open(path, O_CREAT | O_RDWR, 0777);
-+	if (fd == -1)
-+		err(1, "Failed to open file.");
-+
-+	if (ftruncate(fd, size))
-+		err(1, "failed to ftruncate %s", path);
-+
-+	ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (ptr == MAP_FAILED) {
-+		close(fd);
-+		err(1, "Error mapping the file");
-+	}
-+
-+	printf("Writing to memory.\n");
-+	memset(ptr, 1, size);
-+	printf("Done writing to memory.\n");
-+	close(fd);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/vm/tmpfs-memcg.sh b/tools/testing/selftests/vm/tmpfs-memcg.sh
-new file mode 100755
-index 0000000000000..eb584ddcbae5f
---- /dev/null
-+++ b/tools/testing/selftests/vm/tmpfs-memcg.sh
-@@ -0,0 +1,87 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+CGROUP_PATH=/dev/cgroup/memory/tmpfs-memcg-test
-+
-+function cleanup() {
-+  rm -rf /mnt/tmpfs/*
-+  umount /mnt/tmpfs
-+  rm -rf /mnt/tmpfs
-+
-+  rmdir $CGROUP_PATH
-+
-+  echo CLEANUP DONE
-+}
-+
-+function setup() {
-+  mkdir -p $CGROUP_PATH
-+  echo $((10 * 1024 * 1024)) > $CGROUP_PATH/memory.limit_in_bytes
-+  echo 0 > $CGROUP_PATH/cpuset.cpus
-+  echo 0 > $CGROUP_PATH/cpuset.mems
-+
-+  mkdir -p /mnt/tmpfs
-+
-+  echo SETUP DONE
-+}
-+
-+function expect_equal() {
-+  local expected="$1"
-+  local actual="$2"
-+  local error="$3"
-+
-+  if [[ "$actual" != "$expected" ]]; then
-+    echo "expected ($expected) != actual ($actual): $3" >&2
-+    cleanup
-+    exit 1
-+  fi
-+}
-+
-+function expect_ge() {
-+  local expected="$1"
-+  local actual="$2"
-+  local error="$3"
-+
-+  if [[ "$actual" -lt "$expected" ]]; then
-+    echo "expected ($expected) < actual ($actual): $3" >&2
-+    cleanup
-+    exit 1
-+  fi
-+}
-+
-+cleanup
-+setup
-+
-+mount -t tmpfs -o memcg=$CGROUP_PATH tmpfs /mnt/tmpfs
-+
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_equal 0 "$TARGET_MEMCG_USAGE" "Before echo, memcg usage should be 0"
-+
-+# Echo to allocate a page in the tmpfs
-+echo hello > /mnt/tmpfs/test
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_ge 4096 "$TARGET_MEMCG_USAGE" "After echo, memcg usage should be greater than 4096"
-+echo "Echo test succeeded"
-+
-+tools/testing/selftests/vm/mmap_write -p /mnt/tmpfs/test -s $((1 * 1024 * 1024))
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_ge $((1 * 1024 * 1024)) "$TARGET_MEMCG_USAGE" "After echo, memcg usage should greater than 1MB"
-+echo "Write succeeded"
-+
-+# OOM the remote container on pagefault.
-+echo
-+echo
-+echo "OOMing the remote container using pagefault."
-+echo "This will take a long time because the kernel goes through reclaim retries,"
-+echo "but should eventually be OOM-killed by 'Out of memory (Killing remote allocating task)'"
-+#tools/testing/selftests/vm/mmap_write -p /mnt/tmpfs/test -s $((11 * 1024 * 1024))
-+
-+# OOM the remote container on non pagefault.
-+echo
-+echo
-+echo "OOMing the remote container using cat (non-pagefault)"
-+echo "This will take a long time because the kernel goes through reclaim retries,"
-+echo "but should eventually the cat command should receive an ENOMEM"
-+cat /dev/random > /mnt/tmpfs/random
-+
-+cleanup
-+echo SUCCESS
---
-2.34.0.rc0.344.g81b53c2807-goog
+Ich bin STEFANO PESSINA. Ich bin ein italienisch-monegassischer Milliardär und stellvertretender Vorsitzender, Chief Executive Officer (CEO) und größter Einzelaktionär der Walgreens Boots Alliance. Au   fgrund dieser aktuellen Situation (Corona-Virus), die sich auf der ganzen Welt ausbreitet, spenden ich selbst und andere 19 italienische Milliardäre mehr als 45 Millionen US-Dollar, um das Coronavirus in Italien zu bekämpfen. Ich habe auch zugesagt, 1.500.000,00 € an Einzelpersonen, Kirchen und Waisenhäuser usw. zu spenden. Ich habe mich entschieden, Ihnen 1.500.000,00 € zu spenden, da Ihre E-Mail-Adresse zu den glücklichen Gewinnern gehört. Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich für weitere Informationen. Du kannst auch über den untenstehenden Link mehr über mich lesen
+
+https://en.wikipedia.org/wiki/Stefano_Pessina
+
+Herzlicher Gruss
+Stellvertretender Vorsitzender und Geschäftsführer,
+Walgreens Boots-Allianz.
+Stefano Pessina
+
+E-Mail: stefanopessina35@gmail.com
+
+
+
