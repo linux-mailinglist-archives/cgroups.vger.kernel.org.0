@@ -2,272 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A9E44B2D1
-	for <lists+cgroups@lfdr.de>; Tue,  9 Nov 2021 19:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7B244B97D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 00:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242494AbhKISue (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Nov 2021 13:50:34 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:47490 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242084AbhKISud (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Nov 2021 13:50:33 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A54B21891;
-        Tue,  9 Nov 2021 18:47:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636483666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tl20pYAY9isTiU5ioe6IbRR2SERdyiWxrZWCK2XNM5Q=;
-        b=eIyPIbdHtYfPRDMSWXGRcNKFDQ9FTUyaN/6DhhBxe+wncacdegTRk++rjT+PgCPiGDawbv
-        ffxKE/FVGfiiULupJO6aeksqEVpVD8G0zhsdgx+EBjGwFX2JD/SGz6NtwlQiQybRBdHjhO
-        jSFcOVFpG0jljkxrLYdAb1Ow4Frq3bg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE97213B30;
-        Tue,  9 Nov 2021 18:47:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id d3KnOVHCimF3dQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 09 Nov 2021 18:47:45 +0000
-Date:   Tue, 9 Nov 2021 19:47:44 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathias Krause <minipli@grsecurity.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-kernel@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        Kevin Tanguy <kevin.tanguy@corp.ovh.com>,
-        Brad Spengler <spender@grsecurity.net>, cgroups@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Prevent dead task groups from regaining
- cfs_rq's
-Message-ID: <20211109184744.GA31882@blackbody.suse.cz>
-References: <CAKfTPtBm4vHr=svju=Qg6eZmcv8YDghtM2r_pOahZ2gC3tzTxg@mail.gmail.com>
- <a6a3c6c9-d5ea-59b6-8871-0f72bff38833@grsecurity.net>
- <CAKfTPtBxoKBRWs4Z3Pxsk8==Ka9SG7NS3LzfOV33-2UXfhSM=g@mail.gmail.com>
- <cd3778d3-6980-a804-47e3-82b09dc960a4@grsecurity.net>
- <CAKfTPtDthksitm02sLowDMKbWZ29efth-YcPi0zVSFqbaZfiMA@mail.gmail.com>
- <8f4ed996-e6e5-75f4-b5fa-dffb7b7da05b@grsecurity.net>
- <20211105162914.215420-1-minipli@grsecurity.net>
- <20211106104854.GU174703@worktop.programming.kicks-ass.net>
- <9e8b2c49-2a10-2b34-e644-2b99708080bc@grsecurity.net>
- <YYkMoxLPgMt4uV/g@hirez.programming.kicks-ass.net>
+        id S230201AbhKIX7C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 9 Nov 2021 18:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhKIX7C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Nov 2021 18:59:02 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA79C061764
+        for <cgroups@vger.kernel.org>; Tue,  9 Nov 2021 15:56:15 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id k22so700972iol.13
+        for <cgroups@vger.kernel.org>; Tue, 09 Nov 2021 15:56:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZoK2BBW7Jb6r8LW9mP4KvyVyymYNKZIHae58TqDdmjM=;
+        b=e62I04EFslO8JvLVvNHAQ9M278/k+EW9C9hQfqvs/2+1DafaBcurjF1Tw40Jotuw+8
+         a76hUHEIBUw5sz5N2VC+8FIXdNs5LWOHUchzTowWdzRQ/qhobM2E6HSI8tealG9nyest
+         n2XPAp6ghoqcSFzmU+dOTMiMh92xrGfzgVxjnE32SvOSK3UTFa+XyHQAYUb3cuogUoI3
+         ktrpsTE3cnwIVA+a7jEVel4GzAXQTy3pA5r5hQezKzGG9mHJiJKuHKaOieoaFn5B8RRJ
+         ylafV0ZEx69LyWI/2bXv3H+IPK2Jfx1t20og61f7SXBp24yFlnMaUX9QSaLexn24zRvF
+         S8pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZoK2BBW7Jb6r8LW9mP4KvyVyymYNKZIHae58TqDdmjM=;
+        b=oTKVW5y3W8/6NQZPUBtkyMVgfozZxoX9TB7wyBN35UeVDZzyUO0I3xwHkkFSlES7JF
+         1ueXtKCD5OhXmeDzUGtvzkpU9Ra/z628uWo/ty210QMxt34ZcadCobBLaYmR/USaGaCr
+         QROiTl5RTE8LFkmN5+ke8L1Zgf4OFnLXL2v2bTaRWf0p7wmrfkAANv6A0bAqKErHjp12
+         YjESu576A5R5CC9NigUubYiTeg2C+p0yIXervQgK0pJtxdlIzIVnJpvW6T1jFt8fmUyI
+         axaOb9N/Iz/FAJdHryPBzpC9i+L/T7+KUOAuHWBOWN7O74s//qvGQZTH0swz1acyGARd
+         myeg==
+X-Gm-Message-State: AOAM5301t+5RJpzeXgDl6I/8pmRfCWvnsEfuA2b2ewxRbHrK3KiGDhbx
+        Zv7mLqw1ljCA8eplDIZt/T6fXKj75hmLCQBsUcW2yQ==
+X-Google-Smtp-Source: ABdhPJzG072qHQ/0yi0HddSOZXPMaJDZ+ZFS0cuRcHJhcqYNWirO7+r+0gMr2/R+GvX5VWGlK+sRjtiZ3BPsTw10ozg=
+X-Received: by 2002:a05:6638:4183:: with SMTP id az3mr431731jab.56.1636502174733;
+ Tue, 09 Nov 2021 15:56:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YYkMoxLPgMt4uV/g@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211108211959.1750915-1-almasrymina@google.com>
+ <20211108211959.1750915-2-almasrymina@google.com> <20211108221047.GE418105@dread.disaster.area>
+ <YYm1v25dLZL99qKK@casper.infradead.org> <20211109011837.GF418105@dread.disaster.area>
+In-Reply-To: <20211109011837.GF418105@dread.disaster.area>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 9 Nov 2021 15:56:03 -0800
+Message-ID: <CAHS8izNwX80px5X=JrQAfgTBO5=rCN_hSybLW6T1CWmqG5b7eQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] mm/shmem: support deterministic charging of tmpfs
+To:     david@fromorbit.com
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Roman Gushchin <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, riel@surriel.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+On Mon, Nov 8, 2021 at 5:18 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, Nov 08, 2021 at 11:41:51PM +0000, Matthew Wilcox wrote:
+> > On Tue, Nov 09, 2021 at 09:10:47AM +1100, Dave Chinner wrote:
+> > > > + rcu_read_lock();
+> > > > + memcg = rcu_dereference(mapping->host->i_sb->s_memcg_to_charge);
+> > >
+> > > Anything doing pointer chasing to obtain static, unchanging
+> > > superblock state is poorly implemented. The s_memcg_to_charge value never
+> > > changes, so this code should associate the memcg to charge directly
+> > > on the mapping when the mapping is first initialised by the
+> > > filesystem. We already do this with things like attaching address
+> > > space ops and mapping specific gfp masks (i.e
+> > > mapping_set_gfp_mask()), so this association should be set up that
+> > > way, too (e.g. mapping_set_memcg_to_charge()).
+> >
+> > I'm not a fan of enlarging struct address_space with another pointer
+> > unless it's going to be used by all/most filesystems.  If this is
+> > destined to be a shmem-only feature, then it should be in the
+> > shmem_inode instead of the mapping.
+>
+> Neither am I, but I'm also not a fan of the filemap code still
+> having to drill through the mapping to the host inode just to check
+> if it needs to do special stuff for shmem inodes on every call that
+> adds a page to the page cache. This is just as messy and intrusive
+> and the memcg code really has no business digging about in the
+> filesystem specific details of the inode behind the mapping.
+>
+> Hmmm. The mem_cgroup_charge() call in filemap_add_folio() passes a
+> null mm context, so deep in the guts it ends getting the memcg from
+> active_memcg() in get_mem_cgroup_from_mm(). That ends up using
+> current->active_memcg, so maybe a better approach here is to have
+> shmem override current->active_memcg via set_active_memcg() before
+> it enters the generic fs paths and restore it on return...
+>
+> current_fsmemcg()?
+>
 
-Let me add a little summary (and I'm CCing cgroups ML too).
+Thank you for providing a detailed alternative. To be honest it seems
+a bit brittle to me, as in folks can easily add calls to generic fs
+paths forgetting to override the active_memcg and having memory
+charged incorrectly, but if there is no other option and we want to
+make this a shmem-only feature, I can do this anyway.
 
-The cgroup API allows following callbacks (simplified explanation):
+> > If we are to have this for all filesystems, then let's do that properly
+> > and make it generic functionality from its introduction.
+>
+> Fully agree.
 
-- .css_offline           called after killing main reference 
-- .css_released          called when css.refcnt hits zero 
-- .css_free              called after css_released and RCU GP 
+So the tmpfs feature addresses the first 2 usecases I mention in the
+cover letter. For the 3rd usecase I will likely need to extend this
+support to 1 disk-based filesystem, and I'm not sure which at this
+point. It also looks like Roman has in mind 1 or more use cases and
+may extend it to other filesystems as a result. I'm hoping that I can
+provide the generic implementation and the tmpfs support and in follow
+up patches folks can extend this to other file systems by providing
+the fs-specific changes needed for that filesystem.
 
-(The hidden catch is that they're not called directly but through workqueues,
-see css_free_work_fn() for details. .css_free() is queued after RCU GP though.)
+AFAICT with this patch the work to extend to another file system is to
+parse the memcg= option in that filesystem, set the s_memcg_to_charge
+on the superblock (or mapping) of that filesystem, and to charge
+s_memcg_to_charge in fs specific code paths, so all are fs-specific
+changes.
 
-How is this currently used in the cpu controller:
-
-- .css_offline           not used
-- .css_released          sched_offline_group / unregister_fair_sched_group
-- .css_free              sched_free_group / free_fair_sched_group
-
-
-On Mon, Nov 08, 2021 at 12:40:19PM +0100, Peter Zijlstra <peterz@infradead.org> wrote:
-> Something like so good?
-
-Thanks for putting this together, in short I understand it reshuffles as follows:
-
-.css_offline    not used
-.css_released   cpu_cgroup_css_released
-                  sched_released_group(tg)
-                    // unlinking from tg tree
-.css_free       cpu_cgroup_css_free
-                  sched_unregister_group(tg)
-                    unregister_fair_sched_group(tg)
-                      for_each(cpu)
-                        remove_entity_load_avg(cfs_rq)
-                        list_del_leaf_cfs_rq(cfs_rq)    (1)
-                      destroy_cfs_bandwidth(tg)         (2)
-                    call_rcu(sched_free_group_rcu)      (3)
-                      [rcu] sched_free_group
-
-I see two following issues with this:
-
-The cfs_bandwidth.period_timer is still active between (1) and (2) and can be
-fired and tg_unthrottle_up() may add a cfs_rq back to the leaf list (subsequent
-GP won't help).
-(Admittedly, this window is shorter than the original window between
-cpu_cgroup_css_released() and cpu_cgroup_css_released().)
-
-Having another call_rcu() at (3) seems overly complex given the cgroup API
-provides a grace period for free (pun intended :-).
+Based on this, it seems to me the suggestion is to hang the
+memcg_to_charge off the mapping? I'm not sure if *most/all*
+filesystems will eventually support it, but likely more than just
+tmpfs.
 
 
-Therefore, symbolically, the symbolic ordering should be:
 
-.css_offline    not used
-.css_released   cpu_cgroup_css_released
-                  sched_unregister_group(tg)
-                    unregister_fair_sched_group(tg)
-                      destroy_cfs_bandwidth(tg)
-                      for_each(cpu)
-                        remove_entity_load_avg(cfs_rq)
-                        list_del_leaf_cfs_rq(cfs_rq)
-                  sched_released_group(tg)
-                    // unlinking from tg tree
 
-.css_free       cpu_cgroup_css_free
-                  sched_free_group
-
-That is, the destroy_cfs_bandwidth() is called first to make sure the
-tg_unthrottle_up() won't undo some of the cleanups and the respective
-structures are only freed after RCU grace period.
-
-(Considering Vincent's remark, remove_entity_load_avg() and
-list_del_leaf_cfs_rq() should be swapped but I'd keep that for a different
-patch.)
-
-To continue the discussion, the suggestion above in a form of diff (I stripped
-the commit message for now).
-
---8<--
-diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
-index 2067080bb235..8629b37d118e 100644
---- a/kernel/sched/autogroup.c
-+++ b/kernel/sched/autogroup.c
-@@ -31,7 +31,7 @@ static inline void autogroup_destroy(struct kref *kref)
- 	ag->tg->rt_se = NULL;
- 	ag->tg->rt_rq = NULL;
- #endif
--	sched_offline_group(ag->tg);
-+	sched_release_group(ag->tg);
- 	sched_destroy_group(ag->tg);
- }
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 523fd602ea90..a5ca3ae6837b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9771,12 +9771,12 @@ void sched_destroy_group(struct task_group *tg)
- 	call_rcu(&tg->rcu, sched_free_group_rcu);
- }
- 
--void sched_offline_group(struct task_group *tg)
-+void sched_release_group(struct task_group *tg)
- {
- 	unsigned long flags;
- 
--	/* End participation in shares distribution: */
- 	unregister_fair_sched_group(tg);
-+	unregister_rt_sched_group(tg);
- 
- 	spin_lock_irqsave(&task_group_lock, flags);
- 	list_del_rcu(&tg->list);
-@@ -9896,7 +9896,7 @@ static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
- {
- 	struct task_group *tg = css_tg(css);
- 
--	sched_offline_group(tg);
-+	sched_release_group(tg);
- }
- 
- static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 13950beb01a2..6e476f6d9435 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11456,8 +11456,6 @@ void free_fair_sched_group(struct task_group *tg)
- {
- 	int i;
- 
--	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
--
- 	for_each_possible_cpu(i) {
- 		if (tg->cfs_rq)
- 			kfree(tg->cfs_rq[i]);
-@@ -11534,6 +11532,8 @@ void unregister_fair_sched_group(struct task_group *tg)
- 	struct rq *rq;
- 	int cpu;
- 
-+	destroy_cfs_bandwidth(tg_cfs_bandwidth(tg));
-+
- 	for_each_possible_cpu(cpu) {
- 		if (tg->se[cpu])
- 			remove_entity_load_avg(tg->se[cpu]);
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index bb945f8faeca..b48baaba2fc2 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -137,13 +137,17 @@ static inline struct rq *rq_of_rt_se(struct sched_rt_entity *rt_se)
- 	return rt_rq->rq;
- }
- 
--void free_rt_sched_group(struct task_group *tg)
-+void unregister_rt_sched_group(struct task_group *tg)
- {
--	int i;
--
- 	if (tg->rt_se)
- 		destroy_rt_bandwidth(&tg->rt_bandwidth);
- 
-+}
-+
-+void free_rt_sched_group(struct task_group *tg)
-+{
-+	int i;
-+
- 	for_each_possible_cpu(i) {
- 		if (tg->rt_rq)
- 			kfree(tg->rt_rq[i]);
-@@ -250,6 +254,8 @@ static inline struct rt_rq *rt_rq_of_se(struct sched_rt_entity *rt_se)
- 	return &rq->rt;
- }
- 
-+void unregister_rt_sched_group(struct task_group *tg) { }
-+
- void free_rt_sched_group(struct task_group *tg) { }
- 
- int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7f1612d26c18..0e66749486e7 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -488,6 +488,7 @@ extern void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b);
- extern void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
- extern void unthrottle_cfs_rq(struct cfs_rq *cfs_rq);
- 
-+extern void unregister_rt_sched_group(struct task_group *tg);
- extern void free_rt_sched_group(struct task_group *tg);
- extern int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent);
- extern void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
-@@ -503,7 +504,7 @@ extern struct task_group *sched_create_group(struct task_group *parent);
- extern void sched_online_group(struct task_group *tg,
- 			       struct task_group *parent);
- extern void sched_destroy_group(struct task_group *tg);
--extern void sched_offline_group(struct task_group *tg);
-+extern void sched_release_group(struct task_group *tg);
- 
- extern void sched_move_task(struct task_struct *tsk);
- 
-
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
