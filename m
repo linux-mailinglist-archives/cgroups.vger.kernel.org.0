@@ -2,43 +2,26 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5AE44C680
-	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 18:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A58E944C6C6
+	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 19:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232198AbhKJRyw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Nov 2021 12:54:52 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37358 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhKJRyw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Nov 2021 12:54:52 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 53FC31FDC1;
-        Wed, 10 Nov 2021 17:52:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636566723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KvAGaaEk28BI3M4YLWXsJxHLc6pSST1USyqVE8D7V0U=;
-        b=dy+BELMi2a26LP+9/WoG7sygm2jQaK0aPhymhLAFozDgSa+Om7lHTdxBL3zlvpx5ad173n
-        sizdEvd6MbtzonKUrDJib73uc0TRbxg0+HaMJZh1oiVVnGxDBJh8zp1iolsBx61zKTwd6p
-        zZpBowSmOeBbvUhfLAawN85O+V7o5zQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16D6313C7D;
-        Wed, 10 Nov 2021 17:52:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iYcEBcMGjGGVLwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 10 Nov 2021 17:52:03 +0000
-Date:   Wed, 10 Nov 2021 18:52:01 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
+        id S230388AbhKJScB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Nov 2021 13:32:01 -0500
+Received: from goliath.siemens.de ([192.35.17.28]:40995 "EHLO
+        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhKJScA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Nov 2021 13:32:00 -0500
+X-Greylist: delayed 1446 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 13:31:59 EST
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 1AAI4ckg023350
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Nov 2021 19:04:39 +0100
+Received: from [167.87.75.31] ([167.87.75.31])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1AAI4ahw016947;
+        Wed, 10 Nov 2021 19:04:36 +0100
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
+ empty effecitve cpus
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
 Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
         "Moessbauer, Felix" <felix.moessbauer@siemens.com>,
         "longman@redhat.com" <longman@redhat.com>,
@@ -58,30 +41,45 @@ Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
         "shuah@kernel.org" <shuah@kernel.org>,
         "tj@kernel.org" <tj@kernel.org>,
         "henning.schild@siemens.com" <henning.schild@siemens.com>
-Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Message-ID: <20211110175201.GA51149@blackbody.suse.cz>
 References: <20211018143619.205065-1-longman@redhat.com>
  <20211110111357.17617-1-felix.moessbauer@siemens.com>
  <20211110135653.GD20566@blackbody.suse.cz>
  <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
  <20211110161020.GA20101@fuller.cnet>
  <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
+ <20211110175201.GA51149@blackbody.suse.cz>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <44a28cc4-f68f-6e2c-1b0a-18b6570edc5f@siemens.com>
+Date:   Wed, 10 Nov 2021 19:04:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211110175201.GA51149@blackbody.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c1e94031-a179-dc72-e5ee-3f8197bea492@siemens.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 05:15:41PM +0100, Jan Kiszka <jan.kiszka@siemens.com> wrote:
-> Is there pthread_attr_setcgroup_np()?
+On 10.11.21 18:52, Michal Koutný wrote:
+> On Wed, Nov 10, 2021 at 05:15:41PM +0100, Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>> Is there pthread_attr_setcgroup_np()?
+> 
+> If I'm not mistaken the 'p' in pthreads stands for POSIX and cgroups are
+> Linux specific so you won't find that (unless you implement that
+> yourself). ¯\_(ツ)_/¯
+> 
 
-If I'm not mistaken the 'p' in pthreads stands for POSIX and cgroups are
-Linux specific so you won't find that (unless you implement that
-yourself). ¯\_(ツ)_/¯
+I know what it stands for :). But I don't want to re-implement pthreads
+just to have a single creation-time configurable injected. Neither would
+developer of standard application, e.g. libvirt for the rt-kvm special
+case while most of their use cases are fine with regular pthread APIs. I
+think there is also a demand for a programming model that fits into
+existing ones.
 
-Michal
+Jan
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
