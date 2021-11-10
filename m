@@ -2,224 +2,677 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F4544C44C
-	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 16:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6015444C47F
+	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 16:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhKJPYp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Nov 2021 10:24:45 -0500
-Received: from mail-eopbgr40042.outbound.protection.outlook.com ([40.107.4.42]:16206
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231148AbhKJPYo (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:24:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TPCtVuVLPnr+oBYyW6P34IauVuvE1s4xEhNCsdyuRG8RhJwpkOtHNIjmVC7IV4GKGIrLIMkL1TmJQjQAOCnPalXX6bfG++m9iVdHXy+NW126aJHWE8/HCKUSPo+ItTEb+JVrCE7bfxhJKNVkDeSPcuwSq+NOLDV3TmtSH6qpvWekR/QhLxNeTKITO1jFNFG606w6lVI4tsGnJBeLh4/fa8ou2+aYUHFVTeLV1zCUgAfzXlXCenwrmL7Bca+g/3ISZu7VgRLpED/Yu4fm7PNoS/zi+/q8NmDTR+KQ5c+cq7gDfrEyEAKBx3qxCNr6HD5nzXkd8IYYGVlcdob5RaEkgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U0qRMyI8auFOGLBDH0E8gQPrF0wZc8jAySp3hMZCv30=;
- b=bHY2HnAAgVHIsxhY6oDX41hQ6+Nf1KSJjFJru0tdnsR5FwuIntFQP/52yql+TUesTbwcXl2cSDR6RsyjhQINZUjj3zZ8tcpOZqqqiW5wXQW0eidXLfrsRxIFu4ueVH/sdE3Uo4kkvUpohY1g3XR36Y0x/mnwE9svZtFWP41NpZGJfE5MWGWu+bfczPCYFFfxcoJyzQfuctHwBoZeqBP3JtvsOfVasbHeJqB/rKEutTCziD8MJYqa96HcGD3ANAN2PnsixkMZKAN3Y8OBNE5J6I8SOM2mpdmOhO7qjEF+5FV1/Gr/71w4frDwacRFJFX78cC3QfRu5lCef4INeiLaBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U0qRMyI8auFOGLBDH0E8gQPrF0wZc8jAySp3hMZCv30=;
- b=zqkvKrLSA6rAcm8UPfhqrGtCGGT6A5B8l5AKmWNKhDn0RWRNEWSmi/qx+X6AZFKpMe9TgneUNkDcTB8EYuoPwTJQq8llXttBPb2jngI+yKW4yEBocICbYXdmbvE1zl4P1an5Q4qO2hteOTHsnHLp5pwuxwcn9aHK/8qk6MoDqGxfYG7Bw+kPrSg7s1uzk5cLxIVZFdklRhZifBaUCvvvjt/jxKjZAlKPFqkhRLbrCjpBO6KrtT2WZiNZ6i9/Dw9LWoU2uyMitGkduEUTv2DHa0mBuKmqL/Bj9h4A0+XeBXWZmU0t/XH6lVevBSQLVKNhceGK8ZQrVtdhp6ZjQqv3Hg==
-Received: from AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:418::19)
- by AM9PR10MB4824.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:413::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.15; Wed, 10 Nov
- 2021 15:21:54 +0000
-Received: from AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6d66:e6b9:219c:48fb]) by AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6d66:e6b9:219c:48fb%7]) with mapi id 15.20.4690.015; Wed, 10 Nov 2021
- 15:21:54 +0000
-From:   "Moessbauer, Felix" <felix.moessbauer@siemens.com>
-To:     =?iso-8859-1?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
-CC:     "longman@redhat.com" <longman@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "guro@fb.com" <guro@fb.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "mtosatti@redhat.com" <mtosatti@redhat.com>,
-        "pauld@redhat.com" <pauld@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>
-Subject: RE: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Thread-Topic: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Thread-Index: AQHX1iUJ+hEXYuVug0y1LdvFiDDLvqv8yVeAgAAS1aA=
-Date:   Wed, 10 Nov 2021 15:21:54 +0000
-Message-ID: <AM9PR10MB4869C14EAE01B87C0037BF6A89939@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211110111357.17617-1-felix.moessbauer@siemens.com>
- <20211110135653.GD20566@blackbody.suse.cz>
-In-Reply-To: <20211110135653.GD20566@blackbody.suse.cz>
-Accept-Language: en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Enabled=true;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SetDate=2021-11-10T15:21:52Z;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Method=Standard;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_Name=restricted-default;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ActionId=e213f4a3-4e0f-4b21-92c7-8dd0b1e3037d;
- MSIP_Label_a59b6cd5-d141-4a33-8bf1-0ca04484304f_ContentBits=0
-document_confidentiality: Restricted
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5a666b28-71c2-4165-6b04-08d9a45dd407
-x-ms-traffictypediagnostic: AM9PR10MB4824:
-x-ld-processed: 38ae3bcd-9579-4fd4-adda-b42e1495d55a,ExtAddr
-x-microsoft-antispam-prvs: <AM9PR10MB4824E49C86C8D8345D9ADF5B89939@AM9PR10MB4824.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vSk9c4okLQz7eUQMi5Gf/hixIGZzd9H+z9mrnSYDyR3xXETLfWQsb4GtS5CZlEefiQtm72hiGng2tCjCXGtdoV1umyNflduLmEg9Eg+PWIXVYoHFfOjvR427yZtPrd3LW2WwgTFoTKry3AJv/RQGwI7k2Rx4I4WKQhqMrbLy1KBTINORHoRcCXFS48MOzO4bpF8hFfKEJZMuBQXFS32JAlK9EOcOy6xfGvA6Ae4inlnK16BhgwEiLBepEUzFYi7wYjp8OhB5N1JP6toLsGWPVSlLuS5E8w0dP3W93aSfmomWY0VJLNSOLMiNxQBr+99L6fq8iX8SBAb/ZeejJpFT7CAOd0ZrZCr+n7CMYJGSI8rXyiGz1byXe76OTIRrYhQ4wn2e4wyfRY4XV6zec747NCUSCOHD/46bLAeVh2l+BX9sQBsNlguzTERaHbT8XW/QZbHSyA58gfyC/Jb3oldBNq2U4jrYaryY89nBWCGiH2he3vv1XOYCb2OFDLTo88qRcq5HUoszzJLLTolfRmm5t66dNTECCYYmPQ2YWgFrrFvqZIqKjpBIWW6YCVpvpJjzUUWFC97enPLBdBbCYbKfVzEBKyomNpuIDZs4qZpVRdxHWLqcHu+kk2hJCAkJG6BA8pmQ31SJAy8A0G1fq909vwEIOlBKSphfVMniBPa6S0CmiMCMqK3bzOAQCdh8je5mciF5I7PCzvfXCEwgKCGKAw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(107886003)(9686003)(33656002)(26005)(5660300002)(66556008)(64756008)(66446008)(8936002)(8676002)(71200400001)(66476007)(86362001)(53546011)(54906003)(76116006)(7696005)(6916009)(82960400001)(122000001)(38100700002)(52536014)(2906002)(55016002)(186003)(4326008)(7416002)(38070700005)(508600001)(66946007)(6506007)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?OMLGEi1vg2Ua1UiVRHP7JWEFrGITmioOymxvpL/u7RNQcObsvORFKbvzNB?=
- =?iso-8859-1?Q?vBtUQbE84+DZsNYgBZCUHuolT5dmx5Ln+oY4DhvudYAmD+Q6IC4Vze0kM9?=
- =?iso-8859-1?Q?lEpDjHzG4ERP8YRf11cM1P5IRmcGLqAGRGvj2fBEbTcJ/3o7gLnvwd40FH?=
- =?iso-8859-1?Q?/BJ4Vj2c+F0dWcr27EqZei+mvIqS50NkYC6sndRYooDfbSTl5sAioi+Ctq?=
- =?iso-8859-1?Q?FQSWkqqP69PZGRIMQr1yICWVSXatPCN8HNib3jBUcXcWM5UuzPQClb5W+c?=
- =?iso-8859-1?Q?LfntND5k89mkKcOIEAadha68MOMTF2W/+uPYv8YxllMbCxcolYH7g3FXmD?=
- =?iso-8859-1?Q?Kh//sNgC1iH0aTTPg+qg+qrMqUGTPlfwQg0KNKR1HWA+eAuCchoLv+Wrfi?=
- =?iso-8859-1?Q?1vu49MIAV+oa9Nbur2FCfH1xLPYJAfLLnNy95OGD/kBvgZgXKD2hNHTFPS?=
- =?iso-8859-1?Q?vLxPDIXYc6afAC0fyA0ly/2B4BOem4ER+Vk++Zj2rVAADWH1pWp47gmgEp?=
- =?iso-8859-1?Q?dN3B6qzsAYNJM0rB1mZQT/Q72OQ/pN7+UvUBMnPrSqmtJcFeck6+rM7MCS?=
- =?iso-8859-1?Q?srIwSDqYl/hGQ0u29tQJtfVMsA3IM7XXyyg8fKj8bjHjyb0TMtQxDpqC/U?=
- =?iso-8859-1?Q?TK2/R1VIab5Vielz7C7kBjehzWZxVoHXMIKRol0BF1A1yxzQGNGi7t3JwC?=
- =?iso-8859-1?Q?+r5C4uqeB9T0KlcLGBisfdD8lQbKi3Hav24VsH7NSbRk0R/Zd/DoTfCqjW?=
- =?iso-8859-1?Q?xqnVidSdBH5AC+tus3ngKd32p6XQ+QvVegmAYZ8Q1EkcUFeGbcnC+Pqph2?=
- =?iso-8859-1?Q?o28u7LY0pNETPUrjQzNh7vrPDiooVYFDx6EBRrE7s2zDmk8W+KZg93ZA/M?=
- =?iso-8859-1?Q?is9Tu2M7wU0pimlcUbh7MZkfJJVb84hRm/iuvOFMs6zVtL3XZ495Yo6F7f?=
- =?iso-8859-1?Q?P2deT25zbAqEfHaJEoUKUVpUUmoPtqBf1o87Hl4wRkgQDRKj2qgr8Obv9P?=
- =?iso-8859-1?Q?x6HYl7toe7iKyaI1LMnNmf51iiIOs0VP8+kHye7ooiBEZL51jFECVSWMAc?=
- =?iso-8859-1?Q?2SS4KGK0s2I6CYTNcyORJUkAYombNWwIr2tE7+hpM0Y3UDtAgs8jbFcB/R?=
- =?iso-8859-1?Q?mMA77nU+kP2FN7d75xt7iVi4TU9DARAMEvBgh6R1s2grsWj0FfPCZjODc1?=
- =?iso-8859-1?Q?vglRmF5FI/tluop6ootPtgVv2Rfq8dy5pn6dz5BfO2lJJJjDGU8Wtvx7RV?=
- =?iso-8859-1?Q?isd/krdPd08iQwmEGrHLdL54HVwOK4Z1+yzCeWb08RVaBUEdWh4iCwNCeA?=
- =?iso-8859-1?Q?hZ/ZlhhEVssLOkAtFPMc+vFGaBTkeANZ9ZF9oC2EFPtfvncCP1xLAO+WIi?=
- =?iso-8859-1?Q?pkhNk7EsrNiqLtmN7WnhfSGBF4qfUUjM6jFoqSz7WCJA7EAbl4x76N7Nhe?=
- =?iso-8859-1?Q?MELITK8EKBr5tcFrj9ASVaLlVCO6ZL3Pl5qe/RUJBvF3L8vsFtinGP7kdR?=
- =?iso-8859-1?Q?UI82QnH2NfNRu40rbyOb0LEMzr+RoiJcpgt78zpvRxzZgHWhWS79mOXU8w?=
- =?iso-8859-1?Q?l7aqHmSNms+cRjHENyDtP8yLuhHRyEVSh3BY50lAdFqbHDjdNS1CB5yb8M?=
- =?iso-8859-1?Q?45b3XrJFxPx+xVolFiJRz6A7Q9K3jMc6eDfZwaB5zLCgqKr8AgtDcRs6DT?=
- =?iso-8859-1?Q?hZ6AqDK/qakvb9BOUOO1bWYkmWHWvNOo6XFRx8+Dxuq8f7NU3KtzrHMWXT?=
- =?iso-8859-1?Q?hvyg=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S231795AbhKJPjp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Nov 2021 10:39:45 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:35838 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231408AbhKJPjo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Nov 2021 10:39:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1636558617; x=1668094617;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=EUi56rhv+Kceit5Thj41AVtzJb0GZGzTGk+fxka13fc=;
+  b=gHLZPjbM3SijhLzmHIMZF89AsroNZksWFkrmYertX+bsm9k/o0lt419U
+   glbnaiIYjmKoHB7uwzt6g6wu4P4AK0G+AilZPUb/ILEI+7RUphMRAn7su
+   ucPJshNMSySWG9IEHq5mxWxw/Rdug3oYZ20DX4LssjojwfM7MpiXVP5zY
+   w=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 10 Nov 2021 07:36:56 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2021 07:36:55 -0800
+Received: from th-lint-040.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Wed, 10 Nov 2021 07:36:55 -0800
+From:   Georgi Djakov <quic_c_gdjako@quicinc.com>
+To:     <hannes@cmpxchg.org>, <vincent.guittot@linaro.org>,
+        <juri.lelli@redhat.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <rostedt@goodmis.org>
+CC:     <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <mhocko@kernel.org>, <vdavydov.dev@gmail.com>, <tj@kernel.org>,
+        <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <djakov@kernel.org>
+Subject: [RFC] psi: Add additional PSI counters for each type of memory pressure
+Date:   Wed, 10 Nov 2021 07:36:37 -0800
+Message-ID: <1636558597-248294-1-git-send-email-quic_c_gdjako@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a666b28-71c2-4165-6b04-08d9a45dd407
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2021 15:21:54.4441
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4pT8+yiqRcL956oEMQQWdxLSJqEKGJv0jZX6PP6PWBf/MZVuuWNTD8wxy+L5uCoAwYLPaw3YRV9RNUKARMacadJxJXn5/1cTIDHZ3GaXdlU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4824
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.47.97.222)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+From: Carlos Ramirez <carlrami@codeaurora.org>
 
+Calculates psi totals for memory pressure subevents:
+compaction, thrashing, direct compaction, direct reclaim, and kswapd0.
+Uses upper 16 bits of psi_flags to track memory subevents.
 
-> -----Original Message-----
-> From: Michal Koutn=FD <mkoutny@suse.com>
-> Sent: Wednesday, November 10, 2021 2:57 PM
-> To: Moessbauer, Felix (T RDA IOT SES-DE) <felix.moessbauer@siemens.com>
-> Cc: longman@redhat.com; akpm@linux-foundation.org;
-> cgroups@vger.kernel.org; corbet@lwn.net; frederic@kernel.org; guro@fb.com=
-;
-> hannes@cmpxchg.org; juri.lelli@redhat.com; linux-doc@vger.kernel.org; lin=
-ux-
-> kernel@vger.kernel.org; linux-kselftest@vger.kernel.org;
-> lizefan.x@bytedance.com; mtosatti@redhat.com; pauld@redhat.com;
-> peterz@infradead.org; shuah@kernel.org; tj@kernel.org; Kiszka, Jan (T RDA
-> IOT) <jan.kiszka@siemens.com>; Schild, Henning (T RDA IOT SES-DE)
-> <henning.schild@siemens.com>
-> Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type =
-&
-> empty effecitve cpus
->=20
-> Hello.
->=20
-> On Wed, Nov 10, 2021 at 12:13:57PM +0100, Felix Moessbauer
-> <felix.moessbauer@siemens.com> wrote:
-> > However, I was not able to see any latency improvements when using
-> > cpuset.cpus.partition=3Disolated.
->=20
-> Interesting. What was the baseline against which you compared it (isolcpu=
-s, no
-> cpusets,...)?
+Signed-off-by: Carlos Ramirez <carlrami@codeaurora.org>
+Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+---
+ block/blk-cgroup.c        |   4 +-
+ block/blk-core.c          |   4 +-
+ include/linux/psi.h       |   9 ++--
+ include/linux/psi_types.h |  48 +++++++++++++++--
+ kernel/sched/psi.c        | 132 ++++++++++++++++++++++++++++++++++++++++++----
+ kernel/sched/stats.h      |  18 ++++---
+ mm/compaction.c           |   4 +-
+ mm/filemap.c              |   4 +-
+ mm/memcontrol.c           |  12 ++---
+ mm/page_alloc.c           |   8 +--
+ mm/page_io.c              |   4 +-
+ mm/vmscan.c               |   8 +--
+ 12 files changed, 207 insertions(+), 48 deletions(-)
 
-For this test, I just compared both settings cpuset.cpus.partition=3Disolat=
-ed|root.
-There, I did not see a significant difference (but I know, RT tuning depend=
-s on a ton of things).
-
->=20
-> > The test was performed with jitterdebugger on CPUs 1-3 and the followin=
-g
-> cmdline:
-> > rcu_nocbs=3D1-4 nohz_full=3D1-4 irqaffinity=3D0,5-6,11 intel_pstate=3Dd=
-isable
-> > On the other cpus, stress-ng was executed to generate load.
-> > [...]
->=20
-> > This requires cgroup.type=3Dthreaded on both cgroups and changes to the
-> > application (threads have to be born in non-rt group and moved to rt-gr=
-oup).
->=20
-> But even with isolcpus the application would need to set affinity of thre=
-ads to
-> the selected CPUs (cf cgroup migrating). Do I miss anything?
-
-Yes, that's true. But there are two differences (given that you use isolcpu=
-s):
-1. the application only has to set the affinity for rt threads.
- Threads that do not explicitly set the affinity are automatically excluded=
- from the isolated cores.
- Even common rt test applications like jitterdebugger do not pin their non-=
-rt threads.
-2. Threads can be started on non-rt CPUs and then bound to a specific rt CP=
-U.
-This binding can be specified before thread creation via pthread_create.
-By that, you can make sure that at no point in time a thread has a "forbidd=
-en" CPU in its affinities.
-
-With cgroup2, you cannot guarantee the second aspect, as thread creation an=
-d moving to a cgroup is not an atomic operation.
-Also - please correct me if I'm wrong - you first have to create a thread b=
-efore moving it into a group.
-At creation time, you cannot set the final affinity mask (as you create it =
-in the non-rt group and there the CPU is not in the cpuset.cpus).
-Once you move the thread to the rt cgroup, it has a default mask and by tha=
-t can be executed on other rt cores.
-
-Best regards,
-Felix
-
->=20
-> Thanks,
-> Michal
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 88b1fce90520..6f36fe2891db 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1678,7 +1678,7 @@ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
+ 		delay_nsec = min_t(u64, delay_nsec, 250 * NSEC_PER_MSEC);
+ 
+ 	if (use_memdelay)
+-		psi_memstall_enter(&pflags);
++		psi_memstall_enter(&pflags, TSK_BLK_CGROUP_THROTTLE);
+ 
+ 	exp = ktime_add_ns(now, delay_nsec);
+ 	tok = io_schedule_prepare();
+@@ -1690,7 +1690,7 @@ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
+ 	io_schedule_finish(tok);
+ 
+ 	if (use_memdelay)
+-		psi_memstall_leave(&pflags);
++		psi_memstall_leave(&pflags, TSK_BLK_CGROUP_THROTTLE);
+ }
+ 
+ /**
+diff --git a/block/blk-core.c b/block/blk-core.c
+index b043de2baaac..043a85a00920 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1004,9 +1004,9 @@ void submit_bio(struct bio *bio)
+ 	    bio_flagged(bio, BIO_WORKINGSET))) {
+ 		unsigned long pflags;
+ 
+-		psi_memstall_enter(&pflags);
++		psi_memstall_enter(&pflags, TSK_BIO);
+ 		submit_bio_noacct(bio);
+-		psi_memstall_leave(&pflags);
++		psi_memstall_leave(&pflags, TSK_BIO);
+ 		return;
+ 	}
+ 
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 65eb1476ac70..aac221e9f6b8 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -20,8 +20,9 @@ void psi_task_change(struct task_struct *task, int clear, int set);
+ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		     bool sleep);
+ 
+-void psi_memstall_enter(unsigned long *flags);
+-void psi_memstall_leave(unsigned long *flags);
++void psi_memstall_tick(struct task_struct *task, int cpu);
++void psi_memstall_enter(unsigned long *flags, u32 set);
++void psi_memstall_leave(unsigned long *flags, u32 clear);
+ 
+ int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
+ 
+@@ -42,8 +43,8 @@ __poll_t psi_trigger_poll(void **trigger_ptr, struct file *file,
+ 
+ static inline void psi_init(void) {}
+ 
+-static inline void psi_memstall_enter(unsigned long *flags) {}
+-static inline void psi_memstall_leave(unsigned long *flags) {}
++static inline void psi_memstall_enter(unsigned long *flags, u32 set) {}
++static inline void psi_memstall_leave(unsigned long *flags, u32 clear) {}
+ 
+ #ifdef CONFIG_CGROUPS
+ static inline int psi_cgroup_alloc(struct cgroup *cgrp)
+diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
+index 0a23300d49af..4b71cde93095 100644
+--- a/include/linux/psi_types.h
++++ b/include/linux/psi_types.h
+@@ -7,8 +7,6 @@
+ #include <linux/kref.h>
+ #include <linux/wait.h>
+ 
+-#ifdef CONFIG_PSI
+-
+ /* Tracked task states */
+ enum psi_task_count {
+ 	NR_IOWAIT,
+@@ -21,7 +19,18 @@ enum psi_task_count {
+ 	 * don't have to special case any state tracking for it.
+ 	 */
+ 	NR_ONCPU,
+-	NR_PSI_TASK_COUNTS = 4,
++	NR_BLK_CGROUP_THROTTLE,
++	NR_BIO,
++	NR_COMPACTION,
++	NR_THRASHING,
++	NR_CGROUP_RECLAIM_HIGH,
++	NR_CGROUP_RECLAIM_HIGH_SLEEP,
++	NR_CGROUP_TRY_CHARGE,
++	NR_DIRECT_COMPACTION,
++	NR_DIRECT_RECLAIM,
++	NR_READ_SWAPPAGE,
++	NR_KSWAPD,
++	NR_PSI_TASK_COUNTS = 16,
+ };
+ 
+ /* Task state bitmasks */
+@@ -29,6 +38,26 @@ enum psi_task_count {
+ #define TSK_MEMSTALL	(1 << NR_MEMSTALL)
+ #define TSK_RUNNING	(1 << NR_RUNNING)
+ #define TSK_ONCPU	(1 << NR_ONCPU)
++#define TSK_BLK_CGROUP_THROTTLE	(1 << NR_BLK_CGROUP_THROTTLE)
++#define TSK_BIO			(1 << NR_BIO)
++#define TSK_COMPACTION		(1 << NR_COMPACTION)
++#define TSK_THRASHING		(1 << NR_THRASHING)
++#define TSK_CGROUP_RECLAIM_HIGH	(1 << NR_CGROUP_RECLAIM_HIGH)
++#define TSK_CGROUP_RECLAIM_HIGH_SLEEP	(1 << NR_CGROUP_RECLAIM_HIGH_SLEEP)
++#define TSK_CGROUP_TRY_CHARGE	(1 << NR_CGROUP_TRY_CHARGE)
++#define TSK_DIRECT_COMPACTION	(1 << NR_DIRECT_COMPACTION)
++#define TSK_DIRECT_RECLAIM	(1 << NR_DIRECT_RECLAIM)
++#define TSK_READ_SWAPPAGE	(1 << NR_READ_SWAPPAGE)
++#define TSK_KSWAPD		(1 << NR_KSWAPD)
++#define TSK_MEMSTALL_MASK	(TSK_KSWAPD | TSK_READ_SWAPPAGE | \
++				TSK_DIRECT_RECLAIM | TSK_DIRECT_COMPACTION | \
++				TSK_CGROUP_TRY_CHARGE | \
++				TSK_CGROUP_RECLAIM_HIGH_SLEEP | \
++				TSK_CGROUP_RECLAIM_HIGH | TSK_THRASHING | \
++				TSK_COMPACTION | TSK_BIO | \
++				TSK_BLK_CGROUP_THROTTLE)
++
++#ifdef CONFIG_PSI
+ 
+ /* Resources that workloads could be stalled on */
+ enum psi_res {
+@@ -51,9 +80,20 @@ enum psi_states {
+ 	PSI_MEM_FULL,
+ 	PSI_CPU_SOME,
+ 	PSI_CPU_FULL,
++	PSI_BLK_CGROUP_THROTTLE,
++	PSI_BIO,
++	PSI_COMPACTION,
++	PSI_THRASHING,
++	PSI_CGROUP_RECLAIM_HIGH,
++	PSI_CGROUP_RECLAIM_HIGH_SLEEP,
++	PSI_CGROUP_TRY_CHARGE,
++	PSI_DIRECT_COMPACTION,
++	PSI_DIRECT_RECLAIM,
++	PSI_READ_SWAPPAGE,
++	PSI_KSWAPD,
+ 	/* Only per-CPU, to weigh the CPU in the global average: */
+ 	PSI_NONIDLE,
+-	NR_PSI_STATES = 7,
++	NR_PSI_STATES = 18,
+ };
+ 
+ enum psi_aggregators {
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 1652f2bb54b7..fe3f0a36051d 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -225,22 +225,53 @@ void __init psi_init(void)
+ 
+ static bool test_state(unsigned int *tasks, enum psi_states state)
+ {
++	int memstall;
++
++	memstall = tasks[NR_BLK_CGROUP_THROTTLE] || tasks[NR_BIO] ||
++		   tasks[NR_COMPACTION] || tasks[NR_THRASHING] ||
++		   tasks[NR_CGROUP_RECLAIM_HIGH] || tasks[NR_CGROUP_RECLAIM_HIGH_SLEEP] ||
++		   tasks[NR_CGROUP_TRY_CHARGE] ||
++		   tasks[NR_DIRECT_COMPACTION] || tasks[NR_DIRECT_RECLAIM] ||
++		   tasks[NR_READ_SWAPPAGE] || tasks[NR_KSWAPD];
++
+ 	switch (state) {
+ 	case PSI_IO_SOME:
+ 		return unlikely(tasks[NR_IOWAIT]);
+ 	case PSI_IO_FULL:
+ 		return unlikely(tasks[NR_IOWAIT] && !tasks[NR_RUNNING]);
+ 	case PSI_MEM_SOME:
+-		return unlikely(tasks[NR_MEMSTALL]);
++		return memstall;
+ 	case PSI_MEM_FULL:
+-		return unlikely(tasks[NR_MEMSTALL] && !tasks[NR_RUNNING]);
++		return !tasks[NR_RUNNING] && memstall;
+ 	case PSI_CPU_SOME:
+ 		return unlikely(tasks[NR_RUNNING] > tasks[NR_ONCPU]);
+ 	case PSI_CPU_FULL:
+ 		return unlikely(tasks[NR_RUNNING] && !tasks[NR_ONCPU]);
+ 	case PSI_NONIDLE:
+-		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
++		return tasks[NR_IOWAIT] || memstall ||
+ 			tasks[NR_RUNNING];
++	case PSI_BLK_CGROUP_THROTTLE:
++		return tasks[NR_BLK_CGROUP_THROTTLE];
++	case PSI_BIO:
++		return tasks[NR_BIO];
++	case PSI_COMPACTION:
++		return tasks[NR_COMPACTION];
++	case PSI_THRASHING:
++		return tasks[NR_THRASHING];
++	case PSI_CGROUP_RECLAIM_HIGH:
++		return tasks[NR_CGROUP_RECLAIM_HIGH];
++	case PSI_CGROUP_RECLAIM_HIGH_SLEEP:
++		return tasks[NR_CGROUP_RECLAIM_HIGH_SLEEP];
++	case PSI_CGROUP_TRY_CHARGE:
++		return tasks[NR_CGROUP_TRY_CHARGE];
++	case PSI_DIRECT_COMPACTION:
++		return tasks[NR_DIRECT_COMPACTION];
++	case PSI_DIRECT_RECLAIM:
++		return tasks[NR_DIRECT_RECLAIM];
++	case PSI_READ_SWAPPAGE:
++		return tasks[NR_READ_SWAPPAGE];
++	case PSI_KSWAPD:
++		return tasks[NR_KSWAPD];
+ 	default:
+ 		return false;
+ 	}
+@@ -679,6 +710,39 @@ static void record_times(struct psi_group_cpu *groupc, u64 now)
+ 
+ 	if (groupc->state_mask & (1 << PSI_NONIDLE))
+ 		groupc->times[PSI_NONIDLE] += delta;
++
++	if (groupc->state_mask & (1 << PSI_BLK_CGROUP_THROTTLE))
++		groupc->times[PSI_BLK_CGROUP_THROTTLE] += delta;
++
++	if (groupc->state_mask & (1 << PSI_BIO))
++		groupc->times[PSI_BIO] += delta;
++
++	if (groupc->state_mask & (1 << PSI_COMPACTION))
++		groupc->times[PSI_COMPACTION] += delta;
++
++	if (groupc->state_mask & (1 << PSI_THRASHING))
++		groupc->times[PSI_THRASHING] += delta;
++
++	if (groupc->state_mask & (1 << PSI_CGROUP_RECLAIM_HIGH))
++		groupc->times[PSI_CGROUP_RECLAIM_HIGH] += delta;
++
++	if (groupc->state_mask & (1 << PSI_CGROUP_RECLAIM_HIGH_SLEEP))
++		groupc->times[PSI_CGROUP_RECLAIM_HIGH_SLEEP] += delta;
++
++	if (groupc->state_mask & (1 << PSI_CGROUP_TRY_CHARGE))
++		groupc->times[PSI_CGROUP_TRY_CHARGE] += delta;
++
++	if (groupc->state_mask & (1 << PSI_DIRECT_RECLAIM))
++		groupc->times[PSI_DIRECT_RECLAIM] += delta;
++
++	if (groupc->state_mask & (1 << PSI_DIRECT_COMPACTION))
++		groupc->times[PSI_DIRECT_COMPACTION] += delta;
++
++	if (groupc->state_mask & (1 << PSI_READ_SWAPPAGE))
++		groupc->times[PSI_READ_SWAPPAGE] += delta;
++
++	if (groupc->state_mask & (1 << PSI_KSWAPD))
++		groupc->times[PSI_KSWAPD] += delta;
+ }
+ 
+ static void psi_group_change(struct psi_group *group, int cpu,
+@@ -889,7 +953,7 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+  * Marks the calling task as being stalled due to a lack of memory,
+  * such as waiting for a refault or performing reclaim.
+  */
+-void psi_memstall_enter(unsigned long *flags)
++void psi_memstall_enter(unsigned long *flags, u32 set)
+ {
+ 	struct rq_flags rf;
+ 	struct rq *rq;
+@@ -908,7 +972,7 @@ void psi_memstall_enter(unsigned long *flags)
+ 	rq = this_rq_lock_irq(&rf);
+ 
+ 	current->in_memstall = 1;
+-	psi_task_change(current, 0, TSK_MEMSTALL);
++	psi_task_change(current, 0, set);
+ 
+ 	rq_unlock_irq(rq, &rf);
+ }
+@@ -919,7 +983,7 @@ void psi_memstall_enter(unsigned long *flags)
+  *
+  * Marks the calling task as no longer stalled due to lack of memory.
+  */
+-void psi_memstall_leave(unsigned long *flags)
++void psi_memstall_leave(unsigned long *flags, u32 clear)
+ {
+ 	struct rq_flags rf;
+ 	struct rq *rq;
+@@ -937,7 +1001,7 @@ void psi_memstall_leave(unsigned long *flags)
+ 	rq = this_rq_lock_irq(&rf);
+ 
+ 	current->in_memstall = 0;
+-	psi_task_change(current, TSK_MEMSTALL, 0);
++	psi_task_change(current, clear, 0);
+ 
+ 	rq_unlock_irq(rq, &rf);
+ }
+@@ -1021,6 +1085,17 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
+ 	 */
+ 	task_flags = task->psi_flags;
+ 
++	if (task_on_rq_queued(task)) {
++		task_flags = TSK_RUNNING;
++		if (task_current(rq, task))
++			task_flags |= TSK_ONCPU;
++	} else if (task->in_iowait) {
++		task_flags = TSK_IOWAIT;
++	}
++
++	if (task->psi_flags & TSK_MEMSTALL_MASK)
++		task_flags |= task->psi_flags & TSK_MEMSTALL_MASK;
++
+ 	if (task_flags)
+ 		psi_task_change(task, task_flags, 0);
+ 
+@@ -1053,19 +1128,56 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
+ 	for (full = 0; full < 2; full++) {
+ 		unsigned long avg[3];
+ 		u64 total;
++		u64 total_blk_cgroup_throttle;
++		u64 total_bio;
++		u64 total_compaction;
++		u64 total_thrashing;
++		u64 total_cgroup_reclaim_high;
++		u64 total_cgroup_reclaim_high_sleep;
++		u64 total_cgroup_try_charge;
++		u64 total_direct_compaction;
++		u64 total_direct_reclaim;
++		u64 total_read_swappage;
++		u64 total_kswapd;
+ 		int w;
+ 
+ 		for (w = 0; w < 3; w++)
+ 			avg[w] = group->avg[res * 2 + full][w];
+ 		total = div_u64(group->total[PSI_AVGS][res * 2 + full],
+ 				NSEC_PER_USEC);
+-
+-		seq_printf(m, "%s avg10=%lu.%02lu avg60=%lu.%02lu avg300=%lu.%02lu total=%llu\n",
++		total_blk_cgroup_throttle = div_u64(group->total[PSI_AVGS][PSI_BLK_CGROUP_THROTTLE],
++						    NSEC_PER_USEC);
++		total_bio = div_u64(group->total[PSI_AVGS][PSI_BIO],
++				    NSEC_PER_USEC);
++		total_compaction = div_u64(group->total[PSI_AVGS][PSI_COMPACTION],
++					   NSEC_PER_USEC);
++		total_thrashing = div_u64(group->total[PSI_AVGS][PSI_THRASHING],
++					  NSEC_PER_USEC);
++		total_cgroup_reclaim_high = div_u64(group->total[PSI_AVGS][PSI_CGROUP_RECLAIM_HIGH],
++						    NSEC_PER_USEC);
++		total_cgroup_reclaim_high_sleep = div_u64(group->total[PSI_AVGS][PSI_CGROUP_RECLAIM_HIGH_SLEEP],
++							  NSEC_PER_USEC);
++		total_cgroup_try_charge = div_u64(group->total[PSI_AVGS][PSI_CGROUP_TRY_CHARGE],
++						  NSEC_PER_USEC);
++		total_direct_compaction = div_u64(group->total[PSI_AVGS][PSI_DIRECT_COMPACTION],
++						  NSEC_PER_USEC);
++		total_direct_reclaim = div_u64(group->total[PSI_AVGS][PSI_DIRECT_RECLAIM],
++					       NSEC_PER_USEC);
++		total_read_swappage = div_u64(group->total[PSI_AVGS][PSI_READ_SWAPPAGE],
++					      NSEC_PER_USEC);
++		total_kswapd = div_u64(group->total[PSI_AVGS][PSI_KSWAPD],
++				       NSEC_PER_USEC);
++
++		seq_printf(m, "%s avg10=%lu.%02lu avg60=%lu.%02lu avg300=%lu.%02lu total=%llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu\n",
+ 			   full ? "full" : "some",
+ 			   LOAD_INT(avg[0]), LOAD_FRAC(avg[0]),
+ 			   LOAD_INT(avg[1]), LOAD_FRAC(avg[1]),
+ 			   LOAD_INT(avg[2]), LOAD_FRAC(avg[2]),
+-			   total);
++			   total, total_blk_cgroup_throttle, total_bio, total_compaction,
++			   total_thrashing, total_cgroup_reclaim_high,
++			   total_cgroup_reclaim_high_sleep, total_cgroup_try_charge,
++			   total_direct_compaction, total_direct_reclaim, total_read_swappage,
++			   total_kswapd);
+ 	}
+ 
+ 	return 0;
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index cfb0893a83d4..02b9f2a71c2c 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -114,13 +114,15 @@ __schedstats_from_se(struct sched_entity *se)
+ static inline void psi_enqueue(struct task_struct *p, bool wakeup)
+ {
+ 	int clear = 0, set = TSK_RUNNING;
++	int v;
+ 
+ 	if (static_branch_likely(&psi_disabled))
+ 		return;
+ 
+ 	if (!wakeup || p->sched_psi_wake_requeue) {
+-		if (p->in_memstall)
+-			set |= TSK_MEMSTALL;
++		v = p->psi_flags & TSK_MEMSTALL_MASK;
++		if (v)
++			set |= v;
+ 		if (p->sched_psi_wake_requeue)
+ 			p->sched_psi_wake_requeue = 0;
+ 	} else {
+@@ -134,6 +136,7 @@ static inline void psi_enqueue(struct task_struct *p, bool wakeup)
+ static inline void psi_dequeue(struct task_struct *p, bool sleep)
+ {
+ 	int clear = TSK_RUNNING;
++	int v;
+ 
+ 	if (static_branch_likely(&psi_disabled))
+ 		return;
+@@ -147,8 +150,9 @@ static inline void psi_dequeue(struct task_struct *p, bool sleep)
+ 	if (sleep)
+ 		return;
+ 
+-	if (p->in_memstall)
+-		clear |= TSK_MEMSTALL;
++	v = p->psi_flags & TSK_MEMSTALL_MASK;
++	if (v)
++		clear |= v;
+ 
+ 	psi_task_change(p, clear, 0);
+ }
+@@ -166,11 +170,13 @@ static inline void psi_ttwu_dequeue(struct task_struct *p)
+ 		struct rq_flags rf;
+ 		struct rq *rq;
+ 		int clear = 0;
++		int v;
+ 
+ 		if (p->in_iowait)
+ 			clear |= TSK_IOWAIT;
+-		if (p->in_memstall)
+-			clear |= TSK_MEMSTALL;
++		v = p->psi_flags & TSK_MEMSTALL_MASK;
++		if (v)
++			clear |= v;
+ 
+ 		rq = __task_rq_lock(p, &rf);
+ 		psi_task_change(p, clear, 0);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 6e446094ce90..2653589a006f 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2937,9 +2937,9 @@ static int kcompactd(void *p)
+ 			kcompactd_work_requested(pgdat), timeout) &&
+ 			!pgdat->proactive_compact_trigger) {
+ 
+-			psi_memstall_enter(&pflags);
++			psi_memstall_enter(&pflags, TSK_COMPACTION);
+ 			kcompactd_do_work(pgdat);
+-			psi_memstall_leave(&pflags);
++			psi_memstall_leave(&pflags, TSK_COMPACTION);
+ 			/*
+ 			 * Reset the timeout value. The defer timeout from
+ 			 * proactive compaction is lost here but that is fine
+diff --git a/mm/filemap.c b/mm/filemap.c
+index daa0e23a6ee6..0de1941932f6 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1303,7 +1303,7 @@ static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+ 			delayacct_thrashing_start();
+ 			delayacct = true;
+ 		}
+-		psi_memstall_enter(&pflags);
++		psi_memstall_enter(&pflags, TSK_THRASHING);
+ 		thrashing = true;
+ 	}
+ 
+@@ -1404,7 +1404,7 @@ static inline int folio_wait_bit_common(struct folio *folio, int bit_nr,
+ 	if (thrashing) {
+ 		if (delayacct)
+ 			delayacct_thrashing_end();
+-		psi_memstall_leave(&pflags);
++		psi_memstall_leave(&pflags, TSK_THRASHING);
+ 	}
+ 
+ 	/*
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 781605e92015..908a52a65c09 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2342,10 +2342,10 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+ 
+ 		memcg_memory_event(memcg, MEMCG_HIGH);
+ 
+-		psi_memstall_enter(&pflags);
++		psi_memstall_enter(&pflags, TSK_CGROUP_RECLAIM_HIGH);
+ 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
+ 							     gfp_mask, true);
+-		psi_memstall_leave(&pflags);
++		psi_memstall_leave(&pflags, TSK_CGROUP_RECLAIM_HIGH);
+ 	} while ((memcg = parent_mem_cgroup(memcg)) &&
+ 		 !mem_cgroup_is_root(memcg));
+ 
+@@ -2572,9 +2572,9 @@ void mem_cgroup_handle_over_high(void)
+ 	 * schedule_timeout_killable sets TASK_KILLABLE). This means we don't
+ 	 * need to account for any ill-begotten jiffies to pay them off later.
+ 	 */
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_CGROUP_RECLAIM_HIGH_SLEEP);
+ 	schedule_timeout_killable(penalty_jiffies);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_CGROUP_RECLAIM_HIGH_SLEEP);
+ 
+ out:
+ 	css_put(&memcg->css);
+@@ -2641,10 +2641,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 
+ 	memcg_memory_event(mem_over_limit, MEMCG_MAX);
+ 
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_CGROUP_TRY_CHARGE);
+ 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+ 						    gfp_mask, may_swap);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_CGROUP_TRY_CHARGE);
+ 
+ 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
+ 		goto retry;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c5952749ad40..734ea00a0a72 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4347,14 +4347,14 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+ 	if (!order)
+ 		return NULL;
+ 
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_DIRECT_COMPACTION);
+ 	noreclaim_flag = memalloc_noreclaim_save();
+ 
+ 	*compact_result = try_to_compact_pages(gfp_mask, order, alloc_flags, ac,
+ 								prio, &page);
+ 
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_DIRECT_COMPACTION);
+ 
+ 	if (*compact_result == COMPACT_SKIPPED)
+ 		return NULL;
+@@ -4581,7 +4581,7 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order,
+ 
+ 	/* We now go into synchronous reclaim */
+ 	cpuset_memory_pressure_bump();
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_DIRECT_RECLAIM);
+ 	fs_reclaim_acquire(gfp_mask);
+ 	noreclaim_flag = memalloc_noreclaim_save();
+ 
+@@ -4590,7 +4590,7 @@ __perform_reclaim(gfp_t gfp_mask, unsigned int order,
+ 
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	fs_reclaim_release(gfp_mask);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_DIRECT_RECLAIM);
+ 
+ 	cond_resched();
+ 
+diff --git a/mm/page_io.c b/mm/page_io.c
+index 9725c7e1eeea..680d1a8d5d60 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -369,7 +369,7 @@ int swap_readpage(struct page *page, bool synchronous)
+ 	 * or the submitting cgroup IO-throttled, submission can be a
+ 	 * significant part of overall IO time.
+ 	 */
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_READ_SWAPPAGE);
+ 
+ 	if (frontswap_load(page) == 0) {
+ 		SetPageUptodate(page);
+@@ -431,7 +431,7 @@ int swap_readpage(struct page *page, bool synchronous)
+ 	bio_put(bio);
+ 
+ out:
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_READ_SWAPPAGE);
+ 	return ret;
+ }
+ 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index fb9584641ac7..baa29a6be6df 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -4096,7 +4096,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 	};
+ 
+ 	set_task_reclaim_state(current, &sc.reclaim_state);
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_KSWAPD);
+ 	__fs_reclaim_acquire(_THIS_IP_);
+ 
+ 	count_vm_event(PAGEOUTRUN);
+@@ -4278,7 +4278,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 
+ 	snapshot_refaults(NULL, pgdat);
+ 	__fs_reclaim_release(_THIS_IP_);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_KSWAPD);
+ 	set_task_reclaim_state(current, NULL);
+ 
+ 	/*
+@@ -4713,7 +4713,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+ 					   sc.gfp_mask);
+ 
+ 	cond_resched();
+-	psi_memstall_enter(&pflags);
++	psi_memstall_enter(&pflags, TSK_KSWAPD);
+ 	fs_reclaim_acquire(sc.gfp_mask);
+ 	/*
+ 	 * We need to be able to allocate from the reserves for RECLAIM_UNMAP
+@@ -4738,7 +4738,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+ 	current->flags &= ~PF_SWAPWRITE;
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	fs_reclaim_release(sc.gfp_mask);
+-	psi_memstall_leave(&pflags);
++	psi_memstall_leave(&pflags, TSK_KSWAPD);
+ 
+ 	trace_mm_vmscan_node_reclaim_end(sc.nr_reclaimed);
+ 
