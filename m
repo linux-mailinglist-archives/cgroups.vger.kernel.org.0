@@ -2,165 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E56044B9E2
-	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 02:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A68B44C011
+	for <lists+cgroups@lfdr.de>; Wed, 10 Nov 2021 12:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbhKJBSs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Nov 2021 20:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhKJBSs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Nov 2021 20:18:48 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC05BC061766
-        for <cgroups@vger.kernel.org>; Tue,  9 Nov 2021 17:16:01 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id w22so937802ioa.1
-        for <cgroups@vger.kernel.org>; Tue, 09 Nov 2021 17:16:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=stj94EGwcr6EDZXIntFwkyJLCwHPIAGx8uGsazwEWlU=;
-        b=Jt159WJFXb+w9GnjT9mv9XpfUzn44VzYBSGluRMBQq31QXeEB0uBGz1HaJfKr7+WAu
-         9dLdie2BzO/H6uyvavd9+NitYen0fSltpbIILd2hHjz5ospJO39A+puws0q7jdoU9qLL
-         WLu8kyP2Qo8JTKUmCwwtpzJ4v4HP3wFiPCL8LiFPFJbfdw0DX7Mqr3ljvIdqvz7rEEJh
-         lBrFU1tCi5cBUwCk1zn7e8t3MCU3Gm3O2ISNL6GsQo9bvKz61Hif4ZdC7TwHKIWzeR6I
-         0aRXxOf9lP77tLEoEAVbs9BeyLF2JsGrAoVecOKXhI/3phAeErf6uBoPZ9eHYds3AHNU
-         CWxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=stj94EGwcr6EDZXIntFwkyJLCwHPIAGx8uGsazwEWlU=;
-        b=VcF4l8RRiMkhQNmM6wNyuctd5S86LQVwckgqxmPVEvuqSWVqbwP323shQxGeK6CcHn
-         l36BmcMDU2tp3xY6BqrIGYEsuT1s+54j2EwnYtyaRzbu817avqyy+YN5G49v91ZNmvES
-         Lz+r+dgr+5hMQCunkZZb1WoP3215zm0K3ECGB1Gndvfsw7+QXki1E+dIN06RuOABqyc7
-         vg6Veh316bIJGtL97K7MIuGGT+bQlv1Kg4MI0rZbYYBo6bRYizO8PhWRu2pkqBLOQYo7
-         BkW2MRK+b5Cto5ByvTSa4EyOufFADVu+kFgXXPQS+3BcL3uY9Yd8QLQdDFJDdTbUSVkC
-         isjA==
-X-Gm-Message-State: AOAM5326f+uTL9vx8obpAZcYO/LRB0P80+2jem7IyZmGdUTH+IU8MqYM
-        HIa2QukuaoL+V3MFWSso6fCo9uA1gusV3RibO1PZCw==
-X-Google-Smtp-Source: ABdhPJx+8CQ0vAG8/UG1uH9LXnlbcoqHFW49RVAfbweQNd64OIQ81ONcrEhO9Dg9TmUxbFTxvIfWLG8IEVNteOr4lxo=
-X-Received: by 2002:a05:6602:1d0:: with SMTP id w16mr8087681iot.140.1636506960996;
- Tue, 09 Nov 2021 17:16:00 -0800 (PST)
+        id S229653AbhKJLXm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Nov 2021 06:23:42 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:44290 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231325AbhKJLXi (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 10 Nov 2021 06:23:38 -0500
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Nov 2021 06:23:36 EST
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AABDwp1011374
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 10 Nov 2021 12:13:58 +0100
+Received: from MD1T0KAC-VM.ad001.siemens.net (md1t0kac.ad001.siemens.net [139.25.68.224])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AABDvXQ030772;
+        Wed, 10 Nov 2021 12:13:57 +0100
+From:   Felix Moessbauer <felix.moessbauer@siemens.com>
+To:     longman@redhat.com
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
+        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
+        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lizefan.x@bytedance.com, mkoutny@suse.com, mtosatti@redhat.com,
+        pauld@redhat.com, peterz@infradead.org, shuah@kernel.org,
+        tj@kernel.org, jan.kiszka@siemens.com, henning.schild@siemens.com
+Subject: Re: [PATCH v8 0/6] cgroup/cpuset: Add new cpuset partition type & empty effecitve cpus
+Date:   Wed, 10 Nov 2021 12:13:57 +0100
+Message-Id: <20211110111357.17617-1-felix.moessbauer@siemens.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211018143619.205065-1-longman@redhat.com>
+References: <20211018143619.205065-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20211108211959.1750915-1-almasrymina@google.com>
- <20211108211959.1750915-2-almasrymina@google.com> <20211108221047.GE418105@dread.disaster.area>
- <YYm1v25dLZL99qKK@casper.infradead.org> <20211109011837.GF418105@dread.disaster.area>
- <CAHS8izNwX80px5X=JrQAfgTBO5=rCN_hSybLW6T1CWmqG5b7eQ@mail.gmail.com>
-In-Reply-To: <CAHS8izNwX80px5X=JrQAfgTBO5=rCN_hSybLW6T1CWmqG5b7eQ@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 9 Nov 2021 17:15:49 -0800
-Message-ID: <CAHS8izNkHbiYs=GGNrid5O3oRktXoWgsbaKn4RBYFeHK+H+qfw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] mm/shmem: support deterministic charging of tmpfs
-To:     david@fromorbit.com
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Roman Gushchin <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 9, 2021 at 3:56 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Mon, Nov 8, 2021 at 5:18 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Mon, Nov 08, 2021 at 11:41:51PM +0000, Matthew Wilcox wrote:
-> > > On Tue, Nov 09, 2021 at 09:10:47AM +1100, Dave Chinner wrote:
-> > > > > + rcu_read_lock();
-> > > > > + memcg = rcu_dereference(mapping->host->i_sb->s_memcg_to_charge);
-> > > >
-> > > > Anything doing pointer chasing to obtain static, unchanging
-> > > > superblock state is poorly implemented. The s_memcg_to_charge value never
-> > > > changes, so this code should associate the memcg to charge directly
-> > > > on the mapping when the mapping is first initialised by the
-> > > > filesystem. We already do this with things like attaching address
-> > > > space ops and mapping specific gfp masks (i.e
-> > > > mapping_set_gfp_mask()), so this association should be set up that
-> > > > way, too (e.g. mapping_set_memcg_to_charge()).
-> > >
-> > > I'm not a fan of enlarging struct address_space with another pointer
-> > > unless it's going to be used by all/most filesystems.  If this is
-> > > destined to be a shmem-only feature, then it should be in the
-> > > shmem_inode instead of the mapping.
-> >
-> > Neither am I, but I'm also not a fan of the filemap code still
-> > having to drill through the mapping to the host inode just to check
-> > if it needs to do special stuff for shmem inodes on every call that
-> > adds a page to the page cache. This is just as messy and intrusive
-> > and the memcg code really has no business digging about in the
-> > filesystem specific details of the inode behind the mapping.
-> >
-> > Hmmm. The mem_cgroup_charge() call in filemap_add_folio() passes a
-> > null mm context, so deep in the guts it ends getting the memcg from
-> > active_memcg() in get_mem_cgroup_from_mm(). That ends up using
-> > current->active_memcg, so maybe a better approach here is to have
-> > shmem override current->active_memcg via set_active_memcg() before
-> > it enters the generic fs paths and restore it on return...
-> >
-> > current_fsmemcg()?
-> >
->
-> Thank you for providing a detailed alternative. To be honest it seems
-> a bit brittle to me, as in folks can easily add calls to generic fs
-> paths forgetting to override the active_memcg and having memory
-> charged incorrectly, but if there is no other option and we want to
-> make this a shmem-only feature, I can do this anyway.
->
-> > > If we are to have this for all filesystems, then let's do that properly
-> > > and make it generic functionality from its introduction.
-> >
-> > Fully agree.
->
-> So the tmpfs feature addresses the first 2 usecases I mention in the
-> cover letter. For the 3rd usecase I will likely need to extend this
-> support to 1 disk-based filesystem, and I'm not sure which at this
-> point. It also looks like Roman has in mind 1 or more use cases and
-> may extend it to other filesystems as a result. I'm hoping that I can
-> provide the generic implementation and the tmpfs support and in follow
-> up patches folks can extend this to other file systems by providing
-> the fs-specific changes needed for that filesystem.
->
-> AFAICT with this patch the work to extend to another file system is to
-> parse the memcg= option in that filesystem, set the s_memcg_to_charge
-> on the superblock (or mapping) of that filesystem, and to charge
-> s_memcg_to_charge in fs specific code paths, so all are fs-specific
-> changes.
->
-> Based on this, it seems to me the suggestion is to hang the
-> memcg_to_charge off the mapping? I'm not sure if *most/all*
-> filesystems will eventually support it, but likely more than just
-> tmpfs.
->
+Hi Weiman,
 
-Greg actually points out to me off list that the patches - as written
-- supports remounting the tmpfs with a different memcg= option, where
-future charges will be directed to the new memcg provided by the
-option, so s_memcg_to_charge is more of a property of the super_block.
-
-We could explicitly disable remounting with a different memcg=, but
-I'm hoping to preserve that support if possible. The only way to
-preserve it I think and avoid the pointer chasing in fs generic paths
-is for shmem to set_active_memcg() before calling into the generic fs
-code, but all other fs that apply this feature will need to do the
-same. I'm not sure if that's the better option. Let me know what you
-think please. Thanks!
-
+> v8:
+>  - Reorganize the patch series and rationalize the features and
+>    constraints of a partition.
+>  - Update patch descriptions and documentation accordingly.
+> 
+> v7:
+>  - Simplify the documentation patch (patch 5) as suggested by Tejun.
+>  - Fix a typo in patch 2 and improper commit log in patch 3.
+> 
+> v6:
+>  - Remove duplicated tmpmask from update_prstate() which should fix the
+>    frame size too large problem reported by kernel test robot.
+> 
+> This patchset makes four enhancements to the cpuset v2 code.
+> 
+>  Patch 1: Enable partition with no task to have empty cpuset.cpus.effective.
+> 
+>  Patch 2: Refining the features and constraints of a cpuset partition
+>  clarifying what changes are allowed.
 >
-> >
-> > Cheers,
-> >
-> > Dave.
-> > --
-> > Dave Chinner
-> > david@fromorbit.com
+>  Patch 3: Add a new partition state "isolated" to create a partition
+>  root without load balancing. This is for handling intermitten workloads
+>  that have a strict low latency requirement.
+
+
+I just tested this patch-series and can confirm that it works on 5.15.0-rc7-rt15 (PREEMT_RT).
+
+However, I was not able to see any latency improvements when using
+cpuset.cpus.partition=isolated.
+The test was performed with jitterdebugger on CPUs 1-3 and the following cmdline:
+rcu_nocbs=1-4 nohz_full=1-4 irqaffinity=0,5-6,11 intel_pstate=disable
+On the other cpus, stress-ng was executed to generate load.
+
+Just some more general notes:
+
+Even with this new "isolated" type, it is still very tricky to get a similar
+behavior as with isolcpus (as long as I don't miss something here):
+
+Consider an RT application that consists of a non-rt thread that should be floating
+and a rt-thread that should be placed in the isolated domain.
+This requires cgroup.type=threaded on both cgroups and changes to the application
+(threads have to be born in non-rt group and moved to rt-group).
+
+Theoretically, this could be done externally, but in case the application sets the
+affinity mask manually, you run into a timing issue (setting affinities to CPUs
+outside the current cpuset.cpus results in EINVAL).
+
+Best regards,
+Felix Moessbauer
+Siemens AG
+
+> Patch 4: Enable the "cpuset.cpus.partition" file to show the reason
+>  that causes invalid partition like "root invalid (No cpu available
+>  due to hotplug)".
+> 
+> Patch 5 updates the cgroup-v2.rst file accordingly. Patch 6 adds a new
+> cpuset test to test the new cpuset partition code.
