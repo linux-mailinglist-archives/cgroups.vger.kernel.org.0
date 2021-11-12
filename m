@@ -2,100 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58F044EB7E
-	for <lists+cgroups@lfdr.de>; Fri, 12 Nov 2021 17:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AE744EC4C
+	for <lists+cgroups@lfdr.de>; Fri, 12 Nov 2021 18:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbhKLQkB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Nov 2021 11:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233445AbhKLQkA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 12 Nov 2021 11:40:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF33C601FC;
-        Fri, 12 Nov 2021 16:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636735030;
-        bh=GS153duIpf6p5uzAwTDe6we3+dolhCi2DZKA7ujmHls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aGZ37Kgc90dL7lAVMZ2FJ1aXipF8gl6tNM0FuBn7Gm2U2kMosmvrrHAAyNMgYTehJ
-         EWFjhbbiEFWP+TqHuaudpGkZhX39Wm6M4XiBLoDsjRf2egC46nuvNUke+QVJeSLQN6
-         EPKosuM1LxY2H37hDEibXqGGOnEZLxOFWcbC8Oj5vZdT/hLnv6dI/y9w1qabXswwaR
-         hRj0eiDx8GlpnYeSj/HcLHVQApH/Yh1f0eykcdnx6tyC8MxukGzJtvzWqUkVNo1lNt
-         DyoI0FYq9mXvDAM8lKCnNlPQiK8MZ65DHaOseFdM9W35JqVa6iFDAiGbjnHTek07q+
-         bs5/3ws04MoXA==
-Date:   Fri, 12 Nov 2021 17:37:07 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     "Moessbauer, Felix" <felix.moessbauer@siemens.com>,
-        cgroups@vger.kernel.org,
-        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        "henning.schild@siemens.com" <henning.schild@siemens.com>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>,
-        "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>,
-        Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: Questions about replacing isolcpus by cgroup-v2
-Message-ID: <20211112163707.GA315388@lothringen>
-References: <AM9PR10MB48692A964E3106D11AC0FDEE898D9@AM9PR10MB4869.EURPRD10.PROD.OUTLOOK.COM>
- <20211112153656.qkwyvdmb42ze25iw@linutronix.de>
+        id S235331AbhKLSC1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Nov 2021 13:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231919AbhKLSCZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Nov 2021 13:02:25 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43354C061766
+        for <cgroups@vger.kernel.org>; Fri, 12 Nov 2021 09:59:34 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id w15so9793957ill.2
+        for <cgroups@vger.kernel.org>; Fri, 12 Nov 2021 09:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S6FWsJvUFWayhY8ePzqwxfqSm+uqimRoHquPyN3bod4=;
+        b=pOcgdEtKmvGA71hjumZT/MxPEHC50zxapDrdz8scR0Apuzc4LR7SZuiOSj/l+GJBCW
+         oa5fA0BUm8gzn/Dhve/36mdUZQTznyp2QiiczqGB5uGPeujGMWC/UfflN6lSlhJn59dM
+         gBFPmsqSOLPospqb/Y5RdFPfM93wKxcS7+12lcMs3N6PjJIHVXWvslcRh0jMnF53kQ4C
+         msEUYivdrNqlWciPxKuhAnidDrA4KJeeJQSNQvfJib2dLbi5v4+A1fpbt0qU5Y7DQYuK
+         ZnUkuTKV1EJiIAyF2FFqkfiPO1+HdR3+n51PwiTEK+NHLbpe8atAG3WPRFBkN/+YbKLz
+         4hMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S6FWsJvUFWayhY8ePzqwxfqSm+uqimRoHquPyN3bod4=;
+        b=LkpSg13wfO5WvcPzG4JFiaQdyNv3ESVT4UiAlAUjPsz5h71WIH5Vy/jkfHEBfOylvt
+         iRPyoVD8XvrqKru3gvSWTh+qpvyWO0fxS9vWqViZCKs/mI0Nr5++0n30oRfRhxQWQr7B
+         hh6zisFhxCtSdWCGwqMjzPtS/nZtW3vdPP87L9IvlcJ5fxJtLPdEW7sUT0WmVQP+eEzN
+         4KRhe8+OhUnNwuYBQurH+a0DsarDDWbQAbZbYCw114zpuPQyCXpy4KsqSW6yJu3/msyw
+         nCWNYR7Me3/H54K0ucCYjdKAeRnpma1Q9AfP3yeUpW8Dp7ZFJtMc5Q2Bqwh3+15KELek
+         XgxQ==
+X-Gm-Message-State: AOAM533WEMcuKw5a7yytOsX3JGBOfzhDuxyKwGzTB9Y8x5N+WJYAlNRr
+        IZK8RS4aCepCPXhNxLgNcSv/5UilIMwwgsVlvOrx5A==
+X-Google-Smtp-Source: ABdhPJzkglqW8kbM2LBUcT8ykUOgMV6rZfr5KnfWpvGG3jELu7LMZ4EfWMI+dS7aKG1Mft/eiJWzhEfnZ+AvRLWiFn0=
+X-Received: by 2002:a05:6e02:1561:: with SMTP id k1mr10229268ilu.135.1636739973506;
+ Fri, 12 Nov 2021 09:59:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211112153656.qkwyvdmb42ze25iw@linutronix.de>
+References: <20211111234203.1824138-1-almasrymina@google.com>
+ <20211111234203.1824138-3-almasrymina@google.com> <YY4dHPu/bcVdoJ4R@dhcp22.suse.cz>
+ <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com> <YY4nm9Kvkt2FJPph@dhcp22.suse.cz>
+In-Reply-To: <YY4nm9Kvkt2FJPph@dhcp22.suse.cz>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 12 Nov 2021 09:59:22 -0800
+Message-ID: <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 04:36:56PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-11-04 17:29:08 [+0000], Moessbauer, Felix wrote:
-> > Dear subscribers,
-> Hi,
-> 
-> I Cced cgroups@vger since thus question fits there better.
-> I Cced Frederic in case he has come clues regarding isolcpus and
-> cgroups.
-> 
-> > we are currently evaluating how to rework realtime tuning to use cgroup-v2 cpusets instead of the isolcpus kernel parameter.
-> > Our use-case are realtime applications with rt and non-rt threads. Hereby, the non-rt thread might create additional non-rt threads:
-> > 
-> > Example (RT CPU=1, 4 CPUs):
-> > - Non-RT Thread (A) with default affinity 0xD (1101b)
-> > - RT Thread (B) with Affinity 0x2 (0010b, via set_affinity)
-> > 
-> > When using pure isolcpus and cgroup-v1, just setting isolcpus=1 perfectly works:
-> > Thread A gets affinity 0xD, Thread B gets 0x2 and additional threads get a default affinity of 0xD.
-> > By that, independent of the threads' priorities, we can ensure that nothing is scheduled on our RT cpu (except from kernel threads, etc...).
-> > 
-> > During this journey, we discovered the following:
-> > 
-> > Using cgroup-v2 cpusets and isolcpus together seems to be incompatible:
-> > When activating the cpuset controller on a cgroup (for the first time), all default CPU affinities are reset.
-> > By that, also the default affinity is set to 0xFFFF..., while with isolcpus we expect it to be (0xFFFF - isolcpus).
-> > This breaks the example from above, as now the non-RT thread can also be
-> > scheduled on the RT CPU.
+On Fri, Nov 12, 2021 at 12:36 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 12-11-21 00:12:52, Mina Almasry wrote:
+> > On Thu, Nov 11, 2021 at 11:52 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Thu 11-11-21 15:42:01, Mina Almasry wrote:
+> > > > On remote ooms (OOMs due to remote charging), the oom-killer will attempt
+> > > > to find a task to kill in the memcg under oom, if the oom-killer
+> > > > is unable to find one, the oom-killer should simply return ENOMEM to the
+> > > > allocating process.
+> > >
+> > > This really begs for some justification.
+> > >
+> >
+> > I'm thinking (and I can add to the commit message in v4) that we have
+> > 2 reasonable options when the oom-killer gets invoked and finds
+> > nothing to kill: (1) return ENOMEM, (2) kill the allocating task. I'm
+> > thinking returning ENOMEM allows the application to gracefully handle
+> > the failure to remote charge and continue operation.
+> >
+> > For example, in the network service use case that I mentioned in the
+> > RFC proposal, it's beneficial for the network service to get an ENOMEM
+> > and continue to service network requests for other clients running on
+> > the machine, rather than get oom-killed when hitting the remote memcg
+> > limit. But, this is not a hard requirement, the network service could
+> > fork a process that does the remote charging to guard against the
+> > remote charge bringing down the entire process.
+>
+> This all belongs to the changelog so that we can discuss all potential
+> implication and do not rely on any implicit assumptions.
 
-That sounds buggy from the cpuset-v2 side (adding the maintainers in Cc).
+Understood. Maybe I'll wait to collect more feedback and upload v4
+with a thorough explanation of the thought process.
 
-Also please have a look into "[PATCH v8 0/6] cgroup/cpuset: Add new cpuset
-partition type & empty effecitve cpus":
+> E.g. why does
+> it even make sense to kill a task in the origin cgroup?
+>
 
-	  https://lore.kernel.org/lkml/20211018143619.205065-1-longman@redhat.com/
+The behavior I saw returning ENOMEM for this edge case was that the
+code was forever looping the pagefault, and I was (seemingly
+incorrectly) under the impression that a suggestion to forever loop
+the pagefault would be completely fundamentally unacceptable.
 
-This stuff adds support for a new "isolated" partition type on cpuset/cgroup-v2
-which should behave just like isolcpus.
+> > > > If we're in pagefault path and we're unable to return ENOMEM to the
+> > > > allocating process, we instead kill the allocating process.
+> > >
+> > > Why do you handle those differently?
+> > >
+> >
+> > I'm thinking (possibly incorrectly) it's beneficial to return ENOMEM
+> > to the allocating task rather than killing it. I would love to return
+> > ENOMEM in both these cases, but I can't return ENOMEM in the fault
+> > path. The behavior I see is that the oom-killer gets invoked over and
+> > over again looking to find something to kill and continually failing
+> > to find something to kill and the pagefault never gets handled.
+>
+> Just one remark. Until just very recently VM_FAULT_OOM (a result of
+> ENOMEM) would trigger the global OOM killer. This has changed by
+> 60e2793d440a ("mm, oom: do not trigger out_of_memory from the #PF").
+> But you are right that you might just end up looping in the page fault
+> for ever. Is that bad though? The situation is fundamentaly
+> unresolveable at this stage. On the other hand the task is still
+> killable so the userspace can decide to terminate and break out of the
+> loop.
+>
 
-> > 
-> > When only using cgroup-v2, we can isolate our RT process by placing it in a cgroup with CPUs=0,1 and remove CPU=1 from all other cgroups.
-> > However, we do not know of a strategy to set a default affinity:
-> > Given the example above, we have no way to ensure that newly created threads are born with an affinity of just 0x2 (without changing the application).
-> > 
-> > Finally, isolcpus itself is deprecated since kernel 5.4.
-> 
-> Where is this the deprecation of isolcpus announced/ written?
+I think what you're saying here makes a lot of sense and I think is a
+workable approach, and maybe is slightly preferable to killing the
+task IMO (and both are workable IMO). The pagefault can loop until
+memory becomes available in the remote memcg, and the userspace can
+decide to always terminate the process if desired or maybe handle the
+issue more gracefully by freeing memory in the remote memcg somehow;
+i.e. maybe we don't need the kernel to be heavy handed here and kill
+the remote allocating task immediately.
 
-We tried to deprecate it but too many people are still using it. Better pick an
-interface that allows you to change the isolated set at runtime like
-cpuset.sched_load_balance on cpuset/cgroup-v1 or the above patchset on v2.
+> What is the best approach I am not quite sure. As I've said earlier this
+> is very likely going to open a can of worms and so it should be
+> evaluated very carefuly. For that, please make sure to describe your
+> thinking in details.
+>
 
-Thanks.
+OK, thanks for reviewing and the next iteration should include a
+thorough explanation of my thinking.
+
+> > I could, however, kill the allocating task whether it's in the
+> > pagefault path or not; it's not a hard requirement that I return
+> > ENOMEM. If this is what you'd like to see in v4, please let me know,
+> > but I do see some value in allowing some callers to gracefully handle
+> > the ENOMEM.
+> >
+> > > > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > > >
+> > > > Cc: Michal Hocko <mhocko@suse.com>
+> > > > Cc: Theodore Ts'o <tytso@mit.edu>
+> > > > Cc: Greg Thelen <gthelen@google.com>
+> > > > Cc: Shakeel Butt <shakeelb@google.com>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: Hugh Dickins <hughd@google.com>
+> > > > CC: Roman Gushchin <guro@fb.com>
+> > > > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > > > Cc: Hugh Dickins <hughd@google.com>
+> > > > Cc: Tejun Heo <tj@kernel.org>
+> > > > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> > > > Cc: Muchun Song <songmuchun@bytedance.com>
+> > > > Cc: riel@surriel.com
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-fsdevel@vger.kernel.org
+> > > > Cc: cgroups@vger.kernel.org
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
+>
+> --
+> Michal Hocko
+> SUSE Labs
