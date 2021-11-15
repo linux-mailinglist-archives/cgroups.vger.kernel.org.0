@@ -2,98 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7D44510DB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 19:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1F7451638
+	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 22:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243264AbhKOSzp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Nov 2021 13:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
+        id S239579AbhKOVRi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Nov 2021 16:17:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242671AbhKOSxc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 13:53:32 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A08DC0A3BDF
-        for <cgroups@vger.kernel.org>; Mon, 15 Nov 2021 09:53:13 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id e11so37215639ljo.13
-        for <cgroups@vger.kernel.org>; Mon, 15 Nov 2021 09:53:13 -0800 (PST)
+        with ESMTP id S1350422AbhKOUXt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 15:23:49 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2E5C079789;
+        Mon, 15 Nov 2021 12:11:50 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id x5so5340434pfr.0;
+        Mon, 15 Nov 2021 12:11:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6NsJwQViYjBx6x1vnKWwbVuDzGBfSCVWT/rbaDdS07o=;
-        b=KO3K519hv/U7eBTcKvTNDP2eKFUA2AUXYqJpuH3H7HpyMWbd/okypmhcyl68qsgEMB
-         Tk6M3OgdZeFJesvlAB5Bhgl6XW/O9P8mk3dMd4fFh80iqqMofW9VhwiDp62KQ0N/YUUx
-         kuKS6PM57Mxitv2Gso7uX6bsb3i2CsyEFARebzexwMlXFoA74eOMXb002OmB9tn9+Y85
-         wR9hyRPYMFGUdQX09cuC8rvxOvFIKVUi7nFklVRic3dV6iooqaWcyuL5oVncWpD+oPvG
-         mL1mSaV4SWgyrxi/iuT2d03XoYCARQJVASW7AGQBqLHs2tgGfUQfKdhwJr20mXiPSoOr
-         4lYw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=oBGYRkWYdG5WWKlBVnjVyKfV04QfW8RGDK164b+TnA4=;
+        b=LxH3FSerOz2L4FFx8lOOBlj5sDebiEU7bdQ78fpem8rYkFkIwKt5lahlCizi4TTF4P
+         VTs2qdZ7z5qxOaw7+EF9s5ZQDtxw/RGxj5lZY+KSMkC1AQd6K2EbCjmFhZ4ocqCGHGOb
+         9i8Mts523tK+s/SCBSnuYNuvroDWi4X/q2lI8nbpcoOjE9B7ggNCCCILmNcZAPRa8hER
+         pbwfvpEsASm/U5Qj6kF7DBMmZZe7YMxar375ZhNDdGQw9prl0zjDy9RFx5Bnolf1XIwP
+         e6BbZOgECPQK0GP30XfIgGS9IherX0cM+mOZZspbp1kcKU+dG0bkbBLPX4q+xOu4o1E5
+         PivA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6NsJwQViYjBx6x1vnKWwbVuDzGBfSCVWT/rbaDdS07o=;
-        b=hiabKU+0qbsyKle7R78Hoo0/OukPH2prNOIphgko4EiMQALqvrGNiWqWXGiSHk9p6L
-         zNfBUvMBqVpYX06So76hEiEqMK0oTMW4S1eGcuVSSTc8yqTYJyv2m0gZDQwjV/t2VtIj
-         vxE6Ei0PYd2QB6e/zZ0VJ+lHlEj/qn3Fmf7yCBrT8ZwsUjyiNQqBxwr1OCUBG+rP+U6I
-         S0VZcCFNws3hGnX8HqaafZtR9MvzIOMksDmN7XQ/LF1UWxe1as7viebFP4YrHEjgiM2b
-         Bk/jv0KmGQg/2+lCsIxffkdBWGau5rFZhc4AHjQzm9zkVDG0CWPp6AN0evZ3xpDcPiCk
-         hI2Q==
-X-Gm-Message-State: AOAM5325+sK/AN62WpXxgFTnC3RTbPZBYTytg/La16dWJMDgrWYr5EXS
-        q3UUh7SOqxh4Z3MgVOitjRTJ61rpxFuZFJi5Hb+fEA==
-X-Google-Smtp-Source: ABdhPJwhwO7vj3l7PglblWhEu/u5R0j6w6RyAXBfY3b1tMLAwK4ATaXsbDMVLHDtN2AxslDULON1DIcW72dsbChwW+w=
-X-Received: by 2002:a2e:9699:: with SMTP id q25mr448399lji.6.1636998791657;
- Mon, 15 Nov 2021 09:53:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20211108211959.1750915-1-almasrymina@google.com>
- <20211108211959.1750915-2-almasrymina@google.com> <20211108221047.GE418105@dread.disaster.area>
- <YYm1v25dLZL99qKK@casper.infradead.org> <20211109011837.GF418105@dread.disaster.area>
-In-Reply-To: <20211109011837.GF418105@dread.disaster.area>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 15 Nov 2021 09:53:00 -0800
-Message-ID: <CALvZod72uULZ1TfJbk5q-0cVTmGfBG=a5zNb69nb4A2bv+pPWA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] mm/shmem: support deterministic charging of tmpfs
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Roman Gushchin <songmuchun@bytedance.com>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=oBGYRkWYdG5WWKlBVnjVyKfV04QfW8RGDK164b+TnA4=;
+        b=Sg9nTRedHXbQlK9Q3sL+lFBSQA9/JNg+3+8ETlu7+0+Gb5uXfDAhUQi+yooLELJv1z
+         5L6PZjdet45+NbzvFukvliePysRkBXENgYN4c3EGqFyIIddc/h+OF9Q9Z7bkI2YJ95KQ
+         /FVm1F0tKi1yXbc3mlB+dXa9cME372NHpIZyFHXGhnvDI7jJ7tk09RPV4jV2P/RKbqqK
+         bFQWhNxhmtM4USEUWOCr0IWKW6EEwwzljPLlSCCqTVVQ9lPZ+aXLcDqk+KQxECdzTx9v
+         9+l4/zKY4fqAUFqnofyfw4N1wrMNInP65tacMvIJWLu+OnUvdkjySV7lSnQRLR7+harq
+         FSnw==
+X-Gm-Message-State: AOAM530idC/ktTb7NgFivtZRnxXSL/x9wMC8nz+HTtmm12LmbuCiY71h
+        ZW8cKY2aG+peGlJn+arOzgSgG/aK2hzZrFss
+X-Google-Smtp-Source: ABdhPJxlTbEBdEjhMkuMIfYCIEqv49Q4KcpOugleQP8lUeIT/H3234v7Woz9z6kgy+M8DFDHV2ERsQ==
+X-Received: by 2002:a63:b502:: with SMTP id y2mr1066503pge.214.1637007109631;
+        Mon, 15 Nov 2021 12:11:49 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id f3sm16180564pfg.167.2021.11.15.12.11.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 12:11:48 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Nov 2021 10:11:47 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YZK/A43T+zvu89dl@slm.duckdns.org>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211018143619.205065-6-longman@redhat.com>
+ <20211115193122.GA16798@blackbody.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211115193122.GA16798@blackbody.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 8, 2021 at 5:18 PM Dave Chinner <david@fromorbit.com> wrote:
->
-[...]
->
-> > If we are to have this for all filesystems, then let's do that properly
-> > and make it generic functionality from its introduction.
->
-> Fully agree.
->
+Hello,
 
-Mina, I think supporting all filesystems might be a much cleaner
-solution than adding fs specific code.
+On Mon, Nov 15, 2021 at 08:31:22PM +0100, Michal Koutný wrote:
+> Now to the constraints and partition setups. I think it's useful to have
+> a model with which the implementation can be compared with.
+> I tried to condense some "simple rules" from the descriptions you posted
+> in v8 plus your response to my remarks in v7 [2]. These should only be
+> the "validity conditions", not "transition conditions".
 
-We need to:
+FWIW, my opinion is pretty much in line with Michal's in this regard. Other
+than that, everything looks pretty good to me.
 
-1) Add memcg option handling in vfs_parse_fs_param() before fs
-specific param handling.
-2) Add a new page cache memcg charging interface (similar to swap).
+Thanks.
 
-With (1), no need to change any fs specific code.
-
-With (2), fs codepaths will be free of memcg specific handling. This
-new interface will be used in __filemap_add_folio(),
-shmem_add_to_page_cache() and collapse_file().
-
-thanks,
-Shakeel
+-- 
+tejun
