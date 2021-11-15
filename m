@@ -2,266 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621D545163B
-	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 22:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA89D4516CC
+	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 22:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243613AbhKOVRo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Nov 2021 16:17:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43582 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348959AbhKOVNf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 16:13:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637010638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s8/d0X/G9wWHnrD6ZbbOML+JYstcWxNRHEvKNsKGlKA=;
-        b=Q5cy1tMNsBszj8P3Q14tdU8zAgivvJ7ZAOvdGIcmzgex1E3fY1ZEhNjDOqZIzFKJLB2ilk
-        6Pi4lYdW0+8AuEWvKL9woxwLiO35gvy/5CGwhj7vuC9tpG4iR2MysZymvblfmCBXRHrlIk
-        WUiZay5ZlY5PkICwd9LsnDL4bZjHWbA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-dtnOO5I1Mm2H_BZ8ZHwZyA-1; Mon, 15 Nov 2021 16:10:35 -0500
-X-MC-Unique: dtnOO5I1Mm2H_BZ8ZHwZyA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9A71A0CAB;
-        Mon, 15 Nov 2021 21:10:32 +0000 (UTC)
-Received: from [10.22.33.148] (unknown [10.22.33.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BB85E19723;
-        Mon, 15 Nov 2021 21:10:29 +0000 (UTC)
-Message-ID: <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
-Date:   Mon, 15 Nov 2021 16:10:29 -0500
+        id S236530AbhKOVpn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Nov 2021 16:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350819AbhKOVjt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 16:39:49 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4691EC0613B9;
+        Mon, 15 Nov 2021 13:21:45 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id c4so16164617pfj.2;
+        Mon, 15 Nov 2021 13:21:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZUQPppR9ZjdFkfvvbN8Bq2EG2Ba0aYSmf4rrcM4Gmzw=;
+        b=QtWenNQeXFjBE1vmgcC7t0MMDldUBUq9hovNAQXWl/AZPpQXLrm9PUGLdGxY47kUYT
+         y2LDUJHzeO54cT5ezi2EW3SWD/blO+R2SQToifds73Sge4ro6JWPbCH9/IqUPPZ7PsGF
+         xrDjZ6P6bJce25D0eKtzhbymuBuCt9OdEI4kmT1ij5gkD9PaONAVj47FghdY//lazm+P
+         JkdSWQXKJ9r+xpXMmlcOcdlxw0YzaHxB0Jh+yz7+6fG2HZ0TLFD5UjMn6FmY6Ox9PFxy
+         L+h/l4zBePwFwrOgD5m6AUGh2kXQ3ukcxvDaBLBj7k+DnooNzJR+LBuCG1OUeOhoQ5ci
+         lfRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ZUQPppR9ZjdFkfvvbN8Bq2EG2Ba0aYSmf4rrcM4Gmzw=;
+        b=gWXXFzE3+Takh1G2aBGuY3UpDhzs7i+Sza7Ux0Hd73HWqVZtcwPf6bT5IHFM3rzeC4
+         uCUeD7Q/k1eRq5odsgti7uFBMb9mmX9nlDIL2nSpkXTUM4nybCKKB57zwO6B2yATp+7X
+         YVe7RrDU83CtQ2zb8bZBOz6P17S9rperSn3ylkJBOiRDL9/KVkVmY5aHO6Qrgkn9EdbF
+         BsoQsax9PDnrhI76egOVxTJWBYgA3CEB5h2Knz8zKLBqeisDHiF6rkuXDnqe5MTjTsKq
+         cKcbdySnjcA8qlK9Hh6ca+LNA8FuzEx8MFUYYoCWapcbhwJdwX4Zx4vUvPWzviQEekGR
+         1PtA==
+X-Gm-Message-State: AOAM5326w9p+Pky8fWY/QqVTO+3YIZQOAE5ht86bOcI3slRzy68Hf8Nv
+        cyGg8FEmmZJ5SZy82Y8MObU=
+X-Google-Smtp-Source: ABdhPJwLT310i1EOhU9mMvrSU72+CwwgtalLzi4aKetYwy7iEKvuNXFly3Ym6+Z8d/Dj2w7ongIBNA==
+X-Received: by 2002:a65:5a8e:: with SMTP id c14mr1311106pgt.241.1637011304718;
+        Mon, 15 Nov 2021 13:21:44 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id i185sm16088670pfg.80.2021.11.15.13.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 13:21:44 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Nov 2021 11:21:43 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2] cgroup: pretty format /proc/cgroups
+Message-ID: <YZLPZwo7IkgctGwD@slm.duckdns.org>
+References: <20211115011253.20778-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20211018143619.205065-1-longman@redhat.com>
- <20211018143619.205065-6-longman@redhat.com>
- <20211115193122.GA16798@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211115193122.GA16798@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115011253.20778-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Mon, Nov 15, 2021 at 01:12:53AM +0000, Wei Yang wrote:
+> Current /proc/cgroups looks like this:
+> 
+>  subsys_name    hierarchy       num_cgroups     enabled
+> cpuset  3       1       1
+> cpu     2       1       1
+> cpuacct 2       1       1
+> memory  4       71      1
+> freezer 5       1       1
+> 
+> Let's align the title and value. After this patch, it looks like this.
+> 
+>  subsys_name    hierarchy       num_cgroups     enabled
+>       cpuset            5                 1           1
+>          cpu            3                 1           1
+>      cpuacct            3                 1           1
+>       memory            2                71           1
+>      freezer            4                 1           1
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-On 11/15/21 14:31, Michal Koutný wrote:
-> Hello.
->
-> On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
->> +	When set to "isolated", the CPUs in that partition root will
->> +	be in an isolated state without any load balancing from the
->> +	scheduler.  Tasks in such a partition must be explicitly bound
->> +	to each individual CPU.
-> This sounds reasonable but it seems to have some usability issues as was
-> raised in another thread [1]. (I could only think of the workaround of
-> single-cpu cgroup leaves + CLONE_INTO_CGROUP.)
+So, I know it's silly but the file is dumb \t formatted (ie. single \t
+between fields) and am slightly worried that changing the format might break
+some dumb userspace tooling. Given that the information isn't really needed
+for cgroup2 anyway, it prolly is better to leave it as-is, I think.
 
-It can be a problem when one is trying to move from one cgroup to 
-another cgroup with non-overlapping cpus laterally. However, if a task 
-is initially from a parent cgroup with affinity mask that include cpus 
-in the isolated child cgroup, I believe it should be able to move to the 
-isolated child cgroup without problem. Otherwise, it is a bug that needs 
-to be fixed.
+Thanks.
 
-
->
-> TL;DR Do whatever you find suitable but (re)consider sticking to the
-> delegation principle (making hotplug and ancestor changes equal).
->
-> Now to the constraints and partition setups. I think it's useful to have
-> a model with which the implementation can be compared with.
-> I tried to condense some "simple rules" from the descriptions you posted
-> in v8 plus your response to my remarks in v7 [2]. These should only be
-> the "validity conditions", not "transition conditions".
->
-> ## Validity conditions
->
-> For simplification, there's a condition called 'degraded' that tells
-> whether a cpuset can host tasks (with the given config) that expands to
-> two predicates:
->
-> 	degraded := cpus.internal_effective == ø && has_tasks
-> 	valid_root := !degraded && cpus_exclusive && parent.valid_root
-> 	(valid_member := !degraded)
->
-> with a helping predicate
-> 	cpus_exclusive := cpus not shared by a sibling
->
-> The effective CPUs basically combine configured+available CPUs
->
-> 	cpus.internal_effective := (cpus ∩ parent.cpus ∩ online_cpus) - passed
->
-> where
-> 	passed := union of children cpus whose partition is not member
->
-> Finally, to handle the degraded cpusets gracefully, we define
->
-> 	if (!degraded)
-> 		cpus.effective := cpus.internal_effective
-> 	else
-> 		cpus.effective := parent.cpus.effective
->
-> (In cases when there's no parent, we replace its cpus with online_cpus.)
->
-> ---
->
-> I'll try applying these conditions to your description.
->
->> +
->> +	"cpuset.cpus" must always be set up first before enabling
->> +	partition.
-> This is just a transition condition.
->
->>        Unlike "member" whose "cpuset.cpus.effective" can
->> +	contain CPUs not in "cpuset.cpus", this can never happen with a
->> +	valid partition root. In other words, "cpuset.cpus.effective"
->> +	is always a subset of "cpuset.cpus" for a valid partition root.
-> IIUC this refers to the cgroup that is 'degraded'. (The consequences for
-> a valid partition root follow from valid_root definition above.)
->
->> +
->> +	When a parent partition root cannot exclusively grant any of
->> +	the CPUs specified in "cpuset.cpus", "cpuset.cpus.effective"
->> +	becomes empty.
-> This sounds too strict to me, perhaps you meant 'cannot grant _all_ of
-> the CPUs'?
-I think the wording may be confusing. What I meant is none of the 
-requested cpu can be granted. So if there is at least one granted, the 
-effective cpus won't be empty.
->>        If there are tasks in the partition root, the
->> +	partition root becomes invalid and "cpuset.cpus.effective"
->> +	is reset to that of the nearest non-empty ancestor.
-> This is captured in the definition of 'degraded'.
->
->> +
->> +        Note that a task cannot be moved to a croup with empty
->> +        "cpuset.cpus.effective".
-> A transition condition. (Makes sense.)
->
-> [With the validity conditions above, it's possible to have 'valid_root'
-> with empty cpus (hence also empty cpus.internal_effective) if there are
-> no tasks in there. The transition conditions so far prevented this
-> corner case.]
->
->> +	There are additional constraints on where a partition root can
->> +	be enabled ("root" or "isolated").  It can only be enabled in
->> +	a cgroup if all the following conditions are met.
-> I think the enablement (aka rewriting cpuset.cpus.partition) could be
-> always possible but it'd result in "root invalid (...)" if the resulting
-> config doesn't meet the validity condition.
->
->> +
->> +	1) The "cpuset.cpus" is non-empty and exclusive, i.e. they are
->> +	   not shared by any of its siblings.
-> The emptiness here is a judgement call (in my formulation of the
-> conditions it seemed simpler to allow empty cpus.internal_effective with
-> no tasks).
-There are more constraints in enabling a partition. Once it is enabled, 
-there will be less constraints to maintain its validity.
->
->> +	2) The parent cgroup is a valid partition root.
-> Captured in the valid_root definition.
->
->> +	3) The "cpuset.cpus" is a subset of parent's "cpuset.cpus".
-> This is unnecessary strictness. Allow such config,
-> cpus.internal_effective still can't be more than parent's cpuset.cpus.
-> (Or do you have a reason to discard such configs?)
->
->> +	4) There is no child cgroups with cpuset enabled.  This avoids
->> +	   cpu migrations of multiple cgroups simultaneously which can
->> +	   be problematic.
-> A transition condition (i.e. not relevant to validity conditions).
->
->> +	Once becoming a partition root, changes to "cpuset.cpus"
->> +	is generally allowed as long as the cpu list is exclusive,
->> +	non-empty and is a superset of children's cpu lists.
-> Any changes should be allowed otherwise it denies the delegation
-> principle of v2 (IOW a parent should be able to preempt CPUs given to
-> chilren previously and not be denied because of them).
->
-> (If the change results in failed validity condition the cgroup of course
-> cannot be be a valid_root anymore.)
->
->> +        The constraints of a valid partition root are as follows:
->> +
->> +        1) The parent cgroup is a valid partition root.
->> +        2) "cpuset.cpus.effective" is a subset of "cpuset.cpus"
->> +        3) "cpuset.cpus.effective" is non-empty when there are tasks
->> +           in the partition.
-> (This seem to miss the sibling exclusivity condition.)
-> Here I'd simply paste the "Validity conditions" specified above instead.
-You currently cannot make change to cpuset.cpus that violates the cpu 
-exclusivity rule. The above constraints will not disallow you to make 
-the change. They just affect the validity of the partition root.
->
->> +        Changing a partition root to "member" is always allowed.
->> +        If there are child partition roots underneath it, however,
->> +        they will be forced to be switched back to "member" too and
->> +        lose their partitions. So care must be taken to double check
->> +        for this condition before disabling a partition root.
-> (Or is this how delegation is intended?) However, AFAICS, parent still
-> can't remove cpuset.cpus even when the child is a "member". Otherwise,
-> I agree with the back-switch.
-There are only 2 possibilities here. Either we force the child 
-partitions to be become members or invalid partition root. The purpose 
-of invalid partition root is actually a transient state which can be 
-recovered in some way to make the partition again. However, changing a 
-parent partition root to member breaks the possibility of recovering 
-later. That is why I think it is more sensible to force those child 
-partitions to become members.
->
->
->> +	Setting a cgroup to a valid partition root will take the CPUs
->> +	away from the effective CPUs of the parent partition.
-> Captured in the definition of cpus.internal_effective.
->
->> +	A valid parent partition may distribute out all its CPUs to
->> +	its child partitions as long as it is not the root cgroup as
->> +	we need some house-keeping CPUs in the root cgroup.
-> This actually applies to any root partition that's supposed to host
-> tasks. (IOW, 'valid_root' cannot be 'degraded'.)
->
->> +	An invalid partition is not a real partition even though some
->> +	internal states may still be kept.
-> Tautology? (Or new definition of "real".)
->
->> +
->> +	An invalid partition root can be reverted back to a real
->> +	partition root if none of the constraints of a valid partition
->> +        root are violated.
-> Yes. (Also tautological.)
->
-> Anyway, as I said above, I just tried to formulate the model for clearer
-> understanding and the implementation may introduce transition
-> constraints but it'd be good to always have the simple rules to tell
-> what's a valid root in the tree and what's not.
-
-Thanks for analyzing each statements for their validity. I will try to 
-improve it to make it easier to understand.
-
-Cheers,
-Longman
-
+-- 
+tejun
