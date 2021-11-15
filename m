@@ -2,80 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5894C451767
-	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 23:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5B845188A
+	for <lists+cgroups@lfdr.de>; Mon, 15 Nov 2021 23:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346385AbhKOWZv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Nov 2021 17:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346023AbhKOWRz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 17:17:55 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB2C03E03F;
-        Mon, 15 Nov 2021 13:37:24 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id x131so16157514pfc.12;
-        Mon, 15 Nov 2021 13:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sy0cBwSY9OB0AfhJQItSKu5D9CkSMvp3AC0Bk6Ha4VQ=;
-        b=pN6KNRwqQkwkOps2PgEPNWx6ZqE9B6BEhhsEEiyYN7MYDinla+sbz/gXcJ2ygSQhJq
-         7z3VZJaa/DEz0KQ58iKtuRH5SsFuyQ92/N6vUoBv/9dDKUW7K7qPAkRKPuN2kQpuAGZ8
-         8Ei+42gAjmPc8TZL5pV8KQvgGGYy6VZFv6X6zQQ8F8Nk4XJqV+TdlZ8g/beGlO7knjdu
-         iTWmYMHh7t3zasaqNfMIvD99JnxyeSZMC8mEVBacCZbIvI/L8zZQOG6nxXoXnBUyQc2W
-         inCJcZdDwvNBZlTM7IsZkrub7/Q+/9X1vrdlI6g6z5gULncLtvNH/cwVtPaotIizYEZp
-         mEAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Sy0cBwSY9OB0AfhJQItSKu5D9CkSMvp3AC0Bk6Ha4VQ=;
-        b=ILTjJp16jW+/3Eb83+PE8tgG24cY5t2gcCUt2a/e7zSh9LDzqmI/J23NTijDE44aaD
-         FWtEPO/LJ4iT3qTpqRUwAtn8RaHAzm3i+ookMGttAIvwMeNEGcCy+prxQAAuFa6NF8gU
-         P1rZFnDLtBfpasLoVdsLEx+PXo9vVsHa2o0hr1BKgAhL3jJAKjTRaTLjK4eJUO5wy4x4
-         G1C7xiys0vn8njphMxwF+hnJ8acq0nV0UnB7nNbmSdtxK+zx4SQBHKm9NKtOudheoRoo
-         7CfLlHVfpyO/4N7p4z1L05GTEAUDY719VaW4erY9Qqj1iFxHjn4SvdbiyTNr8DpJO6jZ
-         XFmQ==
-X-Gm-Message-State: AOAM532SwLwgCbANeNPrmrq7B06vu85lyQHsiw1GJB+Bg46Sm3glvH5a
-        ha+EM3xNI5ArIPQCpvagKD8=
-X-Google-Smtp-Source: ABdhPJzxoEiP+heMxH0Z2jUQxgSXbZsg9q3n2L2yj/seOLNJg38GYvnglBfSC4AtOVzpjRUom5ybYw==
-X-Received: by 2002:a63:4e09:: with SMTP id c9mr1401145pgb.83.1637012243829;
-        Mon, 15 Nov 2021 13:37:23 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id ls14sm243463pjb.49.2021.11.15.13.37.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 13:37:23 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 15 Nov 2021 11:37:21 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from
- blkg_conf_pref()
-Message-ID: <YZLTEZS66QqRxjuX@slm.duckdns.org>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
+        id S243146AbhKOXBp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Nov 2021 18:01:45 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52296 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234211AbhKOW7p (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 17:59:45 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B629212FE;
+        Mon, 15 Nov 2021 22:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637017007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XszfChHIbqmWBDL5Op+W4Hd9f4QflFXocWVFOOOOktk=;
+        b=1e6O/P+WZWOtrccWiDyT36Q+3aR4OOPIZKKbLnfHJzxJpn0yd9vzpSEglewY8CaiUv+3pU
+        9mlryOi2Vca75FOJA7sIeNmH8Yo0m894mMQXymeHo7rOASJlMo90k5hNjf+zdYSOJ1EKjd
+        o9jX6MLbrlePfiFrRPDtiAWALFDIYBg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637017007;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XszfChHIbqmWBDL5Op+W4Hd9f4QflFXocWVFOOOOktk=;
+        b=g5eanP5cV7Lgt+mSe5VdHWMrEK+GoUSwzJlHsUfkKY+wdapf2u7w8IgsvOI2M6kt4Mz8eO
+        fAWig/ra+NWOOgAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B04013B26;
+        Mon, 15 Nov 2021 22:56:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GzoGAa/lkmF9QQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 15 Nov 2021 22:56:47 +0000
+Message-ID: <abe4ef63-7bb2-93c2-d0c7-d7bab9ba2f6b@suse.cz>
+Date:   Mon, 15 Nov 2021 23:56:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] mm: slab: make slab iterator functions static
+Content-Language: en-US
+To:     Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211109133359.32881-1-songmuchun@bytedance.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211109133359.32881-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 10:07:05AM +0800, Yu Kuai wrote:
-> If blk_queue_enter() failed due to queue is dying, the
-> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
+On 11/9/21 14:33, Muchun Song wrote:
+> There is no external users of slab_start/next/stop(), so make them
+> static. And the memory.kmem.slabinfo is deprecated, which outputs
+> nothing now, so move memcg_slab_show() into mm/memcontrol.c and
+> rename it to mem_cgroup_slab_show to be consistent with other
+> function names.
 > 
-> Fixes: 0c9d338c8443 ("blk-cgroup: synchronize blkg creation against policy deactivation")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
