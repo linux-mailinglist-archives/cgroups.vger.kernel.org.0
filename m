@@ -2,95 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A91B453BFA
-	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 22:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C97453C86
+	for <lists+cgroups@lfdr.de>; Wed, 17 Nov 2021 00:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhKPV7F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Nov 2021 16:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S229986AbhKPXHz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Nov 2021 18:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhKPV7F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 16:59:05 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E0DC061570
-        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 13:56:07 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id k2so1527001lji.4
-        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 13:56:07 -0800 (PST)
+        with ESMTP id S229899AbhKPXHz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 18:07:55 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1F4C061570
+        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 15:04:57 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id y16so643805ioc.8
+        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 15:04:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NGSDUZI7I1mvZPeQN3C3y+QjGBgnwjJfkAsVBmVdGZc=;
-        b=a+XkYQtPqF5RRQI3wwC+zWQDcl6Jk2H5NnW1qWcUwoRaNbjxP1LUP2iIZVf5YnfnQ/
-         bO6jsTt8flc9QzckB+29nGqqrlXfBqY13UDknpfbe/IDKUcqQx9JIzrKT2iQi0xPDnWt
-         FRusVQ3k/e5mSfUl4UizYQcDxOCK+J9bpK4US5g4MlNOJpKNoYzVr+bM1fwpJeysjg8d
-         BSslACmc0Kl1oCzQkbxv0VUJjYZJY9O0Tbr9LHc7AtWBIumaYbWSY/BAR0tzq9C9UvfD
-         JHJ3alQND91uA/bqoZyRsjp94rux3o8yr2umKE7ZmbY1+LbsWA7jE5k24wSGkSHI7evH
-         zp1Q==
+        bh=NCLmpq3O2WgfnqHHONPo5k+Xb63HO8UeUsJwn/lUkKw=;
+        b=S/WK2x3jIwCL9hw45soRVak8siXKxbKoVIkWsbVqHbuyFEp71jYSmrLDup+9cDXA8p
+         DjebcwbV7B+z1OQ5GTfuFq30luZF4jPlC7TxDzMar1i3ioWHKlo9SS++CP0LsH1D0W0q
+         KM5WdHzQfWRN7RiByjFOkn+OH+oSd8Nn0Qq/quRPXged8Oe4xORjDRUfuOCqNigM73RW
+         AGiit48kQXh4fWFTik4ITYJbOXGMmL9I0ALedzjrWNNXD/d3V3u2cIEKuomhXNy5E7sQ
+         ZXjsBH66ms5a3MjGWKjF0cjq3xp1/d7qUG/esLryx1CXCLPPc9sRLoHIYnW1QFYoqSQC
+         xGhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NGSDUZI7I1mvZPeQN3C3y+QjGBgnwjJfkAsVBmVdGZc=;
-        b=FidfcRIhOUyz3H1pbCWDxoJMCUHkfNFot66D2scXr+hzj/7rt5w9Dv0TJn8dKVAShA
-         eqRGYPGQ/7fBnbSCPNGvBXT61czMQ4ckKQ0vnNZVhUTCSe1rP1DfaTLUhDsta1T1hQV/
-         N7Y5zp4w2map7oANOlIpW3ZY7W4Mz5c3DgkNqo+zG+RGv3nmCEbIibnrSjnHX+MMAi+A
-         2SXAe7OPglL3okiO3eGqihVknShSXnOQGBI9NAdWrPkEvUOa7W6EzR0dOJ9uCcTS/lRe
-         YM1FTPgCD8Z9L8U/VtpZFPNnUbFMr7ONWhVUjeqZx0r6+4W68gYeorFs5kzCD3PkCk+F
-         ACOg==
-X-Gm-Message-State: AOAM5326YlPCHYEUvT/Pyi3IEGKxlm6pYeDbZka942OqMRYkeP6nTy/M
-        L5z+p1GyNMdoCCDjHKjTcrBXAH2B+WYKuiWN8+en6A==
-X-Google-Smtp-Source: ABdhPJwzHP0930XAephcBcY6fRf6ULC5mJHvkVbGVHylzeqR6CYm6Qg3QjVKhQ3+Jc052J/uw9QI1JzeKIkLSqhtA2I=
-X-Received: by 2002:a05:651c:1142:: with SMTP id h2mr2513145ljo.35.1637099765832;
- Tue, 16 Nov 2021 13:56:05 -0800 (PST)
+        bh=NCLmpq3O2WgfnqHHONPo5k+Xb63HO8UeUsJwn/lUkKw=;
+        b=2AysEkyI7jtskM9L/TZpFUraiCRY92W0GINZq4v3dUiu3hGuXfAdaNGjt/0TwhG1Li
+         FeB1Yon+rEEMsTuSp98B8W/TYefEkBYglP4XP9yZdRWJ9CJi5hYa/XajuAtCXdpv+xjn
+         VI4RaauMoGs7DzmfR9q7TsFIZuBk6ZdZfw0YYG/OtgAcb3Jtrayt/hn4SfW9oZzGiSeO
+         mdoiv2rvhNQxkRXsQHtxN1zFxTffdRIRBygf8YcGe5Eo6LFYWKwKzkEtV3z84n1a//B2
+         44Iqhn1vX2D8D2yRpYaY+00cAlImsQ3aaBlh+iIVGyxx5sg5ug5VGMQhVYUhmquLEE3F
+         sneQ==
+X-Gm-Message-State: AOAM531HmE6suB1JzrjMgwtzjQsCK0OMdXIoVp23ffF9Be6Itv3nz+vv
+        5dGjcXY9tGp+GZtPVllJ64gmMS87H0UEdLYH8ag=
+X-Google-Smtp-Source: ABdhPJwVMI7JTRNWcLvXE98fRZ3Aga2ksPqrrspXmB8zz7PbHqunR4F4o2TEgHPoEf4ywMtUIYB11vP4o0CnbXa5yCw=
+X-Received: by 2002:a02:b813:: with SMTP id o19mr8818638jam.130.1637103897457;
+ Tue, 16 Nov 2021 15:04:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211111234203.1824138-1-almasrymina@google.com>
- <20211111234203.1824138-3-almasrymina@google.com> <YY4dHPu/bcVdoJ4R@dhcp22.suse.cz>
- <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com>
- <YY4nm9Kvkt2FJPph@dhcp22.suse.cz> <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
- <YZI9ZbRVdRtE2m70@dhcp22.suse.cz> <CAHS8izPcnwOqf8bjfrEd9VFxdA6yX3+a-TeHsxGgpAR+_bRdNA@mail.gmail.com>
- <YZN5tkhHomj6HSb2@dhcp22.suse.cz> <CAHS8izNTbvhjEEb=ZrH2_4ECkVhxnCLzyd=78uWmHA_02iiA9Q@mail.gmail.com>
- <YZOWD8hP2WpqyXvI@dhcp22.suse.cz> <CAHS8izPyCDucFBa9ZKz09g3QVqSWLmAyOmwN+vr=X2y7yZjRQA@mail.gmail.com>
-In-Reply-To: <CAHS8izPyCDucFBa9ZKz09g3QVqSWLmAyOmwN+vr=X2y7yZjRQA@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Nov 2021 13:55:54 -0800
-Message-ID: <CALvZod7FHO6edK1cR+rbt6cG=+zUzEx3+rKWT5mi73Q29_Y5qA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+References: <20211116001628.24216-1-vbabka@suse.cz> <20211116001628.24216-22-vbabka@suse.cz>
+ <CA+fCnZd_39cEvP+ktfxSrYAj6xdM02X6C0CxA5rLauaMhs2mxQ@mail.gmail.com> <6866ad09-f765-0e8b-4821-8dbdc6d0f24e@suse.cz>
+In-Reply-To: <6866ad09-f765-0e8b-4821-8dbdc6d0f24e@suse.cz>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Wed, 17 Nov 2021 00:04:46 +0100
+Message-ID: <CA+fCnZcwti=hiPznPoMNWR-hvEOQbQRjEcDgnGbX+cb=kFa6sA@mail.gmail.com>
+Subject: Re: [RFC PATCH 21/32] mm: Convert struct page to struct slab in
+ functions used by other subsystems
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
+        kasan-dev <kasan-dev@googlegroups.com>, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:27 PM Mina Almasry <almasrymina@google.com> wrote:
+On Tue, Nov 16, 2021 at 5:33 PM Vlastimil Babka <vbabka@suse.cz> wrote:
 >
-> On Tue, Nov 16, 2021 at 3:29 AM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > Yes, exactly. I meant that all this special casing would be done at the
-> > shmem layer as it knows how to communicate this usecase.
+> On 11/16/21 15:02, Andrey Konovalov wrote:
+> >> --- a/mm/kasan/report.c
+> >> +++ b/mm/kasan/report.c
+> >> @@ -249,7 +249,7 @@ static void print_address_description(void *addr, u8 tag)
+> >>
+> >>         if (page && PageSlab(page)) {
+> >>                 struct kmem_cache *cache = page->slab_cache;
+> >> -               void *object = nearest_obj(cache, page, addr);
+> >> +               void *object = nearest_obj(cache, page_slab(page),      addr);
 > >
+> > The tab before addr should be a space. checkpatch should probably report this.
 >
-> Awesome. The more I think of it I think the ENOSPC handling is perfect
-> for this use case, because it gives all users of the shared memory and
-> remote chargers a chance to gracefully handle the ENOSPC or the SIGBUS
-> when we hit the nothing to kill case. The only issue is finding a
-> clean implementation, and if the implementation I just proposed sounds
-> good to you then I see no issues and I'm happy to submit this in the
-> next version. Shakeel and others I would love to know what you think
-> either now or when I post the next version.
->
+> Good catch, thanks. Note the tab is there already before this patch, it just
+> happened to appear identical to a single space before.
 
-The direction seems reasonable to me. I would have more comments on
-the actual code. At the high level I would prefer not to expose these
-cases in the filesystem code (shmem or others) and instead be done in
-a new memcg interface for filesystem users.
+Ah, indeed. Free free to keep this as is to not pollute the patch. Thanks!
