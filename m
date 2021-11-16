@@ -2,96 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9EA453793
-	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 17:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B304538E6
+	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 18:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhKPQgF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Nov 2021 11:36:05 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51202 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbhKPQf7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 11:35:59 -0500
+        id S239147AbhKPR5O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Nov 2021 12:57:14 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239144AbhKPR5M (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 12:57:12 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E8EF91FD37;
-        Tue, 16 Nov 2021 16:32:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637080378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E4F61212C3;
+        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637085252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IdNHsSJ0TUD00V1kkWXYSG/GlAFO0QPXtO8TfYkofSY=;
-        b=MijUyi88lZ9DiijG3jxYOvHLk3fRiZzkR+fpqvw/u1z0LEueLN/0KUr7R3BvYU1M4z6aBE
-        zhnvy154JcLZ4I5wXS7KnTyl7U7XczcEzaEGt54cc8nMDHqImnQ2IfYFGx830RQdTAkIlY
-        4ss7d7Tu0HfV1mYRx3tt0igHxDXiZps=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637080378;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IdNHsSJ0TUD00V1kkWXYSG/GlAFO0QPXtO8TfYkofSY=;
-        b=JKrI4zxYmDk0OoP0A4AGw4Uj1AYkJhYXTHuBPrGvh+prinKuWrhEVkFyZhC891suL7lvHV
-        vhCNK4l3K5a0L5BQ==
+        bh=AQ4Vs3Ue9V/rPlPCCX2Ku26e9rOXlRcNGXZau4L0nns=;
+        b=WWKIaz/W38nsYFEg/zCDoNaH0kIwA0H6XZ/FTs4KYO6YXn8PB48U92vHHzY8eCaYtbXNAw
+        0bDRV5xqAZCLG+pNMxZJqK3emAMALV9Jw4J7trsryDzNOGA1ZVp1riAEmChz92M0DHw1cB
+        L/4UkS3yo+5VogH9yJjdHpqz3Sx7RAE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7CC0313C25;
-        Tue, 16 Nov 2021 16:32:58 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B374513BA0;
+        Tue, 16 Nov 2021 17:54:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id i4pYHDrdk2FtUQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 16 Nov 2021 16:32:58 +0000
-Message-ID: <6866ad09-f765-0e8b-4821-8dbdc6d0f24e@suse.cz>
-Date:   Tue, 16 Nov 2021 17:32:58 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [RFC PATCH 21/32] mm: Convert struct page to struct slab in
- functions used by other subsystems
-Content-Language: en-US
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
+        id JaE7K0Twk2G0cQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 16 Nov 2021 17:54:12 +0000
+Date:   Tue, 16 Nov 2021 18:54:11 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>, cgroups@vger.kernel.org
-References: <20211116001628.24216-1-vbabka@suse.cz>
- <20211116001628.24216-22-vbabka@suse.cz>
- <CA+fCnZd_39cEvP+ktfxSrYAj6xdM02X6C0CxA5rLauaMhs2mxQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CA+fCnZd_39cEvP+ktfxSrYAj6xdM02X6C0CxA5rLauaMhs2mxQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20211116175411.GA50019@blackbody.suse.cz>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211018143619.205065-6-longman@redhat.com>
+ <20211115193122.GA16798@blackbody.suse.cz>
+ <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/16/21 15:02, Andrey Konovalov wrote:
->> --- a/mm/kasan/report.c
->> +++ b/mm/kasan/report.c
->> @@ -249,7 +249,7 @@ static void print_address_description(void *addr, u8 tag)
->>
->>         if (page && PageSlab(page)) {
->>                 struct kmem_cache *cache = page->slab_cache;
->> -               void *object = nearest_obj(cache, page, addr);
->> +               void *object = nearest_obj(cache, page_slab(page),      addr);
+On Mon, Nov 15, 2021 at 04:10:29PM -0500, Waiman Long <longman@redhat.com> wrote:
+> > On Mon, Oct 18, 2021 at 10:36:18AM -0400, Waiman Long <longman@redhat.com> wrote:
+> > > +	scheduler.  Tasks in such a partition must be explicitly bound
+> > > +	to each individual CPU.
+> [...]
 > 
-> The tab before addr should be a space. checkpatch should probably report this.
+> It can be a problem when one is trying to move from one cgroup to another
+> cgroup with non-overlapping cpus laterally. However, if a task is initially
+> from a parent cgroup with affinity mask that include cpus in the isolated
+> child cgroup, I believe it should be able to move to the isolated child
+> cgroup without problem. Otherwise, it is a bug that needs to be fixed.
 
-Good catch, thanks. Note the tab is there already before this patch, it just
-happened to appear identical to a single space before.
+app_root	cpuset.cpus=0-3
+`- non_rt	cpuset.cpus=0-1	cpuset.cpus.partition=member
+`- rt		cpuset.cpus=2-3	cpuset.cpus.partition=isolated
+
+The app_root would have cpuset.cpus.effective=0-1 so even the task in
+app_root can't sched_setaffinity() to cpus 2-3.
+But AFAICS, the migration calls set_cpus_allowed_ptr() anyway, so the
+task in the isolated partition needn't to bind explicitly with
+sched_setaffinity(). (It'd have two cpus available, so one more
+sched_setaffinity() or migration into a single-cpu list is desirable.)
+
+All in all, I think the behavior is OK and the explicit binding of tasks
+in an isolated cpuset is optional (not a must as worded currently).
+
+
+> I think the wording may be confusing. What I meant is none of the requested
+> cpu can be granted. So if there is at least one granted, the effective cpus
+> won't be empty.
+
+Ack.
+
+> You currently cannot make change to cpuset.cpus that violates the cpu
+> exclusivity rule. The above constraints will not disallow you to make the
+> change. They just affect the validity of the partition root.
+
+Sibling exclusivity should be a validity condition regardless of whether
+transition is allowed or not. (At least it looks simpler to me.)
+
+
+> > > +        Changing a partition root to "member" is always allowed.
+> > > +        If there are child partition roots underneath it, however,
+> > > +        they will be forced to be switched back to "member" too and
+> > > +        lose their partitions. So care must be taken to double check
+> > > +        for this condition before disabling a partition root.
+> > (Or is this how delegation is intended?) However, AFAICS, parent still
+> > can't remove cpuset.cpus even when the child is a "member". Otherwise,
+> > I agree with the back-switch.
+> There are only 2 possibilities here. Either we force the child partitions to
+> be become members or invalid partition root.
+
+My point here was mostly about preempting the cpus (as a v2 specific
+feature). (I'm rather indifferent whether children turn into invalid
+roots or members.)
+
+Thanks,
+Michal
