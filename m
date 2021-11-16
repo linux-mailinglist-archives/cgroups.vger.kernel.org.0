@@ -2,452 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CC8451C97
-	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 01:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826874528FE
+	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 05:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242158AbhKPAVe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Nov 2021 19:21:34 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:54702 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352934AbhKPATi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 19:19:38 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 99B9F21979;
-        Tue, 16 Nov 2021 00:16:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637021800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ujsnl/vpHKegChieObjZ4qYGxGunlXYXeZHnYR8ul8=;
-        b=a6kA8FqH16ZEXL4FjNMzEkTJN0I1AGaMAl6CLauKASo5DnKvkceFwbfSTO8x6DDyH+INXm
-        Ousw4uSYqmJ0fLJm8bRqZv2FOvjsuxmunpSQgjf3fn+2hY+ymIPduwS6nyY8qrO9Y8exGV
-        7UsZQ1gE1RWAQTM+REsys6a5KKrq86A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637021800;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ujsnl/vpHKegChieObjZ4qYGxGunlXYXeZHnYR8ul8=;
-        b=ZeofS11lglbOFpPKvNm08BRf28iHGD7x9hiDtThzJo0SYIuUtEVAYfvV1brhm0594I7ugM
-        LOc3rqhX1suhg6AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FA3213F72;
-        Tue, 16 Nov 2021 00:16:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gLeyGmj4kmFjXAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 16 Nov 2021 00:16:40 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org
-Subject: [RFC PATCH 22/32] mm/memcg: Convert slab objcgs from struct page to struct slab
-Date:   Tue, 16 Nov 2021 01:16:18 +0100
-Message-Id: <20211116001628.24216-23-vbabka@suse.cz>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211116001628.24216-1-vbabka@suse.cz>
-References: <20211116001628.24216-1-vbabka@suse.cz>
+        id S240630AbhKPELF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Nov 2021 23:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241941AbhKPEKU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 23:10:20 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BDDC1F99A3
+        for <cgroups@vger.kernel.org>; Mon, 15 Nov 2021 16:58:30 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id w15so18581573ill.2
+        for <cgroups@vger.kernel.org>; Mon, 15 Nov 2021 16:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bh/uK2OAEBnWDXMyTu+rO+aF369+IR1K4BMvSsecSlI=;
+        b=AZMD85bqC+7gsP1XAnO971ULv4k2BveTBFp9oanHT79FoQxM+qPkMv9UOoYjeAVSc4
+         D4bjDHMhC/Hz7sqzqJx4vrvczTQcC6tDkpjQqYf6w2dMSZdqqm9HJqNqjOkOsjTAbLAy
+         9M2nFXZ9xV/WkZYZ+KqwlM8mKB/hQSnLV7QpEq7CE19BGOXT6Cg3bLXoEfwx8n8i6hU5
+         KcZZHw2s9eQ7TAFMm62h6GH2YTl+rWMDO82q6U4TBwQoQjNq3AqqOPndKcQyJtR2uxIZ
+         AcpRpOrsWrMu5ETmoa04yBB8Pie1Y7k3j+6CRIW9Lri6Qq0BItJnPU3wwy+Mi/dhNj06
+         cG7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bh/uK2OAEBnWDXMyTu+rO+aF369+IR1K4BMvSsecSlI=;
+        b=sn/CPX49kTLb4Nsl6A8vL3zp6qvBCSZjBLFwKg/p2MPnHEq5k/xOqTu5+EWrO96TxX
+         CdSAeZb0QB7HxzgJMUS8/mXlTDuBq49HfBxw5GQuILwh6fVDO7MapSI8kXX3CdTGTR0N
+         SQIU+BlotFRxoj4tvVKqc8RfXxOBNZb5hcGGiTJ1KJyg1ChM5OYFKc2B7o+kOZFXPmFr
+         LWSq1O+CU7WRpYVk76woX3Zm6Kjx95ELG34imcRTW1FAOwvGB5ZA4h9pDDyapzhcQ/q+
+         ZwXeXzTDZF3yHBDcEhJEvTwMVU7mP8Zc9bO8106pQa2r7EPIz2TRYMvqxvdZ/ow2nJLz
+         RIbA==
+X-Gm-Message-State: AOAM532jb9394KSbkIdfxvEgJbn//5SssNUFDEHCAzv5V5PK70e4lvj7
+        Qmhy0a9KjxvA2g2XBGZhpEBJ/Je6iChbvuPxcAqOiQ==
+X-Google-Smtp-Source: ABdhPJxUE0bgYVFkJl1QSw3K0NHqN2K56WJbmLI8r7owhMKdvWxS6KwcAySTfqB8L/gumFUq5AMsqspJl8mDr2ddq/I=
+X-Received: by 2002:a05:6e02:1561:: with SMTP id k1mr1956880ilu.135.1637024310088;
+ Mon, 15 Nov 2021 16:58:30 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12740; h=from:subject; bh=rL0UhyEUArSE+lvqfUW/rvcArsY6Rd9/uNtu3i7y8zA=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhkvhJN9ecv1wefrE6SUVjadeqaly4xblSZvtlNYWN FsUbOHaJATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYZL4SQAKCRDgIcpz8YmpEO2KB/ 96j0szHKVtrVdMQt+xMxiNwdBhKTvRS7aqvs5nvXmbHykyLpnjx41XcyZRVzT+5T30jUS5jz4G2Thp Pfl2slXWxUPR7JOGAeyQuiI8y6QRIh1zZqefsOGfEuj74yQUT7F61wR0QeYlK+tfBaTsKz5tObaXUD zl54Cr7FwklXGtqlc7U6+QYKXH0cftrme4EezlbgRkjeOdwSY0NiZC0Xxvh0EfQwUjYRAMOqYDJPn2 pD5TSXsaMVckHNNv8Adj+Q2/e6oPRYg+A624mvnaKhphlTaUd2XTyR3TlAJC1N6SLdqfTSElBjzv70 Afiu2GO4zCQxs9V0NH0hw/z24zdu2S
-X-Developer-Key: i=vbabka@suse.cz; a=openpgp; fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
-Content-Transfer-Encoding: 8bit
+References: <20211111234203.1824138-1-almasrymina@google.com>
+ <20211111234203.1824138-3-almasrymina@google.com> <YY4dHPu/bcVdoJ4R@dhcp22.suse.cz>
+ <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com>
+ <YY4nm9Kvkt2FJPph@dhcp22.suse.cz> <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
+ <YZI9ZbRVdRtE2m70@dhcp22.suse.cz>
+In-Reply-To: <YZI9ZbRVdRtE2m70@dhcp22.suse.cz>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 15 Nov 2021 16:58:19 -0800
+Message-ID: <CAHS8izPcnwOqf8bjfrEd9VFxdA6yX3+a-TeHsxGgpAR+_bRdNA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-page->memcg_data is used with MEMCG_DATA_OBJCGS flag only for slab pages
-so convert all the related infrastructure to struct slab.
+On Mon, Nov 15, 2021 at 2:58 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 12-11-21 09:59:22, Mina Almasry wrote:
+> > On Fri, Nov 12, 2021 at 12:36 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 12-11-21 00:12:52, Mina Almasry wrote:
+> > > > On Thu, Nov 11, 2021 at 11:52 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Thu 11-11-21 15:42:01, Mina Almasry wrote:
+> > > > > > On remote ooms (OOMs due to remote charging), the oom-killer will attempt
+> > > > > > to find a task to kill in the memcg under oom, if the oom-killer
+> > > > > > is unable to find one, the oom-killer should simply return ENOMEM to the
+> > > > > > allocating process.
+> > > > >
+> > > > > This really begs for some justification.
+> > > > >
+> > > >
+> > > > I'm thinking (and I can add to the commit message in v4) that we have
+> > > > 2 reasonable options when the oom-killer gets invoked and finds
+> > > > nothing to kill: (1) return ENOMEM, (2) kill the allocating task. I'm
+> > > > thinking returning ENOMEM allows the application to gracefully handle
+> > > > the failure to remote charge and continue operation.
+> > > >
+> > > > For example, in the network service use case that I mentioned in the
+> > > > RFC proposal, it's beneficial for the network service to get an ENOMEM
+> > > > and continue to service network requests for other clients running on
+> > > > the machine, rather than get oom-killed when hitting the remote memcg
+> > > > limit. But, this is not a hard requirement, the network service could
+> > > > fork a process that does the remote charging to guard against the
+> > > > remote charge bringing down the entire process.
+> > >
+> > > This all belongs to the changelog so that we can discuss all potential
+> > > implication and do not rely on any implicit assumptions.
+> >
+> > Understood. Maybe I'll wait to collect more feedback and upload v4
+> > with a thorough explanation of the thought process.
+> >
+> > > E.g. why does
+> > > it even make sense to kill a task in the origin cgroup?
+> > >
+> >
+> > The behavior I saw returning ENOMEM for this edge case was that the
+> > code was forever looping the pagefault, and I was (seemingly
+> > incorrectly) under the impression that a suggestion to forever loop
+> > the pagefault would be completely fundamentally unacceptable.
+>
+> Well, I have to say I am not entirely sure what is the best way to
+> handle this situation. Another option would be to treat this similar to
+> ENOSPACE situation. This would result into SIGBUS IIRC.
+>
+> The main problem with OOM killer is that it will not resolve the
+> underlying problem in most situations. Shmem files would likely stay
+> laying around and their charge along with them. Killing the allocating
+> task has problems on its own because this could be just a DoS vector by
+> other unrelated tasks sharing the shmem mount point without a gracefull
+> fallback. Retrying the page fault is hard to detect. SIGBUS might be
+> something that helps with the latest. The question is how to communicate
+> this requerement down to the memcg code to know that the memory reclaim
+> should happen (Should it? How hard we should try?) but do not invoke the
+> oom killer. The more I think about this the nastier this is.
 
-To avoid include cycles, move the inline definitions of slab_objcgs() and
-slab_objcgs_check() from memcontrol.h to mm/slab.h.
+So actually I thought the ENOSPC suggestion was interesting so I took
+the liberty to prototype it. The changes required:
 
-This is not just mechanistic changing of types and names. Now in
-mem_cgroup_from_obj() we use PageSlab flag to decide if we interpret the page
-as slab, instead of relying on MEMCG_DATA_OBJCGS bit checked in
-page_objcgs_check() (now slab_objcgs_check()). Similarly in
-memcg_slab_free_hook() where we can encounter kmalloc_large() pages (here the
-PageSlab flag check is implied by virt_to_slab()).
+1. In out_of_memory() we return false if !oc->chosen &&
+is_remote_oom(). This gets bubbled up to try_charge_memcg() as
+mem_cgroup_oom() returning OOM_FAILED.
+2. In try_charge_memcg(), if we get an OOM_FAILED we again check
+is_remote_oom(), if it is a remote oom, return ENOSPC.
+3. The calling code would return ENOSPC to the user in the no-fault
+path, and SIGBUS the user in the fault path with no changes.
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: <cgroups@vger.kernel.org>
----
- include/linux/memcontrol.h |  48 ------------------
- mm/memcontrol.c            |  43 +++++++++-------
- mm/slab.h                  | 101 ++++++++++++++++++++++++++++---------
- 3 files changed, 103 insertions(+), 89 deletions(-)
+To be honest I think this is very workable, as is Shakeel's suggestion
+of MEMCG_OOM_NO_VICTIM. Since this is an opt-in feature, we can
+document the behavior and if the userspace doesn't want to get killed
+they can catch the sigbus and handle it gracefully. If not, the
+userspace just gets killed if we hit this edge case.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0c5c403f4be6..e34112f6a369 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -536,45 +536,6 @@ static inline bool folio_memcg_kmem(struct folio *folio)
- 	return folio->memcg_data & MEMCG_DATA_KMEM;
- }
- 
--/*
-- * page_objcgs - get the object cgroups vector associated with a page
-- * @page: a pointer to the page struct
-- *
-- * Returns a pointer to the object cgroups vector associated with the page,
-- * or NULL. This function assumes that the page is known to have an
-- * associated object cgroups vector. It's not safe to call this function
-- * against pages, which might have an associated memory cgroup: e.g.
-- * kernel stack pages.
-- */
--static inline struct obj_cgroup **page_objcgs(struct page *page)
--{
--	unsigned long memcg_data = READ_ONCE(page->memcg_data);
--
--	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS), page);
--	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
--
--	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
--}
--
--/*
-- * page_objcgs_check - get the object cgroups vector associated with a page
-- * @page: a pointer to the page struct
-- *
-- * Returns a pointer to the object cgroups vector associated with the page,
-- * or NULL. This function is safe to use if the page can be directly associated
-- * with a memory cgroup.
-- */
--static inline struct obj_cgroup **page_objcgs_check(struct page *page)
--{
--	unsigned long memcg_data = READ_ONCE(page->memcg_data);
--
--	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
--		return NULL;
--
--	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
--
--	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
--}
- 
- #else
- static inline bool folio_memcg_kmem(struct folio *folio)
-@@ -582,15 +543,6 @@ static inline bool folio_memcg_kmem(struct folio *folio)
- 	return false;
- }
- 
--static inline struct obj_cgroup **page_objcgs(struct page *page)
--{
--	return NULL;
--}
--
--static inline struct obj_cgroup **page_objcgs_check(struct page *page)
--{
--	return NULL;
--}
- #endif
- 
- static inline bool PageMemcgKmem(struct page *page)
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c8b53ec074b4..ab86614a0c46 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2816,31 +2816,31 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
-  */
- #define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
- 
--int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
--				 gfp_t gfp, bool new_page)
-+int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
-+				 gfp_t gfp, bool new_slab)
- {
--	unsigned int objects = objs_per_slab(s, page_slab(page));
-+	unsigned int objects = objs_per_slab(s, slab);
- 	unsigned long memcg_data;
- 	void *vec;
- 
- 	gfp &= ~OBJCGS_CLEAR_MASK;
- 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
--			   page_to_nid(page));
-+			   slab_nid(slab));
- 	if (!vec)
- 		return -ENOMEM;
- 
- 	memcg_data = (unsigned long) vec | MEMCG_DATA_OBJCGS;
--	if (new_page) {
-+	if (new_slab) {
- 		/*
--		 * If the slab page is brand new and nobody can yet access
--		 * it's memcg_data, no synchronization is required and
--		 * memcg_data can be simply assigned.
-+		 * If the slab is brand new and nobody can yet access its
-+		 * memcg_data, no synchronization is required and memcg_data can
-+		 * be simply assigned.
- 		 */
--		page->memcg_data = memcg_data;
--	} else if (cmpxchg(&page->memcg_data, 0, memcg_data)) {
-+		slab->memcg_data = memcg_data;
-+	} else if (cmpxchg(&slab->memcg_data, 0, memcg_data)) {
- 		/*
--		 * If the slab page is already in use, somebody can allocate
--		 * and assign obj_cgroups in parallel. In this case the existing
-+		 * If the slab is already in use, somebody can allocate and
-+		 * assign obj_cgroups in parallel. In this case the existing
- 		 * objcg vector should be reused.
- 		 */
- 		kfree(vec);
-@@ -2865,24 +2865,31 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
-  */
- struct mem_cgroup *mem_cgroup_from_obj(void *p)
- {
--	struct page *page;
-+	struct folio *folio;
- 
- 	if (mem_cgroup_disabled())
- 		return NULL;
- 
--	page = virt_to_head_page(p);
-+	folio = page_folio(virt_to_page(p));
- 
- 	/*
- 	 * Slab objects are accounted individually, not per-page.
- 	 * Memcg membership data for each individual object is saved in
- 	 * the page->obj_cgroups.
- 	 */
--	if (page_objcgs_check(page)) {
-+	if (folio_test_slab(folio)) {
-+		struct obj_cgroup **objcgs;
- 		struct obj_cgroup *objcg;
-+		struct slab *slab;
- 		unsigned int off;
- 
--		off = obj_to_index(page->slab_cache, page_slab(page), p);
--		objcg = page_objcgs(page)[off];
-+		slab = folio_slab(folio);
-+		objcgs = slab_objcgs_check(slab);
-+		if (!objcgs)
-+			return NULL;
-+
-+		off = obj_to_index(slab->slab_cache, slab, p);
-+		objcg = objcgs[off];
- 		if (objcg)
- 			return obj_cgroup_memcg(objcg);
- 
-@@ -2896,7 +2903,7 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
- 	 * page_memcg_check(page) will guarantee that a proper memory
- 	 * cgroup pointer or NULL will be returned.
- 	 */
--	return page_memcg_check(page);
-+	return page_memcg_check(folio_page(folio, 0));
- }
- 
- __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-diff --git a/mm/slab.h b/mm/slab.h
-index b07e842b5cfc..ec2c98e882f1 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -412,15 +412,56 @@ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t fla
- }
- 
- #ifdef CONFIG_MEMCG_KMEM
--int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
--				 gfp_t gfp, bool new_page);
-+/*
-+ * slab_objcgs - get the object cgroups vector associated with a slab
-+ * @slab: a pointer to the slab struct
-+ *
-+ * Returns a pointer to the object cgroups vector associated with the slab,
-+ * or NULL. This function assumes that the slab is known to have an
-+ * associated object cgroups vector. It's not safe to call this function
-+ * against slabs with underlying pages, which might have an associated memory
-+ * cgroup: e.g.  kernel stack pages.
-+ */
-+static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
-+{
-+	unsigned long memcg_data = READ_ONCE(slab->memcg_data);
-+
-+	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS),
-+							slab_page(slab));
-+	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, slab_page(slab));
-+
-+	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+}
-+
-+/*
-+ * slab_objcgs_check - get the object cgroups vector associated with a slab
-+ * @slab: a pointer to the slab struct
-+ *
-+ * Returns a pointer to the object cgroups vector associated with the slab, or
-+ * NULL. This function is safe to use if the underlying page can be directly
-+ * associated with a memory cgroup.
-+ */
-+static inline struct obj_cgroup **slab_objcgs_check(struct slab *slab)
-+{
-+	unsigned long memcg_data = READ_ONCE(slab->memcg_data);
-+
-+	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
-+		return NULL;
-+
-+	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, slab_page(slab));
-+
-+	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+}
-+
-+int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
-+				 gfp_t gfp, bool new_slab);
- void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 		     enum node_stat_item idx, int nr);
- 
--static inline void memcg_free_page_obj_cgroups(struct page *page)
-+static inline void memcg_free_slab_cgroups(struct slab *slab)
- {
--	kfree(page_objcgs(page));
--	page->memcg_data = 0;
-+	kfree(slab_objcgs(slab));
-+	slab->memcg_data = 0;
- }
- 
- static inline size_t obj_full_size(struct kmem_cache *s)
-@@ -465,7 +506,7 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 					      gfp_t flags, size_t size,
- 					      void **p)
- {
--	struct page *page;
-+	struct slab *slab;
- 	unsigned long off;
- 	size_t i;
- 
-@@ -474,19 +515,19 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 
- 	for (i = 0; i < size; i++) {
- 		if (likely(p[i])) {
--			page = virt_to_head_page(p[i]);
-+			slab = virt_to_slab(p[i]);
- 
--			if (!page_objcgs(page) &&
--			    memcg_alloc_page_obj_cgroups(page, s, flags,
-+			if (!slab_objcgs(slab) &&
-+			    memcg_alloc_slab_cgroups(slab, s, flags,
- 							 false)) {
- 				obj_cgroup_uncharge(objcg, obj_full_size(s));
- 				continue;
- 			}
- 
--			off = obj_to_index(s, page_slab(page), p[i]);
-+			off = obj_to_index(s, slab, p[i]);
- 			obj_cgroup_get(objcg);
--			page_objcgs(page)[off] = objcg;
--			mod_objcg_state(objcg, page_pgdat(page),
-+			slab_objcgs(slab)[off] = objcg;
-+			mod_objcg_state(objcg, slab_pgdat(slab),
- 					cache_vmstat_idx(s), obj_full_size(s));
- 		} else {
- 			obj_cgroup_uncharge(objcg, obj_full_size(s));
-@@ -501,7 +542,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
- 	struct kmem_cache *s;
- 	struct obj_cgroup **objcgs;
- 	struct obj_cgroup *objcg;
--	struct page *page;
-+	struct slab *slab;
- 	unsigned int off;
- 	int i;
- 
-@@ -512,43 +553,57 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
- 		if (unlikely(!p[i]))
- 			continue;
- 
--		page = virt_to_head_page(p[i]);
--		objcgs = page_objcgs_check(page);
-+		slab = virt_to_slab(p[i]);
-+		/* we could be given a kmalloc_large() object, skip those */
-+		if (!slab)
-+			continue;
-+
-+		objcgs = slab_objcgs_check(slab);
- 		if (!objcgs)
- 			continue;
- 
- 		if (!s_orig)
--			s = page->slab_cache;
-+			s = slab->slab_cache;
- 		else
- 			s = s_orig;
- 
--		off = obj_to_index(s, page_slab(page), p[i]);
-+		off = obj_to_index(s, slab, p[i]);
- 		objcg = objcgs[off];
- 		if (!objcg)
- 			continue;
- 
- 		objcgs[off] = NULL;
- 		obj_cgroup_uncharge(objcg, obj_full_size(s));
--		mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
-+		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
- 				-obj_full_size(s));
- 		obj_cgroup_put(objcg);
- 	}
- }
- 
- #else /* CONFIG_MEMCG_KMEM */
-+static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
-+{
-+	return NULL;
-+}
-+
-+static inline struct obj_cgroup **slab_objcgs_check(struct slab *slab)
-+{
-+	return NULL;
-+}
-+
- static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
- {
- 	return NULL;
- }
- 
--static inline int memcg_alloc_page_obj_cgroups(struct page *page,
-+static inline int memcg_alloc_slab_cgroups(struct slab *slab,
- 					       struct kmem_cache *s, gfp_t gfp,
--					       bool new_page)
-+					       bool new_slab)
- {
- 	return 0;
- }
- 
--static inline void memcg_free_page_obj_cgroups(struct page *page)
-+static inline void memcg_free_slab_cgroups(struct slab *slab)
- {
- }
- 
-@@ -587,7 +642,7 @@ static __always_inline void account_slab(struct slab *slab, int order,
- 					 struct kmem_cache *s, gfp_t gfp)
- {
- 	if (memcg_kmem_enabled() && (s->flags & SLAB_ACCOUNT))
--		memcg_alloc_page_obj_cgroups(slab_page(slab), s, gfp, true);
-+		memcg_alloc_slab_cgroups(slab, s, gfp, true);
- 
- 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
- 			    PAGE_SIZE << order);
-@@ -597,7 +652,7 @@ static __always_inline void unaccount_slab(struct slab *slab, int order,
- 					   struct kmem_cache *s)
- {
- 	if (memcg_kmem_enabled())
--		memcg_free_page_obj_cgroups(slab_page(slab));
-+		memcg_free_slab_cgroups(slab);
- 
- 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
- 			    -(PAGE_SIZE << order));
--- 
-2.33.1
+I may be missing something but AFAICT we don't have to "communicate
+this requirement down to the memcg code" with this implementation. The
+memcg code is aware the memcg is oom and will do the reclaim or
+whatever before invoking the oom-killer. It's only when the oom-killer
+can't find something to kill that we return ENOSPC or SIGBUS.
 
+As always thank you very much for reviewing and providing feedback.
