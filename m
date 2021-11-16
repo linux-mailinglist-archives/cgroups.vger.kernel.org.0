@@ -2,174 +2,460 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD3B4530A9
-	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 12:31:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DCB453385
+	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 15:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbhKPLcl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Nov 2021 06:32:41 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49938 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbhKPLcW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 06:32:22 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 428D7212B8;
-        Tue, 16 Nov 2021 11:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637062164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMic05lzPhLioGF8PuhSrI/0Tr+bIUW81mvQWJAgnnk=;
-        b=q2M1nVDdLKmZ500zVoz3gyiN5+S89CaZfnC160+Ezs0edDkuVfUPhs0fkyKB6Ofh9Q8/dg
-        5x5czYSTsBKFLISC6cY0lNZS8XsYlV45BV22bb1Owes+qfBqMsofhdoM0yEYC++bAA+KDl
-        uDminKMOzbuoM5K5SFWGuOABHEOUYY4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BCA6EA3B83;
-        Tue, 16 Nov 2021 11:29:23 +0000 (UTC)
-Date:   Tue, 16 Nov 2021 12:29:19 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
-Message-ID: <YZOWD8hP2WpqyXvI@dhcp22.suse.cz>
-References: <20211111234203.1824138-1-almasrymina@google.com>
- <20211111234203.1824138-3-almasrymina@google.com>
- <YY4dHPu/bcVdoJ4R@dhcp22.suse.cz>
- <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com>
- <YY4nm9Kvkt2FJPph@dhcp22.suse.cz>
- <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
- <YZI9ZbRVdRtE2m70@dhcp22.suse.cz>
- <CAHS8izPcnwOqf8bjfrEd9VFxdA6yX3+a-TeHsxGgpAR+_bRdNA@mail.gmail.com>
- <YZN5tkhHomj6HSb2@dhcp22.suse.cz>
- <CAHS8izNTbvhjEEb=ZrH2_4ECkVhxnCLzyd=78uWmHA_02iiA9Q@mail.gmail.com>
+        id S236962AbhKPOFk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Nov 2021 09:05:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237064AbhKPOFh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 09:05:37 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B83C061746
+        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 06:02:40 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id i12so20460206ila.12
+        for <cgroups@vger.kernel.org>; Tue, 16 Nov 2021 06:02:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bx+LOZiINaT1HDexzncKyUqsxvfo5/luW+zVzz6pEqU=;
+        b=eEf8LRN9CrsaIGv34A5e3s1l9gevtvlUOtPEKUec3w+q5viXFPJ1FhM95YCrU7r40J
+         BRWTNvnPRukNd4ArUtPaoqcP3nOFvtRuksXptQMxFWLwzeWfrBBUnPaJbYsLO5fcgJJu
+         GiTU+pX71foKxYws906+9TVZtadnQNpcqSJ7VDcYzo8sWIJ9/5Rycwo2K/XJ5Ti8KCZf
+         mVJQJeqFLQptZzav2VNl+OfQIDf0DbtOk0tLF6UYElmR8mFkFBZQ+Q/YatfKFZFr0umd
+         1DS4DzLYGIof/rReohkZF1Y5lDu+J1hu2DqPfhjuiJ2j7WN6xj4oyOOqoi1jBQaNaTK5
+         G+0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bx+LOZiINaT1HDexzncKyUqsxvfo5/luW+zVzz6pEqU=;
+        b=4AQvj4bmvP8XtIC3dIFsIVkVBGtoIJP5aVEVr4gWUh+46RBWtyughgFY1zpOYUip4Z
+         2YbOF16PQ9MWtKpTMCF7vOzWoUcm+FptawnOc9G/UdxYD9aio47B0+XHeKOc/wKyPTIm
+         8bRy71QjZ3RWKz8SjOxnmOSBkgOnMc2wcPhrSX75pm4R+7EBphjgMtgj/m6LrjIYak3Q
+         33bXx2M5Yipng3tTG3RjJh7Xk/+MDAKTQmKF7Gb4zHWHYQbNXlx522RSuA5U7Zl1xUjS
+         zbDPXKbbs/I3xzXS2yHyiN6B7FZxlM2TFDFF/aOBGmw8qBNFWWS6O93wNjFnhln9hw5V
+         lWmA==
+X-Gm-Message-State: AOAM533B/lkWIxQhQiyvSrhe15jD/oOpBQ+aPI+YrL/9FIjx18nCDpkS
+        Xa+wLv3ZN/5WF629TsnC5nJx5uFgqZrFCI+b5nI=
+X-Google-Smtp-Source: ABdhPJztUxqXrd0srTV7/mQeglU5OrvO9gcDct2ABAZuqHPM69LI/C+axg15x2E3+1Q8xW/52v8G4IAr8Iqc5Bv0gJs=
+X-Received: by 2002:a05:6e02:1525:: with SMTP id i5mr4704714ilu.81.1637071359840;
+ Tue, 16 Nov 2021 06:02:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHS8izNTbvhjEEb=ZrH2_4ECkVhxnCLzyd=78uWmHA_02iiA9Q@mail.gmail.com>
+References: <20211116001628.24216-1-vbabka@suse.cz> <20211116001628.24216-22-vbabka@suse.cz>
+In-Reply-To: <20211116001628.24216-22-vbabka@suse.cz>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Tue, 16 Nov 2021 15:02:29 +0100
+Message-ID: <CA+fCnZd_39cEvP+ktfxSrYAj6xdM02X6C0CxA5rLauaMhs2mxQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 21/32] mm: Convert struct page to struct slab in
+ functions used by other subsystems
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 16-11-21 02:17:09, Mina Almasry wrote:
-> On Tue, Nov 16, 2021 at 1:28 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 15-11-21 16:58:19, Mina Almasry wrote:
-> > > On Mon, Nov 15, 2021 at 2:58 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Fri 12-11-21 09:59:22, Mina Almasry wrote:
-> > > > > On Fri, Nov 12, 2021 at 12:36 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > >
-> > > > > > On Fri 12-11-21 00:12:52, Mina Almasry wrote:
-> > > > > > > On Thu, Nov 11, 2021 at 11:52 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > > >
-> > > > > > > > On Thu 11-11-21 15:42:01, Mina Almasry wrote:
-> > > > > > > > > On remote ooms (OOMs due to remote charging), the oom-killer will attempt
-> > > > > > > > > to find a task to kill in the memcg under oom, if the oom-killer
-> > > > > > > > > is unable to find one, the oom-killer should simply return ENOMEM to the
-> > > > > > > > > allocating process.
-> > > > > > > >
-> > > > > > > > This really begs for some justification.
-> > > > > > > >
-> > > > > > >
-> > > > > > > I'm thinking (and I can add to the commit message in v4) that we have
-> > > > > > > 2 reasonable options when the oom-killer gets invoked and finds
-> > > > > > > nothing to kill: (1) return ENOMEM, (2) kill the allocating task. I'm
-> > > > > > > thinking returning ENOMEM allows the application to gracefully handle
-> > > > > > > the failure to remote charge and continue operation.
-> > > > > > >
-> > > > > > > For example, in the network service use case that I mentioned in the
-> > > > > > > RFC proposal, it's beneficial for the network service to get an ENOMEM
-> > > > > > > and continue to service network requests for other clients running on
-> > > > > > > the machine, rather than get oom-killed when hitting the remote memcg
-> > > > > > > limit. But, this is not a hard requirement, the network service could
-> > > > > > > fork a process that does the remote charging to guard against the
-> > > > > > > remote charge bringing down the entire process.
-> > > > > >
-> > > > > > This all belongs to the changelog so that we can discuss all potential
-> > > > > > implication and do not rely on any implicit assumptions.
-> > > > >
-> > > > > Understood. Maybe I'll wait to collect more feedback and upload v4
-> > > > > with a thorough explanation of the thought process.
-> > > > >
-> > > > > > E.g. why does
-> > > > > > it even make sense to kill a task in the origin cgroup?
-> > > > > >
-> > > > >
-> > > > > The behavior I saw returning ENOMEM for this edge case was that the
-> > > > > code was forever looping the pagefault, and I was (seemingly
-> > > > > incorrectly) under the impression that a suggestion to forever loop
-> > > > > the pagefault would be completely fundamentally unacceptable.
-> > > >
-> > > > Well, I have to say I am not entirely sure what is the best way to
-> > > > handle this situation. Another option would be to treat this similar to
-> > > > ENOSPACE situation. This would result into SIGBUS IIRC.
-> > > >
-> > > > The main problem with OOM killer is that it will not resolve the
-> > > > underlying problem in most situations. Shmem files would likely stay
-> > > > laying around and their charge along with them. Killing the allocating
-> > > > task has problems on its own because this could be just a DoS vector by
-> > > > other unrelated tasks sharing the shmem mount point without a gracefull
-> > > > fallback. Retrying the page fault is hard to detect. SIGBUS might be
-> > > > something that helps with the latest. The question is how to communicate
-> > > > this requerement down to the memcg code to know that the memory reclaim
-> > > > should happen (Should it? How hard we should try?) but do not invoke the
-> > > > oom killer. The more I think about this the nastier this is.
-> > >
-> > > So actually I thought the ENOSPC suggestion was interesting so I took
-> > > the liberty to prototype it. The changes required:
-> > >
-> > > 1. In out_of_memory() we return false if !oc->chosen &&
-> > > is_remote_oom(). This gets bubbled up to try_charge_memcg() as
-> > > mem_cgroup_oom() returning OOM_FAILED.
-> > > 2. In try_charge_memcg(), if we get an OOM_FAILED we again check
-> > > is_remote_oom(), if it is a remote oom, return ENOSPC.
-> > > 3. The calling code would return ENOSPC to the user in the no-fault
-> > > path, and SIGBUS the user in the fault path with no changes.
-> >
-> > I think this should be implemented at the caller side rather than
-> > somehow hacked into the memcg core. It is the caller to know what to do.
-> > The caller can use gfp flags to control the reclaim behavior.
-> >
-> 
-> Hmm I'm a bit struggling to envision this.  So would it be acceptable
-> at the call sites where we doing a remote charge, such as
-> shmem_add_to_page_cache(), if we get ENOMEM from the
-> mem_cgroup_charge(), and we know we're doing a remote charge (because
-> current's memcg != the super block memcg), then we return ENOSPC from
-> shmem_add_to_page_cache()? I believe that will return ENOSPC to the
-> userspace in the non-pagefault path and SIGBUS in the pagefault path.
-> Or you had something else in mind?
+On Tue, Nov 16, 2021 at 1:16 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> KASAN, KFENCE and memcg interact with SLAB or SLUB internals through functions
+> nearest_obj(), obj_to_index() and objs_per_slab() that use struct page as
+> parameter. This patch converts it to struct slab including all callers, through
+> a coccinelle semantic patch.
+>
+> // Options: --include-headers --no-includes --smpl-spacing include/linux/slab_def.h include/linux/slub_def.h mm/slab.h mm/kasan/*.c mm/kfence/kfence_test.c mm/memcontrol.c mm/slab.c mm/slub.c
+> // Note: needs coccinelle 1.1.1 to avoid breaking whitespace
+>
+> @@
+> @@
+>
+> -objs_per_slab_page(
+> +objs_per_slab(
+>  ...
+>  )
+>  { ... }
+>
+> @@
+> @@
+>
+> -objs_per_slab_page(
+> +objs_per_slab(
+>  ...
+>  )
+>
+> @@
+> identifier fn =~ "obj_to_index|objs_per_slab";
+> @@
+>
+>  fn(...,
+> -   const struct page *page
+> +   const struct slab *slab
+>     ,...)
+>  {
+> <...
+> (
+> - page_address(page)
+> + slab_address(slab)
+> |
+> - page
+> + slab
+> )
+> ...>
+>  }
+>
+> @@
+> identifier fn =~ "nearest_obj";
+> @@
+>
+>  fn(...,
+> -   struct page *page
+> +   const struct slab *slab
+>     ,...)
+>  {
+> <...
+> (
+> - page_address(page)
+> + slab_address(slab)
+> |
+> - page
+> + slab
+> )
+> ...>
+>  }
+>
+> @@
+> identifier fn =~ "nearest_obj|obj_to_index|objs_per_slab";
+> expression E;
+> @@
+>
+>  fn(...,
+> (
+> - slab_page(E)
+> + E
+> |
+> - virt_to_page(E)
+> + virt_to_slab(E)
+> |
+> - virt_to_head_page(E)
+> + virt_to_slab(E)
+> |
+> - page
+> + page_slab(page)
+> )
+>   ,...)
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Julia Lawall <julia.lawall@inria.fr>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: <kasan-dev@googlegroups.com>
+> Cc: <cgroups@vger.kernel.org>
+> ---
+>  include/linux/slab_def.h | 16 ++++++++--------
+>  include/linux/slub_def.h | 18 +++++++++---------
+>  mm/kasan/common.c        |  4 ++--
+>  mm/kasan/generic.c       |  2 +-
+>  mm/kasan/report.c        |  2 +-
+>  mm/kasan/report_tags.c   |  2 +-
+>  mm/kfence/kfence_test.c  |  4 ++--
+>  mm/memcontrol.c          |  4 ++--
+>  mm/slab.c                | 10 +++++-----
+>  mm/slab.h                |  4 ++--
+>  mm/slub.c                |  2 +-
+>  11 files changed, 34 insertions(+), 34 deletions(-)
+>
+> diff --git a/include/linux/slab_def.h b/include/linux/slab_def.h
+> index 3aa5e1e73ab6..e24c9aff6fed 100644
+> --- a/include/linux/slab_def.h
+> +++ b/include/linux/slab_def.h
+> @@ -87,11 +87,11 @@ struct kmem_cache {
+>         struct kmem_cache_node *node[MAX_NUMNODES];
+>  };
+>
+> -static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
+> +static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
+>                                 void *x)
+>  {
+> -       void *object = x - (x - page->s_mem) % cache->size;
+> -       void *last_object = page->s_mem + (cache->num - 1) * cache->size;
+> +       void *object = x - (x - slab->s_mem) % cache->size;
+> +       void *last_object = slab->s_mem + (cache->num - 1) * cache->size;
+>
+>         if (unlikely(object > last_object))
+>                 return last_object;
+> @@ -106,16 +106,16 @@ static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
+>   *   reciprocal_divide(offset, cache->reciprocal_buffer_size)
+>   */
+>  static inline unsigned int obj_to_index(const struct kmem_cache *cache,
+> -                                       const struct page *page, void *obj)
+> +                                       const struct slab *slab, void *obj)
+>  {
+> -       u32 offset = (obj - page->s_mem);
+> +       u32 offset = (obj - slab->s_mem);
+>         return reciprocal_divide(offset, cache->reciprocal_buffer_size);
+>  }
+>
+> -static inline int objs_per_slab_page(const struct kmem_cache *cache,
+> -                                    const struct page *page)
+> +static inline int objs_per_slab(const struct kmem_cache *cache,
+> +                                    const struct slab *slab)
+>  {
+> -       if (is_kfence_address(page_address(page)))
+> +       if (is_kfence_address(slab_address(slab)))
+>                 return 1;
+>         return cache->num;
+>  }
+> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+> index 8a9c2876ca89..33c5c0e3bd8d 100644
+> --- a/include/linux/slub_def.h
+> +++ b/include/linux/slub_def.h
+> @@ -158,11 +158,11 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+>
+>  void *fixup_red_left(struct kmem_cache *s, void *p);
+>
+> -static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
+> +static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
+>                                 void *x) {
+> -       void *object = x - (x - page_address(page)) % cache->size;
+> -       void *last_object = page_address(page) +
+> -               (page->objects - 1) * cache->size;
+> +       void *object = x - (x - slab_address(slab)) % cache->size;
+> +       void *last_object = slab_address(slab) +
+> +               (slab->objects - 1) * cache->size;
+>         void *result = (unlikely(object > last_object)) ? last_object : object;
+>
+>         result = fixup_red_left(cache, result);
+> @@ -178,16 +178,16 @@ static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
+>  }
+>
+>  static inline unsigned int obj_to_index(const struct kmem_cache *cache,
+> -                                       const struct page *page, void *obj)
+> +                                       const struct slab *slab, void *obj)
+>  {
+>         if (is_kfence_address(obj))
+>                 return 0;
+> -       return __obj_to_index(cache, page_address(page), obj);
+> +       return __obj_to_index(cache, slab_address(slab), obj);
+>  }
+>
+> -static inline int objs_per_slab_page(const struct kmem_cache *cache,
+> -                                    const struct page *page)
+> +static inline int objs_per_slab(const struct kmem_cache *cache,
+> +                                    const struct slab *slab)
+>  {
+> -       return page->objects;
+> +       return slab->objects;
+>  }
+>  #endif /* _LINUX_SLUB_DEF_H */
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 8428da2aaf17..6a1cd2d38bff 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -298,7 +298,7 @@ static inline u8 assign_tag(struct kmem_cache *cache,
+>         /* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
+>  #ifdef CONFIG_SLAB
+>         /* For SLAB assign tags based on the object index in the freelist. */
+> -       return (u8)obj_to_index(cache, virt_to_head_page(object), (void *)object);
+> +       return (u8)obj_to_index(cache, virt_to_slab(object), (void *)object);
+>  #else
+>         /*
+>          * For SLUB assign a random tag during slab creation, otherwise reuse
+> @@ -341,7 +341,7 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
+>         if (is_kfence_address(object))
+>                 return false;
+>
+> -       if (unlikely(nearest_obj(cache, virt_to_head_page(object), object) !=
+> +       if (unlikely(nearest_obj(cache, virt_to_slab(object), object) !=
+>             object)) {
+>                 kasan_report_invalid_free(tagged_object, ip);
+>                 return true;
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index 84a038b07c6f..5d0b79416c4e 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -339,7 +339,7 @@ static void __kasan_record_aux_stack(void *addr, bool can_alloc)
+>                 return;
+>
+>         cache = page->slab_cache;
+> -       object = nearest_obj(cache, page, addr);
+> +       object = nearest_obj(cache, page_slab(page), addr);
+>         alloc_meta = kasan_get_alloc_meta(cache, object);
+>         if (!alloc_meta)
+>                 return;
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 0bc10f452f7e..e00999dc6499 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -249,7 +249,7 @@ static void print_address_description(void *addr, u8 tag)
+>
+>         if (page && PageSlab(page)) {
+>                 struct kmem_cache *cache = page->slab_cache;
+> -               void *object = nearest_obj(cache, page, addr);
+> +               void *object = nearest_obj(cache, page_slab(page),      addr);
 
-Yes, exactly. I meant that all this special casing would be done at the
-shmem layer as it knows how to communicate this usecase.
+The tab before addr should be a space. checkpatch should probably report this.
 
-[...]
-
-> > And just a small clarification. Tmpfs is fundamentally problematic from
-> > the OOM handling POV. The nuance here is that the OOM happens in a
-> > different memcg and thus a different resource domain. If you kill a task
-> > in the target memcg then you effectively DoS that workload. If you kill
-> > the allocating task then it is DoSed by anybody allowed to write to that
-> > shmem. All that without a graceful fallback.
-> 
-> I don't know if this addresses your concern, but I'm limiting the
-> memcg= use to processes that can enter that memcg. Therefore they
-> would be able to allocate memory in that memcg anyway by entering it.
-> So if they wanted to intentionally DoS that memcg they can already do
-> it without this feature.
-
-Can you elaborate some more? How do you enforce that the mount point
-cannot be accessed by anybody outside of that constraint?
--- 
-Michal Hocko
-SUSE Labs
+>
+>                 describe_object(cache, object, addr, tag);
+>         }
+> diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
+> index 8a319fc16dab..06c21dd77493 100644
+> --- a/mm/kasan/report_tags.c
+> +++ b/mm/kasan/report_tags.c
+> @@ -23,7 +23,7 @@ const char *kasan_get_bug_type(struct kasan_access_info *info)
+>         page = kasan_addr_to_page(addr);
+>         if (page && PageSlab(page)) {
+>                 cache = page->slab_cache;
+> -               object = nearest_obj(cache, page, (void *)addr);
+> +               object = nearest_obj(cache, page_slab(page), (void *)addr);
+>                 alloc_meta = kasan_get_alloc_meta(cache, object);
+>
+>                 if (alloc_meta) {
+> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+> index 695030c1fff8..f7276711d7b9 100644
+> --- a/mm/kfence/kfence_test.c
+> +++ b/mm/kfence/kfence_test.c
+> @@ -291,8 +291,8 @@ static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocat
+>                          * even for KFENCE objects; these are required so that
+>                          * memcg accounting works correctly.
+>                          */
+> -                       KUNIT_EXPECT_EQ(test, obj_to_index(s, page, alloc), 0U);
+> -                       KUNIT_EXPECT_EQ(test, objs_per_slab_page(s, page), 1);
+> +                       KUNIT_EXPECT_EQ(test, obj_to_index(s, page_slab(page), alloc), 0U);
+> +                       KUNIT_EXPECT_EQ(test, objs_per_slab(s, page_slab(page)), 1);
+>
+>                         if (policy == ALLOCATE_ANY)
+>                                 return alloc;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 781605e92015..c8b53ec074b4 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2819,7 +2819,7 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+>  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+>                                  gfp_t gfp, bool new_page)
+>  {
+> -       unsigned int objects = objs_per_slab_page(s, page);
+> +       unsigned int objects = objs_per_slab(s, page_slab(page));
+>         unsigned long memcg_data;
+>         void *vec;
+>
+> @@ -2881,7 +2881,7 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+>                 struct obj_cgroup *objcg;
+>                 unsigned int off;
+>
+> -               off = obj_to_index(page->slab_cache, page, p);
+> +               off = obj_to_index(page->slab_cache, page_slab(page), p);
+>                 objcg = page_objcgs(page)[off];
+>                 if (objcg)
+>                         return obj_cgroup_memcg(objcg);
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 78ef4d94e3de..adf688d2da64 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -1560,7 +1560,7 @@ static void check_poison_obj(struct kmem_cache *cachep, void *objp)
+>                 struct slab *slab = virt_to_slab(objp);
+>                 unsigned int objnr;
+>
+> -               objnr = obj_to_index(cachep, slab_page(slab), objp);
+> +               objnr = obj_to_index(cachep, slab, objp);
+>                 if (objnr) {
+>                         objp = index_to_obj(cachep, slab, objnr - 1);
+>                         realobj = (char *)objp + obj_offset(cachep);
+> @@ -2530,7 +2530,7 @@ static void *slab_get_obj(struct kmem_cache *cachep, struct slab *slab)
+>  static void slab_put_obj(struct kmem_cache *cachep,
+>                         struct slab *slab, void *objp)
+>  {
+> -       unsigned int objnr = obj_to_index(cachep, slab_page(slab), objp);
+> +       unsigned int objnr = obj_to_index(cachep, slab, objp);
+>  #if DEBUG
+>         unsigned int i;
+>
+> @@ -2717,7 +2717,7 @@ static void *cache_free_debugcheck(struct kmem_cache *cachep, void *objp,
+>         if (cachep->flags & SLAB_STORE_USER)
+>                 *dbg_userword(cachep, objp) = (void *)caller;
+>
+> -       objnr = obj_to_index(cachep, slab_page(slab), objp);
+> +       objnr = obj_to_index(cachep, slab, objp);
+>
+>         BUG_ON(objnr >= cachep->num);
+>         BUG_ON(objp != index_to_obj(cachep, slab, objnr));
+> @@ -3663,7 +3663,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
+>         objp = object - obj_offset(cachep);
+>         kpp->kp_data_offset = obj_offset(cachep);
+>         slab = virt_to_slab(objp);
+> -       objnr = obj_to_index(cachep, slab_page(slab), objp);
+> +       objnr = obj_to_index(cachep, slab, objp);
+>         objp = index_to_obj(cachep, slab, objnr);
+>         kpp->kp_objp = objp;
+>         if (DEBUG && cachep->flags & SLAB_STORE_USER)
+> @@ -4182,7 +4182,7 @@ void __check_heap_object(const void *ptr, unsigned long n,
+>
+>         /* Find and validate object. */
+>         cachep = slab->slab_cache;
+> -       objnr = obj_to_index(cachep, slab_page(slab), (void *)ptr);
+> +       objnr = obj_to_index(cachep, slab, (void *)ptr);
+>         BUG_ON(objnr >= cachep->num);
+>
+>         /* Find offset within object. */
+> diff --git a/mm/slab.h b/mm/slab.h
+> index d6c993894c02..b07e842b5cfc 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -483,7 +483,7 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+>                                 continue;
+>                         }
+>
+> -                       off = obj_to_index(s, page, p[i]);
+> +                       off = obj_to_index(s, page_slab(page), p[i]);
+>                         obj_cgroup_get(objcg);
+>                         page_objcgs(page)[off] = objcg;
+>                         mod_objcg_state(objcg, page_pgdat(page),
+> @@ -522,7 +522,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+>                 else
+>                         s = s_orig;
+>
+> -               off = obj_to_index(s, page, p[i]);
+> +               off = obj_to_index(s, page_slab(page), p[i]);
+>                 objcg = objcgs[off];
+>                 if (!objcg)
+>                         continue;
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 7759f3dde64b..981e40a88bab 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4342,7 +4342,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
+>  #else
+>         objp = objp0;
+>  #endif
+> -       objnr = obj_to_index(s, slab_page(slab), objp);
+> +       objnr = obj_to_index(s, slab, objp);
+>         kpp->kp_data_offset = (unsigned long)((char *)objp0 - (char *)objp);
+>         objp = base + s->size * objnr;
+>         kpp->kp_objp = objp;
+> --
+> 2.33.1
+>
