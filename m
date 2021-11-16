@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F03451C96
-	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 01:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CC8451C97
+	for <lists+cgroups@lfdr.de>; Tue, 16 Nov 2021 01:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241845AbhKPAVa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Nov 2021 19:21:30 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:54652 "EHLO
+        id S242158AbhKPAVe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Nov 2021 19:21:34 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54702 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352757AbhKPATi (ORCPT
+        with ESMTP id S1352934AbhKPATi (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Mon, 15 Nov 2021 19:19:38 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6C88721977;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 99B9F21979;
         Tue, 16 Nov 2021 00:16:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1637021800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q2s2rRolTi/tozAyHKufO2rJcy/F+r5lJEP1a0gCagE=;
-        b=bdN7BbC7EVijQR7vsPqXzwK9i+Cqde+DCzEDFFaCWv17f3hEYf4Kw6ELtUmF8bTY57sOJu
-        LO7/OOSdtwYKJ85rOl35MEqH8Ksa3L2y8CCvlJ+SDimWMuoFPEy956/STisuSZSzclG+sw
-        /IxFdfEfOdfNRSp+fdWhqGymlVxqStY=
+        bh=9ujsnl/vpHKegChieObjZ4qYGxGunlXYXeZHnYR8ul8=;
+        b=a6kA8FqH16ZEXL4FjNMzEkTJN0I1AGaMAl6CLauKASo5DnKvkceFwbfSTO8x6DDyH+INXm
+        Ousw4uSYqmJ0fLJm8bRqZv2FOvjsuxmunpSQgjf3fn+2hY+ymIPduwS6nyY8qrO9Y8exGV
+        7UsZQ1gE1RWAQTM+REsys6a5KKrq86A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1637021800;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q2s2rRolTi/tozAyHKufO2rJcy/F+r5lJEP1a0gCagE=;
-        b=YxbvWrpUzF6kjCHYIfyqzXr7K8UgGz23Zg3CqSkpYJVyoYLys4GREv5a9cp/0eXaOSiLpJ
-        vEhRdKQ86++b7RBQ==
+        bh=9ujsnl/vpHKegChieObjZ4qYGxGunlXYXeZHnYR8ul8=;
+        b=ZeofS11lglbOFpPKvNm08BRf28iHGD7x9hiDtThzJo0SYIuUtEVAYfvV1brhm0594I7ugM
+        LOc3rqhX1suhg6AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C290139DB;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FA3213F72;
         Tue, 16 Nov 2021 00:16:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0K46Cmj4kmFjXAAAMHmgww
+        id gLeyGmj4kmFjXAAAMHmgww
         (envelope-from <vbabka@suse.cz>); Tue, 16 Nov 2021 00:16:40 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
@@ -52,409 +52,402 @@ To:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Pekka Enberg <penberg@kernel.org>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: [RFC PATCH 21/32] mm: Convert struct page to struct slab in functions used by other subsystems
-Date:   Tue, 16 Nov 2021 01:16:17 +0100
-Message-Id: <20211116001628.24216-22-vbabka@suse.cz>
+        cgroups@vger.kernel.org
+Subject: [RFC PATCH 22/32] mm/memcg: Convert slab objcgs from struct page to struct slab
+Date:   Tue, 16 Nov 2021 01:16:18 +0100
+Message-Id: <20211116001628.24216-23-vbabka@suse.cz>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211116001628.24216-1-vbabka@suse.cz>
 References: <20211116001628.24216-1-vbabka@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12792; h=from:subject; bh=IgVl3ZRPt4OrPRzJceHKtR5LaZyvmIn43n2yD1brefw=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhkvhHhJKjpglH0ojEgRxJJDx/KZJk3rlhaI0b5mIL ALr4j4yJATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYZL4RwAKCRDgIcpz8YmpEP6sB/ oCbzd1mr3I+H1daz/zmxBLv3GvS9Ev24Mc5t2tuNU5BUeOVnT3lbzMl5l/mnKzuRX+uO+ocdTwpr2o V2qdhp5F8e3DRzKeYWSErLSGrcUA4CsaEFK36qE3A1hR5FT1j94SE0GWmwB3Blwt+pOH2qoCRcdftJ l1qAbxaUntM81yQkwmpNMYMFv/uoML3krqGB8TUkjlmQfhQZypgImrnVkVCifMV7v4rwCY/JVRVYYW d1cyv/xt95ILtpXD3b2uP3PXTc1NkTdX4o8zQZAxXFyzThAnLSVmuUykJlLj8CbI9ojT9G1U9YLP8m EJafmg+tn8BU5T3uuWqLUxxRLYBnex
+X-Developer-Signature: v=1; a=openpgp-sha256; l=12740; h=from:subject; bh=rL0UhyEUArSE+lvqfUW/rvcArsY6Rd9/uNtu3i7y8zA=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhkvhJN9ecv1wefrE6SUVjadeqaly4xblSZvtlNYWN FsUbOHaJATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYZL4SQAKCRDgIcpz8YmpEO2KB/ 96j0szHKVtrVdMQt+xMxiNwdBhKTvRS7aqvs5nvXmbHykyLpnjx41XcyZRVzT+5T30jUS5jz4G2Thp Pfl2slXWxUPR7JOGAeyQuiI8y6QRIh1zZqefsOGfEuj74yQUT7F61wR0QeYlK+tfBaTsKz5tObaXUD zl54Cr7FwklXGtqlc7U6+QYKXH0cftrme4EezlbgRkjeOdwSY0NiZC0Xxvh0EfQwUjYRAMOqYDJPn2 pD5TSXsaMVckHNNv8Adj+Q2/e6oPRYg+A624mvnaKhphlTaUd2XTyR3TlAJC1N6SLdqfTSElBjzv70 Afiu2GO4zCQxs9V0NH0hw/z24zdu2S
 X-Developer-Key: i=vbabka@suse.cz; a=openpgp; fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-KASAN, KFENCE and memcg interact with SLAB or SLUB internals through functions
-nearest_obj(), obj_to_index() and objs_per_slab() that use struct page as
-parameter. This patch converts it to struct slab including all callers, through
-a coccinelle semantic patch.
+page->memcg_data is used with MEMCG_DATA_OBJCGS flag only for slab pages
+so convert all the related infrastructure to struct slab.
 
-// Options: --include-headers --no-includes --smpl-spacing include/linux/slab_def.h include/linux/slub_def.h mm/slab.h mm/kasan/*.c mm/kfence/kfence_test.c mm/memcontrol.c mm/slab.c mm/slub.c
-// Note: needs coccinelle 1.1.1 to avoid breaking whitespace
+To avoid include cycles, move the inline definitions of slab_objcgs() and
+slab_objcgs_check() from memcontrol.h to mm/slab.h.
 
-@@
-@@
-
--objs_per_slab_page(
-+objs_per_slab(
- ...
- )
- { ... }
-
-@@
-@@
-
--objs_per_slab_page(
-+objs_per_slab(
- ...
- )
-
-@@
-identifier fn =~ "obj_to_index|objs_per_slab";
-@@
-
- fn(...,
--   const struct page *page
-+   const struct slab *slab
-    ,...)
- {
-<...
-(
-- page_address(page)
-+ slab_address(slab)
-|
-- page
-+ slab
-)
-...>
- }
-
-@@
-identifier fn =~ "nearest_obj";
-@@
-
- fn(...,
--   struct page *page
-+   const struct slab *slab
-    ,...)
- {
-<...
-(
-- page_address(page)
-+ slab_address(slab)
-|
-- page
-+ slab
-)
-...>
- }
-
-@@
-identifier fn =~ "nearest_obj|obj_to_index|objs_per_slab";
-expression E;
-@@
-
- fn(...,
-(
-- slab_page(E)
-+ E
-|
-- virt_to_page(E)
-+ virt_to_slab(E)
-|
-- virt_to_head_page(E)
-+ virt_to_slab(E)
-|
-- page
-+ page_slab(page)
-)
-  ,...)
+This is not just mechanistic changing of types and names. Now in
+mem_cgroup_from_obj() we use PageSlab flag to decide if we interpret the page
+as slab, instead of relying on MEMCG_DATA_OBJCGS bit checked in
+page_objcgs_check() (now slab_objcgs_check()). Similarly in
+memcg_slab_free_hook() where we can encounter kmalloc_large() pages (here the
+PageSlab flag check is implied by virt_to_slab()).
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Julia Lawall <julia.lawall@inria.fr>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: <kasan-dev@googlegroups.com>
 Cc: <cgroups@vger.kernel.org>
 ---
- include/linux/slab_def.h | 16 ++++++++--------
- include/linux/slub_def.h | 18 +++++++++---------
- mm/kasan/common.c        |  4 ++--
- mm/kasan/generic.c       |  2 +-
- mm/kasan/report.c        |  2 +-
- mm/kasan/report_tags.c   |  2 +-
- mm/kfence/kfence_test.c  |  4 ++--
- mm/memcontrol.c          |  4 ++--
- mm/slab.c                | 10 +++++-----
- mm/slab.h                |  4 ++--
- mm/slub.c                |  2 +-
- 11 files changed, 34 insertions(+), 34 deletions(-)
+ include/linux/memcontrol.h |  48 ------------------
+ mm/memcontrol.c            |  43 +++++++++-------
+ mm/slab.h                  | 101 ++++++++++++++++++++++++++++---------
+ 3 files changed, 103 insertions(+), 89 deletions(-)
 
-diff --git a/include/linux/slab_def.h b/include/linux/slab_def.h
-index 3aa5e1e73ab6..e24c9aff6fed 100644
---- a/include/linux/slab_def.h
-+++ b/include/linux/slab_def.h
-@@ -87,11 +87,11 @@ struct kmem_cache {
- 	struct kmem_cache_node *node[MAX_NUMNODES];
- };
- 
--static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
-+static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
- 				void *x)
- {
--	void *object = x - (x - page->s_mem) % cache->size;
--	void *last_object = page->s_mem + (cache->num - 1) * cache->size;
-+	void *object = x - (x - slab->s_mem) % cache->size;
-+	void *last_object = slab->s_mem + (cache->num - 1) * cache->size;
- 
- 	if (unlikely(object > last_object))
- 		return last_object;
-@@ -106,16 +106,16 @@ static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
-  *   reciprocal_divide(offset, cache->reciprocal_buffer_size)
-  */
- static inline unsigned int obj_to_index(const struct kmem_cache *cache,
--					const struct page *page, void *obj)
-+					const struct slab *slab, void *obj)
- {
--	u32 offset = (obj - page->s_mem);
-+	u32 offset = (obj - slab->s_mem);
- 	return reciprocal_divide(offset, cache->reciprocal_buffer_size);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0c5c403f4be6..e34112f6a369 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -536,45 +536,6 @@ static inline bool folio_memcg_kmem(struct folio *folio)
+ 	return folio->memcg_data & MEMCG_DATA_KMEM;
  }
  
--static inline int objs_per_slab_page(const struct kmem_cache *cache,
--				     const struct page *page)
-+static inline int objs_per_slab(const struct kmem_cache *cache,
-+				     const struct slab *slab)
- {
--	if (is_kfence_address(page_address(page)))
-+	if (is_kfence_address(slab_address(slab)))
- 		return 1;
- 	return cache->num;
- }
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index 8a9c2876ca89..33c5c0e3bd8d 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -158,11 +158,11 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+-/*
+- * page_objcgs - get the object cgroups vector associated with a page
+- * @page: a pointer to the page struct
+- *
+- * Returns a pointer to the object cgroups vector associated with the page,
+- * or NULL. This function assumes that the page is known to have an
+- * associated object cgroups vector. It's not safe to call this function
+- * against pages, which might have an associated memory cgroup: e.g.
+- * kernel stack pages.
+- */
+-static inline struct obj_cgroup **page_objcgs(struct page *page)
+-{
+-	unsigned long memcg_data = READ_ONCE(page->memcg_data);
+-
+-	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS), page);
+-	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
+-
+-	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
+-}
+-
+-/*
+- * page_objcgs_check - get the object cgroups vector associated with a page
+- * @page: a pointer to the page struct
+- *
+- * Returns a pointer to the object cgroups vector associated with the page,
+- * or NULL. This function is safe to use if the page can be directly associated
+- * with a memory cgroup.
+- */
+-static inline struct obj_cgroup **page_objcgs_check(struct page *page)
+-{
+-	unsigned long memcg_data = READ_ONCE(page->memcg_data);
+-
+-	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
+-		return NULL;
+-
+-	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
+-
+-	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
+-}
  
- void *fixup_red_left(struct kmem_cache *s, void *p);
- 
--static inline void *nearest_obj(struct kmem_cache *cache, struct page *page,
-+static inline void *nearest_obj(struct kmem_cache *cache, const struct slab *slab,
- 				void *x) {
--	void *object = x - (x - page_address(page)) % cache->size;
--	void *last_object = page_address(page) +
--		(page->objects - 1) * cache->size;
-+	void *object = x - (x - slab_address(slab)) % cache->size;
-+	void *last_object = slab_address(slab) +
-+		(slab->objects - 1) * cache->size;
- 	void *result = (unlikely(object > last_object)) ? last_object : object;
- 
- 	result = fixup_red_left(cache, result);
-@@ -178,16 +178,16 @@ static inline unsigned int __obj_to_index(const struct kmem_cache *cache,
- }
- 
- static inline unsigned int obj_to_index(const struct kmem_cache *cache,
--					const struct page *page, void *obj)
-+					const struct slab *slab, void *obj)
- {
- 	if (is_kfence_address(obj))
- 		return 0;
--	return __obj_to_index(cache, page_address(page), obj);
-+	return __obj_to_index(cache, slab_address(slab), obj);
- }
- 
--static inline int objs_per_slab_page(const struct kmem_cache *cache,
--				     const struct page *page)
-+static inline int objs_per_slab(const struct kmem_cache *cache,
-+				     const struct slab *slab)
- {
--	return page->objects;
-+	return slab->objects;
- }
- #endif /* _LINUX_SLUB_DEF_H */
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 8428da2aaf17..6a1cd2d38bff 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -298,7 +298,7 @@ static inline u8 assign_tag(struct kmem_cache *cache,
- 	/* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
- #ifdef CONFIG_SLAB
- 	/* For SLAB assign tags based on the object index in the freelist. */
--	return (u8)obj_to_index(cache, virt_to_head_page(object), (void *)object);
-+	return (u8)obj_to_index(cache, virt_to_slab(object), (void *)object);
  #else
- 	/*
- 	 * For SLUB assign a random tag during slab creation, otherwise reuse
-@@ -341,7 +341,7 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 	if (is_kfence_address(object))
- 		return false;
+ static inline bool folio_memcg_kmem(struct folio *folio)
+@@ -582,15 +543,6 @@ static inline bool folio_memcg_kmem(struct folio *folio)
+ 	return false;
+ }
  
--	if (unlikely(nearest_obj(cache, virt_to_head_page(object), object) !=
-+	if (unlikely(nearest_obj(cache, virt_to_slab(object), object) !=
- 	    object)) {
- 		kasan_report_invalid_free(tagged_object, ip);
- 		return true;
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 84a038b07c6f..5d0b79416c4e 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -339,7 +339,7 @@ static void __kasan_record_aux_stack(void *addr, bool can_alloc)
- 		return;
+-static inline struct obj_cgroup **page_objcgs(struct page *page)
+-{
+-	return NULL;
+-}
+-
+-static inline struct obj_cgroup **page_objcgs_check(struct page *page)
+-{
+-	return NULL;
+-}
+ #endif
  
- 	cache = page->slab_cache;
--	object = nearest_obj(cache, page, addr);
-+	object = nearest_obj(cache, page_slab(page), addr);
- 	alloc_meta = kasan_get_alloc_meta(cache, object);
- 	if (!alloc_meta)
- 		return;
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 0bc10f452f7e..e00999dc6499 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -249,7 +249,7 @@ static void print_address_description(void *addr, u8 tag)
- 
- 	if (page && PageSlab(page)) {
- 		struct kmem_cache *cache = page->slab_cache;
--		void *object = nearest_obj(cache, page,	addr);
-+		void *object = nearest_obj(cache, page_slab(page),	addr);
- 
- 		describe_object(cache, object, addr, tag);
- 	}
-diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
-index 8a319fc16dab..06c21dd77493 100644
---- a/mm/kasan/report_tags.c
-+++ b/mm/kasan/report_tags.c
-@@ -23,7 +23,7 @@ const char *kasan_get_bug_type(struct kasan_access_info *info)
- 	page = kasan_addr_to_page(addr);
- 	if (page && PageSlab(page)) {
- 		cache = page->slab_cache;
--		object = nearest_obj(cache, page, (void *)addr);
-+		object = nearest_obj(cache, page_slab(page), (void *)addr);
- 		alloc_meta = kasan_get_alloc_meta(cache, object);
- 
- 		if (alloc_meta) {
-diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-index 695030c1fff8..f7276711d7b9 100644
---- a/mm/kfence/kfence_test.c
-+++ b/mm/kfence/kfence_test.c
-@@ -291,8 +291,8 @@ static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocat
- 			 * even for KFENCE objects; these are required so that
- 			 * memcg accounting works correctly.
- 			 */
--			KUNIT_EXPECT_EQ(test, obj_to_index(s, page, alloc), 0U);
--			KUNIT_EXPECT_EQ(test, objs_per_slab_page(s, page), 1);
-+			KUNIT_EXPECT_EQ(test, obj_to_index(s, page_slab(page), alloc), 0U);
-+			KUNIT_EXPECT_EQ(test, objs_per_slab(s, page_slab(page)), 1);
- 
- 			if (policy == ALLOCATE_ANY)
- 				return alloc;
+ static inline bool PageMemcgKmem(struct page *page)
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 781605e92015..c8b53ec074b4 100644
+index c8b53ec074b4..ab86614a0c46 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2819,7 +2819,7 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
- int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
- 				 gfp_t gfp, bool new_page)
+@@ -2816,31 +2816,31 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+  */
+ #define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
+ 
+-int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+-				 gfp_t gfp, bool new_page)
++int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
++				 gfp_t gfp, bool new_slab)
  {
--	unsigned int objects = objs_per_slab_page(s, page);
-+	unsigned int objects = objs_per_slab(s, page_slab(page));
+-	unsigned int objects = objs_per_slab(s, page_slab(page));
++	unsigned int objects = objs_per_slab(s, slab);
  	unsigned long memcg_data;
  	void *vec;
  
-@@ -2881,7 +2881,7 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ 	gfp &= ~OBJCGS_CLEAR_MASK;
+ 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
+-			   page_to_nid(page));
++			   slab_nid(slab));
+ 	if (!vec)
+ 		return -ENOMEM;
+ 
+ 	memcg_data = (unsigned long) vec | MEMCG_DATA_OBJCGS;
+-	if (new_page) {
++	if (new_slab) {
+ 		/*
+-		 * If the slab page is brand new and nobody can yet access
+-		 * it's memcg_data, no synchronization is required and
+-		 * memcg_data can be simply assigned.
++		 * If the slab is brand new and nobody can yet access its
++		 * memcg_data, no synchronization is required and memcg_data can
++		 * be simply assigned.
+ 		 */
+-		page->memcg_data = memcg_data;
+-	} else if (cmpxchg(&page->memcg_data, 0, memcg_data)) {
++		slab->memcg_data = memcg_data;
++	} else if (cmpxchg(&slab->memcg_data, 0, memcg_data)) {
+ 		/*
+-		 * If the slab page is already in use, somebody can allocate
+-		 * and assign obj_cgroups in parallel. In this case the existing
++		 * If the slab is already in use, somebody can allocate and
++		 * assign obj_cgroups in parallel. In this case the existing
+ 		 * objcg vector should be reused.
+ 		 */
+ 		kfree(vec);
+@@ -2865,24 +2865,31 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+  */
+ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ {
+-	struct page *page;
++	struct folio *folio;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return NULL;
+ 
+-	page = virt_to_head_page(p);
++	folio = page_folio(virt_to_page(p));
+ 
+ 	/*
+ 	 * Slab objects are accounted individually, not per-page.
+ 	 * Memcg membership data for each individual object is saved in
+ 	 * the page->obj_cgroups.
+ 	 */
+-	if (page_objcgs_check(page)) {
++	if (folio_test_slab(folio)) {
++		struct obj_cgroup **objcgs;
  		struct obj_cgroup *objcg;
++		struct slab *slab;
  		unsigned int off;
  
--		off = obj_to_index(page->slab_cache, page, p);
-+		off = obj_to_index(page->slab_cache, page_slab(page), p);
- 		objcg = page_objcgs(page)[off];
+-		off = obj_to_index(page->slab_cache, page_slab(page), p);
+-		objcg = page_objcgs(page)[off];
++		slab = folio_slab(folio);
++		objcgs = slab_objcgs_check(slab);
++		if (!objcgs)
++			return NULL;
++
++		off = obj_to_index(slab->slab_cache, slab, p);
++		objcg = objcgs[off];
  		if (objcg)
  			return obj_cgroup_memcg(objcg);
-diff --git a/mm/slab.c b/mm/slab.c
-index 78ef4d94e3de..adf688d2da64 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -1560,7 +1560,7 @@ static void check_poison_obj(struct kmem_cache *cachep, void *objp)
- 		struct slab *slab = virt_to_slab(objp);
- 		unsigned int objnr;
  
--		objnr = obj_to_index(cachep, slab_page(slab), objp);
-+		objnr = obj_to_index(cachep, slab, objp);
- 		if (objnr) {
- 			objp = index_to_obj(cachep, slab, objnr - 1);
- 			realobj = (char *)objp + obj_offset(cachep);
-@@ -2530,7 +2530,7 @@ static void *slab_get_obj(struct kmem_cache *cachep, struct slab *slab)
- static void slab_put_obj(struct kmem_cache *cachep,
- 			struct slab *slab, void *objp)
- {
--	unsigned int objnr = obj_to_index(cachep, slab_page(slab), objp);
-+	unsigned int objnr = obj_to_index(cachep, slab, objp);
- #if DEBUG
- 	unsigned int i;
+@@ -2896,7 +2903,7 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ 	 * page_memcg_check(page) will guarantee that a proper memory
+ 	 * cgroup pointer or NULL will be returned.
+ 	 */
+-	return page_memcg_check(page);
++	return page_memcg_check(folio_page(folio, 0));
+ }
  
-@@ -2717,7 +2717,7 @@ static void *cache_free_debugcheck(struct kmem_cache *cachep, void *objp,
- 	if (cachep->flags & SLAB_STORE_USER)
- 		*dbg_userword(cachep, objp) = (void *)caller;
- 
--	objnr = obj_to_index(cachep, slab_page(slab), objp);
-+	objnr = obj_to_index(cachep, slab, objp);
- 
- 	BUG_ON(objnr >= cachep->num);
- 	BUG_ON(objp != index_to_obj(cachep, slab, objnr));
-@@ -3663,7 +3663,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
- 	objp = object - obj_offset(cachep);
- 	kpp->kp_data_offset = obj_offset(cachep);
- 	slab = virt_to_slab(objp);
--	objnr = obj_to_index(cachep, slab_page(slab), objp);
-+	objnr = obj_to_index(cachep, slab, objp);
- 	objp = index_to_obj(cachep, slab, objnr);
- 	kpp->kp_objp = objp;
- 	if (DEBUG && cachep->flags & SLAB_STORE_USER)
-@@ -4182,7 +4182,7 @@ void __check_heap_object(const void *ptr, unsigned long n,
- 
- 	/* Find and validate object. */
- 	cachep = slab->slab_cache;
--	objnr = obj_to_index(cachep, slab_page(slab), (void *)ptr);
-+	objnr = obj_to_index(cachep, slab, (void *)ptr);
- 	BUG_ON(objnr >= cachep->num);
- 
- 	/* Find offset within object. */
+ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
 diff --git a/mm/slab.h b/mm/slab.h
-index d6c993894c02..b07e842b5cfc 100644
+index b07e842b5cfc..ec2c98e882f1 100644
 --- a/mm/slab.h
 +++ b/mm/slab.h
-@@ -483,7 +483,7 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+@@ -412,15 +412,56 @@ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t fla
+ }
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+-int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+-				 gfp_t gfp, bool new_page);
++/*
++ * slab_objcgs - get the object cgroups vector associated with a slab
++ * @slab: a pointer to the slab struct
++ *
++ * Returns a pointer to the object cgroups vector associated with the slab,
++ * or NULL. This function assumes that the slab is known to have an
++ * associated object cgroups vector. It's not safe to call this function
++ * against slabs with underlying pages, which might have an associated memory
++ * cgroup: e.g.  kernel stack pages.
++ */
++static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
++{
++	unsigned long memcg_data = READ_ONCE(slab->memcg_data);
++
++	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS),
++							slab_page(slab));
++	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, slab_page(slab));
++
++	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
++}
++
++/*
++ * slab_objcgs_check - get the object cgroups vector associated with a slab
++ * @slab: a pointer to the slab struct
++ *
++ * Returns a pointer to the object cgroups vector associated with the slab, or
++ * NULL. This function is safe to use if the underlying page can be directly
++ * associated with a memory cgroup.
++ */
++static inline struct obj_cgroup **slab_objcgs_check(struct slab *slab)
++{
++	unsigned long memcg_data = READ_ONCE(slab->memcg_data);
++
++	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
++		return NULL;
++
++	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, slab_page(slab));
++
++	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
++}
++
++int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
++				 gfp_t gfp, bool new_slab);
+ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 		     enum node_stat_item idx, int nr);
+ 
+-static inline void memcg_free_page_obj_cgroups(struct page *page)
++static inline void memcg_free_slab_cgroups(struct slab *slab)
+ {
+-	kfree(page_objcgs(page));
+-	page->memcg_data = 0;
++	kfree(slab_objcgs(slab));
++	slab->memcg_data = 0;
+ }
+ 
+ static inline size_t obj_full_size(struct kmem_cache *s)
+@@ -465,7 +506,7 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 					      gfp_t flags, size_t size,
+ 					      void **p)
+ {
+-	struct page *page;
++	struct slab *slab;
+ 	unsigned long off;
+ 	size_t i;
+ 
+@@ -474,19 +515,19 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 
+ 	for (i = 0; i < size; i++) {
+ 		if (likely(p[i])) {
+-			page = virt_to_head_page(p[i]);
++			slab = virt_to_slab(p[i]);
+ 
+-			if (!page_objcgs(page) &&
+-			    memcg_alloc_page_obj_cgroups(page, s, flags,
++			if (!slab_objcgs(slab) &&
++			    memcg_alloc_slab_cgroups(slab, s, flags,
+ 							 false)) {
+ 				obj_cgroup_uncharge(objcg, obj_full_size(s));
  				continue;
  			}
  
--			off = obj_to_index(s, page, p[i]);
-+			off = obj_to_index(s, page_slab(page), p[i]);
+-			off = obj_to_index(s, page_slab(page), p[i]);
++			off = obj_to_index(s, slab, p[i]);
  			obj_cgroup_get(objcg);
- 			page_objcgs(page)[off] = objcg;
- 			mod_objcg_state(objcg, page_pgdat(page),
-@@ -522,7 +522,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+-			page_objcgs(page)[off] = objcg;
+-			mod_objcg_state(objcg, page_pgdat(page),
++			slab_objcgs(slab)[off] = objcg;
++			mod_objcg_state(objcg, slab_pgdat(slab),
+ 					cache_vmstat_idx(s), obj_full_size(s));
+ 		} else {
+ 			obj_cgroup_uncharge(objcg, obj_full_size(s));
+@@ -501,7 +542,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+ 	struct kmem_cache *s;
+ 	struct obj_cgroup **objcgs;
+ 	struct obj_cgroup *objcg;
+-	struct page *page;
++	struct slab *slab;
+ 	unsigned int off;
+ 	int i;
+ 
+@@ -512,43 +553,57 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s_orig,
+ 		if (unlikely(!p[i]))
+ 			continue;
+ 
+-		page = virt_to_head_page(p[i]);
+-		objcgs = page_objcgs_check(page);
++		slab = virt_to_slab(p[i]);
++		/* we could be given a kmalloc_large() object, skip those */
++		if (!slab)
++			continue;
++
++		objcgs = slab_objcgs_check(slab);
+ 		if (!objcgs)
+ 			continue;
+ 
+ 		if (!s_orig)
+-			s = page->slab_cache;
++			s = slab->slab_cache;
  		else
  			s = s_orig;
  
--		off = obj_to_index(s, page, p[i]);
-+		off = obj_to_index(s, page_slab(page), p[i]);
+-		off = obj_to_index(s, page_slab(page), p[i]);
++		off = obj_to_index(s, slab, p[i]);
  		objcg = objcgs[off];
  		if (!objcg)
  			continue;
-diff --git a/mm/slub.c b/mm/slub.c
-index 7759f3dde64b..981e40a88bab 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4342,7 +4342,7 @@ void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
- #else
- 	objp = objp0;
- #endif
--	objnr = obj_to_index(s, slab_page(slab), objp);
-+	objnr = obj_to_index(s, slab, objp);
- 	kpp->kp_data_offset = (unsigned long)((char *)objp0 - (char *)objp);
- 	objp = base + s->size * objnr;
- 	kpp->kp_objp = objp;
+ 
+ 		objcgs[off] = NULL;
+ 		obj_cgroup_uncharge(objcg, obj_full_size(s));
+-		mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
++		mod_objcg_state(objcg, slab_pgdat(slab), cache_vmstat_idx(s),
+ 				-obj_full_size(s));
+ 		obj_cgroup_put(objcg);
+ 	}
+ }
+ 
+ #else /* CONFIG_MEMCG_KMEM */
++static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
++{
++	return NULL;
++}
++
++static inline struct obj_cgroup **slab_objcgs_check(struct slab *slab)
++{
++	return NULL;
++}
++
+ static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+ {
+ 	return NULL;
+ }
+ 
+-static inline int memcg_alloc_page_obj_cgroups(struct page *page,
++static inline int memcg_alloc_slab_cgroups(struct slab *slab,
+ 					       struct kmem_cache *s, gfp_t gfp,
+-					       bool new_page)
++					       bool new_slab)
+ {
+ 	return 0;
+ }
+ 
+-static inline void memcg_free_page_obj_cgroups(struct page *page)
++static inline void memcg_free_slab_cgroups(struct slab *slab)
+ {
+ }
+ 
+@@ -587,7 +642,7 @@ static __always_inline void account_slab(struct slab *slab, int order,
+ 					 struct kmem_cache *s, gfp_t gfp)
+ {
+ 	if (memcg_kmem_enabled() && (s->flags & SLAB_ACCOUNT))
+-		memcg_alloc_page_obj_cgroups(slab_page(slab), s, gfp, true);
++		memcg_alloc_slab_cgroups(slab, s, gfp, true);
+ 
+ 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+ 			    PAGE_SIZE << order);
+@@ -597,7 +652,7 @@ static __always_inline void unaccount_slab(struct slab *slab, int order,
+ 					   struct kmem_cache *s)
+ {
+ 	if (memcg_kmem_enabled())
+-		memcg_free_page_obj_cgroups(slab_page(slab));
++		memcg_free_slab_cgroups(slab);
+ 
+ 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+ 			    -(PAGE_SIZE << order));
 -- 
 2.33.1
 
