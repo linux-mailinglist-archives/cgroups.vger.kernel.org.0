@@ -2,94 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B3D453D08
-	for <lists+cgroups@lfdr.de>; Wed, 17 Nov 2021 01:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7735F453D68
+	for <lists+cgroups@lfdr.de>; Wed, 17 Nov 2021 02:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhKQAOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Nov 2021 19:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        id S229635AbhKQBHC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Nov 2021 20:07:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhKQAOX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 19:14:23 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD35C061570;
-        Tue, 16 Nov 2021 16:11:25 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id r11so2461423edd.9;
-        Tue, 16 Nov 2021 16:11:25 -0800 (PST)
+        with ESMTP id S229543AbhKQBHC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Nov 2021 20:07:02 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195CC061570;
+        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id g18so1027756pfk.5;
+        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GlqmPq2VIk6eD8ey4VGJbqZUsRwxAJjaJSQyRKeBmc0=;
-        b=gW7tY/rX+1sOa7ZeXu+Q32hSrCZTG9t3phjJUZxIzIzZpDUGPWDXsOJat6Xkj+cJQq
-         Vy39DaWJm6fxLU7sNCjrBsHK63TyMcoG0HaSHUjV57sfDprKbmUI9fvYG77L/ectftAG
-         iaTgu88O5l1wPgtL0vUdmUzU6a5Qnclso/L0pHltw4Tmy0bNRUhlTpEQgTEsRr1aycGE
-         IhkVd+ne7ml6pAfWF+GeWUwFQPH2XxpTMIOLdSWfjqroGUwufi7G5a0NNokXHIPljObS
-         ae44pjDPEZKG4KZL8VzKunquzq1x/kWwkuMNAYU2gnVRdYdEG/tJwf4FUNrfcMq/Ebur
-         SCnA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PLz5baL/tForuA6NLmg8XFMsVJ3OJ6G5avfxPN9wfAY=;
+        b=CkHizIwo5OxrH6SXMtbFaBo3rxwHUxfjaYQqiQXz2DG4k37ZPaiTMLniKDmBOEYATR
+         m3NFrhQCYldaZCZRLdM++qdG+mkLTik41OH67xg1jaWt3Gz8jH2zkJqAXcUoLuPpJNwr
+         a7+Iq2UkHkQAANfQ5gvMuaCvpIPB5LbL0b51sVBNMdnBDjbIoEB0ujCNjNhF/FCTBoLq
+         aSQ+OS81elts5Tre9UNFtGkR9+gcmDWlcMaVmFd9EYWtsodEyX740N7WRAOPsrRcx/BV
+         f+Jr0PYJwF3Z3NzFAWp1mwRjsMB0/ei2In+9mI79i3swOtidWcCeWFU4eyERo0mJHkWe
+         dSNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GlqmPq2VIk6eD8ey4VGJbqZUsRwxAJjaJSQyRKeBmc0=;
-        b=8DXfo8GhSzd23pL4LoFE+lBtmIvMUm+1xsj1clQp4JcsEEj3T8A90zd0Lv0bgsitXZ
-         g0QOeeMdGbx7ziO8qUOa00mhs2rPcN8+5feko9wyAky1JgnXFuBwdU0FvKzR8NXyDBUr
-         ta9Lrps8qWvu2rWGwFGj53e4pLew7lRBvl4GTdssz1/gDpXNnggVxjx7aScqheaxmSpX
-         KHJgCJ9nplohtlgUmJZC20wfhD5QK+shosgvTrDjAF3hF6+WziM6H3aGgmP8afSCw32+
-         qx2LXZ6vzYQmlIgTh1GthDKFL4m3AjY8eLfCPazc4m3n09RxAOtAn5BMGnzydZ6FJagk
-         Aijw==
-X-Gm-Message-State: AOAM532EoZhEOMXjXHo3o7OO73Extg42HC+PdYNLtwwa5neLxWO307Le
-        Gm4czrpFGWaJTNpi9vfK5ZNBiSI0RLk=
-X-Google-Smtp-Source: ABdhPJzx2buasGj4DgLtZhQHUL0aZqm+077gjbL2NyOQmQ9aDNmU1eR3AWVng/9XeopUQZwOPiNNkA==
-X-Received: by 2002:a17:907:96a6:: with SMTP id hd38mr15333049ejc.47.1637107883873;
-        Tue, 16 Nov 2021 16:11:23 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id hc10sm9257466ejc.99.2021.11.16.16.11.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 16 Nov 2021 16:11:23 -0800 (PST)
-Date:   Wed, 17 Nov 2021 00:11:22 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Michal Koutn? <mkoutny@suse.com>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2] cgroup: pretty format /proc/cgroups
-Message-ID: <20211117001122.az2wy3342yd7gkym@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20211115011253.20778-1-richard.weiyang@gmail.com>
- <20211116180013.GA8884@blackbody.suse.cz>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PLz5baL/tForuA6NLmg8XFMsVJ3OJ6G5avfxPN9wfAY=;
+        b=u+lapJqTswyUZ2HDPNHSsQkmBRm8hErbNs3aeSmEdTaxwmhyRlRJ72BOdtbTM6d8xZ
+         7CG9h6ePFPeTNSWduFeymBs4DlUVeReRq4fkx4xKnCkEyKAmpTDF1Uono3+ndID2aORN
+         lumSc8ChGMVAhtByFkEJs5FTtQAiPyJdqvEmwDIjaoXdRT3N7kFdRExOu39lfkH2ezZE
+         tTqALoHcKkeNQXQnMpEzZC0T8OG8CVhcJsO9s+4Xl/lYWdLnBb3d6VlSUSqVdxWNpX9o
+         U4VYXTfMuwLkyvc6VV8mVUxD6In2nqloEg685GFnHmraEF4DtiuYUlMUUVYXGmE0Q8jY
+         a1qw==
+X-Gm-Message-State: AOAM533agdw1T3LS9G5VMuLVV9vBNsc0Oupnl9IIuJuPqTtzL7jUIz8j
+        1FySHglMtU/LURiUbSWzsK5TeIQUtWk=
+X-Google-Smtp-Source: ABdhPJxjCw37K4wG9Bj2g5qb8rvxH1zYGXCDFKGyeao3JLec2qMsk8dqqvU+XtDp1LRq+E9ueWczxQ==
+X-Received: by 2002:a63:920b:: with SMTP id o11mr2455453pgd.314.1637111044472;
+        Tue, 16 Nov 2021 17:04:04 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id b15sm19638050pfv.48.2021.11.16.17.04.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Nov 2021 17:04:03 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     tj@kernel.org
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] block: Use div64_ul instead of do_div
+Date:   Wed, 17 Nov 2021 01:03:58 +0000
+Message-Id: <20211117010358.158313-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116180013.GA8884@blackbody.suse.cz>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 07:00:17PM +0100, Michal Koutn? wrote:
->Hello.
->
->On Mon, Nov 15, 2021 at 01:12:53AM +0000, Wei Yang <richard.weiyang@gmail.com> wrote:
->> Let's align the title and value. After this patch, it looks like this.
->
->For machines this change may come as a surprise (so better not change
->it).
->
->For humans (for instance column from util-linux)
->
->$ column -t /proc/cgroups
->#subsys_name  hierarchy  num_cgroups  enabled
->cpuset        11         2            1
->cpu           4          9            1
->cpuacct       4          9            1
->...
->
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-This is helpful, thanks.
+do_div() does a 64-by-32 division. If the divisor is unsigned long, using
+div64_ul can avoid truncation to 32-bit.
 
->Michal
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ block/blk-throttle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 39bb6e68a9a2..2db635d66617 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1903,7 +1903,7 @@ static void throtl_downgrade_check(struct throtl_grp *tg)
+ 
+ 	if (tg->bps[READ][LIMIT_LOW]) {
+ 		bps = tg->last_bytes_disp[READ] * HZ;
+-		do_div(bps, elapsed_time);
++		div64_ul(bps, elapsed_time);
+ 		if (bps >= tg->bps[READ][LIMIT_LOW])
+ 			tg->last_low_overflow_time[READ] = now;
+ 	}
 -- 
-Wei Yang
-Help you, Help me
+2.25.1
+
