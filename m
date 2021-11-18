@@ -2,93 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA4A45574C
-	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 09:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC11455C16
+	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 14:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243079AbhKRIvq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Nov 2021 03:51:46 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:55218 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243306AbhKRIvn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 03:51:43 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1C09A1FD29;
-        Thu, 18 Nov 2021 08:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637225322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=K1ZCPVq3M/kq9T4nlqgpL35Tc3peJZijmvs4kEuxGJA=;
-        b=Pa9rSh+Aq6osGp7TDt1OWOX3Fqw0zfTH2foxwF0j5jwP7LkZcobFCOdu53aiZwY6a42sIu
-        Y9UYvASMomOZkRJafHSII6R7VLGWcMXMF59q+3+hIXZyYmSXfcTVhoe4FenubXtRHz2/N1
-        43hTQf4y3/iib7lf7xP35eyjfIt2AdQ=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DE05AA3B85;
-        Thu, 18 Nov 2021 08:48:41 +0000 (UTC)
-Date:   Thu, 18 Nov 2021 09:48:41 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
-Message-ID: <YZYTaSVUWUhW0d9t@dhcp22.suse.cz>
-References: <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com>
- <YY4nm9Kvkt2FJPph@dhcp22.suse.cz>
- <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
- <YZI9ZbRVdRtE2m70@dhcp22.suse.cz>
- <CAHS8izPcnwOqf8bjfrEd9VFxdA6yX3+a-TeHsxGgpAR+_bRdNA@mail.gmail.com>
- <YZN5tkhHomj6HSb2@dhcp22.suse.cz>
- <CAHS8izNTbvhjEEb=ZrH2_4ECkVhxnCLzyd=78uWmHA_02iiA9Q@mail.gmail.com>
- <YZOWD8hP2WpqyXvI@dhcp22.suse.cz>
- <CAHS8izPyCDucFBa9ZKz09g3QVqSWLmAyOmwN+vr=X2y7yZjRQA@mail.gmail.com>
- <CALvZod7FHO6edK1cR+rbt6cG=+zUzEx3+rKWT5mi73Q29_Y5qA@mail.gmail.com>
+        id S231527AbhKRNF1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Nov 2021 08:05:27 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14952 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234332AbhKRNDg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 08:03:36 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hw0G84bWNzZd8Y;
+        Thu, 18 Nov 2021 20:58:08 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 18 Nov 2021 21:00:33 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
+ 2021 21:00:32 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] blk-throttle: Set BIO_THROTTLED when bio has been throttled
+Date:   Thu, 18 Nov 2021 21:15:51 +0800
+Message-ID: <20211118131551.810931-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7FHO6edK1cR+rbt6cG=+zUzEx3+rKWT5mi73Q29_Y5qA@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 16-11-21 13:55:54, Shakeel Butt wrote:
-> On Tue, Nov 16, 2021 at 1:27 PM Mina Almasry <almasrymina@google.com> wrote:
-> >
-> > On Tue, Nov 16, 2021 at 3:29 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > Yes, exactly. I meant that all this special casing would be done at the
-> > > shmem layer as it knows how to communicate this usecase.
-> > >
-> >
-> > Awesome. The more I think of it I think the ENOSPC handling is perfect
-> > for this use case, because it gives all users of the shared memory and
-> > remote chargers a chance to gracefully handle the ENOSPC or the SIGBUS
-> > when we hit the nothing to kill case. The only issue is finding a
-> > clean implementation, and if the implementation I just proposed sounds
-> > good to you then I see no issues and I'm happy to submit this in the
-> > next version. Shakeel and others I would love to know what you think
-> > either now or when I post the next version.
-> >
-> 
-> The direction seems reasonable to me. I would have more comments on
-> the actual code. At the high level I would prefer not to expose these
-> cases in the filesystem code (shmem or others) and instead be done in
-> a new memcg interface for filesystem users.
+1.In current process, all bio will set the BIO_THROTTLED flag
+after __blk_throtl_bio().
 
-A library like function in the memcg proper sounds good to me I just
-want to avoid any special casing in the core of the memcg charging and
-special casing there.
+2.If bio needs to be throttled, it will start the timer and
+stop submit bio directly. Bio will submit in blk_throtl_dispatch_work_fn()
+when the timer expires. But in the current process, if bio is throttled.
+The BIO_THROTTLED will be set to bio after timer start. If the bio
+has been completed, it may cause use-after-free.
 
+Fix this by move BIO_THROTTLED set before timer set.
+
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+---
+ block/blk-throttle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 39bb6e68a9a2..ddfbff4465d5 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2149,6 +2149,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 	td->nr_queued[rw]++;
+ 	throtl_add_bio_tg(bio, qn, tg);
+ 	throttled = true;
++	bio_set_flag(bio, BIO_THROTTLED);
+ 
+ 	/*
+ 	 * Update @tg's dispatch time and force schedule dispatch if @tg
+@@ -2163,7 +2164,6 @@ bool __blk_throtl_bio(struct bio *bio)
+ 
+ out_unlock:
+ 	spin_unlock_irq(&q->queue_lock);
+-	bio_set_flag(bio, BIO_THROTTLED);
+ 
+ #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+ 	if (throttled || !td->track_bio_latency)
 -- 
-Michal Hocko
-SUSE Labs
+2.22.0
+
