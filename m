@@ -2,81 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC11455C16
-	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 14:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCC0455E03
+	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 15:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhKRNF1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Nov 2021 08:05:27 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14952 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbhKRNDg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 08:03:36 -0500
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hw0G84bWNzZd8Y;
-        Thu, 18 Nov 2021 20:58:08 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 18 Nov 2021 21:00:33 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 18 Nov
- 2021 21:00:32 +0800
-From:   Laibin Qiu <qiulaibin@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-Date:   Thu, 18 Nov 2021 21:15:51 +0800
-Message-ID: <20211118131551.810931-1-qiulaibin@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S232943AbhKROdV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Nov 2021 09:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232536AbhKROdU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 09:33:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E91FC061574;
+        Thu, 18 Nov 2021 06:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ekjbeMSSluitq89HmbpZTemKWo5ngK3iUKiP5ZJguVc=; b=VF+HazTrHE8GalajWnK4zFuJLv
+        D6WCXPblJLo7kFhjP+L3Uta2+eLf3mHsF6JXywBRZu7Q2I72TOBiYWvz5n95a+VQ4S6fDTJKKH3nU
+        pfNI0hd+eTSPtOXC0l+u9QDssagKuvjr2G8h+Nn70Sn0mwIYsSMw6r2i1AfEVk+GVTytDXuJd5rr5
+        eIkcgr7rtPSkjuR6memzpUw8VgQ6R1/pqPsKFhvEC41v7qoMTDzJN4CqhIQ3yNzjeAor1eWacV8ko
+        Q5jrpfDvqRUc5JkyXRkeuwG1dpXI7GY03XKuFOgKkDWtn9V/3RWe2X7fIzc4nxFJ96YQlQUR6KJUD
+        9cFvvqsA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mniQB-008XRp-Oi; Thu, 18 Nov 2021 14:29:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 967533001FD;
+        Thu, 18 Nov 2021 15:29:51 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5FF4E30255413; Thu, 18 Nov 2021 15:29:51 +0100 (CET)
+Date:   Thu, 18 Nov 2021 15:29:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Andrey Ryabinin <arbn@yandex-team.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Schatzberg <schatzberg.dan@gmail.com>
+Subject: Re: [PATCH v3 1/4] cputime, cpuacct: Include guest time in user time
+ in cpuacct.stat
+Message-ID: <YZZjX4NC5gc+poSI@hirez.programming.kicks-ass.net>
+References: <20211115164607.23784-1-arbn@yandex-team.com>
+ <YZLLyFnT95o4Sa8X@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZLLyFnT95o4Sa8X@slm.duckdns.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-1.In current process, all bio will set the BIO_THROTTLED flag
-after __blk_throtl_bio().
+On Mon, Nov 15, 2021 at 11:06:16AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> Ingo, Peter, this looks fine to be sans a couple typos in the descriptions.
+> Please let me know if you wanna take them through sched tree. Otherwise,
+> I'll route them through cgroup tree in a few days.
 
-2.If bio needs to be throttled, it will start the timer and
-stop submit bio directly. Bio will submit in blk_throtl_dispatch_work_fn()
-when the timer expires. But in the current process, if bio is throttled.
-The BIO_THROTTLED will be set to bio after timer start. If the bio
-has been completed, it may cause use-after-free.
+This is all cgroup only changes, right? That's not immediately obvious
+from the changelogs.
 
-Fix this by move BIO_THROTTLED set before timer set.
-
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
----
- block/blk-throttle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 39bb6e68a9a2..ddfbff4465d5 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2149,6 +2149,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 	td->nr_queued[rw]++;
- 	throtl_add_bio_tg(bio, qn, tg);
- 	throttled = true;
-+	bio_set_flag(bio, BIO_THROTTLED);
- 
- 	/*
- 	 * Update @tg's dispatch time and force schedule dispatch if @tg
-@@ -2163,7 +2164,6 @@ bool __blk_throtl_bio(struct bio *bio)
- 
- out_unlock:
- 	spin_unlock_irq(&q->queue_lock);
--	bio_set_flag(bio, BIO_THROTTLED);
- 
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- 	if (throttled || !td->track_bio_latency)
--- 
-2.22.0
-
+But yeah, I can take them I suppose. Lemme go queue them.
