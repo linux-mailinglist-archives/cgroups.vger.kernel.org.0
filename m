@@ -2,143 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4554554EF
-	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 07:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B03455744
+	for <lists+cgroups@lfdr.de>; Thu, 18 Nov 2021 09:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243481AbhKRG45 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Nov 2021 01:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243473AbhKRG4y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 01:56:54 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46714C061764
-        for <cgroups@vger.kernel.org>; Wed, 17 Nov 2021 22:53:55 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id x1-20020a17090a294100b001a6e7ba6b4eso2543216pjf.9
-        for <cgroups@vger.kernel.org>; Wed, 17 Nov 2021 22:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Gqma2pWdNr7xdLS7T1V9DQe179q0YDzZTbjqjZXlV0o=;
-        b=HbN3FLE40/IRvRc1oUsvv83AnEx3cTy8FUmt1YKuGn+CdySMi7r7n1WB32cyzurnem
-         6UQrs9TCkeOGsd+i+5WJsvqUyl/ORgAD4YnYPB2YfWiXhElbH3Hf7G64RXKsrr91B05H
-         qEkv5UVvocjv0ct742vQRIU5Nk16nukGBhgU0a1qvW1TI8A5tRvbhTSY19lj5HCodBs9
-         oHeN6jPtK50uTctPvTSSUt9j48EgI1Ey9sLP/MSH1wNLp78N87bHkvLJ3g4usImymHkY
-         yDCL9+v+SzTms7fiKiv39bm9gytpi9C1KEEnlcAla3hokHKuspYTljc/q4IlW80K2Vkv
-         Dpdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Gqma2pWdNr7xdLS7T1V9DQe179q0YDzZTbjqjZXlV0o=;
-        b=CZI0YrLsSWcDRhQiFobEjwpM33Ngsi05DyPYTy/CcCM5pTvkV1PBtsTP7WbOI8Y5UW
-         shrcudMQv381dYUPCNGSxrFzuXkpUcXZBCMX0Lp1VZ+v/lKMz0QZ45kqkHs+7+9eQNeq
-         7K6AJ8djF2XisxaVjOZGfxy1c4rEbrmSdnVZHxl7PZ0WWIXb6fmfat2LTNv+LqDE37sR
-         cEgIP/rgSjpXYCo819juJpV2saQSHWXophs6XhFAGA+fJ2NJ+byD6ZXrXd+Do+RBSU9s
-         qmhBbvnwa6g8x8frWJtHPD9+i48ZSH+XlMF6hwusnJal0qebkRRHvt4TaUB4w/3MJyYc
-         uiqg==
-X-Gm-Message-State: AOAM533MhRrKE/+n6FNhMkc1YVEB9F28TrSMVqufDkiJokmYX2Sz3+QT
-        YExV7vhkDeqnKyZ5D06K28yzwN205rd98A==
-X-Google-Smtp-Source: ABdhPJxjuLAWkPLRGxQBAq8gzZIgv3ll3UCcW09rwWPbGZA/IrFbHxFox4B0xY4NKYVZGRnNAkzggRcBpuTapQ==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:1f92:79a2:910:cfc8])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:1a86:: with SMTP id
- ng6mr7771396pjb.142.1637218434751; Wed, 17 Nov 2021 22:53:54 -0800 (PST)
-Date:   Wed, 17 Nov 2021 22:53:50 -0800
-Message-Id: <20211118065350.697046-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc1.387.gb447b232ab-goog
-Subject: [PATCH] memcg: better bounds on the memcg stats updates
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S242900AbhKRIuu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Nov 2021 03:50:50 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55118 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243079AbhKRIuu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Nov 2021 03:50:50 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 106F91FD35;
+        Thu, 18 Nov 2021 08:47:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637225269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iVpxbvqJVQzGe+qqFvlCjjmqBPnBIHY2kdyMMjv1vGs=;
+        b=Y/D/oT03gnHxiHxvFiKgyaMMnwYDDxYEue+ZRaR8LqaCuE+sMOwCLLHTIWJyJO6X1/K+ze
+        Bzn/NRVOQCTZHyurUKyki6nk39IOOUvKeAao0LQFCKVZwNO5dp/LRm+VrDyuaN2lGj9Rg9
+        J7usjyCezBX3RYKInimignX0+Df3cTg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 89EFAA3B83;
+        Thu, 18 Nov 2021 08:47:47 +0000 (UTC)
+Date:   Thu, 18 Nov 2021 09:47:47 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>, riel@surriel.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] mm/oom: handle remote ooms
+Message-ID: <YZYTMxjItztiTyld@dhcp22.suse.cz>
+References: <YY4dHPu/bcVdoJ4R@dhcp22.suse.cz>
+ <CAHS8izNMTcctY7NLL9+qQN8+WVztJod2TfBHp85NqOCvHsjFwQ@mail.gmail.com>
+ <YY4nm9Kvkt2FJPph@dhcp22.suse.cz>
+ <CAHS8izMjfwgiNEoJWGSub6iqgPKyyoMZK5ONrMV2=MeMJsM5sg@mail.gmail.com>
+ <YZI9ZbRVdRtE2m70@dhcp22.suse.cz>
+ <CAHS8izPcnwOqf8bjfrEd9VFxdA6yX3+a-TeHsxGgpAR+_bRdNA@mail.gmail.com>
+ <YZN5tkhHomj6HSb2@dhcp22.suse.cz>
+ <CAHS8izNTbvhjEEb=ZrH2_4ECkVhxnCLzyd=78uWmHA_02iiA9Q@mail.gmail.com>
+ <YZOWD8hP2WpqyXvI@dhcp22.suse.cz>
+ <CAHS8izPyCDucFBa9ZKz09g3QVqSWLmAyOmwN+vr=X2y7yZjRQA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izPyCDucFBa9ZKz09g3QVqSWLmAyOmwN+vr=X2y7yZjRQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The commit 11192d9c124d ("memcg: flush stats only if updated") added
-tracking of memcg stats updates which is used by the readers to flush
-only if the updates are over a certain threshold. However each
-individual update can corresponds to a large value change for a given
-stat. For example adding or removing a hugepage to an LRU changes the
-stat by thp_nr_pages (512 on x86_64). Treating the update related to THP
-as one can keep the stat off, in theory, by (thp_nr_pages * nr_cpus *
-CHARGE_BATCH) before flush.
+On Tue 16-11-21 13:27:34, Mina Almasry wrote:
+> On Tue, Nov 16, 2021 at 3:29 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Can you elaborate some more? How do you enforce that the mount point
+> > cannot be accessed by anybody outside of that constraint?
+> 
+> So if I'm a bad actor that wants to intentionally DoS random memcgs on
+> the system I can:
+> 
+> mount -t tmpfs -o memcg=/sys/fs/cgroup/unified/memcg-to-dos tmpfs /mnt/tmpfs
+> cat /dev/random > /mnt/tmpfs
 
-To handle such scenarios, this patch adds consideration of the stat
-update value as well instead of just the update event. In addition let
-the asyn flusher unconditionally flush the stats to put time limit on
-the stats skew and hopefully a lot less readers would need to flush.
+If you can mount tmpfs then you do not need to fiddle with memcgs at
+all. You just DoS the whole machine. That is not what I was asking
+though.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- mm/memcontrol.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+My question was more towards a difference scenario. How do you
+prevent random processes to _write_ to those mount points? User/group
+permissions might be just too coarse to describe memcg relation. Without
+memcg in place somebody could cause ENOSPC to the mount point users
+and that is not great either but that should be recoverable to some
+degree. With memcg configuration this would cause the memcg OOM which
+would be harder to recover from because it affects all memcg charges in
+that cgroup - not just that specific fs access. See what I mean? This is
+a completely new failure mode. 
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 781605e92015..a8f07540d4b8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -629,11 +629,17 @@ static DEFINE_SPINLOCK(stats_flush_lock);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
- static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
- 
--static inline void memcg_rstat_updated(struct mem_cgroup *memcg)
-+static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- {
-+	unsigned int x;
-+
- 	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
--	if (!(__this_cpu_inc_return(stats_updates) % MEMCG_CHARGE_BATCH))
--		atomic_inc(&stats_flush_threshold);
-+
-+	x = __this_cpu_add_return(stats_updates, abs(val));
-+	if (x > MEMCG_CHARGE_BATCH) {
-+		atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
-+		__this_cpu_write(stats_updates, 0);
-+	}
- }
- 
- static void __mem_cgroup_flush_stats(void)
-@@ -656,7 +662,7 @@ void mem_cgroup_flush_stats(void)
- 
- static void flush_memcg_stats_dwork(struct work_struct *w)
- {
--	mem_cgroup_flush_stats();
-+	__mem_cgroup_flush_stats();
- 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, 2UL*HZ);
- }
- 
-@@ -672,7 +678,7 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
- 		return;
- 
- 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
--	memcg_rstat_updated(memcg);
-+	memcg_rstat_updated(memcg, val);
- }
- 
- /* idx can be of type enum memcg_stat_item or node_stat_item. */
-@@ -705,7 +711,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
- 
--	memcg_rstat_updated(memcg);
-+	memcg_rstat_updated(memcg, val);
- }
- 
- /**
-@@ -807,7 +813,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
- 		return;
- 
- 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
--	memcg_rstat_updated(memcg);
-+	memcg_rstat_updated(memcg, count);
- }
- 
- static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+The only reasonable way would be to reduce the visibility of that mount
+point. This is certainly possible but it seems rather awkward when it
+should be accessible from multiple resource domains.
+
+I cannot really shake off feeling that this is potentially adding more
+problems than it solves.
 -- 
-2.34.0.rc1.387.gb447b232ab-goog
-
+Michal Hocko
+SUSE Labs
