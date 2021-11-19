@@ -2,104 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23140456B52
-	for <lists+cgroups@lfdr.de>; Fri, 19 Nov 2021 09:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93923456F94
+	for <lists+cgroups@lfdr.de>; Fri, 19 Nov 2021 14:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhKSIMg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Nov 2021 03:12:36 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31887 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKSIMf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Nov 2021 03:12:35 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwThz4tYfzcbJD;
-        Fri, 19 Nov 2021 16:04:35 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 16:09:32 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 16:09:31 +0800
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from
- blkg_conf_pref()
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <26541322-e064-d39f-ed39-b463a3cea092@huawei.com>
-Date:   Fri, 19 Nov 2021 16:09:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
+        id S234684AbhKSNaH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Nov 2021 08:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKSNaH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Nov 2021 08:30:07 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EE5C061574
+        for <cgroups@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id v23so12706106iom.12
+        for <cgroups@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
+        b=AUEqQdV3wtCQoHQw3uXtTZQMCIea9TPMKqSH9B1cD/8co4jzDGxflGe06I87v4A9qZ
+         jc5tKvG64fJDptVFDLqT/yBxbv9cKwLkJOodF0z3YLG+EqKKJaXV8iU3GqeisaoIL0Mw
+         TBanQ1f2qFDNkSwU2cn14jYVXl5OlB64IXXKchqXlVGlLk7sLzh1Jar1N9guEthfUUwT
+         yXlX078M0Xbx0RnCnFAkRDhxr4wxRw+wU3RjbSgt58pAwmsRDnxk+ZCQP9yQm0MCS4SN
+         Biu6Cr5RGg7EiSSW28CI+jbgqzijwh5imiGNmDkypWlXexx752rNPvboyYI+NIW+FqBM
+         rIMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
+        b=1M8gRn7WFNUeMTL6zcVESn2katC4rV3TWyI4tNLtbNcwEybufIqxJdniQB0N40YhVk
+         Deo3lnyJfEZ48g0dGjM6T6CyE6A1tDbCGAcmgH1VaKHhhHQTf7jUSsqtJYypRm1jxj3D
+         hmcxBKfq6vFbMpFu2Jd7pY/kLFFitd2jOalzix+Z/SIRHaPhTXYrog1cKOUmi3OCGfaC
+         HtqKGHYobkAjFs3sQyCwzxX+Ji1C9I5JA93kO68TKVKIZt0D6mr1TX3VtzmAPGX9PbKt
+         ZXFCcB/KrVGZ/lInfBVf6D6i96GW7xPppqs6eLPt7AiXmES9WAAqDI+4Kg5COHOU7U/A
+         M+3w==
+X-Gm-Message-State: AOAM533BXBGK1gdTG9FpHqnHVUeD4sYMpj+moHf64MuIlc5AXiE94ZIR
+        PLXnwwEICumZUicwGXF9H4hO2Q==
+X-Google-Smtp-Source: ABdhPJwdxk/QYrODedQdeDW6RHtyFLfIZTB8qh42VRCoIaNIJD7RZfljKbgcdEogIBxcUWxGA8GhDw==
+X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr5237113iow.123.1637328424840;
+        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id n12sm2027960ilk.80.2021.11.19.05.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, Yu Kuai <yukuai3@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, yi.zhang@huawei.com
 In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+References: <20211102020705.2321858-1-yukuai3@huawei.com>
+Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
+Message-Id: <163732842185.43918.10012034831708951012.b4-ty@kernel.dk>
+Date:   Fri, 19 Nov 2021 06:27:01 -0700
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021/11/02 10:07, Yu Kuai wrote:
-Hi, Jens
-
-friendly ping ...
-
-Thanks,
-Kuai
+On Tue, 2 Nov 2021 10:07:05 +0800, Yu Kuai wrote:
 > If blk_queue_enter() failed due to queue is dying, the
 > blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
 > 
-> Fixes: 0c9d338c8443 ("blk-cgroup: synchronize blkg creation against policy deactivation")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/blk-cgroup.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 88b1fce90520..663aabfeba18 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -640,7 +640,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   	 */
->   	ret = blk_queue_enter(q, 0);
->   	if (ret)
-> -		return ret;
-> +		goto fail;
->   
->   	rcu_read_lock();
->   	spin_lock_irq(&q->queue_lock);
-> @@ -676,13 +676,13 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   		new_blkg = blkg_alloc(pos, q, GFP_KERNEL);
->   		if (unlikely(!new_blkg)) {
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		if (radix_tree_preload(GFP_KERNEL)) {
->   			blkg_free(new_blkg);
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		rcu_read_lock();
-> @@ -722,9 +722,10 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   fail_unlock:
->   	spin_unlock_irq(&q->queue_lock);
->   	rcu_read_unlock();
-> +fail_exit_queue:
-> +	blk_queue_exit(q);
->   fail:
->   	blkdev_put_no_open(bdev);
-> -	blk_queue_exit(q);
->   	/*
->   	 * If queue was bypassing, we should retry.  Do so after a
->   	 * short msleep().  It isn't strictly necessary but queue
-> 
+
+Applied, thanks!
+
+[1/1] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
+      commit: 15c30104965101b8e76b24d27035569d6613a7d6
+
+Best regards,
+-- 
+Jens Axboe
+
+
