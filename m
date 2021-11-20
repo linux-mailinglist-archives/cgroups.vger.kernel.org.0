@@ -2,256 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B2B457B58
-	for <lists+cgroups@lfdr.de>; Sat, 20 Nov 2021 05:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A55B2457BA0
+	for <lists+cgroups@lfdr.de>; Sat, 20 Nov 2021 06:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhKTEx0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Nov 2021 23:53:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
+        id S229671AbhKTFKa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 20 Nov 2021 00:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235609AbhKTExZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Nov 2021 23:53:25 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C7DC06173E
-        for <cgroups@vger.kernel.org>; Fri, 19 Nov 2021 20:50:22 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id u6-20020a63f646000000b002dbccd46e61so5040657pgj.18
-        for <cgroups@vger.kernel.org>; Fri, 19 Nov 2021 20:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=79UaOzjGTX1bdBbuOK6OGZYuNHbD+Y6LGP3VMZPWWfo=;
-        b=n+LvozaE5Q8BNCS3fqbqo3irax1e6z+BA7Db8d98bRsEGw60v1DGmfPfVE+O44XNGV
-         rVwVHQDGp+B/FpyiQCK2k19VRTVEyntKdNaWzv+HFUGu+xeemoywhDpiO46vsBL0LzyO
-         CLjU7WusWss/FqNR7Jr324wGgsFJOXNE8X8a8Lh8VTxzYuMgRpH4zYgvIkemxnyBE7ah
-         NCcaiY38b6Fdlu7p1vAPSX4GJAx6ugjvXDdTq25+LSYxa3OkEDzLDT11bfizQZ0Et8vR
-         417XJRFAOrmVlqwhi/X0zItDeqXEYQ7OMZ7T68e+zwx+iTSa3ex4R3LL8lq/UYh4GWF3
-         r/5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=79UaOzjGTX1bdBbuOK6OGZYuNHbD+Y6LGP3VMZPWWfo=;
-        b=0GUtuUGc9zuVnRjI+9LCwi42OTxtcvFzB0pTSrryiNaLXk/GlAb+/4Z/HLqQNq/7Lc
-         gYF4TnHdZ6j/+ULgbvblwOgXW1SSDOyhXE0aacI1dSZwMr7v1MMJ4CNGIFeFKIWE7ndp
-         bnqYbP0GaHFkouSsrbsnnKoE8bC5IqGUs2leYQZ8oj20P9q3LyNfoUgEOQPSrZKK7iLd
-         5vUHcraTkJh+3Z+1Zz2Z/dnuyUi3L+AfnujE/rS3pp3j90kW6AAjXBqx8E+9gTuto2Oz
-         +urGAzSoHheNNIo28bwnMoNlO72sBBRVUAVx/5Gi3PLM4AI6fQFH6A/SEMuDlb+yBYaO
-         jgmw==
-X-Gm-Message-State: AOAM5308bwWzC1XoFJfBkD4dOU2sHVM9+E1BtN+BQmleUDKZJbnzr5p8
-        8qlDqYURDg58o14AMiArPhXUvYTRUXFVeniV/g==
-X-Google-Smtp-Source: ABdhPJzXoftBTXQvnJs8EFAoaTwcP0Br6rSCWqmYFOoLP3v+C0fEMkZmUYYmYcCbMQC53bT7Z87J4j5MwXLcZk2+VQ==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:fa91:560a:d7b4:93])
- (user=almasrymina job=sendgmr) by 2002:a17:902:7005:b0:142:4452:25de with
- SMTP id y5-20020a170902700500b00142445225demr84357056plk.3.1637383821734;
- Fri, 19 Nov 2021 20:50:21 -0800 (PST)
-Date:   Fri, 19 Nov 2021 20:50:08 -0800
-In-Reply-To: <20211120045011.3074840-1-almasrymina@google.com>
-Message-Id: <20211120045011.3074840-3-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20211120045011.3074840-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v4 2/4] mm/oom: handle remote ooms
-From:   Mina Almasry <almasrymina@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S229655AbhKTFK3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 20 Nov 2021 00:10:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7961C061574;
+        Fri, 19 Nov 2021 21:07:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wEdJcEBDOS+GDmIXrr71fbDgTyZK1MYWQaHlEXJLZ+U=; b=RoCqii8SlnkIZCDsu35QUFgqso
+        PITjNmL1dwlGuPu8CjvRwOJcy2m/hYeBGQfdpPfwnOqBiM2CswkijqY7kAw/lXx66QDDMKiFTAA88
+        rdsZLxB0mnvU12IFq8dBzAZORSXWHwrgiIjX51ttJCkU9CfVxobWCFpWhqWUsfY4KredcvAvSnoBF
+        tyQpEFdr/VabIfumYydXb3HHwsX1YzZRrGI36hvu8UjsOfEJ5Qhux0kZt22bAigzQUCZffDPTr2gl
+        jryvet5ScyXeiNvk5C/OI4Xd1Jctu42+rwS4xxvuDYwTw6iQD02X1Utxx/E2/FSFl5aTisiwnSBT0
+        Oj7d9Sug==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1moIao-00AF7t-6g; Sat, 20 Nov 2021 05:07:14 +0000
+Date:   Sat, 20 Nov 2021 05:07:14 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Greg Thelen <gthelen@google.com>,
         Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Roman Gushchin <guro@fb.com>, Theodore Ts'o <tytso@mit.edu>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v4 2/4] mm/oom: handle remote ooms
+Message-ID: <YZiCgrTzcl/QQC+N@casper.infradead.org>
+References: <20211120045011.3074840-1-almasrymina@google.com>
+ <20211120045011.3074840-3-almasrymina@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120045011.3074840-3-almasrymina@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On remote ooms (OOMs due to remote charging), the oom-killer will attempt
-to find a task to kill in the memcg under oom. The oom-killer may be
-unable to find a process to kill if there are no killable processes in
-the remote memcg. In this case, the oom-killer (out_of_memory()) will return
-false, and depending on the gfp, that will generally get bubbled up to
-mem_cgroup_charge_mapping() as an ENOMEM.
+On Fri, Nov 19, 2021 at 08:50:08PM -0800, Mina Almasry wrote:
+> On remote ooms (OOMs due to remote charging), the oom-killer will attempt
+> to find a task to kill in the memcg under oom. The oom-killer may be
+> unable to find a process to kill if there are no killable processes in
+> the remote memcg. In this case, the oom-killer (out_of_memory()) will return
+> false, and depending on the gfp, that will generally get bubbled up to
+> mem_cgroup_charge_mapping() as an ENOMEM.
 
-A few considerations on how to handle this edge case:
+Why doesn't it try to run the shrinkers to get back some page cache /
+slab cache memory from this memcg?  I understand it might not be able
+to (eg if the memory is mlocked), but surely that's rare.
 
-1. memcg= is an opt-in feature, so we have some flexibility with the
-   behavior that we export to userspace using this feature to carry
-   out remote charges that may result in remote ooms. The critical thing
-   is to document this behavior so the userspace knows what to expect
-   and handle the edge cases.
-
-2. It is generally not desirable to kill the allocating process, because it's
-   not a member of the remote memcg which is under oom, and so killing it
-   will almost certainly not free any memory in the memcg under oom.
-
-3. There are allocations that happen in pagefault paths, as well as
-   those that happen in non-pagefault paths, and the error returned from
-   mem_cgroup_charge_mapping() will be handled by the caller resulting
-   in different behavior seen by the userspace in the pagefault and
-   non-pagefault paths. For example, currently if mem_cgroup_charge_mapping()
-   returns ENOMEM, the caller will generally get an ENOMEM on non-pagefault
-   paths, and the caller will be stuck looping the pagefault forever in the
-   pagefault path.
-
-4. In general, it's desirable to give userspace the option to gracefully
-   handle and recover from a failed remote charge rather than kill the
-   process or put it into a situation that's hard to recover from.
-
-With these considerations, the thing that makes most sense here is to
-handle this edge case similarly to how we handle ENOSPC error, and to return
-ENOSPC from mem_cgroup_charge_mapping() when the remote charge
-fails. This has the desirable properties:
-
-1. On pagefault allocations, the userspace will get a SIGBUS if the remote
-   charge fails, and the userspace is able to catch this signal and handle it
-   to recover gracefully as desired.
-
-2. On non-pagefault paths, the userspace will get an ENOSPC error which
-   it can also handle gracefully, if desired.
-
-3. We would not leave the remote charging process in a looping
-   pagetfault (a state somewhat hard to recover from) or kill it.
-
-Implementation notes:
-
-1. To get the ENOSPC behavior we alegedly want, in
-   mem_cgroup_charge_mapping() we detect whether charge_memcg() has
-   failed, and we return ENOSPC here.
-
-2. If the oom-killer is invoked and finds nothing to kill, it prints out
-   the "Out of memory and no killable processes..." message, which can
-   be spammy if the system is executing many remote charges and
-   generally will cause worry as it will likely be seen as a scary
-   looking kernel warning, even though this is somewhat of an expected edge
-   case to run into and we handle it adequately. Therefore, in out_of_memory()
-   we return early to not print this warning. This is not necessary for the
-   functionality of the remote charges.
-
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-
-
----
-
-Changes in v4:
-- Greatly expanded on the commit message to include all my current
-thinking.
-- Converted the patch to handle remote ooms similarly to ENOSPC, rather
-than ENOMEM.
-
-Changes in v3:
-- Fixed build failures/warnings Reported-by: kernel test robot <lkp@intel.com>
-
-Changes in v2:
-- Moved the remote oom handling as Roman requested.
-- Used mem_cgroup_from_task(current) instead of grabbing the memcg from
-current->mm
-
----
- include/linux/memcontrol.h |  6 ++++++
- mm/memcontrol.c            | 31 ++++++++++++++++++++++++++++++-
- mm/oom_kill.c              |  9 +++++++++
- 3 files changed, 45 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0a9b0bba5f3c8..451feebabf160 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -932,6 +932,7 @@ int mem_cgroup_charge_mapping(struct folio *folio, struct mm_struct *mm,
-
- struct mem_cgroup *mem_cgroup_get_from_path(const char *path);
- void mem_cgroup_put_name_in_seq(struct seq_file *seq, struct super_block *sb);
-+bool is_remote_oom(struct mem_cgroup *memcg_under_oom);
-
- void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
- 		int zid, int nr_pages);
-@@ -1255,6 +1256,11 @@ static inline void mem_cgroup_put_name_in_seq(struct seq_file *seq,
- {
- }
-
-+static inline bool is_remote_oom(struct mem_cgroup *memcg_under_oom)
-+{
-+	return false;
-+}
-+
- static inline int mem_cgroup_swapin_charge_page(struct page *page,
- 			struct mm_struct *mm, gfp_t gfp, swp_entry_t entry)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c4ba7f364c214..3e5bc2c32c9b7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2668,6 +2668,35 @@ void mem_cgroup_put_name_in_seq(struct seq_file *m, struct super_block *sb)
- 	__putname(buf);
- }
-
-+/*
-+ * Returns true if current's mm is a descendant of the memcg_under_oom (or
-+ * equal to it). False otherwise. This is used by the oom-killer to detect
-+ * ooms due to remote charging.
-+ */
-+bool is_remote_oom(struct mem_cgroup *memcg_under_oom)
-+{
-+	struct mem_cgroup *current_memcg;
-+	bool is_remote_oom;
-+
-+	if (!memcg_under_oom)
-+		return false;
-+
-+	rcu_read_lock();
-+	current_memcg = mem_cgroup_from_task(current);
-+	if (current_memcg && !css_tryget_online(&current_memcg->css))
-+		current_memcg = NULL;
-+	rcu_read_unlock();
-+
-+	if (!current_memcg)
-+		return false;
-+
-+	is_remote_oom =
-+		!mem_cgroup_is_descendant(current_memcg, memcg_under_oom);
-+	css_put(&current_memcg->css);
-+
-+	return is_remote_oom;
-+}
-+
- /*
-  * Set or clear (if @memcg is NULL) charge association from file system to
-  * memcg.  If @memcg != NULL, then a css reference must be held by the caller to
-@@ -6814,7 +6843,7 @@ int mem_cgroup_charge_mapping(struct folio *folio, struct mm_struct *mm,
- 	if (mapping_memcg) {
- 		ret = charge_memcg(folio, mapping_memcg, gfp);
- 		css_put(&mapping_memcg->css);
--		return ret;
-+		return ret == -ENOMEM ? -ENOSPC : ret;
- 	}
-
- 	return mem_cgroup_charge(folio, mm, gfp);
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 0a7e16b16b8c3..8db500b337415 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -1108,6 +1108,15 @@ bool out_of_memory(struct oom_control *oc)
- 	select_bad_process(oc);
- 	/* Found nothing?!?! */
- 	if (!oc->chosen) {
-+		if (is_remote_oom(oc->memcg)) {
-+			/*
-+			 * For remote ooms with no killable processes, return
-+			 * false here without logging the warning below as we
-+			 * expect the caller to handle this as they please.
-+			 */
-+			return false;
-+		}
-+
- 		dump_header(oc, NULL);
- 		pr_warn("Out of memory and no killable processes...\n");
- 		/*
---
-2.34.0.rc2.393.gf8c9666880-goog
