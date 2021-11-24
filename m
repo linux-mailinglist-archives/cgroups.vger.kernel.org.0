@@ -2,38 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F0E45C950
-	for <lists+cgroups@lfdr.de>; Wed, 24 Nov 2021 16:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE68845CA18
+	for <lists+cgroups@lfdr.de>; Wed, 24 Nov 2021 17:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241811AbhKXQBR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Nov 2021 11:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhKXQBQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Nov 2021 11:01:16 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416E0C061574;
-        Wed, 24 Nov 2021 07:58:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MhRaQX30y19nymtN7XiLLZlWbPS4SbobGvSOfL7Qrks=; b=VWcQqruxbm2TEfSiEDvRf8EWp9
-        i4YG+LkmraO3TfeifQvSRMDp6DVtjo6NuwHNNm7w9mmMhrdT3SoBe/tWe9brqTvQCZ7jZUs6T0ucc
-        vX+aljEB/gNCEfxEjmrvv1+l395R0ThnB3iMrTAWrRMm3oTJnw94MzsSCTYF9QVeUI0p6A/2fLGBO
-        61/8h4OIX0YlAYL8ybhL7MGaTNJuJM7ANRwGzp6TSshTFLDK40NOPz8IxvN54L3X/2lH89qqxL/rZ
-        30wTPCtMr9Af5wOwli4O35Aca/Kgj0bE4wh2bXS9hHoU4/Dprs+kxcoVXS5U3v6/S6uE50Fiff0EE
-        TAzAkjEA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpuek-002Pnu-QR; Wed, 24 Nov 2021 15:57:58 +0000
-Date:   Wed, 24 Nov 2021 15:57:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
+        id S1348974AbhKXQfK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Nov 2021 11:35:10 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54254 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348973AbhKXQfI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Nov 2021 11:35:08 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3367B21954;
+        Wed, 24 Nov 2021 16:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637771518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Zlxw+Rp7HNPM08yf9RQ2otAy6kMKKm82h1DuizBhVs=;
+        b=kvlaZyAZtdO4xGJaVhlIbgldeZDe8dWDxYpweto04dNhK1HokcngfkMFYHnNhQ1FIoqcKY
+        czfjxXpIhR8yBj9ho9sTua3vCySoFNJoVI4oj93jjj75cASczmfdA3axwSPaU9Hnz5d/Ed
+        nRrVTk/DxaqY6WuhTRi4RMh5BmMNbTY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 007D4A3B8A;
+        Wed, 24 Nov 2021 16:31:57 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 17:31:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
 To:     Hao Lee <haolee.swjtu@gmail.com>
-Cc:     linux-mm@kvack.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, shakeelb@google.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        shakeelb@google.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
-Message-ID: <YZ5hBtWPBpHDWzE4@casper.infradead.org>
+Message-ID: <YZ5o/VmU59evp65J@dhcp22.suse.cz>
 References: <20211124151915.GA6163@haolee.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,14 +44,19 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 03:19:15PM +0000, Hao Lee wrote:
+On Wed 24-11-21 15:19:15, Hao Lee wrote:
 > When several tasks are terminated simultaneously, lots of pages will be
 > released, which can cause severe spinlock contention. Other tasks which
 > are running on the same core will be seriously affected. We can yield
 > cpu to fix this problem.
 
-The realtime people will eat you alive for this suggestion.
+How does this actually address the problem? You are effectivelly losing
+fairness completely. We do batch currently so no single task should be
+able to monopolize the cpu for too long. Why this is not sufficient?
 
+> diff --git a/mm/swap.c b/mm/swap.c
+> index e8c9dc6d0377..91850d51a5a5 100644
+> --- a/mm/swap.c
 > +++ b/mm/swap.c
 > @@ -960,8 +960,14 @@ void release_pages(struct page **pages, int nr)
 >  		if (PageLRU(page)) {
@@ -66,3 +72,11 @@ The realtime people will eat you alive for this suggestion.
 > +			}
 > +
 >  			if (prev_lruvec != lruvec)
+>  				lock_batch = 0;
+>  
+> -- 
+> 2.31.1
+
+-- 
+Michal Hocko
+SUSE Labs
