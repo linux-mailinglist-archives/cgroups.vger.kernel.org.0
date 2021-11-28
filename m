@@ -2,73 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11DD461051
-	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 09:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161A1461306
+	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 12:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245490AbhK2Ioi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Nov 2021 03:44:38 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:39288 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350040AbhK2Imh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 03:42:37 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B6ECA212CB;
-        Mon, 29 Nov 2021 08:39:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638175157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y1/HRvQWe5bupilVHXWVZDusBm8nr9LZt0uqBedKdKA=;
-        b=J4qijL9j7NKJC0s4vnqOlrDs2BSFPsMfOKHgq75fzXUbUMmG6kDFsHC446/t8l9HnhxQGi
-        1X48f8fJWJ9sQfbIUtxwtWBvay0Vz0aMdUE83pfyyc4cYhcZsz7fW82PhBT10czrrivQxi
-        qE3pMx7MyDOyufnfhAhM+rP1LoUdXcM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8242FA3B83;
-        Mon, 29 Nov 2021 08:39:17 +0000 (UTC)
-Date:   Mon, 29 Nov 2021 09:39:16 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hao Lee <haolee.swjtu@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
-Message-ID: <YaSRtKwTCOj7JnR6@dhcp22.suse.cz>
-References: <YZ5o/VmU59evp65J@dhcp22.suse.cz>
- <CA+PpKPmy-u_BxYMCQOFyz78t2+3uM6nR9mQeX+MPyH6H2tOOHA@mail.gmail.com>
- <YZ8DZHERun6Fej2P@casper.infradead.org>
- <20211125080238.GA7356@haolee.io>
- <YZ9e3pzHKmn5nev0@dhcp22.suse.cz>
- <20211125123133.GA7758@haolee.io>
- <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
- <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
- <YaC7BcTSijFj+bxR@dhcp22.suse.cz>
- <20211126162623.GA10277@haolee.io>
+        id S233028AbhK2LGZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Nov 2021 06:06:25 -0500
+Received: from mail.vallenar.cl ([200.54.241.89]:56856 "EHLO mail.vallenar.cl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233743AbhK2LEZ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 29 Nov 2021 06:04:25 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.vallenar.cl (Postfix) with ESMTP id AC3C81CAB653;
+        Sun, 28 Nov 2021 12:41:41 -0300 (-03)
+Received: from mail.vallenar.cl ([127.0.0.1])
+        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Ennb2vTXelC0; Sun, 28 Nov 2021 12:41:41 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.vallenar.cl (Postfix) with ESMTP id 279441CEAA8E;
+        Sun, 28 Nov 2021 12:35:13 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.vallenar.cl 279441CEAA8E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vallenar.cl;
+        s=EC098874-C7DE-11E7-B3B1-1A9A6030413E; t=1638113713;
+        bh=IQxUcKgLaEia+DMrVj9OEHbWOH8TffrzQMeZgAxYubI=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=rkvJkvNdynyVuvj5alRJMMqz6ei0OuU0SN0lywCkBi4LGhhLF1KHAJaaxy4AYTEpL
+         H31hVEtLjEuhCPSJS9qfOy5iuLMUEjHhSNou/0uY5i9q6+/A9W4qWzvAWEvTH7GZQR
+         c6Qc/UOwJVM2zSRe0KsEb0vveT4oWRiza1cSYnUBP+36l0TAkn4XCb1Vety0UEhK7q
+         nQa+DwB7Yo/fDd0g7Z3g0RCgg9z88tJixEvEDhzU9wq+VgdpkCPyl1f/K/Rx6kiQZw
+         j4ReF1V0mGryTTwYizZB6gDX4R5SNUW170KyzkAE7ftmpL+gfrlDKSbtUNopAb40mP
+         T0hgaUctDDL+A==
+X-Virus-Scanned: amavisd-new at vallenar.cl
+Received: from mail.vallenar.cl ([127.0.0.1])
+        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Ce_3hFC-Hj6k; Sun, 28 Nov 2021 12:35:12 -0300 (-03)
+Received: from [192.168.8.101] (unknown [105.0.3.102])
+        by mail.vallenar.cl (Postfix) with ESMTPSA id A90501D0869D;
+        Sun, 28 Nov 2021 11:13:46 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126162623.GA10277@haolee.io>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: 2.000.000,00. Euro
+To:     Recipients <yperez@vallenar.cl>
+From:   "manuel franco" <yperez@vallenar.cl>
+Date:   Sun, 28 Nov 2021 16:21:15 +0200
+Reply-To: manuelfrancospende00@gmail.com
+Message-Id: <20211128141346.A90501D0869D@mail.vallenar.cl>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 26-11-21 16:26:23, Hao Lee wrote:
-[...]
-> I will try Matthew's idea to use semaphore or mutex to limit the number of BE
-> jobs that are in the exiting path. This sounds like a feasible approach for
-> our scenario...
+Sie haben eine Spende von 2.000.000,00. Euro
 
-I am not really sure this is something that would be acceptable. Your
-problem is resource partitioning. Papering that over by a lock is not
-the right way to go. Besides that you will likely hit a hard question on
-how many tasks to allow to run concurrently. Whatever the value some
-workload will very likely going to suffer. We cannot assume admin to
-chose the right value because there is no clear answer for that. Not to
-mention other potential problems - e.g. even more priority inversions
-etc.
--- 
-Michal Hocko
-SUSE Labs
+Mein Name ist Manuel Franco aus den Vereinigten Staaten.
+Ich habe die Amerika-Lotterie im Wert von 768 Millionen US-Dollar gewonnen =
+und spende einen Teil davon an nur 5 gl=FCckliche Menschen und ein paar Wai=
+senh=E4user als Wohlwollen f=FCr die Menschheit.
