@@ -2,91 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D444616EF
-	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 14:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEA44616CD
+	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 14:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbhK2NsJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Nov 2021 08:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233975AbhK2NqJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 08:46:09 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B34CC0613FE
-        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 04:28:30 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso25267940otj.1
-        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 04:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=OkRQpTAhydlBMsIV6NONXbb3EeoHq3ReEemBfutM6Uswbb4prT+l7AIWaLFNwmleex
-         kw2m/o1QPv1igy7E2A97kOnSA+yj8M/DmecC+jEI3t8w8C9GuZKP9h79GxVOP+9/d6kl
-         WFLKzhORxeZbPDWu2sqn1Aa+wqFspGrO0ehhKF9Ab+w7oNakXg6FUJ60RtMWmlflzRLZ
-         chjNP9NppGExtxx58dyI/IPIeLl9I3j8tcF9ewQSCPgUng3Psh7v1n909v++G7XVAwzn
-         mi5Edv1T2jYHgY9qCk/HafrJqZ8dReO3P8mDbuKrkHeb0l4icLagRMdI59aePTntJSFC
-         Y51w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=Ibm1OkyfQIvlUUyyjoLEVnUR4XxRU4Uq+j7Fqoc/rOszD8196x1T+z1Zb2dhtdNHfW
-         RJm0k0whd2ivrjzpz4nLPM5zvcoNeV8FPf3Fqn9hD9dTxtTRo1xM7f8qlI8vX48rJGbL
-         QCHIZuFiGGAG6uMs9wzeAIfP9NsxgJUiESPYNNECT4BlnGKjEWOC4ynvUBl5TRB6zzUz
-         J/3ol6aUhySPpltoeCV+FNOcuYRkoEYXA648sD/uI6eExiyk62Vei2kXOdUfp2s0AOxu
-         GKLkIWOb7Y9FTmv1xXqS6tvAdqQnEaHj5xwYgKqQG9WOdvyoygXg/0P8VgNPXTaTlaXT
-         j7yg==
-X-Gm-Message-State: AOAM533e2ucZHNLKMjwLpk6iFFx1+Pyb6D7j3heFBgtXYzZGI9MXIond
-        sAhsfSCx6NpPS+cC5iSMxzsxIOhhzzjDSY45jzo=
-X-Google-Smtp-Source: ABdhPJydOHn6bchp7+0ri50S5Z7vaS/i6KZk4xRLDsNYkpbTg2MdoP9M3dJGnpw2yfcfbQO3rfgHV/ZiUSBBJIHvAWg=
-X-Received: by 2002:a9d:4d8b:: with SMTP id u11mr44031336otk.144.1638188909795;
- Mon, 29 Nov 2021 04:28:29 -0800 (PST)
+        id S231996AbhK2NpC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Nov 2021 08:45:02 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:41304 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhK2NnC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 08:43:02 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 004E11FD39;
+        Mon, 29 Nov 2021 13:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1638193184; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MCR2AjsamUOBWBaNMd3hj2AgMrYiQAsklcYI7+6tUNc=;
+        b=BF5tF/zTTzcePDATMm5ORv0aj2GjCP5cOtzN4OFHtX5kugS+UYnnvq8iIVlAj5+YX67rPU
+        N1SgE1s+MKgLvYeBKJBG8FmbAW4++jm4NgeKnbZN6iYGUrq+j+PdCSs94+YaVrVmeD8r6p
+        9pOiWBR86RlkVMXhKlBclXTwMIayApg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C3F67A3B84;
+        Mon, 29 Nov 2021 13:39:43 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 14:39:43 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hao Lee <haolee.swjtu@gmail.com>, Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
+        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
+Message-ID: <YaTYH67jSNWqYySF@dhcp22.suse.cz>
+References: <YZ8DZHERun6Fej2P@casper.infradead.org>
+ <20211125080238.GA7356@haolee.io>
+ <YZ9e3pzHKmn5nev0@dhcp22.suse.cz>
+ <20211125123133.GA7758@haolee.io>
+ <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
+ <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
+ <YaC7BcTSijFj+bxR@dhcp22.suse.cz>
+ <20211126162623.GA10277@haolee.io>
+ <YaSRtKwTCOj7JnR6@dhcp22.suse.cz>
+ <YaTUR9WcGoOG4oLo@casper.infradead.org>
 MIME-Version: 1.0
-Received: by 2002:ac9:67ce:0:0:0:0:0 with HTTP; Mon, 29 Nov 2021 04:28:29
- -0800 (PST)
-Reply-To: uchennailobitenone@gmail.com
-From:   uhenna <andersonrobertpass@gmail.com>
-Date:   Mon, 29 Nov 2021 04:28:29 -0800
-Message-ID: <CAP5+ZnQjDEoV7LNbN-LMub57EceFCRByrOnv1WpAx9rVo6JF6g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaTUR9WcGoOG4oLo@casper.infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-May the Almighty Lord be with you....
-Am A WIDOW TO LATE MR David Lunner,  I AM 59 .YEARS OLD. My name is
-Josephine HOLLAND.  I am married to Late Mr. David HOLLAND, who worked
-in the France Embassy a here in Lome -Togo West Africa for nine years
-before he died in the
-year 2019.
+On Mon 29-11-21 13:23:19, Matthew Wilcox wrote:
+> On Mon, Nov 29, 2021 at 09:39:16AM +0100, Michal Hocko wrote:
+> > On Fri 26-11-21 16:26:23, Hao Lee wrote:
+> > [...]
+> > > I will try Matthew's idea to use semaphore or mutex to limit the number of BE
+> > > jobs that are in the exiting path. This sounds like a feasible approach for
+> > > our scenario...
+> > 
+> > I am not really sure this is something that would be acceptable. Your
+> > problem is resource partitioning. Papering that over by a lock is not
+> > the right way to go. Besides that you will likely hit a hard question on
+> > how many tasks to allow to run concurrently. Whatever the value some
+> > workload will very likely going to suffer. We cannot assume admin to
+> > chose the right value because there is no clear answer for that. Not to
+> > mention other potential problems - e.g. even more priority inversions
+> > etc.
+> 
+> I don't see how we get priority inversions.  These tasks are exiting; at
+> the point they take the semaphore, they should not be holding any locks.
+> They're holding a resource (memory) that needs to be released, but a
+> task wanting to acquire memory must already be prepared to sleep.
 
-You are chosen to Receive A Donation Cash Grant of my late husband
-that funds $5.7,000,  000,00 (Five Million Seven Hundred Thousand
-United States Dollars) to help the poor and orphanages through your
-sincere help before my death. I am suffering from long time cancer of
-the Breast, from all indication my conditions is really deteriorating
-and it is quite obvious that I wouldn't live any more longer according
-to my doctor because the cancer has gotten to a very bad stage that no
-hope for me to be a living person again, All i need from you is your
-sincerity to use this funds to do this project as i desired and I need
-your information as where My Bank will be sending the funds,
+At least these scenarios come to mind
+- a task being blocked by other lower priority tasks slowly tearing down
+  their address space - essentially a different incarnation of the same
+  problem this is trying to handle
+- a huge memory backed task waiting many for smaller ones to finish
+- waste of resources on properly partitioned systems. Why should
+  somebody block tasks when they are acting on different lruvecs and
+  cpus?
 
-such as:
-Receiver's name:_ Address:_ Phone
-number:_ Country:_
-
-Please do not be offended by the way or manner I came to you as a
-stranger to do this, it is about the only way I could get to you after
-going through your contacts Id. I shall give you the contacts of the
-bank. For legitimacy with  a letter of authority that will establish
-you as my appointed beneficiary of this money.
-
-I am waiting for your reply.
-From Sister Josephine HOLLAND.
-
-You should contact me through my private email address:
-
-mrsjosephineoneholland@gmail.com
+-- 
+Michal Hocko
+SUSE Labs
