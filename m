@@ -2,52 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074914615C0
-	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 14:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D444616EF
+	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 14:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344228AbhK2NH3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Nov 2021 08:07:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        id S233298AbhK2NsJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Nov 2021 08:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346202AbhK2NF2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 08:05:28 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD8AC08EB4B;
-        Mon, 29 Nov 2021 03:47:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sS1UF3+KLoSiOG3o2982PPolKEnQICmz9dBEx8rZQgw=; b=3ozHs8KOkUIsJOlFd0kIUXHuQE
-        8W7ozvGgn/gfccir/W0Zdzs1P+oLIVQmqy9uvTxeViJ0XUHe4og1HjqPJH5PAP0TvoPcAZGeQuUZm
-        NgsUmcU4MvqxyRSRCq1g5+3cW23OYcK1wTmLTNP/C1db3o0/2X0bQKnC1wpR6LIx1DMoQRISHv8ry
-        sFpVFPeTskMa2fNZ70RJ022TbWhKFn5e4aWGVq61F5oB19iSA2jzatZMFLhCCsafrq9lAVNAtkPTC
-        tJVcPI085lNsnv+aZHS8m/VOVjKqYXIkYqJ5scgGik1GzjEJ03K6I18UpmAI9lZsFRPzbvXxcrt99
-        ImFKw4IQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mrf7n-000ZHY-Gy; Mon, 29 Nov 2021 11:47:11 +0000
-Date:   Mon, 29 Nov 2021 03:47:11 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     hch@infradead.org, tj@kernel.org, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 3/4] blk-throtl: introduce blk_throtl_cancel_bios()
-Message-ID: <YaS9v+x2ofp+9jQn@infradead.org>
-References: <20211127101059.477405-1-yukuai3@huawei.com>
- <20211127101059.477405-4-yukuai3@huawei.com>
+        with ESMTP id S233975AbhK2NqJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 08:46:09 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B34CC0613FE
+        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 04:28:30 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso25267940otj.1
+        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 04:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
+        b=OkRQpTAhydlBMsIV6NONXbb3EeoHq3ReEemBfutM6Uswbb4prT+l7AIWaLFNwmleex
+         kw2m/o1QPv1igy7E2A97kOnSA+yj8M/DmecC+jEI3t8w8C9GuZKP9h79GxVOP+9/d6kl
+         WFLKzhORxeZbPDWu2sqn1Aa+wqFspGrO0ehhKF9Ab+w7oNakXg6FUJ60RtMWmlflzRLZ
+         chjNP9NppGExtxx58dyI/IPIeLl9I3j8tcF9ewQSCPgUng3Psh7v1n909v++G7XVAwzn
+         mi5Edv1T2jYHgY9qCk/HafrJqZ8dReO3P8mDbuKrkHeb0l4icLagRMdI59aePTntJSFC
+         Y51w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
+        b=Ibm1OkyfQIvlUUyyjoLEVnUR4XxRU4Uq+j7Fqoc/rOszD8196x1T+z1Zb2dhtdNHfW
+         RJm0k0whd2ivrjzpz4nLPM5zvcoNeV8FPf3Fqn9hD9dTxtTRo1xM7f8qlI8vX48rJGbL
+         QCHIZuFiGGAG6uMs9wzeAIfP9NsxgJUiESPYNNECT4BlnGKjEWOC4ynvUBl5TRB6zzUz
+         J/3ol6aUhySPpltoeCV+FNOcuYRkoEYXA648sD/uI6eExiyk62Vei2kXOdUfp2s0AOxu
+         GKLkIWOb7Y9FTmv1xXqS6tvAdqQnEaHj5xwYgKqQG9WOdvyoygXg/0P8VgNPXTaTlaXT
+         j7yg==
+X-Gm-Message-State: AOAM533e2ucZHNLKMjwLpk6iFFx1+Pyb6D7j3heFBgtXYzZGI9MXIond
+        sAhsfSCx6NpPS+cC5iSMxzsxIOhhzzjDSY45jzo=
+X-Google-Smtp-Source: ABdhPJydOHn6bchp7+0ri50S5Z7vaS/i6KZk4xRLDsNYkpbTg2MdoP9M3dJGnpw2yfcfbQO3rfgHV/ZiUSBBJIHvAWg=
+X-Received: by 2002:a9d:4d8b:: with SMTP id u11mr44031336otk.144.1638188909795;
+ Mon, 29 Nov 2021 04:28:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211127101059.477405-4-yukuai3@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Received: by 2002:ac9:67ce:0:0:0:0:0 with HTTP; Mon, 29 Nov 2021 04:28:29
+ -0800 (PST)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <andersonrobertpass@gmail.com>
+Date:   Mon, 29 Nov 2021 04:28:29 -0800
+Message-ID: <CAP5+ZnQjDEoV7LNbN-LMub57EceFCRByrOnv1WpAx9rVo6JF6g@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 06:10:58PM +0800, Yu Kuai wrote:
-> This function is used to cancel all throttled bios. Noted this
-> modification is mainly from revertion of commit b77412372b68
-> ("blk-throttle: remove blk_throtl_drain").
+May the Almighty Lord be with you....
+Am A WIDOW TO LATE MR David Lunner,  I AM 59 .YEARS OLD. My name is
+Josephine HOLLAND.  I am married to Late Mr. David HOLLAND, who worked
+in the France Embassy a here in Lome -Togo West Africa for nine years
+before he died in the
+year 2019.
 
-This should also go into the last patch.
+You are chosen to Receive A Donation Cash Grant of my late husband
+that funds $5.7,000,  000,00 (Five Million Seven Hundred Thousand
+United States Dollars) to help the poor and orphanages through your
+sincere help before my death. I am suffering from long time cancer of
+the Breast, from all indication my conditions is really deteriorating
+and it is quite obvious that I wouldn't live any more longer according
+to my doctor because the cancer has gotten to a very bad stage that no
+hope for me to be a living person again, All i need from you is your
+sincerity to use this funds to do this project as i desired and I need
+your information as where My Bank will be sending the funds,
+
+such as:
+Receiver's name:_ Address:_ Phone
+number:_ Country:_
+
+Please do not be offended by the way or manner I came to you as a
+stranger to do this, it is about the only way I could get to you after
+going through your contacts Id. I shall give you the contacts of the
+bank. For legitimacy with  a letter of authority that will establish
+you as my appointed beneficiary of this money.
+
+I am waiting for your reply.
+From Sister Josephine HOLLAND.
+
+You should contact me through my private email address:
+
+mrsjosephineoneholland@gmail.com
