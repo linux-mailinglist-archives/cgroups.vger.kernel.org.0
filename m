@@ -2,92 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B6645FF80
-	for <lists+cgroups@lfdr.de>; Sat, 27 Nov 2021 16:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11DD461051
+	for <lists+cgroups@lfdr.de>; Mon, 29 Nov 2021 09:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243723AbhK0PEx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 27 Nov 2021 10:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbhK0PCw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Nov 2021 10:02:52 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28992C06173E;
-        Sat, 27 Nov 2021 06:59:38 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id y13so51142216edd.13;
-        Sat, 27 Nov 2021 06:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DUa+iyqQFoJCh85Xx5S5yIjQywwrD3DfTPEYMfJnePI=;
-        b=IV8FhjwGkFzEgsoXII9eGrWzVHjEaXWRN69iJiFJjhAX/kTN5xHcBw2Iqw4sKvP7gO
-         rbTgoaOSEo/d2JeSeOLnmIWox4CRXLhvsYOeASh3JUaed10kfpGtRmCKHDKG6lQDuGGm
-         7om0B3fYCm/W3gkkWo4VY8yklz3w0/BuBNBE/bfF4vmI3qXhy7C4nToQJc34NLBPRC/l
-         W8mT+ify/i4Oe+enAYROQcr5kM5eWKU6lCh5Jjq+ojAlkx5abgm2b13nV0L2U3MfwHyQ
-         5Z7KQWlzP1kGiHbSUCFgocXai/PX+r5mZbTJ1tZiXRM8hN0ne/ApMxPuztPDdqa7AO7n
-         u3sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DUa+iyqQFoJCh85Xx5S5yIjQywwrD3DfTPEYMfJnePI=;
-        b=eCxfnqESa5JHXTfbVMtwld+ujQZFjwCj8Y2Nil5XTtrNpATq/PiUzhxlKPPJi+rgol
-         lZFYAVWNT3xqjFv2Kw8qS40PQt9esbGTHJzZceyBp/XeFw4MMNc1p7MQHp/nM+/nhU+5
-         858uZfJT9HD4D2Wzgpzh8Tls56hh/iBNxlrP7e7FDaJrJOdvTxN0vQM40yJuMKByqQkn
-         1C7/7jNSTlWMHDolkfid9SJONAGR81lFfOS2bD84W7JfM6rSyxBo9gVyhKKFB8rFxycp
-         UIW0cLH+37et/EwUWcfn7pSgguzTD3qVG/vSXwxr7/3CFoXueZVIazpYaV/s+PWSaX4J
-         2eKQ==
-X-Gm-Message-State: AOAM533/HUh/a1ZGdp7JVk9D/5NR1pfp/H6+4yfd3YhUe7m+auBgAzHb
-        YwW+xwE4VAtNMkGUMT0HLKQ=
-X-Google-Smtp-Source: ABdhPJyQO83LGR4Jszg8uEaH7ZR2GyUi/R6JtEhsXiiiWvGFj14g9bShIaNszzhbPTsQB01LmQKBhA==
-X-Received: by 2002:aa7:c78f:: with SMTP id n15mr57798879eds.344.1638025176706;
-        Sat, 27 Nov 2021 06:59:36 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id w24sm4568159ejk.0.2021.11.27.06.59.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 27 Nov 2021 06:59:36 -0800 (PST)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH 2/2] cgroup: get the wrong css for css_alloc() during cgroup_init_subsys()
-Date:   Sat, 27 Nov 2021 14:59:19 +0000
-Message-Id: <20211127145919.31159-2-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20211127145919.31159-1-richard.weiyang@gmail.com>
-References: <20211127145919.31159-1-richard.weiyang@gmail.com>
+        id S245490AbhK2Ioi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Nov 2021 03:44:38 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:39288 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350040AbhK2Imh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 03:42:37 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B6ECA212CB;
+        Mon, 29 Nov 2021 08:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1638175157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y1/HRvQWe5bupilVHXWVZDusBm8nr9LZt0uqBedKdKA=;
+        b=J4qijL9j7NKJC0s4vnqOlrDs2BSFPsMfOKHgq75fzXUbUMmG6kDFsHC446/t8l9HnhxQGi
+        1X48f8fJWJ9sQfbIUtxwtWBvay0Vz0aMdUE83pfyyc4cYhcZsz7fW82PhBT10czrrivQxi
+        qE3pMx7MyDOyufnfhAhM+rP1LoUdXcM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8242FA3B83;
+        Mon, 29 Nov 2021 08:39:17 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 09:39:16 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Hao Lee <haolee.swjtu@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
+        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
+Message-ID: <YaSRtKwTCOj7JnR6@dhcp22.suse.cz>
+References: <YZ5o/VmU59evp65J@dhcp22.suse.cz>
+ <CA+PpKPmy-u_BxYMCQOFyz78t2+3uM6nR9mQeX+MPyH6H2tOOHA@mail.gmail.com>
+ <YZ8DZHERun6Fej2P@casper.infradead.org>
+ <20211125080238.GA7356@haolee.io>
+ <YZ9e3pzHKmn5nev0@dhcp22.suse.cz>
+ <20211125123133.GA7758@haolee.io>
+ <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
+ <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
+ <YaC7BcTSijFj+bxR@dhcp22.suse.cz>
+ <20211126162623.GA10277@haolee.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126162623.GA10277@haolee.io>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-css_alloc() needs the parent css, while cgroup_css() gets current
-cgropu's css. So we are getting the wrong css during
-cgroup_init_subsys().
+On Fri 26-11-21 16:26:23, Hao Lee wrote:
+[...]
+> I will try Matthew's idea to use semaphore or mutex to limit the number of BE
+> jobs that are in the exiting path. This sounds like a feasible approach for
+> our scenario...
 
-Fortunately, cgrp_dfl_root.cgrp's css is not set yet, so the value we
-pass to css_alloc() doesn't harm to the system.
-
-Let's pass NULL directly during init, since we know there is no parent
-yet.
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
----
- kernel/cgroup/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index dffef5836ff7..452a723d4a36 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5709,7 +5709,7 @@ static void __init cgroup_init_subsys(struct cgroup_subsys *ss, bool early)
- 
- 	/* Create the root cgroup state for this subsystem */
- 	ss->root = &cgrp_dfl_root;
--	css = ss->css_alloc(cgroup_css(&cgrp_dfl_root.cgrp, ss));
-+	css = ss->css_alloc(NULL);
- 	/* We don't handle early failures gracefully */
- 	BUG_ON(IS_ERR(css));
- 	init_and_link_css(css, ss, &cgrp_dfl_root.cgrp);
+I am not really sure this is something that would be acceptable. Your
+problem is resource partitioning. Papering that over by a lock is not
+the right way to go. Besides that you will likely hit a hard question on
+how many tasks to allow to run concurrently. Whatever the value some
+workload will very likely going to suffer. We cannot assume admin to
+chose the right value because there is no clear answer for that. Not to
+mention other potential problems - e.g. even more priority inversions
+etc.
 -- 
-2.33.1
-
+Michal Hocko
+SUSE Labs
