@@ -2,176 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDCD462973
-	for <lists+cgroups@lfdr.de>; Tue, 30 Nov 2021 02:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06694462A95
+	for <lists+cgroups@lfdr.de>; Tue, 30 Nov 2021 03:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbhK3BIr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Nov 2021 20:08:47 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28127 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhK3BIp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 20:08:45 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J33q96rv2z1DJnw;
-        Tue, 30 Nov 2021 09:02:45 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 30 Nov 2021 09:05:24 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 30 Nov
- 2021 09:05:23 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <hch@infradead.org>, <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v2 2/2] block: cancel all throttled bios in del_gendisk()
-Date:   Tue, 30 Nov 2021 09:17:30 +0800
-Message-ID: <20211130011730.2584339-3-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211130011730.2584339-1-yukuai3@huawei.com>
-References: <20211130011730.2584339-1-yukuai3@huawei.com>
+        id S237670AbhK3CkD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Nov 2021 21:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237662AbhK3CkC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Nov 2021 21:40:02 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F478C061746
+        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 18:36:44 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id e136so47978718ybc.4
+        for <cgroups@vger.kernel.org>; Mon, 29 Nov 2021 18:36:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rgI/AaQZFO092ur38zyTNNcK9cTmIjNH5zoKttaDw+s=;
+        b=kYkEpq6LFfs3NoxTELSmxCDx47pYFaIovpRQGk2quPgVmdWUClF+vOD/rZsiomySAK
+         X/zimWA0oKUSpvxdallx8oTsNjVTID4LekkUuE/tLkqT+GQ1HYUie6ZhKNFbOtfVyLrg
+         Ol6Ov926pxHkMA3keHjhtZeyKd40GR/QHKJXOriNYWJvDwZi+y5GANYYSFLL7EwFqLls
+         SWOM6of0sDfztlYzipJoSoyG0n7huKNlRqpRkgc+Flg82cBAIaqmbxv4poSaIfXHcBVP
+         68vLxzZrlSTYmwhvu7R6HepJZm6xQ31Nn9db81qJeAbnEl09V7n0zPl1oE840Yz/jQlU
+         SWIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rgI/AaQZFO092ur38zyTNNcK9cTmIjNH5zoKttaDw+s=;
+        b=k0UJq4tksovEVWZ/VX+qDeGa5oXveYRFlDTH+K/422JNq5jRMpaJi0ZYeOadRs3NTN
+         P1RP+DUGAuNOFIPBq0UES7usfweNVpwyGoqbn50W9sx7hgQaPR9ff+K/8R4300OJ/sYQ
+         suGICvLlxZcYYCKZzF163SCYADkXT7Itpk/XVO9T09e/zF02nBakf4PaqkrkFTSHuwsN
+         gGwP5Wq13a9yFhu/N+kM5jXHSB4VS5cYqG0U5lkm16PqOHeXaMoCB3FFhDCKyauQzlqm
+         o6cJCfxQEwmNd7SeALxK7vwAY3AMBJcx+78Fq4h/rP1/YcfdW9z/wNroRUx6rH/0rA3i
+         QSqg==
+X-Gm-Message-State: AOAM533c75aSP61rAukbvdO2dCfPn0y5ueUAFzsx4IJsNqTdgtSHtrSF
+        k2YQERwpPpy7sE89cUW04Eg/5h3UYqJTRoY3Nl5HpdGVJzt+KliX
+X-Google-Smtp-Source: ABdhPJyFf6WTkt1uX5KpYxUT5GJwtE8x2E0e3vEVMXMsXaGqkI+umr2ym/BiLOmJvqyb8y9kR3sw1Ymo4ANuwF0vanc=
+X-Received: by 2002:a25:ba0e:: with SMTP id t14mr9675193ybg.49.1638239803470;
+ Mon, 29 Nov 2021 18:36:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+References: <20211129161140.306488-1-longman@redhat.com>
+In-Reply-To: <20211129161140.306488-1-longman@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 30 Nov 2021 10:36:07 +0800
+Message-ID: <CAMZfGtXvHB-PRe11VmmFqsLg9EQ3LUPqYA2zNi-1A81p-pzH5Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcg: Relocate mod_objcg_mlstate(), get_obj_stock()
+ and put_obj_stock()
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Throttled bios can't be issued after del_gendisk() is done, thus
-it's better to cancel them immediately rather than waiting for
-throttle is done.
+On Tue, Nov 30, 2021 at 12:14 AM Waiman Long <longman@redhat.com> wrote:
+>
+> All the calls to mod_objcg_mlstate(), get_obj_stock() and put_obj_stock()
+> are done by functions defined within the same "#ifdef CONFIG_MEMCG_KMEM"
+> compilation block. When CONFIG_MEMCG_KMEM isn't defined, the following
+> compilation warnings will be issued [1] and [2].
+>
+>   mm/memcontrol.c:785:20: warning: unused function 'mod_objcg_mlstate'
+>   mm/memcontrol.c:2113:33: warning: unused function 'get_obj_stock'
+>
+> Fix these warning by moving those functions to under the same
+> CONFIG_MEMCG_KMEM compilation block. There is no functional change.
+>
+> [1] https://lore.kernel.org/lkml/202111272014.WOYNLUV6-lkp@intel.com/
+> [2] https://lore.kernel.org/lkml/202111280551.LXsWYt1T-lkp@intel.com/
+>
+> Fixes: 559271146efc ("mm/memcg: optimize user context object stock access")
+> Fixes: 68ac5b3c8db2 ("mm/memcg: cache vmstat data in percpu memcg_stock_pcp")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-For example, if user thread is throttled with low bps while it's
-issuing large io, and the device is deleted. The user thread will
-wait for a long time for io to return.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Noted this patch is mainly from revertion of commit 32e3374304c7
-("blk-throttle: remove tg_drain_bios") and commit b77412372b68
-("blk-throttle: remove blk_throtl_drain").
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 59 ++++++++++++++++++++++++++++++++++++++++++++
- block/blk-throttle.h |  2 ++
- block/genhd.c        |  2 ++
- 3 files changed, 63 insertions(+)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index f7244190cb2f..64fd4d61cbfe 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2260,6 +2260,65 @@ void blk_throtl_bio_endio(struct bio *bio)
- }
- #endif
- 
-+/*
-+ * Dispatch all bios from all children tg's queued on @parent_sq.  On
-+ * return, @parent_sq is guaranteed to not have any active children tg's
-+ * and all bios from previously active tg's are on @parent_sq->bio_lists[].
-+ */
-+static void tg_drain_bios(struct throtl_service_queue *parent_sq)
-+{
-+	struct throtl_grp *tg;
-+
-+	while ((tg = throtl_rb_first(parent_sq))) {
-+		struct throtl_service_queue *sq = &tg->service_queue;
-+		struct bio *bio;
-+
-+		throtl_dequeue_tg(tg);
-+
-+		while ((bio = throtl_peek_queued(&sq->queued[READ])))
-+			tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+		while ((bio = throtl_peek_queued(&sq->queued[WRITE])))
-+			tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+	}
-+}
-+
-+/**
-+ * blk_throtl_cancel_bios - cancel throttled bios
-+ * @q: request_queue to cancel throttled bios for
-+ *
-+ * This function is called to error all currently throttled bios on @q.
-+ */
-+void blk_throtl_cancel_bios(struct request_queue *q)
-+{
-+	struct throtl_data *td = q->td;
-+	struct blkcg_gq *blkg;
-+	struct cgroup_subsys_state *pos_css;
-+	struct bio *bio;
-+	int rw;
-+
-+	rcu_read_lock();
-+
-+	/*
-+	 * Drain each tg while doing post-order walk on the blkg tree, so
-+	 * that all bios are propagated to td->service_queue.  It'd be
-+	 * better to walk service_queue tree directly but blkg walk is
-+	 * easier.
-+	 */
-+	blkg_for_each_descendant_post(blkg, pos_css, td->queue->root_blkg)
-+		tg_drain_bios(&blkg_to_tg(blkg)->service_queue);
-+
-+	/* finally, transfer bios from top-level tg's into the td */
-+	tg_drain_bios(&td->service_queue);
-+
-+	rcu_read_unlock();
-+
-+	/* all bios now should be in td->service_queue, cancel them */
-+	for (rw = READ; rw <= WRITE; rw++)
-+		while ((bio = throtl_pop_queued(&td->service_queue.queued[rw],
-+						NULL)))
-+			bio_io_error(bio);
-+}
-+
- int blk_throtl_init(struct request_queue *q)
- {
- 	struct throtl_data *td;
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index 175f03abd9e4..9d67d5139954 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -160,12 +160,14 @@ static inline void blk_throtl_exit(struct request_queue *q) { }
- static inline void blk_throtl_register_queue(struct request_queue *q) { }
- static inline void blk_throtl_charge_bio_split(struct bio *bio) { }
- static inline bool blk_throtl_bio(struct bio *bio) { return false; }
-+#define blk_throtl_cancel_bios(q)  do { } while (0)
- #else /* CONFIG_BLK_DEV_THROTTLING */
- int blk_throtl_init(struct request_queue *q);
- void blk_throtl_exit(struct request_queue *q);
- void blk_throtl_register_queue(struct request_queue *q);
- void blk_throtl_charge_bio_split(struct bio *bio);
- bool __blk_throtl_bio(struct bio *bio);
-+void blk_throtl_cancel_bios(struct request_queue *q);
- static inline bool blk_throtl_bio(struct bio *bio)
- {
- 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
-diff --git a/block/genhd.c b/block/genhd.c
-index 8e9cbf23c510..24fa3356d164 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -28,6 +28,7 @@
- 
- #include "blk.h"
- #include "blk-rq-qos.h"
-+#include "blk-throttle.h"
- 
- static struct kobject *block_depr;
- 
-@@ -619,6 +620,7 @@ void del_gendisk(struct gendisk *disk)
- 
- 	blk_mq_freeze_queue_wait(q);
- 
-+	blk_throtl_cancel_bios(q);
- 	rq_qos_exit(q);
- 	blk_sync_queue(q);
- 	blk_flush_integrity();
--- 
-2.31.1
-
+Thanks.
