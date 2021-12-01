@@ -2,155 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6D3465355
-	for <lists+cgroups@lfdr.de>; Wed,  1 Dec 2021 17:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF4D465360
+	for <lists+cgroups@lfdr.de>; Wed,  1 Dec 2021 17:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbhLAQwf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Dec 2021 11:52:35 -0500
-Received: from mga18.intel.com ([134.134.136.126]:56264 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239013AbhLAQwc (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 Dec 2021 11:52:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10185"; a="223374341"
-X-IronPort-AV: E=Sophos;i="5.87,279,1631602800"; 
-   d="scan'208";a="223374341"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 08:48:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,279,1631602800"; 
-   d="scan'208";a="500322530"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 01 Dec 2021 08:48:38 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1msSmc-000F9K-0V; Wed, 01 Dec 2021 16:48:38 +0000
-Date:   Thu, 2 Dec 2021 00:47:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>
-Cc:     kbuild-all@lists.01.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        fvogt@suse.de, Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, stable@vger.kernel.org,
-        Fabian Vogt <fvogt@suse.com>
-Subject: Re: [PATCH] bfq: Fix use-after-free with cgroups
-Message-ID: <202112020023.Klrg0J1F-lkp@intel.com>
-References: <20211201133439.3309-1-jack@suse.cz>
+        id S1351485AbhLAQyN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Dec 2021 11:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244015AbhLAQyM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Dec 2021 11:54:12 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCDFC061748;
+        Wed,  1 Dec 2021 08:50:50 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id s137so24254367pgs.5;
+        Wed, 01 Dec 2021 08:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MRSYNLjvSzUUD2xStcS4K0DD5X/I++O60gfhBgUbT1A=;
+        b=qD/FVYfVYxmqsU9ppUga0DOisU5misR0u9i2eWCAlmghTQhk2rqoOHFkDMQAVEB5lr
+         agBx4fpPF7aHLeF7MxHf/bDvg99DY+6dIugyiOBecjhKRs/ikXPhTZ8ZopDe8vDuHGty
+         GDlC+FF6m3p44aef2NDAw2vhjotCIXWmjIWqK4n3Kh66nBFEYQ4fuR+ddkFku29Yw1vH
+         0D10wjaXiq155B8cUVi9WVyOjZU9of5qErlotVhwBmvZ1AQ2sZCAxNhimazk28IUvBCd
+         MsqbWrBwmOtyJCjwEFRfcV8u92k53umoHak17/mkA4E0CzHB4RMtzvZ+psbSxsOKDW3o
+         ruJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MRSYNLjvSzUUD2xStcS4K0DD5X/I++O60gfhBgUbT1A=;
+        b=gU/D8N6sPsdA5JvgCcLCvtr9uxE+DedZ4EJgcOoaTUgsRHA+cZsl5PgYteNA2gZHsk
+         cVypR639OrZ5SjBfZ/fwQcAb+XyaUf6RZvohAz92WvaLZWc0RyIYUGYx3GZzuNFm9L56
+         ayWBhKCUNRMEP5d+z8yRXFlJRwnp/jiX7MdyjJE6r628LxsmrjBFW5INXV6O0haw/aZh
+         XcTNIJtmB/OovPOk6yP4JO9lMdTJXtcvxtGQxk2RofHXDfVoC4d6XaqblRQxRUTNcJGf
+         8NHcTg3Sm2xvGOqobF1bwffrnVPzgGmKqiKfh3fG5tj5jUHZILOgqqS1QSeyILVWp64p
+         aFAg==
+X-Gm-Message-State: AOAM533o/fONvfdD4rif2QKtKBGOWMqZecck2lv8XjU+OdQzF+zjVJIu
+        KntTqejq4iJqSuo8EH4qHHk=
+X-Google-Smtp-Source: ABdhPJwdwieEulaakBV/E1et9FlVwwagtjS2+kVwrJ4Hb3ODRqR/XbzNr9B38dUprfR6U4/cfjxZ6A==
+X-Received: by 2002:a65:408c:: with SMTP id t12mr5386528pgp.262.1638377449923;
+        Wed, 01 Dec 2021 08:50:49 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id m18sm355740pfk.68.2021.12.01.08.50.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Dec 2021 08:50:49 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 1 Dec 2021 06:50:48 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix a typo in comment
+Message-ID: <Yaen6KWQyhBAbsks@slm.duckdns.org>
+References: <20211201011736.10988-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211201133439.3309-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211201011736.10988-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jan,
+On Wed, Dec 01, 2021 at 01:17:36AM +0000, Wei Yang wrote:
+> In commit 8699b7762a62 ("cgroup: s/child_subsys_mask/subtree_ss_mask/"),
+> we rename child_subsys_mask to subtree_ss_mask. While it missed to
+> rename this in comment.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-I love your patch! Yet something to improve:
+Applied to cgroup/for-5.17.
 
-[auto build test ERROR on axboe-block/for-next]
-[also build test ERROR on v5.16-rc3 next-20211201]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Thanks.
 
-url:    https://github.com/0day-ci/linux/commits/Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20211202/202112020023.Klrg0J1F-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/2154a2da8d69308aca6bb431da2d4d9e3e687daa
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
-        git checkout 2154a2da8d69308aca6bb431da2d4d9e3e687daa
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash block/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   block/bfq-iosched.c: In function 'bfq_init_bfqq':
->> block/bfq-iosched.c:5472:44: error: 'struct bfq_group' has no member named 'children'
-    5472 |  hlist_add_head(&bfqq->children_node, &bfqg->children);
-         |                                            ^~
-
-
-vim +5472 block/bfq-iosched.c
-
-  5460	
-  5461	static void bfq_init_bfqq(struct bfq_data *bfqd, struct bfq_group *bfqg,
-  5462				  struct bfq_queue *bfqq, struct bfq_io_cq *bic,
-  5463				  pid_t pid, int is_sync)
-  5464	{
-  5465		u64 now_ns = ktime_get_ns();
-  5466	
-  5467		RB_CLEAR_NODE(&bfqq->entity.rb_node);
-  5468		INIT_LIST_HEAD(&bfqq->fifo);
-  5469		INIT_HLIST_NODE(&bfqq->burst_list_node);
-  5470		INIT_HLIST_NODE(&bfqq->woken_list_node);
-  5471		INIT_HLIST_HEAD(&bfqq->woken_list);
-> 5472		hlist_add_head(&bfqq->children_node, &bfqg->children);
-  5473	
-  5474		bfqq->ref = 0;
-  5475		bfqq->bfqd = bfqd;
-  5476	
-  5477		if (bic)
-  5478			bfq_set_next_ioprio_data(bfqq, bic);
-  5479	
-  5480		if (is_sync) {
-  5481			/*
-  5482			 * No need to mark as has_short_ttime if in
-  5483			 * idle_class, because no device idling is performed
-  5484			 * for queues in idle class
-  5485			 */
-  5486			if (!bfq_class_idle(bfqq))
-  5487				/* tentatively mark as has_short_ttime */
-  5488				bfq_mark_bfqq_has_short_ttime(bfqq);
-  5489			bfq_mark_bfqq_sync(bfqq);
-  5490			bfq_mark_bfqq_just_created(bfqq);
-  5491		} else
-  5492			bfq_clear_bfqq_sync(bfqq);
-  5493	
-  5494		/* set end request to minus infinity from now */
-  5495		bfqq->ttime.last_end_request = now_ns + 1;
-  5496	
-  5497		bfqq->creation_time = jiffies;
-  5498	
-  5499		bfqq->io_start_time = now_ns;
-  5500	
-  5501		bfq_mark_bfqq_IO_bound(bfqq);
-  5502	
-  5503		bfqq->pid = pid;
-  5504	
-  5505		/* Tentative initial value to trade off between thr and lat */
-  5506		bfqq->max_budget = (2 * bfq_max_budget(bfqd)) / 3;
-  5507		bfqq->budget_timeout = bfq_smallest_from_now();
-  5508	
-  5509		bfqq->wr_coeff = 1;
-  5510		bfqq->last_wr_start_finish = jiffies;
-  5511		bfqq->wr_start_at_switch_to_srt = bfq_smallest_from_now();
-  5512		bfqq->split_time = bfq_smallest_from_now();
-  5513	
-  5514		/*
-  5515		 * To not forget the possibly high bandwidth consumed by a
-  5516		 * process/queue in the recent past,
-  5517		 * bfq_bfqq_softrt_next_start() returns a value at least equal
-  5518		 * to the current value of bfqq->soft_rt_next_start (see
-  5519		 * comments on bfq_bfqq_softrt_next_start).  Set
-  5520		 * soft_rt_next_start to now, to mean that bfqq has consumed
-  5521		 * no bandwidth so far.
-  5522		 */
-  5523		bfqq->soft_rt_next_start = jiffies;
-  5524	
-  5525		/* first request is almost certainly seeky */
-  5526		bfqq->seek_history = 1;
-  5527	}
-  5528	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+tejun
