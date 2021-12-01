@@ -2,106 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127FB465670
-	for <lists+cgroups@lfdr.de>; Wed,  1 Dec 2021 20:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D32465853
+	for <lists+cgroups@lfdr.de>; Wed,  1 Dec 2021 22:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhLATaD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Dec 2021 14:30:03 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:44422 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352754AbhLAT3z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Dec 2021 14:29:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 14B4BCE20C9;
-        Wed,  1 Dec 2021 19:26:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D6C2C53FCC;
-        Wed,  1 Dec 2021 19:26:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638386790;
-        bh=3+tnIAcNVr2gta2d6KcvPHcSCBpbqcLGNEvi3YD2Bzc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=rKgVT8JDPWA16vqh7GQr4lsVDvAHNuZ1r02ArxnYe0m7okuxBOs8g+gY1lE/3rjpc
-         Cks4KxJanYC9vcIiiaXtM5mOwdKYznkH/JldRpwv6s0RxHnRQ0EuV6m7aO6NEzUoGy
-         +ylkEFul+MaPps8zm5eQ2q5bYkDL2SWkF3vve19MnJIU28iroQ8Mr37w6XJdP3Wj+S
-         3mOfQ09teahngAk7Rf8yhE7A8VDbHaeGHIPl632bUIhSpU8o+aVTSeuaoa5Z3PUCl9
-         g09Y7lrwP94TZKPmWR4pklorqJnx1IEPAP/MZFJ3++doGgD5Q1jAzZ9V0JHls07eFV
-         VmDJGdCm21L7A==
-Message-ID: <d25a9279-6687-df30-3ae1-93ad73bfe193@kernel.org>
-Date:   Wed, 1 Dec 2021 21:26:23 +0200
+        id S237416AbhLAV0Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Dec 2021 16:26:16 -0500
+Received: from mga07.intel.com ([134.134.136.100]:60547 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229660AbhLAV0P (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 1 Dec 2021 16:26:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10185"; a="299949803"
+X-IronPort-AV: E=Sophos;i="5.87,280,1631602800"; 
+   d="scan'208";a="299949803"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 13:22:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,280,1631602800"; 
+   d="scan'208";a="654944557"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Dec 2021 13:22:51 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1msX3y-000FP8-FG; Wed, 01 Dec 2021 21:22:50 +0000
+Date:   Thu, 2 Dec 2021 05:22:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        fvogt@suse.de, Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, stable@vger.kernel.org,
+        Fabian Vogt <fvogt@suse.com>
+Subject: Re: [PATCH] bfq: Fix use-after-free with cgroups
+Message-ID: <202112020559.l11FLFdN-lkp@intel.com>
+References: <20211201133439.3309-1-jack@suse.cz>
 MIME-Version: 1.0
-Subject: Re: [RFC] psi: Add additional PSI counters for each type of memory
- pressure
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     vincent.guittot@linaro.org, juri.lelli@redhat.com,
-        peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, tj@kernel.org,
-        axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <1636558597-248294-1-git-send-email-quic_c_gdjako@quicinc.com>
- <YYv26rKib03JnYZN@cmpxchg.org>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <YYv26rKib03JnYZN@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211201133439.3309-1-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10.11.21 18:44, Johannes Weiner wrote:
-> On Wed, Nov 10, 2021 at 07:36:37AM -0800, Georgi Djakov wrote:
->> From: Carlos Ramirez <carlrami@codeaurora.org>
->>
->> Calculates psi totals for memory pressure subevents:
->> compaction, thrashing, direct compaction, direct reclaim, and kswapd0.
->> Uses upper 16 bits of psi_flags to track memory subevents.
-> 
-> Oof, that's quite heavy both in terms of branches, but also in terms
-> of cache - which, depending on wakeup pattern and cpu topology can
-> really hurt those paths.
-> 
-> What's the usecase? Do you have automation that needs to act on one
-> type of stall but not the others, for example?
+Hi Jan,
 
-This is mostly for debugging and profiling purposes and does not have 
-any automation yet.
+I love your patch! Yet something to improve:
 
-> I find that looking at vmstat events on hosts with elevated pressure
-> tends to give a pretty good idea of the source. It should also be
-> possible to whip up a short bpftrace script to track down culprit
-> callstacks of psi_memstall_*.
+[auto build test ERROR on axboe-block/for-next]
+[also build test ERROR on v5.16-rc3 next-20211201]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I found very similar patchset that has been posted previously proposing
-almost the same types and some tracepoints in addition to that. I don't
-see anyone having an argument against this in the past, so I'm wondering
-if this could be an acceptable approach?
+url:    https://github.com/0day-ci/linux/commits/Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+config: hexagon-randconfig-r045-20211128 (https://download.01.org/0day-ci/archive/20211202/202112020559.l11FLFdN-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4b553297ef3ee4dc2119d5429adf3072e90fac38)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/2154a2da8d69308aca6bb431da2d4d9e3e687daa
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
+        git checkout 2154a2da8d69308aca6bb431da2d4d9e3e687daa
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
 
-https://lore.kernel.org/r/1585649077-10896-2-git-send-email-laoar.shao@gmail.com
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
->> @@ -1053,19 +1128,56 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
->> +		seq_printf(m, "%s avg10=%lu.%02lu avg60=%lu.%02lu avg300=%lu.%02lu total=%llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu\n",
->>   			   full ? "full" : "some",
->>   			   LOAD_INT(avg[0]), LOAD_FRAC(avg[0]),
->>   			   LOAD_INT(avg[1]), LOAD_FRAC(avg[1]),
->>   			   LOAD_INT(avg[2]), LOAD_FRAC(avg[2]),
->> -			   total);
->> +			   total, total_blk_cgroup_throttle, total_bio, total_compaction,
->> +			   total_thrashing, total_cgroup_reclaim_high,
->> +			   total_cgroup_reclaim_high_sleep, total_cgroup_try_charge,
->> +			   total_direct_compaction, total_direct_reclaim, total_read_swappage,
->> +			   total_kswapd);
-> 
-> The file format is a can of worms. I doubt we can change this at this
-> point without breaking parsers, so those numbers would have to live
-> somewhere else. But let's figure out the above questions before
-> worrying about this.
+All errors (new ones prefixed by >>):
 
-Agree.
+>> block/bfq-iosched.c:5472:46: error: no member named 'children' in 'struct bfq_group'
+           hlist_add_head(&bfqq->children_node, &bfqg->children);
+                                                 ~~~~  ^
+   1 error generated.
 
-Thanks,
-Georgi
+
+vim +5472 block/bfq-iosched.c
+
+  5460	
+  5461	static void bfq_init_bfqq(struct bfq_data *bfqd, struct bfq_group *bfqg,
+  5462				  struct bfq_queue *bfqq, struct bfq_io_cq *bic,
+  5463				  pid_t pid, int is_sync)
+  5464	{
+  5465		u64 now_ns = ktime_get_ns();
+  5466	
+  5467		RB_CLEAR_NODE(&bfqq->entity.rb_node);
+  5468		INIT_LIST_HEAD(&bfqq->fifo);
+  5469		INIT_HLIST_NODE(&bfqq->burst_list_node);
+  5470		INIT_HLIST_NODE(&bfqq->woken_list_node);
+  5471		INIT_HLIST_HEAD(&bfqq->woken_list);
+> 5472		hlist_add_head(&bfqq->children_node, &bfqg->children);
+  5473	
+  5474		bfqq->ref = 0;
+  5475		bfqq->bfqd = bfqd;
+  5476	
+  5477		if (bic)
+  5478			bfq_set_next_ioprio_data(bfqq, bic);
+  5479	
+  5480		if (is_sync) {
+  5481			/*
+  5482			 * No need to mark as has_short_ttime if in
+  5483			 * idle_class, because no device idling is performed
+  5484			 * for queues in idle class
+  5485			 */
+  5486			if (!bfq_class_idle(bfqq))
+  5487				/* tentatively mark as has_short_ttime */
+  5488				bfq_mark_bfqq_has_short_ttime(bfqq);
+  5489			bfq_mark_bfqq_sync(bfqq);
+  5490			bfq_mark_bfqq_just_created(bfqq);
+  5491		} else
+  5492			bfq_clear_bfqq_sync(bfqq);
+  5493	
+  5494		/* set end request to minus infinity from now */
+  5495		bfqq->ttime.last_end_request = now_ns + 1;
+  5496	
+  5497		bfqq->creation_time = jiffies;
+  5498	
+  5499		bfqq->io_start_time = now_ns;
+  5500	
+  5501		bfq_mark_bfqq_IO_bound(bfqq);
+  5502	
+  5503		bfqq->pid = pid;
+  5504	
+  5505		/* Tentative initial value to trade off between thr and lat */
+  5506		bfqq->max_budget = (2 * bfq_max_budget(bfqd)) / 3;
+  5507		bfqq->budget_timeout = bfq_smallest_from_now();
+  5508	
+  5509		bfqq->wr_coeff = 1;
+  5510		bfqq->last_wr_start_finish = jiffies;
+  5511		bfqq->wr_start_at_switch_to_srt = bfq_smallest_from_now();
+  5512		bfqq->split_time = bfq_smallest_from_now();
+  5513	
+  5514		/*
+  5515		 * To not forget the possibly high bandwidth consumed by a
+  5516		 * process/queue in the recent past,
+  5517		 * bfq_bfqq_softrt_next_start() returns a value at least equal
+  5518		 * to the current value of bfqq->soft_rt_next_start (see
+  5519		 * comments on bfq_bfqq_softrt_next_start).  Set
+  5520		 * soft_rt_next_start to now, to mean that bfqq has consumed
+  5521		 * no bandwidth so far.
+  5522		 */
+  5523		bfqq->soft_rt_next_start = jiffies;
+  5524	
+  5525		/* first request is almost certainly seeky */
+  5526		bfqq->seek_history = 1;
+  5527	}
+  5528	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
