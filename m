@@ -2,157 +2,247 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D32465853
-	for <lists+cgroups@lfdr.de>; Wed,  1 Dec 2021 22:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BC5465B9E
+	for <lists+cgroups@lfdr.de>; Thu,  2 Dec 2021 02:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237416AbhLAV0Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Dec 2021 16:26:16 -0500
-Received: from mga07.intel.com ([134.134.136.100]:60547 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229660AbhLAV0P (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 Dec 2021 16:26:15 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10185"; a="299949803"
-X-IronPort-AV: E=Sophos;i="5.87,280,1631602800"; 
-   d="scan'208";a="299949803"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Dec 2021 13:22:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,280,1631602800"; 
-   d="scan'208";a="654944557"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Dec 2021 13:22:51 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1msX3y-000FP8-FG; Wed, 01 Dec 2021 21:22:50 +0000
-Date:   Thu, 2 Dec 2021 05:22:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        fvogt@suse.de, Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, stable@vger.kernel.org,
-        Fabian Vogt <fvogt@suse.com>
-Subject: Re: [PATCH] bfq: Fix use-after-free with cgroups
-Message-ID: <202112020559.l11FLFdN-lkp@intel.com>
-References: <20211201133439.3309-1-jack@suse.cz>
+        id S232496AbhLBBb6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Dec 2021 20:31:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22203 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347786AbhLBBbn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Dec 2021 20:31:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638408496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=okw3PHlBNlwEdedRYzJyUod2jajc5BrgegLXPwlyZ60=;
+        b=ZOZQm7Kaa/yDNpyNpaOg0Vu1KBNkDnRfmFoGQiN2a58l4btI6txZs9X0b4995QPS9gnouc
+        LD/QY8LA+m7VjuEbaH+7kty4pLB2pBJndLobDCLAShE8xXNuuKBtpXDCLqWJ2omJTW6b3H
+        2YU0ouNMbif7Nsrs/WTS3KGBn+mHmL8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-359-Vp4KbFEUMjyAsPpzsj45CQ-1; Wed, 01 Dec 2021 20:28:14 -0500
+X-MC-Unique: Vp4KbFEUMjyAsPpzsj45CQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FB71343C9;
+        Thu,  2 Dec 2021 01:28:12 +0000 (UTC)
+Received: from [10.22.32.30] (unknown [10.22.32.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A7F95C25A;
+        Thu,  2 Dec 2021 01:28:10 +0000 (UTC)
+Message-ID: <8f56f7a3-1d4b-679b-7348-d8ecb4ef3d6c@redhat.com>
+Date:   Wed, 1 Dec 2021 20:28:09 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211201133439.3309-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+References: <20211018143619.205065-1-longman@redhat.com>
+ <20211018143619.205065-6-longman@redhat.com>
+ <20211115193122.GA16798@blackbody.suse.cz>
+ <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
+ <20211116175411.GA50019@blackbody.suse.cz>
+ <293d7abf-aff6-fcd8-c999-b1dbda1cffb8@redhat.com>
+ <YaZbXArNIMNvwJD/@slm.duckdns.org>
+ <2347fe66-dc68-6d58-e63b-7ed2b8077b48@redhat.com>
+ <Yaem+r/YZ9BNXv9R@slm.duckdns.org>
+ <4a021678-1896-2d16-4075-f626c7ab8513@redhat.com>
+In-Reply-To: <4a021678-1896-2d16-4075-f626c7ab8513@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jan,
+On 12/1/21 13:05, Waiman Long wrote:
+>
+> On 12/1/21 11:46, Tejun Heo wrote:
+>>
+>> So, when we were first adding the partition support, the thinking was 
+>> that
+>> as it's pretty niche anyway, we can take some aberrations and 
+>> restrictions,
+>> but I don't think it's a good direction to be building up on top of 
+>> those
+>> like this and would much prefer to clean up the rules and 
+>> restrictions. I
+>> know that this has been going on for quite a while and am sorry that am
+>> coming back to the same issue repeatedly which isn't necessarily 
+>> caused by
+>> the proposed change. What do you think?
+>
+> I think I can relax some of the restrictions, but probably not all of 
+> them at this time. We can certainly working on removing as much 
+> restriction and limitations as possible in future update to the 
+> partition code.
 
-I love your patch! Yet something to improve:
+I would say that partition is a cpuset feature that only a minority of 
+users may ever need to use. What I don't want to do is to make the 
+partition feature as general and accommodating as possible and then some 
+of them become dead code that people never use. It won't break binary 
+compatibility to relax or remove limitations in the future. However, 
+imposing new limitation or restriction in the future may not be 
+possible. So I would like to see new use cases evolve that require us to 
+remove the limitations. If that happens, I am happy to update the code 
+to accommodate the new use cases.
 
-[auto build test ERROR on axboe-block/for-next]
-[also build test ERROR on v5.16-rc3 next-20211201]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+For the current use cases of partition that I am aware of, the current 
+limitations as documented will not be a problem for those use cases.
 
-url:    https://github.com/0day-ci/linux/commits/Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
-config: hexagon-randconfig-r045-20211128 (https://download.01.org/0day-ci/archive/20211202/202112020559.l11FLFdN-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 4b553297ef3ee4dc2119d5429adf3072e90fac38)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/2154a2da8d69308aca6bb431da2d4d9e3e687daa
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jan-Kara/bfq-Fix-use-after-free-with-cgroups/20211201-213549
-        git checkout 2154a2da8d69308aca6bb431da2d4d9e3e687daa
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+The document below is my latest draft of the document. There are several 
+major changes from the earlier draft:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+1) The limitation that "cpuset.cpus" has to be a superset of child's 
+"cpuset.cpus" has been removed as a new patch to remove that limitation 
+will be added.
 
-All errors (new ones prefixed by >>):
+2) The initial transition from "member" to partition root now requires 
+that "cpuset.cpus" overlap with that of the parent's "cpuset.cpus" 
+instead of being a superset.
 
->> block/bfq-iosched.c:5472:46: error: no member named 'children' in 'struct bfq_group'
-           hlist_add_head(&bfqq->children_node, &bfqg->children);
-                                                 ~~~~  ^
-   1 error generated.
+3) Now read back of "cpuset.cpus.partition" may return "isolated invalid".
 
+For the transition back to "member", I haven't changed the current 
+wording of forcing child partition roots to become "member" yet. If you 
+think keeping them as invalid partition root is better, I can made that 
+change too.
 
-vim +5472 block/bfq-iosched.c
+Please let me know what other changes you would like to see.
 
-  5460	
-  5461	static void bfq_init_bfqq(struct bfq_data *bfqd, struct bfq_group *bfqg,
-  5462				  struct bfq_queue *bfqq, struct bfq_io_cq *bic,
-  5463				  pid_t pid, int is_sync)
-  5464	{
-  5465		u64 now_ns = ktime_get_ns();
-  5466	
-  5467		RB_CLEAR_NODE(&bfqq->entity.rb_node);
-  5468		INIT_LIST_HEAD(&bfqq->fifo);
-  5469		INIT_HLIST_NODE(&bfqq->burst_list_node);
-  5470		INIT_HLIST_NODE(&bfqq->woken_list_node);
-  5471		INIT_HLIST_HEAD(&bfqq->woken_list);
-> 5472		hlist_add_head(&bfqq->children_node, &bfqg->children);
-  5473	
-  5474		bfqq->ref = 0;
-  5475		bfqq->bfqd = bfqd;
-  5476	
-  5477		if (bic)
-  5478			bfq_set_next_ioprio_data(bfqq, bic);
-  5479	
-  5480		if (is_sync) {
-  5481			/*
-  5482			 * No need to mark as has_short_ttime if in
-  5483			 * idle_class, because no device idling is performed
-  5484			 * for queues in idle class
-  5485			 */
-  5486			if (!bfq_class_idle(bfqq))
-  5487				/* tentatively mark as has_short_ttime */
-  5488				bfq_mark_bfqq_has_short_ttime(bfqq);
-  5489			bfq_mark_bfqq_sync(bfqq);
-  5490			bfq_mark_bfqq_just_created(bfqq);
-  5491		} else
-  5492			bfq_clear_bfqq_sync(bfqq);
-  5493	
-  5494		/* set end request to minus infinity from now */
-  5495		bfqq->ttime.last_end_request = now_ns + 1;
-  5496	
-  5497		bfqq->creation_time = jiffies;
-  5498	
-  5499		bfqq->io_start_time = now_ns;
-  5500	
-  5501		bfq_mark_bfqq_IO_bound(bfqq);
-  5502	
-  5503		bfqq->pid = pid;
-  5504	
-  5505		/* Tentative initial value to trade off between thr and lat */
-  5506		bfqq->max_budget = (2 * bfq_max_budget(bfqd)) / 3;
-  5507		bfqq->budget_timeout = bfq_smallest_from_now();
-  5508	
-  5509		bfqq->wr_coeff = 1;
-  5510		bfqq->last_wr_start_finish = jiffies;
-  5511		bfqq->wr_start_at_switch_to_srt = bfq_smallest_from_now();
-  5512		bfqq->split_time = bfq_smallest_from_now();
-  5513	
-  5514		/*
-  5515		 * To not forget the possibly high bandwidth consumed by a
-  5516		 * process/queue in the recent past,
-  5517		 * bfq_bfqq_softrt_next_start() returns a value at least equal
-  5518		 * to the current value of bfqq->soft_rt_next_start (see
-  5519		 * comments on bfq_bfqq_softrt_next_start).  Set
-  5520		 * soft_rt_next_start to now, to mean that bfqq has consumed
-  5521		 * no bandwidth so far.
-  5522		 */
-  5523		bfqq->soft_rt_next_start = jiffies;
-  5524	
-  5525		/* first request is almost certainly seeky */
-  5526		bfqq->seek_history = 1;
-  5527	}
-  5528	
+Cheers,
+Longman
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+----------------------------------------------------------------------------------------
+
+   cpuset.cpus.partition
+     A read-write single value file which exists on non-root
+     cpuset-enabled cgroups.  This flag is owned by the parent cgroup
+     and is not delegatable.
+
+     It accepts only the following input values when written to.
+
+       ========    ================================
+       "member"    Non-root member of a partition
+       "root"    Partition root
+       "isolated"    Partition root without load balancing
+       ========    ================================
+
+     The root cgroup is always a partition root and its state
+     cannot be changed.  All other non-root cgroups start out as
+     "member".
+
+     When set to "root", the current cgroup is the root of a new
+     partition or scheduling domain that comprises itself and
+     all its descendants except those that are separate partition
+     roots themselves and their descendants.
+
+     The value shown in "cpuset.cpus.effective" of a partition root is
+     the CPUs that the parent partition root can dedicate to the new
+     partition root.  They are subtracted from "cpuset.cpus.effective"
+     of the parent and may be different from "cpuset.cpus"
+
+     When set to "isolated", the CPUs in that partition root will
+     be in an isolated state without any load balancing from the
+     scheduler.  Tasks placed in such a partition with multiple
+     CPUs should be carefully distributed and bound to each of the
+     individual CPUs for optimal performance.
+
+     A partition root ("root" or "isolated") can be in one of the
+     two possible states - valid or invalid.  An invalid partition
+     root is in a degraded state where some state information are
+     retained, but behaves more like a "member".
+
+     On read, the "cpuset.cpus.partition" file can show the following
+     values.
+
+       ======================    ==============================
+       "member"            Non-root member of a partition
+       "root"            Partition root
+       "isolated"            Partition root without load balancing
+       "root invalid (<reason>)"    Invalid partition root
+       "isolated invalid (<reason>)"    Invalid isolated partition root
+       ======================    ==============================
+
+     In the case of an invalid partition root, a descriptive string on
+     why the partition is invalid is included within parentheses.
+
+     Almost all possible state transitions among "member", valid
+     and invalid partition roots are allowed except from "member"
+     to invalid partition root.
+
+     Before the "member" to partition root transition can happen,
+     the following conditions must be met or the transition will
+     not be allowed.
+
+     1) The "cpuset.cpus" is non-empty and exclusive, i.e. they are
+        not shared by any of its siblings.
+     2) The parent cgroup is a valid partition root.
+     3) The "cpuset.cpus" must contain at least one of the CPUs from
+        parent's "cpuset.cpus", i.e. they overlap.
+     4) There is no child cgroups with cpuset enabled.  This avoids
+        cpu migrations of multiple cgroups simultaneously which can
+        be problematic.
+
+     Once becoming a partition root, the only rule restricting
+     changes made to "cpuset.cpus" is the exclusivity rule where
+     none of the siblings of a partition root can share CPUs with
+     it.
+
+     External events like hotplug or inappropriate changes to
+     "cpuset.cpus" can cause a valid partition root to become invalid.
+     Besides the exclusivity rule listed above, the other conditions
+     required to maintain the validity of a partition root are
+     as follows:
+
+     1) The parent cgroup is a valid partition root.
+     2) If "cpuset.cpus.effective" is empty, the partition must have
+        no task associated with it. Otherwise, the partition becomes
+        invalid and "cpuset.cpus.effective" will fall back to that
+        of the nearest non-empty ancestor.
+
+     A corollary of a valid partition root is that
+     "cpuset.cpus.effective" is always a subset of "cpuset.cpus".
+     Note that a task cannot be moved to a cgroup with empty
+     "cpuset.cpus.effective".
+
+     Changing a partition root (valid or invalid) to "member" is
+     always allowed.  If there are child partition roots underneath
+     it, however, they will be forced to be switched back to "member"
+     too and lose their partitions. So care must be taken to double
+     check for this condition before disabling a partition root.
+
+     A valid non-root parent partition may distribute out all its CPUs
+     to its child partitions when there is no task associated with it.
+
+     An invalid partition root can be reverted back to a valid one
+     if none of the validity constraints of a valid partition root
+     are violated.
+
+     Poll and inotify events are triggered whenever the state of
+     "cpuset.cpus.partition" changes.  That includes changes caused by
+     write to "cpuset.cpus.partition", cpu hotplug and other changes
+     that make the partition invalid.  This will allow user space
+     agents to monitor unexpected changes to "cpuset.cpus.partition"
+     without the need to do continuous polling.
+
