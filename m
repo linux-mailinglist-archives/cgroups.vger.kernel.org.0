@@ -2,42 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC92467D3C
-	for <lists+cgroups@lfdr.de>; Fri,  3 Dec 2021 19:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A55467E35
+	for <lists+cgroups@lfdr.de>; Fri,  3 Dec 2021 20:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382565AbhLCS22 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Dec 2021 13:28:28 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:48796 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241688AbhLCS21 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Dec 2021 13:28:27 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 259FA1FD3C;
-        Fri,  3 Dec 2021 18:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638555902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1353724AbhLCTbL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Dec 2021 14:31:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58760 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353710AbhLCTbK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Dec 2021 14:31:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638559665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eV3OmMVm/NWdly/P2YCXm8g5vG08JX/vYpooIV4zaHM=;
-        b=P7zR711xL2stvUGx6l6vVCieltuwJ7iV6UsAhFInFLaRmH8OJdSujjmdkyf4YrNrIT79E/
-        ZYuQCHGjcPMPXVGMFoAqnhbzDrq9e3ZueDbczIi9W0+stZnoOhH7yqYmjT3d7uzr/o4F3D
-        ArNTust0WbmyWA/ziUPunMb3o5HF4ds=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=pmMKiB3N4p3pnZNkTKPE5eWVpNIexw+a16FHU/X1k2I=;
+        b=ITvoRtlA15KBwPBaV1BoV2Y6n1Xgqm7P0heIWPjD9dhP1c5Vr34DsmGOh4f0K3TpfHiGp9
+        lZ1ZXO/aquB/Yga9xrgtEg62uKs9HyrN47eK3sA5U+gqNazV9NhmNjsFQp4LC42uoo34Oh
+        giiG0PXvTb6/4DsKvwVsKS3rm3mbf/0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-224-JaaTEwooP-GuQcILlIVSxQ-1; Fri, 03 Dec 2021 14:27:42 -0500
+X-MC-Unique: JaaTEwooP-GuQcILlIVSxQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEC8D13EC7;
-        Fri,  3 Dec 2021 18:25:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kezINP1gqmHYYQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 03 Dec 2021 18:25:01 +0000
-Date:   Fri, 3 Dec 2021 19:25:00 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C495A81CCC8;
+        Fri,  3 Dec 2021 19:27:39 +0000 (UTC)
+Received: from [10.22.32.36] (unknown [10.22.32.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A7CF760BD8;
+        Fri,  3 Dec 2021 19:27:20 +0000 (UTC)
+Message-ID: <583191c1-4153-cee8-1836-a4037b9ea304@redhat.com>
+Date:   Fri, 3 Dec 2021 14:27:20 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -50,9 +55,6 @@ Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Juri Lelli <juri.lelli@redhat.com>,
         Frederic Weisbecker <frederic@kernel.org>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v8 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <20211203182500.GD16798@blackbody.suse.cz>
 References: <20211018143619.205065-6-longman@redhat.com>
  <20211115193122.GA16798@blackbody.suse.cz>
  <8f68692b-bd8f-33fd-44ae-f6f83bf2dc00@redhat.com>
@@ -63,92 +65,67 @@ References: <20211018143619.205065-6-longman@redhat.com>
  <Yaem+r/YZ9BNXv9R@slm.duckdns.org>
  <4a021678-1896-2d16-4075-f626c7ab8513@redhat.com>
  <8f56f7a3-1d4b-679b-7348-d8ecb4ef3d6c@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
-Content-Disposition: inline
-In-Reply-To: <8f56f7a3-1d4b-679b-7348-d8ecb4ef3d6c@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <20211203182500.GD16798@blackbody.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211203182500.GD16798@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 12/3/21 13:25, Michal Koutný wrote:
+> Hello Longman.
+>
+> On Wed, Dec 01, 2021 at 08:28:09PM -0500, Waiman Long <longman@redhat.com> wrote:
+>> 1) The limitation that "cpuset.cpus" has to be a superset of child's
+>> "cpuset.cpus" has been removed as a new patch to remove that limitation will
+>> be added.
+> Superb!
+>
+>> 2) The initial transition from "member" to partition root now requires that
+>> "cpuset.cpus" overlap with that of the parent's "cpuset.cpus" instead of
+>> being a superset.
+> That's sensible.
+>
+>> For the transition back to "member", I haven't changed the current wording
+>> of forcing child partition roots to become "member" yet. If you think
+>> keeping them as invalid partition root is better, I can made that change
+>> too.
+> I wrote I was indifferent about this in a previous mail but when I think
+> about it now, switching to invalid root is perhaps better than switching
+> to member since it'd effectively mean that modifications of the parent
+> config propagate (permanently) also to a descendant config, which is
+> an undesired v1-ism.
 
---ctP54qlpMx3WjD+/
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That makes sense. I will keep those child partitions in an invalid state 
+then.
 
-Hello Longman.
+>
+>> Please let me know what other changes you would like to see.
+> I hope my remarks below are just clarifications and not substantial
+> changes. Besides that I find your new draft good. Thanks!
+>
+>> [...]
+>>      An invalid partition root can be reverted back to a valid one
+>>      if none of the validity constraints of a valid partition root
+>>      are violated.
+> s/can be/will be/
+>
+> (I understand the intention is to make it asynchronously and
+> automatically, i.e. without writing into the affected descendant(s)
+> cpuset.partition again.)
+Yes, that will be automatic and the partition will become valid again if 
+other events cause changes that unbreak the validity constraints.
+>
+>>      Poll and inotify events are triggered whenever the state of
+>>      "cpuset.cpus.partition" changes.  That includes changes caused by
+>>      write to "cpuset.cpus.partition", cpu hotplug and other changes
+>>      that make the partition invalid.
+> -> that change validity status
+>
+> (In accordance with the comment above.)
+Cheers,
+Longman
 
-On Wed, Dec 01, 2021 at 08:28:09PM -0500, Waiman Long <longman@redhat.com> =
-wrote:
-> 1) The limitation that "cpuset.cpus" has to be a superset of child's
-> "cpuset.cpus" has been removed as a new patch to remove that limitation w=
-ill
-> be added.
-
-Superb!
-
-> 2) The initial transition from "member" to partition root now requires th=
-at
-> "cpuset.cpus" overlap with that of the parent's "cpuset.cpus" instead of
-> being a superset.
-
-That's sensible.
-
-> For the transition back to "member", I haven't changed the current wording
-> of forcing child partition roots to become "member" yet. If you think
-> keeping them as invalid partition root is better, I can made that change
-> too.
-
-I wrote I was indifferent about this in a previous mail but when I think
-about it now, switching to invalid root is perhaps better than switching
-to member since it'd effectively mean that modifications of the parent
-config propagate (permanently) also to a descendant config, which is
-an undesired v1-ism.
-
-
-> Please let me know what other changes you would like to see.
-
-I hope my remarks below are just clarifications and not substantial
-changes. Besides that I find your new draft good. Thanks!
-
-> [...]
-
-> =A0=A0 =A0An invalid partition root can be reverted back to a valid one
-> =A0=A0 =A0if none of the validity constraints of a valid partition root
-> =A0=A0 =A0are violated.
-
-s/can be/will be/=20
-
-(I understand the intention is to make it asynchronously and
-automatically, i.e. without writing into the affected descendant(s)
-cpuset.partition again.)
-
-> =A0=A0 =A0Poll and inotify events are triggered whenever the state of
-> =A0=A0 =A0"cpuset.cpus.partition" changes.=A0 That includes changes cause=
-d by
-> =A0=A0 =A0write to "cpuset.cpus.partition", cpu hotplug and other changes
-> =A0=A0 =A0that make the partition invalid.
-
--> that change validity status
-
-(In accordance with the comment above.)
-
-
-Michal
-
---ctP54qlpMx3WjD+/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTiq06H1IhXbF2mqzsiXqxkP0JkRwUCYapg+AAKCRAiXqxkP0Jk
-R60gAQCV8E8cIvOn/Hr5KboWD+7obSggVivpR3LxikBIuT9raQD+OptMUIwAN0Mk
-MnWqFSlaobxSAqN0VorYNkJ17mv9dAc=
-=q7Dx
------END PGP SIGNATURE-----
-
---ctP54qlpMx3WjD+/--
