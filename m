@@ -2,100 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394E846818B
-	for <lists+cgroups@lfdr.de>; Sat,  4 Dec 2021 01:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9479F46834C
+	for <lists+cgroups@lfdr.de>; Sat,  4 Dec 2021 09:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354628AbhLDAtc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Dec 2021 19:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354616AbhLDAtc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Dec 2021 19:49:32 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1205C061751
-        for <cgroups@vger.kernel.org>; Fri,  3 Dec 2021 16:46:07 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id k2so9339847lji.4
-        for <cgroups@vger.kernel.org>; Fri, 03 Dec 2021 16:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=84mOUp3LokD6J3j/XPGM8Gdyu0TNZ1hY1SXnt8ueQl0=;
-        b=W00VL1dQdtqB96CSXr76uDShRNGRcJZoc5gxPBZH6JD2lO3sXg/MbNgoIepxvjgy/v
-         1ngl4zAcaMGNYSSMFZUmcTZGNuuO8BREoXOAvrLF1NuaG6twbr/BvF8zVlA2WCvc2n+s
-         3atBTFjXpvf1BSw+xfGON8yWnXNLilAs33nqQ3TOiIIAryw8JTfFkO7b1WoJAv3zh/vW
-         q1r05yy7mWaFNdo7OI46VANrC5cGCWMoG3EInP4CFFm8+Q/q39qu7nPEsJ9jSHTc3IgO
-         oyiqNf62GHUrdj+I5THRVlKdw6jqwGTlCFLYmU1q+05R2IZ7CtOuatZgdbmNpnfUpW6C
-         1BoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=84mOUp3LokD6J3j/XPGM8Gdyu0TNZ1hY1SXnt8ueQl0=;
-        b=QIw/DfLmr3ehUzWlmhVnOA3HSxkZhCxjzZhAZ/bwSFLva6KKzhu0QtTd4oGjNQx3xA
-         KCdDT76xfFeo6gB0PA281R0HUcjd9ZnWx3DdzUSeh0NgRtKMeok9pPh2qT5FA2y81kVi
-         jZVCWIO5dEUUV94tJeZijMVEbIusBmM9h47KXGJr8bD7nI7KtTzL4EoTZs9bJtXJI6w1
-         BmzIl5nBgi4AOPv4JUKwEvxzGrU9CtR1y87Qhr9h+4fH2JRXRZCARoY037NQdhBANYFo
-         ukz+tCNBtI1J2QAnfnAiP3q9BEmN+5l4gQog+vwNPkBu8i5Qah5PXpUWOugcki/vWgfo
-         lM+Q==
-X-Gm-Message-State: AOAM530Ge1by1KsBgGSg/UsruAeQgRcMLqXWv4DhKBUJA15vwrH8G0l6
-        gDKDmz25ksFqf+YiGbeynwenKSwI4cetr6UFiTg0fw==
-X-Google-Smtp-Source: ABdhPJzLV+ZZmoda/NgcR2Lu4eylwVG/7x4I9dAzKn8K8L/25X9VSHMV6CmA5i65Wuva7AzCKFziwlqii0mxLRX3B38=
-X-Received: by 2002:a05:651c:545:: with SMTP id q5mr20684058ljp.202.1638578765757;
- Fri, 03 Dec 2021 16:46:05 -0800 (PST)
+        id S1343993AbhLDIHW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 4 Dec 2021 03:07:22 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:29087 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354766AbhLDIHW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 4 Dec 2021 03:07:22 -0500
+Received: from kwepemi100009.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J5hw54n6Rz1DJl2;
+        Sat,  4 Dec 2021 16:01:09 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100009.china.huawei.com (7.221.188.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 4 Dec 2021 16:03:54 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 4 Dec 2021 16:03:54 +0800
+Subject: Re: [PATCH v4 2/2] block: cancel all throttled bios in del_gendisk()
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+CC:     <hch@infradead.org>, <tj@kernel.org>, <axboe@kernel.dk>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20211202130440.1943847-1-yukuai3@huawei.com>
+ <20211202130440.1943847-3-yukuai3@huawei.com>
+ <20211202144818.GB16798@blackbody.suse.cz>
+ <95825098-a532-a0e4-9ed0-0b5f2a0e5f04@huawei.com>
+ <20211203102739.GB64349@blackbody.suse.cz>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <c8a16fe9-4ad2-682d-0d34-1049dc217d62@huawei.com>
+Date:   Sat, 4 Dec 2021 16:03:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20211203162426.3375036-1-schatzberg.dan@gmail.com>
-In-Reply-To: <20211203162426.3375036-1-schatzberg.dan@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 3 Dec 2021 16:45:54 -0800
-Message-ID: <CALvZod6y+_O49jzuD9wLXncCEGCgun4f-uf_yBzYcsfEiH1WOQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: add group_oom_kill memory event
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211203102739.GB64349@blackbody.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Dec 3, 2021 at 8:24 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
->
-> Our container agent wants to know when a container exits if it was OOM
-> killed or not to report to the user. We use memory.oom.group = 1 to
-> ensure that OOM kills within the container's cgroup kill
-> everything. Existing memory.events are insufficient for knowing if
-> this triggered:
->
-> 1) Our current approach reads memory.events oom_kill and reports the
-> container was killed if the value is non-zero. This is erroneous in
-> some cases where containers create their children cgroups with
-> memory.oom.group=1 as such OOM kills will get counted against the
-> container cgroup's oom_kill counter despite not actually OOM killing
-> the entire container.
->
-> 2) Reading memory.events.local will fail to identify OOM kills in leaf
-> cgroups (that don't set memory.oom.group) within the container cgroup.
->
-> This patch adds a new oom_group_kill event when memory.oom.group
-> triggers to allow userspace to cleanly identify when an entire cgroup
-> is oom killed.
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+在 2021/12/03 18:27, Michal Koutný 写道:
+> On Fri, Dec 03, 2021 at 03:50:01PM +0800, "yukuai (C)" <yukuai3@huawei.com> wrote:
+>> blkg_destroy() is protected by the queue_lock，so I think queue_lock can
+>> protect such concurrent scenario.
+> 
+> blkg_destroy() is not as destroying :-) as actual free, you should
+> synchronize against (the queue_lock ensures this for
+> pd_free_fn=throtl_pd_free but you may still trip on blkcg after
+> blkcg_css_free()).
 
-So, with this patch, will you be watching oom_group_kill from
-memory.events or memory.events.local file for your use-case?
+Hi, Michal
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+I was thinking that if there are active blkgs, holding queue_lock will 
+ensure blkcg won't be freed. However, if there are no active blkgs in
+the first place, it seems right rcu_read_lock() can prevent this
+iteration concurrent with css_release->css_release_work_fn->
+css_free_rwork_fn.
+
+By the way, does spin_lock can guarantee this since it disables preempt
+like what rcu_read_lock() does?
+
+Thanks,
+Kuai
+
+> 
+> [Actually, I think you should see a warning in your situation if you
+> enable CONFIG_PROVE_RCU.]
+> 
+> HTH,
+> Michal
+> 
