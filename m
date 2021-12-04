@@ -2,81 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9479F46834C
-	for <lists+cgroups@lfdr.de>; Sat,  4 Dec 2021 09:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F70F4683A0
+	for <lists+cgroups@lfdr.de>; Sat,  4 Dec 2021 10:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343993AbhLDIHW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 4 Dec 2021 03:07:22 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:29087 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354766AbhLDIHW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 4 Dec 2021 03:07:22 -0500
-Received: from kwepemi100009.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J5hw54n6Rz1DJl2;
-        Sat,  4 Dec 2021 16:01:09 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100009.china.huawei.com (7.221.188.242) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 4 Dec 2021 16:03:54 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 4 Dec 2021 16:03:54 +0800
-Subject: Re: [PATCH v4 2/2] block: cancel all throttled bios in del_gendisk()
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-CC:     <hch@infradead.org>, <tj@kernel.org>, <axboe@kernel.dk>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211202130440.1943847-1-yukuai3@huawei.com>
- <20211202130440.1943847-3-yukuai3@huawei.com>
- <20211202144818.GB16798@blackbody.suse.cz>
- <95825098-a532-a0e4-9ed0-0b5f2a0e5f04@huawei.com>
- <20211203102739.GB64349@blackbody.suse.cz>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <c8a16fe9-4ad2-682d-0d34-1049dc217d62@huawei.com>
-Date:   Sat, 4 Dec 2021 16:03:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1384478AbhLDJkP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 4 Dec 2021 04:40:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1384473AbhLDJkP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 4 Dec 2021 04:40:15 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F97EC061751
+        for <cgroups@vger.kernel.org>; Sat,  4 Dec 2021 01:36:50 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id o29so4272064wms.2
+        for <cgroups@vger.kernel.org>; Sat, 04 Dec 2021 01:36:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Fa6xeDSp50/P8rOL+C54lxIGIVulHb+9yCsfNo1/Wpw=;
+        b=FWWeWvzsX0lVcVoLsRisdgMqOjZy/JOgW6iYDCzNR3aS7WRsMEBPIai+ZFNIuMynAr
+         BT2jMNkIswwTyxFGrp3xMLb/eXReYAVYgdBy/v3oHKfoEgRChUczwjAU2SBhL9tXhriA
+         MJOvZgEQz3GgTo7U+U9Zs7ICijCpUjoRP6E8g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Fa6xeDSp50/P8rOL+C54lxIGIVulHb+9yCsfNo1/Wpw=;
+        b=s4y7qFQ2ouBO6kRGiQmRYGPK3lPEOzxhqyyKyK7+o2GNhkMIOJv9+5hTuTREluyOQ8
+         VOTiCX7Kf2s3AVqsc8/o3UPPj1dAgKk6Gmb3cVQIFGspG9x8JbcPsD+jrJNdTnt//5Q9
+         sFrmnKnMPkIDInDpGEcRxN1nZlOekakUiAwz4AdrsKdL1SAty2fAy7h0QJxTtsO49oMi
+         dWLqrliK4jQH2TKuXErjHbkMK0MmtgMxq7PRpzHiyr6Wvp3/f6Aui89EBUN4qVmLuhrq
+         2q/0Cj/8kv0tHjB1Iurke8Pg85zqgVGexUjH1xvgSMWkarrZe44QeJ5NNYXL7pIvI0XC
+         YV7w==
+X-Gm-Message-State: AOAM530NK15nj9w3IWCHUHPPrXSelxT46txFR4ueVodQT4gKK29mFcrl
+        jPP36imCDJILQasOw4l31Lmc1A==
+X-Google-Smtp-Source: ABdhPJwiOTmQCn38xCf3cLyyJfvN07htPUbre2qVQ4wfsE4L4QKy64fvmr02+djFj6Wlf0GKZ/75tw==
+X-Received: by 2002:a7b:c301:: with SMTP id k1mr22029998wmj.36.1638610608329;
+        Sat, 04 Dec 2021 01:36:48 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:5ee4:2aff:fe50:f48d])
+        by smtp.gmail.com with ESMTPSA id i17sm5622892wmq.48.2021.12.04.01.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Dec 2021 01:36:47 -0800 (PST)
+Date:   Sat, 4 Dec 2021 09:36:46 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: add group_oom_kill memory event
+Message-ID: <Yas2ro/NCDY+1n09@chrisdown.name>
+References: <20211203162426.3375036-1-schatzberg.dan@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211203102739.GB64349@blackbody.suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211203162426.3375036-1-schatzberg.dan@gmail.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2021/12/03 18:27, Michal Koutný 写道:
-> On Fri, Dec 03, 2021 at 03:50:01PM +0800, "yukuai (C)" <yukuai3@huawei.com> wrote:
->> blkg_destroy() is protected by the queue_lock，so I think queue_lock can
->> protect such concurrent scenario.
-> 
-> blkg_destroy() is not as destroying :-) as actual free, you should
-> synchronize against (the queue_lock ensures this for
-> pd_free_fn=throtl_pd_free but you may still trip on blkcg after
-> blkcg_css_free()).
+Dan Schatzberg writes:
+>Our container agent wants to know when a container exits if it was OOM
+>killed or not to report to the user. We use memory.oom.group = 1 to
+>ensure that OOM kills within the container's cgroup kill
+>everything. Existing memory.events are insufficient for knowing if
+>this triggered:
+>
+>1) Our current approach reads memory.events oom_kill and reports the
+>container was killed if the value is non-zero. This is erroneous in
+>some cases where containers create their children cgroups with
+>memory.oom.group=1 as such OOM kills will get counted against the
+>container cgroup's oom_kill counter despite not actually OOM killing
+>the entire container.
+>
+>2) Reading memory.events.local will fail to identify OOM kills in leaf
+>cgroups (that don't set memory.oom.group) within the container cgroup.
+>
+>This patch adds a new oom_group_kill event when memory.oom.group
+>triggers to allow userspace to cleanly identify when an entire cgroup
+>is oom killed.
+>
+>Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 
-Hi, Michal
+Thanks! Acking with one minor point on the documentation front.
 
-I was thinking that if there are active blkgs, holding queue_lock will 
-ensure blkcg won't be freed. However, if there are no active blkgs in
-the first place, it seems right rcu_read_lock() can prevent this
-iteration concurrent with css_release->css_release_work_fn->
-css_free_rwork_fn.
+Acked-by: Chris Down <chris@chrisdown.name>
 
-By the way, does spin_lock can guarantee this since it disables preempt
-like what rcu_read_lock() does?
+>---
+> Documentation/admin-guide/cgroup-v2.rst | 4 ++++
+> include/linux/memcontrol.h              | 1 +
+> mm/memcontrol.c                         | 5 +++++
+> mm/oom_kill.c                           | 1 +
+> 4 files changed, 11 insertions(+)
+>
+>diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>index 2aeb7ae8b393..eec830ce2068 100644
+>--- a/Documentation/admin-guide/cgroup-v2.rst
+>+++ b/Documentation/admin-guide/cgroup-v2.rst
+>@@ -1268,6 +1268,10 @@ PAGE_SIZE multiple when read back.
+> 		The number of processes belonging to this cgroup
+> 		killed by any kind of OOM killer.
+>
+>+          oom_group_kill
+>+                The number of times all tasks in the cgroup were killed
+>+                due to memory.oom.group.
 
-Thanks,
-Kuai
+Maybe pedantic, but this reads as unclear to me whether in cgroup with 3 tasks 
+we get the value "3" or "1" when a group kill occurs.
 
-> 
-> [Actually, I think you should see a warning in your situation if you
-> enable CONFIG_PROVE_RCU.]
-> 
-> HTH,
-> Michal
-> 
+Maybe rephrase to not make be about tasks and just say "number of times a group 
+OOM occurred"?
