@@ -2,109 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D1E46C024
-	for <lists+cgroups@lfdr.de>; Tue,  7 Dec 2021 17:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091AC46C114
+	for <lists+cgroups@lfdr.de>; Tue,  7 Dec 2021 17:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239147AbhLGQDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Dec 2021 11:03:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43146 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238825AbhLGQDx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 11:03:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638892823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J6jwf6epYrICYcmePyRn09ib6008dY63VibUD3hoHT0=;
-        b=Hlv2gxBSGvI5YUmPvs+90Iv8HP6knQQ2IPI3l9ZJspytft7TBqa/PRXp6HQBWfk5uVdZ3O
-        VDMSkIy/Xn1GufwYJdg1PCrqSyq1NJS5RlL5DmS3KI9piD/r6GU+SlJ/g++NKEV3Mqkna6
-        gjv0JNC7Hm3pnbM0kZXWw6Sh8xkuL8I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-367-v4PrHyZpOoC4UoSocSWQZQ-1; Tue, 07 Dec 2021 11:00:17 -0500
-X-MC-Unique: v4PrHyZpOoC4UoSocSWQZQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A03AC1019995;
-        Tue,  7 Dec 2021 16:00:15 +0000 (UTC)
-Received: from [10.22.34.28] (unknown [10.22.34.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98330794DA;
-        Tue,  7 Dec 2021 16:00:14 +0000 (UTC)
-Message-ID: <281a5c45-388f-203e-3c5e-146a85328c78@redhat.com>
-Date:   Tue, 7 Dec 2021 11:00:14 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S235233AbhLGQ7M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Dec 2021 11:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235127AbhLGQ7L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 11:59:11 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433D0C061574
+        for <cgroups@vger.kernel.org>; Tue,  7 Dec 2021 08:55:41 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id 8so14882742qtx.5
+        for <cgroups@vger.kernel.org>; Tue, 07 Dec 2021 08:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jBIRb58Y6btL+TAXKBtqGWyLSLmb/GcxbXs8B9okoJI=;
+        b=xVie4c8Jj9A8d6UbzG2D4i8Nvmdt8QlQvLgRCKAHD0yC9kTB2O9kIE+hhm7KY3Dm75
+         ah5bV+hSCiX04qN/2IR96z3IsKqa4ziG2K1mYHVCveyzJZBvuwNBRm3DnF0g3d5emx1Z
+         2yc9H4rHwU8lLtJs6wHrpSLCv9NY8zhv31ZF3/UhvqukVcCbjKD9+Eoeo50rxWwlVozJ
+         h8uQAdPtl0qp4dmuVcV0ts5oYWQY7wusgeEbP9Y+6rt6pL5B4BHgvtiG5LIUqY31aof3
+         pY0C8UK3RS5LBPrnCFuA9LMp8pIC4Tue6Jfz+oMmvliC3aAdw7AbunTRstt3Tnl8a1Ul
+         5juw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jBIRb58Y6btL+TAXKBtqGWyLSLmb/GcxbXs8B9okoJI=;
+        b=tJYxqMs1otd9GQBBJyWvTcz4+ItH1Ninqa5JPcsSbVJwdNNotUNWtnyUIE/irC6ikO
+         70n0dPQFfAVtzzrFwrs4R/7532EPT3jg9pMPDNP92I6GG1QKAdbVgl4lPcAl4x8dv6cw
+         HiOkrsMEleuLtOy3gnZGbFYaFdZ4JWWAgXiskavde34cvM3fvymAai3XCx2Lc4gJZCoZ
+         qna00hK5iJit28GcZJnt+lmcL1GOtvuaRNEJVcF8e6l/daQ7djvf73hNJJtFwcRQJMaA
+         /Rncb0hb3zCuTyV5WwoboHMGjFBpflN0A8/2GlFcAhthsq7bnzPO6/hTfI46FLUJNvyt
+         ZDEQ==
+X-Gm-Message-State: AOAM530PfNdz4KNNOaN/UVavMdCWt6C2aHML0bB87I6YZ+vYnivVCnxE
+        cvOVII4d1N3QpnF9uj8uc27MduumtsuKnA==
+X-Google-Smtp-Source: ABdhPJy/3i1cZVARjSv2TVIsxsNN6teXBPNEZfAggRQROn5PaiSaIIl1mvr1Y0ltWE/bELIg+HhFpw==
+X-Received: by 2002:a05:622a:43:: with SMTP id y3mr446251qtw.192.1638896140469;
+        Tue, 07 Dec 2021 08:55:40 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:6bda])
+        by smtp.gmail.com with ESMTPSA id t9sm70832qkp.110.2021.12.07.08.55.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 08:55:39 -0800 (PST)
+Date:   Tue, 7 Dec 2021 11:55:38 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
+Message-ID: <Ya+SCkLOLBVN/kiY@cmpxchg.org>
 References: <20211207155208.eyre5svucpg7krxe@linutronix.de>
-From:   Waiman Long <longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20211207155208.eyre5svucpg7krxe@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/7/21 10:52, Sebastian Andrzej Siewior wrote:
+On Tue, Dec 07, 2021 at 04:52:08PM +0100, Sebastian Andrzej Siewior wrote:
 > From: Thomas Gleixner <tglx@linutronix.de>
->
+> 
 > MEMCG has a few constructs which are not compatible with PREEMPT_RT's
 > requirements. This includes:
 > - relying on disabled interrupts from spin_lock_irqsave() locking for
->    something not related to lock itself (like the per-CPU counter).
->
+>   something not related to lock itself (like the per-CPU counter).
+
+If memory serves me right, this is the VM_BUG_ON() in workingset.c:
+
+	VM_WARN_ON_ONCE(!irqs_disabled());  /* For __inc_lruvec_page_state */
+
+This isn't memcg specific. This is the serialization model of the
+generic MM page counters. They can be updated from process and irq
+context, and need to avoid preemption (and corruption) during RMW.
+
+!CONFIG_MEMCG:
+
+static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+					 int val)
+{
+	struct page *page = virt_to_head_page(p);
+
+	mod_node_page_state(page_pgdat(page), idx, val);
+}
+
+which does:
+
+void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+					long delta)
+{
+	unsigned long flags;
+
+	local_irq_save(flags);
+	__mod_node_page_state(pgdat, item, delta);
+	local_irq_restore(flags);
+}
+
+If this breaks PREEMPT_RT, it's broken without memcg too.
+
 > - explicitly disabling interrupts and acquiring a spinlock_t based lock
->    like in memcg_check_events() -> eventfd_signal().
->
-> - explicitly disabling interrupts and freeing memory like in
->    drain_obj_stock() -> obj_cgroup_put() -> obj_cgroup_release() ->
->    percpu_ref_exit().
->
-> Commit 559271146efc ("mm/memcg: optimize user context object stock
-> access") continued to optimize for the CPU local access which
-> complicates the PREEMPT_RT locking requirements further.
->
-> Disable MEMCG on PREEMPT_RT until the whole situation can be evaluated
-> again.
+>   like in memcg_check_events() -> eventfd_signal().
 
-Disabling MEMCG for PREEMPT_RT may be too drastic a step to take. For 
-commit 559271146efc ("mm/memcg: optimize user context object stock 
-access"), I can modify it to disable the optimization for PREEMPT_RT.
+Similar problem to the above: we disable interrupts to protect RMW
+sequences that can (on non-preemptrt) be initiated through process
+context as well as irq context.
 
-Cheers,
-Longman
+IIUC, the PREEMPT_RT construct for handling exactly that scenario is
+the "local lock". Is that correct?
 
+It appears Ingo has already fixed the LRU cache, which for non-rt also
+relies on irq disabling:
 
-> [ bigeasy: commit description. ]
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->   init/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
->
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -943,6 +943,7 @@ config PAGE_COUNTER
->   
->   config MEMCG
->   	bool "Memory controller"
-> +	depends on !PREEMPT_RT
->   	select PAGE_COUNTER
->   	select EVENTFD
->   	help
->
+commit b01b2141999936ac3e4746b7f76c0f204ae4b445
+Author: Ingo Molnar <mingo@kernel.org>
+Date:   Wed May 27 22:11:15 2020 +0200
 
+    mm/swap: Use local_lock for protection
+
+The memcg charge cache should be fixable the same way.
+
+Likewise, if you fix the generic vmstat counters like this, the memcg
+implementation can follow suit.
