@@ -2,63 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210B646BE84
-	for <lists+cgroups@lfdr.de>; Tue,  7 Dec 2021 15:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E72E46BFEE
+	for <lists+cgroups@lfdr.de>; Tue,  7 Dec 2021 16:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhLGPDH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Dec 2021 10:03:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        id S234580AbhLGPzm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Dec 2021 10:55:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhLGPDH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 10:03:07 -0500
-X-Greylist: delayed 339 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Dec 2021 06:59:37 PST
-Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A627C061746
-        for <cgroups@vger.kernel.org>; Tue,  7 Dec 2021 06:59:37 -0800 (PST)
-Received: from tux.applied-asynchrony.com (p5ddd7e1c.dip0.t-ipconnect.de [93.221.126.28])
-        by mail.itouring.de (Postfix) with ESMTPSA id 616B1103761;
-        Tue,  7 Dec 2021 15:53:54 +0100 (CET)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 1A09BF01601;
-        Tue,  7 Dec 2021 15:53:54 +0100 (CET)
-Subject: Re: [PATCH] bfq: Fix use-after-free with cgroups
-To:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>, fvogt@suse.de,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        stable@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
-References: <20211201133439.3309-1-jack@suse.cz>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <28ded939-6339-c9e1-c0a3-ff84fb197eed@applied-asynchrony.com>
-Date:   Tue, 7 Dec 2021 15:53:54 +0100
+        with ESMTP id S234381AbhLGPzm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 10:55:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A50C061748
+        for <cgroups@vger.kernel.org>; Tue,  7 Dec 2021 07:52:11 -0800 (PST)
+Date:   Tue, 7 Dec 2021 16:52:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1638892329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=VS6roNBiwUEM5X9fxDy5HZGLySBmQhwrowKmxwnMeKo=;
+        b=BcczSFN8CKvWRlXBGO8eJz8aSgoUZFPDl3yXZwMqcRiniKvyEO5H1I4FD8smWeB72tPE7W
+        4FhHfvENUhH9Oo6smxiNulqEiCddctZcH8HzErDwFV5cQVwltMyZTjvCpZA16+BMABd+nu
+        URprFReGV/dMjZsMN9iyCoeY+dLhb/Sv22rM9pdB88rvFY2yO2deqrjbrcgru9sePRnXs+
+        Zu5n9d5/Jpy2MuFGa1z+CABNUK9eZbcyQVF+WyhjJaF2c8dQU9/Z8fRwNc7F6XZRQAzXpr
+        LgdIAHZGeTPJuYa+DoJdCJ6Vn8/T5VSKZagkg/tQUH0Rcb5lLWAMFha7knUaPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1638892329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=VS6roNBiwUEM5X9fxDy5HZGLySBmQhwrowKmxwnMeKo=;
+        b=w1JyOzTzNREXfaHDN1SVgPUu3ulwLcDKPcxYzaU9oZ+cen1LSNAG8b7kwCvPe4RsoqnOQS
+        pEpFizCPgDi0ANAg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
+Message-ID: <20211207155208.eyre5svucpg7krxe@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20211201133439.3309-1-jack@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+From: Thomas Gleixner <tglx@linutronix.de>
 
-On 2021-12-01 14:34, Jan Kara wrote:
-> BFQ started crashing with 5.15-based kernels like:
-> 
-> BUG: KASAN: use-after-free in rb_erase (lib/rbtree.c:262 lib/rbtr
-> Read of size 8 at addr ffff888008193098 by task bash/1472
-[snip]
+MEMCG has a few constructs which are not compatible with PREEMPT_RT's
+requirements. This includes:
+- relying on disabled interrupts from spin_lock_irqsave() locking for
+  something not related to lock itself (like the per-CPU counter).
 
-This does not compile when CONFIG_BFQ_GROUP_IOSCHED is disabled.
-I know the patch is meant for the case where it is enabled, but still..
+- explicitly disabling interrupts and acquiring a spinlock_t based lock
+  like in memcg_check_events() -> eventfd_signal().
 
-block/bfq-iosched.c: In function 'bfq_init_bfqq':
-block/bfq-iosched.c:5362:51: error: 'struct bfq_group' has no member named 'children'
-  5362 |         hlist_add_head(&bfqq->children_node, &bfqg->children);
-       |                                                   ^~
-make[1]: *** [scripts/Makefile.build:277: block/bfq-iosched.o] Error 1
+- explicitly disabling interrupts and freeing memory like in
+  drain_obj_stock() -> obj_cgroup_put() -> obj_cgroup_release() ->
+  percpu_ref_exit().
 
-Probably just needs a few more ifdefs :)
+Commit 559271146efc ("mm/memcg: optimize user context object stock
+access") continued to optimize for the CPU local access which
+complicates the PREEMPT_RT locking requirements further.
 
-cheers
-Holger
+Disable MEMCG on PREEMPT_RT until the whole situation can be evaluated
+again.
+
+[ bigeasy: commit description. ]
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ init/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -943,6 +943,7 @@ config PAGE_COUNTER
+ 
+ config MEMCG
+ 	bool "Memory controller"
++	depends on !PREEMPT_RT
+ 	select PAGE_COUNTER
+ 	select EVENTFD
+ 	help
