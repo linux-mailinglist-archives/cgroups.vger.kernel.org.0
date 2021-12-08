@@ -2,100 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFD846C359
-	for <lists+cgroups@lfdr.de>; Tue,  7 Dec 2021 20:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277EB46CBFB
+	for <lists+cgroups@lfdr.de>; Wed,  8 Dec 2021 05:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhLGTMR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Dec 2021 14:12:17 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37886 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240856AbhLGTMQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 14:12:16 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3277021B39;
-        Tue,  7 Dec 2021 19:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638904125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=niz+gipHwOp3WNjxROtKHr6F+e90fRTIiaV+AhLVRjE=;
-        b=CrVG0o9D3ePoRKMpFmdr0JmlbaiFeYYMhpbfUGzbawFoZ+W3UDpTJBg/TaSL3rIUT+uDi0
-        SeVEQbv8Eh5NM6OGu8sKA/GU0BRKPIkO0k5k+fNOusOczAYjJ1sWtdO528Owdy1BFsVniR
-        ASGmD98/jrKXst4wbFXONPf7vEl+LZA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FFAB13AB6;
-        Tue,  7 Dec 2021 19:08:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id g504Az2xr2HgaAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 07 Dec 2021 19:08:45 +0000
-Date:   Tue, 7 Dec 2021 20:08:43 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        fvogt@suse.de, Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        stable@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
-Subject: Re: [PATCH] bfq: Fix use-after-free with cgroups
-Message-ID: <20211207190843.GA40898@blackbody.suse.cz>
-References: <20211201133439.3309-1-jack@suse.cz>
+        id S230169AbhLHELm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Dec 2021 23:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239778AbhLHELl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Dec 2021 23:11:41 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B03C061B38
+        for <cgroups@vger.kernel.org>; Tue,  7 Dec 2021 20:08:09 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id c3so1458760iob.6
+        for <cgroups@vger.kernel.org>; Tue, 07 Dec 2021 20:08:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=w0n14T57zPuvlg1YaFYy3gRfrUPFN1bDHGIrct+fXgc=;
+        b=WAfVy60s9+/0tSqV9K0yinvMPkS6cit0ofg9cxD6kzeAP6cUltXq6JbTU4YZsPBBmE
+         1KBG+7gOqLergY14b53arn5kJ8ejV3I7ocJb9rTA8zKznOtSPWyjgo7PABVmaB6YmQc5
+         1j9e7ZE1Zorjjr1JPQChgQ+cOEBXcRSg7/Cqpx0Kuh756IaI83RLOdTaTqxaaBqPacQj
+         ZT8A6FNNBvsDiNZUVM6yNg+WYzxgcV0hcZuZBs8PB0yKqFnAbq78sWTbtWEEyZigwjAe
+         q15/xV9884uA+KZHdGxa4XUoyP/gZHIgxdJ8c0DBUv9StrsDIUqwnasHWrkugRuv8Pgq
+         t/Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=w0n14T57zPuvlg1YaFYy3gRfrUPFN1bDHGIrct+fXgc=;
+        b=rmzSF46XR68DLSxBu7/8gCTgjmhi7rj28Lc40J1N5ItVxe0U9sR0RXHEbPZhmd7lEu
+         w6bjKv1P4C5eEzYy8oe12ZjsKWxUKOWOsLwkJAV9JnfUHqRy+q2g5DJVPb+0/CVqQ+xE
+         5x+/FXq3uPIpKhd4ElhUq9T8v8sI8Ll/Ds2yWbkIdBDfh7J4VQxae8x94az8+eiEWc1g
+         FRIgL5zm+snoW4td3rjT0TT3vqrx1aQwgd4A81K8ptS/LA+aqxzFSZtxHQgFsyqxfVcE
+         U/en68E5Dbvd33Ir3mo6hz4WNpTI/MsnWYMGTDOmOLUPIsSq2svfcivov68S8Ic/j+no
+         YfnA==
+X-Gm-Message-State: AOAM530a3uDWLFqfdJUvZFFp8PWx7KT7lhhilJ3GRmWwhX0T93i+6R8B
+        C0O9tlXqml3hcKkmemKoUhuXUxEpwLRbQXgqZcM=
+X-Google-Smtp-Source: ABdhPJwY2DAivOMYvvjSAmt0SePTsCC9VtjqUditATxapLI2+FwFZbSlZ1hVtfcgRiJzG5YjrqctFl1h9xCh+BrIA0I=
+X-Received: by 2002:a6b:740b:: with SMTP id s11mr3995221iog.120.1638936488744;
+ Tue, 07 Dec 2021 20:08:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211201133439.3309-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6e02:1a07:0:0:0:0 with HTTP; Tue, 7 Dec 2021 20:08:08
+ -0800 (PST)
+Reply-To: dj0015639@gmail.com
+From:   David Jackson <enkenpaul@gmail.com>
+Date:   Wed, 8 Dec 2021 05:08:08 +0100
+Message-ID: <CAG7-cQ-VWzj2QD5t0sN=_WC-OvG=bWEqPGmLorQyHQSgxJ9y9w@mail.gmail.com>
+Subject: FEDERAL BUREAU OF INVESTIGATION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 02:34:39PM +0100, Jan Kara <jack@suse.cz> wrote:
-> After some analysis we've found out that the culprit of the problem is
-> that some task is reparented from cgroup G to the root cgroup and G is
-> offlined.
+Our Ref: RTB /SNT/STB
+To: Beneficiary
 
-Just sharing my interpretation for context -- (I saw this was a system
-using the unified cgroup hierarchy, io_cgrp_subsys_on_dfl_key was
-enabled) and what was observed could also have been disabling the io
-controller on given level -- that would also manifest similarly -- the
-task is migrated to parent and the former blkcg is offlined.
+This is FBI special agents, David Jackson. I was delegated along side
+others by the United Nations to investigate scammers who has been in
+the business of swindling foreigners especially those that has one
+form of transaction/contracts and another. Please be informed that in
+the course of our investigation, we detected that your name and
+details in our Scammed Monitoring Network. We also found out that you
+were scammed of a huge sum of money by scammers via Western union and
+MoneyGram. Be informed here that in a bid to alleviate the suffering
+of scammed victims, the United Nations initiated this compensation
+program and therefore, you are entitled to the sum of Five Million Two
+Hundred Thousand United States Dollars ($5,200,000.00 USD) for being a
+victim.
 
+Note that the said fund will be transfer to you via the Citibank being
+the paying bank mandated by the United Nations officials.
 
-> +static void bfq_reparent_children(struct bfq_data *bfqd, struct bfq_group *bfqg)
-> [...]
-> -	bfq_bfqq_move(bfqd, bfqq, bfqd->root_group);
-> [...]
-> +	hlist_for_each_entry_safe(bfqq, next, &bfqg->children, children_node)
-> +		bfq_bfqq_move(bfqd, bfqq, bfqd->root_group);
+However, we have to inform you that we have been able to arrest some
+of the swindlers who has been in this illicit business and will all be
+prosecuted accordingly. Be informed as well that we have limited time
+to stay back here, so we will advice that you urgently respond to this
+message ASAP. And do not inform any of the people that collected money
+from you before now about this new development to avoid jeopardizing
+our investigation. All you need to do is to follow our instruction and
+receive your compensation accordingly as directed by the United
+Nations.
 
-Here I assume root_group is (representing) the global blkcg root and
-this reparenting thus skips all ancestors between the removed leaf and
-the root. IIUC the associated io_context would then be treated as if it
-was running in the root blkcg.
-(Admittedly, this isn't a change from this patch but it may cause some
-surprises if the given process runs after the operation.)
+We urgently wait to receive your response.
 
-Reparenting to the immediate ancestors should be safe as cgroup core
-should ensure children are offlined before parents. Would it make sense
-to you?
-
-
-> @@ -897,38 +844,17 @@ static void bfq_pd_offline(struct blkg_policy_data *pd)
-> [...]
-> -		 * It may happen that some queues are still active
-> -		 * (busy) upon group destruction (if the corresponding
-> -		 * processes have been forced to terminate). We move
-> -		 * all the leaf entities corresponding to these queues
-> -		 * to the root_group.
-
-This comment is removed but it seems to me it assumed that the
-reparented entities are only some transitional remainings of terminated
-tasks but they may be the processes migrated upwards with a long (IO
-active) life ahead.
-
-
+Regards,
+DAVID JACKSON
+FEDERAL BUREAU OF INVESTIGATION
+INVESTIGATION ON ALL ONLINE WIRE TRANSFER
