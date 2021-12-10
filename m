@@ -2,130 +2,204 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389CE47011E
-	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 14:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D004703B9
+	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 16:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhLJNFK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Dec 2021 08:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233408AbhLJNFK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 08:05:10 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897C3C061746;
-        Fri, 10 Dec 2021 05:01:35 -0800 (PST)
-Date:   Fri, 10 Dec 2021 14:01:32 +0100
+        id S242793AbhLJPZj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Dec 2021 10:25:39 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:47108 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242745AbhLJPZi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 10:25:38 -0500
+Date:   Fri, 10 Dec 2021 16:22:01 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1639141294;
+        s=2020; t=1639149722;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XNlggrwdxU2IO35iIw34nGX4eaR6cSUi5G5TgF7sVRU=;
-        b=FxdZ93dzBwccssU1Jn4Fw0Q+frnksamu020mgTYBG7dsvQY/AOQX3CzvAjaZLDOD9IMXvb
-        GePbIbeGm45IefXJs6/wz6KizHVylKCTSy5gbmQfof64Tb3cZXOW8qX5zLn4F0+ol5+ZY4
-        Ln9XSVz4Wt/ReZ+81ZNgp933y8hjkuP2zbWyjLlN1Vo+4Pje+1Fn4Z4fSDQElZ5rvKsQ1K
-        wFvJ3KzkgRGj97JuQQPGnEFVLFQIVZPBL2dc3Ewt+7WnHIBRELmdqSrWhayk9K6p2FrV1m
-        BZpP5nAbCv91mpAcPYmGlNBUCTqjFBVtw/02gb8t0uNKS7gqwqRpeRIbZP9KCQ==
+        bh=EFLPu42940dvMO+OtrkN09Ewj78DLFD7wDRKNKEeFhE=;
+        b=KHl69uo+VpxgkXbBnEkxhP1fJrYgQ/dFp7jQV4s3JIvemU2Gxl5lTAjJCwJVAi0exp7j/4
+        tF/uHagC22rmznjtKon/E0uhDmnZobDaNIg29NCvaLqKOTtyNUDfiDOCuRQx/su46e4JSX
+        5tu6T6uyO3Lq94AAd+03tCcuzFiMdvdE+gmxTHVohbFZrV/6n9DgWM+VhP6/8Q2YWHlcnY
+        Q0m7B5czjy6cfsMnh0PWnZ6vM1Gu7p+4zGrkYHHydQh/tNm5C6B+TXtKpX+xQzKB/vPG7z
+        a2IbhKOHUIxcmIV2JGpGR2e/giRUh+c4XjcnPOy5nd7wtXxvOJj3VYz8uZquSw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1639141294;
+        s=2020e; t=1639149722;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XNlggrwdxU2IO35iIw34nGX4eaR6cSUi5G5TgF7sVRU=;
-        b=mEULxooEnU4502J3ZNOj8iBBPuXwd1P1XAtsCS5qSs54GrXINbBoe1fOeeYzUdY3JxFmN4
-        TUekS4bmjzb1YQBw==
+        bh=EFLPu42940dvMO+OtrkN09Ewj78DLFD7wDRKNKEeFhE=;
+        b=PlwDuvP0OEqKmzBJYLcT+HsqBJcpKkXZ4XX+Gdb+0Z/rsRn9gzHV3UIVRG5+s25ySjcHug
+        cg5cT2AZP0BF6SDA==
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH-next v2] mm/memcg: Properly handle memcg_stock access for
- PREEMPT_RT
-Message-ID: <YbNPrGEjtKjzEjQa@linutronix.de>
-References: <20211210025228.158196-1-longman@redhat.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
+Message-ID: <YbNwmUMPFM/MO0cX@linutronix.de>
+References: <20211207155208.eyre5svucpg7krxe@linutronix.de>
+ <Ya+SCkLOLBVN/kiY@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211210025228.158196-1-longman@redhat.com>
+In-Reply-To: <Ya+SCkLOLBVN/kiY@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021-12-09 21:52:28 [-0500], Waiman Long wrote:
-=E2=80=A6
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-=E2=80=A6
-> @@ -2210,7 +2211,7 @@ static void refill_stock(struct mem_cgroup *memcg, =
-unsigned int nr_pages)
->  	struct memcg_stock_pcp *stock;
->  	unsigned long flags;
-> =20
-> -	local_irq_save(flags);
-> +	local_lock_irqsave(&memcg_stock.lock, flags);
+On 2021-12-07 11:55:38 [-0500], Johannes Weiner wrote:
+> On Tue, Dec 07, 2021 at 04:52:08PM +0100, Sebastian Andrzej Siewior wrote:
+> > From: Thomas Gleixner <tglx@linutronix.de>
+> > 
+> > MEMCG has a few constructs which are not compatible with PREEMPT_RT's
+> > requirements. This includes:
+> > - relying on disabled interrupts from spin_lock_irqsave() locking for
+> >   something not related to lock itself (like the per-CPU counter).
+> 
+> If memory serves me right, this is the VM_BUG_ON() in workingset.c:
+> 
+> 	VM_WARN_ON_ONCE(!irqs_disabled());  /* For __inc_lruvec_page_state */
+> 
+> This isn't memcg specific. This is the serialization model of the
+> generic MM page counters. They can be updated from process and irq
+> context, and need to avoid preemption (and corruption) during RMW.
+> 
+> !CONFIG_MEMCG:
+> 
+> static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+> 					 int val)
+> {
+> 	struct page *page = virt_to_head_page(p);
+> 
+> 	mod_node_page_state(page_pgdat(page), idx, val);
+> }
+> 
+> which does:
+> 
+> void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+> 					long delta)
+> {
+> 	unsigned long flags;
+> 
+> 	local_irq_save(flags);
+> 	__mod_node_page_state(pgdat, item, delta);
+> 	local_irq_restore(flags);
+> }
+> 
+> If this breaks PREEMPT_RT, it's broken without memcg too.
 
-Why is this one using the lock? It isn't accessing irq_obj, right?
+The mod_node_page_state() looks fine. But if we use disabling interrupts
+as protecting the RMW operation then this has be used everywhere and can
+not be assumed to be inherited from spin_lock_irq(). Also, none of the
+code here should be invoked from IRQ context on PREEMPT_RT.
 
->  	stock =3D this_cpu_ptr(&memcg_stock);
->  	if (stock->cached !=3D memcg) { /* reset if necessary */
-> @@ -2779,29 +2780,28 @@ static struct mem_cgroup *get_mem_cgroup_from_obj=
-cg(struct obj_cgroup *objcg)
->   * which is cheap in non-preempt kernel. The interrupt context object st=
-ock
->   * can only be accessed after disabling interrupt. User context code can
->   * access interrupt object stock, but not vice versa.
-> + *
-> + * This task and interrupt context optimization is disabled for PREEMPT_=
-RT
-> + * as there is no performance gain in this case.
->   */
->  static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
->  {
-> -	struct memcg_stock_pcp *stock;
-> -
-> -	if (likely(in_task())) {
-> +	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
->  		*pflags =3D 0UL;
->  		preempt_disable();
-> -		stock =3D this_cpu_ptr(&memcg_stock);
-> -		return &stock->task_obj;
-> +		return this_cpu_ptr(&memcg_stock.task_obj);
->  	}
+If the locking scope is known then local_irq_disable() could be replaced
+with a local_lock_t to avoid other things that appear unrelated like the
+memcg_check_events() invocation in uncharge_batch(). The problematic
+part here is mem_cgroup_tree_per_node::lock which can not be acquired
+with disabled interrupts on PREEMPT_RT.
+The "locking scope" is not always clear to me.
+Also, if it is _just_ the counter, then we might solve this differently.
 
-We usually add the local_lock_t to the object it protects, struct
-obj_stock it this case.
-That would give you two different locks (instead of one) so you wouldn't
-have to use preempt_disable() to avoid lockdep's complains. Also it
-would warn you if you happen to use that obj_stock in !in_task() which
-is isn't possible now.
-The only downside would be that drain_local_stock() needs to acquire two
-locks.
+> > - explicitly disabling interrupts and acquiring a spinlock_t based lock
+> >   like in memcg_check_events() -> eventfd_signal().
+> 
+> Similar problem to the above: we disable interrupts to protect RMW
+> sequences that can (on non-preemptrt) be initiated through process
+> context as well as irq context.
+> 
+> IIUC, the PREEMPT_RT construct for handling exactly that scenario is
+> the "local lock". Is that correct?
 
-> =20
-> -	local_irq_save(*pflags);
-> -	stock =3D this_cpu_ptr(&memcg_stock);
-> -	return &stock->irq_obj;
-> +	local_lock_irqsave(&memcg_stock.lock, *pflags);
-> +	return this_cpu_ptr(&memcg_stock.irq_obj);
->  }
-> =20
->  static inline void put_obj_stock(unsigned long flags)
->  {
-> -	if (likely(in_task()))
-> +	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT))
->  		preempt_enable();
->  	else
-> -		local_irq_restore(flags);
-> +		local_unlock_irqrestore(&memcg_stock.lock, flags);
->  }
-> =20
->  /*
+On !PREEMPT_RT this_cpu_inc() can be used in hard-IRQ and task context
+equally while __this_cpu_inc() is "optimized" to be used in IRQ-context/
+a context where it can not be interrupted during its operation.
+local_irq_save() and spin_lock_irq() both disable interrupts here.
+
+On PREEMPT_RT chances are high that the code never runs with disabled
+interrupts. local_irq_save() disables interrupts, yes, but
+spin_lock_irq() does not.
+Therefore a per-object lock, say address_space::i_pages, can
+not be used to protect an otherwise unrelated per-CPU data, a global
+DEFINE_PER_CPU(). The reason is that you can acquire
+address_space::i_pages and get preempted in the middle of
+__this_cpu_inc(). Then another task on the same CPU can acquire
+address_space::i_pages of another struct address_space and perform
+__this_cpu_inc() on the very same per-CPU date. There is your
+interruption of a RMW operation.
+
+local_lock_t is a per-CPU lock which can be used to synchronize access
+to per-CPU variables which are otherwise unprotected / rely on disabled
+preemption / interrupts. So yes, it could be used as a substitute in
+situations where the !PREEMPT_RT needs to manually disable interrupts.
+
+So this:
+
+|func1(struct address_space *m)
+|{
+|  spin_lock_irq(&m->i_pages);
+|  /* other m changes */
+|  __this_cpu_add(counter);
+|  spin_unlock_irq(&m->i_pages);
+|}
+|
+|func2(void)
+|{
+|  local_irq_disable();
+|  __this_cpu_add(counter);
+|  local_irq_enable();
+|}
+
+construct breaks on PREEMPT_RT. With local_lock_t that would be:
+
+|func1(struct address_space *m)
+|{
+|  spin_lock_irq(&m->i_pages);
+|  /* other m changes */
+|  local_lock(&counter_lock);
+|  __this_cpu_add(counter);
+|  local_unlock(&counter_lock);
+|  spin_unlock_irq(&m->i_pages);
+|}
+|
+|func2(void)
+|{
+|  local_lock_irq(&counter_lock);
+|  __this_cpu_add(counter);
+|  local_unlock_irq(&counter_lock);
+|}
+
+Ideally you would attach counter_lock to the same struct where the
+counter is defined so the protection scope is obvious.
+As you see, the local_irq_disable() was substituted with a
+local_lock_irq() but also a local_lock() was added to func1().
+
+> It appears Ingo has already fixed the LRU cache, which for non-rt also
+> relies on irq disabling:
+> 
+> commit b01b2141999936ac3e4746b7f76c0f204ae4b445
+> Author: Ingo Molnar <mingo@kernel.org>
+> Date:   Wed May 27 22:11:15 2020 +0200
+> 
+>     mm/swap: Use local_lock for protection
+> 
+> The memcg charge cache should be fixable the same way.
+> 
+> Likewise, if you fix the generic vmstat counters like this, the memcg
+> implementation can follow suit.
+
+The vmstat counters should be fixed since commit
+   c68ed7945701a ("mm/vmstat: protect per cpu variables with preempt disable on RT")
+
+again by Ingo.
+
+We need to agree how to proceed with these counters. And then we can tackle
+what is left things :)
+It should be enough to disable preemption during the update since on
+PREEMPT_RT that update does not happen in IRQ context.
 
 Sebastian
