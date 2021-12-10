@@ -2,74 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B446FD6E
-	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 10:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB97946FD95
+	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 10:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbhLJJOk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Dec 2021 04:14:40 -0500
-Received: from mail.webdeluxgroup.com ([51.195.117.175]:33238 "EHLO
-        mail.webdeluxgroup.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234276AbhLJJOk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 04:14:40 -0500
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Dec 2021 04:14:40 EST
-Received: by mail.webdeluxgroup.com (Postfix, from userid 1002)
-        id DB0DDA260B; Fri, 10 Dec 2021 09:01:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=webdeluxgroup.com;
-        s=mail; t=1639126865;
-        bh=Ikssx+VmDQhoHuLzKgesrzZ3VGIyKr0VUFS/Kpp5X4A=;
-        h=Date:From:To:Subject:From;
-        b=ga5rtZZka594a1hWq5UPbHfOX7WuWmGm9RuPc4XOWyKyhDP8z8GUeda/BknSNeEyM
-         Y3cLAPkPT/u+RhlvK25YJxQNBLN57X4UqKJvtZt5BKiJO/gpE6NwWL4rl5aeljQwTK
-         3BPJObMsPNYb5lutpvcDngPpkee3r7vzOidIGPPDbay2Kfq/CYbnKQDRJi0tGZnjz0
-         Ju4u36jV8lYDemWRSNEtFT1cfyg9/IWh0ZdJjQjiAyG7yatw5RAohhFveWdLAKpjBQ
-         VYmNnalw6DPfu26vc6Gq4itSaLmbrbKVc9phaEl0r9555iHxBwn/KjMOCvvAYPuWNX
-         Y89ns4H9f1d6w==
-Received: by mail.webdeluxgroup.com for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 09:01:02 GMT
-Message-ID: <20211210074500-0.1.3p.am22.0.rgfa4y58g9@webdeluxgroup.com>
-Date:   Fri, 10 Dec 2021 09:01:02 GMT
-From:   =?UTF-8?Q? "Ji=C5=99=C3=AD_Novotn=C3=BD" ?= 
-        <jiri.novotny@webdeluxgroup.com>
-To:     <cgroups@vger.kernel.org>
-Subject: =?UTF-8?Q?=C3=9Asp=C4=9Bch_kampan=C4=9B?=
-X-Mailer: mail.webdeluxgroup.com
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+        id S239208AbhLJJYJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Dec 2021 04:24:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239202AbhLJJYI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 04:24:08 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F7AC0617A2
+        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 01:20:33 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id t5so27514417edd.0
+        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 01:20:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=SX+FfU5mZDxCoswRXg/krQoh/mf5XisDnoDBVGtWZvI=;
+        b=fa2LOUoLxWv4XALz/wTI0VNk09ZivC+oOpTGEYFmFJQf65kvfkThGd8C0Tunk1nPCF
+         zr+ehwd5gQ7hkPz7TvP32O9oNaZ+SWaichsnJbwlAjkrIZl3xbVi3hO/LIvr6BNuOQhx
+         nA1e31nbAymHHtphxOYLlTzudumNyCS0SOyeG/x56jcrfxisLXkUiOJrnyh64fJ9L4lL
+         5jzumWamcoK8rPC3Eerm1S0JuIyBmd9UbjhYBRBsEL5cEXN/AgzKnGbS3bvmF9qL46ZU
+         Pb10cYUUzk+dKF+1vVfK3LRkPVbSs1/0A18UCloFMsfc3P4bczuLKEK32WPiNZq31EYw
+         I3sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=SX+FfU5mZDxCoswRXg/krQoh/mf5XisDnoDBVGtWZvI=;
+        b=7RffLQPQmIvB1dMh/XOBq44grq+1V/FlFRpWFItQTmpbp/llbYE51aS8eDPDnIpNMU
+         3Skonv1+wPYrtFVaSz6TIhefQEHw1/iIAfU5No8byU8A93V3z32cgIGQk48sutqUztwr
+         gXR+NQIOBDPfb0wriDfLU9hcVIylvNlHFvIerpZ5r4mC07PwJw9+e5VZww9iIMhWecbs
+         WgBKP1ur714lT5rQhHafeCYhGDgjOjQbjqiilzzvDHgPSEZfIuiKORez76IBfooCdQGo
+         d8QgtngANoHrPKDqmCANf3PTx9fMGB8iVPvun1wXtVXjYBhkWducw1IKYLvzyNWtLJfV
+         HqDw==
+X-Gm-Message-State: AOAM5314/FvfiywJmjFBEwThnlatz5mbgNtHfBKECxshx/nv7uCHX218
+        4sv8xPHk7SDq5JzCJNu+kJCm8w==
+X-Google-Smtp-Source: ABdhPJyjRZ85fHSpYIyUt66EHBM4ZpNNk7nXOnCt7DkA0r0LV+HPLXhCEHNQ8Ga6GAUR1sgAm7qHPQ==
+X-Received: by 2002:aa7:cdd9:: with SMTP id h25mr36869911edw.130.1639128032409;
+        Fri, 10 Dec 2021 01:20:32 -0800 (PST)
+Received: from [192.168.1.8] (net-93-70-85-65.cust.vodafonedsl.it. [93.70.85.65])
+        by smtp.gmail.com with ESMTPSA id h10sm1107199edr.95.2021.12.10.01.20.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Dec 2021 01:20:31 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH RFC 0/9] support concurrent sync io for bfq on a specail
+ occasion
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20211127101132.486806-1-yukuai3@huawei.com>
+Date:   Fri, 10 Dec 2021 10:20:29 +0100
+Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <D3FF0820-6A51-46A1-A363-8FFA8CCD2851@linaro.org>
+References: <20211127101132.486806-1-yukuai3@huawei.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dobr=C3=BD den,
-
-Prod=C3=A1v=C3=A1te sv=C3=A9 v=C3=BDrobky p=C5=99=C3=ADmo spot=C5=99ebite=
-l=C5=AFm prost=C5=99ednictv=C3=ADm kan=C3=A1lu E-Commerce?=20
-
-Pokud ano, r=C3=A1d bych v=C3=A1m p=C5=99edstavil mo=C5=BEnosti a p=C5=99=
-=C3=ADklady, jak zv=C3=BD=C5=A1it v=C3=BDnosy z tohoto kan=C3=A1lu.=20
-
-P=C5=99ed =C4=8Dasem se n=C3=A1m ozvala spole=C4=8Dnost, kter=C3=A1 cht=C4=
-=9Bla v=C3=BDrazn=C4=9B zlep=C5=A1it v=C3=BDsledky ve v=C5=A1ech kan=C3=A1=
-lech, jejich=C5=BE prost=C5=99ednictv=C3=ADm oslovuje z=C3=A1kazn=C3=ADky=
-=2E
-
-C=C3=ADlem bylo dos=C3=A1hnout stabiln=C3=ADch, m=C4=9B=C5=99iteln=C3=BDc=
-h v=C3=BDnos=C5=AF a tak=C3=A9 roz=C5=A1=C3=AD=C5=99it p=C5=AFsobnost na =
-mezin=C3=A1rodn=C3=AD trhy.=20
-
-Zjednodu=C5=A1ili jsme strukturu kampan=C3=AD, zlep=C5=A1ili rozmanitost =
-reklam a komunikace a tak=C3=A9 jsme vytvo=C5=99ili nestandardn=C3=AD kat=
-alog v=C3=BDrobk=C5=AF. Implementovali jsme =C5=99e=C5=A1en=C3=AD, kter=C3=
-=A1 vedla k lep=C5=A1=C3=ADmu v=C3=BDsledku CPC, zv=C3=BD=C5=A1en=C3=AD C=
-TR a zlep=C5=A1en=C3=AD konverze potenci=C3=A1ln=C3=ADch z=C3=A1kazn=C3=AD=
-k=C5=AF na nakupuj=C3=ADc=C3=AD z=C3=A1kazn=C3=ADky.=20
-
-D=C3=ADky na=C5=A1im komplexn=C3=ADm aktivit=C3=A1m se v=C3=BDrazn=C4=9B =
-zv=C3=BD=C5=A1il ROI index a v=C3=BDnosy a=C5=BE o 95 %. Stoj=C3=AD za to=
- probrat, jak to ve Va=C5=A1=C3=AD spole=C4=8Dnosti vypad=C3=A1 a co v=C3=
-=A1m m=C5=AF=C5=BEeme nab=C3=ADdnout. Pokud m=C3=A1te z=C3=A1jem o kr=C3=A1=
-tk=C3=BD rozhovor, dejte mi v=C4=9Bd=C4=9Bt. N=C3=A1=C5=A1 anglicky mluv=C3=
-=ADc=C3=AD z=C3=A1stupce V=C3=A1s bude okam=C5=BEit=C4=9B kontaktovat.
 
 
-S p=C5=99=C3=A1telsk=C3=BDm pozdravem
-Ji=C5=99=C3=AD Novotn=C3=BD
+> Il giorno 27 nov 2021, alle ore 11:11, Yu Kuai <yukuai3@huawei.com> ha =
+scritto:
+>=20
+> Bfq can't handle sync io concurrently as long as the io are not issued
+> from root group currently.
+>=20
+> Previous patch set:
+> =
+https://lore.kernel.org/lkml/20211014014556.3597008-2-yukuai3@huawei.com/t=
+/
+>=20
+> During implemting the method mentioned by the above patch set, I found
+> more problems that will block implemting concurrent sync io. The
+> modifications of this patch set are as follows:
+>=20
+> 1) count root group into 'num_groups_with_pending_reqs';
+> 2) don't idle if 'num_groups_with_pending_reqs' is 1;
+> 3) If the group doesn't have pending requests while it's child groups
+> have pending requests, don't count the group.
+
+Why don't yo count the parent group? It seems to me that we should count =
+it.
+
+> 4) Once the group doesn't have pending requests, decrease
+> 'num_groups_with_pending_reqs' immediately. Don't delay to when all
+> it's child groups don't have pending requests.
+>=20
+
+I guess this action is related to 3).
+
+Thanks,
+Paolo
+
+> Noted that I just tested basic functionality of this patchset, and I
+> think it's better to see if anyone have suggestions or better
+> solutions.
+>=20
+> Yu Kuai (9):
+>  block, bfq: add new apis to iterate bfq entities
+>  block, bfq: apply news apis where root group is not expected
+>  block, bfq: handle the case when for_each_entity() access root group
+>  block, bfq: count root group into 'num_groups_with_pending_reqs'
+>  block, bfq: do not idle if only one cgroup is activated
+>  block, bfq: only count group that the bfq_queue belongs to
+>  block, bfq: record how many queues have pending requests in bfq_group
+>  block, bfq: move forward __bfq_weights_tree_remove()
+>  block, bfq: decrease 'num_groups_with_pending_reqs' earlier
+>=20
+> block/bfq-cgroup.c  |  3 +-
+> block/bfq-iosched.c | 92 +++++++++++++++++++++++----------------------
+> block/bfq-iosched.h | 41 +++++++++++++-------
+> block/bfq-wf2q.c    | 44 +++++++++++++++-------
+> 4 files changed, 106 insertions(+), 74 deletions(-)
+>=20
+> --=20
+> 2.31.1
+>=20
+
