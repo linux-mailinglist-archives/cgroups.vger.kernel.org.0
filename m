@@ -2,198 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884D146F962
-	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 03:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0411746FC46
+	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 09:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbhLJC43 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Dec 2021 21:56:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41684 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236078AbhLJC42 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Dec 2021 21:56:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639104773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OvObI7nEXeJiZonfZvXDNg0asabJh1D86F98Up+TTk8=;
-        b=XFbEN74WKqKzONMxzHNv8zI7D4VN2+nB/kKMke9VhQCSY4FptAWMqV+5R8MyE/mpuDBSw2
-        xSq5d4M5sG6uAefJYvMryhwFjbAuCzYbW+r6l0zgQ/DCAnzujFIFcsfbAN2AJWbhG6I/R1
-        TNU+IgJZp7ECEPcjvVSEd6rM4akh2tg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-349-orEd3y_JP3aOQL36R6lfDw-1; Thu, 09 Dec 2021 21:52:47 -0500
-X-MC-Unique: orEd3y_JP3aOQL36R6lfDw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED35E190B2CA;
-        Fri, 10 Dec 2021 02:52:45 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C00F100AE22;
-        Fri, 10 Dec 2021 02:52:39 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v2] mm/memcg: Properly handle memcg_stock access for PREEMPT_RT
-Date:   Thu,  9 Dec 2021 21:52:28 -0500
-Message-Id: <20211210025228.158196-1-longman@redhat.com>
+        id S238114AbhLJIIZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Dec 2021 03:08:25 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:32901 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238135AbhLJIIY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 03:08:24 -0500
+Received: from kwepemi500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J9NjG4pVgzcdVk;
+        Fri, 10 Dec 2021 16:04:34 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500005.china.huawei.com (7.221.188.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 10 Dec 2021 16:04:48 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
+ (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 10 Dec
+ 2021 16:04:47 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>, <tj@kernel.org>
+CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH RFC] block, bfq: update pos_root for idle bfq_queue in bfq_bfqq_move()
+Date:   Fri, 10 Dec 2021 16:16:41 +0800
+Message-ID: <20211210081641.3025060-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Direct calls to local_irq_{save/restore}() and preempt_{enable/disable}()
-are not appropriate for PREEMPT_RT. To provide better PREEMPT_RT support,
-change local_irq_{save/restore}() to local_lock_irq{save/restore}() and
-add a local_lock_t to struct memcg_stock_pcp.
+During code review, we found that if bfqq is not busy in
+bfq_bfqq_move(), bfq_pos_tree_add_move() won't be called for the bfqq,
+thus bfqq->pos_root still points to the old bfqg. However, the ref
+that bfqq hold for the old bfqg will be released, so it's possible
+that the old bfqg can be freed. This is problematic because the freed
+bfqg can still be accessed by bfqq->pos_root.
 
-Also disable the task and interrupt context optimization for obj_stock as
-there will be no performance gain in the case of PREEMPT_RT. In this case,
-task obj_stock will be there but remain unused.
+Fix the problem by calling bfq_pos_tree_add_move() for idle bfqq
+as well.
 
-Note that preempt_enable() and preempt_disable() in get_obj_stock() and
-put_obj_stock() are not replaced by local_lock() and local_unlock() as it
-is possible that a task accessing task_obj may get interrupted and then
-access irq_obj concurrently. So using local_lock for task_obj access
-may cause lockdep splat.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- mm/memcontrol.c | 41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
+ block/bfq-cgroup.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a09a7d2e0b1b..8bed8e2993e4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2097,6 +2097,7 @@ struct obj_stock {
- };
- 
- struct memcg_stock_pcp {
-+	local_lock_t lock;
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
- 	struct obj_stock task_obj;
-@@ -2145,7 +2146,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	if (nr_pages > MEMCG_CHARGE_BATCH)
- 		return ret;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&memcg_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
-@@ -2153,7 +2154,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 		ret = true;
- 	}
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&memcg_stock.lock, flags);
- 
- 	return ret;
- }
-@@ -2189,7 +2190,7 @@ static void drain_local_stock(struct work_struct *dummy)
- 	 * drain_stock races is that we always operate on local CPU stock
- 	 * here with IRQ disabled
- 	 */
--	local_irq_save(flags);
-+	local_lock_irqsave(&memcg_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	drain_obj_stock(&stock->irq_obj);
-@@ -2198,7 +2199,7 @@ static void drain_local_stock(struct work_struct *dummy)
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&memcg_stock.lock, flags);
- }
- 
- /*
-@@ -2210,7 +2211,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&memcg_stock.lock, flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
- 	if (stock->cached != memcg) { /* reset if necessary */
-@@ -2223,7 +2224,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
- 	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
- 		drain_stock(stock);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&memcg_stock.lock, flags);
- }
- 
- /*
-@@ -2779,29 +2780,28 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
-  * which is cheap in non-preempt kernel. The interrupt context object stock
-  * can only be accessed after disabling interrupt. User context code can
-  * access interrupt object stock, but not vice versa.
-+ *
-+ * This task and interrupt context optimization is disabled for PREEMPT_RT
-+ * as there is no performance gain in this case.
-  */
- static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 24a5c5329bcd..85f34c29b909 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -645,6 +645,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 		   struct bfq_group *bfqg)
  {
--	struct memcg_stock_pcp *stock;
--
--	if (likely(in_task())) {
-+	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
- 		*pflags = 0UL;
- 		preempt_disable();
--		stock = this_cpu_ptr(&memcg_stock);
--		return &stock->task_obj;
-+		return this_cpu_ptr(&memcg_stock.task_obj);
- 	}
+ 	struct bfq_entity *entity = &bfqq->entity;
++	struct bfq_group *old_parent = bfqq_group(bfqq);
  
--	local_irq_save(*pflags);
--	stock = this_cpu_ptr(&memcg_stock);
--	return &stock->irq_obj;
-+	local_lock_irqsave(&memcg_stock.lock, *pflags);
-+	return this_cpu_ptr(&memcg_stock.irq_obj);
- }
+ 	/*
+ 	 * Get extra reference to prevent bfqq from being freed in
+@@ -666,7 +667,6 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 		bfq_deactivate_bfqq(bfqd, bfqq, false, false);
+ 	else if (entity->on_st_or_in_serv)
+ 		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
+-	bfqg_and_blkg_put(bfqq_group(bfqq));
  
- static inline void put_obj_stock(unsigned long flags)
- {
--	if (likely(in_task()))
-+	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT))
- 		preempt_enable();
- 	else
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&memcg_stock.lock, flags);
- }
+ 	if (entity->parent &&
+ 	    entity->parent->last_bfqq_created == bfqq)
+@@ -679,11 +679,16 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	/* pin down bfqg and its associated blkg  */
+ 	bfqg_and_blkg_get(bfqg);
  
- /*
-@@ -7088,9 +7088,12 @@ static int __init mem_cgroup_init(void)
- 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
- 				  memcg_hotplug_cpu_dead);
- 
--	for_each_possible_cpu(cpu)
--		INIT_WORK(&per_cpu_ptr(&memcg_stock, cpu)->work,
--			  drain_local_stock);
-+	for_each_possible_cpu(cpu) {
-+		struct memcg_stock_pcp *stock = per_cpu_ptr(&memcg_stock, cpu);
+-	if (bfq_bfqq_busy(bfqq)) {
+-		if (unlikely(!bfqd->nonrot_with_queueing))
+-			bfq_pos_tree_add_move(bfqd, bfqq);
++	/*
++	 * Don't leave the pos_root to old bfqg, since the ref to old bfqg will
++	 * be released and the bfqg might be freed.
++	 */
++	if (unlikely(!bfqd->nonrot_with_queueing))
++		bfq_pos_tree_add_move(bfqd, bfqq);
++	bfqg_and_blkg_put(old_parent);
 +
-+		INIT_WORK(&stock->work, drain_local_stock);
-+		local_lock_init(&stock->lock);
-+	}
++	if (bfq_bfqq_busy(bfqq))
+ 		bfq_activate_bfqq(bfqd, bfqq);
+-	}
  
- 	for_each_node(node) {
- 		struct mem_cgroup_tree_per_node *rtpn;
+ 	if (!bfqd->in_service_queue && !bfqd->rq_in_driver)
+ 		bfq_schedule_dispatch(bfqd);
 -- 
-2.27.0
+2.31.1
 
