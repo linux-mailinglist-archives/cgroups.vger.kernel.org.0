@@ -2,136 +2,192 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FBE46EBF3
-	for <lists+cgroups@lfdr.de>; Thu,  9 Dec 2021 16:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D13A46F8F7
+	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 03:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbhLIPnj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Dec 2021 10:43:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59350 "EHLO
+        id S235778AbhLJCK3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Dec 2021 21:10:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24869 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234915AbhLIPni (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Dec 2021 10:43:38 -0500
+        by vger.kernel.org with ESMTP id S229761AbhLJCK3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Dec 2021 21:10:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639064404;
+        s=mimecast20190719; t=1639102014;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QT9+Eto76AQyhw6YgaOC53MIX23XQDyrz/FUT+QNKSA=;
-        b=dYjylCBIokIyQKxgJ1aSna9N1EbyiHGqWDSQHiIv2r+S3ugqP70v3LYBWJh0+D8FqJ/ln/
-        b0RI2zTGOiDY7Z//JWGZduwFgDaF8C0DvtvPqVkSrl1Zh9IGp8nAXWu4RDvqICPaJ0Ohd5
-        zAgP906+XSGnxNUc4OUq8u0RdmipaEk=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Z2vD9OEgeBTpm8HRDHiQcgDjdIwItFgYD9G96kIg5Tw=;
+        b=A8DwdPE6V6RkqyrG5DQAm+SHrXuuvD+wkWbERUjHbctjwEtjU3XxucosICr8IwY7mSg0Cd
+        wVxClIAftIVxH7vAcGjzKofF0xZwqPTOdTRKPsCXusPwVG4eFTY6ZSD9GePmJrTFiJQR23
+        Tnk2BlurjSq943lTULslD65dJaQnjXM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-153-aqBLroqWND6umz035CDTRg-1; Thu, 09 Dec 2021 10:40:00 -0500
-X-MC-Unique: aqBLroqWND6umz035CDTRg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-174-ld7YJdW7NDufNP4VeZIwgQ-1; Thu, 09 Dec 2021 21:06:53 -0500
+X-MC-Unique: ld7YJdW7NDufNP4VeZIwgQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AE9A100CCCB;
-        Thu,  9 Dec 2021 15:39:58 +0000 (UTC)
-Received: from [10.22.10.109] (unknown [10.22.10.109])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AE0E04ABB5;
-        Thu,  9 Dec 2021 15:39:55 +0000 (UTC)
-Message-ID: <f74efd4a-eee8-3927-f975-92b4c457cb9c@redhat.com>
-Date:   Thu, 9 Dec 2021 10:39:55 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v9 0/7] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20211205183220.818872-1-longman@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 509121023F4D;
+        Fri, 10 Dec 2021 02:06:51 +0000 (UTC)
+Received: from llong.com (unknown [10.22.32.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 08EC05D9D5;
+        Fri, 10 Dec 2021 02:06:46 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211205183220.818872-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] mm/memcg: Properly handle memcg_stock access for PREEMPT_RT
+Date:   Thu,  9 Dec 2021 21:06:32 -0500
+Message-Id: <20211210020632.150769-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/5/21 13:32, Waiman Long wrote:
-> v9:
->   - Add a new patch 1 to remove the child cpuset restriction on parent's
->     "cpuset.cpus".
->   - Relax initial root partition entry limitation to allow cpuset.cpus to
->     overlap that of parent's.
->   - An "isolated invalid" displayed type is added to
->     cpuset.cpus.partition.
->   - Resetting partition root to "member" will leave child partition root
->     as invalid.
->   - Update documentation and test accordingly.
->
-> v8:
->   - Reorganize the patch series and rationalize the features and
->     constraints of a partition.
->   - Update patch descriptions and documentation accordingly.
->
-> v7:
->   - Simplify the documentation patch (patch 5) as suggested by Tejun.
->   - Fix a typo in patch 2 and improper commit log in patch 3.
->
-> This patchset includes one bug fix and four enhancements to the cpuset v2 code.
->
->   Patch 1: Allow parent to set "cpuset.cpus" that may not be a superset
->   of children's "cpuset.cpus" for default hierarchy.
->
->   Patch 2: Enable partition with no task to have empty cpuset.cpus.effective.
->
->   Patch 3: Refining the features and constraints of a cpuset partition
->   clarifying what changes are allowed.
->
->   Patch 4: Add a new partition state "isolated" to create a partition
->   root without load balancing. This is for handling intermitten workloads
->   that have a strict low latency requirement.
->
->   Patch 5: Enable the "cpuset.cpus.partition" file to show the reason
->   that causes invalid partition like "root invalid (No cpu available
->   due to hotplug)".
->
-> Patch 6 updates the cgroup-v2.rst file accordingly. Patch 7 adds a new
-> cpuset test to test the new cpuset partition code.
->
-> Waiman Long (7):
->    cgroup/cpuset: Don't let child cpusets restrict parent in default
->      hierarchy
->    cgroup/cpuset: Allow no-task partition to have empty
->      cpuset.cpus.effective
->    cgroup/cpuset: Refining features and constraints of a partition
->    cgroup/cpuset: Add a new isolated cpus.partition type
->    cgroup/cpuset: Show invalid partition reason string
->    cgroup/cpuset: Update description of cpuset.cpus.partition in
->      cgroup-v2.rst
->    kselftest/cgroup: Add cpuset v2 partition root state test
->
->   Documentation/admin-guide/cgroup-v2.rst       | 168 +++--
->   kernel/cgroup/cpuset.c                        | 440 +++++++-----
->   tools/testing/selftests/cgroup/Makefile       |   5 +-
->   .../selftests/cgroup/test_cpuset_prs.sh       | 667 ++++++++++++++++++
->   tools/testing/selftests/cgroup/wait_inotify.c |  87 +++
->   5 files changed, 1142 insertions(+), 225 deletions(-)
->   create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
->   create mode 100644 tools/testing/selftests/cgroup/wait_inotify.c
->
-Hi,
+Direct calls to local_irq_{save/restore}() and preempt_{enable/disable}()
+are not appropriate for PREEMPT_RT. To provide better PREEMPT_RT support,
+change local_irq_{save/restore}() to local_lock_irq{save/restore}() and
+add a local_lock_t to struct memcg_stock_pcp.
 
-Is this patch series good enough or is there other changes you would 
-still like to make in this series?
+Also disable the task and interrupt context optimization for obj_stock as
+there will be no performance gain in the case of PREEMPT_RT. In this case,
+task obj_stock will be there but remain unused.
 
-Cheers,
-Longman
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ mm/memcontrol.c | 41 ++++++++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 19 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6863a834ed42..c984d3054478 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2109,6 +2109,7 @@ struct obj_stock {
+ };
+ 
+ struct memcg_stock_pcp {
++	local_lock_t lock;
+ 	struct mem_cgroup *cached; /* this never be root cgroup */
+ 	unsigned int nr_pages;
+ 	struct obj_stock task_obj;
+@@ -2147,29 +2148,28 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+  * which is cheap in non-preempt kernel. The interrupt context object stock
+  * can only be accessed after disabling interrupt. User context code can
+  * access interrupt object stock, but not vice versa.
++ *
++ * This task and interrupt context optimization is disabled for PREEMPT_RT
++ * as there is no performance gain in this case.
+  */
+ static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+ {
+-	struct memcg_stock_pcp *stock;
+-
+-	if (likely(in_task())) {
++	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+ 		*pflags = 0UL;
+ 		preempt_disable();
+-		stock = this_cpu_ptr(&memcg_stock);
+-		return &stock->task_obj;
++		return this_cpu_ptr(&memcg_stock.task_obj);
+ 	}
+ 
+-	local_irq_save(*pflags);
+-	stock = this_cpu_ptr(&memcg_stock);
+-	return &stock->irq_obj;
++	local_lock_irqsave(&memcg_stock.lock, *pflags);
++	return this_cpu_ptr(&memcg_stock.irq_obj);
+ }
+ 
+ static inline void put_obj_stock(unsigned long flags)
+ {
+-	if (likely(in_task()))
++	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT))
+ 		preempt_enable();
+ 	else
+-		local_irq_restore(flags);
++		local_unlock_irqrestore(&memcg_stock.lock, flags);
+ }
+ 
+ /**
+@@ -2192,7 +2192,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	if (nr_pages > MEMCG_CHARGE_BATCH)
+ 		return ret;
+ 
+-	local_irq_save(flags);
++	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
+@@ -2200,7 +2200,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 		ret = true;
+ 	}
+ 
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&memcg_stock.lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2236,7 +2236,7 @@ static void drain_local_stock(struct work_struct *dummy)
+ 	 * drain_stock races is that we always operate on local CPU stock
+ 	 * here with IRQ disabled
+ 	 */
+-	local_irq_save(flags);
++	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	drain_obj_stock(&stock->irq_obj);
+@@ -2245,7 +2245,7 @@ static void drain_local_stock(struct work_struct *dummy)
+ 	drain_stock(stock);
+ 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+ 
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&memcg_stock.lock, flags);
+ }
+ 
+ /*
+@@ -2257,7 +2257,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	struct memcg_stock_pcp *stock;
+ 	unsigned long flags;
+ 
+-	local_irq_save(flags);
++	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (stock->cached != memcg) { /* reset if necessary */
+@@ -2270,7 +2270,7 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
+ 		drain_stock(stock);
+ 
+-	local_irq_restore(flags);
++	local_unlock_irqrestore(&memcg_stock.lock, flags);
+ }
+ 
+ /*
+@@ -7059,9 +7059,12 @@ static int __init mem_cgroup_init(void)
+ 	cpuhp_setup_state_nocalls(CPUHP_MM_MEMCQ_DEAD, "mm/memctrl:dead", NULL,
+ 				  memcg_hotplug_cpu_dead);
+ 
+-	for_each_possible_cpu(cpu)
+-		INIT_WORK(&per_cpu_ptr(&memcg_stock, cpu)->work,
+-			  drain_local_stock);
++	for_each_possible_cpu(cpu) {
++		struct memcg_stock_pcp *stock = per_cpu_ptr(&memcg_stock, cpu);
++
++		INIT_WORK(&stock->work, drain_local_stock);
++		local_lock_init(&stock->lock);
++	}
+ 
+ 	for_each_node(node) {
+ 		struct mem_cgroup_tree_per_node *rtpn;
+-- 
+2.27.0
 
