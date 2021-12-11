@@ -2,114 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB72470B3C
-	for <lists+cgroups@lfdr.de>; Fri, 10 Dec 2021 21:00:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E23471039
+	for <lists+cgroups@lfdr.de>; Sat, 11 Dec 2021 03:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243594AbhLJUDq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Dec 2021 15:03:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
+        id S1345641AbhLKCFo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Dec 2021 21:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240266AbhLJUDq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 15:03:46 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC30DC061746;
-        Fri, 10 Dec 2021 12:00:10 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id m192so8812709qke.2;
-        Fri, 10 Dec 2021 12:00:10 -0800 (PST)
+        with ESMTP id S1345652AbhLKCFl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 21:05:41 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C52C061D60
+        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id l7so16186944lja.2
+        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yLZJvjoofMd+xeF11awcZvcV4Nn3U+z+fMY0sp4o/sA=;
-        b=BjS8Vig6e8gQ4F0ZwsS3QThNYRE1ejxTIXemMKWA/aHL8GjyLyTAhPf/Yn4mdskwdf
-         aGk3YFZk3sckvjvH/XRMg6GqWCMnutMR9SLLbsDTP1CWCGbMFyuGWDDSQPaHvMh5uDPY
-         z3K0J/UJ88uHGHrSEaJG1bGYB13RPUe6ug+5eyDprQAY+8kISqRD/Kokt2j8/3EEjF+w
-         Ij8EsV1Mq18LEA8wgQtDhSBN+KwwoFXMxKkv0Z2fiFWa5YOwIw2jy2ERGW9Ua+or7G2V
-         K+1YH+vLDsvdwnJNUccX+KEsh3seflpRZHOnjBrh8z4QksUW5Fl5x9DJB9B0f+zojjUf
-         OS7Q==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
+        b=YLFlW2EU3wC14KpVTk+IM58oSghSYLjMmVu6zQ/IYCwgsR5Sf12xJCL/5+CVpbXsnt
+         22KfNqT06o98mhCtfoOfWNh/4tfFmj2AFDjLdssqJs8+fwuuzWeqstsrP9Eqc87OlMHn
+         TvZYh66KNDgDYMOMzV+7fqlsVNnsPbs5tbKal0uE5CTp2Rk7sipJ65nnPaJWW6urjiYG
+         yjhaQr0+DsLsyIMnaiNd6rjtUc7yQgIo65YEuBLpX5cuMOVjNiZW8dTCMF1ZcQmI8lLg
+         ts2zRNIssQ7WVu8YEQseHp9elEHPuA+qDafMGck3ipNTcw1LcoccQXJFJcltFVTtty4m
+         33gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yLZJvjoofMd+xeF11awcZvcV4Nn3U+z+fMY0sp4o/sA=;
-        b=Dx+NJm6x/C3CHoQepItXqF4lsIPRIZd/9oL3LugMo7WZOZSfFuw/BACPPfX8f+XAyY
-         geiV4x4SfO7gr4BzOlaM2Tf0/A1vG5Ne6MwYwTAMDvGisQREwS9Ioh9BAh9GvmaYoZqM
-         /gAnWWuL3KYipsaiV00SAGjxGhbEqGiHWilt1RyLMAB4OvHRkXAxoWXvyw+A2yS6eFjB
-         WzfEQZgzA9GL3+LxKZSRutZeKRhgh/r+0xy/BJpxa7qzpBD+713s/MlWsBc0yAE9d98D
-         /lraNNCdaV/Olb7b62mpigCnRq/l3qfrrZLfl0lOcjAH8ARCcHVrA5B06pBEDABYsBHA
-         Vwbg==
-X-Gm-Message-State: AOAM5304Lol54WaJk3+sSjzl32oTmfSur9NuPHCAML6d8aJhn2RZ6Fhb
-        bl4moShumQ9aIKATIZSfH8I=
-X-Google-Smtp-Source: ABdhPJxcyt16X640iWzcAvnwZWhPX3Xnns70Dp67SogNqM2UhY/oywrxq/hOGQnDCQLuwDoSew/1nA==
-X-Received: by 2002:a37:e105:: with SMTP id c5mr22591377qkm.777.1639166409684;
-        Fri, 10 Dec 2021 12:00:09 -0800 (PST)
-Received: from dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com ([2620:10d:c091:500::1:a9d6])
-        by smtp.gmail.com with ESMTPSA id v4sm1734537qkp.118.2021.12.10.12.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Dec 2021 12:00:09 -0800 (PST)
-Date:   Fri, 10 Dec 2021 15:00:06 -0500
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: add group_oom_kill memory event
-Message-ID: <YbOxxhuQ3a1Myd6v@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-References: <20211203162426.3375036-1-schatzberg.dan@gmail.com>
- <CALvZod6y+_O49jzuD9wLXncCEGCgun4f-uf_yBzYcsfEiH1WOQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
+        b=aRspIybTRng6cScE6u0f6j7BEbqxzKbYMawCmb+HwhWRo1bmSB3ZMzae6mEi1pgxZ+
+         IXMKcdFoJb8snxHxMYlBntHYk5xoMvYAuokltvVTACkvVREERs/lrfuWIuPGBV6Va5L4
+         aJni3afJ+sEBm62arXuprYeduumK/cmDJTURk4UvO6xIvebi+Lpj2A3msolIQALWdhi3
+         3rsA+6o/Ior4rZRrP8l/AEqTc0TipH9oUYUWZf5SnDVL5S3Lm9wu/4UN1anhN1OZntFf
+         RZjprzGmwUUXjw188ml+FAdDawYRuy+/j/Qvrknk8Bpqu+/OSf8Jons1MWvbJEql0IoG
+         0aGg==
+X-Gm-Message-State: AOAM533xe9JfrgOmSIou7mZvTJ9KpvKhc8k04gvVpQj3ySxVZyVbGu/H
+        fGBOSOIOLePKTdiXwukz2ntllIZGonrHwRkW+BI=
+X-Google-Smtp-Source: ABdhPJxBVYZ26kuukI+qghu2oEbePULLlY8UzOvy8Thh2XI49DVZF++TlN5eyoWkvajWnohXM36KonRfGTJC1IRe82w=
+X-Received: by 2002:a2e:9d8f:: with SMTP id c15mr17452679ljj.477.1639188123220;
+ Fri, 10 Dec 2021 18:02:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6y+_O49jzuD9wLXncCEGCgun4f-uf_yBzYcsfEiH1WOQ@mail.gmail.com>
+Received: by 2002:a05:6512:12c7:0:0:0:0 with HTTP; Fri, 10 Dec 2021 18:02:02
+ -0800 (PST)
+Reply-To: internationallmonetary695@gmail.com
+From:   International Monetary fund <abubakarsadiq1297@gmail.com>
+Date:   Fri, 10 Dec 2021 18:02:02 -0800
+Message-ID: <CAHXNoSg3Z7iK4ieUWhau28hUaL637ztb2vgqOT3oZCxEMRC3RQ@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Dec 03, 2021 at 04:45:54PM -0800, Shakeel Butt wrote:
-> On Fri, Dec 3, 2021 at 8:24 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> >
-> > Our container agent wants to know when a container exits if it was OOM
-> > killed or not to report to the user. We use memory.oom.group = 1 to
-> > ensure that OOM kills within the container's cgroup kill
-> > everything. Existing memory.events are insufficient for knowing if
-> > this triggered:
-> >
-> > 1) Our current approach reads memory.events oom_kill and reports the
-> > container was killed if the value is non-zero. This is erroneous in
-> > some cases where containers create their children cgroups with
-> > memory.oom.group=1 as such OOM kills will get counted against the
-> > container cgroup's oom_kill counter despite not actually OOM killing
-> > the entire container.
-> >
-> > 2) Reading memory.events.local will fail to identify OOM kills in leaf
-> > cgroups (that don't set memory.oom.group) within the container cgroup.
-> >
-> > This patch adds a new oom_group_kill event when memory.oom.group
-> > triggers to allow userspace to cleanly identify when an entire cgroup
-> > is oom killed.
-> >
-> > Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> 
-> So, with this patch, will you be watching oom_group_kill from
-> memory.events or memory.events.local file for your use-case?
-> 
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+-- 
+ I.M.F Head Office
+#1900 Pennsylvania Ave NW,
+Washington, DC 20431
+INTERNATIONAL MONETARY FUND.
+REF:-XVGNN82010
+internationallmonetary695@gmail.com
+Telephone : +12062785473
 
-We will watch from memory.events.local. If containers want to
-construct their own child cgroups and allow for group oom to occur
-inside, that's fine - a future container exit should not result in us
-claiming the container was OOM killed. If the container exits and
-memory.event.local shows oom_group_kill > 0 then we know the container
-was OOM killed.
+This message is from International Monetary fund (IMF) I am Mr Bo Li
+deputy to  Kristalina Georgieva the current president of International
+  Monetary fund (IMF) We are aware of the stress you have been passing
+through and how you have lost your money trying to claim your fund ,
+you have to worry no more for the international monetary fund is fully
+ in-charge of your fund now, contact  me for more info on how you will
+receive your fund( internationallmonetary695@gmail.com) or call me
+on-Telephone : +12062785473 for more info.
+
+Regards,
+Mr Bo Li
