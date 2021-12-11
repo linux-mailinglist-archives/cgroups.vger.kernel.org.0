@@ -2,77 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E23471039
-	for <lists+cgroups@lfdr.de>; Sat, 11 Dec 2021 03:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A3247109F
+	for <lists+cgroups@lfdr.de>; Sat, 11 Dec 2021 03:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345641AbhLKCFo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Dec 2021 21:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345652AbhLKCFl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 21:05:41 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C52C061D60
-        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id l7so16186944lja.2
-        for <cgroups@vger.kernel.org>; Fri, 10 Dec 2021 18:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
-        b=YLFlW2EU3wC14KpVTk+IM58oSghSYLjMmVu6zQ/IYCwgsR5Sf12xJCL/5+CVpbXsnt
-         22KfNqT06o98mhCtfoOfWNh/4tfFmj2AFDjLdssqJs8+fwuuzWeqstsrP9Eqc87OlMHn
-         TvZYh66KNDgDYMOMzV+7fqlsVNnsPbs5tbKal0uE5CTp2Rk7sipJ65nnPaJWW6urjiYG
-         yjhaQr0+DsLsyIMnaiNd6rjtUc7yQgIo65YEuBLpX5cuMOVjNiZW8dTCMF1ZcQmI8lLg
-         ts2zRNIssQ7WVu8YEQseHp9elEHPuA+qDafMGck3ipNTcw1LcoccQXJFJcltFVTtty4m
-         33gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=UB8HPXfiFrSS8lJHVD9imqT8IM8lXgQeVTQMVTTdoew=;
-        b=aRspIybTRng6cScE6u0f6j7BEbqxzKbYMawCmb+HwhWRo1bmSB3ZMzae6mEi1pgxZ+
-         IXMKcdFoJb8snxHxMYlBntHYk5xoMvYAuokltvVTACkvVREERs/lrfuWIuPGBV6Va5L4
-         aJni3afJ+sEBm62arXuprYeduumK/cmDJTURk4UvO6xIvebi+Lpj2A3msolIQALWdhi3
-         3rsA+6o/Ior4rZRrP8l/AEqTc0TipH9oUYUWZf5SnDVL5S3Lm9wu/4UN1anhN1OZntFf
-         RZjprzGmwUUXjw188ml+FAdDawYRuy+/j/Qvrknk8Bpqu+/OSf8Jons1MWvbJEql0IoG
-         0aGg==
-X-Gm-Message-State: AOAM533xe9JfrgOmSIou7mZvTJ9KpvKhc8k04gvVpQj3ySxVZyVbGu/H
-        fGBOSOIOLePKTdiXwukz2ntllIZGonrHwRkW+BI=
-X-Google-Smtp-Source: ABdhPJxBVYZ26kuukI+qghu2oEbePULLlY8UzOvy8Thh2XI49DVZF++TlN5eyoWkvajWnohXM36KonRfGTJC1IRe82w=
-X-Received: by 2002:a2e:9d8f:: with SMTP id c15mr17452679ljj.477.1639188123220;
- Fri, 10 Dec 2021 18:02:03 -0800 (PST)
+        id S235331AbhLKCOa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Dec 2021 21:14:30 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:29181 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhLKCOa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Dec 2021 21:14:30 -0500
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J9rmC4Vr3z8vlC;
+        Sat, 11 Dec 2021 10:08:43 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 11 Dec 2021 10:10:52 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Sat, 11 Dec 2021 10:10:51 +0800
+Subject: Re: [PATCH RFC 9/9] block, bfq: decrease
+ 'num_groups_with_pending_reqs' earlier
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20211127101132.486806-1-yukuai3@huawei.com>
+ <20211127101132.486806-10-yukuai3@huawei.com>
+ <AA66019E-FD14-4821-B53D-0C56EEC38828@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <4765e7f8-48b7-3bc6-5eb6-1dc0a569233d@huawei.com>
+Date:   Sat, 11 Dec 2021 10:10:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6512:12c7:0:0:0:0 with HTTP; Fri, 10 Dec 2021 18:02:02
- -0800 (PST)
-Reply-To: internationallmonetary695@gmail.com
-From:   International Monetary fund <abubakarsadiq1297@gmail.com>
-Date:   Fri, 10 Dec 2021 18:02:02 -0800
-Message-ID: <CAHXNoSg3Z7iK4ieUWhau28hUaL637ztb2vgqOT3oZCxEMRC3RQ@mail.gmail.com>
-Subject: Dear Beneficiary,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <AA66019E-FD14-4821-B53D-0C56EEC38828@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
--- 
- I.M.F Head Office
-#1900 Pennsylvania Ave NW,
-Washington, DC 20431
-INTERNATIONAL MONETARY FUND.
-REF:-XVGNN82010
-internationallmonetary695@gmail.com
-Telephone : +12062785473
+ÔÚ 2021/12/10 18:21, Paolo Valente Ð´µÀ:
+> 
+>> Il giorno 27 nov 2021, alle ore 11:11, Yu Kuai<yukuai3@huawei.com>  ha scritto:
+>>
+>> Currently 'num_groups_with_pending_reqs' won't be decreased when
+>> the group doesn't have any pending requests, while any child group
+>> have any pending requests. The decrement is delayed to when all the
+>> child groups doesn't have any pending requests.
+>>
+>> For example:
+>> 1) t1 issue sync io on root group, t2 and t3 issue sync io on the same
+>> child group. num_groups_with_pending_reqs is 2 now.
+>> 2) t1 stopped, num_groups_with_pending_reqs is still 2. io from t2 and
+>> t3 still can't be handled concurrently.
+>>
+>> Fix the problem by decreasing 'num_groups_with_pending_reqs'
+>> immediately upon the deactivation of last entity of the group.
+>>
+> I don't understand this patch clearly.
+> 
+> I understand your proposal not to count a group as with pending requests, in case no child process of the group has IO, but only its child groups have pending requests.
+> 
+> So, entities here are only queues for this patch?
+> 
+> If they are only queues, I think it is still incorrect to remove the group from the count of groups with pending IO when all its child queues are deactivated, because there may still be unfinished IO for those queues.
 
-This message is from International Monetary fund (IMF) I am Mr Bo Li
-deputy to  Kristalina Georgieva the current president of International
-  Monetary fund (IMF) We are aware of the stress you have been passing
-through and how you have lost your money trying to claim your fund ,
-you have to worry no more for the international monetary fund is fully
- in-charge of your fund now, contact  me for more info on how you will
-receive your fund( internationallmonetary695@gmail.com) or call me
-on-Telephone : +12062785473 for more info.
+Hi, Paolo
 
-Regards,
-Mr Bo Li
+bfq_weights_tree_remove() will be called when all requests are completed
+in bfq_queue, thus I recored how many queues have pending requests
+through weights tree insertion and removal.(Details in patch 7)
+
+Thus when calling bfq_weights_tree_remove() for bfqq, I can check if
+there are no queues have pending requests for parent bfqg:
+
+if (!bfqg->num_entities_with_pending_reqs && -> no queues with pending reqs
+     entity->in_groups_with_pending_reqs) {   -> the group is counted
+
+Thanks,
+Kuai
+> 
+> Am I missing something?
+> 
+> Thanks,
+> Paolo
+> 
