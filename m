@@ -2,381 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD3D473037
-	for <lists+cgroups@lfdr.de>; Mon, 13 Dec 2021 16:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22664731A9
+	for <lists+cgroups@lfdr.de>; Mon, 13 Dec 2021 17:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbhLMPNk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Dec 2021 10:13:40 -0500
-Received: from mx2.didichuxing.com ([36.110.17.22]:12656 "HELO
-        mailgate01.didichuxing.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with SMTP id S230072AbhLMPNk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Dec 2021 10:13:40 -0500
-X-Greylist: delayed 492 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Dec 2021 10:13:39 EST
-Received: from mail.didiglobal.com (unknown [172.20.36.44])
-        by mailgate01.didichuxing.com (Maildata Gateway V2.8) with ESMTP id CD153D80AA819;
-        Mon, 13 Dec 2021 23:05:14 +0800 (CST)
-Received: from localhost.localdomain (172.31.1.96) by
- BJSGEXMBX11.didichuxing.com (172.20.15.141) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 13 Dec 2021 23:05:14 +0800
-X-MD-Sfrom: wanghonglei@didiglobal.com
-X-MD-SrcIP: 172.20.36.44
-From:   Honglei Wang <wanghonglei@didichuxing.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        id S240313AbhLMQZz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Dec 2021 11:25:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238478AbhLMQZx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Dec 2021 11:25:53 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AB0C061574;
+        Mon, 13 Dec 2021 08:25:53 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id jo22so14814345qvb.13;
+        Mon, 13 Dec 2021 08:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nu0e3REkbFkXwUCLY/t28Mz7Y046BFRzaKZrlwttw5A=;
+        b=AfF1bilD8S8n3fyC8TdgEVD0nCb7TFtTyXL6lV8hjUsZ43EkGsaTXH7JrcGFrJkKad
+         Pr2F3aZ53Yy/fyREFZeLULo93p539ZBfTtBZjVqZ1KeD3hDw1e6tPh1RNnrPJdQ9rfAZ
+         4eOT9ab3ciHjBYtgmCBOLE4ed8/N7ROJsj8Ie9VazehcR+BLwFGsmxQ1anpdx/4KuYcm
+         IdSWnsHSGBgRuNtedTLPapppi4nGCMmz2U6RFYFbitW+LXWCSvvalTKzfRxpBi5BMbnZ
+         rXxBOzMs0F6BVaxF29XfcggrKFOPc0TptUvhh+TjJo1Qz5rqFYhzM6GRQyQBGAUeI9un
+         1QGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nu0e3REkbFkXwUCLY/t28Mz7Y046BFRzaKZrlwttw5A=;
+        b=qKpgRi3EAbJ5OEpzJ9S/sV9klQZlIZBy7/S6zOo4/7nm2hc0EaHzyDeQ/9hzg18rP4
+         7Ahc02izfrKmdZBmiSPapECoZJgly2TuKjxib4snnzgNvBkVQddHxDIvXAynaonS4+ea
+         WKJlt8vzVCd84+L8ohx15kts/SmHtVmwjqF5Yw/9afBEbBEXByVoCge261gvuCXUQkkB
+         y8eBy1ogWA14aNqdmaW0yIHO3yVNoU7iXNmh9rzAr9VlZSH/dCHolRe/5CS6QQu1HN7H
+         oEB1NA9Fg3dhmzG+fg+rjYEAijIhqJu0SweZSif6D/1DUne89gWP3kKgWItjV9TKnrqz
+         MBgQ==
+X-Gm-Message-State: AOAM532gj7a+sz23P4HHZQFyeI9sVmPRgxMwTlTNbKfuN/EdRBozN/Ah
+        anTtvtFjy2/rSZaZMhKsDa8=
+X-Google-Smtp-Source: ABdhPJxGAgKYzBWVUtbmLXtj3Lh4MxUnmxMXzwDBqvwT/sapc4nAy4QeBUtdOyseR2y2m1las0eFyg==
+X-Received: by 2002:a0c:f34d:: with SMTP id e13mr44354703qvm.119.1639412752642;
+        Mon, 13 Dec 2021 08:25:52 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::3:42c0])
+        by smtp.gmail.com with ESMTPSA id l22sm9262859qtj.68.2021.12.13.08.25.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Dec 2021 08:25:52 -0800 (PST)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Chris Down <chris@chrisdown.name>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jameshongleiwang@126.com>
-Subject: [RESEND PATCH RFC] cgroup: support numabalancing disable in cgroup level
-Date:   Mon, 13 Dec 2021 23:05:06 +0800
-Message-ID: <20211213150506.61780-1-wanghonglei@didichuxing.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH] mm: add group_oom_kill memory.event fix
+Date:   Mon, 13 Dec 2021 08:25:10 -0800
+Message-Id: <20211213162511.2492267-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.1.96]
-X-ClientProxiedBy: BJEXCAS05.didichuxing.com (172.20.36.127) To
- BJSGEXMBX11.didichuxing.com (172.20.15.141)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We have more and more containers run on same host in cloudnative
-environment. While dealing with performance problems, I found some
-containers get benefit from the numabalancing, but others get negative
-influence. I'm thinking it would be better if we can support open/close
-this feature in cgroup level.
+Andrew, could you please amend the prior patch "mm: add group_oom_kill
+memory.event" with these changes from Johannes and Chris?
 
-Basically speaking, the idea is that the numabalancing for one task will
-only happen when sched_numa_balancing is set ON and it's not disabled in
-cgroup which the task is attached.
+Also - small nit: it makes better sense to
+s/group_oom_kill/oom_group_kill/g in the patch title.
 
-'cgroup.numabalancing_disable' is added for none-root cgroup to provide
-an interface to disable the numabalancing for the cgroup and its
-descendants. And I add an item 'numabalancing_disable' in cgroup.events
-to show the actual numabalancing_disable state.
-
-We just provide option to disable the numabalancing for specific cgroup.
-The main purpose is to prevent the balancing happen for the tasks
-attached to the cgroup when the sched_numa_balancing is set ON. The
-balancing won't happen anyway if the sched_numa_balancing is set OFF.
-
-The inheritance relationship is similar to freeze controller. I borrowed
-the logic of freezer when did coding and add 'numa_cgrp_disable' in the
-task_struct to track if the cgroup which the task's attached is
-numabalancing disabled.
-
-Signed-off-by: Honglei Wang <wanghonglei@didichuxing.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Chris Down <chris@chrisdown.name>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 ---
- include/linux/cgroup-defs.h |  23 +++++++
- include/linux/sched.h       |   3 +
- kernel/cgroup/cgroup.c      | 145 ++++++++++++++++++++++++++++++++++++++++++++
- kernel/sched/fair.c         |  12 +++-
- 4 files changed, 180 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst | 3 +--
+ mm/memcontrol.c                         | 3 ---
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index db2e147e069f..bf141e9447e1 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -74,6 +74,11 @@ enum {
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index eec830ce2068..8269bfa240f4 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1269,8 +1269,7 @@ PAGE_SIZE multiple when read back.
+ 		killed by any kind of OOM killer.
  
- 	/* Control group has to be killed. */
- 	CGRP_KILL,
-+
-+#ifdef CONFIG_NUMA_BALANCING
-+	/* Control group set numabalaning disable. */
-+	CGRP_NUMABALANCING_DISABLE,
-+#endif
- };
+           oom_group_kill
+-                The number of times all tasks in the cgroup were killed
+-                due to memory.oom.group.
++                The number of times a group OOM has occurred.
  
- /* cgroup_root->flags */
-@@ -357,6 +362,21 @@ struct cgroup_freezer_state {
- 	int nr_frozen_tasks;
- };
- 
-+#ifdef CONFIG_NUMA_BALANCING
-+struct cgroup_numabalancing_state {
-+	/* Should the cgroup and its descendants be changed state. */
-+	bool nb_disable;
-+
-+	/* Should the cgroup actually be set as numabalancing disable? */
-+	int e_nb_disable;
-+};
-+
-+#else /* CONFIG_NUMA_BALANCING */
-+
-+struct cgroup_numabalancing_state { };
-+
-+#endif /* CONFIG_NUMA_BALANCING */
-+
- struct cgroup {
- 	/* self css with NULL ->ss, points back to this cgroup */
- 	struct cgroup_subsys_state self;
-@@ -486,6 +506,9 @@ struct cgroup {
- 	/* Used to store internal freezer state */
- 	struct cgroup_freezer_state freezer;
- 
-+	/* Used to store numabalancing state */
-+	struct cgroup_numabalancing_state nb_state;
-+
- 	/* ids of the ancestors at each level including self */
- 	u64 ancestor_ids[];
- };
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 78c351e35fec..1d2ae19568a0 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1242,6 +1242,9 @@ struct task_struct {
- 	u64				last_sum_exec_runtime;
- 	struct callback_head		numa_work;
- 
-+	/* Mark if numabalancing is disabled in cgroup level */
-+	int				numa_cgrp_disable;
-+
- 	/*
- 	 * This pointer is only modified for current in syscall and
- 	 * pagefault context (and for tasks being destroyed), so it can be read
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 919194de39c8..1e5d995141ea 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2495,6 +2495,13 @@ static int cgroup_migrate_execute(struct cgroup_mgctx *mgctx)
- 			 */
- 			cgroup_freezer_migrate_task(task, from_cset->dfl_cgrp,
- 						    to_cset->dfl_cgrp);
-+
-+#ifdef CONFIG_NUMA_BALANCING
-+			if (to_cset->dfl_cgrp->nb_state.nb_disable)
-+				WRITE_ONCE(task->numa_cgrp_disable, 1);
-+			else
-+				WRITE_ONCE(task->numa_cgrp_disable, 0);
-+#endif
- 			put_css_set_locked(from_cset);
- 
- 		}
-@@ -3558,6 +3565,11 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
- 	seq_printf(seq, "populated %d\n", cgroup_is_populated(cgrp));
- 	seq_printf(seq, "frozen %d\n", test_bit(CGRP_FROZEN, &cgrp->flags));
- 
-+#ifdef CONFIG_NUMA_BALANCING
-+	seq_printf(seq, "numabalancing_disable %d\n",
-+		   test_bit(CGRP_NUMABALANCING_DISABLE, &cgrp->flags));
-+#endif
-+
+   memory.events.local
+ 	Similar to memory.events but the fields in the file are local
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5ab3b9ce90de..b5454d8fc344 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4390,9 +4390,6 @@ static int mem_cgroup_oom_control_read(struct seq_file *sf, void *v)
+ 	seq_printf(sf, "under_oom %d\n", (bool)memcg->under_oom);
+ 	seq_printf(sf, "oom_kill %lu\n",
+ 		   atomic_long_read(&memcg->memory_events[MEMCG_OOM_KILL]));
+-	seq_printf(sf, "oom_group_kill %lu\n",
+-		   atomic_long_read(
+-			&memcg->memory_events[MEMCG_OOM_GROUP_KILL]));
  	return 0;
  }
  
-@@ -3700,6 +3712,118 @@ bool cgroup_psi_enabled(void)
- 
- #endif /* CONFIG_PSI */
- 
-+#ifdef CONFIG_NUMA_BALANCING
-+static void __cgroup_numabalancing_disable_set(struct cgroup *cgrp, bool nb_disable)
-+{
-+	struct css_task_iter it;
-+	struct task_struct *task;
-+
-+	lockdep_assert_held(&cgroup_mutex);
-+
-+	spin_lock_irq(&css_set_lock);
-+	if (nb_disable)
-+		set_bit(CGRP_NUMABALANCING_DISABLE, &cgrp->flags);
-+	else
-+		clear_bit(CGRP_NUMABALANCING_DISABLE, &cgrp->flags);
-+	spin_unlock_irq(&css_set_lock);
-+
-+	css_task_iter_start(&cgrp->self, 0, &it);
-+	while ((task = css_task_iter_next(&it))) {
-+		/*
-+		 * We don't care about NUMA placement if the task is exiting.
-+		 * And we don't NUMA balance for kthreads.
-+		 */
-+		if (task->flags & (PF_EXITING | PF_KTHREAD))
-+			continue;
-+		task->numa_cgrp_disable = nb_disable;
-+	}
-+	css_task_iter_end(&it);
-+}
-+
-+static void cgroup_numabalancing_disable_set(struct cgroup *cgrp, bool nb_disable)
-+{
-+	struct cgroup_subsys_state *css;
-+	struct cgroup *dsct;
-+
-+	lockdep_assert_held(&cgroup_mutex);
-+
-+	/*
-+	 * Nothing changed? Just exit.
-+	 */
-+	if (cgrp->nb_state.nb_disable == nb_disable)
-+		return;
-+
-+	cgrp->nb_state.nb_disable = nb_disable;
-+
-+	/*
-+	 * Propagate changes downwards the cgroup tree.
-+	 */
-+	css_for_each_descendant_pre(css, &cgrp->self) {
-+		dsct = css->cgroup;
-+
-+		if (cgroup_is_dead(dsct))
-+			continue;
-+
-+		if (nb_disable) {
-+			dsct->nb_state.e_nb_disable++;
-+			/*
-+			 * Already be set because of ancestor's settings?
-+			 */
-+			if (dsct->nb_state.e_nb_disable > 1)
-+				continue;
-+		} else {
-+			dsct->nb_state.e_nb_disable--;
-+			/*
-+			 * Still keep numabalancing disable because of ancestor's settings?
-+			 */
-+			if (dsct->nb_state.e_nb_disable > 0)
-+				continue;
-+
-+			WARN_ON_ONCE(dsct->nb_state.e_nb_disable < 0);
-+		}
-+
-+		/*
-+		 * Do change actual state: numabalancing disable or enable.
-+		 */
-+		__cgroup_numabalancing_disable_set(dsct, nb_disable);
-+	}
-+}
-+
-+static int cgroup_numabalancing_disable_show(struct seq_file *seq, void *v)
-+{
-+	struct cgroup *cgrp = seq_css(seq)->cgroup;
-+
-+	seq_printf(seq, "%d\n", cgrp->nb_state.nb_disable);
-+
-+	return 0;
-+}
-+
-+static ssize_t cgroup_numabalancing_disable_write(struct kernfs_open_file *of,
-+				   char *buf, size_t nbytes, loff_t off)
-+{
-+	struct cgroup *cgrp;
-+	ssize_t ret;
-+	int nb_disable;
-+
-+	ret = kstrtoint(strstrip(buf), 0, &nb_disable);
-+	if (ret)
-+		return ret;
-+
-+	if (nb_disable < 0 || nb_disable > 1)
-+		return -ERANGE;
-+
-+	cgrp = cgroup_kn_lock_live(of->kn, false);
-+	if (!cgrp)
-+		return -ENOENT;
-+
-+	cgroup_numabalancing_disable_set(cgrp, nb_disable);
-+
-+	cgroup_kn_unlock(of->kn);
-+
-+	return nbytes;
-+}
-+#endif /* CONFIG_NUMA_BALANCING */
-+
- static int cgroup_freeze_show(struct seq_file *seq, void *v)
- {
- 	struct cgroup *cgrp = seq_css(seq)->cgroup;
-@@ -5040,6 +5164,14 @@ static struct cftype cgroup_base_files[] = {
- 		.release = cgroup_pressure_release,
- 	},
- #endif /* CONFIG_PSI */
-+#ifdef CONFIG_NUMA_BALANCING
-+	{
-+		.name = "cgroup.numabalancing_disable",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = cgroup_numabalancing_disable_show,
-+		.write = cgroup_numabalancing_disable_write,
-+	},
-+#endif /* CONFIG_NUMA_BALANCING */
- 	{ }	/* terminate */
- };
- 
-@@ -5366,6 +5498,14 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 		set_bit(CGRP_FROZEN, &cgrp->flags);
- 	}
- 
-+#ifdef CONFIG_NUMA_BALANCING
-+	/*
-+	 * New cgroup inherits effective numabalancing disable counter.
-+	 */
-+	cgrp->nb_state.e_nb_disable = parent->nb_state.e_nb_disable;
-+	if (cgrp->nb_state.e_nb_disable)
-+		set_bit(CGRP_NUMABALANCING_DISABLE, &cgrp->flags);
-+#endif
- 	spin_lock_irq(&css_set_lock);
- 	for (tcgrp = cgrp; tcgrp; tcgrp = cgroup_parent(tcgrp)) {
- 		cgrp->ancestor_ids[tcgrp->level] = cgroup_id(tcgrp);
-@@ -6313,6 +6453,11 @@ void cgroup_post_fork(struct task_struct *child,
- 		 * userspace.
- 		 */
- 		kill = test_bit(CGRP_KILL, &cgrp_flags);
-+
-+#ifdef CONFIG_NUMA_BALANCING
-+		if (test_bit(CGRP_NUMABALANCING_DISABLE, &cgrp_flags))
-+			child->numa_cgrp_disable = 1;
-+#endif
- 	}
- 
- 	spin_unlock_irq(&css_set_lock);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6d9435..837bc9308e8b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -2585,7 +2585,8 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
- 	struct numa_group *ng;
- 	int priv;
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!static_branch_likely(&sched_numa_balancing) ||
-+		READ_ONCE(p->numa_cgrp_disable))
- 		return;
- 
- 	/* for example, ksmd faulting in a user's mm */
-@@ -2866,6 +2867,9 @@ static void task_tick_numa(struct rq *rq, struct task_struct *curr)
- 	if ((curr->flags & (PF_EXITING | PF_KTHREAD)) || work->next != work)
- 		return;
- 
-+	if (READ_ONCE(curr->numa_cgrp_disable))
-+		return;
-+
- 	/*
- 	 * Using runtime rather than walltime has the dual advantage that
- 	 * we (mostly) drive the selection from busy threads and that the
-@@ -2890,7 +2894,8 @@ static void update_scan_period(struct task_struct *p, int new_cpu)
- 	int src_nid = cpu_to_node(task_cpu(p));
- 	int dst_nid = cpu_to_node(new_cpu);
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!static_branch_likely(&sched_numa_balancing) ||
-+		READ_ONCE(p->numa_cgrp_disable))
- 		return;
- 
- 	if (!p->mm || !p->numa_faults || (p->flags & PF_EXITING))
-@@ -7695,7 +7700,8 @@ static int migrate_degrades_locality(struct task_struct *p, struct lb_env *env)
- 	unsigned long src_weight, dst_weight;
- 	int src_nid, dst_nid, dist;
- 
--	if (!static_branch_likely(&sched_numa_balancing))
-+	if (!static_branch_likely(&sched_numa_balancing) ||
-+		READ_ONCE(p->numa_cgrp_disable))
- 		return -1;
- 
- 	if (!p->numa_faults || !(env->sd->flags & SD_NUMA))
 -- 
-2.14.1
+2.30.2
 
