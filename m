@@ -2,85 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773674760B9
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B305B4760D5
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343790AbhLOS2l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Dec 2021 13:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
+        id S1343825AbhLOSgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 13:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhLOS2l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:28:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5F0C061574;
-        Wed, 15 Dec 2021 10:28:41 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id v13-20020a17090a088d00b001b0e3a74cf7so293613pjc.1;
-        Wed, 15 Dec 2021 10:28:41 -0800 (PST)
+        with ESMTP id S234977AbhLOSgA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:36:00 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D416C061574;
+        Wed, 15 Dec 2021 10:36:00 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id k4so17230280plx.8;
+        Wed, 15 Dec 2021 10:36:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=a9xKB7125uY8kvHBhF0BhgO3Irg0Ekzdpi8lSoaB3TU=;
-        b=CzxiwAxOnRR49YKD5qgwaxrwRc7E6+GE1H/V6hV55mvovKfwUDglOhPkTSxG/bPWyx
-         f1dy6m1pSoAqHSC19ACg+Nm2LZrL7y1EOt105wfURgewtPi2sFVOG4di3yocH26zo0Rp
-         3CUlDHSyIxrB8yXASXHxzCRH8h6aMpRMbyJIDlVxeB6tnbZSfu/tbGOgfHqKtlppcACl
-         dY4aJcoZTt2RuFkFdOSX+L14PZdS36Tw1Z+EygnsRF30BUe2saYDD9aRDXjRAhitDKDt
-         rY0w3veSgYUdpcuMh8iRqCMsYlgstAUIfHlns1cHA4vksVynPV6n3r6OJPLX1lOU2HHl
-         70EQ==
+        bh=sphiaH5KnmKIhXvaCjxOtnGbcU9KdLom7iLRZ9t9/OM=;
+        b=OXZjFnMocX9uFmrlxixUhWGpHHaV1MbVgChhnY+iiHKbnMpZ0x8KzP0FsxC/s3DdzE
+         87++rrRG6KT0U4LWdkSCOtxJM2j7wSBBmHZ0+K0xnPSB5OHqh2JPdigZr/qy9dtPzF4B
+         pInBtHxZRy3a1+i8e8PAXoKVzDnPlgpSk+yt+TNL6jo1J15RfbGN/iCT6JhBEgiNclJO
+         lTltrL5JttU8S/fKw10ua4K2exbyUUK9nf7jI95EVoSTx3yrW7RJ2rjgjZCpDLquVgfr
+         G3EcqsbIAMBt5nVaGPyof3u5uwik8+RkIw5Rlk8q/CaO1/9ZmU9k7aJHOWcpyhqZwccf
+         J9aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=a9xKB7125uY8kvHBhF0BhgO3Irg0Ekzdpi8lSoaB3TU=;
-        b=MifX3r2Ku1/wQqR9GqH+fZOzmdYIshpHH0TYMGU1w1236vysfZqnRmCv5R3vST08N0
-         WaMJ98jH7SKnsR4GBxdJS0w6B0s9UqaDeooxVgKp3DOBqo1byOIoij6SIc4MzSkUI8Ww
-         1cdaWdxa31VRj+3I9xfVqfv3YSrrkI+SQkj4cTvhhdah7DgIEDlnQsUUtbSbWLrOBwx2
-         FfLpeqGwln480Au65coj8Kj0PZsbqZpg9Nd2x08Crn7uF6EzqSq63AnGtk6hcE61DgWE
-         YOV/2OcbcnkUcXmncmOc3EIgjVohCGfEcqkQA+cPUGb/KYTFD3siFYHNaF6u2Iv5YEHn
-         FueA==
-X-Gm-Message-State: AOAM530JiyzbVFE/wfoL5mJ/fx74p2X6crjnWmWtVieiOgE1cxmKegaZ
-        kwdfzkTnTdklplEA8ZGzxWo=
-X-Google-Smtp-Source: ABdhPJz0+ZRBBwHvu0SQpNmsKvuni6uIw89FwUOpqy+yjcA/ZcjYrinEZwC+kudJfiqYpuUVWGJnug==
-X-Received: by 2002:a17:90b:3447:: with SMTP id lj7mr1203219pjb.112.1639592920623;
-        Wed, 15 Dec 2021 10:28:40 -0800 (PST)
+        bh=sphiaH5KnmKIhXvaCjxOtnGbcU9KdLom7iLRZ9t9/OM=;
+        b=uSK/ECtNbgsp4IW9GfBqiAIKGmLXel5yD28l4bduANcFRSnWmTHaCQ2E5QbesEHMCX
+         WIbeuews4FadEUpwTvDC4zrDI5UaSfcAS+GdBD1ytygGObTfuJnVckP0/YLLz3bhI/cW
+         9APq+r/owdduzmfRFeLkfNKiRMB9LCPW5ZJF08Sxp+upD4oYFLfmjvRV7ydvEoyi4Ba3
+         dulRUn6CaJFl4FobKwWemxKR2Md1i9Cb0tFxklvmS7ipK5ERbAFYh99+siJGUmiUIoXQ
+         sQZgWodj/XwMzGeJxoUu8kHz+g13cZVu6UHC6lF7PWP2vjkxtOaYYVk0+HcrM9Zx6cQU
+         JGtg==
+X-Gm-Message-State: AOAM531Pa/i2U5SPKa4nbUB3W8gRNSoNniSqtX3RxKkqtJDEcIkoSyo2
+        kasz45+d3/5f7V9bcght7MQ=
+X-Google-Smtp-Source: ABdhPJyL6Wkm4KA6qbSocm0ua0cPJ9+qzrvLwZOXFLvtrd9hkLMwJtTDyqJpalhD0xhoGuErm7IOig==
+X-Received: by 2002:a17:90b:798:: with SMTP id l24mr1215540pjz.122.1639593359900;
+        Wed, 15 Dec 2021 10:35:59 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id h5sm3570824pfc.113.2021.12.15.10.28.39
+        by smtp.gmail.com with ESMTPSA id nv17sm6501515pjb.55.2021.12.15.10.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Dec 2021 10:28:40 -0800 (PST)
+        Wed, 15 Dec 2021 10:35:59 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 15 Dec 2021 08:28:39 -1000
+Date:   Wed, 15 Dec 2021 08:35:58 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 3/3] bpf: remove the cgroup -> bpf header
- dependecy
-Message-ID: <Yboz17Cd3NrdircO@slm.duckdns.org>
-References: <20211215181231.1053479-1-kuba@kernel.org>
- <20211215181231.1053479-4-kuba@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v9 6/7] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <Ybo1jmNvM6sblcJq@slm.duckdns.org>
+References: <20211205183220.818872-1-longman@redhat.com>
+ <20211205183220.818872-7-longman@redhat.com>
+ <Ybe0YWEo7Wp7wib9@slm.duckdns.org>
+ <20211215144450.GC25459@blackbody.suse.cz>
+ <96018978-6b7f-1e7f-1012-9df7f7996ec5@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211215181231.1053479-4-kuba@kernel.org>
+In-Reply-To: <96018978-6b7f-1e7f-1012-9df7f7996ec5@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 10:12:31AM -0800, Jakub Kicinski wrote:
-> Remove the dependency from cgroup-defs.h to bpf-cgroup.h and bpf.h.
-> This reduces the incremental build size of x86 allmodconfig after
-> bpf.h was touched from ~17k objects rebuilt to ~5k objects.
-> bpf.h is 2.2kLoC and is modified relatively often.
-> 
-> We need a new header with just the definition of struct cgroup_bpf
-> and enum cgroup_bpf_attach_type, this is akin to cgroup-defs.h.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Hello, Waiman.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+On Wed, Dec 15, 2021 at 01:16:43PM -0500, Waiman Long wrote:
+> Allowing direct transition from member to invalid partition doesn't feel
+> right for me. A casual user may assume a partition is correctly formed
+> without double checking the "cpuset.partition" value. Returning an error
+> will prevent this kind of issue. If returning more information about the
+> failure is the main reason for allowing the invalid partition transition, we
+> can extend the "cpuset.partition" read syntax to also show the reason for
+> the previous failure.
+
+I don't think it's a good idea to display error messages without a way to
+link the error to the one who triggered it. This is the same problem we had
+with resettable counters. It only works for scenarios where one guy is
+sitting in front of the computer but gets nastry for more complex scnearios
+and automation.
+
+I understand that allowing transitions to invalid state can feel jarring.
+There are pros and cons to both approaches. It's similar dynamics tho.
+Erroring out may be more intuitive for a casual user but makes it harder for
+more complex scenarios because whether a given operation errors or not is
+dependent on external asynchronous states, there's no good way of reporting
+the exact nature of the error or detecting when the operation would succeed
+in the future, and the error conditions are rather arbitrary.
 
 Thanks.
 
