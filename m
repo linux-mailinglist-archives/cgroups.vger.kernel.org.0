@@ -2,113 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24209475154
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 04:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E9147517B
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 04:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239551AbhLODYn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Dec 2021 22:24:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55723 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235509AbhLODYm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Dec 2021 22:24:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639538682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wHvqWA9pCAW9hO772UCEPBtSbiKtXLn9xS2Zet02foU=;
-        b=D7XpqjJxZk1k/LrdSMz/4bLf2yxhg23ndlYStXLLubyHq36HkRjzH3ePi6cmypQHrBKjwm
-        VHKrsTeH9XiILdS8JDJfYy9BIjchp2OymSpx8k6cYGoQDDX0gx4bB8f4JcXQCu1KzLtpCd
-        uIWGkDBtlnxYbqFjPADZJW5SieXGrbM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-529-9OCunupRPaCWWCdihpXOZA-1; Tue, 14 Dec 2021 22:24:38 -0500
-X-MC-Unique: 9OCunupRPaCWWCdihpXOZA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E277581CCB7;
-        Wed, 15 Dec 2021 03:24:35 +0000 (UTC)
-Received: from [10.22.16.35] (unknown [10.22.16.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B73C18276C;
-        Wed, 15 Dec 2021 03:24:22 +0000 (UTC)
-Message-ID: <810204ce-7967-e470-1267-7c3cfb521c89@redhat.com>
-Date:   Tue, 14 Dec 2021 22:24:22 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v9 2/7] cgroup/cpuset: Allow no-task partition to have
- empty cpuset.cpus.effective
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
+        id S236417AbhLODr6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Dec 2021 22:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235616AbhLODr5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Dec 2021 22:47:57 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEE3C061574
+        for <cgroups@vger.kernel.org>; Tue, 14 Dec 2021 19:47:57 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id z6so19534616pfe.7
+        for <cgroups@vger.kernel.org>; Tue, 14 Dec 2021 19:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WX18AvwNcCC2p0SRhjMK6GhbrhT1JBIKs0M6zY3Lj7Q=;
+        b=WPMmh69mSOiH8mgu7ySy0stRSmNQGrh1n9Iu5lufvirjG8da5krGccBikzmhxIsonV
+         GbYy/0bHveh5UqULIOuHH20n1HJHPYTsvZW5BCUkJsJDXDgnV+nHa9RB4IBg2YWPJ/qe
+         d5vdXmlTtFUjiF+1U4AFPGuBU6UXbON5hAccSzNXB5qEG8PdX3brb3YXmDMWwz1J8OgI
+         UstG31izgnPdQHQofdMy4Pv5BBjgfkIxeFVKEuskD09VJSK12WfK1GTx0gXEl7PF3xsW
+         1V9a83ysdKElKSmypE0spqdeA2uIe+86YAbXC1pKh4RUT89rp+4xvKASaUTEbBqH5mWU
+         RuAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WX18AvwNcCC2p0SRhjMK6GhbrhT1JBIKs0M6zY3Lj7Q=;
+        b=TUeSorL1nKQop0cVZ1/R8Qq+NPw3uZQ1lFsN3k4wTJtQgNsPfYCu7WTRXB9d/YNrCu
+         4aAvH8KMA6pAUQxfEpPeyq82gLijJcetTpHgOiTmSQn2TkO6T57/p1/31S5CHnO9E2Y0
+         xAIU6gIaRJwCFmnxpnPzl3wsWVRF/THBsw3gLoB467prk4/hW0oe3Xyj07Pw79/1lcAL
+         +ds3gCZjL54NqbPeCktC7n8VQ64KoMESOLhlfWTNyW5IvN00dOXSkq1wW+5Dv5mUwyg4
+         OFiyaWh/0kKKPHojb2Pr4acfMUWY8cWEN+yqhyyIKU/PYdYdP1eQl/+q7knZVaNt46py
+         FWUA==
+X-Gm-Message-State: AOAM531zKl5kuCr6oPvUZNrmOHwRtEfHSvhlk8aoiBCwR6R8SXMTO+BH
+        qvGnDUCtL2ptt7y5YqWGWv0=
+X-Google-Smtp-Source: ABdhPJwH10ZHWDFi6cCdKP8OhQjj1dB7avN/b0cOOYyztSjA2GG31Cmv5mFdBR/aJtU91LzSkrUsRA==
+X-Received: by 2002:a62:7a54:0:b0:494:6e78:994b with SMTP id v81-20020a627a54000000b004946e78994bmr7244240pfc.5.1639540077124;
+        Tue, 14 Dec 2021 19:47:57 -0800 (PST)
+Received: from odroid ([114.29.23.242])
+        by smtp.gmail.com with ESMTPSA id x11sm418405pjq.52.2021.12.14.19.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Dec 2021 19:47:56 -0800 (PST)
+Date:   Wed, 15 Dec 2021 03:47:46 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        patches@lists.linux.dev, Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        kasan-dev@googlegroups.com, Lu Baolu <baolu.lu@linux.intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20211205183220.818872-1-longman@redhat.com>
- <20211205183220.818872-3-longman@redhat.com>
- <Ybew7d2oE2gLcLNO@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Ybew7d2oE2gLcLNO@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
+Message-ID: <20211215034746.GA1097530@odroid>
+References: <20211201181510.18784-1-vbabka@suse.cz>
+ <4c3dfdfa-2e19-a9a7-7945-3d75bc87ca05@suse.cz>
+ <20211214143822.GA1063445@odroid>
+ <87584294-b1bc-aabe-d86a-1a8b93a7f4d4@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87584294-b1bc-aabe-d86a-1a8b93a7f4d4@suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/13/21 15:45, Tejun Heo wrote:
-> On Sun, Dec 05, 2021 at 01:32:15PM -0500, Waiman Long wrote:
->>   	adding = deleting = false;
->>   	old_prs = new_prs = cpuset->partition_root_state;
->>   	if (cmd == partcmd_enable) {
->> +		/*
->> +		 * Enabling partition root is not allowed if not all the CPUs
->> +		 * can be granted from parent's effective_cpus.
->> +		 */
->> +		if (!cpumask_subset(cpuset->cpus_allowed, parent->effective_cpus))
->> +			return -EINVAL;
->> +
->> +		/*
->> +		 * A parent can be left with no CPU as long as there is no
->> +		 * task directly associated with the parent partition. For
->> +		 * such a parent, no new task can be moved into it.
->> +		 */
->> +		if (partition_is_populated(parent, cpuset) &&
->> +		    cpumask_equal(cpuset->cpus_allowed, parent->effective_cpus))
->> +			return -EINVAL;
-> So, given that this only happens with threaded domains, can we just not
-> allow partitions within threaded domains? The combination doesn't make whole
-> lot of sense to me anyway.
-AFAICS, there are code in cpuset.c that disallows the an non-child node 
-to hold tasks, but the check doesn't cover all the possible cases. I 
-remembered that I was able to create such a scenario without using 
-threaded domains. That is why I put in this conditional check. It has 
-nothing to do with the use of threaded domains.
->> +	/*
->> +	 * On default hierarchy, task cannot be moved to a cpuset with empty
->> +	 * effective cpus.
->> +	 */
->> +	if (is_in_v2_mode() && cpumask_empty(cs->effective_cpus))
->> +		goto out_unlock;
-> And then we can avoid this extra restriction too, right?
+On Tue, Dec 14, 2021 at 03:43:35PM +0100, Vlastimil Babka wrote:
+> On 12/14/21 15:38, Hyeonggon Yoo wrote:
+> > On Tue, Dec 14, 2021 at 01:57:22PM +0100, Vlastimil Babka wrote:
+> >> On 12/1/21 19:14, Vlastimil Babka wrote:
+> >> > Folks from non-slab subsystems are Cc'd only to patches affecting them, and
+> >> > this cover letter.
+> >> > 
+> >> > Series also available in git, based on 5.16-rc3:
+> >> > https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slab-struct_slab-v2r2
+> >> 
+> >> Pushed a new branch slab-struct-slab-v3r3 with accumulated fixes and small tweaks
+> >> and a new patch from Hyeonggon Yoo on top. To avoid too much spam, here's a range diff:
+> >> 
+> > 
+> > Hello Vlastimil, Thank you for nice work.
+> > I'm going to review and test new version soon in free time.
+> 
+> Thanks!
+> 
 
-This check is supposed to prevent a task to be moved to a leaf cpuset 
-partition with just offlined cpus and hence no effective cpu. A possible 
-alternative is to force the partition to become invalid, but I think not 
-allowing the move is easier until one or more offlined cpus are onlined.
+You're welcome!
 
-Cheers,
-Longman
+> > Btw, I gave you some review and test tags and seems to be missing in new
+> > series. Did I do review/test process wrongly? It's first time to review
+> > patches so please let me know if I did it wrongly.
+> 
+> You did right, sorry! I didn't include them as those were for patches that I
+> was additionally changing after your review/test and the decision what is
+> substantial change enough to need a new test/review is often fuzzy. 
 
+Ah, Okay. review/test becomes invalid after some changing.
+that's okay. I was just unfamiliar with the process. Thank you!
+
+> So if you can recheck the new versions it would be great and then I will pick that
+> up, thanks!
+
+Okay. I'll new versions.
+
+> 
+> > --
+> > Thank you.
+> > Hyeonggon.
+> 
