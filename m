@@ -2,80 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A144751BF
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 05:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEED047567B
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 11:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235773AbhLOEhJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Dec 2021 23:37:09 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:36680 "EHLO
+        id S241691AbhLOKgd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 05:36:33 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:39474 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235729AbhLOEhJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Dec 2021 23:37:09 -0500
+        with ESMTP id S236385AbhLOKgd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 05:36:33 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B68D31F383;
-        Wed, 15 Dec 2021 04:37:07 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B842C1F39F;
+        Wed, 15 Dec 2021 10:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639564591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/aPaR9Uw4ulAkIgHecWl2en5QXeWEK3aOB4cy3NVwDI=;
+        b=N0Oi6iG4jR1Ii/2w8VZGdDCkCls7BxgRGgpITtz5WTEMqIEVtEn64XU5QoylIR/K2x/31p
+        dRUkaE8ntIn9pTwzN1kEQ9S+rdhVnK7upRk8kdKOg/KeAaBeb/daspbclQWbET4VvGyatI
+        iuTmVTTFyDVEZ/YCPSS9aAkJG5W4m/0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9D73139CF;
-        Wed, 15 Dec 2021 04:37:04 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85BE613B1C;
+        Wed, 15 Dec 2021 10:36:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eHemJvBwuWF8aQAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Wed, 15 Dec 2021 04:37:04 +0000
-Date:   Tue, 14 Dec 2021 20:36:57 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
+        id /RwjIC/FuWHZdAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 15 Dec 2021 10:36:31 +0000
+Date:   Wed, 15 Dec 2021 11:36:29 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH-next v3] mm/memcg: Properly handle memcg_stock access for
- PREEMPT_RT
-Message-ID: <20211215043657.ngmxlk6rgc2ysbmz@offworld>
-Mail-Followup-To: Waiman Long <longman@redhat.com>,
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20211214144412.447035-1-longman@redhat.com>
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v9 2/7] cgroup/cpuset: Allow no-task partition to have
+ empty cpuset.cpus.effective
+Message-ID: <20211215103629.GA25459@blackbody.suse.cz>
+References: <20211205183220.818872-1-longman@redhat.com>
+ <20211205183220.818872-3-longman@redhat.com>
+ <Ybew7d2oE2gLcLNO@slm.duckdns.org>
+ <810204ce-7967-e470-1267-7c3cfb521c89@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211214144412.447035-1-longman@redhat.com>
-User-Agent: NeoMutt/20201120
+In-Reply-To: <810204ce-7967-e470-1267-7c3cfb521c89@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 14 Dec 2021, Waiman Long wrote:
+On Tue, Dec 14, 2021 at 10:24:22PM -0500, Waiman Long <longman@redhat.com> wrote:
+> AFAICS, there are code in cpuset.c that disallows the an non-child node to
+> hold tasks, but the check doesn't cover all the possible cases.
+> I remembered that I was able to create such a scenario without using
+> threaded domains.
 
->@@ -2189,7 +2194,7 @@ static void drain_local_stock(struct work_struct *dummy)
->	 * drain_stock races is that we always operate on local CPU stock
->	 * here with IRQ disabled
->	 */
->-	local_irq_save(flags);
->+	local_lock_irqsave(&memcg_stock.lock, flags);
->
->	stock = this_cpu_ptr(&memcg_stock);
->	drain_obj_stock(&stock->irq_obj);
+On the default hierarchy (with controller(s) enabled)? That sounds like a bug.
 
-So here there is still the problem that you can end up taking sleeping locks
-with irqs disabled via obj_cgroup_put() >> obj_cgroup_release() - ie: the
-percpu_ref_switch_lock and css_set_lock. It had occurred to me to promote
-the former to a raw spinlock, but doubt we can get away with the latter.
+> That is why I put in this conditional check. It has nothing to do with the
+> use of threaded domains.
 
-Thanks,
-Davidlohr
+But threaded domains are important nevertheless.
+I think that a structure like
+
+	app-cgroup	cgroup.type=threaded domain	cpuset.partition=root
+	`- rt		cgroup.type=threaded		cpuset.partition=isolated
+	`- normal	cgroup.type=threaded
+
+is a valid use case. Therefore I would not disallow partitioning inside
+threaded subtrees (as suggested).
+
+
+Michal
