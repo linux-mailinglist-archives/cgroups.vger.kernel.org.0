@@ -2,91 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8934760F8
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DD9476135
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343918AbhLOSoD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Dec 2021 13:44:03 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37490 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbhLOSoD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:44:03 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D24371F3CC;
-        Wed, 15 Dec 2021 18:44:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639593841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1343572AbhLOSzl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 13:55:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24213 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344091AbhLOSzZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:55:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639594524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NWqD+PcCuxR8HDxLdpgeitQDnhGffUIL9j/CCfmjTsM=;
-        b=ZrtZuZL9p+UI1aJNPgIfrBv5AA1n9CG6VLC82bQzhuhvW7kETDDJ0FtNiqFx7Cufw+EZn7
-        QMszsvkFZ+2lBhW1DRQUbdIy1BOnr7EIedb4HK+T+H3BUi/X41gWGwT9SUgAQiem8cRx6Q
-        OCtF40bavtOsWRDwyGAdw85RjFdlFMs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=6p2PMg3IHKSv9HJVSyU/jUSPqlHttS0kc0XgSmw+DTI=;
+        b=hl8IHaQd9bZP2SgU4MwkYatpzh7ljsg6o+kc2/XV54qMuzRAVvnbs+rZMUzDiOEj+ZJODV
+        wlMEtnJmgoLabR510J7AqF4zalWRBcuZLf3A9bRS+tYXcqTvHW+6f/O6Et8BUlJuOt4BMl
+        ze7Boljjy0H+LQQmyMwnxu6K9Oy31Fw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-45-eLARbfoFMtubSfuCb0DIwQ-1; Wed, 15 Dec 2021 13:55:21 -0500
+X-MC-Unique: eLARbfoFMtubSfuCb0DIwQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 969CCA3B84;
-        Wed, 15 Dec 2021 18:44:01 +0000 (UTC)
-Date:   Wed, 15 Dec 2021 19:44:00 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
-Message-ID: <Ybo3cAkyg0SrUyJJ@dhcp22.suse.cz>
-References: <20211207155208.eyre5svucpg7krxe@linutronix.de>
- <Ya+SCkLOLBVN/kiY@cmpxchg.org>
- <YbNwmUMPFM/MO0cX@linutronix.de>
- <YbcbmvQk+Sgdsi9G@dhcp22.suse.cz>
- <YbocOh+h3o/Yc5Ag@linutronix.de>
- <YboeI1aTFdQpN0TI@dhcp22.suse.cz>
- <YboiRA1znig/cbCt@linutronix.de>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65A3C92502;
+        Wed, 15 Dec 2021 18:55:18 +0000 (UTC)
+Received: from [10.22.10.54] (unknown [10.22.10.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1357A19D9B;
+        Wed, 15 Dec 2021 18:55:05 +0000 (UTC)
+Message-ID: <58c06961-ffc4-27d7-01d2-4c91b0c9161d@redhat.com>
+Date:   Wed, 15 Dec 2021 13:55:05 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YboiRA1znig/cbCt@linutronix.de>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v9 6/7] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+References: <20211205183220.818872-1-longman@redhat.com>
+ <20211205183220.818872-7-longman@redhat.com>
+ <Ybe0YWEo7Wp7wib9@slm.duckdns.org> <20211215144450.GC25459@blackbody.suse.cz>
+ <96018978-6b7f-1e7f-1012-9df7f7996ec5@redhat.com>
+ <Ybo1jmNvM6sblcJq@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <Ybo1jmNvM6sblcJq@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 15-12-21 18:13:40, Sebastian Andrzej Siewior wrote:
-> On 2021-12-15 17:56:03 [+0100], Michal Hocko wrote:
-> > On Wed 15-12-21 17:47:54, Sebastian Andrzej Siewior wrote:
-> > > On 2021-12-13 11:08:26 [+0100], Michal Hocko wrote:
-> > > > On Fri 10-12-21 16:22:01, Sebastian Andrzej Siewior wrote:
-> > > > [...]
-> > > > I am sorry but I didn't get to read and digest the rest of the message
-> > > > yet. Let me just point out this
-> > > > 
-> > > > > The problematic part here is mem_cgroup_tree_per_node::lock which can
-> > > > > not be acquired with disabled interrupts on PREEMPT_RT.  The "locking
-> > > > > scope" is not always clear to me.  Also, if it is _just_ the counter,
-> > > > > then we might solve this differently.
-> > > > 
-> > > > I do not think you should be losing sleep over soft limit reclaim. This
-> > > > is certainly not something to be used for RT workloads and rather than
-> > > > touching that code I think it makes some sense to simply disallow soft
-> > > > limit with RT enabled (i.e. do not allow to set any soft limit).
-> > > 
-> > > Okay. So instead of disabling it entirely you suggest I should take
-> > > another stab at it? Okay. Disabling softlimit, where should I start with
-> > > it? Should mem_cgroup_write() for RES_SOFT_LIMIT always return an error
-> > > or something else?
-> > 
-> > Yeah, I would just return an error for RT configuration. If we ever need
-> > to implement that behavior for RT then we can look at specific fixes.
-> 
-> Okay. What do I gain by doing this / how do I test this? Is running
-> tools/testing/selftests/cgroup/test_*mem* sufficient to test all corner
-> cases here?
+On 12/15/21 13:35, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Wed, Dec 15, 2021 at 01:16:43PM -0500, Waiman Long wrote:
+>> Allowing direct transition from member to invalid partition doesn't feel
+>> right for me. A casual user may assume a partition is correctly formed
+>> without double checking the "cpuset.partition" value. Returning an error
+>> will prevent this kind of issue. If returning more information about the
+>> failure is the main reason for allowing the invalid partition transition, we
+>> can extend the "cpuset.partition" read syntax to also show the reason for
+>> the previous failure.
+> I don't think it's a good idea to display error messages without a way to
+> link the error to the one who triggered it. This is the same problem we had
+> with resettable counters. It only works for scenarios where one guy is
+> sitting in front of the computer but gets nastry for more complex scnearios
+> and automation.
+Yes, I agree it is not a good way to handle this issue.
+>
+> I understand that allowing transitions to invalid state can feel jarring.
+> There are pros and cons to both approaches. It's similar dynamics tho.
+> Erroring out may be more intuitive for a casual user but makes it harder for
+> more complex scenarios because whether a given operation errors or not is
+> dependent on external asynchronous states, there's no good way of reporting
+> the exact nature of the error or detecting when the operation would succeed
+> in the future, and the error conditions are rather arbitrary.
 
-I am not fully aware of all the tests but my point is that if the soft
-limit is not configured then there are no soft limit tree manipulations
-ever happening and therefore the code is effectivelly dead. Is this
-sufficient for the RT patchset to ignore the RT incompatible parts?
--- 
-Michal Hocko
-SUSE Labs
+Thanks for the explanation. Yes, there are always pros and cons for 
+different approach to a problem. I am not totally against allowing 
+member to invalid partition transition. In that case, reading back 
+"cpuset.partition" is a must to verify that it is really a success.
+
+How about we allow transition to an invalid partition state but still 
+return an error?
+
+Regards,
+Longman
+
