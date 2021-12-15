@@ -2,89 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEE7475E4C
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 18:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49703476009
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 18:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245175AbhLORNn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Dec 2021 12:13:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:49292 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbhLORNm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 12:13:42 -0500
-Date:   Wed, 15 Dec 2021 18:13:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1639588421;
+        id S238446AbhLOR7p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 12:59:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232881AbhLOR7p (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 12:59:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1639591184;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jYXjzbGZlnN964PjJtzgEeX8RXqMVqwrS5n7/IuOGFI=;
-        b=REqxSx+V31su26fCsE584O65uicmLycV3UA7QCYU9fdpth3uBkeQoRi4uJDeJLc4JUvAtD
-        +PHYJDuMxpxJGiz2JkppXqJZcskLdO4iXoeTIJt/ImE8S72gp2dAA3Cx0sGcR6kGIxStY2
-        +52K2rbXYrTAxMSNFYImMHK6G9rpOttoQvCxrLbhK/w7cvjU4ao8Yi3HVfoawP7Ah6/PDg
-        nITGvxnemLqPRUlENkSdgr6gzPfPnb5FtV3qPfhrHYXdmE6/4xp/LYaaNoA8VE/+k5EVX1
-        +Iwcc+fsW8iKf1R7Q8M/Cxu6iZ9tw48srCmxB4wUd73qxqorCjBGXjGqOFJ6WA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1639588421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jYXjzbGZlnN964PjJtzgEeX8RXqMVqwrS5n7/IuOGFI=;
-        b=QJ4AOPazmGLlU6Mdv7IO0XBCvO5u84k/9ccp0EH3VnFLVEfxqOu8XJY74BDcJ7iQQ8AYPB
-        RsymUKCJvMZ/QrAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] mm/memcontrol: Disable on PREEMPT_RT
-Message-ID: <YboiRA1znig/cbCt@linutronix.de>
-References: <20211207155208.eyre5svucpg7krxe@linutronix.de>
- <Ya+SCkLOLBVN/kiY@cmpxchg.org>
- <YbNwmUMPFM/MO0cX@linutronix.de>
- <YbcbmvQk+Sgdsi9G@dhcp22.suse.cz>
- <YbocOh+h3o/Yc5Ag@linutronix.de>
- <YboeI1aTFdQpN0TI@dhcp22.suse.cz>
+        bh=7T9baihxbZOtsdtJTZ7JWcmVJu0+eN6bqcVUWyieaoA=;
+        b=dOTUmmac0K6To55+DjDP8R+fSkNFCxkVZOGg2BqGNWmeSTGeFYYBLS+6HjcCWjGF6UZhl7
+        VgLN8niVzH/QHwqrPzT6LTt2X1QXa/HnZFsvT1ck/PFSYugwpSL/wPvWzRt8+nKeEGGJXx
+        OyC/z+wbzV0sldcRSEodQMRX8hB0ugg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-258-eoxD2mjwOxWsfYcVfNC3hA-1; Wed, 15 Dec 2021 12:59:41 -0500
+X-MC-Unique: eoxD2mjwOxWsfYcVfNC3hA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45CEA2F4B;
+        Wed, 15 Dec 2021 17:59:39 +0000 (UTC)
+Received: from [10.22.10.54] (unknown [10.22.10.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 53BC578C26;
+        Wed, 15 Dec 2021 17:59:20 +0000 (UTC)
+Message-ID: <8d73dc26-74e1-d763-d897-6e03cdac3c8c@redhat.com>
+Date:   Wed, 15 Dec 2021 12:59:19 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YboeI1aTFdQpN0TI@dhcp22.suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v9 1/7] cgroup/cpuset: Don't let child cpusets restrict
+ parent in default hierarchy
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+References: <20211205183220.818872-1-longman@redhat.com>
+ <20211205183220.818872-2-longman@redhat.com>
+ <Ybev80+h4JArgMDz@slm.duckdns.org> <20211215122336.GB25459@blackbody.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20211215122336.GB25459@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021-12-15 17:56:03 [+0100], Michal Hocko wrote:
-> On Wed 15-12-21 17:47:54, Sebastian Andrzej Siewior wrote:
-> > On 2021-12-13 11:08:26 [+0100], Michal Hocko wrote:
-> > > On Fri 10-12-21 16:22:01, Sebastian Andrzej Siewior wrote:
-> > > [...]
-> > > I am sorry but I didn't get to read and digest the rest of the message
-> > > yet. Let me just point out this
-> > > 
-> > > > The problematic part here is mem_cgroup_tree_per_node::lock which can
-> > > > not be acquired with disabled interrupts on PREEMPT_RT.  The "locking
-> > > > scope" is not always clear to me.  Also, if it is _just_ the counter,
-> > > > then we might solve this differently.
-> > > 
-> > > I do not think you should be losing sleep over soft limit reclaim. This
-> > > is certainly not something to be used for RT workloads and rather than
-> > > touching that code I think it makes some sense to simply disallow soft
-> > > limit with RT enabled (i.e. do not allow to set any soft limit).
-> > 
-> > Okay. So instead of disabling it entirely you suggest I should take
-> > another stab at it? Okay. Disabling softlimit, where should I start with
-> > it? Should mem_cgroup_write() for RES_SOFT_LIMIT always return an error
-> > or something else?
-> 
-> Yeah, I would just return an error for RT configuration. If we ever need
-> to implement that behavior for RT then we can look at specific fixes.
 
-Okay. What do I gain by doing this / how do I test this? Is running
-tools/testing/selftests/cgroup/test_*mem* sufficient to test all corner
-cases here?
+On 12/15/21 07:23, Michal Koutný wrote:
+> On Mon, Dec 13, 2021 at 10:41:23AM -1000, Tejun Heo <tj@kernel.org> wrote:
+>>> To address this issue, the check is now removed for the default hierarchy
+>>> to free parent cpusets from being restricted by child cpusets. The
+>>> check will still apply for legacy hierarchy.
+> I'm trying to find whether something in update_cpumasks_hier() ensures
+> the constraint is checkd on the legacy hierarchy but it seems to me this
+> baby was thrown out with the bathwater. How is the legacy check still
+> applied?
+Yes, you are right. I did remove the check for legacy hierarchy too.
+>> Applied to cgroup/for-5.17.
+> It comes out a bit more complex if I want to achieve both variants in
+> the below followup:
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 0dd7d853ed17..8b6e06f504f6 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -590,6 +590,35 @@ static inline void free_cpuset(struct cpuset *cs)
+>   	kfree(cs);
+>   }
+>   
+> +/*
+> + * validate_change_legacy() - Validate conditions specific to legacy (v1)
+> + *                            behavior.
+> + */
+> +static int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
+> +{
+> +	struct cgroup_subsys_state *css;
+> +	struct cpuset *c, *par;
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(!rcu_read_lock_held());
+> +
+> +	/* Each of our child cpusets must be a subset of us */
+> +	ret = -EBUSY;
+> +	cpuset_for_each_child(c, css, cur)
+> +		if (!is_cpuset_subset(c, trial))
+> +			goto out;
+> +
+> +	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
+> +	ret = -EACCES;
+> +	par = parent_cs(cur);
+> +	if (par && !is_cpuset_subset(trial, par))
+> +		goto out;
+> +
+> +	ret = 0;
+> +out:
+> +	return ret;
+> +}
+> +
+>   /*
+>    * validate_change() - Used to validate that any proposed cpuset change
+>    *		       follows the structural rules for cpusets.
+> @@ -614,20 +643,21 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+>   {
+>   	struct cgroup_subsys_state *css;
+>   	struct cpuset *c, *par;
+> -	int ret;
+> -
+> -	/* The checks don't apply to root cpuset */
+> -	if (cur == &top_cpuset)
+> -		return 0;
+> +	int ret = 0;
+>   
+>   	rcu_read_lock();
+> -	par = parent_cs(cur);
+>   
+> -	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
+> -	ret = -EACCES;
+> -	if (!is_in_v2_mode() && !is_cpuset_subset(trial, par))
 
-> Thanks!
-Thank you ;)
+I think you still need to guard it with "!is_in_v2_mode()".
 
-Sebastian
+         if (!is_in_v2_mode()) {
+                 ret = validate_change_legacy(cur, trial);
+                 if (ret)
+                         goto out;
+         }
+
+> +	ret = validate_change_legacy(cur, trial);
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Remaining checks don't apply to root cpuset */
+> +	ret = 0;
+> +	if (cur == &top_cpuset)
+>   		goto out;
+>   
+> +	par = parent_cs(cur);
+> +
+>   	/*
+>   	 * If either I or some sibling (!= me) is exclusive, we can't
+>   	 * overlap
+Cheers,
+Longman
+
