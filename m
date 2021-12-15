@@ -2,117 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0F7476084
-	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1374760B7
+	for <lists+cgroups@lfdr.de>; Wed, 15 Dec 2021 19:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238257AbhLOSRN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Dec 2021 13:17:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50660 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343668AbhLOSRB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:17:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639592220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDOmbSgSfH5oVZVfeOYCn0yzGNbmiacT1UQDjK4tWws=;
-        b=aSaz4JWWNfCR86/ybUOOK7ijOBa0ZQz2DMEMSLqOA1pd2PLiOk8uFZO38unCct8SLa1GSl
-        I6LbsSJJuJTxbVn9t0elQLVDgoh9tpoGWLpuT2i/xW0uEdC60AS6yXBB0k5BB8g5uiWSWk
-        GNJqw36mwy87pNHlJlbcv/BPQqrgyB4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-654-O0RuXf4FP2WllEUrZTzsIw-1; Wed, 15 Dec 2021 13:16:56 -0500
-X-MC-Unique: O0RuXf4FP2WllEUrZTzsIw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1E32593AE;
-        Wed, 15 Dec 2021 18:16:54 +0000 (UTC)
-Received: from [10.22.10.54] (unknown [10.22.10.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 342EC60BD8;
-        Wed, 15 Dec 2021 18:16:44 +0000 (UTC)
-Message-ID: <96018978-6b7f-1e7f-1012-9df7f7996ec5@redhat.com>
-Date:   Wed, 15 Dec 2021 13:16:43 -0500
+        id S1343788AbhLOS2U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 13:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhLOS2Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 13:28:16 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9132EC061574;
+        Wed, 15 Dec 2021 10:28:16 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id g19so21441765pfb.8;
+        Wed, 15 Dec 2021 10:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ljp+r2/uwwJFUdX/+JTcBmL6u7/IlJQzL4z/nVQyjLQ=;
+        b=DMRQ5tYS8xfdjkB/0Bu6POtAC9xPB3oOWHQ3zp+tyyxHvPYs/QTZTi3zPJX4A6Y5F3
+         nGEdDCNDIi88nqZqirGia2JnkFbUNdlY3RGfvIBjp9s6OD2sYnPeP4Q7r5Wed7PJZ0Y3
+         +AMiAEx2pHtnQ/86Qy4BtgxnoumB1K+ZkR+Ym9t5p0kW4ZzIe2uRaD9LdVAlS8XcMKOW
+         Ll37jAXwZgET3DQMqrmd6+YoemVFMwBYKaoP467YQ5LUTNKJxMRyFqPsqRwjbXsNw1aN
+         txz/TDUtfF4BADU1sWh7PR9Gc3AvMFIeHeTVSpfp3mDwV7xLtbDNTUMwKHEkl9hBRrb+
+         TYag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ljp+r2/uwwJFUdX/+JTcBmL6u7/IlJQzL4z/nVQyjLQ=;
+        b=HoRZfAN3eb6iWpuolTunvpyvTSDGHs2L52VntpN67flwLTSudxPKa/XviOoMLqEQlB
+         3YNNj+JBMsotAYJC7YluqfnJuIB1hpty6AQ812eZNPeGUAJbfgVqL/5yTsvGHSIQRI4B
+         8U0d+XiOn7RFq91Max9I2xgaE8GjFCLce5nzCV3Z1bIGgM92hOKAVunHJIB+MfUH27sk
+         W9JrLKDOcCVj/5mMP/IkUuKtfFOkadFiZcgz4nMYNBST08dFZv9HNAGMenwfaroFQwvx
+         xHj7Nud4iMf6szV5XtZfrsp1TvVPr7mjMLZrl4diVw6ZHIHuF06ND/wgSel9178WkMvs
+         Eyxg==
+X-Gm-Message-State: AOAM533YSPdON91sTU5E0Zx9J4YBVQ60NW/i4U0kTAmQC7HBrJ5/pgoS
+        +JvGfWgAMawy5at0JwhQWq4=
+X-Google-Smtp-Source: ABdhPJx8gJqM3Sl9c9Tcn5jfoWFOx30/5A2bh9SJMye4DepATryrjx2PnUq/V3OU+0j6rSODVlG8Fg==
+X-Received: by 2002:a62:1614:0:b0:4a2:fa59:c1ad with SMTP id 20-20020a621614000000b004a2fa59c1admr10090808pfw.80.1639592895935;
+        Wed, 15 Dec 2021 10:28:15 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id np1sm7404824pjb.22.2021.12.15.10.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Dec 2021 10:28:15 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 15 Dec 2021 08:28:14 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, rostedt@goodmis.org,
+        mingo@redhat.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        jmorris@namei.org, serge@hallyn.com, cgroups@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 2/3] add missing bpf-cgroup.h includes
+Message-ID: <YbozvuaPMu58RqU2@slm.duckdns.org>
+References: <20211215181231.1053479-1-kuba@kernel.org>
+ <20211215181231.1053479-3-kuba@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v9 6/7] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20211205183220.818872-1-longman@redhat.com>
- <20211205183220.818872-7-longman@redhat.com>
- <Ybe0YWEo7Wp7wib9@slm.duckdns.org> <20211215144450.GC25459@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211215144450.GC25459@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211215181231.1053479-3-kuba@kernel.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/15/21 09:44, Michal Koutný wrote:
-> On Mon, Dec 13, 2021 at 11:00:17AM -1000, Tejun Heo <tj@kernel.org> wrote:
->> * When a valid partition turns invalid, now we have a reliable way of
->>    discovering what exactly caused the transition. However, when a user now
->>    fails to turn a member into partition, all they get is -EINVAL and there's
->>    no way to discover why it failed and the failure conditions that -EINVAL
->>    represents aren't simple.
->>
->> * In an automated configuration scenarios, this operation mode may be
->>    difficult to make reliable and lead to sporadic failures which can be
->>    tricky to track down. The core problem is that whether a given operation
->>    succeeds or not may depend on external states (CPU on/offline) which may
->>    change asynchronously in a way that the configuring entity doesn't have
->>    any control over.
->>
->> It's true that both are existing problems with the current partition
->> interface and given that this is a pretty spcialized feature, this can be
->> okay. Michal, what are your thoughts?
-> Because of asynchronous changes, the return value should not be that
-> important and the user should watch cpuset.partitions for the result
-> (end state) anyway.
-> Furthermore, the reasons should be IMO just informative (i.e. I like
-> they're not explicitly documented) and not API.
->
-> But I see there could be a distinction between -EINVAL (the supplied
-> input makes no sense) and -EAGAIN(?) denoting that the switch to
-> partition root could not happen (due to outer constraints).
->
-> You seem to propose to replace the -EAGAIN above with a success code and
-> allow the switch to an invalid root.
-> The action of the configuring entity would be different: retry (when?)
-> vs wait till transition happens (notification) (although the immediate
-> effect (the change did not happen) is same).
-> I considered the two variants equal but the clear information about when
-> the change can happen I'd favor the variant allowing the switch to
-> invalid root now.
+On Wed, Dec 15, 2021 at 10:12:30AM -0800, Jakub Kicinski wrote:
+> We're about to break the cgroup-defs.h -> bpf-cgroup.h dependency,
+> make sure those who actually need more than the definition of
+> struct cgroup_bpf include bpf-cgroup.h explicitly.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Allowing direct transition from member to invalid partition doesn't feel 
-right for me. A casual user may assume a partition is correctly formed 
-without double checking the "cpuset.partition" value. Returning an error 
-will prevent this kind of issue. If returning more information about the 
-failure is the main reason for allowing the invalid partition 
-transition, we can extend the "cpuset.partition" read syntax to also 
-show the reason for the previous failure.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Cheers,
-Longman
+Thanks.
 
+-- 
+tejun
