@@ -2,44 +2,45 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67670476864
-	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 03:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07055476860
+	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 03:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhLPCzq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Dec 2021 21:55:46 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:51912 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbhLPCzq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 21:55:46 -0500
+        id S233199AbhLPCzp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Dec 2021 21:55:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233197AbhLPCzp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Dec 2021 21:55:45 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4B8C061574;
+        Wed, 15 Dec 2021 18:55:44 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 716CDB82294;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EB7B61BF7;
         Thu, 16 Dec 2021 02:55:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57054C36AFE;
-        Thu, 16 Dec 2021 02:55:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 591ADC36AEE;
+        Thu, 16 Dec 2021 02:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1639623343;
-        bh=YxjBxNV2YAEjL3Otuf0fLRGjWC0v4OV97wVEW+8DHIU=;
+        bh=2/LJwvJ0GMsKI+/4k7k587C4NMuPp8DFFYNp1vhg2TE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRuP0CDN60MoeW2/tqT0uv6Adl6l8mH0wRjReH52felfjiUipyQ39pfE4ieMDmMas
-         u7sy85vUmuWZoC3/K7bUaB/V+/LmSac/VuyA2JhIRDAHtAh+f9h9xIIkyzJaeCO8e/
-         w7MMZo6ggUsr+JbWgAON4JKS1KXlehxYRfXqGY5FBcBb9LmwJ0RmFr+WnaV8gdcp+L
-         8oKbiGj1fNww+rfCt+7JaCyIt9wbtpCUD6N1Nj4n2GKRi4HITq8LqVuIwsar9jgEqQ
-         FDacedxEOUfD/HOOE/XDZ81KQ2EQmXw0GxBWBzb4RWy7amOu4Xd2ELfUMPEu8QlJk1
-         oIeYUcbcgXUeQ==
+        b=rgm4bXynjKy1OQtDozeJhmK3x/Ey+yEwxfmuDlJH/NzQqzFTVti+6We9gjx0BpYzi
+         iQZSYa3kCPybhKweV97L312CIuny1VUjtQ9cR9J1laXifEP2uLZyO38RRg205QP5em
+         PG1O2zRisyU11Z+qBtC50R0hBNic+a5+XibvHsKAL91Sk95jzv30SDQo1vXCQANjoH
+         Wjk2ot6jwmCqceS6ID7teNaEtEOIz6YDXx5Jtz+9RdmwW0FueYqrxEPoG8KzDtoIs3
+         /a+TXUnQWCxMANchu9fvVZ+nyt8ZTHEiYn2zP88veE9tk25FT9Y7EHGDl8JrLM1G6Y
+         jHpEwsgNaiX8Q==
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
 Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
         Tejun Heo <tj@kernel.org>, kafai@fb.com, songliubraving@fb.com,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, rostedt@goodmis.org,
-        mingo@redhat.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        jmorris@namei.org, serge@hallyn.com, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH bpf-next v5 2/3] add missing bpf-cgroup.h includes
-Date:   Wed, 15 Dec 2021 18:55:37 -0800
-Message-Id: <20211216025538.1649516-3-kuba@kernel.org>
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org
+Subject: [PATCH bpf-next v5 3/3] bpf: remove the cgroup -> bpf header dependecy
+Date:   Wed, 15 Dec 2021 18:55:38 -0800
+Message-Id: <20211216025538.1649516-4-kuba@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211216025538.1649516-1-kuba@kernel.org>
 References: <20211216025538.1649516-1-kuba@kernel.org>
@@ -49,9 +50,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We're about to break the cgroup-defs.h -> bpf-cgroup.h dependency,
-make sure those who actually need more than the definition of
-struct cgroup_bpf include bpf-cgroup.h explicitly.
+Remove the dependency from cgroup-defs.h to bpf-cgroup.h and bpf.h.
+This reduces the incremental build size of x86 allmodconfig after
+bpf.h was touched from ~17k objects rebuilt to ~5k objects.
+bpf.h is 2.2kLoC and is modified relatively often.
+
+We need a new header with just the definition of struct cgroup_bpf
+and enum cgroup_bpf_attach_type, this is akin to cgroup-defs.h.
 
 Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
@@ -66,148 +71,196 @@ CC: john.fastabend@gmail.com
 CC: kpsingh@kernel.org
 CC: lizefan.x@bytedance.com
 CC: hannes@cmpxchg.org
-CC: rostedt@goodmis.org
-CC: mingo@redhat.com
-CC: yoshfuji@linux-ipv6.org
-CC: dsahern@kernel.org
-CC: jmorris@namei.org
-CC: serge@hallyn.com
 CC: bpf@vger.kernel.org
 CC: cgroups@vger.kernel.org
-CC: linux-security-module@vger.kernel.org
 ---
- kernel/bpf/helpers.c        | 1 +
- kernel/bpf/syscall.c        | 1 +
- kernel/bpf/verifier.c       | 1 +
- kernel/cgroup/cgroup.c      | 1 +
- kernel/trace/trace_kprobe.c | 1 +
- kernel/trace/trace_uprobe.c | 1 +
- net/ipv4/udp.c              | 1 +
- net/ipv6/udp.c              | 1 +
- net/socket.c                | 1 +
- security/device_cgroup.c    | 1 +
- 10 files changed, 10 insertions(+)
+ include/linux/bpf-cgroup-defs.h | 70 +++++++++++++++++++++++++++++++++
+ include/linux/bpf-cgroup.h      | 57 +--------------------------
+ include/linux/cgroup-defs.h     |  2 +-
+ 3 files changed, 72 insertions(+), 57 deletions(-)
+ create mode 100644 include/linux/bpf-cgroup-defs.h
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 8babae03d30a..34d6f91dec1c 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-  */
+diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+new file mode 100644
+index 000000000000..695d1224a71b
+--- /dev/null
++++ b/include/linux/bpf-cgroup-defs.h
+@@ -0,0 +1,70 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _BPF_CGROUP_DEFS_H
++#define _BPF_CGROUP_DEFS_H
++
++#ifdef CONFIG_CGROUP_BPF
++
++#include <linux/list.h>
++#include <linux/percpu-refcount.h>
++#include <linux/workqueue.h>
++
++struct bpf_prog_array;
++
++enum cgroup_bpf_attach_type {
++	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
++	CGROUP_INET_INGRESS = 0,
++	CGROUP_INET_EGRESS,
++	CGROUP_INET_SOCK_CREATE,
++	CGROUP_SOCK_OPS,
++	CGROUP_DEVICE,
++	CGROUP_INET4_BIND,
++	CGROUP_INET6_BIND,
++	CGROUP_INET4_CONNECT,
++	CGROUP_INET6_CONNECT,
++	CGROUP_INET4_POST_BIND,
++	CGROUP_INET6_POST_BIND,
++	CGROUP_UDP4_SENDMSG,
++	CGROUP_UDP6_SENDMSG,
++	CGROUP_SYSCTL,
++	CGROUP_UDP4_RECVMSG,
++	CGROUP_UDP6_RECVMSG,
++	CGROUP_GETSOCKOPT,
++	CGROUP_SETSOCKOPT,
++	CGROUP_INET4_GETPEERNAME,
++	CGROUP_INET6_GETPEERNAME,
++	CGROUP_INET4_GETSOCKNAME,
++	CGROUP_INET6_GETSOCKNAME,
++	CGROUP_INET_SOCK_RELEASE,
++	MAX_CGROUP_BPF_ATTACH_TYPE
++};
++
++struct cgroup_bpf {
++	/* array of effective progs in this cgroup */
++	struct bpf_prog_array __rcu *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
++
++	/* attached progs to this cgroup and attach flags
++	 * when flags == 0 or BPF_F_ALLOW_OVERRIDE the progs list will
++	 * have either zero or one element
++	 * when BPF_F_ALLOW_MULTI the list can have up to BPF_CGROUP_MAX_PROGS
++	 */
++	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
++	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
++
++	/* list of cgroup shared storages */
++	struct list_head storages;
++
++	/* temp storage for effective prog array used by prog_attach/detach */
++	struct bpf_prog_array *inactive;
++
++	/* reference counter used to detach bpf programs after cgroup removal */
++	struct percpu_ref refcnt;
++
++	/* cgroup_bpf is released using a work queue */
++	struct work_struct release_work;
++};
++
++#else /* CONFIG_CGROUP_BPF */
++struct cgroup_bpf {};
++#endif /* CONFIG_CGROUP_BPF */
++
++#endif
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 11820a430d6c..b525d8cdc25b 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -3,10 +3,10 @@
+ #define _BPF_CGROUP_H
+ 
  #include <linux/bpf.h>
-+#include <linux/bpf-cgroup.h>
- #include <linux/rcupdate.h>
- #include <linux/random.h>
- #include <linux/smp.h>
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ddd81d543203..da07bdf71697 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2011-2014 PLUMgrid, http://plumgrid.com
-  */
- #include <linux/bpf.h>
-+#include <linux/bpf-cgroup.h>
- #include <linux/bpf_trace.h>
- #include <linux/bpf_lirc.h>
- #include <linux/bpf_verifier.h>
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d74e8a99412e..f0604796132f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4,6 +4,7 @@
-  * Copyright (c) 2018 Covalent IO, Inc. http://covalent.io
-  */
- #include <uapi/linux/btf.h>
-+#include <linux/bpf-cgroup.h>
- #include <linux/kernel.h>
- #include <linux/types.h>
- #include <linux/slab.h>
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 919194de39c8..cd4c23f7e3df 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -30,6 +30,7 @@
- 
- #include "cgroup-internal.h"
- 
-+#include <linux/bpf-cgroup.h>
- #include <linux/cred.h>
++#include <linux/bpf-cgroup-defs.h>
  #include <linux/errno.h>
- #include <linux/init_task.h>
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 33272a7b6912..4e1257f50aa3 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -7,6 +7,7 @@
-  */
- #define pr_fmt(fmt)	"trace_kprobe: " fmt
+ #include <linux/jump_label.h>
+ #include <linux/percpu.h>
+-#include <linux/percpu-refcount.h>
+ #include <linux/rbtree.h>
+ #include <uapi/linux/bpf.h>
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/security.h>
- #include <linux/module.h>
- #include <linux/uaccess.h>
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index f5f0039d31e5..4f35514a48f3 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -7,6 +7,7 @@
-  */
- #define pr_fmt(fmt)	"trace_uprobe: " fmt
+@@ -23,33 +23,6 @@ struct ctl_table_header;
+ struct task_struct;
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/security.h>
- #include <linux/ctype.h>
- #include <linux/module.h>
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 69d30053fed9..99536127650b 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -74,6 +74,7 @@
+ #ifdef CONFIG_CGROUP_BPF
+-enum cgroup_bpf_attach_type {
+-	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
+-	CGROUP_INET_INGRESS = 0,
+-	CGROUP_INET_EGRESS,
+-	CGROUP_INET_SOCK_CREATE,
+-	CGROUP_SOCK_OPS,
+-	CGROUP_DEVICE,
+-	CGROUP_INET4_BIND,
+-	CGROUP_INET6_BIND,
+-	CGROUP_INET4_CONNECT,
+-	CGROUP_INET6_CONNECT,
+-	CGROUP_INET4_POST_BIND,
+-	CGROUP_INET6_POST_BIND,
+-	CGROUP_UDP4_SENDMSG,
+-	CGROUP_UDP6_SENDMSG,
+-	CGROUP_SYSCTL,
+-	CGROUP_UDP4_RECVMSG,
+-	CGROUP_UDP6_RECVMSG,
+-	CGROUP_GETSOCKOPT,
+-	CGROUP_SETSOCKOPT,
+-	CGROUP_INET4_GETPEERNAME,
+-	CGROUP_INET6_GETPEERNAME,
+-	CGROUP_INET4_GETSOCKNAME,
+-	CGROUP_INET6_GETSOCKNAME,
+-	CGROUP_INET_SOCK_RELEASE,
+-	MAX_CGROUP_BPF_ATTACH_TYPE
+-};
  
- #define pr_fmt(fmt) "UDP: " fmt
+ #define CGROUP_ATYPE(type) \
+ 	case BPF_##type: return type
+@@ -127,33 +100,6 @@ struct bpf_prog_list {
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+ };
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/uaccess.h>
- #include <asm/ioctls.h>
- #include <linux/memblock.h>
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 6a0e569f0bb8..ba8986d12413 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -17,6 +17,7 @@
-  *      YOSHIFUJI Hideaki @USAGI:	convert /proc/net/udp6 to seq_file.
-  */
+-struct bpf_prog_array;
+-
+-struct cgroup_bpf {
+-	/* array of effective progs in this cgroup */
+-	struct bpf_prog_array __rcu *effective[MAX_CGROUP_BPF_ATTACH_TYPE];
+-
+-	/* attached progs to this cgroup and attach flags
+-	 * when flags == 0 or BPF_F_ALLOW_OVERRIDE the progs list will
+-	 * have either zero or one element
+-	 * when BPF_F_ALLOW_MULTI the list can have up to BPF_CGROUP_MAX_PROGS
+-	 */
+-	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
+-	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
+-
+-	/* list of cgroup shared storages */
+-	struct list_head storages;
+-
+-	/* temp storage for effective prog array used by prog_attach/detach */
+-	struct bpf_prog_array *inactive;
+-
+-	/* reference counter used to detach bpf programs after cgroup removal */
+-	struct percpu_ref refcnt;
+-
+-	/* cgroup_bpf is released using a work queue */
+-	struct work_struct release_work;
+-};
+-
+ int cgroup_bpf_inherit(struct cgroup *cgrp);
+ void cgroup_bpf_offline(struct cgroup *cgrp);
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/errno.h>
- #include <linux/types.h>
- #include <linux/socket.h>
-diff --git a/net/socket.c b/net/socket.c
-index 7f64a6eccf63..721a5a1b1106 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -52,6 +52,7 @@
-  *	Based upon Swansea University Computer Society NET3.039
-  */
+@@ -451,7 +397,6 @@ int cgroup_bpf_prog_query(const union bpf_attr *attr,
+ 			  union bpf_attr __user *uattr);
+ #else
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/ethtool.h>
- #include <linux/mm.h>
- #include <linux/socket.h>
-diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-index 04375df52fc9..842889f3dcb7 100644
---- a/security/device_cgroup.c
-+++ b/security/device_cgroup.c
-@@ -5,6 +5,7 @@
-  * Copyright 2007 IBM Corp
-  */
+-struct cgroup_bpf {};
+ static inline int cgroup_bpf_inherit(struct cgroup *cgrp) { return 0; }
+ static inline void cgroup_bpf_offline(struct cgroup *cgrp) {}
  
-+#include <linux/bpf-cgroup.h>
- #include <linux/device_cgroup.h>
- #include <linux/cgroup.h>
- #include <linux/ctype.h>
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index db2e147e069f..411684c80cf3 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -19,7 +19,7 @@
+ #include <linux/percpu-rwsem.h>
+ #include <linux/u64_stats_sync.h>
+ #include <linux/workqueue.h>
+-#include <linux/bpf-cgroup.h>
++#include <linux/bpf-cgroup-defs.h>
+ #include <linux/psi_types.h>
+ 
+ #ifdef CONFIG_CGROUPS
 -- 
 2.31.1
 
