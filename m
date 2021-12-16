@@ -2,135 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A39D476D3E
-	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 10:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8EA476D65
+	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 10:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbhLPJTE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Dec 2021 04:19:04 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:44300 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbhLPJTE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Dec 2021 04:19:04 -0500
+        id S235401AbhLPJ2m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Dec 2021 04:28:42 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:60974 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235360AbhLPJ2k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Dec 2021 04:28:40 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 817CB1F45E;
-        Thu, 16 Dec 2021 09:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639646342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E869621135;
+        Thu, 16 Dec 2021 09:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639646918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rSmtMs4D/JMgdDSMfUX2HHXghuzhz3dXnYIHGOrCvIE=;
-        b=ZYRquT7w/sYhdd9nS/Jw484q+HHCO55WvkA2cWVmui6nm4c72iQb8r0c3s0IqBVotyADay
-        itkgxzc+bsXlEOaoTY841FC7HivasogpzrSLz+hjgior+Tg3hL6PIGOa1UD5wbCFbsxcfD
-        peX3wzUigyNTyUyonZq3/0tiXN2OZDU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639646342;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rSmtMs4D/JMgdDSMfUX2HHXghuzhz3dXnYIHGOrCvIE=;
-        b=9KCZzAFwVEmzRi97GXUbGa+7/wo2edOGm5ye9yAA2u98sFHTfmatiOoLOIPRTH48K7/Bkq
-        DuxL1c4mixmO7WAA==
+        bh=fGxktS/Uc4QdkNKSXK/IVadOzTG1ebMs/QUmVV6nIcE=;
+        b=Eh2Wx8s9jDwfC6jxKZuaZRo24mG2IrIk9796h9H2/iwEim4E06TJFI8j6yq9/wyc9rjpJo
+        396WeJCIzR7D9qq7Fr4tJgnwzwqPCQ6m9OgWHc/zxKAv52j9ARDUZxGkKQjCS636XLM66F
+        Tp76ek5AjK/Gkf8uXf/sx+eEV3Povs0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 01F1E13C1F;
-        Thu, 16 Dec 2021 09:19:01 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AABE813C1F;
+        Thu, 16 Dec 2021 09:28:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id taJdO4UEu2FwXQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 16 Dec 2021 09:19:01 +0000
-Message-ID: <956d76e5-a319-7e3d-14b9-af5106b5333f@suse.cz>
-Date:   Thu, 16 Dec 2021 10:19:01 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
-Content-Language: en-US
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        patches@lists.linux.dev, Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        id Y/wQKcYGu2FtYQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 16 Dec 2021 09:28:38 +0000
+Date:   Thu, 16 Dec 2021 10:28:37 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        kasan-dev@googlegroups.com, Lu Baolu <baolu.lu@linux.intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-References: <20211201181510.18784-1-vbabka@suse.cz>
- <4c3dfdfa-2e19-a9a7-7945-3d75bc87ca05@suse.cz>
- <Ybk+0LKrsAJatILE@carbon.dhcp.thefacebook.com>
- <Ybp8a5JNndgCLy2w@carbon.dhcp.thefacebook.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Ybp8a5JNndgCLy2w@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v9 3/7] cgroup/cpuset: Refining features and constraints
+ of a partition
+Message-ID: <20211216092837.GB46450@blackbody.suse.cz>
+References: <20211205183220.818872-1-longman@redhat.com>
+ <20211205183220.818872-4-longman@redhat.com>
+ <20211215144944.GE16798@blackbody.suse.cz>
+ <98887e63-51de-f5ad-8fb8-56269aaf4bcf@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98887e63-51de-f5ad-8fb8-56269aaf4bcf@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/16/21 00:38, Roman Gushchin wrote:
-> On Tue, Dec 14, 2021 at 05:03:12PM -0800, Roman Gushchin wrote:
->> On Tue, Dec 14, 2021 at 01:57:22PM +0100, Vlastimil Babka wrote:
->> > On 12/1/21 19:14, Vlastimil Babka wrote:
->> > > Folks from non-slab subsystems are Cc'd only to patches affecting them, and
->> > > this cover letter.
->> > > 
->> > > Series also available in git, based on 5.16-rc3:
->> > > https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slab-struct_slab-v2r2
->> > 
->> > Pushed a new branch slab-struct-slab-v3r3 with accumulated fixes and small tweaks
->> > and a new patch from Hyeonggon Yoo on top. To avoid too much spam, here's a range diff:
->> 
->> Hi Vlastimil!
->> 
->> I've started to review this patchset (btw, a really nice work, I like
->> the resulting code way more). Because I'm looking at v3 and I don't have
+On Wed, Dec 15, 2021 at 11:29:41AM -0500, Waiman Long <longman@redhat.com> wrote:
+> There are additional checks for the member to partition transition which
+> requires that the target cpuset shouldn't have child cpuset.
 
-Thanks a lot, Roman!
+Ah, I forgot the transition condition no. 4 will apply here. Clear.
 
-...
+So, currently full bottom up + top down walk is needed in (rare?) case
+the switch from root partition to member and back.
 
-> 
-> * mm/slab: Convert most struct page to struct slab by spatch
-> 
-> Another patch with the same title? Rebase error?
-> 
-> * mm/slab: Finish struct page to struct slab conversion
-> 
-> And this one too?
+> That prevents the recovering of a invalid partition root under a
+> member cpuset. We could certainly remove that restriction by adding
+> additional code as well as additional tests to verify it works. I
+> haven't done that simply to avoid adding more complexity to the
+> current code.
 
-No, these are for mm/slab.c, the previous were for mm/slub.c :)
+I agree this restriction can be lifted later independently when the rest
+settles.  (It's not so different from controllers disabling on the
+unified hierarchy after all.)
 
-> 
-> Thanks!
-> 
-> Roman
+
+Thanks,
+Michal
 
