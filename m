@@ -2,90 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8EA476D65
-	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 10:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B72F476DB0
+	for <lists+cgroups@lfdr.de>; Thu, 16 Dec 2021 10:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhLPJ2m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Dec 2021 04:28:42 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:60974 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235360AbhLPJ2k (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Dec 2021 04:28:40 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E869621135;
-        Thu, 16 Dec 2021 09:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1639646918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fGxktS/Uc4QdkNKSXK/IVadOzTG1ebMs/QUmVV6nIcE=;
-        b=Eh2Wx8s9jDwfC6jxKZuaZRo24mG2IrIk9796h9H2/iwEim4E06TJFI8j6yq9/wyc9rjpJo
-        396WeJCIzR7D9qq7Fr4tJgnwzwqPCQ6m9OgWHc/zxKAv52j9ARDUZxGkKQjCS636XLM66F
-        Tp76ek5AjK/Gkf8uXf/sx+eEV3Povs0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AABE813C1F;
-        Thu, 16 Dec 2021 09:28:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Y/wQKcYGu2FtYQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 16 Dec 2021 09:28:38 +0000
-Date:   Thu, 16 Dec 2021 10:28:37 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v9 3/7] cgroup/cpuset: Refining features and constraints
- of a partition
-Message-ID: <20211216092837.GB46450@blackbody.suse.cz>
-References: <20211205183220.818872-1-longman@redhat.com>
- <20211205183220.818872-4-longman@redhat.com>
- <20211215144944.GE16798@blackbody.suse.cz>
- <98887e63-51de-f5ad-8fb8-56269aaf4bcf@redhat.com>
+        id S235550AbhLPJpP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Dec 2021 04:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235547AbhLPJpP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Dec 2021 04:45:15 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153D4C061401
+        for <cgroups@vger.kernel.org>; Thu, 16 Dec 2021 01:45:15 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id x32so63034786ybi.12
+        for <cgroups@vger.kernel.org>; Thu, 16 Dec 2021 01:45:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A1MFole7nFko6XzmDNfgE5E+/1W8AedAM5ImSr4t3Mo=;
+        b=nsmQ/apsKdQztyc0yc5tiUuptN+9XlsBEAr0qz+gI5SZ+IV3uSUUFj52fE9YbQVI8n
+         SMbjtHrTJA6hukMVpoe9h0y6Rmfyrl+OHG/iOHic+VH5G02tOBfDdwGMpC7FfUrBGTu3
+         8XpRGgzs7x86Dl8C0S2EHzI480i8bV0jQS8+RviV1BOSx6kp/P/aMy3Hx325lxQFnmHw
+         X0cG1oWo6GktwZFd78AaZBgbbhnACTQenYXojWdQRhiJtzNFPn30D0eC0JI1ooH1p6wQ
+         p1NWPJE7pjmTIGoCX0RY9/cuWQjZRO11Ex/D2pnSThLbuR6dO5PA2wjt+xORpiYjw6W8
+         bveg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A1MFole7nFko6XzmDNfgE5E+/1W8AedAM5ImSr4t3Mo=;
+        b=mZggUxE4ESzhZ0y7Fn5RKsCsPaVHVweIOstmpPJZXVMhjaQfqm3meXU1fXVHdAxyQi
+         9K3X1geXpDTDHofvMfbVHnEkdw+aCTDRDSmgbg8sf4FKCf1lnCW9cCA+3zx6YSQJHGMB
+         7FHt+ji4TGiCu+Ijk5gMyer/PkUV4h5ZgUJ4Khf4Av8h08UNKUA+TvfblXT4UnJ00qdn
+         CARrkaVyorhKC2wlkzXfuA5N6lJJMaMxPdWKcd6fj3qP5G+sf1HVGBf6RpyZ5NvKzr4J
+         T3y4HxoI2vF92w6WJ5NxpS8dWQMzhqUq+sMZ4/P1D2SJlCKh7aXF+W1t9yrYXMfzDabD
+         WnJg==
+X-Gm-Message-State: AOAM532andf0oAU8+JxPjglXBs4p6hsFYloEar1tCwTUqLScs6+IkV9q
+        YdaC8NNXdvpzwPcgnVgPf1RmqAEfG7B56mqfRExgpA==
+X-Google-Smtp-Source: ABdhPJytpY6IKx476YQCSWtivg98+adXT5ZH0jbr+l9j/D8Pt8zWvBRmB8J/jyRv6XgbIY/CqxeyMFRbwZaiwwEiQw8=
+X-Received: by 2002:a25:9c81:: with SMTP id y1mr12149005ybo.49.1639647914325;
+ Thu, 16 Dec 2021 01:45:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98887e63-51de-f5ad-8fb8-56269aaf4bcf@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211216022024.127375-1-wangweiyang2@huawei.com>
+In-Reply-To: <20211216022024.127375-1-wangweiyang2@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 16 Dec 2021 17:44:38 +0800
+Message-ID: <CAMZfGtUBSqgnHM+DSG7na=7tbNMyj_qS8pEOCn9nDdkPEzi-4g@mail.gmail.com>
+Subject: Re: [PATCH -next] mm/memcg: Use struct_size() helper in kzalloc()
+To:     Wang Weiyang <wangweiyang2@huawei.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 11:29:41AM -0500, Waiman Long <longman@redhat.com> wrote:
-> There are additional checks for the member to partition transition which
-> requires that the target cpuset shouldn't have child cpuset.
+On Thu, Dec 16, 2021 at 10:21 AM Wang Weiyang <wangweiyang2@huawei.com> wrote:
+>
+> Make use of the struct_size() helper instead of an open-coded version, in
+> order to avoid any potential type mistakes or integer overflows that, in
+> the worst scenario, could lead to heap overflows.
+>
+> Link: https://github.com/KSPP/linux/issues/160
+> Signed-off-by: Wang Weiyang <wangweiyang2@huawei.com>
 
-Ah, I forgot the transition condition no. 4 will apply here. Clear.
-
-So, currently full bottom up + top down walk is needed in (rare?) case
-the switch from root partition to member and back.
-
-> That prevents the recovering of a invalid partition root under a
-> member cpuset. We could certainly remove that restriction by adding
-> additional code as well as additional tests to verify it works. I
-> haven't done that simply to avoid adding more complexity to the
-> current code.
-
-I agree this restriction can be lifted later independently when the rest
-settles.  (It's not so different from controllers disabling on the
-unified hierarchy after all.)
-
-
-Thanks,
-Michal
-
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
