@@ -2,168 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4483479189
-	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 17:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF724793F8
+	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 19:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhLQQeg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Dec 2021 11:34:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21794 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239148AbhLQQef (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Dec 2021 11:34:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639758875;
+        id S230526AbhLQSVl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Dec 2021 13:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhLQSVk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Dec 2021 13:21:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9470FC061574;
+        Fri, 17 Dec 2021 10:21:40 -0800 (PST)
+Date:   Fri, 17 Dec 2021 19:21:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1639765299;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iHsgYvtM2VbxZhXYtiIDslv8uvAy3OgBfsyPMPqyKfY=;
-        b=HHGDPMO8Ws2pvIFJBbV0rJxZec5XFD2w3PyG/tTncoxRMuL4g27/lzynPwhcJN/CjBj4aZ
-        yIxhu/6eE6cRlL0U/pkAk/HPC12TkMvhyfQFiPXKGbOx+pX1HQP+b45hbIM7JaAKClxA56
-        KlvrRv0qxdT6ZY2Q6l2T7+f1ohoZJBM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-203-JQdpYZzfMw-6gjsTIJXbyQ-1; Fri, 17 Dec 2021 11:34:31 -0500
-X-MC-Unique: JQdpYZzfMw-6gjsTIJXbyQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74C6910168C6;
-        Fri, 17 Dec 2021 16:34:29 +0000 (UTC)
-Received: from [10.22.10.138] (unknown [10.22.10.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F4BD4E2A2;
-        Fri, 17 Dec 2021 16:34:10 +0000 (UTC)
-Message-ID: <a7c9aaa1-b813-fccc-6623-0c6409642b6b@redhat.com>
-Date:   Fri, 17 Dec 2021 11:34:09 -0500
+        bh=fm8Ji21c2eiKP0yW1lKrfGVuKLVJyDvJbeQwn/ZsYvM=;
+        b=YqrU3fHSQRfaFxUWraZUi980r3t8h7vYSYTYzSR3s0gWO5X9yKrM2rWbqwY39lGVyl0lSX
+        ONjIGeqwz29rc6M5TyE4S/cLoCfB9Dckz1DMBhjwSy0asb+U2J3j6IYEjiK4jOfYnQzpwA
+        Qi9+Idkz9wWSoDviGb6NrcMSxjOkBxKODW47A99mUb+LDX1V+mNK+rg9+7m5XI/FWfo/ak
+        29Qzc4S7++v3EotbBhJ1xtorSGNzhcAsKrH9ISvrSYT+I58TA4csXrlM3Ggtaqx5WK6/ZV
+        4o7mi8wdT3FZFilT5Znj32LIkdmV+NKQ28BWl9WBQfaDNg1qFHolx2kunWfE2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1639765299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fm8Ji21c2eiKP0yW1lKrfGVuKLVJyDvJbeQwn/ZsYvM=;
+        b=9Tm2o/FLsPj4spSSiHLUbXy/DCYZ3PjoY5s5g+ZQy2QGHF7KQk9kTv/yEF/a//9Ryn4TzC
+        sA45eR7TuPsNTiDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH-next v3] mm/memcg: Properly handle memcg_stock access for
+ PREEMPT_RT
+Message-ID: <YbzVMURu2b2/++yi@linutronix.de>
+References: <20211214144412.447035-1-longman@redhat.com>
+ <Ybx3ubNFfGpCqhn0@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] cgroup/cpuset: Make child cpusets restrict parents on v1
- hierarchy
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>, tj@kernel.org
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
-        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
-        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        lizefan.x@bytedance.com, mtosatti@redhat.com, pauld@redhat.com,
-        peterz@infradead.org, shuah@kernel.org
-References: <8d73dc26-74e1-d763-d897-6e03cdac3c8c@redhat.com>
- <20211217154854.41409-1-mkoutny@suse.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211217154854.41409-1-mkoutny@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Ybx3ubNFfGpCqhn0@linutronix.de>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/17/21 10:48, Michal Koutný wrote:
-> The commit 1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets
-> restrict parent in default hierarchy") inteded to relax the check only
-> on the default hierarchy (or v2 mode) but it dropped the check in v1
-> too.
->
-> This patch returns and separates the legacy-only validations so that
-> they can be considered only in the v1 mode, which should enforce the old
-> constraints for the sake of compatibility.
->
-> Fixes: 1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets restrict parent in default hierarchy")
-> Suggested-by: Waiman Long <longman@redhat.com>
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->   kernel/cgroup/cpuset.c | 52 ++++++++++++++++++++++++++++++++----------
->   1 file changed, 40 insertions(+), 12 deletions(-)
->
-> This is formatted as a separate patch fixing the already queued change in
-> for-5.17 but it can be eventually squashed into the referenced commit AFAIAC.
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 0dd7d853ed17..ce6929ddc0b0 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -590,6 +590,35 @@ static inline void free_cpuset(struct cpuset *cs)
->   	kfree(cs);
->   }
->   
-> +/*
-> + * validate_change_legacy() - Validate conditions specific to legacy (v1)
-> + *                            behavior.
-> + */
-> +static int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
-> +{
-> +	struct cgroup_subsys_state *css;
-> +	struct cpuset *c, *par;
-> +	int ret;
-> +
-> +	WARN_ON_ONCE(!rcu_read_lock_held());
-> +
-> +	/* Each of our child cpusets must be a subset of us */
-> +	ret = -EBUSY;
-> +	cpuset_for_each_child(c, css, cur)
-> +		if (!is_cpuset_subset(c, trial))
-> +			goto out;
-> +
-> +	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
-> +	ret = -EACCES;
-> +	par = parent_cs(cur);
-> +	if (par && !is_cpuset_subset(trial, par))
-> +		goto out;
-> +
-> +	ret = 0;
-> +out:
-> +	return ret;
-> +}
-> +
->   /*
->    * validate_change() - Used to validate that any proposed cpuset change
->    *		       follows the structural rules for cpusets.
-> @@ -614,20 +643,21 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
->   {
->   	struct cgroup_subsys_state *css;
->   	struct cpuset *c, *par;
-> -	int ret;
-> -
-> -	/* The checks don't apply to root cpuset */
-> -	if (cur == &top_cpuset)
-> -		return 0;
-> +	int ret = 0;
->   
->   	rcu_read_lock();
-> -	par = parent_cs(cur);
->   
-> -	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
-> -	ret = -EACCES;
-> -	if (!is_in_v2_mode() && !is_cpuset_subset(trial, par))
-> +	if (!is_in_v2_mode())
-> +		ret = validate_change_legacy(cur, trial);
-> +	if (ret)
-> +		goto out;
-> +
-> +	/* Remaining checks don't apply to root cpuset */
-> +	if (cur == &top_cpuset)
->   		goto out;
->   
-> +	par = parent_cs(cur);
-> +
->   	/*
->   	 * If either I or some sibling (!= me) is exclusive, we can't
->   	 * overlap
-> @@ -1175,9 +1205,7 @@ enum subparts_cmd {
->    *
->    * Because of the implicit cpu exclusive nature of a partition root,
->    * cpumask changes that violates the cpu exclusivity rule will not be
-> - * permitted when checked by validate_change(). The validate_change()
-> - * function will also prevent any changes to the cpu list if it is not
-> - * a superset of children's cpu lists.
-> + * permitted when checked by validate_change().
->    */
->   static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
->   					  struct cpumask *newmask,
+On 2021-12-17 12:42:51 [+0100], To Waiman Long wrote:
+> On 2021-12-14 09:44:12 [-0500], Waiman Long wrote:
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2096,7 +2096,12 @@ struct obj_stock {
 
-Thanks for addressing this issue.
+so I made something based on this. Let me clean this up and test it
+first. So it is just a heads up :)
 
-Reviewed-by: Waiman Long <longman@redhat.com>
-
+Sebastian
