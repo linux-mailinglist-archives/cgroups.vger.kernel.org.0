@@ -2,128 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA84478A41
-	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 12:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB5A47904F
+	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 16:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235606AbhLQLmy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Dec 2021 06:42:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235474AbhLQLmx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Dec 2021 06:42:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53761C061574;
-        Fri, 17 Dec 2021 03:42:53 -0800 (PST)
-Date:   Fri, 17 Dec 2021 12:42:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1639741371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S234796AbhLQPtO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Dec 2021 10:49:14 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:43276 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhLQPtO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Dec 2021 10:49:14 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A3C9F1F38B;
+        Fri, 17 Dec 2021 15:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1639756152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3/ancgIFgkXeO3NDEPeVGpgn07wkYNrxt0m0tDBAo20=;
-        b=r9nEpz+wZp4vfF/Gu2Vs1J8cQGszY5GTzaCwHMLoUcdK3QhP58IZzWaQFpOl+Ez/g+yCDV
-        eL/PwjSebD3D9tVO0d90NcbkeO5fuNs7862UwJMTdZAWnjZ8R8qQqHzTkzkKdDp7zqiXIq
-        rLLI/ShKnpmtSAlFha/c+luhZDNoXDSsst+e4bBBauovDVvfRAqXQ1F4R6aakFAcvHt7Ow
-        EGjtvUzpTu17fPvqlkxE68I18P3FNsJRsu4ZW6Fk7eu90NOJfYi5wnKF+daB8+NXUk/Wvo
-        O/f7RsowfsQxUmnbG3+uzA/zWnxCTJcaqyg339qiPsuTRQP1+Ly3bLAMLsY/OQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1639741371;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3/ancgIFgkXeO3NDEPeVGpgn07wkYNrxt0m0tDBAo20=;
-        b=ExKsbpBJPazNTYPG4oRZ2RNYzMs9Rfo2Vd/yrEk6XGqBqAS5LzFrUd0qDG1XzlNZGMUfFQ
-        L/wNcK/zVkl+fJAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH-next v3] mm/memcg: Properly handle memcg_stock access for
- PREEMPT_RT
-Message-ID: <Ybx3ubNFfGpCqhn0@linutronix.de>
-References: <20211214144412.447035-1-longman@redhat.com>
+        bh=IMAVP9J2GHVSmKC+cLlgFMSosIKR4Gu62W3/R1oimQs=;
+        b=C5fXhkyP2MnU0nq4MLVst5WF2II5sGuDOjIZgvNjdXxGfo3wB51ZGJ5VTMQxvb39n+diVK
+        qiC0kGQeCM7d8SGibFBwLzKw0gVfk7h+jHJ4HDHCgIdURV58x38TuN74p7GGKt6k30tE91
+        GVKnPNVTmtSGP3wcvwASna04ilcjkF4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63496139C1;
+        Fri, 17 Dec 2021 15:49:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id V5y0F3ixvGFfRwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 17 Dec 2021 15:49:12 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     longman@redhat.com, tj@kernel.org
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
+        frederic@kernel.org, guro@fb.com, hannes@cmpxchg.org,
+        juri.lelli@redhat.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        lizefan.x@bytedance.com, mkoutny@suse.com, mtosatti@redhat.com,
+        pauld@redhat.com, peterz@infradead.org, shuah@kernel.org
+Subject: [PATCH] cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
+Date:   Fri, 17 Dec 2021 16:48:54 +0100
+Message-Id: <20211217154854.41409-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <8d73dc26-74e1-d763-d897-6e03cdac3c8c@redhat.com>
+References: <8d73dc26-74e1-d763-d897-6e03cdac3c8c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211214144412.447035-1-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2021-12-14 09:44:12 [-0500], Waiman Long wrote:
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2096,7 +2096,12 @@ struct obj_stock {
->  #endif
->  };
->  
-> +/*
-> + * The local_lock protects the whole memcg_stock_pcp structure including
-> + * the embedded obj_stock structures.
-> + */
->  struct memcg_stock_pcp {
-> +	local_lock_t lock;
->  	struct mem_cgroup *cached; /* this never be root cgroup */
->  	unsigned int nr_pages;
->  	struct obj_stock task_obj;
-> @@ -2145,7 +2150,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
->  	if (nr_pages > MEMCG_CHARGE_BATCH)
->  		return ret;
->  
-> -	local_irq_save(flags);
-> +	local_lock_irqsave(&memcg_stock.lock, flags);
+The commit 1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets
+restrict parent in default hierarchy") inteded to relax the check only
+on the default hierarchy (or v2 mode) but it dropped the check in v1
+too.
 
-This still does not explain why the lock is acquired here where it
-appears to be unrelated to memcg_stock.lock.
+This patch returns and separates the legacy-only validations so that
+they can be considered only in the v1 mode, which should enforce the old
+constraints for the sake of compatibility.
 
->  
->  	stock = this_cpu_ptr(&memcg_stock);
->  	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
-> @@ -2779,29 +2784,34 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
->   * which is cheap in non-preempt kernel. The interrupt context object stock
->   * can only be accessed after disabling interrupt. User context code can
->   * access interrupt object stock, but not vice versa.
-> + *
-> + * This task and interrupt context optimization is disabled for PREEMPT_RT
-> + * as there is no performance gain in this case and changes will be made to
-> + * irq_obj only.
-> + *
-> + * For non-PREEMPT_RT, we are not replacing preempt_disable() by local_lock()
-> + * as nesting of task_obj and irq_obj are allowed which may cause lockdep
-> + * splat if local_lock() is used. Using separate local locks will complicate
-> + * the interaction between obj_stock and the broader memcg_stock object.
->   */
->  static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
->  {
-> -	struct memcg_stock_pcp *stock;
-> -
-> -	if (likely(in_task())) {
-> +	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
->  		*pflags = 0UL;
->  		preempt_disable();
-> -		stock = this_cpu_ptr(&memcg_stock);
-> -		return &stock->task_obj;
-> +		return this_cpu_ptr(&memcg_stock.task_obj);
+Fixes: 1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets restrict parent in default hierarchy")
+Suggested-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cpuset.c | 52 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 40 insertions(+), 12 deletions(-)
 
-Do we need to keep the memcg_stock.task_obj for !RT?
-I'm not really convinced that disabling either preemption or interrupts
-is so much better compared to actual locking locking with lockdep
-annotation. Looking at the history, I'm also impressed by that fact that
-disabling/ enabling interrupts is *so* expensive that all this is
-actually worth it.
+This is formatted as a separate patch fixing the already queued change in
+for-5.17 but it can be eventually squashed into the referenced commit AFAIAC.
 
->  	}
->  
-> -	local_irq_save(*pflags);
-> -	stock = this_cpu_ptr(&memcg_stock);
-> -	return &stock->irq_obj;
-> +	local_lock_irqsave(&memcg_stock.lock, *pflags);
-> +	return this_cpu_ptr(&memcg_stock.irq_obj);
->  }
->  
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 0dd7d853ed17..ce6929ddc0b0 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -590,6 +590,35 @@ static inline void free_cpuset(struct cpuset *cs)
+ 	kfree(cs);
+ }
+ 
++/*
++ * validate_change_legacy() - Validate conditions specific to legacy (v1)
++ *                            behavior.
++ */
++static int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
++{
++	struct cgroup_subsys_state *css;
++	struct cpuset *c, *par;
++	int ret;
++
++	WARN_ON_ONCE(!rcu_read_lock_held());
++
++	/* Each of our child cpusets must be a subset of us */
++	ret = -EBUSY;
++	cpuset_for_each_child(c, css, cur)
++		if (!is_cpuset_subset(c, trial))
++			goto out;
++
++	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
++	ret = -EACCES;
++	par = parent_cs(cur);
++	if (par && !is_cpuset_subset(trial, par))
++		goto out;
++
++	ret = 0;
++out:
++	return ret;
++}
++
+ /*
+  * validate_change() - Used to validate that any proposed cpuset change
+  *		       follows the structural rules for cpusets.
+@@ -614,20 +643,21 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+ {
+ 	struct cgroup_subsys_state *css;
+ 	struct cpuset *c, *par;
+-	int ret;
+-
+-	/* The checks don't apply to root cpuset */
+-	if (cur == &top_cpuset)
+-		return 0;
++	int ret = 0;
+ 
+ 	rcu_read_lock();
+-	par = parent_cs(cur);
+ 
+-	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
+-	ret = -EACCES;
+-	if (!is_in_v2_mode() && !is_cpuset_subset(trial, par))
++	if (!is_in_v2_mode())
++		ret = validate_change_legacy(cur, trial);
++	if (ret)
++		goto out;
++
++	/* Remaining checks don't apply to root cpuset */
++	if (cur == &top_cpuset)
+ 		goto out;
+ 
++	par = parent_cs(cur);
++
+ 	/*
+ 	 * If either I or some sibling (!= me) is exclusive, we can't
+ 	 * overlap
+@@ -1175,9 +1205,7 @@ enum subparts_cmd {
+  *
+  * Because of the implicit cpu exclusive nature of a partition root,
+  * cpumask changes that violates the cpu exclusivity rule will not be
+- * permitted when checked by validate_change(). The validate_change()
+- * function will also prevent any changes to the cpu list if it is not
+- * a superset of children's cpu lists.
++ * permitted when checked by validate_change().
+  */
+ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 					  struct cpumask *newmask,
+-- 
+2.33.1
 
-Sebastian
