@@ -2,109 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756E9478362
-	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 03:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA84478A41
+	for <lists+cgroups@lfdr.de>; Fri, 17 Dec 2021 12:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhLQCxS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Dec 2021 21:53:18 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:33862 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhLQCxR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Dec 2021 21:53:17 -0500
-Received: from kwepemi100007.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JFYSS3L7Qzcbyw;
-        Fri, 17 Dec 2021 10:52:56 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100007.china.huawei.com (7.221.188.115) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 17 Dec 2021 10:53:14 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 17 Dec 2021 10:53:14 +0800
-Subject: Re: [PATCH RFC 9/9] block, bfq: decrease
- 'num_groups_with_pending_reqs' earlier
-To:     Paolo Valente <paolo.valente@linaro.org>
-CC:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211127101132.486806-1-yukuai3@huawei.com>
- <20211127101132.486806-10-yukuai3@huawei.com>
- <AA66019E-FD14-4821-B53D-0C56EEC38828@linaro.org>
- <4765e7f8-48b7-3bc6-5eb6-1dc0a569233d@huawei.com>
- <B5C2B1F6-4DF9-4657-AFF4-D53DD04A65DC@linaro.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <97642e8d-b93c-c229-d13e-76517d5e654f@huawei.com>
-Date:   Fri, 17 Dec 2021 10:53:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S235606AbhLQLmy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Dec 2021 06:42:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235474AbhLQLmx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Dec 2021 06:42:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53761C061574;
+        Fri, 17 Dec 2021 03:42:53 -0800 (PST)
+Date:   Fri, 17 Dec 2021 12:42:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1639741371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/ancgIFgkXeO3NDEPeVGpgn07wkYNrxt0m0tDBAo20=;
+        b=r9nEpz+wZp4vfF/Gu2Vs1J8cQGszY5GTzaCwHMLoUcdK3QhP58IZzWaQFpOl+Ez/g+yCDV
+        eL/PwjSebD3D9tVO0d90NcbkeO5fuNs7862UwJMTdZAWnjZ8R8qQqHzTkzkKdDp7zqiXIq
+        rLLI/ShKnpmtSAlFha/c+luhZDNoXDSsst+e4bBBauovDVvfRAqXQ1F4R6aakFAcvHt7Ow
+        EGjtvUzpTu17fPvqlkxE68I18P3FNsJRsu4ZW6Fk7eu90NOJfYi5wnKF+daB8+NXUk/Wvo
+        O/f7RsowfsQxUmnbG3+uzA/zWnxCTJcaqyg339qiPsuTRQP1+Ly3bLAMLsY/OQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1639741371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/ancgIFgkXeO3NDEPeVGpgn07wkYNrxt0m0tDBAo20=;
+        b=ExKsbpBJPazNTYPG4oRZ2RNYzMs9Rfo2Vd/yrEk6XGqBqAS5LzFrUd0qDG1XzlNZGMUfFQ
+        L/wNcK/zVkl+fJAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH-next v3] mm/memcg: Properly handle memcg_stock access for
+ PREEMPT_RT
+Message-ID: <Ybx3ubNFfGpCqhn0@linutronix.de>
+References: <20211214144412.447035-1-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <B5C2B1F6-4DF9-4657-AFF4-D53DD04A65DC@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211214144412.447035-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2021/12/17 0:34, Paolo Valente 写道:
-> 
-> 
->> Il giorno 11 dic 2021, alle ore 03:10, yukuai (C) <yukuai3@huawei.com> ha scritto:
->>
->> 在 2021/12/10 18:21, Paolo Valente 写道:
->>>> Il giorno 27 nov 2021, alle ore 11:11, Yu Kuai<yukuai3@huawei.com>  ha scritto:
->>>>
->>>> Currently 'num_groups_with_pending_reqs' won't be decreased when
->>>> the group doesn't have any pending requests, while any child group
->>>> have any pending requests. The decrement is delayed to when all the
->>>> child groups doesn't have any pending requests.
->>>>
->>>> For example:
->>>> 1) t1 issue sync io on root group, t2 and t3 issue sync io on the same
->>>> child group. num_groups_with_pending_reqs is 2 now.
->>>> 2) t1 stopped, num_groups_with_pending_reqs is still 2. io from t2 and
->>>> t3 still can't be handled concurrently.
->>>>
->>>> Fix the problem by decreasing 'num_groups_with_pending_reqs'
->>>> immediately upon the deactivation of last entity of the group.
->>>>
->>> I don't understand this patch clearly.
->>> I understand your proposal not to count a group as with pending requests, in case no child process of the group has IO, but only its child groups have pending requests.
->>> So, entities here are only queues for this patch?
->>> If they are only queues, I think it is still incorrect to remove the group from the count of groups with pending IO when all its child queues are deactivated, because there may still be unfinished IO for those queues.
->>
->> Hi, Paolo
->>
->> bfq_weights_tree_remove() will be called when all requests are completed
->> in bfq_queue, thus I recored how many queues have pending requests
->> through weights tree insertion and removal.(Details in patch 7)
->>
->> Thus when calling bfq_weights_tree_remove() for bfqq, I can check if
->> there are no queues have pending requests for parent bfqg:
->>
->> if (!bfqg->num_entities_with_pending_reqs && -> no queues with pending reqs
->>     entity->in_groups_with_pending_reqs) {   -> the group is counted
->>
-> 
-> Ok, I got confused because you use the term deactivation.  Yet you
-> seem to decrement the counter at the right time.  Maybe fix that term,
-> in commit messages and comments.
+On 2021-12-14 09:44:12 [-0500], Waiman Long wrote:
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2096,7 +2096,12 @@ struct obj_stock {
+>  #endif
+>  };
+>  
+> +/*
+> + * The local_lock protects the whole memcg_stock_pcp structure including
+> + * the embedded obj_stock structures.
+> + */
+>  struct memcg_stock_pcp {
+> +	local_lock_t lock;
+>  	struct mem_cgroup *cached; /* this never be root cgroup */
+>  	unsigned int nr_pages;
+>  	struct obj_stock task_obj;
+> @@ -2145,7 +2150,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	if (nr_pages > MEMCG_CHARGE_BATCH)
+>  		return ret;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.lock, flags);
 
-Ok, I'll fix that term, and thanks for taking time reviewing these
-patches,
-> 
-> Thanks,
-> Paolo
-> 
->> Thanks,
->> Kuai
->>> Am I missing something?
->>> Thanks,
->>> Paolo
-> 
-> .
-> 
+This still does not explain why the lock is acquired here where it
+appears to be unrelated to memcg_stock.lock.
+
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
+> @@ -2779,29 +2784,34 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+>   * which is cheap in non-preempt kernel. The interrupt context object stock
+>   * can only be accessed after disabling interrupt. User context code can
+>   * access interrupt object stock, but not vice versa.
+> + *
+> + * This task and interrupt context optimization is disabled for PREEMPT_RT
+> + * as there is no performance gain in this case and changes will be made to
+> + * irq_obj only.
+> + *
+> + * For non-PREEMPT_RT, we are not replacing preempt_disable() by local_lock()
+> + * as nesting of task_obj and irq_obj are allowed which may cause lockdep
+> + * splat if local_lock() is used. Using separate local locks will complicate
+> + * the interaction between obj_stock and the broader memcg_stock object.
+>   */
+>  static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+>  {
+> -	struct memcg_stock_pcp *stock;
+> -
+> -	if (likely(in_task())) {
+> +	if (likely(in_task()) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
+>  		*pflags = 0UL;
+>  		preempt_disable();
+> -		stock = this_cpu_ptr(&memcg_stock);
+> -		return &stock->task_obj;
+> +		return this_cpu_ptr(&memcg_stock.task_obj);
+
+Do we need to keep the memcg_stock.task_obj for !RT?
+I'm not really convinced that disabling either preemption or interrupts
+is so much better compared to actual locking locking with lockdep
+annotation. Looking at the history, I'm also impressed by that fact that
+disabling/ enabling interrupts is *so* expensive that all this is
+actually worth it.
+
+>  	}
+>  
+> -	local_irq_save(*pflags);
+> -	stock = this_cpu_ptr(&memcg_stock);
+> -	return &stock->irq_obj;
+> +	local_lock_irqsave(&memcg_stock.lock, *pflags);
+> +	return this_cpu_ptr(&memcg_stock.irq_obj);
+>  }
+>  
+
+Sebastian
