@@ -2,105 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603ED4799E0
-	for <lists+cgroups@lfdr.de>; Sat, 18 Dec 2021 10:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F53479EDD
+	for <lists+cgroups@lfdr.de>; Sun, 19 Dec 2021 03:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhLRJJ0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 18 Dec 2021 04:09:26 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:33864 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbhLRJJZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Dec 2021 04:09:25 -0500
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JGKlz6h89zcbh0;
-        Sat, 18 Dec 2021 17:09:03 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 18 Dec 2021 17:09:23 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 18 Dec 2021 17:09:23 +0800
-Subject: Re: [PATCH RFC] block, bfq: update pos_root for idle bfq_queue in
- bfq_bfqq_move()
-To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>, <tj@kernel.org>
-CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211210081641.3025060-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <680073dc-cdaf-8634-e536-7f07997c5d93@huawei.com>
-Date:   Sat, 18 Dec 2021 17:09:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229573AbhLSCmJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 Dec 2021 21:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhLSCmJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Dec 2021 21:42:09 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B597CC061574
+        for <cgroups@vger.kernel.org>; Sat, 18 Dec 2021 18:42:08 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id a11-20020a17090a854b00b001b11aae38d6so6614503pjw.2
+        for <cgroups@vger.kernel.org>; Sat, 18 Dec 2021 18:42:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1fCDnzs11QBF/HgkFGJOxPwWBFoX6qDm6eKaoQut7Fg=;
+        b=u385DoqLNxdGOTSHTYc/tJNFZZ1KR5LO4JfCZc8oc2ITGuRYg01B992ZOPe2SZHECt
+         ucGsrko12/gWUNGpwPEqTUnUT9i75KKR2zCkUOJv+rGJ+PkuGN3LscQYCrS6ny0HS3cu
+         AuhXPWp3EcbWy2hBuND6IYJp079NG7jcZUqbYrBqdrXeIlK1WCrfi/yxi+qPOdpGIZdP
+         y3B5HeRMLbJ5PBxmcSRpKglfmI0mFRuGXtjqqowILph1dorR3MABpJFveEHLlYQkykHS
+         ThZB44WazlXOe/rKp2DXaFy1TUTNSpd7fwlpJqzo9KnWfcvh9YfBniBJGyJ/rPhLFHD5
+         wCGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1fCDnzs11QBF/HgkFGJOxPwWBFoX6qDm6eKaoQut7Fg=;
+        b=5KCTQj+J0PAd3z+cQljaJB/sRpGq4mvrjsS1kmAAna/t9tpAZcpaHnBNMVKKHZG8ST
+         Dww/8RQVc8PcGEuAuNQEhhXL8/HVrRlP3ShunWZQn1UCM9EWPClcT4zzckBuwWo9KvYb
+         jKcD2zoJ1u1CdS5Ch5Uvh9gcHBvVVMKyL/BnNUTMk07IN4NBIAaLXwhxy/WwRGWR1Ga0
+         VnKBuRqbWkbCLFKoilAv6vqQbEgoj6ktpH9ppPndcAPh/QGIp2yMTUogQY5Z7zSBfg94
+         m1zCOe+1zCyDPmW7mhefIh2xMhW9mo4Po1L03RUGHRVtZOg7iQq+7SuDuY3xoQ0Nr9DY
+         1cyA==
+X-Gm-Message-State: AOAM532oU1WlOak0PjOY1H8dmEW4kuiKsoedLTNo625HFTJQ0CQ1TaLN
+        WF4rWICxgZHDG4DJeUq/nfy8Bg==
+X-Google-Smtp-Source: ABdhPJxk/oVPS0gygqoiITAj+VMP6vtxy4gQJ1MgcFYsT1CEkq/FsylJcLjy2YKSwOBAC1ZGZWuhAA==
+X-Received: by 2002:a17:90b:3a86:: with SMTP id om6mr5386779pjb.16.1639881728052;
+        Sat, 18 Dec 2021 18:42:08 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id y191sm13223415pfb.124.2021.12.18.18.42.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 18 Dec 2021 18:42:07 -0800 (PST)
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+To:     lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH] cpuset: convert 'allowed' in __cpuset_node_allowed() to be boolean
+Date:   Sun, 19 Dec 2021 10:41:54 +0800
+Message-Id: <20211219024154.28853-1-zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-In-Reply-To: <20211210081641.3025060-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ÔÚ 2021/12/10 16:16, Yu Kuai Ð´µÀ:
-> During code review, we found that if bfqq is not busy in
-> bfq_bfqq_move(), bfq_pos_tree_add_move() won't be called for the bfqq,
-> thus bfqq->pos_root still points to the old bfqg. However, the ref
-> that bfqq hold for the old bfqg will be released, so it's possible
-> that the old bfqg can be freed. This is problematic because the freed
-> bfqg can still be accessed by bfqq->pos_root.
-> 
-> Fix the problem by calling bfq_pos_tree_add_move() for idle bfqq
-> as well.
-> 
-Friendly ping ...
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/bfq-cgroup.c | 15 ++++++++++-----
->   1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index 24a5c5329bcd..85f34c29b909 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -645,6 +645,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->   		   struct bfq_group *bfqg)
->   {
->   	struct bfq_entity *entity = &bfqq->entity;
-> +	struct bfq_group *old_parent = bfqq_group(bfqq);
->   
->   	/*
->   	 * Get extra reference to prevent bfqq from being freed in
-> @@ -666,7 +667,6 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->   		bfq_deactivate_bfqq(bfqd, bfqq, false, false);
->   	else if (entity->on_st_or_in_serv)
->   		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
-> -	bfqg_and_blkg_put(bfqq_group(bfqq));
->   
->   	if (entity->parent &&
->   	    entity->parent->last_bfqq_created == bfqq)
-> @@ -679,11 +679,16 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->   	/* pin down bfqg and its associated blkg  */
->   	bfqg_and_blkg_get(bfqg);
->   
-> -	if (bfq_bfqq_busy(bfqq)) {
-> -		if (unlikely(!bfqd->nonrot_with_queueing))
-> -			bfq_pos_tree_add_move(bfqd, bfqq);
-> +	/*
-> +	 * Don't leave the pos_root to old bfqg, since the ref to old bfqg will
-> +	 * be released and the bfqg might be freed.
-> +	 */
-> +	if (unlikely(!bfqd->nonrot_with_queueing))
-> +		bfq_pos_tree_add_move(bfqd, bfqq);
-> +	bfqg_and_blkg_put(old_parent);
-> +
-> +	if (bfq_bfqq_busy(bfqq))
->   		bfq_activate_bfqq(bfqd, bfqq);
-> -	}
->   
->   	if (!bfqd->in_service_queue && !bfqd->rq_in_driver)
->   		bfq_schedule_dispatch(bfqd);
-> 
+Convert 'allowed' in __cpuset_node_allowed() to be boolean since the
+return types of node_isset() and __cpuset_node_allowed() are both
+boolean.
+
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+---
+ kernel/cgroup/cpuset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 0dd7d853ed17..dc653ab26e50 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3528,7 +3528,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+ bool __cpuset_node_allowed(int node, gfp_t gfp_mask)
+ {
+ 	struct cpuset *cs;		/* current cpuset ancestors */
+-	int allowed;			/* is allocation in zone z allowed? */
++	bool allowed;			/* is allocation in zone z allowed? */
+ 	unsigned long flags;
+ 
+ 	if (in_interrupt())
+-- 
+2.11.0
+
