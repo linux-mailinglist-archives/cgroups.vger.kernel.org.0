@@ -2,59 +2,34 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF5A47A325
-	for <lists+cgroups@lfdr.de>; Mon, 20 Dec 2021 01:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B358E47A352
+	for <lists+cgroups@lfdr.de>; Mon, 20 Dec 2021 02:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhLTAr5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 19 Dec 2021 19:47:57 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43850 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhLTAr4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Dec 2021 19:47:56 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0BED61F395;
-        Mon, 20 Dec 2021 00:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1639961275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GljbjGESLyxg+ngLc7mhGY1oQBxex2sK+C5XSkEFVyI=;
-        b=bXsxoOzcRRIip4e3u7ZMJHBHCqpqGoHvghX+Qod90rITqgkPX6WlwwmBkBzLIQgnPM3M7l
-        siGEY6tKIftLy8gm6P7tCtEhJhPH5+N420SWQ7CGJk78g/87i2iR5inofquN9kpBkcJNuF
-        Zi+LVig8LSExmO4XED1Ps1yp2oNnfR4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1639961275;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GljbjGESLyxg+ngLc7mhGY1oQBxex2sK+C5XSkEFVyI=;
-        b=d+lrN53wSmcr6AJTW2rR1oZX3qGUcCXsDSsgdtTCVT7nNW2HNB8UytrIeq4FK+FkuQdmV5
-        dAxQM4ms+6JZ/yCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66B78133A7;
-        Mon, 20 Dec 2021 00:47:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yFyaF7rSv2HcbQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 20 Dec 2021 00:47:54 +0000
-Message-ID: <86617be0-8aa8-67d2-08bd-1e06c3d12785@suse.cz>
-Date:   Mon, 20 Dec 2021 01:47:54 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
-Content-Language: en-US
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Lameter <cl@linux.com>,
+        id S230394AbhLTBmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 19 Dec 2021 20:42:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhLTBmv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Dec 2021 20:42:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3776C061574
+        for <cgroups@vger.kernel.org>; Sun, 19 Dec 2021 17:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=k7fHWgKrjS6NSIvn5a4Jtgxmp/WhT9Wz1heA+PvFHEU=; b=fbUn3fvK/C4lIcfXkF1dhfDZp+
+        0ZelBeFgnQYcFnt0EOTirvxdbva/ddh2SL+FntgltRD3RE987l95C52xyYhhRfbE2xb17KwOfKlFs
+        5hOrS2+3DKFsP3AzTTFXGdtnAfDlAGiCbxuyVX733jeZZ+d0DD58EAaIyKmbheLpfRjDtShOeT6am
+        hg7mxrzy3tJ/5EM0XQThsZ+qE0Zv7Dl2ydMZ44Ueicge/g2XjDjlE+5Q0yijLnkgOFaSa51eA1ivu
+        3KHkjCK1aKheaU9DVEJ4MCzqGgtQ+Ndgh2oKwtYQK2wpphRgppBrz+kxZNRgm1Zd6KP6yXdmRMLqn
+        IlqHXmWA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mz7gr-001BXA-DH; Mon, 20 Dec 2021 01:42:13 +0000
+Date:   Mon, 20 Dec 2021 01:42:13 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Christoph Lameter <cl@linux.com>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
@@ -84,80 +59,67 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Will Deacon <will@kernel.org>, x86@kernel.org,
         Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
+Message-ID: <Yb/fdYbLunsVYRqQ@casper.infradead.org>
 References: <20211201181510.18784-1-vbabka@suse.cz>
  <4c3dfdfa-2e19-a9a7-7945-3d75bc87ca05@suse.cz>
  <Ybk+0LKrsAJatILE@carbon.dhcp.thefacebook.com>
  <Ybp8a5JNndgCLy2w@carbon.dhcp.thefacebook.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <Ybp8a5JNndgCLy2w@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <86617be0-8aa8-67d2-08bd-1e06c3d12785@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86617be0-8aa8-67d2-08bd-1e06c3d12785@suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/16/21 00:38, Roman Gushchin wrote:
-> Part 2:
+On Mon, Dec 20, 2021 at 01:47:54AM +0100, Vlastimil Babka wrote:
+> > * mm/slub: Convert print_page_info() to print_slab_info()
+> > Do we really need to explicitly convert slab_folio()'s result to (struct folio *)?
 > 
-> * mm: Convert check_heap_object() to use struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert detached_freelist to use a struct slab
-> How about to convert free_nonslab_page() to free_nonslab_folio()?
-> And maybe rename it to something like free_large_kmalloc()?
-> If I'm not missing something, large kmallocs is the only way how we can end up
-> there with a !slab folio/page.
+> Unfortunately yes, as long as folio_flags() don't take const struct folio *,
+> which will need some yak shaving.
 
-Good point, thanks! But did at as part of the following patch, where it fits
-logically better.
+In case anyone's interested ...
 
-> * mm/slub: Convert kfree() to use a struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
+folio_flags calls VM_BUG_ON_PGFLAGS() which would need its second
+argument to be const.
 
-Didn't add your tag because of the addition of free_large_kmalloc() change.
+That means dump_page() needs to take a const struct page, which
+means __dump_page() needs its argument to be const.
 
-> * mm/slub: Convert __slab_lock() and __slab_unlock() to struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert print_page_info() to print_slab_info()
-> Do we really need to explicitly convert slab_folio()'s result to (struct folio *)?
+That calls ...
 
-Unfortunately yes, as long as folio_flags() don't take const struct folio *,
-which will need some yak shaving.
+is_migrate_cma_page()
+page_mapping()
+page_mapcount()
+page_ref_count()
+page_to_pgoff()
+page_to_pfn()
+hpage_pincount_available()
+head_compound_mapcount()
+head_compound_pincount()
+compound_order()
+PageKsm()
+PageAnon()
+PageCompound()
 
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert alloc_slab_page() to return a struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert __free_slab() to use struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert pfmemalloc_match() to take a struct slab
-> Cool! Removing pfmemalloc_unsafe() is really nice.
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Convert most struct page to struct slab by spatch
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slub: Finish struct page to struct slab conversion
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> 
-> * mm/slab: Convert kmem_getpages() and kmem_freepages() to struct slab
-> Reviewed-by: Roman Gushchin <guro@fb.com>
+... and at that point, I ran out of motivation to track down some parts
+of this tarbaby that could be fixed.  I did do:
 
-Thanks again!
+    mm: constify page_count and page_ref_count
+    mm: constify get_pfnblock_flags_mask and get_pfnblock_migratetype
+    mm: make compound_head const-preserving
+    mm/page_owner: constify dump_page_owner
 
-> * mm/slab: Convert most struct page to struct slab by spatch
-> 
-> Another patch with the same title? Rebase error?
-> 
-> * mm/slab: Finish struct page to struct slab conversion
-> 
-> And this one too?
-> 
-> 
-> Thanks!
-> 
-> Roman
+so some of those are already done.  But a lot of them just need to be
+done at the same time.  For example, page_mapping() calls
+folio_mapping() which calls folio_test_slab() which calls folio_flags(),
+so dump_page() and page_mapping() need to be done at the same time.
+
+One bit that could be broken off easily (I think ...) is PageTransTail()
+PageTail(), PageCompound(), PageHuge(), page_to_pgoff() and
+page_to_index().  One wrinkle is needed a temporary
+TESTPAGEFLAGS_FALSE_CONST.  But I haven't tried it yet.
 
