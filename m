@@ -2,95 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC50047BF27
-	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 12:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C55047C4F9
+	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 18:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhLULwv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Dec 2021 06:52:51 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43658 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237291AbhLULwt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Dec 2021 06:52:49 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 429C321114;
-        Tue, 21 Dec 2021 11:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1640087568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SCgxXcO/BZlBAUPu/jU/ISxCVbf1DpLofk5IlL3lQL0=;
-        b=AwOnU2FEPfu6mm17FwEKXn7vFLAM4F0SfFny4EAt8FaQO4BICBQwT3fhV37/GN7dVPiSHq
-        4l17UTn1xFdJBTXlqotg5IFAtFQp97PxtSFKmxnO9CymhXd0WFXxdkDxFPQqpYMGghUsmi
-        gXHZ7VcxkNW1SQbhPtA4js+l2DyTMZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1640087568;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SCgxXcO/BZlBAUPu/jU/ISxCVbf1DpLofk5IlL3lQL0=;
-        b=n8cmMnrBkFYeFhPOzJnGCilZY/ecndMZhBa8W0rTV9rJ+ESd8Xpgiigt4GB7GieARcNpDw
-        IRXWG93OA8y8V5Bg==
-Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id 21234A3B8F;
-        Tue, 21 Dec 2021 11:52:48 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BD2A01F2CEA; Tue, 21 Dec 2021 12:52:47 +0100 (CET)
-Date:   Tue, 21 Dec 2021 12:52:47 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tj@kernel.org, axboe@kernel.dk,
-        paolo.valente@linaro.org, fchecconi@gmail.com,
-        avanzini.arianna@gmail.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH 2/4] block, bfq: avoid moving bfqq to it's parent bfqg
-Message-ID: <20211221115247.GE24748@quack2.suse.cz>
-References: <20211221032135.878550-1-yukuai3@huawei.com>
- <20211221032135.878550-3-yukuai3@huawei.com>
- <20211221101659.GB24748@quack2.suse.cz>
- <d1c91a5f-33f3-ffad-e1ad-fb91482eb864@huawei.com>
+        id S240406AbhLURZP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Dec 2021 12:25:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:56786 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231187AbhLURZP (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 21 Dec 2021 12:25:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97EB4D6E;
+        Tue, 21 Dec 2021 09:25:14 -0800 (PST)
+Received: from [10.57.34.58] (unknown [10.57.34.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27FF13F718;
+        Tue, 21 Dec 2021 09:25:06 -0800 (PST)
+Message-ID: <db0ba937-8785-a27b-afff-55c55456ae19@arm.com>
+Date:   Tue, 21 Dec 2021 17:25:01 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d1c91a5f-33f3-ffad-e1ad-fb91482eb864@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
+Content-Language: en-GB
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, "H. Peter Anvin" <hpa@zytor.com>,
+        Christoph Lameter <cl@linux.com>,
+        Will Deacon <will@kernel.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>, x86@kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Marco Elver <elver@google.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        patches@lists.linux.dev, Pekka Enberg <penberg@kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        iommu@lists.linux-foundation.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <20211201181510.18784-1-vbabka@suse.cz>
+ <4c3dfdfa-2e19-a9a7-7945-3d75bc87ca05@suse.cz>
+ <YbtUmi5kkhmlXEB1@ip-172-31-30-232.ap-northeast-1.compute.internal>
+ <38976607-b9f9-1bce-9db9-60c23da65d2e@suse.cz>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <38976607-b9f9-1bce-9db9-60c23da65d2e@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 21-12-21 19:08:44, yukuai (C) wrote:
-> 在 2021/12/21 18:16, Jan Kara 写道:
-> > On Tue 21-12-21 11:21:33, Yu Kuai wrote:
-> > > Moving bfqq to it's parent bfqg is pointless.
-> > > 
-> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > 
-> > Did you notice that this is happening often enough that the check is worth
-> > it? Where do we do this?
-> > 
+On 2021-12-20 23:58, Vlastimil Babka wrote:
+> On 12/16/21 16:00, Hyeonggon Yoo wrote:
+>> On Tue, Dec 14, 2021 at 01:57:22PM +0100, Vlastimil Babka wrote:
+>>> On 12/1/21 19:14, Vlastimil Babka wrote:
+>>>> Folks from non-slab subsystems are Cc'd only to patches affecting them, and
+>>>> this cover letter.
+>>>>
+>>>> Series also available in git, based on 5.16-rc3:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slab-struct_slab-v2r2
+>>>
+>>> Pushed a new branch slab-struct-slab-v3r3 with accumulated fixes and small tweaks
+>>> and a new patch from Hyeonggon Yoo on top. To avoid too much spam, here's a range diff:
+>>
+>> Reviewing the whole patch series takes longer than I thought.
+>> I'll try to review and test rest of patches when I have time.
+>>
+>> I added Tested-by if kernel builds okay and kselftests
+>> does not break the kernel on my machine.
+>> (with CONFIG_SLAB/SLUB/SLOB depending on the patch),
 > 
-> I noticed that this will happend when root group is offlined:
+> Thanks!
 > 
-> bfq_pd_offline
->  bfq_put_async_queues
->   __bfq_put_async_bfqq
->    bfq_bfqq_move
+>> Let me know me if you know better way to test a patch.
 > 
-> I'm not sure if there are other situations. I think bfq_bfqq_move()
-> is not happening often itself, thus the checking won't affect
-> performance.
+> Testing on your machine is just fine.
+> 
+>> # mm/slub: Define struct slab fields for CONFIG_SLUB_CPU_PARTIAL only when enabled
+>>
+>> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>>
+>> Comment:
+>> Works on both SLUB_CPU_PARTIAL and !SLUB_CPU_PARTIAL.
+>> btw, do we need slabs_cpu_partial attribute when we don't use
+>> cpu partials? (!SLUB_CPU_PARTIAL)
+> 
+> The sysfs attribute? Yeah we should be consistent to userspace expecting to
+> read it (even with zeroes), regardless of config.
+> 
+>> # mm/slub: Simplify struct slab slabs field definition
+>> Comment:
+>>
+>> This is how struct page looks on the top of v3r3 branch:
+>> struct page {
+>> [...]
+>>                  struct {        /* slab, slob and slub */
+>>                          union {
+>>                                  struct list_head slab_list;
+>>                                  struct {        /* Partial pages */
+>>                                          struct page *next;
+>> #ifdef CONFIG_64BIT
+>>                                          int pages;      /* Nr of pages left */
+>> #else
+>>                                          short int pages;
+>> #endif
+>>                                  };
+>>                          };
+>> [...]
+>>
+>> It's not consistent with struct slab.
+> 
+> Hm right. But as we don't actually use the struct page version anymore, and
+> it's not one of the fields checked by SLAB_MATCH(), we can ignore this.
+> 
+>> I think this is because "mm: Remove slab from struct page" was dropped.
+> 
+> That was just postponed until iommu changes are in. Matthew mentioned those
+> might be merged too, so that final cleanup will happen too and take care of
+> the discrepancy above, so no need for extra churn to address it speficially.
 
-Yeah, OK, I was just wondering. I guess there's no harm in doing this
-check. Maybe add a comment that this can sometimes happen when dealing with
-the root cgroup. And then feel free to add:
+FYI the IOMMU changes are now queued in linux-next, so if all goes well 
+you might be able to sneak that final patch in too.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Robin.
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
+>> Would you update some of patches?
+>>
+>> # mm/sl*b: Differentiate struct slab fields by sl*b implementations
+>> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Works SL[AUO]B on my machine and makes code much better.
+>>
+>> # mm/slob: Convert SLOB to use struct slab and struct folio
+>> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> It still works fine on SLOB.
+>>
+>> # mm/slab: Convert kmem_getpages() and kmem_freepages() to struct slab
+>> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>>
+>> # mm/slub: Convert __free_slab() to use struct slab
+>> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>>
+>> Thanks,
+>> Hyeonggon.
+> 
+> Thanks again,
+> Vlastimil
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
