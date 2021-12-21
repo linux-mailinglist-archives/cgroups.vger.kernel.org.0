@@ -2,195 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEFF47BE0F
-	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 11:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD8147BE94
+	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 12:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhLUKSm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Dec 2021 05:18:42 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37682 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhLUKSm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Dec 2021 05:18:42 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 07DBE212BD;
-        Tue, 21 Dec 2021 10:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1640081921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeLb56EWWERunSQS+nTwlT/HPBai5vEGwdDuZ5s+pas=;
-        b=kyaSl/VEKmVZV4lyIQbdgu4o0yN2yGgaz++oomEOgyf98DaMDi1JJhKxi324U0ioBPYQbc
-        aQCt50etbM05wrrQ8P56cC/RLwTXvXariLcBbDBufW1plDXpFVf2B2ccN9BWKeN9M7XR/9
-        Q6ku/K875J5c9S1Oa3mOBIFq+kikZjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1640081921;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeLb56EWWERunSQS+nTwlT/HPBai5vEGwdDuZ5s+pas=;
-        b=eMUZ+Gki9ekEoBX5N5cZQ+wGYVUD2ZR9Xp082e7yXdSDw+tEnvo1ilRlnhOgvdpaJ4wQ+v
-        Vj37bPraopmiD2Cw==
-Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id E5F9BA3B87;
-        Tue, 21 Dec 2021 10:18:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B7A0C1E14A1; Tue, 21 Dec 2021 11:18:40 +0100 (CET)
-Date:   Tue, 21 Dec 2021 11:18:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, paolo.valente@linaro.org,
-        jack@suse.cz, fchecconi@gmail.com, avanzini.arianna@gmail.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 3/4] block, bfq: don't move oom_bfqq
-Message-ID: <20211221101840.GC24748@quack2.suse.cz>
+        id S236883AbhLULIt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Dec 2021 06:08:49 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:29273 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236868AbhLULIs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Dec 2021 06:08:48 -0500
+Received: from kwepemi500001.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JJDGH3hx4zbjY2;
+        Tue, 21 Dec 2021 19:08:23 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500001.china.huawei.com (7.221.188.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 21 Dec 2021 19:08:46 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 21 Dec 2021 19:08:45 +0800
+Subject: Re: [PATCH 2/4] block, bfq: avoid moving bfqq to it's parent bfqg
+To:     Jan Kara <jack@suse.cz>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <fchecconi@gmail.com>, <avanzini.arianna@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
 References: <20211221032135.878550-1-yukuai3@huawei.com>
- <20211221032135.878550-4-yukuai3@huawei.com>
+ <20211221032135.878550-3-yukuai3@huawei.com>
+ <20211221101659.GB24748@quack2.suse.cz>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <d1c91a5f-33f3-ffad-e1ad-fb91482eb864@huawei.com>
+Date:   Tue, 21 Dec 2021 19:08:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211221032135.878550-4-yukuai3@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211221101659.GB24748@quack2.suse.cz>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 21-12-21 11:21:34, Yu Kuai wrote:
-> Our test report a UAF:
+ÔÚ 2021/12/21 18:16, Jan Kara Ð´µÀ:
+> On Tue 21-12-21 11:21:33, Yu Kuai wrote:
+>> Moving bfqq to it's parent bfqg is pointless.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > 
-> [ 2073.019181] ==================================================================
-> [ 2073.019188] BUG: KASAN: use-after-free in __bfq_put_async_bfqq+0xa0/0x168
-> [ 2073.019191] Write of size 8 at addr ffff8000ccf64128 by task rmmod/72584
-> [ 2073.019192]
-> [ 2073.019196] CPU: 0 PID: 72584 Comm: rmmod Kdump: loaded Not tainted 4.19.90-yk #5
-> [ 2073.019198] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-> [ 2073.019200] Call trace:
-> [ 2073.019203]  dump_backtrace+0x0/0x310
-> [ 2073.019206]  show_stack+0x28/0x38
-> [ 2073.019210]  dump_stack+0xec/0x15c
-> [ 2073.019216]  print_address_description+0x68/0x2d0
-> [ 2073.019220]  kasan_report+0x238/0x2f0
-> [ 2073.019224]  __asan_store8+0x88/0xb0
-> [ 2073.019229]  __bfq_put_async_bfqq+0xa0/0x168
-> [ 2073.019233]  bfq_put_async_queues+0xbc/0x208
-> [ 2073.019236]  bfq_pd_offline+0x178/0x238
-> [ 2073.019240]  blkcg_deactivate_policy+0x1f0/0x420
-> [ 2073.019244]  bfq_exit_queue+0x128/0x178
-> [ 2073.019249]  blk_mq_exit_sched+0x12c/0x160
-> [ 2073.019252]  elevator_exit+0xc8/0xd0
-> [ 2073.019256]  blk_exit_queue+0x50/0x88
-> [ 2073.019259]  blk_cleanup_queue+0x228/0x3d8
-> [ 2073.019267]  null_del_dev+0xfc/0x1e0 [null_blk]
-> [ 2073.019274]  null_exit+0x90/0x114 [null_blk]
-> [ 2073.019278]  __arm64_sys_delete_module+0x358/0x5a0
-> [ 2073.019282]  el0_svc_common+0xc8/0x320
-> [ 2073.019287]  el0_svc_handler+0xf8/0x160
-> [ 2073.019290]  el0_svc+0x10/0x218
-> [ 2073.019291]
-> [ 2073.019294] Allocated by task 14163:
-> [ 2073.019301]  kasan_kmalloc+0xe0/0x190
-> [ 2073.019305]  kmem_cache_alloc_node_trace+0x1cc/0x418
-> [ 2073.019308]  bfq_pd_alloc+0x54/0x118
-> [ 2073.019313]  blkcg_activate_policy+0x250/0x460
-> [ 2073.019317]  bfq_create_group_hierarchy+0x38/0x110
-> [ 2073.019321]  bfq_init_queue+0x6d0/0x948
-> [ 2073.019325]  blk_mq_init_sched+0x1d8/0x390
-> [ 2073.019330]  elevator_switch_mq+0x88/0x170
-> [ 2073.019334]  elevator_switch+0x140/0x270
-> [ 2073.019338]  elv_iosched_store+0x1a4/0x2a0
-> [ 2073.019342]  queue_attr_store+0x90/0xe0
-> [ 2073.019348]  sysfs_kf_write+0xa8/0xe8
-> [ 2073.019351]  kernfs_fop_write+0x1f8/0x378
-> [ 2073.019359]  __vfs_write+0xe0/0x360
-> [ 2073.019363]  vfs_write+0xf0/0x270
-> [ 2073.019367]  ksys_write+0xdc/0x1b8
-> [ 2073.019371]  __arm64_sys_write+0x50/0x60
-> [ 2073.019375]  el0_svc_common+0xc8/0x320
-> [ 2073.019380]  el0_svc_handler+0xf8/0x160
-> [ 2073.019383]  el0_svc+0x10/0x218
-> [ 2073.019385]
-> [ 2073.019387] Freed by task 72584:
-> [ 2073.019391]  __kasan_slab_free+0x120/0x228
-> [ 2073.019394]  kasan_slab_free+0x10/0x18
-> [ 2073.019397]  kfree+0x94/0x368
-> [ 2073.019400]  bfqg_put+0x64/0xb0
-> [ 2073.019404]  bfqg_and_blkg_put+0x90/0xb0
-> [ 2073.019408]  bfq_put_queue+0x220/0x228
-> [ 2073.019413]  __bfq_put_async_bfqq+0x98/0x168
-> [ 2073.019416]  bfq_put_async_queues+0xbc/0x208
-> [ 2073.019420]  bfq_pd_offline+0x178/0x238
-> [ 2073.019424]  blkcg_deactivate_policy+0x1f0/0x420
-> [ 2073.019429]  bfq_exit_queue+0x128/0x178
-> [ 2073.019433]  blk_mq_exit_sched+0x12c/0x160
-> [ 2073.019437]  elevator_exit+0xc8/0xd0
-> [ 2073.019440]  blk_exit_queue+0x50/0x88
-> [ 2073.019443]  blk_cleanup_queue+0x228/0x3d8
-> [ 2073.019451]  null_del_dev+0xfc/0x1e0 [null_blk]
-> [ 2073.019459]  null_exit+0x90/0x114 [null_blk]
-> [ 2073.019462]  __arm64_sys_delete_module+0x358/0x5a0
-> [ 2073.019467]  el0_svc_common+0xc8/0x320
-> [ 2073.019471]  el0_svc_handler+0xf8/0x160
-> [ 2073.019474]  el0_svc+0x10/0x218
-> [ 2073.019475]
-> [ 2073.019479] The buggy address belongs to the object at ffff8000ccf63f00
->  which belongs to the cache kmalloc-1024 of size 1024
-> [ 2073.019484] The buggy address is located 552 bytes inside of
->  1024-byte region [ffff8000ccf63f00, ffff8000ccf64300)
-> [ 2073.019486] The buggy address belongs to the page:
-> [ 2073.019492] page:ffff7e000333d800 count:1 mapcount:0 mapping:ffff8000c0003a00 index:0x0 compound_mapcount: 0
-> [ 2073.020123] flags: 0x7ffff0000008100(slab|head)
-> [ 2073.020403] raw: 07ffff0000008100 ffff7e0003334c08 ffff7e00001f5a08 ffff8000c0003a00
-> [ 2073.020409] raw: 0000000000000000 00000000001c001c 00000001ffffffff 0000000000000000
-> [ 2073.020411] page dumped because: kasan: bad access detected
-> [ 2073.020412]
-> [ 2073.020414] Memory state around the buggy address:
-> [ 2073.020420]  ffff8000ccf64000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 2073.020424]  ffff8000ccf64080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 2073.020428] >ffff8000ccf64100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 2073.020430]                                   ^
-> [ 2073.020434]  ffff8000ccf64180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 2073.020438]  ffff8000ccf64200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> [ 2073.020439] ==================================================================
+> Did you notice that this is happening often enough that the check is worth
+> it? Where do we do this?
 > 
-> The same problem exist in mainline as well.
-> 
-> This is because oom_bfqq is moved to a non-root group, thus root_group
-> is freed earlier.
-> 
-> Thus fix the problem by don't move oom_bfqq.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Makes sense. Feel free to add:
+I noticed that this will happend when root group is offlined:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+bfq_pd_offline
+  bfq_put_async_queues
+   __bfq_put_async_bfqq
+    bfq_bfqq_move
 
-									Honza
+I'm not sure if there are other situations. I think bfq_bfqq_move()
+is not happening often itself, thus the checking won't affect
+performance.
 
-> ---
->  block/bfq-cgroup.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+Thanks,
+Kuai
+> 								Honza
 > 
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index 0f62546a72d4..8e8cf6b3d946 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -651,6 +651,12 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  	if (old_parent == bfqg)
->  		return;
->  
-> +	/*
-> +	 * oom_bfqq is not allowed to move, oom_bfqq will hold ref to root_group
-> +	 * until elevator exit.
-> +	 */
-> +	if (bfqq == &bfqd->oom_bfqq)
-> +		return;
->  	/*
->  	 * Get extra reference to prevent bfqq from being freed in
->  	 * next possible expire or deactivate.
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> ---
+>>   block/bfq-cgroup.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+>> index 24a5c5329bcd..0f62546a72d4 100644
+>> --- a/block/bfq-cgroup.c
+>> +++ b/block/bfq-cgroup.c
+>> @@ -645,6 +645,11 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+>>   		   struct bfq_group *bfqg)
+>>   {
+>>   	struct bfq_entity *entity = &bfqq->entity;
+>> +	struct bfq_group *old_parent = bfq_group(bfqq);
+>> +
+>> +	/* No point to move bfqq to the same group */
+>> +	if (old_parent == bfqg)
+>> +		return;
+>>   
+>>   	/*
+>>   	 * Get extra reference to prevent bfqq from being freed in
+>> @@ -666,7 +671,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+>>   		bfq_deactivate_bfqq(bfqd, bfqq, false, false);
+>>   	else if (entity->on_st_or_in_serv)
+>>   		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
+>> -	bfqg_and_blkg_put(bfqq_group(bfqq));
+>> +	bfqg_and_blkg_put(old_parent);
+>>   
+>>   	if (entity->parent &&
+>>   	    entity->parent->last_bfqq_created == bfqq)
+>> -- 
+>> 2.31.1
+>>
