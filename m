@@ -2,143 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9570E47BE05
-	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 11:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD2847BE0C
+	for <lists+cgroups@lfdr.de>; Tue, 21 Dec 2021 11:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhLUKPT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Dec 2021 05:15:19 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37362 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhLUKPS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Dec 2021 05:15:18 -0500
+        id S229533AbhLUKRA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Dec 2021 05:17:00 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:41436 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhLUKRA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Dec 2021 05:17:00 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 684282114D;
-        Tue, 21 Dec 2021 10:15:17 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 57E8C1F388;
+        Tue, 21 Dec 2021 10:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1640081717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1640081819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Tw4XdfqKEnDXFIq4KJAkTaIZVJn1UjG86AxtNcsugP8=;
-        b=Hjyte8ENHdsPrBGaVKpNFn1mwcPxGe7gGmzQMk577eS/xg7Pz8BF7k5gk9VW2Sck6Eq61M
-        A6fT0Z6/hDxsTH4hAJdSSOKKZez+Hyn+fY03LdgZdjsuEArzOZYvCTAGFiwCzVGI68RGuw
-        aNqrAysr/+N8GWNpt7852Prl0Wd4DSA=
+        bh=DwlLWjduFMONq98dJAYAgeIdej/YjReYCrkxEXLrVeA=;
+        b=gTM2jBePOjSM4DDR4GxbKx29ve2KrQJ/s6U6GOPwbNhu/MovBndTVqvLoiJhslnliZDvRP
+        id/HKrlPLQxnxYP+Kk3Jdc1ZfeoeUIA9i+7NiEGE9oE3VYYovO9Egtc0Xjt76+rc3Ccefu
+        fSKCI6wX5T38bhTNJrEkHgPpk6qlQ1Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1640081717;
+        s=susede2_ed25519; t=1640081819;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Tw4XdfqKEnDXFIq4KJAkTaIZVJn1UjG86AxtNcsugP8=;
-        b=/iFnvAG4RtesCazLS7MFQDjGh3UnSiR0emxt3HUEhp0xgT6K6zgWlDSxErALSjimAWHqOo
-        WfH9FJNrpG9+C8BA==
+        bh=DwlLWjduFMONq98dJAYAgeIdej/YjReYCrkxEXLrVeA=;
+        b=EFBZzDXhptWBR7NjK8IO6gJJwX6pwu7jcO4h2NUDvhHwr4Pc3I537H7C3jdEdxNWz7N7oj
+        eSd0GrSYrlNPueDA==
 Received: from quack2.suse.cz (unknown [10.163.28.18])
-        by relay2.suse.de (Postfix) with ESMTP id 5309AA3B89;
-        Tue, 21 Dec 2021 10:15:17 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 46D5DA3B87;
+        Tue, 21 Dec 2021 10:16:59 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2A3E41E14A1; Tue, 21 Dec 2021 11:15:17 +0100 (CET)
-Date:   Tue, 21 Dec 2021 11:15:17 +0100
+        id 2D0871E14A1; Tue, 21 Dec 2021 11:16:59 +0100 (CET)
+Date:   Tue, 21 Dec 2021 11:16:59 +0100
 From:   Jan Kara <jack@suse.cz>
 To:     Yu Kuai <yukuai3@huawei.com>
 Cc:     tj@kernel.org, axboe@kernel.dk, paolo.valente@linaro.org,
         jack@suse.cz, fchecconi@gmail.com, avanzini.arianna@gmail.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 1/4] block, bfq: cleanup bfq_bfqq_to_bfqg()
-Message-ID: <20211221101517.GA24748@quack2.suse.cz>
+Subject: Re: [PATCH 2/4] block, bfq: avoid moving bfqq to it's parent bfqg
+Message-ID: <20211221101659.GB24748@quack2.suse.cz>
 References: <20211221032135.878550-1-yukuai3@huawei.com>
- <20211221032135.878550-2-yukuai3@huawei.com>
+ <20211221032135.878550-3-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211221032135.878550-2-yukuai3@huawei.com>
+In-Reply-To: <20211221032135.878550-3-yukuai3@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 21-12-21 11:21:32, Yu Kuai wrote:
-> Use bfq_group() instead, which do the same thing.
+On Tue 21-12-21 11:21:33, Yu Kuai wrote:
+> Moving bfqq to it's parent bfqg is pointless.
 > 
 > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Nice. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+Did you notice that this is happening often enough that the check is worth
+it? Where do we do this?
 
 								Honza
 
 > ---
->  block/bfq-iosched.c |  4 ++--
->  block/bfq-iosched.h |  1 -
->  block/bfq-wf2q.c    | 15 ---------------
->  3 files changed, 2 insertions(+), 18 deletions(-)
+>  block/bfq-cgroup.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 0c612a911696..2f2b97cad980 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -774,7 +774,7 @@ bfq_pos_tree_add_move(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->  	if (!bfqq->next_rq)
->  		return;
->  
-> -	bfqq->pos_root = &bfq_bfqq_to_bfqg(bfqq)->rq_pos_tree;
-> +	bfqq->pos_root = &bfqq_group(bfqq)->rq_pos_tree;
->  	__bfqq = bfq_rq_pos_tree_lookup(bfqd, bfqq->pos_root,
->  			blk_rq_pos(bfqq->next_rq), &parent, &p);
->  	if (!__bfqq) {
-> @@ -2669,7 +2669,7 @@ static struct bfq_queue *bfqq_find_close(struct bfq_data *bfqd,
->  					 struct bfq_queue *bfqq,
->  					 sector_t sector)
+> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> index 24a5c5329bcd..0f62546a72d4 100644
+> --- a/block/bfq-cgroup.c
+> +++ b/block/bfq-cgroup.c
+> @@ -645,6 +645,11 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+>  		   struct bfq_group *bfqg)
 >  {
-> -	struct rb_root *root = &bfq_bfqq_to_bfqg(bfqq)->rq_pos_tree;
-> +	struct rb_root *root = &bfqq_group(bfqq)->rq_pos_tree;
->  	struct rb_node *parent, *node;
->  	struct bfq_queue *__bfqq;
+>  	struct bfq_entity *entity = &bfqq->entity;
+> +	struct bfq_group *old_parent = bfq_group(bfqq);
+> +
+> +	/* No point to move bfqq to the same group */
+> +	if (old_parent == bfqg)
+> +		return;
 >  
-> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> index 07288b9da389..99949548896e 100644
-> --- a/block/bfq-iosched.h
-> +++ b/block/bfq-iosched.h
-> @@ -1051,7 +1051,6 @@ extern struct blkcg_policy blkcg_policy_bfq;
->  	for (parent = NULL; entity ; entity = parent)
->  #endif /* CONFIG_BFQ_GROUP_IOSCHED */
+>  	/*
+>  	 * Get extra reference to prevent bfqq from being freed in
+> @@ -666,7 +671,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+>  		bfq_deactivate_bfqq(bfqd, bfqq, false, false);
+>  	else if (entity->on_st_or_in_serv)
+>  		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
+> -	bfqg_and_blkg_put(bfqq_group(bfqq));
+> +	bfqg_and_blkg_put(old_parent);
 >  
-> -struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq);
->  struct bfq_queue *bfq_entity_to_bfqq(struct bfq_entity *entity);
->  unsigned int bfq_tot_busy_queues(struct bfq_data *bfqd);
->  struct bfq_service_tree *bfq_entity_service_tree(struct bfq_entity *entity);
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index b74cc0da118e..e1f5ca5c1fdb 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -142,16 +142,6 @@ static bool bfq_update_next_in_service(struct bfq_sched_data *sd,
->  
->  #ifdef CONFIG_BFQ_GROUP_IOSCHED
->  
-> -struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
-> -{
-> -	struct bfq_entity *group_entity = bfqq->entity.parent;
-> -
-> -	if (!group_entity)
-> -		group_entity = &bfqq->bfqd->root_group->entity;
-> -
-> -	return container_of(group_entity, struct bfq_group, entity);
-> -}
-> -
->  /*
->   * Returns true if this budget changes may let next_in_service->parent
->   * become the next_in_service entity for its parent entity.
-> @@ -230,11 +220,6 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
->  
->  #else /* CONFIG_BFQ_GROUP_IOSCHED */
->  
-> -struct bfq_group *bfq_bfqq_to_bfqg(struct bfq_queue *bfqq)
-> -{
-> -	return bfqq->bfqd->root_group;
-> -}
-> -
->  static bool bfq_update_parent_budget(struct bfq_entity *next_in_service)
->  {
->  	return false;
+>  	if (entity->parent &&
+>  	    entity->parent->last_bfqq_created == bfqq)
 > -- 
 > 2.31.1
 > 
