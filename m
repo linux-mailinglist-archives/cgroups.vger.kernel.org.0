@@ -2,138 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A024B47D125
-	for <lists+cgroups@lfdr.de>; Wed, 22 Dec 2021 12:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCE547D371
+	for <lists+cgroups@lfdr.de>; Wed, 22 Dec 2021 15:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237577AbhLVLlW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Dec 2021 06:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233494AbhLVLlW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Dec 2021 06:41:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA2CC06173F
-        for <cgroups@vger.kernel.org>; Wed, 22 Dec 2021 03:41:21 -0800 (PST)
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1640173280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+        id S245613AbhLVORa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Dec 2021 09:17:30 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50460 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245622AbhLVOR3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Dec 2021 09:17:29 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 82D76212B7;
+        Wed, 22 Dec 2021 14:17:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1640182648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jUscNupxAInGNFwdgPxE24F7XsB5NZIGxnYUda6WoJA=;
-        b=bcjoPvk55c8sAaoa4q4VH8gB+SPU56a6QMGfWd0AfqBzVu3AeAt8CCDMhe16bhDtBok1UD
-        usKttDwFRFWs1/Ezqralb/mLw6YJ0YTfpIGTBz49xbWW9wf5FKPMM3yCKn249Ktxmvk1Sc
-        EHv3w9lS0/Hu651QBvj5pAtNn8uZxp0PFHbdmpzDB4zARDrzdsb6r9qhN1v8cpWH0JY9T3
-        mDjcgxykAiwCcprtHLugrtzNLyh8kGRZ+2pgh+iSFLHbP9EyFYHZlk6B3QI6F8xuNlaXFc
-        K3GwPKRKxAMG4tsqLw7CcAab5ZOJuL9VE7sMvnVlQ4t8tyXs3kVDqAU9Fls7rQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1640173280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+        bh=idiSby8trVHShWK13Y0N9hJM/pCoT2M/uIPXzb4ZYSA=;
+        b=XDsNO3+6DoHh9p+11+8PK6Gn9zpjZeUbct6b6ph3OmJRYuyc9lSQprir/4vmItc06j8BtB
+        XOEVxllFEWsgILJ8W7Nr+s/AAWK/QhZCWFoz7vYeG3K0SuXxsuHodfbKv1NpYkQ55dlK48
+        CrCYotIwo+k+loQFNJJz2LZNfYBOBWo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1640182648;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jUscNupxAInGNFwdgPxE24F7XsB5NZIGxnYUda6WoJA=;
-        b=RucXExCrOFfGkre/X3jLYZdkXqI6Sh25YhnYIuGWSVc208J6vybnoQ1tw2htJE3pia7ZJf
-        mpOWiyHmHescuOCQ==
-To:     cgroups@vger.kernel.org, linux-mm@kvack.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [RFC PATCH 3/3] mm/memcg: Allow the task_obj optimization only on non-PREEMPTIBLE kernels.
-Date:   Wed, 22 Dec 2021 12:41:11 +0100
-Message-Id: <20211222114111.2206248-4-bigeasy@linutronix.de>
-In-Reply-To: <20211222114111.2206248-1-bigeasy@linutronix.de>
-References: <20211222114111.2206248-1-bigeasy@linutronix.de>
+        bh=idiSby8trVHShWK13Y0N9hJM/pCoT2M/uIPXzb4ZYSA=;
+        b=gqT1jGNfT+HgU3YyxXQ1XixhKQerBZcrY72CDNrrn+PaBGBW7lhNdsvIge7o/1p7kZMKkL
+        1Q1dAFAsOMJg56Aw==
+Received: from quack2.suse.cz (unknown [10.163.28.18])
+        by relay2.suse.de (Postfix) with ESMTP id E3334A3B85;
+        Wed, 22 Dec 2021 14:17:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5787C1F2CEF; Wed, 22 Dec 2021 15:17:22 +0100 (CET)
+Date:   Wed, 22 Dec 2021 15:17:22 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tj@kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, fchecconi@gmail.com,
+        avanzini.arianna@gmail.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH 4/4] block, bfq: update pos_root for idle bfq_queue in
+ bfq_bfqq_move()
+Message-ID: <20211222141722.GC685@quack2.suse.cz>
+References: <20211221032135.878550-1-yukuai3@huawei.com>
+ <20211221032135.878550-5-yukuai3@huawei.com>
+ <20211221115001.GD24748@quack2.suse.cz>
+ <6ca1e924-47fa-b94e-598c-69a9549eb68e@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6ca1e924-47fa-b94e-598c-69a9549eb68e@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Based on my understanding the optimisation with task_obj for in_task()
-mask sense on non-PREEMPTIBLE kernels because preempt_disable()/enable()
-is optimized away. This could be then restricted to !CONFIG_PREEMPTION kern=
-el
-instead to only PREEMPT_RT.
-With CONFIG_PREEMPT_DYNAMIC a non-PREEMPTIBLE kernel can also be
-configured but these kernels always have preempt_disable()/enable()
-present so it probably makes no sense here for the optimisation.
+On Wed 22-12-21 11:12:45, yukuai (C) wrote:
+> 在 2021/12/21 19:50, Jan Kara 写道:
+> > On Tue 21-12-21 11:21:35, Yu Kuai wrote:
+> > > During code review, we found that if bfqq is not busy in
+> > > bfq_bfqq_move(), bfq_pos_tree_add_move() won't be called for the bfqq,
+> > > thus bfqq->pos_root still points to the old bfqg. However, the ref
+> > > that bfqq hold for the old bfqg will be released, so it's possible
+> > > that the old bfqg can be freed. This is problematic because the freed
+> > > bfqg can still be accessed by bfqq->pos_root.
+> > > 
+> > > Fix the problem by calling bfq_pos_tree_add_move() for idle bfqq
+> > > as well.
+> > > 
+> > > Fixes: e21b7a0b9887 ("block, bfq: add full hierarchical scheduling and cgroups support")
+> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > 
+> > I'm just wondering, how can it happen that !bfq_bfqq_busy() queue is in
+> > pos_tree? Because bfq_remove_request() takes care to remove bfqq from the
+> > pos_tree...
+> 
+> Hi,
+> 
+> It's right this is not a problem in common case. The problem seems to
+> relate to queue merging and task migration. Because I once reporduced
+> it with the same reporducer for the problem that offlined bfqg can be
+> inserted into service tree. The uaf is exactly in
+> bfq_remove_request->rb_rease(). However I didn't save the stack...
+> 
+> I guess this is because bfq_del_bfqq_busy() is called from
+> bfq_release_process_ref(), and queue merging prevert sunch bfqq to be
+> freed, thus such bfqq is not in service tree, and it's pos_root can
+> point to the old bfqg after bfq_bic_update_cgroup->bfq_bfqq_move.
+> 
+> I haven't confirmed this, however, this patch itself only cleared
+> bfqq->pos_root for idle bfqq, there should be no harm.
 
-Restrict the optimisation to !CONFIG_PREEMPTION kernels.
+Well, I agree this patch does no harm but in my opinion it is just papering
+over the real problem which is that we leave bfqq without any request in
+the pos_tree which can have also other unexpected consequences. I don't
+think your scenario with bfq_release_process_ref() calling
+bfq_del_bfqq_busy() really answers my question because we call
+bfq_del_bfqq_busy() only if RB_EMPTY_ROOT(&bfqq->sort_list) (i.e., bfqq has
+no requests) and when sort_list was becoming empty, bfq_remove_request()
+should have removed bfqq from the pos_tree. So I think proper fix lies
+elsewhere and I would not merge this patch until we better understand what
+is happening in this case.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- mm/memcontrol.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1e76f26be2c15..92180f1aa9edc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2126,7 +2126,7 @@ struct memcg_stock_pcp {
- 	local_lock_t stock_lock;
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	/* Protects only task_obj */
- 	local_lock_t task_obj_lock;
- 	struct obj_stock task_obj;
-@@ -2139,7 +2139,7 @@ struct memcg_stock_pcp {
- };
- static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) =3D {
- 	.stock_lock =3D INIT_LOCAL_LOCK(stock_lock),
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	.task_obj_lock =3D INIT_LOCAL_LOCK(task_obj_lock),
- #endif
- };
-@@ -2228,7 +2228,7 @@ static void drain_local_stock(struct work_struct *dum=
-my)
- 	 * drain_stock races is that we always operate on local CPU stock
- 	 * here with IRQ disabled
- 	 */
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	local_lock(&memcg_stock.task_obj_lock);
- 	old =3D drain_obj_stock(&this_cpu_ptr(&memcg_stock)->task_obj, NULL);
- 	local_unlock(&memcg_stock.task_obj_lock);
-@@ -2837,7 +2837,7 @@ static inline struct obj_stock *get_obj_stock(unsigne=
-d long *pflags,
- {
- 	struct memcg_stock_pcp *stock;
-=20
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	if (likely(in_task())) {
- 		*pflags =3D 0UL;
- 		*stock_pcp =3D NULL;
-@@ -2855,7 +2855,7 @@ static inline struct obj_stock *get_obj_stock(unsigne=
-d long *pflags,
- static inline void put_obj_stock(unsigned long flags,
- 				 struct memcg_stock_pcp *stock_pcp)
- {
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	if (likely(!stock_pcp))
- 		local_unlock(&memcg_stock.task_obj_lock);
- 	else
-@@ -3267,7 +3267,7 @@ static bool obj_stock_flush_required(struct memcg_sto=
-ck_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
-=20
--#ifndef CONFIG_PREEMPT_RT
-+#ifndef CONFIG_PREEMPTION
- 	if (in_task() && stock->task_obj.cached_objcg) {
- 		memcg =3D obj_cgroup_memcg(stock->task_obj.cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
---=20
-2.34.1
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
