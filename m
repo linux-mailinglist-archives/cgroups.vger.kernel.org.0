@@ -2,154 +2,232 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF9E47D96D
-	for <lists+cgroups@lfdr.de>; Wed, 22 Dec 2021 23:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA6147DC79
+	for <lists+cgroups@lfdr.de>; Thu, 23 Dec 2021 02:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236924AbhLVWxy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Dec 2021 17:53:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236054AbhLVWxy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Dec 2021 17:53:54 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFA3C06173F
-        for <cgroups@vger.kernel.org>; Wed, 22 Dec 2021 14:53:53 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id h9-20020a628309000000b004ba70782342so2269022pfe.20
-        for <cgroups@vger.kernel.org>; Wed, 22 Dec 2021 14:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=oNIAkp8neiAB7783twgZn/TOQ9PM7zBBm/WLvA2Zt9k=;
-        b=nDgKUnHCmPH/1PpVRNkhtBbODzY52sRC85PwAtvQUnxfM7N0o2wARPvR/muu5AzNw8
-         82cyvFCb7Wj2w1u8zWMcOp8QNYGwL/2akDv6EUHpnUXxu7IpBCoweLw3zuLlYHP1E6yd
-         n3d2lnpsWohoKv+dDK7C02guj1oMsXtAJzdS8se6b3xhLXLG9/jwJIVUlRUThhIFjvTT
-         FRpeqgNndxxn5LjOdn7F4nrR24PUQ0km7DJLYwb393Z2d0MIPZAHiX9FtcTYHy+MuVKk
-         JqO6jT+Vt5UiwwOzBrhnUXfeg4HbfrUyflH5D6G8Qo/DNptyIxJFaaKQgcLmRgPMBqf5
-         yeSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=oNIAkp8neiAB7783twgZn/TOQ9PM7zBBm/WLvA2Zt9k=;
-        b=puXhKm97zYqxNlewlHSZzFphIyl3NUr+k900fqkmMDSI9SbWmNtLbXcdLGsm33vjRl
-         txBG1eGymjLewWoRCWqldkG1XHhu96UvFsqHkZYhS3NP33GoMTTd7rBGP9KBjXubxV9C
-         RpCl8Uw6LGBnPaLjFNU1PZBWoGFbYCK3cm7OHDp7ScMZHrb+FaaDYomApxCzbhBU7fCE
-         2mpWeK7xyzWXIFL1dwr+iVLR6x7JXBKTApy75gzTo8IEUUyx4lVTqTQd+i8Sd016K7Ir
-         FqnlzU1M70zNd/exxVpr2eppeuo1TkW3adsTdRdBeEdj0L9i9V81pH66geYyyR+JKa/l
-         lKAA==
-X-Gm-Message-State: AOAM531pj6LBlvoMFXFfIVxn+cP8A/V3uX3Owl+GQpfRrdh9oJvTwPa8
-        9VK6hdhkZuzccnQMBaIfzWZwdf2zCF7O
-X-Google-Smtp-Source: ABdhPJz6QB+cG99ugzQmXA5S7F0yVd27ghimYtU78fR/JgqN0PW8ZMeyet2eEfgFWR9J8AF8DO/4oQPlVWog
-X-Received: from vipinsh.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:36b0])
- (user=vipinsh job=sendgmr) by 2002:a17:903:2c2:b0:148:aef8:4483 with SMTP id
- s2-20020a17090302c200b00148aef84483mr4556771plk.19.1640213633308; Wed, 22 Dec
- 2021 14:53:53 -0800 (PST)
-Date:   Wed, 22 Dec 2021 22:53:50 +0000
-Message-Id: <20211222225350.1912249-1-vipinsh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.1.307.g9b7440fafd-goog
-Subject: [PATCH v2] KVM: Move VM's worker kthreads back to the original
- cgroups before exiting.
-From:   Vipin Sharma <vipinsh@google.com>
-To:     pbonzini@redhat.com, seanjc@google.com, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     dmatlack@google.com, jiangshanlai@gmail.com, kvm@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232952AbhLWBC7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Dec 2021 20:02:59 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:30093 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhLWBC7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Dec 2021 20:02:59 -0500
+Received: from kwepemi500003.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JKBg76Gc4z1DJqk;
+        Thu, 23 Dec 2021 08:59:47 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500003.china.huawei.com (7.221.188.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 23 Dec 2021 09:02:57 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 23 Dec 2021 09:02:56 +0800
+Subject: Re: Use after free with BFQ and cgroups
+To:     Jan Kara <jack@suse.cz>
+CC:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        <linux-block@vger.kernel.org>, <fvogt@suse.de>,
+        <cgroups@vger.kernel.org>
+References: <20211125172809.GC19572@quack2.suse.cz>
+ <20211126144724.GA31093@blackbody.suse.cz>
+ <20211129171115.GC29512@quack2.suse.cz>
+ <f03b2b1c-808a-c657-327d-03165b988e7d@huawei.com>
+ <20211222152103.GF685@quack2.suse.cz>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <d770663a-911c-c9c1-1185-558634f4c738@huawei.com>
+Date:   Thu, 23 Dec 2021 09:02:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20211222152103.GF685@quack2.suse.cz>
+Content-Type: multipart/mixed;
+        boundary="------------DBDA67AA3D957847EA8B3933"
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-VM worker kthreads can linger in the VM process's cgroup for sometime
-after KVM terminates the VM process.
+--------------DBDA67AA3D957847EA8B3933
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-KVM terminates the worker kthreads by calling kthread_stop() which waits
-on the 'exited' completion, triggered by exit_mm(), via mm_release(),
-during kthread's exit.  However, these kthreads are removed from the
-cgroup using cgroup_exit() call which happens after exit_mm(). A VM
-process can terminate between the time window of exit_mm() to
-cgroup_exit(), leaving only worker kthreads in the cgroup.
+ÔÚ 2021/12/22 23:21, Jan Kara Ð´µÀ:
+> On Thu 09-12-21 10:23:33, yukuai (C) wrote:
+>> We confirmed this by our reproducer through a simple patch:
+>> stop merging bfq_queues if their parents are different.
+> 
+> Can you please share your reproducer? I have prepared some patches which
+> I'd like to verify before posting... Thanks!
 
-Moving worker kthreads back to the original cgroup (kthreadd_task's
-cgroup) makes sure that cgroup is empty as soon as the main VM process
-is terminated.
+Hi,
 
-kthreadd_task is not an exported symbol which causes build errors if KVM
-is built as a loadable module. Both users (kvm_main & vhost) of
-cgroup_attach_task_all(), have the same issue, therefore, using
-kthreadd_task as a default option is chosen when the API is called with
-NULL argument.
+Here is the reproducer, usually the problem will come up within an
+hour.
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
----
+Thanks,
+Kuai
+> 
+> 								Honza
+> 
 
-v2:
-- Use kthreadd_task in the cgroup API to avoid build issue.
+--------------DBDA67AA3D957847EA8B3933
+Content-Type: text/plain; charset="UTF-8"; name="null_bad.sh"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="null_bad.sh"
 
-v1: https://lore.kernel.org/lkml/20211214050708.4040200-1-vipinsh@google.com/
+#!/bin/bash
+NR=1
+basedir=/sys/fs/cgroup/blkio/null
+CG_PREFIX=/sys/fs/cgroup/blkio/null/nullb
 
- kernel/cgroup/cgroup-v1.c |  5 +++++
- virt/kvm/kvm_main.c       | 15 ++++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+function set_cgroup()
+{
+	testdir=$1
+	dev_id=$2
+	let weight=RANDOM%900+100
+	let iops=RANDOM%1000+100
+	let bps=RANDOM%10485760+10485760
+	echo "$weight" > $testdir/blkio.bfq.weight
+	echo "$dev_id $iops" > $testdir/blkio.throttle.read_iops_device
+	echo "$dev_id $iops" > $testdir/blkio.throttle.write_iops_device
+	echo "$dev_id $bps" > $testdir/blkio.throttle.read_bps_device
+	echo "$dev_id $bps" > $testdir/blkio.throttle.write_bps_device
+}
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 81c9e0685948..81d4b2f2acf0 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -51,6 +51,8 @@ bool cgroup1_ssid_disabled(int ssid)
-  * @from: attach to all cgroups of a given task
-  * @tsk: the task to be attached
-  *
-+ * If @from is NULL then use kthreadd_task for finding the destination cgroups.
-+ *
-  * Return: %0 on success or a negative errno code on failure
-  */
- int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
-@@ -58,6 +60,9 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
- 	struct cgroup_root *root;
- 	int retval = 0;
- 
-+	if (!from)
-+		from = kthreadd_task;
-+
- 	mutex_lock(&cgroup_mutex);
- 	percpu_down_write(&cgroup_threadgroup_rwsem);
- 	for_each_root(root) {
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index b0f7e6eb00ff..f7504578c374 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5785,7 +5785,7 @@ static int kvm_vm_worker_thread(void *context)
- 	init_context = NULL;
- 
- 	if (err)
--		return err;
-+		goto out;
- 
- 	/* Wait to be woken up by the spawner before proceeding. */
- 	kthread_parkme();
-@@ -5793,6 +5793,19 @@ static int kvm_vm_worker_thread(void *context)
- 	if (!kthread_should_stop())
- 		err = thread_fn(kvm, data);
- 
-+out:
-+	/*
-+	 * We need to move the kthread back to its original cgroups, so that it
-+	 * doesn't linger in the cgroups of the user process after the user
-+	 * process has already terminated.
-+	 *
-+	 * kthread_stop() waits on 'exited' completion condition which is set
-+	 * in exit_mm(), via mm_release(), in do_exit(). However, kthread
-+	 * is removed from cgroups in the cgroup_exit() which is called after
-+	 * exit_mm(). This causes lingering of kthreads in cgroups after main
-+	 * VM process has finished.
-+	 */
-+	WARN_ON(cgroup_attach_task_all(NULL, current));
- 	return err;
- }
- 
+function set_sys()
+{
+	local queue_dir=/sys/block/$1/queue
 
-base-commit: 5e4e84f1124aa02643833b7ea40abd5a8e964388
--- 
-2.34.1.307.g9b7440fafd-goog
+	let rq_affinity=RANDOM%3
+	echo $rq_affinity > $queue_dir/rq_affinity
 
+	let add_random=RANDOM%2
+	echo $add_random > $queue_dir/add_random
+
+	let rotational=RANDOM%2
+	echo $rotational > $queue_dir/rotational
+
+	let nomerges=RANDOM%2
+	echo $nomerges > $queue_dir/nomerges
+
+	let s_num=RANDOM%5
+	case $s_num in
+		0)
+		scheduler=none
+		;;
+		1)
+		scheduler=bfq
+		;;
+		2)
+		scheduler=bfq
+		;;
+		3)
+		scheduler=none
+		;;
+	esac
+	echo bfq > $queue_dir/scheduler
+}
+
+create_cg()
+{
+	local i
+	local path
+
+	for i in $(seq 0 $NR)
+	do
+		path=${CG_PREFIX}${i}
+		mkdir -p $path
+	done
+}
+
+switch_cg()
+{
+	local path=${CG_PREFIX}$1
+	local t
+
+	for t in $(cat $path/tasks)
+	do
+		echo $t > /sys/fs/cgroup/blkio/tasks
+	done
+
+	echo "tasks in $path"
+	cat $path/tasks
+}
+
+rm_cg()
+{
+	local path=${CG_PREFIX}$1
+
+	rmdir $path
+	return $?
+}
+
+mkdir $basedir
+cgdir1=/sys/fs/cgroup/blkio/null/nullb0
+cgdir2=/sys/fs/cgroup/blkio/null/nullb1
+
+ADD_MOD="modprobe null_blk"
+while true
+do
+	let flag=RANDOM%2
+	if [ $flag -eq 1 ];then
+		$ADD_MOD queue_mode=2 blocking=1 nr_devices=2
+	else
+		$ADD_MOD queue_mode=2 nr_devices=2
+	fi
+		
+	create_cg
+
+	dev_id=`lsblk | grep nullb0 | awk '{print $2}'`
+	set_cgroup $basedir $dev_id 
+	set_sys nullb0
+
+	dev_id=`lsblk | grep nullb1 | awk '{print $2}'`
+	set_cgroup $basedir $dev_id 
+	set_sys nullb1
+
+	let flag=RANDOM%20
+	if [ $flag -eq 5 ];then
+		echo 1 > /sys/block/nullb0/make-it-fail
+		echo 1 > /sys/block/nullb1/make-it-fail
+	else
+		echo 0 > /sys/block/nullb0/make-it-fail
+		echo 0 > /sys/block/nullb1/make-it-fail
+	fi
+
+	i=0
+	while [ $i -le 3 ]
+	do
+		cgexec -g "blkio:null/nullb0" fio -filename=/dev/nullb0 -ioengine=libaio -time_based=1 -rw=rw -thread -size=100g -bs=512 -numjobs=4 -iodepth=8 -runtime=5 -group_reporting -name=brd-IOwrite -rwmixread=50 &>/dev/null &
+		cgexec -g "blkio:null/nullb0" fio -filename=/dev/nullb0 -ioengine=psync -direct=1 -time_based=1 -rw=rw -thread -size=100g -bs=512 -numjobs=4 -iodepth=8 -runtime=5 -group_reporting -name=brd-IOwrite -rwmixread=50 &>/dev/null &
+		cgexec -g "blkio:null/nullb1" fio -filename=/dev/nullb1 -ioengine=libaio -time_based=1 -rw=rw -thread -size=100g -bs=1024k -numjobs=4 -iodepth=8 -runtime=5 -group_reporting -name=brd-IOwrite -rwmixread=50 &>/dev/null &
+		cgexec -g "blkio:null/nullb1" fio -filename=/dev/nullb1 -ioengine=psync -direct=1 -time_based=1 -rw=rw -thread -size=100g -bs=1024k -numjobs=4 -iodepth=8 -runtime=5 -group_reporting -name=brd-IOwrite -rwmixread=50 &>/dev/null &
+		((i=i+1))
+	done
+
+	sleep 3
+
+	until rm_cg 0
+	do
+		switch_cg 0
+		sleep 0.1
+	done
+
+	until rm_cg 1
+	do
+		switch_cg 1
+		sleep 0.1
+	done
+
+	while true
+	do
+		rmmod null_blk &>/dev/null && break
+		sleep 0.1
+	done
+done
+
+
+--------------DBDA67AA3D957847EA8B3933--
