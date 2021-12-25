@@ -2,83 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F291247E931
-	for <lists+cgroups@lfdr.de>; Thu, 23 Dec 2021 22:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6241847F189
+	for <lists+cgroups@lfdr.de>; Sat, 25 Dec 2021 01:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240686AbhLWVsv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Dec 2021 16:48:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60165 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231576AbhLWVsv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Dec 2021 16:48:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1640296130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8aOo+PkY5S4h+Nfs7B8aAFLKqPmDvtOJfX8JOA95JqA=;
-        b=WzHw8uXVCFI0EEXgSUYeXPoomqlPWLFfFpZi8Ez4aX1a39pGpg4TNhTcv/JudN/CMlEkg9
-        a28WyYraaZd2PfwhoXqGTWSpS/Q1pm5oBIxWB5WYJ+lJQ5iE5m0B7cA5anf8uINTgiVWEB
-        xgHZyjDKEKpREhc3QYR8U5HYhHUKdlE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-614-7l4heniYOzabyI4fv3Kasw-1; Thu, 23 Dec 2021 16:48:45 -0500
-X-MC-Unique: 7l4heniYOzabyI4fv3Kasw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64AA31006AA0;
-        Thu, 23 Dec 2021 21:48:43 +0000 (UTC)
-Received: from [10.22.16.147] (unknown [10.22.16.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 474B36E1EE;
-        Thu, 23 Dec 2021 21:48:42 +0000 (UTC)
-Message-ID: <f6bb93c8-3940-6141-d0e0-50144549a4f5@redhat.com>
-Date:   Thu, 23 Dec 2021 16:48:41 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [RFC PATCH 3/3] mm/memcg: Allow the task_obj optimization only on
- non-PREEMPTIBLE kernels.
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20211222114111.2206248-1-bigeasy@linutronix.de>
- <20211222114111.2206248-4-bigeasy@linutronix.de>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20211222114111.2206248-4-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S230265AbhLYAJr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Dec 2021 19:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhLYAJq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Dec 2021 19:09:46 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3F1C061757;
+        Fri, 24 Dec 2021 16:09:46 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id f5so38054297edq.6;
+        Fri, 24 Dec 2021 16:09:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=sT/KIGohhkLRHjE3wm2QpMED803gmT90EUceteaiTMI=;
+        b=Veny7lRRrWZ6cPaqOR1uySyz7YnyTWPGVAUtA23S03w2GGa/Sj2f9sCm89ozYiU3Qo
+         hUhntjifTiyQxfwN7y5vW6QdTtXlhqM6U7RhP3cWSxfNm0ZfhwbUrJB/jjVdtE7jD29t
+         lnPiuzVjMwD5PPwFFYR6jxA/Dijs21s2jg7TWGNf43364LTSwWT5O/A4hZRfvT2UTQgN
+         PO9bf4FnsSzdsu1kM9AxU8XHitS2y1rnXZp9FL1mxEJEENOSoGuHhjCgh/+yURhmQKuW
+         aEFoqMqwvq6hmOnomkBSchjGntX73QCZ86RhRytOX4U1+A8UkOh/84oejldtuLZKDRgt
+         Zl2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sT/KIGohhkLRHjE3wm2QpMED803gmT90EUceteaiTMI=;
+        b=fiW5Dg2VoVHjzokc8nkBXCW39Pp6l6vHeP2RXvTFH2LfrHI3hOzmYhVwZ5U3/BJBYG
+         qW3+sf1uHNkrO5yxGdHz90wkAL2FxEBTgbwq1eipAmKuezMIQpp05HYMrt5HLDfe4h/m
+         +W7JJN6s7L0bJplovQfc348gOFAIZuKE/t0Oc4ho+40MLv5WsMCyzfb8oOCT7X5N3xeO
+         DbEjHEEwP7knOFoLbPbaW4Q1pIcRPixhwaPXPNUWVwmC9IOn5VS+m08iXMDDwOXOb56d
+         2APiSPVU0Mt3FsE2Tavjybb2KdLzBY8xAb6u+DbgiWdJJcJDnuOvXKtYL17UObf+ZpmS
+         0j9Q==
+X-Gm-Message-State: AOAM530S+ZvQpXOroTltu4/pef6IrPGzrQUV4PHn4T+ZRSloCquXFXx8
+        NNdDFH5BD687QDNAJCsvB2Y=
+X-Google-Smtp-Source: ABdhPJxfOJL4hEtLTz7LFV0uoWA8Zq4W7yvzwO+EDf6X5MmBwjeF9LmGUL8aDyhlKwTdW+36yEN/qA==
+X-Received: by 2002:aa7:d788:: with SMTP id s8mr7503399edq.9.1640390983968;
+        Fri, 24 Dec 2021 16:09:43 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id k12sm3011051ejx.119.2021.12.24.16.09.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Dec 2021 16:09:43 -0800 (PST)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH 1/2] cgroup: rstat: explicitly put loop variant in while
+Date:   Sat, 25 Dec 2021 00:09:31 +0000
+Message-Id: <20211225000932.7253-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/22/21 06:41, Sebastian Andrzej Siewior wrote:
-> Based on my understanding the optimisation with task_obj for in_task()
-> mask sense on non-PREEMPTIBLE kernels because preempt_disable()/enable()
-> is optimized away. This could be then restricted to !CONFIG_PREEMPTION kernel
-> instead to only PREEMPT_RT.
-> With CONFIG_PREEMPT_DYNAMIC a non-PREEMPTIBLE kernel can also be
-> configured but these kernels always have preempt_disable()/enable()
-> present so it probably makes no sense here for the optimisation.
->
-> Restrict the optimisation to !CONFIG_PREEMPTION kernels.
->
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Instead of do while unconditionally, let's put the loop variant in
+while.
 
-If PREEMPT_DYNAMIC is selected, PREEMPTION will also be set. My 
-understanding is that some distros are going to use PREEMPT_DYNAMIC, but 
-default to PREEMPT_VOLUNTARY. So I don't believe it is a good idea to 
-disable the optimization based on PREEMPTION alone.
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+---
+ kernel/cgroup/rstat.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Regards,
-Longman
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 1486768f2318..a9d344e0521d 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -124,12 +124,10 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
+ 
+ 			prstatc = cgroup_rstat_cpu(parent, cpu);
+ 			nextp = &prstatc->updated_children;
+-			while (true) {
++			while (*nextp != pos) {
+ 				struct cgroup_rstat_cpu *nrstatc;
+ 
+ 				nrstatc = cgroup_rstat_cpu(*nextp, cpu);
+-				if (*nextp == pos)
+-					break;
+ 				WARN_ON_ONCE(*nextp == parent);
+ 				nextp = &nrstatc->updated_next;
+ 			}
+-- 
+2.33.1
 
