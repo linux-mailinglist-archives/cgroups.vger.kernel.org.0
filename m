@@ -2,152 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C422480C05
-	for <lists+cgroups@lfdr.de>; Tue, 28 Dec 2021 18:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E754811F9
+	for <lists+cgroups@lfdr.de>; Wed, 29 Dec 2021 12:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbhL1RRq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Dec 2021 12:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S235496AbhL2LXF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Dec 2021 06:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235978AbhL1RRp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Dec 2021 12:17:45 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0757C06173F
-        for <cgroups@vger.kernel.org>; Tue, 28 Dec 2021 09:17:45 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id s1so14955976pga.5
-        for <cgroups@vger.kernel.org>; Tue, 28 Dec 2021 09:17:45 -0800 (PST)
+        with ESMTP id S233655AbhL2LXE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Dec 2021 06:23:04 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AD9C061574
+        for <cgroups@vger.kernel.org>; Wed, 29 Dec 2021 03:23:04 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so19633084pjb.5
+        for <cgroups@vger.kernel.org>; Wed, 29 Dec 2021 03:23:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ivoEdS/CxNoGT7D8SqF0HNjUYAr9Hq6dlyJRhMADj5U=;
-        b=mE6AwGIQ3sval0uBHIKCCq+gF2bQ7hglSjPsTsleu2wn0+ggU2al7iWlZSUBWYp6/U
-         L2ClRIPzUoRTvHwD/IoZcmKsJvbS5ND/UrnQl+3+TfS3g6V8fIkCuLr2Fle/F2GL6D1y
-         E6BXtrTkjuOBPsiaG0tMdkhQy+RW1SwuGVTxXj1KuwQaLfRc6I2IN+GUMo93p1EVtVyJ
-         2FUGCZzPjE//OZQsKHMVP2fQbmyeOWU82IN/kXeEizDHzXnvqCziCoOIRj3799XlISo5
-         aENIZTOWJLYG1KnocCv8m3Me3F4WGRrooPpJjvRFa6iM92TmU0WyOvaSVg6CdAuCgUPb
-         l6ug==
+        bh=B8D9h3oa8OpyqxIH3xe2rIOLYO1p/ntyh/ItEZc2ers=;
+        b=WGgAxIa78MQr67iJtQ1TD1NaSUDzL8Sj14e4SvxYWhEN9di3WJIBnUF+L3ExcGr1oj
+         QG61NAIFhjT/XTvY0CDIKSy0x2wdhjgp5o3CP/sn9tLZp0iIoIh8BXvPhaMFXpuLfzRl
+         ssYONzQtGOvuMs4NA/1vndNqMZ2aeOxJ5COnpBFYJWM3L7v9L5GRfb6CzWNnmn7NDNB5
+         Y3k9y/k0SaoD8ZsB9lFCcDRjDybncaD5TD9GRZZ/dYi8Nrw8/TG12zPX6PJi/KX88OD2
+         OuID2/9IQHJyO+voFSIrf5Pg524R1rvzzNEz20N8dgdaI7Q3jfQjIb0uJgqdnoHZZxJI
+         MBfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ivoEdS/CxNoGT7D8SqF0HNjUYAr9Hq6dlyJRhMADj5U=;
-        b=XV0f3N+Rbs1i4rrXat1It3iWQEX1bJW5ccqdFNkr9Qn6SVFMldXLshH/aI6PbmF+ua
-         /B5vTvST46l6GUqJA1IqqSwUKjXrit9oe3i7hXU+Nm4kjkhKmSgTyL2GQYjownlewg3Y
-         nP/Rdp6hQwLKtXlCpyQSBlVmBGBAI3SVGyAwkRAruWrtX/IW9VivVpLdHukldeYvvKI8
-         vaUs8f0GKHLThIpGCLx5cvTbYRz0NPBpAAAknKZhdFFNBGL71si20Zr03Wxg/cL5BIXT
-         Lb73jNCjM7Wqy/3py9KIpYac+OLebda9OpvEW50oar40Qgibcbqc4J8Jvvzw2myyzzxN
-         ylXQ==
-X-Gm-Message-State: AOAM533ryj/FYi+97z/1VB+WKkPpgzwJiWyjLehHNYMcZLE0YBthLmYK
-        EIgJnoBBLlGx5MCkAt21vi/yzw==
-X-Google-Smtp-Source: ABdhPJxD3vDyn9OpaKKR9zvezH3CNjriesx8x9r68KUytLQi20VcY65aVOYCHnVEJaUNScucolLojA==
-X-Received: by 2002:a63:8b4c:: with SMTP id j73mr19846740pge.81.1640711864988;
-        Tue, 28 Dec 2021 09:17:44 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l6sm20339575pfu.63.2021.12.28.09.17.44
+        bh=B8D9h3oa8OpyqxIH3xe2rIOLYO1p/ntyh/ItEZc2ers=;
+        b=Tl1GcVpJ3FRrYpVL167ZOmDdQK4WxV/Br0syt1xAWFv7nb1Nb7oqAQM8nJN92H20Ah
+         S8tg05/+rOM7g24TWz+A2AwjOuHd7mYeSnYMKEDsIYSnDJCVFUXLSdmgoIfIke1Vb7yd
+         0pYWjYazXkISZKCUQ+LYAmsDZ34zCjoQG5IAx5U/rwusJtEOvw3KvYIp7/K4G3eiTuGx
+         pHUsm4Ti1avR387xBtAsjV+w0IDUwk/PIMDpviAzHaOkZ/xnViMWVagSu4LRe4C+jaGl
+         /qDj23VXcq86GM8p4LEU8zo27fFzHjh0hbrLx24OI/CT+oGFfpvaMfwDBxMO8OK7H7sk
+         YVRA==
+X-Gm-Message-State: AOAM530mUyCIWMuENVhnFmB8jrn124Y1iH8gvEIC/GoGTLnkUcxYdvZn
+        JWaluEQ6cHguFAiBgAmdS7s=
+X-Google-Smtp-Source: ABdhPJwuzAxU4R0IYSsKh74KLKKx3PviuJjkKN5hUYyTQsDBZbYnOyqmi34FrA9NClJ4Q9W7ZJbPJg==
+X-Received: by 2002:a17:902:9343:b0:148:a2e7:fb5f with SMTP id g3-20020a170902934300b00148a2e7fb5fmr27487300plp.160.1640776983676;
+        Wed, 29 Dec 2021 03:23:03 -0800 (PST)
+Received: from ip-172-31-30-232.ap-northeast-1.compute.internal (ec2-18-181-137-102.ap-northeast-1.compute.amazonaws.com. [18.181.137.102])
+        by smtp.gmail.com with ESMTPSA id pf7sm27063114pjb.8.2021.12.29.03.22.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Dec 2021 09:17:44 -0800 (PST)
-Date:   Tue, 28 Dec 2021 17:17:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     pbonzini@redhat.com, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, dmatlack@google.com, jiangshanlai@gmail.com,
-        kvm@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: Move VM's worker kthreads back to the original
- cgroups before exiting.
-Message-ID: <YctGtWzYcNP2iTaN@google.com>
-References: <20211222225350.1912249-1-vipinsh@google.com>
+        Wed, 29 Dec 2021 03:23:03 -0800 (PST)
+Date:   Wed, 29 Dec 2021 11:22:54 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        patches@lists.linux.dev, Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, cgroups@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        kasan-dev@googlegroups.com, Lu Baolu <baolu.lu@linux.intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH v2 00/33] Separate struct slab from struct page
+Message-ID: <YcxFDuPXlTwrPSPk@ip-172-31-30-232.ap-northeast-1.compute.internal>
+References: <20211201181510.18784-1-vbabka@suse.cz>
+ <4c3dfdfa-2e19-a9a7-7945-3d75bc87ca05@suse.cz>
+ <f3a83708-3f3c-a634-7bee-dcfcaaa7f36e@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211222225350.1912249-1-vipinsh@google.com>
+In-Reply-To: <f3a83708-3f3c-a634-7bee-dcfcaaa7f36e@suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 22, 2021, Vipin Sharma wrote:
-> kthreadd_task is not an exported symbol which causes build errors if KVM
-> is built as a loadable module. Both users (kvm_main & vhost) of
-> cgroup_attach_task_all(), have the same issue, therefore, using
-> kthreadd_task as a default option is chosen when the API is called with
-> NULL argument.
-
-...
-
-> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-> index 81c9e0685948..81d4b2f2acf0 100644
-> --- a/kernel/cgroup/cgroup-v1.c
-> +++ b/kernel/cgroup/cgroup-v1.c
-> @@ -51,6 +51,8 @@ bool cgroup1_ssid_disabled(int ssid)
->   * @from: attach to all cgroups of a given task
->   * @tsk: the task to be attached
->   *
-> + * If @from is NULL then use kthreadd_task for finding the destination cgroups.
-> + *
->   * Return: %0 on success or a negative errno code on failure
->   */
->  int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
-> @@ -58,6 +60,9 @@ int cgroup_attach_task_all(struct task_struct *from, struct task_struct *tsk)
->  	struct cgroup_root *root;
->  	int retval = 0;
->  
-> +	if (!from)
-> +		from = kthreadd_task;
-
-Rather than sully cgroup_attach_task_all() with this behavior, can't KVM do
-
-	cgroup_attach_task_all(current->real_parent, current)
-
-since AFAICT real_parent is guaranteed to point at kthreadd_task.
-
-> +
->  	mutex_lock(&cgroup_mutex);
->  	percpu_down_write(&cgroup_threadgroup_rwsem);
->  	for_each_root(root) {
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index b0f7e6eb00ff..f7504578c374 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -5785,7 +5785,7 @@ static int kvm_vm_worker_thread(void *context)
->  	init_context = NULL;
->  
->  	if (err)
-> -		return err;
-> +		goto out;
->  
->  	/* Wait to be woken up by the spawner before proceeding. */
->  	kthread_parkme();
-> @@ -5793,6 +5793,19 @@ static int kvm_vm_worker_thread(void *context)
->  	if (!kthread_should_stop())
->  		err = thread_fn(kvm, data);
->  
-> +out:
-> +	/*
-> +	 * We need to move the kthread back to its original cgroups, so that it
-
-Please state what is being done, not what "needs" to be done.  The need to do
-something is implicit, otherwise we wouldn't be doing it.
-
-> +	 * doesn't linger in the cgroups of the user process after the user
-> +	 * process has already terminated.
-> +	 *
-> +	 * kthread_stop() waits on 'exited' completion condition which is set
-> +	 * in exit_mm(), via mm_release(), in do_exit(). However, kthread
-> +	 * is removed from cgroups in the cgroup_exit() which is called after
-> +	 * exit_mm(). This causes lingering of kthreads in cgroups after main
-> +	 * VM process has finished.
-> +	 */
-> +	WARN_ON(cgroup_attach_task_all(NULL, current));
-
-This should not WARN, cgroup_attach_task_all() needs to perform allocations and
-will fail with -ENOMEM even in the absense of kernel bugs.
-
->  	return err;
->  }
->  
+On Wed, Dec 22, 2021 at 05:56:50PM +0100, Vlastimil Babka wrote:
+> On 12/14/21 13:57, Vlastimil Babka wrote:
+> > On 12/1/21 19:14, Vlastimil Babka wrote:
+> >> Folks from non-slab subsystems are Cc'd only to patches affecting them, and
+> >> this cover letter.
+> >>
+> >> Series also available in git, based on 5.16-rc3:
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slab-struct_slab-v2r2
+> > 
+> > Pushed a new branch slab-struct-slab-v3r3 with accumulated fixes and small tweaks
+> > and a new patch from Hyeonggon Yoo on top. To avoid too much spam, here's a range diff:
 > 
-> base-commit: 5e4e84f1124aa02643833b7ea40abd5a8e964388
-> -- 
-> 2.34.1.307.g9b7440fafd-goog
-> 
+> Hi, I've pushed another update branch slab-struct_slab-v4r1, and also to
+> -next. I've shortened git commit log lines to make checkpatch happier,
+> so no range-diff as it would be too long. I believe it would be useless
+> spam to post the whole series now, shortly before xmas, so I will do it
+> at rc8 time, to hopefully collect remaining reviews. But if anyone wants
+> a mailed version, I can do that.
+>
+
+Hello Matthew and Vlastimil.
+it's part 3 of review.
+
+# mm: Convert struct page to struct slab in functions used by other subsystems
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+
+# mm/slub: Convert most struct page to struct slab by spatch
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+with a question below.
+
+-static int check_slab(struct kmem_cache *s, struct page *page)
++static int check_slab(struct kmem_cache *s, struct slab *slab)
+ {
+        int maxobj;
+ 
+-       if (!PageSlab(page)) {
+-               slab_err(s, page, "Not a valid slab page");
++       if (!folio_test_slab(slab_folio(slab))) {
++               slab_err(s, slab, "Not a valid slab page");
+                return 0;
+        }
+
+Can't we guarantee that struct slab * always points to a slab?
+
+for struct page * it can be !PageSlab(page) because struct page *
+can be other than slab. but struct slab * can only be slab
+unlike struct page. code will be simpler if we guarantee that
+struct slab * always points to a slab (or NULL).
+
+
+# mm/slub: Convert pfmemalloc_match() to take a struct slab
+It's confusing to me because the original pfmemalloc_match() is removed
+and pfmemalloc_match_unsafe() was renamed to pfmemalloc_match() and
+converted to use slab_test_pfmemalloc() helper.
+
+But I agree with the resulting code. so:
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+
+# mm/slub: Convert alloc_slab_page() to return a struct slab
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+
+# mm/slub: Convert print_page_info() to print_slab_info()
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+
+I hope to review rest of patches in a week.
+
+Thanks,
+Hyeonggon
+
+> Changes in v4:
+> - rebase to 5.16-rc6 to avoid a conflict with mainline
+> - collect acks/reviews/tested-by from Johannes, Roman, Hyeonggon Yoo -
+> thanks!
+> - in patch "mm/slub: Convert detached_freelist to use a struct slab"
+> renamed free_nonslab_page() to free_large_kmalloc() and use folio there,
+> as suggested by Roman
+> - in "mm/memcg: Convert slab objcgs from struct page to struct slab"
+> change one caller of slab_objcgs_check() to slab_objcgs() as suggested
+> by Johannes, realize the other caller should be also changed, and remove
+> slab_objcgs_check() completely.
