@@ -2,314 +2,224 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5554874A7
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jan 2022 10:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FD54875CA
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jan 2022 11:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbiAGJ2v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 7 Jan 2022 04:28:51 -0500
-Received: from proxmox-new.maurer-it.com ([94.136.29.106]:35294 "EHLO
-        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbiAGJ2v (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 7 Jan 2022 04:28:51 -0500
-X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Jan 2022 04:28:51 EST
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 7707146BF2;
-        Fri,  7 Jan 2022 10:20:25 +0100 (CET)
-Date:   Fri, 7 Jan 2022 10:20:23 +0100
-From:   Wolfgang Bumiller <w.bumiller@proxmox.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, tj@kernel.org, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 2/2] blk-cgroup: stop using seq_get_buf
-Message-ID: <20220107092023.iaz57fai5kj47fqf@olga.proxmox.com>
-References: <20210810152623.1796144-1-hch@lst.de>
- <20210810152623.1796144-2-hch@lst.de>
+        id S237563AbiAGKjO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 7 Jan 2022 05:39:14 -0500
+Received: from mga01.intel.com ([192.55.52.88]:24013 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346855AbiAGKjJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 7 Jan 2022 05:39:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1641551949; x=1673087949;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9GdO4wqC0kLGDcNcqwdRME4ErHXsLenJpPHBNN/bD64=;
+  b=b+4ka/WTY/kMkWUtaCufaAzOmcXUrg1u1QCIFS3rWyV0sD8r+pDl7l72
+   S/BguFEMITkirtndJHgPkCTobj8ZlIscB/+3Er4/iGUYaGwq67Iq00Wra
+   FdyV1PAiPnor91WhjEUihBPeFtXIpA5sX5mmNUEqNq/DXGfhtlXnklBjR
+   qMYGKiRUH2dAqYbuqsaRCKoH6J9wsmb4XNFWAq/Xrev4JJtspTASxNcWn
+   0/FAFdmeasTmUT2WIJ8qtsVCJx2Wr3cJg/mG3PleixmlXe8/gCdps8pcU
+   h3GcGLvRIxa4/FctmqfxFokzntq7tsu+R1qZULKSApK//UWATpFCO11b2
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10219"; a="267146450"
+X-IronPort-AV: E=Sophos;i="5.88,269,1635231600"; 
+   d="scan'208";a="267146450"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2022 02:37:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,269,1635231600"; 
+   d="scan'208";a="668734586"
+Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Jan 2022 02:37:51 -0800
+Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n5md4-000IYO-Uv; Fri, 07 Jan 2022 10:37:50 +0000
+Date:   Fri, 07 Jan 2022 18:37:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-5.16-fixes] BUILD SUCCESS
+ bf35a7879f1dfb0d050fe779168bcf25c7de66f5
+Message-ID: <61d817df.2CZY+54MP7fZUzJm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810152623.1796144-2-hch@lst.de>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Sorry for the late noise, but now when there are no stats, the name has
-still been printed out without adding a new line, which doesn't seem to
-be inline with the documented 'nested keyed' file format.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.16-fixes
+branch HEAD: bf35a7879f1dfb0d050fe779168bcf25c7de66f5  selftests: cgroup: Test open-time cgroup namespace usage for migration checks
 
-in particular, I'm now seeing this line with 2 keys:
+elapsed time: 720m
 
-    253:10 253:5 rbytes=0 wbytes=0 rios=0 wios=1 dbytes=0 dios=0
-    ^~~~~~ ^~~~~
+configs tested: 150
+configs skipped: 3
 
-I'm not sure if a separate temporary buffer would make more sense or
-switching back to seq_get_buf?
-Figuring out `has_stats` first doesn't seem to be trivial due to the
-`pd_stat_fn` calls.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Or of course, just include the newlines unconditionally?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20220107
+parisc                           alldefconfig
+arm                           stm32_defconfig
+mips                        bcm47xx_defconfig
+powerpc                      ppc40x_defconfig
+arm                       omap2plus_defconfig
+arm                            lart_defconfig
+sh                        sh7763rdp_defconfig
+sh                           se7343_defconfig
+sh                           se7721_defconfig
+sh                     sh7710voipgw_defconfig
+sh                            shmin_defconfig
+arc                          axs101_defconfig
+powerpc                     taishan_defconfig
+sh                        edosk7705_defconfig
+sh                          r7780mp_defconfig
+mips                      loongson3_defconfig
+ia64                      gensparse_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                  cadence_csp_defconfig
+m68k                        mvme147_defconfig
+sh                          lboxre2_defconfig
+powerpc                      chrp32_defconfig
+powerpc                      mgcoge_defconfig
+mips                           jazz_defconfig
+arm                           viper_defconfig
+m68k                       m5275evb_defconfig
+arc                        nsimosci_defconfig
+xtensa                    smp_lx200_defconfig
+sparc64                          alldefconfig
+arm                           h5000_defconfig
+arm                          badge4_defconfig
+sh                        dreamcast_defconfig
+m68k                       m5475evb_defconfig
+openrisc                            defconfig
+arm                        realview_defconfig
+powerpc                       ppc64_defconfig
+arm                        trizeps4_defconfig
+arm                  randconfig-c002-20220107
+arm                  randconfig-c002-20220106
+ia64                             allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+s390                                defconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20220107
+x86_64               randconfig-a001-20220107
+x86_64               randconfig-a004-20220107
+x86_64               randconfig-a006-20220107
+x86_64               randconfig-a002-20220107
+x86_64               randconfig-a003-20220107
+i386                 randconfig-a003-20220107
+i386                 randconfig-a005-20220107
+i386                 randconfig-a004-20220107
+i386                 randconfig-a006-20220107
+i386                 randconfig-a002-20220107
+i386                 randconfig-a001-20220107
+x86_64               randconfig-a012-20220106
+x86_64               randconfig-a015-20220106
+x86_64               randconfig-a014-20220106
+x86_64               randconfig-a013-20220106
+x86_64               randconfig-a011-20220106
+x86_64               randconfig-a016-20220106
+s390                 randconfig-r044-20220106
+riscv                randconfig-r042-20220106
+arc                  randconfig-r043-20220106
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-Unless seq_file has/gets another way to roll back the buffer?
+clang tested configs:
+mips                 randconfig-c004-20220107
+arm                  randconfig-c002-20220107
+i386                 randconfig-c001-20220107
+riscv                randconfig-c006-20220107
+powerpc              randconfig-c003-20220107
+x86_64               randconfig-c007-20220107
+mips                      malta_kvm_defconfig
+arm                      pxa255-idp_defconfig
+mips                       lemote2f_defconfig
+mips                        qi_lb60_defconfig
+arm                          collie_defconfig
+powerpc                          allyesconfig
+arm                         s5pv210_defconfig
+arm                         palmz72_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                         tb0219_defconfig
+s390                             alldefconfig
+mips                      bmips_stb_defconfig
+i386                 randconfig-a003-20220106
+i386                 randconfig-a005-20220106
+i386                 randconfig-a006-20220106
+i386                 randconfig-a002-20220106
+i386                 randconfig-a001-20220106
+x86_64               randconfig-a012-20220107
+x86_64               randconfig-a015-20220107
+x86_64               randconfig-a014-20220107
+x86_64               randconfig-a013-20220107
+x86_64               randconfig-a011-20220107
+x86_64               randconfig-a016-20220107
+i386                 randconfig-a012-20220107
+i386                 randconfig-a016-20220107
+i386                 randconfig-a014-20220107
+i386                 randconfig-a015-20220107
+i386                 randconfig-a011-20220107
+i386                 randconfig-a013-20220107
+hexagon              randconfig-r041-20220107
+hexagon              randconfig-r045-20220107
+riscv                randconfig-r042-20220107
 
-On Tue, Aug 10, 2021 at 05:26:23PM +0200, Christoph Hellwig wrote:
-> seq_get_buf is a crutch that undoes all the memory safety of the
-> seq_file interface.  Use the normal seq_printf interfaces instead.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/blk-cgroup.c         | 30 ++++++------------------------
->  block/blk-iocost.c         | 23 +++++++++--------------
->  block/blk-iolatency.c      | 38 +++++++++++++++++++-------------------
->  block/mq-deadline-cgroup.c |  8 +++-----
->  include/linux/blk-cgroup.h |  4 ++--
->  5 files changed, 39 insertions(+), 64 deletions(-)
-> 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 52aa0540ccaf..b8ec47dcce42 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -877,8 +877,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
->  	bool has_stats = false;
->  	const char *dname;
->  	unsigned seq;
-> -	char *buf;
-> -	size_t size = seq_get_buf(s, &buf), off = 0;
->  	int i;
->  
->  	if (!blkg->online)
-> @@ -888,13 +886,7 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
->  	if (!dname)
->  		return;
->  
-> -	/*
-> -	 * Hooray string manipulation, count is the size written NOT
-> -	 * INCLUDING THE \0, so size is now count+1 less than what we
-> -	 * had before, but we want to start writing the next bit from
-> -	 * the \0 so we only add count to buf.
-> -	 */
-> -	off += scnprintf(buf+off, size-off, "%s ", dname);
-> +	seq_printf(s, "%s ", dname);
->  
->  	do {
->  		seq = u64_stats_fetch_begin(&bis->sync);
-> @@ -909,40 +901,30 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
->  
->  	if (rbytes || wbytes || rios || wios) {
->  		has_stats = true;
-> -		off += scnprintf(buf+off, size-off,
-> -			"rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
-> +		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
->  			rbytes, wbytes, rios, wios,
->  			dbytes, dios);
->  	}
->  
->  	if (blkcg_debug_stats && atomic_read(&blkg->use_delay)) {
->  		has_stats = true;
-> -		off += scnprintf(buf+off, size-off, " use_delay=%d delay_nsec=%llu",
-> +		seq_printf(s, " use_delay=%d delay_nsec=%llu",
->  			atomic_read(&blkg->use_delay),
->  			atomic64_read(&blkg->delay_nsec));
->  	}
->  
->  	for (i = 0; i < BLKCG_MAX_POLS; i++) {
->  		struct blkcg_policy *pol = blkcg_policy[i];
-> -		size_t written;
->  
->  		if (!blkg->pd[i] || !pol->pd_stat_fn)
->  			continue;
->  
-> -		written = pol->pd_stat_fn(blkg->pd[i], buf+off, size-off);
-> -		if (written)
-> +		if (pol->pd_stat_fn(blkg->pd[i], s))
->  			has_stats = true;
-> -		off += written;
->  	}
->  
-> -	if (has_stats) {
-> -		if (off < size - 1) {
-> -			off += scnprintf(buf+off, size-off, "\n");
-> -			seq_commit(s, off);
-> -		} else {
-> -			seq_commit(s, -1);
-> -		}
-> -	}
-> +	if (has_stats)
-> +		seq_printf(s, "\n");
->  }
->  
->  static int blkcg_print_stat(struct seq_file *sf, void *v)
-> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> index 5fac3757e6e0..89b21a360b2c 100644
-> --- a/block/blk-iocost.c
-> +++ b/block/blk-iocost.c
-> @@ -2988,34 +2988,29 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
->  	kfree(iocg);
->  }
->  
-> -static size_t ioc_pd_stat(struct blkg_policy_data *pd, char *buf, size_t size)
-> +static bool ioc_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
->  {
->  	struct ioc_gq *iocg = pd_to_iocg(pd);
->  	struct ioc *ioc = iocg->ioc;
-> -	size_t pos = 0;
->  
->  	if (!ioc->enabled)
-> -		return 0;
-> +		return false;
->  
->  	if (iocg->level == 0) {
->  		unsigned vp10k = DIV64_U64_ROUND_CLOSEST(
->  			ioc->vtime_base_rate * 10000,
->  			VTIME_PER_USEC);
-> -		pos += scnprintf(buf + pos, size - pos, " cost.vrate=%u.%02u",
-> -				  vp10k / 100, vp10k % 100);
-> +		seq_printf(s, " cost.vrate=%u.%02u", vp10k / 100, vp10k % 100);
->  	}
->  
-> -	pos += scnprintf(buf + pos, size - pos, " cost.usage=%llu",
-> -			 iocg->last_stat.usage_us);
-> +	seq_printf(s, " cost.usage=%llu", iocg->last_stat.usage_us);
->  
->  	if (blkcg_debug_stats)
-> -		pos += scnprintf(buf + pos, size - pos,
-> -				 " cost.wait=%llu cost.indebt=%llu cost.indelay=%llu",
-> -				 iocg->last_stat.wait_us,
-> -				 iocg->last_stat.indebt_us,
-> -				 iocg->last_stat.indelay_us);
-> -
-> -	return pos;
-> +		seq_printf(s, " cost.wait=%llu cost.indebt=%llu cost.indelay=%llu",
-> +			iocg->last_stat.wait_us,
-> +			iocg->last_stat.indebt_us,
-> +			iocg->last_stat.indelay_us);
-> +	return true;
->  }
->  
->  static u64 ioc_weight_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
-> diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-> index d8b0d8bd132b..c0545f9da549 100644
-> --- a/block/blk-iolatency.c
-> +++ b/block/blk-iolatency.c
-> @@ -890,8 +890,7 @@ static int iolatency_print_limit(struct seq_file *sf, void *v)
->  	return 0;
->  }
->  
-> -static size_t iolatency_ssd_stat(struct iolatency_grp *iolat, char *buf,
-> -				 size_t size)
-> +static bool iolatency_ssd_stat(struct iolatency_grp *iolat, struct seq_file *s)
->  {
->  	struct latency_stat stat;
->  	int cpu;
-> @@ -906,39 +905,40 @@ static size_t iolatency_ssd_stat(struct iolatency_grp *iolat, char *buf,
->  	preempt_enable();
->  
->  	if (iolat->rq_depth.max_depth == UINT_MAX)
-> -		return scnprintf(buf, size, " missed=%llu total=%llu depth=max",
-> -				 (unsigned long long)stat.ps.missed,
-> -				 (unsigned long long)stat.ps.total);
-> -	return scnprintf(buf, size, " missed=%llu total=%llu depth=%u",
-> -			 (unsigned long long)stat.ps.missed,
-> -			 (unsigned long long)stat.ps.total,
-> -			 iolat->rq_depth.max_depth);
-> +		seq_printf(s, " missed=%llu total=%llu depth=max",
-> +			(unsigned long long)stat.ps.missed,
-> +			(unsigned long long)stat.ps.total);
-> +	else
-> +		seq_printf(s, " missed=%llu total=%llu depth=%u",
-> +			(unsigned long long)stat.ps.missed,
-> +			(unsigned long long)stat.ps.total,
-> +			iolat->rq_depth.max_depth);
-> +	return true;
->  }
->  
-> -static size_t iolatency_pd_stat(struct blkg_policy_data *pd, char *buf,
-> -				size_t size)
-> +static bool iolatency_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
->  {
->  	struct iolatency_grp *iolat = pd_to_lat(pd);
->  	unsigned long long avg_lat;
->  	unsigned long long cur_win;
->  
->  	if (!blkcg_debug_stats)
-> -		return 0;
-> +		return false;
->  
->  	if (iolat->ssd)
-> -		return iolatency_ssd_stat(iolat, buf, size);
-> +		return iolatency_ssd_stat(iolat, s);
->  
->  	avg_lat = div64_u64(iolat->lat_avg, NSEC_PER_USEC);
->  	cur_win = div64_u64(iolat->cur_win_nsec, NSEC_PER_MSEC);
->  	if (iolat->rq_depth.max_depth == UINT_MAX)
-> -		return scnprintf(buf, size, " depth=max avg_lat=%llu win=%llu",
-> -				 avg_lat, cur_win);
-> -
-> -	return scnprintf(buf, size, " depth=%u avg_lat=%llu win=%llu",
-> -			 iolat->rq_depth.max_depth, avg_lat, cur_win);
-> +		seq_printf(s, " depth=max avg_lat=%llu win=%llu",
-> +			avg_lat, cur_win);
-> +	else
-> +		seq_printf(s, " depth=%u avg_lat=%llu win=%llu",
-> +			iolat->rq_depth.max_depth, avg_lat, cur_win);
-> +	return true;
->  }
->  
-> -
->  static struct blkg_policy_data *iolatency_pd_alloc(gfp_t gfp,
->  						   struct request_queue *q,
->  						   struct blkcg *blkcg)
-> diff --git a/block/mq-deadline-cgroup.c b/block/mq-deadline-cgroup.c
-> index 3b4bfddec39f..b48a4b962f90 100644
-> --- a/block/mq-deadline-cgroup.c
-> +++ b/block/mq-deadline-cgroup.c
-> @@ -52,7 +52,7 @@ struct dd_blkcg *dd_blkcg_from_bio(struct bio *bio)
->  	return dd_blkcg_from_pd(pd);
->  }
->  
-> -static size_t dd_pd_stat(struct blkg_policy_data *pd, char *buf, size_t size)
-> +static bool dd_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
->  {
->  	static const char *const prio_class_name[] = {
->  		[IOPRIO_CLASS_NONE]	= "NONE",
-> @@ -61,12 +61,10 @@ static size_t dd_pd_stat(struct blkg_policy_data *pd, char *buf, size_t size)
->  		[IOPRIO_CLASS_IDLE]	= "IDLE",
->  	};
->  	struct dd_blkcg *blkcg = dd_blkcg_from_pd(pd);
-> -	int res = 0;
->  	u8 prio;
->  
->  	for (prio = 0; prio < ARRAY_SIZE(blkcg->stats->stats); prio++)
-> -		res += scnprintf(buf + res, size - res,
-> -			" [%s] dispatched=%u inserted=%u merged=%u",
-> +		seq_printf(s, " [%s] dispatched=%u inserted=%u merged=%u",
->  			prio_class_name[prio],
->  			ddcg_sum(blkcg, dispatched, prio) +
->  			ddcg_sum(blkcg, merged, prio) -
-> @@ -75,7 +73,7 @@ static size_t dd_pd_stat(struct blkg_policy_data *pd, char *buf, size_t size)
->  			ddcg_sum(blkcg, completed, prio),
->  			ddcg_sum(blkcg, merged, prio));
->  
-> -	return res;
-> +	return true;
->  }
->  
->  static struct blkg_policy_data *dd_pd_alloc(gfp_t gfp, struct request_queue *q,
-> diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-> index 37048438872c..b4de2010fba5 100644
-> --- a/include/linux/blk-cgroup.h
-> +++ b/include/linux/blk-cgroup.h
-> @@ -152,8 +152,8 @@ typedef void (blkcg_pol_online_pd_fn)(struct blkg_policy_data *pd);
->  typedef void (blkcg_pol_offline_pd_fn)(struct blkg_policy_data *pd);
->  typedef void (blkcg_pol_free_pd_fn)(struct blkg_policy_data *pd);
->  typedef void (blkcg_pol_reset_pd_stats_fn)(struct blkg_policy_data *pd);
-> -typedef size_t (blkcg_pol_stat_pd_fn)(struct blkg_policy_data *pd, char *buf,
-> -				      size_t size);
-> +typedef bool (blkcg_pol_stat_pd_fn)(struct blkg_policy_data *pd,
-> +				struct seq_file *s);
->  
->  struct blkcg_policy {
->  	int				plid;
-> -- 
-> 2.30.2
-> 
-> 
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
