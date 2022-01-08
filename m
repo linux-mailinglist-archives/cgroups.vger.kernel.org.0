@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD2B48830D
-	for <lists+cgroups@lfdr.de>; Sat,  8 Jan 2022 11:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3B848830E
+	for <lists+cgroups@lfdr.de>; Sat,  8 Jan 2022 11:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbiAHKex (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 8 Jan 2022 05:34:53 -0500
-Received: from mga05.intel.com ([192.55.52.43]:2551 "EHLO mga05.intel.com"
+        id S233880AbiAHKfx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 8 Jan 2022 05:35:53 -0500
+Received: from mga12.intel.com ([192.55.52.136]:41065 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231232AbiAHKex (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sat, 8 Jan 2022 05:34:53 -0500
+        id S231232AbiAHKfx (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 8 Jan 2022 05:35:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641638092; x=1673174092;
+  t=1641638153; x=1673174153;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=NbjU9Qs/7EkrrA8beOvnY9qn2sv9VzrpAZw+C72mlVg=;
-  b=DjOCsf8uVLfEJn593w+KUFe7bb9eDcsxF7t/HFenwlzFRWD5fdDgzokr
-   CxqjDjGMYdXBVqs+TiLWdpmSxsRKqwzH3NqelMp51ZWFA6T1dshJJY0fp
-   4bdlXV8Wk9D/NSrcUPP3fYAmIy++unUKoo11DnQLUNBGZFDvXPK4AmTDG
-   m7sUNFZ9/oeCZdnOyAJUnoH/xnHHLXEYYYY8OA5E7A43n+eY31kJW7YcU
-   CRvOwCa3/O724akLeae4knlYCJTTFsFCSMgPEvfqRZzU/DeP3qJp+OC1c
-   rDi8+CBHrUa8COEh7qrM/o63Uklu5r6aJ70ZwFu1FjW5Frw40o2Q9YbPh
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10220"; a="329347384"
+  bh=7qsJpxkbFWhSanLCb25u5fZc1kxTj+hIOlKL5i7SRkM=;
+  b=dqCpmtd6nG4CiK40JaGcJcqcswv6RpX6I4z7/jfHoOxapBT7vpu/qVg/
+   1mA5m8PbJeNWMK+uZuRCs+31RsROrZHNTMDbJyfsZeZoDEA8sxIz2M3da
+   pm5eJwXpl/ANPAQ+/mH3aYdZwmgK9EVDi4aI3llQhWvqbKvzVAjUAZdQ/
+   qTSmbkEWiZqZgG8muRcz5zzjcKXX10QHqRLKLyRpn09cTVqGYE6CI2JSP
+   6OKB9PjFZ6Rd77wM3e648iWOwcFMM27gSEEgmI40s3dLskwMbEuozemsv
+   WY/LJK0PnjuL8WQafcS5hJ2hevy/C0Ad+QyJRqzn5GB6bRZueMzIzhGSj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10220"; a="222992000"
 X-IronPort-AV: E=Sophos;i="5.88,272,1635231600"; 
-   d="scan'208";a="329347384"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2022 02:34:52 -0800
+   d="scan'208";a="222992000"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2022 02:35:52 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,272,1635231600"; 
-   d="scan'208";a="764088328"
+   d="scan'208";a="514117998"
 Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 08 Jan 2022 02:34:51 -0800
+  by orsmga007.jf.intel.com with ESMTP; 08 Jan 2022 02:35:51 -0800
 Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1n693i-0000WY-QX; Sat, 08 Jan 2022 10:34:50 +0000
-Date:   Sat, 08 Jan 2022 18:34:40 +0800
+        id 1n694g-0000Wm-SQ; Sat, 08 Jan 2022 10:35:50 +0000
+Date:   Sat, 08 Jan 2022 18:34:48 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 12ab2b5c8a0e7cb0af8e70593b8eb80c3e588986
-Message-ID: <61d968c0.j4X7REPG4O+NXElx%lkp@intel.com>
+Subject: [tj-cgroup:for-5.17] BUILD SUCCESS
+ d4296faebd337e5f76c0fddb815de33d2b0ad118
+Message-ID: <61d968c8.6C6FQwjY23gCV6x0%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,8 +52,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 12ab2b5c8a0e7cb0af8e70593b8eb80c3e588986  Merge branch 'for-5.17' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17
+branch HEAD: d4296faebd337e5f76c0fddb815de33d2b0ad118  cpuset: convert 'allowed' in __cpuset_node_allowed() to be boolean
 
 elapsed time: 728m
 
