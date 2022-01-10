@@ -2,116 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F84E488E08
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jan 2022 02:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB62548935A
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jan 2022 09:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbiAJB2e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 9 Jan 2022 20:28:34 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:30263 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbiAJB2d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 9 Jan 2022 20:28:33 -0500
-Received: from kwepemi500007.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JXGRF3Bj3zbjhR;
-        Mon, 10 Jan 2022 09:27:53 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500007.china.huawei.com (7.221.188.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 10 Jan 2022 09:28:31 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 10 Jan 2022 09:28:30 +0800
-Subject: Re: [PATCH v5 2/2] block: cancel all throttled bios in del_gendisk()
-To:     <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>
-CC:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        <hch@infradead.org>, <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20211210083143.3181535-1-yukuai3@huawei.com>
- <20211210083143.3181535-3-yukuai3@huawei.com>
- <20220107150519.GA26824@blackbody.suse.cz> <YdiuN9kv5OvE/Rtf@slm.duckdns.org>
- <20220107213612.GQ4202@paulmck-ThinkPad-P17-Gen-1>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <9e318511-b33c-37c6-8ffd-75302280246d@huawei.com>
-Date:   Mon, 10 Jan 2022 09:28:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20220107213612.GQ4202@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+        id S240518AbiAJIah (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 10 Jan 2022 03:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240674AbiAJI31 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 10 Jan 2022 03:29:27 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ECDC06173F;
+        Mon, 10 Jan 2022 00:29:26 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id e19so4505494plc.10;
+        Mon, 10 Jan 2022 00:29:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZbHmoJTvhu1ZJHvYjVegih6S2199NdYzTfdyg0if26A=;
+        b=HYBLvzRW8JYt51HdI/oGR7NhCjlv3HKUo+3R8MK/A2QmXDOpfeXDrE4OjEKm9hyr/f
+         z5hX0nD3/ELjvCIWF3aW7LoLRpbBM3CKM9oC0yCAspprbuIglE0aPyjqcHkod9waOtca
+         jACUuUUMU78auMMafwnfGwvnN7p3AZGIQrnJFXjhJgW9a6cjPA5f4TfMTLNcrk6/lSrj
+         dBnOaXvOggkJTMyvlJqd2KtzgMZ/4mtVYVoAjFAQ2Bkc0sZySQB6oQ8/btLK5dPWlvZ/
+         2ywGopmL+wwuf31otpzF9BsUiYay3Gy7Ib/XhmoOHpMu6jaer01guxfqSmTd4wrbNiol
+         Fb3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZbHmoJTvhu1ZJHvYjVegih6S2199NdYzTfdyg0if26A=;
+        b=XJYzNoY+Hll/kDUaiu0k5hpRe02wTjkuHY31ds8cAxjyS1o7xpySXLT7tziRdnPn35
+         8AQAD+je3MyrEWUboKu4hiA7BU8irG5tQ+2ljJYdaCC2cE0p7tM66jQE3YGSMwhKqbSs
+         jd95kCOzVNgLAzTieXoJLCBW26QhhBG9RYsiX5IH2NkuDRF2L0QmFulU4BdOqKUFGNnJ
+         40Dla8b0yTKLSBMboGsYPFcybk7UfCMI9l1EJhE5wuk0v4vC5xt8gF/JwBUi9L7/oCdz
+         PHn/qtierI72qPvTIH+RDtgZOWccANnKxsBwiopM1JcQo7JvBvg3A04EkhzUWVnWq9km
+         2rpw==
+X-Gm-Message-State: AOAM532qaP3BsPLOsiJbPs/eEvpok8iZmEQokB+KNJYhWHU93jnJ8Grw
+        0w0CH5Ri+TlUMNkXvsXYq0c=
+X-Google-Smtp-Source: ABdhPJyU5uW0w9xPoxodl96z0xjfHCXHzkuF3m3FvUNE58KKuxPvBJMw0Qwd4L1dVj5i44JThwNdrw==
+X-Received: by 2002:a17:902:a601:b0:148:adf2:9725 with SMTP id u1-20020a170902a60100b00148adf29725mr74531784plq.136.1641803366161;
+        Mon, 10 Jan 2022 00:29:26 -0800 (PST)
+Received: from VM-0-3-centos.localdomain ([101.32.213.191])
+        by smtp.gmail.com with ESMTPSA id h2sm6223356pfh.55.2022.01.10.00.29.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 10 Jan 2022 00:29:25 -0800 (PST)
+From:   brookxu <brookxu.cn@gmail.com>
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     ming.lei@redhat.com, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] blk-throtl: avoid double charge of bio IOPS due to split
+Date:   Mon, 10 Jan 2022 16:29:23 +0800
+Message-Id: <1641803363-27550-1-git-send-email-brookxu.cn@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/01/08 5:36, Paul E. McKenney 写道:
-> On Fri, Jan 07, 2022 at 11:18:47AM -1000, Tejun Heo wrote:
->> Hello,
->>
->> On Fri, Jan 07, 2022 at 04:05:19PM +0100, Michal Koutný wrote:
->>> On Fri, Dec 10, 2021 at 04:31:43PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
->>>> +	 * queue_lock is held, rcu lock is not needed here.
->>>> +	 */
->>>> +	blkg_for_each_descendant_post(blkg, pos_css, td->queue->root_blkg)
->>>> +		tg_drain_bios(&blkg_to_tg(blkg)->service_queue);
->>>
->>> FTR, I acknowledge this can work due to RCU peculiarities, however, I
->>> don't understand why is it preferred against more robust explict
->>> rcu_read_lock().
->>>
->>> (All in all, this isn't a deal breaker and I'm not confident evaluating
->>> the rest of the patch.)
->>
->> Cc'ing Paul for RCU. Paul, this nit is around whether or not to use
->> rcu_read_lock() in an irq disabled section. I can see both sides of the
->> arguments - it's weird to put in an extra rcu_read_lock() when technically
->> unnecessary but it's also nice to have something explicit and structured to
->> mark parts which require RCU protection. Putting in a comment is okay but
->> consistency is difficult to achieve that way.
->>
->> Maybe all these are unnecessary as lockdep would be able to catch them
->> anyway, or maybe we'd want something to explicitly mark RCU protected
->> sections. I don't know but whichever way, I think we need to establish a
->> convention.
-> 
-> The easiest thing to do is to use rcu_dereference_sched() instead of
-> rcu_dereference().  This will cause lockdep to insist on preemption
-> (for example, interrupts) being disabled.
-> 
-> Or is this a case where a function containing rcu_dereference() is invoked
-> with interrupts disabled from some call sites and under rcu_read_lock()
-> protection from other call sites?  In this case, it is usually best to
-> include that redundant rcu_read_lock() [1].
+From: Chunguang Xu <brookxu@tencent.com>
 
-Hi,
+After commit 900e08075202("block: move queue enter logic into
+blk_mq_submit_bio()"), submit_bio_checks() moved to __submit_bio_fops()
+and blk_mq_submit_bio(). The IOs go through blk_mq_submit_bio()
+may be splited before entering blk-throtl, so we need to check
+whether the BIO is throttled, and only update the io_split_cnt
+for the THROTTLED bio to avoid double charge.
 
-This is the later case, so I guess I'll include that redundant
-rcu_read_lock().
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ block/blk-throttle.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks,
-Kuai
-> 
-> 							Thanx, Paul
-> 
-> [1]	If you are a glutton for punishment, or if you would otherwise
-> 	have to add a cubic goatskin of rcu_read_lock() calls, you
-> 	could instead write this priceless gem in place of the calls to
-> 	rcu_dereference() in that common function:
-> 
-> 	p = rcu_dereference_check(ptr, rcu_read_lock_sched_held());
-> 
-> 	This would cause lockdep to be happy with either rcu_read_lock()
-> 	or preemption being disabled.
-> 
-> 	This is more precise, and would be preferable in some cases,
-> 	for example, if there were lots of hotpath callsites with
-> 	interrupts disabled.  "Do we add 25 pairs of rcu_read_lock()
-> 	and rcu_read_unlock()?	Or do we add just the one ugly
-> 	rcu_dereference_check()?"
-> .
-> 
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 39bb6e6..2b12fc7 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2049,6 +2049,9 @@ void blk_throtl_charge_bio_split(struct bio *bio)
+ 	struct throtl_service_queue *parent_sq;
+ 	bool rw = bio_data_dir(bio);
+ 
++	if (!bio_flagged(bio, BIO_THROTTLED))
++		return;
++
+ 	do {
+ 		if (!parent->has_rules[rw])
+ 			break;
+-- 
+1.8.3.1
+
