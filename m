@@ -2,63 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0AD48BB86
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 00:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C01A48BB8F
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 00:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbiAKXif (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jan 2022 18:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S245396AbiAKXwP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jan 2022 18:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243729AbiAKXic (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 18:38:32 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAA6C061748
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:38:32 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id m6so1483691ybc.9
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:38:32 -0800 (PST)
+        with ESMTP id S233696AbiAKXwP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 18:52:15 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64F6C06173F
+        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:52:14 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id h14so1515475ybe.12
+        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:52:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=95SGhqOm0RccSxJd03GJ+P09jT1muY8YMjYut8pvtqA=;
-        b=oh8SsVjgy0iZTdFo6YzyNVUqT1q/qdQHbxYWVkHGO7CG64yrC1aFcOfJBL7xrSAlY+
-         RVtvIjA/p2bWEp6apmi/M0sDnT83FLIUvq78MpV8sZy9vtQVY5tqeJrpJDEedtQvx9OZ
-         MPw4nuikifUlivgQBD+7FjtvuZo7nc2CwEX8orNj2/Slu0GJ9e+69x01Jxsz2wlPaobq
-         U/dF8X2zhedHCjjLSMl/qZhQ3HFa55fhGCf8qofKVe0BQLTWNijS9GIv/O/GHgBhOrHJ
-         SgzyS93ujsrXUWxfD97cq7se0IRa35hwt980hfCuYJyr39pl1Jc8wlvTcVIIk5iE4kLR
-         eGCg==
+        bh=9wKkvOi6CL+CUKSws0OOxycjJbGOa3ISqmAvlKnxPaQ=;
+        b=WkGpcHKLJcXLClorQAecOFn9CNhS+bceFQ6mofBVna5AihqCPnuTRKd8T6lxX8NGx+
+         y9xr8KBnuX7ZQWwJ5bMx3duvt9LbVXxHmhKuodJ3ZTMCgS4Rwq+hYYXUd/Fpw7453nYg
+         qP5nSrkC7uPNjA/WMjZN1jxKQ/MejUGNUYgvtMvnCwBEI/8SjF0wLC/v4dqXuywNitA0
+         7PMsCuQ23uU9ZuNugxM4t/2r8p5zdFeHUzw6f+sDX9vE7shIFBZbGS0tmy4XI6dFrbla
+         HELillMj0V4a/2GYP9c3pupA/g94QCl3RwlNIWYwRNFhsAAZAPlLbWYeHjhMTTGCOqnq
+         BKkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=95SGhqOm0RccSxJd03GJ+P09jT1muY8YMjYut8pvtqA=;
-        b=SovZ5uk6drKyZ4H7WjD7ezxpBlK137GNTbZO2IUiXMdEjFWwbpa2qaGUBNsurHhXPY
-         vEDI0n50Oe8iRcOJabgi4Uuk9Hcmb9QDwfSj/L9DCHIE52cxkyjMlJi2fVjN6d28OREd
-         l3you1/oLng9HWyzZFhTxc1FHsKXKiU0iX7i4W284KVz0O2xo1KQp9AiSqzX9FCUacOv
-         U54HN9lyz7aOkK2aO6r3kFoJa52+YBEZYx7yBfc5bX7EFS74k2aVdI0u5f3yZgI1F5ab
-         j4VHj9pQRDQaRQw7+c52mQAjprGjGtqA6eUw05xxXFAzfHxlcb7lQ4Sr3TLQn+VBaCgr
-         wEiw==
-X-Gm-Message-State: AOAM532XQhyuFdgRqvko0G702k3J7ZTDPwZdPQetAXLga9XeIP/wYJ58
-        SIOhamgqhJf7cunrcfBfV27sgXh9IWw5I9iW0HLW7w==
-X-Google-Smtp-Source: ABdhPJymtneO7XZ322JsP6ScH1vz+nxafPzDb/8P3vFGru+YCwIQAx2X7BIG31eVsRLKMY8+ovsKJfxSCiVJ37kJwjg=
-X-Received: by 2002:a25:fc27:: with SMTP id v39mr10217685ybd.9.1641944311344;
- Tue, 11 Jan 2022 15:38:31 -0800 (PST)
+        bh=9wKkvOi6CL+CUKSws0OOxycjJbGOa3ISqmAvlKnxPaQ=;
+        b=MuOuo1Qwvt/IegFi3Cv8KsmZHZZgCemdbFGH4EqlTNoLQjF/x5FSqQ2o58O7rvjY/A
+         6CeGZWqkGvEVOMQybUk5FlAqPFBr+uvIl29YLaroQVCCyx0nRe7Ubnyiv5FYPtNq/9ji
+         GaWU5VZlmspNyqfvB/eoNN6szBaJUu6/gBmbupgsDZie5KvCHaDryryXschfoPqkYuxn
+         JoTaPrWyElFoBrEGM7aI+s+ZgtcBydXq8nmMj13jcY8YPUGr7vdZtbOuCUmDIsUD7kod
+         xwzMLDudKDmjRWItD+lthCj5UUA2uG/oP6qAIXzEtXC07zz2WlEkJaOQMoghHusaWz4v
+         94Fw==
+X-Gm-Message-State: AOAM530T4NTjxq1rg/nSvdwx/NxzNqG9zYhSvaPSzPQTW+OeLKLWqXBQ
+        ZqkxFBYmUgrnOjegOL3lGSvj2WzZA5OmNT8nLFNlFg==
+X-Google-Smtp-Source: ABdhPJzDlxPB3uXYSLQwUwwUmkRZF91fpJVstFmxZ9CGHtzcqSLt0zalZaAMmtMF1ETT+psG4e1+UnBjKJFKQhStNPU=
+X-Received: by 2002:a25:9787:: with SMTP id i7mr2670803ybo.192.1641945133363;
+ Tue, 11 Jan 2022 15:52:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20220107234138.1765668-1-joshdon@google.com> <Yd189wHB2LJcK1Pv@hirez.programming.kicks-ass.net>
-In-Reply-To: <Yd189wHB2LJcK1Pv@hirez.programming.kicks-ass.net>
+References: <1641894961-9241-1-git-send-email-CruzZhao@linux.alibaba.com> <1641894961-9241-2-git-send-email-CruzZhao@linux.alibaba.com>
+In-Reply-To: <1641894961-9241-2-git-send-email-CruzZhao@linux.alibaba.com>
 From:   Josh Don <joshdon@google.com>
-Date:   Tue, 11 Jan 2022 15:38:20 -0800
-Message-ID: <CABk29NuGs_9uxgbv678W=BGGinZNiUHO5T57FHGbOG+HP-FT2g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cgroup: add cpu.stat_percpu
-To:     Peter Zijlstra <peterz@infradead.org>
+Date:   Tue, 11 Jan 2022 15:52:02 -0800
+Message-ID: <CABk29NuX1XYUXj8uZrSjm83n=-uk1LUbRQSMpo2s6er2pTRmDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] sched/core: Accounting forceidle time for all
+ tasks except idle task
+To:     Cruz Zhao <CruzZhao@linux.alibaba.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         cgroups@vger.kernel.org,
         linux-kernel <linux-kernel@vger.kernel.org>
@@ -67,49 +70,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 4:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Jan 11, 2022 at 1:56 AM Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
 >
-> On Fri, Jan 07, 2022 at 03:41:37PM -0800, Josh Don wrote:
+> There are two types of forced idle time: forced idle time from cookie'd
+> task and forced idle time form uncookie'd task. The forced idle time from
+> uncookie'd task is actually caused by the cookie'd task in runqueue
+> indirectly, and it's more accurate to measure the capacity loss with the
+> sum of both.
 >
-> > +     seq_puts(seq, "usage_usec");
-> > +     for_each_possible_cpu(cpu) {
-> > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
-> > +             val = cached_bstat->cputime.sum_exec_runtime;
-> > +             do_div(val, NSEC_PER_USEC);
-> > +             seq_printf(seq, " %llu", val);
-> > +     }
-> > +     seq_puts(seq, "\n");
-> > +
-> > +     seq_puts(seq, "user_usec");
-> > +     for_each_possible_cpu(cpu) {
-> > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
-> > +             val = cached_bstat->cputime.utime;
-> > +             do_div(val, NSEC_PER_USEC);
-> > +             seq_printf(seq, " %llu", val);
-> > +     }
-> > +     seq_puts(seq, "\n");
-> > +
-> > +     seq_puts(seq, "system_usec");
-> > +     for_each_possible_cpu(cpu) {
-> > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
-> > +             val = cached_bstat->cputime.stime;
-> > +             do_div(val, NSEC_PER_USEC);
-> > +             seq_printf(seq, " %llu", val);
-> > +     }
-> > +     seq_puts(seq, "\n");
+> Assuming cpu x and cpu y are a pair of SMT siblings, consider the
+> following scenarios:
+>   1.There's a cookie'd task running on cpu x, and there're 4 uncookie'd
+>     tasks running on cpu y. For cpu x, there will be 80% forced idle time
+>     (from uncookie'd task); for cpu y, there will be 20% forced idle time
+>     (from cookie'd task).
+>   2.There's a uncookie'd task running on cpu x, and there're 4 cookie'd
+>     tasks running on cpu y. For cpu x, there will be 80% forced idle time
+>     (from cookie'd task); for cpu y, there will be 20% forced idle time
+>     (from uncookie'd task).
 >
-> This is an anti-pattern; given enough CPUs (easy) this will trivially
-> overflow the 1 page seq buffer.
+> The scenario1 can recurrent by stress-ng(scenario2 can recurrent similary):
+>     (cookie'd)taskset -c x stress-ng -c 1 -l 100
+>     (uncookie'd)taskset -c y stress-ng -c 4 -l 100
 >
-> People are already struggling to fix existing ABI, lets not make the
-> problem worse.
+> In the above two scenarios, the total capacity loss is 1 cpu, but in
+> scenario1, the cookie'd forced idle time tells us 20% cpu capacity loss, in
+> scenario2, the cookie'd forced idle time tells us 80% cpu capacity loss,
+> which are not accurate. It'll be more accurate to measure with cookie'd
+> forced idle time and uncookie'd forced idle time.
+>
+> Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
+> ---
 
-Is the concern there just the extra overhead from making multiple
-trips into this handler and re-allocating the buffer until it is large
-enough to take all the output? In that case, we could pre-allocate
-with a size of the right order of magnitude, similar to /proc/stat.
+Thanks,
 
-Lack of per-cpu stats is a gap between cgroup v1 and v2, for which v2
-can easily support this interface given that it already tracks the
-stats percpu internally. I opted to dump them all in a single file
-here, to match the consolidation that occurred from cpuacct->cpu.stat.
+Reviewed-by: Josh Don <joshdon@google.com>
