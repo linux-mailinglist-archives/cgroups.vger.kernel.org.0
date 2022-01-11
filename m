@@ -2,65 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A6148B775
-	for <lists+cgroups@lfdr.de>; Tue, 11 Jan 2022 20:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC8D48B77B
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jan 2022 20:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237110AbiAKTka (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jan 2022 14:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        id S237172AbiAKTle (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jan 2022 14:41:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236898AbiAKTk3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 14:40:29 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620B2C06173F
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 11:40:28 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id o15so250209lfo.11
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 11:40:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=72nCaH0D5cVWOpCSRc18GR2eFwD5HF2lWhLZ438H8+E=;
-        b=IbI2Ue6xwevdXzForB3sPC7JLpGCLW4aJaiaqGPQM519ZpN4Iw53D7dK6TEvItwJQM
-         lU0w7yPNWbufVbo7aTy0WNF/06ot4HROv5RcW7EH+B/47POEIinAhzsJIzijm2pqH0rA
-         32W/JrQJcTgkaHK2M1qJ6iERelYscbkX2JYhs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=72nCaH0D5cVWOpCSRc18GR2eFwD5HF2lWhLZ438H8+E=;
-        b=3YbI+Kjv9Wm/kLyJ7ulrTTXx2VoR1Zy4jopFLK0YgesBrLM6CoNvFNmABZPGLnAR8r
-         wYGL2TDkrzsrckDV2ei+hugRezq7qxSyF4v0couy/qrEltuHVv7fpB4fHb3HSykYUAov
-         HhwUNpLY1Z7JLAuK7MINAB/KVLs+9qz95zSG2KcIa25kZIde7LFdxCHjFRozP4XHEoWy
-         X1j12GS3aEbEu1zM742MSONkIT5KuUFssJZzk8ZeCwUGWxiAtO9++xmgxYJBaQUNxWD5
-         Bxg4GPnPFJGnkVEOgNGwyI/xYOJK7/zYMip44BdvPT2KbaClX+S9kC8VNcAQJMxr+VEA
-         9XSQ==
-X-Gm-Message-State: AOAM532si+YsnDmtGgZ+zFtCi3m03CQeIfvPASMcqpb6RZLpVdd9d8Jn
-        Zwa+bwXQMI/Lbzs3U6iXMuXKoeaOflHBTEE1oIk=
-X-Google-Smtp-Source: ABdhPJwxkwb8IKb4BOkjGitjXWcwOk23/V4mKvvYxuvjVio1TWUFyOBl+JNmFJm42LcZgvzil75mBQ==
-X-Received: by 2002:a05:6512:2039:: with SMTP id s25mr4449172lfs.41.1641930026506;
-        Tue, 11 Jan 2022 11:40:26 -0800 (PST)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id y7sm1429605lfb.272.2022.01.11.11.40.26
-        for <cgroups@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 11 Jan 2022 11:40:26 -0800 (PST)
-Received: by mail-lf1-f53.google.com with SMTP id d3so215204lfv.13
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 11:40:26 -0800 (PST)
-X-Received: by 2002:adf:c74e:: with SMTP id b14mr5117431wrh.97.1641929709117;
- Tue, 11 Jan 2022 11:35:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20220111071212.1210124-1-surenb@google.com> <Yd3RClhoz24rrU04@sol.localdomain>
- <CAHk-=wgwb6pJjvHYmOMT-yp5RYvw0pbv810Wcxdm5S7dWc-s0g@mail.gmail.com> <CAJuCfpE3feNU=36qRUdCJsk41rxQBv1gRYy5R1dB1djMd0NLjg@mail.gmail.com>
-In-Reply-To: <CAJuCfpE3feNU=36qRUdCJsk41rxQBv1gRYy5R1dB1djMd0NLjg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 11 Jan 2022 11:34:53 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj9-9mFcoaD3rdHd+HKYpyTXkkE2iJkPoTTCrp-+sD=ew@mail.gmail.com>
-Message-ID: <CAHk-=wj9-9mFcoaD3rdHd+HKYpyTXkkE2iJkPoTTCrp-+sD=ew@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] psi: Fix uaf issue when psi trigger is destroyed
- while being polled
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
+        with ESMTP id S237090AbiAKTlb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 14:41:31 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECCEC06173F;
+        Tue, 11 Jan 2022 11:41:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4FBABB81CB6;
+        Tue, 11 Jan 2022 19:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50798C36AE3;
+        Tue, 11 Jan 2022 19:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641930089;
+        bh=jYNHzG1wbaAIyjZ88RuWPwTqUfCGhaT6PoqY/x5NTrA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bZZke3cGP9qy6WgGCyY08pzem55ryUbgJmk9aZD8S8+kQu7J4Rl1tFen2RRoSBK/o
+         tU5b2w4Du6X5IakR895ZclgnQH5Q/QMn/EX3hHm7e2MnB+GJ1DVvgNfqLVW7wX7gi1
+         dwEV6C7KZxpcF0+hadCOauvl2vAuyAnHtgnddnlYqIKP8be+R56e8cLVtIIYbU8ovq
+         r9mAY4hX2j3Z5DMOkYw+nAGdJ0qUUwqCkR6y/XgY1NyhLzWwC6iH9aKgLMlRy3R7NP
+         KvfgqLQ9x5OK3wNNsIvnmsgRkS1mlnPgKX08lZ4wRKpY4CUjJSSL8sevoe1Eoc9Il0
+         Pb+X3dZ97KLAg==
+Date:   Tue, 11 Jan 2022 11:41:26 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,19 +52,97 @@ Cc:     Eric Biggers <ebiggers@kernel.org>,
         stable <stable@vger.kernel.org>,
         Android Kernel Team <kernel-team@android.com>,
         syzbot <syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 1/1] psi: Fix uaf issue when psi trigger is destroyed
+ while being polled
+Message-ID: <Yd3dZklleDnJCQ46@gmail.com>
+References: <20220111071212.1210124-1-surenb@google.com>
+ <Yd3RClhoz24rrU04@sol.localdomain>
+ <CAHk-=wgwb6pJjvHYmOMT-yp5RYvw0pbv810Wcxdm5S7dWc-s0g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgwb6pJjvHYmOMT-yp5RYvw0pbv810Wcxdm5S7dWc-s0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 11:27 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> Thanks for the explanation!
-> So, it sounds like the best (semantically correct) option I have here
-> is smp_store_release() to set the pointer, and then smp_load_acquire()
-> to read it. Is my understanding correct?
+On Tue, Jan 11, 2022 at 11:11:32AM -0800, Linus Torvalds wrote:
+> On Tue, Jan 11, 2022 at 10:48 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> >
+> > The write here needs to use smp_store_release(), since it is paired with the
+> > concurrent READ_ONCE() in psi_trigger_poll().
+> 
+> A smp_store_release() doesn't make sense pairing with a READ_ONCE().
+> 
+> Any memory ordering that the smp_store_release() does on the writing
+> side is entirely irrelevant, since the READ_ONCE() doesn't imply any
+> ordering on the reading side. Ordering one but not the other is
+> nonsensical.
+> 
+> So the proper pattern is to use a WRITE_ONCE() to pair with a
+> READ_ONCE() (when you don't care about memory ordering, or you handle
+> it explicitly), or a smp_load_acquire() with a smp_store_release() (in
+> which case writes before the smp_store_release() on the writing side
+> will be ordered wrt accesses after smp_load_acquire() on the reading
+> side).
+> 
+> Of course, in practice, for pointers, the whole "dereference off a
+> pointer" on the read side *does* imply a barrier in all relevant
+> situations. So yes, a smp_store_release() -> READ_ONCE() does work in
+> practice, although it's technically wrong (in particular, it's wrong
+> on alpha, because of the completely broken memory ordering that alpha
+> has that doesn't even honor data dependencies as read-side orderings)
+> 
+> But in this case, I do think that since there's some setup involved
+> with the trigger pointer, the proper serialization is to use
+> smp_store_release() to set the pointer, and then smp_load_acquire() on
+> the reading side.
+> 
+> Or just use the RCU primitives - they are even better optimized, and
+> handle exactly that case, and can be more efficient on some
+> architectures if release->acquire isn't already cheap.
+> 
+> That said, we've pretty much always accepted that normal word writes
+> are not going to tear, so we *have* also accepted just
+> 
+>  - do any normal store of a value on the write side
+> 
+>  - do a READ_ONCE() on the reading side
+> 
+> where the reading side doesn't actually care *what* value it gets, it
+> only cares that the value it gets is *stable* (ie no compiler reloads
+> that might show up as two different values on the reading side).
+> 
+> Of course, that has the same issue as WRITE_ONCE/READ_ONCE - you need
+> to worry about memory ordering separately.
+> 
+> > > +     seq->private = new;
+> >
+> > Likewise here.
+> 
+> Yeah, same deal, except here you can't even use the RCU ones, because
+> 'seq->private' isn't annotated for RCU.
+> 
+> Or you'd do the casting, of course.
+> 
 
-Yeah, that's the clearest one from a memory ordering standpoint, and
-is generally also cheap.
+This is yet another case of "one time init".  There have been long discussions
+on this topic before:
+* https://lore.kernel.org/linux-fsdevel/20200713033330.205104-1-ebiggers@kernel.org/T/#u
+* https://lore.kernel.org/lkml/20200916233042.51634-1-ebiggers@kernel.org/T/#u
+* https://lwn.net/Articles/827180/
 
-                Linus
+I even attempted to document the best practices:
+* https://lore.kernel.org/linux-fsdevel/20200717044427.68747-1-ebiggers@kernel.org/T/#u
+
+However, no one could agree on whether READ_ONCE() or smp_load_acquire() should
+be used.  smp_load_acquire() is always correct, so it remains my preference.
+However, READ_ONCE() is correct in some cases, and some people (including the
+primary LKMM maintainer) insist that it be used in all such cases, as well as in
+rcu_dereference() even though this places difficult-to-understand constraints on
+how rcu_dereference() can be used.
+
+My preference is that smp_load_acquire() be used.  But be aware that this risks
+the READ_ONCE() people coming out of the woodwork and arguing for READ_ONCE().
+
+- Eric
