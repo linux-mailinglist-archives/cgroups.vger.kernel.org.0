@@ -2,218 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6119448A963
-	for <lists+cgroups@lfdr.de>; Tue, 11 Jan 2022 09:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B8B48A9B2
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jan 2022 09:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbiAKIcD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jan 2022 03:32:03 -0500
-Received: from proxmox-new.maurer-it.com ([94.136.29.106]:58199 "EHLO
-        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346437AbiAKIcC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 03:32:02 -0500
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 6CED0455EE;
-        Tue, 11 Jan 2022 09:32:01 +0100 (CET)
-From:   Wolfgang Bumiller <w.bumiller@proxmox.com>
-To:     linux-block@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Tejun Heo <tj@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: [PATCH v3] blk-cgroup: always terminate io.stat lines
-Date:   Tue, 11 Jan 2022 09:31:59 +0100
-Message-Id: <20220111083159.42340-1-w.bumiller@proxmox.com>
-X-Mailer: git-send-email 2.30.2
+        id S236498AbiAKIkX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jan 2022 03:40:23 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:38060 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234862AbiAKIkW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 03:40:22 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D04351F3B8;
+        Tue, 11 Jan 2022 08:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1641890421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VIUY6eShIdRTWSX2SPQ97aOdwxxv1/dSNJBcmaqEh1k=;
+        b=F6OQn/8ghbFt5kDOe4MDHdFUUUJKANC6GwmV1NZ9rs/hfuit0S6arCMN+IIbKkNilDqykQ
+        VkFrl8zKQmi6G2ugEIf9Sggw6KPJC4bGGTrmbqFIEkWlWZYdXeQjIsHCKgy7+6daHk8aJx
+        bxjWj2srPDWFaegvbV1yxKE1P9cKT9E=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 52F29A3B88;
+        Tue, 11 Jan 2022 08:40:21 +0000 (UTC)
+Date:   Tue, 11 Jan 2022 09:40:20 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        vbabka@suse.cz, willy@infradead.org, songmuchun@bytedance.com,
+        shy828301@gmail.com, surenb@google.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/4] mm/memcg: use NUMA_NO_NODE to indicate allocation
+ from unspecified node
+Message-ID: <Yd1CdJA5NelzoK1D@dhcp22.suse.cz>
+References: <20220111010302.8864-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220111010302.8864-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-With the removal of seq_get_buf in blkcg_print_one_stat, we
-cannot make adding the newline conditional on there being
-relevant stats because the name was already written out
-unconditionally.
-Otherwise we may end up with multiple device names in one
-line which is confusing and doesn't follow the nested-keyed
-file format.
+On Tue 11-01-22 01:02:59, Wei Yang wrote:
+> Instead of use "-1", let's use NUMA_NO_NODE for consistency.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-Signed-off-by: Wolfgang Bumiller <w.bumiller@proxmox.com>
-Fixes: 252c651a4c85 ("blk-cgroup: stop using seq_get_buf")
----
-Changes to v2:
-* Fix `iolatency_ssd_stat` return type bool -> void
-  I was building with CONFIG_BLK_CGROUP_IOLATENCY=n, thankfully the
-  kernel test robot noticed it.
+I am not really sure this is worth it. After the merge window I plan to
+post http://lkml.kernel.org/r/20211214100732.26335-1-mhocko@kernel.org.
+With that in place we can drop the check and a node rewrite so the net
+result will be a less and more straightforward code. If you agree I can
+add this with your s-o-b into my series:
 
-Link to v2: https://lore.kernel.org/all/20220110153457.5894-1-w.bumiller@proxmox.com/
-Link to v1: https://lore.kernel.org/all/20220110103724.11743-1-w.bumiller@proxmox.com/
-
-Changes in v2:
-* Address the warning about `has_stats` being unused now (sorry about
-  that, built it as part of a package and missed that looked too trivial...)
-* `pd_stat_fn` now returns `void`
-
-Original v1 note:
-
-I also switched to `seq_puts` as suggested by `checkpatch.pl`
-
-This seemed like the simplest approach, so I thought I'd
-send a patch.
-
-On my physical machine, creating a new thin lv and starting
-a container on it created lines such as
-
-    253:10 253:5 rbytes=0 wbytes=0 rios=0 wios=1 dbytes=0 dios=0
-    ^~~~~~ ^~~~~
-
-This *looks* like the devices might just happen to have the
-same stats, but that's not the case (and doesn't follow the
-documented format).
-
-With this patch this becomes:
-
-    253:10
-    253:5 rbytes=0 wbytes=0 rios=0 wios=1 dbytes=0 dios=0
-
-Let me know if you prefer a different solution. I'm not sure
-a temporary buffer that can be discarded would be much
-better than the previous seq_get_buf() version. Otherwise
-we'd need to change the `pd_stat_fn` interface to collect
-the data separately and do the formatting afterwards I
-suppose?
-
-
- block/blk-cgroup.c         | 9 ++-------
- block/blk-iocost.c         | 5 ++---
- block/blk-iolatency.c      | 8 +++-----
- include/linux/blk-cgroup.h | 2 +-
- 4 files changed, 8 insertions(+), 16 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 663aabfeba18..48e98c31a3d6 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -888,7 +888,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 781605e92015..ed19a21ee14e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5044,18 +5044,8 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
  {
- 	struct blkg_iostat_set *bis = &blkg->iostat;
- 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
--	bool has_stats = false;
- 	const char *dname;
- 	unsigned seq;
- 	int i;
-@@ -914,14 +913,12 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 	} while (u64_stats_fetch_retry(&bis->sync, seq));
+ 	struct mem_cgroup_per_node *pn;
+-	int tmp = node;
+-	/*
+-	 * This routine is called against possible nodes.
+-	 * But it's BUG to call kmalloc() against offline node.
+-	 *
+-	 * TODO: this routine can waste much memory for nodes which will
+-	 *       never be onlined. It's better to use memory hotplug callback
+-	 *       function.
+-	 */
+-	if (!node_state(node, N_NORMAL_MEMORY))
+-		tmp = -1;
+-	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, tmp);
++
++	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, node);
+ 	if (!pn)
+ 		return 1;
  
- 	if (rbytes || wbytes || rios || wios) {
--		has_stats = true;
- 		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
- 			rbytes, wbytes, rios, wios,
- 			dbytes, dios);
- 	}
- 
- 	if (blkcg_debug_stats && atomic_read(&blkg->use_delay)) {
--		has_stats = true;
- 		seq_printf(s, " use_delay=%d delay_nsec=%llu",
- 			atomic_read(&blkg->use_delay),
- 			atomic64_read(&blkg->delay_nsec));
-@@ -933,12 +930,10 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 		if (!blkg->pd[i] || !pol->pd_stat_fn)
- 			continue;
- 
--		if (pol->pd_stat_fn(blkg->pd[i], s))
--			has_stats = true;
-+		pol->pd_stat_fn(blkg->pd[i], s);
- 	}
- 
--	if (has_stats)
--		seq_printf(s, "\n");
-+	seq_puts(s, "\n");
- }
- 
- static int blkcg_print_stat(struct seq_file *sf, void *v)
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 769b64394298..b4f1b7c1a965 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2995,13 +2995,13 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
- 	kfree(iocg);
- }
- 
--static bool ioc_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
-+static void ioc_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
- {
- 	struct ioc_gq *iocg = pd_to_iocg(pd);
- 	struct ioc *ioc = iocg->ioc;
- 
- 	if (!ioc->enabled)
--		return false;
-+		return;
- 
- 	if (iocg->level == 0) {
- 		unsigned vp10k = DIV64_U64_ROUND_CLOSEST(
-@@ -3017,7 +3017,6 @@ static bool ioc_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
- 			iocg->last_stat.wait_us,
- 			iocg->last_stat.indebt_us,
- 			iocg->last_stat.indelay_us);
--	return true;
- }
- 
- static u64 ioc_weight_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index 6593c7123b97..2a0e0f34a1e1 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -891,7 +891,7 @@ static int iolatency_print_limit(struct seq_file *sf, void *v)
- 	return 0;
- }
- 
--static bool iolatency_ssd_stat(struct iolatency_grp *iolat, struct seq_file *s)
-+static void iolatency_ssd_stat(struct iolatency_grp *iolat, struct seq_file *s)
- {
- 	struct latency_stat stat;
- 	int cpu;
-@@ -914,17 +914,16 @@ static bool iolatency_ssd_stat(struct iolatency_grp *iolat, struct seq_file *s)
- 			(unsigned long long)stat.ps.missed,
- 			(unsigned long long)stat.ps.total,
- 			iolat->rq_depth.max_depth);
--	return true;
- }
- 
--static bool iolatency_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
-+static void iolatency_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
- {
- 	struct iolatency_grp *iolat = pd_to_lat(pd);
- 	unsigned long long avg_lat;
- 	unsigned long long cur_win;
- 
- 	if (!blkcg_debug_stats)
--		return false;
-+		return;
- 
- 	if (iolat->ssd)
- 		return iolatency_ssd_stat(iolat, s);
-@@ -937,7 +936,6 @@ static bool iolatency_pd_stat(struct blkg_policy_data *pd, struct seq_file *s)
- 	else
- 		seq_printf(s, " depth=%u avg_lat=%llu win=%llu",
- 			iolat->rq_depth.max_depth, avg_lat, cur_win);
--	return true;
- }
- 
- static struct blkg_policy_data *iolatency_pd_alloc(gfp_t gfp,
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index b4de2010fba5..132e05ed6935 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -152,7 +152,7 @@ typedef void (blkcg_pol_online_pd_fn)(struct blkg_policy_data *pd);
- typedef void (blkcg_pol_offline_pd_fn)(struct blkg_policy_data *pd);
- typedef void (blkcg_pol_free_pd_fn)(struct blkg_policy_data *pd);
- typedef void (blkcg_pol_reset_pd_stats_fn)(struct blkg_policy_data *pd);
--typedef bool (blkcg_pol_stat_pd_fn)(struct blkg_policy_data *pd,
-+typedef void (blkcg_pol_stat_pd_fn)(struct blkg_policy_data *pd,
- 				struct seq_file *s);
- 
- struct blkcg_policy {
 -- 
-2.30.2
-
-
+Michal Hocko
+SUSE Labs
