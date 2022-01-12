@@ -2,102 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7942048C766
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 16:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600DE48CA07
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 18:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354708AbiALPkj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jan 2022 10:40:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53712 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354739AbiALPkh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 10:40:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642002036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gJmHbv9SCbjdwt82aanZM10+dOvSdHukj6nnuz8zRSw=;
-        b=Otx7kFuf6KKIGrYWvzjSkWIjeqz6E1Q+cMTZR/nBCVmiyZVXjatnUv1GPwOEY/8jT476fO
-        uP5xVwUqeqIILpwLwuf/O4Tm2q+D9tK5YkwVJ3Z6MSaYdIX4qgy1urmKagVi9dQHRAY40G
-        jCnsIC+te68oGIHPSLhuVTiByv1noVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-259-2_ciwF2DNHmPaaptMl4MsQ-1; Wed, 12 Jan 2022 10:40:34 -0500
-X-MC-Unique: 2_ciwF2DNHmPaaptMl4MsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA38710168C0;
-        Wed, 12 Jan 2022 15:40:31 +0000 (UTC)
-Received: from [10.22.10.195] (unknown [10.22.10.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3420E87942;
-        Wed, 12 Jan 2022 15:40:02 +0000 (UTC)
-Message-ID: <0cf37ac0-69c7-2da4-22a6-58e78dc35cef@redhat.com>
-Date:   Wed, 12 Jan 2022 10:40:01 -0500
+        id S244302AbiALRn7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jan 2022 12:43:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243483AbiALRn4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 12:43:56 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D13C061751
+        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 09:43:56 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id t24so3967071qkg.11
+        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 09:43:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eP5J8KdvwPTzx2Kh8QKLifNfox7/NjpkOpmG9av6VCk=;
+        b=KOnNi/erjJKDmXshSZZv7C3gKcJm3IwJxMouUmE8kJwjg35FNi2J3VpRJJE/XQaq+f
+         ouYLgnZDFAaNV/dqxDZDk6O3Fv6kndvxJTf9AH6O4akiYKs9CyjyX3pWSP26jU17VEXI
+         6ErUlQZ3+TUb2xsmk1ccCDw9ox3MzN4DbY+Gik5rJVQOkCfjDDk7H1g7Yf66gTgdMZ0B
+         xX7ItBjgp1QlQISrAdgTibHYblom3PdgqvpX8tr+VOTUf+X4TBASg+486PvrMw4KlZD7
+         CYY5L51LKMZK8LUaHHFZsldW3arkrea20wfWQ0cJ5wMJObXD8DPKu+feJ+i17rNp84mq
+         Jraw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eP5J8KdvwPTzx2Kh8QKLifNfox7/NjpkOpmG9av6VCk=;
+        b=R2GwbFeNRqdakU6+Ev+e6K7K2wpKHe61uOZ4Onpx/xTCqPeLzUUyQBmAd1VaBO9qPe
+         8oHnCl6vss+56Xc6/Y5w7WqsuM9EWW1p3fYbjD3vUlpgq0vZKRh7e3RsngNnHAWxNBOW
+         bfg8w7cQs4+O7j/bIdRXicH077ThMsdMMldZbkIvJZ14L22ifQSjwaR068xMrqvLEV1S
+         /9OsSSA8omVmxYnXu1kab5747CbXYfXHr8iWZkZXv+dOU9Spx9bfcJASw7YjuTHRH66U
+         K43rh831lp8sJRFM5fsZ2J/VsWrJn4MdZvGbjF79oqaaLqS4/cZg0xoQe8xheMxp1kpM
+         Elxw==
+X-Gm-Message-State: AOAM531SsIrxw8yOuzB9JOmdiFI7kzkpQy9rTo21WBY6FsreCM1FZGDk
+        vCkNUO0LZeLhqW0wfw24/LtBtrV1wn/J23EJw4d3KQ==
+X-Google-Smtp-Source: ABdhPJxLWwmyro/LoBJqQDlBZtRxFKL0M6eFBNtTxql56a0+Bl0VWjyjB5YOXPDVFGgaUWS7krAoLWZb5Bhs1xjIjtM=
+X-Received: by 2002:a05:6902:703:: with SMTP id k3mr987928ybt.225.1642009434832;
+ Wed, 12 Jan 2022 09:43:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v9 4/7] cgroup/cpuset: Add a new isolated cpus.partition
- type
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+References: <20220111232309.1786347-1-surenb@google.com> <Yd7oPlxCpnzNmFzc@cmpxchg.org>
+In-Reply-To: <Yd7oPlxCpnzNmFzc@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 12 Jan 2022 09:43:43 -0800
+Message-ID: <CAJuCfpGHLXDvMU1GLMcgK_K72_ErPhbcFh1ZvEeHg025yinNuw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] psi: Fix uaf issue when psi trigger is destroyed
+ while being polled
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Eric Biggers <ebiggers@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20211205183220.818872-1-longman@redhat.com>
- <20211205183220.818872-5-longman@redhat.com>
- <Yd7x3P+wGCVfYtza@hirez.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Yd7x3P+wGCVfYtza@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        syzbot <syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+)
 
-On 1/12/22 10:21, Peter Zijlstra wrote:
-> On Sun, Dec 05, 2021 at 01:32:17PM -0500, Waiman Long wrote:
->> Cpuset v1 uses the sched_load_balance control file to determine if load
->> balancing should be enabled.  Cpuset v2 gets rid of sched_load_balance
->> as its use may require disabling load balancing at cgroup root.
->>
->> For workloads that require very low latency like DPDK, the latency
->> jitters caused by periodic load balancing may exceed the desired
->> latency limit.
->>
->> When cpuset v2 is in use, the only way to avoid this latency cost is to
->> use the "isolcpus=" kernel boot option to isolate a set of CPUs. After
->> the kernel boot, however, there is no way to add or remove CPUs from
->> this isolated set. For workloads that are more dynamic in nature, that
->> means users have to provision enough CPUs for the worst case situation
->> resulting in excess idle CPUs.
->>
->> To address this issue for cpuset v2, a new cpuset.cpus.partition type
->> "isolated" is added which allows the creation of a cpuset partition
->> without load balancing. This will allow system administrators to
->> dynamically adjust the size of isolated partition to the current need
->> of the workload without rebooting the system.
-> you can, ofcourse, create lots of 1 cpu partitions, which is effectively
-> what you're doing, except there was a problem with that which you also
-> forgot to mention.
+On Wed, Jan 12, 2022 at 6:40 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Tue, Jan 11, 2022 at 03:23:09PM -0800, Suren Baghdasaryan wrote:
+> > With write operation on psi files replacing old trigger with a new one,
+> > the lifetime of its waitqueue is totally arbitrary. Overwriting an
+> > existing trigger causes its waitqueue to be freed and pending poll()
+> > will stumble on trigger->event_wait which was destroyed.
+> > Fix this by disallowing to redefine an existing psi trigger. If a write
+> > operation is used on a file descriptor with an already existing psi
+> > trigger, the operation will fail with EBUSY error.
+> > Also bypass a check for psi_disabled in the psi_trigger_destroy as the
+> > flag can be flipped after the trigger is created, leading to a memory
+> > leak.
+> >
+> > Fixes: 0e94682b73bf ("psi: introduce psi monitor")
+> > Cc: stable@vger.kernel.org
+> > Reported-by: syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com
+> > Analyzed-by: Eric Biggers <ebiggers@kernel.org>
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Yes, that is a possible workaround. However, it makes cgroup management 
-much harder especially in the cgroup v2 environment where multiple 
-controllers are likely to be enabled in the same cgroup.
+Hmm. kernel test robot notified me of new (which are not really new)
+warnings but I don't think this patch specifically introduced them:
 
-Cheers,
-Longman
+kernel/sched/psi.c:1112:21: warning: no previous prototype for
+function 'psi_trigger_create' [-Wmissing-prototypes]
+   struct psi_trigger *psi_trigger_create(struct psi_group *group,
+                       ^
+   kernel/sched/psi.c:1112:1: note: declare 'static' if the function
+is not intended to be used outside of this translation unit
+   struct psi_trigger *psi_trigger_create(struct psi_group *group,
+   ^
+   static
+>> kernel/sched/psi.c:1182:6: warning: no previous prototype for function 'psi_trigger_destroy' [-Wmissing-prototypes]
+   void psi_trigger_destroy(struct psi_trigger *t)
+        ^
+   kernel/sched/psi.c:1182:1: note: declare 'static' if the function
+is not intended to be used outside of this translation unit
+   void psi_trigger_destroy(struct psi_trigger *t)
+   ^
+   static
+   kernel/sched/psi.c:1249:10: warning: no previous prototype for
+function 'psi_trigger_poll' [-Wmissing-prototypes]
+   __poll_t psi_trigger_poll(void **trigger_ptr,
+            ^
+   kernel/sched/psi.c:1249:1: note: declare 'static' if the function
+is not intended to be used outside of this translation unit
+   __poll_t psi_trigger_poll(void **trigger_ptr,
+   ^
 
+This happens with the following config:
+
+CONFIG_CGROUPS=n
+CONFIG_PSI=y
+
+With cgroups disabled these functions are defined as non-static but
+are not defined in the header
+(https://elixir.bootlin.com/linux/latest/source/include/linux/psi.h#L28)
+since the only external user cgroup.c is disabled. The cleanest way to
+fix these I think is by doing smth like this in psi.c:
+
+struct psi_trigger *_psi_trigger_create(struct psi_group *group, char
+*buf, size_t nbytes, enum psi_res res)
+{
+  // original psi_trigger_create code
+}
+
+#ifdef CONFIG_CGROUPS
+
+struct psi_trigger *psi_trigger_create(struct psi_group *group, char
+*buf, size_t nbytes, enum psi_res res)
+{
+    return _psi_trigger_create(group, buf, nbytes, res);
+}
+
+#else
+
+static struct psi_trigger *psi_trigger_create(struct psi_group *group,
+char *buf, size_t nbytes, enum psi_res res)
+{
+    return _psi_trigger_create(group, buf, nbytes, res);
+}
+
+#endif
+
+Two questions:
+1. Is this even worth fixing?
+2. If so, I would like to do that as a separate patch (these warnings
+are unrelated to the changes in this patch). Would that be ok?
+Thanks,
+Suren.
