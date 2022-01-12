@@ -2,78 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E1D48BEAB
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 07:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E9E48BFEC
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 09:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351046AbiALGqN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jan 2022 01:46:13 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:60690 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351044AbiALGqM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 01:46:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 60BECCE1BCF;
-        Wed, 12 Jan 2022 06:46:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B469C36AE9;
-        Wed, 12 Jan 2022 06:46:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641969968;
-        bh=4Tn/USo8KXboTynK6KqLOmV0gnZLDsBgsgeyLJRL42U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KPBg50AG2faZ8N/dkKJzcmsW0yf4+tZqhCuQn+FFCR6kc2LkIgOS6StWmkVzv0WOT
-         xBb+gILh/BDRFnnrCnrG/CF9hRYe/34tqdNvlFZU3P0bKcCIdBtaF0Ekhip3FZOHnU
-         4ax4ZDl2jRoPJwOQj1iZWfUaFrDbOJYSdFps7gUK/HcmyKUFRRZT4f7K1qcJ972sxI
-         15MLR5c/BlgsMvRDUIaIAV5KAg8KdDk3AhV0oOxKh2c9EcN0K7cTgCEkwKog49VHPh
-         +R6aYIPs+srU9pWbkDcZK3xM5tibGLjp9mkmdZm5/dMBbfOSjEhf1e48Yvr3Berhn6
-         JJJh+q5HmRWVA==
-Date:   Tue, 11 Jan 2022 22:46:06 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     hannes@cmpxchg.org, torvalds@linux-foundation.org, tj@kernel.org,
-        lizefan.x@bytedance.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, stable@vger.kernel.org,
-        kernel-team@android.com,
-        syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com
-Subject: Re: [PATCH v3 1/1] psi: Fix uaf issue when psi trigger is destroyed
- while being polled
-Message-ID: <Yd55LpWuuKHm26L2@sol.localdomain>
-References: <20220111232309.1786347-1-surenb@google.com>
+        id S1349435AbiALIat (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jan 2022 03:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349393AbiALIas (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 03:30:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3EBC06173F;
+        Wed, 12 Jan 2022 00:30:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=13bfDwC4Q9dgAZpU/RAeEl2vEaor8KDQuawgF7gUxzo=; b=u4J/qAfmQnxgC0O1RunRdY0Voc
+        hgGawk8rMe8I6Z8rdGysGN3Ulzh2Culzl7aB2cSzmp3/sc4Szea2bwv14BiDsqBPtUPHgaGV1JlLY
+        L44pdHm06jhzUq14uktN/t+5PHqUiUisq0PNllMY2ZQz7k4Ku+FzQvkxQOzrA6TzYsW05NZMXn+24
+        DzRlKhW0CkAU8vAU3QzWP7s+bwzXP57mG/KATB+CmnKNUP/CkdKJJuBejUX/9GINss86dy0PmKrtO
+        87gu3XffXlZBy4jPwBjm0QGNQBuAoKj0Z6xVLFzqyw959q5XaCYiehWYitGzI7ig0WbFVQojsAyP2
+        N1IAEzjQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n7Z1X-003wtl-NJ; Wed, 12 Jan 2022 08:30:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3F5B3001FD;
+        Wed, 12 Jan 2022 09:30:23 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8E8562B34C7D3; Wed, 12 Jan 2022 09:30:23 +0100 (CET)
+Date:   Wed, 12 Jan 2022 09:30:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        cgroups@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] cgroup: add cpu.stat_percpu
+Message-ID: <Yd6Rn63Rha5NDd1I@hirez.programming.kicks-ass.net>
+References: <20220107234138.1765668-1-joshdon@google.com>
+ <Yd189wHB2LJcK1Pv@hirez.programming.kicks-ass.net>
+ <CABk29NuGs_9uxgbv678W=BGGinZNiUHO5T57FHGbOG+HP-FT2g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220111232309.1786347-1-surenb@google.com>
+In-Reply-To: <CABk29NuGs_9uxgbv678W=BGGinZNiUHO5T57FHGbOG+HP-FT2g@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 03:23:09PM -0800, Suren Baghdasaryan wrote:
-> With write operation on psi files replacing old trigger with a new one,
-> the lifetime of its waitqueue is totally arbitrary. Overwriting an
-> existing trigger causes its waitqueue to be freed and pending poll()
-> will stumble on trigger->event_wait which was destroyed.
-> Fix this by disallowing to redefine an existing psi trigger. If a write
-> operation is used on a file descriptor with an already existing psi
-> trigger, the operation will fail with EBUSY error.
-> Also bypass a check for psi_disabled in the psi_trigger_destroy as the
-> flag can be flipped after the trigger is created, leading to a memory
-> leak.
+On Tue, Jan 11, 2022 at 03:38:20PM -0800, Josh Don wrote:
+> On Tue, Jan 11, 2022 at 4:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Jan 07, 2022 at 03:41:37PM -0800, Josh Don wrote:
+> >
+> > > +     seq_puts(seq, "usage_usec");
+> > > +     for_each_possible_cpu(cpu) {
+> > > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
+> > > +             val = cached_bstat->cputime.sum_exec_runtime;
+> > > +             do_div(val, NSEC_PER_USEC);
+> > > +             seq_printf(seq, " %llu", val);
+> > > +     }
+> > > +     seq_puts(seq, "\n");
+> > > +
+> > > +     seq_puts(seq, "user_usec");
+> > > +     for_each_possible_cpu(cpu) {
+> > > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
+> > > +             val = cached_bstat->cputime.utime;
+> > > +             do_div(val, NSEC_PER_USEC);
+> > > +             seq_printf(seq, " %llu", val);
+> > > +     }
+> > > +     seq_puts(seq, "\n");
+> > > +
+> > > +     seq_puts(seq, "system_usec");
+> > > +     for_each_possible_cpu(cpu) {
+> > > +             cached_bstat = per_cpu_ptr(&cached_percpu_stats, cpu);
+> > > +             val = cached_bstat->cputime.stime;
+> > > +             do_div(val, NSEC_PER_USEC);
+> > > +             seq_printf(seq, " %llu", val);
+> > > +     }
+> > > +     seq_puts(seq, "\n");
+> >
+> > This is an anti-pattern; given enough CPUs (easy) this will trivially
+> > overflow the 1 page seq buffer.
+> >
+> > People are already struggling to fix existing ABI, lets not make the
+> > problem worse.
 > 
-> Fixes: 0e94682b73bf ("psi: introduce psi monitor")
-> Cc: stable@vger.kernel.org
-> Reported-by: syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com
-> Analyzed-by: Eric Biggers <ebiggers@kernel.org>
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
+> Is the concern there just the extra overhead from making multiple
+> trips into this handler and re-allocating the buffer until it is large
+> enough to take all the output? In that case, we could pre-allocate
+> with a size of the right order of magnitude, similar to /proc/stat.
+> 
+> Lack of per-cpu stats is a gap between cgroup v1 and v2, for which v2
+> can easily support this interface given that it already tracks the
+> stats percpu internally. I opted to dump them all in a single file
+> here, to match the consolidation that occurred from cpuacct->cpu.stat.
 
-Looks good,
+Hmm.. fancy new stuff there :-) Yes, I think that would aleviate the
+immediate problem. I suppose /proc/interrupts ought to get some of that
+too.
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-
-- Eric
+Still, I'm not sure having so much data in a single file is wise. But
+I've not really kept up with the discussions around this problem much.
