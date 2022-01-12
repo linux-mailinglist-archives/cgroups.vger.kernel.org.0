@@ -2,169 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3953048CC4B
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 20:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8E448CC9D
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 20:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242886AbiALTuW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jan 2022 14:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S1350675AbiALT4l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jan 2022 14:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357752AbiALTuL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 14:50:11 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2055C061756
-        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 11:50:10 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id g14so8659206ybs.8
-        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 11:50:10 -0800 (PST)
+        with ESMTP id S1357666AbiALTzq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 14:55:46 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8905C06173F;
+        Wed, 12 Jan 2022 11:55:46 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id l15so5734113pls.7;
+        Wed, 12 Jan 2022 11:55:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jRJqEvb6RaoXDTGIGvfe6D9l0JWX3IBGy+0XrscHKFk=;
-        b=A05wtVt0YhyBSdDPVxnMOaffKavmT2bc7mtYBlQvpXZuCcKdvBu2pQnaPFx3DGatS3
-         dletqWECy0d2sgn8vA9vLAVgNohXHyzj9Cgqbl79LKWXgG+hE4wDbGAhWFykD9TScLom
-         RAoovIZCddTCKuxzFHyAQtyUFKl1Zj9Pah7k/alWN5AMM8RaorUkk56uf1K/F+4vbrJ1
-         tVX2xsXqH3CMuhvO/jQ0GHItrhwrslksLTTyVuEJKA47jbtOoEt6Dy2V8InbwuqJee6U
-         RtN4mRaJgakGvKhskjQGCe4cEY3Rn9j04AANjfnBq6vDTcY1WWI2cp4TB0GwIncWQef6
-         qjjQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pTkXuSKZdEidYDtUquppnkS8GPvDaeca2bpqBFg2VUk=;
+        b=aVDCcfyGG6eZ7fQRZwIpKvAV3p4XQAIsCDHU4V8R68gVluTPXLyO4TF+tuwhm7XNxH
+         2VFN9RxstCr5amo4nthsCVIpWzI31OwDeQN2LuYI4sWHzWcRLMB7vii4FIcLCxFHvuk1
+         hQ7tW6OYVeXC6Mkku3+HVMdiL4OicoRI+GOcEe8uOTotfiLnVvGoiJ7mL0/n/Ya0Yqv7
+         NfCSAd4pxzo1OW1rtcHHA87G7eCWLKSBrG/jHsP4/JaH4No9utBcUP7RryQqI8z3hg/V
+         PUzZYlGbJLCwksdC5V2bXkWcbjX0AEAL/vErnFXE/LmN/wkCJmwpcfVzJIprU1iydK1r
+         oKXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jRJqEvb6RaoXDTGIGvfe6D9l0JWX3IBGy+0XrscHKFk=;
-        b=OQdziwiZXd1wFwB3M7hFTB0ymkcesztR82VIBH+Kpm+L9YiuEfKkB/9Hk49yHOgWbL
-         jYH31PuuJFZfaGAt1ngLyDSRr/0V3dwzvhVS/h+e6Yfo/uKQurTNbr+Nzk6U9AuNaAjf
-         Y4wtVWG1PGp3Wlpq3Nkc2w+3wdnwgMLwDXkWLdHvQlnGTmkQKh729Eq4+ZWfen4l+l4o
-         u+UjwOZXfxp/8p1FQdzvzIgDQ3pdY+QFVJu2G4/JNxI4twvib9OuG4ibu/qOgeCxgEeN
-         mkG18fR4qWmxuKq9+J9RsF74wF7KGUdslvvHJo9JC1A4RDztxDUT4Uo2ZNIeGxezXcDC
-         OjiQ==
-X-Gm-Message-State: AOAM531nlEZxvS2F2J3Ar17FiGVoh6GfoH9CyGgoyWDijjo+8/8n3CWH
-        4TMjbnU0Dsa1N7AIimERycxcCggOPKbhSNe00rttzA==
-X-Google-Smtp-Source: ABdhPJx6W0X7kISJhEYdoiY21aNG29fuGIZW3ogzIBP7+xBMxjmD0lYfSi3qgeEmYg4Q7LUKrKFZmmy6/h0/7WJ3H6o=
-X-Received: by 2002:a25:c245:: with SMTP id s66mr1871016ybf.243.1642017009537;
- Wed, 12 Jan 2022 11:50:09 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=pTkXuSKZdEidYDtUquppnkS8GPvDaeca2bpqBFg2VUk=;
+        b=UMS0+xmWaSaIzOveVXJjY2wqC8Ruu1NM/oZ0S8KvEWAm4Rw9ROdEAAqjoFIEJamS/Z
+         SFaROWCnp/MFYicmlqODkN+RSnSNhsKXiHZYll3VjFmfrlyVI2GTp7kZb5p2YnmL+0c7
+         v3eYwKluL+iZ8C1OSw631EDNN+6toQPX7oCpEAp/sKCfWZo2h2e/ePm7nszLcMJo9cs5
+         /FIK1sCf0h9sRlJmxDwtPA1M2rwnqzJMXos1uRs9KxVdwJ8wqYL/7PR4yzQQ1KYNVRuM
+         Q5L8T/amv0nd+eBvksPegppIwC/dr/r2kPVVmklpk2F6fDvKVM9xiMAbrmqW1vr9Q6Nb
+         Roew==
+X-Gm-Message-State: AOAM530acJndpMcpvrSKflV0eYGHRG8lp/YW83FS6hy0D1d7xkVDBMjJ
+        ZQ5foQzpqQMcfl9gwFgkM1Q=
+X-Google-Smtp-Source: ABdhPJzHfrBMVxX8lg2F1rhL/JoDTXNGv358VL6jn2+Y1jzcadxQmUz0yRx0vf75QYU8VUnSG4huCg==
+X-Received: by 2002:a17:90a:de08:: with SMTP id m8mr1316255pjv.102.1642017346109;
+        Wed, 12 Jan 2022 11:55:46 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id x12sm448834pjq.52.2022.01.12.11.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jan 2022 11:55:45 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 12 Jan 2022 09:55:44 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cgroup: rstat: use same convention to assign
+ cgroup_base_stat
+Message-ID: <Yd8yQFx/cOBGd6+N@slm.duckdns.org>
+References: <20220108003817.6619-1-richard.weiyang@gmail.com>
 MIME-Version: 1.0
-References: <20220111232309.1786347-1-surenb@google.com> <Yd7oPlxCpnzNmFzc@cmpxchg.org>
- <CAJuCfpGHLXDvMU1GLMcgK_K72_ErPhbcFh1ZvEeHg025yinNuw@mail.gmail.com>
- <CAJuCfpEaM3KoPy3MUG7HW2yzcT6oJ5gdceyHPNpHrqTErq27eQ@mail.gmail.com>
- <Yd8a8TdThrGHsf2o@casper.infradead.org> <CAJuCfpF45VY_7esx7p2yEK+eK-ufSMsBETEdJPF=Mzxj+BTnLA@mail.gmail.com>
- <Yd8hpPwsIT2pbKUN@gmail.com> <CAJuCfpF_aZ7OnDRYr2MNa-x=ctO-daw-U=k+-GCYkJR1_yTHQg@mail.gmail.com>
- <Yd8mIY5IxwOKTK+D@gmail.com> <CAJuCfpG9o5Z7x6hvPXy-Tfgom31sm4rjAA=f4KiY9pppGRGSHQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpG9o5Z7x6hvPXy-Tfgom31sm4rjAA=f4KiY9pppGRGSHQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 12 Jan 2022 11:49:58 -0800
-Message-ID: <CAJuCfpHeg9mb4oq71P6xcC9fQipWBaAy9WJZg=jM+cUnR+ouMg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] psi: Fix uaf issue when psi trigger is destroyed
- while being polled
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        syzbot <syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220108003817.6619-1-richard.weiyang@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 11:06 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Wed, Jan 12, 2022 at 11:04 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Wed, Jan 12, 2022 at 10:53:48AM -0800, Suren Baghdasaryan wrote:
-> > > On Wed, Jan 12, 2022 at 10:44 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> > > >
-> > > > On Wed, Jan 12, 2022 at 10:26:08AM -0800, Suren Baghdasaryan wrote:
-> > > > > On Wed, Jan 12, 2022 at 10:16 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > > > >
-> > > > > > On Wed, Jan 12, 2022 at 09:49:00AM -0800, Suren Baghdasaryan wrote:
-> > > > > > > > This happens with the following config:
-> > > > > > > >
-> > > > > > > > CONFIG_CGROUPS=n
-> > > > > > > > CONFIG_PSI=y
-> > > > > > > >
-> > > > > > > > With cgroups disabled these functions are defined as non-static but
-> > > > > > > > are not defined in the header
-> > > > > > > > (https://elixir.bootlin.com/linux/latest/source/include/linux/psi.h#L28)
-> > > > > > > > since the only external user cgroup.c is disabled. The cleanest way to
-> > > > > > > > fix these I think is by doing smth like this in psi.c:
-> > > > > >
-> > > > > > A cleaner way to solve these is simply:
-> > > > > >
-> > > > > > #ifndef CONFIG_CGROUPS
-> > > > > > static struct psi_trigger *psi_trigger_create(...);
-> > > > > > ...
-> > > > > > #endif
-> > > > > >
-> > > > > > I tested this works:
-> > > > > >
-> > > > > > $ cat foo5.c
-> > > > > > static int psi(void *);
-> > > > > >
-> > > > > > int psi(void *x)
-> > > > > > {
-> > > > > >         return (int)(long)x;
-> > > > > > }
-> > > > > >
-> > > > > > int bar(void *x)
-> > > > > > {
-> > > > > >         return psi(x);
-> > > > > > }
-> > > > > > $ gcc -W -Wall -O2 -c -o foo5.o foo5.c
-> > > > > > $ readelf -s foo5.o
-> > > > > >
-> > > > > > Symbol table '.symtab' contains 4 entries:
-> > > > > >    Num:    Value          Size Type    Bind   Vis      Ndx Name
-> > > > > >      0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
-> > > > > >      1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS foo5.c
-> > > > > >      2: 0000000000000000     0 SECTION LOCAL  DEFAULT    1 .text
-> > > > > >      3: 0000000000000000     3 FUNC    GLOBAL DEFAULT    1 bar
-> > > > > >
-> > > > >
-> > > > > Thanks Matthew!
-> > > > > That looks much cleaner. I'll post a separate patch to fix these. My
-> > > > > main concern was whether it's worth adding more code to satisfy this
-> > > > > warning but with this approach the code changes are minimal, so I'll
-> > > > > go ahead and post it shortly.
-> > > >
-> > > > Why not simply move the declarations of psi_trigger_create() and
-> > > > psi_trigger_destroy() in include/linux/psi.h outside of the
-> > > > '#ifdef CONFIG_CGROUPS' block, to match the .c file?
-> > >
-> > > IIRC this was done to avoid another warning that these functions are
-> > > not used outside of psi.c when CONFIG_CGROUPS=n
-> > >
-> >
-> > What tool gave that warning?
->
-> Let me double-check by building it. It has been a while since I
-> developed the code and I don't want to mislead by making false claims.
->
+On Sat, Jan 08, 2022 at 12:38:16AM +0000, Wei Yang wrote:
+> In function cgroup_base_stat_flush(), we update cgroup_base_stat by
+> getting rstatc->bstat and adjust delta to related fields.
+> 
+> There are two convention to assign cgroup_base_stat in this function:
+> 
+>   * rstat2 = rstat1
+>   * rstat2.cputime = rstat1.cputime
+> 
+> The second convention may make audience think just field "cputime" is
+> updated, while cputime is the only field in cgroup_base_stat.
+> 
+> Let's use the same convention to eliminate this confusion.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-No warnings, so it was probably done to keep the scope of these
-functions as local as possible.
-I agree that moving them out of #ifdef CONFIG_CGROUPS in the header
-file makes sense here. The scope unnecessarily expands when
-CONFIG_CGROUPS=n but the code is simpler. Will do that then.
+Applied 1-2 to cgroup/for-5.18.
 
-I noticed there is another warning about psi_cpu_proc_ops and similar
-structures being unused when CONFIG_PROC_FS=n. Looks like I'll need
-some more ifdefs to fix all these warnings.
+Thanks.
 
-> >
-> > - Eric
+-- 
+tejun
