@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2B648C621
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 15:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A25648C62D
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 15:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241471AbiALOhO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jan 2022 09:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S1354185AbiALOkE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jan 2022 09:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241905AbiALOhN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 09:37:13 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A53C061748
-        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 06:37:12 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id jr5so3055978qvb.11
-        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 06:37:12 -0800 (PST)
+        with ESMTP id S1354165AbiALOkA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jan 2022 09:40:00 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F02C061751
+        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 06:40:00 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id c19so3210084qtx.3
+        for <cgroups@vger.kernel.org>; Wed, 12 Jan 2022 06:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gN6nYxQ+pi+EX1rhDvVBrSftakRyc+dgBWa+b+GYGOw=;
-        b=mUYM4mY5CMZFdZf8LoZxSmr2HrBtGWy/OuRuqq61O/YzMtji9cyv80GCzVs3+/yBQM
-         ea8h1TgnQuxezzPUpv+dYIPkHwYXJi8s8RLc3/qoVBJIdyMcJhSjmxQmUkiMYq3Ma/mk
-         FCYSRjNlYgSsNDINKB5/QzVJm37I8VUcYMKVK1npArHn3Q6M8h3+azxH7i00hNJ3x5GH
-         /MOIqnam32dgIasH341bE3XTjvVfDKCVLNSfwExXT1QlmErmH+Ao3P6BgqP5XnvYn4WD
-         4jkB6eQQ2fqopSlJvC4a/kF34giBDtsHPoVyc1PJ8OLUBC1+AAZopBx4/zXrVog6uTYo
-         wZRg==
+        bh=azTS6tnDk3tgwE9tswmIFeSjakmtEkN/3qV9mBsYccQ=;
+        b=lTRxPpgHABlbCins2TOnLV9LVjCQ26SweG5q5/C2dMrN7f4+7+CdEQaKc4xcdS/zs3
+         DnnJODvxalPzEBmfycggfJ4lZoZUdSfkcT1FFajWBuoDH4tbJJLL2YuL6VbiKPY23zjT
+         s9abyL/GVEQlgdsFh47XnaBAIlnd4r3ZyvPyN5/9fVlr23f1ZQ+zFnmJ2EknoM6EVijq
+         DtrWB4hpPieJhguRemvh6pArWmjvKs5iO38IbvNSIbHAERKk9TjFr3Jxk2ED+QMTUtWB
+         yC+ONdLHxP7q+hbMjaRXE0DQCgYR737mTcvby6eksJwvQM1crqiY6MklMC7KIIBeXrYS
+         SJPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gN6nYxQ+pi+EX1rhDvVBrSftakRyc+dgBWa+b+GYGOw=;
-        b=2ci2uYwbAw8bIJMtV059NMH1lkyU3KIFuDA133Ex2y77xGLMlZS4c03+izCeFDvDwp
-         WbkOEtfkEeZWJ+N7ve8KhIMbTA5jLo7cFAHQ69JPWEocEr62rZ3Ueaf/5A9UhzYudUh/
-         gF4pX68f7kjq6oUyr2+BoTM7J0zS2yay7mKukMejjyVijdyMJ59paXg25h/QkRx72YQm
-         q5tl6084CRgXOWBGBFfdU0TLOOD9MDwwNWh73/3HSf+bDOQytO3kEnh268FP9gP2Tcej
-         x5t1D9+8uaKEqhou61LhRDx2rU5Ch0FFjcmNCBIhzqWf5qp01EDF+xrMZaedTugMsZAw
-         7lQQ==
-X-Gm-Message-State: AOAM532b2118hnMe73vsW8fS+baY8clhWum2w+XuVRGd6ZJS22dAz3hf
-        sMLESyKY0oYJgwK/KIOw0Y8hTA==
-X-Google-Smtp-Source: ABdhPJxY1HshUCe33M5fQkNV7QxIC9vh6OAlDMc4ZVnOi5TLVs7F8THYxcCWfsxToe3z3GOWAGLkKg==
-X-Received: by 2002:a05:6214:300a:: with SMTP id ke10mr8262318qvb.98.1641998232082;
-        Wed, 12 Jan 2022 06:37:12 -0800 (PST)
+        bh=azTS6tnDk3tgwE9tswmIFeSjakmtEkN/3qV9mBsYccQ=;
+        b=B8Lrg2QbZG0zpFvcmqFP6q3ZtcI58a3kSPfrZIY3lo52NluZWjuFiVj4RbMPb/TuDG
+         M0NyKZUdkl/jlAjgRxS1gIxdKkqAxgQFKurHllU8Jf9aB27jCwIaahxmOyir7uN51Ewi
+         g7O0ojG8WcCj/LAbDc4HhRRD+FCkZwNKGTf+whaw+F6AB4Z57015XKXo3wqJQx/ri5WB
+         jSkQLlGk9goJikcsQSB2rrWkZE0rEULxllfnGV0wxdEdQ8BMjeKmXMvyKiCcsYcsChQx
+         OcJYu1SGqPyqDooNZL61emqhItuH3wjIR9ws+lXJ+IRiZwH25fBrIP+i6ycSPtHeQBgz
+         0C7g==
+X-Gm-Message-State: AOAM531ZhveMeVeo9tTzS9NcHy3jsVplJRWHxU5WyHx81cqsL5Z5p22T
+        i+T8C5I5Q1+Oz5GD9V4gpm1P5Q==
+X-Google-Smtp-Source: ABdhPJzrrSK3m7ltAbl1maAKx6vtdpBbyflm+yV6TugFLnybhDj8DR7ye+TY80jvOr5AzdzXhoJBmg==
+X-Received: by 2002:ac8:5a4a:: with SMTP id o10mr7834867qta.617.1641998399438;
+        Wed, 12 Jan 2022 06:39:59 -0800 (PST)
 Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id c17sm8211262qkl.90.2022.01.12.06.37.11
+        by smtp.gmail.com with ESMTPSA id 2sm129843qtx.66.2022.01.12.06.39.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jan 2022 06:37:11 -0800 (PST)
-Date:   Wed, 12 Jan 2022 09:37:10 -0500
+        Wed, 12 Jan 2022 06:39:59 -0800 (PST)
+Date:   Wed, 12 Jan 2022 09:39:58 -0500
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Suren Baghdasaryan <surenb@google.com>
 Cc:     torvalds@linux-foundation.org, ebiggers@kernel.org, tj@kernel.org,
@@ -59,19 +59,19 @@ Cc:     torvalds@linux-foundation.org, ebiggers@kernel.org, tj@kernel.org,
         cgroups@vger.kernel.org, stable@vger.kernel.org,
         kernel-team@android.com,
         syzbot+cdb5dd11c97cc532efad@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/1] psi: Fix uaf issue when psi trigger is destroyed
+Subject: Re: [PATCH v3 1/1] psi: Fix uaf issue when psi trigger is destroyed
  while being polled
-Message-ID: <Yd7nlpb5C1asdT9p@cmpxchg.org>
-References: <20220111071212.1210124-1-surenb@google.com>
+Message-ID: <Yd7oPlxCpnzNmFzc@cmpxchg.org>
+References: <20220111232309.1786347-1-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220111071212.1210124-1-surenb@google.com>
+In-Reply-To: <20220111232309.1786347-1-surenb@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 10, 2022 at 11:12:12PM -0800, Suren Baghdasaryan wrote:
+On Tue, Jan 11, 2022 at 03:23:09PM -0800, Suren Baghdasaryan wrote:
 > With write operation on psi files replacing old trigger with a new one,
 > the lifetime of its waitqueue is totally arbitrary. Overwriting an
 > existing trigger causes its waitqueue to be freed and pending poll()
@@ -90,9 +90,4 @@ On Mon, Jan 10, 2022 at 11:12:12PM -0800, Suren Baghdasaryan wrote:
 > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-That looks good to me, thanks Suren.
-
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Peter, would you mind picking this up and routing this to Linus
-through the sched tree, please?
