@@ -2,106 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C01A48BB8F
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 00:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D838248BBC6
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 01:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245396AbiAKXwP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jan 2022 18:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        id S236095AbiALAYZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jan 2022 19:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233696AbiAKXwP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 18:52:15 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64F6C06173F
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:52:14 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id h14so1515475ybe.12
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 15:52:14 -0800 (PST)
+        with ESMTP id S234921AbiALAYY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 19:24:24 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DFAC06173F;
+        Tue, 11 Jan 2022 16:24:24 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id u21so3076626edd.5;
+        Tue, 11 Jan 2022 16:24:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9wKkvOi6CL+CUKSws0OOxycjJbGOa3ISqmAvlKnxPaQ=;
-        b=WkGpcHKLJcXLClorQAecOFn9CNhS+bceFQ6mofBVna5AihqCPnuTRKd8T6lxX8NGx+
-         y9xr8KBnuX7ZQWwJ5bMx3duvt9LbVXxHmhKuodJ3ZTMCgS4Rwq+hYYXUd/Fpw7453nYg
-         qP5nSrkC7uPNjA/WMjZN1jxKQ/MejUGNUYgvtMvnCwBEI/8SjF0wLC/v4dqXuywNitA0
-         7PMsCuQ23uU9ZuNugxM4t/2r8p5zdFeHUzw6f+sDX9vE7shIFBZbGS0tmy4XI6dFrbla
-         HELillMj0V4a/2GYP9c3pupA/g94QCl3RwlNIWYwRNFhsAAZAPlLbWYeHjhMTTGCOqnq
-         BKkQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dFpazlv+lywoGwl9/cFSYAAABBv6zxWMmcLpH0m+3/M=;
+        b=Jvwa9TaIcLtrQXSCOZEpvt5o4j62C2t3W/QMQ/KHJ/fiv10OoW6JKvXj5KBsR6XAd9
+         YTJX3yMs+oReKUEusB6HXOycLwagLJUD3wZlEY4LzzdZZk2UhbnmiM2kmyYYwY3bXcry
+         I5k+BCombR71JSn6bX3+5Knoym/PI1ut2Mzwc/VjfVDq/AqE04o8xf4fXQz5FmaHuweo
+         JkXPznZqOnmSwakVWgUKEGUyT9xIufjGXDTNb8kX1g956DAXLnicAHPkoZITy9/nV74M
+         TdhGyqIuaWMDnKnhm95W6/P6RSpUBTjyJ0EQAGayOmRlDg58JOSj8qZKnbD+IR6TiQkT
+         Fhdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9wKkvOi6CL+CUKSws0OOxycjJbGOa3ISqmAvlKnxPaQ=;
-        b=MuOuo1Qwvt/IegFi3Cv8KsmZHZZgCemdbFGH4EqlTNoLQjF/x5FSqQ2o58O7rvjY/A
-         6CeGZWqkGvEVOMQybUk5FlAqPFBr+uvIl29YLaroQVCCyx0nRe7Ubnyiv5FYPtNq/9ji
-         GaWU5VZlmspNyqfvB/eoNN6szBaJUu6/gBmbupgsDZie5KvCHaDryryXschfoPqkYuxn
-         JoTaPrWyElFoBrEGM7aI+s+ZgtcBydXq8nmMj13jcY8YPUGr7vdZtbOuCUmDIsUD7kod
-         xwzMLDudKDmjRWItD+lthCj5UUA2uG/oP6qAIXzEtXC07zz2WlEkJaOQMoghHusaWz4v
-         94Fw==
-X-Gm-Message-State: AOAM530T4NTjxq1rg/nSvdwx/NxzNqG9zYhSvaPSzPQTW+OeLKLWqXBQ
-        ZqkxFBYmUgrnOjegOL3lGSvj2WzZA5OmNT8nLFNlFg==
-X-Google-Smtp-Source: ABdhPJzDlxPB3uXYSLQwUwwUmkRZF91fpJVstFmxZ9CGHtzcqSLt0zalZaAMmtMF1ETT+psG4e1+UnBjKJFKQhStNPU=
-X-Received: by 2002:a25:9787:: with SMTP id i7mr2670803ybo.192.1641945133363;
- Tue, 11 Jan 2022 15:52:13 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dFpazlv+lywoGwl9/cFSYAAABBv6zxWMmcLpH0m+3/M=;
+        b=G/jHIhwY2QJz/iM/z5KIfT2569IgvybYzHhliT2r/TU3elKOSOMZT5f4/Bo5EicCdL
+         25ttgA19YAuRpYnZZ253K9e1OPUGNYEreETryAjuspUuHvye/nPB4+jGEwdU3vMyS+c+
+         Z8ghKHbsJdyudSjGW+anmyxGMto1fn3gOi8smG+prQhkHuSKPjf/WbGsDt1Xlkmjhc8R
+         zpSQNxq6NLQiCtImpKYvQZQ5BOPIWgiD0q3chewd8knqmHuyRcEpt7b8aWFbw8Pl54r+
+         Wk2/R1sVJPi6s+1WsoHmE0tzg9imcYQ1Y3mWOsu3AiRucytev6W7DwGQi1IStyJrvGGI
+         lGbQ==
+X-Gm-Message-State: AOAM530SBq9Gc+Ny3kwm304gHfgojkfX29KJXJMxEO3B7pDwZiEhrver
+        Ai75uDbHGqq4YWq8jy/DqP8=
+X-Google-Smtp-Source: ABdhPJxbp1jqOMEDjz32OniUVIm0N2DkA9bp6QjRfoPbyPBgiQ99JQe7N3wdX7/klyg2U5f09KGbYA==
+X-Received: by 2002:a05:6402:1764:: with SMTP id da4mr6500959edb.324.1641947062977;
+        Tue, 11 Jan 2022 16:24:22 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id w17sm183314edr.68.2022.01.11.16.24.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 11 Jan 2022 16:24:22 -0800 (PST)
+Date:   Wed, 12 Jan 2022 00:24:21 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, vbabka@suse.cz,
+        willy@infradead.org, songmuchun@bytedance.com, shy828301@gmail.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 3/4] mm/memcg: retrieve parent memcg from css.parent
+Message-ID: <20220112002421.m3fyktkkz55fup3v@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20220111010302.8864-1-richard.weiyang@gmail.com>
+ <20220111010302.8864-3-richard.weiyang@gmail.com>
+ <Yd3H8Hea6dBlkzeW@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <1641894961-9241-1-git-send-email-CruzZhao@linux.alibaba.com> <1641894961-9241-2-git-send-email-CruzZhao@linux.alibaba.com>
-In-Reply-To: <1641894961-9241-2-git-send-email-CruzZhao@linux.alibaba.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 11 Jan 2022 15:52:02 -0800
-Message-ID: <CABk29NuX1XYUXj8uZrSjm83n=-uk1LUbRQSMpo2s6er2pTRmDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] sched/core: Accounting forceidle time for all
- tasks except idle task
-To:     Cruz Zhao <CruzZhao@linux.alibaba.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        cgroups@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yd3H8Hea6dBlkzeW@carbon.dhcp.thefacebook.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 1:56 AM Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
+On Tue, Jan 11, 2022 at 10:09:52AM -0800, Roman Gushchin wrote:
+>On Tue, Jan 11, 2022 at 01:03:01AM +0000, Wei Yang wrote:
+>> The parent we get from page_counter is correct, while this is two
+>> different hierarchy.
+>> 
+>> Let's retrieve the parent memcg from css.parent just like parent_cs(),
+>> blkcg_parent(), etc.
 >
-> There are two types of forced idle time: forced idle time from cookie'd
-> task and forced idle time form uncookie'd task. The forced idle time from
-> uncookie'd task is actually caused by the cookie'd task in runqueue
-> indirectly, and it's more accurate to measure the capacity loss with the
-> sum of both.
+>Does it bring any benefits except consistency?
 >
-> Assuming cpu x and cpu y are a pair of SMT siblings, consider the
-> following scenarios:
->   1.There's a cookie'd task running on cpu x, and there're 4 uncookie'd
->     tasks running on cpu y. For cpu x, there will be 80% forced idle time
->     (from uncookie'd task); for cpu y, there will be 20% forced idle time
->     (from cookie'd task).
->   2.There's a uncookie'd task running on cpu x, and there're 4 cookie'd
->     tasks running on cpu y. For cpu x, there will be 80% forced idle time
->     (from cookie'd task); for cpu y, there will be 20% forced idle time
->     (from uncookie'd task).
->
-> The scenario1 can recurrent by stress-ng(scenario2 can recurrent similary):
->     (cookie'd)taskset -c x stress-ng -c 1 -l 100
->     (uncookie'd)taskset -c y stress-ng -c 4 -l 100
->
-> In the above two scenarios, the total capacity loss is 1 cpu, but in
-> scenario1, the cookie'd forced idle time tells us 20% cpu capacity loss, in
-> scenario2, the cookie'd forced idle time tells us 80% cpu capacity loss,
-> which are not accurate. It'll be more accurate to measure with cookie'd
-> forced idle time and uncookie'd forced idle time.
->
-> Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
-> ---
 
-Thanks,
+I am afraid no.
 
-Reviewed-by: Josh Don <joshdon@google.com>
+>> 
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+>
+>Reviewed-by: Roman Gushchin <guro@fb.com>
+>
+>Thanks!
+
+-- 
+Wei Yang
+Help you, Help me
