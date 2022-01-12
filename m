@@ -2,100 +2,193 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5FC48BCCC
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 02:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B21048BD88
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jan 2022 04:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbiALB7f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jan 2022 20:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348123AbiALB7e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 20:59:34 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2A5C061748
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 17:59:34 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id z22so1742757ybi.11
-        for <cgroups@vger.kernel.org>; Tue, 11 Jan 2022 17:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cVxEczww7H9SKUQS4bM3hqv/i/BHfSqFjaglAC6lVKQ=;
-        b=Ts2boQ0OQ6dUg+Q1bgi1eRic89TubkUE0VQ2NPiyhgnU3O0OzuHrNsR/aYTnxham6j
-         QkFUVZHsgmjs/3IJLRiePUPt2SyMyFnLJAjc+jITIcvu+aD44BkdZK20a5pA5ojpVZjz
-         aOvkgkwHgYrqe31l/rstBihzrSuX6cCEeJOTCrj9q4I/BeqQFvPfpTlLSoJoJmqH6J3V
-         yuAgSyr6Z0SbVWOFs00A9/fwH4X5uc6aBbvOAdytDX6Tn7l/PeZz0eXeYkvh9LgU2UoE
-         lWPQDZt03th6mEf0Qj5U2yfEOk7ebdD/9B8nEoucVNGOBtU98dqeVrDKcGwN/HY+e6yu
-         CB8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cVxEczww7H9SKUQS4bM3hqv/i/BHfSqFjaglAC6lVKQ=;
-        b=WzuRxmtqkTSp5xIIGBR3YGC+L7XPFr1Kthpl7uOYtJHkMLAyHMvVQtOr8FZU8VUuFy
-         6oskS9Ojvn2l8t3NiIWuW/eHylFsgByJ5ndF3T+LwLKK2zUtOBg05DggsZuKTGk7Drbr
-         CfxN8785EF/5zguNjxXOy4Z5x3AW+z4qupgQvAf7tsLOAUXPNI+SPnxgGDBdtGpc7Go0
-         ty4HEFAsIlhsOrjM921uNXo3+7Pmm2wYTFioxD33JDHkwydiyHuojw/O9NGkUqpq+hXj
-         R5W3etQo31vqhLalvfunO8+YahntttNVPV7UxFSAFPIt+8Ken7U2M4/UqL6g2W9D+X+F
-         3QJw==
-X-Gm-Message-State: AOAM533EOAT9Bdp3MN8nShlCLVEmEWfXvsX6NkgB6mPxE1VzRZkMCSNw
-        iRenNO4vRK7MrBzk+FITzjMJxR9IDiWBSoFx0PQkGQ==
-X-Google-Smtp-Source: ABdhPJwN4hwcuKzBzJtr7wGTU0xnt0KS8/Uq8aK0aVyxSAu3ccYgg66CQmlwyhXOT6fWIigjAUWgjHVnsEGldOBZvgI=
-X-Received: by 2002:a25:2383:: with SMTP id j125mr9713381ybj.430.1641952773384;
- Tue, 11 Jan 2022 17:59:33 -0800 (PST)
+        id S1349064AbiALDGf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jan 2022 22:06:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349059AbiALDGf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jan 2022 22:06:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641956794;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hLUxMC+s0pjFSC8kaV/VAZ/OjH+3iQwtRfE6QrexVRQ=;
+        b=CbTvkKSwsGdKG6kpTLJugZ4XuOeJRudt5m7p30PWh49X2QCCdY1VplQLLGURauvcEkTCDv
+        RZ+Ooy8AfZl9Hrst5UzgFmJFDdMJGSLVp0pJY2VZrpsFwwrYjd8tVWnQECWUE6O0ptjm7k
+        HhWt2f9IjShz8JcRf8EBoRDkaIiawEA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-88-BVlO2JIgPpuRso4p7ARE6A-1; Tue, 11 Jan 2022 22:06:31 -0500
+X-MC-Unique: BVlO2JIgPpuRso4p7ARE6A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97F321853028;
+        Wed, 12 Jan 2022 03:06:29 +0000 (UTC)
+Received: from T590 (ovpn-8-16.pek2.redhat.com [10.72.8.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C73E5E24E;
+        Wed, 12 Jan 2022 03:05:58 +0000 (UTC)
+Date:   Wed, 12 Jan 2022 11:05:54 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     mkoutny@suse.com, paulmck@kernel.org, tj@kernel.org,
+        axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v6 2/2] block: cancel all throttled bios in del_gendisk()
+Message-ID: <Yd5FkuhYX9YcgQkZ@T590>
+References: <20220110134758.2233758-1-yukuai3@huawei.com>
+ <20220110134758.2233758-3-yukuai3@huawei.com>
 MIME-Version: 1.0
-References: <1641894961-9241-1-git-send-email-CruzZhao@linux.alibaba.com> <1641894961-9241-3-git-send-email-CruzZhao@linux.alibaba.com>
-In-Reply-To: <1641894961-9241-3-git-send-email-CruzZhao@linux.alibaba.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 11 Jan 2022 17:59:22 -0800
-Message-ID: <CABk29NtonxXS53J-+3w_GTLTVurf8HS4v35T9evoGyERB0uDqA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] sched/core: Forced idle accounting per-cpu
-To:     Cruz Zhao <CruzZhao@linux.alibaba.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        cgroups@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220110134758.2233758-3-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 1:56 AM Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
->
-> Accounting for "forced idle" time per cpu, which is the time a cpu is
-> forced to idle by its SMT sibling.
->
-> As it's not accurate to measure the capacity loss only by cookie'd forced
-> idle time, and it's hard to trace the forced idle time caused by all the
-> uncookie'd tasks, we account the forced idle time from the perspective of
-> the cpu.
->
-> Forced idle time per cpu is displayed via /proc/schedstat, we can get the
-> forced idle time of cpu x from the 10th column of the row for cpu x. The
-> unit is ns. It also requires that schedstats is enabled.
->
-> Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
+Hello Yu Kuai,
+
+On Mon, Jan 10, 2022 at 09:47:58PM +0800, Yu Kuai wrote:
+> Throttled bios can't be issued after del_gendisk() is done, thus
+> it's better to cancel them immediately rather than waiting for
+> throttle is done.
+> 
+> For example, if user thread is throttled with low bps while it's
+> issuing large io, and the device is deleted. The user thread will
+> wait for a long time for io to return.
+> 
+> Noted this patch is mainly from revertion of commit 32e3374304c7
+> ("blk-throttle: remove tg_drain_bios") and commit b77412372b68
+> ("blk-throttle: remove blk_throtl_drain").
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
+>  block/blk-throttle.c | 77 ++++++++++++++++++++++++++++++++++++++++++++
+>  block/blk-throttle.h |  2 ++
+>  block/genhd.c        |  2 ++
+>  3 files changed, 81 insertions(+)
 
-Two quick followup questions:
+Just wondering why not take the built-in way in throtl_upgrade_state() for
+canceling throttled bios? Something like the following, then we can avoid
+to re-invent the wheel.
 
-1) From your v1, I still wasn't quite sure if the per-cpu time was
-useful or not for you versus a single overall sum (ie. I think other
-metrics could be more useful for analyzing steal_cookie if that's what
-you're specifically interested in). Do you definitely want the per-cpu
-totals?
+ block/blk-throttle.c | 38 +++++++++++++++++++++++++++++++-------
+ block/blk-throttle.h |  2 ++
+ block/genhd.c        |  3 +++
+ 3 files changed, 36 insertions(+), 7 deletions(-)
 
-2) If your cgroup accounting patch is merged, do you still want this
-patch? You can grab the global values from the root cgroup (assuming
-you have cgroups enabled). The only potential gap is if you need
-per-cpu totals, though I'm working to add percpu stats to cgroup-v2:
-https://lkml.kernel.org/r/%3C20220107234138.1765668-1-joshdon@google.com%3E
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index cf7e20804f1b..17e56b2e44c4 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1816,16 +1816,11 @@ static void throtl_upgrade_check(struct throtl_grp *tg)
+ 		throtl_upgrade_state(tg->td);
+ }
+ 
+-static void throtl_upgrade_state(struct throtl_data *td)
++static void __throtl_cancel_bios(struct throtl_data *td)
+ {
+ 	struct cgroup_subsys_state *pos_css;
+ 	struct blkcg_gq *blkg;
+ 
+-	throtl_log(&td->service_queue, "upgrade to max");
+-	td->limit_index = LIMIT_MAX;
+-	td->low_upgrade_time = jiffies;
+-	td->scale = 0;
+-	rcu_read_lock();
+ 	blkg_for_each_descendant_post(blkg, pos_css, td->queue->root_blkg) {
+ 		struct throtl_grp *tg = blkg_to_tg(blkg);
+ 		struct throtl_service_queue *sq = &tg->service_queue;
+@@ -1834,12 +1829,41 @@ static void throtl_upgrade_state(struct throtl_data *td)
+ 		throtl_select_dispatch(sq);
+ 		throtl_schedule_next_dispatch(sq, true);
+ 	}
+-	rcu_read_unlock();
+ 	throtl_select_dispatch(&td->service_queue);
+ 	throtl_schedule_next_dispatch(&td->service_queue, true);
+ 	queue_work(kthrotld_workqueue, &td->dispatch_work);
+ }
+ 
++void blk_throtl_cancel_bios(struct request_queue *q)
++{
++	struct cgroup_subsys_state *pos_css;
++	struct blkcg_gq *blkg;
++
++	rcu_read_lock();
++	spin_lock_irq(&q->queue_lock);
++	__throtl_cancel_bios(q->td);
++	spin_unlock_irq(&q->queue_lock);
++	rcu_read_unlock();
++
++	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg)
++		del_timer_sync(&blkg_to_tg(blkg)->service_queue.pending_timer);
++	del_timer_sync(&q->td->service_queue.pending_timer);
++
++	throtl_shutdown_wq(q);
++}
++
++static void throtl_upgrade_state(struct throtl_data *td)
++{
++	throtl_log(&td->service_queue, "upgrade to max");
++	td->limit_index = LIMIT_MAX;
++	td->low_upgrade_time = jiffies;
++	td->scale = 0;
++
++	rcu_read_lock();
++	__throtl_cancel_bios(td);
++	rcu_read_unlock();
++}
++
+ static void throtl_downgrade_state(struct throtl_data *td)
+ {
+ 	td->scale /= 2;
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index b23a9f3abb82..525ac607c518 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -162,11 +162,13 @@ static inline int blk_throtl_init(struct request_queue *q) { return 0; }
+ static inline void blk_throtl_exit(struct request_queue *q) { }
+ static inline void blk_throtl_register_queue(struct request_queue *q) { }
+ static inline bool blk_throtl_bio(struct bio *bio) { return false; }
++static inline void blk_throtl_cancel_bios(struct request_queue *q) {}
+ #else /* CONFIG_BLK_DEV_THROTTLING */
+ int blk_throtl_init(struct request_queue *q);
+ void blk_throtl_exit(struct request_queue *q);
+ void blk_throtl_register_queue(struct request_queue *q);
+ bool __blk_throtl_bio(struct bio *bio);
++void blk_throtl_cancel_bios(struct request_queue *q);
+ static inline bool blk_throtl_bio(struct bio *bio)
+ {
+ 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+diff --git a/block/genhd.c b/block/genhd.c
+index 626c8406f21a..1395cbd8eacf 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -30,6 +30,7 @@
+ #include "blk.h"
+ #include "blk-mq-sched.h"
+ #include "blk-rq-qos.h"
++#include "blk-throttle.h"
+ 
+ static struct kobject *block_depr;
+ 
+@@ -622,6 +623,8 @@ void del_gendisk(struct gendisk *disk)
+ 
+ 	blk_mq_freeze_queue_wait(q);
+ 
++	blk_throtl_cancel_bios(q);
++
+ 	rq_qos_exit(q);
+ 	blk_sync_queue(q);
+ 	blk_flush_integrity();
+
+Thanks,
+Ming
+
