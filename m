@@ -2,102 +2,219 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C4A48DAB8
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 16:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D380B48DBB0
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 17:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbiAMPe6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 10:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbiAMPe6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 10:34:58 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9332BC061574
-        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:57 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id q25so24553780edb.2
-        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=XHQEo9fqyrDZ/5pi9gXVVtH309S9YPpH8gy7JyNdDZw=;
-        b=eKWmurj4NResToF0OQ5yghRvrgG247rWZs3l71mu71gH1gbNOYs8Y+ensblntjJEGp
-         DbAta7A2CYGsKkW30ZutIQuC/CJmzK7ig8GRak1LH0FGLs0zYBojtWzmKZgJaOlWuVQi
-         ESFKoOozU3OlPdQ0UMcDNjt4d4o/zytAMDmlXtGsb57i1F9+giW02CmfnQx0Kb5bj5Sl
-         0FImcI6w6z2gWgiuNuPlTBrcBv/rxo8/nZg6dqTMQh/mG4tY3FtY6fpo2IwT2n1ygA90
-         jCwWbWduTkfqTiVCG7WpcTINhVnRkZpEAkGFC+BZfOTC41n+bC4P1dLGOOv++YPWW7Yz
-         J0Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=XHQEo9fqyrDZ/5pi9gXVVtH309S9YPpH8gy7JyNdDZw=;
-        b=dc2vIc/OKdfsMSPAaS/4ss7y3fpjlfch4n+PFAaQ5lmfMBt/NxzQ+nlX3uhAXA2gGO
-         ItRFqdrNkS1/mmRC6ztIbQejPVDG/npWip2BX0suDjwix3r4QWbbEF+UZcqEev3HLkxr
-         MV2nSkAeMW8wCZEeHnCRoMC2Eu0Sz6W06b0h9Qm68sKZw5TfXLwDbdJKcyDeOAY01deI
-         grtePdkyAkd7orhLBkJtDBTjTrFFSUQz2vLbjVeRaMjtbMHGy0h3osj+2TQr08A/PR/2
-         qkW2l+XH0u18I2SpNVRHgU2fuVYT5I8vYyTJeclqEUzmINOFahp/NDcRroKXDRkMyziY
-         upOw==
-X-Gm-Message-State: AOAM530CUN2pHfRCMOafP/fS2MVjzaF7K0PN3ghvxjH98nfaOMGzHi7a
-        ZwtlqyyKQQ4IPfk7awZB74HTnb1boKbTg6zyTR8=
-X-Google-Smtp-Source: ABdhPJyP30c3AX7vwi5bpkKeehjNJ2tKa7x7Nox6SrWVCO3YQTdxNZjEbMW6TDmpmScyoA4T1RPDBaEhmewJQ4KFE7U=
-X-Received: by 2002:a17:907:16a9:: with SMTP id hc41mr3848284ejc.706.1642088095308;
- Thu, 13 Jan 2022 07:34:55 -0800 (PST)
+        id S236588AbiAMQ0Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 11:26:24 -0500
+Received: from mga07.intel.com ([134.134.136.100]:51006 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236520AbiAMQ0Y (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 Jan 2022 11:26:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642091184; x=1673627184;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gBq4m4zhBGWa7wPSPlkC8swdh6SNgrYfbHPlXejXkIc=;
+  b=No23wV4exdyTjXXYXGnlclJ2ou/EUzl2TRDFUaHJZwY2eK0h8+roT5UQ
+   rO9I1M5fuvxMBtgxtYLRbv5f/++aPMO73PCwFAKR/tZC1kADOhk8yhO2z
+   /q4AtVDqxrHFxbuoDlQwu8wTPX6J4f3zuHd82hWNX9OBORCPhBxASKDC+
+   QVfer5fc6LYnFqMp63bVXMHRA/ZhxngdNjAzunWjynJ/TaIe6y8e34CLD
+   AmlTMvheEf5I9FWQbdBdzTJuXX6jqD++eOgz5l2nkosbKdE48LS41spQ8
+   6KVbh/FZ8GF2eDAq5BcVAqAhm8kRpSoCNQpJC0diLg/toZZMO0qZbVvli
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="307388044"
+X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
+   d="scan'208";a="307388044"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 08:26:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
+   d="scan'208";a="491179430"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 13 Jan 2022 08:25:57 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n82vE-0007RR-HN; Thu, 13 Jan 2022 16:25:56 +0000
+Date:   Fri, 14 Jan 2022 00:25:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 27fe872b5169140b93c5eecd9ebd4fac7f5475ac
+Message-ID: <61e05264.ZDaz+iGmEVXG4Hz2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Received: by 2002:a17:907:9691:0:0:0:0 with HTTP; Thu, 13 Jan 2022 07:34:54
- -0800 (PST)
-Reply-To: rco.ben189@outlook.fr
-From:   "Mrs. Susan Dansuki" <peteronyekachi077@gmail.com>
-Date:   Thu, 13 Jan 2022 07:34:54 -0800
-Message-ID: <CAB6=xybVdxVnwJMigSm4ch7FAs8MM+15O2SxxhtupPLBpfO3MQ@mail.gmail.com>
-Subject: Re: COVID-19 RELIEF FUND WORTH $1,500,000.00 USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=20
-Attention: Beneficiary,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 27fe872b5169140b93c5eecd9ebd4fac7f5475ac  Merge branch 'for-5.17-fixes' into for-next
 
-I am  Mrs. Susan Dansuki, the current Director of the Centers for
-Disease Control and Prevention. In the wake of the global COVID-19
-Pandemic, I wish to bring you the good news of hope. Be officially
-inform that the United Nations organization department for disaster
-management in conjunction with IMF, World Bank, is giving out Covid-19
-stimulus package worth $1,500, 000.00 USD, and your e-mail address
-were selected among other's to receive this stimulus package.
+elapsed time: 1132m
 
-The United Nations COVID-19 Response and Recovery Fund is a UN
-inter-agency fund mechanism established by the UN Secretary-General to
-help support low- and middle-income people(s) to respond to the
-pandemic and its impacts, including an unprecedented socio-economic
-shock. The Fund=E2=80=99s assistance targets those most vulnerable to econo=
-mic
-hardship and social disruption around the world.
+configs tested: 146
+configs skipped: 3
 
-We are delighted to inform you that due to mixed up of names and
-numbers, your email attached to approved number UN6MM020/COVID-19,
-which consequently fall on our Chapter, therefore, you are advised to
-contact the United Nations Covid-19 Relief Fund Coordinator ( Mr.
-Robert TAIWO ), to claim your $1,500, 000.00 USD.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Name: Mr.  Robert Taiwo
-Email:   mr.roberttaiwo73@qq.com
-Telephone:  +229 965 483 88
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+m68k                             alldefconfig
+sh                          sdk7780_defconfig
+ia64                        generic_defconfig
+ia64                         bigsur_defconfig
+sh                     magicpanelr2_defconfig
+sh                          landisk_defconfig
+sh                   sh7724_generic_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                               alldefconfig
+powerpc                      mgcoge_defconfig
+arm                            lart_defconfig
+powerpc                    klondike_defconfig
+arm                           stm32_defconfig
+powerpc                      bamboo_defconfig
+csky                             alldefconfig
+sparc                       sparc32_defconfig
+sh                          rsk7269_defconfig
+um                           x86_64_defconfig
+sh                               j2_defconfig
+powerpc64                        alldefconfig
+mips                     decstation_defconfig
+powerpc                       holly_defconfig
+csky                                defconfig
+powerpc                        warp_defconfig
+m68k                       m5475evb_defconfig
+mips                             allyesconfig
+arm                            pleb_defconfig
+arm                        trizeps4_defconfig
+sh                           se7705_defconfig
+mips                         mpc30x_defconfig
+nios2                            alldefconfig
+powerpc                      pasemi_defconfig
+m68k                            q40_defconfig
+arm                           tegra_defconfig
+arm                          badge4_defconfig
+sh                   sh7770_generic_defconfig
+arm                          exynos_defconfig
+ia64                             allmodconfig
+sh                         apsh4a3a_defconfig
+mips                           xway_defconfig
+powerpc                       ppc64_defconfig
+arm                          simpad_defconfig
+sh                             sh03_defconfig
+arm                        cerfcube_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                          r7785rp_defconfig
+arm                            hisi_defconfig
+powerpc                       maple_defconfig
+i386                             alldefconfig
+arm                           sunxi_defconfig
+sh                           se7721_defconfig
+sh                           se7780_defconfig
+powerpc                   motionpro_defconfig
+arm                           h3600_defconfig
+m68k                         amcore_defconfig
+sh                          rsk7264_defconfig
+sh                          kfr2r09_defconfig
+um                             i386_defconfig
+h8300                               defconfig
+arm                  randconfig-c002-20220113
+arm                  randconfig-c002-20220112
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220113
+arc                  randconfig-r043-20220113
+s390                 randconfig-r044-20220113
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-Confirm the following information as soon as possible.
+clang tested configs:
+arm                  randconfig-c002-20220113
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220113
+powerpc              randconfig-c003-20220113
+i386                          randconfig-c001
+mips                 randconfig-c004-20220113
+powerpc                     ppa8548_defconfig
+mips                        bcm63xx_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                      pmac32_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+hexagon              randconfig-r045-20220113
+hexagon              randconfig-r041-20220113
+hexagon              randconfig-r045-20220112
+riscv                randconfig-r042-20220112
+hexagon              randconfig-r041-20220112
 
-1. Full Name :
-2. Address :
-3. Nationality :
-4. Direct Telephone #:
-
-NOTE: that the amount to be paid to you is ( $1,500, 000.00 USD ), we
-are expecting your urgent response to this email to enable us monitor
-the transaction effectively.
-
-Best Regards
-Mrs. Susan Dansuki
-Director of the Centers for Disease Control and Prevention.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
