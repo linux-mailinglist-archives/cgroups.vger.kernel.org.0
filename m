@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3C248DBAE
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 17:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B3748DBAD
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 17:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236584AbiAMQ0N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 11:26:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:57457 "EHLO mga12.intel.com"
+        id S236631AbiAMQZ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 11:25:59 -0500
+Received: from mga02.intel.com ([134.134.136.20]:34818 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236520AbiAMQ0N (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 Jan 2022 11:26:13 -0500
+        id S236627AbiAMQZ7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 Jan 2022 11:25:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642091173; x=1673627173;
+  t=1642091159; x=1673627159;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=oIyZ9WIQ6HvcM1TI7rqfqttQJSiUxyfx+XBviiKuB8A=;
-  b=FLt4sts9GJ2dwe9gRzaE9WpwlWDDvk/I6XUaIIB0ooq6bQ+83/moxbS4
-   jya/LJW9tFknXkR/h18O7rH6PrDl7P4iuNNkRneY3EMnT+Ie897NR5pNJ
-   nvEZQgg+XRkan8tIGt1sto1im+mlMVBjTi1Lxm+N9sNDWLmcDEBJLItxu
-   4BnbFxZBGt0EDiOqKbpzZnR7bW3jjbOD2xAX4hpqf3pOiw/0EUZ4XMCIR
-   IxeLaR01a3FvXdE3NPneXByA9MwxKUZZBBNB7WtEhAfAMv+7vUNFRoEng
-   yqAB6hcuSZuaRBI8GOO0jP3Szqi1PcDx2A/2tP9WSDf2h3YpRsT2clCt6
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="224026980"
+  bh=mnAIH6dIYqS4MUYKYWWDy+VJ/L/oSWRWlRtucrQBfuQ=;
+  b=fr6YX5AMDxPXmVE+gaHdwSMGur2awNLfulD7x4OtxCSlr4+vhuuBdb5Y
+   AdHVvFAaH5CSaeC9Ez3DbwtedtqV/IAaGyb4yhKhUrYiJdfcizyKm1MMY
+   Ms45yp6q0Gluo5mu1BXdxDQlFEXEq7U3hws04A4rLAkEH4Ifwhy0+KOzn
+   uG4zdS1uz/XFRVretOtQ0H6ezPfPMo/0LZeYS5zYk96C+nKB+n8rFlGBx
+   qQ8NJzccvfnrnnVmJHzBCxI3HkUgWsOq/pma3s8AO/K5dxLsr7EC+NFas
+   p3AZRkmcXjfFd5UqSNeo1Hx8pSDAO+rVkbXaMCIABm/FED61ITdWSv8Ml
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="231392829"
 X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
-   d="scan'208";a="224026980"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 08:26:12 -0800
+   d="scan'208";a="231392829"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 08:25:58 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
-   d="scan'208";a="614002660"
+   d="scan'208";a="559153230"
 Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Jan 2022 08:25:57 -0800
+  by orsmga001.jf.intel.com with ESMTP; 13 Jan 2022 08:25:57 -0800
 Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1n82vE-0007RO-Gp; Thu, 13 Jan 2022 16:25:56 +0000
-Date:   Fri, 14 Jan 2022 00:25:15 +0800
+        id 1n82vE-0007RJ-FG; Thu, 13 Jan 2022 16:25:56 +0000
+Date:   Fri, 14 Jan 2022 00:25:20 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-5.18] BUILD SUCCESS
- ffacbd11e2580a93546733d2e4e320c181f76844
-Message-ID: <61e0526b.aOOagla/5A808hh8%lkp@intel.com>
+Subject: [tj-cgroup:for-5.17-fixes] BUILD SUCCESS
+ d068eebbd4822b6c14a7ea375dfe53ca5c69c776
+Message-ID: <61e05270.hcwfrlKrYr6X1ct4%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,8 +52,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.18
-branch HEAD: ffacbd11e2580a93546733d2e4e320c181f76844  cgroup: Fix cgroup_can_fork() and cgroup_post_fork() kernel-doc comment
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17-fixes
+branch HEAD: d068eebbd4822b6c14a7ea375dfe53ca5c69c776  cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
 
 elapsed time: 1133m
 
