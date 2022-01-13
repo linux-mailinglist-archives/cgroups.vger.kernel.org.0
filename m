@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D380B48DBB0
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 17:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3C248DBAE
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 17:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236588AbiAMQ0Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 11:26:24 -0500
-Received: from mga07.intel.com ([134.134.136.100]:51006 "EHLO mga07.intel.com"
+        id S236584AbiAMQ0N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 11:26:13 -0500
+Received: from mga12.intel.com ([192.55.52.136]:57457 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236520AbiAMQ0Y (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 Jan 2022 11:26:24 -0500
+        id S236520AbiAMQ0N (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 Jan 2022 11:26:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642091184; x=1673627184;
+  t=1642091173; x=1673627173;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=gBq4m4zhBGWa7wPSPlkC8swdh6SNgrYfbHPlXejXkIc=;
-  b=No23wV4exdyTjXXYXGnlclJ2ou/EUzl2TRDFUaHJZwY2eK0h8+roT5UQ
-   rO9I1M5fuvxMBtgxtYLRbv5f/++aPMO73PCwFAKR/tZC1kADOhk8yhO2z
-   /q4AtVDqxrHFxbuoDlQwu8wTPX6J4f3zuHd82hWNX9OBORCPhBxASKDC+
-   QVfer5fc6LYnFqMp63bVXMHRA/ZhxngdNjAzunWjynJ/TaIe6y8e34CLD
-   AmlTMvheEf5I9FWQbdBdzTJuXX6jqD++eOgz5l2nkosbKdE48LS41spQ8
-   6KVbh/FZ8GF2eDAq5BcVAqAhm8kRpSoCNQpJC0diLg/toZZMO0qZbVvli
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="307388044"
+  bh=oIyZ9WIQ6HvcM1TI7rqfqttQJSiUxyfx+XBviiKuB8A=;
+  b=FLt4sts9GJ2dwe9gRzaE9WpwlWDDvk/I6XUaIIB0ooq6bQ+83/moxbS4
+   jya/LJW9tFknXkR/h18O7rH6PrDl7P4iuNNkRneY3EMnT+Ie897NR5pNJ
+   nvEZQgg+XRkan8tIGt1sto1im+mlMVBjTi1Lxm+N9sNDWLmcDEBJLItxu
+   4BnbFxZBGt0EDiOqKbpzZnR7bW3jjbOD2xAX4hpqf3pOiw/0EUZ4XMCIR
+   IxeLaR01a3FvXdE3NPneXByA9MwxKUZZBBNB7WtEhAfAMv+7vUNFRoEng
+   yqAB6hcuSZuaRBI8GOO0jP3Szqi1PcDx2A/2tP9WSDf2h3YpRsT2clCt6
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="224026980"
 X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
-   d="scan'208";a="307388044"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 08:26:04 -0800
+   d="scan'208";a="224026980"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 08:26:12 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,286,1635231600"; 
-   d="scan'208";a="491179430"
+   d="scan'208";a="614002660"
 Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 13 Jan 2022 08:25:57 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Jan 2022 08:25:57 -0800
 Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1n82vE-0007RR-HN; Thu, 13 Jan 2022 16:25:56 +0000
-Date:   Fri, 14 Jan 2022 00:25:08 +0800
+        id 1n82vE-0007RO-Gp; Thu, 13 Jan 2022 16:25:56 +0000
+Date:   Fri, 14 Jan 2022 00:25:15 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 27fe872b5169140b93c5eecd9ebd4fac7f5475ac
-Message-ID: <61e05264.ZDaz+iGmEVXG4Hz2%lkp@intel.com>
+Subject: [tj-cgroup:for-5.18] BUILD SUCCESS
+ ffacbd11e2580a93546733d2e4e320c181f76844
+Message-ID: <61e0526b.aOOagla/5A808hh8%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,12 +52,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 27fe872b5169140b93c5eecd9ebd4fac7f5475ac  Merge branch 'for-5.17-fixes' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.18
+branch HEAD: ffacbd11e2580a93546733d2e4e320c181f76844  cgroup: Fix cgroup_can_fork() and cgroup_post_fork() kernel-doc comment
 
-elapsed time: 1132m
+elapsed time: 1133m
 
-configs tested: 146
+configs tested: 143
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -164,8 +164,6 @@ powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
 x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
 i386                          randconfig-a012
 i386                          randconfig-a014
 i386                          randconfig-a016
@@ -193,7 +191,6 @@ riscv                randconfig-c006-20220113
 powerpc              randconfig-c003-20220113
 i386                          randconfig-c001
 mips                 randconfig-c004-20220113
-powerpc                     ppa8548_defconfig
 mips                        bcm63xx_defconfig
 mips                   sb1250_swarm_defconfig
 powerpc                      pmac32_defconfig
