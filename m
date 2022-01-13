@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F91048DAB6
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 16:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C4A48DAB8
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 16:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbiAMPeZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 10:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        id S232390AbiAMPe6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 10:34:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbiAMPeZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 10:34:25 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C22C061574
-        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:25 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id i5so24503148edf.9
-        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:25 -0800 (PST)
+        with ESMTP id S229912AbiAMPe6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 10:34:58 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9332BC061574
+        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:57 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id q25so24553780edb.2
+        for <cgroups@vger.kernel.org>; Thu, 13 Jan 2022 07:34:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=vGIFzNmQpQQ5nHzyD40XyUWx3lBBnCxfYKR0bhFKrzU=;
-        b=bpa+BrpxnnVXrbrYtGGCkuFYI/tiqdx8E5ZNY8A9WwRm5k3dNJYaNRIBxotRdsPKuw
-         TpzIE+wzZjDT4+HOkhEfM//N2tFGCmwHVEsedIq6LvGf826Ckg/kof8tUr30m9RHfh7g
-         3OVdHgwMbLhTIVEOXIpdi4+I+TvCgB02479bBbVfBT+1hYxKo6BJ0dX1CoHmrR2LaW6+
-         Btv1WyDPTi8zh3SqLKjEq641wYAYAlfa/vr3XUFlkYZo/Qef5/Ne+n6KZ6fyh7esa+a3
-         Xog03BlDPbxg+yDVJbWpio3uGqAKL2AmHoW30d2Dqc4NbzJO9uhl7GvK0iosxgJp0+K0
-         QAaQ==
+        bh=XHQEo9fqyrDZ/5pi9gXVVtH309S9YPpH8gy7JyNdDZw=;
+        b=eKWmurj4NResToF0OQ5yghRvrgG247rWZs3l71mu71gH1gbNOYs8Y+ensblntjJEGp
+         DbAta7A2CYGsKkW30ZutIQuC/CJmzK7ig8GRak1LH0FGLs0zYBojtWzmKZgJaOlWuVQi
+         ESFKoOozU3OlPdQ0UMcDNjt4d4o/zytAMDmlXtGsb57i1F9+giW02CmfnQx0Kb5bj5Sl
+         0FImcI6w6z2gWgiuNuPlTBrcBv/rxo8/nZg6dqTMQh/mG4tY3FtY6fpo2IwT2n1ygA90
+         jCwWbWduTkfqTiVCG7WpcTINhVnRkZpEAkGFC+BZfOTC41n+bC4P1dLGOOv++YPWW7Yz
+         J0Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to:content-transfer-encoding;
-        bh=vGIFzNmQpQQ5nHzyD40XyUWx3lBBnCxfYKR0bhFKrzU=;
-        b=kN+FcKZX4N3ouiz0oq+g75Pfi1inhZqQut4Yirp68Ea19f8d5+r2MyboUAOoLIRpX5
-         P1fNr2U4VWNVZ+vyBTrlX/yhO4GkdQseZZ0UkxMn0DMDrr8QKciyXMuoT0Y+rlrk9WE8
-         l319bN/MhR5CJ4o8zFL2e4SS7A4FW0pyW2Ah8Qj++jzn5Fs7xnce0oAdlOEdDgyOIHvK
-         WPA95SItj9dE4/F2n3u5rTwKqryUDCr011yGC1lcLVcAjv5BvNXb4JkkadRICONDEkZh
-         mi9HFleeONie70RDBRLRq0j80mwkqrnXcyCARIggY5QODd2h8Athd3B3GtZi0hkkmkeM
-         w8IA==
-X-Gm-Message-State: AOAM533fF3rqY4SL8bh1XaZlmJzHKozsyxmSq8JJ3NX645ywDPs9VSkR
-        XclVOnPhblEIlEkykEcNVs6V9faVeJQ5WWW5+As=
-X-Google-Smtp-Source: ABdhPJwFRvI9SVNtUWcS0Y73D+LRo2NFfhtk5wwAlhPvxJPwyo09tKrslP93kVzvJZUP2lQAMmy5l37C8CWm9tRs1tg=
-X-Received: by 2002:a05:6402:42c4:: with SMTP id i4mr4814005edc.408.1642088063134;
- Thu, 13 Jan 2022 07:34:23 -0800 (PST)
+        bh=XHQEo9fqyrDZ/5pi9gXVVtH309S9YPpH8gy7JyNdDZw=;
+        b=dc2vIc/OKdfsMSPAaS/4ss7y3fpjlfch4n+PFAaQ5lmfMBt/NxzQ+nlX3uhAXA2gGO
+         ItRFqdrNkS1/mmRC6ztIbQejPVDG/npWip2BX0suDjwix3r4QWbbEF+UZcqEev3HLkxr
+         MV2nSkAeMW8wCZEeHnCRoMC2Eu0Sz6W06b0h9Qm68sKZw5TfXLwDbdJKcyDeOAY01deI
+         grtePdkyAkd7orhLBkJtDBTjTrFFSUQz2vLbjVeRaMjtbMHGy0h3osj+2TQr08A/PR/2
+         qkW2l+XH0u18I2SpNVRHgU2fuVYT5I8vYyTJeclqEUzmINOFahp/NDcRroKXDRkMyziY
+         upOw==
+X-Gm-Message-State: AOAM530CUN2pHfRCMOafP/fS2MVjzaF7K0PN3ghvxjH98nfaOMGzHi7a
+        ZwtlqyyKQQ4IPfk7awZB74HTnb1boKbTg6zyTR8=
+X-Google-Smtp-Source: ABdhPJyP30c3AX7vwi5bpkKeehjNJ2tKa7x7Nox6SrWVCO3YQTdxNZjEbMW6TDmpmScyoA4T1RPDBaEhmewJQ4KFE7U=
+X-Received: by 2002:a17:907:16a9:: with SMTP id hc41mr3848284ejc.706.1642088095308;
+ Thu, 13 Jan 2022 07:34:55 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a17:907:9691:0:0:0:0 with HTTP; Thu, 13 Jan 2022 07:34:22
+Received: by 2002:a17:907:9691:0:0:0:0 with HTTP; Thu, 13 Jan 2022 07:34:54
  -0800 (PST)
 Reply-To: rco.ben189@outlook.fr
 From:   "Mrs. Susan Dansuki" <peteronyekachi077@gmail.com>
-Date:   Thu, 13 Jan 2022 07:34:22 -0800
-Message-ID: <CAB6=xyZZURfdsV5=kN97v80diCvyPrq+e_EzfYnFL1aZ07quJQ@mail.gmail.com>
+Date:   Thu, 13 Jan 2022 07:34:54 -0800
+Message-ID: <CAB6=xybVdxVnwJMigSm4ch7FAs8MM+15O2SxxhtupPLBpfO3MQ@mail.gmail.com>
 Subject: Re: COVID-19 RELIEF FUND WORTH $1,500,000.00 USD
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
@@ -58,6 +58,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+--=20
 Attention: Beneficiary,
 
 I am  Mrs. Susan Dansuki, the current Director of the Centers for
@@ -84,7 +85,7 @@ Robert TAIWO ), to claim your $1,500, 000.00 USD.
 
 Name: Mr.  Robert Taiwo
 Email:   mr.roberttaiwo73@qq.com
-Telephone/WhatsApp :  +229 965 483 88
+Telephone:  +229 965 483 88
 
 Confirm the following information as soon as possible.
 
