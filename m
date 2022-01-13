@@ -2,201 +2,227 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCC548D3CB
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 09:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E632A48D516
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jan 2022 10:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbiAMIqZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 03:46:25 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16709 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiAMIqY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 03:46:24 -0500
-Received: from kwepemi500004.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JZHxZ2x6dzZf5J;
-        Thu, 13 Jan 2022 16:42:42 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500004.china.huawei.com (7.221.188.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 13 Jan 2022 16:46:19 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 13 Jan 2022 16:46:19 +0800
-Subject: Re: [PATCH v6 2/2] block: cancel all throttled bios in del_gendisk()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <mkoutny@suse.com>, <paulmck@kernel.org>, <tj@kernel.org>,
-        <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20220110134758.2233758-1-yukuai3@huawei.com>
- <20220110134758.2233758-3-yukuai3@huawei.com> <Yd5FkuhYX9YcgQkZ@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <2221953d-be40-3433-d46c-f40acd044482@huawei.com>
-Date:   Thu, 13 Jan 2022 16:46:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S232062AbiAMJik (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 04:38:40 -0500
+Received: from mga07.intel.com ([134.134.136.100]:20140 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232093AbiAMJij (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 Jan 2022 04:38:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642066719; x=1673602719;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Dp0luOpI9ODzo8ZsqXUcIAQZzIg8GhdBt/D9aXLQZdQ=;
+  b=Xr0WCcamyBVCaGTAZ1mERRSAnlkg5Yv3+xkIB5DSYIt+8qzuogczVzr1
+   tgpHHxTYpTHE4/cO/RH43vKfjPp3lQlhpciZRHpiNumT8ZZq+dS1OfjZr
+   LfJqXUGYENM4IRG5MNngr5/LudWU7j9P9OLGrZSkY67sSxBcwVwJcBtFe
+   VeLuaYIM/HNo7cQ7KEVk0dqZonAk1F7x4Y6cGosa7Dl4wfXmTqHzcSrAP
+   QomjrXyDFuoHLvwtml4qg37jSD2MFBeBMyHeyB0vJFw08AqnEOmVx65ra
+   Xl736jzz/NqbczUsg0aZmtfMRiUYci+yfvIWk6CYmYokcPz4v8ouJY+bS
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="307319595"
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="307319595"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 01:38:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="691743108"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 13 Jan 2022 01:38:37 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n7wZ3-00072v-9j; Thu, 13 Jan 2022 09:38:37 +0000
+Date:   Thu, 13 Jan 2022 17:38:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:test-merge-for-5.17] BUILD SUCCESS
+ 5733aea7abddbb24b7611ef82688b576acf0dcbd
+Message-ID: <61dff315.T0aZMxIXh0uZEivm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <Yd5FkuhYX9YcgQkZ@T590>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ÔÚ 2022/01/12 11:05, Ming Lei Ð´µÀ:
-> Hello Yu Kuai,
-> 
-> On Mon, Jan 10, 2022 at 09:47:58PM +0800, Yu Kuai wrote:
->> Throttled bios can't be issued after del_gendisk() is done, thus
->> it's better to cancel them immediately rather than waiting for
->> throttle is done.
->>
->> For example, if user thread is throttled with low bps while it's
->> issuing large io, and the device is deleted. The user thread will
->> wait for a long time for io to return.
->>
->> Noted this patch is mainly from revertion of commit 32e3374304c7
->> ("blk-throttle: remove tg_drain_bios") and commit b77412372b68
->> ("blk-throttle: remove blk_throtl_drain").
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   block/blk-throttle.c | 77 ++++++++++++++++++++++++++++++++++++++++++++
->>   block/blk-throttle.h |  2 ++
->>   block/genhd.c        |  2 ++
->>   3 files changed, 81 insertions(+)
-> 
-> Just wondering why not take the built-in way in throtl_upgrade_state() for
-> canceling throttled bios? Something like the following, then we can avoid
-> to re-invent the wheel.
-> 
->   block/blk-throttle.c | 38 +++++++++++++++++++++++++++++++-------
->   block/blk-throttle.h |  2 ++
->   block/genhd.c        |  3 +++
->   3 files changed, 36 insertions(+), 7 deletions(-)
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index cf7e20804f1b..17e56b2e44c4 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -1816,16 +1816,11 @@ static void throtl_upgrade_check(struct throtl_grp *tg)
->   		throtl_upgrade_state(tg->td);
->   }
->   
-> -static void throtl_upgrade_state(struct throtl_data *td)
-> +static void __throtl_cancel_bios(struct throtl_data *td)
->   {
->   	struct cgroup_subsys_state *pos_css;
->   	struct blkcg_gq *blkg;
->   
-> -	throtl_log(&td->service_queue, "upgrade to max");
-> -	td->limit_index = LIMIT_MAX;
-> -	td->low_upgrade_time = jiffies;
-> -	td->scale = 0;
-> -	rcu_read_lock();
->   	blkg_for_each_descendant_post(blkg, pos_css, td->queue->root_blkg) {
->   		struct throtl_grp *tg = blkg_to_tg(blkg);
->   		struct throtl_service_queue *sq = &tg->service_queue;
-> @@ -1834,12 +1829,41 @@ static void throtl_upgrade_state(struct throtl_data *td)
->   		throtl_select_dispatch(sq);
->   		throtl_schedule_next_dispatch(sq, true);
-Hi, Ming Lei
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge-for-5.17
+branch HEAD: 5733aea7abddbb24b7611ef82688b576acf0dcbd  Merge branch 'for-5.17' into test-merge-for-5.17
 
-I'm confused that how can bios be canceled here?
-tg->iops and tg->bps stay untouched, how can throttled bios
-dispatch?
->   	}
-> -	rcu_read_unlock();
->   	throtl_select_dispatch(&td->service_queue);
->   	throtl_schedule_next_dispatch(&td->service_queue, true);
->   	queue_work(kthrotld_workqueue, &td->dispatch_work);
->   }
->   
-> +void blk_throtl_cancel_bios(struct request_queue *q)
-> +{
-> +	struct cgroup_subsys_state *pos_css;
-> +	struct blkcg_gq *blkg;
-> +
-> +	rcu_read_lock();
-> +	spin_lock_irq(&q->queue_lock);
-> +	__throtl_cancel_bios(q->td);
-> +	spin_unlock_irq(&q->queue_lock);
-> +	rcu_read_unlock();
-> +
-> +	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg)
-> +		del_timer_sync(&blkg_to_tg(blkg)->service_queue.pending_timer);
-> +	del_timer_sync(&q->td->service_queue.pending_timer);
+elapsed time: 724m
 
-By the way, I think delete timer will end up io hung here if there are
-some bios still be throttled.
+configs tested: 154
+configs skipped: 3
 
-Thanks,
-Kuai
-> +
-> +	throtl_shutdown_wq(q);
-> +}
-> +
-> +static void throtl_upgrade_state(struct throtl_data *td)
-> +{
-> +	throtl_log(&td->service_queue, "upgrade to max");
-> +	td->limit_index = LIMIT_MAX;
-> +	td->low_upgrade_time = jiffies;
-> +	td->scale = 0;
-> +
-> +	rcu_read_lock();
-> +	__throtl_cancel_bios(td);
-> +	rcu_read_unlock();
-> +}
-> +
->   static void throtl_downgrade_state(struct throtl_data *td)
->   {
->   	td->scale /= 2;
-> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-> index b23a9f3abb82..525ac607c518 100644
-> --- a/block/blk-throttle.h
-> +++ b/block/blk-throttle.h
-> @@ -162,11 +162,13 @@ static inline int blk_throtl_init(struct request_queue *q) { return 0; }
->   static inline void blk_throtl_exit(struct request_queue *q) { }
->   static inline void blk_throtl_register_queue(struct request_queue *q) { }
->   static inline bool blk_throtl_bio(struct bio *bio) { return false; }
-> +static inline void blk_throtl_cancel_bios(struct request_queue *q) {}
->   #else /* CONFIG_BLK_DEV_THROTTLING */
->   int blk_throtl_init(struct request_queue *q);
->   void blk_throtl_exit(struct request_queue *q);
->   void blk_throtl_register_queue(struct request_queue *q);
->   bool __blk_throtl_bio(struct bio *bio);
-> +void blk_throtl_cancel_bios(struct request_queue *q);
->   static inline bool blk_throtl_bio(struct bio *bio)
->   {
->   	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 626c8406f21a..1395cbd8eacf 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -30,6 +30,7 @@
->   #include "blk.h"
->   #include "blk-mq-sched.h"
->   #include "blk-rq-qos.h"
-> +#include "blk-throttle.h"
->   
->   static struct kobject *block_depr;
->   
-> @@ -622,6 +623,8 @@ void del_gendisk(struct gendisk *disk)
->   
->   	blk_mq_freeze_queue_wait(q);
->   
-> +	blk_throtl_cancel_bios(q);
-> +
->   	rq_qos_exit(q);
->   	blk_sync_queue(q);
->   	blk_flush_integrity();
-> 
-> Thanks,
-> Ming
-> 
-> .
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+m68k                             alldefconfig
+sh                          sdk7780_defconfig
+ia64                        generic_defconfig
+ia64                         bigsur_defconfig
+sh                     magicpanelr2_defconfig
+sh                          landisk_defconfig
+sh                   sh7724_generic_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                                  defconfig
+mips                       capcella_defconfig
+powerpc                      ppc40x_defconfig
+m68k                             allyesconfig
+powerpc                           allnoconfig
+sh                               alldefconfig
+powerpc                      mgcoge_defconfig
+arm                            lart_defconfig
+powerpc                    klondike_defconfig
+arm                           stm32_defconfig
+powerpc                      bamboo_defconfig
+csky                             alldefconfig
+sparc                       sparc32_defconfig
+sh                          rsk7269_defconfig
+um                           x86_64_defconfig
+sh                               j2_defconfig
+powerpc64                        alldefconfig
+mips                     decstation_defconfig
+powerpc                       holly_defconfig
+csky                                defconfig
+powerpc                        warp_defconfig
+m68k                       m5475evb_defconfig
+mips                             allyesconfig
+arm                            pleb_defconfig
+arm                        trizeps4_defconfig
+sh                           se7705_defconfig
+mips                         mpc30x_defconfig
+xtensa                  audio_kc705_defconfig
+mips                 decstation_r4k_defconfig
+nios2                            alldefconfig
+powerpc                      pasemi_defconfig
+m68k                            q40_defconfig
+arm                           tegra_defconfig
+arm                          badge4_defconfig
+sh                   sh7770_generic_defconfig
+arm                          exynos_defconfig
+ia64                             allmodconfig
+sh                         apsh4a3a_defconfig
+mips                           xway_defconfig
+powerpc                       ppc64_defconfig
+arm                          simpad_defconfig
+arm                         lpc18xx_defconfig
+m68k                        mvme16x_defconfig
+ia64                          tiger_defconfig
+m68k                       bvme6000_defconfig
+sh                             sh03_defconfig
+arm                        cerfcube_defconfig
+powerpc                 mpc837x_mds_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                          r7785rp_defconfig
+arm                            hisi_defconfig
+powerpc                       maple_defconfig
+i386                             alldefconfig
+arm                           sunxi_defconfig
+sh                           se7721_defconfig
+sh                           se7780_defconfig
+powerpc                   motionpro_defconfig
+arm                           h3600_defconfig
+m68k                         amcore_defconfig
+sh                          rsk7264_defconfig
+sh                          kfr2r09_defconfig
+um                             i386_defconfig
+h8300                               defconfig
+arm                  randconfig-c002-20220113
+arm                  randconfig-c002-20220112
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a002
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+riscv                randconfig-r042-20220113
+arc                  randconfig-r043-20220113
+s390                 randconfig-r044-20220113
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+arm                  randconfig-c002-20220113
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220113
+powerpc              randconfig-c003-20220113
+i386                          randconfig-c001
+mips                 randconfig-c004-20220113
+mips                        bcm63xx_defconfig
+mips                   sb1250_swarm_defconfig
+powerpc                      pmac32_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+hexagon              randconfig-r045-20220113
+hexagon              randconfig-r041-20220113
+hexagon              randconfig-r045-20220112
+riscv                randconfig-r042-20220112
+hexagon              randconfig-r041-20220112
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
