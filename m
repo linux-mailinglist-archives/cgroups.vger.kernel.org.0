@@ -2,154 +2,163 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D3448EDFC
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 17:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0454748EE09
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 17:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243236AbiANQUr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jan 2022 11:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
+        id S243315AbiANQXQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jan 2022 11:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243304AbiANQUq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 11:20:46 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B40EC061574;
-        Fri, 14 Jan 2022 08:20:46 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id 128so3154257pfe.12;
-        Fri, 14 Jan 2022 08:20:46 -0800 (PST)
+        with ESMTP id S243318AbiANQXP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 11:23:15 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701F6C06161C
+        for <cgroups@vger.kernel.org>; Fri, 14 Jan 2022 08:23:15 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id r16-20020a17090a0ad000b001b276aa3aabso22575289pje.0
+        for <cgroups@vger.kernel.org>; Fri, 14 Jan 2022 08:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=tI6w3Ew9uGi/4Ws14FKORId620oBYfchKOW7qmy41Pg=;
-        b=HY0j4wzABS+0tmo1ciIn9OCG9WYpveD9/CRFtxUR5s4EpAiRsgOpumJrKXnwlBLfUL
-         nVTvlv9ycgETcPJb61MfGbv5wMjcEITUx+zvjfNb9MSHX3XDDVcs8WNed6zhGA/KHzpT
-         /0t5yY66BEYEhydFy2UABlDPGDoxaQK15gknPQK7D8LvUKMoq5f3vrxo1x4jwLBMNAed
-         ouJ8OYK2gG/XOpNdyjeGecwrfQJdJXzOt+Zg3LREIvkRtn1kp8iMmHxNEdLvqlDvkclD
-         5MTmBAXXOL2LFhOX4Y44zMm+rfapaNeNkeTsUL+oV76GFKVa65cE/NaWThNwlXb/cjPg
-         7arQ==
+        bh=WMPE+WU1bNdjA6o7ZbSZsATOGsvK5p4vgAdRPhBadPc=;
+        b=fl3KdIZfValLjKA1E6wedckpa7NV+PNpEFoj8oa3STd5ZQLHS2aaTMEzMBmBSb3wq+
+         o2gSaeZoO/8yPFDBpMhj3fGtAl10cJAhdLkfZ3VlRS3Kp0JpapU/FH3thd8kytE1VF09
+         XECH6TqRirWgstwCobE9daj33k00FkiAhGF+zZKjuBcUBNYFpnfs0AznIxM1jMLHcFs5
+         BVUUOsfQiJ3Co1FtHATSSi9LK7LbADoVuuSYvS96Osbk0g05tLOGJML3L05USTsHWWu+
+         MTNgsI4GX+KaZgsnRZCGm0ah5cOQ62Mv2h1EbKrtQzs5UKbDJq9EwF7MbJyf7VgLS8n3
+         V8/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=tI6w3Ew9uGi/4Ws14FKORId620oBYfchKOW7qmy41Pg=;
-        b=JW+MXlaK+gtTGg/Hwud5e6LSiOo+IN2Xh5S8D1aeXdeF5MNjzFVR9xkWoAkhEXWTP8
-         YMekO2M26chHIqDmM77veF0RnUAcCIjhy9dJUH2Rr/IEZEqgjtMTJAk0JxPEDS47jC8Z
-         iq4hDy0sFEVVSD3mUNHcyf4rGNrOgkJD9x0cWXfcOmA156BkHGUEa/egnEvEg+wZ/cVD
-         J6IuMbEtsCKUklXexSrHjIfUKtBq7ghyURsElGbU52azrGfZ6h34HaAvZFg6jJZkHoA5
-         iVs0snkK2FtZwRNT115vgmGERBC1l307h79+j5efbKoXNk7xJPBHpMbM/hUhSNMXwV7H
-         ocKg==
-X-Gm-Message-State: AOAM5325m1qdjek7hbfXPyssbmCfC4ITSarNOMLAcbB+2NFuMxLx+Asy
-        UIO/4+NVpbkGriih6pap1p2Nn0u1KsbFTw==
-X-Google-Smtp-Source: ABdhPJz6AVfa1WVT3ozV52/TTxxA7+rA/ZqLs7Z7WpjzPYU6ZTkx0kgKz7dEkwGow9hAHyUPSb0OMA==
-X-Received: by 2002:a05:6a00:22d1:b0:4c2:5a55:960e with SMTP id f17-20020a056a0022d100b004c25a55960emr6081874pfj.74.1642177245436;
-        Fri, 14 Jan 2022 08:20:45 -0800 (PST)
+        bh=WMPE+WU1bNdjA6o7ZbSZsATOGsvK5p4vgAdRPhBadPc=;
+        b=R39UeBryRQLUa8dPg33EmFfoYIWkpG0sQg2qZrxwgfZAx1jBgTleNsHFQm9PajMrzG
+         3Ep92VFh5eFMfZR5qsc9mo2Ljrlg+rIq00U+kWIDhBWCGi9hbLOtpGvzfLvXQSjdvs5b
+         u0oVKICluT9I/5p+AqMIBo7synLYlflhrCtrtuaGOhytzKHLNRGX/v741frycKiTOQdP
+         bi5HIrv0RF3p+GA+5KXL41WKShbQ28Qvb/KXlhhzXsP8eWNKU0La41Jn7pUE4ZG8PyDR
+         dHDfVr+6wArwcXw6Z6Do2V+gfeuKT2THaxNgrQGn6DqweJuQrj4PeGD4LXxITG/Q0bNC
+         xGzQ==
+X-Gm-Message-State: AOAM530JgD4PPzVynli/Zw2I8BE6nwxvFGpAxSVpZDKWH3vs0TNn8pI1
+        LRny2nKgvhd9Sm9chk1AG68=
+X-Google-Smtp-Source: ABdhPJxu546PerKJs7qQiFSTh9hIC7+Vs3tRH15QSqaFf1N7Y7ak994n9gGwe4pZaG/Y4fNE35/eYw==
+X-Received: by 2002:a17:902:ee55:b0:14a:357e:74d5 with SMTP id 21-20020a170902ee5500b0014a357e74d5mr10528504plo.50.1642177394692;
+        Fri, 14 Jan 2022 08:23:14 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id h189sm1241535pfg.141.2022.01.14.08.20.44
+        by smtp.gmail.com with ESMTPSA id nv10sm1505268pjb.33.2022.01.14.08.23.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jan 2022 08:20:44 -0800 (PST)
+        Fri, 14 Jan 2022 08:23:13 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 14 Jan 2022 06:20:43 -1000
+Date:   Fri, 14 Jan 2022 06:23:12 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Zhang Qiao <zhangqiao22@huawei.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [Question] set_cpus_allowed_ptr() call failed at cpuset_attach()
-Message-ID: <YeGi2yjRi/uZIF/2@slm.duckdns.org>
-References: <09ce5796-798e-83d0-f1a6-ba38a787bfc5@huawei.com>
- <4415cd09-6de3-bb2d-386d-8beb4927fb46@huawei.com>
+To:     Alexander Egorenkov <egorenar@linux.ibm.com>
+Cc:     cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>
+Subject: Re: LTP test suite triggers LOCKDEP_CIRCULAR on linux-next
+Message-ID: <YeGjcF6CU/R6cyec@slm.duckdns.org>
+References: <87mtjzslv7.fsf@oc8242746057.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4415cd09-6de3-bb2d-386d-8beb4927fb46@huawei.com>
+In-Reply-To: <87mtjzslv7.fsf@oc8242746057.ibm.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-(cc'ing Waiman and Michal and quoting whole body)
+Roman, does this ring a bell?
 
-Seems sane to me but let's hear what Waiman and Michal think.
-
-On Fri, Jan 14, 2022 at 09:15:06AM +0800, Zhang Qiao wrote:
+On Thu, Jan 13, 2022 at 04:20:44PM +0100, Alexander Egorenkov wrote:
 > 
-> Hello everyone
+> Hi,
 > 
-> 	I found the following warning log on qemu. I migrated a task from one cpuset cgroup to
-> another, while I also performed the cpu hotplug operation, and got following calltrace.
+> our daily CI linux-next test reported the following finding on s390x arch:
 > 
-> 	This may lead to a inconsistency between the affinity of the task and cpuset.cpus of the
-> dest cpuset, but this task can be successfully migrated to the dest cpuset cgroup.
+> 	 LOCKDEP_CIRCULAR (suite: ltp, case: mtest06 (mmap1))
+> 		 WARNING: possible circular locking dependency detected
+> 		 5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1 Not tainted
+> 		 ------------------------------------------------------
+> 		 mmap1/202299 is trying to acquire lock:
+> 		 00000001892c0188 (css_set_lock){..-.}-{2:2}, at: obj_cgroup_release+0x4a/0xe0
+> 		 but task is already holding lock:
+> 		 00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+> 		 which lock already depends on the new lock.
+> 		 the existing dependency chain (in reverse order) is:
+> 		 -> #1 (&sighand->siglock){-.-.}-{2:2}:
+> 			__lock_acquire+0x604/0xbd8
+> 			lock_acquire.part.0+0xe2/0x238
+> 			lock_acquire+0xb0/0x200
+> 			_raw_spin_lock_irqsave+0x6a/0xd8
+> 			__lock_task_sighand+0x90/0x190
+> 			cgroup_freeze_task+0x2e/0x90
+> 			cgroup_migrate_execute+0x11c/0x608
+> 			cgroup_update_dfl_csses+0x246/0x270
+> 			cgroup_subtree_control_write+0x238/0x518
+> 			kernfs_fop_write_iter+0x13e/0x1e0
+> 			new_sync_write+0x100/0x190
+> 			vfs_write+0x22c/0x2d8
+> 			ksys_write+0x6c/0xf8
+> 			__do_syscall+0x1da/0x208
+> 			system_call+0x82/0xb0
+> 		 -> #0 (css_set_lock){..-.}-{2:2}:
+> 			check_prev_add+0xe0/0xed8
+> 			validate_chain+0x736/0xb20
+> 			__lock_acquire+0x604/0xbd8
+> 			lock_acquire.part.0+0xe2/0x238
+> 			lock_acquire+0xb0/0x200
+> 			_raw_spin_lock_irqsave+0x6a/0xd8
+> 			obj_cgroup_release+0x4a/0xe0
+> 			percpu_ref_put_many.constprop.0+0x150/0x168
+> 			drain_obj_stock+0x94/0xe8
+> 			refill_obj_stock+0x94/0x278
+> 			obj_cgroup_charge+0x164/0x1d8
+> 			kmem_cache_alloc+0xac/0x528
+> 			__sigqueue_alloc+0x150/0x308
+> 			__send_signal+0x260/0x550
+> 			send_signal+0x7e/0x348
+> 			force_sig_info_to_task+0x104/0x180
+> 			force_sig_fault+0x48/0x58
+> 			__do_pgm_check+0x120/0x1f0
+> 			pgm_check_handler+0x11e/0x180
+> 		 other info that might help us debug this:
+> 		  Possible unsafe locking scenario:
+> 			CPU0                    CPU1
+> 			----                    ----
+> 		   lock(&sighand->siglock);
+> 						lock(css_set_lock);
+> 						lock(&sighand->siglock);
+> 		   lock(css_set_lock);
+> 		  *** DEADLOCK ***
+> 		 2 locks held by mmap1/202299:
+> 		  #0: 00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+> 		  #1: 00000001892ad560 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x168
+> 		 stack backtrace:
+> 		 CPU: 15 PID: 202299 Comm: mmap1 Not tainted 5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1
+> 		 Hardware name: IBM 3906 M04 704 (LPAR)
+> 		 Call Trace:
+> 		  [<00000001888aacfe>] dump_stack_lvl+0x76/0x98 
+> 		  [<0000000187c6d7be>] check_noncircular+0x136/0x158 
+> 		  [<0000000187c6e888>] check_prev_add+0xe0/0xed8 
+> 		  [<0000000187c6fdb6>] validate_chain+0x736/0xb20 
+> 		  [<0000000187c71e54>] __lock_acquire+0x604/0xbd8 
+> 		  [<0000000187c7301a>] lock_acquire.part.0+0xe2/0x238 
+> 		  [<0000000187c73220>] lock_acquire+0xb0/0x200 
+> 		  [<00000001888bf9aa>] _raw_spin_lock_irqsave+0x6a/0xd8 
+> 		  [<0000000187ef6862>] obj_cgroup_release+0x4a/0xe0 
+> 		  [<0000000187ef6498>] percpu_ref_put_many.constprop.0+0x150/0x168 
+> 		  [<0000000187ef9674>] drain_obj_stock+0x94/0xe8 
+> 		  [<0000000187efa464>] refill_obj_stock+0x94/0x278 
+> 		  [<0000000187eff55c>] obj_cgroup_charge+0x164/0x1d8 
+> 		  [<0000000187ed8aa4>] kmem_cache_alloc+0xac/0x528 
+> 		  [<0000000187bf2eb8>] __sigqueue_alloc+0x150/0x308 
+> 		  [<0000000187bf4210>] __send_signal+0x260/0x550 
+> 		  [<0000000187bf5f06>] send_signal+0x7e/0x348 
+> 		  [<0000000187bf7274>] force_sig_info_to_task+0x104/0x180 
+> 		  [<0000000187bf7758>] force_sig_fault+0x48/0x58 
+> 		  [<00000001888ae160>] __do_pgm_check+0x120/0x1f0 
+> 		  [<00000001888c0cde>] pgm_check_handler+0x11e/0x180 
+> 		 INFO: lockdep is turned off.
 > 
-> 	Can we use cpus_read_lock()/cpus_read_unlock() to guarantee that set_cpus_allowed_ptr()
-> doesn't fail, as follows:
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index d0e163a02099..2535d23d2c51 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2265,6 +2265,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->         guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
-> 
->         cgroup_taskset_for_each(task, css, tset) {
-> +               cpus_read_lock();
->                 if (cs != &top_cpuset)
->                         guarantee_online_cpus(task, cpus_attach);
->                 else
-> @@ -2274,6 +2275,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->                  * fail.  TODO: have a better way to handle failure here
->                  */
->                 WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
-> +               cpus_read_unlock();
-> 
-> 
-> 	Is there a better solution?
-> 
-> 	Thanks
-> 
-> log:
-> [   43.853794] ------------[ cut here ]------------
-> [   43.853798] WARNING: CPU: 7 PID: 463 at ../kernel/cgroup/cpuset.c:2279 cpuset_attach+0xee/0x1f0
-> [   43.853806] Modules linked in:
-> [   43.853807] CPU: 7 PID: 463 Comm: bash Not tainted 5.16.0-rc4+ #10
-> [   43.853810] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-> [   43.853811] RIP: 0010:cpuset_attach+0xee/0x1f0
-> [   43.853814] Code: ff ff 48 85 c0 48 89 c3 74 24 48 81 fd 40 42 54 82 75 96 80 bb 38 07 00 00 6f 48 8b 05 93 b3 55 01 48 89 05 bc 05 bb 01 75 97 <0f> 0b eb b3 48 8b 85 e8 00 00 00 48 85
-> [   43.853816] RSP: 0018:ffffc90000623c30 EFLAGS: 00010246
-> [   43.853818] RAX: 0000000000000000 RBX: ffff888101f39c80 RCX: 0000000000000001
-> [   43.853819] RDX: 0000000000007fff RSI: ffffffff82cd5708 RDI: ffff888101f39c80
-> [   43.853821] RBP: ffff8881001afe00 R08: 0000000000000000 R09: ffffc90000623d00
-> [   43.853822] R10: ffffc900000a3de8 R11: 0000000000000001 R12: ffffc90000623cf0
-> [   43.853823] R13: ffffffff82cd56d0 R14: ffffffff82544240 R15: 0000000000000001
-> [   43.853824] FS:  00007f012414d740(0000) GS:ffff8882b5bc0000(0000) knlGS:0000000000000000
-> [   43.853828] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   43.853829] CR2: 000055cfdb27de28 CR3: 00000001020cc000 CR4: 00000000000006e0
-> [   43.853830] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   43.853831] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   43.853832] Call Trace:
-> [   43.853846]  <TASK>
-> [   43.853848]  cgroup_migrate_execute+0x319/0x410
-> [   43.853853]  cgroup_attach_task+0x159/0x200
-> [   43.853857]  ? __cgroup1_procs_write.constprop.21+0x10d/0x170
-> [   43.853858]  __cgroup1_procs_write.constprop.21+0x10d/0x170
-> [   43.853860]  cgroup_file_write+0x65/0x160
-> [   43.853863]  kernfs_fop_write_iter+0x12a/0x1a0
-> [   43.853870]  new_sync_write+0x11d/0x1b0
-> [   43.853877]  vfs_write+0x232/0x290
-> [   43.853880]  ksys_write+0x9c/0xd0
-> [   43.853882]  ? fpregs_assert_state_consistent+0x19/0x40
-> [   43.853886]  do_syscall_64+0x3a/0x80
-> [   43.853896]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   43.853902] RIP: 0033:0x7f012381f224
-> [   43.853904] Code: 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8d 05 c1 07 2e 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 45
-> [   43.853906] RSP: 002b:00007ffd3f411f28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [   43.853908] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f012381f224
-> [   43.853909] RDX: 0000000000000004 RSI: 000055cfdb297a70 RDI: 0000000000000001
-> [   43.853910] RBP: 000055cfdb297a70 R08: 000000000000000a R09: 0000000000000003
-> [   43.853911] R10: 000000000000000a R11: 0000000000000246 R12: 00007f0123afb760
-> [   43.853913] R13: 0000000000000004 R14: 00007f0123af72a0 R15: 00007f0123af6760
-> [   43.853914]  </TASK>
-> [   43.853915] ---[ end trace 8292bcee7ea90403 ]---
+> Regards
+> Alex
 
 -- 
 tejun
