@@ -2,149 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D098648E181
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 01:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD4F48E20E
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 02:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbiANA3k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jan 2022 19:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbiANA3k (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 19:29:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45A0C061574;
-        Thu, 13 Jan 2022 16:29:39 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id t24so29153389edi.8;
-        Thu, 13 Jan 2022 16:29:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8EJiE87iFvzZs2wfpp7MhZSruKW5x9ebf2/nsWfIQAY=;
-        b=KzGxA/Mn5jnF3eZqy7OWsndDxgnJpSHZAE+/AsMtTVpwYdR+j5o7zqZybAwsY3FtfC
-         Zdhb4E/EIDEzf3/C/I6WWnCyQ3MVlat+azg4xSdQJ5PMhoLivaX+W0w2Ks8GBbKdjJKO
-         8cDYIaYTatdFa5sunv/AGeKgu/Bw4ABOVqHsc70RH7d0C5oA8w1qz2cMAQuH5ITEcfdf
-         euxQZ8B3cT42PKxNQL0n8RDQyw5ILnnDrH6mR0+p5FeilycRyArnNQtA1lHzQMCBWEvq
-         uSGjp71IEJm70ZrPWH56e7JGMeqBHO6cUeH1QRx0COuJBM1M3RxbXAH+TvdBkY7sRDuk
-         fQ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8EJiE87iFvzZs2wfpp7MhZSruKW5x9ebf2/nsWfIQAY=;
-        b=AXv/2R2Gd/CdG79wF4LJc8LJLeDFTefKr1hfKYjoClKMQouhWjdMoG6BlfKYG/Ln7T
-         Uh7YZH3cuE4jkriTqU3QqZIAXWcOIbDrxG4JX7V+LQBMp54P/0X0XheiNGymfMsi7Ddo
-         R1m0ErilfToNBDS9lRV3NhRMXPR1DgYYW44AXDxdeAdRGEvEYovMPuAMX1kYmWy4zrfG
-         yE5U/5yWXIFdiLyIyBinb5hgym8lHTkOvapEjt61KJ7dtEw0d750GYFXjdRP5PaP6BtM
-         aPou98gv8vbB+Pb31pZpyaRsq+PmvgS7qOGK1cXPb2+iDCfblsKxJDJfvSizdjx5HJxq
-         hrKg==
-X-Gm-Message-State: AOAM5329/8bAXIB3D9yWBXGIo7vXnb6Sy4pLHSAEwoOy4msgGzR7ELJB
-        VG2/nTPCgCF2zmxvmHgxSa4=
-X-Google-Smtp-Source: ABdhPJwgzBvEezAa5NINhfz1SA5iwrNunoXYrzVrs5APytwkgDEFLy8R0bo2N6zJZtlQgqy2SIMUlw==
-X-Received: by 2002:a17:906:7e57:: with SMTP id z23mr5422663ejr.674.1642120178277;
-        Thu, 13 Jan 2022 16:29:38 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id t8sm1710368edr.90.2022.01.13.16.29.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jan 2022 16:29:37 -0800 (PST)
-Date:   Fri, 14 Jan 2022 00:29:37 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, guro@fb.com, vbabka@suse.cz,
-        willy@infradead.org, songmuchun@bytedance.com, shy828301@gmail.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/4] mm/memcg: use NUMA_NO_NODE to indicate allocation
- from unspecified node
-Message-ID: <20220114002937.fnyq3yyk36j4nb3d@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20220111010302.8864-1-richard.weiyang@gmail.com>
- <Yd1CdJA5NelzoK1D@dhcp22.suse.cz>
- <20220112004634.dc5suwei4ymyxaxg@master>
- <Yd6Xr7K9bKGVgGtI@dhcp22.suse.cz>
+        id S235783AbiANBPL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jan 2022 20:15:11 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:30276 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230237AbiANBPL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Jan 2022 20:15:11 -0500
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JZjxv121Wzbjxn;
+        Fri, 14 Jan 2022 09:14:27 +0800 (CST)
+Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 14 Jan 2022 09:15:07 +0800
+Received: from [10.67.111.186] (10.67.111.186) by
+ dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 14 Jan 2022 09:15:07 +0800
+Message-ID: <4415cd09-6de3-bb2d-386d-8beb4927fb46@huawei.com>
+Date:   Fri, 14 Jan 2022 09:15:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yd6Xr7K9bKGVgGtI@dhcp22.suse.cz>
-User-Agent: NeoMutt/20170113 (1.7.2)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+From:   Zhang Qiao <zhangqiao22@huawei.com>
+Subject: [Question] set_cpus_allowed_ptr() call failed at cpuset_attach()
+References: <09ce5796-798e-83d0-f1a6-ba38a787bfc5@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, <lizefan.x@bytedance.com>,
+        <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <09ce5796-798e-83d0-f1a6-ba38a787bfc5@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.186]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500018.china.huawei.com (7.185.36.186)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 09:56:15AM +0100, Michal Hocko wrote:
->On Wed 12-01-22 00:46:34, Wei Yang wrote:
->> On Tue, Jan 11, 2022 at 09:40:20AM +0100, Michal Hocko wrote:
->> >On Tue 11-01-22 01:02:59, Wei Yang wrote:
->> >> Instead of use "-1", let's use NUMA_NO_NODE for consistency.
->> >> 
->> >> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->> >
->> >I am not really sure this is worth it. After the merge window I plan to
->> >post http://lkml.kernel.org/r/20211214100732.26335-1-mhocko@kernel.org.
->> 
->> Give me some time to understand it :-)
->
->Just for the record, here is what I have put on top of that series:
 
-Ok, I got what you try to resolve. I am ok with the following change except
-one point.
+Hello everyone
 
->--- 
->>From b7195eba02fe6308a6927450f4630057c05e808e Mon Sep 17 00:00:00 2001
->From: Wei Yang <richard.weiyang@gmail.com>
->Date: Tue, 11 Jan 2022 09:45:25 +0100
->Subject: [PATCH] memcg: do not tweak node in alloc_mem_cgroup_per_node_info
->
->alloc_mem_cgroup_per_node_info is allocated for each possible node and
->this used to be a problem because not !node_online nodes didn't have
->appropriate data structure allocated. This has changed by "mm: handle
->uninitialized numa nodes gracefully" so we can drop the special casing
->here.
->
->Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->Signed-off-by: Michal Hocko <mhocko@suse.com>
->---
-> mm/memcontrol.c | 14 ++------------
-> 1 file changed, 2 insertions(+), 12 deletions(-)
->
->diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->index 781605e92015..ed19a21ee14e 100644
->--- a/mm/memcontrol.c
->+++ b/mm/memcontrol.c
->@@ -5044,18 +5044,8 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
-> static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-> {
-> 	struct mem_cgroup_per_node *pn;
->-	int tmp = node;
->-	/*
->-	 * This routine is called against possible nodes.
->-	 * But it's BUG to call kmalloc() against offline node.
->-	 *
->-	 * TODO: this routine can waste much memory for nodes which will
->-	 *       never be onlined. It's better to use memory hotplug callback
->-	 *       function.
->-	 */
+	I found the following warning log on qemu. I migrated a task from one cpuset cgroup to
+another, while I also performed the cpu hotplug operation, and got following calltrace.
 
-Do you think this TODO is not related to this change?
+	This may lead to a inconsistency between the affinity of the task and cpuset.cpus of the
+dest cpuset, but this task can be successfully migrated to the dest cpuset cgroup.
 
->-	if (!node_state(node, N_NORMAL_MEMORY))
->-		tmp = -1;
->-	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, tmp);
->+
->+	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, node);
-> 	if (!pn)
-> 		return 1;
-> 
->-- 
->2.30.2
->
->
->-- 
->Michal Hocko
->SUSE Labs
+	Can we use cpus_read_lock()/cpus_read_unlock() to guarantee that set_cpus_allowed_ptr()
+doesn't fail, as follows:
 
--- 
-Wei Yang
-Help you, Help me
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index d0e163a02099..2535d23d2c51 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2265,6 +2265,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+        guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
+
+        cgroup_taskset_for_each(task, css, tset) {
++               cpus_read_lock();
+                if (cs != &top_cpuset)
+                        guarantee_online_cpus(task, cpus_attach);
+                else
+@@ -2274,6 +2275,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+                 * fail.  TODO: have a better way to handle failure here
+                 */
+                WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
++               cpus_read_unlock();
+
+
+	Is there a better solution?
+
+	Thanks
+
+log:
+[   43.853794] ------------[ cut here ]------------
+[   43.853798] WARNING: CPU: 7 PID: 463 at ../kernel/cgroup/cpuset.c:2279 cpuset_attach+0xee/0x1f0
+[   43.853806] Modules linked in:
+[   43.853807] CPU: 7 PID: 463 Comm: bash Not tainted 5.16.0-rc4+ #10
+[   43.853810] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
+[   43.853811] RIP: 0010:cpuset_attach+0xee/0x1f0
+[   43.853814] Code: ff ff 48 85 c0 48 89 c3 74 24 48 81 fd 40 42 54 82 75 96 80 bb 38 07 00 00 6f 48 8b 05 93 b3 55 01 48 89 05 bc 05 bb 01 75 97 <0f> 0b eb b3 48 8b 85 e8 00 00 00 48 85
+[   43.853816] RSP: 0018:ffffc90000623c30 EFLAGS: 00010246
+[   43.853818] RAX: 0000000000000000 RBX: ffff888101f39c80 RCX: 0000000000000001
+[   43.853819] RDX: 0000000000007fff RSI: ffffffff82cd5708 RDI: ffff888101f39c80
+[   43.853821] RBP: ffff8881001afe00 R08: 0000000000000000 R09: ffffc90000623d00
+[   43.853822] R10: ffffc900000a3de8 R11: 0000000000000001 R12: ffffc90000623cf0
+[   43.853823] R13: ffffffff82cd56d0 R14: ffffffff82544240 R15: 0000000000000001
+[   43.853824] FS:  00007f012414d740(0000) GS:ffff8882b5bc0000(0000) knlGS:0000000000000000
+[   43.853828] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   43.853829] CR2: 000055cfdb27de28 CR3: 00000001020cc000 CR4: 00000000000006e0
+[   43.853830] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   43.853831] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   43.853832] Call Trace:
+[   43.853846]  <TASK>
+[   43.853848]  cgroup_migrate_execute+0x319/0x410
+[   43.853853]  cgroup_attach_task+0x159/0x200
+[   43.853857]  ? __cgroup1_procs_write.constprop.21+0x10d/0x170
+[   43.853858]  __cgroup1_procs_write.constprop.21+0x10d/0x170
+[   43.853860]  cgroup_file_write+0x65/0x160
+[   43.853863]  kernfs_fop_write_iter+0x12a/0x1a0
+[   43.853870]  new_sync_write+0x11d/0x1b0
+[   43.853877]  vfs_write+0x232/0x290
+[   43.853880]  ksys_write+0x9c/0xd0
+[   43.853882]  ? fpregs_assert_state_consistent+0x19/0x40
+[   43.853886]  do_syscall_64+0x3a/0x80
+[   43.853896]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   43.853902] RIP: 0033:0x7f012381f224
+[   43.853904] Code: 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8d 05 c1 07 2e 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 45
+[   43.853906] RSP: 002b:00007ffd3f411f28 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[   43.853908] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f012381f224
+[   43.853909] RDX: 0000000000000004 RSI: 000055cfdb297a70 RDI: 0000000000000001
+[   43.853910] RBP: 000055cfdb297a70 R08: 000000000000000a R09: 0000000000000003
+[   43.853911] R10: 000000000000000a R11: 0000000000000246 R12: 00007f0123afb760
+[   43.853913] R13: 0000000000000004 R14: 00007f0123af72a0 R15: 00007f0123af6760
+[   43.853914]  </TASK>
+[   43.853915] ---[ end trace 8292bcee7ea90403 ]---
