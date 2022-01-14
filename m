@@ -2,87 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B307748E8E2
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 12:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFE048E8FB
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 12:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbiANLIh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jan 2022 06:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbiANLIh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 06:08:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F228CC061574;
-        Fri, 14 Jan 2022 03:08:36 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92DF761EF2;
-        Fri, 14 Jan 2022 11:08:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233C3C36AE5;
-        Fri, 14 Jan 2022 11:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642158516;
-        bh=OF5OUUAm25dp5cp+JT0GiuvYGOwzKMtdyhATZeQWCM4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=anWYlmeAreoucUVCTnYlq5eLjpIWYUu97Eer6MAZxeInCL2iyNeuvzdkr4wXTCilh
-         ADbkMRQOsbDKfGrQhI/Krb3R7WFGc/QG6nzEmEKa0alTS2JpzXrfMo3TEZhlLl22fu
-         O/XvQqtC6HrkjNYMciuW/e+EteHpY6ZAvt5AX88lFtxPpWvzn6Pcd5BkA/Buu0SDru
-         e1xE+5quxorgWd+xmEB8LlUeq1b3EJ600qkDwcuSgR9Ly/WxVGoAduHQwChY7NaAx+
-         0Dtj5KrkdTYWGk26kAp8EQbFDtPRuo2/rBAFXH4k8BrxHPAgx19pRBUIhVExEPYznV
-         2326WkH6r4Fng==
-Date:   Fri, 14 Jan 2022 13:08:28 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        vbabka@suse.cz, willy@infradead.org, songmuchun@bytedance.com,
-        shy828301@gmail.com, surenb@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/4] mm/memcg: mem_cgroup_per_node is already set to 0 on
- allocation
-Message-ID: <YeFZrEAaPw1Y5wwd@kernel.org>
-References: <20220111010302.8864-1-richard.weiyang@gmail.com>
- <20220111010302.8864-2-richard.weiyang@gmail.com>
+        id S233234AbiANLNQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jan 2022 06:13:16 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:42263 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232396AbiANLNQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 06:13:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0V1otGzS_1642158792;
+Received: from 30.21.164.113(mailfrom:cruzzhao@linux.alibaba.com fp:SMTPD_---0V1otGzS_1642158792)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 14 Jan 2022 19:13:13 +0800
+Message-ID: <1cca28c3-c84d-415e-9b33-6687e4ff2cbb@linux.alibaba.com>
+Date:   Fri, 14 Jan 2022 19:13:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220111010302.8864-2-richard.weiyang@gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH v2 3/3] sched/core: Force idle accounting per cgroup
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, joshdon@google.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1641894961-9241-1-git-send-email-CruzZhao@linux.alibaba.com>
+ <1641894961-9241-4-git-send-email-CruzZhao@linux.alibaba.com>
+ <Yd89Lv3VuaaFVm4h@slm.duckdns.org>
+From:   cruzzhao <cruzzhao@linux.alibaba.com>
+In-Reply-To: <Yd89Lv3VuaaFVm4h@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 01:03:00AM +0000, Wei Yang wrote:
-> kzalloc_node() would set data to 0, so it's not necessary to set it
-> again.
-> 
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> ---
->  mm/memcontrol.c | 2 --
->  1 file changed, 2 deletions(-)
+在 2022/1/13 上午4:42, Tejun Heo 写道:
+> Hello,
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 11715f7323c0..a504616f904a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5067,8 +5067,6 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
->  	}
->  
->  	lruvec_init(&pn->lruvec);
-> -	pn->usage_in_excess = 0;
-> -	pn->on_tree = false;
->  	pn->memcg = memcg;
->  
->  	memcg->nodeinfo[node] = pn;
-> -- 
-> 2.33.1
+> On Tue, Jan 11, 2022 at 05:56:01PM +0800, Cruz Zhao wrote:
+>> +#ifdef CONFIG_SCHED_CORE
+>> +void cpuacct_account_forceidle(int cpu, struct task_struct *tsk, u64 cputime)
+>> +{
+>> +	struct cpuacct *ca;
+>> +	u64 *fi;
+>> +
+>> +	rcu_read_lock();
+>> +	/*
+>> +	 * We have hold rq->core->__lock here, which protects ca->forceidle
+>> +	 * percpu.
+>> +	 */
+>> +	for (ca = task_ca(tsk); ca; ca = parent_ca(ca)) {
+>> +		fi = per_cpu_ptr(ca->forceidle, cpu);
+>> +		*fi += cputime;
+>> +	}
 > 
+> Please don't do this. Use rstat and integrate it with other stats.
+> 
+> Thanks.
 > 
 
--- 
-Sincerely yours,
-Mike.
+Thanks for suggestions, I'll try to do this using rstat. BTW, is it ok
+to integrate it with cgroup_base_stat?
+
+Best,
+Cruz Zhao
