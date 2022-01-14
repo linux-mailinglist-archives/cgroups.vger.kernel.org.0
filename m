@@ -2,119 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AEE48E748
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 10:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3B148E7FA
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 11:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237133AbiANJS5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jan 2022 04:18:57 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:17347 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236423AbiANJS4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 04:18:56 -0500
-Received: from kwepemi100006.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JZwgX5M9xz9sBr;
-        Fri, 14 Jan 2022 17:17:44 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100006.china.huawei.com (7.221.188.165) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 14 Jan 2022 17:18:54 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 14 Jan
- 2022 17:18:53 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next] blk-throttle: enable io throttle for root in cgroup v2
-Date:   Fri, 14 Jan 2022 17:30:00 +0800
-Message-ID: <20220114093000.3323470-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S237375AbiANKAD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jan 2022 05:00:03 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:58050 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240103AbiANJ7y (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 04:59:54 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BFEC51F3D3;
+        Fri, 14 Jan 2022 09:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1642154391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qmwbDXCD1IYxhc8Rn4/92BZfIPK0fFdxSVgthJ5taA4=;
+        b=J4BVfOXcoK+w1RCl2Zw4sZxvBV7m3oaac6fwGpQXId2pL+KIV+ughVxTxQ2zeit4y/cv0k
+        6RGNq6gHnAVqsCAHjqgmOfRRuSumWxuEWMrajJ5Rh7hvcmCILmaG2n+qCTD+0gJruobjkP
+        Jje0H/AIsgcT22TnebB7nLPWxCJtEaM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1642154391;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qmwbDXCD1IYxhc8Rn4/92BZfIPK0fFdxSVgthJ5taA4=;
+        b=puAmxENJ+nE7lagW0XsW5t1PTGbkxEpFb9sBE4MLPvZEWOdNSvddqAQV1h7jvkwy1BGs0C
+        6k5WF/eEsv6GEkBQ==
+Received: from quack3.suse.cz (unknown [10.163.43.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 73AF0A3B8F;
+        Fri, 14 Jan 2022 09:59:51 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EA7A8A05D7; Fri, 14 Jan 2022 10:59:50 +0100 (CET)
+Date:   Fri, 14 Jan 2022 10:59:50 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     jack@suse.cz, tj@kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH v2 0/3] block, bfq: minor cleanup and fix
+Message-ID: <20220114095950.fa3gofecmryztivs@quack3.lan>
+References: <20211231032354.793092-1-yukuai3@huawei.com>
+ <5696c767-8248-09a4-f04e-ac93138d30ef@huawei.com>
+ <1cdb99ba-ed52-c755-fec4-86ee5f9bc61d@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1cdb99ba-ed52-c755-fec4-86ee5f9bc61d@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-RFC patch: https://lkml.org/lkml/2021/9/9/1432
+On Fri 14-01-22 16:23:36, yukuai (C) wrote:
+> 在 2022/01/11 9:40, yukuai (C) 写道:
+> > 在 2021/12/31 11:23, Yu Kuai 写道:
+> > > Chagnes in v2:
+> > >   - add comment in patch 2
+> > >   - remove patch 4, since the problem do not exist.
+> > > 
+> > friendly ping ...
+> 
+> Hi, Jens
+> 
+> Can this patchset be applied?
 
-There is a proformance problem in our environment:
+Maybe Jens is waiting for Paolo's ack as a BFQ maintainer. Paolo, what do
+you think about the cleanups? They seem mostly obvious to me...
 
-A host can provide a remote device to difierent client. If one client is
-under high io pressure, other clients might be affected.
+								Honza
 
-Limit the overall iops/bps(io.max) from the client can fix the problem,
-however, config files do not exist in root cgroup currently, which makes
-it impossible.
-
-This patch enables io throttle for root cgroup:
- - enable "io.max" and "io.low" in root
- - don't skip root group in tg_iops_limit() and tg_bps_limit()
- - don't skip root group in tg_conf_updated()
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 7c462c006b26..ac25bfbbfe7f 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -156,9 +156,6 @@ static uint64_t tg_bps_limit(struct throtl_grp *tg, int rw)
- 	struct throtl_data *td;
- 	uint64_t ret;
- 
--	if (cgroup_subsys_on_dfl(io_cgrp_subsys) && !blkg->parent)
--		return U64_MAX;
--
- 	td = tg->td;
- 	ret = tg->bps[rw][td->limit_index];
- 	if (ret == 0 && td->limit_index == LIMIT_LOW) {
-@@ -186,9 +183,6 @@ static unsigned int tg_iops_limit(struct throtl_grp *tg, int rw)
- 	struct throtl_data *td;
- 	unsigned int ret;
- 
--	if (cgroup_subsys_on_dfl(io_cgrp_subsys) && !blkg->parent)
--		return UINT_MAX;
--
- 	td = tg->td;
- 	ret = tg->iops[rw][td->limit_index];
- 	if (ret == 0 && tg->td->limit_index == LIMIT_LOW) {
-@@ -1284,9 +1278,8 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		struct throtl_grp *parent_tg;
- 
- 		tg_update_has_rules(this_tg);
--		/* ignore root/second level */
--		if (!cgroup_subsys_on_dfl(io_cgrp_subsys) || !blkg->parent ||
--		    !blkg->parent->parent)
-+		/* ignore root level */
-+		if (!cgroup_subsys_on_dfl(io_cgrp_subsys) || !blkg->parent)
- 			continue;
- 		parent_tg = blkg_to_tg(blkg->parent);
- 		/*
-@@ -1625,7 +1618,6 @@ static struct cftype throtl_files[] = {
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- 	{
- 		.name = "low",
--		.flags = CFTYPE_NOT_ON_ROOT,
- 		.seq_show = tg_print_limit,
- 		.write = tg_set_limit,
- 		.private = LIMIT_LOW,
-@@ -1633,7 +1625,6 @@ static struct cftype throtl_files[] = {
- #endif
- 	{
- 		.name = "max",
--		.flags = CFTYPE_NOT_ON_ROOT,
- 		.seq_show = tg_print_limit,
- 		.write = tg_set_limit,
- 		.private = LIMIT_MAX,
+> 
+> Thanks
+> > > Yu Kuai (3):
+> > >    block, bfq: cleanup bfq_bfqq_to_bfqg()
+> > >    block, bfq: avoid moving bfqq to it's parent bfqg
+> > >    block, bfq: don't move oom_bfqq
+> > > 
+> > >   block/bfq-cgroup.c  | 16 +++++++++++++++-
+> > >   block/bfq-iosched.c |  4 ++--
+> > >   block/bfq-iosched.h |  1 -
+> > >   block/bfq-wf2q.c    | 15 ---------------
+> > >   4 files changed, 17 insertions(+), 19 deletions(-)
+> > > 
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
