@@ -2,95 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3B148E7FA
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 11:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF2148E8DB
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jan 2022 12:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbiANKAD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jan 2022 05:00:03 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:58050 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240103AbiANJ7y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 04:59:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BFEC51F3D3;
-        Fri, 14 Jan 2022 09:59:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1642154391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmwbDXCD1IYxhc8Rn4/92BZfIPK0fFdxSVgthJ5taA4=;
-        b=J4BVfOXcoK+w1RCl2Zw4sZxvBV7m3oaac6fwGpQXId2pL+KIV+ughVxTxQ2zeit4y/cv0k
-        6RGNq6gHnAVqsCAHjqgmOfRRuSumWxuEWMrajJ5Rh7hvcmCILmaG2n+qCTD+0gJruobjkP
-        Jje0H/AIsgcT22TnebB7nLPWxCJtEaM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1642154391;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmwbDXCD1IYxhc8Rn4/92BZfIPK0fFdxSVgthJ5taA4=;
-        b=puAmxENJ+nE7lagW0XsW5t1PTGbkxEpFb9sBE4MLPvZEWOdNSvddqAQV1h7jvkwy1BGs0C
-        6k5WF/eEsv6GEkBQ==
-Received: from quack3.suse.cz (unknown [10.163.43.118])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 73AF0A3B8F;
-        Fri, 14 Jan 2022 09:59:51 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EA7A8A05D7; Fri, 14 Jan 2022 10:59:50 +0100 (CET)
-Date:   Fri, 14 Jan 2022 10:59:50 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     jack@suse.cz, tj@kernel.org, axboe@kernel.dk,
-        paolo.valente@linaro.org, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH v2 0/3] block, bfq: minor cleanup and fix
-Message-ID: <20220114095950.fa3gofecmryztivs@quack3.lan>
-References: <20211231032354.793092-1-yukuai3@huawei.com>
- <5696c767-8248-09a4-f04e-ac93138d30ef@huawei.com>
- <1cdb99ba-ed52-c755-fec4-86ee5f9bc61d@huawei.com>
+        id S240535AbiANLGf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jan 2022 06:06:35 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:57587 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237845AbiANLGf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jan 2022 06:06:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0V1oHN1x_1642158390;
+Received: from 30.21.164.113(mailfrom:cruzzhao@linux.alibaba.com fp:SMTPD_---0V1oHN1x_1642158390)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 14 Jan 2022 19:06:31 +0800
+Message-ID: <e071a66e-e7d5-8657-725b-8d48cb8ddbb7@linux.alibaba.com>
+Date:   Fri, 14 Jan 2022 19:06:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH v2 2/3] sched/core: Forced idle accounting per-cpu
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, joshdon@google.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1641894961-9241-1-git-send-email-CruzZhao@linux.alibaba.com>
+ <1641894961-9241-3-git-send-email-CruzZhao@linux.alibaba.com>
+ <Yd7JO1UYlRXR0dWE@hirez.programming.kicks-ass.net>
+From:   cruzzhao <cruzzhao@linux.alibaba.com>
+In-Reply-To: <Yd7JO1UYlRXR0dWE@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1cdb99ba-ed52-c755-fec4-86ee5f9bc61d@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 14-01-22 16:23:36, yukuai (C) wrote:
-> 在 2022/01/11 9:40, yukuai (C) 写道:
-> > 在 2021/12/31 11:23, Yu Kuai 写道:
-> > > Chagnes in v2:
-> > >   - add comment in patch 2
-> > >   - remove patch 4, since the problem do not exist.
-> > > 
-> > friendly ping ...
-> 
-> Hi, Jens
-> 
-> Can this patchset be applied?
 
-Maybe Jens is waiting for Paolo's ack as a BFQ maintainer. Paolo, what do
-you think about the cleanups? They seem mostly obvious to me...
 
-								Honza
-
+在 2022/1/12 下午8:27, Peter Zijlstra 写道:
+> On Tue, Jan 11, 2022 at 05:56:00PM +0800, Cruz Zhao wrote:
 > 
-> Thanks
-> > > Yu Kuai (3):
-> > >    block, bfq: cleanup bfq_bfqq_to_bfqg()
-> > >    block, bfq: avoid moving bfqq to it's parent bfqg
-> > >    block, bfq: don't move oom_bfqq
-> > > 
-> > >   block/bfq-cgroup.c  | 16 +++++++++++++++-
-> > >   block/bfq-iosched.c |  4 ++--
-> > >   block/bfq-iosched.h |  1 -
-> > >   block/bfq-wf2q.c    | 15 ---------------
-> > >   4 files changed, 17 insertions(+), 19 deletions(-)
-> > > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>> @@ -1115,6 +1118,7 @@ struct rq {
+>>  	unsigned int		core_forceidle_seq;
+>>  	unsigned int		core_forceidle_occupation;
+>>  	u64			core_forceidle_start;
+>> +	bool			in_forcedidle;
+> 
+> naming is wrong
+> 
+>>  #endif
+>>  };
+>>  
+>> diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
+>> index 07dde29..ea22a8c 100644
+>> --- a/kernel/sched/stats.c
+>> +++ b/kernel/sched/stats.c
+>> @@ -108,6 +108,16 @@ void __update_stats_enqueue_sleeper(struct rq *rq, struct task_struct *p,
+>>  	}
+>>  }
+>>  
+>> +#ifdef CONFIG_SCHED_CORE
+>> +static inline u64 get_rq_forceidle_time(struct rq *rq) {
+>> +	return rq->rq_forceidle_time;
+>> +}
+>> +#else
+>> +static inline u64 get_rq_forceidle_time(struct rq *rq) {
+>> +	return 0;
+>> +}
+>> +#endif
+> 
+> indent is wrong, and if you put the #ifdef inside the function it'll be
+> smaller.
+
+Thanks for reviewing and suggestions, I'll fix these problems in the
+next version.
+
+Best,
+Cruz Zhao
