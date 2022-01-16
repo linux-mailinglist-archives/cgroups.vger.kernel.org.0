@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E72048FEA5
-	for <lists+cgroups@lfdr.de>; Sun, 16 Jan 2022 20:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE3F48FEB8
+	for <lists+cgroups@lfdr.de>; Sun, 16 Jan 2022 20:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236152AbiAPTYR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 16 Jan 2022 14:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
+        id S236094AbiAPTyi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 16 Jan 2022 14:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236155AbiAPTYR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 16 Jan 2022 14:24:17 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FABC061574
-        for <cgroups@vger.kernel.org>; Sun, 16 Jan 2022 11:24:17 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id bu18so26650098lfb.5
-        for <cgroups@vger.kernel.org>; Sun, 16 Jan 2022 11:24:16 -0800 (PST)
+        with ESMTP id S229573AbiAPTyi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 16 Jan 2022 14:54:38 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4E3C061574
+        for <cgroups@vger.kernel.org>; Sun, 16 Jan 2022 11:54:38 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id p27so38160491lfa.1
+        for <cgroups@vger.kernel.org>; Sun, 16 Jan 2022 11:54:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=c6evELW+tkD7CtjU/q82JAh8zwV9sibyS+oVT1wgMIo=;
-        b=pS/LRlqPd2v795c2ySY+8PL8UpC5Zl/zUN5+ti7B4CoFeYTvYKCSFwKmMbUVOPcDVc
-         7eDStVWQH+iALVLXbJ//2+WauF9fp7eC+h+NWylp10lReOm2dExRzmxX6TmsUpamL0FA
-         3mhzljQgdxIjCnOhaoIUlIh/xT31WP7v/ZND528u73eUybliaipUhuZ8Myurkri9/Bn0
-         VMYcEsiO5g5dBYFv1judak18DlWxlI2misGKjlM0Uy/c9j5/lFYy/XHbPdCQhuXVVchu
-         erkNGuEzUvBLWQC3ykVipjL4zjFm2geGKSIDKJvecb5eGqp9umVpwKPwj9v6mlgDm1G1
-         E4Cg==
+        bh=32ZGPXHe3Ged0KnD2WiQsFB3QGx2BbSWPhOV/bW7jNc=;
+        b=RMd20O9hiJ+E++mZyFCDgYsG99GnasXx9c7mZSzw0rI5QCZRUDgY7035Y/jwkEIhET
+         //SyReKW9JjjJucOIxRqhB29/qOd4FJouwJMwOq05gVXJnoAaw9T8BRB2KyG/rTWdf/3
+         JChxfan6qdczRC8W0KyNqWCcGtDTmC/Dkg1vIrMMrJS8DHl6PHjNIY+V4aHI/Ct1MUx+
+         eWAX6pjHBWif9lJixach4FExApXyy+orxoCRlPl5egBwUKbfvgBbI0LxRO4uqztDVEGx
+         zcs89gRS7lDl7xhNTMO0tfkzqTOrF99K6B28pwaFimR4JkOr12A8c0sB/e3NKvoHqzWt
+         KJ5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=c6evELW+tkD7CtjU/q82JAh8zwV9sibyS+oVT1wgMIo=;
-        b=41ii1MltguXdgMRyXGaoeMhfdCtx8SXcvW6GB1ZRnyy2sgnT67FRR57UVmYnQVhSSS
-         EnWmrYOh90rQR9JnlBuRgzSxT/YDgLOkBhkSYgIKpNL3f0RqHeo1UFCLdbvUwyYMN7Sy
-         Tqf6NfsIeguMLEnN6OA8/aCHyMxM0Wu/2Spxooe691dvigLgBZiUemfgvGLWatqjQqNX
-         aZ1iV0JDYrn8EoNNq2qrmoO0HCdGX2aW/OZE7Qs0TJNhE0fshRgFZVQW/JYPaE1WnLsG
-         y6CXfSsdHAdSrHCQiuCy+S9OGIhfxL2fGPVIW/vijQpa6K86m/t8hlyfsqFF12vh6g7C
-         mC3A==
-X-Gm-Message-State: AOAM530DNOqRRVgjGXTLKIiIs7bimlXCT6X+95Ro4bitL72FWv1dp2ct
-        yzKW3icNG3j/tfdlV017WpoqTmhVsIX9lzwG1uCiwQ==
-X-Google-Smtp-Source: ABdhPJw6mt0uPBES7VWlz/l/3HfrOre8edIq1HG4QyVNrJkP4NMUfE1A5yoz/TNv8wazbvj7f5TgBtQy/ErWCZ/LmWo=
-X-Received: by 2002:a05:6512:2629:: with SMTP id bt41mr14284903lfb.264.1642361055116;
- Sun, 16 Jan 2022 11:24:15 -0800 (PST)
+        bh=32ZGPXHe3Ged0KnD2WiQsFB3QGx2BbSWPhOV/bW7jNc=;
+        b=kiFl+T3IwB8jDRaMQ+3wTmMASPqUPeKAlYYIQmjccc1x0RsPsfEapdTQS5UvHnvqGo
+         yRhbrA22Gj6PVTZ1z6dUqjpEsjIl2Unw1Iv1vVImhSmXzrwVGcEMbGFMiPIYt1M9BGGI
+         9RHmgFvRGWeLQDwKgLCCDV0MZbKSpvT5ybhoEExoq2/kV6ySWswWb3aGoryXdg/eW4Jp
+         DQKGbWZ1NyJvj2WZ4OdupiAfbHiYDkPcTXy6nk5pXPJP/en72t6dMy6lkdPKU0YjAOr8
+         L/gS1OBQ69S9bB5Hqwn2e1s8RvjKQvEho8esxDNEm9/gFgSJBAKlocn4G1jmPGmEnEAF
+         PSCQ==
+X-Gm-Message-State: AOAM533av7NeX6seoImEGwnHSH2OsPQtzkTxM5KcazzhIz7vyYWKcCPY
+        XL8T/NMGXWvC7vke2gHc/mpH4B0I7Z/a6BkH6nNGVg==
+X-Google-Smtp-Source: ABdhPJyGC2HiGMD9xJ2IzvKhtFycMw3qTAUv/s7jZVYILuuCp45IGNNYwzSQ72dovmtvqs9HDTNM7vbfxWjIAoqZLN0=
+X-Received: by 2002:a05:6512:33d5:: with SMTP id d21mr14534416lfg.8.1642362875855;
+ Sun, 16 Jan 2022 11:54:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20220111010302.8864-1-richard.weiyang@gmail.com> <20220111010302.8864-2-richard.weiyang@gmail.com>
-In-Reply-To: <20220111010302.8864-2-richard.weiyang@gmail.com>
+References: <20220111010302.8864-1-richard.weiyang@gmail.com> <20220111010302.8864-3-richard.weiyang@gmail.com>
+In-Reply-To: <20220111010302.8864-3-richard.weiyang@gmail.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 16 Jan 2022 11:24:03 -0800
-Message-ID: <CALvZod5ycSmk7URBoLGGJAiyjGQ1E0HR2RnJ-3uZai=t+KpEKA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mm/memcg: mem_cgroup_per_node is already set to 0 on allocation
+Date:   Sun, 16 Jan 2022 11:54:24 -0800
+Message-ID: <CALvZod52PWUhaFW1jOjJFd_Ef4pBrj7=q8MaBEAWMqawapxQ6Q@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mm/memcg: retrieve parent memcg from css.parent
 To:     Wei Yang <richard.weiyang@gmail.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -69,8 +69,11 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Mon, Jan 10, 2022 at 5:03 PM Wei Yang <richard.weiyang@gmail.com> wrote:
 >
-> kzalloc_node() would set data to 0, so it's not necessary to set it
-> again.
+> The parent we get from page_counter is correct, while this is two
+> different hierarchy.
+>
+> Let's retrieve the parent memcg from css.parent just like parent_cs(),
+> blkcg_parent(), etc.
 >
 > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
