@@ -2,155 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF611492D42
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jan 2022 19:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB51E492DE9
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jan 2022 19:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbiARS0M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jan 2022 13:26:12 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:42006 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347803AbiARS0L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jan 2022 13:26:11 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E37FB21709;
-        Tue, 18 Jan 2022 18:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642530370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ge3g8LQjPPjPT4iWHPjDIO/ZDcQCDnvHvSUhi3iQ1rQ=;
-        b=OrSB7UBk3Zx97KIJkOYB5/kufBllUFb5h0WOoqblWugIrDuY6fI4jMScI8ZXt28J8tyxS1
-        bS38D81tmtfhLt1vAcQlfLpfAqsWk7kcK5h/W40SGY9cXN/ZY7TVfEA3pKjrCwqhplgM/8
-        CQJV6oKK94ZSeCnenftUsSkJ0Ok5ARQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA48C13AC9;
-        Tue, 18 Jan 2022 18:26:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rbGALEIG52EsPgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 18 Jan 2022 18:26:10 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     bigeasy@linutronix.de
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-mm@kvack.org, longman@redhat.com,
-        mhocko@kernel.org, mkoutny@suse.com, peterz@infradead.org,
-        tglx@linutronix.de, vdavydov.dev@gmail.com
-Subject: [PATCH] mm/memcg: Do not check v1 event counter when not needed
-Date:   Tue, 18 Jan 2022 19:26:00 +0100
-Message-Id: <20220118182600.15007-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <YeE9zyUokSY9L2ZI@linutronix.de>
-References: <YeE9zyUokSY9L2ZI@linutronix.de>
+        id S1348453AbiARSyy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jan 2022 13:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348448AbiARSyx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jan 2022 13:54:53 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6C5C06173E
+        for <cgroups@vger.kernel.org>; Tue, 18 Jan 2022 10:54:53 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id v45so8621964ybi.0
+        for <cgroups@vger.kernel.org>; Tue, 18 Jan 2022 10:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QuweckTQS4ipVDvmzbXJd32fRhDvTN+WDj7gwwJ5UoU=;
+        b=jQFQQg8xNBNZ796rZm7JSGtcgk/RVRlUMQOrW3OprZAwIy/2ezKxTUPzerHa5MEWoA
+         +kfQjBOqWihjoI8v514cV21UvUHS5JntgpKuZ/16liMkZGbbSOZYF4w1r6JCuqamghHv
+         vowP4DYmSxtE//fgZqRAITszSqg91cqu9Gg64FsXe9W1savFkk2plmXtLm5fBBA0jF0b
+         oImfjSzLxxePgVhSUZSsFU9ZJ84ZiyGtkbd0T7VyhnxMEoyDyxlSw/pOQe3BAymEfuQ2
+         L/UK5sx9cvQq7XnTqbleIw48nFYsStzQLbt2Y29R65fkhq5UTeKah55mvbCMv7n+zmyV
+         rtAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QuweckTQS4ipVDvmzbXJd32fRhDvTN+WDj7gwwJ5UoU=;
+        b=JOFmYLqBLlG5IEEIBhIkil1U/4SGXmbasmFUP6tJ9Gc1B93+i3VFYDiPWo3PZ0JEzO
+         ctAWV16CvhsktiaevaA8PahvptdoY9EPp65Kq9rqVTKBELeiRVXg6WhMeGFStQyBBzPb
+         OLBcicLayQfJgrQLTP96dJpLyScwDT2Q63J0oA7kpuahZmPEPWXhTY6/JNHK/6qWPpzQ
+         5d4vjruT8WNSufL2cOwK1P0rjbHZCc8Xf4veqbpYIdHfiQ28sI/a0buQYf9sajkW2uUe
+         7M5Fq4jC7l1TFBGcoS1u3fMRxjuvttJgZ9H7OsLR2PHadQ+CId8gbMalKwpps26WzcC/
+         wlHA==
+X-Gm-Message-State: AOAM530ugMYPqv96grrqHOL2VS7ofYzmF6G9xMsvJtjWIQcuD7I6JhuY
+        KiCXSGNFf52jPcCEop+rNC4ka/GmEdF0Qf0n56O4yw==
+X-Google-Smtp-Source: ABdhPJwmF0diEuNSgYDq6VwVG2sEv2wSXB4R4GhA8CrKDHbQBq+Cp6d2D+RYzxyanPD1WMMgcwbQ0BJ4awu2dbq2mt8=
+X-Received: by 2002:a25:388a:: with SMTP id f132mr35653202yba.102.1642532092017;
+ Tue, 18 Jan 2022 10:54:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20220115010622.3185921-1-hridya@google.com> <20220115010622.3185921-5-hridya@google.com>
+ <f8c8b196-7d12-6242-97ac-38149f3a3ba3@amd.com>
+In-Reply-To: <f8c8b196-7d12-6242-97ac-38149f3a3ba3@amd.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Tue, 18 Jan 2022 10:54:16 -0800
+Message-ID: <CA+wgaPMjCfjQS4LA8hmVwAaGfXZhoJvvTUnOGt3duOhFb3orTw@mail.gmail.com>
+Subject: Re: [RFC 4/6] dma-buf: Add DMA-BUF exporter op to charge a DMA-BUF to
+ a cgroup.
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Li Li <dualli@google.com>, Marco Ballesio <balejs@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hang Lu <hangl@codeaurora.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        cgroups@vger.kernel.org, Kenny.Ho@amd.com, daniels@collabora.com,
+        kaleshsingh@google.com, tjmercier@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The function memcg_check_events() is called to trigger possible event
-notifications or soft limit updates when page event "clock" moves
-sufficiently. This tracking is not needed when neither soft limit nor (v1)
-event notifications are configured. The tracking can catch-up
-with the clock at any time upon thresholds configuration.
+On Sun, Jan 16, 2022 at 11:46 PM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 15.01.22 um 02:06 schrieb Hridya Valsaraju:
+> > The optional exporter op provides a way for processes to transfer
+> > charge of a buffer to a different process. This is essential for the
+> > cases where a central allocator process does allocations for various
+> > subsystems, hands over the fd to the client who
+> > requested the memory and drops all references to the allocated memory.
+> >
+> > Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> > ---
+> >   include/linux/dma-buf.h | 18 ++++++++++++++++++
+> >   1 file changed, 18 insertions(+)
+> >
+> > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> > index 7ab50076e7a6..d5e52f81cc6f 100644
+> > --- a/include/linux/dma-buf.h
+> > +++ b/include/linux/dma-buf.h
+> > @@ -13,6 +13,7 @@
+> >   #ifndef __DMA_BUF_H__
+> >   #define __DMA_BUF_H__
+> >
+> > +#include <linux/cgroup_gpu.h>
+> >   #include <linux/dma-buf-map.h>
+> >   #include <linux/file.h>
+> >   #include <linux/err.h>
+> > @@ -285,6 +286,23 @@ struct dma_buf_ops {
+> >
+> >       int (*vmap)(struct dma_buf *dmabuf, struct dma_buf_map *map);
+> >       void (*vunmap)(struct dma_buf *dmabuf, struct dma_buf_map *map);
+> > +
+> > +     /**
+> > +      * @charge_to_cgroup:
+> > +      *
+> > +      * This is called by an exporter to charge a buffer to the specif=
+ied
+> > +      * cgroup.
+>
+> Well that sentence makes absolutely no sense at all.
+>
+> The dma_buf_ops are supposed to be called by the DMA-buf subsystem on
+> behalves of the importer and never by the exporter itself.
+>
+> I hope that this is just a documentation mixup.
 
-Guard this functionality behind an unlikely static branch (soft limit
-and events are presumably rather unused than used).
+Thank you for taking a look Christian!
 
-This has slight insignificant performance gain in page-fault specific
-benchmark but overall no performance impact is expected. The goal is to
-partition the charging code per provided user functionality.
+Yes, that was poor wording, sorry about that. It should instead say
+that the op would be called by the process the buffer is currently
+charged to in order to transfer the buffer's charge to a different
+cgroup. This is helpful in the case where a process acts as an
+allocator for multiple client processes and we would like the
+allocated buffers to be charged to the clients who requested their
+allocation(instead of the allocating process as is the default
+behavior). In Android, the graphics allocator HAL process[1] does
+most of the graphics allocations on behalf of various clients. After
+allocation, the HAL process passes the fd to the client over binder
+IPC and the binder driver invokes the charge_to_cgroup() DMA-BUF op to
+uncharge the buffer from the HAL process and charge it to the client
+process instead.
 
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- mm/memcontrol.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+[1]: https://source.android.com/devices/graphics/arch-bq-gralloc
+
+Regards,
+Hridya
 
 
-On Fri, Jan 14, 2022 at 10:09:35AM +0100, Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-> So avoiding these two also avoids memcg_check_events()?
-
-I've made the matter explicit with the surrounding patch.
-
-[
-The performance "gain" is negligible (differences of pft [1] are dominated by
-non-root memcg classification):
-
-                         nocg, nopatch            cg, nopatch              nocg, patch              cg, patch
-Hmean     faults/sec-2   273366.6312 (   0.00%)   243573.3767 * -10.90%*   273901.9709 *   0.20%*   247702.4104 *  -9.39%*
-CoeffVar  faults/sec-2        3.8771 (   0.00%)        3.8396 (   0.97%)        3.1400 (  19.01%)        4.1188 (  -6.24%)
-
-                                                  cg, nopatch                                       cg, patch
-Hmean     faults/sec-2                            243573.3767 (   0.00%)                            247702.4104 *   1.70%*
-CoeffVar  faults/sec-2                                 3.8396 (   0.00%)                                 4.1188 (  -7.27%)
-
-On less targetted benchmarks it's well below noise.
-]
-
-I think it would make sense inserting the patch into your series and
-subsequently reject enabling on PREEMPT_RT -- provided this patch makes sense
-to others too -- the justification is rather functionality splitting for
-this PREEMPT_RT effort.
-
-> Are there plans to remove v1 or is this part of "we must not break
-> userland"?
-
-It's part of that mantra, so v1 can't be simply removed. OTOH, my sensing is
-that this change also fits under not extending v1 (to avoid doubling effort on
-everything).
-
-Michal
-
-[1] https://github.com/gormanm/mmtests/blob/6bcb8b301a48386e0cc63a21f7642048a3ceaed5/configs/config-pagealloc-performance#L6
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4a7b3ebf8e48..7f64ce33d137 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -106,6 +106,8 @@ static bool do_memsw_account(void)
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
- 
-+DEFINE_STATIC_KEY_FALSE(memcg_v1_events_enabled_key);
-+
- /*
-  * Cgroups above their limits are maintained in a RB-Tree, independent of
-  * their hierarchy representation
-@@ -852,6 +854,9 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgroup *memcg,
-  */
- static void memcg_check_events(struct mem_cgroup *memcg, int nid)
- {
-+	if (!static_branch_unlikely(&memcg_v1_events_enabled_key))
-+		return;
-+
- 	/* threshold event is triggered in finer grain than soft limit */
- 	if (unlikely(mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_THRESH))) {
-@@ -3757,6 +3762,7 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
- 		break;
- 	case RES_SOFT_LIMIT:
- 		memcg->soft_limit = nr_pages;
-+		static_branch_enable(&memcg_v1_events_enabled_key);
- 		ret = 0;
- 		break;
- 	}
-@@ -4831,6 +4837,8 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 	list_add(&event->list, &memcg->event_list);
- 	spin_unlock_irq(&memcg->event_list_lock);
- 
-+	static_branch_enable(&memcg_v1_events_enabled_key);
-+
- 	fdput(cfile);
- 	fdput(efile);
- 
--- 
-2.34.1
-
+>
+> Regards,
+> Christian.
+>
+> >   The caller must hold a reference to @gpucg obtained via
+> > +      * gpucg_get(). The DMA-BUF will be uncharged from the cgroup it =
+is
+> > +      * currently charged to before being charged to @gpucg. The calle=
+r must
+> > +      * belong to the cgroup the buffer is currently charged to.
+> > +      *
+> > +      * This callback is optional.
+> > +      *
+> > +      * Returns:
+> > +      *
+> > +      * 0 on success or negative error code on failure.
+> > +      */
+> > +     int (*charge_to_cgroup)(struct dma_buf *dmabuf, struct gpucg *gpu=
+cg);
+> >   };
+> >
+> >   /**
+>
