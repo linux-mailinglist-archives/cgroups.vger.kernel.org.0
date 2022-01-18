@@ -2,76 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434CA4921CE
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jan 2022 10:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11352492375
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jan 2022 11:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbiARJDW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jan 2022 04:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233444AbiARJDR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jan 2022 04:03:17 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0C2C06161C
-        for <cgroups@vger.kernel.org>; Tue, 18 Jan 2022 01:03:17 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id c6so53657575ybk.3
-        for <cgroups@vger.kernel.org>; Tue, 18 Jan 2022 01:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
-        b=hj0GL8APiBpubKtDCzp3qEaSTLAKALjJma5ALqGeBNFva5mzNVwT7K/nZKTy9jBivk
-         JnVeaIfj7+PnxKN465Zmvw+0/TiU6aHpyfRN2aRkEtZPlhAqeU1p0oQ4tzMzicVjOr3i
-         gbqkrl5X1ARmnk5CQgz6Gtas/mBjkhRGvB8csRmfgfT5rIfgoDiled/vAtkevlujbnVz
-         k8Nyw9wdpEV1yxXD0rF37pWa/v/014xYeFdulFVDih3nPLXPXA3l6RzcvbO1ynDPMZUM
-         FjLoA50Pxu3xBbR5y/VnsGVdsvvUgXLsj1cszLKPZM852Quqen7GYIJUdocFvLa60Eln
-         t98Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=IAamEH5Xu1dJ3X0trVcFTPIrL7aTtcDGn5mUS4vw1a8=;
-        b=efC7DgnBFuwz++aifRocPOPcrFYX8YYgAFh8xmCXz+s8YqAngEZsDXHVBLWnaJxpLy
-         S6a0zvQv5dOupBEg7tn8+nZot5rVEmJtaoMvmWdWIt2PNlq7cEKAujcq8fJ5rXb0AYqy
-         P2iaVVOVuv4mB2kterXNas3QPIhqkVXAzzrNgrsLjbamCPTpoiJksuxeyyr4iZoRrNii
-         T3JB7A/kXQONuSNaoDbyV2WnaD3gPGCqhjTqgiSW4zi00SHTv8BbI2XgzcGRsBBtcaUi
-         DqIVJzQzZfr7Yyt8G5cqR3W2vT5H27DkNrooUrZfdXYaZh14t8xSJeFzq3LvBPivE3CE
-         q1Cg==
-X-Gm-Message-State: AOAM531AQz5LEvfhUGjgc9+N//vjlWATD+pf+JapGPXGx6v2UjjT24hp
-        ejKSh2LVv/aDdk/qEH+rq349PGs2aTbMMgcR0Vo=
-X-Google-Smtp-Source: ABdhPJwaOt3KJ+0kEhvggvcLYRcfVBMrV37YktiQ8aFFuzFkY+GKjk4acHVXBfsAYhE797BagutW5d8GiAvauTrppbw=
-X-Received: by 2002:a5b:34b:: with SMTP id q11mr31483209ybp.652.1642496596406;
- Tue, 18 Jan 2022 01:03:16 -0800 (PST)
+        id S232971AbiARKFb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jan 2022 05:05:31 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:43289 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232812AbiARKFa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jan 2022 05:05:30 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V2C14H1_1642500318;
+Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0V2C14H1_1642500318)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 18 Jan 2022 18:05:26 +0800
+From:   Tianchen Ding <dtcccc@linux.alibaba.com>
+To:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] cpuset: Fix the bug that subpart_cpus updated wrongly in update_cpumask()
+Date:   Tue, 18 Jan 2022 18:05:18 +0800
+Message-Id: <20220118100518.2381118-1-dtcccc@linux.alibaba.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: by 2002:a05:7108:3655:0:0:0:0 with HTTP; Tue, 18 Jan 2022 01:03:15
- -0800 (PST)
-Reply-To: asil.ajwad@gmail.com
-From:   Asil Ajwad <graceyaogokamboule@gmail.com>
-Date:   Mon, 17 Jan 2022 21:03:15 -1200
-Message-ID: <CA+Yy_gCPDU1aVGxQ4KN15MzyTM5X7id3fn57k443NJ3XkhR=pg@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+subparts_cpus should be limited as a subset of cpus_allowed, but it is
+updated wrongly by using cpumask_andnot(). Use cpumask_and() instead to
+fix it.
+
+Fixes: ee8dde0cd2ce ("cpuset: Add new v2 cpuset.sched.partition flag")
+Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+---
+ kernel/cgroup/cpuset.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index bb3531e7fda7..804ff5738c5f 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1635,8 +1635,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	 * Make sure that subparts_cpus is a subset of cpus_allowed.
+ 	 */
+ 	if (cs->nr_subparts_cpus) {
+-		cpumask_andnot(cs->subparts_cpus, cs->subparts_cpus,
+-			       cs->cpus_allowed);
++		cpumask_and(cs->subparts_cpus, cs->subparts_cpus, cs->cpus_allowed);
+ 		cs->nr_subparts_cpus = cpumask_weight(cs->subparts_cpus);
+ 	}
+ 	spin_unlock_irq(&callback_lock);
 -- 
-Greetings,
+2.33.0
 
-I am Mr.Asil Ajwad, I work with United Bank of Africa, can you use
-an ATM Visa Card to withdraw money at, ATM Cash Machine in your
-country, if yes I want to transfer abounded fund the sum of $10.5million
-US-Dollars, to you from my country, this is part of the money that was
-abounded by our late old client a politician who unfortunately lost
-his life and was forced out of power Du to greedy act, the bank will
-
-change the account details to your name, and apply for a Visa Card
-with your details, the Visa Card will be send to you, and you can be
-withdrawing money with it always, whatever any amount you withdraw
-daily, you will send 60% to me and you will take 40%, the Visa Card
-and the bank account will be on your name, I will be waiting for your
-response for more details, thanks to you a lot for giving me your time.
-
-regards,
-Mr.Asil Ajwad.
