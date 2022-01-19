@@ -2,125 +2,251 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9C8493F8A
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jan 2022 19:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F585493FC2
+	for <lists+cgroups@lfdr.de>; Wed, 19 Jan 2022 19:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356594AbiASSDD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Jan 2022 13:03:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351948AbiASSDB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jan 2022 13:03:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642615381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=czyQcT5AvdpFdccMDnqOJP5PsUxctttwWttnV2WSAI4=;
-        b=CMWZHPi/s/KJNjs7mhgsokItQpUiqN9RcgJ5p4gO0hEHxQkyL/bdf8PwOI38tl9YigmBkS
-        4FF5jS+ni0s71stn1NPV5m/UOH+KY6WyuDvE+4o+A4uVDC7svbQhoqMTBmSCeHAcfAo9j6
-        +hlVdreRieEmGifRhYdCUOzqn2bwcko=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-379-H8HtoEsAPPa58XO_dZ9XyQ-1; Wed, 19 Jan 2022 13:02:58 -0500
-X-MC-Unique: H8HtoEsAPPa58XO_dZ9XyQ-1
-Received: by mail-wm1-f72.google.com with SMTP id i26-20020a1c541a000000b0034dc8bd7078so1140317wmb.8
-        for <cgroups@vger.kernel.org>; Wed, 19 Jan 2022 10:02:58 -0800 (PST)
+        id S1356695AbiASSWh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Jan 2022 13:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356688AbiASSWd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jan 2022 13:22:33 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA4FC06173E
+        for <cgroups@vger.kernel.org>; Wed, 19 Jan 2022 10:22:33 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id v186so10150562ybg.1
+        for <cgroups@vger.kernel.org>; Wed, 19 Jan 2022 10:22:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ow/r3jR/x5GfOuGnuaEDOpHXZ2D5zk6XSR55QH2bw2k=;
+        b=FLI8i7I5yY8vnry+xbaYi6fdQCzv/or9KmsXB8RqqToh1UZrTutJ8AvfQ35vIwRpaZ
+         ZVIDvaMC9WrXJlmNwtpWjHaWlh2hOUrkwFG7C3i2Gjctt+KKhjxyftX7F345XteoowUn
+         tmj3k+QHGMBCEsEd1hH7U0I28J5nEx8e5PpVhVuGXuhCte6lCImn19BiZqTDEqOw/Fdg
+         fvcYZ8Aq05r+5q6HwLuIb9fePc6b1rxye0TZ4rjMY47us1/36Bhlc7LrAw524c1oJWJz
+         AMiicIHHXoNcakeFhzP4hNVTgux4URUiw4uTdMc92CXEM0fnjkPofkv52VCekSlDs/yT
+         fqqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=czyQcT5AvdpFdccMDnqOJP5PsUxctttwWttnV2WSAI4=;
-        b=O+fvd/n+/XEA65iaUkvSdSJuYoS9YrFaqmq6m6+/gGE9YKM+7jFbJ/5i1XDbNwMwXu
-         pLfN+Z7HLGGi/GfWj1ZsWPsMJAhDjpyLfqlvOclBYkPaa7oDsR0WROCPavwdYnipRq1O
-         5NusrZqUxY1XcNZDnsugHFwSMn/G1Iv85QdtrjSdVGYKQepFAsxkyNIBLWLVuJ8J138Y
-         4VA9ntsFRz/kuee/7jU5cm44UX/pm6hQTI5rG/cZ3+55r15QW8HCPf6/0A7NCDpF60Uq
-         uVqDQY/50YgRGZQXnFV/vfSBRRO5YkV5w2+TSU4QOglwL0PaDgtAplL3AMfQdvorLeva
-         DAKg==
-X-Gm-Message-State: AOAM533pE4dqOVKMyaQv4kHHpy9jYHAiotovOBiQz7WDQrfJGTgw0hfI
-        ItBTr9LrQpC1CwsaqD9OsiyTdzp3NXy2HcxLVLEEW0k4obmPAPoRgz1wqCoym9NhV9V9MidkyeU
-        2gR//ScyMJJFASHL3vg==
-X-Received: by 2002:adf:d1e9:: with SMTP id g9mr16362045wrd.94.1642615377589;
-        Wed, 19 Jan 2022 10:02:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzWiK4YX1B5gdEVQZODtrmTI10OiMW4QGl94Z1D+eFnE79lslF625dzQ56217EHdanwhn1q9A==
-X-Received: by 2002:adf:d1e9:: with SMTP id g9mr16361991wrd.94.1642615376863;
-        Wed, 19 Jan 2022 10:02:56 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id u7sm233710wmc.11.2022.01.19.10.02.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jan 2022 10:02:56 -0800 (PST)
-Message-ID: <7a0bc562-9f25-392d-5c05-9dbcd350d002@redhat.com>
-Date:   Wed, 19 Jan 2022 19:02:53 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ow/r3jR/x5GfOuGnuaEDOpHXZ2D5zk6XSR55QH2bw2k=;
+        b=aJD7N0IWhelJyLDJ0LLVsNNvFQw197vhp6O+JkM0Gp727isHPZwwDxN0ZDy6ld5Rlc
+         /vqrWN94EDzUKW+5V9wzFL5pMaOLUmGnCRu+iQ3q/Evh0l4FxoGd+aH262bNxkZTE5wu
+         saiTCRA7mosb2Ej3Kz1A5aRzm1qG+b4x3at25R94uVdU8PgwNWS2Jp4I3x/aQUWN8596
+         AHFSa8PIAJbzsYvYEZsozu4Fm0aXDuS46YEcXKDUtEDn2dv+STjE6UnIL3uMnd4vaUf/
+         REWS1qFXc4ZL2Gv6NhCfHRefFbmIxGAXKbca6z1UqX2ziSJSCuhGzObJERzcdbhdadrm
+         4SaA==
+X-Gm-Message-State: AOAM530jn/FizfDBCWzhePgRaMDOkpeZ7OGA8dSVtc4L54PFasbDCp+M
+        QjRt2i1KhpAjhr5QOBTte3pgdUCvSbyeWdrh1uMp3g==
+X-Google-Smtp-Source: ABdhPJyjjX5Kb9HEVQzIWK6/hD7hnVoGUHZFYjjUqWfesM5kj11GBi5GykhCeEhYDzwi5M4A2l0fMwN4mb/19ZPJHfM=
+X-Received: by 2002:a5b:550:: with SMTP id r16mr38968597ybp.403.1642616552050;
+ Wed, 19 Jan 2022 10:22:32 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH v2] KVM: Move VM's worker kthreads back to the original
- cgroups before exiting.
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        seanjc@google.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        dmatlack@google.com, jiangshanlai@gmail.com, kvm@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211222225350.1912249-1-vipinsh@google.com>
- <20220105180420.GC6464@blackbody.suse.cz>
- <CAHVum0e84nUcGtdPYQaJDQszKj-QVP5gM+nteBpSTaQ2sWYpmQ@mail.gmail.com>
- <Yeclbe3GNdCMLlHz@slm.duckdns.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <Yeclbe3GNdCMLlHz@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220115010622.3185921-1-hridya@google.com> <20220115010622.3185921-5-hridya@google.com>
+ <f8c8b196-7d12-6242-97ac-38149f3a3ba3@amd.com> <CA+wgaPMjCfjQS4LA8hmVwAaGfXZhoJvvTUnOGt3duOhFb3orTw@mail.gmail.com>
+ <Yeg0GGi0tdnnCLHg@phenom.ffwll.local> <5cc27a05-8131-ce9b-dea1-5c75e994216d@amd.com>
+In-Reply-To: <5cc27a05-8131-ce9b-dea1-5c75e994216d@amd.com>
+From:   Hridya Valsaraju <hridya@google.com>
+Date:   Wed, 19 Jan 2022 10:21:56 -0800
+Message-ID: <CA+wgaPMqN6HYfx4Abb=be0zN1BytyoP3jEWgaAW-x+POY0SgTQ@mail.gmail.com>
+Subject: Re: [RFC 4/6] dma-buf: Add DMA-BUF exporter op to charge a DMA-BUF to
+ a cgroup.
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Li Li <dualli@google.com>, Marco Ballesio <balejs@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hang Lu <hangl@codeaurora.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        cgroups@vger.kernel.org, Kenny.Ho@amd.com, daniels@collabora.com,
+        kaleshsingh@google.com, tjmercier@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/18/22 21:39, Tejun Heo wrote:
-> So, these are normally driven by the !populated events. That's how everyone
-> else is doing it. If you want to tie the kvm workers lifetimes to kvm
-> process, wouldn't it be cleaner to do so from kvm side? ie. let kvm process
-> exit wait for the workers to be cleaned up.
+On Wed, Jan 19, 2022 at 7:58 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 19.01.22 um 16:54 schrieb Daniel Vetter:
+> > On Tue, Jan 18, 2022 at 10:54:16AM -0800, Hridya Valsaraju wrote:
+> >> On Sun, Jan 16, 2022 at 11:46 PM Christian K=C3=B6nig
+> >> <christian.koenig@amd.com> wrote:
+> >>> Am 15.01.22 um 02:06 schrieb Hridya Valsaraju:
+> >>>> The optional exporter op provides a way for processes to transfer
+> >>>> charge of a buffer to a different process. This is essential for the
+> >>>> cases where a central allocator process does allocations for various
+> >>>> subsystems, hands over the fd to the client who
+> >>>> requested the memory and drops all references to the allocated memor=
+y.
+> >>>>
+> >>>> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> >>>> ---
+> >>>>    include/linux/dma-buf.h | 18 ++++++++++++++++++
+> >>>>    1 file changed, 18 insertions(+)
+> >>>>
+> >>>> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> >>>> index 7ab50076e7a6..d5e52f81cc6f 100644
+> >>>> --- a/include/linux/dma-buf.h
+> >>>> +++ b/include/linux/dma-buf.h
+> >>>> @@ -13,6 +13,7 @@
+> >>>>    #ifndef __DMA_BUF_H__
+> >>>>    #define __DMA_BUF_H__
+> >>>>
+> >>>> +#include <linux/cgroup_gpu.h>
+> >>>>    #include <linux/dma-buf-map.h>
+> >>>>    #include <linux/file.h>
+> >>>>    #include <linux/err.h>
+> >>>> @@ -285,6 +286,23 @@ struct dma_buf_ops {
+> >>>>
+> >>>>        int (*vmap)(struct dma_buf *dmabuf, struct dma_buf_map *map);
+> >>>>        void (*vunmap)(struct dma_buf *dmabuf, struct dma_buf_map *ma=
+p);
+> >>>> +
+> >>>> +     /**
+> >>>> +      * @charge_to_cgroup:
+> >>>> +      *
+> >>>> +      * This is called by an exporter to charge a buffer to the spe=
+cified
+> >>>> +      * cgroup.
+> >>> Well that sentence makes absolutely no sense at all.
+> >>>
+> >>> The dma_buf_ops are supposed to be called by the DMA-buf subsystem on
+> >>> behalves of the importer and never by the exporter itself.
+> >>>
+> >>> I hope that this is just a documentation mixup.
+> >> Thank you for taking a look Christian!
+> >>
+> >> Yes, that was poor wording, sorry about that. It should instead say
+> >> that the op would be called by the process the buffer is currently
+> >> charged to in order to transfer the buffer's charge to a different
+> >> cgroup. This is helpful in the case where a process acts as an
+> >> allocator for multiple client processes and we would like the
+> >> allocated buffers to be charged to the clients who requested their
+> >> allocation(instead of the allocating process as is the default
+> >> behavior). In Android, the graphics allocator HAL process[1] does
+> >> most of the graphics allocations on behalf of various clients. After
+> >> allocation, the HAL process passes the fd to the client over binder
+> >> IPC and the binder driver invokes the charge_to_cgroup() DMA-BUF op to
+> >> uncharge the buffer from the HAL process and charge it to the client
+> >> process instead.
+> >>
+> >> [1]: https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F=
+%2Fsource.android.com%2Fdevices%2Fgraphics%2Farch-bq-gralloc&amp;data=3D04%=
+7C01%7Cchristian.koenig%40amd.com%7C838d25da974d4ea4257508d9db63eb70%7C3dd8=
+961fe4884e608e11a82d994e183d%7C0%7C0%7C637782044488604857%7CUnknown%7CTWFpb=
+GZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7=
+C3000&amp;sdata=3DQn7JeyF5Rq9tnrGw1KgNuQkpu5RbcrvPhDOa1OBJ6TU%3D&amp;reserv=
+ed=3D0
+> > For that use-case, do we really need to have the vfunc abstraction and
+> > force all exporters to do something reasonable with it?
+>
+> I was about to write up a similar answer, but more from the technical sid=
+e.
+>
+> Why in the world should that be done on the DMA-buf object as a
+> communication function between importer and exporter?
+>
+> That design makes absolutely no sense at all to me.
+>
+> Regards,
+> Christian.
+>
+> >
+> > I think just storing the cgrpus gpu memory bucket this is charged again=
+st
+> > and doing this in a generic way would be a lot better.
+> >
+> > That way we can also easily add other neat features in the future, like
+> > e.g. ttm could take care of charge-assignement automatically maybe, or =
+we
+> > could print the current cgroups charge relationship in the sysfs info
+> > file. Or anything else really.
 
-It does.  For example kvm_mmu_post_init_vm's call to
-kvm_vm_create_worker_thread is matched with the call to
-kthread_stop in kvm_mmu_pre_destroy_vm.
-  
-According to Vpin, the problem is that there's a small amount of time
-between the return from kthread_stop and the point where the cgroup
-can be removed.  My understanding of the race is the following:
+Thank you for the comments Daniel and Christian! I made the
+charge/uncharge/transfer part of the exporter implementation since it
+provided exporters a choice on whether they wanted to enable cgroup
+memory accounting for the buffers they were exporting. I also see the
+benefits of making the charge/uncharge/transfer generic by moving it
+to the DMA-BUF framework like you are suggesting though. We will move
+to a more generic design in the next version of the RFC.
 
-user process			kthread			management
-------------			-------			----------
-							wait4()
-exit_task_work()
-   ____fput()
-     kvm_mmu_pre_destroy_vm()
-       kthread_stop();
-         wait_for_completion();
-				exit_signals()
-				  /* set PF_EXITING */
-				exit_mm()
-				  exit_mm_release()
-				    complete_vfork_done()
-				      complete();
-cgroup_exit()
-   cgroup_set_move_task()
-     css_set_update_populated()
-exit_notify()
-   do_notify_parent()
-							<wakeup>
-							rmdir()
-							  cgroup_destroy_locked()
-							    cgroup_is_populated()
-							    return -EBUSY
-				cgroup_exit()
-				  cgroup_set_move_task()
-				    css_set_update_populated()
+Regards,
+Hridya
 
-I cannot find the code that makes it possible to rmdir a cgroup
-if PF_EXITING is set.
-
-Paolo
-
+> >
+> > I do feel that in general for gpu memory cgroups to be useful, we shoul=
+d
+> > really have memory pools as a fairly strong concept. Otherwise every
+> > driver/allocator/thing is going to come up with their own, and very lik=
+ely
+> > incompatible interpretation. And we end up with a supposed generic cgro=
+ups
+> > interface which cannot actually be used in a driver/vendor agnostic way=
+ at
+> > all.
+> > -Daniel
+> >
+> >> Regards,
+> >> Hridya
+> >>
+> >>
+> >>> Regards,
+> >>> Christian.
+> >>>
+> >>>>    The caller must hold a reference to @gpucg obtained via
+> >>>> +      * gpucg_get(). The DMA-BUF will be uncharged from the cgroup =
+it is
+> >>>> +      * currently charged to before being charged to @gpucg. The ca=
+ller must
+> >>>> +      * belong to the cgroup the buffer is currently charged to.
+> >>>> +      *
+> >>>> +      * This callback is optional.
+> >>>> +      *
+> >>>> +      * Returns:
+> >>>> +      *
+> >>>> +      * 0 on success or negative error code on failure.
+> >>>> +      */
+> >>>> +     int (*charge_to_cgroup)(struct dma_buf *dmabuf, struct gpucg *=
+gpucg);
+> >>>>    };
+> >>>>
+> >>>>    /**
+>
