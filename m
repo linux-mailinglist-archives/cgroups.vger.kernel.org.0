@@ -2,89 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4746494FBD
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jan 2022 15:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED7F4950EF
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jan 2022 16:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245264AbiATOC3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jan 2022 09:02:29 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:48134 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235542AbiATOC2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jan 2022 09:02:28 -0500
+        id S1376433AbiATPFH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jan 2022 10:05:07 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:34258 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376432AbiATPFE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jan 2022 10:05:04 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AB7081F388;
-        Thu, 20 Jan 2022 14:02:27 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9427B21905;
+        Thu, 20 Jan 2022 15:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1642687347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1642691103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=34TJNw4/W0xTbQedpBACNYP+v/nLFuErBI3QihUnxYA=;
-        b=CL2oL11sIm6GsYpC/7RLyX/oK2+E++LeDUyG+w8aimfmvFN6411HJqUB2WRcuTyJVAjkQh
-        Nuxrm3IhXZ3K+bzZEQCv/flg8IbeBiSFtwzGpSrZ+Lk9BDV/DNcT/gBPsDHRFPQK0v6FFF
-        08CISQRfePNNd5sCb043RitIMLq9p1g=
+        bh=2nAWydtx5DdzNGZYqxu4dZV+DvOfZYEZrc2cFUMKL8M=;
+        b=r4jbhqQWwY/Z9/hjXZ6h6tTz6bY/SVcBXO+CmBi9g+75D0cuyPbDmkpjc728sDJnOVvvUg
+        GSRqyxC3n/bFkiYIHZLVo1Q54qisS0YiIA6eTwz1IKvQIMGe/KUqnFLxNPV4kD0lm2dGRZ
+        ZF6TjHvRug8R3uO8y+6aOd77NnCuOzA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8ED1213BCC;
-        Thu, 20 Jan 2022 14:02:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 590A713BD2;
+        Thu, 20 Jan 2022 15:05:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id WAJFInNr6WFoDwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 20 Jan 2022 14:02:27 +0000
-Date:   Thu, 20 Jan 2022 15:02:22 +0100
+        id 72gCFR966WHQLwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 20 Jan 2022 15:05:03 +0000
+Date:   Thu, 20 Jan 2022 16:05:02 +0100
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Zhang Qiao <zhangqiao22@huawei.com>
-Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Question] set_cpus_allowed_ptr() call failed at cpuset_attach()
-Message-ID: <20220120140222.GA27269@blackbody.suse.cz>
-References: <09ce5796-798e-83d0-f1a6-ba38a787bfc5@huawei.com>
- <4415cd09-6de3-bb2d-386d-8beb4927fb46@huawei.com>
- <20220119130221.GA31037@blackbody.suse.cz>
- <ff49c096-39d9-4215-5b4f-8af2fd7c0c91@huawei.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, seanjc@google.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, dmatlack@google.com,
+        jiangshanlai@gmail.com, kvm@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: Move VM's worker kthreads back to the original
+ cgroups before exiting.
+Message-ID: <20220120150502.GC27269@blackbody.suse.cz>
+References: <20211222225350.1912249-1-vipinsh@google.com>
+ <20220105180420.GC6464@blackbody.suse.cz>
+ <CAHVum0e84nUcGtdPYQaJDQszKj-QVP5gM+nteBpSTaQ2sWYpmQ@mail.gmail.com>
+ <Yeclbe3GNdCMLlHz@slm.duckdns.org>
+ <7a0bc562-9f25-392d-5c05-9dbcd350d002@redhat.com>
+ <YehY0z2vHYVZk52J@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ff49c096-39d9-4215-5b4f-8af2fd7c0c91@huawei.com>
+In-Reply-To: <YehY0z2vHYVZk52J@slm.duckdns.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 03:14:22PM +0800, Zhang Qiao <zhangqiao22@huawei.com> wrote:
-> i think the troublesome scenario as follows:
->      cpuset_can_attach
->        down_read(cpuset_rwsem)
->          // check all migratees
->        up_read(cpuset_rwsem)
->                                        			[ _cpu_down / cpuhp_setup_state ]
->      cpuset_attach
->       	down_write(cpuset_rwsem)
-> 	guarantee_online_cpus() // (load cpus_attach)
-> 	     						sched_cpu_deactivate
-> 							  set_cpu_active(cpu, false)  // will change cpu_active_mask
->         set_cpus_allowed_ptr(cpus_attach)
-> 	   __set_cpus_allowed_ptr_locked()
-> 	     // (if the intersection of cpus_attach and
-> 	      cpu_active_mask is empty, will return -EINVAL)
->        up_write(cpuset_rwsem)
-> 	                                     		schedule_work
->         	                               		...
->                 	                       		cpuset_hotplug_update_tasks
->                         	                	 down_write(cpuset_rwsem)
-> 	                                	         up_write(cpuset_rwsem)
-> 		                                       ... flush_work
->         		                               [ _cpu_down / cpu_up_down_serialize_trainwrecks ]
+On Wed, Jan 19, 2022 at 08:30:43AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> It'd be nicer if we can make kthread_stop() waiting more regular but I
+> couldn't find a good existing place and routing the usual parent
+> signaling might be too complicated. Anyone has better ideas?
 
-Thanks, a locking loophole indeed.
+The regular way is pictured in Paolo's diagram already, the
+exit_notify/do_signal_parent -> wait4 path.
 
-FTR, meanwhile I noticed: a) cpuset_fork() looks buggy when
-CLONE_INTO_CGROUP (and dst.cpus != src.cpus), b) it'd be affected with
-similar hotplug race.
+Actually, I can see that there exists already kernel_wait() and is used
+by a UMH wrapper kthread. kthreadd issues ignore_signals() so (besides
+no well defined point of signalling a kthread) the signal notification
+is moot and only waking up the waiter is relevant. So kthread_stop()
+could wait via kernel_wait() based on pid (extracted from task_struct).
+
+Have I missed an obstacle?
+
 
 Michal
