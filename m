@@ -2,113 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9A6495F2E
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jan 2022 13:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32387496270
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jan 2022 16:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380428AbiAUMnS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Jan 2022 07:43:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350560AbiAUMnR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jan 2022 07:43:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642768997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1351411AbiAUP5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Jan 2022 10:57:08 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55052 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350816AbiAUP5I (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Jan 2022 10:57:08 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D333B1F3CA;
+        Fri, 21 Jan 2022 15:57:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1642780626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4npqjtp4XyHuyXZdSlqBznaQ1OqDTHRAdb5cB+lM/zc=;
-        b=PXIn/UNnBJVjU84zryMv1X6arDqVGAVkQ5mkZBKPAj4GJOVqRnPW25ZhurHfLRA8WF0VmP
-        +K+fALcOy13dirYaS5VuNWnM7aTuTLiRy0MRRq3vZhBd+4dp/nKW7bHH7JHVjzdmzF+t3y
-        fjxxtDh+7JHwx6PhNyU2hXinvnP0tNw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-619-1ueiQlrZOEm5vfO2ZKx8Qg-1; Fri, 21 Jan 2022 07:43:13 -0500
-X-MC-Unique: 1ueiQlrZOEm5vfO2ZKx8Qg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=iC6HlJNGkj7g2fm9s+Lr372ZTXnke169KUBr6T9jAO8=;
+        b=ZNv1nepTtadpjK+r7+JhnENvQ6TcqTpdwfnTtrIiHTVFtTqy4jVVmzuSRhdWIUpSZSa8aA
+        +4PPzQVCBYGQ/Eate+TkuHoSkREYhXKdrjqDMHkAvQWcvteVPpx0svJ2Zj40GDAwoytb8k
+        MBO/d/1QMWW39ZUAiejRHNbYnRApeao=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B8C91006AA5;
-        Fri, 21 Jan 2022 12:43:11 +0000 (UTC)
-Received: from [10.22.16.178] (unknown [10.22.16.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D6697AB75;
-        Fri, 21 Jan 2022 12:43:09 +0000 (UTC)
-Message-ID: <a166a39f-aa9f-95af-3f3f-f4e17e7c3305@redhat.com>
-Date:   Fri, 21 Jan 2022 07:43:08 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH] cgroup/cpuset: Fix a race between cpuset_attach() and cpu
- hotplug
-Content-Language: en-US
-To:     Zhang Qiao <zhangqiao22@huawei.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC1BD13A1E;
+        Fri, 21 Jan 2022 15:57:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bEdzKdLX6mHvEwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 21 Jan 2022 15:57:06 +0000
+Date:   Fri, 21 Jan 2022 16:57:05 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Zhang Qiao <zhangqiao22@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
         matthltc@us.ibm.com, bblum@google.com, menage@google.com,
-        akpm@linux-foundation.org, mkoutny@suse.com, zhaogongyi@huawei.com
+        akpm@linux-foundation.org, longman@redhat.com,
+        zhaogongyi@huawei.com
+Subject: Re: [PATCH] cgroup/cpuset: Fix a race between cpuset_attach() and
+ cpu hotplug
+Message-ID: <20220121155705.GA2394@blackbody.suse.cz>
 References: <20220121101210.84926-1-zhangqiao22@huawei.com>
-From:   Waiman Long <longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20220121101210.84926-1-zhangqiao22@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/21/22 05:12, Zhang Qiao wrote:
-> As previously discussed(https://lkml.org/lkml/2022/1/20/51),
-> cpuset_attach() is affected with similar cpu hotplug race,
-> as follow scenario:
->
->       cpuset_attach()				cpu hotplug
->      ---------------------------            ----------------------
->      down_write(cpuset_rwsem)
->      guarantee_online_cpus() // (load cpus_attach)
-> 					sched_cpu_deactivate
-> 					  set_cpu_active()
-> 					  // will change cpu_active_mask
->      set_cpus_allowed_ptr(cpus_attach)
->        __set_cpus_allowed_ptr_locked()
->         // (if the intersection of cpus_attach and
->           cpu_active_mask is empty, will return -EINVAL)
->      up_write(cpuset_rwsem)
->
-> To avoid races such as described above, protect cpuset_attach() call
-> with cpu_hotplug_lock.
->
+On Fri, Jan 21, 2022 at 06:12:10PM +0800, Zhang Qiao <zhangqiao22@huawei.com> wrote:
 > Fixes: be367d099270 ("cgroups: let ss->can_attach and ss->attach do whole threadgroups at a time")
+
+What a deep stratigraphy (not sure if it's this one but anything else
+would likely come from eras ago too).
+
 > Reported-by: Zhao Gongyi <zhaogongyi@huawei.com>
 > Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
 > ---
->   kernel/cgroup/cpuset.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index dc653ab26e50..0af5725cc1df 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2252,6 +2252,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   	cgroup_taskset_first(tset, &css);
->   	cs = css_cs(css);
->
-> +	cpus_read_lock();
->   	percpu_down_write(&cpuset_rwsem);
->
->   	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
-> @@ -2305,6 +2306,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   		wake_up(&cpuset_attach_wq);
->
->   	percpu_up_write(&cpuset_rwsem);
-> +	cpus_read_unlock();
->   }
->
->   /* The various types of files and directories in a cpuset file system */
-> --
-> 2.18.0
+>  kernel/cgroup/cpuset.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-The locking sequence looks right.
-
-Acked-by: Waiman Long <longman@redhat.com>
+Feel free to include
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
 
