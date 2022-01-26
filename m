@@ -2,74 +2,189 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3B349C88F
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 12:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D26FA49CC1C
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 15:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240650AbiAZLY2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jan 2022 06:24:28 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:56340 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbiAZLY1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 06:24:27 -0500
-Date:   Wed, 26 Jan 2022 12:24:25 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643196266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=22UvY86Kfs4AbFGAcdoC8Kdx7cTmd+khf9zUEu3+8JU=;
-        b=Y7kQkiCmXIll4GHMf/OXPjc7GbWHeMX4BK6a60kJv+OtHkOlHBIWzwoVlUecRRVSGLleqq
-        xN0exkry7H3DhKWYBAycSgPYGE2nREK85PvJSSZxiqEwLbP6yfMYNXD5gZ55/XBHzBmUs4
-        P5epcx+y7dqy9Xh40pdCjwKrEjd2oIik+PPGmirzfJptqanxbweSltevfnCAEPTRKX1SQS
-        +rCwDQj4W6YDWwWg/dIVUcbg93Z+K6M+K1jYKCoApUGInNkLU3HyDMlZTwmgYAD0CJ9I1W
-        WbI5qs2CetZVCe6yGPVfH8hNPVtZ9r/MWOdLmkXCfF47Y5uXtGvABUB4uvnOrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643196266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=22UvY86Kfs4AbFGAcdoC8Kdx7cTmd+khf9zUEu3+8JU=;
-        b=igt4CRlkzJpPqZFeay9GJE8KSEMkn9bNkM5J8GrPivTBxt7zcI40CakmKrJraSCsziuMtB
-        dBEtsKhIHBrZkxCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 2/4] mm/memcg: Protect per-CPU counter by disabling
- preemption on PREEMPT_RT where needed.
-Message-ID: <YfEvaeCXoL+I3z05@linutronix.de>
-References: <20220125164337.2071854-1-bigeasy@linutronix.de>
- <20220125164337.2071854-3-bigeasy@linutronix.de>
- <86eeed07-b7dc-b387-ea4d-1a4a41334fe3@suse.cz>
+        id S235562AbiAZORK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jan 2022 09:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242041AbiAZORJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 09:17:09 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73787C06161C
+        for <cgroups@vger.kernel.org>; Wed, 26 Jan 2022 06:17:09 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id v3so15929263pgc.1
+        for <cgroups@vger.kernel.org>; Wed, 26 Jan 2022 06:17:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QuBjI/BryKVkGIA4h31vhmSSCk11smyr2XD+Upk34ss=;
+        b=eLgorfddK9RDt16GtJUDSQjE2iZvbV3tiZ19IQiNbHso9K5YwgELoAegHUh6ZjivMI
+         IZLfI7pCrI7uBYBwthU5+CPYcxUn2OnwKcISkz+ACEnzl5PhDDnPSMSQuIAOyI6/PzSw
+         sf2XJ0jaumGZPt3Az/dV2emlU3/3B/1YL2FPiI5zP6OpHXc87P3eNYSmX+z7KEpjoDWp
+         vqrhEfW/AequoC+byd7VPhnzvH5p9gqS3gVS8qRhHulpiUWCqKV3vB1G8SbOpZTK4ekK
+         YowgSXGjIuA8ZM+itgeLTa7pU4YbyphWbbCgVNojYjPlxtMxGrB91l2eYtPCnysgDOAw
+         M8xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QuBjI/BryKVkGIA4h31vhmSSCk11smyr2XD+Upk34ss=;
+        b=27SF81fWbEh54BVIpSWCOcWdhBJrcMuINGXEsm4FOJgxziZb5h3l4NH46jwazSOF4L
+         nM+Ezg07B7/50q1Ue2LM3nJCW7ZooTlOze4dezUir+a0QVgzaOWnmgZ9VLk5LR71n/kZ
+         Ae2W3G7HzXXI7IWWN2ga+cE4tGB5iAahqKfbp8H0bOTkKFrBA6Zn5wj3B3kMkyShINcX
+         LWjf6ZZ0eXxyotHwI2GTsgXT8wGK4BHLTcsi8ef+HLszBw0KQHB7UuttAcD75HZ/NRhZ
+         C5Sy3INRdmhJNK3TGWvrqfZcJhn6u7mRnsceWtd0hnoxe0QP8qu+vzWkPc9Su/U0N+kd
+         AyLw==
+X-Gm-Message-State: AOAM530VB+9kOgjhVvM6fadkAAuVMfvEn0qgsjPKRf1qHR8/RIrajp3I
+        TcuOgNIRyg5QroHLthdeOyg=
+X-Google-Smtp-Source: ABdhPJw2Bj8vx6rwvGwyB+HEb3e9oDBnlEdGmZXkJ4RvAFQVXmKJrR3Yeq223sW9lSAFdZyHv1YBZA==
+X-Received: by 2002:a63:b30b:: with SMTP id i11mr19168820pgf.457.1643206628750;
+        Wed, 26 Jan 2022 06:17:08 -0800 (PST)
+Received: from vultr.guest ([45.76.74.237])
+        by smtp.gmail.com with ESMTPSA id d8sm2452797pfl.198.2022.01.26.06.17.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jan 2022 06:17:08 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Subject: [PATCH] cgroup: minor optimization around the usage of cur_tasks_head
+Date:   Wed, 26 Jan 2022 14:17:05 +0000
+Message-Id: <20220126141705.6497-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <86eeed07-b7dc-b387-ea4d-1a4a41334fe3@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022-01-26 11:06:40 [+0100], Vlastimil Babka wrote:
-> So it's like c68ed7945701 ("mm/vmstat: protect per cpu variables with
-> preempt disable on RT") but we still don't want a wrapper of those
-> constructs so they don't spread further, right :)
+Recently there was an issue occurred on our production envrionment with a
+very old kernel version 4.19. That issue can be fixed by upstream
+commit 9c974c772464 ("cgroup: Iterate tasks that did not finish do_exit()")
 
-Right. We only have them because of assumption based on spin_lock_irq()
-which are not true on PREEMPT_RT. Having a generic one might let people
-to use them for the wrong reasons.
-The commit you mentioned changed all users while here I only changed
-those which missed it. Also I wasn't sure if preemption should be
-disabled or interrupts (to align with the other local_irq_save()).
+When I was trying to fix that issue on our production environment, I found
+we can create a hotfix with a simplified version of the commit -
 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+As the usage of cur_tasks_head is within the function
+css_task_iter_advance(), we can make it as a local variable. That could
+make it more clear and easier to understand. Another benefit is we don't
+need to carry it in css_task_iter.
 
-Thank you.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Michal Koutný <mkoutny@suse.com>
+---
+ include/linux/cgroup.h |  1 -
+ kernel/cgroup/cgroup.c | 29 ++++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 14 deletions(-)
 
-Sebastian
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 75c151413fda..f619a92d0fa0 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -61,7 +61,6 @@ struct css_task_iter {
+ 
+ 	struct list_head		*task_pos;
+ 
+-	struct list_head		*cur_tasks_head;
+ 	struct css_set			*cur_cset;
+ 	struct css_set			*cur_dcset;
+ 	struct task_struct		*cur_task;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 919194de39c8..ffb0c863b97a 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4545,10 +4545,12 @@ static struct css_set *css_task_iter_next_css_set(struct css_task_iter *it)
+ /**
+  * css_task_iter_advance_css_set - advance a task iterator to the next css_set
+  * @it: the iterator to advance
++ * @cur_tasks_head: head of current tasks
+  *
+  * Advance @it to the next css_set to walk.
+  */
+-static void css_task_iter_advance_css_set(struct css_task_iter *it)
++static void css_task_iter_advance_css_set(struct css_task_iter *it,
++				struct list_head **cur_tasks_head)
+ {
+ 	struct css_set *cset;
+ 
+@@ -4557,13 +4559,13 @@ static void css_task_iter_advance_css_set(struct css_task_iter *it)
+ 	/* Advance to the next non-empty css_set and find first non-empty tasks list*/
+ 	while ((cset = css_task_iter_next_css_set(it))) {
+ 		if (!list_empty(&cset->tasks)) {
+-			it->cur_tasks_head = &cset->tasks;
++			*cur_tasks_head = &cset->tasks;
+ 			break;
+ 		} else if (!list_empty(&cset->mg_tasks)) {
+-			it->cur_tasks_head = &cset->mg_tasks;
++			*cur_tasks_head = &cset->mg_tasks;
+ 			break;
+ 		} else if (!list_empty(&cset->dying_tasks)) {
+-			it->cur_tasks_head = &cset->dying_tasks;
++			*cur_tasks_head = &cset->dying_tasks;
+ 			break;
+ 		}
+ 	}
+@@ -4571,7 +4573,7 @@ static void css_task_iter_advance_css_set(struct css_task_iter *it)
+ 		it->task_pos = NULL;
+ 		return;
+ 	}
+-	it->task_pos = it->cur_tasks_head->next;
++	it->task_pos = (*cur_tasks_head)->next;
+ 
+ 	/*
+ 	 * We don't keep css_sets locked across iteration steps and thus
+@@ -4610,6 +4612,7 @@ static void css_task_iter_skip(struct css_task_iter *it,
+ 
+ static void css_task_iter_advance(struct css_task_iter *it)
+ {
++	struct list_head *cur_tasks_head = NULL;
+ 	struct task_struct *task;
+ 
+ 	lockdep_assert_held(&css_set_lock);
+@@ -4626,18 +4629,18 @@ static void css_task_iter_advance(struct css_task_iter *it)
+ 			it->task_pos = it->task_pos->next;
+ 
+ 		if (it->task_pos == &it->cur_cset->tasks) {
+-			it->cur_tasks_head = &it->cur_cset->mg_tasks;
+-			it->task_pos = it->cur_tasks_head->next;
++			cur_tasks_head = &it->cur_cset->mg_tasks;
++			it->task_pos = cur_tasks_head->next;
+ 		}
+ 		if (it->task_pos == &it->cur_cset->mg_tasks) {
+-			it->cur_tasks_head = &it->cur_cset->dying_tasks;
+-			it->task_pos = it->cur_tasks_head->next;
++			cur_tasks_head = &it->cur_cset->dying_tasks;
++			it->task_pos = cur_tasks_head->next;
+ 		}
+ 		if (it->task_pos == &it->cur_cset->dying_tasks)
+-			css_task_iter_advance_css_set(it);
++			css_task_iter_advance_css_set(it, &cur_tasks_head);
+ 	} else {
+ 		/* called from start, proceed to the first cset */
+-		css_task_iter_advance_css_set(it);
++		css_task_iter_advance_css_set(it, &cur_tasks_head);
+ 	}
+ 
+ 	if (!it->task_pos)
+@@ -4651,12 +4654,12 @@ static void css_task_iter_advance(struct css_task_iter *it)
+ 			goto repeat;
+ 
+ 		/* and dying leaders w/o live member threads */
+-		if (it->cur_tasks_head == &it->cur_cset->dying_tasks &&
++		if (cur_tasks_head == &it->cur_cset->dying_tasks &&
+ 		    !atomic_read(&task->signal->live))
+ 			goto repeat;
+ 	} else {
+ 		/* skip all dying ones */
+-		if (it->cur_tasks_head == &it->cur_cset->dying_tasks)
++		if (cur_tasks_head == &it->cur_cset->dying_tasks)
+ 			goto repeat;
+ 	}
+ }
+-- 
+2.17.1
+
