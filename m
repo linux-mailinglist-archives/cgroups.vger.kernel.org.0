@@ -2,83 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F2649CFFF
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 17:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9546949D01D
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 17:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243276AbiAZQuA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jan 2022 11:50:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236507AbiAZQt7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 11:49:59 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D402AC06161C;
-        Wed, 26 Jan 2022 08:49:58 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id i1so76137pla.9;
-        Wed, 26 Jan 2022 08:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qHKkyLNz3BcJqhVoJVmJSW+AQ6LC+YMbazKnt8TVUkM=;
-        b=EqkmYvUuHqLMrlellKgtt5dH4fjRwBxeLQlg4yOHiXrlRPwkZmEvL5zjR9gsWSQj8e
-         FH/FdYO/EASM4JiRC2XMNbbtLLaauL4WXuAHKZc0or3hXKBCPHdtOFGpP+luU0nhVRhw
-         ISVG1N4X6ctoZfEnl3UB1LEwNQISpF5UBMCga4EdNsAAxwXm9gMzD+tjcICd2bG9L0sA
-         Fj66vuOp0rx9m6DVJ724BgsVjrxTHV+lVjBnWgTXX25kBbEXt0zAvwtvq72HmheS7iva
-         z/wkmZSUkSjfDI6IaTzK9NHM1ChbYGdI5oqObJRJF0ttryPec4a4MTIJ2NWrucNChbJy
-         ugzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=qHKkyLNz3BcJqhVoJVmJSW+AQ6LC+YMbazKnt8TVUkM=;
-        b=f7GTLWjv+Srzi1anyoPz10f10nNa3Ta8dj7g8xza/eYzqFf6VVeDw8Gvb5bymqp3aJ
-         R3RLTJADqz42SDaxfFiwe6fU0ZILDwDqEMA8CD6mg5Rc8QaF52uFED39Nr7DFXk8/EiP
-         aoqZcQqSdkQZFeu1+eZqqXAA7Nc+uYzcqKx7HjoNumdJcPO/LOenGvahw6RVhtwFa89M
-         AeD2iIymRYx1QlVFMymWsXYNX1pbY6NbNUXqqu+037+K/gdSoMDlVEArcHJ0RrGP2el9
-         hGn9TfG2eOHKJGhF2tLxCKaawzy++zUa0UwPKRLryqaKPgfzD+xX14PxuBBBGysorreg
-         ePfg==
-X-Gm-Message-State: AOAM533prErK+CLzqhPKtdkiDu84eoa9p2pw3cYNzjCZs4nRpUkqqEHR
-        vSyo1ZTyB9pP24dOnwxU6g+DJQWTVV0aGg==
-X-Google-Smtp-Source: ABdhPJxSvfAEkqpVTTNNS1c3bwoVCUdq52Tj7PktJnSjmA7duMqtB66nxR0YUt1iwK8wbpp2259SJg==
-X-Received: by 2002:a17:902:7603:b0:148:daa7:ed7e with SMTP id k3-20020a170902760300b00148daa7ed7emr23330196pll.150.1643215798273;
-        Wed, 26 Jan 2022 08:49:58 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id o7sm2441165pfk.184.2022.01.26.08.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 08:49:57 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 26 Jan 2022 06:49:56 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Tianchen Ding <dtcccc@linux.alibaba.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpuset: Fix the bug that subpart_cpus updated wrongly in
- update_cpumask()
-Message-ID: <YfF7tPxxNT2SxWxl@slm.duckdns.org>
-References: <20220118100518.2381118-1-dtcccc@linux.alibaba.com>
+        id S243353AbiAZQ5Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jan 2022 11:57:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:51438 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243345AbiAZQ5Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 11:57:16 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DD373218F8;
+        Wed, 26 Jan 2022 16:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643216234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3McJH9/soyjDGsp4lQ4WDb3Lp1cmKICM9yz0suAddps=;
+        b=cLAh3kTg6YH2mjns+CgakIQCEYBwygZGFAjVifsaYEfSyZACiBw3lgIHsgMtKLsXBXryhj
+        egW/JW0V5e116ht90lFaE441PuvGgBp++a980OIva1KUIwmXSRsYAe+9C+Gx3IpZyRtzBe
+        OZHRFzRYtyR7iOmR3AENe0VrXAALha4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643216234;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3McJH9/soyjDGsp4lQ4WDb3Lp1cmKICM9yz0suAddps=;
+        b=d/ezpIRJ0s+H4pkw6fmafDzl1Bi4zJkzOM51iBovrsIs36OlEObcv9xuoDYSVUUZLoPSN/
+        GZZwnKlYI3E2yJCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF3A813E2C;
+        Wed, 26 Jan 2022 16:57:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 897vKWp98WErUAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 26 Jan 2022 16:57:14 +0000
+Message-ID: <7f4928b8-16e2-88b3-2688-1519a19653a9@suse.cz>
+Date:   Wed, 26 Jan 2022 17:57:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220118100518.2381118-1-dtcccc@linux.alibaba.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Content-Language: en-US
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>
+References: <20220125164337.2071854-1-bigeasy@linutronix.de>
+ <20220125164337.2071854-4-bigeasy@linutronix.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 3/4] mm/memcg: Add a local_lock_t for IRQ and TASK object.
+In-Reply-To: <20220125164337.2071854-4-bigeasy@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 18, 2022 at 06:05:18PM +0800, Tianchen Ding wrote:
-> subparts_cpus should be limited as a subset of cpus_allowed, but it is
-> updated wrongly by using cpumask_andnot(). Use cpumask_and() instead to
-> fix it.
+On 1/25/22 17:43, Sebastian Andrzej Siewior wrote:
+> The members of the per-CPU structure memcg_stock_pcp are protected
+> either by disabling interrupts or by disabling preemption if the
+> invocation occurred in process context.
+> Disabling interrupts protects most of the structure excluding task_obj
+> while disabling preemption protects only task_obj.
+> This schema is incompatible with PREEMPT_RT because it creates atomic
+> context in which actions are performed which require preemptible
+> context. One example is obj_cgroup_release().
 > 
-> Fixes: ee8dde0cd2ce ("cpuset: Add new v2 cpuset.sched.partition flag")
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+> The IRQ-disable and preempt-disable sections can be replaced with
+> local_lock_t which preserves the explicit disabling of interrupts while
+> keeps the code preemptible on PREEMPT_RT.
+> 
+> The task_obj has been added for performance reason on non-preemptible
+> kernels where preempt_disable() is a NOP. On the PREEMPT_RT preemption
+> model preempt_disable() is always implemented. Also there are no memory
+> allocations in_irq() context and softirqs are processed in (preemptible)
+> process context. Therefore it makes sense to avoid using task_obj.
+> 
+> Don't use task_obj on PREEMPT_RT and replace manual disabling of
+> interrupts with a local_lock_t. This change requires some factoring:
+> 
+> - drain_obj_stock() drops a reference on obj_cgroup which leads to an
+>   invocation of obj_cgroup_release() if it is the last object. This in
+>   turn leads to recursive locking of the local_lock_t. To avoid this,
+>   obj_cgroup_release() is invoked outside of the locked section.
+> 
+> - drain_obj_stock() gets a memcg_stock_pcp passed if the stock_lock has been
+>   acquired (instead of the task_obj_lock) to avoid recursive locking later
+>   in refill_stock().
 
-Applied to cgroup/for-5.17-fixes.
+Looks like this was maybe true in some previous version but now
+drain_obj_stock() gets a bool parameter that is passed to
+obj_cgroup_uncharge_pages(). But drain_local_stock() uses a NULL or
+stock_pcp for that bool parameter which is weird.
 
-Thanks.
+> - drain_all_stock() disables preemption via get_cpu() and then invokes
+>   drain_local_stock() if it is the local CPU to avoid scheduling a worker
+>   (which invokes the same function). Disabling preemption here is
+>   problematic due to the sleeping locks in drain_local_stock().
+>   This can be avoided by always scheduling a worker, even for the local
+>   CPU. Using cpus_read_lock() stabilizes cpu_online_mask which ensures
+>   that no worker is scheduled for an offline CPU. Since there is no
+>   flush_work(), it is still possible that a worker is invoked on the wrong
+>   CPU but it is okay since it operates always on the local-CPU data.
+> 
+> - drain_local_stock() is always invoked as a worker so it can be optimized
+>   by removing in_task() (it is always true) and avoiding the "irq_save"
+>   variant because interrupts are always enabled here. Operating on
+>   task_obj first allows to acquire the lock_lock_t without lockdep
+>   complains.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
--- 
-tejun
+The problem is that this pattern where get_obj_stock() sets a
+stock_lock_acquried bool and this is passed down and acted upon elsewhere,
+is a well known massive red flag for Linus :/
+Maybe we should indeed just revert 559271146efc, as Michal noted there were
+no hard numbers to justify it, and in previous discussion it seemed to
+surface that the costs of irq disable/enable are not that bad on recent cpus
+as assumed?
+
+> ---
+>  mm/memcontrol.c | 174 +++++++++++++++++++++++++++++++-----------------
+>  1 file changed, 114 insertions(+), 60 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 3d1b7cdd83db0..2d8be88c00888 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -260,8 +260,10 @@ bool mem_cgroup_kmem_disabled(void)
+>  	return cgroup_memory_nokmem;
+>  }
+>  
+> +struct memcg_stock_pcp;
+
+Seems this forward declaration is unused.
+
+>  static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+> -				      unsigned int nr_pages);
+> +				      unsigned int nr_pages,
+> +				      bool stock_lock_acquried);
+>  
+>  static void obj_cgroup_release(struct percpu_ref *ref)
+>  {
