@@ -2,78 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7449CDE0
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 16:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729449CEF7
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jan 2022 16:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236028AbiAZPVm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jan 2022 10:21:42 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:40604 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235939AbiAZPVl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 10:21:41 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id CE19B21900;
-        Wed, 26 Jan 2022 15:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643210500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9sue3kCU/ER/IRMi/KZAJ26mZGkZjDDlVHexxnqqTGg=;
-        b=dfLKbiy0WMK2IkpK8jhJ+IeLwjkBdRovBxvwdU1hq0H/lvUXIU92Iaqh36UeOnOZl5Hj9f
-        z38jbCewLromjpSf/P2y+iPKzY2uRj5pNMQzEaHGc90LTjtukT252VDBW1MvsjVjwY25xD
-        pUttU46/HhTLQDkj11tWZO2E4uWAT8M=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231298AbiAZPyk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jan 2022 10:54:40 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:41640 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbiAZPyj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 10:54:39 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B792DA3B88;
-        Wed, 26 Jan 2022 15:21:40 +0000 (UTC)
-Date:   Wed, 26 Jan 2022 16:21:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 1/4] mm/memcg: Disable threshold event handlers on
- PREEMPT_RT
-Message-ID: <YfFnBBMDVjESaj/y@dhcp22.suse.cz>
-References: <20220125164337.2071854-1-bigeasy@linutronix.de>
- <20220125164337.2071854-2-bigeasy@linutronix.de>
- <YfFddqkAhd1YKqX9@dhcp22.suse.cz>
- <YfFegDwQSm9v2Qcu@linutronix.de>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6B0EF1F3AF;
+        Wed, 26 Jan 2022 15:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1643212478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JhMXk/ivkidpxAK5AccyfBh1ZU8l7X1indTMMcc/0QM=;
+        b=EK4opr1HdQbMlUngugC9CHY4DDnOmc7BYv0V+FHex/muEUvopf0YP9cdoY7OID6sO8UPQY
+        oQK1xmn5BTnjXTulR0Ig6qcO1re1Ui3R2+3xtSRsj9LI8WX98qYrgzs3HjRD4Kl4n7JrOo
+        AmjkXticwheVEG3Ek/p0CCdHartfmDw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5313F13E1A;
+        Wed, 26 Jan 2022 15:54:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FbG7E75u8WH/LwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 26 Jan 2022 15:54:38 +0000
+Date:   Wed, 26 Jan 2022 16:54:37 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] cgroup: minor optimization around the usage of
+ cur_tasks_head
+Message-ID: <20220126155437.GD2516@blackbody.suse.cz>
+References: <20220126141705.6497-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YfFegDwQSm9v2Qcu@linutronix.de>
+In-Reply-To: <20220126141705.6497-1-laoar.shao@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 26-01-22 15:45:20, Sebastian Andrzej Siewior wrote:
-> On 2022-01-26 15:40:54 [+0100], Michal Hocko wrote:
-> > I still support this approach but the patch is much larger than
-> > necessary. The code moving shouldn't be really necessary and a simple
-> > "do not allow" to set any thresholds or soft limit should be good
-> > enough. 
-> > 
-> > While in general it is better to disable the unreachable code I do not
-> > think this is worth the code churn here.
-> 
-> I got the "defined but not used" warnings by the compiler after I
-> disabled the two functions. Then I moved everything to one code block to
-> avoid the multiple ifdefs.
-> If that is not good, let me think of something else…
+Hello Yafang.
 
-If this is really needed then just split the patch into two. First to
-add the special RT handling and the other one to move the code without
-any other changes.
+On Wed, Jan 26, 2022 at 02:17:05PM +0000, Yafang Shao <laoar.shao@gmail.com> wrote:
+> As the usage of cur_tasks_head is within the function
+> css_task_iter_advance(), we can make it as a local variable. That could
+> make it more clear and easier to understand. Another benefit is we don't
+> need to carry it in css_task_iter.
 
--- 
-Michal Hocko
-SUSE Labs
+It looks correct. When refactoring in the sake of understandibility
+(disputable :), wouldn't it be better to avoid the double-pointer arg
+passed into css_task_iter_advance_css_set() and just return the new
+cur_tasks_head (the input value doesn't seem relevant)?
+
+Thanks,
+Michal
