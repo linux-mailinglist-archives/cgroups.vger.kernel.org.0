@@ -2,62 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950DE49D824
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jan 2022 03:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EFD49D9CA
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jan 2022 06:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbiA0Cpi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jan 2022 21:45:38 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:32064 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbiA0Cph (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jan 2022 21:45:37 -0500
-Received: from kwepemi500019.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JklGX36yRz1FCpq;
-        Thu, 27 Jan 2022 10:41:40 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500019.china.huawei.com (7.221.188.117) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 27 Jan 2022 10:45:35 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 27 Jan 2022 10:45:34 +0800
+        id S232721AbiA0FEI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jan 2022 00:04:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35661 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230106AbiA0FEI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jan 2022 00:04:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643259847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=plPajYXA8B5ZLakDfOB/mq6gwvfYbK84k4ZYLKgoU6w=;
+        b=K/uusz10UWBF0kNGSINnxEN0rCT9PEtgs0Tclz6pdbMLSqFnmN/dtncCELtyt2KO0VO0jp
+        Y4w5DWy3PwS0uxyDYySqf8FwRTs4tQOAoujs2KgIMolnLTikqHKRCKaVoSRc/Nhc/aSOmp
+        3DFiAp4+oaKwgSfPzBhdL7j2CV1GXIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-307-NGGhIgoONtKk4r22eqt6yQ-1; Thu, 27 Jan 2022 00:03:57 -0500
+X-MC-Unique: NGGhIgoONtKk4r22eqt6yQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E02283DD23;
+        Thu, 27 Jan 2022 05:03:55 +0000 (UTC)
+Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6162F5ED2D;
+        Thu, 27 Jan 2022 05:03:40 +0000 (UTC)
+Date:   Thu, 27 Jan 2022 13:03:35 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Tejun Heo <tj@kernel.org>, mkoutny@suse.com, paulmck@kernel.org,
+        axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
 Subject: Re: [PATCH v6 2/2] block: cancel all throttled bios in del_gendisk()
-To:     Tejun Heo <tj@kernel.org>, Ming Lei <ming.lei@redhat.com>
-CC:     <mkoutny@suse.com>, <paulmck@kernel.org>, <axboe@kernel.dk>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+Message-ID: <YfInp7SsZNNgRfB7@T590>
 References: <20220110134758.2233758-1-yukuai3@huawei.com>
- <20220110134758.2233758-3-yukuai3@huawei.com> <Yd5FkuhYX9YcgQkZ@T590>
+ <20220110134758.2233758-3-yukuai3@huawei.com>
+ <Yd5FkuhYX9YcgQkZ@T590>
  <b416e6a6-f2c9-caf3-dacd-f937746207da@huawei.com>
  <YfF+yukISfkuc9IK@slm.duckdns.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <630c162b-8bdd-d87e-0d80-c7a78ea267a5@huawei.com>
-Date:   Thu, 27 Jan 2022 10:45:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <630c162b-8bdd-d87e-0d80-c7a78ea267a5@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YfF+yukISfkuc9IK@slm.duckdns.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+In-Reply-To: <630c162b-8bdd-d87e-0d80-c7a78ea267a5@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ÔÚ 2022/01/27 1:03, Tejun Heo Ð´µÀ:
-> On Mon, Jan 24, 2022 at 11:50:11AM +0800, yukuai (C) wrote:
->> Both ways can fix the problem, which way do you prefer?
+On Thu, Jan 27, 2022 at 10:45:33AM +0800, yukuai (C) wrote:
+> åœ¨ 2022/01/27 1:03, Tejun Heo å†™é“:
+> > On Mon, Jan 24, 2022 at 11:50:11AM +0800, yukuai (C) wrote:
+> > > Both ways can fix the problem, which way do you prefer?
+> > 
+> > Ming's suggested change seems simpler, no?
 > 
-> Ming's suggested change seems simpler, no?
+> Hi,
+> 
+> Yes, if Ming don't mind, I can send a new version after Ming's
+> pathset "block: don't drain file system I/O on del_gendisk".
 
-Hi,
+The patch of canceling throttled bios shouldn't be conflicted
+with the above big patchset, and you can send it out now against
+for-5.18/block.
 
-Yes, if Ming don't mind, I can send a new version after Ming's
-pathset "block: don't drain file system I/O on del_gendisk".
 
 Thanks,
-Kuai
+Ming
+
