@@ -2,148 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBBC4A0327
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jan 2022 22:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF8A4A2B07
+	for <lists+cgroups@lfdr.de>; Sat, 29 Jan 2022 02:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344357AbiA1Vso (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Jan 2022 16:48:44 -0500
-Received: from mga17.intel.com ([192.55.52.151]:39922 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344099AbiA1Vso (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 28 Jan 2022 16:48:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643406524; x=1674942524;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c3DfHy4UfybaUGWpZe7ypxB5nT4Kqu/2JshXAhBJsV8=;
-  b=HrDrs84centBUNzyaRIZGRsBkeuygfZ5e5K1odfzgEk8FV3bVrnNzb1t
-   rSgufc4gAo9y270xnsiZ43vfJWnFTspJU9LYXuuMnPhcE2SLbSISSOGMV
-   LaUTN1c0BiNB4vZ5YJ2clvvRY3n/vBTTVffuGv+DzodxZqBYbl1jJi9dD
-   9k9bXAdrg0J6TSy6aOKvpTPSGeVKBmKe+E3h/W6Sb/rJ762t5H3+elvF+
-   HukCx4U5UXorcEYC6NU1dDHyxXD0/khSvJd+hjesPd8fd51CQ4/hVfKDd
-   2FW/iLWp0w2unpvXh4nXF9epoon1hHJaQYszT7EcppPp3HlXR6dt2Ofpr
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10241"; a="227871425"
-X-IronPort-AV: E=Sophos;i="5.88,325,1635231600"; 
-   d="scan'208";a="227871425"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2022 13:48:44 -0800
-X-IronPort-AV: E=Sophos;i="5.88,325,1635231600"; 
-   d="scan'208";a="536304846"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2022 13:48:43 -0800
-Date:   Fri, 28 Jan 2022 13:48:43 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH 2/2] mm/page_owner: Dump memcg information
-Message-ID: <20220128214843.GJ785175@iweiny-DESK2.sc.intel.com>
-References: <20220128195642.416743-1-longman@redhat.com>
- <20220128195642.416743-3-longman@redhat.com>
- <20220128212249.GI785175@iweiny-DESK2.sc.intel.com>
- <e14e8c96-b2e3-cb57-2c35-284116798225@redhat.com>
+        id S1352026AbiA2Bmr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Jan 2022 20:42:47 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:31251 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344761AbiA2Bmr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jan 2022 20:42:47 -0500
+Received: from kwepemi100008.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Jlxrc3gk2zbk3y;
+        Sat, 29 Jan 2022 09:41:52 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100008.china.huawei.com (7.221.188.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 29 Jan 2022 09:42:44 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 29 Jan 2022 09:42:44 +0800
+Subject: Re: [PATCH v2 0/3] block, bfq: minor cleanup and fix
+To:     Jens Axboe <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <jack@suse.cz>, <tj@kernel.org>
+CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20211231032354.793092-1-yukuai3@huawei.com>
+ <164338111974.263985.3933987922467783334.b4-ty@kernel.dk>
+ <2579c500-549f-ff04-d1e1-6cf3db10b428@kernel.dk>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <8f0d2f92-96c5-f2c4-daa4-f2a59bd885a2@huawei.com>
+Date:   Sat, 29 Jan 2022 09:42:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e14e8c96-b2e3-cb57-2c35-284116798225@redhat.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <2579c500-549f-ff04-d1e1-6cf3db10b428@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 04:31:07PM -0500, Waiman Long wrote:
-> On 1/28/22 16:22, Ira Weiny wrote:
-> > On Fri, Jan 28, 2022 at 02:56:42PM -0500, Waiman Long wrote:
-> > > It was found that a number of offlined memcgs were not freed because
-> > > they were pinned by some charged pages that were present. Even "echo
-> > > 1 > /proc/sys/vm/drop_caches" wasn't able to free those pages. These
-> > > offlined but not freed memcgs tend to increase in number over time with
-> > > the side effect that percpu memory consumption as shown in /proc/meminfo
-> > > also increases over time.
-> > > 
-> > > In order to find out more information about those pages that pin
-> > > offlined memcgs, the page_owner feature is extended to dump memory
-> > > cgroup information especially whether the cgroup is offlined or not.
-> > > 
-> > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > ---
-> > >   mm/page_owner.c | 28 ++++++++++++++++++++++++++++
-> > >   1 file changed, 28 insertions(+)
-> > > 
-> > > diff --git a/mm/page_owner.c b/mm/page_owner.c
-> > > index c52ce9d6bc3b..e5d8c642296b 100644
-> > > --- a/mm/page_owner.c
-> > > +++ b/mm/page_owner.c
-> > > @@ -10,6 +10,7 @@
-> > >   #include <linux/migrate.h>
-> > >   #include <linux/stackdepot.h>
-> > >   #include <linux/seq_file.h>
-> > > +#include <linux/memcontrol.h>
-> > >   #include <linux/sched/clock.h>
-> > >   #include "internal.h"
-> > > @@ -339,6 +340,7 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
-> > >   		depot_stack_handle_t handle)
-> > >   {
-> > >   	int ret = 0, pageblock_mt, page_mt;
-> > > +	unsigned long __maybe_unused memcg_data;
-> > >   	char *kbuf;
-> > >   	count = min_t(size_t, count, PAGE_SIZE);
-> > > @@ -371,6 +373,32 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
-> > >   			"Page has been migrated, last migrate reason: %s\n",
-> > >   			migrate_reason_names[page_owner->last_migrate_reason]);
-> > > +#ifdef CONFIG_MEMCG
-> > > +	/*
-> > > +	 * Look for memcg information and print it out
-> > > +	 */
-> > > +	memcg_data = READ_ONCE(page->memcg_data);
-> > > +	if (memcg_data) {
-> > > +		struct mem_cgroup *memcg = page_memcg_check(page);
-> > > +		bool onlined;
-> > > +		char name[80];
-> > > +
-> > > +		if (memcg_data & MEMCG_DATA_OBJCGS)
-> > > +			SNPRINTF(kbuf, count, ret, err, "Slab cache page\n");
-> > > +
-> > > +		if (!memcg)
-> > > +			goto copy_out;
-> > > +
-> > > +		onlined = (memcg->css.flags & CSS_ONLINE);
-> > > +		cgroup_name(memcg->css.cgroup, name, sizeof(name) - 1);
-> > > +		SNPRINTF(kbuf, count, ret, err, "Charged %sto %smemcg %s\n",
-> >                                                          ^^^
-> > 						Extra specifier?
-> > 
-> > Did this compile without warnings?
+在 2022/01/29 3:27, Jens Axboe 写道:
+> On 1/28/22 7:45 AM, Jens Axboe wrote:
+>> On Fri, 31 Dec 2021 11:23:51 +0800, Yu Kuai wrote:
+>>> Chagnes in v2:
+>>>   - add comment in patch 2
+>>>   - remove patch 4, since the problem do not exist.
+>>>
+>>> Yu Kuai (3):
+>>>    block, bfq: cleanup bfq_bfqq_to_bfqg()
+>>>    block, bfq: avoid moving bfqq to it's parent bfqg
+>>>    block, bfq: don't move oom_bfqq
+>>>
+>>> [...]
+>>
+>> Applied, thanks!
+>>
+>> [1/3] block, bfq: cleanup bfq_bfqq_to_bfqg()
+>>        commit: a9c77f6ec0b566439182a10b64dd3e60a0408849
+>> [2/3] block, bfq: avoid moving bfqq to it's parent bfqg
+>>        commit: 36ad7fe0ec7485ee435f7a40452c7a58598779d4
+>> [3/3] block, bfq: don't move oom_bfqq
+>>        commit: a0b98e6fba18a40aa9672cc3e0abf980456f3ae6
 > 
-> Yes, there was no warning.
+> For all those pings, this patchset sure didn't see a lot of compiles:
+> 
+> block/bfq-cgroup.c: In function ‘bfq_bfqq_move’:
+> block/bfq-cgroup.c:648:40: error: implicit declaration of function ‘bfq_group’; did you mean ‘bfqq_group’? [-Werror=implicit-function-declaration]
+>    648 |         struct bfq_group *old_parent = bfq_group(bfqq);
+>        |                                        ^~~~~~~~~
+>        |                                        bfqq_group
+> block/bfq-cgroup.c:648:40: error: initialization of ‘struct bfq_group *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+> cc1: all warnings being treated as errors
+> make[1]: *** [scripts/Makefile.build:288: block/bfq-cgroup.o] Error 1
+> make: *** [Makefile:1831: block] Error 2
+> 
+> Dropped.
+> 
 
-But isn't that an extra specifier?
+Hi,
 
-Ira
+I'm sincerely sorry for this, I do forget to compiles this patchset,
+and let this stupid clerical error exposure to you...
 
-> 
-> Cheers,
-> Longmna
-> 
-> > Ira
-> > 
-> > > +			PageMemcgKmem(page) ? "(via objcg) " : "",
-> > > +			onlined ? "" : "offlined ", name);
-> > > +	}
-> > > +
-> > > +copy_out:
-> > > +#endif
-> > > +
-> > >   	SNPRINTF(kbuf, count, ret, err, "\n");
-> > >   	if (copy_to_user(buf, kbuf, ret))
-> > > -- 
-> > > 2.27.0
-> > > 
-> > > 
-> 
+I'll send anothor version of patch 2.
+
+Thanks,
+Kuai
