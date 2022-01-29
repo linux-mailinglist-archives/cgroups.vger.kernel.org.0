@@ -2,95 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF8A4A2B07
-	for <lists+cgroups@lfdr.de>; Sat, 29 Jan 2022 02:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448934A2B1C
+	for <lists+cgroups@lfdr.de>; Sat, 29 Jan 2022 02:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352026AbiA2Bmr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Jan 2022 20:42:47 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:31251 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344761AbiA2Bmr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jan 2022 20:42:47 -0500
-Received: from kwepemi100008.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Jlxrc3gk2zbk3y;
-        Sat, 29 Jan 2022 09:41:52 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100008.china.huawei.com (7.221.188.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 29 Jan 2022 09:42:44 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 29 Jan 2022 09:42:44 +0800
-Subject: Re: [PATCH v2 0/3] block, bfq: minor cleanup and fix
-To:     Jens Axboe <axboe@kernel.dk>, <paolo.valente@linaro.org>,
-        <jack@suse.cz>, <tj@kernel.org>
-CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20211231032354.793092-1-yukuai3@huawei.com>
- <164338111974.263985.3933987922467783334.b4-ty@kernel.dk>
- <2579c500-549f-ff04-d1e1-6cf3db10b428@kernel.dk>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <8f0d2f92-96c5-f2c4-daa4-f2a59bd885a2@huawei.com>
-Date:   Sat, 29 Jan 2022 09:42:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1352113AbiA2Bvv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Jan 2022 20:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352089AbiA2Bvp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jan 2022 20:51:45 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98522C06173B
+        for <cgroups@vger.kernel.org>; Fri, 28 Jan 2022 17:51:45 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id z5so7748394plg.8
+        for <cgroups@vger.kernel.org>; Fri, 28 Jan 2022 17:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3HAETZklYMRHOBMF4nZqSUVtbfOCXRHz+7u9x6rdHNk=;
+        b=KdotavDnl39ndT7clf/ig6ckZcizJxpNLOerW7ygxH6m8J6LOd+Y69okHEcP764r5P
+         dwq2DNviRFubvvn/eCYqrjpbkdg7JtZueRxpFK67Lj9+H5LB8tdiG4y0LosjH89ED0Fa
+         /VGdGOuwT121ACmm+0o+QFBukGwqZqpmXP73IYCdPTb2dL/Ay2fCyTGFijwv2cXky5vJ
+         6uQTU6iVTYa8ePLqI5Ijjne0AFuNPouLMMXzbJZ/+litaEcSV72lQeOub9t6EGdHmC0e
+         3EHwPtb23R2Smae00Eg6//vzR5n2E0Nbm9Xf0cXbEqxhWC8hpRln8XeGaGiq9r858tWC
+         vQbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3HAETZklYMRHOBMF4nZqSUVtbfOCXRHz+7u9x6rdHNk=;
+        b=di/irDlvlWXGeHySlLahQVoVLWbkUHKSoPzx2bOhSvz/HXpkWtR9IXmV1YpLn9tj86
+         3IFmoQ5+SWx3teQHkeVm1OVTomKVxaCxxMgHx284bOYWmm/K1qdPV6Lk06hhmN0ijhK5
+         dBakNiZtr/6VI8YPsysKu/KZkKsBwCRvSeunFiBgW4+RNz0mjLGp7wUvgu/yZZ54B6AP
+         yKyjy1hchjfki4j78l/pr5iry3BpheohYUzFoKhAYZeqV4BBDT2kHqQG6FgLrx2xlX04
+         XyIHVtYsUYr1Z0wMtWxWnByo2cWRR1RMbVgB1MciKdToMeNBJWCXuwjixIS4eGoWlygq
+         8P3w==
+X-Gm-Message-State: AOAM532XKdw8PyVIJ2VDQpTPLmGs4J97ns7pnEQr4vwW+V1pDKujSpR7
+        0bAvR44e21uC0S1XFmz63OI/wg==
+X-Google-Smtp-Source: ABdhPJxIAjqPrZg0Dh0AgczUDxeDVDYuUMiAhQxGCbZ0io601R9FaHnpIHoXrdalmoKZF9W0y06rMQ==
+X-Received: by 2002:a17:903:404b:: with SMTP id n11mr11675278pla.42.1643421104746;
+        Fri, 28 Jan 2022 17:51:44 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id 190sm10123225pfg.181.2022.01.28.17.51.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jan 2022 17:51:44 -0800 (PST)
+Subject: Re: [PATCH v3 0/3] block, bfq: minor cleanup and fix
+To:     Yu Kuai <yukuai3@huawei.com>, paolo.valente@linaro.org,
+        jack@suse.cz
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+References: <20220129015924.3958918-1-yukuai3@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7cb40388-02e9-712a-6a40-ccabd5605880@kernel.dk>
+Date:   Fri, 28 Jan 2022 18:51:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <2579c500-549f-ff04-d1e1-6cf3db10b428@kernel.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20220129015924.3958918-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/01/29 3:27, Jens Axboe 写道:
-> On 1/28/22 7:45 AM, Jens Axboe wrote:
->> On Fri, 31 Dec 2021 11:23:51 +0800, Yu Kuai wrote:
->>> Chagnes in v2:
->>>   - add comment in patch 2
->>>   - remove patch 4, since the problem do not exist.
->>>
->>> Yu Kuai (3):
->>>    block, bfq: cleanup bfq_bfqq_to_bfqg()
->>>    block, bfq: avoid moving bfqq to it's parent bfqg
->>>    block, bfq: don't move oom_bfqq
->>>
->>> [...]
->>
->> Applied, thanks!
->>
->> [1/3] block, bfq: cleanup bfq_bfqq_to_bfqg()
->>        commit: a9c77f6ec0b566439182a10b64dd3e60a0408849
->> [2/3] block, bfq: avoid moving bfqq to it's parent bfqg
->>        commit: 36ad7fe0ec7485ee435f7a40452c7a58598779d4
->> [3/3] block, bfq: don't move oom_bfqq
->>        commit: a0b98e6fba18a40aa9672cc3e0abf980456f3ae6
+On 1/28/22 6:59 PM, Yu Kuai wrote:
+> Changes in v3:
+>  - fix a clerical error in patch 2
 > 
-> For all those pings, this patchset sure didn't see a lot of compiles:
+> Chagnes in v2:
+>  - add comment in patch 2
+>  - remove patch 4, since the problem do not exist.
 > 
-> block/bfq-cgroup.c: In function ‘bfq_bfqq_move’:
-> block/bfq-cgroup.c:648:40: error: implicit declaration of function ‘bfq_group’; did you mean ‘bfqq_group’? [-Werror=implicit-function-declaration]
->    648 |         struct bfq_group *old_parent = bfq_group(bfqq);
->        |                                        ^~~~~~~~~
->        |                                        bfqq_group
-> block/bfq-cgroup.c:648:40: error: initialization of ‘struct bfq_group *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> cc1: all warnings being treated as errors
-> make[1]: *** [scripts/Makefile.build:288: block/bfq-cgroup.o] Error 1
-> make: *** [Makefile:1831: block] Error 2
+> Yu Kuai (3):
+>   block, bfq: cleanup bfq_bfqq_to_bfqg()
+>   block, bfq: avoid moving bfqq to it's parent bfqg
+>   block, bfq: don't move oom_bfqq
 > 
-> Dropped.
-> 
+>  block/bfq-cgroup.c  | 16 +++++++++++++++-
+>  block/bfq-iosched.c |  4 ++--
+>  block/bfq-iosched.h |  1 -
+>  block/bfq-wf2q.c    | 15 ---------------
+>  4 files changed, 17 insertions(+), 19 deletions(-)
 
-Hi,
+I'm not even looking at this until you tell me that:
 
-I'm sincerely sorry for this, I do forget to compiles this patchset,
-and let this stupid clerical error exposure to you...
+a) you've actually compiled this one. which, btw, I can't believe
+   needs mentioning, particularly when you had enough time to keep
+   pinging about this patchset.
 
-I'll send anothor version of patch 2.
+b) it's actually be run. last one was clearly not.
 
-Thanks,
-Kuai
+-- 
+Jens Axboe
+
