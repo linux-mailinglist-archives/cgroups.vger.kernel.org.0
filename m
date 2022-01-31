@@ -2,33 +2,33 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4404A505F
-	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 21:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64144A5089
+	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 21:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbiAaUn0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jan 2022 15:43:26 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:45754 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239860AbiAaUn0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 15:43:26 -0500
+        id S1379149AbiAaUvn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jan 2022 15:51:43 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:44608 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355850AbiAaUvi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 15:51:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 6AEBDCE1281;
-        Mon, 31 Jan 2022 20:43:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A37EC340E8;
-        Mon, 31 Jan 2022 20:43:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D5788614EA;
+        Mon, 31 Jan 2022 20:51:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98B64C340E8;
+        Mon, 31 Jan 2022 20:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643661802;
-        bh=JFWeeOeX6cMALtKM2vqlyIArFqrtqdWgyAlR/K0BiiM=;
+        s=k20201202; t=1643662297;
+        bh=tX6vpO5C4zkX8VHS8hum/62LQzSNztcbGvWYKWQl7YE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DsVbUZNgXSXX7Vp5kx/hp3fv7i7TnEaNCHHSpAWfjrnPft8jTlVvpAtPufljeq1NE
-         eWe1mBdkC1Z4+gVowCiXW4qrWXlG2iwlJHSclBz0Ux7V/VbeAhwYNo3LAWkId15GsC
-         iCXP+yboTKXgO/3Z8VOFu4eqSFjgRzQmv4DcT9MBx5gdlm+b2EN5teo5zHx3JIxVZW
-         ABTIfiVdi1r3KpasmC4hvjLckFnXafw1C+MWr8F09FOv59/iWA+Ce4rtL4NU7Snm4h
-         e0K5GjuDAMQ0xiipMEOk4LXXyCYRoCMw8mcsE+MEGhucgc+MlcVcKkyCmS7Afh08PT
-         gcVkJDy3o3j/w==
-Date:   Mon, 31 Jan 2022 22:43:09 +0200
+        b=ATkv6m2+GD3ZcijSZcw0eXCmRFRyUcncCfGLiwwxFRMBGVP/hL2/OESM2+Bm3BHSI
+         jlJH35lFKnZYbczbzb/FHB3rFk1nPEj2ShQz7aM96eLsi1UbGVbFwn1Ms4sP35M9kc
+         M8An6au1QzZfQdF3xzKgDywd0cp1yPLla9MoGki7NOLZipmkcWXTpbRuHa61iuI3oQ
+         K9uBC9RYQ/nKdzj9xBLog3e02+1k7q0Ifg3TzvbMAIdZwk2Gr05ydV6fkPzsie9pdF
+         TycV2WnZsNinTpOhpHvELyAGCTfj5jR1CA6bwyZCxWBzwLdeK4/55DZ0N+WwR9Kff8
+         smsdfdS1XajQQ==
+Date:   Mon, 31 Jan 2022 22:51:24 +0200
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Waiman Long <longman@redhat.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -44,87 +44,121 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
         David Rientjes <rientjes@google.com>,
         Roman Gushchin <guro@fb.com>, Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v3 2/4] mm/page_owner: Use scnprintf() to avoid excessive
- buffer overrun check
-Message-ID: <YfhJ3VT8KCjd3iGR@kernel.org>
+Subject: Re: [PATCH v3 3/4] mm/page_owner: Print memcg information
+Message-ID: <YfhLzI+RLRGgexmr@kernel.org>
 References: <20220131192308.608837-1-longman@redhat.com>
- <20220131192308.608837-3-longman@redhat.com>
+ <20220131192308.608837-4-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220131192308.608837-3-longman@redhat.com>
+In-Reply-To: <20220131192308.608837-4-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 02:23:06PM -0500, Waiman Long wrote:
-> The snprintf() function can return a length greater than the given
-> input size. That will require a check for buffer overrun after each
-> invocation of snprintf(). scnprintf(), on the other hand, will never
-> return a greater length. By using scnprintf() in selected places, we
-> can avoid some buffer overrun checks except after stack_depot_snprint()
-> and after the last snprintf().
+On Mon, Jan 31, 2022 at 02:23:07PM -0500, Waiman Long wrote:
+> It was found that a number of offlined memcgs were not freed because
+> they were pinned by some charged pages that were present. Even "echo
+> 1 > /proc/sys/vm/drop_caches" wasn't able to free those pages. These
+> offlined but not freed memcgs tend to increase in number over time with
+> the side effect that percpu memory consumption as shown in /proc/meminfo
+> also increases over time.
+> 
+> In order to find out more information about those pages that pin
+> offlined memcgs, the page_owner feature is extended to print memory
+> cgroup information especially whether the cgroup is offlined or not.
 > 
 > Signed-off-by: Waiman Long <longman@redhat.com>
 > Acked-by: David Rientjes <rientjes@google.com>
-> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-
 > ---
->  mm/page_owner.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
+>  mm/page_owner.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
 > diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 99e360df9465..28dac73e0542 100644
+> index 28dac73e0542..a471c74c7fe0 100644
 > --- a/mm/page_owner.c
 > +++ b/mm/page_owner.c
-> @@ -338,19 +338,16 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
->  	if (!kbuf)
->  		return -ENOMEM;
+> @@ -10,6 +10,7 @@
+>  #include <linux/migrate.h>
+>  #include <linux/stackdepot.h>
+>  #include <linux/seq_file.h>
+> +#include <linux/memcontrol.h>
+>  #include <linux/sched/clock.h>
 >  
-> -	ret = snprintf(kbuf, count,
-> +	ret = scnprintf(kbuf, count,
->  			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns, free_ts %llu ns\n",
->  			page_owner->order, page_owner->gfp_mask,
->  			&page_owner->gfp_mask, page_owner->pid,
->  			page_owner->ts_nsec, page_owner->free_ts_nsec);
+>  #include "internal.h"
+> @@ -325,6 +326,42 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
+>  	seq_putc(m, '\n');
+>  }
 >  
-> -	if (ret >= count)
-> -		goto err;
-> -
->  	/* Print information relevant to grouping pages by mobility */
->  	pageblock_mt = get_pageblock_migratetype(page);
->  	page_mt  = gfp_migratetype(page_owner->gfp_mask);
-> -	ret += snprintf(kbuf + ret, count - ret,
-> +	ret += scnprintf(kbuf + ret, count - ret,
->  			"PFN %lu type %s Block %lu type %s Flags %pGp\n",
->  			pfn,
->  			migratetype_names[page_mt],
-> @@ -358,19 +355,14 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
->  			migratetype_names[pageblock_mt],
->  			&page->flags);
->  
-> -	if (ret >= count)
-> -		goto err;
-> -
->  	ret += stack_depot_snprint(handle, kbuf + ret, count - ret, 0);
->  	if (ret >= count)
->  		goto err;
->  
->  	if (page_owner->last_migrate_reason != -1) {
-> -		ret += snprintf(kbuf + ret, count - ret,
-> +		ret += scnprintf(kbuf + ret, count - ret,
->  			"Page has been migrated, last migrate reason: %s\n",
+> +#ifdef CONFIG_MEMCG
+> +/*
+> + * Looking for memcg information and print it out
+> + */
+> +static inline void print_page_owner_memcg(char *kbuf, size_t count, int *pret,
+> +					  struct page *page)
+> +{
+> +	unsigned long memcg_data = READ_ONCE(page->memcg_data);
+> +	struct mem_cgroup *memcg;
+> +	bool onlined;
+> +	char name[80];
+> +
+> +	if (!memcg_data)
+> +		return;
+> +
+> +	if (memcg_data & MEMCG_DATA_OBJCGS)
+> +		*pret += scnprintf(kbuf + *pret, count - *pret,
+> +				"Slab cache page\n");
+
+Don't we need to check for overflow here?
+
+> +
+> +	memcg = page_memcg_check(page);
+> +	if (!memcg)
+> +		return;
+> +
+> +	onlined = (memcg->css.flags & CSS_ONLINE);
+> +	cgroup_name(memcg->css.cgroup, name, sizeof(name));
+> +	*pret += scnprintf(kbuf + *pret, count - *pret,
+> +			"Charged %sto %smemcg %s\n",
+> +			PageMemcgKmem(page) ? "(via objcg) " : "",
+> +			onlined ? "" : "offlined ",
+> +			name);
+
+Ditto
+
+> +}
+> +#else /* CONFIG_MEMCG */
+> +static inline void print_page_owner_memcg(char *kbuf, size_t count, int *pret,
+> +					  struct page *page) { }
+
+I think #ifdef inside the print_page_owner_memcg() functions will be
+simpler and clearer.
+
+> +#endif /* CONFIG_MEMCG */
+> +
+>  static ssize_t
+>  print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+>  		struct page *page, struct page_owner *page_owner,
+> @@ -365,6 +402,8 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
 >  			migrate_reason_names[page_owner->last_migrate_reason]);
-> -		if (ret >= count)
-> -			goto err;
 >  	}
 >  
+> +	print_page_owner_memcg(kbuf, count, &ret, page);
+> +
+
+ret can go over count here.
+Why not make print_page_owner_memcg() an int so that the call will be
+consistent with other calls in print_page_owner():
+
+	ret += print_page_owner_memcg(kbuf, count, page);
+	if (ret >= count)
+		goto err;
+
 >  	ret += snprintf(kbuf + ret, count - ret, "\n");
+>  	if (ret >= count)
+>  		goto err;
 > -- 
 > 2.27.0
-> 
 > 
 
 -- 
