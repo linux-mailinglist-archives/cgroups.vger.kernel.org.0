@@ -2,111 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F19A4A49CF
-	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 16:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726314A4C82
+	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 17:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbiAaPGe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jan 2022 10:06:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60448 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbiAaPGd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 10:06:33 -0500
-Date:   Mon, 31 Jan 2022 16:06:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643641592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w0NFiv/w/Cs5H22tLULVbOiZiCXLk9Q8Uppqq+mmVWE=;
-        b=ITwPnNVNsBPallxs5zUMi9DOOpAhk6imEl29XzDT9MGobpamlZEVxC0uwSPXiwyoAqtOuN
-        Hrwl3I5fISii+Y/OSbWmGCc6EQERKZdXnhx/vPX4nTQqUQk4qyit5lxFOo5iWifIhWj1ph
-        WoTtowcpcyOyip8EKhw5RpLPnvAtJ1tjClZFVuHC9xg3yqt47DMJ+dI4GPCqXOlOkTiB5+
-        HP2Nt28QdqUkdNgDhBG/SV77OyQyT1jkxb6VmdKdZ/JMkNIXqV14SVHCfEDhSZcAbv3Xuf
-        YohzS0CvFocKMugUENcXzjz+0oMSMD0gLABmWKAfDXO06HABuUjiymEQtKZHfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643641592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w0NFiv/w/Cs5H22tLULVbOiZiCXLk9Q8Uppqq+mmVWE=;
-        b=kDAzeZihk9torF7OFmhGe5sb/Dan/+Ie9U+8pJm4pG3edO3Y116sFbfMFGf++mfgG7JzSV
-        x53bPvamwbn6AGCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S243253AbiAaQxW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jan 2022 11:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234308AbiAaQxV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 11:53:21 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE8CC06173B
+        for <cgroups@vger.kernel.org>; Mon, 31 Jan 2022 08:53:21 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id h8so5930448qtk.13
+        for <cgroups@vger.kernel.org>; Mon, 31 Jan 2022 08:53:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kCLY9awXUZ+VaBKEx7Kf5fe8lUKb+8FACIctpfMa/JA=;
+        b=vcKL8lE+2CbEB7y6dB2JbuBXT040U9YHCdWxDounbU74q0EijmUnVJ989O7FOH2YfG
+         sIyFOWWg/pJqWPPaxxt4JSHVuQrwqNVtNr6SLvVBRxJ2NihBphaaUXwhHi7Ps8gRoRK+
+         hzBa0M0K2TBF6HlXg8gEU+nnS0Yyt9XDisazb66sFWHRm9yfzCdH7T+KJNyBdXsyUGB/
+         mqaAFN+OPNz38LWlbBIEICRfpAHOdAE93OghZ77qivsyHj6bsGl4RPvxQEouzM+j0agZ
+         /MoQ4WH1Jcb20Hbor6rBTGTmrsKgI/wQqvx93dKfYMhQuxtvtGBmRAVxhFhWaFchsH5E
+         mpYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kCLY9awXUZ+VaBKEx7Kf5fe8lUKb+8FACIctpfMa/JA=;
+        b=JRgpTtumJd374wQzHA/RXW+zPC6Gf3nA//7PNT+PCqCP7/jrED52DBvv5FpnJWVPL1
+         4Y/U84WzH+e2JtoQpNLE2yeIvkvnS17nfH8uYrhJGWT4yMdZGIfURQTdTQS9TSHPVPqw
+         l0ylQbEyQSNQ6vh2nyCxPBUbD492Z7kSYgO5PLwd4WpArsdfejYP+S858mbDhFPbXwwR
+         qufBfSWI9q9Iv01IU7YHxVdzzlte9YqtYODzmCc3oqYBQ9DNBcj6cRQoFSBkkpdm47uC
+         do9Osv/EqLzgx1HViydTJu/VulpfzEPOup80TMQ1TWrJuHutr4ZWjF+qfusHBM9SeIiA
+         dOJA==
+X-Gm-Message-State: AOAM53119R4FGWJOV13X+iGp0UTWvU+/f9GGNijqpIBHXGk8nB1paB1L
+        5xU+Ur76Hst4ivSpHZw10ERaPA==
+X-Google-Smtp-Source: ABdhPJzq6qUK+RHhdfQHgFLxnHu2bNiYFr6RdYOhaqYJ8Xy5yY0Nu+L3RURiz+5GAJCB0TPzTQawag==
+X-Received: by 2002:a05:622a:1303:: with SMTP id v3mr15653667qtk.257.1643648000595;
+        Mon, 31 Jan 2022 08:53:20 -0800 (PST)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id s13sm8887569qki.97.2022.01.31.08.53.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jan 2022 08:53:20 -0800 (PST)
+Date:   Mon, 31 Jan 2022 11:53:19 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Waiman Long <longman@redhat.com>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 3/4] mm/memcg: Add a local_lock_t for IRQ and TASK object.
-Message-ID: <Yff69slA4UTz5Q1Y@linutronix.de>
-References: <20220125164337.2071854-1-bigeasy@linutronix.de>
- <20220125164337.2071854-4-bigeasy@linutronix.de>
- <7f4928b8-16e2-88b3-2688-1519a19653a9@suse.cz>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        Rafael Aquini <aquini@redhat.com>
+Subject: Re: [PATCH v2 3/3] mm/page_owner: Dump memcg information
+Message-ID: <YfgT/9tEREQNiiAN@cmpxchg.org>
+References: <20220129205315.478628-1-longman@redhat.com>
+ <20220129205315.478628-4-longman@redhat.com>
+ <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f4928b8-16e2-88b3-2688-1519a19653a9@suse.cz>
+In-Reply-To: <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022-01-26 17:57:14 [+0100], Vlastimil Babka wrote:
-> > - drain_obj_stock() gets a memcg_stock_pcp passed if the stock_lock has been
-> >   acquired (instead of the task_obj_lock) to avoid recursive locking later
-> >   in refill_stock().
-> 
-> Looks like this was maybe true in some previous version but now
-> drain_obj_stock() gets a bool parameter that is passed to
-> obj_cgroup_uncharge_pages(). But drain_local_stock() uses a NULL or
-> stock_pcp for that bool parameter which is weird.
-
-buh. Sorry, that is a left over and should have been true/false instead.
-
-> > - drain_all_stock() disables preemption via get_cpu() and then invokes
-> >   drain_local_stock() if it is the local CPU to avoid scheduling a worker
-> >   (which invokes the same function). Disabling preemption here is
-> >   problematic due to the sleeping locks in drain_local_stock().
-> >   This can be avoided by always scheduling a worker, even for the local
-> >   CPU. Using cpus_read_lock() stabilizes cpu_online_mask which ensures
-> >   that no worker is scheduled for an offline CPU. Since there is no
-> >   flush_work(), it is still possible that a worker is invoked on the wrong
-> >   CPU but it is okay since it operates always on the local-CPU data.
+On Mon, Jan 31, 2022 at 10:38:51AM +0100, Michal Hocko wrote:
+> On Sat 29-01-22 15:53:15, Waiman Long wrote:
+> > It was found that a number of offlined memcgs were not freed because
+> > they were pinned by some charged pages that were present. Even "echo
+> > 1 > /proc/sys/vm/drop_caches" wasn't able to free those pages. These
+> > offlined but not freed memcgs tend to increase in number over time with
+> > the side effect that percpu memory consumption as shown in /proc/meminfo
+> > also increases over time.
 > > 
-> > - drain_local_stock() is always invoked as a worker so it can be optimized
-> >   by removing in_task() (it is always true) and avoiding the "irq_save"
-> >   variant because interrupts are always enabled here. Operating on
-> >   task_obj first allows to acquire the lock_lock_t without lockdep
-> >   complains.
-> > 
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > In order to find out more information about those pages that pin
+> > offlined memcgs, the page_owner feature is extended to dump memory
+> > cgroup information especially whether the cgroup is offlined or not.
 > 
-> The problem is that this pattern where get_obj_stock() sets a
-> stock_lock_acquried bool and this is passed down and acted upon elsewhere,
-> is a well known massive red flag for Linus :/
-> Maybe we should indeed just revert 559271146efc, as Michal noted there were
-> no hard numbers to justify it, and in previous discussion it seemed to
-> surface that the costs of irq disable/enable are not that bad on recent cpus
-> as assumed?
+> It is not really clear to me how this is supposed to be used. Are you
+> really dumping all the pages in the system to find out offline memcgs?
+> That looks rather clumsy to me. I am not against adding memcg
+> information to the page owner output. That can be useful in other
+> contexts.
 
-I added some number, fell free re-run.
-Let me know if a revert is preferred or you want to keep that so that I
-can prepare the patches accordingly before posting.
+We've sometimes done exactly that in production, but with drgn
+scripts. It's not very common, so it doesn't need to be very efficient
+either. Typically, we'd encounter a host with an unusual number of
+dying cgroups, ssh in and poke around with drgn to figure out what
+kind of objects are still pinning the cgroups in question.
 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -260,8 +260,10 @@ bool mem_cgroup_kmem_disabled(void)
-> >  	return cgroup_memory_nokmem;
-> >  }
-> >  
-> > +struct memcg_stock_pcp;
-> 
-> Seems this forward declaration is unused.
-you, thanks.
-
-Sebastian
+This patch would make that process a little easier, I suppose.
