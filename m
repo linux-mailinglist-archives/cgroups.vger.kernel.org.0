@@ -2,140 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAF24A3F60
-	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 10:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CCC4A4019
+	for <lists+cgroups@lfdr.de>; Mon, 31 Jan 2022 11:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239059AbiAaJiy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jan 2022 04:38:54 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:36172 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238819AbiAaJix (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 04:38:53 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 82D841F381;
-        Mon, 31 Jan 2022 09:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643621932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gFfYneuXxxyIxBAM26QGb5mPJgkTqy82COvXmXoG2U4=;
-        b=GMBKwIRjiio5uHYtjsHX5SKOBDrnxWSy8DukbeDOPJQleviNEbItB3o3m1N/LZjjEGZVAr
-        rZJm32G3ziPltbFmd7NNMW1esOGj+61VxPiAimMbWMU0g9EkStqQpAYsPEgLmzCHMaECD1
-        h7SFZ8qG3T157yf1RvTbA0Qh25FCw8M=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 802F1A3B84;
-        Mon, 31 Jan 2022 09:38:51 +0000 (UTC)
-Date:   Mon, 31 Jan 2022 10:38:51 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S1358140AbiAaK0S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jan 2022 05:26:18 -0500
+Received: from mga17.intel.com ([192.55.52.151]:38123 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1358132AbiAaK0R (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 31 Jan 2022 05:26:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643624778; x=1675160778;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rnpGhLBeO/HdBBinrNjhSH3ZdFwzc3ZAIZeFErKuU6A=;
+  b=SkcJ7eA6RZTlScMiOO024trJbZNNtkF46WMRtc2T2aFFxeynxquzaHMG
+   GhnJnnYlvl14f/ZDy0DtaeKE0lvPuhPRWlXvxUSqS3asEStOYSn7IqF7I
+   uIN57GTBjzXVJeEqWPILmoFwjpYuN02ISa1hUgjUepUy/0ztd1JyiEoD9
+   bJTa7VtP8nlsxJ9Fwby4r24R8edKGLqyUIn+3pcAE23OxEHfKTeOKq2jt
+   2pwzLcWHD7EmiwPWG2PO9LtV4L9MzLlFZCN6ZnU1Y9joQXMA6uh7iCKuz
+   f25Ge8H6B1ZAycugVAwCfF/19f4sB1sI3VjMkcTYag0xSaIVe1HeAAhoZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10243"; a="228097216"
+X-IronPort-AV: E=Sophos;i="5.88,330,1635231600"; 
+   d="scan'208";a="228097216"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 02:26:17 -0800
+X-IronPort-AV: E=Sophos;i="5.88,330,1635231600"; 
+   d="scan'208";a="598799829"
+Received: from smile.fi.intel.com ([10.237.72.61])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 02:26:13 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1nETrx-00GpLQ-JX;
+        Mon, 31 Jan 2022 12:25:09 +0200
+Date:   Mon, 31 Jan 2022 12:25:09 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Petr Mladek <pmladek@suse.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
         Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v2 3/3] mm/page_owner: Dump memcg information
-Message-ID: <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
+Subject: Re: [PATCH v2 1/3] lib/vsprintf: Avoid redundant work with 0 size
+Message-ID: <Yfe5Bb3U6Uil7Y6g@smile.fi.intel.com>
 References: <20220129205315.478628-1-longman@redhat.com>
- <20220129205315.478628-4-longman@redhat.com>
+ <20220129205315.478628-2-longman@redhat.com>
+ <d99b3c4b-7b6e-529-6e4b-b91b65c92d81@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220129205315.478628-4-longman@redhat.com>
+In-Reply-To: <d99b3c4b-7b6e-529-6e4b-b91b65c92d81@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 29-01-22 15:53:15, Waiman Long wrote:
-> It was found that a number of offlined memcgs were not freed because
-> they were pinned by some charged pages that were present. Even "echo
-> 1 > /proc/sys/vm/drop_caches" wasn't able to free those pages. These
-> offlined but not freed memcgs tend to increase in number over time with
-> the side effect that percpu memory consumption as shown in /proc/meminfo
-> also increases over time.
+On Sun, Jan 30, 2022 at 12:49:37PM -0800, David Rientjes wrote:
+> On Sat, 29 Jan 2022, Waiman Long wrote:
 > 
-> In order to find out more information about those pages that pin
-> offlined memcgs, the page_owner feature is extended to dump memory
-> cgroup information especially whether the cgroup is offlined or not.
+> > For *scnprintf(), vsnprintf() is always called even if the input size is
+> > 0. That is a waste of time, so just return 0 in this case.
 
-It is not really clear to me how this is supposed to be used. Are you
-really dumping all the pages in the system to find out offline memcgs?
-That looks rather clumsy to me. I am not against adding memcg
-information to the page owner output. That can be useful in other
-contexts.
+Why do you think it's not legit?
 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/page_owner.c | 31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
-> 
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 28dac73e0542..8dc5cd0fa227 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -10,6 +10,7 @@
->  #include <linux/migrate.h>
->  #include <linux/stackdepot.h>
->  #include <linux/seq_file.h>
-> +#include <linux/memcontrol.h>
->  #include <linux/sched/clock.h>
->  
->  #include "internal.h"
-> @@ -331,6 +332,7 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
->  		depot_stack_handle_t handle)
->  {
->  	int ret, pageblock_mt, page_mt;
-> +	unsigned long __maybe_unused memcg_data;
->  	char *kbuf;
->  
->  	count = min_t(size_t, count, PAGE_SIZE);
-> @@ -365,6 +367,35 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
->  			migrate_reason_names[page_owner->last_migrate_reason]);
->  	}
->  
-> +#ifdef CONFIG_MEMCG
-
-This really begs to be in a dedicated function. page_owner_print_memcg
-or something like that.
-
-> +	/*
-> +	 * Look for memcg information and print it out
-> +	 */
-> +	memcg_data = READ_ONCE(page->memcg_data);
-> +	if (memcg_data) {
-> +		struct mem_cgroup *memcg = page_memcg_check(page);
-> +		bool onlined;
-> +		char name[80];
-
-What does prevent memcg to go away and being reused for a different
-purpose?
-
-> +
-> +		if (memcg_data & MEMCG_DATA_OBJCGS)
-> +			ret += scnprintf(kbuf + ret, count - ret,
-> +					"Slab cache page\n");
-> +
-> +		if (!memcg)
-> +			goto copy_out;
-> +
-> +		onlined = (memcg->css.flags & CSS_ONLINE);
-> +		cgroup_name(memcg->css.cgroup, name, sizeof(name));
-> +		ret += scnprintf(kbuf + ret, count - ret,
-> +				"Charged %sto %smemcg %s\n",
-> +				PageMemcgKmem(page) ? "(via objcg) " : "",
-> +				onlined ? "" : "offlined ",
-> +				name);
-> +	}
-> +
-> +copy_out:
-> +#endif
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
