@@ -2,98 +2,179 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02CB4A543F
-	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 01:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1474A5729
+	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 07:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbiBAArC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jan 2022 19:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbiBAArC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 19:47:02 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CD4C06173B;
-        Mon, 31 Jan 2022 16:47:01 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r10so30751718edt.1;
-        Mon, 31 Jan 2022 16:47:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=GYfi12SpmN0g9NqCoQ6tYL22xFi8Uo1iR/vTcnK9fck=;
-        b=M8JyDPdDdfrEs1luJVidkqPn7+qgD4TNYcQAXFMm0RPY0nfJUSyFdHSYKBx3dzqcfJ
-         wjDKrCKhJEa/VH4upcSnRwzq43GqdetPEPK02terNMKeobZISvpFpg+OLMKkXJIiRohZ
-         RKqi01JwhYCy97rwRMiRDbzaxzb7rFt6NuXoaObwhZSU6MTauJT/320Lbr2K3otV2rLo
-         Nuw4NPg3mzoRAe6gyu1kt9BqCIoF+9Xk5c/wWEfuPFviHOP6UP8XDExpwUO22re57moT
-         9zqp6p8fUCanOl1R2fgrr3/wsQNlHOg0JwBcUVs2xoTaxLS7VIuHmzQwu7gj1gXlEdkW
-         cIVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=GYfi12SpmN0g9NqCoQ6tYL22xFi8Uo1iR/vTcnK9fck=;
-        b=lWCj96RU7ErJ0JWpqWoH+W1KB5RLRs5sdHqADQNlR36KWqbc6UBvDajoiw+vrmJCud
-         mBAkG0vn0QAsh1zXNPqH5ZMk+cJ5jhIpGgt8UuiRHLSRGEqa75UZhsyHxpyem6FLoCTS
-         C6Rnzph0hWLEXTS0k4NkgJFzdb0DaHVkUxP0enj15l630QPqFfex7oF38c/QB9j+39l0
-         sshHPTKr9W3/48aTyrCvXwf4TDzKy7ezYrIAZ/e8sruTRU3kPTO+9TWMmL4MNwRpdgre
-         GyRMiR143vGH3p0nCmbjVOkHfWOPeoxY72gAEuPE4PJWyYcQrPa4iRsUpGH0GjAw0S2J
-         zyOA==
-X-Gm-Message-State: AOAM530I9sSfE5a5astSOYeBLa3LmbCdwg2wEcLPOLTNwRTnA8N7SEDU
-        vmUpr1UgmBfUqo9A6sjggmmQYTD6agY=
-X-Google-Smtp-Source: ABdhPJxlpF/0P8RQcRZyxNk3LwNbmTSQP+mAUSu26uEJPUvLBUp70MI2dhcbvJ2xJt+TjQ5nHnrtPw==
-X-Received: by 2002:a05:6402:228e:: with SMTP id cw14mr23041894edb.378.1643676420231;
-        Mon, 31 Jan 2022 16:47:00 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id gv34sm13977377ejc.125.2022.01.31.16.46.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 31 Jan 2022 16:46:59 -0800 (PST)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        willy@infradead.org, songmuchun@bytedance.com, shy828301@gmail.com,
-        surenb@google.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, vbabka@suse.cz,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH 2/2] mm/memcg: retrieve parent memcg from css.parent
-Date:   Tue,  1 Feb 2022 00:46:43 +0000
-Message-Id: <20220201004643.8391-2-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20220201004643.8391-1-richard.weiyang@gmail.com>
-References: <20220201004643.8391-1-richard.weiyang@gmail.com>
+        id S232016AbiBAGYf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Feb 2022 01:24:35 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:56600 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231318AbiBAGYf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 01:24:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48790614A0;
+        Tue,  1 Feb 2022 06:23:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035C9C340EB;
+        Tue,  1 Feb 2022 06:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643696601;
+        bh=HfcgLdgc3B7KCIDeYVDCOGK+3kcF0wgKikBnzg+bTCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hkLUp/IB2GCcNukU/n/SN3b4hGrNAVgSg9olTqdDrlQh72GPdsAAVGRf0TV8xX057
+         qFFxIfxMqcDSpcR4vUWfClWa+KHHdR0nJfmXPM09CDY4QLolTZLqehrDSkIWngO+s9
+         r0ezCld7Bnw/YR4G7Rzgpjk8S7tyOWf9en8aAW1dKA09kMoohjG5KCMG+QiHpzVtzN
+         UgegvrFmT6sm501g8kg1Xm84rV9G5XmIzK0CBNRLfSHV7D7s2Kaw2R60x7P8M6hWCr
+         f6hIiAGIHpVsMk9NsXdCgaQZYKGZxXJcOYv7BQ9EHrfnZ57lIdjJTFBgG7/YYvdQFd
+         SQZxnXbIRRgYA==
+Date:   Tue, 1 Feb 2022 08:23:10 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>, Rafael Aquini <aquini@redhat.com>
+Subject: Re: [PATCH v3 3/4] mm/page_owner: Print memcg information
+Message-ID: <YfjRzobwtv7wn2Gt@kernel.org>
+References: <20220131192308.608837-1-longman@redhat.com>
+ <20220131192308.608837-4-longman@redhat.com>
+ <YfhLzI+RLRGgexmr@kernel.org>
+ <4234fc60-5d65-1089-555a-734218aa6f9c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4234fc60-5d65-1089-555a-734218aa6f9c@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The parent we get from page_counter is correct, while this is two
-different hierarchy.
-
-Let's retrieve the parent memcg from css.parent just like parent_cs(),
-blkcg_parent(), etc.
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
- include/linux/memcontrol.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0c5c403f4be6..12bf443f7b14 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -886,9 +886,7 @@ static inline struct mem_cgroup *lruvec_memcg(struct lruvec *lruvec)
-  */
- static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
- {
--	if (!memcg->memory.parent)
--		return NULL;
--	return mem_cgroup_from_counter(memcg->memory.parent, memory);
-+	return mem_cgroup_from_css(memcg->css.parent);
- }
+On Mon, Jan 31, 2022 at 04:43:32PM -0500, Waiman Long wrote:
+> 
+> On 1/31/22 15:51, Mike Rapoport wrote:
+> > On Mon, Jan 31, 2022 at 02:23:07PM -0500, Waiman Long wrote:
+> > > It was found that a number of offlined memcgs were not freed because
+> > > they were pinned by some charged pages that were present. Even "echo
+> > > 1 > /proc/sys/vm/drop_caches" wasn't able to free those pages. These
+> > > offlined but not freed memcgs tend to increase in number over time with
+> > > the side effect that percpu memory consumption as shown in /proc/meminfo
+> > > also increases over time.
+> > > 
+> > > In order to find out more information about those pages that pin
+> > > offlined memcgs, the page_owner feature is extended to print memory
+> > > cgroup information especially whether the cgroup is offlined or not.
+> > > 
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > Acked-by: David Rientjes <rientjes@google.com>
+> > > ---
+> > >   mm/page_owner.c | 39 +++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 39 insertions(+)
+> > > 
+> > > diff --git a/mm/page_owner.c b/mm/page_owner.c
+> > > index 28dac73e0542..a471c74c7fe0 100644
+> > > --- a/mm/page_owner.c
+> > > +++ b/mm/page_owner.c
+> > > @@ -10,6 +10,7 @@
+> > >   #include <linux/migrate.h>
+> > >   #include <linux/stackdepot.h>
+> > >   #include <linux/seq_file.h>
+> > > +#include <linux/memcontrol.h>
+> > >   #include <linux/sched/clock.h>
+> > >   #include "internal.h"
+> > > @@ -325,6 +326,42 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
+> > >   	seq_putc(m, '\n');
+> > >   }
+> > > +#ifdef CONFIG_MEMCG
+> > > +/*
+> > > + * Looking for memcg information and print it out
+> > > + */
+> > > +static inline void print_page_owner_memcg(char *kbuf, size_t count, int *pret,
+> > > +					  struct page *page)
+> > > +{
+> > > +	unsigned long memcg_data = READ_ONCE(page->memcg_data);
+> > > +	struct mem_cgroup *memcg;
+> > > +	bool onlined;
+> > > +	char name[80];
+> > > +
+> > > +	if (!memcg_data)
+> > > +		return;
+> > > +
+> > > +	if (memcg_data & MEMCG_DATA_OBJCGS)
+> > > +		*pret += scnprintf(kbuf + *pret, count - *pret,
+> > > +				"Slab cache page\n");
+> > Don't we need to check for overflow here?
+> 
+> See my previous patch 2 and the reason I used scnprintf() is that it never
+> return a length that is >= the given size. So overflow won't happen. The
+> final snprintf() in print_page_owner() will detect buffer overflow.
  
- static inline bool mem_cgroup_is_descendant(struct mem_cgroup *memcg,
--- 
-2.33.1
+Right, I've missed that 
+ 
+> > > +
+> > > +	memcg = page_memcg_check(page);
+> > > +	if (!memcg)
+> > > +		return;
+> > > +
+> > > +	onlined = (memcg->css.flags & CSS_ONLINE);
+> > > +	cgroup_name(memcg->css.cgroup, name, sizeof(name));
+> > > +	*pret += scnprintf(kbuf + *pret, count - *pret,
+> > > +			"Charged %sto %smemcg %s\n",
+> > > +			PageMemcgKmem(page) ? "(via objcg) " : "",
+> > > +			onlined ? "" : "offlined ",
+> > > +			name);
+> > Ditto
+> > 
+> > > +}
+> > > +#else /* CONFIG_MEMCG */
+> > > +static inline void print_page_owner_memcg(char *kbuf, size_t count, int *pret,
+> > > +					  struct page *page) { }
 
+> > I think #ifdef inside the print_page_owner_memcg() functions will be
+> > simpler and clearer.
+>
+> Yes, I see both styles used in kernel code though this style is probably
+> more common. I will keep this unless there is a good reason to do otherwise.
+
+Having #ifdef inside the function is safer wrt future updates. It's often
+happens that non-default arm of #ifdef is forgotten. Besides, it's several
+lines less.
+ 
+> > > +#endif /* CONFIG_MEMCG */
+> > > +
+> > >   static ssize_t
+> > >   print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+> > >   		struct page *page, struct page_owner *page_owner,
+> > > @@ -365,6 +402,8 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+> > >   			migrate_reason_names[page_owner->last_migrate_reason]);
+> > >   	}
+> > > +	print_page_owner_memcg(kbuf, count, &ret, page);
+> > > +
+> > ret can go over count here.
+> > Why not make print_page_owner_memcg() an int so that the call will be
+> > consistent with other calls in print_page_owner():
+> > 
+> > 	ret += print_page_owner_memcg(kbuf, count, page);
+> > 	if (ret >= count)
+> > 		goto err;
+
+I still think that 'int print_page_owner_memcg()' is clearer and more
+readable.
+ 
+> See my comments above.
+> 
+> Cheers,
+> Longman
+> 
+
+-- 
+Sincerely yours,
+Mike.
