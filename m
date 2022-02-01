@@ -2,118 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772154A5824
-	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 08:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1D34A598E
+	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 11:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbiBAH5f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Feb 2022 02:57:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2658 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229929AbiBAH5f (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 02:57:35 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21177vpM004925;
-        Tue, 1 Feb 2022 07:57:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : cc :
- subject : in-reply-to : in-reply-to : references : date : message-id :
- mime-version : content-type; s=pp1;
- bh=uuxhueiyYauBBegXUW2RmKe02lmKTiZq/8hDUJP4EZY=;
- b=sSvPViUMD2obHA44CvZkGPhjj691gKY6i3MGlIHqHDqlCHTh5u1PlPeA1T0cONpKYl/Z
- mHNQNqXMQN43Vk8T0R1J9HApRBfxi6c6U6hGGH6m73TpIDuFe5uPVnkQr/pKTz7sVLKY
- gYPtiSm1cjimhWzEguWSkiVC8zGn4hdu/Ph5GllPbSWABysqXSp7RhpHvXte7HgEKtA9
- em9xATQGNwY1WNpIJEICnsAvdh0yth1KNY08CRPkMw9wg8GDGjRa/DMjCKg8oozfYbOf
- q7BIZyL1iBuCMTlkNhEoymDZEEPzd2Tkvi/dCcQJERdhMdmtcZTt4pMLQJ0R+qTHz/z7 DQ== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dxhm4bdqn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Feb 2022 07:57:33 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2117qT1P026098;
-        Tue, 1 Feb 2022 07:57:32 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3dvw79htju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Feb 2022 07:57:32 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2117vTDC42664356
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Feb 2022 07:57:29 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADD824204D;
-        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E16F42049;
-        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
-Received: from localhost (unknown [9.171.59.74])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
-From:   Alexander Egorenkov <egorenar@linux.ibm.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     cgroups@vger.kernel.org
-Subject: Re: LTP test suite triggers LOCKDEP_CIRCULAR on linux-next
-In-Reply-To: <Yfgaf885yDFPtjJH@carbon.dhcp.thefacebook.com>
-In-Reply-To: 
-References: <87mtjzslv7.fsf@oc8242746057.ibm.com>
- <YeI78TMjU12qRmQ8@carbon.dhcp.thefacebook.com>
- <YfgWAuzAo2WDyPH+@carbon.dhcp.thefacebook.com>
- <87r18nj01l.fsf@oc8242746057.ibm.com>
- <Yfgaf885yDFPtjJH@carbon.dhcp.thefacebook.com>
-Date:   Tue, 01 Feb 2022 08:57:29 +0100
-Message-ID: <87tudjow7q.fsf@oc8242746057.ibm.com>
+        id S236231AbiBAKCl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Feb 2022 05:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236229AbiBAKCl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 05:02:41 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E620EC061714
+        for <cgroups@vger.kernel.org>; Tue,  1 Feb 2022 02:02:40 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id p12so33070561edq.9
+        for <cgroups@vger.kernel.org>; Tue, 01 Feb 2022 02:02:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=6fJ+fZY5GiZZHwpcXYOHVxRnu3uQZSG9RLn+T0JVJ8M=;
+        b=dODs5ewj8yYeX+hKwjGBVMzQGHzQ4b7I1Vzf53DHWrHTsF1AjtP7A+LDTGQ9RoIJ0z
+         KF72qa7PkZQNgmSVVbVuHPiD4wyW9pEENTeHO7W6uKdcPVmJfdkaVYvHEAKA0+xMNz/4
+         EgKInhHTWJNmMgCIozbHN/5ORnypbftWS+wnuoaNYOo2oFZSGbYsrEXQj4KhluZzzfhY
+         hagNKRKPbEA7ZVEZ8dkEd/Aa/te53BqOJIqIvb7t3DlEHDxMjmEheS1Pb0GC+zQ8bMKj
+         as+U6BirsHsimg6eXk1vTQX8nnERnwUNt5D51Z53dieCYheaOjO4VBKhOoZOMZSbWlJt
+         GdjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=6fJ+fZY5GiZZHwpcXYOHVxRnu3uQZSG9RLn+T0JVJ8M=;
+        b=4JqKAsO2DRwOasI3NuqdvRsYEDvayHGwry7vH3y4F3tUPFNEG5Hl6SLsRofRGz2dfl
+         tm4XLIm6nvZdaUF3mMz+QBJYZtQtYaUD+FZbi1P5XpVyTv+DNH4q4JHi8TteLJo0/uup
+         7/TjmNQUZns5QzZ3qfQ72BoqsizZKObu0N1RCBwtPzWx4vN25iuRuSuT0C1Z3m0GGRN4
+         2Jcab/i2iHCc6eHjhYbFTcYPT/Bh3nAQNHJXZEXYx7TFlBSA5KaQOBG7xeLjWqgXqMW1
+         wUitpXUCQvxMtjitdN9PZbwI8Pp6mWDGONRiORvYilDOfK4eMm8XaTX+FsPbczxXPhqZ
+         Sbzg==
+X-Gm-Message-State: AOAM533MMYjjhDxmvKWesDs7yGw+caYMbcObyhW8xxsn7Z1JW0gMMZjP
+        LmPv5LxWQgWXPBO7T5XVebv+gtolie7LFwuuA84=
+X-Google-Smtp-Source: ABdhPJw3kW6hCMj7yKHuqklpJ7ZKZw27sdd/3+b1d2E00TtmriIbonCsLgdR8r2tU7p4eb5TkOnQ8zffmG1wDt1zCLg=
+X-Received: by 2002:aa7:d64e:: with SMTP id v14mr24679486edr.335.1643709759493;
+ Tue, 01 Feb 2022 02:02:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bemAZ67ShBhTGeYHDVL8iTftaPQSZZ4H
-X-Proofpoint-GUID: bemAZ67ShBhTGeYHDVL8iTftaPQSZZ4H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-01_02,2022-01-31_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 suspectscore=0 phishscore=0 mlxscore=0
- bulkscore=0 clxscore=1015 impostorscore=0 mlxlogscore=893 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202010038
+Received: by 2002:a54:3708:0:0:0:0:0 with HTTP; Tue, 1 Feb 2022 02:02:38 -0800 (PST)
+Reply-To: westerunion909@gmail.com
+From:   Kelly Myers <kellymyers006@gmail.com>
+Date:   Tue, 1 Feb 2022 02:02:38 -0800
+Message-ID: <CA+bRPivppy1kw0qgT1y82rUW02ja3sNC1XpEnD6k61CayNkjEQ@mail.gmail.com>
+Subject: Dear Email ID Owner.(USD$4000 IMF COMPENSATION FUND TO PICK UP TODAY).
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Roman,
+Dear Email ID Owner.
 
-Roman Gushchin <guro@fb.com> writes:
+The IMF is compensating all the email address that was funds as one of
+the ward win Victims and your email address and your name is among the
+listed one of approved to pay the sum of $3.6 million U.S Dollars. We
+have concluded to effect your own payment through Western Union Money
+Transfer for easy pick-up of those funds in good condition,$4000 twice
+daily,till the $3.6 million is completely transferred to you.We now
+need your information where we will be sending the funds,such
+as;Receiver name(Your full Name)address and phone number.Contact
+Western Union agent with this Email: ( westerunion995@gmail.com  ) for
+your payment fund.
 
-> On Mon, Jan 31, 2022 at 06:19:02PM +0100, Alexander Egorenkov wrote:
->> Hi Roman,
->> 
->> 
->> Roman Gushchin <guro@fb.com> writes:
->> 
->> > On Fri, Jan 14, 2022 at 07:13:53PM -0800, Roman Gushchin wrote:
->> >> On Thu, Jan 13, 2022 at 04:20:44PM +0100, Alexander Egorenkov wrote:
->> >> 
->> >> Hi Alexander!
->> >> 
->> >> Can you, please, check if the following patch is fixing the problem for you?
->> >> 
->> >> Thanks a lot in advance!
->> >
->> > Friendly ping.
->> >
->> > Thanks!
->> 
->> I'm very sorry for late response,
->> we just noticed your mails :(
->> We installed your patch and today's CI run will use it for testing on
->> s390 arch.
->> I will have reports tomorrow.
->> 
->> Thanks for prompt response!
->
-> Perfect, thank you so much!
+Ms.Maria Zatto
+E-mail:westerunion995@gmail.com
+Telephone: +229 682 97 169
 
-i'm happy to report that the provided patch fixed the message
-and our CI tests for s390 cannot reproduce the situation anymore.
+Contact Ms.Maria,immediately you get this mail through western union
+email address above to enable her speed-up.your payment and release
+the $4000 dollars MTCN today for you to pick up the payment OK.
 
-Thanks!
+You are expected to provide us with the details as prescribed below to
+enable safe and easy release of your funds today.
 
-Regards
-Alex
+(1)Your Full name:
+(2)Your Phone number:
+(3)Your Country:
+(4)Your Age:
+
+Thank you,
+Dr.Kelly Myers.
+Contact Dir.Western Union Money Transfer,
+Cotonou-Benin Republic.
