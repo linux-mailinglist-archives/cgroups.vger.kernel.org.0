@@ -2,176 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4114A6881
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 00:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D254A68C8
+	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 00:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242854AbiBAX1M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Feb 2022 18:27:12 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21888 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229798AbiBAX1L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 18:27:11 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 211MNIb0012539;
-        Tue, 1 Feb 2022 15:26:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=kWQGnlsnCQQMA5/UZrmR7fJWxEg/FG4Vtq3Dbuxs0wc=;
- b=aE8VBWGw+iLxQFmkF3hVYk0f5ik/T4l+rbo9tZSVNWhwkGAhMBHqVPTKP67FSrBy69Xg
- LxyFPZEJqGqfxLG3zCoykpl/pnoheAJexOpqmJTFtAyaS0BuFjvWtcr47hjuRM6IzHuu
- +zGPYuo/JH6KXiyl/H+ItTbD2cMP7pHBv1k= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dy6n9uhuk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 01 Feb 2022 15:26:54 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 1 Feb 2022 15:26:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eC1Aad57Ooi3bU9pI6B4zQN7KeJxSV/z0Kg6/RlbJreKhGBRuu4TLDP9XYXJoBNufhosWpFFcfkro3OhxE3FfqStm5R6dAnyUbfD6I2TEMBn3UPmwjeSi4DdBexDh4J/vcbDuzFw279zbEOw4ZunBSREC8nQLvGS5np/W2qaOqmFybffCdAYLHvN66lE7f95hGAG9OuJHdc5M7VHstubAYwbF+sLNFnp9ZFv6+pJY+wXZoEqydsbNswnLbpCkIB1Dut3t3bRFtOo3lm9zfU2g5FsEkv1KPBXpdURXEzUwXhaOMW1dTfNBNQRp0pU0YFHoVfZj1LnCQWUucpkY8IAHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kWQGnlsnCQQMA5/UZrmR7fJWxEg/FG4Vtq3Dbuxs0wc=;
- b=n1XJpLP54CTyD6Im0tfiBbQqNwbXeyhecEPawYpa0HsGjpSnA3kpplRSngMNPA+va+bq+KzR64w6qDnQRULQd4KoM4CAuZsbKmRWYAMDboFf090ELDQAdhoi96MpvBhStvvLk6ns9ZkReIm2M6tmgP9zdgxx/cXw/iR2fUKT+gHPwrNxcfXeNzIdST4GvN96fzyvSPAVTg4eT2n4bsgltWa8zsIfVHddOJzLoTOIChTZTMnfmbYoGqNDJxsMOF+k9/74b6UFFyy7QaSzQqUIXbvleGNYH+nQZS8L8q2T7a2JAp8pu+UNfKgct/I6Ql/5MHncG3ACunV8wIoC8pj5TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by MWHPR15MB1517.namprd15.prod.outlook.com (2603:10b6:300:be::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.22; Tue, 1 Feb
- 2022 23:26:53 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d4ac:5796:5198:ecd2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d4ac:5796:5198:ecd2%3]) with mapi id 15.20.4930.022; Tue, 1 Feb 2022
- 23:26:53 +0000
-Date:   Tue, 1 Feb 2022 15:26:48 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        <cgroups@vger.kernel.org>
+        id S230261AbiBAXtj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Feb 2022 18:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbiBAXti (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 18:49:38 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550BFC061714
+        for <cgroups@vger.kernel.org>; Tue,  1 Feb 2022 15:49:38 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id z19so37006499lfq.13
+        for <cgroups@vger.kernel.org>; Tue, 01 Feb 2022 15:49:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EuDNjPJawgy9D+r4jnnOrp6Ldz6J1fdOgUQgLaNhBWY=;
+        b=jRvFkIVHvY2LFgD7nF7fURn/TddgGOCPcQeLKp7Zysw9Cui01wUuN1lgu3KnFNhs3D
+         TzPFm4kKsf9oXuHh6ItE3znYAqw4MFB0622YgZmhR8pJl1BUjWz/RBjXmLIVaIahfeQP
+         qbPgo6TPj3a6tQLVVHsdWcSLz/k6sILtUi1mdgK+89RURf9kwA+14PsZSSQK2Pyw7LrH
+         d+ZOLio1k89+tlN3oGOtwA9xxPLsGGGt9LwxyaeDcCEfW5YA0LIVStdtsxYVlvoO2GBP
+         L+WH6JFAJDOiv310Dm2+zkiBbgO+rozy8tZaB3JQa3BXG63VmvtMHm6F6AovBUXbkFI2
+         3JRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EuDNjPJawgy9D+r4jnnOrp6Ldz6J1fdOgUQgLaNhBWY=;
+        b=AIy1YKSjBzNncoDdNObL66oPbBHVwwyEtMl48cZbGMj8qi5mL4TZCL5yAD3IwiIkPX
+         1oOvoicdZ7kRT76YdZXjDLVzdBPDjUaIUeNwCIFBSntP0gRWruLXeZc4TLl9k+bnEo3/
+         vXjFFj93Jtmmv5ntxurSyilPRwMSoZjYZEcg/DYYtYBgBzpjYhMzEIeyUY7e9oWKeQ9m
+         3PwFe0IkOzpQa6NmEpqrKkunIQpX1FpULPHK8VynAeaGKXOSr4TqZcoFcVKCyslLPXV3
+         03+19CnRAdrwuxQ5wtjbcTU1zGwQ9VfMHRYnGpXS0+85QsjUEWginWRLJtExvyLISR++
+         VbVw==
+X-Gm-Message-State: AOAM533AMOmKIOD1aWpZXskYljg6c2ol8crCUVKUkU5Xpktgl15v80uC
+        7Rn9o+jE085lBF+KGCV/VL27eZx2B9919tINuYLi7A==
+X-Google-Smtp-Source: ABdhPJzLYtIe/Qd8mcpyl5xP/4AaDTSUDh8U+8ENJ4yZauHq18jhY1kfbqczHcwrSs20ztu5ZYzFKLnFF1g0+UF1GcU=
+X-Received: by 2002:a05:6512:33ce:: with SMTP id d14mr21772638lfg.264.1643759376434;
+ Tue, 01 Feb 2022 15:49:36 -0800 (PST)
+MIME-Version: 1.0
+References: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+In-Reply-To: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 1 Feb 2022 15:49:24 -0800
+Message-ID: <CALvZod5xXihut1mw1Q9vn9wuB0qOsm8ir63obf3_vv9rGZoacg@mail.gmail.com>
 Subject: Re: [PATCH RESEND] mm: memcg: synchronize objcg lists with a
  dedicated spinlock
-Message-ID: <YfnBuNYkoTlaX+Wk@carbon.dhcp.thefacebook.com>
-References: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
- <Yfm4yfrrJeTlaJZc@slm.duckdns.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Yfm4yfrrJeTlaJZc@slm.duckdns.org>
-X-ClientProxiedBy: MWHPR1401CA0017.namprd14.prod.outlook.com
- (2603:10b6:301:4b::27) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d04985f4-2a33-496e-678c-08d9e5da5419
-X-MS-TrafficTypeDiagnostic: MWHPR15MB1517:EE_
-X-Microsoft-Antispam-PRVS: <MWHPR15MB1517F85E83AF37C06FF0BB62BE269@MWHPR15MB1517.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 64mwq0trNIa/CjSTq0XXcCVdXmiibkt135F1jhCwxQwM4W0oTXwUb8+dDjlHafsaWLvfrk+S07ytOt81FmAtpqU7bVxjmmHZDpwJrOztfT3EKpP463xpWBKXMFmGpapKSmwflxh10Dv8DPI7aP952up9fxloYXEVWTzTBU/xlUojlvQfVCCsunhsLDWVMgXJsqLC2qbYekGMvsun/8NigSUX7/tfUPZSSG9TxhG2em0KaehC4x26rtie5B9bcw8/RtBqCHAisfyN9oKeMY+pNv4B1xladhVCqTr3YBo4oV8zy6tArBmtBkNRVKj3Ll312G0EdqIYCjqzUhDfm7go//KncdeslqSA0GYFknQxs9YIFQJlH4aVtYK5EE884ej7ZtmP2vYV2cuTc9iqKDeoUd30CJ+Yrz8I7ajVG2PCslUqg6cT/oCGXd8FBWCls6mkLbnTRm618eFPAvriv+9di40aWinZMqoUqH4z539HT/M+IeVYTWuz9cKIw6q5ADy9rE9hTInk67/lYqkYC9Aze60QfdkhPMS9eOrKL/woS9DMmbS95I5q2vpe2stc+EInkPqZEMU/Sbt9M9aJ8NQCNqKbIcqkSJcLxXpDxR7Aymsxpyax9cxJzcbbUcjdaYHSByVuctqWrtOvh8ex9eRMoS2NZFuO8+oEI6h29p+9azMOlFeLKMBhiReClBWX3KMVKhv+oW9Au1ZFIKBQKWOW3A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6916009)(8936002)(7416002)(5660300002)(8676002)(54906003)(6666004)(4326008)(83380400001)(2906002)(6512007)(86362001)(9686003)(38100700002)(186003)(6486002)(52116002)(6506007)(508600001)(66476007)(66556008)(316002)(66946007)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GNhhFGgmc1h7W0fKg9mkSK0kQvFjLAA1f5re7nMGbzxgKx4V7m3nb4TswSVv?=
- =?us-ascii?Q?1eEgbImz7vPn0AACTAVY+cFol5ByVaG2sXn85b5WuJ6jYNRWJWHxNLoZD1Yx?=
- =?us-ascii?Q?U986XwInR1SrJewhv613bisUvj/OhX71Ob/IIF78OpGrj//HC9JlSxCWScIf?=
- =?us-ascii?Q?0rzmrv2gWLaokeiPHe8SiqKrYt7z4H0uz2K+z9mXRXle+3UrlALoIHOVwgL9?=
- =?us-ascii?Q?yV6i+bcs1YUEW6zl7FM4WuhIKdy+x7YtlcLS4O4+hxmZw2g4/ygR7IqYGHLD?=
- =?us-ascii?Q?fSkFkWPFHKcCwjFqytFwbYuFWSLlmIfYkXXGYK07kiJZijGT/4h77IUxsCcN?=
- =?us-ascii?Q?VH93TVxBUbfo3039uRkFO8pptqmZlI3MIHee9xU8bsxSviXKtN9E/1S7aSrP?=
- =?us-ascii?Q?eEDpLIOx5ih6F97K7/zGOe5i6c4nk8rYzdhmRAuGLGXm+JkjUNBjjNO2zvAX?=
- =?us-ascii?Q?RcvR6UbnQu5uIrN0PqCN15a4Tk3u+c0zzoapKByKcNBaGQxr1YefP2UMt6s1?=
- =?us-ascii?Q?3NKK+ojqe+891SLqyDlljzhlLFhUHGEhvN8wUBYyGZy+oRyGK9IH2Kph1oCz?=
- =?us-ascii?Q?eAdT6NMnpH1x2KvRkkfk6BxiC4O+/u06mMwS3uhHJcZTA+505i1TGSU7tDQX?=
- =?us-ascii?Q?ysiDhZvKOfoljLl6akJO7YO876jZmFud2RDEb7rkXe3/uTOYJb6t0iLZV87i?=
- =?us-ascii?Q?GRZ4+6hZ3JCBYMYZOaghhsQro4XJVUW0OVU3EtR+wJCy0rai7SuSJUrMzMrT?=
- =?us-ascii?Q?1XthbmLi1y447i57+aE7x3J9qg4l528J1Hm4x9b00agTpBSutrSZYFvJpEGI?=
- =?us-ascii?Q?Ym6vuk5OgcF8nlqbnycEMHNM9wxdNw3sl8D1VuFMfRuucVX051aW7Cnnez1v?=
- =?us-ascii?Q?ay1NhL/v58cVUlfBFslpRpXiiBrs0R/c1FQV3J06yBPBaBpNRABe/5NCbCtv?=
- =?us-ascii?Q?pYeau8NgB3RDZXzXKcgT091tQmroiEv5DQSem6zlP33ksakqABSJ3o52LTm6?=
- =?us-ascii?Q?rFkXDbRfsbS+2XwgjqvZBmT/XwTmqDDA1TCerJ1VYmoeUXcpoV9qe32o83l+?=
- =?us-ascii?Q?Ms7alY80u/qfkN1AKr4IJa8WKbCTO9mRBJ+wBZSsKdD1QHtkVpcvU0PRZsiI?=
- =?us-ascii?Q?JNEpCWEtWCi4i3A5xNyelP+Z46GfiEVAk2QPQhdhradIMRPjiuUvJPkz57E8?=
- =?us-ascii?Q?xJR2ZdHD8Zh4BETdApfdbMUqgPPlGM8FsoouUUhOPkaXAHT5Sif9LZd2elTA?=
- =?us-ascii?Q?rimQvv2VGPsZee8WqtS1XiHsqtWReFIgk11PPSKIWBHrnwzY7hDjZK0fqR2X?=
- =?us-ascii?Q?bQmLihLH9tq71wIdgT/w9hGvAUc7LNgaOn45NHl2ZAksMOmgXMjfbX5jAiJh?=
- =?us-ascii?Q?w0V8wUj8nn3NfKqfGugrKSlFkUiuSHWhc8QfxloIT5goqDF2NxcgCMHKc6E6?=
- =?us-ascii?Q?4R+U2pjxRzyAcJgVP/hR8UnunoWjb+fX62/29t5ayZzdepZokr5wNpTxG9NI?=
- =?us-ascii?Q?DfqN5pqojY7hOs910nMeQ5AyFa6/pE7R1to7WpTeOulPqOjx9DOH5aRdJDrg?=
- =?us-ascii?Q?R/uEfoto5ENzrcUpCm7Z2DRBpe+MarrSNqqsegQ3?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d04985f4-2a33-496e-678c-08d9e5da5419
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2022 23:26:52.9030
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3eWlyYS8OSMyyRPPel+OeJaB3rHw87qx1Xi+/bZIt5oDTzlLsw73BRN6PqUYNqQq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1517
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: CTJutliaHOOlBU0Qs-GA5zeDyN7EMnvI
-X-Proofpoint-GUID: CTJutliaHOOlBU0Qs-GA5zeDyN7EMnvI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-01_10,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- spamscore=0 bulkscore=0 mlxlogscore=259 mlxscore=0 adultscore=0
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202010129
-X-FB-Internal: deliver
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 01, 2022 at 12:48:41PM -1000, Tejun Heo wrote:
-> On Tue, Feb 01, 2022 at 02:33:04PM -0800, Roman Gushchin wrote:
-> ...
-> > In this example a slab allocation from __send_signal() caused a
-> > refilling and draining of a percpu objcg stock, resulted in a
-> > releasing of another non-related objcg. Objcg release path requires
-> > taking the css_set_lock, which is used to synchronize objcg lists.
-> > 
-> > This can create a circular dependency with the sighandler lock,
-> > which is taken with the locked css_set_lock by the freezer code
-> > (to freeze a task).
-> > 
-> > In general it seems that using css_set_lock to synchronize objcg lists
-> > makes any slab allocations and deallocation with the locked
-> > css_set_lock and any intervened locks risky.
-> > 
-> > To fix the problem and make the code more robust let's stop using
-> > css_set_lock to synchronize objcg lists and use a new dedicated
-> > spinlock instead.
-> > 
-> > Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-> > Tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-> > Reviewed-by: Waiman Long <longman@redhat.com>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Shakeel Butt <shakeelb@google.com>
-> > Cc: Jeremy Linton <jeremy.linton@arm.com>
-> > Cc: cgroups@vger.kernel.org
-> 
-> Acked-by: Tejun Heo <tj@kernel.org>
+On Tue, Feb 1, 2022 at 2:33 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> Alexander reported a circular lock dependency revealed by the mmap1
+> ltp test:
+>   LOCKDEP_CIRCULAR (suite: ltp, case: mtest06 (mmap1))
+>           WARNING: possible circular locking dependency detected
+>           5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1 Not tainted
+>           ------------------------------------------------------
+>           mmap1/202299 is trying to acquire lock:
+>           00000001892c0188 (css_set_lock){..-.}-{2:2}, at: obj_cgroup_release+0x4a/0xe0
+>           but task is already holding lock:
+>           00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+>           which lock already depends on the new lock.
+>           the existing dependency chain (in reverse order) is:
+>           -> #1 (&sighand->siglock){-.-.}-{2:2}:
+>                  __lock_acquire+0x604/0xbd8
+>                  lock_acquire.part.0+0xe2/0x238
+>                  lock_acquire+0xb0/0x200
+>                  _raw_spin_lock_irqsave+0x6a/0xd8
+>                  __lock_task_sighand+0x90/0x190
+>                  cgroup_freeze_task+0x2e/0x90
+>                  cgroup_migrate_execute+0x11c/0x608
+>                  cgroup_update_dfl_csses+0x246/0x270
+>                  cgroup_subtree_control_write+0x238/0x518
+>                  kernfs_fop_write_iter+0x13e/0x1e0
+>                  new_sync_write+0x100/0x190
+>                  vfs_write+0x22c/0x2d8
+>                  ksys_write+0x6c/0xf8
+>                  __do_syscall+0x1da/0x208
+>                  system_call+0x82/0xb0
+>           -> #0 (css_set_lock){..-.}-{2:2}:
+>                  check_prev_add+0xe0/0xed8
+>                  validate_chain+0x736/0xb20
+>                  __lock_acquire+0x604/0xbd8
+>                  lock_acquire.part.0+0xe2/0x238
+>                  lock_acquire+0xb0/0x200
+>                  _raw_spin_lock_irqsave+0x6a/0xd8
+>                  obj_cgroup_release+0x4a/0xe0
+>                  percpu_ref_put_many.constprop.0+0x150/0x168
+>                  drain_obj_stock+0x94/0xe8
+>                  refill_obj_stock+0x94/0x278
+>                  obj_cgroup_charge+0x164/0x1d8
+>                  kmem_cache_alloc+0xac/0x528
+>                  __sigqueue_alloc+0x150/0x308
+>                  __send_signal+0x260/0x550
+>                  send_signal+0x7e/0x348
+>                  force_sig_info_to_task+0x104/0x180
+>                  force_sig_fault+0x48/0x58
+>                  __do_pgm_check+0x120/0x1f0
+>                  pgm_check_handler+0x11e/0x180
+>           other info that might help us debug this:
+>            Possible unsafe locking scenario:
+>                  CPU0                    CPU1
+>                  ----                    ----
+>             lock(&sighand->siglock);
+>                                          lock(css_set_lock);
+>                                          lock(&sighand->siglock);
+>             lock(css_set_lock);
+>            *** DEADLOCK ***
+>           2 locks held by mmap1/202299:
+>            #0: 00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+>            #1: 00000001892ad560 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x168
+>           stack backtrace:
+>           CPU: 15 PID: 202299 Comm: mmap1 Not tainted 5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1
+>           Hardware name: IBM 3906 M04 704 (LPAR)
+>           Call Trace:
+>            [<00000001888aacfe>] dump_stack_lvl+0x76/0x98
+>            [<0000000187c6d7be>] check_noncircular+0x136/0x158
+>            [<0000000187c6e888>] check_prev_add+0xe0/0xed8
+>            [<0000000187c6fdb6>] validate_chain+0x736/0xb20
+>            [<0000000187c71e54>] __lock_acquire+0x604/0xbd8
+>            [<0000000187c7301a>] lock_acquire.part.0+0xe2/0x238
+>            [<0000000187c73220>] lock_acquire+0xb0/0x200
+>            [<00000001888bf9aa>] _raw_spin_lock_irqsave+0x6a/0xd8
+>            [<0000000187ef6862>] obj_cgroup_release+0x4a/0xe0
+>            [<0000000187ef6498>] percpu_ref_put_many.constprop.0+0x150/0x168
+>            [<0000000187ef9674>] drain_obj_stock+0x94/0xe8
+>            [<0000000187efa464>] refill_obj_stock+0x94/0x278
+>            [<0000000187eff55c>] obj_cgroup_charge+0x164/0x1d8
+>            [<0000000187ed8aa4>] kmem_cache_alloc+0xac/0x528
+>            [<0000000187bf2eb8>] __sigqueue_alloc+0x150/0x308
+>            [<0000000187bf4210>] __send_signal+0x260/0x550
+>            [<0000000187bf5f06>] send_signal+0x7e/0x348
+>            [<0000000187bf7274>] force_sig_info_to_task+0x104/0x180
+>            [<0000000187bf7758>] force_sig_fault+0x48/0x58
+>            [<00000001888ae160>] __do_pgm_check+0x120/0x1f0
+>            [<00000001888c0cde>] pgm_check_handler+0x11e/0x180
+>           INFO: lockdep is turned off.
+>
+> In this example a slab allocation from __send_signal() caused a
+> refilling and draining of a percpu objcg stock, resulted in a
+> releasing of another non-related objcg. Objcg release path requires
+> taking the css_set_lock, which is used to synchronize objcg lists.
+>
+> This can create a circular dependency with the sighandler lock,
+> which is taken with the locked css_set_lock by the freezer code
+> (to freeze a task).
+>
+> In general it seems that using css_set_lock to synchronize objcg lists
+> makes any slab allocations and deallocation with the locked
+> css_set_lock and any intervened locks risky.
+>
+> To fix the problem and make the code more robust let's stop using
+> css_set_lock to synchronize objcg lists and use a new dedicated
+> spinlock instead.
+>
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Jeremy Linton <jeremy.linton@arm.com>
+> Cc: cgroups@vger.kernel.org
 
-Thank you!
-> 
-> I suppose this will go through -mm? If you want me to route it through the
-> cgroup tree, please let me know.
-
-I think so, usually this stuff goes through @mm.
-
-Thanks!
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
