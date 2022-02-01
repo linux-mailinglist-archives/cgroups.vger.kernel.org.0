@@ -2,94 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC1F4A5438
-	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 01:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E404A5440
+	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 01:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbiBAAml (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 31 Jan 2022 19:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
+        id S231244AbiBAArC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 31 Jan 2022 19:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbiBAAmk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 19:42:40 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55179C061714;
-        Mon, 31 Jan 2022 16:42:40 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a8so48351003ejc.8;
-        Mon, 31 Jan 2022 16:42:40 -0800 (PST)
+        with ESMTP id S230038AbiBAArC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 31 Jan 2022 19:47:02 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7818CC061714;
+        Mon, 31 Jan 2022 16:47:01 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id s13so48678553ejy.3;
+        Mon, 31 Jan 2022 16:47:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tM48J1r6RkVUujqg3c37yU/BycOtok0R6SCSR/HwO4I=;
-        b=UUW3DPdsg1gI2lDGeDXFutTvvI5cYxgHl2wsh3p/ADj0fd46ifjisnczPrI4UjM8N/
-         vOVnCmjP0puOYVDH6vyFuJWHTvvw3MF9QDhm52vgjSbVecXUHUwKGvLI7VCj03Yn+70n
-         duOs6uAvOx3ewSYFheL0uw3EZlADa2KeTn0TK25CbE7pR7aGYginonT6BMbkFIFP6Wtp
-         uc34SUM2eeQ0dXuMqc+tsTdjScmYBkC+RTH8qJyiP6GejSYPbid/1Fhvzj0l88X5dwUF
-         xqdS53FSpXlQ7VTaC+JgrZgfimgH1Ox7lT0GtkHtEuRsFE3rYz5wLRlZjPaHOjQ3fDkw
-         wphA==
+        h=from:to:cc:subject:date:message-id;
+        bh=uPVLcxrrpf12Ei4lWc6lSHRXgw8cc0G/gavfe4Q9af4=;
+        b=hdpLvN0QxInM8+zBsj9rlh83NVjYyFJoIFuN/De4NAA9EcVJhT7Wqhkcj75YZEeEV2
+         th2W52TZaFlmrPuVbf6bmepEh9nDGgI4CSDd+GaLoRrX1GocorJrKLmA9JiVmpB6t8s5
+         66kbKsZny0SG2cCxsmhC78eAk8a3CPKbs558vyZgfnz46XL3sxK28SQN2uG3f6XLjnzl
+         LNghAm/XyZAZInH39ADFZhe9ctC11i3g7jcQor7TRZxqtGO16EuWNH8wT2AC3cDP3IuA
+         0C0BTkQ33c8fKzbuibkJDmgEw1NtwrOcnpFtlrZOFnPEaDzl3jCxB+jJoKQlGI40mEK6
+         Gi2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tM48J1r6RkVUujqg3c37yU/BycOtok0R6SCSR/HwO4I=;
-        b=eqSNNNg+TIT0yIkBe9opV8eYQN+d/FREZJ5OpPhDLWL1bNw6haJQqmXYvWUt4UzjyG
-         RNLAfWvsbaC0K9ysvwPTT4bYKGHkkO3v1rKXnxc4D4+UfFebp0GkvSWPuOV0SUrOScrB
-         EZqtm+mea+AXO1ePmCVKF5JRrCAxk3Fm2yCDJ/UdSvfS7O12bNNoujd4/ImezCaoC0aP
-         ZMjIO7IuLiFSAtapmmJIT5tLMNyQbQ6Fq+FX5ye2mZOtQN6oHrIdezbSqKgXPCG8yiw+
-         evIPZVOAtH1aEsIvdazlYQorAwGAOusronspomJrzv0Ro8GX5WLak4PfYQ5mVU66KDma
-         kbnw==
-X-Gm-Message-State: AOAM530vv0039/Uyeog5h9rJHP7R3gCLbgvJooNx4rSqxpG/bJL14zVe
-        umCZlqWQ1Z8Ao0Up12zqdn8=
-X-Google-Smtp-Source: ABdhPJxY5fgWWILhLGqCxpjBMMlFx486Xl1isTrvEuq8/x1ubfRORcKnjz54hAE4v2urxxFA9gTReA==
-X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr18694773ejc.615.1643676158800;
-        Mon, 31 Jan 2022 16:42:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uPVLcxrrpf12Ei4lWc6lSHRXgw8cc0G/gavfe4Q9af4=;
+        b=TiceN4VhKLMmTTQ7rot6B4Of3l8XLvfU+rWxZVQq6zLicZ4VHytqRQUjzpNH5E3kT2
+         dLqTMcrvnZeUFhgwk+ju7EU0uP4zmQ+AS0uUCrWmDyXrN4yepKR/noojfxnb75fB6Wtj
+         rwQvgZJjrUqLXtPNDhYKkipgpJfJq8y2i9YqrOTa/1ZQO+DNVZQ76L0aqA9jq7hI+LrI
+         aM+GynvabMk1o5yOxUq1cM884O/MmjcvCDechMiz3ahMpPff85RZ1WVqFbon6ME/IA1i
+         Tv2kBhdxRDS3P5pSHlH1sOwPIUSSTuSDvpwvnbUPMMwWIWHJrVjuJjgfuPZPAg7M6TJs
+         6NMw==
+X-Gm-Message-State: AOAM530rZEvjQaChNuTvPojqCkranxycOa1Pza4gqvLWg6B3yp8VLyYU
+        kZ5RdFSWDiMZj9/eaHw1XsU=
+X-Google-Smtp-Source: ABdhPJw8HWmyZMvyKUz/GCpLFtIhWj2bZvqHd92ATTkn5xbAydEP5bf6sPKyPc0j527YW5ynQlVdrQ==
+X-Received: by 2002:a17:907:c19:: with SMTP id ga25mr20364151ejc.606.1643676419516;
+        Mon, 31 Jan 2022 16:46:59 -0800 (PST)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id d15sm14199510ejw.143.2022.01.31.16.42.38
+        by smtp.gmail.com with ESMTPSA id v10sm18500935edx.36.2022.01.31.16.46.58
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 31 Jan 2022 16:42:38 -0800 (PST)
-Date:   Tue, 1 Feb 2022 00:42:37 +0000
+        Mon, 31 Jan 2022 16:46:59 -0800 (PST)
 From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
-        guro@fb.com, vbabka@suse.cz, willy@infradead.org,
-        songmuchun@bytedance.com, shy828301@gmail.com, surenb@google.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/4] mm/memcg: use NUMA_NO_NODE to indicate allocation
- from unspecified node
-Message-ID: <20220201004237.77nqe36aqut6kuxc@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20220111010302.8864-1-richard.weiyang@gmail.com>
- <20220131014742.oxcrctcg6sqwvzij@master>
- <20220131143620.b619f24f5246b26bce2b717d@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220131143620.b619f24f5246b26bce2b717d@linux-foundation.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        willy@infradead.org, songmuchun@bytedance.com, shy828301@gmail.com,
+        surenb@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH 1/2] mm/memcg: mem_cgroup_per_node is already set to 0 on allocation
+Date:   Tue,  1 Feb 2022 00:46:42 +0000
+Message-Id: <20220201004643.8391-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 02:36:20PM -0800, Andrew Morton wrote:
->On Mon, 31 Jan 2022 01:47:42 +0000 Wei Yang <richard.weiyang@gmail.com> wrote:
->
->> Hi, Andrew
->> 
->> Would you pick up this patch set, or prefer me to send a v2?
->> 
->
->It's unclear to me what's happening with [4/4].  At least a new
->changelog with more justification is expected?
->
+kzalloc_node() would set data to 0, so it's not necessary to set it
+again.
 
-As Michal and Roman suggested, this is not a hot-path. I would drop this one.
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 2 --
+ 1 file changed, 2 deletions(-)
 
->So yes, please resend?
-
-Sure.
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ea8460658550..ce7060907df2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5070,8 +5070,6 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 	}
+ 
+ 	lruvec_init(&pn->lruvec);
+-	pn->usage_in_excess = 0;
+-	pn->on_tree = false;
+ 	pn->memcg = memcg;
+ 
+ 	memcg->nodeinfo[node] = pn;
 -- 
-Wei Yang
-Help you, Help me
+2.33.1
+
