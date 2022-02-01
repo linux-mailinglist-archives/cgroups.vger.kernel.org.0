@@ -2,111 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1736E4A5789
-	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 08:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772154A5824
+	for <lists+cgroups@lfdr.de>; Tue,  1 Feb 2022 08:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbiBAHMq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Feb 2022 02:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbiBAHMp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 02:12:45 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0ADC06173B
-        for <cgroups@vger.kernel.org>; Mon, 31 Jan 2022 23:12:44 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id a25so22714654lji.9
-        for <cgroups@vger.kernel.org>; Mon, 31 Jan 2022 23:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PVW92HDoC/XVNlQ/sBgLb71ANKolpSb9a+lR1z7DyS0=;
-        b=CPLDx7KNeK82j2UI56J1LCuggSFeS3B2lH5X9mR4iWGhggCJZ7rZFSdvibZncDYfeL
-         3aGqJjr05O4+vnzjbsQBaM8wljY2rHeBMdnMAjqAfYWCw9vb8EqAzVHJ+/2/S2VQDaA7
-         Up2Jqz0gcUyuHx7md+lYW8pzmwH4plPXMFItE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PVW92HDoC/XVNlQ/sBgLb71ANKolpSb9a+lR1z7DyS0=;
-        b=DcUCZEkdAVd6bwt+uZHmN+V9FeKJAQMP1WRMR3oUNFpS0fjgea6Ud5FM07WKLcImql
-         b+z0bVbpXm6MJuSzVsR8WTOYuUnwhwgH//Cnh1k0GAcFX6yGQ3NH39PQ+mta7IWhpjKJ
-         b0mh+rziJFFb3oM49UCXytcrqGsaB7fAVHgvpwf5xYC7W/emos/v536lv9lFi5gmYgTT
-         yK+yt4fxLlLdc0ohFsGg2+El2s/vneROLVLc5m7SK791uQwKRMCruNrAI+QmJL9y0bl5
-         BaNg2TSF4SwvchcE88gDCAXxwUZ2QvPkAuo4F1z/PEi56zGxiq24ycFf6/nZVTwQw7oW
-         35VQ==
-X-Gm-Message-State: AOAM532sLQhuVfN2WLtNO1zalipidVs8afCZc2FOt1jY/QueWGNolhN/
-        arYlFEdUasrnn5341HPg4/uOyA==
-X-Google-Smtp-Source: ABdhPJyAdQ4Gv3Z2Qodv0TvVsi1PTC193vemFm9wBX541IgG+fveE5li4PdKDLfvw6DSY9tWIOAXzg==
-X-Received: by 2002:a2e:890a:: with SMTP id d10mr6847738lji.29.1643699563231;
-        Mon, 31 Jan 2022 23:12:43 -0800 (PST)
-Received: from [172.16.11.74] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id j18sm749488lfr.253.2022.01.31.23.12.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jan 2022 23:12:42 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] lib/vsprintf: Avoid redundant work with 0 size
-To:     Waiman Long <longman@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
-        Rafael Aquini <aquini@redhat.com>
-References: <20220129205315.478628-1-longman@redhat.com>
- <20220129205315.478628-2-longman@redhat.com>
- <d99b3c4b-7b6e-529-6e4b-b91b65c92d81@google.com>
- <Yfe5Bb3U6Uil7Y6g@smile.fi.intel.com> <Yfe6SfG4CqzWSaMM@smile.fi.intel.com>
- <Yfe7Q5cx+MoaOev/@smile.fi.intel.com>
- <c33b6435-1b27-32af-b14c-0f3a0318dcca@redhat.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <f3bcf541-e77b-ca93-ef5c-862f4de99366@rasmusvillemoes.dk>
-Date:   Tue, 1 Feb 2022 08:12:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S230331AbiBAH5f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Feb 2022 02:57:35 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2658 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229929AbiBAH5f (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Feb 2022 02:57:35 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21177vpM004925;
+        Tue, 1 Feb 2022 07:57:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : cc :
+ subject : in-reply-to : in-reply-to : references : date : message-id :
+ mime-version : content-type; s=pp1;
+ bh=uuxhueiyYauBBegXUW2RmKe02lmKTiZq/8hDUJP4EZY=;
+ b=sSvPViUMD2obHA44CvZkGPhjj691gKY6i3MGlIHqHDqlCHTh5u1PlPeA1T0cONpKYl/Z
+ mHNQNqXMQN43Vk8T0R1J9HApRBfxi6c6U6hGGH6m73TpIDuFe5uPVnkQr/pKTz7sVLKY
+ gYPtiSm1cjimhWzEguWSkiVC8zGn4hdu/Ph5GllPbSWABysqXSp7RhpHvXte7HgEKtA9
+ em9xATQGNwY1WNpIJEICnsAvdh0yth1KNY08CRPkMw9wg8GDGjRa/DMjCKg8oozfYbOf
+ q7BIZyL1iBuCMTlkNhEoymDZEEPzd2Tkvi/dCcQJERdhMdmtcZTt4pMLQJ0R+qTHz/z7 DQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dxhm4bdqn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Feb 2022 07:57:33 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2117qT1P026098;
+        Tue, 1 Feb 2022 07:57:32 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3dvw79htju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Feb 2022 07:57:32 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2117vTDC42664356
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Feb 2022 07:57:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADD824204D;
+        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E16F42049;
+        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
+Received: from localhost (unknown [9.171.59.74])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Feb 2022 07:57:29 +0000 (GMT)
+From:   Alexander Egorenkov <egorenar@linux.ibm.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     cgroups@vger.kernel.org
+Subject: Re: LTP test suite triggers LOCKDEP_CIRCULAR on linux-next
+In-Reply-To: <Yfgaf885yDFPtjJH@carbon.dhcp.thefacebook.com>
+In-Reply-To: 
+References: <87mtjzslv7.fsf@oc8242746057.ibm.com>
+ <YeI78TMjU12qRmQ8@carbon.dhcp.thefacebook.com>
+ <YfgWAuzAo2WDyPH+@carbon.dhcp.thefacebook.com>
+ <87r18nj01l.fsf@oc8242746057.ibm.com>
+ <Yfgaf885yDFPtjJH@carbon.dhcp.thefacebook.com>
+Date:   Tue, 01 Feb 2022 08:57:29 +0100
+Message-ID: <87tudjow7q.fsf@oc8242746057.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <c33b6435-1b27-32af-b14c-0f3a0318dcca@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bemAZ67ShBhTGeYHDVL8iTftaPQSZZ4H
+X-Proofpoint-GUID: bemAZ67ShBhTGeYHDVL8iTftaPQSZZ4H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-01_02,2022-01-31_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 impostorscore=0 mlxlogscore=893 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202010038
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 31/01/2022 19.48, Waiman Long wrote:
-> On 1/31/22 05:34, Andy Shevchenko wrote:
+Hi Roman,
 
->> Also it seems currently the kernel documentation is not aligned with
->> the code
->>
->>    "If @size is == 0 the function returns 0."
->>
->> It should mention the (theoretical?) possibility of getting negative
->> value,
->> if vsnprintf() returns negative value.
-> 
-> AFAICS, the kernel's vsnprintf() function will not return -1.
+Roman Gushchin <guro@fb.com> writes:
 
-Even if it did, the "i < size" comparison in vscnprintf() is "int v
-size_t", so integer promotion says that even if i were negative, that
-comparison would be false, so we wouldn't forward that negative value
-anyway.
+> On Mon, Jan 31, 2022 at 06:19:02PM +0100, Alexander Egorenkov wrote:
+>> Hi Roman,
+>> 
+>> 
+>> Roman Gushchin <guro@fb.com> writes:
+>> 
+>> > On Fri, Jan 14, 2022 at 07:13:53PM -0800, Roman Gushchin wrote:
+>> >> On Thu, Jan 13, 2022 at 04:20:44PM +0100, Alexander Egorenkov wrote:
+>> >> 
+>> >> Hi Alexander!
+>> >> 
+>> >> Can you, please, check if the following patch is fixing the problem for you?
+>> >> 
+>> >> Thanks a lot in advance!
+>> >
+>> > Friendly ping.
+>> >
+>> > Thanks!
+>> 
+>> I'm very sorry for late response,
+>> we just noticed your mails :(
+>> We installed your patch and today's CI run will use it for testing on
+>> s390 arch.
+>> I will have reports tomorrow.
+>> 
+>> Thanks for prompt response!
+>
+> Perfect, thank you so much!
 
-> So in that
-> sense it is not fully POSIX compliant. 
+i'm happy to report that the provided patch fixed the message
+and our CI tests for s390 cannot reproduce the situation anymore.
 
-Of course it's not, but not because it doesn't return -1. POSIX just
-says to return that in case of an error, and as a matter of QoI, the
-kernel's implementation simply can't (and must not) fail. There are
-other cases where we don't follow POSIX/C, e.g. in some corner cases
-around field length and precision (documented in test_printf.c), and the
-non-support of %n (and floating point and handling of wchar_t*), and the
-whole %p<> extension etc.
+Thanks!
 
-Rasmus
+Regards
+Alex
