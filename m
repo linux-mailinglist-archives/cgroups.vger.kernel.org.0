@@ -2,36 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 970924A760F
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 17:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DF84A7637
+	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 17:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239809AbiBBQiK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Feb 2022 11:38:10 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56236 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234678AbiBBQiJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 11:38:09 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2941721100;
-        Wed,  2 Feb 2022 16:38:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1643819888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1346004AbiBBQyE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Feb 2022 11:54:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240269AbiBBQyE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 11:54:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643820843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ovtEFN3zyuhZ84VATTXxeaX4XxbwY8ky/fQzl6DC/1E=;
-        b=VbieOmiRhqEU6RioiXSYtTXq1pkpEM59XXP4jKGogGC6DPO62BFtWfjW0oxah/XnG4ZUpr
-        fVcilnkkpeLfnCDqL24v6MCv/f+OzRTkaH1XJ7IPGKFxSvII98y0Pztp7ZHSXVDOgIndiB
-        B908vNICOfe2bWd7yPqAP6oCJuqr0bA=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=DPqXXCSvtXWPYnKF39SzZCno/APupEDKEIyaUUkXZKc=;
+        b=NiJ/10STi4hnZiI3pRYqmgT2tilamIlD9Ri/LCgiyt7qp0KLAwh0k+DiERJ8+NJQt5U4U9
+        aVzeZxWxEI81zNcP0AJcS+2atObDwNVUVY1JdynBHoMPyCecRO1C2y4tHtPlX97IbciUsD
+        mi9sZ0pIRb+JB9OhCIkhk5JTB9Y6Sno=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-127-QeDFCgTcO02K7x1KW0bJ2A-1; Wed, 02 Feb 2022 11:53:58 -0500
+X-MC-Unique: QeDFCgTcO02K7x1KW0bJ2A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 98642A3B8E;
-        Wed,  2 Feb 2022 16:38:07 +0000 (UTC)
-Date:   Wed, 2 Feb 2022 17:38:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF45118C89CC;
+        Wed,  2 Feb 2022 16:53:55 +0000 (UTC)
+Received: from [10.22.34.202] (unknown [10.22.34.202])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 05AF3753D0;
+        Wed,  2 Feb 2022 16:53:52 +0000 (UTC)
+Message-ID: <4ba66abe-5c6d-26a7-f11c-c3b8514bfb34@redhat.com>
+Date:   Wed, 2 Feb 2022 11:53:52 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v4 4/4] mm/page_owner: Record task command name
+Content-Language: en-US
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Petr Mladek <pmladek@suse.com>,
@@ -41,62 +52,46 @@ Cc:     Waiman Long <longman@redhat.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
-        Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v2 3/3] mm/page_owner: Dump memcg information
-Message-ID: <YfqzbwAPKpshXSLK@dhcp22.suse.cz>
-References: <20220129205315.478628-4-longman@redhat.com>
- <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
- <YfgT/9tEREQNiiAN@cmpxchg.org>
- <YfgnUZQBRkqhrEIb@carbon.dhcp.thefacebook.com>
- <Yfgpknwr1tMnPkqh@dhcp22.suse.cz>
- <12686956-612d-d89b-5641-470d5e913090@redhat.com>
- <YfkQJ4QhfY0dICB9@dhcp22.suse.cz>
- <268a8bdf-4c70-b967-f34c-2293b54186f0@redhat.com>
- <YfpHbtffFi2x1L4p@dhcp22.suse.cz>
- <YfqpSPLC+LAdqbJX@carbon.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YfqpSPLC+LAdqbJX@carbon.dhcp.thefacebook.com>
+        Mike Rapoport <rppt@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <20220131192308.608837-5-longman@redhat.com>
+ <20220131220328.622162-1-longman@redhat.com>
+ <YflRjeoC0jbzArDG@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YflRjeoC0jbzArDG@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 02-02-22 07:54:48, Roman Gushchin wrote:
-> On Wed, Feb 02, 2022 at 09:57:18AM +0100, Michal Hocko wrote:
-> > On Tue 01-02-22 11:41:19, Waiman Long wrote:
-> > > 
-> > > On 2/1/22 05:49, Michal Hocko wrote:
-> > [...]
-> > > > Could you be more specific? Offlined memcgs are still part of the
-> > > > hierarchy IIRC. So it shouldn't be much more than iterating the whole
-> > > > cgroup tree and collect interesting data about dead cgroups.
-> > > 
-> > > What I mean is that without piggybacking on top of page_owner, we will to
-> > > add a lot more code to collect and display those information which may have
-> > > some overhead of its own.
-> > 
-> > Yes, there is nothing like a free lunch. Page owner is certainly a tool
-> > that can be used. My main concern is that this tool doesn't really
-> > scale on large machines with a lots of memory. It will provide a very
-> > detailed information but I am not sure this is particularly helpful to
-> > most admins (why should people process tons of allocation backtraces in
-> > the first place). Wouldn't it be sufficient to have per dead memcg stats
-> > to see where the memory sits?
-> > 
-> > Accumulated offline memcgs is something that bothers more people and I
-> > am really wondering whether we can do more for those people to evaluate
-> > the current state.
-> 
-> Cgroup v2 has corresponding counters for years. Or do you mean something different?
 
-Do we have anything more specific than nr_dying_descendants? I was
-thinking about an interface which would provide paths and stats for dead
-memcgs. But I have to confess I haven't really spent much time thinking
-about how much work that would be. I am by no means against adding memcg
-information to the page owner. I just think there must be a better way
-to present resource consumption by dead memcgs.
+On 2/1/22 10:28, Michal Hocko wrote:
+> Cc Vlastimil
+>
+> On Mon 31-01-22 17:03:28, Waiman Long wrote:
+>> The page_owner information currently includes the pid of the calling
+>> task. That is useful as long as the task is still running. Otherwise,
+>> the number is meaningless. To have more information about the allocating
+>> tasks that had exited by the time the page_owner information is
+>> retrieved, we need to store the command name of the task.
+>>
+>> Add a new comm field into page_owner structure to store the command name
+>> and display it when the page_owner information is retrieved.
+> I completely agree that pid is effectivelly useless (if not misleading)
+> but is comm really telling all that much to compensate for the
+> additional storage required for _each_ page in the system?
 
--- 
-Michal Hocko
-SUSE Labs
+Yes, it does add an extra 16 bytes per page overhead. The command name 
+can be useful if one want to find out which userspace command is 
+responsible for a problematic page allocation. Maybe we can remove pid 
+from page_owner to save 8 bytes as you also agree that this number is 
+not that useful.
+
+Cheers,
+Longman
+
