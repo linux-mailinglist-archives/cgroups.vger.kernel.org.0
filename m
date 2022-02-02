@@ -2,40 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2174A798D
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 21:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B284A7B76
+	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 00:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbiBBUeG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Feb 2022 15:34:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37538 "EHLO
+        id S235116AbiBBXG5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Feb 2022 18:06:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45063 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347212AbiBBUeE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 15:34:04 -0500
+        by vger.kernel.org with ESMTP id S232019AbiBBXG4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 18:06:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643834044;
+        s=mimecast20190719; t=1643843216;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9zS1/+E6LbgkmQXXirvHhlSIzu5z9ShRmVZP1k7+Qso=;
-        b=Tw3sMPEyIQ3HZj5du6TO5PPFwRlAorVqAKg8Kl9TToUQD/CJZOexCOn+PFtNt0Aga2/qX3
-        uc6tlPn7G9M+4SnbOii64VBOBGFKR5UifDFJKE3yXzcdcH99NQImxdqzn8Yt1PYRP2jLTw
-        XLcM1zivDg2Xpjcvy2Ni6P+R0drBC6Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=srHq4RerCPcuK2/I9lWBI5nczQqLUr4zYMys9nonwW0=;
+        b=ANHHMEoEt4kme7PJSzZBjj3biAAgFIaNGmWaDG62aj49RUPavtiX6235XGQ+nM/Ujpq3L/
+        rIfzsl9T9wEBizsO/qTCKd+8YrhVswQpFyCxekSzqghzOobv74asghUS6tWYHam7OdDaIt
+        YqWDL/Yz3GlXUlf2bzJ/WHdnPYpJl2k=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-453-4ssqO2vLPUybJrJ9eyi8_A-1; Wed, 02 Feb 2022 15:33:59 -0500
-X-MC-Unique: 4ssqO2vLPUybJrJ9eyi8_A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CA0B83DD20;
-        Wed,  2 Feb 2022 20:33:56 +0000 (UTC)
-Received: from llong.com (unknown [10.22.34.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E9FF654532;
-        Wed,  2 Feb 2022 20:33:54 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
+ us-mta-583-t50uVmtSOVad0sf5I0cVQQ-1; Wed, 02 Feb 2022 18:06:55 -0500
+X-MC-Unique: t50uVmtSOVad0sf5I0cVQQ-1
+Received: by mail-qt1-f199.google.com with SMTP id w25-20020ac84d19000000b002d2966d66a8so513315qtv.18
+        for <cgroups@vger.kernel.org>; Wed, 02 Feb 2022 15:06:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=srHq4RerCPcuK2/I9lWBI5nczQqLUr4zYMys9nonwW0=;
+        b=wkyJZj6Bc4ViITFTr2X1PSON00kv1EOQgbTBialYrDQGcI97iwXZg4f345/lh8Je3l
+         3nwv56ko79meJQxmSXDvANLl0iak4R2u3kMsARIB4OT6O0pEwYQxo227Eic/iVQm/2YL
+         k9+cKT9FMNhFYuIuyd6ktLXPwr2adOTXSbnDEWzmUCE+WmGO3GrbfQQNTY4ZHtuH24Ot
+         fR1pqmkcfVFzgdMlAcSQvzY7oAHyxFuJiy2pQmBSYtrS/hJZhgAuEO6DiYy302UfQrWZ
+         BqEU3TOqWZq6RPRl7MhVKDM9bwnB9cZsFZxEzAgVz8rvajaE799DRGqK37Lnr3qy1jkW
+         24Ig==
+X-Gm-Message-State: AOAM530pQ8jzczf4plcWjAPdRgC2m+qQat/0/UBTwnXiCom/sJmgNPP0
+        eH0W96tRrGyhoX92URb/jvoiC6owU/7WcnAeEl8Y9Wzb+k6eJLLD+n/3RIcniJl7fPyEt3ARD8f
+        K9DklvGklLgT+61XVfA==
+X-Received: by 2002:a05:622a:144a:: with SMTP id v10mr16612658qtx.350.1643843214566;
+        Wed, 02 Feb 2022 15:06:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwhd9wQP9nLOoPNf+zPu0Q9gF2MAe960omGhUqE/PcrJrAiip/p0+OPiu1a41WQoa5ljwp9Zg==
+X-Received: by 2002:a05:622a:144a:: with SMTP id v10mr16612625qtx.350.1643843214253;
+        Wed, 02 Feb 2022 15:06:54 -0800 (PST)
+Received: from optiplex-fbsd (c-73-182-255-193.hsd1.nh.comcast.net. [73.182.255.193])
+        by smtp.gmail.com with ESMTPSA id h7sm3106143qtb.27.2022.02.02.15.06.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Feb 2022 15:06:53 -0800 (PST)
+Date:   Wed, 2 Feb 2022 18:06:51 -0500
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -43,96 +61,106 @@ To:     Johannes Weiner <hannes@cmpxchg.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
         Mike Rapoport <rppt@kernel.org>,
         David Rientjes <rientjes@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 4/4] mm/page_owner: Record task command name
-Date:   Wed,  2 Feb 2022 15:30:36 -0500
-Message-Id: <20220202203036.744010-5-longman@redhat.com>
-In-Reply-To: <20220131192308.608837-5-longman@redhat.com>
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH v4 0/4] mm/page_owner: Extend page_owner to show memcg
+ information
+Message-ID: <YfsOi38nXkyCrYam@optiplex-fbsd>
 References: <20220131192308.608837-5-longman@redhat.com>
+ <20220202203036.744010-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220202203036.744010-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The page_owner information currently includes the pid of the calling
-task. That is useful as long as the task is still running. Otherwise,
-the number is meaningless. To have more information about the allocating
-tasks that had exited by the time the page_owner information is
-retrieved, we need to store the command name of the task.
+On Wed, Feb 02, 2022 at 03:30:32PM -0500, Waiman Long wrote:
+>  v4:
+>   - Take rcu_read_lock() when memcg is being accessed as suggested by
+>     Michal.
+>   - Make print_page_owner_memcg() return the new offset into the buffer
+>     and put CONFIG_MEMCG block inside as suggested by Mike.
+>   - Directly use TASK_COMM_LEN as length of name buffer as suggested by
+>     Roman.
+> 
+>  v3:
+>   - Add unlikely() to patch 1 and clarify that -1 will not be returned.
+>   - Use a helper function to print out memcg information in patch 3.
+>   - Add a new patch 4 to store task command name in page_owner
+>     structure.
+> 
+>  v2:
+>   - Remove the SNPRINTF() macro as suggested by Ira and use scnprintf()
+>     instead to remove some buffer overrun checks.
+>   - Add a patch to optimize vscnprintf with a size parameter of 0.
+> 
+> While debugging the constant increase in percpu memory consumption on
+> a system that spawned large number of containers, it was found that a
+> lot of offline mem_cgroup structures remained in place without being
+> freed. Further investigation indicated that those mem_cgroup structures
+> were pinned by some pages.
+> 
+> In order to find out what those pages are, the existing page_owner
+> debugging tool is extended to show memory cgroup information and whether
+> those memcgs are offline or not. With the enhanced page_owner tool,
+> the following is a typical page that pinned the mem_cgroup structure
+> in my test case:
+> 
+> Page allocated via order 0, mask 0x1100cca(GFP_HIGHUSER_MOVABLE), pid 162970 (podman), ts 1097761405537 ns, free_ts 1097760838089 ns
+> PFN 1925700 type Movable Block 3761 type Movable Flags 0x17ffffc00c001c(uptodate|dirty|lru|reclaim|swapbacked|node=0|zone=2|lastcpupid=0x1fffff)
+>  prep_new_page+0xac/0xe0
+>  get_page_from_freelist+0x1327/0x14d0
+>  __alloc_pages+0x191/0x340
+>  alloc_pages_vma+0x84/0x250
+>  shmem_alloc_page+0x3f/0x90
+>  shmem_alloc_and_acct_page+0x76/0x1c0
+>  shmem_getpage_gfp+0x281/0x940
+>  shmem_write_begin+0x36/0xe0
+>  generic_perform_write+0xed/0x1d0
+>  __generic_file_write_iter+0xdc/0x1b0
+>  generic_file_write_iter+0x5d/0xb0
+>  new_sync_write+0x11f/0x1b0
+>  vfs_write+0x1ba/0x2a0
+>  ksys_write+0x59/0xd0
+>  do_syscall_64+0x37/0x80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> Charged to offline memcg libpod-conmon-15e4f9c758422306b73b2dd99f9d50a5ea53cbb16b4a13a2c2308a4253cc0ec8.
+> 
+> So the page was not freed because it was part of a shmem segment. That
+> is useful information that can help users to diagnose similar problems.
+> 
+> With cgroup v1, /proc/cgroups can be read to find out the total number
+> of memory cgroups (online + offline). With cgroup v2, the cgroup.stat of
+> the root cgroup can be read to find the number of dying cgroups (most
+> likely pinned by dying memcgs).
+> 
+> The page_owner feature is not supposed to be enabled for production
+> system due to its memory overhead. However, if it is suspected that
+> dying memcgs are increasing over time, a test environment with page_owner
+> enabled can then be set up with appropriate workload for further analysis
+> on what may be causing the increasing number of dying memcgs.
+> 
+> Waiman Long (4):
+>   lib/vsprintf: Avoid redundant work with 0 size
+>   mm/page_owner: Use scnprintf() to avoid excessive buffer overrun check
+>   mm/page_owner: Print memcg information
+>   mm/page_owner: Record task command name
+> 
+>  lib/vsprintf.c  |  8 +++---
+>  mm/page_owner.c | 70 ++++++++++++++++++++++++++++++++++++++-----------
+>  2 files changed, 60 insertions(+), 18 deletions(-)
+> 
+> -- 
+> 2.27.0
+>
 
-Add a new comm field into page_owner structure to store the command name
-and display it when the page_owner information is retrieved.
+Thank you, Waiman.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/page_owner.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index f7820357e4d4..d56afa9c792e 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -29,6 +29,7 @@ struct page_owner {
- 	depot_stack_handle_t free_handle;
- 	u64 ts_nsec;
- 	u64 free_ts_nsec;
-+	char comm[TASK_COMM_LEN];
- 	pid_t pid;
- };
- 
-@@ -165,6 +166,8 @@ static inline void __set_page_owner_handle(struct page_ext *page_ext,
- 		page_owner->last_migrate_reason = -1;
- 		page_owner->pid = current->pid;
- 		page_owner->ts_nsec = local_clock();
-+		strlcpy(page_owner->comm, current->comm,
-+			sizeof(page_owner->comm));
- 		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
- 		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
- 
-@@ -232,6 +235,7 @@ void __folio_copy_owner(struct folio *newfolio, struct folio *old)
- 	new_page_owner->pid = old_page_owner->pid;
- 	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
- 	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
-+	strcpy(new_page_owner->comm, old_page_owner->comm);
- 
- 	/*
- 	 * We don't clear the bit on the old folio as it's going to be freed
-@@ -379,10 +383,11 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 		return -ENOMEM;
- 
- 	ret = scnprintf(kbuf, count,
--			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns, free_ts %llu ns\n",
-+			"Page allocated via order %u, mask %#x(%pGg), pid %d (%s), ts %llu ns, free_ts %llu ns\n",
- 			page_owner->order, page_owner->gfp_mask,
- 			&page_owner->gfp_mask, page_owner->pid,
--			page_owner->ts_nsec, page_owner->free_ts_nsec);
-+			page_owner->comm, page_owner->ts_nsec,
-+			page_owner->free_ts_nsec);
- 
- 	/* Print information relevant to grouping pages by mobility */
- 	pageblock_mt = get_pageblock_migratetype(page);
-@@ -449,9 +454,10 @@ void __dump_page_owner(const struct page *page)
- 	else
- 		pr_alert("page_owner tracks the page as freed\n");
- 
--	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d, ts %llu, free_ts %llu\n",
-+	pr_alert("page last allocated via order %u, migratetype %s, gfp_mask %#x(%pGg), pid %d (%s), ts %llu, free_ts %llu\n",
- 		 page_owner->order, migratetype_names[mt], gfp_mask, &gfp_mask,
--		 page_owner->pid, page_owner->ts_nsec, page_owner->free_ts_nsec);
-+		 page_owner->pid, page_owner->comm, page_owner->ts_nsec,
-+		 page_owner->free_ts_nsec);
- 
- 	handle = READ_ONCE(page_owner->handle);
- 	if (!handle)
--- 
-2.27.0
+Acked-by: Rafael Aquini <aquini@redhat.com>
 
