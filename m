@@ -2,172 +2,246 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF70D4A74FF
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 16:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C03154A7519
+	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 16:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbiBBPzX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Feb 2022 10:55:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23560 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230107AbiBBPzW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 10:55:22 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 2121ftMh016821;
-        Wed, 2 Feb 2022 07:54:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=PntVkuMfTienoR7WfCrdOCIGWX4pTWY+Pz9DpDetKJ8=;
- b=VNORFQ5cMkGak4CBsI4tJMn4n3sMeUXdGyjd3r/Fju07zsvC3A9PN7yicCXrCUMt8bqM
- KAShRCFV65f0gGH2CG4R6o2Fr5zeNvUrOUfMj8/sv4OPNaxdHtZTSfqpVYB0TNOEVfUm
- sIFpjZa1K15G7SLbHOsDhrla2cMKQ/8McMY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3dyb3hwnae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 02 Feb 2022 07:54:56 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 2 Feb 2022 07:54:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U5MixJfWx4GXwJGc5Sg/zWhSgdt4bzAgABAFZDMdJt5ewHge4jaIrI/8R5sjzO8h1TCtHSQ0AWoejDpVnu2uNQCMu26XhBco2ZLUy0u7ecgfxlw3F2CRDxvAwASzjBFfxz5tsaTE8k5wTnXTFd3WjuQ+enntM+15YW+rvUSiDAgB0LswiRMFvDE+7MVJpYLepBE+jjz1KAGVGbLW799vJPE246gt5GluhM2+HxVR/2ux+kXu/NoluonFp6vZU2+R9+au8KqAFGV5EQcP6qaE6bGt7LCATvwTdvrSVfsmxwAzNHRMhtb786ipsyEYejNvf379THs6o0iBILCk6B4g9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PntVkuMfTienoR7WfCrdOCIGWX4pTWY+Pz9DpDetKJ8=;
- b=ZNADFEYsuk93i4kWacR+yLBx4atguNU3A8v7oO2x21vca4br2DIDBzZoU3dgX+f6dMG/u0vR6bLNS5KKd1xCera9U65+ymihd9Nm0A1EPgGMaoQABZlhr5K08ZRZnJR5o5u0gs9DsB3R1SNDObLmh06r64GbCDPLjj+ZbxahOAgbQvKfWsO2INB22/jGTAJ74ClUf5FK2kt1F1sPAlyB+c1oGp9y+3/hja6UKArkmOy/gTRsv9OIDE0QlooM6elBcOoByBAopCnCAoRf0avJEHg4TU4G6K6t3x2A7QPcho3BGWOCDQUUXrFTrJtoBbL0mdj5Chb9JBfBPbxwthPI7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by DM6PR15MB3243.namprd15.prod.outlook.com (2603:10b6:5:162::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Wed, 2 Feb
- 2022 15:54:53 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d4ac:5796:5198:ecd2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d4ac:5796:5198:ecd2%3]) with mapi id 15.20.4930.022; Wed, 2 Feb 2022
- 15:54:53 +0000
-Date:   Wed, 2 Feb 2022 07:54:48 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, Ira Weiny <ira.weiny@intel.com>,
-        Rafael Aquini <aquini@redhat.com>
-Subject: Re: [PATCH v2 3/3] mm/page_owner: Dump memcg information
-Message-ID: <YfqpSPLC+LAdqbJX@carbon.dhcp.thefacebook.com>
-References: <20220129205315.478628-1-longman@redhat.com>
- <20220129205315.478628-4-longman@redhat.com>
- <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
- <YfgT/9tEREQNiiAN@cmpxchg.org>
- <YfgnUZQBRkqhrEIb@carbon.dhcp.thefacebook.com>
- <Yfgpknwr1tMnPkqh@dhcp22.suse.cz>
- <12686956-612d-d89b-5641-470d5e913090@redhat.com>
- <YfkQJ4QhfY0dICB9@dhcp22.suse.cz>
- <268a8bdf-4c70-b967-f34c-2293b54186f0@redhat.com>
- <YfpHbtffFi2x1L4p@dhcp22.suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YfpHbtffFi2x1L4p@dhcp22.suse.cz>
-X-ClientProxiedBy: MWHPR19CA0055.namprd19.prod.outlook.com
- (2603:10b6:300:94::17) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1345590AbiBBP61 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Feb 2022 10:58:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:39432 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239981AbiBBP6Z (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 2 Feb 2022 10:58:25 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FED8113E;
+        Wed,  2 Feb 2022 07:58:25 -0800 (PST)
+Received: from [192.168.122.164] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C40193F73B;
+        Wed,  2 Feb 2022 07:58:24 -0800 (PST)
+Message-ID: <49447f71-bb84-8e1d-e0cb-c9e482d3459b@arm.com>
+Date:   Wed, 2 Feb 2022 09:58:15 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ae8daf97-e94c-4c48-989d-08d9e66459b3
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3243:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB32432A50A1A70F1A5B543A2CBE279@DM6PR15MB3243.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ehqb3d35LQx4RwTKvmSFrb1b7D4HHeAcEs4RLZfmOasvLZv8+l76nTzKk+r+PMxiw46VOl8Yd41T+h3LOQaiCbPKMO33FjtKhvKis/onWkQDeLJaBOxQuK6+Lr6nLS+yUegK8F5wk4IN0+YftTFDRH/DPSAUlxEseB5Dvv0Annol2TPPkVNBsBpBjfkI1JeBqOKfuxba/FmZb+a44nRczLpH8Xpw4kk5zIswIAeYfjSviJr5Z3NTgQrnmYcR358TkLCcXxvgsoqVXx3YOG7a6eflxsRGF68Wkqi95up5al3rUiVyHiGO9pa9arYEKrIjxIFCYHWCCYBippAUz59q53esKjPF+g1bE64wY+OguQu4gGYwMWJKUm2ZTQOvu4+SXCK7PLyGQ4IHLsI78934lT2594gScGTz6yT5diuWbNzAnejcGC4z/qHVhIrmbS6qfB7yiGs3X5G3bBfAiu2dPIL7xzsk/aRMhzs76wuNXs0FZGKj14DHAwtCnRdrSIzlYIRCPbjy5jCp3URzmMLUVQrv9hcoBZ1AVZyvTZLDXNPnESs1J9ARduSnfZeNaKROMkiRuzrzbE0qY4pkWHtPVKfwibx9FnT2ghxVBxMwSkjpOZtV4yFV+PPCJzauycF4q1gZAHF2zCJeREvw7LE5/t0y55dqq4HUAPHWOLGONm0txwLVmpZSYUELk1tmcMVElIXw4oBkOBeI87GVU4jtUg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(2906002)(6666004)(508600001)(6486002)(9686003)(186003)(6916009)(6506007)(316002)(54906003)(52116002)(53546011)(83380400001)(66946007)(8936002)(8676002)(66476007)(86362001)(4326008)(66556008)(38100700002)(7416002)(5660300002)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k5zYs0QLI6w8806R/SXvjyfM9PAHL4hfOYA+kbzmaZRSImj/vEbjqIOXjbq8?=
- =?us-ascii?Q?wtR+2G/PEnG9mH0lq9bO2uB/QTAxDUNuVlFEry/Da43t8lf3VXdQJ15hvhtg?=
- =?us-ascii?Q?74Io+9qNDKODPYFu0vWYnAtwv3Dwwl6zFHZ+8fjeGzj8pCoa+sqsDDuEJDIZ?=
- =?us-ascii?Q?7LJpGUkBCSouNvKNp3NA6+6FkITZjILeZ9HNJwx1O9td9Jn0YWlX5ndWhAxr?=
- =?us-ascii?Q?1eGl6ZjfH0UmQF6Yd00BNtbDmC25TaZhNaolh4YXS4jImUoiQn+V+OJUld4E?=
- =?us-ascii?Q?lfsFCIVUhNwXXmmsMUPmFaqujgkhBb5g4zPOrCoOc7Ufyu+w4y82Z1yH48VK?=
- =?us-ascii?Q?m8tmQkKdvaUT73Bjcc5UNPsuRHdx7pqEutq+PNYxk04b3StMY8Z55V/CvODp?=
- =?us-ascii?Q?Z9amp+iHtW6OdPZJ8mcYkKwcAJQEfS/Wy+UgIQyx5xdpceV9MnGZdZVtkPVY?=
- =?us-ascii?Q?EZDXMs6MAWMAClQM0d/+Ef4QV5KRVDfq7mX/A/2y2hF/saYLDH76ryAisfsH?=
- =?us-ascii?Q?Z2IRhJJOXJQaXhI9FnONoNYRO2CNV4PvjZ0GuSr8kXRe1uLdiZF/E+qLKVsk?=
- =?us-ascii?Q?Ym/HA980wiTiCmA7ydituiNScoTd4iHixUhO4V73zQLBfvwCf5TMBV37wTro?=
- =?us-ascii?Q?kkeOgTRYTPMvG1PKyB03bluZarFtEo9Tsgdx3RhfpRFbpmSIjaLSCyp+yQW3?=
- =?us-ascii?Q?2CJ6dAUWsCGplGxbiqfMUuxposOAdwVZcII1VdxTdavEGGzkuBAjy12T3/jY?=
- =?us-ascii?Q?YUf65bj9kE1Y4Ih2zj5TYZdiQv47YTGdEkqpewaHhNvae55dMkl587x5+Vya?=
- =?us-ascii?Q?/qAwqttVDxdCtq16DaACkn1YVZ9eeFP3pVfissRECkCuz86opHsKfhJN3QPN?=
- =?us-ascii?Q?0bu4PmqUBDQLjJT9NZslY0YVLDSXCbTXVaO34IfbPqCi/uKtDTXS5SF+FC/A?=
- =?us-ascii?Q?tI48PNz8XYtGK6GXYW7Bx9AAIKdcn6V+s/ar0I4NvEhZqTO9Nk/xLGC8W0Hg?=
- =?us-ascii?Q?rRdQDOuKGByorQGKupYzTQdkAji27vItHC1NCj/q/liYDUU+1YI2loN0zYQT?=
- =?us-ascii?Q?lfICqrSgnrw2p7WPJNgVPVvR/OM8SuC9mvDhx1YfNgM+srw/KqPPSBqb3Mwg?=
- =?us-ascii?Q?aM8UGIu3AQCX8BVvZO3vMAWmNRWn+s9HxWvBrjTab4g4WYH7HCzMnGdJRUKA?=
- =?us-ascii?Q?EUhclQxF4PxUUNovYjosKF2gYX6ELWe6iB8lKx8S/ZHpXR5yKIvpbBoWWnMu?=
- =?us-ascii?Q?BI9iOmdqTnbmFIAW0OXgpGu+6OeJ+QtnS3St8uXf+Xw+8ZHRawRiyvh5nz++?=
- =?us-ascii?Q?Z8XjCuqrTOqrehQlvM6j30AYlN4sGG6IuSNyaFFonElEplmzXbEsfuU0iRKI?=
- =?us-ascii?Q?J+BX2ZFUEmpHFiQIPGB+kKczV4FJ1feivUuwpHSC3fYCyBPGPo6qeWR3v6sW?=
- =?us-ascii?Q?YX6zG1YJOtlUHbSP64AJo0E0YKuGcbW+6vlgD2m2j1wMRDVR+9+px+3XneId?=
- =?us-ascii?Q?pyGnYz2304BVI1+dQ3sYc/fv5tgfcwi3Gz35YnU6LOoDuU96aqA5kRan88S6?=
- =?us-ascii?Q?vhVMOFaPOBKMfKCLfVU4nRGoDHqyP9sCbHFvP48B?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae8daf97-e94c-4c48-989d-08d9e66459b3
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2022 15:54:53.0539
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HgWHEdTNkJXqxtJns1mutldNBdkkF9iZrPrJ1l/UuUW3Hfq2NmG3UeoBlFPfXtyc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3243
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: SgZCIPj9yViw1FyGgr9dWk6NycFnJ46b
-X-Proofpoint-ORIG-GUID: SgZCIPj9yViw1FyGgr9dWk6NycFnJ46b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-02_07,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 spamscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=462 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202020089
-X-FB-Internal: deliver
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH RESEND] mm: memcg: synchronize objcg lists with a
+ dedicated spinlock
+Content-Language: en-US
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org
+References: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+In-Reply-To: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 09:57:18AM +0100, Michal Hocko wrote:
-> On Tue 01-02-22 11:41:19, Waiman Long wrote:
-> > 
-> > On 2/1/22 05:49, Michal Hocko wrote:
-> [...]
-> > > Could you be more specific? Offlined memcgs are still part of the
-> > > hierarchy IIRC. So it shouldn't be much more than iterating the whole
-> > > cgroup tree and collect interesting data about dead cgroups.
-> > 
-> > What I mean is that without piggybacking on top of page_owner, we will to
-> > add a lot more code to collect and display those information which may have
-> > some overhead of its own.
+On 2/1/22 16:33, Roman Gushchin wrote:
+> Alexander reported a circular lock dependency revealed by the mmap1
+> ltp test:
+>    LOCKDEP_CIRCULAR (suite: ltp, case: mtest06 (mmap1))
+>            WARNING: possible circular locking dependency detected
+>            5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1 Not tainted
+>            ------------------------------------------------------
+>            mmap1/202299 is trying to acquire lock:
+>            00000001892c0188 (css_set_lock){..-.}-{2:2}, at: obj_cgroup_release+0x4a/0xe0
+>            but task is already holding lock:
+>            00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+>            which lock already depends on the new lock.
+>            the existing dependency chain (in reverse order) is:
+>            -> #1 (&sighand->siglock){-.-.}-{2:2}:
+>                   __lock_acquire+0x604/0xbd8
+>                   lock_acquire.part.0+0xe2/0x238
+>                   lock_acquire+0xb0/0x200
+>                   _raw_spin_lock_irqsave+0x6a/0xd8
+>                   __lock_task_sighand+0x90/0x190
+>                   cgroup_freeze_task+0x2e/0x90
+>                   cgroup_migrate_execute+0x11c/0x608
+>                   cgroup_update_dfl_csses+0x246/0x270
+>                   cgroup_subtree_control_write+0x238/0x518
+>                   kernfs_fop_write_iter+0x13e/0x1e0
+>                   new_sync_write+0x100/0x190
+>                   vfs_write+0x22c/0x2d8
+>                   ksys_write+0x6c/0xf8
+>                   __do_syscall+0x1da/0x208
+>                   system_call+0x82/0xb0
+>            -> #0 (css_set_lock){..-.}-{2:2}:
+>                   check_prev_add+0xe0/0xed8
+>                   validate_chain+0x736/0xb20
+>                   __lock_acquire+0x604/0xbd8
+>                   lock_acquire.part.0+0xe2/0x238
+>                   lock_acquire+0xb0/0x200
+>                   _raw_spin_lock_irqsave+0x6a/0xd8
+>                   obj_cgroup_release+0x4a/0xe0
+>                   percpu_ref_put_many.constprop.0+0x150/0x168
+>                   drain_obj_stock+0x94/0xe8
+>                   refill_obj_stock+0x94/0x278
+>                   obj_cgroup_charge+0x164/0x1d8
+>                   kmem_cache_alloc+0xac/0x528
+>                   __sigqueue_alloc+0x150/0x308
+>                   __send_signal+0x260/0x550
+>                   send_signal+0x7e/0x348
+>                   force_sig_info_to_task+0x104/0x180
+>                   force_sig_fault+0x48/0x58
+>                   __do_pgm_check+0x120/0x1f0
+>                   pgm_check_handler+0x11e/0x180
+>            other info that might help us debug this:
+>             Possible unsafe locking scenario:
+>                   CPU0                    CPU1
+>                   ----                    ----
+>              lock(&sighand->siglock);
+>                                           lock(css_set_lock);
+>                                           lock(&sighand->siglock);
+>              lock(css_set_lock);
+>             *** DEADLOCK ***
+>            2 locks held by mmap1/202299:
+>             #0: 00000000ca3b3818 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x38/0x180
+>             #1: 00000001892ad560 (rcu_read_lock){....}-{1:2}, at: percpu_ref_put_many.constprop.0+0x0/0x168
+>            stack backtrace:
+>            CPU: 15 PID: 202299 Comm: mmap1 Not tainted 5.17.0-20220113.rc0.git0.f2211f194038.300.fc35.s390x+debug #1
+>            Hardware name: IBM 3906 M04 704 (LPAR)
+>            Call Trace:
+>             [<00000001888aacfe>] dump_stack_lvl+0x76/0x98
+>             [<0000000187c6d7be>] check_noncircular+0x136/0x158
+>             [<0000000187c6e888>] check_prev_add+0xe0/0xed8
+>             [<0000000187c6fdb6>] validate_chain+0x736/0xb20
+>             [<0000000187c71e54>] __lock_acquire+0x604/0xbd8
+>             [<0000000187c7301a>] lock_acquire.part.0+0xe2/0x238
+>             [<0000000187c73220>] lock_acquire+0xb0/0x200
+>             [<00000001888bf9aa>] _raw_spin_lock_irqsave+0x6a/0xd8
+>             [<0000000187ef6862>] obj_cgroup_release+0x4a/0xe0
+>             [<0000000187ef6498>] percpu_ref_put_many.constprop.0+0x150/0x168
+>             [<0000000187ef9674>] drain_obj_stock+0x94/0xe8
+>             [<0000000187efa464>] refill_obj_stock+0x94/0x278
+>             [<0000000187eff55c>] obj_cgroup_charge+0x164/0x1d8
+>             [<0000000187ed8aa4>] kmem_cache_alloc+0xac/0x528
+>             [<0000000187bf2eb8>] __sigqueue_alloc+0x150/0x308
+>             [<0000000187bf4210>] __send_signal+0x260/0x550
+>             [<0000000187bf5f06>] send_signal+0x7e/0x348
+>             [<0000000187bf7274>] force_sig_info_to_task+0x104/0x180
+>             [<0000000187bf7758>] force_sig_fault+0x48/0x58
+>             [<00000001888ae160>] __do_pgm_check+0x120/0x1f0
+>             [<00000001888c0cde>] pgm_check_handler+0x11e/0x180
+>            INFO: lockdep is turned off.
 > 
-> Yes, there is nothing like a free lunch. Page owner is certainly a tool
-> that can be used. My main concern is that this tool doesn't really
-> scale on large machines with a lots of memory. It will provide a very
-> detailed information but I am not sure this is particularly helpful to
-> most admins (why should people process tons of allocation backtraces in
-> the first place). Wouldn't it be sufficient to have per dead memcg stats
-> to see where the memory sits?
+> In this example a slab allocation from __send_signal() caused a
+> refilling and draining of a percpu objcg stock, resulted in a
+> releasing of another non-related objcg. Objcg release path requires
+> taking the css_set_lock, which is used to synchronize objcg lists.
 > 
-> Accumulated offline memcgs is something that bothers more people and I
-> am really wondering whether we can do more for those people to evaluate
-> the current state.
+> This can create a circular dependency with the sighandler lock,
+> which is taken with the locked css_set_lock by the freezer code
+> (to freeze a task).
+> 
+> In general it seems that using css_set_lock to synchronize objcg lists
+> makes any slab allocations and deallocation with the locked
+> css_set_lock and any intervened locks risky.
+> 
+> To fix the problem and make the code more robust let's stop using
+> css_set_lock to synchronize objcg lists and use a new dedicated
+> spinlock instead.
+> 
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reported-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Jeremy Linton <jeremy.linton@arm.com>
+> Cc: cgroups@vger.kernel.org
+> ---
+>   include/linux/memcontrol.h |  5 +++--
+>   mm/memcontrol.c            | 10 +++++-----
+>   2 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index b72d75141e12..0abbd685703b 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -219,7 +219,7 @@ struct obj_cgroup {
+>   	struct mem_cgroup *memcg;
+>   	atomic_t nr_charged_bytes;
+>   	union {
+> -		struct list_head list;
+> +		struct list_head list; /* protected by objcg_lock */
+>   		struct rcu_head rcu;
+>   	};
+>   };
+> @@ -315,7 +315,8 @@ struct mem_cgroup {
+>   #ifdef CONFIG_MEMCG_KMEM
+>   	int kmemcg_id;
+>   	struct obj_cgroup __rcu *objcg;
+> -	struct list_head objcg_list; /* list of inherited objcgs */
+> +	/* list of inherited objcgs, protected by objcg_lock */
+> +	struct list_head objcg_list;
+>   #endif
+>   
+>   	MEMCG_PADDING(_pad2_);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 09d342c7cbd0..36e9f38c919d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -254,7 +254,7 @@ struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
+>   }
+>   
+>   #ifdef CONFIG_MEMCG_KMEM
+> -extern spinlock_t css_set_lock;
+> +static DEFINE_SPINLOCK(objcg_lock);
+>   
+>   bool mem_cgroup_kmem_disabled(void)
+>   {
+> @@ -298,9 +298,9 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+>   	if (nr_pages)
+>   		obj_cgroup_uncharge_pages(objcg, nr_pages);
+>   
+> -	spin_lock_irqsave(&css_set_lock, flags);
+> +	spin_lock_irqsave(&objcg_lock, flags);
+>   	list_del(&objcg->list);
+> -	spin_unlock_irqrestore(&css_set_lock, flags);
+> +	spin_unlock_irqrestore(&objcg_lock, flags);
+>   
+>   	percpu_ref_exit(ref);
+>   	kfree_rcu(objcg, rcu);
+> @@ -332,7 +332,7 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+>   
+>   	objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
+>   
+> -	spin_lock_irq(&css_set_lock);
+> +	spin_lock_irq(&objcg_lock);
+>   
+>   	/* 1) Ready to reparent active objcg. */
+>   	list_add(&objcg->list, &memcg->objcg_list);
+> @@ -342,7 +342,7 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+>   	/* 3) Move already reparented objcgs to the parent's list */
+>   	list_splice(&memcg->objcg_list, &parent->objcg_list);
+>   
+> -	spin_unlock_irq(&css_set_lock);
+> +	spin_unlock_irq(&objcg_lock);
+>   
+>   	percpu_ref_kill(&objcg->refcnt);
+>   }
+> 
 
-Cgroup v2 has corresponding counters for years. Or do you mean something different?
+Thanks for taking care of this. Since it looks the same as my patch 
+aside from the fact that I also defensivly converted the list_del to a 
+list_del_rcu.
+
+
+Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
+
+and
+
+Tested-by: Jeremy Linton <jeremy.linton@arm.com>
+
+
+Thanks again,
+
+
+
