@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CDC4A798A
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 21:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFC34A798C
+	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 21:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347205AbiBBUd7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Feb 2022 15:33:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22093 "EHLO
+        id S1347219AbiBBUeD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Feb 2022 15:34:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23955 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347195AbiBBUd6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 15:33:58 -0500
+        by vger.kernel.org with ESMTP id S1347204AbiBBUd7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 15:33:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643834038;
+        s=mimecast20190719; t=1643834039;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aswR5jLflKHAA/2KWO7s8HDPhJp/8ybDJLjB9qtlMrw=;
-        b=HmZlysUsgZysPO8eiQPSFeEMZCgoiI01hFcKKT1S1+VfJc6PdnuFOpYjOlAANE9cUcdJqQ
-        EsL/5gq7FZ/6D6nN+JGLXwY4vWPBlttRgIgQZT7joaEegk3kowZwb2vWMIKl1gFlY2VmnQ
-        3UzSoewWu40myMiCUKhkOOzFfwr7OLU=
+        bh=w+Q+AFP6tIEythEP8N9DfZ2WkxdGuyQHwcgj9xdFRo8=;
+        b=VFh9NlQpERcsQoFCMSBNisaXlntkey8qbZMssh5OJlztEiP3n8aW0NiuEPrV3inBlHBNSG
+        AGRE0E7ekOnGWV2RKus+tD6m25Y/TetvqdeJ9C4kfvfNwNLJgPQgnQ+1X0S5Q5k2CGpCWy
+        Pyg9p1+NYChTBeK5sK83hWooK8WeeAs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-544-_oSbZEydPAiJCv_mdPNglg-1; Wed, 02 Feb 2022 15:33:54 -0500
-X-MC-Unique: _oSbZEydPAiJCv_mdPNglg-1
+ us-mta-121-JMKTMjwwPiuyP6GqA7MOVg-1; Wed, 02 Feb 2022 15:33:58 -0500
+X-MC-Unique: JMKTMjwwPiuyP6GqA7MOVg-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5EA61091DB5;
-        Wed,  2 Feb 2022 20:33:52 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAC7B100C68A;
+        Wed,  2 Feb 2022 20:33:54 +0000 (UTC)
 Received: from llong.com (unknown [10.22.34.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A30D12E2D;
-        Wed,  2 Feb 2022 20:33:19 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DACAD4F864;
+        Wed,  2 Feb 2022 20:33:52 +0000 (UTC)
 From:   Waiman Long <longman@redhat.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -51,9 +51,9 @@ Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Roman Gushchin <guro@fb.com>,
         Rafael Aquini <aquini@redhat.com>,
         Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 2/4] mm/page_owner: Use scnprintf() to avoid excessive buffer overrun check
-Date:   Wed,  2 Feb 2022 15:30:34 -0500
-Message-Id: <20220202203036.744010-3-longman@redhat.com>
+Subject: [PATCH v4 3/4] mm/page_owner: Print memcg information
+Date:   Wed,  2 Feb 2022 15:30:35 -0500
+Message-Id: <20220202203036.744010-4-longman@redhat.com>
 In-Reply-To: <20220131192308.608837-5-longman@redhat.com>
 References: <20220131192308.608837-5-longman@redhat.com>
 MIME-Version: 1.0
@@ -63,67 +63,93 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The snprintf() function can return a length greater than the given
-input size. That will require a check for buffer overrun after each
-invocation of snprintf(). scnprintf(), on the other hand, will never
-return a greater length. By using scnprintf() in selected places, we
-can avoid some buffer overrun checks except after stack_depot_snprint()
-and after the last snprintf().
+It was found that a number of offline memcgs were not freed because
+they were pinned by some charged pages that were present. Even "echo 1 >
+/proc/sys/vm/drop_caches" wasn't able to free those pages. These offline
+but not freed memcgs tend to increase in number over time with the side
+effect that percpu memory consumption as shown in /proc/meminfo also
+increases over time.
+
+In order to find out more information about those pages that pin
+offline memcgs, the page_owner feature is extended to print memory
+cgroup information especially whether the cgroup is offline or not.
+RCU read lock is taken when memcg is being accessed to make sure
+that it won't be freed.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 Acked-by: David Rientjes <rientjes@google.com>
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Acked-by: Roman Gushchin <guro@fb.com>
 ---
- mm/page_owner.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ mm/page_owner.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
 diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 99e360df9465..28dac73e0542 100644
+index 28dac73e0542..f7820357e4d4 100644
 --- a/mm/page_owner.c
 +++ b/mm/page_owner.c
-@@ -338,19 +338,16 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 	if (!kbuf)
- 		return -ENOMEM;
+@@ -10,6 +10,7 @@
+ #include <linux/migrate.h>
+ #include <linux/stackdepot.h>
+ #include <linux/seq_file.h>
++#include <linux/memcontrol.h>
+ #include <linux/sched/clock.h>
  
--	ret = snprintf(kbuf, count,
-+	ret = scnprintf(kbuf, count,
- 			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns, free_ts %llu ns\n",
- 			page_owner->order, page_owner->gfp_mask,
- 			&page_owner->gfp_mask, page_owner->pid,
- 			page_owner->ts_nsec, page_owner->free_ts_nsec);
+ #include "internal.h"
+@@ -325,6 +326,45 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
+ 	seq_putc(m, '\n');
+ }
  
--	if (ret >= count)
--		goto err;
--
- 	/* Print information relevant to grouping pages by mobility */
- 	pageblock_mt = get_pageblock_migratetype(page);
- 	page_mt  = gfp_migratetype(page_owner->gfp_mask);
--	ret += snprintf(kbuf + ret, count - ret,
-+	ret += scnprintf(kbuf + ret, count - ret,
- 			"PFN %lu type %s Block %lu type %s Flags %pGp\n",
- 			pfn,
- 			migratetype_names[page_mt],
-@@ -358,19 +355,14 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 			migratetype_names[pageblock_mt],
- 			&page->flags);
- 
--	if (ret >= count)
--		goto err;
--
- 	ret += stack_depot_snprint(handle, kbuf + ret, count - ret, 0);
- 	if (ret >= count)
- 		goto err;
- 
- 	if (page_owner->last_migrate_reason != -1) {
--		ret += snprintf(kbuf + ret, count - ret,
++/*
++ * Looking for memcg information and print it out
++ */
++static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
++					 struct page *page)
++{
++#ifdef CONFIG_MEMCG
++	unsigned long memcg_data;
++	struct mem_cgroup *memcg;
++	bool online;
++	char name[80];
++
++	rcu_read_lock();
++	memcg_data = READ_ONCE(page->memcg_data);
++	if (!memcg_data)
++		goto out_unlock;
++
++	if (memcg_data & MEMCG_DATA_OBJCGS)
 +		ret += scnprintf(kbuf + ret, count - ret,
- 			"Page has been migrated, last migrate reason: %s\n",
++				"Slab cache page\n");
++
++	memcg = page_memcg_check(page);
++	if (!memcg)
++		goto out_unlock;
++
++	online = (memcg->css.flags & CSS_ONLINE);
++	cgroup_name(memcg->css.cgroup, name, sizeof(name));
++	ret += scnprintf(kbuf + ret, count - ret,
++			"Charged %sto %smemcg %s\n",
++			PageMemcgKmem(page) ? "(via objcg) " : "",
++			online ? "" : "offline ",
++			name);
++out_unlock:
++	rcu_read_unlock();
++#endif /* CONFIG_MEMCG */
++
++	return ret;
++}
++
+ static ssize_t
+ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+ 		struct page *page, struct page_owner *page_owner,
+@@ -365,6 +405,8 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
  			migrate_reason_names[page_owner->last_migrate_reason]);
--		if (ret >= count)
--			goto err;
  	}
  
++	ret = print_page_owner_memcg(kbuf, count, ret, page);
++
  	ret += snprintf(kbuf + ret, count - ret, "\n");
+ 	if (ret >= count)
+ 		goto err;
 -- 
 2.27.0
 
