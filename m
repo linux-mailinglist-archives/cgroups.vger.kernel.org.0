@@ -2,109 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DA44A6DCD
-	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 10:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF70D4A74FF
+	for <lists+cgroups@lfdr.de>; Wed,  2 Feb 2022 16:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244953AbiBBJaX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Feb 2022 04:30:23 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:37778 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbiBBJaX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 04:30:23 -0500
-Received: by mail-il1-f199.google.com with SMTP id 20-20020a056e020cb400b002b93016fbccso13760884ilg.4
-        for <cgroups@vger.kernel.org>; Wed, 02 Feb 2022 01:30:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NZ7WdYtQrNmVol7I4UetJhUqWcjgf5izWYmBss2fDeI=;
-        b=HW5S1q59cMtDZWW3gQri0jjf7gTDWwbh/OyCvoVe9crf/s0D+EbaW5LSOqBtWO2WEt
-         H1KDzQcCAUG33lRF0LfEpeDx6Mh8xdUHDzJZuuElUvln/E1tYrtp/1td9tOHxT4MI1L4
-         nOFRiFIAlH8i04DxvIWWoNoQcOZTwiXJkshdFGzyoQYzEVQ1ab6ZiIzHiPkPhI1+ki5d
-         by/GrvuJr/zx3/OcpIlz0gBTRoWKTyceKNWl5VFYlU0f5Jv/vC/ALtG4is3kRqsGS0m6
-         6A5dmDii8eVNe+ucgtVpjDMc7+qhom+p26S+srbO/pqC5pMcFBXv5Zr4Cd/M+xLoXedJ
-         dbJw==
-X-Gm-Message-State: AOAM5309ylGzF99RfnEq1igG4Cye5Py9LTqybuHYi+ZsbA28wjmjLy+s
-        kEVVKcQVjZTfOkKW1nwqEDWPrj0dw3ZOydNPVpxhQxgFjaNG
-X-Google-Smtp-Source: ABdhPJzxRGFGHD/f8nz9jewR6Z8HVVhEyTz1BpTtYuPo9LSEN5UQM2YwD+bThGxUUYDBD1kyZWz0kY7by3sKLnFQTZKMf0QgqeLM
+        id S232127AbiBBPzX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Feb 2022 10:55:23 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23560 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230107AbiBBPzW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Feb 2022 10:55:22 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 2121ftMh016821;
+        Wed, 2 Feb 2022 07:54:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=PntVkuMfTienoR7WfCrdOCIGWX4pTWY+Pz9DpDetKJ8=;
+ b=VNORFQ5cMkGak4CBsI4tJMn4n3sMeUXdGyjd3r/Fju07zsvC3A9PN7yicCXrCUMt8bqM
+ KAShRCFV65f0gGH2CG4R6o2Fr5zeNvUrOUfMj8/sv4OPNaxdHtZTSfqpVYB0TNOEVfUm
+ sIFpjZa1K15G7SLbHOsDhrla2cMKQ/8McMY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3dyb3hwnae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 02 Feb 2022 07:54:56 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 2 Feb 2022 07:54:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U5MixJfWx4GXwJGc5Sg/zWhSgdt4bzAgABAFZDMdJt5ewHge4jaIrI/8R5sjzO8h1TCtHSQ0AWoejDpVnu2uNQCMu26XhBco2ZLUy0u7ecgfxlw3F2CRDxvAwASzjBFfxz5tsaTE8k5wTnXTFd3WjuQ+enntM+15YW+rvUSiDAgB0LswiRMFvDE+7MVJpYLepBE+jjz1KAGVGbLW799vJPE246gt5GluhM2+HxVR/2ux+kXu/NoluonFp6vZU2+R9+au8KqAFGV5EQcP6qaE6bGt7LCATvwTdvrSVfsmxwAzNHRMhtb786ipsyEYejNvf379THs6o0iBILCk6B4g9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PntVkuMfTienoR7WfCrdOCIGWX4pTWY+Pz9DpDetKJ8=;
+ b=ZNADFEYsuk93i4kWacR+yLBx4atguNU3A8v7oO2x21vca4br2DIDBzZoU3dgX+f6dMG/u0vR6bLNS5KKd1xCera9U65+ymihd9Nm0A1EPgGMaoQABZlhr5K08ZRZnJR5o5u0gs9DsB3R1SNDObLmh06r64GbCDPLjj+ZbxahOAgbQvKfWsO2INB22/jGTAJ74ClUf5FK2kt1F1sPAlyB+c1oGp9y+3/hja6UKArkmOy/gTRsv9OIDE0QlooM6elBcOoByBAopCnCAoRf0avJEHg4TU4G6K6t3x2A7QPcho3BGWOCDQUUXrFTrJtoBbL0mdj5Chb9JBfBPbxwthPI7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by DM6PR15MB3243.namprd15.prod.outlook.com (2603:10b6:5:162::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Wed, 2 Feb
+ 2022 15:54:53 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d4ac:5796:5198:ecd2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d4ac:5796:5198:ecd2%3]) with mapi id 15.20.4930.022; Wed, 2 Feb 2022
+ 15:54:53 +0000
+Date:   Wed, 2 Feb 2022 07:54:48 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, Ira Weiny <ira.weiny@intel.com>,
+        Rafael Aquini <aquini@redhat.com>
+Subject: Re: [PATCH v2 3/3] mm/page_owner: Dump memcg information
+Message-ID: <YfqpSPLC+LAdqbJX@carbon.dhcp.thefacebook.com>
+References: <20220129205315.478628-1-longman@redhat.com>
+ <20220129205315.478628-4-longman@redhat.com>
+ <YfeuK5j7cbgM+Oo+@dhcp22.suse.cz>
+ <YfgT/9tEREQNiiAN@cmpxchg.org>
+ <YfgnUZQBRkqhrEIb@carbon.dhcp.thefacebook.com>
+ <Yfgpknwr1tMnPkqh@dhcp22.suse.cz>
+ <12686956-612d-d89b-5641-470d5e913090@redhat.com>
+ <YfkQJ4QhfY0dICB9@dhcp22.suse.cz>
+ <268a8bdf-4c70-b967-f34c-2293b54186f0@redhat.com>
+ <YfpHbtffFi2x1L4p@dhcp22.suse.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YfpHbtffFi2x1L4p@dhcp22.suse.cz>
+X-ClientProxiedBy: MWHPR19CA0055.namprd19.prod.outlook.com
+ (2603:10b6:300:94::17) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a47:: with SMTP id u7mr7869536ilv.33.1643794222593;
- Wed, 02 Feb 2022 01:30:22 -0800 (PST)
-Date:   Wed, 02 Feb 2022 01:30:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b8c08805d705aaa2@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in __init_work (3)
-From:   syzbot <syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ae8daf97-e94c-4c48-989d-08d9e66459b3
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3243:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR15MB32432A50A1A70F1A5B543A2CBE279@DM6PR15MB3243.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ehqb3d35LQx4RwTKvmSFrb1b7D4HHeAcEs4RLZfmOasvLZv8+l76nTzKk+r+PMxiw46VOl8Yd41T+h3LOQaiCbPKMO33FjtKhvKis/onWkQDeLJaBOxQuK6+Lr6nLS+yUegK8F5wk4IN0+YftTFDRH/DPSAUlxEseB5Dvv0Annol2TPPkVNBsBpBjfkI1JeBqOKfuxba/FmZb+a44nRczLpH8Xpw4kk5zIswIAeYfjSviJr5Z3NTgQrnmYcR358TkLCcXxvgsoqVXx3YOG7a6eflxsRGF68Wkqi95up5al3rUiVyHiGO9pa9arYEKrIjxIFCYHWCCYBippAUz59q53esKjPF+g1bE64wY+OguQu4gGYwMWJKUm2ZTQOvu4+SXCK7PLyGQ4IHLsI78934lT2594gScGTz6yT5diuWbNzAnejcGC4z/qHVhIrmbS6qfB7yiGs3X5G3bBfAiu2dPIL7xzsk/aRMhzs76wuNXs0FZGKj14DHAwtCnRdrSIzlYIRCPbjy5jCp3URzmMLUVQrv9hcoBZ1AVZyvTZLDXNPnESs1J9ARduSnfZeNaKROMkiRuzrzbE0qY4pkWHtPVKfwibx9FnT2ghxVBxMwSkjpOZtV4yFV+PPCJzauycF4q1gZAHF2zCJeREvw7LE5/t0y55dqq4HUAPHWOLGONm0txwLVmpZSYUELk1tmcMVElIXw4oBkOBeI87GVU4jtUg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(2906002)(6666004)(508600001)(6486002)(9686003)(186003)(6916009)(6506007)(316002)(54906003)(52116002)(53546011)(83380400001)(66946007)(8936002)(8676002)(66476007)(86362001)(4326008)(66556008)(38100700002)(7416002)(5660300002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k5zYs0QLI6w8806R/SXvjyfM9PAHL4hfOYA+kbzmaZRSImj/vEbjqIOXjbq8?=
+ =?us-ascii?Q?wtR+2G/PEnG9mH0lq9bO2uB/QTAxDUNuVlFEry/Da43t8lf3VXdQJ15hvhtg?=
+ =?us-ascii?Q?74Io+9qNDKODPYFu0vWYnAtwv3Dwwl6zFHZ+8fjeGzj8pCoa+sqsDDuEJDIZ?=
+ =?us-ascii?Q?7LJpGUkBCSouNvKNp3NA6+6FkITZjILeZ9HNJwx1O9td9Jn0YWlX5ndWhAxr?=
+ =?us-ascii?Q?1eGl6ZjfH0UmQF6Yd00BNtbDmC25TaZhNaolh4YXS4jImUoiQn+V+OJUld4E?=
+ =?us-ascii?Q?lfsFCIVUhNwXXmmsMUPmFaqujgkhBb5g4zPOrCoOc7Ufyu+w4y82Z1yH48VK?=
+ =?us-ascii?Q?m8tmQkKdvaUT73Bjcc5UNPsuRHdx7pqEutq+PNYxk04b3StMY8Z55V/CvODp?=
+ =?us-ascii?Q?Z9amp+iHtW6OdPZJ8mcYkKwcAJQEfS/Wy+UgIQyx5xdpceV9MnGZdZVtkPVY?=
+ =?us-ascii?Q?EZDXMs6MAWMAClQM0d/+Ef4QV5KRVDfq7mX/A/2y2hF/saYLDH76ryAisfsH?=
+ =?us-ascii?Q?Z2IRhJJOXJQaXhI9FnONoNYRO2CNV4PvjZ0GuSr8kXRe1uLdiZF/E+qLKVsk?=
+ =?us-ascii?Q?Ym/HA980wiTiCmA7ydituiNScoTd4iHixUhO4V73zQLBfvwCf5TMBV37wTro?=
+ =?us-ascii?Q?kkeOgTRYTPMvG1PKyB03bluZarFtEo9Tsgdx3RhfpRFbpmSIjaLSCyp+yQW3?=
+ =?us-ascii?Q?2CJ6dAUWsCGplGxbiqfMUuxposOAdwVZcII1VdxTdavEGGzkuBAjy12T3/jY?=
+ =?us-ascii?Q?YUf65bj9kE1Y4Ih2zj5TYZdiQv47YTGdEkqpewaHhNvae55dMkl587x5+Vya?=
+ =?us-ascii?Q?/qAwqttVDxdCtq16DaACkn1YVZ9eeFP3pVfissRECkCuz86opHsKfhJN3QPN?=
+ =?us-ascii?Q?0bu4PmqUBDQLjJT9NZslY0YVLDSXCbTXVaO34IfbPqCi/uKtDTXS5SF+FC/A?=
+ =?us-ascii?Q?tI48PNz8XYtGK6GXYW7Bx9AAIKdcn6V+s/ar0I4NvEhZqTO9Nk/xLGC8W0Hg?=
+ =?us-ascii?Q?rRdQDOuKGByorQGKupYzTQdkAji27vItHC1NCj/q/liYDUU+1YI2loN0zYQT?=
+ =?us-ascii?Q?lfICqrSgnrw2p7WPJNgVPVvR/OM8SuC9mvDhx1YfNgM+srw/KqPPSBqb3Mwg?=
+ =?us-ascii?Q?aM8UGIu3AQCX8BVvZO3vMAWmNRWn+s9HxWvBrjTab4g4WYH7HCzMnGdJRUKA?=
+ =?us-ascii?Q?EUhclQxF4PxUUNovYjosKF2gYX6ELWe6iB8lKx8S/ZHpXR5yKIvpbBoWWnMu?=
+ =?us-ascii?Q?BI9iOmdqTnbmFIAW0OXgpGu+6OeJ+QtnS3St8uXf+Xw+8ZHRawRiyvh5nz++?=
+ =?us-ascii?Q?Z8XjCuqrTOqrehQlvM6j30AYlN4sGG6IuSNyaFFonElEplmzXbEsfuU0iRKI?=
+ =?us-ascii?Q?J+BX2ZFUEmpHFiQIPGB+kKczV4FJ1feivUuwpHSC3fYCyBPGPo6qeWR3v6sW?=
+ =?us-ascii?Q?YX6zG1YJOtlUHbSP64AJo0E0YKuGcbW+6vlgD2m2j1wMRDVR+9+px+3XneId?=
+ =?us-ascii?Q?pyGnYz2304BVI1+dQ3sYc/fv5tgfcwi3Gz35YnU6LOoDuU96aqA5kRan88S6?=
+ =?us-ascii?Q?vhVMOFaPOBKMfKCLfVU4nRGoDHqyP9sCbHFvP48B?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae8daf97-e94c-4c48-989d-08d9e66459b3
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2022 15:54:53.0539
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HgWHEdTNkJXqxtJns1mutldNBdkkF9iZrPrJ1l/UuUW3Hfq2NmG3UeoBlFPfXtyc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3243
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: SgZCIPj9yViw1FyGgr9dWk6NycFnJ46b
+X-Proofpoint-ORIG-GUID: SgZCIPj9yViw1FyGgr9dWk6NycFnJ46b
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-02_07,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 spamscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=462 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202020089
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Feb 02, 2022 at 09:57:18AM +0100, Michal Hocko wrote:
+> On Tue 01-02-22 11:41:19, Waiman Long wrote:
+> > 
+> > On 2/1/22 05:49, Michal Hocko wrote:
+> [...]
+> > > Could you be more specific? Offlined memcgs are still part of the
+> > > hierarchy IIRC. So it shouldn't be much more than iterating the whole
+> > > cgroup tree and collect interesting data about dead cgroups.
+> > 
+> > What I mean is that without piggybacking on top of page_owner, we will to
+> > add a lot more code to collect and display those information which may have
+> > some overhead of its own.
+> 
+> Yes, there is nothing like a free lunch. Page owner is certainly a tool
+> that can be used. My main concern is that this tool doesn't really
+> scale on large machines with a lots of memory. It will provide a very
+> detailed information but I am not sure this is particularly helpful to
+> most admins (why should people process tons of allocation backtraces in
+> the first place). Wouldn't it be sufficient to have per dead memcg stats
+> to see where the memory sits?
+> 
+> Accumulated offline memcgs is something that bothers more people and I
+> am really wondering whether we can do more for those people to evaluate
+> the current state.
 
-syzbot found the following issue on:
-
-HEAD commit:    b76bbb34dc80 net: stmmac: dwmac-sun8i: make clk really gat..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16cccccbb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae0d71385f83fe54
-dashboard link: https://syzkaller.appspot.com/bug?extid=13b13d204fb13cfda744
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-ODEBUG: init active (active state 0) object type: work_struct hint: css_killed_work_fn+0x0/0x5e0 kernel/cgroup/cgroup.c:3947
-WARNING: CPU: 0 PID: 13 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-
-CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.17.0-rc1-syzkaller-00460-gb76bbb34dc80 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 40 30 06 8a 4c 89 ee 48 c7 c7 40 24 06 8a e8 0c 57 27 05 <0f> 0b 83 05 55 7f b2 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc90000d27ba8 EFLAGS: 00010286
-
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff888011928000 RSI: ffffffff815fa1d8 RDI: fffff520001a4f67
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff815f3f3e R11: 0000000000000000 R12: ffffffff89ab5380
-R13: ffffffff8a062940 R14: ffffffff814bda70 R15: ffffffff90788e18
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2eb22000 CR3: 0000000053d45000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_object_init+0x524/0xd10 lib/debugobjects.c:593
- __init_work+0x48/0x50 kernel/workqueue.c:518
- css_release+0x1a/0x110 kernel/cgroup/cgroup.c:5213
- percpu_ref_put_many.constprop.0+0x22b/0x260 include/linux/percpu-refcount.h:335
- rcu_do_batch kernel/rcu/tree.c:2527 [inline]
- rcu_core+0x7b8/0x1540 kernel/rcu/tree.c:2778
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
- kthread+0x2e9/0x3a0 kernel/kthread.c:377
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cgroup v2 has corresponding counters for years. Or do you mean something different?
