@@ -2,107 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D77E4A886C
-	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423B64A8BDD
+	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 19:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236892AbiBCQNf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Feb 2022 11:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbiBCQNe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 11:13:34 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D88DC061714;
-        Thu,  3 Feb 2022 08:13:34 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id a8so2619507pfa.6;
-        Thu, 03 Feb 2022 08:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=uOJP/dHIjrt3Mk14YimQ7oK5vd7nsEQbU3Iru0dLJMs=;
-        b=DctRaEel5LO3as8bp8Q61ufK6PmYwfRynGpoS9S0XFEZDYYnIvtW5bLY+wBWVVI1pX
-         xt/CFxBrzuvUFyGTTkuJCSbVDUvkUANCQuSpKo5YiAoNeiL9X2IcJB3jxTlQ3aTD/EBy
-         suVMO53T83SDzqZF9CXZRS1wDrXInC6sU01MR99dATKQSO1puIbKbwJk7c0d2l8Tl9mK
-         keVyFE3lpmOedsoGf25+HK7KhvAlouycn9FFw9CAvWwqnA5V9DN4DC2Uk4DALP0xw0q6
-         6IfDFk5Hnz4ZW1LmvdYJI5VUWskhDW/g6cE0zkZahFVCXGLEmm6LRZMIGdxdDwbD0Sjk
-         MO+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=uOJP/dHIjrt3Mk14YimQ7oK5vd7nsEQbU3Iru0dLJMs=;
-        b=CTMvbNY+VsLlpPt7MWQu2i4iPNbmAFxnFCaqxNAsD3b6MuP2JQsEvIRMh+5MhPgpAs
-         eFoq3g2RK9QX833mGn0t/57sMBDi2kBic5ekjIkXvbjtlv438blMb/lHUIl9NGLmU3jT
-         A6w/UnnGK2c0MWItb8SD7qFUsnMNhuQBgkeFGVYbl/TYEcGTEZyDJ6BPEs+7fkqMeHWi
-         gbeqmpgDKx7tatPmv22/uHLwBGWEoYPYU6900RLeECkj23703N0SA6z/NAd9xsbLxSm4
-         Tqjfc6/REyjc+1tZOgZAHaLd3GZY5Q4k98gwmQ6SIXOfNVAKrgXmR6Bzr1lDQvFnxzur
-         N/Gg==
-X-Gm-Message-State: AOAM5334t6GEhff4m68r0AZFkx8hb6WHC9xQwEcYYpmKPHNiIxfluPrk
-        eTs29QvkCnlm51/sIMgYhNNTE43fKiA=
-X-Google-Smtp-Source: ABdhPJzY6Iv7v1e0alBuGwqkZCEeCsz5lA4sryOjz8JZ28oyXPewdL6g3T5H3YgRcXngVBco+P3BdQ==
-X-Received: by 2002:a05:6a00:1a53:: with SMTP id h19mr34733463pfv.65.1643904813831;
-        Thu, 03 Feb 2022 08:13:33 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id s30sm18551263pfw.63.2022.02.03.08.13.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Feb 2022 08:13:33 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 3 Feb 2022 06:13:32 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [GIT PULL] cgroup fixes for v5.17-rc2
-Message-ID: <Yfv/LMxqHSa3s5YS@slm.duckdns.org>
+        id S1353558AbiBCStN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Feb 2022 13:49:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60018 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230376AbiBCStN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 13:49:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643914152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xvwI014RI3T9gp2AWaO1azWgkMohE5MRNXNJ2U28y3Q=;
+        b=CGwYX2/ytROtX0a4EVA7ZzbZ/H0TVDn2l8l+6e6eWp6VvHvhSlfD+6fZTiE8LSU56PLCXs
+        Jh6bLs0cNRXZS3JD3S81CkWx5MTzs4p1TfMr4atA4lQ93H1knhNS5g+fLLRp9+DAyBdJW9
+        6ls4IOzNC3D6e63JxfyoRhBNLBwDWNA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-6-TvIIpLhHMeCEUxZNTdvVjw-1; Thu, 03 Feb 2022 13:49:09 -0500
+X-MC-Unique: TvIIpLhHMeCEUxZNTdvVjw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B78531091DA2;
+        Thu,  3 Feb 2022 18:49:05 +0000 (UTC)
+Received: from [10.22.8.80] (unknown [10.22.8.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB2844CED8;
+        Thu,  3 Feb 2022 18:49:02 +0000 (UTC)
+Message-ID: <42cca916-d4c8-daa1-4a91-60738c499c89@redhat.com>
+Date:   Thu, 3 Feb 2022 13:49:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v4 2/4] mm/page_owner: Use scnprintf() to avoid excessive
+ buffer overrun check
+Content-Language: en-US
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>, Rafael Aquini <aquini@redhat.com>
+References: <20220131192308.608837-5-longman@redhat.com>
+ <20220202203036.744010-3-longman@redhat.com>
+ <5c03fa31-35a5-4cbc-6b0e-872d5db82a41@suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <5c03fa31-35a5-4cbc-6b0e-872d5db82a41@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Linus.
+On 2/3/22 10:46, Vlastimil Babka wrote:
+> On 2/2/22 21:30, Waiman Long wrote:
+>> The snprintf() function can return a length greater than the given
+>> input size. That will require a check for buffer overrun after each
+>> invocation of snprintf(). scnprintf(), on the other hand, will never
+>> return a greater length. By using scnprintf() in selected places, we
+>> can avoid some buffer overrun checks except after stack_depot_snprint()
+>> and after the last snprintf().
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Acked-by: David Rientjes <rientjes@google.com>
+>> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Looks like this will work, but note that if the purpose of patch 1/4 was
+> that after the first scnprintf() that overflows the following calls will be
+> short-cut thanks to passing the size as 0, AFAICS that won't work. Because
+> scnprintf() returns the number without trailing zero, 'ret' will be 'count -
+> 1' after the overflow, so 'count - ret' will be 1, never 0.
 
-cgroup fixes for v5.17-rc2 including:
+Yes, I am aware of that. Patch 1 is just a micro-optimization for the 
+very rare case.
 
-* Eric's fix for a long standing cgroup1 permission issue where it only
-  checks for uid 0 instead of CAP which inadvertently allows unprivileged
-  userns roots to modify release_agent userhelper.
+Cheers,
+Longman
 
-* Fixes for the fallouts from Waiman's recent cpuset work.
 
-Thanks.
-
-The following changes since commit daadb3bd0e8d3e317e36bc2c1542e86c528665e5:
-
-  Merge tag 'locking_core_for_v5.17_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2022-01-11 17:24:45 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17-fixes
-
-for you to fetch changes up to 2bdfd2825c9662463371e6691b1a794e97fa36b4:
-
-  cgroup/cpuset: Fix "suspicious RCU usage" lockdep warning (2022-02-03 05:59:01 -1000)
-
-----------------------------------------------------------------
-Eric W. Biederman (1):
-      cgroup-v1: Require capabilities to set release_agent
-
-Michal Koutný (1):
-      cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
-
-Tianchen Ding (1):
-      cpuset: Fix the bug that subpart_cpus updated wrongly in update_cpumask()
-
-Waiman Long (1):
-      cgroup/cpuset: Fix "suspicious RCU usage" lockdep warning
-
- kernel/cgroup/cgroup-v1.c | 14 ++++++++++
- kernel/cgroup/cpuset.c    | 65 +++++++++++++++++++++++++++++++++++++----------
- 2 files changed, 65 insertions(+), 14 deletions(-)
-
--- 
-tejun
