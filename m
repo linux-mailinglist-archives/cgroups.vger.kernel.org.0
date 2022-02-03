@@ -2,116 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D052C4A879E
-	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 16:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4416E4A87E5
+	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 16:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351838AbiBCPXb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Feb 2022 10:23:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23541 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351855AbiBCPXa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 10:23:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643901810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hSeQIZ/CtCE+d0vB+jizfse1LNxVSYoWhLdejmi7nC0=;
-        b=RrP7Oz/LWFR9TSQrEfVSKMwBJWTgkrMqccWJRXCBVmkGCxiOF7P8V2SiualnRvbCvyrdqm
-        IlVWY9xWOPqvY3AvGyoEVpfbc5drckvKtw3MMaAJ4pcgyo9/LCRb+8PPrN7pt4fC50J0Ls
-        m37j2OlDVtubtWzXZv1V0KIxm3HqQ5I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-158-7Tkyf_ElOHip_BSdOCUVyA-1; Thu, 03 Feb 2022 10:23:27 -0500
-X-MC-Unique: 7Tkyf_ElOHip_BSdOCUVyA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S232224AbiBCPqy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Feb 2022 10:46:54 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:40252 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235532AbiBCPqy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 10:46:54 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A065583DB83;
-        Thu,  3 Feb 2022 15:23:25 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.32.210])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8373384A3C;
-        Thu,  3 Feb 2022 15:23:24 +0000 (UTC)
-Date:   Thu, 3 Feb 2022 10:23:22 -0500
-From:   Phil Auld <pauld@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/cpuset: Fix "suspicious RCU usage" lockdep warning
-Message-ID: <Yfvzaudy0hOduSMc@lorien.usersys.redhat.com>
-References: <20220203033103.773030-1-longman@redhat.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DAAEF21123;
+        Thu,  3 Feb 2022 15:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1643903212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qag6tkHAZgc8uXx2cxv+vocoYireohjHqFyNa8NETMI=;
+        b=IJEnoj6Ibm8O0mi19d4TNUqFyp2wpMTSCVGmu9cHcTlRkWY0oDReLijm6fDsu8yDJTR4Z/
+        KJ3e2YFJHaSfaRfK878zktY5ktc0HrNMFgmm2xpgAAwIa1N3opczoy2jUl/P/QJGOh8tRh
+        qkCHq1CJu4GamRMXZWGd0h+Ei44tdCs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1643903212;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qag6tkHAZgc8uXx2cxv+vocoYireohjHqFyNa8NETMI=;
+        b=Q69+nu2srD89INEG52kptlrsTaoOM/1DpVHi2Uck2IJEmU41qsb3pcMazGHaZH0ak1J3zv
+        A7bw+lIbHiGm2LDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 943A213A07;
+        Thu,  3 Feb 2022 15:46:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G6hhI+z4+2H8DgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 03 Feb 2022 15:46:52 +0000
+Message-ID: <5c03fa31-35a5-4cbc-6b0e-872d5db82a41@suse.cz>
+Date:   Thu, 3 Feb 2022 16:46:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220203033103.773030-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Content-Language: en-US
+To:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>, Rafael Aquini <aquini@redhat.com>
+References: <20220131192308.608837-5-longman@redhat.com>
+ <20220202203036.744010-3-longman@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 2/4] mm/page_owner: Use scnprintf() to avoid excessive
+ buffer overrun check
+In-Reply-To: <20220202203036.744010-3-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 10:31:03PM -0500 Waiman Long wrote:
-> It was found that a "suspicious RCU usage" lockdep warning was issued
-> with the rcu_read_lock() call in update_sibling_cpumasks().  It is
-> because the update_cpumasks_hier() function may sleep. So we have
-> to release the RCU lock, call update_cpumasks_hier() and reacquire
-> it afterward.
+On 2/2/22 21:30, Waiman Long wrote:
+> The snprintf() function can return a length greater than the given
+> input size. That will require a check for buffer overrun after each
+> invocation of snprintf(). scnprintf(), on the other hand, will never
+> return a greater length. By using scnprintf() in selected places, we
+> can avoid some buffer overrun checks except after stack_depot_snprint()
+> and after the last snprintf().
 > 
-> Also add a percpu_rwsem_assert_held() in update_sibling_cpumasks()
-> instead of stating that in the comment.
-> 
-> Fixes: 4716909cc5c5 ("cpuset: Track cpusets that use parent's effective_cpus")
 > Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+Looks like this will work, but note that if the purpose of patch 1/4 was
+that after the first scnprintf() that overflows the following calls will be
+short-cut thanks to passing the size as 0, AFAICS that won't work. Because
+scnprintf() returns the number without trailing zero, 'ret' will be 'count -
+1' after the overflow, so 'count - ret' will be 1, never 0.
+
 > ---
->  kernel/cgroup/cpuset.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  mm/page_owner.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index dc653ab26e50..b147acece984 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1522,10 +1522,15 @@ static void update_sibling_cpumasks(struct cpuset *parent, struct cpuset *cs,
->  	struct cpuset *sibling;
->  	struct cgroup_subsys_state *pos_css;
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 99e360df9465..28dac73e0542 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -338,19 +338,16 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+>  	if (!kbuf)
+>  		return -ENOMEM;
 >  
-> +	percpu_rwsem_assert_held(&cpuset_rwsem);
-> +
->  	/*
->  	 * Check all its siblings and call update_cpumasks_hier()
->  	 * if their use_parent_ecpus flag is set in order for them
->  	 * to use the right effective_cpus value.
-> +	 *
-> +	 * The update_cpumasks_hier() function may sleep. So we have to
-> +	 * release the RCU read lock before calling it.
->  	 */
->  	rcu_read_lock();
->  	cpuset_for_each_child(sibling, pos_css, parent) {
-> @@ -1533,8 +1538,13 @@ static void update_sibling_cpumasks(struct cpuset *parent, struct cpuset *cs,
->  			continue;
->  		if (!sibling->use_parent_ecpus)
->  			continue;
-> +		if (!css_tryget_online(&sibling->css))
-> +			continue;
+> -	ret = snprintf(kbuf, count,
+> +	ret = scnprintf(kbuf, count,
+>  			"Page allocated via order %u, mask %#x(%pGg), pid %d, ts %llu ns, free_ts %llu ns\n",
+>  			page_owner->order, page_owner->gfp_mask,
+>  			&page_owner->gfp_mask, page_owner->pid,
+>  			page_owner->ts_nsec, page_owner->free_ts_nsec);
 >  
-> +		rcu_read_unlock();
->  		update_cpumasks_hier(sibling, tmp);
-> +		rcu_read_lock();
-> +		css_put(&sibling->css);
+> -	if (ret >= count)
+> -		goto err;
+> -
+>  	/* Print information relevant to grouping pages by mobility */
+>  	pageblock_mt = get_pageblock_migratetype(page);
+>  	page_mt  = gfp_migratetype(page_owner->gfp_mask);
+> -	ret += snprintf(kbuf + ret, count - ret,
+> +	ret += scnprintf(kbuf + ret, count - ret,
+>  			"PFN %lu type %s Block %lu type %s Flags %pGp\n",
+>  			pfn,
+>  			migratetype_names[page_mt],
+> @@ -358,19 +355,14 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
+>  			migratetype_names[pageblock_mt],
+>  			&page->flags);
+>  
+> -	if (ret >= count)
+> -		goto err;
+> -
+>  	ret += stack_depot_snprint(handle, kbuf + ret, count - ret, 0);
+>  	if (ret >= count)
+>  		goto err;
+>  
+>  	if (page_owner->last_migrate_reason != -1) {
+> -		ret += snprintf(kbuf + ret, count - ret,
+> +		ret += scnprintf(kbuf + ret, count - ret,
+>  			"Page has been migrated, last migrate reason: %s\n",
+>  			migrate_reason_names[page_owner->last_migrate_reason]);
+> -		if (ret >= count)
+> -			goto err;
 >  	}
->  	rcu_read_unlock();
->  }
-> -- 
-> 2.27.0
-> 
-
-This looks good. Thanks Waiman.
-
-Tested-by: Phil Auld <pauld@redhat.com>
-Reviewed-by: Phil Auld <pauld@redhat.com>
-
-
-Cheers,
-Phil
--- 
+>  
+>  	ret += snprintf(kbuf + ret, count - ret, "\n");
 
