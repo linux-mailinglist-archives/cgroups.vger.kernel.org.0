@@ -2,65 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680834A8C9B
-	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 20:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1808E4A902F
+	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 22:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242407AbiBCTkZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Feb 2022 14:40:25 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:35808 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353814AbiBCTkW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 14:40:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A878F61949;
-        Thu,  3 Feb 2022 19:40:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F934C340E8;
-        Thu,  3 Feb 2022 19:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643917222;
-        bh=/0QUOiReOFNNywPWXIehNo6nlkCCJhv9EHrfvrPyW4Y=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LgxRNuDKjlycBVITOho0n2QnclXE5obeBA2XlH69isSaoJGZg/zS9xdQiafhnKRxx
-         cKbKF791mIUctJSEeMHbpL1icHRFI68mRUF5yUK7ovB5xcv58d2L+DOoOEotXBwn5E
-         aq9fW5fF6321S33PcmLG0gfczW/hPhRNU2xMhwlVKFVuA99Gg08jSoxWxYpnhs/H1v
-         9KwwQ0R37KeIbUin1OlLvIc5amw3TcwfWVrMmZ1At9cod4kmPbx3hJN2E0EH3kJP44
-         LCc/455uuFSB3HNNAzMW0A2YE+pL1kSnz9zb7cYohYz2Nk3MOxk4iMlaa6tpiXADSt
-         8tXOY/gxknzWg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0CE3FE5D08C;
-        Thu,  3 Feb 2022 19:40:22 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup fixes for v5.17-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <Yfv/LMxqHSa3s5YS@slm.duckdns.org>
-References: <Yfv/LMxqHSa3s5YS@slm.duckdns.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Yfv/LMxqHSa3s5YS@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17-fixes
-X-PR-Tracked-Commit-Id: 2bdfd2825c9662463371e6691b1a794e97fa36b4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 305e6c42e8de565864431510230a8ad75c85f4d4
-Message-Id: <164391722203.21505.14786787349066651579.pr-tracker-bot@kernel.org>
-Date:   Thu, 03 Feb 2022 19:40:22 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
+        id S235095AbiBCVrV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Feb 2022 16:47:21 -0500
+Received: from [106.75.181.135] ([106.75.181.135]:54761 "EHLO ts3card.com"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231545AbiBCVrV (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 3 Feb 2022 16:47:21 -0500
+Message-ID: <20220204054721748123@ts3card.com>
+From:   =?utf-8?B?44OI44Oo44K/44OV44Kh44Kk44OK44Oz44K55qCq5byP5Lya56S+?= 
+        <info@ts3card.com>
+To:     <cgroups@vger.kernel.org>
+Subject: =?utf-8?B?44CQVFMzIFRTIENVQklDQ0FSROOAkemHjeimgQ==?=
+        =?utf-8?B?OuW/heOBmuOBiuiqreOBv+OBj+OBoOOBleOBhA==?=
+Date:   Fri, 4 Feb 2022 05:47:13 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+X-mailer: Licaeh 4
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Thu, 3 Feb 2022 06:13:32 -1000:
+4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
+4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
+4pSB4pSBDQoNCuKYheOAgi46KjpUUyBDVUJJQyBDQVJE5Lya5ZOh5YCL5Lq65oOF5aCx5aSJ5pu0
+44CC4piF44CCLjoqOg0KDQrilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIENCg0KDQpUUyBDVUJJQyBDQVJE5Lya5ZOh5qijDQoNCuOB
+k+OBruOBn+OBs+OBr+OAgVRTIENVQklDIENBUkRF44Oh44O844Or44K144O844OT44K544KS44GU
+5Yip55So44GE44Gf44Gg44GN44GC44KK44GM44Go44GG44GU44GW44GE44G+44GZ44CCDQoNCuW9
+k+ekvuOBr+OCu+OCreODpeODquODhuOCo+OCt+OCueODhuODoOOBruWkp+W5heOBquOCouODg+OD
+l+OCsOODrOODvOODieOCkuWun+aWveOBl+OBpuOBhOOCi+OBn+OCgeOAgeWAi+S6uuaDheWgseOB
+rg0K5YaN6KqN6Ki844GM5a6M5LqG44GZ44KL44G+44Gn44CBVFMgQ1VCSUMgQ0FSROODoeODs+OD
+kOODvOOBruOCteODvOODk+OCueOBr+OBmeOBueOBpuWBnOatouOBleOCjOOBvuOBmeOAgg0KDQrm
+nKzml6XjgYvjgonjgIFUUyBDVUJJQyBDQVJE44Oh44Oz44OQ44O844Gu44Om44O844K244O844GM
+6YCa5bi45L2/55So44GX44Gf44GE5aC05ZCI44Gv44CBMjTmmYLplpPku6XlhoXjgasNCuS7peS4
+i+OBruWAi+S6uuaDheWgseaUueWWhOiqjeiovOOCkuihjOOBhuW/heimgeOBjOOBguOCiuOBvuOB
+meaJv+iqjeW+jOOBq+OBruOBv+S9v+eUqOOBp+OBjeOBvuOBmSANCg0K44Ot44Kw44Kk44Oz6KqN
+6Ki8Omh0dHBzOi8vbXktdHMzY2FyZC1jb20uamFjY3NpY21jbHViLnRvcA0KDQrjgZPjga7jgrXj
+g7zjg5Pjgrnjga/jgIFUUyBDVUJJQyBDQVJE44Oh44OO44OQ44O85bCC55So44Gu6YCa55+l44K1
+44O844OT44K544Gn44GZ44CC44GT44Gu44Oh44O844Or44Gu5YaF5a65DQrjgavjgZTms6jmhI/j
+gYTjgZ/jgaDjgY3jgIHkuI3lv4XopoHjgarntJvlpLHjgpLpgb/jgZHjgabjgY/jgaDjgZXjgYTj
+gIINCg0K4pSP4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
+4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
+4pSB4pSB4pSTDQoNCuOAgOKWoOacrOODoeODvOODq+OBr+mAgeS/oeWwgueUqOOBruOBn+OCgeOA
+geOBk+OBoeOCieOBruODoeODvOODq+OCouODieODrOOCueOBq+OBlOi/lOS/oeOBhOOBn+OBoOOB
+hOOBpuOCgg0K44CA44CA5a++5b+c44Gv44GE44Gf44GX44GL44Gt44G+44GZ44Gu44Gn44GU5LqG
+5om/44GP44Gg44GV44GE44CCDQrjgIDjgIDjgarjgYrjgIHmnKzjg6Hjg7zjg6vjgavjgaTjgYTj
+gabjgYrlv4PlvZPjgZ/jgorjgYzjgarjgYTloLTlkIjjgavjga/jgIENCuOAgCDjgYrmiYvmlbDj
+gafjgZnjgYzjgIHkuIvoqJjjgYrllY/jgYTlkIjjgo/jgZvlhYjjgb7jgafjgYrpm7voqbHjgavj
+gabpgKPntaHjgpLjgYrpoZjjgYTjgYTjgZ/jgZfjgb7jgZnjgIINCg0K44CAPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQrj
+gIDilqDnmbrooYzvvJpUUyBDVUJJQyBDQVJE44CM44OG44Kj44O844Ko44K544Kt44Ol44O844OT
+44OD44Kv44Kr44O844OJ44CNDQrjgIDjgIDjgIDjgIDjgIAgaHR0cHM6Ly90c2N1YmljLmNvbS8N
+CuOAgOOAgOOAgOOAgOOAgOODiOODqOOCv+ODleOCoeOCpOODiuODs+OCueagquW8j+S8muekvg0K
+44CA44CA44CA44CA44CA44CSNDUxLTYwMTTjgIDmhJvnn6XnnIzlkI3lj6TlsYvluILopb/ljLrn
+iZvls7bnlLo255WqMeWPtw0KDQrjgIDilqDmnKzjg6Hjg7zjg6vjgavjgaTjgYTjgabjga7jgYrl
+lY/jgYTlkIjjgo/jgZvvvJoNCuKXj1RPWU9UQSwgREFJSEFUU1UsIOOCuOOCp+ODvOODoOOCuSwg
+44OI44Oo44K/44Os44Oz44K/44Kr44O8IEZEQ+OBrg0K44CA44CA44CA44CA44CA44CAVFMgQ1VC
+SUMgQ0FSRCwgVFMgQ1VCSUMgVklFVyBDQVJE44KS44GK5oyB44Gh44Gu5pa544Gv44GT44Gh44KJ
+DQrjgIDjgIDjgIDjgIDjgIDjgIDjgqTjg7Pjg5Xjgqnjg6Hjg7zjgrfjg6fjg7Pjg4fjgrnjgq8N
+CuOAgOOAgOOAgOOAgOOAgOOAgFsg5p2x5LqsIF3jgIAwM++8jTU2MTfvvI0yNTExDQrjgIDjgIDj
+gIDjgIDjgIDjgIBb5ZCN5Y+k5bGLXeOAgDA1Mu+8jTIzOe+8jTI1MTENCig5OjAw772eMTc6MzAg
+5bm05Lit54Sh5LyRIOW5tOacq+W5tOWni+mZpOOBjykNCuKXj+S4iuiomOS7peWkluOBruOCq+OD
+vOODieS8muWToeOBleOBvuOBr+OAgeOBiuaJi+aMgeOBoeOBruOCq+ODvOODieWIuOmdouijj+OB
+q+iomOi8ieOBrg0K44CA44CA44CA44CA44CA44CA44Kr44O844OJ44Gr6Zai44GZ44KL44GK5ZWP
+44GE5ZCI44KP44Gb6Zu76Kmx55Wq5Y+344Gr44GK44GL44GR44GP44Gg44GV44GEDQrjgIDjgIDj
+gIDjgIDjgIANCuKUl+KUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
+geKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
+geKUgeKUgeKUgeKUmw0K
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17-fixes
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/305e6c42e8de565864431510230a8ad75c85f4d4
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
