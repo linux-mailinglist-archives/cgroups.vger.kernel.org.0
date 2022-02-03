@@ -2,78 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1808E4A902F
-	for <lists+cgroups@lfdr.de>; Thu,  3 Feb 2022 22:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E174A9111
+	for <lists+cgroups@lfdr.de>; Fri,  4 Feb 2022 00:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbiBCVrV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Feb 2022 16:47:21 -0500
-Received: from [106.75.181.135] ([106.75.181.135]:54761 "EHLO ts3card.com"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231545AbiBCVrV (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 3 Feb 2022 16:47:21 -0500
-Message-ID: <20220204054721748123@ts3card.com>
-From:   =?utf-8?B?44OI44Oo44K/44OV44Kh44Kk44OK44Oz44K55qCq5byP5Lya56S+?= 
-        <info@ts3card.com>
-To:     <cgroups@vger.kernel.org>
-Subject: =?utf-8?B?44CQVFMzIFRTIENVQklDQ0FSROOAkemHjeimgQ==?=
-        =?utf-8?B?OuW/heOBmuOBiuiqreOBv+OBj+OBoOOBleOBhA==?=
-Date:   Fri, 4 Feb 2022 05:47:13 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-X-mailer: Licaeh 4
+        id S233506AbiBCXTO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Feb 2022 18:19:14 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:43540 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233188AbiBCXTO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Feb 2022 18:19:14 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C87C561842;
+        Thu,  3 Feb 2022 23:19:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4669C340E8;
+        Thu,  3 Feb 2022 23:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1643930353;
+        bh=QAHuBZ+lX2RUpSHwgEocw6rmoaPtXDKxXRloyq8ZEec=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CjspKTS1bIPfibcKITrREBKeKQlZmkOykOg6E5BXy0zEwtnZIRsD4PFTz6byuzX9r
+         +lFOI56eEYmixY6vm3Qq137KAT2W9/9MD417k/Q5JaOKMvDs+3P27ZGynHSXbyEx35
+         c/dnEzqXOQRUU29oM0utwLQvmRN+owV/pen03xtc=
+Date:   Thu, 3 Feb 2022 15:19:12 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        <cgroups@vger.kernel.org>
+Subject: Re: [PATCH RESEND] mm: memcg: synchronize objcg lists with a
+ dedicated spinlock
+Message-Id: <20220203151912.87d47b82c1bc3f0d56be0e3a@linux-foundation.org>
+In-Reply-To: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+References: <Yfm1IHmoGdyUR81T@carbon.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSBDQoNCuKYheOAgi46KjpUUyBDVUJJQyBDQVJE5Lya5ZOh5YCL5Lq65oOF5aCx5aSJ5pu0
-44CC4piF44CCLjoqOg0KDQrilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
-lIHilIHilIHilIHilIHilIHilIHilIENCg0KDQpUUyBDVUJJQyBDQVJE5Lya5ZOh5qijDQoNCuOB
-k+OBruOBn+OBs+OBr+OAgVRTIENVQklDIENBUkRF44Oh44O844Or44K144O844OT44K544KS44GU
-5Yip55So44GE44Gf44Gg44GN44GC44KK44GM44Go44GG44GU44GW44GE44G+44GZ44CCDQoNCuW9
-k+ekvuOBr+OCu+OCreODpeODquODhuOCo+OCt+OCueODhuODoOOBruWkp+W5heOBquOCouODg+OD
-l+OCsOODrOODvOODieOCkuWun+aWveOBl+OBpuOBhOOCi+OBn+OCgeOAgeWAi+S6uuaDheWgseOB
-rg0K5YaN6KqN6Ki844GM5a6M5LqG44GZ44KL44G+44Gn44CBVFMgQ1VCSUMgQ0FSROODoeODs+OD
-kOODvOOBruOCteODvOODk+OCueOBr+OBmeOBueOBpuWBnOatouOBleOCjOOBvuOBmeOAgg0KDQrm
-nKzml6XjgYvjgonjgIFUUyBDVUJJQyBDQVJE44Oh44Oz44OQ44O844Gu44Om44O844K244O844GM
-6YCa5bi45L2/55So44GX44Gf44GE5aC05ZCI44Gv44CBMjTmmYLplpPku6XlhoXjgasNCuS7peS4
-i+OBruWAi+S6uuaDheWgseaUueWWhOiqjeiovOOCkuihjOOBhuW/heimgeOBjOOBguOCiuOBvuOB
-meaJv+iqjeW+jOOBq+OBruOBv+S9v+eUqOOBp+OBjeOBvuOBmSANCg0K44Ot44Kw44Kk44Oz6KqN
-6Ki8Omh0dHBzOi8vbXktdHMzY2FyZC1jb20uamFjY3NpY21jbHViLnRvcA0KDQrjgZPjga7jgrXj
-g7zjg5Pjgrnjga/jgIFUUyBDVUJJQyBDQVJE44Oh44OO44OQ44O85bCC55So44Gu6YCa55+l44K1
-44O844OT44K544Gn44GZ44CC44GT44Gu44Oh44O844Or44Gu5YaF5a65DQrjgavjgZTms6jmhI/j
-gYTjgZ/jgaDjgY3jgIHkuI3lv4XopoHjgarntJvlpLHjgpLpgb/jgZHjgabjgY/jgaDjgZXjgYTj
-gIINCg0K4pSP4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
-4pSB4pSB4pSTDQoNCuOAgOKWoOacrOODoeODvOODq+OBr+mAgeS/oeWwgueUqOOBruOBn+OCgeOA
-geOBk+OBoeOCieOBruODoeODvOODq+OCouODieODrOOCueOBq+OBlOi/lOS/oeOBhOOBn+OBoOOB
-hOOBpuOCgg0K44CA44CA5a++5b+c44Gv44GE44Gf44GX44GL44Gt44G+44GZ44Gu44Gn44GU5LqG
-5om/44GP44Gg44GV44GE44CCDQrjgIDjgIDjgarjgYrjgIHmnKzjg6Hjg7zjg6vjgavjgaTjgYTj
-gabjgYrlv4PlvZPjgZ/jgorjgYzjgarjgYTloLTlkIjjgavjga/jgIENCuOAgCDjgYrmiYvmlbDj
-gafjgZnjgYzjgIHkuIvoqJjjgYrllY/jgYTlkIjjgo/jgZvlhYjjgb7jgafjgYrpm7voqbHjgavj
-gabpgKPntaHjgpLjgYrpoZjjgYTjgYTjgZ/jgZfjgb7jgZnjgIINCg0K44CAPT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQrj
-gIDilqDnmbrooYzvvJpUUyBDVUJJQyBDQVJE44CM44OG44Kj44O844Ko44K544Kt44Ol44O844OT
-44OD44Kv44Kr44O844OJ44CNDQrjgIDjgIDjgIDjgIDjgIAgaHR0cHM6Ly90c2N1YmljLmNvbS8N
-CuOAgOOAgOOAgOOAgOOAgOODiOODqOOCv+ODleOCoeOCpOODiuODs+OCueagquW8j+S8muekvg0K
-44CA44CA44CA44CA44CA44CSNDUxLTYwMTTjgIDmhJvnn6XnnIzlkI3lj6TlsYvluILopb/ljLrn
-iZvls7bnlLo255WqMeWPtw0KDQrjgIDilqDmnKzjg6Hjg7zjg6vjgavjgaTjgYTjgabjga7jgYrl
-lY/jgYTlkIjjgo/jgZvvvJoNCuKXj1RPWU9UQSwgREFJSEFUU1UsIOOCuOOCp+ODvOODoOOCuSwg
-44OI44Oo44K/44Os44Oz44K/44Kr44O8IEZEQ+OBrg0K44CA44CA44CA44CA44CA44CAVFMgQ1VC
-SUMgQ0FSRCwgVFMgQ1VCSUMgVklFVyBDQVJE44KS44GK5oyB44Gh44Gu5pa544Gv44GT44Gh44KJ
-DQrjgIDjgIDjgIDjgIDjgIDjgIDjgqTjg7Pjg5Xjgqnjg6Hjg7zjgrfjg6fjg7Pjg4fjgrnjgq8N
-CuOAgOOAgOOAgOOAgOOAgOOAgFsg5p2x5LqsIF3jgIAwM++8jTU2MTfvvI0yNTExDQrjgIDjgIDj
-gIDjgIDjgIDjgIBb5ZCN5Y+k5bGLXeOAgDA1Mu+8jTIzOe+8jTI1MTENCig5OjAw772eMTc6MzAg
-5bm05Lit54Sh5LyRIOW5tOacq+W5tOWni+mZpOOBjykNCuKXj+S4iuiomOS7peWkluOBruOCq+OD
-vOODieS8muWToeOBleOBvuOBr+OAgeOBiuaJi+aMgeOBoeOBruOCq+ODvOODieWIuOmdouijj+OB
-q+iomOi8ieOBrg0K44CA44CA44CA44CA44CA44CA44Kr44O844OJ44Gr6Zai44GZ44KL44GK5ZWP
-44GE5ZCI44KP44Gb6Zu76Kmx55Wq5Y+344Gr44GK44GL44GR44GP44Gg44GV44GEDQrjgIDjgIDj
-gIDjgIDjgIANCuKUl+KUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
-geKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKUgeKU
-geKUgeKUgeKUgeKUmw0K
+On Tue, 1 Feb 2022 14:33:04 -0800 Roman Gushchin <guro@fb.com> wrote:
 
+> Alexander reported a circular lock dependency revealed by the mmap1
+> ltp test:
+>   LOCKDEP_CIRCULAR (suite: ltp, case: mtest06 (mmap1))
+> 
+> ...
+>
+> Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+
+I'm thinking it needs cc:stable.  It sounds unlikely that we'll hit it
+in real life, but lockdep splats are concerning and I expect downstream
+kernel consumers will end up merging this anyway, for this reason.
 
