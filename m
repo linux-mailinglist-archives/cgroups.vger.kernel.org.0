@@ -2,118 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2486F4AB6C8
-	for <lists+cgroups@lfdr.de>; Mon,  7 Feb 2022 09:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437244AC743
+	for <lists+cgroups@lfdr.de>; Mon,  7 Feb 2022 18:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbiBGI0G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Feb 2022 03:26:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
+        id S237050AbiBGR02 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Feb 2022 12:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244064AbiBGIPv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Feb 2022 03:15:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 08DFCC043181
-        for <cgroups@vger.kernel.org>; Mon,  7 Feb 2022 00:15:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644221750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S238850AbiBGRUM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Feb 2022 12:20:12 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0284EC0401D5;
+        Mon,  7 Feb 2022 09:20:11 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6403E21106;
+        Mon,  7 Feb 2022 17:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1644254409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fZCtKdGV/PdaGul2Xel2hTCDnJYx95E5j/0H+d54vhM=;
-        b=cYdCKnvXBL9hcdC9e+tOr2P3CvH5Wpdbtu8hne1S5HsOKlVVpe3to3DMMeJhhTp0FoY2Am
-        Uo9qW5metTSSb1yVDkvMiO08oFio5lqIDMLslgPLAn3xt/xNNd5fwkIyOFo+A8OmI3NLif
-        oyWQ0nOC3sTeYwquzV/hFfcIJN8WQoA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-38-UW0UGwDRPQ-RJVmE6brk5w-1; Mon, 07 Feb 2022 03:15:47 -0500
-X-MC-Unique: UW0UGwDRPQ-RJVmE6brk5w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=WgeOunKZPWr1u7CmKBkIn3aI6IvIjxAaiaRIxKsTWU4=;
+        b=oJXyY0lg033cJKb3vjdcvI1hPZc0gH3NGf+1IsuEJ2ysu4j/U4GQMpA/uH+PHT9ObqH4c3
+        /ifMCTOMsZOAoJluh2kAlCYa+QIjE9Jlssbw6yrsZiFNwdqn5cHqm8RNt6f4GoH3hPvEjk
+        GOdslupORGgeUQ8/DjTm1kwISSSRba0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FE2F801B0E;
-        Mon,  7 Feb 2022 08:15:45 +0000 (UTC)
-Received: from T590 (ovpn-8-33.pek2.redhat.com [10.72.8.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B56D127CD2;
-        Mon,  7 Feb 2022 08:15:11 +0000 (UTC)
-Date:   Mon, 7 Feb 2022 16:15:06 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH v7 1/2] blk-throtl: introduce a new flag
- THROTL_TG_CANCELING
-Message-ID: <YgDVCjkjJe1CSVxv@T590>
-References: <20220128084522.3169961-1-yukuai3@huawei.com>
- <20220128084522.3169961-2-yukuai3@huawei.com>
+        by relay2.suse.de (Postfix) with ESMTPS id 234B7A3B84;
+        Mon,  7 Feb 2022 17:20:08 +0000 (UTC)
+Date:   Mon, 7 Feb 2022 18:20:04 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>, Rafael Aquini <aquini@redhat.com>
+Subject: Re: [PATCH v4 3/4] mm/page_owner: Print memcg information
+Message-ID: <YgFUxFI5bMbc42j4@dhcp22.suse.cz>
+References: <20220131192308.608837-5-longman@redhat.com>
+ <20220202203036.744010-4-longman@redhat.com>
+ <YfvOp5VXrxy9IW1w@dhcp22.suse.cz>
+ <3f042edb-3769-afea-17a7-899578cd5c69@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220128084522.3169961-2-yukuai3@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <3f042edb-3769-afea-17a7-899578cd5c69@redhat.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 04:45:21PM +0800, Yu Kuai wrote:
-> If the new flag is set, then the throtl_grp will stop throttling bios.
-> Prepare to canceling all throttled bios if the disk is gone.
+On Thu 03-02-22 14:03:58, Waiman Long wrote:
+> On 2/3/22 07:46, Michal Hocko wrote:
+> > On Wed 02-02-22 15:30:35, Waiman Long wrote:
+> > [...]
+> > > +#ifdef CONFIG_MEMCG
+> > > +	unsigned long memcg_data;
+> > > +	struct mem_cgroup *memcg;
+> > > +	bool online;
+> > > +	char name[80];
+> > > +
+> > > +	rcu_read_lock();
+> > > +	memcg_data = READ_ONCE(page->memcg_data);
+> > > +	if (!memcg_data)
+> > > +		goto out_unlock;
+> > > +
+> > > +	if (memcg_data & MEMCG_DATA_OBJCGS)
+> > > +		ret += scnprintf(kbuf + ret, count - ret,
+> > > +				"Slab cache page\n");
+> > > +
+> > > +	memcg = page_memcg_check(page);
+> > > +	if (!memcg)
+> > > +		goto out_unlock;
+> > > +
+> > > +	online = (memcg->css.flags & CSS_ONLINE);
+> > > +	cgroup_name(memcg->css.cgroup, name, sizeof(name));
+> > Is there any specific reason to use another buffer allocated on the
+> > stack? Also 80B seems too short to cover NAME_MAX.
+> > 
+> > Nothing else jumped at me.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  block/blk-throttle.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index 7c462c006b26..abc5e506c72d 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -43,8 +43,12 @@
->  static struct workqueue_struct *kthrotld_workqueue;
->  
->  enum tg_state_flags {
-> -	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
-> -	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
-> +	/* on parent's pending tree */
-> +	THROTL_TG_PENDING	= 1 << 0,
-> +	/* bio_lists[] became non-empty */
-> +	THROTL_TG_WAS_EMPTY	= 1 << 1,
-> +	/* starts to cancel all bios, will be set if the disk is deleted */
-> +	THROTL_TG_CANCELING	= 1 << 2,
->  };
->  
->  #define rb_entry_tg(node)	rb_entry((node), struct throtl_grp, rb_node)
-> @@ -871,7 +875,8 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
->  	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
->  
->  	/* If tg->bps = -1, then BW is unlimited */
-> -	if (bps_limit == U64_MAX && iops_limit == UINT_MAX) {
-> +	if ((bps_limit == U64_MAX && iops_limit == UINT_MAX) ||
-> +	    tg->flags & THROTL_TG_CANCELING) {
->  		if (wait)
->  			*wait = 0;
->  		return true;
-> @@ -974,6 +979,9 @@ static void tg_update_disptime(struct throtl_grp *tg)
->  	unsigned long read_wait = -1, write_wait = -1, min_wait = -1, disptime;
->  	struct bio *bio;
->  
-> +	if (tg->flags & THROTL_TG_CANCELING)
-> +		goto update;
-> +
+> I suppose we can print directly into kbuf with cgroup_name(), but using a
+> separate buffer is easier to read and understand. 79 characters should be
+> enough for most cgroup names. Some auto-generated names with some kind of
+> embedded uuids may be longer than that, but the random sequence of hex
+> digits that may be missing do not convey much information for identification
+> purpose. We can always increase the buffer length later if it turns out to
+> be an issue.
 
-The above change and the following one in tg_update_disptime() isn't
-needed actually.
-
-Also I'd suggest to fold the two into one patch.
-
-
-Thanks,
-Ming
-
+Cutting a name short sounds like a source of confusion and there doesn't
+seem to be any good reason for that.
+-- 
+Michal Hocko
+SUSE Labs
