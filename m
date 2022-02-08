@@ -2,146 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7AF4AE02A
-	for <lists+cgroups@lfdr.de>; Tue,  8 Feb 2022 19:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C844AE118
+	for <lists+cgroups@lfdr.de>; Tue,  8 Feb 2022 19:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384700AbiBHR6r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Feb 2022 12:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S1385055AbiBHSlS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Feb 2022 13:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384419AbiBHR6o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Feb 2022 12:58:44 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2FEC0612C3
-        for <cgroups@vger.kernel.org>; Tue,  8 Feb 2022 09:58:40 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m18so6420952lfq.4
-        for <cgroups@vger.kernel.org>; Tue, 08 Feb 2022 09:58:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+CQgr5ve9zRzrNvBukJhKnL+pLaCQfJXdaqimLxBtNw=;
-        b=E2UoFvQVzm+7bHzoMVzVa5ubhrCgFht99UH8rY/REMe83oGfWQbtPaijzy5V1htQAM
-         BkkNX7I3Loju1qPFQ5SKiuN5gRGm//MXKuPFU/+lAiqJjC612uxlmflrzBxtp0cWwYp0
-         0Kn0O12jqVtQTdqiqNJsAs/kerC4f1FDmDdBVHLKxxjOtW327uXZ7o+HvwuC70xxjlJl
-         gSSvHFw3+VHuGjkG/d+Df6+eQ0ecY2ISbQ4wyFZX0Fpw5/u3TLH17KBnUcAF9XaLd/bl
-         if5ThueUvsEl4EwY0MmqrEAzcqWRBNvYY6S6rsWOgW3CuGWUHJPk569Mef72P68WBent
-         D8HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+CQgr5ve9zRzrNvBukJhKnL+pLaCQfJXdaqimLxBtNw=;
-        b=q13VcjlPsaVFGmd35pxBQXSP16bEwLoZL9/DFp+RqJrMW/BgNrdLbenmVeIL0pveHW
-         EqdDY28x65HlYKhlEuNEu7odlz2gAA/lNeoD0hFgMnCOIYsoyYcuFxxaBWAi8v5jWPWs
-         /wtIhJevujogz8kCF3/4xLSm+N5nJSDUshUx3yuXBR13NPYJ6xsWBAsZLzQMJtNhSW6J
-         //SjVo9/jME/kyjRwwQ7/ZvkjXqpJoHZxMFezp9/8dhHJ4CfyXZ9hupZSqcFnc5WC8NZ
-         ZnlTzBNRG5j7kwPEeW7ddfOC2uQORHeEU0kSR71gTixGsrPDWf2hu564B8Q2Alc0uUfZ
-         hJQg==
-X-Gm-Message-State: AOAM532cIUXqxMqb6NJJVKaQ++KzIcQEBUv7Jx4HCEw16ifu9m5fNtIG
-        HtPnv7UqD+kKtGXUy89Vm2s22nEJdTREND4ZGJAM/xhdT75kyg==
-X-Google-Smtp-Source: ABdhPJzAJtv7/46SwEDqx+yw/l/cxQ/RFIcqnChaJ8qRLteh+2fRg1hhY9W/DgaPCSXAVJRA9+8dkpNfdfi5A44xCvg=
-X-Received: by 2002:ac2:43ad:: with SMTP id t13mr3734442lfl.8.1644343119017;
- Tue, 08 Feb 2022 09:58:39 -0800 (PST)
+        with ESMTP id S1385074AbiBHSlR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Feb 2022 13:41:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED3EDC06174F
+        for <cgroups@vger.kernel.org>; Tue,  8 Feb 2022 10:41:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644345676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xML1xNkIw3e0hTYk74bi0fSg0bcnbMZm5u6L4MPv8BA=;
+        b=aAcdPOMiOreeH3mPfBRSBK2A2oju9QjKkENlozUO+2Z0iXqTmydlcVzu3R4xXKCgemNK1a
+        gQuXJxS16edU2v+OKJrbdbmBsUYh+npDhY1jIrJzrzjJfUh7STbdbBobAiTO0yAIL1IAwM
+        KhEP52V4xGkeiYQIWhhc5bb7Rm/q3Ow=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-168-4DGKpYoYNeCJaX4uVE-ldw-1; Tue, 08 Feb 2022 13:41:11 -0500
+X-MC-Unique: 4DGKpYoYNeCJaX4uVE-ldw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10B42101F003;
+        Tue,  8 Feb 2022 18:41:02 +0000 (UTC)
+Received: from [10.22.35.8] (unknown [10.22.35.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F62710A3945;
+        Tue,  8 Feb 2022 18:40:58 +0000 (UTC)
+Message-ID: <e897adca-168e-13db-8001-4afbef3aa648@redhat.com>
+Date:   Tue, 8 Feb 2022 13:40:57 -0500
 MIME-Version: 1.0
-References: <20220125164337.2071854-1-bigeasy@linutronix.de>
- <20220125164337.2071854-4-bigeasy@linutronix.de> <YfFmxH1IXeegNOa9@dhcp22.suse.cz>
- <YfKHxKda7bGJmrLJ@linutronix.de> <YfkhsiWHzsyQSBfl@dhcp22.suse.cz>
- <Yfkjjamj09lZn4sA@linutronix.de> <YflR3/RuGjYuQZPH@dhcp22.suse.cz>
- <YfumP3u1VCjKHE3b@linutronix.de> <Yfup9THPcSIPDSoH@dhcp22.suse.cz>
-In-Reply-To: <Yfup9THPcSIPDSoH@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 8 Feb 2022 09:58:27 -0800
-Message-ID: <CALvZod7yovQ5OTWr=k_eiEBVb1LTRvPkbsY8joAtyigQnvBUww@mail.gmail.com>
-Subject: Re: [PATCH 3/4] mm/memcg: Add a local_lock_t for IRQ and TASK object.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH v5 3/4] mm/page_owner: Print memcg information
+Content-Language: en-US
 To:     Michal Hocko <mhocko@suse.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Ira Weiny <ira.weiny@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rafael Aquini <aquini@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <20220208000532.1054311-1-longman@redhat.com>
+ <20220208000532.1054311-4-longman@redhat.com>
+ <YgJeWth50eP9L0PK@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YgJeWth50eP9L0PK@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 3, 2022 at 2:10 AM Michal Hocko <mhocko@suse.com> wrote:
+On 2/8/22 07:13, Michal Hocko wrote:
+> On Mon 07-02-22 19:05:31, Waiman Long wrote:
+>> It was found that a number of dying memcgs were not freed because
+>> they were pinned by some charged pages that were present. Even "echo 1 >
+>> /proc/sys/vm/drop_caches" wasn't able to free those pages. These dying
+>> but not freed memcgs tend to increase in number over time with the side
+>> effect that percpu memory consumption as shown in /proc/meminfo also
+>> increases over time.
+> I still believe that this is very suboptimal way to debug offline memcgs
+> but memcg information can be useful in other contexts and it doesn't
+> cost us anything except for an additional output so I am fine with this.
+I am planning to have a follow-up patch to add a new debugfs file for 
+just printing page information associated with dying memcgs only. It 
+will be based on the existing page_owner code, though. So I need to get 
+this patch in first.
+>   
+>> In order to find out more information about those pages that pin
+>> dying memcgs, the page_owner feature is extended to print memory
+>> cgroup information especially whether the cgroup is dying or not.
+>> RCU read lock is taken when memcg is being accessed to make sure
+>> that it won't be freed.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Acked-by: David Rientjes <rientjes@google.com>
+>> Acked-by: Roman Gushchin <guro@fb.com>
+>> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> With few comments/questions below.
 >
-> On Thu 03-02-22 10:54:07, Sebastian Andrzej Siewior wrote:
-> > On 2022-02-01 16:29:35 [+0100], Michal Hocko wrote:
-> > > > > Sorry, I know that this all is not really related to your work but if
-> > > > > the original optimization is solely based on artificial benchmarks then
-> > > > > I would rather drop it and also make your RT patchset easier.
-> > > >
-> > > > Do you have any real-world benchmark in mind? Like something that is
-> > > > already used for testing/ benchmarking and would fit here?
-> > >
-> > > Anything that even remotely resembles a real allocation heavy workload.
-> >
-> > So I figured out that build the kernel as user triggers the allocation
-> > path in_task() and in_interrupt(). I booted a PREEMPT_NONE kernel and
-> > run "perf stat -r 5 b.sh" where b.sh unpacks a kernel and runs a
-> > allmodconfig build on /dev/shm. The slow disk should not be a problem.
-> >
-> > With the optimisation:
-> > |  Performance counter stats for './b.sh' (5 runs):
-> > |
-> > |       43.367.405,59 msec task-clock                #   30,901 CPUs utilized            ( +-  0,01% )
-> > |           7.393.238      context-switches          #  170,499 /sec                     ( +-  0,13% )
-> > |             832.364      cpu-migrations            #   19,196 /sec                     ( +-  0,15% )
-> > |         625.235.644      page-faults               #   14,419 K/sec                    ( +-  0,00% )
-> > | 103.822.081.026.160      cycles                    #    2,394 GHz                      ( +-  0,01% )
-> > |  75.392.684.840.822      stalled-cycles-frontend   #   72,63% frontend cycles idle     ( +-  0,02% )
-> > |  54.971.177.787.990      stalled-cycles-backend    #   52,95% backend cycles idle      ( +-  0,02% )
-> > |  69.543.893.308.966      instructions              #    0,67  insn per cycle
-> > |                                                    #    1,08  stalled cycles per insn  ( +-  0,00% )
-> > |  14.585.269.354.314      branches                  #  336,357 M/sec                    ( +-  0,00% )
-> > |     558.029.270.966      branch-misses             #    3,83% of all branches          ( +-  0,01% )
-> > |
-> > |            1403,441 +- 0,466 seconds time elapsed  ( +-  0,03% )
-> >
-> >
-> > With the optimisation disabled:
-> > |  Performance counter stats for './b.sh' (5 runs):
-> > |
-> > |       43.354.742,31 msec task-clock                #   30,869 CPUs utilized            ( +-  0,01% )
-> > |           7.394.210      context-switches          #  170,601 /sec                     ( +-  0,06% )
-> > |             842.835      cpu-migrations            #   19,446 /sec                     ( +-  0,63% )
-> > |         625.242.341      page-faults               #   14,426 K/sec                    ( +-  0,00% )
-> > | 103.791.714.272.978      cycles                    #    2,395 GHz                      ( +-  0,01% )
-> > |  75.369.652.256.425      stalled-cycles-frontend   #   72,64% frontend cycles idle     ( +-  0,01% )
-> > |  54.947.610.706.450      stalled-cycles-backend    #   52,96% backend cycles idle      ( +-  0,01% )
-> > |  69.529.388.440.691      instructions              #    0,67  insn per cycle
-> > |                                                    #    1,08  stalled cycles per insn  ( +-  0,01% )
-> > |  14.584.515.016.870      branches                  #  336,497 M/sec                    ( +-  0,00% )
-> > |     557.716.885.609      branch-misses             #    3,82% of all branches          ( +-  0,02% )
-> > |
-> > |             1404,47 +- 1,05 seconds time elapsed  ( +-  0,08% )
-> >
-> > I'm still open to a more specific test ;)
+>> ---
+>>   mm/page_owner.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 44 insertions(+)
+>>
+>> diff --git a/mm/page_owner.c b/mm/page_owner.c
+>> index 28dac73e0542..d4c311455753 100644
+>> --- a/mm/page_owner.c
+>> +++ b/mm/page_owner.c
+>> @@ -10,6 +10,7 @@
+>>   #include <linux/migrate.h>
+>>   #include <linux/stackdepot.h>
+>>   #include <linux/seq_file.h>
+>> +#include <linux/memcontrol.h>
+>>   #include <linux/sched/clock.h>
+>>   
+>>   #include "internal.h"
+>> @@ -325,6 +326,47 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
+>>   	seq_putc(m, '\n');
+>>   }
+>>   
+>> +/*
+>> + * Looking for memcg information and print it out
+>> + */
+> I am not sure this is particularly useful comment.
+Right, I can remove that.
 >
-> Thanks for this test. I do assume that both have been run inside a
-> non-root memcg.
+>> +static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
+>> +					 struct page *page)
+>> +{
+>> +#ifdef CONFIG_MEMCG
+>> +	unsigned long memcg_data;
+>> +	struct mem_cgroup *memcg;
+>> +	bool dying;
+>> +
+>> +	rcu_read_lock();
+>> +	memcg_data = READ_ONCE(page->memcg_data);
+>> +	if (!memcg_data)
+>> +		goto out_unlock;
+>> +
+>> +	if (memcg_data & MEMCG_DATA_OBJCGS)
+>> +		ret += scnprintf(kbuf + ret, count - ret,
+>> +				"Slab cache page\n");
+>> +
+>> +	memcg = page_memcg_check(page);
+>> +	if (!memcg)
+>> +		goto out_unlock;
+>> +
+>> +	dying = (memcg->css.flags & CSS_DYING);
+> Is there any specific reason why you haven't used mem_cgroup_online?
+Not really. However, I think checking for CSS_DYING makes more sense now 
+that I using the term "dying".
 >
-> Weiman, what was the original motivation for 559271146efc0? Because as
-> this RT patch shows it makes future changes much more complex and I
-> would prefer a simpler and easier to maintain code than some micro
-> optimizations that do not have any visible effect on real workloads.
+>> +	ret += scnprintf(kbuf + ret, count - ret,
+>> +			"Charged %sto %smemcg ",
+>> +			PageMemcgKmem(page) ? "(via objcg) " : "",
+>> +			dying ? "dying " : "");
+>> +
+>> +	/* Write cgroup name directly into kbuf */
+>> +	cgroup_name(memcg->css.cgroup, kbuf + ret, count - ret);
+>> +	ret += strlen(kbuf + ret);
+> cgroup_name should return the length of the path added to the buffer.
+I realized that after I sent out the patch. I will remove te redundant 
+strlen() in a future update.
+>
+>> +	ret += scnprintf(kbuf + ret, count - ret, "\n");
+> I do not see any overflow prevention here. I believe you really need to
+> check ret >= count after each scnprintf/cgroup_name.
 
-commit 559271146efc0 is a part of patch series "mm/memcg: Reduce
-kmemcache memory accounting overhead". For perf numbers you can see
-the cover letter in the commit fdbcb2a6d677 ("mm/memcg: move
-mod_objcg_state() to memcontrol.c").
+As you have realized, the beauty of using scnprintf() is to not needing 
+an overflow check after each invocation.
 
-BTW I am onboard with preferring simpler code over complicated optimized code.
+Cheers,
+Longman
+
