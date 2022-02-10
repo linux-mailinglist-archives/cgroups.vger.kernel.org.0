@@ -2,46 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A88C4B0C86
-	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 12:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5CB4B1604
+	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 20:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241072AbiBJLkp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Feb 2022 06:40:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41704 "EHLO
+        id S1343727AbiBJTOI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Feb 2022 14:14:08 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241058AbiBJLko (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 06:40:44 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3913BFF0;
-        Thu, 10 Feb 2022 03:40:45 -0800 (PST)
-Received: from kwepemi100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JvZT763HKz1FCY9;
-        Thu, 10 Feb 2022 19:36:27 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100001.china.huawei.com (7.221.188.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 10 Feb 2022 19:40:41 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 10 Feb
- 2022 19:40:40 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <ming.lei@redhat.com>, <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v9] block: cancel all throttled bios in del_gendisk()
-Date:   Thu, 10 Feb 2022 19:56:37 +0800
-Message-ID: <20220210115637.1074927-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S245101AbiBJTOH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 14:14:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6861C101C;
+        Thu, 10 Feb 2022 11:14:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1C81AB82728;
+        Thu, 10 Feb 2022 19:14:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE1C6C004E1;
+        Thu, 10 Feb 2022 19:14:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644520444;
+        bh=WjFROMNd1IDU206aRk23NJcrAg8BywhNavE19EBdG/0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=m3ZVI2AAQHOMjrcCGJ6VwrOluEThb79Sq2erIf7FUBaapEDlc4eWMhD0fOg+xoHNG
+         G/cRK8z4Nv0rhEzUVNUeZVN59LmSQpXDBr/t4yw6CwB9xPYbe3cDip2xE2s4SzWqXl
+         XzCqb1jsqwBlP9LKjhcLltSQ9zM1DoqttenCly2XmJF7+VY74MQqm0zvFhiDG/M4oh
+         ucUsBxIyGI5EG441otrKgwAbAnaWbzSUTJmWv0IkF6g9vZAXay0HXsJG7QLzDsApoP
+         wc2esxdrzTu/jVwoklohDToPfaiKFilWTbMZ3DJgTmqW326ijFiy4UhSOwsYYsvR0j
+         AFLo4q5BNHDlw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 657E05C0439; Thu, 10 Feb 2022 11:14:04 -0800 (PST)
+Date:   Thu, 10 Feb 2022 11:14:04 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
+        rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>
+Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
+ lockdep/lock_stat (v1)
+Message-ID: <20220210191404.GM4285@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+ <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YgTXUQ9CBoo3+A+c@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,136 +71,43 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Throttled bios can't be issued after del_gendisk() is done, thus
-it's better to cancel them immediately rather than waiting for
-throttle is done.
+On Thu, Feb 10, 2022 at 10:13:53AM +0100, Peter Zijlstra wrote:
+> On Wed, Feb 09, 2022 at 04:32:58PM -0800, Namhyung Kim wrote:
+> > On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
+> > >
+> > > > Eventually I'm mostly interested in the contended locks only and I
+> > > > want to reduce the overhead in the fast path.  By moving that, it'd be
+> > > > easy to track contended locks with timing by using two tracepoints.
+> > >
+> > > So why not put in two new tracepoints and call it a day?
+> > >
+> > > Why muck about with all that lockdep stuff just to preserve the name
+> > > (and in the process continue to blow up data structures etc..). This
+> > > leaves distros in a bind, will they enable this config and provide
+> > > tracepoints while bloating the data structures and destroying things
+> > > like lockref (which relies on sizeof(spinlock_t)), or not provide this
+> > > at all.
+> > 
+> > If it's only lockref, is it possible to change it to use arch_spinlock_t
+> > so that it can remain in 4 bytes?  It'd be really nice if we can keep
+> > spin lock size, but it'd be easier to carry the name with it for
+> > analysis IMHO.
+> 
+> It's just vile and disgusting to blow up the lock size for convenience
+> like this.
+> 
+> And no, there's more of that around. A lot of effort has been spend to
+> make sure spinlocks are 32bit and we're not going to give that up for
+> something as daft as this.
+> 
+> Just think harder on the analysis side. Like said; I'm thinking the
+> caller IP should be good enough most of the time.
 
-For example, if user thread is throttled with low bps while it's
-issuing large io, and the device is deleted. The user thread will
-wait for a long time for io to return.
+Another option is to keep any additional storage in a separate data
+structure keyed off of lock address, lockdep class, or whatever.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
-Changes in v9:
- - some minor changes as suggested by Ming.
-Changes in v8:
- - fold two patches into one
-Changes in v7:
- - use the new solution as suggested by Ming.
+Whether or not this is a -good- option, well, who knows?  ;-)
 
- block/blk-throttle.c | 44 +++++++++++++++++++++++++++++++++++++++++---
- block/blk-throttle.h |  2 ++
- block/genhd.c        |  2 ++
- 3 files changed, 45 insertions(+), 3 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 7c462c006b26..ca92e5fa2769 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -43,8 +43,12 @@
- static struct workqueue_struct *kthrotld_workqueue;
- 
- enum tg_state_flags {
--	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
--	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
-+	/* on parent's pending tree */
-+	THROTL_TG_PENDING	= 1 << 0,
-+	/* bio_lists[] became non-empty */
-+	THROTL_TG_WAS_EMPTY	= 1 << 1,
-+	/* starts to cancel all bios, will be set if the disk is deleted */
-+	THROTL_TG_CANCELING	= 1 << 2,
- };
- 
- #define rb_entry_tg(node)	rb_entry((node), struct throtl_grp, rb_node)
-@@ -871,7 +875,8 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
- 	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
- 
- 	/* If tg->bps = -1, then BW is unlimited */
--	if (bps_limit == U64_MAX && iops_limit == UINT_MAX) {
-+	if ((bps_limit == U64_MAX && iops_limit == UINT_MAX) ||
-+	    tg->flags & THROTL_TG_CANCELING) {
- 		if (wait)
- 			*wait = 0;
- 		return true;
-@@ -1763,6 +1768,39 @@ static bool throtl_hierarchy_can_upgrade(struct throtl_grp *tg)
- 	return false;
- }
- 
-+void blk_throtl_cancel_bios(struct request_queue *q)
-+{
-+	struct cgroup_subsys_state *pos_css;
-+	struct blkcg_gq *blkg;
-+
-+	spin_lock_irq(&q->queue_lock);
-+	/*
-+	 * queue_lock is held, rcu lock is not needed here technically.
-+	 * However, rcu lock is still held to emphasize that following
-+	 * path need RCU protection and to prevent warning from lockdep.
-+	 */
-+	rcu_read_lock();
-+	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
-+		struct throtl_grp *tg = blkg_to_tg(blkg);
-+		struct throtl_service_queue *sq = &tg->service_queue;
-+
-+		/*
-+		 * Set the flag to make sure throtl_pending_timer_fn() won't
-+		 * stop until all throttled bios are dispatched.
-+		 */
-+		blkg_to_tg(blkg)->flags |= THROTL_TG_CANCELING;
-+		/*
-+		 * Update disptime after setting the above flag to make sure
-+		 * throtl_select_dispatch() won't exit without dispatching.
-+		 */
-+		tg_update_disptime(tg);
-+
-+		throtl_schedule_pending_timer(sq, jiffies + 1);
-+	}
-+	rcu_read_unlock();
-+	spin_unlock_irq(&q->queue_lock);
-+}
-+
- static bool throtl_can_upgrade(struct throtl_data *td,
- 	struct throtl_grp *this_tg)
- {
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index 175f03abd9e4..2ae467ac17ea 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -160,12 +160,14 @@ static inline void blk_throtl_exit(struct request_queue *q) { }
- static inline void blk_throtl_register_queue(struct request_queue *q) { }
- static inline void blk_throtl_charge_bio_split(struct bio *bio) { }
- static inline bool blk_throtl_bio(struct bio *bio) { return false; }
-+static inline void blk_throtl_cancel_bios(struct request_queue *q) { }
- #else /* CONFIG_BLK_DEV_THROTTLING */
- int blk_throtl_init(struct request_queue *q);
- void blk_throtl_exit(struct request_queue *q);
- void blk_throtl_register_queue(struct request_queue *q);
- void blk_throtl_charge_bio_split(struct bio *bio);
- bool __blk_throtl_bio(struct bio *bio);
-+void blk_throtl_cancel_bios(struct request_queue *q);
- static inline bool blk_throtl_bio(struct bio *bio)
- {
- 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
-diff --git a/block/genhd.c b/block/genhd.c
-index 9589d1d59afa..6acc98cd0365 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -29,6 +29,7 @@
- #include "blk.h"
- #include "blk-mq-sched.h"
- #include "blk-rq-qos.h"
-+#include "blk-throttle.h"
- 
- static struct kobject *block_depr;
- 
-@@ -625,6 +626,7 @@ void del_gendisk(struct gendisk *disk)
- 
- 	blk_mq_freeze_queue_wait(q);
- 
-+	blk_throtl_cancel_bios(disk->queue);
- 	rq_qos_exit(q);
- 	blk_sync_queue(q);
- 	blk_flush_integrity();
--- 
-2.31.1
-
+						Thanx, Paul
