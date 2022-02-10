@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC4D4B1812
-	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 23:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA07B4B181B
+	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 23:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344909AbiBJWXv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Feb 2022 17:23:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49840 "EHLO
+        id S235846AbiBJWZR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Feb 2022 17:25:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244171AbiBJWXu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 17:23:50 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15C9218E
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:23:50 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id b9so13059488lfq.6
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:23:50 -0800 (PST)
+        with ESMTP id S235597AbiBJWZO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 17:25:14 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C294325C2
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:25:14 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id i34so13126775lfv.2
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:25:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0hO66QIvus488NAq78feGEF3dBYxRKmF5DOdeN40y0E=;
-        b=ifAyrepAz0/IittI3oOkEW3ly0MGafuEuH+Wv4mqyEk5J+wQSQK4XejFuQrRyABDxy
-         cDqnh5/He67UFdvdqWpWkGAY/4DGX71VVGZtRxmYlXps/XzEIW0/YAK+lGR1Of8QoJhA
-         dlcXq1Pjm6j94Eh2UzSeZtQSV1JIKru0Uq60Ossq66fC+6zhWOea8yR11tUdGHv33PQS
-         QgWvXdGu9gDVM4ZDMwDCLedn7lb0suJH93kcg+bgyn+ulIlbOetxdtUDPDVAkqcwTwa4
-         n4LLOEvLFf2EFgZfhIIv1t/7uc9WiFYkSNxY+AH74ofOtAAxydlupol0MB9qJiSbd0mY
-         cn/A==
+        bh=+9taNQqr53065W1oX4JDNtAk/+njpm3x8DzxRxP1lHU=;
+        b=D959OvVwl7BXuwDxGu0YH5B8iaG9JycwJXSActYL0Rhkvl1XpSclE6R6SP/TS9KpOb
+         uIITo6yOM2u/NW7Lpt2qvugxdahKXm7DxUSfw4CvZOax6yiLj0PuPiJD0kxUvrCoLRZE
+         8+tEADL2hNCtlzAphVfr0GXuxsruicxdkryZKu4A3EZQYGNy1YGT2PXBJWQ7cmvCU5sT
+         JmTq6TyMVzqerdn7CZcyv983bkS+4BRuAEOfAWl2vQTFGVVjXWYx7YXbhJ8zrn9tghSq
+         n6Z4aZpGnza7LI6CgiHjzXoxAuxZQeb8ZX3fWnC9sHKXTbS9MAdJvXlr3WYwA+ZhdPb1
+         7tbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0hO66QIvus488NAq78feGEF3dBYxRKmF5DOdeN40y0E=;
-        b=7URcdq17GF8TgwtfBmMHbIyXMbxOE6WKRzyVm7v2r0JUDfkwe4RLeGXRLWsX94wD8N
-         0sAJ6BtAPLi9Kuz4C94+pPAl1PJYWGnntW4wmvxm8GnevcFOqaaH+mKgKLzenTbX4dNs
-         0x4YOhsgqITxsI0g+Rdpal8yRC4btxhU2BUmILvNpcfqR4pS8H+1+7j/weXImMEtii57
-         GOmEbJH1O+9b79lhcN4ZAXWstqQvSydvNaHFuIGDGJxcW1O5AoUuFDuqd0Lma85Uew0K
-         h59dmc+KXTKp+zvIx9yg8ihT0PBfP0cp5jp+rxX9Q4k6003CEtDZ4fzH03fr/5XsmJQj
-         P9AA==
-X-Gm-Message-State: AOAM530PRAPx1p6w596z3axiWfSKauT44TmJ+IHYfhU2je+HLZGqtX1b
-        zIDxNWYv5wP2osYj3havUvg2AQKz40UI1WPKcXvvgQ==
-X-Google-Smtp-Source: ABdhPJwFiSrA1WyKAJ3QOZVAg4E0gV7YsjWEijBGwjO9wjm2Wyh1/Ocie0SCJqhwKTKi5U//VRSxTwUeqtXSwW1SiPE=
-X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr6432078lfu.40.1644531829105;
- Thu, 10 Feb 2022 14:23:49 -0800 (PST)
+        bh=+9taNQqr53065W1oX4JDNtAk/+njpm3x8DzxRxP1lHU=;
+        b=sUoyfRlH1m/DNj89lai9nv9zJVYVc2oEvrvCT6+sSoQkM4g88eCLqi2nceQiDZV3HM
+         lIqyWkYpnxe4ytaBMbZJhSRWLje9UREB1kDBnzUJYO0fWh7+LHwPBG5KFkex9krRd29y
+         JbRDuvFsb4L95LjLDiVEWFr/YeP9erALqgZVeE0sLByZ3FZHj1oxd1iyAWmUZdFTQEPp
+         dW9tg/nc/aib9Os1R4BKD6oqsuzm9g1XpE1ZYUXINnfzL8UPlp5wGFGc0/pSCYLw669u
+         zibG1IRJUczl0G99i0ICfWTILZXd1ViTvBwjJrga9rAdMBg2elSApgD7OfE/vNYBLQgA
+         TrDQ==
+X-Gm-Message-State: AOAM532dJIK6FKtHOPn2KaA89q87DUSJmDbKniWRjRLuP9qeS9ZLARXJ
+        LamBBQZtTne3fmgk/uGeYwbotHrVzE41pq1v9FiWAHsfq9YjKw==
+X-Google-Smtp-Source: ABdhPJyM1osoqKEaHQe/4Fm9kFoRNB8nnlkgffkyJW13U9ZE2XGrrPprjfDe61hw1PjYuIsv/WI+Ymv70pU4S4b9iCg=
+X-Received: by 2002:ac2:43ad:: with SMTP id t13mr6592317lfl.8.1644531912995;
+ Thu, 10 Feb 2022 14:25:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20220210081437.1884008-1-shakeelb@google.com> <20220210081437.1884008-2-shakeelb@google.com>
- <YgVtGhvXqqVzTy7M@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YgVtGhvXqqVzTy7M@carbon.dhcp.thefacebook.com>
+References: <20220210081437.1884008-1-shakeelb@google.com> <20220210081437.1884008-3-shakeelb@google.com>
+ <YgVvgCbbTrDPb5tT@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YgVvgCbbTrDPb5tT@carbon.dhcp.thefacebook.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 10 Feb 2022 14:23:37 -0800
-Message-ID: <CALvZod4Ex+0q+4pDnR8q6bpV8Q5NKbt=5c6SDVUDVnKxTqUNRQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] memcg: refactor mem_cgroup_oom
+Date:   Thu, 10 Feb 2022 14:25:01 -0800
+Message-ID: <CALvZod5FBEHzNcXD-Wo5BPmMxu+Kf-ZA8s6N9EmD6TeFocs3_w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] memcg: unify force charging conditions
 To:     Roman Gushchin <guro@fb.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -70,27 +70,24 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 11:53 AM Roman Gushchin <guro@fb.com> wrote:
+On Thu, Feb 10, 2022 at 12:03 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> On Thu, Feb 10, 2022 at 12:14:34AM -0800, Shakeel Butt wrote:
-> > The function mem_cgroup_oom returns enum which has four possible values
-> > but the caller does not care about such values and only care if the
-> > return value is OOM_SUCCESS or not. So, remove the enum altogether and
-> > make mem_cgroup_oom returns a simple bool.
+> On Thu, Feb 10, 2022 at 12:14:35AM -0800, Shakeel Butt wrote:
+> > Currently the kernel force charges the allocations which have __GFP_HIGH
+> > flag without triggering the memory reclaim. __GFP_HIGH indicates that
+> > the caller is high priority and since commit 869712fd3de5 ("mm:
+> > memcontrol: fix network errors from failing __GFP_ATOMIC charges") the
+> > kernel let such allocations do force charging. Please note that
+> > __GFP_ATOMIC has been replaced by __GFP_HIGH.
 > >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > __GFP_HIGH does not tell if the caller can block or can trigger reclaim.
+> > There are separate checks to determine that. So, there is no need to
+> > skip reclaim for __GFP_HIGH allocations. So, handle __GFP_HIGH together
+> > with __GFP_NOFAIL which also does force charging.
 >
-> Nice!
->
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-
-Thanks.
->
-[...]
->
-> The only thing, I'd add a small comment on the return value here. E.g.
-> "returns true if one or more tasks have been successfully killed" or something
-> like this.
+> This sounds very reasonable. But shouldn't we check if __GFP_DIRECT_RECLAIM
+> is set and bail out otherwise?
 >
 
-Will do in the next version.
+We already have a gfpflags_allow_blocking() check which checks for
+__GFP_DIRECT_RECLAIM.
