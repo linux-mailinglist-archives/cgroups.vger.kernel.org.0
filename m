@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0433D4B180E
-	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 23:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4D4B1812
+	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 23:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344888AbiBJWWt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Feb 2022 17:22:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49444 "EHLO
+        id S1344909AbiBJWXv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Feb 2022 17:23:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243459AbiBJWWt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 17:22:49 -0500
+        with ESMTP id S244171AbiBJWXu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 17:23:50 -0500
 Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EE710BB
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:22:49 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id i34so13117352lfv.2
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:22:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15C9218E
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:23:50 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id b9so13059488lfq.6
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 14:23:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bwpOdgFQsH734At37yjdv4Nb0bvjgu3SgbDAbXyvUB4=;
-        b=fI0xbKcdzpA+8Va5155Mdfuw440giBRX8QLLR8+CLcUsOBdRYP4z5OQCb57mF1a8N6
-         t4s6l4rmrsyAyL1hj58kI/rAt3V/SV8/lSX51xzZhhhpDCqA409AECsie1YGy4IeHGLE
-         +GVtYOgiHoGkj9QW0fe8XD1crWNgUuUWYkRV89jW49qmBY2DLgAVREQwkcLu3xvYYS9r
-         kgPtnyKJRn30npoDJjXj4RnYDRe+JgEthHfR2mGk6dY1Mcg5fOQAR3nblzbsl3+Mdw+7
-         HYI9DpKPo3laQm7w7tXBN9WHS9Ql//I9J2NxCSL2J+brvwZ7zgOSXv0otFoAhUzNRBlM
-         BG4A==
+        bh=0hO66QIvus488NAq78feGEF3dBYxRKmF5DOdeN40y0E=;
+        b=ifAyrepAz0/IittI3oOkEW3ly0MGafuEuH+Wv4mqyEk5J+wQSQK4XejFuQrRyABDxy
+         cDqnh5/He67UFdvdqWpWkGAY/4DGX71VVGZtRxmYlXps/XzEIW0/YAK+lGR1Of8QoJhA
+         dlcXq1Pjm6j94Eh2UzSeZtQSV1JIKru0Uq60Ossq66fC+6zhWOea8yR11tUdGHv33PQS
+         QgWvXdGu9gDVM4ZDMwDCLedn7lb0suJH93kcg+bgyn+ulIlbOetxdtUDPDVAkqcwTwa4
+         n4LLOEvLFf2EFgZfhIIv1t/7uc9WiFYkSNxY+AH74ofOtAAxydlupol0MB9qJiSbd0mY
+         cn/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bwpOdgFQsH734At37yjdv4Nb0bvjgu3SgbDAbXyvUB4=;
-        b=34LjcFFl2AMucQrfQBwWjr2sLgc510j5ilqdaYDU0IMwGbwQ4ab3KkZf1q36rggqKg
-         ug09quznR+bui8N4giQr1aseVE35sM9kd1S4SAnUOOD/G40tGy7VlwBHzLDNDCPL5c73
-         B5+lxDwhRMF1rNy5gJs9aZNq9ZXKhUX9I0VnQDMRgaVPbAd1BKC2NLtsf4kLv2G2Snxb
-         PkZD5msq608fWJuUZp4zdXcUVbEpiHerST7jGgviiz6xNU2ui0tFWN0zqv7X4QE5kGeW
-         IMHZQuJPvBTOQs+JiUFzdUxxbIaJ/vw4rwtsunUlPdKbJJRS/0g+sarNx7+4kFemH4di
-         1OGQ==
-X-Gm-Message-State: AOAM5303bS6nInsW1bIoLONFx0AGDPZba3I7WH3raGt2GoTztZVkx0an
-        YUzPr03IHMnOIwkMR103TCLUKn8yQHeR7sphdxFhK8EyT3Y=
-X-Google-Smtp-Source: ABdhPJz3n2/MNQsc8l0zgRAoXCBWTnu0KCr4v87xDGQiIoKz3e1x0R0A09Vnlf+JoKpSRstq0zNn8mmNb53j/3k3w/4=
-X-Received: by 2002:a05:6512:3e10:: with SMTP id i16mr6280877lfv.184.1644531767275;
- Thu, 10 Feb 2022 14:22:47 -0800 (PST)
+        bh=0hO66QIvus488NAq78feGEF3dBYxRKmF5DOdeN40y0E=;
+        b=7URcdq17GF8TgwtfBmMHbIyXMbxOE6WKRzyVm7v2r0JUDfkwe4RLeGXRLWsX94wD8N
+         0sAJ6BtAPLi9Kuz4C94+pPAl1PJYWGnntW4wmvxm8GnevcFOqaaH+mKgKLzenTbX4dNs
+         0x4YOhsgqITxsI0g+Rdpal8yRC4btxhU2BUmILvNpcfqR4pS8H+1+7j/weXImMEtii57
+         GOmEbJH1O+9b79lhcN4ZAXWstqQvSydvNaHFuIGDGJxcW1O5AoUuFDuqd0Lma85Uew0K
+         h59dmc+KXTKp+zvIx9yg8ihT0PBfP0cp5jp+rxX9Q4k6003CEtDZ4fzH03fr/5XsmJQj
+         P9AA==
+X-Gm-Message-State: AOAM530PRAPx1p6w596z3axiWfSKauT44TmJ+IHYfhU2je+HLZGqtX1b
+        zIDxNWYv5wP2osYj3havUvg2AQKz40UI1WPKcXvvgQ==
+X-Google-Smtp-Source: ABdhPJwFiSrA1WyKAJ3QOZVAg4E0gV7YsjWEijBGwjO9wjm2Wyh1/Ocie0SCJqhwKTKi5U//VRSxTwUeqtXSwW1SiPE=
+X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr6432078lfu.40.1644531829105;
+ Thu, 10 Feb 2022 14:23:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20220210081437.1884008-1-shakeelb@google.com> <20220210081437.1884008-5-shakeelb@google.com>
- <YgVyZrDPxVgP6OLG@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YgVyZrDPxVgP6OLG@carbon.dhcp.thefacebook.com>
+References: <20220210081437.1884008-1-shakeelb@google.com> <20220210081437.1884008-2-shakeelb@google.com>
+ <YgVtGhvXqqVzTy7M@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YgVtGhvXqqVzTy7M@carbon.dhcp.thefacebook.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 10 Feb 2022 14:22:36 -0800
-Message-ID: <CALvZod5xFmCVV_AZO1be8pYakmDvYh-QXmNYtTNT4zvCw-m4bQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] memcg: synchronously enforce memory.high
+Date:   Thu, 10 Feb 2022 14:23:37 -0800
+Message-ID: <CALvZod4Ex+0q+4pDnR8q6bpV8Q5NKbt=5c6SDVUDVnKxTqUNRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] memcg: refactor mem_cgroup_oom
 To:     Roman Gushchin <guro@fb.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@suse.com>,
@@ -70,44 +70,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 12:15 PM Roman Gushchin <guro@fb.com> wrote:
+On Thu, Feb 10, 2022 at 11:53 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Thu, Feb 10, 2022 at 12:14:34AM -0800, Shakeel Butt wrote:
+> > The function mem_cgroup_oom returns enum which has four possible values
+> > but the caller does not care about such values and only care if the
+> > return value is OOM_SUCCESS or not. So, remove the enum altogether and
+> > make mem_cgroup_oom returns a simple bool.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+>
+> Nice!
+>
+> Reviewed-by: Roman Gushchin <guro@fb.com>
+
+Thanks.
 >
 [...]
 >
-> Has this approach been extensively tested in the production?
->
-> Injecting sleeps at return-to-userspace moment is safe in terms of priority
-> inversions: a slowed down task will unlikely affect the rest of the system.
->
-> It way less predictable for a random allocation in the kernel mode, what if
-> the task is already holding a system-wide resource?
->
-> Someone might argue that it's not better than a system-wide memory shortage
-> and the same allocation might go into a direct reclaim anyway, but with
-> the way how memory.high is used it will happen way more often.
+> The only thing, I'd add a small comment on the return value here. E.g.
+> "returns true if one or more tasks have been successfully killed" or something
+> like this.
 >
 
-Thanks for the review.
-
-This patchset is tested in the test environment for now and I do plan
-to test this in production but that is a slow process and will take
-some time.
-
-Let me answer the main concern you have raised i.e. the safety of
-throttling a task synchronously in the charge code path. Please note
-that synchronous memory reclaim and oom-killing can already cause the
-priority inversion issues you have mentioned. The way we usually
-tackle such issues are through userspace controllers. For example oomd
-is the userspace solution for catering such issues related to
-oom-killing. Here we have a similar userspace daemon monitoring the
-workload and deciding if it should let the workload grow or kill it.
-
-Now should we keep the current high limit enforcement implementation
-and let it be ineffective for some real workloads or should we make
-the enforcement more robust and let the userspace tackle some corner
-case priority inversion issues. I think we should follow the second
-option as we already have precedence of doing the same for reclaim and
-oom-killing.
-
-thanks,
-Shakeel
+Will do in the next version.
