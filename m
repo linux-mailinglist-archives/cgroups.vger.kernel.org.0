@@ -2,91 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1954B0303
-	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 03:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7F64B0323
+	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 03:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbiBJCCP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Feb 2022 21:02:15 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33556 "EHLO
+        id S229988AbiBJCMe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Feb 2022 21:12:34 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbiBJCAP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Feb 2022 21:00:15 -0500
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18FB2AA8C;
-        Wed,  9 Feb 2022 17:37:13 -0800 (PST)
-Received: by mail-ej1-f46.google.com with SMTP id ka4so11626412ejc.11;
-        Wed, 09 Feb 2022 17:37:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hi13+0AtzbStYByZM4x4aFlINJC7bo3Kt6Lh5RP5h4I=;
-        b=dS54NUwsHmTH733rbm6skuFOqNSWHxb0d+f/jhaNF5rcqklxEw9ZbWjwh9/rUMoYdY
-         Fs6FF6u7mOsAM/Rkjy5+dyZBUsfH9XLdr5PhGPDQ2XdjbDtKV/kxZ1PUsnz7+qxIPuh4
-         MsLR7ayLq6BV9pTh5EqLKy5278SH1iL5vfvW4AFzV2ex0Xw4wc0RmPBm8zdTC8M6jbRp
-         i+5Pu/lzSj3BhIMmthm3IvfRJ5D4zKRsxfzFGGy73l6LdAHpyO3Vs0v19tb4HsEK4WoI
-         6Y+56wa7uchPqi76l/s2tle42N9CGV8GkWRtn33Qk39X3cXa6ffQaR6jJAp4YtljvTBc
-         2zSA==
-X-Gm-Message-State: AOAM531cnxLpkYwASiI2Ouvm4Rz76Tk5Y2NC0Pf9JJGB1+Gn3Xr+RIN9
-        OQUCfoPPPZg5SvaZ8baBXcWqAH94YIUjjHVoM+wRyvP2
-X-Google-Smtp-Source: ABdhPJzZvnlJt99+GIG+klBaTJQcc/Z6vAhuqEVXq5NuAa23zEuQluX/L2PyRqxOmq/geXpyXWqIXcWqvbgPSRooCuM=
-X-Received: by 2002:a05:6512:3186:: with SMTP id i6mr3590137lfe.47.1644453189598;
- Wed, 09 Feb 2022 16:33:09 -0800 (PST)
+        with ESMTP id S229756AbiBJCMb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Feb 2022 21:12:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D5B3115D
+        for <cgroups@vger.kernel.org>; Wed,  9 Feb 2022 18:12:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644459151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P6vE7TMM8XQmUx/JZEXZ7KbzC9HN6qrtMSQNLqqgwc0=;
+        b=KgO+gOPOpabPBoMJb9fHAwjr5W73zbyGivNm1s1Vlc11u1PeKzVAhVCcfLklEdVzO90wXk
+        MCT7LUaDf4xe1+Kjxigpyma0aCdER4I7TCZhn8pLQPaDJVpe3fSkdxBTlUigpZRNZK3A9i
+        ymSDKyrQr/JNkN4SnLE6NVX/glcNRIU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-319-ouDSCyF9O2mGWJ3xs_HXuA-1; Wed, 09 Feb 2022 21:12:26 -0500
+X-MC-Unique: ouDSCyF9O2mGWJ3xs_HXuA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A4731937FC1;
+        Thu, 10 Feb 2022 02:12:23 +0000 (UTC)
+Received: from [10.22.9.207] (unknown [10.22.9.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BD924ABAF;
+        Thu, 10 Feb 2022 02:12:20 +0000 (UTC)
+Message-ID: <8c85f624-690e-1b96-2e7e-2c1695373437@redhat.com>
+Date:   Wed, 9 Feb 2022 21:12:20 -0500
 MIME-Version: 1.0
-References: <20220208184208.79303-1-namhyung@kernel.org> <20220209090908.GK23216@worktop.programming.kicks-ass.net>
-In-Reply-To: <20220209090908.GK23216@worktop.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 9 Feb 2022 16:32:58 -0800
-Message-ID: <CAM9d7cgq+jxu6FJuKhZkprn7dO4DiG5pDjmYZzneQYTfKOM85g@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
 Subject: Re: [RFC 00/12] locking: Separate lock tracepoints from
  lockdep/lock_stat (v1)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
+Content-Language: en-US
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        rostedt <rostedt@goodmis.org>,
         Byungchul Park <byungchul.park@lge.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Radoslaw Burny <rburny@google.com>, Tejun Heo <tj@kernel.org>,
         rcu <rcu@vger.kernel.org>, cgroups <cgroups@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
         intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        paulmck <paulmck@kernel.org>
+References: <20220208184208.79303-1-namhyung@kernel.org>
+ <20220209090908.GK23216@worktop.programming.kicks-ass.net>
+ <24fe6a08-5931-8e8d-8d77-459388c4654e@redhat.com>
+ <919214156.50301.1644431371345.JavaMail.zimbra@efficios.com>
+ <69e5f778-8715-4acf-c027-58b6ec4a9e77@redhat.com>
+ <CAM9d7ci=N2NVj57k=W0ebqBzfW+ThBqYSrx-CZbgwGcbOSrEGA@mail.gmail.com>
+ <718973621.50447.1644434890744.JavaMail.zimbra@efficios.com>
+ <CAM9d7cj=tj6pA48q_wkQOGn-2vUc9FRj63bMBOm5R7OukmMbTQ@mail.gmail.com>
+ <f8b7760f-16a2-6ada-de88-9e21a7e8fef9@redhat.com>
+ <CAM9d7chH0Pvxx_FURL0sZvawwenRmjPyfac_9oinOaRwv8isng@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAM9d7chH0Pvxx_FURL0sZvawwenRmjPyfac_9oinOaRwv8isng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 9, 2022 at 1:09 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Feb 08, 2022 at 10:41:56AM -0800, Namhyung Kim wrote:
->
-> > Eventually I'm mostly interested in the contended locks only and I
-> > want to reduce the overhead in the fast path.  By moving that, it'd be
-> > easy to track contended locks with timing by using two tracepoints.
->
-> So why not put in two new tracepoints and call it a day?
->
-> Why muck about with all that lockdep stuff just to preserve the name
-> (and in the process continue to blow up data structures etc..). This
-> leaves distros in a bind, will they enable this config and provide
-> tracepoints while bloating the data structures and destroying things
-> like lockref (which relies on sizeof(spinlock_t)), or not provide this
-> at all.
 
-If it's only lockref, is it possible to change it to use arch_spinlock_t
-so that it can remain in 4 bytes?  It'd be really nice if we can keep
-spin lock size, but it'd be easier to carry the name with it for
-analysis IMHO.
+On 2/9/22 19:27, Namhyung Kim wrote:
+> On Wed, Feb 9, 2022 at 12:17 PM Waiman Long <longman@redhat.com> wrote:
+>>
+>> On 2/9/22 14:45, Namhyung Kim wrote:
+>>> On Wed, Feb 9, 2022 at 11:28 AM Mathieu Desnoyers
+>>> <mathieu.desnoyers@efficios.com> wrote:
+>>>> ----- On Feb 9, 2022, at 2:22 PM, Namhyung Kim namhyung@kernel.org wrote:
+>>>>> I'm also concerning dynamic allocated locks in a data structure.
+>>>>> If we keep the info in a hash table, we should delete it when the
+>>>>> lock is gone.  I'm not sure we have a good place to hook it up all.
+>>>> I was wondering about this use case as well. Can we make it mandatory to
+>>>> declare the lock "class" (including the name) statically, even though the
+>>>> lock per-se is allocated dynamically ? Then the initialization of the lock
+>>>> embedded within the data structure would simply refer to the lock class
+>>>> definition.
+>>> Isn't it still the same if we have static lock classes that the entry needs
+>>> to be deleted from the hash table when it frees the data structure?
+>>> I'm more concerned about free than alloc as there seems to be no
+>>> API to track that in a place.
+>> We may have to invent some new APIs to do that. For example,
+>> spin_lock_exit() can be the counterpart of spin_lock_init() and so on.
+>> Of course, existing kernel code have to be modified to designate the
+>> point after which a lock is no longer being used or is freed.
+> Yeah, but I'm afraid that it could be easy to miss something.
+> Also it would add some runtime overhead due to maintaining
+> the hash table even if the tracepoints are not used.
 
-Thanks,
-Namhyung
+Yes, there is some overhead at lock init and exit time, but it is 
+generally negligible if the lock is used multiple times. The hash table 
+will consume some additional memory if configured, but it shouldn't be much.
+
+Cheers,
+Longman
+
