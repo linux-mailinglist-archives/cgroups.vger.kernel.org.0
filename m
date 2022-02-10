@@ -2,51 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0430D4B07E5
-	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 09:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B904B07E8
+	for <lists+cgroups@lfdr.de>; Thu, 10 Feb 2022 09:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbiBJIOw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Feb 2022 03:14:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51940 "EHLO
+        id S234713AbiBJIPF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Feb 2022 03:15:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233744AbiBJIOw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 03:14:52 -0500
+        with ESMTP id S237159AbiBJIPE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Feb 2022 03:15:04 -0500
 Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350DF1097
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 00:14:54 -0800 (PST)
-Received: by mail-oo1-xc49.google.com with SMTP id r12-20020a4aea8c000000b002fd5bc5d365so3146455ooh.18
-        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 00:14:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FEC109E
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 00:15:06 -0800 (PST)
+Received: by mail-oo1-xc49.google.com with SMTP id y20-20020a4acb94000000b003185ebeeffdso454475ooq.15
+        for <cgroups@vger.kernel.org>; Thu, 10 Feb 2022 00:15:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=T9FcBDMwvgeHBlJy4y16uXfaabYSCGyJ3a5EN/2FH/k=;
-        b=MxdsYuSId5HtvKIg92vKZD2AqHFrlV0PE/vRdDgoIOtAxeRQ9ojCRGSaEaK45fB/bh
-         We8jMJdFWXIW3lmpW/ZDfeZqIzKdt/QwufKjFYFwGOjP5J1vxnhO4F61EVjj6I5nQCH9
-         fDEgALX0BPefVUNsfL9sWq0H2oZnkV64CrnT5tb6XTyHRbhSH20LE7MeL9YrcLKE+Upn
-         ca0C2CBxPkElew+dpCqGOsBsQheR9rbsOFacWIyuWmkdp6LjxepL0z7kc5y4slTtujd4
-         Lyx2Ub3/D9/fZ76P15/g2wgvb8rYb5WxFCWJrzgsjaJGP5phBtg3xbKKR3MOb87xNC86
-         TOKw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=ccL+prLnNui1wQO9OJC//pr1nIoZqpsfs/6QLowjnxA=;
+        b=pmWp6X7ryarZ+YnBgBkSYNZxfbT8EUlpu8mZWkUUtaqWZTASUegrZGNcgLJM6LDrfa
+         sOyZ5paq6lfQOFy7Maq4sHUcY9hzReQFMlxZLwCDGu/xt0EMaw3WG10U2i4brkjeC1ZN
+         cTNPjKYzdbfmwoU3+S2uZkl6/qBNFL5mgkZ5IDt/F1jziJdPtD6JcM5+aDpIlRdfgXeG
+         ZwDPGoUDwhz7YwmvtmbB011F5qAf/buznwxzhCM7vdskuMAf5xAw1VCbJL70Q2M0x5Rn
+         KdTFwyttN8r6iGaw76vM+QZ7PWhQpOvxdEIg08Ms6pYH71vRsTnDCxQsmfoWxtiRLr65
+         uIcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=T9FcBDMwvgeHBlJy4y16uXfaabYSCGyJ3a5EN/2FH/k=;
-        b=YHcXCTkTilwXV1SKp9RI7DB4b4U4NFzBlmD99omdDMVK8VKvWRJS24z+GnjiEdIa4r
-         GE59IltcOAIoQz8gno7JHiQcBzzBp+ony0gFRLNgYHw75qUJFm6FBpFgcbjM1gI4pYtL
-         tKCZKL5r1BZADDqVP6QYcRDvSc/hiVxHag9Itf5TD5goE9pvdN7GbyHP3qXNTi6X916k
-         UKbCJdJ5FwMZOMB7rsYDxRA/uYP61lZKzRuLZnBca+yCMGNIG28koQcak8Go3x1xSfcU
-         fAKZYaWwxPgaZnllQCP07zlEsSssuW2rE3wIzyUiF12rOfRG2VCqqj8moZZrBPuZ5/F0
-         EKMg==
-X-Gm-Message-State: AOAM532fs2ITx4yRQVZe7mbww8Nal0ulMSj6cCuDJwVdmAXeMlYJL2cH
-        vQ5A0z3sAPE2T7jbb1RrXb453Ktp/OOVFw==
-X-Google-Smtp-Source: ABdhPJwpmJs5KvIzTk+4UqumkYVhgfmnjA3Xqt4XkjaPcdUfPtlskWzbyZqOPhpvf84nMJpU67NzE5RGU1VfFw==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ccL+prLnNui1wQO9OJC//pr1nIoZqpsfs/6QLowjnxA=;
+        b=0+dqLPjbcCiOZ3UJPsGBo4dVkQSvhwIWWiKfTPd3UHTpCYZ4cFlKYlDTxy4NJP6jsv
+         Z0cRcsX+HnJch8AQrbGU/OaVkcuwd4LXERLzZtQFyHLirioGntJQ7hiAxx8+FDOP0/T8
+         MAEdAEbw77jGgkyieBkmcPJeR/83qnH73pFoNi1ARj59puTFBGhgaQwORmj7pvgdBNgR
+         Hy1myj5RK0TmICWj2nqu2OTs07Oam+9YrA/LlWEMOKceNnaOqpk1e6jwVFeSRzdvCBFd
+         5UfqrkJ1W5yf5/iVb7AoOcVrz8jBMC1s9rNNd9/PuzkpczcCVY3YnQ4TGrguYODpkeae
+         Z0vA==
+X-Gm-Message-State: AOAM533r9qHji+t6VNWVBA+6ylO92Sc9T4rIw+CHYNkRvIhU4A8A6Prw
+        pMIfIhB4HLfdjAh2buxo8ZGi/ihwOBWcmA==
+X-Google-Smtp-Source: ABdhPJzB3TPZFNIkTQlaHtc3qFPKgIqNHdfKDG4RKgU30NjreLXhCTGWbciK4zFungSiwD0o3q561rgbbNdsbg==
 X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:6801:6774:cb90:c600])
- (user=shakeelb job=sendgmr) by 2002:a05:6808:1688:: with SMTP id
- bb8mr599419oib.163.1644480893417; Thu, 10 Feb 2022 00:14:53 -0800 (PST)
-Date:   Thu, 10 Feb 2022 00:14:33 -0800
-Message-Id: <20220210081437.1884008-1-shakeelb@google.com>
+ (user=shakeelb job=sendgmr) by 2002:a05:6808:168a:: with SMTP id
+ bb10mr573255oib.246.1644480905495; Thu, 10 Feb 2022 00:15:05 -0800 (PST)
+Date:   Thu, 10 Feb 2022 00:14:34 -0800
+In-Reply-To: <20220210081437.1884008-1-shakeelb@google.com>
+Message-Id: <20220210081437.1884008-2-shakeelb@google.com>
 Mime-Version: 1.0
+References: <20220210081437.1884008-1-shakeelb@google.com>
 X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
-Subject: [PATCH 0/4] memcg: robust enforcement of memory.high
+Subject: [PATCH 1/4] memcg: refactor mem_cgroup_oom
 From:   Shakeel Butt <shakeelb@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>
@@ -65,29 +69,98 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Due to the semantics of memory.high enforcement i.e. throttle the
-workload without oom-kill, we are trying to use it for right sizing the
-workloads in our production environment. However we observed the
-mechanism fails for some specific applications which does bug chunck of
-allocations in a single syscall. The reason behind this failure is due
-to the limitation of the memory.high enforcement's current
-implementation. This patch series solves this issue by enforcing the
-memory.high synchronously and making it more robust.
+The function mem_cgroup_oom returns enum which has four possible values
+but the caller does not care about such values and only care if the
+return value is OOM_SUCCESS or not. So, remove the enum altogether and
+make mem_cgroup_oom returns a simple bool.
 
-Shakeel Butt (4):
-  memcg: refactor mem_cgroup_oom
-  memcg: unify force charging conditions
-  selftests: memcg: test high limit for single entry allocation
-  memcg: synchronously enforce memory.high
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 40 +++++++++++++---------------------------
+ 1 file changed, 13 insertions(+), 27 deletions(-)
 
- include/linux/page_counter.h                  |  10 +
- mm/memcontrol.c                               | 175 ++++++++++--------
- mm/page_counter.c                             |  59 ++++--
- tools/testing/selftests/cgroup/cgroup_util.c  |  15 +-
- tools/testing/selftests/cgroup/cgroup_util.h  |   1 +
- .../selftests/cgroup/test_memcontrol.c        |  78 ++++++++
- 6 files changed, 240 insertions(+), 98 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a0e9d9f12cf5..c40c27822802 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1795,20 +1795,12 @@ static void memcg_oom_recover(struct mem_cgroup *memcg)
+ 		__wake_up(&memcg_oom_waitq, TASK_NORMAL, 0, memcg);
+ }
+ 
+-enum oom_status {
+-	OOM_SUCCESS,
+-	OOM_FAILED,
+-	OOM_ASYNC,
+-	OOM_SKIPPED
+-};
+-
+-static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
++static bool mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int order)
+ {
+-	enum oom_status ret;
+-	bool locked;
++	bool locked, ret = false;
+ 
+ 	if (order > PAGE_ALLOC_COSTLY_ORDER)
+-		return OOM_SKIPPED;
++		return ret;
+ 
+ 	memcg_memory_event(memcg, MEMCG_OOM);
+ 
+@@ -1831,14 +1823,13 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+ 	 * victim and then we have to bail out from the charge path.
+ 	 */
+ 	if (memcg->oom_kill_disable) {
+-		if (!current->in_user_fault)
+-			return OOM_SKIPPED;
+-		css_get(&memcg->css);
+-		current->memcg_in_oom = memcg;
+-		current->memcg_oom_gfp_mask = mask;
+-		current->memcg_oom_order = order;
+-
+-		return OOM_ASYNC;
++		if (current->in_user_fault) {
++			css_get(&memcg->css);
++			current->memcg_in_oom = memcg;
++			current->memcg_oom_gfp_mask = mask;
++			current->memcg_oom_order = order;
++		}
++		return ret;
+ 	}
+ 
+ 	mem_cgroup_mark_under_oom(memcg);
+@@ -1849,10 +1840,7 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+ 		mem_cgroup_oom_notify(memcg);
+ 
+ 	mem_cgroup_unmark_under_oom(memcg);
+-	if (mem_cgroup_out_of_memory(memcg, mask, order))
+-		ret = OOM_SUCCESS;
+-	else
+-		ret = OOM_FAILED;
++	ret = mem_cgroup_out_of_memory(memcg, mask, order);
+ 
+ 	if (locked)
+ 		mem_cgroup_oom_unlock(memcg);
+@@ -2545,7 +2533,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	int nr_retries = MAX_RECLAIM_RETRIES;
+ 	struct mem_cgroup *mem_over_limit;
+ 	struct page_counter *counter;
+-	enum oom_status oom_status;
+ 	unsigned long nr_reclaimed;
+ 	bool passed_oom = false;
+ 	bool may_swap = true;
+@@ -2648,9 +2635,8 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * a forward progress or bypass the charge if the oom killer
+ 	 * couldn't make any progress.
+ 	 */
+-	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+-		       get_order(nr_pages * PAGE_SIZE));
+-	if (oom_status == OOM_SUCCESS) {
++	if (mem_cgroup_oom(mem_over_limit, gfp_mask,
++			   get_order(nr_pages * PAGE_SIZE))) {
+ 		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
 -- 
 2.35.1.265.g69c8d7142f-goog
 
