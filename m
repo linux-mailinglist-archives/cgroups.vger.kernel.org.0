@@ -2,90 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B114B2A01
-	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 17:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492E24B2E90
+	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 21:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348638AbiBKQT1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Feb 2022 11:19:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47414 "EHLO
+        id S242257AbiBKUgz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Feb 2022 15:36:55 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351462AbiBKQTP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 11:19:15 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C88D90
-        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 08:19:12 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id b12-20020a056902030c00b0061d720e274aso19663805ybs.20
-        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 08:19:12 -0800 (PST)
+        with ESMTP id S1352677AbiBKUgy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 15:36:54 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF7AD53
+        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 12:36:46 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id e17so14063903ljk.5
+        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 12:36:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=09UL10d0I9UYF+bVDoR9sZ50jMDUcLUx49HZh4jVL78=;
-        b=JE1EYWsWmJMVKKKziQTWEWuNUsyaPxqCZ/opyUrIE1QJ2zMzT8OF9HdxhY+GhtuCaK
-         HyDDiusYJME2veTyqvuwR1555jPMqz95nnShokOB0VNQWEe93IdgXongToVPd90O3dAV
-         IimzoYc1rIm15su0G+eGvhoRyruDLS+nZbjAQSDDWgXzx6DUp60nKevkdTlnOcGS/yxC
-         7VDKvQJbgIkNVOdKUHyv+vhK1BCP41v5/xbIT27E+bix812dIwb5ma26aGylR3U5/hbr
-         /YZu4e+ldXsQQ0aLJTqhpqIkZ/qs9fg8ieI0b6EipnVFoSEM/clguN4lkL+c5q3or2+f
-         JMAw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CCAsjj+/2EPlyUQtiVo8WDkzcxXnQjrZ0PEqMW7wI0o=;
+        b=ppE7RooPi4WL00e0ZLJbFk100+IS02OV5QywrNLcKaCJbEtR4YxukPIudnLp8SeKMe
+         1NpTHSxW8chgPGf7JOY4Ea15KZrCmewdQuJqeHkqMC3F2oB8XRhcoJdjL6j9/F+7f8WJ
+         uUAPTnA1DepzO0Qt+pe0IQN9d9vuPEWAghF7tyEwP6gcUibW6u7V60dsZ2Om7MgSwh3u
+         hnqtLmgCUXP8KKVYUrxRFdwOov2m9joI3QdDjxk8pE/fUxhg1L3y/BZJCLku2CDajQza
+         5EbbCjrTyKK1IaSFwD9Kfjiz5aTiqTn7xQlm4sYnrDALmXTu3uE6ySHxWdrZ9XJkKkF2
+         1Hdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=09UL10d0I9UYF+bVDoR9sZ50jMDUcLUx49HZh4jVL78=;
-        b=1z2k89kevpIT/quo9YTuYDq97+HdKmULpk3f5yedbDy7s+/6gnAENwjwwbjtRwyQrY
-         d/FKsySs3tFHUY1m7xHlZX7sle3QSF/lkDnBNeMiC0PjgaOzvA80gVVc0EWKBs+M3Slh
-         /I1y0PK2SXXDx2tVVDkyAJ0e43zqhYjKF4Q8wOnumHNvkMRP5VIUhczWZKY11Bv98M8u
-         Xh20fo40XVpMHcSnVFxWNmF2XdMQIg9DIfNX1e60uSpg9Zv+6+LKnNShUKSgiuYfTm8p
-         LENwXlCYA/Ofq7DXOiWXrLnEAzqhGLKjiPpvq7GaoRr5YxFlNH01jAd07XS2IoX3Pp/O
-         WDAw==
-X-Gm-Message-State: AOAM533si96zsoQ+n49HVG0Q18W58HWCawXxKh+3+/IbOzCvtPUiJYD3
-        LFMWaw0jwFAVTDhf7G8oAuByDm7w0GbRCso=
-X-Google-Smtp-Source: ABdhPJyt28xsiqi+oRkwIgJ74WzjQyOoBVx2xkYnBQvOje0p3ZB58ZSdJeKE27JlSq7ErJdcjRoIy8BigQrNax8=
-X-Received: from tj2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:187])
- (user=tjmercier job=sendgmr) by 2002:a81:d007:: with SMTP id
- v7mr2415829ywi.88.1644596352146; Fri, 11 Feb 2022 08:19:12 -0800 (PST)
-Date:   Fri, 11 Feb 2022 16:18:29 +0000
-In-Reply-To: <20220211161831.3493782-1-tjmercier@google.com>
-Message-Id: <20220211161831.3493782-7-tjmercier@google.com>
-Mime-Version: 1.0
-References: <20220211161831.3493782-1-tjmercier@google.com>
-X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
-Subject: [RFC v2 6/6] android: binder: Add a buffer flag to relinquish
- ownership of fds
-From:   "T.J. Mercier" <tjmercier@google.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     kaleshsingh@google.com, Kenny.Ho@amd.com,
-        "T.J. Mercier" <tjmercier@google.com>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CCAsjj+/2EPlyUQtiVo8WDkzcxXnQjrZ0PEqMW7wI0o=;
+        b=ii4gH819B/ugN6Ug87DnMnGD8rAa4OSB99lHccMxm51EDD2XVzLsM962bjOkst/zcC
+         vNCI7wc9UPuia1c79xGAMaO70ElFObkIZ2M7HvLnuREd+Ft5VtOq4SmZ2xesuc/0qFUu
+         Kcv21T02D60FxCnbzR7nlLYP/22yheUWd4ADozJV7yzJdMAp6gSaGpa7sz5gWug8cUJ+
+         85InypMt2nRdyW/snLjutDbdUveb0tlmlJBI5iQDaIO6FJ+0hruhbJ/7Be0+jlpX0XJW
+         oQFTxdGV/Vqu0P45/F2HuFcQ8qOPDkb2h/wUtTzwUqc1Ew4un+qtuT0AA3EwVJqQPAQm
+         bprw==
+X-Gm-Message-State: AOAM531hrngj0AEt+BtWPJWCB+E//d1AMJV9tT/qBHU6IF+JvFfCTusR
+        tem71/Z3P6tvkTIR3Jrp4pAUtShF6qIats2TaOWBfg==
+X-Google-Smtp-Source: ABdhPJwVEa48rkJ6G8rmFGKX6ejD7MgqMsPEy2hj6bqYfREd84v21zv7mlJcxID3H7rLs2teXuRiEvkPefLlwn+Djcc=
+X-Received: by 2002:a2e:b16e:: with SMTP id a14mr1959958ljm.35.1644611804994;
+ Fri, 11 Feb 2022 12:36:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20220211064917.2028469-1-shakeelb@google.com> <20220211064917.2028469-5-shakeelb@google.com>
+ <YgZS+YijLo0/WmEd@chrisdown.name>
+In-Reply-To: <YgZS+YijLo0/WmEd@chrisdown.name>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 11 Feb 2022 12:36:33 -0800
+Message-ID: <CALvZod6FwcSyi3B-3fkw4e+7BGrjFF2iRLEZVeurLp2+v-k-dg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] memcg: synchronously enforce memory.high for large overcharges
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,119 +69,54 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch introduces a buffer flag BINDER_BUFFER_FLAG_SENDER_NO_NEED
-that a process sending an fd array to another process over binder IPC
-can set to relinquish ownership of the fds being sent for memory
-accounting purposes. If the flag is found to be set during the fd array
-translation and the fd is for a DMA-BUF, the buffer is uncharged from
-the sender's cgroup and charged to the receiving process's cgroup
-instead.
+On Fri, Feb 11, 2022 at 4:13 AM Chris Down <chris@chrisdown.name> wrote:
+>
+[...]
+> >To make high limit enforcement more robust, this patch makes the limit
+> >enforcement synchronous only if the accumulated overcharge becomes
+> >larger than MEMCG_CHARGE_BATCH. So, most of the allocations would still
+> >be throttled on the return-to-userspace path but only the extreme
+> >allocations which accumulates large amount of overcharge without
+> >returning to the userspace will be throttled synchronously. The value
+> >MEMCG_CHARGE_BATCH is a bit arbitrary but most of other places in the
+> >memcg codebase uses this constant therefore for now uses the same one.
+>
+> Note that mem_cgroup_handle_over_high() has its own allocator throttling grace
+> period, where it bails out if the penalty to apply is less than 10ms. The
+> reclaim will still happen, though. So throttling might not happen even for
+> roughly MEMCG_CHARGE_BATCH-sized allocations, depending on the overall size of
+> the cgroup and its protection.
+>
 
-It is up to the sending process to ensure that it closes the fds
-regardless of whether the transfer failed or succeeded.
+Here by throttling, I meant both reclaim and
+schedule_timeout_killable(). I don't want to say low level details
+which might change in future.
 
-Most graphics shared memory allocations in Android are done by the
-graphics allocator HAL process. On requests from clients, the HAL process
-allocates memory and sends the fds to the clients over binder IPC.
-The graphics allocator HAL will not retain any references to the
-buffers. When the HAL sets the BINDER_BUFFER_FLAG_SENDER_NO_NEED for fd
-arrays holding DMA-BUF fds, the gpu cgroup controller will be able to
-correctly charge the buffers to the client processes instead of the
-graphics allocator HAL.
+[...]
+>
+> Thanks, I was going to comment on v1 that I prefer to keep the implementation
+> of mem_cgroup_handle_over_high if possible since we know that the mechanism has
+> been safe in production over the past few years.
+>
+> One question I have is about throttling. It looks like this new
+> mem_cgroup_handle_over_high callsite may mean that throttling is invoked more
+> than once on a misbehaving workload that's failing to reclaim since the
+> throttling could be invoked both here and in return to userspace, right? That
+> might not be a problem, but we should think about the implications of that,
+> especially in relation to MEMCG_MAX_HIGH_DELAY_JIFFIES.
+>
 
-From: Hridya Valsaraju <hridya@google.com>
-Signed-off-by: Hridya Valsaraju <hridya@google.com>
-Co-developed-by: T.J. Mercier <tjmercier@google.com>
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
----
-changes in v2
-- Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
-heap to a single dma-buf function for all heaps per Daniel Vetter and
-Christian K=C3=B6nig.
+Please note that mem_cgroup_handle_over_high() clears
+memcg_nr_pages_over_high and if on the return-to-userspace path
+mem_cgroup_handle_over_high() finds that memcg_nr_pages_over_high is
+non-zero, then it means the task has further accumulated the charges
+over high limit after a possibly synchronous
+memcg_nr_pages_over_high() call.
 
- drivers/android/binder.c            | 26 ++++++++++++++++++++++++++
- include/uapi/linux/android/binder.h |  1 +
- 2 files changed, 27 insertions(+)
+> Maybe we should record if throttling happened previously and avoid doing it
+> again for this entry into kernelspace? Not certain that's the right answer, but
+> we should think about what the new semantics should be.
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 8351c5638880..f50d88ded188 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -42,6 +42,7 @@
-=20
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-=20
-+#include <linux/dma-buf.h>
- #include <linux/fdtable.h>
- #include <linux/file.h>
- #include <linux/freezer.h>
-@@ -2482,8 +2483,10 @@ static int binder_translate_fd_array(struct list_hea=
-d *pf_head,
- {
- 	binder_size_t fdi, fd_buf_size;
- 	binder_size_t fda_offset;
-+	bool transfer_gpu_charge =3D false;
- 	const void __user *sender_ufda_base;
- 	struct binder_proc *proc =3D thread->proc;
-+	struct binder_proc *target_proc =3D t->to_proc;
- 	int ret;
-=20
- 	fd_buf_size =3D sizeof(u32) * fda->num_fds;
-@@ -2521,8 +2524,15 @@ static int binder_translate_fd_array(struct list_hea=
-d *pf_head,
- 	if (ret)
- 		return ret;
-=20
-+	if (IS_ENABLED(CONFIG_CGROUP_GPU) &&
-+		parent->flags & BINDER_BUFFER_FLAG_SENDER_NO_NEED)
-+		transfer_gpu_charge =3D true;
-+
- 	for (fdi =3D 0; fdi < fda->num_fds; fdi++) {
- 		u32 fd;
-+		struct dma_buf *dmabuf;
-+		struct gpucg *gpucg;
-+
- 		binder_size_t offset =3D fda_offset + fdi * sizeof(fd);
- 		binder_size_t sender_uoffset =3D fdi * sizeof(fd);
-=20
-@@ -2532,6 +2542,22 @@ static int binder_translate_fd_array(struct list_hea=
-d *pf_head,
- 						  in_reply_to);
- 		if (ret)
- 			return ret > 0 ? -EINVAL : ret;
-+
-+		if (!transfer_gpu_charge)
-+			continue;
-+
-+		dmabuf =3D dma_buf_get(fd);
-+		if (IS_ERR(dmabuf))
-+			continue;
-+
-+		gpucg =3D gpucg_get(target_proc->tsk);
-+		ret =3D dma_buf_charge_transfer(dmabuf, gpucg);
-+		if (ret) {
-+			pr_warn("%d:%d Unable to transfer DMA-BUF fd charge to %d",
-+				proc->pid, thread->pid, target_proc->pid);
-+			gpucg_put(gpucg);
-+		}
-+		dma_buf_put(dmabuf);
- 	}
- 	return 0;
- }
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/andro=
-id/binder.h
-index 3246f2c74696..169fd5069a1a 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -137,6 +137,7 @@ struct binder_buffer_object {
-=20
- enum {
- 	BINDER_BUFFER_FLAG_HAS_PARENT =3D 0x01,
-+	BINDER_BUFFER_FLAG_SENDER_NO_NEED =3D 0x02,
- };
-=20
- /* struct binder_fd_array_object - object describing an array of fds in a =
-buffer
---=20
-2.35.1.265.g69c8d7142f-goog
-
+For now, I will keep this as is and will add a comment in the code and
+a mention in the commit message about it. I will wait for others to
+comment before sending the next version and thanks for taking a look.
