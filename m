@@ -2,148 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9C94B256D
-	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 13:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1FC4B2A0E
+	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 17:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbiBKMNv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Feb 2022 07:13:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55922 "EHLO
+        id S1351161AbiBKQSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Feb 2022 11:18:46 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbiBKMNu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 07:13:50 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B62B42
-        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 04:13:48 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id d10so22467588eje.10
-        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 04:13:48 -0800 (PST)
+        with ESMTP id S1351109AbiBKQSp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 11:18:45 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE3B2E8
+        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 08:18:43 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id s133-20020a252c8b000000b0062112290d0bso4759883ybs.23
+        for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 08:18:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OZFYLN+S6IkbZKtWQGnLOGDHtfELHim7rgW7KJNl2oA=;
-        b=GgzQiLfzSmdOrEWpzLCjSq3QC0hcb9rDCloigLalwdcFW/g9GKJ3a3Z0+28hLH8wbK
-         xp8IGtFCVCVQSyA9ZhpEaqrHjiShC/ZCizU4JmHjIzZ1F66JmvkQELHdJPnjFBAkJI3Q
-         hXYU9/IjNZR9rTRX5wDuSaFBFFg905KXUmqWg=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=yZLJCK7E+jF9SMNP1+4R/zXh1+xClGhVRWVCTVgc4sc=;
+        b=XMgJm0JnHLSh1BoAQZ0wKW1tqDREm4lLvo1GgrQbJjxOht9DuV2ml/M55v/YYYtwG0
+         EiX+KPa11IXCkHxfjDJ+jqjtozMdXO8Np1xzeO0YafmBD2TU0JlinyFCVvLW1rCwcCdZ
+         /67a9xCpHLDF2di7B26fW8eJ3s0rX9wB1nI24kFBk8sgAKm4tMtoVZMf/yF+8MHFUzmC
+         QNdvprMkp7K7VXtvF+nMffFYcUR4zeTM22B4QkFSF1Qw8M748l+D1HGKINDyJL+qVrEZ
+         7Hxo0m9piTC3QY0bjNEgwJt9fVXLWzIOFBU2gNAs/Btn+n7fz9/GKQAbXBpP767W1iWa
+         t4eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OZFYLN+S6IkbZKtWQGnLOGDHtfELHim7rgW7KJNl2oA=;
-        b=ZUzdTrfU/GZFsy7b/G2flvxmY8lVlMlGVV9g9mC/zJH1OFWC4nWbuQHfMZkMRRRZUS
-         p7pPANhCDbfmt5A1NvzLDyVq06BKXK25TiZb630XZ0mi2B6Puoj+FfrG7z2ZKRK3WFUF
-         Sr3sFZZ4cyFN4nDKLnrI10keGHRIvyzkAUaLEnjuU2scg3PwJm/oj9NzCTnD6k4DRv2V
-         4VcvJFm/VgnsGJ44ZBaTDwfVCcBq6Ebk+pQMXLyd5H2Vrb1Qw14Gk2vwdL7o+zCLvnNS
-         IRRxezdNVm52VLaXZSzR6c5S893sodXpt60BhBJ670ee2dPDmu8DLtlne3RoxJOF+cCI
-         A+Ig==
-X-Gm-Message-State: AOAM532M74CYmkOvM/y2IU2bq71HcgN4v1oJFCb755GF2nCS6eZDRD3c
-        6f6DKtseFi9cIBeeapzUdMnwAg==
-X-Google-Smtp-Source: ABdhPJyRtqUrUs+M3S+hu6tQUEiRGJ5QkqmMDrFjSkY5y8JkhDvsNhfxzQOQjlNJnDEFjbBJjNU4UA==
-X-Received: by 2002:a17:906:3b42:: with SMTP id h2mr1147665ejf.647.1644581626601;
-        Fri, 11 Feb 2022 04:13:46 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::5:bc0d])
-        by smtp.gmail.com with ESMTPSA id i22sm5828777ejx.128.2022.02.11.04.13.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Feb 2022 04:13:45 -0800 (PST)
-Date:   Fri, 11 Feb 2022 12:13:45 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] memcg: synchronously enforce memory.high for
- large overcharges
-Message-ID: <YgZS+YijLo0/WmEd@chrisdown.name>
-References: <20220211064917.2028469-1-shakeelb@google.com>
- <20220211064917.2028469-5-shakeelb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20220211064917.2028469-5-shakeelb@google.com>
-User-Agent: Mutt/2.1.5 (31b18ae9) (2021-12-30)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=yZLJCK7E+jF9SMNP1+4R/zXh1+xClGhVRWVCTVgc4sc=;
+        b=X8N6Gpfa/fMtMl0Bu9nKb4WtFj7z3x1xWIngMtiE7VdmV0pZnE56w62ds6acZfy9I9
+         Nunt/BkWOygw6OrWvL94o6asgH63tbsjYe0dEN87J4GKDomurHkj9hz8beSilqNMbFLd
+         7xl6VF0nteXppGj9Rs5XFU2BQIyGONMdb7rITF40a49JPM8TmfoTiYQHHrh4dy0egjV+
+         +0GE4QRmXMxImAN6gkPoigWAiOrVgZCfFFnzsHp4CmiAuX/WHtC13aF5nkcMgHkJHIxc
+         ifaOU1C8lW5VEQrzXvkpdxWihsu5x31SwSqPm4lJ9C8lo+3CHEkKj8HHH3Gq9dBjqGTs
+         FXIg==
+X-Gm-Message-State: AOAM530GUhgjiD5erV+ZYw0rg496drtInDGOvhzSFPSH+5xkckCX+2KO
+        5DcmrO19ysXTByOs4RbphnDFt4YGO7HAjmc=
+X-Google-Smtp-Source: ABdhPJzhF/L162IKZGA2v1vfeqRBtKk+kc26yO7jRh6AAqTqVZtjKGL2w7yvYf60mUisa/RM+m5bcl0vC/4rWsw=
+X-Received: from tj2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:187])
+ (user=tjmercier job=sendgmr) by 2002:a5b:c6:: with SMTP id
+ d6mr1955239ybp.273.1644596323025; Fri, 11 Feb 2022 08:18:43 -0800 (PST)
+Date:   Fri, 11 Feb 2022 16:18:23 +0000
+Message-Id: <20220211161831.3493782-1-tjmercier@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
+Subject: [RFC v2 0/6] Proposal for a GPU cgroup controller
+From:   "T.J. Mercier" <tjmercier@google.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     kaleshsingh@google.com, Kenny.Ho@amd.com,
+        "T.J. Mercier" <tjmercier@google.com>,
+        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Shakeel Butt writes:
->The high limit is used to throttle the workload without invoking the
->oom-killer. Recently we tried to use the high limit to right size our
->internal workloads. More specifically dynamically adjusting the limits
->of the workload without letting the workload get oom-killed. However due
->to the limitation of the implementation of high limit enforcement, we
->observed the mechanism fails for some real workloads.
->
->The high limit is enforced on return-to-userspace i.e. the kernel let
->the usage goes over the limit and when the execution returns to
->userspace, the high reclaim is triggered and the process can get
->throttled as well. However this mechanism fails for workloads which do
->large allocations in a single kernel entry e.g. applications that
->mlock() a large chunk of memory in a single syscall. Such applications
->bypass the high limit and can trigger the oom-killer.
->
->To make high limit enforcement more robust, this patch makes the limit
->enforcement synchronous only if the accumulated overcharge becomes
->larger than MEMCG_CHARGE_BATCH. So, most of the allocations would still
->be throttled on the return-to-userspace path but only the extreme
->allocations which accumulates large amount of overcharge without
->returning to the userspace will be throttled synchronously. The value
->MEMCG_CHARGE_BATCH is a bit arbitrary but most of other places in the
->memcg codebase uses this constant therefore for now uses the same one.
+This patch series revisits the proposal for a GPU cgroup controller to
+track and limit memory allocations by various device/allocator
+subsystems. The patch series also contains a simple prototype to
+illustrate how Android intends to implement DMA-BUF allocator
+attribution using the GPU cgroup controller. The prototype does not
+include resource limit enforcements.
 
-Note that mem_cgroup_handle_over_high() has its own allocator throttling grace 
-period, where it bails out if the penalty to apply is less than 10ms. The 
-reclaim will still happen, though. So throttling might not happen even for 
-roughly MEMCG_CHARGE_BATCH-sized allocations, depending on the overall size of 
-the cgroup and its protection.
+Changelog:
 
->Signed-off-by: Shakeel Butt <shakeelb@google.com>
->---
->Changes since v1:
->- Based on Roman's comment simply the sync enforcement and only target
->  the extreme cases.
->
-> mm/memcontrol.c | 5 +++++
-> 1 file changed, 5 insertions(+)
->
->diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->index 292b0b99a2c7..0da4be4798e7 100644
->--- a/mm/memcontrol.c
->+++ b/mm/memcontrol.c
->@@ -2703,6 +2703,11 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> 		}
-> 	} while ((memcg = parent_mem_cgroup(memcg)));
->
->+	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
->+	    !(current->flags & PF_MEMALLOC) &&
->+	    gfpflags_allow_blocking(gfp_mask)) {
->+		mem_cgroup_handle_over_high();
+v2:
+See the previous revision of this change submitted by Hridya Valsaraju
+at: https://lore.kernel.org/all/20220115010622.3185921-1-hridya@google.com/
 
-Thanks, I was going to comment on v1 that I prefer to keep the implementation 
-of mem_cgroup_handle_over_high if possible since we know that the mechanism has 
-been safe in production over the past few years.
+Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
+heap to a single dma-buf function for all heaps per Daniel Vetter and
+Christian K=C3=B6nig. Pointers to struct gpucg and struct gpucg_device
+tracking the current associations were added to the dma_buf struct to
+achieve this.
 
-One question I have is about throttling. It looks like this new 
-mem_cgroup_handle_over_high callsite may mean that throttling is invoked more 
-than once on a misbehaving workload that's failing to reclaim since the 
-throttling could be invoked both here and in return to userspace, right? That 
-might not be a problem, but we should think about the implications of that, 
-especially in relation to MEMCG_MAX_HIGH_DELAY_JIFFIES.
+Fix incorrect Kconfig help section indentation per Randy Dunlap.
 
-Maybe we should record if throttling happened previously and avoid doing it 
-again for this entry into kernelspace? Not certain that's the right answer, but 
-we should think about what the new semantics should be.
+History of the GPU cgroup controller
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The GPU/DRM cgroup controller came into being when a consensus[1]
+was reached that the resources it tracked were unsuitable to be integrated
+into memcg. Originally, the proposed controller was specific to the DRM
+subsystem and was intended to track GEM buffers and GPU-specific
+resources[2]. In order to help establish a unified memory accounting model
+for all GPU and all related subsystems, Daniel Vetter put forth a
+suggestion to move it out of the DRM subsystem so that it can be used by
+other DMA-BUF exporters as well[3]. This RFC proposes an interface that
+does the same.
 
->+	}
-> 	return 0;
-> }
->
->-- 
->2.35.1.265.g69c8d7142f-goog
->
+[1]: https://patchwork.kernel.org/project/dri-devel/cover/20190501140438.95=
+06-1-brian.welty@intel.com/#22624705
+[2]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.welty@int=
+el.com/
+[3]: https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwll.local/
+
+T.J. Mercier (6):
+  gpu: rfc: Proposal for a GPU cgroup controller
+  cgroup: gpu: Add a cgroup controller for allocator attribution of GPU
+    memory
+  dmabuf: Use the GPU cgroup charge/uncharge APIs
+  dmabuf: heaps: export system_heap buffers with GPU cgroup charging
+  dmabuf: Add gpu cgroup charge transfer function
+  android: binder: Add a buffer flag to relinquish ownership of fds
+
+ Documentation/gpu/rfc/gpu-cgroup.rst | 195 +++++++++++++++++
+ Documentation/gpu/rfc/index.rst      |   4 +
+ drivers/android/binder.c             |  26 +++
+ drivers/dma-buf/dma-buf.c            | 100 +++++++++
+ drivers/dma-buf/dma-heap.c           |  27 +++
+ drivers/dma-buf/heaps/system_heap.c  |   3 +
+ include/linux/cgroup_gpu.h           | 127 +++++++++++
+ include/linux/cgroup_subsys.h        |   4 +
+ include/linux/dma-buf.h              |  22 +-
+ include/linux/dma-heap.h             |  11 +
+ include/uapi/linux/android/binder.h  |   1 +
+ init/Kconfig                         |   7 +
+ kernel/cgroup/Makefile               |   1 +
+ kernel/cgroup/gpu.c                  | 304 +++++++++++++++++++++++++++
+ 14 files changed, 830 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/gpu/rfc/gpu-cgroup.rst
+ create mode 100644 include/linux/cgroup_gpu.h
+ create mode 100644 kernel/cgroup/gpu.c
+
+--=20
+2.35.1.265.g69c8d7142f-goog
+
