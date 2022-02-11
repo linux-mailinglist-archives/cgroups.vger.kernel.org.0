@@ -2,40 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBECD4B30BD
-	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 23:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6994B30C3
+	for <lists+cgroups@lfdr.de>; Fri, 11 Feb 2022 23:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350228AbiBKWgA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Feb 2022 17:36:00 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35520 "EHLO
+        id S1354152AbiBKWgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 11 Feb 2022 17:36:01 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354177AbiBKWfy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 17:35:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382CDDD8
+        with ESMTP id S1354132AbiBKWfz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Feb 2022 17:35:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E077DDA
         for <cgroups@vger.kernel.org>; Fri, 11 Feb 2022 14:35:47 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644618945;
+        s=2020; t=1644618946;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CEAzjeAy8cKiKlYL0fu8G573D2IU9l14d7NwNaWhxG0=;
-        b=moHj9TSKQ3mEmbTWUxZMJCpO54B2EeIut6YwWex8ouzmjckojF0UQ5QJ38qWrGnSTD9GkY
-        RwmkXHoJti0UzcI5PsU6Ebxak9itBwVH37rJqIFpfV7OoJq6uBnck5Mn3TVProxTqUAMrx
-        vyeji30+hEt+ovgxrV6x7zr+V1ou7kW9rMYF+FQXutQf0X4oxkrzeqfypY1OiLPLzPpP8r
-        L/DX+8RAA2Hygz4LUpiEVNBIQDm0Yw150EYuQQkCn4T2TZW/s3IOqaABwLBqO75jCCFpfi
-        d2VGj4JP9geBpSVVMkb+tlxLTJ688n5utMsRlLD9FljLp4KJy0sYv0aM9tZjDA==
+        bh=CtnQ/jKOXRc8a6xZ9GWxhxNQwNrZxILRPNGj9AW3VcA=;
+        b=u3z2mDV13XSe3El21I9eb7YJRguX0MUChuJJQo/qnzBwJVQpw96QsMT3S+oMag/Fy7DQDN
+        72cU/BtFmL31A7qiBLnRjiBmBSMrAlELLsJKhcnQNuftN94Yw+CaH5V7eiqCIj5wEc8f4t
+        3nTjNzupD+LTD8QqZYCAkZrHMvEiZRAra59rjB6oOFrLxbixh/8Nh7JrbxxL/EE25JRqwU
+        zBZEq074GDaGqEmlbFfdMtcRRuNvF8XcMUOOL23twuArJweICfJWbucS8y6DzaOSYGMpUG
+        SDmq6uFjOu38DubfeMO497hVqaxz09zihzbjcuCiv12NXaDvM/ELZn9JRMxkng==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644618945;
+        s=2020e; t=1644618946;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CEAzjeAy8cKiKlYL0fu8G573D2IU9l14d7NwNaWhxG0=;
-        b=Rn1DqHXX2PBHGgXEi5KBkFZMYZBoTCs5Vnp1+Syg+zCBQmxTywdMTx0ynVKfDMrayiV63G
-        BAZgC8fXn4qVAoCg==
+        bh=CtnQ/jKOXRc8a6xZ9GWxhxNQwNrZxILRPNGj9AW3VcA=;
+        b=kYfjRvHr7iEaLYuLlch0R2uJnpiRDfqHj+EEtXkzQqM8ln9dH31I6RKYkh53yy+EPI0nMa
+        tKE8I6rEVltBIdCA==
 To:     cgroups@vger.kernel.org, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -45,14 +45,14 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Waiman Long <longman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v2 1/4] mm/memcg: Revert ("mm/memcg: optimize user context object stock access")
-Date:   Fri, 11 Feb 2022 23:35:34 +0100
-Message-Id: <20220211223537.2175879-2-bigeasy@linutronix.de>
+Subject: [PATCH v2 2/4] mm/memcg: Disable threshold event handlers on PREEMPT_RT
+Date:   Fri, 11 Feb 2022 23:35:35 +0100
+Message-Id: <20220211223537.2175879-3-bigeasy@linutronix.de>
 In-Reply-To: <20220211223537.2175879-1-bigeasy@linutronix.de>
 References: <20220211223537.2175879-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -64,263 +64,95 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+During the integration of PREEMPT_RT support, the code flow around
+memcg_check_events() resulted in `twisted code'. Moving the code around
+and avoiding then would then lead to an additional local-irq-save
+section within memcg_check_events(). While looking better, it adds a
+local-irq-save section to code flow which is usually within an
+local-irq-off block on non-PREEMPT_RT configurations.
 
-The optimisation is based on a micro benchmark where local_irq_save() is
-more expensive than a preempt_disable(). There is no evidence that it is
-visible in a real-world workload and there are CPUs where the opposite is
-true (local_irq_save() is cheaper than preempt_disable()).
+The threshold event handler is a deprecated memcg v1 feature. Instead of
+trying to get it to work under PREEMPT_RT just disable it. There should
+be no users on PREEMPT_RT. From that perspective it makes even less
+sense to get it to work under PREEMPT_RT while having zero users.
 
-Based on micro benchmarks, the optimisation makes sense on PREEMPT_NONE
-where preempt_disable() is optimized away. There is no improvement with
-PREEMPT_DYNAMIC since the preemption counter is always available.
+Make memory.soft_limit_in_bytes and cgroup.event_control return
+-EOPNOTSUPP on PREEMPT_RT. Make an empty memcg_check_events() and
+memcg_write_event_control() which return only -EOPNOTSUPP on PREEMPT_RT.
+Document that the two knobs are disabled on PREEMPT_RT.
 
-The optimization makes also the PREEMPT_RT integration more complicated
-since most of the assumption are not true on PREEMPT_RT.
-
-Revert the optimisation since it complicates the PREEMPT_RT integration
-and the improvement is hardly visible.
-
-[ bigeasy: Patch body around Michal's diff ]
-
-Link: https://lore.kernel.org/all/YgOGkXXCrD%2F1k+p4@dhcp22.suse.cz
-Link: https://lkml.kernel.org/r/YdX+INO9gQje6d0S@linutronix.de
-Signed-off-by: Michal Hocko <mhocko@suse.com>
+Suggested-by: Michal Hocko <mhocko@kernel.org>
+Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- mm/memcontrol.c | 94 ++++++++++++++-----------------------------------
- 1 file changed, 27 insertions(+), 67 deletions(-)
+ Documentation/admin-guide/cgroup-v1/memory.rst |  2 ++
+ mm/memcontrol.c                                | 14 ++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation=
+/admin-guide/cgroup-v1/memory.rst
+index faac50149a222..2cc502a75ef64 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -64,6 +64,7 @@ Brief summary of control files.
+ 				     threads
+  cgroup.procs			     show list of processes
+  cgroup.event_control		     an interface for event_fd()
++				     This knob is not available on CONFIG_PREEMPT_RT systems.
+  memory.usage_in_bytes		     show current usage for memory
+ 				     (See 5.5 for details)
+  memory.memsw.usage_in_bytes	     show current usage for memory+Swap
+@@ -75,6 +76,7 @@ Brief summary of control files.
+  memory.max_usage_in_bytes	     show max memory usage recorded
+  memory.memsw.max_usage_in_bytes     show max memory+Swap usage recorded
+  memory.soft_limit_in_bytes	     set/show soft limit of memory usage
++				     This knob is not available on CONFIG_PREEMPT_RT systems.
+  memory.stat			     show various statistics
+  memory.use_hierarchy		     set/show hierarchical account enabled
+                                      This knob is deprecated and shouldn't=
+ be
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 09d342c7cbd0d..4b1572ae990d8 100644
+index 4b1572ae990d8..c1caa662946dc 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2085,23 +2085,17 @@ void unlock_page_memcg(struct page *page)
- 	folio_memcg_unlock(page_folio(page));
- }
-=20
--struct obj_stock {
-+struct memcg_stock_pcp {
-+	struct mem_cgroup *cached; /* this never be root cgroup */
-+	unsigned int nr_pages;
-+
- #ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup *cached_objcg;
- 	struct pglist_data *cached_pgdat;
- 	unsigned int nr_bytes;
- 	int nr_slab_reclaimable_b;
- 	int nr_slab_unreclaimable_b;
--#else
--	int dummy[0];
- #endif
--};
--
--struct memcg_stock_pcp {
--	struct mem_cgroup *cached; /* this never be root cgroup */
--	unsigned int nr_pages;
--	struct obj_stock task_obj;
--	struct obj_stock irq_obj;
-=20
- 	struct work_struct work;
- 	unsigned long flags;
-@@ -2111,12 +2105,12 @@ static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg=
-_stock);
- static DEFINE_MUTEX(percpu_charge_mutex);
-=20
- #ifdef CONFIG_MEMCG_KMEM
--static void drain_obj_stock(struct obj_stock *stock);
-+static void drain_obj_stock(struct memcg_stock_pcp *stock);
- static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- 				     struct mem_cgroup *root_memcg);
-=20
- #else
--static inline void drain_obj_stock(struct obj_stock *stock)
-+static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
- {
- }
- static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-@@ -2193,9 +2187,7 @@ static void drain_local_stock(struct work_struct *dum=
-my)
- 	local_irq_save(flags);
-=20
- 	stock =3D this_cpu_ptr(&memcg_stock);
--	drain_obj_stock(&stock->irq_obj);
--	if (in_task())
--		drain_obj_stock(&stock->task_obj);
-+	drain_obj_stock(stock);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-=20
-@@ -2770,41 +2762,6 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(=
-struct obj_cgroup *objcg)
+@@ -858,6 +858,9 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgrou=
+p *memcg,
   */
- #define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
-=20
--/*
-- * Most kmem_cache_alloc() calls are from user context. The irq disable/en=
-able
-- * sequence used in this case to access content from object stock is slow.
-- * To optimize for user context access, there are now two object stocks for
-- * task context and interrupt context access respectively.
-- *
-- * The task context object stock can be accessed by disabling preemption o=
-nly
-- * which is cheap in non-preempt kernel. The interrupt context object stock
-- * can only be accessed after disabling interrupt. User context code can
-- * access interrupt object stock, but not vice versa.
-- */
--static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
--{
--	struct memcg_stock_pcp *stock;
--
--	if (likely(in_task())) {
--		*pflags =3D 0UL;
--		preempt_disable();
--		stock =3D this_cpu_ptr(&memcg_stock);
--		return &stock->task_obj;
--	}
--
--	local_irq_save(*pflags);
--	stock =3D this_cpu_ptr(&memcg_stock);
--	return &stock->irq_obj;
--}
--
--static inline void put_obj_stock(unsigned long flags)
--{
--	if (likely(in_task()))
--		preempt_enable();
--	else
--		local_irq_restore(flags);
--}
--
- /*
-  * mod_objcg_mlstate() may be called with irq enabled, so
-  * mod_memcg_lruvec_state() should be used.
-@@ -3075,10 +3032,13 @@ void __memcg_kmem_uncharge_page(struct page *page, =
-int order)
- void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 		     enum node_stat_item idx, int nr)
+ static void memcg_check_events(struct mem_cgroup *memcg, int nid)
  {
-+	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
--	struct obj_stock *stock =3D get_obj_stock(&flags);
- 	int *bytes;
-=20
-+	local_irq_save(flags);
-+	stock =3D this_cpu_ptr(&memcg_stock);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT))
++		return;
 +
- 	/*
- 	 * Save vmstat data in stock and skip vmstat array update unless
- 	 * accumulating over a page of vmstat data or when pgdat or idx
-@@ -3129,26 +3089,29 @@ void mod_objcg_state(struct obj_cgroup *objcg, stru=
-ct pglist_data *pgdat,
- 	if (nr)
- 		mod_objcg_mlstate(objcg, pgdat, idx, nr);
+ 	/* threshold event is triggered in finer grain than soft limit */
+ 	if (unlikely(mem_cgroup_event_ratelimit(memcg,
+ 						MEM_CGROUP_TARGET_THRESH))) {
+@@ -3724,8 +3727,12 @@ static ssize_t mem_cgroup_write(struct kernfs_open_f=
+ile *of,
+ 		}
+ 		break;
+ 	case RES_SOFT_LIMIT:
+-		memcg->soft_limit =3D nr_pages;
+-		ret =3D 0;
++		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++			ret =3D -EOPNOTSUPP;
++		} else {
++			memcg->soft_limit =3D nr_pages;
++			ret =3D 0;
++		}
+ 		break;
+ 	}
+ 	return ret ?: nbytes;
+@@ -4701,6 +4708,9 @@ static ssize_t memcg_write_event_control(struct kernf=
+s_open_file *of,
+ 	char *endp;
+ 	int ret;
 =20
--	put_obj_stock(flags);
-+	local_irq_restore(flags);
- }
-=20
- static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_by=
-tes)
- {
-+	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
--	struct obj_stock *stock =3D get_obj_stock(&flags);
- 	bool ret =3D false;
-=20
-+	local_irq_save(flags);
++	if (IS_ENABLED(CONFIG_PREEMPT_RT))
++		return -EOPNOTSUPP;
 +
-+	stock =3D this_cpu_ptr(&memcg_stock);
- 	if (objcg =3D=3D stock->cached_objcg && stock->nr_bytes >=3D nr_bytes) {
- 		stock->nr_bytes -=3D nr_bytes;
- 		ret =3D true;
- 	}
+ 	buf =3D strstrip(buf);
 =20
--	put_obj_stock(flags);
-+	local_irq_restore(flags);
-=20
- 	return ret;
- }
-=20
--static void drain_obj_stock(struct obj_stock *stock)
-+static void drain_obj_stock(struct memcg_stock_pcp *stock)
- {
- 	struct obj_cgroup *old =3D stock->cached_objcg;
-=20
-@@ -3204,13 +3167,8 @@ static bool obj_stock_flush_required(struct memcg_st=
-ock_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
-=20
--	if (in_task() && stock->task_obj.cached_objcg) {
--		memcg =3D obj_cgroup_memcg(stock->task_obj.cached_objcg);
--		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
--			return true;
--	}
--	if (stock->irq_obj.cached_objcg) {
--		memcg =3D obj_cgroup_memcg(stock->irq_obj.cached_objcg);
-+	if (stock->cached_objcg) {
-+		memcg =3D obj_cgroup_memcg(stock->cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
- 			return true;
- 	}
-@@ -3221,10 +3179,13 @@ static bool obj_stock_flush_required(struct memcg_s=
-tock_pcp *stock,
- static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_byt=
-es,
- 			     bool allow_uncharge)
- {
-+	struct memcg_stock_pcp *stock;
- 	unsigned long flags;
--	struct obj_stock *stock =3D get_obj_stock(&flags);
- 	unsigned int nr_pages =3D 0;
-=20
-+	local_irq_save(flags);
-+
-+	stock =3D this_cpu_ptr(&memcg_stock);
- 	if (stock->cached_objcg !=3D objcg) { /* reset if necessary */
- 		drain_obj_stock(stock);
- 		obj_cgroup_get(objcg);
-@@ -3240,7 +3201,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg=
-, unsigned int nr_bytes,
- 		stock->nr_bytes &=3D (PAGE_SIZE - 1);
- 	}
-=20
--	put_obj_stock(flags);
-+	local_irq_restore(flags);
-=20
- 	if (nr_pages)
- 		obj_cgroup_uncharge_pages(objcg, nr_pages);
-@@ -6821,7 +6782,6 @@ static void uncharge_folio(struct folio *folio, struc=
-t uncharge_gather *ug)
- 	long nr_pages;
- 	struct mem_cgroup *memcg;
- 	struct obj_cgroup *objcg;
--	bool use_objcg =3D folio_memcg_kmem(folio);
-=20
- 	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
-=20
-@@ -6830,7 +6790,7 @@ static void uncharge_folio(struct folio *folio, struc=
-t uncharge_gather *ug)
- 	 * folio memcg or objcg at this point, we have fully
- 	 * exclusive access to the folio.
- 	 */
--	if (use_objcg) {
-+	if (folio_memcg_kmem(folio)) {
- 		objcg =3D __folio_objcg(folio);
- 		/*
- 		 * This get matches the put at the end of the function and
-@@ -6858,7 +6818,7 @@ static void uncharge_folio(struct folio *folio, struc=
-t uncharge_gather *ug)
-=20
- 	nr_pages =3D folio_nr_pages(folio);
-=20
--	if (use_objcg) {
-+	if (folio_memcg_kmem(folio)) {
- 		ug->nr_memory +=3D nr_pages;
- 		ug->nr_kmem +=3D nr_pages;
-=20
+ 	efd =3D simple_strtoul(buf, &endp, 10);
 --=20
 2.34.1
 
