@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A64574B69F0
-	for <lists+cgroups@lfdr.de>; Tue, 15 Feb 2022 11:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755C64B69F2
+	for <lists+cgroups@lfdr.de>; Tue, 15 Feb 2022 11:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbiBOK47 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 15 Feb 2022 05:56:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50500 "EHLO
+        id S233578AbiBOK5A (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 15 Feb 2022 05:57:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbiBOK4z (ORCPT
+        with ESMTP id S232106AbiBOK4z (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Tue, 15 Feb 2022 05:56:55 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D88954AC
-        for <cgroups@vger.kernel.org>; Tue, 15 Feb 2022 02:56:45 -0800 (PST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED159FB74
+        for <cgroups@vger.kernel.org>; Tue, 15 Feb 2022 02:56:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644922605; x=1676458605;
+  t=1644922606; x=1676458606;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=TKHOT0y5hSb4aHCGkOD/3iDP69IvAoy47CBrR3YmYns=;
-  b=B3Ca4Ajaro9J5qDS/JRWKqKS30MDZWmYeip/jEhbm+fk0yVGVcRKTPDf
-   HjP41X3zO3cycgD+1BEJwUopmo2DGNB1iJQuETMR+37Pc9LU4y30AfD9F
-   o2/DKb5ECCmTpWm7lSaXmilD1yxe3JBw/jh4p0KBk9o97tRwACoUp9jFn
-   7Il//y/ifQdy87jpFQ7rNk61Fn7fOnyRgoEoOzyFd0fN6oWy+l3g/Zewk
-   +ow/7A6jDV/E6cHGJQ0JL4pqC5GhAtz5xmEka/JOVsrBl9x97eb8EV/Fu
-   mx1VzT94wio/R0A7RlMnSHyptzK8YYpR14UixpeSs8pCN3W5V/XFRxZg0
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10258"; a="249160582"
+  bh=q4fZAfoN5nCqH7PYonogbz3yTS0aQLYVzDgMJqhT9V0=;
+  b=A9h0AFk0BTqVTzIzlzvD/RI8S6hSh7n9I1ymVL9FzqICddn3jfNqM0c+
+   DStJLXF0u1PbAZWMK3QZiwyGVXfhSjawy3bq0StnAjZ6fo1yLGyRNq5k/
+   fMPpHSH47MJ9dCnosu5iQfeUdA/03Gy1bJ1IWeZ8R4XlA1rKkGTzwuYTC
+   ML8E7hJQEvlAI7AiSLIIqGOar+ymKPiQerRcXv95goPETWn2ULWwhU6On
+   FKyMk29l9ET6ZOwrHv+r5yCzToDK8RAB44gq7MDkqk3PbrAHbZY0KlFKG
+   fBakFz5CC0r8XVvga6hMesDqVw1CelclCB5l+n36vX5C2FLrHmlFNDy+1
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10258"; a="336757491"
 X-IronPort-AV: E=Sophos;i="5.88,370,1635231600"; 
-   d="scan'208";a="249160582"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2022 02:56:45 -0800
+   d="scan'208";a="336757491"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2022 02:56:45 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.88,370,1635231600"; 
-   d="scan'208";a="570769836"
+   d="scan'208";a="539215619"
 Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 15 Feb 2022 02:56:43 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 15 Feb 2022 02:56:44 -0800
 Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nJvVj-0009Yx-BS; Tue, 15 Feb 2022 10:56:43 +0000
-Date:   Tue, 15 Feb 2022 18:56:09 +0800
+        id 1nJvVj-0009ZA-GK; Tue, 15 Feb 2022 10:56:43 +0000
+Date:   Tue, 15 Feb 2022 18:56:18 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- ad9bff39fb84a8e81855ef7d728a18bd398fb67e
-Message-ID: <620b86c9.zTCYGgjXOtOXP6iM%lkp@intel.com>
+Subject: [tj-cgroup:for-5.17-fixes] BUILD SUCCESS
+ 05c7b7a92cc87ff8d7fde189d0fade250697573c
+Message-ID: <620b86d2.nNPwny8A1vWIHN19%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -61,10 +61,10 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: ad9bff39fb84a8e81855ef7d728a18bd398fb67e  Merge branch 'for-5.17-fixes' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.17-fixes
+branch HEAD: 05c7b7a92cc87ff8d7fde189d0fade250697573c  cgroup/cpuset: Fix a race between cpuset_attach() and cpu hotplug
 
-elapsed time: 729m
+elapsed time: 730m
 
 configs tested: 129
 configs skipped: 3
