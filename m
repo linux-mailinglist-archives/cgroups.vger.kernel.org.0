@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA6E4B9C68
-	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B628C4B9C67
+	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbiBQJs0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S236559AbiBQJs0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Thu, 17 Feb 2022 04:48:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60948 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238003AbiBQJsX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 04:48:23 -0500
+        with ESMTP id S238808AbiBQJsY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 04:48:24 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9732917060
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DC71705F
         for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 01:48:09 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -21,21 +21,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wI7PoqknI8hRH7tFrgvMNOkROXfGQbU72P/Xt0XNbhU=;
-        b=4SDwHoLm3k4A54BR7OKuHB8prdpOKrYlJbubqWciPa9wLyo+xKVs5YcpniU+wgqXnVpC7W
-        sJgBy/WdXlsQPn1gCMxAOsF6qeXDl+1J7qh42iv11z8+oZDZsS/BJQmi+QqodBK54+G/zP
-        V1fjpDq7aHUsmDq8i+m5JaotL8OjLqPcQhiaX8RkkNAZvX68gbI8Ja10WksENxiXdSxPEP
-        5G3Qvffdz0aOIRmC1wtxHuP+m2M9i8IpZBXfK0KuUQUw4QYGc14Gqia1st0DwEz2gP/q0g
-        0jG+6BdN3c2QrQfIoLDVgWF3PTneqoTBvblRJAvL6uVI3P2V6HOGcZ2AOKveAg==
+        bh=kVZ+pt/1JgatWwehiTV0O06PG+qwCoPYYdHavMUynSM=;
+        b=4x9pQZ/+arQ/FUcXDBSf7ajEi9bG8limTx2HLP/v/9S+hPtIQiVs8TUZ8cG1MNt9qftfG1
+        wv6Vu94lG30+5KKsrMfPkT3v9fx0ZbkXKaunTjctUGxxhpbQzq2Vx7yKsPGjirqDjBEGcD
+        0bcWb4Nr93llKX1bRJpOpGDY11Ov4PZIJGZ3WZffELk9zawW1CjsxP6qBZujcEYsDvzXGb
+        HEF0IxoGx4udky4Y6xLnXqf+yIvU5BA4ruPxXDxfYmVCTmD7w6bpyilKwKUE/TojuN1z53
+        E5ziOGJx7FRydzUfWPyvqYbxAtj7GEX44mhz64RntOsELfDJCyF4G+Jfqan3OQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1645091288;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wI7PoqknI8hRH7tFrgvMNOkROXfGQbU72P/Xt0XNbhU=;
-        b=2Miowt8Bh+315xArP7XQYRiOo05jb/fVb0aKUzHxqz2fVT7ed7bir51cIky2t1uNZ7gp2E
-        NwHCXg48qk3ODTBA==
+        bh=kVZ+pt/1JgatWwehiTV0O06PG+qwCoPYYdHavMUynSM=;
+        b=QVjj988fUUlnn/EqqXHo3xd5ZhfV68qeGSA1a8/kZBPOggQ+//vcqDwdf3nC068q2JU6qu
+        OKpWyyCYjWCXCdBw==
 To:     cgroups@vger.kernel.org, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -45,11 +45,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v3 3/5] mm/memcg: Protect per-CPU counter by disabling preemption on PREEMPT_RT where needed.
-Date:   Thu, 17 Feb 2022 10:48:00 +0100
-Message-Id: <20220217094802.3644569-4-bigeasy@linutronix.de>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v3 4/5] mm/memcg: Opencode the inner part of obj_cgroup_uncharge_pages() in drain_obj_stock()
+Date:   Thu, 17 Feb 2022 10:48:01 +0100
+Message-Id: <20220217094802.3644569-5-bigeasy@linutronix.de>
 In-Reply-To: <20220217094802.3644569-1-bigeasy@linutronix.de>
 References: <20220217094802.3644569-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -64,111 +63,78 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The per-CPU counter are modified with the non-atomic modifier. The
-consistency is ensured by disabling interrupts for the update.
-On non PREEMPT_RT configuration this works because acquiring a
-spinlock_t typed lock with the _irq() suffix disables interrupts. On
-PREEMPT_RT configurations the RMW operation can be interrupted.
+From: Johannes Weiner <hannes@cmpxchg.org>
 
-Another problem is that mem_cgroup_swapout() expects to be invoked with
-disabled interrupts because the caller has to acquire a spinlock_t which
-is acquired with disabled interrupts. Since spinlock_t never disables
-interrupts on PREEMPT_RT the interrupts are never disabled at this
-point.
+Provide the inner part of refill_stock() as __refill_stock() without
+disabling interrupts. This eases the integration of local_lock_t where
+recursive locking must be avoided.
+Open code obj_cgroup_uncharge_pages() in drain_obj_stock() and use
+__refill_stock(). The caller of drain_obj_stock() already disables
+interrupts.
 
-The code is never called from in_irq() context on PREEMPT_RT therefore
-disabling preemption during the update is sufficient on PREEMPT_RT.
-The sections which explicitly disable interrupts can remain on
-PREEMPT_RT because the sections remain short and they don't involve
-sleeping locks (memcg_check_events() is doing nothing on PREEMPT_RT).
+[bigeasy: Patch body around Johannes' diff ]
 
-Disable preemption during update of the per-CPU variables which do not
-explicitly disable interrupts.
-
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Acked-by: Roman Gushchin <guro@fb.com>
 ---
- mm/memcontrol.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0b5117ed2ae08..36ab3660f2c6d 100644
+index 36ab3660f2c6d..a3225501cce36 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -630,6 +630,28 @@ static DEFINE_SPINLOCK(stats_flush_lock);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
- static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
-=20
-+/*
-+ * Accessors to ensure that preemption is disabled on PREEMPT_RT because i=
-t can
-+ * not rely on this as part of an acquired spinlock_t lock. These function=
-s are
-+ * never used in hardirq context on PREEMPT_RT and therefore disabling pre=
-emtion
-+ * is sufficient.
-+ */
-+static void memcg_stats_lock(void)
-+{
-+#ifdef CONFIG_PREEMPT_RT
-+      preempt_disable();
-+#else
-+      VM_BUG_ON(!irqs_disabled());
-+#endif
-+}
-+
-+static void memcg_stats_unlock(void)
-+{
-+#ifdef CONFIG_PREEMPT_RT
-+      preempt_enable();
-+#endif
-+}
-+
- static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+@@ -2224,12 +2224,9 @@ static void drain_local_stock(struct work_struct *du=
+mmy)
+  * Cache charges(val) to local per_cpu area.
+  * This will be consumed by consume_stock() function, later.
+  */
+-static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
  {
- 	unsigned int x;
-@@ -706,6 +728,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
-um node_stat_item idx,
- 	pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 	memcg =3D pn->memcg;
+ 	struct memcg_stock_pcp *stock;
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
 =20
-+	memcg_stats_lock();
- 	/* Update memcg */
- 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
+ 	stock =3D this_cpu_ptr(&memcg_stock);
+ 	if (stock->cached !=3D memcg) { /* reset if necessary */
+@@ -2241,7 +2238,14 @@ static void refill_stock(struct mem_cgroup *memcg, u=
+nsigned int nr_pages)
 =20
-@@ -713,6 +736,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
-um node_stat_item idx,
- 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+ 	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
+ 		drain_stock(stock);
++}
 =20
- 	memcg_rstat_updated(memcg, val);
-+	memcg_stats_unlock();
++static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	__refill_stock(memcg, nr_pages);
+ 	local_irq_restore(flags);
  }
 =20
- /**
-@@ -795,8 +819,10 @@ void __count_memcg_events(struct mem_cgroup *memcg, en=
-um vm_event_item idx,
- 	if (mem_cgroup_disabled())
- 		return;
+@@ -3158,8 +3162,16 @@ static void drain_obj_stock(struct memcg_stock_pcp *=
+stock)
+ 		unsigned int nr_pages =3D stock->nr_bytes >> PAGE_SHIFT;
+ 		unsigned int nr_bytes =3D stock->nr_bytes & (PAGE_SIZE - 1);
 =20
-+	memcg_stats_lock();
- 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
- 	memcg_rstat_updated(memcg, count);
-+	memcg_stats_unlock();
- }
+-		if (nr_pages)
+-			obj_cgroup_uncharge_pages(old, nr_pages);
++		if (nr_pages) {
++			struct mem_cgroup *memcg;
++
++			memcg =3D get_mem_cgroup_from_objcg(old);
++
++			memcg_account_kmem(memcg, -nr_pages);
++			__refill_stock(memcg, nr_pages);
++
++			css_put(&memcg->css);
++		}
 =20
- static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
-@@ -7140,8 +7166,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_=
-t entry)
- 	 * important here to have the interrupts disabled because it is the
- 	 * only synchronisation we have for updating the per-CPU variables.
- 	 */
--	VM_BUG_ON(!irqs_disabled());
-+	memcg_stats_lock();
- 	mem_cgroup_charge_statistics(memcg, -nr_entries);
-+	memcg_stats_unlock();
- 	memcg_check_events(memcg, page_to_nid(page));
-=20
- 	css_put(&memcg->css);
+ 		/*
+ 		 * The leftover is flushed to the centralized per-memcg value.
 --=20
 2.34.1
 
