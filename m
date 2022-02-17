@@ -2,106 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380BC4BA55E
-	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 17:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FCC4BA578
+	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 17:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242116AbiBQQGI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Feb 2022 11:06:08 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39060 "EHLO
+        id S242774AbiBQQL7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Feb 2022 11:11:59 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236819AbiBQQGG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 11:06:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2937D29C12D
-        for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 08:05:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645113950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q8C5mBTF/zQPiu7mRTQ0V1X+3+5OQ4DWAsdzOSei6/I=;
-        b=g0/DkOjF130rSLL0p9nt5505Y/iggj+13Tzt4sfNyOz/3X4rjSLPiNKNyZFolR9QqMVaa8
-        nQ/dVp9CScKvddp+4umIV9KQELbcV7X3b81qf2qDxshcoySmCKlIMhH+Rq9tIwHYsf7pOM
-        6wc0NE72ghfjO/qbzvcwh0T/XrAnELI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-623-AC0NT4jMPtGBQ2c5x5SYAg-1; Thu, 17 Feb 2022 11:05:49 -0500
-X-MC-Unique: AC0NT4jMPtGBQ2c5x5SYAg-1
-Received: by mail-wm1-f71.google.com with SMTP id f26-20020a7bc8da000000b0037bd7f39dbbso1031711wml.3
-        for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 08:05:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=q8C5mBTF/zQPiu7mRTQ0V1X+3+5OQ4DWAsdzOSei6/I=;
-        b=42Xhhk7iWAwyASsJAd0dtlDsmvtrSkDHcdefiNR9pWIMJKTVVlpQi4pg+mMkEzmPX9
-         kIB0zorTvqwpyVjK0oIUNw6wRdOem5st8uJHEaNXIGFtnRbasKy+7402WsqXhCQ0IG1m
-         0ZyF2x5ah1fAzPSvbEZiTRszsl+H9/+EOLv4VLrgxHZsxCEVuzLVodRV4EQYA2aWkN2t
-         KQvmRCh4rdEH33N9D9uRHiiDTwWsHSdyQ1PDuK7SiwpLHTLGVmmI7Y0bCQayBBRjpaKU
-         7GngJU3dOkkzG2RWl61dFboycSKIzzCTs+YswI7La0B2LCzJI7xuf5BVk1KHglNEF2Mq
-         HMuw==
-X-Gm-Message-State: AOAM531EIDDjJfC4JCv12BJKWmJkgzesAHJE9sC5rWPjNKAJfuydVJcb
-        eq7mMZGIJJFTg67DNTmfshLJSkAiPtDNBVSoxvynnWC+IqNFGkVumYXNeygG3rNsutagf/lU72F
-        iqiNj1DTP63+lkuETJQ==
-X-Received: by 2002:adf:e78a:0:b0:1e6:3524:e135 with SMTP id n10-20020adfe78a000000b001e63524e135mr2961067wrm.601.1645113947653;
-        Thu, 17 Feb 2022 08:05:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzVqs24c8i2D8Lt4f9Z4iNheHvxgXvMVn69Wevb7xDbVFxS55ujEEr2K1D18VYZWPyWeX53MQ==
-X-Received: by 2002:adf:e78a:0:b0:1e6:3524:e135 with SMTP id n10-20020adfe78a000000b001e63524e135mr2961045wrm.601.1645113947428;
-        Thu, 17 Feb 2022 08:05:47 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id c17sm1579430wmh.31.2022.02.17.08.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Feb 2022 08:05:46 -0800 (PST)
-Message-ID: <3113f00a-e910-2dfb-479f-268566445630@redhat.com>
-Date:   Thu, 17 Feb 2022 17:05:45 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v3] KVM: Move VM's worker kthreads back to the original
- cgroup before exiting.
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Vipin Sharma <vipinsh@google.com>, seanjc@google.com
-Cc:     kbuild-all@lists.01.org, mkoutny@suse.com, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, dmatlack@google.com,
-        jiangshanlai@gmail.com, kvm@vger.kernel.org,
+        with ESMTP id S233970AbiBQQL6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 11:11:58 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CC1BF48;
+        Thu, 17 Feb 2022 08:11:40 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6334F219A2;
+        Thu, 17 Feb 2022 16:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1645114299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=trkaAj42Qk58nzvh5xCn9D72uPJ0Goap4j9Xg6GQj54=;
+        b=dIt60ilvthbCzGmprCu9i0vdIACxkq2NIlLVQSHwrsUEUHqFlF7hbQprfIAEY7l2wMM/3W
+        PYS5RX+QIa3rGOFDU3MRy5wmcKBI6jB3NUXLFjp4KQRY9AwhYyciJ+tW0WGDSaausdAEir
+        hzOr+3+QNiRqmnreY2jgWr6606D4ZQs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4360813C18;
+        Thu, 17 Feb 2022 16:11:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qnfcD7tzDmJ7cwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 17 Feb 2022 16:11:39 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Masami Ichikawa <masami.ichikawa@cybertrust.co.jp>,
+        Tabitha Sable <tabitha.c.sable@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220217061616.3303271-1-vipinsh@google.com>
- <202202172046.GuW8pHQc-lkp@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <202202172046.GuW8pHQc-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: [PATCH] cgroup-v1: Correct privileges check in release_agent writes
+Date:   Thu, 17 Feb 2022 17:11:28 +0100
+Message-Id: <20220217161128.20291-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/17/22 13:34, kernel test robot wrote:
->> 5859		reattach_err = cgroup_attach_task_all(current->real_parent, current);
+The idea is to check: a) the owning user_ns of cgroup_ns, b)
+capabilities in init_user_ns.
 
-This needs to be within rcu_dereference().
+The commit 24f600856418 ("cgroup-v1: Require capabilities to set
+release_agent") got this wrong in the write handler of release_agent
+since it checked user_ns of the opener (may be different from the owning
+user_ns of cgroup_ns).
+Secondly, to avoid possibly confused deputy, the capability of the
+opener must be checked.
 
-Paolo
+Fixes: 24f600856418 ("cgroup-v1: Require capabilities to set release_agent")
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/stable/20220216121142.GB30035@blackbody.suse.cz/
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cgroup-v1.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->    5860		if (reattach_err) {
->    5861			kvm_err("%s: cgroup_attach_task_all failed on reattach with err %d\n",
->    5862				__func__, reattach_err);
->    5863		}
->    5864		return err;
->    5865	}
->    5866	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 0e877dbcfeea..afc6c0e9c966 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -546,6 +546,7 @@ static ssize_t cgroup_release_agent_write(struct kernfs_open_file *of,
+ 					  char *buf, size_t nbytes, loff_t off)
+ {
+ 	struct cgroup *cgrp;
++	struct cgroup_file_ctx *ctx;
+ 
+ 	BUILD_BUG_ON(sizeof(cgrp->root->release_agent_path) < PATH_MAX);
+ 
+@@ -553,8 +554,9 @@ static ssize_t cgroup_release_agent_write(struct kernfs_open_file *of,
+ 	 * Release agent gets called with all capabilities,
+ 	 * require capabilities to set release agent.
+ 	 */
+-	if ((of->file->f_cred->user_ns != &init_user_ns) ||
+-	    !capable(CAP_SYS_ADMIN))
++	ctx = of->priv;
++	if ((ctx->ns->user_ns != &init_user_ns) ||
++	    !file_ns_capable(of->file, &init_user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	cgrp = cgroup_kn_lock_live(of->kn, false);
+-- 
+2.34.1
 
