@@ -2,40 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADCF4B9C66
-	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA6E4B9C68
+	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbiBQJsY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Feb 2022 04:48:24 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60938 "EHLO
+        id S229925AbiBQJs0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Feb 2022 04:48:26 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbiBQJsX (ORCPT
+        with ESMTP id S238003AbiBQJsX (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 04:48:23 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C1D17AA7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9732917060
         for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 01:48:09 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1645091287;
+        s=2020; t=1645091288;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+YK9BAbzRHLQMq1juWmxjiOoknuxlRDdzwwjsluBi8c=;
-        b=q8lRQHoGi2PQHO36VPEbo4ntN5HOPDTRaTDTHZnQh5sMU4uEMIvJd7E3AhwIhpuW/g8JPp
-        v23JGi57QjBX5HgSJiYtXmp5tK9CtXfpNyFu76Vppiecl7SLEmUxVS/s/2KlD84KaSaJVP
-        B/EPT6TlKbO7rbhe6nlVo2oUsO6eVaTqBJrd5HW9Gpp2n17S3v8sfFnqJDL7OHEtcr3jK9
-        A4/7Nzi1K/KLUrjWEVgqeiBceQ8SoDJheW0pQvdjThKBuRoACRCj5ZMQ40vXoC/E64V3jw
-        eqOIduXysDAZ5LjmpE+HvkRARbKEDghL0GNXOikP/AuHYUnrz7RXRshdjmwlag==
+        bh=wI7PoqknI8hRH7tFrgvMNOkROXfGQbU72P/Xt0XNbhU=;
+        b=4SDwHoLm3k4A54BR7OKuHB8prdpOKrYlJbubqWciPa9wLyo+xKVs5YcpniU+wgqXnVpC7W
+        sJgBy/WdXlsQPn1gCMxAOsF6qeXDl+1J7qh42iv11z8+oZDZsS/BJQmi+QqodBK54+G/zP
+        V1fjpDq7aHUsmDq8i+m5JaotL8OjLqPcQhiaX8RkkNAZvX68gbI8Ja10WksENxiXdSxPEP
+        5G3Qvffdz0aOIRmC1wtxHuP+m2M9i8IpZBXfK0KuUQUw4QYGc14Gqia1st0DwEz2gP/q0g
+        0jG+6BdN3c2QrQfIoLDVgWF3PTneqoTBvblRJAvL6uVI3P2V6HOGcZ2AOKveAg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1645091287;
+        s=2020e; t=1645091288;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+YK9BAbzRHLQMq1juWmxjiOoknuxlRDdzwwjsluBi8c=;
-        b=B9qWJiYyQi0ZyyZWOQpXIjJpMplXI6p4y/mwX0DdmDiNPfy4Ftmc0xHh06mvYz5t0690c5
-        poc62RSFgWO1FsCQ==
+        bh=wI7PoqknI8hRH7tFrgvMNOkROXfGQbU72P/Xt0XNbhU=;
+        b=2Miowt8Bh+315xArP7XQYRiOo05jb/fVb0aKUzHxqz2fVT7ed7bir51cIky2t1uNZ7gp2E
+        NwHCXg48qk3ODTBA==
 To:     cgroups@vger.kernel.org, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -47,13 +47,12 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Waiman Long <longman@redhat.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Roman Gushchin <guro@fb.com>
-Subject: [PATCH v3 2/5] mm/memcg: Disable threshold event handlers on PREEMPT_RT
-Date:   Thu, 17 Feb 2022 10:47:59 +0100
-Message-Id: <20220217094802.3644569-3-bigeasy@linutronix.de>
+Subject: [PATCH v3 3/5] mm/memcg: Protect per-CPU counter by disabling preemption on PREEMPT_RT where needed.
+Date:   Thu, 17 Feb 2022 10:48:00 +0100
+Message-Id: <20220217094802.3644569-4-bigeasy@linutronix.de>
 In-Reply-To: <20220217094802.3644569-1-bigeasy@linutronix.de>
 References: <20220217094802.3644569-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -65,97 +64,111 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-During the integration of PREEMPT_RT support, the code flow around
-memcg_check_events() resulted in `twisted code'. Moving the code around
-and avoiding then would then lead to an additional local-irq-save
-section within memcg_check_events(). While looking better, it adds a
-local-irq-save section to code flow which is usually within an
-local-irq-off block on non-PREEMPT_RT configurations.
+The per-CPU counter are modified with the non-atomic modifier. The
+consistency is ensured by disabling interrupts for the update.
+On non PREEMPT_RT configuration this works because acquiring a
+spinlock_t typed lock with the _irq() suffix disables interrupts. On
+PREEMPT_RT configurations the RMW operation can be interrupted.
 
-The threshold event handler is a deprecated memcg v1 feature. Instead of
-trying to get it to work under PREEMPT_RT just disable it. There should
-be no users on PREEMPT_RT. From that perspective it makes even less
-sense to get it to work under PREEMPT_RT while having zero users.
+Another problem is that mem_cgroup_swapout() expects to be invoked with
+disabled interrupts because the caller has to acquire a spinlock_t which
+is acquired with disabled interrupts. Since spinlock_t never disables
+interrupts on PREEMPT_RT the interrupts are never disabled at this
+point.
 
-Make memory.soft_limit_in_bytes and cgroup.event_control return
--EOPNOTSUPP on PREEMPT_RT. Make an empty memcg_check_events() and
-memcg_write_event_control() which return only -EOPNOTSUPP on PREEMPT_RT.
-Document that the two knobs are disabled on PREEMPT_RT.
+The code is never called from in_irq() context on PREEMPT_RT therefore
+disabling preemption during the update is sufficient on PREEMPT_RT.
+The sections which explicitly disable interrupts can remain on
+PREEMPT_RT because the sections remain short and they don't involve
+sleeping locks (memcg_check_events() is doing nothing on PREEMPT_RT).
 
-Suggested-by: Michal Hocko <mhocko@kernel.org>
-Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+Disable preemption during update of the per-CPU variables which do not
+explicitly disable interrupts.
+
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Acked-by: Roman Gushchin <guro@fb.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- Documentation/admin-guide/cgroup-v1/memory.rst |  2 ++
- mm/memcontrol.c                                | 14 ++++++++++++--
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation=
-/admin-guide/cgroup-v1/memory.rst
-index faac50149a222..2cc502a75ef64 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -64,6 +64,7 @@ Brief summary of control files.
- 				     threads
-  cgroup.procs			     show list of processes
-  cgroup.event_control		     an interface for event_fd()
-+				     This knob is not available on CONFIG_PREEMPT_RT systems.
-  memory.usage_in_bytes		     show current usage for memory
- 				     (See 5.5 for details)
-  memory.memsw.usage_in_bytes	     show current usage for memory+Swap
-@@ -75,6 +76,7 @@ Brief summary of control files.
-  memory.max_usage_in_bytes	     show max memory usage recorded
-  memory.memsw.max_usage_in_bytes     show max memory+Swap usage recorded
-  memory.soft_limit_in_bytes	     set/show soft limit of memory usage
-+				     This knob is not available on CONFIG_PREEMPT_RT systems.
-  memory.stat			     show various statistics
-  memory.use_hierarchy		     set/show hierarchical account enabled
-                                      This knob is deprecated and shouldn't=
- be
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8ab2dc75e70ec..0b5117ed2ae08 100644
+index 0b5117ed2ae08..36ab3660f2c6d 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -859,6 +859,9 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgrou=
-p *memcg,
-  */
- static void memcg_check_events(struct mem_cgroup *memcg, int nid)
+@@ -630,6 +630,28 @@ static DEFINE_SPINLOCK(stats_flush_lock);
+ static DEFINE_PER_CPU(unsigned int, stats_updates);
+ static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
+=20
++/*
++ * Accessors to ensure that preemption is disabled on PREEMPT_RT because i=
+t can
++ * not rely on this as part of an acquired spinlock_t lock. These function=
+s are
++ * never used in hardirq context on PREEMPT_RT and therefore disabling pre=
+emtion
++ * is sufficient.
++ */
++static void memcg_stats_lock(void)
++{
++#ifdef CONFIG_PREEMPT_RT
++      preempt_disable();
++#else
++      VM_BUG_ON(!irqs_disabled());
++#endif
++}
++
++static void memcg_stats_unlock(void)
++{
++#ifdef CONFIG_PREEMPT_RT
++      preempt_enable();
++#endif
++}
++
+ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
  {
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		return;
-+
- 	/* threshold event is triggered in finer grain than soft limit */
- 	if (unlikely(mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_THRESH))) {
-@@ -3731,8 +3734,12 @@ static ssize_t mem_cgroup_write(struct kernfs_open_f=
-ile *of,
- 		}
- 		break;
- 	case RES_SOFT_LIMIT:
--		memcg->soft_limit =3D nr_pages;
--		ret =3D 0;
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+			ret =3D -EOPNOTSUPP;
-+		} else {
-+			memcg->soft_limit =3D nr_pages;
-+			ret =3D 0;
-+		}
- 		break;
- 	}
- 	return ret ?: nbytes;
-@@ -4708,6 +4715,9 @@ static ssize_t memcg_write_event_control(struct kernf=
-s_open_file *of,
- 	char *endp;
- 	int ret;
+ 	unsigned int x;
+@@ -706,6 +728,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
+um node_stat_item idx,
+ 	pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	memcg =3D pn->memcg;
 =20
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		return -EOPNOTSUPP;
-+
- 	buf =3D strstrip(buf);
++	memcg_stats_lock();
+ 	/* Update memcg */
+ 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
 =20
- 	efd =3D simple_strtoul(buf, &endp, 10);
+@@ -713,6 +736,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
+um node_stat_item idx,
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+=20
+ 	memcg_rstat_updated(memcg, val);
++	memcg_stats_unlock();
+ }
+=20
+ /**
+@@ -795,8 +819,10 @@ void __count_memcg_events(struct mem_cgroup *memcg, en=
+um vm_event_item idx,
+ 	if (mem_cgroup_disabled())
+ 		return;
+=20
++	memcg_stats_lock();
+ 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
+ 	memcg_rstat_updated(memcg, count);
++	memcg_stats_unlock();
+ }
+=20
+ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+@@ -7140,8 +7166,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_=
+t entry)
+ 	 * important here to have the interrupts disabled because it is the
+ 	 * only synchronisation we have for updating the per-CPU variables.
+ 	 */
+-	VM_BUG_ON(!irqs_disabled());
++	memcg_stats_lock();
+ 	mem_cgroup_charge_statistics(memcg, -nr_entries);
++	memcg_stats_unlock();
+ 	memcg_check_events(memcg, page_to_nid(page));
+=20
+ 	css_put(&memcg->css);
 --=20
 2.34.1
 
