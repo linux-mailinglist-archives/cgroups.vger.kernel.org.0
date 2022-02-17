@@ -2,45 +2,45 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331234BAA33
-	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 20:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 895114BAE4D
+	for <lists+cgroups@lfdr.de>; Fri, 18 Feb 2022 01:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245462AbiBQTse (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Feb 2022 14:48:34 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50862 "EHLO
+        id S230089AbiBRAVj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Feb 2022 19:21:39 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245520AbiBQTsa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 14:48:30 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17D02612C;
-        Thu, 17 Feb 2022 11:48:10 -0800 (PST)
+        with ESMTP id S230061AbiBRAVi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 19:21:38 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6366150;
+        Thu, 17 Feb 2022 16:21:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645127290; x=1676663290;
+  t=1645143683; x=1676679683;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=kVVoUac+9++cZ9L6mpXFpdsjVJethaHpin9YxElk0ak=;
-  b=AzlqY0sIJScikXaRTPV8Ph69ToeuY1FNz2zGLtT0l6FGZALYJKiaCgKd
-   RaIah6K9tsTL6TPD1I96FWS5f4xk0A66BkTRwX6/P7Y292OXKvJP5p7Nz
-   Fi/UZWNxepCra20TPeN+Uy9XIIgSO7Ob6bY4qo6sQNovvYD3L90pLVGNg
-   6wV0sYYGIlW7Jpk+KIvT0t7OcSsQlf+zq9P86lwnQy8MZ4Bt8LscLthDC
-   by0NC4QzPYyiwQsTLAJG4Baz9B2Ld9foi+O91Ny/l9e5YyiU0Sn8CnH2Y
-   vFs5cmrxIM8S5oE6Q1irMReVbjyls22k//h95b5CEwmCamrGL6GOyRX9F
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="251159224"
-X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; 
-   d="scan'208";a="251159224"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 11:48:10 -0800
+  bh=N32BdLCCicYvF88PVJV2JjNN97uAJo3pxS97Q2b1+KM=;
+  b=JebK25hjQclsv7jqSHiEE0DjhouD4qt1Hlweeh/N3JaaLPvOya/WDJl3
+   c2PnjKG1mJU6qLzaGAmlHipha9jFsT95Yg/4DMrb/NXTXgaR110a6iTsC
+   I8UBubYHZRc7skItWk8OucBwc0SYrc+cZxM1teB+tUxmS7XaEnnKjPz0R
+   tiosmwmc/T2cXlMHRA7YINkMxoRrRF17Mds1pXK9dWUcBmY2zjn1AYr2H
+   6llKIJQL8NOTTbuV7UzINeTx2ik026zG72tzcPOd1+4t7yyEP9JIFLQya
+   RsAY4lSZ02S62N1y8PDSqYcW4/KuivP+Yahwn6QOn7gU6P+3w2LYXcKRi
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="248595414"
+X-IronPort-AV: E=Sophos;i="5.88,377,1635231600"; 
+   d="scan'208";a="248595414"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 15:23:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,376,1635231600"; 
-   d="scan'208";a="704977976"
+X-IronPort-AV: E=Sophos;i="5.88,377,1635231600"; 
+   d="scan'208";a="777665220"
 Received: from lkp-server01.sh.intel.com (HELO 6f05bf9e3301) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 17 Feb 2022 11:48:07 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 17 Feb 2022 15:23:06 -0800
 Received: from kbuild by 6f05bf9e3301 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nKmkz-0000XV-Ct; Thu, 17 Feb 2022 19:48:01 +0000
-Date:   Fri, 18 Feb 2022 03:47:28 +0800
+        id 1nKq78-0000jQ-2C; Thu, 17 Feb 2022 23:23:06 +0000
+Date:   Fri, 18 Feb 2022 07:22:54 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Vipin Sharma <vipinsh@google.com>, pbonzini@redhat.com,
         seanjc@google.com
@@ -51,7 +51,7 @@ Cc:     kbuild-all@lists.01.org, mkoutny@suse.com, tj@kernel.org,
         Vipin Sharma <vipinsh@google.com>
 Subject: Re: [PATCH v3] KVM: Move VM's worker kthreads back to the original
  cgroup before exiting.
-Message-ID: <202202180218.msk1UR5R-lkp@intel.com>
+Message-ID: <202202180730.AAgeOZkF-lkp@intel.com>
 References: <20220217061616.3303271-1-vipinsh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -60,8 +60,8 @@ In-Reply-To: <20220217061616.3303271-1-vipinsh@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,11 +76,9 @@ Thank you for the patch! Perhaps something to improve:
 
 url:    https://github.com/0day-ci/linux/commits/Vipin-Sharma/KVM-Move-VM-s-worker-kthreads-back-to-the-original-cgroup-before-exiting/20220217-141723
 base:   db6e7adf8de9b3b99a9856acb73870cc3a70e3ca
-config: arm64-randconfig-s032-20220217 (https://download.01.org/0day-ci/archive/20220218/202202180218.msk1UR5R-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 11.2.0
+config: x86_64-rhel-8.3-kselftests (https://download.01.org/0day-ci/archive/20220218/202202180730.AAgeOZkF-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
         # apt-get install sparse
         # sparse version: v0.6.4-dirty
         # https://github.com/0day-ci/linux/commit/1abffef71ef85b6fb8f1296e6ef38febc4f2b007
@@ -89,28 +87,28 @@ reproduce:
         git checkout 1abffef71ef85b6fb8f1296e6ef38febc4f2b007
         # save the config file to linux build tree
         mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm64 SHELL=/bin/bash
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 
 sparse warnings: (new ones prefixed by >>)
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c: note: in included file:
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c: note: in included file:
    include/linux/kvm_host.h:1877:54: sparse: sparse: array of flexible structures
    include/linux/kvm_host.h:1879:56: sparse: sparse: array of flexible structures
->> arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *from @@     got struct task_struct [noderef] __rcu *real_parent @@
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse:     expected struct task_struct *from
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_change_pte' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_invalidate_range_start' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_invalidate_range_end' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_clear_flush_young' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_clear_young' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_test_young' - different lock contexts for basic block
-   arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2522:9: sparse: sparse: context imbalance in 'hva_to_pfn_remapped' - unexpected unlock
+>> arch/x86/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *from @@     got struct task_struct [noderef] __rcu *real_parent @@
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse:     expected struct task_struct *from
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:5859:54: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_change_pte' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_invalidate_range_start' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_invalidate_range_end' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_clear_flush_young' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_clear_young' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:538:9: sparse: sparse: context imbalance in 'kvm_mmu_notifier_test_young' - different lock contexts for basic block
+   arch/x86/kvm/../../../virt/kvm/kvm_main.c:2522:9: sparse: sparse: context imbalance in 'hva_to_pfn_remapped' - unexpected unlock
 
-vim +5859 arch/arm64/kvm/../../../virt/kvm/kvm_main.c
+vim +5859 arch/x86/kvm/../../../virt/kvm/kvm_main.c
 
   5805	
   5806	static int kvm_vm_worker_thread(void *context)
