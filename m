@@ -2,60 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4392E4B9C0C
-	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA204B9C65
+	for <lists+cgroups@lfdr.de>; Thu, 17 Feb 2022 10:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbiBQJ3R (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Feb 2022 04:29:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51244 "EHLO
+        id S237420AbiBQJsX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Feb 2022 04:48:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232696AbiBQJ3Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 04:29:16 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01E11C55AA
-        for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 01:29:02 -0800 (PST)
-Date:   Thu, 17 Feb 2022 10:28:57 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1645090139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rfvk1TOpsNNoE1/dc+0M3aPmjLaMlI/s+kkO3n5aMnQ=;
-        b=ahyvfRlUu+y1KuuXpCSjq/hC1mJ3pNLNUyJvxv/xP4hYG6KeYo59Dj4gUndCvKWWUZdF1p
-        EPzoK4ASLFCn3+4Zbgqv9k2m9pMI1ajmY/+SpyTonH2vfz2jhWTGg15JeT462vIjsHFsAH
-        BWBV7oTuNRfvO7mEyPsLBiHrsmDPHidirIJ8JL0BYVl/POyR06dg+XdIFquu17PHBqhOch
-        Lny7nvsdX2Flzu4avyejdflrLAuzTqBfDXP4/4weyxp0TgXrMneEkreuzdiL+7zVbbDt2e
-        k/iO/2mDhnWgOEglvVuWk6b14ZNS4BgvV9SVMkAYaeVtlZmx0fiNCnhh6gSSNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1645090139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rfvk1TOpsNNoE1/dc+0M3aPmjLaMlI/s+kkO3n5aMnQ=;
-        b=i+s1ymebTXcUUlUub/3iQBKh1aNTNiyfZAF8JndxUG78GwiZI+oPjOskJmV/LT8enJ8XXZ
-        sU3FfP1KL5y5AHBg==
+        with ESMTP id S229925AbiBQJsW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Feb 2022 04:48:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDD31705F
+        for <cgroups@vger.kernel.org>; Thu, 17 Feb 2022 01:48:08 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1645091287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A4ypfDSqGMLg9km1dl2WOJwJsS8OW8SkL6eTIxLtYuc=;
+        b=elTaWLiRGCv72mzSp9Bn5+xIhnnOLk02quK11HhQEiDGoAHa0bQtAn3sNjtHsc3Co7fCPn
+        UYkVRXcupS33LVJlDqLQ60Sv3edMm9HWVcPL5mCvS4oolAAtMTphXJ5UE9Hf6xItugrE6e
+        Kb2ksXizy4WoqynEpl8MPiW7Ds1eOaFGmGJ6MOmTp06Js+K2oY08/5xpQBpQ6o4/+MFrh7
+        HwKhJ6KqvkPckqPdz5XPKx/ns8vxfhDzACx8/2ueyIoVvXHKlf7z4XOiXqeso10Tt7Z0z9
+        dz1sL3Q7fjs/wGPrNdzMQJPMGp+AkFwYXgd6jMSjhu5MxvbUfCKXv6Rv4gDV1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1645091287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A4ypfDSqGMLg9km1dl2WOJwJsS8OW8SkL6eTIxLtYuc=;
+        b=W7kqkBljW4f1rmnUnTl4a9BsY3Hz7ECJSUiEAiFfHNnHHa8U9x2NdU53pOkTCFTvy/Yvmq
+        xwFn+kjKzH8kSZBA==
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 4/4] mm/memcg: Protect memcg_stock with a local_lock_t
-Message-ID: <Yg4VWfeCLGFnjQ1W@linutronix.de>
-References: <20220211223537.2175879-1-bigeasy@linutronix.de>
- <20220211223537.2175879-5-bigeasy@linutronix.de>
- <YgqB77SaViGRAtgt@cmpxchg.org>
- <Yg0dctKholvzADYP@linutronix.de>
- <Yg09t/j5Z0X9L7aX@cmpxchg.org>
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/5] mm/memcg: Address PREEMPT_RT problems instead of disabling it.
+Date:   Thu, 17 Feb 2022 10:47:57 +0100
+Message-Id: <20220217094802.3644569-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Yg09t/j5Z0X9L7aX@cmpxchg.org>
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -66,37 +58,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022-02-16 13:08:55 [-0500], Johannes Weiner wrote:
-> I thought you'd fold it into yours, but separate patch works too,
-> thanks!
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi,
 
-Thank you.
+this series aims to address the memcg related problem on PREEMPT_RT.
 
-> One important note, though:
-> 
-> > @@ -3151,8 +3155,17 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
-> >  		unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-> >  		unsigned int nr_bytes = stock->nr_bytes & (PAGE_SIZE - 1);
-> >  
-> > -		if (nr_pages)
-> > -			obj_cgroup_uncharge_pages(old, nr_pages);
-> > +		if (nr_pages) {
-> > +			struct mem_cgroup *memcg;
-> > +
-> > +			memcg = get_mem_cgroup_from_objcg(old);
-> > +
-> > +			if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> > +				page_counter_uncharge(&memcg->kmem, nr_pages);
-> > +			__refill_stock(memcg, nr_pages);
-> 
-> This doesn't take "memcg: add per-memcg total kernel memory stat"
-> queued in -mm into account and so will break kmem accounting.
->
-> Make sure to rebase the patches to the -mm tree before sending it
-> out. You can find it here: https://github.com/hnaz/linux-mm
+I tested them on CONFIG_PREEMPT and CONFIG_PREEMPT_RT with the
+tools/testing/selftests/cgroup/* tests and I haven't observed any
+regressions (other than the lockdep report that is already there).
 
-Thank you, rebased on-top.
+Changes since v2:
+- rebased on top of v5.17-rc4-mmots-2022-02-15-20-39.
+
+- Added memcg_stats_lock() in 3/5 so it a little more obvious and
+  hopefully easiert to maintain.
+
+- Opencoded obj_cgroup_uncharge_pages() in drain_obj_stock(). The
+  __locked suffix was confusing.
+
+v2: https://lore.kernel.org/all/20220211223537.2175879-1-bigeasy@linutronix=
+.de/
+
+Changes since v1:
+- Made a full patch from Michal Hocko's diff to disable the from-IRQ vs
+  from-task optimisation
+
+- Disabling threshold event handlers is using now IS_ENABLED(PREEMPT_RT)
+  instead of #ifdef. The outcome is the same but there is no need to
+  shuffle the code around.
+
+v1: https://lore.kernel.org/all/20220125164337.2071854-1-bigeasy@linutronix=
+.de/
+
+Changes since the RFC:
+- cgroup.event_control / memory.soft_limit_in_bytes is disabled on
+  PREEMPT_RT. It is a deprecated v1 feature. Fixing the signal path is
+  not worth it.
+
+- The updates to per-CPU counters are usually synchronised by disabling
+  interrupts. There are a few spots where assumption about disabled
+  interrupts are not true on PREEMPT_RT and therefore preemption is
+  disabled. This is okay since the counter are never written from
+  in_irq() context.
+
+RFC: https://lore.kernel.org/all/20211222114111.2206248-1-bigeasy@linutroni=
+x.de/
 
 Sebastian
+
+
