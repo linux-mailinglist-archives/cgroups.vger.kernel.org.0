@@ -2,56 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC1D4BBD0B
-	for <lists+cgroups@lfdr.de>; Fri, 18 Feb 2022 17:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3894BBDAB
+	for <lists+cgroups@lfdr.de>; Fri, 18 Feb 2022 17:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbiBRQKH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Feb 2022 11:10:07 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47860 "EHLO
+        id S232256AbiBRQjo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Feb 2022 11:39:44 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbiBRQKH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Feb 2022 11:10:07 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4392F105AAA
-        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:09:50 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o2so6412029lfd.1
-        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:09:50 -0800 (PST)
+        with ESMTP id S238012AbiBRQjn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Feb 2022 11:39:43 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90922B04B3
+        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:39:25 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id bn33so5122602ljb.6
+        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:39:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8gUAABA3j3f1FRh38YxGuqY86VzPDifyEVw8iwRRkpw=;
-        b=cyWkAO0iWWXZ5RX3hmvLYfEnD4qtbZcgGTUs/I4Eg1grFIrrB5/Wd595bPPNN8gV75
-         4uLVzqdO6mgrPtNahiDzECg+2hz2mpA/jll0Uz1e9vE3/dEfS2cHeJ7a6ELdiCq72hDx
-         gBhiBpg+mRkGjwza4EY6K7UOBZ7+u69+V0AUR9zA02dO0T0bJB2yvtXHpZGOfELslWYp
-         Jqzrp1aTYcHK5wKyzEHcIraox5zejrYEfvGtu64Lluf3xQcg3piCrWRqWf56z/DTi0f8
-         VKyGAm8RBs2yYcH8wVnBOGwrQZiC8x90T/EmeljJ9eCVe24yF5+2EKiUZuBwMHqhtcB/
-         TQzg==
+         :cc:content-transfer-encoding;
+        bh=ZsaJ/52U7cZLmE6ctPyXK8XUe33/stjG8THMIu6wVGU=;
+        b=RlQ/Wx7QFlwknPTQbVvjrxcl4E9RzQ2/VKYDGLGK3WW8txbJIsltBAIVTI5JcNwXK0
+         iC5zOzJsOU6rKE+QZ7O3I3HYWBGzvq/2tdD+IyWDNJpEg3GbHdCCabSJ/s/CR9YEZmHX
+         byRKHpIwAmFwny9oi9nwOwjo0yVzfG8ECrC0xIvtON8BR5FzQvZgQXw+Y8IO7vrRrDxp
+         fulBnbHk6nI1z+KEDQVYwuXz3vg9vvlMZuDBm60mvAHxVxmiHAaXVYsHREDOKWfDgkRP
+         4OX24fchdF5eAppQGXTXDOMF3lbC1N/HnbHVnsTHaGdfhLFiZ9EqJ8qVksLN/yzuOvyo
+         QIRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8gUAABA3j3f1FRh38YxGuqY86VzPDifyEVw8iwRRkpw=;
-        b=QOs0DZcYoeMzi8pZPtadJ0VahlOdAvxy6WhvadCtPtAxZ7ubZhLwyX7eVmK5ORMqIm
-         CwISVTGbKdM3sEfE66HXsoOOTaK44mNxU6fWvaEdwEbWQBg5ROQevJDoql8DN6NdejEY
-         EZRinKPUQ7O5sK7kPDc71voXpIFHwkbVuOUdVBH4uAoOPMiaJt098FfS75SK8QR67j5y
-         JPBBb3c6TalVRXT9FQ8BThjc7o5NGTLykglVRyk3n5Xei1tGJTb7XHRfaV1SZpGTPIOQ
-         0uIxfd3DLhA6inthZxJCs/rDjuXjXhM85x2ttyNKyVnYn5F4vXZuFzt7LODwXNFxwgmx
-         i1Pw==
-X-Gm-Message-State: AOAM532sK4Q+phZW9d1jStZz1zbZjegsmHo0I/DH4a7obY9OZLLLaXCD
-        9F2Mk0MDS4LNM0mmmORykVTOclbmsr2eeBcNDsduAg==
-X-Google-Smtp-Source: ABdhPJxC+0P6mzNCudfOUmF2+1/m+DdL2qJoJkzkh8QVFxs+1WMA6P8RW8xTZO0FEIIgGs78tI0REqWRCuF2q1wdq30=
-X-Received: by 2002:a05:6512:388d:b0:443:6066:2c8d with SMTP id
- n13-20020a056512388d00b0044360662c8dmr5730000lft.184.1645200588394; Fri, 18
- Feb 2022 08:09:48 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZsaJ/52U7cZLmE6ctPyXK8XUe33/stjG8THMIu6wVGU=;
+        b=n9feaSeLu7xkojB/n3dCfCcDNCAywuWpCqzBQtEtsBd3MF+bAo+dL1s9vXTnnX41T8
+         iP58HATePCm0qjAc5PtiShz26DK91IprgaOEtmeKJ/FoiGNoLz4u2SX+FgNUfIi4AahQ
+         NEFcEQUD6s9IHuOjqJWefgsjoJtIPUVItt3JxVbFGhpcGs5JfP8/oVzP8/gx6j/RUP3+
+         phe8OEfBtjga224DwLB7WYEv8ADztwvyoEZZb8NPLrN1J9iNxVeng74c5aa9zzfxksdx
+         j6YzLvAEm0VRViCcg/RIyrbEPUMF3jpDffh+hAbC8/JGd6CyQBPMLhJiTS7hH0iCtpli
+         CKPA==
+X-Gm-Message-State: AOAM533sMLDLqIOQejTSRz1LXC102fFB8I9rukRI8PNueC7gm5Tknvc6
+        uat9Q3/Wom/Bi2r2dtfC7IFbWGcgdbMvJHieCRxF4RYKUPk=
+X-Google-Smtp-Source: ABdhPJwk+ekDMb1/Vp1di+Fw3CVEgfEyZGbPeNiKh55+gY80alFolcT8I6MhKqljhmb9I5u8VpxFy8JukZM0L4u3+Nk=
+X-Received: by 2002:a2e:954:0:b0:241:73c:cb5e with SMTP id 81-20020a2e0954000000b00241073ccb5emr6619311ljj.86.1645202363662;
+ Fri, 18 Feb 2022 08:39:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20220217094802.3644569-1-bigeasy@linutronix.de> <20220217094802.3644569-2-bigeasy@linutronix.de>
-In-Reply-To: <20220217094802.3644569-2-bigeasy@linutronix.de>
+References: <20220217094802.3644569-1-bigeasy@linutronix.de> <20220217094802.3644569-3-bigeasy@linutronix.de>
+In-Reply-To: <20220217094802.3644569-3-bigeasy@linutronix.de>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 18 Feb 2022 08:09:36 -0800
-Message-ID: <CALvZod5FdXwim6ftgBqQRiXw6exv-Jj9ey+awkVDC1F8YTOBMQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] mm/memcg: Revert ("mm/memcg: optimize user context
- object stock access")
+Date:   Fri, 18 Feb 2022 08:39:12 -0800
+Message-ID: <CALvZod7Jz91+px=Gpmd8qeY=eN1tS6vEGK0Dq_eGNq9Q=pj7xQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] mm/memcg: Disable threshold event handlers on PREEMPT_RT
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -61,9 +59,9 @@ Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>
+        Waiman Long <longman@redhat.com>, Roman Gushchin <guro@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -78,28 +76,25 @@ X-Mailing-List: cgroups@vger.kernel.org
 On Thu, Feb 17, 2022 at 1:48 AM Sebastian Andrzej Siewior
 <bigeasy@linutronix.de> wrote:
 >
-> From: Michal Hocko <mhocko@suse.com>
+> During the integration of PREEMPT_RT support, the code flow around
+> memcg_check_events() resulted in `twisted code'. Moving the code around
+> and avoiding then would then lead to an additional local-irq-save
+> section within memcg_check_events(). While looking better, it adds a
+> local-irq-save section to code flow which is usually within an
+> local-irq-off block on non-PREEMPT_RT configurations.
 >
-> The optimisation is based on a micro benchmark where local_irq_save() is
-> more expensive than a preempt_disable(). There is no evidence that it is
-> visible in a real-world workload and there are CPUs where the opposite is
-> true (local_irq_save() is cheaper than preempt_disable()).
+> The threshold event handler is a deprecated memcg v1 feature. Instead of
+> trying to get it to work under PREEMPT_RT just disable it. There should
+> be no users on PREEMPT_RT. From that perspective it makes even less
+> sense to get it to work under PREEMPT_RT while having zero users.
 >
-> Based on micro benchmarks, the optimisation makes sense on PREEMPT_NONE
-> where preempt_disable() is optimized away. There is no improvement with
-> PREEMPT_DYNAMIC since the preemption counter is always available.
+> Make memory.soft_limit_in_bytes and cgroup.event_control return
+> -EOPNOTSUPP on PREEMPT_RT. Make an empty memcg_check_events() and
+> memcg_write_event_control() which return only -EOPNOTSUPP on PREEMPT_RT.
+> Document that the two knobs are disabled on PREEMPT_RT.
 >
-> The optimization makes also the PREEMPT_RT integration more complicated
-> since most of the assumption are not true on PREEMPT_RT.
->
-> Revert the optimisation since it complicates the PREEMPT_RT integration
-> and the improvement is hardly visible.
->
-> [ bigeasy: Patch body around Michal's diff ]
->
-> Link: https://lore.kernel.org/all/YgOGkXXCrD%2F1k+p4@dhcp22.suse.cz
-> Link: https://lkml.kernel.org/r/YdX+INO9gQje6d0S@linutronix.de
-> Signed-off-by: Michal Hocko <mhocko@suse.com>
+> Suggested-by: Michal Hocko <mhocko@kernel.org>
+> Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > Acked-by: Roman Gushchin <guro@fb.com>
 > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
