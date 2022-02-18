@@ -2,54 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3894BBDAB
-	for <lists+cgroups@lfdr.de>; Fri, 18 Feb 2022 17:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6874BBE51
+	for <lists+cgroups@lfdr.de>; Fri, 18 Feb 2022 18:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbiBRQjo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Feb 2022 11:39:44 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49414 "EHLO
+        id S234395AbiBRR0J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Feb 2022 12:26:09 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238012AbiBRQjn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Feb 2022 11:39:43 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90922B04B3
-        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:39:25 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id bn33so5122602ljb.6
-        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 08:39:25 -0800 (PST)
+        with ESMTP id S238712AbiBRR0B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Feb 2022 12:26:01 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5BA2B5BB7
+        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 09:25:44 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id s21so5324846ljp.2
+        for <cgroups@vger.kernel.org>; Fri, 18 Feb 2022 09:25:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZsaJ/52U7cZLmE6ctPyXK8XUe33/stjG8THMIu6wVGU=;
-        b=RlQ/Wx7QFlwknPTQbVvjrxcl4E9RzQ2/VKYDGLGK3WW8txbJIsltBAIVTI5JcNwXK0
-         iC5zOzJsOU6rKE+QZ7O3I3HYWBGzvq/2tdD+IyWDNJpEg3GbHdCCabSJ/s/CR9YEZmHX
-         byRKHpIwAmFwny9oi9nwOwjo0yVzfG8ECrC0xIvtON8BR5FzQvZgQXw+Y8IO7vrRrDxp
-         fulBnbHk6nI1z+KEDQVYwuXz3vg9vvlMZuDBm60mvAHxVxmiHAaXVYsHREDOKWfDgkRP
-         4OX24fchdF5eAppQGXTXDOMF3lbC1N/HnbHVnsTHaGdfhLFiZ9EqJ8qVksLN/yzuOvyo
-         QIRQ==
+         :cc;
+        bh=uJsUkkYuKsFjmFuSrzJx6Z65BOc8raptsVlPvLM8N1M=;
+        b=DQrnOr+7ZnH78FYvqffaE346vGIkV2x2C9ECWU9yqE4RVKdgMog75eA1y87iH06bUW
+         xH0/fu78Skp4CvfXhzy6o2zYv3LGx/qwRJulidi4KrOjrA2U42XmP28RlZShOeNgqbka
+         Cs4C0ETSQhG/vv/IDOf0o2HHaiUmd1ZFgIfwxIZLWbO/MOvqIYCazVduLcs8zp0wuuhI
+         4+v5fciZgeeBNgdpAYcl2j/woTbUupNnDfY1AItJjxVg8pIpsVMjcLjfamvYsBd9zqnU
+         mIcZXICCAD8nhgSnUNP4ziv0mZr+imOkr6s1d5lyGDxGlLaYYsjX1lA1RAZE9JqtUBeI
+         EzSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZsaJ/52U7cZLmE6ctPyXK8XUe33/stjG8THMIu6wVGU=;
-        b=n9feaSeLu7xkojB/n3dCfCcDNCAywuWpCqzBQtEtsBd3MF+bAo+dL1s9vXTnnX41T8
-         iP58HATePCm0qjAc5PtiShz26DK91IprgaOEtmeKJ/FoiGNoLz4u2SX+FgNUfIi4AahQ
-         NEFcEQUD6s9IHuOjqJWefgsjoJtIPUVItt3JxVbFGhpcGs5JfP8/oVzP8/gx6j/RUP3+
-         phe8OEfBtjga224DwLB7WYEv8ADztwvyoEZZb8NPLrN1J9iNxVeng74c5aa9zzfxksdx
-         j6YzLvAEm0VRViCcg/RIyrbEPUMF3jpDffh+hAbC8/JGd6CyQBPMLhJiTS7hH0iCtpli
-         CKPA==
-X-Gm-Message-State: AOAM533sMLDLqIOQejTSRz1LXC102fFB8I9rukRI8PNueC7gm5Tknvc6
-        uat9Q3/Wom/Bi2r2dtfC7IFbWGcgdbMvJHieCRxF4RYKUPk=
-X-Google-Smtp-Source: ABdhPJwk+ekDMb1/Vp1di+Fw3CVEgfEyZGbPeNiKh55+gY80alFolcT8I6MhKqljhmb9I5u8VpxFy8JukZM0L4u3+Nk=
-X-Received: by 2002:a2e:954:0:b0:241:73c:cb5e with SMTP id 81-20020a2e0954000000b00241073ccb5emr6619311ljj.86.1645202363662;
- Fri, 18 Feb 2022 08:39:23 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=uJsUkkYuKsFjmFuSrzJx6Z65BOc8raptsVlPvLM8N1M=;
+        b=G7t4PHmW835EDSYnGpTQgSHcQVlK2b06F9LkG/yoiUbyNTHSgGPoG2sILh1+U5hslf
+         UXQNmFjg+05jB4O9sLZrLT3VrPXjf9L6LWmaoYAkxr4SXTQ++23wTETePmWH0k2agCg2
+         Rp2Q3z2YuVNXrDCilp0QXHvNWc2k9gRCpD3QmU129YyOqSH8vG40RZIEGAcDwuVMySmj
+         IFEvc6631AF/CWSLBWInXPebxm4a+uh2Ma84lmuBlXaGdWMhcWG6HgKgVTqrTwzcWIAx
+         +xAO3v30gzF+bbFJPww0801l+sGetCpO9St4RN/GeBgS5ulre+0CX7pebR3R0WWGKTCj
+         Piqw==
+X-Gm-Message-State: AOAM533HJN1WP3fMSkObp3dqCE9ZJHPVnGQ59QFCKP7NlOUP2rJSnfSQ
+        DQ9/ITF7bfjCKo7lM5Rh0/fDLCdWpbh4fkxrfmfiMQ==
+X-Google-Smtp-Source: ABdhPJz7B845uKGybPywxSqX/oQBwMJEoTY1oe+5SmrKHMrw+7UPwyBsRDz8K3Lsg8DgAiBpIvy8JJxQkuPWYU4456I=
+X-Received: by 2002:a2e:9cd3:0:b0:23e:53fd:a7e5 with SMTP id
+ g19-20020a2e9cd3000000b0023e53fda7e5mr6418436ljj.475.1645205142357; Fri, 18
+ Feb 2022 09:25:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20220217094802.3644569-1-bigeasy@linutronix.de> <20220217094802.3644569-3-bigeasy@linutronix.de>
-In-Reply-To: <20220217094802.3644569-3-bigeasy@linutronix.de>
+References: <20220217094802.3644569-1-bigeasy@linutronix.de> <20220217094802.3644569-4-bigeasy@linutronix.de>
+In-Reply-To: <20220217094802.3644569-4-bigeasy@linutronix.de>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 18 Feb 2022 08:39:12 -0800
-Message-ID: <CALvZod7Jz91+px=Gpmd8qeY=eN1tS6vEGK0Dq_eGNq9Q=pj7xQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] mm/memcg: Disable threshold event handlers on PREEMPT_RT
+Date:   Fri, 18 Feb 2022 09:25:29 -0800
+Message-ID: <CALvZod4eZWVfibhxu0P0ZQ35cB=vDbde=VNeXiBZfED=k3YPOQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm/memcg: Protect per-CPU counter by disabling
+ preemption on PREEMPT_RT where needed.
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -61,7 +63,6 @@ Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Waiman Long <longman@redhat.com>, Roman Gushchin <guro@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -76,27 +77,77 @@ X-Mailing-List: cgroups@vger.kernel.org
 On Thu, Feb 17, 2022 at 1:48 AM Sebastian Andrzej Siewior
 <bigeasy@linutronix.de> wrote:
 >
-> During the integration of PREEMPT_RT support, the code flow around
-> memcg_check_events() resulted in `twisted code'. Moving the code around
-> and avoiding then would then lead to an additional local-irq-save
-> section within memcg_check_events(). While looking better, it adds a
-> local-irq-save section to code flow which is usually within an
-> local-irq-off block on non-PREEMPT_RT configurations.
+> The per-CPU counter are modified with the non-atomic modifier. The
+> consistency is ensured by disabling interrupts for the update.
+> On non PREEMPT_RT configuration this works because acquiring a
+> spinlock_t typed lock with the _irq() suffix disables interrupts. On
+> PREEMPT_RT configurations the RMW operation can be interrupted.
 >
-> The threshold event handler is a deprecated memcg v1 feature. Instead of
-> trying to get it to work under PREEMPT_RT just disable it. There should
-> be no users on PREEMPT_RT. From that perspective it makes even less
-> sense to get it to work under PREEMPT_RT while having zero users.
+> Another problem is that mem_cgroup_swapout() expects to be invoked with
+> disabled interrupts because the caller has to acquire a spinlock_t which
+> is acquired with disabled interrupts. Since spinlock_t never disables
+> interrupts on PREEMPT_RT the interrupts are never disabled at this
+> point.
 >
-> Make memory.soft_limit_in_bytes and cgroup.event_control return
-> -EOPNOTSUPP on PREEMPT_RT. Make an empty memcg_check_events() and
-> memcg_write_event_control() which return only -EOPNOTSUPP on PREEMPT_RT.
-> Document that the two knobs are disabled on PREEMPT_RT.
+> The code is never called from in_irq() context on PREEMPT_RT therefore
+> disabling preemption during the update is sufficient on PREEMPT_RT.
+> The sections which explicitly disable interrupts can remain on
+> PREEMPT_RT because the sections remain short and they don't involve
+> sleeping locks (memcg_check_events() is doing nothing on PREEMPT_RT).
 >
-> Suggested-by: Michal Hocko <mhocko@kernel.org>
-> Suggested-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> Disable preemption during update of the per-CPU variables which do not
+> explicitly disable interrupts.
+>
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > Acked-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  mm/memcontrol.c | 29 ++++++++++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 0b5117ed2ae08..36ab3660f2c6d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -630,6 +630,28 @@ static DEFINE_SPINLOCK(stats_flush_lock);
+>  static DEFINE_PER_CPU(unsigned int, stats_updates);
+>  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
+>
+> +/*
+> + * Accessors to ensure that preemption is disabled on PREEMPT_RT because it can
+> + * not rely on this as part of an acquired spinlock_t lock. These functions are
+> + * never used in hardirq context on PREEMPT_RT and therefore disabling preemtion
+> + * is sufficient.
+> + */
+> +static void memcg_stats_lock(void)
+> +{
+> +#ifdef CONFIG_PREEMPT_RT
+> +      preempt_disable();
+> +#else
+> +      VM_BUG_ON(!irqs_disabled());
+> +#endif
+> +}
+> +
+> +static void memcg_stats_unlock(void)
+> +{
+> +#ifdef CONFIG_PREEMPT_RT
+> +      preempt_enable();
+> +#endif
+> +}
+> +
+>  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  {
+>         unsigned int x;
+> @@ -706,6 +728,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>         pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+>         memcg = pn->memcg;)
+>
+> +       memcg_stats_lock();
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+The call chains from rmap.c have not really disabled irqs. Actually
+there is a comment in do_page_add_anon_rmap() "We use the irq-unsafe
+__{inc|mod}_zone_page_stat because these counters are not modified in
+interrupt context, and pte lock(a spinlock) is held, which implies
+preemption disabled".
+
+VM_BUG_ON(!irqs_disabled()) within memcg_stats_lock() would be giving
+false error reports for CONFIG_PREEMPT_NONE kernels.
