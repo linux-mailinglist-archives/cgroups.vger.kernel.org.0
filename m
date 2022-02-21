@@ -2,62 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B6F4BE29B
-	for <lists+cgroups@lfdr.de>; Mon, 21 Feb 2022 18:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE2D4BEADC
+	for <lists+cgroups@lfdr.de>; Mon, 21 Feb 2022 20:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381668AbiBURZx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Feb 2022 12:25:53 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58340 "EHLO
+        id S231329AbiBUS1l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Feb 2022 13:27:41 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbiBURZk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Feb 2022 12:25:40 -0500
+        with ESMTP id S233571AbiBUS0d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Feb 2022 13:26:33 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12043AE68
-        for <cgroups@vger.kernel.org>; Mon, 21 Feb 2022 09:25:16 -0800 (PST)
-Date:   Mon, 21 Feb 2022 18:25:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1645464314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QNtNFdJSacVr39E6Cf/B3S4hi9OzOvHCrXZBSJUBNek=;
-        b=job64lGFLs88tgOC58oUnEjLgmTTN/A9J2cmQ5n3f8mbEc1EDx5jPctWkm4a6GYNgpaesK
-        q2f73rvblIG506aBx6r+RteEm500eFneFthRRXuneboc+NtM+DbzrViKnc/aRpTwoqVQFX
-        3h93qN07kfg6iqj2bw7BDieWZy2VjChQp5/OlFZZ5DiQgUBHcOU4apyzZ0E9r8QCcfcp/v
-        DRwo1t8PVH+WGk5TcPOYpXRPx8mi4CsfU3KobPXDQ8nS4/ARZwSj4Ogb7aG97Qx9ysrCYl
-        c73RrA3JxZrUx2PWrpm0AyjE1uCIjgvnp6obFNDBmDOa/P0Zj4CX0ISHmGAepQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1645464314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QNtNFdJSacVr39E6Cf/B3S4hi9OzOvHCrXZBSJUBNek=;
-        b=kvY/S3SYQUccFr25pdL1pEqU7UlLkvE9bEmvzwN5lEqUVOSwODkgGYnINgGgTZCzfw9FtH
-        9j6IFmyjlNHdBpAg==
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98165215
+        for <cgroups@vger.kernel.org>; Mon, 21 Feb 2022 10:26:09 -0800 (PST)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1645467966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Jxyd7UXPX5m/2j0TbW7YsD0CbLlXnk2SQHCfRxdbRq8=;
+        b=rDqhHBZwWPmrML+3zs+6Mry2+GNEjjA2OB1vXBk6cIwkdYf79tuoYcBtWuGqMUx7pbqKav
+        A/11ZQzjIQf7TZ0fZ5Qt12GUJbJ4CEf0+OKdcxPBoWpMPvM9G1p2FbpsPgZXRDx3VXeRRU
+        Uq/iEdP/UHrQ4l7y4x65LjBJPhypR3DE+anLYbBxZcQ5HxHzmkG0w0CnJyPiXPQd9VZWk5
+        qc7JN+OWjdgOUJr695dH+ENcatXmRCfewsDIjstt8Wt34dqGa81x8iLqUMRq9V8MC01d83
+        u/Aj13T3DL3oGVIK9y6vegva0eyCsY+bK5ZhkIpTAXSC2wNc6xXWBiEdhpDDIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1645467966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Jxyd7UXPX5m/2j0TbW7YsD0CbLlXnk2SQHCfRxdbRq8=;
+        b=z0wkmCZRL38ez2aF9RpPLjXxM5m6UAa833zd33BcQNifDcHjsIBWZcqD8bdsNL9+6VRwmU
+        LpFHPO8HL8JCCEBw==
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v3 5/5] mm/memcg: Protect memcg_stock with a local_lock_t
-Message-ID: <YhPK+Ht4I4MTFI+m@linutronix.de>
-References: <20220217094802.3644569-1-bigeasy@linutronix.de>
- <20220217094802.3644569-6-bigeasy@linutronix.de>
- <YhOlxsLOOU/OVSzu@dhcp22.suse.cz>
- <YhOtmPQUcqZCKodH@linutronix.de>
- <YhO8yQrdVX04T8/n@dhcp22.suse.cz>
- <YhPBXUmIIHeXI/Gz@linutronix.de>
- <YhPJM4RjqklanVLE@dhcp22.suse.cz>
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/6] mm/memcg: Address PREEMPT_RT problems instead of disabling it.
+Date:   Mon, 21 Feb 2022 19:25:34 +0100
+Message-Id: <20220221182540.380526-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YhPJM4RjqklanVLE@dhcp22.suse.cz>
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -68,16 +58,65 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022-02-21 18:17:39 [+0100], Michal Hocko wrote:
-> > What about if replace get_cpu() with migrate_disable()? 
-> 
-> Yeah, that would be a better option. I am just not used to think in RT
-> so migrate_disable didn't really come to my mind.
+Hi,
 
-Good.
-Let me rebase accordingly, new version is coming soon.
+this series aims to address the memcg related problem on PREEMPT_RT.
 
-Side note: migrate_disable() is by now implemented in !RT and used in
-highmem for instance (kmap_atomic()).
+I tested them on CONFIG_PREEMPT and CONFIG_PREEMPT_RT with the
+tools/testing/selftests/cgroup/* tests and I haven't observed any
+regressions (other than the lockdep report that is already there).
+
+Changes since v3:
+- Added __memcg_stats_lock() to __mod_memcg_lruvec_state(). This one
+  does not check for disabled interrupts on !RT. The only user
+  (__mod_memcg_lruvec_state()) checks if the context is task (neither
+  soft nor hard irq) if the two idx are used which are used by rmap.c
+  and otherwise it checks for disabled interrupts. Reported by Shakeel
+  Butt.
+
+- In drain_all_stock() migration is disabled and drain_local_stock() is
+  invoked directly if the request CPU is the local CPU.=20
+
+v3: https://lore.kernel.org/all/20220217094802.3644569-1-bigeasy@linutronix=
+.de/
+
+Changes since v2:
+- rebased on top of v5.17-rc4-mmots-2022-02-15-20-39.
+
+- Added memcg_stats_lock() in 3/5 so it a little more obvious and
+  hopefully easiert to maintain.
+
+- Opencoded obj_cgroup_uncharge_pages() in drain_obj_stock(). The
+  __locked suffix was confusing.
+
+v2: https://lore.kernel.org/all/20220211223537.2175879-1-bigeasy@linutronix=
+.de/
+
+Changes since v1:
+- Made a full patch from Michal Hocko's diff to disable the from-IRQ vs
+  from-task optimisation
+
+- Disabling threshold event handlers is using now IS_ENABLED(PREEMPT_RT)
+  instead of #ifdef. The outcome is the same but there is no need to
+  shuffle the code around.
+
+v1: https://lore.kernel.org/all/20220125164337.2071854-1-bigeasy@linutronix=
+.de/
+
+Changes since the RFC:
+- cgroup.event_control / memory.soft_limit_in_bytes is disabled on
+  PREEMPT_RT. It is a deprecated v1 feature. Fixing the signal path is
+  not worth it.
+
+- The updates to per-CPU counters are usually synchronised by disabling
+  interrupts. There are a few spots where assumption about disabled
+  interrupts are not true on PREEMPT_RT and therefore preemption is
+  disabled. This is okay since the counter are never written from
+  in_irq() context.
+
+RFC: https://lore.kernel.org/all/20211222114111.2206248-1-bigeasy@linutroni=
+x.de/
 
 Sebastian
+
+
