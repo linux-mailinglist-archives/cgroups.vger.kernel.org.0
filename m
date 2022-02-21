@@ -2,93 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9794BE1B0
-	for <lists+cgroups@lfdr.de>; Mon, 21 Feb 2022 18:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B754BE994
+	for <lists+cgroups@lfdr.de>; Mon, 21 Feb 2022 19:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378961AbiBUPRP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Feb 2022 10:17:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59740 "EHLO
+        id S235434AbiBUPUU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Feb 2022 10:20:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242537AbiBUPRP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Feb 2022 10:17:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E9A1C121
-        for <cgroups@vger.kernel.org>; Mon, 21 Feb 2022 07:16:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D050AB81215
-        for <cgroups@vger.kernel.org>; Mon, 21 Feb 2022 15:16:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67CDEC340E9;
-        Mon, 21 Feb 2022 15:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645456609;
-        bh=7ju0dRgH/yYPJtn4KOG60za9bLFOf4tZUIskehK0LyI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=C4JlmNoX87DCg4yP2xOZVFwBCLHDl95bGvlr++KOG3/OG56RRxg0dPXqYJryh2fF1
-         oes715dVRKo4OUXGVfMtq3QQsswPlV54cuhEF5awvdSH6AIIaBOSSxvUBskVrZUz7h
-         W820oYXs+87vrrLFjiJ7NUXDt0xFwhapunn35UhwCpGeJOQbluHwd7ISenQO9OKqZl
-         I4w/BhFuSGsjzNv5BpFU1PFkHil4UzxUCH7IbVsOKeKoDVdUjBMXwZmlKyaUVyb890
-         Ycpo1dp0QCJICQOFusySwOjs4eUloM8rUVokO4v1xX72osvV+KSHmAEWgFlIpDnqi0
-         v+zI3ct3z3Umg==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org, Christian Brauner <brauner@kernel.org>
-Subject: [PATCH] cgroup: clarify cgroup_css_set_fork()
-Date:   Mon, 21 Feb 2022 16:16:39 +0100
-Message-Id: <20220221151639.3828143-1-brauner@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S243649AbiBUPUT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Feb 2022 10:20:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB421DA75
+        for <cgroups@vger.kernel.org>; Mon, 21 Feb 2022 07:19:56 -0800 (PST)
+Date:   Mon, 21 Feb 2022 16:19:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1645456793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iiqDs9VmzVxtjLGqmwh2wXqRO32y274elUOjlfl5pnA=;
+        b=Csp7yKVAgNp7j1ujRn4fDH0+27J/BHkBSyTu/EJaAY+GfA/KxhRzDodQqBp6V3t8F4MjgY
+        6T6snrOf3E+o9m0gQZgBI8gQ0XXefphcvdrj65RXqBVGoplkipjbLwzy/bdpRSxVm/TLZP
+        p4wyuaV9r0TTDrwMpLNptw2gyswu7MnOdPRLYMWEyQGyoS4VVwmteuMk2fy0MZIc7dedyN
+        eJceeBWGyVJT/zXxiRznGpJtPgGYfoOW4ZtPMYxHBt03UiWZeB2561reMAd2BE7ItQ/XhC
+        q+yqYN2OoXr7m7Pto+ptKTS+8uIINgaWtuSKyWonAn+LxWn3/49imFouxE51/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1645456793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iiqDs9VmzVxtjLGqmwh2wXqRO32y274elUOjlfl5pnA=;
+        b=19vfFOgPBN5Px5aR1YBszTg4dPsBy1E6qIzOt/WCzph8OK++1Qt7FQibaqKw9CfSNwoxHi
+        iwPTNXgWiS1SbsAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v3 5/5] mm/memcg: Protect memcg_stock with a local_lock_t
+Message-ID: <YhOtmPQUcqZCKodH@linutronix.de>
+References: <20220217094802.3644569-1-bigeasy@linutronix.de>
+ <20220217094802.3644569-6-bigeasy@linutronix.de>
+ <YhOlxsLOOU/OVSzu@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1559; h=from:subject; bh=7ju0dRgH/yYPJtn4KOG60za9bLFOf4tZUIskehK0LyI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSQJr3J1W2Xaf+XqhDfMExM5e3z++i9fXmNudUvsyFr/CdcW 9T3g6ShlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhIxj1Ghjm1Lw7xvfkelLFcREWAKy 1v2S7XCZctjSWe1zxTCtus+53hf8DnuGRmQ79qjU27F/74mXrY6JdUwzF9A3Mbo5Q1spKVzAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YhOlxsLOOU/OVSzu@dhcp22.suse.cz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-With recent fixes for the permission checking when moving a task into a cgroup
-using a file descriptor to a cgroup's cgroup.procs file and calling write() it
-seems a good idea to clarify CLONE_INTO_CGROUP permission checking with a
-comment.
+On 2022-02-21 15:46:30 [+0100], Michal Hocko wrote:
+> On Thu 17-02-22 10:48:02, Sebastian Andrzej Siewior wrote:
+> [...]
+> > @@ -2266,7 +2273,6 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+> >  	 * as well as workers from this path always operate on the local
+> >  	 * per-cpu data. CPU up doesn't touch memcg_stock at all.
+> >  	 */
+> > -	curcpu = get_cpu();
+> 
+> Could you make this a separate patch?
 
-Cc: Tejun Heo <tj@kernel.org>
-Cc: <cgroups@vger.kernel.org>
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- kernel/cgroup/cgroup.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Sure.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 9d05c3ca2d5e..0f8bd120be17 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6166,6 +6166,18 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
- 	if (ret)
- 		goto err;
- 
-+	/*
-+	 * Note, spawning a task directly into a cgroup works by passing a file
-+	 * descriptor to the target cgroup directory. This can even be an
-+	 * O_PATH file descriptor. But it can never be a cgroup.procs file
-+	 * descriptor. This was done on purpose so spawning into a cgroup could
-+	 * be conceptualized as an atomic
-+	 * fd = openat(dfd_cgroup, "cgroup.procs", ...);
-+	 * write(fd, <child-pid>, ...);
-+	 * sequence, i.e. it's a shorthand for the caller opening and writing
-+	 * cgroup.procs of the cgroup indicated by @dfd_cgroup. This allows
-+	 * us to always use the caller's credentials.
-+	 */
- 	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
- 					!(kargs->flags & CLONE_THREAD),
- 					current->nsproxy->cgroup_ns);
+> >  	for_each_online_cpu(cpu) {
+> >  		struct memcg_stock_pcp *stock = &per_cpu(memcg_stock, cpu);
+> >  		struct mem_cgroup *memcg;
+> > @@ -2282,14 +2288,9 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+> >  		rcu_read_unlock();
+> >  
+> >  		if (flush &&
+> > -		    !test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags)) {
+> > -			if (cpu == curcpu)
+> > -				drain_local_stock(&stock->work);
+> > -			else
+> > -				schedule_work_on(cpu, &stock->work);
+> > -		}
+> > +		    !test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags))
+> > +			schedule_work_on(cpu, &stock->work);
+> 
+> Maybe I am missing but on !PREEMPT kernels there is nothing really
+> guaranteeing that the worker runs so there should be cond_resched after
+> the mutex is unlocked. I do not think we want to rely on callers to be
+> aware of this subtlety.
 
-base-commit: cfb92440ee71adcc2105b0890bb01ac3cddb8507
--- 
-2.32.0
+There is no guarantee on PREEMPT kernels, too. The worker will be made
+running and will be put on the CPU when the scheduler sees it fit and
+there could be other worker which take precedence (queued earlier).
+But I was not aware that the worker _needs_ to run before we return. We
+might get migrated after put_cpu() so I wasn't aware that this is
+important. Should we attempt best effort and wait for the worker on the
+current CPU?
 
+> An alternative would be to split out __drain_local_stock which doesn't
+> do local_lock.
+
+but isn't the section in drain_local_stock() unprotected then?
+
+Sebastian
