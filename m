@@ -2,181 +2,309 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7753C4BF3C0
-	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 09:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06B94BF522
+	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 10:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229711AbiBVIff (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Feb 2022 03:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
+        id S230111AbiBVJw7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Feb 2022 04:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiBVIff (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 03:35:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29860158E8B
-        for <cgroups@vger.kernel.org>; Tue, 22 Feb 2022 00:35:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645518909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S230334AbiBVJw5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 04:52:57 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C692D4616E
+        for <cgroups@vger.kernel.org>; Tue, 22 Feb 2022 01:52:31 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7B65721102;
+        Tue, 22 Feb 2022 09:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1645523550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=E30WgXgAZRS6lQUJeUsCZdCeBdcikCP7h9EfQ36uBTo=;
-        b=UJMzrzulJM+sJcwYbHJ7oHygzi6LHm2GPOWWkp8P9E2wBv6YBEGMbFbr4cFubqKiuUOdZZ
-        WWWs+4WvIobdLTQMQJuNtl2SRcTfep1422bJql3B1s/ySvb5xOwvpW+rBa7xovpQ9VBf7s
-        z8uJNIENFv1/EpH+NQ5+6BREwyFPGyA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-280-1HXNWZrNPvCvU5OEN9wO8Q-1; Tue, 22 Feb 2022 03:35:08 -0500
-X-MC-Unique: 1HXNWZrNPvCvU5OEN9wO8Q-1
-Received: by mail-wr1-f70.google.com with SMTP id p9-20020adf9589000000b001e333885ac1so8607747wrp.10
-        for <cgroups@vger.kernel.org>; Tue, 22 Feb 2022 00:35:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=E30WgXgAZRS6lQUJeUsCZdCeBdcikCP7h9EfQ36uBTo=;
-        b=5F3ez9nxroDi63dCyspig1/w+SFqP7a6HBLH6z6Qs7lEQV9f4Idfyz3QCq05ZLSfe/
-         RpNEh8G0TK1PA1k0qy20MqwMHGgRqn9TbwIz46bl2TahzD5OxBjBL1V/AJRAzfD1tjjL
-         q16JTOUpziSR8LVPbCD4T8n3KW7fUQSZa1nYUgTv9h+gR+VTfEDMSj+YsisL6BhHKkNb
-         onm17jymvX/5ewdbfSS7onDqe5SXHbF/C2x/G5yB5FBIYWs3hCyS0M30NXfP5VSRLAD6
-         yZIPO1bZnnVgHjCNaTOjQWUh9YQAefI4O3iD+oC7fM/xOpl2iWVvtL5JGgM4tPOho2zk
-         K/mQ==
-X-Gm-Message-State: AOAM533dzVZldfkbLUwY7iwbz0rSiqMP18OOyT78LqlhdwVmbbBVRyHz
-        9gWIYLFFjOSgQMF9I6kBGe/yYKmSk+OLSS3xEm++urWuFUWYjn7npWQMbJSNF3KBSYLyj/cQT3b
-        ZeeMWkXAtNms+/usTDg==
-X-Received: by 2002:a05:6000:1081:b0:1e3:16d0:1c47 with SMTP id y1-20020a056000108100b001e316d01c47mr18921361wrw.19.1645518906779;
-        Tue, 22 Feb 2022 00:35:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzTFqlbUoKjOmzD6tEVN0k7Dy726wJbHNF/nP2PKCvE89SzHXdNF5wf7IME2kP/sJ798r1zNg==
-X-Received: by 2002:a05:6000:1081:b0:1e3:16d0:1c47 with SMTP id y1-20020a056000108100b001e316d01c47mr18921343wrw.19.1645518906513;
-        Tue, 22 Feb 2022 00:35:06 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id v5sm32603727wrr.7.2022.02.22.00.35.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Feb 2022 00:35:05 -0800 (PST)
-Message-ID: <53d4b30e-2563-c13b-eadc-8372ae965fcb@redhat.com>
-Date:   Tue, 22 Feb 2022 09:35:04 +0100
+        bh=h6mieIgEvjyuDAfc7uOkZ5vr5OU0GNLS9TFS5R7LVsQ=;
+        b=aJA8FHfv0IKytKEygDLo9BQNAOhxHiT/0nlxPGdGed+2nmb2vntin3IE6p57PatDYvqfSi
+        76v0c2W0u/X14Kv3T1/nMtTishSMfHOfhHo9YbpJmWy+tKyue+UfZwg06d/WlKZtfk8/AT
+        C4ZAQbd6rhsMPGgKXRgy1lKYH5U5XqI=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 47F6FA3B83;
+        Tue, 22 Feb 2022 09:52:30 +0000 (UTC)
+Date:   Tue, 22 Feb 2022 10:52:29 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v4 5/6] mm/memcg: Protect memcg_stock with a local_lock_t
+Message-ID: <YhSyXbxaMcgBJJtT@dhcp22.suse.cz>
+References: <20220221182540.380526-1-bigeasy@linutronix.de>
+ <20220221182540.380526-6-bigeasy@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v4] KVM: Move VM's worker kthreads back to the original
- cgroup before exiting.
-Content-Language: en-US
-To:     Vipin Sharma <vipinsh@google.com>, seanjc@google.com
-Cc:     mkoutny@suse.com, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, dmatlack@google.com, jiangshanlai@gmail.com,
-        kvm@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220222054848.563321-1-vipinsh@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20220222054848.563321-1-vipinsh@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220221182540.380526-6-bigeasy@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/22/22 06:48, Vipin Sharma wrote:
-> VM worker kthreads can linger in the VM process's cgroup for sometime
-> after KVM terminates the VM process.
+On Mon 21-02-22 19:25:39, Sebastian Andrzej Siewior wrote:
+> The members of the per-CPU structure memcg_stock_pcp are protected by
+> disabling interrupts. This is not working on PREEMPT_RT because it
+> creates atomic context in which actions are performed which require
+> preemptible context. One example is obj_cgroup_release().
 > 
-> KVM terminates the worker kthreads by calling kthread_stop() which waits
-> on the 'exited' completion, triggered by exit_mm(), via mm_release(), in
-> do_exit() during the kthread's exit.  However, these kthreads are
-> removed from the cgroup using the cgroup_exit() which happens after the
-> exit_mm(). Therefore, A VM process can terminate in between the
-> exit_mm() and cgroup_exit() calls, leaving only worker kthreads in the
-> cgroup.
+> The IRQ-disable sections can be replaced with local_lock_t which
+> preserves the explicit disabling of interrupts while keeps the code
+> preemptible on PREEMPT_RT.
 > 
-> Moving worker kthreads back to the original cgroup (kthreadd_task's
-> cgroup) makes sure that the cgroup is empty as soon as the main VM
-> process is terminated.
+> drain_obj_stock() drops a reference on obj_cgroup which leads to an invocation
+> of obj_cgroup_release() if it is the last object. This in turn leads to
+> recursive locking of the local_lock_t. To avoid this, obj_cgroup_release() is
+> invoked outside of the locked section.
 > 
-> Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> Suggested-by: Sean Christopherson <seanjc@google.com>
+> obj_cgroup_uncharge_pages() can be invoked with the local_lock_t acquired and
+> without it. This will lead later to a recursion in refill_stock(). To
+> avoid the locking recursion provide obj_cgroup_uncharge_pages_locked()
+> which uses the locked version of refill_stock().
+> 
+> - Replace disabling interrupts for memcg_stock with a local_lock_t.
+> 
+> - Let drain_obj_stock() return the old struct obj_cgroup which is passed
+>   to obj_cgroup_put() outside of the locked section.
+> 
+> - Provide obj_cgroup_uncharge_pages_locked() which uses the locked
+>   version of refill_stock() to avoid recursive locking in
+>   drain_obj_stock().
+> 
+> Link: https://lkml.kernel.org/r/20220209014709.GA26885@xsang-OptiPlex-9020
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+Thank you, this looks much more straightforward. I am not super fan of
+the requirement to call obj_cgroup_put oudside of drain_obj_stock but
+I can live with that. A comment in drain_obj_stock to call that out
+explicitly would be nice (can be done as a follow up and have Andrew
+fold it in if there is no new resubmission).
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
 > ---
+>  mm/memcontrol.c | 55 ++++++++++++++++++++++++++++++-------------------
+>  1 file changed, 34 insertions(+), 21 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index cd3950256519d..3d7ccb104374c 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2128,6 +2128,7 @@ void unlock_page_memcg(struct page *page)
+>  }
+>  
+>  struct memcg_stock_pcp {
+> +	local_lock_t stock_lock;
+>  	struct mem_cgroup *cached; /* this never be root cgroup */
+>  	unsigned int nr_pages;
+>  
+> @@ -2143,18 +2144,21 @@ struct memcg_stock_pcp {
+>  	unsigned long flags;
+>  #define FLUSHING_CACHED_CHARGE	0
+>  };
+> -static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> +static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) = {
+> +	.stock_lock = INIT_LOCAL_LOCK(stock_lock),
+> +};
+>  static DEFINE_MUTEX(percpu_charge_mutex);
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+> -static void drain_obj_stock(struct memcg_stock_pcp *stock);
+> +static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock);
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>  				     struct mem_cgroup *root_memcg);
+>  static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages);
+>  
+>  #else
+> -static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
+> +static inline struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
+>  {
+> +	return NULL;
+>  }
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>  				     struct mem_cgroup *root_memcg)
+> @@ -2186,7 +2190,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	if (nr_pages > MEMCG_CHARGE_BATCH)
+>  		return ret;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
+> @@ -2194,7 +2198,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  		ret = true;
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  
+>  	return ret;
+>  }
+> @@ -2223,6 +2227,7 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+>  static void drain_local_stock(struct work_struct *dummy)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
+>  
+>  	/*
+> @@ -2230,14 +2235,16 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	 * drain_stock races is that we always operate on local CPU stock
+>  	 * here with IRQ disabled
+>  	 */
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+> -	drain_obj_stock(stock);
+> +	old = drain_obj_stock(stock);
+>  	drain_stock(stock);
+>  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  }
+>  
+>  /*
+> @@ -2264,9 +2271,9 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	unsigned long flags;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  	__refill_stock(memcg, nr_pages);
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  }
+>  
+>  /*
+> @@ -3093,10 +3100,11 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		     enum node_stat_item idx, int nr)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
+>  	int *bytes;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  
+>  	/*
+> @@ -3105,7 +3113,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  	 * changes.
+>  	 */
+>  	if (stock->cached_objcg != objcg) {
+> -		drain_obj_stock(stock);
+> +		old = drain_obj_stock(stock);
+>  		obj_cgroup_get(objcg);
+>  		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+>  				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
+> @@ -3149,7 +3157,9 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  	if (nr)
+>  		mod_objcg_mlstate(objcg, pgdat, idx, nr);
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  }
+>  
+>  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+> @@ -3158,7 +3168,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
+> @@ -3166,17 +3176,17 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  		ret = true;
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  
+>  	return ret;
+>  }
+>  
+> -static void drain_obj_stock(struct memcg_stock_pcp *stock)
+> +static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
+>  {
+>  	struct obj_cgroup *old = stock->cached_objcg;
+>  
+>  	if (!old)
+> -		return;
+> +		return NULL;
+>  
+>  	if (stock->nr_bytes) {
+>  		unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+> @@ -3226,8 +3236,8 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  		stock->cached_pgdat = NULL;
+>  	}
+>  
+> -	obj_cgroup_put(old);
+>  	stock->cached_objcg = NULL;
+> +	return old;
+>  }
+>  
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+> @@ -3248,14 +3258,15 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  			     bool allow_uncharge)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (stock->cached_objcg != objcg) { /* reset if necessary */
+> -		drain_obj_stock(stock);
+> +		old = drain_obj_stock(stock);
+>  		obj_cgroup_get(objcg);
+>  		stock->cached_objcg = objcg;
+>  		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+> @@ -3269,7 +3280,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  
+>  	if (nr_pages)
+>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
+> -- 
+> 2.35.1
 
-Queued, thanks.
-
-Paolo
-
-> Thanks Sean, for the example on how to use the real_parent outside of the RCU
-> critical region. I wrote your name in Suggested-by, I hope you are fine with
-> it and this is the right tag/way to give you the credit.
-> 
-> v4:
-> - Read task's real_parent in the RCU critical section.
-> - Don't log error message from the cgroup_attach_task_all() API.
-> 
-> v3: https://lore.kernel.org/lkml/20220217061616.3303271-1-vipinsh@google.com/
-> - Use 'current->real_parent' (kthreadd_task) in the
->    cgroup_attach_task_all() call.
-> - Revert cgroup APIs changes in v2. Now, patch does not touch cgroup
->    APIs.
-> - Update commit and comment message
-> 
-> v2: https://lore.kernel.org/lkml/20211222225350.1912249-1-vipinsh@google.com/
-> - Use kthreadd_task in the cgroup API to avoid build issue.
-> 
-> v1: https://lore.kernel.org/lkml/20211214050708.4040200-1-vipinsh@google.com/
-> 
->   virt/kvm/kvm_main.c | 22 +++++++++++++++++++++-
->   1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 83c57bcc6eb6..cdf1fa3c60ae 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -5810,6 +5810,7 @@ static int kvm_vm_worker_thread(void *context)
->   	 * we have to locally copy anything that is needed beyond initialization
->   	 */
->   	struct kvm_vm_worker_thread_context *init_context = context;
-> +	struct task_struct *parent;
->   	struct kvm *kvm = init_context->kvm;
->   	kvm_vm_thread_fn_t thread_fn = init_context->thread_fn;
->   	uintptr_t data = init_context->data;
-> @@ -5836,7 +5837,7 @@ static int kvm_vm_worker_thread(void *context)
->   	init_context = NULL;
->   
->   	if (err)
-> -		return err;
-> +		goto out;
->   
->   	/* Wait to be woken up by the spawner before proceeding. */
->   	kthread_parkme();
-> @@ -5844,6 +5845,25 @@ static int kvm_vm_worker_thread(void *context)
->   	if (!kthread_should_stop())
->   		err = thread_fn(kvm, data);
->   
-> +out:
-> +	/*
-> +	 * Move kthread back to its original cgroup to prevent it lingering in
-> +	 * the cgroup of the VM process, after the latter finishes its
-> +	 * execution.
-> +	 *
-> +	 * kthread_stop() waits on the 'exited' completion condition which is
-> +	 * set in exit_mm(), via mm_release(), in do_exit(). However, the
-> +	 * kthread is removed from the cgroup in the cgroup_exit() which is
-> +	 * called after the exit_mm(). This causes the kthread_stop() to return
-> +	 * before the kthread actually quits the cgroup.
-> +	 */
-> +	rcu_read_lock();
-> +	parent = rcu_dereference(current->real_parent);
-> +	get_task_struct(parent);
-> +	rcu_read_unlock();
-> +	cgroup_attach_task_all(parent, current);
-> +	put_task_struct(parent);
-> +
->   	return err;
->   }
->   
-> 
-> base-commit: 1bbc60d0c7e5728aced352e528ef936ebe2344c0
-
+-- 
+Michal Hocko
+SUSE Labs
