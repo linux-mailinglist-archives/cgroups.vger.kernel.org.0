@@ -2,69 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE274C012D
-	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 19:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F034C0263
+	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 20:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbiBVSYM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Feb 2022 13:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
+        id S235288AbiBVTvC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Feb 2022 14:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbiBVSYL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 13:24:11 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96568EAC8C;
-        Tue, 22 Feb 2022 10:23:45 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id q8-20020a17090a178800b001bc299b8de1so278862pja.1;
-        Tue, 22 Feb 2022 10:23:45 -0800 (PST)
+        with ESMTP id S233668AbiBVTvC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 14:51:02 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B994CBA75A;
+        Tue, 22 Feb 2022 11:50:36 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id d16so17885656pgd.9;
+        Tue, 22 Feb 2022 11:50:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=XRY9BTtFDMjGt0LGbkNbt6s2IHGP2Dl3/GtZArqDt6M=;
-        b=k4TDZhxO4zLnuGpfptc8tcXjeITKastU4t7LEphduxxMVQfj0PMC26Gzd50CTdJmK9
-         Hk75f7bRkkezokkuF3CPaFr94vo0zuEVtktH/VPQCDDwH4b41nUn1OhcAhnVMOSuLjdD
-         44ewS/IApkmNBq5DjQfE9aC7COY/oCs5EsqzYtjs495XG94VueQzaqp+F5Y6aejdcC+T
-         cCyo12yrjvvi8PnV3y6S/3xM4zI9JwotFpF2Hifl9ddUktBezeqpxRDfbsPW8kiHnxQG
-         /MSIAOECD7C4YXWqMCKanL2EcvGUxSapnk0NX2Vo3HNddunUS30T0vxEbXXVuMQ+Tesc
-         hkAQ==
+        bh=UXjqKNRIgAxMkX6Cqpc/qXekDEWeVq9e93BE44DZgy8=;
+        b=bzNy2OQYqoF9fgSgZMFDD5DbAtgYNYLa2UZkmn8QOEBGt9Ddtu+Xm0gVwHi5NeBRLw
+         Xanu1t2DcPXG0uuFeBVnkrZ5Xux/TYpApMgXLVHeNHAHNL//JZEQdgImpgwjuRR0U6pV
+         9soDMPSrXsY1fjBNig2HWKxELREeNFI1I0Mj/hsX2erYiDcGUnLHDwJz3WXlGJQ1zUrd
+         IwfAFtDasYah/dnF5DrT+KqRe9JPoX+z9vYIz6mvfVY88As2x80YUcXiD6OpuLEp38uX
+         5UH+96wV1uLjy3PBjdqhvFOQsHaCBKqKihcj9VZWXAFEnNgsNY43d/+N8Y+vaG+dYOam
+         Z8Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=XRY9BTtFDMjGt0LGbkNbt6s2IHGP2Dl3/GtZArqDt6M=;
-        b=xO9Rw3ILbzGXF/l1g/WPcNqwGz+H15hoslkVOorJWmqN5b4ZCaNYG5ggW7GouTGcG0
-         divHqPssRhqxePE+yeqQZ0OQnDmPEkOwZl/V5o6KSeC2FPmQ0j9MpxJ/4WGylKx9rXXE
-         eE0yybqMSgMWy4LZLm0G2mjFwOhAiYvYYMVtF533tT4Xt95iADxgelgOZnkc8e0q7OFq
-         XNUgYg2rgha63jI4/yBzNyRKQpf3EZfa8BtFxkspQ82R3POlia+SEgq4i5goYk+XufGJ
-         nvk8NjITjnD0rBWX4L7WNGZzZhZZmr4p7L12ufyvJ1+Gq/tAUAHq5gID3Obz4SLAAuhi
-         VKXA==
-X-Gm-Message-State: AOAM5326JiDs+n36GFmiVAa0cy7Za2ylN6aB2o1/PH2ZQrKYbXUuUI1i
-        Wf9J+AqmxKaBOM15MsH7ZtA=
-X-Google-Smtp-Source: ABdhPJy4GwU+2FBSIX7szCtTBeuszPT/l7F25CNLzTYhUHqqCTxKB2s+Z1VguKa7RfZz2aZ9wWPb9w==
-X-Received: by 2002:a17:902:bd85:b0:14d:c29b:d534 with SMTP id q5-20020a170902bd8500b0014dc29bd534mr24068006pls.99.1645554225037;
-        Tue, 22 Feb 2022 10:23:45 -0800 (PST)
+        bh=UXjqKNRIgAxMkX6Cqpc/qXekDEWeVq9e93BE44DZgy8=;
+        b=mH9dlkbYK7Q1zYwLZosuQxvrr/KjbqWfMX2qXIM/tbvzuvG2VWPzeNtLAWH0cclu/7
+         pk6W8taTk4yUiCKVaZuchaf3L3JZDtfpyzhyfaBdDCIQ0Hkk32BMcA0psD35fpbrnQxT
+         5Mmk4i3utX5eifCBlGshkWQaQdbu5QbqxfX2tJ84JChGGDYSfz9jnh0a9yjE4cArnRCL
+         j4Hm1m+LDX5XeELhcVimSzxbX6Ol9CrbZvwV++MbusE8kKvU6IqZ3+bnvoPml5sIH+tX
+         devOEl715uashx/M2Rb8aAQPmEfr6Vljxij7/AGX58zWxLNqSSmW7r7cB+MTZIHzlbm4
+         kbHQ==
+X-Gm-Message-State: AOAM532BxkA0J50D43d+EI7gcJgcunBgy/1Rvc7VhM2yr/aerV6xnW12
+        xS9VpxEu97dpTwslwVHcvns=
+X-Google-Smtp-Source: ABdhPJyTOKkCrJShCu5+Ro+v3Di/q1CAk6Xek47BOOTpf1EsNabtf1X1LNcMfc/wnAoXdkJV5Qk/cg==
+X-Received: by 2002:a63:894a:0:b0:365:8dbf:cd0d with SMTP id v71-20020a63894a000000b003658dbfcd0dmr20710224pgd.5.1645559436052;
+        Tue, 22 Feb 2022 11:50:36 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id n13sm163708pjq.13.2022.02.22.10.23.44
+        by smtp.gmail.com with ESMTPSA id ep5-20020a17090ae64500b001bc56af507dsm333344pjb.47.2022.02.22.11.50.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 10:23:44 -0800 (PST)
+        Tue, 22 Feb 2022 11:50:35 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Feb 2022 08:23:43 -1000
+Date:   Tue, 22 Feb 2022 09:50:33 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     syzbot <syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com>,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in cpuset_write_resmask
-Message-ID: <YhUqLxR9o5UGVlTx@slm.duckdns.org>
-References: <000000000000264b2a05d44bca80@google.com>
- <0000000000008f71e305d89070bb@google.com>
- <YhUc10UcAmot1AJK@slm.duckdns.org>
- <a1baa10e-2c73-1fdd-0228-820310455dd5@redhat.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] cpuset: Fix kernel-doc
+Message-ID: <YhU+iQ8GdN9JKjgs@slm.duckdns.org>
+References: <20220216031753.8298-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a1baa10e-2c73-1fdd-0228-820310455dd5@redhat.com>
+In-Reply-To: <20220216031753.8298-1-jiapeng.chong@linux.alibaba.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -76,15 +72,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 01:22:13PM -0500, Waiman Long wrote:
-> My preliminary analysis is that the warning may be caused by my commit
-> 1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets restrict parent in
-> default hierarchy") since the merge branch e5313968c41b is missing the fix
-> commit d068eebbd482 ("cgroup/cpuset: Make child cpusets restrict parents on
-> v1 hierarchy"). I believe the problem should be gone once the merge branch
-> is updated to a later upstream baseline.
+On Wed, Feb 16, 2022 at 11:17:53AM +0800, Jiapeng Chong wrote:
+> Fix the following W=1 kernel warnings:
+> 
+> kernel/cgroup/cpuset.c:3718: warning: expecting prototype for
+> cpuset_memory_pressure_bump(). Prototype was for
+> __cpuset_memory_pressure_bump() instead.
+> 
+> kernel/cgroup/cpuset.c:3568: warning: expecting prototype for
+> cpuset_node_allowed(). Prototype was for __cpuset_node_allowed()
+> instead.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Fantastic. Thank you so much for taking a look.
+Applied to cgroup/for-5.17-fixes.
+
+Thanks.
 
 -- 
 tejun
