@@ -2,64 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055754C007A
-	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 18:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4836C4C0106
+	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 19:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbiBVRw1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Feb 2022 12:52:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
+        id S233767AbiBVSNh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Feb 2022 13:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234662AbiBVRw0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 12:52:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64913C7E82
-        for <cgroups@vger.kernel.org>; Tue, 22 Feb 2022 09:52:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645552319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nni+lwg+vURAlQ1l6Xl0fUh9nRnO1LrD4u/eCChPHCE=;
-        b=DLScQrRYLhydsVITCravgMrBdldb1oTbkaZ6fCZO20zVDaoS1c0hyczeSoN2qwDHcUvk5e
-        K6flmdJbfVBIQMXcQlf4mYNHO663RtOkm5EKILDGDJednV31buw8JFO/3fdizup7S1/fuH
-        ux2XtLRkZR2gniV5ktaJkdTfO4s+Ssw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-637-TUnx2vHpM3S1tSl3hwV0LQ-1; Tue, 22 Feb 2022 12:51:56 -0500
-X-MC-Unique: TUnx2vHpM3S1tSl3hwV0LQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2924C80DE0F;
-        Tue, 22 Feb 2022 17:51:54 +0000 (UTC)
-Received: from [10.22.11.128] (unknown [10.22.11.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EA90567658;
-        Tue, 22 Feb 2022 17:51:52 +0000 (UTC)
-Message-ID: <bb1370c7-ef68-2d84-88c4-9f73a3152e5a@redhat.com>
-Date:   Tue, 22 Feb 2022 12:51:52 -0500
+        with ESMTP id S233081AbiBVSNg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 13:13:36 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7B76542F;
+        Tue, 22 Feb 2022 10:13:11 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id i21so12868609pfd.13;
+        Tue, 22 Feb 2022 10:13:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ZB+Gu7YpATSeA5t+N3YCnRgIG2ZtKKuUBwZ11FHjUfE=;
+        b=RA5ZZcKVCaJu4k9+anC+SKGCGQerWGqOhKJaggLKQV7bGyHctRS7qpuJKLwzWJx3Wv
+         Dey7ap2D5hO5jWRp53MeEF17hEm4V6cizKN1IjBybApavS5+4d3vKAO/eKEsgi5+pAct
+         T9nbvEwNjHtHjH9OgbB4FdyB2PvlFDtrjGVHPbwXprRB+8x87LSxY4CLxE6wq0eSWYp0
+         kjemJDp8QbuSY3VuODIS7aPNIfSVcqPvUNP1XKdmms7J15ZcFjzqJV529On+vnt42uIg
+         ebWKFeYpqqrrqB0/DsXzqj2GtLcqPx0Qv/SuFKNMC/hqf3R+P8HbwUJWy+I5Ua+Q1Qjs
+         f7zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=ZB+Gu7YpATSeA5t+N3YCnRgIG2ZtKKuUBwZ11FHjUfE=;
+        b=q4JNoTOaLpK5GiMd+rmzlOM84EhcpFdvnQUlBsl+elUUal/2+NdQPul83Y7AVSbJis
+         HZyCE0iPc+dnzkwR9gQ/cOwNoKt+CeuVxpGSppuO5/rjy0zhOTC2rNg6gsQLnKuxCBaD
+         QUuhsZ4AYouM6xNwWBfkdmpNVIVUEV2U2WUE9omBLLU/yCJSXkd09AGc99vKRWw3voTF
+         +5kTyAiq1vHsy3YxqgqNEdn5BqXJ7PpyfhLpYdPWmQ5CF/Xz1i/1AGd8augbySK4dJhV
+         RTKQ813Yd5xwqXDUF7oXh+BF3x02BpHMyA9b56KjQ60uexR14tQK0ISkW/cKqDb7I9C0
+         LGlg==
+X-Gm-Message-State: AOAM531M5w6io96BrFPGpOG5CGbcS+xnz/wZDORgN609hbWqUPZkKpox
+        SWRsdbNQo/DEN7xKFtn9VW0=
+X-Google-Smtp-Source: ABdhPJzdDUApA6XIS5hwgv9MnJix+kY9TnPhiSV/CJIJgcQFGm6rLgPfVPijE68/WRpEhbeg6YIJhQ==
+X-Received: by 2002:a05:6a00:ad2:b0:4f1:2734:a3d9 with SMTP id c18-20020a056a000ad200b004f12734a3d9mr11379146pfl.61.1645553590865;
+        Tue, 22 Feb 2022 10:13:10 -0800 (PST)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id i17sm21632607pgv.8.2022.02.22.10.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Feb 2022 10:13:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 22 Feb 2022 08:13:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Masami Ichikawa <masami.ichikawa@cybertrust.co.jp>,
+        Tabitha Sable <tabitha.c.sable@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup-v1: Correct privileges check in release_agent
+ writes
+Message-ID: <YhUntajxL3YrDXXg@slm.duckdns.org>
+References: <20220217161128.20291-1-mkoutny@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [syzbot] WARNING in cpuset_write_resmask
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>,
-        syzbot <syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com>
-Cc:     cgroups@vger.kernel.org, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000264b2a05d44bca80@google.com>
- <0000000000008f71e305d89070bb@google.com> <YhUc10UcAmot1AJK@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YhUc10UcAmot1AJK@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220217161128.20291-1-mkoutny@suse.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,81 +78,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/22/22 12:26, Tejun Heo wrote:
-> (cc'ing Waiman and quoting whole body)
->
-> Hello, Waiman.
->
-> It looks like it's hitting
->
->   WARN_ON(!is_in_v2_mode() && !nodes_equal(cp->mems_allowed, cp->effective_mems))
->
-> Can you take a look?
+On Thu, Feb 17, 2022 at 05:11:28PM +0100, Michal Koutný wrote:
+> The idea is to check: a) the owning user_ns of cgroup_ns, b)
+> capabilities in init_user_ns.
+> 
+> The commit 24f600856418 ("cgroup-v1: Require capabilities to set
+> release_agent") got this wrong in the write handler of release_agent
+> since it checked user_ns of the opener (may be different from the owning
+> user_ns of cgroup_ns).
+> Secondly, to avoid possibly confused deputy, the capability of the
+> opener must be checked.
+> 
+> Fixes: 24f600856418 ("cgroup-v1: Require capabilities to set release_agent")
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/stable/20220216121142.GB30035@blackbody.suse.cz/
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-Sure. I will take a look at that.
+Applied to cgroup/for-5.17-fixes.
 
-Cheers,
-Longman
+Thanks.
 
->
-> Thanks.
->
-> On Mon, Feb 21, 2022 at 04:29:18PM -0800, syzbot wrote:
->> syzbot has found a reproducer for the following issue on:
->>
->> HEAD commit:    e5313968c41b Merge branch 'Split bpf_sk_lookup remote_port..
->> git tree:       bpf-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=113aeefa700000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=c40b67275bfe2a58
->> dashboard link: https://syzkaller.appspot.com/bug?extid=568dc81cd20b72d4a49f
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bb97ce700000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12062c8e700000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 3647 at kernel/cgroup/cpuset.c:1817 update_nodemasks_hier kernel/cgroup/cpuset.c:1817 [inline]
->> WARNING: CPU: 1 PID: 3647 at kernel/cgroup/cpuset.c:1817 update_nodemask kernel/cgroup/cpuset.c:1890 [inline]
->> WARNING: CPU: 1 PID: 3647 at kernel/cgroup/cpuset.c:1817 cpuset_write_resmask+0x167b/0x20f0 kernel/cgroup/cpuset.c:2457
->> Modules linked in:
->> CPU: 0 PID: 3647 Comm: syz-executor287 Not tainted 5.16.0-syzkaller-11655-ge5313968c41b #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:update_nodemasks_hier kernel/cgroup/cpuset.c:1817 [inline]
->> RIP: 0010:update_nodemask kernel/cgroup/cpuset.c:1890 [inline]
->> RIP: 0010:cpuset_write_resmask+0x167b/0x20f0 kernel/cgroup/cpuset.c:2457
->> Code: 3c 08 00 0f 85 ed 08 00 00 49 8b 9c 24 38 01 00 00 48 89 ef 48 89 de e8 63 4a 04 00 48 39 dd 0f 84 dd ef ff ff e8 e5 46 04 00 <0f> 0b e9 d1 ef ff ff e8 d9 46 04 00 e8 b4 a5 ef ff e8 cf 46 04 00
->> RSP: 0018:ffffc90003acfb18 EFLAGS: 00010293
->> RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
->> RDX: ffff88801e193a00 RSI: ffffffff81740f0b RDI: 0000000000000003
->> RBP: 0000000000000003 R08: 0000000000000003 R09: ffffffff8fdeca17
->> R10: ffffffff81740efd R11: 0000000000000001 R12: ffff888074f2e000
->> R13: ffff888074f2e054 R14: ffff888074f2e138 R15: 0000000000000000
->> FS:  00007fee62f33700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007ffcf8240960 CR3: 0000000072ae3000 CR4: 00000000003506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>   <TASK>
->>   cgroup_file_write+0x1de/0x760 kernel/cgroup/cgroup.c:3877
->>   kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
->>   call_write_iter include/linux/fs.h:2086 [inline]
->>   new_sync_write+0x431/0x660 fs/read_write.c:503
->>   vfs_write+0x7cd/0xae0 fs/read_write.c:590
->>   ksys_write+0x12d/0x250 fs/read_write.c:643
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x7fee62f82b79
->> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007fee62f33308 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->> RAX: ffffffffffffffda RBX: 00007fee6300c4c8 RCX: 00007fee62f82b79
->> RDX: 0000000000000001 RSI: 0000000020000080 RDI: 0000000000000006
->> RBP: 00007fee6300c4c0 R08: 0000000000000012 R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fee6300c4cc
->> R13: 00007fee62fd92b0 R14: 6d2e746573757063 R15: 0000000000022000
->>   </TASK>
->>
-
+-- 
+tejun
