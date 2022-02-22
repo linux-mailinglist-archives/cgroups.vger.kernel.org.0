@@ -2,75 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4836C4C0106
-	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 19:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78054C0127
+	for <lists+cgroups@lfdr.de>; Tue, 22 Feb 2022 19:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbiBVSNh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Feb 2022 13:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S231816AbiBVSWz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Feb 2022 13:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbiBVSNg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 13:13:36 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7B76542F;
-        Tue, 22 Feb 2022 10:13:11 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id i21so12868609pfd.13;
-        Tue, 22 Feb 2022 10:13:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZB+Gu7YpATSeA5t+N3YCnRgIG2ZtKKuUBwZ11FHjUfE=;
-        b=RA5ZZcKVCaJu4k9+anC+SKGCGQerWGqOhKJaggLKQV7bGyHctRS7qpuJKLwzWJx3Wv
-         Dey7ap2D5hO5jWRp53MeEF17hEm4V6cizKN1IjBybApavS5+4d3vKAO/eKEsgi5+pAct
-         T9nbvEwNjHtHjH9OgbB4FdyB2PvlFDtrjGVHPbwXprRB+8x87LSxY4CLxE6wq0eSWYp0
-         kjemJDp8QbuSY3VuODIS7aPNIfSVcqPvUNP1XKdmms7J15ZcFjzqJV529On+vnt42uIg
-         ebWKFeYpqqrrqB0/DsXzqj2GtLcqPx0Qv/SuFKNMC/hqf3R+P8HbwUJWy+I5Ua+Q1Qjs
-         f7zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=ZB+Gu7YpATSeA5t+N3YCnRgIG2ZtKKuUBwZ11FHjUfE=;
-        b=q4JNoTOaLpK5GiMd+rmzlOM84EhcpFdvnQUlBsl+elUUal/2+NdQPul83Y7AVSbJis
-         HZyCE0iPc+dnzkwR9gQ/cOwNoKt+CeuVxpGSppuO5/rjy0zhOTC2rNg6gsQLnKuxCBaD
-         QUuhsZ4AYouM6xNwWBfkdmpNVIVUEV2U2WUE9omBLLU/yCJSXkd09AGc99vKRWw3voTF
-         +5kTyAiq1vHsy3YxqgqNEdn5BqXJ7PpyfhLpYdPWmQ5CF/Xz1i/1AGd8augbySK4dJhV
-         RTKQ813Yd5xwqXDUF7oXh+BF3x02BpHMyA9b56KjQ60uexR14tQK0ISkW/cKqDb7I9C0
-         LGlg==
-X-Gm-Message-State: AOAM531M5w6io96BrFPGpOG5CGbcS+xnz/wZDORgN609hbWqUPZkKpox
-        SWRsdbNQo/DEN7xKFtn9VW0=
-X-Google-Smtp-Source: ABdhPJzdDUApA6XIS5hwgv9MnJix+kY9TnPhiSV/CJIJgcQFGm6rLgPfVPijE68/WRpEhbeg6YIJhQ==
-X-Received: by 2002:a05:6a00:ad2:b0:4f1:2734:a3d9 with SMTP id c18-20020a056a000ad200b004f12734a3d9mr11379146pfl.61.1645553590865;
-        Tue, 22 Feb 2022 10:13:10 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id i17sm21632607pgv.8.2022.02.22.10.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 10:13:10 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Feb 2022 08:13:09 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Masami Ichikawa <masami.ichikawa@cybertrust.co.jp>,
-        Tabitha Sable <tabitha.c.sable@gmail.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, stable@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup-v1: Correct privileges check in release_agent
- writes
-Message-ID: <YhUntajxL3YrDXXg@slm.duckdns.org>
-References: <20220217161128.20291-1-mkoutny@suse.com>
+        with ESMTP id S234957AbiBVSWo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Feb 2022 13:22:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 41431C6808
+        for <cgroups@vger.kernel.org>; Tue, 22 Feb 2022 10:22:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645554138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wpBwJl6c6s7sx3w93zOGpJgVfvC/ipdRSEUJaReqDhs=;
+        b=bLXiMZbCyFJXifWNUDQ783REY1qRW2Wstt/VIHLgRNLSLE84shDT0CKLwF2KjI/obbcDg7
+        ZwYh96Q8pTwuZoxI1AWY2FErexaw4+CHNQz0ffIfIkRKZQ/Ugfb0GrAPulFI/VRxIp1ak4
+        li5d5snoqiuxX73rUWpkqpvgB1Zv2uE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-42-QflFvAqZOSWLleMcbvM1cA-1; Tue, 22 Feb 2022 13:22:16 -0500
+X-MC-Unique: QflFvAqZOSWLleMcbvM1cA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4ED01100C610;
+        Tue, 22 Feb 2022 18:22:15 +0000 (UTC)
+Received: from [10.22.11.128] (unknown [10.22.11.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 221A987548;
+        Tue, 22 Feb 2022 18:22:14 +0000 (UTC)
+Message-ID: <a1baa10e-2c73-1fdd-0228-820310455dd5@redhat.com>
+Date:   Tue, 22 Feb 2022 13:22:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220217161128.20291-1-mkoutny@suse.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [syzbot] WARNING in cpuset_write_resmask
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>,
+        syzbot <syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com>
+Cc:     cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000264b2a05d44bca80@google.com>
+ <0000000000008f71e305d89070bb@google.com> <YhUc10UcAmot1AJK@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YhUc10UcAmot1AJK@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,25 +67,24 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 05:11:28PM +0100, Michal Koutný wrote:
-> The idea is to check: a) the owning user_ns of cgroup_ns, b)
-> capabilities in init_user_ns.
-> 
-> The commit 24f600856418 ("cgroup-v1: Require capabilities to set
-> release_agent") got this wrong in the write handler of release_agent
-> since it checked user_ns of the opener (may be different from the owning
-> user_ns of cgroup_ns).
-> Secondly, to avoid possibly confused deputy, the capability of the
-> opener must be checked.
-> 
-> Fixes: 24f600856418 ("cgroup-v1: Require capabilities to set release_agent")
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/stable/20220216121142.GB30035@blackbody.suse.cz/
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+On 2/22/22 12:26, Tejun Heo wrote:
+> (cc'ing Waiman and quoting whole body)
+>
+> Hello, Waiman.
+>
+> It looks like it's hitting
+>
+>   WARN_ON(!is_in_v2_mode() && !nodes_equal(cp->mems_allowed, cp->effective_mems))
+>
+> Can you take a look?
 
-Applied to cgroup/for-5.17-fixes.
+My preliminary analysis is that the warning may be caused by my commit 
+1f1562fcd04a ("cgroup/cpuset: Don't let child cpusets restrict parent in 
+default hierarchy") since the merge branch e5313968c41b is missing the 
+fix commit d068eebbd482 ("cgroup/cpuset: Make child cpusets restrict 
+parents on v1 hierarchy"). I believe the problem should be gone once the 
+merge branch is updated to a later upstream baseline.
 
-Thanks.
+Cheers,
+Longman
 
--- 
-tejun
