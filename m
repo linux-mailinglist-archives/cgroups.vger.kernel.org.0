@@ -2,111 +2,188 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB43E4C3A66
-	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 01:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527814C3EDA
+	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 08:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbiBYAfQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Feb 2022 19:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
+        id S233676AbiBYHSh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Feb 2022 02:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbiBYAfP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Feb 2022 19:35:15 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE4929DD60
-        for <cgroups@vger.kernel.org>; Thu, 24 Feb 2022 16:34:44 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id x5so5188117edd.11
-        for <cgroups@vger.kernel.org>; Thu, 24 Feb 2022 16:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ilQGiGw+cHHnWYdpNd2TsqiqLrmn72vknxopCrZER/Q=;
-        b=EXhP+YADKLWYCXD23XUiXLkpefnymxGvQ/D3MVz2Nk0z3XGGwRNe8I8uITmCtQwIFm
-         4VBod9Tn78bwab2BZ6kHXnt2BwHZ8uUEHy7OzOAKBSZJ6fc1QETVMyQqbXCcNsyyNHmj
-         97dZX0Epb88JPt0lOOpWx5jvJ4XY959jv7wVBuSoVSgpqg8I0ylEXoDrTok1pLCiMh5F
-         tXdlQvD1HPzeefQzeA955geaPEZK76a0puWvb624G1Uk60kRkYJM9LXDRiEGmrQ7jnYq
-         0HtNtCuP/AO4ipwxFWETbeAfyVM1DbdZnpvq2VBPheijzUBcevHVMOJzgQp4VUcYlosT
-         Qe9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ilQGiGw+cHHnWYdpNd2TsqiqLrmn72vknxopCrZER/Q=;
-        b=dRjMFZoEW7dstvBv7bFjdn3XT74pWI5lrDgkTWvBC8hgO81lxCNgy8bmHdkyJQ1aLc
-         cwdE0ZcBChRObjf83EbbYpw2fABHjfKTzAq71NMkQG/V8kkffPGVWmQIs9kt6tqqNnkH
-         pSx7eltnR0VFSCrQVoo7+JEBoz19Y3v2as947KXT/zrm/uHdu516j9U7EN9l+ZGJQdGt
-         Y4G7xqot9P65V0axjeTqJb78QikO+uRDEIBPuk+jNHmEP/uhTf/m7xeKBPRqjwSCf6hP
-         WZuEWl5+y5tu0MGvsBYm2pDooXddLx0uok+yqlBJQTZLuEYh8dFLo26pLyc4Lhf38VXa
-         hPpA==
-X-Gm-Message-State: AOAM532LmVWSX4GOE3VOcrnBaJLVL9WOI1gycbej4lVAHg173eJotkQz
-        SQQTrOy5xnDv2TcNRQ/uUWI=
-X-Google-Smtp-Source: ABdhPJyuoa5ezgs1FJUFIN4JTKE1OZe4PXfPQZ6hNFf3F6TNXGWk9P7dqdy+drSU3xm8bap1JfloTQ==
-X-Received: by 2002:aa7:cc82:0:b0:410:d2b0:1a07 with SMTP id p2-20020aa7cc82000000b00410d2b01a07mr4691617edt.359.1645749282998;
-        Thu, 24 Feb 2022 16:34:42 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id dc4-20020a170906c7c400b006a9bca854c2sm337086ejb.37.2022.02.24.16.34.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Feb 2022 16:34:42 -0800 (PST)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH 3/3] mm/memcg: move generation assignment and comparison together
-Date:   Fri, 25 Feb 2022 00:34:37 +0000
-Message-Id: <20220225003437.12620-4-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20220225003437.12620-1-richard.weiyang@gmail.com>
-References: <20220225003437.12620-1-richard.weiyang@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232495AbiBYHSg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 02:18:36 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204B0239D5F;
+        Thu, 24 Feb 2022 23:18:04 -0800 (PST)
+Received: from kwepemi100026.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K4h0c6kkHzdZgJ;
+        Fri, 25 Feb 2022 15:16:48 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100026.china.huawei.com (7.221.188.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.18; Fri, 25 Feb 2022 15:18:01 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 25 Feb 2022 15:18:01 +0800
+Subject: Re: [PATCH v9] block: cancel all throttled bios in del_gendisk()
+To:     <ming.lei@redhat.com>, <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220210115637.1074927-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <c000951a-b304-4663-4752-4a2cf8a4cbbb@huawei.com>
+Date:   Fri, 25 Feb 2022 15:18:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20220210115637.1074927-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-For each round-trip, we assign generation on first invocation and
-compare it on subsequent invocations.
+friendly ping ...
 
-Let's move them together to make it more self-explaining. Also this
-reduce a check on prev.
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
----
- mm/memcontrol.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 03399146168f..17da93c2f94e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -996,7 +996,14 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 		mz = root->nodeinfo[reclaim->pgdat->node_id];
- 		iter = &mz->iter;
- 
--		if (prev && reclaim->generation != iter->generation)
-+		/*
-+		 * On first invocation, assign iter->generation to
-+		 * reclaim->generation.
-+		 * On subsequent invocations, make sure no one else jump in.
-+		 */
-+		if (!prev)
-+			reclaim->generation = iter->generation;
-+		else if (reclaim->generation != iter->generation)
- 			goto out_unlock;
- 
- 		while (1) {
-@@ -1056,8 +1063,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 
- 		if (!memcg)
- 			iter->generation++;
--		else if (!prev)
--			reclaim->generation = iter->generation;
- 	}
- 
- out_unlock:
--- 
-2.33.1
-
+ÔÚ 2022/02/10 19:56, Yu Kuai Ð´µÀ:
+> Throttled bios can't be issued after del_gendisk() is done, thus
+> it's better to cancel them immediately rather than waiting for
+> throttle is done.
+> 
+> For example, if user thread is throttled with low bps while it's
+> issuing large io, and the device is deleted. The user thread will
+> wait for a long time for io to return.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+> Changes in v9:
+>   - some minor changes as suggested by Ming.
+> Changes in v8:
+>   - fold two patches into one
+> Changes in v7:
+>   - use the new solution as suggested by Ming.
+> 
+>   block/blk-throttle.c | 44 +++++++++++++++++++++++++++++++++++++++++---
+>   block/blk-throttle.h |  2 ++
+>   block/genhd.c        |  2 ++
+>   3 files changed, 45 insertions(+), 3 deletions(-)
+> 
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 7c462c006b26..ca92e5fa2769 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -43,8 +43,12 @@
+>   static struct workqueue_struct *kthrotld_workqueue;
+>   
+>   enum tg_state_flags {
+> -	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
+> -	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
+> +	/* on parent's pending tree */
+> +	THROTL_TG_PENDING	= 1 << 0,
+> +	/* bio_lists[] became non-empty */
+> +	THROTL_TG_WAS_EMPTY	= 1 << 1,
+> +	/* starts to cancel all bios, will be set if the disk is deleted */
+> +	THROTL_TG_CANCELING	= 1 << 2,
+>   };
+>   
+>   #define rb_entry_tg(node)	rb_entry((node), struct throtl_grp, rb_node)
+> @@ -871,7 +875,8 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
+>   	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
+>   
+>   	/* If tg->bps = -1, then BW is unlimited */
+> -	if (bps_limit == U64_MAX && iops_limit == UINT_MAX) {
+> +	if ((bps_limit == U64_MAX && iops_limit == UINT_MAX) ||
+> +	    tg->flags & THROTL_TG_CANCELING) {
+>   		if (wait)
+>   			*wait = 0;
+>   		return true;
+> @@ -1763,6 +1768,39 @@ static bool throtl_hierarchy_can_upgrade(struct throtl_grp *tg)
+>   	return false;
+>   }
+>   
+> +void blk_throtl_cancel_bios(struct request_queue *q)
+> +{
+> +	struct cgroup_subsys_state *pos_css;
+> +	struct blkcg_gq *blkg;
+> +
+> +	spin_lock_irq(&q->queue_lock);
+> +	/*
+> +	 * queue_lock is held, rcu lock is not needed here technically.
+> +	 * However, rcu lock is still held to emphasize that following
+> +	 * path need RCU protection and to prevent warning from lockdep.
+> +	 */
+> +	rcu_read_lock();
+> +	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
+> +		struct throtl_grp *tg = blkg_to_tg(blkg);
+> +		struct throtl_service_queue *sq = &tg->service_queue;
+> +
+> +		/*
+> +		 * Set the flag to make sure throtl_pending_timer_fn() won't
+> +		 * stop until all throttled bios are dispatched.
+> +		 */
+> +		blkg_to_tg(blkg)->flags |= THROTL_TG_CANCELING;
+> +		/*
+> +		 * Update disptime after setting the above flag to make sure
+> +		 * throtl_select_dispatch() won't exit without dispatching.
+> +		 */
+> +		tg_update_disptime(tg);
+> +
+> +		throtl_schedule_pending_timer(sq, jiffies + 1);
+> +	}
+> +	rcu_read_unlock();
+> +	spin_unlock_irq(&q->queue_lock);
+> +}
+> +
+>   static bool throtl_can_upgrade(struct throtl_data *td,
+>   	struct throtl_grp *this_tg)
+>   {
+> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+> index 175f03abd9e4..2ae467ac17ea 100644
+> --- a/block/blk-throttle.h
+> +++ b/block/blk-throttle.h
+> @@ -160,12 +160,14 @@ static inline void blk_throtl_exit(struct request_queue *q) { }
+>   static inline void blk_throtl_register_queue(struct request_queue *q) { }
+>   static inline void blk_throtl_charge_bio_split(struct bio *bio) { }
+>   static inline bool blk_throtl_bio(struct bio *bio) { return false; }
+> +static inline void blk_throtl_cancel_bios(struct request_queue *q) { }
+>   #else /* CONFIG_BLK_DEV_THROTTLING */
+>   int blk_throtl_init(struct request_queue *q);
+>   void blk_throtl_exit(struct request_queue *q);
+>   void blk_throtl_register_queue(struct request_queue *q);
+>   void blk_throtl_charge_bio_split(struct bio *bio);
+>   bool __blk_throtl_bio(struct bio *bio);
+> +void blk_throtl_cancel_bios(struct request_queue *q);
+>   static inline bool blk_throtl_bio(struct bio *bio)
+>   {
+>   	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 9589d1d59afa..6acc98cd0365 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -29,6 +29,7 @@
+>   #include "blk.h"
+>   #include "blk-mq-sched.h"
+>   #include "blk-rq-qos.h"
+> +#include "blk-throttle.h"
+>   
+>   static struct kobject *block_depr;
+>   
+> @@ -625,6 +626,7 @@ void del_gendisk(struct gendisk *disk)
+>   
+>   	blk_mq_freeze_queue_wait(q);
+>   
+> +	blk_throtl_cancel_bios(disk->queue);
+>   	rq_qos_exit(q);
+>   	blk_sync_queue(q);
+>   	blk_flush_integrity();
+> 
