@@ -2,70 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB424C4766
-	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 15:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB4E4C4879
+	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 16:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239879AbiBYO1t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Feb 2022 09:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
+        id S232655AbiBYPPo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Feb 2022 10:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238458AbiBYO1q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 09:27:46 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9258D198B
-        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 06:27:13 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id h17-20020a17090acf1100b001bc68ecce4aso8566563pju.4
-        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 06:27:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=CueWZXVwpZqdL5pKcLH+mDQMXSj/tgq8h6dqyMSiTWc=;
-        b=PfpjwGmuxVMO98b9FDuDLsLE9btC0WBH7LhsJ8t4TpjmMe2OedybHGRFlbaMxvYueI
-         GLqc6LyVGQuJqh2jy8NIWPv0N0tKhYKhSghFrdptUgkE7MxEqeWrePJD0232xturOP2i
-         df8DJgH6f6Jr0nFGXKB7PXidirxCjRPva+wV9HkYaIj524bMF5Slt5aPVJh4G/B9xohN
-         yS6/VWCFrOF0R5IASe5MFC60DxuRiDjAhaKPiK2d+udCx4FGyiMGBw5knhW0hY8Cx1j7
-         tRFkY6hwSHgmjZy1IprRmpUfS8AE64hOqjHRilR3OGHIem0SxKWFJIyhdmRxNcjZ094D
-         FUmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=CueWZXVwpZqdL5pKcLH+mDQMXSj/tgq8h6dqyMSiTWc=;
-        b=f2DjfavHejQIHTulVa+lb5t39cjJVdrHK/iELySI+5NEmAzSPkUkltRb0KkZSkokSx
-         ajBp6uN8vjKvIhM7sEpBbLS3g2od6nAszy98rO5O4xz8Zt3w8GeQmOrUqi/F4U2FMl8X
-         zQ5pc9poLThmClWoHWkG8ht+ODedskGUPJu3Dl7A25flXqtXmDN0XFebEyPScS/UDqhZ
-         HUARnvFjwCvEf91w5Zod6FOSwyzguoedksjBo2Q8wPtx+hacST1aR2YmZTilBI2fNHoh
-         eaeBnSdCD9gPFL8Ppt/prb4Yip5NeCc2ogelV4DuYKIF1qzfH9nYZKlMcjXtpEH8tcZG
-         aP/Q==
-X-Gm-Message-State: AOAM5311FNEyZebJY8XH8AE0oUnAhdyf4QMuFI8+UuOCUj3zsL/TEdBG
-        sHx1Ppfu0alp8GnOgzyfWX0llw==
-X-Google-Smtp-Source: ABdhPJyrLKbOQ8eTWPLV/0scGMnACkwjuJFvTJHTGBtWwoynPikelwG7k7xTp6UTIKeE64ve7G24pQ==
-X-Received: by 2002:a17:90a:fe86:b0:1bc:6935:346 with SMTP id co6-20020a17090afe8600b001bc69350346mr3457979pjb.150.1645799233170;
-        Fri, 25 Feb 2022 06:27:13 -0800 (PST)
-Received: from [192.168.4.157] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id na5-20020a17090b4c0500b001bc9301f316sm2669492pjb.42.2022.02.25.06.27.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Feb 2022 06:27:12 -0800 (PST)
-Message-ID: <6db54b86-4f25-af15-692b-af067823d77e@kernel.dk>
-Date:   Fri, 25 Feb 2022 07:27:11 -0700
+        with ESMTP id S231529AbiBYPPn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 10:15:43 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52AA190B7B
+        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 07:15:10 -0800 (PST)
+Date:   Fri, 25 Feb 2022 16:15:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1645802108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XQcCIB/BgIE3sYYr7FuCBw/IBoiYy9McFWIhbMjd23A=;
+        b=TPyOgGka+Lps9k5E+/jHWNhaZZwxy03gDgZXCKFuV7nhaovdqsmi07aQaWn0w96W6tRYfF
+        1ode+DMVEUaS37UAHb+4ZjmZjpTF6F/64wjprv2lczIHOEPo4pEBEKNzNUvzgU0RftB1cJ
+        wMyJFfLdi4LiL+/pZNd5aGR6KeFl1eIv/aSLuXP07J2VE6/Vbp5TaJZqkWj/cC+1wgvHys
+        sT3Ud7dyKaTdUEpDdCPWtL5RwudTCXuX4wvgs+TgdN/xf1+2DBUK9D0nmB2FgsbmA7z8jc
+        +k12ARhogh/cJHr/eSPPYzcBdUlqOKQ3dKP85asV0d7PHzknSkUtmTxFWTtoIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1645802108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XQcCIB/BgIE3sYYr7FuCBw/IBoiYy9McFWIhbMjd23A=;
+        b=bcZAp0a9QQrLodeqKB/SipBFgBZK9tos1qlPjD8FH6TcYEFaip5a0lOPCQqezBwlZ39WdE
+        4y/SYKbqCjt0J3CQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH] mm/memcg: Add a comment regarding the release `obj'.
+Message-ID: <Yhjye3LaBB8q55bg@linutronix.de>
+References: <20220221182540.380526-1-bigeasy@linutronix.de>
+ <20220221182540.380526-6-bigeasy@linutronix.de>
+ <YhSyXbxaMcgBJJtT@dhcp22.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v9] block: cancel all throttled bios in del_gendisk()
-Content-Language: en-US
-To:     Yu Kuai <yukuai3@huawei.com>, ming.lei@redhat.com, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-References: <20220210115637.1074927-1-yukuai3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20220210115637.1074927-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YhSyXbxaMcgBJJtT@dhcp22.suse.cz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,18 +64,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/10/22 4:56 AM, Yu Kuai wrote:
-> Throttled bios can't be issued after del_gendisk() is done, thus
-> it's better to cancel them immediately rather than waiting for
-> throttle is done.
-> 
-> For example, if user thread is throttled with low bps while it's
-> issuing large io, and the device is deleted. The user thread will
-> wait for a long time for io to return.
+Please fold into
+    mm/memcg: Protect memcg_stock with a local_lock_t
 
-I hand applied this for 5.18 as it's conflicting with other
-changes. Please double check the end result.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ mm/memcontrol.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7883e2f2af3e8..19d4f9297b0c6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3245,6 +3245,10 @@ static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
+ 	}
+ 
+ 	stock->cached_objcg = NULL;
++	/*
++	 * The `old' objects needs to be released by the caller via
++	 * obj_cgroup_put() outside of memcg_stock_pcp::stock_lock.
++	 */
+ 	return old;
+ }
+ 
 -- 
-Jens Axboe
+2.35.1
 
