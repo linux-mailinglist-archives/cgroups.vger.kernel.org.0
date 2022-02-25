@@ -2,91 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18A44C4BA6
-	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 18:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CBE4C4CA2
+	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 18:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238057AbiBYRJI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Feb 2022 12:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S243866AbiBYRiO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Feb 2022 12:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237751AbiBYRJH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 12:09:07 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0F017B8A3
-        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 09:08:34 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id y11so5211334pfa.6
-        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 09:08:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JKBFp/+QmdkMl3W2CNCuhdgLoZgTOVOm62o/vgJZi/w=;
-        b=HvtTf0aOv5iPGo064vKxcuLQ17FFIg+BoA294KV6ssoXN0UKe1Irs+22XOPAWWqtGE
-         4iEfPdX03oAOFR9M7UMcq6Yfzj85bvEYotaIp6nft1LKgTj/QgVYoNRtIVQvi271iVY2
-         qfVuvMzoZfV/R9IegCaNbraeZ222UG0SN6Bco9sAgTRz0lbWGhbXqMhUjGJkeB+SNUG3
-         re3NDnnS1q0E3NnRZiZJS+swJy/YLm8Xo9UGKX1PXWmp+eEZbhrQZkQM8Inh3BZpIrkq
-         YFN2ixSSHfssooXM+6HvJY/i1VNwO4802U2JuKTiozHH0MGmg7/JrsyEpL0ztObKX3TN
-         hG2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JKBFp/+QmdkMl3W2CNCuhdgLoZgTOVOm62o/vgJZi/w=;
-        b=w6tX1kenZ3aGKuj+B6l0aqVWGkrszLgOdEWkSC9XwslEn3XtB6uzSCF7IDUEaKKd9h
-         Zg4GDVi7DUcX1U5HNeVWrUtFPIhAHls96REWGiB9KNj80z0VUaIWzB1opXR29MkvzoH6
-         jYs3P0+6HgEiJO6viKgMbbaD//N0Oan7wnYBalHAzI7tzsrclVn1GR9ZJeUtxBNiWNRk
-         oGGGCHtnvlk+s45CW7Q/qnsOHAKjPmqusILRNPmSKRCm6ruAyMLJNp7LveadKQfTCHId
-         l6xj7p82vJBEZdqknoiNNLYIUPN4FXWGJYReA3bkUUlP0IEVICc4BUKM3vm42A8FoCc4
-         htDQ==
-X-Gm-Message-State: AOAM532sw7xE9IPHkhTAaeLz9elERuFnnGfubS4CU3fQomqLIKfAP+Ob
-        xmQYGFaxpOEZB0YoGERXxkiPO0h7NPMyOI34NOMACw==
-X-Google-Smtp-Source: ABdhPJxzgWYZohgTKo1QuNgSvTB1IKvNJ0LcuNCD5Cweh5M4YQGTb/OCuCn/4I2TOwzs8n9FitLqFD21bp88y9lVFwM=
-X-Received: by 2002:a63:5148:0:b0:373:c8d7:f23f with SMTP id
- r8-20020a635148000000b00373c8d7f23fmr6837953pgl.509.1645808913778; Fri, 25
- Feb 2022 09:08:33 -0800 (PST)
+        with ESMTP id S243873AbiBYRiN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 12:38:13 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF5D25C41;
+        Fri, 25 Feb 2022 09:37:38 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B9F6B210E1;
+        Fri, 25 Feb 2022 17:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1645810656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GY0iFUW9uJV4Vgn8uP3pu0/kxNIDCy02Hy0asV7edUo=;
+        b=TXIXb+dwDLgXu7FYESoUdvIw3WVo04Tn7lfRoljMYCviwhHmW1InDMG9ZQjzhXih8TqnNI
+        ES+6S6tUSmYt1b2swWoy9lcUJ69gLBkQP4/kolRUjgAXtxWkGHRG+fNa8+fQejAvYGAu+U
+        AhFlb6bQkB59K5/cvejRsALjZ6OA0UI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9594513C00;
+        Fri, 25 Feb 2022 17:37:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eev8I+ATGWLCOwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 25 Feb 2022 17:37:36 +0000
+Date:   Fri, 25 Feb 2022 18:37:35 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Tejun Heo <tj@kernel.org>,
+        seanjc@google.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        dmatlack@google.com, jiangshanlai@gmail.com, kvm@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: Move VM's worker kthreads back to the original
+ cgroups before exiting.
+Message-ID: <20220225173734.GA26252@blackbody.suse.cz>
+References: <20211222225350.1912249-1-vipinsh@google.com>
+ <20220105180420.GC6464@blackbody.suse.cz>
+ <CAHVum0e84nUcGtdPYQaJDQszKj-QVP5gM+nteBpSTaQ2sWYpmQ@mail.gmail.com>
+ <Yeclbe3GNdCMLlHz@slm.duckdns.org>
+ <7a0bc562-9f25-392d-5c05-9dbcd350d002@redhat.com>
+ <YehY0z2vHYVZk52J@slm.duckdns.org>
+ <20220120150502.GC27269@blackbody.suse.cz>
+ <CAHVum0fOP-2XcUcG3PqW08DY7CmpDroG6Fcv9KoD1FqLmGpB8w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220221182540.380526-1-bigeasy@linutronix.de>
- <20220221182540.380526-4-bigeasy@linutronix.de> <CALvZod7DfxHp+_NenW+NY81WN_Li4kEx4rDodb2vKhpC==sd5g@mail.gmail.com>
- <YhjzE/8LgbULbj/C@linutronix.de>
-In-Reply-To: <YhjzE/8LgbULbj/C@linutronix.de>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 25 Feb 2022 09:08:22 -0800
-Message-ID: <CALvZod48Tp7i_BbA4Um57m989iuFU5kSvbzLhSOUt23_CiWmjw@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: Add missing counter index which are not update
- in interrupt.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>, Roman Gushchin <guro@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHVum0fOP-2XcUcG3PqW08DY7CmpDroG6Fcv9KoD1FqLmGpB8w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 7:17 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> Shakeel Butt reported that I missed a few counters which are not updated
-> in-interrupt context and therefore disabling preemption is fine.
->
-> Please fold into:
->      "Protect per-CPU counter by disabling preemption on PREEMPT_RT"
->
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hi Vipin.
 
-Thanks. For the folded patch:
+On Wed, Feb 16, 2022 at 09:37:45AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> On Thu, Jan 20, 2022 at 7:05 AM Michal Koutný <mkoutny@suse.com> wrote:
+> > Have I missed an obstacle?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Aha...
+
+[
+> I used few other combination where I put kernel_wait() call after
+> put_task_struct(k) call.
+> 
+> Every time during the module exit, kernel was crashing like:
+
+Thanks for trying this out.
+]
+
+> Do you have any suggestions what might be the right way to use this API?
+
+...it has occured to me now -- the KVM kthread is not a child of the
+wanna-wait user task. So the kernel_wait() silently errs with -ECHILD
+and task_struct is released too early and that (probably) brings about
+the crash.
+
+I'm sorry for not realizing that initially.
+
+(Generally, any kthread_create'd task would be affected by this. I guess
+the KVM worker threads can't be forked from the kvm_create_vm() callers?
+(It could prevent the double migration to and from caller's cgroup
+though.))
+
+Michal
+
