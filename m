@@ -2,50 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8384C3FD7
-	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 09:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB424C4766
+	for <lists+cgroups@lfdr.de>; Fri, 25 Feb 2022 15:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbiBYIOV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Feb 2022 03:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
+        id S239879AbiBYO1t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Feb 2022 09:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbiBYIOV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 03:14:21 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48781D0340
-        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 00:13:48 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 742391F383;
-        Fri, 25 Feb 2022 08:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645776827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a9XUtHgFIXz3Y7VU5CfuvkiImWSSj6M2SSPgIuQZxWw=;
-        b=P51WeZJwQaSXAs3kehFkP5GgGwrp0kmlZJytxgvWQc9SXsNbzmcUW37g2LTuqRdG6+JVHX
-        x49lzoHoYwtXjQ9ason8Vzr7s9hOBPm1En8NXOGujqR4T2RM+XUx4MdLOeKZL0Q7hYIfIQ
-        AiUg+xtD4wBqtK75jF2ZvixJTvQ968A=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 472EEA3B81;
-        Fri, 25 Feb 2022 08:13:47 +0000 (UTC)
-Date:   Fri, 25 Feb 2022 09:13:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/3] mm/memcg: some cleanup for mem_cgroup_iter()
-Message-ID: <YhiPuokZpIk1MYaB@dhcp22.suse.cz>
-References: <20220225003437.12620-1-richard.weiyang@gmail.com>
+        with ESMTP id S238458AbiBYO1q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Feb 2022 09:27:46 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9258D198B
+        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 06:27:13 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id h17-20020a17090acf1100b001bc68ecce4aso8566563pju.4
+        for <cgroups@vger.kernel.org>; Fri, 25 Feb 2022 06:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=CueWZXVwpZqdL5pKcLH+mDQMXSj/tgq8h6dqyMSiTWc=;
+        b=PfpjwGmuxVMO98b9FDuDLsLE9btC0WBH7LhsJ8t4TpjmMe2OedybHGRFlbaMxvYueI
+         GLqc6LyVGQuJqh2jy8NIWPv0N0tKhYKhSghFrdptUgkE7MxEqeWrePJD0232xturOP2i
+         df8DJgH6f6Jr0nFGXKB7PXidirxCjRPva+wV9HkYaIj524bMF5Slt5aPVJh4G/B9xohN
+         yS6/VWCFrOF0R5IASe5MFC60DxuRiDjAhaKPiK2d+udCx4FGyiMGBw5knhW0hY8Cx1j7
+         tRFkY6hwSHgmjZy1IprRmpUfS8AE64hOqjHRilR3OGHIem0SxKWFJIyhdmRxNcjZ094D
+         FUmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=CueWZXVwpZqdL5pKcLH+mDQMXSj/tgq8h6dqyMSiTWc=;
+        b=f2DjfavHejQIHTulVa+lb5t39cjJVdrHK/iELySI+5NEmAzSPkUkltRb0KkZSkokSx
+         ajBp6uN8vjKvIhM7sEpBbLS3g2od6nAszy98rO5O4xz8Zt3w8GeQmOrUqi/F4U2FMl8X
+         zQ5pc9poLThmClWoHWkG8ht+ODedskGUPJu3Dl7A25flXqtXmDN0XFebEyPScS/UDqhZ
+         HUARnvFjwCvEf91w5Zod6FOSwyzguoedksjBo2Q8wPtx+hacST1aR2YmZTilBI2fNHoh
+         eaeBnSdCD9gPFL8Ppt/prb4Yip5NeCc2ogelV4DuYKIF1qzfH9nYZKlMcjXtpEH8tcZG
+         aP/Q==
+X-Gm-Message-State: AOAM5311FNEyZebJY8XH8AE0oUnAhdyf4QMuFI8+UuOCUj3zsL/TEdBG
+        sHx1Ppfu0alp8GnOgzyfWX0llw==
+X-Google-Smtp-Source: ABdhPJyrLKbOQ8eTWPLV/0scGMnACkwjuJFvTJHTGBtWwoynPikelwG7k7xTp6UTIKeE64ve7G24pQ==
+X-Received: by 2002:a17:90a:fe86:b0:1bc:6935:346 with SMTP id co6-20020a17090afe8600b001bc69350346mr3457979pjb.150.1645799233170;
+        Fri, 25 Feb 2022 06:27:13 -0800 (PST)
+Received: from [192.168.4.157] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id na5-20020a17090b4c0500b001bc9301f316sm2669492pjb.42.2022.02.25.06.27.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Feb 2022 06:27:12 -0800 (PST)
+Message-ID: <6db54b86-4f25-af15-692b-af067823d77e@kernel.dk>
+Date:   Fri, 25 Feb 2022 07:27:11 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220225003437.12620-1-richard.weiyang@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v9] block: cancel all throttled bios in del_gendisk()
+Content-Language: en-US
+To:     Yu Kuai <yukuai3@huawei.com>, ming.lei@redhat.com, tj@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+References: <20220210115637.1074927-1-yukuai3@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20220210115637.1074927-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,26 +73,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 25-02-22 00:34:34, Wei Yang wrote:
-> No functional change, try to make it more readable.
+On 2/10/22 4:56 AM, Yu Kuai wrote:
+> Throttled bios can't be issued after del_gendisk() is done, thus
+> it's better to cancel them immediately rather than waiting for
+> throttle is done.
 > 
-> Wei Yang (3):
->   mm/memcg: set memcg after css verified and got reference
->   mm/memcg: set pos to prev unconditionally
->   mm/memcg: move generation assignment and comparison together
-> 
->  mm/memcontrol.c | 27 ++++++++++++---------------
->  1 file changed, 12 insertions(+), 15 deletions(-)
+> For example, if user thread is throttled with low bps while it's
+> issuing large io, and the device is deleted. The user thread will
+> wait for a long time for io to return.
 
-I am sorry but I do not really see these changes to be simplifying 
-the iterator code enough to be worth touching the code. The iterator
-code is really subtle and we have experienced some subtle bugs there.
-I would be really reluctant to touch it unless the result is a clear
-simplification or a bug fix. Please keep in mind that the review
-overhead is far from negligible here.
+I hand applied this for 5.18 as it's conflicting with other
+changes. Please double check the end result.
 
-Unless Johannes sees that as a clear improvement then I would suggest
-dropping these patches from the akpm's tree.
 -- 
-Michal Hocko
-SUSE Labs
+Jens Axboe
+
