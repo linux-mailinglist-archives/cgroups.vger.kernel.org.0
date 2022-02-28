@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F162E4C644E
-	for <lists+cgroups@lfdr.de>; Mon, 28 Feb 2022 09:05:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4549A4C6453
+	for <lists+cgroups@lfdr.de>; Mon, 28 Feb 2022 09:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbiB1IG0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Feb 2022 03:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S230247AbiB1IHe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Feb 2022 03:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbiB1IG0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Feb 2022 03:06:26 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C8D53E1C
-        for <cgroups@vger.kernel.org>; Mon, 28 Feb 2022 00:05:47 -0800 (PST)
+        with ESMTP id S230205AbiB1IHd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Feb 2022 03:07:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237C453E2F
+        for <cgroups@vger.kernel.org>; Mon, 28 Feb 2022 00:06:55 -0800 (PST)
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 79CE9212B9;
-        Mon, 28 Feb 2022 08:05:46 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id B7CF31F39E;
+        Mon, 28 Feb 2022 08:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646035546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1646035613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CJjGxGd7NICkj5b0VAQYPCrTSysai2RJYd5eFJEnd78=;
-        b=tuU/U3Gl9PZdvqweWp8cOFKJlXkNf9e90mjY+OOr1Bc8dLF/W2/aELwz4HPXBpbWbwN48O
-        9Zx1qMK2Meb54IludRz7QplC7YyqlA8aQtsM4Clwrp3Cbg4JZTF2kRmXo8bPUuEz1p4O6U
-        aDkpYdlvUVq9pHqT8mcTl7MkNV2VHcQ=
+        bh=o3e5pxvpLCEcNYRbknllT9dfKsoRIPJKJgji4WAezrw=;
+        b=uqULMjeXpnVQ6MLq6+1Y3XOnxog2c0obIGXkPzz20XDVZibdc00i1eATYjIN+Zwper32rV
+        Sn56BMN0t/Q1PjH4QsMlqCKyE3bPA0jesAm7LrQtSkJjQtTzz8A3fi6XaUfn7x0QL5vqBB
+        RmHWUiovhIOJxPeMKl7BjnpHDZdl4E4=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 48925A3B85;
-        Mon, 28 Feb 2022 08:05:46 +0000 (UTC)
-Date:   Mon, 28 Feb 2022 09:05:45 +0100
+        by relay2.suse.de (Postfix) with ESMTPS id 7C8DBA3B84;
+        Mon, 28 Feb 2022 08:06:53 +0000 (UTC)
+Date:   Mon, 28 Feb 2022 09:06:53 +0100
 From:   Michal Hocko <mhocko@suse.com>
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
@@ -40,16 +40,16 @@ Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Waiman Long <longman@redhat.com>, Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH v5 3/6] mm/memcg: Protect per-CPU counter by disabling
- preemption on PREEMPT_RT where needed.
-Message-ID: <YhyCWQYL8vxRSLrd@dhcp22.suse.cz>
+        Waiman Long <longman@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v5 5/6] mm/memcg: Protect memcg_stock with a local_lock_t
+Message-ID: <YhyCnQmyiTBUcJuR@dhcp22.suse.cz>
 References: <20220226204144.1008339-1-bigeasy@linutronix.de>
- <20220226204144.1008339-4-bigeasy@linutronix.de>
+ <20220226204144.1008339-6-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220226204144.1008339-4-bigeasy@linutronix.de>
+In-Reply-To: <20220226204144.1008339-6-bigeasy@linutronix.de>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -60,142 +60,247 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 26-02-22 21:41:41, Sebastian Andrzej Siewior wrote:
-> The per-CPU counter are modified with the non-atomic modifier. The
-> consistency is ensured by disabling interrupts for the update.
-> On non PREEMPT_RT configuration this works because acquiring a
-> spinlock_t typed lock with the _irq() suffix disables interrupts. On
-> PREEMPT_RT configurations the RMW operation can be interrupted.
+On Sat 26-02-22 21:41:43, Sebastian Andrzej Siewior wrote:
+> The members of the per-CPU structure memcg_stock_pcp are protected by
+> disabling interrupts. This is not working on PREEMPT_RT because it
+> creates atomic context in which actions are performed which require
+> preemptible context. One example is obj_cgroup_release().
 > 
-> Another problem is that mem_cgroup_swapout() expects to be invoked with
-> disabled interrupts because the caller has to acquire a spinlock_t which
-> is acquired with disabled interrupts. Since spinlock_t never disables
-> interrupts on PREEMPT_RT the interrupts are never disabled at this
-> point.
+> The IRQ-disable sections can be replaced with local_lock_t which
+> preserves the explicit disabling of interrupts while keeps the code
+> preemptible on PREEMPT_RT.
 > 
-> The code is never called from in_irq() context on PREEMPT_RT therefore
-> disabling preemption during the update is sufficient on PREEMPT_RT.
-> The sections which explicitly disable interrupts can remain on
-> PREEMPT_RT because the sections remain short and they don't involve
-> sleeping locks (memcg_check_events() is doing nothing on PREEMPT_RT).
+> drain_obj_stock() drops a reference on obj_cgroup which leads to an invocation
+> of obj_cgroup_release() if it is the last object. This in turn leads to
+> recursive locking of the local_lock_t. To avoid this, obj_cgroup_release() is
+> invoked outside of the locked section.
 > 
-> Disable preemption during update of the per-CPU variables which do not
-> explicitly disable interrupts.
+> obj_cgroup_uncharge_pages() can be invoked with the local_lock_t acquired and
+> without it. This will lead later to a recursion in refill_stock(). To
+> avoid the locking recursion provide obj_cgroup_uncharge_pages_locked()
+> which uses the locked version of refill_stock().
 > 
+> - Replace disabling interrupts for memcg_stock with a local_lock_t.
+> 
+> - Let drain_obj_stock() return the old struct obj_cgroup which is passed
+>   to obj_cgroup_put() outside of the locked section.
+> 
+> - Provide obj_cgroup_uncharge_pages_locked() which uses the locked
+>   version of refill_stock() to avoid recursive locking in
+>   drain_obj_stock().
+> 
+> Link: https://lkml.kernel.org/r/20220209014709.GA26885@xsang-OptiPlex-9020
+> Reported-by: kernel test robot <oliver.sang@intel.com>
 > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com
 
+I thought I have already acked this one. Anyway
 Acked-by: Michal Hocko <mhocko@suse.com>
 
-TBH I am not a fan of the counter special casing for the debugging
-enabled warnings but I do not feel strong enough to push you trhough an
-additional version round.
-
-Thanks!
-
 > ---
->  mm/memcontrol.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 55 insertions(+), 1 deletion(-)
+>  mm/memcontrol.c | 59 +++++++++++++++++++++++++++++++------------------
+>  1 file changed, 38 insertions(+), 21 deletions(-)
 > 
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 0b5117ed2ae08..238ea77aade5d 100644
+> index 4d049b4691afd..6439b0089d392 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -630,6 +630,35 @@ static DEFINE_SPINLOCK(stats_flush_lock);
->  static DEFINE_PER_CPU(unsigned int, stats_updates);
->  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
+> @@ -2135,6 +2135,7 @@ void unlock_page_memcg(struct page *page)
+>  }
 >  
-> +/*
-> + * Accessors to ensure that preemption is disabled on PREEMPT_RT because it can
-> + * not rely on this as part of an acquired spinlock_t lock. These functions are
-> + * never used in hardirq context on PREEMPT_RT and therefore disabling preemtion
-> + * is sufficient.
-> + */
-> +static void memcg_stats_lock(void)
-> +{
-> +#ifdef CONFIG_PREEMPT_RT
-> +      preempt_disable();
-> +#else
-> +      VM_BUG_ON(!irqs_disabled());
-> +#endif
-> +}
-> +
-> +static void __memcg_stats_lock(void)
-> +{
-> +#ifdef CONFIG_PREEMPT_RT
-> +      preempt_disable();
-> +#endif
-> +}
-> +
-> +static void memcg_stats_unlock(void)
-> +{
-> +#ifdef CONFIG_PREEMPT_RT
-> +      preempt_enable();
-> +#endif
-> +}
-> +
->  static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+>  struct memcg_stock_pcp {
+> +	local_lock_t stock_lock;
+>  	struct mem_cgroup *cached; /* this never be root cgroup */
+>  	unsigned int nr_pages;
+>  
+> @@ -2150,18 +2151,21 @@ struct memcg_stock_pcp {
+>  	unsigned long flags;
+>  #define FLUSHING_CACHED_CHARGE	0
+>  };
+> -static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+> +static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) = {
+> +	.stock_lock = INIT_LOCAL_LOCK(stock_lock),
+> +};
+>  static DEFINE_MUTEX(percpu_charge_mutex);
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+> -static void drain_obj_stock(struct memcg_stock_pcp *stock);
+> +static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock);
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>  				     struct mem_cgroup *root_memcg);
+>  static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages);
+>  
+>  #else
+> -static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
+> +static inline struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
 >  {
->  	unsigned int x;
-> @@ -706,6 +735,27 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
->  	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
->  	memcg = pn->memcg;
->  
-> +	/*
-> +	 * The caller from rmap relay on disabled preemption becase they never
-> +	 * update their counter from in-interrupt context. For these two
-> +	 * counters we check that the update is never performed from an
-> +	 * interrupt context while other caller need to have disabled interrupt.
-> +	 */
-> +	__memcg_stats_lock();
-> +	if (IS_ENABLED(CONFIG_DEBUG_VM) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> +		switch (idx) {
-> +		case NR_ANON_MAPPED:
-> +		case NR_FILE_MAPPED:
-> +		case NR_ANON_THPS:
-> +		case NR_SHMEM_PMDMAPPED:
-> +		case NR_FILE_PMDMAPPED:
-> +			WARN_ON_ONCE(!in_task());
-> +			break;
-> +		default:
-> +			WARN_ON_ONCE(!irqs_disabled());
-> +		}
-> +	}
-> +
->  	/* Update memcg */
->  	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
->  
-> @@ -713,6 +763,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
->  	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
->  
->  	memcg_rstat_updated(memcg, val);
-> +	memcg_stats_unlock();
+> +	return NULL;
 >  }
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>  				     struct mem_cgroup *root_memcg)
+> @@ -2193,7 +2197,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	if (nr_pages > MEMCG_CHARGE_BATCH)
+>  		return ret;
 >  
->  /**
-> @@ -795,8 +846,10 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
->  	if (mem_cgroup_disabled())
->  		return;
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
 >  
-> +	memcg_stats_lock();
->  	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
->  	memcg_rstat_updated(memcg, count);
-> +	memcg_stats_unlock();
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (memcg == stock->cached && stock->nr_pages >= nr_pages) {
+> @@ -2201,7 +2205,7 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  		ret = true;
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  
+>  	return ret;
 >  }
+> @@ -2230,6 +2234,7 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+>  static void drain_local_stock(struct work_struct *dummy)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
 >  
->  static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
-> @@ -7140,8 +7193,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
->  	 * important here to have the interrupts disabled because it is the
->  	 * only synchronisation we have for updating the per-CPU variables.
+>  	/*
+> @@ -2237,14 +2242,16 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	 * drain_stock races is that we always operate on local CPU stock
+>  	 * here with IRQ disabled
 >  	 */
-> -	VM_BUG_ON(!irqs_disabled());
-> +	memcg_stats_lock();
->  	mem_cgroup_charge_statistics(memcg, -nr_entries);
-> +	memcg_stats_unlock();
->  	memcg_check_events(memcg, page_to_nid(page));
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
 >  
->  	css_put(&memcg->css);
+>  	stock = this_cpu_ptr(&memcg_stock);
+> -	drain_obj_stock(stock);
+> +	old = drain_obj_stock(stock);
+>  	drain_stock(stock);
+>  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  }
+>  
+>  /*
+> @@ -2271,9 +2278,9 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	unsigned long flags;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  	__refill_stock(memcg, nr_pages);
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  }
+>  
+>  /*
+> @@ -3100,10 +3107,11 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  		     enum node_stat_item idx, int nr)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
+>  	int *bytes;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  
+>  	/*
+> @@ -3112,7 +3120,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  	 * changes.
+>  	 */
+>  	if (stock->cached_objcg != objcg) {
+> -		drain_obj_stock(stock);
+> +		old = drain_obj_stock(stock);
+>  		obj_cgroup_get(objcg);
+>  		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+>  				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
+> @@ -3156,7 +3164,9 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>  	if (nr)
+>  		mod_objcg_mlstate(objcg, pgdat, idx, nr);
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  }
+>  
+>  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+> @@ -3165,7 +3175,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  	unsigned long flags;
+>  	bool ret = false;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
+> @@ -3173,17 +3183,17 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+>  		ret = true;
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+>  
+>  	return ret;
+>  }
+>  
+> -static void drain_obj_stock(struct memcg_stock_pcp *stock)
+> +static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
+>  {
+>  	struct obj_cgroup *old = stock->cached_objcg;
+>  
+>  	if (!old)
+> -		return;
+> +		return NULL;
+>  
+>  	if (stock->nr_bytes) {
+>  		unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+> @@ -3233,8 +3243,12 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+>  		stock->cached_pgdat = NULL;
+>  	}
+>  
+> -	obj_cgroup_put(old);
+>  	stock->cached_objcg = NULL;
+> +	/*
+> +	 * The `old' objects needs to be released by the caller via
+> +	 * obj_cgroup_put() outside of memcg_stock_pcp::stock_lock.
+> +	 */
+> +	return old;
+>  }
+>  
+>  static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+> @@ -3255,14 +3269,15 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  			     bool allow_uncharge)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	struct obj_cgroup *old = NULL;
+>  	unsigned long flags;
+>  	unsigned int nr_pages = 0;
+>  
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(&memcg_stock.stock_lock, flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (stock->cached_objcg != objcg) { /* reset if necessary */
+> -		drain_obj_stock(stock);
+> +		old = drain_obj_stock(stock);
+>  		obj_cgroup_get(objcg);
+>  		stock->cached_objcg = objcg;
+>  		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+> @@ -3276,7 +3291,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+>  	}
+>  
+> -	local_irq_restore(flags);
+> +	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+> +	if (old)
+> +		obj_cgroup_put(old);
+>  
+>  	if (nr_pages)
+>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
 > -- 
 > 2.35.1
 
