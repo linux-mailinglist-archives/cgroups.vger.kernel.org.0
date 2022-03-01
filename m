@@ -2,163 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A27C84C8B67
-	for <lists+cgroups@lfdr.de>; Tue,  1 Mar 2022 13:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BA34C8CFF
+	for <lists+cgroups@lfdr.de>; Tue,  1 Mar 2022 14:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbiCAMVZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Mar 2022 07:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        id S232203AbiCANzN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Mar 2022 08:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbiCAMVZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Mar 2022 07:21:25 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A7957170;
-        Tue,  1 Mar 2022 04:20:43 -0800 (PST)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K7GWx17dbzdZj5;
-        Tue,  1 Mar 2022 20:19:25 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+        with ESMTP id S233891AbiCANzN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Mar 2022 08:55:13 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06245A0BE;
+        Tue,  1 Mar 2022 05:54:31 -0800 (PST)
+Received: from kwepemi100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4K7JXG75DRz1GBx4;
+        Tue,  1 Mar 2022 21:49:50 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100001.china.huawei.com (7.221.188.215) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 1 Mar 2022 20:20:41 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Tue, 1 Mar
- 2022 20:20:40 +0800
-From:   Laibin Qiu <qiulaibin@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v2] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-Date:   Tue, 1 Mar 2022 20:39:19 +0800
-Message-ID: <20220301123919.2381579-1-qiulaibin@huawei.com>
-X-Mailer: git-send-email 2.22.0
+ 15.1.2308.21; Tue, 1 Mar 2022 21:54:29 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 1 Mar 2022 21:54:28 +0800
+Subject: Re: [PATCH v9] block: cancel all throttled bios in del_gendisk()
+To:     Ming Lei <ming.lei@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20220210115637.1074927-1-yukuai3@huawei.com>
+ <YhuyBgZSS6m/Mwu6@infradead.org> <Yhxnkg0AEaj36t+a@T590>
+ <YhyYpWHGVhs3J/dk@infradead.org> <Yh31bQu3gbXoDBuK@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <836f0686-4ac8-327d-2bab-64a762ea8673@huawei.com>
+Date:   Tue, 1 Mar 2022 21:54:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500004.china.huawei.com (7.185.36.219)
+In-Reply-To: <Yh31bQu3gbXoDBuK@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-1.In current process, all bio will set the BIO_THROTTLED flag
-after __blk_throtl_bio().
+ÔÚ 2022/03/01 18:29, Ming Lei Ð´µÀ:
+> On Mon, Feb 28, 2022 at 01:40:53AM -0800, Christoph Hellwig wrote:
+>> On Mon, Feb 28, 2022 at 02:11:30PM +0800, Ming Lei wrote:
+>>>> FYI, this crashed left rigt and center when running xfstests with
+>>>> traces pointing to throtl_pending_timer_fn.
+>>>
+>>> Can you share the exact xfstests test(fs, test)? Or panic log?
+>>>
+>>> I can't reproduce it when running './check -g auto' on XFS, meantime
+>>> tracking throtl_pending_timer_fn().
+>>
+>>  From a quick run using f2fs:
+>>
+>> generic/081 files ... [  316.487861] run fstests generic/081 at 2022-02-28 09:38:40
+> 
+> Thanks for providing the reproducer.
+> 
+> The reason is that the pending timer is deleted in blkg's release
+> handler, so the timer can still be live after request queue is released.
+> 
+> The patch of 'block: cancel all throttled bios in del_gendisk()' should just
+> make it easier to trigger.
+> 
+> After patch of "block: move blkcg initialization/destroy into disk allocation/
+> release handler" lands, the issue can be fixed easily by:
 
-2.If bio needs to be throttled, it will start the timer and
-stop submit bio directly. Bio will submit in
-blk_throtl_dispatch_work_fn() when the timer expires.But in
-the current process, if bio is throttled. The BIO_THROTTLED
-will be set to bio after timer start. If the bio has been
-completed, it may cause use-after-free blow.
+Hi,
 
-BUG: KASAN: use-after-free in blk_throtl_bio+0x12f0/0x2c70
-Read of size 2 at addr ffff88801b8902d4 by task fio/26380
+Thanks for locating this problem,
 
- dump_stack+0x9b/0xce
- print_address_description.constprop.6+0x3e/0x60
- kasan_report.cold.9+0x22/0x3a
- blk_throtl_bio+0x12f0/0x2c70
- submit_bio_checks+0x701/0x1550
- submit_bio_noacct+0x83/0xc80
- submit_bio+0xa7/0x330
- mpage_readahead+0x380/0x500
- read_pages+0x1c1/0xbf0
- page_cache_ra_unbounded+0x471/0x6f0
- do_page_cache_ra+0xda/0x110
- ondemand_readahead+0x442/0xae0
- page_cache_async_ra+0x210/0x300
- generic_file_buffered_read+0x4d9/0x2130
- generic_file_read_iter+0x315/0x490
- blkdev_read_iter+0x113/0x1b0
- aio_read+0x2ad/0x450
- io_submit_one+0xc8e/0x1d60
- __se_sys_io_submit+0x125/0x350
- do_syscall_64+0x2d/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Perhaps this patch should wait for the problem to be solved.
 
-Allocated by task 26380:
- kasan_save_stack+0x19/0x40
- __kasan_kmalloc.constprop.2+0xc1/0xd0
- kmem_cache_alloc+0x146/0x440
- mempool_alloc+0x125/0x2f0
- bio_alloc_bioset+0x353/0x590
- mpage_alloc+0x3b/0x240
- do_mpage_readpage+0xddf/0x1ef0
- mpage_readahead+0x264/0x500
- read_pages+0x1c1/0xbf0
- page_cache_ra_unbounded+0x471/0x6f0
- do_page_cache_ra+0xda/0x110
- ondemand_readahead+0x442/0xae0
- page_cache_async_ra+0x210/0x300
- generic_file_buffered_read+0x4d9/0x2130
- generic_file_read_iter+0x315/0x490
- blkdev_read_iter+0x113/0x1b0
- aio_read+0x2ad/0x450
- io_submit_one+0xc8e/0x1d60
- __se_sys_io_submit+0x125/0x350
- do_syscall_64+0x2d/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 0:
- kasan_save_stack+0x19/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x1b/0x30
- __kasan_slab_free+0x111/0x160
- kmem_cache_free+0x94/0x460
- mempool_free+0xd6/0x320
- bio_free+0xe0/0x130
- bio_put+0xab/0xe0
- bio_endio+0x3a6/0x5d0
- blk_update_request+0x590/0x1370
- scsi_end_request+0x7d/0x400
- scsi_io_completion+0x1aa/0xe50
- scsi_softirq_done+0x11b/0x240
- blk_mq_complete_request+0xd4/0x120
- scsi_mq_done+0xf0/0x200
- virtscsi_vq_done+0xbc/0x150
- vring_interrupt+0x179/0x390
- __handle_irq_event_percpu+0xf7/0x490
- handle_irq_event_percpu+0x7b/0x160
- handle_irq_event+0xcc/0x170
- handle_edge_irq+0x215/0xb20
- common_interrupt+0x60/0x120
- asm_common_interrupt+0x1e/0x40
-
-Fix this by move BIO_THROTTLED set into the queue_lock.
-
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
----
- block/blk-throttle.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index a3b3ebc72dd4..9d4ad9317509 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2145,13 +2145,14 @@ bool __blk_throtl_bio(struct bio *bio)
- 	}
- 
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
- 	bio_set_flag(bio, BIO_THROTTLED);
- 
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- 	if (throttled || !td->track_bio_latency)
- 		bio->bi_issue.value |= BIO_ISSUE_THROTL_SKIP_LATENCY;
- #endif
-+	spin_unlock_irq(&q->queue_lock);
-+
- 	rcu_read_unlock();
- 	return throttled;
- }
--- 
-2.22.0
-
+Thanks,
+Kuai
+> 
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index fa063c6c0338..e8d4be5e1de3 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -82,6 +82,7 @@ static void blkg_free(struct blkcg_gq *blkg)
+>   		if (blkg->pd[i])
+>   			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
+>   
+> +	blk_put_queue(blkg->q);
+>   	free_percpu(blkg->iostat_cpu);
+>   	percpu_ref_exit(&blkg->refcnt);
+>   	kfree(blkg);
+> @@ -297,9 +298,10 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
+>   	blkg->online = true;
+>   	spin_unlock(&blkcg->lock);
+>   
+> -	if (!ret)
+> +	if (!ret && blk_get_queue(q))
+>   		return blkg;
+> -
+> +	else if (!ret)
+> +		ret = -ENODEV;
+>   	/* @blkg failed fully initialized, use the usual release path */
+>   	blkg_put(blkg);
+>   	return ERR_PTR(ret);
+> 
+> 
+> Thanks,
+> Ming
+> 
+> .
+> 
