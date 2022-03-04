@@ -2,59 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6026C4CC97D
-	for <lists+cgroups@lfdr.de>; Thu,  3 Mar 2022 23:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC714CD2A4
+	for <lists+cgroups@lfdr.de>; Fri,  4 Mar 2022 11:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbiCCWzB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Mar 2022 17:55:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        id S231206AbiCDKmK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Mar 2022 05:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbiCCWzA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Mar 2022 17:55:00 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A06EC5F4
-        for <cgroups@vger.kernel.org>; Thu,  3 Mar 2022 14:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=WhlL7h61341iIESeWTlGbuGhMPR1lyzTfnmPlu4dcLQ=; b=SCFq8+cO6okq1ihYq2bG0Y1KNL
-        AdmVymHxeldmywraXF2E/01Df0bz2MzSsQbpLLy4eD7iL2hltsD/4KXshR4FmgEp3vNhjyv9C94n+
-        r42JfSLPt8b6a+pAo7vx3UajGo1JZi9bpNegCTmSLaXHJJFzsOKU2PqJ5UPSjoYD6tN6gMQA6pXeY
-        Oh2sGCJ8qeT2mpBtzfjfINkRtttkHBXJjHs8xlRMLgQIdNqdqJBQkXpiq42qvedN4f9IDnGLLYFae
-        DlPxT5/h4R9ZA7udADgVmsGtNDtMBGKN84O9S9kKdGfHx+tPuIvBhjrMJ9PX4mMb0a5Lgof8bVfGX
-        ArPe3CUg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nPuKi-00C3nL-37; Thu, 03 Mar 2022 22:54:04 +0000
-Message-ID: <8c61e14d-493d-ecea-6bc5-076781e8e93d@infradead.org>
-Date:   Thu, 3 Mar 2022 14:53:59 -0800
+        with ESMTP id S237313AbiCDKmJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Mar 2022 05:42:09 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AA51AAFCA
+        for <cgroups@vger.kernel.org>; Fri,  4 Mar 2022 02:41:22 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id k10-20020a5d91ca000000b006414a00b160so5196544ior.18
+        for <cgroups@vger.kernel.org>; Fri, 04 Mar 2022 02:41:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6SuusqU261l0YZRBubHgkzmZFekkg3laoBBQucPRrgA=;
+        b=7iACFOn720b9XUde2TThDtEl8VDEzlnBk6XINc8zfZtfxdbFv7IfKzohsODxM2tEqI
+         He5or8rPIZEclg/mpA8Nt3bBTOj0vKXbouK7Lq6R/zLKawIUmcmJlIjfbWodcwr2yFff
+         liMzwr2pHbLAWw2B+Bwl+xr3Uwo+oiaG0LiaxM1hsm290Kmd2fhDdC6mxei9Qk68xzK5
+         fWIEWJ5fNw35chlUD3C+R7kGPUgenM2fMrmGB0Pw+nJY+/tPDM9OOTLlxh0nDFSldZ4j
+         dtRZPBoMaSeRgbKMrgwDYoBAXw0t01S+JbJ6dKjg57rKZTfZtObrGqp3zGKCQ3ioneZl
+         qp5g==
+X-Gm-Message-State: AOAM530bUqn3tNuDtLERhy3pOGmSNWOH7QvtUkDqCStwIlJAYRhpT7wF
+        UxG47xD5IbWMj4CpcTM5f/6KaNPC2gpfrR5PFHHJnKFTvoEW
+X-Google-Smtp-Source: ABdhPJwKCMl3GU2i9vbnDTeANVWYScaZeMCV2tSwF1TW5fUve4h9UUDcIrdH6VmCvdsJafXL55JBIVWVo0pCWJHPquGCcHchQG9J
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH 1/2] mm/memcontrol: return 1 from cgroup.memory __setup()
- handler
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     linux-mm@kvack.org, Igor Zhbanov <i.zhbanov@omprussia.ru>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org
-References: <20220222005811.10672-1-rdunlap@infradead.org>
- <20220302185300.GA19699@blackbody.suse.cz>
- <9f8d4ddb-81ce-738a-d1f7-346ff9bf8ebd@infradead.org>
- <20220303101406.GE10867@blackbody.suse.cz>
- <5130da56-0f22-8212-0ea3-6ddb8a8f5455@infradead.org>
- <YiFCAFZwG//aeQP2@blackbook>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <YiFCAFZwG//aeQP2@blackbook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6e02:178f:b0:2c4:b692:a8ec with SMTP id
+ y15-20020a056e02178f00b002c4b692a8ecmr13307761ilu.296.1646390481472; Fri, 04
+ Mar 2022 02:41:21 -0800 (PST)
+Date:   Fri, 04 Mar 2022 02:41:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf53e605d96227cd@google.com>
+Subject: [syzbot] linux-next boot error: WARNING: suspicious RCU usage in cpuacct_charge
+From:   syzbot <syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        brauner@kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,42 +58,99 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    6d284ba80c0c Add linux-next specific files for 20220304
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c283d1700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26714bde6b3ad08b
+dashboard link: https://syzkaller.appspot.com/bug?extid=16e3f2c77e7c5a0113f9
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com
 
 
-On 3/3/22 14:32, Michal Koutný wrote:
-> On Thu, Mar 03, 2022 at 01:53:03PM -0800, Randy Dunlap <rdunlap@infradead.org> wrote:
->>> Isn't mere presence of the handler sufficient to filter those out? [1]
->>
->> What is [1] here?
-> 
-> Please ignore, too much editing on my side.
-> 
->> I don't know of any case where "foo=2" should be passed to init if
->> there is a setup function for "foo=" defined.
-> 
-> Good. I was asking because of the following semantics:
-> - absent handler -- pass to init,
+=============================
+WARNING: suspicious RCU usage
+5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
+-----------------------------
+include/linux/cgroup.h:494 suspicious rcu_dereference_check() usage!
 
-Ack: if the handler code is not built, it is an Unknown boot option
-and is passed to init.
+other info that might help us debug this:
 
-> - returns 0 -- filter out,
-> - returns negative -- filter out, print message.
 
-Currently setup functions should return 1 (or any non-zero value)
-to indicate "handled" or should return 0 to indicate "not handled".
+rcu_scheduler_active = 1, debug_locks = 1
+2 locks held by kthreadd/2:
+ #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
+ #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
 
-Andrew has a patch in mmotm: include/linux/init.h so that the comment
-before __setup() says:
+stack backtrace:
+CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ task_css include/linux/cgroup.h:494 [inline]
+ task_ca kernel/sched/cpuacct.c:40 [inline]
+ cpuacct_charge+0x2af/0x3c0 kernel/sched/cpuacct.c:342
+ cgroup_account_cputime include/linux/cgroup.h:792 [inline]
+ update_curr+0x37b/0x830 kernel/sched/fair.c:907
+ dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
+ dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
+ dequeue_task kernel/sched/core.c:2019 [inline]
+ __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
+ __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
+ __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
+ set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
+ kthreadd+0x44/0x750 kernel/kthread.c:724
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
 
-/*
- * NOTE: __setup functions return values:
- * @fn returns 1 (or non-zero) if the option argument is "handled"
- * and returns 0 if the option argument is "not handled".
- */
+=============================
+WARNING: suspicious RCU usage
+5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
+-----------------------------
+include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
 
->>> (Richer reporting or -EINVAL is by my understanding now a different
->>> problem.)
+other info that might help us debug this:
 
--- 
-~Randy
+
+rcu_scheduler_active = 1, debug_locks = 1
+2 locks held by kthreadd/2:
+ #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
+ #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
+
+stack backtrace:
+CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ task_css_set include/linux/cgroup.h:481 [inline]
+ task_dfl_cgroup include/linux/cgroup.h:550 [inline]
+ cgroup_account_cputime include/linux/cgroup.h:794 [inline]
+ update_curr+0x671/0x830 kernel/sched/fair.c:907
+ dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
+ dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
+ dequeue_task kernel/sched/core.c:2019 [inline]
+ __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
+ __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
+ __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
+ set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
+ kthreadd+0x44/0x750 kernel/kthread.c:724
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
