@@ -2,68 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA21F4CE27C
-	for <lists+cgroups@lfdr.de>; Sat,  5 Mar 2022 04:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF154CE3BF
+	for <lists+cgroups@lfdr.de>; Sat,  5 Mar 2022 09:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbiCEDmL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Mar 2022 22:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S230309AbiCEI5d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 5 Mar 2022 03:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbiCEDmL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Mar 2022 22:42:11 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81510229C89
-        for <cgroups@vger.kernel.org>; Fri,  4 Mar 2022 19:41:18 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id ay5so9419200plb.1
-        for <cgroups@vger.kernel.org>; Fri, 04 Mar 2022 19:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g3T8Wrd1J7uGYe15NcawUAYKxW858bm+7idoDqUxKYI=;
-        b=MyaYOjbzKClchfYsPyWtaapwj4xAq3tSb4HBkNNsRnhNYZTuEomnmeMB4qHMTVEYLf
-         u7IYfAxFrljMrpJ5U148gK8VLJL8mZSazH5MslieGV4nb3kyeUTiGa7Le9jFztpUzjPK
-         /hFELLvBajcg0wrFpUDLEEcuWt67POL2MCKy4HISQ5W20yghK4E1lQto1s/O6WhNLUml
-         x2J/ZSdWA4XoA655TSnAWldBccQGT4aQZt8nvqrNXarkACbhsq73irzwEX68lHfzexAs
-         UfWnSYy8uEi56AwIIHiEHgvVM2lzs7CBRtb0eAmi3EwVdwpMJSA6Xu5kZ53n6czbV3An
-         tJ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g3T8Wrd1J7uGYe15NcawUAYKxW858bm+7idoDqUxKYI=;
-        b=sZqVHjRHO8gYVSR+KmOI+mI285gst13B2WSF+/Qmp/V30EpsEdea3zAcZt93o3BnaA
-         X3x8pX4ZIsshSXSIZDiu/sI5HjXXonTNMhlpQ5VdezXieVLTqbNpyUMPThIzuBwKU0+x
-         Y+RCxh31oKrkJU8ISukXrXn02Ay7BT5BtZ654cROcviulAYxfNl4+5c/m6VK96VJ1qk6
-         sQL0MC+eYMP3sPTsiyiOYNMZYr6vFGRio8AEMqUpTmjvhd/jkUPUkEsHMgVAxCWh9B5f
-         a/GmNVJMzQVs1P5DyRsjxT0EsF3/piByE4AXC+NwmrJx138rcIqt/HRMuy687lZOvViH
-         q1iA==
-X-Gm-Message-State: AOAM531NWJeI7kNR/t3TV9WFC9Du2n/QcuUaAL3d4jzj0Z2JD2EL1+Q9
-        XjPbnwfckrqhNCFipwz1uJM3pQ==
-X-Google-Smtp-Source: ABdhPJxvVO84UijMWteTh39H+Sz9+e3LBMyDKw84DqwLeJMQyNDa3ooXBiIpls9IiNWRP8tv+hlaIg==
-X-Received: by 2002:a17:903:124a:b0:151:99fe:1a10 with SMTP id u10-20020a170903124a00b0015199fe1a10mr1545897plh.87.1646451678079;
-        Fri, 04 Mar 2022 19:41:18 -0800 (PST)
-Received: from localhost.localdomain ([2409:8a28:e6d:cc00:d089:89fd:5c33:f12])
-        by smtp.gmail.com with ESMTPSA id h5-20020a056a001a4500b004e177b8cbfdsm7360927pfv.197.2022.03.04.19.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Mar 2022 19:41:17 -0800 (PST)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        peterz@infradead.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Linux Kernel Functional Testing <lkft@linaro.org>,
-        syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH linux-next] cgroup: fix suspicious rcu_dereference_check() usage warning
-Date:   Sat,  5 Mar 2022 11:41:03 +0800
-Message-Id: <20220305034103.57123-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S229798AbiCEI5c (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 5 Mar 2022 03:57:32 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7328F68C0;
+        Sat,  5 Mar 2022 00:56:41 -0800 (PST)
+Received: from kwepemi100002.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K9dpd0Q15zdcKv;
+        Sat,  5 Mar 2022 16:55:21 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100002.china.huawei.com (7.221.188.188) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 5 Mar 2022 16:56:40 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
+ (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Sat, 5 Mar
+ 2022 16:56:39 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <jack@suse.cz>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH -next 00/11] support concurrent sync io for bfq on a specail occasion
+Date:   Sat, 5 Mar 2022 17:11:54 +0800
+Message-ID: <20220305091205.4188398-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,34 +51,108 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-task_css_set_check() will use rcu_dereference_check() to check for
-rcu_read_lock_held() on the read-side, which is not true after commit
-dc6e0818bc9a ("sched/cpuacct: Optimize away RCU read lock"). This
-commit drop explicit rcu_read_lock(), change to RCU-sched read-side
-critical section. So fix the RCU warning by adding check for
-rcu_read_lock_sched_held().
+Currently, bfq can't handle sync io concurrently as long as they
+are not issued from root group. This is because
+'bfqd->num_groups_with_pending_reqs > 0' is always true in
+bfq_asymmetric_scenario().
 
-Fixes: dc6e0818bc9a ("sched/cpuacct: Optimize away RCU read lock")
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com
-Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/cgroup.h | 1 +
- 1 file changed, 1 insertion(+)
+This patchset tries to support concurrent sync io if all the sync ios
+are issued from the same cgroup:
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 1e356c222756..0d1ada8968d7 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -450,6 +450,7 @@ extern struct mutex cgroup_mutex;
- extern spinlock_t css_set_lock;
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
-+		rcu_read_lock_sched_held() ||				\
- 		lockdep_is_held(&cgroup_mutex) ||			\
- 		lockdep_is_held(&css_set_lock) ||			\
- 		((task)->flags & PF_EXITING) || (__c))
+1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
+
+2) Don't idle if 'num_groups_with_pending_reqs' is 1, patch 6;
+
+3) Don't count the group if the group doesn't have pending requests,
+while it's child groups may have pending requests, patch 7;
+
+This is because, for example:
+if sync ios are issued from cgroup /root/c1/c2, root, c1 and c2
+will all be counted into 'num_groups_with_pending_reqs',
+which makes it impossible to handle sync ios concurrently.
+
+4) Decrease 'num_groups_with_pending_reqs' when the last queue completes
+all the requests, while child groups may still have pending
+requests, patch 8-10;
+
+This is because, for example:
+t1 issue sync io on root group, t2 and t3 issue sync io on the same
+child group. num_groups_with_pending_reqs is 2 now.
+After t1 stopped, num_groups_with_pending_reqs is still 2. sync io from
+t2 and t3 still can't be handled concurrently.
+
+fio test script: startdelay is used to avoid queue merging
+[global]
+filename=/dev/nvme0n1
+allow_mounted_write=0
+ioengine=psync
+direct=1
+ioscheduler=bfq
+offset_increment=10g
+group_reporting
+rw=randwrite
+bs=4k
+
+[test1]
+numjobs=1
+
+[test2]
+startdelay=1
+numjobs=1
+
+[test3]
+startdelay=2
+numjobs=1
+
+[test4]
+startdelay=3
+numjobs=1
+
+[test5]
+startdelay=4
+numjobs=1
+
+[test6]
+startdelay=5
+numjobs=1
+
+[test7]
+startdelay=6
+numjobs=1
+
+[test8]
+startdelay=7
+numjobs=1
+
+test result:
+running fio on root cgroup
+v5.17-rc6:	   550 Mib/s
+v5.17-rc6-patched: 550 Mib/s
+
+running fio on non-root cgroup
+v5.17-rc6:	   349 Mib/s
+v5.17-rc6-patched: 550 Mib/s
+
+Yu Kuai (11):
+  block, bfq: add new apis to iterate bfq entities
+  block, bfq: apply news apis where root group is not expected
+  block, bfq: cleanup for __bfq_activate_requeue_entity()
+  block, bfq: move the increasement of 'num_groups_with_pending_reqs' to
+    it's caller
+  block, bfq: count root group into 'num_groups_with_pending_reqs'
+  block, bfq: do not idle if only one cgroup is activated
+  block, bfq: only count parent bfqg when bfqq is activated
+  block, bfq: record how many queues have pending requests in bfq_group
+  block, bfq: move forward __bfq_weights_tree_remove()
+  block, bfq: decrease 'num_groups_with_pending_reqs' earlier
+  block, bfq: cleanup bfqq_group()
+
+ block/bfq-cgroup.c  | 13 +++----
+ block/bfq-iosched.c | 87 +++++++++++++++++++++++----------------------
+ block/bfq-iosched.h | 41 +++++++++++++--------
+ block/bfq-wf2q.c    | 56 +++++++++++++++--------------
+ 4 files changed, 106 insertions(+), 91 deletions(-)
+
 -- 
-2.20.1
+2.31.1
 
