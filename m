@@ -2,110 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8077C4CDCFC
-	for <lists+cgroups@lfdr.de>; Fri,  4 Mar 2022 19:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA21F4CE27C
+	for <lists+cgroups@lfdr.de>; Sat,  5 Mar 2022 04:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241876AbiCDSyW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Mar 2022 13:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S229486AbiCEDmL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Mar 2022 22:42:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbiCDSyU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Mar 2022 13:54:20 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E781BF920
-        for <cgroups@vger.kernel.org>; Fri,  4 Mar 2022 10:53:32 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id f5so18645335ybg.9
-        for <cgroups@vger.kernel.org>; Fri, 04 Mar 2022 10:53:31 -0800 (PST)
+        with ESMTP id S231124AbiCEDmL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Mar 2022 22:42:11 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81510229C89
+        for <cgroups@vger.kernel.org>; Fri,  4 Mar 2022 19:41:18 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id ay5so9419200plb.1
+        for <cgroups@vger.kernel.org>; Fri, 04 Mar 2022 19:41:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bEOxM9dCTwOgx3v/sybpuLomdOANvZM0pQSflYOHu1w=;
-        b=i652L4F2GnSj5foPdKPemlgr6xx94ua5Ic9XEX8NWr98rE/J8kp3lucWhLtM4AOES3
-         T9r1sjUabt2iScIDVpUdwI7AvcDZFK6NUnb+i966anXeK79MKuuIqPU7cQfPEN83otOC
-         mKwkhFqmQ0lI9vTrYAN1FaKXTRwQdjLTY1yTk=
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g3T8Wrd1J7uGYe15NcawUAYKxW858bm+7idoDqUxKYI=;
+        b=MyaYOjbzKClchfYsPyWtaapwj4xAq3tSb4HBkNNsRnhNYZTuEomnmeMB4qHMTVEYLf
+         u7IYfAxFrljMrpJ5U148gK8VLJL8mZSazH5MslieGV4nb3kyeUTiGa7Le9jFztpUzjPK
+         /hFELLvBajcg0wrFpUDLEEcuWt67POL2MCKy4HISQ5W20yghK4E1lQto1s/O6WhNLUml
+         x2J/ZSdWA4XoA655TSnAWldBccQGT4aQZt8nvqrNXarkACbhsq73irzwEX68lHfzexAs
+         UfWnSYy8uEi56AwIIHiEHgvVM2lzs7CBRtb0eAmi3EwVdwpMJSA6Xu5kZ53n6czbV3An
+         tJ3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bEOxM9dCTwOgx3v/sybpuLomdOANvZM0pQSflYOHu1w=;
-        b=2jf3v2C5WYBCKi6u3sjgPxlxcVTrAF36+DbV1IszWOixAdc4ml8hTfZriikpIq13AO
-         OGkdbdp2V41TnkrFv+yyg0R9toQ9U7do6hepyz//mRfIey4enUCcMqvglws+d4uucBDT
-         SC4Bhd6FcIFac4DohfTTDFjvPksuJfAqiyEtFcNAxNG1Q6t2mRGiIX8SSCPf7GIi5LGW
-         83c16TlPXjUZOy0Ke9DI6UI9ZsX3ox1B7szzkpabkaX76YPZNDRWJnqJg5hWkZE5BlEW
-         OWGX6AuagrBNmguwcWeBZr/JO3thcpl3+KSHbPaIyC9hKxxeIQ2ssaskhZoGT+eh+y7K
-         bz9g==
-X-Gm-Message-State: AOAM532wgC9seeCnxPkKixangH+V87zKIMYWf68h00PLyxdDc8zqloZ2
-        zrLlW7TOn0NSjKHzjy5tK47W3EYNZxGVEWiVH3bUjQ==
-X-Google-Smtp-Source: ABdhPJxmeYC7TAv458Sge2scZxXaYjCZnTUCKtizCBToEOesPPQLwrIAjrV205QglSMumtJodE5x7d4SMdWgl+HQSTw=
-X-Received: by 2002:a25:bc8:0:b0:628:80d9:526c with SMTP id
- 191-20020a250bc8000000b0062880d9526cmr17661448ybl.115.1646420011206; Fri, 04
- Mar 2022 10:53:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g3T8Wrd1J7uGYe15NcawUAYKxW858bm+7idoDqUxKYI=;
+        b=sZqVHjRHO8gYVSR+KmOI+mI285gst13B2WSF+/Qmp/V30EpsEdea3zAcZt93o3BnaA
+         X3x8pX4ZIsshSXSIZDiu/sI5HjXXonTNMhlpQ5VdezXieVLTqbNpyUMPThIzuBwKU0+x
+         Y+RCxh31oKrkJU8ISukXrXn02Ay7BT5BtZ654cROcviulAYxfNl4+5c/m6VK96VJ1qk6
+         sQL0MC+eYMP3sPTsiyiOYNMZYr6vFGRio8AEMqUpTmjvhd/jkUPUkEsHMgVAxCWh9B5f
+         a/GmNVJMzQVs1P5DyRsjxT0EsF3/piByE4AXC+NwmrJx138rcIqt/HRMuy687lZOvViH
+         q1iA==
+X-Gm-Message-State: AOAM531NWJeI7kNR/t3TV9WFC9Du2n/QcuUaAL3d4jzj0Z2JD2EL1+Q9
+        XjPbnwfckrqhNCFipwz1uJM3pQ==
+X-Google-Smtp-Source: ABdhPJxvVO84UijMWteTh39H+Sz9+e3LBMyDKw84DqwLeJMQyNDa3ooXBiIpls9IiNWRP8tv+hlaIg==
+X-Received: by 2002:a17:903:124a:b0:151:99fe:1a10 with SMTP id u10-20020a170903124a00b0015199fe1a10mr1545897plh.87.1646451678079;
+        Fri, 04 Mar 2022 19:41:18 -0800 (PST)
+Received: from localhost.localdomain ([2409:8a28:e6d:cc00:d089:89fd:5c33:f12])
+        by smtp.gmail.com with ESMTPSA id h5-20020a056a001a4500b004e177b8cbfdsm7360927pfv.197.2022.03.04.19.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Mar 2022 19:41:17 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        peterz@infradead.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Linux Kernel Functional Testing <lkft@linaro.org>,
+        syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH linux-next] cgroup: fix suspicious rcu_dereference_check() usage warning
+Date:   Sat,  5 Mar 2022 11:41:03 +0800
+Message-Id: <20220305034103.57123-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220304184040.1304781-1-shakeelb@google.com>
-In-Reply-To: <20220304184040.1304781-1-shakeelb@google.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 4 Mar 2022 10:53:20 -0800
-Message-ID: <CABWYdi0t6W4269g5OMLuLG=SWESDDEDPF-1kv1OKnzua=6=mBQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg: sync flush only if periodic flush is delayed
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Frank Hofmann <fhofmann@cloudflare.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Dao <dqminh@cloudflare.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Mar 4, 2022 at 10:40 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> Daniel Dao has reported [1] a regression on workloads that may trigger
-> a lot of refaults (anon and file). The underlying issue is that flushing
-> rstat is expensive. Although rstat flush are batched with (nr_cpus *
-> MEMCG_BATCH) stat updates, it seems like there are workloads which
-> genuinely do stat updates larger than batch value within short amount of
-> time. Since the rstat flush can happen in the performance critical
-> codepaths like page faults, such workload can suffer greatly.
->
-> This patch fixes this regression by making the rstat flushing
-> conditional in the performance critical codepaths. More specifically,
-> the kernel relies on the async periodic rstat flusher to flush the stats
-> and only if the periodic flusher is delayed by more than twice the
-> amount of its normal time window then the kernel allows rstat flushing
-> from the performance critical codepaths.
->
-> Now the question: what are the side-effects of this change? The worst
-> that can happen is the refault codepath will see 4sec old lruvec stats
-> and may cause false (or missed) activations of the refaulted page which
-> may under-or-overestimate the workingset size. Though that is not very
-> concerning as the kernel can already miss or do false activations.
->
-> There are two more codepaths whose flushing behavior is not changed by
-> this patch and we may need to come to them in future. One is the
-> writeback stats used by dirty throttling and second is the deactivation
-> heuristic in the reclaim. For now keeping an eye on them and if there is
-> report of regression due to these codepaths, we will reevaluate then.
->
-> Link: https://lore.kernel.org/all/CA+wXwBSyO87ZX5PVwdHm-=dBjZYECGmfnydUicUyrQqndgX2MQ@mail.gmail.com [1]
-> Fixes: 1f828223b799 ("memcg: flush lruvec stats in the refault")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Reported-by: Daniel Dao <dqminh@cloudflare.com>
-> Cc: <stable@vger.kernel.org>
-> ---
+task_css_set_check() will use rcu_dereference_check() to check for
+rcu_read_lock_held() on the read-side, which is not true after commit
+dc6e0818bc9a ("sched/cpuacct: Optimize away RCU read lock"). This
+commit drop explicit rcu_read_lock(), change to RCU-sched read-side
+critical section. So fix the RCU warning by adding check for
+rcu_read_lock_sched_held().
 
-See my testing results here:
-https://lore.kernel.org/linux-mm/CABWYdi2usrWOnOnmKYYvuFpE=yJmgtq4a7u6FiGJGJkskv+eVQ@mail.gmail.com/
+Fixes: dc6e0818bc9a ("sched/cpuacct: Optimize away RCU read lock")
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reported-by: syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com
+Tested-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ include/linux/cgroup.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Tested-by: Ivan Babrou <ivan@cloudflare.com>
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 1e356c222756..0d1ada8968d7 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -450,6 +450,7 @@ extern struct mutex cgroup_mutex;
+ extern spinlock_t css_set_lock;
+ #define task_css_set_check(task, __c)					\
+ 	rcu_dereference_check((task)->cgroups,				\
++		rcu_read_lock_sched_held() ||				\
+ 		lockdep_is_held(&cgroup_mutex) ||			\
+ 		lockdep_is_held(&css_set_lock) ||			\
+ 		((task)->flags & PF_EXITING) || (__c))
+-- 
+2.20.1
+
