@@ -2,22 +2,22 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFCD4D134D
-	for <lists+cgroups@lfdr.de>; Tue,  8 Mar 2022 10:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55DD4D1352
+	for <lists+cgroups@lfdr.de>; Tue,  8 Mar 2022 10:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345335AbiCHJ1q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Mar 2022 04:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
+        id S241255AbiCHJ2G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Mar 2022 04:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345338AbiCHJ1p (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Mar 2022 04:27:45 -0500
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01C941312;
-        Tue,  8 Mar 2022 01:26:48 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0V6e-tkD_1646731601;
-Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0V6e-tkD_1646731601)
+        with ESMTP id S1345358AbiCHJ1w (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Mar 2022 04:27:52 -0500
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CC34131E;
+        Tue,  8 Mar 2022 01:26:51 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0V6e-tl1_1646731604;
+Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0V6e-tl1_1646731604)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Mar 2022 17:26:43 +0800
+          Tue, 08 Mar 2022 17:26:46 +0800
 From:   Tianchen Ding <dtcccc@linux.alibaba.com>
 To:     Zefan Li <lizefan.x@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -43,9 +43,9 @@ To:     Zefan Li <lizefan.x@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
         Vipin Sharma <vipinsh@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [RFC PATCH v2 2/4] cpuset: Handle input of partition info for group balancer
-Date:   Tue,  8 Mar 2022 17:26:27 +0800
-Message-Id: <20220308092629.40431-3-dtcccc@linux.alibaba.com>
+Subject: [RFC PATCH v2 3/4] sched: Introduce group balancer
+Date:   Tue,  8 Mar 2022 17:26:28 +0800
+Message-Id: <20220308092629.40431-4-dtcccc@linux.alibaba.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20220308092629.40431-1-dtcccc@linux.alibaba.com>
 References: <20220308092629.40431-1-dtcccc@linux.alibaba.com>
@@ -62,153 +62,262 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Partition info is the key param of group balancer. It represents the
-division of effective cpus. Cpus are divided into several parts, and
-group balancer will select one part for each cgroup (called settle)
-and try to gather all tasks of that cgroup running on the cpus of
-selected part.
+From: Michael Wang <yun.wang@linux.alibaba.com>
 
-For example, the effective cpulist is "0-63". A valid input of partition
-info can be "0-15;16-31;32-47;48-63;". This divide cpus into 4 parts,
-each part with 16 cpus.
-Intersections between parts or conflicts with effective cpus are not
-allowd, e.g., "0-40;30-63" or "0-31;32-70;".
+Modern platform are growing fast on CPU numbers, multiple
+apps sharing one box are very common, they used to have
+exclusive cpu setting but nowadays things are changing.
 
-Once the partition info is set, the corresponding cgroup becomes a
-controller. All descendants of it are managed by group balancer,
-according to params set in this controller cgroup.
-A cgroup can become a controller only when its ancestors and descendants
-are not controller.
+To achieve better utility of CPU resource, multiple apps
+are starting to sharing the CPUs. The CPU resources usually
+overcommitted since app's workload are undulated.
 
-To unset a controller, write empty string to it.
-(i.e., echo > cpuset.gb.partition)
-This will clear its partition info and reset the relationship between
-itself and its descendants.
+This introduced problems on performance when share mode vs
+exclusive mode, for eg with cgroup A,B and C deployed in
+exclusive mode, it will be:
 
-Setting, modifying, or unsetting partition info must be done when group
-balancer is disabled. (i.e., gb.period_us = 0.)
+  CPU_X (100%)     CPU_Y (100%)     CPU_Z (50%)
+  T_1_CG_A         T_1_CG_B         T_1_CG_C
+  T_2_CG_A         T_2_CG_B         T_2_CG_C
+  T_3_CG_A         T_3_CG_B
+  T_4_CG_A         T_4_CG_B
 
-ROOT_CG
-   |
-   |
-   |_________
-   |         |
- CG_A       CG_B(controller, gb.partition = "...", gb.period_us > 0)
-             |
-             |
-             |________________
-             |                |
-           CG_C(gb active)  CG_D(gb active)
-               (prefer=0)       (prefer=3)
+while the share mode will be:
 
-For example, if we input valid partition info "0-15;16-31;32-47;48-63;"
-and positive period to CG_B, group balancer for all descendants of CG_B
-is enabled. All tasks in CG_C will tend to run on cpus of part0 (0-15),
-and all tasks in CG_D will tend to run on part3 (48-63).
+  CPU_X (100%)     CPU_Y (75%)     CPU_Z (75%)
+  T_1_CG_A         T_2_CG_A         T_1_CG_B
+  T_2_CG_B         T_3_CG_B         T_2_CG_C
+  T_4_CG_B         T_4_CG_A         T_3_CG_A
+  T_1_CG_C
 
-After setting partition info, CG_B becomes a controller. So setting
-another partition info in ROOT_CG, CG_C or CG_D is not allowed until
-CG_B is disabled and unset. While CG_A can still be set.
+As we can see, the confliction between groups on CPU
+resources are now happening all over the CPUs.
 
+The testing on sysbench-memory show 30+% drop on share
+mode, and redis-benchmark show 10+% drop too, compared
+to the exclusive mode.
+
+However, despite of the performance drop, in real world
+we still prefer share mode. The undulated workload can
+make the exclusive mode so unefficient on CPU utilization,
+for eg the next period, when CG_A become 'idle', exclusive
+mode will like:
+
+  CPU_X (0%)     CPU_Y (100%)     CPU_Z (50%)
+                 T_1_CG_B         T_1_CG_C
+                 T_2_CG_B         T_2_CG_C
+                 T_3_CG_B
+                 T_4_CG_B
+
+while share mode like:
+
+  CPU_X (50%)     CPU_Y (50%)     CPU_Z (50%)
+  T_2_CG_B         T_1_CG_C        T_3_CG_B
+  T_4_CG_B         T_1_CG_B        T_2_CG_C
+
+The CPU_X is totally wasted in exclusive mode, the resource
+efficiency are really poor.
+
+Thus what we need, is a way to ease confliction in share mode,
+make groups as exclusive as possible, to gain both performance
+and resource efficiency.
+
+The main idea of group balancer is to fulfill this requirement
+by balancing groups of tasks among groups of CPUs, consider this
+as a dynamic demi-exclusive mode. Task trigger work to settle it's
+group into a proper partition (minimum predicted load), then try
+migrate itself into it. To gradually settle groups into the most
+exclusively partition.
+
+Just like balance the task among CPUs, now with GB a user can
+put CPU X,Y,Z into three partitions, and balance group A,B,C
+into these partition, to make them as exclusive as possible.
+GB can be seen as an optimize policy based on load balance,
+it obeys the main idea of load balance and makes adjustment
+based on that.
+
+How to use:
+
+First, make sure the children of your cgroup both enabling "cpu" and
+"cpuset" subsys, because group balancer gather load info from task group
+and partition info from cpuset group. So tasks should stay at the same
+cgroup. Do this recursively if necessary:
+  echo "+cpu +cpuset" > $CGROUP_PATH/cgroup.subtree_control
+
+To create partition, for example run:
+  echo "0-15;16-31;32-47;48-63;" > $CGROUP_PATH/cpuset.gb.partition
+
+This will create 4 partitions contain CPUs 0-15,16-31,32-47 and
+48-63 separately.
+
+Then enable GB for your cgroup, run:
+  echo 200000 > $CGROUP_PATH/cpuset.gb.period_us
+
+This will enable GB for all descendants of $CGROUP_PATH, EXCEPT itself.
+
+Testing Results:
+  In order to enlarge the differences, we do testing on ARM platform
+  with 128 CPUs, create 8 partition according to cluster info.
+
+  Since we pick benchmark which can gain benefit from exclusive mode,
+  this is more like a functional testing rather than performance, to
+  show that GB help winback the performance.
+
+  Create 8 cgroup each running 'sysbench memory --threads=16 run',
+  the output of share mode is:
+    events/s (eps):                      4939865.8892
+    events/s (eps):                      4699033.0351
+    events/s (eps):                      4373262.0563
+    events/s (eps):                      3534852.1000
+    events/s (eps):                      4724359.4354
+    events/s (eps):                      3438985.1082
+    events/s (eps):                      3600268.9196
+    events/s (eps):                      3782130.8202
+  the output of gb mode is:
+    events/s (eps):                      4919287.0608
+    events/s (eps):                      5926525.9995
+    events/s (eps):                      4933459.3272
+    events/s (eps):                      5184040.1349
+    events/s (eps):                      5030940.1116
+    events/s (eps):                      5773255.0246
+    events/s (eps):                      4649109.0129
+    events/s (eps):                      5683217.7641
+
+  Create 4 cgroup each running redis-server with 16 io threads,
+  4 redis-benchmark per each server show average rps as:
+
+                    share mode       gb mode
+  PING_INLINE        45903.94        46529.9      1.36%
+  PING_MBULK         48342.58        50881.99     5.25%
+  SET                38681.95        42108.17     8.86%
+  GET                46774.09        51067.99     9.18%
+  INCR               46092.24        50543.98     9.66%
+  LPUSH              41723.35        45464.73     8.97%
+  RPUSH              42722.77        47667.76     11.57%
+  LPOP               41010.75        45077.65     9.92%
+  RPOP               43198.33        47248.05     9.37%
+  SADD               44750.16        50253.79     12.30%
+  HSET               44352           47940.12     8.09%
+  SPOP               47436.64        51658.99     8.90%
+  ZADD               43124.02        45992.96     6.65%
+  ZPOPMIN            46854.7         51561.52     10.05%
+  LPUSH              41723.35        45464.73     8.97%
+  LRANGE_100         22411.47        23311.32     4.02%
+  LRANGE_300         11323.8         11585.06     2.31%
+  LRANGE_500         7516.12         7577.76      0.82%
+  LRANGE_600         6632.1          6737.31      1.59%
+  MSET               27945.01        29401.3      5.21%
+
+Co-developed-by: Cruz Zhao <cruzzhao@linux.alibaba.com>
+Signed-off-by: Cruz Zhao <cruzzhao@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
 Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
 ---
- include/linux/sched/gb.h |  29 +++++
- kernel/cgroup/cpuset.c   | 245 +++++++++++++++++++++++++++++++++++++--
- 2 files changed, 267 insertions(+), 7 deletions(-)
+ include/linux/cpuset.h   |   5 +
+ include/linux/sched.h    |   5 +
+ include/linux/sched/gb.h |  10 +
+ kernel/cgroup/cpuset.c   |  39 ++++
+ kernel/sched/core.c      |   5 +
+ kernel/sched/fair.c      |  26 ++-
+ kernel/sched/gb.c        | 448 +++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h     |  10 +
+ 8 files changed, 547 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/gb.h b/include/linux/sched/gb.h
-index 63c14289a748..b03a2b4ef4b7 100644
---- a/include/linux/sched/gb.h
-+++ b/include/linux/sched/gb.h
-@@ -8,9 +8,30 @@
- #define _LINUX_SCHED_GB_H
- 
- #include <linux/sched.h>
-+#include <linux/cpumask.h>
-+
-+#define CPU_PART_MAX		32
-+struct gb_part {
-+	int id;
-+	struct cpumask cpus;
-+};
-+
-+struct gb_part_info {
-+	int nr_part;
-+	struct rcu_head rcu_head;
-+	struct gb_part parts[CPU_PART_MAX];
-+	int ctop[NR_CPUS];
-+};
- 
- struct gb_info {
- 	/* ---for ancestor as controller--- */
-+	/*
-+	 * Partition info. Non-NULL means this cgroup acting as a controller.
-+	 * While otherwise, NULL means not a controller.
-+	 * (Maybe a descendant of a controller, or not managed by gb at all.)
-+	 */
-+	struct gb_part_info *part_info;
-+
- 	/* Period(ns) for task work in task tick, 0 means disabled. */
- 	u64 gb_period;
- 
-@@ -22,6 +43,14 @@ struct gb_info {
- 	unsigned long settle_next;
- };
- 
-+#define for_each_gbpart(i, pi)			\
-+	for (i = 0; i < (pi)->nr_part; i++)
-+
-+static inline struct cpumask *part_cpus(struct gb_part_info *pi, int id)
-+{
-+	return &pi->parts[id].cpus;
-+}
-+
- #ifdef CONFIG_GROUP_BALANCER
- extern unsigned int sysctl_gb_settle_period;
- #endif
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 0349f3f64e3d..4b456b379b87 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -683,13 +683,24 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
- 	if (cur == &top_cpuset)
- 		goto out;
- 
-+	ret = -EINVAL;
-+
-+#ifdef CONFIG_GROUP_BALANCER
-+	/*
-+	 * If group balancer part_info is set, this cgroup acts as a controller.
-+	 * Not allow to change cpumask until unset it
-+	 * by writing empty string to cpuset.gb.partition.
-+	 */
-+	if (cs_gi(cur)->part_info)
-+		goto out;
-+#endif
-+
- 	par = parent_cs(cur);
- 
- 	/*
- 	 * If either I or some sibling (!= me) is exclusive, we can't
- 	 * overlap
- 	 */
--	ret = -EINVAL;
- 	cpuset_for_each_child(c, css, par) {
- 		if ((is_cpu_exclusive(trial) || is_cpu_exclusive(c)) &&
- 		    c != cur &&
-@@ -2539,12 +2550,77 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index d58e0476ee8e..3be2ab42bb98 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -178,6 +178,11 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+ 	task_unlock(current);
  }
  
- #ifdef CONFIG_GROUP_BALANCER
--static inline void init_gb(struct cpuset *cs)
-+static void free_gb_part_info(struct rcu_head *rcu_head)
-+{
-+	struct gb_part_info *pi = container_of(rcu_head, struct gb_part_info, rcu_head);
++#ifdef CONFIG_GROUP_BALANCER
++struct gb_info *task_gi(struct task_struct *p, bool get_controller);
++cpumask_var_t *gi_cpus(struct gb_info *gi);
++#endif
 +
-+	kfree(pi);
+ #else /* !CONFIG_CPUSETS */
+ 
+ static inline bool cpusets_enabled(void) { return false; }
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 5e0b5b4a4c8f..fca655770925 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1289,6 +1289,11 @@ struct task_struct {
+ 	unsigned long			numa_pages_migrated;
+ #endif /* CONFIG_NUMA_BALANCING */
+ 
++#ifdef CONFIG_GROUP_BALANCER
++	u64			gb_stamp;
++	struct callback_head		gb_work;
++#endif
++
+ #ifdef CONFIG_RSEQ
+ 	struct rseq __user *rseq;
+ 	u32 rseq_sig;
+diff --git a/include/linux/sched/gb.h b/include/linux/sched/gb.h
+index b03a2b4ef4b7..7af91662b740 100644
+--- a/include/linux/sched/gb.h
++++ b/include/linux/sched/gb.h
+@@ -9,10 +9,14 @@
+ 
+ #include <linux/sched.h>
+ #include <linux/cpumask.h>
++#include <linux/seq_file.h>
++#include <linux/cgroup-defs.h>
+ 
+ #define CPU_PART_MAX		32
+ struct gb_part {
+ 	int id;
++	unsigned int mgrt_on;
++	u64 predict_load;
+ 	struct cpumask cpus;
+ };
+ 
+@@ -41,6 +45,12 @@ struct gb_info {
+ 
+ 	/* Stamp to record next settling. */
+ 	unsigned long settle_next;
++
++	/*
++	 * Record preferred partition (in part_info of controller) of this cgroup.
++	 * Default -1.
++	 */
++	int gb_prefer;
+ };
+ 
+ #define for_each_gbpart(i, pi)			\
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 4b456b379b87..de13c22c1921 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -235,6 +235,20 @@ static struct gb_info *css_gi(struct cgroup_subsys_state *css, bool get_controll
+ 
+ 	return get_controller ? cs->control_gi : &cs->gi;
+ }
++
++struct gb_info *task_gi(struct task_struct *p, bool get_controller)
++{
++	struct cpuset *cs = task_cs(p);
++
++	return cs ? css_gi(&cs->css, get_controller) : NULL;
 +}
 +
-+static inline void update_child_gb_controller(struct cpuset *cs, struct gb_info *gi)
++cpumask_var_t *gi_cpus(struct gb_info *gi)
++{
++	struct cpuset *cs = container_of(gi, struct cpuset, gi);
++
++	return &cs->effective_cpus;
++}
+ #else
+ static inline struct gb_info *cs_gi(struct cpuset *cs)
+ {
+@@ -2572,6 +2586,21 @@ static inline void update_child_gb_controller(struct cpuset *cs, struct gb_info
+ 	rcu_read_unlock();
+ }
+ 
++static inline void reset_child_gb_prefer(struct cpuset *cs)
 +{
 +	struct cpuset *cp;
 +	struct cgroup_subsys_state *pos_css;
@@ -218,274 +327,615 @@ index 0349f3f64e3d..4b456b379b87 100644
 +		if (cp == cs)
 +			continue;
 +
-+		cp->control_gi = gi;
++		cs_gi(cp)->gb_prefer = -1;
 +	}
 +	rcu_read_unlock();
 +}
 +
-+static inline void update_gb_part_info(struct cpuset *cs, struct gb_part_info *new)
+ static inline void update_gb_part_info(struct cpuset *cs, struct gb_part_info *new)
  {
  	struct gb_info *gi = cs_gi(cs);
-+	struct gb_part_info *old;
-+
-+	if (gi->part_info && !new) {
-+		/*
-+		 * We are clearing partition info.
-+		 * This cgroup is no longer a controller.
-+		 * Reset all descendants.
-+		 */
-+		update_child_gb_controller(cs, NULL);
-+	}
-+
-+	old = xchg(&gi->part_info, new);
-+
-+	if (old) {
-+		call_rcu(&old->rcu_head, free_gb_part_info);
-+	} else if (new) {
-+		/*
-+		 * This cgroup is newly becoming a controller.
-+		 * Set relationship between cs and descendants.
-+		 */
-+		update_child_gb_controller(cs, gi);
-+	}
-+}
-+
-+static inline void init_gb(struct cpuset *cs)
-+{
-+	struct gb_info *gi = cs_gi(cs), *gi_iter;
-+	struct cgroup_subsys_state *css;
+@@ -2606,6 +2635,7 @@ static inline void init_gb(struct cpuset *cs)
  
  	gi->settle_period = msecs_to_jiffies(sysctl_gb_settle_period);
  	gi->settle_next = jiffies + gi->settle_period;
-+
-+	/* Search upwards to find any existing controller. */
-+	for (css = cs->css.parent; css; css = css->parent) {
-+		gi_iter = css_gi(css, false);
-+		if (gi_iter->part_info) {
-+			cs->control_gi = gi_iter;
-+			break;
-+		}
-+	}
-+}
-+
-+static inline void remove_gb(struct cpuset *cs)
-+{
-+	if (cs_gi(cs)->part_info)
-+		update_gb_part_info(cs, NULL);
- }
++	gi->gb_prefer = -1;
  
- static u64 gb_period_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
-@@ -2560,28 +2636,156 @@ static int gb_period_write_u64(struct cgroup_subsys_state *css, struct cftype *c
- {
+ 	/* Search upwards to find any existing controller. */
+ 	for (css = cs->css.parent; css; css = css->parent) {
+@@ -2637,6 +2667,7 @@ static int gb_period_write_u64(struct cgroup_subsys_state *css, struct cftype *c
  	struct cpuset *cs = css_cs(css);
  	struct gb_info *gi = cs_gi(cs);
-+	int retval = -EINVAL;
+ 	int retval = -EINVAL;
++	bool reset;
  
  	if (val > MAX_GB_PERIOD)
--		return -EINVAL;
-+		return retval;
- 
- 	percpu_down_write(&cpuset_rwsem);
- 
-+	/*
-+	 * Cannot enable group balancer on cgroups
-+	 * whose partition info not set.
-+	 */
-+	if (!gi->part_info)
-+		goto out_unlock;
-+
- 	gi->gb_period = val * NSEC_PER_USEC;
-+	retval = 0;
- 
-+out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
--	return 0;
-+	return retval;
- }
- 
- static void gb_partition_read(struct seq_file *sf, struct gb_info *gi)
- {
-+	struct gb_part_info *pi = gi->part_info;
-+	int i;
-+
-+	if (!pi)
-+		return;
-+
-+	for_each_gbpart(i, pi)
-+		seq_printf(sf, "%*pbl;", cpumask_pr_args(part_cpus(pi, i)));
-+
- 	seq_putc(sf, '\n');
- }
- 
-+static void build_gb_partition(struct cpumask *cpus_allowed, struct gb_part_info *pi, int id)
-+{
-+	int i;
-+	struct gb_part *part = &pi->parts[id];
-+
-+	part->id = id;
-+	cpumask_copy(&part->cpus, cpus_allowed);
-+
-+	for_each_cpu(i, &part->cpus)
-+		pi->ctop[i] = id;
-+}
-+
-+static int __gb_partition_write(struct cpuset *cs, char *buf, size_t nbytes)
-+{
-+	struct gb_part_info *new_pi;
-+	bool should_stop = false;
-+	int ret, retval = -EINVAL, id = 0;
-+	char *start, *end;
-+	cpumask_var_t summask, cpus_allowed;
-+
-+	/*
-+	 * Write empty string to clear partition info.
-+	 * Then this cgroup is not a controller.
-+	 */
-+	if (nbytes < 2) {
-+		update_gb_part_info(cs, NULL);
-+		retval = 0;
-+		goto out;
-+	}
-+
-+	retval = -ENOMEM;
-+	if (!zalloc_cpumask_var(&summask, GFP_KERNEL))
-+		goto out;
-+	if (!zalloc_cpumask_var(&cpus_allowed, GFP_KERNEL))
-+		goto out_free_cpumask;
-+	new_pi = kzalloc(sizeof(*new_pi), GFP_KERNEL);
-+	if (!new_pi)
-+		goto out_free_cpumask2;
-+
-+	buf = strstrip(buf);
-+	memset(new_pi->ctop, -1, sizeof(int) * num_possible_cpus());
-+	start = buf;
-+	end = strchr(start, ';');
-+	retval = -EINVAL;
-+
-+	/* Handle user input in format of "cpulist1;cpulist2;...;cpulistN;" */
-+	for (;;) {
-+		if (!end)
-+			should_stop = true;
-+		else
-+			*end = '\0';
-+
-+		if (*start == '\0')
-+			goto next;
-+
-+		if (new_pi->nr_part >= CPU_PART_MAX) {
-+			pr_warn("part number should be no larger than %d\n", CPU_PART_MAX);
-+			goto out_free_pi;
-+		}
-+
-+		ret = cpulist_parse(start, cpus_allowed);
-+		if (ret || cpumask_empty(cpus_allowed)) {
-+			pr_warn("invalid cpulist: %s\n", start);
-+			goto out_free_pi;
-+		}
-+
-+		/* There should not be intersections betweem partitions. */
-+		if (cpumask_intersects(summask, cpus_allowed)) {
-+			pr_warn("%*pbl intersect with others\n", cpumask_pr_args(cpus_allowed));
-+			goto out_free_pi;
-+		}
-+
-+		cpumask_or(summask, summask, cpus_allowed);
-+
-+		build_gb_partition(cpus_allowed, new_pi, id);
-+		id++;
-+		new_pi->nr_part++;
-+next:
-+		if (should_stop)
-+			break;
-+
-+		start = end + 1;
-+		end = strchr(start, ';');
-+	}
-+
-+	/*
-+	 * Check whether the input is valid.
-+	 * Should not conflict with effective_cpus.
-+	 */
-+	if (!cpumask_subset(summask, cs->effective_cpus) || new_pi->nr_part < 2) {
-+		pr_warn("invalid cpulist\n");
-+		goto out_free_pi;
-+	}
-+
-+	update_gb_part_info(cs, new_pi);
-+
-+	retval = 0;
-+	goto out_free_cpumask2;
-+
-+out_free_pi:
-+	kfree(new_pi);
-+out_free_cpumask2:
-+	free_cpumask_var(cpus_allowed);
-+out_free_cpumask:
-+	free_cpumask_var(summask);
-+out:
-+	return retval;
-+}
-+
- static ssize_t gb_partition_write(struct kernfs_open_file *of, char *buf,
- 				     size_t nbytes, loff_t off)
- {
--	struct cgroup_subsys_state *css = of_css(of);
--	struct cpuset *cs = css_cs(css);
-+	struct cgroup_subsys_state *css = of_css(of), *pos_css;
-+	struct cpuset *cs = css_cs(css), *cp;
- 	int retval = -ENODEV;
- 
- 	cpus_read_lock();
-@@ -2589,7 +2793,31 @@ static ssize_t gb_partition_write(struct kernfs_open_file *of, char *buf,
- 	if (!is_cpuset_online(cs))
+ 		return retval;
+@@ -2650,9 +2681,17 @@ static int gb_period_write_u64(struct cgroup_subsys_state *css, struct cftype *c
+ 	if (!gi->part_info)
  		goto out_unlock;
  
--	retval = 0;
-+	retval = -EINVAL;
-+	/* Cannot change gb partition during enabling. */
-+	if (cs_gi(cs)->gb_period)
-+		goto out_unlock;
++	/* gb_period = 0 means disabling group balancer. */
++	reset = gi->gb_period && !val;
 +
-+	/*
-+	 * Cannot set gb partitons on cgroup whose
-+	 * ancestor or descendant has been set.
-+	 */
-+	if (css_gi(css, true))
-+		goto out_unlock;
-+
-+	rcu_read_lock();
-+	cpuset_for_each_descendant_pre(cp, pos_css, cs) {
-+		if (cp == cs)
-+			continue;
-+
-+		if (cs_gi(cp)->part_info) {
-+			rcu_read_unlock();
-+			goto out_unlock;
-+		}
-+	}
-+	rcu_read_unlock();
-+
-+	retval = __gb_partition_write(cs, buf, nbytes);
+ 	gi->gb_period = val * NSEC_PER_USEC;
+ 	retval = 0;
  
++	if (reset) {
++		synchronize_rcu();
++		reset_child_gb_prefer(cs);
++	}
++
  out_unlock:
  	percpu_up_write(&cpuset_rwsem);
-@@ -2598,6 +2826,7 @@ static ssize_t gb_partition_write(struct kernfs_open_file *of, char *buf,
+ 	return retval;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5e5365755bdd..d57d6210bcfc 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4484,6 +4484,11 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
+ #ifdef CONFIG_SMP
+ 	plist_node_init(&p->pushable_tasks, MAX_PRIO);
+ 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
++#endif
++#ifdef CONFIG_GROUP_BALANCER
++	p->gb_stamp = 0;
++	p->gb_work.next = &p->gb_work;
++	init_task_work(&p->gb_work, group_balancing_work);
+ #endif
+ 	return 0;
  }
- #else
- static inline void init_gb(struct cpuset *cs) { }
-+static inline void remove_gb(struct cpuset *cs) { }
- static inline void gb_partition_read(struct seq_file *sf, struct gb_info *gi) { }
- #endif /* CONFIG_GROUP_BALANCER */
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 10c8dc9b7494..c1bd3f62e39c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1609,6 +1609,9 @@ static void update_numa_stats(struct task_numa_env *env,
+ 			    !cpumask_test_cpu(cpu, env->p->cpus_ptr))
+ 				continue;
  
-@@ -3051,6 +3280,8 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- 		parent->child_ecpus_count--;
++			if (group_hot(env->p, env->src_cpu, cpu) == 0)
++				continue;
++
+ 			if (ns->idle_cpu == -1)
+ 				ns->idle_cpu = cpu;
+ 
+@@ -1944,6 +1947,9 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+ 			continue;
+ 
++		if (group_hot(env->p, env->src_cpu, cpu) == 0)
++			continue;
++
+ 		env->dst_cpu = cpu;
+ 		if (task_numa_compare(env, taskimp, groupimp, maymove))
+ 			break;
+@@ -6050,8 +6056,11 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
+ 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
+ 
+ 	schedstat_inc(p->stats.nr_wakeups_affine_attempts);
+-	if (target == nr_cpumask_bits)
++	if (target == nr_cpumask_bits) {
++		if (group_hot(p, prev_cpu, this_cpu) == 1)
++			return this_cpu;
+ 		return prev_cpu;
++	}
+ 
+ 	schedstat_inc(sd->ttwu_move_affine);
+ 	schedstat_inc(p->stats.nr_wakeups_affine);
+@@ -7846,6 +7855,10 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 		return 0;
  	}
  
-+	remove_gb(cs);
++	tsk_cache_hot = group_hot(p, env->src_cpu, env->dst_cpu);
++	if (tsk_cache_hot != -1)
++		return tsk_cache_hot;
 +
- 	cpuset_dec();
- 	clear_bit(CS_ONLINE, &cs->flags);
+ 	/*
+ 	 * Aggressive migration if:
+ 	 * 1) active balance
+@@ -8266,6 +8279,15 @@ static unsigned long task_h_load(struct task_struct *p)
+ 	return div64_ul(p->se.avg.load_avg * cfs_rq->h_load,
+ 			cfs_rq_load_avg(cfs_rq) + 1);
+ }
++
++#ifdef CONFIG_GROUP_BALANCER
++unsigned long cfs_h_load(struct cfs_rq *cfs_rq)
++{
++	update_cfs_rq_h_load(cfs_rq);
++	return cfs_rq->h_load;
++}
++#endif
++
+ #else
+ static bool __update_blocked_fair(struct rq *rq, bool *done)
+ {
+@@ -11213,6 +11235,8 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+ 	if (static_branch_unlikely(&sched_numa_balancing))
+ 		task_tick_numa(rq, curr);
  
++	task_tick_gb(rq, curr);
++
+ 	update_misfit_status(curr, rq);
+ 	update_overutilized_status(task_rq(curr));
+ 
+diff --git a/kernel/sched/gb.c b/kernel/sched/gb.c
+index 4a2876ec1cca..f7da96253ad0 100644
+--- a/kernel/sched/gb.c
++++ b/kernel/sched/gb.c
+@@ -8,7 +8,455 @@
+ 
+ #include "sched.h"
+ 
++#define DECAY_PERIOD		HZ
++
+ /* Params about settle period. (ms) */
+ unsigned int sysctl_gb_settle_period = 200;
+ unsigned int sysctl_gb_settle_period_max = 10000;
+ unsigned int sysctl_gb_global_settle_period = 200;
++
++static unsigned long global_settle_next;
++static unsigned long predict_period_stamp;
++DEFINE_SPINLOCK(settle_lock);
++
++static inline int ctop(struct gb_part_info *pi, int cpu)
++{
++	return pi->ctop[cpu];
++}
++
++static u64 tg_load_of_part(struct gb_part_info *pi, struct task_group *tg, int id)
++{
++	int i;
++	u64 load = 0;
++
++	for_each_cpu(i, part_cpus(pi, id))
++		load += cfs_h_load(tg->cfs_rq[i]);
++
++	return load;
++}
++
++static u64 load_of_part(struct gb_part_info *pi, int id)
++{
++	int i;
++	u64 load = 0;
++
++	for_each_cpu(i, part_cpus(pi, id))
++		load += cpu_rq(i)->cfs.avg.load_avg;
++
++	return load;
++}
++
++static inline int part_mgrt_lock(struct gb_part_info *pi, int src, int dst)
++{
++	struct gb_part *src_part, *dst_part;
++
++	if (src != -1) {
++		src_part = &pi->parts[src];
++		if (READ_ONCE(src_part->mgrt_on))
++			return 0;
++	}
++
++	if (dst != -1) {
++		dst_part = &pi->parts[dst];
++		if (READ_ONCE(dst_part->mgrt_on))
++			return 0;
++	}
++
++	if (src != -1 && xchg(&src_part->mgrt_on, 1))
++		return 0;
++
++	if (dst != -1 && xchg(&dst_part->mgrt_on, 1)) {
++		WRITE_ONCE(src_part->mgrt_on, 0);
++		return 0;
++	}
++
++	return 1;
++}
++
++static inline void part_mgrt_unlock(struct gb_part_info *pi, int src, int dst)
++{
++	struct gb_part *src_part, *dst_part;
++
++	if (src != -1) {
++		src_part = &pi->parts[src];
++		WRITE_ONCE(src_part->mgrt_on, 0);
++	}
++
++	if (dst != -1) {
++		dst_part = &pi->parts[dst];
++		WRITE_ONCE(dst_part->mgrt_on, 0);
++	}
++}
++
++static u64 cap_of_part(struct gb_part_info *pi, int id)
++{
++	int i;
++	u64 cap = 0;
++
++	for_each_cpu(i, part_cpus(pi, id))
++		cap += cpu_rq(i)->cpu_capacity;
++
++	return cap;
++}
++
++static inline void predict_load_add(struct gb_part_info *pi, int id, u64 load)
++{
++	pi->parts[id].predict_load += load;
++}
++
++static void predict_load_decay(struct gb_part_info *pi)
++{
++	int i, fact, passed;
++
++	passed = jiffies - global_settle_next + predict_period_stamp;
++	predict_period_stamp = passed % DECAY_PERIOD;
++	fact = passed / DECAY_PERIOD;
++
++	if (!fact)
++		return;
++
++	for_each_gbpart(i, pi) {
++		struct gb_part *gp = &pi->parts[i];
++
++		/*
++		 * Decay NICE_0_LOAD into zero after 10 seconds
++		 */
++		if (fact > 10)
++			gp->predict_load = 0;
++		else
++			gp->predict_load >>= fact;
++	}
++}
++
++static int try_to_settle(struct gb_part_info *pi, struct gb_info *gi, struct task_group *tg)
++{
++	int i, src, dst, ret;
++	u64 mgrt_load, tg_load, min_load, src_load, dst_load;
++	cpumask_var_t *effective_cpus = gi_cpus(gi);
++
++	src = dst = -1;
++	min_load = U64_MAX;
++	tg_load = 0;
++	for_each_gbpart(i, pi) {
++		u64 mgrt, load;
++
++		/* DO NOT settle in parts out of effective_cpus. */
++		if (!cpumask_intersects(part_cpus(pi, i), effective_cpus[0]))
++			continue;
++
++		mgrt = tg_load_of_part(pi, tg, i);
++		load = load_of_part(pi, i);
++		/* load after migration */
++		if (load > mgrt)
++			load -= mgrt;
++		else
++			load = 0;
++
++		/*
++		 * Try to find out the partition contain
++		 * minimum load, and the load of this task
++		 * group is excluded on comparison.
++		 *
++		 * This help to prevent that a partition
++		 * full of the tasks from this task group was
++		 * considered as busy.
++		 *
++		 * As for the prediction load, the partition
++		 * this group preferred will be excluded, since
++		 * these prediction load could be introduced by
++		 * itself.
++		 *
++		 * This is not precise, but it serves the idea
++		 * to prefer a partition as long as possible,
++		 * to save the cost of resettle as much as
++		 * possible.
++		 */
++		if (i == gi->gb_prefer) {
++			src = i;
++			src_load = load + mgrt;
++			mgrt_load = mgrt;
++		} else
++			load += pi->parts[i].predict_load;
++
++		if (load < min_load) {
++			dst = i;
++			min_load = load;
++			dst_load = load + mgrt;
++		}
++
++		tg_load += mgrt;
++	}
++
++	if (!tg_load)
++		return 0;
++
++	ret = 0;
++	gi->settle_period *= 2;
++	if (src == -1) {
++		/* First settle */
++		gi->gb_prefer = dst;
++		predict_load_add(pi, dst, tg_load);
++		ret = 1;
++	} else if (src != dst) {
++		/* Resettle will cost, be careful */
++		long dst_imb, src_imb, dst_cap, src_cap;
++
++		src_cap = cap_of_part(pi, src);
++		dst_cap = cap_of_part(pi, dst);
++
++		/*
++		 * src_load        dst_load
++		 * ------------ vs ---------
++		 * src_capacity    dst_capacity
++		 *
++		 * Should not cause further imbalancing after
++		 * resettle.
++		 */
++		src_imb = abs(src_load * dst_cap - dst_load * src_cap);
++		dst_imb = abs((src_load - mgrt_load) * dst_cap - (dst_load + mgrt_load) * src_cap);
++
++		if (dst_imb <= src_imb) {
++			gi->gb_prefer = dst;
++			predict_load_add(pi, dst, tg_load);
++			gi->settle_period = msecs_to_jiffies(sysctl_gb_settle_period) * 2;
++			ret = 1;
++		}
++	}
++
++	if (gi->settle_period > msecs_to_jiffies(sysctl_gb_settle_period_max))
++		gi->settle_period = msecs_to_jiffies(sysctl_gb_settle_period_max);
++
++	return ret;
++}
++
++/*
++ * group_hot() will tell us which cpu is contained in the
++ * preferred CPU partition of the task group of a task.
++ *
++ * return 1 if prefer dst_cpu
++ * return 0 if prefer src_cpu
++ * return -1 if prefer either or neither
++ */
++int group_hot(struct task_struct *p, int src_cpu, int dst_cpu)
++{
++	int ret = -1;
++	struct task_group *tg;
++	struct gb_info *gi, *control_gi;
++	struct gb_part_info *pi;
++
++	rcu_read_lock();
++
++	control_gi = task_gi(p, true);
++
++	if (!control_gi || !control_gi->gb_period)
++		goto out_unlock;
++
++	gi = task_gi(p, false);
++	pi = control_gi->part_info;
++	tg = task_group(p);
++	if (gi->gb_prefer != -1 && ctop(pi, src_cpu) != ctop(pi, dst_cpu))
++		ret = (gi->gb_prefer == ctop(pi, dst_cpu));
++
++out_unlock:
++	rcu_read_unlock();
++	return ret;
++}
++
++void task_tick_gb(struct rq *rq, struct task_struct *curr)
++{
++	struct callback_head *work = &curr->gb_work;
++	struct gb_info *gi, *control_gi;
++	struct gb_part_info *pi;
++	u64 period, now;
++
++	if ((curr->flags & (PF_EXITING | PF_KTHREAD)) || work->next != work)
++		return;
++
++	rcu_read_lock();
++
++	control_gi = task_gi(curr, true);
++
++	if (!control_gi || !control_gi->gb_period)
++		goto unlock;
++
++	gi = task_gi(curr, false);
++	pi = control_gi->part_info;
++
++	/* Save it when already satisfied. */
++	if (gi->gb_prefer != -1 &&
++	    gi->gb_prefer == ctop(pi, task_cpu(curr)))
++		goto unlock;
++
++	now = curr->se.sum_exec_runtime;
++	period = control_gi->gb_period;
++
++	if (now > curr->gb_stamp + period) {
++		curr->gb_stamp = now;
++		task_work_add(curr, work, TWA_RESUME);
++	}
++
++unlock:
++	rcu_read_unlock();
++}
++
++void group_balancing_work(struct callback_head *work)
++{
++	int cpu, this_cpu, this_part, this_prefer, best_cpu;
++	struct task_group *this_tg;
++	struct gb_info *this_gi, *control_gi;
++	struct gb_part_info *pi;
++	struct task_struct *best_task;
++	struct cpumask cpus;
++
++	SCHED_WARN_ON(current != container_of(work, struct task_struct, gb_work));
++
++	work->next = work;
++	if (current->flags & PF_EXITING)
++		return;
++
++	rcu_read_lock();
++	/*
++	 * We build group balancer on "cpuset" subsys, and gather load info from
++	 * "cpu" subsys. So we need to ensure these two subsys belonging to
++	 * the same cgroup.
++	 */
++	if (task_cgroup(current, cpuset_cgrp_id) != task_group(current)->css.cgroup)
++		goto unlock;
++
++	control_gi = task_gi(current, true);
++
++	if (!control_gi || !control_gi->gb_period)
++		goto unlock;
++
++	this_gi = task_gi(current, false);
++	pi = control_gi->part_info;
++	this_tg = task_group(current);
++
++	/*
++	 * Settle task group one-by-one help prevent the
++	 * situation when multiple group try to settle the
++	 * same partition at the same time.
++	 *
++	 * However, when bunch of groups trying to settle at
++	 * the same time, there are no guarantee on the
++	 * fairness, some of them may get more chances and
++	 * settle sooner than the others.
++	 *
++	 * So one trick here is to grow the cg_settle_period
++	 * of settled group, to make sure they yield the
++	 * next chances to others.
++	 *
++	 * Another trick here is about prediction, as settle
++	 * group will followed by bunch of task migration,
++	 * the current load of CPU partition can't imply it's
++	 * busyness in future, and we may pick a busy one in
++	 * the end.
++	 *
++	 * Thus we maintain the predict load after each settle,
++	 * so next try will be able to do the prediction and
++	 * avoid to pick those which is already busy enough.
++	 */
++	if (spin_trylock(&settle_lock)) {
++		if (time_after(jiffies, global_settle_next) &&
++		    time_after(jiffies, this_gi->settle_next)) {
++			predict_load_decay(pi);
++
++			global_settle_next = jiffies;
++			if (try_to_settle(pi, this_gi, this_tg))
++				global_settle_next +=
++					msecs_to_jiffies(sysctl_gb_global_settle_period);
++
++			this_gi->settle_next = jiffies + this_gi->settle_period;
++		}
++		spin_unlock(&settle_lock);
++	}
++
++	this_cpu = task_cpu(current);
++	this_prefer = this_gi->gb_prefer;
++	this_part = ctop(pi, this_cpu);
++	if (this_prefer == -1 ||
++	    this_part == this_prefer ||
++	    !part_mgrt_lock(pi, this_part, this_prefer)) {
++		goto unlock;
++	}
++
++	cpumask_copy(&cpus, part_cpus(pi, this_prefer));
++
++	/*
++	 * We arrived here when current task A don't prefer
++	 * it's current CPU, but prefer CPUs of partition Y.
++	 *
++	 * In other word, if task A could run on CPUs of
++	 * partition Y, it have good chance to reduce conflict
++	 * with the tasks from other groups, and share hot
++	 * cache with the tasks from the same group.
++	 *
++	 * So here is the main logical of group balancer to
++	 * achieve it's purpose, make sure groups of tasks
++	 * are balanced into groups of CPUs.
++	 *
++	 * If A's current CPU belong to CPU partition X,
++	 * try to find a CPU from partition Y, which is
++	 * running a task prefer partition X, and swap them.
++	 *
++	 * Otherwise, or if can't find such CPU and task,
++	 * just find an idle CPU from partition Y, and do
++	 * migration.
++	 *
++	 * Ideally the migration and swap work will finally
++	 * put the tasks into right places, but the wakeup
++	 * stuff can easily break that by locate an idle CPU
++	 * out of the range.
++	 *
++	 * However, since the whole idea is to gain cache
++	 * benefit and reduce conflict between groups, if
++	 * there are enough idle CPU out there then every
++	 * thing just fine, so let it go.
++	 */
++
++	best_cpu = -1;
++	best_task = NULL;
++	for_each_cpu_and(cpu, &cpus, current->cpus_ptr) {
++		struct task_struct *p;
++
++		WARN_ON(cpu == this_cpu);
++
++		if (available_idle_cpu(cpu)) {
++			best_cpu = cpu;
++			continue;
++		}
++
++		if (this_part == -1)
++			continue;
++
++		p = rcu_dereference(cpu_rq(cpu)->curr);
++
++		if (!p || (p->flags & PF_EXITING) || is_idle_task(p)
++		    || p == current || task_gi(p, true) != control_gi)
++			continue;
++
++		if (task_cpu(p) == cpu &&
++		    this_part == task_gi(p, false)->gb_prefer &&
++		    cpumask_test_cpu(this_cpu, p->cpus_ptr)) {
++			get_task_struct(p);
++			best_task = p;
++			best_cpu = cpu;
++			break;
++		}
++	}
++
++	rcu_read_unlock();
++
++	if (best_task) {
++		migrate_swap(current, best_task, best_cpu, this_cpu);
++		put_task_struct(best_task);
++	} else if (best_cpu != -1) {
++		migrate_task_to(current, best_cpu);
++	}
++
++	part_mgrt_unlock(pi, this_part, this_prefer);
++	return;
++
++unlock:
++	rcu_read_unlock();
++}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index d6555aacdf78..97c621bcded3 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3148,3 +3148,13 @@ extern int sched_dynamic_mode(const char *str);
+ extern void sched_dynamic_update(int mode);
+ #endif
+ 
++#ifdef CONFIG_GROUP_BALANCER
++extern unsigned long cfs_h_load(struct cfs_rq *cfs_rq);
++extern int group_hot(struct task_struct *p, int src_cpu, int dst_cpu);
++extern void task_tick_gb(struct rq *rq, struct task_struct *curr);
++extern void group_balancing_work(struct callback_head *work);
++#else
++static inline int group_hot(struct task_struct *p, int src_cpu, int dst_cpu) { return -1; }
++static inline void task_tick_gb(struct rq *rq, struct task_struct *curr) {};
++static inline void group_balancing_work(struct callback_head *work) {};
++#endif
 -- 
 2.27.0
 
