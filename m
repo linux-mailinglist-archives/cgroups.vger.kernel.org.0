@@ -2,91 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B914D11EF
-	for <lists+cgroups@lfdr.de>; Tue,  8 Mar 2022 09:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CEA4D1349
+	for <lists+cgroups@lfdr.de>; Tue,  8 Mar 2022 10:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243546AbiCHIS6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Mar 2022 03:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S240030AbiCHJ1k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Mar 2022 04:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237521AbiCHIS6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Mar 2022 03:18:58 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCD53ED34
-        for <cgroups@vger.kernel.org>; Tue,  8 Mar 2022 00:18:02 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1BE5B210F3;
-        Tue,  8 Mar 2022 08:18:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646727481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lVmEixqpuJvqpe4IHKN+rIuyorY+AJrE8NHUQyQr4Js=;
-        b=ao5dkugfz7BsUWyZQdmyUiUpvjVl+MyShWu+tmWxVWcOIksv0OiGkegrzjfru2LSNV7wmD
-        A0iTPnr5VU00LshqEMNkjtOn/mkwjbjWGsIhJnMXUpjgcnG4tx/dBbIdFNBxflqUX570dw
-        CP76Zz+Nr4VW1Rg7dcSuU01nTducrYc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C5F42A3B8A;
-        Tue,  8 Mar 2022 08:18:00 +0000 (UTC)
-Date:   Tue, 8 Mar 2022 09:17:58 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] mm/memcg: add next_mz back if not reclaimed yet
-Message-ID: <YicRNofU+L1cKIQp@dhcp22.suse.cz>
-References: <20220308012047.26638-1-richard.weiyang@gmail.com>
- <20220308012047.26638-3-richard.weiyang@gmail.com>
+        with ESMTP id S234844AbiCHJ1k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Mar 2022 04:27:40 -0500
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E117140930;
+        Tue,  8 Mar 2022 01:26:43 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0V6e-ti7_1646731589;
+Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0V6e-ti7_1646731589)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Mar 2022 17:26:38 +0800
+From:   Tianchen Ding <dtcccc@linux.alibaba.com>
+To:     Zefan Li <lizefan.x@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tianchen Ding <dtcccc@linux.alibaba.com>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
+        Cruz Zhao <cruzzhao@linux.alibaba.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [RFC PATCH v2 0/4] Introduce group balancer
+Date:   Tue,  8 Mar 2022 17:26:25 +0800
+Message-Id: <20220308092629.40431-1-dtcccc@linux.alibaba.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220308012047.26638-3-richard.weiyang@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 08-03-22 01:20:47, Wei Yang wrote:
-> next_mz is removed from rb_tree, let's add it back if no reclaim has
-> been tried.
+Modern platform are growing fast on CPU numbers. To achieve better
+utility of CPU resource, multiple apps are starting to sharing the CPUs.
 
-Could you elaborate more why we need/want this?
+What we need is a way to ease confliction in share mode,
+make groups as exclusive as possible, to gain both performance
+and resource efficiency.
 
-> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> ---
->  mm/memcontrol.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 344a7e891bc5..e803ff02aae2 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3493,8 +3493,13 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
->  			break;
->  	} while (!nr_reclaimed);
-> -	if (next_mz)
-> +	if (next_mz) {
-> +		spin_lock_irq(&mctz->lock);
-> +		excess = soft_limit_excess(next_mz->memcg);
-> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> +		spin_unlock_irq(&mctz->lock);
->  		css_put(&next_mz->memcg->css);
-> +	}
->  	return nr_reclaimed;
->  }
->  
-> -- 
-> 2.33.1
+The main idea of group balancer is to fulfill this requirement
+by balancing groups of tasks among groups of CPUs, consider this
+as a dynamic demi-exclusive mode. Task trigger work to settle it's
+group into a proper partition (minimum predicted load), then try
+migrate itself into it. To gradually settle groups into the most
+exclusively partition.
+
+GB can be seen as an optimize policy based on load balance,
+it obeys the main idea of load balance and makes adjustment
+based on that.
+
+Our test on ARM64 platform with 128 CPUs shows that,
+throughput of sysbench memory is improved about 25%,
+and redis-benchmark is improved up to about 10%.
+
+See each patch for detail:
+The 1st patch introduces infrastructure.
+The 2nd patch introduces detail about partition info.
+The 3rd patch is the main part of group balancer.
+The 4th patch is about stats.
+
+v2:
+Put partition info and period settings to cpuset subsys of cgroup_v2.
+
+v1: https://lore.kernel.org/all/98f41efd-74b2-198a-839c-51b785b748a6@linux.alibaba.com/
+
+Michael Wang (1):
+  sched: Introduce group balancer
+
+Tianchen Ding (3):
+  sched, cpuset: Introduce infrastructure of group balancer
+  cpuset: Handle input of partition info for group balancer
+  cpuset, gb: Add stat for group balancer
+
+ include/linux/cpuset.h   |   5 +
+ include/linux/sched.h    |   5 +
+ include/linux/sched/gb.h |  70 ++++++
+ init/Kconfig             |  12 +
+ kernel/cgroup/cpuset.c   | 405 +++++++++++++++++++++++++++++++-
+ kernel/sched/Makefile    |   1 +
+ kernel/sched/core.c      |   5 +
+ kernel/sched/debug.c     |  10 +-
+ kernel/sched/fair.c      |  26 ++-
+ kernel/sched/gb.c        | 487 +++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h     |  14 ++
+ 11 files changed, 1037 insertions(+), 3 deletions(-)
+ create mode 100644 include/linux/sched/gb.h
+ create mode 100644 kernel/sched/gb.c
 
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
