@@ -2,61 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6EB4D6A51
-	for <lists+cgroups@lfdr.de>; Sat, 12 Mar 2022 00:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4C84D6D36
+	for <lists+cgroups@lfdr.de>; Sat, 12 Mar 2022 08:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbiCKWxx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Mar 2022 17:53:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        id S231210AbiCLHR4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 12 Mar 2022 02:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbiCKWxF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 11 Mar 2022 17:53:05 -0500
-X-Greylist: delayed 312 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Mar 2022 14:26:43 PST
-Received: from plesk.schabkar.com (plesk.schabkar.com [83.64.250.251])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC9B1070B4
-        for <cgroups@vger.kernel.org>; Fri, 11 Mar 2022 14:26:43 -0800 (PST)
-Received: from plesk.schabkar.com (localhost.localdomain [127.0.0.1])
-        by plesk.schabkar.com (Postfix) with ESMTP id 325423643F90
-        for <cgroups@vger.kernel.org>; Fri, 11 Mar 2022 23:21:29 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at plesk.schabkar.com
-X-Spam-Score: 2.897
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_50,RCVD_IN_DNSWL_MED,
-        SHORT_SHORTNER,SPF_FAIL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-Received: from plesk.schabkar.com ([127.0.0.1])
-        by plesk.schabkar.com (plesk.schabkar.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id H0ISeWx__d9i for <cgroups@vger.kernel.org>;
-        Fri, 11 Mar 2022 23:21:26 +0100 (CET)
-Received: by plesk.schabkar.com (Postfix, from userid 10181)
-        id EFA863643F9B; Fri, 11 Mar 2022 23:21:26 +0100 (CET)
-To:     cgroups@vger.kernel.org
-Subject: Allesdach - Verarbeiter finden
-X-PHP-Originating-Script: 10181:class-phpmailer.php
-Date:   Fri, 11 Mar 2022 22:21:26 +0000
-From:   Allesdach Wagner GmbH <kontakt@allesdach.at>
-Message-ID: <84594b2e18cb83b1eb4b132a522f1228@allesdach.at>
-X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-PPP-Message-ID: <164703728693.11046.3622704820104119714@plesk.schabkar.com>
-X-PPP-Vhost: allesdach.at
+        with ESMTP id S231211AbiCLHRv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 12 Mar 2022 02:17:51 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4341E5339
+        for <cgroups@vger.kernel.org>; Fri, 11 Mar 2022 23:16:45 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a8so23449877ejc.8
+        for <cgroups@vger.kernel.org>; Fri, 11 Mar 2022 23:16:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=fCsAW2UJBB6c8M7QlLxk/JpB7LFkDqCihtv/AG+0X8o=;
+        b=gqlsHeWUslWmzUd/Eur6w3QnGn7z2Zwd53xTFvdB8A32ZYPRsfJNBaAwpSKYMaKBN7
+         Ow2oIrQFQHSV+lmB4JpCjzVpV2lwJ/YqI/9FSKwQDmDfs9VaBrPJeEKgtx5nwB1Lj2x/
+         6+bmSn4/Ei6xKx5X/k4isDUc4/6feXGplx3FStYBqaIVKj0l6LGBxLX3sskLSsysS+dz
+         RbUBSKdevPvprvhQXzMqfkOQ7m6kNdlwRCda0DYDQx+tNNXdjB/tImVE6t7B8C5x68HJ
+         wY5JZZhZoFO7SN/y9eB4vA9xiunMKSr3rXaoa0YlR0eGT7jKk3wZgxmcQPxo8jLz5Fn+
+         TYcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fCsAW2UJBB6c8M7QlLxk/JpB7LFkDqCihtv/AG+0X8o=;
+        b=STgC4c1VRKY8UXORTFWb9nCRncnbtAGwoW+hjanUN7p1Nx7YzD0vnpsWCKIR3IU/MI
+         HB9Kblxv1CKjIgLBI1Bq2J4kk7PuZWrPpsjZRZl7PZi78rSIcnRUAD7muCMY40UKzsuc
+         xus49DvNvwLKYUHLX07oQxU5GSQhUOfU3Z/0b7n/HssNHyKjZLu/DI0HPLonCpRu1WjB
+         Dc/2BiqJwiKBrYphqo4/JW5sOVlHhgg0h4jMfCafZdF7TugI8sPVNjnfB7rbasjt1EUL
+         vUhczHBXMhdCOD2UnE1JSE7PP8SMadsNr2hoNufQKWb17tS93fZglw45tlLGV5DW93fA
+         Ppjw==
+X-Gm-Message-State: AOAM53111zGY8+EJtlo1HKRtdN3XFHYwFCIAcjprYBFkb60Xll/rocb/
+        QPm07bnccOS3/Hm55w1ouw4=
+X-Google-Smtp-Source: ABdhPJzM8qMnDGTwX/YJSEeKqcXHJnylnQX45G0C/nIhSIh2See/JjfvN6BSKAtcks9RZDlbUar+mg==
+X-Received: by 2002:a17:907:7ea7:b0:6db:b3c7:95d6 with SMTP id qb39-20020a1709077ea700b006dbb3c795d6mr3155520ejc.480.1647069403462;
+        Fri, 11 Mar 2022 23:16:43 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id q15-20020a056402518f00b00416a3194924sm3788805edd.75.2022.03.11.23.16.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 11 Mar 2022 23:16:42 -0800 (PST)
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [Patch v2 1/3] mm/memcg: mz already removed from rb_tree in mem_cgroup_largest_soft_limit_node()
+Date:   Sat, 12 Mar 2022 07:16:21 +0000
+Message-Id: <20220312071623.19050-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Sehr geehrte(r) 🍓 Paula want to meet you! Click here: http://inx.lv/0gzS?tjs4x 🍓!
+When mz is not NULL, mem_cgroup_largest_soft_limit_node() has removed
+it from rb_tree.
 
-Wir danken für Ihr Interesse an den Produkten und Leistungen von Allesdach Wagner!
-Ihre Anfrage ist bei uns eingegangen und wird schnellstmöglich bearbeitet.
+Not necessary to call __mem_cgroup_remove_exceeded() again.
 
-Mit freundlichen Grüßen,
-Ihr Allesdach Wagner Team
-
-
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 ---
-Dies ist eine automatisch generierte Email von allesdach.at
-Datenschutz gelesen und akzeptiert.
+ mm/memcontrol.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f898320b678a..d70bf5cf04eb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3458,7 +3458,6 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 		nr_reclaimed += reclaimed;
+ 		*total_scanned += nr_scanned;
+ 		spin_lock_irq(&mctz->lock);
+-		__mem_cgroup_remove_exceeded(mz, mctz);
+ 
+ 		/*
+ 		 * If we failed to reclaim anything from this memory cgroup
+-- 
+2.33.1
 
