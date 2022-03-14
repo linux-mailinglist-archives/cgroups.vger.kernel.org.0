@@ -2,61 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE704D905D
-	for <lists+cgroups@lfdr.de>; Tue, 15 Mar 2022 00:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E68644D9094
+	for <lists+cgroups@lfdr.de>; Tue, 15 Mar 2022 00:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244377AbiCNXbp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Mar 2022 19:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S1343749AbiCNXqx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Mar 2022 19:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbiCNXbo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 19:31:44 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D26DFD10
-        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 16:30:34 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id y8so16986985edl.9
-        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 16:30:33 -0700 (PDT)
+        with ESMTP id S235010AbiCNXqw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 19:46:52 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70ABB3E5F4
+        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 16:45:41 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id r13so37598973ejd.5
+        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 16:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=qHm6ns4crCOcaBTwUjMbD9FaBOK99gvm+HsOLXP9V1E=;
-        b=GycEiFI15k/dqMhfJjR5ur8JChRl8fpPp3zxafdxMdTo8IE65VlLRln1bxzKQR0yRV
-         IRUl8aJyCZ3Yalh2hP95Elt0JT3mj52pUKnBGcN5oL6JSHPXLWbKhYqoWGuLCd2LRoap
-         VLZAJtKHGOZiZs1Vu3S7xYbcWe9a7d5iUA2qSwP5fGI8cEm2ZizJqD6ht5727y8diLKr
-         5HvdYqgHcxB96axrmWl2/eedK4zl0501ed8ynA2oOd+6CWeik/01RXhGSNc5ObvPt3Ly
-         87qSVVzFtjzq1XS4o6flLzE5r77BwZjPIO1k/GEEiNsMmstlAsvfVe1NseGCgp7Sy4xL
-         OnDA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mMcKlcLkl25csYGtmWB99GmowZ54MQeoPUbWxxcyFU0=;
+        b=bp+YoIVGfFN/43D3vqHErY1NhIRJApUAhtw6o/hQeIyaDBqIfE66EIhFuNlzouKqsM
+         ICMTNUqtiRAq88ITvYxr1uiF5OmdPGah32szvxsrVE8+TbWCoOGxOG6L25aPWaho7kdy
+         3FU/jNh6QDkaRKObZiMMOkBlD8Aqv99swKSc8YZ9bFy6T0F/mbML6sVVYqbR6qCMVE6H
+         bYhE/ZUbxEYhn6H6a+/VharXFDIBFPo45r3fdwvvEZ51SgbTUi25vilSjvica56rkM6I
+         xTjLcOE3UXJzEYpLAj8t0ISFMLBTpHiYS87O0Yj4+2ZJb/rKhYVFzvJMGee+en585/rw
+         GBaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qHm6ns4crCOcaBTwUjMbD9FaBOK99gvm+HsOLXP9V1E=;
-        b=BmJ9aFfMG4p2viNlRGu+0yVtG8sL8wPTJwAnRgOGpSzBhykQnD7rYpz0bUIKy+v5dI
-         zu+yjaY+y5aNa4luo+2QFPMMgPPjZaxVWBvM5OflJpKyw4xQ7OMNeQXLIeKTEmSRpZXM
-         KceCl+jMiMXaFt5PVoz5KA7PgyOx0SH/kToVs3DDc6baIsPhvG5tGg0v9yqspGYz6iuZ
-         ylI9gMpoiKeD1yHQXfexFlVzQSSQAnUBf6Q7C2ggQGtiOuwayD5AoX+W1UvsRLWX0sOw
-         bLstmdv5xH5YDQ3SV0fJdVqUJ5CYDWNGZuLSSlj8yJ+k6zA6S7xNfTgvmHy+EKRwNmUr
-         zvzA==
-X-Gm-Message-State: AOAM533OIU7BFVsjIiC8CI89kzU4dSNYrIgMCq9TpCamprkDziTIeMZl
-        qLxeQyFw9fWBFv45kvGrTkA=
-X-Google-Smtp-Source: ABdhPJxx2AL7sfD2+cvjeAOS3rZprmNqp3tp0jVsDzyN6cbSnTIKphYgUW/pnVahzky+WMgydova3A==
-X-Received: by 2002:a50:9d47:0:b0:40f:9d3d:97b6 with SMTP id j7-20020a509d47000000b0040f9d3d97b6mr22477433edk.392.1647300632638;
-        Mon, 14 Mar 2022 16:30:32 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id u24-20020a1709064ad800b006d70e40bd9esm7404844ejt.15.2022.03.14.16.30.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Mar 2022 16:30:32 -0700 (PDT)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [Patch v3] mm/memcg: mz already removed from rb_tree if not NULL
-Date:   Mon, 14 Mar 2022 23:30:30 +0000
-Message-Id: <20220314233030.12334-1-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mMcKlcLkl25csYGtmWB99GmowZ54MQeoPUbWxxcyFU0=;
+        b=JR8ZjX0HKapP03pgRAvzroW38nsFLItQWgkBE0UmyZwjupZNCFeJ1zPd6jQ86oUCBv
+         jasgxQHq7oQSyHfnfSa/Rrw1EkFKH+Ab1JOFk9YMT5hcwFuk054+MF2j3F5xo74b3U+n
+         QEFcxMi2duPPotOPwGZlGuiMCjx8oCzMHvArDCGO6uUsopYBmOkLeKWMucNIxCRextPF
+         sFow+IJdQO5vtJbOHbcpcxjkDiQP/x/fdI7zmM3WRUkWPcEZKWfRvWV9pZEOfkaBBT0H
+         //0+yKiGgOk6X2WdIc1WNw8uKHpGZMndiA0FDwk0iNBpJ8IFKOWtVslUznopQXn9B+QG
+         JTTw==
+X-Gm-Message-State: AOAM532QuRNhBfVzx0cCB+uDtG/Pe6T9cSAdWBngULfcOlUkj/bvo1nj
+        sr1RJo65m8fNEcuPFxhTv3SsrHgpChXSxdyQUTpH2Q==
+X-Google-Smtp-Source: ABdhPJzivdKSx3a2ptS01jjlhP74llQ2PdFx6OA83cn+BAtPtg6OtNsv++AhnKe1mUMAW8amvG7lkgIAO9oTvOh6yGc=
+X-Received: by 2002:a17:906:5d08:b0:6da:b4ea:937 with SMTP id
+ g8-20020a1709065d0800b006dab4ea0937mr20516098ejt.446.1647301539672; Mon, 14
+ Mar 2022 16:45:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220309165222.2843651-1-tjmercier@google.com>
+ <20220309165222.2843651-8-tjmercier@google.com> <CAHRSSEy5_h9LJB4q5_OJA7fSq=ROo68UaK+hdPz-Vj-wac1Qhg@mail.gmail.com>
+In-Reply-To: <CAHRSSEy5_h9LJB4q5_OJA7fSq=ROo68UaK+hdPz-Vj-wac1Qhg@mail.gmail.com>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Mon, 14 Mar 2022 16:45:28 -0700
+Message-ID: <CABdmKX1G0Rwmz7=BP1ER+TmtrnkGiE0nROsPTHKxnj=6bHhY3Q@mail.gmail.com>
+Subject: Re: [RFC v3 7/8] binder: use __kernel_pid_t and __kernel_uid_t for userspace
+To:     Todd Kjos <tkjos@google.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,31 +95,79 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When mz is not NULL, it means mz can either come from
-mem_cgroup_largest_soft_limit_node or __mem_cgroup_largest_soft_limit_nod.
-And both of them has removed this node by __mem_cgroup_remove_exceeded().
+On Thu, Mar 10, 2022 at 11:33 AM Todd Kjos <tkjos@google.com> wrote:
+>
+> On Wed, Mar 9, 2022 at 8:52 AM T.J. Mercier <tjmercier@google.com> wrote:
+> >
+> > The kernel interface should use types that the kernel defines instead o=
+f
+> > pid_t and uid_t, whose definiton is owned by libc. This fixes the heade=
+r
+> > so that it can be included without first including sys/types.h.
+> >
+> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> > ---
+> >  include/uapi/linux/android/binder.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/a=
+ndroid/binder.h
+> > index 169fd5069a1a..aa28454dbca3 100644
+> > --- a/include/uapi/linux/android/binder.h
+> > +++ b/include/uapi/linux/android/binder.h
+> > @@ -289,8 +289,8 @@ struct binder_transaction_data {
+> >
+> >         /* General information about the transaction. */
+> >         __u32           flags;
+> > -       pid_t           sender_pid;
+> > -       uid_t           sender_euid;
+> > +       __kernel_pid_t  sender_pid;
+> > +       __kernel_uid_t  sender_euid;
+>
+> Are we guaranteed that this does not affect the UAPI at all? Userspace
+> code using this definition will have to run with kernels using the old
+> definition and visa-versa.
 
-Not necessary to call __mem_cgroup_remove_exceeded() again.
+A standards compliant userspace should be expecting a signed integer
+type here. So the only way I can think userspace would be affected is
+if:
+1) pid_t is a long AND
+2) sizeof(long) > sizeof(int) AND
+3) Consumers of the pid_t definition actually attempt to mutate the
+result to make use of extra bits in the variable (which are not there)
 
-[fmhocko@suse.com: refine changelog]
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
----
- mm/memcontrol.c | 1 -
- 1 file changed, 1 deletion(-)
+This seems extremely unlikely. For instance just on the topic of the
+first item, all of the C library implementations with pid_t
+definitions linked here use an int, except for Bionic which typdefs
+pid_t to __kernel_pid_t and Sortix which uses long.
+https://wiki.osdev.org/C_Library
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index dc225ca512f6..e803ff02aae2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3460,7 +3460,6 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 		nr_reclaimed += reclaimed;
- 		*total_scanned += nr_scanned;
- 		spin_lock_irq(&mctz->lock);
--		__mem_cgroup_remove_exceeded(mz, mctz);
- 
- 		/*
- 		 * If we failed to reclaim anything from this memory cgroup
--- 
-2.33.1
+However I would argue this is already broken and should count as a bug
+fix since I can't do this:
 
+$ cat binder_include.c ; gcc binder_include.c
+#include <linux/android/binder.h>
+int main() {}
+In file included from binder_include.c:1:
+/usr/include/linux/android/binder.h:291:9: error: unknown type name =E2=80=
+=98pid_t=E2=80=99
+  291 |         pid_t           sender_pid;
+      |         ^~~~~
+/usr/include/linux/android/binder.h:292:9: error: unknown type name =E2=80=
+=98uid_t=E2=80=99
+  292 |         uid_t           sender_euid;
+      |         ^~~~~
+
+This is also the only occurrence of pid_t in all of
+include/uapi/linux. All 40+ other uses are __kernel_pid_t, and I don't
+see why the binder header should be different.
+
+
+>
+> >         binder_size_t   data_size;      /* number of bytes of data */
+> >         binder_size_t   offsets_size;   /* number of bytes of offsets *=
+/
+> >
+> > --
+> > 2.35.1.616.g0bdcbb4464-goog
+> >
