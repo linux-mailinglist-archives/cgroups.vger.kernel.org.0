@@ -2,58 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69004D8B53
-	for <lists+cgroups@lfdr.de>; Mon, 14 Mar 2022 19:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369D14D8B57
+	for <lists+cgroups@lfdr.de>; Mon, 14 Mar 2022 19:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbiCNSIn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Mar 2022 14:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
+        id S236317AbiCNSJ0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Mar 2022 14:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbiCNSIm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 14:08:42 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4E63AA7A
-        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 11:07:32 -0700 (PDT)
+        with ESMTP id S231370AbiCNSJZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 14:09:25 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121BBE007
+        for <cgroups@vger.kernel.org>; Mon, 14 Mar 2022 11:08:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647281252; x=1678817252;
+  t=1647281295; x=1678817295;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=XVf2pH1d466RZxcPnP6O/bRhFgwua0sKD+tz3OE/LBo=;
-  b=AbcmFh1r6/VxUXqbjR6asRG7BpV4Oo/AXcz2zsXQCpiUbdlqQinqx4hv
-   7cBDTd7UvmGbmhy0TTNBYxHIpcl4E4tJY6lrHnhYTFREhQezjjEtLSe+i
-   ou/UgTips3HSYWBbYvFRQbXcCwJ+46govilYvF2lAwMkxPxwgvCsoT48U
-   DNSjeKMl/HudohjSWuS8hmZERAt3V1uMh6IvUjHV/peE+gHtNXTrBtcLL
-   evOU/g3lK+tje+5dGzFveBNc66xUIlTJe+fdML1wAPt7IkKuF8e8pFV2d
-   bLLzzHIrJD7WVH2KX1/cy3JbgBMfGHhcV/miZ/lpCoijemMtpbd67eJ31
+  bh=ZsZ/YVPtgr3g0B7nWePzofoAP8EzCT6HF1aDW+aWnQ0=;
+  b=hJJUUFV6F2873zXs/c8tL/invZuH40gwt+lCyY97RPGTjxMrydlcD/hq
+   uljUlu/tQBxeaPIqdGvshCf1ArBlMOMAB7jXZ77waBAhOcDaM+Lgl7dl8
+   9iOS0I7B76+3TTy6vnCe80zPak8aKMV+/lumo9w2sPd4Fo7hTP4I4Ep1l
+   8j756v+DPJd+aQ5zyEZt0B6CR8MD9uCB82LuxQpwMli4vpsYO4TUWZQcI
+   iFfyuB6C5GwJ8JYUYngwAct56wdW4s/XvYsHQvyFmTHUlT+79LBi1C5BI
+   Ur2UMLPimajizq8xO76/oytYImeQ0nB/vxCSFt8wrQrRPV//9968fEGlB
    w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="256057126"
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="254935384"
 X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; 
-   d="scan'208";a="256057126"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2022 11:07:14 -0700
+   d="scan'208";a="254935384"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2022 11:08:14 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,181,1643702400"; 
-   d="scan'208";a="515537363"
+   d="scan'208";a="645906067"
 Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 14 Mar 2022 11:07:12 -0700
+  by orsmga004.jf.intel.com with ESMTP; 14 Mar 2022 11:08:12 -0700
 Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nTp68-000A6q-1t; Mon, 14 Mar 2022 18:07:12 +0000
-Date:   Tue, 15 Mar 2022 02:07:04 +0800
+        id 1nTp76-000A73-4W; Mon, 14 Mar 2022 18:08:12 +0000
+Date:   Tue, 15 Mar 2022 02:07:11 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 1be9b7206b7dbff54b223eee7ef3bc91b80433aa
-Message-ID: <622f8448.gRZfm2GcpiEE9qdN%lkp@intel.com>
+Subject: [tj-cgroup:for-5.18] BUILD SUCCESS
+ f9da322e864e5cd3dc217480e73f78f47cf40c5b
+Message-ID: <622f844f./amqu4oGlkN9QUak%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,10 +61,10 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 1be9b7206b7dbff54b223eee7ef3bc91b80433aa  Merge branch 'for-5.18' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.18
+branch HEAD: f9da322e864e5cd3dc217480e73f78f47cf40c5b  cgroup: cleanup comments
 
-elapsed time: 726m
+elapsed time: 727m
 
 configs tested: 180
 configs skipped: 3
@@ -103,8 +103,8 @@ powerpc                     ep8248e_defconfig
 powerpc                     tqm8555_defconfig
 powerpc                 linkstation_defconfig
 powerpc                      bamboo_defconfig
-um                           x86_64_defconfig
 ia64                         bigsur_defconfig
+um                           x86_64_defconfig
 arm                         lpc18xx_defconfig
 i386                                defconfig
 sh                          kfr2r09_defconfig
@@ -230,8 +230,8 @@ mips                      bmips_stb_defconfig
 arm                       cns3420vb_defconfig
 arm                      pxa255-idp_defconfig
 arm                        magician_defconfig
-mips                         tb0287_defconfig
 arm                         lpc32xx_defconfig
+mips                         tb0287_defconfig
 powerpc                      obs600_defconfig
 powerpc                      ppc64e_defconfig
 powerpc                 mpc8313_rdb_defconfig
