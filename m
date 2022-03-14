@@ -2,64 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA39D4D7A16
-	for <lists+cgroups@lfdr.de>; Mon, 14 Mar 2022 06:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0034B4D7A6C
+	for <lists+cgroups@lfdr.de>; Mon, 14 Mar 2022 06:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbiCNFVm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Mar 2022 01:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        id S231806AbiCNFgy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Mar 2022 01:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbiCNFVl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 01:21:41 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F761FCF5;
-        Sun, 13 Mar 2022 22:20:31 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mv5-20020a17090b198500b001bf2a039831so16288828pjb.5;
-        Sun, 13 Mar 2022 22:20:31 -0700 (PDT)
+        with ESMTP id S231422AbiCNFgx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Mar 2022 01:36:53 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D210224BE3;
+        Sun, 13 Mar 2022 22:35:44 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id mr24-20020a17090b239800b001bf0a375440so16335568pjb.4;
+        Sun, 13 Mar 2022 22:35:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ziHLpQ3BSJG9uN5+hBB/K6gEy6fyUA7DHi/ja3cIYfM=;
-        b=q00xIdHjpKrgKFRyR7NWEIHcwWV9iQlp7ojYRaJVhqNPsW8IakgsMbDhLXKoO2fyMm
-         L40MTzx1rNEjjJ+CzfnU3WMxC5v7DI8cQtMqPxxvQZFC9+5LKhGXRghAOSvSUC1jqjdK
-         4aa6E9xjaNtqVpZmwcBYJwXWsxu5e9Cn8zLt9bieBt4Kawq1UgTrW0MjTNLKZxeMNO99
-         /vdOQN2yQS+f+1MgrodpMUb4Zjj8qVz7yVFH/40/9ocAejfaX0SbcFtwsmfmC3j7HhKM
-         AteOHOZv8LgeY609Eka+n4NfJOwKapW1PWiYuHvofNlQQG5jcPkCnD5RFFgaO773uoFp
-         Kinw==
+        bh=C2/3lb1hdkF97hNbei7dfXomt9xkrDDtfYf9ru8Gdm4=;
+        b=oNVR0qUtUkejwD2PE40U3m3bOfecNXxVeKkVp9fOm+3Me77M45+NPeo55ubqZlKq7r
+         MB7tiA63/q1i44rKG6d5ltclJzQv3Qz6hhh3RVq9xq7IO4ncnICocd4C9j5XVYHLTf1H
+         0t37CbsvKjlG0aLe8uQgii2HaQrObeg3Am1odGPvV1Uc+c31V9C/Ju30rReVHe8B7ESC
+         epUdibdIm8U4Wa6yuG/J9mGpJ520zSl63IpEll5h0ZCNatE7cUD1FFvlYx5LP4BamLZT
+         MjTkoUVR2DYc65MSqHiATmVgOUcADjVgzLehE3W1M6UCy8UGQSH8LXrnv7gEq+fTE4Gr
+         17Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=ziHLpQ3BSJG9uN5+hBB/K6gEy6fyUA7DHi/ja3cIYfM=;
-        b=W3PU1crilLEKcQp4jfb9K9ATrP1Y8Ov/ZDrq3knAq/7/wlQKV9OG5tPXC446uwXGxw
-         ayoK8ZUSoN2i8Q3VAz7ntfK05vO67u3DKNl0BnlSSB/iziavFM9kmnEDdkfkVpzBJAOh
-         kIMm6jl0xNZOzaozUlItRP5DlYG7NQc/gsOKHcVwraPGoZvS2xJaAurgrynFHe8aRTka
-         28R2m5OY9Yz1vkFvhbxFKNlc46V7uKj2RoWk/kf28HFkkitvsaisBb/gy/VuNlwpEey7
-         K8CpvITr9nTJP+6WfUMUO0+uhBNZJiswIUA8bT6E0AEgNAIL9S0LI3Y4JFbllBmAId7i
-         cuMA==
-X-Gm-Message-State: AOAM531mtXPn3v7Jrlj+7iOszZ59PBCsR5DRYY/Pr9WXxoEgMsg+Vsgu
-        gD1JjohbdJHMpKDbLoIYAehEXDKa7dtPZg==
-X-Google-Smtp-Source: ABdhPJy2N10/kuyRtzhGAI7OGBTz7x2djL200AEXIwbnCDRPmnlC1B6fOp6bJcJIAV4rclTMXLhI2A==
-X-Received: by 2002:a17:903:11c7:b0:151:7290:ccc with SMTP id q7-20020a17090311c700b0015172900cccmr22215622plh.95.1647235230980;
-        Sun, 13 Mar 2022 22:20:30 -0700 (PDT)
+        bh=C2/3lb1hdkF97hNbei7dfXomt9xkrDDtfYf9ru8Gdm4=;
+        b=10k7a/U6S8tMvKNESyEt9tPkD1U0DwqlBy344/5TidHAVPVBN4nusEbZ7qRgcj5s+x
+         ofvp22B/Q/5LauGxygPGBoC2YNzpTlKnjjwOUtutSTMjBxxkP7zIiZGaQqwWECi+Q+2V
+         w9pAqjO3mTIxDFyrt/iTzVDb08tnKCtG0nrXVZEFCxhNUKIPJP0ao4iiLZB/ucIeVtih
+         OlI6aFSOnDVnkN3+2GcOuBZ1Lzd3AiHpbTmVtFcD16yXEdSiHvzQHUl//Sgzd8l3ZEtx
+         uO81svBZ5ata3OPARgFO1u/7gx2eJcAYhdrfDadd9ICkhDkYUXAxB+IYW1x6RLcL2+b4
+         WhKw==
+X-Gm-Message-State: AOAM531vudLLSBxINPPcTeTQQjKLyytt/iFMkDFbXJO9Y/Vws/1kIpAM
+        kBzrn+GzdYOPc+kjtcx3M+Hs/sEXr4yU0w==
+X-Google-Smtp-Source: ABdhPJxQfuJzNpaxaFptAzT4ZYgj4ZR/5PodW1CaO6QpMn1QABgOB9VGxTKEOuE8CeSaQvplRfChPw==
+X-Received: by 2002:a17:903:244e:b0:151:e3e2:cc09 with SMTP id l14-20020a170903244e00b00151e3e2cc09mr21625163pls.70.1647236144220;
+        Sun, 13 Mar 2022 22:35:44 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id mt15-20020a17090b230f00b001bf191e6f08sm15960332pjb.9.2022.03.13.22.20.29
+        by smtp.gmail.com with ESMTPSA id j67-20020a636e46000000b003740d689ca9sm14830191pgc.62.2022.03.13.22.35.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Mar 2022 22:20:30 -0700 (PDT)
+        Sun, 13 Mar 2022 22:35:43 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 13 Mar 2022 19:20:28 -1000
+Date:   Sun, 13 Mar 2022 19:35:42 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     trix@redhat.com
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: cleanup comments
-Message-ID: <Yi7QnANYByb+8aSS@slm.duckdns.org>
-References: <20220305204657.707070-1-trix@redhat.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hao Luo <haoluo@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>, bpf@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
+Message-ID: <Yi7ULpR70HatVP/8@slm.duckdns.org>
+References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220305204657.707070-1-trix@redhat.com>
+In-Reply-To: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -71,21 +79,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Mar 05, 2022 at 12:46:57PM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> for spdx, add a space before //
-> 
-> replacements
-> judgement to judgment
-> transofrmed to transformed
-> partitition to partition
-> histrical to historical
-> migratecd to migrated
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Hello,
 
-Applied to cgroup/for-5.18.
+On Wed, Mar 09, 2022 at 12:27:15PM -0800, Yosry Ahmed wrote:
+...
+> These problems are already addressed by the rstat aggregation
+> mechanism in the kernel, which is primarily used for memcg stats. We
+
+Not that it matters all that much but I don't think the above statement is
+true given that sched stats are an integrated part of the rstat
+implementation and io was converted before memcg.
+
+> - For every cgroup, we will either use flags to distinguish BPF stats
+> updates from normal stats updates, or flush both anyway (memcg stats
+> are periodically flushed anyway).
+
+I'd just keep them together. Usually most activities tend to happen
+together, so it's cheaper to aggregate all of them in one go in most cases.
+
+> - Provide flags to enable/disable using per-cpu arrays (for stats that
+> are not updated frequently), and enable/disable hierarchical
+> aggregation (for non-hierarchical stats, they can still make benefit
+> of the automatic entries creation & deletion).
+> - Provide different hierarchical aggregation operations : SUM, MAX, MIN, etc.
+> - Instead of an array as the map value, use a struct, and let the user
+> provide an aggregator function in the form of a BPF program.
+
+I'm more partial to the last option. It does make the usage a bit more
+compilcated but hopefully it shouldn't be too bad with good examples.
+
+I don't have strong opinions on the bpf side of things but it'd be great to
+be able to use rstat from bpf.
 
 Thanks.
 
