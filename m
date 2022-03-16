@@ -2,133 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5ED4DB642
-	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57584DB655
+	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350266AbiCPQg4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 12:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S1350352AbiCPQjy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Mar 2022 12:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbiCPQg4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:36:56 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7045BE7C
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:35:41 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id s8so4407464pfk.12
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:35:41 -0700 (PDT)
+        with ESMTP id S1357477AbiCPQjx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:39:53 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC30220DB
+        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:38:31 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mm23-20020a17090b359700b001bfceefd8c6so5516834pjb.3
+        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=275NXYJb5aDtfGLgJwV8jy6NeIY7jYYNXA4F+p+7cbI=;
-        b=ca3YzU4ecHyoF5z9aV8JSuIo/aHcR1av61umXYi8JxoeJeLfrsg6bHwTJ+7QfqMAY2
-         W5AJIv4jxXQqUafuQZkfyhG7dP7qQFMBfcbxYK74ZjEXybe+6DGMthl8sYjC6VHmBtKT
-         MgGAvgJYWvrZvnpwYny8tHp5qwO1Wwa0sh9mJT0E6i5rD4MskKotZI7ypsp4Co/l2tVm
-         PnXhHqsdCtll4ouLcB65KDtuFEfQHm4tvaRbUiniF8ugw9gwtPknP2TGah+iUDshxBkc
-         uQ1LypK8NDdZHngCEYebr8//kv5aJfMWaTrpDvEKnEJy4RRIzqMPGcpT2Y/SZd0ZsZ03
-         SUsQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KJG9d+Kapo0GF7vwtS3fr/dHSRbCdMx6tPdBaWiajKU=;
+        b=VnlKOwXeu1JbtWgHXg66/LRudlGjGdd4KwAhx7lqYYr5HZ0xPz5SaCNHNxthx3PODH
+         plbWZ8WTaBn9EWpsQLJaYl/HJ3BDuZILWyi/rf70/f6UERAvjfHCTLaI18y7jv3P4hZ6
+         nVBdsAyFDA5dC/k1DQyF/TEcDArR8pazwZiQgEH6UU9OgX+wrlsGHe/6OlsJn8rk5zMf
+         2rn875loP+m4YQjUmX2h4azPligyPoTeG8Zw5+GtJ/7KmjH+Y74Y/1Afkf124kFRCC9B
+         sXaAKfJJMA1EwW2MoJa2fSKc4D0uRnvQ7cJZCfzraMbEVRutC/KUIC4MuNCPl4jUydwY
+         QwHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=275NXYJb5aDtfGLgJwV8jy6NeIY7jYYNXA4F+p+7cbI=;
-        b=ya9KBZCsfObdFJlXTBhLNXmxcQZ2+F0rfTyUveHUTV6RbQ193wKYBsq6GOVc6Kpx3W
-         +W4wL90jf+36JSPIbS46mSHFYIhceiYZfFvsOtgCKhhBbDaHCoGhcNT0XjgOvYjbX2rj
-         r8ZDBYrCHrlDBf7IltIh2c2BqdpdhJnT0HqvURfwKkTSKkN4iaK7Zqi9XcQQseqsJlmN
-         MYUf27wCYEYcAIeO9ogTnbz3AN7of874qG67HPhToInwQ69DQNwREgBiRzmsl3QMhruA
-         DXBh13IiqS55sLTcYd3NWhk1yoruDnXNkYWgTiozrjqLK6fW001assIF5YVQonaaACNo
-         Qpgw==
-X-Gm-Message-State: AOAM5317aN0u3EGiLMp/63JTjNQ/2jgYsB04w9OoD1I7dl5trc/kz7UT
-        N+Biymq9epAvLXsZ+QcFdvC1u8G7XgPK/aRrg19WvA==
-X-Google-Smtp-Source: ABdhPJy0dfdrNHDXfzLhLoV648rli3spqHAE3tjA1YC2TLkbHATBCWj+SMR8ittEPqKuL6E9L0btG1d4/XdhA5vNQAc=
-X-Received: by 2002:a65:6091:0:b0:35e:d274:5f54 with SMTP id
- t17-20020a656091000000b0035ed2745f54mr383547pgu.200.1647448541147; Wed, 16
- Mar 2022 09:35:41 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=KJG9d+Kapo0GF7vwtS3fr/dHSRbCdMx6tPdBaWiajKU=;
+        b=epBEdnqgiDfGJAlAXS1xl9L84r0tU4DGjNwP+Hm1264e0Aqs1/aNcbFnboBC7vuX5C
+         Kg4Zr5G5NyVywJ/H1UeTg9/9z5zL5vdG3oT8EILWNmNARtxf5nTowzu7Ksc0QybAYfsI
+         5CTUQD8x79qFahKUgh8w/nG5l+J0AMYTm88wNyEcmLV/Ut7UKh7gS7SxNsd+lNZhZWPL
+         uLVUWoI5kKiCc1XOyyH2y66IoB5vtDiiAXl7VZXFh+5PMhtvw2i190klqHiAf9mpMftb
+         VTJ7fYueLfwzn+abTmuu3SVA3X/rr3aGVmn6uVYxVvjHKZzi9DNvY+Z5wShP/N0s1+eP
+         R2fg==
+X-Gm-Message-State: AOAM531u92EqAOoZkzMqh1x+aAak1+OgqA/4S6fCd+bYTPEPgibe4KN6
+        bbUGOqDY6/RVW+vdhx3vqmc=
+X-Google-Smtp-Source: ABdhPJxc8W/nE+n1xPyRqTo6cZuxvW0h+BniQiXRFHCQrCidG405hdq888+4tNKTT+hqZXabszMC2g==
+X-Received: by 2002:a17:902:ecc2:b0:151:dd64:c77a with SMTP id a2-20020a170902ecc200b00151dd64c77amr508471plh.154.1647448710548;
+        Wed, 16 Mar 2022 09:38:30 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id mq6-20020a17090b380600b001c6357f146csm7207387pjb.12.2022.03.16.09.38.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Mar 2022 09:38:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Mar 2022 06:38:28 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Olsson John <john.olsson@saabgroup.com>
+Cc:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: Split process across multiple schedulers?
+Message-ID: <YjIShE3mwRyNbO53@slm.duckdns.org>
+References: <b5039be462e8492085b6638df2a761ca@saabgroup.com>
 MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
- <Yi7ULpR70HatVP/8@slm.duckdns.org>
-In-Reply-To: <Yi7ULpR70HatVP/8@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 16 Mar 2022 09:35:05 -0700
-Message-ID: <CAJD7tkYGUaeeFMJSWNbdgaoEq=kFTkZzx8Jy1fwWBvt2WEfqAA@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5039be462e8492085b6638df2a761ca@saabgroup.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+Hello,
 
-Thanks for taking the time to read my proposal! Sorry for the late
-reply. This email skipped my inbox for some reason.
+On Mon, Mar 14, 2022 at 03:19:56PM +0000, Olsson John wrote:
+> Preferably for optimal performance you want to isolate the cores where the virtual core threads are running so nothing else interferes with them (besides kernel threads connected to IRQs that can't be moved from the isolated cores). The VMM is then running on another core that is not running a virtual core thread. CGroups is the preferred way of accomplishing this. :)
 
-On Sun, Mar 13, 2022 at 10:35 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, Mar 09, 2022 at 12:27:15PM -0800, Yosry Ahmed wrote:
-> ...
-> > These problems are already addressed by the rstat aggregation
-> > mechanism in the kernel, which is primarily used for memcg stats. We
->
-> Not that it matters all that much but I don't think the above statement is
-> true given that sched stats are an integrated part of the rstat
-> implementation and io was converted before memcg.
->
+I have a basic question. cgroup provides new capabilities through its
+ability to hierarchically organize workloads on the system and distributes
+resources across the hierarchy. If all one wants to do is affining specific
+threads to specific CPUs or changing some other attributes of them, there's
+nothing extra that cgroup provides compared to using plain per-task
+interface. Is there some other eason why cgroup is the preferred way here?
 
-Excuse my ignorance, I am new to kernel development. I only saw calls
-to cgroup_rstat_updated() in memcg and io and assumed they were the
-only users. Now I found cpu_account_cputime() :)
+Thanks.
 
-> > - For every cgroup, we will either use flags to distinguish BPF stats
-> > updates from normal stats updates, or flush both anyway (memcg stats
-> > are periodically flushed anyway).
->
-> I'd just keep them together. Usually most activities tend to happen
-> together, so it's cheaper to aggregate all of them in one go in most cases.
-
-This makes sense to me, thanks.
-
->
-> > - Provide flags to enable/disable using per-cpu arrays (for stats that
-> > are not updated frequently), and enable/disable hierarchical
-> > aggregation (for non-hierarchical stats, they can still make benefit
-> > of the automatic entries creation & deletion).
-> > - Provide different hierarchical aggregation operations : SUM, MAX, MIN, etc.
-> > - Instead of an array as the map value, use a struct, and let the user
-> > provide an aggregator function in the form of a BPF program.
->
-> I'm more partial to the last option. It does make the usage a bit more
-> compilcated but hopefully it shouldn't be too bad with good examples.
->
-> I don't have strong opinions on the bpf side of things but it'd be great to
-> be able to use rstat from bpf.
-
-It indeed gives more flexibility but is more complicated. Also, I am
-not sure about the overhead to make calls to BPF programs in every
-aggregation step. Looking forward to get feedback on the bpf side of
-things.
-
->
-> Thanks.
->
-> --
-> tejun
+-- 
+tejun
