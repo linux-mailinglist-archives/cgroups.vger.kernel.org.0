@@ -2,115 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ED94DB5B6
-	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05EC4DB61D
+	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbiCPQOy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 12:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        id S1349823AbiCPQ2X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Mar 2022 12:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239089AbiCPQOy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:14:54 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9325DAE78
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:13:37 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id t2so4362184pfj.10
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:13:37 -0700 (PDT)
+        with ESMTP id S1346831AbiCPQ2W (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:28:22 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C96C1C8
+        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:27:07 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id z12-20020a17090ad78c00b001bf022b69d6so2911252pju.2
+        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z02blqoxThuGkhi9wvej2czZDkzHuDmLTnoYf50M1uc=;
-        b=cGZXSXrsgc31cO4Sk0bWUlfS1YHAUJEfGTBf5TIBee1N2O1v51N7loA1ZZpKIMLhQU
-         ZL4G+LW3sc0mD2+VrXcSsn2ki9iK3vUoZBFy+e+ymKKFCYoQ+YANqSB0U4QAHY9uDFXB
-         SafWbfwTRZGMBUkBvqQatRHY7TtVrEWAZlgYsjZQpgb3TmjgnxKesoFw28mzwz8qsMx3
-         NyfJIBCq/S3dp8Nn2WH5a8J4Z0pUttEIw8/bVGsy6obvllTS6Lt/V7qPFQ8r+oGvrktt
-         7x5mr0KfJ+CGeeCF427uudGKR4pMiwgAi/lgMMyclVWd9GIeS9bxCskxGnxeAA+7BFqV
-         Ye+w==
+         :cc:content-transfer-encoding;
+        bh=LOz30deJcjhjIyXrEXiDnvgZ+SlnXxBb7kUkmufCFCs=;
+        b=euiuCzfqGkYwgdoQmNRDghuuPrAiXcUV401r/vjPV6N4ydFbIk4O/ZZos55iCYihiJ
+         1B2Rdtk2zITgdDZnW4fAcsQkznCDbtClCUyNsp3+wGQqZhtsZcavfxaZO4uc39FbFK5c
+         DPNGY6oCGwYL2dtnywRcf3II37L/WfRmydceUYcMRp7yEXaaDpJwqw0cdTtA7oUmf99K
+         L3r2N2Ro8VNPJE16xuaG4MaBJbyvbNiaNwRSY0Eyjwppc6RxiTgg9+8s5wDbscVHjrjn
+         S/F6K4GdPfbGbLMp3h+Y+rNlIC4IvgqTUFpV8l+loRNejQDA4QjoTkD9Bx4o+eQmBScb
+         t/ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z02blqoxThuGkhi9wvej2czZDkzHuDmLTnoYf50M1uc=;
-        b=7udAZwtVNSbEnAjdXYfzJZaL9ULf2xRCYXAL4sdmzKyujkX+RWvpWmpNUCGHzjdhzD
-         iLN2iC5PbB3qikuuAOyZAHLcEBT2DWwzc9Ocp2iocJlA2Gg5ishutsInnGFML9jirSw8
-         /aUzhL5jz0WSbu+rbSrP0T2Pa7V4QzUlUMCNjgxIZCJdcXNdBIicn4/Hvo6HAQ0NfFeY
-         +LPVcQi3Jg+KHeeU9qJueodCdh04qnLO5JtGVdJMy0dsAnN9ACTJ0cKJd4VHBR7dVmuV
-         Q2QfuNyKlzv6vvOpGiMXLChCjKkZzk2p3KcCFV+2CYqU/GcUTxDNHl3eNFu+R7gJD2kQ
-         nkgg==
-X-Gm-Message-State: AOAM531/EXcWeYu662kevBYNbxRhlfcAX2JQanScJAtOcD9rf+w3Ddr9
-        WYWLkZKC+sGymunr2JLazKcn8ZbFpwa9yrKbunrDZA==
-X-Google-Smtp-Source: ABdhPJzy/6N3/PYQ7f+k69lwS1R1FqLXCJ2jyBfTrGN9DVuznSeyY9IHKWkgrsllbUI26ZmLok3HTwQWVmcOo994kQ4=
-X-Received: by 2002:a65:6091:0:b0:35e:d274:5f54 with SMTP id
- t17-20020a656091000000b0035ed2745f54mr306553pgu.200.1647447216944; Wed, 16
- Mar 2022 09:13:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LOz30deJcjhjIyXrEXiDnvgZ+SlnXxBb7kUkmufCFCs=;
+        b=G0EeP4uI7wqwTxKPWfyNpCMFcphTV1zIHOUPe+ro+x2I4iiyol3SLmmfL8V2O1o8ne
+         xEY2hvHvo7u6FrUFmQxywpE16dO+A9gT3qM7K74fhnDZJQ/Bc1panQEY8d8TiTY7iIl0
+         +nLboMUvDXizceh5Qi3sWF/9X9HfZFpeIymzskRm/mXnf/EAOkXFNoacUbgs0Pnr01kZ
+         zvzpkAWHun8WZslNbfcVpEVGINgnEWv86ZWBAyRCQNoZeSkujnHTXX2CR3SEoe1hJMWe
+         AzRBOMFZ9A5k5JohAGV2GzEvdCY49aiUKq6T65i38PLbrY+nDIfLAJD/eGJuw808bIsX
+         DARg==
+X-Gm-Message-State: AOAM5306Dz3K0gubN0ZnYDZPxtN/knzgbufJP5+BeN0DNxBM4nd95+JU
+        3yU73sHDdG7hLVV/btORur7XjjvZQa3X266dV3guOA==
+X-Google-Smtp-Source: ABdhPJytOF5H+Jf3tnI4511+heBxknFBPUzXrfadFH/aaaKAfnciI9nJzGVZMoY9Fe2031uuscVswxuuo1OcklRO2DE=
+X-Received: by 2002:a17:902:e745:b0:151:5474:d3ed with SMTP id
+ p5-20020a170902e74500b001515474d3edmr319937plf.106.1647448026684; Wed, 16 Mar
+ 2022 09:27:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
- <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-In-Reply-To: <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 16 Mar 2022 09:13:00 -0700
-Message-ID: <CAJD7tkYGXVX+ehGsOMidfaKCbjuB2HeAK=Up_2evg6iOZD1z-Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+References: <20220304184040.1304781-1-shakeelb@google.com> <20220311160051.GA24796@blackbody.suse.cz>
+ <20220312190715.cx4aznnzf6zdp7wv@google.com> <20220314125709.GA12347@blackbody.suse.cz>
+In-Reply-To: <20220314125709.GA12347@blackbody.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 16 Mar 2022 09:26:55 -0700
+Message-ID: <CALvZod4Mfcqt4DvYzSxSX=C9sVWfrMpva9rrMc91_DQ_jReXbA@mail.gmail.com>
+Subject: Re: [PATCH] memcg: sync flush only if periodic flush is delayed
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Frank Hofmann <fhofmann@cloudflare.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Dao <dqminh@cloudflare.com>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 11:05 PM Song Liu <song@kernel.org> wrote:
+On Mon, Mar 14, 2022 at 5:57 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
 >
-> On Wed, Mar 9, 2022 at 12:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> Hi 2.
+>
+> On Sat, Mar 12, 2022 at 07:07:15PM +0000, Shakeel Butt <shakeelb@google.c=
+om> wrote:
+> > It is (b) that I am aiming for in this patch. At least (a) was not
+> > happening in the cloudflare experiments. Are you suggesting having a
+> > dedicated high priority wq would solve both (a) and (b)?
+> > [...]
+> > > We can't argue what's the effect of periodic only flushing so this
+> > > newly introduced factor would inherit that too. I find it superfluous=
+.
 > >
-> [...]
 > >
-> > The map usage by BPF programs and integration with rstat can be as follows:
-> > - Internally, each map entry has per-cpu arrays, a total array, and a
-> > pending array. BPF programs and user space only see one array.
-> > - The update interface is disabled. BPF programs use helpers to modify
-> > elements. Internally, the modifications are made to per-cpu arrays,
-> > and invoke a call to cgroup_bpf_updated()  or an equivalent.
-> > - Lookups (from BPF programs or user space) invoke an rstat flush and
-> > read from the total array.
+> > Sorry I didn't get your point. What is superfluous?
 >
-> Lookups invoke a rstat flush, so we still walk every node of a subtree for
-> each lookup, no? So the actual cost should be similar than walking the
-> subtree with some BPF program? Did I miss something?
+> Let me retell my understanding.
+> The current implementation flushes based on cumulated error and time.
+> Your patch proposes conditioning the former with another time-based
+> flushing, whose duration can be up to 2 times longer than the existing
+> periodic flush.
+>
+> Assuming the periodic flush is working, the reader won't see data older
+> than 2 seconds, so the additional sync-flush after (possible) 4 seconds
+> seems superfluous.
+>
+> (In the case of periodic flush being stuck, I thought the factor 2=3D4s/2=
+s
+> was superfluous, another magic parameter.)
+>
+> I'm comparing here your proposal vs no synchronous flushing in
+> workingset_refault().
+>
+> > Do you have any strong concerns with the currect patch?
+>
+> Does that clarify?
+>
+> (I agree with your initial thesis this can be iterated before it evolves
+> to everyone's satisfaction.)
 >
 
-Hi Song,
-
-Thanks for taking the time to read my proposal.
-
-The rstat framework maintains a tree that contains only updated
-cgroups. An rstat flush only traverses this tree, not the cgroup
-subtree/hierarchy.
-
-This also ensures that consecutive readers do not have to do any
-traversals unless new updates happen, because the first reader will
-have already flushed the stats.
-
->
-> Thanks,
-> Song
->
-> > - In cgroup_rstat_flush_locked() flush BPF stats as well.
-> >
-> [...]
+Thanks Michal for the explanation. For the long term, I think all
+these batching can be made part of core rstat infrastructure and as
+generic as you have described. Also there is interest in using rstat
+from BPF, so generic batching would be needed there as well.
