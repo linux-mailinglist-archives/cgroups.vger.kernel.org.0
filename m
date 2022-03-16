@@ -2,87 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57584DB655
-	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFE84DB6B2
+	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350352AbiCPQjy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 12:39:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
+        id S1348702AbiCPQvE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Mar 2022 12:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357477AbiCPQjx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:39:53 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC30220DB
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:38:31 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mm23-20020a17090b359700b001bfceefd8c6so5516834pjb.3
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:38:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KJG9d+Kapo0GF7vwtS3fr/dHSRbCdMx6tPdBaWiajKU=;
-        b=VnlKOwXeu1JbtWgHXg66/LRudlGjGdd4KwAhx7lqYYr5HZ0xPz5SaCNHNxthx3PODH
-         plbWZ8WTaBn9EWpsQLJaYl/HJ3BDuZILWyi/rf70/f6UERAvjfHCTLaI18y7jv3P4hZ6
-         nVBdsAyFDA5dC/k1DQyF/TEcDArR8pazwZiQgEH6UU9OgX+wrlsGHe/6OlsJn8rk5zMf
-         2rn875loP+m4YQjUmX2h4azPligyPoTeG8Zw5+GtJ/7KmjH+Y74Y/1Afkf124kFRCC9B
-         sXaAKfJJMA1EwW2MoJa2fSKc4D0uRnvQ7cJZCfzraMbEVRutC/KUIC4MuNCPl4jUydwY
-         QwHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KJG9d+Kapo0GF7vwtS3fr/dHSRbCdMx6tPdBaWiajKU=;
-        b=epBEdnqgiDfGJAlAXS1xl9L84r0tU4DGjNwP+Hm1264e0Aqs1/aNcbFnboBC7vuX5C
-         Kg4Zr5G5NyVywJ/H1UeTg9/9z5zL5vdG3oT8EILWNmNARtxf5nTowzu7Ksc0QybAYfsI
-         5CTUQD8x79qFahKUgh8w/nG5l+J0AMYTm88wNyEcmLV/Ut7UKh7gS7SxNsd+lNZhZWPL
-         uLVUWoI5kKiCc1XOyyH2y66IoB5vtDiiAXl7VZXFh+5PMhtvw2i190klqHiAf9mpMftb
-         VTJ7fYueLfwzn+abTmuu3SVA3X/rr3aGVmn6uVYxVvjHKZzi9DNvY+Z5wShP/N0s1+eP
-         R2fg==
-X-Gm-Message-State: AOAM531u92EqAOoZkzMqh1x+aAak1+OgqA/4S6fCd+bYTPEPgibe4KN6
-        bbUGOqDY6/RVW+vdhx3vqmc=
-X-Google-Smtp-Source: ABdhPJxc8W/nE+n1xPyRqTo6cZuxvW0h+BniQiXRFHCQrCidG405hdq888+4tNKTT+hqZXabszMC2g==
-X-Received: by 2002:a17:902:ecc2:b0:151:dd64:c77a with SMTP id a2-20020a170902ecc200b00151dd64c77amr508471plh.154.1647448710548;
-        Wed, 16 Mar 2022 09:38:30 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id mq6-20020a17090b380600b001c6357f146csm7207387pjb.12.2022.03.16.09.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Mar 2022 09:38:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Mar 2022 06:38:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Olsson John <john.olsson@saabgroup.com>
-Cc:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: Split process across multiple schedulers?
-Message-ID: <YjIShE3mwRyNbO53@slm.duckdns.org>
+        with ESMTP id S240548AbiCPQvD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:51:03 -0400
+Received: from weald.air.saab.se (weald.air.saab.se [136.163.212.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23387443C9
+        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:49:47 -0700 (PDT)
+Received: from mailhub1.air.saab.se ([136.163.213.4])
+        by weald.air.saab.se (8.14.7/8.14.7) with ESMTP id 22GGnVUb005751
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Mar 2022 17:49:31 +0100
+DKIM-Filter: OpenDKIM Filter v2.11.0 weald.air.saab.se 22GGnVUb005751
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=saabgroup.com;
+        s=weald; t=1647449371;
+        bh=5QHUREPdKS0RYEDaBp+97Eck0DLnpYJfMdi/oyeVGbU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=utkEsq3p/XJygC/rsIc9PMZ3MEF4Lo/f2mQLLC1YfAZcb4cNrdJ++SzeOFTU0W7+W
+         l/7+RWoywfQLpyY89k46SDKHv/eDM27NPI/WkIptQ8dtqXdHlDWCCVpgf9B70ZF9rP
+         xiLWtoSRbNZBRsbU3hCS5LqTsnytGaC1yYkvDNSQ=
+Received: from corpappl17772.corp.saab.se (corpappl17772.corp.saab.se [10.12.196.79])
+        by mailhub1.air.saab.se (8.15.2/8.15.2) with ESMTPS id 22GGnRPw479708
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Mar 2022 17:49:27 +0100
+Received: from corpappl17781.corp.saab.se (10.12.196.88) by
+ corpappl17772.corp.saab.se (10.12.196.79) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Wed, 16 Mar 2022 17:49:29 +0100
+Received: from corpappl17781.corp.saab.se ([fe80::988b:c853:94fe:90aa]) by
+ corpappl17781.corp.saab.se ([fe80::988b:c853:94fe:90aa%5]) with mapi id
+ 15.02.0986.015; Wed, 16 Mar 2022 17:49:29 +0100
+From:   Olsson John <john.olsson@saabgroup.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: Split process across multiple schedulers?
+Thread-Topic: [EXTERNAL] Re: Split process across multiple schedulers?
+Thread-Index: Adg3spIZ/DvaypfiTgy8SrH+fLuE4ABmU+gAAAIfiuA=
+Date:   Wed, 16 Mar 2022 16:49:29 +0000
+Message-ID: <e9cac4aba6384c5c91125a9f7d61a4e8@saabgroup.com>
 References: <b5039be462e8492085b6638df2a761ca@saabgroup.com>
+ <YjIShE3mwRyNbO53@slm.duckdns.org>
+In-Reply-To: <YjIShE3mwRyNbO53@slm.duckdns.org>
+Accept-Language: sv-SE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [136.163.101.124]
+x-tm-as-product-ver: SMEX-14.0.0.3092-8.6.1018-26776.000
+x-tm-as-result: No-10--7.191500-5.000000
+x-tmase-matchedrid: csPTYAMX1+HK19rKCr/Ovgrcxrzwsv5uXPK9y3z82GttfzoljzPXOwQ9
+        5qKM84XK8GCkoSXZagnidWxlRVBYwc4Cn0fUiJuC3nHtGkYl/Vrao9CLy9z1sujt1glqt+yGGNt
+        H9cKwddYCb8D7TYsad7MTUjboGcLokAoSYAlFT8/k9NqTmudp1Go8zUxTJUAjgb57WVqtsG2zxb
+        tU2iY0wyo4RxY8NtHpX7bicKxRIU2No+PRbWqfROJGF26G8SWy8lP6F/raTZitbVuluC2/ALMgY
+        g56KHJrELnI9QuVpuVgwj4RBUjnvFQ9dfenIsFZw2tMTSg0x74=
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--7.191500-5.000000
+x-tmase-version: SMEX-14.0.0.3092-8.6.1018-26776.000
+x-tm-snts-smtp: A30F34C42C9B7E4FEF0198A2A593FEC2B1A75B02BBCF7B3D14A509D1CC35D7B82002:B
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5039be462e8492085b6638df2a761ca@saabgroup.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+> I have a basic question. cgroup provides new capabilities through
+> its ability to hierarchically organize workloads on the system and
+> distributes resources across the hierarchy. If all one wants to do
+> is affining specific threads to specific CPUs or changing some other
+> attributes of them, there's nothing extra that cgroup provides
+> compared to using plain per-task interface. Is there some other
+> eason why cgroup is the preferred way here?
 
-On Mon, Mar 14, 2022 at 03:19:56PM +0000, Olsson John wrote:
-> Preferably for optimal performance you want to isolate the cores where the virtual core threads are running so nothing else interferes with them (besides kernel threads connected to IRQs that can't be moved from the isolated cores). The VMM is then running on another core that is not running a virtual core thread. CGroups is the preferred way of accomplishing this. :)
+Very good question! And yes, there actually are some reasons. :)
 
-I have a basic question. cgroup provides new capabilities through its
-ability to hierarchically organize workloads on the system and distributes
-resources across the hierarchy. If all one wants to do is affining specific
-threads to specific CPUs or changing some other attributes of them, there's
-nothing extra that cgroup provides compared to using plain per-task
-interface. Is there some other eason why cgroup is the preferred way here?
+By using cgroup you can delegate the authority to configure a subset
+of the hierarchy via rwx and user, group, others. By using the
+per-task interface you have to be root, right?
 
-Thanks.
+Also, we want to separate the configuration of the threads from the
+application as it need to be deployed in different hardware scenarios.
 
--- 
-tejun
+And we need to be able to easily replicate a configuration from one
+machine to another machine.
+
+We also need to configure other aspects that cgroup allows us to do
+for the set of processes.
+
+Since cgroup solves all of the above problems for us, why using
+something else? :)
+
