@@ -2,124 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F05EC4DB61D
-	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B264DB639
+	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 17:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349823AbiCPQ2X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 12:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S240701AbiCPQcj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Mar 2022 12:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346831AbiCPQ2W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:28:22 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C96C1C8
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:27:07 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id z12-20020a17090ad78c00b001bf022b69d6so2911252pju.2
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 09:27:07 -0700 (PDT)
+        with ESMTP id S231220AbiCPQci (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 12:32:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1A26D4CB;
+        Wed, 16 Mar 2022 09:31:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id t22so2270028plo.0;
+        Wed, 16 Mar 2022 09:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LOz30deJcjhjIyXrEXiDnvgZ+SlnXxBb7kUkmufCFCs=;
-        b=euiuCzfqGkYwgdoQmNRDghuuPrAiXcUV401r/vjPV6N4ydFbIk4O/ZZos55iCYihiJ
-         1B2Rdtk2zITgdDZnW4fAcsQkznCDbtClCUyNsp3+wGQqZhtsZcavfxaZO4uc39FbFK5c
-         DPNGY6oCGwYL2dtnywRcf3II37L/WfRmydceUYcMRp7yEXaaDpJwqw0cdTtA7oUmf99K
-         L3r2N2Ro8VNPJE16xuaG4MaBJbyvbNiaNwRSY0Eyjwppc6RxiTgg9+8s5wDbscVHjrjn
-         S/F6K4GdPfbGbLMp3h+Y+rNlIC4IvgqTUFpV8l+loRNejQDA4QjoTkD9Bx4o+eQmBScb
-         t/ow==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0li51S2j9zx6touwa3lalaBuNLB+ApBmTIWJmdTR4CI=;
+        b=CMYlilISkpmT9u93kuzE80ilYUmxO8tZDHP6kRvGqaeCD3IgCfRgtxtt4ui3m8C8N3
+         9QtIz4konuRNXrXD0iyToy2A4HfrIhnctNOUmpZYxsjwupqLpl7K0F3OdK7bv76ZfG3S
+         d7I15BTZRPEIinQ3m0FkfvWkUcwSGR1Kc3/jiio7PtNWUUHFlqir/2VM7IQD1imzBbID
+         DSr03q7fwGP/+dxbERzS+cdO5t1v3YENg18f8jVBEZpwv4qnrRc58kP/y7mbEgt4vj+L
+         LHrdRCBMigiHY3BFJ70y/qpNf8P39NsI9ElYBYDeI1G4SH0cV9bcMzQpwjbmUyBVJ7Ta
+         M/lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LOz30deJcjhjIyXrEXiDnvgZ+SlnXxBb7kUkmufCFCs=;
-        b=G0EeP4uI7wqwTxKPWfyNpCMFcphTV1zIHOUPe+ro+x2I4iiyol3SLmmfL8V2O1o8ne
-         xEY2hvHvo7u6FrUFmQxywpE16dO+A9gT3qM7K74fhnDZJQ/Bc1panQEY8d8TiTY7iIl0
-         +nLboMUvDXizceh5Qi3sWF/9X9HfZFpeIymzskRm/mXnf/EAOkXFNoacUbgs0Pnr01kZ
-         zvzpkAWHun8WZslNbfcVpEVGINgnEWv86ZWBAyRCQNoZeSkujnHTXX2CR3SEoe1hJMWe
-         AzRBOMFZ9A5k5JohAGV2GzEvdCY49aiUKq6T65i38PLbrY+nDIfLAJD/eGJuw808bIsX
-         DARg==
-X-Gm-Message-State: AOAM5306Dz3K0gubN0ZnYDZPxtN/knzgbufJP5+BeN0DNxBM4nd95+JU
-        3yU73sHDdG7hLVV/btORur7XjjvZQa3X266dV3guOA==
-X-Google-Smtp-Source: ABdhPJytOF5H+Jf3tnI4511+heBxknFBPUzXrfadFH/aaaKAfnciI9nJzGVZMoY9Fe2031uuscVswxuuo1OcklRO2DE=
-X-Received: by 2002:a17:902:e745:b0:151:5474:d3ed with SMTP id
- p5-20020a170902e74500b001515474d3edmr319937plf.106.1647448026684; Wed, 16 Mar
- 2022 09:27:06 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0li51S2j9zx6touwa3lalaBuNLB+ApBmTIWJmdTR4CI=;
+        b=YqexcZ0zvvhvDCFGzhaPwSKErTOwEux0rwnTYz7zsVCdFTa7Cwujj21214cX/F/K7a
+         hizvKEX9bqO+SHOITlCLSZ6+mkO4mCG8EpJ9bIMUjxCVANDEqA0Z9OWx8c6WjhJPC11C
+         ip+KXQhJ0YK5d6T2vp2YdxdkzPdTkTsp9XVdrfbVIglXr7TAkWrLsujNH7iq8KWOI8l/
+         nNrSiWmz4mdGuUNLGVxjsnTC8FP5jM77M3TdYzfzRwkgbc0I3yG3kor0jXrt3WO91A8l
+         SraiA+gQLVjhmCLAqo6BOduD3bhZ77OG12iGlR/mfNixXmFf/ByVTUPRRcq2R/e2Pl7t
+         xfFg==
+X-Gm-Message-State: AOAM531En/eHjasR3Idjaad1YWSFeVayT02XpHPmMsRJrnfzg4T4V+gk
+        Av1u+wzCCm0asi9pYag8BGo=
+X-Google-Smtp-Source: ABdhPJzEVxA0lPXRLR3lK6epsQ90ZVHK5W+GGO82avyXJSn6CEsL4VYY2Tdi1UmAoEVuQTAdoHvncw==
+X-Received: by 2002:a17:902:bcca:b0:153:88c7:a02 with SMTP id o10-20020a170902bcca00b0015388c70a02mr338759pls.112.1647448283647;
+        Wed, 16 Mar 2022 09:31:23 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id j23-20020a17090a841700b001c678ac3b4bsm81977pjn.14.2022.03.16.09.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Mar 2022 09:31:22 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 16 Mar 2022 06:31:21 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hao Luo <haoluo@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
+Message-ID: <YjIQ2c8CoMDDaUeT@slm.duckdns.org>
+References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
+ <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220304184040.1304781-1-shakeelb@google.com> <20220311160051.GA24796@blackbody.suse.cz>
- <20220312190715.cx4aznnzf6zdp7wv@google.com> <20220314125709.GA12347@blackbody.suse.cz>
-In-Reply-To: <20220314125709.GA12347@blackbody.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 16 Mar 2022 09:26:55 -0700
-Message-ID: <CALvZod4Mfcqt4DvYzSxSX=C9sVWfrMpva9rrMc91_DQ_jReXbA@mail.gmail.com>
-Subject: Re: [PATCH] memcg: sync flush only if periodic flush is delayed
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Frank Hofmann <fhofmann@cloudflare.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Dao <dqminh@cloudflare.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Mar 14, 2022 at 5:57 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> Hi 2.
->
-> On Sat, Mar 12, 2022 at 07:07:15PM +0000, Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > It is (b) that I am aiming for in this patch. At least (a) was not
-> > happening in the cloudflare experiments. Are you suggesting having a
-> > dedicated high priority wq would solve both (a) and (b)?
-> > [...]
-> > > We can't argue what's the effect of periodic only flushing so this
-> > > newly introduced factor would inherit that too. I find it superfluous=
-.
-> >
-> >
-> > Sorry I didn't get your point. What is superfluous?
->
-> Let me retell my understanding.
-> The current implementation flushes based on cumulated error and time.
-> Your patch proposes conditioning the former with another time-based
-> flushing, whose duration can be up to 2 times longer than the existing
-> periodic flush.
->
-> Assuming the periodic flush is working, the reader won't see data older
-> than 2 seconds, so the additional sync-flush after (possible) 4 seconds
-> seems superfluous.
->
-> (In the case of periodic flush being stuck, I thought the factor 2=3D4s/2=
-s
-> was superfluous, another magic parameter.)
->
-> I'm comparing here your proposal vs no synchronous flushing in
-> workingset_refault().
->
-> > Do you have any strong concerns with the currect patch?
->
-> Does that clarify?
->
-> (I agree with your initial thesis this can be iterated before it evolves
-> to everyone's satisfaction.)
->
+On Tue, Mar 15, 2022 at 11:04:56PM -0700, Song Liu wrote:
+> Lookups invoke a rstat flush, so we still walk every node of a subtree for
+> each lookup, no? So the actual cost should be similar than walking the
+> subtree with some BPF program? Did I miss something?
 
-Thanks Michal for the explanation. For the long term, I think all
-these batching can be made part of core rstat infrastructure and as
-generic as you have described. Also there is interest in using rstat
-from BPF, so generic batching would be needed there as well.
+rstat only walks cgroups / cpus which have been active since the flush.
+
+Thanks.
+
+-- 
+tejun
