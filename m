@@ -2,44 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C8A4DB965
-	for <lists+cgroups@lfdr.de>; Wed, 16 Mar 2022 21:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4AB4DBCA5
+	for <lists+cgroups@lfdr.de>; Thu, 17 Mar 2022 02:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351349AbiCPUcz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 16:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S1358345AbiCQBug (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Mar 2022 21:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351072AbiCPUcu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 16:32:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2617A53B76
-        for <cgroups@vger.kernel.org>; Wed, 16 Mar 2022 13:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=wrxNxBy8s6TDvnPVGvUvMddh1Mjgt2nIlkzhG/1ajBY=; b=ZX8nantX2NIUcvAbd5Hw8ZWFqL
-        oxU9CcdISZ8FFQlChGWUAzCnM8hpQ/TJyTnCheB5kxzIqbgV1loS2gECpHr4w+NKHda2JZAwIpyZR
-        FGzUqdC/Mqyt+PXYGAG9DgklZktI/IdB4D3PWnOnMMun77o9zAh0uMiJElg4WDj3ER3FbFdEHMfHV
-        BIRtkVAu847tsWJpPPX3MRF5MYpvBT+lxoGz9Y655mY63KTVsF/+HzMAMQspYh45jYdpaljIyLpCx
-        RAvmJfS82wackrgUFXcwrtrRK0jIxw8MefyHlyE4uRyZppsvZffMRNeskX9klk0wg/im14x2/+gQw
-        ehubXdHg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nUaIs-006MBu-1I; Wed, 16 Mar 2022 20:31:30 +0000
-Date:   Wed, 16 Mar 2022 20:31:30 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: [RFC] memcg: Convert mc_target.page to mc_target.folio
-Message-ID: <YjJJIrENYb1qFHzl@casper.infradead.org>
+        with ESMTP id S1348344AbiCQBug (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 21:50:36 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9313115A00;
+        Wed, 16 Mar 2022 18:49:20 -0700 (PDT)
+Received: from kwepemi100026.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KJqgl4t78zcb2M;
+        Thu, 17 Mar 2022 09:44:19 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100026.china.huawei.com (7.221.188.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 17 Mar 2022 09:49:18 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 17 Mar 2022 09:49:17 +0800
+Subject: Re: [PATCH -next 00/11] support concurrent sync io for bfq on a
+ specail occasion
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <jack@suse.cz>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220305091205.4188398-1-yukuai3@huawei.com>
+ <e299180e-cdbd-0837-8478-5e397ac8166b@huawei.com>
+Message-ID: <11fda851-a552-97ea-d083-d0288c17ba53@huawei.com>
+Date:   Thu, 17 Mar 2022 09:49:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <e299180e-cdbd-0837-8478-5e397ac8166b@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,399 +56,111 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This is a fairly mechanical change to convert mc_target.page to
-mc_target.folio.  This is a prerequisite for converting
-find_get_incore_page() to find_get_incore_folio().  But I'm not
-convinced it's right, and I'm not convinced the existing code is
-quite right either.
+friendly ping ...
 
-In particular, the code in hunk @@ -6036,28 +6041,26 @@ needs
-careful review.  There are also assumptions in here that a memory
-allocation is never larger than a PMD, which is true today, but I've
-been asked about larger allocations.
-
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ae66972a0331..a424df06b3e1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5461,42 +5461,44 @@ static int mem_cgroup_do_precharge(unsigned long count)
- }
- 
- union mc_target {
--	struct page	*page;
-+	struct folio	*folio;
- 	swp_entry_t	ent;
- };
- 
- enum mc_target_type {
- 	MC_TARGET_NONE = 0,
--	MC_TARGET_PAGE,
-+	MC_TARGET_FOLIO,
- 	MC_TARGET_SWAP,
- 	MC_TARGET_DEVICE,
- };
- 
--static struct page *mc_handle_present_pte(struct vm_area_struct *vma,
-+static struct folio *mc_handle_present_pte(struct vm_area_struct *vma,
- 						unsigned long addr, pte_t ptent)
- {
- 	struct page *page = vm_normal_page(vma, addr, ptent);
-+	struct folio *folio;
- 
- 	if (!page || !page_mapped(page))
- 		return NULL;
--	if (PageAnon(page)) {
-+	folio = page_folio(page);
-+	if (folio_test_anon(folio)) {
- 		if (!(mc.flags & MOVE_ANON))
- 			return NULL;
- 	} else {
- 		if (!(mc.flags & MOVE_FILE))
- 			return NULL;
- 	}
--	if (!get_page_unless_zero(page))
-+	if (!folio_try_get(folio))
- 		return NULL;
- 
--	return page;
-+	return folio;
- }
- 
- #if defined(CONFIG_SWAP) || defined(CONFIG_DEVICE_PRIVATE)
--static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
-+static struct folio *mc_handle_swap_pte(struct vm_area_struct *vma,
- 			pte_t ptent, swp_entry_t *entry)
- {
--	struct page *page = NULL;
-+	struct folio *folio;
- 	swp_entry_t ent = pte_to_swp_entry(ptent);
- 
- 	if (!(mc.flags & MOVE_ANON))
-@@ -5507,10 +5509,12 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
- 	 * stored as special swap entries in the page table.
- 	 */
- 	if (is_device_private_entry(ent)) {
--		page = pfn_swap_entry_to_page(ent);
--		if (!get_page_unless_zero(page))
-+		struct page *page = pfn_swap_entry_to_page(ent);
-+
-+		folio = page_folio(page);
-+		if (!folio_try_get(folio))
- 			return NULL;
--		return page;
-+		return folio;
- 	}
- 
- 	if (non_swap_entry(ent))
-@@ -5518,22 +5522,22 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
- 
- 	/*
- 	 * Because lookup_swap_cache() updates some statistics counter,
--	 * we call find_get_page() with swapper_space directly.
-+	 * we call filemap_get_folio() with swapper_space directly.
- 	 */
--	page = find_get_page(swap_address_space(ent), swp_offset(ent));
-+	folio = filemap_get_folio(swap_address_space(ent), swp_offset(ent));
- 	entry->val = ent.val;
- 
--	return page;
-+	return folio;
- }
- #else
--static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
-+static struct folio *mc_handle_swap_pte(struct vm_area_struct *vma,
- 			pte_t ptent, swp_entry_t *entry)
- {
- 	return NULL;
- }
- #endif
- 
--static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
-+static struct folio *mc_handle_file_pte(struct vm_area_struct *vma,
- 			unsigned long addr, pte_t ptent)
- {
- 	if (!vma->vm_file) /* anonymous vma */
-@@ -5543,28 +5547,28 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
- 
- 	/* page is moved even if it's not RSS of this task(page-faulted). */
- 	/* shmem/tmpfs may report page out on swap: account for that too. */
--	return find_get_incore_page(vma->vm_file->f_mapping,
--			linear_page_index(vma, addr));
-+	return page_folio(find_get_incore_page(vma->vm_file->f_mapping,
-+			linear_page_index(vma, addr)));
- }
- 
- /**
-- * mem_cgroup_move_account - move account of the page
-- * @page: the page
-- * @compound: charge the page as compound or small page
-- * @from: mem_cgroup which the page is moved from.
-- * @to:	mem_cgroup which the page is moved to. @from != @to.
-+ * mem_cgroup_move_account - move account of the folio
-+ * @folio: The folio.
-+ * @compound: Charge the folio as large or small.
-+ * @from: mem_cgroup which the folio is moved from.
-+ * @to:	mem_cgroup which the folio is moved to. @from != @to.
-  *
-- * The caller must make sure the page is not on LRU (isolate_page() is useful.)
-+ * The caller must make sure the folio is not on LRU (folio_isolate_lru()
-+ * is useful.)
-  *
-  * This function doesn't do "charge" to new cgroup and doesn't do "uncharge"
-  * from old cgroup.
-  */
--static int mem_cgroup_move_account(struct page *page,
-+static int mem_cgroup_move_account(struct folio *folio,
- 				   bool compound,
- 				   struct mem_cgroup *from,
- 				   struct mem_cgroup *to)
- {
--	struct folio *folio = page_folio(page);
- 	struct lruvec *from_vec, *to_vec;
- 	struct pglist_data *pgdat;
- 	unsigned int nr_pages = compound ? folio_nr_pages(folio) : 1;
-@@ -5576,7 +5580,7 @@ static int mem_cgroup_move_account(struct page *page,
- 
- 	/*
- 	 * Prevent mem_cgroup_migrate() from looking at
--	 * page's memory cgroup of its source page while we change it.
-+	 * folio's memory cgroup of its source folio while we change it.
- 	 */
- 	ret = -EBUSY;
- 	if (!folio_trylock(folio))
-@@ -5637,13 +5641,13 @@ static int mem_cgroup_move_account(struct page *page,
- 	/*
- 	 * All state has been migrated, let's switch to the new memcg.
- 	 *
--	 * It is safe to change page's memcg here because the page
-+	 * It is safe to change folio's memcg here because the folio
- 	 * is referenced, charged, isolated, and locked: we can't race
- 	 * with (un)charging, migration, LRU putback, or anything else
--	 * that would rely on a stable page's memory cgroup.
-+	 * that would rely on a stable folio's memory cgroup.
- 	 *
--	 * Note that lock_page_memcg is a memcg lock, not a page lock,
--	 * to save space. As soon as we switch page's memory cgroup to a
-+	 * Note that folio_memcg_lock is a memcg lock, not a folio lock,
-+	 * to save space. As soon as we switch folio's memory cgroup to a
- 	 * new memcg that isn't locked, the above state can change
- 	 * concurrently again. Make sure we're truly done with it.
- 	 */
-@@ -5676,21 +5680,21 @@ static int mem_cgroup_move_account(struct page *page,
-  * @vma: the vma the pte to be checked belongs
-  * @addr: the address corresponding to the pte to be checked
-  * @ptent: the pte to be checked
-- * @target: the pointer the target page or swap ent will be stored(can be NULL)
-+ * @target: the pointer the target folio or swap ent will be stored(can be NULL)
-  *
-  * Returns
-  *   0(MC_TARGET_NONE): if the pte is not a target for move charge.
-- *   1(MC_TARGET_PAGE): if the page corresponding to this pte is a target for
-- *     move charge. if @target is not NULL, the page is stored in target->page
-+ *   1(MC_TARGET_FOLIO): if the folio corresponding to this pte is a target for
-+ *     move charge. if @target is not NULL, the folio is stored in target->folio
-  *     with extra refcnt got(Callers should handle it).
-  *   2(MC_TARGET_SWAP): if the swap entry corresponding to this pte is a
-  *     target for charge migration. if @target is not NULL, the entry is stored
-  *     in target->ent.
-- *   3(MC_TARGET_DEVICE): like MC_TARGET_PAGE  but page is device memory and
-+ *   3(MC_TARGET_DEVICE): like MC_TARGET_FOLIO  but folio is device memory and
-  *   thus not on the lru.
-- *     For now we such page is charge like a regular page would be as for all
-+ *     For now such folio is chargd like a regular folio would be as for all
-  *     intent and purposes it is just special memory taking the place of a
-- *     regular page.
-+ *     regular folio.
-  *
-  *     See Documentations/vm/hmm.txt and include/linux/hmm.h
-  *
-@@ -5700,41 +5704,41 @@ static int mem_cgroup_move_account(struct page *page,
- static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
- 		unsigned long addr, pte_t ptent, union mc_target *target)
- {
--	struct page *page = NULL;
-+	struct folio *folio = NULL;
- 	enum mc_target_type ret = MC_TARGET_NONE;
- 	swp_entry_t ent = { .val = 0 };
- 
- 	if (pte_present(ptent))
--		page = mc_handle_present_pte(vma, addr, ptent);
-+		folio = mc_handle_present_pte(vma, addr, ptent);
- 	else if (is_swap_pte(ptent))
--		page = mc_handle_swap_pte(vma, ptent, &ent);
-+		folio = mc_handle_swap_pte(vma, ptent, &ent);
- 	else if (pte_none(ptent))
--		page = mc_handle_file_pte(vma, addr, ptent);
-+		folio = mc_handle_file_pte(vma, addr, ptent);
- 
--	if (!page && !ent.val)
-+	if (!folio && !ent.val)
- 		return ret;
--	if (page) {
-+	if (folio) {
- 		/*
- 		 * Do only loose check w/o serialization.
--		 * mem_cgroup_move_account() checks the page is valid or
-+		 * mem_cgroup_move_account() checks the folio is valid or
- 		 * not under LRU exclusion.
- 		 */
--		if (page_memcg(page) == mc.from) {
--			ret = MC_TARGET_PAGE;
--			if (is_device_private_page(page) ||
--			    is_device_coherent_page(page))
-+		if (folio_memcg(folio) == mc.from) {
-+			ret = MC_TARGET_FOLIO;
-+			if (folio_is_device_private(folio) ||
-+			    folio_is_device_coherent(folio))
- 				ret = MC_TARGET_DEVICE;
- 			if (target)
--				target->page = page;
-+				target->folio = folio;
- 		}
- 		if (!ret || !target)
--			put_page(page);
-+			folio_put(folio);
- 	}
- 	/*
--	 * There is a swap entry and a page doesn't exist or isn't charged.
-+	 * There is a swap entry and a folio doesn't exist or isn't charged.
- 	 * But we cannot move a tail-page in a THP.
- 	 */
--	if (ent.val && !ret && (!page || !PageTransCompound(page)) &&
-+	if (ent.val && !ret && (!folio || !folio_test_large(folio)) &&
- 	    mem_cgroup_id(mc.from) == lookup_swap_cgroup_id(ent)) {
- 		ret = MC_TARGET_SWAP;
- 		if (target)
-@@ -5745,14 +5749,14 @@ static enum mc_target_type get_mctgt_type(struct vm_area_struct *vma,
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- /*
-- * We don't consider PMD mapped swapping or file mapped pages because THP does
-+ * We don't consider PMD mapped swapping or file mapped folios because THP does
-  * not support them for now.
-  * Caller should make sure that pmd_trans_huge(pmd) is true.
-  */
- static enum mc_target_type get_mctgt_type_thp(struct vm_area_struct *vma,
- 		unsigned long addr, pmd_t pmd, union mc_target *target)
- {
--	struct page *page = NULL;
-+	struct folio *folio = NULL;
- 	enum mc_target_type ret = MC_TARGET_NONE;
- 
- 	if (unlikely(is_swap_pmd(pmd))) {
-@@ -5760,15 +5764,15 @@ static enum mc_target_type get_mctgt_type_thp(struct vm_area_struct *vma,
- 				  !is_pmd_migration_entry(pmd));
- 		return ret;
- 	}
--	page = pmd_page(pmd);
--	VM_BUG_ON_PAGE(!page || !PageHead(page), page);
-+	folio = page_folio(pmd_page(pmd));
-+	VM_BUG_ON_FOLIO(!folio || !folio_test_large(folio), folio);
- 	if (!(mc.flags & MOVE_ANON))
- 		return ret;
--	if (page_memcg(page) == mc.from) {
--		ret = MC_TARGET_PAGE;
-+	if (folio_memcg(folio) == mc.from) {
-+		ret = MC_TARGET_FOLIO;
- 		if (target) {
--			get_page(page);
--			target->page = page;
-+			folio_get(folio);
-+			target->folio = folio;
- 		}
- 	}
- 	return ret;
-@@ -5796,7 +5800,8 @@ static int mem_cgroup_count_precharge_pte_range(pmd_t *pmd,
- 		 * support transparent huge page with MEMORY_DEVICE_PRIVATE but
- 		 * this might change.
- 		 */
--		if (get_mctgt_type_thp(vma, addr, *pmd, NULL) == MC_TARGET_PAGE)
-+		if (get_mctgt_type_thp(vma, addr, *pmd, NULL) ==
-+				MC_TARGET_FOLIO)
- 			mc.precharge += HPAGE_PMD_NR;
- 		spin_unlock(ptl);
- 		return 0;
-@@ -5987,7 +5992,7 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
- 	spinlock_t *ptl;
- 	enum mc_target_type target_type;
- 	union mc_target target;
--	struct page *page;
-+	struct folio *folio;
- 
- 	ptl = pmd_trans_huge_lock(pmd, vma);
- 	if (ptl) {
-@@ -5996,25 +6001,25 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
- 			return 0;
- 		}
- 		target_type = get_mctgt_type_thp(vma, addr, *pmd, &target);
--		if (target_type == MC_TARGET_PAGE) {
--			page = target.page;
--			if (!isolate_lru_page(page)) {
--				if (!mem_cgroup_move_account(page, true,
-+		if (target_type == MC_TARGET_FOLIO) {
-+			folio = target.folio;
-+			if (!folio_isolate_lru(folio)) {
-+				if (!mem_cgroup_move_account(folio, true,
- 							     mc.from, mc.to)) {
- 					mc.precharge -= HPAGE_PMD_NR;
- 					mc.moved_charge += HPAGE_PMD_NR;
- 				}
--				putback_lru_page(page);
-+				folio_putback_lru(folio);
- 			}
--			put_page(page);
-+			folio_put(folio);
- 		} else if (target_type == MC_TARGET_DEVICE) {
--			page = target.page;
--			if (!mem_cgroup_move_account(page, true,
-+			folio = target.folio;
-+			if (!mem_cgroup_move_account(folio, true,
- 						     mc.from, mc.to)) {
- 				mc.precharge -= HPAGE_PMD_NR;
- 				mc.moved_charge += HPAGE_PMD_NR;
- 			}
--			put_page(page);
-+			folio_put(folio);
- 		}
- 		spin_unlock(ptl);
- 		return 0;
-@@ -6036,28 +6041,26 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
- 		case MC_TARGET_DEVICE:
- 			device = true;
- 			fallthrough;
--		case MC_TARGET_PAGE:
--			page = target.page;
-+		case MC_TARGET_FOLIO:
-+			folio = target.folio;
- 			/*
--			 * We can have a part of the split pmd here. Moving it
--			 * can be done but it would be too convoluted so simply
--			 * ignore such a partial THP and keep it in original
--			 * memcg. There should be somebody mapping the head.
-+			 * Is bailing out here with a large folio still the
-+			 * right thing to do?  Unclear.
- 			 */
--			if (PageTransCompound(page))
-+			if (folio_test_large(folio))
- 				goto put;
--			if (!device && isolate_lru_page(page))
-+			if (!device && folio_isolate_lru(folio))
- 				goto put;
--			if (!mem_cgroup_move_account(page, false,
-+			if (!mem_cgroup_move_account(folio, false,
- 						mc.from, mc.to)) {
- 				mc.precharge--;
- 				/* we uncharge from mc.from later. */
- 				mc.moved_charge++;
- 			}
- 			if (!device)
--				putback_lru_page(page);
--put:			/* get_mctgt_type() gets the page */
--			put_page(page);
-+				folio_putback_lru(folio);
-+put:			/* get_mctgt_type() gets the folio */
-+			folio_put(folio);
- 			break;
- 		case MC_TARGET_SWAP:
- 			ent = target.ent;
+在 2022/03/11 14:31, yukuai (C) 写道:
+> friendly ping ...
+> 
+> 在 2022/03/05 17:11, Yu Kuai 写道:
+>> Currently, bfq can't handle sync io concurrently as long as they
+>> are not issued from root group. This is because
+>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+>> bfq_asymmetric_scenario().
+>>
+>> This patchset tries to support concurrent sync io if all the sync ios
+>> are issued from the same cgroup:
+>>
+>> 1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
+>>
+>> 2) Don't idle if 'num_groups_with_pending_reqs' is 1, patch 6;
+>>
+>> 3) Don't count the group if the group doesn't have pending requests,
+>> while it's child groups may have pending requests, patch 7;
+>>
+>> This is because, for example:
+>> if sync ios are issued from cgroup /root/c1/c2, root, c1 and c2
+>> will all be counted into 'num_groups_with_pending_reqs',
+>> which makes it impossible to handle sync ios concurrently.
+>>
+>> 4) Decrease 'num_groups_with_pending_reqs' when the last queue completes
+>> all the requests, while child groups may still have pending
+>> requests, patch 8-10;
+>>
+>> This is because, for example:
+>> t1 issue sync io on root group, t2 and t3 issue sync io on the same
+>> child group. num_groups_with_pending_reqs is 2 now.
+>> After t1 stopped, num_groups_with_pending_reqs is still 2. sync io from
+>> t2 and t3 still can't be handled concurrently.
+>>
+>> fio test script: startdelay is used to avoid queue merging
+>> [global]
+>> filename=/dev/nvme0n1
+>> allow_mounted_write=0
+>> ioengine=psync
+>> direct=1
+>> ioscheduler=bfq
+>> offset_increment=10g
+>> group_reporting
+>> rw=randwrite
+>> bs=4k
+>>
+>> [test1]
+>> numjobs=1
+>>
+>> [test2]
+>> startdelay=1
+>> numjobs=1
+>>
+>> [test3]
+>> startdelay=2
+>> numjobs=1
+>>
+>> [test4]
+>> startdelay=3
+>> numjobs=1
+>>
+>> [test5]
+>> startdelay=4
+>> numjobs=1
+>>
+>> [test6]
+>> startdelay=5
+>> numjobs=1
+>>
+>> [test7]
+>> startdelay=6
+>> numjobs=1
+>>
+>> [test8]
+>> startdelay=7
+>> numjobs=1
+>>
+>> test result:
+>> running fio on root cgroup
+>> v5.17-rc6:       550 Mib/s
+>> v5.17-rc6-patched: 550 Mib/s
+>>
+>> running fio on non-root cgroup
+>> v5.17-rc6:       349 Mib/s
+>> v5.17-rc6-patched: 550 Mib/s
+>>
+>> Yu Kuai (11):
+>>    block, bfq: add new apis to iterate bfq entities
+>>    block, bfq: apply news apis where root group is not expected
+>>    block, bfq: cleanup for __bfq_activate_requeue_entity()
+>>    block, bfq: move the increasement of 'num_groups_with_pending_reqs' to
+>>      it's caller
+>>    block, bfq: count root group into 'num_groups_with_pending_reqs'
+>>    block, bfq: do not idle if only one cgroup is activated
+>>    block, bfq: only count parent bfqg when bfqq is activated
+>>    block, bfq: record how many queues have pending requests in bfq_group
+>>    block, bfq: move forward __bfq_weights_tree_remove()
+>>    block, bfq: decrease 'num_groups_with_pending_reqs' earlier
+>>    block, bfq: cleanup bfqq_group()
+>>
+>>   block/bfq-cgroup.c  | 13 +++----
+>>   block/bfq-iosched.c | 87 +++++++++++++++++++++++----------------------
+>>   block/bfq-iosched.h | 41 +++++++++++++--------
+>>   block/bfq-wf2q.c    | 56 +++++++++++++++--------------
+>>   4 files changed, 106 insertions(+), 91 deletions(-)
+>>
