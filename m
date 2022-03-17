@@ -2,165 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4AB4DBCA5
-	for <lists+cgroups@lfdr.de>; Thu, 17 Mar 2022 02:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA514DC2B2
+	for <lists+cgroups@lfdr.de>; Thu, 17 Mar 2022 10:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358345AbiCQBug (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Mar 2022 21:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        id S229837AbiCQJbj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Mar 2022 05:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348344AbiCQBug (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Mar 2022 21:50:36 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9313115A00;
-        Wed, 16 Mar 2022 18:49:20 -0700 (PDT)
-Received: from kwepemi100026.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KJqgl4t78zcb2M;
-        Thu, 17 Mar 2022 09:44:19 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100026.china.huawei.com (7.221.188.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 17 Mar 2022 09:49:18 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 17 Mar 2022 09:49:17 +0800
-Subject: Re: [PATCH -next 00/11] support concurrent sync io for bfq on a
- specail occasion
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
-        <jack@suse.cz>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20220305091205.4188398-1-yukuai3@huawei.com>
- <e299180e-cdbd-0837-8478-5e397ac8166b@huawei.com>
-Message-ID: <11fda851-a552-97ea-d083-d0288c17ba53@huawei.com>
-Date:   Thu, 17 Mar 2022 09:49:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S229557AbiCQJbi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Mar 2022 05:31:38 -0400
+Received: from weald.air.saab.se (weald.air.saab.se [136.163.212.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E131D4C18
+        for <cgroups@vger.kernel.org>; Thu, 17 Mar 2022 02:30:20 -0700 (PDT)
+Received: from mailhub1.air.saab.se ([136.163.213.4])
+        by weald.air.saab.se (8.14.7/8.14.7) with ESMTP id 22H9UAHZ073375
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Mar 2022 10:30:10 +0100
+DKIM-Filter: OpenDKIM Filter v2.11.0 weald.air.saab.se 22H9UAHZ073375
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=saabgroup.com;
+        s=weald; t=1647509411;
+        bh=b6FqKrBh6NuQz0yvGHKXPjeDUeXTkFJrPXcooHJHzV4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=o6fXvX9Q0tncD/kN53hCHF4dU0FVKcL60NwupF1CCQ4PHXHkgT9sAhd4yjrxBOMIS
+         F2Krn57chEGI77kPFaanrLUtBHlHjMIcmVOzypWKOyV+xohsewJ+MjVN/bYp09w6eA
+         YzsqGugrhrBus9ylMNG3Er4YAxBtCBUH5N8nYg+Y=
+Received: from corpappl17780.corp.saab.se (corpappl17780.corp.saab.se [10.12.196.87])
+        by mailhub1.air.saab.se (8.15.2/8.15.2) with ESMTPS id 22H9U5tk738279
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Mar 2022 10:30:05 +0100
+Received: from corpappl17781.corp.saab.se (10.12.196.88) by
+ corpappl17780.corp.saab.se (10.12.196.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.15; Thu, 17 Mar 2022 10:30:09 +0100
+Received: from corpappl17781.corp.saab.se ([fe80::988b:c853:94fe:90aa]) by
+ corpappl17781.corp.saab.se ([fe80::988b:c853:94fe:90aa%5]) with mapi id
+ 15.02.0986.015; Thu, 17 Mar 2022 10:30:09 +0100
+From:   Olsson John <john.olsson@saabgroup.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: Split process across multiple schedulers?
+Thread-Topic: [EXTERNAL] Re: Split process across multiple schedulers?
+Thread-Index: Adg3spIZ/DvaypfiTgy8SrH+fLuE4ABmU+gAAAIfiuD///4eAP/+/g1g
+Date:   Thu, 17 Mar 2022 09:30:09 +0000
+Message-ID: <943440a04e4c4731a3e9e6a7b1259251@saabgroup.com>
+References: <b5039be462e8492085b6638df2a761ca@saabgroup.com>
+ <YjIShE3mwRyNbO53@slm.duckdns.org>
+ <e9cac4aba6384c5c91125a9f7d61a4e8@saabgroup.com>
+ <YjIfMLG5W2a/E4vX@slm.duckdns.org>
+In-Reply-To: <YjIfMLG5W2a/E4vX@slm.duckdns.org>
+Accept-Language: sv-SE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [136.163.101.124]
+x-tm-as-product-ver: SMEX-14.0.0.3092-8.6.1018-26776.006
+x-tm-as-result: No-10--5.818500-5.000000
+x-tmase-matchedrid: C/snMIRQLS3K19rKCr/Ovgrcxrzwsv5uXPK9y3z82GvRguFbDyQ6QWsV
+        Mgb+0+QTgP2p92ehQtCGKomsRGtEOhPcKKDHsPAh9Ib/6w+1lWTm1vUHDy7uwnLylM8ptjw6nUL
+        NgN42j5Naf/8Uw5sGwoACHEwi7FEl4LNHCv9qbsnuW/BrYJGl/Wo8zUxTJUAjbkvAJoOQ99mNpx
+        yS486Sbkp8EzfxzhxRWrBuOGs7/XkR88BdwfqweMEocegS/lMoQR7lWMXPA1vW2YYHslT0Iybwn
+        d9CSevUimyY0YAT/KkDcb80+9h4A7pl0W1gY0BsR+GtoiXVeDHdvovMm13clX5M9ijZ/f3P4xu5
+        XN3Jhhp4bs5UaN05yiodkxNr5EpEP0DBdQeKlX1Fl9A34VWpsJOOVzRd/XVO76/5TqQm4wZT4Io
+        3XrOy8qlzGYww69iWXWoRJ9YU/XC2WO4olsVFvcOC5QFrchIlsDya1Zprd+VBFlBT0/hxjaPFjJ
+        EFr+olSXhbxZVQ5H+OhzOa6g8KrebFxDsuQ4gzb5wW11BYaZZoE3fxTWtLZL3CMPT7ZaQUKvMD1
+        +6EpNxDDKa3G4nrLQ==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--5.818500-5.000000
+x-tmase-version: SMEX-14.0.0.3092-8.6.1018-26776.006
+x-tm-snts-smtp: BB7525F51FD061C1B82152DE4CB7E9505311383CD785C1D6D52B103B250B065A2002:B
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <e299180e-cdbd-0837-8478-5e397ac8166b@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-friendly ping ...
+> Yeah, mostly curious from cgroup design POV. It'd be nice to support
+> use cases like this well but we likely don't wanna twist anything
+> for it.
 
-在 2022/03/11 14:31, yukuai (C) 写道:
-> friendly ping ...
-> 
-> 在 2022/03/05 17:11, Yu Kuai 写道:
->> Currently, bfq can't handle sync io concurrently as long as they
->> are not issued from root group. This is because
->> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->> bfq_asymmetric_scenario().
->>
->> This patchset tries to support concurrent sync io if all the sync ios
->> are issued from the same cgroup:
->>
->> 1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
->>
->> 2) Don't idle if 'num_groups_with_pending_reqs' is 1, patch 6;
->>
->> 3) Don't count the group if the group doesn't have pending requests,
->> while it's child groups may have pending requests, patch 7;
->>
->> This is because, for example:
->> if sync ios are issued from cgroup /root/c1/c2, root, c1 and c2
->> will all be counted into 'num_groups_with_pending_reqs',
->> which makes it impossible to handle sync ios concurrently.
->>
->> 4) Decrease 'num_groups_with_pending_reqs' when the last queue completes
->> all the requests, while child groups may still have pending
->> requests, patch 8-10;
->>
->> This is because, for example:
->> t1 issue sync io on root group, t2 and t3 issue sync io on the same
->> child group. num_groups_with_pending_reqs is 2 now.
->> After t1 stopped, num_groups_with_pending_reqs is still 2. sync io from
->> t2 and t3 still can't be handled concurrently.
->>
->> fio test script: startdelay is used to avoid queue merging
->> [global]
->> filename=/dev/nvme0n1
->> allow_mounted_write=0
->> ioengine=psync
->> direct=1
->> ioscheduler=bfq
->> offset_increment=10g
->> group_reporting
->> rw=randwrite
->> bs=4k
->>
->> [test1]
->> numjobs=1
->>
->> [test2]
->> startdelay=1
->> numjobs=1
->>
->> [test3]
->> startdelay=2
->> numjobs=1
->>
->> [test4]
->> startdelay=3
->> numjobs=1
->>
->> [test5]
->> startdelay=4
->> numjobs=1
->>
->> [test6]
->> startdelay=5
->> numjobs=1
->>
->> [test7]
->> startdelay=6
->> numjobs=1
->>
->> [test8]
->> startdelay=7
->> numjobs=1
->>
->> test result:
->> running fio on root cgroup
->> v5.17-rc6:       550 Mib/s
->> v5.17-rc6-patched: 550 Mib/s
->>
->> running fio on non-root cgroup
->> v5.17-rc6:       349 Mib/s
->> v5.17-rc6-patched: 550 Mib/s
->>
->> Yu Kuai (11):
->>    block, bfq: add new apis to iterate bfq entities
->>    block, bfq: apply news apis where root group is not expected
->>    block, bfq: cleanup for __bfq_activate_requeue_entity()
->>    block, bfq: move the increasement of 'num_groups_with_pending_reqs' to
->>      it's caller
->>    block, bfq: count root group into 'num_groups_with_pending_reqs'
->>    block, bfq: do not idle if only one cgroup is activated
->>    block, bfq: only count parent bfqg when bfqq is activated
->>    block, bfq: record how many queues have pending requests in bfq_group
->>    block, bfq: move forward __bfq_weights_tree_remove()
->>    block, bfq: decrease 'num_groups_with_pending_reqs' earlier
->>    block, bfq: cleanup bfqq_group()
->>
->>   block/bfq-cgroup.c  | 13 +++----
->>   block/bfq-iosched.c | 87 +++++++++++++++++++++++----------------------
->>   block/bfq-iosched.h | 41 +++++++++++++--------
->>   block/bfq-wf2q.c    | 56 +++++++++++++++--------------
->>   4 files changed, 106 insertions(+), 91 deletions(-)
->>
+Ok. I'll give you some more details. :)
+
+The building block we are discussing here (running a VM where VMM and
+virtual core threads are scheduled using different schedulers and thus
+effectively on different cores) is a building block in a larger
+context. The use cases I have provided so far are still valid and
+needed.
+
+What you run in the VM is the OS plus application of some embedded
+multicore system where the target hardware is way less competent than
+what you are running the VM on. It will most likely even be using a
+different CPU architecture so you cross compile to for instance x86.
+
+Now put this building block in a simulator where other parts of the
+larger system are connected to this VM. This simulator is used to
+train persons who operate the real system and it is important it's
+behavior closely mimics the actual real system. For instance response
+times from the embedded system may not be too fast nor to too slow.
+
+
+> Yeah, deligation can be useful. However, given that the
+> configuration would need some automation / scripting anyway, it
+> shouldn't be too difficult to work around.
+
+Think of it like this. IT department installs the OS of the Host and
+sets up cgroup node where a user group controls access to a
+subtree. Developers belonging to this group are then allowed to
+configure cgroup using abstract names for the nodes in the tree. The
+software running on the server uses these abstract names and does not
+need to know how they are configured. This means that when the
+software is deployed in a different setting where you want another
+behavior you just need to reconfigure the cgroup without needing to
+recompile the software. And by relying on cgroups you also get less
+source code to maintain (and that you might get wrong).
+
+
+> The thing is, to put different threads of a process into different
+> cgroups, one has to know which threads are doing what, which is the
+> same knowledge needed to configure per-thread attributes.
+
+Well, you might also have generic rules like for VM named "foo" you
+put the VMM thread in "foo-vmm" and virtual core threads in
+"foo-vct01" through "foo-vctnn". The actual mapping of these cgroups
+to physical cores might differ from server to server. And you might
+also select different schedulers and so on depending on server
+configuration and the intention with the software installation. For
+instance CI-loops that run batches where real-time behavior (matching
+elapsed wall clock time in the simulation to actual system) is not
+that important and you can fast-forward the simulation as you are
+interested in functional tests and so on. This mean that the actual
+software does not need to worry about such things.
+
+
+/John
+
