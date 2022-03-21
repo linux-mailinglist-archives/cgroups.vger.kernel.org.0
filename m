@@ -2,70 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766B84E3357
-	for <lists+cgroups@lfdr.de>; Mon, 21 Mar 2022 23:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4004D4E3524
+	for <lists+cgroups@lfdr.de>; Tue, 22 Mar 2022 01:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbiCUWy2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Mar 2022 18:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
+        id S233601AbiCUX6W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Mar 2022 19:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbiCUWyT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 18:54:19 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A137380F70;
-        Mon, 21 Mar 2022 15:33:00 -0700 (PDT)
-Date:   Mon, 21 Mar 2022 15:32:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1647901979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4OY/H+zb0RIXu5WxaVqPmTsIU0BzpBHr2Aoo03K23OQ=;
-        b=lWfBFFlwAImoY6uLwKWFs0S0tB3p39fYyxokhIeIaZPj4jja16BD+f2jryUMXCpvSoQH58
-        KeNgR9rDqZZ733hMRZ75cM3upum9/Xboyi1T1hrsp4FdNCyEUqd/OOG+FlIywmGiFjuF4e
-        0dwiI5FqWUCpfqADo77fjlQiIREimSI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        Shuah Khan <shuah@kernel.org>, Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 4/5] mm: truncate: split huge page cache page to a
- non-zero order if possible.
-Message-ID: <Yjj9FaoChB3u0Gbh@carbon.dhcp.thefacebook.com>
-References: <20220321142128.2471199-1-zi.yan@sent.com>
- <20220321142128.2471199-5-zi.yan@sent.com>
+        with ESMTP id S233600AbiCUX5x (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 19:57:53 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B00281683
+        for <cgroups@vger.kernel.org>; Mon, 21 Mar 2022 16:55:00 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qa43so32869917ejc.12
+        for <cgroups@vger.kernel.org>; Mon, 21 Mar 2022 16:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qiaO27WzdyEkhPCgtVcKJYNpZr9WKp2+zwnsf/1VvSc=;
+        b=Ri8yuR7/Vfc3fPL9gQLx7nlC2w5WarFCPritcrnsHpSsxuLwI5G3Voo8JeXcgyszLb
+         +2uoYc1aMEeZckMfuvJ2tS1RQ4sV4x2bEw3/t6bZI8mymUrBIyCvE8fdVOZNpVekttmd
+         gL3/aF9rUmS8p0UDTQfskhyx+I2egHowIc+sQ/N03tFWDWkkas9yz9J6z6/pRbfJotOJ
+         Hya7yMo0Sw59opqFkSYTZhc7F9NiPgJ8uwx1p8C0nJ00wLf8jKvLHqjCFphRAZgfpYi+
+         VVSQCs5iHmIrTMa+g/VlfDJHcUV27McnejGmfZoaaKiH2IvdAJP5kg+Lda21FYCK3UME
+         MrGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qiaO27WzdyEkhPCgtVcKJYNpZr9WKp2+zwnsf/1VvSc=;
+        b=kw/L4HhlFuI8yCMPEB0DRhsgepZ1xA82gcZDLMhUF2VApmZm2rW/nlPF+fZnPvQw/6
+         T0A7nfAPJivqw8gUlA+K2xj1C6KJPcF6gxTwOgl9T8Aie2cN64uiyNtljArMJ3JBehjJ
+         /uailQUe1Won/G974Wmdys6LWErx+9wusxfB71BNf5N51NpE0juToZQ5u510fXbvcrYi
+         cQFILvrH3iDYFYIrHoWx29HfY1DxoyAvTf+uf6YP79/PriGOa9jeKmjyMrS5FL1H9fAz
+         7k48kE/53/dHsADDcPSCRFO9Z5nsQ88ZDOlIByUXp13M4hUfuGTYuhpko+jBCYRCLiGM
+         U8xg==
+X-Gm-Message-State: AOAM533CrkJcwWRW8Hqo9dujhq1NMas5uj4LxWcIyGtby6quBze7U9HH
+        XsMFJfwB61SypZFKyG96sfuo4Pjhq8GIc6AEWhisfg==
+X-Google-Smtp-Source: ABdhPJwljarBa64DW7LUA/1wDxvFxLHgPtNYizJ4BJSCb3j/73bGTaegZtVwv4hXKy5Ey64Opp4zZ4UPfFj0Fl96E/A=
+X-Received: by 2002:a17:907:3eaa:b0:6df:b058:96a with SMTP id
+ hs42-20020a1709073eaa00b006dfb058096amr18101556ejc.368.1647906877844; Mon, 21
+ Mar 2022 16:54:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220321142128.2471199-5-zi.yan@sent.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220309165222.2843651-1-tjmercier@google.com>
+ <20220309165222.2843651-6-tjmercier@google.com> <20220321174530.GB9640@blackbody.suse.cz>
+In-Reply-To: <20220321174530.GB9640@blackbody.suse.cz>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Mon, 21 Mar 2022 16:54:26 -0700
+Message-ID: <CABdmKX3+mTjxWzgrv44SKWT7mdGnQKMrv6c26d=iWdNPG7f1VQ@mail.gmail.com>
+Subject: Re: [RFC v3 5/8] dmabuf: Add gpu cgroup charge transfer function
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Mar 21, 2022 at 10:21:27AM -0400, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> To minimize the number of pages after a huge page truncation, we do not
-> need to split it all the way down to order-0. The huge page has at most
-> three parts, the part before offset, the part to be truncated, the part
-> remaining at the end. Find the greatest common power of two multiplier of
-> the non-zero values of them as the new order, so we can split the huge
-> page to this order and keep the remaining pages as large and as few as
-> possible.
+On Mon, Mar 21, 2022 at 10:45 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
+>
+> Hello.
+>
+> On Wed, Mar 09, 2022 at 04:52:15PM +0000, "T.J. Mercier" <tjmercier@googl=
+e.com> wrote:
+> > +int dma_buf_charge_transfer(struct dma_buf *dmabuf, struct gpucg *gpuc=
+g)
+> > +{
+> > +#ifdef CONFIG_CGROUP_GPU
+> > +     struct gpucg *current_gpucg;
+> > +     int ret =3D 0;
+> > +
+> > +     /*
+> > +      * Verify that the cgroup of the process requesting the transfer =
+is the
+> > +      * same as the one the buffer is currently charged to.
+> > +      */
+> > +     current_gpucg =3D gpucg_get(current);
+> > +     mutex_lock(&dmabuf->lock);
+> > +     if (current_gpucg !=3D dmabuf->gpucg) {
+> > +             ret =3D -EPERM;
+> > +             goto err;
+> > +     }
+>
+> Add a shortcut for gpucg =3D=3D current_gpucg?
 
-Would you mind please to describe the algorithm in more details?
+Good idea, thank you!
+
+>
+> > +
+> > +     ret =3D gpucg_try_charge(gpucg, dmabuf->gpucg_dev, dmabuf->size);
+> > +     if (ret)
+> > +             goto err;
+> > +
+> > +     dmabuf->gpucg =3D gpucg;
+> > +
+> > +     /* uncharge the buffer from the cgroup it's currently charged to.=
+ */
+> > +     gpucg_uncharge(current_gpucg, dmabuf->gpucg_dev, dmabuf->size);
+>
+> I think gpucg_* API would need to cater for such transfers too since
+> possibly transitional breach of a limit during the transfer may
+> unnecessarily fail the operation.
+
+Since the charge is duplicated in two cgroups for a short period
+before it is uncharged from the source cgroup I guess the situation
+you're thinking about is a global (or common ancestor) limit? I can
+see how that would be a problem for transfers done this way and an
+alternative would be to swap the order of the charge operations: first
+uncharge, then try_charge. To be certain the uncharge is reversible if
+the try_charge fails, I think I'd need either a mutex used at all
+gpucg_*charge call sites or access to the gpucg_mutex, which implies
+adding transfer support to gpu.c as part of the gpucg_* API itself and
+calling it here. Am I following correctly here?
+
+This series doesn't actually add limit support just accounting, but
+I'd like to get it right here.
+
+>
+> My 0.02=E2=82=AC,
+> Michal
 
 Thanks!
