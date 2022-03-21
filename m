@@ -2,119 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 589344E31BC
-	for <lists+cgroups@lfdr.de>; Mon, 21 Mar 2022 21:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF70C4E32E4
+	for <lists+cgroups@lfdr.de>; Mon, 21 Mar 2022 23:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349006AbiCUU21 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Mar 2022 16:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        id S229487AbiCUWrG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Mar 2022 18:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344532AbiCUU20 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 16:28:26 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4406F165BB8;
-        Mon, 21 Mar 2022 13:27:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gZbO0KdhBiORkhiif0BsALcp9sgyuD+KeZa9N38C1tR1Ot7cZcDsR9dC/UcNM5hq3DayL2RTi5W9AIqrZfLkXtDlxenGJQtggQxdKiGS2vFd4VfvzwMmWXk+8jaaSRFi3j5KHqnNEI5Sr/kCGKHa04pktENxuU252WRJPne4GuuCUZfKsCal7Flg+UoGXvHAcx2j3C3tGMQlD0/1wn55yfT6bEQ83IoscRAmpaflVxCvJkuugL5s8n5rYvZno7bDgpdVj0/x7Ptf+5Uq9E60SOTzSXvN1bCecrCPvzNPxMUMQBQhtaYntNb6lKWWJjRSeMci5Ke0PcHL/dvc1IuWlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sFbAVOgB5L3qOPG9VdCAPxzY821z39LgMQbDCE9M8Vo=;
- b=OUg0iO/X+cTz1etgFk3FkL284IZp2MmSPIrokeTItQXghEWV08gI9zYUMqUuwsvrH4afx/2NXonAzhn/TlgpE1y2xzSJ8S522QJy+f3nt48Idj6d3zsSZ87s79i/79AoCIBkCkqIwzEgPGWa0DLeLsjZzQJBmZCcuq5pUXYRAvG8s749twKmvqnev4MlZGAefOAyGCMAWCmbKcuE+sbUZB3KKdxG0FbnlTQp//7DiZvEGpU8ZeWlagZvTD0qnwu8CG6DjILuhJ11+dvQiD4D6WNtWpCpgoIDR/iHWpoCPQf5Gk5d/AaIu5ThmELIpJPEdW9zU+uDD0jvYSrIfgZgHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sFbAVOgB5L3qOPG9VdCAPxzY821z39LgMQbDCE9M8Vo=;
- b=O6BRFysnBo22kJOzG33391zJ3P1+7YUzmBUm9pGfnxJ3h+B9z6RFZnCumP+C/LhgfIiHcrVtbV/g6MDeT1+QxLar/5P7r2yeIM/zi03WlTqlaTt+SZ1gLHfeOPVlIVGiCu+APv31PUyN3bmoX2vyXjWOdQkvw7rGcBRGQuS6t05ziwk5mP8ROLChnXjwAv0ivBx7seP6w3DZjEvvJpj6BbZvQrWFZbu+P2XNlzSAGuXGrziMLP+B4fC3YG2TpR7I6pkNKkFwE7Ez3tUug0wprFUlFOvCp7MGsKosZ9MRXVKTt92qXBpJfvr7MlNV1JycStcHoOv0YXMb9rmUarfuNg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by MWHPR12MB1504.namprd12.prod.outlook.com (2603:10b6:301:c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.14; Mon, 21 Mar
- 2022 20:26:57 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::40a6:6e1d:b057:a036]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::40a6:6e1d:b057:a036%6]) with mapi id 15.20.5081.023; Mon, 21 Mar 2022
- 20:26:57 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        with ESMTP id S229461AbiCUWqy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 18:46:54 -0400
+X-Greylist: delayed 12509 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Mar 2022 15:25:49 PDT
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4A73997D2;
+        Mon, 21 Mar 2022 15:25:49 -0700 (PDT)
+Date:   Mon, 21 Mar 2022 15:18:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1647901086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kU2x6mfxHzd6oubiXMPH3ZgCSjbnudyOXlm9XSlrpLM=;
+        b=q9fAZ1jelJXKmSIUHYreNIYyOIgRUWEHYCOoJks6gKZ/rK6ys/DA1Z3pIsq0JybH2/qWEl
+        Hd+fLeYrj5aD28WaSFkNAKcb/IY1B/KhjN+wK+uOy5DpsJIDyKXyxzX2qmnF92mvp1dUs/
+        5LSgYePfnBr066kks/l/Oimb4uVMhy8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
         Shuah Khan <shuah@kernel.org>, Yang Shi <shy828301@gmail.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Hugh Dickins <hughd@google.com>,
         "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] mm: memcg: make memcg huge page split support any order split.
-Date:   Mon, 21 Mar 2022 16:26:55 -0400
-X-Mailer: MailMate (1.14r5870)
-Message-ID: <2FBD6D12-EDBE-4061-8738-E5E333F2367C@nvidia.com>
-In-Reply-To: <YjjX/bZrUmQfFjHC@casper.infradead.org>
+Subject: Re: [RFC PATCH 3/5] mm: thp: split huge page to any lower order
+ pages.
+Message-ID: <Yjj5mADYABiZSxGB@carbon.dhcp.thefacebook.com>
 References: <20220321142128.2471199-1-zi.yan@sent.com>
- <20220321142128.2471199-2-zi.yan@sent.com>
- <YjjKh2NoWGcq28Oo@carbon.dhcp.thefacebook.com>
- <0001CABA-9436-4EFF-9C7F-F67300D09DA1@nvidia.com>
- <YjjX/bZrUmQfFjHC@casper.infradead.org>
-Content-Type: multipart/signed;
- boundary="=_MailMate_2F541385-50E7-4360-9312-72AE9C63E581_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1PR13CA0314.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::19) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+ <20220321142128.2471199-4-zi.yan@sent.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f5b324fe-a083-41ef-4a46-08da0b79256d
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1504:EE_
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1504BEB793E325E97F490560C2169@MWHPR12MB1504.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JdGMmIWHqJ6ypqNeOOMf8yIJYGLTe5M0tHoPXicXWhe/cBYDAHjc5IpTTmnkvWT6Iym9kT8oaWEt8O2jB2vDnHEsdF4OTVDaxqNDTh/LTkIKpYnXcu+Cff4JWzlPnOCQv3kQNKSF8L/4jaaw/JV7+wiT0zxRqncVfacAA7JzDmgcwuVu3gRhY/YenYt1OBUH6spkXm+ZFQHmw6PBJ0MH+xjpZhswD5SXXGsFjbPEtbCGr7o0S2WBzu7WdFdjyI9nZbwBulLkW9j1HupOT330ArswawzlcMzu+Wy0gSDZUK4/sczDlzLyITIyBta0UOa3lcBX3jWz1ipZrQVZDiLcHRH/0GtM4vxthuqSYrFZZwdryyGG+QkNQ5MuIsvteUcPcGmUFXpInookKqy10A3ZnhHzGgVgWKpdxCjAZj2RN9tsH1NvD71MrTcB4salIzQsEwBwQ1vXvqgxxs22njzOFvF2MP0ozokIxnIWIsVMMAi/VLSMC70C0NYRDOSijpt+TI/k80n+v6Em2Lc74/TTB0mOjsqV1rtCv0F2VAoi7G6Ui86nZAwi4fmaRHhjDoasyC6RidIFOlEkLIhsmTIvlwPn9wc/y/Qeg61FAKmbISxznkqtSnTQIBPU4z08xhxsHBi6DGuOcmvfMBchF5x6si2+Wvie81hCHWqaaT1ZQUD7h4IKnKomjU/VqqWbwZQczHM+eRzja/xGitqSGNZgqv18i4yXmcOqiVw/blKUgkLs/36Y5fz16cBEVjmKBw2d
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(508600001)(6486002)(53546011)(6512007)(8936002)(21480400003)(7416002)(86362001)(235185007)(2616005)(33656002)(316002)(36756003)(26005)(186003)(66556008)(6916009)(4326008)(2906002)(54906003)(66946007)(66476007)(8676002)(38100700002)(5660300002)(6506007)(14583001)(45980500001)(72826004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+fCjQHpwU1zqSFJVuuguqPGXfn+HT2uT1FiR5ndIECRSFrWBCBRZX6cv1iK3?=
- =?us-ascii?Q?FxXspqlIY6swy1K0cDYuHfh84DLp0KnT8jKePKMdwNAorOMBsYM/DOFtwy/r?=
- =?us-ascii?Q?YzzhcMEMwSbvf8nLhjtfe6PiyaTFLysyY4/LUKFLeJpCZBF//L6hCD7oIcqu?=
- =?us-ascii?Q?g3GdXwTG6Wt6IuwZwVJUDZ6fo2Why360GQ1jIt0wtlxScw9fQ/UNBoE1ALCc?=
- =?us-ascii?Q?QA4KRSnTHy1w/wtyf4LmMxAeXNtRi87quPguXRVHYoSJtGuYsHtynbIL7OUt?=
- =?us-ascii?Q?FkUatbYvuhLCW3dumqFWYwV2VmJxajhbllQRYE3Y7KqcVJswFpKNMcZR2HGv?=
- =?us-ascii?Q?Q5TYaT9PEXrdKkyOMxHxLdBeSnHGqWqc6BTZ84dk+gi86pw+4FRl0Ohf+wu6?=
- =?us-ascii?Q?k0gM1sTfU1KahdfgZrL26SP2Jc5vZmxfTA9WALwCkPJKrLyhgG2IU68sIwZV?=
- =?us-ascii?Q?mrEM0VVMxdjWd+Glo1bs9TLgjZ8K+f71/xbx/L8HF9GUD6k87dtfRaO/dFCK?=
- =?us-ascii?Q?mRWIazgKCvC4hEx9NJbX5eRKep9tJA2UV76ptZlod2Q9m6N3LCWwb25j6HaG?=
- =?us-ascii?Q?UgGeL2NsPIMxahDZMfdj91DRwYzLR82IxEOngDrZupOxHKOz3YkgEOr/FBav?=
- =?us-ascii?Q?o8Z4jcvqGZqwoaA8PuE88YR+CLQlE7U5Ml9S8JAnyBL3KEMHCwMoW1SVPjhd?=
- =?us-ascii?Q?d+YYJEjuk0BMuHTAgeOwuP8S+747FVIs2LZmu1EKUUJiTmTOfLbipXa4QqtA?=
- =?us-ascii?Q?HwVwuLT8WbxEL1cN/XuLTeAGSfLcoX5wSXK5DVx9VDoqymKhZEjUJM2tJP1q?=
- =?us-ascii?Q?AZk+CEQRq63F7zJIAZUY9elc+1vvmd1kHXR2cSZcQBa0wvUf64811qRubCun?=
- =?us-ascii?Q?JLyTdi7H1qfoIaRK78dEocGUCnLJVy5si+dg5FdmO7pxJuX+uHFmT1uLnU+s?=
- =?us-ascii?Q?sR5rKNFV2MAjyLwpwHFawhxy9P0Tr+Q18iuBH5sNVbA+bvQ9nM3BxB9wMUKd?=
- =?us-ascii?Q?U/vFtJucZD05BGHBzxfXwwHRYZX7dlULIWK8in8x2NAOIhEloZbfHMOueofZ?=
- =?us-ascii?Q?/7bkE2ovng0Odgjl2tAqjWTGeygItvvr9amrNwpHRa8bNDrfEBqbJ6nG7b+B?=
- =?us-ascii?Q?RMQY2Kdd+IwfiuM9KNuxTTI4L3oUoSxY1wn5dMTMkjrSvL8lUpPr3qYVy1vD?=
- =?us-ascii?Q?NWRnhUp+6gULQjyf7QbnvqUPN0o6ODtAk22zq+zcjxmdEwZ6N/QcyhHLF1rn?=
- =?us-ascii?Q?YvjVs7jU6a4C3j5K9iBT/FAxoxOtiTH8OmPXcXfxreOsbnd1xpOqFffPF9xY?=
- =?us-ascii?Q?bpMTF9RR29DAqQjxHsv4FF1vHOxaYNA8ORMskUqPGs8RIT7d3OewduAfCgz+?=
- =?us-ascii?Q?p/2w6bXmE3x+IF7hTyJ22cpPoJqPVrqIPZj93HKJ1iwEmseDPZ5vE/DULYhY?=
- =?us-ascii?Q?xHU5ER0PKP4Fsh4F6+PCOin2zTAPjI4F?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5b324fe-a083-41ef-4a46-08da0b79256d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2022 20:26:57.4932
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XH8FX1ft2ApTKrL5nOforLoqtvKeWFR0L238w1AQIy4Ptkyf2DWVsB+8fzol5RDT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1504
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220321142128.2471199-4-zi.yan@sent.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,51 +55,322 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=_MailMate_2F541385-50E7-4360-9312-72AE9C63E581_=
-Content-Type: text/plain
+On Mon, Mar 21, 2022 at 10:21:26AM -0400, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> To split a THP to any lower order pages, we need to reform THPs on
+> subpages at given order and add page refcount based on the new page
+> order. Also we need to reinitialize page_deferred_list after removing
+> the page from the split_queue, otherwise a subsequent split will see
+> list corruption when checking the page_deferred_list again.
+> 
+> It has many uses, like minimizing the number of pages after
+> truncating a pagecache THP. For anonymous THPs, we can only split them
+> to order-0 like before until we add support for any size anonymous THPs.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
 
-On 21 Mar 2022, at 15:54, Matthew Wilcox wrote:
+Overall the patch looks good to me, please, feel free to add
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+to the next version.
 
-> On Mon, Mar 21, 2022 at 03:07:46PM -0400, Zi Yan wrote:
->> Yes. Will change it to new_nr to be consistent.
->
-> uh, you're going to call ilog2?
+Couple of small nits below:
 
-fortunately, no. Inside split_page_memcg(), I probably
-need to add VM_BUG_ON(nr % new_nr != 0) to make sure
-new_nr is a divisor of nr, since there are a couple
-of nr / new_nr operations. Otherwise, new_nr works.
+> ---
+>  include/linux/huge_mm.h |   8 +++
+>  mm/huge_memory.c        | 111 ++++++++++++++++++++++++++++++----------
+>  2 files changed, 91 insertions(+), 28 deletions(-)
+> 
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index 2999190adc22..c7153cd7e9e4 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -186,6 +186,8 @@ void free_transhuge_page(struct page *page);
+>  
+>  bool can_split_folio(struct folio *folio, int *pextra_pins);
+>  int split_huge_page_to_list(struct page *page, struct list_head *list);
+> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+> +		unsigned int new_order);
 
->
-> I think this would look less inconsistent if 'nr' were an unsigned long
-> (how long until we need 16GB pages?  Think PPC already supports those)
+Do we really need both? Maybe add the new_order argument to the existing function?
+It seems like there are not so many call sites.
 
+>  static inline int split_huge_page(struct page *page)
+>  {
+>  	return split_huge_page_to_list(page, NULL);
+> @@ -355,6 +357,12 @@ split_huge_page_to_list(struct page *page, struct list_head *list)
+>  {
+>  	return 0;
+>  }
+> +static inline int
+> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+> +		unsigned int new_order)
+> +{
+> +	return 0;
+> +}
+>  static inline int split_huge_page(struct page *page)
+>  {
+>  	return 0;
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index fcfa46af6c4c..3617aa3ad0b1 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2236,11 +2236,13 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>  static void unmap_page(struct page *page)
+>  {
+>  	struct folio *folio = page_folio(page);
+> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
+> -		TTU_SYNC;
+> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC;
+>  
+>  	VM_BUG_ON_PAGE(!PageHead(page), page);
+>  
+> +	if (folio_order(folio) >= HPAGE_PMD_ORDER)
+> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
+> +
+>  	/*
+>  	 * Anon pages need migration entries to preserve them, but file
+>  	 * pages can simply be left unmapped, then faulted back on demand.
+> @@ -2254,9 +2256,9 @@ static void unmap_page(struct page *page)
+>  	VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
+>  }
+>  
+> -static void remap_page(struct folio *folio, unsigned long nr)
+> +static void remap_page(struct folio *folio, unsigned short nr)
+>  {
+> -	int i = 0;
+> +	unsigned int i;
+>  
+>  	/* If unmap_page() uses try_to_migrate() on file, remove this check */
+>  	if (!folio_test_anon(folio))
+> @@ -2274,7 +2276,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>  		struct lruvec *lruvec, struct list_head *list)
+>  {
+>  	VM_BUG_ON_PAGE(!PageHead(head), head);
+> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
+>  	lockdep_assert_held(&lruvec->lru_lock);
+>  
+> @@ -2295,9 +2296,10 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>  }
+>  
+>  static void __split_huge_page_tail(struct page *head, int tail,
+> -		struct lruvec *lruvec, struct list_head *list)
+> +		struct lruvec *lruvec, struct list_head *list, unsigned int new_order)
+>  {
+>  	struct page *page_tail = head + tail;
+> +	unsigned long compound_head_flag = new_order ? (1L << PG_head) : 0;
+>  
+>  	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
+>  
+> @@ -2321,6 +2323,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  #ifdef CONFIG_64BIT
+>  			 (1L << PG_arch_2) |
+>  #endif
+> +			 compound_head_flag |
+>  			 (1L << PG_dirty)));
+>  
+>  	/* ->mapping in first tail page is compound_mapcount */
+> @@ -2329,7 +2332,10 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  	page_tail->mapping = head->mapping;
+>  	page_tail->index = head->index + tail;
+>  
+> -	/* Page flags must be visible before we make the page non-compound. */
+> +	/*
+> +	 * Page flags must be visible before we make the page non-compound or
+> +	 * a compound page in new_order.
+> +	 */
+>  	smp_wmb();
+>  
+>  	/*
+> @@ -2339,10 +2345,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  	 * which needs correct compound_head().
+>  	 */
+>  	clear_compound_head(page_tail);
+> +	if (new_order) {
+> +		prep_compound_page(page_tail, new_order);
+> +		prep_transhuge_page(page_tail);
+> +	}
+>  
+>  	/* Finally unfreeze refcount. Additional reference from page cache. */
+> -	page_ref_unfreeze(page_tail, 1 + (!PageAnon(head) ||
+> -					  PageSwapCache(head)));
+> +	page_ref_unfreeze(page_tail, 1 + ((!PageAnon(head) ||
+> +					   PageSwapCache(head)) ?
+> +						thp_nr_pages(page_tail) : 0));
+>  
+>  	if (page_is_young(head))
+>  		set_page_young(page_tail);
+> @@ -2360,7 +2371,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  }
+>  
+>  static void __split_huge_page(struct page *page, struct list_head *list,
+> -		pgoff_t end)
+> +		pgoff_t end, unsigned int new_order)
+>  {
+>  	struct folio *folio = page_folio(page);
+>  	struct page *head = &folio->page;
+> @@ -2369,10 +2380,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  	unsigned long offset = 0;
+>  	unsigned int order = thp_order(head);
+>  	unsigned int nr = thp_nr_pages(head);
+> +	unsigned int new_nr = 1 << new_order;
+>  	int i;
+>  
+>  	/* complete memcg works before add pages to LRU */
+> -	split_page_memcg(head, nr, 0);
+> +	split_page_memcg(head, nr, new_order);
+>  
+>  	if (PageAnon(head) && PageSwapCache(head)) {
+>  		swp_entry_t entry = { .val = page_private(head) };
+> @@ -2387,42 +2399,50 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  
+>  	ClearPageHasHWPoisoned(head);
+>  
+> -	for (i = nr - 1; i >= 1; i--) {
+> -		__split_huge_page_tail(head, i, lruvec, list);
+> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+> +		__split_huge_page_tail(head, i, lruvec, list, new_order);
+>  		/* Some pages can be beyond EOF: drop them from page cache */
+>  		if (head[i].index >= end) {
+>  			ClearPageDirty(head + i);
+>  			__delete_from_page_cache(head + i, NULL);
+>  			if (shmem_mapping(head->mapping))
+> -				shmem_uncharge(head->mapping->host, 1);
+> +				shmem_uncharge(head->mapping->host, new_nr);
+>  			put_page(head + i);
+>  		} else if (!PageAnon(page)) {
+>  			__xa_store(&head->mapping->i_pages, head[i].index,
+>  					head + i, 0);
+>  		} else if (swap_cache) {
+> +			/*
+> +			 * split anonymous THPs (including swapped out ones) to
+> +			 * non-zero order not supported
+> +			 */
+> +			VM_BUG_ON(new_order);
+>  			__xa_store(&swap_cache->i_pages, offset + i,
+>  					head + i, 0);
+>  		}
+>  	}
+>  
+> -	ClearPageCompound(head);
+> +	if (!new_order)
+> +		ClearPageCompound(head);
+> +	else
+> +		set_compound_order(head, new_order);
+>  	unlock_page_lruvec(lruvec);
+>  	/* Caller disabled irqs, so they are still disabled here */
+>  
+> -	split_page_owner(head, order, 0);
+> +	split_page_owner(head, order, new_order);
+>  
+>  	/* See comment in __split_huge_page_tail() */
+>  	if (PageAnon(head)) {
+>  		/* Additional pin to swap cache */
+>  		if (PageSwapCache(head)) {
+> -			page_ref_add(head, 2);
+> +			page_ref_add(head, 1 + new_nr);
+>  			xa_unlock(&swap_cache->i_pages);
+>  		} else {
+>  			page_ref_inc(head);
+>  		}
+>  	} else {
+>  		/* Additional pin to page cache */
+> -		page_ref_add(head, 2);
+> +		page_ref_add(head, 1 + new_nr);
+>  		xa_unlock(&head->mapping->i_pages);
+>  	}
+>  	local_irq_enable();
+> @@ -2435,7 +2455,14 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  		split_swap_cluster(entry);
+>  	}
+>  
+> -	for (i = 0; i < nr; i++) {
+> +	/*
+> +	 * set page to its compound_head when split to THPs, so that GUP pin and
+> +	 * PG_locked are transferred to the right after-split page
+> +	 */
+> +	if (new_order)
+> +		page = compound_head(page);
+> +
+> +	for (i = 0; i < nr; i += new_nr) {
+>  		struct page *subpage = head + i;
+>  		if (subpage == page)
+>  			continue;
+> @@ -2472,36 +2499,60 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+>   * This function splits huge page into normal pages. @page can point to any
+>   * subpage of huge page to split. Split doesn't change the position of @page.
+>   *
+> + * See split_huge_page_to_list_to_order() for more details.
+> + *
+> + * Returns 0 if the hugepage is split successfully.
+> + * Returns -EBUSY if the page is pinned or if anon_vma disappeared from under
+> + * us.
+> + */
+> +int split_huge_page_to_list(struct page *page, struct list_head *list)
+> +{
+> +	return split_huge_page_to_list_to_order(page, list, 0);
+> +}
+> +
+> +/*
+> + * This function splits huge page into pages in @new_order. @page can point to
+> + * any subpage of huge page to split. Split doesn't change the position of
+> + * @page.
+> + *
+>   * Only caller must hold pin on the @page, otherwise split fails with -EBUSY.
+>   * The huge page must be locked.
+>   *
+>   * If @list is null, tail pages will be added to LRU list, otherwise, to @list.
+>   *
+> - * Both head page and tail pages will inherit mapping, flags, and so on from
+> - * the hugepage.
+> + * Pages in new_order will inherit mapping, flags, and so on from the hugepage.
+>   *
+> - * GUP pin and PG_locked transferred to @page. Rest subpages can be freed if
+> - * they are not mapped.
+> + * GUP pin and PG_locked transferred to @page or the compound page @page belongs
+> + * to. Rest subpages can be freed if they are not mapped.
+>   *
+>   * Returns 0 if the hugepage is split successfully.
+>   * Returns -EBUSY if the page is pinned or if anon_vma disappeared from under
+>   * us.
+>   */
+> -int split_huge_page_to_list(struct page *page, struct list_head *list)
+> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+> +				     unsigned int new_order)
+>  {
+>  	struct folio *folio = page_folio(page);
+>  	struct page *head = &folio->page;
+>  	struct deferred_split *ds_queue = get_deferred_split_queue(head);
+> -	XA_STATE(xas, &head->mapping->i_pages, head->index);
+> +	/* reset xarray order to new order after split */
+> +	XA_STATE_ORDER(xas, &head->mapping->i_pages, head->index, new_order);
+>  	struct anon_vma *anon_vma = NULL;
+>  	struct address_space *mapping = NULL;
+>  	int extra_pins, ret;
+>  	pgoff_t end;
+>  
+> +	VM_BUG_ON(thp_order(head) <= new_order);
+>  	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
+>  	VM_BUG_ON_PAGE(!PageLocked(head), head);
+>  	VM_BUG_ON_PAGE(!PageCompound(head), head);
+>  
+> +	/* Cannot split THP to order-1 (no order-1 THPs) */
+> +	VM_BUG_ON(new_order == 1);
+> +
+> +	/* Split anonymous THP to non-zero order not support */
+> +	VM_BUG_ON(PageAnon(head) && new_order);
+> +
+>  	if (PageWriteback(head))
+>  		return -EBUSY;
+>  
+> @@ -2582,7 +2633,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  	if (page_ref_freeze(head, 1 + extra_pins)) {
+>  		if (!list_empty(page_deferred_list(head))) {
+>  			ds_queue->split_queue_len--;
+> -			list_del(page_deferred_list(head));
+> +			list_del_init(page_deferred_list(head));
 
---
-Best Regards,
-Yan, Zi
+Can you, please, add the comment from the changelog here as well?
 
---=_MailMate_2F541385-50E7-4360-9312-72AE9C63E581_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmI435APHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUJIAP/0CzSz8P2XRJkZdEbGhs9vL53wFcpYK/PFGx
-uT4zo+m6uD/rpMvXfGAvp9rebHsSbru2PFo4BIuPuaiuuuqFv7ESdHHDv9x5Y7jc
-dV44hJjFEh+sTMJPORbdwk28U974xQYab4Ay1dAn5eemWg7GpQm3GOsa9aa6TT0J
-Bg/OLxsswJoKkVAPLEzRo9r9JpVh09Jgmic0kAHTLTsbckKxvKu+H0CUzXxcZm5T
-46j2jpInUExeLDwrROzxSQ9OFrE3RliH5ojmKHWjxikWVRyEmA8YEu2+PAz8fy8s
-3/FlI9lFFbe+j9iSeSe46l/A/guyK6HTORXDmy9pf2DXByYbOgIS5f5jT1K7QVNl
-PzJrn/VZ9PPcVHHFKL1rinRo4TuAiyr1q0qeUiOGdAyvcmIyX75V01PIxSqNbKuL
-qEYGaNsr84ekpbACtY0VpRGVlIbQfZnFb/e8FEko9dFYL8oMLyaoWDHj7eFWN4RU
-xk+zU9szLijVJaJw9jOpawZ0pPlNv68NzMIpcNSRXDZnajxBfslmnrDA5JwM+QqU
-mS1mUepZUb2Br3Sk2t7wH/K2cvmnHLQDThcHpPv+cDR+kKEV7L9XxOh8LNDZBFmD
-wP/ri2AdsnDN9SVatmf7hcZU2y13FGKiS73584xn6sgl4QXeK0m6en3RfVjnj4IZ
-9bAK/5nO
-=1XBK
------END PGP SIGNATURE-----
-
---=_MailMate_2F541385-50E7-4360-9312-72AE9C63E581_=--
+Thanks!
