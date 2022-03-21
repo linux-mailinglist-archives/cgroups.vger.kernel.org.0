@@ -2,54 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47754E30FB
-	for <lists+cgroups@lfdr.de>; Mon, 21 Mar 2022 20:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D564E3193
+	for <lists+cgroups@lfdr.de>; Mon, 21 Mar 2022 21:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352856AbiCUT4V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Mar 2022 15:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        id S240683AbiCUURp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Mar 2022 16:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345508AbiCUT4U (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 15:56:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C3217DCAA;
-        Mon, 21 Mar 2022 12:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4efTTqCS4Gsyb7wXaU8yL8zAGuclTlr6Cip6vqeSx5U=; b=gGjMpvSX+0ScawY3AAK5s8QnbO
-        XilmRzJ+bqBsjUujrCWbfeV/tiRX+pQZDKbIS1SYRtDXXz1K9KLWQrCrfPxGmLQfFztXcAsXJ2Ddo
-        l4tFcS3eTzqbtxZbVV5mTyle4MnmSMieKmIpHog/hTDlWj7SWmzHTxHQWMzK7iDKSGEKFuCuCF/9W
-        coeGAeogiJmc3cJpJwW11rZXRiUcEkhs/lgHGb9qR0vtxf8I6ssv8JvulnzZxoy9KoA+SjsZE3S7Q
-        24osUQanD2wp6GrgKEPW9Zicp2W4mjDyhuUcBHe/T+iGNKsM6u29kq3/ct+LGca1//oM3Lch994Ro
-        fcXZH5cw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nWO6v-00AtdF-9P; Mon, 21 Mar 2022 19:54:37 +0000
-Date:   Mon, 21 Mar 2022 19:54:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        Shuah Khan <shuah@kernel.org>, Yang Shi <shy828301@gmail.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] mm: memcg: make memcg huge page split support
- any order split.
-Message-ID: <YjjX/bZrUmQfFjHC@casper.infradead.org>
-References: <20220321142128.2471199-1-zi.yan@sent.com>
- <20220321142128.2471199-2-zi.yan@sent.com>
- <YjjKh2NoWGcq28Oo@carbon.dhcp.thefacebook.com>
- <0001CABA-9436-4EFF-9C7F-F67300D09DA1@nvidia.com>
+        with ESMTP id S240617AbiCUURp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Mar 2022 16:17:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DA245AFF;
+        Mon, 21 Mar 2022 13:16:19 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id i11so13020660plr.1;
+        Mon, 21 Mar 2022 13:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=H5h/m458Q7wYqGc+3uQIHPjw143NJQEVleeRF9aQtyI=;
+        b=DOmbSvaV5SAVC3ugCRngQsMixY5lvDsFiyMunecammQfl0Gf5b+ThHvaVvxxyOWHru
+         jHqfr0edtm4anbxQDhXIKIEi5p/OGGHf6JKH2asyxA4EBM7jm97RJdoFg8jAc2+12OwN
+         XWPawlMTUJ6srDY4NhOv8VAg+h6Q9hzsT79TUt6vRHJbwrMoQlHTUItS31izjo+aTBEx
+         BUOykWK5iERg9CnVQeSpYxR0N2rB3X63J8KvIzXztZ4N+F4A6DH77lKbU20Oau6jxdYV
+         +JziBrbJ/M9bE+2KEV4/WDz8AWlAEpw9N5cJoRfOyhP5PlGoLgih1KGlIz7uYbd1AZL0
+         mdEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=H5h/m458Q7wYqGc+3uQIHPjw143NJQEVleeRF9aQtyI=;
+        b=th3/T7lHJRRHJyjDnzLxg0p8ZhGV1oD5PsR3fMnR7VKiMW+EIt4jLAXKuSCHEyaxMt
+         pfaB2I1p6L4ZcjOnV/dzjH3bPTUAQrjWx0ixDLfuFZMd7JxGzL/pwdkFTCK4zzhYp/FI
+         gSBQ2SFTVIbW+qcFoVTJdYERAAkpUftSc65WDs6VD2uaT8iURIsB6oCL+wwOetJbkyoE
+         UL3K9NpnVjgiLZjNUQQG8flFaSddMkDXPe3McoNbeqkJAdX0tM8nVf56HNfErIGxbBpy
+         Sl41OEjWZMaM3KxS4vwCjq53wf1vCjfLslpKKX4SV/i47jBgVZlvBf3wQhVMURLhqmjy
+         5Kmg==
+X-Gm-Message-State: AOAM533MpFsNZDWzpt4nJqB4S+Fhlx79h+tsSGfTH5srIN2nd/cwHmNM
+        tH28tRm9Rs9BLyUyquay7NA=
+X-Google-Smtp-Source: ABdhPJwuyh8n6M9IDtQpzxHy0DC8t0UvSFdPgrPDBMJIh3dN3t1ReiQev38rRI+AbQ9zx5SXg6oBBg==
+X-Received: by 2002:a17:902:e806:b0:154:38d6:71d4 with SMTP id u6-20020a170902e80600b0015438d671d4mr11300220plg.31.1647893778939;
+        Mon, 21 Mar 2022 13:16:18 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id a17-20020a17090a481100b001c6a662dd58sm287254pjh.7.2022.03.21.13.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Mar 2022 13:16:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 21 Mar 2022 10:16:17 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.18-rc1
+Message-ID: <YjjdEUPIoYyPjsvh@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0001CABA-9436-4EFF-9C7F-F67300D09DA1@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,11 +68,40 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Mar 21, 2022 at 03:07:46PM -0400, Zi Yan wrote:
-> Yes. Will change it to new_nr to be consistent.
+Hello,
 
-uh, you're going to call ilog2?
+All trivial cleanups without meaningful behavior changes.
 
-I think this would look less inconsistent if 'nr' were an unsigned long
-(how long until we need 16GB pages?  Think PPC already supports those)
+Thanks.
 
+The following changes since commit daadb3bd0e8d3e317e36bc2c1542e86c528665e5:
+
+  Merge tag 'locking_core_for_v5.17_rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2022-01-11 17:24:45 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.18
+
+for you to fetch changes up to f9da322e864e5cd3dc217480e73f78f47cf40c5b:
+
+  cgroup: cleanup comments (2022-03-13 19:19:27 -1000)
+
+----------------------------------------------------------------
+Tom Rix (1):
+      cgroup: cleanup comments
+
+Wei Yang (2):
+      cgroup: rstat: use same convention to assign cgroup_base_stat
+      cgroup: rstat: retrieve current bstat to delta directly
+
+Yang Li (1):
+      cgroup: Fix cgroup_can_fork() and cgroup_post_fork() kernel-doc comment
+
+ kernel/cgroup/cgroup.c  |  2 ++
+ kernel/cgroup/cpuset.c  | 10 +++++-----
+ kernel/cgroup/freezer.c |  2 +-
+ kernel/cgroup/rstat.c   |  5 ++---
+ 4 files changed, 10 insertions(+), 9 deletions(-)
+
+-- 
+tejun
