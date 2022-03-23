@@ -2,146 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17074E48EC
-	for <lists+cgroups@lfdr.de>; Tue, 22 Mar 2022 23:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7189C4E4AEF
+	for <lists+cgroups@lfdr.de>; Wed, 23 Mar 2022 03:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237617AbiCVWIp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Mar 2022 18:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        id S241287AbiCWCcj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Mar 2022 22:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237554AbiCVWIe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Mar 2022 18:08:34 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B179B6F4B8;
-        Tue, 22 Mar 2022 15:07:06 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22MIITn1023181;
-        Tue, 22 Mar 2022 15:06:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=wllJnS0XqXipMf6tAFjOz4iAppyqxI4/ObmWs7r6k40=;
- b=QzJ/X+N9DsgP11dUOewwzvwIclky3bIi0rKZruL3wu3c6fuxtjGyvfQQEivvmf/u/UGY
- u7J4IfSFKH6qUNYJJfo+mTUpDdPtVuhpAtRNtkE3iUbhSlO08ZPirfwOCZ9ZlLv6E4yy
- +USmXRlT5yFtKbnvwzEV6b3/vWtbOYUbvIs= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ey802q1jw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Mar 2022 15:06:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YajQxkLfwYY/KExOo02xKD7LN1dKzfwXa4Fk3XFp7077yU8QoWkY43ksxbyhpjXvRu4Am1Y3fKWspr/iSTzElL859pFclbWb1QCoXjRSBaq6sS67zQO91w8OvVUpeQjIvB1r7rQ7R8Wo4CLgJ0YvvSEaRppUyXFv72xnsL3q5glvv/8MzPoKigWGdl63/xRD1E4YzAixtFmdNc6oVRdd7b9rIZ4oQEc1BlsDUdbFt+rAylYKTcC5Ui9Mmn0W61uqpmZWjnFLDD2HPIojW90L0RCT/GWscS/l+wck9Bs4N+/tpExhs14RPBjXYOtWQiPx2GHRfdYfpSvAt5IJTncUcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wllJnS0XqXipMf6tAFjOz4iAppyqxI4/ObmWs7r6k40=;
- b=XUHMjH+2x6LoMHV3YesJG87j+Bo4RPwVGqyUxcF8m7Y1uCll//W9fcGb4U6/5Gh4SdAkzZAZ3B4y1dnAyFLjbyC5Q68mhThjJf5FyL4RLIcQeLhlkTKqoQMEk3G2bEuKJJlwYWAFBuHhO8ZjHQmHa2z+/XN29vuOq725DChDVAmYYkpVS/uAA9p40xZyF4BdJbWEFkDWs8BO1hIM35/Fgac1RBzlY0dwyAfNnPUpYs3pZA/b31671XQ282e7giNnX5DMhjM81aU2jmN08sT/YhH9qbTWULrvGFOgdACme902QXtuJ3QnQCiNVrcIrvGPAR3w3O7cA8kqElaj0e7JYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MN2PR15MB3054.namprd15.prod.outlook.com (2603:10b6:208:f2::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.16; Tue, 22 Mar
- 2022 22:06:45 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2%7]) with mapi id 15.20.5102.016; Tue, 22 Mar 2022
- 22:06:45 +0000
-Message-ID: <2453e8f6-29fe-c11a-75a4-18644a68d525@fb.com>
-Date:   Tue, 22 Mar 2022 15:06:41 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
- <Yi7ULpR70HatVP/8@slm.duckdns.org>
- <CAJD7tkYGUaeeFMJSWNbdgaoEq=kFTkZzx8Jy1fwWBvt2WEfqAA@mail.gmail.com>
- <f049c2f6-499b-ff7a-3910-38487878606a@fb.com>
- <CA+khW7jFSmm5sTyAVfEZhYnKDhVZKRRGLgAmCqgZzgON8NJOGg@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <CA+khW7jFSmm5sTyAVfEZhYnKDhVZKRRGLgAmCqgZzgON8NJOGg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MWHPR07CA0002.namprd07.prod.outlook.com
- (2603:10b6:300:116::12) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S230089AbiCWCci (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Mar 2022 22:32:38 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCD66D1B7;
+        Tue, 22 Mar 2022 19:31:09 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KNXPB0glbzfYxT;
+        Wed, 23 Mar 2022 10:29:34 +0800 (CST)
+Received: from [10.174.177.76] (10.174.177.76) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 23 Mar 2022 10:31:06 +0800
+Subject: Re: [RFC PATCH 3/5] mm: thp: split huge page to any lower order
+ pages.
+To:     Zi Yan <ziy@nvidia.com>
+CC:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Shuah Khan <shuah@kernel.org>, Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
+        Yu Zhao <yuzhao@google.com>
+References: <20220321142128.2471199-1-zi.yan@sent.com>
+ <20220321142128.2471199-4-zi.yan@sent.com>
+ <165ec1a8-2b35-f6fb-82d3-b94613dd437a@huawei.com>
+ <D03D6945-8BFE-4137-BDB6-BD884656B65B@nvidia.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <ed175cd4-1411-459e-e892-7d889e1253c0@huawei.com>
+Date:   Wed, 23 Mar 2022 10:31:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 01dbcfc3-acad-451c-cfcd-08da0c5040e0
-X-MS-TrafficTypeDiagnostic: MN2PR15MB3054:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR15MB3054AEB8A255722A20BB7332D3179@MN2PR15MB3054.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2bPrQnmWT2ClM4U875sXkZlLvsqpXZUnxu/xwryRIisEOk81fvdzkEraSpmYkydMYx8+pj5AqXHmxIxrqeYoiOr5Vhh15pp2H6HrIQW97ctcEVaGyAUPBa3SQRqnJGkuGGMMcPt2RaEy2X/Vh809oldnrW7ewusfKF0PsH4o65HU4nntEvQziLyyXL94PkHKHdbkoe8jvW8RWS3iPA2OooFovaKbIEN7PIXONCOP9TB8j3FXyrWVkfkBqED9QkqEv7iqbvUTeE/BdV6ujTgTWqF5RIhZRagtjL2yx19gm1IbaoOG4cLTqLKwwAcBrOFI3HHsKCbwE9xKoHGzxwOsDtvwHRZrdZK3IN7mu/QO7q4/+/YqJQVSUqJxlVgv6uuSG1KBvbinZRj81A8IANT6d8ol3Pn3zuqiuCo2fNXoI3UP+V2pKlBp/OkjPc0sXhiDsPkKbq/Vi4GvV3ivxpydNu1lsiANAiROkc25pSd69jb9jKvL8RRPps5BiYLBuCjjgb9mYli/j6mxx7zwLXIYUKpkihsRqpSs9VL4DKk8af19lCtRi7xLPBE2tl2UqGLdgsJmwRq4W8iBRt/tjaEImpZFRr5uL9N5OHPBalrC+hgyQTC4+HOTEahPnG1XSzfnp/dcgIRtMSRBN7ulb92dVVMwygt89SBq1KiA9Im8a1dWDnTD9AaXEV/l3Xuf5C8iKCDdpgYYTCJIshHM62d3JTZQbn/r+gP66rxiAvDYz7Y=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(83380400001)(52116002)(6666004)(36756003)(508600001)(38100700002)(6512007)(6506007)(53546011)(316002)(31696002)(86362001)(6916009)(31686004)(54906003)(6486002)(66946007)(186003)(66476007)(2906002)(8676002)(4326008)(2616005)(5660300002)(7416002)(8936002)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sk1SNndjN2VmeTRCSTJrd0h2L2c5cHFYSU5sS0YxVm16c0pDTkd2cEE3VzlG?=
- =?utf-8?B?bUt1eGxQMjlIVTh0T3l5cC8zd0VPandrUDkxZVltMDZheS8ySE11SExHZmdJ?=
- =?utf-8?B?V01qSHo3RFArK2lXMmdMVVNRaWVvYVZoeElleVNwYTdmQ1lMcm93aElDdWJJ?=
- =?utf-8?B?cm1leloyaTluS1J4akgzOStpSS9wRUd5dmMrL2g2VW00MkEreldLeEZ1akxm?=
- =?utf-8?B?dmVITFJUdytEUGE5TmJtcmlRWGk2amFtTkRTazgrQzRqeHd0dmR1M2ZPQXpM?=
- =?utf-8?B?d3MxNWZMSzFCRkgrTVJGZVFMRXU4K2gzWEdOelFlWjMySmRrN0dYNnp5eklF?=
- =?utf-8?B?UlBmODdiKzNlMTNiWkFuMjByMGNxNDlGd3dWNWM0dVJLT0xwWkdoTVdJMnR2?=
- =?utf-8?B?RW5qUWxFbVN4S2lTYWQ2S0RiZ3djZmdNMklVL0llZTNqNmpncjNVRVFSdFlZ?=
- =?utf-8?B?OVlpUU1wMzV5czVCbWoyWnRLRnB4U2c0aEs5SHJSVndaYjhYcFpSVURZY0hE?=
- =?utf-8?B?ZSswZndOY241THZZbDRrQk5MNnR5QVl3eS9JcFBxeHlxaFUxZk1Ob05JTjQ3?=
- =?utf-8?B?Qk45S0lmTlhzVTdSTzFRZHNyc3hVbW9vdllhZW9SYlZmVS9hRnNXd3NLRTY2?=
- =?utf-8?B?b0U2emtCOGI3bzhncC9Fakk3SzJVejhBTENDZnZhenNtc1JSRFFEeVJRb2g1?=
- =?utf-8?B?VjFqN3BTV1gxRkxabkU3MGR5L0pWM3ZGMVVDeDlKMGc0c0pPSE1zSkFVQUlR?=
- =?utf-8?B?ZE5kTThKbkZGMFNlWUtMOWpYRGs3THRwYVI2QndHdFphM0FTc2hGeGF6Zktt?=
- =?utf-8?B?RUs2RnZKaVNWRElYQWVKaWpRejcwdy9VSXN0QytsaytvelViTkRDdWcreUIz?=
- =?utf-8?B?WXlpL0dUZGFncDhWTEIwM09NVW93MHJxbVlrOHkzNW5jcklvekt2OVMydk9N?=
- =?utf-8?B?Zk9jUlR5OUxhSVVKVm1wY05rWDVoU2t2bDlmMVQvWVRkTGxEMFd4aU1rYkVK?=
- =?utf-8?B?NlMxeUdJN2hiUXFiNHNkREJFWVhFY0tEdG5UKzZ3U2RaMFA5RGcvVFlYMkhS?=
- =?utf-8?B?OWlZc2h3TGVmd1RmVGFyaXlTeDBNMDdEZGkxV0hsR1p6eDRFOXkwMk9KZXpP?=
- =?utf-8?B?bzZ5OEUxRDlVWXl5MGIyMjlvMlN6d0dkTDl3NnZodWVKQUY0QU9teU41Kzg5?=
- =?utf-8?B?YXlqSmgxVWNFWXZxdE5TNkdKL0c2V05wdlFyQU1tWTR1SS9RK1JTU0FOYTVr?=
- =?utf-8?B?VEFWSVBTRUJsTnRiZ3ltQWw3eHY1SFZUNnhnbUJidXlyTUZaZXpGNENTejlG?=
- =?utf-8?B?STJZTEF5Q1dSb3pzckNhM09JejQ0bmJRczZ4UkVwZ3J3emg1UzdsMElQOUxi?=
- =?utf-8?B?clBPejh0WU9OVFJnWjVaMTZUaW11TnBFcUJ1UFRscFhuQk5YT0RnbWJST24v?=
- =?utf-8?B?aXdSTVUxQXJJVWtpZW52bGk2RG1QQUtOaEtxODd4MDhiL3pWSm5URlFkV0NY?=
- =?utf-8?B?Qy85dkdueXBQc0xqK2JwcGo3dFg5UTlyOUM2M0tUMFZOVGZ3Q0Y1ZDFkYnFY?=
- =?utf-8?B?Uy9HNldoTlNyMlNxVTc2RzJNYkIvcko3WkgvNHdRU0w5Vm41aHN4ZjdmVFRo?=
- =?utf-8?B?YkRIUGJuRFRVWU5OVFd3S2NtQ1M0a0pOU25WeHh3OTF0amQ1dFFpUEtTekVk?=
- =?utf-8?B?V3VROXloUjRXL3JXc0h0T3l6czduK21JQlk5TDFXUDJ1RmVQdjh4bmFPRVJ4?=
- =?utf-8?B?WVZpajlqN1Nsa3UyUGFrcXhiNGsvOG85ajY1bk1PQms2TlpqZ3ova21tUFdS?=
- =?utf-8?B?ckQzRVI4WUNtM3Z3YjJkQjljY1dkN0ZzV25RN3ZZeTF0SmpBRVZmMFhqVGM5?=
- =?utf-8?B?ODhtclg3UDBmekhXRmpvZlp0V0Z2R0FVdXlMcEtQVVN2SmxVOU1OTmhTa3B4?=
- =?utf-8?B?WVEwTkVJeDYwVzZCaWR0QVNEQXQ5dWlpYnNLc0l3MksvdGlEN09pRXhkcWJO?=
- =?utf-8?B?emdXOUgrSTZBPT0=?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01dbcfc3-acad-451c-cfcd-08da0c5040e0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2022 22:06:45.2988
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oXMWDRDJAnxPn/UF2e0BbOxWGmbLnZEYVfjQqhDw4PWsxhQSBnZuCDbozIn1XM8i
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3054
-X-Proofpoint-GUID: KJ3da-uYVcCPgkF8NDrJiqh5_lc7mrwW
-X-Proofpoint-ORIG-GUID: KJ3da-uYVcCPgkF8NDrJiqh5_lc7mrwW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-22_08,2022-03-22_01,2022-02-23_01
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <D03D6945-8BFE-4137-BDB6-BD884656B65B@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.76]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,35 +60,190 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 3/22/22 2:37 PM, Hao Luo wrote:
-> On Tue, Mar 22, 2022 at 11:09 AM Yonghong Song <yhs@fb.com> wrote:
+On 2022/3/22 22:30, Zi Yan wrote:
+> On 21 Mar 2022, at 23:21, Miaohe Lin wrote:
+> 
+>> On 2022/3/21 22:21, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> To split a THP to any lower order pages, we need to reform THPs on
+>>> subpages at given order and add page refcount based on the new page
+>>> order. Also we need to reinitialize page_deferred_list after removing
+>>> the page from the split_queue, otherwise a subsequent split will see
+>>> list corruption when checking the page_deferred_list again.
+>>>
+>>> It has many uses, like minimizing the number of pages after
+>>> truncating a pagecache THP. For anonymous THPs, we can only split them
+>>> to order-0 like before until we add support for any size anonymous THPs.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>  include/linux/huge_mm.h |   8 +++
+>>>  mm/huge_memory.c        | 111 ++++++++++++++++++++++++++++++----------
+>>>  2 files changed, 91 insertions(+), 28 deletions(-)
+>>>
+>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>> index 2999190adc22..c7153cd7e9e4 100644
+>>> --- a/include/linux/huge_mm.h
+>>> +++ b/include/linux/huge_mm.h
+>>> @@ -186,6 +186,8 @@ void free_transhuge_page(struct page *page);
+>>>
+>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
+>>>  int split_huge_page_to_list(struct page *page, struct list_head *list);
+>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order);
+>>>  static inline int split_huge_page(struct page *page)
+>>>  {
+>>>  	return split_huge_page_to_list(page, NULL);
+>>> @@ -355,6 +357,12 @@ split_huge_page_to_list(struct page *page, struct list_head *list)
+>>>  {
+>>>  	return 0;
+>>>  }
+>>> +static inline int
+>>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order)
+>>> +{
+>>> +	return 0;
+>>> +}
+>>>  static inline int split_huge_page(struct page *page)
+>>>  {
+>>>  	return 0;
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index fcfa46af6c4c..3617aa3ad0b1 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -2236,11 +2236,13 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>>>  static void unmap_page(struct page *page)
+>>>  {
+>>>  	struct folio *folio = page_folio(page);
+>>> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
+>>> -		TTU_SYNC;
+>>> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC;
+>>>
+>>>  	VM_BUG_ON_PAGE(!PageHead(page), page);
+>>>
+>>> +	if (folio_order(folio) >= HPAGE_PMD_ORDER)
+>>> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
+>>> +
+>>>  	/*
+>>>  	 * Anon pages need migration entries to preserve them, but file
+>>>  	 * pages can simply be left unmapped, then faulted back on demand.
+>>> @@ -2254,9 +2256,9 @@ static void unmap_page(struct page *page)
+>>>  	VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
+>>>  }
+>>>
+>>> -static void remap_page(struct folio *folio, unsigned long nr)
+>>> +static void remap_page(struct folio *folio, unsigned short nr)
+>>>  {
+>>> -	int i = 0;
+>>> +	unsigned int i;
+>>>
+>>>  	/* If unmap_page() uses try_to_migrate() on file, remove this check */
+>>>  	if (!folio_test_anon(folio))
+>>> @@ -2274,7 +2276,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  		struct lruvec *lruvec, struct list_head *list)
+>>>  {
+>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
+>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
+>>>  	lockdep_assert_held(&lruvec->lru_lock);
+>>>
+>>> @@ -2295,9 +2296,10 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  }
+>>>
+>>>  static void __split_huge_page_tail(struct page *head, int tail,
+>>> -		struct lruvec *lruvec, struct list_head *list)
+>>> +		struct lruvec *lruvec, struct list_head *list, unsigned int new_order)
+>>>  {
+>>>  	struct page *page_tail = head + tail;
+>>> +	unsigned long compound_head_flag = new_order ? (1L << PG_head) : 0;
+>>>
+>>>  	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
+>>>
+>>> @@ -2321,6 +2323,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>>>  #ifdef CONFIG_64BIT
+>>>  			 (1L << PG_arch_2) |
+>>>  #endif
+>>> +			 compound_head_flag |
+>>>  			 (1L << PG_dirty)));
+>>>
+>>>  	/* ->mapping in first tail page is compound_mapcount */
+>>> @@ -2329,7 +2332,10 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>>>  	page_tail->mapping = head->mapping;
+>>>  	page_tail->index = head->index + tail;
+>>>
+>>> -	/* Page flags must be visible before we make the page non-compound. */
+>>> +	/*
+>>> +	 * Page flags must be visible before we make the page non-compound or
+>>> +	 * a compound page in new_order.
+>>> +	 */
+>>>  	smp_wmb();
+>>>
+>>>  	/*
+>>> @@ -2339,10 +2345,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>>>  	 * which needs correct compound_head().
+>>>  	 */
+>>>  	clear_compound_head(page_tail);
+>>> +	if (new_order) {
+>>> +		prep_compound_page(page_tail, new_order);
+>>> +		prep_transhuge_page(page_tail);
+>>> +	}
 >>
->> Hi, Yosry, I heard this was discussed in bpf office hour which I
->> didn't attend. Could you summarize the conclusion and what is the
->> step forward? We also have an internal tool which collects cgroup
->> stats and this might help us as well. Thanks!
+>> Many thanks for your series. It looks really good. One question:
+>> IIUC, It seems there has assumption that LRU compound_pages should
+>> be PageTransHuge. So PageTransHuge just checks PageHead:
 >>
+>> static inline int PageTransHuge(struct page *page)
+>> {
+>> 	VM_BUG_ON_PAGE(PageTail(page), page);
+>> 	return PageHead(page);
+>> }
+>>
+>> So LRU pages with any order( > 0) will might be wrongly treated as THP which
+>> has order = HPAGE_PMD_ORDER. We should ensure thp_nr_pages is used instead of
+>> hard coded HPAGE_PMD_ORDER.
+>>
+>> Looks at the below code snippet:
+>> mm/mempolicy.c:
+>> static struct page *new_page(struct page *page, unsigned long start)
+>> {
+>> ...
+>> 	} else if (PageTransHuge(page)) {
+>> 		struct page *thp;
+>>
+>> 		thp = alloc_hugepage_vma(GFP_TRANSHUGE, vma, address,
+>> 					 HPAGE_PMD_ORDER);
+>> 					 ^^^^^^^^^^^^^^^^
+>> 		if (!thp)
+>> 			return NULL;
+>> 		prep_transhuge_page(thp);
+>> 		return thp;
+>> 	}
+>> ...
+>> }
+>>
+>> HPAGE_PMD_ORDER is used instead of thp_nr_pages. So the lower order pages might be
+>> used as if its order is HPAGE_PMD_ORDER. All of such usage might need to be fixed.
+>> Or am I miss something ?
+>>
+>> Thanks again for your work. :)
 > 
-> Hi Yonghong,
+> THP will still only have HPAGE_PMD_ORDER and will not be split into any order
+> other than 0. This series only allows to split huge page cache folio (added by Matthew)
+> into any lower order. I have an explicit VM_BUG_ON() to ensure new_order
+> is only 0 when non page cache page is the input. Since there is still non-trivial
+> amount of work to add any order THP support in the kernel. IIRC, Yu Zhao (cc’d) was
+> planning to work on that.
 > 
-> Yosry is out of office this entire week. I don't know whether he has
-> access to corp email account, so please allow me to reply on his
-> behalf.
-> 
-> So instead of using rstat in bpf (by providing a map interface), it's
-> better to leverage the flexibility provided by bpf to extend rstat.
-> "We can achieve a similar outcome with a less intrusive design." Yosry
-> "will look at programs providing their own aggregators and maintaining
-> their own stats, and only making callbacks to/from rstat." As the next
-> step, Yosry is going to work on an RFC patchset to drive the
-> discussion, when he is back.
-> 
-> It's great to see that this is helpful to you as well! I am looking
-> forward to collaboration if there is a need.
 
-Thanks, Hao, for explanation. I am looking forward to the RFC patch!
+Many thanks for clarifying. I'm sorry but I haven't followed Matthew's patches. I am
+wondering could huge page cache folio be treated as THP ? If so, how to ensure the
+correctness of huge page cache ?
+
+Thanks again!
+
+> Thanks for checking the patches.
+
+BTW: I like your patches. It's really interesting. :)
 
 > 
-> Hao
