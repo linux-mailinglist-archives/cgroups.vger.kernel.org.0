@@ -2,259 +2,191 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71624E5D07
-	for <lists+cgroups@lfdr.de>; Thu, 24 Mar 2022 03:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141A74E5EF2
+	for <lists+cgroups@lfdr.de>; Thu, 24 Mar 2022 07:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347559AbiCXCDz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Mar 2022 22:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        id S1345983AbiCXGwl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Mar 2022 02:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347556AbiCXCDy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Mar 2022 22:03:54 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5596B931B4;
-        Wed, 23 Mar 2022 19:02:22 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KP7fl5mtbzBrjN;
-        Thu, 24 Mar 2022 09:58:23 +0800 (CST)
-Received: from [10.174.177.76] (10.174.177.76) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 24 Mar 2022 10:02:19 +0800
-Subject: Re: [RFC PATCH 3/5] mm: thp: split huge page to any lower order
- pages.
-To:     Zi Yan <ziy@nvidia.com>
-CC:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Shuah Khan <shuah@kernel.org>, Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
-        Yu Zhao <yuzhao@google.com>
-References: <20220321142128.2471199-1-zi.yan@sent.com>
- <20220321142128.2471199-4-zi.yan@sent.com>
- <165ec1a8-2b35-f6fb-82d3-b94613dd437a@huawei.com>
- <D03D6945-8BFE-4137-BDB6-BD884656B65B@nvidia.com>
- <ed175cd4-1411-459e-e892-7d889e1253c0@huawei.com>
- <87E48455-3FDD-47FC-A953-CBAB52FD3889@nvidia.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <6587a8af-8d6d-c947-2cee-11f75ceefef6@huawei.com>
-Date:   Thu, 24 Mar 2022 10:02:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S230331AbiCXGwk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Mar 2022 02:52:40 -0400
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFB195493;
+        Wed, 23 Mar 2022 23:51:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=27;SR=0;TI=SMTPD_---0V83hx77_1648104651;
+Received: from 30.39.225.82(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0V83hx77_1648104651)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Mar 2022 14:50:53 +0800
+Message-ID: <4529fa25-9497-b05c-90c0-42fb10841a22@linux.alibaba.com>
+Date:   Thu, 24 Mar 2022 14:50:50 +0800
 MIME-Version: 1.0
-In-Reply-To: <87E48455-3FDD-47FC-A953-CBAB52FD3889@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.7.0
+From:   Tianchen Ding <dtcccc@linux.alibaba.com>
+Subject: Re: [RFC PATCH v2 0/4] Introduce group balancer
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
+        Cruz Zhao <cruzzhao@linux.alibaba.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20220308092629.40431-1-dtcccc@linux.alibaba.com>
+ <YieOvaqJeEW2lta/@slm.duckdns.org>
+ <defa02c1-9660-f335-a764-d89dbe2f502e@linux.alibaba.com>
+ <YijrVmzG8/yT9a0f@slm.duckdns.org>
+ <014c8afe-e57f-0f31-32bb-cf4ff3d3cb95@linux.alibaba.com>
+ <YjjA+vyQuh5fNeLG@slm.duckdns.org>
 Content-Language: en-US
+In-Reply-To: <YjjA+vyQuh5fNeLG@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.76]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/3/24 6:10, Zi Yan wrote:
-> On 22 Mar 2022, at 22:31, Miaohe Lin wrote:
+On 2022/3/22 02:16, Tejun Heo wrote:
+> Hello,
 > 
->> On 2022/3/22 22:30, Zi Yan wrote:
->>> On 21 Mar 2022, at 23:21, Miaohe Lin wrote:
->>>
->>>> On 2022/3/21 22:21, Zi Yan wrote:
->>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>
->>>>> To split a THP to any lower order pages, we need to reform THPs on
->>>>> subpages at given order and add page refcount based on the new page
->>>>> order. Also we need to reinitialize page_deferred_list after removing
->>>>> the page from the split_queue, otherwise a subsequent split will see
->>>>> list corruption when checking the page_deferred_list again.
->>>>>
->>>>> It has many uses, like minimizing the number of pages after
->>>>> truncating a pagecache THP. For anonymous THPs, we can only split them
->>>>> to order-0 like before until we add support for any size anonymous THPs.
->>>>>
->>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>>> ---
->>>>>  include/linux/huge_mm.h |   8 +++
->>>>>  mm/huge_memory.c        | 111 ++++++++++++++++++++++++++++++----------
->>>>>  2 files changed, 91 insertions(+), 28 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>>> index 2999190adc22..c7153cd7e9e4 100644
->>>>> --- a/include/linux/huge_mm.h
->>>>> +++ b/include/linux/huge_mm.h
->>>>> @@ -186,6 +186,8 @@ void free_transhuge_page(struct page *page);
->>>>>
->>>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
->>>>>  int split_huge_page_to_list(struct page *page, struct list_head *list);
->>>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->>>>> +		unsigned int new_order);
->>>>>  static inline int split_huge_page(struct page *page)
->>>>>  {
->>>>>  	return split_huge_page_to_list(page, NULL);
->>>>> @@ -355,6 +357,12 @@ split_huge_page_to_list(struct page *page, struct list_head *list)
->>>>>  {
->>>>>  	return 0;
->>>>>  }
->>>>> +static inline int
->>>>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
->>>>> +		unsigned int new_order)
->>>>> +{
->>>>> +	return 0;
->>>>> +}
->>>>>  static inline int split_huge_page(struct page *page)
->>>>>  {
->>>>>  	return 0;
->>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>>> index fcfa46af6c4c..3617aa3ad0b1 100644
->>>>> --- a/mm/huge_memory.c
->>>>> +++ b/mm/huge_memory.c
->>>>> @@ -2236,11 +2236,13 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
->>>>>  static void unmap_page(struct page *page)
->>>>>  {
->>>>>  	struct folio *folio = page_folio(page);
->>>>> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
->>>>> -		TTU_SYNC;
->>>>> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC;
->>>>>
->>>>>  	VM_BUG_ON_PAGE(!PageHead(page), page);
->>>>>
->>>>> +	if (folio_order(folio) >= HPAGE_PMD_ORDER)
->>>>> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
->>>>> +
->>>>>  	/*
->>>>>  	 * Anon pages need migration entries to preserve them, but file
->>>>>  	 * pages can simply be left unmapped, then faulted back on demand.
->>>>> @@ -2254,9 +2256,9 @@ static void unmap_page(struct page *page)
->>>>>  	VM_WARN_ON_ONCE_PAGE(page_mapped(page), page);
->>>>>  }
->>>>>
->>>>> -static void remap_page(struct folio *folio, unsigned long nr)
->>>>> +static void remap_page(struct folio *folio, unsigned short nr)
->>>>>  {
->>>>> -	int i = 0;
->>>>> +	unsigned int i;
->>>>>
->>>>>  	/* If unmap_page() uses try_to_migrate() on file, remove this check */
->>>>>  	if (!folio_test_anon(folio))
->>>>> @@ -2274,7 +2276,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
->>>>>  		struct lruvec *lruvec, struct list_head *list)
->>>>>  {
->>>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
->>>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
->>>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
->>>>>  	lockdep_assert_held(&lruvec->lru_lock);
->>>>>
->>>>> @@ -2295,9 +2296,10 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
->>>>>  }
->>>>>
->>>>>  static void __split_huge_page_tail(struct page *head, int tail,
->>>>> -		struct lruvec *lruvec, struct list_head *list)
->>>>> +		struct lruvec *lruvec, struct list_head *list, unsigned int new_order)
->>>>>  {
->>>>>  	struct page *page_tail = head + tail;
->>>>> +	unsigned long compound_head_flag = new_order ? (1L << PG_head) : 0;
->>>>>
->>>>>  	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
->>>>>
->>>>> @@ -2321,6 +2323,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
->>>>>  #ifdef CONFIG_64BIT
->>>>>  			 (1L << PG_arch_2) |
->>>>>  #endif
->>>>> +			 compound_head_flag |
->>>>>  			 (1L << PG_dirty)));
->>>>>
->>>>>  	/* ->mapping in first tail page is compound_mapcount */
->>>>> @@ -2329,7 +2332,10 @@ static void __split_huge_page_tail(struct page *head, int tail,
->>>>>  	page_tail->mapping = head->mapping;
->>>>>  	page_tail->index = head->index + tail;
->>>>>
->>>>> -	/* Page flags must be visible before we make the page non-compound. */
->>>>> +	/*
->>>>> +	 * Page flags must be visible before we make the page non-compound or
->>>>> +	 * a compound page in new_order.
->>>>> +	 */
->>>>>  	smp_wmb();
->>>>>
->>>>>  	/*
->>>>> @@ -2339,10 +2345,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
->>>>>  	 * which needs correct compound_head().
->>>>>  	 */
->>>>>  	clear_compound_head(page_tail);
->>>>> +	if (new_order) {
->>>>> +		prep_compound_page(page_tail, new_order);
->>>>> +		prep_transhuge_page(page_tail);
->>>>> +	}
->>>>
->>>> Many thanks for your series. It looks really good. One question:
->>>> IIUC, It seems there has assumption that LRU compound_pages should
->>>> be PageTransHuge. So PageTransHuge just checks PageHead:
->>>>
->>>> static inline int PageTransHuge(struct page *page)
->>>> {
->>>> 	VM_BUG_ON_PAGE(PageTail(page), page);
->>>> 	return PageHead(page);
->>>> }
->>>>
->>>> So LRU pages with any order( > 0) will might be wrongly treated as THP which
->>>> has order = HPAGE_PMD_ORDER. We should ensure thp_nr_pages is used instead of
->>>> hard coded HPAGE_PMD_ORDER.
->>>>
->>>> Looks at the below code snippet:
->>>> mm/mempolicy.c:
->>>> static struct page *new_page(struct page *page, unsigned long start)
->>>> {
->>>> ...
->>>> 	} else if (PageTransHuge(page)) {
->>>> 		struct page *thp;
->>>>
->>>> 		thp = alloc_hugepage_vma(GFP_TRANSHUGE, vma, address,
->>>> 					 HPAGE_PMD_ORDER);
->>>> 					 ^^^^^^^^^^^^^^^^
->>>> 		if (!thp)
->>>> 			return NULL;
->>>> 		prep_transhuge_page(thp);
->>>> 		return thp;
->>>> 	}
->>>> ...
->>>> }
->>>>
->>>> HPAGE_PMD_ORDER is used instead of thp_nr_pages. So the lower order pages might be
->>>> used as if its order is HPAGE_PMD_ORDER. All of such usage might need to be fixed.
->>>> Or am I miss something ?
->>>>
->>>> Thanks again for your work. :)
->>>
->>> THP will still only have HPAGE_PMD_ORDER and will not be split into any order
->>> other than 0. This series only allows to split huge page cache folio (added by Matthew)
->>> into any lower order. I have an explicit VM_BUG_ON() to ensure new_order
->>> is only 0 when non page cache page is the input. Since there is still non-trivial
->>> amount of work to add any order THP support in the kernel. IIRC, Yu Zhao (cc’d) was
->>> planning to work on that.
->>>
+> On Thu, Mar 10, 2022 at 01:47:34PM +0800, Tianchen Ding wrote:
+>> If we want to build group balancer in userspace, we need:
+>>    1) gather load info from each rq periodically
+>>    2) make decision to set cpuset.cpus of each cgroup
 >>
->> Many thanks for clarifying. I'm sorry but I haven't followed Matthew's patches. I am
->> wondering could huge page cache folio be treated as THP ? If so, how to ensure the
->> correctness of huge page cache ?
+>> However, there're some problems about this way.
+>>
+>> For 1), we need to consider how frequently collecting these info, which may
+>> impact performance and accuracy. If the load changes hugely right after we
+>> get it once, our data are expired and then the decision may be wrong. (If we
+>> are in kernel, faster action can be taken.)
 > 
-> You are right. All these HPAGE_PMD_ORDRE locations should be replaced by thp_nr_pages().
-> I will look into it.
-> 
-
-Many thanks for doing this. :)
-
-> Thanks a lot.
-> 
-> --
-> Best Regards,
-> Yan, Zi
+> We now have a pretty well established way to transport data to userspace at
+> really low overhead. If you piggy back on bpf interfaces, they can usually
+> be pretty unintrusive and low effort as long as you have the right kind of
+> data aggregated already, which shouldn't be that difficult here.
 > 
 
+Yes, bpf is a good way to fetch these data.
+In fact we may also consider impacting on some decisions of scheduler in 
+some scenes. But it seems to be a long term work...
+
+>> We believe 2) is harder. The specific policy may be complex and alter
+>> according to different scenes. There's not a general method.
+>> e.g., with 16cpus and 4 cgroups, how to decide when we set one of them
+>> 0-3(when busy)or 0-7(when some of other cgroups are idle)? If there are much
+>> more threads in cgroupA than cgroupB/C/D , and we want to satisfy cgroupA as
+>> far as possible(on the premise of fairness of B/C/D)， dynamically
+>> enlarging(when B/C/D partly idle) and shrinking(when B/C/D busy) cpuset of
+>> cgroupA requires complex policy. In this example, fairness and performance
+>> can be provided by existing scheduler, but when it comes to grouping hot
+>> cache or decreasing competion, both scheduler in kernel and action in
+>> userspace are hard to solve.
+> 
+> So, I get that it's not easy. In fact, we don't even yet know how to
+> properly compare loads across groups of CPUs - simple sums that you're using
+> break down when there are big gaps in weight numbers across tasks and can
+> become meaningless in the presence of CPU affinities. They can still work
+
+"simple sums" is fine because we only use this load when selecting 
+partitions, not migrating.
+
+If I understand correctly, do you mean a scene that:
+cgroupA has only one thread with full busy load (1024)
+cgroup B/C/D have many threads with small load (maybe 100)
+There're two CPU partitons:0-3 and 4-7
+
+If A choose 0-3 (we suppose its thread sticking on cpu0), so the load of 
+partition 0-3 becomes 1024 because simple sums. So B/C/D will all choose 
+partition 4-7. This will be fine since our group balancer is a kind of 
+"soft" bind. If we are waking a thread from cgroupB and find there is no 
+free cpu in 4-7, we'll fallback to normal path and select other idle cpu 
+(i.e., 1-3) if possible.
+Otherwise, if there is no idle cpu totally, meaning the whole system is 
+busy. The existing load balance mechanism will handle it, and our 
+patches only try to switch two tasks if their cache in their own cgroups 
+can be closer after migration.
+
+> when the configuration is fairly homogeenous and controlled but the standard
+> should be far higher for something we bake into the kernel and expose
+> userland-visible interface for.
+> 
+
+Our aim is to improve performance of apps, so will not limit cpu usage 
+strictly. This kind of soft bind also helps to avoid conflicts with 
+existing load balance mechanism. We may explain this in document.
+
+>> What's more, in many cloud computing scenes, there may be hundreds or
+>> thousands of containers, which are much larger than partition number. These
+>> containers may be dynamically created and destroyed at any time. Making
+>> policy to manage them from userspace will not be practical.
+>>
+>> These problems become easy when going to kernelspace. We get info directly
+>> from scheduler, and help revising its decision at some key points, or do
+>> some support work(e.g., task migration if possible).
+> 
+> I don't think they become necessarily easy. Sure, you can hack up something
+> which works for some cases by poking into existing code; however, the bar
+> for acceptance is also way higher for a kernel interface - it should be
+> generic, consistent with other interfaces (I won't go into cgroup interface
+> issues here), and work orthogonally with other kernel features (ie. task /
+> group weights should work in an explainable way). I don't think the proposed
+> patches are scoring high in those axes.
+> 
+
+We set the interface into cpuset subsys because partition info should 
+follow effective_cpus. There may be a problem that we need to get load 
+info from cpu subsys, so "cpu" and "cpuset" should be both enabled in 
+the same cgroup. Fortunately, this is easy in cgroup-v2. Any other 
+conflict do you see?
+
+About "work orthogonally with other kernel features", we've explained 
+above. Weights are only used in selecting partitions and we just tend to 
+trying pulling tasks to their selected partitions, not force.
+
+> I'm not against the goal here. Given that cgroups express the logical
+> structure of applications running on the system, it does make sense to
+> factor that into scheduling decisions. However, what's proposed seems too
+> premature and I have a hard time seeing why this level of functionality
+> would be difficult to be implement from userspace with some additions in
+> terms of visibility which is really easy to do these days.
+
+Just as out explanation in the last mail, we believe building this in 
+userspace is not easy. Because interfaces provided by kernel now is 
+inflexible. From the view of cgroup, it is given a binded "cpuset.cpus", 
+and all cpus in this range are treated equally, while all cpus out of 
+this range are strictly forbidden. The existing cpuset mechanisms do 
+help resource limitation and isolation, but may be weak on improving 
+perforamce.
+
+So, our idea is, doing this in userspace, which relies on existing 
+kernel interfaces, is hard. Only exposing more data to increase 
+visibility in userspace is not enough. We need a whole solution from 
+collecting data to impacting decisions of the scheduler. Maybe eBPF can 
+cover all these works in the future, but it takes long time to develop 
+and maybe too much to achieve just dynamic cpu bind.
+
+Thanks.
