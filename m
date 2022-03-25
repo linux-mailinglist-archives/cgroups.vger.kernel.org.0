@@ -2,103 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71F24E6CC8
-	for <lists+cgroups@lfdr.de>; Fri, 25 Mar 2022 04:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72A84E6EE5
+	for <lists+cgroups@lfdr.de>; Fri, 25 Mar 2022 08:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358160AbiCYDMW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Mar 2022 23:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
+        id S1348234AbiCYHcF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Mar 2022 03:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234794AbiCYDMU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Mar 2022 23:12:20 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E729157F;
-        Thu, 24 Mar 2022 20:10:47 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id i4so5553358qti.7;
-        Thu, 24 Mar 2022 20:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rZkrO50N8MIM5fdKHsVpbm2U8iuVkvk0CAUhdGmqqWM=;
-        b=LEzCQ1BWpC5mhJuQigVniD6FG8W+FawIPFRfZn+Kc8wgPtrkzAdxNxjdF2z4sGF77R
-         vx2tdr04eu9K+qltad/QTWCS+aJIjicWUybB4qRGdUGf2MFLsUJ26Wt2s/Yd3g/69drO
-         nfmJa7B2HNNRWw5dUCx6PEQbxGEKpJEBmTZ+oYi4Mk4h7XqPLyFV36M4lrktps1MDGIM
-         7416CjhidMppBvW1QZARuGBCy9CPxN2gcZDERMFLwvRVPuByqnQ60bhEsGDqoBoYMpzf
-         oYJTqoXCa3jnCaLnvzBLSEQ3zz+UytX3asngvJyWKFknxSwXSATB4MWAIynVxZeEhPvl
-         u90Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rZkrO50N8MIM5fdKHsVpbm2U8iuVkvk0CAUhdGmqqWM=;
-        b=HMZk6yKo7SfaW+hNOuxX3fnQZ/WAaoY2yfANRWNi77vZGW/jKdwKQodGT7ThuA94uv
-         aGQZAv01cNGv3q1vUdYCeE3P2gb4tkOyzH02pOIJr+6im5xcmmGSghGmlbbKOc1X7nxF
-         uJhIZMTnrmV6nsy16nS1BcjsxPIdz6pO1usAkogs7XDXJbgFmGW2nBCNmgOBxVLvXel/
-         QDJHXNa+Ba3pYINA4lMnRfHeqb6OtnqVEIRJ7hxI7qQYr07GUdIGYFGBxnOFBW17Xm3g
-         GUITl8s97jvqySKeZKcRHpzar9LgvTPlh42JnA/hETlZqfLKhkCKcqhxs9lQFMcyfShI
-         kPjw==
-X-Gm-Message-State: AOAM5310hRbeE4d+vEXTYtvCaEwt6o/+GGElVBjPCF5eg9RaDt+kzZbW
-        ySalkya2SNJ+0mkWYn6sWNoLFgoaQSMA2p4KpiU=
-X-Google-Smtp-Source: ABdhPJzUejlrpTWbMbBFR3zw+m+FP9gNyj6Y72ty2YJAvfbhqETu1h/9BmrZCmXPz9/vloJ369+PEExnQzGdOMkkQPk=
-X-Received: by 2002:ac8:4e50:0:b0:2e2:17a8:2ab0 with SMTP id
- e16-20020ac84e50000000b002e217a82ab0mr7367671qtw.68.1648177847048; Thu, 24
- Mar 2022 20:10:47 -0700 (PDT)
+        with ESMTP id S1350106AbiCYHcE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Mar 2022 03:32:04 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E612C4E16;
+        Fri, 25 Mar 2022 00:30:30 -0700 (PDT)
+Received: from kwepemi100023.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KPtwz5wNqzCrlb;
+        Fri, 25 Mar 2022 15:28:19 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100023.china.huawei.com (7.221.188.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 25 Mar 2022 15:30:28 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 25 Mar 2022 15:30:27 +0800
+Subject: Re: [PATCH -next 00/11] support concurrent sync io for bfq on a
+ specail occasion
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <jack@suse.cz>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220305091205.4188398-1-yukuai3@huawei.com>
+ <e299180e-cdbd-0837-8478-5e397ac8166b@huawei.com>
+ <11fda851-a552-97ea-d083-d0288c17ba53@huawei.com>
+Message-ID: <e78fc7c5-cf08-9fc7-3f81-7ff8aaf37673@huawei.com>
+Date:   Fri, 25 Mar 2022 15:30:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <Yjx/3yi7BfH7wLPz@chrisdown.name> <FE4CCCF9-CF08-424B-85D0-B5C1BA63329D@linux.dev>
-In-Reply-To: <FE4CCCF9-CF08-424B-85D0-B5C1BA63329D@linux.dev>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Fri, 25 Mar 2022 11:10:19 +0800
-Message-ID: <CAGWkznGnDUvAqX3KCP+HZCyn49XU9=2bV9vfiFbutsQw8mK=hw@mail.gmail.com>
-Subject: Re: [RFC PATCH] cgroup: introduce proportional protection on memcg
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Chris Down <chris@chrisdown.name>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        ke wang <ke.wang@unisoc.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <11fda851-a552-97ea-d083-d0288c17ba53@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Mar 25, 2022 at 12:23 AM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> It seems like what=E2=80=99s being proposed is an ability to express the =
-protection in % of the current usage rather than an absolute number.
-> It=E2=80=99s an equivalent for something like a memory (reclaim) priority=
-: e.g. a cgroup with 80% protection is _always_ reclaimed less aggressively=
- than one with a 20% protection.
->
-> That said, I=E2=80=99m not a fan of this idea.
-> It might make sense in some reasonable range of usages, but if your workl=
-oad is simply leaking memory and growing indefinitely, protecting it seems =
-like a bad idea. And the first part can be easily achieved using an userspa=
-ce tool.
->
-> Thanks!
->
-> > On Mar 24, 2022, at 7:33 AM, Chris Down <chris@chrisdown.name> wrote:
-> >
-> > =EF=BB=BFI'm confused by the aims of this patch. We already have propor=
-tional reclaim for memory.min and memory.low, and memory.high is already "p=
-roportional" by its nature to drive memory back down behind the configured =
-threshold.
-> >
-> > Could you please be more clear about what you're trying to achieve and =
-in what way the existing proportional reclaim mechanisms are insufficient f=
-or you?
-ok, I think it could be fixable for memory leak issues. Please refer
-to my reply on Chris's comment for more explanation.
+friendly ping ...
+
+在 2022/03/17 9:49, yukuai (C) 写道:
+> friendly ping ...
+> 
+> 在 2022/03/11 14:31, yukuai (C) 写道:
+>> friendly ping ...
+>>
+>> 在 2022/03/05 17:11, Yu Kuai 写道:
+>>> Currently, bfq can't handle sync io concurrently as long as they
+>>> are not issued from root group. This is because
+>>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+>>> bfq_asymmetric_scenario().
+>>>
+>>> This patchset tries to support concurrent sync io if all the sync ios
+>>> are issued from the same cgroup:
+>>>
+>>> 1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
+>>>
+>>> 2) Don't idle if 'num_groups_with_pending_reqs' is 1, patch 6;
+>>>
+>>> 3) Don't count the group if the group doesn't have pending requests,
+>>> while it's child groups may have pending requests, patch 7;
+>>>
+>>> This is because, for example:
+>>> if sync ios are issued from cgroup /root/c1/c2, root, c1 and c2
+>>> will all be counted into 'num_groups_with_pending_reqs',
+>>> which makes it impossible to handle sync ios concurrently.
+>>>
+>>> 4) Decrease 'num_groups_with_pending_reqs' when the last queue completes
+>>> all the requests, while child groups may still have pending
+>>> requests, patch 8-10;
+>>>
+>>> This is because, for example:
+>>> t1 issue sync io on root group, t2 and t3 issue sync io on the same
+>>> child group. num_groups_with_pending_reqs is 2 now.
+>>> After t1 stopped, num_groups_with_pending_reqs is still 2. sync io from
+>>> t2 and t3 still can't be handled concurrently.
+>>>
+>>> fio test script: startdelay is used to avoid queue merging
+>>> [global]
+>>> filename=/dev/nvme0n1
+>>> allow_mounted_write=0
+>>> ioengine=psync
+>>> direct=1
+>>> ioscheduler=bfq
+>>> offset_increment=10g
+>>> group_reporting
+>>> rw=randwrite
+>>> bs=4k
+>>>
+>>> [test1]
+>>> numjobs=1
+>>>
+>>> [test2]
+>>> startdelay=1
+>>> numjobs=1
+>>>
+>>> [test3]
+>>> startdelay=2
+>>> numjobs=1
+>>>
+>>> [test4]
+>>> startdelay=3
+>>> numjobs=1
+>>>
+>>> [test5]
+>>> startdelay=4
+>>> numjobs=1
+>>>
+>>> [test6]
+>>> startdelay=5
+>>> numjobs=1
+>>>
+>>> [test7]
+>>> startdelay=6
+>>> numjobs=1
+>>>
+>>> [test8]
+>>> startdelay=7
+>>> numjobs=1
+>>>
+>>> test result:
+>>> running fio on root cgroup
+>>> v5.17-rc6:       550 Mib/s
+>>> v5.17-rc6-patched: 550 Mib/s
+>>>
+>>> running fio on non-root cgroup
+>>> v5.17-rc6:       349 Mib/s
+>>> v5.17-rc6-patched: 550 Mib/s
+>>>
+>>> Yu Kuai (11):
+>>>    block, bfq: add new apis to iterate bfq entities
+>>>    block, bfq: apply news apis where root group is not expected
+>>>    block, bfq: cleanup for __bfq_activate_requeue_entity()
+>>>    block, bfq: move the increasement of 
+>>> 'num_groups_with_pending_reqs' to
+>>>      it's caller
+>>>    block, bfq: count root group into 'num_groups_with_pending_reqs'
+>>>    block, bfq: do not idle if only one cgroup is activated
+>>>    block, bfq: only count parent bfqg when bfqq is activated
+>>>    block, bfq: record how many queues have pending requests in bfq_group
+>>>    block, bfq: move forward __bfq_weights_tree_remove()
+>>>    block, bfq: decrease 'num_groups_with_pending_reqs' earlier
+>>>    block, bfq: cleanup bfqq_group()
+>>>
+>>>   block/bfq-cgroup.c  | 13 +++----
+>>>   block/bfq-iosched.c | 87 +++++++++++++++++++++++----------------------
+>>>   block/bfq-iosched.h | 41 +++++++++++++--------
+>>>   block/bfq-wf2q.c    | 56 +++++++++++++++--------------
+>>>   4 files changed, 106 insertions(+), 91 deletions(-)
+>>>
