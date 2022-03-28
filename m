@@ -2,236 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5054E8CEE
-	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 06:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FC44E90EE
+	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 11:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237729AbiC1ECt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Mar 2022 00:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
+        id S238570AbiC1JTK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Mar 2022 05:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237929AbiC1ECH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 00:02:07 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA71B457BC
-        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:09 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b11-20020a5b008b000000b00624ea481d55so9994472ybp.19
-        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:09 -0700 (PDT)
+        with ESMTP id S233749AbiC1JTK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 05:19:10 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B8A40917
+        for <cgroups@vger.kernel.org>; Mon, 28 Mar 2022 02:17:30 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id u22so12035870pfg.6
+        for <cgroups@vger.kernel.org>; Mon, 28 Mar 2022 02:17:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=5yVgehYPp/D4TvQwla1lP4QXTd3no9VslKN9O7AQtMc=;
-        b=PhhJHuDY8p3QcagPQvPZS3gUNE+WTXGwsjHGcy5vYWAnTDsBi689RrlHpX0zFrkeeB
-         cgq7zsJvQ4TmXMK1FTpCqUW7u3lra5MV6nGauGeFVJDPCVrWmnkHjOmwhDdU+M7H3MZe
-         9q35JQxGebLqH5/ONPtCo4HXNZx4OcvVXTYpNkTBV6/yAbNgaRVy5ssOv6jFVcFkP4kh
-         c6sqXcTOyO3FaJ9kpa11O5JJElojJYBxTFCpnde1aJSzeINLr01Z2GHiUlyp+D3vIicZ
-         9yFl6rYahM5JoO00jsPYyoSQwu+mCGj11q2ksSeUHehSTH8F0UI4LYMgOKHBkHzbM5kw
-         cvlQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kpQSKtdwNb3KC+dlFVYdgCuQmYu2WXrTtlnYf3fe1l8=;
+        b=YCsQDYTMhVfFS4jUgjugN+EKYW2QiI11NiiFh/w4yzJf8k0v+rR+WcwnSZ1DS/RnKP
+         7GkAeIFgVSZcYgH9yYPcRw1VQuH8wf6MSjnx31JR4bmwVt+N7EG5ssSn4iorRC9/5TaF
+         nVsY1CNVZUcfifMRRoRcBAgXAK1dhD0FLbwGOFlGr87RFvJKSgpyNaYT4XugCWPs+KJz
+         S/R7pigyNxrGJ5jGrhVrThjkD5V1lkqRGQBw1/u2heG1ewyU/y1jUYJKmHbLeE1QGjTI
+         MJGui/dwhfeQX32BFZ3xZCjFv+eXoBGlci9kCOx5YWMJxIy/5mPiJFYPZyEUXdgaDDvU
+         weKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=5yVgehYPp/D4TvQwla1lP4QXTd3no9VslKN9O7AQtMc=;
-        b=6DpUDgv97PfrbY40aNNZbbZJQHzY4F2tPpio+ZyAjqzXSHacqCGF8766zq0N78wOpI
-         iUl5/NokziGxia3eKoXnsuhZZpamCfnwIxuZe7bUGuyZEwxWacKQtRDjE0gLIE94rJ7O
-         qNcvl1SEyqYS2+3hs+EM9j8sgQmI0WzBoNolwEQuTt9xf/5MbMNPaUNMXq5K2ioqsLFj
-         qkSP4IjkLjmdzFP+HNocwlqHSXKtwNZjjxihoJpfj52w0ITLAY0eAwDn/ovYTxeorhnv
-         TJwSE0sOYhsH/NFyjYkXv2riJmoRMA9sTvrISaUpTTanR7gPhh1kEu6RAvtJR5c8UgBZ
-         z0Bw==
-X-Gm-Message-State: AOAM5316o7mczY0v6uQe81yUH77kRFrZ48zSEOOcAF0bYIm+YdrkXQ8I
-        1TQkC0k3gpQNvWZRqoWmYKw5EUA1ZigZ1/8=
-X-Google-Smtp-Source: ABdhPJys0sTPrji6EjHujuYz082iO9ggsvoNSm4OdxVncyEN7gJkiqTrwHhvJvo9vVVIk7aJX3q2Povqc86sLs4=
-X-Received: from tj2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:187])
- (user=tjmercier job=sendgmr) by 2002:a25:bdd3:0:b0:635:eaaf:53 with SMTP id
- g19-20020a25bdd3000000b00635eaaf0053mr20426308ybk.74.1648440008833; Sun, 27
- Mar 2022 21:00:08 -0700 (PDT)
-Date:   Mon, 28 Mar 2022 03:59:43 +0000
-In-Reply-To: <20220328035951.1817417-1-tjmercier@google.com>
-Message-Id: <20220328035951.1817417-5-tjmercier@google.com>
-Mime-Version: 1.0
-References: <20220328035951.1817417-1-tjmercier@google.com>
-X-Mailer: git-send-email 2.35.1.1021.g381101b075-goog
-Subject: [RFC v4 4/8] dmabuf: heaps: export system_heap buffers with GPU
- cgroup charging
-From:   "T.J. Mercier" <tjmercier@google.com>
-To:     tjmercier@google.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kpQSKtdwNb3KC+dlFVYdgCuQmYu2WXrTtlnYf3fe1l8=;
+        b=sJKF+ngktMF7vVxvnPHMS+WW+xt35jPWxXNjBJl5xs42aCmhhnzWhcMQVjBadWRZc8
+         VD0rxQ8MsGrmgIeSBdioM4kzLjKftjMTO2ajRAn2216mVHWXL21LtEnXBMITyIweofbd
+         ifkKQrmyrp5uTH9dmFtzsK8IWoG7ZGqVY+Gl8kXQh2ZtYWoS3/1bfGBObyM5CUnWV1kE
+         +m1ob+57E+gVRqT96E6yrY8hDkZyAcC8uaFq6upHcvUYUWnEiI8i0HmaC9fvXdRpD7ku
+         cdiqtgp/h3ecwgunzUY3QstfoBL+8mFY7vXuIIDOqDbgN8nPLrQjI9GyY19+Yuv6sG6U
+         xcCQ==
+X-Gm-Message-State: AOAM530mmrvCIy7qASDt27+g9Q7oKhKwQws42670YsPWCB4qm+lrbWoW
+        ZCq1TtnWWKxRA/x4WxVeeqNLE7ZGqP1gJp2HNW4QnA==
+X-Google-Smtp-Source: ABdhPJzNClzlxXy6do9tw7mpbWwP81WKjZPm+SVTHWOuMA+zQGyhRfvPYFLJ2ILCrxR0H8E1lbcgYU2wYHB9QGa6xK4=
+X-Received: by 2002:a05:6a00:a0f:b0:4e1:309:83c0 with SMTP id
+ p15-20020a056a000a0f00b004e1030983c0mr22567091pfh.68.1648459049579; Mon, 28
+ Mar 2022 02:17:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
+ <CAPhsuW6QTaCVekkT8Ah0N2K4JY7yiiO2wZjk6pVKuraEqjkoXQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW6QTaCVekkT8Ah0N2K4JY7yiiO2wZjk6pVKuraEqjkoXQ@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 28 Mar 2022 02:16:53 -0700
+Message-ID: <CAJD7tkaS0k9TVvsDDKP1XCahJ1TyJeSyRHGSM+NZygFwMD=wzQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
+To:     Song Liu <song@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     kaleshsingh@google.com, Kenny.Ho@amd.com, mkoutny@suse.com,
-        skhan@linuxfoundation.org, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+        Hao Luo <haoluo@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hridya Valsaraju <hridya@google.com>
+On Fri, Mar 18, 2022 at 12:59 PM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Mar 9, 2022 at 12:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > Hey everyone,
+> >
+> > I would like to discuss an idea to facilitate collection of
+> > hierarchical cgroup stats using BPF programs. We want to provide a
+> > simple interface for BPF programs to collect hierarchical cgroup stats
+> > and integrate with the existing rstat aggregation mechanism in the
+> > kernel. The most prominent use case is the ability to extend memcg
+> > stats (and histograms) by BPF programs.
+> >
+>
+> + Namhyung,
+>
+> I forgot to mention this in the office hour. The aggregation efficiency
+> problem is actually similar to Namhyung's work to use BPF programs
+> to aggregate perf counters. Check:
+>      tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+>
+> Namhyung's solution is to walk up the cgroup tree on cgroup switch
+> events. This may not be as efficient as rstat flush logic, but I think it
+> is good enough for many use cases (unless the cgroup tree is very
+> deep). It also demonstrates how we can implement some cgroup
+> logic in BPF.
+>
+> I hope this helps.
+>
+> Thanks,
+> Song
+>
+> [...]
 
-All DMA heaps now register a new GPU cgroup device upon creation, and the
-system_heap now exports buffers associated with its GPU cgroup device for
-tracking purposes.
+Hi Song,
 
-Signed-off-by: Hridya Valsaraju <hridya@google.com>
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
+Thanks so much for pointing this out. I have an idea of a less
+intrusive and more generic way to directly use rstat flushing in BPF
+programs, which basically makes BPF programs maintain their own stats
+and flushing logic and only using helpers to make calls to rstat
+(instead of a whole new rstat map). I will work on an RFC patch series
+for this.
 
----
-v3 changes
-Use more common dual author commit message format per John Stultz.
-
-v2 changes
-Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
-heap to a single dma-buf function for all heaps per Daniel Vetter and
-Christian K=C3=B6nig.
----
- drivers/dma-buf/dma-heap.c          | 27 +++++++++++++++++++++++++++
- drivers/dma-buf/heaps/system_heap.c |  3 +++
- include/linux/dma-heap.h            | 11 +++++++++++
- 3 files changed, 41 insertions(+)
-
-diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-index 8f5848aa144f..885072427775 100644
---- a/drivers/dma-buf/dma-heap.c
-+++ b/drivers/dma-buf/dma-heap.c
-@@ -7,6 +7,7 @@
-  */
-=20
- #include <linux/cdev.h>
-+#include <linux/cgroup_gpu.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
- #include <linux/dma-buf.h>
-@@ -31,6 +32,7 @@
-  * @heap_devt		heap device node
-  * @list		list head connecting to list of heaps
-  * @heap_cdev		heap char device
-+ * @gpucg_dev		gpu cgroup device for memory accounting
-  *
-  * Represents a heap of memory from which buffers can be made.
-  */
-@@ -41,6 +43,9 @@ struct dma_heap {
- 	dev_t heap_devt;
- 	struct list_head list;
- 	struct cdev heap_cdev;
-+#ifdef CONFIG_CGROUP_GPU
-+	struct gpucg_device gpucg_dev;
-+#endif
- };
-=20
- static LIST_HEAD(heap_list);
-@@ -216,6 +221,26 @@ const char *dma_heap_get_name(struct dma_heap *heap)
- 	return heap->name;
- }
-=20
-+#ifdef CONFIG_CGROUP_GPU
-+/**
-+ * dma_heap_get_gpucg_dev() - get struct gpucg_device for the heap.
-+ * @heap: DMA-Heap to get the gpucg_device struct for.
-+ *
-+ * Returns:
-+ * The gpucg_device struct for the heap. NULL if the GPU cgroup controller=
- is
-+ * not enabled.
-+ */
-+struct gpucg_device *dma_heap_get_gpucg_dev(struct dma_heap *heap)
-+{
-+	return &heap->gpucg_dev;
-+}
-+#else /* CONFIG_CGROUP_GPU */
-+struct gpucg_device *dma_heap_get_gpucg_dev(struct dma_heap *heap)
-+{
-+	return NULL;
-+}
-+#endif /* CONFIG_CGROUP_GPU */
-+
- struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
- {
- 	struct dma_heap *heap, *h, *err_ret;
-@@ -288,6 +313,8 @@ struct dma_heap *dma_heap_add(const struct dma_heap_exp=
-ort_info *exp_info)
- 	list_add(&heap->list, &heap_list);
- 	mutex_unlock(&heap_list_lock);
-=20
-+	gpucg_register_device(dma_heap_get_gpucg_dev(heap), exp_info->name);
-+
- 	return heap;
-=20
- err2:
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/sy=
-stem_heap.c
-index ab7fd896d2c4..752a05c3cfe2 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -395,6 +395,9 @@ static struct dma_buf *system_heap_allocate(struct dma_=
-heap *heap,
- 	exp_info.ops =3D &system_heap_buf_ops;
- 	exp_info.size =3D buffer->len;
- 	exp_info.flags =3D fd_flags;
-+#ifdef CONFIG_CGROUP_GPU
-+	exp_info.gpucg_dev =3D dma_heap_get_gpucg_dev(heap);
-+#endif
- 	exp_info.priv =3D buffer;
- 	dmabuf =3D dma_buf_export(&exp_info);
- 	if (IS_ERR(dmabuf)) {
-diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
-index 0c05561cad6e..e447a61d054e 100644
---- a/include/linux/dma-heap.h
-+++ b/include/linux/dma-heap.h
-@@ -10,6 +10,7 @@
- #define _DMA_HEAPS_H
-=20
- #include <linux/cdev.h>
-+#include <linux/cgroup_gpu.h>
- #include <linux/types.h>
-=20
- struct dma_heap;
-@@ -59,6 +60,16 @@ void *dma_heap_get_drvdata(struct dma_heap *heap);
-  */
- const char *dma_heap_get_name(struct dma_heap *heap);
-=20
-+/**
-+ * dma_heap_get_gpucg_dev() - get a pointer to the struct gpucg_device for=
- the
-+ * heap.
-+ * @heap: DMA-Heap to retrieve gpucg_device for.
-+ *
-+ * Returns:
-+ * The gpucg_device struct for the heap.
-+ */
-+struct gpucg_device *dma_heap_get_gpucg_dev(struct dma_heap *heap);
-+
- /**
-  * dma_heap_add - adds a heap to dmabuf heaps
-  * @exp_info:		information needed to register this heap
---=20
-2.35.1.1021.g381101b075-goog
-
+If this doesn't work out, I will probably fallback to handling the
+flushing completely in the BPF programs, similar to the example you
+provided (which is a lot of help, thanks!).
