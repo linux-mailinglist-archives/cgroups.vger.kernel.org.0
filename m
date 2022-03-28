@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5F84E9438
-	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 13:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9864E93CD
+	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 13:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbiC1L0l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Mar 2022 07:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
+        id S241085AbiC1LZK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Mar 2022 07:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241731AbiC1LYJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 07:24:09 -0400
+        with ESMTP id S241026AbiC1LZC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 07:25:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5B655BC7;
-        Mon, 28 Mar 2022 04:21:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620C15643F;
+        Mon, 28 Mar 2022 04:23:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29B1661126;
-        Mon, 28 Mar 2022 11:21:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4588FC340F3;
-        Mon, 28 Mar 2022 11:21:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA686611D8;
+        Mon, 28 Mar 2022 11:23:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506C2C340F3;
+        Mon, 28 Mar 2022 11:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466509;
-        bh=ocxmqrhFe+3/lIramiGQhKBRQ/Os4hCCByY+saZzH/k=;
+        s=k20201202; t=1648466588;
+        bh=D7zehDB5ZT+cPJglemgyT0v37ZSf+QM4AK+whiwO7mQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rDDsVHFIlUNfLwt8bxLcjxCLTubCirpY6l6nVRIx3D+4OEfoVwpDshKEPg2r+2xGU
-         BEH4x9W2ys6/un0rapn1A45loErghSgJ2VVzu1tSacvirvXTPLW2QSkke5j4hgMRNg
-         lF9Bdo23yxV9CiRGKA2Dp83oDJ5j7wdvrKCdptUcJaXFqAmGfDWg7MjhNMH+4hJmvZ
-         yw3isEMi2aOfyj/PzkaC1NMaPhqSRXqlsKYG/ur16nJPS6nGVy5xzlEnwJu+MfeNq4
-         Tgam7RzLddPTHys3LHOvM0vKWQCg+S3TgZtzEQaRYmRu3Gke78du53o8APADsmu2fK
-         D7zsU8vHRJs5w==
+        b=rcEQ5BzMOiNupz15FGivAI6C4IqPwJYHHn9ntCEb4dku4GQtMT7j5WAmG90J5/g0a
+         l+phooA3E2PH3XJsNpBdK/PKSD5pbfAFqYbTMSzY+lCy6HupFmfMdrkRcI8tAjr7kG
+         o62YOiCFpillZp2VNIIBJLGNBVlbfG/AUGPANhyT6rV+X6U448wyQEns5Em8tfvASf
+         b1zBGd9NRifuomvupqJ3E6RQ/HwOZFpmi0LVzkll4xDFHTsUiTawfaO6nS4rx5Acmc
+         +fhb5GbMqX6CZ165Pyc2+i9/6qVaK2R2VF2gdkRhzmKce9+2iq4+aL3WPzKjB6Ledc
+         +NCqjm70UbNKg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yu Kuai <yukuai3@huawei.com>, Jan Kara <jack@suse.cz>,
         Paolo Valente <paolo.valente@linaro.org>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        tj@kernel.org, cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/29] block, bfq: don't move oom_bfqq
-Date:   Mon, 28 Mar 2022 07:21:12 -0400
-Message-Id: <20220328112132.1555683-10-sashal@kernel.org>
+        tj@kernel.org, linux-block@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 05/21] block, bfq: don't move oom_bfqq
+Date:   Mon, 28 Mar 2022 07:22:38 -0400
+Message-Id: <20220328112254.1556286-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328112132.1555683-1-sashal@kernel.org>
-References: <20220328112132.1555683-1-sashal@kernel.org>
+In-Reply-To: <20220328112254.1556286-1-sashal@kernel.org>
+References: <20220328112254.1556286-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -175,10 +175,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+)
 
 diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 85b8e1c3a762..e37af3f8a733 100644
+index b791e2041e49..c2fdd6fcdaee 100644
 --- a/block/bfq-cgroup.c
 +++ b/block/bfq-cgroup.c
-@@ -644,6 +644,12 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+@@ -642,6 +642,12 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
  {
  	struct bfq_entity *entity = &bfqq->entity;
  
