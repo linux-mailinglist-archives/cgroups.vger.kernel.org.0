@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDF74E8CD1
-	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 06:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6DA4E8CF4
+	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 06:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237985AbiC1ECX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Mar 2022 00:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S237928AbiC1ECH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Mar 2022 00:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237991AbiC1ECI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 00:02:08 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ADC46B10
-        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id x9-20020a5b0809000000b00631d9edfb96so9928188ybp.22
-        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:21 -0700 (PDT)
+        with ESMTP id S237905AbiC1EBq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 00:01:46 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5406E45530
+        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:04 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2e68c93bb30so109047377b3.18
+        for <cgroups@vger.kernel.org>; Sun, 27 Mar 2022 21:00:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=aw7Jx0SBZxiq/gXtNTr/NMs/6Ce+sPdPMOXm830Orc8=;
-        b=eM8mPq9N5vZRrWebfORCnrSl0XRPx94LYESRj40CAjlczmt89I7kRE/n/KEEqDDsRi
-         2VgZpTpvYRaeuDNJrSHfCyl9UbpzyJ5cqokTLz1BMbslwkyNHS5E78N1d64aSy+gl11B
-         1p8GUjO2KVfyZhGF7ucjaahqsvCOzKOzijNgNPnyeFA43XzerDJq66wnq8tBIQxmiMl6
-         02cthS73zFxWeCoionBZOGyI3/aZ9t0MgTof4VSUoebJQfYkSS4iOJcNT1POfhOXcZVR
-         W04MSO/aufHy4OLYp9+KPWojv4lKbBUSREW8Wsjg+/ynFZQZ1LkrTuvLe6/qhZCtgw3y
-         fZFg==
+        bh=IYYYJa14yGoWfIlSCozw9vFwnqgCtFZKfx+GkbnYSXE=;
+        b=RK4bONjo0HsvOUkL3Q0L0YYP4oMIRRUxsLZrGS1ggPxUPmcf0Ku+8mk6TthgaTShfI
+         S5LSzEJ8gsi/fNLS5JKi2Or1xauiPrbYmg8dMwASkKHC0K0Qq8bXqOsNilCcvWFFcsJh
+         95RQBY4SG+N+uFldG+tXlKf2/Kb+TgThsYky72KhLMM/hdbWgBJxHxYNZaq7G68vAJBR
+         5X0dibqhoLkd09ofaZCyqHq2STvP8euPy9X+RUtDyw9e7IOuznjbkp8i7UqgkgqVVYHr
+         Zj6HCgoXBscApkVfeq0zlYCZOIMpeOvOXuo2ScpjbfDbZoLPA3f6xz/pNEmOIP4w7Fs+
+         BZPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=aw7Jx0SBZxiq/gXtNTr/NMs/6Ce+sPdPMOXm830Orc8=;
-        b=MZYz4TzYAZftx5PIhxI5SmZspWibVhpE0w76f42hVQPcC2iF7FKFfSaNoHN6QUI0yH
-         yIkwQfisKraKsYLa7bdkAzzhVL2DPHhUzovop/RywrF52ZHF9aSjxa660379jKHxctE2
-         mIy5wfjil+D/IReTUqNuy4N0gj7ziMjDQQK8IXwS2MwQDcLZUBR54adFmehc/lnnfwpK
-         pD4ki1bYsV4cgu5kTiw/N9YEQJ6OAHawY2Kx3NoONcb7m375tn5jqvkZXKgThDLiKvjB
-         lZ+T2hwkRbRMnWUHfeS0bBDXsSLugay25PAyrzE29+eXeKOB7YXhMT+/31COyBTEMXUG
-         s9UQ==
-X-Gm-Message-State: AOAM531DtEIRSaQsyA1QBTdRNzJQ2AjbN/mS3hppPkWggWQk5l7/LUTa
-        GhgjfmifTeGAHsRMGVLHEkuMcOVhTu3udIU=
-X-Google-Smtp-Source: ABdhPJwvR7vKzkyBmRBAGOeAKkOn5JNipCSaGz6+Q1QABCR6XgfrrtebYw8A1AqbJ68EfoCjXn4f3oT/fBtHotE=
+        bh=IYYYJa14yGoWfIlSCozw9vFwnqgCtFZKfx+GkbnYSXE=;
+        b=iMFK/OZb2V8m6kUY7qDOo5RRjzDbD0pkksiv6cT9CEXkDjoy7PxqbBg+fAMGfL7YrM
+         aoNsCx7Go20YZ1X6rxAuDhJXJ60EXNSq1+vrvC0Eyo0NB0kGTeOTpbTd9tuM5//5J19n
+         lGbi32h8xZQAB059XS7c3EfyAV5LZ1SIuKAPqlrPI9b1WjVgkwEqYrDEeOcedQXr+nTL
+         OrHZQXBuTFhkUYa68W2QIkH7oUW5mUvLx9kO6XSZXr0o5vmRk4yEDfyIlJVRc/6waTE2
+         U1+cewjYTk/JpTd1lRB3GViUI/AlXAewWBsI3KPGTBWWiDexbBLG3Pw0kHCMuDu9FapD
+         ifVw==
+X-Gm-Message-State: AOAM533Txkjcg0Df4IJEDSSLvFqiU5yeo8xtyT8ZJx/dKshMQg99yExB
+        HkvQstfRIvEKN8LTp+F1XerJd0Fil1q1gCE=
+X-Google-Smtp-Source: ABdhPJxYK7296EhIG6DPTxcUw4Vq+WUXF92UatMSSsMB6VQOxYjQeGp1NzWh43iM6Z6YlY0AXGgjNo5itdMR5Qk=
 X-Received: from tj2.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:187])
- (user=tjmercier job=sendgmr) by 2002:a25:238d:0:b0:633:b8e5:ddef with SMTP id
- j135-20020a25238d000000b00633b8e5ddefmr20177089ybj.176.1648440020525; Sun, 27
- Mar 2022 21:00:20 -0700 (PDT)
-Date:   Mon, 28 Mar 2022 03:59:47 +0000
+ (user=tjmercier job=sendgmr) by 2002:a05:690c:81:b0:2e1:b8cf:5ea9 with SMTP
+ id be1-20020a05690c008100b002e1b8cf5ea9mr24964136ywb.191.1648440003462; Sun,
+ 27 Mar 2022 21:00:03 -0700 (PDT)
+Date:   Mon, 28 Mar 2022 03:59:41 +0000
 In-Reply-To: <20220328035951.1817417-1-tjmercier@google.com>
-Message-Id: <20220328035951.1817417-9-tjmercier@google.com>
+Message-Id: <20220328035951.1817417-3-tjmercier@google.com>
 Mime-Version: 1.0
 References: <20220328035951.1817417-1-tjmercier@google.com>
 X-Mailer: git-send-email 2.35.1.1021.g381101b075-goog
-Subject: [RFC v4 8/8] selftests: Add binder cgroup gpu memory transfer test
+Subject: [RFC v4 2/8] cgroup: gpu: Add a cgroup controller for allocator
+ attribution of GPU memory
 From:   "T.J. Mercier" <tjmercier@google.com>
 To:     tjmercier@google.com, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -93,842 +94,535 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This test verifies that the cgroup GPU memory charge is transferred
-correctly when a dmabuf is passed between processes in two different
-cgroups and the sender specifies BINDER_BUFFER_FLAG_SENDER_NO_NEED in the
-binder transaction data containing the dmabuf file descriptor.
+From: Hridya Valsaraju <hridya@google.com>
 
+The cgroup controller provides accounting for GPU and GPU-related
+memory allocations. The memory being accounted can be device memory or
+memory allocated from pools dedicated to serve GPU-related tasks.
+
+This patch adds APIs to:
+-allow a device to register for memory accounting using the GPU cgroup
+controller.
+-charge and uncharge allocated memory to a cgroup.
+
+When the cgroup controller is enabled, it would expose information about
+the memory allocated by each device(registered for GPU cgroup memory
+accounting) for each cgroup.
+
+The API/UAPI can be extended to set per-device/total allocation limits
+in the future.
+
+The cgroup controller has been named following the discussion in [1].
+
+[1]: https://lore.kernel.org/amd-gfx/YCJp%2F%2FkMC7YjVMXv@phenom.ffwll.local/
+
+Signed-off-by: Hridya Valsaraju <hridya@google.com>
 Signed-off-by: T.J. Mercier <tjmercier@google.com>
+
 ---
 v4 changes
-Skip test if not run as root per Shuah Khan.
+Adjust gpucg_try_charge critical section for future charge transfer
+functionality.
 
-Add better logging for abnormal child termination per Shuah Khan.
+v3 changes
+Use more common dual author commit message format per John Stultz.
+
+v2 changes
+Fix incorrect Kconfig help section indentation per Randy Dunlap.
 ---
- .../selftests/drivers/android/binder/Makefile |   8 +
- .../drivers/android/binder/binder_util.c      | 254 +++++++++
- .../drivers/android/binder/binder_util.h      |  32 ++
- .../selftests/drivers/android/binder/config   |   4 +
- .../binder/test_dmabuf_cgroup_transfer.c      | 484 ++++++++++++++++++
- 5 files changed, 782 insertions(+)
- create mode 100644 tools/testing/selftests/drivers/android/binder/Makefile
- create mode 100644 tools/testing/selftests/drivers/android/binder/binder_util.c
- create mode 100644 tools/testing/selftests/drivers/android/binder/binder_util.h
- create mode 100644 tools/testing/selftests/drivers/android/binder/config
- create mode 100644 tools/testing/selftests/drivers/android/binder/test_dmabuf_cgroup_transfer.c
+ include/linux/cgroup_gpu.h    | 127 ++++++++++++++
+ include/linux/cgroup_subsys.h |   4 +
+ init/Kconfig                  |   7 +
+ kernel/cgroup/Makefile        |   1 +
+ kernel/cgroup/gpu.c           | 303 ++++++++++++++++++++++++++++++++++
+ 5 files changed, 442 insertions(+)
+ create mode 100644 include/linux/cgroup_gpu.h
+ create mode 100644 kernel/cgroup/gpu.c
 
-diff --git a/tools/testing/selftests/drivers/android/binder/Makefile b/tools/testing/selftests/drivers/android/binder/Makefile
+diff --git a/include/linux/cgroup_gpu.h b/include/linux/cgroup_gpu.h
 new file mode 100644
-index 000000000000..726439d10675
+index 000000000000..c90069719022
 --- /dev/null
-+++ b/tools/testing/selftests/drivers/android/binder/Makefile
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS += -Wall
++++ b/include/linux/cgroup_gpu.h
+@@ -0,0 +1,127 @@
++/* SPDX-License-Identifier: MIT
++ * Copyright 2019 Advanced Micro Devices, Inc.
++ * Copyright (C) 2022 Google LLC.
++ */
++#ifndef _CGROUP_GPU_H
++#define _CGROUP_GPU_H
 +
-+TEST_GEN_PROGS = test_dmabuf_cgroup_transfer
++#include <linux/cgroup.h>
++#include <linux/page_counter.h>
 +
-+include ../../../lib.mk
++#ifdef CONFIG_CGROUP_GPU
++ /* The GPU cgroup controller data structure */
++struct gpucg {
++	struct cgroup_subsys_state css;
 +
-+$(OUTPUT)/test_dmabuf_cgroup_transfer: ../../../cgroup/cgroup_util.c binder_util.c
-diff --git a/tools/testing/selftests/drivers/android/binder/binder_util.c b/tools/testing/selftests/drivers/android/binder/binder_util.c
-new file mode 100644
-index 000000000000..c9dcf5b9d42b
---- /dev/null
-+++ b/tools/testing/selftests/drivers/android/binder/binder_util.c
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0
++	/* list of all resource pools that belong to this cgroup */
++	struct list_head rpools;
++};
 +
-+#include "binder_util.h"
++struct gpucg_device {
++	/*
++	 * list of various resource pools in various cgroups that the device is
++	 * part of.
++	 */
++	struct list_head rpools;
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <sys/mount.h>
-+
-+#include <linux/limits.h>
-+#include <linux/android/binder.h>
-+#include <linux/android/binderfs.h>
-+
-+static const size_t BINDER_MMAP_SIZE = 64 * 1024;
-+
-+static void binderfs_unmount(const char *mountpoint)
-+{
-+	if (umount2(mountpoint, MNT_DETACH))
-+		fprintf(stderr, "Failed to unmount binderfs at %s: %s\n",
-+			mountpoint, strerror(errno));
-+	else
-+		fprintf(stderr, "Binderfs unmounted: %s\n", mountpoint);
-+
-+	if (rmdir(mountpoint))
-+		fprintf(stderr, "Failed to remove binderfs mount %s: %s\n",
-+			mountpoint, strerror(errno));
-+	else
-+		fprintf(stderr, "Binderfs mountpoint destroyed: %s\n", mountpoint);
-+}
-+
-+struct binderfs_ctx create_binderfs(const char *name)
-+{
-+	int fd, ret, saved_errno;
-+	struct binderfs_device device = { 0 };
-+	struct binderfs_ctx ctx = { 0 };
++	/* list of all devices registered for GPU cgroup accounting */
++	struct list_head dev_node;
 +
 +	/*
-+	 * P_tmpdir is set to "/tmp/" on Android platforms where Binder is most
-+	 * commonly used, but this path does not actually exist on Android. We
-+	 * will first try using "/data/local/tmp" and fallback to P_tmpdir if
-+	 * that fails for non-Android platforms.
++	 * pointer to string literal to be used as identifier for accounting and
++	 * limit setting
 +	 */
-+	static const char tmpdir[] = "/data/local/tmp";
-+	static const size_t MAX_TMPDIR_SIZE =
-+		sizeof(tmpdir) > sizeof(P_tmpdir) ?
-+		sizeof(tmpdir) : sizeof(P_tmpdir);
-+	static const char template[] = "/binderfs_XXXXXX";
++	const char *name;
++};
 +
-+	char *mkdtemp_result;
-+	char binderfs_mntpt[MAX_TMPDIR_SIZE + sizeof(template)];
-+	char device_path[MAX_TMPDIR_SIZE + sizeof(template) + BINDERFS_MAX_NAME];
-+
-+	snprintf(binderfs_mntpt, sizeof(binderfs_mntpt), "%s%s", tmpdir, template);
-+
-+	mkdtemp_result = mkdtemp(binderfs_mntpt);
-+	if (mkdtemp_result == NULL) {
-+		fprintf(stderr, "Failed to create binderfs mountpoint at %s: %s.\n",
-+			binderfs_mntpt, strerror(errno));
-+		fprintf(stderr, "Trying fallback mountpoint...\n");
-+		snprintf(binderfs_mntpt, sizeof(binderfs_mntpt), "%s%s", P_tmpdir, template);
-+		if (mkdtemp(binderfs_mntpt) == NULL) {
-+			fprintf(stderr, "Failed to create binderfs mountpoint at %s: %s\n",
-+			binderfs_mntpt, strerror(errno));
-+			return ctx;
-+		}
-+	}
-+	fprintf(stderr, "Binderfs mountpoint created at %s\n", binderfs_mntpt);
-+
-+	if (mount(NULL, binderfs_mntpt, "binder", 0, 0)) {
-+		perror("Could not mount binderfs");
-+		rmdir(binderfs_mntpt);
-+		return ctx;
-+	}
-+	fprintf(stderr, "Binderfs mounted at %s\n", binderfs_mntpt);
-+
-+	strncpy(device.name, name, sizeof(device.name));
-+	snprintf(device_path, sizeof(device_path), "%s/binder-control", binderfs_mntpt);
-+	fd = open(device_path, O_RDONLY | O_CLOEXEC);
-+	if (!fd) {
-+		perror("Failed to open binder-control device");
-+		binderfs_unmount(binderfs_mntpt);
-+		return ctx;
-+	}
-+
-+	ret = ioctl(fd, BINDER_CTL_ADD, &device);
-+	saved_errno = errno;
-+	close(fd);
-+	errno = saved_errno;
-+	if (ret) {
-+		perror("Failed to allocate new binder device");
-+		binderfs_unmount(binderfs_mntpt);
-+		return ctx;
-+	}
-+
-+	fprintf(stderr, "Allocated new binder device with major %d, minor %d, and name %s at %s\n",
-+		device.major, device.minor, device.name, binderfs_mntpt);
-+
-+	ctx.name = strdup(name);
-+	ctx.mountpoint = strdup(binderfs_mntpt);
-+	return ctx;
++/**
++ * css_to_gpucg - get the corresponding gpucg ref from a cgroup_subsys_state
++ * @css: the target cgroup_subsys_state
++ *
++ * Returns: gpu cgroup that contains the @css
++ */
++static inline struct gpucg *css_to_gpucg(struct cgroup_subsys_state *css)
++{
++	return css ? container_of(css, struct gpucg, css) : NULL;
 +}
 +
-+void destroy_binderfs(struct binderfs_ctx *ctx)
++/**
++ * gpucg_get - get the gpucg reference that a task belongs to
++ * @task: the target task
++ *
++ * This increases the reference count of the css that the @task belongs to.
++ *
++ * Returns: reference to the gpu cgroup the task belongs to.
++ */
++static inline struct gpucg *gpucg_get(struct task_struct *task)
 +{
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), "%s/%s", ctx->mountpoint, ctx->name);
-+
-+	if (unlink(path))
-+		fprintf(stderr, "Failed to unlink binder device %s: %s\n", path, strerror(errno));
-+	else
-+		fprintf(stderr, "Destroyed binder %s at %s\n", ctx->name, ctx->mountpoint);
-+
-+	binderfs_unmount(ctx->mountpoint);
-+
-+	free(ctx->name);
-+	free(ctx->mountpoint);
++	if (!cgroup_subsys_enabled(gpu_cgrp_subsys))
++		return NULL;
++	return css_to_gpucg(task_get_css(task, gpu_cgrp_id));
 +}
 +
-+struct binder_ctx open_binder(struct binderfs_ctx *bfs_ctx)
++/**
++ * gpucg_put - put a gpucg reference
++ * @gpucg: the target gpucg
++ *
++ * Put a reference obtained via gpucg_get
++ */
++static inline void gpucg_put(struct gpucg *gpucg)
 +{
-+	struct binder_ctx ctx = {.fd = -1, .memory = NULL};
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), "%s/%s", bfs_ctx->mountpoint, bfs_ctx->name);
-+	ctx.fd = open(path, O_RDWR | O_NONBLOCK | O_CLOEXEC);
-+	if (ctx.fd < 0) {
-+		fprintf(stderr, "Error opening binder device %s: %s\n", path, strerror(errno));
-+		return ctx;
-+	}
-+
-+	ctx.memory = mmap(NULL, BINDER_MMAP_SIZE, PROT_READ, MAP_SHARED, ctx.fd, 0);
-+	if (ctx.memory == NULL) {
-+		perror("Error mapping binder memory");
-+		close(ctx.fd);
-+		ctx.fd = -1;
-+	}
-+
-+	return ctx;
++	if (gpucg)
++		css_put(&gpucg->css);
 +}
 +
-+void close_binder(struct binder_ctx *ctx)
++/**
++ * gpucg_parent - find the parent of a gpu cgroup
++ * @cg: the target gpucg
++ *
++ * This does not increase the reference count of the parent cgroup
++ *
++ * Returns: parent gpu cgroup of @cg
++ */
++static inline struct gpucg *gpucg_parent(struct gpucg *cg)
 +{
-+	if (munmap(ctx->memory, BINDER_MMAP_SIZE))
-+		perror("Failed to unmap binder memory");
-+	ctx->memory = NULL;
-+
-+	if (close(ctx->fd))
-+		perror("Failed to close binder");
-+	ctx->fd = -1;
++	return css_to_gpucg(cg->css.parent);
 +}
 +
-+int become_binder_context_manager(int binder_fd)
++int gpucg_try_charge(struct gpucg *gpucg, struct gpucg_device *device, u64 usage);
++void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_device *device, u64 usage);
++void gpucg_register_device(struct gpucg_device *gpucg_dev, const char *name);
++#else /* CONFIG_CGROUP_GPU */
++
++struct gpucg;
++struct gpucg_device;
++
++static inline struct gpucg *css_to_gpucg(struct cgroup_subsys_state *css)
 +{
-+	return ioctl(binder_fd, BINDER_SET_CONTEXT_MGR, 0);
++	return NULL;
 +}
 +
-+int do_binder_write_read(int binder_fd, void *writebuf, binder_size_t writesize,
-+			 void *readbuf, binder_size_t readsize)
++static inline struct gpucg *gpucg_get(struct task_struct *task)
 +{
-+	int err;
-+	struct binder_write_read bwr = {
-+		.write_buffer = (binder_uintptr_t)writebuf,
-+		.write_size = writesize,
-+		.read_buffer = (binder_uintptr_t)readbuf,
-+		.read_size = readsize
-+	};
-+
-+	do {
-+		if (ioctl(binder_fd, BINDER_WRITE_READ, &bwr) >= 0)
-+			err = 0;
-+		else
-+			err = -errno;
-+	} while (err == -EINTR);
-+
-+	if (err < 0) {
-+		perror("BINDER_WRITE_READ");
-+		return -1;
-+	}
-+
-+	if (bwr.write_consumed < writesize) {
-+		fprintf(stderr, "Binder did not consume full write buffer %llu %llu\n",
-+			bwr.write_consumed, writesize);
-+		return -1;
-+	}
-+
-+	return bwr.read_consumed;
++	return NULL;
 +}
 +
-+static const char *reply_string(int cmd)
++static inline void gpucg_put(struct gpucg *gpucg) {}
++
++static inline struct gpucg *gpucg_parent(struct gpucg *cg)
 +{
-+	switch (cmd) {
-+	case BR_ERROR:
-+		return("BR_ERROR");
-+	case BR_OK:
-+		return("BR_OK");
-+	case BR_TRANSACTION_SEC_CTX:
-+		return("BR_TRANSACTION_SEC_CTX");
-+	case BR_TRANSACTION:
-+		return("BR_TRANSACTION");
-+	case BR_REPLY:
-+		return("BR_REPLY");
-+	case BR_ACQUIRE_RESULT:
-+		return("BR_ACQUIRE_RESULT");
-+	case BR_DEAD_REPLY:
-+		return("BR_DEAD_REPLY");
-+	case BR_TRANSACTION_COMPLETE:
-+		return("BR_TRANSACTION_COMPLETE");
-+	case BR_INCREFS:
-+		return("BR_INCREFS");
-+	case BR_ACQUIRE:
-+		return("BR_ACQUIRE");
-+	case BR_RELEASE:
-+		return("BR_RELEASE");
-+	case BR_DECREFS:
-+		return("BR_DECREFS");
-+	case BR_ATTEMPT_ACQUIRE:
-+		return("BR_ATTEMPT_ACQUIRE");
-+	case BR_NOOP:
-+		return("BR_NOOP");
-+	case BR_SPAWN_LOOPER:
-+		return("BR_SPAWN_LOOPER");
-+	case BR_FINISHED:
-+		return("BR_FINISHED");
-+	case BR_DEAD_BINDER:
-+		return("BR_DEAD_BINDER");
-+	case BR_CLEAR_DEATH_NOTIFICATION_DONE:
-+		return("BR_CLEAR_DEATH_NOTIFICATION_DONE");
-+	case BR_FAILED_REPLY:
-+		return("BR_FAILED_REPLY");
-+	case BR_FROZEN_REPLY:
-+		return("BR_FROZEN_REPLY");
-+	case BR_ONEWAY_SPAM_SUSPECT:
-+		return("BR_ONEWAY_SPAM_SUSPECT");
-+	default:
-+		return("Unknown");
-+	};
++	return NULL;
 +}
 +
-+int expect_binder_reply(int32_t actual, int32_t expected)
++static inline int gpucg_try_charge(struct gpucg *gpucg,
++				   struct gpucg_device *device,
++				   u64 usage)
 +{
-+	if (actual != expected) {
-+		fprintf(stderr, "Expected %s but received %s\n",
-+			reply_string(expected), reply_string(actual));
-+		return -1;
-+	}
 +	return 0;
 +}
 +
-diff --git a/tools/testing/selftests/drivers/android/binder/binder_util.h b/tools/testing/selftests/drivers/android/binder/binder_util.h
-new file mode 100644
-index 000000000000..807f5abe987e
---- /dev/null
-+++ b/tools/testing/selftests/drivers/android/binder/binder_util.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++static inline void gpucg_uncharge(struct gpucg *gpucg,
++				  struct gpucg_device *device,
++				  u64 usage) {}
 +
-+#ifndef SELFTEST_BINDER_UTIL_H
-+#define SELFTEST_BINDER_UTIL_H
-+
-+#include <stdint.h>
-+
-+#include <linux/android/binder.h>
-+
-+struct binderfs_ctx {
-+	char *name;
-+	char *mountpoint;
-+};
-+
-+struct binder_ctx {
-+	int fd;
-+	void *memory;
-+};
-+
-+struct binderfs_ctx create_binderfs(const char *name);
-+void destroy_binderfs(struct binderfs_ctx *ctx);
-+
-+struct binder_ctx open_binder(struct binderfs_ctx *bfs_ctx);
-+void close_binder(struct binder_ctx *ctx);
-+
-+int become_binder_context_manager(int binder_fd);
-+
-+int do_binder_write_read(int binder_fd, void *writebuf, binder_size_t writesize,
-+			 void *readbuf, binder_size_t readsize);
-+
-+int expect_binder_reply(int32_t actual, int32_t expected);
++static inline void gpucg_register_device(struct gpucg_device *gpucg_dev,
++					 const char *name) {}
++#endif /* CONFIG_CGROUP_GPU */
++#endif /* _CGROUP_GPU_H */
+diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
+index 445235487230..46a2a7b93c41 100644
+--- a/include/linux/cgroup_subsys.h
++++ b/include/linux/cgroup_subsys.h
+@@ -65,6 +65,10 @@ SUBSYS(rdma)
+ SUBSYS(misc)
+ #endif
+ 
++#if IS_ENABLED(CONFIG_CGROUP_GPU)
++SUBSYS(gpu)
 +#endif
-diff --git a/tools/testing/selftests/drivers/android/binder/config b/tools/testing/selftests/drivers/android/binder/config
++
+ /*
+  * The following subsystems are not supported on the default hierarchy.
+  */
+diff --git a/init/Kconfig b/init/Kconfig
+index e9119bf54b1f..43568472930a 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -980,6 +980,13 @@ config BLK_CGROUP
+ 
+ 	See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more information.
+ 
++config CGROUP_GPU
++	bool "gpu cgroup controller (EXPERIMENTAL)"
++	select PAGE_COUNTER
++	help
++	  Provides accounting and limit setting for memory allocations by the GPU and
++	  GPU-related subsystems.
++
+ config CGROUP_WRITEBACK
+ 	bool
+ 	depends on MEMCG && BLK_CGROUP
+diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
+index 12f8457ad1f9..be95a5a532fc 100644
+--- a/kernel/cgroup/Makefile
++++ b/kernel/cgroup/Makefile
+@@ -7,3 +7,4 @@ obj-$(CONFIG_CGROUP_RDMA) += rdma.o
+ obj-$(CONFIG_CPUSETS) += cpuset.o
+ obj-$(CONFIG_CGROUP_MISC) += misc.o
+ obj-$(CONFIG_CGROUP_DEBUG) += debug.o
++obj-$(CONFIG_CGROUP_GPU) += gpu.o
+diff --git a/kernel/cgroup/gpu.c b/kernel/cgroup/gpu.c
 new file mode 100644
-index 000000000000..fcc5f8f693b3
+index 000000000000..ac4c470914b5
 --- /dev/null
-+++ b/tools/testing/selftests/drivers/android/binder/config
-@@ -0,0 +1,4 @@
-+CONFIG_CGROUP_GPU=y
-+CONFIG_ANDROID=y
-+CONFIG_ANDROID_BINDERFS=y
-+CONFIG_ANDROID_BINDER_IPC=y
-diff --git a/tools/testing/selftests/drivers/android/binder/test_dmabuf_cgroup_transfer.c b/tools/testing/selftests/drivers/android/binder/test_dmabuf_cgroup_transfer.c
-new file mode 100644
-index 000000000000..586465d7bf6d
---- /dev/null
-+++ b/tools/testing/selftests/drivers/android/binder/test_dmabuf_cgroup_transfer.c
-@@ -0,0 +1,484 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/kernel/cgroup/gpu.c
+@@ -0,0 +1,303 @@
++// SPDX-License-Identifier: MIT
++// Copyright 2019 Advanced Micro Devices, Inc.
++// Copyright (C) 2022 Google LLC.
++
++#include <linux/cgroup.h>
++#include <linux/cgroup_gpu.h>
++#include <linux/mm.h>
++#include <linux/page_counter.h>
++#include <linux/seq_file.h>
++#include <linux/slab.h>
++
++static struct gpucg *root_gpucg __read_mostly;
 +
 +/*
-+ * This test verifies that the cgroup GPU memory charge is transferred correctly
-+ * when a dmabuf is passed between processes in two different cgroups and the
-+ * sender specifies BINDER_BUFFER_FLAG_SENDER_NO_NEED in the binder transaction
-+ * data containing the dmabuf file descriptor.
-+ *
-+ * The gpu_cgroup_dmabuf_transfer test function becomes the binder context
-+ * manager, then forks a child who initiates a transaction with the context
-+ * manager by specifying a target of 0. The context manager reply contains a
-+ * dmabuf file descriptor which was allocated by the gpu_cgroup_dmabuf_transfer
-+ * test function, but should be charged to the child cgroup after the binder
-+ * transaction.
++ * Protects list of resource pools maintained on per cgroup basis
++ * and list of devices registered for memory accounting using the GPU cgroup
++ * controller.
 + */
++static DEFINE_MUTEX(gpucg_mutex);
++static LIST_HEAD(gpucg_devices);
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stddef.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/epoll.h>
-+#include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
++struct gpucg_resource_pool {
++	/* The device whose resource usage is tracked by this resource pool */
++	struct gpucg_device *device;
 +
-+#include "binder_util.h"
-+#include "../../../cgroup/cgroup_util.h"
-+#include "../../../kselftest.h"
-+#include "../../../kselftest_harness.h"
++	/* list of all resource pools for the cgroup */
++	struct list_head cg_node;
 +
-+#include <linux/limits.h>
-+#include <linux/dma-heap.h>
-+#include <linux/android/binder.h>
++	/* list maintained by the gpucg_device to keep track of its resource pools */
++	struct list_head dev_node;
 +
-+#define UNUSED(x) ((void)(x))
-+
-+static const unsigned int BINDER_CODE = 8675309; /* Any number will work here */
-+
-+struct cgroup_ctx {
-+	char *root;
-+	char *source;
-+	char *dest;
++	/* tracks memory usage of the resource pool */
++	struct page_counter total;
 +};
 +
-+void destroy_cgroups(struct __test_metadata *_metadata, struct cgroup_ctx *ctx)
++static void free_cg_rpool_locked(struct gpucg_resource_pool *rpool)
 +{
-+	if (ctx->source != NULL) {
-+		TH_LOG("Destroying cgroup: %s", ctx->source);
-+		rmdir(ctx->source);
-+		free(ctx->source);
-+	}
++	lockdep_assert_held(&gpucg_mutex);
 +
-+	if (ctx->dest != NULL) {
-+		TH_LOG("Destroying cgroup: %s", ctx->dest);
-+		rmdir(ctx->dest);
-+		free(ctx->dest);
-+	}
-+
-+	free(ctx->root);
-+	ctx->root = ctx->source = ctx->dest = NULL;
++	list_del(&rpool->cg_node);
++	list_del(&rpool->dev_node);
++	kfree(rpool);
 +}
 +
-+struct cgroup_ctx create_cgroups(struct __test_metadata *_metadata)
++static void gpucg_css_free(struct cgroup_subsys_state *css)
 +{
-+	struct cgroup_ctx ctx = {0};
-+	char root[PATH_MAX], *tmp;
-+	static const char template[] = "/gpucg_XXXXXX";
++	struct gpucg_resource_pool *rpool, *tmp;
++	struct gpucg *gpucg = css_to_gpucg(css);
 +
-+	if (cg_find_unified_root(root, sizeof(root))) {
-+		TH_LOG("Could not find cgroups root");
-+		return ctx;
-+	}
++	// delete all resource pools
++	mutex_lock(&gpucg_mutex);
++	list_for_each_entry_safe(rpool, tmp, &gpucg->rpools, cg_node)
++		free_cg_rpool_locked(rpool);
++	mutex_unlock(&gpucg_mutex);
 +
-+	if (cg_read_strstr(root, "cgroup.controllers", "gpu")) {
-+		TH_LOG("Could not find GPU controller");
-+		return ctx;
-+	}
-+
-+	if (cg_write(root, "cgroup.subtree_control", "+gpu")) {
-+		TH_LOG("Could not enable GPU controller");
-+		return ctx;
-+	}
-+
-+	ctx.root = strdup(root);
-+
-+	snprintf(root, sizeof(root), "%s/%s", ctx.root, template);
-+	tmp = mkdtemp(root);
-+	if (tmp == NULL) {
-+		TH_LOG("%s - Could not create source cgroup", strerror(errno));
-+		destroy_cgroups(_metadata, &ctx);
-+		return ctx;
-+	}
-+	ctx.source = strdup(tmp);
-+
-+	snprintf(root, sizeof(root), "%s/%s", ctx.root, template);
-+	tmp = mkdtemp(root);
-+	if (tmp == NULL) {
-+		TH_LOG("%s - Could not create destination cgroup", strerror(errno));
-+		destroy_cgroups(_metadata, &ctx);
-+		return ctx;
-+	}
-+	ctx.dest = strdup(tmp);
-+
-+	TH_LOG("Created cgroups: %s %s", ctx.source, ctx.dest);
-+
-+	return ctx;
++	kfree(gpucg);
 +}
 +
-+int dmabuf_heap_alloc(int fd, size_t len, int *dmabuf_fd)
++static struct cgroup_subsys_state *
++gpucg_css_alloc(struct cgroup_subsys_state *parent_css)
 +{
-+	struct dma_heap_allocation_data data = {
-+		.len = len,
-+		.fd = 0,
-+		.fd_flags = O_RDONLY | O_CLOEXEC,
-+		.heap_flags = 0,
-+	};
-+	int ret;
++	struct gpucg *gpucg, *parent;
 +
-+	if (!dmabuf_fd)
-+		return -EINVAL;
++	gpucg = kzalloc(sizeof(struct gpucg), GFP_KERNEL);
++	if (!gpucg)
++		return ERR_PTR(-ENOMEM);
 +
-+	ret = ioctl(fd, DMA_HEAP_IOCTL_ALLOC, &data);
-+	if (ret < 0)
-+		return ret;
-+	*dmabuf_fd = (int)data.fd;
-+	return ret;
++	parent = css_to_gpucg(parent_css);
++	if (!parent)
++		root_gpucg = gpucg;
++
++	INIT_LIST_HEAD(&gpucg->rpools);
++
++	return &gpucg->css;
 +}
 +
-+/* The system heap is known to export dmabufs with support for cgroup tracking */
-+int alloc_dmabuf_from_system_heap(struct __test_metadata *_metadata, size_t bytes)
++static struct gpucg_resource_pool *find_cg_rpool_locked(
++	struct gpucg *cg,
++	struct gpucg_device *device)
 +{
-+	int heap_fd = -1, dmabuf_fd = -1;
-+	static const char * const heap_path = "/dev/dma_heap/system";
++	struct gpucg_resource_pool *pool;
 +
-+	heap_fd = open(heap_path, O_RDONLY);
-+	if (heap_fd < 0) {
-+		TH_LOG("%s - open %s failed!\n", strerror(errno), heap_path);
-+		return -1;
-+	}
++	lockdep_assert_held(&gpucg_mutex);
 +
-+	if (dmabuf_heap_alloc(heap_fd, bytes, &dmabuf_fd))
-+		TH_LOG("dmabuf allocation failed! - %s", strerror(errno));
-+	close(heap_fd);
++	list_for_each_entry(pool, &cg->rpools, cg_node)
++		if (pool->device == device)
++			return pool;
 +
-+	return dmabuf_fd;
++	return NULL;
 +}
 +
-+int binder_request_dmabuf(int binder_fd)
++static struct gpucg_resource_pool *init_cg_rpool(struct gpucg *cg,
++						 struct gpucg_device *device)
 +{
-+	int ret;
++	struct gpucg_resource_pool *rpool = kzalloc(sizeof(*rpool),
++							GFP_KERNEL);
++	if (!rpool)
++		return ERR_PTR(-ENOMEM);
++
++	rpool->device = device;
++
++	page_counter_init(&rpool->total, NULL);
++	INIT_LIST_HEAD(&rpool->cg_node);
++	INIT_LIST_HEAD(&rpool->dev_node);
++	list_add_tail(&rpool->cg_node, &cg->rpools);
++	list_add_tail(&rpool->dev_node, &device->rpools);
++
++	return rpool;
++}
++
++/**
++ * get_cg_rpool_locked - find the resource pool for the specified device and
++ * specified cgroup. If the resource pool does not exist for the cg, it is
++ * created in a hierarchical manner in the cgroup and its ancestor cgroups who
++ * do not already have a resource pool entry for the device.
++ *
++ * @cg: The cgroup to find the resource pool for.
++ * @device: The device associated with the returned resource pool.
++ *
++ * Return: return resource pool entry corresponding to the specified device in
++ * the specified cgroup (hierarchically creating them if not existing already).
++ *
++ */
++static struct gpucg_resource_pool *
++get_cg_rpool_locked(struct gpucg *cg, struct gpucg_device *device)
++{
++	struct gpucg *parent_cg, *p, *stop_cg;
++	struct gpucg_resource_pool *rpool, *tmp_rpool;
++	struct gpucg_resource_pool *parent_rpool = NULL, *leaf_rpool = NULL;
++
++	rpool = find_cg_rpool_locked(cg, device);
++	if (rpool)
++		return rpool;
++
++	stop_cg = cg;
++	do {
++		rpool = init_cg_rpool(stop_cg, device);
++		if (IS_ERR(rpool))
++			goto err;
++
++		if (!leaf_rpool)
++			leaf_rpool = rpool;
++
++		stop_cg = gpucg_parent(stop_cg);
++		if (!stop_cg)
++			break;
++
++		rpool = find_cg_rpool_locked(stop_cg, device);
++	} while (!rpool);
 +
 +	/*
-+	 * We just send an empty binder_buffer_object to initiate a transaction
-+	 * with the context manager, who should respond with a single dmabuf
-+	 * inside a binder_fd_array_object.
++	 * Re-initialize page counters of all rpools created in this invocation
++	 * to enable hierarchical charging.
++	 * stop_cg is the first ancestor cg who already had a resource pool for
++	 * the device. It can also be NULL if no ancestors had a pre-existing
++	 * resource pool for the device before this invocation.
 +	 */
++	rpool = leaf_rpool;
++	for (p = cg; p != stop_cg; p = parent_cg) {
++		parent_cg = gpucg_parent(p);
++		if (!parent_cg)
++			break;
++		parent_rpool = find_cg_rpool_locked(parent_cg, device);
++		page_counter_init(&rpool->total, &parent_rpool->total);
 +
-+	struct binder_buffer_object bbo = {
-+		.hdr.type = BINDER_TYPE_PTR,
-+		.flags = 0,
-+		.buffer = 0,
-+		.length = 0,
-+		.parent = 0, /* No parent */
-+		.parent_offset = 0 /* No parent */
-+	};
-+
-+	binder_size_t offsets[] = {0};
-+
-+	struct {
-+		int32_t cmd;
-+		struct binder_transaction_data btd;
-+	} __attribute__((packed)) bc = {
-+		.cmd = BC_TRANSACTION,
-+		.btd = {
-+			.target = { 0 },
-+			.cookie = 0,
-+			.code = BINDER_CODE,
-+			.flags = TF_ACCEPT_FDS, /* We expect a FDA in the reply */
-+			.data_size = sizeof(bbo),
-+			.offsets_size = sizeof(offsets),
-+			.data.ptr = {
-+				(binder_uintptr_t)&bbo,
-+				(binder_uintptr_t)offsets
-+			}
-+		},
-+	};
-+
-+	struct {
-+		int32_t reply_noop;
-+	} __attribute__((packed)) br;
-+
-+	ret = do_binder_write_read(binder_fd, &bc, sizeof(bc), &br, sizeof(br));
-+	if (ret >= sizeof(br) && expect_binder_reply(br.reply_noop, BR_NOOP)) {
-+		return -1;
-+	} else if (ret < sizeof(br)) {
-+		fprintf(stderr, "Not enough bytes in binder reply %d\n", ret);
-+		return -1;
-+	}
-+	return 0;
-+}
-+
-+int send_dmabuf_reply(int binder_fd, struct binder_transaction_data *tr, int dmabuf_fd)
-+{
-+	int ret;
-+	/*
-+	 * The trailing 0 is to achieve the necessary alignment for the binder
-+	 * buffer_size.
-+	 */
-+	int fdarray[] = { dmabuf_fd, 0 };
-+
-+	struct binder_buffer_object bbo = {
-+		.hdr.type = BINDER_TYPE_PTR,
-+		.flags = BINDER_BUFFER_FLAG_SENDER_NO_NEED,
-+		.buffer = (binder_uintptr_t)fdarray,
-+		.length = sizeof(fdarray),
-+		.parent = 0, /* No parent */
-+		.parent_offset = 0 /* No parent */
-+	};
-+
-+	struct binder_fd_array_object bfdao = {
-+		.hdr.type = BINDER_TYPE_FDA,
-+		.num_fds = 1,
-+		.parent = 0, /* The binder_buffer_object */
-+		.parent_offset = 0 /* FDs follow immediately */
-+	};
-+
-+	uint64_t sz = sizeof(fdarray);
-+	uint8_t data[sizeof(sz) + sizeof(bbo) + sizeof(bfdao)];
-+	binder_size_t offsets[] = {sizeof(sz), sizeof(sz)+sizeof(bbo)};
-+
-+	memcpy(data,                            &sz, sizeof(sz));
-+	memcpy(data + sizeof(sz),               &bbo, sizeof(bbo));
-+	memcpy(data + sizeof(sz) + sizeof(bbo), &bfdao, sizeof(bfdao));
-+
-+	struct {
-+		int32_t cmd;
-+		struct binder_transaction_data_sg btd;
-+	} __attribute__((packed)) bc = {
-+		.cmd = BC_REPLY_SG,
-+		.btd.transaction_data = {
-+			.target = { tr->target.handle },
-+			.cookie = tr->cookie,
-+			.code = BINDER_CODE,
-+			.flags = 0,
-+			.data_size = sizeof(data),
-+			.offsets_size = sizeof(offsets),
-+			.data.ptr = {
-+				(binder_uintptr_t)data,
-+				(binder_uintptr_t)offsets
-+			}
-+		},
-+		.btd.buffers_size = sizeof(fdarray)
-+	};
-+
-+	struct {
-+		int32_t reply_noop;
-+	} __attribute__((packed)) br;
-+
-+	ret = do_binder_write_read(binder_fd, &bc, sizeof(bc), &br, sizeof(br));
-+	if (ret >= sizeof(br) && expect_binder_reply(br.reply_noop, BR_NOOP)) {
-+		return -1;
-+	} else if (ret < sizeof(br)) {
-+		fprintf(stderr, "Not enough bytes in binder reply %d\n", ret);
-+		return -1;
-+	}
-+	return 0;
-+}
-+
-+struct binder_transaction_data *binder_wait_for_transaction(int binder_fd,
-+							    uint32_t *readbuf,
-+							    size_t readsize)
-+{
-+	static const int MAX_EVENTS = 1, EPOLL_WAIT_TIME_MS = 3 * 1000;
-+	struct binder_reply {
-+		int32_t reply0;
-+		int32_t reply1;
-+		struct binder_transaction_data btd;
-+	} *br;
-+	struct binder_transaction_data *ret = NULL;
-+	struct epoll_event events[MAX_EVENTS];
-+	int epoll_fd, num_events, readcount;
-+	uint32_t bc[] = { BC_ENTER_LOOPER };
-+
-+	do_binder_write_read(binder_fd, &bc, sizeof(bc), NULL, 0);
-+
-+	epoll_fd = epoll_create1(EPOLL_CLOEXEC);
-+	if (epoll_fd == -1) {
-+		perror("epoll_create");
-+		return NULL;
++		rpool = parent_rpool;
 +	}
 +
-+	events[0].events = EPOLLIN;
-+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, binder_fd, &events[0])) {
-+		perror("epoll_ctl add");
-+		goto err_close;
-+	}
-+
-+	num_events = epoll_wait(epoll_fd, events, MAX_EVENTS, EPOLL_WAIT_TIME_MS);
-+	if (num_events < 0) {
-+		perror("epoll_wait");
-+		goto err_ctl;
-+	} else if (num_events == 0) {
-+		fprintf(stderr, "No events\n");
-+		goto err_ctl;
-+	}
-+
-+	readcount = do_binder_write_read(binder_fd, NULL, 0, readbuf, readsize);
-+	fprintf(stderr, "Read %d bytes from binder\n", readcount);
-+
-+	if (readcount < (int)sizeof(struct binder_reply)) {
-+		fprintf(stderr, "read_consumed not large enough\n");
-+		goto err_ctl;
-+	}
-+
-+	br = (struct binder_reply *)readbuf;
-+	if (expect_binder_reply(br->reply0, BR_NOOP))
-+		goto err_ctl;
-+
-+	if (br->reply1 == BR_TRANSACTION) {
-+		if (br->btd.code == BINDER_CODE)
-+			ret = &br->btd;
-+		else
-+			fprintf(stderr, "Received transaction with unexpected code: %u\n",
-+				br->btd.code);
-+	} else {
-+		expect_binder_reply(br->reply1, BR_TRANSACTION_COMPLETE);
-+	}
-+
-+err_ctl:
-+	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, binder_fd, NULL))
-+		perror("epoll_ctl del");
-+err_close:
-+	close(epoll_fd);
-+	return ret;
-+}
-+
-+static int child_request_dmabuf_transfer(const char *cgroup, void *arg)
-+{
-+	UNUSED(cgroup);
-+	int ret = -1;
-+	uint32_t readbuf[32];
-+	struct binderfs_ctx bfs_ctx = *(struct binderfs_ctx *)arg;
-+	struct binder_ctx b_ctx;
-+
-+	fprintf(stderr, "Child PID: %d\n", getpid());
-+
-+	b_ctx = open_binder(&bfs_ctx);
-+	if (b_ctx.fd < 0) {
-+		fprintf(stderr, "Child unable to open binder\n");
-+		return -1;
-+	}
-+
-+	if (binder_request_dmabuf(b_ctx.fd))
-+		goto err;
-+
-+	/* The child must stay alive until the binder reply is received */
-+	if (binder_wait_for_transaction(b_ctx.fd, readbuf, sizeof(readbuf)) == NULL)
-+		ret = 0;
-+
-+	/*
-+	 * We don't close the received dmabuf here so that the parent can
-+	 * inspect the cgroup gpu memory charges to verify the charge transfer
-+	 * completed successfully.
-+	 */
++	return leaf_rpool;
 +err:
-+	close_binder(&b_ctx);
-+	fprintf(stderr, "Child done\n");
++	for (p = cg; p != stop_cg; p = gpucg_parent(p)) {
++		tmp_rpool = find_cg_rpool_locked(p, device);
++		free_cg_rpool_locked(tmp_rpool);
++	}
++	return rpool;
++}
++
++/**
++ * gpucg_try_charge - charge memory to the specified gpucg and gpucg_device.
++ * Caller must hold a reference to @gpucg obtained through gpucg_get(). The size
++ * of the memory is rounded up to be a multiple of the page size.
++ *
++ * @gpucg: The gpu cgroup to charge the memory to.
++ * @device: The device to charge the memory to.
++ * @usage: size of memory to charge in bytes.
++ *
++ * Return: returns 0 if the charging is successful and otherwise returns an
++ * error code.
++ */
++int gpucg_try_charge(struct gpucg *gpucg, struct gpucg_device *device, u64 usage)
++{
++	struct page_counter *counter;
++	u64 nr_pages;
++	struct gpucg_resource_pool *rp;
++	int ret = 0;
++
++	nr_pages = PAGE_ALIGN(usage) >> PAGE_SHIFT;
++
++	mutex_lock(&gpucg_mutex);
++	rp = get_cg_rpool_locked(gpucg, device);
++	/*
++	 * Continue to hold gpucg_mutex because we use it to block charges
++	 * while transfers are in progress.
++	 */
++	if (IS_ERR(rp)) {
++		mutex_unlock(&gpucg_mutex);
++		return PTR_ERR(rp);
++	}
++
++	if (page_counter_try_charge(&rp->total, nr_pages, &counter))
++		css_get_many(&gpucg->css, nr_pages);
++	else
++		ret = -ENOMEM;
++	mutex_unlock(&gpucg_mutex);
++
 +	return ret;
 +}
 +
-+TEST(gpu_cgroup_dmabuf_transfer)
++/**
++ * gpucg_uncharge - uncharge memory from the specified gpucg and gpucg_device.
++ * The caller must hold a reference to @gpucg obtained through gpucg_get().
++ *
++ * @gpucg: The gpu cgroup to uncharge the memory from.
++ * @device: The device to uncharge the memory from.
++ * @usage: size of memory to uncharge in bytes.
++ */
++void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_device *device, u64 usage)
 +{
-+	static const char * const GPUMEM_FILENAME = "gpu.memory.current";
-+	static const size_t ONE_MiB = 1024 * 1024;
++	u64 nr_pages;
++	struct gpucg_resource_pool *rp;
 +
-+	int ret, dmabuf_fd;
-+	uint32_t readbuf[32];
-+	long memsize;
-+	pid_t child_pid;
-+	struct binderfs_ctx bfs_ctx;
-+	struct binder_ctx b_ctx;
-+	struct cgroup_ctx cg_ctx;
-+	struct binder_transaction_data *tr;
-+	struct flat_binder_object *fbo;
-+	struct binder_buffer_object *bbo;
++	mutex_lock(&gpucg_mutex);
++	rp = find_cg_rpool_locked(gpucg, device);
++	/*
++	 * gpucg_mutex can be unlocked here, rp will stay valid until gpucg is freed and there are
++	 * active refs on gpucg. Uncharges are fine while transfers are in progress.
++	 */
++	mutex_unlock(&gpucg_mutex);
 +
-+	if (geteuid() != 0)
-+		ksft_exit_skip("Need to be root to mount binderfs\n");
-+
-+	bfs_ctx = create_binderfs("testbinder");
-+	if (bfs_ctx.name == NULL)
-+		ksft_exit_skip("The Android binderfs filesystem is not available\n");
-+
-+	cg_ctx = create_cgroups(_metadata);
-+	if (cg_ctx.root == NULL) {
-+		destroy_binderfs(&bfs_ctx);
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
++	if (unlikely(!rp)) {
++		pr_err("Resource pool not found, incorrect charge/uncharge ordering?\n");
++		return;
 +	}
 +
-+	ASSERT_EQ(cg_enter_current(cg_ctx.source), 0) {
-+		TH_LOG("Could not move parent to cgroup: %s", cg_ctx.source);
-+		goto err_cg;
-+	}
-+
-+	dmabuf_fd = alloc_dmabuf_from_system_heap(_metadata, ONE_MiB);
-+	ASSERT_GE(dmabuf_fd, 0) {
-+		goto err_cg;
-+	}
-+	TH_LOG("Allocated dmabuf");
-+
-+	memsize = cg_read_key_long(cg_ctx.source, GPUMEM_FILENAME, "system");
-+	ASSERT_EQ(memsize, ONE_MiB) {
-+		TH_LOG("GPU memory used after allocation: %ld but it should be %lu",
-+		       memsize, (unsigned long)ONE_MiB);
-+		goto err_dmabuf;
-+	}
-+
-+	b_ctx = open_binder(&bfs_ctx);
-+	ASSERT_GE(b_ctx.fd, 0) {
-+		TH_LOG("Parent unable to open binder");
-+		goto err_dmabuf;
-+	}
-+	TH_LOG("Opened binder at %s/%s", bfs_ctx.mountpoint, bfs_ctx.name);
-+
-+	ASSERT_EQ(become_binder_context_manager(b_ctx.fd), 0) {
-+		TH_LOG("Cannot become context manager: %s", strerror(errno));
-+		goto err_binder;
-+	}
-+
-+	child_pid = cg_run_nowait(cg_ctx.dest, child_request_dmabuf_transfer, &bfs_ctx);
-+	ASSERT_GT(child_pid, 0) {
-+		TH_LOG("Error forking: %s", strerror(errno));
-+		goto err_binder;
-+	}
-+
-+	tr = binder_wait_for_transaction(b_ctx.fd, readbuf, sizeof(readbuf));
-+	ASSERT_NE(tr, NULL) {
-+		TH_LOG("Error receiving transaction request from child");
-+		goto err_child;
-+	}
-+	fbo = (struct flat_binder_object *)tr->data.ptr.buffer;
-+	ASSERT_EQ(fbo->hdr.type, BINDER_TYPE_PTR) {
-+		TH_LOG("Did not receive a buffer object from child");
-+		goto err_child;
-+	}
-+	bbo = (struct binder_buffer_object *)fbo;
-+	ASSERT_EQ(bbo->length, 0) {
-+		TH_LOG("Did not receive an empty buffer object from child");
-+		goto err_child;
-+	}
-+
-+	TH_LOG("Received transaction from child");
-+	send_dmabuf_reply(b_ctx.fd, tr, dmabuf_fd);
-+
-+	ASSERT_EQ(cg_read_key_long(cg_ctx.dest, GPUMEM_FILENAME, "system"), ONE_MiB) {
-+		TH_LOG("Destination cgroup does not have system charge!");
-+		goto err_child;
-+	}
-+	ASSERT_EQ(cg_read_key_long(cg_ctx.source, GPUMEM_FILENAME, "system"), 0) {
-+		TH_LOG("Source cgroup still has system charge!");
-+		goto err_child;
-+	}
-+	TH_LOG("Charge transfer succeeded!");
-+
-+err_child:
-+	waitpid(child_pid, &ret, 0);
-+	if (WIFEXITED(ret))
-+		TH_LOG("Child %d terminated normally with %d", child_pid, WEXITSTATUS(ret));
-+	else if (WIFSIGNALED(ret))
-+		TH_LOG("Child %d terminated with signal %d\n", child_pid, WTERMSIG(ret));
-+err_binder:
-+	close_binder(&b_ctx);
-+err_dmabuf:
-+	close(dmabuf_fd);
-+err_cg:
-+	destroy_cgroups(_metadata, &cg_ctx);
-+	destroy_binderfs(&bfs_ctx);
++	nr_pages = PAGE_ALIGN(usage) >> PAGE_SHIFT;
++	page_counter_uncharge(&rp->total, nr_pages);
++	css_put_many(&gpucg->css, nr_pages);
 +}
 +
-+TEST_HARNESS_MAIN
++/**
++ * gpucg_register_device - Registers a device for memory accounting using the
++ * GPU cgroup controller.
++ *
++ * @device: The device to register for memory accounting.
++ * @name: Pointer to a string literal to denote the name of the device.
++ *
++ * Both @device andd @name must remain valid.
++ */
++void gpucg_register_device(struct gpucg_device *device, const char *name)
++{
++	if (!device)
++		return;
++
++	INIT_LIST_HEAD(&device->dev_node);
++	INIT_LIST_HEAD(&device->rpools);
++
++	mutex_lock(&gpucg_mutex);
++	list_add_tail(&device->dev_node, &gpucg_devices);
++	mutex_unlock(&gpucg_mutex);
++
++	device->name = name;
++}
++
++static int gpucg_resource_show(struct seq_file *sf, void *v)
++{
++	struct gpucg_resource_pool *rpool;
++	struct gpucg *cg = css_to_gpucg(seq_css(sf));
++
++	mutex_lock(&gpucg_mutex);
++	list_for_each_entry(rpool, &cg->rpools, cg_node) {
++		seq_printf(sf, "%s %lu\n", rpool->device->name,
++			   page_counter_read(&rpool->total) * PAGE_SIZE);
++	}
++	mutex_unlock(&gpucg_mutex);
++
++	return 0;
++}
++
++struct cftype files[] = {
++	{
++		.name = "memory.current",
++		.seq_show = gpucg_resource_show,
++	},
++	{ }     /* terminate */
++};
++
++struct cgroup_subsys gpu_cgrp_subsys = {
++	.css_alloc      = gpucg_css_alloc,
++	.css_free       = gpucg_css_free,
++	.early_init     = false,
++	.legacy_cftypes = files,
++	.dfl_cftypes    = files,
++};
 -- 
 2.35.1.1021.g381101b075-goog
 
