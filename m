@@ -2,160 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0D44E9122
-	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 11:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6CB4E9351
+	for <lists+cgroups@lfdr.de>; Mon, 28 Mar 2022 13:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbiC1JYZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Mar 2022 05:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
+        id S240717AbiC1LV2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Mar 2022 07:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbiC1JYY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 05:24:24 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0FE52E64
-        for <cgroups@vger.kernel.org>; Mon, 28 Mar 2022 02:22:43 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c23so14308396plo.0
-        for <cgroups@vger.kernel.org>; Mon, 28 Mar 2022 02:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tH6vHR9kCH+NPukJnjAaBd+mpjJ8sCuBLDfcwcVYg4I=;
-        b=Gomwsgqcc5G4y4sCHxDYeBsL0kU62rY/xNhOxwhAcqftO8/kCgQ5J57BFSIgnhQiGf
-         ubMotdKqupuh5Hzae+8D7+mnC+/IdK+hfC8qgCZkggge0kLvPM9ebDt8Yj22oguNZdQ9
-         N6xNkTeXk0uFjLWtc7v8+UVuym6t96OzehARRawtd4H8hmQ9ctBNvjcgJc1T7hFlOLGC
-         CMWEVKiehCtlseLN/+E+Hf3/4U+ho3QOgIdFR03zUb757cTkMPVui+WdgyVO1UL+mugy
-         jRue3rN1i5bcrnohe8NFKWShUw9VGbbEJcuJSdOwfi250k4QUQsJXeWf/WJYwWg9vb8/
-         j1bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tH6vHR9kCH+NPukJnjAaBd+mpjJ8sCuBLDfcwcVYg4I=;
-        b=3SeX09Mv69Zs8lk66iRI9XksgMqwzuaRKW66Qegb3JOQPCF2RBLsVCXQOCyAxGp1Pp
-         Cv0p7IsTfg3jtX2vmbLkUnfVnUItqkvbGqfbxidD4sOYNnyfCbWLA+dxq9TzL+ClC6QC
-         gcFrPugUVy8hNM9dUbGEg/FDDm88j4OAUMqkjq1/GP6n7UMLTsJt/RH5FbhRNL4/OcS3
-         NMWcgFRVfu5YgcBS4sI5FBPYgS94GHLvkdR3jujJyHWCgysWz9AsbKkdubfQRIJ2cnLo
-         R9nTj8Vmdqzt5eAvf3OyQxOYKEYanBFDpJUHbg4D6bqETlKskqVRc4p/1YjxGmiDnO6D
-         2jxg==
-X-Gm-Message-State: AOAM532JRyM/9DuAhH3o0I8rJM1XHHjRxdEHcRIlYocbc/ZOHFRnKROC
-        M9MOFfZoH+q6kllYSdBPVIGGDIQsch8G975NWj9WZQ==
-X-Google-Smtp-Source: ABdhPJxWUfGIn8epdRIti+VLoKKHJZ2mD8kQKlwwmj143rS8qojVUag82QRaAB0zL9zm9z1GZWz4dgUUB+ZXX5hJLV4=
-X-Received: by 2002:a17:902:b902:b0:154:bb05:ddb9 with SMTP id
- bf2-20020a170902b90200b00154bb05ddb9mr25759949plb.14.1648459362481; Mon, 28
- Mar 2022 02:22:42 -0700 (PDT)
+        with ESMTP id S240649AbiC1LUz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Mar 2022 07:20:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EF955773;
+        Mon, 28 Mar 2022 04:18:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B814B80ED8;
+        Mon, 28 Mar 2022 11:18:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2390FC36AE7;
+        Mon, 28 Mar 2022 11:18:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648466327;
+        bh=CwNmiHP3kD2ALWMRRxrmMavzMxlIsHerayanhfBCWHE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ODxbLQ0xzKW+OAIuli4A3kNCXPy0ImubFYF1GZ/S0DznXOdeE3s7lKgap699HTmTN
+         c0Z6fgFryWmLhT9QIfwEeWwOg8jpP4ZMYHId95eHb7YkLg92W1FaNq+evZ01oa82vV
+         4mkMr7vNt0/h3TX2eClhR5hhKRUfm9t402vfgAtSMyxJPE6OkoYUKHlLU2e/yHPr4u
+         NhpGEAlaEUA4ImuYAh9lLAcIseqMjoGv+46rxWDcwQIuvPidIkjcaGJLlOciyIQccl
+         mS/iIEINYjRT4lCz/QWqQJGKt9W+SkM91K56orv+zFt8vv63FmnGW7iZaKc0d6I6tN
+         LfuDQok2I8bFw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ming Lei <ming.lei@redhat.com>, Ning Li <lining2020x@163.com>,
+        Tejun Heo <tj@kernel.org>, Chunguang Xu <brookxu@tencent.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 09/43] block: throttle split bio in case of iops limit
+Date:   Mon, 28 Mar 2022 07:17:53 -0400
+Message-Id: <20220328111828.1554086-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220328111828.1554086-1-sashal@kernel.org>
+References: <20220328111828.1554086-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
- <Yi7ULpR70HatVP/8@slm.duckdns.org> <CAJD7tkYGUaeeFMJSWNbdgaoEq=kFTkZzx8Jy1fwWBvt2WEfqAA@mail.gmail.com>
- <f049c2f6-499b-ff7a-3910-38487878606a@fb.com>
-In-Reply-To: <f049c2f6-499b-ff7a-3910-38487878606a@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 28 Mar 2022 02:22:06 -0700
-Message-ID: <CAJD7tkYK7A1Vn+LRo9xZA+K7BuRmWeUyLX6XE-g-MBf8myLn6Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 11:09 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 3/16/22 9:35 AM, Yosry Ahmed wrote:
-> > Hi Tejun,
-> >
-> > Thanks for taking the time to read my proposal! Sorry for the late
-> > reply. This email skipped my inbox for some reason.
-> >
-> > On Sun, Mar 13, 2022 at 10:35 PM Tejun Heo <tj@kernel.org> wrote:
-> >>
-> >> Hello,
-> >>
-> >> On Wed, Mar 09, 2022 at 12:27:15PM -0800, Yosry Ahmed wrote:
-> >> ...
-> >>> These problems are already addressed by the rstat aggregation
-> >>> mechanism in the kernel, which is primarily used for memcg stats. We
-> >>
-> >> Not that it matters all that much but I don't think the above statement is
-> >> true given that sched stats are an integrated part of the rstat
-> >> implementation and io was converted before memcg.
-> >>
-> >
-> > Excuse my ignorance, I am new to kernel development. I only saw calls
-> > to cgroup_rstat_updated() in memcg and io and assumed they were the
-> > only users. Now I found cpu_account_cputime() :)
-> >
-> >>> - For every cgroup, we will either use flags to distinguish BPF stats
-> >>> updates from normal stats updates, or flush both anyway (memcg stats
-> >>> are periodically flushed anyway).
-> >>
-> >> I'd just keep them together. Usually most activities tend to happen
-> >> together, so it's cheaper to aggregate all of them in one go in most cases.
-> >
-> > This makes sense to me, thanks.
-> >
-> >>
-> >>> - Provide flags to enable/disable using per-cpu arrays (for stats that
-> >>> are not updated frequently), and enable/disable hierarchical
-> >>> aggregation (for non-hierarchical stats, they can still make benefit
-> >>> of the automatic entries creation & deletion).
-> >>> - Provide different hierarchical aggregation operations : SUM, MAX, MIN, etc.
-> >>> - Instead of an array as the map value, use a struct, and let the user
-> >>> provide an aggregator function in the form of a BPF program.
-> >>
-> >> I'm more partial to the last option. It does make the usage a bit more
-> >> compilcated but hopefully it shouldn't be too bad with good examples.
-> >>
-> >> I don't have strong opinions on the bpf side of things but it'd be great to
-> >> be able to use rstat from bpf.
-> >
-> > It indeed gives more flexibility but is more complicated. Also, I am
-> > not sure about the overhead to make calls to BPF programs in every
-> > aggregation step. Looking forward to get feedback on the bpf side of
-> > things.
->
-> Hi, Yosry, I heard this was discussed in bpf office hour which I
-> didn't attend. Could you summarize the conclusion and what is the
-> step forward? We also have an internal tool which collects cgroup
-> stats and this might help us as well. Thanks!
->
-> >
-> >>
-> >> Thanks.
-> >>
-> >> --
-> >> tejun
+From: Ming Lei <ming.lei@redhat.com>
 
-Hi Yonghong,
+[ Upstream commit 9f5ede3c01f9951b0ae7d68b28762ad51d9bacc8 ]
 
-Hao has already done an excellent job summarizing the outcome of the meeting.
+Commit 111be8839817 ("block-throttle: avoid double charge") marks bio as
+BIO_THROTTLED unconditionally if __blk_throtl_bio() is called on this bio,
+then this bio won't be called into __blk_throtl_bio() any more. This way
+is to avoid double charge in case of bio splitting. It is reasonable for
+read/write throughput limit, but not reasonable for IOPS limit because
+block layer provides io accounting against split bio.
 
-The idea I have is basically to introduce "rstat flushing" BPF
-programs. BPF programs that collect and display stats would use
-helpers to call cgroup_rstat_flush() and cgroup_rstat_updated() (or
-similar). rstat would then make calls to the "rstat flushing" BPF
-programs during flushes, similar to calls to css_rstat_flush().
+Chunguang Xu has already observed this issue and fixed it in commit
+4f1e9630afe6 ("blk-throtl: optimize IOPS throttle for large IO scenarios").
+However, that patch only covers bio splitting in __blk_queue_split(), and
+we have other kind of bio splitting, such as bio_split() &
+submit_bio_noacct() and other ways.
 
-I will work on an RFC patch(es) for this soon. Let me know if you have
-any comments/suggestions/feedback.
+This patch tries to fix the issue in one generic way by always charging
+the bio for iops limit in blk_throtl_bio(). This way is reasonable:
+re-submission & fast-cloned bio is charged if it is submitted to same
+disk/queue, and BIO_THROTTLED will be cleared if bio->bi_bdev is changed.
 
-Thanks!
+This new approach can get much more smooth/stable iops limit compared with
+commit 4f1e9630afe6 ("blk-throtl: optimize IOPS throttle for large IO
+scenarios") since that commit can't throttle current split bios actually.
+
+Also this way won't cause new double bio iops charge in
+blk_throtl_dispatch_work_fn() in which blk_throtl_bio() won't be called
+any more.
+
+Reported-by: Ning Li <lining2020x@163.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: Chunguang Xu <brookxu@tencent.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20220216044514.2903784-7-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ block/blk-merge.c    |  2 --
+ block/blk-throttle.c | 10 +++++++---
+ block/blk-throttle.h |  2 --
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 4de34a332c9f..f5255991b773 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -368,8 +368,6 @@ void __blk_queue_split(struct request_queue *q, struct bio **bio,
+ 		trace_block_split(split, (*bio)->bi_iter.bi_sector);
+ 		submit_bio_noacct(*bio);
+ 		*bio = split;
+-
+-		blk_throtl_charge_bio_split(*bio);
+ 	}
+ }
+ 
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 7c462c006b26..87769b337fc5 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -808,7 +808,8 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
+ 	unsigned int bio_size = throtl_bio_data_size(bio);
+ 
+-	if (bps_limit == U64_MAX) {
++	/* no need to throttle if this bio's bytes have been accounted */
++	if (bps_limit == U64_MAX || bio_flagged(bio, BIO_THROTTLED)) {
+ 		if (wait)
+ 			*wait = 0;
+ 		return true;
+@@ -920,9 +921,12 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
+ 	unsigned int bio_size = throtl_bio_data_size(bio);
+ 
+ 	/* Charge the bio to the group */
+-	tg->bytes_disp[rw] += bio_size;
++	if (!bio_flagged(bio, BIO_THROTTLED)) {
++		tg->bytes_disp[rw] += bio_size;
++		tg->last_bytes_disp[rw] += bio_size;
++	}
++
+ 	tg->io_disp[rw]++;
+-	tg->last_bytes_disp[rw] += bio_size;
+ 	tg->last_io_disp[rw]++;
+ 
+ 	/*
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index 175f03abd9e4..cb43f4417d6e 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -170,8 +170,6 @@ static inline bool blk_throtl_bio(struct bio *bio)
+ {
+ 	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
+ 
+-	if (bio_flagged(bio, BIO_THROTTLED))
+-		return false;
+ 	if (!tg->has_rules[bio_data_dir(bio)])
+ 		return false;
+ 
+-- 
+2.34.1
+
