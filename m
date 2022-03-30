@@ -2,152 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF9C4EB782
-	for <lists+cgroups@lfdr.de>; Wed, 30 Mar 2022 02:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392FB4EB881
+	for <lists+cgroups@lfdr.de>; Wed, 30 Mar 2022 04:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241479AbiC3Ath (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Mar 2022 20:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
+        id S242113AbiC3Cyi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Mar 2022 22:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231342AbiC3Atg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Mar 2022 20:49:36 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D796F182D9C
-        for <cgroups@vger.kernel.org>; Tue, 29 Mar 2022 17:47:52 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id lr4so29967028ejb.11
-        for <cgroups@vger.kernel.org>; Tue, 29 Mar 2022 17:47:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aUg+nsxlXPscnfiMYKd+M7CmvIDxhBFg2TxnVLMBR5s=;
-        b=kX4HPddeobRAwdKEOnLTw4DYufDEk5c8qxuMObUBbwxa3aPvdY7LNLDGNalvMKvNKt
-         F6jP6FhmeL+vsQ3CGykJmjwsST/Wba5VeZJ/Ou7Bg88KA3ZYI8jZCBK2zTUUGLcPECTp
-         hwi30uLJsriwV0WJU/eHst1MWIbyhtSIA1SHOv5fwNP0C9Txq5brTn04fkHUtq9L8Fgd
-         7KtMs8b4AWITjk1htYA6IbtbpDBOTkPMPVM43gsJpLbApkLr9FQzBIYN3rD58r9GqzEI
-         bEbbb46WFRzhbK9EoZsgb4v8ClkPsVfVyUzHMqBYoUUb6zzqW3WdSw6odrdPaMeqn7Vj
-         fUGA==
+        with ESMTP id S236875AbiC3Cyi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Mar 2022 22:54:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CC2717F3F5
+        for <cgroups@vger.kernel.org>; Tue, 29 Mar 2022 19:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1648608773;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ma0cdZKvD2y8q033msWkRp2PLEzhGQ/8y/lyYzyaHeg=;
+        b=Mx0ieUTdU+kloR8uaNZpzoFCKpCyeUTDNFRCywoyz0HjglZ96A7Ji6/f6/EgZqwPhSfWKC
+        7bty6q6dNbU7xnnAaWvJGfoeC6zM12a5MJ5pKuCc4YUHvA3Ul6oEk3A8qhoyNQqmHm1mFJ
+        bS5euydr777E/LfkH6EsnoRtuohv0MQ=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-221-Q5xE2SThPCiJHsdEGKeeRQ-1; Tue, 29 Mar 2022 22:52:52 -0400
+X-MC-Unique: Q5xE2SThPCiJHsdEGKeeRQ-1
+Received: by mail-lf1-f69.google.com with SMTP id h14-20020a056512220e00b0044a1337e409so5979381lfu.12
+        for <cgroups@vger.kernel.org>; Tue, 29 Mar 2022 19:52:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aUg+nsxlXPscnfiMYKd+M7CmvIDxhBFg2TxnVLMBR5s=;
-        b=a3cVkEG2S4a7zlYxJreoFp2+ug0ZaTMYIPKG6Mvc0qV02Lndgmx5Q+aHQnMgNVhDSd
-         K45oCBrg0wcNRoSc9Nx8ohhnt0lidQdqZtf1ya8Eh5KF0lh/mrDwuzumwzW5tLYZwbo/
-         iXF86QrFR99zXXjArFgAjZeBEjY4PCc26C0uJVJTmuGNMo5eXRhnJRjcQZYNWuHZUbFC
-         GWDRFFxqhm8O2c+08VPEnzGvZxOE3E8SankQ3LmzI7PLpJs/bI7ZaL/UImwAI5ta9E/l
-         Me8nnGtz0PySm9HY1TdQ8uilok8zdgGiLsc0RbxMeuHu8d8Ce4u/aQXn6QcUcijLm/er
-         nSMw==
-X-Gm-Message-State: AOAM533lTOl7akl/CWGdMQeqgT5/KtGJeqQDsqI0ZpDaTR175Xu9Hy68
-        mexJPnIK6/a8Pje98gLkwKc=
-X-Google-Smtp-Source: ABdhPJy4F9bfwKf/j18exkVQ9d4Twgxpur4utK6ckmoYoKOh1wD+mTKH2CnttB7AQvKvvY82D430Yw==
-X-Received: by 2002:a17:907:6d82:b0:6d6:da31:e542 with SMTP id sb2-20020a1709076d8200b006d6da31e542mr36187919ejc.135.1648601271316;
-        Tue, 29 Mar 2022 17:47:51 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id v5-20020a50c405000000b004161123bf7asm8834629edf.67.2022.03.29.17.47.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Mar 2022 17:47:50 -0700 (PDT)
-Date:   Wed, 30 Mar 2022 00:47:50 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/3] mm/memcg: set pos to prev unconditionally
-Message-ID: <20220330004750.fx4jr4bnehz4ynpf@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20220225003437.12620-1-richard.weiyang@gmail.com>
- <20220225003437.12620-3-richard.weiyang@gmail.com>
- <YkNUZYrSHPjJ1XOb@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ma0cdZKvD2y8q033msWkRp2PLEzhGQ/8y/lyYzyaHeg=;
+        b=ULcxdJCbnv7jGD/8I4v71YhxNp8emai92HvqNIkWLz6/9REPBOArHXBo28hpVPML3a
+         UyepCjREx85QGTe6+fbmoZwFLIEbf888MhSYDI8c7qxpC7/ZbpWVzeeEUu5GO3A4TVlQ
+         SRPwtVwRBsVgWBzG5D5XicMHX+kTx9fhrtmEUODgvfuMHs0Bu68D0KOYQn8sSnxWVy2q
+         0ci+sgPOpIdr/wHxVMubgIAMYYOwNpztEE1ENuhYL0RtNVTvatYdqnbmFt92O9ldQCiF
+         V36mxNJQ1b2MBJuKMfQ0crEJqu73Q8vaSonx3gj80drzDtY0PRzVVYC7Q8U3qDkTbBoA
+         MSgA==
+X-Gm-Message-State: AOAM530YsXrdQA21Di2XQHqRa+eyOGafYlzKgNsSTshlwWLTvLJ5ZNm0
+        fWgI9gKCJ6vGPR8ZQ4zbhT0kjgJ653BBxmlUv+pMrCJtXg7oO3UYy5k3Wmdw7uejDGiRur0PMVo
+        v+HmApe1mm6g9qdh1cTsECjfd00hQQFMtbA==
+X-Received: by 2002:a2e:9c8:0:b0:248:f8:67c5 with SMTP id 191-20020a2e09c8000000b0024800f867c5mr4912819ljj.19.1648608770580;
+        Tue, 29 Mar 2022 19:52:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkIA/whlS3j6eKLVHrldj2gWMf7FSGbkfNTmCl8OCDZ34eNxVwmazKVZychrCmUiRKlM0h/YaN1Vs3UK4+JYA=
+X-Received: by 2002:a2e:9c8:0:b0:248:f8:67c5 with SMTP id 191-20020a2e09c8000000b0024800f867c5mr4912804ljj.19.1648608770371;
+ Tue, 29 Mar 2022 19:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YkNUZYrSHPjJ1XOb@cmpxchg.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000921fd405db62096a@google.com>
+In-Reply-To: <000000000000921fd405db62096a@google.com>
+From:   Ming Lei <ming.lei@redhat.com>
+Date:   Wed, 30 Mar 2022 10:52:38 +0800
+Message-ID: <CAFj5m9+Gc-t6vD17yWBNos-fk9vmhUTLsXYGrSx4Bdzn7R67JQ@mail.gmail.com>
+Subject: Re: [syzbot] possible deadlock in throtl_pending_timer_fn
+To:     syzbot <syzbot+934ebb67352c8a490bf3@syzkaller.appspotmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 02:48:05PM -0400, Johannes Weiner wrote:
->On Fri, Feb 25, 2022 at 12:34:36AM +0000, Wei Yang wrote:
->> Current code set pos to prev based on condition (prev && !reclaim),
->> while we can do this unconditionally.
->> 
->> Since:
->> 
->>   * If !reclaim, pos is the same as prev no matter it is NULL or not.
->>   * If reclaim, pos would be set properly from iter->position.
->> 
->> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->> ---
->>  mm/memcontrol.c | 5 +----
->>  1 file changed, 1 insertion(+), 4 deletions(-)
->> 
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 9464fe2aa329..03399146168f 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -980,7 +980,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->>  	struct mem_cgroup_reclaim_iter *iter;
->>  	struct cgroup_subsys_state *css = NULL;
->>  	struct mem_cgroup *memcg = NULL;
->> -	struct mem_cgroup *pos = NULL;
->> +	struct mem_cgroup *pos = prev;
+On Wed, Mar 30, 2022 at 5:23 AM syzbot
+<syzbot+934ebb67352c8a490bf3@syzkaller.appspotmail.com> wrote:
 >
->I don't like this so much. It suggests pos always starts with prev, no
->matter what. But this isn't true for reclaim mode, which overrides the
->initialized value again.
+> Hello,
 >
->>  	if (mem_cgroup_disabled())
->>  		return NULL;
->> @@ -988,9 +988,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->>  	if (!root)
->>  		root = root_mem_cgroup;
->>  
->> -	if (prev && !reclaim)
->> -		pos = prev;
+> syzbot found the following issue on:
 >
->How about making the reclaim vs non-reclaim mode explicit and do:
+> HEAD commit:    cb7cbaae7fd9 Merge tag 'drm-next-2022-03-25' of git://anon..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17ef8b43700000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7094767cefc58fb9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=934ebb67352c8a490bf3
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 >
->	if (reclaim) {
->		...
->		pos = iter->position;
->		...
->	} else {
->		pos = prev;
->	}
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+934ebb67352c8a490bf3@syzkaller.appspotmail.com
 
-Something like this?
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
+for-5.18/block
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index eed9916cdce5..5d433b79ba47 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1005,9 +1005,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 	if (!root)
- 		root = root_mem_cgroup;
- 
--	if (prev && !reclaim)
--		pos = prev;
--
- 	rcu_read_lock();
- 
- 	if (reclaim) {
-@@ -1033,6 +1030,8 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 			 */
- 			(void)cmpxchg(&iter->position, pos, NULL);
- 		}
-+	} else if (prev) {
-+		pos = prev;
- 	}
- 
- 	if (pos)
--- 
-Wei Yang
-Help you, Help me
+It should be fixed by:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-5.18/block&id=d578c770c85233af592e54537f93f3831bde7e9a
+
+Thanks,
+
