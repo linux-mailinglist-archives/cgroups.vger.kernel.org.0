@@ -2,69 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE5E4ECFE7
-	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 01:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFDD44ED05A
+	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 01:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbiC3XGS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Mar 2022 19:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
+        id S1346536AbiC3Xtd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Mar 2022 19:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236212AbiC3XGS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Mar 2022 19:06:18 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EB42D1D8
-        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:04:31 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id j15so44434239eje.9
-        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:04:31 -0700 (PDT)
+        with ESMTP id S242691AbiC3Xtc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Mar 2022 19:49:32 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C74965D08
+        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:47:43 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h1so26298278edj.1
+        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:47:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dzKZ7ECGkzcFdPQK5M9ncRL/sQmYPUdD+l7iQzUycAA=;
-        b=MftjtHFIxELw4IPjIcxy8tjPG26Iq9aW2ed4nF7XZHiDywZb4f2s/BLKMVFS3lWKmm
-         9fmTlV+ZpJ8KDPJEtUXaAFySzX5epOxrYuZ/mH4DpCGdxro2jggjgghc/RUbzwlnawP9
-         o3XgG435IlPTYm1Xm2n/BvkdW+/nBK6pp4FnWbY2k3fhd69xWmyaLmj8mYrDUMB4djjj
-         25nTEL1u5CYdqavAwTnbUNZnKXTfgEzXVGFJw/V6MDfVs0n8+EKD5+9Y95nGENMoGSpj
-         ZyYYt4GNVp0A6CHGzJ+kxLhSn7rwgKr41PBNSEOvFSs4mOpwyVo6N1B+jmL56p9z3WFh
-         Fa6Q==
+        h=from:to:cc:subject:date:message-id;
+        bh=9LsSC7UA/+paobOapmA1UTtO12gXoTTx/WztGKAK+nc=;
+        b=fe8eEAxqUkCZXNGaq3RHJrZtPAa7wyQzIypVPUh9xnoN6xe8QrIvlcinUSoQ6IUwhD
+         MsAIu87gT2JCNO2a5tAm6RP/syCmhSmtdFYMrW5HEfNhzGlRxUChrw8BMQWKR289xWnS
+         WjapK7MM2ND4tNqj5/C9UmPFZ+uMsaguZKFcYNppJSJZCtDU+3EnT96GQnXANK0oY0hd
+         8Z2Wo2LpiGv/0Y4JEKbKMSQdv5CyDm2YYqX6xqZfwtesHHXVylMZBzm6t32Z+B9mp4D8
+         OA3Qu4yzBCYSpwB24NguEODDVRhh6T5/BFUncycCXkxxqhcmTKHb7PeJ+gZ2nDyTUfxH
+         gAew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dzKZ7ECGkzcFdPQK5M9ncRL/sQmYPUdD+l7iQzUycAA=;
-        b=vZ8aPU/Jy77AlegyHnsv1b50Zijnudx15k8h9tRFcxDjwY2Xvm0XHa4UO0DUXYMcNc
-         fiT1OvJPen9uWrIBMzX6FVF4B4RxNZXhCbD+oRA8PURjj1idVYF3OHIOKBgt4c5D9s99
-         SIRJyVAuPoHB3LEHV+xCQyt8RsCnFUBgEJTV5bNyZ39v3ZeSE3QAhjdAWWsfvP+4uqxX
-         bF4dM1qpG0K04XaWar7UQvVQeHvH3LRysaothcpmi3usJJBtkEtC1HDXFLrb7lT/NIi6
-         +T2XB2iOmlPNpWS6WL7JSGOumCL3ic85tZ8Zlo94XfK6D7k8GDSroksMsrh70ftpGaCk
-         T18g==
-X-Gm-Message-State: AOAM530RP4uQKb6xIfWfBcJWEYBC/wsoG6jQWJjgxegE6Rf5W/bGFMMS
-        qzV23dWWauSTk43XLpzddWk=
-X-Google-Smtp-Source: ABdhPJxhAIuWULIKpzZ/GYJkv8ySomgFTpP9EX2TyymMMyq59mUwBzURUn/gIkQjQ3V4klCGBZNhDQ==
-X-Received: by 2002:a17:906:c0c9:b0:6db:207:c41f with SMTP id bn9-20020a170906c0c900b006db0207c41fmr2208540ejb.292.1648681470183;
-        Wed, 30 Mar 2022 16:04:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9LsSC7UA/+paobOapmA1UTtO12gXoTTx/WztGKAK+nc=;
+        b=nxDqj6HYUr+Q0HPX8j6YMLcY8EYQHNiR4CVu6b47IHYlH36ymLL8VFWI5YaX5jRwKC
+         AzxcX9JUKG9hzUuOfwa4sNtRnx5lE/gTlDAufcHHa5s0xJoKQBsRkTjJHNmDi8B+LywU
+         EV5xItakKzMSlIK0eXefD8DVgvj5C8CBK1WEU/ato4upquMr2yMWgosB5FP+VjqifkQh
+         2lW17+pIzbVWfCvyJaAufF0HgWquoaQK/ezLttnZNKQeBp7b0usxIxcIXMccvcLn4zHk
+         GmZHGO5bmX786zW8iDWLFKNLZzFwML2eznI2bao9iEZEVH6EGxYWwXLR5hvy5+u8EB+F
+         /eCA==
+X-Gm-Message-State: AOAM531XuWzmXN5ZO2bLunTWGGMkPj68b8FtPIiCNcHuXH19oY6WISHt
+        zGorjWlxAZySPnb5wgrn3julY9MUcKU=
+X-Google-Smtp-Source: ABdhPJzYepoaEpY+Ia1Q3I1JFH/RZTdrqcEo0FxbNDNSw2eXDEbi/BjnIfcPQxEQhVmeV2yIqKUobw==
+X-Received: by 2002:a05:6402:1e8b:b0:3da:58e6:9a09 with SMTP id f11-20020a0564021e8b00b003da58e69a09mr13737843edf.155.1648684061888;
+        Wed, 30 Mar 2022 16:47:41 -0700 (PDT)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id p10-20020a17090664ca00b006df8869d58dsm8730965ejn.100.2022.03.30.16.04.29
+        by smtp.gmail.com with ESMTPSA id c11-20020a056402120b00b004196059efd1sm10400924edw.75.2022.03.30.16.47.41
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Mar 2022 16:04:29 -0700 (PDT)
-Date:   Wed, 30 Mar 2022 23:04:29 +0000
+        Wed, 30 Mar 2022 16:47:41 -0700 (PDT)
 From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 3/3] mm/memcg: move generation assignment and comparison
- together
-Message-ID: <20220330230429.ua5y42cgr3f6crnr@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20220225003437.12620-1-richard.weiyang@gmail.com>
- <20220225003437.12620-4-richard.weiyang@gmail.com>
- <YkR902CHgavwleet@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YkR902CHgavwleet@cmpxchg.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [Patch v2 0/3] mm/memcg: some cleanup for mem_cgroup_iter()
+Date:   Wed, 30 Mar 2022 23:47:16 +0000
+Message-Id: <20220330234719.18340-1-richard.weiyang@gmail.com>
+X-Mailer: git-send-email 2.11.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,51 +64,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 11:57:07AM -0400, Johannes Weiner wrote:
->On Fri, Feb 25, 2022 at 12:34:37AM +0000, Wei Yang wrote:
->> For each round-trip, we assign generation on first invocation and
->> compare it on subsequent invocations.
->> 
->> Let's move them together to make it more self-explaining. Also this
->> reduce a check on prev.
->> 
->> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->
->This makes sense. The function is structured into 1) load state, 2)
->advance, 3) save state. The load state is a better fit for
->initializing reclaim->generation.
->
->> @@ -996,7 +996,14 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->>  		mz = root->nodeinfo[reclaim->pgdat->node_id];
->>  		iter = &mz->iter;
->>  
->> -		if (prev && reclaim->generation != iter->generation)
->> +		/*
->> +		 * On first invocation, assign iter->generation to
->> +		 * reclaim->generation.
->> +		 * On subsequent invocations, make sure no one else jump in.
->> +		 */
->> +		if (!prev)
->> +			reclaim->generation = iter->generation;
->> +		else if (reclaim->generation != iter->generation)
->>  			goto out_unlock;
->
->The comment duplicates the code, it doesn't explain why we're doing
->this. How about:
->
->		/*
->		 * On start, join the current reclaim iteration cycle.
->		 * Exit when a concurrent walker completes it.
->		 */
+No functional change, try to make it more readable.
 
-This one looks better and explain the reclaim model.
-Thanks
+v2: some adjustment as suggested by Johannes 
 
->
->With that, please feel free to add:
->
->Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Wei Yang (3):
+  mm/memcg: set memcg after css verified and got reference
+  mm/memcg: set pos explicitly for reclaim and !reclaim
+  mm/memcg: move generation assignment and comparison together
+
+ mm/memcontrol.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
 -- 
-Wei Yang
-Help you, Help me
+2.33.1
+
