@@ -2,114 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AE84EC664
-	for <lists+cgroups@lfdr.de>; Wed, 30 Mar 2022 16:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B2D4EC8F2
+	for <lists+cgroups@lfdr.de>; Wed, 30 Mar 2022 17:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243455AbiC3OXx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Mar 2022 10:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S1344497AbiC3P6z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Mar 2022 11:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239973AbiC3OXx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Mar 2022 10:23:53 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B903CD329
-        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 07:22:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id lr4so33421465ejb.11
-        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 07:22:07 -0700 (PDT)
+        with ESMTP id S1348462AbiC3P6z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Mar 2022 11:58:55 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9844B42B
+        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 08:57:09 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id m21so2764500qtw.8
+        for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 08:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4iTANxmONAKu4RDVv0y+koCJEtwISqaQFOKub5KCpYY=;
-        b=ARDCeatE6ITj6RrVssEpi4soZXUTx10fHOsOPABcN7zK7iIsBrhSpbv2Mi3z4nezHM
-         XGnjs2pQBWfUgxWDY1Byh5zkoIucQsUZ2Pim338F7IkFcpYpQY5cdrYy8oKnm1UGsXIl
-         /R1JQXydQ6N4QMnX2+PLyOntQjkcwYNpfO/f43dmHUEAMTWp9tZzD4zmrRwFqJXFnDOa
-         6mnpTxbxUh0DQN6mH1jNcIgCf67RAsDnR4Mbb99c8M/CSvWszvQ5GThgYys4Gh5ndMcd
-         +4B4cLdEnUnPJtoxiYwi3yr28PPlraTvMkSygErs72lyr2tVIz+zI4tjPc1K4anGFQp8
-         xeyA==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2DqrTDJij/+jnL6IguPlfSJVz0YoCK5Qn6m+J92VWzI=;
+        b=orgO24LkHCF4EOuz/ab4HIS8kjgemcfoGLDYGu7EWuXlTISEDMSKr4h2nrxRs2PzEc
+         EjAshco2pN7gXzRJhW+0+mjZnkG0Xxm5vCR41OHjwj7BNKSAbpspP9aKawjBtJt4ZKKk
+         Iat4FhW+5tFjMxnCnwdh8Bfl7HaK837UV+gjMj9/2UCWjyP+V8to1NZzXlrfzbZHkzeX
+         WwPTYlpbpMAm35NaEV1dkfMAfyfgI3ZCHwuPlupG2iXlGyuDmKzIaZ/YYwDXbMdDNC9p
+         km4O1WETMIikl7k5dpkF/phamL+DERfeGpjhuTN3hR+/OfQDxFYdrJ2a9p8r5UE1gffJ
+         TTpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4iTANxmONAKu4RDVv0y+koCJEtwISqaQFOKub5KCpYY=;
-        b=xO2jxYGtKT549iW43DgeAu3iydCV9hxFHFFJsy9vmdnHgTL/G9R+8LfhASykYlh8+R
-         Yj4Dy5YjOxxZNRzbVCJI7/wV2tpqfUNAISaEnthhOF6qGEj17oemcTFQDso2UMvpTw9n
-         CLabx0xL4VZR3h5KWTTEGZpUcZdJwUGB/Ew13APvCyB7mmR2DcSSK7Hk7Ovj9yYL6+Z9
-         yM/08g70RhF2nWrL32RabwH0t8O+8HzsHuosWz15lqFDlPzAPJOarSba/IxsHzUhm2WX
-         NmcsmSwLncMJY0u+SfOiKTX14ZMiwqY1rpZGEssHrQgrfEHxdEFYKOV9X7vHg5kMhOR7
-         q3tw==
-X-Gm-Message-State: AOAM533il16FkznDZGln6ceJHDW/soPh2tA/rAoEi1O3i9QtLIlYP81i
-        t35kDMGhoZR2mkjtQoa3vGA=
-X-Google-Smtp-Source: ABdhPJzXVCXPTVNzet0Qhi1syNJDEUtoTmJGonpuAY0FK5Rzlw97jdcABj6E3ChkjPw2pSWrLdjJhQ==
-X-Received: by 2002:a17:907:7f9e:b0:6e0:d34b:7d98 with SMTP id qk30-20020a1709077f9e00b006e0d34b7d98mr25886639ejc.574.1648650126648;
-        Wed, 30 Mar 2022 07:22:06 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id bm23-20020a170906c05700b006d597fd51c6sm8422830ejb.145.2022.03.30.07.22.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Mar 2022 07:22:06 -0700 (PDT)
-Date:   Wed, 30 Mar 2022 14:22:05 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/3] mm/memcg: set pos to prev unconditionally
-Message-ID: <20220330142205.iaw6apqxkngp3bdz@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2DqrTDJij/+jnL6IguPlfSJVz0YoCK5Qn6m+J92VWzI=;
+        b=boYRSEMXBn6Pp+43t8AoXi7CZQP8ObepVEDVn6TXiORHqcGJQM/V5aLammBPTCs8Xf
+         fkuc4xwYnXwD8dMGb0S82CUmB6NEybnOwmN0WuP8upzRKpM/p0RXnjSeo6BNjsqNpswK
+         zSEUpRsW8lPL31yuCkBsqSX+mRcUxihI6Yh1cpBRuSopGyXB0P/5weBPk/C8LWWkeuga
+         8MBqPkfmYKCLp4K+uslaaO8h+3EWnky1oVQYJfefHQs9czdwpfO+i9xiGMR852nR4uz/
+         b3DY6yvRV5zZUJPJUEUlzBvDIniuZkUN9533pBmdbaESmLy9zEZI8MOmeU5M9hvnsyeM
+         KlAA==
+X-Gm-Message-State: AOAM533d8PuDS0ycubwMC3HomDTyzRqB4GB9wdan43RUUlKLzXC0emJX
+        C43FDbYhaqoJd8B4iRRJQxzxJEjy2owtCA==
+X-Google-Smtp-Source: ABdhPJwis4J+aFI90oZrgLFV575jBY3CiFlk/12EJdxfp3LWn6/dudg9zJuHrQONsGAd5+Dx3cTrPw==
+X-Received: by 2002:ac8:7d86:0:b0:2e1:fe79:d602 with SMTP id c6-20020ac87d86000000b002e1fe79d602mr162679qtd.502.1648655828801;
+        Wed, 30 Mar 2022 08:57:08 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id j11-20020a37a00b000000b0067b436faccesm10958647qke.122.2022.03.30.08.57.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 08:57:08 -0700 (PDT)
+Date:   Wed, 30 Mar 2022 11:57:07 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 3/3] mm/memcg: move generation assignment and comparison
+ together
+Message-ID: <YkR902CHgavwleet@cmpxchg.org>
 References: <20220225003437.12620-1-richard.weiyang@gmail.com>
- <20220225003437.12620-3-richard.weiyang@gmail.com>
- <YkNUZYrSHPjJ1XOb@cmpxchg.org>
- <20220330004750.fx4jr4bnehz4ynpf@master>
- <YkRIUbEGHVIbVRNO@cmpxchg.org>
+ <20220225003437.12620-4-richard.weiyang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YkRIUbEGHVIbVRNO@cmpxchg.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220225003437.12620-4-richard.weiyang@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 08:08:49AM -0400, Johannes Weiner wrote:
->On Wed, Mar 30, 2022 at 12:47:50AM +0000, Wei Yang wrote:
->> Something like this?
->> 
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index eed9916cdce5..5d433b79ba47 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -1005,9 +1005,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->>  	if (!root)
->>  		root = root_mem_cgroup;
->>  
->> -	if (prev && !reclaim)
->> -		pos = prev;
->> -
->>  	rcu_read_lock();
->>  
->>  	if (reclaim) {
->> @@ -1033,6 +1030,8 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->>  			 */
->>  			(void)cmpxchg(&iter->position, pos, NULL);
->>  		}
->> +	} else if (prev) {
->> +		pos = prev;
->>  	}
->>  
->>  	if (pos)
->
->Yep!
+On Fri, Feb 25, 2022 at 12:34:37AM +0000, Wei Yang wrote:
+> For each round-trip, we assign generation on first invocation and
+> compare it on subsequent invocations.
+> 
+> Let's move them together to make it more self-explaining. Also this
+> reduce a check on prev.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-Sure, I would prepare a v2.
+This makes sense. The function is structured into 1) load state, 2)
+advance, 3) save state. The load state is a better fit for
+initializing reclaim->generation.
 
-BTW, do you have some comment on patch 3?
+> @@ -996,7 +996,14 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+>  		mz = root->nodeinfo[reclaim->pgdat->node_id];
+>  		iter = &mz->iter;
+>  
+> -		if (prev && reclaim->generation != iter->generation)
+> +		/*
+> +		 * On first invocation, assign iter->generation to
+> +		 * reclaim->generation.
+> +		 * On subsequent invocations, make sure no one else jump in.
+> +		 */
+> +		if (!prev)
+> +			reclaim->generation = iter->generation;
+> +		else if (reclaim->generation != iter->generation)
+>  			goto out_unlock;
 
--- 
-Wei Yang
-Help you, Help me
+The comment duplicates the code, it doesn't explain why we're doing
+this. How about:
+
+		/*
+		 * On start, join the current reclaim iteration cycle.
+		 * Exit when a concurrent walker completes it.
+		 */
+
+With that, please feel free to add:
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
