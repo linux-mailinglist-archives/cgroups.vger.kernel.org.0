@@ -2,58 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7709E4ED05B
+	by mail.lfdr.de (Postfix) with ESMTP id 9556D4ED05C
 	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 01:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351869AbiC3Xte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S242691AbiC3Xte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Wed, 30 Mar 2022 19:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351868AbiC3Xtc (ORCPT
+        with ESMTP id S1351869AbiC3Xtc (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Wed, 30 Mar 2022 19:49:32 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2525D65D26
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2F165D34
         for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:47:44 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id bi12so44696022ejb.3
+Received: by mail-ej1-x62f.google.com with SMTP id p15so44589990ejc.7
         for <cgroups@vger.kernel.org>; Wed, 30 Mar 2022 16:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=F2sr6A+74F0K682i5KfFbDfyxE+MQpH5kf2WVRDaVIg=;
-        b=DXlRh9VdTEpO7NS8UN7I/7xFcNqWI9MpkZUOkkXQrKpqPO+/o7s8ip5/V3wuJlw9OC
-         N3JRk5k243KQRIuZCPQP2fwXOTj3I89ZdtinJXIsTV+Yyy1E8T+vW0I7IB2dOco/Idn9
-         CG3tUrd4r5OzGyJRPpU3422sei2X2oIgWsBz6S6wAlgwQzPlkMw+E2SMYoOWVJ9v9nrM
-         FFT3i2i6zxf7106D+R9OFTCDqr58JFeYzzWuOWg6KtBG6Qr1KppDZNE1fes9Kaguf5Z9
-         Rj5p1RThizy2W3wNBRgnN6gGxCIGyH6cq10Ur8eWx9EWyHWotIdxRDSCOlXYEPUBXlA+
-         31yQ==
+        bh=6FJnqnKyYiDxw5+zHvmYhDEIHbsPH/AeIDmnSnqcv8U=;
+        b=o5aWz+8c0XSKHv66RUMiIoR/ArVLQsHrsbZ9viJiWDel0QYolsZo+3P9o/TlWTdErM
+         VM6LJrjtXVstBK+E+JwFdt37ex4X7hoR19Pnhxcnckr3VmFzG6JzVC6Fw+zBSi490HwX
+         ZYiKTzS5tmQa16DJPiF7Dl5GiNAHQnXVF/DOUdjlxt/zPutCxvoWRnB2tsDK1yPy9gRu
+         xU3yvDN9PThnJQVF2S053ymA5I4eqRir0mck8ma8Y8JW3FMWOU1adRcAFqn5DxCl4an1
+         glGeCvdWJOYmXzxxyc5qx08I1hzkYp2UtU+6l+Ah+4sc/q/Bad87aiQ4K4JliZ2OyhJj
+         5yaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=F2sr6A+74F0K682i5KfFbDfyxE+MQpH5kf2WVRDaVIg=;
-        b=otud+efyEp5ZmDFTFdIwiDcP4NM3p9l7z7KvJndIt+iENXzp2fedAN5ql2Sh6SnBZO
-         CEK+qIVew/neaJoillUor2gQVfjUb//n9eL25UYpCaTSMkNbUnSSA2vQOg/xOmjx/QrB
-         iTUZgkUKhEZKDMvdF8CHoWMOWUbV5mTLi+ooh9XpOUh9tqzj4brNQyn51OJZeqecIAdP
-         erLsX1xBlWfc2GYpVyjWdopl0M5ymurq+AHmTqE4Lst4Xg2ewRUNYhzeIaRQd+w4BB3k
-         lKNu3DViRIxkfvmsufYv13xn9ATy/BL4TRD14SXfFMpHiysa51JjwAjoVaHRQh8XemNX
-         8I/Q==
-X-Gm-Message-State: AOAM533hNfLVTtjG2SrqiBCTfuCFrCpvwxNwkW2F6LtWBj/pSWccpWvZ
-        wI3gWymB6mNwAPZ3TmQ2Fmk=
-X-Google-Smtp-Source: ABdhPJxzxxKzXun8q1D4jDTvVnY2R6tSETGwmLXnIvxFv5FeES3d4jdl2vhSvZHTjQQ6vZQ4adTvKQ==
-X-Received: by 2002:a17:906:4fd5:b0:6e1:2084:99d2 with SMTP id i21-20020a1709064fd500b006e1208499d2mr2245403ejw.639.1648684062588;
-        Wed, 30 Mar 2022 16:47:42 -0700 (PDT)
+        bh=6FJnqnKyYiDxw5+zHvmYhDEIHbsPH/AeIDmnSnqcv8U=;
+        b=Sb7wDondXUXd1bqw3olUJtzstYLxPOX1C4ohCsFWoo2IRjIf2DkZBs4kNIde9fjxTt
+         emb+O/o77N5fAL/6YBcgJdNgxNyyMLPM1gJrFbuSD3N4BY0neVmzroAIIaWVnUnbnIXr
+         beZQz8b4Zy4tg/XupO6nruJn4VE+iuNyTZG4lsZS112j7hoFc6E/A8DXZECCl5kTxhrx
+         5AqWpGXmNfLQFyqwhTYxNwFGBGk9xgYeQDjJuzIliDFGjB2+NCSJX9cVBY+3mg64/dDN
+         APZ3pdK4+kTtpMS0a/IvjVdMGT+0Vmlrtwe+74Wu/ubLxenTKiZkO6te0tF5lmnfob04
+         +ihw==
+X-Gm-Message-State: AOAM531f4GYPtkqslU3INYY8SInewdYi5tgDD2mBSNloTIEuzdQ1sPKB
+        yEDMl37uJFxJQ5cBn7LLCKI=
+X-Google-Smtp-Source: ABdhPJxYEItkqfh9mvC3TLsa/vajXERsHMYaAPlapmfd0q/6wb4IpuO77RspaKpXhGMU7MJtoQQUOw==
+X-Received: by 2002:a17:907:2d88:b0:6e4:9a7f:9175 with SMTP id gt8-20020a1709072d8800b006e49a7f9175mr2316911ejc.584.1648684063395;
+        Wed, 30 Mar 2022 16:47:43 -0700 (PDT)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id e28-20020a170906649c00b006df6dfeb557sm8719049ejm.49.2022.03.30.16.47.42
+        by smtp.gmail.com with ESMTPSA id b3-20020aa7d483000000b00419209d4c85sm10271351edr.66.2022.03.30.16.47.42
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Mar 2022 16:47:42 -0700 (PDT)
+        Wed, 30 Mar 2022 16:47:43 -0700 (PDT)
 From:   Wei Yang <richard.weiyang@gmail.com>
 To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         akpm@linux-foundation.org
 Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
         Wei Yang <richard.weiyang@gmail.com>
-Subject: [Patch v2 1/3] mm/memcg: set memcg after css verified and got reference
-Date:   Wed, 30 Mar 2022 23:47:17 +0000
-Message-Id: <20220330234719.18340-2-richard.weiyang@gmail.com>
+Subject: [Patch v2 2/3] mm/memcg: set pos explicitly for reclaim and !reclaim
+Date:   Wed, 30 Mar 2022 23:47:18 +0000
+Message-Id: <20220330234719.18340-3-richard.weiyang@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20220330234719.18340-1-richard.weiyang@gmail.com>
 References: <20220330234719.18340-1-richard.weiyang@gmail.com>
@@ -67,40 +67,42 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Instead of reset memcg when css is either not verified or not got
-reference, we can set it after these process.
+During mem_cgroup_iter, there are two ways to get iteration position:
+reclaim vs non-reclaim mode.
 
-No functional change, just simplified the code a little.
+Let's do it explicitly for reclaim vs non-reclaim mode.
 
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
 ---
- mm/memcontrol.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+v2: split into two explicit part as suggested by Johannes
+---
+ mm/memcontrol.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index dc193e83794d..eed9916cdce5 100644
+index eed9916cdce5..5d433b79ba47 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1057,15 +1057,10 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 		 * is provided by the caller, so we know it's alive
- 		 * and kicking, and don't take an extra reference.
- 		 */
--		memcg = mem_cgroup_from_css(css);
+@@ -1005,9 +1005,6 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+ 	if (!root)
+ 		root = root_mem_cgroup;
+ 
+-	if (prev && !reclaim)
+-		pos = prev;
 -
--		if (css == &root->css)
--			break;
--
--		if (css_tryget(css))
-+		if (css == &root->css || css_tryget(css)) {
-+			memcg = mem_cgroup_from_css(css);
- 			break;
--
--		memcg = NULL;
-+		}
- 	}
+ 	rcu_read_lock();
  
  	if (reclaim) {
+@@ -1033,6 +1030,8 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+ 			 */
+ 			(void)cmpxchg(&iter->position, pos, NULL);
+ 		}
++	} else if (prev) {
++		pos = prev;
+ 	}
+ 
+ 	if (pos)
 -- 
 2.33.1
 
