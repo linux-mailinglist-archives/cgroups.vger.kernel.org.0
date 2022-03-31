@@ -2,178 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7AC4EE19D
-	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 21:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB74EE1A2
+	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 21:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbiCaT1D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 31 Mar 2022 15:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S240650AbiCaT21 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Mar 2022 15:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234433AbiCaT1C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 15:27:02 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FB2DFFBE
-        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:25:14 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id w141so369829qkb.6
-        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:25:14 -0700 (PDT)
+        with ESMTP id S240646AbiCaT20 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 15:28:26 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6C31E0147
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:26:39 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id o5so1222796ybe.2
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:26:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vyEyFUKqryt9zBzJe2Z7xpXuyc7SpWk9id19kGwXgKM=;
-        b=mEMZuaiSHC0FBEUUP25G6KwZkLY4fMTbC8nkggOHXCQ/rM2A8QlY/nhB4znsxN8X9w
-         0jeQiv+bQGLWX0qeKRehzPVnXaW+Q8ZCCepBvbNi3xIV8pEDnpbycgEhOGONjdxalGsx
-         9pYzWnpcjILDPK/VxTHTnMbiOIl/m/ZDNCyBhP+rCo6pD7FSWUgRr9B1F2mzbadBoEOq
-         MENdNcglup1LzOJdJaWye2ZZlN3INJM9XB+m7+M5ya+XfHYGoDkDEbbJ6rdk+qi8Z+lS
-         yUX/W/uL/945ytaEli3+xdaOUNHQdReLI2rZXgPFC7SQ7uLSX4in12E1YEzscjaqpQdU
-         ZyDQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TX6QX0+HXrSqPnqJDfaKnpAt/asDBfCVYhsU3t5tEcc=;
+        b=nb3MbJRRAbBq9xDAD1NkGl6UAAGL0QIEi9Lgjrtb61uhKkmxKE2ynQ1oz3cxOJ6xaL
+         hUw2V2U6RikzGjio0lGQsjrt8P4ZUdwVuQmENM9+qmYF4bLsKGbvRyFMp3dW2EeoZ46q
+         Ozvbohpe3e5Et69346PFXjYvxEjxJx0h9Ow//0q/jX97jqtRytW2dgZWdpfnhKiRImgf
+         BQXQkrxJtZNwtShSr7InkA/MggN0JtZO/Vp/58i4pvPelyqW8S2KgYer5xwnrSWNt5N2
+         nNQOEBZZndbQX1lmru4YUbyIp57jfGAktPoso00dg+tuqHJv2rO/pqiEAtsT976rgnoq
+         69NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vyEyFUKqryt9zBzJe2Z7xpXuyc7SpWk9id19kGwXgKM=;
-        b=2doj6nvBiJcgxXowi0erL4TegEqxauJc9XfMKdJmDh3UnCWrwEctBOiwUOcjgTuQAt
-         knLOGOOnNmVTnIGJxiRv4M4qDQXeDjM80yf7U8IOo7aIoHQjZIqQCvVusqN7ZfFBbZgW
-         eCyx0kjilUXcZHLTyGKMIBkLuWht0fpLMz7Qb7L1F98l6zEVL5vv75KJ/i0Oxy7uxDht
-         inVQ4u42yLj/pDO3apXVRNtRZB4+MicQA0KTRGA5jxtTuqop3CYYUap18M7rTwPax21B
-         a6+P3/p4Tv87eeGdLlJD9/qfwZFKRPzL8TpkgRHGyEJDesg8Dy+mq4UBdJRu8JpeveOu
-         SbdQ==
-X-Gm-Message-State: AOAM530k//tKWJb/p6McSjVyRqCVHgQJaOR0Wy+FDpyOxrkacfe9Rtzq
-        oAneCuF4Y0Tp6OMh6u8eyof2frGAUZFdow==
-X-Google-Smtp-Source: ABdhPJyzPs3CSu4BAynvB5YsY/AnOTZRmDgsGtbExxW+CfN83047fy7Y8GbQcqNJxNI7NWzQ7xeS0g==
-X-Received: by 2002:a37:c20b:0:b0:67b:3585:4687 with SMTP id i11-20020a37c20b000000b0067b35854687mr4363466qkm.280.1648754712603;
-        Thu, 31 Mar 2022 12:25:12 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id v3-20020a05622a014300b002e1dcd4cfa9sm173876qtw.64.2022.03.31.12.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Mar 2022 12:25:12 -0700 (PDT)
-Date:   Thu, 31 Mar 2022 15:25:11 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>
-Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
-Message-ID: <YkYAFxTgo4OsL4q4@cmpxchg.org>
-References: <20220331084151.2600229-1-yosryahmed@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TX6QX0+HXrSqPnqJDfaKnpAt/asDBfCVYhsU3t5tEcc=;
+        b=vHY6gv7gvPxbD8M+4r7VK9/rl3mIOfjuu6IDcYR4jvnCbVucvhKjf2I4eweaHZmRoS
+         +4fT6T3rQdnTudLep2P2DchPQTwCOj4mlmou7rieheXi2M71YTwtlCSfRYZ80/1WljE7
+         T6LoWtfH06EUPMFn7Cby5E9uauoE1qSy+wd7E4hQbsWYcrPtrbQDWCr4tfKzH8za0psb
+         /FIBUjLHAADP8Ca0aqCe9z3CPRZMo0tKIaxjE6aXQAR0STVDYQnlMrnVKr5BtPjbd9iz
+         yMJT7DfiqEuHsERark4HVvJrnHtrJ/Cz42sx0oDxHrcLkZk6WV//7nNlaT5FiQ0muFYQ
+         f/Bw==
+X-Gm-Message-State: AOAM531+cvQSsDrMTa6VaZIXVZLiSmeJc2rTdCNIb09U1drshRikgEPp
+        cVwyzqH3+WrlHM5dlDVDVlHf1Soz+Fe5XA3ue6A4QA==
+X-Google-Smtp-Source: ABdhPJzb6s3dp9L52kirRHRXCjOqXWIaXLwxT6D11fIb5+efsBWozTIDW6eLFnP1mKmrG/gWXA8/BV0Ci5ZwJ4uz/Dw=
+X-Received: by 2002:a25:608:0:b0:634:5ff5:7c65 with SMTP id
+ 8-20020a250608000000b006345ff57c65mr5199291ybg.282.1648754798107; Thu, 31 Mar
+ 2022 12:26:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220331084151.2600229-1-yosryahmed@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <1648713656-24254-1-git-send-email-zhaoyang.huang@unisoc.com>
+ <YkVt0m+VxnXgnulq@dhcp22.suse.cz> <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
+ <YkWR8t8yEe6xyzCM@dhcp22.suse.cz>
+In-Reply-To: <YkWR8t8yEe6xyzCM@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 31 Mar 2022 12:26:27 -0700
+Message-ID: <CAJuCfpFgi+Dph-dcDAvGQXwgeZVDBhok1UQ3X5kxFEfPQnxSSg@mail.gmail.com>
+Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        Ke Wang <ke.wang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 08:41:51AM +0000, Yosry Ahmed wrote:
-> From: Shakeel Butt <shakeelb@google.com>
-> 
-> Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
-> 
-> Use case: Proactive Reclaim
-> ---------------------------
-> 
-> A userspace proactive reclaimer can continuously probe the memcg to
-> reclaim a small amount of memory. This gives more accurate and
-> up-to-date workingset estimation as the LRUs are continuously
-> sorted and can potentially provide more deterministic memory
-> overcommit behavior. The memory overcommit controller can provide
-> more proactive response to the changing behavior of the running
-> applications instead of being reactive.
-> 
-> A userspace reclaimer's purpose in this case is not a complete replacement
-> for kswapd or direct reclaim, it is to proactively identify memory savings
-> opportunities and reclaim some amount of cold pages set by the policy
-> to free up the memory for more demanding jobs or scheduling new jobs.
-> 
-> A user space proactive reclaimer is used in Google data centers.
-> Additionally, Meta's TMO paper recently referenced a very similar
-> interface used for user space proactive reclaim:
-> https://dl.acm.org/doi/pdf/10.1145/3503222.3507731
-> 
-> Benefits of a user space reclaimer:
-> -----------------------------------
-> 
-> 1) More flexible on who should be charged for the cpu of the memory
-> reclaim. For proactive reclaim, it makes more sense to be centralized.
-> 
-> 2) More flexible on dedicating the resources (like cpu). The memory
-> overcommit controller can balance the cost between the cpu usage and
-> the memory reclaimed.
-> 
-> 3) Provides a way to the applications to keep their LRUs sorted, so,
-> under memory pressure better reclaim candidates are selected. This also
-> gives more accurate and uptodate notion of working set for an
-> application.
-> 
-> Why memory.high is not enough?
-> ------------------------------
-> 
-> - memory.high can be used to trigger reclaim in a memcg and can
->   potentially be used for proactive reclaim.
->   However there is a big downside in using memory.high. It can potentially
->   introduce high reclaim stalls in the target application as the
->   allocations from the processes or the threads of the application can hit
->   the temporary memory.high limit.
-> 
-> - Userspace proactive reclaimers usually use feedback loops to decide
->   how much memory to proactively reclaim from a workload. The metrics
->   used for this are usually either refaults or PSI, and these metrics
->   will become messy if the application gets throttled by hitting the
->   high limit.
-> 
-> - memory.high is a stateful interface, if the userspace proactive
->   reclaimer crashes for any reason while triggering reclaim it can leave
->   the application in a bad state.
-> 
-> - If a workload is rapidly expanding, setting memory.high to proactively
->   reclaim memory can result in actually reclaiming more memory than
->   intended.
-> 
-> The benefits of such interface and shortcomings of existing interface
-> were further discussed in this RFC thread:
-> https://lore.kernel.org/linux-mm/5df21376-7dd1-bf81-8414-32a73cea45dd@google.com/
-> 
-> Interface:
-> ----------
-> 
-> Introducing a very simple memcg interface 'echo 10M > memory.reclaim' to
-> trigger reclaim in the target memory cgroup.
-> 
-> 
-> Possible Extensions:
-> --------------------
-> 
-> - This interface can be extended with an additional parameter or flags
->   to allow specifying one or more types of memory to reclaim from (e.g.
->   file, anon, ..).
-> 
-> - The interface can also be extended with a node mask to reclaim from
->   specific nodes. This has use cases for reclaim-based demotion in memory
->   tiering systens.
-> 
-> - A similar per-node interface can also be added to support proactive
->   reclaim and reclaim-based demotion in systems without memcg.
-> 
-> For now, let's keep things simple by adding the basic functionality.
-> 
-> [yosryahmed@google.com: refreshed to current master, updated commit
-> message based on recent discussions and use cases]
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Thu, Mar 31, 2022 at 4:35 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 31-03-22 19:18:58, Zhaoyang Huang wrote:
+> > On Thu, Mar 31, 2022 at 5:01 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Thu 31-03-22 16:00:56, zhaoyang.huang wrote:
+> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > >
+> > > > For some kind of memcg, the usage is varies greatly from scenarios. Such as
+> > > > multimedia app could have the usage range from 50MB to 500MB, which generated
+> > > > by loading an special algorithm into its virtual address space and make it hard
+> > > > to protect the expanded usage without userspace's interaction.
+> > >
+> > > Do I get it correctly that the concern you have is that you do not know
+> > > how much memory your workload will need because that depends on some
+> > > parameters?
+> > right. such as a camera APP will expand the usage from 50MB to 500MB
+> > because of launching a special function(face beauty etc need special
+> > algorithm)
+> > >
+> > > > Furthermore, fixed
+> > > > memory.low is a little bit against its role of soft protection as it will response
+> > > > any system's memory pressure in same way.
+> > >
+> > > Could you be more specific about this as well?
+> > As the camera case above, if we set memory.low as 200MB to keep the
+> > APP run smoothly, the system will experience high memory pressure when
+> > another high load APP launched simultaneously. I would like to have
+> > camera be reclaimed under this scenario.
+>
+> OK, so you effectivelly want to keep the memory protection when there is
+> a "normal" memory pressure but want to relax the protection on other
+> high memory utilization situations?
+>
+> How do you exactly tell a difference between a steady memory pressure
+> (say stream IO on the page cache) from "high load APP launched"? Should
+> you reduce the protection on the stram IO situation as well?
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+IIUC what you are implementing here is a "memory allowance boost"
+feature and it seems you are implementing it entirely inside the
+kernel, while only userspace knows when to apply this boost (say at
+app launch time). This does not make sense to me.
 
-Thanks for compiling all the history and arguments around this change!
+>
+> [...]
+> > > One very important thing that I am missing here is the overall objective of this
+> > > tuning. From the above it seems that you want to (ab)use memory->low to
+> > > protect some portion of the charged memory and that the protection
+> > > shrinks over time depending on the the global PSI metrict and time.
+> > > But why this is a good thing?
+> > 'Good' means it meets my original goal of keeping the usage during a
+> > period of time and responding to the system's memory pressure. For an
+> > android like system, memory is almost forever being in a tight status
+> > no matter how many RAM it has. What we need from memcg is more than
+> > control and grouping, we need it to be more responsive to the system's
+> > load and could  sacrifice its usage  under certain criteria.
+>
+> Why existing tools/APIs are insufficient for that? You can watch for
+> both global and memcg memory pressure including PSI metrics and update
+> limits dynamically. Why is it necessary to put such a logic into the
+> kernel?
+
+I had exactly the same thought while reading through this.
+In Android you would probably need to implement a userspace service
+which would temporarily relax the memcg limits when required, monitor
+PSI levels and adjust the limits accordingly.
+
+>
+> --
+> Michal Hocko
+> SUSE Labs
