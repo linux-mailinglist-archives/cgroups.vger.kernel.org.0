@@ -2,118 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E293B4ED893
-	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 13:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513364EDC4F
+	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 17:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbiCaLhH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 31 Mar 2022 07:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
+        id S237011AbiCaPFl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Mar 2022 11:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232097AbiCaLhG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 07:37:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0363A206EDC;
-        Thu, 31 Mar 2022 04:35:20 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B479E1F37D;
-        Thu, 31 Mar 2022 11:35:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1648726518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0iGRqDVWtIbClXX9jVOMp8RjR3wfp+eidE5p7MXuygs=;
-        b=eSREMlixUKn6FkfFx7u1sXdAW8YfxbXQ50cR770VPYQGAn1vhhuQOVHNRs+0p7rOT0z1z2
-        eAxqWj82Yt9i2/1Wl6gtsjymIYuNLpYZFT5Qv7KDDzAcVu+uwKE5w0U4rTjh0KYXb0G3gF
-        vcqGFJUs6orzHF0kMWDD30ruR+xl34s=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4B8B2A3B87;
-        Thu, 31 Mar 2022 11:35:18 +0000 (UTC)
-Date:   Thu, 31 Mar 2022 13:35:14 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Ke Wang <ke.wang@unisoc.com>
-Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
-Message-ID: <YkWR8t8yEe6xyzCM@dhcp22.suse.cz>
-References: <1648713656-24254-1-git-send-email-zhaoyang.huang@unisoc.com>
- <YkVt0m+VxnXgnulq@dhcp22.suse.cz>
- <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
+        with ESMTP id S232527AbiCaPFl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 11:05:41 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA4931DC6
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 08:03:52 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id c4so21619605qtx.1
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 08:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d1kYZrmObSeZbyw3RMt9FzoTsF57Tn5L7U9ZzVddVG4=;
+        b=e2xD+tga/GoLwXnWljxsycUVzkUHHyFtBZKj9ohJ3DP81/4ckKV/P9xjMrfLtBjaN8
+         Y0jQRfJ0wP4mfKhofDqV7PBy2k7vHUHo0TufYPjQRU543RWwSgi458e5LByUAvekjqD6
+         6mlrpkeoiYpUpBurMZwQncB+hcsM4fnzgrTSoPR45s5VhDL9WiWRUs9iec9d8NzGqATk
+         aigMYifkF1/doRpuLcRVcPWvkVIQZ1qExWkm5fTs3sjVJH30REhh3Q6Qjb0Oi2JXZxPq
+         wU1ti7XW3WX2DApr61woyuQxTDHY+thYU3CFYK68PNE2xWO7fIdGDsFTszmbSqBKt/8T
+         XEKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d1kYZrmObSeZbyw3RMt9FzoTsF57Tn5L7U9ZzVddVG4=;
+        b=vm+1RLNGddvZeFG6AMlHfjo2JCRWeJg3kCy6jWtYgOsjmoFSTjtE/iJnFwdXJ7AU+l
+         xIVC5iJ067RERM1CvTwB7d3mXxHhvwu/wcSQAsH6TYlvzw6jdHKxmhoRR2nZWMi+8ss1
+         mzzs6TWDgOfpFfKJfSc3uwYgXpKRFym0c6GZkN7cdkRhNYNP2xMO6N/K88+D3wVOH69h
+         QviF3i/2Emay6InfIgmfm18WD2MAHMo0hg6ooAG9VEW77GcJF7lhikfSHh6+Ah6suskD
+         ifhj6lu3EH7n405gmujZq2fnTzWl3mtSb9Ws3bL8p+tnviTVcPWEsYCs41pWIf5bNY4T
+         V3Mg==
+X-Gm-Message-State: AOAM531OfDHhOS69SrGvKBFRaAk0mNA9tcmX9SfwDnyn5HIvGwmfpggx
+        4SPH3PfjD+55W/wF41jHu+ltaQ==
+X-Google-Smtp-Source: ABdhPJwK/dO1SqlWZzy8Ome1xM0rJLftTCnmGQoUxC0JJNCTJoYeogOobH0D44OOIICSVVy0CzD0mg==
+X-Received: by 2002:a05:622a:1905:b0:2e0:7543:21d4 with SMTP id w5-20020a05622a190500b002e0754321d4mr4845011qtc.12.1648739031643;
+        Thu, 31 Mar 2022 08:03:51 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id j4-20020a37c244000000b0067d79a3fd0esm12903088qkm.106.2022.03.31.08.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Mar 2022 08:03:51 -0700 (PDT)
+Date:   Thu, 31 Mar 2022 11:03:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [Patch v2 2/3] mm/memcg: set pos explicitly for reclaim and
+ !reclaim
+Message-ID: <YkXC1l27pUjwRDJa@cmpxchg.org>
+References: <20220330234719.18340-1-richard.weiyang@gmail.com>
+ <20220330234719.18340-3-richard.weiyang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220330234719.18340-3-richard.weiyang@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 31-03-22 19:18:58, Zhaoyang Huang wrote:
-> On Thu, Mar 31, 2022 at 5:01 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 31-03-22 16:00:56, zhaoyang.huang wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > For some kind of memcg, the usage is varies greatly from scenarios. Such as
-> > > multimedia app could have the usage range from 50MB to 500MB, which generated
-> > > by loading an special algorithm into its virtual address space and make it hard
-> > > to protect the expanded usage without userspace's interaction.
-> >
-> > Do I get it correctly that the concern you have is that you do not know
-> > how much memory your workload will need because that depends on some
-> > parameters?
-> right. such as a camera APP will expand the usage from 50MB to 500MB
-> because of launching a special function(face beauty etc need special
-> algorithm)
-> >
-> > > Furthermore, fixed
-> > > memory.low is a little bit against its role of soft protection as it will response
-> > > any system's memory pressure in same way.
-> >
-> > Could you be more specific about this as well?
-> As the camera case above, if we set memory.low as 200MB to keep the
-> APP run smoothly, the system will experience high memory pressure when
-> another high load APP launched simultaneously. I would like to have
-> camera be reclaimed under this scenario.
+On Wed, Mar 30, 2022 at 11:47:18PM +0000, Wei Yang wrote:
+> During mem_cgroup_iter, there are two ways to get iteration position:
+> reclaim vs non-reclaim mode.
+> 
+> Let's do it explicitly for reclaim vs non-reclaim mode.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 
-OK, so you effectivelly want to keep the memory protection when there is
-a "normal" memory pressure but want to relax the protection on other
-high memory utilization situations?
-
-How do you exactly tell a difference between a steady memory pressure
-(say stream IO on the page cache) from "high load APP launched"? Should
-you reduce the protection on the stram IO situation as well?
-
-[...]
-> > One very important thing that I am missing here is the overall objective of this
-> > tuning. From the above it seems that you want to (ab)use memory->low to
-> > protect some portion of the charged memory and that the protection
-> > shrinks over time depending on the the global PSI metrict and time.
-> > But why this is a good thing?
-> 'Good' means it meets my original goal of keeping the usage during a
-> period of time and responding to the system's memory pressure. For an
-> android like system, memory is almost forever being in a tight status
-> no matter how many RAM it has. What we need from memcg is more than
-> control and grouping, we need it to be more responsive to the system's
-> load and could  sacrifice its usage  under certain criteria.
-
-Why existing tools/APIs are insufficient for that? You can watch for
-both global and memcg memory pressure including PSI metrics and update
-limits dynamically. Why is it necessary to put such a logic into the
-kernel?
-
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
