@@ -2,53 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F474EDF9A
-	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 19:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7AC4EE19D
+	for <lists+cgroups@lfdr.de>; Thu, 31 Mar 2022 21:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbiCaR1W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 31 Mar 2022 13:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        id S234682AbiCaT1D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 31 Mar 2022 15:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbiCaR1V (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 13:27:21 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E971DEAAF;
-        Thu, 31 Mar 2022 10:25:32 -0700 (PDT)
-Date:   Thu, 31 Mar 2022 10:25:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1648747530;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QoY8vIMreW+/xI4V4yzmOr1sNP8TedvFK6EgBQAh6sU=;
-        b=BXWgUXCvFX2rA9i3tibs+9mub/WXaMXb9DJ+WPeqE9Ht6Qfd1MUG+tG4aJPgSu6P+L307j
-        6P3k+YtGiKPPYdB0TbVOitDS5/48g8z0onStfVszGQBvyqZdAnfZcggMIzZw/CXFM9QrHa
-        PEIKgCEMPp7A5q60iHgLqu1VV2cPhlo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
+        with ESMTP id S234433AbiCaT1C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 31 Mar 2022 15:27:02 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FB2DFFBE
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:25:14 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id w141so369829qkb.6
+        for <cgroups@vger.kernel.org>; Thu, 31 Mar 2022 12:25:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vyEyFUKqryt9zBzJe2Z7xpXuyc7SpWk9id19kGwXgKM=;
+        b=mEMZuaiSHC0FBEUUP25G6KwZkLY4fMTbC8nkggOHXCQ/rM2A8QlY/nhB4znsxN8X9w
+         0jeQiv+bQGLWX0qeKRehzPVnXaW+Q8ZCCepBvbNi3xIV8pEDnpbycgEhOGONjdxalGsx
+         9pYzWnpcjILDPK/VxTHTnMbiOIl/m/ZDNCyBhP+rCo6pD7FSWUgRr9B1F2mzbadBoEOq
+         MENdNcglup1LzOJdJaWye2ZZlN3INJM9XB+m7+M5ya+XfHYGoDkDEbbJ6rdk+qi8Z+lS
+         yUX/W/uL/945ytaEli3+xdaOUNHQdReLI2rZXgPFC7SQ7uLSX4in12E1YEzscjaqpQdU
+         ZyDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vyEyFUKqryt9zBzJe2Z7xpXuyc7SpWk9id19kGwXgKM=;
+        b=2doj6nvBiJcgxXowi0erL4TegEqxauJc9XfMKdJmDh3UnCWrwEctBOiwUOcjgTuQAt
+         knLOGOOnNmVTnIGJxiRv4M4qDQXeDjM80yf7U8IOo7aIoHQjZIqQCvVusqN7ZfFBbZgW
+         eCyx0kjilUXcZHLTyGKMIBkLuWht0fpLMz7Qb7L1F98l6zEVL5vv75KJ/i0Oxy7uxDht
+         inVQ4u42yLj/pDO3apXVRNtRZB4+MicQA0KTRGA5jxtTuqop3CYYUap18M7rTwPax21B
+         a6+P3/p4Tv87eeGdLlJD9/qfwZFKRPzL8TpkgRHGyEJDesg8Dy+mq4UBdJRu8JpeveOu
+         SbdQ==
+X-Gm-Message-State: AOAM530k//tKWJb/p6McSjVyRqCVHgQJaOR0Wy+FDpyOxrkacfe9Rtzq
+        oAneCuF4Y0Tp6OMh6u8eyof2frGAUZFdow==
+X-Google-Smtp-Source: ABdhPJyzPs3CSu4BAynvB5YsY/AnOTZRmDgsGtbExxW+CfN83047fy7Y8GbQcqNJxNI7NWzQ7xeS0g==
+X-Received: by 2002:a37:c20b:0:b0:67b:3585:4687 with SMTP id i11-20020a37c20b000000b0067b35854687mr4363466qkm.280.1648754712603;
+        Thu, 31 Mar 2022 12:25:12 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05622a014300b002e1dcd4cfa9sm173876qtw.64.2022.03.31.12.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Mar 2022 12:25:12 -0700 (PDT)
+Date:   Thu, 31 Mar 2022 15:25:11 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+Cc:     Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         David Rientjes <rientjes@google.com>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Jonathan Corbet <corbet@lwn.net>, Yu Zhao <yuzhao@google.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>
 Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
-Message-ID: <YkXkA+Oh1Bx33PrU@carbon.dhcp.thefacebook.com>
+Message-ID: <YkYAFxTgo4OsL4q4@cmpxchg.org>
 References: <20220331084151.2600229-1-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20220331084151.2600229-1-yosryahmed@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,12 +145,6 @@ On Thu, Mar 31, 2022 at 08:41:51AM +0000, Yosry Ahmed wrote:
 > The benefits of such interface and shortcomings of existing interface
 > were further discussed in this RFC thread:
 > https://lore.kernel.org/linux-mm/5df21376-7dd1-bf81-8414-32a73cea45dd@google.com/
-
-Hello!
-
-I'm totally up for the proposed feature! It makes total sense and is proved
-to be useful, let's add it.
-
 > 
 > Interface:
 > ----------
@@ -151,103 +166,14 @@ to be useful, let's add it.
 > 
 > - A similar per-node interface can also be added to support proactive
 >   reclaim and reclaim-based demotion in systems without memcg.
-
-Maybe an option to specify a timeout? That might simplify the userspace part.
-Also, please please add a test to selftests/cgroup/memcg tests.
-It will also provide an example on how the userspace can use the feature.
-
 > 
 > For now, let's keep things simple by adding the basic functionality.
-
-What I'm worried about is how we gonna extend it? How do you see the interface
-with 2-3 extensions from the list above? All these extensions look very
-reasonable to me, so we'll likely have to implement them soon. So let's think
-about the extensibility now.
-
-I wonder if it makes more sense to introduce a sys_reclaim() syscall instead?
-In the end, such a feature might make sense on the system level too.
-Yes, there is the drop_caches sysctl, but it's too radical for many cases.
-
 > 
 > [yosryahmed@google.com: refreshed to current master, updated commit
 > message based on recent discussions and use cases]
 > Signed-off-by: Shakeel Butt <shakeelb@google.com>
 > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst |  9 ++++++
->  mm/memcontrol.c                         | 37 +++++++++++++++++++++++++
->  2 files changed, 46 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 69d7a6983f78..925aaabb2247 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1208,6 +1208,15 @@ PAGE_SIZE multiple when read back.
->  	high limit is used and monitored properly, this limit's
->  	utility is limited to providing the final safety net.
->  
-> +  memory.reclaim
-> +	A write-only file which exists on non-root cgroups.
-> +
-> +	This is a simple interface to trigger memory reclaim in the
-> +	target cgroup. Write the number of bytes to reclaim to this
-> +	file and the kernel will try to reclaim that much memory.
-> +	Please note that the kernel can over or under reclaim from
-> +	the target cgroup.
-> +
->    memory.oom.group
->  	A read-write single value file which exists on non-root
->  	cgroups.  The default value is "0".
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 725f76723220..994849fab7df 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6355,6 +6355,38 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
->  	return nbytes;
->  }
->  
-> +static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> +			      size_t nbytes, loff_t off)
-> +{
-> +	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> +	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
-> +	unsigned long nr_to_reclaim, nr_reclaimed = 0;
-> +	int err;
-> +
-> +	buf = strstrip(buf);
-> +	err = page_counter_memparse(buf, "", &nr_to_reclaim);
-> +	if (err)
-> +		return err;
-> +
-> +	while (nr_reclaimed < nr_to_reclaim) {
-> +		unsigned long reclaimed;
-> +
-> +		if (signal_pending(current))
-> +			break;
-> +
-> +		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> +						nr_to_reclaim - nr_reclaimed,
-> +						GFP_KERNEL, true);
-> +
-> +		if (!reclaimed && !nr_retries--)
-> +			break;
-> +
-> +		nr_reclaimed += reclaimed;
-> +	}
-> +
-> +	return nbytes;
-> +}
-> +
->  static struct cftype memory_files[] = {
->  	{
->  		.name = "current",
-> @@ -6413,6 +6445,11 @@ static struct cftype memory_files[] = {
->  		.seq_show = memory_oom_group_show,
->  		.write = memory_oom_group_write,
->  	},
-> +	{
-> +		.name = "reclaim",
-> +		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
-> +		.write = memory_reclaim,
 
-Btw, why not on root?
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Thanks for compiling all the history and arguments around this change!
