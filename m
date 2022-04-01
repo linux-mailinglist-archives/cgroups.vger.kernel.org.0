@@ -2,77 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27264EFBFE
-	for <lists+cgroups@lfdr.de>; Fri,  1 Apr 2022 23:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 520054EFC10
+	for <lists+cgroups@lfdr.de>; Fri,  1 Apr 2022 23:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350944AbiDAVJ1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Apr 2022 17:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        id S1344201AbiDAVPp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Apr 2022 17:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239280AbiDAVJZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Apr 2022 17:09:25 -0400
+        with ESMTP id S236145AbiDAVPp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Apr 2022 17:15:45 -0400
 Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91C01FF226
-        for <cgroups@vger.kernel.org>; Fri,  1 Apr 2022 14:07:34 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id v13so3141247qkv.3
-        for <cgroups@vger.kernel.org>; Fri, 01 Apr 2022 14:07:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298D3517EF
+        for <cgroups@vger.kernel.org>; Fri,  1 Apr 2022 14:13:54 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id q200so3134944qke.7
+        for <cgroups@vger.kernel.org>; Fri, 01 Apr 2022 14:13:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xpR1DVaP7IDSimYCmW7Cs0QbhOf/zsDSmwDGGMtRXiE=;
-        b=zjuB4EbQMLgWLd1xXiDq0DRbbEAMjzYTkvWV9FTeHjjdzxMzsgLz9cOT8LX0HL865X
-         LHW2BCUJqmYEEKsG5XwbnSGOutsGN/YQ8gmiu4xTRrIth38kOixfHQZQp2D+gQEy+wAp
-         5eir0XmdbMQD1DcCDnZSs2bABE+JK2WFkzuk8nyxnHCs0K+BO+55i+IvC4lNtDkq/8Xc
-         /JtKNdUi3TT3IKCk5/e+FXfRTo0pkQIePvF+lwPnyDerrmezPkOlDwgKHH0Jqd1QjqH+
-         b0Ya2VO3D31C+Q+ZLRx1Nd2EdE4udUMCOl40Onplk0lAqsORuAt13L2dbxATWATht7fU
-         ojpQ==
+        bh=1NBRp1HzbNCgKf7QFMBcsjXIZ9h5LA2zsVAhStlZGsU=;
+        b=S3e9r2h5S/Lod35wzYRaK1L5GREWuQAVOTczCCvp+AvT9S37huY+EoFoDqDnnr6KOE
+         N6e1yXaNF4QQVU8G9U/GULrvVAEC7yd+sEuCnVhhtnxImWTtkJnry6Mn85pnbyip6w0P
+         VoBUATjnT3b1RpL+BsqSjYjyhZvg3WWi10vxawB6kHAkm2DkuEo8dhSfUn/QT/T6KGOY
+         Dxc0HmB78YkJbJoJI12rAo3MJOChv+SEFUT6efmRoS4tPr8tFZK6tpnzR4DJ+hJI6F4B
+         s+pNP7VlxTORg0K4n1IEq98avQdmm/GdYqZXPMXnfkFXpLjvwbp/RfpKhQgxN9hie8af
+         gjrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xpR1DVaP7IDSimYCmW7Cs0QbhOf/zsDSmwDGGMtRXiE=;
-        b=OWkePE7fhTBV6Qz6/PzJ6BOakxG8aRihJG0pCwOI4UP1BJat79/mm9r3nNot1zauhc
-         aLEs3pIPavX5rhIQOYgDFrgTTR6MQUNLf9DFnhl6J8BoeDrX2DtDY1Pbk+3UbaDY+DZE
-         6WpSsqJ6jhejvazJIQ8xwaHxL1LN1BxZwPs5/Mke5ogxvAWUnBgcysnHiM4vsALqIuZC
-         Nfp6gKiH7f+wRPOtg77FaEiNZPMbtgp7XdYbl+KG7jho4n0FLM+RjcM/AU0Gsd5EAx2y
-         ccftc7s1YW6OXjEP7EgyLMYw0fRxnanG7kzZZAC8gmg0P41i7iqj6cyKCYKK+llv9t9i
-         HVbA==
-X-Gm-Message-State: AOAM5316IDnY5SlHrD7nJ9rthwXS/bMj3hoRAma0ICN/nX2ZiWXPV/sT
-        d+zpn6tMQql+5KFbZ9OPDB4G3A==
-X-Google-Smtp-Source: ABdhPJyycpf+e5FVb3aWtVmQD7bkM0h2MY5J9KLEotdLnlXB7JnQrhs9Y2zK6E5P8AW1jXU+nDIGQA==
-X-Received: by 2002:a05:620a:20c2:b0:67d:2fb1:d358 with SMTP id f2-20020a05620a20c200b0067d2fb1d358mr7929343qka.55.1648847253922;
-        Fri, 01 Apr 2022 14:07:33 -0700 (PDT)
+        bh=1NBRp1HzbNCgKf7QFMBcsjXIZ9h5LA2zsVAhStlZGsU=;
+        b=QPyg5ZGc7Yi/DNZpB13vlosM+/KYr9HRnyCJf0MS7E0bvLqqCZfr1DdKFJZmg1qRyc
+         +1EiefWy+Mj/UmOogmrrkU0NrJJYKeHdTDCu0TPzuv8Ptf32NX+62nGyLNeWseP34NFo
+         hyHFoeMMOH9R2q7YhARyHVbcfd1YfGox6WApCSJCPZ3EEGB2F22ydk0i6vS0J0cTPfis
+         8n+GxQP2x3FNzYOcp3rjfvOv56ltDVR5g2gRxZIr2LCRvBGgIP+jJvAW90Q2noySXYrN
+         hj67yFcix29N8dHWcboOyPXBfREXPm+OE++5nSobp4KlwNcPEa2464GoTFDcEe/U9G+N
+         lNZQ==
+X-Gm-Message-State: AOAM530iVTs92Ur2WE657O56WYHIQBRKxsb/3aTyXE8O3PPhVCMRY2rV
+        ZVeAJ37ayTHNOknqNB6ttpgO5w==
+X-Google-Smtp-Source: ABdhPJyXBCMAL3/HZEBhemG6vUEMlJWBqz+syx/qm25d7BuxnWqjdHM8goVn8TL79Ikm/UjFgI9FZw==
+X-Received: by 2002:a37:b984:0:b0:67f:64a2:313e with SMTP id j126-20020a37b984000000b0067f64a2313emr7725162qkf.3.1648847633352;
+        Fri, 01 Apr 2022 14:13:53 -0700 (PDT)
 Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05620a0e8400b0067b1bcd081csm1820620qkm.66.2022.04.01.14.07.33
+        by smtp.gmail.com with ESMTPSA id f19-20020a05620a409300b00680c933fb1csm2254822qko.20.2022.04.01.14.13.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Apr 2022 14:07:33 -0700 (PDT)
-Date:   Fri, 1 Apr 2022 17:07:32 -0400
+        Fri, 01 Apr 2022 14:13:52 -0700 (PDT)
+Date:   Fri, 1 Apr 2022 17:13:52 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Wei Xu <weixugc@google.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
 Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         David Rientjes <rientjes@google.com>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
         cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
         Jonathan Corbet <corbet@lwn.net>, Yu Zhao <yuzhao@google.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Greg Thelen <gthelen@google.com>
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>
 Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
-Message-ID: <YkdplNIhtz3iyLKv@cmpxchg.org>
+Message-ID: <YkdrEG5FlL7Gq2Vi@cmpxchg.org>
 References: <20220331084151.2600229-1-yosryahmed@google.com>
- <CAAPL-u8g2qkhdTQtFtBS3GNYz0WnyahWEXvR4g_OSaKv+7EozA@mail.gmail.com>
- <YkcYq8F6MYlMi+yS@cmpxchg.org>
- <CAAPL-u-za-TTyyC5uMVev9eQyhxZS7q3pVqaUxCFjqk+Sv9+ig@mail.gmail.com>
+ <YkXkA+Oh1Bx33PrU@carbon.dhcp.thefacebook.com>
+ <CAJD7tkYVpnf1+sa9vRAQCw5H0LUH6zE6_yhNAFwKF3sW0BLzEA@mail.gmail.com>
+ <YkdG4nv/uKI0EtMp@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAPL-u-za-TTyyC5uMVev9eQyhxZS7q3pVqaUxCFjqk+Sv9+ig@mail.gmail.com>
+In-Reply-To: <YkdG4nv/uKI0EtMp@carbon.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -82,35 +80,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 01, 2022 at 01:14:35PM -0700, Wei Xu wrote:
-> On Fri, Apr 1, 2022 at 8:22 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > On Thu, Mar 31, 2022 at 09:05:15PM -0700, Wei Xu wrote:
-> > > It is better to return an error code (e.g. -EBUSY) when
-> > > memory_reclaim() fails to reclaim nr_to_reclaim bytes of memory,
-> > > except if the cgroup memory usage is already 0.  We can also return
-> > > -EINVAL if nr_to_reclaim is too large (e.g. > limit).
-> >
-> > For -EBUSY, are you thinking of a specific usecase where that would
-> > come in handy? I'm not really opposed to it, but couldn't convince
-> > myself of the practical benefits of it, either.
-> >
-> > Keep in mind that MAX_RECLAIM_RETRIES failed reclaim attempts usually
-> > constitute an OOM situation: memory.max will issue kills and
-> > memory.high will begin crippling throttling. In what scenario would
-> > you want to keep reclaiming a workload that is considered OOM?
-> >
-> > Certainly, proactive reclaim that wants to purge only the cold tail of
-> > the workload wouldn't retry. Meta's version of this patch actually
-> > does return -EAGAIN on reclaim failure, but the userspace daemon
-> > doesn't do anything with it, so I didn't bring it up.
+On Fri, Apr 01, 2022 at 11:39:30AM -0700, Roman Gushchin wrote:
+> The interface you're proposing is not really extensible, so we'll likely need to
+> introduce a new interface like memory.reclaim_ext very soon. Why not create
+> an extensible API from scratch?
 > 
-> -EAGAIN sounds good, too.  Given that the userspace requests to
-> reclaim a specified number of bytes, I think it is generally better to
-> tell the userspace whether the request has been successfully
-> fulfilled. Ideally, it would be even better to return how many bytes
-> that have been reclaimed, though that is not easy to do through the
-> cgroup interface. The userspace can choose to ignore the return value
-> or log a message/update some stats (which Google does) for the
-> monitoring purpose.
+> I'm looking at cgroup v2 documentation which describes various interface files
+> formats and it seems like given the number of potential optional arguments
+> the best option is nested keyed (please, refer to the Interface Files section).
+> 
+> E.g. the format can be:
+> echo "1G type=file nodemask=1-2 timeout=30s" > memory.reclaim
 
-Fair enough, thanks for your thoughts. No objection from me!
+Yeah, that syntax looks perfect.
+
+But why do you think it's not extensible from the current patch? We
+can add those arguments one by one as we agree on them, and return
+-EINVAL if somebody passes an unknown parameter.
+
+It seems to me the current proposal is forward-compatible that way
+(with the current set of keyword pararms being the empty set :-))
