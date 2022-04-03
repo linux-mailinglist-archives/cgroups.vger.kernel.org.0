@@ -2,62 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F344F06C1
-	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 04:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9DD4F0827
+	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 08:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbiDCCKn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 2 Apr 2022 22:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        id S1344210AbiDCGse (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Apr 2022 02:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiDCCKm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 2 Apr 2022 22:10:42 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395B01AF0F
-        for <cgroups@vger.kernel.org>; Sat,  2 Apr 2022 19:08:49 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id dr20so13290956ejc.6
-        for <cgroups@vger.kernel.org>; Sat, 02 Apr 2022 19:08:49 -0700 (PDT)
+        with ESMTP id S235101AbiDCGse (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 02:48:34 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381D2377FB
+        for <cgroups@vger.kernel.org>; Sat,  2 Apr 2022 23:46:41 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y16so4746099ilc.7
+        for <cgroups@vger.kernel.org>; Sat, 02 Apr 2022 23:46:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=C7M3sxnNh9ju9tb2x0yLZLDmlvAi9UQAlTWRcM/JN90=;
-        b=iw1q4VQH1xO+kN+VCt9RffVSCNxDWS53ujTgERnK+15z2eisOdiIC7FaCeeWhxumRi
-         Tbx2nAEMNJj7OdLQQYC6hr2oMKRnVDUtVyvRAzYV6gnzpsVSS+xfiTcE/0acVLcxwqy9
-         SONTxEpBrvtds2Lxz+Zh8zmGvWmkClCwiOS4QGpAB6ssxp5AdbC09+EeB9Y8kVAL4U25
-         Fc3NLRSS4OI6B5++JH22GH3nnm7ZOlx/2n84xGBg8NNey7eG078CslnwvBzweEPzohKf
-         LuVCEtvp3zA8lMQKUah3SB68McfJNek0VUc+lxRkfxjKHdntX4e0bjdDXZizwM46EYe9
-         2TrQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t6+k/4Om7VsqLidja8hb8+QMIWaL5Tmj1wC2cL00ays=;
+        b=nOlAijP5ZZ9vsdwJxJUZqAvchhR2fSeQGoSus10DZCtVRxLYXfh3CaMWft73tMME1m
+         t8EEPpLhVAmbmIitm4y9QYf8gD29WnqYP9IPk0DbsJRQ306l1QfJlfZBvwV0n6/apy1q
+         kE/dBq22AAuWR+VBcGZKlXr/FEVoU2mgB22M1LxnKoR+KLx+gi822+ieZ9bQV5DPkPDX
+         rv0cbX0UhZ/st6FHWyCx4nSEY24sHkWVOJgCK96qcxkxAp+J+AvawMuPwG3FbWM+qvsh
+         z1YzQW9HvQJnNjv85bt720LiaBD3IDsndMwp3VULMTwSwWfSyKEqFX+sUpd6E8sAOFuU
+         nD8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=C7M3sxnNh9ju9tb2x0yLZLDmlvAi9UQAlTWRcM/JN90=;
-        b=sg16iKNsLHOXlwgI6JoErxv05FVKunjP0XTy8+ffc+PD/LNUGcm9e/XoS83d7zMDZj
-         a1klBJ7ueu7qsmVArXj1Jgy0kHp307QhN3LPrlc6tViqMk5hCea+5EuaIBXUNZ/K+t2+
-         K7p9AUyMJYOdtB9gl2cfC/AbGstT/bIqRZMCweesffOgwBCfv+gjlH7mt7gyulLLFX2o
-         ulv8hnylTBkYeBpLD23xL9Kgh4Xve7XPi+S/2rGKMQCUfnnSjEeX6k8V23Ei/G+V4vNz
-         PyxhL4MA1Ba2/I8/7T8uF4Gnr8ATamC2e1mbNbMVoGgBwHfcPvGr3+Jrgu2yGK/8IeEA
-         3MOA==
-X-Gm-Message-State: AOAM530fum54msRNnnbUNPFZLksDYwN/GUdqswPxP+qoqVeA/JpJKm3M
-        q0l6wUkJHyFldLDIMUiVzYo=
-X-Google-Smtp-Source: ABdhPJzPihh5MnM9zl87IEzyXxnubntZliOJ1aSl0fp3Aq0FzR0SpueXYx0GhjTzS6VRJ52xxVrtrA==
-X-Received: by 2002:a17:906:ae0b:b0:6df:c7d6:9235 with SMTP id le11-20020a170906ae0b00b006dfc7d69235mr5708345ejb.664.1648951727733;
-        Sat, 02 Apr 2022 19:08:47 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id c13-20020a17090654cd00b006e0db351d01sm2692639ejp.124.2022.04.02.19.08.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 02 Apr 2022 19:08:47 -0700 (PDT)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Wei Yang <richard.weiyang@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t6+k/4Om7VsqLidja8hb8+QMIWaL5Tmj1wC2cL00ays=;
+        b=fL/Kudfbh8g8i9vEdIlycVbRovxyhsru0vEj2NUvRp+4ha0m3R9dnEDFuAzs2BXN6N
+         aaM2NUNtWbLVt2XIROb9lqJqrogVXKR8qQifG0Md8c7L7FSgZNLH1FBbGFdpwh0yaw9t
+         ydo+41w1bo+P/qk3hqc/ckRrgqVV4MuYOy5SuVFbuNuMjwuLh53kv2QBUYAwSJFB26L5
+         K7vm3PMROqxZjuuGVkurgoQ+xHKXg0ODKPiMFyL3Cxl3L2ZfKh9ZuTIkaJiySUXwatE3
+         O3+jUh6HjeNDQw1FKnfBWboO5kL5r1w6TJFQX3Ka04wLOthNFcfPc+8GehEG7LgDi5Ne
+         aOmA==
+X-Gm-Message-State: AOAM531+QxXmTUV/6CJRCDzr9sjZZ4SfAMep8sMSUzy3wfdT3USiGiDy
+        +smcNzSwBQJYtWga29PhZpVLziXQwuzryqVaD+5o5g==
+X-Google-Smtp-Source: ABdhPJzFIevVMEisQ9Pwvrh3Lhxnl9EwRG1TSPfzOF/+7Ua2Imr8RieK1XhYkaSWk0BECbaP9FsQ3vwbj4/V5Fwy9OA=
+X-Received: by 2002:a92:d94d:0:b0:2c8:45a5:926b with SMTP id
+ l13-20020a92d94d000000b002c845a5926bmr3208155ilq.310.1648968400437; Sat, 02
+ Apr 2022 23:46:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220331084151.2600229-1-yosryahmed@google.com>
+ <YkcEMdsi9G5y8mX4@dhcp22.suse.cz> <CAAPL-u_i-Mp-Bo7LtP_4aJscY=1JHG_y1H_-A7N_HRAgtz+arg@mail.gmail.com>
+ <87y20nzyw4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87y20nzyw4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Sat, 2 Apr 2022 23:46:29 -0700
+Message-ID: <CAAPL-u_zLTs6cMSN8sOtktCHKncfSWo+qWxXU7_iL3hhwhL8QA@mail.gmail.com>
+Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH] mm/memcg: non-hierarchical mode is deprecated
-Date:   Sun,  3 Apr 2022 02:08:33 +0000
-Message-Id: <20220403020833.26164-1-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Jonathan Corbet <corbet@lwn.net>, Yu Zhao <yuzhao@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,31 +80,57 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-After commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical
-mode"), we won't have a NULL parent except root_mem_cgroup. And this
-case is handled when (memcg == root).
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-CC: Roman Gushchin <roman.gushchin@linux.dev>
-CC: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2cd8bfdec379..3ceb9b8592b1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6587,9 +6587,6 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 		return;
- 
- 	parent = parent_mem_cgroup(memcg);
--	/* No parent means a non-hierarchical mode on v1 memcg */
--	if (!parent)
--		return;
- 
- 	if (parent == root) {
- 		memcg->memory.emin = READ_ONCE(memcg->memory.min);
--- 
-2.33.1
-
+On Sat, Apr 2, 2022 at 1:13 AM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Wei Xu <weixugc@google.com> writes:
+>
+> > On Fri, Apr 1, 2022 at 6:54 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>
+> >> On Thu 31-03-22 08:41:51, Yosry Ahmed wrote:
+> >> > From: Shakeel Butt <shakeelb@google.com>
+> >> >
+>
+> [snip]
+>
+> >> > Possible Extensions:
+> >> > --------------------
+> >> >
+> >> > - This interface can be extended with an additional parameter or flags
+> >> >   to allow specifying one or more types of memory to reclaim from (e.g.
+> >> >   file, anon, ..).
+> >> >
+> >> > - The interface can also be extended with a node mask to reclaim from
+> >> >   specific nodes. This has use cases for reclaim-based demotion in memory
+> >> >   tiering systens.
+> >> >
+> >> > - A similar per-node interface can also be added to support proactive
+> >> >   reclaim and reclaim-based demotion in systems without memcg.
+> >> >
+> >> > For now, let's keep things simple by adding the basic functionality.
+> >>
+> >> Yes, I am for the simplicity and this really looks like a bare minumum
+> >> interface. But it is not really clear who do you want to add flags on
+> >> top of it?
+> >>
+> >> I am not really sure we really need a node aware interface for memcg.
+> >> The global reclaim interface will likely need a different node because
+> >> we do not want to make this CONFIG_MEMCG constrained.
+> >
+> > A nodemask argument for memory.reclaim can be useful for memory
+> > tiering between NUMA nodes with different performance.  Similar to
+> > proactive reclaim, it can allow a userspace daemon to drive
+> > memcg-based proactive demotion via the reclaim-based demotion
+> > mechanism in the kernel.
+>
+> I am not sure whether nodemask is a good way for demoting pages between
+> different types of memory.  For example, for a system with DRAM and
+> PMEM, if specifying DRAM node in nodemask means demoting to PMEM, what
+> is the meaning of specifying PMEM node? reclaiming to disk?
+>
+> In general, I have no objection to the idea in general.  But we should
+> have a clear and consistent interface.  Per my understanding the default
+> memcg interface is for memory, regardless of memory types.  The memory
+> reclaiming means reduce the memory usage, regardless of memory types.
+> We need to either extending the semantics of memory reclaiming (to
+> include memory demoting too), or add another interface for memory
+> demoting.
