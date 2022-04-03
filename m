@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9DD4F0827
-	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 08:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EB54F0833
+	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 08:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344210AbiDCGse (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Apr 2022 02:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
+        id S1354220AbiDCG62 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Apr 2022 02:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235101AbiDCGse (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 02:48:34 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381D2377FB
-        for <cgroups@vger.kernel.org>; Sat,  2 Apr 2022 23:46:41 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y16so4746099ilc.7
-        for <cgroups@vger.kernel.org>; Sat, 02 Apr 2022 23:46:41 -0700 (PDT)
+        with ESMTP id S234113AbiDCG62 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 02:58:28 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5F6381B6
+        for <cgroups@vger.kernel.org>; Sat,  2 Apr 2022 23:56:31 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id g21so7733612iom.13
+        for <cgroups@vger.kernel.org>; Sat, 02 Apr 2022 23:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t6+k/4Om7VsqLidja8hb8+QMIWaL5Tmj1wC2cL00ays=;
-        b=nOlAijP5ZZ9vsdwJxJUZqAvchhR2fSeQGoSus10DZCtVRxLYXfh3CaMWft73tMME1m
-         t8EEPpLhVAmbmIitm4y9QYf8gD29WnqYP9IPk0DbsJRQ306l1QfJlfZBvwV0n6/apy1q
-         kE/dBq22AAuWR+VBcGZKlXr/FEVoU2mgB22M1LxnKoR+KLx+gi822+ieZ9bQV5DPkPDX
-         rv0cbX0UhZ/st6FHWyCx4nSEY24sHkWVOJgCK96qcxkxAp+J+AvawMuPwG3FbWM+qvsh
-         z1YzQW9HvQJnNjv85bt720LiaBD3IDsndMwp3VULMTwSwWfSyKEqFX+sUpd6E8sAOFuU
-         nD8g==
+        bh=LZlimpDrEHgO1rzyCYuAbLljxvciHy4QdNJs4xVtrnk=;
+        b=T2EKk7dyMep8/29cdvnmpJvSBhC3tVejpCx/rLNsKf9qKNg480LjqMQQCRXV1WS/ql
+         IiF4bR7DYMvv35us0w7WT1RPk7OpoLdrERvZ8VyxZJqHoBllBNyHAYErlPDEkLB+DHQN
+         pqmkgvAu33MWBs0sIXCOx4fkIX797PCMn7wSpeVMYSEIROsVlttHatLTe/nIo46c5Yu9
+         +PI1uA1Pynxd42/t/8MA5rtp2aNcmszrbKSoR5yHjyZfvqumvyp6bSGaB3AGan996wek
+         XoIdhE2QCNIGkDF/ozpMGNF1ex5zm1Zqts+fajdYUF28OEIrsXf5yYKjIK5jzzYybDaa
+         3idg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t6+k/4Om7VsqLidja8hb8+QMIWaL5Tmj1wC2cL00ays=;
-        b=fL/Kudfbh8g8i9vEdIlycVbRovxyhsru0vEj2NUvRp+4ha0m3R9dnEDFuAzs2BXN6N
-         aaM2NUNtWbLVt2XIROb9lqJqrogVXKR8qQifG0Md8c7L7FSgZNLH1FBbGFdpwh0yaw9t
-         ydo+41w1bo+P/qk3hqc/ckRrgqVV4MuYOy5SuVFbuNuMjwuLh53kv2QBUYAwSJFB26L5
-         K7vm3PMROqxZjuuGVkurgoQ+xHKXg0ODKPiMFyL3Cxl3L2ZfKh9ZuTIkaJiySUXwatE3
-         O3+jUh6HjeNDQw1FKnfBWboO5kL5r1w6TJFQX3Ka04wLOthNFcfPc+8GehEG7LgDi5Ne
-         aOmA==
-X-Gm-Message-State: AOAM531+QxXmTUV/6CJRCDzr9sjZZ4SfAMep8sMSUzy3wfdT3USiGiDy
-        +smcNzSwBQJYtWga29PhZpVLziXQwuzryqVaD+5o5g==
-X-Google-Smtp-Source: ABdhPJzFIevVMEisQ9Pwvrh3Lhxnl9EwRG1TSPfzOF/+7Ua2Imr8RieK1XhYkaSWk0BECbaP9FsQ3vwbj4/V5Fwy9OA=
-X-Received: by 2002:a92:d94d:0:b0:2c8:45a5:926b with SMTP id
- l13-20020a92d94d000000b002c845a5926bmr3208155ilq.310.1648968400437; Sat, 02
- Apr 2022 23:46:40 -0700 (PDT)
+        bh=LZlimpDrEHgO1rzyCYuAbLljxvciHy4QdNJs4xVtrnk=;
+        b=gtcKbJjjiPutuAFvAQ9Wmu426G04vFGeu+KNumj/lgTaIJrn14n+Wr8+t/cAPkrCYr
+         FB3MipSzNf9nkJ0FrF0RtrpaOvd6kXRALo1SEU/bfGj45t8p0LWokKt4YXJmaiaegA3j
+         /GbH03pGS57Dd7L1rEeJWBrIerMKa5z5i/Aip8qeAi/9jpYnuF27FiGypwOxQKMwtITH
+         0T5esh1KGI32ORjO3bYNoU9NZezDgMeWtioBmJ78ym5iPhpTb/bJcQXk9Y2KvSA+nuRT
+         LollR9bWXycANFG++dK1xmBq3t9B2dBpwm/F24Ob3rw+ERMY7RHQ0umEXylLTKU8Z6/T
+         JywQ==
+X-Gm-Message-State: AOAM532k9pIbRWOdZh9L+lXC++kagQSZlOE62m0Zaf+Wn0gnBzHqFlWQ
+        KDDcBrV4d3WNs+lYyhu1JsyVZrc4igH3hOzmF+AwHg==
+X-Google-Smtp-Source: ABdhPJzb5mBXYffh2qbyaAwkzrHxSsPGl5iPs/oVvkZeOgVaq4/cqjWLGtERImQrJF6BNnSrg/zcLtNNEsH2s3lfa5Y=
+X-Received: by 2002:a05:6602:2c52:b0:646:2488:a9a0 with SMTP id
+ x18-20020a0566022c5200b006462488a9a0mr3051360iov.130.1648968990332; Sat, 02
+ Apr 2022 23:56:30 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220331084151.2600229-1-yosryahmed@google.com>
  <YkcEMdsi9G5y8mX4@dhcp22.suse.cz> <CAAPL-u_i-Mp-Bo7LtP_4aJscY=1JHG_y1H_-A7N_HRAgtz+arg@mail.gmail.com>
  <87y20nzyw4.fsf@yhuang6-desk2.ccr.corp.intel.com>
 In-Reply-To: <87y20nzyw4.fsf@yhuang6-desk2.ccr.corp.intel.com>
 From:   Wei Xu <weixugc@google.com>
-Date:   Sat, 2 Apr 2022 23:46:29 -0700
-Message-ID: <CAAPL-u_zLTs6cMSN8sOtktCHKncfSWo+qWxXU7_iL3hhwhL8QA@mail.gmail.com>
+Date:   Sat, 2 Apr 2022 23:56:19 -0700
+Message-ID: <CAAPL-u8wjtBRE7KZyZjoQ0eTJecnW35uEXAE3KU0M+AvL=5-ug@mail.gmail.com>
 Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
 To:     "Huang, Ying" <ying.huang@intel.com>
 Cc:     Michal Hocko <mhocko@suse.com>,
@@ -73,7 +73,7 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -134,3 +134,14 @@ On Sat, Apr 2, 2022 at 1:13 AM Huang, Ying <ying.huang@intel.com> wrote:
 > We need to either extending the semantics of memory reclaiming (to
 > include memory demoting too), or add another interface for memory
 > demoting.
+
+Good point.  With the "demote pages during reclaim" patch series,
+reclaim is already extended to demote pages as well.  For example,
+can_reclaim_anon_pages() returns true if demotion is allowed and
+shrink_page_list() can demote pages instead of reclaiming pages.
+
+Currently, demotion is disabled for memcg reclaim, which I think can
+be relaxed and also necessary for memcg-based proactive demotion.  I'd
+like to suggest that we extend the semantics of memory.reclaim to
+cover memory demotion as well.  A flag can be used to enable/disable
+the demotion behavior.
