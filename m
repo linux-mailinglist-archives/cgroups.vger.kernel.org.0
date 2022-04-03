@@ -2,150 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE98D4F0A0F
-	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 15:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA72F4F0A7F
+	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 17:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbiDCOAC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Apr 2022 10:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
+        id S1355593AbiDCPGg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Apr 2022 11:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbiDCOAA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 10:00:00 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC50366BB;
-        Sun,  3 Apr 2022 06:58:07 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id x14so3160784pjf.2;
-        Sun, 03 Apr 2022 06:58:07 -0700 (PDT)
+        with ESMTP id S1355078AbiDCPGg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 11:06:36 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9653630A
+        for <cgroups@vger.kernel.org>; Sun,  3 Apr 2022 08:04:41 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id l14so990938ybe.4
+        for <cgroups@vger.kernel.org>; Sun, 03 Apr 2022 08:04:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J5mbcZTsiDy3mrNkZULEao/0esdA8VeRyfo3ZqOjIFQ=;
-        b=GVcAdkoyMokXfTR2LLDHuHD1vCyTv/CL4Mr0zcmD71hYcQLNx4trRtToCqpmglZ6p2
-         PfyrVY4bjMJXXryJlFSZQ/inrpyn7w0puiD1GGEY/XC92cwwNU1SxUYrW9IZcp7i+jIG
-         rr5TENhHGiX+LNgYDXHa6AVCI/VsyUXghylGxj7jMkpLT2FqRqavlgYBDmPuRHB89kl8
-         LftNF2g36cg6yha8KtSQVaDjIdftf5xi+Cxgar9wFbNJrCDeMY8KnnM9bq3P4Ey3m9Nh
-         /DgblGo29ZvOgCxzDuGnjFXgYqF5WmFRf1nyTgxTlrFEjhoJR6cvszzuclZGerOi/1Vw
-         FlQg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o1a2JVSeIsg2n4ZPERcRwhBo2C98JOFbdzvDc4k4uyY=;
+        b=lPiPbC/t1ZONedq5p4jRaLJSgnXNlu8ckGlSdays2/JRFNJ8SQ22JXehsnSCOBhtRE
+         oQBxdjUsuCd7ZmU+nVc7oWCZNnoynu9fz9eSmY/Duz2fHGiCsVlmHmeJzqIKQh999KLv
+         k4d1agL0ZunXTrAdcC7/I3mWf+udbWmRvNfgdN0IUCDpKwo0j7Aqk4TD3hKC4vwmY6V/
+         ijxSemBS8EgzN0y9OReOorBobYABLcxH6k1uHuH2f/z6zoO3CO89P+yOqWpnEM8XP2Mo
+         rbpFshHNFodJb+MFXRq6CoFAazWBBDm3vxKlIyvFCnZxDl1mdI1fPhj4yiWNQ7WjczKI
+         QgFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J5mbcZTsiDy3mrNkZULEao/0esdA8VeRyfo3ZqOjIFQ=;
-        b=0IkI+0ar28nCn5CxBcm/ptSk5yQnF9T60D2D/kXQ4uHXa75hDnC5u3ZlPTIiVQkK9D
-         pVyTFQkeiqw9npq84sTty+1FAE7SeOSGj5qDU0nuKyZ49Lh68JLeFqZd5xQWcQ6m+okN
-         cAROWkGtEiT0iMt93o2ybq8C2Y3NXfsUAD+rXLzJJzPihH9bjyPICELLwjp4xszd4Eck
-         E9eG4WcDmZ63pBp3ExXtWfT3dQHxTvx7bvqvBfH8gLlj65R5D/yDFQ5y7GzdFKKH1bsN
-         tEFD9e8ctoG7E8lJ6F3jR6cX9wyZrVnKM4qefONMVUPA/lGVh5JKwxXgHVgnqGYnQtKs
-         +48A==
-X-Gm-Message-State: AOAM532PM5xX8J/cu1frS74CE/xDxCYduwDcm8IgAfOBN7/H0ACXylBc
-        xdTvfZTW2V8qhCE5tDJrQ2DoAU7IOyi0VA==
-X-Google-Smtp-Source: ABdhPJxsYMJ1kd5jIPYZmDRQk0lc+8cUe2U8iJtJpbX8SKgWG1rYaUEfmU/2/0CM6VmLyS0ME+dgHQ==
-X-Received: by 2002:a17:902:ce0a:b0:156:72e2:f191 with SMTP id k10-20020a170902ce0a00b0015672e2f191mr7726674plg.76.1648994286114;
-        Sun, 03 Apr 2022 06:58:06 -0700 (PDT)
-Received: from localhost.localdomain ([113.173.105.8])
-        by smtp.googlemail.com with ESMTPSA id v13-20020a17090a088d00b001c64d30fa8bsm17110441pjc.1.2022.04.03.06.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Apr 2022 06:58:05 -0700 (PDT)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     cgroups@vger.kernel.org
-Cc:     Bui Quang Minh <minhquangbui99@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] cgroup: Kill the parent controller when its last child is killed
-Date:   Sun,  3 Apr 2022 20:57:17 +0700
-Message-Id: <20220403135717.8294-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o1a2JVSeIsg2n4ZPERcRwhBo2C98JOFbdzvDc4k4uyY=;
+        b=HS5EH71hPPA/+42lRIpn17llrPl4wVpvg9Jg/w4No058DvBUebQbpq3lPCQ6wHhRZJ
+         TQ2X1ormi6cQSu2OTW8BVamzwATJzbBHah6Hicv7XfAFsYiWkat8Xy8cnZO5FUnoCnR1
+         tlHsSKrjVGt5JubJQrlIlmiHmZHNHtsk+WeYhWSy0YajTYBJEcnWw1UZHMiLsvoIyTyZ
+         UjO51Bue2l5blut3NzFjUZPM0Ouvaq9dJyDCcJNaOC9lfxS+JG9KpSlH77egfn8LWw8o
+         XaBhNtSbY+w/sBfQXCNjM2IF55Vlo9yJsXAjoeR+V3Em1AUz8scCS+a3BGYkXUxut+5T
+         7Z9w==
+X-Gm-Message-State: AOAM531xNCpePUuEbefVTXrbYJWBL6QXuVsIG/SWixxDxNZkLLXQOr2d
+        4Z5rGnwpYPSDGnknIqe5lRGKC0Zy8r6Neu5zG48f0A==
+X-Google-Smtp-Source: ABdhPJx6EzmSEWE8rVRtD7a3gHc2p3QZhet3QHh22eUylFDpjS2S+FoLE1X153mpIx+V6iPztColsYQlOCd/kjsa5rk=
+X-Received: by 2002:a25:3852:0:b0:63d:bdb4:d882 with SMTP id
+ f79-20020a253852000000b0063dbdb4d882mr1876485yba.426.1648998280430; Sun, 03
+ Apr 2022 08:04:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <1648713656-24254-1-git-send-email-zhaoyang.huang@unisoc.com>
+ <YkVt0m+VxnXgnulq@dhcp22.suse.cz> <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
+ <YkWR8t8yEe6xyzCM@dhcp22.suse.cz> <CAGWkznHxAD0757m1i1Csw1CVRDtQddfCL08dYf12fa47=-uYYQ@mail.gmail.com>
+ <YkbjNYMY8VjHoSHR@dhcp22.suse.cz> <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
+In-Reply-To: <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 3 Apr 2022 08:04:29 -0700
+Message-ID: <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        Ke Wang <ke.wang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When umounting a cgroup controller, in case the controller has no children,
-the initial ref will be dropped in cgroup_kill_sb. In cgroup_rmdir path,
-the controller is deleted from the parent's children list in
-css_release_work_fn, which is run on a kernel worker.
+On Fri, Apr 1, 2022 at 10:18 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+>
+> On Fri, Apr 1, 2022 at 7:34 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 01-04-22 09:34:02, Zhaoyang Huang wrote:
+> > > On Thu, Mar 31, 2022 at 7:35 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 31-03-22 19:18:58, Zhaoyang Huang wrote:
+> > > > > On Thu, Mar 31, 2022 at 5:01 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Thu 31-03-22 16:00:56, zhaoyang.huang wrote:
+> > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > > > > >
+> > > > > > > For some kind of memcg, the usage is varies greatly from scenarios. Such as
+> > > > > > > multimedia app could have the usage range from 50MB to 500MB, which generated
+> > > > > > > by loading an special algorithm into its virtual address space and make it hard
+> > > > > > > to protect the expanded usage without userspace's interaction.
+> > > > > >
+> > > > > > Do I get it correctly that the concern you have is that you do not know
+> > > > > > how much memory your workload will need because that depends on some
+> > > > > > parameters?
+> > > > > right. such as a camera APP will expand the usage from 50MB to 500MB
+> > > > > because of launching a special function(face beauty etc need special
+> > > > > algorithm)
+> > > > > >
+> > > > > > > Furthermore, fixed
+> > > > > > > memory.low is a little bit against its role of soft protection as it will response
+> > > > > > > any system's memory pressure in same way.
+> > > > > >
+> > > > > > Could you be more specific about this as well?
+> > > > > As the camera case above, if we set memory.low as 200MB to keep the
+> > > > > APP run smoothly, the system will experience high memory pressure when
+> > > > > another high load APP launched simultaneously. I would like to have
+> > > > > camera be reclaimed under this scenario.
+> > > >
+> > > > OK, so you effectivelly want to keep the memory protection when there is
+> > > > a "normal" memory pressure but want to relax the protection on other
+> > > > high memory utilization situations?
+> > > >
+> > > > How do you exactly tell a difference between a steady memory pressure
+> > > > (say stream IO on the page cache) from "high load APP launched"? Should
+> > > > you reduce the protection on the stram IO situation as well?
+> > > We can take either system's io_wait or PSI_IO into consideration for these.
+> >
+> > I do not follow. Let's say you have a stream IO workload which is mostly
+> > RO. Reclaiming those pages means effectivelly to drop them from the
+> > cache so there is no IO involved during the reclaim. This will generate
+> > a constant flow of reclaim that shouldn't normally affect other
+> > workloads (as long as kswapd keeps up with the IO pace). How does your
+> > scheme cope with this scenario? My understanding is that it will simply
+> > relax the protection.
+> You are right. This scheme treats the system's memory pressure
+> equally, no matter if it comes from in-kernel page allocation with
+> high order or cache drop by IO like things. The decay_factor composed
+> of PSI_SOME and PSI_FULL which represent the system is tight on
+> memory, every entity has the obligation to donate to solve this issue.
+> >
+> > > > [...]
+> > > > > > One very important thing that I am missing here is the overall objective of this
+> > > > > > tuning. From the above it seems that you want to (ab)use memory->low to
+> > > > > > protect some portion of the charged memory and that the protection
+> > > > > > shrinks over time depending on the the global PSI metrict and time.
+> > > > > > But why this is a good thing?
+> > > > > 'Good' means it meets my original goal of keeping the usage during a
+> > > > > period of time and responding to the system's memory pressure. For an
+> > > > > android like system, memory is almost forever being in a tight status
+> > > > > no matter how many RAM it has. What we need from memcg is more than
+> > > > > control and grouping, we need it to be more responsive to the system's
+> > > > > load and could  sacrifice its usage  under certain criteria.
+> > > >
+> > > > Why existing tools/APIs are insufficient for that? You can watch for
+> > > > both global and memcg memory pressure including PSI metrics and update
+> > > > limits dynamically. Why is it necessary to put such a logic into the
+> > > > kernel?
+> > > Poll and then React method in userspace requires a polling interval
+> > > and response time. Take PSI as an example, it polls ten times during
+> > > POLLING_INTERVAL while just report once, which introduce latency in
+> > > some extend.
+> >
+> > Do workload transitions happen so often in your situation that the
+> > interval really matters? As Suren already pointed out starting a new
+> > application is usually an explicit event which can pro-activelly update
+> > limits.
+> Yes. As my reply to Suren's comment, even a positive monitor service
+> which could be aware of the activity starting(APP launching etc) at
+> the very first time, has to 1. read PSI and memcg->watermark/usage 2.
+> make a decision. 3. write memcg->memory.low to adjust memory
+> allowance. Furthermore, monitors could not supervise the APP for whole
+> life time, while the reclaiming could arise at any time.
 
-With this simple script
+Ok, sounds like you want this dynamic limit to be active all the time,
+not only at specific points in the process's life cycle.
+One thing that I don't understand in this approach is: why memory.low
+should depend on the system's memory pressure. It seems you want to
+allow a process to allocate more when memory pressure is high. That is
+very counter-intuitive to me. Could you please explain the underlying
+logic of why this is the right thing to do, without going into
+technical details?
 
-	#!/bin/sh
-
-	mount -t cgroup -o none,name=test test ./tmp
-	mkdir -p ./tmp/abc
-
-	rmdir ./tmp/abc
-	umount ./tmp
-
-	sleep 5
-	cat /proc/self/cgroup
-
-The rmdir will remove the last child and umount is expected to kill the
-parent controller. However, when running the above script, we may get
-
-	1:name=test:/
-
-This shows that the parent controller has not been killed. The reason is
-after rmdir is completed, it is not guaranteed that the parent's children
-list is empty as css_release_work_fn is deferred to run on a worker. In
-case cgroup_kill_sb is run before that work, it does not drop the initial
-ref. Later in the worker, it just removes the child from the list without
-checking the list is empty to kill the parent controller. As a result, the
-parent controller still has the initial ref but without any logical refs
-(children ref, mount ref).
-
-This commit adds a free parent controller path into the worker function to
-free up the parent controller when the last child is killed.
-
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
----
- kernel/cgroup/cgroup.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a557eea7166f..220eb1742961 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5157,12 +5157,25 @@ static void css_release_work_fn(struct work_struct *work)
- 		container_of(work, struct cgroup_subsys_state, destroy_work);
- 	struct cgroup_subsys *ss = css->ss;
- 	struct cgroup *cgrp = css->cgroup;
-+	struct cgroup *parent = cgroup_parent(cgrp);
- 
- 	mutex_lock(&cgroup_mutex);
- 
- 	css->flags |= CSS_RELEASED;
- 	list_del_rcu(&css->sibling);
- 
-+	/*
-+	 * If parent doesn't have any children, start killing it.
-+	 * And don't kill the default root.
-+	 */
-+	if (parent && list_empty(&parent->self.children) &&
-+	    parent != &cgrp_dfl_root.cgrp &&
-+	    !percpu_ref_is_dying(&parent->self.refcnt)) {
-+		if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
-+			cgroup_bpf_offline(parent);
-+		percpu_ref_kill(&parent->self.refcnt);
-+	}
-+
- 	if (ss) {
- 		/* css release path */
- 		if (!list_empty(&css->rstat_css_node)) {
--- 
-2.25.1
-
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
