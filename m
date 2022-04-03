@@ -2,49 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799444F0B07
-	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 18:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5737F4F0B90
+	for <lists+cgroups@lfdr.de>; Sun,  3 Apr 2022 19:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359309AbiDCQCc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Apr 2022 12:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        id S1359659AbiDCRYh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Apr 2022 13:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359307AbiDCQCc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 12:02:32 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4F3980E;
-        Sun,  3 Apr 2022 09:00:38 -0700 (PDT)
+        with ESMTP id S1359654AbiDCRYg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 13:24:36 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FA939836;
+        Sun,  3 Apr 2022 10:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649001638; x=1680537638;
+  t=1649006562; x=1680542562;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=qvHYdvxr81dj6BSTtdc044toQ4oANBTAS7xvEFGuayI=;
-  b=lgX3zuPsEyQ2cveb8kTh0NN+IR9or3qvf8xtw1YERTPWDrY7zaIvVuwp
-   wfZxaDWRVY8AhrST2o2Y/RhXm+0Bi2hIIW3S/F1p9ftMSq2tpC2t878hv
-   JC9/fXFMba13awo+JwrZ6CR1Hxl9O/1cME+kMoKgM3PLWtOZfYshCRSz5
-   MZQ9YfDCg/prYshujp4TjIcSJ6xE9c4yqfBJpVMmxDkWvLILfsAX++P0/
-   00OBhz1gZ2V75QuyI7IwPbC2LZyEzlFQmoHvdO2AZ+J6fWkoQP2Fw6cbM
-   Uwq0xVx3s8kVFYop/dz+H12RXjpz69rzU3UrTed+ZQaJPZUeDdU9VhlHX
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10306"; a="260381423"
+  bh=Kg3nT9zXXv061+GqAw9adWjDJuUK/w2Dr4majqksh4k=;
+  b=Z0eZ59Fp7LPrRDbZMeKQdugdoFWL1UzSdHs0uI3Kl0mInG5l6+65iFog
+   jnAYMbh0fypUYxk2KXOGTRh8R1V3vgeQA9qN8APWaajePoooBtLjQgUZK
+   ELGwXWuZfl12h4nN2g+zvtXkq/g11P4q5njB6uHfuOUR4aZM8g7U2ZMsK
+   lhUynb5EofZQvPqz8IRYFF82BAQoxPM4G8UbcbEtPIW7wHEblBwaGWB9X
+   ZJGOQ/bN1Sd92gLPfI7zPiujOEu5V4lMjZzSVLTbcOvn0U3cvUIydEEG7
+   99E+GoYgYcIDdV4RrbNiEqvUqDcwukT2KskkIMfqw8QGYE3jY6ssCb+GV
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10306"; a="257980051"
 X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="260381423"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 09:00:37 -0700
+   d="scan'208";a="257980051"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 10:22:41 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="607767948"
+   d="scan'208";a="651261140"
 Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Apr 2022 09:00:33 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 03 Apr 2022 10:22:37 -0700
 Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1nb2eW-00014e-Ru;
-        Sun, 03 Apr 2022 16:00:32 +0000
-Date:   Sun, 3 Apr 2022 23:59:39 +0800
+        id 1nb3vx-00018E-AT;
+        Sun, 03 Apr 2022 17:22:37 +0000
+Date:   Mon, 4 Apr 2022 01:22:18 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Bui Quang Minh <minhquangbui99@gmail.com>, cgroups@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Bui Quang Minh <minhquangbui99@gmail.com>,
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Bui Quang Minh <minhquangbui99@gmail.com>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -57,17 +58,17 @@ Cc:     kbuild-all@lists.01.org, Bui Quang Minh <minhquangbui99@gmail.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Subject: Re: [PATCH] cgroup: Kill the parent controller when its last child
  is killed
-Message-ID: <202204032330.l2wsF3mf-lkp@intel.com>
+Message-ID: <202204040103.yTRTggqu-lkp@intel.com>
 References: <20220403135717.8294-1-minhquangbui99@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20220403135717.8294-1-minhquangbui99@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,26 +87,30 @@ https://git-scm.com/docs/git-format-patch]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-config: i386-randconfig-m021 (https://download.01.org/0day-ci/archive/20220403/202204032330.l2wsF3mf-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.2.0-19) 11.2.0
+config: arm-mxs_defconfig (https://download.01.org/0day-ci/archive/20220404/202204040103.yTRTggqu-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project c4a1b07d0979e7ff20d7d541af666d822d66b566)
 reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
         # https://github.com/intel-lab-lkp/linux/commit/2bc22feae8a913c7f371bc79ef9967122d8d326c
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
         git checkout 2bc22feae8a913c7f371bc79ef9967122d8d326c
         # save the config file to linux build tree
         mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
-   kernel/cgroup/cgroup.c: In function 'css_release_work_fn':
->> kernel/cgroup/cgroup.c:5169:52: error: 'struct cgroup_bpf' has no member named 'refcnt'
-    5169 |                 if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
-         |                                                    ^
+>> kernel/cgroup/cgroup.c:5169:39: error: no member named 'refcnt' in 'struct cgroup_bpf'
+                   if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
+                                             ~~~~~~~~~ ^
+   1 error generated.
 
 
 vim +5169 kernel/cgroup/cgroup.c
