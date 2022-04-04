@@ -2,194 +2,410 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E485C4F0D88
-	for <lists+cgroups@lfdr.de>; Mon,  4 Apr 2022 04:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B3C4F0D93
+	for <lists+cgroups@lfdr.de>; Mon,  4 Apr 2022 04:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238927AbiDDCgW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Apr 2022 22:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
+        id S1349478AbiDDCpt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 3 Apr 2022 22:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbiDDCgW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 22:36:22 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E5827CF9;
-        Sun,  3 Apr 2022 19:34:26 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id i4so6677828qti.7;
-        Sun, 03 Apr 2022 19:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pet6Cd8QN+6E9l7Pe1i1Z7DRHGjXc6tw1i1GJeHwKHY=;
-        b=V8puzvltQxJL9XxR1kuxmEAcD3nniE6lMtpldsHM3CWZnj98229LnpMFRFmvNCdLIc
-         moyLXNsc9st9sioCsMmdz0/GGQN5Riv0xseZ+y8ddA++5tQPSYdT7lsO5AwpMUGQ+3fv
-         aPu1D/FWGC/M8vNVOW0SsD/Vs6D+8Me3yL2uWFnAdFn+BqMwRyQtMlVetUXY93IofmU8
-         xvWKhEoJr0Z9S5l7ikgVgk/iDFKvJvfhM1BFOSyWQVJsF7/79VzbpGnf8q/dIn1hDvqP
-         whl+uX0h6pwSI2KO/KDgQ1ExFhL5orJ0O5YiOipx/C/A3DUaWPPyFGpZThuTalX3Lvf7
-         T/tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pet6Cd8QN+6E9l7Pe1i1Z7DRHGjXc6tw1i1GJeHwKHY=;
-        b=QRRZSZTy5GxTqWlCGTkvZwN1qosFChfoJ1XG5Q6UdaOcvF55t6RYTXaPqmDVL2Pfgv
-         jqmWK+0XPD40g5viYIWkt4IR+OfaJOsTlXk4INB8dAqAj/gKNlKNlHl0uwuJ4s3bSieW
-         JJFaapdBpO9LHH7srd7fAC2WlTZjPCnNhbvfEDI6SHjCFceNrPIe9Rn26ulISUL3Ajr1
-         KA59w/QshoVLbd4w/FRfpNLxKqZjWYHePAIGMjMyx6zFl+pRkRIV2ZbvRGrJr9HV95x/
-         ne1Z7utgpLCfg0u3AuUFcvQvCbgLQsH4eYdBADf0290lB9eXv8OtysH3crRMrtBE0vhl
-         qpAw==
-X-Gm-Message-State: AOAM531v7qdiDfMoqqpQhdBbs3HkAkldl/kBxQ8HAzQ5dB0VHW1ODmQm
-        pMFYSQ8YmuIN2MC2X/KiYnQomKKXNRpSqziW4Wk=
-X-Google-Smtp-Source: ABdhPJyAdARiOzxgBRjGfjOxZyVkyOhu8EUSQdQ140UXpKmWbiF4Mf5SGUwoCIVpjWRFagFwo5HlCRsi/sF1OOhz/5k=
-X-Received: by 2002:a05:622a:1013:b0:2e1:c9c0:9831 with SMTP id
- d19-20020a05622a101300b002e1c9c09831mr15898965qte.245.1649039665610; Sun, 03
- Apr 2022 19:34:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <1648713656-24254-1-git-send-email-zhaoyang.huang@unisoc.com>
- <YkVt0m+VxnXgnulq@dhcp22.suse.cz> <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
- <YkWR8t8yEe6xyzCM@dhcp22.suse.cz> <CAGWkznHxAD0757m1i1Csw1CVRDtQddfCL08dYf12fa47=-uYYQ@mail.gmail.com>
- <YkbjNYMY8VjHoSHR@dhcp22.suse.cz> <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
- <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Mon, 4 Apr 2022 10:33:58 +0800
-Message-ID: <CAGWkznFTQCm0cusVxA_55fu2WfT-w2coVHrT=JA1D_9_2728mQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S243955AbiDDCps (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Apr 2022 22:45:48 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9998E11C3E
+        for <cgroups@vger.kernel.org>; Sun,  3 Apr 2022 19:43:46 -0700 (PDT)
+Received: from SHSend.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+        by SHSQR01.spreadtrum.com with ESMTPS id 2342ha3g059552
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NO);
+        Mon, 4 Apr 2022 10:43:36 +0800 (CST)
+        (envelope-from zhaoyang.huang@unisoc.com)
+Received: from bj03382pcu.spreadtrum.com (10.0.74.65) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Mon, 4 Apr 2022 10:43:35 +0800
+From:   "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        Ke Wang <ke.wang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <ke.wang@unisoc.com>
+Subject: [RFC PATCHv2] cgroup: introduce dynamic protection for memcg
+Date:   Mon, 4 Apr 2022 10:43:13 +0800
+Message-ID: <1649040193-10073-1-git-send-email-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.0.74.65]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL: SHSQR01.spreadtrum.com 2342ha3g059552
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Apr 3, 2022 at 11:04 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Fri, Apr 1, 2022 at 10:18 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-> >
-> > On Fri, Apr 1, 2022 at 7:34 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 01-04-22 09:34:02, Zhaoyang Huang wrote:
-> > > > On Thu, Mar 31, 2022 at 7:35 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Thu 31-03-22 19:18:58, Zhaoyang Huang wrote:
-> > > > > > On Thu, Mar 31, 2022 at 5:01 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Thu 31-03-22 16:00:56, zhaoyang.huang wrote:
-> > > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > > > > >
-> > > > > > > > For some kind of memcg, the usage is varies greatly from scenarios. Such as
-> > > > > > > > multimedia app could have the usage range from 50MB to 500MB, which generated
-> > > > > > > > by loading an special algorithm into its virtual address space and make it hard
-> > > > > > > > to protect the expanded usage without userspace's interaction.
-> > > > > > >
-> > > > > > > Do I get it correctly that the concern you have is that you do not know
-> > > > > > > how much memory your workload will need because that depends on some
-> > > > > > > parameters?
-> > > > > > right. such as a camera APP will expand the usage from 50MB to 500MB
-> > > > > > because of launching a special function(face beauty etc need special
-> > > > > > algorithm)
-> > > > > > >
-> > > > > > > > Furthermore, fixed
-> > > > > > > > memory.low is a little bit against its role of soft protection as it will response
-> > > > > > > > any system's memory pressure in same way.
-> > > > > > >
-> > > > > > > Could you be more specific about this as well?
-> > > > > > As the camera case above, if we set memory.low as 200MB to keep the
-> > > > > > APP run smoothly, the system will experience high memory pressure when
-> > > > > > another high load APP launched simultaneously. I would like to have
-> > > > > > camera be reclaimed under this scenario.
-> > > > >
-> > > > > OK, so you effectivelly want to keep the memory protection when there is
-> > > > > a "normal" memory pressure but want to relax the protection on other
-> > > > > high memory utilization situations?
-> > > > >
-> > > > > How do you exactly tell a difference between a steady memory pressure
-> > > > > (say stream IO on the page cache) from "high load APP launched"? Should
-> > > > > you reduce the protection on the stram IO situation as well?
-> > > > We can take either system's io_wait or PSI_IO into consideration for these.
-> > >
-> > > I do not follow. Let's say you have a stream IO workload which is mostly
-> > > RO. Reclaiming those pages means effectivelly to drop them from the
-> > > cache so there is no IO involved during the reclaim. This will generate
-> > > a constant flow of reclaim that shouldn't normally affect other
-> > > workloads (as long as kswapd keeps up with the IO pace). How does your
-> > > scheme cope with this scenario? My understanding is that it will simply
-> > > relax the protection.
-> > You are right. This scheme treats the system's memory pressure
-> > equally, no matter if it comes from in-kernel page allocation with
-> > high order or cache drop by IO like things. The decay_factor composed
-> > of PSI_SOME and PSI_FULL which represent the system is tight on
-> > memory, every entity has the obligation to donate to solve this issue.
-> > >
-> > > > > [...]
-> > > > > > > One very important thing that I am missing here is the overall objective of this
-> > > > > > > tuning. From the above it seems that you want to (ab)use memory->low to
-> > > > > > > protect some portion of the charged memory and that the protection
-> > > > > > > shrinks over time depending on the the global PSI metrict and time.
-> > > > > > > But why this is a good thing?
-> > > > > > 'Good' means it meets my original goal of keeping the usage during a
-> > > > > > period of time and responding to the system's memory pressure. For an
-> > > > > > android like system, memory is almost forever being in a tight status
-> > > > > > no matter how many RAM it has. What we need from memcg is more than
-> > > > > > control and grouping, we need it to be more responsive to the system's
-> > > > > > load and could  sacrifice its usage  under certain criteria.
-> > > > >
-> > > > > Why existing tools/APIs are insufficient for that? You can watch for
-> > > > > both global and memcg memory pressure including PSI metrics and update
-> > > > > limits dynamically. Why is it necessary to put such a logic into the
-> > > > > kernel?
-> > > > Poll and then React method in userspace requires a polling interval
-> > > > and response time. Take PSI as an example, it polls ten times during
-> > > > POLLING_INTERVAL while just report once, which introduce latency in
-> > > > some extend.
-> > >
-> > > Do workload transitions happen so often in your situation that the
-> > > interval really matters? As Suren already pointed out starting a new
-> > > application is usually an explicit event which can pro-activelly update
-> > > limits.
-> > Yes. As my reply to Suren's comment, even a positive monitor service
-> > which could be aware of the activity starting(APP launching etc) at
-> > the very first time, has to 1. read PSI and memcg->watermark/usage 2.
-> > make a decision. 3. write memcg->memory.low to adjust memory
-> > allowance. Furthermore, monitors could not supervise the APP for whole
-> > life time, while the reclaiming could arise at any time.
->
-> Ok, sounds like you want this dynamic limit to be active all the time,
-> not only at specific points in the process's life cycle.
-Not sure yet. I think it would be better to cooperate with AMS like
-things which could distinguish scenarios. Such as place
-foreground/background processes into different memcgs with different
-decay configurations OR dynamic set up the parameters to a specific
-memcg.
-> One thing that I don't understand in this approach is: why memory.low
-> should depend on the system's memory pressure. It seems you want to
-> allow a process to allocate more when memory pressure is high. That is
-> very counter-intuitive to me. Could you please explain the underlying
-> logic of why this is the right thing to do, without going into
-> technical details?
-What I want to achieve is make memory.low be positive correlation with
-timing and negative to memory pressure, which means the protected
-memcg should lower its protection(via lower memcg.low) for helping
-system's memory pressure when it's high. The concept behind is memcg's
-fault back of dropped memory is less important than system's latency
-on high memory pressure. Please refer to my new version's test data
-for more detail.
->
-> >
-> > > --
-> > > Michal Hocko
-> > > SUSE Labs
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+
+For some kind of memcg, the usage is varies greatly from scenarios. Such as
+multimedia app could have the usage range from 50MB to 500MB, which generated
+by loading an special algorithm into its virtual address space and make it hard
+to protect the expanded usage without userspace's interaction. Furthermore, fixed
+memory.low is a little bit against its role of soft protection as it will response
+any system's memory pressure in same way.
+
+Taking all above into consideration, we introduce a kind of dynamic protection
+based on group's watermark and system's memory pressure in this patch. Our aims are:
+1. dynamic protection with no fixed setting
+2. proper protection value on memory.current
+3. time based decay protection
+4. memory pressue related protection
+
+The basic concept could be descripted as bellowing, where we take group->watermark
+as a representative of usage
+		group->memory.low = decayed_watermark * decay_factor
+		decayed_watermark = group->watermark * func_wm_decay(time)
+		decay_factor = psi_system[PSI_MEM][time]
+
+func_wm_decay could be deemed as a linear decay funcion that will decay 1/2 in
+68s(36bit).If we take 2048 as "1", it could be descripted as:
+		decayed_watermark = time >> (group->wm_dec_factor - 10)
+		decayed_watermark = new_usage(if new_usage > decayed_watermark)
+
+decay_factor is as simple as a table lookingup and compose the final value by
+weight of some and full as
+		some = psi_system.avg[PSI_MEM * 2][time]
+		full = psi_system.avg[PSI_MEM * 2 + 1][time]
+		decay_factor = some  + full * 2
+
+We simply test above change by comparing it with current design on a v5.4 based
+system in 3GB RAM in bellowing steps, via which we can find that fixed
+memory.low have the system experience high memory pressure with holding too
+much memory.
+
+1. setting up the topology seperatly as [1]
+2. place a memory cost process into B and have it consume 1GB memory from userspace.
+3. generating global memory pressure via mlock 1GB memory.
+4. watching B's memory.current and PSI_MEM.
+5. repeat 3,4 twice.
+
+[1]. setting fixed low=500MB; low=600MB; wm_decay_factor=36(68s decay 1/2)
+      A(low=500MB)
+     /
+    B(low=500MB)
+
+What we observed are:
+
+            PSI_MEM, usage          PSI_MEM,usage	PSI_MEM,usage
+            (Mlock 1GB)             (Mlock 2GB)		(stable)
+low=600MB   s=23 f=17 u=720/600MB   s=91 f=48 u=202MB   s=68 f=32 u=106MB
+low=500MB   s=22 f=13 u=660/530MB   s=88 f=50 u=156MB   s=30 f=20 u=120MB
+patch       s=23 f=12 u=692/470MB   s=40 f=23 u=67MB    s=21 f=18 u=45MB
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+changes for v2:introduce opt-in logic and update test data on comments
+---
+---
+ include/linux/memcontrol.h   | 52 +++++++++++++++++++++++++++++++
+ include/linux/page_counter.h |  4 +++
+ include/linux/psi.h          |  3 ++
+ kernel/sched/psi.c           | 18 +++++++++++
+ mm/memcontrol.c              | 74 ++++++++++++++++++++++++++++++++++++++++++++
+ mm/page_counter.c            |  4 +++
+ 6 files changed, 155 insertions(+)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0c5c403..f18a700 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -21,6 +21,9 @@
+ #include <linux/vmstat.h>
+ #include <linux/writeback.h>
+ #include <linux/page-flags.h>
++#include <linux/sched/loadavg.h>
++#include <linux/sched/clock.h>
++#include <linux/psi.h>
+ 
+ struct mem_cgroup;
+ struct obj_cgroup;
+@@ -28,6 +31,8 @@
+ struct mm_struct;
+ struct kmem_cache;
+ 
++#define MEMCG_INTERVAL	(2*HZ+1)	/* 2 sec intervals */
++
+ /* Cgroup-specific page state, on top of universal node page state */
+ enum memcg_stat_item {
+ 	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
+@@ -340,6 +345,12 @@ struct mem_cgroup {
+ 	struct deferred_split deferred_split_queue;
+ #endif
+ 
++	u64 wm_decay_fact;
++	u64 some_prop;
++	u64 full_prop;
++	u64 avg_next_update;
++	u64 avg_last_update;
++
+ 	struct mem_cgroup_per_node *nodeinfo[];
+ };
+ 
+@@ -608,6 +619,47 @@ static inline bool mem_cgroup_disabled(void)
+ 	return !cgroup_subsys_enabled(memory_cgrp_subsys);
+ }
+ 
++/*
++ * calculate memory.low based on the historic watermark and memory pressure
++ */
++static inline void calc_protected_low(struct mem_cgroup *group)
++{
++	u64 now, decay_factor;
++	u64 decayed_watermark;
++	u64 delta_time;
++
++	now = sched_clock();
++
++	if (!group->avg_next_update) {
++		group->avg_next_update = now + jiffies_to_nsecs(5*HZ);
++		return;
++	}
++
++	if (time_before((unsigned long)now, (unsigned long)group->avg_next_update))
++		return;
++
++	delta_time = group->avg_last_update ? now - group->avg_last_update : 0;
++	/*
++	 * we take 2048 as "1" and 68s decay 1/2(36bit) by default
++	 * decay_factor = 1024 * delta_time / 68s(0x1000000000)
++	 * 0.5(1024)/68s = decay_factor/delta_time ==> decay_factor = delta_time >> 26
++	 */
++	decay_factor = (2048 - min(2048ULL, delta_time >> (group->wm_decay_fact - 10)));
++	decayed_watermark = group->memory.decayed_watermark * decay_factor / 2048;
++	/* decay_factor: based on average memory pressure over elapsed time */
++	decay_factor = psi_mem_get(delta_time);
++	group->memory.low = decayed_watermark * (100 - decay_factor) / 100;
++
++	/*
++	 * avg_next_update: expected expire time according to current status
++	 */
++	group->memory.decayed_watermark = decayed_watermark;
++	group->avg_last_update = now;
++	group->avg_next_update = now + jiffies_to_nsecs(2*HZ);
++
++	return;
++}
++
+ static inline void mem_cgroup_protection(struct mem_cgroup *root,
+ 					 struct mem_cgroup *memcg,
+ 					 unsigned long *min,
+diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+index 6795913..2720eb9f 100644
+--- a/include/linux/page_counter.h
++++ b/include/linux/page_counter.h
+@@ -25,8 +25,12 @@ struct page_counter {
+ 
+ 	/* legacy */
+ 	unsigned long watermark;
++	unsigned long decayed_watermark;
+ 	unsigned long failcnt;
+ 
++	/* proportional protection */
++	unsigned long min_prop;
++	unsigned long low_prop;
+ 	/*
+ 	 * 'parent' is placed here to be far from 'usage' to reduce
+ 	 * cache false sharing, as 'usage' is written mostly while
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 65eb147..b6e468a 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -25,6 +25,8 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 
+ int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
+ 
++unsigned long psi_mem_get(unsigned long time);
++
+ #ifdef CONFIG_CGROUPS
+ int psi_cgroup_alloc(struct cgroup *cgrp);
+ void psi_cgroup_free(struct cgroup *cgrp);
+@@ -45,6 +47,7 @@ static inline void psi_init(void) {}
+ static inline void psi_memstall_enter(unsigned long *flags) {}
+ static inline void psi_memstall_leave(unsigned long *flags) {}
+ 
++static unsigned long psi_mem_get(unsigned long time) {}
+ #ifdef CONFIG_CGROUPS
+ static inline int psi_cgroup_alloc(struct cgroup *cgrp)
+ {
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index dd80bd2..e6788c7 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -291,6 +291,24 @@ static void get_recent_times(struct psi_group *group, int cpu,
+ 	}
+ }
+ 
++unsigned long psi_mem_get(unsigned long time_ns)
++{
++	unsigned long time_sec = time_ns / (1000 * 1000 * 1000);
++	unsigned long some, full;
++	if (time_sec < 10) {
++		some = LOAD_INT(psi_system.avg[PSI_MEM * 2][0]);
++		full = LOAD_INT(psi_system.avg[PSI_MEM * 2 + 1][0]);
++	} else if (time_sec < 60) {
++		some = LOAD_INT(psi_system.avg[PSI_MEM * 2][1]);
++		full = LOAD_INT(psi_system.avg[PSI_MEM * 2 + 1][1]);
++	} else {
++		some = LOAD_INT(psi_system.avg[PSI_MEM * 2][2]);
++		full = LOAD_INT(psi_system.avg[PSI_MEM * 2 + 1][2]);
++	}
++
++	return max(100UL, some + full * 2);
++}
++
+ static void calc_avgs(unsigned long avg[3], int missed_periods,
+ 		      u64 time, u64 period)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 508bcea..f177d4e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5188,6 +5188,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
+ 	memcg->soft_limit = PAGE_COUNTER_MAX;
+ 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
++	memcg->wm_decay_fact = 0;
+ 	if (parent) {
+ 		memcg->swappiness = mem_cgroup_swappiness(parent);
+ 		memcg->oom_kill_disable = parent->oom_kill_disable;
+@@ -6410,6 +6411,57 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ 	return nbytes;
+ }
+ 
++static int memory_wm_df_show(struct seq_file *m, void *v)
++{
++	seq_printf(m, "%llu\n", (u64)READ_ONCE(mem_cgroup_from_seq(m)->wm_decay_fact));
++	return 0;
++}
++
++static ssize_t memory_wm_df_write(struct kernfs_open_file *of,
++		char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++
++	buf = strstrip(buf);
++	memcg->wm_decay_fact = simple_strtoull(buf, NULL, 10);
++
++	return nbytes;
++}
++
++static int memory_some_prop_show(struct seq_file *m, void *v)
++{
++	seq_printf(m, "%llu\n", (u64)READ_ONCE(mem_cgroup_from_seq(m)->some_prop));
++	return 0;
++}
++
++static ssize_t memory_some_prop_write(struct kernfs_open_file *of,
++		char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++
++	buf = strstrip(buf);
++	memcg->some_prop = simple_strtoull(buf, NULL, 10);
++
++	return nbytes;
++}
++
++static int memory_full_prop_show(struct seq_file *m, void *v)
++{
++	seq_printf(m, "%llu\n", (u64)READ_ONCE(mem_cgroup_from_seq(m)->full_prop));
++	return 0;
++}
++
++static ssize_t memory_full_prop_write(struct kernfs_open_file *of,
++		char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++
++	buf = strstrip(buf);
++	memcg->full_prop = simple_strtoull(buf, NULL, 10);
++
++	return nbytes;
++}
++
+ static struct cftype memory_files[] = {
+ 	{
+ 		.name = "current",
+@@ -6468,6 +6520,24 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ 		.seq_show = memory_oom_group_show,
+ 		.write = memory_oom_group_write,
+ 	},
++	{
++		.name = "wm_decay_factor",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = memory_wm_df_show,
++		.write = memory_wm_df_write,
++	},
++	{
++		.name = "some_prop",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = memory_some_prop_show,
++		.write = memory_some_prop_write,
++	},
++	{
++		.name = "full_prop",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = memory_full_prop_show,
++		.write = memory_full_prop_write,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+@@ -6616,6 +6686,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ {
+ 	unsigned long usage, parent_usage;
+ 	struct mem_cgroup *parent;
++	unsigned long watermark;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return;
+@@ -6642,6 +6713,9 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+ 	if (!parent)
+ 		return;
+ 
++	if (memcg->wm_decay_fact)
++		calc_protected_low(memcg);
++
+ 	if (parent == root) {
+ 		memcg->memory.emin = READ_ONCE(memcg->memory.min);
+ 		memcg->memory.elow = READ_ONCE(memcg->memory.low);
+diff --git a/mm/page_counter.c b/mm/page_counter.c
+index 7d83641..18abfdd 100644
+--- a/mm/page_counter.c
++++ b/mm/page_counter.c
+@@ -83,6 +83,8 @@ void page_counter_charge(struct page_counter *counter, unsigned long nr_pages)
+ 		 */
+ 		if (new > READ_ONCE(c->watermark))
+ 			WRITE_ONCE(c->watermark, new);
++		if (new > READ_ONCE(c->decayed_watermark))
++			WRITE_ONCE(c->decayed_watermark, new);
+ 	}
+ }
+ 
+@@ -137,6 +139,8 @@ bool page_counter_try_charge(struct page_counter *counter,
+ 		 */
+ 		if (new > READ_ONCE(c->watermark))
+ 			WRITE_ONCE(c->watermark, new);
++		if (new > READ_ONCE(c->decayed_watermark))
++			WRITE_ONCE(c->decayed_watermark, new);
+ 	}
+ 	return true;
+ 
+-- 
+1.9.1
+
