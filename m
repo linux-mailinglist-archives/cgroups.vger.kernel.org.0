@@ -2,37 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4424F122A
-	for <lists+cgroups@lfdr.de>; Mon,  4 Apr 2022 11:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920454F13C1
+	for <lists+cgroups@lfdr.de>; Mon,  4 Apr 2022 13:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354442AbiDDJio (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Apr 2022 05:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
+        id S238463AbiDDLZL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Apr 2022 07:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354650AbiDDJil (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Apr 2022 05:38:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B73D3BFBC;
-        Mon,  4 Apr 2022 02:36:36 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0F7091F37E;
-        Mon,  4 Apr 2022 09:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649064995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LpYoL6AgjzJZ4tpGv3/xyzDAd+WQcpBXKtpN+zEEZ6M=;
-        b=URZHSoRiL8o7b+yMQLyfEwpcnDVBQxC25DaiTXuXyRDL0IVDsBLTG0R5+BoVe4h2RwHe+8
-        846rB9SKsGl/yDW1VzKHMBpdDywbpp7qqlqIszK75ScfGaGQ/nc4UbHX9VFyfjHiaxZssh
-        AyAChWqakgt161TVz0sPrchh0q2dSMg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CC8C7A3B92;
-        Mon,  4 Apr 2022 09:36:34 +0000 (UTC)
-Date:   Mon, 4 Apr 2022 11:36:33 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+        with ESMTP id S235756AbiDDLZL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Apr 2022 07:25:11 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E4626569;
+        Mon,  4 Apr 2022 04:23:15 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id t2so7342837qtw.9;
+        Mon, 04 Apr 2022 04:23:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uTEQc40WAUSwoIQpKgQjJIExKC4lQtRNhQFFG5ZkcD4=;
+        b=pSQrIEqHbVdTq/rz7ZjoIHJeXGubsbHAjJLdZQp8l5AlsVTZJ+zGV6P/H00sP5zGjo
+         q+P5rRL6Xf1ojgtC3ksx1Ef8i2OuaW6hN5Xvmhv81HeIWyvZeivSRdnL27IsTVbg6i3O
+         9B3re0wo1wSl/8BcUSuX4LVgJRfaDdhN6r87xtLvideB2JC7a+DPgCUTNGgGwOjgRVyW
+         Zvxxz7gIeRHEVgHhHIX7quhCuYkWirUKgloE0bw5kmWIex1c1AUdUPNaRxvptrxfhIvR
+         QjWrwJZu5C4IjXkkouQaycFHjCIqdJbz9C21zz2s0nyXkEv6veEazyX+AXCVSnLXMhE4
+         b+Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uTEQc40WAUSwoIQpKgQjJIExKC4lQtRNhQFFG5ZkcD4=;
+        b=VWFV7Oec/fVIBxUwQvEbgsaAms7lflUJWSTLNvao/SyJeCQg0r71BJ8+DAuCj+pI+9
+         0bzl32qa5D6NiGvC53Le49fUXGvs3jz5861V+4sp2Lx7xp9amVNm9jjBaMc1tfKqQcJL
+         9f9x53GedjY8qd+gr2mX87g6/x9gAqpEP+Q0Brd0EfqB7V9FXPCcz9DU2eLptxokv/+Q
+         atXRIpC2lmG/W1CAkPryx2gtaHhE6R7o8n3yQqazC50TX0z4y/ppTQyF5lEw67asTXHS
+         EhfNZ1cNR2XVI9NEdGUVreZaXwnc3UjHaP5vrLLW/MtN9r8XOCPJNJ5TTu73+pd+WYxz
+         P9RQ==
+X-Gm-Message-State: AOAM531mrDgYtTjdALUulziKls8dZAJluG0/JfSQaA/KaNX7ehFUL5FK
+        kzWvlOuQ2qvwGYklxCcMmbUCOV/3vStMpJU+rfI=
+X-Google-Smtp-Source: ABdhPJwsqMcUrJ8a8kJxjin3FIFKsyMPd5nCbkXKV5uDt5pycXdxclS9X6RJOkF7HV24PAyV8hVuJ5+fhP+GvaC6fM4=
+X-Received: by 2002:a05:622a:1999:b0:2e2:2928:db7d with SMTP id
+ u25-20020a05622a199900b002e22928db7dmr17447404qtc.160.1649071394354; Mon, 04
+ Apr 2022 04:23:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAGWkznF4qb2EP3=xVamKO8qk08vaFg9JeHD7g80xvBfxm39Hkg@mail.gmail.com>
+ <YkWR8t8yEe6xyzCM@dhcp22.suse.cz> <CAGWkznHxAD0757m1i1Csw1CVRDtQddfCL08dYf12fa47=-uYYQ@mail.gmail.com>
+ <YkbjNYMY8VjHoSHR@dhcp22.suse.cz> <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
+ <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
+ <CAGWkznFTQCm0cusVxA_55fu2WfT-w2coVHrT=JA1D_9_2728mQ@mail.gmail.com>
+ <YkqxpEW4m6iU3zMq@dhcp22.suse.cz> <CAGWkznG4L3w=9bpZp8TjyWHmqFyZQk-3m4xCZ96zhHCLPawBgQ@mail.gmail.com>
+ <CAGWkznGMRohE2_at4Qh8KbwSqNmNqOAG2N1EM+7uE9wKqzRm0A@mail.gmail.com> <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
+In-Reply-To: <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Mon, 4 Apr 2022 19:23:03 +0800
+Message-ID: <CAGWkznGbd5TOTHZE8uUhak3SnHqEWx_9QCJVtUFUSg9rk3xYEQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Suren Baghdasaryan <surenb@google.com>,
         "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -42,33 +67,19 @@ Cc:     Suren Baghdasaryan <surenb@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         cgroups mailinglist <cgroups@vger.kernel.org>,
         Ke Wang <ke.wang@unisoc.com>
-Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
-Message-ID: <Ykq8IXstIKoW8JE2@dhcp22.suse.cz>
-References: <YkWR8t8yEe6xyzCM@dhcp22.suse.cz>
- <CAGWkznHxAD0757m1i1Csw1CVRDtQddfCL08dYf12fa47=-uYYQ@mail.gmail.com>
- <YkbjNYMY8VjHoSHR@dhcp22.suse.cz>
- <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
- <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
- <CAGWkznFTQCm0cusVxA_55fu2WfT-w2coVHrT=JA1D_9_2728mQ@mail.gmail.com>
- <YkqxpEW4m6iU3zMq@dhcp22.suse.cz>
- <CAGWkznG4L3w=9bpZp8TjyWHmqFyZQk-3m4xCZ96zhHCLPawBgQ@mail.gmail.com>
- <CAGWkznGMRohE2_at4Qh8KbwSqNmNqOAG2N1EM+7uE9wKqzRm0A@mail.gmail.com>
- <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 04-04-22 11:32:28, Michal Hocko wrote:
+On Mon, Apr 4, 2022 at 5:32 PM Michal Hocko <mhocko@suse.com> wrote:
+>
 > On Mon 04-04-22 17:23:43, Zhaoyang Huang wrote:
 > > On Mon, Apr 4, 2022 at 5:07 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
 > > >
@@ -112,18 +123,53 @@ On Mon 04-04-22 11:32:28, Michal Hocko wrote:
 > > protect long as system pressure is under the threshold(partially
 > > coherent with current design) and will sacrifice the memcg if pressure
 > > is over the threshold(added change)
-> 
+>
 > No, not really. For one it is still really unclear why there should be any
 > difference in the semantic between global and external memory pressure
 > in general. The low limit is always a protection from the external
 > pressure. And what should be the actual threshold? Amount of the reclaim
 > performed, effectivness of the reclaim or what?
+Please find bellowing for the test result, which shows current design
+has more effective protection when system memory pressure is high. It
+could be argued that the protected memcg lost the protection as its
+usage dropped too much. I would like to say that this is just the goal
+of the change. Is it reasonable to let the whole system be trapped in
+memory pressure while the memcg holds the memory? With regard to
+threshold, it is a dynamic decayed watermark value which represents
+the historic(watermark) and present(update to new usage if it expands
+again) usage. Actually, I have update the code by adding opt-in code
+which means this is a opt type of the memcg. This patch is coherent to
+the original design if user want to set the fixed value by default and
+also provide a new way of dynamic protected memcg without external
+monitor and interactivation.
 
-Btw. you might want to have a look at http://lkml.kernel.org/r/20220331084151.2600229-1-yosryahmed@google.com
-where a new interface to allow pro-active memory reclaim is discussed.
-I think that this might turn out to be a better fit then an automagic
-kernel manipulation with a low limit. It will require a user agent to
-drive the reclaim though.
--- 
-Michal Hocko
-SUSE Labs
+We simply test above change by comparing it with current design on a v5.4 based
+system in 3GB RAM in bellowing steps, via which we can find that fixed
+memory.low have the system experience high memory pressure with holding too
+much memory.
+
+1. setting up the topology seperatly as [1]
+2. place a memory cost process into B and have it consume 1GB memory
+from userspace.
+3. generating global memory pressure via mlock 1GB memory.
+4. watching B's memory.current and PSI_MEM.
+5. repeat 3,4 twice.
+
+[1]. setting fixed low=500MB; low=600MB; wm_decay_factor=36(68s decay 1/2)
+      A(low=500MB)
+     /
+    B(low=500MB)
+
+What we observed are:
+
+                    PSI_MEM, usage             PSI_MEM,usage
+PSI_MEM,usage
+                    (Mlock 1GB)                    (Mlock 2GB)
+     (stable)
+low=600MB   s=23 f=17 u=720/600MB   s=91 f=48 u=202MB   s=68 f=32 u=106MB
+low=500MB   s=22 f=13 u=660/530MB   s=88 f=50 u=156MB   s=30 f=20 u=120MB
+patch            s=23 f=12 u=692/470MB   s=40 f=23 u=67MB     s=21 f=18 u=45MB
+
+> --
+> Michal Hocko
+> SUSE Labs
