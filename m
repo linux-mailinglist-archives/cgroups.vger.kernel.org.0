@@ -2,85 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82554F3DF8
-	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 22:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3355C4F4499
+	for <lists+cgroups@lfdr.de>; Wed,  6 Apr 2022 00:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbiDEOKK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Apr 2022 10:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
+        id S240158AbiDEOKE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Apr 2022 10:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377013AbiDENMq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 09:12:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF7D120D9D;
-        Tue,  5 Apr 2022 05:12:48 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2FE681F745;
-        Tue,  5 Apr 2022 12:12:47 +0000 (UTC)
+        with ESMTP id S1352628AbiDENHD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 09:07:03 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1E48300A;
+        Tue,  5 Apr 2022 05:08:24 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 34FB4210EF;
+        Tue,  5 Apr 2022 12:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649160767; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1649160503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YGolTQlWegdqsJgfgfOCgFdotBM/n5qIvgfFfvEjxd0=;
-        b=BK6a6qL8o7p/MJgbNqqctnSF5bmv5BGKuuqBTv2USITbTpPoKI1f15ogW871KoTo/RdheN
-        2ofE8y9/q59bmAhdL1seIYTAGQd263xP4FVoKwCcc/FYdRc3tUwqP3pmlISrihOeY4NF+U
-        B5AcViJAx3CYaDGctEIJbO7LJzMoxwU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=VYOi21VBdrnEfgCIXqKolf+TBqlw4Pd+D8zmojzTZKg=;
+        b=IzlVwj1UBmMOQmHd3Zp7EfAXZmHByCFtW1hb2ofyTRxldgM0qGnGQd6hQt8jCSab/6KcQa
+        DvpaN+BbZ0cPKEbNjPfbufOi006FMFq43iNjeXx+OsbgAgJLj9TyIVm1NfWnLhJysJp1ob
+        x43XW5Auch1IHBKqWUSgRQ4Q6Do+kNI=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA5C913A04;
-        Tue,  5 Apr 2022 12:12:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id s8TPKD4yTGIlCAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 05 Apr 2022 12:12:46 +0000
-Date:   Tue, 5 Apr 2022 14:12:45 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        by relay2.suse.de (Postfix) with ESMTPS id 81C8CA3B89;
+        Tue,  5 Apr 2022 12:08:22 +0000 (UTC)
+Date:   Tue, 5 Apr 2022 14:08:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, cgroups@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC v4 5/8] dmabuf: Add gpu cgroup charge transfer function
-Message-ID: <20220405121245.GA30368@blackbody.suse.cz>
-References: <20220328035951.1817417-1-tjmercier@google.com>
- <20220328035951.1817417-6-tjmercier@google.com>
- <20220329152142.GA15794@blackbody.suse.cz>
- <CABdmKX2874NdYCBzpKLnqWhZQDkC2wKz4ZL_aFNqrec6iAutpQ@mail.gmail.com>
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        Ke Wang <ke.wang@unisoc.com>
+Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
+Message-ID: <YkwxNaJIg6ptJOYT@dhcp22.suse.cz>
+References: <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
+ <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
+ <CAGWkznFTQCm0cusVxA_55fu2WfT-w2coVHrT=JA1D_9_2728mQ@mail.gmail.com>
+ <YkqxpEW4m6iU3zMq@dhcp22.suse.cz>
+ <CAGWkznG4L3w=9bpZp8TjyWHmqFyZQk-3m4xCZ96zhHCLPawBgQ@mail.gmail.com>
+ <CAGWkznGMRohE2_at4Qh8KbwSqNmNqOAG2N1EM+7uE9wKqzRm0A@mail.gmail.com>
+ <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
+ <CAGWkznGbd5TOTHZE8uUhak3SnHqEWx_9QCJVtUFUSg9rk3xYEQ@mail.gmail.com>
+ <Ykrkx4JML4c81gBV@dhcp22.suse.cz>
+ <CAGWkznEaEavCz9GeiYuTqsox2qZK43iQKevt8njkzaHv6KiW-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABdmKX2874NdYCBzpKLnqWhZQDkC2wKz4ZL_aFNqrec6iAutpQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAGWkznEaEavCz9GeiYuTqsox2qZK43iQKevt8njkzaHv6KiW-A@mail.gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -91,55 +68,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 01, 2022 at 11:41:36AM -0700, "T.J. Mercier" <tjmercier@google.com> wrote:
-> This link doesn't work for me, but I think you're referring to the
-> discussion about your "RAM_backed_buffers" comment from March 23rd.
+On Mon 04-04-22 21:14:40, Zhaoyang Huang wrote:
+[...]
+> Please be noticed that this patch DOES protect the memcg when external
+> pressure is 1GB as fixed low does.
 
-(Oops, it's a non-public message. But yes, you guessed it right ;-))
+This is getting more and more confusing (at least to me). Could you
+describe the behavior of the reclaim for the following setups/situations?
 
-> Anyway the test I did goes like this: enable memcg and gpu cgoups
-> tracking and run a process that allocates 100MiB of dmabufs. Observe
-> memcg and gpu accounting values before and after the allocation.
+a) mostly reclaiming a clean page cache - via kswapd
+b) same as above but the direct reclaim is necessary but very
+   lightweight
+c) direct reclaim makes fwd progress but not enough to satisfy the
+   allocation request (so the reclaim has to be retried)
+d) direct reclaim not making progress and low limit protection is
+   ignored.
 
-Thanks for this measurement/dem/demoo.
+Say we have several memcgs and only some have low memory protection
+configured. What is the user observable state of the protected group and
+when and how much the protection can be updated?
 
-> Before
-> # cat memory.current gpu.memory.current
-> 14909440
-> system 0
-> 
-> <Test program does the allocation of 100MiB of dmabufs>
-> 
-> After
-> # cat memory.current gpu.memory.current
-> 48025600
-> system 104857600
-> 
-> So the memcg value increases by about 30 MiB while the gpu values
-> increases by 100 MiB.
+I think it would be also helpful to describe the high level semantic of
+this feature.
 
-> This is with kmem enabled, and the /proc/maps
-> file for this process indicates that the majority of that 30 MiB is
-> kernel memory.
+> Besides, how does the admin decide
+> the exact number of low/min if it expand from small to even xGB in a
+> quick changing scenario?
 
-> I think this result shows that neither the kernel nor process memory
-> overlap with the gpu cgroup tracking of these allocations.
+This is not really related, is it? There are different ways to tune for
+the protection.
 
-It depends how the semantics of the 'system' entry is defined, no?
-As I grasped from other thread, the 'total' is going to be removed, so
-'system' represents exclusively device memory?
-
-
-> So despite the fact that these buffers are in main memory, they are
-> allocated in a way that does not result in memcg attribution. (It
-> looks to me like __GFP_ACCOUNT is not set for these.)
-
-(I thought you knew what dmabufs your program used :-p)
-
-So, the goal is to do the tracking and migrations only via the gpu cg
-layer, regardless how memcg charges it (or not).
-
-(I have no opinion on that, I'm just summing it so that we're on the
-same page.)
-
-Michal
+[...]
+-- 
+Michal Hocko
+SUSE Labs
