@@ -2,113 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A614F2FC9
-	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 14:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023BD4F33EF
+	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 15:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350118AbiDEJy6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Apr 2022 05:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
+        id S1344970AbiDEJyz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Apr 2022 05:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345737AbiDEJW7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 05:22:59 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63C6EB3C;
-        Tue,  5 Apr 2022 02:12:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 494E8210F4;
-        Tue,  5 Apr 2022 09:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649149920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mVhpyElouVHiShzfKiMDpwTUsMQzwG3WoSbwcyg24Hk=;
-        b=o2qv6btz8dqtGvXVklb2rUqFn4/SpHgk1qtD2cB+/Na3YKuaNPlK0xJA+XEQs3GqIfrsWJ
-        i5L+/jIZaEkmbNq7j3ojQvfVjcdznGe3XGW3hPoaj5Cvjj6e/6zVr9wJq6IhUPdXrtTXij
-        3F5YLiidr96TCatmJROASTwlYMUqf9U=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 029C0132B7;
-        Tue,  5 Apr 2022 09:11:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id xLx0O98HTGJgKwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 05 Apr 2022 09:11:59 +0000
-Date:   Tue, 5 Apr 2022 11:11:58 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Bui Quang Minh <minhquangbui99@gmail.com>, cgroups@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup: Kill the parent controller when its last
- child is killed
-Message-ID: <20220405091158.GA13806@blackbody.suse.cz>
-References: <20220404142535.145975-1-minhquangbui99@gmail.com>
- <Ykss1N/VYX7femqw@slm.duckdns.org>
+        with ESMTP id S1348912AbiDEJsp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 05:48:45 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B85CEE4DB
+        for <cgroups@vger.kernel.org>; Tue,  5 Apr 2022 02:37:22 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id c4so6157724vkq.9
+        for <cgroups@vger.kernel.org>; Tue, 05 Apr 2022 02:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=8YjdKne984sfE1TFRfUKmP3/44deiAaiEdvrqOqJMtM=;
+        b=EqSwsfAKfrawy7t8TIrkzB/pZuBKFa36fgsssyo48iNUnMIxKKRCf1pXgUYzWJ7BgI
+         85YRcfppFcrZOBaNypf0/3E5uGd4IvH7X5YoyMfDRrdevnX2q1BfQDMkv1yqKbtkPIZL
+         nCw+nhuyrA65FLKhcnbp+0dIsdQ6b+1sviHN5uoUrUnzKg1eplyo1+haaW+BpwKQZl3k
+         CrhlIYflzKyANa1FtIiXtV0mgZ5/ZIEKcYQ0ThZ+fJUbRY5vSNdD6DqWY++eVL7AeDHw
+         04k4Wij0SCOFfWQ+uv7pcUNaGRfHsa4RCsz6y0MqNRBSuZyDz9mcycQYlh7KbH+sfWCv
+         pOEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=8YjdKne984sfE1TFRfUKmP3/44deiAaiEdvrqOqJMtM=;
+        b=2K1C5pwV5H/d8ZEZe0LdGwSHdjhB85APeMli74Wq5SGSAMR9WKKfiHVBlT6GpWTTF3
+         RgoQlkt4vC1wODkya62j1X3NJyRAZH6nijWoqplVdTXmvHzRYwLGiKKpcFKH6kMqnCqr
+         Vw9gYbiyCDm2Ul1js5PcmNwruzNmrmpDR8Zxft/TiHRVf1ryyl7YEgHGKOBx3vfqC/wz
+         Sc2OjG2nmng6rLiQvv9L1iHshLKNlurZxLH87qk3026SL3hx2gtRBeiu76D18oXziETo
+         jkvphiJT+hkt5aV/vCf4x9liSPhn/DuEhCFJlvcqyKnWt1DnhAaY5HdrLJVMHFwuim0E
+         7pHw==
+X-Gm-Message-State: AOAM533cFlZugDHtrNrKr8/k5b0oDs0yE2Uodh0O/Mn3OJIRaM2HAuee
+        /Y47zKSyIsfHtuYdcxw61qdas9jpzDCNn4tiWr2tr9nGK8Y=
+X-Google-Smtp-Source: ABdhPJxzwo8gGeAlDfgu0mu7KJA/bz8KmM62AZkCxbH/ZqKyhVV+UhKYmZ5+W3Naxiz5nUd7wgS/KbqjzfZmIdFk8Pk=
+X-Received: by 2002:ac5:c3d0:0:b0:344:44f4:25c3 with SMTP id
+ t16-20020ac5c3d0000000b0034444f425c3mr915664vkk.23.1649151441074; Tue, 05 Apr
+ 2022 02:37:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ykss1N/VYX7femqw@slm.duckdns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   =?UTF-8?B?0JXQvdGM0YjQuNC9INCQ0L3QtNGA0LXQuQ==?= 
+        <and.enshin@gmail.com>
+Date:   Tue, 5 Apr 2022 18:37:10 +0900
+Message-ID: <CAHoi7SvtE971BuMWwnt=8V-DutO5=sgUGow637MiPq_+3NYbQg@mail.gmail.com>
+Subject: reclaim memory from cgrouped app(/kernel)
+To:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 04, 2022 at 07:37:24AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> And the suggested behavior doesn't make much sense to me. It doesn't
-> actually solve the underlying problem but instead always make css
-> destructions recursive which can lead to surprises for normal use cases.
+Hi,
 
-I also don't like the nested special-case use percpu_ref_kill().
+does kernel reclaim memory inside cgroup - from apps running inside
+cgroup and from part of kernel taking memory somehow related to this
+cgroup - if there is no overall memory pressure in system but memory
+usage in this particular cgroup is close to limit?
 
-I looked at this and my supposed solution turned out to be a revert of
-commit 3c606d35fe97 ("cgroup: prevent mount hang due to memory
-controller lifetime"). So at the unmount time it's necessary to distinguish
-children that are in the process of removal from children than are online or
-pinned indefinitely.
+If yes, will kernel reclaim pages marked as MADV_FREE?
 
-What about:
-
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2205,11 +2205,14 @@ static void cgroup_kill_sb(struct super_block *sb)
-        struct cgroup_root *root = cgroup_root_from_kf(kf_root);
-
-        /*
--        * If @root doesn't have any children, start killing it.
-+        * If @root doesn't have any children held by residual state (e.g.
-+        * memory controller), start killing it, flush workqueue to filter out
-+        * transiently offlined children.
-         * This prevents new mounts by disabling percpu_ref_tryget_live().
-         *
-         * And don't kill the default root.
-         */
-+       flush_workqueue(cgroup_destroy_wq);
-        if (list_empty(&root->cgrp.self.children) && root != &cgrp_dfl_root &&
-            !percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
-                cgroup_bpf_offline(&root->cgrp);
-
-(I suspect there's technically still possible a race between concurrent unmount
-and the last rmdir but the flush on kill_sb path should be affordable and it
-prevents unnecessarily conserved cgroup roots.)
-
-Michal
+-- 
+Best Regards,
+Andrei Enshin
