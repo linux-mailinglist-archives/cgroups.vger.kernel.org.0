@@ -2,105 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91894F2133
-	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 06:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4994F2315
+	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 08:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbiDECsX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Apr 2022 22:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        id S230186AbiDEG3B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Apr 2022 02:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbiDECsL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Apr 2022 22:48:11 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462D310EDE0
-        for <cgroups@vger.kernel.org>; Mon,  4 Apr 2022 19:30:33 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id p22so13621703iod.2
-        for <cgroups@vger.kernel.org>; Mon, 04 Apr 2022 19:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JTzIzbrqZyK9WcizVERi7qlxh5xxIEK+9IqWImCqDAY=;
-        b=YcMVYnQMKz2NhQbrK0HjGTOXQmTu+Vk9t1j3Nfgnp7gS4pAl9K8ReC7ZTF3NS0ao62
-         +k6BganfzYE1RHEvww+e/oOwq6C1n3EDSdgXuZrPrUp/3uVwkyfn+h+4qiNGraccB4KQ
-         nIfDzn7o26dbdKpb851QTXPT7ZhljzDSnSko5y404+cDtwPiIHYDokLbazUURxbzDJYf
-         0wCUTDsNI802WAuIUoPq6xTRWniX7nxbPjm5nqHr5UFiVd2OkMiVpH3V//O4UytUclaa
-         R0jpdX1UgmZmW10eiTYtRmFvTG/l/HJtjLd+9wWEiVF0naJ4VQ9kG+1P5NjKQrF+efCb
-         Vk2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JTzIzbrqZyK9WcizVERi7qlxh5xxIEK+9IqWImCqDAY=;
-        b=qauhQQRFgjzlDwHbbS1/gmUgAAODZx+50MOOVon/MylZJk81SlnhTyw0usWYLG8JRB
-         69KsNjXoGx7RaEs1tqxd4JD6ua5Dfyt2zGzsI+4b8lpcQPGcMY5Cgajzq0UC+t0QH1Uq
-         BPCUMHLh4eQ2tW5fO+vfsnLo0O8i1l09S496o5sTdhwMFz7oWGV6zZ4j3xOFCXiDh9G0
-         mTjtgvCtrjc+cI/0jP/xvweJy5BfzHO0PomUH00kzBy/W9a27anJ17JFyH3usHJn+E/S
-         PU7gn+UA9vpDf/OQTdhc6Iz0h6L//P4NRW6yp17PQJ5IJ1EOS438dEpuo3l5OLX0X62d
-         tmWw==
-X-Gm-Message-State: AOAM530Xg1iij2jvUUk7+Ckw8T1Fa8bYjO3TSwaYAkg68C5dc4YBJPvp
-        x19lRFevclEafwMJazNvbQHtacwP2grdIb6kkgqj2A==
-X-Google-Smtp-Source: ABdhPJwODLum9ilGhChVng+UBA9UPlj2zbdInzRba3Olr4b4wDij4kupJU4FIgzVrCfK1I45tTbjXWS8CK+5nB/27Fs=
-X-Received: by 2002:a02:84c9:0:b0:31a:1cf2:4468 with SMTP id
- f67-20020a0284c9000000b0031a1cf24468mr806877jai.31.1649125832511; Mon, 04 Apr
- 2022 19:30:32 -0700 (PDT)
+        with ESMTP id S229836AbiDEG27 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 02:28:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FC74BFC3
+        for <cgroups@vger.kernel.org>; Mon,  4 Apr 2022 23:27:01 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 77CCD210DE;
+        Tue,  5 Apr 2022 06:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1649140020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yh3Ex3Th+gF9Cqk/K++VhrpMY2seww3cQSgR3bJT/Hg=;
+        b=Oi2QIer3acnB2qh/3gKgxeQvPSaRTPBE8h7WnJQCGkxdTcMy+Db8yjuRi5DAxorBEcAfCL
+        hKdfWigOSnr9C7qSjjWpf9thxyS/fKtFkzS/LcxhoxwawIFl/VD3vOsV/1tqEkFfvUSjBQ
+        BQNyPpSpioYZBU9cYrbtoMLG1w+zYrE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 43B1BA3B89;
+        Tue,  5 Apr 2022 06:27:00 +0000 (UTC)
+Date:   Tue, 5 Apr 2022 08:26:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Wei Yang <richard.weiyang@gmail.com>
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] mm/memcg: non-hierarchical mode is deprecated
+Message-ID: <YkvhMx2EVVisfjRG@dhcp22.suse.cz>
+References: <20220403020833.26164-1-richard.weiyang@gmail.com>
+ <Ykq6Gbt5MX9GCiKM@dhcp22.suse.cz>
+ <20220405022218.53idmvm2ha2tzmy2@master>
 MIME-Version: 1.0
-References: <20220331084151.2600229-1-yosryahmed@google.com>
- <CAAPL-u8g2qkhdTQtFtBS3GNYz0WnyahWEXvR4g_OSaKv+7EozA@mail.gmail.com>
- <YkcYq8F6MYlMi+yS@cmpxchg.org> <CAAPL-u-za-TTyyC5uMVev9eQyhxZS7q3pVqaUxCFjqk+Sv9+ig@mail.gmail.com>
- <CALvZod4-fKfv6vbZPZ3nCE=Bue4FUnC+9t27wsznmyd+JKgDbg@mail.gmail.com>
-In-Reply-To: <CALvZod4-fKfv6vbZPZ3nCE=Bue4FUnC+9t27wsznmyd+JKgDbg@mail.gmail.com>
-From:   Wei Xu <weixugc@google.com>
-Date:   Mon, 4 Apr 2022 19:30:21 -0700
-Message-ID: <CAAPL-u-7Vnq8tmmRNDOz7Jw1ei_Vw=idJaPzMPoq5=sBrpyrRA@mail.gmail.com>
-Subject: Re: [PATCH resend] memcg: introduce per-memcg reclaim interface
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Cgroups <cgroups@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Jonathan Corbet <corbet@lwn.net>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220405022218.53idmvm2ha2tzmy2@master>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 4, 2022 at 10:08 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Fri, Apr 1, 2022 at 1:14 PM Wei Xu <weixugc@google.com> wrote:
+On Tue 05-04-22 02:22:18, Wei Yang wrote:
+> On Mon, Apr 04, 2022 at 11:27:53AM +0200, Michal Hocko wrote:
+> >On Sun 03-04-22 02:08:33, Wei Yang wrote:
+> >> After commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical
+> >> mode"), we won't have a NULL parent except root_mem_cgroup. And this
+> >> case is handled when (memcg == root).
+> >> 
+> >> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> >> CC: Roman Gushchin <roman.gushchin@linux.dev>
+> >> CC: Johannes Weiner <hannes@cmpxchg.org>
 > >
-> [...]
+> >Acked-by: Michal Hocko <mhocko@suse.com>
+> >Thanks!
 > >
-> > -EAGAIN sounds good, too.  Given that the userspace requests to
-> > reclaim a specified number of bytes, I think it is generally better to
-> > tell the userspace whether the request has been successfully
-> > fulfilled. Ideally, it would be even better to return how many bytes
-> > that have been reclaimed, though that is not easy to do through the
-> > cgroup interface.
->
-> What would be the challenge on returning the number of bytes reclaimed
-> through cgroup interface?
+> 
+> Thanks for the ack. When reading the code, I found one redundant check in
+> shrink_node_memcgs().
+> 
+>   shrink_node_memcgs
+>     mem_cgroup_below_min
+>       mem_cgroup_supports_protection
+>     mem_cgroup_below_low
+>       mem_cgroup_supports_protection
+> 
+> I am not sure it worthwhile to take it out.
+> 
+>   shrink_node_memcgs
+>     mem_cgroup_supports_protection
+>       mem_cgroup_below_min
+>       mem_cgroup_below_low
+> 
+> Look forward your opinion.
 
-write() syscall is used to write the command into memory.reclaim,
-which should return either the number of command bytes written or -1
-(errno is set to indicate the actual error).  I think we should not
-return the number of bytes reclaimed through write().  A new
-sys_reclaim() is better in this regard because we can define its
-return value, though it would need a cgroup argument, which is not
-commonly defined for syscalls.
+I guess you refer to mem_cgroup_is_root check in mem_cgroup_supports_protection,
+right?
+
+You are right that the check is not really required because e{min,low}
+should always stay at 0 for the root memcg AFAICS. On the other hand the
+check is not in any hot path and it really adds clarity here because
+protection is not really supported on the root memcg. So I am not this
+is an overall win.
+-- 
+Michal Hocko
+SUSE Labs
