@@ -2,82 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAE94F1D18
-	for <lists+cgroups@lfdr.de>; Mon,  4 Apr 2022 23:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F1F4F2125
+	for <lists+cgroups@lfdr.de>; Tue,  5 Apr 2022 06:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240599AbiDDVaF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Mon, 4 Apr 2022 17:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
+        id S230246AbiDECyu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Apr 2022 22:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380277AbiDDT1L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Apr 2022 15:27:11 -0400
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F733B037
-        for <cgroups@vger.kernel.org>; Mon,  4 Apr 2022 12:25:15 -0700 (PDT)
-Received: by mail-io1-f69.google.com with SMTP id f7-20020a056602088700b00645ebbe277cso6912749ioz.22
-        for <cgroups@vger.kernel.org>; Mon, 04 Apr 2022 12:25:15 -0700 (PDT)
+        with ESMTP id S230213AbiDECyl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Apr 2022 22:54:41 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBF52957E5
+        for <cgroups@vger.kernel.org>; Mon,  4 Apr 2022 19:22:21 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id f18so8192491edc.5
+        for <cgroups@vger.kernel.org>; Mon, 04 Apr 2022 19:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PGMcc6BBrVtiS+i2Ug0VtK3wbbeBQEHvMN1RCK8rtJM=;
+        b=T7b/kFnop+W+o3vMn+4faNMaH/6FVivfWcDvLooM6SXo3IuYPc5Pc/iLnyOFOYM4Lx
+         +PEnWnwS+79f6ahrGXwHJKWetACHMgs7G8t1cyqZ/8gcnVcaAmosyjvJMWlkARoO3RmJ
+         AZzav9BHLYzjA2Y//zznKm9QPwReL4zr+QJcHW1TNKytJQfT/NVLXQ2Tcmumf69mJ0vk
+         MssrfEYgxZ2RJN81lAy3kL3NgqjHh9yzfbCWWLeIznHl8O3kh/X4EH2kRL6VK4TcYF9r
+         CUsz2CB0x9Zg/1pD4IlLrggiu8K3gzEViK9SKYb1Z86W1Gqv7qXkzGy1TvdQIrf8gxkB
+         ULcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:content-transfer-encoding;
-        bh=kmWFJFj34/4zFHaivaN7YD9rve+XHxpxZd65FGGyjrQ=;
-        b=cHn0+Rw0xKwH+QjGnvwMUqQ/Y4AyYAM/OeV2KaByxxCoXcIvygIv57R5qrcaW6yeKb
-         M/xFrzaYvlU1we6+PAZT+CnqcvUDkrcIgWC4U7Gs1U9W81jPI3+Vi6P55jvAUYqZYKfq
-         /xABqrSdR/EgnJnTztUkRtIwRRF2ulmIAnNjhh0HDqHzmQwcR4Dtqi/2UnWnHPvTIQof
-         G0zTsvZ3vttfe+q6q6vXTwPgKKFKsQf79vWdCaMnZzroO12ehxLL5KX6Cap+QqvrIWbG
-         Va6imC8PX7JPArc/IYa8ININfEhqAyWhc23wzZkrEHvAhuoqadmLSksSUEtwyLZeChi/
-         UKnQ==
-X-Gm-Message-State: AOAM532m/Am9m8WOP2AtMxt26C12PvWAWLSnauM14yizl60VuWTG1S3A
-        wniytbuS2HLkMlH66yie/hAHwWrjCBbVUlRyAIl+aGrExfhy
-X-Google-Smtp-Source: ABdhPJwu0I+tkB37kU2Qzn6gi2n1zL0hp4u1Zi1zgPa4Zh1RdJP9BTUrQKrvjyQW2pqi/qB2v0WNoXpnUj34T7J5r8Tmxqtwtswv
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PGMcc6BBrVtiS+i2Ug0VtK3wbbeBQEHvMN1RCK8rtJM=;
+        b=rG+lnpGuHXk7BOYYZNBb0JoKBWvtQldYikgHrirDtVOy0C5hMqtwZixC1dbuCiuJ/E
+         KRSQYokpPphrSsysHF30z501ayMJD2OkOEy4PB7veHQRusppl1sfF9peNtIZmYkJ4QNz
+         nrmeDnlPUDdNORVTWFvHduljca8mhXJclO/sfIozR1h1pmfLtob+awLXnJ6BeD8eGuy/
+         SKGgU03NMGtPOFo+o08HwoeqWjaqUpFx5bOx+n+how8w2Szr0BTqp92fJ0PGIXB0cXIY
+         +Qq1LvY07rAef70KPW1FQd1SCsh0LVlmGPDJNsNgkpPGKHzORvMO7GdTJgFAboagDFFs
+         w03g==
+X-Gm-Message-State: AOAM530OI5JQieK1AK2CsNXYLlz7BwNzdxXSu0PmwH89KY0A53bqfOZl
+        VipVSqewovA5m361yN3VPNs=
+X-Google-Smtp-Source: ABdhPJyo/xdpPRsyGVYrEqRBQBwfDNp5B9V9lJiT+LnoQtMPKnQy/GcJWhyFgpqLAXDHzuyD/XR6/Q==
+X-Received: by 2002:a05:6402:22d8:b0:41c:c3cd:478e with SMTP id dm24-20020a05640222d800b0041cc3cd478emr1228107edb.34.1649125339797;
+        Mon, 04 Apr 2022 19:22:19 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id c1-20020a50cf01000000b0041cb7e02a5csm4085867edk.87.2022.04.04.19.22.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Apr 2022 19:22:19 -0700 (PDT)
+Date:   Tue, 5 Apr 2022 02:22:18 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Wei Yang <richard.weiyang@gmail.com>, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] mm/memcg: non-hierarchical mode is deprecated
+Message-ID: <20220405022218.53idmvm2ha2tzmy2@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20220403020833.26164-1-richard.weiyang@gmail.com>
+ <Ykq6Gbt5MX9GCiKM@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa7:b0:2ca:52e8:b500 with SMTP id
- l7-20020a056e021aa700b002ca52e8b500mr676538ilv.34.1649100314393; Mon, 04 Apr
- 2022 12:25:14 -0700 (PDT)
-Date:   Mon, 04 Apr 2022 12:25:14 -0700
-In-Reply-To: <000000000000264b2a05d44bca80@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000070561105dbd91673@google.com>
-Subject: Re: [syzbot] WARNING in cpuset_write_resmask
-From:   syzbot <syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com>
-To:     cgroups@vger.kernel.org, changbin.du@intel.com,
-        christian.brauner@ubuntu.com, davem@davemloft.net,
-        edumazet@google.com, hannes@cmpxchg.org, hkallweit1@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, longman@redhat.com, mkoutny@suse.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yajun.deng@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ykq6Gbt5MX9GCiKM@dhcp22.suse.cz>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Mon, Apr 04, 2022 at 11:27:53AM +0200, Michal Hocko wrote:
+>On Sun 03-04-22 02:08:33, Wei Yang wrote:
+>> After commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical
+>> mode"), we won't have a NULL parent except root_mem_cgroup. And this
+>> case is handled when (memcg == root).
+>> 
+>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+>> CC: Roman Gushchin <roman.gushchin@linux.dev>
+>> CC: Johannes Weiner <hannes@cmpxchg.org>
+>
+>Acked-by: Michal Hocko <mhocko@suse.com>
+>Thanks!
+>
 
-commit d068eebbd4822b6c14a7ea375dfe53ca5c69c776
-Author: Michal Koutný <mkoutny@suse.com>
-Date:   Fri Dec 17 15:48:54 2021 +0000
+Thanks for the ack. When reading the code, I found one redundant check in
+shrink_node_memcgs().
 
-    cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
+  shrink_node_memcgs
+    mem_cgroup_below_min
+      mem_cgroup_supports_protection
+    mem_cgroup_below_low
+      mem_cgroup_supports_protection
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=142f17f7700000
-start commit:   e5313968c41b Merge branch 'Split bpf_sk_lookup remote_port..
-git tree:       bpf-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c40b67275bfe2a58
-dashboard link: https://syzkaller.appspot.com/bug?extid=568dc81cd20b72d4a49f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bb97ce700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12062c8e700000
+I am not sure it worthwhile to take it out.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+  shrink_node_memcgs
+    mem_cgroup_supports_protection
+      mem_cgroup_below_min
+      mem_cgroup_below_low
 
-#syz fix: cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
+Look forward your opinion.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Wei Yang
+Help you, Help me
