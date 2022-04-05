@@ -2,103 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3355C4F4499
-	for <lists+cgroups@lfdr.de>; Wed,  6 Apr 2022 00:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BE84F52AE
+	for <lists+cgroups@lfdr.de>; Wed,  6 Apr 2022 05:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240158AbiDEOKE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Apr 2022 10:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46420 "EHLO
+        id S235781AbiDFC5b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Apr 2022 22:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352628AbiDENHD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 09:07:03 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1E48300A;
-        Tue,  5 Apr 2022 05:08:24 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 34FB4210EF;
-        Tue,  5 Apr 2022 12:08:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649160503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VYOi21VBdrnEfgCIXqKolf+TBqlw4Pd+D8zmojzTZKg=;
-        b=IzlVwj1UBmMOQmHd3Zp7EfAXZmHByCFtW1hb2ofyTRxldgM0qGnGQd6hQt8jCSab/6KcQa
-        DvpaN+BbZ0cPKEbNjPfbufOi006FMFq43iNjeXx+OsbgAgJLj9TyIVm1NfWnLhJysJp1ob
-        x43XW5Auch1IHBKqWUSgRQ4Q6Do+kNI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 81C8CA3B89;
-        Tue,  5 Apr 2022 12:08:22 +0000 (UTC)
-Date:   Tue, 5 Apr 2022 14:08:21 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        Ke Wang <ke.wang@unisoc.com>
-Subject: Re: [RFC PATCH] cgroup: introduce dynamic protection for memcg
-Message-ID: <YkwxNaJIg6ptJOYT@dhcp22.suse.cz>
-References: <CAGWkznF7cSyPU0ceYwH6zweJzf-X1bQnS6AJ2-J+WEL0u8jzng@mail.gmail.com>
- <CAJuCfpHneDZMXO_MmQDPA+igAOdAPRUChiq+zftFXGfDzPHNhQ@mail.gmail.com>
- <CAGWkznFTQCm0cusVxA_55fu2WfT-w2coVHrT=JA1D_9_2728mQ@mail.gmail.com>
- <YkqxpEW4m6iU3zMq@dhcp22.suse.cz>
- <CAGWkznG4L3w=9bpZp8TjyWHmqFyZQk-3m4xCZ96zhHCLPawBgQ@mail.gmail.com>
- <CAGWkznGMRohE2_at4Qh8KbwSqNmNqOAG2N1EM+7uE9wKqzRm0A@mail.gmail.com>
- <Ykq7KUleuAg5QnNU@dhcp22.suse.cz>
- <CAGWkznGbd5TOTHZE8uUhak3SnHqEWx_9QCJVtUFUSg9rk3xYEQ@mail.gmail.com>
- <Ykrkx4JML4c81gBV@dhcp22.suse.cz>
- <CAGWkznEaEavCz9GeiYuTqsox2qZK43iQKevt8njkzaHv6KiW-A@mail.gmail.com>
+        with ESMTP id S1452913AbiDEPzm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Apr 2022 11:55:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CB6E29DC;
+        Tue,  5 Apr 2022 07:58:07 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id m16so409786plx.3;
+        Tue, 05 Apr 2022 07:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=iE/Y9WscNLHu6w2KEIZCPXwIElVoVHM0BzES9hjgoSw=;
+        b=phlbuxVtZrq+ny/cBitrnv1EdI2+ifY+dU7QMLrWR4vTUYhhs5DmvkW8pGnjEt00dY
+         aeztRgO/rJiLIbsJOMkp2X5p+zBpqygo3MmguP1fKSF3+Lf8WmwLmYa414Z6tbkq7PtB
+         ZlM8l2daOyMhZ2URU1jsuj+cAFosdKMB1hJVwUE82ZFfIxAwOpVLrf4SjgSs9s9MuxmX
+         RLSMFtHho+fNSTZvCXpwoVQPSjCeD+aUdFQhTpIpZuUCgFohEgx7bCH/+TM6bTLv0uvp
+         1FIYjib+PWttI6jjFrcNZVQV5hky9BB97FMuLw/RLCV3Wb1dJv9c8ovyUbgUvR0hSBfX
+         5MtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=iE/Y9WscNLHu6w2KEIZCPXwIElVoVHM0BzES9hjgoSw=;
+        b=4Y8cYfRBm59eJPxQZU/tfjiJh2iYvkFpS2w6Cw3TAkdNcCX3u2LyUo8GMWZH//+OjG
+         cLXm69gDW4ukUPmtV0q2ivaUkRyYS9m9doGmGeiz1AVNqZX+/Q26DJZZ2EgmmYsCiz0k
+         oR7b3xh0wRbVgeziLHhj14Sn38b2G5N9NX+GD80/KAwh6dTMesB13cAeHTsZLVs80sBD
+         gnhpf3ZMB8uVT7fXozx1w/CFPj/L8078T8gSwsf2pT3B/aekQuFjYMaC+sv08R6at7ll
+         UdhbQ1uBFcUfMWwE8PXXpZhWEHOhtMAXB8s/o2Mweyu84JALipPluLf0R99rlDUSedmX
+         d7dg==
+X-Gm-Message-State: AOAM531EBN1gGfLY4w/4kxFsWIlTw99VuukBrtP/UG1HjS/FqVmClVRL
+        l6gcNM6UWywcb7Chrcj3pdQ=
+X-Google-Smtp-Source: ABdhPJzFpTmAHMEddWr7RNGzwiIMRPlsV5EWgeWLor8A7Szuf1ubXoh5DmZkW0YKEv0eiO9ET3XgJw==
+X-Received: by 2002:a17:90b:1e0e:b0:1c7:5b03:1d8b with SMTP id pg14-20020a17090b1e0e00b001c75b031d8bmr4558131pjb.121.1649170687106;
+        Tue, 05 Apr 2022 07:58:07 -0700 (PDT)
+Received: from [192.168.0.115] ([113.173.105.8])
+        by smtp.gmail.com with ESMTPSA id p10-20020a056a000b4a00b004fd9a6a2a39sm16660710pfo.184.2022.04.05.07.58.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Apr 2022 07:58:06 -0700 (PDT)
+Message-ID: <bdd4104d-390e-74c7-0de1-a275044831a5@gmail.com>
+Date:   Tue, 5 Apr 2022 21:58:01 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznEaEavCz9GeiYuTqsox2qZK43iQKevt8njkzaHv6KiW-A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2] cgroup: Kill the parent controller when its last child
+ is killed
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20220404142535.145975-1-minhquangbui99@gmail.com>
+ <Ykss1N/VYX7femqw@slm.duckdns.org> <20220405091158.GA13806@blackbody.suse.cz>
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+In-Reply-To: <20220405091158.GA13806@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 04-04-22 21:14:40, Zhaoyang Huang wrote:
-[...]
-> Please be noticed that this patch DOES protect the memcg when external
-> pressure is 1GB as fixed low does.
+On 4/5/22 16:11, Michal Koutný wrote:
+> On Mon, Apr 04, 2022 at 07:37:24AM -1000, Tejun Heo <tj@kernel.org> wrote:
+>> And the suggested behavior doesn't make much sense to me. It doesn't
+>> actually solve the underlying problem but instead always make css
+>> destructions recursive which can lead to surprises for normal use cases.
+> 
+> I also don't like the nested special-case use percpu_ref_kill().
 
-This is getting more and more confusing (at least to me). Could you
-describe the behavior of the reclaim for the following setups/situations?
+After thinking more carefully, I agree with your points. The recursive 
+css destruction only does not fixup the previous parents' metadata 
+correctly and it is not a desirable behavior too.
 
-a) mostly reclaiming a clean page cache - via kswapd
-b) same as above but the direct reclaim is necessary but very
-   lightweight
-c) direct reclaim makes fwd progress but not enough to satisfy the
-   allocation request (so the reclaim has to be retried)
-d) direct reclaim not making progress and low limit protection is
-   ignored.
+> I looked at this and my supposed solution turned out to be a revert of
+> commit 3c606d35fe97 ("cgroup: prevent mount hang due to memory
+> controller lifetime"). So at the unmount time it's necessary to distinguish
+> children that are in the process of removal from children than are online or
+> pinned indefinitely.
+> 
+> What about:
+> 
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -2205,11 +2205,14 @@ static void cgroup_kill_sb(struct super_block *sb)
+>          struct cgroup_root *root = cgroup_root_from_kf(kf_root);
+> 
+>          /*
+> -        * If @root doesn't have any children, start killing it.
+> +        * If @root doesn't have any children held by residual state (e.g.
+> +        * memory controller), start killing it, flush workqueue to filter out
+> +        * transiently offlined children.
+>           * This prevents new mounts by disabling percpu_ref_tryget_live().
+>           *
+>           * And don't kill the default root.
+>           */
+> +       flush_workqueue(cgroup_destroy_wq);
+>          if (list_empty(&root->cgrp.self.children) && root != &cgrp_dfl_root &&
+>              !percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
+>                  cgroup_bpf_offline(&root->cgrp);
+> 
+> (I suspect there's technically still possible a race between concurrent unmount
+> and the last rmdir but the flush on kill_sb path should be affordable and it
+> prevents unnecessarily conserved cgroup roots.)
 
-Say we have several memcgs and only some have low memory protection
-configured. What is the user observable state of the protected group and
-when and how much the protection can be updated?
+Your proposed solution looks good to me. As with my example the flush 
+will guarantee the rmdir and its deferred work has been executed before 
+cleaning up in umount path.
 
-I think it would be also helpful to describe the high level semantic of
-this feature.
+But what do you think about
 
-> Besides, how does the admin decide
-> the exact number of low/min if it expand from small to even xGB in a
-> quick changing scenario?
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index f01ff231a484..5578ee76e789 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2215,6 +2215,7 @@ static void cgroup_kill_sb(struct super_block *sb)
+                 cgroup_bpf_offline(&root->cgrp);
+                 percpu_ref_kill(&root->cgrp.self.refcnt);
+         }
++       root->cgrp.flags |= CGRP_UMOUNT;
+         cgroup_put(&root->cgrp);
+         kernfs_kill_sb(sb);
+  }
+@@ -5152,12 +5153,28 @@ static void css_release_work_fn(struct 
+work_struct *work)
+                 container_of(work, struct cgroup_subsys_state, 
+destroy_work);
+         struct cgroup_subsys *ss = css->ss;
+         struct cgroup *cgrp = css->cgroup;
++       struct cgroup *parent = cgroup_parent(cgrp);
 
-This is not really related, is it? There are different ways to tune for
-the protection.
+         mutex_lock(&cgroup_mutex);
 
-[...]
--- 
-Michal Hocko
-SUSE Labs
+         css->flags |= CSS_RELEASED;
+         list_del_rcu(&css->sibling);
+
++       /*
++        * If parent doesn't have any children, start killing it.
++        * And don't kill the default root.
++        */
++       if (parent && list_empty(&parent->self.children) &&
++           parent->flags & CGRP_UMOUNT &&
++           parent != &cgrp_dfl_root.cgrp &&
++           !percpu_ref_is_dying(&parent->self.refcnt)) {
++#ifdef CONFIG_CGROUP_BPF
++               if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
++                       cgroup_bpf_offline(parent);
++#endif
++               percpu_ref_kill(&parent->self.refcnt);
++       }
++
+         if (ss) {
+                 /* css release path */
+                 if (!list_empty(&css->rstat_css_node)) {
+
+The idea is to set a flag in the umount path, in the rmdir it will 
+destroy the css in case its direct parent is umounted, no recursive 
+here. This is just an incomplete example, we may need to reset that flag 
+when remounting.
+
+Thanks,
+Quang Minh.
