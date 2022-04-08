@@ -2,57 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962CC4F8EB6
-	for <lists+cgroups@lfdr.de>; Fri,  8 Apr 2022 08:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D8F4F8DCB
+	for <lists+cgroups@lfdr.de>; Fri,  8 Apr 2022 08:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbiDHE77 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Apr 2022 00:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
+        id S234407AbiDHFAA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 Apr 2022 01:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234400AbiDHE7y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Apr 2022 00:59:54 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5486A7B566
-        for <cgroups@vger.kernel.org>; Thu,  7 Apr 2022 21:57:50 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id q7-20020a17090a7a8700b001ca823ceb16so4117117pjf.3
-        for <cgroups@vger.kernel.org>; Thu, 07 Apr 2022 21:57:50 -0700 (PDT)
+        with ESMTP id S234409AbiDHE74 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Apr 2022 00:59:56 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A9929C91
+        for <cgroups@vger.kernel.org>; Thu,  7 Apr 2022 21:57:52 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id z18-20020a17090ab11200b001ca9f560e91so4097758pjq.8
+        for <cgroups@vger.kernel.org>; Thu, 07 Apr 2022 21:57:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=gA8fl4VBLSIuPoY/kPZyFR8DNphzGSE/geYX3/dgg00=;
-        b=Pcpd2Rbrapa7M7Za73CnE1bEFC5wI7dwEloVVr2sNZaIVqKCy5cB4naL+d9PVU9Kq9
-         o27VPMESu81Lm/IKCtpsqDvuaOrAbNZ4Z3JlkNVWBzI0rgkIQUh8AgXWl+jQU788ZJmX
-         l6A6jyeZdEjndJ2j2ErDuXmLudkDIPIY2lKK43CSnl2C6npVfgu2m4i619MVJM7BRrwk
-         AY/5jLUI62lflwZYHGLXDAiENTVnD5dnA32uP1ue3g0CVNMJg6oMYm2jAGzmng8hs1ih
-         0Riamlr+TJ4j2W4TmwXqsgJmdKZCloPwc1OqNvr5som55EVUiCPihm0xB908z/cfbhad
-         eBpQ==
+        bh=3pTs/VmZPxq5q5wYSF5wNcPHcga+GtsVQl1Ey1cMTYA=;
+        b=rvhnsrqMv4sgVKJh1vywJDwJ5U1YIrm4qeZ+xvYMN5iNrp3UBtoPAwLYGST3GoaiMm
+         WHOaYmhgN89ZSkqq/rrlyrpsoAk9snev93OB3iD6xwnbay5f9TY/LZvY0DCAezc6XBkq
+         xL4SfAAQ1Asd+mUQruSX/RHQfET7mMtUa5hZPgL9lbYKPNV6DK0EbhmuK9i82PR/5pAt
+         /NhixDWU/pG6CKN2oFTyr8dDewwdERP0qYAzylJbweyHFeoMsu6trfoKBuDfsepu7Rek
+         a8aShEUZ343hISjyHiMcMdIBoVEqcQ1IoADLU9STJVAAr7sxoIvQ8281ix2aOcgAz9HZ
+         /kVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=gA8fl4VBLSIuPoY/kPZyFR8DNphzGSE/geYX3/dgg00=;
-        b=u2gVGBeVlQPD27gLOiuqQh2BpNi9aTmAy8V+nnUNO8DBMTMBgAtZbXBNUR664v0JzA
-         BqSiZ7WtRLNN01uZJVZ+W8jUctIGibII+HpdC4KkbXdPF9KM7IuU1fxLLH9sVSR6Khji
-         TmOioYXDb/m+O7xGLiAOd/btdRAlYEK7uB6A+YaA92dlu69OndGa6wNn8MDNMCyGTbWA
-         AmiddI9uKDP44e9zaTX4PLxT66WIEKABggC2kcMjgwr31OrtY2cgW02uMlghVJwBFye/
-         JkrFU0spcq6mIHUNzuwoLIKXTl07yUJru0JP7LSWaYRyO0KqUfVnEH5PZcmCDZomaSnJ
-         gK5Q==
-X-Gm-Message-State: AOAM532iNCeZOUB0lo5g41NRWvuQ2/4e98ZFo7sfaFCEezvkKuOnK1TJ
-        ja5T3m5HMBPOCwfop4XummQ4ztcJrKVDZkxp
-X-Google-Smtp-Source: ABdhPJwveDjBEYrVRy38w4adlQ9PbmM5YsL9jL+O+3mQ7Gci02SY9egKz08a0oG2xCNWEbJ8Q67ORfFnzPtKwKxT
+        bh=3pTs/VmZPxq5q5wYSF5wNcPHcga+GtsVQl1Ey1cMTYA=;
+        b=WBm9rIINpUhGowBp1uN+M4ehIFJ+w7mAIskq6eUxs95jhNSQGeUHhjFIklFsouYHEh
+         Y3gn9NjamEFn7CUJn1h9EDvFPr6DGx32wTtKwMuDCcS0UjeJbJPtqHKaKEVxvuZlNUyj
+         aXIMtASY20jiOFKxrWcwS1a6SwZZDVf1cnIGFG8DsuzPahzydn+plikQYnJd0009a3jL
+         o9r2ORA66V0odcKQHLarMbfFJPV1vm17xCYR+nRs+dUO2CQkkAd3AuyrBBzJB9LC3z8y
+         JzGaHL975L8SYDEXZRm7NdOrH9TfthiHvVZjG1Mre7ODOFnHPkqxFZxu8lmjudgejFGv
+         sqjQ==
+X-Gm-Message-State: AOAM531+xTBL0t47k3smcPUWOvEIN8hiLsfuygnxvehF5khD6uLPmxbk
+        NbpKxrotcGyqoX6IEHGXTgQmuBFZooLJDlfx
+X-Google-Smtp-Source: ABdhPJwrP7dagj8dnlFgC14HxELMunGPx+PFv2E1bWL6b6NRaIqpjG704ThFr7Q8pI5XpMISvNAO5NCYkQKyivj5
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:902:6bc4:b0:154:6b3d:a720 with SMTP
- id m4-20020a1709026bc400b001546b3da720mr17230778plt.104.1649393870424; Thu,
- 07 Apr 2022 21:57:50 -0700 (PDT)
-Date:   Fri,  8 Apr 2022 04:57:42 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:903:22c4:b0:154:8399:5285 with SMTP
+ id y4-20020a17090322c400b0015483995285mr17325689plg.56.1649393871741; Thu, 07
+ Apr 2022 21:57:51 -0700 (PDT)
+Date:   Fri,  8 Apr 2022 04:57:43 +0000
 In-Reply-To: <20220408045743.1432968-1-yosryahmed@google.com>
-Message-Id: <20220408045743.1432968-4-yosryahmed@google.com>
+Message-Id: <20220408045743.1432968-5-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20220408045743.1432968-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
-Subject: [PATCH v3 3/4] selftests: cgroup: fix alloc_anon_noexit() instantly
- freeing memory
+Subject: [PATCH v3 4/4] selftests: cgroup: add a selftest for memory.reclaim
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -76,49 +75,124 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, alloc_anon_noexit() calls alloc_anon() which instantly frees
-the allocated memory. alloc_anon_noexit() is usually used with
-cg_run_nowait() to run a process in the background that allocates
-memory. It makes sense for the background process to keep the memory
-allocated and not instantly free it (otherwise there is no point of
-running it in the background).
+Add a new test for memory.reclaim that verifies that the interface
+correctly reclaims memory as intended, from both anon and file pages.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- tools/testing/selftests/cgroup/test_memcontrol.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ .../selftests/cgroup/test_memcontrol.c        | 85 +++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
 diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 36ccf2322e21..f2ffb3a30194 100644
+index f2ffb3a30194..75ae441c01c3 100644
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c
 +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -211,13 +211,17 @@ static int alloc_pagecache_50M_noexit(const char *cgroup, void *arg)
- static int alloc_anon_noexit(const char *cgroup, void *arg)
- {
- 	int ppid = getppid();
-+	size_t size = (unsigned long)arg;
-+	char *buf, *ptr;
- 
--	if (alloc_anon(cgroup, arg))
--		return -1;
-+	buf = malloc(size);
-+	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
-+		*ptr = 0;
- 
- 	while (getppid() == ppid)
- 		sleep(1);
- 
-+	free(buf);
- 	return 0;
+@@ -760,6 +760,90 @@ static int test_memcg_max(const char *root)
+ 	return ret;
  }
  
++/*
++ * This test checks that memory.reclaim reclaims the given
++ * amount of memory (from both anon and file).
++ */
++static int test_memcg_reclaim(const char *root)
++{
++	int ret = KSFT_FAIL, fd;
++	char *memcg;
++	long current, to_reclaim;
++	char buf[64];
++
++	memcg = cg_name(root, "memcg_test");
++	if (!memcg)
++		goto cleanup;
++
++	if (cg_create(memcg))
++		goto cleanup;
++
++	current = cg_read_long(memcg, "memory.current");
++	if (current != 0)
++		goto cleanup;
++
++	cg_run_nowait(memcg, alloc_anon_noexit, (void *) MB(50));
++	sleep(1);
++
++	fd = get_temp_fd();
++	if (fd < 0)
++		goto cleanup;
++
++	cg_run_nowait(memcg, alloc_pagecache_50M_noexit, (void *)(long)fd);
++	sleep(1);
++
++	current = cg_read_long(memcg, "memory.current");
++	if (!values_close(current, MB(100), 10))
++		goto cleanup;
++
++	/*
++	 * Reclaim until current reaches 30M, make sure to reclaim over 50M to
++	 * hit both anon and file.
++	 */
++	while (true) {
++		int err;
++
++		current = cg_read_long(memcg, "memory.current");
++		to_reclaim = current - MB(30);
++
++		/*
++		 * We only keep looping if we get EAGAIN, which means we could
++		 * not reclaim the full amount.
++		 */
++		if (to_reclaim <= 0)
++			goto cleanup;
++
++
++		snprintf(buf, sizeof(buf), "%ld", to_reclaim);
++		err = cg_write(memcg, "memory.reclaim", buf);
++		if (!err) {
++			/*
++			 * If writing succeeds, then the written amount should have been
++			 * fully reclaimed (and maybe more).
++			 */
++			current = cg_read_long(memcg, "memory.current");
++			if (!values_close(current, MB(30), 3) && current > MB(30))
++				goto cleanup;
++			break;
++		}
++
++		/* The kernel could not reclaim the full amount, try again. */
++		if (err == EAGAIN)
++			continue;
++
++		/* We got an unexpected error. */
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++cleanup:
++	cg_destroy(memcg);
++	free(memcg);
++	close(fd);
++
++	return ret;
++}
++
+ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
+ {
+ 	long mem_max = (long)arg;
+@@ -1263,6 +1347,7 @@ struct memcg_test {
+ 	T(test_memcg_high),
+ 	T(test_memcg_high_sync),
+ 	T(test_memcg_max),
++	T(test_memcg_reclaim),
+ 	T(test_memcg_oom_events),
+ 	T(test_memcg_swap_max),
+ 	T(test_memcg_sock),
 -- 
 2.35.1.1178.g4f1659d476-goog
 
