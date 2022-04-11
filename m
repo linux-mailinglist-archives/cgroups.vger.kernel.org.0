@@ -2,63 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A38DB4FA57A
-	for <lists+cgroups@lfdr.de>; Sat,  9 Apr 2022 08:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2307C4FB482
+	for <lists+cgroups@lfdr.de>; Mon, 11 Apr 2022 09:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240193AbiDIGqI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 9 Apr 2022 02:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S245277AbiDKHWz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Apr 2022 03:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240156AbiDIGqG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 9 Apr 2022 02:46:06 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A17B6D31
-        for <cgroups@vger.kernel.org>; Fri,  8 Apr 2022 23:44:00 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 32so7509795pgl.4
-        for <cgroups@vger.kernel.org>; Fri, 08 Apr 2022 23:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4KIbEhpDOtCyioS8BZF5p0mGW/6SLKhNyk9CSQ+cWmo=;
-        b=mJomCgJeV+RXmlPTrKz6qrQhrHm7UDKRrcrKS4fB3ekDBuMvYloc6N3zmoewCRpve5
-         5wL2KDqW8Z+tm6tNzomwdJaRht0Ve91sWusE4dVKDHUDO7qYsjj+FJxjENUtyF7aeBAn
-         dlxb86l3upJFsQhUVQzQHMwAnzbOq3hpu68G8h/vPyJhHFbsDHrlvpzXBgmB8YrMsUU5
-         vEnxIy4If3++IMbF512A0INdexqm6swj5Y83/EA90VybgBNxHF6AGuIGFQIKy/ogAVrY
-         Fn7I8qbZ/6vMDoiFS2le7qfO1qviRbm+GcB25jK+buDGEz4Q8WoecYXCA5GlPJ+0QAlK
-         9Lcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4KIbEhpDOtCyioS8BZF5p0mGW/6SLKhNyk9CSQ+cWmo=;
-        b=tL11bqV/xcwmwDvUaMTJAExsB8Kyqg4EAc5UKU5RdCP5oX/8JMILsNpCLcSCUYKSVt
-         K5GbmXFlR8c4klbpaf+CmngCTdfFaBZCjLGuwLhKX8vsSvdd1aqkTwzHtAkGdORLXYLo
-         ve7Qttskb7b2Lh5QUXI/mV+k/YjZNpnfoiT8sFEd1ehTyrX+/ocZ+5r3kxOL2NH6EtJ5
-         LxgbwdQDvjImRanEnTLteOB11eJ83kgVpOLGvN6+gm6QFrrNtV7BDfHZWoeTnTUsgzXM
-         1ixWW9JxlNXJKHpQ3IIIDdos8IinD1GcXlJ5g2evgKbhz+DZnB1CXPgr+2/UadTltIr8
-         uoqA==
-X-Gm-Message-State: AOAM533N2DepXLymU45rjW/Qa6kVEMhUsxP4GX4h6ubyUDuMU7loUZ/a
-        2zy72r87k1xTxNIQ86voT3q2ngWzsrH4PYI5MOvCQQ==
-X-Google-Smtp-Source: ABdhPJxoI+Rt3FuHlytPnMV9pwghZ6eRumL6W/khQzhcnTwilPXXMAY9cLvkEbBH/0UBAvxjMbxqY66yaPmjd4OXrpc=
-X-Received: by 2002:a63:3e8d:0:b0:398:5222:3a3 with SMTP id
- l135-20020a633e8d000000b00398522203a3mr18742608pga.561.1649486639371; Fri, 08
- Apr 2022 23:43:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220408045743.1432968-1-yosryahmed@google.com>
- <20220408045743.1432968-3-yosryahmed@google.com> <CAJD7tkb6VJt=pfqnW11r6S7A0r2Vh85a3YZaVso-qyiCM06nDQ@mail.gmail.com>
- <YlDlCRSyR9xNW5dJ@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YlDlCRSyR9xNW5dJ@carbon.dhcp.thefacebook.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 8 Apr 2022 23:43:23 -0700
-Message-ID: <CAJD7tkbiLQ8XV89yKDzJ467A7+=xvRMPw3pYwt+0gSnbwqBtVA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] selftests: cgroup: return the errno of write() in
- cg_write() on failure
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        with ESMTP id S245325AbiDKHWu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Apr 2022 03:22:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B872F3AB;
+        Mon, 11 Apr 2022 00:20:36 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 239E11F38C;
+        Mon, 11 Apr 2022 07:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1649661635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EKQ22xGnCAfhZWYXu0EvGb4wthBpsfoBSJ1Jf+KqZ/U=;
+        b=ZyojcBVo92JmwvoAqRyuWeNWhRdm2bTVzL3tgs8ML4g9f+5OapIHmsoh8iSO3TZbUFORDW
+        l7lVqpJ+JmozjlZtoMfJjR4SyYzHmgOUP3TOxtkw2i10q7qGLIWBSnvnX/BajoavEbPNJp
+        v/KvnynxlBntXBl4aDgMwxDLnE8Fnlg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 68ECBA3B83;
+        Mon, 11 Apr 2022 07:20:34 +0000 (UTC)
+Date:   Mon, 11 Apr 2022 09:20:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         David Rientjes <rientjes@google.com>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -67,112 +46,58 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
         Chen Wandun <chenwandun@huawei.com>,
         Vaibhav Jain <vaibhav@linux.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] memcg: introduce per-memcg reclaim interface
+Message-ID: <YlPWvuK5pG/CapKv@dhcp22.suse.cz>
+References: <20220408045743.1432968-1-yosryahmed@google.com>
+ <20220408045743.1432968-2-yosryahmed@google.com>
+ <YlA754XNFAmWQcm6@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+ <YlBCeadBqbeVvALK@dhcp22.suse.cz>
+ <YlBM/HlPyPUZew5N@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YlBM/HlPyPUZew5N@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 6:44 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> On Fri, Apr 08, 2022 at 06:21:55PM -0700, Yosry Ahmed wrote:
-> > On Thu, Apr 7, 2022 at 9:57 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > >
-> > > Currently, cg_write() returns 0 on success and -1 on failure. Modify it
-> > > to return the errno of write() syscall when write() fails.
-> > >
-> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > ---
-> > >  tools/testing/selftests/cgroup/cgroup_util.c | 32 +++++++++++---------
-> > >  1 file changed, 17 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-> > > index dbaa7aabbb4a..3b6bb09985fa 100644
-> > > --- a/tools/testing/selftests/cgroup/cgroup_util.c
-> > > +++ b/tools/testing/selftests/cgroup/cgroup_util.c
-> > > @@ -38,23 +38,23 @@ static ssize_t read_text(const char *path, char *buf, size_t max_len)
-> > >         return len;
-> > >  }
-> > >
-> > > -static ssize_t write_text(const char *path, char *buf, ssize_t len)
-> > > +/*
-> > > + * Returns:
-> > > + *     success -> 0
-> > > + *     open() failure -> -1
-> > > + *     write() failure -> errno
-> > > + */
-> > > +static int write_text(const char *path, char *buf, ssize_t len)
-> > >  {
-> > > -       int fd;
-> > > +       int fd, ret;
-> > >
-> > >         fd = open(path, O_WRONLY | O_APPEND);
-> > >         if (fd < 0)
-> > >                 return fd;
-> > >
-> > > -       len = write(fd, buf, len);
-> > > -       if (len < 0) {
-> > > -               close(fd);
-> > > -               return len;
-> > > -       }
-> > > -
-> > > +       ret = write(fd, buf, len) < 0 ? errno : 0;
-> > >         close(fd);
-> > > -
-> > > -       return len;
-> > > +       return ret;
-> > >  }
-> > >
-> > >  char *cg_name(const char *root, const char *name)
-> > > @@ -177,17 +177,19 @@ long cg_read_lc(const char *cgroup, const char *control)
-> > >         return cnt;
-> > >  }
-> > >
-> > > +/*
-> > > + * Returns:
-> > > + *     success -> 0
-> > > + *     open() failure -> -1
-> > > + *     write() failure -> errno
-> > > + */
-> > >  int cg_write(const char *cgroup, const char *control, char *buf)
-> > >  {
-> > >         char path[PATH_MAX];
-> > >         ssize_t len = strlen(buf);
-> > >
-> > >         snprintf(path, sizeof(path), "%s/%s", cgroup, control);
-> > > -
-> > > -       if (write_text(path, buf, len) == len)
-> > > -               return 0;
-> > > -
-> > > -       return -1;
-> > > +       return write_text(path, buf, len);
-> > >  }
-> >
-> > I have changed this in v4 to a cleaner implementation that either
-> > returns 0 on success or -errno on failure. I also made sure to check
-> > that the full buffer was being written, and updated cg_read() as well
-> > for the interface to be consistent.
-> >
-> > Will send out once the discussion on patch 1 in v3 reaches a consensus.
->
-> Ok, sounds good, please feel free to add my
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> for the whole series. It looks really nice and ready for merging upstream to me.
->
-> Thanks!
+On Fri 08-04-22 10:55:56, Dan Schatzberg wrote:
+> On Fri, Apr 08, 2022 at 04:11:05PM +0200, Michal Hocko wrote:
+> > Regarding "max" as a possible input. I am not really sure to be honest.
+> > I can imagine that it could be legit to simply reclaim all the charges
+> > (e.g. before removing the memcg) which should be achieveable by
+> > reclaiming the reported consumption. Or what exactly should be the
+> > semantic?
+> 
+> Yeah, it just allows you to avoid reading memory.current to just
+> reclaim everything if you can specify "max"
 
-Thanks a lot for reviewing it! I would appreciate it if you still took
-a look at the v4 version of this patch when I send it (probably early
-next week) as it's significantly different and includes changes to
-cg_read() and read_text() as well.
+The same could be achieved by requesting a really high number (-1Ul)
+
+> - you're still protected
+> by nretries to eventually bail out.
+
+The number of retries is an implementation detail and nobody should
+really rely on that. Bail out on signal can be still used so yeah
+getting a large input or whatever alias of that should be just fine.
+
+> Mostly, though I just feel like
+> supporting "max" makes memory.reclaim semetric with a lot of the
+> cgroup memory control files which tend to support "max".
+
+max is used for limits now and this doesn't have a semantic of one.
+But I have to say I do not really feel strongly about this.
+
+-- 
+Michal Hocko
+SUSE Labs
