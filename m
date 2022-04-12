@@ -2,102 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2307C4FB482
-	for <lists+cgroups@lfdr.de>; Mon, 11 Apr 2022 09:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB7D4FE898
+	for <lists+cgroups@lfdr.de>; Tue, 12 Apr 2022 21:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245277AbiDKHWz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Apr 2022 03:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        id S1354078AbiDLT1z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Apr 2022 15:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245325AbiDKHWu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Apr 2022 03:22:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B872F3AB;
-        Mon, 11 Apr 2022 00:20:36 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 239E11F38C;
-        Mon, 11 Apr 2022 07:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649661635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKQ22xGnCAfhZWYXu0EvGb4wthBpsfoBSJ1Jf+KqZ/U=;
-        b=ZyojcBVo92JmwvoAqRyuWeNWhRdm2bTVzL3tgs8ML4g9f+5OapIHmsoh8iSO3TZbUFORDW
-        l7lVqpJ+JmozjlZtoMfJjR4SyYzHmgOUP3TOxtkw2i10q7qGLIWBSnvnX/BajoavEbPNJp
-        v/KvnynxlBntXBl4aDgMwxDLnE8Fnlg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 68ECBA3B83;
-        Mon, 11 Apr 2022 07:20:34 +0000 (UTC)
-Date:   Mon, 11 Apr 2022 09:20:30 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        with ESMTP id S1357836AbiDLT1o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Apr 2022 15:27:44 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8635526107
+        for <cgroups@vger.kernel.org>; Tue, 12 Apr 2022 12:25:25 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id a42so11809815pfx.7
+        for <cgroups@vger.kernel.org>; Tue, 12 Apr 2022 12:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYhX4cxvNPixKiX8/O3wLDCe+0alwiuzYnrIU9ZEA4g=;
+        b=WcXC5z9iBD0s8lqEIkWuMQZUWfBIEmGdOcTDJqsddJGTc3xoDzEDte6mLkWCIDPq6H
+         YHQuTi2jz+pLaZ8K0n3h+80UsslQCJcbZCL49vv/iIQRc4MzeoUTN57u4Pk6Dtk8H9Wc
+         KDCu2a04jyUl6dKyGyJfhQgPSJPUaOxmhiyGeDPKKJPcJHNUlNymuti54JQo6/NDczvO
+         vbVuQ9W77Cy/v2QPjgtsQEF4MpP2tX3f+bHSl/ir7fHiWkRxbpG2V2V744Rx+xNFpwjR
+         XZUkPMYcqusEKPz9Uy9mX9juzRrR5tQ+Q4qiBB8T1Gj6Sx2YQ1W9au99vcD3HFtSTAwh
+         8rqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mYhX4cxvNPixKiX8/O3wLDCe+0alwiuzYnrIU9ZEA4g=;
+        b=1zoLLi8H+zbblgD9Hl84bcscriORVwbHy/Gqb0dCZtNxLO627MbtPnnihCWwMwqIx2
+         WUsKKvENuHIfDC6CbfKaE1apBweN1h5OZDsBCrWepiDdeGHT2keoIQ10cDKFl34l/vNZ
+         HtEyxZdGVlh91SG8/62hUAqUSldoJlCkb02I5MTkhZIkGfyy+Q7EXi9CO8HBV8lM7he5
+         iO8mDKLcNecUnaTf/bxymcuMBy0028ar43O5qFmJ6esql5vRlljaFojacyobkVyqNk+H
+         1jevdh//SJufzdfI9kOJKE/oCzLe4U5BcjySlfMnfjIN3Jrb+Ygw9tPJGfPGRGwtUscy
+         cXuQ==
+X-Gm-Message-State: AOAM533jIncj9CFWmhbVdwwp8MiAebODMRQICChxQfCtkWIy/naoa/1e
+        tRYb/Tq/mLTRWanlCiVBWwGVFyBGOxPUq4+L
+X-Google-Smtp-Source: ABdhPJzeMv6SyUCfIBcUkGwkpHGFXVQVcRPNb1is3QYfwJwv0AwJdiiTP5oX9DldB+gEsO0E0yWlUQ==
+X-Received: by 2002:a05:6a00:15ca:b0:505:bf6f:2b48 with SMTP id o10-20020a056a0015ca00b00505bf6f2b48mr12169006pfu.64.1649791524446;
+        Tue, 12 Apr 2022 12:25:24 -0700 (PDT)
+Received: from localhost.localdomain ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm38925670pfc.78.2022.04.12.12.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Apr 2022 12:25:24 -0700 (PDT)
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     cgroups@vger.kernel.org
+Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
         Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] memcg: introduce per-memcg reclaim interface
-Message-ID: <YlPWvuK5pG/CapKv@dhcp22.suse.cz>
-References: <20220408045743.1432968-1-yosryahmed@google.com>
- <20220408045743.1432968-2-yosryahmed@google.com>
- <YlA754XNFAmWQcm6@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
- <YlBCeadBqbeVvALK@dhcp22.suse.cz>
- <YlBM/HlPyPUZew5N@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Subject: [PATCH] cgroup: don't queue css_release_work if one already pending
+Date:   Tue, 12 Apr 2022 12:24:59 -0700
+Message-Id: <20220412192459.227740-1-tadeusz.struk@linaro.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YlBM/HlPyPUZew5N@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 08-04-22 10:55:56, Dan Schatzberg wrote:
-> On Fri, Apr 08, 2022 at 04:11:05PM +0200, Michal Hocko wrote:
-> > Regarding "max" as a possible input. I am not really sure to be honest.
-> > I can imagine that it could be legit to simply reclaim all the charges
-> > (e.g. before removing the memcg) which should be achieveable by
-> > reclaiming the reported consumption. Or what exactly should be the
-> > semantic?
-> 
-> Yeah, it just allows you to avoid reading memory.current to just
-> reclaim everything if you can specify "max"
+Syzbot found a corrupted list bug scenario that can be triggered from
+cgroup css_create(). The reproduces writes to cgroup.subtree_control
+file, which invokes cgroup_apply_control_enable(), css_create(), and
+css_populate_dir(), which then randomly fails with a fault injected -ENOMEM.
+In such scenario the css_create() error path rcu enqueues css_free_rwork_fn
+work for an css->refcnt initialized with css_release() destructor,
+and there is a chance that the css_release() function will be invoked
+for a cgroup_subsys_state, for which a destroy_work has already been
+queued via css_create() error path. This causes a list_add corruption
+as can be seen in the syzkaller report [1].
+This can be avoided by adding a check to css_release() that checks
+if it has already been enqueued.
 
-The same could be achieved by requesting a really high number (-1Ul)
+[1] https://syzkaller.appspot.com/bug?id=e26e54d6eac9d9fb50b221ec3e4627b327465dbd
 
-> - you're still protected
-> by nretries to eventually bail out.
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: <cgroups@vger.kernel.org>
+Cc: <netdev@vger.kernel.org>
+Cc: <bpf@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
 
-The number of retries is an implementation detail and nobody should
-really rely on that. Bail out on signal can be still used so yeah
-getting a large input or whatever alias of that should be just fine.
+Reported-by: syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Fixes: 8f36aaec9c92 ("cgroup: Use rcu_work instead of explicit rcu and work item")
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+---
+ kernel/cgroup/cgroup.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> Mostly, though I just feel like
-> supporting "max" makes memory.reclaim semetric with a lot of the
-> cgroup memory control files which tend to support "max".
-
-max is used for limits now and this doesn't have a semantic of one.
-But I have to say I do not really feel strongly about this.
-
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index adb820e98f24..9ae2de29f8c9 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5210,8 +5210,11 @@ static void css_release(struct percpu_ref *ref)
+ 	struct cgroup_subsys_state *css =
+ 		container_of(ref, struct cgroup_subsys_state, refcnt);
+ 
+-	INIT_WORK(&css->destroy_work, css_release_work_fn);
+-	queue_work(cgroup_destroy_wq, &css->destroy_work);
++	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT,
++			      work_data_bits(&css->destroy_work))) {
++		INIT_WORK(&css->destroy_work, css_release_work_fn);
++		queue_work(cgroup_destroy_wq, &css->destroy_work);
++	}
+ }
+ 
+ static void init_and_link_css(struct cgroup_subsys_state *css,
 -- 
-Michal Hocko
-SUSE Labs
+2.35.1
