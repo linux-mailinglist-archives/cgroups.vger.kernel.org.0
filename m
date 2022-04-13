@@ -2,61 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9C94FF56C
-	for <lists+cgroups@lfdr.de>; Wed, 13 Apr 2022 13:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FB14FF57A
+	for <lists+cgroups@lfdr.de>; Wed, 13 Apr 2022 13:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbiDMLHz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Apr 2022 07:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
+        id S232206AbiDMLNt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Apr 2022 07:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbiDMLHs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Apr 2022 07:07:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A98D5883F;
-        Wed, 13 Apr 2022 04:05:27 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1A517210FD;
-        Wed, 13 Apr 2022 11:05:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1649847926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vuDXLs71XOBzrT2KJvxwCfIHfXPj0UmnTLYWZfHEDe0=;
-        b=JC5qRv5Cuo0x3WTN1cxGKr1vYp7BboeDeJum9hm2H607castvJ6ruwuxfyk+nV+PDxTE49
-        aP9BLfuxL6HzLSnWxOG0cjTxORuNZLCDCS5o5fy9Cii3HPQ+ecEkwf0M58ohuDUMDNAgBk
-        Vv9DjYTz5J0+estjzScgqLVkX792HgY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1649847926;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vuDXLs71XOBzrT2KJvxwCfIHfXPj0UmnTLYWZfHEDe0=;
-        b=vlys3+ra2hG6zozEb6xdmehkg362hPm1YLYRS7wG+WphtjzfIS+Qs/0fe/rcDQ7UEryH2j
-        8myhqy33qrVNHDDQ==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 00F6DA3B82;
-        Wed, 13 Apr 2022 11:05:26 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A41F2A0615; Wed, 13 Apr 2022 13:05:25 +0200 (CEST)
-Date:   Wed, 13 Apr 2022 13:05:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, paolo.valente@linaro.org,
-        jack@suse.cz, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH -next 05/11] block, bfq: count root group into
- 'num_groups_with_pending_reqs'
-Message-ID: <20220413110525.u7wi2ttk5lag6r4b@quack3.lan>
+        with ESMTP id S231514AbiDMLNt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Apr 2022 07:13:49 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F992315A;
+        Wed, 13 Apr 2022 04:11:27 -0700 (PDT)
+Received: from kwepemi100007.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kdfyx4VGnz1HBn8;
+        Wed, 13 Apr 2022 19:10:49 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100007.china.huawei.com (7.221.188.115) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 13 Apr 2022 19:11:25 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 13 Apr 2022 19:11:24 +0800
+Subject: Re: [PATCH -next 02/11] block, bfq: apply news apis where root group
+ is not expected
+To:     Jan Kara <jack@suse.cz>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
 References: <20220305091205.4188398-1-yukuai3@huawei.com>
- <20220305091205.4188398-6-yukuai3@huawei.com>
+ <20220305091205.4188398-3-yukuai3@huawei.com>
+ <20220413095044.uwxeqli2ytcdanem@quack3.lan>
+ <20220413105932.lzvlafeilinuqcw3@quack3.lan>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <7b99bbcb-9d65-387f-0c1e-4377a7beff58@huawei.com>
+Date:   Wed, 13 Apr 2022 19:11:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220305091205.4188398-6-yukuai3@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <20220413105932.lzvlafeilinuqcw3@quack3.lan>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,99 +58,76 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 05-03-22 17:11:59, Yu Kuai wrote:
-> Root group is not counted into 'num_groups_with_pending_reqs' because
-> 'entity->parent' is set to NULL for child entities, thus
-> for_each_entity() can't access root group.
-> 
-> This patch set root_group's entity to 'entity->parent' for child
-> entities, this way root_group will be counted because for_each_entity()
-> can access root_group in bfq_activate_requeue_entity(),
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  block/bfq-cgroup.c  | 6 +++---
->  block/bfq-iosched.h | 3 ++-
->  block/bfq-wf2q.c    | 5 +++++
->  3 files changed, 10 insertions(+), 4 deletions(-)
+ÔÚ 2022/04/13 18:59, Jan Kara Ð´µÀ:
+> On Wed 13-04-22 11:50:44, Jan Kara wrote:
+>> On Sat 05-03-22 17:11:56, Yu Kuai wrote:
+>>> 'entity->sched_data' is set to parent group's sched_data, thus it's NULL
+>>> for root group. And for_each_entity() is used widely to access
+>>> 'entity->sched_data', thus aplly news apis if root group is not
+>>                               ^^ apply
+>>
+Hi,
 
-I think you can remove bfqg->my_entity after this patch, can't you? Because
-effectively it's only purpose was so that you don't have to special-case
-children of root_group...
+Thanks for spotting this.
+>>> expected. Prepare to count root group into 'num_groups_with_pending_reqs'.
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>> ---
+>>>   block/bfq-iosched.c |  2 +-
+>>>   block/bfq-iosched.h | 22 ++++++++--------------
+>>>   block/bfq-wf2q.c    | 10 +++++-----
+>>>   3 files changed, 14 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>>> index 69ddf6b0f01d..3bc7a7686aad 100644
+>>> --- a/block/bfq-iosched.c
+>>> +++ b/block/bfq-iosched.c
+>>> @@ -4393,7 +4393,7 @@ void bfq_bfqq_expire(struct bfq_data *bfqd,
+>>>   	 * service with the same budget.
+>>>   	 */
+>>>   	entity = entity->parent;
+>>> -	for_each_entity(entity)
+>>> +	for_each_entity_not_root(entity)
+>>>   		entity->service = 0;
+>>>   }
+>>
+>> So why is it a problem to clear the service for root cgroup here?
 
-								Honza
+This is not a problem in theory, however 'entity->service' should always
+be 0 for root_group. Thus I think there is no need to do this.
 
+>>
+>>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+>>> index f8eb340381cf..c4cb935a615a 100644
+>>> --- a/block/bfq-wf2q.c
+>>> +++ b/block/bfq-wf2q.c
+>>> @@ -815,7 +815,7 @@ void bfq_bfqq_served(struct bfq_queue *bfqq, int served)
+>>>   		bfqq->service_from_wr += served;
+>>>   
+>>>   	bfqq->service_from_backlogged += served;
+>>> -	for_each_entity(entity) {
+>>> +	for_each_entity_not_root(entity) {
+>>>   		st = bfq_entity_service_tree(entity);
+>>
+>> Hum, right so how come this was not crashing? Because entity->sched_data is
+>> indeed NULL for bfqd->root_group->entity and so bfq_entity_service_tree()
+>> returned some bogus pointer? Similarly for the cases you are changing
+>> below?
 > 
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index 420eda2589c0..6cd65b5e790d 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -436,7 +436,7 @@ void bfq_init_entity(struct bfq_entity *entity, struct bfq_group *bfqg)
->  		 */
->  		bfqg_and_blkg_get(bfqg);
->  	}
-> -	entity->parent = bfqg->my_entity; /* NULL for root group */
-> +	entity->parent = &bfqg->entity;
->  	entity->sched_data = &bfqg->sched_data;
->  }
->  
-> @@ -581,7 +581,7 @@ static void bfq_group_set_parent(struct bfq_group *bfqg,
->  	struct bfq_entity *entity;
->  
->  	entity = &bfqg->entity;
-> -	entity->parent = parent->my_entity;
-> +	entity->parent = &parent->entity;
->  	entity->sched_data = &parent->sched_data;
->  }
->  
-> @@ -688,7 +688,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  	else if (bfqd->last_bfqq_created == bfqq)
->  		bfqd->last_bfqq_created = NULL;
->  
-> -	entity->parent = bfqg->my_entity;
-> +	entity->parent = &bfqg->entity;
->  	entity->sched_data = &bfqg->sched_data;
->  	/* pin down bfqg and its associated blkg  */
->  	bfqg_and_blkg_get(bfqg);
-> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> index ddd8eff5c272..4530ab8b42ac 100644
-> --- a/block/bfq-iosched.h
-> +++ b/block/bfq-iosched.h
-> @@ -1024,13 +1024,14 @@ extern struct blkcg_policy blkcg_policy_bfq;
->  /* - interface of the internal hierarchical B-WF2Q+ scheduler - */
->  
->  #ifdef CONFIG_BFQ_GROUP_IOSCHED
-> -/* stop at one of the child entities of the root group */
-> +/* stop at root group */
->  #define for_each_entity(entity)	\
->  	for (; entity ; entity = entity->parent)
->  
->  #define is_root_entity(entity) \
->  	(entity->sched_data == NULL)
->  
-> +/* stop at one of the child entities of the root group */
->  #define for_each_entity_not_root(entity) \
->  	for (; entity && !is_root_entity(entity); entity = entity->parent)
->  
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index 17f1d2c5b8dc..138a2950b841 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -1125,6 +1125,11 @@ static void bfq_activate_requeue_entity(struct bfq_entity *entity,
->  {
->  	for_each_entity(entity) {
->  		bfq_update_groups_with_pending_reqs(entity);
-> +
-> +		/* root group is not in service tree */
-> +		if (is_root_entity(entity))
-> +			break;
-> +
->  		__bfq_activate_requeue_entity(entity, non_blocking_wait_rq);
->  
->  		if (!bfq_update_next_in_service(entity->sched_data, entity,
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Oh, I see now. Because for_each_entity() currently does not iterate through
+> root cgroup because it has root_group->my_entity set to NULL and thus as a
+> result immediate children of root_group will have their parent set to NULL
+> as well.
+
+Yes, currently for_each_entity() and for_each_entity_not_root() are the
+same, they will stop before root_group.
+
+With patch 5, for_each_entity_not_root() will stay the same, while
+for_each_entity() will access root_group's entity in addition. And
+because bfq_entity_service_tree() will access 'entity->sched_data', thus
+I change to the new api here to avoid null-ptr-deref after patch 5.
+
+Same reasons for below changes.
+
+Thanks,
+Kuai
