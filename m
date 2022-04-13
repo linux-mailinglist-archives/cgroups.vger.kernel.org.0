@@ -2,44 +2,45 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DDF4FF5C6
-	for <lists+cgroups@lfdr.de>; Wed, 13 Apr 2022 13:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ACF4FF5EA
+	for <lists+cgroups@lfdr.de>; Wed, 13 Apr 2022 13:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbiDMLf5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Apr 2022 07:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
+        id S235275AbiDMLnK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Apr 2022 07:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbiDMLfz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Apr 2022 07:35:55 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422635A9C;
-        Wed, 13 Apr 2022 04:33:32 -0700 (PDT)
-Received: from kwepemi100005.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KdgN83X5gzBs1B;
-        Wed, 13 Apr 2022 19:29:12 +0800 (CST)
+        with ESMTP id S232617AbiDMLnF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Apr 2022 07:43:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CE35C35C;
+        Wed, 13 Apr 2022 04:40:36 -0700 (PDT)
+Received: from kwepemi500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Kdgb90vMXzgYmQ;
+        Wed, 13 Apr 2022 19:38:45 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100005.china.huawei.com (7.221.188.155) with Microsoft SMTP Server
+ kwepemi500021.china.huawei.com (7.221.188.245) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 13 Apr 2022 19:33:30 +0800
+ 15.1.2375.24; Wed, 13 Apr 2022 19:40:34 +0800
 Received: from [10.174.176.73] (10.174.176.73) by
  kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 13 Apr 2022 19:33:29 +0800
-Subject: Re: [PATCH -next 00/11] support concurrent sync io for bfq on a
- specail occasion
+ 15.1.2375.24; Wed, 13 Apr 2022 19:40:33 +0800
+Subject: Re: [PATCH -next 10/11] block, bfq: decrease
+ 'num_groups_with_pending_reqs' earlier
 To:     Jan Kara <jack@suse.cz>
 CC:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
         <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
 References: <20220305091205.4188398-1-yukuai3@huawei.com>
- <20220413111216.npgrdzaubsvjsmy3@quack3.lan>
+ <20220305091205.4188398-11-yukuai3@huawei.com>
+ <20220413112816.fwobg4cp6ttpnpk6@quack3.lan>
 From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <36f0923c-bb9b-12f1-b3bc-cdbe0bbcca55@huawei.com>
-Date:   Wed, 13 Apr 2022 19:33:28 +0800
+Message-ID: <f3ed507a-7c85-cd69-3ad5-3e9c0e75c372@huawei.com>
+Date:   Wed, 13 Apr 2022 19:40:32 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20220413111216.npgrdzaubsvjsmy3@quack3.lan>
+In-Reply-To: <20220413112816.fwobg4cp6ttpnpk6@quack3.lan>
 Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.176.73]
@@ -56,33 +57,42 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/04/13 19:12, Jan Kara 写道:
-> On Sat 05-03-22 17:11:54, Yu Kuai wrote:
->> Currently, bfq can't handle sync io concurrently as long as they
->> are not issued from root group. This is because
->> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->> bfq_asymmetric_scenario().
+在 2022/04/13 19:28, Jan Kara 写道:
+> On Sat 05-03-22 17:12:04, Yu Kuai wrote:
+>> Currently 'num_groups_with_pending_reqs' won't be decreased when
+>> the group doesn't have any pending requests, while some child group
+>> still have pending requests. The decrement is delayed to when all the
+>> child groups doesn't have any pending requests.
 >>
->> This patchset tries to support concurrent sync io if all the sync ios
->> are issued from the same cgroup:
+>> For example:
+>> 1) t1 issue sync io on root group, t2 and t3 issue sync io on the same
+>> child group. num_groups_with_pending_reqs is 2 now.
+>> 2) t1 stopped, num_groups_with_pending_reqs is still 2. io from t2 and
+>> t3 still can't be handled concurrently.
 >>
->> 1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
+>> Fix the problem by decreasing 'num_groups_with_pending_reqs'
+>> immediately upon the weights_tree removal of last bfqq of the group.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > 
-> Seeing the complications and special casing for root_group I wonder: Won't
-> we be better off to create fake bfq_sched_data in bfq_data and point
-> root_group->sched_data there? AFAICS it would simplify the code
-
+> So I'd find the logic easier to follow if you completely removed
+> entity->in_groups_with_pending_reqs and did updates of
+> bfqd->num_groups_with_pending_reqs like:
+> 
+> 	if (!bfqg->num_entities_with_pending_reqs++)
+> 		bfqd->num_groups_with_pending_reqs++;
+> 
 Hi,
 
-That sounds an good idel, in this case we only need to make sure the
-fake service tree will always be empty, which means we only need to
-special casing bfq_active/idle_insert to the fake service tree.
+Indeed, this is an excellent idle, and much better than the way I did.
 
 Thanks,
 Kuai
-> considerably as root_group would be just another bfq_group, no need to
-> special case it in various places, no games with bfqg->my_entity, etc.
-> Paolo, do you see any problem with that?
+
+> and similarly on the remove side. And there would we literally two places
+> (addition & removal from weight tree) that would need to touch these
+> counters. Pretty obvious and all can be done in patch 9.
 > 
 > 								Honza
 > 
+
