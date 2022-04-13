@@ -2,140 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB7D4FE898
-	for <lists+cgroups@lfdr.de>; Tue, 12 Apr 2022 21:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EBF4FF423
+	for <lists+cgroups@lfdr.de>; Wed, 13 Apr 2022 11:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354078AbiDLT1z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Apr 2022 15:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S234727AbiDMJxL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Apr 2022 05:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357836AbiDLT1o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Apr 2022 15:27:44 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8635526107
-        for <cgroups@vger.kernel.org>; Tue, 12 Apr 2022 12:25:25 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id a42so11809815pfx.7
-        for <cgroups@vger.kernel.org>; Tue, 12 Apr 2022 12:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mYhX4cxvNPixKiX8/O3wLDCe+0alwiuzYnrIU9ZEA4g=;
-        b=WcXC5z9iBD0s8lqEIkWuMQZUWfBIEmGdOcTDJqsddJGTc3xoDzEDte6mLkWCIDPq6H
-         YHQuTi2jz+pLaZ8K0n3h+80UsslQCJcbZCL49vv/iIQRc4MzeoUTN57u4Pk6Dtk8H9Wc
-         KDCu2a04jyUl6dKyGyJfhQgPSJPUaOxmhiyGeDPKKJPcJHNUlNymuti54JQo6/NDczvO
-         vbVuQ9W77Cy/v2QPjgtsQEF4MpP2tX3f+bHSl/ir7fHiWkRxbpG2V2V744Rx+xNFpwjR
-         XZUkPMYcqusEKPz9Uy9mX9juzRrR5tQ+Q4qiBB8T1Gj6Sx2YQ1W9au99vcD3HFtSTAwh
-         8rqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mYhX4cxvNPixKiX8/O3wLDCe+0alwiuzYnrIU9ZEA4g=;
-        b=1zoLLi8H+zbblgD9Hl84bcscriORVwbHy/Gqb0dCZtNxLO627MbtPnnihCWwMwqIx2
-         WUsKKvENuHIfDC6CbfKaE1apBweN1h5OZDsBCrWepiDdeGHT2keoIQ10cDKFl34l/vNZ
-         HtEyxZdGVlh91SG8/62hUAqUSldoJlCkb02I5MTkhZIkGfyy+Q7EXi9CO8HBV8lM7he5
-         iO8mDKLcNecUnaTf/bxymcuMBy0028ar43O5qFmJ6esql5vRlljaFojacyobkVyqNk+H
-         1jevdh//SJufzdfI9kOJKE/oCzLe4U5BcjySlfMnfjIN3Jrb+Ygw9tPJGfPGRGwtUscy
-         cXuQ==
-X-Gm-Message-State: AOAM533jIncj9CFWmhbVdwwp8MiAebODMRQICChxQfCtkWIy/naoa/1e
-        tRYb/Tq/mLTRWanlCiVBWwGVFyBGOxPUq4+L
-X-Google-Smtp-Source: ABdhPJzeMv6SyUCfIBcUkGwkpHGFXVQVcRPNb1is3QYfwJwv0AwJdiiTP5oX9DldB+gEsO0E0yWlUQ==
-X-Received: by 2002:a05:6a00:15ca:b0:505:bf6f:2b48 with SMTP id o10-20020a056a0015ca00b00505bf6f2b48mr12169006pfu.64.1649791524446;
-        Tue, 12 Apr 2022 12:25:24 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm38925670pfc.78.2022.04.12.12.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Apr 2022 12:25:24 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     cgroups@vger.kernel.org
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-Subject: [PATCH] cgroup: don't queue css_release_work if one already pending
-Date:   Tue, 12 Apr 2022 12:24:59 -0700
-Message-Id: <20220412192459.227740-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S233851AbiDMJxH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Apr 2022 05:53:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0359446152;
+        Wed, 13 Apr 2022 02:50:46 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B5A251F856;
+        Wed, 13 Apr 2022 09:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1649843444; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U9sUMbXWYwe92wKsFm671vYxFMhofHKxVsokA7MWvxI=;
+        b=bTcP6RKTnl17n4CZJtBbVYJAuXrT0mU2E9IlMAvJn6Iwmg+KGRUJSfjEj0xxvMQ8mUZPH7
+        Ig9KDYUnNqAyvcyQuzWLIajOqTTVW/RfvkaTCUXXIwewln8obB8X4qnMmxPnRoI3r7Btsz
+        OrqeG4WbhdwWL5sUiAXsufft/t80ZOM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1649843444;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U9sUMbXWYwe92wKsFm671vYxFMhofHKxVsokA7MWvxI=;
+        b=EfUHcSGf4VbiiRKfNtY4mZiMrQjXfNc+7EzF8GykI5/0/tNxB/uS8fg0qWxJ4Vx/nYffpP
+        01J2diM08p/fNHDw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9DAFBA3B83;
+        Wed, 13 Apr 2022 09:50:44 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 2727BA0615; Wed, 13 Apr 2022 11:50:44 +0200 (CEST)
+Date:   Wed, 13 Apr 2022 11:50:44 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     tj@kernel.org, axboe@kernel.dk, paolo.valente@linaro.org,
+        jack@suse.cz, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH -next 02/11] block, bfq: apply news apis where root group
+ is not expected
+Message-ID: <20220413095044.uwxeqli2ytcdanem@quack3.lan>
+References: <20220305091205.4188398-1-yukuai3@huawei.com>
+ <20220305091205.4188398-3-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220305091205.4188398-3-yukuai3@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Syzbot found a corrupted list bug scenario that can be triggered from
-cgroup css_create(). The reproduces writes to cgroup.subtree_control
-file, which invokes cgroup_apply_control_enable(), css_create(), and
-css_populate_dir(), which then randomly fails with a fault injected -ENOMEM.
-In such scenario the css_create() error path rcu enqueues css_free_rwork_fn
-work for an css->refcnt initialized with css_release() destructor,
-and there is a chance that the css_release() function will be invoked
-for a cgroup_subsys_state, for which a destroy_work has already been
-queued via css_create() error path. This causes a list_add corruption
-as can be seen in the syzkaller report [1].
-This can be avoided by adding a check to css_release() that checks
-if it has already been enqueued.
+On Sat 05-03-22 17:11:56, Yu Kuai wrote:
+> 'entity->sched_data' is set to parent group's sched_data, thus it's NULL
+> for root group. And for_each_entity() is used widely to access
+> 'entity->sched_data', thus aplly news apis if root group is not
+                             ^^ apply
 
-[1] https://syzkaller.appspot.com/bug?id=e26e54d6eac9d9fb50b221ec3e4627b327465dbd
+> expected. Prepare to count root group into 'num_groups_with_pending_reqs'.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  block/bfq-iosched.c |  2 +-
+>  block/bfq-iosched.h | 22 ++++++++--------------
+>  block/bfq-wf2q.c    | 10 +++++-----
+>  3 files changed, 14 insertions(+), 20 deletions(-)
+> 
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 69ddf6b0f01d..3bc7a7686aad 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -4393,7 +4393,7 @@ void bfq_bfqq_expire(struct bfq_data *bfqd,
+>  	 * service with the same budget.
+>  	 */
+>  	entity = entity->parent;
+> -	for_each_entity(entity)
+> +	for_each_entity_not_root(entity)
+>  		entity->service = 0;
+>  }
 
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: <cgroups@vger.kernel.org>
-Cc: <netdev@vger.kernel.org>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
+So why is it a problem to clear the service for root cgroup here?
 
-Reported-by: syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-Fixes: 8f36aaec9c92 ("cgroup: Use rcu_work instead of explicit rcu and work item")
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- kernel/cgroup/cgroup.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+> index f8eb340381cf..c4cb935a615a 100644
+> --- a/block/bfq-wf2q.c
+> +++ b/block/bfq-wf2q.c
+> @@ -815,7 +815,7 @@ void bfq_bfqq_served(struct bfq_queue *bfqq, int served)
+>  		bfqq->service_from_wr += served;
+>  
+>  	bfqq->service_from_backlogged += served;
+> -	for_each_entity(entity) {
+> +	for_each_entity_not_root(entity) {
+>  		st = bfq_entity_service_tree(entity);
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index adb820e98f24..9ae2de29f8c9 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5210,8 +5210,11 @@ static void css_release(struct percpu_ref *ref)
- 	struct cgroup_subsys_state *css =
- 		container_of(ref, struct cgroup_subsys_state, refcnt);
- 
--	INIT_WORK(&css->destroy_work, css_release_work_fn);
--	queue_work(cgroup_destroy_wq, &css->destroy_work);
-+	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT,
-+			      work_data_bits(&css->destroy_work))) {
-+		INIT_WORK(&css->destroy_work, css_release_work_fn);
-+		queue_work(cgroup_destroy_wq, &css->destroy_work);
-+	}
- }
- 
- static void init_and_link_css(struct cgroup_subsys_state *css,
+Hum, right so how come this was not crashing? Because entity->sched_data is
+indeed NULL for bfqd->root_group->entity and so bfq_entity_service_tree()
+returned some bogus pointer? Similarly for the cases you are changing
+below?
+
+								Honza
+
+> 
+>  		entity->service += served;
+> @@ -1201,7 +1201,7 @@ static void bfq_deactivate_entity(struct bfq_entity *entity,
+>  	struct bfq_sched_data *sd;
+>  	struct bfq_entity *parent = NULL;
+>  
+> -	for_each_entity_safe(entity, parent) {
+> +	for_each_entity_not_root_safe(entity, parent) {
+>  		sd = entity->sched_data;
+>  
+>  		if (!__bfq_deactivate_entity(entity, ins_into_idle_tree)) {
+> @@ -1270,7 +1270,7 @@ static void bfq_deactivate_entity(struct bfq_entity *entity,
+>  	 * is not the case.
+>  	 */
+>  	entity = parent;
+> -	for_each_entity(entity) {
+> +	for_each_entity_not_root(entity) {
+>  		/*
+>  		 * Invoke __bfq_requeue_entity on entity, even if
+>  		 * already active, to requeue/reposition it in the
+> @@ -1570,7 +1570,7 @@ struct bfq_queue *bfq_get_next_queue(struct bfq_data *bfqd)
+>  	 * We can finally update all next-to-serve entities along the
+>  	 * path from the leaf entity just set in service to the root.
+>  	 */
+> -	for_each_entity(entity) {
+> +	for_each_entity_not_root(entity) {
+>  		struct bfq_sched_data *sd = entity->sched_data;
+>  
+>  		if (!bfq_update_next_in_service(sd, NULL, false))
+> @@ -1597,7 +1597,7 @@ bool __bfq_bfqd_reset_in_service(struct bfq_data *bfqd)
+>  	 * execute the final step: reset in_service_entity along the
+>  	 * path from entity to the root.
+>  	 */
+> -	for_each_entity(entity)
+> +	for_each_entity_not_root(entity)
+>  		entity->sched_data->in_service_entity = NULL;
+>  
+>  	/*
+> -- 
+> 2.31.1
+> 
 -- 
-2.35.1
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
