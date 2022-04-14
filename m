@@ -2,106 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7AE5006A4
-	for <lists+cgroups@lfdr.de>; Thu, 14 Apr 2022 09:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2315E501994
+	for <lists+cgroups@lfdr.de>; Thu, 14 Apr 2022 19:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240260AbiDNHMD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Apr 2022 03:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S243968AbiDNRGV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Apr 2022 13:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240269AbiDNHL4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Apr 2022 03:11:56 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFCAAE51
-        for <cgroups@vger.kernel.org>; Thu, 14 Apr 2022 00:09:33 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id e71so7808326ybf.8
-        for <cgroups@vger.kernel.org>; Thu, 14 Apr 2022 00:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=iDCpUonGeNaCJXRMdr6vYmxcKF/myS9p15qnUMHiNJDFMpXlzPt3JQQEHmzT1Y3uoL
-         3XNS/etG68Zx4UJhEVJOSmOFgbnLdB1iyQfQd+X8GbC+6BEv1Pv5Uwq37ZwlXP2Q+KRF
-         r+0mpkDhENBdAvD5k+0g9RCfrk29XpzS5VFq7RwrlTKxoi7dSo/MtSUEH62uztsbuiPR
-         msAeP55Q78GMvM04iKMecHKrc2z/Vvg66j1aldyG5V0jzsKagEz2Dd9Q5U6NJTPnAwQx
-         mUc/LFPDkVN/+D/7jeNyDt55z91rTBm1jsuIA4B2EnL+qxE0BFbU33r16gfTJMS9ys+R
-         Jugg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=MDyrNGz3W0GmVcsuUz160mEAfnH++zJW8pcckk0/nZoB/L1ub+LhYwSYqhDIH/QFTS
-         FmCsUJrk9or5e028qfjz60D84owUtjE/Mibpf8a+r6C/TR4015ZoCU1lO9R4hwtPSNOt
-         fomlrrHK87xIZHWXAQoGSJYwz7n6YEDNSFBlnW9v+2rYcjxfnW7vFZSgDQSMQaumQqNB
-         +2ixcyU+kb5JWu72eUSZEe6IvuKB3wUBxKIhRTO6dUBT+ocjAOqO3xA0O/PiGNJRQA9J
-         uyiKTWoSL0Ch31w2hk8XjHDcL0iVAdx1FHii58toJucaTIYzWkbdra++X/naJYbo3vh7
-         +HmQ==
-X-Gm-Message-State: AOAM530cE8Uwnkiyv0T8O5rwElhIr1KtCFhKD7bpig8SGTzReNnedJJg
-        1MM/Qrdi01REMA/OIrPrZ6vmF+uWPWQjfVc+SVk=
-X-Google-Smtp-Source: ABdhPJxaY8DQz3yN+4Pvm32folzfjhudOZOOIZkjgQoaEg0xcdbEgAzCSfXCrj9MqMRQJIW3Swp5dJqLEiGHS3gserg=
-X-Received: by 2002:a25:7b41:0:b0:641:26a9:9be3 with SMTP id
- w62-20020a257b41000000b0064126a99be3mr772329ybc.163.1649920171301; Thu, 14
- Apr 2022 00:09:31 -0700 (PDT)
+        with ESMTP id S242707AbiDNRFa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Apr 2022 13:05:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C903EFE430;
+        Thu, 14 Apr 2022 09:44:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7CDCF1F747;
+        Thu, 14 Apr 2022 16:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1649954651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fAh1doWqdu+T5/UcndhANWk7kmOrXizHJ0CC+YKJ3Ek=;
+        b=ItvkKqTJave9fRovg0ydCzfpuP8dusozKz3WSWTw4xyCZGYtm401PRaOw3A7tKtn195ttV
+        70Iq3LASPYGaaQFBLo3dZiZFNeqlNkqtTdFBwMkiE/Frdb4DB0+Mp2kc/s0DQAGgLyu5/I
+        Vu6vxdwLlPRhTE1WJ+UxARYAK7bzTjw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 30A0813A86;
+        Thu, 14 Apr 2022 16:44:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Rl0ZC1tPWGKBDgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 14 Apr 2022 16:44:11 +0000
+Date:   Thu, 14 Apr 2022 18:44:09 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Subject: Re: [PATCH] cgroup: don't queue css_release_work if one already
+ pending
+Message-ID: <20220414164409.GA5404@blackbody.suse.cz>
+References: <20220412192459.227740-1-tadeusz.struk@linaro.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:a822:b0:247:d9b3:22bc with HTTP; Thu, 14 Apr 2022
- 00:09:30 -0700 (PDT)
-Reply-To: danielseyba@yahoo.com
-From:   Seyba Daniel <mohaseen949433@gmail.com>
-Date:   Thu, 14 Apr 2022 09:09:30 +0200
-Message-ID: <CAOnm=ucO2rj5kjL=O4UgP+EmPTZVO8yn7OM4iBrEZXVPwQjPzA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b44 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mohaseen949433[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [mohaseen949433[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220412192459.227740-1-tadeusz.struk@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hello Tadeusz.
 
-I am so sorry contacting you in this means especially when we have never
-met before. I urgently seek your service to represent me in investing in
-your region / country and you will be rewarded for your service without
-affecting your present job with very little time invested in it.
+Thanks for analyzing this syzbot report. Let me provide my understanding
+of the test case and explanation why I think your patch fixes it but is
+not fully correct.
 
-My interest is in buying real estate, private schools or companies with
-potentials for rapid growth in long terms.
+On Tue, Apr 12, 2022 at 12:24:59PM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> Syzbot found a corrupted list bug scenario that can be triggered from
+> cgroup css_create(). The reproduces writes to cgroup.subtree_control
+> file, which invokes cgroup_apply_control_enable(), css_create(), and
+> css_populate_dir(), which then randomly fails with a fault injected -ENOMEM.
 
-So please confirm interest by responding back.
+The reproducer code makes it hard for me to understand which function
+fails with ENOMEM.
+But I can see your patch fixes the reproducer and your additional debug
+patch which proves that css->destroy_work is re-queued.
 
-My dearest regards
+> In such scenario the css_create() error path rcu enqueues css_free_rwork_fn
+> work for an css->refcnt initialized with css_release() destructor,
 
-Seyba Daniel
+Note that css_free_rwork_fn() utilizes css->destroy_*r*work.
+The error path in css_create() open codes relevant parts of
+css_release_work_fn() so that css_release() can be skipped and the
+refcnt is eventually just percpu_ref_exit()'d.
+
+> and there is a chance that the css_release() function will be invoked
+> for a cgroup_subsys_state, for which a destroy_work has already been
+> queued via css_create() error path.
+
+But I think the problem is css_populate_dir() failing in
+cgroup_apply_control_enable(). (Is this what you actually meant?
+css_create() error path is then irrelevant, no?)
+
+The already created csses should then be rolled back via 
+	cgroup_restore_control(cgrp);
+	cgroup_apply_control_disable(cgrp);
+	   ...
+	   kill_css(css)
+
+I suspect the double-queuing is a result of the fact that there exists
+only the single reference to the css->refcnt. I.e. it's
+percpu_ref_kill_and_confirm()'d and released both at the same time.
+
+(Normally (when not killing the last reference), css->destroy_work reuse
+is not a problem because of the sequenced chain
+css_killed_work_fn()->css_put()->css_release().)
+
+> This can be avoided by adding a check to css_release() that checks
+> if it has already been enqueued.
+
+If that's what's happening, then your patch omits the final
+css_release_work_fn() in favor of css_killed_work_fn() but both should
+be run during the rollback upon css_populate_dir() failure.
+
+So an alternative approach to tackle this situation would be to split
+css->destroy_work into two work work_structs (one for killing, one for
+releasing) at the cost of inflating cgroup_subsys_state.
+
+Take my hypothesis with a grain of salt maybe the assumption (last
+reference == initial reference) is not different from normal operation.
+
+Regards,
+Michal
