@@ -2,194 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A861501A71
-	for <lists+cgroups@lfdr.de>; Thu, 14 Apr 2022 19:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0015501F5C
+	for <lists+cgroups@lfdr.de>; Fri, 15 Apr 2022 02:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239145AbiDNRxr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Apr 2022 13:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S1347800AbiDOAEM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Apr 2022 20:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343924AbiDNRxq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Apr 2022 13:53:46 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EABEA75C
-        for <cgroups@vger.kernel.org>; Thu, 14 Apr 2022 10:51:20 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d15so5249973pll.10
-        for <cgroups@vger.kernel.org>; Thu, 14 Apr 2022 10:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=R60EpWC4+M+3jSe48lUE7Gq4ExP+RSflXlkjF6VcaNg=;
-        b=MJT5ZerLaHe0JjBpnq1LElIVlHvKx2ombKDP9yRuUPnzETaAhn9nIFw2s+5thyg8ck
-         z+Auc/bX6s4XDzQD7WK+/TG6WF/NPaz7NxNF+va1neIBQvkDM8rvE/Z8Bu7yJMiDjGhr
-         Qq/F7VMSrZoc5QrzMA5rKvUUC9eGBE4aSx1/AZufDrZmL8MFVO75636rgU+GQRNVBJf+
-         XMC2Wjv8LayNUGel212gOwnBPbKqlmm34ot5OyZMuDQLngo5WNI+Qvm1BsfC5EhRNMHA
-         pczXurvhUftRw1ejmjb5pCtSqc/EQVw3Lip1QWxc1k5n4sDFrV6ZrKI9OY/a3Zk8+Y1S
-         UitA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=R60EpWC4+M+3jSe48lUE7Gq4ExP+RSflXlkjF6VcaNg=;
-        b=wZUkQQvW7L7B9OlZvn9WtgcsH+7cz9uAfTe9MVNUyW1efMAc8xj2svB8z4RAlZRb8f
-         vBSUUmxvdUgZuhQ0cOct2fj5vj9hjL4M4/6RpNiuIDcGLR5UDdgTLnaXHVncO76aYriS
-         2NjSeXjuGsdwuJlhbUti8+JtFolaksix0nQmofQFoTW0ohF17gUNQtjx1GFufTUJcUAF
-         drww2czJNvx2mGS6bgTd0SKSPNFFY5ljVBAUT3qIdVNH0Gjv8qCN1yJtAqK/CrWYWH8r
-         NCTySG1BojpfeDVhV45dKiUCIyHt5b70LIBk/49heXAbx/BVsGuwax/RRuNL0xwWvFjY
-         JrlA==
-X-Gm-Message-State: AOAM533exd8qTvirDXtiM5Qoeqb1gaIDtVTB0hYulZ4jkUz9TdvxRpAz
-        96YrNAh10nPfcXtDV0bH7EfyJg==
-X-Google-Smtp-Source: ABdhPJwRAMampTIjKcuBpR+du+kxiuKgR+5wRxgzxrak8w+8zYw1w59xdKpX2VjJw2lzIeX2jldwgw==
-X-Received: by 2002:a17:902:b7c9:b0:158:b09e:527a with SMTP id v9-20020a170902b7c900b00158b09e527amr6104672plz.40.1649958679806;
-        Thu, 14 Apr 2022 10:51:19 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id p3-20020a056a000b4300b004faee36ea56sm506706pfo.155.2022.04.14.10.51.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Apr 2022 10:51:19 -0700 (PDT)
-Message-ID: <584183e2-2473-6185-e07d-f478da118b87@linaro.org>
-Date:   Thu, 14 Apr 2022 10:51:18 -0700
+        with ESMTP id S240890AbiDOAEL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Apr 2022 20:04:11 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE30B57164;
+        Thu, 14 Apr 2022 17:01:45 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1649980904;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=x0OJT7vtHeCsFa3T3M2nSJtuwiJNpM1MZE2d38sUzeE=;
+        b=TnMKjcFycGksoGIHsEZYPyuP5tGDPSWVACST3hbjTjCsgJ+rldhg9Bza3n9fsrh56wJTYB
+        WJReZfLJggzdlpikXj9ouMRFCzA+2uY3TyOh9z/sguWkNnBzjhfigrHxD+DYDn6mI9XhrM
+        kk2gFy8dWtqvNlsR/WkxT/qaUPQbqFc=
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, David Vernet <void@manifault.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH 0/4] mm: memcg kselftests fixes
+Date:   Thu, 14 Apr 2022 17:01:29 -0700
+Message-Id: <20220415000133.3955987-1-roman.gushchin@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-References: <20220412192459.227740-1-tadeusz.struk@linaro.org>
- <20220414164409.GA5404@blackbody.suse.cz>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH] cgroup: don't queue css_release_work if one already
- pending
-In-Reply-To: <20220414164409.GA5404@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Michal,
-Thanks for your analysis.
+I'm resending two memcg kselftests fixes, which I first posted in 2019 [1],
+however they didn't go anywhere. I've rechecked them and they're are both
+still actual, even though there were new regressions introduced since that,
+so not all tests are passing now. I know that David Vernet (cc'ed) is working
+on fixing (some of) them, so hopefully he'll post more fixes soon.
 
-On 4/14/22 09:44, Michal Koutný wrote:
-> Hello Tadeusz.
-> 
-> Thanks for analyzing this syzbot report. Let me provide my understanding
-> of the test case and explanation why I think your patch fixes it but is
-> not fully correct.
-> 
-> On Tue, Apr 12, 2022 at 12:24:59PM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
->> Syzbot found a corrupted list bug scenario that can be triggered from
->> cgroup css_create(). The reproduces writes to cgroup.subtree_control
->> file, which invokes cgroup_apply_control_enable(), css_create(), and
->> css_populate_dir(), which then randomly fails with a fault injected -ENOMEM.
-> 
-> The reproducer code makes it hard for me to understand which function
-> fails with ENOMEM.
-> But I can see your patch fixes the reproducer and your additional debug
-> patch which proves that css->destroy_work is re-queued.
+I believe it's better for such patches to go through mm and cgroup trees
+(and mailing lists), where there are better chances for them to be properly
+reviewed, so adding corresponding entries to the MAINTAINERS file to make it
+obvious.
 
-Yes, it is hard to see the actual failing point because, I think it is randomly
-failing in different places. I think in the actual case that causes the list
-corruption is in fact in css_create().
-It is the css_create() error path that does fist rcu enqueue in:
+1: https://lore.kernel.org/lkml/20191203165758.GA607734@chrisdown.name/T/
 
-https://elixir.bootlin.com/linux/v5.10.109/source/kernel/cgroup/cgroup.c#L5228
 
-and the second is triggered by the css->refcnt calling css_release()
+Roman Gushchin (4):
+  kselftests: memcg: update the oom group leaf events test
+  kselftests: memcg: speed up the memory.high test
+  MAINTAINERS: add corresponding kselftests to cgroup entry
+  MAINTAINERS: add corresponding kselftests to memcg entry
 
-The reason why we don't see it actually failing in css_create() in the trace
-dump is that the fail_dump() is rate-limited, see:
-https://elixir.bootlin.com/linux/v5.18-rc2/source/lib/fault-inject.c#L44
-
-I was confused as well, so I put additional debug prints in every place
-where css_release() can fail, and it was actually in
-css_create()->cgroup_idr_alloc() that failed in my case.
-
-What happened was, the write triggered:
-cgroup_subtree_control_write()->cgroup_apply_control()->cgroup_apply_control_enable()->css_create()
-
-which, allocates and initializes the css, then fails in cgroup_idr_alloc(),
-bails out and calls queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
-
-then cgroup_subtree_control_write() bails out to out_unlock:, which then goes:
-
-cgroup_kn_unlock()->cgroup_put()->css_put()->percpu_ref_put(&css->refcnt)->percpu_ref_put_many(ref)
-
-which then calls ref->data->release(ref) and enqueues the same
-&css->destroy_rwork on cgroup_destroy_wq causing list corruption in insert_work.
-
->> In such scenario the css_create() error path rcu enqueues css_free_rwork_fn
->> work for an css->refcnt initialized with css_release() destructor,
-> 
-> Note that css_free_rwork_fn() utilizes css->destroy_*r*work.
-> The error path in css_create() open codes relevant parts of
-> css_release_work_fn() so that css_release() can be skipped and the
-> refcnt is eventually just percpu_ref_exit()'d.
-> 
->> and there is a chance that the css_release() function will be invoked
->> for a cgroup_subsys_state, for which a destroy_work has already been
->> queued via css_create() error path.
-> 
-> But I think the problem is css_populate_dir() failing in
-> cgroup_apply_control_enable(). (Is this what you actually meant?
-> css_create() error path is then irrelevant, no?)
-
-I thought so too at first as the the crushdump shows that this is failing
-in css_populate_dir(), but this is not the fail that causes the list corruption.
-The code can recover from the fail in css_populate_dir().
-The fail that causes trouble is in css_create(), that makes it go to its error path.
-I can dig out the patch with my debug prints and request syzbot to run it
-if you want.
-
-> 
-> The already created csses should then be rolled back via
-> 	cgroup_restore_control(cgrp);
-> 	cgroup_apply_control_disable(cgrp);
-> 	   ...
-> 	   kill_css(css)
-> 
-> I suspect the double-queuing is a result of the fact that there exists
-> only the single reference to the css->refcnt. I.e. it's
-> percpu_ref_kill_and_confirm()'d and released both at the same time.
-> 
-> (Normally (when not killing the last reference), css->destroy_work reuse
-> is not a problem because of the sequenced chain
-> css_killed_work_fn()->css_put()->css_release().)
-> 
->> This can be avoided by adding a check to css_release() that checks
->> if it has already been enqueued.
-> 
-> If that's what's happening, then your patch omits the final
-> css_release_work_fn() in favor of css_killed_work_fn() but both should
-> be run during the rollback upon css_populate_dir() failure.
-
-This change only prevents from double queue:
-
-queue_[rcu]_work(cgroup_destroy_wq, &css->destroy_rwork);
-
-I don't see how it affects the css_killed_work_fn() clean path.
-I didn't look at it, since I thought it is irrelevant in this case.
+ MAINTAINERS                                      | 3 +++
+ tools/testing/selftests/cgroup/test_memcontrol.c | 7 ++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
 -- 
-Thanks,
-Tadeusz
+2.35.1
+
