@@ -2,85 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 004BD5035B3
-	for <lists+cgroups@lfdr.de>; Sat, 16 Apr 2022 11:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CED5046DB
+	for <lists+cgroups@lfdr.de>; Sun, 17 Apr 2022 08:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbiDPJ0E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 Apr 2022 05:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S233013AbiDQGmR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Apr 2022 02:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiDPJ0C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 16 Apr 2022 05:26:02 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8031C1171;
-        Sat, 16 Apr 2022 02:23:31 -0700 (PDT)
-Received: from kwepemi100017.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KgSLh57KQzCr6c;
-        Sat, 16 Apr 2022 17:19:08 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100017.china.huawei.com (7.221.188.163) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 16 Apr 2022 17:23:29 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 16 Apr
- 2022 17:23:28 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <jack@suse.cz>, <paolo.valente@linaro.org>, <axboe@kernel.dk>,
-        <tj@kernel.org>
-CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next v2 5/5] block, bfq: do not idle if only one cgroup is activated
-Date:   Sat, 16 Apr 2022 17:37:53 +0800
-Message-ID: <20220416093753.3054696-6-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220416093753.3054696-1-yukuai3@huawei.com>
-References: <20220416093753.3054696-1-yukuai3@huawei.com>
+        with ESMTP id S233502AbiDQGmQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Apr 2022 02:42:16 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5C02C641
+        for <cgroups@vger.kernel.org>; Sat, 16 Apr 2022 23:39:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id w19so19961827lfu.11
+        for <cgroups@vger.kernel.org>; Sat, 16 Apr 2022 23:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=bT5KP076LNXAkBuT6bxsWqWs6Rnf/a89eLMuVK8//BE=;
+        b=ncW0cuAMb8hBdKsyH8A3kwzpFlf5AjHuKNEWWaWOGkn5vtR0OwYflZ/UOyblXqRhoX
+         kbsctJzKaEA9bWHOVkTV9KuCRQcRcOgvcUf41KIzu3vHK2W9CC4bp4s9AHaibfLLOQjS
+         bT1e05vF0QYw5pL8iOoteYlboX9TqJwxMFp/G4XDGLWUN1+Kmy6fQdP8Kl/4NuFsySkn
+         HzOuRVfYzz0kv3CUSF1d0XcVL91nMfwKTE/4x0Inr2clsZHHMcHM8uhguc3zAzvEA9cl
+         WWfK9ozD2CGno/6VT0O3Ng+LCRT/WPIh/FlwpOJ46w4aohgfKTn2GFxLEpSzV5i7vrat
+         rK0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=bT5KP076LNXAkBuT6bxsWqWs6Rnf/a89eLMuVK8//BE=;
+        b=upttCp0vlthCAeMI41V1b+8bbFcN8V2rHjqTqswtRmnejmutK3PMeiY2HcRpAdT0jx
+         a+AVtH5oemcATY6xNylRmbtkPHbOzyHm1oORy4mVIksZCdaVgbZ5/dg8FUyGM1WpCnz5
+         zA3z9hd6mfmRf0RdaNrCtuAUEgdZWSsp5NAMRT2tqBSg1+7+nttKo8BGpPIDWUGYqFaE
+         pKMDh6+Ud569T+1SDGaLr88+kxogZAqNKF2jlPpWv+/AuXRkXixEXUngglUTTvAzaR0R
+         hDEH4RJu08QRaNBPLIaA/YihJZmk+8+SNvGuqhR8TQPD3n6UMzu3y7rBBX1pCH03UOjV
+         lwnQ==
+X-Gm-Message-State: AOAM533dMr7m+wNetuZ8YGooL3rxQWGNZTXlcotXaJcXouwWmBFoQxjH
+        HEV/TXBt2/fvR/GJjIu4LYhxXw==
+X-Google-Smtp-Source: ABdhPJyDayD1yzsslV7LgR6+8/ExlagCq2BG2TF0dic2T/PuIDSyOXUYXztnIZD0s2fB6srWdeqxNQ==
+X-Received: by 2002:a05:6512:1326:b0:45a:3a4:f25a with SMTP id x38-20020a056512132600b0045a03a4f25amr4319176lfu.575.1650177579195;
+        Sat, 16 Apr 2022 23:39:39 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.177])
+        by smtp.gmail.com with ESMTPSA id x40-20020a056512132800b004489691436esm872040lfu.146.2022.04.16.23.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Apr 2022 23:39:38 -0700 (PDT)
+Message-ID: <55605876-d05a-8be3-a6ae-ec26de9ee178@openvz.org>
+Date:   Sun, 17 Apr 2022 09:39:37 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+From:   Vasily Averin <vvs@openvz.org>
+Subject: [PATCH memcg RFC] net: set proper memcg for net_init hooks
+ allocations
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <46c1c59e-1368-620d-e57a-f35c2c82084d@linux.dev>
+Content-Language: en-US
+In-Reply-To: <46c1c59e-1368-620d-e57a-f35c2c82084d@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now that root group is counted into 'num_groups_with_pending_reqs',
-'num_groups_with_pending_reqs > 0' is always true in
-bfq_asymmetric_scenario().
+__register_pernet_operations() executes init hook of registered
+pernet_operation structure in all existing net namespaces.
 
-Thus change the condition to 'num_groups_with_pending_reqs > 1'.
+Typically, these hooks are called by a process associated with
+the specified net namespace, and all __GFP_ACCOUNTING marked
+allocation are accounted for corresponding container/memcg.
 
-On the other hand, now that 'num_groups_with_pending_reqs' represents
-how many groups have pending requests, this change can enable concurrent
-sync io is only on cgroup is activated.
+However __register_pernet_operations() calls the hooks in the same
+context, and as a result all marked allocations are accounted
+to one memcg for all processed net namespaces.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+This patch adjusts active memcg for each net namespace and helps
+to account memory allocated inside ops_init() into the proper memcg.
+
+Signed-off-by: Vasily Averin <vvs@openvz.org>
 ---
- block/bfq-iosched.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dear Vlastimil, Roman,
+I'm not sure that memcg is used correctly here, 
+is it perhaps some additional locking required?
+---
+ net/core/net_namespace.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 39abcd95df8e..7d9f94882f8e 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -846,7 +846,7 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index a5b5bb99c644..171c6e0b2337 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -26,6 +26,7 @@
+ #include <net/net_namespace.h>
+ #include <net/netns/generic.h>
  
- 	return varied_queue_weights || multiple_classes_busy
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
--	       || bfqd->num_groups_with_pending_reqs > 0
-+	       || bfqd->num_groups_with_pending_reqs > 1
- #endif
- 		;
- }
++#include <linux/sched/mm.h>
+ /*
+  *	Our network namespace constructor/destructor lists
+  */
+@@ -1147,7 +1148,13 @@ static int __register_pernet_operations(struct list_head *list,
+ 		 * setup_net() and cleanup_net() are not possible.
+ 		 */
+ 		for_each_net(net) {
++			struct mem_cgroup *old, *memcg = NULL;
++#ifdef CONFIG_MEMCG
++			memcg = (net == &init_net) ? root_mem_cgroup : mem_cgroup_from_obj(net);
++#endif
++			old = set_active_memcg(memcg);
+ 			error = ops_init(ops, net);
++			set_active_memcg(old);
+ 			if (error)
+ 				goto out_undo;
+ 			list_add_tail(&net->exit_list, &net_exit_list);
 -- 
 2.31.1
 
