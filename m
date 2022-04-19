@@ -2,100 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E6A5061FF
-	for <lists+cgroups@lfdr.de>; Tue, 19 Apr 2022 04:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C07506808
+	for <lists+cgroups@lfdr.de>; Tue, 19 Apr 2022 11:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbiDSCMo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Apr 2022 22:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        id S244818AbiDSJwr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Apr 2022 05:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbiDSCMn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Apr 2022 22:12:43 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C54725EA4
-        for <cgroups@vger.kernel.org>; Mon, 18 Apr 2022 19:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650334202; x=1681870202;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=nH/XrxtiTaYfm0g+ofM2ITpPrGvqHIGnxGucWn4QUeE=;
-  b=kI0VVkCRSajLSMxg3jLmKadZpF3GbPhDv+0vLS6s9f0+13EdOnLF+DX6
-   bIoxMJjNM5wblWvW3Moi4arbUWEEM/YGwDAHDX8Y2HaSj04w3mZwuEV+B
-   D5nJdUuD9sij/5ly1SHJW4cPRoLB/5gnqy6LnTWk5TOwrCH8gQUbueiC9
-   7BDfxVPgV+Z3QqIyrNR8jYRh564/rxYFOozFQgXDEJhW+Mc/4aCgUceu4
-   N43b/HHPstWKiraVqsCujRptyo0KXkJ+RmesA6d7yjHnsOsVB/lS8D/9k
-   hoZqD40L+EMY4GFQlxcoGGkmTEmkx4ZE4qFIozZEso2YHBNosgLTtyoz5
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10321"; a="263828606"
-X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
-   d="scan'208";a="263828606"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2022 19:10:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,271,1643702400"; 
-   d="scan'208";a="665625976"
-Received: from shbuild999.sh.intel.com ([10.239.146.138])
-  by orsmga004.jf.intel.com with ESMTP; 18 Apr 2022 19:09:59 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Dave Hansen <dave.hansen@intel.com>, ying.huang@intel.com,
-        Feng Tang <feng.tang@intel.com>
-Subject: [RFC PATCH] cgroup/cpuset: fix a memory binding failure for cgroup v2
-Date:   Tue, 19 Apr 2022 10:09:58 +0800
-Message-Id: <20220419020958.40419-1-feng.tang@intel.com>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S1350438AbiDSJwn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Apr 2022 05:52:43 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA5E11C08;
+        Tue, 19 Apr 2022 02:49:59 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 703691F38D;
+        Tue, 19 Apr 2022 09:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1650361798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J1deqUxc9C8D6lInkd2DloHcFrHOp4GMQ6s/PLFQPqA=;
+        b=19W+p5kE2JN+9TJwKovFQQHYDzGXCipmtRiqv16MxNu2WAphcZeAaEeeZd13G8/XMcOXYR
+        QlLrHgV7LR3mKgXduFGrmGMKuwYsa7v/2nxukCq3s90vAPazeKwbGFGzDnTt2CCiz7Vif9
+        ydCaXqQAhEqqlAsgAHKloKj1BX52vno=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1650361798;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J1deqUxc9C8D6lInkd2DloHcFrHOp4GMQ6s/PLFQPqA=;
+        b=iO8ylqwF5TMzf4SeDvp3qCGb8/Ge2WiU2xauMHrhCLNPzzESfu1Pgcwn+dfkQ/J32faC+T
+        ALuphv9JSEHACgBw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 5F1552C141;
+        Tue, 19 Apr 2022 09:49:58 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 9AC27A0620; Tue, 19 Apr 2022 11:49:55 +0200 (CEST)
+Date:   Tue, 19 Apr 2022 11:49:55 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tj@kernel.org, axboe@kernel.dk,
+        paolo.valente@linaro.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH -next 10/11] block, bfq: decrease
+ 'num_groups_with_pending_reqs' earlier
+Message-ID: <20220419094955.ucjxadnhdyonfjdo@quack3.lan>
+References: <20220305091205.4188398-1-yukuai3@huawei.com>
+ <20220305091205.4188398-11-yukuai3@huawei.com>
+ <20220413112816.fwobg4cp6ttpnpk6@quack3.lan>
+ <f3ed507a-7c85-cd69-3ad5-3e9c0e75c372@huawei.com>
+ <ef7bad8c-b8dd-f625-330c-9a22e303844b@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ef7bad8c-b8dd-f625-330c-9a22e303844b@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We got report that setting cpuset.mems failed when the nodemask
-contains a newly onlined memory node (not enumerated during boot)
-for cgroup v2, while the binding succeeded for cgroup v1.
+On Fri 15-04-22 09:10:06, yukuai (C) wrote:
+> 在 2022/04/13 19:40, yukuai (C) 写道:
+> > 在 2022/04/13 19:28, Jan Kara 写道:
+> > > On Sat 05-03-22 17:12:04, Yu Kuai wrote:
+> > > > Currently 'num_groups_with_pending_reqs' won't be decreased when
+> > > > the group doesn't have any pending requests, while some child group
+> > > > still have pending requests. The decrement is delayed to when all the
+> > > > child groups doesn't have any pending requests.
+> > > > 
+> > > > For example:
+> > > > 1) t1 issue sync io on root group, t2 and t3 issue sync io on the same
+> > > > child group. num_groups_with_pending_reqs is 2 now.
+> > > > 2) t1 stopped, num_groups_with_pending_reqs is still 2. io from t2 and
+> > > > t3 still can't be handled concurrently.
+> > > > 
+> > > > Fix the problem by decreasing 'num_groups_with_pending_reqs'
+> > > > immediately upon the weights_tree removal of last bfqq of the group.
+> > > > 
+> > > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > 
+> > > So I'd find the logic easier to follow if you completely removed
+> > > entity->in_groups_with_pending_reqs and did updates of
+> > > bfqd->num_groups_with_pending_reqs like:
+> > > 
+> > >     if (!bfqg->num_entities_with_pending_reqs++)
+> > >         bfqd->num_groups_with_pending_reqs++;
+> > > 
+> > Hi,
+> > 
+> > Indeed, this is an excellent idle, and much better than the way I did.
+> > 
+> > Thanks,
+> > Kuai
+> > 
+> > > and similarly on the remove side. And there would we literally two places
+> > > (addition & removal from weight tree) that would need to touch these
+> > > counters. Pretty obvious and all can be done in patch 9.
+> 
+> I think with this change, we can count root_group while activating bfqqs
+> that are under root_group, thus there is no need to modify
+> for_each_entity(or fake bfq_sched_data) any more.
 
-The root cause is, for cgroup v2, when a new memory node is onlined,
-top_cpuset's 'mem_allowed' is not updated with the new nodemask of
-memory nodes, and the following setting memory nodemask will fail,
-if the nodemask contains a new node.
+Sure, if you can make this work, it would be easier :)
 
-Fix it by updating top_cpuset.mems_allowed right after the
-new memory node is onlined, just like v1.
+> The special case is that weight racing bfqqs are not inserted into
+> weights tree, and I think this can be handled by adding a fake
+> bfq_weight_counter for such bfqqs.
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
-Very likely I missed some details here, but it looks strange that
-the top_cpuset.mem_allowed is not updatd even after we onlined
-several memory nodes after boot.
+Do you mean "weight raised bfqqs"? Yes, you are right they would need
+special treatment - maybe bfq_weights_tree_add() is not the best function
+to use for this and we should rather use insertion / removal from the
+service tree for maintaining num_entities_with_pending_reqs counter?
+I can even see we already have bfqg->active_entities so maybe we could just
+somehow tweak that accounting and use it for our purposes?
 
- kernel/cgroup/cpuset.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 9390bfd9f1cd..b97caaf16374 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3314,8 +3314,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
- 	/* synchronize mems_allowed to N_MEMORY */
- 	if (mems_updated) {
- 		spin_lock_irq(&callback_lock);
--		if (!on_dfl)
--			top_cpuset.mems_allowed = new_mems;
-+		top_cpuset.mems_allowed = new_mems;
- 		top_cpuset.effective_mems = new_mems;
- 		spin_unlock_irq(&callback_lock);
- 		update_tasks_nodemask(&top_cpuset);
+								Honza
 -- 
-2.27.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
