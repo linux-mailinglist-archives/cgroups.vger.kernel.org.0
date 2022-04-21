@@ -2,164 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C262950A853
-	for <lists+cgroups@lfdr.de>; Thu, 21 Apr 2022 20:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECD250A91E
+	for <lists+cgroups@lfdr.de>; Thu, 21 Apr 2022 21:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389434AbiDUStA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Apr 2022 14:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S1391767AbiDUT2q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Apr 2022 15:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357287AbiDUStA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Apr 2022 14:49:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CAE6042EF5
-        for <cgroups@vger.kernel.org>; Thu, 21 Apr 2022 11:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650566767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i+DEirf4SQwPuVLQDTt9OPbRrmwnWl+I/vXtf9aJnpM=;
-        b=FoNWtc1pakWI2jMDI1r7KP6P0y1mR2JhOWoDXOv3RL8Sd791Z83HOmWFtpl8o+aYepjO0l
-        H5vXl01pguBR4+X5XhSOqEAdKEdZOBQhTD7V/kJd8YrbODUKbryRn2io2ltr+Sgx7oKfZc
-        NEmRBzKUgDGfDy+PSNtB920Es71fAks=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-631-ZRYZ-50dOI62Q9efZ_o2Ow-1; Thu, 21 Apr 2022 14:46:03 -0400
-X-MC-Unique: ZRYZ-50dOI62Q9efZ_o2Ow-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5841F1E10B44;
-        Thu, 21 Apr 2022 18:46:01 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AB0E6416156;
-        Thu, 21 Apr 2022 18:46:00 +0000 (UTC)
-Message-ID: <58c41f14-356e-88dd-54aa-dc6873bf80ff@redhat.com>
-Date:   Thu, 21 Apr 2022 14:46:00 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] mm/memcg: Free percpu stats memory of dying memcg's
-Content-Language: en-US
+        with ESMTP id S1391610AbiDUT2q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Apr 2022 15:28:46 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9832B4D270;
+        Thu, 21 Apr 2022 12:25:55 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id p8so5883581pfh.8;
+        Thu, 21 Apr 2022 12:25:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cBrbiWDBHEqVzD/h6n2uk0w0Vf7EqWqgPo3W9iAFxx0=;
+        b=HTZ57TThs2gZgtm09J297EO0M3RO62RHz/zVoetmYhSGSzXIWjGtQNVlcT/am6ElqW
+         +cTLNQXaPDGTicHPztmAQxL3KOlCa0xow9uOS0FV7+JXKwDeZShuUEbBQiE0Rvus2mm5
+         eLMesI2o5ptZFTctQwjDDGBVhqCeowgcfZNMhAiMxUibIPc0sbqguwSOhdL28aF/wAhR
+         OZ5HsLcodEdCdqfjUtovF9t5paSvEko+HnTNyqgzeng1bpWq/xgmjewQjuDsQDeCZo73
+         Hqyj9I01JfoH0aaOvVNTvMQISmhsF50hwZGJaZUherneAHdfPc/CDIR4kCzKfbNxpgrg
+         5ujQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=cBrbiWDBHEqVzD/h6n2uk0w0Vf7EqWqgPo3W9iAFxx0=;
+        b=0+EBFbQC2kVJpggDuSgsKAxBIWswb38o0V17mfZymlkzF0K4qG1CZbjxEZF7lN+A3V
+         TQaeREQxT4u4RIxHYzCtZm1pnrkrFdUkWV5m3lsgSWA7RsTzNOasHw0+FE4dld/IVxPX
+         VaIuDlfKHWxFNhQovx8Yyi2huNX7O4vLtjamslfodyXN+vgGvT/P+KIW5MUKy8yB3mDS
+         W2jWAPb86n3+ICPFdNEwpptnbtAhLsMfgEK5+oY2zQTolsCf6+pthIdOwQDXkFumpb8W
+         W7qXsVr1FgI4bj7/+/5p5GpsWXUWIZBGGd72xb9b/zbebu8NFeQ8+RjQ3yTXkNWQudv6
+         rQWg==
+X-Gm-Message-State: AOAM531isdSk7DvXdRzUWgOKV06jLS5J5qpJuuRAjOzhXsupfccU7IR4
+        M8vzNGzC4DzruAb41nFIOZM=
+X-Google-Smtp-Source: ABdhPJydgd/xmb2yR2CCAMjNeInbLx5JdrgHVbwNiCA8VKBZYu2tb2FGgUU1dxdUfy8WyP5TnL9L3A==
+X-Received: by 2002:aa7:9522:0:b0:4e1:d277:ce8 with SMTP id c2-20020aa79522000000b004e1d2770ce8mr1170604pfp.16.1650569154975;
+        Thu, 21 Apr 2022 12:25:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:2c86])
+        by smtp.gmail.com with ESMTPSA id t63-20020a625f42000000b0050a7eaff8c9sm14868920pfb.189.2022.04.21.12.25.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Apr 2022 12:25:54 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 21 Apr 2022 09:25:52 -1000
+From:   Tejun Heo <tj@kernel.org>
 To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Vernet <void@manifault.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20220421145845.1044652-1-longman@redhat.com>
- <YmGHYNuAp8957ouq@carbon> <112a4d7f-bc53-6e59-7bb8-6fecb65d045d@redhat.com>
- <YmGbmrH/Hg1VJlUc@carbon>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <YmGbmrH/Hg1VJlUc@carbon>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Zefan Li <lizefan.x@bytedance.com>
+Subject: Re: [PATCH 3/4] MAINTAINERS: add corresponding kselftests to cgroup
+ entry
+Message-ID: <YmGvwPIAA1LqCcku@slm.duckdns.org>
+References: <20220415000133.3955987-1-roman.gushchin@linux.dev>
+ <20220415000133.3955987-4-roman.gushchin@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220415000133.3955987-4-roman.gushchin@linux.dev>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/21/22 13:59, Roman Gushchin wrote:
-> On Thu, Apr 21, 2022 at 01:28:20PM -0400, Waiman Long wrote:
->> On 4/21/22 12:33, Roman Gushchin wrote:
->>> On Thu, Apr 21, 2022 at 10:58:45AM -0400, Waiman Long wrote:
->>>> For systems with large number of CPUs, the majority of the memory
->>>> consumed by the mem_cgroup structure is actually the percpu stats
->>>> memory. When a large number of memory cgroups are continuously created
->>>> and destroyed (like in a container host), it is possible that more
->>>> and more mem_cgroup structures remained in the dying state holding up
->>>> increasing amount of percpu memory.
->>>>
->>>> We can't free up the memory of the dying mem_cgroup structure due to
->>>> active references in some other places. However, the percpu stats memory
->>>> allocated to that mem_cgroup is a different story.
->>>>
->>>> This patch adds a new percpu_stats_disabled variable to keep track of
->>>> the state of the percpu stats memory. If the variable is set, percpu
->>>> stats update will be disabled for that particular memcg. All the stats
->>>> update will be forward to its parent instead. Reading of the its percpu
->>>> stats will return 0.
->>>>
->>>> The flushing and freeing of the percpu stats memory is a multi-step
->>>> process. The percpu_stats_disabled variable is set when the memcg is
->>>> being set to offline state. After a grace period with the help of RCU,
->>>> the percpu stats data are flushed and then freed.
->>>>
->>>> This will greatly reduce the amount of memory held up by dying memory
->>>> cgroups.
->>>>
->>>> By running a simple management tool for container 2000 times per test
->>>> run, below are the results of increases of percpu memory (as reported
->>>> in /proc/meminfo) and nr_dying_descendants in root's cgroup.stat.
->>> Hi Waiman!
->>>
->>> I've been proposing the same idea some time ago:
->>> https://lore.kernel.org/all/20190312223404.28665-7-guro@fb.com/T/ .
->>>
->>> However I dropped it with the thinking that with many other fixes
->>> preventing the accumulation of the dying cgroups it's not worth the added
->>> complexity and a potential cpu overhead.
->>>
->>> I think it ultimately comes to the number of dying cgroups. If it's low,
->>> memory savings are not worth the cpu overhead. If it's high, they are.
->>> I hope long-term to drive it down significantly (with lru-pages reparenting
->>> being the first major milestone), but it might take a while.
->>>
->>> I don't have a strong opinion either way, just want to dump my thoughts
->>> on this.
->> I have quite a number of customer cases complaining about increasing percpu
->> memory usages. The number of dying memcg's can go to tens of thousands. From
->> my own investigation, I believe that those dying memcg's are not freed
->> because they are pinned down by references in the page structure. I am aware
->> that we support the use of objcg in the page structure which will allow easy
->> reparenting, but most pages don't do that and it is not easy to do this
->> conversion and it may take quite a while to do that.
-> The big question is whether there is a memory pressure on those systems.
-> If yes, and the number of dying cgroups is growing, it's worth investigating.
-> It might be due to the sharing of pagecache pages and this will be ultimately
-> fixed with implementing of the pagecache reparenting. But it also might be due
-> to other bugs, which are fixable, so it would be great to understand.
+On Thu, Apr 14, 2022 at 05:01:32PM -0700, Roman Gushchin wrote:
+> List cgroup kselftests in the cgroup MAINTAINERS entry.
+> These are tests covering core, freezer and cgroup.kill
+> functionality.
+> 
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: cgroups@vger.kernel.org
 
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Pagecache reparenting will probably fix the problem that I have seen. Is 
-someone working on this?
+I suppose this can go with the rest through -mm? Please let me know if I
+should pick it up.
 
+Thanks.
 
-> So if there is a memory pressure and dying cgroups are still accumulating,
-> we need to investigate and fix it.
->
-> If there is (almost) no memory pressure, it's a proactive reclaim question.
-> There are several discussions and projects going on in this area.
-
-
-As more and more memory are pinned down by dying memcg's, there is just 
-less memory available for other useful works. So it is an issue from the 
-user point of view. I am not sure how much memory pressure the customers 
-have, but they certainly are not happy about that.
-
-
-> Releasing percpu memory is more a workaround of the problem rather than fix.
-> In the end, if we're accumulating dying cgroups, we're still leaking memory,
-> just at a smaller pace (which is good, of course).
-
-I agree that it is a workaround. However, without pagecache reparenting, 
-userspace applications may need to be modified to minimize the chance of 
-leaving behind dying memcg's. It is not easy either.
-
-Cheers,
-Longman
-
-
+-- 
+tejun
