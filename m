@@ -2,288 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1424650BED6
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 19:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3E50BF26
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 20:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbiDVRjY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Apr 2022 13:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        id S229450AbiDVSBB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Apr 2022 14:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbiDVRjV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 13:39:21 -0400
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B92CD64FA;
-        Fri, 22 Apr 2022 10:36:17 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id x24so5993037qtq.11;
-        Fri, 22 Apr 2022 10:36:17 -0700 (PDT)
+        with ESMTP id S236621AbiDVR7e (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 13:59:34 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2274107834;
+        Fri, 22 Apr 2022 10:56:40 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id t202so8134591vst.8;
+        Fri, 22 Apr 2022 10:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XxZBZ3stUkdhVW/utSJpsv4jrMoNhjVNY7NCi5QPbWU=;
+        b=EeMR2o3WC1it+xKaAE3UcnjfygI28wLy1fn4KUlwq5rUdHXA3ogqmv0vTwBr0/yoz6
+         cDJzg1rfj241iv+2uzC/BYGGmTQnKA/47HSG40F4e3rn8DO/sTGjGLJRZKBNYcdc4SkJ
+         VkxKM+/h5DcmnfD6wJ5B5PusUoozoXv2HxITbZos6wYa396jYdGaTuZm1sAUBzw7DwuF
+         Vdb4koyAer9x2qkiNcMLqPOqC1r2BHVTFWFhhbVE4d70XYAPKDtci9NNSWGC9H/laxad
+         B6pBvpciftuPkCUfsnr9UwtkqOowG6+yMOVvJAiLds17XVWjt2On7Tg7vNK/gpJ5LN5I
+         UWqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mXE/v8JHTyVxf9dgekZsoHje3QpqCFbIJjMNc4DKNeY=;
-        b=koBlbJoht58beorrsGvuuphDI0lniCciWuEnL+dMo+Zu6QF1Q2qbIDXYkqdJup/Btg
-         atVIzFvRvNdYhC+Je6UATIMNm8B5gD0dQ4IZf4A3NlNCFGtBbmXrOiNL8MmAUTQLtske
-         1sxsKX806nghIVHFloKpjKeC+x5TD/627jSVn4Z/tuonR7SCsX5rS+F5ScVGo9YXLIiD
-         UeEh/te3DaBqtCy66l4a/Ln48h42A3I0Yd8Uvlpgq5W8GRJYP9Wx7PPS65zpaXrXvdyZ
-         FXHmWCrj+DyYFFMw83aXRv2NFmUvinoz95sPKjuhWmoXpSe63lkgunyYIqmPvnnLdBMD
-         WY0g==
-X-Gm-Message-State: AOAM5329bzGLVzvsCD5q8nA0IqOjAI8LmP1kWKjsakpqckTSHCn9rtvT
-        SejdJo5ly1Exk+N4e/xvvJM=
-X-Google-Smtp-Source: ABdhPJzCi1TK9u470losckNRhCcKUe7haryJuWzbkADBmQtwP1jOaK9pihePFSoS/nmvY+ThNG1g6g==
-X-Received: by 2002:ac8:6998:0:b0:2f1:ea20:96ae with SMTP id o24-20020ac86998000000b002f1ea2096aemr4090123qtq.89.1650648872334;
-        Fri, 22 Apr 2022 10:34:32 -0700 (PDT)
-Received: from localhost (fwdproxy-ash-119.fbsv.net. [2a03:2880:20ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id c4-20020a37b304000000b0069ec13803adsm1173538qkf.7.2022.04.22.10.34.32
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XxZBZ3stUkdhVW/utSJpsv4jrMoNhjVNY7NCi5QPbWU=;
+        b=aVXQ8yM1rBzkIVZ9Ky8Lnso/IHhpxBsMw5VqZsdJrgiIc8HB0CSc1ioYp8RpA8bRW8
+         YCyzf2VElRrwN/ECc1OYr8NmxCjuUlp6TlaZZqjnumf7/OShAJTZkugZpjgr6qhembjC
+         YH0t3GbQl6gSjr6t5a9Wm+PMJkmE1UUTpwt8XHQ1wc9DefL2M/cep1T6oLtkGSj08Pt0
+         6/JzbSgcNT3jIfz36nn7fLFEmdvXtaRfXt5K8CYebOXETNFOxahNMzi4dcouqvgtzLFq
+         Ih7+rYmVv+X5sXQYbdfli8/XBXeTcvHerieVjMXADmiU21B+oeqV2T+rzHewLY+UhQ2L
+         xFeA==
+X-Gm-Message-State: AOAM532PfPjb0rboW2yAG4cpEZgEX6QiqgBGEAQyUO2OfB++ryq7jKtx
+        49QSlG15ygTrqcyqnoMnqvtvtCS/wWA=
+X-Google-Smtp-Source: ABdhPJyo1Iq8/URCKrCCXfDfGEQSCogorOh8Sewv54X7ETtbR5vNrqWaSBhLNZmp149jqYMLD9zdlA==
+X-Received: by 2002:a05:6a00:2405:b0:4e1:5008:adcc with SMTP id z5-20020a056a00240500b004e15008adccmr6135265pfh.35.1650649719093;
+        Fri, 22 Apr 2022 10:48:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:b5ae])
+        by smtp.gmail.com with ESMTPSA id x71-20020a62864a000000b0050ad2c24a39sm3358336pfd.205.2022.04.22.10.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 10:34:32 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+        Fri, 22 Apr 2022 10:48:38 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 22 Apr 2022 07:48:36 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     David Vernet <void@manifault.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 4/4] cgroup: Add test_cpucg_weight_underprovisioned() testcase
-Date:   Fri, 22 Apr 2022 10:33:53 -0700
-Message-Id: <20220422173349.3394844-5-void@manifault.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220422173349.3394844-1-void@manifault.com>
+Subject: Re: [PATCH 0/4] cgroup: Introduce cpu controller test suite
+Message-ID: <YmLqdIiXdpQqcPTd@slm.duckdns.org>
 References: <20220422173349.3394844-1-void@manifault.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220422173349.3394844-1-void@manifault.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-test_cpu.c includes testcases that validate the cgroup cpu controller.
-This patch adds a new testcase called test_cpucg_weight_underprovisioned()
-that verifies that processes with different cpu.weight that are all running
-on an underprovisioned system, still get roughly the same amount of cpu
-time.
+Hello, David.
 
-Because test_cpucg_weight_underprovisioned() is very similar to
-test_cpucg_weight_overprovisioned(), this patch also pulls the common logic
-into a separate helper function that is invoked from both testcases, and
-which uses function pointers to invoke the unique portions of the
-testcases.
+On Fri, Apr 22, 2022 at 10:33:47AM -0700, David Vernet wrote:
+> This patchset introduces a new test_cpu.c test suite as part of
+> tools/testing/selftests/cgroup. test_cpu.c will contain testcases that
+> validate the cgroup v2 cpu controller.
+> 
+> This patchset only contains testcases that validate cpu.stat and
+> cpu.weight, but I'm expecting to send further patchsets after this that
+> also include testcases that validate other knobs such as cpu.max.
+> 
+> Note that checkpatch complains about a missing MAINTAINERS file entry for
+> [PATCH 1/4], but Roman Gushchin added that entry in a separate patchset:
+> https://lore.kernel.org/all/20220415000133.3955987-4-roman.gushchin@linux.dev/.
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- tools/testing/selftests/cgroup/test_cpu.c | 155 ++++++++++++++++------
- 1 file changed, 117 insertions(+), 38 deletions(-)
+Looks great to me. Thanks for adding the much needed selftests. Peter, if
+you're okay with it, imma route it through the cgroup tree.
 
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 8d901c06c79d..64f9ce91c992 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -19,6 +19,12 @@ enum hog_clock_type {
- 	CPU_HOG_CLOCK_WALL,
- };
- 
-+struct cpu_hogger {
-+	char *cgroup;
-+	pid_t pid;
-+	long usage;
-+};
-+
- struct cpu_hog_func_param {
- 	int nprocs;
- 	struct timespec ts;
-@@ -223,31 +229,15 @@ static int test_cpucg_stats(const char *root)
- 	return ret;
- }
- 
--/*
-- * First, this test creates the following hierarchy:
-- * A
-- * A/B     cpu.weight = 50
-- * A/C     cpu.weight = 100
-- * A/D     cpu.weight = 150
-- *
-- * A separate process is then created for each child cgroup which spawns as
-- * many threads as there are cores, and hogs each CPU as much as possible
-- * for some time interval.
-- *
-- * Once all of the children have exited, we verify that each child cgroup
-- * was given proportional runtime as informed by their cpu.weight.
-- */
--static int test_cpucg_weight_overprovisioned(const char *root)
-+static int
-+run_cpucg_weight_test(
-+		const char *root,
-+		pid_t (*spawn_child)(const struct cpu_hogger *child),
-+		int (*validate)(const struct cpu_hogger *children, int num_children))
- {
--	struct child {
--		char *cgroup;
--		pid_t pid;
--		long usage;
--	};
- 	int ret = KSFT_FAIL, i;
- 	char *parent = NULL;
--	struct child children[3] = {NULL};
--	long usage_seconds = 10;
-+	struct cpu_hogger children[3] = {NULL};
- 
- 	parent = cg_name(root, "cpucg_test_0");
- 	if (!parent)
-@@ -273,16 +263,7 @@ static int test_cpucg_weight_overprovisioned(const char *root)
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(children); i++) {
--		struct cpu_hog_func_param param = {
--			.nprocs = get_nprocs(),
--			.ts = {
--				.tv_sec = usage_seconds,
--				.tv_nsec = 0,
--			},
--			.clock_type = CPU_HOG_CLOCK_WALL,
--		};
--		pid_t pid = cg_run_nowait(children[i].cgroup, hog_cpus_timed,
--				(void *)&param);
-+		pid_t pid = spawn_child(&children[i]);
- 		if (pid <= 0)
- 			goto cleanup;
- 		children[i].pid = pid;
-@@ -302,7 +283,46 @@ static int test_cpucg_weight_overprovisioned(const char *root)
- 		children[i].usage = cg_read_key_long(children[i].cgroup,
- 				"cpu.stat", "usage_usec");
- 
--	for (i = 0; i < ARRAY_SIZE(children) - 1; i++) {
-+	if (validate(children, ARRAY_SIZE(children)))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+cleanup:
-+	for (i = 0; i < ARRAY_SIZE(children); i++) {
-+		cg_destroy(children[i].cgroup);
-+		free(children[i].cgroup);
-+	}
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+static pid_t weight_hog_ncpus(const struct cpu_hogger *child, int ncpus)
-+{
-+	long usage_seconds = 10;
-+	struct cpu_hog_func_param param = {
-+		.nprocs = ncpus,
-+		.ts = {
-+			.tv_sec = usage_seconds,
-+			.tv_nsec = 0,
-+		},
-+		.clock_type = CPU_HOG_CLOCK_WALL,
-+	};
-+	return cg_run_nowait(child->cgroup, hog_cpus_timed, (void *)&param);
-+}
-+
-+static pid_t weight_hog_all_cpus(const struct cpu_hogger *child)
-+{
-+	return weight_hog_ncpus(child, get_nprocs());
-+}
-+
-+static int
-+overprovision_validate(const struct cpu_hogger *children, int num_children)
-+{
-+	int ret = KSFT_FAIL, i;
-+
-+	for (i = 0; i < num_children - 1; i++) {
- 		long delta;
- 
- 		if (children[i + 1].usage <= children[i].usage)
-@@ -315,16 +335,74 @@ static int test_cpucg_weight_overprovisioned(const char *root)
- 
- 	ret = KSFT_PASS;
- cleanup:
--	for (i = 0; i < ARRAY_SIZE(children); i++) {
--		cg_destroy(children[i].cgroup);
--		free(children[i].cgroup);
-+	return ret;
-+}
-+
-+/*
-+ * First, this test creates the following hierarchy:
-+ * A
-+ * A/B     cpu.weight = 50
-+ * A/C     cpu.weight = 100
-+ * A/D     cpu.weight = 150
-+ *
-+ * A separate process is then created for each child cgroup which spawns as
-+ * many threads as there are cores, and hogs each CPU as much as possible
-+ * for some time interval.
-+ *
-+ * Once all of the children have exited, we verify that each child cgroup
-+ * was given proportional runtime as informed by their cpu.weight.
-+ */
-+static int test_cpucg_weight_overprovisioned(const char *root)
-+{
-+	return run_cpucg_weight_test(root, weight_hog_all_cpus,
-+			overprovision_validate);
-+}
-+
-+static pid_t weight_hog_one_cpu(const struct cpu_hogger *child)
-+{
-+	return weight_hog_ncpus(child, 1);
-+}
-+
-+static int
-+underprovision_validate(const struct cpu_hogger *children, int num_children)
-+{
-+	int ret = KSFT_FAIL, i;
-+
-+	for (i = 0; i < num_children - 1; i++) {
-+		if (!values_close(children[i + 1].usage, children[0].usage, 15))
-+			goto cleanup;
- 	}
--	cg_destroy(parent);
--	free(parent);
- 
-+	ret = KSFT_PASS;
-+cleanup:
- 	return ret;
- }
- 
-+/*
-+ * First, this test creates the following hierarchy:
-+ * A
-+ * A/B     cpu.weight = 50
-+ * A/C     cpu.weight = 100
-+ * A/D     cpu.weight = 150
-+ *
-+ * A separate process is then created for each child cgroup which spawns a
-+ * single thread that hogs a CPU. The testcase is only run on systems that
-+ * have at least one core per-thread in the child processes.
-+ *
-+ * Once all of the children have exited, we verify that each child cgroup
-+ * had roughly the same runtime despite having different cpu.weight.
-+ */
-+static int test_cpucg_weight_underprovisioned(const char *root)
-+{
-+	// Only run the test if there are enough cores to avoid overprovisioning
-+	// the system.
-+	if (get_nprocs() < 4)
-+		return KSFT_SKIP;
-+
-+	return run_cpucg_weight_test(root, weight_hog_one_cpu,
-+			underprovision_validate);
-+}
-+
- #define T(x) { x, #x }
- struct cpucg_test {
- 	int (*fn)(const char *root);
-@@ -333,6 +411,7 @@ struct cpucg_test {
- 	T(test_cpucg_subtree_control),
- 	T(test_cpucg_stats),
- 	T(test_cpucg_weight_overprovisioned),
-+	T(test_cpucg_weight_underprovisioned),
- };
- #undef T
- 
+Thanks.
+
 -- 
-2.30.2
-
+tejun
