@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DA750BED3
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 19:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1424650BED6
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 19:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbiDVRjT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Apr 2022 13:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        id S234102AbiDVRjY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Apr 2022 13:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbiDVRjT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 13:39:19 -0400
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4058EBB918;
-        Fri, 22 Apr 2022 10:36:16 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id s4so6347874qkh.0;
-        Fri, 22 Apr 2022 10:36:16 -0700 (PDT)
+        with ESMTP id S233918AbiDVRjV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 13:39:21 -0400
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B92CD64FA;
+        Fri, 22 Apr 2022 10:36:17 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id x24so5993037qtq.11;
+        Fri, 22 Apr 2022 10:36:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jd8Of3UQ/tKXQyCAU+TY/4BZIiO1B8v+E8NTO3SRV0g=;
-        b=67bewfq4JSiGMNkH3BxEaaEXNeRZuT29zbFLi9nBMlL2JaBNpVuy9Jbvda99CJAftg
-         ImEs19az89q9OJ3Dt1/kDy7/8Zp/Ehz/ntv+WDZAh+aLqAK3XIj92MaEhKdK8Zhl+R01
-         XKhgvsYqWL16Iz+5+n/at02WDnMAxurhKUeHpwD64c2an6zYcW6a+1UXQ7nhnqNhSg1A
-         tTWA7Sa2u0jX89UkC4izO5QsZLlOsNjFeyn78k1mSj34JK+W8lr0v528rwy6WXrXr2/4
-         5xro1gMm8tdO1ud3H3VIUIYF/+R/Ei2DRAbmAtnnxXxpToUzr9+YlFv6SKre85unQbNW
-         cdng==
-X-Gm-Message-State: AOAM532NU0K5E64U3q2TDPbijDRtiq4+4/HC/VeNqqclQ3YTfRk+q+fU
-        l5t29EcgqtvssKwKi1+plX06mDa1hOgGSQ==
-X-Google-Smtp-Source: ABdhPJyTT4O6pc8bwgHjfFEarWkws8V3+iMpizSW91UzeSI3fpGVsB8It4W5bxvliPVaK4ljqNmCDw==
-X-Received: by 2002:a05:620a:d4e:b0:69b:f2e5:b8cd with SMTP id o14-20020a05620a0d4e00b0069bf2e5b8cdmr3390200qkl.535.1650648870591;
-        Fri, 22 Apr 2022 10:34:30 -0700 (PDT)
-Received: from localhost (fwdproxy-ash-009.fbsv.net. [2a03:2880:20ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05622a170500b002f33ec7a932sm1632660qtk.79.2022.04.22.10.34.30
+        bh=mXE/v8JHTyVxf9dgekZsoHje3QpqCFbIJjMNc4DKNeY=;
+        b=koBlbJoht58beorrsGvuuphDI0lniCciWuEnL+dMo+Zu6QF1Q2qbIDXYkqdJup/Btg
+         atVIzFvRvNdYhC+Je6UATIMNm8B5gD0dQ4IZf4A3NlNCFGtBbmXrOiNL8MmAUTQLtske
+         1sxsKX806nghIVHFloKpjKeC+x5TD/627jSVn4Z/tuonR7SCsX5rS+F5ScVGo9YXLIiD
+         UeEh/te3DaBqtCy66l4a/Ln48h42A3I0Yd8Uvlpgq5W8GRJYP9Wx7PPS65zpaXrXvdyZ
+         FXHmWCrj+DyYFFMw83aXRv2NFmUvinoz95sPKjuhWmoXpSe63lkgunyYIqmPvnnLdBMD
+         WY0g==
+X-Gm-Message-State: AOAM5329bzGLVzvsCD5q8nA0IqOjAI8LmP1kWKjsakpqckTSHCn9rtvT
+        SejdJo5ly1Exk+N4e/xvvJM=
+X-Google-Smtp-Source: ABdhPJzCi1TK9u470losckNRhCcKUe7haryJuWzbkADBmQtwP1jOaK9pihePFSoS/nmvY+ThNG1g6g==
+X-Received: by 2002:ac8:6998:0:b0:2f1:ea20:96ae with SMTP id o24-20020ac86998000000b002f1ea2096aemr4090123qtq.89.1650648872334;
+        Fri, 22 Apr 2022 10:34:32 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-119.fbsv.net. [2a03:2880:20ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c4-20020a37b304000000b0069ec13803adsm1173538qkf.7.2022.04.22.10.34.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 10:34:30 -0700 (PDT)
+        Fri, 22 Apr 2022 10:34:32 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
 Cc:     cgroups@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 3/4] cgroup: Add test_cpucg_weight_overprovisioned() testcase
-Date:   Fri, 22 Apr 2022 10:33:52 -0700
-Message-Id: <20220422173349.3394844-4-void@manifault.com>
+Subject: [PATCH v2 4/4] cgroup: Add test_cpucg_weight_underprovisioned() testcase
+Date:   Fri, 22 Apr 2022 10:33:53 -0700
+Message-Id: <20220422173349.3394844-5-void@manifault.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220422173349.3394844-1-void@manifault.com>
 References: <20220422173349.3394844-1-void@manifault.com>
@@ -59,136 +59,153 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 test_cpu.c includes testcases that validate the cgroup cpu controller.
-This patch adds a new testcase called test_cpucg_weight_overprovisioned()
-that verifies the expected behavior of creating multiple processes with
-different cpu.weight, on a system that is overprovisioned.
+This patch adds a new testcase called test_cpucg_weight_underprovisioned()
+that verifies that processes with different cpu.weight that are all running
+on an underprovisioned system, still get roughly the same amount of cpu
+time.
 
-So as to avoid code duplication, this patch also updates cpu_hog_func_param
-to take a new hog_clock_type enum which informs how time is counted in
-hog_cpus_timed() (either process time or wall clock time).
+Because test_cpucg_weight_underprovisioned() is very similar to
+test_cpucg_weight_overprovisioned(), this patch also pulls the common logic
+into a separate helper function that is invoked from both testcases, and
+which uses function pointers to invoke the unique portions of the
+testcases.
 
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- tools/testing/selftests/cgroup/cgroup_util.c |  12 ++
- tools/testing/selftests/cgroup/cgroup_util.h |   1 +
- tools/testing/selftests/cgroup/test_cpu.c    | 135 ++++++++++++++++++-
- 3 files changed, 145 insertions(+), 3 deletions(-)
+ tools/testing/selftests/cgroup/test_cpu.c | 155 ++++++++++++++++------
+ 1 file changed, 117 insertions(+), 38 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 0cf7e90c0052..b690fdc8b4cd 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -190,6 +190,18 @@ int cg_write(const char *cgroup, const char *control, char *buf)
- 	return -1;
- }
- 
-+int cg_write_numeric(const char *cgroup, const char *control, long value)
-+{
-+	char buf[64];
-+	int ret;
-+
-+	ret = sprintf(buf, "%lu", value);
-+	if (ret < 0)
-+		return ret;
-+
-+	return cg_write(cgroup, control, buf);
-+}
-+
- int cg_find_unified_root(char *root, size_t len)
- {
- 	char buf[10 * PAGE_SIZE];
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-index 1df13dc8b8aa..0f79156697cf 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/cgroup_util.h
-@@ -35,6 +35,7 @@ extern long cg_read_long(const char *cgroup, const char *control);
- long cg_read_key_long(const char *cgroup, const char *control, const char *key);
- extern long cg_read_lc(const char *cgroup, const char *control);
- extern int cg_write(const char *cgroup, const char *control, char *buf);
-+int cg_write_numeric(const char *cgroup, const char *control, long value);
- extern int cg_run(const char *cgroup,
- 		  int (*fn)(const char *cgroup, void *arg),
- 		  void *arg);
 diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 3bd61964a262..8d901c06c79d 100644
+index 8d901c06c79d..64f9ce91c992 100644
 --- a/tools/testing/selftests/cgroup/test_cpu.c
 +++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -2,6 +2,8 @@
+@@ -19,6 +19,12 @@ enum hog_clock_type {
+ 	CPU_HOG_CLOCK_WALL,
+ };
  
- #define _GNU_SOURCE
- #include <linux/limits.h>
-+#include <sys/sysinfo.h>
-+#include <sys/wait.h>
- #include <errno.h>
- #include <pthread.h>
- #include <stdio.h>
-@@ -10,9 +12,17 @@
- #include "../kselftest.h"
- #include "cgroup_util.h"
- 
-+enum hog_clock_type {
-+	// Count elapsed time using the CLOCK_PROCESS_CPUTIME_ID clock.
-+	CPU_HOG_CLOCK_PROCESS,
-+	// Count elapsed time using system wallclock time.
-+	CPU_HOG_CLOCK_WALL,
++struct cpu_hogger {
++	char *cgroup;
++	pid_t pid;
++	long usage;
 +};
 +
  struct cpu_hog_func_param {
  	int nprocs;
  	struct timespec ts;
-+	enum hog_clock_type clock_type;
- };
- 
- /*
-@@ -118,8 +128,13 @@ static int hog_cpus_timed(const char *cgroup, void *arg)
- 		(struct cpu_hog_func_param *)arg;
- 	struct timespec ts_run = param->ts;
- 	struct timespec ts_remaining = ts_run;
-+	struct timespec ts_start;
- 	int i, ret;
- 
-+	ret = clock_gettime(CLOCK_MONOTONIC, &ts_start);
-+	if (ret != 0)
-+		return ret;
-+
- 	for (i = 0; i < param->nprocs; i++) {
- 		pthread_t tid;
- 
-@@ -135,9 +150,19 @@ static int hog_cpus_timed(const char *cgroup, void *arg)
- 		if (ret && errno != EINTR)
- 			return ret;
- 
--		ret = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts_total);
--		if (ret != 0)
--			return ret;
-+		if (param->clock_type == CPU_HOG_CLOCK_PROCESS) {
-+			ret = clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts_total);
-+			if (ret != 0)
-+				return ret;
-+		} else {
-+			struct timespec ts_current;
-+
-+			ret = clock_gettime(CLOCK_MONOTONIC, &ts_current);
-+			if (ret != 0)
-+				return ret;
-+
-+			ts_total = timespec_sub(&ts_current, &ts_start);
-+		}
- 
- 		ts_remaining = timespec_sub(&ts_run, &ts_total);
- 	}
-@@ -176,6 +201,7 @@ static int test_cpucg_stats(const char *root)
- 			.tv_sec = usage_seconds,
- 			.tv_nsec = 0,
- 		},
-+		.clock_type = CPU_HOG_CLOCK_PROCESS,
- 	};
- 	if (cg_run(cpucg, hog_cpus_timed, (void *)&param))
- 		goto cleanup;
-@@ -197,6 +223,108 @@ static int test_cpucg_stats(const char *root)
+@@ -223,31 +229,15 @@ static int test_cpucg_stats(const char *root)
  	return ret;
  }
  
+-/*
+- * First, this test creates the following hierarchy:
+- * A
+- * A/B     cpu.weight = 50
+- * A/C     cpu.weight = 100
+- * A/D     cpu.weight = 150
+- *
+- * A separate process is then created for each child cgroup which spawns as
+- * many threads as there are cores, and hogs each CPU as much as possible
+- * for some time interval.
+- *
+- * Once all of the children have exited, we verify that each child cgroup
+- * was given proportional runtime as informed by their cpu.weight.
+- */
+-static int test_cpucg_weight_overprovisioned(const char *root)
++static int
++run_cpucg_weight_test(
++		const char *root,
++		pid_t (*spawn_child)(const struct cpu_hogger *child),
++		int (*validate)(const struct cpu_hogger *children, int num_children))
+ {
+-	struct child {
+-		char *cgroup;
+-		pid_t pid;
+-		long usage;
+-	};
+ 	int ret = KSFT_FAIL, i;
+ 	char *parent = NULL;
+-	struct child children[3] = {NULL};
+-	long usage_seconds = 10;
++	struct cpu_hogger children[3] = {NULL};
+ 
+ 	parent = cg_name(root, "cpucg_test_0");
+ 	if (!parent)
+@@ -273,16 +263,7 @@ static int test_cpucg_weight_overprovisioned(const char *root)
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(children); i++) {
+-		struct cpu_hog_func_param param = {
+-			.nprocs = get_nprocs(),
+-			.ts = {
+-				.tv_sec = usage_seconds,
+-				.tv_nsec = 0,
+-			},
+-			.clock_type = CPU_HOG_CLOCK_WALL,
+-		};
+-		pid_t pid = cg_run_nowait(children[i].cgroup, hog_cpus_timed,
+-				(void *)&param);
++		pid_t pid = spawn_child(&children[i]);
+ 		if (pid <= 0)
+ 			goto cleanup;
+ 		children[i].pid = pid;
+@@ -302,7 +283,46 @@ static int test_cpucg_weight_overprovisioned(const char *root)
+ 		children[i].usage = cg_read_key_long(children[i].cgroup,
+ 				"cpu.stat", "usage_usec");
+ 
+-	for (i = 0; i < ARRAY_SIZE(children) - 1; i++) {
++	if (validate(children, ARRAY_SIZE(children)))
++		goto cleanup;
++
++	ret = KSFT_PASS;
++cleanup:
++	for (i = 0; i < ARRAY_SIZE(children); i++) {
++		cg_destroy(children[i].cgroup);
++		free(children[i].cgroup);
++	}
++	cg_destroy(parent);
++	free(parent);
++
++	return ret;
++}
++
++static pid_t weight_hog_ncpus(const struct cpu_hogger *child, int ncpus)
++{
++	long usage_seconds = 10;
++	struct cpu_hog_func_param param = {
++		.nprocs = ncpus,
++		.ts = {
++			.tv_sec = usage_seconds,
++			.tv_nsec = 0,
++		},
++		.clock_type = CPU_HOG_CLOCK_WALL,
++	};
++	return cg_run_nowait(child->cgroup, hog_cpus_timed, (void *)&param);
++}
++
++static pid_t weight_hog_all_cpus(const struct cpu_hogger *child)
++{
++	return weight_hog_ncpus(child, get_nprocs());
++}
++
++static int
++overprovision_validate(const struct cpu_hogger *children, int num_children)
++{
++	int ret = KSFT_FAIL, i;
++
++	for (i = 0; i < num_children - 1; i++) {
+ 		long delta;
+ 
+ 		if (children[i + 1].usage <= children[i].usage)
+@@ -315,16 +335,74 @@ static int test_cpucg_weight_overprovisioned(const char *root)
+ 
+ 	ret = KSFT_PASS;
+ cleanup:
+-	for (i = 0; i < ARRAY_SIZE(children); i++) {
+-		cg_destroy(children[i].cgroup);
+-		free(children[i].cgroup);
++	return ret;
++}
++
 +/*
 + * First, this test creates the following hierarchy:
 + * A
@@ -205,100 +222,65 @@ index 3bd61964a262..8d901c06c79d 100644
 + */
 +static int test_cpucg_weight_overprovisioned(const char *root)
 +{
-+	struct child {
-+		char *cgroup;
-+		pid_t pid;
-+		long usage;
-+	};
++	return run_cpucg_weight_test(root, weight_hog_all_cpus,
++			overprovision_validate);
++}
++
++static pid_t weight_hog_one_cpu(const struct cpu_hogger *child)
++{
++	return weight_hog_ncpus(child, 1);
++}
++
++static int
++underprovision_validate(const struct cpu_hogger *children, int num_children)
++{
 +	int ret = KSFT_FAIL, i;
-+	char *parent = NULL;
-+	struct child children[3] = {NULL};
-+	long usage_seconds = 10;
 +
-+	parent = cg_name(root, "cpucg_test_0");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+cpu"))
-+		goto cleanup;
-+
-+	for (i = 0; i < ARRAY_SIZE(children); i++) {
-+		children[i].cgroup = cg_name_indexed(parent, "cpucg_child", i);
-+		if (!children[i].cgroup)
++	for (i = 0; i < num_children - 1; i++) {
++		if (!values_close(children[i + 1].usage, children[0].usage, 15))
 +			goto cleanup;
-+
-+		if (cg_create(children[i].cgroup))
-+			goto cleanup;
-+
-+		if (cg_write_numeric(children[i].cgroup, "cpu.weight",
-+					50 * (i + 1)))
-+			goto cleanup;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(children); i++) {
-+		struct cpu_hog_func_param param = {
-+			.nprocs = get_nprocs(),
-+			.ts = {
-+				.tv_sec = usage_seconds,
-+				.tv_nsec = 0,
-+			},
-+			.clock_type = CPU_HOG_CLOCK_WALL,
-+		};
-+		pid_t pid = cg_run_nowait(children[i].cgroup, hog_cpus_timed,
-+				(void *)&param);
-+		if (pid <= 0)
-+			goto cleanup;
-+		children[i].pid = pid;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(children); i++) {
-+		int retcode;
-+
-+		waitpid(children[i].pid, &retcode, 0);
-+		if (!WIFEXITED(retcode))
-+			goto cleanup;
-+		if (WEXITSTATUS(retcode))
-+			goto cleanup;
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(children); i++)
-+		children[i].usage = cg_read_key_long(children[i].cgroup,
-+				"cpu.stat", "usage_usec");
-+
-+	for (i = 0; i < ARRAY_SIZE(children) - 1; i++) {
-+		long delta;
-+
-+		if (children[i + 1].usage <= children[i].usage)
-+			goto cleanup;
-+
-+		delta = children[i + 1].usage - children[i].usage;
-+		if (!values_close(delta, children[0].usage, 35))
-+			goto cleanup;
-+	}
-+
+ 	}
+-	cg_destroy(parent);
+-	free(parent);
+ 
 +	ret = KSFT_PASS;
 +cleanup:
-+	for (i = 0; i < ARRAY_SIZE(children); i++) {
-+		cg_destroy(children[i].cgroup);
-+		free(children[i].cgroup);
-+	}
-+	cg_destroy(parent);
-+	free(parent);
+ 	return ret;
+ }
+ 
++/*
++ * First, this test creates the following hierarchy:
++ * A
++ * A/B     cpu.weight = 50
++ * A/C     cpu.weight = 100
++ * A/D     cpu.weight = 150
++ *
++ * A separate process is then created for each child cgroup which spawns a
++ * single thread that hogs a CPU. The testcase is only run on systems that
++ * have at least one core per-thread in the child processes.
++ *
++ * Once all of the children have exited, we verify that each child cgroup
++ * had roughly the same runtime despite having different cpu.weight.
++ */
++static int test_cpucg_weight_underprovisioned(const char *root)
++{
++	// Only run the test if there are enough cores to avoid overprovisioning
++	// the system.
++	if (get_nprocs() < 4)
++		return KSFT_SKIP;
 +
-+	return ret;
++	return run_cpucg_weight_test(root, weight_hog_one_cpu,
++			underprovision_validate);
 +}
 +
  #define T(x) { x, #x }
  struct cpucg_test {
  	int (*fn)(const char *root);
-@@ -204,6 +332,7 @@ struct cpucg_test {
- } tests[] = {
+@@ -333,6 +411,7 @@ struct cpucg_test {
  	T(test_cpucg_subtree_control),
  	T(test_cpucg_stats),
-+	T(test_cpucg_weight_overprovisioned),
+ 	T(test_cpucg_weight_overprovisioned),
++	T(test_cpucg_weight_underprovisioned),
  };
  #undef T
  
