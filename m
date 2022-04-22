@@ -2,66 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A974A50ADC4
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 04:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2171D50AE4B
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 04:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443339AbiDVCcu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Apr 2022 22:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S229901AbiDVDCB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Apr 2022 23:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbiDVCcc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Apr 2022 22:32:32 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7F51D0CC
-        for <cgroups@vger.kernel.org>; Thu, 21 Apr 2022 19:29:41 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id bg9so6206472pgb.9
-        for <cgroups@vger.kernel.org>; Thu, 21 Apr 2022 19:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vnwa2/E4TTvsZNdvRU29uFcAMGoetyFfng2lxAsZyvs=;
-        b=i1aDJ+cBEN/Qi0ifvWu89VN2VtJEAI+sUbVu6CO17eUtch7Lc4hQk6+ROT49jL6OLb
-         m19kGV7c4Ku7RsiVZieFkbNkwoFiYrXk2EbJxTzXlFy+iEqdeSHMzmTrZFtYLZGehrO2
-         78TfXZ93IpSmgjFbprLy1RpRR1/MfIGKvkfleAnU/Y9ASAj+uNjV0FHWwQn3h0Hxguov
-         6uIT34XqSqtOTLHKsHxDYLoX0EfRtHrEdCLBTn4MAQdoHSznb43hyaaTXbZvzZXJjSf5
-         x5augORvT5fWzGVwH/qBPybU6plMoSpSjehao1MPjubdz6MWConLgheFyK9RQOZecART
-         hS3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vnwa2/E4TTvsZNdvRU29uFcAMGoetyFfng2lxAsZyvs=;
-        b=3kBsJDAyFWgCeuMcBO+ebJMKPlnDaC/IMwPzE1QRCIQlGONN+48W107OkhMIq1Yvzu
-         MZXe80xhlKeEewBAEh6kbvDlxnRK/rJOKQWL9qG0E8b+pfXVSAy/dM3E9q6X/HeFrCdX
-         GTdlhrOBzS6URKPXyLPfE7esW3QreRTvbDmxkzeIqZcIqcsIfEtHvj5aLm5Yu+Q0PxsD
-         g7k3Gg4Hwe75rQiKG+CAAIJ9oW0FR5a7FhUjWwhZzgNvVlStpoNoH7YLsDaEkADku0dE
-         7383zV3l0XkueeuxASVPROp8NBJ+Q7TqC64i6aqHBC2HYOhbvyBoQyNNMHoXNb/DN0uf
-         bk5g==
-X-Gm-Message-State: AOAM530//MVY3LREjzOcGW/CFxdBvZ6O1HDoBzgivhyP/IsqLB61G6wT
-        4j+dqEs3cEbBr1dNAoDToVFwRHTU/HgJpIsM
-X-Google-Smtp-Source: ABdhPJy1JPBV19Zq+eQCHMebemfhqlw58lFdv0J33srKIMnQ3hu7/xkE7HYk7ATMdQ0s2RkOc08PTQ==
-X-Received: by 2002:a63:6886:0:b0:3aa:9204:d1eb with SMTP id d128-20020a636886000000b003aa9204d1ebmr2070069pgc.63.1650594580714;
-        Thu, 21 Apr 2022 19:29:40 -0700 (PDT)
-Received: from localhost ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id 130-20020a621488000000b00505e6092973sm447810pfu.68.2022.04.21.19.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Apr 2022 19:29:40 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 10:29:36 +0800
-From:   Muchun Song <songmuchun@bytedance.com>
+        with ESMTP id S1442136AbiDVDCA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Apr 2022 23:02:00 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA3A4D9EC;
+        Thu, 21 Apr 2022 19:59:08 -0700 (PDT)
+Date:   Thu, 21 Apr 2022 19:59:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1650596346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YNU0A0wQbRo9vG6Fxcfru5+fUFZat7gNvd1jVI3Drpk=;
+        b=stes4zkEnsmvTJz5l51I1gDs5kSJMVg38xIaxChenqK2FebUpU213JCujyBQIb1T30xiR+
+        Kpf2JNlLhViag4fyJVNU5xNc+XLPRJR0W1FRMN51j8fsi3yQLZnnXc0mcI2d2TcsmzThzw
+        CqOdvcxQHKDeyWRrDj5USIoxTEMIC7g=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
 To:     Waiman Long <longman@redhat.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Yang Shi <shy828301@gmail.com>,
         Vlastimil Babka <vbabka@suse.cz>
 Subject: Re: [PATCH] mm/memcg: Free percpu stats memory of dying memcg's
-Message-ID: <YmITEEdEbaKCK3BN@FVFYT0MHHV2J.usts.net>
+Message-ID: <YmIZ9Lpvx5pY3oTV@carbon>
 References: <20220421145845.1044652-1-longman@redhat.com>
  <YmGHYNuAp8957ouq@carbon>
  <112a4d7f-bc53-6e59-7bb8-6fecb65d045d@redhat.com>
@@ -71,9 +47,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <58c41f14-356e-88dd-54aa-dc6873bf80ff@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -145,13 +123,22 @@ On Thu, Apr 21, 2022 at 02:46:00PM -0400, Waiman Long wrote:
 > 
 > Pagecache reparenting will probably fix the problem that I have seen. Is
 > someone working on this?
->
 
-We also encountered dying cgroup issue on our servers for a long time.
-I have worked on this for a while and proposed a resolution [1] based
-on obj_cgroup APIs to charge the LRU pages.
+Some time ago Muchun posted patches based on the reusing of the obj_cgroup API.
 
-[1] https://lore.kernel.org/all/20220216115132.52602-1-songmuchun@bytedance.com/
+I'm not strictly against this approach, but in my opinion it's not the best.
+I suggested to use lru vectors as an intermediate objects. In theory, it might
+allow to avoid bumping reference counters for all charged pages at all: live
+cgroups will be protected by being live, dying cgroups will only need
+a temporarily protection while lru vectors and associated pages are reparenting.
 
-Thanks.
+There are pros and cons:
++ cgroup reference counting becomes simpler and more debuggable
++ potential perf wins from fewer operations with live cgroups css refcounters
+= I hope to see code simplifications (but not guaranteed)
+- deleting cgroups becomes more expensive, but the cost can be spread to
+  asynchronous workers
 
+Idk if Muchun tried to implement it. If not, I might try myself.
+
+Thanks!
