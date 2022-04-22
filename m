@@ -2,121 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5D750BD48
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 18:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7043750BD63
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449779AbiDVQnu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Apr 2022 12:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
+        id S1449816AbiDVQsc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Apr 2022 12:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449768AbiDVQns (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 12:43:48 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8E15F247
-        for <cgroups@vger.kernel.org>; Fri, 22 Apr 2022 09:40:54 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id lc2so17404987ejb.12
-        for <cgroups@vger.kernel.org>; Fri, 22 Apr 2022 09:40:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CoGqA9rNsKJzYU/Obb8AAvf20gVKLeXNXFwl6nZ00rM=;
-        b=puSEmprmz1nabSt+ml3920aGPKkUVGoZm9P1z5qEs6WOb5oaEqNdPuB+XnBF/+pdaO
-         BVteA6H2VgQlmb0Vq/J/n/1XVZvrvGQjt3mVj7lbZ/55jU+YzyVz0YPnKdWjffXAa8Sz
-         MZZheTPjT0XiMePlwtP5H2lntWYI8T7f3sghXXsJd3g7Ti463gREa1RRPDULw3YuULJU
-         V2eu6FowolcgcwIpjbYp+q6SYrrPz3TtrfOdT2/aZwIAQaPxpVJyN7CzTxgTka8GC3Wa
-         WXEDYA8EWuQGKrc2twCsC4WwQ7w8TiQWt2zr4dmLhdutg4v2XDEey0Wxj5JTGpSZAciX
-         TulA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CoGqA9rNsKJzYU/Obb8AAvf20gVKLeXNXFwl6nZ00rM=;
-        b=MGLfpS2tjkkTYr+5lZSCDyALVtvDZkYLJW4xJRkiU6cZ8egzIUurw6wL4ZEldYfq/X
-         yZSWxf9Q6emvPXYwFH4Z/Ryc0gCAAZyASFw8CV04pb8awSUHSu4m/9h2f0XVgK14F0jx
-         IpwKgwm1o4wGEojxK0rmsgP0Ri5cVssepNkctFAIwMTRQjltk/9ezBGu1538w8IJ+Ae0
-         b7ZRJTrhfgfRkVJKe3/bcu6B6yNP6DwKmjpStW8NueUFY9XLhdiAHXc89RjavB0MYMy9
-         vU8PT5AH+hwW/0OPYnoBDytCtUvD7iklNJmo8PbbtA6ckGWvOhaXe+CEC9t9bZjrsHmz
-         yTCg==
-X-Gm-Message-State: AOAM530veCBUGN3pX714BabB4KlK7NTJ4YNsuYHdDoDg0y3qnn3RLBDa
-        nn3JVmikkgDAggkSamyzsHR20F0zWXQdJaRgF4sU0g==
-X-Google-Smtp-Source: ABdhPJzoLmBU5Xg3Lxmb7MT8CNOOwTwJf10BbLeuL2aNNlpJcThtRrea/0k1l5jXVtMthl5n+035wmUrG4QqfMQQfso=
-X-Received: by 2002:a17:907:60c9:b0:6f3:47fb:df26 with SMTP id
- hv9-20020a17090760c900b006f347fbdf26mr3107234ejc.159.1650645652344; Fri, 22
- Apr 2022 09:40:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220420235228.2767816-1-tjmercier@google.com> <YmLBTBd+5RHzr9MK@kroah.com>
-In-Reply-To: <YmLBTBd+5RHzr9MK@kroah.com>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Fri, 22 Apr 2022 09:40:41 -0700
-Message-ID: <CABdmKX2X6VqK4rw90+OtSOF+aFZELefuzd=YOY3+cqiOqqYALQ@mail.gmail.com>
-Subject: Re: [RFC v5 0/6] Proposal for a GPU cgroup controller
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Tejun Heo <tj@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
+        with ESMTP id S1449800AbiDVQsb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 12:48:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E0225EBD3
+        for <cgroups@vger.kernel.org>; Fri, 22 Apr 2022 09:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650645937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iRkZ/MlhVt4hFpcsFs4QSWVVxX1L4tCfV1bfk1REu+M=;
+        b=CrCZ1os0LjYeozJpMqkC3iN9jFzorBBRX4n87MTz5WgIdSntf8ftLuXfYHh8UDrzsHEIHM
+        1OF+jEbq3qNZf8NloMbntfBH/SGXCaU5d0RxDeNgQ8XtoB66zA/JgUzFZxXmqaFYItQ+0e
+        51sn7S9wFwaSqeWju8332jk+mm9VFiE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-264-pbnhvUw6MYGIrHBckTXuTg-1; Fri, 22 Apr 2022 12:45:31 -0400
+X-MC-Unique: pbnhvUw6MYGIrHBckTXuTg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6094A101AA44;
+        Fri, 22 Apr 2022 16:45:31 +0000 (UTC)
+Received: from jsavitz-csb.redhat.com (unknown [10.22.10.142])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE9482166B5E;
+        Fri, 22 Apr 2022 16:45:30 +0000 (UTC)
+From:   Joel Savitz <jsavitz@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Joel Savitz <jsavitz@redhat.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Carlos Llamas <cmllamas@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, trivial@kernel.org
+Subject: [PATCH] Documentation: add missing angle bracket in cgroup-v2 doc Tejun Heo <tj@kernel.org>
+Date:   Fri, 22 Apr 2022 12:45:26 -0400
+Message-Id: <20220422164526.3464306-1-jsavitz@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 7:53 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 20, 2022 at 11:52:18PM +0000, T.J. Mercier wrote:
-> > This patch series revisits the proposal for a GPU cgroup controller to
-> > track and limit memory allocations by various device/allocator
-> > subsystems. The patch series also contains a simple prototype to
-> > illustrate how Android intends to implement DMA-BUF allocator
-> > attribution using the GPU cgroup controller. The prototype does not
-> > include resource limit enforcements.
-> >
-> > Changelog:
-> > v5:
-> > Rebase on top of v5.18-rc3
->
-> Why is a "RFC" series on v5?  I treat "RFC" as "not ready to be merged,
-> if people are interested, please look at it".  But v5 seems like you
-> think this is real.
->
-> confused,
->
-> greg k-h
+Trivial addition of missing closing angle backet.
 
-I'm sorry for the confusion. I'll change this to PATCH in future revisions.
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 69d7a6983f78..38aa01939e1e 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1881,7 +1881,7 @@ IO Latency Interface Files
+   io.latency
+ 	This takes a similar format as the other controllers.
+ 
+-		"MAJOR:MINOR target=<target time in microseconds"
++		"MAJOR:MINOR target=<target time in microseconds>"
+ 
+   io.stat
+ 	If the controller is enabled you will see extra stats in io.stat in
+-- 
+2.27.0
+
