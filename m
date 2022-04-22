@@ -2,106 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940FA50BBEA
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 17:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF2450BC4E
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 17:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449572AbiDVPqA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Apr 2022 11:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        id S1390909AbiDVQAo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Apr 2022 12:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449506AbiDVPpa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 11:45:30 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6EA5B3C2;
-        Fri, 22 Apr 2022 08:42:34 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id s14so11651907plk.8;
-        Fri, 22 Apr 2022 08:42:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/2bXBH57zZDvmeIOYDk/m7NyaBAKN+vWWjfrVhEZ7T4=;
-        b=XYZOLh+Jv2kL2sx884zx4C5eFWyZUuKY38ML9XvAYhNcR9BREu4ndvKecAC8kiH8Wl
-         2v8yd4kPP2gu4bBvSJJYHpMRWaZdWMCPawASUwvIYLt/36hDOsoQF6/PRGnoA/fP3+Iy
-         OdYf/Am/17PxHTlnZSv3KbSRM9TsczBeb1wQS6jyeQwBOuRzRhaolF58FR4l9A1SPpSs
-         HkM3GxADfbMO/Zvs8ImLLAeCMjyTOUQSJdFg27FdWbQ+EuDUKbiREIqdpGpAdH81y42c
-         dVVAZmsCS7qchIwgGY0c3HnDxcg2FfvolA13AyZ8voskHxh/DdCWa9uIdpnjrvxytLup
-         fQpg==
+        with ESMTP id S1388249AbiDVQAk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 12:00:40 -0400
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723B15DA63;
+        Fri, 22 Apr 2022 08:57:47 -0700 (PDT)
+Received: by mail-qv1-f46.google.com with SMTP id b17so6327866qvp.6;
+        Fri, 22 Apr 2022 08:57:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/2bXBH57zZDvmeIOYDk/m7NyaBAKN+vWWjfrVhEZ7T4=;
-        b=wsZc+GM2UzLy55ReM0h1QJOD4WO38nkrn4j7DyMVTYJMtFMTmfab+lJGNrXEUB1Us2
-         AsF0bTmWBXv0ol/wpYmI2kikZvjavVDtp/NrOmVKmT2uJgq2XTPL/ZMYzCU3qZG8CR9H
-         nfMz5vhVyHooVvBqk6v3EWOZZpxG4Qe3fD2FJ+2VSOmxX4xntrEaOWbuqAZ5CM0vt60L
-         WGauzYn2Gac9BYcViOzW3gt+NNUP2OZMdp4CiQepR6MkJT1QE+OlILtCzk1zWMpAXjV9
-         bqqMoxdzZM2MLjexRpk2kB6ynjuxSOg19OwpQrLJv0rXgegz0zrXtOCLU1Omfq0s7NLK
-         efoQ==
-X-Gm-Message-State: AOAM531HRe4YVRJUTMEB8Rjj8ncsaQKsrDdNaHQ/IK6ANkvyZphpkf3k
-        UlnxzlN3+rtvklwD9hDpD9Y=
-X-Google-Smtp-Source: ABdhPJxxn+CbIFWzfwls+DC0iuC84aNWB0fSRIoYKEF+syIzU+vM8K0HoUfp8xLLZbd6xF64bDs7kQ==
-X-Received: by 2002:a17:90b:4c45:b0:1d2:acdc:71d4 with SMTP id np5-20020a17090b4c4500b001d2acdc71d4mr16900643pjb.39.1650642153919;
-        Fri, 22 Apr 2022 08:42:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:b5ae])
-        by smtp.gmail.com with ESMTPSA id y68-20020a623247000000b0050acc1def3csm3032102pfy.203.2022.04.22.08.42.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xndd22pRCbxHKJgUFMYpySvXlLsTmNU6TAEv5LDON7Y=;
+        b=1tuY6z4SxGSp1pg3P3ZJWCs1u7QqvRSpaeCDfjvAgWo9/HmUuLKCYCz6ufxSwWfnJh
+         zbJuT6XyE3jTnCZFUFGsugcVtSH6kxd0lz1+b8rWlWjkQ/ha01VP0L8GZzP47wENsdNc
+         j78Ucdg+d+eXjOk5sQHJmrzLpLf5vH1PK8Ef3u+L7gnDP1DGwLMgTSdejbO3kMeedpij
+         8efIRMsCBycyOV5fQ/9X2zanaOiaE+iJ8EdKWPqRj8+F6Kl7FrP3Kz8acf3ZJT0Ybq39
+         jxiVLB7mzmO5apBCcH2XxH5IruFgHmdi0Y2PFHeIKeo+k36u4hPssECvx13F5fkQZxfL
+         kzUw==
+X-Gm-Message-State: AOAM531sdXEipjAx9dq0uYGMBV1z+kIRywQUuEnuVW5fuxJSK0MpO9G/
+        r+YT7T36rdcCssijVvVqZl0=
+X-Google-Smtp-Source: ABdhPJz8vekvOIGYSvs4ljIiWGq3glYsC/ZEz2KOr8vJEqLWuuy+8QCTERQpL+9QQabTtDiEH93L8g==
+X-Received: by 2002:a05:6214:23cc:b0:44f:4974:4c1c with SMTP id hr12-20020a05621423cc00b0044f49744c1cmr4022837qvb.116.1650643066441;
+        Fri, 22 Apr 2022 08:57:46 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-020.fbsv.net. [2a03:2880:20ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id f11-20020ac859cb000000b002f3438493a5sm1382061qtf.27.2022.04.22.08.57.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 08:42:33 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 22 Apr 2022 05:42:31 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mm@kvack.org
-Subject: Re: make the blkcg and blkcg structures private
-Message-ID: <YmLM5/1+VH5mdQ/o@slm.duckdns.org>
-References: <20220420042723.1010598-1-hch@lst.de>
- <YmHQS1pyIglK+gfS@slm.duckdns.org>
- <20220422042318.GA9977@lst.de>
+        Fri, 22 Apr 2022 08:57:46 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     akpm@linux-foundation.org
+Cc:     tj@kernel.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com, void@manifault.com
+Subject: [PATCH 0/5] Fix bugs in memcontroller cgroup tests
+Date:   Fri, 22 Apr 2022 08:57:24 -0700
+Message-Id: <20220422155728.3055914-1-void@manifault.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220422042318.GA9977@lst.de>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+tools/testing/selftests/cgroup/test_memcontrol.c contains a set of
+testcases which validate expected behavior of the cgroup memory controller.
+Roman Gushchin recently sent out a patchset that fixed a few issues in the
+test. This patchset continues that effort by fixing a few more issues that
+were causing non-deterministic failures in the suite. With this patchset,
+I'm unable to reproduce any more errors after running the tests in a
+continuous loop for many iterations. Before, I was able to reproduce at
+least one of the errors fixed in this patchset with just one or two runs.
 
-On Fri, Apr 22, 2022 at 06:23:18AM +0200, Christoph Hellwig wrote:
-> On Thu, Apr 21, 2022 at 11:44:43AM -1000, Tejun Heo wrote:
-> > The patches look all good to me and I'm not against making things more
-> > private but can you elaborate on the rationale a bit more? By and large, we
-> > have never been shy about putting things in the headers if there's *any*
-> > (perceived) gain to be made from doing so, or even just as a way to pick the
-> > locations for different things - type defs go on header and so on. Most of
-> > the inlines and [un]likely's that we have are rather silly with modern
-> > compilers with global optimizations, so it does make sense to get tidier,
-> > but if that's the rationale, mentioning that in the commit message, even
-> > briefly, would be great - ie. it should explain the benefits of adding these
-> > few accessors to keep the definition private.
-> 
-> Mostly to help me understand the code :)  between all the moving to
-> and from the css struture it is a bit of a mess, and limiting the scope
-> that deals with the structures greatly helps with that.
+David Vernet (5):
+  cgroups: Refactor children cgroups in memcg tests
+  cgroup: Account for memory_recursiveprot in test_memcg_low()
+  cgroup: Account for memory_localevents in
+    test_memcg_oom_group_leaf_events()
+  cgroup: Removing racy check in test_memcg_sock()
+  cgroup: Fix racy check in alloc_pagecache_max_30M() helper function
 
-Hahaha, yeah, fair enough. I don't see a reason to not apply the patchset
-given that the code is better organized and easier to follow afterewards.
-For the series,
-
- Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
+ tools/testing/selftests/cgroup/cgroup_util.c  | 12 ++++
+ tools/testing/selftests/cgroup/cgroup_util.h  |  1 +
+ .../selftests/cgroup/test_memcontrol.c        | 69 +++++++++++++------
+ 3 files changed, 61 insertions(+), 21 deletions(-)
 
 -- 
-tejun
+2.30.2
+
