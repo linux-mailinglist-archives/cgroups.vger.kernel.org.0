@@ -2,83 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7043750BD63
-	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 18:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F43D50BEDC
+	for <lists+cgroups@lfdr.de>; Fri, 22 Apr 2022 19:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449816AbiDVQsc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Apr 2022 12:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        id S234960AbiDVRkN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Apr 2022 13:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449800AbiDVQsb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 12:48:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E0225EBD3
-        for <cgroups@vger.kernel.org>; Fri, 22 Apr 2022 09:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650645937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iRkZ/MlhVt4hFpcsFs4QSWVVxX1L4tCfV1bfk1REu+M=;
-        b=CrCZ1os0LjYeozJpMqkC3iN9jFzorBBRX4n87MTz5WgIdSntf8ftLuXfYHh8UDrzsHEIHM
-        1OF+jEbq3qNZf8NloMbntfBH/SGXCaU5d0RxDeNgQ8XtoB66zA/JgUzFZxXmqaFYItQ+0e
-        51sn7S9wFwaSqeWju8332jk+mm9VFiE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-264-pbnhvUw6MYGIrHBckTXuTg-1; Fri, 22 Apr 2022 12:45:31 -0400
-X-MC-Unique: pbnhvUw6MYGIrHBckTXuTg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6094A101AA44;
-        Fri, 22 Apr 2022 16:45:31 +0000 (UTC)
-Received: from jsavitz-csb.redhat.com (unknown [10.22.10.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE9482166B5E;
-        Fri, 22 Apr 2022 16:45:30 +0000 (UTC)
-From:   Joel Savitz <jsavitz@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Joel Savitz <jsavitz@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] Documentation: add missing angle bracket in cgroup-v2 doc Tejun Heo <tj@kernel.org>
-Date:   Fri, 22 Apr 2022 12:45:26 -0400
-Message-Id: <20220422164526.3464306-1-jsavitz@redhat.com>
+        with ESMTP id S234465AbiDVRkJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Apr 2022 13:40:09 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77478102CC9;
+        Fri, 22 Apr 2022 10:37:02 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id h13so6562298qvr.2;
+        Fri, 22 Apr 2022 10:37:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DKU0THvM0AAAFGGde2aNgjFZG6FZ7ssd+fvUj/DwIMQ=;
+        b=K/BgixKTR8mxCxTSf6PZRZY9qenBEsBPrOrWTMFnU+GRM4Kq/kQT8CO0QaqLcfj7AA
+         jSPYbqjomYA2ted96LqLA+nrUMxR3OGR6WZg/8+SQTJKrWeeZv2G9bduWEOATGgJuJYv
+         WDgBe1r3RNL3eyrLJipiRM8ffvQqwQIcnverABfRYsJoDN/7z8erz3AqhfeKYuOs5JkX
+         0i4OwsTOaqZND5hu9YGu9fB81yLkpxrtbI2uZSIWX8UfzS8CRD0DYgVKoFBdc5TlR9o2
+         aqEIrdQBdW+z/97wz5Iz+JOoM/JWpXxrpKbXjE1men6OT/QDTknUi6rIPDVowOAdD694
+         cv4A==
+X-Gm-Message-State: AOAM532WyXNrlIgbtqKyP81CkMLTOVDadDpfP+qBHVwgDVtpvUdUdmXN
+        p4BDD3jSdo1RpCzkW2/5tzY=
+X-Google-Smtp-Source: ABdhPJxNy4+0HCpQRUWo/jNoyyub36xXtrCmqyxpPG5Ks8+6SAp8VM90KgNA+xFHSW5EGC6WIsVJ5Q==
+X-Received: by 2002:a05:6214:252e:b0:456:1c4e:bbee with SMTP id gg14-20020a056214252e00b004561c4ebbeemr25093qvb.70.1650648858370;
+        Fri, 22 Apr 2022 10:34:18 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-010.fbsv.net. [2a03:2880:20ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id m139-20020a37a391000000b0069e88edfdacsm1188051qke.105.2022.04.22.10.34.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Apr 2022 10:34:18 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4] cgroup: Introduce cpu controller test suite
+Date:   Fri, 22 Apr 2022 10:33:47 -0700
+Message-Id: <20220422173349.3394844-1-void@manifault.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Trivial addition of missing closing angle backet.
+This patchset introduces a new test_cpu.c test suite as part of
+tools/testing/selftests/cgroup. test_cpu.c will contain testcases that
+validate the cgroup v2 cpu controller.
 
-Signed-off-by: Joel Savitz <jsavitz@redhat.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset only contains testcases that validate cpu.stat and
+cpu.weight, but I'm expecting to send further patchsets after this that
+also include testcases that validate other knobs such as cpu.max.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 69d7a6983f78..38aa01939e1e 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1881,7 +1881,7 @@ IO Latency Interface Files
-   io.latency
- 	This takes a similar format as the other controllers.
- 
--		"MAJOR:MINOR target=<target time in microseconds"
-+		"MAJOR:MINOR target=<target time in microseconds>"
- 
-   io.stat
- 	If the controller is enabled you will see extra stats in io.stat in
+Note that checkpatch complains about a missing MAINTAINERS file entry for
+[PATCH 1/4], but Roman Gushchin added that entry in a separate patchset:
+https://lore.kernel.org/all/20220415000133.3955987-4-roman.gushchin@linux.dev/.
+
+Changelog:
+v2:
+  - s/cgcpu/cpucg for variable names and test names.
+  - Pass struct timespec as part of struct cpu_hog_func_param rather than
+    stuffing the whole time as nanoseconds in a single long.
+
+David Vernet (4):
+  cgroup: Add new test_cpu.c test suite in cgroup selftests
+  cgroup: Add test_cpucg_stats() testcase to cgroup cpu selftests
+  cgroup: Add test_cpucg_weight_overprovisioned() testcase
+  cgroup: Add test_cpucg_weight_underprovisioned() testcase
+
+ tools/testing/selftests/cgroup/.gitignore    |   1 +
+ tools/testing/selftests/cgroup/Makefile      |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c |  12 +
+ tools/testing/selftests/cgroup/cgroup_util.h |   4 +
+ tools/testing/selftests/cgroup/test_cpu.c    | 446 +++++++++++++++++++
+ 5 files changed, 465 insertions(+)
+ create mode 100644 tools/testing/selftests/cgroup/test_cpu.c
+
 -- 
-2.27.0
+2.30.2
 
