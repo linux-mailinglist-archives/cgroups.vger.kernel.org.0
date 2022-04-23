@@ -2,113 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B7450CC0D
-	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 17:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1D350CDCA
+	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 23:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236166AbiDWQAN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Apr 2022 12:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38820 "EHLO
+        id S237211AbiDWVqt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Apr 2022 17:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236193AbiDWQAM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 12:00:12 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A4D2626;
-        Sat, 23 Apr 2022 08:57:14 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id b68so7960491qkc.4;
-        Sat, 23 Apr 2022 08:57:14 -0700 (PDT)
+        with ESMTP id S229469AbiDWVqs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 17:46:48 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4238427158
+        for <cgroups@vger.kernel.org>; Sat, 23 Apr 2022 14:43:50 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id a15so11289490pfv.11
+        for <cgroups@vger.kernel.org>; Sat, 23 Apr 2022 14:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NjdKMlafojykRWM3mLmTI0beW/EaYpJclIaGul4FrUE=;
+        b=DPReL9r/tgtBxHjkNlFUr3vLePZV3WBKBCdqSzMfebUFeNdYbJ/ENvRK/DMKBq2S8Q
+         gLdxMYTD/r0rB1oM71uJkyNGfmhAkNRJP9KfLeZV3hYSi73cL81ApuqK0mqT6jU8IAYf
+         0N56sADpN3Xkq48jtOg+tuJsm6VA3nAl921pZ+CQQfh6DaY3UIMoGmlqcaEkFaBuGsUF
+         BmDd0YcJAuwAjyIfL3UniTtX7SPXUThVYlELl3Y5perm06zDnXZ+rV3AKMixc7Q8pZKz
+         YvoRorV6wbnVw4L1iQwmzoC7meonzJsnBHwcBNixrZaEBPik4w4UydYvWeCWdLPI2kXz
+         vTug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gmXNl4tIfL5wRbTrjuvKfaCU9MK0lOXp83omTUSrSMo=;
-        b=RqYcKbwdqymvvBUcZsqs2449ogL1+J5xlvDJt3JhwCZln//N/ASrDT/R/AsaDi4r5W
-         cIyOVCbsVpPi/SMbtnKam77lZMmMXxm9wLpnJBdJi/HllZEC2KQiJYrGcW17reB32E54
-         ku+/2abwX9sE/cQp5p7y95LwjCInYWf/PuEm1+9jJa8GmEgcnvTCIx7C246S0wt0brbM
-         IJgdz59Ydq00nA13w6Mblr78h/uNX+FOOUhhm3rqqL+/dIC/t5+7RfKdrIdBRQy6/lWA
-         8jl+qDzgEVcBy2wNfZ9eccDkleiFjXgCCdLv9JKEJntYEOhy5LTMNg+nvHMOpmhSXgD5
-         x2tw==
-X-Gm-Message-State: AOAM530fcqYnQojJzgxWl3pQ39U0MPI9ieIcXsNi8GwxbBLydcYne6SW
-        W7onRlfVvmLEvZOoX0OFoic=
-X-Google-Smtp-Source: ABdhPJxrka55ASWkCj+31Zq8g/DCOT2vSRE9a3/Q38M+L6ijF+65YD0/feALRFzYTD/HSx0KMyH5Rg==
-X-Received: by 2002:a05:620a:2588:b0:680:f657:fbd6 with SMTP id x8-20020a05620a258800b00680f657fbd6mr5649398qko.287.1650729433397;
-        Sat, 23 Apr 2022 08:57:13 -0700 (PDT)
-Received: from localhost (fwdproxy-ash-119.fbsv.net. [2a03:2880:20ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05620a0e8400b0067b1bcd081csm2321762qkm.66.2022.04.23.08.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 08:57:13 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     akpm@linux-foundation.org
-Cc:     tj@kernel.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com, void@manifault.com
-Subject: [PATCH v2 5/5] cgroup: Fix racy check in alloc_pagecache_max_30M() helper function
-Date:   Sat, 23 Apr 2022 08:56:22 -0700
-Message-Id: <20220423155619.3669555-6-void@manifault.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220423155619.3669555-1-void@manifault.com>
-References: <20220423155619.3669555-1-void@manifault.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NjdKMlafojykRWM3mLmTI0beW/EaYpJclIaGul4FrUE=;
+        b=MmUMlwdUMH8SQkjzW/Gd/KJmw1FbnFSjFRbIOeXauGy+KOtQVtPpL+CHS1iO2s/dBF
+         cRk0MwkUOQg3ca5pixfohrkAxAtPRKZfsQ87tWnLlUCLmHz0S/YOAEYNBWrpIfJ/B4Vh
+         lobTCNp2RhSY+4BOJ52fHHdoXfAqX7TtP2CvF1khI5Vk6vucKv5kfupRZ/BIwYFGJzJy
+         2HuAi+EU9vuiMofPQMAitufd8OGY5m4fsYcp8y5A1k9J+pS2oa4mGfa5dVn+HzLedAlp
+         ptCGVOa7trZq6SLkJskJUechxhZr+Jgjdj0pfy6ZWwKieanCG6RXBJAlRMWiRJ4aEUE1
+         Dimg==
+X-Gm-Message-State: AOAM530PvP70S9Oc807SvKNUAets6S6JF2HOVNNywhc+PzapXGjN+ISR
+        Yh6DX4F5mUsoUp63cbIB2VJTeKGQoEWt7JM/P5bO6A==
+X-Google-Smtp-Source: ABdhPJw4oCtdWDvodWpsyA5xVH+DH+MnprCEJol9U/OWK04/udNMPZ6L4XEE7Ab6fQOB4kMsx/PUTEbHKYrLAOv6N3o=
+X-Received: by 2002:a63:88c8:0:b0:3ab:1871:13ac with SMTP id
+ l191-20020a6388c8000000b003ab187113acmr1557536pgd.561.1650750229438; Sat, 23
+ Apr 2022 14:43:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220421234426.3494842-1-yosryahmed@google.com>
+ <20220421234426.3494842-5-yosryahmed@google.com> <20220423142801.gnvd42cdcsz4hpon@google.com>
+In-Reply-To: <20220423142801.gnvd42cdcsz4hpon@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Sat, 23 Apr 2022 14:43:13 -0700
+Message-ID: <CAJD7tkbhjJDNXcAmiAkGT8RCvBSz=SAfh7JR3AJysSz29hcEgw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] selftests: cgroup: add a selftest for memory.reclaim
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        Chen Wandun <chenwandun@huawei.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-alloc_pagecache_max_30M() in the cgroup memcg tests performs a 50MB
-pagecache allocation, which it expects to be capped at 30MB due to the
-calling process having a memory.high setting of 30MB. After the allocation,
-the function contains a check that verifies that MB(29) < memory.current <=
-MB(30). This check can actually fail non-deterministically.
+On Sat, Apr 23, 2022 at 7:28 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Thu, Apr 21, 2022 at 11:44:26PM +0000, Yosry Ahmed wrote:
+> > Add a new test for memory.reclaim that verifies that the interface
+> > correctly reclaims memory as intended, from both anon and file pages.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+> > ---
+> >  .../selftests/cgroup/test_memcontrol.c        | 86 +++++++++++++++++++
+> >  1 file changed, 86 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+> > index f2ffb3a30194..5f7c20de2426 100644
+> > --- a/tools/testing/selftests/cgroup/test_memcontrol.c
+> > +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+> > @@ -760,6 +760,91 @@ static int test_memcg_max(const char *root)
+> >       return ret;
+> >  }
+> >
+> > +/*
+> > + * This test checks that memory.reclaim reclaims the given
+> > + * amount of memory (from both anon and file).
+> > + */
+> > +static int test_memcg_reclaim(const char *root)
+> > +{
+> > +     int ret = KSFT_FAIL, fd, retries;
+> > +     char *memcg;
+> > +     long current, to_reclaim;
+> > +     char buf[64];
+> > +
+> > +     memcg = cg_name(root, "memcg_test");
+> > +     if (!memcg)
+> > +             goto cleanup;
+> > +
+> > +     if (cg_create(memcg))
+> > +             goto cleanup;
+> > +
+> > +     current = cg_read_long(memcg, "memory.current");
+> > +     if (current != 0)
+> > +             goto cleanup;
+> > +
+> > +     cg_run_nowait(memcg, alloc_anon_noexit, (void *) MB(50));
+>
+> Don't you need is_swap_enabled() check before deciding to do the anon
+> allocations?
 
-The testcases that use this function are test_memcg_high() and
-test_memcg_max(), which set memory.min and memory.max to 30MB respectively
-for the cgroup under test. The allocation can slightly exceed this number
-in both cases, and for memory.max, the process performing the allocation
-will not have the OOM killer invoked as it's performing a pagecache
-allocation.  This patchset therefore updates the above check to instead use
-the verify_close() helper function.
+Yes you are right. In the next version will check whether or not swap
+is enabled and modify the test accordingly.
 
-Signed-off-by: David Vernet <void@manifault.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> > +     sleep(1);
+> > +
+> > +     fd = get_temp_fd();
+> > +     if (fd < 0)
+> > +             goto cleanup;
+> > +
+> > +     cg_run_nowait(memcg, alloc_pagecache_50M_noexit, (void *)(long)fd);
+> > +     sleep(1);
+>
+> These sleep(1)s do not seem robust. Since kernel keeps the page cache
+> around, you can convert anon to use tmpfs and use simple cg_run to
+> trigger the allocations of anon (tmpfs) and file which will remain in
+> memory even after return from cg_run.
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 38d2054eefe6..3bac06999354 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -564,9 +564,14 @@ static int alloc_pagecache_max_30M(const char *cgroup, void *arg)
- {
- 	size_t size = MB(50);
- 	int ret = -1;
--	long current;
-+	long current, high, max;
- 	int fd;
- 
-+	high = cg_read_long(cgroup, "memory.high");
-+	max = cg_read_long(cgroup, "memory.max");
-+	if (high != MB(30) && max != MB(30))
-+		goto cleanup;
-+
- 	fd = get_temp_fd();
- 	if (fd < 0)
- 		return -1;
-@@ -575,7 +580,7 @@ static int alloc_pagecache_max_30M(const char *cgroup, void *arg)
- 		goto cleanup;
- 
- 	current = cg_read_long(cgroup, "memory.current");
--	if (current <= MB(29) || current > MB(30))
-+	if (!values_close(current, MB(30), 5))
- 		goto cleanup;
- 
- 	ret = 0;
--- 
-2.30.2
+Other tests in the file are also using sleep approach (see
+test_memcg_min, although it retries for multiple times until
+memory.current reaches an expected amount). In my experience it hasn't
+been flaky running for multiple times on different machines, but I
+agree it can be flaky (false negative).
 
+I am not sure about the allocating file pages with cg_run, is it
+guaranteed that the page cache will remain in memory until the test
+ends? If it doesn't, it can also flake, but it would produce false
+positives (the test could pass because the kernel drained page cache
+for some other reason although the interface is not working
+correctly).
+
+In my personal opinion, false negative flakes are better than false
+positives. At least currently the test explicitly and clearly fails if
+the allocations are not successful. If we rely on the page cache
+remaining until the test finishes then it could silently pass if the
+interface is not working correctly.
+
+There are a few ways we can go forward with this:
+1) Keep everything as-is, but print a message if the test fails due to
+memory.current not reaching 100MB to make it clear that it didn't fail
+due to a problem with the interface.
+2) Add a sleep/retry loop similar to test_memcg_min instead of sleeping once.
+3) Send a signal from forked children when they are done with the
+allocation, and wait to receive this signal in the test to make sure
+the allocation is completed.
+
+In my opinion we should do (1) (and maybe (2)) for now as (3) could be
+an overkill if the test is normal passing. Maybe add a comment about
+(3) being an option in the future if the test flakes. Let me know what
+you think?
