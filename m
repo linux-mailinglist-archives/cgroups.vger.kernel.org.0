@@ -2,82 +2,188 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D5A50CBCF
-	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 17:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7625150CBDD
+	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 17:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbiDWPgX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Apr 2022 11:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
+        id S234934AbiDWPmB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Apr 2022 11:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbiDWPgW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 11:36:22 -0400
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F771E2C34;
-        Sat, 23 Apr 2022 08:33:25 -0700 (PDT)
-Received: by mail-qt1-f172.google.com with SMTP id f14so7580083qtq.1;
-        Sat, 23 Apr 2022 08:33:25 -0700 (PDT)
+        with ESMTP id S233521AbiDWPmB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 11:42:01 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FDF3EABB
+        for <cgroups@vger.kernel.org>; Sat, 23 Apr 2022 08:39:03 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id n17so12915629ljc.11
+        for <cgroups@vger.kernel.org>; Sat, 23 Apr 2022 08:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=a+z70vimB+5HjACd5bJnkNciNJmYhICT7m82HtTW0ak=;
+        b=DGOxBYWGDBUZ85wK2PSmDgFBf3glfu6gBp9RcuZpjhtgF6HOjUY5Q2ABqF6SbbucDY
+         ALM7X7aHf99HafMPHM99WC7enJTKMJTEBI283/ereOCVLfHFuQ8XI1lmfyBXO4h9RU39
+         n7ABaPpwvD4EdliIxzOrw9UewqCBHWH67THLRGJkCkFdWcimUmA0Utg7st7+XwHgRZEN
+         Tu0dkwEzwiUufuFq4DrEvruNVCpmplVfy26ZaeqNDdT2ToVxmbZ4I9RCx2oG79NVen3C
+         Wb/krsbyfcOO9f8SOZQBZytlQePpf4MEK1030tBTm6Gbcd4qrT0i/toFpmtC8xaMzfOw
+         2oNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=qJrUJVGVT6gqJK4KN8HDJusUJ1FB5XVpIwvyKJbnkls=;
-        b=k6FpbbMMBnbTlsX4CQCthBCen/1Kr7VPQfLSHOIvEEGwgwvviL5VLKueOMvS+RNiVt
-         +fa6sYL00wUT4yXeW2tdYTb6aVUVqAQHuJeXFp5aXd8L9cxFoc+zXFObAwI8A8yIi+bt
-         A4ErT1vJiPcoMazNW5xa7QpVKb1lcf7hE4hVBorzf+zVxiIGTfXovdCvxjTQK0Wdwlfs
-         9zsfcU+0UVUPHY0FIHPGrmxo56T9giQ1mBYXFoz5gPHLJ3kmrBt6YwtNDYGg7zmd48Lo
-         /1zSsH0gIBqLYbpekyQ7tEtQq5RmSbJDWplxxcbuq84C6wDZlmbNTSWcA3kDz43dgY3G
-         M1gQ==
-X-Gm-Message-State: AOAM531CzIV9tcTdNopeJ3XiOJGcliohb8etJwchhJymI4w+VHryD9PX
-        PL9QCR1s5FKvwOypp6Vf5IU=
-X-Google-Smtp-Source: ABdhPJydqQZ+KYP1B8EgK79hxqm7VtvY1k4CpTZbNBftmTVxThWugowAhDIPkdk/lE5nCghmUeiGlw==
-X-Received: by 2002:a05:622a:651:b0:2f2:600:d146 with SMTP id a17-20020a05622a065100b002f20600d146mr6920846qtb.88.1650728004508;
-        Sat, 23 Apr 2022 08:33:24 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-005.fbsv.net. [2a03:2880:20ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id g11-20020ac84b6b000000b002f35e802a55sm1754224qts.1.2022.04.23.08.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 08:33:24 -0700 (PDT)
-Date:   Sat, 23 Apr 2022 08:33:21 -0700
-From:   David Vernet <void@manifault.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     akpm@linux-foundation.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com
-Subject: Re: [PATCH 1/5] cgroups: Refactor children cgroups in memcg tests
-Message-ID: <20220423153321.cts6qhlybkghoe2o@dev0025.ash9.facebook.com>
-References: <20220423113037.gnfysktiuzmfnpmp@dev0025.ash9.facebook.com>
- <EEC47283-0467-4C97-AAB2-73F17A97CE15@linux.dev>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=a+z70vimB+5HjACd5bJnkNciNJmYhICT7m82HtTW0ak=;
+        b=bLcVmMRbS5WWv/3eUMMzGBC4THg3+kxfVDig9Qp6RhSIF2S0dVfw1F/YkBxO0NjnD6
+         Ve3r5m7YyYNfVuHjQA8fevy01QFkTRElGMlKme2joweBtvPd6sL2shHTOVn5+sQmXrXa
+         TI2bABdh1MLzx5oRHkADjhf7UUNNH+hGh1yKREMc4UpKodntkkI6ZjKN85FZNEfGbmjF
+         UD7PttGnbOI48VX60nBPV1i9N/g4bvBxGHpEFncCKa9iGr2Z34T078BNStUg2/dMJG/4
+         Bc74CpLSiPAx1LveQH9SoNZIjBM5FczQ4ljxCPKhgDrxL3qaPWTG2Q07NJfPfhVe5CT0
+         B7ew==
+X-Gm-Message-State: AOAM530ypiUk8seZvcqYGxgMhzvKED/A3kNALJRLFwHqKVDc74XzYYZb
+        pzhHd+mlkNqpJxJkJ0S5O28ziQ==
+X-Google-Smtp-Source: ABdhPJyYd1HfSKlhZZ2xbgUsaXPbfPteYDgF4mpaisyCzRwuDfskdLVMadU5g6ZMLIwnSMH0GOHZmg==
+X-Received: by 2002:a05:651c:1617:b0:247:fd84:2195 with SMTP id f23-20020a05651c161700b00247fd842195mr5903693ljq.356.1650728341337;
+        Sat, 23 Apr 2022 08:39:01 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.177])
+        by smtp.gmail.com with ESMTPSA id q3-20020a196e43000000b00470e15b24casm658735lfk.89.2022.04.23.08.39.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Apr 2022 08:39:00 -0700 (PDT)
+Message-ID: <3e457e4e-a908-0de7-ba3e-6d5ab434107e@openvz.org>
+Date:   Sat, 23 Apr 2022 18:38:59 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <EEC47283-0467-4C97-AAB2-73F17A97CE15@linux.dev>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+From:   Vasily Averin <vvs@openvz.org>
+Subject: [PATCH memcg v2] net: set proper memcg for net_init hooks allocations
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     kernel@openvz.org, Florian Westphal <fw@strlen.de>,
+        linux-kernel@vger.kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <202204231806.8O86U791-lkp@intel.com>
+Content-Language: en-US
+In-Reply-To: <202204231806.8O86U791-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 08:19:12AM -0700, Roman Gushchin wrote:
-> 
-> > On Apr 23, 2022, at 4:30 AM, David Vernet <void@manifault.com> wrote:
-> > 
-> > ﻿On Fri, Apr 22, 2022 at 04:04:15PM -0700, Roman Gushchin wrote:
-> >> 
-> > 
-> > Thanks for the reviews on this patchset, Roman. FYI I think Andrew already
-> > merged these patches to the -mm tree. I'll send out a follow-on patch that
-> > fixes everything you pointed out, both here and on the other patches in the
-> > set.
-> 
-> The mm tree isn’t a git tree, but a collection of the text patches, managed by Andrew. So you can send a new version and Andrew can update it in place. It’s happening all the time: mostly for adding reviewed-by/acked-by tags etc, but for code updates as well.
-> It’s not uncommon for some patchset to mature while being in the mm tree, this allows to include them into linux-next and give some more testing, but without doing many reverts/fixups (Andrew is often squashing fixups into the original patch too). So long story short, you can just send a new version, especially because all changes all minor.
+__register_pernet_operations() executes init hook of registered
+pernet_operation structure in all existing net namespaces.
 
-Ah, that makes sense. Thanks for explaining that. I'll send out a v2 of the
-patches shortly, then!
+Typically, these hooks are called by a process associated with
+the specified net namespace, and all __GFP_ACCOUNTING marked
+allocation are accounted for corresponding container/memcg.
+
+However __register_pernet_operations() calls the hooks in the same
+context, and as a result all marked allocations are accounted
+to one memcg for all processed net namespaces.
+
+This patch adjusts active memcg for each net namespace and helps
+to account memory allocated inside ops_init() into the proper memcg.
+
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+---
+v2: introduced get/put_net_memcg(),
+    new functions are moved under CONFIG_MEMCG_KMEM
+    to fix compilation issues reported by Intel's kernel test robot
+
+v1: introduced get_mem_cgroup_from_kmem(), which takes the refcount
+    for the found memcg, suggested by Shakeel
+---
+ include/linux/memcontrol.h | 35 +++++++++++++++++++++++++++++++++++
+ net/core/net_namespace.c   |  7 +++++++
+ 2 files changed, 42 insertions(+)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0abbd685703b..5230d3c5585a 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1714,6 +1714,33 @@ static inline int memcg_cache_id(struct mem_cgroup *memcg)
+ 
+ struct mem_cgroup *mem_cgroup_from_obj(void *p);
+ 
++static inline struct mem_cgroup *get_mem_cgroup_from_kmem(void *p)
++{
++	struct mem_cgroup *memcg;
++
++	rcu_read_lock();
++	do {
++		memcg = mem_cgroup_from_obj(p);
++	} while (memcg && !css_tryget(&memcg->css));
++	rcu_read_unlock();
++	return memcg;
++}
++
++static inline struct mem_cgroup *get_net_memcg(void *p)
++{
++	struct mem_cgroup *memcg;
++
++	memcg = get_mem_cgroup_from_kmem(p);
++
++	if (!memcg)
++		memcg = root_mem_cgroup;
++
++	return memcg;
++}
++static inline void put_net_memcg(struct mem_cgroup *memcg)
++{
++	css_put(&memcg->css);
++}
+ #else
+ static inline bool mem_cgroup_kmem_disabled(void)
+ {
+@@ -1766,6 +1793,14 @@ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
+        return NULL;
+ }
+ 
++static inline struct mem_cgroup *get_net_memcg(void *p)
++{
++	return NULL;
++}
++
++static inline void put_net_memcg(struct mem_cgroup *memcg)
++{
++}
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
+ #endif /* _LINUX_MEMCONTROL_H */
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index a5b5bb99c644..bf88360b8377 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -26,6 +26,7 @@
+ #include <net/net_namespace.h>
+ #include <net/netns/generic.h>
+ 
++#include <linux/sched/mm.h>
+ /*
+  *	Our network namespace constructor/destructor lists
+  */
+@@ -1147,7 +1148,13 @@ static int __register_pernet_operations(struct list_head *list,
+ 		 * setup_net() and cleanup_net() are not possible.
+ 		 */
+ 		for_each_net(net) {
++			struct mem_cgroup *old, *memcg;
++
++			memcg = get_net_memcg(net);
++			old = set_active_memcg(memcg);
+ 			error = ops_init(ops, net);
++			set_active_memcg(old);
++			put_net_memcg(memcg);
+ 			if (error)
+ 				goto out_undo;
+ 			list_add_tail(&net->exit_list, &net_exit_list);
+-- 
+2.31.1
+
