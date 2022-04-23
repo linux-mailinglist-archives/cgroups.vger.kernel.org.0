@@ -2,209 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5D950C959
-	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 12:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0050C995
+	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 13:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbiDWKoR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Apr 2022 06:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S234931AbiDWLdi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Apr 2022 07:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbiDWKoQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 06:44:16 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C005C361
-        for <cgroups@vger.kernel.org>; Sat, 23 Apr 2022 03:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650710478; x=1682246478;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=J4AXS8euKAxd+dx8JDk7HM7t3wn0UEUnPw9FovRmlG0=;
-  b=QKgXnv6HfaY0u8S/ucndyGoP6ktBkOnqADSIU/douQFcbhaQxCRoRXrR
-   S6sD86kL41XnuPELLoAgpCHm3U2DgBDJwfnWJWbNubGEbpDJTN0Q00YTL
-   UFMj+jOxl2tubevLBz1XWhi5wkkhD6c6DWhBhqe04UPCu90HpVnNXffqV
-   rPQ7oh8sM8Of0WKkZ1MT/fsvs9LGwu4oM/2YBXQVj1tm5ls7+qQRDcjpP
-   b1vXiseHJRazF/RuDH9+YuUxP/CxzrTWjiN8INZFnzuzpWdIW/iIgtfrP
-   3cjtiLXW176ovjBtUMlECIY6qYir/dXeWVCw1QWhfOD2qtIW9BqLmI9vT
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="263729601"
-X-IronPort-AV: E=Sophos;i="5.90,284,1643702400"; 
-   d="scan'208";a="263729601"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2022 03:41:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,284,1643702400"; 
-   d="scan'208";a="594507101"
-Received: from lkp-server01.sh.intel.com (HELO dd58949a6e39) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 23 Apr 2022 03:41:17 -0700
-Received: from kbuild by dd58949a6e39 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1niDCW-0000Am-H5;
-        Sat, 23 Apr 2022 10:41:16 +0000
-Date:   Sat, 23 Apr 2022 18:40:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 4ab93063c83a2478863158799b027e9489ad4a40
-Message-ID: <6263d78f.6xntrSk4EimnKTzT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S232564AbiDWLdh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 07:33:37 -0400
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D244219C2F;
+        Sat, 23 Apr 2022 04:30:40 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id d19so7596880qko.3;
+        Sat, 23 Apr 2022 04:30:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v+hm7gQVZ3AvhLOPtEZQpwUGWPY5yjYTJl2KFpAuyRI=;
+        b=CmVP1UEeOajeakz/bqm6hWkTeRu/K/B2XMFZL2i+OoBmJ+KJe/HXPYI40QNwBf6Jd9
+         omMkoNod4T8krrRtfnzcK+JiBCBDn/QU+rgeFgSt9so0nclwGjzwF9P7itAIhwF/U1lD
+         x6Ip34psnCYsfad0CSaU0k8fx8N9JkpJwvsXxTJc9+DoVn4WvC9M0cRcNvJbIKzJjv9c
+         YrVzjmZv80iU3abtXQTFm7OorhBb4dp0M3QYTkGjmUpbHyt0s/BZPBDy/F0kJupBDHz3
+         MgBRXU5noElJ1C+5L1MGqufv1y2j359PP1oZRCCfypIvRAIqIiOqm2ECZwEAYz3CM3pc
+         O43w==
+X-Gm-Message-State: AOAM532zZKUelYj6o7bqwMeQ+RLsCQIS3pQEALIGdeMM+tUg439VJg1B
+        Q1GmW5yw64mkUjDY6eE7PGA=
+X-Google-Smtp-Source: ABdhPJyL5qHhE+Rq8ng4FXgO46xS2udtOcYBgNIw2VO/z6o0ZNxbHjowlCxBnPGa+DV/Djz80tXa1A==
+X-Received: by 2002:a37:b141:0:b0:69b:ea55:b20e with SMTP id a62-20020a37b141000000b0069bea55b20emr5354820qkf.316.1650713439772;
+        Sat, 23 Apr 2022 04:30:39 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-010.fbsv.net. [2a03:2880:20ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 2-20020a05620a06c200b0069ea498aec7sm2199801qky.16.2022.04.23.04.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Apr 2022 04:30:39 -0700 (PDT)
+Date:   Sat, 23 Apr 2022 04:30:37 -0700
+From:   David Vernet <void@manifault.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     akpm@linux-foundation.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com
+Subject: Re: [PATCH 1/5] cgroups: Refactor children cgroups in memcg tests
+Message-ID: <20220423113037.gnfysktiuzmfnpmp@dev0025.ash9.facebook.com>
+References: <20220422155728.3055914-1-void@manifault.com>
+ <20220422155728.3055914-2-void@manifault.com>
+ <YmM0b+3thMZaXVDb@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Disposition: inline
+In-Reply-To: <YmM0b+3thMZaXVDb@carbon>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 4ab93063c83a2478863158799b027e9489ad4a40  cgroup: Add test_cpucg_weight_underprovisioned() testcase
+On Fri, Apr 22, 2022 at 04:04:15PM -0700, Roman Gushchin wrote:
+>
 
-elapsed time: 926m
+Thanks for the reviews on this patchset, Roman. FYI I think Andrew already
+merged these patches to the -mm tree. I'll send out a follow-on patch that
+fixes everything you pointed out, both here and on the other patches in the
+set.
 
-configs tested: 127
-configs skipped: 4
+> On Fri, Apr 22, 2022 at 08:57:25AM -0700, David Vernet wrote:
+> > In test_memcg_min() and test_memcg_low(), there is an array of four sibling
+> > cgroups. All but one of these sibling groups does a 50MB allocation, and
+> > the group that does no allocation is the third of four in the array.  This
+> > is not a problem per se, but makes it a bit tricky to do some assertions in
+> > test_memcg_low(), as we want to make assertions on the siblings based on
+> > whether or not they performed allocations. Having a static index before
+> > which all groups have performed an allocation makes this cleaner.
+> > 
+> > This patch therefore reorders the sibling groups so that the group that
+> > performs no allocations is the last in the array.
+> 
+> It makes the comment explaining the test just above the test_memcg_min()
+> function obsolete. Please, fix it too.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-arm                       aspeed_g5_defconfig
-sh                          rsk7201_defconfig
-sparc                               defconfig
-arm                        shmobile_defconfig
-powerpc                       holly_defconfig
-sh                        edosk7760_defconfig
-powerpc                      ppc40x_defconfig
-arc                          axs103_defconfig
-m68k                             allyesconfig
-m68k                          atari_defconfig
-m68k                        m5407c3_defconfig
-sh                          rsk7203_defconfig
-m68k                         apollo_defconfig
-arm                           sunxi_defconfig
-arm                           h3600_defconfig
-mips                         rt305x_defconfig
-arm                         nhk8815_defconfig
-xtensa                  audio_kc705_defconfig
-ia64                      gensparse_defconfig
-powerpc                      cm5200_defconfig
-h8300                    h8300h-sim_defconfig
-arm                            xcep_defconfig
-sh                           se7619_defconfig
-sh                           se7722_defconfig
-m68k                       m5475evb_defconfig
-powerpc                   currituck_defconfig
-powerpc                 canyonlands_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220422
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allmodconfig
-s390                                defconfig
-s390                             allyesconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220422
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-
-clang tested configs:
-arm                        magician_defconfig
-arm                  colibri_pxa300_defconfig
-mips                      malta_kvm_defconfig
-mips                       rbtx49xx_defconfig
-mips                      maltaaprp_defconfig
-arm                      tct_hammer_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                       ebony_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                         shannon_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                         socfpga_defconfig
-arm                             mxs_defconfig
-powerpc                     akebono_defconfig
-i386                          randconfig-a006
-i386                          randconfig-a002
-i386                          randconfig-a004
-x86_64                        randconfig-a005
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-hexagon              randconfig-r041-20220422
-riscv                randconfig-r042-20220422
-hexagon              randconfig-r045-20220422
-s390                 randconfig-r044-20220422
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Thanks for catching that. I'll fix the comment both in test_memcg_min() and
+test_memcg_low() when I send out that follow-on patch.
