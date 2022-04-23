@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9032C50C9F5
-	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 14:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1F350C9F0
+	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 14:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbiDWMfQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Apr 2022 08:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S233468AbiDWMfS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Apr 2022 08:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235436AbiDWMfP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 08:35:15 -0400
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F6F1A0B01;
-        Sat, 23 Apr 2022 05:32:18 -0700 (PDT)
-Received: by mail-qt1-f170.google.com with SMTP id bz24so7297521qtb.2;
-        Sat, 23 Apr 2022 05:32:18 -0700 (PDT)
+        with ESMTP id S235444AbiDWMfQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 08:35:16 -0400
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7535319FA93;
+        Sat, 23 Apr 2022 05:32:19 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id o18so7288768qtk.7;
+        Sat, 23 Apr 2022 05:32:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yElsKBK3uV3FIG02XGPOUL6cQVNqHPl51yiT0znHIN0=;
-        b=oZejJCUC/bDG7FwxZDXgCXKZZ0FvGU7PxQpNwJjj1E9DWnPyywNUHExTQqvmBv9XPF
-         hKYn487qXGUbjgWwHCYwyOCuJwO6lvZy5+vGtXyMKLG42z2cqJsSfIZ9AmO9yeorVQB+
-         I6a5X1L7WihQW8kcuIBDdklczeMaGrUTccpRSamCB1rvP1YC+GBUabYjpJJ9etlUCkfp
-         +jWLzkYk+v5hRDA5FbfKYOfhqq80c4OC3J+Y6keVTwSzS8wiHgmSwZ5dP1CwoTJO4M88
-         5KWhcr+23vG0YlM7XOIU/Ye3S3XzFNzjXTkIYL8VWc/Ub7e87UREnaEtVPuxijPNUds+
-         x3bw==
-X-Gm-Message-State: AOAM531kw+DY/ADEUitaUJxjZt04KeX+JO5BFWRQSfRzqX4iYpUbZCer
-        yx4qY3US6Vt/bhtd06nG0Jk=
-X-Google-Smtp-Source: ABdhPJyc3rFST6AL32njAG7Hxk/Tew+Aq2t7XFVjfDdmi8Y7KhS/Y2lwMlUmGOzLV4fwziQ9Qo8prw==
-X-Received: by 2002:ac8:5754:0:b0:2e1:eee8:be0b with SMTP id 20-20020ac85754000000b002e1eee8be0bmr6307255qtx.349.1650717137717;
-        Sat, 23 Apr 2022 05:32:17 -0700 (PDT)
-Received: from localhost (fwdproxy-ash-016.fbsv.net. [2a03:2880:20ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id w4-20020a05620a0e8400b0067b1bcd081csm2131328qkm.66.2022.04.23.05.32.17
+        bh=wjvd9HBYUKTG7tiz4UXuo0+xBPTs1X922uSucprikPU=;
+        b=Uh933T/JUH5JD1O6b/ORDwu6FDFx9tMdYjVswJEYMacwDN/AVdUS8AMvDwe9TwxBWI
+         Z13GXkEqxVbFpUmAFpLr6H/3kYlzjo5X4N+Woovb1LeDq1/0oOK1kGs62vIx2tpGN5vb
+         iqNmlecYm0846Xu5uGSrr2rGrp5rpRmgnTiShSOYrJig8YsQ4urItNFtuIbyNRK2DZ6V
+         acXZlRR+YmxxEfeGtjC1NKxMtB0ZHJKjMVBlXlBpqj331CxkFC/3RgN4krupoKvhQM7K
+         7SVodeIReUjhinnU+VG8CyxJjPyS86J/LqYPjj1n6iqXDtANXA+EoPyzg2Kh5oWkA6vZ
+         M4TQ==
+X-Gm-Message-State: AOAM533dlAnQV21rD71ajxzJdNtu71T0tf1QM7YVGk3KH5ji4QX6ZVYF
+        ycil73XhSwzs03rKQEDVJwI=
+X-Google-Smtp-Source: ABdhPJw8PGnHGavsa+EyWdLnGCYp2f6dr0yiWghsmS0eIwJ1W/l+HoNZZYB4dc8W1OdAyvkSTuJ1Vw==
+X-Received: by 2002:a05:622a:1d4:b0:2f1:f278:d387 with SMTP id t20-20020a05622a01d400b002f1f278d387mr6514973qtw.645.1650717138590;
+        Sat, 23 Apr 2022 05:32:18 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-018.fbsv.net. [2a03:2880:20ff:12::face:b00c])
+        by smtp.gmail.com with ESMTPSA id y7-20020a05620a0e0700b00699a30d6d10sm2146844qkm.111.2022.04.23.05.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 05:32:17 -0700 (PDT)
+        Sat, 23 Apr 2022 05:32:18 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
 Cc:     cgroups@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 4/5] Add test_cpucg_max_nested() testcase
-Date:   Sat, 23 Apr 2022 05:30:53 -0700
-Message-Id: <20220423123053.2982931-4-void@manifault.com>
+Subject: [PATCH 5/5] cgroup: Add config file to cgroup selftest suite
+Date:   Sat, 23 Apr 2022 05:30:54 -0700
+Message-Id: <20220423123053.2982931-5-void@manifault.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220423123053.2982931-1-void@manifault.com>
 References: <20220423123053.2982931-1-void@manifault.com>
@@ -58,97 +58,32 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The cgroup cpu controller selftests have a test_cpucg_max() testcase
-that validates the behavior of the cpu.max knob. Let's also add a
-testcase that verifies that the behavior works correctly when set on a
-nested cgroup.
+Most of the test suites in tools/testing/selftests contain a config file
+that specifies which kernel config options need to be present in order for
+the test suite to be able to run and perform meaningful validation. There
+is no config file for the tools/testing/selftests/cgroup test suite, so
+this patch adds one.
 
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- tools/testing/selftests/cgroup/test_cpu.c | 63 +++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ tools/testing/selftests/cgroup/config | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 tools/testing/selftests/cgroup/config
 
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 715922c15c78..24020a2c68dc 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -617,6 +617,68 @@ static int test_cpucg_max(const char *root)
- 	return ret;
- }
- 
-+/*
-+ * This test verifies that a process inside of a nested cgroup whose parent
-+ * group has a cpu.max value set, is properly throttled.
-+ */
-+static int test_cpucg_max_nested(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	long usage_usec, user_usec;
-+	long usage_seconds = 1;
-+	long expected_usage_usec = usage_seconds * USEC_PER_SEC;
-+	char *parent, *child;
-+
-+	parent = cg_name(root, "cpucg_parent");
-+	child = cg_name(parent, "cpucg_child");
-+	if (!parent || !child)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+cpu"))
-+		goto cleanup;
-+
-+	if (cg_create(child))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cpu.max", "1000"))
-+		goto cleanup;
-+
-+	struct cpu_hog_func_param param = {
-+		.nprocs = 1,
-+		.ts = {
-+			.tv_sec = usage_seconds,
-+			.tv_nsec = 0,
-+		},
-+		.clock_type = CPU_HOG_CLOCK_WALL,
-+	};
-+	if (cg_run(child, hog_cpus_timed, (void *)&param))
-+		goto cleanup;
-+
-+	usage_usec = cg_read_key_long(child, "cpu.stat", "usage_usec");
-+	user_usec = cg_read_key_long(child, "cpu.stat", "user_usec");
-+	if (user_usec <= 0)
-+		goto cleanup;
-+
-+	if (user_usec >= expected_usage_usec)
-+		goto cleanup;
-+
-+	if (values_close(usage_usec, expected_usage_usec, 95))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_destroy(child);
-+	free(child);
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
- #define T(x) { x, #x }
- struct cpucg_test {
- 	int (*fn)(const char *root);
-@@ -629,6 +691,7 @@ struct cpucg_test {
- 	T(test_cpucg_nested_weight_overprovisioned),
- 	T(test_cpucg_nested_weight_underprovisioned),
- 	T(test_cpucg_max),
-+	T(test_cpucg_max_nested),
- };
- #undef T
- 
+diff --git a/tools/testing/selftests/cgroup/config b/tools/testing/selftests/cgroup/config
+new file mode 100644
+index 000000000000..84fe884fad86
+--- /dev/null
++++ b/tools/testing/selftests/cgroup/config
+@@ -0,0 +1,8 @@
++CONFIG_CGROUPS=y
++CONFIG_CGROUP_CPUACCT=y
++CONFIG_CGROUP_FREEZER=y
++CONFIG_CGROUP_SCHED=y
++CONFIG_MEMCG=y
++CONFIG_MEMCG_KMEM=y
++CONFIG_MEMCG_SWAP=y
++CONFIG_PAGE_COUNTER=y
 -- 
 2.30.2
 
