@@ -2,131 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EA650C99C
-	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 13:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB4450C9BC
+	for <lists+cgroups@lfdr.de>; Sat, 23 Apr 2022 13:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbiDWLjx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Apr 2022 07:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        id S235362AbiDWLxd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Apr 2022 07:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbiDWLjw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 07:39:52 -0400
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4084F1A04F;
-        Sat, 23 Apr 2022 04:36:56 -0700 (PDT)
-Received: by mail-qk1-f180.google.com with SMTP id d198so7578145qkc.12;
-        Sat, 23 Apr 2022 04:36:56 -0700 (PDT)
+        with ESMTP id S235359AbiDWLxa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Apr 2022 07:53:30 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389F71F6E6D;
+        Sat, 23 Apr 2022 04:50:34 -0700 (PDT)
+Received: by mail-qk1-f178.google.com with SMTP id e128so7600993qkd.7;
+        Sat, 23 Apr 2022 04:50:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BcOqG7n5x1u/kJMqwh39Y5RSFSmbFCI9uw/6+AwfTFk=;
-        b=qlW47WTNgLqYAcdQ3gQ8iRhLrMlbmDGK/ktxmdC5/CTEfuYcbb7OiFFAn5n5VYS+Bi
-         oPkHtXY6qBtgmJSMycJMB1vBF11Fu9xkA1gRnEczvQ6sC6UgXM8znkmjtKFDJSrHfyjG
-         6+l57+4rEei5xuDysryuNlycKui7chxQPFtyFrqmn6DSfPh9IX+iKnrVJHEHhkWLYKe3
-         69TpQX6L7eROiOY9PbBdZ8DVGfRd5TZCQ5fqbV4NRDA0QH3HqLgu4ROm21qT8Wh199C1
-         DJ4nJxAVTcjYsoaJi/nGB5t081i/DqL6rvAUmkHBPnIGnWjGTZQ36fW4ucDk2H814eYc
-         sJ5g==
-X-Gm-Message-State: AOAM531le+yNYTR8udMKFuvjt6/qMIGeNy2FRXkEhWymRDVGAh8xMVkh
-        TbUblsEhjeAkoaDPTN2r370=
-X-Google-Smtp-Source: ABdhPJxuD1TVwkZ0HbifP6E6S0QwJLLQMTOA4Qo7MnFnODcBZD0xZcU2q1vPD/m7S/aMeB9RyKrfQw==
-X-Received: by 2002:a05:620a:2495:b0:69e:e047:c6e7 with SMTP id i21-20020a05620a249500b0069ee047c6e7mr5094904qkn.737.1650713815298;
-        Sat, 23 Apr 2022 04:36:55 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-119.fbsv.net. [2a03:2880:20ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a63-20020ae9e842000000b0069e6722632bsm2246042qkg.39.2022.04.23.04.36.54
+        bh=PveZFFy5DjWV6FRcjoJAL/47PpCBgs3g9S6snQO0X6I=;
+        b=YE5gyLgzP/JpHpFZI0jlGBFBuh+gBlLtrU+L/28MS0RD9waKFhTBRviDsiVBrPLQ6I
+         MfF/TZKbdBuejaPCS9am3ClP+7C7Z7ShA0iHD+M8RPheKnmId9DsoUQcNXM/IkrR0hCh
+         KJ3/p9ZEkcu7bxvgQlnD3Kcb4xsvs3DOTEvkJgbQ9wv+C5PNDMRvWOhOoGxs5qAsxgXb
+         xAiaH0mdDG/KXxLSplWtf031WB5xjiXgGdiGSTdu3R2b+c/jH6xjIhF8IBbHlgJxIqUc
+         MLjHSSH7GDATOMRgVzwh5v7IzS0UqjNTlhfwTgtObQNrpA5F3Thboscwbwi4n0liMAMC
+         +17g==
+X-Gm-Message-State: AOAM530oaI2OfNoU/EP59zz9He7tq87SjnNA4/TqfyLhHyqSSx86uLrJ
+        xrx8lMmdoccfw5andMyLy/Ucvdnr6o31aQ==
+X-Google-Smtp-Source: ABdhPJzSNZPXMfHsH4gNHFIZZSEdZMchVyCNRJ7PtwHf6oYnAETrt3eM7zPN/0PyMTHGeSzavJ1UjA==
+X-Received: by 2002:a05:620a:2405:b0:69f:2238:989d with SMTP id d5-20020a05620a240500b0069f2238989dmr3391511qkn.318.1650714633308;
+        Sat, 23 Apr 2022 04:50:33 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-020.fbsv.net. [2a03:2880:20ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c13-20020a37e10d000000b0069c268c37f1sm2197836qkm.23.2022.04.23.04.50.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 04:36:55 -0700 (PDT)
-Date:   Sat, 23 Apr 2022 04:36:52 -0700
+        Sat, 23 Apr 2022 04:50:33 -0700 (PDT)
+Date:   Sat, 23 Apr 2022 04:50:30 -0700
 From:   David Vernet <void@manifault.com>
 To:     Roman Gushchin <roman.gushchin@linux.dev>
 Cc:     akpm@linux-foundation.org, tj@kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
         shakeelb@google.com, kernel-team@fb.com
-Subject: Re: [PATCH 3/5] cgroup: Account for memory_localevents in
- test_memcg_oom_group_leaf_events()
-Message-ID: <20220423113652.ys5gd7vvwkvbdte4@dev0025.ash9.facebook.com>
+Subject: Re: [PATCH 4/5] cgroup: Removing racy check in test_memcg_sock()
+Message-ID: <20220423115030.ee2gxwkwjzetzoby@dev0025.ash9.facebook.com>
 References: <20220422155728.3055914-1-void@manifault.com>
- <20220422155728.3055914-4-void@manifault.com>
- <YmM26XBZxWy4Widc@carbon>
+ <20220422155728.3055914-5-void@manifault.com>
+ <YmM/NCX9FwUY/GvB@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YmM26XBZxWy4Widc@carbon>
+In-Reply-To: <YmM/NCX9FwUY/GvB@carbon>
 User-Agent: NeoMutt/20211029
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 04:14:49PM -0700, Roman Gushchin wrote:
-> On Fri, Apr 22, 2022 at 08:57:27AM -0700, David Vernet wrote:
-> > The test_memcg_oom_group_leaf_events() testcase in the cgroup memcg tests
-> > validates that processes in a group that perform allocations exceeding
-> > memory.oom.group are killed. It also validates that the
-> > memory.events.oom_kill events are properly propagated in this case.  Commit
-> > 06e11c907ea4 ("kselftests: memcg: update the oom group leaf events test")
-> > fixed test_memcg_oom_group_leaf_events() to account for the fact that the
-> > memory.events.oom_kill events in a child cgroup is propagated up to its
-> > parent. This behavior can actually be configured by the memory_localevents
-> > mount option, so this patch updates the testcase to properly account for
-> > the possible presence of this mount option.
+On Fri, Apr 22, 2022 at 04:50:12PM -0700, Roman Gushchin wrote:
+> On Fri, Apr 22, 2022 at 08:57:28AM -0700, David Vernet wrote:
+> > test_memcg_sock() in the cgroup memcg tests, verifies expected memory
+> > accounting for sockets. The test forks a process which functions as a TCP
+> > server, and sends large buffers back and forth between itself (as the TCP
+> > client) and the forked TCP server. While doing so, it verifies that
+> > memory.current and memory.stat.sock look correct.
 > > 
-> > Signed-off-by: David Vernet <void@manifault.com>
-> > ---
-> >  .../testing/selftests/cgroup/test_memcontrol.c  | 17 ++++++++++++++++-
-> >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-> > index ea2fd27e52df..d88e0ca3f3d1 100644
-> > --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> > +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> > @@ -21,6 +21,7 @@
-> >  #include "../kselftest.h"
-> >  #include "cgroup_util.h"
-> >  
-> > +static bool has_localevents;
-> >  static bool has_recursiveprot;
-> >  
-> >  /*
-> > @@ -1091,6 +1092,7 @@ static int test_memcg_oom_group_leaf_events(const char *root)
-> >  {
-> >  	int ret = KSFT_FAIL;
-> >  	char *parent, *child;
-> > +	long parent_oom_events;
-> >  
-> >  	parent = cg_name(root, "memcg_test_0");
-> >  	child = cg_name(root, "memcg_test_0/memcg_test_1");
-> > @@ -1128,7 +1130,15 @@ static int test_memcg_oom_group_leaf_events(const char *root)
-> >  	if (cg_read_key_long(child, "memory.events", "oom_kill ") <= 0)
-> >  		goto cleanup;
-> >  
-> > -	if (cg_read_key_long(parent, "memory.events", "oom_kill ") <= 0)
-> > +	parent_oom_events = cg_read_key_long(
-> > +			parent, "memory.events", "oom_kill ");
-> > +	// If memory_localevents is not enabled (the default), the parent should
-> > +	// count OOM events in its children groups. Otherwise, it should not
-> > +	// have observed any events.
+> > There is currently a check in tcp_client() which asserts memory.current >=
+> > memory.stat.sock. This check is racy, as between memory.current and
+> > memory.stat.sock being queried, a packet could come in which causes
+> > mem_cgroup_charge_skmem() to be invoked. This could cause memory.stat.sock
+> > to exceed memory.current. Reversing the order of querying doesn't address
+> > the problem either, as memory may be reclaimed between the two calls.
 > 
-> Please, use /* */ style comments, it's a generic kernel style.
+> But just curious, does it fix the flakiness (assuming there is no memory
+> pressure)?
 
-Ack, will fix in a follow-on patch.
+Yes, it does fix the flakiness. I saw it fail once or twice in my runs, but
+to your point that was only in the presence of memory pressure, which could
+make many of the tests in the file fail. Let me know if you'd prefer to put
+the check back in, and instead reverse the order of querying memory.current
+and memory.stat.sock.
 
 > 
-> > +	if (has_localevents) {
-> > +		if (parent_oom_events != 0)
-> > +			goto cleanup;
-> > +	} else if (parent_oom_events <= 0)
-> >  		goto cleanup;
+> > Instead, this patch just removes that assertion altogether, and instead
+> > relies on the values_close() check that follows to validate the expected
+> > accounting.
 > 
-> How about something like this? IMO a bit more clear what's going on.
-> 	if ((has_local_events && parent_oom_events == 0) ||
-> 	    parent_oom_events > 0)
-> 		ret = KSFT_PASS;
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
 
-Agreed that's a bit clearer, I'll include this in the follow-on patch.
+Thanks!
