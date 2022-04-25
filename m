@@ -2,153 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E70350DD20
-	for <lists+cgroups@lfdr.de>; Mon, 25 Apr 2022 11:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4637250DE52
+	for <lists+cgroups@lfdr.de>; Mon, 25 Apr 2022 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239714AbiDYJwP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Apr 2022 05:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42664 "EHLO
+        id S231223AbiDYK7T (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Apr 2022 06:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239886AbiDYJwE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 05:52:04 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C413EA9B;
-        Mon, 25 Apr 2022 02:49:00 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C7AA221123;
-        Mon, 25 Apr 2022 09:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1650880138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n215KfJqkHmi9Mmq49cvfsGZ/OiTnyFPqnXnfcZ0qHY=;
-        b=O/h/zQi9hrK066WJ3e/N9k1cERZXJmAywDnFMxEiP/8Ak03zf50M/34yUDFj/yA9dnVuBk
-        nL7KAymiXMDyRs7i50snJXCrvxf+/6Tk/J1Xq/httxDAlHAA4cNdV1CANpR6A8yi9VgEvZ
-        giGifkoxTEp0tgjkAc2mhyTZCLBW9d8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1650880138;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n215KfJqkHmi9Mmq49cvfsGZ/OiTnyFPqnXnfcZ0qHY=;
-        b=KMXPa11Mj9t2r011fFWDg6Gvp9XR7amRkx+PRp8NltpciOjYcX8dTBsaT6kfNYVav2Axfh
-        4o0CKWG1qJ+KOaCQ==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AAFA72C172;
-        Mon, 25 Apr 2022 09:48:58 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 87D48A0620; Mon, 25 Apr 2022 11:48:56 +0200 (CEST)
-Date:   Mon, 25 Apr 2022 11:48:56 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     jack@suse.cz, paolo.valente@linaro.org, axboe@kernel.dk,
-        tj@kernel.org, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH -next v2 2/5] block, bfq: add fake weight_counter for
- weight-raised queue
-Message-ID: <20220425094856.qgkhba2klguduxot@quack3.lan>
-References: <20220416093753.3054696-1-yukuai3@huawei.com>
- <20220416093753.3054696-3-yukuai3@huawei.com>
+        with ESMTP id S235679AbiDYK7K (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 06:59:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BBD83031
+        for <cgroups@vger.kernel.org>; Mon, 25 Apr 2022 03:56:06 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id g19so25468563lfv.2
+        for <cgroups@vger.kernel.org>; Mon, 25 Apr 2022 03:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=T8bwaMzGPgoQcIyr+n6koMGrG7fm/Z4/AiIVbk5FTRE=;
+        b=PHxpIopHnjSfjS/SVHNS9Ad2fDgAC87mv4w+6ga4qbdW0Q2DTzaYmHRN3FR9hnZOCy
+         6xHdBZqPo+eR6dnxjdmLPyDBqPd9zII1ImpopMWmMb93yF0N8tm+cUmIT5jrtOL4N/4v
+         XixhnibyCcGYMbLesUH9fox8gdn0Zo0vLs70tveEs+TVVtOicDv7XzpKK+lCL7Svz8Lj
+         GZMLt9aTLZIYCm/IcFYiEyN9C17/I/NuJ8YIv2YRMMdH1cS5JDNQB8rXKBscDJ3JiUNc
+         UpHURClLwRUW/qmDhx/2kWlIj9Ntv/iBjic6ui24tNOoA8UmKZVBg0Y/Y35+pkBgxAMI
+         0zRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=T8bwaMzGPgoQcIyr+n6koMGrG7fm/Z4/AiIVbk5FTRE=;
+        b=acNpqPZZceoJIA74yKJMYp+KfaL6Y6IC0prPLNiXql30mctS49kz7h6uBRivQwizq9
+         hT3TT69SXgjExKK2c8LAF2ffeKJRTZHn7cEr6mbRY7mo164ioQ2RHX8R2yxjCpJE7RSS
+         kMdwyOZMH143k3qDNkNU3+iCMaqvRi7RLLyp7dSpVD4YkK9qL+EgYJ4vse0kGfdAWmlv
+         iWOZuKCgQo6GaqwaV9Dc53MYzys3mZYJ5Yrc75m23V9YW6UeO419Xwj1GyTYH6fz/9ih
+         ZxhvDjrNvWb/dhEndP10nLPmG58euQBo9gSuW3i3IyjUJ7CAAIfACBL4RRUCIcgsh8Nr
+         6BWg==
+X-Gm-Message-State: AOAM530OOMqukIW3fBpZM1ZaRt+8Gp6/M47ueLA2ixFlsxR17CW6cisr
+        PYUKmJEHpvW+nlAxomdZgEpOsw==
+X-Google-Smtp-Source: ABdhPJyLPYmyB6rQIhq9qCyC4P5Ohn4e0bSOMU0jVjfByl4Sdt9vHdoQEKEN1WyZbQ2/A3sI9KAGxw==
+X-Received: by 2002:ac2:410b:0:b0:448:58a8:3e8a with SMTP id b11-20020ac2410b000000b0044858a83e8amr12549809lfi.258.1650884164338;
+        Mon, 25 Apr 2022 03:56:04 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.177])
+        by smtp.gmail.com with ESMTPSA id u29-20020ac25bdd000000b004720c866dd0sm213357lfn.87.2022.04.25.03.56.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Apr 2022 03:56:03 -0700 (PDT)
+Message-ID: <c2f0139a-62e2-5985-34e9-d42faac81960@openvz.org>
+Date:   Mon, 25 Apr 2022 13:56:02 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220416093753.3054696-3-yukuai3@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+From:   Vasily Averin <vvs@openvz.org>
+Subject: [PATCH memcg v3] net: set proper memcg for net_init hooks allocations
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     kernel@openvz.org, Florian Westphal <fw@strlen.de>,
+        linux-kernel@vger.kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <20220424144627.GB13403@xsang-OptiPlex-9020>
+Content-Language: en-US
+In-Reply-To: <20220424144627.GB13403@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 16-04-22 17:37:50, Yu Kuai wrote:
-> Weight-raised queue is not inserted to weights_tree, which makes it
-> impossible to track how many queues have pending requests through
-> weights_tree insertion and removel. This patch add fake weight_counter
-> for weight-raised queue to do that.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+__register_pernet_operations() executes init hook of registered
+pernet_operation structure in all existing net namespaces.
 
-This is a bit hacky. I was looking into a better place where to hook to
-count entities in a bfq_group with requests and I think bfq_add_bfqq_busy()
-and bfq_del_bfqq_busy() are ideal for this. It also makes better sense
-conceptually than hooking into weights tree handling.
+Typically, these hooks are called by a process associated with
+the specified net namespace, and all __GFP_ACCOUNTING marked
+allocation are accounted for corresponding container/memcg.
 
-Other than this the rest of the series looks fine to me.
+However __register_pernet_operations() calls the hooks in the same
+context, and as a result all marked allocations are accounted
+to one memcg for all processed net namespaces.
 
-								Honza
+This patch adjusts active memcg for each net namespace and helps
+to account memory allocated inside ops_init() into the proper memcg.
 
-> ---
->  block/bfq-iosched.c | 11 +++++++++++
->  block/bfq-wf2q.c    |  5 ++---
->  2 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 2deea2d07a1f..a2977c938c70 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -134,6 +134,8 @@
->  #include "bfq-iosched.h"
->  #include "blk-wbt.h"
->  
-> +#define BFQ_FAKE_WEIGHT_COUNTER ((void *) POISON_INUSE)
-> +
->  #define BFQ_BFQQ_FNS(name)						\
->  void bfq_mark_bfqq_##name(struct bfq_queue *bfqq)			\
->  {									\
-> @@ -884,6 +886,12 @@ void bfq_weights_tree_add(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->  	if (bfqq->weight_counter)
->  		return;
->  
-> +	if (bfqq->wr_coeff != 1) {
-> +		bfqq->weight_counter = BFQ_FAKE_WEIGHT_COUNTER;
-> +		bfqq->ref++;
-> +		return;
-> +	}
-> +
->  	while (*new) {
->  		struct bfq_weight_counter *__counter = container_of(*new,
->  						struct bfq_weight_counter,
-> @@ -943,6 +951,9 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->  	if (!bfqq->weight_counter)
->  		return;
->  
-> +	if (bfqq->weight_counter == BFQ_FAKE_WEIGHT_COUNTER)
-> +		goto reset_entity_pointer;
-> +
->  	root = &bfqd->queue_weights_tree;
->  	bfqq->weight_counter->num_active--;
->  	if (bfqq->weight_counter->num_active > 0)
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index a1296058c1ec..ae12c6b2c525 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -776,7 +776,7 @@ __bfq_entity_update_weight_prio(struct bfq_service_tree *old_st,
->  		 * Add the entity, if it is not a weight-raised queue,
->  		 * to the counter associated with its new weight.
->  		 */
-> -		if (prev_weight != new_weight && bfqq && bfqq->wr_coeff == 1)
-> +		if (prev_weight != new_weight && bfqq)
->  			bfq_weights_tree_add(bfqd, bfqq);
->  
->  		new_st->wsum += entity->weight;
-> @@ -1680,8 +1680,7 @@ void bfq_add_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->  	bfqd->busy_queues[bfqq->ioprio_class - 1]++;
->  
->  	if (!bfqq->dispatched)
-> -		if (bfqq->wr_coeff == 1)
-> -			bfq_weights_tree_add(bfqd, bfqq);
-> +		bfq_weights_tree_add(bfqd, bfqq);
->  
->  	if (bfqq->wr_coeff > 1)
->  		bfqd->wr_busy_queues++;
-> -- 
-> 2.31.1
-> 
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+---
+v3: put_net_memcg() replaced by an alreay existing mem_cgroup_put()
+    It checks memcg before accessing it, this is required for
+    __register_pernet_operations() called before memcg initialization.
+    Additionally fixed leading whitespaces in non-memcg_kmem version
+    of mem_cgroup_from_obj().
+
+v2: introduced get/put_net_memcg(),
+    new functions are moved under CONFIG_MEMCG_KMEM
+    to fix compilation issues reported by Intel's kernel test robot
+
+v1: introduced get_mem_cgroup_from_kmem(), which takes the refcount
+    for the found memcg, suggested by Shakeel
+---
+ include/linux/memcontrol.h | 29 ++++++++++++++++++++++++++++-
+ net/core/net_namespace.c   |  7 +++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0abbd685703b..cfb68a3f7015 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1714,6 +1714,29 @@ static inline int memcg_cache_id(struct mem_cgroup *memcg)
+ 
+ struct mem_cgroup *mem_cgroup_from_obj(void *p);
+ 
++static inline struct mem_cgroup *get_mem_cgroup_from_kmem(void *p)
++{
++	struct mem_cgroup *memcg;
++
++	rcu_read_lock();
++	do {
++		memcg = mem_cgroup_from_obj(p);
++	} while (memcg && !css_tryget(&memcg->css));
++	rcu_read_unlock();
++	return memcg;
++}
++
++static inline struct mem_cgroup *get_net_memcg(void *p)
++{
++	struct mem_cgroup *memcg;
++
++	memcg = get_mem_cgroup_from_kmem(p);
++
++	if (!memcg)
++		memcg = root_mem_cgroup;
++
++	return memcg;
++}
+ #else
+ static inline bool mem_cgroup_kmem_disabled(void)
+ {
+@@ -1763,9 +1786,13 @@ static inline void memcg_put_cache_ids(void)
+ 
+ static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ {
+-       return NULL;
++	return NULL;
+ }
+ 
++static inline struct mem_cgroup *get_net_memcg(void *p)
++{
++	return NULL;
++}
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
+ #endif /* _LINUX_MEMCONTROL_H */
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index a5b5bb99c644..3093b4d5b2b9 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -26,6 +26,7 @@
+ #include <net/net_namespace.h>
+ #include <net/netns/generic.h>
+ 
++#include <linux/sched/mm.h>
+ /*
+  *	Our network namespace constructor/destructor lists
+  */
+@@ -1147,7 +1148,13 @@ static int __register_pernet_operations(struct list_head *list,
+ 		 * setup_net() and cleanup_net() are not possible.
+ 		 */
+ 		for_each_net(net) {
++			struct mem_cgroup *old, *memcg;
++
++			memcg = get_net_memcg(net);
++			old = set_active_memcg(memcg);
+ 			error = ops_init(ops, net);
++			set_active_memcg(old);
++			mem_cgroup_put(memcg);
+ 			if (error)
+ 				goto out_undo;
+ 			list_add_tail(&net->exit_list, &net_exit_list);
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
