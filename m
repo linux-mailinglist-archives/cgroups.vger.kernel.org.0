@@ -2,110 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E12750EE42
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 03:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C02450EE54
+	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 03:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbiDZBwS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Apr 2022 21:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
+        id S232087AbiDZB5K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Apr 2022 21:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241577AbiDZBwQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 21:52:16 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB09124DAA;
-        Mon, 25 Apr 2022 18:49:07 -0700 (PDT)
-Received: from kwepemi100023.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KnPqp26QDzGpS3;
-        Tue, 26 Apr 2022 09:46:30 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100023.china.huawei.com (7.221.188.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 09:49:05 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 09:49:05 +0800
-Subject: Re: [PATCH -next v2 2/5] block, bfq: add fake weight_counter for
- weight-raised queue
-To:     Jan Kara <jack@suse.cz>
-CC:     <paolo.valente@linaro.org>, <axboe@kernel.dk>, <tj@kernel.org>,
-        <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20220416093753.3054696-1-yukuai3@huawei.com>
- <20220416093753.3054696-3-yukuai3@huawei.com>
- <20220425094856.qgkhba2klguduxot@quack3.lan>
- <a27b8c79-867f-9253-84db-1d39c964b3ed@huawei.com>
- <20220425161650.xzyijgkb5yzviea3@quack3.lan>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <4591d02d-1f14-c928-1c50-6e434dfbb7b2@huawei.com>
-Date:   Tue, 26 Apr 2022 09:49:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S229834AbiDZB5K (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 21:57:10 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51929120D04;
+        Mon, 25 Apr 2022 18:54:04 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 18:53:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1650938042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dZsy6ZebabS1TsQcaFiZ0sPD2AjyXhLmbrTmljIpUeA=;
+        b=Pi1rV36/KmttICAXEd0fKT1KpBXiMySRUBxxWjE2+dRPpMgGjZlxHRKt6LrkdEU97QrkS+
+        S5iwFooeG+o4SgYZ1oWAlxvXobVWlOqWdlLqCkA1vu08s6FEvumTymbGTVXfQD6X7IHluN
+        OORjBvR/DN+bY8gxVyu3IwOtj9fkjFA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        Chen Wandun <chenwandun@huawei.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v5 2/4] selftests: cgroup: return -errno from
+ cg_read()/cg_write() on failure
+Message-ID: <YmdQrql2rSMwjmY4@carbon>
+References: <20220425190040.2475377-1-yosryahmed@google.com>
+ <20220425190040.2475377-3-yosryahmed@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20220425161650.xzyijgkb5yzviea3@quack3.lan>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220425190040.2475377-3-yosryahmed@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/04/26 0:16, Jan Kara 写道:
-> Hello!
+On Mon, Apr 25, 2022 at 07:00:38PM +0000, Yosry Ahmed wrote:
+> Currently, cg_read()/cg_write() returns 0 on success and -1 on failure.
+> Modify them to return the -errno on failure.
 > 
-> On Mon 25-04-22 21:34:16, yukuai (C) wrote:
->> 在 2022/04/25 17:48, Jan Kara 写道:
->>> On Sat 16-04-22 17:37:50, Yu Kuai wrote:
->>>> Weight-raised queue is not inserted to weights_tree, which makes it
->>>> impossible to track how many queues have pending requests through
->>>> weights_tree insertion and removel. This patch add fake weight_counter
->>>> for weight-raised queue to do that.
->>>>
->>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>>
->>> This is a bit hacky. I was looking into a better place where to hook to
->>> count entities in a bfq_group with requests and I think bfq_add_bfqq_busy()
->>> and bfq_del_bfqq_busy() are ideal for this. It also makes better sense
->>> conceptually than hooking into weights tree handling.
->>
->> bfq_del_bfqq_busy() will be called when all the reqs in the bfqq are
->> dispatched, however there might still some reqs are't completed yet.
->>
->> Here what we want to track is how many bfqqs have pending reqs,
->> specifically if the bfqq have reqs are't complted.
->>
->> Thus I think bfq_del_bfqq_busy() is not the right place to do that.
-> 
-> Yes, I'm aware there will be a difference. But note that bfqq can stay busy
-> with only dispatched requests because the logic in __bfq_bfqq_expire() will
-> not call bfq_del_bfqq_busy() if idling is needed for service guarantees. So
-> I think using bfq_add/del_bfqq_busy() would work OK.
-Hi,
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-I didn't think of that before. If bfqq stay busy after dispathing all
-the requests, there are two other places that bfqq can clear busy:
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-1) bfq_remove_request(), bfqq has to insert a new req while it's not in
-service.
-
-2) bfq_release_process_ref(), user thread is gone / moved, or old bfqq
-is gone due to merge / ioprio change.
-
-I wonder, will bfq_del_bfqq_busy() be called immediately when requests
-are completed? (It seems not to me...). For example, a user thread
-issue a sync io just once, and it keep running without issuing new io,
-then when does the bfqq clears the busy state?
-
-Thanks,
-Kuai
-> 
-> 								Honza
-> 
+Thanks!
