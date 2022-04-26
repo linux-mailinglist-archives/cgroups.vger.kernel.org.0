@@ -2,56 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C02450EE54
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 03:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D8C50EE5A
+	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 03:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbiDZB5K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Apr 2022 21:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        id S235070AbiDZB7X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Apr 2022 21:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbiDZB5K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 21:57:10 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51929120D04;
-        Mon, 25 Apr 2022 18:54:04 -0700 (PDT)
-Date:   Mon, 25 Apr 2022 18:53:50 -0700
+        with ESMTP id S229834AbiDZB7X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Apr 2022 21:59:23 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9C46FA0B;
+        Mon, 25 Apr 2022 18:56:17 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 18:56:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1650938042;
+        t=1650938176;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dZsy6ZebabS1TsQcaFiZ0sPD2AjyXhLmbrTmljIpUeA=;
-        b=Pi1rV36/KmttICAXEd0fKT1KpBXiMySRUBxxWjE2+dRPpMgGjZlxHRKt6LrkdEU97QrkS+
-        S5iwFooeG+o4SgYZ1oWAlxvXobVWlOqWdlLqCkA1vu08s6FEvumTymbGTVXfQD6X7IHluN
-        OORjBvR/DN+bY8gxVyu3IwOtj9fkjFA=
+        bh=eknS5mZjx4pi0PW50DuACc81xMEJlhElzkFotI9xECI=;
+        b=Zy5KwFrskWKcY3bLKvYR+K/romXFvT8ubAkmxpL922s/9KYhDYlCYyxcYgBNWmO6yRbAyC
+        IFVV3DYFHNBmr/F90mhh7Pla2zpFxQqPYO7rgaZdV6JsTx9RICKkLRnpAIprEhvq78S2W5
+        GPndu/sXoZVZyLWfyONdz6s6ipZHESo=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] selftests: cgroup: return -errno from
- cg_read()/cg_write() on failure
-Message-ID: <YmdQrql2rSMwjmY4@carbon>
-References: <20220425190040.2475377-1-yosryahmed@google.com>
- <20220425190040.2475377-3-yosryahmed@google.com>
+To:     David Vernet <void@manifault.com>
+Cc:     akpm@linux-foundation.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 1/5] cgroups: Refactor children cgroups in memcg tests
+Message-ID: <YmdROKOEfiP1rk8q@carbon>
+References: <20220423155619.3669555-1-void@manifault.com>
+ <20220423155619.3669555-2-void@manifault.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220425190040.2475377-3-yosryahmed@google.com>
+In-Reply-To: <20220423155619.3669555-2-void@manifault.com>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -63,12 +50,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 07:00:38PM +0000, Yosry Ahmed wrote:
-> Currently, cg_read()/cg_write() returns 0 on success and -1 on failure.
-> Modify them to return the -errno on failure.
+On Sat, Apr 23, 2022 at 08:56:17AM -0700, David Vernet wrote:
+> In test_memcg_min() and test_memcg_low(), there is an array of four sibling
+> cgroups. All but one of these sibling groups does a 50MB allocation, and
+> the group that does no allocation is the third of four in the array.  This
+> is not a problem per se, but makes it a bit tricky to do some assertions in
+> test_memcg_low(), as we want to make assertions on the siblings based on
+> whether or not they performed allocations. Having a static index before
+> which all groups have performed an allocation makes this cleaner.
 > 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Shakeel Butt <shakeelb@google.com>
+> This patch therefore reorders the sibling groups so that the group that
+> performs no allocations is the last in the array. A follow-on patch will
+> leverage this to fix a bug in the test that incorrectly asserts that a
+> sibling group that had performed an allocation, but only had protection
+> from its parent, will not observe any memory.events.low events during
+> reclaim.
+> 
+> Signed-off-by: David Vernet <void@manifault.com>
 
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
