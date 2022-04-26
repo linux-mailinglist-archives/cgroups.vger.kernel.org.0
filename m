@@ -2,75 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546B050F163
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 08:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920FD50F298
+	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 09:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245469AbiDZGrA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Apr 2022 02:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S1344070AbiDZHiL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Apr 2022 03:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245725AbiDZGq4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 02:46:56 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6088D12C8F2
-        for <cgroups@vger.kernel.org>; Mon, 25 Apr 2022 23:43:47 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id q185so11474071ljb.5
-        for <cgroups@vger.kernel.org>; Mon, 25 Apr 2022 23:43:47 -0700 (PDT)
+        with ESMTP id S238662AbiDZHiJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 03:38:09 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7988C24E
+        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 00:35:01 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id r11so10885376ila.1
+        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 00:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=K2d011P8KfcYwwiHkCEUfdA6HfAgaJe5w6mALwX0ubY=;
-        b=ucopxF9WfhVVHWRqZ21ScpWY3F6vUeftNTSf7toMamrheU0OxvUcaaprhBe62s1n6f
-         BqKhFXXKeG3P27w76cKmJ8S58bNyKrj9iB9MutS65aXrnRUDQMPgtk78QOqLaxKTJVgg
-         jCElShjmCrninAIOEh0HkazA1QytgiAb3/ylLwDsMCfpHdwPWpdK0wu0EU0WuHnGAX7b
-         VzyQpskFimFQ/P20V1oMC+fOFshJ0YgCRkk9wO4Pom6O40sGavzvkSe9J3DVn4mNIHZY
-         IODiJtXsb8FzKtweUwAVQcyz7029ke5hIhdXaVinNFcaRH2JaEm9psZ2+oq9F+Momo7a
-         kwMQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T6uVKqz/bxBh0XcbvcuRA0UyoUPF9VXe65F1cQD8y4Q=;
+        b=ObEunFSl4crRLGfpGD9vb4uNjucdcW+SwMC5wjs68ErQM98eX2dd/1bhFqvb4MQrUZ
+         aNBQiYOEZs6DAFrjwy4GxIX9P710BE5dNtb9ren8SoNbyoDCq1JSrqMW6bcxyN3g457u
+         /+gBpA8szyFlMBKjZqPcqtIcg53tpCAgbfmBRZ+EQiSDL0bYkiLUkJAuAA+ESILGYbW5
+         jVcb61+A+66M7v7MKaJKTdQY27E/r9amtlm20dB0rHCxpqld0qjq5eRsqvCmPNleg1uA
+         MTGwgfxKApBNNdQAeaBp8qoeybFa8FJ6gos+fYTUTeB4wg78apx7w8FkSb2oMxvxLXSe
+         mDTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=K2d011P8KfcYwwiHkCEUfdA6HfAgaJe5w6mALwX0ubY=;
-        b=MPCKngvYJiBF0HtHHBXP1iCtL8pDfhtoszHenfnWxpvHGVqKFHF55W2ejyLZRwmFHm
-         K+ZlL97Gb1bZPPwEYmTJyyPs+y4O0jwNfyUU1n0fhqQAFq109IJjyL0wOpLOnXc/coY3
-         LGvCS0r8TYABHeQ1kr2ydO+Fs1QBHEZ7q5FOe+haxx2kX2Os0rvfUUFODGARHfBwFIDP
-         0tq6FBUFfG/vGmusv3cgSvKcmcXkE4AaK539YcSJqS60ppspuBQk6TwqmDUA//9pnpwR
-         O8L82ZIMnNVWbr/oKjNp9wZH2f4cEnGwmp3eEq8ut+afHJCDwW1JGZkuKurPF7/KoLVV
-         AmMQ==
-X-Gm-Message-State: AOAM533EPh79BtbNBkdNe40q2uNuQcpPeP1s9E9hGHxbVDSEkZy5/BRL
-        LjKGECIZ8SWhCUO8xTdTS9Yeeg==
-X-Google-Smtp-Source: ABdhPJznIC2XojKpJb8/wZGwLoRVgWv80lsRGUWtGqO/JnjNZLgQaaSAeJcnhhe6K6hFnk0cPct93Q==
-X-Received: by 2002:a2e:a235:0:b0:24f:1209:fcbf with SMTP id i21-20020a2ea235000000b0024f1209fcbfmr5265271ljm.313.1650955425082;
-        Mon, 25 Apr 2022 23:43:45 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id t9-20020a2e5349000000b00247e931bd67sm1402338ljd.9.2022.04.25.23.43.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Apr 2022 23:43:44 -0700 (PDT)
-Message-ID: <33085523-a8b9-1bf6-2726-f456f59015ef@openvz.org>
-Date:   Tue, 26 Apr 2022 09:43:43 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH memcg v4] net: set proper memcg for net_init hooks allocations
-To:     Vlastimil Babka <vbabka@suse.cz>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T6uVKqz/bxBh0XcbvcuRA0UyoUPF9VXe65F1cQD8y4Q=;
+        b=lDQ9xFErlY5Lir6RCl7Adyoph7bCwscr1uocLI0f4lNnNZOSJ2PCjyFqpno1vOqcZR
+         H/a8VIzrjPu8m4JtD4LdD/8jZTTvEWuMxXB60nsBUA6xqCxcNRAzSr0DD/2kIGQSQHSR
+         MQ28jcQIsnFVKU0oNTgI7AC5ghs+sT7GAVgJIUm1XBLUZucJxgfbkCA15ezREiTbZxPo
+         PijHM0oAmO7XBDD7uFsKmjQAkG6aXpVGdDntLeIdnptwNpC2o+oMdxPqb/+wLckVwXFw
+         urnX+I1S1W65a0jItIDYx+g0j/uFP1f4DEDjTe+QDhZSBDJih3Ao+1vmqHaOGPgHMOOI
+         NQ3Q==
+X-Gm-Message-State: AOAM531MeWFcnCTr+OJ8g76/5L3Z/2VWgMVKELVnQvFirpLHWdOUVRJp
+        HUz9aneV2QYdwuVcF5uA/0bmpg==
+X-Google-Smtp-Source: ABdhPJzzgIPYx4mfeq03H4D4LkohxnIEdiAlT4JnSJ/rUPy7BWzzJro8BOalbut4cMQo3UF9wiXwfw==
+X-Received: by 2002:a05:6e02:b23:b0:2cd:89db:f685 with SMTP id e3-20020a056e020b2300b002cd89dbf685mr5194103ilu.296.1650958500701;
+        Tue, 26 Apr 2022 00:35:00 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id w5-20020a05660205c500b006546d0b5f6dsm9257784iox.41.2022.04.26.00.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Apr 2022 00:34:59 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 07:34:56 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     kernel@openvz.org, Florian Westphal <fw@strlen.de>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <YmdeCqi6wmgiSiWh@carbon>
-Content-Language: en-US
-In-Reply-To: <YmdeCqi6wmgiSiWh@carbon>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH v3 4/6] KVM: arm64/mmu: count KVM page table pages in
+ pagetable stats
+Message-ID: <YmegoB/fBkfwaE5z@google.com>
+References: <20220426053904.3684293-1-yosryahmed@google.com>
+ <20220426053904.3684293-5-yosryahmed@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220426053904.3684293-5-yosryahmed@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,115 +96,65 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-__register_pernet_operations() executes init hook of registered
-pernet_operation structure in all existing net namespaces.
+Hi Yosry,
 
-Typically, these hooks are called by a process associated with
-the specified net namespace, and all __GFP_ACCOUNT marked
-allocation are accounted for corresponding container/memcg.
+On Tue, Apr 26, 2022 at 05:39:02AM +0000, Yosry Ahmed wrote:
+> Count the pages used by KVM in arm64 for page tables in pagetable stats.
+> 
+> Account pages allocated for PTEs in pgtable init functions and
+> kvm_set_table_pte().
+> 
+> Since most page table pages are freed using put_page(), add a helper
+> function put_pte_page() that checks if this is the last ref for a pte
+> page before putting it, and unaccounts stats accordingly.
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>  arch/arm64/kernel/image-vars.h |  3 ++
+>  arch/arm64/kvm/hyp/pgtable.c   | 50 +++++++++++++++++++++-------------
+>  2 files changed, 34 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+> index 241c86b67d01..25bf058714f6 100644
+> --- a/arch/arm64/kernel/image-vars.h
+> +++ b/arch/arm64/kernel/image-vars.h
+> @@ -143,6 +143,9 @@ KVM_NVHE_ALIAS(__hyp_rodata_end);
+>  /* pKVM static key */
+>  KVM_NVHE_ALIAS(kvm_protected_mode_initialized);
+>  
+> +/* Called by kvm_account_pgtable_pages() to update pagetable stats */
+> +KVM_NVHE_ALIAS(__mod_lruvec_page_state);
+> +
+>  #endif /* CONFIG_KVM */
+>  
+>  #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 2cb3867eb7c2..53e13c3313e9 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -152,6 +152,7 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp,
+>  
+>  	WARN_ON(kvm_pte_valid(old));
+>  	smp_store_release(ptep, pte);
+> +	kvm_account_pgtable_pages((void *)childp, +1);
 
-However __register_pernet_operations() calls the hooks in the same
-context, and as a result all marked allocations are accounted
-to one memcg for all processed net namespaces.
+What page tables do we want to account? KVM on ARM manages several page
+tables.
 
-This patch adjusts active memcg for each net namespace and helps
-to account memory allocated inside ops_init() into the proper memcg.
+For regular KVM, the host kernel manages allocations for the hyp stage 1
+tables in addition to the stage 2 tables used for a particular VM. The
+former is system overhead whereas the latter could be attributed to a
+guest VM.
 
-Signed-off-by: Vasily Averin <vvs@openvz.org>
----
-v4: get_mem_cgroup_from_kmem() renamed to get_mem_cgroup_from_obj(),
-    get_net_memcg() replaced by mem_cgroup_or_root(), suggested by Roman.
+I imagine protected KVM is out of scope, since it actually manages its
+own allocations outside of the host kernel.
 
-v3: put_net_memcg() replaced by an alreay existing mem_cgroup_put()
-    It checks memcg before accessing it, this is required for
-    __register_pernet_operations() called before memcg initialization.
-    Additionally fixed leading whitespaces in non-memcg_kmem version
-    of mem_cgroup_from_obj().
+Given this, I would recommend adding the accounting hooks to mmu.c as
+that is where we alloc/free table pages and it is in the host address
+space. kvm_s2_mm_ops and kvm_hyp_mm_ops point to all the relevant
+functions, though the latter is only relevant if we want to count system
+page tables too.
 
-v2: introduced get/put_net_memcg(),
-    new functions are moved under CONFIG_MEMCG_KMEM
-    to fix compilation issues reported by Intel's kernel test robot
-
-v1: introduced get_mem_cgroup_from_kmem(), which takes the refcount
-    for the found memcg, suggested by Shakeel
----
- include/linux/memcontrol.h | 27 ++++++++++++++++++++++++++-
- net/core/net_namespace.c   |  7 +++++++
- 2 files changed, 33 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0abbd685703b..6dd4ed7d3b6f 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1714,6 +1714,22 @@ static inline int memcg_cache_id(struct mem_cgroup *memcg)
- 
- struct mem_cgroup *mem_cgroup_from_obj(void *p);
- 
-+static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
-+{
-+	struct mem_cgroup *memcg;
-+
-+	rcu_read_lock();
-+	do {
-+		memcg = mem_cgroup_from_obj(p);
-+	} while (memcg && !css_tryget(&memcg->css));
-+	rcu_read_unlock();
-+	return memcg;
-+}
-+
-+static inline struct mem_cgroup *mem_cgroup_or_root(struct mem_cgroup *memcg)
-+{
-+	return memcg ? memcg : root_mem_cgroup;
-+}
- #else
- static inline bool mem_cgroup_kmem_disabled(void)
- {
-@@ -1763,9 +1779,18 @@ static inline void memcg_put_cache_ids(void)
- 
- static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
- {
--       return NULL;
-+	return NULL;
- }
- 
-+static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
-+{
-+	return NULL;
-+}
-+
-+static inline struct mem_cgroup *mem_cgroup_or_root(struct mem_cgroup *memcg)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- #endif /* _LINUX_MEMCONTROL_H */
-diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-index a5b5bb99c644..240f3db77dec 100644
---- a/net/core/net_namespace.c
-+++ b/net/core/net_namespace.c
-@@ -26,6 +26,7 @@
- #include <net/net_namespace.h>
- #include <net/netns/generic.h>
- 
-+#include <linux/sched/mm.h>
- /*
-  *	Our network namespace constructor/destructor lists
-  */
-@@ -1147,7 +1148,13 @@ static int __register_pernet_operations(struct list_head *list,
- 		 * setup_net() and cleanup_net() are not possible.
- 		 */
- 		for_each_net(net) {
-+			struct mem_cgroup *old, *memcg;
-+
-+			memcg = mem_cgroup_or_root(get_mem_cgroup_from_obj(net));
-+			old = set_active_memcg(memcg);
- 			error = ops_init(ops, net);
-+			set_active_memcg(old);
-+			mem_cgroup_put(memcg);
- 			if (error)
- 				goto out_undo;
- 			list_add_tail(&net->exit_list, &net_exit_list);
--- 
-2.31.1
-
+--
+Thanks,
+Oliver
