@@ -2,112 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0390A51005D
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 16:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F21510135
+	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 16:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351588AbiDZO2G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Apr 2022 10:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S242873AbiDZPBg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Apr 2022 11:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351025AbiDZO2F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 10:28:05 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B425A083
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 07:24:56 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id bv19so36435262ejb.6
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 07:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=vGi2xWo0glztPoHlb3pGflxD9oTprLjQ3hPK/vMNf9g=;
-        b=hQ7W0BWcpUkQc/T8HXofDKebFeuGCBNPA5SZVDUfqR/Wgw7Qois8SYRnyk9WOoAHeu
-         F/9jI9kUIifVKMlpQKopUdI/JZsUhYq/vQcqeQK4/nxr9MspWekGKFdgaWjZZsQVqxhu
-         tmS+2B+y3iD7cVRg0aBWsQnviwtyJcRl60tsNuO09pmmr2LGiuSl+b9edYTc8nrargte
-         ufPok664AcZ7cV+an88gvuWIEVSJMo3IR31ozD8FfRbz1dZEA5V21oxe1GZ9V7jSg/cU
-         hgKUeLqYaG8JBRTtZFaqg06j5HFctbBkAB4mjjXcEmG4ci7ClXQz0YfqeQxhVk0uUDy0
-         5fKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=vGi2xWo0glztPoHlb3pGflxD9oTprLjQ3hPK/vMNf9g=;
-        b=q863BzKOA0lB7P6sHvp08Nyf1rOOrlMZyDa8S2WZ4JQP0iUlaTa/zSxceT/5y7QRYv
-         sB8tzexTeKO9Spqa25Cb1y7YxKg7FExnj8qmyvme/mwMt5dNulzLvbEmKfcGGox67tja
-         bIHPrQlOYR7+A4kuYZpI5hfufFHJn+RluJTHKyzBFn6MQrKLqzk1pEkOZmwJQTo9nK5J
-         NAL9kF2bBbniEGOqH8J1xlc9c5nlR54F98yHbyC1oGmKK6T0yr4llCmLkH8ln1AxldZ/
-         SogeqH1guYN4YeB2WJSPm2ir2rCykLyW88Y2YQQr7WwJTUIEh2AimwYif8nGcQPcPvho
-         9bAw==
-X-Gm-Message-State: AOAM532spgGaFJhUdmvCk4W0076DRhtY2pUIvoza4b/AkDwuwrTLimGm
-        PsM6YdDjXnKNpP23TvutUQT1uQ==
-X-Google-Smtp-Source: ABdhPJwqgfbj1kmKNaRApziMfN3y1y0mgZBxvHxiI0QR5TzVpevciWSnaiC3oLvOhLwmBH4Io+45bQ==
-X-Received: by 2002:a17:907:86ab:b0:6e8:d60e:d6c3 with SMTP id qa43-20020a17090786ab00b006e8d60ed6c3mr21366841ejc.346.1650983095263;
-        Tue, 26 Apr 2022 07:24:55 -0700 (PDT)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id l20-20020a1709062a9400b006ce71a88bf5sm4976128eje.183.2022.04.26.07.24.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Apr 2022 07:24:54 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH -next 00/11] support concurrent sync io for bfq on a
- specail occasion
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20220413111216.npgrdzaubsvjsmy3@quack3.lan>
-Date:   Tue, 26 Apr 2022 16:24:51 +0200
-Cc:     Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
+        with ESMTP id S1351582AbiDZPBg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 11:01:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 36F48B1A85
+        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 07:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650985106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GoYuxuTr0wU4xOtdPoGRbWQ9hkISKKeNkUzuaQojQ8I=;
+        b=RkpQPRNU978iOCfD01TMO+x0vCfFNj6bNibzEuoK8pdH+7jzvYH5W8L9I/5FVhA1UfDH+/
+        R3agtXHzeKiYO0lV9ZZeEiCu5NS6iJR666wVXHGQEBkvtjjqVW2itN/tVIEryEPls6kt1h
+        jtDRunEIzl1RY3ByPDlkWj6JENTWMQ8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-139-VXxt-ww9N8qv-QtWSacfcQ-1; Tue, 26 Apr 2022 10:58:23 -0400
+X-MC-Unique: VXxt-ww9N8qv-QtWSacfcQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B2F0101AA45;
+        Tue, 26 Apr 2022 14:58:22 +0000 (UTC)
+Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA44C15230A0;
+        Tue, 26 Apr 2022 14:58:21 +0000 (UTC)
+Message-ID: <be293d58-1084-b586-2267-6a1e6a400762@redhat.com>
+Date:   Tue, 26 Apr 2022 10:58:21 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2] cgroup/cpuset: Remove cpus_allowed/mems_allowed setup
+ in cpuset_init_smp()
+Content-Language: en-US
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>, ying.huang@intel.com,
+        stable@vger.kernel.org
+References: <20220425155505.1292896-1-longman@redhat.com>
+ <20220426032337.GA84190@shbuild999.sh.intel.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20220426032337.GA84190@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <7C91FB1F-0690-4D1C-A631-98236F6DC55F@linaro.org>
-References: <20220305091205.4188398-1-yukuai3@huawei.com>
- <20220413111216.npgrdzaubsvjsmy3@quack3.lan>
-To:     Jan Kara <jack@suse.cz>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,TVD_SUBJ_WIPE_DEBT
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 4/25/22 23:23, Feng Tang wrote:
+> Hi Waiman,
+>
+> On Mon, Apr 25, 2022 at 11:55:05AM -0400, Waiman Long wrote:
+>> There are 3 places where the cpu and node masks of the top cpuset can
+>> be initialized in the order they are executed:
+>>   1) start_kernel -> cpuset_init()
+>>   2) start_kernel -> cgroup_init() -> cpuset_bind()
+>>   3) kernel_init_freeable() -> do_basic_setup() -> cpuset_init_smp()
+>>
+>> The first cpuset_init() function just sets all the bits in the masks.
+>> The last one executed is cpuset_init_smp() which sets up cpu and node
+>> masks suitable for v1, but not v2.  cpuset_bind() does the right setup
+>> for both v1 and v2.
+>>
+>> For systems with cgroup v2 setup, cpuset_bind() is called once. For
+>> systems with cgroup v1 setup, cpuset_bind() is called twice. It is
+>> first called before cpuset_init_smp() in cgroup v2 mode.  Then it is
+>> called again when cgroup v1 filesystem is mounted in v1 mode after
+>> cpuset_init_smp().
+>>
+>>    [    2.609781] cpuset_bind() called - v2 = 1
+>>    [    3.079473] cpuset_init_smp() called
+>>    [    7.103710] cpuset_bind() called - v2 = 0
+> I run some test, on a server with centOS, this did happen that
+> cpuset_bind() is called twice, first as v2 during kernel boot,
+> and then as v1 post-boot.
+>
+> However on a QEMU running with a basic debian rootfs image,
+> the second  call of cpuset_bind() didn't happen.
 
+The first time cpuset_bind() is called in cgroup_init(), the kernel 
+doesn't know if userspace is going to mount v1 or v2 cgroup. By default, 
+it is assumed to be v2. However, if userspace mounts the cgroup v1 
+filesystem for cpuset, cpuset_bind() will be run at this point by 
+rebind_subsystem() to set up cgroup v1 environment and 
+cpus_allowed/mems_allowed will be correctly set at this point. Mounting 
+the cgroup v2 filesystem, however, does not cause rebind_subsystem() to 
+run and hence cpuset_bind() is not called again.
 
-> Il giorno 13 apr 2022, alle ore 13:12, Jan Kara <jack@suse.cz> ha scritto:
-> 
-> On Sat 05-03-22 17:11:54, Yu Kuai wrote:
->> Currently, bfq can't handle sync io concurrently as long as they
->> are not issued from root group. This is because
->> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->> bfq_asymmetric_scenario().
->> 
->> This patchset tries to support concurrent sync io if all the sync ios
->> are issued from the same cgroup:
->> 
->> 1) Count root_group into 'num_groups_with_pending_reqs', patch 1-5;
-> 
-> Seeing the complications and special casing for root_group I wonder: Won't
-> we be better off to create fake bfq_sched_data in bfq_data and point
-> root_group->sched_data there? AFAICS it would simplify the code
-> considerably as root_group would be just another bfq_group, no need to
-> special case it in various places, no games with bfqg->my_entity, etc.
-> Paolo, do you see any problem with that?
-> 
+Is the QEMU setup not mounting any cgroup filesystem at all? If so, does 
+it matter whether v1 or v2 setup is used?
 
-I do see the benefits.  My only concern is that then we also need to
-check/change the places that rely on the assumption that we would
-change.
+>> As a result, cpu and memory node hot add may fail to update the cpu and
+>> node masks of the top cpuset to include the newly added cpu or node in
+>> a cgroup v2 environment.
+>>
+>> smp_init() is called after the first two init functions.  So we don't
+>> have a complete list of active cpus and memory nodes until later in
+>> cpuset_init_smp() which is the right time to set up effective_cpus
+>> and effective_mems.
+>>
+>> To fix this problem, the potentially incorrect cpus_allowed &
+>> mems_allowed setup in cpuset_init_smp() are removed.  For cgroup v2
+>> systems, the initial cpuset_bind() call will set them up correctly.
+>> For cgroup v1 systems, the second call to cpuset_bind() will do the
+>> right setup.
+>>
+>> cc: stable@vger.kernel.org
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 9390bfd9f1cd..6bd8f5ef40fe 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -3390,8 +3390,9 @@ static struct notifier_block cpuset_track_online_nodes_nb = {
+>>    */
+>>   void __init cpuset_init_smp(void)
+>>   {
+>> -	cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
+>> -	top_cpuset.mems_allowed = node_states[N_MEMORY];
+> So can we keep line
+>    cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
+>
+> and only remove line
+>         top_cpuset.mems_allowed = node_states[N_MEMORY];
+> ?
 
-Thanks,
-Paolo
+That may cause cpusets.cpu to be set incorrectly for systems using 
+cgroup v2. What is really important is that effective_cpus and 
+effective_mems are set correctly.
 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Cheers,
+Longman
 
