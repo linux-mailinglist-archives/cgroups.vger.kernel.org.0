@@ -2,227 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5379E51092A
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 21:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FF1510BBA
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 00:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344071AbiDZThU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Apr 2022 15:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        id S1355659AbiDZWQc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Apr 2022 18:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354231AbiDZThT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 15:37:19 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253C11A1D9A
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 12:34:06 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id bi24-20020a05600c3d9800b00393ff664705so239274wmb.4
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 12:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdglKt24ulKLWyX0LsILT516ozly9pUWvxRymOVkqGI=;
-        b=D9ihhOYCzfSq6PHe75gU3OheUI3W9iH7N3JyrClUp6au/zHYy/RjIQ+jFjvmiw3I9o
-         uU7o/2RsJb0OvTjqDki2JlEYfTgugeTS76dPfA3259nEGmWh42vCXrHa6/5V7/2johUN
-         +QaWhuSllkcd3/yIwhHQc0dL4v+1u2xt3a0+X1HNRFS3ddbQntWN7TwV79pXNZP4tjWY
-         q9oDYLmA6GmRpsibkQ3SJm8PJsmjU0ySPtDfndPYlEEAFXG22uifNwS/0VoF2zqchWyZ
-         YeBZmMfcWMAOzmPfGY/zoiJYCO20nTusS/8yz+ffjxEMcUZ2DMbLY7V/1myPVVFJC4B1
-         X+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdglKt24ulKLWyX0LsILT516ozly9pUWvxRymOVkqGI=;
-        b=CDyC1p5Wpq+aAcEa0fWUM4zs013vEQuoqpPDYbVJBw9zx2XGimN/05xKaXJNWS1Mv3
-         yS8b2EGNNnRVmsSRO8TxkvUrZ3Se0IvDhYzHDVmZ+DyuvJ7VW31DNIiDj5UfysTa/6uT
-         S+w+UdSzc3N3UF1Pi3A/6TomyOwJFQU7I0gu4KJ9mNakdk/AmBzrYsvw1wYEn5dD1/UK
-         yAwa1BFKPDAO4wWs4O+EDIFJI6K5tsB5N0y82ZAB3JjeE2/nB4xIyn6iHWK4ZHnC9mQQ
-         /MrWBhp+tzGnGIf/KcddIHWXummiUEd59r/mzs6/bmynO/V5dfaNC7pD4xHI9JNt3QqD
-         kHRg==
-X-Gm-Message-State: AOAM532cVMhLoWpFyNlpocMAdGm0XwhYNj2XTGMIzxD2Zp6rVNzhuTIi
-        OyE6U8ByZPaGawI7g8F+bvEicrVsqlz4yknqjiMCjg==
-X-Google-Smtp-Source: ABdhPJxfcXYYWDf1qEw77YopXVh9hGlDN3ohweZv6hh7qehoXVg7JxTIKYy8mWq0Lcp0jdkpbGhhqEQXGML1k1dn1J0=
-X-Received: by 2002:a05:600c:4e46:b0:393:f5fb:b3df with SMTP id
- e6-20020a05600c4e4600b00393f5fbb3dfmr4865915wmq.80.1651001644438; Tue, 26 Apr
- 2022 12:34:04 -0700 (PDT)
+        with ESMTP id S232124AbiDZWQb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 18:16:31 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527933BF86;
+        Tue, 26 Apr 2022 15:13:22 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 15:13:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1651011200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ONCBO+e5tQXeuB1xqqICB6bR57S4tXEQxOiBCuhrW/I=;
+        b=OOGII0HetFVOSjsZLi1gd3RE3w3HK4eGA85+lFWnNQINk7PsQUCLJ6D1oUhrMf5JkaAujg
+        XDzi8sLsAZF/tBbAdHmIYRTcyhoA+SwIJWTb/ZqtXVoQRxGvN4ArsCo2kGa35XnhRbuRUC
+        RvV9i34s3cE/gM7iK4P2z0BJnQu+bA8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH memcg v4] net: set proper memcg for net_init hooks
+ allocations
+Message-ID: <YmhueUucXP6RjMaR@carbon>
+References: <YmdeCqi6wmgiSiWh@carbon>
+ <33085523-a8b9-1bf6-2726-f456f59015ef@openvz.org>
 MIME-Version: 1.0
-References: <20220426053904.3684293-1-yosryahmed@google.com>
- <20220426053904.3684293-5-yosryahmed@google.com> <874k2falbk.wl-maz@kernel.org>
-In-Reply-To: <874k2falbk.wl-maz@kernel.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 26 Apr 2022 12:33:28 -0700
-Message-ID: <CAJD7tkZ-mrhCXoR0ZONjJ7kuAuzWED8Dcjkw6mv812-3uSo_Cg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] KVM: arm64/mmu: count KVM page table pages in
- pagetable stats
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33085523-a8b9-1bf6-2726-f456f59015ef@openvz.org>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks a lot for taking the time to look at this!
+On Tue, Apr 26, 2022 at 09:43:43AM +0300, Vasily Averin wrote:
+> __register_pernet_operations() executes init hook of registered
+> pernet_operation structure in all existing net namespaces.
+> 
+> Typically, these hooks are called by a process associated with
+> the specified net namespace, and all __GFP_ACCOUNT marked
+> allocation are accounted for corresponding container/memcg.
+> 
+> However __register_pernet_operations() calls the hooks in the same
+> context, and as a result all marked allocations are accounted
+> to one memcg for all processed net namespaces.
+> 
+> This patch adjusts active memcg for each net namespace and helps
+> to account memory allocated inside ops_init() into the proper memcg.
+> 
+> Signed-off-by: Vasily Averin <vvs@openvz.org>
+> ---
+> v4: get_mem_cgroup_from_kmem() renamed to get_mem_cgroup_from_obj(),
+>     get_net_memcg() replaced by mem_cgroup_or_root(), suggested by Roman.
+> 
+> v3: put_net_memcg() replaced by an alreay existing mem_cgroup_put()
+>     It checks memcg before accessing it, this is required for
+>     __register_pernet_operations() called before memcg initialization.
+>     Additionally fixed leading whitespaces in non-memcg_kmem version
+>     of mem_cgroup_from_obj().
+> 
+> v2: introduced get/put_net_memcg(),
+>     new functions are moved under CONFIG_MEMCG_KMEM
+>     to fix compilation issues reported by Intel's kernel test robot
+> 
+> v1: introduced get_mem_cgroup_from_kmem(), which takes the refcount
+>     for the found memcg, suggested by Shakeel
+> ---
+>  include/linux/memcontrol.h | 27 ++++++++++++++++++++++++++-
+>  net/core/net_namespace.c   |  7 +++++++
+>  2 files changed, 33 insertions(+), 1 deletion(-)
 
-On Tue, Apr 26, 2022 at 8:58 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Tue, 26 Apr 2022 06:39:02 +0100,
-> Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > Count the pages used by KVM in arm64 for page tables in pagetable stats.
-> >
-> > Account pages allocated for PTEs in pgtable init functions and
-> > kvm_set_table_pte().
-> >
-> > Since most page table pages are freed using put_page(), add a helper
-> > function put_pte_page() that checks if this is the last ref for a pte
-> > page before putting it, and unaccounts stats accordingly.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >  arch/arm64/kernel/image-vars.h |  3 ++
-> >  arch/arm64/kvm/hyp/pgtable.c   | 50 +++++++++++++++++++++-------------
-> >  2 files changed, 34 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-> > index 241c86b67d01..25bf058714f6 100644
-> > --- a/arch/arm64/kernel/image-vars.h
-> > +++ b/arch/arm64/kernel/image-vars.h
-> > @@ -143,6 +143,9 @@ KVM_NVHE_ALIAS(__hyp_rodata_end);
-> >  /* pKVM static key */
-> >  KVM_NVHE_ALIAS(kvm_protected_mode_initialized);
-> >
-> > +/* Called by kvm_account_pgtable_pages() to update pagetable stats */
-> > +KVM_NVHE_ALIAS(__mod_lruvec_page_state);
->
-> This cannot be right. It means that this function will be called
-> directly from the EL2 code when in protected mode, and will result in
-> extreme fireworks.  There is no way you can call core kernel stuff
-> like this from this context.
->
-> Please do not add random symbols to this list just for the sake of
-> being able to link the kernel.
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Excuse my ignorance, this is my first time touching kvm code. Thanks a
-lot for pointing this out.
-
->
-> > +
-> >  #endif /* CONFIG_KVM */
-> >
-> >  #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> > index 2cb3867eb7c2..53e13c3313e9 100644
-> > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > @@ -152,6 +152,7 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp,
-> >
-> >       WARN_ON(kvm_pte_valid(old));
-> >       smp_store_release(ptep, pte);
-> > +     kvm_account_pgtable_pages((void *)childp, +1);
->
-> Why the + sign?
-
-I am following conventions in other existing stat accounting hooks
-(e.g. kvm_mod_used_mmu_pages(vcpu->kvm, +1) call in
-arch/x86/kvm/mmu/mmu.c), but I can certainly remove it if you think
-this is better.
-
->
-> >  }
-> >
-> >  static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
-> > @@ -326,6 +327,14 @@ int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr,
-> >       return ret;
-> >  }
-> >
-> > +static void put_pte_page(kvm_pte_t *ptep, struct kvm_pgtable_mm_ops *mm_ops)
-> > +{
-> > +     /* If this is the last page ref, decrement pagetable stats first. */
-> > +     if (!mm_ops->page_count || mm_ops->page_count(ptep) == 1)
-> > +             kvm_account_pgtable_pages((void *)ptep, -1);
-> > +     mm_ops->put_page(ptep);
-> > +}
-> > +
-> >  struct hyp_map_data {
-> >       u64                             phys;
-> >       kvm_pte_t                       attr;
-> > @@ -488,10 +497,10 @@ static int hyp_unmap_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-> >
-> >       dsb(ish);
-> >       isb();
-> > -     mm_ops->put_page(ptep);
-> > +     put_pte_page(ptep, mm_ops);
-> >
-> >       if (childp)
-> > -             mm_ops->put_page(childp);
-> > +             put_pte_page(childp, mm_ops);
-> >
-> >       return 0;
-> >  }
-> > @@ -522,6 +531,7 @@ int kvm_pgtable_hyp_init(struct kvm_pgtable *pgt, u32 va_bits,
-> >       pgt->pgd = (kvm_pte_t *)mm_ops->zalloc_page(NULL);
-> >       if (!pgt->pgd)
-> >               return -ENOMEM;
-> > +     kvm_account_pgtable_pages((void *)pgt->pgd, +1);
-> >
-> >       pgt->ia_bits            = va_bits;
-> >       pgt->start_level        = KVM_PGTABLE_MAX_LEVELS - levels;
-> > @@ -541,10 +551,10 @@ static int hyp_free_walker(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-> >       if (!kvm_pte_valid(pte))
-> >               return 0;
-> >
-> > -     mm_ops->put_page(ptep);
-> > +     put_pte_page(ptep, mm_ops);
-> >
-> >       if (kvm_pte_table(pte, level))
-> > -             mm_ops->put_page(kvm_pte_follow(pte, mm_ops));
-> > +             put_pte_page(kvm_pte_follow(pte, mm_ops), mm_ops);
->
-> OK, I see the pattern. I don't think this workable as such. I'd rather
-> the callbacks themselves (put_page, zalloc_page*) call into the
-> accounting code when it makes sense, rather than spreading the
-> complexity and having to special case the protected case.
->
-
-This makes sense. I am working on moving calls to
-kvm_account_pgtable_pages to callbacks in mmu.c in the next version
-(stage2_memcache_zalloc_page, kvm_host_put_page, etc).
-
-
-> Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Thanks!
