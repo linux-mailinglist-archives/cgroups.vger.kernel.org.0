@@ -2,159 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 920FD50F298
-	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 09:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763C150F2DB
+	for <lists+cgroups@lfdr.de>; Tue, 26 Apr 2022 09:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344070AbiDZHiL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Apr 2022 03:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S1343803AbiDZHnh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Apr 2022 03:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238662AbiDZHiJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 03:38:09 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7988C24E
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 00:35:01 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id r11so10885376ila.1
-        for <cgroups@vger.kernel.org>; Tue, 26 Apr 2022 00:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T6uVKqz/bxBh0XcbvcuRA0UyoUPF9VXe65F1cQD8y4Q=;
-        b=ObEunFSl4crRLGfpGD9vb4uNjucdcW+SwMC5wjs68ErQM98eX2dd/1bhFqvb4MQrUZ
-         aNBQiYOEZs6DAFrjwy4GxIX9P710BE5dNtb9ren8SoNbyoDCq1JSrqMW6bcxyN3g457u
-         /+gBpA8szyFlMBKjZqPcqtIcg53tpCAgbfmBRZ+EQiSDL0bYkiLUkJAuAA+ESILGYbW5
-         jVcb61+A+66M7v7MKaJKTdQY27E/r9amtlm20dB0rHCxpqld0qjq5eRsqvCmPNleg1uA
-         MTGwgfxKApBNNdQAeaBp8qoeybFa8FJ6gos+fYTUTeB4wg78apx7w8FkSb2oMxvxLXSe
-         mDTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T6uVKqz/bxBh0XcbvcuRA0UyoUPF9VXe65F1cQD8y4Q=;
-        b=lDQ9xFErlY5Lir6RCl7Adyoph7bCwscr1uocLI0f4lNnNZOSJ2PCjyFqpno1vOqcZR
-         H/a8VIzrjPu8m4JtD4LdD/8jZTTvEWuMxXB60nsBUA6xqCxcNRAzSr0DD/2kIGQSQHSR
-         MQ28jcQIsnFVKU0oNTgI7AC5ghs+sT7GAVgJIUm1XBLUZucJxgfbkCA15ezREiTbZxPo
-         PijHM0oAmO7XBDD7uFsKmjQAkG6aXpVGdDntLeIdnptwNpC2o+oMdxPqb/+wLckVwXFw
-         urnX+I1S1W65a0jItIDYx+g0j/uFP1f4DEDjTe+QDhZSBDJih3Ao+1vmqHaOGPgHMOOI
-         NQ3Q==
-X-Gm-Message-State: AOAM531MeWFcnCTr+OJ8g76/5L3Z/2VWgMVKELVnQvFirpLHWdOUVRJp
-        HUz9aneV2QYdwuVcF5uA/0bmpg==
-X-Google-Smtp-Source: ABdhPJzzgIPYx4mfeq03H4D4LkohxnIEdiAlT4JnSJ/rUPy7BWzzJro8BOalbut4cMQo3UF9wiXwfw==
-X-Received: by 2002:a05:6e02:b23:b0:2cd:89db:f685 with SMTP id e3-20020a056e020b2300b002cd89dbf685mr5194103ilu.296.1650958500701;
-        Tue, 26 Apr 2022 00:35:00 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id w5-20020a05660205c500b006546d0b5f6dsm9257784iox.41.2022.04.26.00.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Apr 2022 00:34:59 -0700 (PDT)
-Date:   Tue, 26 Apr 2022 07:34:56 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH v3 4/6] KVM: arm64/mmu: count KVM page table pages in
- pagetable stats
-Message-ID: <YmegoB/fBkfwaE5z@google.com>
-References: <20220426053904.3684293-1-yosryahmed@google.com>
- <20220426053904.3684293-5-yosryahmed@google.com>
+        with ESMTP id S1344273AbiDZHnc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Apr 2022 03:43:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96948198;
+        Tue, 26 Apr 2022 00:40:25 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4D09D210EB;
+        Tue, 26 Apr 2022 07:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1650958824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TzIWVJ6EAqjRbZdTdcHexxp67XQ0RbOshNKrsYIiSGw=;
+        b=HEKQn3ZNZDXr5N9BnyZVgEfdr/N/FPYgznPqSkR3gh+MssKWIATSMZQ9KQir0TwYryIgeM
+        vPoVMchQ76WSLK7rnM/QEMx/dLo91F7OQwRtxhtIQZ9E/rqMEUAyIlN9JXf7ZOWJ/UqScS
+        kM8uEOZOlqVJ30Rl9VGN5x8PzIVV0HE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1650958824;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TzIWVJ6EAqjRbZdTdcHexxp67XQ0RbOshNKrsYIiSGw=;
+        b=p5T6zNi4/s2xl8tShY9ElhnTBewZdrvUmQifOHQhh37BeTdsOAYD6X2REHk4nclxYXrlK8
+        UPx9RNBM+1j+WnBQ==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 37FD12C142;
+        Tue, 26 Apr 2022 07:40:24 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id DF0CEA0620; Tue, 26 Apr 2022 09:40:23 +0200 (CEST)
+Date:   Tue, 26 Apr 2022 09:40:23 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, paolo.valente@linaro.org, axboe@kernel.dk,
+        tj@kernel.org, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH -next v2 2/5] block, bfq: add fake weight_counter for
+ weight-raised queue
+Message-ID: <20220426074023.5y4gwvjsjzem3vgp@quack3.lan>
+References: <20220416093753.3054696-1-yukuai3@huawei.com>
+ <20220416093753.3054696-3-yukuai3@huawei.com>
+ <20220425094856.qgkhba2klguduxot@quack3.lan>
+ <a27b8c79-867f-9253-84db-1d39c964b3ed@huawei.com>
+ <20220425161650.xzyijgkb5yzviea3@quack3.lan>
+ <4591d02d-1f14-c928-1c50-6e434dfbb7b2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220426053904.3684293-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4591d02d-1f14-c928-1c50-6e434dfbb7b2@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Yosry,
-
-On Tue, Apr 26, 2022 at 05:39:02AM +0000, Yosry Ahmed wrote:
-> Count the pages used by KVM in arm64 for page tables in pagetable stats.
+On Tue 26-04-22 09:49:04, yukuai (C) wrote:
+> 在 2022/04/26 0:16, Jan Kara 写道:
+> > Hello!
+> > 
+> > On Mon 25-04-22 21:34:16, yukuai (C) wrote:
+> > > 在 2022/04/25 17:48, Jan Kara 写道:
+> > > > On Sat 16-04-22 17:37:50, Yu Kuai wrote:
+> > > > > Weight-raised queue is not inserted to weights_tree, which makes it
+> > > > > impossible to track how many queues have pending requests through
+> > > > > weights_tree insertion and removel. This patch add fake weight_counter
+> > > > > for weight-raised queue to do that.
+> > > > > 
+> > > > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > > 
+> > > > This is a bit hacky. I was looking into a better place where to hook to
+> > > > count entities in a bfq_group with requests and I think bfq_add_bfqq_busy()
+> > > > and bfq_del_bfqq_busy() are ideal for this. It also makes better sense
+> > > > conceptually than hooking into weights tree handling.
+> > > 
+> > > bfq_del_bfqq_busy() will be called when all the reqs in the bfqq are
+> > > dispatched, however there might still some reqs are't completed yet.
+> > > 
+> > > Here what we want to track is how many bfqqs have pending reqs,
+> > > specifically if the bfqq have reqs are't complted.
+> > > 
+> > > Thus I think bfq_del_bfqq_busy() is not the right place to do that.
+> > 
+> > Yes, I'm aware there will be a difference. But note that bfqq can stay busy
+> > with only dispatched requests because the logic in __bfq_bfqq_expire() will
+> > not call bfq_del_bfqq_busy() if idling is needed for service guarantees. So
+> > I think using bfq_add/del_bfqq_busy() would work OK.
+> Hi,
 > 
-> Account pages allocated for PTEs in pgtable init functions and
-> kvm_set_table_pte().
+> I didn't think of that before. If bfqq stay busy after dispathing all
+> the requests, there are two other places that bfqq can clear busy:
 > 
-> Since most page table pages are freed using put_page(), add a helper
-> function put_pte_page() that checks if this is the last ref for a pte
-> page before putting it, and unaccounts stats accordingly.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  arch/arm64/kernel/image-vars.h |  3 ++
->  arch/arm64/kvm/hyp/pgtable.c   | 50 +++++++++++++++++++++-------------
->  2 files changed, 34 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-> index 241c86b67d01..25bf058714f6 100644
-> --- a/arch/arm64/kernel/image-vars.h
-> +++ b/arch/arm64/kernel/image-vars.h
-> @@ -143,6 +143,9 @@ KVM_NVHE_ALIAS(__hyp_rodata_end);
->  /* pKVM static key */
->  KVM_NVHE_ALIAS(kvm_protected_mode_initialized);
->  
-> +/* Called by kvm_account_pgtable_pages() to update pagetable stats */
-> +KVM_NVHE_ALIAS(__mod_lruvec_page_state);
-> +
->  #endif /* CONFIG_KVM */
->  
->  #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 2cb3867eb7c2..53e13c3313e9 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -152,6 +152,7 @@ static void kvm_set_table_pte(kvm_pte_t *ptep, kvm_pte_t *childp,
->  
->  	WARN_ON(kvm_pte_valid(old));
->  	smp_store_release(ptep, pte);
-> +	kvm_account_pgtable_pages((void *)childp, +1);
+> 1) bfq_remove_request(), bfqq has to insert a new req while it's not in
+> service.
 
-What page tables do we want to account? KVM on ARM manages several page
-tables.
+Yes and the request then would have to be dispatched or merged. Which
+generally means another bfqq from the same bfqg is currently active and
+thus this should have no impact on service guarantees we are interested in.
 
-For regular KVM, the host kernel manages allocations for the hyp stage 1
-tables in addition to the stage 2 tables used for a particular VM. The
-former is system overhead whereas the latter could be attributed to a
-guest VM.
+> 2) bfq_release_process_ref(), user thread is gone / moved, or old bfqq
+> is gone due to merge / ioprio change.
 
-I imagine protected KVM is out of scope, since it actually manages its
-own allocations outside of the host kernel.
+Yes, here there's no new IO for the bfqq so no point in maintaining any
+service guarantees to it.
 
-Given this, I would recommend adding the accounting hooks to mmu.c as
-that is where we alloc/free table pages and it is in the host address
-space. kvm_s2_mm_ops and kvm_hyp_mm_ops point to all the relevant
-functions, though the latter is only relevant if we want to count system
-page tables too.
+> I wonder, will bfq_del_bfqq_busy() be called immediately when requests
+> are completed? (It seems not to me...). For example, a user thread
+> issue a sync io just once, and it keep running without issuing new io,
+> then when does the bfqq clears the busy state?
 
---
-Thanks,
-Oliver
+No, when bfqq is kept busy, it will get scheduled as in-service queue in
+the future. Then what happens depends on whether it will get more requests
+or not. But generally its busy state will get cleared once it is expired
+for other reason than preemption.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
