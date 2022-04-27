@@ -2,93 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BA3512587
-	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 00:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0218512791
+	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 01:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237380AbiD0WwA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 18:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S229454AbiD0Xju (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 19:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbiD0WwA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 18:52:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE04089CEB
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 15:48:46 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id bq30so5612553lfb.3
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 15:48:46 -0700 (PDT)
+        with ESMTP id S229544AbiD0Xjs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 19:39:48 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3BF45AD7
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 16:36:34 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i24so2813254pfa.7
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 16:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=SQk+uPdXjus9l+tZCRcT7jspmYgklYtunIPDK1R0FPo=;
-        b=4be664J+OKOeBO0o8b8/lSmk7jn8HmLIxoeRFfTKVZp/qfcuXsj0nn0H7AsnMzYhl1
-         ES/5EofZCQG+lU25D5qAXkc8AWQpCGUfz9nDBy6CFgdN3kWmzPKWPX3ouImm0xjv8Hot
-         Q1nLzcRXHoGKjZZq2Ugu0RFU8yN4C0APkgUeDUB6KrZ1trEszX9xLoTyIm2bJLDwMNdk
-         N7W3FgisFjh7vg/mDxMWbdPH84tzDYTOBZqlPWxH+fPixhU1X26YGN658TZN77CaspzE
-         6acX8xvHwftaEXxYqp5UMxc8oAGQBmwZm+vxqUqGmkQKqvGDa+d8noiqD3E455dFClQ1
-         3Wlw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FL5RmqjsnS96RItXhleCXY3INxI4L38U8zTk4H4kbRM=;
+        b=Fnjww4kTfxvDYxU1OPnCUQ05Dg7DEB2VNmgBa3iIVs1YziXLL5NPY22PxqWXh7lRlB
+         8vuXugqSz74/dVRL6IV85uoBkg1Axric6AIQ3KCnilEj1X6Rj1CCpiY1X8QSqFEDtLjL
+         x0EE+oQBe8Dvrs0rULZGjGplV+5cDIqQ7DQh2uofwdi1gqfXibZiQZSWhIX6812SQDV0
+         ooiysKmKTdtVuGN7sNGxHt52RH6aaUff+q46TbfeovpbaLTjLAzpyfjWwLcRjtDoU3Za
+         xFMGzikPBEx43dvuCJzWa0IU2IwO8irzQo5Ik4kcOU1/KW/jP+bE1ULp+1XD6wXL12nD
+         7wHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=SQk+uPdXjus9l+tZCRcT7jspmYgklYtunIPDK1R0FPo=;
-        b=S8ovboxvRkOGmPmdi1DCue9SsVMFTK7XZkIazhjXmK5+Ak5pD/ahQxHlyWDA9HU21W
-         RsmL//WdRUkOerpuI7tnIFD3/e6XuInYaPbUR0LNFk9/vMvN76ZE+ufz53NFDzNGCRri
-         MLe9GBU8lz8rMIRn57FeIRQAZ1iRl6mLDeLGYBo1e7rHYM8GF28lzaUsfLECI1oPKQkQ
-         fKFiGNsRF3E0g043XkhFjHqeQ0M5sq9I90MbWps8gYnWDwRZlmmwQXG9wEF12Ebip9zV
-         sOusjz8wLILF29g1WdNUR6KhNn1dYnw0XOVRhlK7KbsLvleJob7XonbJMnqrnlbglOqk
-         zF+A==
-X-Gm-Message-State: AOAM531mxwZbXRviNHq5RyaEWxZPo5TY63xdFlMhycKeIwhVL6KyCBni
-        CMN1gK9YpQevQoEdkxCavR6/9g==
-X-Google-Smtp-Source: ABdhPJz73JY3yLDUY6xr/jjV4y8SsKN6H0NWeoiwZQ6xAk04KGa1rAljireM7SzoraFwJvt6CG+IFw==
-X-Received: by 2002:a19:4f10:0:b0:471:fb4e:bf28 with SMTP id d16-20020a194f10000000b00471fb4ebf28mr16129205lfb.274.1651099725237;
-        Wed, 27 Apr 2022 15:48:45 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id h10-20020ac24daa000000b00471f8c681fdsm1740502lfe.233.2022.04.27.15.48.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Apr 2022 15:48:44 -0700 (PDT)
-Message-ID: <9600b84a-8590-4e7b-c74d-3f52fe905e7f@openvz.org>
-Date:   Thu, 28 Apr 2022 01:48:43 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FL5RmqjsnS96RItXhleCXY3INxI4L38U8zTk4H4kbRM=;
+        b=EwpCrttfh4USQiqWWljaXbZBQhk73bY+jcw7ZZ4rwF1Y/7ND1FtTccD9GdzSMxH2Bh
+         08brC5RS0ihMyX3u9r94inbXaY4IuP2leuFd9L6VZjEt51dcasgxuEvE33aVTzOmiuqv
+         9uwCTH37q+51htXy7MiX5wBa3Ul/zg5+FX+EXghCCbdP7ibJbfvNkDyOZ7LVe9gXlR/U
+         lU12vXweZ4RHANPZJCDhASC+Ky81utKT/GCijl58ScZoF0GXmraYBSe0fpMQEnbodU3I
+         ePXTL5sXWluCPwT7r+tuF2oYxsXHn1790AkrRjJ+iwMkTcs4Cxp/ToxllnoUhdnIvLIF
+         f4gg==
+X-Gm-Message-State: AOAM532uBLjqcok8iHIVLljv+APIuzWl9KZNuYsj6+ejb93HbGnpK7bw
+        GsnzPM3wajO3F+rBObePN9sPhDCp5V/Jqm60di3GWg==
+X-Google-Smtp-Source: ABdhPJy4UALwll6c0xGRrMjr2HG+8qWZYoDKSENmN8Qp6glp0VyRbdy5DcsshId0F3jOAIOJmkP3RA8JC+4vWUV+Y8A=
+X-Received: by 2002:a63:9502:0:b0:386:3916:ca8e with SMTP id
+ p2-20020a639502000000b003863916ca8emr25446320pgd.357.1651102592948; Wed, 27
+ Apr 2022 16:36:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] memcg: enable accounting for veth queues
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <1c338b99-8133-6126-2ff2-94a4d3f26451@openvz.org>
- <20220427095854.79554fab@kernel.org>
-From:   Vasily Averin <vvs@openvz.org>
-In-Reply-To: <20220427095854.79554fab@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
+ <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org> <Ymm3WpvJWby4gaD/@cmpxchg.org>
+In-Reply-To: <Ymm3WpvJWby4gaD/@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 27 Apr 2022 16:36:22 -0700
+Message-ID: <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/27/22 19:58, Jakub Kicinski wrote:
-> On Wed, 27 Apr 2022 13:34:29 +0300 Vasily Averin wrote:
->> Subject: [PATCH] memcg: enable accounting for veth queues
-> 
-> This is a pure networking patch, right? The prefix should be "net: ",
-> I think.
-Thank you for the remark, I'll fix it.
+On Wed, Apr 27, 2022 at 3:32 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Wed, Apr 27, 2022 at 05:20:31PM -0400, Johannes Weiner wrote:
+> > On Wed, Apr 27, 2022 at 01:29:34PM -0700, Minchan Kim wrote:
+> > > Hi Johannes,
+> > >
+> > > On Wed, Apr 27, 2022 at 12:00:15PM -0400, Johannes Weiner wrote:
+> > > > Currently it requires poking at debugfs to figure out the size and
+> > > > population of the zswap cache on a host. There are no counters for
+> > > > reads and writes against the cache. As a result, it's difficult to
+> > > > understand zswap behavior on production systems.
+> > > >
+> > > > Print zswap memory consumption and how many pages are zswapped out in
+> > > > /proc/meminfo. Count zswapouts and zswapins in /proc/vmstat.
+> > > >
+> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > > ---
+> > > >  fs/proc/meminfo.c             |  7 +++++++
+> > > >  include/linux/swap.h          |  5 +++++
+> > > >  include/linux/vm_event_item.h |  4 ++++
+> > > >  mm/vmstat.c                   |  4 ++++
+> > > >  mm/zswap.c                    | 13 ++++++-------
+> > > >  5 files changed, 26 insertions(+), 7 deletions(-)
+> > > >
+> > > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> > > > index 6fa761c9cc78..6e89f0e2fd20 100644
+> > > > --- a/fs/proc/meminfo.c
+> > > > +++ b/fs/proc/meminfo.c
+> > > > @@ -86,6 +86,13 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+> > > >
+> > > >   show_val_kb(m, "SwapTotal:      ", i.totalswap);
+> > > >   show_val_kb(m, "SwapFree:       ", i.freeswap);
+> > > > +#ifdef CONFIG_ZSWAP
+> > > > + seq_printf(m,  "Zswap:          %8lu kB\n",
+> > > > +            (unsigned long)(zswap_pool_total_size >> 10));
+> > > > + seq_printf(m,  "Zswapped:       %8lu kB\n",
+> > > > +            (unsigned long)atomic_read(&zswap_stored_pages) <<
+> > > > +            (PAGE_SHIFT - 10));
+> > > > +#endif
+> > >
+> > > I agree it would be very handy to have the memory consumption in meminfo
+> > >
+> > > https://lore.kernel.org/all/YYwZXrL3Fu8%2FvLZw@google.com/
+> > >
+> > > If we really go this Zswap only metric instead of general term
+> > > "Compressed", I'd like to post maybe "Zram:" with same reason
+> > > in this patchset. Do you think that's better idea instead of
+> > > introducing general term like "Compressed:" or something else?
+> >
+> > I'm fine with changing it to Compressed. If somebody cares about a
+> > more detailed breakdown, we can add Zswap, Zram subsets as needed.
+>
+> It does raise the question what to do about cgroup, though. Should the
+> control files (memory.zswap.current & memory.zswap.max) apply to zram
+> in the future? If so, we should rename them, too.
+>
+> I'm not too familiar with zram, maybe you can provide some
+> background. AFAIU, Google uses zram quite widely; all the more
+> confusing why there is no container support for it yet.
+>
+> Could you shed some light?
+>
 
-Initially it was a part of the patch accounted resources accounted 
-when creating a new netdevice, but then I moved this piece to
-a separate patch, because unlike other cases, it is specific to veth.
- 
-Thank you,
-	Vasily Averin
+I can shed light on the datacenter workloads. We use cgroup (still on
+v1) and zswap. For the workloads/applications, the swap (or zswap) is
+transparent in the sense that they are charged exactly the same
+irrespective of how much their memory is zswapped-out. Basically the
+applications see the same usage which is actually v1's
+memsw.usage_in_bytes. We dynamically increase the swap size if it is
+low, so we are not really worried about one job hogging the swap
+space.
+
+Regarding stats we actually do have them internally representing
+compressed size and number of pages in zswap. The compressed size is
+actually used for OOM victim selection. The memsw or v2's swap usage
+in the presence of compression based swap does not actually tell how
+much memory can potentially be released by evicting a job. For example
+if there are two jobs 'A' and 'B'. Both of them have 100 pages
+compressed but A's 100 pages are compressed to let's say 10 pages
+while B's 100 pages are compressed to 70 pages. It is preferable to
+kill B as that will release 70 pages. (This is a very simplified
+explanation of what we actually do).
