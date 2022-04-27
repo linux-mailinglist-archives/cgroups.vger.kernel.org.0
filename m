@@ -2,153 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A759451177F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 14:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842095117CC
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 14:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233577AbiD0MNP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 08:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S233923AbiD0MZu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 08:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbiD0MNP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 08:13:15 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F3648393;
-        Wed, 27 Apr 2022 05:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651061404; x=1682597404;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UNTq8c3nGCVicANYsW9zJ0pFSSw7ENqHGTRz5ROMqyA=;
-  b=IcuMM4uG2sWIs7oQqQnJL/jKz0aSGck6prsuMTwza4JdAghiX2b4YONo
-   ozZPfGtzpJKAQod8ukNBpTwnT0B2jnJXaVGFAY0MvYhBlqriW09JEIFzM
-   rbENq4iCiWgPA8RuVLy9UPUCf/dvBmp6kRhNjTcG+7Eyfc3Yu3QDSRf4q
-   05SZ6aJ+8vXjK19xu02s057xCwkXnY8+C7uNppxhyxYYtBnIt5B0rPFuK
-   qtmjtrPr78d8g2LTzPKC5W9qNrgmPcV7nAI7H/BjCiGBs8k9uKJeIwaFj
-   BbVOyJ0+kjhwwGRsrEGuEvNpDd8Em6aaBOODrME2oWmmGnNkPUJOpKe1H
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245828202"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; 
-   d="scan'208";a="245828202"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2022 05:10:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; 
-   d="scan'208";a="580561887"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.138])
-  by orsmga008.jf.intel.com with ESMTP; 27 Apr 2022 05:09:58 -0700
-Date:   Wed, 27 Apr 2022 20:09:58 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] cgroup/cpuset: Remove cpus_allowed/mems_allowed setup
- in cpuset_init_smp()
-Message-ID: <20220427120958.GD84190@shbuild999.sh.intel.com>
-References: <20220425155505.1292896-1-longman@redhat.com>
- <20220426032337.GA84190@shbuild999.sh.intel.com>
- <be293d58-1084-b586-2267-6a1e6a400762@redhat.com>
- <20220427010654.GC84190@shbuild999.sh.intel.com>
- <4c6847ba-4c8d-9776-a065-684a8b95130b@redhat.com>
+        with ESMTP id S233930AbiD0MZr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 08:25:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9146C4132E;
+        Wed, 27 Apr 2022 05:22:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B9681F74B;
+        Wed, 27 Apr 2022 12:22:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651062154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bPJVJ/mvoFlMUFOZPBJ+knXZSOjq1aUlwWwkq9LhQTo=;
+        b=n6Zsmd3ZvSPkPhiIdXXfFL6ehZn8AL7BshvVE3p+w5JDx9muTQd5wKkGExHgczFgQH8G4e
+        d8rlT0rW81Ve1qiYTkNlC1dukAx4Q4DIDccyG20zh1OfPZXR6eF7ygx84SM0nBfFl5krNz
+        Ihf/Jng1e1v9VeCT1AdFdSHRSN77vjg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD64F13A39;
+        Wed, 27 Apr 2022 12:22:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AT8+MYk1aWLfOAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 27 Apr 2022 12:22:33 +0000
+Date:   Wed, 27 Apr 2022 14:22:32 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Vasily Averin <vvs@openvz.org>, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH memcg v4] net: set proper memcg for net_init hooks
+ allocations
+Message-ID: <20220427122232.GA9823@blackbody.suse.cz>
+References: <YmdeCqi6wmgiSiWh@carbon>
+ <33085523-a8b9-1bf6-2726-f456f59015ef@openvz.org>
+ <CALvZod4oaj9MpBDVUp9KGmnqu4F3UxjXgOLkrkvmRfFjA7F1dw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4c6847ba-4c8d-9776-a065-684a8b95130b@redhat.com>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,TVD_SUBJ_WIPE_DEBT autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CALvZod4oaj9MpBDVUp9KGmnqu4F3UxjXgOLkrkvmRfFjA7F1dw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 10:34:21PM -0400, Waiman Long wrote:
-> On 4/26/22 21:06, Feng Tang wrote:
-> > On Tue, Apr 26, 2022 at 10:58:21PM +0800, Waiman Long wrote:
-> > > On 4/25/22 23:23, Feng Tang wrote:
-> > > > Hi Waiman,
-> > > > 
-> > > > On Mon, Apr 25, 2022 at 11:55:05AM -0400, Waiman Long wrote:
-> > > > > There are 3 places where the cpu and node masks of the top cpuset can
-> > > > > be initialized in the order they are executed:
-> > > > >    1) start_kernel -> cpuset_init()
-> > > > >    2) start_kernel -> cgroup_init() -> cpuset_bind()
-> > > > >    3) kernel_init_freeable() -> do_basic_setup() -> cpuset_init_smp()
-> > > > > 
-> > > > > The first cpuset_init() function just sets all the bits in the masks.
-> > > > > The last one executed is cpuset_init_smp() which sets up cpu and node
-> > > > > masks suitable for v1, but not v2.  cpuset_bind() does the right setup
-> > > > > for both v1 and v2.
-> > > > > 
-> > > > > For systems with cgroup v2 setup, cpuset_bind() is called once. For
-> > > > > systems with cgroup v1 setup, cpuset_bind() is called twice. It is
-> > > > > first called before cpuset_init_smp() in cgroup v2 mode.  Then it is
-> > > > > called again when cgroup v1 filesystem is mounted in v1 mode after
-> > > > > cpuset_init_smp().
-> > > > > 
-> > > > >     [    2.609781] cpuset_bind() called - v2 = 1
-> > > > >     [    3.079473] cpuset_init_smp() called
-> > > > >     [    7.103710] cpuset_bind() called - v2 = 0
-> > > > I run some test, on a server with centOS, this did happen that
-> > > > cpuset_bind() is called twice, first as v2 during kernel boot,
-> > > > and then as v1 post-boot.
-> > > > 
-> > > > However on a QEMU running with a basic debian rootfs image,
-> > > > the second  call of cpuset_bind() didn't happen.
-> > > The first time cpuset_bind() is called in cgroup_init(), the kernel
-> > > doesn't know if userspace is going to mount v1 or v2 cgroup. By default,
-> > > it is assumed to be v2. However, if userspace mounts the cgroup v1
-> > > filesystem for cpuset, cpuset_bind() will be run at this point by
-> > > rebind_subsystem() to set up cgroup v1 environment and
-> > > cpus_allowed/mems_allowed will be correctly set at this point. Mounting
-> > > the cgroup v2 filesystem, however, does not cause rebind_subsystem() to
-> > > run and hence cpuset_bind() is not called again.
-> > > 
-> > > Is the QEMU setup not mounting any cgroup filesystem at all? If so, does
-> > > it matter whether v1 or v2 setup is used?
-> > When I got the cpuset binding error report, I tried first on qemu to
-> > reproduce and failed (due to there was no memory hotplug), then I
-> > reproduced it on a real server. For both system, I used "cgroup_no_v1=all"
-> > cmdline parameter to test cgroup-v2, could this be the reason? (TBH,
-> > this is the first time I use cgroup-v2).
-> > 
-> > Here is the info dump:
-> > 
-> > # mount | grep cgroup
-> > tmpfs on /sys/fs/cgroup type tmpfs (ro,nosuid,nodev,noexec,mode=755)
-> > cgroup on /sys/fs/cgroup/systemd type cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/lib/systemd/systemd-cgroups-agent,name=systemd)
-> > 
-> > #cat /proc/filesystems | grep cgroup
-> > nodev   cgroup
-> > nodev   cgroup2
-> > 
-> > Thanks,
-> > Feng
+On Tue, Apr 26, 2022 at 10:23:32PM -0700, Shakeel Butt <shakeelb@google.com> wrote:
+> [...]
+> >
+> > +static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
+> > +{
+> > +       struct mem_cgroup *memcg;
+> > +
 > 
-> For cgroup v2, cpus_allowed should be set to cpu_possible_mask and
-> mems_allowed to node_possible_map as is done in the first invocation of
-> cpuset_bind(). That is the correct behavior.
- 
-OK. For the cgroup v2 mem binding problem with hot-added nodes, I
-retested today, and it can't be reproduced with this patch. So feel
-free to add:
-  
-  Tested-by: Feng Tang <feng.tang@intel.com>
+> Do we need memcg_kmem_enabled() check here or maybe
+> mem_cgroup_from_obj() should be doing memcg_kmem_enabled() instead of
+> mem_cgroup_disabled() as we can have "cgroup.memory=nokmem" boot
+> param.
 
-Thanks,
-Feng
+I reckon such a guard is on the charge side and readers should treat
+NULL and root_mem_group equally. Or is there a case when these two are
+different? 
 
+(I can see it's different semantics when stored in current->active_memcg
+(and active_memcg() getter) but for such "outer" callers like here it
+seems equal.)
 
-> Cheers,
-> Longman
-> 
+Regards,
+Michal
+
