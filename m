@@ -2,103 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C629A511EB9
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 20:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72751206E
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 20:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243241AbiD0QZm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 12:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S243508AbiD0Q4E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 12:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243381AbiD0QYj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 12:24:39 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47876231692;
-        Wed, 27 Apr 2022 09:18:49 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id v10so1813202pgl.11;
-        Wed, 27 Apr 2022 09:18:49 -0700 (PDT)
+        with ESMTP id S243531AbiD0Qzs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 12:55:48 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B16422302
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 09:52:37 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j8-20020a17090a060800b001cd4fb60dccso2219918pjj.2
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 09:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mqASqeNgn2MnRKKvwUc4ZQ7zeAhzxAmdAAXdF7mi3dg=;
-        b=VPYVt0nOnYVYZR60ZA6lctKmm/WOzCKfgCNGoiZ4E9EYKXM3a8SzhPw7rwq3lmJ9Va
-         p90WEIuEcSNY8OZWEnnOLx0GSm4nVQ93Elr89pi1oYOwDl8bS98H8WxP79KZj9PFHaRH
-         nwIkbRDVgIbMuMxCi9PxMEa2Riru3C1Ohn2Fs3atKkNKXXgF4L2Ml7swXiVL6ttY4fFE
-         53/lNcov94euEqSTnTw9eozsCNmF0YbJJeAiMFn+G+SvlMT77Q/gyoKTBTO6HKwi+VHL
-         S1/FQNRSP/h+e6aUTaX3OSLFlxYLKYpeiS/yRqZbiz65EP5Vv3a+yaqEmUdmWvNs4Qns
-         0ujQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vykJS+GCN4oOt/wUy0V+c72rmxebQEGqa0biVVI0j7Y=;
+        b=j3R3a5/JnI6fvngAk0q+6VHP/6OI5UNIT6V+w+qj8VLfcmJqtjseEGtXfaFyizk/IX
+         PU/q6OweVYApqtV+lBDouzWxtm9XMMTYRudgUBSWgiCEQeTgIfT9DYFKVpCH58w1ERBM
+         7W5wA9x7X+j9QfaBRhyL2NKcYQLcxBJnX91rFinU+EE0JN6Yw0stS+Z5kOjleeuUHa2K
+         JNrPLV5o8eERREFVn8dvNtQ1ddpTpcbK8yoa2y4mPAEolJ6zRBFHuOgsBd3YU6axaQCy
+         LPZoUV3EUZ91yfLwtV5EQqd8BqSXjuWij1ldNudI+1JBYK35W2Fqwb/G6hIzlIzOXgYG
+         kQlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=mqASqeNgn2MnRKKvwUc4ZQ7zeAhzxAmdAAXdF7mi3dg=;
-        b=RLdBvyBrpxX5hui1yrLYi4GDtYo4hRaSVltAXan9BOhy6zWWWR3XxLWLwwEYtABJwB
-         JHIfNxYAYmcHIhM4k/NOAsTeBZMoHiGQrMKTI2dSBhQ8yePDLLS654V/eGT3aqZqmN9B
-         Y/qfruqHUVpJp7BAh3VwOFHNYUantVYCjL0NS4+C61s+U/DOX/3+wkBliq/3mvaUiuHL
-         6o1HyttaiwezFrTivmuZMEtWTeKG0EwKovQvbyUnXidLwrSpgqbkCsB+ndWyVWpPjYkI
-         cK0jad+K6v8D963pXkwYEIF6mMvrIyfoHiIfPdAIDUnEJZfLuc9IYuD5lzx/Am1qHkcO
-         noTQ==
-X-Gm-Message-State: AOAM5311xG4XJs35EpnunW+gar9ODdpg3Gtso6Rtcc2o/r+/CEdmsoo/
-        sTPXxzslgzX8OTQyqoUqLylCHJ4qU9Y=
-X-Google-Smtp-Source: ABdhPJylGofNVmOaPFlpu9B/m3r7wliPYu5BslrXyLzQ5pgRedl3bvbInBeBujOFxwCrealaY9G5/w==
-X-Received: by 2002:a63:834a:0:b0:3ab:5946:17b with SMTP id h71-20020a63834a000000b003ab5946017bmr12162950pge.59.1651076324945;
-        Wed, 27 Apr 2022 09:18:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4f81])
-        by smtp.gmail.com with ESMTPSA id o41-20020a17090a0a2c00b001d75aabe050sm3386122pjo.34.2022.04.27.09.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Apr 2022 09:18:44 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 27 Apr 2022 06:18:42 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] selftests: cgroup: Fix unsigned expression compared with
- zero
-Message-ID: <Ymls4pydYPMBtyCm@slm.duckdns.org>
-References: <20220427061756.56893-1-jiapeng.chong@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vykJS+GCN4oOt/wUy0V+c72rmxebQEGqa0biVVI0j7Y=;
+        b=SucRO1bRqrQqNuY40/TPO/jWD87LoMltUgoucU4lanOT3OIVFAu7ZH19+V/kO/Edyf
+         /gw6yrN19zPXI+z8a9BdMDXFXePr0Usot7UCYP8rR5pb59zeCjTobq1vBRe/uoAHUSDP
+         zITS9yChWsGgYq50/5iH98svcWtVqa52kWrU3faY5MKtqH+uEafV3UTEyHJHEkWNL5OX
+         cqwnmXXDjt8fOEjY825fwFe/33iAGrmUtBngW5ETfuw+c3Tfj3aWYMF4LnORYiaFGMh1
+         NGwfs+I4kW1Pa7FSRYR2L+iM7SWBwnVKshfOtAlzV4pHxdK5ZXRW1/fFOJzpJzKMxVsm
+         ppig==
+X-Gm-Message-State: AOAM531Ek2xoOM0Y+MtWoNW0i9Xw2FMTUPhL/mgdcrOGOCy99V/i36ge
+        aYad1blRa0JpVpJ8NxbB62TNo25WF8ew9zy/VM/Sx0GuDSdc2A==
+X-Google-Smtp-Source: ABdhPJynB6sYUtZFPdStewPZKGT5epF0dIPoGZdrNxMD84yqLEGZmSKWqxNKgf+xK/hNaVlFgP0oEpszN7CABQTTRVo=
+X-Received: by 2002:a17:902:b094:b0:15c:dee8:74c8 with SMTP id
+ p20-20020a170902b09400b0015cdee874c8mr24420474plr.6.1651078356628; Wed, 27
+ Apr 2022 09:52:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220427061756.56893-1-jiapeng.chong@linux.alibaba.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org> <20220427140153.GC9823@blackbody.suse.cz>
+In-Reply-To: <20220427140153.GC9823@blackbody.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 27 Apr 2022 09:52:25 -0700
+Message-ID: <CALvZod6Dz7iw=gyiQ2pDVe2RJxF-7PbVoptwFZCw=sWtxpBBGQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: accounting for objects allocated for new netdevice
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Vasily Averin <vvs@openvz.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Vlastimil Babka <vbabka@suse.cz>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 02:17:56PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./tools/testing/selftests/cgroup/cgroup_util.c:566:8-12: WARNING:
-> Unsigned expression compared with zero: size < 0.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
->  tools/testing/selftests/cgroup/cgroup_util.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-> index 4c52cc6f2f9c..661e06b94a43 100644
-> --- a/tools/testing/selftests/cgroup/cgroup_util.c
-> +++ b/tools/testing/selftests/cgroup/cgroup_util.c
-> @@ -552,7 +552,7 @@ int proc_mount_contains(const char *option)
->  	return strstr(buf, option) != NULL;
->  }
->  
-> -ssize_t proc_read_text(int pid, bool thread, const char *item, char *buf, size_t size)
-> +ssize_t proc_read_text(int pid, bool thread, const char *item, char *buf, ssize_t size)
+On Wed, Apr 27, 2022 at 7:01 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+>
+> Hello Vasily.
+>
+> On Wed, Apr 27, 2022 at 01:37:50PM +0300, Vasily Averin <vvs@openvz.org> =
+wrote:
+> > diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> > index cfa79715fc1a..2881aeeaa880 100644
+> > --- a/fs/kernfs/mount.c
+> > +++ b/fs/kernfs/mount.c
+> > @@ -391,7 +391,7 @@ void __init kernfs_init(void)
+> >  {
+> >       kernfs_node_cache =3D kmem_cache_create("kernfs_node_cache",
+> >                                             sizeof(struct kernfs_node),
+> > -                                           0, SLAB_PANIC, NULL);
+> > +                                           0, SLAB_PANIC | SLAB_ACCOUN=
+T, NULL);
+>
+> kernfs accounting you say?
+> kernfs backs up also cgroups, so the parent-child accounting comes to my
+> mind.
+> See the temporary switch to parent memcg in mem_cgroup_css_alloc().
+>
+> (I mean this makes some sense but I'd suggest unlumping the kernfs into
+> a separate path for possible discussion and its not-only-netdevice
+> effects.)
+>
 
-Converting input size parameter to ssize_t doesn't make sense. I don't see
-where it's doing size < 0 either but that's probably where it should be
-fixed.
-
--- 
-tejun
+I agree with Michal that kernfs accounting should be its own patch.
+Internally at Google, we actually have enabled the memcg accounting of
+kernfs nodes. We have workloads which create 100s of subcontainers and
+without memcg accounting of kernfs we see high system overhead.
