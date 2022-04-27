@@ -2,123 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70551511B6F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 16:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECFE511B82
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 16:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238058AbiD0Og3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 10:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
+        id S238813AbiD0O6I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 10:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238060AbiD0Og0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 10:36:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 569C3FD13
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 07:33:15 -0700 (PDT)
+        with ESMTP id S238746AbiD0O6H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 10:58:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 883F95F66D
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 07:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1651069994;
+        s=mimecast20190719; t=1651071295;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pCszdxGtpE1ozcn4mZloZJWxhovKrd6sE3m0QUQcezY=;
-        b=Bn6Knr+mN9t00hj5R9nJDsGZcCC3NFX26FBsmIHRr1MVOQqR0SpbHq7McjwyGTKuzbUzu1
-        Q715jM9NV3IjSgukE58c40tzOhyprGboSoZ3nzM6Eae0/INMy6En5SIs5dNJxImF6e9kCN
-        7a3iyIInERhD160wAeMupsuhUcGAuTY=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0IQvTcMEBnE+yly3Jqj1m7ej/vPl078aXENmc+H4j+E=;
+        b=SbWrfMzfDkn1DxuPq4J5ZjOQZ2etBpuIYwsVQqaFopRyh4aBjkZXsZvNaVpT4iN0oW4Z/C
+        efqX8dJZGScNCgJW5VLH1tHmP0ig/nehmGfQDHo/LsScCjHTiQFK0Qt7dtsw9RenBYvu2O
+        3Pnvm/JKAb7oEfAJR3UZ8JumX1AlAp8=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-441-Ntlq1A14PxCINLPDU2k1Ag-1; Wed, 27 Apr 2022 10:33:07 -0400
-X-MC-Unique: Ntlq1A14PxCINLPDU2k1Ag-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+ us-mta-390-Ady9gyINNF6aO5JBgqcudA-1; Wed, 27 Apr 2022 10:54:51 -0400
+X-MC-Unique: Ady9gyINNF6aO5JBgqcudA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 199A818A6592;
-        Wed, 27 Apr 2022 14:33:06 +0000 (UTC)
-Received: from [10.22.11.205] (unknown [10.22.11.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E09257D274;
-        Wed, 27 Apr 2022 14:33:04 +0000 (UTC)
-Message-ID: <3791e950-d997-23c0-07ff-909fd170d0a7@redhat.com>
-Date:   Wed, 27 Apr 2022 10:33:04 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2] cgroup/cpuset: Remove cpus_allowed/mems_allowed setup
- in cpuset_init_smp()
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Feng Tang <feng.tang@intel.com>,
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6E42185A5BE;
+        Wed, 27 Apr 2022 14:54:50 +0000 (UTC)
+Received: from llong.com (unknown [10.22.11.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A33FD20296A5;
+        Wed, 27 Apr 2022 14:54:41 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Feng Tang <feng.tang@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Dave Hansen <dave.hansen@intel.com>, ying.huang@intel.com,
-        stable@vger.kernel.org
-References: <20220425155505.1292896-1-longman@redhat.com>
- <20220427135324.GB9823@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20220427135324.GB9823@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, stable@vger.kernel.org
+Subject: [PATCH v3] cgroup/cpuset: Remove cpus_allowed/mems_allowed setup in cpuset_init_smp()
+Date:   Wed, 27 Apr 2022 10:54:28 -0400
+Message-Id: <20220427145428.1411867-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,TVD_SUBJ_WIPE_DEBT
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,TVD_SUBJ_WIPE_DEBT autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/27/22 09:53, Michal Koutný wrote:
-> Hello.
->
-> On Mon, Apr 25, 2022 at 11:55:05AM -0400, Waiman Long <longman@redhat.com> wrote:
->> smp_init() is called after the first two init functions.  So we don't
->> have a complete list of active cpus and memory nodes until later in
->> cpuset_init_smp() which is the right time to set up effective_cpus
->> and effective_mems.
-> Yes.
->
-> 	setup_arch
-> 	  prefill_possible_map
-> 	cpuset_init (1)
-> 	cgroup_init
-> 	  cpuset_bind (2a)
-> 	...
-> 	kernel_init
-> 	  kernel_init_freeable
-> 	    ...
-> 	      cpuset_init_smp (3)
-> 	...
-> 	...
-> 	cpuset_bind (2b)
->
->
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 9390bfd9f1cd..6bd8f5ef40fe 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -3390,8 +3390,9 @@ static struct notifier_block cpuset_track_online_nodes_nb = {
->>    */
->>   void __init cpuset_init_smp(void)
->>   {
->> -	cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
->> -	top_cpuset.mems_allowed = node_states[N_MEMORY];
->> +	/*
->> +	 * cpus_allowd/mems_allowed will be properly set up in cpuset_bind().
->> +	 */
-> IIUC, the comment should say
->
->> +	 * cpus_allowed/mems_allowed were (v2) or will be (v1) properly set up in cpuset_bind().
-> (nit)
->
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
->
-Thanks for the review. I plan to post v3 with updated commit log and 
-comment soon.
+There are 3 places where the cpu and node masks of the top cpuset can
+be initialized in the order they are executed:
+ 1) start_kernel -> cpuset_init()
+ 2) start_kernel -> cgroup_init() -> cpuset_bind()
+ 3) kernel_init_freeable() -> do_basic_setup() -> cpuset_init_smp()
 
-Cheers,
-Longman
+The first cpuset_init() call just sets all the bits in the masks.
+The second cpuset_bind() call sets cpus_allowed and mems_allowed to the
+default v2 values. The third cpuset_init_smp() call sets them back to
+v1 values.
+
+For systems with cgroup v2 setup, cpuset_bind() is called once.  As a
+result, cpu and memory node hot add may fail to update the cpu and node
+masks of the top cpuset to include the newly added cpu or node in a
+cgroup v2 environment.
+
+For systems with cgroup v1 setup, cpuset_bind() is called again by
+rebind_subsystem() when the v1 cpuset filesystem is mounted as shown
+in the dmesg log below with an instrumented kernel.
+
+  [    2.609781] cpuset_bind() called - v2 = 1
+  [    3.079473] cpuset_init_smp() called
+  [    7.103710] cpuset_bind() called - v2 = 0
+
+smp_init() is called after the first two init functions.  So we don't
+have a complete list of active cpus and memory nodes until later in
+cpuset_init_smp() which is the right time to set up effective_cpus
+and effective_mems.
+
+To fix this cgroup v2 mask setup problem, the potentially incorrect
+cpus_allowed & mems_allowed setting in cpuset_init_smp() are removed.
+For cgroup v2 systems, the initial cpuset_bind() call will set the masks
+correctly.  For cgroup v1 systems, the second call to cpuset_bind()
+will do the right setup.
+
+cc: stable@vger.kernel.org
+Signed-off-by: Waiman Long <longman@redhat.com>
+Tested-by: Feng Tang <feng.tang@intel.com>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/cpuset.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 9390bfd9f1cd..71a418858a5e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3390,8 +3390,11 @@ static struct notifier_block cpuset_track_online_nodes_nb = {
+  */
+ void __init cpuset_init_smp(void)
+ {
+-	cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
+-	top_cpuset.mems_allowed = node_states[N_MEMORY];
++	/*
++	 * cpus_allowd/mems_allowed set to v2 values in the initial
++	 * cpuset_bind() call will be reset to v1 values in another
++	 * cpuset_bind() call when v1 cpuset is mounted.
++	 */
+ 	top_cpuset.old_mems_allowed = top_cpuset.mems_allowed;
+ 
+ 	cpumask_copy(top_cpuset.effective_cpus, cpu_active_mask);
+-- 
+2.27.0
 
