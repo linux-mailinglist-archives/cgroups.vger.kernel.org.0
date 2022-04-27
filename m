@@ -2,66 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54115115D2
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 13:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A3E5115AF
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 13:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbiD0K6J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 06:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
+        id S231730AbiD0LAm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 07:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbiD0K6E (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 06:58:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233A33C5DA5
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 03:34:33 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y32so2353378lfa.6
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 03:34:33 -0700 (PDT)
+        with ESMTP id S231782AbiD0LAL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 07:00:11 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B6C3C763D
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 03:37:54 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq30so2392173lfb.3
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 03:37:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=openvz-org.20210112.gappssmtp.com; s=20210112;
         h=message-id:date:mime-version:user-agent:from:subject:to:cc
          :content-language:content-transfer-encoding;
-        bh=s9wfiyI3JBIiISlABF9nzSzidRhd08PN5K7/7gRJUwU=;
-        b=F1CrcAo2L4t+g24hKYKTkJrAIVD+uTem+dr8Xe28yedKWFGtVI7PftZuZcQfKZcEOu
-         z8H2qRwJPsk95KVz3cKAwjeZpfThWo2YICJwhmyX38kLU48FLwyTc4X1KU+Q0seSVK8o
-         SIoNSv6HijNeKMGu+McRx0LPACtUYGfr9OFlNsr53DrbB25SZKsV46crOk2U2kaEeS1v
-         n73RzjxPj+Dc+8m9++UWK2PmXlExBoFRwfte8OGfQKin+2u9FYxR9RdC7gS2PlqLFCVi
-         1bR/qi42emMrThTa7fgOLHgL2q7KukCh3+iI19VSkvx1t6PsRjP52JxxJxIyWn6CQNYp
-         HqNw==
+        bh=jRN8XksCdAf0+x8Uj8a/DButwn5KzLonnaobSsBfglg=;
+        b=DK23ya2EJ5weoMmh1t7kx/QodejkNkn8M5NyBLC6YNDDq/iyYjlsNadZ2EHYSJ5Fqg
+         v6gIuXZexBcUPt7oHC2h4qRgCgC/5A3dmpZmQsJ+8GqVCb1x/lOqbf91P7uw5Ww0uqKD
+         uyHVfyKv/F1Mc0YNVKPWcoHW3ohxieUlWta8+KHFA8/SQJvfuKwbBS+TFPT4bO6XlV24
+         H/uUZxi93xoDkhBCqfXOOKQhO/48gVdV2wprUxrQeRwT2K32euRbJz7E7YXAoFNXApwv
+         SLu4nXXcpWgbpsAiiuxu+zsOGeWaGuKPZ7cmgu84GIuIDg25iFm84RkrJJ73rKF+8/gg
+         IwGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:from
          :subject:to:cc:content-language:content-transfer-encoding;
-        bh=s9wfiyI3JBIiISlABF9nzSzidRhd08PN5K7/7gRJUwU=;
-        b=CzRLPhQ77rtsxEp9JvRoF0YBPX2UwdvwiFvsUz3B8TivgISQXlbPVKVth5hFoZGTvw
-         ddFuyiSShflrYlUTzl8JRY6AyZQmXtD3b+gicsnmvs7nQJSq61M/nGfgSOz3BHNpAnW+
-         kCBDFG+8AursQ7FY0LJ2VjOKIbxOQCRN8+a7kNE43JQpHC4z5mYWOz3zZo4SQsIx1Gum
-         44EC71A+ixvfymj5zrKBrX7o36kQ9IBFyvpjnO/xiI/DTqFddGEVO/pcPB1CDdqTulPK
-         o34Z4bz99/G76Vadvcg0n0x1m07lCSsJ/YQeVIpbpSVJPO1fccTPFAsczONGHzebeGmB
-         m9CQ==
-X-Gm-Message-State: AOAM533dovmPG0d+EWaoxSTo98XVpxmpY7/Ro5ZMwbBNX0HGZxqcvmpH
-        c6eOJBU47Li6YfuWYSvRHefFUw==
-X-Google-Smtp-Source: ABdhPJxiTFY6rBxC2YzE+gz4kYCDHrExSRB5wTlrCu3KWfOeIv1VagTWKbAP/FWpZ11dpTHTp1793g==
-X-Received: by 2002:a05:6512:228e:b0:471:9022:c4d3 with SMTP id f14-20020a056512228e00b004719022c4d3mr19562388lfu.513.1651055671334;
-        Wed, 27 Apr 2022 03:34:31 -0700 (PDT)
+        bh=jRN8XksCdAf0+x8Uj8a/DButwn5KzLonnaobSsBfglg=;
+        b=azeOPWUyKMr4jFKw+DNKG8V7vFR6aQ+euI5dDvF+RqFCp400oUDZzbSQ31hlF9pzYA
+         PnYyNU0J+9/bdIj3MFmRFPMCUAVrt7x9jd4bV3FIAbi8jqJa1zRkY5mdHv6RN4KCLXfr
+         WY2ucGe/jXgqHk8tEQ/Ob+tF9tlDyD7GwrSDfUa8fQSu/oAH9Y3dgOlu6N3EZVoK/wx6
+         yaGFxmgh4RCmDdMtNW4LrNnxiNhkv5CzwbejfWQBFa11jqy8uYj74Ccy6cvGoJJG0qUp
+         qPINeT1Fwa4qfiSBfZXyjxNCX/9uZtRqmMGAyDTmmLUmlsu4u8rsAKsFDB5AqaEsY5xD
+         u4GQ==
+X-Gm-Message-State: AOAM530F+Eq7BUjtokPV0Ok4XBE0pHr9K3df0XIO2YfJdFsWxLmlbn+y
+        cfdn1F8c5NUVQoPOW6fXy7Dx9w==
+X-Google-Smtp-Source: ABdhPJydThKNwg1fAKcAA4XC9MwiqCQDBZ2EHrvqh41Hwk2uoGINd3w/CMeX10Khz/ZzztPAo5aBuw==
+X-Received: by 2002:a05:6512:400a:b0:46b:8cd9:1af8 with SMTP id br10-20020a056512400a00b0046b8cd91af8mr20687452lfb.545.1651055872441;
+        Wed, 27 Apr 2022 03:37:52 -0700 (PDT)
 Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id l21-20020a194955000000b00471f0aea31fsm1762928lfj.39.2022.04.27.03.34.30
+        by smtp.gmail.com with ESMTPSA id m4-20020a197104000000b00471ebfc7a0bsm1840776lfc.191.2022.04.27.03.37.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Apr 2022 03:34:30 -0700 (PDT)
-Message-ID: <1c338b99-8133-6126-2ff2-94a4d3f26451@openvz.org>
-Date:   Wed, 27 Apr 2022 13:34:29 +0300
+        Wed, 27 Apr 2022 03:37:51 -0700 (PDT)
+Message-ID: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
+Date:   Wed, 27 Apr 2022 13:37:50 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
 From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH] memcg: enable accounting for veth queues
+Subject: [PATCH] memcg: accounting for objects allocated for new netdevice
 To:     Roman Gushchin <roman.gushchin@linux.dev>,
         Vlastimil Babka <vbabka@suse.cz>,
         Shakeel Butt <shakeelb@google.com>
-Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+Cc:     kernel@openvz.org, Florian Westphal <fw@strlen.de>,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
@@ -74,27 +81,136 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-veth netdevice defines own rx queues and allocates array containing
-up to 4095 ~750-bytes-long 'struct veth_rq' elements. Such allocation
-is quite huge and should be accounted to memcg.
+Creating a new netdevice allocates at least ~50Kb of memory for various
+kernel objects, but only ~5Kb of them are accounted to memcg. As a result,
+creating an unlimited number of netdevice inside a memcg-limited container
+does not fall within memcg restrictions, consumes a significant part
+of the host's memory, can cause global OOM and lead to random kills of
+host processes.
+
+The main consumers of non-accounted memory are:
+ ~10Kb   80+ kernfs nodes
+ ~6Kb    ipv6_add_dev() allocations
+  6Kb    __register_sysctl_table() allocations
+  4Kb    neigh_sysctl_register() allocations
+  4Kb    __devinet_sysctl_register() allocations
+  4Kb    __addrconf_sysctl_register() allocations
+
+Accounting of these objects allows to increase the share of memcg-related
+memory up to 60-70% (~38Kb accounted vs ~54Kb total for dummy netdevice
+on typical VM with default Fedora 35 kernel) and this should be enough
+to somehow protect the host from misuse inside container.
+
+Other related objects are quite small and may not be taken into account
+to minimize the expected performance degradation.
+
+It should be separately mentonied ~300 bytes of percpu allocation
+of struct ipstats_mib in snmp6_alloc_dev(), on huge multi-cpu nodes
+it can become the main consumer of memory.
 
 Signed-off-by: Vasily Averin <vvs@openvz.org>
 ---
- drivers/net/veth.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+RFC was discussed here:
+https://lore.kernel.org/all/a5e09e93-106d-0527-5b1e-48dbf3b48b4e@virtuozzo.com/
+---
+ fs/kernfs/mount.c     | 2 +-
+ fs/proc/proc_sysctl.c | 2 +-
+ net/core/neighbour.c  | 2 +-
+ net/ipv4/devinet.c    | 2 +-
+ net/ipv6/addrconf.c   | 8 ++++----
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index d29fb9759cc9..bd67f458641a 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1310,7 +1310,7 @@ static int veth_alloc_queues(struct net_device *dev)
- 	struct veth_priv *priv = netdev_priv(dev);
+diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+index cfa79715fc1a..2881aeeaa880 100644
+--- a/fs/kernfs/mount.c
++++ b/fs/kernfs/mount.c
+@@ -391,7 +391,7 @@ void __init kernfs_init(void)
+ {
+ 	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
+ 					      sizeof(struct kernfs_node),
+-					      0, SLAB_PANIC, NULL);
++					      0, SLAB_PANIC | SLAB_ACCOUNT, NULL);
+ 
+ 	/* Creates slab cache for kernfs inode attributes */
+ 	kernfs_iattrs_cache  = kmem_cache_create("kernfs_iattrs_cache",
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 7d9cfc730bd4..df4604fea4f8 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1333,7 +1333,7 @@ struct ctl_table_header *__register_sysctl_table(
+ 		nr_entries++;
+ 
+ 	header = kzalloc(sizeof(struct ctl_table_header) +
+-			 sizeof(struct ctl_node)*nr_entries, GFP_KERNEL);
++			 sizeof(struct ctl_node)*nr_entries, GFP_KERNEL_ACCOUNT);
+ 	if (!header)
+ 		return NULL;
+ 
+diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+index ec0bf737b076..3dcda2a54f86 100644
+--- a/net/core/neighbour.c
++++ b/net/core/neighbour.c
+@@ -3728,7 +3728,7 @@ int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
+ 	char neigh_path[ sizeof("net//neigh/") + IFNAMSIZ + IFNAMSIZ ];
+ 	char *p_name;
+ 
+-	t = kmemdup(&neigh_sysctl_template, sizeof(*t), GFP_KERNEL);
++	t = kmemdup(&neigh_sysctl_template, sizeof(*t), GFP_KERNEL_ACCOUNT);
+ 	if (!t)
+ 		goto err;
+ 
+diff --git a/net/ipv4/devinet.c b/net/ipv4/devinet.c
+index fba2bffd65f7..47523fe5b891 100644
+--- a/net/ipv4/devinet.c
++++ b/net/ipv4/devinet.c
+@@ -2566,7 +2566,7 @@ static int __devinet_sysctl_register(struct net *net, char *dev_name,
+ 	struct devinet_sysctl_table *t;
+ 	char path[sizeof("net/ipv4/conf/") + IFNAMSIZ];
+ 
+-	t = kmemdup(&devinet_sysctl, sizeof(*t), GFP_KERNEL);
++	t = kmemdup(&devinet_sysctl, sizeof(*t), GFP_KERNEL_ACCOUNT);
+ 	if (!t)
+ 		goto out;
+ 
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index f908e2fd30b2..e79621ee4a0a 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -342,7 +342,7 @@ static int snmp6_alloc_dev(struct inet6_dev *idev)
+ {
  	int i;
  
--	priv->rq = kcalloc(dev->num_rx_queues, sizeof(*priv->rq), GFP_KERNEL);
-+	priv->rq = kcalloc(dev->num_rx_queues, sizeof(*priv->rq), GFP_KERNEL_ACCOUNT);
- 	if (!priv->rq)
- 		return -ENOMEM;
+-	idev->stats.ipv6 = alloc_percpu(struct ipstats_mib);
++	idev->stats.ipv6 = alloc_percpu_gfp(struct ipstats_mib, GFP_KERNEL_ACCOUNT);
+ 	if (!idev->stats.ipv6)
+ 		goto err_ip;
+ 
+@@ -358,7 +358,7 @@ static int snmp6_alloc_dev(struct inet6_dev *idev)
+ 	if (!idev->stats.icmpv6dev)
+ 		goto err_icmp;
+ 	idev->stats.icmpv6msgdev = kzalloc(sizeof(struct icmpv6msg_mib_device),
+-					   GFP_KERNEL);
++					   GFP_KERNEL_ACCOUNT);
+ 	if (!idev->stats.icmpv6msgdev)
+ 		goto err_icmpmsg;
+ 
+@@ -382,7 +382,7 @@ static struct inet6_dev *ipv6_add_dev(struct net_device *dev)
+ 	if (dev->mtu < IPV6_MIN_MTU)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	ndev = kzalloc(sizeof(struct inet6_dev), GFP_KERNEL);
++	ndev = kzalloc(sizeof(struct inet6_dev), GFP_KERNEL_ACCOUNT);
+ 	if (!ndev)
+ 		return ERR_PTR(err);
+ 
+@@ -7029,7 +7029,7 @@ static int __addrconf_sysctl_register(struct net *net, char *dev_name,
+ 	struct ctl_table *table;
+ 	char path[sizeof("net/ipv6/conf/") + IFNAMSIZ];
+ 
+-	table = kmemdup(addrconf_sysctl, sizeof(addrconf_sysctl), GFP_KERNEL);
++	table = kmemdup(addrconf_sysctl, sizeof(addrconf_sysctl), GFP_KERNEL_ACCOUNT);
+ 	if (!table)
+ 		goto out;
  
 -- 
 2.31.1
