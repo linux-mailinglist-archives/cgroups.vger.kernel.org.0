@@ -2,73 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A82251201F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 20:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC840511E31
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239355AbiD0PJf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 11:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        id S241081AbiD0QFz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 12:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239180AbiD0PJd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 11:09:33 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAA05046C
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 08:06:22 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id b12so1792769plg.4
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 08:06:22 -0700 (PDT)
+        with ESMTP id S242345AbiD0QEh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 12:04:37 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD9C36AF30
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 09:01:14 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id n185so1611822qke.5
+        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 09:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XS75V+e2Ct78C2HTr9fzu0rvESRlSHMev5cWIVD79uw=;
-        b=r/YR+XZjsNKfW6ntLhVS2qvC7q4aKCieabb65nb4ICf0i6WPU76Rc+tkeTTxtOSp4r
-         Cp4ikH5UOnW0RwHI0VWzuKZyB2yx+/3AEW56212jW8nk916NwlrBUrYbb5yh6HFUn/3g
-         7C24RG1alHoU/CY45Nv2Q+KqmGQGYipv6EK7gRTDqW9eWMqt2je5/dYX0pSpvobCGJ2U
-         T++YUMItnBRWW3mLRtwxTf5lcgwHzksUW2ykha3mFO2hChZdUZ9YL6VgaQRSBgXZJ1CA
-         KE42kd5aMrtcbglmkWfum3XmBqsylzcpg0FRfxBDKbVvhz6YeFwQIJ/RD9fCyF/VAJ6e
-         4lcA==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9GL3COHv0leHgkc2xj8IFg2MOsyvROczlu9iqFQTi6c=;
+        b=EyNosu86WZBzUC9jjE+BB/6+rRUePVNB5D6ZLweYK0cFIUWcYSagiZotbV3kGhvIlS
+         aSvmf4EfGitZgrEkXNDGgBgiz1HC8zvbqhEgPDUnOPd4hguA+FT8asyo6S3j5oDYIoGo
+         8i8blQjc96SokqKzFW3yhgqj9t2hCvOPMNnicEa5sb4XEiaLxO8ipgY23jPrzflTCMCj
+         e/QXaswu/EhhZnxUl3ooWdUkmRJ2DPmY42IUXuA03tcMHr/j8BJn49Zny7U2+x5RZUMc
+         5GK7mdC+N0Gj6dvbpJN0oMAU2pAmBPbv0TW1TyQBbPT7Db08uuswrZhBl7kJzgp+QWcy
+         Qw3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XS75V+e2Ct78C2HTr9fzu0rvESRlSHMev5cWIVD79uw=;
-        b=wYid4LlF8bMKYECxSzDI0UXcP4fGarZ4S/2xtNn0ac8AXiPWiaSrfzR8JdJ3Ve/oGm
-         S6RF8udEl/Qm9I55z3kCXv6fP6pnLt6jD1dCrBMNerzqmzjyTZmxL444RSuwt1r/PLlc
-         eiPA1eMuKCqfB0CkkBo39Pp93Nc261gaXcc8Ctws+rqqCypfWCr2yA8bdm4e945rIO/f
-         3oohhlt2SKk9BDGBTudgam/nXOYlPviyA2q96X6wICVofd9N66+TfMi0JHaGN9lZjeUj
-         lNBFhqKJXTi/ZAQyE3e6fxLQ/wped+czeQ+4RWHxv5ENLkLhQKzzLX0G3RJTbEK+lGWI
-         dyZA==
-X-Gm-Message-State: AOAM531ozTJk1u2GclM+773XnZEaJnuAoDLj+ZZnRKcjvyur88/lkhS/
-        DEq88KW9ATihYAV1vw03wsqoLjxEDrhOl/rpveHrbg==
-X-Google-Smtp-Source: ABdhPJyhFsA6EuYCCsjkboZqyERAvCzNstvehUDrJwgfZmF4YkAReKOkOhEXO+4ruAdhtV07MECBNmLql1kgnul+17A=
-X-Received: by 2002:a17:903:2285:b0:15b:cd9e:f018 with SMTP id
- b5-20020a170903228500b0015bcd9ef018mr27793510plh.106.1651071981975; Wed, 27
- Apr 2022 08:06:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9GL3COHv0leHgkc2xj8IFg2MOsyvROczlu9iqFQTi6c=;
+        b=VJNcRoI1yOPBbND/G2xnuOW2rsLWOpq44XD8WcWLf58Ayk4th5v7+e8kZLboCo/CWs
+         nha2re6smNd2qGSn/4RzZuxhoiNZcqeMAWdUGEs1e82+sg2sQwNz2qK8gWdE5jYyY7b5
+         i27VLNEeYQavrt27e+LH8Aq3zXhCLdXnd6iQWp2qHa9WZRsXQiUmYjtjJ39X+SAOqg62
+         asgNmV90z7yI2xIp/o9JuHND+jYnkOVdFnH0zHq//KQLLRiXd0WeFGuUhys0mX0fIxiy
+         kZMmYh10EpssH6humOXBvBBf1Q3qHzRTRGfJKwrrhJvLTckVbjdic2cNHkdny+SWb7nW
+         AzJQ==
+X-Gm-Message-State: AOAM532eJ3hde0zqlgc5oHXB7Sd6yuzn7UtYjjkTDggCsWiKak0D5+Yg
+        a/1lTZBwuMhJa4vSyfdNnrtxFQ==
+X-Google-Smtp-Source: ABdhPJxf17+/YxgQAbE/TSRufq++NTLpwlkrr6HcG5ZWLe4C60zjvMCj2EQOO6Z99OmnWn9WV/8HRA==
+X-Received: by 2002:a05:620a:404f:b0:69f:1160:73e6 with SMTP id i15-20020a05620a404f00b0069f116073e6mr16720445qko.690.1651075256344;
+        Wed, 27 Apr 2022 09:00:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:f617])
+        by smtp.gmail.com with ESMTPSA id v67-20020a376146000000b0069ec181a0c6sm8304072qkb.10.2022.04.27.09.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Apr 2022 09:00:56 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 0/5] zswap: cgroup accounting & control
+Date:   Wed, 27 Apr 2022 12:00:11 -0400
+Message-Id: <20220427160016.144237-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <YmdeCqi6wmgiSiWh@carbon> <33085523-a8b9-1bf6-2726-f456f59015ef@openvz.org>
- <CALvZod4oaj9MpBDVUp9KGmnqu4F3UxjXgOLkrkvmRfFjA7F1dw@mail.gmail.com> <20220427122232.GA9823@blackbody.suse.cz>
-In-Reply-To: <20220427122232.GA9823@blackbody.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 27 Apr 2022 08:06:10 -0700
-Message-ID: <CALvZod7v0taU51TNRu=OM5iJ-bnm1ryu9shjs80PuE-SWobqFg@mail.gmail.com>
-Subject: Re: [PATCH memcg v4] net: set proper memcg for net_init hooks allocations
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Vasily Averin <vvs@openvz.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>, kernel@openvz.org,
-        Florian Westphal <fw@strlen.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,34 +70,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 5:22 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> On Tue, Apr 26, 2022 at 10:23:32PM -0700, Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > [...]
-> > >
-> > > +static inline struct mem_cgroup *get_mem_cgroup_from_obj(void *p)
-> > > +{
-> > > +       struct mem_cgroup *memcg;
-> > > +
-> >
-> > Do we need memcg_kmem_enabled() check here or maybe
-> > mem_cgroup_from_obj() should be doing memcg_kmem_enabled() instead of
-> > mem_cgroup_disabled() as we can have "cgroup.memory=3Dnokmem" boot
-> > param.
->
-> I reckon such a guard is on the charge side and readers should treat
-> NULL and root_mem_group equally. Or is there a case when these two are
-> different?
->
-> (I can see it's different semantics when stored in current->active_memcg
-> (and active_memcg() getter) but for such "outer" callers like here it
-> seems equal.)
+Zswap backing memory is currently not tracked (and limited) on a
+per-cgroup basis. As a result, workloads can escape their memory
+containment and cause resource priority inversions on a shared host.
+E.g. a lo-pri group fills the global zswap pool and forces a hi-pri
+group out to disk.
 
-I was more thinking about possible shortcut optimization and unrelated
-to this patch.
+Also, zswap doesn't benefit all workloads equally. Some even suffer
+when memory contents compress poorly, and are better off going to disk
+swap directly. On a host with mixed workloads, it's currently not
+possible to enable zswap for one workload but not for the other.
 
-Vasily, can you please add documentation for get_mem_cgroup_from_obj()
-similar to get_mem_cgroup_from_mm()? Also for mem_cgroup_or_root().
-Please note that root_mem_cgroup can be NULL during early boot.
+This series implements missing cgroup awareness and control for zswap
+to address both issues.
+
+More details on interface and implementation in patch 5.
+
+Patches 1-3 clean up related and adjacent options in Kconfig. Not
+dependencies, just things I noticed during development.
+
+Based on v5.18-rc4-mmots-2022-04-26-19-34-5-g5e1fdb02de7a.
+
+ Documentation/admin-guide/cgroup-v2.rst |  21 ++
+ drivers/block/zram/Kconfig              |   3 +-
+ fs/proc/meminfo.c                       |   7 +
+ include/linux/memcontrol.h              |  54 +++
+ include/linux/swap.h                    |   5 +
+ include/linux/vm_event_item.h           |   4 +
+ init/Kconfig                            | 123 -------
+ mm/Kconfig                              | 523 +++++++++++++++++++-----------
+ mm/memcontrol.c                         | 196 ++++++++++-
+ mm/vmstat.c                             |   4 +
+ mm/zswap.c                              |  50 ++-
+ 11 files changed, 648 insertions(+), 342 deletions(-)
+
+
