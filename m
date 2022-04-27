@@ -2,118 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130F1511B20
-	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 16:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF6C51194A
+	for <lists+cgroups@lfdr.de>; Wed, 27 Apr 2022 16:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbiD0N4k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 09:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
+        id S237333AbiD0OFI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 10:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236700AbiD0N4i (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 09:56:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5872ACB;
-        Wed, 27 Apr 2022 06:53:27 -0700 (PDT)
+        with ESMTP id S237151AbiD0OFH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 10:05:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0D847ACA;
+        Wed, 27 Apr 2022 07:01:56 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2D06321118;
-        Wed, 27 Apr 2022 13:53:26 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DC01C1F37B;
+        Wed, 27 Apr 2022 14:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651067606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1651068114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z0VSn2vEXwWXMGAfap1HPPywpjqAc/nB4nW5xPcHwuA=;
-        b=f/xNu/kDIRTMogOu0Uw02XT1TextwCqsKVU5GEime6fEx0GQmAShKNghzduSIpnAvkWvIl
-        4XLpd3AXnkkx71Us1FiykJTL38kwzzkcISvSZKWwnE24AiQJotbu2LNxhs2RA6jAzmKmeI
-        YWMQC29ImtGt9spIXjuzKoHdmIYLXW0=
+        bh=rtEd6e1tTShJTnCJcYs65RbsArilbR2cAspTgrMECHg=;
+        b=InPtbRKyqPnLyRc4lNpBPdIgoPKrVjYvlGinsX0swe8z63mZmZLe+hjtuQVEEBmBMWafjh
+        aQ2Bges0I0+i4O+uhCH5nABzz41ag5HpDK76UpUhk5JJtaWIIrh6PjmvD2cO5EizQEXU7M
+        sRVuQIiTePcpSjg7K8BV/a7Wo+iGgD8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF00713A39;
-        Wed, 27 Apr 2022 13:53:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82A5713A39;
+        Wed, 27 Apr 2022 14:01:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ehVtNdVKaWJvZgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 27 Apr 2022 13:53:25 +0000
-Date:   Wed, 27 Apr 2022 15:53:24 +0200
+        id KJHuHtJMaWKCagAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 27 Apr 2022 14:01:54 +0000
+Date:   Wed, 27 Apr 2022 16:01:53 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>, ying.huang@intel.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup/cpuset: Remove cpus_allowed/mems_allowed setup
- in cpuset_init_smp()
-Message-ID: <20220427135324.GB9823@blackbody.suse.cz>
-References: <20220425155505.1292896-1-longman@redhat.com>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] memcg: accounting for objects allocated for new netdevice
+Message-ID: <20220427140153.GC9823@blackbody.suse.cz>
+References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220425155505.1292896-1-longman@redhat.com>
+In-Reply-To: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,TVD_SUBJ_WIPE_DEBT autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+Hello Vasily.
 
-On Mon, Apr 25, 2022 at 11:55:05AM -0400, Waiman Long <longman@redhat.com> wrote:
-> smp_init() is called after the first two init functions.  So we don't
-> have a complete list of active cpus and memory nodes until later in
-> cpuset_init_smp() which is the right time to set up effective_cpus
-> and effective_mems.
-
-Yes.
-
-	setup_arch
-	  prefill_possible_map
-	cpuset_init (1)
-	cgroup_init
-	  cpuset_bind (2a)
-	...
-	kernel_init
-	  kernel_init_freeable
-	    ...
-	      cpuset_init_smp (3)
-	...
-	...
-	cpuset_bind (2b)
-
-
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 9390bfd9f1cd..6bd8f5ef40fe 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3390,8 +3390,9 @@ static struct notifier_block cpuset_track_online_nodes_nb = {
->   */
->  void __init cpuset_init_smp(void)
+On Wed, Apr 27, 2022 at 01:37:50PM +0300, Vasily Averin <vvs@openvz.org> wrote:
+> diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
+> index cfa79715fc1a..2881aeeaa880 100644
+> --- a/fs/kernfs/mount.c
+> +++ b/fs/kernfs/mount.c
+> @@ -391,7 +391,7 @@ void __init kernfs_init(void)
 >  {
-> -	cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
-> -	top_cpuset.mems_allowed = node_states[N_MEMORY];
-> +	/*
-> +	 * cpus_allowd/mems_allowed will be properly set up in cpuset_bind().
-> +	 */
+>  	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
+>  					      sizeof(struct kernfs_node),
+> -					      0, SLAB_PANIC, NULL);
+> +					      0, SLAB_PANIC | SLAB_ACCOUNT, NULL);
 
-IIUC, the comment should say
+kernfs accounting you say?
+kernfs backs up also cgroups, so the parent-child accounting comes to my
+mind.
+See the temporary switch to parent memcg in mem_cgroup_css_alloc().
 
-> +	 * cpus_allowed/mems_allowed were (v2) or will be (v1) properly set up in cpuset_bind().
+(I mean this makes some sense but I'd suggest unlumping the kernfs into
+a separate path for possible discussion and its not-only-netdevice
+effects.)
 
-(nit)
-
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Thanks,
+Michal
