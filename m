@@ -2,55 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12A951381C
-	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 17:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFAF513A74
+	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 18:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237090AbiD1PVR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Apr 2022 11:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45782 "EHLO
+        id S235092AbiD1Q6I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Apr 2022 12:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349013AbiD1PU4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Apr 2022 11:20:56 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB62B53FC
-        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 08:17:21 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id a22so756084qkl.5
-        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 08:17:21 -0700 (PDT)
+        with ESMTP id S234392AbiD1Q6H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Apr 2022 12:58:07 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41C5AAB6D;
+        Thu, 28 Apr 2022 09:54:52 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a11so4759830pff.1;
+        Thu, 28 Apr 2022 09:54:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E9UW1bag0U6JwSp2lSKEFTQPx6fxwp66hBJxsfKUM1Q=;
-        b=gRA6hbtN/01k4+k22fV/ZVyh8d/v1uJ8gcamYPxonMAcJx8uuQTXaMsl2cAvgDzKIc
-         T30+pFpIeJOxFtaGF4H5w4QDpMhBfMSa/IRig4pA91KK2J2EJzCeU/kvPwG9qeMDkqSF
-         0M1jjIIyWzHmkshwPgA9MnNY7YW688hDVNGtwpEeV2ReIGCcLZH4TNUWSoGDgPJVmYn4
-         kgSq4l7TidxAF7IByp5uYg3VTk2iRG6Ry6VhBr65yYljjeJzuHfdY5/1+38fgLYlR5R8
-         QNRygU8Tuw7ukszTHI58UOlwMgnF/uUo5NrUz0ocjhfKfbeQGWiHY7eplLvMEXdnC0mD
-         OkoQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MvCOJLEv0diYuRsRJ3vfm9TWORadeU8jtlQyqpscZYs=;
+        b=Wj8UXDdE0X8gpr6LoRyZmqUQOw2kxuuPyrfVfL1bKAAZqgSatnq6bYzfRifjXKI+FX
+         Wm9USQkdGM8HZGBT7ts1RW4ABEbw+glCOKAVM2+/Kk3j//GfWRCpzt+Zh9uEuyVTS3RE
+         +BSxCzbRHgD+qVLgtP8lSGFNihGOMbsjyBDNZ+gcJx/AHUi+zyX5Z2+nAFvx/N/QhlRS
+         7PuL9T3OQ4hj5tyqcKkjBLDhVV7d5z9g2aOVx/D7OCeALJGjMrAi8pkEeLNK13IQC2D2
+         fjsgAARRjCsT2bNtUGofF1e30Q8XgIa9z97MYStEAnk5Cs0NUbGtoiUeCTdfMFw3D/BW
+         PvEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E9UW1bag0U6JwSp2lSKEFTQPx6fxwp66hBJxsfKUM1Q=;
-        b=etxkYD1zdijCM4izaitcEdxMgL6uK4tBA1Mpch0+NPHEO2y3X8e2os129eYhr0vfX8
-         B01QpHXPdnyVZvf41KEmmlWU6UwgoGesUC2A1xToDaA+jjepmcZYoAWyTLpN/cDHm5dQ
-         A6gGJAxjuv6waFuN2mOmwPunQpsMrshRA1ZceS9J0cX/MBiB1TKCAdEPCyr3XvGkzJ2N
-         MpYCLswvwDUPInunL+DDv3c5JM8KjHL1ToNIHAJptWGEI5lTwPvIqwLueS2hlCACsS97
-         pLeBLX/as5fPjMoX7v2FIDBt9nGirX7JCLkTJ6CLfZ51jXjYb0FMC/zStD3HH12heCjt
-         ZPzQ==
-X-Gm-Message-State: AOAM530dBU9pIgjE1JARSrUWzJ1FJI9rDWnFjXK6A5KRSTAw3TSLuNOY
-        XhIMLzPXV423Jim2mR+Z4KgSKQ==
-X-Google-Smtp-Source: ABdhPJz0uD0Y4GikJduMeS7kngfPj/NeqmtNRrLdYE+UuoiwDoiYWKCJ9epVPC+Wehgv4PrxA1EH1w==
-X-Received: by 2002:a37:c44:0:b0:69f:9a59:43c1 with SMTP id 65-20020a370c44000000b0069f9a5943c1mr4298447qkm.616.1651159040310;
-        Thu, 28 Apr 2022 08:17:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d588])
-        by smtp.gmail.com with ESMTPSA id r7-20020a05622a034700b002f337000725sm140413qtw.42.2022.04.28.08.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Apr 2022 08:17:19 -0700 (PDT)
-Date:   Thu, 28 Apr 2022 11:16:43 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MvCOJLEv0diYuRsRJ3vfm9TWORadeU8jtlQyqpscZYs=;
+        b=nyQouo1SJltt9db2f3Cxem80fh3mEfi2si3yKy0qKTWf6ol50YR+KVyX14lYEC3Uuj
+         iV6M7189Ti+wtYmmtjcSj2r6B7G/prLzr6W+pc3laDTWE8qsE5FLdUzfDxmzO0c/VTfh
+         6L0diJmurxzOswXzEuwddoI1KXG+Kz41eWcXNiBeA5zhP89S3Q2mMBiUzCxUzMVj5AoW
+         2xTAcb7AyxiEO64kFOlIZwbFPbAqNjGvxpzYJrovSoJ5vd9ldOy3btj6gd0spAJF1Nzf
+         2rnc9ySS+tttgSHdsMCmIZ8rT3RAKswRU8zfG7nQ58XCvT+0DHiUohkL/u6AkTGI23ax
+         d8EQ==
+X-Gm-Message-State: AOAM530H8GyxRdRMwgEwz/xqTdsHQJn+n26UPwiJOYhm5tLPlRLhHX1M
+        A6UCVCpYPGNtdSij8Urqq2/KYXiWZk10LUF4m34=
+X-Google-Smtp-Source: ABdhPJwOi4QlvWVAg2x0n7sXu+D03SSjc9/9+Z2qP7Q8SICby6ygCVP2AF2/o6d5nA40Vvl1UIFzJlKaHhWZ+diI4kk=
+X-Received: by 2002:a65:6951:0:b0:381:f10:ccaa with SMTP id
+ w17-20020a656951000000b003810f10ccaamr28256271pgq.587.1651164892221; Thu, 28
+ Apr 2022 09:54:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
+ <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org>
+ <Ymm3WpvJWby4gaD/@cmpxchg.org> <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
+ <YmqmWPrIagEEceN1@cmpxchg.org> <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
+In-Reply-To: <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 28 Apr 2022 09:54:39 -0700
+Message-ID: <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
 To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         Seth Jennings <sjenning@redhat.com>,
@@ -59,22 +65,10 @@ Cc:     Minchan Kim <minchan@kernel.org>,
         Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-Message-ID: <Ymqv25+8IX2wqKzu@cmpxchg.org>
-References: <20220427160016.144237-1-hannes@cmpxchg.org>
- <20220427160016.144237-5-hannes@cmpxchg.org>
- <Ymmnrkn0mSWcuvmH@google.com>
- <YmmznQ8AO5RLxicA@cmpxchg.org>
- <Ymm3WpvJWby4gaD/@cmpxchg.org>
- <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
- <YmqmWPrIagEEceN1@cmpxchg.org>
- <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,7 +76,8 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 07:49:33AM -0700, Shakeel Butt wrote:
+On Thu, Apr 28, 2022 at 7:49 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
 > On Thu, Apr 28, 2022 at 7:36 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > >
 > > On Wed, Apr 27, 2022 at 04:36:22PM -0700, Shakeel Butt wrote:
@@ -173,25 +168,21 @@ On Thu, Apr 28, 2022 at 07:49:33AM -0700, Shakeel Butt wrote:
 > >
 > > In the DC, I guess you don't use disk swap in conjunction with zswap,
 > > so those writeback cache controls are less interesting to you?
-> 
+>
 > Yes, we have some modifications to zswap to make it work without any
-> backing real swap.
+> backing real swap. Though there is a future plan to move to zram
+> eventually.
 
-Not sure if you can share them, but I would be interested in those
-changes. We have real backing swap, but because of the way swap
-entries are allocated, pages stored in zswap will consume physical
-disk slots. So on top of regular swap, you need to provision disk
-space for zswap as well, which is unfortunate.
+Interesting, if so why not just simply use zram?
 
-What could be useful is a separate swap entry address space that maps
-zswap slots and disk slots alike. This would fix the above problem. It
-would have the added benefit of making swapoff much simpler and faster
-too, as it doesn't need to chase down page tables to free disk slots.
-
+>
+> >
 > > But it sounds like you would benefit from the zswap(ped) counters in
 > > memory.stat at least.
-> 
+>
 > Yes and I think if we need zram specific counters/stats in future,
 > those can be added then.
-
-I agree.
+>
+> >
+> > Thanks, that is enlightening!
+>
