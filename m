@@ -2,177 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7E8513AFA
-	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 19:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD01D513B14
+	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 19:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343822AbiD1RfF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Apr 2022 13:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
+        id S1350599AbiD1RtJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Apr 2022 13:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346684AbiD1RfE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Apr 2022 13:35:04 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F02A66F89;
-        Thu, 28 Apr 2022 10:31:49 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id h1so4810810pfv.12;
-        Thu, 28 Apr 2022 10:31:49 -0700 (PDT)
+        with ESMTP id S1350570AbiD1RtH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Apr 2022 13:49:07 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838FE86E20
+        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 10:45:52 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id f4so7313903iov.2
+        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 10:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=O5rgxxNLcUoozxHrIfe6C8PWavZ3F1iuN11i5Agtycw=;
-        b=KMkykjjprAhd2Vr1vJN0LmzavMT/mYNHAeeP6qnDg/LDjvFS1l7VaFA1jIBQzfV5qL
-         wvsUvg+GNSRoEivJ5V+jCqOqpoXT1LIgwKb0WGg6a7blsMb9xbx6tDxcd+Eah050FzO4
-         X5iswbbw4P9MbdCL7Dc7qsi/g1f5VgUYCcEBjoZX0V8fAHyGbtgz7qU+JNmOp4D5Ed6a
-         kNOJ/4wYxG/2NksSGYuDSHdye5mUCZmpx3YYyqfrav20k6V3hRiyJWozrNNRLX6o03VG
-         stGCIaQzY94lwV991u5G3Bx3xzsQMgT6h5R0XoJT55V7uOEKw8YqQhVIOv5/QfHoyhDD
-         hmoA==
+        bh=rYkNgcXPFsN0AZS9Gdq00dTATV9XxHLGEv5CoQhxVgg=;
+        b=hzMsoV3D0yJ0Unlop+rpTzklIYhRnWH7ICsyDlDVFdcLE9BIlkNP73Wm+4oXNVuiB8
+         plJ8GuyyvEt6ZXQbKxd1muNdZzq09naSLXrKhBTeETybRl01LEoPVDN68ktaYn9l0zsi
+         yoyQHHe1wradnURDVY6+HNGMMkWazXFQRLoTut+ycpEUb54hblTXLdMjgsITAqGXMdx5
+         3Y8FH49L78ooub0KNRfiN5ke97caoBhhHNMCuuOQncS7BD/mI1wPI6p0qS0ilNo4Z01F
+         oWlrVzL07peONZe79tOTcyd8YQZsNWlwpVd98T9TgcHmPXq0Kuzw5WruzgVtu+f1uIoR
+         iH0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=O5rgxxNLcUoozxHrIfe6C8PWavZ3F1iuN11i5Agtycw=;
-        b=S1AsG/gD4voMdKzy74+NN5GZbn3TePsTWlpQYrxgEyqfgrtSDg91Ef/FDdkh0825en
-         ho9w1jDZUQiy3skYENik3n9pvY9CTIoDd2T7sh4H60GI9k4O3vOahD85vhxcimXj2gJL
-         r0b+D+IyQs48FrwxebGgx115otMntGucO7mJS6g3znRS2ALxt3XgxdEVFlyrATmLGUqb
-         sv5ma2RTWdDYPi+wf4gE/ermM8hLqwZCvrZ9lmQTIVuKYcTSZj99nSLdq/MV0CAEQCI2
-         LH+yc0upzUDZtKXvhH2dFsiHtQAjLPPy+VxWzDAkz5Xvw58dIKmh3MJxrWGJja39QklX
-         9l2w==
-X-Gm-Message-State: AOAM531KgEXWy7nAL3VdbDK6HAx+Gf/uFoUsXszmJhKEx9xA+70XX85j
-        upIYHx7FuZ4U+SalSeV0axc=
-X-Google-Smtp-Source: ABdhPJxq0c+k6KVhZYOQptiZKD/wqkp6LW7t+ndte7xfGjJjErK73Be3Hq6U1Twa0p/aoUgr8eRGzA==
-X-Received: by 2002:a65:4848:0:b0:39c:c393:688c with SMTP id i8-20020a654848000000b0039cc393688cmr28566847pgs.376.1651167108932;
-        Thu, 28 Apr 2022 10:31:48 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:dc95:713b:f72c:4ad4])
-        by smtp.gmail.com with ESMTPSA id b29-20020a62a11d000000b0050d8d39892bsm429362pff.166.2022.04.28.10.31.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rYkNgcXPFsN0AZS9Gdq00dTATV9XxHLGEv5CoQhxVgg=;
+        b=5gExHyt/AkQ4uPnmi9E5qfBml8fIZb1Mnl+NjbQvNYFTBQ5MstjniHUquw5Kv6hyqb
+         U9Gn0PXtLIGBAsjEPL/183qBq2XqyNT8N3pc3SHPAIzZHw3jkWPHatG+yHggb4avWnCF
+         Ol5Bs33lasM4TsmCbSDj5XAgfJucxNpWYgT8GlN1bVhM0+SJyTRgFFVt07Cnk8JjRYP6
+         rcBu0/Cid+h39PgC6wWhQ/AUReIioGHEQQmawCXh3YNmtpXZKt+1vgZvvPpqmow4xFuY
+         fJxARU+K3hX3XiIW3CTlHnBvjeQN959KPghY3epSk9btgZZAt5qZNz40MQbn55xgXwzk
+         yQqg==
+X-Gm-Message-State: AOAM530mOJYY+NNODgY3s2YDEN9jDPQE7vPNSjqP5mQT5UqotgaGDy1I
+        NUfOQ2L4shf/0Cr+j3I1vImleA==
+X-Google-Smtp-Source: ABdhPJx/sYY/i7dOFt3+PaiV4KhSUz6X+tqTVPbVDr2OqPDCjEE/yaOau4YnhKo+v4gz0/SI7nAHRg==
+X-Received: by 2002:a02:cc48:0:b0:32b:14:4186 with SMTP id i8-20020a02cc48000000b0032b00144186mr6761137jaq.189.1651167951414;
+        Thu, 28 Apr 2022 10:45:51 -0700 (PDT)
+Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
+        by smtp.gmail.com with ESMTPSA id f15-20020a056e020c6f00b002cbc9935527sm269640ilj.83.2022.04.28.10.45.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Apr 2022 10:31:47 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 28 Apr 2022 10:31:45 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Thu, 28 Apr 2022 10:45:50 -0700 (PDT)
+Date:   Thu, 28 Apr 2022 17:45:47 +0000
+From:   Oliver Upton <oupton@google.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-Message-ID: <YmrPgWs5WPabIBQk@google.com>
-References: <20220427160016.144237-1-hannes@cmpxchg.org>
- <20220427160016.144237-5-hannes@cmpxchg.org>
- <Ymmnrkn0mSWcuvmH@google.com>
- <YmmznQ8AO5RLxicA@cmpxchg.org>
- <YmnA0Da90IURbxrM@google.com>
- <Ymqj93gEEzu2Gb3U@cmpxchg.org>
- <YmrICbP6bDJqDv5R@google.com>
- <YmrNiY3VhdMbfTq1@cmpxchg.org>
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH v3 4/6] KVM: arm64/mmu: count KVM page table pages in
+ pagetable stats
+Message-ID: <YmrSywSU1ezREvT6@google.com>
+References: <20220426053904.3684293-1-yosryahmed@google.com>
+ <20220426053904.3684293-5-yosryahmed@google.com>
+ <YmegoB/fBkfwaE5z@google.com>
+ <CAJD7tkY-WZKcyer=TbWF0dVfOhvZO7hqPN=AYCDZe1f+2HA-QQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YmrNiY3VhdMbfTq1@cmpxchg.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkY-WZKcyer=TbWF0dVfOhvZO7hqPN=AYCDZe1f+2HA-QQ@mail.gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 01:23:21PM -0400, Johannes Weiner wrote:
-> On Thu, Apr 28, 2022 at 09:59:53AM -0700, Minchan Kim wrote:
-> > On Thu, Apr 28, 2022 at 10:25:59AM -0400, Johannes Weiner wrote:
-> > > On Wed, Apr 27, 2022 at 03:16:48PM -0700, Minchan Kim wrote:
-> > > > On Wed, Apr 27, 2022 at 05:20:29PM -0400, Johannes Weiner wrote:
-> > > > > On Wed, Apr 27, 2022 at 01:29:34PM -0700, Minchan Kim wrote:
-> > > > > > Hi Johannes,
-> > > > > > 
-> > > > > > On Wed, Apr 27, 2022 at 12:00:15PM -0400, Johannes Weiner wrote:
-> > > > > > > Currently it requires poking at debugfs to figure out the size and
-> > > > > > > population of the zswap cache on a host. There are no counters for
-> > > > > > > reads and writes against the cache. As a result, it's difficult to
-> > > > > > > understand zswap behavior on production systems.
-> > > > > > > 
-> > > > > > > Print zswap memory consumption and how many pages are zswapped out in
-> > > > > > > /proc/meminfo. Count zswapouts and zswapins in /proc/vmstat.
-> > > > > > > 
-> > > > > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > > > > ---
-> > > > > > >  fs/proc/meminfo.c             |  7 +++++++
-> > > > > > >  include/linux/swap.h          |  5 +++++
-> > > > > > >  include/linux/vm_event_item.h |  4 ++++
-> > > > > > >  mm/vmstat.c                   |  4 ++++
-> > > > > > >  mm/zswap.c                    | 13 ++++++-------
-> > > > > > >  5 files changed, 26 insertions(+), 7 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > > > > > > index 6fa761c9cc78..6e89f0e2fd20 100644
-> > > > > > > --- a/fs/proc/meminfo.c
-> > > > > > > +++ b/fs/proc/meminfo.c
-> > > > > > > @@ -86,6 +86,13 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> > > > > > >  
-> > > > > > >  	show_val_kb(m, "SwapTotal:      ", i.totalswap);
-> > > > > > >  	show_val_kb(m, "SwapFree:       ", i.freeswap);
-> > > > > > > +#ifdef CONFIG_ZSWAP
-> > > > > > > +	seq_printf(m,  "Zswap:          %8lu kB\n",
-> > > > > > > +		   (unsigned long)(zswap_pool_total_size >> 10));
-> > > > > > > +	seq_printf(m,  "Zswapped:       %8lu kB\n",
-> > > > > > > +		   (unsigned long)atomic_read(&zswap_stored_pages) <<
-> > > > > > > +		   (PAGE_SHIFT - 10));
-> > > > > > > +#endif
-> > > > > > 
-> > > > > > I agree it would be very handy to have the memory consumption in meminfo
-> > > > > > 
-> > > > > > https://lore.kernel.org/all/YYwZXrL3Fu8%2FvLZw@google.com/
-> > > > > > 
-> > > > > > If we really go this Zswap only metric instead of general term
-> > > > > > "Compressed", I'd like to post maybe "Zram:" with same reason
-> > > > > > in this patchset. Do you think that's better idea instead of
-> > > > > > introducing general term like "Compressed:" or something else?
-> > > > > 
-> > > > > I'm fine with changing it to Compressed. If somebody cares about a
-> > > > > more detailed breakdown, we can add Zswap, Zram subsets as needed.
-> > > > 
-> > > > Thanks! Please consider ZSWPIN to rename more general term, too.
-> > > 
-> > > That doesn't make sense to me.
-> > > 
-> > > Zram is a swap backend, its traffic is accounted in PSWPIN/OUT. Zswap
-> > > is a writeback cache on top of the swap backend. It has pages
-> > > entering, refaulting, and being written back to the swap backend
-> > > (PSWPOUT). A zswpout and a zramout are different things.
-> > 
-> > Think about that system has two swap devices (storage + zram).
-> > I think it's useful to know how many swap IO comes from zram
-> > and rest of them are storage.
+On Tue, Apr 26, 2022 at 12:27:57PM -0700, Yosry Ahmed wrote:
+> > What page tables do we want to account? KVM on ARM manages several page
+> > tables.
+> >
+> > For regular KVM, the host kernel manages allocations for the hyp stage 1
+> > tables in addition to the stage 2 tables used for a particular VM. The
+> > former is system overhead whereas the latter could be attributed to a
+> > guest VM.
 > 
-> Hm, isn't this comparable to having one swap on flash and one swap on
-> a rotating disk? /sys/block/*/stat should be able to tell you how
-> traffic is distributed, no?
+> Honestly I would love to get your input on this. The main motivation
+> here is to give users insights on the kernel memory usage on their
+> system (or in a cgroup). We currently have NR_PAGETABLE stats for
+> normal kernel page tables (allocated using
+> __pte_alloc_one()/pte_free()), this shows up in /proc/meminfo,
+> /path/to/cgroup/memory.stat, and node stats. The idea is to add
+> NR_SECONDARY_PAGETABLE that should include the memory used for kvm
+> pagetables, which should be a separate category (no overlap). What
+> gets included or not depends on the semantics of KVM and what exactly
+> falls under the category of secondary pagetables from the user's pov.
+> 
+> Currently it looks like s2 page table allocations get accounted to
+> kmem of memory control groups (GFP_KERNEL_ACCOUNT), while hyp page
+> table allocations do not (GFP_KERNEL). So we could either follow this
+> and only account s2 page table allocations in the stats, or make hyp
+> allocations use GFP_KERNEL_ACCOUNT as well and add them to the stats.
+> Let me know what you think.
 
-That raises me a same question. Could you also look at the zswap stat
-instead of adding it into vmstat? (If zswap doesn't have the counter,
-couldn't we simply add new stat in sysfs?)
+I think it is reasonable to just focus on stage 2 table allocations and
+ignore all else. As Marc pointed out it isn't workable in other
+contexts anyway (pKVM), and keeps the patch tidy too.
 
-I thought the patch aims for exposting statistics to grab easier
-using popular meminfo and vmstat and wanted to leverage it for
-zram, too.
+GFP_KERNEL_ACCOUNT for hyp allocations wouldn't make sense, as it is
+done at init to build out the system page tables for EL2.
 
-> 
-> What I'm more worried about is the fact that in theory you can stack
-> zswap on top of zram. Consider a fast compression cache on top of a
-> higher compression backend. Is somebody doing this now? I doubt
-> it. But as people look into memory tiering more and more, this doesn't
-> sound entirely implausible. If the stacked layers then share the same
-> in/out events, it would be quite confusing.
-> 
-> If you think PSWPIN/OUT and per-device stats aren't enough, I'm not
-> opposed to adding zramin/out to /proc/vmstat as well. I think we're
-> less worried there than with /proc/meminfo. I'd just prefer to keep
-> them separate from the zswap events.
-> 
-> Does that sound reasonable?
-> 
+--
+Thanks,
+Oliver
