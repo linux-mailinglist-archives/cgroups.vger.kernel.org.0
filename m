@@ -2,71 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0218512791
-	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 01:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711AD51287E
+	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 03:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229454AbiD0Xju (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 19:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S232356AbiD1BLc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 21:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiD0Xjs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 19:39:48 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3BF45AD7
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 16:36:34 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id i24so2813254pfa.7
-        for <cgroups@vger.kernel.org>; Wed, 27 Apr 2022 16:36:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FL5RmqjsnS96RItXhleCXY3INxI4L38U8zTk4H4kbRM=;
-        b=Fnjww4kTfxvDYxU1OPnCUQ05Dg7DEB2VNmgBa3iIVs1YziXLL5NPY22PxqWXh7lRlB
-         8vuXugqSz74/dVRL6IV85uoBkg1Axric6AIQ3KCnilEj1X6Rj1CCpiY1X8QSqFEDtLjL
-         x0EE+oQBe8Dvrs0rULZGjGplV+5cDIqQ7DQh2uofwdi1gqfXibZiQZSWhIX6812SQDV0
-         ooiysKmKTdtVuGN7sNGxHt52RH6aaUff+q46TbfeovpbaLTjLAzpyfjWwLcRjtDoU3Za
-         xFMGzikPBEx43dvuCJzWa0IU2IwO8irzQo5Ik4kcOU1/KW/jP+bE1ULp+1XD6wXL12nD
-         7wHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FL5RmqjsnS96RItXhleCXY3INxI4L38U8zTk4H4kbRM=;
-        b=EwpCrttfh4USQiqWWljaXbZBQhk73bY+jcw7ZZ4rwF1Y/7ND1FtTccD9GdzSMxH2Bh
-         08brC5RS0ihMyX3u9r94inbXaY4IuP2leuFd9L6VZjEt51dcasgxuEvE33aVTzOmiuqv
-         9uwCTH37q+51htXy7MiX5wBa3Ul/zg5+FX+EXghCCbdP7ibJbfvNkDyOZ7LVe9gXlR/U
-         lU12vXweZ4RHANPZJCDhASC+Ky81utKT/GCijl58ScZoF0GXmraYBSe0fpMQEnbodU3I
-         ePXTL5sXWluCPwT7r+tuF2oYxsXHn1790AkrRjJ+iwMkTcs4Cxp/ToxllnoUhdnIvLIF
-         f4gg==
-X-Gm-Message-State: AOAM532uBLjqcok8iHIVLljv+APIuzWl9KZNuYsj6+ejb93HbGnpK7bw
-        GsnzPM3wajO3F+rBObePN9sPhDCp5V/Jqm60di3GWg==
-X-Google-Smtp-Source: ABdhPJy4UALwll6c0xGRrMjr2HG+8qWZYoDKSENmN8Qp6glp0VyRbdy5DcsshId0F3jOAIOJmkP3RA8JC+4vWUV+Y8A=
-X-Received: by 2002:a63:9502:0:b0:386:3916:ca8e with SMTP id
- p2-20020a639502000000b003863916ca8emr25446320pgd.357.1651102592948; Wed, 27
- Apr 2022 16:36:32 -0700 (PDT)
+        with ESMTP id S229887AbiD1BLb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 21:11:31 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F020772457;
+        Wed, 27 Apr 2022 18:08:17 -0700 (PDT)
+Received: from kwepemi100025.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KpcnV2knLzCs7X;
+        Thu, 28 Apr 2022 09:03:42 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100025.china.huawei.com (7.221.188.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 28 Apr 2022 09:08:15 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 28 Apr 2022 09:08:14 +0800
+Subject: Re: [PATCH -next v3 1/3] block, bfq: record how many queues are busy
+ in bfq_group
+To:     Jan Kara <jack@suse.cz>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220427124722.48465-1-yukuai3@huawei.com>
+ <20220427124722.48465-2-yukuai3@huawei.com>
+ <20220427125251.yl7ff4ti33w6ktrf@quack3.lan>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <4c783fa9-f01b-1f9e-9bcb-0e26431d0d24@huawei.com>
+Date:   Thu, 28 Apr 2022 09:08:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
- <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org> <Ymm3WpvJWby4gaD/@cmpxchg.org>
-In-Reply-To: <Ymm3WpvJWby4gaD/@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 27 Apr 2022 16:36:22 -0700
-Message-ID: <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+In-Reply-To: <20220427125251.yl7ff4ti33w6ktrf@quack3.lan>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,85 +56,42 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 3:32 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Apr 27, 2022 at 05:20:31PM -0400, Johannes Weiner wrote:
-> > On Wed, Apr 27, 2022 at 01:29:34PM -0700, Minchan Kim wrote:
-> > > Hi Johannes,
-> > >
-> > > On Wed, Apr 27, 2022 at 12:00:15PM -0400, Johannes Weiner wrote:
-> > > > Currently it requires poking at debugfs to figure out the size and
-> > > > population of the zswap cache on a host. There are no counters for
-> > > > reads and writes against the cache. As a result, it's difficult to
-> > > > understand zswap behavior on production systems.
-> > > >
-> > > > Print zswap memory consumption and how many pages are zswapped out in
-> > > > /proc/meminfo. Count zswapouts and zswapins in /proc/vmstat.
-> > > >
-> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > ---
-> > > >  fs/proc/meminfo.c             |  7 +++++++
-> > > >  include/linux/swap.h          |  5 +++++
-> > > >  include/linux/vm_event_item.h |  4 ++++
-> > > >  mm/vmstat.c                   |  4 ++++
-> > > >  mm/zswap.c                    | 13 ++++++-------
-> > > >  5 files changed, 26 insertions(+), 7 deletions(-)
-> > > >
-> > > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > > > index 6fa761c9cc78..6e89f0e2fd20 100644
-> > > > --- a/fs/proc/meminfo.c
-> > > > +++ b/fs/proc/meminfo.c
-> > > > @@ -86,6 +86,13 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> > > >
-> > > >   show_val_kb(m, "SwapTotal:      ", i.totalswap);
-> > > >   show_val_kb(m, "SwapFree:       ", i.freeswap);
-> > > > +#ifdef CONFIG_ZSWAP
-> > > > + seq_printf(m,  "Zswap:          %8lu kB\n",
-> > > > +            (unsigned long)(zswap_pool_total_size >> 10));
-> > > > + seq_printf(m,  "Zswapped:       %8lu kB\n",
-> > > > +            (unsigned long)atomic_read(&zswap_stored_pages) <<
-> > > > +            (PAGE_SHIFT - 10));
-> > > > +#endif
-> > >
-> > > I agree it would be very handy to have the memory consumption in meminfo
-> > >
-> > > https://lore.kernel.org/all/YYwZXrL3Fu8%2FvLZw@google.com/
-> > >
-> > > If we really go this Zswap only metric instead of general term
-> > > "Compressed", I'd like to post maybe "Zram:" with same reason
-> > > in this patchset. Do you think that's better idea instead of
-> > > introducing general term like "Compressed:" or something else?
-> >
-> > I'm fine with changing it to Compressed. If somebody cares about a
-> > more detailed breakdown, we can add Zswap, Zram subsets as needed.
->
-> It does raise the question what to do about cgroup, though. Should the
-> control files (memory.zswap.current & memory.zswap.max) apply to zram
-> in the future? If so, we should rename them, too.
->
-> I'm not too familiar with zram, maybe you can provide some
-> background. AFAIU, Google uses zram quite widely; all the more
-> confusing why there is no container support for it yet.
->
-> Could you shed some light?
->
+ÔÚ 2022/04/27 20:52, Jan Kara Ð´µÀ:
+> On Wed 27-04-22 20:47:20, Yu Kuai wrote:
+>> Prepare to refactor the counting of 'num_groups_with_pending_reqs'.
+>>
+>> Add a counter 'busy_queues' in bfq_group, and update it in
+>> bfq_add/del_bfqq_busy().
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> ...
+> 
+>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+>> index f8eb340381cf..53826797430f 100644
+>> --- a/block/bfq-wf2q.c
+>> +++ b/block/bfq-wf2q.c
+>> @@ -218,6 +218,14 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
+>>   	return false;
+>>   }
+>>   
+>> +static void bfq_update_busy_queues(struct bfq_queue *bfqq, bool is_add)
+>> +{
+>> +	if (is_add)
+>> +		bfqq_group(bfqq)->busy_queues++;
+>> +	else
+>> +		bfqq_group(bfqq)->busy_queues--;
+>> +}
+>> +
+>>   #else /* CONFIG_BFQ_GROUP_IOSCHED */
+> 
+> I think the bool argument here unnecessarily hurts readability (it's
+> difficult to see what the argument means without looking into the
+> implementation). I'd rather create two functions bfq_{inc,dec}_busy_queues()
+> or if you really insist on a single function, we can have
+> bfq_add_busy_queues() and have 'int' argument that will be +1 or -1.
 
-I can shed light on the datacenter workloads. We use cgroup (still on
-v1) and zswap. For the workloads/applications, the swap (or zswap) is
-transparent in the sense that they are charged exactly the same
-irrespective of how much their memory is zswapped-out. Basically the
-applications see the same usage which is actually v1's
-memsw.usage_in_bytes. We dynamically increase the swap size if it is
-low, so we are not really worried about one job hogging the swap
-space.
-
-Regarding stats we actually do have them internally representing
-compressed size and number of pages in zswap. The compressed size is
-actually used for OOM victim selection. The memsw or v2's swap usage
-in the presence of compression based swap does not actually tell how
-much memory can potentially be released by evicting a job. For example
-if there are two jobs 'A' and 'B'. Both of them have 100 pages
-compressed but A's 100 pages are compressed to let's say 10 pages
-while B's 100 pages are compressed to 70 pages. It is preferable to
-kill B as that will release 70 pages. (This is a very simplified
-explanation of what we actually do).
+Thanks for the suggestion, I'll create two functions in next iteration.
+> 
+> 								Honza
+> 
