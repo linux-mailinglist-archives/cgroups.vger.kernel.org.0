@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711AD51287E
-	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 03:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBF0512889
+	for <lists+cgroups@lfdr.de>; Thu, 28 Apr 2022 03:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbiD1BLc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Apr 2022 21:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
+        id S240177AbiD1BMy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Apr 2022 21:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbiD1BLb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 21:11:31 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F020772457;
-        Wed, 27 Apr 2022 18:08:17 -0700 (PDT)
-Received: from kwepemi100025.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KpcnV2knLzCs7X;
-        Thu, 28 Apr 2022 09:03:42 +0800 (CST)
+        with ESMTP id S240191AbiD1BMw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Apr 2022 21:12:52 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C40728DA;
+        Wed, 27 Apr 2022 18:09:39 -0700 (PDT)
+Received: from kwepemi500011.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KpcvG4fm7zfb9q;
+        Thu, 28 Apr 2022 09:08:42 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100025.china.huawei.com (7.221.188.158) with Microsoft SMTP Server
+ kwepemi500011.china.huawei.com (7.221.188.124) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Apr 2022 09:08:15 +0800
+ 15.1.2375.24; Thu, 28 Apr 2022 09:09:37 +0800
 Received: from [10.174.176.73] (10.174.176.73) by
  kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Apr 2022 09:08:14 +0800
-Subject: Re: [PATCH -next v3 1/3] block, bfq: record how many queues are busy
- in bfq_group
+ 15.1.2375.24; Thu, 28 Apr 2022 09:09:36 +0800
+Subject: Re: [PATCH -next v3 2/3] block, bfq: refactor the counting of
+ 'num_groups_with_pending_reqs'
 To:     Jan Kara <jack@suse.cz>
 CC:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>,
         <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
 References: <20220427124722.48465-1-yukuai3@huawei.com>
- <20220427124722.48465-2-yukuai3@huawei.com>
- <20220427125251.yl7ff4ti33w6ktrf@quack3.lan>
+ <20220427124722.48465-3-yukuai3@huawei.com>
+ <20220427124908.o3cl72h2uflmufso@quack3.lan>
 From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <4c783fa9-f01b-1f9e-9bcb-0e26431d0d24@huawei.com>
-Date:   Thu, 28 Apr 2022 09:08:14 +0800
+Message-ID: <d36b4904-3db8-537c-5040-b496272ccf70@huawei.com>
+Date:   Thu, 28 Apr 2022 09:09:36 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20220427125251.yl7ff4ti33w6ktrf@quack3.lan>
+In-Reply-To: <20220427124908.o3cl72h2uflmufso@quack3.lan>
 Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600009.china.huawei.com (7.193.23.164)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -56,42 +56,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/04/27 20:52, Jan Kara 写道:
-> On Wed 27-04-22 20:47:20, Yu Kuai wrote:
->> Prepare to refactor the counting of 'num_groups_with_pending_reqs'.
+在 2022/04/27 20:49, Jan Kara 写道:
+> On Wed 27-04-22 20:47:21, Yu Kuai wrote:
+>> Currently, bfq can't handle sync io concurrently as long as they
+>> are not issued from root group. This is because
+>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+>> bfq_asymmetric_scenario().
 >>
->> Add a counter 'busy_queues' in bfq_group, and update it in
->> bfq_add/del_bfqq_busy().
+>> The way that bfqg is counted into 'num_groups_with_pending_reqs':
+>>
+>> Before this patch:
+>>   1) root group will never be counted.
+>>   2) Count if bfqg or it's child bfqgs have pending requests.
+>>   3) Don't count if bfqg and it's child bfqgs complete all the requests.
+>>
+>> After this patch:
+>>   1) root group is counted.
+>>   2) Count if bfqg have at least one bfqq that is marked busy.
+>>   3) Don't count if bfqg doesn't have any busy bfqqs.
+>>
+>> With this change, the occasion that only one group is activated can be
+>> detected, and next patch will support concurrent sync io in the
+>> occasion.
+>>
+>> This patch also rename 'num_groups_with_pending_reqs' to
+>> 'num_groups_with_busy_queues'.
 >>
 >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > 
-> ...
-> 
->> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
->> index f8eb340381cf..53826797430f 100644
->> --- a/block/bfq-wf2q.c
->> +++ b/block/bfq-wf2q.c
->> @@ -218,6 +218,14 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
->>   	return false;
->>   }
->>   
->> +static void bfq_update_busy_queues(struct bfq_queue *bfqq, bool is_add)
->> +{
->> +	if (is_add)
->> +		bfqq_group(bfqq)->busy_queues++;
->> +	else
->> +		bfqq_group(bfqq)->busy_queues--;
->> +}
->> +
->>   #else /* CONFIG_BFQ_GROUP_IOSCHED */
-> 
-> I think the bool argument here unnecessarily hurts readability (it's
-> difficult to see what the argument means without looking into the
-> implementation). I'd rather create two functions bfq_{inc,dec}_busy_queues()
-> or if you really insist on a single function, we can have
-> bfq_add_busy_queues() and have 'int' argument that will be +1 or -1.
+> Looks good. Just I think you forgot to remove in_groups_with_pending_reqs,
+> which is now unused, from bfq_entity.
 
-Thanks for the suggestion, I'll create two functions in next iteration.
-> 
-> 								Honza
-> 
+Will remove it in the next iteration.
+
+Thanks,
+Kuai
