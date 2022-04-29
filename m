@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E14D151553C
-	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 22:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBF4515545
+	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 22:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380590AbiD2UPI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Apr 2022 16:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
+        id S1380632AbiD2UPX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Apr 2022 16:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380587AbiD2UPH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Apr 2022 16:15:07 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7672A3DDDD
-        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:48 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id d127-20020a633685000000b003ab20e589a8so4215796pga.22
-        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:48 -0700 (PDT)
+        with ESMTP id S1380600AbiD2UPJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Apr 2022 16:15:09 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CC53ED17
+        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:49 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id r9-20020a17090aa08900b001d8826816e6so4511887pjp.4
+        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=HQRALrLqPLOKdX3/Qrvlj2304W4cY881g6B2XTfjhjE=;
-        b=e1Gj1cFIx7qA9DjuG4CERdhHtwjjaMyqc0jE42K6DIa/HcAF7kLYbOh7A4zE3CfdpC
-         MXLc5TLYF/85xAw4JqYk5Z+4VaQG+kEY5rcUmOxE6tic9A7AB/r3soW+wIKvxsx6s6sb
-         dwf/GudGOtBTMTSquKo6sp/pI7w4IG3EJ9Ed+c2JR8p72budxuezZoM2UOclpII5lS61
-         jLjhhkg61TxTY5Ps6VReS8PPdn/lF7OSnXOocjCyRcBRNrRTP7mhwtpcGmbPstkKa1Z3
-         UjsKnboQEBlCrWAyY27GIJsYPsHmlwb5DzS1Loav7ERt/ViNzQEWA6OAJ7ojRdb9jzbP
-         ysnA==
+        bh=WJSDpsc2WvoBFv9mTA61a5Umprsh/icO78ayN0cr9Bs=;
+        b=XK8m1lEPYyGBc9UNev+UIJgN/P7IC1BvuvVMJTbn/r6py0F3Lw6Fv3q8ILFyBYMVLZ
+         MnvcTtwLPs9qLTOzDrfbzBbzcFsKgFcIpkP1iDnH3nigu5jcxcjT3SQG6HmSeBeeWNXh
+         nWqMIpSxa67WhLX5qrBEPIdWZClzZXZCQmTuCwlOQ52XSMIiZurYcyKlAE100i/H4G+X
+         p0yV6mz7huTMa+l9U35w3XcRl/r9Xa8/Qmqq531nkOdpeqQgz1iv9qqZRPytgVAUNefO
+         TLvub9at+LkqfyoK37ZiP+2KwOj6XQdMrsV1bz+J2e5sV3w4mKrIKmrOwHFLFZvOJ7UN
+         qxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=HQRALrLqPLOKdX3/Qrvlj2304W4cY881g6B2XTfjhjE=;
-        b=TE+rTLvUv0ThMiYlJZBh+Bnj/PgK1LDTRqdoY/Btdl8xzIMzBi6hCTEqpP7Es7KUlb
-         mPOfwr3o67QxUBFdugwPZrr59VT7trbNz+etIsXphYQTJDjPyGu0PL7C0EInZHFOkTLw
-         SVXNI90dwGbypo4T3NPEh4z8Rkwim9ABRnhSS2ryLlJT8JfWlyNmWNGKj2QXYSFqCkeq
-         DZFm+iM4+L4atqB99+vPNFzJQ5XEf2gXWuG4ocDG+zCqby72tJMTYZ4EFpFpsbgXpXQ5
-         0TiOnV8YnPYWB1FRA3hJWNTTRFtQdWPx/qZECJymKaZ9S83vIpprMIQJt3PNVRyp1Ukc
-         3BAw==
-X-Gm-Message-State: AOAM532gHQlJ4z8uw6gTb/Gsk+WugfaubSYgiRlGOb0fFFOnPURB7/CA
-        p71btIZ5LDPpOm/MiUJ1ekDa2D2P2Vjm3Plw
-X-Google-Smtp-Source: ABdhPJyFiTvIOFIZYo+38It2ytGBtkvfsnlq74KMff/yRu6trFEODoofBTp8U5qgZN1B+vJQKJMiROSbmndcmE1m
+        bh=WJSDpsc2WvoBFv9mTA61a5Umprsh/icO78ayN0cr9Bs=;
+        b=aQvKnNwCwZH/VJqKwn0gt0Uptic0HzCC0jw3l3+yYfS8imFDz3iHKrSKxOgOwg999j
+         vlypi88j98KHqEyN11TOJu+e2TIEXfCQaSig/VN3fDZn2hr+cdEwqSHt3PHMGSZeXTfm
+         reaVUwt4gf+3pK+r3UIhwIY7noyxEvDjP2tIFh3uyp7zQDSxgvAKyGilS8wkMpdTxMYm
+         Y8MTgQuaSyxpxpBkSaEfWFG9K8u0rTi2ynvNlIWy5O+nGl6U05Jcuc4vLGuFlecA9gHQ
+         qEYs7h5Gs7VOw1M3IA/1GJcD5eUioIaz7y8l5FMnagYxgr8kcJy7W5hDqDcgGN9aTREo
+         2hyA==
+X-Gm-Message-State: AOAM533YgaiiwH50sC0njRxr1e5weYoeAlDrML0C5wr/bjZJDyRwzHgj
+        HKb7GdHytS4fF7anz62YOHJLSqP0Ff3j8qNq
+X-Google-Smtp-Source: ABdhPJy8M95IzubrsL7x95NvP2WiBYnG038db0b/2iw0dRRfI3FAVtvV34XGoZ0NsslM2ywf/tGMkw5/l/vSYvKs
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a62:87cd:0:b0:50d:bf61:3de9 with SMTP
- id i196-20020a6287cd000000b0050dbf613de9mr906362pfe.16.1651263107958; Fri, 29
- Apr 2022 13:11:47 -0700 (PDT)
-Date:   Fri, 29 Apr 2022 20:11:29 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a63:5154:0:b0:39d:5e18:9d98 with SMTP
+ id r20-20020a635154000000b0039d5e189d98mr761530pgl.145.1651263109293; Fri, 29
+ Apr 2022 13:11:49 -0700 (PDT)
+Date:   Fri, 29 Apr 2022 20:11:30 +0000
 In-Reply-To: <20220429201131.3397875-1-yosryahmed@google.com>
-Message-Id: <20220429201131.3397875-3-yosryahmed@google.com>
+Message-Id: <20220429201131.3397875-4-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20220429201131.3397875-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.36.0.464.gb9c8b46e94-goog
-Subject: [PATCH v4 2/4] KVM: mmu: add a helper to account memory used by KVM mmu.
+Subject: [PATCH v4 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
+ pagetable stats.
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
@@ -85,35 +86,109 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add a helper to account pages used by KVM for page tables in secondary
-pagetable stats. This function will be used by subsequent patches in
-different archs.
+Count the pages used by KVM mmu on x86 for in secondary pagetable stats.
+
+For the legacy mmu, accounting pagetable stats is combined KVM's
+existing for mmu pages in newly introduced kvm_[un]account_mmu_page()
+helpers.
+
+For tdp mmu, introduce new tdp_[un]account_mmu_page() helpers. That
+combines accounting pagetable stats with the tdp_mmu_pages counter
+accounting.
+
+tdp_mmu_pages counter introduced in this series [1]. This patch was
+rebased on top of the first two patches in that series.
+
+[1]https://lore.kernel.org/lkml/20220401063636.2414200-1-mizhang@google.com/
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- include/linux/kvm_host.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c | 16 ++++++++++++++--
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 252ee4a61b58..54cc4634053c 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -2221,6 +2221,15 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 78d8e1d8fb99..e5b0e826445d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1679,6 +1679,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+ 	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
  }
- #endif /* CONFIG_KVM_XFER_TO_GUEST_WORK */
  
-+/*
-+ * If nr > 1, we assume virt is the address of the first page of a block of
-+ * pages that were allocated together (i.e accounted together).
-+ */
-+static inline void kvm_account_pgtable_pages(void *virt, int nr)
++static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
 +{
-+	mod_lruvec_page_state(virt_to_page(virt), NR_SECONDARY_PAGETABLE, nr);
++	kvm_mod_used_mmu_pages(kvm, +1);
++	kvm_account_pgtable_pages((void *)sp->spt, +1);
 +}
 +
- /*
-  * This defines how many reserved entries we want to keep before we
-  * kick the vcpu to the userspace to avoid dirty ring full.  This
++static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	kvm_mod_used_mmu_pages(kvm, -1);
++	kvm_account_pgtable_pages((void *)sp->spt, -1);
++}
++
+ static void kvm_mmu_free_page(struct kvm_mmu_page *sp)
+ {
+ 	MMU_WARN_ON(!is_empty_shadow_page(sp->spt));
+@@ -1734,7 +1746,7 @@ static struct kvm_mmu_page *kvm_mmu_alloc_page(struct kvm_vcpu *vcpu, int direct
+ 	 */
+ 	sp->mmu_valid_gen = vcpu->kvm->arch.mmu_valid_gen;
+ 	list_add(&sp->link, &vcpu->kvm->arch.active_mmu_pages);
+-	kvm_mod_used_mmu_pages(vcpu->kvm, +1);
++	kvm_account_mmu_page(vcpu->kvm, sp);
+ 	return sp;
+ }
+ 
+@@ -2363,7 +2375,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+ 			list_add(&sp->link, invalid_list);
+ 		else
+ 			list_move(&sp->link, invalid_list);
+-		kvm_mod_used_mmu_pages(kvm, -1);
++		kvm_unaccount_mmu_page(kvm, sp);
+ 	} else {
+ 		/*
+ 		 * Remove the active root from the active page list, the root
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 3456277ade18..6295c4da5dee 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -371,6 +371,18 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+ 	}
+ }
+ 
++static void tdp_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	atomic64_inc(&kvm->arch.tdp_mmu_pages);
++	kvm_account_pgtable_pages((void *)sp->spt, +1);
++}
++
++static void tdp_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	atomic64_dec(&kvm->arch.tdp_mmu_pages);
++	kvm_account_pgtable_pages((void *)sp->spt, -1);
++}
++
+ /**
+  * tdp_mmu_unlink_sp() - Remove a shadow page from the list of used pages
+  *
+@@ -383,7 +395,7 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+ static void tdp_mmu_unlink_sp(struct kvm *kvm, struct kvm_mmu_page *sp,
+ 			      bool shared)
+ {
+-	atomic64_dec(&kvm->arch.tdp_mmu_pages);
++	tdp_unaccount_mmu_page(kvm, sp);
+ 
+ 	if (!sp->lpage_disallowed)
+ 		return;
+@@ -1121,7 +1133,7 @@ static int tdp_mmu_link_sp(struct kvm *kvm, struct tdp_iter *iter,
+ 		tdp_mmu_set_spte(kvm, iter, spte);
+ 	}
+ 
+-	atomic64_inc(&kvm->arch.tdp_mmu_pages);
++	tdp_account_mmu_page(kvm, sp);
+ 
+ 	return 0;
+ }
 -- 
 2.36.0.464.gb9c8b46e94-goog
 
