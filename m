@@ -2,64 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2984B513FEA
-	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 03:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697EA5141B3
+	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 07:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353638AbiD2BGy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Apr 2022 21:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
+        id S238077AbiD2FU5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Apr 2022 01:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbiD2BGy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Apr 2022 21:06:54 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4303ABC865;
-        Thu, 28 Apr 2022 18:03:38 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id kd11so4428454qvb.2;
-        Thu, 28 Apr 2022 18:03:38 -0700 (PDT)
+        with ESMTP id S231154AbiD2FU5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Apr 2022 01:20:57 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC7866FA5
+        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 22:17:39 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id bu29so12170625lfb.0
+        for <cgroups@vger.kernel.org>; Thu, 28 Apr 2022 22:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=s9wfiyI3JBIiISlABF9nzSzidRhd08PN5K7/7gRJUwU=;
+        b=zgh0lqmxqjAmYpfMJeInqwyar5RpKgn6nKPhjU0zE/mRkRAEOsvk01q11mzTkDptGi
+         TwBcOx3EARcSI0hAy15m/EW2/0NDVnNDO95agwC6gbWdQLW4BjUE7CMli5n1iR5y8wOa
+         g2LGTfB+wEs9BisfMzb6MrrgDQhrA5OanuAZ+TT5md3h2aag3jDAPyzctlDCCG97MKPQ
+         e06ZJtfPG7utnP0hWSxpaUVfENEu7U2BcFuBCJbGdkJRiMjrPXJVr2P3nK0MraYFi6sz
+         dmNYSv5MxKsD7AUI5Bf0T5Y0G9OWIbekQq8sNqNLeTRfjuqk1lZZeNVGgx24s+tILIfP
+         7Q2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=5W/PHVbvpSagVt8G3Hj3eW0IY7pmUgdHHakH22/epB8=;
-        b=uIDzWEM6Nnw4tRtYVaj7+heGUYGsMg00iKD2Z3GOBWEh+0lHPjGFWED/wohlT/2kPb
-         nWqdhj6Xjg8ikvXsIZny51dcPBj46OQuid2jqC5BQopaTSHMcnFckRLSoXwIvODs7gmU
-         375YQicFz8s0Rodu72rtnZmCow+JAuSvpA668IIXiA6VuH4okicEMQ7HeTaerZJwxE+n
-         WQHw7EPrwuN8XSYEH2tc9zx2xuOiXQqWUBtcssM8o3bt+McYgM10vMEtciN83DbdyKt5
-         zflEalNBeueIlnVuBBVByHB1T/7+iTJNY9sRYih1yGexU1Ygl9e7jzE3WFRuuB4I4Fq1
-         Ld/Q==
-X-Gm-Message-State: AOAM5312Py8KpCr3ZjpzPV1KfGbvh+SBbnfYvpAgszbY0hVWoIScRtsW
-        JTHujaQcMZQKhQVo5RyMG+4=
-X-Google-Smtp-Source: ABdhPJycaAU4Fqd8i5oSVNbuNnJ/LKsV/SNu6Bwc8rsaXssptvFPXU9aCZhBc7ty0EIfRzyIKyvx3g==
-X-Received: by 2002:a05:6214:f6d:b0:446:4c8b:b57d with SMTP id iy13-20020a0562140f6d00b004464c8bb57dmr26267591qvb.104.1651194217338;
-        Thu, 28 Apr 2022 18:03:37 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-016.fbsv.net. [2a03:2880:20ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id i19-20020a05620a249300b0069f805534d3sm814533qkn.89.2022.04.28.18.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Apr 2022 18:03:37 -0700 (PDT)
-Date:   Thu, 28 Apr 2022 18:03:33 -0700
-From:   David Vernet <void@manifault.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com,
-        Richard Palethorpe <rpalethorpe@suse.com>
-Subject: Re: [PATCH v2 2/5] cgroup: Account for memory_recursiveprot in
- test_memcg_low()
-Message-ID: <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
-References: <20220423155619.3669555-1-void@manifault.com>
- <20220423155619.3669555-3-void@manifault.com>
- <20220427140928.GD9823@blackbody.suse.cz>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=s9wfiyI3JBIiISlABF9nzSzidRhd08PN5K7/7gRJUwU=;
+        b=pJrxd113BnmaZWOEUHfWdjZ+zHkn1Ku7WMWsoLR9FVGaO8JRhO6fELsB7tRPQ5iHN9
+         dCWoO7mTBL7eawYpkg/jlmEuoEi9vnUKblRIVouiaWGtGBOIHyiu1CJUAn2c3nh1X59u
+         Bekw4HgyhCg4XODakvGG5Wo9F+QyNPF2ah/3NModZJ7Io7xkJcjYQ1poMRCDEWl8fcVn
+         DBnVvcAn1K03dCMgtUbV1pMAXxhEr8Okomqt0EBACpuxJ/EpGwVuDWZXXMsgEvJHBKmn
+         A7QP27fQeW4tOHXs1bAymvi4l5SUweY9TgZ3r9qHjOf0tmSBZvzCKyfoxe6DKDBWzgTF
+         eNEQ==
+X-Gm-Message-State: AOAM532g6YvygMwMZtxUT8iGV2dL1cpVap/EPvc3ALGAt3jTcnFgOp9W
+        3vy3IhZ0YBnOhAVc4vP+cJJPfm8jYAcJ/Q==
+X-Google-Smtp-Source: ABdhPJwelcg5eDVRHLImUr0uIk1M3llTR4bkoNPEBZ5hH7LEHpAFRJhhOG5cuBf+CacuskRyT5R8Qg==
+X-Received: by 2002:a05:6512:902:b0:46b:c03f:19e5 with SMTP id e2-20020a056512090200b0046bc03f19e5mr26524304lft.118.1651209457725;
+        Thu, 28 Apr 2022 22:17:37 -0700 (PDT)
+Received: from [192.168.43.196] ([185.174.128.251])
+        by smtp.gmail.com with ESMTPSA id y14-20020a19914e000000b00472085bfdf4sm141451lfj.133.2022.04.28.22.17.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Apr 2022 22:17:37 -0700 (PDT)
+Message-ID: <0b28d49b-605c-ac1a-df85-643164e69039@openvz.org>
+Date:   Fri, 29 Apr 2022 08:17:35 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220427140928.GD9823@blackbody.suse.cz>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: [PATCH net] net: enable memcg accounting for veth queues
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <1c338b99-8133-6126-2ff2-94a4d3f26451@openvz.org>
+ <20220427095854.79554fab@kernel.org>
+From:   Vasily Averin <vvs@openvz.org>
+In-Reply-To: <20220427095854.79554fab@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,40 +78,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Michal,
+veth netdevice defines own rx queues and allocates array containing
+up to 4095 ~750-bytes-long 'struct veth_rq' elements. Such allocation
+is quite huge and should be accounted to memcg.
 
-On Wed, Apr 27, 2022 at 04:09:28PM +0200, Michal Koutný wrote:
-> Hello David.
-> 
-> On Sat, Apr 23, 2022 at 08:56:19AM -0700, David Vernet <void@manifault.com> wrote:
-> > This unfortunately broke the memcg tests, which asserts that a sibling
-> > that experienced reclaim but had a memory.low value of 0, would not
-> > observe any memory.low events. This patch updates test_memcg_low() to
-> > account for the new behavior introduced by memory_recursiveprot.
-> 
-> I think the test is correct, there should be no (not even recursive)
-> protection in this particular case (when the remaining siblings consume
-> all of parental protection).
-> 
-> This should be fixed in the kernel (see also [1], no updates from me yet
-> :-/)
-> 
-> Michal
-> 
-> [1] https://lore.kernel.org/lkml/20220322182248.29121-1-mkoutny@suse.com/
-> 
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+---
+ drivers/net/veth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I see, thanks for sharing that context. I think I see your point about the
-implementation of the reclaim mechanism potentially overcounting, but my
-interpretation of the rest of that discussion with Roman is that we haven't
-yet decided whether we don't want to propagate memory.low events from
-children cgroups with memory.low == 0. Or at the very least, some more
-justification was requested on why not counting such events was prudent.
-
-Would you be ok with merging this patch so that the cgroup selftests can
-pass again based on the current behavior of the kernel, and we can then
-revert the changes to test_memcg_low() later on if and when we decide that
-we don't want to propagate memory.low events for memory.low == 0 children?
-
-Thanks,
-David
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index d29fb9759cc9..bd67f458641a 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1310,7 +1310,7 @@ static int veth_alloc_queues(struct net_device *dev)
+ 	struct veth_priv *priv = netdev_priv(dev);
+ 	int i;
+ 
+-	priv->rq = kcalloc(dev->num_rx_queues, sizeof(*priv->rq), GFP_KERNEL);
++	priv->rq = kcalloc(dev->num_rx_queues, sizeof(*priv->rq), GFP_KERNEL_ACCOUNT);
+ 	if (!priv->rq)
+ 		return -ENOMEM;
+ 
+-- 
+2.31.1
