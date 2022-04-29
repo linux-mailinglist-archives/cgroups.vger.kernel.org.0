@@ -2,114 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D66F514560
-	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 11:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C06515539
+	for <lists+cgroups@lfdr.de>; Fri, 29 Apr 2022 22:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347530AbiD2J3l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Apr 2022 05:29:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        id S1380581AbiD2UPG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Apr 2022 16:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbiD2J3k (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Apr 2022 05:29:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247AA35DE7;
-        Fri, 29 Apr 2022 02:26:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B4C9921870;
-        Fri, 29 Apr 2022 09:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651224381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U29ZMPPzFK4uUEyUYePHiz2qlt3Ri7SCZ7aNiH026UY=;
-        b=IGPyVwbIILUdzwZFwC6tg5ufsIZXP5ClacMvrcvkQiCZaeUgVRAYMM/AoNO9PpHjD/AEcL
-        fOWpgPD83vJ1gjAAlqWmAdKmqOLaAsi5QlzP+Y1N3FfIUGIGGIZFJNt++GwMtNRmpzL3Rs
-        N46aQwwVuCxWp71FRvxzu2n0+VXMq3Q=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D51713446;
-        Fri, 29 Apr 2022 09:26:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 903IHT2va2LwAgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 29 Apr 2022 09:26:21 +0000
-Date:   Fri, 29 Apr 2022 11:26:20 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     David Vernet <void@manifault.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com,
-        Richard Palethorpe <rpalethorpe@suse.com>
-Subject: Re: [PATCH v2 2/5] cgroup: Account for memory_recursiveprot in
- test_memcg_low()
-Message-ID: <20220429092620.GA23621@blackbody.suse.cz>
-References: <20220423155619.3669555-1-void@manifault.com>
- <20220423155619.3669555-3-void@manifault.com>
- <20220427140928.GD9823@blackbody.suse.cz>
- <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S1380570AbiD2UPE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Apr 2022 16:15:04 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3B63BBDF
+        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:45 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id o7-20020a17090a0a0700b001d93c491131so7348591pjo.6
+        for <cgroups@vger.kernel.org>; Fri, 29 Apr 2022 13:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=an+yRArve5ZrSQoHDO73aNF7aPP+aWpAaWAPrlB9pIk=;
+        b=rVCOmuzI6Jkg0VCtxq3Vv4tNhvcYa/7dy0aktfX+JU+3ABY/r1NuUYg6gNufzdzZyl
+         TDx1/jOeHCUYV9kesQSDCM7gJuIkuCPZ3CI4xBiGyBYzao4KJxWyjV/wpOnUty7d2gkO
+         xxgzezsPH49IA+C2wqMwqPUxHg+sr/u2pJ62e25BKh1gnBlY4tBxVuP6uCBRMMN8Bn0A
+         o1aa0m514YE3U+J37NsZZ2A48FIIXDI4WlykXmRNEDZ9x5sTM9dO2kFgrvtI4EV9z//v
+         PwFQ3hahtu5wgS2IyOj4qxw1dMwLZ0jJ58K/MjgmBn8W0hkXkDKsnnvkTtmina/ADpu8
+         G4Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=an+yRArve5ZrSQoHDO73aNF7aPP+aWpAaWAPrlB9pIk=;
+        b=Ko2bdtdNeBSraj7n/df7m5zAh3Qf83jKKKTOTZ4vkEXWLpKoyJOewK01X8kd3yOBC6
+         1eBahqTcb1DZ01I1T5Dbq/rl81eaLoBR07AdY4rIivAZGweDSFohvj7B44RqhyF2nEXc
+         kQdn9ylRcaD9rcxMkQ81YNyUhHrWgBUf6sEMgb3iZFLi/+kFqk7V3X81qq8yO6iDkrUX
+         tnT6l3FQClTFKebzlZBHQbj85859cZ+orprNbb1kYw7Qn5HiPzUfLqByT/Lm2IVrACyX
+         6kMyiv1oownE1dRLHnWxMRJ6wSgSVWtcTqP+038+7Dsq5KzlBEuGDt6j4lwlWLe9RZNK
+         VXNA==
+X-Gm-Message-State: AOAM530pGhcBZ/mowlefSzUm+h+rtDOplZMMrohWX6b5Dkl5tZNE+vF3
+        RGiNh6nLY5g6sUDzAJlnffjgd2F9iN83lSQZ
+X-Google-Smtp-Source: ABdhPJxGZ1WYv4PcG6KKKG7/eOxb6RjoyzIw3GgB/7NGUVZUE3/7d2UGeWsMnv6NDpe3G1grI1WrkTwZdxjSyZ2c
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:e510:b0:1d9:ee23:9fa1 with SMTP
+ id t16-20020a17090ae51000b001d9ee239fa1mr438392pjy.0.1651263104394; Fri, 29
+ Apr 2022 13:11:44 -0700 (PDT)
+Date:   Fri, 29 Apr 2022 20:11:27 +0000
+Message-Id: <20220429201131.3397875-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.464.gb9c8b46e94-goog
+Subject: [PATCH v4 0/4] KVM: mm: count KVM mmu usage in memory stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 06:03:33PM -0700, David Vernet <void@manifault.com> wrote:
-> but my interpretation of the rest of that discussion with Roman is
-> that we haven't yet decided whether we don't want to propagate
-> memory.low events from children cgroups with memory.low == 0. Or at
-> the very least, some more justification was requested on why not
-> counting such events was prudent.
+We keep track of several kernel memory stats (total kernel memory, page
+tables, stack, vmalloc, etc) on multiple levels (global, per-node,
+per-memcg, etc). These stats give insights to users to how much memory
+is used by the kernel and for what purposes.
 
-I'm not a fan of that original proposal of mine anymore (to be more
-precise, of _only_ that patch, there's still the RFCness reason 1) to
-consider).
-As I shared with the last reply there, there's a problem in the behavior
-which shouldn't be masked by filtering some events.
+Currently, memory used by kvm mmu is not accounted in any of those
+kernel memory stats. This patch series accounts the memory pages
+used by KVM for page tables in those stats in a new
+NR_SECONDARY_PAGETABLE stat.
 
-> Would you be ok with merging this patch so that the cgroup selftests can
-> pass again based on the current behavior of the kernel, and we can then
-> revert the changes to test_memcg_low() later on if and when we decide that
-> we don't want to propagate memory.low events for memory.low == 0 children?
+---
 
-I still think that the behavior when there's no protection left for the
-memory.low == 0 child, there should be no memory.low events (not just
-uncounted but not happening) and test should not accept this (even
-though it's the current behavior).
+Changes in V4:
+- Changed accounting hooks in arm64 to only account s2 page tables and
+  refactored them to a much cleaner form, based on recommendations from
+  Oliver Upton and Marc Zyngier.
+- Dropped patches for mips and riscv. I am not interested in those archs
+  anyway and don't have the resources to test them. I posted them for
+  completeness but it doesn't seem like anyone was interested.
 
-What might improve the test space would be to have two configs like
+Changes in V3:
+- Added NR_SECONDARY_PAGETABLE instead of piggybacking on NR_PAGETABLE
+  stats.
 
-Original one (simplified here)
-	parent		memory.low=50M	memory.current=100M
-	` child1	memory.low=50M	memory.current=50M
-	` child2	memory.low=0M	memory.current=50M
+Changes in V2:
+- Added accounting stats for other archs than x86.
+- Changed locations in the code where x86 KVM page table stats were
+  accounted based on suggestions from Sean Christopherson.
 
-New one (checks events due to recursive protection)
-	parent		memory.low=50M	memory.current=100M
-	` child1	memory.low=40M	memory.current=50M
-	` child2	memory.low=0M	memory.current=50M
+---
 
-The second config assigns recursive protection to child2 and should
-therefore cause memory.low events in child2 (with memory_recursiveprot
-enabled of course).
+Yosry Ahmed (4):
+  mm: add NR_SECONDARY_PAGETABLE to count secondary page table uses.
+  KVM: mmu: add a helper to account memory used by KVM mmu.
+  KVM: x86/mmu: count KVM mmu usage in secondary pagetable stats.
+  KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
 
-Or alternative new one (checks events due to recursive protection)
-	parent		memory.low=50M	memory.current=100M
-	` child1	memory.low=0M	memory.current=50M
-	` child2	memory.low=0M	memory.current=50M
+ Documentation/admin-guide/cgroup-v2.rst |  5 ++++
+ Documentation/filesystems/proc.rst      |  4 +++
+ arch/arm64/kvm/mmu.c                    | 35 ++++++++++++++++++++++---
+ arch/x86/kvm/mmu/mmu.c                  | 16 +++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c              | 16 +++++++++--
+ drivers/base/node.c                     |  2 ++
+ fs/proc/meminfo.c                       |  2 ++
+ include/linux/kvm_host.h                |  9 +++++++
+ include/linux/mmzone.h                  |  1 +
+ mm/memcontrol.c                         |  1 +
+ mm/page_alloc.c                         |  6 ++++-
+ mm/vmstat.c                             |  1 +
+ 12 files changed, 89 insertions(+), 9 deletions(-)
 
-HTH,
-Michal
+-- 
+2.36.0.464.gb9c8b46e94-goog
+
