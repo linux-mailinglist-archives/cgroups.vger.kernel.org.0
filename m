@@ -2,145 +2,276 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F08A517910
-	for <lists+cgroups@lfdr.de>; Mon,  2 May 2022 23:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DE2517AAA
+	for <lists+cgroups@lfdr.de>; Tue,  3 May 2022 01:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237088AbiEBV0Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 May 2022 17:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S229928AbiEBXYe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 May 2022 19:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232204AbiEBV0Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 May 2022 17:26:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6CA2F5;
-        Mon,  2 May 2022 14:22:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ED2FB210DE;
-        Mon,  2 May 2022 21:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651526564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gDk2qkB7YUEj5NtH1MO7nyXZonZFY6nq6FEdcA71x/0=;
-        b=TFavIqNrXC1pDmJRQ9csR4iHTIfSyLzehksOi+Bx2aYpRS8C9cf2HWN76ikfgpQoHGnF98
-        MBaZcccVCtS9nVins+KeqsL0JB+bXpGE8XLV6sNEqyQWywmiUNhUmKGrSnW0t+eLcjLETo
-        m/b8vfqOSuc+TKbc7gomqJt311lOB6A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8B7813491;
-        Mon,  2 May 2022 21:22:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FX4IKKRLcGLRVQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 02 May 2022 21:22:44 +0000
-Date:   Mon, 2 May 2022 23:22:09 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vasily Averin <vvs@openvz.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
-        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        with ESMTP id S232977AbiEBXX7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 May 2022 19:23:59 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68888B29
+        for <cgroups@vger.kernel.org>; Mon,  2 May 2022 16:20:27 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2f8d487f575so75273157b3.5
+        for <cgroups@vger.kernel.org>; Mon, 02 May 2022 16:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=3zd6SkVHkE73vtIjS4+ESkFSoXh7wpctsPz+uIVL4JI=;
+        b=c0I+qEtJMsrVZZTwAujazrXnHO+aAYhTEZ5z7hMjCZcJ/KXjOOtZIF/ejeAfZaYyos
+         dY4AP2Wbz8lb7qhknFlgFZyPHF0zI7zzQZWoaUU102rnxrG7hQ2cnFuSRsDeJkVOizcu
+         QO6gw837wQtQ+WkVYeU1Vtq4HjzX32QiQ0ud5nKO+r6QTo/9Ne4NFYPnTOMAcO70QSbm
+         q3LnLJZlXIuMqJbIOXDQcrzfao8lJAtRRsfRMbf/34/x9dN+WX58KrhfvF8QvgdJpVWm
+         1wFFbMG94teHGS8w8HOcPKLiOO0UANM2uFFBx/DE6WI+UPsEoJNz1I/i+WAnjHnlcze3
+         T8Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=3zd6SkVHkE73vtIjS4+ESkFSoXh7wpctsPz+uIVL4JI=;
+        b=M/4qgU6KSgj/HXmQYEtyJctOmOqHXwaaRNpSVauSCPEIbsnFX0hVAVq7SXry52niMI
+         7mk9LzVGLowkVbNPd6X5h3OHQiAR72gLb/vyuNVi5w21CKguH1EEEGpxGdO4umO4DUrM
+         8Sxt6J9CoQ3L0wsuIOVPco8sb93GrGndyZM73POARZpACy91do1wdjhyHOKAON6xR+o5
+         3rrv/I8re/pby9XWnZlHfUwPxxm/bl1N8CNUjCz/L9xiCUNOlmnvcc4X1fzNpxe1dDl3
+         dhEdOLqKIcw/1Pz8E6qnrO49rzJANQ0K9vqh2mTKBg3Ozs2cN9hIDVlTnyW8t0cNqXbx
+         RaKQ==
+X-Gm-Message-State: AOAM5337IxqIjDxbPEF5kKGDcG6aIQ4nN72Ww6GrH1b9sZ6q6vBK99P3
+        mQPcZjUJBIDcf4bXqN4juGiXdORjf9qZtaQ=
+X-Google-Smtp-Source: ABdhPJyMMCJAeCzw5ggPIrDPy0kqIfd0j3HaYTVh+WcmLgbo26zjtB2e1UuO7eWujv5FuBBnMkCvu1a9GuUx+7g=
+X-Received: from tj.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:53a])
+ (user=tjmercier job=sendgmr) by 2002:a25:4b43:0:b0:649:563f:df2a with SMTP id
+ y64-20020a254b43000000b00649563fdf2amr9654625yba.290.1651533605042; Mon, 02
+ May 2022 16:20:05 -0700 (PDT)
+Date:   Mon,  2 May 2022 23:19:34 +0000
+Message-Id: <20220502231944.3891435-1-tjmercier@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.464.gb9c8b46e94-goog
+Subject: [PATCH v6 0/6] Proposal for a GPU cgroup controller
+From:   "T.J. Mercier" <tjmercier@google.com>
+To:     tjmercier@google.com, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: kernfs memcg accounting
-Message-ID: <YnBLge4ZQNbbxufc@blackbook>
-References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
- <20220427140153.GC9823@blackbody.suse.cz>
- <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     daniel@ffwll.ch, jstultz@google.com, cmllamas@google.com,
+        kaleshsingh@google.com, Kenny.Ho@amd.com, mkoutny@suse.com,
+        skhan@linuxfoundation.org, kernel-team@android.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+This patch series revisits the proposal for a GPU cgroup controller to
+track and limit memory allocations by various device/allocator
+subsystems. The patch series also contains a simple prototype to
+illustrate how Android intends to implement DMA-BUF allocator
+attribution using the GPU cgroup controller. The prototype does not
+include resource limit enforcements.
 
-On Mon, May 02, 2022 at 10:37:49PM +0300, Vasily Averin <vvs@openvz.org> wrote:
-> I did not understand your statement. Could you please explain it in more details?
+Changelog:
+v6:
+Move documentation into cgroup-v2.rst per Tejun Heo.
 
-Sure, let me expand my perhaps ambiguous and indefinite sentence.
+Rename BINDER_FD{A}_FLAG_SENDER_NO_NEED ->
+BINDER_FD{A}_FLAG_XFER_CHARGE per Carlos Llamas.
 
-> I see that cgroup_mkdir()->cgroup_create() creates new kernfs node for new
-> sub-directory, and with my patch account memory of kernfs node to memcg 
-> of current process.
+Return error on transfer failure per Carlos Llamas.
 
-Indeed. The variants I'm comparing here are: a) charge to the creator's
-memcg, b) charge to the parent (memcg ancestor) of created cgroup.
+v5:
+Rebase on top of v5.18-rc3
 
-When struct mem_cgroup charging was introduced, there was a similar
-discussion [1].
+Drop the global GPU cgroup "total" (sum of all device totals) portion
+of the design since there is no currently known use for this per
+Tejun Heo.
 
-I can see following aspects here:
-1) absolute size of kernfs_objects,
-2) practical difference between a) and b),
-3) consistency with memcg,
-4) v1 vs v2 behavior.
+Fix commit message which still contained the old name for
+dma_buf_transfer_charge per Michal Koutn=C3=BD.
 
-Ad 1) -- normally, I'd treat this as negligible (~120B struct
-kernfs_node * there are ~10 of them per subsys * ~10 subsystems ~ 12
-KB/cgroup). But I guess the point of this change are exploitative users
-where this doesn't hold [2], so absolute size is not so important.
+Remove all GPU cgroup code except what's necessary to support charge transf=
+er
+from dma_buf. Previously charging was done in export, but for non-Android
+graphics use-cases this is not ideal since there may be a delay between
+allocation and export, during which time there is no accounting.
 
-Ad 2) -- in the typical workloads, only top-level cgroup are created by
-some management entity and lower level are managed from within, i.e.
-there is little difference whom to charge the created objects.
+Merge dmabuf: Use the GPU cgroup charge/uncharge APIs patch into
+dmabuf: heaps: export system_heap buffers with GPU cgroup charging as a
+result of above.
 
-Ad 3) -- struct mem_cgroup objects are charged to their hierarchical
-parent, so that dying memcgs can be associated to a subtree which is
-where the reclaim can deal with it (in contrast with creator's cgroup).
+Put the charge and uncharge code in the same file (system_heap_allocate,
+system_heap_dma_buf_release) instead of splitting them between the heap and
+the dma_buf_release. This avoids asymmetric management of the gpucg charges=
+.
 
-Now, if I'm looking correctly, the kernfs_node objects are not pinned by
-any residual state (subsystems kill_css()->css_clear_dir() synchronously
-from rmdir, cgroup itself may be RCU delayed). So the memcg argument
-remains purely for consistency (but no practical reason).
+Modify the dma_buf_transfer_charge API to accept a task_struct instead
+of a gpucg. This avoids requiring the caller to manage the refcount
+of the gpucg upon failure and confusing ownership transfer logic.
 
-Ad 4) -- the variant b) becomes slightly awkward when mkdir'ing a cgroup
-in a non-memcg hierarchy (bubbles up to root, despite creator in a
-non-root memcg).
+Support all strings for gpucg_register_bucket instead of just string
+literals.
 
-How do these reasonings align with your original intention of net
-devices accounting? (Are the creators of net devices inside the
-container?)
+Enforce globally unique gpucg_bucket names.
 
+Constrain gpucg_bucket name lengths to 64 bytes.
 
-> Do you think it is incorrect and new kernfs node should be accounted
-> to memcg of parent cgroup, as mem_cgroup_css_alloc()-> mem_cgroup_alloc() does?
+Append "-heap" to gpucg_bucket names from dmabuf-heaps.
 
-I don't think either variant is incorrect. I'd very much prefer the
-consistency with memcg behavior (variant a)) but as I've listed the
-arguments above, it seems such a consistency can't be easily justified.
+Drop patch 7 from the series, which changed the types of
+binder_transaction_data's sender_pid and sender_euid fields. This was
+done in another commit here:
+https://lore.kernel.org/all/20220210021129.3386083-4-masahiroy@kernel.org/
 
+Rename:
+  gpucg_try_charge -> gpucg_charge
+  find_cg_rpool_locked -> cg_rpool_find_locked
+  init_cg_rpool -> cg_rpool_init
+  get_cg_rpool_locked -> cg_rpool_get_locked
+  "gpu cgroup controller" -> "GPU controller"
+  gpucg_device -> gpucg_bucket
+  usage -> size
 
-> Perhaps you mean that in this case kernfs should not be counted at all,
-> as almost all neighboring allocations do?
+Tests:
+  Support both binder_fd_array_object and binder_fd_object. This is
+  necessary because new versions of Android will use binder_fd_object
+  instead of binder_fd_array_object, and we need to support both.
 
-No, I think it wouldn't help here [2]. (Or which neighboring allocations
-do you mean? There must be at least nr_cgroups of them.)
+  Tests for both binder_fd_array_object and binder_fd_object.
 
-(Of course, then there's the traditional performance argument, cgroup's
-kernfs_node object shouldn't be problematic but I can't judge others
-(sysfs) but that's nothing to prevent any form of kernfs_node accounting
-going forward in my eyes.)
+  For binder_utils return error codes instead of
+  struct binder{fs}_ctx.
 
-HTH,
-Michal
+  Use ifdef __ANDROID__ to choose platform-dependent temp path instead
+  of a runtime fallback.
 
-[1] https://lore.kernel.org/all/20200729171039.GA22229@blackbody.suse.cz/
-[2] Unless this could be constraint by something even bigger and
-accounted. But only struct mem_cgroup (recursively its percpu stats)
-comes to my mind.
+  Ensure binderfs_mntpt ends with a trailing '/' character instead of
+  prepending it where used.
+
+v4:
+Skip test if not run as root per Shuah Khan
+
+Add better test logging for abnormal child termination per Shuah Khan
+
+Adjust ordering of charge/uncharge during transfer to avoid potentially
+hitting cgroup limit per Michal Koutn=C3=BD
+
+Adjust gpucg_try_charge critical section for charge transfer functionality
+
+Fix uninitialized return code error for dmabuf_try_charge error case
+
+v3:
+Remove Upstreaming Plan from gpu-cgroup.rst per John Stultz
+
+Use more common dual author commit message format per John Stultz
+
+Remove android from binder changes title per Todd Kjos
+
+Add a kselftest for this new behavior per Greg Kroah-Hartman
+
+Include details on behavior for all combinations of kernel/userspace
+versions in changelog (thanks Suren Baghdasaryan) per Greg Kroah-Hartman.
+
+Fix pid and uid types in binder UAPI header
+
+v2:
+See the previous revision of this change submitted by Hridya Valsaraju
+at: https://lore.kernel.org/all/20220115010622.3185921-1-hridya@google.com/
+
+Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
+heap to a single dma-buf function for all heaps per Daniel Vetter and
+Christian K=C3=B6nig. Pointers to struct gpucg and struct gpucg_device
+tracking the current associations were added to the dma_buf struct to
+achieve this.
+
+Fix incorrect Kconfig help section indentation per Randy Dunlap.
+
+History of the GPU cgroup controller
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The GPU/DRM cgroup controller came into being when a consensus[1]
+was reached that the resources it tracked were unsuitable to be integrated
+into memcg. Originally, the proposed controller was specific to the DRM
+subsystem and was intended to track GEM buffers and GPU-specific
+resources[2]. In order to help establish a unified memory accounting model
+for all GPU and all related subsystems, Daniel Vetter put forth a
+suggestion to move it out of the DRM subsystem so that it can be used by
+other DMA-BUF exporters as well[3]. This RFC proposes an interface that
+does the same.
+
+[1]: https://patchwork.kernel.org/project/dri-devel/cover/20190501140438.95=
+06-1-brian.welty@intel.com/#22624705
+[2]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.welty@int=
+el.com/
+[3]: https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwll.local/
+
+Hridya Valsaraju (3):
+  gpu: rfc: Proposal for a GPU cgroup controller
+  cgroup: gpu: Add a cgroup controller for allocator attribution of GPU
+    memory
+  binder: Add flags to relinquish ownership of fds
+
+T.J. Mercier (3):
+  dmabuf: heaps: export system_heap buffers with GPU cgroup charging
+  dmabuf: Add gpu cgroup charge transfer function
+  selftests: Add binder cgroup gpu memory transfer tests
+
+ Documentation/admin-guide/cgroup-v2.rst       |  24 +
+ drivers/android/binder.c                      |  31 +-
+ drivers/dma-buf/dma-buf.c                     |  80 ++-
+ drivers/dma-buf/dma-heap.c                    |  39 ++
+ drivers/dma-buf/heaps/system_heap.c           |  28 +-
+ include/linux/cgroup_gpu.h                    | 137 +++++
+ include/linux/cgroup_subsys.h                 |   4 +
+ include/linux/dma-buf.h                       |  49 +-
+ include/linux/dma-heap.h                      |  15 +
+ include/uapi/linux/android/binder.h           |  23 +-
+ init/Kconfig                                  |   7 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/gpu.c                           | 386 +++++++++++++
+ .../selftests/drivers/android/binder/Makefile |   8 +
+ .../drivers/android/binder/binder_util.c      | 250 +++++++++
+ .../drivers/android/binder/binder_util.h      |  32 ++
+ .../selftests/drivers/android/binder/config   |   4 +
+ .../binder/test_dmabuf_cgroup_transfer.c      | 526 ++++++++++++++++++
+ 18 files changed, 1621 insertions(+), 23 deletions(-)
+ create mode 100644 include/linux/cgroup_gpu.h
+ create mode 100644 kernel/cgroup/gpu.c
+ create mode 100644 tools/testing/selftests/drivers/android/binder/Makefile
+ create mode 100644 tools/testing/selftests/drivers/android/binder/binder_u=
+til.c
+ create mode 100644 tools/testing/selftests/drivers/android/binder/binder_u=
+til.h
+ create mode 100644 tools/testing/selftests/drivers/android/binder/config
+ create mode 100644 tools/testing/selftests/drivers/android/binder/test_dma=
+buf_cgroup_transfer.c
+
+--=20
+2.36.0.464.gb9c8b46e94-goog
 
