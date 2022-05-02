@@ -2,57 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1FA516B31
-	for <lists+cgroups@lfdr.de>; Mon,  2 May 2022 09:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23927516DB2
+	for <lists+cgroups@lfdr.de>; Mon,  2 May 2022 11:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358566AbiEBH2B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 May 2022 03:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S1384291AbiEBJv6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 May 2022 05:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358534AbiEBH2A (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 May 2022 03:28:00 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2AC15734
-        for <cgroups@vger.kernel.org>; Mon,  2 May 2022 00:24:33 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id f4so15283350iov.2
-        for <cgroups@vger.kernel.org>; Mon, 02 May 2022 00:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U3yK116U7QtcL5LqxzCgKsq8iaHrCKZT63ym/sXbAKc=;
-        b=Bzi+R0R7QaC+1bjX2bo/eUhZOcarNK1lhHQK3BnkDNsZ/YQ2kF65HgubGNE1g9QjAF
-         VClt8yFpYSC5oht9s5BVdGzylLx1SGefdWn/yZSkP43v9ZQ/U115ldRP4mIaned4xy+i
-         XIOYoMJFeLcWOEhr5AxcXnBEpdEmwdLfO6uO7xJ6U4GX4NaQbgjWU8WH2H/DzUzqOLnG
-         Y07pCf3IIYshAUYH77brXREcB5+CeW72v1d84nST1hyzetu4eMbN4GXW/ybvmO2gKA4z
-         6cXwi4THka5cWO2I5lnhUndPk6YD5GJn9zIhAtE8MWZojqFyir63YUwehSgoAGHPtqPb
-         sMAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U3yK116U7QtcL5LqxzCgKsq8iaHrCKZT63ym/sXbAKc=;
-        b=c14rMpa6Up0RvV0YgD5JCU8V3tyHRjBWG+WppyWHfkLJlM8OoCFfJ82KdLa3ogUGNv
-         KagKp6t9GgAeCDTCUNMWzkFAfeUUGlB8nMpAFyejv1VBzsIdbTD3vCfKeLB4f9oX8RGt
-         tsz64I0qSU3URgAUFyyjNhZFAf1BIXAHuxDYBRN/UsMyIY+TB1WLJD45e6uLhFjA9Dml
-         7IkbY9S7hHLdSubnkxBjsQhfB1D0DVEKaVF9V5B+CG1QQ5DuWC+CQ3lBdbZjXCkE9Td0
-         dHF6R81PTTpj4DRLSyazl8NHOsjbU8AZ3iqoK5W8htKsJO8Ts4vRQh3keFccb5eJfKpD
-         8C3A==
-X-Gm-Message-State: AOAM530A/fnfnGaMroeUNUdM//CpikqGgnpS4+pmGbA16fDge39MkdEL
-        eGtGoZ1cAG0KPx1R9LS1ydcmTw==
-X-Google-Smtp-Source: ABdhPJxeI2hWA90VpSmXaKqPppDo5J6dwWDCrTz4glAq2DiVVqCq9f3COwPcysvhW/KDXqg9MvY5ZQ==
-X-Received: by 2002:a05:6638:2643:b0:323:c3e3:fcec with SMTP id n3-20020a056638264300b00323c3e3fcecmr4517508jat.289.1651476272267;
-        Mon, 02 May 2022 00:24:32 -0700 (PDT)
-Received: from google.com (194.225.68.34.bc.googleusercontent.com. [34.68.225.194])
-        by smtp.gmail.com with ESMTPSA id z7-20020a926507000000b002cde6e352e5sm2494262ilb.47.2022.05.02.00.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 May 2022 00:24:31 -0700 (PDT)
-Date:   Mon, 2 May 2022 07:24:28 +0000
-From:   Oliver Upton <oupton@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S1384304AbiEBJv4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 May 2022 05:51:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C163E90;
+        Mon,  2 May 2022 02:48:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DCDC611F6;
+        Mon,  2 May 2022 09:48:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE57CC385A4;
+        Mon,  2 May 2022 09:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651484907;
+        bh=km8t5GpWZMuY8sFBom7Ai4dq7ayaMW+RDKrREB38Qpw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dBpvmz6sEN1MJSCG6kftcwf2X41LKcoSP+2cvL+Mu7aaUuifXIn2IzlCzjSlKhIBn
+         mGw6RHBuQhmpr6g9XCDrg7a5LrfailJ/55TjXnF0zMiXKdcFyrgY1K7g445sPce5L8
+         oMqDksVZbBO2MK43HzGadn8kLatdYQVxmDgu5X0E45DWFURQATkuzFSyYfj0nAAYOu
+         NFzKof5QKEpKbVfPAbMrjyO9EGWXQS6nO+WnqUbBQCu6Mpb+O1VxYF5bC6P6nS6oZr
+         JpJlAIognaEJvVN0T9GVOhGfuEZHtJOTLtEntvW6vfDMlw7BTGjHAg/mN2w3ftJty/
+         rSxiqU4ncTzfw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1nlSfI-008O7L-OG; Mon, 02 May 2022 10:48:24 +0100
+Date:   Mon, 02 May 2022 10:49:05 +0100
+Message-ID: <87k0b4i7se.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
         Alexandru Elisei <alexandru.elisei@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -69,57 +59,68 @@ Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
         linux-mm@kvack.org
-Subject: Re: [PATCH v4 4/4] KVM: arm64/mmu: count KVM s2 mmu usage in
- secondary pagetable stats
-Message-ID: <Ym+HLD/U0wwrxtaB@google.com>
+Subject: Re: [PATCH v4 4/4] KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
+In-Reply-To: <Ym+HLD/U0wwrxtaB@google.com>
 References: <20220429201131.3397875-1-yosryahmed@google.com>
- <20220429201131.3397875-5-yosryahmed@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220429201131.3397875-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        <20220429201131.3397875-5-yosryahmed@google.com>
+        <Ym+HLD/U0wwrxtaB@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: oupton@google.com, yosryahmed@google.com, tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, akpm@linux-foundation.org, mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-mm@kvack.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Yosry,
-
-On Fri, Apr 29, 2022 at 08:11:31PM +0000, Yosry Ahmed wrote:
-> Count the pages used by KVM in arm64 for stage2 mmu in secondary pagetable
-> stats.
+On Mon, 02 May 2022 08:24:28 +0100,
+Oliver Upton <oupton@google.com> wrote:
 > 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  arch/arm64/kvm/mmu.c | 35 +++++++++++++++++++++++++++++++----
->  1 file changed, 31 insertions(+), 4 deletions(-)
+> Hi Yosry,
 > 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 53ae2c0640bc..fc5030307cce 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -92,9 +92,13 @@ static bool kvm_is_device_pfn(unsigned long pfn)
->  static void *stage2_memcache_zalloc_page(void *arg)
->  {
->  	struct kvm_mmu_memory_cache *mc = arg;
-> +	void *virt;
->  
->  	/* Allocated with __GFP_ZERO, so no need to zero */
-> -	return kvm_mmu_memory_cache_alloc(mc);
-> +	virt = kvm_mmu_memory_cache_alloc(mc);
-> +	if (virt)
-> +		kvm_account_pgtable_pages(virt, +1);
+> On Fri, Apr 29, 2022 at 08:11:31PM +0000, Yosry Ahmed wrote:
+> > Count the pages used by KVM in arm64 for stage2 mmu in secondary pagetable
+> > stats.
+> > 
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >  arch/arm64/kvm/mmu.c | 35 +++++++++++++++++++++++++++++++----
+> >  1 file changed, 31 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index 53ae2c0640bc..fc5030307cce 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -92,9 +92,13 @@ static bool kvm_is_device_pfn(unsigned long pfn)
+> >  static void *stage2_memcache_zalloc_page(void *arg)
+> >  {
+> >  	struct kvm_mmu_memory_cache *mc = arg;
+> > +	void *virt;
+> >  
+> >  	/* Allocated with __GFP_ZERO, so no need to zero */
+> > -	return kvm_mmu_memory_cache_alloc(mc);
+> > +	virt = kvm_mmu_memory_cache_alloc(mc);
+> > +	if (virt)
+> > +		kvm_account_pgtable_pages(virt, +1);
+> 
+> Sorry I didn't say it last time around, would now be a good time to
+> clean up the funky sign convention of kvm_mod_used_mmu_pages()? Or limit
+> the funk to just x86 :)
 
-Sorry I didn't say it last time around, would now be a good time to
-clean up the funky sign convention of kvm_mod_used_mmu_pages()? Or limit
-the funk to just x86 :)
+Indeed. I pointed this out in my initial review of this series, and
+expected these to be gone by now.
 
---
-Thanks,
-Oliver
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
