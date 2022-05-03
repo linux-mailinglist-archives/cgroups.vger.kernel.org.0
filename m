@@ -2,111 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E17251837C
-	for <lists+cgroups@lfdr.de>; Tue,  3 May 2022 13:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CDD5189A5
+	for <lists+cgroups@lfdr.de>; Tue,  3 May 2022 18:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbiECLwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 May 2022 07:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S239390AbiECQ02 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 May 2022 12:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbiECLwg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 May 2022 07:52:36 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F84E3586F
-        for <cgroups@vger.kernel.org>; Tue,  3 May 2022 04:49:04 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id m11so17859499oib.11
-        for <cgroups@vger.kernel.org>; Tue, 03 May 2022 04:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bSXV9PrUUGhVycOu/J4fBj5chKdIrO0Ql5olYi0vSd8=;
-        b=EhLk4QD8o470moC0OQtXUJEkeGOuhJP7m3BdSFzrKvpKeHc++CQ5VcBNB8p+t/+ULb
-         mUs0X7+NoyUX71r4F4Q6AqvPde/whddEC8nQgV7/xuf543eAWAourHoKkPFOJIVkJ7f5
-         y5S8nlT5aC3a9dDgieTz47gxlMOYr7Fq+aor/UlSZpj5j4euCtAGzUU6xKKogQ7B2GID
-         bCDIgFY52vnw19sjxzyI8JFWMW3iwMEo4+N/DPmGXgTUmP0vrhPGU2Yb7CNN3YJ0BJxk
-         v0UUrXC5KaM/A6D9gMwaP6XrN3FgYA8EFuKmgSEuQVmzC+EFHcPsMnGdc4JYv7c99/Go
-         txgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bSXV9PrUUGhVycOu/J4fBj5chKdIrO0Ql5olYi0vSd8=;
-        b=rNjX0OGAyGP4gECNYRcBPBP4jkFu8RiZBXuYu81ubVeqcWP8QiB42/MUTN9CqNh8Em
-         JutrON/xLb40QwRwLMj5AYNdIwwOqYvLjpBlu0ZaCkY7bWoHTvc4MSQnP4guxBCj8xPo
-         4lrVnnN0WKcodPRVMCKRXSXfizhzqTWiIryoYkVN1ZCAM6F6lULmgiXODpuFflEthsm7
-         LHaw2Mh+pBEc8HGGYYFZvRzq4oScAOuyBLxSDNL4M9m4lPGzarlaW6cmen9A/Seco9A5
-         XHrw2fGViFX+T4SMH3d+NrexMygicX8ThhQ4jIPGPu1pQbLq2bktsK7VaOkO//Q7k+Lr
-         zEkQ==
-X-Gm-Message-State: AOAM530Fu+ZorTb+jAJVL5hHK1GRejiaczFC3bmrcWKATOxtAl4KOYzc
-        EcgkBuCjnNA67+AcYzoDXl7voLFts+JuCamgORqKLw==
-X-Google-Smtp-Source: ABdhPJwyBTRJk8+J4ioWmZvVzAmOxgN9NvzBheRx+KThLSEpiOI0+072NTxNv0o0eTMZHbWGo3hi4tpUZTNUUEX+OPQ=
-X-Received: by 2002:a05:6808:f0f:b0:326:29af:dd2d with SMTP id
- m15-20020a0568080f0f00b0032629afdd2dmr1587521oiw.211.1651578543310; Tue, 03
- May 2022 04:49:03 -0700 (PDT)
+        with ESMTP id S239396AbiECQ00 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 May 2022 12:26:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A46B3C48A
+        for <cgroups@vger.kernel.org>; Tue,  3 May 2022 09:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1651594971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+g2uJIOUxcZwM6c5aOyAIEGRNprcj0Uo89xpRn5Hq6Y=;
+        b=AVvwxuN3+06Z34JuLCUt5m8TNOxGgnb3Wan0WBfEyWqPKx0xCX9mhlrQTya/xFNPt5T3Pd
+        2E0eHbz2OOz/kTMRW5q9De+YIF2A1eDf4rRz/B0/Hep8bTVfjYD/cb9zC+2CYuiRVAVTft
+        s0G6SH41dAgOYpA4rcMyKjsJuR9JbLA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-207-OAKLH312M7mYzR7U9EhSwQ-1; Tue, 03 May 2022 12:22:38 -0400
+X-MC-Unique: OAKLH312M7mYzR7U9EhSwQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1EC7B1014A64;
+        Tue,  3 May 2022 16:22:37 +0000 (UTC)
+Received: from llong.com (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 33882403373;
+        Tue,  3 May 2022 16:22:36 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v10 0/8] cgroup/cpuset: Major cpu partition code restructuring
+Date:   Tue,  3 May 2022 12:21:41 -0400
+Message-Id: <20220503162149.1764245-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <000000000000264b2a05d44bca80@google.com> <00000000000070561105dbd91673@google.com>
-In-Reply-To: <00000000000070561105dbd91673@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 3 May 2022 13:48:52 +0200
-Message-ID: <CACT4Y+aV-3dT7QDSs1a+yuJ_AZHJZQYDEK4fKwC-ZjsP+65LJg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in cpuset_write_resmask
-To:     syzbot <syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com>
-Cc:     cgroups@vger.kernel.org, changbin.du@intel.com,
-        christian.brauner@ubuntu.com, davem@davemloft.net,
-        edumazet@google.com, hannes@cmpxchg.org, hkallweit1@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, longman@redhat.com, mkoutny@suse.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yajun.deng@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 4 Apr 2022 at 21:25, syzbot
-<syzbot+568dc81cd20b72d4a49f@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit d068eebbd4822b6c14a7ea375dfe53ca5c69c776
-> Author: Michal Koutn=C3=BD <mkoutny@suse.com>
-> Date:   Fri Dec 17 15:48:54 2021 +0000
->
->     cgroup/cpuset: Make child cpusets restrict parents on v1 hierarchy
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D142f17f770=
-0000
-> start commit:   e5313968c41b Merge branch 'Split bpf_sk_lookup remote_por=
-t..
-> git tree:       bpf-next
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dc40b67275bfe2=
-a58
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D568dc81cd20b72d=
-4a49f
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13bb97ce700=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12062c8e70000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: cgroup/cpuset: Make child cpusets restrict parents on v1 hierar=
-chy
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
+v10:
+ - Relax constraints for changes made to "cpuset.cpus"
+   and "cpuset.cpus.partition" as suggested. Now almost all changes
+   are allowed.
 
-Based on commit subject looks reasonable:
+v9:
+ - Add a new patch 1 to remove the child cpuset restriction on parent's
+   "cpuset.cpus".
+ - Relax initial root partition entry limitation to allow cpuset.cpus to
+   overlap that of parent's.
+ - An "isolated invalid" displayed type is added to
+   cpuset.cpus.partition.
+ - Resetting partition root to "member" will leave child partition root
+   as invalid.
+ - Update documentation and test accordingly.
 
-#syz fix: cgroup/cpuset: Make child cpusets restrict parents on v1 hierarch=
-y
+v8:
+ - Reorganize the patch series and rationalize the features and
+   constraints of a partition.
+ - Update patch descriptions and documentation accordingly.
+
+This patchset include the following enhancements to the cpuset v2
+partition code.
+ 1) Allow partitions that have no task to have empty effective cpus.
+ 2) Relax the constraints on what changes are allowed in cpuset.cpus
+    and cpuset.cpus.partition. However, the partition remain invalid
+    until the constraints of a valid partition root is satisfied.
+ 3) Add a new "isolated" partition type for partitions with no load
+    balancing which is available in v1 but not yet in v2.
+ 4) Allow the reading of cpuset.cpus.partition to include a reason
+    string as to why the partition remain invalid.
+
+ In addition, the cgroup-v2.rst documentation file is updated and
+ a self test is added to verify the correctness the partition code.
+
+Waiman Long (8):
+  cgroup/cpuset: Add top_cpuset check in update_tasks_cpumask()
+  cgroup/cpuset: Miscellaneous cleanups & add helper functions
+  cgroup/cpuset: Allow no-task partition to have empty
+    cpuset.cpus.effective
+  cgroup/cpuset: Relax constraints to partition & cpus changes
+  cgroup/cpuset: Add a new isolated cpus.partition type
+  cgroup/cpuset: Show invalid partition reason string
+  cgroup/cpuset: Update description of cpuset.cpus.partition in
+    cgroup-v2.rst
+  kselftest/cgroup: Add cpuset v2 partition root state test
+
+ Documentation/admin-guide/cgroup-v2.rst       | 145 ++--
+ kernel/cgroup/cpuset.c                        | 712 +++++++++++-------
+ tools/testing/selftests/cgroup/Makefile       |   5 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 674 +++++++++++++++++
+ tools/testing/selftests/cgroup/wait_inotify.c |  87 +++
+ 5 files changed, 1295 insertions(+), 328 deletions(-)
+ create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
+ create mode 100644 tools/testing/selftests/cgroup/wait_inotify.c
+
+-- 
+2.27.0
+
