@@ -2,246 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3135192D6
-	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 02:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05618519B09
+	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 11:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244678AbiEDAfQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 May 2022 20:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
+        id S241780AbiEDJEh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 May 2022 05:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244654AbiEDAfP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 May 2022 20:35:15 -0400
-Received: from beige.elm.relay.mailchannels.net (beige.elm.relay.mailchannels.net [23.83.212.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E741AF03;
-        Tue,  3 May 2022 17:31:40 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id B64C02C0C28;
-        Wed,  4 May 2022 00:25:24 +0000 (UTC)
-Received: from pdx1-sub0-mail-a241.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 7F9E42C197B;
-        Wed,  4 May 2022 00:25:23 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1651623923; a=rsa-sha256;
-        cv=none;
-        b=cEoPu6kERrPorAWzwKhl5iQYp2TOMXPNxO51fO7WY0aDZqpGO42Im9ssl9F0LsU+o2l7ZB
-        rL8HixG9Q9YbddpjVjzIXJonePtmV4bmXyKBz0HGduR2Zk0s7XOpce8yN/BKJvH8LhCDX+
-        7oTtHwWlYQ1MfWTPLffFpgZZV7DlrozWMy1hO99lMxY8w7thSqmvgC06fFYZDZU74ihxpv
-        rJf59KsKOPRWnPQAe99w+aIS63SZWNqSV4/EEA6FEX6hbpV5snKVLMfgqXwKBoLmeXFvp8
-        P/NQU3RZR20wVy1D0kh2eSLBcB87Cy5J1V+1hlxPmdixZusUQADc7EmpgWz/cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1651623923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=Hdg6qiQIlirwga0S1D4eAt0+896iFphupiKzUuqyi/Q=;
-        b=TAggbjMiNCTCeXU/LbfQrHxfiZMsJx6ACMrKwvXz/Zm6Xh+phKtkA0lG44TztFXnBBcpjY
-        D6lSwBgiBT6VADeEU2UoZZwPd2z00HmBKaDasKaYhjHXHmpf/KquTrmCRZ5DI+TP0iqFCS
-        gtxc9CRZb0iTnhc0gbPsPFuJhifTIVjE1qHO62NDODWT28mgU/4LwtQ8pKFXzGAekJ6IuQ
-        KvijZ/DJnAUhHcq4AKTvXqYaC5Mn7l9+S0WF45luTwDjlttivVFfIGmyBVmyBST/Ig9jVe
-        TGmCOorcyujog35EgGN6OSaHc/yis98UMxKyFaPD67NLQdmT4tF9q/PNutkqJw==
-ARC-Authentication-Results: i=1;
-        rspamd-fdd564cbf-kgpdw;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Towering-Name: 7796fde944d0d166_1651623924363_2581278341
-X-MC-Loop-Signature: 1651623924362:418608808
-X-MC-Ingress-Time: 1651623924362
-Received: from pdx1-sub0-mail-a241.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.96.96.26 (trex/6.7.1);
-        Wed, 04 May 2022 00:25:24 +0000
-Received: from offworld (unknown [8.34.116.185])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dave@stgolabs.net)
-        by pdx1-sub0-mail-a241.dreamhost.com (Postfix) with ESMTPSA id 4KtHfT5mZnz1g;
-        Tue,  3 May 2022 17:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-        s=dreamhost; t=1651623923;
-        bh=Hdg6qiQIlirwga0S1D4eAt0+896iFphupiKzUuqyi/Q=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=rgUIAvoTFpTkfb3mIEefutvc2YskV5Y59hB3NobYW57orXBSp86moSb5KsmPlkCEy
-         4T/OCMcMwH3iZPPxh1h5nPyhB5fAoZvimb0PcS3XNJnjchUw+DQD/rmQpqIdf+f7uP
-         HOImaf1V1Ac64X8bg7vcd8m686bCjLbNV7gKUzITd5iFTYPS8pEJeZNgalR+b6lVKW
-         E9ssdneLShN65tkb6grnT8Z2jjV42h94o4otHpZ4KqnX2SpPKGJmHBu+SmOU9abMGq
-         AahW7vdKwo/9qR48/jfMRq4blgJXsSGsGT/yQLzMmetNKmFwcd9rAwulvFe1OM/VSC
-         vrBjviOfCrqyw==
-Date:   Tue, 3 May 2022 17:13:34 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Michal =?utf-8?B?S291dG7Dr8K/wr0=?= <mkoutny@suse.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v5 1/4] memcg: introduce per-memcg reclaim interface
-Message-ID: <20220504001334.4va3c5ul33jbauti@offworld>
-Mail-Followup-To: Yosry Ahmed <yosryahmed@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Michal =?utf-8?B?S291dG7Dr8K/wr0=?= <mkoutny@suse.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>
-References: <20220425190040.2475377-1-yosryahmed@google.com>
- <20220425190040.2475377-2-yosryahmed@google.com>
+        with ESMTP id S1346889AbiEDJEE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 05:04:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A5063FB
+        for <cgroups@vger.kernel.org>; Wed,  4 May 2022 02:00:23 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id w19so1189725lfu.11
+        for <cgroups@vger.kernel.org>; Wed, 04 May 2022 02:00:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=9h40UHG4+Vlt8Ck/eT8J9TW5C6yu4qO7t/1/LFEGiqY=;
+        b=WV8AFjx0yOFxd5rVjjr2sLJ5mz+V5+uLTb8SILkuM1yrcMqzUSvPWiS2mpZw8xGb4r
+         9qZ4I/VkzSXsP28HaPRPIrFVlF/ASJZx9O7CTX8EzLap0XCMvySddHQy7j98gc1T3N+w
+         5C6I73NA84YBQltR4hG9pjh9Ip9cTCZicfKpbFFzp0NtpwgxPD/AH1MC8Lp0hvqVwJqC
+         YXkbk/fZs0S5ef8KwZ0KTWOZHNzZiICXs9YcutrZ5rkun9sYbnD8JpXfWJgA8fFTrzFD
+         MpWCsX9wWoxokW6zDRuaLX48cKgi+EoPmdbIPxi1GGEW7QJDhnMkWuLmbpidhOenlIf4
+         rdUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=9h40UHG4+Vlt8Ck/eT8J9TW5C6yu4qO7t/1/LFEGiqY=;
+        b=A3bqw6hHaYD3+Zv7wUavLrKaEBeQCFzEqFbOXt43Oog7m7LL6rl9Q3/Jf0XFpywG6u
+         Zg8PLCfvwpQIOB0+QdTeXxt5FooyThzYKDW5geVUh8fuNUVOtbzNpRSOtlVuP0N47EUH
+         SHjA3ZFDqdQWeLPoBgXLd49u4JE/47KPvUKhOO43IYgKuoES/7DUz8Cq9KAS2UZYHpUd
+         GUbAYQ6qYGAa7SpNtRMx2DLxbo4bih7sKVezeqs3C0MGaMV5RHoLb6+dxvn+r4xu0AAW
+         crBd43igk+6NlNVyWDjHhk5FcPLAszjUqXFnw6W8jWNfbB49zzJBlre5IGkAL8sD82ma
+         h33g==
+X-Gm-Message-State: AOAM530YAgng6WLJeFOrSt39ygorqu62nNh1f8jUtX4BOZckMJy4prib
+        zFF496kN0QVLIxVC0fQPX3+4hw==
+X-Google-Smtp-Source: ABdhPJziPdsSe7MlyMs4jK++JOgvd87NWYOeCBg4hkkKvteIrGgQq5sUczFdQtMM55Ef2i7SPN5aBQ==
+X-Received: by 2002:a05:6512:1085:b0:472:1013:aac7 with SMTP id j5-20020a056512108500b004721013aac7mr13587675lfg.463.1651654821736;
+        Wed, 04 May 2022 02:00:21 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.177])
+        by smtp.gmail.com with ESMTPSA id u20-20020ac243d4000000b0047255d21143sm1154631lfl.114.2022.05.04.02.00.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 May 2022 02:00:21 -0700 (PDT)
+Message-ID: <52a9f35b-458b-44c4-7fc8-d05c8db0c73f@openvz.org>
+Date:   Wed, 4 May 2022 12:00:18 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20220425190040.2475377-2-yosryahmed@google.com>
-User-Agent: NeoMutt/20220408
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: kernfs memcg accounting
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
+ <20220427140153.GC9823@blackbody.suse.cz>
+ <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
+ <YnBLge4ZQNbbxufc@blackbook>
+From:   Vasily Averin <vvs@openvz.org>
+In-Reply-To: <YnBLge4ZQNbbxufc@blackbook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 25 Apr 2022, Yosry Ahmed wrote:
+On 5/3/22 00:22, Michal Koutný wrote:
+> When struct mem_cgroup charging was introduced, there was a similar
+> discussion [1].
 
->From: Shakeel Butt <shakeelb@google.com>
->
->Introduce a memcg interface to trigger memory reclaim on a memory cgroup.
->
->Use case: Proactive Reclaim
->---------------------------
->
->A userspace proactive reclaimer can continuously probe the memcg to
->reclaim a small amount of memory. This gives more accurate and
->up-to-date workingset estimation as the LRUs are continuously
->sorted and can potentially provide more deterministic memory
->overcommit behavior. The memory overcommit controller can provide
->more proactive response to the changing behavior of the running
->applications instead of being reactive.
->
->A userspace reclaimer's purpose in this case is not a complete replacement
->for kswapd or direct reclaim, it is to proactively identify memory savings
->opportunities and reclaim some amount of cold pages set by the policy
->to free up the memory for more demanding jobs or scheduling new jobs.
->
->A user space proactive reclaimer is used in Google data centers.
->Additionally, Meta's TMO paper recently referenced a very similar
->interface used for user space proactive reclaim:
->https://dl.acm.org/doi/pdf/10.1145/3503222.3507731
->
->Benefits of a user space reclaimer:
->-----------------------------------
->
->1) More flexible on who should be charged for the cpu of the memory
->reclaim. For proactive reclaim, it makes more sense to be centralized.
->
->2) More flexible on dedicating the resources (like cpu). The memory
->overcommit controller can balance the cost between the cpu usage and
->the memory reclaimed.
->
->3) Provides a way to the applications to keep their LRUs sorted, so,
->under memory pressure better reclaim candidates are selected. This also
->gives more accurate and uptodate notion of working set for an
->application.
->
->Why memory.high is not enough?
->------------------------------
->
->- memory.high can be used to trigger reclaim in a memcg and can
->  potentially be used for proactive reclaim.
->  However there is a big downside in using memory.high. It can potentially
->  introduce high reclaim stalls in the target application as the
->  allocations from the processes or the threads of the application can hit
->  the temporary memory.high limit.
->
->- Userspace proactive reclaimers usually use feedback loops to decide
->  how much memory to proactively reclaim from a workload. The metrics
->  used for this are usually either refaults or PSI, and these metrics
->  will become messy if the application gets throttled by hitting the
->  high limit.
->
->- memory.high is a stateful interface, if the userspace proactive
->  reclaimer crashes for any reason while triggering reclaim it can leave
->  the application in a bad state.
->
->- If a workload is rapidly expanding, setting memory.high to proactively
->  reclaim memory can result in actually reclaiming more memory than
->  intended.
->
->The benefits of such interface and shortcomings of existing interface
->were further discussed in this RFC thread:
->https://lore.kernel.org/linux-mm/5df21376-7dd1-bf81-8414-32a73cea45dd@google.com/
->
->Interface:
->----------
->
->Introducing a very simple memcg interface 'echo 10M > memory.reclaim' to
->trigger reclaim in the target memory cgroup.
->
->The interface is introduced as a nested-keyed file to allow for future
->optional arguments to be easily added to configure the behavior of
->reclaim.
->
->Possible Extensions:
->--------------------
->
->- This interface can be extended with an additional parameter or flags
->  to allow specifying one or more types of memory to reclaim from (e.g.
->  file, anon, ..).
->
->- The interface can also be extended with a node mask to reclaim from
->  specific nodes. This has use cases for reclaim-based demotion in memory
->  tiering systens.
->
->- A similar per-node interface can also be added to support proactive
->  reclaim and reclaim-based demotion in systems without memcg.
->
->- Add a timeout parameter to make it easier for user space to call the
->  interface without worrying about being blocked for an undefined amount
->  of time.
->
->For now, let's keep things simple by adding the basic functionality.
->
->[yosryahmed@google.com: worked on versions v2 onwards, refreshed to
->current master, updated commit message based on recent
->discussions and use cases]
->
->Signed-off-by: Shakeel Butt <shakeelb@google.com>
->Co-developed-by: Yosry Ahmed <yosryahmed@google.com>
->Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->Acked-by: Michal Hocko <mhocko@suse.com>
->Acked-by: Wei Xu <weixugc@google.com>
->Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Thank you, I'm missed this patch, it was very interesting and useful.
+I would note though, that OpenVZ and LXC have another usecase:
+we have separate and independent systemd instances inside OS containers.
+So container's cgroups are created not in host's root memcg but 
+inside accountable container's root memcg.  
 
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+> I can see following aspects here:
+> 1) absolute size of kernfs_objects,
+> 2) practical difference between a) and b),
+> 3) consistency with memcg,
+> 4) v1 vs v2 behavior.
+...
+> How do these reasonings align with your original intention of net
+> devices accounting? (Are the creators of net devices inside the
+> container?)
+
+It is possible to create netdevice in one namespace/container 
+and then move them to another one, and this possibility is widely used.
+With my patch memory allocated by these devices will be not accounted
+to new memcg, however I do not think it is a problem.
+My patches protect the host mostly from misuse, when someone creates
+a huge number of nedevices inside a container.
+
+>> Do you think it is incorrect and new kernfs node should be accounted
+>> to memcg of parent cgroup, as mem_cgroup_css_alloc()-> mem_cgroup_alloc() does?
+> 
+> I don't think either variant is incorrect. I'd very much prefer the
+> consistency with memcg behavior (variant a)) but as I've listed the
+> arguments above, it seems such a consistency can't be easily justified.
+
+From my point of view it is most important to account allocated memory
+to any cgroup inside container. Select of proper memcg is a secondary goal here.
+Frankly speaking I do not see a big difference between memcg of current process,
+memcg of newly created child and memcg of its parent.
+
+As far as I understand, Roman chose the parent memcg because it was a special
+case of creating a new memory group. He temporally changed active memcg
+in mem_cgroup_css_alloc() and properly accounted all required memcg-specific
+allocations.
+However, he ignored accounting for a rather large struct mem_cgroup
+therefore I think we can do not worry about 128 bytes of kernfs node.
+Yes, it will be accounted to some other memcg, but the same thing
+happens with kernfs nodes of other groups.
+I don't think that's a problem.
+
+>> Perhaps you mean that in this case kernfs should not be counted at all,
+>> as almost all neighboring allocations do?
+> 
+> No, I think it wouldn't help here [2]. (Or which neighboring allocations
+> do you mean? There must be at least nr_cgroups of them.)
+
+Primary I mean here struct mem_cgroup allocation in mem_cgroup_alloc().
+However, I think we need to take into account any other distributions called
+inside cgroup_mkdir: struct cgroup and kernefs node in common part and 
+any other cgroup-cpecific allocations in other .css_alloc functions.
+They all can be called from inside container, allocates non-accountable
+memory and by this way theoretically can be misused.
+So I'm going to check this scenario a bit later.
+
+Thank you,
+	Vasily Averin
