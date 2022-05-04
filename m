@@ -2,73 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B34251A4DB
-	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 18:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DE051ABF5
+	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 19:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352827AbiEDQGD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 May 2022 12:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S1359645AbiEDSCJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 May 2022 14:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353042AbiEDQGC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 12:06:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CBFB615803
-        for <cgroups@vger.kernel.org>; Wed,  4 May 2022 09:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1651680144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kx7MkkZT+Yq+fM3GfswobHpHpBTfL9nTvycJqnYKSP8=;
-        b=g64HKG3q7K9kl0OdgE3bVx0t56mL25HfPcdeYHdrnZG95Gt95xSWwL3EWg2VMMvjGH/6IU
-        G/YZ2Xg/1Apbh17i2zs+e3ofB+tM9ShMxCQaqEtlrEw5zbFUbGp24Fird2Rk7fP1pdF7sz
-        eelDZJqopjQ7GRxGKAZBsAJ5ITqW7RY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-45-MzJLmzJiNoatZxsrxTXkGw-1; Wed, 04 May 2022 12:02:23 -0400
-X-MC-Unique: MzJLmzJiNoatZxsrxTXkGw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 35937805F46;
-        Wed,  4 May 2022 16:02:22 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 77B9540CF8EF;
-        Wed,  4 May 2022 16:02:20 +0000 (UTC)
-Message-ID: <379138a0-1721-d6fa-4d1d-cb8d79f28474@redhat.com>
-Date:   Wed, 4 May 2022 12:02:19 -0400
+        with ESMTP id S1377586AbiEDSBO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 14:01:14 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B54349CB3
+        for <cgroups@vger.kernel.org>; Wed,  4 May 2022 10:17:03 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id m20so4132709ejj.10
+        for <cgroups@vger.kernel.org>; Wed, 04 May 2022 10:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FnWaMtJ2reMZ0hSCzzXuNRbvuXwq8gpuYV5+BFONKAE=;
+        b=ebMRE72btSfbTu94JZ+XbYWhvE/t1czQ57kEXj7uZgqVNjU0RU05kt542IcNMw286P
+         mZ6xpaFHpoeprnPd/kWTrSQM1G1BlgktJBr4xG6RhrWbvNpjLFl0+ecdobJz9KuMfktV
+         UlJP10pRifyYNtb3y8yF7fYoE45nmhJGPuHRr8itCnr4dcm9iT/w1jRlWmB9PS7QeasX
+         MBbnOipnG539gw+r56zTNE0rnzgfv4xUxVI+yvcMCj1GqXyXDIgz3lhz/guXrQx5FvT8
+         2GLVwiFONxmqgCymujrhnutcpLdrZszCr9yLOce9QDwfXfAXYsJDEcTv/UtDWzRMX6T4
+         WUAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FnWaMtJ2reMZ0hSCzzXuNRbvuXwq8gpuYV5+BFONKAE=;
+        b=o1sF6Ii1cmwgIfG2knh7PlxOWFotS2MVmC4keu916JtAwtxEnyQFzzZ1GJBJWwiZHc
+         50ivXqYVFsfwCiZn3pJ1lZjmLKSuVPERfUBSJJUbY4uTyVfwzg9fyuuNCBB6OYLCAXOM
+         pSSKM6hsYHhrPByuhw+oWRkrZdb5nluwXjmcDfmOe88NTDy1n0kRa+w20OTjUGkgH0To
+         9CcvAI0s7aTNA1FbtsfjjM9pjei49JF3WCnqEpHDqt/2F6OefbhVZwm2PMdIm9nC1FZX
+         gppsGlp0rdosXvbpy352S5NY5AeXOgYLS1780QQydIO76Dazgs34wf2Kn04CmIpkXlQc
+         KpUg==
+X-Gm-Message-State: AOAM53275ffmxsZXBKIVRJl1Ga1M7hfbvZUuHtLd4/xGPe5g+MHG3Bzt
+        PaKYev4iHFDDvxVexBCKTtTHVot0uu8OspGmXstvmQ==
+X-Google-Smtp-Source: ABdhPJz/zOdjLmIrLFM4P9uo4u+sCzHObiW2BBC9Wwk/Gd0JvieVCy9Z4KHizOYES4jB3khXzoCnClSitVy5oWW1avQ=
+X-Received: by 2002:a17:906:3404:b0:6f4:d33d:9d88 with SMTP id
+ c4-20020a170906340400b006f4d33d9d88mr2280391ejb.446.1651684621642; Wed, 04
+ May 2022 10:17:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v10 7/8] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20220502231944.3891435-1-tjmercier@google.com>
+ <20220502231944.3891435-2-tjmercier@google.com> <20220504121052.GA24172@blackbody.suse.cz>
+In-Reply-To: <20220504121052.GA24172@blackbody.suse.cz>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Wed, 4 May 2022 10:16:50 -0700
+Message-ID: <CABdmKX2nbXLrngK8XRFCBCP=Zz-AMgKviiUdpWvEiYc-jOqang@mail.gmail.com>
+Subject: Re: [PATCH v6 1/6] gpu: rfc: Proposal for a GPU cgroup controller
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20220503162149.1764245-1-longman@redhat.com>
- <20220503162149.1764245-8-longman@redhat.com>
- <20220504112552.GA15266@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20220504112552.GA15266@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hridya Valsaraju <hridya@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        John Stultz <jstultz@google.com>,
+        Todd Kjos <tkjos@android.com>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kernel-team@android.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,68 +80,45 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/4/22 07:25, Michal Koutný wrote:
+On Wed, May 4, 2022 at 5:10 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
 > Hello.
 >
-> On Tue, May 03, 2022 at 12:21:48PM -0400, Waiman Long <longman@redhat.com> wrote:
->>   Documentation/admin-guide/cgroup-v2.rst | 145 +++++++++++++-----------
->>   1 file changed, 79 insertions(+), 66 deletions(-)
-> A note across various lines -- it seems your new text accidentally mixes
-> both spaces and tabs for indentation.
-
-You are right. I will fix that.
-
+> On Mon, May 02, 2022 at 11:19:35PM +0000, "T.J. Mercier" <tjmercier@googl=
+e.com> wrote:
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > [...]
+> > +     The device name string is set by a device driver when it register=
+s with the
+> > +     GPU cgroup controller to participate in resource accounting.
 >
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index 69d7a6983f78..94e1e3771830 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> [...]
->> +	The value shown in "cpuset.cpus.effective" of a partition root is
->> +	the CPUs that the parent partition root can dedicate to the new
->> +	partition root.  They are subtracted from "cpuset.cpus.effective"
->> +	of the parent and may be different from "cpuset.cpus"
-> I find this paragraph a bit hard to comprehend (I read it as it talks
-> about three levels of cgroups (parent, child, grandparent). It is
-> correct but I'd suggect following formulation (where I additionally
-> simplifed it by talking about "available" cpus):
+> Are these names available anywhere else for the user? (I.e. would
+> drivers add respective sysfs attributes or similar?)
 >
->> The value shown in "cpuset.cpus.effective" of a partition root is
->> the CPUs that the partition root can dedicate to a potential new child
->> partition root. The new child subtracts available CPUs from its parent
->> "cpuset.cpus.effective".
+Hi, this sounds like it could be a good idea but it'd probably be best
+to do this inside gpucg_register_bucket instead of requiring drivers
+to perform this externally, possibly in a non-uniform way. Maybe a
+sysfs file that prints each name of the gpucg_buckets elements?
+However the only names that would result from this series are the
+names of the dma-buf heaps, with "-heap" appended. So they are
+predictable from the /dev/dma_heap/* names, and only the system and
+cma heaps currently exist upstream.
 
-
-Thanks for the suggestion, will modify the text as suggested.
-
-
+For other future uses of this controller I thought we were headed in
+the direction of "standardized" names which would be
+predefined/hardcoded and documented, so these names wouldn't really
+need to be made available to a user at runtime.
+https://lore.kernel.org/lkml/CABdmKX3gTAohaOwkNccGrQyXN9tzT-oEVibO5ZPF+eP+V=
+q=3DAOg@mail.gmail.com/
 >
->> +	For a partition root to become valid, the following conditions
->> +	must be met.
->> +
->> +	1) The "cpuset.cpus" is exclusive, i.e. they are not shared by
->> +	   any of its siblings (exclusivity rule).
->> +	2) The parent cgroup is a valid partition root.
->> +	3) The "cpuset.cpus" is not empty and must contain at least
->> +	   one of the CPUs from parent's "cpuset.cpus", i.e. they overlap.
->> +        4) The "cpuset.cpus.effective" must be a subset of "cpuset.cpus"
->> +           and cannot be empty unless there is no task associated with
->> +           this partition.
-> This sounds good to me.
+> > +     Non-unique names will be rejected at the point of registration.
 >
->> +        Care must be taken to change a valid partition root to "member"
->> +        as all its child partitions, if present, will become invalid.
-> This does not talk about recovering. Is it intentional? (I.e. to left
-> implementation defined)
-
-This new patch series does have the ability to recover now.  I am just 
-not emphasizing the recovery aspect of it in the doc file. I will add a 
-sentence about it.
-
+> This doesn't seem relevant to the cgroupfs user, does it?
+> I think it should be mentioned at the respective API.
 >
-> Except the remarks above, I find the concepts described here good. I'll
-> reply to implementation separately & later.
+Yeah you're right. Thank you.
 
-Thanks,
-Longman
-
+> HTH,
+> Michal
+>
