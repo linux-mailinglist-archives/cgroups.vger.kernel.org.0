@@ -2,78 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05618519B09
-	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 11:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB28519DED
+	for <lists+cgroups@lfdr.de>; Wed,  4 May 2022 13:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241780AbiEDJEh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 May 2022 05:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S1348731AbiEDL3c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 May 2022 07:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346889AbiEDJEE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 05:04:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A5063FB
-        for <cgroups@vger.kernel.org>; Wed,  4 May 2022 02:00:23 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id w19so1189725lfu.11
-        for <cgroups@vger.kernel.org>; Wed, 04 May 2022 02:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9h40UHG4+Vlt8Ck/eT8J9TW5C6yu4qO7t/1/LFEGiqY=;
-        b=WV8AFjx0yOFxd5rVjjr2sLJ5mz+V5+uLTb8SILkuM1yrcMqzUSvPWiS2mpZw8xGb4r
-         9qZ4I/VkzSXsP28HaPRPIrFVlF/ASJZx9O7CTX8EzLap0XCMvySddHQy7j98gc1T3N+w
-         5C6I73NA84YBQltR4hG9pjh9Ip9cTCZicfKpbFFzp0NtpwgxPD/AH1MC8Lp0hvqVwJqC
-         YXkbk/fZs0S5ef8KwZ0KTWOZHNzZiICXs9YcutrZ5rkun9sYbnD8JpXfWJgA8fFTrzFD
-         MpWCsX9wWoxokW6zDRuaLX48cKgi+EoPmdbIPxi1GGEW7QJDhnMkWuLmbpidhOenlIf4
-         rdUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9h40UHG4+Vlt8Ck/eT8J9TW5C6yu4qO7t/1/LFEGiqY=;
-        b=A3bqw6hHaYD3+Zv7wUavLrKaEBeQCFzEqFbOXt43Oog7m7LL6rl9Q3/Jf0XFpywG6u
-         Zg8PLCfvwpQIOB0+QdTeXxt5FooyThzYKDW5geVUh8fuNUVOtbzNpRSOtlVuP0N47EUH
-         SHjA3ZFDqdQWeLPoBgXLd49u4JE/47KPvUKhOO43IYgKuoES/7DUz8Cq9KAS2UZYHpUd
-         GUbAYQ6qYGAa7SpNtRMx2DLxbo4bih7sKVezeqs3C0MGaMV5RHoLb6+dxvn+r4xu0AAW
-         crBd43igk+6NlNVyWDjHhk5FcPLAszjUqXFnw6W8jWNfbB49zzJBlre5IGkAL8sD82ma
-         h33g==
-X-Gm-Message-State: AOAM530YAgng6WLJeFOrSt39ygorqu62nNh1f8jUtX4BOZckMJy4prib
-        zFF496kN0QVLIxVC0fQPX3+4hw==
-X-Google-Smtp-Source: ABdhPJziPdsSe7MlyMs4jK++JOgvd87NWYOeCBg4hkkKvteIrGgQq5sUczFdQtMM55Ef2i7SPN5aBQ==
-X-Received: by 2002:a05:6512:1085:b0:472:1013:aac7 with SMTP id j5-20020a056512108500b004721013aac7mr13587675lfg.463.1651654821736;
-        Wed, 04 May 2022 02:00:21 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id u20-20020ac243d4000000b0047255d21143sm1154631lfl.114.2022.05.04.02.00.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 May 2022 02:00:21 -0700 (PDT)
-Message-ID: <52a9f35b-458b-44c4-7fc8-d05c8db0c73f@openvz.org>
-Date:   Wed, 4 May 2022 12:00:18 +0300
+        with ESMTP id S1348719AbiEDL3b (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 07:29:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3502A71C;
+        Wed,  4 May 2022 04:25:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BE45B210E0;
+        Wed,  4 May 2022 11:25:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1651663553; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IHotc1tLxNFQnMsMhQ4/PAmmsXVX/ZrmEY2hoLkhoeY=;
+        b=prmLabugZEs93348NyPI+Rk+PvbnW03y6T9MnWqgkElCaLaxD76fSofTgRaeDBgj+VsO+6
+        JJrL0pJY5taH3pcpCX3mOYmFXRH4wLu2FwI9+uFoFQy61iIBDOsN98iOmHbJLnWAaSemYH
+        wBbOqgwKNBoCX7DWQOQHFbvaRdjwiaA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E694132C4;
+        Wed,  4 May 2022 11:25:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GYZmFcFicmKxPgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 04 May 2022 11:25:53 +0000
+Date:   Wed, 4 May 2022 13:25:52 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v10 7/8] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20220504112552.GA15266@blackbody.suse.cz>
+References: <20220503162149.1764245-1-longman@redhat.com>
+ <20220503162149.1764245-8-longman@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: kernfs memcg accounting
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
-        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
- <20220427140153.GC9823@blackbody.suse.cz>
- <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
- <YnBLge4ZQNbbxufc@blackbook>
-From:   Vasily Averin <vvs@openvz.org>
-In-Reply-To: <YnBLge4ZQNbbxufc@blackbook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220503162149.1764245-8-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,68 +73,58 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/3/22 00:22, Michal Koutný wrote:
-> When struct mem_cgroup charging was introduced, there was a similar
-> discussion [1].
+Hello.
 
-Thank you, I'm missed this patch, it was very interesting and useful.
-I would note though, that OpenVZ and LXC have another usecase:
-we have separate and independent systemd instances inside OS containers.
-So container's cgroups are created not in host's root memcg but 
-inside accountable container's root memcg.  
+On Tue, May 03, 2022 at 12:21:48PM -0400, Waiman Long <longman@redhat.com> wrote:
+>  Documentation/admin-guide/cgroup-v2.rst | 145 +++++++++++++-----------
+>  1 file changed, 79 insertions(+), 66 deletions(-)
 
-> I can see following aspects here:
-> 1) absolute size of kernfs_objects,
-> 2) practical difference between a) and b),
-> 3) consistency with memcg,
-> 4) v1 vs v2 behavior.
-...
-> How do these reasonings align with your original intention of net
-> devices accounting? (Are the creators of net devices inside the
-> container?)
+A note across various lines -- it seems your new text accidentally mixes
+both spaces and tabs for indentation.
 
-It is possible to create netdevice in one namespace/container 
-and then move them to another one, and this possibility is widely used.
-With my patch memory allocated by these devices will be not accounted
-to new memcg, however I do not think it is a problem.
-My patches protect the host mostly from misuse, when someone creates
-a huge number of nedevices inside a container.
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 69d7a6983f78..94e1e3771830 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> [...]
+> +	The value shown in "cpuset.cpus.effective" of a partition root is
+> +	the CPUs that the parent partition root can dedicate to the new
+> +	partition root.  They are subtracted from "cpuset.cpus.effective"
+> +	of the parent and may be different from "cpuset.cpus"
 
->> Do you think it is incorrect and new kernfs node should be accounted
->> to memcg of parent cgroup, as mem_cgroup_css_alloc()-> mem_cgroup_alloc() does?
-> 
-> I don't think either variant is incorrect. I'd very much prefer the
-> consistency with memcg behavior (variant a)) but as I've listed the
-> arguments above, it seems such a consistency can't be easily justified.
+I find this paragraph a bit hard to comprehend (I read it as it talks
+about three levels of cgroups (parent, child, grandparent). It is
+correct but I'd suggect following formulation (where I additionally
+simplifed it by talking about "available" cpus):
 
-From my point of view it is most important to account allocated memory
-to any cgroup inside container. Select of proper memcg is a secondary goal here.
-Frankly speaking I do not see a big difference between memcg of current process,
-memcg of newly created child and memcg of its parent.
+> The value shown in "cpuset.cpus.effective" of a partition root is
+> the CPUs that the partition root can dedicate to a potential new child
+> partition root. The new child subtracts available CPUs from its parent
+> "cpuset.cpus.effective".
 
-As far as I understand, Roman chose the parent memcg because it was a special
-case of creating a new memory group. He temporally changed active memcg
-in mem_cgroup_css_alloc() and properly accounted all required memcg-specific
-allocations.
-However, he ignored accounting for a rather large struct mem_cgroup
-therefore I think we can do not worry about 128 bytes of kernfs node.
-Yes, it will be accounted to some other memcg, but the same thing
-happens with kernfs nodes of other groups.
-I don't think that's a problem.
 
->> Perhaps you mean that in this case kernfs should not be counted at all,
->> as almost all neighboring allocations do?
-> 
-> No, I think it wouldn't help here [2]. (Or which neighboring allocations
-> do you mean? There must be at least nr_cgroups of them.)
+> +	For a partition root to become valid, the following conditions
+> +	must be met.
+> +
+> +	1) The "cpuset.cpus" is exclusive, i.e. they are not shared by
+> +	   any of its siblings (exclusivity rule).
+> +	2) The parent cgroup is a valid partition root.
+> +	3) The "cpuset.cpus" is not empty and must contain at least
+> +	   one of the CPUs from parent's "cpuset.cpus", i.e. they overlap.
+> +        4) The "cpuset.cpus.effective" must be a subset of "cpuset.cpus"
+> +           and cannot be empty unless there is no task associated with
+> +           this partition.
 
-Primary I mean here struct mem_cgroup allocation in mem_cgroup_alloc().
-However, I think we need to take into account any other distributions called
-inside cgroup_mkdir: struct cgroup and kernefs node in common part and 
-any other cgroup-cpecific allocations in other .css_alloc functions.
-They all can be called from inside container, allocates non-accountable
-memory and by this way theoretically can be misused.
-So I'm going to check this scenario a bit later.
+This sounds good to me.
 
-Thank you,
-	Vasily Averin
+> +        Care must be taken to change a valid partition root to "member"
+> +        as all its child partitions, if present, will become invalid.
+
+This does not talk about recovering. Is it intentional? (I.e. to left
+implementation defined)
+
+Except the remarks above, I find the concepts described here good. I'll
+reply to implementation separately & later.
+
+Regards,
+Michal
