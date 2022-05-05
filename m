@@ -2,100 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25A551B408
-	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 02:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D9A51B4F1
+	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 03:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbiEEAFJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 May 2022 20:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        id S233839AbiEEBEu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 May 2022 21:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383256AbiEDXyz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 19:54:55 -0400
-Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B927048891
-        for <cgroups@vger.kernel.org>; Wed,  4 May 2022 16:51:17 -0700 (PDT)
-Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-e2fa360f6dso2800874fac.2
-        for <cgroups@vger.kernel.org>; Wed, 04 May 2022 16:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
-        b=C8FRCRI8h6f7dQQ85qcYDQY7ppWHojyLa2FzUP3TRs4NevqyOcKofpQoCpFvBpLyM7
-         EF7k5XJwkS8J9n3sL3vtA6DF56S72cgpHfK3Y/xrAhveEiMuh5JPBshpn88URGHmAxU+
-         sFS4VH4kB3GswJzyaX4VtMo1vkS0uu6TAafU15jC3XIxKbvn6eRmN4gQXTko6B7FCWuh
-         WQEg/aOgZg5MHIQCPxh1CZuiGL/8COA6sWHjYfKqUKvAjqar1pxjC4CvoNpZAl76Jvgu
-         XtSq5w1h5xiJMrYNabgbVL39vs2utfBPCMgQZRlkXzC2JL9MMLe6ZYWk1hw94L1j+9W9
-         +YOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
-        b=EjS8du1lHIQEmsPskTJe/dFrYEFjy2KbC2N4sp1J9ED7mf/S3iUBZXPGf58cka4qJt
-         fLGsD8swST7bQkC71h7hvQdbKCP9w3dhBGrbLagwoXnPkR/E80x76i/ql5BaQqnWPlKd
-         nGysqDibxI4qjU0Y0nTHvAemRmQVii1x7sx5kqTxgj4ZsVEzPyYGxWEc6XEQHi/MkpNH
-         5uCgglPjnkcFZMi0w7tIufrlqbkl02VNSFx6+/GXm/Da0oFVd16Daw1S2U5x6+tZI3en
-         HHuKXzb/6Qp+kGnDqD3sZeBUJS8njlhSb+Rzdmt1OpD7F9oc1kswRFQNnixW+R/3x9yC
-         qWyw==
-X-Gm-Message-State: AOAM533odaCRSwQZis6Gi20ZnWxMD/F5OX0I4YPJc8BO2te4Q+5p06W+
-        aA9RWOsvG4u4tAXdruIx1NgiVWlM1IwgENO70jU=
-X-Google-Smtp-Source: ABdhPJxA4Ha/hUkAwAC4dJc5XxPK5kro+yai3V9qxVeZWvF5aWQiORxrxPjbzozlKMsC54nHO04IcfskkX9d/TX7YNA=
-X-Received: by 2002:a05:6870:6005:b0:e6:515c:da5a with SMTP id
- t5-20020a056870600500b000e6515cda5amr1020559oaa.183.1651708276883; Wed, 04
- May 2022 16:51:16 -0700 (PDT)
+        with ESMTP id S233780AbiEEBEt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 May 2022 21:04:49 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808972317C;
+        Wed,  4 May 2022 18:01:11 -0700 (PDT)
+Received: from kwepemi100013.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KtwHR47MvzCsWV;
+        Thu,  5 May 2022 08:56:03 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100013.china.huawei.com (7.221.188.136) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 5 May 2022 09:00:44 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 5 May 2022 09:00:43 +0800
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <jack@suse.cz>, <tj@kernel.org>, <linux-block@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+Date:   Thu, 5 May 2022 09:00:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:6802:1a9:0:0:0:0 with HTTP; Wed, 4 May 2022 16:51:16
- -0700 (PDT)
-Reply-To: ortegainvestmmentforrealinvest@gmail.com
-From:   Info <joybhector64@gmail.com>
-Date:   Thu, 5 May 2022 05:21:16 +0530
-Message-ID: <CAP7KLYjtz_qWKEF8hKvGtdp2G3HBY2yq5YNOBeM0Nc0=iV_NcA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:43 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5001]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [joybhector64[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [joybhector64[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+In-Reply-To: <20220428120837.3737765-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
--- 
-I am an investor. I came from the USA and I have many investments all
-over the world.
+Hi, Paolo
 
-I want you to partner with me to invest in your country I am into many
-investment such as real Estate or buying of properties i can also
-invest money in any of existing business with equity royalty or by %
-percentage so on,
-Warm regards
+Can you take a look at this patchset? It has been quite a long time
+since we spotted this problem...
+
+Thanks,
+Kuai
+
+ÔÚ 2022/04/28 20:08, Yu Kuai Ð´µÀ:
+> Changes in v5:
+>   - rename bfq_add_busy_queues() to bfq_inc_busy_queues() in patch 1
+>   - fix wrong definition in patch 1
+>   - fix spelling mistake in patch 2: leaset -> least
+>   - update comments in patch 3
+>   - add reviewed-by tag in patch 2,3
+> 
+> Changes in v4:
+>   - split bfq_update_busy_queues() to bfq_add/dec_busy_queues(),
+>     suggested by Jan Kara.
+>   - remove unused 'in_groups_with_pending_reqs',
+> 
+> Changes in v3:
+>   - remove the cleanup patch that is irrelevant now(I'll post it
+>     separately).
+>   - instead of hacking wr queues and using weights tree insertion/removal,
+>     using bfq_add/del_bfqq_busy() to count the number of groups
+>     (suggested by Jan Kara).
+> 
+> Changes in v2:
+>   - Use a different approch to count root group, which is much simple.
+> 
+> Currently, bfq can't handle sync io concurrently as long as they
+> are not issued from root group. This is because
+> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+> bfq_asymmetric_scenario().
+> 
+> The way that bfqg is counted into 'num_groups_with_pending_reqs':
+> 
+> Before this patchset:
+>   1) root group will never be counted.
+>   2) Count if bfqg or it's child bfqgs have pending requests.
+>   3) Don't count if bfqg and it's child bfqgs complete all the requests.
+> 
+> After this patchset:
+>   1) root group is counted.
+>   2) Count if bfqg have at least one bfqq that is marked busy.
+>   3) Don't count if bfqg doesn't have any busy bfqqs.
+> 
+> The main reason to use busy state of bfqq instead of 'pending requests'
+> is that bfqq can stay busy after dispatching the last request if idling
+> is needed for service guarantees.
+> 
+> With the above changes, concurrent sync io can be supported if only
+> one group is activated.
+> 
+> fio test script(startdelay is used to avoid queue merging):
+> [global]
+> filename=/dev/nvme0n1
+> allow_mounted_write=0
+> ioengine=psync
+> direct=1
+> ioscheduler=bfq
+> offset_increment=10g
+> group_reporting
+> rw=randwrite
+> bs=4k
+> 
+> [test1]
+> numjobs=1
+> 
+> [test2]
+> startdelay=1
+> numjobs=1
+> 
+> [test3]
+> startdelay=2
+> numjobs=1
+> 
+> [test4]
+> startdelay=3
+> numjobs=1
+> 
+> [test5]
+> startdelay=4
+> numjobs=1
+> 
+> [test6]
+> startdelay=5
+> numjobs=1
+> 
+> [test7]
+> startdelay=6
+> numjobs=1
+> 
+> [test8]
+> startdelay=7
+> numjobs=1
+> 
+> test result:
+> running fio on root cgroup
+> v5.18-rc1:	   550 Mib/s
+> v5.18-rc1-patched: 550 Mib/s
+> 
+> running fio on non-root cgroup
+> v5.18-rc1:	   349 Mib/s
+> v5.18-rc1-patched: 550 Mib/s
+> 
+> Note that I also test null_blk with "irqmode=2
+> completion_nsec=100000000(100ms) hw_queue_depth=1", and tests show
+> that service guarantees are still preserved.
+> 
+> Previous versions:
+> RFC: https://lore.kernel.org/all/20211127101132.486806-1-yukuai3@huawei.com/
+> v1: https://lore.kernel.org/all/20220305091205.4188398-1-yukuai3@huawei.com/
+> v2: https://lore.kernel.org/all/20220416093753.3054696-1-yukuai3@huawei.com/
+> v3: https://lore.kernel.org/all/20220427124722.48465-1-yukuai3@huawei.com/
+> v4: https://lore.kernel.org/all/20220428111907.3635820-1-yukuai3@huawei.com/
+> 
+> Yu Kuai (3):
+>    block, bfq: record how many queues are busy in bfq_group
+>    block, bfq: refactor the counting of 'num_groups_with_pending_reqs'
+>    block, bfq: do not idle if only one group is activated
+> 
+>   block/bfq-cgroup.c  |  1 +
+>   block/bfq-iosched.c | 48 +++-----------------------------------
+>   block/bfq-iosched.h | 57 +++++++--------------------------------------
+>   block/bfq-wf2q.c    | 35 +++++++++++++++++-----------
+>   4 files changed, 35 insertions(+), 106 deletions(-)
+> 
