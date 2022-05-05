@@ -2,142 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2488651C4DF
-	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBF351C4EF
+	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 18:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245362AbiEEQOw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 12:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
+        id S235664AbiEEQQT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 12:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381875AbiEEQOu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 12:14:50 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599701D30B;
-        Thu,  5 May 2022 09:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651767060; x=1683303060;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1eGeIh+xMiBRTxqWkXlfYujous1v8oMKzohvreSWsN8=;
-  b=FNMAdsi+bg+d8+nosUfVJUoMrzCP+ZwWMIIQ38Sis9BZBryE1ITu1E24
-   /F8BHqZsOr/ZDTPD3/safwHP+4+KVD6dds7ponxMCg40eon1sCWXVL/25
-   MgLPGzhmn4F/GvSULHgWYJsczT5Tn68ITVnCmq9TG4Os63l3rJxWGULVq
-   TqWTOrlj2Pa0QGs7LQUDgdYRrl0hzbogNCb1PQhwlzeDoN5ItvVN+6t4/
-   Ql8gC/WlZLP03T/ZV2OodXeDhsnXV6P3g0XvSGZUMRTFlXriAQQH6p7tK
-   ObfP/5DoCeyQ3wW46OXSGOvS7iwwOSAM3ZuwhUkRueHfCEKQJJY8iOCeX
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10338"; a="331155509"
-X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="331155509"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2022 09:10:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="665035013"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 05 May 2022 09:10:40 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nme3s-000CXj-Ac;
-        Thu, 05 May 2022 16:10:40 +0000
-Date:   Fri, 6 May 2022 00:09:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     cgel.zte@gmail.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        willy@infradead.org, shy828301@gmail.com
-Cc:     kbuild-all@lists.01.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        linmiaohe@huawei.com, william.kucharski@oracle.com,
-        peterx@redhat.com, hughd@google.com, vbabka@suse.cz,
-        songmuchun@bytedance.com, surenb@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
-Subject: Re: [PATCH] mm/memcg: support control THP behaviour in cgroup
-Message-ID: <202205052327.RldmheYL-lkp@intel.com>
-References: <20220505033814.103256-1-xu.xin16@zte.com.cn>
+        with ESMTP id S229849AbiEEQQS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 12:16:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4509B80
+        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 09:12:38 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c14so4015501pfn.2
+        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 09:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JOg3JkIywRLzrPPGawgi8+ppo6ekCB8fiVEKfUdHYi8=;
+        b=bQoc6U3SxwP0PLDXxVdqqhePzPc76Rf9CAYeT6a95TuwCPscQdatdnavfs9+sEDFuA
+         p3rZyeAuQqJiMBN6peF93vd05yCGPXNj4V78HmPSInyZV2H91C+CpOJYjHq5n9ogs4Wq
+         1QVsNX3yw+iEWNAClXf5MVN3ViDAULifqYmqmyZJpC4K3jC0w7+UvEQ4hfYrYVyPC642
+         7Nwru5zmvGzc97KPaDQQ3DX+5WICrsIp/3jHcKn/sOem690fn62qi74MMmhCn5Mrz0Sf
+         pocEv78vyZ7zQzsi0xJ5L5GbPAFPRTIHB6zPsGPTDuNDJY83edQsULVTvzQRv1FyJ0xa
+         ZjSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JOg3JkIywRLzrPPGawgi8+ppo6ekCB8fiVEKfUdHYi8=;
+        b=WffFH94pnzB+6pzVp/+Wy/PkYn8AF9nnV12jiqIAxdrYKPLfRrko/GS5hJNqJGME+X
+         NPTfiXr74NIiDCwGmw2UAK1/A42OkrYF2rtcUvqW3HlT9VMT8KFZe+5j7AxysnZXls5y
+         g4CpHEO0BHVtDinFOZVRaaejGzYpSCr0aw6WsLrhe9klPUBRKL5zX8uGg9DDlasC+w04
+         zMU0ZXpfooPRFKM1DoL8mcD6hoRgX+guTdrDhOpL35O7UNHDD73u9iXoABBfe6UJBIC2
+         r8UvPGGMqjdGC54DA5VwVsYsZoLkDs62APlZCAzDagSrMLMlNSQUCGFPQKz6hdAwiU0n
+         UKdQ==
+X-Gm-Message-State: AOAM531ZRiHWBXqGHcO98SSIctyf02VcoWia4CbM8rGvzNz3Wj62zT/t
+        tvU5TDZ8aDDMX3jqm8MyfQWaHMY15zYZyem5ziE0+g==
+X-Google-Smtp-Source: ABdhPJwt8R0qqFEdfPp4xjRQYlx7+/QzN23NSOyJAtP1ucd4x7SKkS02w0EVQ9tWN674m9awAGDz5ZtA7fxuoG+LdZs=
+X-Received: by 2002:a05:6a00:2382:b0:50d:fa40:1077 with SMTP id
+ f2-20020a056a00238200b0050dfa401077mr17326483pfc.8.1651767157870; Thu, 05 May
+ 2022 09:12:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220505033814.103256-1-xu.xin16@zte.com.cn>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
+In-Reply-To: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 5 May 2022 09:12:26 -0700
+Message-ID: <CALvZod5xiSuJaDjGb+NM18puejwhnPWweSj+N=0RGQrjpjfxbw@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: Export memcg->watermark via sysfs for v2 memcg
+To:     Ganesan Rajagopal <rganesan@arista.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+On Thu, May 5, 2022 at 5:13 AM Ganesan Rajagopal <rganesan@arista.com> wrote:
+>
+> v1 memcg exports memcg->watermark as "memory.mem_usage_in_bytes" in
 
-Thank you for the patch! Perhaps something to improve:
+*max_usage_in_bytes
 
-[auto build test WARNING on linux/master]
-[also build test WARNING on linus/master v5.18-rc5]
-[cannot apply to hnaz-mm/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> sysfs. This is missing for v2 memcg though "memory.current" is exported.
+> There is no other easy way of getting this information in Linux.
+> getrsuage() returns ru_maxrss but that's the max RSS of a single process
+> instead of the aggregated max RSS of all the processes. Hence, expose
+> memcg->watermark as "memory.watermark" for v2 memcg.
+>
+> Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220505-114028
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 107c948d1d3e61d10aee9d0f7c3d81bbee9842af
-config: i386-randconfig-s001 (https://download.01.org/0day-ci/archive/20220505/202205052327.RldmheYL-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/intel-lab-lkp/linux/commit/f08a35b9798572693a91c6a3d823ed9ae54ef688
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220505-114028
-        git checkout f08a35b9798572693a91c6a3d823ed9ae54ef688
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-   mm/huge_memory.c: note: in included file (through include/linux/mm.h):
->> include/linux/huge_mm.h:272:43: sparse: sparse: marked inline, but without a definition
-   mm/huge_memory.c: note: in included file:
->> include/linux/khugepaged.h:30:36: sparse: sparse: marked inline, but without a definition
-   include/linux/khugepaged.h:31:38: sparse: sparse: marked inline, but without a definition
---
-   mm/memory.c:1024:17: sparse: sparse: context imbalance in 'copy_pte_range' - different lock contexts for basic block
-   mm/memory.c:1752:16: sparse: sparse: context imbalance in '__get_locked_pte' - different lock contexts for basic block
-   mm/memory.c:1800:9: sparse: sparse: context imbalance in 'insert_page' - different lock contexts for basic block
-   mm/memory.c:2302:17: sparse: sparse: context imbalance in 'remap_pte_range' - different lock contexts for basic block
-   mm/memory.c:2558:17: sparse: sparse: context imbalance in 'apply_to_pte_range' - unexpected unlock
-   mm/memory.c:2847:9: sparse: sparse: context imbalance in 'wp_page_copy' - different lock contexts for basic block
-   mm/memory.c:3185:17: sparse: sparse: context imbalance in 'wp_pfn_shared' - unexpected unlock
-   mm/memory.c:3248:19: sparse: sparse: context imbalance in 'do_wp_page' - different lock contexts for basic block
-   mm/memory.c: note: in included file (through include/linux/mm.h):
->> include/linux/huge_mm.h:272:43: sparse: sparse: marked inline, but without a definition
->> include/linux/huge_mm.h:272:43: sparse: sparse: marked inline, but without a definition
---
-   mm/shmem.c: note: in included file:
->> include/linux/khugepaged.h:30:36: sparse: sparse: marked inline, but without a definition
-   include/linux/khugepaged.h:31:38: sparse: sparse: marked inline, but without a definition
->> include/linux/khugepaged.h:30:36: sparse: sparse: marked inline, but without a definition
-   include/linux/khugepaged.h:31:38: sparse: sparse: marked inline, but without a definition
-
-vim +272 include/linux/huge_mm.h
-
-   263	
-   264	static inline struct list_head *page_deferred_list(struct page *page)
-   265	{
-   266		/*
-   267		 * Global or memcg deferred list in the second tail pages is
-   268		 * occupied by compound_head.
-   269		 */
-   270		return &page[2].deferred_list;
-   271	}
- > 272	inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma);
-   273	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Can you please explain the use-case for which you need this metric?
+Also note that this is not really an aggregated RSS of all the
+processes in the cgroup. So, do you want max RSS or max charge and for
+what use-case?
