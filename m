@@ -2,46 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCE351BFCD
-	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 14:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E1E51C0D9
+	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 15:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238533AbiEEMyD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 08:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        id S1379784AbiEENgs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 09:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236913AbiEEMxx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 08:53:53 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2D6187;
-        Thu,  5 May 2022 05:50:13 -0700 (PDT)
+        with ESMTP id S1379779AbiEENg3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 09:36:29 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8209256FBD;
+        Thu,  5 May 2022 06:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651755013; x=1683291013;
+  t=1651757531; x=1683293531;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=A9PXcXkJKXOiPlbiJL9+S1g3O2eDE4FkjAv8/9Dq67g=;
-  b=m7jai3T36OY75WFYibDaVdjr0qQkh5wOl6MtJyrjDpy0GNGycZEsFOar
-   /dBOLGgUexM0hUngYQfl9cz6/ws1xamE+ETcMHaZdDaU7XeuFVbi385in
-   GcLS5oPlMaUrh/BeQZ0jHL6aiLfuWPorXuJsTCB+B1/M3SVRCzv6DeIPY
-   gD4rOcg+eS7Oryj9kn7ZA36g2KNTCCJvbHw2OL40aA5fZMJH0F2D27VIt
-   9agn6HqRXoc5OSFpNwv3shpzmtS5Zsc8HUEKscCfi/s5SQFA4Fr+iwTeH
-   qErsDc1w0/Gh/74GnZiDhgPforyovwM4+dW2/lzhprO/K6mWKiT7AzhZk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10337"; a="267693568"
+  bh=0n9xKziNJR4TEkk9TsrLeTOHao554U8zzlo+fCxG4Ow=;
+  b=HUV3jhWcDBoqOh5Gdqgx7j6ITYlNWOhwFs2Pz03YC9FfbkWBqUM/IMHd
+   I8d5FhPJB/w2gX9wFIhD4si6lJv2JqdWwWzO12PvENxAcVbSCfdfF33X/
+   f1zDWgj6WzoQ2YkQaMVhJHWr+YAYLTObpFLaYUT8lFw+M1qZZ3OeeRnie
+   0m2DbKL5jkKBX5c7zXK/1GR6hJPR8gw4zKpea7/PBF5IbjGnsYVAgY8bA
+   hwxI2DePHP+kjJTxfY3BfEJMAkSc8LQGwpr5rjKytdZACHFdw3j4dPcGm
+   FjQojIZD7bUpSvF/Ka+X12bXXTBxdQllAn0d3ceF5ynRdSTbralTwaJuZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10338"; a="250093963"
 X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="267693568"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2022 05:50:13 -0700
+   d="scan'208";a="250093963"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2022 06:32:11 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.91,201,1647327600"; 
-   d="scan'208";a="585302810"
+   d="scan'208";a="537334824"
 Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 05 May 2022 05:50:08 -0700
+  by orsmga006.jf.intel.com with ESMTP; 05 May 2022 06:32:07 -0700
 Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1nmavn-000CPo-Ur;
-        Thu, 05 May 2022 12:50:07 +0000
-Date:   Thu, 5 May 2022 20:49:47 +0800
+        id 1nmbaQ-000CQy-Eo;
+        Thu, 05 May 2022 13:32:06 +0000
+Date:   Thu, 5 May 2022 21:31:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     cgel.zte@gmail.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
         willy@infradead.org, shy828301@gmail.com
@@ -53,16 +53,16 @@ Cc:     kbuild-all@lists.01.org, mhocko@kernel.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         cgroups@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
 Subject: Re: [PATCH] mm/memcg: support control THP behaviour in cgroup
-Message-ID: <202205052006.qFYTjcyt-lkp@intel.com>
+Message-ID: <202205052101.TsTEcZoc-lkp@intel.com>
 References: <20220505033814.103256-1-xu.xin16@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20220505033814.103256-1-xu.xin16@zte.com.cn>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,29 +82,27 @@ https://git-scm.com/docs/git-format-patch]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220505-114028
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 107c948d1d3e61d10aee9d0f7c3d81bbee9842af
-config: mips-decstation_64_defconfig (https://download.01.org/0day-ci/archive/20220505/202205052006.qFYTjcyt-lkp@intel.com/config)
-compiler: mips64el-linux-gcc (GCC) 11.3.0
+config: i386-randconfig-a001 (https://download.01.org/0day-ci/archive/20220505/202205052101.TsTEcZoc-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
 reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
         # https://github.com/intel-lab-lkp/linux/commit/f08a35b9798572693a91c6a3d823ed9ae54ef688
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220505-114028
         git checkout f08a35b9798572693a91c6a3d823ed9ae54ef688
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=mips SHELL=/bin/bash
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
-   mips64el-linux-ld: mm/memory.o: in function `__handle_mm_fault':
-   memory.c:(.text+0x60a8): undefined reference to `__transparent_hugepage_enabled'
->> mips64el-linux-ld: memory.c:(.text+0x6108): undefined reference to `__transparent_hugepage_enabled'
-   mips64el-linux-ld: mm/huge_memory.o: in function `transparent_hugepage_active':
-   huge_memory.c:(.text+0x21e4): undefined reference to `__transparent_hugepage_enabled'
+   ld: mm/memory.o: in function `__handle_mm_fault':
+>> memory.c:(.text+0xc6f9): undefined reference to `__transparent_hugepage_enabled'
+>> ld: memory.c:(.text+0xc751): undefined reference to `__transparent_hugepage_enabled'
+   ld: mm/huge_memory.o: in function `transparent_hugepage_active':
+>> huge_memory.c:(.text+0x6351): undefined reference to `__transparent_hugepage_enabled'
 
 -- 
 0-DAY CI Kernel Test Service
