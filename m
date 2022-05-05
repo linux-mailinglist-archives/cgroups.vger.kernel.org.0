@@ -2,73 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB85351BE64
-	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 13:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F50551BF09
+	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 14:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355943AbiEELyD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 07:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
+        id S1359710AbiEEMRQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 08:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236235AbiEELyB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 07:54:01 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C8521A8;
-        Thu,  5 May 2022 04:50:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C4AA91F8D2;
-        Thu,  5 May 2022 11:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1651751416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFH/x2L4G69sbr6PPcrJ24GF6EKzycaRm+AGvFywOyg=;
-        b=Hi7oi4+HvgHIFy7zdrmmaaXxpCzxgIsU/9DIcQEQIsZBrzEnC99VBYyTdl9tCC5Clj0fNo
-        S4wfHAcq5GS0FxgqjHIneVl1e76wHk0FgPIrmw1/VLSR1LTsnu6LUe2oRBxPFHVVShOMzR
-        bOw8YBZW592ZS2VzcJD/HrayK6QgMM8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6974213A65;
-        Thu,  5 May 2022 11:50:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id lOXYGPi5c2IDbwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 05 May 2022 11:50:16 +0000
-Date:   Thu, 5 May 2022 13:50:15 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hridya Valsaraju <hridya@google.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        John Stultz <jstultz@google.com>,
-        Todd Kjos <tkjos@android.com>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 2/6] cgroup: gpu: Add a cgroup controller for
- allocator attribution of GPU memory
-Message-ID: <20220505115015.GD10890@blackbody.suse.cz>
-References: <20220502231944.3891435-1-tjmercier@google.com>
- <20220502231944.3891435-3-tjmercier@google.com>
- <20220504122558.GB24172@blackbody.suse.cz>
- <CABdmKX2DJy0i3XAP7xTduZ8KFVKtgto24w714YJNUb_=pfYiKw@mail.gmail.com>
-MIME-Version: 1.0
+        with ESMTP id S1359705AbiEEMRM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 08:17:12 -0400
+Received: from mail-oa1-x63.google.com (mail-oa1-x63.google.com [IPv6:2001:4860:4864:20::63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36327648
+        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 05:13:31 -0700 (PDT)
+Received: by mail-oa1-x63.google.com with SMTP id 586e51a60fabf-deb9295679so4007572fac.6
+        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 05:13:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:dkim-signature:date:from:to:cc:subject
+         :message-id:content-disposition:user-agent;
+        bh=t7IyGM1PKLvCYj6DQvv6UjWdSV7ltvFKCoW393kXRNw=;
+        b=TW4D1XmL0RbBMV6pER4/giUUhc3BIiwSUIYXAjluWaaMC/hU92kR6ZY51wFIWbq+Hr
+         u6DtEQSmxCpOUjNzOP1qvbTV9K9mIG/dNFykEYmV708TxfUc9T5jHWdmvXD2/w37Ig43
+         OhcnN+klZAs/LDyD+EqNyEsA38+7A39BIFjfwPs9h+RQ05rL24CULQanUSzQlSbUMUq3
+         ICfYTcfBNWsvCEek8e838/1rzBobK9WjKYVgWUgDmSiyLDl5Xn7ZlC0vb7+sbg5xA1c3
+         ayRkz6GWTTJQzqawKiOl44/dtUT4OYnuieGv7SboKu5ZSNAHTiD9FjMMFtlJS5RhKeV3
+         Mstg==
+X-Gm-Message-State: AOAM532SgP/NBmwJjeTu2aKOngDGNrd+qqN4aUsA75KxHXojJB3bAdvO
+        PxXIdVoCdod8NS280x3oSdBVuzA/Rg8MS4OGtxtR08xo7xuK
+X-Google-Smtp-Source: ABdhPJxUkvnIikJ8E1BXEQ5yQQkxhwMXWA/OpLAcn/gt3X4vfgcVDWDzHy+KFmDWVoeLGB5zxWMtyAUJ90dN
+X-Received: by 2002:a05:6870:42cc:b0:ed:5822:c10e with SMTP id z12-20020a05687042cc00b000ed5822c10emr1981057oah.171.1651752810988;
+        Thu, 05 May 2022 05:13:30 -0700 (PDT)
+Received: from smtp.aristanetworks.com (mx.aristanetworks.com. [162.210.129.12])
+        by smtp-relay.gmail.com with ESMTPS id 24-20020a05687010d800b000edd6d3a87asm88495oar.38.2022.05.05.05.13.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 May 2022 05:13:30 -0700 (PDT)
+X-Relaying-Domain: arista.com
+Received: from us192.sjc.aristanetworks.com (us192.sjc.aristanetworks.com [10.243.24.7])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id 46A4D53222C;
+        Thu,  5 May 2022 05:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1651752810;
+        bh=t7IyGM1PKLvCYj6DQvv6UjWdSV7ltvFKCoW393kXRNw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=E1j+U2hl6CofJ8uiprGDIHpGd2TFUWswYtuDc/9R27b1EB7Y69W7zoVvtRffljx5Z
+         sjAYQQ0Kpsd/xuo7Tk3grwQCOvgXO4VBje31QSr4qeRkDyuL/TgSBrTvHDAByWyGmL
+         piIhedVavXg/djHKPya8N8MoAAJoSqgNURHEG0NZ6V/+86tbzw2LTJrI0V/j8ZrAkE
+         uNov92hP4YCmKgaktYB+WeffKims7dHVH62bxVsTXc+FiK+lfQ2jGVR8TYDjJxKL50
+         8/fEfu+s+495H7MKCSyZnSFJj9QGwIbqC6BhnKFlvxq8C+2wPRHN+4EnMxYHpd5M1z
+         AY2l58vGnkRDA==
+Received: by us192.sjc.aristanetworks.com (Postfix, from userid 10278)
+        id 28A5E6A40F6E; Thu,  5 May 2022 05:13:30 -0700 (PDT)
+Date:   Thu, 5 May 2022 05:13:30 -0700
+From:   Ganesan Rajagopal <rganesan@arista.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org, rganesan@arista.com
+Subject: [PATCH] mm/memcontrol: Export memcg->watermark via sysfs for v2 memcg
+Message-ID: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABdmKX2DJy0i3XAP7xTduZ8KFVKtgto24w714YJNUb_=pfYiKw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,25 +72,49 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 04, 2022 at 10:19:20AM -0700, "T.J. Mercier" <tjmercier@google.com> wrote:
-> Should I export these now for this series?
+v1 memcg exports memcg->watermark as "memory.mem_usage_in_bytes" in
+sysfs. This is missing for v2 memcg though "memory.current" is exported.
+There is no other easy way of getting this information in Linux.
+getrsuage() returns ru_maxrss but that's the max RSS of a single process
+instead of the aggregated max RSS of all the processes. Hence, expose
+memcg->watermark as "memory.watermark" for v2 memcg.
 
-Hehe, _I_ don't know.
-Depends on the likelihood this lands in and is built upon.
+Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
+---
+ mm/memcontrol.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-> No, except maybe the gpucg_bucket name which I can add an accessor
-> function for. Won't this mean depending on LTO for potential inlining
-> of the functions currently implemented in the header?
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 725f76723220..57ed07deff3e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6098,6 +6098,14 @@ static u64 memory_current_read(struct cgroup_subsys_state *css,
+ 	return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
+ }
+ 
++static u64 memory_watermark_read(struct cgroup_subsys_state *css,
++				 struct cftype *cft)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
++
++	return (u64)memcg->memory.watermark * PAGE_SIZE;
++}
++
+ static int memory_min_show(struct seq_file *m, void *v)
+ {
+ 	return seq_puts_memcg_tunable(m,
+@@ -6361,6 +6369,11 @@ static struct cftype memory_files[] = {
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.read_u64 = memory_current_read,
+ 	},
++	{
++		.name = "watermark",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = memory_watermark_read,
++	},
+ 	{
+ 		.name = "min",
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+-- 
+2.28.0
 
-Yes.  Also depends how much inlining here would be performance relevant.
-I suggested this with an OS vendor hat on, i.e. the less such ABI, the
-simpler.
-
-> I'm happy to make this change, but I wonder why some parts of the
-> kernel take this approach and others do not.
-
-I think there is no convention (see also
-Documentation/process/stable-api-nonsense.rst ;-)).
-
-Regards,
-Michal
