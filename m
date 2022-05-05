@@ -2,74 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207CD51CCFA
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 01:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E9B51CD08
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 01:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357114AbiEEX6V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 19:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S1387005AbiEFAAZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 20:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350367AbiEEX6U (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 19:58:20 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6759460D85
-        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 16:54:39 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id i186so5685612vsc.9
-        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 16:54:39 -0700 (PDT)
+        with ESMTP id S1386988AbiEFAAY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 20:00:24 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38EB60DA6
+        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 16:56:42 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id p4so6959434edx.0
+        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 16:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tDDyzRVab5pN0l0Oc9TAGru6/qJIRko7NAIbkOiJF8A=;
-        b=r1hLylWIOOOhaGFz+p6F3AydVEizM2PBMopIl7xCwgCpXpdj2SokxxV2SHoaI7PsS5
-         O5XPHbELH3T7ucpExD9G9kVlFRitPY7R7wqnjKFPFLIxiMf35ksgPBUGvOAa8J2qSLnA
-         QyTdGasRks2Hu/SE+misUqRIisf3JSGLfx/+ngOcXh4xDTDaEcERE/5fhgMDAaNmg9eE
-         XxGq2KReyZ+PuXCPEUzSvCQVdKgX+qxpRhgSMBPttinWyGCEIuhX/kpStjsbylnebD2X
-         vAkIk10ud0IVJn1anD+35kseqge1JuMc50aIHwAcrX8491ZfphZk/mlv0nA3ZBCz5Afe
-         GC5w==
+         :cc:content-transfer-encoding;
+        bh=uWiEhWmhMDzG0ZpwCc+KvFHmta+dLhGoAJnxSBDiro8=;
+        b=CaBQ1UXw8e392aHxUqO7YzvZNbVO299KOlkxDA3WGrY9BWShRdfHWTf0i0Tdsc0Z4x
+         Zgp4Gq8IkAZ61hhLujTNwr7ZXt3+q6wrr7TWIsSa3R0i/tELL2+yAzMh5esa0TCqwJjl
+         F/5g78AXRbrvZs5gyHBEnx6Uj/Y4QIjKYxUmn38VJVxgSqmyUH1by4gck/j5PJ+AjqT+
+         BCOGzPJ0WCkgbOLhtqewqTMnmy5zyvK3ubf+kCmfpaL0Fm6d4f06nN2nMq53FagcwD13
+         1/6oImedxy6bVsDtMqoGLQAS79JNnWcFY/mAdKcBZe7DOuOn/8sY8HI2NP6NDwRdgjvN
+         Jsrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tDDyzRVab5pN0l0Oc9TAGru6/qJIRko7NAIbkOiJF8A=;
-        b=ii+Bogn374KF77ceKVjdwBLjfdPmq6RScwu4PcMYVq+hUhP6sHf5Ci+8kxYtHWdMoJ
-         YySvy/feHwDSk1gfeedoZlxMc5d0W/VGG9hKasPhvKIl5jvZFw4fmTKHoWZyXX6o98Qz
-         qCYJ2uXpQ+tX0ykqptE0xSncyolAF9P1TBWwNQhbTQyvpn6Mj2gdMfFdC6/s53fQ8gaq
-         b0OhvsuEM1a0Sc39lGhS9xF4eqcjAHTfaLfj2EDodujeVmkn5zHgRfWsn1lod1PDaug6
-         Navmdw466w2FJEkhKAvdjTGpw4fNdP6hWua+xIwrruaR3tDFU60QNgQMYaR23+nczytO
-         BJBA==
-X-Gm-Message-State: AOAM532JEsoqBLdvMQAHW54HqOj8lRMYwvURKsI9nFEVd+xDZ5la3dER
-        Sm+yOL0NVm8kOrUFVOQrt5kooxLuyY3qglk7QGd7uQ==
-X-Google-Smtp-Source: ABdhPJxopamlFqZOgSKVhG7nIetrG2PG7cgpRoI22LRBUGNQCpa8b8bZVtse6QuNZy6mGp6tZHSNhz6wiA/JWjuxyp0=
-X-Received: by 2002:a05:6102:c13:b0:32d:518f:feaf with SMTP id
- x19-20020a0561020c1300b0032d518ffeafmr174918vss.84.1651794878401; Thu, 05 May
- 2022 16:54:38 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uWiEhWmhMDzG0ZpwCc+KvFHmta+dLhGoAJnxSBDiro8=;
+        b=I+vE2r0DSw94uA0wg9uldSOSwdL+Muz+ulu+MHbAmDjIBpwYUIjfKYYO4PcxYw5ob8
+         5cEMso5Er+SXYw8xNL8TFmLjbPg1rpBWCSIVr8qtOs0XlL0Sackc/LeYk2rqAuoTdwUC
+         6cYwSnJ+YxF9shFc/vvy/lkS/OLr4RdiT+Pw5cx7G9xxS2wpDWH59p9tsaWVMJclmEyb
+         1vagY7ZiSUNy6I5zRWHq5P904jP5liaZZEIVJp6CxWx06Ivji8HxBc4ps5gC0aRsArxg
+         adU8JS4RmFUskcF6qxUZELgj9byFKTdzH/YvLsVISOrGBjuMOd4r7mOPMwLkC7031CfN
+         xX3Q==
+X-Gm-Message-State: AOAM533R2sq9FBZtePdG/eAEH5LIyFz4aFwnloCWCdnslEZYdwHb1/pb
+        4q1y5aaWg+ZNhBttO6Dl8MsFRUj/OxxJ72dNrjpWrg==
+X-Google-Smtp-Source: ABdhPJxBVsYL/HmPz5Si6AZ374lQlB+QZq/MgvSO76eUd0MC1TXZ0G1DD2y30Q2fgAaRR4bq7DsCqSpNFU8IXCPJ+NQ=
+X-Received: by 2002:a05:6402:2397:b0:426:4967:8574 with SMTP id
+ j23-20020a056402239700b0042649678574mr744975eda.197.1651795001436; Thu, 05
+ May 2022 16:56:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
- <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org>
- <Ymm3WpvJWby4gaD/@cmpxchg.org> <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
- <YmqmWPrIagEEceN1@cmpxchg.org> <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
- <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com>
- <CALvZod5CReJZeGxkX9i6k7+R+3kF5dikXx9akbiP_L0j4Qu=6A@mail.gmail.com> <CABCjUKAoTmqvyBbFH7A188s8Hwi1XbLgfb6znzgFOuRWBMBxig@mail.gmail.com>
-In-Reply-To: <CABCjUKAoTmqvyBbFH7A188s8Hwi1XbLgfb6znzgFOuRWBMBxig@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 5 May 2022 16:54:02 -0700
-Message-ID: <CAOUHufbnc3Q2qNd5f=SUgmzdSG6_c_ddZgDFEcxNajdSz=Ty3g@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-To:     Suleiman Souhlal <suleiman@google.com>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
+References: <20220502231944.3891435-1-tjmercier@google.com>
+ <20220502231944.3891435-2-tjmercier@google.com> <20220504121052.GA24172@blackbody.suse.cz>
+ <CABdmKX2nbXLrngK8XRFCBCP=Zz-AMgKviiUdpWvEiYc-jOqang@mail.gmail.com> <20220505112908.GC10890@blackbody.suse.cz>
+In-Reply-To: <20220505112908.GC10890@blackbody.suse.cz>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Thu, 5 May 2022 16:56:30 -0700
+Message-ID: <CABdmKX26mY3xYL0drv51t5_3tmUTbExZtjN73KU8bpP8ZJ5CgA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/6] gpu: rfc: Proposal for a GPU cgroup controller
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hridya Valsaraju <hridya@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        John Stultz <jstultz@google.com>,
+        Todd Kjos <tkjos@android.com>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kernel-team@android.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -81,31 +81,34 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 5, 2022 at 3:25 PM Suleiman Souhlal <suleiman@google.com> wrote:
+On Thu, May 5, 2022 at 4:29 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
 >
-> On Fri, May 6, 2022 at 4:33 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Thu, Apr 28, 2022 at 9:54 AM Yang Shi <shy828301@gmail.com> wrote:
-> > >
-> > [...]
-> > > > Yes, we have some modifications to zswap to make it work without any
-> > > > backing real swap. Though there is a future plan to move to zram
-> > > > eventually.
-> > >
-> > > Interesting, if so why not just simply use zram?
-> > >
-> >
-> > Historical reasons. When we started trying out the zswap, I think zram
-> > was still in staging or not stable enough (Suleiman can give a better
-> > answer).
+> On Wed, May 04, 2022 at 10:16:50AM -0700, "T.J. Mercier" <tjmercier@googl=
+e.com> wrote:
+> > However the only names that would result from this series are the
+> > names of the dma-buf heaps, with "-heap" appended. So they are
+> > predictable from the /dev/dma_heap/* names, and only the system and
+> > cma heaps currently exist upstream.
 >
-> One of the reasons we chose zswap instead of zram is that zswap can
-> reject pages.
-> Also, we wanted to have per-memcg pools, which zswap made much easier to do.
+> It's not so important with the read-only stats currently posted (a
+> crafted sysfs file with these names would be an overlikill)...
+>
+> >
+> > For other future uses of this controller I thought we were headed in
+> > the direction of "standardized" names which would be
+> > predefined/hardcoded and documented, so these names wouldn't really
+> > need to be made available to a user at runtime.
+> > https://lore.kernel.org/lkml/CABdmKX3gTAohaOwkNccGrQyXN9tzT-oEVibO5ZPF+=
+eP+Vq=3DAOg@mail.gmail.com/
+>
+> (Ah, I see.)
+>
+> ...but if writers (limits) are envisioned, the keys should represent
+> something that the user can derive/construct from available info -- e.g.
+> the documentation.
+>
+> OK, so I understand current form just presents some statistics.
+>
+Yup, thanks for taking a look.
 
-Yes, it was a design choice. zswap was cache-like (tiering) and zram
-was storage-like (endpoint). Though nowadays the distinction is
-blurry.
-
-It had nothing to do with zram being in staging -- when we took zswap,
-it was out of the tree.
+> Michal
