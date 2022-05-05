@@ -2,63 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575F951C907
-	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 21:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D930F51C93E
+	for <lists+cgroups@lfdr.de>; Thu,  5 May 2022 21:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385020AbiEETeW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 15:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S242164AbiEEThB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 15:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384472AbiEETeV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 15:34:21 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F4F5AA70
-        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 12:30:40 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d17so5355608plg.0
-        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 12:30:40 -0700 (PDT)
+        with ESMTP id S1344299AbiEEThA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 15:37:00 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203985BE46
+        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 12:33:20 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d17so5362366plg.0
+        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 12:33:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gLvYPio/y1Rsy8ZWzpMgmaTLG4G8yUQ5M+BgkCxtwtA=;
-        b=XQIzSd9nao1kbun84GbUFcH2P6yyzDFG+N0A2uCHmVBYC8oODM70pXR7xtStMpfyc5
-         mtLLHkk0xuZbqCU7Z5wfpn1V3VrJczJhfpGwyYX1NsIjuxhnx3cpVEjvnU072DQm7TsC
-         gFykdkxKL30lcwxhTxXlO00viowVHb31o4Z2Loba1USEpkQpfNxxSXoUolf1lg7eK28D
-         gU4oWX58uS9Uc4wMyy34HH3NIIDZng79hu94xSbuNXAA5Q+YGYbWkVR7CXkiOn3GfgBN
-         5WSfh48VFtwZ0Z7T/OV4fH9LnOoWTy+y8fK8buNSTDzi/szVTBJSmmRLPwFRFH2lKvwh
-         WMhw==
+        bh=dRHgD9SEP6VxecvOJKMO+hE0skmrxwLBPBgRgtV/MUU=;
+        b=cRbJ1Voo0Pa/pnGw+etrw1nN4wsyMSamotM9s29deoo46EfHIwdES8lYAf2BicHXYh
+         cbUp7UQn497jeuMx6r582K3O7sammfm2CYNakU5Sb48i4jDKZ1/hFLj6g+yGHbGJg678
+         pNktgCkMDanFMuxNLRXwMiyGeLVgOhm//W+PEJVfg+oRO9cOlW+7w99LZd25UFx/xpnw
+         0PST6Um2u2Ibhy/5pt+x2B+DTaCcyj4HM4TxHjiiNvODWTuv3Qwv0YeTP3NAfk5RQGGr
+         gWMXiYl5ck3Cr5eZRPzA0PTQ66o9qX9DoCCrsFx+1hjhm2KMdvZNlU04BokxyrIOe33N
+         lB/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gLvYPio/y1Rsy8ZWzpMgmaTLG4G8yUQ5M+BgkCxtwtA=;
-        b=nwXZD7VL4+6dw60J8ocPQkCQv9Ciaot7s8vnAv+xd5+BsDX2yK7VqY+P2Dg/sy/RGn
-         jz0r3pdie+p/wr5QMFgmACaFm/6jGbYh+Hri40LWrb5odvKom4XtpUeOJMQQL/64QqrL
-         sTttIp/8G/r8yqtewqvhHmfouY7XnSaC8TnIUiw1/p8hj15nWdUIXY5H9/Wzm/fCpTfX
-         yatHJHA18PA9UobOYExa9szoxYJVZ5irHqlc84mU+AsLKfknjGJdDUr4kypqunjjjd20
-         CHe7v9VbzBHx0EjwmhCCtRbdEo6RcNa0Y0Zvt3ZHm6DLSbPw12fGEg65q7yiAivi4G2a
-         i+hw==
-X-Gm-Message-State: AOAM530YoYW8Ip82BmbPSfHHdMdh1pkVBLy7Y41zIaI5RTNl/LrXuwSE
-        pAoCNM183d1K+T0TMy0NPVtyJJzMUbomnKpBb70zmw==
-X-Google-Smtp-Source: ABdhPJyXcVPUUtmRGPX2KwjdTIb5ADyqBAf+SHZRA/wRfxH1x/C1g1gXItwmdL+70dkvEIL2og+nTKc+ICshlHYRZ8k=
-X-Received: by 2002:a17:902:f682:b0:15e:951b:8091 with SMTP id
- l2-20020a170902f68200b0015e951b8091mr25548653plg.106.1651779040120; Thu, 05
- May 2022 12:30:40 -0700 (PDT)
+        bh=dRHgD9SEP6VxecvOJKMO+hE0skmrxwLBPBgRgtV/MUU=;
+        b=A6guL/31trq4ecT5ilc7pwkU593Q4Zfvio9jymz3owYcTFnGb7XKE8xkNxZ+k8hiVv
+         Ne+3ZY0Et2QwK8ak6WeSiBAxpHipYOIKVDYU9QvW0ZmXe1hqMUDOyqur3HpjaEG7ps5O
+         Qi+NDib2dbGzi8kRcaKGbooVdkHKSab/OyrqXu78qeQCg1KSIJ/ja2X0bDTpO3ZZSs/z
+         d0qQpJG6wpKILW5Dw9YcYHiXcJNHSowuSNWIeEtgz2rM+qik2c2yD3vP9A+0EPjHJw/e
+         trHo2paEJhnV4wkOcjJFTCiBrZBOruttskHUGd/ay/AyOAfoRZAYhvGdRYhtnGvoVBgy
+         JaVw==
+X-Gm-Message-State: AOAM532K0rO136X2Hwn8qE2o16uH2/Or0GL++W/6d6KyiRyOi70Mg7n0
+        fTvXVVIiDvnE2+0E5dduzTytVYZs8YlH74xzHEP4uQ==
+X-Google-Smtp-Source: ABdhPJxGguelLKMMpEx0uxbQpKMJbjQY6h5B3jSBojaGuvXcuco6MYRM1sPTvh64MqlKMdIMtg8Lwvyr/Ct7WyXrOzU=
+X-Received: by 2002:a17:90b:1d83:b0:1dc:4362:61bd with SMTP id
+ pf3-20020a17090b1d8300b001dc436261bdmr8009409pjb.126.1651779199526; Thu, 05
+ May 2022 12:33:19 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
  <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org>
  <Ymm3WpvJWby4gaD/@cmpxchg.org> <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
  <YmqmWPrIagEEceN1@cmpxchg.org> <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
- <Ymqv25+8IX2wqKzu@cmpxchg.org>
-In-Reply-To: <Ymqv25+8IX2wqKzu@cmpxchg.org>
+ <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com>
+In-Reply-To: <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 5 May 2022 12:30:29 -0700
-Message-ID: <CALvZod7_5CNjMqEo_SseW7VoVW9gRC8ZoVy=f9SAOL4+-1jR4A@mail.gmail.com>
+Date:   Thu, 5 May 2022 12:33:08 -0700
+Message-ID: <CALvZod5CReJZeGxkX9i6k7+R+3kF5dikXx9akbiP_L0j4Qu=6A@mail.gmail.com>
 Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Yuanchu Xie <yuanchu@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
+To:     Yang Shi <shy828301@gmail.com>,
+        Suleiman Souhlal <suleiman@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         Seth Jennings <sjenning@redhat.com>,
@@ -72,40 +72,23 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-+Yosry & Yuanchu
-
-On Thu, Apr 28, 2022 at 8:17 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, Apr 28, 2022 at 9:54 AM Yang Shi <shy828301@gmail.com> wrote:
 >
 [...]
-> >
 > > Yes, we have some modifications to zswap to make it work without any
-> > backing real swap.
+> > backing real swap. Though there is a future plan to move to zram
+> > eventually.
 >
-> Not sure if you can share them, but I would be interested in those
-> changes. We have real backing swap, but because of the way swap
-> entries are allocated, pages stored in zswap will consume physical
-> disk slots. So on top of regular swap, you need to provision disk
-> space for zswap as well, which is unfortunate.
->
-> What could be useful is a separate swap entry address space that maps
-> zswap slots and disk slots alike. This would fix the above problem. It
-> would have the added benefit of making swapoff much simpler and faster
-> too, as it doesn't need to chase down page tables to free disk slots.
+> Interesting, if so why not just simply use zram?
 >
 
-I think we can share the code. Adding Yosry & Yuanchu who are
-currently maintaining that piece of code.
-
-Though that code might not be in an upstreamable state. At the high
-level, it introduces a new type of swap (SWP_GHOST) which underlying
-is a truncated file, so no real disk space is needed. The zswap always
-accepts the page, so the kernel never tries to go to the underlying
-swapfile (reality is a bit more complicated due to the presence of
-incompressible memory and no real disk present on the system).
+Historical reasons. When we started trying out the zswap, I think zram
+was still in staging or not stable enough (Suleiman can give a better
+answer).
