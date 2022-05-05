@@ -2,61 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B33B51CC0C
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 00:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207CD51CCFA
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 01:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236152AbiEEW2p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 May 2022 18:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S1357114AbiEEX6V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 May 2022 19:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234582AbiEEW2o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 18:28:44 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B99289BA
-        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 15:25:04 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id z144so5523265vsz.13
-        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 15:25:03 -0700 (PDT)
+        with ESMTP id S1350367AbiEEX6U (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 May 2022 19:58:20 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6759460D85
+        for <cgroups@vger.kernel.org>; Thu,  5 May 2022 16:54:39 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id i186so5685612vsc.9
+        for <cgroups@vger.kernel.org>; Thu, 05 May 2022 16:54:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZTU61zGXmWFiJ96Frh3Jz27MZBWaPQRzBHvvGIgt+qo=;
-        b=QZRowjxdyK3cW28/2AurA6uZk0guOaXUobYrDQoZCXWjvLQ/UqqjkspA5cq5vJ+lmO
-         +3VbOyg8tu+9HHC1yNMS9fsG78gc0LDsxRKGKuxDPRLFtxvfi6CwNOqKaTu2udwfQwkv
-         kR9lBSbM5k/K8gXDLSshvj7HkXa/BzC0t91oaM4geJKTL/jxwdmyKz/neojgz/Uo6xaw
-         AOiiQ8YF0qfzCUU3y/7/icQ5tkmKsKoBTJn5cIyN71HYj/JFEs9X81LOQVThWl5uXnKb
-         3HnpMtxMR/nY9nHCaG3a0wOMj9PnPQKa4DCx8yQwXiLEURUhuk9+smXGAN7Fyv6N/LU0
-         tzvw==
+        bh=tDDyzRVab5pN0l0Oc9TAGru6/qJIRko7NAIbkOiJF8A=;
+        b=r1hLylWIOOOhaGFz+p6F3AydVEizM2PBMopIl7xCwgCpXpdj2SokxxV2SHoaI7PsS5
+         O5XPHbELH3T7ucpExD9G9kVlFRitPY7R7wqnjKFPFLIxiMf35ksgPBUGvOAa8J2qSLnA
+         QyTdGasRks2Hu/SE+misUqRIisf3JSGLfx/+ngOcXh4xDTDaEcERE/5fhgMDAaNmg9eE
+         XxGq2KReyZ+PuXCPEUzSvCQVdKgX+qxpRhgSMBPttinWyGCEIuhX/kpStjsbylnebD2X
+         vAkIk10ud0IVJn1anD+35kseqge1JuMc50aIHwAcrX8491ZfphZk/mlv0nA3ZBCz5Afe
+         GC5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZTU61zGXmWFiJ96Frh3Jz27MZBWaPQRzBHvvGIgt+qo=;
-        b=uwPUr+3AL8A14I/TbtftATCAG8letXk0TI8R6WWZm4i4G9IuFjapmgF1/klpxJ1bJ2
-         WwIdw8ghIpvK2+cLU7YEhqgxxDv5+jbV3MD+/FUi6zuZ/U6wFTvOpsk6Zdk7fS/LHlN/
-         javNsgr1EXKsM0wAb4yo4KcFUgHzyHu4ebhDCOgNBP0sC+f0S699gxDhkE+vw6yq60hy
-         K07o3UnPgDsexkytiaar8R+P/tIWMRZlE+B0eYRRiGOEmO12pR2YEFASfNf4pS8cqCSd
-         AU1vAnS0YUshnrVhGLU5J8RTu+D+D1JoN/ZKqTQzog90Ku3IpygIrhW5eKjNmu/CPpfd
-         hzQA==
-X-Gm-Message-State: AOAM533hjC5qI/KJo+FOSV5iP4woGUVcgsAAqyd8M3ABVXlBkGjuJXa3
-        F4J9RDtNNnEMCLiXj9FuieYTkJPCzu74s3fpcL3g6Q==
-X-Google-Smtp-Source: ABdhPJzSTIXaeYs3GBff5g8EE46n+pwTbaDmDqbFn++uI37hHmsvQXFL1UGe+27TlhuxLyn320oDrpT4/PNoNTSXYm8=
-X-Received: by 2002:a67:c29e:0:b0:32d:1090:54cb with SMTP id
- k30-20020a67c29e000000b0032d109054cbmr108667vsj.56.1651789502928; Thu, 05 May
- 2022 15:25:02 -0700 (PDT)
+        bh=tDDyzRVab5pN0l0Oc9TAGru6/qJIRko7NAIbkOiJF8A=;
+        b=ii+Bogn374KF77ceKVjdwBLjfdPmq6RScwu4PcMYVq+hUhP6sHf5Ci+8kxYtHWdMoJ
+         YySvy/feHwDSk1gfeedoZlxMc5d0W/VGG9hKasPhvKIl5jvZFw4fmTKHoWZyXX6o98Qz
+         qCYJ2uXpQ+tX0ykqptE0xSncyolAF9P1TBWwNQhbTQyvpn6Mj2gdMfFdC6/s53fQ8gaq
+         b0OhvsuEM1a0Sc39lGhS9xF4eqcjAHTfaLfj2EDodujeVmkn5zHgRfWsn1lod1PDaug6
+         Navmdw466w2FJEkhKAvdjTGpw4fNdP6hWua+xIwrruaR3tDFU60QNgQMYaR23+nczytO
+         BJBA==
+X-Gm-Message-State: AOAM532JEsoqBLdvMQAHW54HqOj8lRMYwvURKsI9nFEVd+xDZ5la3dER
+        Sm+yOL0NVm8kOrUFVOQrt5kooxLuyY3qglk7QGd7uQ==
+X-Google-Smtp-Source: ABdhPJxopamlFqZOgSKVhG7nIetrG2PG7cgpRoI22LRBUGNQCpa8b8bZVtse6QuNZy6mGp6tZHSNhz6wiA/JWjuxyp0=
+X-Received: by 2002:a05:6102:c13:b0:32d:518f:feaf with SMTP id
+ x19-20020a0561020c1300b0032d518ffeafmr174918vss.84.1651794878401; Thu, 05 May
+ 2022 16:54:38 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220427160016.144237-1-hannes@cmpxchg.org> <20220427160016.144237-5-hannes@cmpxchg.org>
  <Ymmnrkn0mSWcuvmH@google.com> <YmmznQ8AO5RLxicA@cmpxchg.org>
  <Ymm3WpvJWby4gaD/@cmpxchg.org> <CALvZod5LBi5V6q1uHUTSNnLz64HbD499a+OZvdYsUcmcWSt8Jg@mail.gmail.com>
  <YmqmWPrIagEEceN1@cmpxchg.org> <CALvZod7wOyXpA3pycM2dav9_F9sW5ezC84or-75u8GdQyu30nw@mail.gmail.com>
- <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com> <CALvZod5CReJZeGxkX9i6k7+R+3kF5dikXx9akbiP_L0j4Qu=6A@mail.gmail.com>
-In-Reply-To: <CALvZod5CReJZeGxkX9i6k7+R+3kF5dikXx9akbiP_L0j4Qu=6A@mail.gmail.com>
-From:   Suleiman Souhlal <suleiman@google.com>
-Date:   Fri, 6 May 2022 07:24:51 +0900
-Message-ID: <CABCjUKAoTmqvyBbFH7A188s8Hwi1XbLgfb6znzgFOuRWBMBxig@mail.gmail.com>
+ <CAHbLzkqOUkaud4hQZeAbnO3T6VJpku4aKn1EYv9RunB+Kmu9Sg@mail.gmail.com>
+ <CALvZod5CReJZeGxkX9i6k7+R+3kF5dikXx9akbiP_L0j4Qu=6A@mail.gmail.com> <CABCjUKAoTmqvyBbFH7A188s8Hwi1XbLgfb6znzgFOuRWBMBxig@mail.gmail.com>
+In-Reply-To: <CABCjUKAoTmqvyBbFH7A188s8Hwi1XbLgfb6znzgFOuRWBMBxig@mail.gmail.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 5 May 2022 16:54:02 -0700
+Message-ID: <CAOUHufbnc3Q2qNd5f=SUgmzdSG6_c_ddZgDFEcxNajdSz=Ty3g@mail.gmail.com>
 Subject: Re: [PATCH 4/5] mm: zswap: add basic meminfo and vmstat coverage
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Yang Shi <shy828301@gmail.com>,
+To:     Suleiman Souhlal <suleiman@google.com>,
+        Yang Shi <shy828301@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -79,24 +81,31 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 6, 2022 at 4:33 AM Shakeel Butt <shakeelb@google.com> wrote:
+On Thu, May 5, 2022 at 3:25 PM Suleiman Souhlal <suleiman@google.com> wrote:
 >
-> On Thu, Apr 28, 2022 at 9:54 AM Yang Shi <shy828301@gmail.com> wrote:
+> On Fri, May 6, 2022 at 4:33 AM Shakeel Butt <shakeelb@google.com> wrote:
 > >
-> [...]
-> > > Yes, we have some modifications to zswap to make it work without any
-> > > backing real swap. Though there is a future plan to move to zram
-> > > eventually.
+> > On Thu, Apr 28, 2022 at 9:54 AM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > [...]
+> > > > Yes, we have some modifications to zswap to make it work without any
+> > > > backing real swap. Though there is a future plan to move to zram
+> > > > eventually.
+> > >
+> > > Interesting, if so why not just simply use zram?
+> > >
 > >
-> > Interesting, if so why not just simply use zram?
-> >
+> > Historical reasons. When we started trying out the zswap, I think zram
+> > was still in staging or not stable enough (Suleiman can give a better
+> > answer).
 >
-> Historical reasons. When we started trying out the zswap, I think zram
-> was still in staging or not stable enough (Suleiman can give a better
-> answer).
+> One of the reasons we chose zswap instead of zram is that zswap can
+> reject pages.
+> Also, we wanted to have per-memcg pools, which zswap made much easier to do.
 
-One of the reasons we chose zswap instead of zram is that zswap can
-reject pages.
-Also, we wanted to have per-memcg pools, which zswap made much easier to do.
+Yes, it was a design choice. zswap was cache-like (tiering) and zram
+was storage-like (endpoint). Though nowadays the distinction is
+blurry.
 
--- Suleiman
+It had nothing to do with zram being in staging -- when we took zswap,
+it was out of the tree.
