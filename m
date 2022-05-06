@@ -2,97 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7AC51E0C0
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 23:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923BF51E213
+	for <lists+cgroups@lfdr.de>; Sat,  7 May 2022 01:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391619AbiEFVMW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 May 2022 17:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35526 "EHLO
+        id S1355869AbiEFXQq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 May 2022 19:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444283AbiEFVMU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 17:12:20 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EB56F48D
-        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 14:08:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k1so8589774pll.4
-        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 14:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
-        b=Joad3nP8B5ojFitfw8DdC0REQkC0zsEe5u5htQxRckBRMr0urz7hxKetQtkO7udZkC
-         FzsX8+p0Sc9gNOdvrZeAW12+l5tyilxfYlspVMB2dpiDJXLqx6Wpi7hihMfrud54m1Zg
-         Mh1oe2MDVYw6kiaDlA2NtogrCOZQSuzvqJYgf6f6Wy1ePNSkxUwDBI80KJ/ZXX/CFO5Q
-         B0yfdN0Ec0SWIEutTTWh6w6dsvNIDRBHaB7bwrhudJECyVKeg6tf7u7bc9CBG2qQ5YWd
-         PTVzliATz7YkJx+8OKJJ6ybkyR4ooOScuQpvU3MnF7L2YHjPQ0IF5hQRrxqJ19lmzvAD
-         R+8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=VSSUIwdzgxQxnEkB7+u7pnweyPajIQMP3nQqWYs8VX0=;
-        b=iW0/SNmDmY+A44akLWOFXIRClmzruhZws7MooEI1M0K6nKIWgRaZd+sqGemczrwx7p
-         +S5BlRZt66ihknI2y7a7Dg0kdu5zEaztw4yNDoEBmYgAIoh5PEZh3HlvrIXn3lFiuwtc
-         U+9fpHCBijotwGwmUUmsKMnVtOgkeoWs1piIH7rfXPlxG9FSJHR2ABHuEOA5mIghgjcK
-         OfbZWlzlkhe8AF+NiZceVbBPI4kC3sigoQ25ArZsQMMLYtvB7mZgm5RSpxKq3sOOzJbS
-         R122OOwslTT+tOlJ0bVbOpoX//1cHixDLhkIDbL1be734G7FYs77JEz9SXMPiGm8H3VD
-         0uAA==
-X-Gm-Message-State: AOAM531I3159izj+QKpiBHdGVvDH3OQwiH5cqLayA4G8uWtTjMQ2nbvh
-        LvPR3VoxH7sPd9GQH4XWs6btLWYeT8qor2OH5Q==
-X-Google-Smtp-Source: ABdhPJx7AZjSp/7FT2MdvlO7YrWQYCt+JqbfUbd88+DVrBY7qXWtsKhZdbXg3BxxR2WqyNhrb0hZJ8rVXn/MQ9qyvow=
-X-Received: by 2002:a17:90b:4c4d:b0:1dc:9636:ad19 with SMTP id
- np13-20020a17090b4c4d00b001dc9636ad19mr14608339pjb.39.1651871315438; Fri, 06
- May 2022 14:08:35 -0700 (PDT)
+        with ESMTP id S1344728AbiEFXQp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 19:16:45 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899CA6D38B;
+        Fri,  6 May 2022 16:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651878780; x=1683414780;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ivKLSc3Gz/VoaAyyf+KCJfvGkIFxkKCWMielKh/Fppg=;
+  b=GVG6h9CZA1jfByghGDw1R65aQ32f9pMEAdoBEWbj90Q0r5YLFXDnmcc6
+   dh1y0+Gc0N/ECEjmrkCTLfd7tnJ4sn/Ukd4PFBc3r1uNYrfCl8iWoghnc
+   IYW/1mujkVQVidenIlzhdOTOd8YRtrBDcCPG8wqOsUmta/rkddahyW0M/
+   q0HT1+3COSeLNnyxnWEQgY2k5ZnqblheXYJN5ZuVT47571pdmUBx3ctuH
+   xh/k4jgxKjA0rxZ5RSJA2naZCe0I84Yf+iM56o2B0mSyttNGpFq57oSGh
+   khYBJZMBc20RExNu/JfzomMgjw2OdoQC5iF3tvdqgsPyLljBy3G/W72Fa
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="250609349"
+X-IronPort-AV: E=Sophos;i="5.91,205,1647327600"; 
+   d="scan'208";a="250609349"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2022 16:13:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,205,1647327600"; 
+   d="scan'208";a="812601743"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 06 May 2022 16:12:55 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nn782-000E0I-Eu;
+        Fri, 06 May 2022 23:12:54 +0000
+Date:   Sat, 7 May 2022 07:12:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     cgel.zte@gmail.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        willy@infradead.org, shy828301@gmail.com
+Cc:     kbuild-all@lists.01.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        linmiaohe@huawei.com, hughd@google.com, songmuchun@bytedance.com,
+        surenb@google.com, vbabka@suse.cz, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        william.kucharski@oracle.com, peterx@redhat.com,
+        Yang Yang <yang.yang29@zte.com.cn>
+Subject: Re: [PATCH v2] mm/memcg: support control THP behaviour in cgroup
+Message-ID: <202205070730.ekn8xxfz-lkp@intel.com>
+References: <20220506031804.437642-1-yang.yang29@zte.com.cn>
 MIME-Version: 1.0
-Received: by 2002:ac4:9906:0:b0:4ba:807b:b8f3 with HTTP; Fri, 6 May 2022
- 14:08:34 -0700 (PDT)
-Reply-To: warren001buffett@gmail.com
-In-Reply-To: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
-References: <CAD_xG_pvNZK6BFCW+28Xv4DE=_5rbDZXDok2BYNn9xw6Ma7iow@mail.gmail.com>
-From:   Warren Buffett <guidayema@gmail.com>
-Date:   Fri, 6 May 2022 21:08:34 +0000
-Message-ID: <CAD_xG_rdOBPkJ_vBtwu64jvh_9gu-xQ0snv+DGiNbwhQ45dCoA@mail.gmail.com>
-Subject: Fwd: My name is Warren Buffett, an American businessman.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:643 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4891]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [guidayema[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220506031804.437642-1-yang.yang29@zte.com.cn>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-My name is Warren Buffett, an American businessman and investor I have
-something important to discuss with you.
+Hi,
 
-Mr. Warren Buffett
-warren001buffett@gmail.com
-Chief Executive Officer: Berkshire Hathaway
-aphy/Warren-Edward-Buffett
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linux/master linus/master v5.18-rc5 next-20220506]
+[cannot apply to hnaz-mm/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220506-112100
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+config: arm64-randconfig-r005-20220506 (https://download.01.org/0day-ci/archive/20220507/202205070730.ekn8xxfz-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/01b750c350f3c12ca3908e94dc4447041ac9d89b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220506-112100
+        git checkout 01b750c350f3c12ca3908e94dc4447041ac9d89b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+   aarch64-linux-ld: mm/shmem.o: in function `shmem_zero_setup':
+   shmem.c:(.text+0x6a0): undefined reference to `khugepaged_always'
+>> aarch64-linux-ld: shmem.c:(.text+0x6b4): undefined reference to `khugepaged_req_madv'
+   aarch64-linux-ld: mm/huge_memory.o: in function `do_huge_pmd_anonymous_page':
+   huge_memory.c:(.text+0x3a78): undefined reference to `khugepaged_always'
+>> aarch64-linux-ld: huge_memory.c:(.text+0x3a8c): undefined reference to `khugepaged_req_madv'
+   aarch64-linux-ld: mm/khugepaged.o: in function `hugepage_vma_check':
+   khugepaged.c:(.text+0x1370): undefined reference to `khugepaged_always'
+   aarch64-linux-ld: mm/khugepaged.o: in function `set_recommended_min_free_kbytes':
+   khugepaged.c:(.text+0x1654): undefined reference to `khugepaged_enabled'
+   aarch64-linux-ld: mm/khugepaged.o: in function `khugepaged_wait_work':
+   khugepaged.c:(.text+0x1b08): undefined reference to `khugepaged_enabled'
+>> aarch64-linux-ld: khugepaged.c:(.text+0x1c4c): undefined reference to `khugepaged_enabled'
+   aarch64-linux-ld: mm/khugepaged.o: in function `khugepaged_do_scan':
+   khugepaged.c:(.text+0x3a58): undefined reference to `khugepaged_enabled'
+   aarch64-linux-ld: khugepaged.c:(.text+0x3b10): undefined reference to `khugepaged_enabled'
+   aarch64-linux-ld: mm/khugepaged.o: in function `khugepaged_enter_vma_merge':
+   khugepaged.c:(.text+0x3f6c): undefined reference to `khugepaged_always'
+>> aarch64-linux-ld: khugepaged.c:(.text+0x3f80): undefined reference to `khugepaged_req_madv'
+   aarch64-linux-ld: mm/khugepaged.o: in function `start_stop_khugepaged':
+   khugepaged.c:(.text+0x42ec): undefined reference to `khugepaged_enabled'
+   aarch64-linux-ld: mm/khugepaged.o: in function `khugepaged_min_free_kbytes_update':
+   khugepaged.c:(.text+0x442c): undefined reference to `khugepaged_enabled'
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
