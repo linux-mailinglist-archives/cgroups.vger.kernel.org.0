@@ -2,208 +2,198 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846CF51DFA4
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 21:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E21C51E03B
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 22:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1390745AbiEFTdN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 May 2022 15:33:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
+        id S1443339AbiEFUmQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 May 2022 16:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390743AbiEFTdN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 15:33:13 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AAA6D94D
-        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 12:29:28 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 16so10367731lju.13
-        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 12:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=KWAb658hWnEyrNgr/yyrfE4nucb98F+3qRmQt1CMXNA=;
-        b=G/TjzTQMF1GsQTZOCwfujliBF5HfJ5GxX8JkT7vDeyvg5KUQUOMV7XEtC6MmaPQGPx
-         vhCqL1NN0ajISS2f5/HLS0G4JOZ6J0ehLRpNWgpeo3/byghb7omWCXJKirrgPdRi4h+G
-         elmvcOwiVB0KrZMyC6FV+JiyRVKQY667j3Vl70wZnt6RZJwD7IIHdFX0mrzOo/FuDgz5
-         /ViZkoq02gVCwy3ERveiYb6XZe0GEe1DdKy2aiPGKGAUo38kAuG+rBL50vxkpDyaMyos
-         G9bVpgU0U8+7maS6R2RLUVPa1mK/ghZnh2yhqf+bP6IvFBrl9Ll2C1tJYNMQDzvMvr82
-         tMrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=KWAb658hWnEyrNgr/yyrfE4nucb98F+3qRmQt1CMXNA=;
-        b=OGfTb5Ogm1k/Y3to+KvTh5t38+HvfcLdnn9cnbsnEgsAuL8kJe5EHLAfOPDGqVl/yB
-         fdwJJ+xk6uMivRtQDEWSyL99+V2pXdUsn2NCjwje5kz+ziZZWwxGXZsL7lbj4NdZiNIG
-         YEpXvXtsvKLsfQ6xCPTy3+bPedoGfIcikYkEQ3fUr1Bas0P8KmiKzx6yhwa3lDCCVh8z
-         OspbT4uKED2ktLAqXZgbRa7IqqPAQOf8A3I5d/oIK+Kdb3bG903sPjggWJaj3+SQ6zJ3
-         4MBudUbwnXNKfvUVkWjmplQSVmoIZqunYYOeXI1ztLVaol2qFYUV6g6aWJF+15lUuDk8
-         aTQA==
-X-Gm-Message-State: AOAM531k2HNQ+pzNz9qa5odf4BTHoSuJKW8MdN+BQqnPAEbGnCU3n754
-        JfxMcdLtLr6wMDtr1Xi7An59Hw==
-X-Google-Smtp-Source: ABdhPJyWWGiCkdIxMCIxqsLpBldxBZhSAlwBUjCRBsmjDFAzoM8XzNWYWeUahljwmbUXpjrOAeyuEg==
-X-Received: by 2002:a2e:a794:0:b0:250:5de1:1ec5 with SMTP id c20-20020a2ea794000000b002505de11ec5mr2859520ljf.270.1651865367120;
-        Fri, 06 May 2022 12:29:27 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id u24-20020a196a18000000b0047255d21180sm791507lfu.175.2022.05.06.12.29.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 May 2022 12:29:26 -0700 (PDT)
-Message-ID: <a07be858-c8a3-7851-9086-e3262cbcf707@openvz.org>
-Date:   Fri, 6 May 2022 22:29:25 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH v2] percpu: improve percpu_alloc_percpu event trace
-To:     Shakeel Butt <shakeelb@google.com>,
+        with ESMTP id S1443211AbiEFUmK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 16:42:10 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9112D1F1;
+        Fri,  6 May 2022 13:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651869503; x=1683405503;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2b+dWfxndlwKVu8r56BjaXCpV9WofllYiBZQXaA0tCY=;
+  b=FdtiNxtxPPI7oayfk7MZSOfzKi6uV/5pJlzpqtJksnsObAAS3DMnn4Qo
+   VTzIZ9V7E2v+gIbJ5H/ke4mjrwWJtXfnANFJAf7hUU+SHvyWkGgeqNp7H
+   IH9p/5Byw64Fan43xSC9JlSyQkVzHdf93C5gIJxSwXl2NxSoI2/2jJNjX
+   ahTJMD2s672iPNpeUlUKPGFlwwv286z5Xu7wZZqxG0z9hzZut1153gkUw
+   CFQpAwWqGRv3YPTVHo8FyyyYBAtt4VkMvFu5hlrz+bOMDtnS5lKkI/ASk
+   lEtTnCMix2Jce0Ts0IlJ8jNI9SuOehqtjBg5tFN/mLKJqyadNGl56CIVU
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="248474801"
+X-IronPort-AV: E=Sophos;i="5.91,205,1647327600"; 
+   d="scan'208";a="248474801"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2022 13:38:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,205,1647327600"; 
+   d="scan'208";a="564011788"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 06 May 2022 13:38:18 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nn4iQ-000DsG-38;
+        Fri, 06 May 2022 20:38:18 +0000
+Date:   Sat, 7 May 2022 04:38:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vasily Averin <vvs@openvz.org>, Shakeel Butt <shakeelb@google.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>
-Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
+Cc:     kbuild-all@lists.01.org, kernel@openvz.org,
+        linux-kernel@vger.kernel.org,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Vlastimil Babka <vbabka@suse.cz>,
         Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org
-References: <2b388d09-940e-990f-1f8a-2fdaa9210fa0@openvz.org>
-Content-Language: en-US
-In-Reply-To: <2b388d09-940e-990f-1f8a-2fdaa9210fa0@openvz.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Christoph Lameter <cl@linux-foundation.org>
+Subject: Re: [PATCH] percpu: improve percpu_alloc_percpu event trace
+Message-ID: <202205070420.aAhuqpYk-lkp@intel.com>
+References: <8d627f02-183f-c4e7-7c15-77b2b438536b@openvz.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d627f02-183f-c4e7-7c15-77b2b438536b@openvz.org>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Added call_site, bytes_alloc and gfp_flags fields to the output
-of the percpu_alloc_percpu ftrace event:
+Hi Vasily,
 
-mkdir-4393  [001]   169.334788: percpu_alloc_percpu:
- call_site=mem_cgroup_css_alloc+0xa6 reserved=0 is_atomic=0 size=2408 align=8
-  base_addr=0xffffc7117fc00000 off=402176 ptr=0x3dc867a62300 bytes_alloc=14448
-   gfp_flags=GFP_KERNEL_ACCOUNT
+Thank you for the patch! Perhaps something to improve:
 
-This is required to track memcg-accounted percpu allocations.
+[auto build test WARNING on rostedt-trace/for-next]
+[also build test WARNING on hnaz-mm/master v5.18-rc5]
+[cannot apply to dennis-percpu/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Signed-off-by: Vasily Averin <vvs@openvz.org>
----
-v2: added call_site, improved patch description
----
- include/trace/events/percpu.h | 23 +++++++++++++++++------
- mm/percpu-internal.h          |  8 ++++----
- mm/percpu.c                   |  5 +++--
- 3 files changed, 24 insertions(+), 12 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Vasily-Averin/percpu-improve-percpu_alloc_percpu-event-trace/20220506-124742
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+config: i386-randconfig-s001 (https://download.01.org/0day-ci/archive/20220507/202205070420.aAhuqpYk-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/dee6876db0a7a4715516e673f9edaca2ba40677c
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Vasily-Averin/percpu-improve-percpu_alloc_percpu-event-trace/20220506-124742
+        git checkout dee6876db0a7a4715516e673f9edaca2ba40677c
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash
 
-diff --git a/include/trace/events/percpu.h b/include/trace/events/percpu.h
-index df112a64f6c9..e989cefc0def 100644
---- a/include/trace/events/percpu.h
-+++ b/include/trace/events/percpu.h
-@@ -6,15 +6,20 @@
- #define _TRACE_PERCPU_H
- 
- #include <linux/tracepoint.h>
-+#include <trace/events/mmflags.h>
- 
- TRACE_EVENT(percpu_alloc_percpu,
- 
--	TP_PROTO(bool reserved, bool is_atomic, size_t size,
--		 size_t align, void *base_addr, int off, void __percpu *ptr),
-+	TP_PROTO(unsigned long call_site,
-+		 bool reserved, bool is_atomic, size_t size,
-+		 size_t align, void *base_addr, int off,
-+		 void __percpu *ptr, size_t bytes_alloc, gfp_t gfp_flags),
- 
--	TP_ARGS(reserved, is_atomic, size, align, base_addr, off, ptr),
-+	TP_ARGS(call_site, reserved, is_atomic, size, align, base_addr, off,
-+		ptr, bytes_alloc, gfp_flags),
- 
- 	TP_STRUCT__entry(
-+		__field(	unsigned long,		call_site	)
- 		__field(	bool,			reserved	)
- 		__field(	bool,			is_atomic	)
- 		__field(	size_t,			size		)
-@@ -22,9 +27,11 @@ TRACE_EVENT(percpu_alloc_percpu,
- 		__field(	void *,			base_addr	)
- 		__field(	int,			off		)
- 		__field(	void __percpu *,	ptr		)
-+		__field(	size_t,			bytes_alloc	)
-+		__field(	gfp_t,			gfp_flags	)
- 	),
--
- 	TP_fast_assign(
-+		__entry->call_site	= call_site;
- 		__entry->reserved	= reserved;
- 		__entry->is_atomic	= is_atomic;
- 		__entry->size		= size;
-@@ -32,12 +39,16 @@ TRACE_EVENT(percpu_alloc_percpu,
- 		__entry->base_addr	= base_addr;
- 		__entry->off		= off;
- 		__entry->ptr		= ptr;
-+		__entry->bytes_alloc	= bytes_alloc;
-+		__entry->gfp_flags	= gfp_flags;
- 	),
- 
--	TP_printk("reserved=%d is_atomic=%d size=%zu align=%zu base_addr=%p off=%d ptr=%p",
-+	TP_printk("call_site=%pS reserved=%d is_atomic=%d size=%zu align=%zu base_addr=%p off=%d ptr=%p bytes_alloc=%zu gfp_flags=%s",
-+		  (void *)__entry->call_site,
- 		  __entry->reserved, __entry->is_atomic,
- 		  __entry->size, __entry->align,
--		  __entry->base_addr, __entry->off, __entry->ptr)
-+		  __entry->base_addr, __entry->off, __entry->ptr,
-+		  __entry->bytes_alloc, show_gfp_flags(__entry->gfp_flags))
- );
- 
- TRACE_EVENT(percpu_free_percpu,
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index 411d1593ef23..70b1ea23f4d2 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -113,7 +113,6 @@ static inline int pcpu_chunk_map_bits(struct pcpu_chunk *chunk)
- 	return pcpu_nr_pages_to_map_bits(chunk->nr_pages);
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
- /**
-  * pcpu_obj_full_size - helper to calculate size of each accounted object
-  * @size: size of area to allocate in bytes
-@@ -123,13 +122,14 @@ static inline int pcpu_chunk_map_bits(struct pcpu_chunk *chunk)
-  */
- static inline size_t pcpu_obj_full_size(size_t size)
- {
--	size_t extra_size;
-+	size_t extra_size = 0;
- 
--	extra_size = size / PCPU_MIN_ALLOC_SIZE * sizeof(struct obj_cgroup *);
-+#ifdef CONFIG_MEMCG_KMEM
-+	extra_size += size / PCPU_MIN_ALLOC_SIZE * sizeof(struct obj_cgroup *);
-+#endif
- 
- 	return size * num_possible_cpus() + extra_size;
- }
--#endif /* CONFIG_MEMCG_KMEM */
- 
- #ifdef CONFIG_PERCPU_STATS
- 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index ea28db283044..3633eeefaa0d 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1884,8 +1884,9 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
- 	ptr = __addr_to_pcpu_ptr(chunk->base_addr + off);
- 	kmemleak_alloc_percpu(ptr, size, gfp);
- 
--	trace_percpu_alloc_percpu(reserved, is_atomic, size, align,
--			chunk->base_addr, off, ptr);
-+	trace_percpu_alloc_percpu(_RET_IP_, reserved, is_atomic, size, align,
-+				  chunk->base_addr, off, ptr,
-+				  pcpu_obj_full_size(size), gfp);
- 
- 	pcpu_memcg_post_alloc_hook(objcg, chunk, off, size);
- 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+   mm/percpu.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, include/trace/events/percpu.h):
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast from restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long flags @@     got restricted gfp_t [usertype] gfp_flags @@
+   include/trace/events/percpu.h:11:1: sparse:     expected unsigned long flags
+   include/trace/events/percpu.h:11:1: sparse:     got restricted gfp_t [usertype] gfp_flags
+   mm/percpu.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, include/trace/events/percpu.h):
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast to restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: cast to restricted gfp_t
+>> include/trace/events/percpu.h:11:1: sparse: sparse: restricted gfp_t degrades to integer
+>> include/trace/events/percpu.h:11:1: sparse: sparse: restricted gfp_t degrades to integer
+   mm/percpu.c:2012:24: sparse: sparse: context imbalance in 'pcpu_balance_free' - unexpected unlock
+
+vim +11 include/trace/events/percpu.h
+
+df95e795a72289 Dennis Zhou   2017-06-19  10  
+df95e795a72289 Dennis Zhou   2017-06-19 @11  TRACE_EVENT(percpu_alloc_percpu,
+df95e795a72289 Dennis Zhou   2017-06-19  12  
+df95e795a72289 Dennis Zhou   2017-06-19  13  	TP_PROTO(bool reserved, bool is_atomic, size_t size,
+dee6876db0a7a4 Vasily Averin 2022-05-06  14  		 size_t align, void *base_addr, int off,
+dee6876db0a7a4 Vasily Averin 2022-05-06  15  		 void __percpu *ptr, size_t bytes_alloc, gfp_t gfp_flags),
+df95e795a72289 Dennis Zhou   2017-06-19  16  
+dee6876db0a7a4 Vasily Averin 2022-05-06  17  	TP_ARGS(reserved, is_atomic, size, align, base_addr, off, ptr,
+dee6876db0a7a4 Vasily Averin 2022-05-06  18  		bytes_alloc, gfp_flags),
+df95e795a72289 Dennis Zhou   2017-06-19  19  
+df95e795a72289 Dennis Zhou   2017-06-19  20  	TP_STRUCT__entry(
+df95e795a72289 Dennis Zhou   2017-06-19  21  		__field(	bool,			reserved	)
+df95e795a72289 Dennis Zhou   2017-06-19  22  		__field(	bool,			is_atomic	)
+df95e795a72289 Dennis Zhou   2017-06-19  23  		__field(	size_t,			size		)
+df95e795a72289 Dennis Zhou   2017-06-19  24  		__field(	size_t,			align		)
+df95e795a72289 Dennis Zhou   2017-06-19  25  		__field(	void *,			base_addr	)
+df95e795a72289 Dennis Zhou   2017-06-19  26  		__field(	int,			off		)
+df95e795a72289 Dennis Zhou   2017-06-19  27  		__field(	void __percpu *,	ptr		)
+dee6876db0a7a4 Vasily Averin 2022-05-06  28  		__field(	size_t,			bytes_alloc	)
+dee6876db0a7a4 Vasily Averin 2022-05-06  29  		__field(	gfp_t,			gfp_flags	)
+df95e795a72289 Dennis Zhou   2017-06-19  30  	),
+df95e795a72289 Dennis Zhou   2017-06-19  31  	TP_fast_assign(
+df95e795a72289 Dennis Zhou   2017-06-19  32  		__entry->reserved	= reserved;
+df95e795a72289 Dennis Zhou   2017-06-19  33  		__entry->is_atomic	= is_atomic;
+df95e795a72289 Dennis Zhou   2017-06-19  34  		__entry->size		= size;
+df95e795a72289 Dennis Zhou   2017-06-19  35  		__entry->align		= align;
+df95e795a72289 Dennis Zhou   2017-06-19  36  		__entry->base_addr	= base_addr;
+df95e795a72289 Dennis Zhou   2017-06-19  37  		__entry->off		= off;
+df95e795a72289 Dennis Zhou   2017-06-19  38  		__entry->ptr		= ptr;
+dee6876db0a7a4 Vasily Averin 2022-05-06  39  		__entry->bytes_alloc	= bytes_alloc;
+dee6876db0a7a4 Vasily Averin 2022-05-06  40  		__entry->gfp_flags	= gfp_flags;
+df95e795a72289 Dennis Zhou   2017-06-19  41  	),
+df95e795a72289 Dennis Zhou   2017-06-19  42  
+dee6876db0a7a4 Vasily Averin 2022-05-06  43  	TP_printk("reserved=%d is_atomic=%d size=%zu align=%zu base_addr=%p off=%d ptr=%p bytes_alloc=%zu gfp_flags=%s",
+df95e795a72289 Dennis Zhou   2017-06-19  44  		  __entry->reserved, __entry->is_atomic,
+df95e795a72289 Dennis Zhou   2017-06-19  45  		  __entry->size, __entry->align,
+dee6876db0a7a4 Vasily Averin 2022-05-06  46  		  __entry->base_addr, __entry->off, __entry->ptr,
+dee6876db0a7a4 Vasily Averin 2022-05-06  47  		  __entry->bytes_alloc, show_gfp_flags(__entry->gfp_flags))
+df95e795a72289 Dennis Zhou   2017-06-19  48  );
+df95e795a72289 Dennis Zhou   2017-06-19  49  
+
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
