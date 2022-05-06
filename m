@@ -2,111 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B48251DCAA
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 17:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8E651DDB7
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 18:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443242AbiEFQCE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 May 2022 12:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S238906AbiEFQoE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 May 2022 12:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236869AbiEFQCE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 12:02:04 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBC26AA48
-        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 08:58:20 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x18so7844055plg.6
-        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 08:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VHy+wusyPADBOcjPYMIU3GWI4e85gM3jZeodGyJVQhA=;
-        b=YGRbRScUA8LR419d9cSOfjxmPI30qASgatv9LYfKxT1s7ZO5i8WQkqAVMm0P3oJ4nk
-         pBy3k6/8jLxgJSVy7MuL4DUxNA0WmvQ8gnfUfHudyju0I6slP1Mp0HLBuo7jjUPXvoc1
-         +2ppp9aeS4CY2viyRJUfAC2jdWa9UL/LWVB3lmNlPkBvpy+G+NMd9SazdehqRdbxwrXH
-         edI8bgPLYjrN3G/mKqxCdQimCdKP4M6VVivakQcXQ6nYR6xoLOwI1tp+SrxtmQ4MRnQT
-         ApUDsqAx5WIGKy18Lb7Oir3iBhYA4ONUJGRhDTeizI26JCjF/olW7Vs2VyIXz2JNtXnY
-         rwDQ==
+        with ESMTP id S245534AbiEFQoD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 12:44:03 -0400
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6426F6;
+        Fri,  6 May 2022 09:40:18 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id j6so6270741qkp.9;
+        Fri, 06 May 2022 09:40:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VHy+wusyPADBOcjPYMIU3GWI4e85gM3jZeodGyJVQhA=;
-        b=B7eVAqgdpl25asMglof/vtKAO9RJIgsaDeMdeRmH0sE4BBTbFFIRKRU2Bxn5jIRofK
-         qIn3WXnpumaQZVZrWwuwevx9Gbd3J0NjB1rTU4mQ7p4I1MiHt2USVq/GOL7z6Rokwt91
-         e622emZ9p5CFNslLf59sJxWvMFTxnNGvW0uwBqrGMp8I5kSfjpD3jHuroSwEJvC3V1Mk
-         ispqyQ7xAK77ezgPYjtDn3yIeerFqL7s3vFGKJNq3C8z3NMY2I76/5qPAFQgyOBvdJBt
-         mYlHKYvbqxCBzNvXyXJdSU9SnBKV4p2quyO0UMSoLs8Hm0SHYldhftDuIJx4pDl5ZkZQ
-         07Xw==
-X-Gm-Message-State: AOAM530iBvLPOzpqz7/+YynHHaccb3FK87EYe4nqdrbIEG5c0NBAZrfh
-        6gtT9fZ+sJCN+dsaiuVuWTpSEVTm80/AcEI8bFRlkQ==
-X-Google-Smtp-Source: ABdhPJyp2Q4nMMCgRmMgg2kKkOudiFFK7W93k8BUew9TnmnymZ67RQIeu7iOUYVz9L1gYPVH47+ppGfqXEhc9fEUOWs=
-X-Received: by 2002:a17:90a:ea18:b0:1da:4630:513d with SMTP id
- w24-20020a17090aea1800b001da4630513dmr4840715pjy.237.1651852700201; Fri, 06
- May 2022 08:58:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=tFroZ33tNBSAN1tcZa2Cw4zWBMi2iBtFH4Bzz4YsosU=;
+        b=1g3R79/JZIjzSixj9uXtVSHj9hn7aspX+hluZvudL5HjakKQICBACLpIo9dPrfUaB4
+         KAFH6ONTbThZS1zKik09jYohsAPquNtsQeWLlRW8JQlgHq0eSa4Hdh/CAqvk9ZtD6/0A
+         r/bihZePW50J33JLQqNjKe0b8UKw1QEWOdW+a732j33Qys0VsYlOlJFuwvt97rgopnpl
+         nB4dD0++hXkWMiE4+teBFF2m9uQxiU7uWxO4v2Np3Q0wnmnRzoP9xnu7oh6+ka9KMOBn
+         yIRUnJdsnDe1UTmBWnNcHMAo61Vlllp3EcT82NhQKOmHJ+0/9lP2nPmNsY13tuBv8cM9
+         VrjA==
+X-Gm-Message-State: AOAM5337DVXAMAHP5vohY5E/1sspSrMc1UXA5TjaHFD5VlUd/01rfctG
+        CUr1goiQWbcmn3z4uuAPJfY=
+X-Google-Smtp-Source: ABdhPJxyETxODGJra6xsGRAaLJvcj4Q8KJz+eh5+aO7lgt55G5ib6uq66idy09jNJJ0Ht6o/l8Hj+A==
+X-Received: by 2002:a05:620a:4045:b0:69f:e555:3fdf with SMTP id i5-20020a05620a404500b0069fe5553fdfmr3016293qko.365.1651855217645;
+        Fri, 06 May 2022 09:40:17 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-012.fbsv.net. [2a03:2880:20ff:c::face:b00c])
+        by smtp.gmail.com with ESMTPSA id o22-20020ac84296000000b002f39b99f6a0sm2717130qtl.58.2022.05.06.09.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 May 2022 09:40:17 -0700 (PDT)
+Date:   Fri, 6 May 2022 09:40:15 -0700
+From:   David Vernet <void@manifault.com>
+To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     akpm@linux-foundation.org, tj@kernel.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com,
+        Richard Palethorpe <rpalethorpe@suse.com>
+Subject: Re: [PATCH v2 2/5] cgroup: Account for memory_recursiveprot in
+ test_memcg_low()
+Message-ID: <20220506164015.fsdsuv226nhllos5@dev0025.ash9.facebook.com>
+References: <20220423155619.3669555-1-void@manifault.com>
+ <20220423155619.3669555-3-void@manifault.com>
+ <20220427140928.GD9823@blackbody.suse.cz>
+ <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
+ <20220429092620.GA23621@blackbody.suse.cz>
 MIME-Version: 1.0
-References: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
- <CALvZod5xiSuJaDjGb+NM18puejwhnPWweSj+N=0RGQrjpjfxbw@mail.gmail.com> <CAPD3tpG1BeTOwTBxkXCxoJagvbn6n1aAEkt0P65g91N9gtK03w@mail.gmail.com>
-In-Reply-To: <CAPD3tpG1BeTOwTBxkXCxoJagvbn6n1aAEkt0P65g91N9gtK03w@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 6 May 2022 08:58:09 -0700
-Message-ID: <CALvZod5OK=6Pmf3-iQ_ERE56-C0u6R0SCRcT6axk28kLxRy_RQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: Export memcg->watermark via sysfs for v2 memcg
-To:     Ganesan Rajagopal <rganesan@arista.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220429092620.GA23621@blackbody.suse.cz>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 5, 2022 at 10:27 AM Ganesan Rajagopal <rganesan@arista.com> wrote:
->
-> On Thu, May 5, 2022 at 9:42 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Thu, May 5, 2022 at 5:13 AM Ganesan Rajagopal <rganesan@arista.com> wrote:
-> > >
-> > > v1 memcg exports memcg->watermark as "memory.mem_usage_in_bytes" in
-> >
-> > *max_usage_in_bytes
->
-> Oops, thanks for the correction.
->
-> > > sysfs. This is missing for v2 memcg though "memory.current" is exported.
-> > > There is no other easy way of getting this information in Linux.
-> > > getrsuage() returns ru_maxrss but that's the max RSS of a single process
-> > > instead of the aggregated max RSS of all the processes. Hence, expose
-> > > memcg->watermark as "memory.watermark" for v2 memcg.
-> > >
-> > > Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
-> >
-> > Can you please explain the use-case for which you need this metric?
-> > Also note that this is not really an aggregated RSS of all the
-> > processes in the cgroup. So, do you want max RSS or max charge and for
-> > what use-case?
->
-> We run a lot of automated tests when building our software and used to
-> run into OOM scenarios when the tests run unbounded. We use this metric
-> to heuristically limit how many tests can run in parallel using per test
-> historical data.
->
-> I understand this isn't really aggregated RSS, max charge works. We just
-> need some metric to account for the peak memory usage.  We don't need
-> it to be super accurate because there's significant variance between test
-> runs anyway. We conservatively use the historical max to limit parallelism.
->
-> Since this metric is not exposed in v2 memcg, the only alternative is to
-> poll "memory.current" which would be quite inefficient and grossly
-> inaccurate.
->
+Sorry for the delayed reply, Michal. I've been at LSFMM this week.
 
-Oh also include the details you explained here in your commit message.
+On Fri, Apr 29, 2022 at 11:26:20AM +0200, Michal Koutný wrote:
+> I still think that the behavior when there's no protection left for the
+> memory.low == 0 child, there should be no memory.low events (not just
+> uncounted but not happening) and test should not accept this (even
+> though it's the current behavior).
+
+That's fair. I think part of the problem here is that in general, the
+memcontroller itself is quite heuristic, so it's tough to write tests that
+provide useful coverage while also being sufficiently flexible to avoid
+flakiness and over-prescribing expected behavior. In this case I think it's
+probably correct that the memory.low == 0 child shouldn't inherit
+protection from its parent under any circumstances due to its siblings
+overcommitting the parent's protection, but I also wonder if it's really
+necessary to enforce that. If you look at how much memory A/B/E gets at the
+end of the reclaim, it's still far less than 1MB (though should it be 0?).
+I'd be curious to hear what Johannes thinks.
+
+> What might improve the test space would be to have two configs like
+> 
+> Original one (simplified here)
+> 	parent		memory.low=50M	memory.current=100M
+> 	` child1	memory.low=50M	memory.current=50M
+> 	` child2	memory.low=0M	memory.current=50M
+> 
+> New one (checks events due to recursive protection)
+> 	parent		memory.low=50M	memory.current=100M
+> 	` child1	memory.low=40M	memory.current=50M
+> 	` child2	memory.low=0M	memory.current=50M
+> 
+> The second config assigns recursive protection to child2 and should
+> therefore cause memory.low events in child2 (with memory_recursiveprot
+> enabled of course).
+
+Something like this would work, though I think it's useful to specifically
+validate the behavior of the memcontroller when the children overcommit the
+parent's memory.low protection, which the current test does. So I'm
+inclined to keep this testcase, and add your next suggestion:
+
+> Or alternative new one (checks events due to recursive protection)
+> 	parent		memory.low=50M	memory.current=100M
+> 	` child1	memory.low=0M	memory.current=50M
+> 	` child2	memory.low=0M	memory.current=50M
+
+This definitely sounds to me like a useful testcase to add, and I'm happy
+to do so in a follow-on patch. If we added this, do you think we need to
+keep the check for memory.low events for the memory.low == 0 child in the
+overcommit testcase? It arguably helped to catch the SWAP_CLUSTER_MAX
+rounding issue you pointed out. Again, curious to hear what Johannes thinks
+as well.
+
+Thanks,
+David
