@@ -2,70 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0B651DB84
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 17:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01D351DCA1
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 17:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352071AbiEFPJK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 May 2022 11:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
+        id S1443224AbiEFQA1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 May 2022 12:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346922AbiEFPIz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 11:08:55 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5000B6D181
-        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 08:05:12 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id f4so8332863iov.2
-        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 08:05:12 -0700 (PDT)
+        with ESMTP id S1443225AbiEFQA0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 12:00:26 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD176D1AD
+        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 08:56:42 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id g3so6453409pgg.3
+        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 08:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2LpI0DImiuDC2UzRqfJHQ2qAza8P08IbEZJSnDfETww=;
-        b=C3DmY9zqQpuSybTFOak9V+J6u4wDYDHiArS7riORo4yB6KdqsWLxhsWFUXdp5Zs75r
-         KlULlrzTb6vVdS+TmD/jo/bV8PW3aZ5GW7HeytlG87S0bd1BJT21JxJdPWnjs0hSF3SU
-         zV/hZEYf+9AtoPpN49UXruQAhUzGe606FESKKBMPigXxbhAw9OFDNrCDZXxjxGJZYD/A
-         VBaa9IqZP05rI4wxT6MUkVDoNQOipok6hfIKKdi9UVogn/sEkGZSRfzgP16cJnQki1Il
-         D8XmaVr2p3CeL/fFfwnlhIqGTkcSaaLAssco5zlEM4tyNawoaqQiJXtR6lcRyYHVaZPU
-         +lbw==
+        bh=m81d4j0n4jrU8+EkDRIdTToCet26p62xWOxrVZBvafg=;
+        b=S1iVkf0yZxiaHzRBF42XNyBBVYQtqIWrWcb4akJVYnJMmXnItPsVLmg4coDg8m/z67
+         zbApxIKZInjNBYxMJw8GIMzyj7M3bgKFUnKdDhR/ihqiUbAQkrfwyXdCvuTc/G/2I+4h
+         dWxhx4OhlpzjbIwrxJblu6/FndBQSKOCVwpoCXNUsiWW/IMOJmsWE/bLctyGJdeaJOCb
+         aRQE95Jbf47BWzr6ax2qXBxI7K+cBRdcaxoFdUKc5y16WUBwk0VM2M5GNhyCZqOk4Wkw
+         F9Bvu8K6Ft+b68SNWYjQMKhxpzKetTu3oAOcHDoSa/7tlueVVUgn83GnY5mOciJpzE0O
+         Y9gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2LpI0DImiuDC2UzRqfJHQ2qAza8P08IbEZJSnDfETww=;
-        b=q36u5l1PIkr9RvnfJHVX9jb9z0Pf7fwE9dfelv6I7QHMb6weJfQxdRQnVa/6b44u2X
-         fMhbAtuY+NtKk/iN2y5ZSCS84e+g3fqZVufk35+mdzCRy00Of2bep5Ir08Y4GfEJ5wAn
-         ZGRf7k3HmmY2spTYHNRgD/67HdHNo84ivwlUalEgJhap4kvUCFY0F60st/5/u/ZjiFKb
-         ngDVSvhuUrnnAoD3otjvhylJWBiMK/u+9dXVeIurcqGH4S4tH33+F7HFG2mJlVS0eoE6
-         mwv4vea+1syFeJXrlrVFK+cWnOPsB14Bo2Sc8gJ6YMBkQinWQdXCVn4ZWDTcLVzKJ05m
-         uCCg==
-X-Gm-Message-State: AOAM532WAvlsqOjWTNobUdFik+nnEXO+VnCMsk1PRhwv5e8g+QpMkXTS
-        UzJgJ4rRspOJRZPXpCqbrmawM65fv9Xd5B4K4cdWUO0kHKI=
-X-Google-Smtp-Source: ABdhPJxeb79WtbUmSsuNP/GjVqnX8MbYvhajHJu6C3ecnqMNPy2jQSs2AQGuAJ8tlrZ+czv/9fyK+O6wejD/c8fhKsg=
-X-Received: by 2002:a05:6638:140d:b0:32b:c643:e334 with SMTP id
- k13-20020a056638140d00b0032bc643e334mr1250057jad.125.1651849511454; Fri, 06
- May 2022 08:05:11 -0700 (PDT)
+        bh=m81d4j0n4jrU8+EkDRIdTToCet26p62xWOxrVZBvafg=;
+        b=P6mKXDfMgjAmkyC86TKW+QJvamoQDSRhyoxATSDyHAdEWEbADY9eoDQrOaL41Yjf1D
+         kK8dHYycyv4YCu5ibigX9E8BTe3lFC+wCfawnaSE96GleeMlNqf/CJKrObnoO4z/PFq3
+         dEAS77NykOOsuPvUsimHIaH7e61cOHAF8+T2TW8eyxA2Bd87+tdvFYjGyBajFt2WEBaB
+         I2r3P4hHrwkOj6yecMVHDpjeIF2PZBQcLXg0tccw4YZ4rEA6wfD9RwJt3bMeupE+kx1U
+         bhwN1bYVl425cy5KNroa6xtasy0+Z0nlYeBJ/RBEMoBW4xl36AJwd58s7yrA7Y/+Hf50
+         da0Q==
+X-Gm-Message-State: AOAM533Hc6uSDGJkgxjbvqFhNhiZJ5qn3R+feLJwa5zA985q6WL2uOls
+        noNKGdAbhjNqimatUZrN5yrYHRI0gTb9TiPXJOTH5Q==
+X-Google-Smtp-Source: ABdhPJziffrcGvlPDxqjGz/Vr0ekqIFtG6zrGIg+rMwoZp9uSB2un9q9wNrJB1PRhDQhf9QHDrzZV/ayRSY3fzj/qso=
+X-Received: by 2002:a63:382:0:b0:3c2:1669:e57b with SMTP id
+ 124-20020a630382000000b003c21669e57bmr3299293pgd.509.1651852602162; Fri, 06
+ May 2022 08:56:42 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220505121329.GA32827@us192.sjc.aristanetworks.com> <YnU3EuaWCKL5LZLy@cmpxchg.org>
 In-Reply-To: <YnU3EuaWCKL5LZLy@cmpxchg.org>
-From:   Ganesan Rajagopal <rganesan@arista.com>
-Date:   Fri, 6 May 2022 20:34:34 +0530
-Message-ID: <CAPD3tpEStjm02QXE=vpUKhttc3RroJ8LNdX7iBaAgCOpdcy8-A@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 6 May 2022 08:56:31 -0700
+Message-ID: <CALvZod6jcdhHqFEo1r-y5QufA+LxeCDy9hnD2ag_8vkvxXtp2Q@mail.gmail.com>
 Subject: Re: [PATCH] mm/memcontrol: Export memcg->watermark via sysfs for v2 memcg
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ganesan Rajagopal <rganesan@arista.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 6, 2022 at 8:27 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri, May 6, 2022 at 7:57 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
 > On Thu, May 05, 2022 at 05:13:30AM -0700, Ganesan Rajagopal wrote:
 > > v1 memcg exports memcg->watermark as "memory.mem_usage_in_bytes" in
@@ -89,6 +92,6 @@ On Fri, May 6, 2022 at 8:27 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
 > But please add a blurb to Documentation/admin-guide/cgroup-v2.rst.
 
-Thank you for the review. I'll refresh the patch with the documentation blurb.
-
-Ganesan
+No objection from me. I do have two points: (1) watermark is not a
+good name for this interface, maybe max_usage or something. (2) a way
+to reset (i.e. write to it, reset it).
