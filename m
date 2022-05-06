@@ -2,128 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A9F51DA88
-	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 16:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CD651DB41
+	for <lists+cgroups@lfdr.de>; Fri,  6 May 2022 16:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442219AbiEFOeI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 May 2022 10:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
+        id S1358127AbiEFPAz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 May 2022 11:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442195AbiEFOdx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 10:33:53 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B3D68FA3;
-        Fri,  6 May 2022 07:30:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651847410; x=1683383410;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/3bQs46ARc9z6IxvGQKAIeVw9c66t2zrtmGP1N90Tss=;
-  b=kIlxcGKBxmL8XxzICY8ODoqt39SOIU1lTJf2fwm3FuIJVE0oooGDznnO
-   oWtjwc5d1fEMNMC6SPePgk5d6lCIx9KIE0Dh49E+yWN9g5AUCupasuxjD
-   w1U76aLwEYMckJcdklun//fIRSnHkqyHTcIujFCj0gLkHg3kiIkIui/kN
-   6YIZ8CbwweVEpGO/m6Sg1uUyQCH9euRI7VjJJZtpJ5vUqctcRaDxbgzvG
-   e5Kml5gQdYGcPBC5EZlam1VF98PXcImhSxP+FaU5WT1TYZudx6c1iD5s4
-   8GFKmLe/M4qP6DO1WmaLv4qgHRq9uq0GZ6UfgRxMJMx5eDgRbuqnooz/i
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="268376273"
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; 
-   d="scan'208";a="268376273"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2022 07:30:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; 
-   d="scan'208";a="665498808"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 06 May 2022 07:30:05 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nmyy4-000DY8-89;
-        Fri, 06 May 2022 14:30:04 +0000
-Date:   Fri, 6 May 2022 22:29:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     cgel.zte@gmail.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        willy@infradead.org, shy828301@gmail.com
-Cc:     kbuild-all@lists.01.org, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        linmiaohe@huawei.com, hughd@google.com, songmuchun@bytedance.com,
-        surenb@google.com, vbabka@suse.cz, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        william.kucharski@oracle.com, peterx@redhat.com,
-        Yang Yang <yang.yang29@zte.com.cn>
-Subject: Re: [PATCH v2] mm/memcg: support control THP behaviour in cgroup
-Message-ID: <202205062206.5pPA18rP-lkp@intel.com>
-References: <20220506031804.437642-1-yang.yang29@zte.com.cn>
+        with ESMTP id S1384416AbiEFPAw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 May 2022 11:00:52 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8CC5D5D1
+        for <cgroups@vger.kernel.org>; Fri,  6 May 2022 07:57:09 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id x9so6152273qts.6
+        for <cgroups@vger.kernel.org>; Fri, 06 May 2022 07:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UMiJdnXRi9aL2AL9Vognq71+6oZgB61YztBopTVtQsI=;
+        b=OQ7BK+mietcxdA+xGJIfTtOaowVb7K7X3AIK/p0uNueclD7Y7fS3s2OecMUE77qV1X
+         c5lrVZcv3qzT9iXvcohzhZThbkkrY27rW1TYJFoKXU87Fxb1hBAfMPjp+DroOAMnb6nN
+         +RfzBqhZFn1AVmUXUpoBS9Trkeaxg0rtJvWx8qbh3OrPmSLNw5vnbauJAcTj0z0MhCcG
+         mbYIi4s4dytVvlg4zrOl3UEGEs6uXvVXQF4xq6kn4ruyxufmUY7+/P7yQuNSuYV6koW5
+         B/kpsin/bvmMqHv6TwomKQg2J7PkZUjlJwogTKj2UXnpv+Dy9OYdeHM54qs9blfKuACF
+         kiIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UMiJdnXRi9aL2AL9Vognq71+6oZgB61YztBopTVtQsI=;
+        b=weMAuNpUWSpilZ22hSPplRVwVS0P8ZxnGmPS4/xHDglQlDQOK44pc7ruqR8k1Ur8D2
+         HKmzWrwHWl94H4pKkkvMffP8e+oRnKsCnVJCKoGYf+RkbhMeqr/hX3U1XX6M70uEu69C
+         xQbbN1bvI6UMsWwIJXN5JBMWhNQt9LRMuEhMMbcAc++uMaR6vAufmQspa/OIW2KioTzu
+         CeyW748YfgZd77CnxgI6z6gS9dRs8YZJv7rEcd3Md0m7FCOAC/NG/1p7J661HqzGln6l
+         HFTSTw4suSNTFz1tpD66ap02TAZXE1R9YkTdSAVjZPR25TFw3GW60yCJNIDS5r9Czdms
+         6F8A==
+X-Gm-Message-State: AOAM531uYw3CPeNeasDR8UsdHHzpgdps+XptmzHFg98INx9p0DPNTLyr
+        lWdzjx1hEo6j3ipPVGNKglVAUsFq+KVx1g==
+X-Google-Smtp-Source: ABdhPJw5KlQIWwHvnoYh6CGzeMwc2xD2ZeoiJt6REs1ah2m8tXsLfJ8mfGEirSewIBncZHGs+ozCrg==
+X-Received: by 2002:ac8:5245:0:b0:2f3:a331:b045 with SMTP id y5-20020ac85245000000b002f3a331b045mr3085687qtn.570.1651849028187;
+        Fri, 06 May 2022 07:57:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:538c])
+        by smtp.gmail.com with ESMTPSA id k6-20020ac81406000000b002f39b99f69fsm2577960qtj.57.2022.05.06.07.57.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 May 2022 07:57:07 -0700 (PDT)
+Date:   Fri, 6 May 2022 07:56:18 -0700
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Ganesan Rajagopal <rganesan@arista.com>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memcontrol: Export memcg->watermark via sysfs for v2
+ memcg
+Message-ID: <YnU3EuaWCKL5LZLy@cmpxchg.org>
+References: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220506031804.437642-1-yang.yang29@zte.com.cn>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220505121329.GA32827@us192.sjc.aristanetworks.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+On Thu, May 05, 2022 at 05:13:30AM -0700, Ganesan Rajagopal wrote:
+> v1 memcg exports memcg->watermark as "memory.mem_usage_in_bytes" in
+> sysfs. This is missing for v2 memcg though "memory.current" is exported.
+> There is no other easy way of getting this information in Linux.
+> getrsuage() returns ru_maxrss but that's the max RSS of a single process
+> instead of the aggregated max RSS of all the processes. Hence, expose
+> memcg->watermark as "memory.watermark" for v2 memcg.
+> 
+> Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
 
-Thank you for the patch! Yet something to improve:
+This wasn't initially added to cgroup2 because its usefulness is very
+specific: it's (mostly) useless on limited cgroups, on long-running
+cgroups, and on cgroups that are recycled for multiple jobs. And I
+expect these categories apply to the majority of cgroup usecases.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linux/master linus/master v5.18-rc5 next-20220506]
-[cannot apply to hnaz-mm/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+However, for the situation where you want to measure the footprint of
+a short-lived, unlimited one-off cgroup, there really is no good
+alternative. And it's a legitimate usecase. It doesn't cost much to
+maintain this info. So I think we should go ahead with this patch.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220506-112100
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-config: s390-randconfig-r013-20220505 (https://download.01.org/0day-ci/archive/20220506/202205062206.5pPA18rP-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/01b750c350f3c12ca3908e94dc4447041ac9d89b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review cgel-zte-gmail-com/mm-memcg-support-control-THP-behaviour-in-cgroup/20220506-112100
-        git checkout 01b750c350f3c12ca3908e94dc4447041ac9d89b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   s390-linux-ld: mm/shmem.o: in function `shmem_zero_setup':
-   shmem.c:(.text+0x380): undefined reference to `khugepaged_always'
->> s390-linux-ld: shmem.c:(.text+0x3f2): undefined reference to `khugepaged_req_madv'
-   s390-linux-ld: mm/huge_memory.o: in function `do_huge_pmd_anonymous_page':
->> huge_memory.c:(.text+0x3d9c): undefined reference to `khugepaged_always'
->> s390-linux-ld: huge_memory.c:(.text+0x3e2a): undefined reference to `khugepaged_req_madv'
-   s390-linux-ld: mm/khugepaged.o: in function `set_recommended_min_free_kbytes':
-   khugepaged.c:(.text+0x1d06): undefined reference to `khugepaged_enabled'
-   s390-linux-ld: mm/khugepaged.o: in function `hugepage_vma_check.part.0':
-   khugepaged.c:(.text+0x24c4): undefined reference to `khugepaged_always'
-   s390-linux-ld: mm/khugepaged.o: in function `khugepaged_wait_work':
-   khugepaged.c:(.text+0x2da8): undefined reference to `khugepaged_enabled'
->> s390-linux-ld: khugepaged.c:(.text+0x2e94): undefined reference to `khugepaged_enabled'
-   s390-linux-ld: mm/khugepaged.o: in function `khugepaged_do_scan':
-   khugepaged.c:(.text+0x46e8): undefined reference to `khugepaged_enabled'
-   s390-linux-ld: khugepaged.c:(.text+0x482a): undefined reference to `khugepaged_enabled'
-   s390-linux-ld: mm/khugepaged.o: in function `khugepaged_enter_vma_merge':
-   khugepaged.c:(.text+0x4bb2): undefined reference to `khugepaged_always'
->> s390-linux-ld: khugepaged.c:(.text+0x4c1a): undefined reference to `khugepaged_req_madv'
-   s390-linux-ld: mm/khugepaged.o: in function `start_stop_khugepaged':
-   khugepaged.c:(.text+0x4eb6): undefined reference to `khugepaged_enabled'
-   s390-linux-ld: mm/khugepaged.o: in function `khugepaged_min_free_kbytes_update':
-   khugepaged.c:(.text+0x5066): undefined reference to `khugepaged_enabled'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+But please add a blurb to Documentation/admin-guide/cgroup-v2.rst.
