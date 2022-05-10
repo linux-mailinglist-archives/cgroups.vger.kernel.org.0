@@ -2,68 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E60522686
-	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 23:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247AB52269F
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 00:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbiEJV42 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 17:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
+        id S233038AbiEJWHu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 18:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235207AbiEJV4N (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 17:56:13 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7B957139
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t6so434030wra.4
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
+        with ESMTP id S231318AbiEJWHs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 18:07:48 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF625EBFE;
+        Tue, 10 May 2022 15:07:47 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c11so45557plg.13;
+        Tue, 10 May 2022 15:07:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
-        b=pvu4vmnNkxBfNPaw9v92a2w+TVqfwi+iTgvjgFvjq+ssgXnL2/XxuczeCjzFigw6Fp
-         LdrwiJrm5va3fTljcIrhm2cCN2U3mHlAeGm/YCKUXs8GdTX9I68G+Bkv1+NDR1Vt5YAL
-         b0Oy+hcWXfNh68+frvkkZEUFC4PBzALS5U5cfl6+gErj5JV6cqdOWZypd5vUtHNf1ZvG
-         S5ld+Bo59W0iXbrlJP/mnDfnhgKqL6sJExvTb1S/4mzhTBYEDX1kSPUfTU+4U7XvOULp
-         BlWx/yzcaO3KNO9uZIsiptBfq34GgjqYlMOzrHkqYyBggfOuj6Q3k2CYVGzEXWLPerlF
-         PpIA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/D0OGw2on3AvUmlzv6/hmtVTR0FwAvCOjEZGHeN3148=;
+        b=D+gxb7yJZ8m9WsThtL1BuBBOK9yZLCBXHYCPmiuC3APueeYrvaQ54LuI6lVJ9KDkGH
+         bq8GCDiooCm7ohQyIPpk/Kemojg6ouW6d3J42fNcrTqpgF5QKN4NAP95JpFbeuv6tpy8
+         eydzSFu4lyZgZrhRoHv/IdwFTGtzmVWzOiM/azxGTFxwwaR8UBZ8EFSiEh9bdNBHdb0B
+         pxZ0jZeBQbGHGF+LgD5PRcmJm4mDJ/Ajquo0bduwqzhPfvj2IYFI0EwegKDL3MFvKjDU
+         4Hi5BLDA2H/KhFY4EuEhj+wqb2D5jVc74T94LZr/+9gDTT4iItLQjiB9E6fH5zaQNaPy
+         bEeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
-        b=PMqeDjxbEe761J5kIb2MYtwcMD8g2lJpjrPSCq3GOURJAPKfS3NM0hSto4IT5T9xPO
-         vTqv1+YVd13h6wNc+YHo/pqZDdlD6XGBTKLfYmU7LEhjzwsHSGup0YwlLH0F4ft6onho
-         76j+5CqRV9jHo8/XEZWCo0+9kEL3RpYMlBUtejM5oYuu9miwQ8UVyoySgdQhuabL6+HY
-         fWJR+Hhav4SK68I5+DkGdb7d4V3NyJjaSdVrwI4+0vs/UBA0ho3FJTpObI+c3FjqK5x6
-         TqpzMa3rmCdDmbrKkiIxE+RDsZrRpVifmKNCJFkENDaZuPbDhaGo7x+bQTKlPYRtbQCL
-         DERg==
-X-Gm-Message-State: AOAM533eWoYkJoUVbZf0ZSNuUTPSeJHkhYPyrAEI0IkKAFKC2oeT9qYG
-        QW0fRgNayK/jUhceFGMBShcxfyw5yjjI5owG/ANtmg==
-X-Google-Smtp-Source: ABdhPJyvhf5tHo+7ymkHhZKRFq0olhspXHd8enDR9DXvVol++Jwbk6xZofLsCZBaS03E9VdsgNBSy5whbtz0QVbHtl8=
-X-Received: by 2002:a05:6000:154a:b0:20c:7e65:c79e with SMTP id
- 10-20020a056000154a00b0020c7e65c79emr20365907wry.582.1652219768969; Tue, 10
- May 2022 14:56:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220510001807.4132027-1-yosryahmed@google.com>
- <20220510001807.4132027-2-yosryahmed@google.com> <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
- <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com>
- <YnrEDfZs1kuB1gu5@slm.duckdns.org> <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
- <YnrSrKFTBn3IyUfa@slm.duckdns.org>
-In-Reply-To: <YnrSrKFTBn3IyUfa@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 May 2022 14:55:32 -0700
-Message-ID: <CAJD7tkbeZPH9UJXtGeopPnTSVPYN-GzzM51SE_QNuLmiaVNpeA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
- program type
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/D0OGw2on3AvUmlzv6/hmtVTR0FwAvCOjEZGHeN3148=;
+        b=pOJc0qRibX8J429WnIaQNxldeI9edZ2YZtkc854huV8xtvQiCrRHBqqB8SmQHjpxqk
+         lKaRn6/lbyGOkrkbMLOCVzwJdxnmS9p62pOUD2/UcJJQ5c6c9WwTiZ7QqcEp0TBsHI/j
+         JPRBa/RM6U4OmKposzkWRK/PXQyO5Dzuz26+QJyXaZFB/hv+RKI/I0b6wEuDfC1ZuvTl
+         m/DZo9l8uueThrmBDk0rQ6itYd7pdRqneX1G98PxXbC/h0tAmq6Dz001q4Ot5LXzzAHg
+         mLFxD8uZFx34GwI7D5eIyQamttHxFyQrA2s6mbRaeLNo6bLoYS1mRX1nrTXCUKXt+yhx
+         /Z3A==
+X-Gm-Message-State: AOAM530qBNUu96ForQBo7sk0TmTZB+pzG/sEqTO2OFMN0qeqRDxX4BH/
+        YPgOVM9dNvsL0xcv4wGzMfI=
+X-Google-Smtp-Source: ABdhPJzxtINQ2mxuzNFYfiTFTPIUxv7J7/LYgiXNkci9t3/kBm0Ez1sdfLL3KriCyw+dsZt6P8aeSA==
+X-Received: by 2002:a17:902:ec8a:b0:15e:967b:f928 with SMTP id x10-20020a170902ec8a00b0015e967bf928mr23020423plg.133.1652220466953;
+        Tue, 10 May 2022 15:07:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:6c64])
+        by smtp.gmail.com with ESMTPSA id q7-20020a63d607000000b003c14af5062asm200577pgg.66.2022.05.10.15.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 15:07:46 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 10 May 2022 12:07:44 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        KP Singh <kpsingh@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Shuah Khan <shuah@kernel.org>,
@@ -73,68 +68,52 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 8/9] bpf: Introduce cgroup iter
+Message-ID: <YnriMPYyOP9ibskc@slm.duckdns.org>
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-9-yosryahmed@google.com>
+ <Ynq04gC1l7C2tx6o@slm.duckdns.org>
+ <CA+khW7girnNwap1ABN1a4XuvkEEnmkztTV+fsuC3MsxNeB08Yg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+khW7girnNwap1ABN1a4XuvkEEnmkztTV+fsuC3MsxNeB08Yg@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 10, 2022 at 2:01 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, May 10, 2022 at 01:43:46PM -0700, Yosry Ahmed wrote:
-> > I assume if we do this optimization, and have separate updated lists
-> > for controllers, we will still have a "core" updated list that is not
-> > tied to any controller. Is this correct?
->
-> Or we can create a dedicated updated list for the bpf progs, or even
-> multiple for groups of them and so on.
->
-> > If yes, then we can make the interface controller-agnostic (a global
-> > list of BPF flushers). If we do the optimization later, we tie BPF
-> > stats to the "core" updated list. We can even extend the userland
-> > interface then to allow for controller-specific BPF stats if found
-> > useful.
->
-> We'll need that anyway as cpustats are tied to the cgroup themselves rather
-> than the cpu controller.
->
-> > If not, and there will only be controller-specific updated lists then,
-> > then we might need to maintain a "core" updated list just for the sake
-> > of BPF programs, which I don't think would be favorable.
->
-> If needed, that's fine actually.
->
-> > What do you think? Either-way, I will try to document our discussion
-> > outcome in the commit message (and maybe the code), so that
-> > if-and-when this optimization is made, we can come back to it.
->
-> So, the main focus is keeping the userspace interface as simple as possible
-> and solving performance issues on the rstat side. If we need however many
-> updated lists to do that, that's all fine. FWIW, the experience up until now
-> has been consistent with the assumptions that the current implementation
-> makes and I haven't seen real any world cases where the shared updated list
-> are problematic.
->
+Hello,
 
-Thanks again for your insights and time!
+On Tue, May 10, 2022 at 02:12:16PM -0700, Hao Luo wrote:
+> > Is there a reason why this can't be a proper iterator which supports
+> > lseek64() to locate a specific cgroup?
+> >
+> 
+> There are two reasons:
+> 
+> - Bpf_iter assumes no_llseek. I haven't looked closely on why this is
+> so and whether we can add its support.
+> 
+> - Second, the name 'iter' in this patch is misleading. What this patch
+> really does is reusing the functionality of dumping in bpf_iter.
+> 'Dumper' is a better name. We want to create one file in bpffs for
+> each cgroup. We are essentially just iterating a set of one single
+> element.
 
-That's great to hear. I am all in for making the userspace interface
-simpler. I will rework this patch series so that the BPF programs just
-attach to "rstat" and send a V1.
-Any other concerns you have that you think I should address in V1?
+I see. I'm just shooting in the dark without context but at least in
+principle there's no reason why cgroups wouldn't be iterable, so it might be
+something worth at least thinking about before baking in the interface.
 
-> Thanks.
->
-> --
-> tejun
+Thanks.
+
+-- 
+tejun
