@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A9A5209FE
+	by mail.lfdr.de (Postfix) with ESMTP id 677145209FD
 	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 02:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbiEJAXS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 May 2022 20:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
+        id S233628AbiEJAXF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 May 2022 20:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbiEJAW3 (ORCPT
+        with ESMTP id S233564AbiEJAW3 (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Mon, 9 May 2022 20:22:29 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C1128C9C6
-        for <cgroups@vger.kernel.org>; Mon,  9 May 2022 17:18:26 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id h19-20020aa796d3000000b0050d3c025470so5409880pfq.0
-        for <cgroups@vger.kernel.org>; Mon, 09 May 2022 17:18:26 -0700 (PDT)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D755728C9E1
+        for <cgroups@vger.kernel.org>; Mon,  9 May 2022 17:18:27 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 16-20020a630010000000b003c5e4be54b2so8058625pga.2
+        for <cgroups@vger.kernel.org>; Mon, 09 May 2022 17:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=jUygyQcHmQCX+4t0PO9Lj98oGxUhwQRCqcIwRtRRuu0=;
-        b=b9L6wIY6W3JHgNc21GkxYFtPGgfmo5QUJKkjlOhi4hW3quxxLCFiGsyjlcSg3mOEte
-         xmYcnYmek/bOQXhLz+sI4VQviMEA+cmcQ45gAHFT3NM89PNw3VF2taoJOECrNh688Ieh
-         XVEE6g3VTkOhPesLqypGO5fy0bGZ8/jL+ZYAYtCCGQJukNlJAI77UUs0ewH/ySwBGf6S
-         euh6YXkx+e0I2eJNJCkjlpGpu/IgzPTDz31AoWxHLCsaa08vNcDkWlzYVZ3WX+++HFY+
-         JMd+L9/ZBEFMpxJLXdRZehKNGnT/yoi38iBjacCWDEVlkD8M9h/fuKz/vEF7G+xhBP93
-         CS6w==
+        bh=KcVlDhYIqiGAy0xA6Ny1iEWIuZrHDDkBi7OMZAuyAKA=;
+        b=CbFDRQM+DJHPuLYLBakMiPuPtWC2dPz39UZfOmcu4qup9XyxZPCJINo69q4jZT4AoC
+         dLRunNzKgmtg9/SjwCmLiNW5Q87qDk2kiCE3Bvr3D+WjbNu8Syu3BhuMYSNbGa207ILF
+         Qh7apNc/4HgAHnDy45R3N6ppLnbRqI6AWkGDHHxN3ezenAc++v64jfbpcV8RvtKTW5OW
+         H5cK0SaNA8KayXojnjkq3df/p9zd5sCw6q/pivecBUNQfPA6gTBNzpdlsha/+JCX+EP2
+         b27F5hHeQOk9I6B+LWTtNHptDhwCCBC3wK41+O8Y1dY+/ywCr06lqwmPK5GvIEQsBDUo
+         dI5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=jUygyQcHmQCX+4t0PO9Lj98oGxUhwQRCqcIwRtRRuu0=;
-        b=X29did3EeV3omLj+HzaciyCBlPW+C1DJoybtVKyYh7yQVJsjDTxAzNw5AP/gpKwbDx
-         CEHdlH6s+PFgTwsex1mAyJFYOwJvtA5SSPBrEwo8rzs5yFeaKAM7PNKk90pIOnlEbn2/
-         P/sEHNJu/6Qz1JRMIto6cHkG8c5FoP4OuRb1JmoUoAshFRxZrtpttqsdwGXwd+AuxG+Q
-         2yYE52lsgqVPl/EvbhyUcX2T1L6xIkftM+aZjghbHY1u4XFHVywGm1LJiB1M0gl89tuT
-         T0mBXzdKi4y4YijzjHzRYPzf2o9t++Ol5Zgl4Vd8a6IHalVTJEvBz3M4HDykCbl4wD0a
-         X1pg==
-X-Gm-Message-State: AOAM531+tsiPaOjZWJsZeTHcT/clEL/TmUrxXD2IrxpH88NDcf5oWnU8
-        qg9Kd9tKF6PtlpFaKngm6I9ne3Luu0GJ2eVo
-X-Google-Smtp-Source: ABdhPJws2wA6fi+zGQOzH1vWd8zNdFXSGIXiWcInZijSRi9ZraL3D7PhFIBq8d5am7hWKt6LV39Xxn5hy8O21P2z
+        bh=KcVlDhYIqiGAy0xA6Ny1iEWIuZrHDDkBi7OMZAuyAKA=;
+        b=luRwMqiQBYYeRr2ILHPSdIMXVg3PXwurRKJXS2V3a6HzC3MN7G23U6jCzg8knBh868
+         zoAROjsUG8xisBc3Pg+pmZI9D2kh7rGg/B+CkgDecm0sMcvRs/xAc1HbvmdUEQSKqdGU
+         qtdZljMyfCV2NMLblS5xxNLaUFRCACsW1NWCg90m9IbbCQ9629E2OFXPxQX+6YDkFsMe
+         OJ98SqGT7z1iMAM0ubHtc5zAnfy0H28TboEt8sAQRwA0foRyAStvqRM1U19E4H+QTKXD
+         A+WPlqax4w+Mfhf7vg2YFzreta/z/uBMq/4AMDggvVeOuB06lCHcBCDxvW/Sj3GLltA/
+         Um7Q==
+X-Gm-Message-State: AOAM533AERTI95SEG1SE+pE3SfM8sRbRQ9J99UyiRAptVE4bH0g6hGdQ
+        pr2luGlGjg0rQe9VIZo5dmE2PengmFsXB80P
+X-Google-Smtp-Source: ABdhPJzYYkjJ3ZLtAxYLy2pZUwKzXH4+bOWrXeRHBvANSFiGZs994Oo4pdOYa15sJhMjmUsYw0Y5YSKbOxkEbCUX
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:846:b0:50d:f02f:bb46 with SMTP
- id q6-20020a056a00084600b0050df02fbb46mr18110972pfk.74.1652141905673; Mon, 09
- May 2022 17:18:25 -0700 (PDT)
-Date:   Tue, 10 May 2022 00:18:01 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:90b:2311:b0:1d9:277e:edad with SMTP
+ id mt17-20020a17090b231100b001d9277eedadmr20549707pjb.190.1652141907370; Mon,
+ 09 May 2022 17:18:27 -0700 (PDT)
+Date:   Tue, 10 May 2022 00:18:02 +0000
 In-Reply-To: <20220510001807.4132027-1-yosryahmed@google.com>
-Message-Id: <20220510001807.4132027-4-yosryahmed@google.com>
+Message-Id: <20220510001807.4132027-5-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20220510001807.4132027-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.36.0.512.ge40c2bad7a-goog
-Subject: [RFC PATCH bpf-next 3/9] libbpf: Add support for rstat progs and links
+Subject: [RFC PATCH bpf-next 4/9] bpf: add bpf rstat helpers
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -75,133 +75,171 @@ Cc:     Stanislav Fomichev <sdf@google.com>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add support to attach "cgroup_subsys/rstat" programs to a subsystem by
-calling bpf_program__attach_subsys. Currently, only CGROUP_SUBSYS_RSTAT
-programs are supported for attachment to subsystems.
+Add bpf_cgroup_rstat_updated() and bpf_cgroup_rstat_flush() helpers
+to enable  bpf programs that collect and output cgroup stats
+to communicate with the rstat frameworkto add a cgroup to the rstat
+updated tree or trigger an rstat flush before reading stats.
+
+ARG_ANYTHING is used here for the struct *cgroup parameter. Would it be
+better to add a task_cgroup(subsys_id) helper that returns a cgroup
+pointer so that we can use a BTF argument instead?
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- tools/lib/bpf/bpf.c      |  3 +++
- tools/lib/bpf/bpf.h      |  3 +++
- tools/lib/bpf/libbpf.c   | 35 +++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |  3 +++
- tools/lib/bpf/libbpf.map |  1 +
- 5 files changed, 45 insertions(+)
+ include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
+ kernel/bpf/helpers.c           | 30 ++++++++++++++++++++++++++++++
+ scripts/bpf_doc.py             |  2 ++
+ tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
+ 4 files changed, 68 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index cf27251adb92..abfff17cfa07 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -863,6 +863,9 @@ int bpf_link_create(int prog_fd, int target_fd,
- 		if (!OPTS_ZEROED(opts, kprobe_multi))
- 			return libbpf_err(-EINVAL);
- 		break;
-+	case BPF_CGROUP_SUBSYS_RSTAT:
-+		attr.link_create.cgroup_subsys.name = ptr_to_u64(OPTS_GET(opts, cgroup_subsys.name, 0));
-+		break;
- 	default:
- 		if (!OPTS_ZEROED(opts, flags))
- 			return libbpf_err(-EINVAL);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index f4b4afb6d4ba..384767a9ffd3 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -413,6 +413,9 @@ struct bpf_link_create_opts {
- 		struct {
- 			__u64 bpf_cookie;
- 		} perf_event;
-+		struct {
-+			const char *name;
-+		} cgroup_subsys;
- 		struct {
- 			__u32 flags;
- 			__u32 cnt;
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 809fe209cdcc..56380953df55 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8715,6 +8715,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("cgroup/setsockopt",	CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- 	SEC_DEF("struct_ops+",		STRUCT_OPS, 0, SEC_NONE),
- 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
-+	SEC_DEF("cgroup_subsys/rstat",	CGROUP_SUBSYS_RSTAT, 0, SEC_NONE),
- };
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 0f4855fa85db..fce5535579d6 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5149,6 +5149,22 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * void bpf_cgroup_rstat_updated(struct cgroup *cgrp)
++ *	Description
++ *		Notify the rstat framework that bpf stats were updated for
++ *		*cgrp* on the current cpu. Directly calls cgroup_rstat_updated
++ *		with the given *cgrp* and the current cpu.
++ *	Return
++ *		0
++ *
++ * void bpf_cgroup_rstat_flush(struct cgroup *cgrp)
++ *	Description
++ *		Collect all per-cpu stats in *cgrp*'s subtree into global
++ *		counters and propagate them upwards. Directly calls
++ *		cgroup_rstat_flush_irqsafe with the given *cgrp*.
++ *	Return
++ *		0
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5345,6 +5361,8 @@ union bpf_attr {
+ 	FN(copy_from_user_task),	\
+ 	FN(skb_set_tstamp),		\
+ 	FN(ima_file_hash),		\
++	FN(cgroup_rstat_updated),	\
++	FN(cgroup_rstat_flush),		\
+ 	/* */
  
- static size_t custom_sec_def_cnt;
-@@ -10957,6 +10958,40 @@ static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_l
- 	return libbpf_get_error(*link);
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 315053ef6a75..d124eed97ad7 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1374,6 +1374,32 @@ void bpf_timer_cancel_and_free(void *val)
+ 	kfree(t);
  }
  
-+struct bpf_link *bpf_program__attach_subsys(const struct bpf_program *prog,
-+					     const char *subsys_name)
++BPF_CALL_1(bpf_cgroup_rstat_updated, struct cgroup *, cgrp)
 +{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, lopts,
-+			    .cgroup_subsys.name = subsys_name);
-+	struct bpf_link *link = NULL;
-+	char errmsg[STRERR_BUFSIZE];
-+	int err, prog_fd, link_fd;
-+
-+	prog_fd = bpf_program__fd(prog);
-+	if (prog_fd < 0) {
-+		pr_warn("prog '%s': can't attach before loaded\n", prog->name);
-+		return libbpf_err_ptr(-EINVAL);
-+	}
-+
-+	link = calloc(1, sizeof(*link));
-+	if (!link)
-+		return libbpf_err_ptr(-ENOMEM);
-+	link->detach = &bpf_link__detach_fd;
-+
-+	link_fd = bpf_link_create(prog_fd, 0, BPF_CGROUP_SUBSYS_RSTAT, &lopts);
-+	if (link_fd < 0) {
-+		err = -errno;
-+		pr_warn("prog '%s': failed to attach: %s\n",
-+			prog->name, libbpf_strerror_r(err, errmsg,
-+						      sizeof(errmsg)));
-+		free(link);
-+		return libbpf_err_ptr(err);
-+	}
-+
-+	link->fd = link_fd;
-+	return link;
++	cgroup_rstat_updated(cgrp, smp_processor_id());
++	return 0;
 +}
 +
- struct bpf_link *bpf_program__attach(const struct bpf_program *prog)
- {
- 	struct bpf_link *link = NULL;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 05dde85e19a6..eddbffcd39f7 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -537,6 +537,9 @@ bpf_program__attach_xdp(const struct bpf_program *prog, int ifindex);
- LIBBPF_API struct bpf_link *
- bpf_program__attach_freplace(const struct bpf_program *prog,
- 			     int target_fd, const char *attach_func_name);
-+LIBBPF_API struct bpf_link *
-+bpf_program__attach_subsys(const struct bpf_program *prog,
-+			   const char *subsys_name);
++static const struct bpf_func_proto bpf_cgroup_rstat_updated_proto = {
++	.func		= bpf_cgroup_rstat_updated,
++	.gpl_only	= false,
++	.ret_type	= RET_VOID,
++	.arg1_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_1(bpf_cgroup_rstat_flush, struct cgroup *, cgrp)
++{
++	cgroup_rstat_flush_irqsafe(cgrp);
++	return 0;
++}
++
++static const struct bpf_func_proto bpf_cgroup_rstat_flush_proto = {
++	.func		= bpf_cgroup_rstat_flush,
++	.gpl_only	= false,
++	.ret_type	= RET_VOID,
++	.arg1_type	= ARG_ANYTHING,
++};
++
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+@@ -1426,6 +1452,10 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_loop_proto;
+ 	case BPF_FUNC_strncmp:
+ 		return &bpf_strncmp_proto;
++	case BPF_FUNC_cgroup_rstat_updated:
++		return &bpf_cgroup_rstat_updated_proto;
++	case BPF_FUNC_cgroup_rstat_flush:
++		return &bpf_cgroup_rstat_flush_proto;
+ 	default:
+ 		break;
+ 	}
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index 096625242475..9e2b08557a6f 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -633,6 +633,7 @@ class PrinterHelpers(Printer):
+             'struct socket',
+             'struct file',
+             'struct bpf_timer',
++            'struct cgroup',
+     ]
+     known_types = {
+             '...',
+@@ -682,6 +683,7 @@ class PrinterHelpers(Printer):
+             'struct socket',
+             'struct file',
+             'struct bpf_timer',
++            'struct cgroup',
+     }
+     mapped_types = {
+             'u8': '__u8',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 0f4855fa85db..fce5535579d6 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5149,6 +5149,22 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * void bpf_cgroup_rstat_updated(struct cgroup *cgrp)
++ *	Description
++ *		Notify the rstat framework that bpf stats were updated for
++ *		*cgrp* on the current cpu. Directly calls cgroup_rstat_updated
++ *		with the given *cgrp* and the current cpu.
++ *	Return
++ *		0
++ *
++ * void bpf_cgroup_rstat_flush(struct cgroup *cgrp)
++ *	Description
++ *		Collect all per-cpu stats in *cgrp*'s subtree into global
++ *		counters and propagate them upwards. Directly calls
++ *		cgroup_rstat_flush_irqsafe with the given *cgrp*.
++ *	Return
++ *		0
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5345,6 +5361,8 @@ union bpf_attr {
+ 	FN(copy_from_user_task),	\
+ 	FN(skb_set_tstamp),		\
+ 	FN(ima_file_hash),		\
++	FN(cgroup_rstat_updated),	\
++	FN(cgroup_rstat_flush),		\
+ 	/* */
  
- struct bpf_map;
- 
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index dd35ee58bfaa..5583a2dbfb7c 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -447,4 +447,5 @@ LIBBPF_0.8.0 {
- 		libbpf_register_prog_handler;
- 		libbpf_unregister_prog_handler;
- 		bpf_program__attach_kprobe_multi_opts;
-+		bpf_program__attach_subsys;
- } LIBBPF_0.7.0;
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.36.0.512.ge40c2bad7a-goog
 
