@@ -2,65 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BD9522624
-	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 23:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E60522686
+	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 23:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbiEJVMa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 17:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
+        id S230375AbiEJV42 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 17:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbiEJVM3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 17:12:29 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745C82670B0
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:12:28 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id jt15so311376qvb.8
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:12:28 -0700 (PDT)
+        with ESMTP id S235207AbiEJV4N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 17:56:13 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7B957139
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t6so434030wra.4
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XYVHi22m1+mXSFa7Nc0RAjeQBwpnm2Xj7XiJSm9Cw/Q=;
-        b=bg0OJPq+1ifxyjjTiknBIfD7bywHGJRstK0TY4IrD//sypqPQuAu3G5PLlFk8jLsA8
-         BEQB49EYqZHFcSpANBU9k4Y4McljWHHn2nRCFpO5phZwcXHOwS+0YCcMXrkqWuM2yrPi
-         CyKeidXdVQPHVG6HF5DB6+aF6PCg7NLaSemz7x8nLmDOcotb7t/kqV/y62a4g6mQjj0D
-         WTAVCIve7Uw+uKvbL0lArYC8g7crryu2JrsgF2yAeDqDPrj42kkWhTaSjTVlUcz7xGi1
-         XdNRaMFLU5TIpjY4TmcWhK5EdQ+fYDZNJOTnvtHUVaNSVIwMzJ/RrAqI8ijt0Lz1unjN
-         hh0Q==
+        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
+        b=pvu4vmnNkxBfNPaw9v92a2w+TVqfwi+iTgvjgFvjq+ssgXnL2/XxuczeCjzFigw6Fp
+         LdrwiJrm5va3fTljcIrhm2cCN2U3mHlAeGm/YCKUXs8GdTX9I68G+Bkv1+NDR1Vt5YAL
+         b0Oy+hcWXfNh68+frvkkZEUFC4PBzALS5U5cfl6+gErj5JV6cqdOWZypd5vUtHNf1ZvG
+         S5ld+Bo59W0iXbrlJP/mnDfnhgKqL6sJExvTb1S/4mzhTBYEDX1kSPUfTU+4U7XvOULp
+         BlWx/yzcaO3KNO9uZIsiptBfq34GgjqYlMOzrHkqYyBggfOuj6Q3k2CYVGzEXWLPerlF
+         PpIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XYVHi22m1+mXSFa7Nc0RAjeQBwpnm2Xj7XiJSm9Cw/Q=;
-        b=oWQoL8WD+Un54q1nzk5TOUyZG26iQvENb4Wc5p0BqVD4v+jbNhKu3Uhbd5WG0fKfuI
-         +ky5CNVgChvGAPjp8KDfxPeouVdO7JgW+tNjej6S2DABlIF0OeDDqQgmPXRDTaq/A7XE
-         dOc9pLq4LtuBOE3fKl5bukbEykxe25jvip78fy4GuVy/SIdSTmCuRpCyoTidmPM2eLpz
-         RuO8+BjSBAbzufxEUh8tQx1W15BEaHVohOoCnIs6C6kRQpgx/TamIZ1CY+X02DHvZXp8
-         +NeNC2XSDxZs52yyGah42o9exZiXo7iLKn6SGaVvcJVfOAIXWMtS4BRvem5yLmWPwAwh
-         rbpA==
-X-Gm-Message-State: AOAM532oA3IHsxl8MlQgghSpOjXsxN1E4nH6AGcMbK2d0x4Q09kKEGdS
-        cRt/GvXoSn87HtT8PIE2DYUHnyg9WgO1UVMoZX3mew==
-X-Google-Smtp-Source: ABdhPJwAcCwCJeGY/PbbQTEOy1WFFk31KQkfG7qJ7XtUwaSdP+qPOIHxjDRC9A/Yzd+WuzSVbR54vLjJfgZqyGIwmRQ=
-X-Received: by 2002:ad4:4753:0:b0:456:34db:614b with SMTP id
- c19-20020ad44753000000b0045634db614bmr19646103qvx.17.1652217147364; Tue, 10
- May 2022 14:12:27 -0700 (PDT)
+        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
+        b=PMqeDjxbEe761J5kIb2MYtwcMD8g2lJpjrPSCq3GOURJAPKfS3NM0hSto4IT5T9xPO
+         vTqv1+YVd13h6wNc+YHo/pqZDdlD6XGBTKLfYmU7LEhjzwsHSGup0YwlLH0F4ft6onho
+         76j+5CqRV9jHo8/XEZWCo0+9kEL3RpYMlBUtejM5oYuu9miwQ8UVyoySgdQhuabL6+HY
+         fWJR+Hhav4SK68I5+DkGdb7d4V3NyJjaSdVrwI4+0vs/UBA0ho3FJTpObI+c3FjqK5x6
+         TqpzMa3rmCdDmbrKkiIxE+RDsZrRpVifmKNCJFkENDaZuPbDhaGo7x+bQTKlPYRtbQCL
+         DERg==
+X-Gm-Message-State: AOAM533eWoYkJoUVbZf0ZSNuUTPSeJHkhYPyrAEI0IkKAFKC2oeT9qYG
+        QW0fRgNayK/jUhceFGMBShcxfyw5yjjI5owG/ANtmg==
+X-Google-Smtp-Source: ABdhPJyvhf5tHo+7ymkHhZKRFq0olhspXHd8enDR9DXvVol++Jwbk6xZofLsCZBaS03E9VdsgNBSy5whbtz0QVbHtl8=
+X-Received: by 2002:a05:6000:154a:b0:20c:7e65:c79e with SMTP id
+ 10-20020a056000154a00b0020c7e65c79emr20365907wry.582.1652219768969; Tue, 10
+ May 2022 14:56:08 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220510001807.4132027-1-yosryahmed@google.com>
- <20220510001807.4132027-9-yosryahmed@google.com> <Ynq04gC1l7C2tx6o@slm.duckdns.org>
-In-Reply-To: <Ynq04gC1l7C2tx6o@slm.duckdns.org>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 10 May 2022 14:12:16 -0700
-Message-ID: <CA+khW7girnNwap1ABN1a4XuvkEEnmkztTV+fsuC3MsxNeB08Yg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 8/9] bpf: Introduce cgroup iter
+ <20220510001807.4132027-2-yosryahmed@google.com> <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
+ <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com>
+ <YnrEDfZs1kuB1gu5@slm.duckdns.org> <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
+ <YnrSrKFTBn3IyUfa@slm.duckdns.org>
+In-Reply-To: <YnrSrKFTBn3IyUfa@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 10 May 2022 14:55:32 -0700
+Message-ID: <CAJD7tkbeZPH9UJXtGeopPnTSVPYN-GzzM51SE_QNuLmiaVNpeA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
+ program type
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Shuah Khan <shuah@kernel.org>,
@@ -70,8 +73,9 @@ Cc:     Yosry Ahmed <yosryahmed@google.com>,
         David Rientjes <rientjes@google.com>,
         Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -84,38 +88,53 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Tejun,
-
-On Tue, May 10, 2022 at 11:54 AM Tejun Heo <tj@kernel.org> wrote:
+On Tue, May 10, 2022 at 2:01 PM Tejun Heo <tj@kernel.org> wrote:
 >
 > Hello,
 >
-> On Tue, May 10, 2022 at 12:18:06AM +0000, Yosry Ahmed wrote:
-> > From: Hao Luo <haoluo@google.com>
-> >
-> > Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
-> > iter doesn't iterate a set of kernel objects. Instead, it is supposed to
-> > be parameterized by a cgroup id and prints only that cgroup. So one
-> > needs to specify a target cgroup id when attaching this iter. The target
-> > cgroup's state can be read out via a link of this iter.
+> On Tue, May 10, 2022 at 01:43:46PM -0700, Yosry Ahmed wrote:
+> > I assume if we do this optimization, and have separate updated lists
+> > for controllers, we will still have a "core" updated list that is not
+> > tied to any controller. Is this correct?
 >
-> Is there a reason why this can't be a proper iterator which supports
-> lseek64() to locate a specific cgroup?
+> Or we can create a dedicated updated list for the bpf progs, or even
+> multiple for groups of them and so on.
+>
+> > If yes, then we can make the interface controller-agnostic (a global
+> > list of BPF flushers). If we do the optimization later, we tie BPF
+> > stats to the "core" updated list. We can even extend the userland
+> > interface then to allow for controller-specific BPF stats if found
+> > useful.
+>
+> We'll need that anyway as cpustats are tied to the cgroup themselves rather
+> than the cpu controller.
+>
+> > If not, and there will only be controller-specific updated lists then,
+> > then we might need to maintain a "core" updated list just for the sake
+> > of BPF programs, which I don't think would be favorable.
+>
+> If needed, that's fine actually.
+>
+> > What do you think? Either-way, I will try to document our discussion
+> > outcome in the commit message (and maybe the code), so that
+> > if-and-when this optimization is made, we can come back to it.
+>
+> So, the main focus is keeping the userspace interface as simple as possible
+> and solving performance issues on the rstat side. If we need however many
+> updated lists to do that, that's all fine. FWIW, the experience up until now
+> has been consistent with the assumptions that the current implementation
+> makes and I haven't seen real any world cases where the shared updated list
+> are problematic.
 >
 
-There are two reasons:
+Thanks again for your insights and time!
 
-- Bpf_iter assumes no_llseek. I haven't looked closely on why this is
-so and whether we can add its support.
-
-- Second, the name 'iter' in this patch is misleading. What this patch
-really does is reusing the functionality of dumping in bpf_iter.
-'Dumper' is a better name. We want to create one file in bpffs for
-each cgroup. We are essentially just iterating a set of one single
-element.
+That's great to hear. I am all in for making the userspace interface
+simpler. I will rework this patch series so that the BPF programs just
+attach to "rstat" and send a V1.
+Any other concerns you have that you think I should address in V1?
 
 > Thanks.
-
 >
 > --
 > tejun
