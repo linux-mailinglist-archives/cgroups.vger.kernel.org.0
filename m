@@ -2,696 +2,338 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB9C5227E6
-	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 01:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1135227F1
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 01:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbiEJX5G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 19:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
+        id S238861AbiEJX5V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 19:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238489AbiEJX5E (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 19:57:04 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54F3208F46
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:02 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b33-20020a25aea1000000b0064588c45fbaso387081ybj.16
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:02 -0700 (PDT)
+        with ESMTP id S238746AbiEJX5K (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 19:57:10 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F793209B7F
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:08 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2f902276272so2631797b3.21
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc:content-transfer-encoding;
-        bh=gpc+taySKk3MNhQfkQXGrP1E1S3X7b6iIkkrvK0jjQk=;
-        b=FJgoF3XQED/pmTUW/k8/kwQOacCwuY8PajnlvmNo7vPUrW03rQhgNqVylRfk6bt9N5
-         +pBo04gYW2XdAwzcMMCR4QrepYsOYrpGeSwGHfZ7I8DbxYFsr4mFLEAh6eXvhioT62Aw
-         pinwSZ/tiKIcjJZSco9BfroDbcJ+T0H3sY0aosRWw8hSHMilM7WEzjPRIvqiUwZ7Dm0n
-         PAeMkkxoM+scEWgJgxPLA8dmQBCsp20INriwhq4AIBrW0b0Wo8r8cXXtwpDX2WvlaAkd
-         xgPmaVvQrnsBAdrf9NuE/bszYtPwceY8NGbj7kqwxnmMUl4DnGiCLCwNEei5oFmBrFYb
-         n9cw==
+        bh=v8gt6xjWudwEV2qln2N7SwuUJc9JxxsnlnvbLCYxUc0=;
+        b=loPY8BnZXxZrmNCWwTUfS3qnOnH67SZdt82uLV668C+yIIJpUM1rapWhZgScGIl9UE
+         JFdoQvmgq7+PYtQoNo7Xt49JaVYYmqeh2y94j0P91OEseICBN/VZcZdJ3lAn7XpCBFZ3
+         ZAVIHeyQUE+wezChaUS94nW2/UcpI4NzobrLV1STkXosAruMEI00Fa/sE0BRXri67Gz2
+         q05IqbfZP5GchqKe/UA5reCqq9DB1Z8ctk9/fnRwNjkinW13EkBWelw/KRjhayVVXg4q
+         Q+RrUAtEcwIKZeShieINdDTV4tIt2WaYR50DZuhNAsEvXdGj1OBBCwLDh1FP0SxBPBN8
+         7Qmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc:content-transfer-encoding;
-        bh=gpc+taySKk3MNhQfkQXGrP1E1S3X7b6iIkkrvK0jjQk=;
-        b=43dBmyp/MRDx7P9cixrK0De1AKM8BaWIfT64D2baoMRQllPOXIdD+8me519QvhdF42
-         bj99/57pNAbEj6b4OxzcX2LicvADMFVVhwcjczPfGvDzGGtcRSZHKQuI10NgNlEIVJ5o
-         iGRUbir0/wLAHSLcr2ZkumIARzW6Nah8g1RvX1GIjTZPIMeJ0wkGFndziHwKxbuS0XYm
-         9k4OhRxxJevonKLxbG22gQQdTlHYrKOEKLgdY/A4MByHcLtCgzWo1G44KHMhzapV/DAU
-         mWJDXAN/GH8tFpiCfXP0SXggQ+do+Y95+QYkWKy/dtMDvGL2RVv7d6VOxfkPVB6pGmgP
-         ai8A==
-X-Gm-Message-State: AOAM530UCpgbI8olEtT36WO4VXL+fWHdnWXednSUr5s/Aw1zzmaepY7b
-        x/CjxLNkf0ihdMe60s6jfKGhlhtOVYJBdZk=
-X-Google-Smtp-Source: ABdhPJz0zXu4ZAwmDD5a3Zr4zNSeYdSZDCB0YRiRirzMXasBTaC1edOgJ/1mVkJ29siYdT+Menb7z5oDCrlMv70=
+        bh=v8gt6xjWudwEV2qln2N7SwuUJc9JxxsnlnvbLCYxUc0=;
+        b=bUZNrQ8wXCRf/rPMyUDDePnAstzD229f5hjNrKsjbAcv0FlEDzGx9GURtSpf42svCl
+         gayoIS8QZ1Q3vQ3xZoD446VqQUl1PsQqWdBRnwtBm5GSoqpjGOu5hCXOY+SUqR1/2AiH
+         5xnXtbqXaR1Qy5sftuQuEEaoEf7SR2uP4M73qI0ZBwzEp9erZ/3CChCw/4VI2lroVlHV
+         Gh5W1WtueX/oNudekSqwiJp3vL6DrmEZJ7U571MKn+uC06G0PpiWmVPBo+JTfZvJa6eY
+         Ab1/PFPXZbXMC4aLxT4nEklpB4qGfOueWRZK7eSJBztNwy4gsuWdkCjNh457mrGzLdIL
+         2GNw==
+X-Gm-Message-State: AOAM532/W2ZwOrmvrYupfkAdiXOcgA8SoqowO8JbHJbDc5xCXVrKhC9j
+        YT7NQCWUUtmLx9NNUhXldXMIhH+E3Xsjkjo=
+X-Google-Smtp-Source: ABdhPJxuMd23Slzk/nX5zXAwKMfpsaSnwA9y71fBu5xFnMi06zJ5/oaDRiKKaGgRjX9ctDMnyPrityYdWY9YepQ=
 X-Received: from tj.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:53a])
- (user=tjmercier job=sendgmr) by 2002:a25:dd01:0:b0:64a:13f1:fd65 with SMTP id
- u1-20020a25dd01000000b0064a13f1fd65mr20129591ybg.609.1652227021979; Tue, 10
- May 2022 16:57:01 -0700 (PDT)
-Date:   Tue, 10 May 2022 23:56:46 +0000
+ (user=tjmercier job=sendgmr) by 2002:a5b:8cb:0:b0:645:d65f:dcdd with SMTP id
+ w11-20020a5b08cb000000b00645d65fdcddmr19840185ybq.233.1652227027524; Tue, 10
+ May 2022 16:57:07 -0700 (PDT)
+Date:   Tue, 10 May 2022 23:56:48 +0000
 In-Reply-To: <20220510235653.933868-1-tjmercier@google.com>
-Message-Id: <20220510235653.933868-3-tjmercier@google.com>
+Message-Id: <20220510235653.933868-5-tjmercier@google.com>
 Mime-Version: 1.0
 References: <20220510235653.933868-1-tjmercier@google.com>
 X-Mailer: git-send-email 2.36.0.512.ge40c2bad7a-goog
-Subject: [PATCH v7 2/6] cgroup: gpu: Add a cgroup controller for allocator
- attribution of GPU memory
+Subject: [PATCH v7 4/6] dmabuf: Add gpu cgroup charge transfer function
 From:   "T.J. Mercier" <tjmercier@google.com>
-To:     tjmercier@google.com, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+To:     tjmercier@google.com, Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>
-Cc:     daniel@ffwll.ch, hridya@google.com, christian.koenig@amd.com,
-        jstultz@google.com, tkjos@android.com, cmllamas@google.com,
-        surenb@google.com, kaleshsingh@google.com, Kenny.Ho@amd.com,
-        mkoutny@suse.com, skhan@linuxfoundation.org,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
+Cc:     daniel@ffwll.ch, hridya@google.com, jstultz@google.com,
+        tkjos@android.com, cmllamas@google.com, surenb@google.com,
+        kaleshsingh@google.com, Kenny.Ho@amd.com, mkoutny@suse.com,
+        skhan@linuxfoundation.org, kernel-team@android.com,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hridya Valsaraju <hridya@google.com>
+The dma_buf_transfer_charge function provides a way for processes to
+transfer charge of a buffer to a different process. This is essential
+for the cases where a central allocator process does allocations for
+various subsystems, hands over the fd to the client who requested the
+memory and drops all references to the allocated memory.
 
-The cgroup controller provides accounting for GPU and GPU-related
-memory allocations. The memory being accounted can be device memory or
-memory allocated from pools dedicated to serve GPU-related tasks.
-
-This patch adds APIs to:
--allow a device to register for memory accounting using the GPU cgroup
-controller.
--charge and uncharge allocated memory to a cgroup.
-
-When the cgroup controller is enabled, it would expose information about
-the memory allocated by each device(registered for GPU cgroup memory
-accounting) for each cgroup.
-
-The API/UAPI can be extended to set per-device/total allocation limits
-in the future.
-
-The cgroup controller has been named following the discussion in [1].
-
-[1]: https://lore.kernel.org/amd-gfx/YCJp%2F%2FkMC7YjVMXv@phenom.ffwll.loca=
-l/
-
-Signed-off-by: Hridya Valsaraju <hridya@google.com>
+Originally-by: Hridya Valsaraju <hridya@google.com>
 Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
 ---
-v7 changes
-Hide gpucg and gpucg_bucket struct definitions per Michal Koutn=C3=BD.
-This means gpucg_register_bucket now returns an internally allocated
-struct gpucg_bucket.
-
-Move all public function documentation to the cgroup_gpu.h header.
-
 v5 changes
-Support all strings for gpucg_register_device instead of just string
-literals.
+Fix commit message which still contained the old name for
+dma_buf_transfer_charge per Michal Koutn=C3=BD.
 
-Enforce globally unique gpucg_bucket names.
-
-Constrain gpucg_bucket name lengths to 64 bytes.
-
-Obtain just a single css refcount instead of nr_pages for each
-charge.
-
-Rename:
-gpucg_try_charge -> gpucg_charge
-find_cg_rpool_locked -> cg_rpool_find_locked
-init_cg_rpool -> cg_rpool_init
-get_cg_rpool_locked -> cg_rpool_get_locked
-"gpu cgroup controller" -> "GPU controller"
-gpucg_device -> gpucg_bucket
-usage -> size
+Modify the dma_buf_transfer_charge API to accept a task_struct instead
+of a gpucg. This avoids requiring the caller to manage the refcount
+of the gpucg upon failure and confusing ownership transfer logic.
 
 v4 changes
-Adjust gpucg_try_charge critical section for future charge transfer
-functionality.
+Adjust ordering of charge/uncharge during transfer to avoid potentially
+hitting cgroup limit per Michal Koutn=C3=BD.
 
 v3 changes
 Use more common dual author commit message format per John Stultz.
 
 v2 changes
-Fix incorrect Kconfig help section indentation per Randy Dunlap.
+Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
+heap to a single dma-buf function for all heaps per Daniel Vetter and
+Christian K=C3=B6nig.
 ---
- include/linux/cgroup_gpu.h    | 122 ++++++++++++
- include/linux/cgroup_subsys.h |   4 +
- init/Kconfig                  |   7 +
- kernel/cgroup/Makefile        |   1 +
- kernel/cgroup/gpu.c           | 339 ++++++++++++++++++++++++++++++++++
- 5 files changed, 473 insertions(+)
- create mode 100644 include/linux/cgroup_gpu.h
- create mode 100644 kernel/cgroup/gpu.c
+ drivers/dma-buf/dma-buf.c  | 57 ++++++++++++++++++++++++++++++++++++++
+ include/linux/cgroup_gpu.h | 24 ++++++++++++++++
+ include/linux/dma-buf.h    |  6 ++++
+ kernel/cgroup/gpu.c        | 51 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 138 insertions(+)
 
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index bc89c44bd9b9..f3fb844925e2 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -1341,6 +1341,63 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct i=
+osys_map *map)
+ }
+ EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap, DMA_BUF);
+=20
++/**
++ * dma_buf_transfer_charge - Change the GPU cgroup to which the provided d=
+ma_buf is charged.
++ * @dmabuf:	[in]	buffer whose charge will be migrated to a different GPU c=
+group
++ * @target:	[in]	the task_struct of the destination process for the GPU cg=
+roup charge
++ *
++ * Only tasks that belong to the same cgroup the buffer is currently charg=
+ed to
++ * may call this function, otherwise it will return -EPERM.
++ *
++ * Returns 0 on success, or a negative errno code otherwise.
++ */
++int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct task_struct *ta=
+rget)
++{
++	struct gpucg *current_gpucg, *target_gpucg, *to_release;
++	int ret;
++
++	if (!dmabuf->gpucg || !dmabuf->gpucg_bucket) {
++		/* This dmabuf is not tracked under GPU cgroup accounting */
++		return 0;
++	}
++
++	current_gpucg =3D gpucg_get(current);
++	target_gpucg =3D gpucg_get(target);
++	to_release =3D target_gpucg;
++
++	/* If the source and destination cgroups are the same, don't do anything.=
+ */
++	if (current_gpucg =3D=3D target_gpucg) {
++		ret =3D 0;
++		goto skip_transfer;
++	}
++
++	/*
++	 * Verify that the cgroup of the process requesting the transfer
++	 * is the same as the one the buffer is currently charged to.
++	 */
++	mutex_lock(&dmabuf->lock);
++	if (current_gpucg !=3D dmabuf->gpucg) {
++		ret =3D -EPERM;
++		goto err;
++	}
++
++	ret =3D gpucg_transfer_charge(
++		dmabuf->gpucg, target_gpucg, dmabuf->gpucg_bucket, dmabuf->size);
++	if (ret)
++		goto err;
++
++	to_release =3D dmabuf->gpucg;
++	dmabuf->gpucg =3D target_gpucg;
++
++err:
++	mutex_unlock(&dmabuf->lock);
++skip_transfer:
++	gpucg_put(current_gpucg);
++	gpucg_put(to_release);
++	return ret;
++}
++EXPORT_SYMBOL_NS_GPL(dma_buf_transfer_charge, DMA_BUF);
++
+ #ifdef CONFIG_DEBUG_FS
+ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+ {
 diff --git a/include/linux/cgroup_gpu.h b/include/linux/cgroup_gpu.h
-new file mode 100644
-index 000000000000..cb228a16aa1f
---- /dev/null
+index cb228a16aa1f..7eb68f1507fb 100644
+--- a/include/linux/cgroup_gpu.h
 +++ b/include/linux/cgroup_gpu.h
-@@ -0,0 +1,122 @@
-+/* SPDX-License-Identifier: MIT
-+ * Copyright 2019 Advanced Micro Devices, Inc.
-+ * Copyright (C) 2022 Google LLC.
-+ */
-+#ifndef _CGROUP_GPU_H
-+#define _CGROUP_GPU_H
-+
-+#include <linux/cgroup.h>
-+
-+#define GPUCG_BUCKET_NAME_MAX_LEN 64
-+
-+struct gpucg;
-+struct gpucg_bucket;
-+
-+#ifdef CONFIG_CGROUP_GPU
-+
-+/**
-+ * css_to_gpucg - get the corresponding gpucg ref from a cgroup_subsys_sta=
-te
-+ * @css: the target cgroup_subsys_state
-+ *
-+ * Returns: gpu cgroup that contains the @css
-+ */
-+struct gpucg *css_to_gpucg(struct cgroup_subsys_state *css);
-+
-+/**
-+ * gpucg_get - get the gpucg reference that a task belongs to
-+ * @task: the target task
-+ *
-+ * This increases the reference count of the css that the @task belongs to=
-.
-+ *
-+ * Returns: reference to the gpu cgroup the task belongs to.
-+ */
-+struct gpucg *gpucg_get(struct task_struct *task);
-+
-+/**
-+ * gpucg_put - put a gpucg reference
-+ * @gpucg: the target gpucg
-+ *
-+ * Put a reference obtained via gpucg_get
-+ */
-+void gpucg_put(struct gpucg *gpucg);
-+
-+/**
-+ * gpucg_parent - find the parent of a gpu cgroup
-+ * @cg: the target gpucg
-+ *
-+ * This does not increase the reference count of the parent cgroup
-+ *
-+ * Returns: parent gpu cgroup of @cg
-+ */
-+struct gpucg *gpucg_parent(struct gpucg *cg);
-+
-+/**
-+ * gpucg_charge - charge memory to the specified gpucg and gpucg_bucket.
-+ * Caller must hold a reference to @gpucg obtained through gpucg_get(). Th=
-e size of the memory is
-+ * rounded up to be a multiple of the page size.
-+ *
-+ * @gpucg: The gpu cgroup to charge the memory to.
-+ * @bucket: The bucket to charge the memory to.
-+ * @size: The size of memory to charge in bytes.
-+ *        This size will be rounded up to the nearest page size.
-+ *
-+ * Return: returns 0 if the charging is successful and otherwise returns a=
-n error code.
-+ */
-+int gpucg_charge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 siz=
-e);
-+
-+/**
-+ * gpucg_uncharge - uncharge memory from the specified gpucg and gpucg_buc=
-ket.
-+ * The caller must hold a reference to @gpucg obtained through gpucg_get()=
-.
-+ *
-+ * @gpucg: The gpu cgroup to uncharge the memory from.
-+ * @bucket: The bucket to uncharge the memory from.
-+ * @size: The size of memory to uncharge in bytes.
-+ *        This size will be rounded up to the nearest page size.
-+ */
-+void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 =
+@@ -75,6 +75,22 @@ int gpucg_charge(struct gpucg *gpucg, struct gpucg_bucke=
+t *bucket, u64 size);
+  */
+ void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 =
 size);
-+
+=20
 +/**
-+ * gpucg_register_bucket - Registers a bucket for memory accounting using =
-the GPU cgroup controller.
++ * gpucg_transfer_charge - Transfer a GPU charge from one cgroup to anothe=
+r.
 + *
-+ * @name: Pointer to a null-terminated string to denote the name of the bu=
-cket. This name should be
-+ *        globally unique, and should not exceed @GPUCG_BUCKET_NAME_MAX_LE=
-N bytes.
++ * @source:	[in]	The GPU cgroup the charge will be transferred from.
++ * @dest:	[in]	The GPU cgroup the charge will be transferred to.
++ * @bucket:	[in]	The GPU cgroup bucket corresponding to the charge.
++ * @size:	[in]	The size of the memory in bytes.
++ *                      This size will be rounded up to the nearest page s=
+ize.
 + *
-+ * @bucket must remain valid. @name will be copied.
-+ *
-+ * Returns a pointer to a newly allocated bucket on success, or an errno c=
-ode otherwise. As buckets
-+ * cannot be unregistered, this can never be freed.
++ * Returns 0 on success, or a negative errno code otherwise.
 + */
-+struct gpucg_bucket *gpucg_register_bucket(const char *name);
-+#else /* CONFIG_CGROUP_GPU */
++int gpucg_transfer_charge(struct gpucg *source,
++			  struct gpucg *dest,
++			  struct gpucg_bucket *bucket,
++			  u64 size);
 +
-+static inline struct gpucg *css_to_gpucg(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
-+static inline struct gpucg *gpucg_get(struct task_struct *task)
-+{
-+	return NULL;
-+}
-+
-+static inline void gpucg_put(struct gpucg *gpucg) {}
-+
-+static inline struct gpucg *gpucg_parent(struct gpucg *cg)
-+{
-+	return NULL;
-+}
-+
-+static inline int gpucg_charge(struct gpucg *gpucg,
-+			       struct gpucg_bucket *bucket,
-+			       u64 size)
+ /**
+  * gpucg_register_bucket - Registers a bucket for memory accounting using =
+the GPU cgroup controller.
+  *
+@@ -117,6 +133,14 @@ static inline void gpucg_uncharge(struct gpucg *gpucg,
+ 				  struct gpucg_bucket *bucket,
+ 				  u64 size) {}
+=20
++static inline int gpucg_transfer_charge(struct gpucg *source,
++					struct gpucg *dest,
++					struct gpucg_bucket *bucket,
++					u64 size)
 +{
 +	return 0;
 +}
 +
-+static inline void gpucg_uncharge(struct gpucg *gpucg,
-+				  struct gpucg_bucket *bucket,
-+				  u64 size) {}
-+
-+static inline struct gpucg_bucket *gpucg_register_bucket(const char *name)=
+ static inline struct gpucg_bucket *gpucg_register_bucket(const char *name)=
  {}
-+#endif /* CONFIG_CGROUP_GPU */
-+#endif /* _CGROUP_GPU_H */
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index 445235487230..46a2a7b93c41 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -65,6 +65,10 @@ SUBSYS(rdma)
- SUBSYS(misc)
- #endif
-=20
-+#if IS_ENABLED(CONFIG_CGROUP_GPU)
-+SUBSYS(gpu)
-+#endif
+ #endif /* CONFIG_CGROUP_GPU */
+ #endif /* _CGROUP_GPU_H */
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index 8e7c55c830b3..438ad8577b76 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -18,6 +18,7 @@
+ #include <linux/file.h>
+ #include <linux/err.h>
+ #include <linux/scatterlist.h>
++#include <linux/sched.h>
+ #include <linux/list.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/fs.h>
+@@ -650,9 +651,14 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct ios=
+ys_map *map);
+ void dma_buf_exp_info_set_gpucg(struct dma_buf_export_info *exp_info,
+ 				struct gpucg *gpucg,
+ 				struct gpucg_bucket *gpucg_bucket);
 +
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index ddcbefe535e9..2e00a190e170 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -984,6 +984,13 @@ config BLK_CGROUP
-=20
- 	See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more inf=
-ormation.
-=20
-+config CGROUP_GPU
-+	bool "GPU controller (EXPERIMENTAL)"
-+	select PAGE_COUNTER
-+	help
-+	  Provides accounting and limit setting for memory allocations by the GPU=
- and
-+	  GPU-related subsystems.
++int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct task_struct *ta=
+rget);
+ #else/* CONFIG_CGROUP_GPU */
+ static inline void dma_buf_exp_info_set_gpucg(struct dma_buf_export_info *=
+exp_info,
+ 					      struct gpucg *gpucg,
+ 					      struct gpucg_bucket *gpucg_bucket) {}
 +
- config CGROUP_WRITEBACK
- 	bool
- 	depends on MEMCG && BLK_CGROUP
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index 12f8457ad1f9..be95a5a532fc 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -7,3 +7,4 @@ obj-$(CONFIG_CGROUP_RDMA) +=3D rdma.o
- obj-$(CONFIG_CPUSETS) +=3D cpuset.o
- obj-$(CONFIG_CGROUP_MISC) +=3D misc.o
- obj-$(CONFIG_CGROUP_DEBUG) +=3D debug.o
-+obj-$(CONFIG_CGROUP_GPU) +=3D gpu.o
++static inline int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct t=
+ask_struct *target)
++{ return 0; }
+ #endif /* CONFIG_CGROUP_GPU */
+ #endif /* __DMA_BUF_H__ */
 diff --git a/kernel/cgroup/gpu.c b/kernel/cgroup/gpu.c
-new file mode 100644
-index 000000000000..ad16ea15d427
---- /dev/null
+index ad16ea15d427..038ea873a9d3 100644
+--- a/kernel/cgroup/gpu.c
 +++ b/kernel/cgroup/gpu.c
-@@ -0,0 +1,339 @@
-+// SPDX-License-Identifier: MIT
-+// Copyright 2019 Advanced Micro Devices, Inc.
-+// Copyright (C) 2022 Google LLC.
-+
-+#include <linux/cgroup.h>
-+#include <linux/cgroup_gpu.h>
-+#include <linux/err.h>
-+#include <linux/gfp.h>
-+#include <linux/list.h>
-+#include <linux/mm.h>
-+#include <linux/page_counter.h>
-+#include <linux/seq_file.h>
-+#include <linux/slab.h>
-+#include <linux/string.h>
-+
-+static struct gpucg *root_gpucg __read_mostly;
-+
-+/*
-+ * Protects list of resource pools maintained on per cgroup basis and list
-+ * of buckets registered for memory accounting using the GPU cgroup contro=
-ller.
-+ */
-+static DEFINE_MUTEX(gpucg_mutex);
-+static LIST_HEAD(gpucg_buckets);
-+
-+/* The GPU cgroup controller data structure */
-+struct gpucg {
-+	struct cgroup_subsys_state css;
-+
-+	/* list of all resource pools that belong to this cgroup */
-+	struct list_head rpools;
-+};
-+
-+/* A named entity representing bucket of tracked memory. */
-+struct gpucg_bucket {
-+	/* list of various resource pools in various cgroups that the bucket is p=
-art of */
-+	struct list_head rpools;
-+
-+	/* list of all buckets registered for GPU cgroup accounting */
-+	struct list_head bucket_node;
-+
-+	/* string to be used as identifier for accounting and limit setting */
-+	const char *name;
-+};
-+
-+struct gpucg_resource_pool {
-+	/* The bucket whose resource usage is tracked by this resource pool */
-+	struct gpucg_bucket *bucket;
-+
-+	/* list of all resource pools for the cgroup */
-+	struct list_head cg_node;
-+
-+	/* list maintained by the gpucg_bucket to keep track of its resource pool=
-s */
-+	struct list_head bucket_node;
-+
-+	/* tracks memory usage of the resource pool */
-+	struct page_counter total;
-+};
-+
-+static void free_cg_rpool_locked(struct gpucg_resource_pool *rpool)
-+{
-+	lockdep_assert_held(&gpucg_mutex);
-+
-+	list_del(&rpool->cg_node);
-+	list_del(&rpool->bucket_node);
-+	kfree(rpool);
-+}
-+
-+static void gpucg_css_free(struct cgroup_subsys_state *css)
-+{
-+	struct gpucg_resource_pool *rpool, *tmp;
-+	struct gpucg *gpucg =3D css_to_gpucg(css);
-+
-+	// delete all resource pools
-+	mutex_lock(&gpucg_mutex);
-+	list_for_each_entry_safe(rpool, tmp, &gpucg->rpools, cg_node)
-+		free_cg_rpool_locked(rpool);
-+	mutex_unlock(&gpucg_mutex);
-+
-+	kfree(gpucg);
-+}
-+
-+static struct cgroup_subsys_state *
-+gpucg_css_alloc(struct cgroup_subsys_state *parent_css)
-+{
-+	struct gpucg *gpucg, *parent;
-+
-+	gpucg =3D kzalloc(sizeof(struct gpucg), GFP_KERNEL);
-+	if (!gpucg)
-+		return ERR_PTR(-ENOMEM);
-+
-+	parent =3D css_to_gpucg(parent_css);
-+	if (!parent)
-+		root_gpucg =3D gpucg;
-+
-+	INIT_LIST_HEAD(&gpucg->rpools);
-+
-+	return &gpucg->css;
-+}
-+
-+static struct gpucg_resource_pool *cg_rpool_find_locked(
-+	struct gpucg *cg,
-+	struct gpucg_bucket *bucket)
-+{
-+	struct gpucg_resource_pool *rpool;
-+
-+	lockdep_assert_held(&gpucg_mutex);
-+
-+	list_for_each_entry(rpool, &cg->rpools, cg_node)
-+		if (rpool->bucket =3D=3D bucket)
-+			return rpool;
-+
-+	return NULL;
-+}
-+
-+static struct gpucg_resource_pool *cg_rpool_init(struct gpucg *cg,
-+						 struct gpucg_bucket *bucket)
-+{
-+	struct gpucg_resource_pool *rpool =3D kzalloc(sizeof(*rpool),
-+							GFP_KERNEL);
-+	if (!rpool)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rpool->bucket =3D bucket;
-+
-+	page_counter_init(&rpool->total, NULL);
-+	INIT_LIST_HEAD(&rpool->cg_node);
-+	INIT_LIST_HEAD(&rpool->bucket_node);
-+	list_add_tail(&rpool->cg_node, &cg->rpools);
-+	list_add_tail(&rpool->bucket_node, &bucket->rpools);
-+
-+	return rpool;
-+}
-+
-+/**
-+ * get_cg_rpool_locked - find the resource pool for the specified bucket a=
-nd
-+ * specified cgroup. If the resource pool does not exist for the cg, it is
-+ * created in a hierarchical manner in the cgroup and its ancestor cgroups=
- who
-+ * do not already have a resource pool entry for the bucket.
-+ *
-+ * @cg: The cgroup to find the resource pool for.
-+ * @bucket: The bucket associated with the returned resource pool.
-+ *
-+ * Return: return resource pool entry corresponding to the specified bucke=
-t in
-+ * the specified cgroup (hierarchically creating them if not existing alre=
-ady).
-+ *
-+ */
-+static struct gpucg_resource_pool *
-+cg_rpool_get_locked(struct gpucg *cg, struct gpucg_bucket *bucket)
-+{
-+	struct gpucg *parent_cg, *p, *stop_cg;
-+	struct gpucg_resource_pool *rpool, *tmp_rpool;
-+	struct gpucg_resource_pool *parent_rpool =3D NULL, *leaf_rpool =3D NULL;
-+
-+	rpool =3D cg_rpool_find_locked(cg, bucket);
-+	if (rpool)
-+		return rpool;
-+
-+	stop_cg =3D cg;
-+	do {
-+		rpool =3D cg_rpool_init(stop_cg, bucket);
-+		if (IS_ERR(rpool))
-+			goto err;
-+
-+		if (!leaf_rpool)
-+			leaf_rpool =3D rpool;
-+
-+		stop_cg =3D gpucg_parent(stop_cg);
-+		if (!stop_cg)
-+			break;
-+
-+		rpool =3D cg_rpool_find_locked(stop_cg, bucket);
-+	} while (!rpool);
-+
-+	/*
-+	 * Re-initialize page counters of all rpools created in this invocation
-+	 * to enable hierarchical charging.
-+	 * stop_cg is the first ancestor cg who already had a resource pool for
-+	 * the bucket. It can also be NULL if no ancestors had a pre-existing
-+	 * resource pool for the bucket before this invocation.
-+	 */
-+	rpool =3D leaf_rpool;
-+	for (p =3D cg; p !=3D stop_cg; p =3D parent_cg) {
-+		parent_cg =3D gpucg_parent(p);
-+		if (!parent_cg)
-+			break;
-+		parent_rpool =3D cg_rpool_find_locked(parent_cg, bucket);
-+		page_counter_init(&rpool->total, &parent_rpool->total);
-+
-+		rpool =3D parent_rpool;
-+	}
-+
-+	return leaf_rpool;
-+err:
-+	for (p =3D cg; p !=3D stop_cg; p =3D gpucg_parent(p)) {
-+		tmp_rpool =3D cg_rpool_find_locked(p, bucket);
-+		free_cg_rpool_locked(tmp_rpool);
-+	}
-+	return rpool;
-+}
-+
-+struct gpucg *css_to_gpucg(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct gpucg, css) : NULL;
-+}
-+
-+struct gpucg *gpucg_get(struct task_struct *task)
-+{
-+	if (!cgroup_subsys_enabled(gpu_cgrp_subsys))
-+		return NULL;
-+	return css_to_gpucg(task_get_css(task, gpu_cgrp_id));
-+}
-+
-+void gpucg_put(struct gpucg *gpucg)
-+{
-+	if (gpucg)
-+		css_put(&gpucg->css);
-+}
-+
-+struct gpucg *gpucg_parent(struct gpucg *cg)
-+{
-+	return css_to_gpucg(cg->css.parent);
-+}
-+
-+int gpucg_charge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 siz=
-e)
+@@ -274,6 +274,57 @@ void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_=
+bucket *bucket, u64 size)
+ 	css_put(&gpucg->css);
+ }
+=20
++int gpucg_transfer_charge(struct gpucg *source,
++			  struct gpucg *dest,
++			  struct gpucg_bucket *bucket,
++			  u64 size)
 +{
 +	struct page_counter *counter;
 +	u64 nr_pages;
-+	struct gpucg_resource_pool *rp;
++	struct gpucg_resource_pool *rp_source, *rp_dest;
 +	int ret =3D 0;
 +
 +	nr_pages =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
 +
 +	mutex_lock(&gpucg_mutex);
-+	rp =3D cg_rpool_get_locked(gpucg, bucket);
-+	/*
-+	 * Continue to hold gpucg_mutex because we use it to block charges while =
-transfers are in
-+	 * progress to avoid potentially exceeding a limit.
-+	 */
-+	if (IS_ERR(rp)) {
-+		mutex_unlock(&gpucg_mutex);
-+		return PTR_ERR(rp);
++	rp_source =3D cg_rpool_find_locked(source, bucket);
++	if (unlikely(!rp_source)) {
++		ret =3D -ENOENT;
++		goto exit_early;
 +	}
 +
-+	if (page_counter_try_charge(&rp->total, nr_pages, &counter))
-+		css_get(&gpucg->css);
-+	else
-+		ret =3D -ENOMEM;
-+	mutex_unlock(&gpucg_mutex);
++	rp_dest =3D cg_rpool_get_locked(dest, bucket);
++	if (IS_ERR(rp_dest)) {
++		ret =3D PTR_ERR(rp_dest);
++		goto exit_early;
++	}
 +
++	/*
++	 * First uncharge from the pool it's currently charged to. This ordering =
+avoids double
++	 * charging while the transfer is in progress, which could cause us to hi=
+t a limit.
++	 * If the try_charge fails for this transfer, we need to be able to rever=
+se this uncharge,
++	 * so we continue to hold the gpucg_mutex here.
++	 */
++	page_counter_uncharge(&rp_source->total, nr_pages);
++	css_put(&source->css);
++
++	/* Now attempt the new charge */
++	if (page_counter_try_charge(&rp_dest->total, nr_pages, &counter)) {
++		css_get(&dest->css);
++	} else {
++		/*
++		 * The new charge failed, so reverse the uncharge from above. This shoul=
+d always
++		 * succeed since charges on source are blocked by gpucg_mutex.
++		 */
++		WARN_ON(!page_counter_try_charge(&rp_source->total, nr_pages, &counter))=
+;
++		css_get(&source->css);
++		ret =3D -ENOMEM;
++	}
++exit_early:
++	mutex_unlock(&gpucg_mutex);
 +	return ret;
 +}
 +
-+void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 =
-size)
-+{
-+	u64 nr_pages;
-+	struct gpucg_resource_pool *rp;
-+
-+	mutex_lock(&gpucg_mutex);
-+	rp =3D cg_rpool_find_locked(gpucg, bucket);
-+	/*
-+	 * gpucg_mutex can be unlocked here, rp will stay valid until gpucg is fr=
-eed and there are
-+	 * active refs on gpucg. Uncharges are fine while transfers are in progre=
-ss since there is
-+	 * no potential to exceed a limit while uncharging and transferring.
-+	 */
-+	mutex_unlock(&gpucg_mutex);
-+
-+	if (unlikely(!rp)) {
-+		pr_err("Resource pool not found, incorrect charge/uncharge ordering?\n")=
-;
-+		return;
-+	}
-+
-+	nr_pages =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
-+	page_counter_uncharge(&rp->total, nr_pages);
-+	css_put(&gpucg->css);
-+}
-+
-+struct gpucg_bucket *gpucg_register_bucket(const char *name)
-+{
-+	struct gpucg_bucket *bucket, *b;
-+
-+	if (!name)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (strlen(name) >=3D GPUCG_BUCKET_NAME_MAX_LEN)
-+		return ERR_PTR(-ENAMETOOLONG);
-+
-+	bucket =3D kzalloc(sizeof(struct gpucg_bucket), GFP_KERNEL);
-+	if (!bucket)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&bucket->bucket_node);
-+	INIT_LIST_HEAD(&bucket->rpools);
-+	bucket->name =3D kstrdup_const(name, GFP_KERNEL);
-+
-+	mutex_lock(&gpucg_mutex);
-+	list_for_each_entry(b, &gpucg_buckets, bucket_node) {
-+		if (strncmp(b->name, bucket->name, GPUCG_BUCKET_NAME_MAX_LEN) =3D=3D 0) =
-{
-+			mutex_unlock(&gpucg_mutex);
-+			kfree_const(bucket->name);
-+			kfree(bucket);
-+			return ERR_PTR(-EEXIST);
-+		}
-+	}
-+	list_add_tail(&bucket->bucket_node, &gpucg_buckets);
-+	mutex_unlock(&gpucg_mutex);
-+
-+	return bucket;
-+}
-+
-+static int gpucg_resource_show(struct seq_file *sf, void *v)
-+{
-+	struct gpucg_resource_pool *rpool;
-+	struct gpucg *cg =3D css_to_gpucg(seq_css(sf));
-+
-+	mutex_lock(&gpucg_mutex);
-+	list_for_each_entry(rpool, &cg->rpools, cg_node) {
-+		seq_printf(sf, "%s %lu\n", rpool->bucket->name,
-+			   page_counter_read(&rpool->total) * PAGE_SIZE);
-+	}
-+	mutex_unlock(&gpucg_mutex);
-+
-+	return 0;
-+}
-+
-+struct cftype files[] =3D {
-+	{
-+		.name =3D "memory.current",
-+		.seq_show =3D gpucg_resource_show,
-+	},
-+	{ }     /* terminate */
-+};
-+
-+struct cgroup_subsys gpu_cgrp_subsys =3D {
-+	.css_alloc      =3D gpucg_css_alloc,
-+	.css_free       =3D gpucg_css_free,
-+	.early_init     =3D false,
-+	.legacy_cftypes =3D files,
-+	.dfl_cftypes    =3D files,
-+};
+ struct gpucg_bucket *gpucg_register_bucket(const char *name)
+ {
+ 	struct gpucg_bucket *bucket, *b;
 --=20
 2.36.0.512.ge40c2bad7a-goog
 
