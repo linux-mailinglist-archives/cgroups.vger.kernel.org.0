@@ -2,55 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7445226F8
-	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 00:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32286522733
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 00:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbiEJWkn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 18:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
+        id S233335AbiEJWuN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 18:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbiEJWkm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 18:40:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518181FA70;
-        Tue, 10 May 2022 15:40:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C908461811;
-        Tue, 10 May 2022 22:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7375C385D1;
-        Tue, 10 May 2022 22:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1652222439;
-        bh=Uep9omWAHUgcNmftnhT+OxXsLVstbaEvQlnJP1mh//w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aU3hfLPZDr+uUiq73DIBtXvAfY5S2GiWrylBB7qJs04cVSM3a032pbem+F+SzA3nD
-         NmTFsl/iikJ9L8A13NTBsku9/0KwxWXCPXKeZ6/c0JvI6ckcVLMmTGJmlWcWt3QzJh
-         PiasBPNTr9le1p4IUa0r4IApkoasZ/VAVs0RChD0=
-Date:   Tue, 10 May 2022 15:40:37 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        with ESMTP id S229561AbiEJWuM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 18:50:12 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7012124DC50
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 15:50:11 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id dv4so583375qvb.13
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 15:50:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5pgf2LC4mfZtxmKKitMud+Oy12RPGcU3F46iHWGsadA=;
+        b=ekAQBJLQ0g2H+FUmFV5f70dwdMJlmpMe43UT4QIXA58jzQ7eDTurlQUHhbMjmFXgUn
+         iSvHyXVOpjYMsk92HbvRZQl8ByOek4TmP4dutBYmWmysLSp+0lz8VY73TGj93QW0TK/I
+         wFDu3nWggMxUUhT25DqnrpkQRHcZyfZQlsTbTl94c/g9RyI7z/yYTSrr78bkYPz4zPE6
+         iY4Bp9up41gXopOTZgVvz0svbTi1cJwop5wCmJ5rigsS40iOXz4jYN10Zh1qCwptI9S1
+         NrCYR94Zlax6XmK+bd61BAf+16YQeV+dhN2Bpph/aIHzuhFyMVqWf35ODyxRjEeOQHST
+         hZVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5pgf2LC4mfZtxmKKitMud+Oy12RPGcU3F46iHWGsadA=;
+        b=TvZR+Oj3Ckczj0dHztbrG5TQPtcBh5a/ACGlP1BrfXVl/oIVZVce5/WTUdXj9SmXNW
+         PXEiFJwXE2uH+8sH/hCYLIoyhxmlm2DCyA6jEzd89WHtQvj5n75yrQcLlAucp3jQccjW
+         N8ATh7bAFV62GYqZ8p/xlecDs/RLP6OoQdmLqViFVJFTyLsu2Z53DVmDuaVXx3rabu6+
+         YcHN0fwv7oF/aQYdTB9ZfwzNBm8USi1jjN6YVkF0GW/lQ/MVngy+TcaRY71sC1rjWq3P
+         RsAUdGlvcNs/LLn21nFgWJv2i/ye+FyKAqF5KvoRK00Kb0Pxen72ut/cBuoM/FCmI6oo
+         FDiQ==
+X-Gm-Message-State: AOAM533S56idIXi0sky9z63PFEnmeis1AJKXvdPvZaoU4zOBKm75PTMZ
+        FAAeKjgBHplW3gIxt7wbMf8uM5IfzjDrGJ2fcrmQ5A==
+X-Google-Smtp-Source: ABdhPJzAFn9/jIPprW6IL+T0z4v5PPLX/63yNDyYNQ0qdZ3QxvFVYV7PhbjIoCNQF1WFZkNWMTKoVzPSeNUYybVJQSc=
+X-Received: by 2002:ad4:4753:0:b0:456:34db:614b with SMTP id
+ c19-20020ad44753000000b0045634db614bmr19945189qvx.17.1652223010267; Tue, 10
+ May 2022 15:50:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-9-yosryahmed@google.com> <Ynq04gC1l7C2tx6o@slm.duckdns.org>
+ <CA+khW7girnNwap1ABN1a4XuvkEEnmkztTV+fsuC3MsxNeB08Yg@mail.gmail.com> <YnriMPYyOP9ibskc@slm.duckdns.org>
+In-Reply-To: <YnriMPYyOP9ibskc@slm.duckdns.org>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 10 May 2022 15:49:59 -0700
+Message-ID: <CA+khW7gUdZQq77jO2_A6rvE6f+HV=sGfBVGvAmazGPvwudE0RQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 8/9] bpf: Introduce cgroup iter
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 3/6] mm: Kconfig: group swap, slab, hotplug and thp
- options into submenus
-Message-Id: <20220510154037.c7916ee9d7de90eedd12f92c@linux-foundation.org>
-In-Reply-To: <20220510152847.230957-4-hannes@cmpxchg.org>
-References: <20220510152847.230957-1-hannes@cmpxchg.org>
-        <20220510152847.230957-4-hannes@cmpxchg.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,29 +85,34 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 10 May 2022 11:28:44 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Tue, May 10, 2022 at 3:07 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, May 10, 2022 at 02:12:16PM -0700, Hao Luo wrote:
+> > > Is there a reason why this can't be a proper iterator which supports
+> > > lseek64() to locate a specific cgroup?
+> > >
+> >
+> > There are two reasons:
+> >
+> > - Bpf_iter assumes no_llseek. I haven't looked closely on why this is
+> > so and whether we can add its support.
+> >
+> > - Second, the name 'iter' in this patch is misleading. What this patch
+> > really does is reusing the functionality of dumping in bpf_iter.
+> > 'Dumper' is a better name. We want to create one file in bpffs for
+> > each cgroup. We are essentially just iterating a set of one single
+> > element.
+>
+> I see. I'm just shooting in the dark without context but at least in
+> principle there's no reason why cgroups wouldn't be iterable, so it might be
+> something worth at least thinking about before baking in the interface.
+>
 
-> There are several clusters of related config options spread throughout
-> the mostly flat MM submenu. Group them together and put specialization
-> options into further subdirectories to make the MM submenu a bit more
-> organized and easier to navigate.
+Yep. Conceptually there should be no problem to iterate cgroups in the
+system. It may be better to have two independent bpf objects: bpf_iter
+and bpf_dumper. In our use case, we want bpf_dumper, which just
+exports data out through fs interface.
 
-Causes
-
-hp2:/usr/src/25> make allnoconfig
-
-WARNING: unmet direct dependencies detected for ARCH_WANT_GENERAL_HUGETLB
-  Depends on [n]: TRANSPARENT_HUGEPAGE [=n]
-  Selected by [y]:
-  - X86 [=y]
-
-WARNING: unmet direct dependencies detected for ARCH_WANTS_THP_SWAP
-  Depends on [n]: TRANSPARENT_HUGEPAGE [=n]
-  Selected by [y]:
-  - X86 [=y] && X86_64 [=y]
-#
-# configuration written to .config
-#
-
-
-I'll disable this and [4/6] for now.
+Hao
