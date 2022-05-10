@@ -2,185 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3985224D7
-	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 21:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579185224D9
+	for <lists+cgroups@lfdr.de>; Tue, 10 May 2022 21:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbiEJTef (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 15:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S231313AbiEJTf1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 15:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiEJTee (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 15:34:34 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED9170F1B;
-        Tue, 10 May 2022 12:34:33 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id i17so17644392pla.10;
-        Tue, 10 May 2022 12:34:33 -0700 (PDT)
+        with ESMTP id S231327AbiEJTfW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 15:35:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D404F28ABB5
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 12:35:19 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id m62so10799955wme.5
+        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 12:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bQthYIwGazUHXvJP4lOeiwCuBM9QlZF5ToR+SlrapXg=;
-        b=WKDEchBVC4Mp134gTUdZstuBf95M4RJvGSkZViPHvH1YSJM33gQRVZWZL9HZNWW223
-         Qgy84a9u4AjEUm9YrMVUW9UNx0E2sQYgIN0MYN+gOf1caJZneovM75xCXkgevzWeAsSs
-         fM6pqvNvNTmffmbhpx9GcAic/N3JOAqSHe9kcVUGE4Hq0Zaxgnv8Fjt1Naee4CaKnfjj
-         RCinT3zwa59llD67qILIX1cl1IPfp6fk0aGqq7nXOd/ahyrQ90DNGCjyCv6aprfqu2uC
-         vgmyE+UAa2PzfG4jdNqQlPInnL6EHMiLb94OdoFMMrvQT9Bx1Ici0tfDSEEqtb0cASaT
-         F32Q==
+        bh=LKRFb9sxsi8oVNRQ43Dsv1RUcYQL89fBmT5eMJ6Q6vc=;
+        b=EfY1U3ySncids9bZ/XiDLa2VH9i6sbY/PMjLNCbvBO1E67+B//9XD39LPI+k4M4SXb
+         0mo6agcKMHL4JcqBGuur1rZZOR0bYlBs9lVOXwn6IxVJevsm9h4qZ5fCDG0CsQl86FHc
+         dZm45vhhVRzeMywWFM3c/rIK3xZj9OfCrjmXk+ay6MaeYyuLU2MaWZK4v3cKSshiy3Hh
+         8dxDMZWPxm8hyWF/FqJUetv/QUwyev5dO10y3i0kox5kliJcYyKHTQbwrNCeq2ieBpQn
+         0QHn/Xra2ZglGj1nSXfcsFwuCOVxiit8IExysiIj+GKovfTp/eBVC8LodvK2lIvQQLOF
+         NK9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bQthYIwGazUHXvJP4lOeiwCuBM9QlZF5ToR+SlrapXg=;
-        b=Z3LBxwjPm1DgHRvRAJEDrtaGv1FFpRZJW3EkLwV07SNsCD3QRQqgSLe31zPorEFDsU
-         F84TwMZtDu6GlmgI7JvQtkc0iMAKQuPyjDwdkv4OlMYP9qwj7xH5pywgw7HzJOnWFPyr
-         4rsXo7MNhHL4+D3xQh6X59Ams8fNTG6TDtHGTvMJCS67NYj8EtIMKCucgCD7x7plHgj+
-         lvWKGQdHvYTUfj2NPSuoLLjQ+HBBNtdS5so4vND9V04zCchpFC8eK/yAQxurUMuVAzlD
-         F9T44OYRgCEGXWd2s0ZIduft2v5LJXfQCfTUj0GctkqWvkWPbGMY7mxKIMb/jVCnjm5W
-         7F5A==
-X-Gm-Message-State: AOAM533t00+8j/HtBPDG/qPgkbqyGnNIu4jBmWsmozA9R4lglPAboDSG
-        vTJHlm0HQctAOtJnvY5JaW5v2+QMge93v9IzTjQ=
-X-Google-Smtp-Source: ABdhPJxUFMq+haarYgwZ66z+ncVF/vfNC4KlopREAV3XXY82SC6n/r928x8vXvUee+OfLRX/rpcr31r0SvO93QHc4MI=
-X-Received: by 2002:a17:902:d552:b0:15e:e759:cd38 with SMTP id
- z18-20020a170902d55200b0015ee759cd38mr22134697plf.87.1652211272813; Tue, 10
- May 2022 12:34:32 -0700 (PDT)
+        bh=LKRFb9sxsi8oVNRQ43Dsv1RUcYQL89fBmT5eMJ6Q6vc=;
+        b=XMHCcmWQd0lIDCsvezr6nDmsfHpDM2ywO4ps7WyL6DMah8wtZb66pASa4h2rIE6Ick
+         hzrYhVMFCrTrZnZWl52uSvIAPxo8aTgfCozqrk7bP6lmjhRZv4YHInBiYHvIgsjtIyEo
+         r/hLg0/OK9B4p9jR8/Ix2X+BXNZMFdalyDUXVOAF+VP1WXLxFvZX3GV8ji9Vxu35Wm1H
+         lNPkfrLnjQi0TiqYj0kVPkdLRlwnjpVztEm5Uw29E2vhj0IstIxtGbApuhfC8KIXjxmN
+         blJIc10Amr3TjMfnJK5tK/m1LlyF2s1f+l0VrRxxR0ikmNHV5fMBU0c3OYDgZLe3DKX5
+         Df0Q==
+X-Gm-Message-State: AOAM5339qLgcyku4OdoIvC4DH8DmHNc7RhPE9hAmpVoFX7aQRabE4GqZ
+        aaWfeVE5NiSfxFKo40hbtIffABABwjkLDi6Z7xSorQ==
+X-Google-Smtp-Source: ABdhPJwtdbqlTr6NGdts99IEdCRtAfnTWT+wHPPMXwyZcWIMcXkbhDPH8ehovcRs+RmtpcnP4cUwZes7T+tfAkJVltw=
+X-Received: by 2002:a05:600c:4ecc:b0:394:790d:5f69 with SMTP id
+ g12-20020a05600c4ecc00b00394790d5f69mr1481079wmq.196.1652211318302; Tue, 10
+ May 2022 12:35:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220505033814.103256-1-xu.xin16@zte.com.cn> <YnUlntNFR4zeD+qa@dhcp22.suse.cz>
- <6275d3e7.1c69fb81.1d62.4504@mx.google.com> <YnjmPAToTR0C5o8x@dhcp22.suse.cz>
- <6278fa75.1c69fb81.9c598.f794@mx.google.com> <Ynj/l+pyFJxKfcbQ@dhcp22.suse.cz>
- <6279c354.1c69fb81.7f6c1.15e0@mx.google.com>
-In-Reply-To: <6279c354.1c69fb81.7f6c1.15e0@mx.google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 10 May 2022 12:34:20 -0700
-Message-ID: <CAHbLzkqztB+NXVcxtd7bVo7onH6AcMJ3JWCAHHqH3OAdbZsMOQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcg: support control THP behaviour in cgroup
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-2-yosryahmed@google.com> <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
+In-Reply-To: <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 10 May 2022 12:34:42 -0700
+Message-ID: <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
+ program type
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
+        Shuah Khan <shuah@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Suren Baghdasaryan <surenb@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Yang Yang <yang.yang29@zte.com.cn>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 9, 2022 at 6:43 PM CGEL <cgel.zte@gmail.com> wrote:
+On Tue, May 10, 2022 at 11:44 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> On Mon, May 09, 2022 at 01:48:39PM +0200, Michal Hocko wrote:
-> > On Mon 09-05-22 11:26:43, CGEL wrote:
-> > > On Mon, May 09, 2022 at 12:00:28PM +0200, Michal Hocko wrote:
-> > > > On Sat 07-05-22 02:05:25, CGEL wrote:
-> > > > [...]
-> > > > > If there are many containers to run on one host, and some of them have high
-> > > > > performance requirements, administrator could turn on thp for them:
-> > > > > # docker run -it --thp-enabled=always
-> > > > > Then all the processes in those containers will always use thp.
-> > > > > While other containers turn off thp by:
-> > > > > # docker run -it --thp-enabled=never
-> > > >
-> > > > I do not know. The THP config space is already too confusing and complex
-> > > > and this just adds on top. E.g. is the behavior of the knob
-> > > > hierarchical? What is the policy if parent memcg says madivise while
-> > > > child says always? How does the per-application configuration aligns
-> > > > with all that (e.g. memcg policy madivise but application says never via
-> > > > prctl while still uses some madvised - e.g. via library).
-> > > >
-> > >
-> > > The cgroup THP behavior is align to host and totally independent just likes
-> > > /sys/fs/cgroup/memory.swappiness. That means if one cgroup config 'always'
-> > > for thp, it has no matter with host or other cgroup. This make it simple for
-> > > user to understand or control.
-> >
-> > All controls in cgroup v2 should be hierarchical. This is really
-> > required for a proper delegation semantic.
-> >
+> Hello,
 >
-> Could we align to the semantic of /sys/fs/cgroup/memory.swappiness?
-> Some distributions like Ubuntu is still using cgroup v1.
+> On Tue, May 10, 2022 at 12:17:59AM +0000, Yosry Ahmed wrote:
+> > @@ -706,6 +707,9 @@ struct cgroup_subsys {
+> >        * specifies the mask of subsystems that this one depends on.
+> >        */
+> >       unsigned int depends_on;
+> > +
+> > +     /* used to store bpf programs.*/
+> > +     struct cgroup_subsys_bpf bpf;
+> >  };
+>
+> Care to elaborate on rationales around associating this with a specific
+> cgroup_subsys rather than letting it walk cgroups and access whatever csses
+> as needed? I don't think it's a wrong approach or anything but I can think
+> of plenty of things that would be interesting without being associated with
+> a specific subsystem - even all the cpu usage statistics are built to in the
+> cgroup core and given how e.g. systemd uses cgroup to organize the
+> applications in the system whether resource control is active or not, there
+> are a lot of info one can gather about those without being associated with a
+> specific subsystem.
 
-Other than enable flag, how would you handle the defrag flag
-hierarchically? It is much more complicated.
+Hi Tejun,
+
+Thanks so much for taking the time to look into this!
+
+The rationale behind associating this work with cgroup_subsys is that
+usually the stats are associated with a resource (e.g. memory, cpu,
+etc). For example, if the memory controller is only enabled for a
+subtree in a big hierarchy, it would be more efficient to only run BPF
+rstat programs for those cgroups, not the entire hierarchy. It
+provides a way to control what part of the hierarchy you want to
+collect stats for. This is also semantically similar to the
+css_rstat_flush() callback.
+
+However, I do see your point about the benefits of collecting stats
+that are not associated with any controller. I think there are
+multiple options here, and I would love to hear what you prefer:
+1. In addition to subsystems, support an "all" or "cgroup" attach
+point that loads BPF rstat flush programs that will run for all
+cgroups.
+2. Simplify the interface so that all BPF rstat flush programs run for
+all cgroups, and add the subsystem association later if a need arises.
+3. Instead of attaching BPF programs to a subsystem, attach them to a
+cgroup. This gives more flexibility, but also makes lifetime handling
+of programs more complicated and error-prone. I can also see most use
+cases (including ours) attaching programs to the root cgroup anyway.
+In this case, we waste space by storing pointers to the same program
+in every cgroup, and have unnecessary complexity in the code.
+
+Let me know what you think!
 
 >
-> > > If memcg policy madivise but application says never, just like host, the result
-> > > is no THP for that application.
-> > >
-> > > > > By doing this we could promote important containers's performance with less
-> > > > > footprint of thp.
-> > > >
-> > > > Do we really want to provide something like THP based QoS? To me it
-> > > > sounds like a bad idea and if the justification is "it might be useful"
-> > > > then I would say no. So you really need to come with a very good usecase
-> > > > to promote this further.
-> > >
-> > > At least on some 5G(communication technology) machine, it's useful to provide
-> > > THP based QoS. Those 5G machine use micro-service software architecture, in
-> > > other words one service application runs in one container.
-> >
-> > I am not really sure I understand. If this is one application per
-> > container (cgroup) then why do you really need per-group setting?
-> > Does the application is a set of different processes which are only very
-> > loosely tight?
-> >
-> For micro-service architecture, the application in one container is not a
-> set of loosely tight processes, it's aim at provide one certain service,
-> so different containers means different service, and different service
-> has different QoS demand.
+> Thanks.
 >
-> The reason why we need per-group(per-container) setting is because most
-> container are managed by compose software, the compose software provide
-> UI to decide how to run a container(likes setting swappiness value). For
-> example the docker compose:
-> https://docs.docker.com/compose/#compose-v2-and-the-new-docker-compose-command
->
-> To make it clearer, I try to make a summary for why container needs this patch:
->     1.one machine can run different containers;
->     2.for some scenario, container runs only one service inside(can be only one
-> application);
->     3.different containers provide different services, different services have
-> different QoS demands;
->     4.THP has big influence on QoS. It's fast for memory access, but eat more
-> memory;
-
-I have been involved in this kind of topic discussion offline a couple
-of times. But TBH I don't see how you could achieve QoS by this flag.
-THP allocation is *NOT* guaranteed. And the overhead may be quite
-high. It depends on how fragmented the system is.
-
->     5.containers usually managed by compose software, which treats container as
-> base management unit;
->     6.this patch provide cgroup THP controller, which can be a method to adjust
-> container memory QoS.
->
-> > > Container becomes
-> > > the suitable management unit but not the whole host. And some performance
-> > > sensitive containers desiderate THP to provide low latency communication.
-> > > But if we use THP with 'always', it will consume more memory(on our machine
-> > > that is about 10% of total memory). And unnecessary huge pages will increase
-> > > memory pressure, add latency for minor pages faults, and add overhead when
-> > > splitting huge pages or coalescing normal sized pages into huge pages.
-> >
-> > It is still not really clear to me how do you achieve that the whole
-> > workload in the said container has the same THP requirements.
-> > --
-> > Michal Hocko
-> > SUSE Labs
+> --
+> tejun
