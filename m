@@ -2,156 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F11523A50
-	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 18:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32500523A6B
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 18:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbiEKQ3D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 May 2022 12:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
+        id S238468AbiEKQep (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 May 2022 12:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344740AbiEKQ3B (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 May 2022 12:29:01 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3262380E0
-        for <cgroups@vger.kernel.org>; Wed, 11 May 2022 09:28:59 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id m1so2651538qkn.10
-        for <cgroups@vger.kernel.org>; Wed, 11 May 2022 09:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Vjtbfzb3XfQBK49vkLU2ME+zLfRrW3PO/4LCqkSQxEo=;
-        b=4rjytAOgIXa9oPL4+JvWFQPgZx54vdMfMIxW8eljWagpDYXPTR81+XelntW9epHwlY
-         DPldjGntjh0a7rjeBqYQVVoujjL/MVQo0nqpIkvAXLC4NlYfuPZdMHZOpF6tz7nxW5x0
-         UbHP9qf1gRsOxHo/D6Xrwrt3Q1NPgnfJR50weL9kafzWEeHl1RdJeCc220fvKfdufkVk
-         qCmDi88pFnxUC9Hy9C85YGx0KIpbiun+O79f7ude563WJnH2cUkwsB4uCDnUwW3xtpbR
-         zIIuXu9o6qjwbfRwtpqi7ZvCHEdEjbASF/jD9PiRkM5GKbJ0F/ZmqKvgO2zwKVfDmVEt
-         xQMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Vjtbfzb3XfQBK49vkLU2ME+zLfRrW3PO/4LCqkSQxEo=;
-        b=5EPSthTg53fOmE0BI9PogRxuYVsf6bmYENOWOMLeHP4JEO635OTlKG8/RGGZVYi5t8
-         bqw3nkbU84NiFtpkop0KJ/byURItV8dzokRoPOftTQWXrHCYJ+xs4/ugHGOWM+lQiTYc
-         JrHCn0DE8KfSeQAHqNOofmGCrm1voTEbOri2SD872lOs/VYN7H/Bvp0a5KKUaCIZp8ot
-         H2dZTgsU/LvDDbnMqdpTPS1ehlhSs18Kc1N6c9LoJT2qfFtU3lxE30VPD4K7RCs9qDlS
-         xcddrkovA6YdWL8+oJQnQTJIwNnjVeEOzVndOdiuXiagYbOSQQNYYvDDSRbBQBTPjQYG
-         fw9A==
-X-Gm-Message-State: AOAM532hJ+JmWT42o/nhUi951YS0NgAlnpfwkmW1YJVN2kel3zoZUo1E
-        0rIJ3JEacYGQr1FZ1c2DSntboA==
-X-Google-Smtp-Source: ABdhPJxft2gzXlXl71SNi+1b64jFQbBGf7Iu8X2dSHgjCzwPpZHsDPkpt95dPvlqSuT8vGr0Dc2BFg==
-X-Received: by 2002:a05:620a:28ca:b0:6a0:a0a9:b2e6 with SMTP id l10-20020a05620a28ca00b006a0a0a9b2e6mr9828094qkp.638.1652286538773;
-        Wed, 11 May 2022 09:28:58 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:14fe])
-        by smtp.gmail.com with ESMTPSA id cb25-20020a05622a1f9900b002f39b99f6b0sm1461209qtb.74.2022.05.11.09.28.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 09:28:58 -0700 (PDT)
-Date:   Wed, 11 May 2022 12:28:57 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 3/6] mm: Kconfig: group swap, slab, hotplug and thp
- options into submenus
-Message-ID: <YnvkSVivfnT57Vwh@cmpxchg.org>
-References: <20220510152847.230957-1-hannes@cmpxchg.org>
- <20220510152847.230957-4-hannes@cmpxchg.org>
- <20220510154037.c7916ee9d7de90eedd12f92c@linux-foundation.org>
- <YnvU0hwCfQ11P8Ce@cmpxchg.org>
+        with ESMTP id S245088AbiEKQem (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 May 2022 12:34:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EC4239D8E;
+        Wed, 11 May 2022 09:34:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D8EA021D24;
+        Wed, 11 May 2022 16:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652286880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2JoTxCuGT/XwmSwU+DDVolsXEflHmN6heyJDe9s6Lc8=;
+        b=CUkd58Keel+pNaWn+KYfxSYFopIDQDKGU3PoRCjYzjYA13p/vREkGqB+N7B6dnrAbP0OUH
+        UgN9xcN9ryoxwKytW0/dcicFGuLYVDNSMVS7cyFxSnp+8lCv7Nr/tgx3tn2JfRg3TITSdt
+        xKGuvz/T96eKVUHLlFlJcs+fWsGNMCQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DE2613A76;
+        Wed, 11 May 2022 16:34:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id S8OOJaDle2JBUQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 11 May 2022 16:34:40 +0000
+Date:   Wed, 11 May 2022 18:34:39 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Vasily Averin <vvs@openvz.org>, Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: kernfs memcg accounting
+Message-ID: <20220511163439.GD24172@blackbody.suse.cz>
+References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
+ <20220427140153.GC9823@blackbody.suse.cz>
+ <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
+ <YnBLge4ZQNbbxufc@blackbook>
+ <52a9f35b-458b-44c4-7fc8-d05c8db0c73f@openvz.org>
+ <YnsoMEuWjlpDcmt3@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YnvU0hwCfQ11P8Ce@cmpxchg.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YnsoMEuWjlpDcmt3@carbon>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 11, 2022 at 11:22:59AM -0400, Johannes Weiner wrote:
-> On Tue, May 10, 2022 at 03:40:37PM -0700, Andrew Morton wrote:
-> > On Tue, 10 May 2022 11:28:44 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > 
-> > > There are several clusters of related config options spread throughout
-> > > the mostly flat MM submenu. Group them together and put specialization
-> > > options into further subdirectories to make the MM submenu a bit more
-> > > organized and easier to navigate.
-> > 
-> > Causes
-> > 
-> > hp2:/usr/src/25> make allnoconfig
+On Tue, May 10, 2022 at 08:06:24PM -0700, Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> My primary goal was to apply the memory pressure on memory cgroups with a lot
+> of (dying) children cgroups. On a multi-cpu machine a memory cgroup structure
+> is way larger than a page, so a cgroup which looks small can be really large
+> if we calculate the amount of memory taken by all children memcg internals.
 > 
-> My bad. I'll respin those on top of the others and add allnoconfig
-> builds to my testing routine. Thanks.
+> Applying this pressure to another cgroup (e.g. the one which contains systemd)
+> doesn't help to reclaim any pages which are pinning the dying cgroups.
 
-Actually, this is rather straight-forward to fix in place. This delta
-for 3/6 takes care of both warnings:
+Just a note -- this another usecase of cgroups created from within the
+subtree (e.g. a container). I agree that cgroup-manager/systemd case is
+also valid (as dying memcgs may accumulate after a restart).
 
----
-From 2b5fcaed2714584b40c7d7f76bdda250aa94b48f Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Wed, 11 May 2022 12:12:37 -0400
-Subject: [PATCH] mm: Kconfig: group swap, slab, hotplug and thp options into
- submenus fix
+memcgs with their retained state with footprint are special.
 
-WARNING: unmet direct dependencies detected for ARCH_WANT_GENERAL_HUGETLB
-  Depends on [n]: TRANSPARENT_HUGEPAGE [=n]
-  Selected by [y]:
-  - X86 [=y]
+> For other controllers (maybe blkcg aside, idk) it shouldn't matter, because
+> there is no such problem there.
+> 
+> For consistency reasons I'd suggest to charge all *large* allocations
+> (e.g. percpu) to the parent cgroup. Small allocations can be ignored.
 
-WARNING: unmet direct dependencies detected for ARCH_WANTS_THP_SWAP
-  Depends on [n]: TRANSPARENT_HUGEPAGE [=n]
-  Selected by [y]:
-  - X86 [=y] && X86_64 [=y]
+Strictly speaking, this would mean that any controller would have on
+implicit dependency on the memory controller (such as io controller
+has).
+In the extreme case even controller-less hierarchy would have such a
+requirement (for precise kernfs_node accounting).
+Such a dependency is not enforceable on v1 (with various topologies of
+different hierarchies).
+Although, I initially favored the consistency with memory controller too,
+I think it's simpler to charge to the creator's memcg to achieve
+consistency across v1 and v2 :-) 
 
-The ARCH_WANT* symbols are selected by the arch to communicate
-requests to THP if enabled. Those mustn't be inside the 'if THP' block
-for user-visible THP options of course. Move them back out.
-
-Reported-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/Kconfig | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 2c5935a28edf..c2f4a547ab00 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -692,6 +692,12 @@ config NOMMU_INITIAL_TRIM_EXCESS
- 
- 	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
- 
-+config ARCH_WANT_GENERAL_HUGETLB
-+	bool
-+
-+config ARCH_WANTS_THP_SWAP
-+	def_bool n
-+
- menuconfig TRANSPARENT_HUGEPAGE
- 	bool "Transparent Hugepage Support"
- 	depends on HAVE_ARCH_TRANSPARENT_HUGEPAGE && !PREEMPT_RT
-@@ -733,12 +739,6 @@ choice
- 	  benefit.
- endchoice
- 
--config ARCH_WANT_GENERAL_HUGETLB
--	bool
--
--config ARCH_WANTS_THP_SWAP
--	def_bool n
--
- config THP_SWAP
- 	def_bool y
- 	depends on TRANSPARENT_HUGEPAGE && ARCH_WANTS_THP_SWAP && SWAP
--- 
-2.35.3
+Michal
