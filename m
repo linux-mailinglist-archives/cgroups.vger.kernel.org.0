@@ -2,338 +2,179 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1135227F1
-	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 01:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E8752294C
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 03:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238861AbiEJX5V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 May 2022 19:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44754 "EHLO
+        id S233751AbiEKB75 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 May 2022 21:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238746AbiEJX5K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 19:57:10 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F793209B7F
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:08 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2f902276272so2631797b3.21
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 16:57:08 -0700 (PDT)
+        with ESMTP id S233219AbiEKB74 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 May 2022 21:59:56 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B8C4ECDF;
+        Tue, 10 May 2022 18:59:55 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id m12so486016plb.4;
+        Tue, 10 May 2022 18:59:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=v8gt6xjWudwEV2qln2N7SwuUJc9JxxsnlnvbLCYxUc0=;
-        b=loPY8BnZXxZrmNCWwTUfS3qnOnH67SZdt82uLV668C+yIIJpUM1rapWhZgScGIl9UE
-         JFdoQvmgq7+PYtQoNo7Xt49JaVYYmqeh2y94j0P91OEseICBN/VZcZdJ3lAn7XpCBFZ3
-         ZAVIHeyQUE+wezChaUS94nW2/UcpI4NzobrLV1STkXosAruMEI00Fa/sE0BRXri67Gz2
-         q05IqbfZP5GchqKe/UA5reCqq9DB1Z8ctk9/fnRwNjkinW13EkBWelw/KRjhayVVXg4q
-         Q+RrUAtEcwIKZeShieINdDTV4tIt2WaYR50DZuhNAsEvXdGj1OBBCwLDh1FP0SxBPBN8
-         7Qmw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:to:cc:subject:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ygRJwU53ypBYWb0ipajvfg9wu8BsJDcxou4i7b0FONY=;
+        b=AC0/bjCtvdumOBQpoatC2IVwm5A2dJuUre1XwUktN/jPod+nsh1Qg7qpzwCPVU6ilk
+         abDUXuerlgxYt8a4AVPN3MTA5VcA8x5Q++NxwSevkqbdTbpdVIKJLQ7zFOf5vo7BohOj
+         ev5UZepOZO/gSCuseNeREznvCgsHrov54w7j+92CDKqhK3q/fenS0pRYjexAGiZDs7wi
+         QrQG65AnY78uCLRmGQUM24zwdctL84RC1o1+iqaXVI432IWUbOP5J0GbIFCPlb2OJ87n
+         lxVk5K8DgOLb7QJHbPC/9sARdOUrI9NmPh9NE8beeIBmSx9CABeUVdN73Ne0QhbjhfAy
+         KYzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=v8gt6xjWudwEV2qln2N7SwuUJc9JxxsnlnvbLCYxUc0=;
-        b=bUZNrQ8wXCRf/rPMyUDDePnAstzD229f5hjNrKsjbAcv0FlEDzGx9GURtSpf42svCl
-         gayoIS8QZ1Q3vQ3xZoD446VqQUl1PsQqWdBRnwtBm5GSoqpjGOu5hCXOY+SUqR1/2AiH
-         5xnXtbqXaR1Qy5sftuQuEEaoEf7SR2uP4M73qI0ZBwzEp9erZ/3CChCw/4VI2lroVlHV
-         Gh5W1WtueX/oNudekSqwiJp3vL6DrmEZJ7U571MKn+uC06G0PpiWmVPBo+JTfZvJa6eY
-         Ab1/PFPXZbXMC4aLxT4nEklpB4qGfOueWRZK7eSJBztNwy4gsuWdkCjNh457mrGzLdIL
-         2GNw==
-X-Gm-Message-State: AOAM532/W2ZwOrmvrYupfkAdiXOcgA8SoqowO8JbHJbDc5xCXVrKhC9j
-        YT7NQCWUUtmLx9NNUhXldXMIhH+E3Xsjkjo=
-X-Google-Smtp-Source: ABdhPJxuMd23Slzk/nX5zXAwKMfpsaSnwA9y71fBu5xFnMi06zJ5/oaDRiKKaGgRjX9ctDMnyPrityYdWY9YepQ=
-X-Received: from tj.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:53a])
- (user=tjmercier job=sendgmr) by 2002:a5b:8cb:0:b0:645:d65f:dcdd with SMTP id
- w11-20020a5b08cb000000b00645d65fdcddmr19840185ybq.233.1652227027524; Tue, 10
- May 2022 16:57:07 -0700 (PDT)
-Date:   Tue, 10 May 2022 23:56:48 +0000
-In-Reply-To: <20220510235653.933868-1-tjmercier@google.com>
-Message-Id: <20220510235653.933868-5-tjmercier@google.com>
-Mime-Version: 1.0
-References: <20220510235653.933868-1-tjmercier@google.com>
-X-Mailer: git-send-email 2.36.0.512.ge40c2bad7a-goog
-Subject: [PATCH v7 4/6] dmabuf: Add gpu cgroup charge transfer function
-From:   "T.J. Mercier" <tjmercier@google.com>
-To:     tjmercier@google.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     daniel@ffwll.ch, hridya@google.com, jstultz@google.com,
-        tkjos@android.com, cmllamas@google.com, surenb@google.com,
-        kaleshsingh@google.com, Kenny.Ho@amd.com, mkoutny@suse.com,
-        skhan@linuxfoundation.org, kernel-team@android.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ygRJwU53ypBYWb0ipajvfg9wu8BsJDcxou4i7b0FONY=;
+        b=6EAVY64rtB3TCfmw/Gjsj0iTMUKOgdWZf9w3EZeTzepFzDNkqTlRWCBTlOSgqHJcSq
+         fpwWGgywhtZ4jfDPHspblZKQcgr3Utu3N6nnU3e//Qqf/ysYPCvb/ROO9XFNJnlSh8VS
+         3jYLArx6sppSUooGbQmAQdJON3he4nymcs7cqMx0z4Gb1AsDC7ZJO26VKGfwYfdgqxfs
+         BwS0u8ycIpFNF6E9Ej+Jr9wSYqm7JhplqAq4HcjlaGhLUxT+czLATK0a325A5YgI5QTb
+         A7PMJ0O8PHUE/JHnVlVJa9EVWvBqjs7xyFWhOs1srQ5TipeGZuM5FYHeNGM/HtbnslP2
+         x38g==
+X-Gm-Message-State: AOAM531YVKrJWS6jr8Sn0u6JrbI4ze7nhznGXPJOmEkVkxLln2yLWiTL
+        i8jebiR9fHZF8INb5p/W4/8=
+X-Google-Smtp-Source: ABdhPJz6SJazp2lQsRReL6XYXSBvynMV1jL0WCwdK6U711v08I70fN/Tk7cykMKTwI8/8EFo+qCUew==
+X-Received: by 2002:a17:90a:94c2:b0:1d9:3fbd:bbe1 with SMTP id j2-20020a17090a94c200b001d93fbdbbe1mr2766800pjw.59.1652234394526;
+        Tue, 10 May 2022 18:59:54 -0700 (PDT)
+Received: from localhost ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id d7-20020a170903230700b0015e8d4eb1f7sm304835plh.65.2022.05.10.18.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 18:59:53 -0700 (PDT)
+Message-ID: <627b1899.1c69fb81.cd831.12d9@mx.google.com>
+X-Google-Original-Message-ID: <20220511015952.GA1482876@cgel.zte@gmail.com>
+Date:   Wed, 11 May 2022 01:59:52 +0000
+From:   CGEL <cgel.zte@gmail.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, willy@infradead.org,
+        shy828301@gmail.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        linmiaohe@huawei.com, william.kucharski@oracle.com,
+        peterx@redhat.com, hughd@google.com, vbabka@suse.cz,
+        songmuchun@bytedance.com, surenb@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
+Subject: Re: [PATCH] mm/memcg: support control THP behaviour in cgroup
+References: <20220505033814.103256-1-xu.xin16@zte.com.cn>
+ <YnUlntNFR4zeD+qa@dhcp22.suse.cz>
+ <6275d3e7.1c69fb81.1d62.4504@mx.google.com>
+ <YnjmPAToTR0C5o8x@dhcp22.suse.cz>
+ <6278fa75.1c69fb81.9c598.f794@mx.google.com>
+ <Ynj/l+pyFJxKfcbQ@dhcp22.suse.cz>
+ <6279c354.1c69fb81.7f6c1.15e0@mx.google.com>
+ <Yno3pNQOn1lAMPnu@dhcp22.suse.cz>
+ <627a5214.1c69fb81.1b7fb.47be@mx.google.com>
+ <YnpqYte2jLdcBiPg@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YnpqYte2jLdcBiPg@dhcp22.suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The dma_buf_transfer_charge function provides a way for processes to
-transfer charge of a buffer to a different process. This is essential
-for the cases where a central allocator process does allocations for
-various subsystems, hands over the fd to the client who requested the
-memory and drops all references to the allocated memory.
+On Tue, May 10, 2022 at 03:36:34PM +0200, Michal Hocko wrote:
+> On Tue 10-05-22 11:52:51, CGEL wrote:
+> > On Tue, May 10, 2022 at 12:00:04PM +0200, Michal Hocko wrote:
+> > > On Tue 10-05-22 01:43:38, CGEL wrote:
+> > > > On Mon, May 09, 2022 at 01:48:39PM +0200, Michal Hocko wrote:
+> > > > > On Mon 09-05-22 11:26:43, CGEL wrote:
+> > > > > > On Mon, May 09, 2022 at 12:00:28PM +0200, Michal Hocko wrote:
+> > > > > > > On Sat 07-05-22 02:05:25, CGEL wrote:
+> > > > > > > [...]
+> > > > > > > > If there are many containers to run on one host, and some of them have high
+> > > > > > > > performance requirements, administrator could turn on thp for them:
+> > > > > > > > # docker run -it --thp-enabled=always
+> > > > > > > > Then all the processes in those containers will always use thp.
+> > > > > > > > While other containers turn off thp by:
+> > > > > > > > # docker run -it --thp-enabled=never
+> > > > > > > 
+> > > > > > > I do not know. The THP config space is already too confusing and complex
+> > > > > > > and this just adds on top. E.g. is the behavior of the knob
+> > > > > > > hierarchical? What is the policy if parent memcg says madivise while
+> > > > > > > child says always? How does the per-application configuration aligns
+> > > > > > > with all that (e.g. memcg policy madivise but application says never via
+> > > > > > > prctl while still uses some madvised - e.g. via library).
+> > > > > > >
+> > > > > > 
+> > > > > > The cgroup THP behavior is align to host and totally independent just likes
+> > > > > > /sys/fs/cgroup/memory.swappiness. That means if one cgroup config 'always'
+> > > > > > for thp, it has no matter with host or other cgroup. This make it simple for
+> > > > > > user to understand or control.
+> > > > > 
+> > > > > All controls in cgroup v2 should be hierarchical. This is really
+> > > > > required for a proper delegation semantic.
+> > > > >
+> > > > 
+> > > > Could we align to the semantic of /sys/fs/cgroup/memory.swappiness?
+> > > > Some distributions like Ubuntu is still using cgroup v1.
+> > > 
+> > > cgroup v1 interface is mostly frozen. All new features are added to the
+> > > v2 interface.
+> > >
+> > 
+> > So what about we add this interface to cgroup v2?
+> 
+> Can you come up with a sane hierarchical behavior?
+>
 
-Originally-by: Hridya Valsaraju <hridya@google.com>
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
+I think this new interface better be independent not hierarchical anyway. Especially
+when we treat container as lightweight virtual machine.
 
----
-v5 changes
-Fix commit message which still contained the old name for
-dma_buf_transfer_charge per Michal Koutn=C3=BD.
+> [...]
+> > > > For micro-service architecture, the application in one container is not a
+> > > > set of loosely tight processes, it's aim at provide one certain service,
+> > > > so different containers means different service, and different service
+> > > > has different QoS demand. 
+> > > 
+> > > OK, if they are tightly coupled you could apply the same THP policy by
+> > > an existing prctl interface. Why is that not feasible. As you are noting
+> > > below...
+> > > 
+> > > >     5.containers usually managed by compose software, which treats container as
+> > > > base management unit;
+> > > 
+> > > ..so the compose software can easily start up the workload by using prctl
+> > > to disable THP for whatever workloads it is not suitable for.
+> > 
+> > prctl(PR_SET_THP_DISABLE..) can not be elegance to support the semantic we
+> > need. If only some containers needs THP, other containers and host do not need
+> > THP. We must set host THP to always first, and call prctl() to close THP for
+> > host tasks and other containers one by one,
+> 
+> It might not be the most elegant solution but it should work.
 
-Modify the dma_buf_transfer_charge API to accept a task_struct instead
-of a gpucg. This avoids requiring the caller to manage the refcount
-of the gpucg upon failure and confusing ownership transfer logic.
+So you agree it's reasonable to set THP policy for process in container, right?
+If so, IMHO, when there are thousands of processes launch and die on the machine,
+it will be horrible to do so by calling prctl(), I don't see the reasonability. 
 
-v4 changes
-Adjust ordering of charge/uncharge during transfer to avoid potentially
-hitting cgroup limit per Michal Koutn=C3=BD.
+> Maintaining user interfaces for ever has some cost and the THP
+> configuration space is quite large already. So I would rather not add
+> more complication in unless that is absolutely necessary.
+> 
+> > in this process some tasks that start before we call prctl() may
+> > already use THP with no need.
+> 
+> As long as all those processes have a common ancestor I do not see how
+> that would be possible.
+> 
+For example:
+1) userspace set THP policy to always
+2) then one unrelated processe A may launch automatic by a script maybe
+3) call prctl() to disable THP for A
+process A may already use THP with no need.
 
-v3 changes
-Use more common dual author commit message format per John Stultz.
-
-v2 changes
-Move dma-buf cgroup charge transfer from a dma_buf_op defined by every
-heap to a single dma-buf function for all heaps per Daniel Vetter and
-Christian K=C3=B6nig.
----
- drivers/dma-buf/dma-buf.c  | 57 ++++++++++++++++++++++++++++++++++++++
- include/linux/cgroup_gpu.h | 24 ++++++++++++++++
- include/linux/dma-buf.h    |  6 ++++
- kernel/cgroup/gpu.c        | 51 ++++++++++++++++++++++++++++++++++
- 4 files changed, 138 insertions(+)
-
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index bc89c44bd9b9..f3fb844925e2 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -1341,6 +1341,63 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct i=
-osys_map *map)
- }
- EXPORT_SYMBOL_NS_GPL(dma_buf_vunmap, DMA_BUF);
-=20
-+/**
-+ * dma_buf_transfer_charge - Change the GPU cgroup to which the provided d=
-ma_buf is charged.
-+ * @dmabuf:	[in]	buffer whose charge will be migrated to a different GPU c=
-group
-+ * @target:	[in]	the task_struct of the destination process for the GPU cg=
-roup charge
-+ *
-+ * Only tasks that belong to the same cgroup the buffer is currently charg=
-ed to
-+ * may call this function, otherwise it will return -EPERM.
-+ *
-+ * Returns 0 on success, or a negative errno code otherwise.
-+ */
-+int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct task_struct *ta=
-rget)
-+{
-+	struct gpucg *current_gpucg, *target_gpucg, *to_release;
-+	int ret;
-+
-+	if (!dmabuf->gpucg || !dmabuf->gpucg_bucket) {
-+		/* This dmabuf is not tracked under GPU cgroup accounting */
-+		return 0;
-+	}
-+
-+	current_gpucg =3D gpucg_get(current);
-+	target_gpucg =3D gpucg_get(target);
-+	to_release =3D target_gpucg;
-+
-+	/* If the source and destination cgroups are the same, don't do anything.=
- */
-+	if (current_gpucg =3D=3D target_gpucg) {
-+		ret =3D 0;
-+		goto skip_transfer;
-+	}
-+
-+	/*
-+	 * Verify that the cgroup of the process requesting the transfer
-+	 * is the same as the one the buffer is currently charged to.
-+	 */
-+	mutex_lock(&dmabuf->lock);
-+	if (current_gpucg !=3D dmabuf->gpucg) {
-+		ret =3D -EPERM;
-+		goto err;
-+	}
-+
-+	ret =3D gpucg_transfer_charge(
-+		dmabuf->gpucg, target_gpucg, dmabuf->gpucg_bucket, dmabuf->size);
-+	if (ret)
-+		goto err;
-+
-+	to_release =3D dmabuf->gpucg;
-+	dmabuf->gpucg =3D target_gpucg;
-+
-+err:
-+	mutex_unlock(&dmabuf->lock);
-+skip_transfer:
-+	gpucg_put(current_gpucg);
-+	gpucg_put(to_release);
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(dma_buf_transfer_charge, DMA_BUF);
-+
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
-diff --git a/include/linux/cgroup_gpu.h b/include/linux/cgroup_gpu.h
-index cb228a16aa1f..7eb68f1507fb 100644
---- a/include/linux/cgroup_gpu.h
-+++ b/include/linux/cgroup_gpu.h
-@@ -75,6 +75,22 @@ int gpucg_charge(struct gpucg *gpucg, struct gpucg_bucke=
-t *bucket, u64 size);
-  */
- void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_bucket *bucket, u64 =
-size);
-=20
-+/**
-+ * gpucg_transfer_charge - Transfer a GPU charge from one cgroup to anothe=
-r.
-+ *
-+ * @source:	[in]	The GPU cgroup the charge will be transferred from.
-+ * @dest:	[in]	The GPU cgroup the charge will be transferred to.
-+ * @bucket:	[in]	The GPU cgroup bucket corresponding to the charge.
-+ * @size:	[in]	The size of the memory in bytes.
-+ *                      This size will be rounded up to the nearest page s=
-ize.
-+ *
-+ * Returns 0 on success, or a negative errno code otherwise.
-+ */
-+int gpucg_transfer_charge(struct gpucg *source,
-+			  struct gpucg *dest,
-+			  struct gpucg_bucket *bucket,
-+			  u64 size);
-+
- /**
-  * gpucg_register_bucket - Registers a bucket for memory accounting using =
-the GPU cgroup controller.
-  *
-@@ -117,6 +133,14 @@ static inline void gpucg_uncharge(struct gpucg *gpucg,
- 				  struct gpucg_bucket *bucket,
- 				  u64 size) {}
-=20
-+static inline int gpucg_transfer_charge(struct gpucg *source,
-+					struct gpucg *dest,
-+					struct gpucg_bucket *bucket,
-+					u64 size)
-+{
-+	return 0;
-+}
-+
- static inline struct gpucg_bucket *gpucg_register_bucket(const char *name)=
- {}
- #endif /* CONFIG_CGROUP_GPU */
- #endif /* _CGROUP_GPU_H */
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index 8e7c55c830b3..438ad8577b76 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -18,6 +18,7 @@
- #include <linux/file.h>
- #include <linux/err.h>
- #include <linux/scatterlist.h>
-+#include <linux/sched.h>
- #include <linux/list.h>
- #include <linux/dma-mapping.h>
- #include <linux/fs.h>
-@@ -650,9 +651,14 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct ios=
-ys_map *map);
- void dma_buf_exp_info_set_gpucg(struct dma_buf_export_info *exp_info,
- 				struct gpucg *gpucg,
- 				struct gpucg_bucket *gpucg_bucket);
-+
-+int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct task_struct *ta=
-rget);
- #else/* CONFIG_CGROUP_GPU */
- static inline void dma_buf_exp_info_set_gpucg(struct dma_buf_export_info *=
-exp_info,
- 					      struct gpucg *gpucg,
- 					      struct gpucg_bucket *gpucg_bucket) {}
-+
-+static inline int dma_buf_transfer_charge(struct dma_buf *dmabuf, struct t=
-ask_struct *target)
-+{ return 0; }
- #endif /* CONFIG_CGROUP_GPU */
- #endif /* __DMA_BUF_H__ */
-diff --git a/kernel/cgroup/gpu.c b/kernel/cgroup/gpu.c
-index ad16ea15d427..038ea873a9d3 100644
---- a/kernel/cgroup/gpu.c
-+++ b/kernel/cgroup/gpu.c
-@@ -274,6 +274,57 @@ void gpucg_uncharge(struct gpucg *gpucg, struct gpucg_=
-bucket *bucket, u64 size)
- 	css_put(&gpucg->css);
- }
-=20
-+int gpucg_transfer_charge(struct gpucg *source,
-+			  struct gpucg *dest,
-+			  struct gpucg_bucket *bucket,
-+			  u64 size)
-+{
-+	struct page_counter *counter;
-+	u64 nr_pages;
-+	struct gpucg_resource_pool *rp_source, *rp_dest;
-+	int ret =3D 0;
-+
-+	nr_pages =3D PAGE_ALIGN(size) >> PAGE_SHIFT;
-+
-+	mutex_lock(&gpucg_mutex);
-+	rp_source =3D cg_rpool_find_locked(source, bucket);
-+	if (unlikely(!rp_source)) {
-+		ret =3D -ENOENT;
-+		goto exit_early;
-+	}
-+
-+	rp_dest =3D cg_rpool_get_locked(dest, bucket);
-+	if (IS_ERR(rp_dest)) {
-+		ret =3D PTR_ERR(rp_dest);
-+		goto exit_early;
-+	}
-+
-+	/*
-+	 * First uncharge from the pool it's currently charged to. This ordering =
-avoids double
-+	 * charging while the transfer is in progress, which could cause us to hi=
-t a limit.
-+	 * If the try_charge fails for this transfer, we need to be able to rever=
-se this uncharge,
-+	 * so we continue to hold the gpucg_mutex here.
-+	 */
-+	page_counter_uncharge(&rp_source->total, nr_pages);
-+	css_put(&source->css);
-+
-+	/* Now attempt the new charge */
-+	if (page_counter_try_charge(&rp_dest->total, nr_pages, &counter)) {
-+		css_get(&dest->css);
-+	} else {
-+		/*
-+		 * The new charge failed, so reverse the uncharge from above. This shoul=
-d always
-+		 * succeed since charges on source are blocked by gpucg_mutex.
-+		 */
-+		WARN_ON(!page_counter_try_charge(&rp_source->total, nr_pages, &counter))=
-;
-+		css_get(&source->css);
-+		ret =3D -ENOMEM;
-+	}
-+exit_early:
-+	mutex_unlock(&gpucg_mutex);
-+	return ret;
-+}
-+
- struct gpucg_bucket *gpucg_register_bucket(const char *name)
- {
- 	struct gpucg_bucket *bucket, *b;
---=20
-2.36.0.512.ge40c2bad7a-goog
-
+> -- 
+> Michal Hocko
+> SUSE Labs
