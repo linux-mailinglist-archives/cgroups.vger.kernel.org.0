@@ -2,142 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABE0522BF6
-	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 08:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45C0522CEE
+	for <lists+cgroups@lfdr.de>; Wed, 11 May 2022 09:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbiEKGBq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 May 2022 02:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        id S242713AbiEKHNc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 May 2022 03:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbiEKGBo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 11 May 2022 02:01:44 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B660D326CE
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 23:01:43 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id p26so1658120lfh.10
-        for <cgroups@vger.kernel.org>; Tue, 10 May 2022 23:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KG2LP7lqw9uskhHUdz+/neRzxuQzhpKu6yMc7xnK/Nw=;
-        b=ymECTCTfY6HysdomwfmKw5QWUX/LYJLfLVPUX3cID7988CkBbdzv4Aku3xtSvlHixS
-         mLEUKjlqqEjDC/D0dqLnlo2CRSmatHUUKoX0cT2CfKO7C856mRyrIXYdTvYhusfPWxLA
-         qgK4HNLVdHR50zn89GYGFuYzzQIPmwysOCOoGl0fi6a9fVknY6UH33Yk/lLXJvqdaKZC
-         tphhA4klMvM9w/djtKoUNrB6JxH51OCpzoP6u8mQ2MulTxFfP9ygmlYJ2tbJQw5owmHm
-         oC8clKUaILQ+G8AYEjejlZG6vDBahYAeBM+8p9Y3+ALCzbkyKzV6zMJwTti7o7nYmmsO
-         mYrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KG2LP7lqw9uskhHUdz+/neRzxuQzhpKu6yMc7xnK/Nw=;
-        b=kfXlcvVwdDbCr/dGicRDOgJgA+1d4aso0pVh6TrsNIFlUwRYab/WMFj+525DV12cx/
-         3qqPKWxdjnaYIdseiw8EffGtTBL7qZyjmHejRiUYpfeZxyRe39HkdC/CX5U/o5/avIUu
-         ge7W3O1eE0OST5ZJKQXdBIv+7xDEqT8Glt3O/k6jlLcMWEP2uYaoCHpF1G7+qYNtL6V4
-         SZdHKLHCu3IqsRGtvu8y0iYaXxhyriEOHxRpmsLyt1p3p4qvxFe81kEURBvsQphBuMdv
-         ljiLND3MNaA9cYyg8vbb5oxbkonTIfW5On5VSst3/yeuHgwnzrdcyi5kfyymSQoLbQ75
-         slLw==
-X-Gm-Message-State: AOAM532olaK3FMeeK+F+r4BJYjrB59o26kDc3SB6HPIMuunxRFGskCB0
-        uiFqqK74/tryGMiP+5bY6SRkZQ==
-X-Google-Smtp-Source: ABdhPJzhOSrTTl7JsNVKxTfB5Rc4MG0yXwEh9nEh9pFJe8mx0Axc3u9gEEJWS24t2+EpklkRliWhcg==
-X-Received: by 2002:a19:6905:0:b0:472:4d89:c49b with SMTP id e5-20020a196905000000b004724d89c49bmr18645249lfc.137.1652248901942;
-        Tue, 10 May 2022 23:01:41 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id v26-20020a2e925a000000b00250749dab23sm167874ljg.99.2022.05.10.23.01.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 May 2022 23:01:41 -0700 (PDT)
-Message-ID: <0eec6575-548e-23e0-0d99-4e079a33d338@openvz.org>
-Date:   Wed, 11 May 2022 09:01:40 +0300
+        with ESMTP id S241161AbiEKHN3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 May 2022 03:13:29 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7551053FC
+        for <cgroups@vger.kernel.org>; Wed, 11 May 2022 00:13:25 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8EE0E1F8F7;
+        Wed, 11 May 2022 07:13:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652253204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v3MEE3PCAin488+Sg3Y+cPevPCOC3na5cXBSCbF/tME=;
+        b=hii84q44ZpbI1s2/MUpEY3XkgMdDGRV2xp78zOJXyihOgzmQEi+DNBtqkYvHwDXFUJNOsW
+        3r6eitcIEOKRtc3ctO4Z6BS337p/XjSUR88unGCHvAeKx1SdDBlKwRliO8LTFlHDwyg9YF
+        t3j9/HCDO2FZ4TvAUwSTCh49OYvHv1U=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 430EC2C141;
+        Wed, 11 May 2022 07:13:24 +0000 (UTC)
+Date:   Wed, 11 May 2022 09:13:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Ganesan Rajagopal <rganesan@arista.com>
+Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2] mm/memcontrol: Export memcg->watermark via sysfs for
+ v2 memcg
+Message-ID: <YntiE+qNnHQBV4zE@dhcp22.suse.cz>
+References: <20220507050916.GA13577@us192.sjc.aristanetworks.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: kernfs memcg accounting
-Content-Language: en-US
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
-        Florian Westphal <fw@strlen.de>, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>
-References: <7e867cb0-89d6-402c-33d2-9b9ba0ba1523@openvz.org>
- <20220427140153.GC9823@blackbody.suse.cz>
- <7509fa9f-9d15-2f29-cb2f-ac0e8d99a948@openvz.org>
- <YnBLge4ZQNbbxufc@blackbook>
- <52a9f35b-458b-44c4-7fc8-d05c8db0c73f@openvz.org> <YnsoMEuWjlpDcmt3@carbon>
-From:   Vasily Averin <vvs@openvz.org>
-In-Reply-To: <YnsoMEuWjlpDcmt3@carbon>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220507050916.GA13577@us192.sjc.aristanetworks.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/11/22 06:06, Roman Gushchin wrote:
-> On Wed, May 04, 2022 at 12:00:18PM +0300, Vasily Averin wrote:
->> From my point of view it is most important to account allocated memory
->> to any cgroup inside container. Select of proper memcg is a secondary goal here.
->> Frankly speaking I do not see a big difference between memcg of current process,
->> memcg of newly created child and memcg of its parent.
->>
->> As far as I understand, Roman chose the parent memcg because it was a special
->> case of creating a new memory group. He temporally changed active memcg
->> in mem_cgroup_css_alloc() and properly accounted all required memcg-specific
->> allocations.
+On Fri 06-05-22 22:09:16, Ganesan Rajagopal wrote:
+> We run a lot of automated tests when building our software and run into
+> OOM scenarios when the tests run unbounded. v1 memcg exports
+> memcg->watermark as "memory.max_usage_in_bytes" in sysfs. We use this
+> metric to heuristically limit the number of tests that can run in
+> parallel based on per test historical data.
 > 
-> My primary goal was to apply the memory pressure on memory cgroups with a lot
-> of (dying) children cgroups. On a multi-cpu machine a memory cgroup structure
-> is way larger than a page, so a cgroup which looks small can be really large
-> if we calculate the amount of memory taken by all children memcg internals.
+> This metric is currently not exported for v2 memcg and there is no
+> other easy way of getting this information. getrusage() syscall returns
+> "ru_maxrss" which can be used as an approximation but that's the max
+> RSS of a single child process across all children instead of the
+> aggregated max for all child processes. The only work around is to
+> periodically poll "memory.current" but that's not practical for
+> short-lived one-off cgroups.
 > 
-> Applying this pressure to another cgroup (e.g. the one which contains systemd)
-> doesn't help to reclaim any pages which are pinning the dying cgroups.
+> Hence, expose memcg->watermark as "memory.peak" for v2 memcg.
+
+Yes, I can imagine that a very short lived process can easily escape
+from the monitoring. The memory consumption can be still significant
+though.
+
+The v1 interface allows to reset the value by writing to the file. Have
+you considered that as well?
+ 
+> Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst |  7 +++++++
+>  mm/memcontrol.c                         | 13 +++++++++++++
+>  2 files changed, 20 insertions(+)
 > 
-> For other controllers (maybe blkcg aside, idk) it shouldn't matter, because
-> there is no such problem there.
-> 
-> For consistency reasons I'd suggest to charge all *large* allocations
-> (e.g. percpu) to the parent cgroup. Small allocations can be ignored.
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 69d7a6983f78..828ce037fb2a 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1208,6 +1208,13 @@ PAGE_SIZE multiple when read back.
+>  	high limit is used and monitored properly, this limit's
+>  	utility is limited to providing the final safety net.
+>  
+> +  memory.peak
+> +	A read-only single value file which exists on non-root
+> +	cgroups.
+> +
+> +	The max memory usage recorded for the cgroup and its
+> +	descendants since the creation of the cgroup.
+> +
+>    memory.oom.group
+>  	A read-write single value file which exists on non-root
+>  	cgroups.  The default value is "0".
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 725f76723220..88fa70b5d8af 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6098,6 +6098,14 @@ static u64 memory_current_read(struct cgroup_subsys_state *css,
+>  	return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
+>  }
+>  
+> +static u64 memory_peak_read(struct cgroup_subsys_state *css,
+> +			    struct cftype *cft)
+> +{
+> +	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> +
+> +	return (u64)memcg->memory.watermark * PAGE_SIZE;
+> +}
+> +
+>  static int memory_min_show(struct seq_file *m, void *v)
+>  {
+>  	return seq_puts_memcg_tunable(m,
+> @@ -6361,6 +6369,11 @@ static struct cftype memory_files[] = {
+>  		.flags = CFTYPE_NOT_ON_ROOT,
+>  		.read_u64 = memory_current_read,
+>  	},
+> +	{
+> +		.name = "peak",
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +		.read_u64 = memory_peak_read,
+> +	},
+>  	{
+>  		.name = "min",
+>  		.flags = CFTYPE_NOT_ON_ROOT,
+> -- 
+> 2.28.0
 
-I showed in [1] other large allocation:
-"
-number	bytes	$1*$2	sum	note	call_site
-of	alloc
-allocs
-------------------------------------------------------------
-1       14448   14448   14448   =       percpu_alloc_percpu:
-1       8192    8192    22640   ++      (mem_cgroup_css_alloc+0x54)
-49      128     6272    28912   ++      (__kernfs_new_node+0x4e)
-49      96      4704    33616   ?       (simple_xattr_alloc+0x2c)
-49      88      4312    37928   ++      (__kernfs_iattrs+0x56)
-1       4096    4096    42024   ++      (cgroup_mkdir+0xc7)
-1       3840    3840    45864   =       percpu_alloc_percpu:
-4       512     2048    47912   +       (alloc_fair_sched_group+0x166)
-4       512     2048    49960   +       (alloc_fair_sched_group+0x139)
-1       2048    2048    52008   ++      (mem_cgroup_css_alloc+0x109)
-"
-[1] https://lore.kernel.org/all/1aa4cd22-fcb6-0e8d-a1c6-23661d618864@openvz.org/
-=	already accounted
-++	to be accounted first
-+	to be accounted a bit later
-
-There is no problems with objects allocated in mem_cgroup_alloc(),
-they will be accounted to parent's memcg.
-However I do not understand how to handle other large objects?
-
-We could move set_active_memcg(parent) call from mem_cgroup_css_alloc() 
-to cgroup_apply_control_enable() and handle allocation in all .css_alloc()
-
-However I need to handle allocations called from cgroup_mkdir() too and
-badly understand how to do it properly.
-
-Thank you,
-	Vasily Averin
+-- 
+Michal Hocko
+SUSE Labs
