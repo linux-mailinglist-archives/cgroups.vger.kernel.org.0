@@ -2,73 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1500052538B
-	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 19:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8585253A8
+	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 19:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357016AbiELR1m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 May 2022 13:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
+        id S1350599AbiELRaD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 May 2022 13:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356850AbiELR1m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 13:27:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D335994C8;
-        Thu, 12 May 2022 10:27:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CDD141F8EF;
-        Thu, 12 May 2022 17:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652376459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7XEGm/1PGoEXcO1HFP5KFYVz2HoDo+VVY6EzV48qjEY=;
-        b=FzNR/9sgSrYP2DPIDbJYhi2A7TQZTkeEClVE8X88trBQ+zDeTp6YXcGexdIzHN9WVt1CXT
-        6ppZ2fr+wNOvNGpQiGz6QiiimHTY0fyVoPFyBeCsw0Wxl9Pe77+R+JdNfKLcpjL+emZ331
-        gZhmVXUA0C5FWdFhgV4XQ8ieop+pvys=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9396713ABE;
-        Thu, 12 May 2022 17:27:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id zMdGI4tDfWJwJQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 12 May 2022 17:27:39 +0000
-Date:   Thu, 12 May 2022 19:27:38 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Vernet <void@manifault.com>, tj@kernel.org,
-        roman.gushchin@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Chris Down <chris@chrisdown.name>
-Subject: Re: [PATCH v2 2/5] cgroup: Account for memory_recursiveprot in
- test_memcg_low()
-Message-ID: <20220512172738.GB16096@blackbody.suse.cz>
-References: <20220423155619.3669555-1-void@manifault.com>
- <20220423155619.3669555-3-void@manifault.com>
- <20220427140928.GD9823@blackbody.suse.cz>
- <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
- <20220429092620.GA23621@blackbody.suse.cz>
- <20220506164015.fsdsuv226nhllos5@dev0025.ash9.facebook.com>
- <Ynkum8DeJIAtGi9y@cmpxchg.org>
- <20220509174424.e43e695ffe0f7333c187fba8@linux-foundation.org>
- <20220510174341.GC24172@blackbody.suse.cz>
- <Ynv4AdjeVjptnjrH@cmpxchg.org>
+        with ESMTP id S1347552AbiELRaC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 13:30:02 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6224326ADBA;
+        Thu, 12 May 2022 10:30:01 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id q18so5542002pln.12;
+        Thu, 12 May 2022 10:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=AyYwNHrrFSveH2j8M/8x/XkyABlhchvxowKUFBK5pvg=;
+        b=NlFGVJUc203qX2UEbtIf5QdXTzhQ97zk2FRQ6bfBDGBWadHki9DCSwoXnNuLGJKFhd
+         75jmHjdopWJ/sBMRqPeCqc5UQlGOYEDi/Ky2Wcp55+lnwrkwcnmV633o1dPRWBJzLbos
+         UePpWrykeOT5OvB4JfTD6upm2VTxF7Bu8Us4AAchm+8Trj9N9USQAFC+2uyFMZdrnU6r
+         kRg5JaR17Sgw3H0zaPeAG4Mm9BthlWJppfjADw5AvWu7U3dT4Da3X//88AEOVZix7reF
+         L4waIWDyg9FbmRhO7zsK48FcovRP8CDdNjAFEyLfyI7x3UiXzY1l9augkfkTvh1Ez7ng
+         fxXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=AyYwNHrrFSveH2j8M/8x/XkyABlhchvxowKUFBK5pvg=;
+        b=cwgeND2CXfDOE7iO/P7YZR6DEJYUmAxL97UMm7K+jMeyWf5KdEXP9VNW6O1+ULSfNJ
+         wnH+v7f1fCKvMq3SN1KhB8GrYbXPvnGIvZ98/GuUwJ2ioz/mm1z0vgf2hVXuD7pUaEFV
+         nqGjNGrcxB4q89dDwlfrgfrN0XMtqGj+ao2nV2i7R4azH12ZrLZnYhWKH2bkOxu0jJ1j
+         Qii2R8FOvBQg5GxDue4o2GIlSUOSJWOyRfAreA+0KhJoi403dSoYwj8aGlopafkp9X0J
+         oEmgPf+sL7BM8ei49QXPJe3LwxgMi8JHPEVhBPDhLL8sdAMOUhRzE/xwFZQqeh4EYJXP
+         kFZw==
+X-Gm-Message-State: AOAM531mKj0E5m74dPk1DJ0cj5VnPmKobjVLYF1okNXxFaOH67npMagL
+        wtqzXIKg0odwSJLgybYNhRSu0N33LW0=
+X-Google-Smtp-Source: ABdhPJw44++sm/6Wx4gGd8uQ313i8NjndTe9ryXTpcBWRUuulIMzlHVn2aAKIE9W9xGzU/SAOjKKJg==
+X-Received: by 2002:a17:902:e842:b0:15e:d449:fd03 with SMTP id t2-20020a170902e84200b0015ed449fd03mr983853plg.60.1652376600520;
+        Thu, 12 May 2022 10:30:00 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:6c64])
+        by smtp.gmail.com with ESMTPSA id q18-20020a170902f79200b0015e8d4eb1f9sm190729pln.67.2022.05.12.10.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 May 2022 10:29:59 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 12 May 2022 07:29:58 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup fixes for v5.18-rc6
+Message-ID: <Yn1EFgZdbSSjTatf@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Ynv4AdjeVjptnjrH@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,39 +68,47 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 11, 2022 at 01:53:05PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> Can you indeed elaborate on the problem you see with low events?
+Hello,
 
-My mistake. I realized I was testing on a system without
-memory_recursiveprot enabled. Therefore I saw no events in children with
-memory.low=0.
+This pull contains one commit - Waiman's fix for cgroup2 cpuset bug where it
+could miss nodes which were hot-added.
 
-However, it also means that my previous evaluation of the "simple" fix
-(dropping the SWAP_CLUSTER_MAX rounding) was incorrect and it actually
-doesn't resolve the problem of two differently active siblings I posted
-earlier.
+Thanks.
 
-> So your proposed patch looks like the right thing to do to me. And I
-> would ack it, but please do explain your concerns around low event
-> reporting after it.
+The following changes since commit a7391ad3572431a354c927cf8896e86e50d7d0bf:
 
-I retract it (at least for now), it doesn't really help. It can be seen
-(after application) [1] that once (low) protected memory is opened for
-reclaim, the sibling proportions change suddenly (neither sibling is
-protected during sc->memcg_low_reclaim, however, the formerly protected
-suddenly provides good supply of reclaimable pages).
+  Merge tag 'iomm-fixes-v5.18-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu (2022-05-04 11:04:52 -0700)
 
-OTOH, without memory_recursiveprot [2], the elow growth of the victim
-sibling is absent and situation stabilizes with only partial reclaim
-from the (explicitly) protected sibling. 
+are available in the Git repository at:
 
-In both variants (recursive/non-recursive) the parent ends up with same
-amount of unreclaimed memory, however, the gradual tranfer of elow with
-the recursive protection is undesired. (I'm only thinking how to solve
-it simply.)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.18-fixes
 
-Michal
+for you to fetch changes up to 2685027fca387b602ae565bff17895188b803988:
 
-[1] https://bugzilla.suse.com/attachment.cgi?id=858869
-[2] https://bugzilla.suse.com/attachment.cgi?id=858870
+  cgroup/cpuset: Remove cpus_allowed/mems_allowed setup in cpuset_init_smp() (2022-05-05 08:57:00 -1000)
 
+----------------------------------------------------------------
+Waiman Long (1):
+      cgroup/cpuset: Remove cpus_allowed/mems_allowed setup in cpuset_init_smp()
+
+ kernel/cgroup/cpuset.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 9390bfd9f1cd..71a418858a5e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3390,8 +3390,11 @@ static struct notifier_block cpuset_track_online_nodes_nb = {
+  */
+ void __init cpuset_init_smp(void)
+ {
+-	cpumask_copy(top_cpuset.cpus_allowed, cpu_active_mask);
+-	top_cpuset.mems_allowed = node_states[N_MEMORY];
++	/*
++	 * cpus_allowd/mems_allowed set to v2 values in the initial
++	 * cpuset_bind() call will be reset to v1 values in another
++	 * cpuset_bind() call when v1 cpuset is mounted.
++	 */
+ 	top_cpuset.old_mems_allowed = top_cpuset.mems_allowed;
+ 
+ 	cpumask_copy(top_cpuset.effective_cpus, cpu_active_mask);
