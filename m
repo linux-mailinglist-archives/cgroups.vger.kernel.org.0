@@ -2,95 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A53524DD7
-	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 15:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9F0525328
+	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 19:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354171AbiELNKK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 May 2022 09:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        id S1354507AbiELREP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 May 2022 13:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354039AbiELNKG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 09:10:06 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736F624F215
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 06:10:04 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id x22so4236776qto.2
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 06:10:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-transfer-encoding:user-agent:mime-version;
-        bh=RBA5iYSHu9+0TYIYrBGNppT49jXTmNkB4+A2Po1Nus8=;
-        b=3eBFlCCHPRxkzPZ0s8KZjMicvMtmgL+oe/KrY5MKDSXcjQwLbcXkaduM7++YpUA55d
-         auo6swNXasvTsK3hhnOsCxf7T2SHW9FzAMBSKTJe/ufAs5+Cx85VNXf2xt48DwLkz14l
-         Gg7HSyQjgfSgnfEBrgiK8uGWHf0rWcv+UCOWgyHiOyT4JTKwbJZVaSr509src58ZzFSD
-         7NJB9D5MBw+fHof1VNKLRvVEgiUFBf4MvCs6oVrfokAyCWOQx9XKF03oRjBw0ZFadjap
-         VXC2Glu3iKcmppInO6+yumJld1Kco9x2F2fGdOXjV6B+9FYZ+/e0bFv1flHl1gi4nr19
-         0Xjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:content-transfer-encoding:user-agent:mime-version;
-        bh=RBA5iYSHu9+0TYIYrBGNppT49jXTmNkB4+A2Po1Nus8=;
-        b=WzDrm7HiucK3Ng1ePK0qX6WdRYWnxaHmiTRIjdhXZmoM9thFpPaRUAtk/lsShepZoE
-         x7UrBNw5FdllX5ytJWqXADzicYFry6GH9SQSE2sqy5J7mYrOWGUsmdutNBtcohTsLoo4
-         bV88Zj2gaROIR4uIrRk8wzB72FrCP0t8rec4Ryjy/+Egm4K6FzZuaJmQhZSxk+JPdGQY
-         jsdLN17kATTxuhIxPx6Cn5iByi9He8Yh3SBsO/SpuL4CqL9Cs3+DsVj9f1CziRI1felK
-         Yyd63Bk0/dmcuMzDbS4bXWQNb4yyTiaMif0qRqbA+nUHOy428oYCHA3oE4UD9xKzdWtk
-         InEg==
-X-Gm-Message-State: AOAM532NjuuXhixYb++vqOKcir/WThk7ztHa2zinHK3hQ9ZgW73EYDqc
-        j37UYpeT9EeGBoUVOHbDOqXeeQ==
-X-Google-Smtp-Source: ABdhPJz5CKwhlE8d7bTTHW0wg3txErQtYCpOVtChIjACpnnxUq2VanDb8ocB/1nkSkvCRgs6MnSb/g==
-X-Received: by 2002:a05:622a:5d0:b0:2f3:c650:19cc with SMTP id d16-20020a05622a05d000b002f3c65019ccmr28598110qtb.0.1652361003426;
-        Thu, 12 May 2022 06:10:03 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id l14-20020ac8148e000000b002f39b99f68dsm2864002qtj.39.2022.05.12.06.10.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 06:10:02 -0700 (PDT)
-Message-ID: <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
-Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        John Stultz <jstultz@google.com>,
-        Carlos Llamas <cmllamas@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
-Date:   Thu, 12 May 2022 09:09:59 -0400
-In-Reply-To: <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
-References: <20220510235653.933868-1-tjmercier@google.com>
-         <3365cd1d750e84fedc8e75d646a77ffd85619d35.camel@ndufresne.ca>
-         <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.0 (3.44.0-1.fc36) 
+        with ESMTP id S242193AbiELREO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 13:04:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57016D4DA;
+        Thu, 12 May 2022 10:04:13 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7EEC71F8EF;
+        Thu, 12 May 2022 17:04:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652375052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8x6aPJt6yqRe+xxwaduylXqRn+TAS3mKV8QmNRMu74M=;
+        b=oqAeYgjoS/Yzrg0FlOaRvqUONZMeshLiVKHa5kE0tg7n3W/Qd8TjfD2+9mXN1PtCJP58R8
+        wnlHvNSmzK+5ejL8Fn0anZd7UdrYBDHqSDVzVTUq6+y9ZXzNhqW3be11YgM8I/tx3NwAfM
+        R0sJIrUtOa7NJDVEeM6pKGJS33DF4rc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 453DB13ABE;
+        Thu, 12 May 2022 17:04:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0BnrDww+fWIuHAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 12 May 2022 17:04:12 +0000
+Date:   Thu, 12 May 2022 19:04:10 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     David Vernet <void@manifault.com>
+Cc:     akpm@linux-foundation.org, tj@kernel.org, roman.gushchin@linux.dev,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 0/5] Fix bugs in memcontroller cgroup tests
+Message-ID: <20220512170410.GA16096@blackbody.suse.cz>
+References: <20220423155619.3669555-1-void@manifault.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220423155619.3669555-1-void@manifault.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,303 +63,36 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Le mercredi 11 mai 2022 =C3=A0 13:31 -0700, T.J. Mercier a =C3=A9crit=C2=A0=
-:
-> On Wed, May 11, 2022 at 6:21 AM Nicolas Dufresne <nicolas@ndufresne.ca> w=
-rote:
-> >=20
-> > Hi,
-> >=20
-> > Le mardi 10 mai 2022 =C3=A0 23:56 +0000, T.J. Mercier a =C3=A9crit :
-> > > This patch series revisits the proposal for a GPU cgroup controller t=
-o
-> > > track and limit memory allocations by various device/allocator
-> > > subsystems. The patch series also contains a simple prototype to
-> > > illustrate how Android intends to implement DMA-BUF allocator
-> > > attribution using the GPU cgroup controller. The prototype does not
-> > > include resource limit enforcements.
-> >=20
-> > I'm sorry, since I'm not in-depth technically involve. But from reading=
- the
-> > topic I don't understand the bound this creates between DMABuf Heaps an=
-d GPU. Is
-> > this an attempt to really track the DMABuf allocated by userland, or ju=
-st
-> > something for GPU ? What about V4L2 devices ? Any way this can be clari=
-fied,
-> > specially what would other subsystem needs to have cgroup DMABuf alloca=
-tion
-> > controller support ?
-> >=20
-> Hi Nicolas,
->=20
-> The link between dmabufs, dmabuf heaps, and "GPU memory" is maybe
-> somewhat of an Androidism. However this change aims to be usable for
-> tracking all GPU related allocations. It's just that this initial
-> series only adds support for tracking dmabufs allocated from dmabuf
-> heaps.
->=20
-> In Android most graphics buffers are dma buffers allocated from a
-> dmabuf heap, so that is why these dmabuf heap allocations are being
-> tracked under the GPU cgroup. Other dmabuf exporters like V4L2 might
-> also want to track their buffers, but would probably want to do so
-> under a bucket name of something like "v4l2". Same goes for GEM
-> dmabufs. The naming scheme for this is still yet to be decided. It
-> would be cool to be able to attribute memory at the driver level, or
-> even different types of memory at the driver level, but I imagine
-> there is a point of diminishing returns for fine-grained
-> naming/bucketing.
->=20
-> So far, I haven't tried to create a strict definition of what is and
-> is not "GPU memory" for the purpose of this accounting, so I don't
-> think we should be restricted to tracking just dmabufs. I don't see
-> why this couldn't be anything a driver wants to consider as GPU memory
-> as long as it is named/bucketed appropriately, such as both on-package
-> graphics card memory use and CPU memory dedicated for graphics use
-> like for host/device transfers.
->=20
-> Is that helpful?
+Hello.
 
-I'm actually happy I've asked this question, wasn't silly after all. I thin=
-k the
-problem here is a naming issue. What you really are monitor is "video memor=
-y",
-which consist of a memory segment allocated to store data used to render im=
-ages
-(its not always images of course, GPU an VPU have specialized buffers for t=
-heir
-purpose).
+On Sat, Apr 23, 2022 at 08:56:15AM -0700, David Vernet <void@manifault.com> wrote:
+> tools/testing/selftests/cgroup/test_memcontrol.c contains a set of
+> testcases which validate expected behavior of the cgroup memory controller.
+> Roman Gushchin recently sent out a patchset that fixed a few issues in the
+> test.
 
-Whether this should be split between what is used specifically by the GPU
-drivers, the display drivers, the VPU (CODEC and pre/post-processor) or cam=
-era
-drivers is something that should be discussed. But in the current approach,=
- you
-really meant Video memory as a superset of the above. Personally, I think
-generically (to de-Andronized your work), en-globing all video memory is
-sufficient. What I fail to understand is how you will manage to distinguish=
-ed
-DMABuf Heap allocation (which are used outside of Android btw), from Video
-allocation or other type of usage. I'm sure non-video usage will exist in t=
-he
-future (think of machine learning, compute, other high bandwidth streaming
-thingy ...)
+Link here
+https://lore.kernel.org/r/20220415000133.3955987-1-roman.gushchin@linux.dev/.
 
->=20
-> Best,
-> T.J.
->=20
-> > >=20
-> > > Changelog:
-> > > v7:
-> > > Hide gpucg and gpucg_bucket struct definitions per Michal Koutn=C3=BD=
-.
-> > > This means gpucg_register_bucket now returns an internally allocated
-> > > struct gpucg_bucket.
-> > >=20
-> > > Move all public function documentation to the cgroup_gpu.h header.
-> > >=20
-> > > Remove comment in documentation about duplicate name rejection which
-> > > is not relevant to cgroups users per Michal Koutn=C3=BD.
-> > >=20
-> > > v6:
-> > > Move documentation into cgroup-v2.rst per Tejun Heo.
-> > >=20
-> > > Rename BINDER_FD{A}_FLAG_SENDER_NO_NEED ->
-> > > BINDER_FD{A}_FLAG_XFER_CHARGE per Carlos Llamas.
-> > >=20
-> > > Return error on transfer failure per Carlos Llamas.
-> > >=20
-> > > v5:
-> > > Rebase on top of v5.18-rc3
-> > >=20
-> > > Drop the global GPU cgroup "total" (sum of all device totals) portion
-> > > of the design since there is no currently known use for this per
-> > > Tejun Heo.
-> > >=20
-> > > Fix commit message which still contained the old name for
-> > > dma_buf_transfer_charge per Michal Koutn=C3=BD.
-> > >=20
-> > > Remove all GPU cgroup code except what's necessary to support charge =
-transfer
-> > > from dma_buf. Previously charging was done in export, but for non-And=
-roid
-> > > graphics use-cases this is not ideal since there may be a delay betwe=
-en
-> > > allocation and export, during which time there is no accounting.
-> > >=20
-> > > Merge dmabuf: Use the GPU cgroup charge/uncharge APIs patch into
-> > > dmabuf: heaps: export system_heap buffers with GPU cgroup charging as=
- a
-> > > result of above.
-> > >=20
-> > > Put the charge and uncharge code in the same file (system_heap_alloca=
-te,
-> > > system_heap_dma_buf_release) instead of splitting them between the he=
-ap and
-> > > the dma_buf_release. This avoids asymmetric management of the gpucg c=
-harges.
-> > >=20
-> > > Modify the dma_buf_transfer_charge API to accept a task_struct instea=
-d
-> > > of a gpucg. This avoids requiring the caller to manage the refcount
-> > > of the gpucg upon failure and confusing ownership transfer logic.
-> > >=20
-> > > Support all strings for gpucg_register_bucket instead of just string
-> > > literals.
-> > >=20
-> > > Enforce globally unique gpucg_bucket names.
-> > >=20
-> > > Constrain gpucg_bucket name lengths to 64 bytes.
-> > >=20
-> > > Append "-heap" to gpucg_bucket names from dmabuf-heaps.
-> > >=20
-> > > Drop patch 7 from the series, which changed the types of
-> > > binder_transaction_data's sender_pid and sender_euid fields. This was
-> > > done in another commit here:
-> > > https://lore.kernel.org/all/20220210021129.3386083-4-masahiroy@kernel=
-.org/
-> > >=20
-> > > Rename:
-> > >   gpucg_try_charge -> gpucg_charge
-> > >   find_cg_rpool_locked -> cg_rpool_find_locked
-> > >   init_cg_rpool -> cg_rpool_init
-> > >   get_cg_rpool_locked -> cg_rpool_get_locked
-> > >   "gpu cgroup controller" -> "GPU controller"
-> > >   gpucg_device -> gpucg_bucket
-> > >   usage -> size
-> > >=20
-> > > Tests:
-> > >   Support both binder_fd_array_object and binder_fd_object. This is
-> > >   necessary because new versions of Android will use binder_fd_object
-> > >   instead of binder_fd_array_object, and we need to support both.
-> > >=20
-> > >   Tests for both binder_fd_array_object and binder_fd_object.
-> > >=20
-> > >   For binder_utils return error codes instead of
-> > >   struct binder{fs}_ctx.
-> > >=20
-> > >   Use ifdef __ANDROID__ to choose platform-dependent temp path instea=
-d
-> > >   of a runtime fallback.
-> > >=20
-> > >   Ensure binderfs_mntpt ends with a trailing '/' character instead of
-> > >   prepending it where used.
-> > >=20
-> > > v4:
-> > > Skip test if not run as root per Shuah Khan
-> > >=20
-> > > Add better test logging for abnormal child termination per Shuah Khan
-> > >=20
-> > > Adjust ordering of charge/uncharge during transfer to avoid potential=
-ly
-> > > hitting cgroup limit per Michal Koutn=C3=BD
-> > >=20
-> > > Adjust gpucg_try_charge critical section for charge transfer function=
-ality
-> > >=20
-> > > Fix uninitialized return code error for dmabuf_try_charge error case
-> > >=20
-> > > v3:
-> > > Remove Upstreaming Plan from gpu-cgroup.rst per John Stultz
-> > >=20
-> > > Use more common dual author commit message format per John Stultz
-> > >=20
-> > > Remove android from binder changes title per Todd Kjos
-> > >=20
-> > > Add a kselftest for this new behavior per Greg Kroah-Hartman
-> > >=20
-> > > Include details on behavior for all combinations of kernel/userspace
-> > > versions in changelog (thanks Suren Baghdasaryan) per Greg Kroah-Hart=
-man.
-> > >=20
-> > > Fix pid and uid types in binder UAPI header
-> > >=20
-> > > v2:
-> > > See the previous revision of this change submitted by Hridya Valsaraj=
-u
-> > > at: https://lore.kernel.org/all/20220115010622.3185921-1-hridya@googl=
-e.com/
-> > >=20
-> > > Move dma-buf cgroup charge transfer from a dma_buf_op defined by ever=
-y
-> > > heap to a single dma-buf function for all heaps per Daniel Vetter and
-> > > Christian K=C3=B6nig. Pointers to struct gpucg and struct gpucg_devic=
-e
-> > > tracking the current associations were added to the dma_buf struct to
-> > > achieve this.
-> > >=20
-> > > Fix incorrect Kconfig help section indentation per Randy Dunlap.
-> > >=20
-> > > History of the GPU cgroup controller
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > The GPU/DRM cgroup controller came into being when a consensus[1]
-> > > was reached that the resources it tracked were unsuitable to be integ=
-rated
-> > > into memcg. Originally, the proposed controller was specific to the D=
-RM
-> > > subsystem and was intended to track GEM buffers and GPU-specific
-> > > resources[2]. In order to help establish a unified memory accounting =
-model
-> > > for all GPU and all related subsystems, Daniel Vetter put forth a
-> > > suggestion to move it out of the DRM subsystem so that it can be used=
- by
-> > > other DMA-BUF exporters as well[3]. This RFC proposes an interface th=
-at
-> > > does the same.
-> > >=20
-> > > [1]: https://patchwork.kernel.org/project/dri-devel/cover/20190501140=
-438.9506-1-brian.welty@intel.com/#22624705
-> > > [2]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.wel=
-ty@intel.com/
-> > > [3]: https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwll.=
-local/
-> > >=20
-> > > Hridya Valsaraju (3):
-> > >   gpu: rfc: Proposal for a GPU cgroup controller
-> > >   cgroup: gpu: Add a cgroup controller for allocator attribution of G=
-PU
-> > >     memory
-> > >   binder: Add flags to relinquish ownership of fds
-> > >=20
-> > > T.J. Mercier (3):
-> > >   dmabuf: heaps: export system_heap buffers with GPU cgroup charging
-> > >   dmabuf: Add gpu cgroup charge transfer function
-> > >   selftests: Add binder cgroup gpu memory transfer tests
-> > >=20
-> > >  Documentation/admin-guide/cgroup-v2.rst       |  23 +
-> > >  drivers/android/binder.c                      |  31 +-
-> > >  drivers/dma-buf/dma-buf.c                     |  80 ++-
-> > >  drivers/dma-buf/dma-heap.c                    |  38 ++
-> > >  drivers/dma-buf/heaps/system_heap.c           |  28 +-
-> > >  include/linux/cgroup_gpu.h                    | 146 +++++
-> > >  include/linux/cgroup_subsys.h                 |   4 +
-> > >  include/linux/dma-buf.h                       |  49 +-
-> > >  include/linux/dma-heap.h                      |  15 +
-> > >  include/uapi/linux/android/binder.h           |  23 +-
-> > >  init/Kconfig                                  |   7 +
-> > >  kernel/cgroup/Makefile                        |   1 +
-> > >  kernel/cgroup/gpu.c                           | 390 +++++++++++++
-> > >  .../selftests/drivers/android/binder/Makefile |   8 +
-> > >  .../drivers/android/binder/binder_util.c      | 250 +++++++++
-> > >  .../drivers/android/binder/binder_util.h      |  32 ++
-> > >  .../selftests/drivers/android/binder/config   |   4 +
-> > >  .../binder/test_dmabuf_cgroup_transfer.c      | 526 ++++++++++++++++=
-++
-> > >  18 files changed, 1632 insertions(+), 23 deletions(-)
-> > >  create mode 100644 include/linux/cgroup_gpu.h
-> > >  create mode 100644 kernel/cgroup/gpu.c
-> > >  create mode 100644 tools/testing/selftests/drivers/android/binder/Ma=
-kefile
-> > >  create mode 100644 tools/testing/selftests/drivers/android/binder/bi=
-nder_util.c
-> > >  create mode 100644 tools/testing/selftests/drivers/android/binder/bi=
-nder_util.h
-> > >  create mode 100644 tools/testing/selftests/drivers/android/binder/co=
-nfig
-> > >  create mode 100644 tools/testing/selftests/drivers/android/binder/te=
-st_dmabuf_cgroup_transfer.c
-> > >=20
-> >=20
+> This patchset continues that effort by fixing a few more issues that
+> were causing non-deterministic failures in the suite.
+
+Are the Roman's patches merged anywhere? (I ran into some issues when I
+was rebasing your (David's) series on top of master.) I'd like to put
+all sensible patches in one series or stack on existing branch (if
+there's any).
+
+For possible v3 of this series, I did:
+  - dropped the patch that allows non-zero memory.events:low for a sibling with
+    memory.low=0 when mounted with memory_recursiveprot (the case needs more
+    discussion),
+  - added few more cleanups, convenience for debugging,
+  - fixed comments in the first patch.
+
+Pushed here [1] before properly sending the v3 for discussion.
+
+Thanks,
+Michal
+
+[1] https://github.com/Werkov/linux/commits/cgroup-ml/memory.low-overreclaim-var2
 
