@@ -2,56 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9F0525328
-	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 19:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1500052538B
+	for <lists+cgroups@lfdr.de>; Thu, 12 May 2022 19:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354507AbiELREP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 May 2022 13:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        id S1357016AbiELR1m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 May 2022 13:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242193AbiELREO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 13:04:14 -0400
+        with ESMTP id S1356850AbiELR1m (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 13:27:42 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57016D4DA;
-        Thu, 12 May 2022 10:04:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D335994C8;
+        Thu, 12 May 2022 10:27:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7EEC71F8EF;
-        Thu, 12 May 2022 17:04:12 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CDD141F8EF;
+        Thu, 12 May 2022 17:27:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652375052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1652376459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8x6aPJt6yqRe+xxwaduylXqRn+TAS3mKV8QmNRMu74M=;
-        b=oqAeYgjoS/Yzrg0FlOaRvqUONZMeshLiVKHa5kE0tg7n3W/Qd8TjfD2+9mXN1PtCJP58R8
-        wnlHvNSmzK+5ejL8Fn0anZd7UdrYBDHqSDVzVTUq6+y9ZXzNhqW3be11YgM8I/tx3NwAfM
-        R0sJIrUtOa7NJDVEeM6pKGJS33DF4rc=
+        bh=7XEGm/1PGoEXcO1HFP5KFYVz2HoDo+VVY6EzV48qjEY=;
+        b=FzNR/9sgSrYP2DPIDbJYhi2A7TQZTkeEClVE8X88trBQ+zDeTp6YXcGexdIzHN9WVt1CXT
+        6ppZ2fr+wNOvNGpQiGz6QiiimHTY0fyVoPFyBeCsw0Wxl9Pe77+R+JdNfKLcpjL+emZ331
+        gZhmVXUA0C5FWdFhgV4XQ8ieop+pvys=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 453DB13ABE;
-        Thu, 12 May 2022 17:04:12 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9396713ABE;
+        Thu, 12 May 2022 17:27:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0BnrDww+fWIuHAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 12 May 2022 17:04:12 +0000
-Date:   Thu, 12 May 2022 19:04:10 +0200
+        id zMdGI4tDfWJwJQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 12 May 2022 17:27:39 +0000
+Date:   Thu, 12 May 2022 19:27:38 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     David Vernet <void@manifault.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, roman.gushchin@linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, kernel-team@fb.com
-Subject: Re: [PATCH v2 0/5] Fix bugs in memcontroller cgroup tests
-Message-ID: <20220512170410.GA16096@blackbody.suse.cz>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Vernet <void@manifault.com>, tj@kernel.org,
+        roman.gushchin@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org, mhocko@kernel.org,
+        shakeelb@google.com, kernel-team@fb.com,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Chris Down <chris@chrisdown.name>
+Subject: Re: [PATCH v2 2/5] cgroup: Account for memory_recursiveprot in
+ test_memcg_low()
+Message-ID: <20220512172738.GB16096@blackbody.suse.cz>
 References: <20220423155619.3669555-1-void@manifault.com>
+ <20220423155619.3669555-3-void@manifault.com>
+ <20220427140928.GD9823@blackbody.suse.cz>
+ <20220429010333.5rt2jwpiumnbuapf@dev0025.ash9.facebook.com>
+ <20220429092620.GA23621@blackbody.suse.cz>
+ <20220506164015.fsdsuv226nhllos5@dev0025.ash9.facebook.com>
+ <Ynkum8DeJIAtGi9y@cmpxchg.org>
+ <20220509174424.e43e695ffe0f7333c187fba8@linux-foundation.org>
+ <20220510174341.GC24172@blackbody.suse.cz>
+ <Ynv4AdjeVjptnjrH@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220423155619.3669555-1-void@manifault.com>
+In-Reply-To: <Ynv4AdjeVjptnjrH@cmpxchg.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -63,36 +76,39 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+On Wed, May 11, 2022 at 01:53:05PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
+> Can you indeed elaborate on the problem you see with low events?
 
-On Sat, Apr 23, 2022 at 08:56:15AM -0700, David Vernet <void@manifault.com> wrote:
-> tools/testing/selftests/cgroup/test_memcontrol.c contains a set of
-> testcases which validate expected behavior of the cgroup memory controller.
-> Roman Gushchin recently sent out a patchset that fixed a few issues in the
-> test.
+My mistake. I realized I was testing on a system without
+memory_recursiveprot enabled. Therefore I saw no events in children with
+memory.low=0.
 
-Link here
-https://lore.kernel.org/r/20220415000133.3955987-1-roman.gushchin@linux.dev/.
+However, it also means that my previous evaluation of the "simple" fix
+(dropping the SWAP_CLUSTER_MAX rounding) was incorrect and it actually
+doesn't resolve the problem of two differently active siblings I posted
+earlier.
 
-> This patchset continues that effort by fixing a few more issues that
-> were causing non-deterministic failures in the suite.
+> So your proposed patch looks like the right thing to do to me. And I
+> would ack it, but please do explain your concerns around low event
+> reporting after it.
 
-Are the Roman's patches merged anywhere? (I ran into some issues when I
-was rebasing your (David's) series on top of master.) I'd like to put
-all sensible patches in one series or stack on existing branch (if
-there's any).
+I retract it (at least for now), it doesn't really help. It can be seen
+(after application) [1] that once (low) protected memory is opened for
+reclaim, the sibling proportions change suddenly (neither sibling is
+protected during sc->memcg_low_reclaim, however, the formerly protected
+suddenly provides good supply of reclaimable pages).
 
-For possible v3 of this series, I did:
-  - dropped the patch that allows non-zero memory.events:low for a sibling with
-    memory.low=0 when mounted with memory_recursiveprot (the case needs more
-    discussion),
-  - added few more cleanups, convenience for debugging,
-  - fixed comments in the first patch.
+OTOH, without memory_recursiveprot [2], the elow growth of the victim
+sibling is absent and situation stabilizes with only partial reclaim
+from the (explicitly) protected sibling. 
 
-Pushed here [1] before properly sending the v3 for discussion.
+In both variants (recursive/non-recursive) the parent ends up with same
+amount of unreclaimed memory, however, the gradual tranfer of elow with
+the recursive protection is undesired. (I'm only thinking how to solve
+it simply.)
 
-Thanks,
 Michal
 
-[1] https://github.com/Werkov/linux/commits/cgroup-ml/memory.low-overreclaim-var2
+[1] https://bugzilla.suse.com/attachment.cgi?id=858869
+[2] https://bugzilla.suse.com/attachment.cgi?id=858870
 
