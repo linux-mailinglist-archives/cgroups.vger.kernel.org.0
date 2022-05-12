@@ -2,164 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807ED5257EB
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 00:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0FD525819
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 01:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359256AbiELWnI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 May 2022 18:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        id S1359369AbiELXHI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 May 2022 19:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244764AbiELWnH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 18:43:07 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD6C283A00
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 15:43:06 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id jt15so5474157qvb.8
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 15:43:06 -0700 (PDT)
+        with ESMTP id S1349930AbiELXHI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 19:07:08 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9706F5DA1B
+        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 16:07:06 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id b20so5919912qkc.6
+        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 16:07:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=sK+42GruGIvOT2IVl/tBK2BbAhxfazwDQIwVMlz/Dqg=;
-        b=H42oGBBaIuWQozoExGdZVqBqIqAeAaw0VcEwB7+tdbA3RWDWl13l18u2+dRaIYLUMR
-         Amb5ZOM2foKYxqovgtqo1tjnZDrnFvQNV1oDRcFrwKyHcbHxr8IYILHu8cFE+/FwdgJ+
-         k1QzqMdFo1CH9LqrY/N5oJ6VwsMQbBXbOquIXVKBKz7OMvicItrTul+UwYGfK0oXe0b3
-         MFbnWkQ1UXockxsuTx+Syh8gAkbxHgcDoLNBLgy3ffLJbIj7j3jIoH9z6F84++WQoIQS
-         pHJSx+o0sR4pV8Acp680iGiHSsIrorvrQbvKKDyArgj8eNhOeiD6fVY6QDzo/UoKdaOu
-         wDpg==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cUck+cVE4Zxuay2oogDnSAcnKGvRjnTdnpV0Wo1py44=;
+        b=Dj1JULLJRgmUJGyzT66YmWR2bXmVOPWjKovt19K15mjhXg3HwFYBwEJuzTGwKaAq9s
+         UlYZ0/IUYcAg2aRR26LgYG0/HAiOUXbRTrjNR+Wc4SxPVT5MXbauCdL2/WDBI7QN0Gh0
+         c2v6RoCDtzZcEzCwRaxfIkuXKgKFQmfp7WteHFGn9yxB7UXbRpwFXrmu9mN6KLIniXYn
+         E6Ng4kcGK1aHvRPzZUSVA18lIbBd/twXGFM4i7KmkNJcxCIrUG0eta5gQ+Zhk4sMsbTs
+         bfvIMBQOMEqF/RWs5LYTgoZiIZ4OfdOx64M8r+ZkVp/WNmWSvYEJZ9cPVzcTwYawUn43
+         j07A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=sK+42GruGIvOT2IVl/tBK2BbAhxfazwDQIwVMlz/Dqg=;
-        b=SUDdRdj3s7bCpwlKiGxC34VRnO29wSYvPoHkydBBV+ZcYi8pTxg3HZWY9P4WME54im
-         47FbN50wvd+9gqI2KoLYi0x/ZbblOXND9Hn2xamikD47FhiplbE8aezrrzR9WFX94GEi
-         MgNXpLNlaYAtmxXMRNALa3ciQS9mq7duJyQ8IyAplxFIEjezILfpRgrU6/dI2OjkAhFG
-         XUZguI6JcNolvGeaEYSAUsKxfKX1rtfE6xXqHxzUGYXL58GljXxLZW/DNg047qGLHUCI
-         hBhFUBJX6x6NlofzxyUr5V65zarqjE0iVS/ALSKI0PDozTkVx8bsTSYSHbFL7fcg1bEc
-         Uz8w==
-X-Gm-Message-State: AOAM530Tl60WYoWCcHCqQrIZ5qWVflynLuL+itoz4Usu91A9Eaok0Jpm
-        eVKo0Vb0CBNNdp5mgrcQlGglyaRGfdQVNyBpptVzHw==
-X-Google-Smtp-Source: ABdhPJxYK7yxziz6F+yn4V15rS5ApGuIGP6NpeLhq7Jxvm4/UQIKUmZ1iQYob5gt2XyqODVQvpRVU70EBpTXandwHvA=
-X-Received: by 2002:a05:6214:250b:b0:45b:9ee:730a with SMTP id
- gf11-20020a056214250b00b0045b09ee730amr1970135qvb.15.1652395385318; Thu, 12
- May 2022 15:43:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cUck+cVE4Zxuay2oogDnSAcnKGvRjnTdnpV0Wo1py44=;
+        b=i+PhCpRqz0ssN6UaOTW0ok5tABxMhTuNEVdCr1ID1RCiLD3sMyTNg2RcQ+ofxjXhCF
+         IoqhIRnW1OtQv0Au81MhgCTusLfwuHKv3CBI+SU9feBM7tz/dJByQTP5458GPsfNFidB
+         eIrIdzYJW/BsaSM/erXirrMkpz0jj48CFai7fwUipnzhKc5HlGypTJJwWABaokHSiD+Y
+         ffLEEpmIcEXf+xSMuOhCiv0Y3xpzj5050YvE3JiYH9y+wQqladCfQwGkOpOExibnJn6K
+         E3xQhfn6e7ExEANsrJYBnQ+QFAydTZ6w93w9+jvgkNA5OambqkenmF2i8uFHwvkoFKgD
+         eFTw==
+X-Gm-Message-State: AOAM533gvGOasXn2hxZp3by6kCPaM9mRX3anZ0FV8DXb2P6lBEMGhW9l
+        xG/WQehKRQgfjTa5KPuHvRM7TA==
+X-Google-Smtp-Source: ABdhPJzPe/f2XnvNR7HBy1hfb2wAJ55PWzG5ke4OAfKWdYulxV6DryUEgezu1lF0L4l4p+1B2aoJOQ==
+X-Received: by 2002:a05:620a:4553:b0:6a0:5280:defd with SMTP id u19-20020a05620a455300b006a05280defdmr1763977qkp.165.1652396825764;
+        Thu, 12 May 2022 16:07:05 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:14fe])
+        by smtp.gmail.com with ESMTPSA id w13-20020ac86b0d000000b002f39b99f677sm545833qts.17.2022.05.12.16.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 May 2022 16:07:05 -0700 (PDT)
+Date:   Thu, 12 May 2022 19:07:04 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+Message-ID: <Yn2TGJ4vZ/fst+CY@cmpxchg.org>
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-2-yosryahmed@google.com>
+ <87ilqoi77b.wl-maz@kernel.org>
+ <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Khazhy Kumykov <khazhy@google.com>
-Date:   Thu, 12 May 2022 15:42:54 -0700
-Message-ID: <CACGdZYK3iLc8u+YuyteaWqLRCHUJvR10Gem6MFyx36wP4Z2y2Q@mail.gmail.com>
-Subject: Issue with 252c651a4c85 ("blk-cgroup: stop using seq_get_buf")
-To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, w.bumiller@proxmox.com,
-        cgroups@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000013f9805ded8481a"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---000000000000013f9805ded8481a
-Content-Type: text/plain; charset="UTF-8"
+Hey Yosry,
 
-I can see in the latest tip, if we have devices with no statistics,
-we'll print the maj:min and then nothing else, which can end up
-looking weird, (e.g. like below.) I see that in older kernels, we
-avoided printing the device name at all if there were no stats, and it
-looks like this behavior was silently broken by 252c651a4c85
-("blk-cgroup: stop using seq_get_buf"), where before we prepared the
-whole line then decided at the end whether to commit it or not.
+On Mon, May 02, 2022 at 11:46:26AM -0700, Yosry Ahmed wrote:
+> On Mon, May 2, 2022 at 3:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> > 115bae923ac8bb29ee635). You are saying that this is related to a
+> > 'workload', but given that the accounting is global, I fail to see how
+> > you can attribute these allocations on a particular VM.
+> 
+> The main motivation is having the memcg stats, which give attribution
+> to workloads. If you think it's more appropriate, we can add it as a
+> memcg-only stat, like MEMCG_VMALLOC (see 4e5aa1f4c2b4 ("memcg: add
+> per-memcg vmalloc stat")). The only reason I made this as a global
+> stat too is to be consistent with NR_PAGETABLE.
 
-I do see a patch "blk-cgroup: always terminate io.stat lines" that
-addresses this by just unconditionally printing the newline (though it
-looks like that patch never landed). I'm wondering if it's worth
-trying to bring back the old behavior of not printing these devices at
-all if they have no statistics. (e.g. by having the "first"
-stats-haver writing out the bdev name, or going back to scnprintf)
+Please no memcg-specific stats if a regular vmstat item is possible
+and useful at the system level as well, like in this case. It's extra
+memcg code, extra callbacks, and it doesn't have NUMA node awareness.
 
-9:0 8:0 rbytes=16720896 wbytes=905216 rios=768 wios=67 dbytes=0 dios=0
-1:15 1:14 1:13 1:12 1:11 1:10 1:9 1:8 1:7 1:6 1:5 1:4 1:3 1:2 1:1 1:0
+> > What do you plan to do for IOMMU page tables? After all, they serve
+> > the exact same purpose, and I'd expect these to be handled the same
+> > way (i.e. why is this KVM specific?).
+> 
+> The reason this was named NR_SECONDARY_PAGTABLE instead of
+> NR_KVM_PAGETABLE is exactly that. To leave room to incrementally
+> account other types of secondary page tables to this stat. It is just
+> that we are currently interested in the KVM MMU usage.
 
---000000000000013f9805ded8481a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Do you actually care at the supervisor level that this memory is used
+for guest page tables?
 
-MIIPmwYJKoZIhvcNAQcCoIIPjDCCD4gCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz1MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-h3dPtFviTyG11HYwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6
-Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYIKwYBBQUH
-AQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2NhL2dzYXRs
-YXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29t
-L2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei6x4schvR
-zV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBAE0ANr7NUOqEcZce4KYP
-SjzlrshSC8sgJ8dKDDbe35PL86vDuMIrytVjiV10p/YUofun9GeHBY6r5kTyh4be5FgftiiNtWzn
-U1W5cxLYMT1hKYxXxnM2sWMQGFl4TkxxbRoVZa3ou/NxFdAZeiQSwGnzk5oIDTBZQc8q3wMa1svm
-A5Rd4MVaIUt+hyk6seAldN6k4/O34O1l2V6D+/BwagyzLWvOeMEM9hClVF+F6a20yy4dcDsprFZZ
-Sk9JzUy9F6FM7L1wT2ndjTNDja4Y2tixf31KuisZLGKmDZsW/fXF1GgWDaM0DbYJwtE3kHylWnMk
-CN4PfYgIa15C5A9lXhExggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
-YWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENBIDIwMjAC
-EAFEftjde/YEIFcjUXqhcBUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHDsP3BX
-jy6RwT4vXBH4G8jwnka+73wWStMiGd08D4zQMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
-KoZIhvcNAQkFMQ8XDTIyMDUxMjIyNDMwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
-CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
-hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB/M8a2/yZZVUXuHOn8EDYZ0hBf
-cGKPEt/aEPEZyza35hwKNlDHzu7MwKSxCdEKjsx6OiJrZtwv9sYxQI6sRKTxFbwcb/7lNA4X97jp
-zBoy59ik1Y4Iex0mr7ZrnL45nZzvu/noKP3mM2iD7VEQg9qzYdpLz162rh389KLuzsvNqABgG8vR
-IyAbEMSfxRLOk3J0/BhJD9UmtwCNWyIUZzAssFCmMmr+muT9r9Skxsk8VWYyAlu4mBWSqInTCJzM
-AQXQ/mkdSF9Ts51hxktHWJtnhClHfUTohJl2ktb11nTJmS7qkep0ZhdUj4Zg9xoMfLNj688HaExD
-yBGkJ1wg/2KO
---000000000000013f9805ded8481a--
+It seems to me you primarily care that it is reported *somewhere*
+(hence the piggybacking off of NR_PAGETABLE at first). And whether
+it's page tables or iommu tables or whatever else allocated for the
+purpose of virtualization, it doesn't make much of a difference to the
+host/cgroup that is tracking it, right?
+
+(The proximity to nr_pagetable could also be confusing. A high page
+table count can be a hint to userspace to enable THP. It seems
+actionable in a different way than a high number of kvm page tables or
+iommu page tables.)
+
+How about NR_VIRT? It's shorter, seems descriptive enough, less room
+for confusion, and is more easily extensible in the future.
