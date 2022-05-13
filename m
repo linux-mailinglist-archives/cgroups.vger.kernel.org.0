@@ -2,180 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2625267E5
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872515267FE
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 19:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382742AbiEMRIT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 13:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
+        id S1382785AbiEMROL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 May 2022 13:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356224AbiEMRIS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 13:08:18 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476AE61294
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:08:16 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id x22so7305695qto.2
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:08:16 -0700 (PDT)
+        with ESMTP id S1382715AbiEMROI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 13:14:08 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D00735DF1
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:14:07 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id x23so8211096pff.9
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:14:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zXhkDIVf27CV50GWaqhnTSClMrVWORrrk1UTjwHnru8=;
-        b=cnwlzxqBMjsJ+1WY7JYGk0zmaRis0uxKC7n7kcvotpz3nsqvchPQgSX6XYMUfhDe6C
-         zQX+xYwhjdbi9MoF65ZpjqRRK7MJ0XKfxooT6ZqFqqo5RjIKjDa+M6SKyoLVYCac5pnq
-         F/Ub9Xe3njx+6EalimZC+4nsWYG/wjM6ZV3DJI5rfIRoltmydpP3cLFDVWHPmw472OJh
-         wjt3Bfjw86NWL6eyRuQrhiFfaHCEQEWvic5An3l6SAxg8tWA6OZwBS1CE8KjO+VtdCEW
-         IPvb1TfV5UEO/ymbUOlWpPhhEU9+bxxgQMSRElxcmydKAxpio18y2YkuyD7/w+eB4Eo5
-         aUFw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VM6L7CzHZq+DP15ACyDCNeBcnTiw96jhTORnn16Mcn8=;
+        b=m7gQomUnSLOq+9pE4q9ffHGKLb3L3GE/tyqnZaMpqmJHNyG5wt5m5mpVnrt/R5fltk
+         yK5RyYuw70QdsT3xpjionXDVduKVwIkENV/Mv5F0EHktzxJsXpmHkKAWfcOwy5gVtQvt
+         Jb9aF197MUvc/8VfJWEKOA0A5W6r7Y5jyFAxdXtd+z7v8GihBIgqkMzUgDgmRLDEQBOl
+         8CqLPCu3zlaWk59USw4+jqNDxNbSsUsyKPMu7PWzekJIARr0BRZnv82P4+e07sbtFdHd
+         l7nGCtA297XhzYezBsDN16APQINq+JlpmHHYdQbrAp93SyhwC2tFFlzq6Ax51hV8P071
+         YexA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zXhkDIVf27CV50GWaqhnTSClMrVWORrrk1UTjwHnru8=;
-        b=BYFucNqGrQf4ArFjKhhlX10RD0eKjMoZ7JwCvfdlEGDTWXLOtQMgXc3aOI3vUr6nLi
-         ynbA4nJY19WCLKmMubV3bjerEbgStCotYmDsWPmsEfXvOJLhc7wqGYcxusoKDobU0cN5
-         gOQSIn8B+50g+COUK7QYcFAVS5kW8eXA8lf6jCF+A6XnwbqZr/EowmFF+ECxXxCVE12/
-         zAMmhIgGu0eD/J08WpLVPGqB1Yrno1qc5tT5A3SDg/KPdv059khkx74fhHO74nIs2qAs
-         6xq/yqkzYBaafhym3aFlzauq0gMugNhLkN7/riGzHUUnsdeEqpaWIysHTK91WYk67/fd
-         PiQQ==
-X-Gm-Message-State: AOAM530slcHKJ4izQjjPfjrU7eYz6H7t4Dj2MG32xZJoIxger3rYs7x7
-        uXzv45lKcesAqVdfBrelhNVVkw==
-X-Google-Smtp-Source: ABdhPJwyv/gBNDnSk88os8Mohl8nxNU34Bx3dZyO4nXr5WiLiNrjoxWHwBHg3wmq2v0jQwwY7p/mpg==
-X-Received: by 2002:a05:622a:104e:b0:2f3:f7a5:62e6 with SMTP id f14-20020a05622a104e00b002f3f7a562e6mr5423719qte.582.1652461695399;
-        Fri, 13 May 2022 10:08:15 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:14fe])
-        by smtp.gmail.com with ESMTPSA id 143-20020a370995000000b0069fc13ce207sm1622277qkj.56.2022.05.13.10.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 10:08:14 -0700 (PDT)
-Date:   Fri, 13 May 2022 13:08:13 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
-Message-ID: <Yn6QfdouzkcrygTR@cmpxchg.org>
-References: <20220510152847.230957-1-hannes@cmpxchg.org>
- <20220510152847.230957-7-hannes@cmpxchg.org>
- <20220511173218.GB31592@blackbody.suse.cz>
- <YnwJUL90fuoHs3YW@cmpxchg.org>
- <20220513151426.GC16096@blackbody.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VM6L7CzHZq+DP15ACyDCNeBcnTiw96jhTORnn16Mcn8=;
+        b=59rFYpBGfrz86S6WKA2EHlbdUa54S+CUYqszcL6hOQAW4ENBhUNAuTJWOPz0GZVycs
+         r/nLkqduk8nw2a6wC7i6kL00YKuWv8wIQWalhC2kBwAavGdao/RLs8omgtCgcZ6YEhj5
+         Ze69h81s0fQVKT50E5zN6LbB1BirRnQS2ArffcK1oWVEekMlPSG+ABxS/212kjUoa/2i
+         VY10OzwFDERLV7lSn4I41Iq8GbxZHuv//9dHpCLjl6OpRE25qwtqxmxDZ9Kg+i3mi7L2
+         ljr6l+6xQKvg6CAAOqTjXyJ1b0xca2xvN20D9/ADuCkYPHxrpNIS2vMgXqeAjPRiT0UK
+         j+5A==
+X-Gm-Message-State: AOAM532SpUbA10qKAVIiFIQb/zXqh52vYlRNfojZIF0FOFDL7nk9Xfko
+        vZHV8xXS7jiRfkvNBlikDbtHo4/VxvMDO3GZQlusTg==
+X-Google-Smtp-Source: ABdhPJzzJRHomgqXTbd3lMoRoFV7vbrkO5L/UrOYsIgvGq7U/iV65DcmY+1YVfkRJDcWOE7WzBlet9mYxMGwLWQyyE4=
+X-Received: by 2002:a63:1866:0:b0:3db:4b04:9f56 with SMTP id
+ 38-20020a631866000000b003db4b049f56mr4750300pgy.509.1652462046391; Fri, 13
+ May 2022 10:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220513151426.GC16096@blackbody.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-2-yosryahmed@google.com> <87ilqoi77b.wl-maz@kernel.org>
+ <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+ <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
+ <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
+In-Reply-To: <Yn6DeEGLyR4Q0cDp@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 13 May 2022 10:13:54 -0700
+Message-ID: <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Oliver Upton <oupton@google.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Michal,
-
-On Fri, May 13, 2022 at 05:14:26PM +0200, Michal Koutný wrote:
-> On Wed, May 11, 2022 at 03:06:56PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > Correct. After which the uncompressed page is reclaimed and uncharged.
-> > So the zswapout process will reduce the charge bottom line.
-> 
-> A zswap object falling under memory.current was my first thinking, I was
-> confused why it's exported as a separate counter memory.zswap.current
-> (which IMO suggests disjoint counting) and it doubles a
-> memory.stat:zswap entry.
-> 
-> Is the separate memory.zswap.current good for anything? (Except maybe
-> avoiding global rstat flush on memory.stat read but that'd be an
-> undesired precendent.)
-
-Right, it's accounted as a subset rather than fully disjointed. But it
-is a limitable counter of its own, so I exported it as such, with a
-current and a max knob. This is comparable to the kmem counter in v1.
-
-From an API POV it would be quite strange to have max for a counter
-that has no current. Likewise it would be strange for a major memory
-consumer to be missing from memory.stat.
-
-> (Ad the eventually reduced footprint, the transitional excursion above
-> memcg's (or ancestor's) limit should be limited by number of parallel
-> reclaims running (each one at most a page, right?), so it doesn't seem
-> necessary to tackle (now).)
-
-Correct.
-
-> > memory.zswap.* are there to configure zswap policy, within the
-> > boundaries of available memory - it's by definition a subset.
-> 
-> I see how the .max works when equal to 0 or "max". The intermediate
-> values are more difficult to reason about.
-
-It needs to be configured to the workload's access frequency curve,
-which can be done with trial-and-error (reasonable balance between
-zswpins and pswpins) or in a more targeted manner using tools such as
-page_idle, damon etc.
-
-> Also, I can see that on the global level, zswap is configured relatively
-> (/sys/module/zswap/parameters/max_pool_percent).
-> You wrote that the actual configured value is workload specific, would
-> it be simpler to have also relative zswap limit per memcg?
+On Fri, May 13, 2022 at 9:12 AM Sean Christopherson <seanjc@google.com> wrote:
 >
-> (Relative wrt memory.max, it'd be rather just a convenience with this
-> simple ratio, however, it'd correspond to the top level limit. OTOH, the
-> relatives would have counter-intuitive hierarchical behavior. I don't
-> mean this should be changed, rather wondering why this variant was
-> chosen.)
+[...]
+>
+> It was mostly an honest question, I too am trying to understand what userspace
+> wants to do with this information.  I was/am also trying to understand the benefits
+> of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
+> already has specific stats for the number of leaf pages mapped into a VM, why not
+> do the same for non-leaf pages?
 
-A percentage isn't a bad way to pick a global default limit for a
-kernel feature. But it would have been preferable if zswap had used
-the percentage internally and made the knob based in bytes (like
-min_free_kbytes for example).
+Let me answer why a more general stat is useful and the potential
+userspace reaction:
 
-Because for load tuning, bytes make much more sense. That's how you
-measure the workingset, so a percentage is an awkward indirection. At
-the cgroup level, it makes even less sense: all memcg tunables are in
-bytes, it would be quite weird to introduce a "max" that is 0-100. Add
-the confusion of how percentages would propagate down the hierarchy...
+For a memory type which is significant enough, it is useful to expose
+it in the general interfaces, so that the general data/stat collection
+infra can collect them instead of having workload dependent stat
+collectors. In addition, not necessarily that stat has to have a
+userspace reaction in an online fashion. We do collect stats for
+offline analysis which greatly influence the priority order of
+optimization workitems.
 
-> > +bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
-> > +{
-> > +     struct mem_cgroup *memcg, *original_memcg;
-> > +     bool ret = true;
-> > +
-> > +     original_memcg = get_mem_cgroup_from_objcg(objcg);
-> > +     for (memcg = original_memcg; memcg != root_mem_cgroup;
-> > +          memcg = parent_mem_cgroup(memcg)) {
-> > +             unsigned long max = READ_ONCE(memcg->zswap_max);
-> > +             unsigned long pages;
-> > +
-> > +             if (max == PAGE_COUNTER_MAX)
-> > +                     continue;
-> > +             if (max == 0) {
-> > +                     ret = false;
-> > +                     break;
-> > +             }
-> > +
-> > +             cgroup_rstat_flush(memcg->css.cgroup);
-> 
-> Here, I think it'd be better not to bypass mem_cgroup_flush_stats() (the
-> mechanism is approximate and you traverse all ancestors anyway), i.e.
-> mem_cgroup_flush_stats() before the loop instead of this.
-
-I don't traverse all ancestors, I bail on disabled groups and skip
-unlimited ones. This saves a lot of flushes in practice right now: our
-heaviest swapping cgroups have zswap disabled (max=0) because they're
-lowpri and forced to disk. Likewise, the zswap users have their zswap
-limit several levels down from the root, and I currently don't ever
-flush the higher levels (max=PAGE_COUNTER_MAX).
-
-Flushing unnecessary groups with a ratelimit doesn't sound like an
-improvement to me.
-
-Thanks
+Next the question is do we really need a separate stat item
+(secondary_pagetable instead of just plain pagetable) exposed in the
+stable API? To me secondary_pagetable is general (not kvm specific)
+enough and can be significant, so having a separate dedicated stat
+should be ok. Though I am ok with lump it with pagetable stat for now
+but we do want it to be accounted somewhere.
