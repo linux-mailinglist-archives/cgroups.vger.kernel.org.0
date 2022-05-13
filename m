@@ -2,147 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8265266D4
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 18:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DDA5266F0
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 18:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381753AbiEMQO0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 12:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
+        id S1377703AbiEMQXl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 May 2022 12:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381684AbiEMQNg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 12:13:36 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9534552F;
-        Fri, 13 May 2022 09:13:27 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id i17so8371184pla.10;
-        Fri, 13 May 2022 09:13:27 -0700 (PDT)
+        with ESMTP id S1382377AbiEMQXk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 12:23:40 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49DE3C724
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:23:34 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id m2-20020a1ca302000000b003943bc63f98so5017757wme.4
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:23:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n4Ua5qSAHgvrptVTXpgV4jY28Fp/1ApPJcGYkkazweE=;
-        b=dh+CcTt4AjCORsqV1ZODlBqFq+OvMka9auOOZykOuG9GwHD05RDvn63lEcsItiN2eH
-         nH+MkFBQ8v1tdeWUMN4BRvaW+7Q1uwmQiOctS5wPsQLKRk5Ykt9si+fUFSf6n/at1dmY
-         4JOHexwRERxmPXQVd5EWv4mWhFA3BXiW4pCX0ZdVzHtYoUWHmurH8uIA0uBpYInyofFZ
-         pNEuW8xEgDqjAmuzWH27jn+y85YMNek74F2xgDatREWDoXEvBkL4SnO/axBiM7vQgUS4
-         gbWP9yrJI2fCACw+ngKTCewWFxR85tswkrdeT3TpOZ3UiGjOL9rgao5yscsrH/9y3/bl
-         VBAw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P05jhA0WcF/hZv6hPGGv+IwSy9Etnh2buB8vtD3ctaw=;
+        b=NbGqMSBPXMT8N2S9Mb/Dsg5lSZ+Q1JehG0g27ajHeCVpig2+23Km9JoVFr/ImPYFoO
+         wJmh2nXKIDIII/vXFSfau8UNbJ5DJy18o9CrYBc7a9/NtK/YuUaf3AolOoaNxUrDOM7q
+         Q6bqIo+8/dE7bkyPlhCmEkjd6AnOrD2OhH0pNxkmwIETys/pp9IK8GjEeaFuFYivzvmD
+         gdTf3d0+GG/ftL3jXg8rtu2aDumAzRDQYSjyUvkD+w5EoHcKd9GNvo5O8R6/JDd1Mi60
+         2jyTWDR3yNwOUThXmrpBuS7lvNeRMKW2aCC5EP/QH/EPpkCTf5DhQlw8Sa6acajQ+nyC
+         /GXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=n4Ua5qSAHgvrptVTXpgV4jY28Fp/1ApPJcGYkkazweE=;
-        b=QcsytHXlMbPTEHIYFvpnQDkGksrZ4wabpvWRsXAT2RgqsbxfmSlmSamGthRC9S/PDz
-         mmgpmAjPFz0JpDvkg9BuABJxKgKuE+l8IRaLRUCj5oFqtZLe9P9za9AJHpAr/V4Oyg3E
-         BAm2ptrGTLLFB+n/+yg4VwWeVYZfh1Uf74vSWF+Z+PW77xIVD75tk2waNk8AzGckea6L
-         hEP3Z7sIw4rRwf5ye22GhKy7ssQsCLvVJwjDZfSIBBx9QjO2pQShpv7pxWsLR9Jwq3fQ
-         gQeD7UFwkGxsGjk4bQtspjwrLp6IxFViZGlY/wNSj/e7qdM0+ssS7W31NHvUrKu+yHRv
-         qSqg==
-X-Gm-Message-State: AOAM531ktAfLKnLfVG9t7Q1On4bEYj0w7wx0itA1fhgeHk86GyWO5S4E
-        3awW5GrZ/SEDAKBVvooj4g8=
-X-Google-Smtp-Source: ABdhPJx/E0j2BSOqlsmETv4JaHt8kQAXKtx8000l3ywPW9tmB75Cv/mYY002CdT2AqHaPSsO5Oy1mQ==
-X-Received: by 2002:a17:90b:17c4:b0:1de:c92c:ad91 with SMTP id me4-20020a17090b17c400b001dec92cad91mr5642606pjb.169.1652458407026;
-        Fri, 13 May 2022 09:13:27 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:5607])
-        by smtp.gmail.com with ESMTPSA id ip14-20020a17090b314e00b001d81a30c437sm1796573pjb.50.2022.05.13.09.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 09:13:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 13 May 2022 06:13:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     "T.J. Mercier" <tjmercier@google.com>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        John Stultz <jstultz@google.com>,
-        Carlos Llamas <cmllamas@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
-Message-ID: <Yn6DpUsoSz1/15Kc@slm.duckdns.org>
-References: <20220510235653.933868-1-tjmercier@google.com>
- <3365cd1d750e84fedc8e75d646a77ffd85619d35.camel@ndufresne.ca>
- <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
- <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
- <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P05jhA0WcF/hZv6hPGGv+IwSy9Etnh2buB8vtD3ctaw=;
+        b=mRZU2+I+m55A12d9x9SoUVcmUonrNaWlybyPQq3KjZKRXz7ojm7V5GHMTU4+/Qdsu3
+         elsKhhQ099L1PzQfkYGky2onSxc0hEJvTCwkjiicfxVZ4bvsmwb+ncvp6fibBsCvDLIj
+         StmTX9fT2CSjKEWzQ61kuy5KnwInsOfC37+LHDV5atJXYfhjsQWIXAHMx8EXxBa1NarB
+         j+/56GdarIK+qPnDD5ii2VkDA1FUDBqfrmkFlXJnCrwo1HRFSmo7sWoGBrIC1+MOdwKy
+         utMnJQybLDHZG0neXcSCfZcX68o7k55ncXkaezca7IC56jaSPw+VH9fn9pjVZGZL4vT/
+         vvAw==
+X-Gm-Message-State: AOAM531Spr6q0Ud/r3911Rmw64ilS2kh5sqCHxq4HLwQt9GqtqTIXZxm
+        gLA9a/okLw0WXl4fkp4+BYaNF676kG9dLOt2zGimBA==
+X-Google-Smtp-Source: ABdhPJwMQHR1rV6RBNYyN9NXTYzZlmwu+UcKsnVAZ7vLR8pJMUCcm4gmI2KWG3egFgrVcfmqBhhxtSll0QHpKEJ76pM=
+X-Received: by 2002:a05:600c:3490:b0:394:5616:ac78 with SMTP id
+ a16-20020a05600c349000b003945616ac78mr5401973wmq.80.1652459013025; Fri, 13
+ May 2022 09:23:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-2-yosryahmed@google.com> <87ilqoi77b.wl-maz@kernel.org>
+ <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+ <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
+ <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
+In-Reply-To: <Yn6DeEGLyR4Q0cDp@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 13 May 2022 09:22:56 -0700
+Message-ID: <CAJD7tkZ-pLKu=pY54DoUP7cX_Yn=XgTCpfFK+w+81D9WgbWRsA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Thanks everyone for participating in this discussion and looking into this.
 
-On Thu, May 12, 2022 at 08:43:52PM -0700, T.J. Mercier wrote:
-> > I'm actually happy I've asked this question, wasn't silly after all. I think the
-> > problem here is a naming issue. What you really are monitor is "video memory",
-> > which consist of a memory segment allocated to store data used to render images
-> > (its not always images of course, GPU an VPU have specialized buffers for their
-> > purpose).
+On Fri, May 13, 2022 at 9:12 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, May 13, 2022, Johannes Weiner wrote:
+> > On Thu, May 12, 2022 at 11:29:38PM +0000, Sean Christopherson wrote:
+> > > On Thu, May 12, 2022, Johannes Weiner wrote:
+> > > > On Mon, May 02, 2022 at 11:46:26AM -0700, Yosry Ahmed wrote:
+> > > > > On Mon, May 2, 2022 at 3:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > What do you plan to do for IOMMU page tables? After all, they serve
+> > > > > > the exact same purpose, and I'd expect these to be handled the same
+> > > > > > way (i.e. why is this KVM specific?).
+> > > > >
+> > > > > The reason this was named NR_SECONDARY_PAGTABLE instead of
+> > > > > NR_KVM_PAGETABLE is exactly that. To leave room to incrementally
+> > > > > account other types of secondary page tables to this stat. It is just
+> > > > > that we are currently interested in the KVM MMU usage.
+> > > >
+> > > > Do you actually care at the supervisor level that this memory is used
+> > > > for guest page tables?
+> > >
+> > > Hmm, yes?  KVM does have a decent number of large-ish allocations that aren't
+> > > for page tables, but except for page tables, the number/size of those allocations
+> > > scales linearly with either the number of vCPUs or the amount of memory assigned
+> > > to the VM (with no room for improvement barring KVM changes).
+> > >
+> > > Off the top of my head, KVM's secondary page tables are the only allocations that
+> > > don't scale linearly, especially when nested virtualization is in use.
 > >
-> > Whether this should be split between what is used specifically by the GPU
-> > drivers, the display drivers, the VPU (CODEC and pre/post-processor) or camera
-> > drivers is something that should be discussed. But in the current approach, you
-> > really meant Video memory as a superset of the above. Personally, I think
-> > generically (to de-Andronized your work), en-globing all video memory is
-> > sufficient. What I fail to understand is how you will manage to distinguished
-> > DMABuf Heap allocation (which are used outside of Android btw), from Video
-> > allocation or other type of usage. I'm sure non-video usage will exist in the
-> > future (think of machine learning, compute, other high bandwidth streaming
-> > thingy ...)
+> > Thanks, that's useful information.
 > >
-> Ok thank you for pointing out the naming issue. The naming is a
-> consequence of the initial use case, but I guess it's too specific.
-> What I want out of this change is that android can track dmabufs that
-> come out of heaps, and drm can track gpu memory. But other drivers
-> could track different resources under different names. Imagine this
-> were called a buffer cgroup controller instead of a GPU cgroup
-> controller. Then the use component ("video memory") isn't tied up with
-> the name of the controller, but it's up to the name of the bucket the
-> resource is tracked under. I think this meets the needs of the two use
-> cases I'm aware of now, while leaving the door open to other future
-> needs. Really the controller is just enabling abstract named buckets
-> for tracking and eventually limiting a type of resource.
+> > Are these other allocations accounted somewhere? If not, are they
+> > potential containment holes that will need fixing eventually?
+>
+> All allocations that are tied to specific VM/vCPU are tagged GFP_KERNEL_ACCOUNT,
+> so we should be good on that front.
+>
+> > > > It seems to me you primarily care that it is reported *somewhere*
+> > > > (hence the piggybacking off of NR_PAGETABLE at first). And whether
+> > > > it's page tables or iommu tables or whatever else allocated for the
+> > > > purpose of virtualization, it doesn't make much of a difference to the
+> > > > host/cgroup that is tracking it, right?
+> > > >
+> > > > (The proximity to nr_pagetable could also be confusing. A high page
+> > > > table count can be a hint to userspace to enable THP. It seems
+> > > > actionable in a different way than a high number of kvm page tables or
+> > > > iommu page tables.)
+> > >
+> > > I don't know about iommu page tables, but on the KVM side a high count can also
+> > > be a good signal that enabling THP would be beneficial.
+> >
+> > Well, maybe.
+> >
+> > It might help, but ultimately it's the process that's in control in
+> > all cases: it's unmovable kernel memory allocated to manage virtual
+> > address space inside the task.
+> >
+> > So I'm still a bit at a loss whether these things should all be lumped
+> > in together or kept separately. meminfo and memory.stat are permanent
+> > ABI, so we should try to establish in advance whether the new itme is
+> > really a first-class consumer or part of something bigger.
+> >
+> > The patch initially piggybacked on NR_PAGETABLE. I found an email of
+> > you asking why it couldn't be a separate item, but it didn't provide a
+> > reasoning for that decision. Could you share your thoughts on that?
+>
+> It was mostly an honest question, I too am trying to understand what userspace
+> wants to do with this information.  I was/am also trying to understand the benefits
+> of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
+> already has specific stats for the number of leaf pages mapped into a VM, why not
+> do the same for non-leaf pages?
 
-So, there hasn't been whole lot of discussion w/ other GPU folks and what
-comes up still seems to indicate that we're still long way away from having
-a meaningful gpu controller. For your use case, would it make sense to just
-add dmabuf as a key to the misc controller? I'm not sure it makes sense to
-push "gpu controller" forward if there's no conceptual consensus around what
-resources are.
+Let me cast some light on this. The reason this started being
+piggybacked on NR_PAGETABLE is that we had a remnant of an old
+internal implementation of NR_PAGETABLE before it was introduced
+upstream, that accounted KVM secondary page tables as normal page
+tables. This made me think this behavior was preferable. Personally, I
+wanted to make it a separate thing since the beginning. When I found
+opinions here that also suggested a separate stat I went ahead for
+that.
 
-Thanks.
-
--- 
-tejun
+As for where to put this information, it does not have to be
+NR_SECONDARY_PAGETABLE. Ultimately, people working on KVM are the ones
+that will interpret and act upon this data, so if you have somewhere
+else in mind please let me know, Sean.
