@@ -2,174 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DDA5266F0
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 18:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDC5526702
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 18:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377703AbiEMQXl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 12:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        id S235497AbiEMQ2r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 May 2022 12:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382377AbiEMQXk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 12:23:40 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49DE3C724
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:23:34 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id m2-20020a1ca302000000b003943bc63f98so5017757wme.4
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:23:34 -0700 (PDT)
+        with ESMTP id S235278AbiEMQ2q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 12:28:46 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC2391567;
+        Fri, 13 May 2022 09:28:43 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id n8so8450275plh.1;
+        Fri, 13 May 2022 09:28:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P05jhA0WcF/hZv6hPGGv+IwSy9Etnh2buB8vtD3ctaw=;
-        b=NbGqMSBPXMT8N2S9Mb/Dsg5lSZ+Q1JehG0g27ajHeCVpig2+23Km9JoVFr/ImPYFoO
-         wJmh2nXKIDIII/vXFSfau8UNbJ5DJy18o9CrYBc7a9/NtK/YuUaf3AolOoaNxUrDOM7q
-         Q6bqIo+8/dE7bkyPlhCmEkjd6AnOrD2OhH0pNxkmwIETys/pp9IK8GjEeaFuFYivzvmD
-         gdTf3d0+GG/ftL3jXg8rtu2aDumAzRDQYSjyUvkD+w5EoHcKd9GNvo5O8R6/JDd1Mi60
-         2jyTWDR3yNwOUThXmrpBuS7lvNeRMKW2aCC5EP/QH/EPpkCTf5DhQlw8Sa6acajQ+nyC
-         /GXA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ewPlolLGmE/a959g4ZA9emiwMLzM/HuRgbAmtM/bKKM=;
+        b=hBiN6IheDSJjCVGBGxNiJqN1NO8KxR5odY3itzDXivs7PJf8NZMHpFBtiOwWS44KpC
+         5QByrr9xl4phn4Ex2VvkCcHFs7vkuwG83TbENksSTbJdRJfDqAyJoFkeIWC0OmVnNYwJ
+         anTAfEIj0J+TXXUq8DOCMGeeJy4GwiDk5eMQlqXmvBI1ciYLvFqOREiudh/miO3Ug2lp
+         Sem0FDhxzNBnr8WKZmCbmJ+xgk0k0Z/+JmJLa3zxOnDTJfwDMn4qRo3ynvCG1rJk3rqz
+         UONgy6PF+YxDv4fwpfWtlrwBWekAQfPxtH74R5/TdAENGRNc44h2zM8/RoYnOpGYnYSm
+         qKoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P05jhA0WcF/hZv6hPGGv+IwSy9Etnh2buB8vtD3ctaw=;
-        b=mRZU2+I+m55A12d9x9SoUVcmUonrNaWlybyPQq3KjZKRXz7ojm7V5GHMTU4+/Qdsu3
-         elsKhhQ099L1PzQfkYGky2onSxc0hEJvTCwkjiicfxVZ4bvsmwb+ncvp6fibBsCvDLIj
-         StmTX9fT2CSjKEWzQ61kuy5KnwInsOfC37+LHDV5atJXYfhjsQWIXAHMx8EXxBa1NarB
-         j+/56GdarIK+qPnDD5ii2VkDA1FUDBqfrmkFlXJnCrwo1HRFSmo7sWoGBrIC1+MOdwKy
-         utMnJQybLDHZG0neXcSCfZcX68o7k55ncXkaezca7IC56jaSPw+VH9fn9pjVZGZL4vT/
-         vvAw==
-X-Gm-Message-State: AOAM531Spr6q0Ud/r3911Rmw64ilS2kh5sqCHxq4HLwQt9GqtqTIXZxm
-        gLA9a/okLw0WXl4fkp4+BYaNF676kG9dLOt2zGimBA==
-X-Google-Smtp-Source: ABdhPJwMQHR1rV6RBNYyN9NXTYzZlmwu+UcKsnVAZ7vLR8pJMUCcm4gmI2KWG3egFgrVcfmqBhhxtSll0QHpKEJ76pM=
-X-Received: by 2002:a05:600c:3490:b0:394:5616:ac78 with SMTP id
- a16-20020a05600c349000b003945616ac78mr5401973wmq.80.1652459013025; Fri, 13
- May 2022 09:23:33 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ewPlolLGmE/a959g4ZA9emiwMLzM/HuRgbAmtM/bKKM=;
+        b=CzgYh7HRobHxXhj9Rh7tqETu/PK708J07pnsuM3bHBqeg5wnpj1xq0xDjTNmM84ur6
+         EF4N+oZFekw7xibRo0JRI96+RpxI1xZR/GvV8VZAQ7RhIkgQotNIs8JNwRiecVyNmBwd
+         mt1slcCKp3kFTibh2DA9rwCNDM5kELp7LzFHFy65VKf72yJn8VWm//B9epUx3E/etkps
+         t3NKrRjlSF9Fksmm9M9g7hdwqysF6eMW/N1jGVswNXtcu87wklcxYe2YDSi54lEJw5uM
+         RXOl3+Ygjqfhgas/0V++Zc+ip/O3qkh8w122fUtNNgJVeYTwC8NqKInz8jsiZU60rJ4S
+         57WQ==
+X-Gm-Message-State: AOAM532J2lfmzz0K7+mM/HbzbLtYe/jtaktFHQKtYrITpHjk0xzLiBIv
+        cvQZdP3g7pSL5ZuGK5jfJl0=
+X-Google-Smtp-Source: ABdhPJwT/dE+TDl8hBshKtguIUYZXsn7hWUYiz6ETIvxyAm9GztrLfAZoYOm3xuWA6x2QvGGXpC94A==
+X-Received: by 2002:a17:902:b94b:b0:15e:f33b:ec22 with SMTP id h11-20020a170902b94b00b0015ef33bec22mr5512470pls.119.1652459323334;
+        Fri, 13 May 2022 09:28:43 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:5607])
+        by smtp.gmail.com with ESMTPSA id u12-20020a62d44c000000b0050dc7628159sm1961602pfl.51.2022.05.13.09.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 May 2022 09:28:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 13 May 2022 06:28:41 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yahu Gao <gaoyahu19@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, Yahu Gao <yahugao@didiglobal.com>,
+        Kunhai Dai <daikunhai@didiglobal.com>
+Subject: Re: [PATCH] block,iocost: fix potential kernel NULL
+Message-ID: <Yn6HOSAE/aAeMGLU@slm.duckdns.org>
+References: <20220513145928.29766-1-gaoyahu19@gmail.com>
+ <20220513145928.29766-2-gaoyahu19@gmail.com>
 MIME-Version: 1.0
-References: <20220429201131.3397875-1-yosryahmed@google.com>
- <20220429201131.3397875-2-yosryahmed@google.com> <87ilqoi77b.wl-maz@kernel.org>
- <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
- <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
- <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
-In-Reply-To: <Yn6DeEGLyR4Q0cDp@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 13 May 2022 09:22:56 -0700
-Message-ID: <CAJD7tkZ-pLKu=pY54DoUP7cX_Yn=XgTCpfFK+w+81D9WgbWRsA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220513145928.29766-2-gaoyahu19@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks everyone for participating in this discussion and looking into this.
+Hello,
 
-On Fri, May 13, 2022 at 9:12 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Fri, May 13, 2022, Johannes Weiner wrote:
-> > On Thu, May 12, 2022 at 11:29:38PM +0000, Sean Christopherson wrote:
-> > > On Thu, May 12, 2022, Johannes Weiner wrote:
-> > > > On Mon, May 02, 2022 at 11:46:26AM -0700, Yosry Ahmed wrote:
-> > > > > On Mon, May 2, 2022 at 3:01 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > What do you plan to do for IOMMU page tables? After all, they serve
-> > > > > > the exact same purpose, and I'd expect these to be handled the same
-> > > > > > way (i.e. why is this KVM specific?).
-> > > > >
-> > > > > The reason this was named NR_SECONDARY_PAGTABLE instead of
-> > > > > NR_KVM_PAGETABLE is exactly that. To leave room to incrementally
-> > > > > account other types of secondary page tables to this stat. It is just
-> > > > > that we are currently interested in the KVM MMU usage.
-> > > >
-> > > > Do you actually care at the supervisor level that this memory is used
-> > > > for guest page tables?
-> > >
-> > > Hmm, yes?  KVM does have a decent number of large-ish allocations that aren't
-> > > for page tables, but except for page tables, the number/size of those allocations
-> > > scales linearly with either the number of vCPUs or the amount of memory assigned
-> > > to the VM (with no room for improvement barring KVM changes).
-> > >
-> > > Off the top of my head, KVM's secondary page tables are the only allocations that
-> > > don't scale linearly, especially when nested virtualization is in use.
-> >
-> > Thanks, that's useful information.
-> >
-> > Are these other allocations accounted somewhere? If not, are they
-> > potential containment holes that will need fixing eventually?
->
-> All allocations that are tied to specific VM/vCPU are tagged GFP_KERNEL_ACCOUNT,
-> so we should be good on that front.
->
-> > > > It seems to me you primarily care that it is reported *somewhere*
-> > > > (hence the piggybacking off of NR_PAGETABLE at first). And whether
-> > > > it's page tables or iommu tables or whatever else allocated for the
-> > > > purpose of virtualization, it doesn't make much of a difference to the
-> > > > host/cgroup that is tracking it, right?
-> > > >
-> > > > (The proximity to nr_pagetable could also be confusing. A high page
-> > > > table count can be a hint to userspace to enable THP. It seems
-> > > > actionable in a different way than a high number of kvm page tables or
-> > > > iommu page tables.)
-> > >
-> > > I don't know about iommu page tables, but on the KVM side a high count can also
-> > > be a good signal that enabling THP would be beneficial.
-> >
-> > Well, maybe.
-> >
-> > It might help, but ultimately it's the process that's in control in
-> > all cases: it's unmovable kernel memory allocated to manage virtual
-> > address space inside the task.
-> >
-> > So I'm still a bit at a loss whether these things should all be lumped
-> > in together or kept separately. meminfo and memory.stat are permanent
-> > ABI, so we should try to establish in advance whether the new itme is
-> > really a first-class consumer or part of something bigger.
-> >
-> > The patch initially piggybacked on NR_PAGETABLE. I found an email of
-> > you asking why it couldn't be a separate item, but it didn't provide a
-> > reasoning for that decision. Could you share your thoughts on that?
->
-> It was mostly an honest question, I too am trying to understand what userspace
-> wants to do with this information.  I was/am also trying to understand the benefits
-> of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
-> already has specific stats for the number of leaf pages mapped into a VM, why not
-> do the same for non-leaf pages?
+On Fri, May 13, 2022 at 10:59:28PM +0800, Yahu Gao wrote:
+> From: Yahu Gao <yahugao@didiglobal.com>
+> 
+> Some inode pinned dying memory cgroup and its parent destroyed at first.
+> The parent's pd of iocost won't be allocated during function
+> blkcg_activate_policy.
+> Ignore the DYING CSS to avoid kernel NULL during iocost policy data init.
 
-Let me cast some light on this. The reason this started being
-piggybacked on NR_PAGETABLE is that we had a remnant of an old
-internal implementation of NR_PAGETABLE before it was introduced
-upstream, that accounted KVM secondary page tables as normal page
-tables. This made me think this behavior was preferable. Personally, I
-wanted to make it a separate thing since the beginning. When I found
-opinions here that also suggested a separate stat I went ahead for
-that.
+Thanks for the analysis and patch but I'm not quite sure the analysis is
+correct. When a cgroup goes down, its blkgs are destroyed
+blkcg_destroy_blkgs() which is invoked by blkcg_unpin_online() when its
+online_pin reaches zero which is incremented and decremented recursively, so
+an ancestor's blkgs should be destroyed before a descendant's if the code is
+working as intended. Can you guys dig a bit deeper and why we're losing
+ancestor blkgs before descendants?
 
-As for where to put this information, it does not have to be
-NR_SECONDARY_PAGETABLE. Ultimately, people working on KVM are the ones
-that will interpret and act upon this data, so if you have somewhere
-else in mind please let me know, Sean.
+Thanks.
+
+-- 
+tejun
