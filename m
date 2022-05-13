@@ -2,152 +2,430 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6C452584F
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 01:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E2C525A4E
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 05:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359444AbiELX3p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 May 2022 19:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
+        id S1350532AbiEMDoM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 May 2022 23:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354178AbiELX3o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 19:29:44 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CD216A25D
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 16:29:43 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id p8so6147542pfh.8
-        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 16:29:43 -0700 (PDT)
+        with ESMTP id S1376858AbiEMDoJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 May 2022 23:44:09 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C9126CC60
+        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 20:44:05 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bv19so13815373ejb.6
+        for <cgroups@vger.kernel.org>; Thu, 12 May 2022 20:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/iy7DvZiK8nafA5XKuXqSqcNqBCZjj9/qjUXXJFqGpQ=;
-        b=cWZf8gG13SFYJAbym+C3jUQYUcEqHiEmBSGcMRkGeKtHJpoPVjCJpboc2DabP5dHl4
-         t2pGv+CgDWDeHxJP9tx6pCY9dSjjnguG4ekrfcrEUPi+LIH60qOBWqDT9YCyqkQV8C4/
-         dSaySBo05+qtz5foTJQ9KZOVML5d+2f0Q7XlTuBAcMKJyVliAc9S9Hsa6xjkW2Sp6kD0
-         1UgaKp+HBuU30LUTW23SGQf4o5bUWN8CesvUXR+7waPEQ995rJuJyEfEpi5J8hby+7Aj
-         Cx1uoQ+692VdjLzjahYMHQzslw6xA739laCwIfxc6iaGRPPEF0WSqEC8fNXQchv8WP2x
-         CzyQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bHsWM+Jemo/IE4V7RB9cRdmEwCfy/dzIlfh2KyXi40c=;
+        b=dqoqhLTVommukWekYXATDCaajEGXoveHVJmfJOKBRldg0JkH4yFwr2l/vQj5BS97A9
+         rTE2HKI8YMS4d/BBQJYi8PV2Xu+6CeAv6NQ1cUu7H2cN1JYq7xRWmcS0+2US8Rr7zlsH
+         OzLSSGQ2v/1eFDvg8T13gqwohDRs9o8pe82KgEHBthUwlYbRd/pI5cgIXPmpkg+n5onV
+         f9w/U2YFs6VFgaf8XeKnhDaCQqmYU0OAq49VXMalEEsW0GipsQNm4eJcukacT8AMi3Vl
+         PWyBTDGEl7JI0LagbJfAT7VQicCGnLaX6ZKI5KP4duD6OPAgmrMUvYCYFE+tla8aJ/V0
+         LSmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/iy7DvZiK8nafA5XKuXqSqcNqBCZjj9/qjUXXJFqGpQ=;
-        b=mTrexc4A7fzyx1IqpOyT+D7wyvc0/iWGeDbAxFiTuEYZPAi2LLeLLhyyMLmFrP8Oj2
-         ZNKJKg2PxDglFW5foKXagsi6noDUCPfDG+m1AakAl+6IJPgmRV1w4mfqHa34/gzjxaws
-         AkQwo5CFubdFZ8kcswC39vcNUbnG+mtQXJ6XOq5zGI2+0jiXn5GmimWwEtYscxJwlCo0
-         A90yvjEYbZHTZAl1h+w5uW9uO11NETDzNS1fXpYTpBiG/XW0+TfkL/IE+F052G0FEajV
-         mbI/ZVaQM7t9O7zE5nig9mJaMnocHzH0mGi+inPsQG02JWmPKw1utnr7lufgl3Hjt12b
-         Ae5w==
-X-Gm-Message-State: AOAM533JUB+9IK0ds9Vmfu0sqST3A1EddWKjYI3F566fRIqp8yXVg4xb
-        aoIoMfpMfl+REEMAti8hYIs9tQ==
-X-Google-Smtp-Source: ABdhPJxxG6YUzPEUM5+g1vu/KK0sSWSbi9F/X2ppQRyP6w4zTtX0HAmpJ+CS2CQNyEouYPVZqp8oog==
-X-Received: by 2002:a63:d20e:0:b0:3db:5e25:26c with SMTP id a14-20020a63d20e000000b003db5e25026cmr1559604pgg.200.1652398182635;
-        Thu, 12 May 2022 16:29:42 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id n2-20020a622702000000b0050dc76281e7sm333832pfn.193.2022.05.12.16.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 16:29:42 -0700 (PDT)
-Date:   Thu, 12 May 2022 23:29:38 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Marc Zyngier <maz@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-Message-ID: <Yn2YYl98Vhh/UL0w@google.com>
-References: <20220429201131.3397875-1-yosryahmed@google.com>
- <20220429201131.3397875-2-yosryahmed@google.com>
- <87ilqoi77b.wl-maz@kernel.org>
- <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
- <Yn2TGJ4vZ/fst+CY@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bHsWM+Jemo/IE4V7RB9cRdmEwCfy/dzIlfh2KyXi40c=;
+        b=V2TAHy7pnwlE655/GVxMb8vu9ihxOsXNfmupZ3hhPaC0u2+MQ7P1nl6J7r6Wp7C+BP
+         MQr3SAX3I9QY3eyqooggnJJXHQzL933VqDP+qOnnQrBNuUfyW/x6YZaXJmGKtIYMibfA
+         vgik7WPD95av7JQ9J3THshbTAv/0dWmd/hO0ZgwGL55zUDcA8NLsapfLB08vMFuWsch/
+         M5Q+QDV6KfT8xYHM+W3+H8kg4QdeOmCIVnyN9zrgDpR7feFG18mhFyFQ+c19+W9JtKxS
+         Etuy1wls1FeGm3j2HXljqSfEIalSf4VhlHOOL5yKuoSSD501f+ZUF1RwsIv2a5W3O5Wl
+         9ktQ==
+X-Gm-Message-State: AOAM5320qkyJL8Egat5eheN+GC90C3yU+CifncYfRdZQXn8+JG4tynRM
+        UVPgwKYR/a7DGYKtdnkiucf2oJY9dDrP1Qo/7nQt2g==
+X-Google-Smtp-Source: ABdhPJwFWNh6XhDKKc51rh3sa/hEc/yEhfmKOtpU/oxW7nRCQ8tw7lmd0fC7np1TYyHXTpHiZPSDwI53NnVsPAxmJaA=
+X-Received: by 2002:a17:906:6a0f:b0:6f5:15cf:2e5 with SMTP id
+ qw15-20020a1709066a0f00b006f515cf02e5mr2476733ejc.584.1652413444067; Thu, 12
+ May 2022 20:44:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yn2TGJ4vZ/fst+CY@cmpxchg.org>
+References: <20220510235653.933868-1-tjmercier@google.com> <3365cd1d750e84fedc8e75d646a77ffd85619d35.camel@ndufresne.ca>
+ <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com> <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
+In-Reply-To: <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Thu, 12 May 2022 20:43:52 -0700
+Message-ID: <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <shuah@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        John Stultz <jstultz@google.com>,
+        Carlos Llamas <cmllamas@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kernel-team@android.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 12, 2022, Johannes Weiner wrote:
-> Hey Yosry,
-> 
-> On Mon, May 02, 2022 at 11:46:26AM -0700, Yosry Ahmed wrote:
-> > On Mon, May 2, 2022 at 3:01 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > 115bae923ac8bb29ee635). You are saying that this is related to a
-> > > 'workload', but given that the accounting is global, I fail to see how
-> > > you can attribute these allocations on a particular VM.
-> > 
-> > The main motivation is having the memcg stats, which give attribution
-> > to workloads. If you think it's more appropriate, we can add it as a
-> > memcg-only stat, like MEMCG_VMALLOC (see 4e5aa1f4c2b4 ("memcg: add
-> > per-memcg vmalloc stat")). The only reason I made this as a global
-> > stat too is to be consistent with NR_PAGETABLE.
-> 
-> Please no memcg-specific stats if a regular vmstat item is possible
-> and useful at the system level as well, like in this case. It's extra
-> memcg code, extra callbacks, and it doesn't have NUMA node awareness.
-> 
-> > > What do you plan to do for IOMMU page tables? After all, they serve
-> > > the exact same purpose, and I'd expect these to be handled the same
-> > > way (i.e. why is this KVM specific?).
-> > 
-> > The reason this was named NR_SECONDARY_PAGTABLE instead of
-> > NR_KVM_PAGETABLE is exactly that. To leave room to incrementally
-> > account other types of secondary page tables to this stat. It is just
-> > that we are currently interested in the KVM MMU usage.
-> 
-> Do you actually care at the supervisor level that this memory is used
-> for guest page tables?
+On Thu, May 12, 2022 at 6:10 AM Nicolas Dufresne <nicolas@ndufresne.ca> wro=
+te:
+>
+> Le mercredi 11 mai 2022 =C3=A0 13:31 -0700, T.J. Mercier a =C3=A9crit :
+> > On Wed, May 11, 2022 at 6:21 AM Nicolas Dufresne <nicolas@ndufresne.ca>=
+ wrote:
+> > >
+> > > Hi,
+> > >
+> > > Le mardi 10 mai 2022 =C3=A0 23:56 +0000, T.J. Mercier a =C3=A9crit :
+> > > > This patch series revisits the proposal for a GPU cgroup controller=
+ to
+> > > > track and limit memory allocations by various device/allocator
+> > > > subsystems. The patch series also contains a simple prototype to
+> > > > illustrate how Android intends to implement DMA-BUF allocator
+> > > > attribution using the GPU cgroup controller. The prototype does not
+> > > > include resource limit enforcements.
+> > >
+> > > I'm sorry, since I'm not in-depth technically involve. But from readi=
+ng the
+> > > topic I don't understand the bound this creates between DMABuf Heaps =
+and GPU. Is
+> > > this an attempt to really track the DMABuf allocated by userland, or =
+just
+> > > something for GPU ? What about V4L2 devices ? Any way this can be cla=
+rified,
+> > > specially what would other subsystem needs to have cgroup DMABuf allo=
+cation
+> > > controller support ?
+> > >
+> > Hi Nicolas,
+> >
+> > The link between dmabufs, dmabuf heaps, and "GPU memory" is maybe
+> > somewhat of an Androidism. However this change aims to be usable for
+> > tracking all GPU related allocations. It's just that this initial
+> > series only adds support for tracking dmabufs allocated from dmabuf
+> > heaps.
+> >
+> > In Android most graphics buffers are dma buffers allocated from a
+> > dmabuf heap, so that is why these dmabuf heap allocations are being
+> > tracked under the GPU cgroup. Other dmabuf exporters like V4L2 might
+> > also want to track their buffers, but would probably want to do so
+> > under a bucket name of something like "v4l2". Same goes for GEM
+> > dmabufs. The naming scheme for this is still yet to be decided. It
+> > would be cool to be able to attribute memory at the driver level, or
+> > even different types of memory at the driver level, but I imagine
+> > there is a point of diminishing returns for fine-grained
+> > naming/bucketing.
+> >
+> > So far, I haven't tried to create a strict definition of what is and
+> > is not "GPU memory" for the purpose of this accounting, so I don't
+> > think we should be restricted to tracking just dmabufs. I don't see
+> > why this couldn't be anything a driver wants to consider as GPU memory
+> > as long as it is named/bucketed appropriately, such as both on-package
+> > graphics card memory use and CPU memory dedicated for graphics use
+> > like for host/device transfers.
+> >
+> > Is that helpful?
+>
+> I'm actually happy I've asked this question, wasn't silly after all. I th=
+ink the
+> problem here is a naming issue. What you really are monitor is "video mem=
+ory",
+> which consist of a memory segment allocated to store data used to render =
+images
+> (its not always images of course, GPU an VPU have specialized buffers for=
+ their
+> purpose).
+>
+> Whether this should be split between what is used specifically by the GPU
+> drivers, the display drivers, the VPU (CODEC and pre/post-processor) or c=
+amera
+> drivers is something that should be discussed. But in the current approac=
+h, you
+> really meant Video memory as a superset of the above. Personally, I think
+> generically (to de-Andronized your work), en-globing all video memory is
+> sufficient. What I fail to understand is how you will manage to distingui=
+shed
+> DMABuf Heap allocation (which are used outside of Android btw), from Vide=
+o
+> allocation or other type of usage. I'm sure non-video usage will exist in=
+ the
+> future (think of machine learning, compute, other high bandwidth streamin=
+g
+> thingy ...)
+>
+Ok thank you for pointing out the naming issue. The naming is a
+consequence of the initial use case, but I guess it's too specific.
+What I want out of this change is that android can track dmabufs that
+come out of heaps, and drm can track gpu memory. But other drivers
+could track different resources under different names. Imagine this
+were called a buffer cgroup controller instead of a GPU cgroup
+controller. Then the use component ("video memory") isn't tied up with
+the name of the controller, but it's up to the name of the bucket the
+resource is tracked under. I think this meets the needs of the two use
+cases I'm aware of now, while leaving the door open to other future
+needs. Really the controller is just enabling abstract named buckets
+for tracking and eventually limiting a type of resource.
 
-Hmm, yes?  KVM does have a decent number of large-ish allocations that aren't
-for page tables, but except for page tables, the number/size of those allocations
-scales linearly with either the number of vCPUs or the amount of memory assigned
-to the VM (with no room for improvement barring KVM changes).
+P.S. I will be unavailable starting tomorrow, but I'll be back on Monday.
 
-Off the top of my head, KVM's secondary page tables are the only allocations that
-don't scale linearly, especially when nested virtualization is in use.
 
-> It seems to me you primarily care that it is reported *somewhere*
-> (hence the piggybacking off of NR_PAGETABLE at first). And whether
-> it's page tables or iommu tables or whatever else allocated for the
-> purpose of virtualization, it doesn't make much of a difference to the
-> host/cgroup that is tracking it, right?
-> 
-> (The proximity to nr_pagetable could also be confusing. A high page
-> table count can be a hint to userspace to enable THP. It seems
-> actionable in a different way than a high number of kvm page tables or
-> iommu page tables.)
 
-I don't know about iommu page tables, but on the KVM side a high count can also
-be a good signal that enabling THP would be beneficial.  It's definitely actionable
-in a different way though too.
 
-> How about NR_VIRT? It's shorter, seems descriptive enough, less room
-> for confusion, and is more easily extensible in the future.
-
-I don't like NR_VIRT because VFIO/iommu can be used for non-virtualization things,
-and we'd be lying by omission unless KVM (and other users) updates all of its
-large-ish allocations to account them correctly.
+> >
+> > Best,
+> > T.J.
+> >
+> > > >
+> > > > Changelog:
+> > > > v7:
+> > > > Hide gpucg and gpucg_bucket struct definitions per Michal Koutn=C3=
+=BD.
+> > > > This means gpucg_register_bucket now returns an internally allocate=
+d
+> > > > struct gpucg_bucket.
+> > > >
+> > > > Move all public function documentation to the cgroup_gpu.h header.
+> > > >
+> > > > Remove comment in documentation about duplicate name rejection whic=
+h
+> > > > is not relevant to cgroups users per Michal Koutn=C3=BD.
+> > > >
+> > > > v6:
+> > > > Move documentation into cgroup-v2.rst per Tejun Heo.
+> > > >
+> > > > Rename BINDER_FD{A}_FLAG_SENDER_NO_NEED ->
+> > > > BINDER_FD{A}_FLAG_XFER_CHARGE per Carlos Llamas.
+> > > >
+> > > > Return error on transfer failure per Carlos Llamas.
+> > > >
+> > > > v5:
+> > > > Rebase on top of v5.18-rc3
+> > > >
+> > > > Drop the global GPU cgroup "total" (sum of all device totals) porti=
+on
+> > > > of the design since there is no currently known use for this per
+> > > > Tejun Heo.
+> > > >
+> > > > Fix commit message which still contained the old name for
+> > > > dma_buf_transfer_charge per Michal Koutn=C3=BD.
+> > > >
+> > > > Remove all GPU cgroup code except what's necessary to support charg=
+e transfer
+> > > > from dma_buf. Previously charging was done in export, but for non-A=
+ndroid
+> > > > graphics use-cases this is not ideal since there may be a delay bet=
+ween
+> > > > allocation and export, during which time there is no accounting.
+> > > >
+> > > > Merge dmabuf: Use the GPU cgroup charge/uncharge APIs patch into
+> > > > dmabuf: heaps: export system_heap buffers with GPU cgroup charging =
+as a
+> > > > result of above.
+> > > >
+> > > > Put the charge and uncharge code in the same file (system_heap_allo=
+cate,
+> > > > system_heap_dma_buf_release) instead of splitting them between the =
+heap and
+> > > > the dma_buf_release. This avoids asymmetric management of the gpucg=
+ charges.
+> > > >
+> > > > Modify the dma_buf_transfer_charge API to accept a task_struct inst=
+ead
+> > > > of a gpucg. This avoids requiring the caller to manage the refcount
+> > > > of the gpucg upon failure and confusing ownership transfer logic.
+> > > >
+> > > > Support all strings for gpucg_register_bucket instead of just strin=
+g
+> > > > literals.
+> > > >
+> > > > Enforce globally unique gpucg_bucket names.
+> > > >
+> > > > Constrain gpucg_bucket name lengths to 64 bytes.
+> > > >
+> > > > Append "-heap" to gpucg_bucket names from dmabuf-heaps.
+> > > >
+> > > > Drop patch 7 from the series, which changed the types of
+> > > > binder_transaction_data's sender_pid and sender_euid fields. This w=
+as
+> > > > done in another commit here:
+> > > > https://lore.kernel.org/all/20220210021129.3386083-4-masahiroy@kern=
+el.org/
+> > > >
+> > > > Rename:
+> > > >   gpucg_try_charge -> gpucg_charge
+> > > >   find_cg_rpool_locked -> cg_rpool_find_locked
+> > > >   init_cg_rpool -> cg_rpool_init
+> > > >   get_cg_rpool_locked -> cg_rpool_get_locked
+> > > >   "gpu cgroup controller" -> "GPU controller"
+> > > >   gpucg_device -> gpucg_bucket
+> > > >   usage -> size
+> > > >
+> > > > Tests:
+> > > >   Support both binder_fd_array_object and binder_fd_object. This is
+> > > >   necessary because new versions of Android will use binder_fd_obje=
+ct
+> > > >   instead of binder_fd_array_object, and we need to support both.
+> > > >
+> > > >   Tests for both binder_fd_array_object and binder_fd_object.
+> > > >
+> > > >   For binder_utils return error codes instead of
+> > > >   struct binder{fs}_ctx.
+> > > >
+> > > >   Use ifdef __ANDROID__ to choose platform-dependent temp path inst=
+ead
+> > > >   of a runtime fallback.
+> > > >
+> > > >   Ensure binderfs_mntpt ends with a trailing '/' character instead =
+of
+> > > >   prepending it where used.
+> > > >
+> > > > v4:
+> > > > Skip test if not run as root per Shuah Khan
+> > > >
+> > > > Add better test logging for abnormal child termination per Shuah Kh=
+an
+> > > >
+> > > > Adjust ordering of charge/uncharge during transfer to avoid potenti=
+ally
+> > > > hitting cgroup limit per Michal Koutn=C3=BD
+> > > >
+> > > > Adjust gpucg_try_charge critical section for charge transfer functi=
+onality
+> > > >
+> > > > Fix uninitialized return code error for dmabuf_try_charge error cas=
+e
+> > > >
+> > > > v3:
+> > > > Remove Upstreaming Plan from gpu-cgroup.rst per John Stultz
+> > > >
+> > > > Use more common dual author commit message format per John Stultz
+> > > >
+> > > > Remove android from binder changes title per Todd Kjos
+> > > >
+> > > > Add a kselftest for this new behavior per Greg Kroah-Hartman
+> > > >
+> > > > Include details on behavior for all combinations of kernel/userspac=
+e
+> > > > versions in changelog (thanks Suren Baghdasaryan) per Greg Kroah-Ha=
+rtman.
+> > > >
+> > > > Fix pid and uid types in binder UAPI header
+> > > >
+> > > > v2:
+> > > > See the previous revision of this change submitted by Hridya Valsar=
+aju
+> > > > at: https://lore.kernel.org/all/20220115010622.3185921-1-hridya@goo=
+gle.com/
+> > > >
+> > > > Move dma-buf cgroup charge transfer from a dma_buf_op defined by ev=
+ery
+> > > > heap to a single dma-buf function for all heaps per Daniel Vetter a=
+nd
+> > > > Christian K=C3=B6nig. Pointers to struct gpucg and struct gpucg_dev=
+ice
+> > > > tracking the current associations were added to the dma_buf struct =
+to
+> > > > achieve this.
+> > > >
+> > > > Fix incorrect Kconfig help section indentation per Randy Dunlap.
+> > > >
+> > > > History of the GPU cgroup controller
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > The GPU/DRM cgroup controller came into being when a consensus[1]
+> > > > was reached that the resources it tracked were unsuitable to be int=
+egrated
+> > > > into memcg. Originally, the proposed controller was specific to the=
+ DRM
+> > > > subsystem and was intended to track GEM buffers and GPU-specific
+> > > > resources[2]. In order to help establish a unified memory accountin=
+g model
+> > > > for all GPU and all related subsystems, Daniel Vetter put forth a
+> > > > suggestion to move it out of the DRM subsystem so that it can be us=
+ed by
+> > > > other DMA-BUF exporters as well[3]. This RFC proposes an interface =
+that
+> > > > does the same.
+> > > >
+> > > > [1]: https://patchwork.kernel.org/project/dri-devel/cover/201905011=
+40438.9506-1-brian.welty@intel.com/#22624705
+> > > > [2]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.w=
+elty@intel.com/
+> > > > [3]: https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwl=
+l.local/
+> > > >
+> > > > Hridya Valsaraju (3):
+> > > >   gpu: rfc: Proposal for a GPU cgroup controller
+> > > >   cgroup: gpu: Add a cgroup controller for allocator attribution of=
+ GPU
+> > > >     memory
+> > > >   binder: Add flags to relinquish ownership of fds
+> > > >
+> > > > T.J. Mercier (3):
+> > > >   dmabuf: heaps: export system_heap buffers with GPU cgroup chargin=
+g
+> > > >   dmabuf: Add gpu cgroup charge transfer function
+> > > >   selftests: Add binder cgroup gpu memory transfer tests
+> > > >
+> > > >  Documentation/admin-guide/cgroup-v2.rst       |  23 +
+> > > >  drivers/android/binder.c                      |  31 +-
+> > > >  drivers/dma-buf/dma-buf.c                     |  80 ++-
+> > > >  drivers/dma-buf/dma-heap.c                    |  38 ++
+> > > >  drivers/dma-buf/heaps/system_heap.c           |  28 +-
+> > > >  include/linux/cgroup_gpu.h                    | 146 +++++
+> > > >  include/linux/cgroup_subsys.h                 |   4 +
+> > > >  include/linux/dma-buf.h                       |  49 +-
+> > > >  include/linux/dma-heap.h                      |  15 +
+> > > >  include/uapi/linux/android/binder.h           |  23 +-
+> > > >  init/Kconfig                                  |   7 +
+> > > >  kernel/cgroup/Makefile                        |   1 +
+> > > >  kernel/cgroup/gpu.c                           | 390 +++++++++++++
+> > > >  .../selftests/drivers/android/binder/Makefile |   8 +
+> > > >  .../drivers/android/binder/binder_util.c      | 250 +++++++++
+> > > >  .../drivers/android/binder/binder_util.h      |  32 ++
+> > > >  .../selftests/drivers/android/binder/config   |   4 +
+> > > >  .../binder/test_dmabuf_cgroup_transfer.c      | 526 ++++++++++++++=
+++++
+> > > >  18 files changed, 1632 insertions(+), 23 deletions(-)
+> > > >  create mode 100644 include/linux/cgroup_gpu.h
+> > > >  create mode 100644 kernel/cgroup/gpu.c
+> > > >  create mode 100644 tools/testing/selftests/drivers/android/binder/=
+Makefile
+> > > >  create mode 100644 tools/testing/selftests/drivers/android/binder/=
+binder_util.c
+> > > >  create mode 100644 tools/testing/selftests/drivers/android/binder/=
+binder_util.h
+> > > >  create mode 100644 tools/testing/selftests/drivers/android/binder/=
+config
+> > > >  create mode 100644 tools/testing/selftests/drivers/android/binder/=
+test_dmabuf_cgroup_transfer.c
+> > > >
+> > >
+>
