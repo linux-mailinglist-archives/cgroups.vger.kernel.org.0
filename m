@@ -2,104 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C994752683D
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 19:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651E95268A0
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 19:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382401AbiEMRXt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 13:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        id S1383131AbiEMRko (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 May 2022 13:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352522AbiEMRXs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 13:23:48 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0902D1117B
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:23:48 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id m12so8587894plb.4
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:23:48 -0700 (PDT)
+        with ESMTP id S1383146AbiEMRkl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 13:40:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B91237A0A
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:40:34 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w21-20020a25df15000000b0064b401428bfso6899731ybg.22
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 10:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=pUiCnPMeV2tewEXDSR1Opfl8CW/W1nTXt/fBcyuE7po=;
-        b=hcbrT8LB9KtUyOFhJcjNGDoACadQCvR45e8T6zhTyidWst7gm9QCPlPUMus2qyKZO5
-         F5DqklOOcurOuJJoDyNyaahuz9kll92/JgnSl7AlqgPH+K3Sn2fBXIsuvf7m/+R6yAVS
-         fsGK3TwUuxHbSqM+peiMHJozwxnh0TRDv3ZGQTeyAIlOMdMVBvwteTZ4PytPmR9t47Gg
-         pqGrxwTsmpv7IbPbGbuf/rmrhjr8qRe8wpa4F75swNWUD2SfEYFj+qQV2DV/gexKRIvo
-         8snEpImCqQT57ffaUneyHTR7IkLcLcdzbaRzu3MoseaxEL7zq3AKDZum93Mv0C+hXL9+
-         x1Jw==
+        bh=/x54ivsu0L8dQHsfXj5X8iP56Kte1TfUkHVw0Dl1VHM=;
+        b=qKV2F/o+1EleqLXGs3rBHm8b6aBfYoNPf/knsl2Sb1SacsaCDUg95ck9Gx6JtESbuB
+         bWOP/I/kWCUgv6TttHk+/rePIlVtKrycnPaVy0m0p8e5HUVdlb/N+J+ZYQPgSLRhcVA7
+         palQF7MXJL9T433RCaLIjovMH6OYlC1Zf8EWRKAuy6QWAKJmpLrihJkQlgVDTFVvgcpF
+         +rvUr1e6PjJHC3AjQBRda2cLpTN8KcZ8+tRav42P62w74xQUOuBPHSRZaacW3Q9GuCim
+         STL68JEuK71bfcDTHpyKs+/hjsN3E1JNNCXlgr82AAc1Vi5PV5yIDED0zKWD3VgrW87o
+         I+9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pUiCnPMeV2tewEXDSR1Opfl8CW/W1nTXt/fBcyuE7po=;
-        b=ciKaCH/xqSR9QGAUNUA1T61tKBr2lhTF1pTmTW9aIfWROcXaU4ALAlRwF1G/fRc9k+
-         mg7c/oozUum8nQt27OoMybB7Ft+KfOK/J5hHKEHozZgWkh9nXAhHizqlgF+3F9tXL5UI
-         ka5qdx5c0jgLREq4pLblLpw9ZOh08/3FueQhmQHCEaragBpU5SQWZk4TXC1DUiM7epj8
-         Ogm7X5bdqI2aFxBE3KE5MZOTaOsQxzN/mdRuWdnt1CPZ7TPBOt/nXXo0X19aQ2govBQB
-         J/ZStsluDkii27c0xwipqkRdbUuIE5/9H+NIyALr11x7ogOViu29NPc0VwL+7tShKcTt
-         0Q6g==
-X-Gm-Message-State: AOAM533MgTAhKTnRUKAk/ElrSGNe1oLkfXvTmkm5cNc9uNVkyHPjEv2l
-        O+vUJ4kALqiP5ZgJo6VCUAQjQvpd2M+p1BvwZB8Bow==
-X-Google-Smtp-Source: ABdhPJz4VHbNlIGbH/16c9aEUEopLMQoK6LkB7d36n7lf29oYijqqNLTzk2YOn+i0DI+nxCAjpyhWmReuAOUVN9lSMM=
-X-Received: by 2002:a17:902:b094:b0:15c:dee8:74c8 with SMTP id
- p20-20020a170902b09400b0015cdee874c8mr5479352plr.6.1652462627392; Fri, 13 May
- 2022 10:23:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220510152847.230957-1-hannes@cmpxchg.org> <20220510152847.230957-7-hannes@cmpxchg.org>
-In-Reply-To: <20220510152847.230957-7-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 13 May 2022 10:23:36 -0700
-Message-ID: <CALvZod6kBZZFfD6Y5p_=9TMJr8P-vU_77NTq048wGUDr0wTv0Q@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=/x54ivsu0L8dQHsfXj5X8iP56Kte1TfUkHVw0Dl1VHM=;
+        b=WYvWhy3lsttV5q+KsVrSobygJYxXBtyJEku5jKKuzvC9YlyIxCTdJ4LLggVjIkaNTw
+         tHmtuSYHZLKanxWED7kFxetk6s2lN4DejeBTmIUmZ2Daap8dg5dJfsFeU+BcsAbd8k0F
+         Fleh8cJSrJ/ksa6E4aAwlTNI2NlilGRQtCObNXUgn7npCK9m6Z5kaG01LFaTs2V5/FIS
+         WZahefugMUzzwildtx3YEqSV7rcpZ8DaD89f8216QhDsKb5mlF5YARVnBQRiDRh2bXRl
+         umius/AP/yk2Wd+C9NuXT6kaqAsgbouI6N6/t3eLXiG5b79x7GI2ijnOA8rPxxs4Lfso
+         lk+A==
+X-Gm-Message-State: AOAM533OGpwp1QAiW0dTCepdbnlgWo7ai+bqZFWB4iErzBO+w8TWchsP
+        KSdlfvLc21n+E6IiaaZxlVCAuyT07is=
+X-Google-Smtp-Source: ABdhPJxLwlcUI8aiFKGSy1WNiNL6CkqQU8iPRWVD4apx3797fEAEvp/buK2LXv6QRf/g0jHKOaxItcKixA0=
+X-Received: from khazhy-linux.svl.corp.google.com ([2620:15c:2cd:202:43f7:a68a:3d8e:73b4])
+ (user=khazhy job=sendgmr) by 2002:a81:32c1:0:b0:2f7:cda8:50e1 with SMTP id
+ y184-20020a8132c1000000b002f7cda850e1mr7020634ywy.519.1652463633776; Fri, 13
+ May 2022 10:40:33 -0700 (PDT)
+Date:   Fri, 13 May 2022 10:40:30 -0700
+In-Reply-To: <CACGdZYLMW2KHVebfyJZVn9G=15N+Jt4+8oF5gq3wdDTOcXbk9A@mail.gmail.com>
+Message-Id: <20220513174030.1307720-1-khazhy@google.com>
+Mime-Version: 1.0
+References: <CACGdZYLMW2KHVebfyJZVn9G=15N+Jt4+8oF5gq3wdDTOcXbk9A@mail.gmail.com>
+X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
+Subject: [RESEND][RFC PATCH] blkcg: rewind seq_file if no stats
+From:   Khazhismel Kumykov <khazhy@google.com>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Khazhismel Kumykov <khazhy@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 10, 2022 at 8:29 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-[...]
-> +void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
-> +{
-> +       struct mem_cgroup *memcg;
-> +
-> +       VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
-> +
-> +       /* PF_MEMALLOC context, charging must succeed */
-)
-Instead of these warnings and comment why not just explicitly use
-memalloc_noreclaim_[save|restore]() ?
+Restores the previous behavior of only displaying devices for which we
+have statistics (and removes the current, broken, behavior of printing
+devname with no newline if no statistics)
 
-> +       if (obj_cgroup_charge(objcg, GFP_KERNEL, size))
+In lieu of get_seq_buf + seq_commit, provide a way to "undo" writes if
+we use seq_printf
 
-Can we please make this specific charging an opt-in feature or at
-least provide a way to opt-out? This will impact users/providers where
-swap is used transparently (in terms of memory usage). Also do you
-want this change for v1 users as well?
+Fixes: 252c651a4c85 ("blk-cgroup: stop using seq_get_buf")
 
-> +               VM_WARN_ON_ONCE(1);
-> +
-> +       rcu_read_lock();
-> +       memcg = obj_cgroup_memcg(objcg);
-> +       mod_memcg_state(memcg, MEMCG_ZSWAP_B, size);
-> +       mod_memcg_state(memcg, MEMCG_ZSWAPPED, 1);
-> +       rcu_read_unlock();
-> +}
-> +
+Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
+---
+ block/blk-cgroup.c       |  5 +++++
+ fs/seq_file.c            | 14 ++++++++++++++
+ include/linux/seq_file.h |  2 ++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 8dfe62786cd5..50043a742c48 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -909,6 +909,7 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 	const char *dname;
+ 	unsigned seq;
+ 	int i;
++	int scookie;
+ 
+ 	if (!blkg->online)
+ 		return;
+@@ -917,6 +918,8 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 	if (!dname)
+ 		return;
+ 
++	scookie = seq_checkpoint(s);
++
+ 	seq_printf(s, "%s ", dname);
+ 
+ 	do {
+@@ -956,6 +959,8 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 
+ 	if (has_stats)
+ 		seq_printf(s, "\n");
++	else
++		seq_restore(s, scookie);
+ }
+ 
+ static int blkcg_print_stat(struct seq_file *sf, void *v)
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 7ab8a58c29b6..c3ec6b57334e 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -408,6 +408,20 @@ void seq_printf(struct seq_file *m, const char *f, ...)
+ }
+ EXPORT_SYMBOL(seq_printf);
+ 
++int seq_checkpoint(struct seq_file *m)
++{
++	return m->count;
++}
++EXPORT_SYMBOL(seq_checkpoint);
++
++void seq_restore(struct seq_file *m, int count)
++{
++	if (WARN_ON_ONCE(count > m->count || count > m->size))
++		return;
++	m->count = count;
++}
++EXPORT_SYMBOL(seq_restore);
++
+ #ifdef CONFIG_BINARY_PRINTF
+ void seq_bprintf(struct seq_file *m, const char *f, const u32 *binary)
+ {
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 60820ab511d2..d3a05f7c2750 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -117,6 +117,8 @@ __printf(2, 0)
+ void seq_vprintf(struct seq_file *m, const char *fmt, va_list args);
+ __printf(2, 3)
+ void seq_printf(struct seq_file *m, const char *fmt, ...);
++int seq_checkpoint(struct seq_file *m);
++void seq_restore(struct seq_file *m, int count);
+ void seq_putc(struct seq_file *m, char c);
+ void seq_puts(struct seq_file *m, const char *s);
+ void seq_put_decimal_ull_width(struct seq_file *m, const char *delimiter,
+-- 
+2.36.0.550.gb090851708-goog
+
