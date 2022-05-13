@@ -2,112 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69D3526693
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 17:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC1B5266CC
+	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 18:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382294AbiEMPwb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 11:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
+        id S235097AbiEMQMu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 May 2022 12:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382287AbiEMPwa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 11:52:30 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAD01F2D76
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 08:52:23 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id v4so10755536ljd.10
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 08:52:23 -0700 (PDT)
+        with ESMTP id S233613AbiEMQMr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 12:12:47 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E763DDEA
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:12:45 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id y41so8053408pfw.12
+        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 09:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=B97ovzBTCo6Rpt8pan1l5/t89Mv44hmEDRujwkHt9Ic=;
-        b=Gn8g+5fjv7e1DNvpLJ5tu50Zc48R9MGuaEXQSp7RNvhogmOV11JQQefjUfc1WAIjlK
-         dJ/Lin0vXk+AFC5NAEVYN2uyQ/gVoUsQbdGSNQXxKRCPgLwfFI/l9Bdy731b3hcb9sZ0
-         M9Y0mpjbO9Uy/K1xvNR9RdgPtgC2prB26Xi8anmhW3UIQ1yx1q2nGP5nymZuPcIO4zAl
-         d9HNvFH9D6xBd+fZ9EhSkrrOJCdp0ME9jdlh24Az1mJ3jeZXcyBhCoUXZDDqEuirAx5s
-         UJSJC4S+K2fYuUMqxdXQJbU8gdSPCbignrbxY+XB/Xjch9vQJ0hN6qZ0RIGgOcOB1QxS
-         TuPA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z141h5DooZE4FL3AcX+0cKxHlZQWL6e7O/2bq4FL5UY=;
+        b=pMpyJUjUuK/7b/oFgsoqZPGJMcOKB+7c5car+thP1abZdX0Ernmov9vuFLaqKMGXn2
+         rG8JUhF6WgH7lMygF4hmuRIwFoCrADaFG0pDWTQKNWoL6WLM69N4kM4KtTQkkoALHWrD
+         mAeJQipbT6/IL+OPcmvLrWT3xFgMFLNWJ+O6dFPVj4sg1KmNHaULMm56Trm/hh8TOipy
+         uhaRQ/7aUedXdd9J0nEfOtBBAWb0ZPzn5j4jRptmc960+ldd4gTqKw70bR33LbaLOe4i
+         OR/28/FZmY9vcAYQkNkQbiAC8Sl0bxsa6t+sHaEyvc1goNVOfOnpsfXq5AH2VoYmLRhW
+         N/PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=B97ovzBTCo6Rpt8pan1l5/t89Mv44hmEDRujwkHt9Ic=;
-        b=PvyQ8FjgfuiJs2utNnV68kCZWOP/HnHLmGpFnMId8jTQDIArdPaMbzuUyHy7FmCtFs
-         nzbCqWCEFCXtogGVMBY9FQPBYbHms73E/LDjCr8y5tr1NCnOd4ErRUvCgWI9C58LvaDG
-         rReHkoDLY12gOKrvu+wMR/gqYlamfJjLbr9O5oundF3p+lHaLvnnkjYvsqha4VvQDcpC
-         hsO+gF7shmzTWFClAd/U+DII67NbUUftFefAYV5HXtTZegZP+wbjcEFSYBZjOcVk2NnF
-         s2ygEFeLjcQcAqGZaOFYanTGjVuUrE5V/smgQzpLS/uWzDJ+T+DFFptlLYsXqAVQvATf
-         A7kA==
-X-Gm-Message-State: AOAM531J7bXdE4z1KJ/YXL6OaWGSLbSIqFHasQFadltsEJsWiSctJZOH
-        TKFfhcwN7Ieyvt9aMl/FBlXv0g==
-X-Google-Smtp-Source: ABdhPJyBUY+emFFcq7o19hSvSlbPeDw+klHuHk2REYp1lLwANVqC7PgqaSFoQ9tA4IAQP6U1Mlbbeg==
-X-Received: by 2002:a2e:3217:0:b0:250:896d:f894 with SMTP id y23-20020a2e3217000000b00250896df894mr3436894ljy.283.1652457141899;
-        Fri, 13 May 2022 08:52:21 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.177])
-        by smtp.gmail.com with ESMTPSA id j17-20020a056512345100b0047255d21152sm418647lfr.129.2022.05.13.08.52.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 May 2022 08:52:21 -0700 (PDT)
-Message-ID: <30f5b95a-db87-3924-6ad0-4c302c924ff0@openvz.org>
-Date:   Fri, 13 May 2022 18:52:20 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH 4/4] memcg: enable accounting for allocations in
- alloc_fair_sched_group
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z141h5DooZE4FL3AcX+0cKxHlZQWL6e7O/2bq4FL5UY=;
+        b=SLg/9447bpoloCjkSFICPyDIqFmlgTRVqKG6QO0jqiNVhidI6Ssp+YjhWHzHgbDrmH
+         lOaFmkdpoAAx75L8A6pJ8oh9NSILNz+aQq+DhenBjkZxBbaHMKebWmhVmsLjB4lV2rND
+         Kcm3SHVJol5tAM7DXBzlxDcpwVKVgHdJr3qiqcIRxFtH6psclwx2AiDMM6cxmyudZlVH
+         NdBjL/kRexgfpoPnjJ+bpMxr1Tke8u1geM3VaW4PPhNN8p+KOpqoXbZyDYsVcnlsP1Uo
+         XWEFmmlTJExsmIHNTiKV1OHvHXLItzBRwVC68ZjL/j6ENNzK31cNG7tkKo5pXBnLjybf
+         sbmw==
+X-Gm-Message-State: AOAM533UtlOwMfWsqXyqR1l4dQLsCvl3ztwTzhvAWCGU9vd9kLUQ3g9K
+        tW0QRj47zR8WLwHxao6NLjnTNg==
+X-Google-Smtp-Source: ABdhPJxZZEiYRsI2RBdRgtXYc4csRnATqQp8IQ+ui/ozYpm8C71ZnCC99jhfyvA9CYU552pckX/xxw==
+X-Received: by 2002:a63:190d:0:b0:3db:11ba:cdb3 with SMTP id z13-20020a63190d000000b003db11bacdb3mr4564735pgl.81.1652458365185;
+        Fri, 13 May 2022 09:12:45 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c9-20020aa78e09000000b0050dc76281ebsm1952250pfr.197.2022.05.13.09.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 May 2022 09:12:44 -0700 (PDT)
+Date:   Fri, 13 May 2022 16:12:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Marc Zyngier <maz@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
-References: <Ynv7+VG+T2y9rpdk@carbon>
-Content-Language: en-US
-In-Reply-To: <Ynv7+VG+T2y9rpdk@carbon>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+Message-ID: <Yn6DeEGLyR4Q0cDp@google.com>
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-2-yosryahmed@google.com>
+ <87ilqoi77b.wl-maz@kernel.org>
+ <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+ <Yn2TGJ4vZ/fst+CY@cmpxchg.org>
+ <Yn2YYl98Vhh/UL0w@google.com>
+ <Yn5+OtZSSUZZgTQj@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yn5+OtZSSUZZgTQj@cmpxchg.org>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Creating of each new cpu cgroup allocates two 512-bytes kernel objects
-per CPU. This is especially important for cgroups shared parent memory
-cgroup. In this scenario, on nodes with multiple processors, these
-allocations become one of the main memory consumers.
+On Fri, May 13, 2022, Johannes Weiner wrote:
+> On Thu, May 12, 2022 at 11:29:38PM +0000, Sean Christopherson wrote:
+> > On Thu, May 12, 2022, Johannes Weiner wrote:
+> > > On Mon, May 02, 2022 at 11:46:26AM -0700, Yosry Ahmed wrote:
+> > > > On Mon, May 2, 2022 at 3:01 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > What do you plan to do for IOMMU page tables? After all, they serve
+> > > > > the exact same purpose, and I'd expect these to be handled the same
+> > > > > way (i.e. why is this KVM specific?).
+> > > > 
+> > > > The reason this was named NR_SECONDARY_PAGTABLE instead of
+> > > > NR_KVM_PAGETABLE is exactly that. To leave room to incrementally
+> > > > account other types of secondary page tables to this stat. It is just
+> > > > that we are currently interested in the KVM MMU usage.
+> > > 
+> > > Do you actually care at the supervisor level that this memory is used
+> > > for guest page tables?
+> > 
+> > Hmm, yes?  KVM does have a decent number of large-ish allocations that aren't
+> > for page tables, but except for page tables, the number/size of those allocations
+> > scales linearly with either the number of vCPUs or the amount of memory assigned
+> > to the VM (with no room for improvement barring KVM changes).
+> > 
+> > Off the top of my head, KVM's secondary page tables are the only allocations that
+> > don't scale linearly, especially when nested virtualization is in use.
+> 
+> Thanks, that's useful information.
+> 
+> Are these other allocations accounted somewhere? If not, are they
+> potential containment holes that will need fixing eventually?
 
-Accounting for this memory helps to avoid misuse inside memcg-limited
-contianers.
-
-Signed-off-by: Vasily Averin <vvs@openvz.org>
----
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a68482d66535..46e66acf7475 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11529,12 +11529,12 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+All allocations that are tied to specific VM/vCPU are tagged GFP_KERNEL_ACCOUNT,
+so we should be good on that front.
  
- 	for_each_possible_cpu(i) {
- 		cfs_rq = kzalloc_node(sizeof(struct cfs_rq),
--				      GFP_KERNEL, cpu_to_node(i));
-+				      GFP_KERNEL_ACCOUNT, cpu_to_node(i));
- 		if (!cfs_rq)
- 			goto err;
- 
- 		se = kzalloc_node(sizeof(struct sched_entity_stats),
--				  GFP_KERNEL, cpu_to_node(i));
-+				  GFP_KERNEL_ACCOUNT, cpu_to_node(i));
- 		if (!se)
- 			goto err_free_rq;
- 
--- 
-2.31.1
+> > > It seems to me you primarily care that it is reported *somewhere*
+> > > (hence the piggybacking off of NR_PAGETABLE at first). And whether
+> > > it's page tables or iommu tables or whatever else allocated for the
+> > > purpose of virtualization, it doesn't make much of a difference to the
+> > > host/cgroup that is tracking it, right?
+> > > 
+> > > (The proximity to nr_pagetable could also be confusing. A high page
+> > > table count can be a hint to userspace to enable THP. It seems
+> > > actionable in a different way than a high number of kvm page tables or
+> > > iommu page tables.)
+> > 
+> > I don't know about iommu page tables, but on the KVM side a high count can also
+> > be a good signal that enabling THP would be beneficial.
+> 
+> Well, maybe.
+> 
+> It might help, but ultimately it's the process that's in control in
+> all cases: it's unmovable kernel memory allocated to manage virtual
+> address space inside the task.
+> 
+> So I'm still a bit at a loss whether these things should all be lumped
+> in together or kept separately. meminfo and memory.stat are permanent
+> ABI, so we should try to establish in advance whether the new itme is
+> really a first-class consumer or part of something bigger.
+> 
+> The patch initially piggybacked on NR_PAGETABLE. I found an email of
+> you asking why it couldn't be a separate item, but it didn't provide a
+> reasoning for that decision. Could you share your thoughts on that?
 
+It was mostly an honest question, I too am trying to understand what userspace
+wants to do with this information.  I was/am also trying to understand the benefits
+of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
+already has specific stats for the number of leaf pages mapped into a VM, why not
+do the same for non-leaf pages?
