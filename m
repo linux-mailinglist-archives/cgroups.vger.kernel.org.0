@@ -2,59 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A01F526B0D
-	for <lists+cgroups@lfdr.de>; Fri, 13 May 2022 22:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB07527016
+	for <lists+cgroups@lfdr.de>; Sat, 14 May 2022 10:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384071AbiEMURK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 May 2022 16:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        id S230283AbiENIvk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 14 May 2022 04:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357601AbiEMURJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 May 2022 16:17:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46DFD34658
-        for <cgroups@vger.kernel.org>; Fri, 13 May 2022 13:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652473027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1LW72Jjy9MKnDZ4qBo9AkKccKnp0hdNYiyWQhDRqlzQ=;
-        b=B433sUzKUUBK9ITqlH/5/OxjEcvHiHHB4W6K73gni4Cmkpyr7JzUGwxewIBSb5TOMGTbCL
-        PfEEVUBOf7KhIDxi6niePZF18cmYyC4rJQXGS+JtkA1ofCfHB2Pe1hSilTpgKnEl+NDjyl
-        u4yI+x2kjZDnfWwJrydnvuX7Rdv0XbI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-461-Vp2BTxdoPM2uN1KrJHTUzw-1; Fri, 13 May 2022 16:17:06 -0400
-X-MC-Unique: Vp2BTxdoPM2uN1KrJHTUzw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F1AC101A52C;
-        Fri, 13 May 2022 20:17:05 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.16.240])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4902940D2820;
-        Fri, 13 May 2022 20:17:05 +0000 (UTC)
-Date:   Fri, 13 May 2022 16:17:03 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH] kseltest/cgroup: Make test_stress.sh work if run
- interactively
-Message-ID: <Yn68vzyMIy4upGtq@lorien.usersys.redhat.com>
-References: <20220513190928.676841-1-longman@redhat.com>
+        with ESMTP id S229733AbiENIvi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 14 May 2022 04:51:38 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888986599;
+        Sat, 14 May 2022 01:51:35 -0700 (PDT)
+Received: from kwepemi100003.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L0fP62PCczhYnt;
+        Sat, 14 May 2022 16:50:50 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100003.china.huawei.com (7.221.188.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 14 May 2022 16:51:33 +0800
+Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
+ (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 14 May
+ 2022 16:51:32 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <jack@suse.cz>, <paolo.valente@linaro.org>, <axboe@kernel.dk>,
+        <tj@kernel.org>
+CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH -next 0/8] multiple cleanup patches for bfq
+Date:   Sat, 14 May 2022 17:05:14 +0800
+Message-ID: <20220514090522.1669270-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220513190928.676841-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.2
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,37 +51,25 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 13, 2022 at 03:09:28PM -0400 Waiman Long wrote:
-> Commit 54de76c01239 ("kselftest/cgroup: fix test_stress.sh to use OUTPUT
-> dir") changes the test_core command path from . to $OUTPUT. However,
-> variable OUTPUT may not be defined if the command is run interactively.
-> Fix that by using ${OUTPUT:-.} to cover both cases.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  tools/testing/selftests/cgroup/test_stress.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_stress.sh b/tools/testing/selftests/cgroup/test_stress.sh
-> index 109c044f715f..3c9c4554d5f6 100755
-> --- a/tools/testing/selftests/cgroup/test_stress.sh
-> +++ b/tools/testing/selftests/cgroup/test_stress.sh
-> @@ -1,4 +1,4 @@
->  #!/bin/bash
->  # SPDX-License-Identifier: GPL-2.0
->  
-> -./with_stress.sh -s subsys -s fork ${OUTPUT}/test_core
-> +./with_stress.sh -s subsys -s fork ${OUTPUT:-.}/test_core
-> -- 
-> 2.27.0
-> 
+There are no functional changes in this patchset, just some places
+that I think can be improved during code review.
 
+Yu Kuai (8):
+  block, bfq: cleanup bfq_weights_tree add/remove apis
+  block, bfq: cleanup __bfq_weights_tree_remove()
+  block, bfq: factor out code to update 'active_entities'
+  block, bfq: don't declare 'bfqd' as type 'void *' in bfq_group
+  block, bfq: cleanup bfq_activate_requeue_entity()
+  block, bfq: remove dead code for updating 'rq_in_driver'
+  block, bfq: cleanup bfq_bfqq_update_budg_for_activation()
+  block, bfq: cleanup bfq_bfqq_handle_idle_busy_switch()
 
-Thanks Waiman!  I did not think to try manually running it.
-
-
-Cheers,
-Phil
+ block/bfq-cgroup.c  |   2 +-
+ block/bfq-iosched.c | 179 ++++++++++++++++++--------------------------
+ block/bfq-iosched.h |  11 +--
+ block/bfq-wf2q.c    |  91 ++++++++++------------
+ 4 files changed, 119 insertions(+), 164 deletions(-)
 
 -- 
+2.31.1
 
