@@ -2,235 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC485278FD
-	for <lists+cgroups@lfdr.de>; Sun, 15 May 2022 20:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC79527A81
+	for <lists+cgroups@lfdr.de>; Mon, 16 May 2022 00:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbiEOSDT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 May 2022 14:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S231439AbiEOWGs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 May 2022 18:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbiEOSDR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 14:03:17 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEEC27175
-        for <cgroups@vger.kernel.org>; Sun, 15 May 2022 11:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652637796; x=1684173796;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DjjK1tG+kWb1f3DCQqtNmM5DQuzesVC2Ohp+zNRjklA=;
-  b=kj5hUq/+0NXngZI0UwllA+dcEUwMqW9e7ah73pfVSlQpJ8jnVyN8wIk6
-   /LisUprre2tait8xyLb7ppPQL9MFGs62AHkMJjFJFWVTAKtfl73aqUDvW
-   QvWbViSMqu69Emvz6VZ2fIkJuS/KcfSgRPCCTtfsrsRAJxkxr0WWs69Qm
-   ugS5E1HAObCrZ/Y0GcfK8I4S8wRP0kwIbQ/I4DoUw62/1Cinw8yq8LBBZ
-   AMMLQGiFBcEE3yF5BHK3lzG6JG73lc/F7xKG0ho7VvpS9Zl61fUDKqKtr
-   aMIaUk6OQljqaxFguYbpySSgi3OdztC4gufpYDkmtWS9EQoY83+9buoaP
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10348"; a="252736304"
-X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; 
-   d="scan'208";a="252736304"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2022 11:03:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; 
-   d="scan'208";a="625618850"
-Received: from lkp-server01.sh.intel.com (HELO d1462bc4b09b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 15 May 2022 11:03:14 -0700
-Received: from kbuild by d1462bc4b09b with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nqIaI-0001rp-2W;
-        Sun, 15 May 2022 18:03:14 +0000
-Date:   Mon, 16 May 2022 02:02:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-5.19] BUILD SUCCESS
- 213adc63dfbcdff9a0c19ec1f2681fda9c05cf6d
-Message-ID: <6281404b.QQS1cQCnHJJXvjwf%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S234992AbiEOWGr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 18:06:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D67205D5;
+        Sun, 15 May 2022 15:06:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CFA49B80E66;
+        Sun, 15 May 2022 22:06:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0803EC385B8;
+        Sun, 15 May 2022 22:06:41 +0000 (UTC)
+Date:   Sun, 15 May 2022 18:06:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Vasily Averin <vvs@openvz.org>, Shakeel Butt <shakeelb@google.com>,
+        Ingo Molnar <mingo@redhat.com>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
+        "linux-trace-users@vger.kernel.org" 
+        <linux-trace-users@vger.kernel.org>
+Subject: Re: [PATCH v2] percpu: improve percpu_alloc_percpu event trace
+Message-ID: <20220515180640.0ae2ead5@gandalf.local.home>
+In-Reply-To: <YnsgbXKiNNSF+1ZO@carbon>
+References: <2b388d09-940e-990f-1f8a-2fdaa9210fa0@openvz.org>
+        <a07be858-c8a3-7851-9086-e3262cbcf707@openvz.org>
+        <YnsgbXKiNNSF+1ZO@carbon>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.19
-branch HEAD: 213adc63dfbcdff9a0c19ec1f2681fda9c05cf6d  kseltest/cgroup: Make test_stress.sh work if run interactively
+On Tue, 10 May 2022 19:33:17 -0700
+Roman Gushchin <roman.gushchin@linux.dev> wrote:
 
-elapsed time: 2726m
+>  --- a/include/trace/events/percpu.h
+> > +++ b/include/trace/events/percpu.h
+> > @@ -6,15 +6,20 @@
+> >  #define _TRACE_PERCPU_H
+> >  
+> >  #include <linux/tracepoint.h>
+> > +#include <trace/events/mmflags.h>
+> >  
+> >  TRACE_EVENT(percpu_alloc_percpu,
+> >  
+> > -	TP_PROTO(bool reserved, bool is_atomic, size_t size,
+> > -		 size_t align, void *base_addr, int off, void __percpu *ptr),
+> > +	TP_PROTO(unsigned long call_site,
+> > +		 bool reserved, bool is_atomic, size_t size,
+> > +		 size_t align, void *base_addr, int off,
+> > +		 void __percpu *ptr, size_t bytes_alloc, gfp_t gfp_flags),  
+> 
+> Don't we want to preserve the order and add the call_site at the end?
+> Trace events are not ABI, but if we don't have a strong reason to break it,
+> I'd preserve the old order.
 
-configs tested: 149
-configs skipped: 4
+Ideally everyone should be using libtraceevent which will parse the format
+file for the needed entries.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Nothing (important) should be parsing the raw ascii from the trace files.
+It's slow and unreliable. The raw format (trace_pipe_raw) files, along with
+libtraceevent will handle fining the fields you are looking for, even if
+the fields move around (internally or externally).
 
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-powerpc              randconfig-c003-20220512
-arm                           stm32_defconfig
-csky                                defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                     tqm8555_defconfig
-arm                          simpad_defconfig
-arm                        cerfcube_defconfig
-sh                          r7785rp_defconfig
-sh                          urquell_defconfig
-h8300                     edosk2674_defconfig
-arm                            hisi_defconfig
-mips                        bcm47xx_defconfig
-sh                              ul2_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7712_defconfig
-um                               alldefconfig
-parisc                generic-64bit_defconfig
-xtensa                    xip_kc705_defconfig
-xtensa                generic_kc705_defconfig
-sh                   secureedge5410_defconfig
-arc                                 defconfig
-mips                             allmodconfig
-ia64                          tiger_defconfig
-m68k                           sun3_defconfig
-openrisc                            defconfig
-arm                        trizeps4_defconfig
-mips                         tb0226_defconfig
-arm                         axm55xx_defconfig
-nios2                         3c120_defconfig
-m68k                       bvme6000_defconfig
-powerpc                     taishan_defconfig
-sparc                       sparc32_defconfig
-arm                             ezx_defconfig
-sh                          lboxre2_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                           allnoconfig
-powerpc                 mpc837x_mds_defconfig
-mips                       capcella_defconfig
-arm                     eseries_pxa_defconfig
-mips                           gcw0_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                             allyesconfig
-xtensa                  nommu_kc705_defconfig
-mips                 decstation_r4k_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                    amigaone_defconfig
-sh                          landisk_defconfig
-arm                         s3c6400_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                         mpc30x_defconfig
-sh                         ecovec24_defconfig
-sh                          rsk7264_defconfig
-sh                           se7751_defconfig
-parisc                generic-32bit_defconfig
-sh                            hp6xx_defconfig
-powerpc                     stx_gp3_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220512
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-alpha                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-s390                 randconfig-r044-20220512
-riscv                randconfig-r042-20220512
-arc                  randconfig-r043-20220512
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
+Then there's trace-cruncher (a python script that uses libtracefs and
+libtraceevent) that will work too.
 
-clang tested configs:
-powerpc              randconfig-c003-20220512
-x86_64                        randconfig-c007
-riscv                randconfig-c006-20220512
-mips                 randconfig-c004-20220512
-i386                          randconfig-c001
-arm                  randconfig-c002-20220512
-powerpc                     tqm5200_defconfig
-powerpc                      ppc64e_defconfig
-x86_64                           allyesconfig
-arm                         orion5x_defconfig
-arm                      pxa255-idp_defconfig
-arm                  colibri_pxa270_defconfig
-arm                        magician_defconfig
-mips                  cavium_octeon_defconfig
-powerpc                     tqm8540_defconfig
-riscv                             allnoconfig
-arm                        mvebu_v5_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                          moxart_defconfig
-powerpc                   lite5200b_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      ppc44x_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20220512
-hexagon              randconfig-r041-20220512
+  https://github.com/vmware/trace-cruncher
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+-- Steve
