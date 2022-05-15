@@ -2,194 +2,199 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B81527042
-	for <lists+cgroups@lfdr.de>; Sat, 14 May 2022 11:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39005274F3
+	for <lists+cgroups@lfdr.de>; Sun, 15 May 2022 04:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbiENJ3P (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 14 May 2022 05:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
+        id S232299AbiEOCfO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 14 May 2022 22:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbiENJ3O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 14 May 2022 05:29:14 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DCEBC0B;
-        Sat, 14 May 2022 02:29:12 -0700 (PDT)
-Received: from kwepemi100019.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L0gB41FW6zGpZj;
-        Sat, 14 May 2022 17:26:20 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100019.china.huawei.com (7.221.188.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 14 May 2022 17:29:11 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 14 May 2022 17:29:10 +0800
-Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
- specail occasion
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
-CC:     <jack@suse.cz>, <tj@kernel.org>, <linux-block@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20220428120837.3737765-1-yukuai3@huawei.com>
- <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
-Message-ID: <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
-Date:   Sat, 14 May 2022 17:29:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231256AbiEOCfN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 14 May 2022 22:35:13 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE1BBF44
+        for <cgroups@vger.kernel.org>; Sat, 14 May 2022 19:35:12 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id nl9-20020a17090b384900b001df338b4b72so595397pjb.6
+        for <cgroups@vger.kernel.org>; Sat, 14 May 2022 19:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=IU+Vi4Ob23fwiLlYzh8GDnN8SnUFyY7qicvCIYHwbGE=;
+        b=oMG9OdYMWUdI4I+WvEwgmsD0xEUwkGfpPPUHciAB7L3RnbthLqYsqlu5mU4QEUXP3K
+         Vwa1QKalIW2DZa0FQ9ua5g/pJo8H/Cw3YfJmFCCi5/QtFUmSnVlcyMGmYFHNjRSNZ2vS
+         T4Fb9ChrCveZr4AsuzIzsOpOFJvIuBWkTOZlZ7JoL/ZT/skItTjOjIoEHL98uGIR7LVs
+         gaSDgtX++wRa+31pnL3ME4QUszBq3ap2PHIJasDRsM3DdikIMbWZipsTNhPmB2O2LW1A
+         tBdMCye4/b9s6BYSWSNV33QOUstdG7CJo7ra6MnMMnlmB8W8zL+zr+mS/NAxxECz5Puj
+         bcoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=IU+Vi4Ob23fwiLlYzh8GDnN8SnUFyY7qicvCIYHwbGE=;
+        b=rThftbZrgCedbghDofUSOz33HTC8bHgT6o3bdiDrH4Ghg8CUAgmp3CuPsfRljgVuQf
+         mJ8OSBQdXgXIOajNIgqstORuFcwkk/dSHqYeYydgSjLpEArw05GC9qEokbCUvTGPV8er
+         zRYQxyvRs6mQAvD/KeLe16Zu+Nh2cZ4bELxgb9M3qBXm/2RJZM7nfySkjrURJrVVJmm+
+         0W3eo3WHyONomhzu4Lyg6yS6Ik88VmAjW7xUKR/dbNqHeIx8TpS9gll6aHE1Uw47JNGz
+         7yl6RBIQi/bPLJRTQu/rvA9TVb9hAGxLLK3moSQSjwftVbz4VCj46emMabEwXHaY8FoX
+         5GXg==
+X-Gm-Message-State: AOAM532toaI99/BnJowQ+S3GaOde/auYe8s764b0h08ZlCVSvwA2OV/G
+        yvxbJeHAEaxe4pnpcmBSlh0nex3Sv11Lw01e
+X-Google-Smtp-Source: ABdhPJzaMCzLNX2WZCU2aLHDM5R9d54wMaYfRdNDWi1SjGhqU+OJpdMKNv8qtu3yLZztiXmhf7w+R1aT4wzWEshm
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:8d83:b0:1dd:258c:7c55 with SMTP
+ id d3-20020a17090a8d8300b001dd258c7c55mr319038pjo.1.1652582111328; Sat, 14
+ May 2022 19:35:11 -0700 (PDT)
+Date:   Sun, 15 May 2022 02:34:57 +0000
+Message-Id: <20220515023504.1823463-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
+Subject: [RFC PATCH bpf-next v2 0/7] bpf: rstat: cgroup hierarchical stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/05/05 9:00, yukuai (C) 写道:
-> Hi, Paolo
-> 
-> Can you take a look at this patchset? It has been quite a long time
-> since we spotted this problem...
-> 
+This patch series allows for using bpf to collect hierarchical cgroup
+stats efficiently by integrating with the rstat framework. The rstat
+framework provides an efficient way to collect cgroup stats and
+propagate them through the cgroup hierarchy.
 
-friendly ping ...
-> Thanks,
-> Kuai
-> 
-> 在 2022/04/28 20:08, Yu Kuai 写道:
->> Changes in v5:
->>   - rename bfq_add_busy_queues() to bfq_inc_busy_queues() in patch 1
->>   - fix wrong definition in patch 1
->>   - fix spelling mistake in patch 2: leaset -> least
->>   - update comments in patch 3
->>   - add reviewed-by tag in patch 2,3
->>
->> Changes in v4:
->>   - split bfq_update_busy_queues() to bfq_add/dec_busy_queues(),
->>     suggested by Jan Kara.
->>   - remove unused 'in_groups_with_pending_reqs',
->>
->> Changes in v3:
->>   - remove the cleanup patch that is irrelevant now(I'll post it
->>     separately).
->>   - instead of hacking wr queues and using weights tree 
->> insertion/removal,
->>     using bfq_add/del_bfqq_busy() to count the number of groups
->>     (suggested by Jan Kara).
->>
->> Changes in v2:
->>   - Use a different approch to count root group, which is much simple.
->>
->> Currently, bfq can't handle sync io concurrently as long as they
->> are not issued from root group. This is because
->> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->> bfq_asymmetric_scenario().
->>
->> The way that bfqg is counted into 'num_groups_with_pending_reqs':
->>
->> Before this patchset:
->>   1) root group will never be counted.
->>   2) Count if bfqg or it's child bfqgs have pending requests.
->>   3) Don't count if bfqg and it's child bfqgs complete all the requests.
->>
->> After this patchset:
->>   1) root group is counted.
->>   2) Count if bfqg have at least one bfqq that is marked busy.
->>   3) Don't count if bfqg doesn't have any busy bfqqs.
->>
->> The main reason to use busy state of bfqq instead of 'pending requests'
->> is that bfqq can stay busy after dispatching the last request if idling
->> is needed for service guarantees.
->>
->> With the above changes, concurrent sync io can be supported if only
->> one group is activated.
->>
->> fio test script(startdelay is used to avoid queue merging):
->> [global]
->> filename=/dev/nvme0n1
->> allow_mounted_write=0
->> ioengine=psync
->> direct=1
->> ioscheduler=bfq
->> offset_increment=10g
->> group_reporting
->> rw=randwrite
->> bs=4k
->>
->> [test1]
->> numjobs=1
->>
->> [test2]
->> startdelay=1
->> numjobs=1
->>
->> [test3]
->> startdelay=2
->> numjobs=1
->>
->> [test4]
->> startdelay=3
->> numjobs=1
->>
->> [test5]
->> startdelay=4
->> numjobs=1
->>
->> [test6]
->> startdelay=5
->> numjobs=1
->>
->> [test7]
->> startdelay=6
->> numjobs=1
->>
->> [test8]
->> startdelay=7
->> numjobs=1
->>
->> test result:
->> running fio on root cgroup
->> v5.18-rc1:       550 Mib/s
->> v5.18-rc1-patched: 550 Mib/s
->>
->> running fio on non-root cgroup
->> v5.18-rc1:       349 Mib/s
->> v5.18-rc1-patched: 550 Mib/s
->>
->> Note that I also test null_blk with "irqmode=2
->> completion_nsec=100000000(100ms) hw_queue_depth=1", and tests show
->> that service guarantees are still preserved.
->>
->> Previous versions:
->> RFC: 
->> https://lore.kernel.org/all/20211127101132.486806-1-yukuai3@huawei.com/
->> v1: 
->> https://lore.kernel.org/all/20220305091205.4188398-1-yukuai3@huawei.com/
->> v2: 
->> https://lore.kernel.org/all/20220416093753.3054696-1-yukuai3@huawei.com/
->> v3: 
->> https://lore.kernel.org/all/20220427124722.48465-1-yukuai3@huawei.com/
->> v4: 
->> https://lore.kernel.org/all/20220428111907.3635820-1-yukuai3@huawei.com/
->>
->> Yu Kuai (3):
->>    block, bfq: record how many queues are busy in bfq_group
->>    block, bfq: refactor the counting of 'num_groups_with_pending_reqs'
->>    block, bfq: do not idle if only one group is activated
->>
->>   block/bfq-cgroup.c  |  1 +
->>   block/bfq-iosched.c | 48 +++-----------------------------------
->>   block/bfq-iosched.h | 57 +++++++--------------------------------------
->>   block/bfq-wf2q.c    | 35 +++++++++++++++++-----------
->>   4 files changed, 35 insertions(+), 106 deletions(-)
->>
+* Background on rstat (I am using a subscriber analogy that is not
+commonly used):
+
+The rstat framework maintains a tree of cgroups that have updates and
+which cpus have updates. A subscriber to the rstat framework maintains
+their own stats. The framework is used to tell the subscriber when
+and what to flush, for the most efficient stats propagation. The
+workflow is as follows:
+
+- When a subscriber updates a cgroup on a cpu, it informs the rstat
+  framework by calling cgroup_rstat_updated(cgrp, cpu).
+
+- When a subscriber wants to read some stats for a cgroup, it asks
+  the rstat framework to initiate a stats flush (propagation) by calling
+  cgroup_rstat_flush(cgrp).
+
+- When the rstat framework initiates a flush, it makes callbacks to
+  subscribers to aggregate stats on cpus that have updates, and
+  propagate updates to their parent.
+
+Currently, the main subscribers to the rstat framework are cgroup
+subsystems (e.g. memory, block). This patch series allow bpf programs to
+become subscribers as well.
+
+The first three patches introduce a new bpf program type, RSTAT_FLUSH,
+which is a callback that rstat makes to bpf when a stats flush is
+ongoing.
+
+The fourth patch adds bpf_cgroup_rstat_updated() and
+bpf_cgroup_rstat_flush() helpers, to allow bpf stat collectors and
+readers to communicate with rstat.
+
+The fifth patch is actually v2 of a previously submitted patch [1]
+by Hao Luo. We agreed that it fits better as a part of this series. It
+introduces cgroup_iter programs that can dump stats for cgroups to
+userspace.
+v1 - > v2:
+- Getting the cgroup's reference at the time at attaching, instead of
+  at the time when iterating. (Yonghong) (context [1])
+- Remove .init_seq_private and .fini_seq_private callbacks for
+  cgroup_iter. They are not needed now. (Yonghong)
+
+The sixth patch extends bpf selftests cgroup helpers, as necessary for
+the following patch.
+
+The seventh patch is a selftest that demonstrates the entire workflow.
+It includes programs that collect, aggregate, and dump per-cgroup stats
+by fully integrating with the rstat framework.
+
+[1]https://lore.kernel.org/lkml/20220225234339.2386398-9-haoluo@google.com/
+
+RFC v1 -> RFC v2:
+- Instead of rstat flush programs attach to subsystems, they now attach
+  to rstat (global flushers, not per-subsystem), based on discussions
+  with Tejun. The first patch is entirely rewritten.
+- Pass cgroup pointers to rstat flushers instead of cgroup ids. This is
+  much more flexibility and less likely to need a uapi update later.
+- rstat helpers are now only defined if CGROUP_CONFIG.
+- Most of the code is now only defined if CGROUP_CONFIG and
+  CONFIG_BPF_SYSCALL.
+- Move rstat helper protos from bpf_base_func_proto() to
+  tracing_prog_func_proto().
+- rstat helpers argument (cgroup pointer) is now ARG_PTR_TO_BTF_ID, not
+  ARG_ANYTHING.
+- Rewrote the selftest to use the cgroup helpers.
+- Dropped bpf_map_lookup_percpu_elem (already added by Feng).
+- Dropped patch to support cgroup v1 for cgroup_iter.
+- Dropped patch to define some cgroup_put() when !CONFIG_CGROUP. The
+  code that calls it is no longer compiled when !CONFIG_CGROUP.
+
+
+Hao Luo (1):
+  bpf: Introduce cgroup iter
+
+Yosry Ahmed (6):
+  bpf: introduce RSTAT_FLUSH program type
+  cgroup: bpf: flush bpf stats on rstat flush
+  libbpf: Add support for rstat flush progs
+  bpf: add bpf rstat helpers
+  selftests/bpf: extend cgroup helpers
+  bpf: add a selftest for cgroup hierarchical stats collection
+
+ include/linux/bpf-rstat.h                     |  31 ++
+ include/linux/bpf.h                           |   4 +
+ include/linux/bpf_types.h                     |   4 +
+ include/uapi/linux/bpf.h                      |  33 ++
+ kernel/bpf/Makefile                           |   3 +
+ kernel/bpf/cgroup_iter.c                      | 148 ++++++++
+ kernel/bpf/helpers.c                          |  30 ++
+ kernel/bpf/rstat.c                            | 187 ++++++++++
+ kernel/bpf/syscall.c                          |   6 +
+ kernel/cgroup/rstat.c                         |   2 +
+ kernel/trace/bpf_trace.c                      |   4 +
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                |  33 ++
+ tools/lib/bpf/bpf.c                           |   1 -
+ tools/lib/bpf/libbpf.c                        |  40 +++
+ tools/lib/bpf/libbpf.h                        |   3 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/testing/selftests/bpf/cgroup_helpers.c  | 158 +++++---
+ tools/testing/selftests/bpf/cgroup_helpers.h  |  14 +-
+ .../test_cgroup_hierarchical_stats.c          | 339 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+ .../selftests/bpf/progs/cgroup_vmscan.c       | 222 ++++++++++++
+ 22 files changed, 1225 insertions(+), 47 deletions(-)
+ create mode 100644 include/linux/bpf-rstat.h
+ create mode 100644 kernel/bpf/cgroup_iter.c
+ create mode 100644 kernel/bpf/rstat.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_cgroup_hierarchical_stats.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_vmscan.c
+
+-- 
+2.36.0.550.gb090851708-goog
+
