@@ -2,79 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34769527681
-	for <lists+cgroups@lfdr.de>; Sun, 15 May 2022 11:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF865278E8
+	for <lists+cgroups@lfdr.de>; Sun, 15 May 2022 19:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbiEOJIW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 May 2022 05:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
+        id S237883AbiEORZU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 May 2022 13:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbiEOJIT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 05:08:19 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C3E19FB2
-        for <cgroups@vger.kernel.org>; Sun, 15 May 2022 02:08:18 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id r6-20020a1c2b06000000b00396fee5ebc9so589922wmr.1
-        for <cgroups@vger.kernel.org>; Sun, 15 May 2022 02:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4UPlHLLMHUIw4lCwKqytRf70kgAzZVqEMbwMAZTs8QI=;
-        b=eDigYPY7ZRSUS7IKjWCTISNXs1Mys0oeAvOEd5+sNlqwpX/dS2dJLe2BoeGzOeZQkq
-         sUcSBmdYkVkjREcbeEEv72lz4QsNrMpGz9mOQhhXyrQpv0JIjo9XV+tqyVWAtFxDAFpI
-         fNlNnlVdMUgm5Mn3stDJyOZBPJ0u7gI8r6mXz/bkfOGeSSSNK1Tstp8bUrvWh4EZkZ4W
-         ID3H65U+HKbAcs/n1WlOg25czuxfIHpZtmV5poPiYVNi9iPigGWfvCe2vCcb+1NWTQAa
-         XZV0cRmMCXEyyTV7kYBQs/i91pSuUC+zwwJ8CHtdKulK4395d1OQn4p7KP/utLJpZvQJ
-         PhuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4UPlHLLMHUIw4lCwKqytRf70kgAzZVqEMbwMAZTs8QI=;
-        b=c1zDhLm4yKBL/JvRqxvQ8ICGPa6d+iSjXOOtdw1ONnTXQXd/z3PjPdvBaTPIOijg89
-         x45bFlYK067XzOfCOaFT5iscstPvDXaa0i7gpCcai1map8JBRZIF1valv/nySv75os1Z
-         pA7P2wILH6dqz2QcyXJJBcVWoXXoyd3j+Lo82nTNKNC8jw47Yi/MP0Ahf4lKkNyjlvb4
-         EmrsEEbdqYAkX7M8FSPiITyIMvb8mE3FUrS0RUjDt2XvLE0rHs/hFcb5kDDH9yWs3iPn
-         K5ZZekiiA3aYKb8KLcZbyuvb1zswhWUpIoA2pxRIv7dJtM/mSwCtmBbeXOUgPiYfY38t
-         XZUA==
-X-Gm-Message-State: AOAM532E6uRu84fEWG+9q1UoNaRm8ufLPCCp+DLgL1eG18tw9RiIbrah
-        b5g20Ae+l5kzjAmEdxJBTTlRsvflReSa6XnVRW4CFg==
-X-Google-Smtp-Source: ABdhPJz9ONQSxakxMZXfP3VzMmYw2QEzxC32G/LK7q2wOgqvmlcLcPLMQv3BfxhBR402cK+g90Fl6xzpUljK0keHiyQ=
-X-Received: by 2002:a05:600c:1908:b0:394:867d:66c4 with SMTP id
- j8-20020a05600c190800b00394867d66c4mr22018729wmq.152.1652605696605; Sun, 15
- May 2022 02:08:16 -0700 (PDT)
+        with ESMTP id S237879AbiEORZT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 13:25:19 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA32613D00
+        for <cgroups@vger.kernel.org>; Sun, 15 May 2022 10:25:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652635518; x=1684171518;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lpaTDZklbx46DWOvkutIlcBRyYPhTVCjD7qS22KfmgQ=;
+  b=VW2PLSJGeUpwu/YK3dnqsr5Uj7L6vC16GkvpQ4YBfmKfJvk/W3y/4v4X
+   pnzjV7KtDAk/0jdxo2IiZP7A1Z+V3mZNANzxMa554PnDXrpn+Hr3n05iY
+   0O4nNkABf7/oXRnZvPKQ7CB3zy4jrnBd8cgv1CHpdPYHd4HdQ5BxrLqW0
+   /DNEEtsXbL1rHsq1D4xvN4ZRiUzt6HjadL2/b4UMyzqPRDWoyhUvTnLLV
+   YvOCLiZdR/c8d0bRZJZvjm0bpeVMWtM5TJJx84TmEBThGMt8rWj6dtrNG
+   WtfKreoQlTahyLcAmiLgkcR51RP78ESwpLb2pZ+vW0yX64AbPF9iSzBMB
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10348"; a="331282399"
+X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; 
+   d="scan'208";a="331282399"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2022 10:25:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,228,1647327600"; 
+   d="scan'208";a="604553457"
+Received: from lkp-server01.sh.intel.com (HELO d1462bc4b09b) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 15 May 2022 10:25:14 -0700
+Received: from kbuild by d1462bc4b09b with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nqHzV-0001qA-6A;
+        Sun, 15 May 2022 17:25:13 +0000
+Date:   Mon, 16 May 2022 01:24:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 4d00bb3c2f23d1d8b8a25ed0cf288ebdf047aed4
+Message-ID: <6281373d.DhY5vuB4tRbE/W+6%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220515023504.1823463-1-yosryahmed@google.com> <20220515023504.1823463-4-yosryahmed@google.com>
-In-Reply-To: <20220515023504.1823463-4-yosryahmed@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Sun, 15 May 2022 02:07:40 -0700
-Message-ID: <CAJD7tkaCEcabywFGyeiM9zggx2Tw-e=Qa2UArgxXN8j7vJR-fA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 3/7] libbpf: Add support for rstat flush progs
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,124 +62,166 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 14, 2022 at 7:35 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> Add support to attach RSTAT_FLUSH programs.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  tools/lib/bpf/bpf.c      |  1 -
->  tools/lib/bpf/libbpf.c   | 40 ++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h   |  3 +++
->  tools/lib/bpf/libbpf.map |  1 +
->  4 files changed, 44 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 5660268e103f..9e3cb0d1eb99 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -870,7 +870,6 @@ int bpf_link_create(int prog_fd, int target_fd,
->                 attr.link_create.tracing.cookie = OPTS_GET(opts, tracing.cookie, 0);
->                 if (!OPTS_ZEROED(opts, tracing))
->                         return libbpf_err(-EINVAL);
-> -               break;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 4d00bb3c2f23d1d8b8a25ed0cf288ebdf047aed4  Merge branch 'for-5.19' into for-next
 
-This is a mistake, a remnant of RFC V1. Will remove it in the next version.
+elapsed time: 2687m
 
->         default:
->                 if (!OPTS_ZEROED(opts, flags))
->                         return libbpf_err(-EINVAL);
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4867a930628b..b7fc64ebf8dd 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8998,6 +8998,7 @@ static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_
->  static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
->  static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link);
->  static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_link **link);
-> +static int attach_rstat(const struct bpf_program *prog, long cookie, struct bpf_link **link);
->
->  static const struct bpf_sec_def section_defs[] = {
->         SEC_DEF("socket",               SOCKET_FILTER, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> @@ -9078,6 +9079,7 @@ static const struct bpf_sec_def section_defs[] = {
->         SEC_DEF("cgroup/setsockopt",    CGROUP_SOCKOPT, BPF_CGROUP_SETSOCKOPT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
->         SEC_DEF("struct_ops+",          STRUCT_OPS, 0, SEC_NONE),
->         SEC_DEF("sk_lookup",            SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
-> +       SEC_DEF("rstat/flush",          RSTAT_FLUSH, 0, SEC_NONE, attach_rstat),
->  };
->
->  static size_t custom_sec_def_cnt;
-> @@ -11784,6 +11786,44 @@ static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_l
->         return libbpf_get_error(*link);
->  }
->
-> +struct bpf_link *bpf_program__attach_rstat(const struct bpf_program *prog)
-> +{
-> +       struct bpf_link *link = NULL;
-> +       char errmsg[STRERR_BUFSIZE];
-> +       int err, prog_fd, link_fd;
-> +
-> +       prog_fd = bpf_program__fd(prog);
-> +       if (prog_fd < 0) {
-> +               pr_warn("prog '%s': can't attach before loaded\n", prog->name);
-> +               return libbpf_err_ptr(-EINVAL);
-> +       }
-> +
-> +       link = calloc(1, sizeof(*link));
-> +       if (!link)
-> +               return libbpf_err_ptr(-ENOMEM);
-> +       link->detach = &bpf_link__detach_fd;
-> +
-> +       /* rstat flushers are currently the only supported rstat programs */
-> +       link_fd = bpf_link_create(prog_fd, 0, BPF_RSTAT_FLUSH, NULL);
-> +       if (link_fd < 0) {
-> +               err = -errno;
-> +               pr_warn("prog '%s': failed to attach: %s\n",
-> +                       prog->name, libbpf_strerror_r(err, errmsg,
-> +                                                     sizeof(errmsg)));
-> +               free(link);
-> +               return libbpf_err_ptr(err);
-> +       }
-> +
-> +       link->fd = link_fd;
-> +       return link;
-> +}
-> +
-> +static int attach_rstat(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> +{
-> +       *link = bpf_program__attach_rstat(prog);
-> +       return libbpf_get_error(*link);
-> +}
-> +
->  struct bpf_link *bpf_program__attach(const struct bpf_program *prog)
->  {
->         struct bpf_link *link = NULL;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 21984dcd6dbe..f8b6827d5550 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -662,6 +662,9 @@ LIBBPF_API struct bpf_link *
->  bpf_program__attach_iter(const struct bpf_program *prog,
->                          const struct bpf_iter_attach_opts *opts);
->
-> +LIBBPF_API struct bpf_link *
-> +bpf_program__attach_rstat(const struct bpf_program *prog);
-> +
->  /*
->   * Libbpf allows callers to adjust BPF programs before being loaded
->   * into kernel. One program in an object file can be transformed into
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 008da8db1d94..f945c6265cb5 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -449,6 +449,7 @@ LIBBPF_0.8.0 {
->                 bpf_program__attach_kprobe_multi_opts;
->                 bpf_program__attach_trace_opts;
->                 bpf_program__attach_usdt;
-> +               bpf_program__attach_rstat;
->                 bpf_program__set_insns;
->                 libbpf_register_prog_handler;
->                 libbpf_unregister_prog_handler;
-> --
-> 2.36.0.550.gb090851708-goog
->
+configs tested: 141
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+arm                           stm32_defconfig
+csky                                defconfig
+riscv             nommu_k210_sdcard_defconfig
+powerpc                     tqm8555_defconfig
+arm                          simpad_defconfig
+arm                        cerfcube_defconfig
+sh                          r7785rp_defconfig
+sh                          urquell_defconfig
+h8300                     edosk2674_defconfig
+arm                            hisi_defconfig
+mips                        bcm47xx_defconfig
+sh                              ul2_defconfig
+sh                      rts7751r2d1_defconfig
+sh                           se7712_defconfig
+sh                   secureedge5410_defconfig
+arc                                 defconfig
+mips                             allmodconfig
+arm                        trizeps4_defconfig
+mips                         tb0226_defconfig
+arm                         axm55xx_defconfig
+nios2                         3c120_defconfig
+m68k                       bvme6000_defconfig
+powerpc                     taishan_defconfig
+sparc                       sparc32_defconfig
+arm                             ezx_defconfig
+sh                          lboxre2_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                           allnoconfig
+powerpc                 mpc837x_mds_defconfig
+mips                       capcella_defconfig
+arm                     eseries_pxa_defconfig
+parisc                generic-64bit_defconfig
+mips                           gcw0_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                             allyesconfig
+xtensa                  nommu_kc705_defconfig
+mips                 decstation_r4k_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                    amigaone_defconfig
+sh                          landisk_defconfig
+arm                         s3c6400_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                         mpc30x_defconfig
+sh                         ecovec24_defconfig
+sh                          rsk7264_defconfig
+sh                           se7751_defconfig
+parisc                generic-32bit_defconfig
+sh                            hp6xx_defconfig
+powerpc                     stx_gp3_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220512
+ia64                                defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+arc                  randconfig-r043-20220512
+riscv                randconfig-r042-20220512
+s390                 randconfig-r044-20220512
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
+
+clang tested configs:
+powerpc              randconfig-c003-20220512
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220512
+mips                 randconfig-c004-20220512
+i386                          randconfig-c001
+arm                  randconfig-c002-20220512
+powerpc                     tqm5200_defconfig
+powerpc                      ppc64e_defconfig
+x86_64                           allyesconfig
+arm                         orion5x_defconfig
+arm                      pxa255-idp_defconfig
+arm                  colibri_pxa270_defconfig
+arm                        magician_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                     tqm8540_defconfig
+riscv                             allnoconfig
+arm                        mvebu_v5_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                          moxart_defconfig
+powerpc                   lite5200b_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r041-20220512
+hexagon              randconfig-r045-20220512
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
