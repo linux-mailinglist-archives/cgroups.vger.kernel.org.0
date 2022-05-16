@@ -2,128 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2246528731
-	for <lists+cgroups@lfdr.de>; Mon, 16 May 2022 16:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4590A528C28
+	for <lists+cgroups@lfdr.de>; Mon, 16 May 2022 19:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbiEPOfE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 May 2022 10:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        id S1344331AbiEPRjn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 May 2022 13:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbiEPOfC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 16 May 2022 10:35:02 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17909D5F;
-        Mon, 16 May 2022 07:35:02 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C56F71FB2E;
-        Mon, 16 May 2022 14:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652711700; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W7ceyTjxid5l9ZGGTqZ+wt/EPfbFdKSX+/F4lyNdDKg=;
-        b=g3iVVHUtSyQWBN3Y59HjcBDj1p/IZFTO1o2s8CWmnszg6wBpymi4LOQIZAcNlK/seWQfW5
-        OTdSKo9VL5YnbQyO5U7Jfrl+JZ6OG/lh8V2pkehTwaRN9l9VeiSd8KtqESYl+sNjIGZ0wr
-        /r1jDJWacCJhVoSdrQMTgwD1CqqpyIo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 883E513AAB;
-        Mon, 16 May 2022 14:35:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KL9RIBRhgmL0GwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 16 May 2022 14:35:00 +0000
-Date:   Mon, 16 May 2022 16:34:59 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
-Message-ID: <20220516143459.GA17557@blackbody.suse.cz>
-References: <20220510152847.230957-1-hannes@cmpxchg.org>
- <20220510152847.230957-7-hannes@cmpxchg.org>
- <20220511173218.GB31592@blackbody.suse.cz>
- <YnwJUL90fuoHs3YW@cmpxchg.org>
- <20220513151426.GC16096@blackbody.suse.cz>
- <Yn6QfdouzkcrygTR@cmpxchg.org>
+        with ESMTP id S1344248AbiEPRjm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 May 2022 13:39:42 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B94036B42;
+        Mon, 16 May 2022 10:39:41 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id l16so19492027oil.6;
+        Mon, 16 May 2022 10:39:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QlC2UOYMPKKudwLjLWBF40eX+oeG8Yvuxzp6LWYy94=;
+        b=lN5q6KoGnMVKq8KOjsovYc0Ea9Rz2wCpQaF48i5eMxFhf3pMQhJODDGAvdMNRqWL2n
+         1kuhXkOG7R5wJOM/NAWz7J4UIEiIRaBQzILAI5v2Su+zwhL0GL/t0lZWPP9pPWi9X5w1
+         TRmLsarTXjfHK8MzG/jFj58z06sJ6O70HdWHKxHpNJMABQaWzn4ySx0XB977Cqy6L+Ms
+         68LQaNkjgqCJaydfqryJPKMsb++N4qxHLOKJWhJR9AvA7TVZ0iSC6ytp/1cGqiViasIS
+         jDUUNTS1nVh0xyNxGTDlH8awrM/IWxq4zVYrTKv/Qp1yO7yesfSIN0YJWuUzfIiCwqMP
+         08PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4QlC2UOYMPKKudwLjLWBF40eX+oeG8Yvuxzp6LWYy94=;
+        b=PrrEPO3UnuNlR/bEApMOP3sHY/XbqzTnnXMP3jqLlb1LD31D7cdZHHhseJIMjLs6pj
+         iideI1NSAyEWkx2dyf4v0zuh5lCwl7R3/ZMTcR1I01DYKDWfISJT7BNWM1ng3llrcYrH
+         93R3ITf79Wdi525htb2D9RYrhx5BsB1ypPg0bC8v2kly1NmpZOiYiR7pdlpqYhTi+3y9
+         bD2T/1b1iMWn0VgHlX6Y6mYcBCI2JPz4kcYLDYvUU9fIpYrcMSFxb2GsXMDSbCRFq3JF
+         W6N/2+eA6Wy+iUyvP7GX7MgeMcJaUGUAmmk4JwqAbKUIl7+UaJWgLCbB+uvyHAUp1h7B
+         mJzQ==
+X-Gm-Message-State: AOAM533EBZ0Lq1VQhPu17HpWUaecnvIyrIqqwrtptbnMEf6HydQJ7UTR
+        jHt2RQOJrzCEAKjTjIQxB8Y=
+X-Google-Smtp-Source: ABdhPJygSNZJhhtbXnU4GGWyPg8tyF+H+RqlJkjIxzimnUGLIq1vRXiWXdwn9GweAfMMT4GBb11GiQ==
+X-Received: by 2002:a05:6808:2117:b0:326:4798:88cc with SMTP id r23-20020a056808211700b00326479888ccmr14071383oiw.78.1652722780974;
+        Mon, 16 May 2022 10:39:40 -0700 (PDT)
+Received: from localhost ([199.180.249.178])
+        by smtp.gmail.com with ESMTPSA id o129-20020acabe87000000b003264e122a9asm4002748oif.54.2022.05.16.10.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 May 2022 10:39:40 -0700 (PDT)
+From:   bh1scw@gmail.com
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        Fanjun Kong <bh1scw@gmail.com>
+Subject: [PATCH] blk-cgroup: Remove unnecessary rcu_read_lock/unlock()
+Date:   Tue, 17 May 2022 01:39:30 +0800
+Message-Id: <20220516173930.159535-1-bh1scw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yn6QfdouzkcrygTR@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 13, 2022 at 01:08:13PM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> Right, it's accounted as a subset rather than fully disjointed. But it
-> is a limitable counter of its own, so I exported it as such, with a
-> current and a max knob. This is comparable to the kmem counter in v1.
+From: Fanjun Kong <bh1scw@gmail.com>
 
-That counter and limit didn't turn out well. I liked the analogy to
-writeback (and dirty limit) better.
+spin_lock_irq/spin_unlock_irq contains preempt_disable/enable().
+Which can serve as RCU read-side critical region, so remove
+rcu_read_lock/unlock().
 
-> From an API POV it would be quite strange to have max for a counter
-> that has no current. Likewise it would be strange for a major memory
-> consumer to be missing from memory.stat.
+Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
+---
+ block/blk-cgroup.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-My understanding would be to have all memory.stat entries as you
-propose, no extra .current counter and the .max knob for zswap
-configuration.
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index a91f8ae18b49..7bdc16a36560 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1283,14 +1283,13 @@ int blkcg_init_queue(struct request_queue *q)
+ 	preloaded = !radix_tree_preload(GFP_KERNEL);
+ 
+ 	/* Make sure the root blkg exists. */
+-	rcu_read_lock();
++	/* spin_lock_irq can serve as RCU read-side critical section. */
+ 	spin_lock_irq(&q->queue_lock);
+ 	blkg = blkg_create(&blkcg_root, q, new_blkg);
+ 	if (IS_ERR(blkg))
+ 		goto err_unlock;
+ 	q->root_blkg = blkg;
+ 	spin_unlock_irq(&q->queue_lock);
+-	rcu_read_unlock();
+ 
+ 	if (preloaded)
+ 		radix_tree_preload_end();
+@@ -1316,7 +1315,6 @@ int blkcg_init_queue(struct request_queue *q)
+ 	return ret;
+ err_unlock:
+ 	spin_unlock_irq(&q->queue_lock);
+-	rcu_read_unlock();
+ 	if (preloaded)
+ 		radix_tree_preload_end();
+ 	return PTR_ERR(blkg);
+-- 
+2.36.0
 
-> It needs to be configured to the workload's access frequency curve,
-> which can be done with trial-and-error (reasonable balance between
-> zswpins and pswpins) or in a more targeted manner using tools such as
-> page_idle, damon etc.
-> [...]
-> Because for load tuning, bytes make much more sense. That's how you
-> measure the workingset, so a percentage is an awkward indirection. At
-> the cgroup level, it makes even less sense: all memcg tunables are in
-> bytes, it would be quite weird to introduce a "max" that is 0-100. Add
-> the confusion of how percentages would propagate down the hierarchy...
-
-Thanks for the explanation. I guess there's no simple tranformation of
-in-kernel available information that'd allow a more semantic
-configuration of this value. The rather crude absolute value requires
-(but also simply allows) some calibration or responsive tuning.
-
-> I don't traverse all ancestors, I bail on disabled groups and skip
-> unlimited ones.
-
-I admit I missed that.
-
-> Flushing unnecessary groups with a ratelimit doesn't sound like an
-> improvement to me.
-
-Then I'm only concerned about a situation when there's a single deep
-memcg that undergoes both workingset_refault() and zswap querying.
-The latter (bare call to cgroup_rstat_flush()) won't reset
-stats_flush_threshold, so the former (or the async flush more likely)
-would attempt a flush too. The flush work (on the leaf memcg) would be
-done twice even though it may be within the tolerance of cumulated
-error the second time.
-
-This is a thing that might require attention in the future (depending on
-some data how it actually performs). I see how the current approach is
-justified.
-
-
-Regards,
-Michal
