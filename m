@@ -2,91 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC79527A81
-	for <lists+cgroups@lfdr.de>; Mon, 16 May 2022 00:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BAC527B64
+	for <lists+cgroups@lfdr.de>; Mon, 16 May 2022 03:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbiEOWGs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 May 2022 18:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
+        id S239050AbiEPBay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 May 2022 21:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbiEOWGr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 18:06:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D67205D5;
-        Sun, 15 May 2022 15:06:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CFA49B80E66;
-        Sun, 15 May 2022 22:06:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0803EC385B8;
-        Sun, 15 May 2022 22:06:41 +0000 (UTC)
-Date:   Sun, 15 May 2022 18:06:40 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Vasily Averin <vvs@openvz.org>, Shakeel Butt <shakeelb@google.com>,
-        Ingo Molnar <mingo@redhat.com>, kernel@openvz.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
-        "linux-trace-users@vger.kernel.org" 
-        <linux-trace-users@vger.kernel.org>
-Subject: Re: [PATCH v2] percpu: improve percpu_alloc_percpu event trace
-Message-ID: <20220515180640.0ae2ead5@gandalf.local.home>
-In-Reply-To: <YnsgbXKiNNSF+1ZO@carbon>
-References: <2b388d09-940e-990f-1f8a-2fdaa9210fa0@openvz.org>
-        <a07be858-c8a3-7851-9086-e3262cbcf707@openvz.org>
-        <YnsgbXKiNNSF+1ZO@carbon>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S238900AbiEPBay (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 15 May 2022 21:30:54 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322456421;
+        Sun, 15 May 2022 18:30:50 -0700 (PDT)
+Received: from kwepemi500016.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L1hVy2RBQz1JCFc;
+        Mon, 16 May 2022 09:29:30 +0800 (CST)
+Received: from localhost.localdomain (10.175.127.227) by
+ kwepemi500016.china.huawei.com (7.221.188.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 16 May 2022 09:30:48 +0800
+From:   Zhang Wensheng <zhangwensheng5@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <yukuai3@huawei.com>
+Subject: [PATCH -next] block: fix io hung of setting throttle limit frequently
+Date:   Mon, 16 May 2022 09:44:29 +0800
+Message-ID: <20220516014429.33723-1-zhangwensheng5@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500016.china.huawei.com (7.221.188.220)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 10 May 2022 19:33:17 -0700
-Roman Gushchin <roman.gushchin@linux.dev> wrote:
+Our test find a io hung problem which could be simplified:
+setting throttle iops/bps limit to small, and to issue a big
+bio. if the io is limited to 10s, just wait 1s, continue to
+set same throttle iops/bps limit again, now, we could see
+that the new throttle time become 10s again, like this, if
+we distribute limit repeatedly within 10s, this io will always
+in throttle queue.
 
->  --- a/include/trace/events/percpu.h
-> > +++ b/include/trace/events/percpu.h
-> > @@ -6,15 +6,20 @@
-> >  #define _TRACE_PERCPU_H
-> >  
-> >  #include <linux/tracepoint.h>
-> > +#include <trace/events/mmflags.h>
-> >  
-> >  TRACE_EVENT(percpu_alloc_percpu,
-> >  
-> > -	TP_PROTO(bool reserved, bool is_atomic, size_t size,
-> > -		 size_t align, void *base_addr, int off, void __percpu *ptr),
-> > +	TP_PROTO(unsigned long call_site,
-> > +		 bool reserved, bool is_atomic, size_t size,
-> > +		 size_t align, void *base_addr, int off,
-> > +		 void __percpu *ptr, size_t bytes_alloc, gfp_t gfp_flags),  
-> 
-> Don't we want to preserve the order and add the call_site at the end?
-> Trace events are not ABI, but if we don't have a strong reason to break it,
-> I'd preserve the old order.
+when the throttle limit iops/bps is set to io. tg_conf_updated
+will be called, it will start a new slice and update a new
+dispatch time to pending timer which lead to wait again.
 
-Ideally everyone should be using libtraceevent which will parse the format
-file for the needed entries.
+Because of commit 9f5ede3c01f9 ("block: throttle split bio in
+case of iops limit"), the io will work fine if limited by bps.
+which could fix part of the problem, not the root cause.
 
-Nothing (important) should be parsing the raw ascii from the trace files.
-It's slow and unreliable. The raw format (trace_pipe_raw) files, along with
-libtraceevent will handle fining the fields you are looking for, even if
-the fields move around (internally or externally).
+To fix this problem, adding the judge before update dispatch time.
+if the pending timer is alive, we should not to update time.
 
-Then there's trace-cruncher (a python script that uses libtracefs and
-libtraceevent) that will work too.
+Signed-off-by: Zhang Wensheng <zhangwensheng5@huawei.com>
+---
+ block/blk-throttle.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-  https://github.com/vmware/trace-cruncher
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 469c483719be..8acb205dfa85 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1321,12 +1321,14 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+ 	 * that a group's limit are dropped suddenly and we don't want to
+ 	 * account recently dispatched IO with new low rate.
+ 	 */
+-	throtl_start_new_slice(tg, READ);
+-	throtl_start_new_slice(tg, WRITE);
++	if (!timer_pending(&sq->parent_sq->pending_timer)) {
++		throtl_start_new_slice(tg, READ);
++		throtl_start_new_slice(tg, WRITE);
+ 
+-	if (tg->flags & THROTL_TG_PENDING) {
+-		tg_update_disptime(tg);
+-		throtl_schedule_next_dispatch(sq->parent_sq, true);
++		if (tg->flags & THROTL_TG_PENDING) {
++			tg_update_disptime(tg);
++			throtl_schedule_next_dispatch(sq->parent_sq, true);
++		}
+ 	}
+ }
+ 
+-- 
+2.31.1
 
--- Steve
