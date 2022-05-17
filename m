@@ -2,174 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D44C52ADAF
-	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 23:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D83552AE93
+	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 01:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbiEQVw3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 17:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        id S231740AbiEQXau (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 19:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbiEQVw2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 17:52:28 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AD24CD43
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id d21so106717wra.10
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
+        with ESMTP id S231591AbiEQXas (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 19:30:48 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B88645E
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 16:30:42 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id wh22so473632ejb.7
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 16:30:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
-        b=lRZ5GxxxrkWxHuTV9nhyvyTmdpz78TOI1zQA1xl82f7kTLOB3C3gakvuMQbXDJXl2J
-         fogZI6IRq2L0TyIBR/A2xVS650k799Zw2lpmLrIq6BDVqOgi8hE7V6afS8zj/ASXKIML
-         hBwLR1q4KHyqWqK02TMxkkTUfiMmnIqO/KZQUBnZY7i4cpePrAZ7IcaqWfDjdYjhsEuv
-         CETs/qZ6oMbCJA3bXYsZ1e739HI5xqLkrgtNhwmuDCLZtqFcXquVY4QfqTGpKwF+W/p1
-         5Nqm7UL1nc1wjchOez5kkQqqyoXFBp6pKjpGucj3YGrBFFJ489gN2zLQOxiFk0KMwXRv
-         IEIA==
+        bh=kje1fxePklyTYdwuahnUd7jrh3kjOYPr65ooSYjVE44=;
+        b=BZgE0jkbkeLVvFmb8ruOV8av8A5Vi/cJesgkFUe7yW3/UIFp5JuLCAIksYmq6dxaPC
+         UTmFxH4fn4hS3/gzRePwOA9Zgz2QoeR/e7KsL6wHOQMvCBYOzvoW2yP96YAu1wlsdo/W
+         OYW4HOnAUXA1JVGJiazKgXoK/bUipg6BPRZaPd0iU4I6XDCU9CWewInibc8sy+vWJYxb
+         GbGtI+anWZDqWuOTylV0pzWc9p1n+hpH4zF0jqzCG43N/eDSdV5LLd69UT0bGeoGyGse
+         0mKYTvfzrYVwqtPqL3gqbyjVL7SFmO6Pfdv96YRbeDf3urkh47YcrQa2GcXbFgbNtfr9
+         LXxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
-        b=0SfOAzjsKRISca+LoCyFTcaLv8lfIqLQFGWJ75hObbx/6Medclur6xIJUJuYb47YwA
-         Dg9smQYb4OFcswL86GIfIaUgTlOv59arpNblgWaB181gxevMRbvUnNV4cl2x+LaTaVq2
-         c5mDzjN91asZVMh91zBzWFF4pB9BEscHsQRXnKi/U3v8E6Hzh19IsQT65xXSuMGkxuex
-         +hAINlleNjYgRJpK9O58beAz9ROAQTVFk2S+puKQk8XIyPyVs40Z/wFVcHrfD1Ke8XeJ
-         CGnDZe6sDwAKGKe5bDW15VdUGq/O44tHlxRkH8GYylWVUK8CIKo2ZuPce9Af5jTaO0QO
-         u9HQ==
-X-Gm-Message-State: AOAM533bbAgBE/JBfGhCASXwhn6I/tiGji9aWNI8O/lijLzZrf0LFsYn
-        oJnJX7G2g+pwR0ovuPr2XhpBSIu5KSLaCQI9fgi5bQ==
-X-Google-Smtp-Source: ABdhPJwkD4NBCsYJCrEGudQHrl3n4XCoQFQunN5fD0Av9+UeGss5C/xYh6EoMYvlQ2BTtWl6HgiteKNolpbFPYtmWKA=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr20501121wrr.534.1652824345517; Tue, 17
- May 2022 14:52:25 -0700 (PDT)
+        bh=kje1fxePklyTYdwuahnUd7jrh3kjOYPr65ooSYjVE44=;
+        b=NjxEo97m5nrMrp4qoq8uJw36uPD/ZQeoYPUqBnA7bxG2e/PlpatxBKDdemPNfKmcfJ
+         bEogKcoHsE3krPFhZoSSQVNkusNEXjgbIE+e4eheSuP1JWRadh8vJ/eswZIQBm7OlTcT
+         tmDvuiwsgqV6/s4Hs4eH/4EviFHEqwBJQ4PU09VYnZcrnUIfzzJw7iAsZJU1mjU+ukGp
+         ojzxb0SAY9narCyRT8WOL11f66M9ZWGFgPTpCtXLXVrPI2BwTb6Fl5cSBkH475fRtkeC
+         s1lfdWWtymni6mRL8Sei5nBC3ywVxWWVVu+AiQJAr2R1cIFXl4Htruy4a0NeYvymeUmk
+         pfeQ==
+X-Gm-Message-State: AOAM531lep9NzIBE6NtYV9JUtD4Qq/ASQXn4opWkajqgJHf451+1lI/b
+        GNKVF6OSCERWMsAu1SIZRrwiB5jn43daWjO6NQpYiQ==
+X-Google-Smtp-Source: ABdhPJynpuiODXlilJ4ccPPw09Oypx2Cww6BUXEGpKKQ1/r4bC3SNcHdzpBPpWcDWLBl7XOueU5+lIF135DZSaWqEEs=
+X-Received: by 2002:a17:906:6a10:b0:6f5:5e4:9d5 with SMTP id
+ qw16-20020a1709066a1000b006f505e409d5mr21615657ejc.122.1652830241187; Tue, 17
+ May 2022 16:30:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220515023504.1823463-1-yosryahmed@google.com>
- <20220515023504.1823463-3-yosryahmed@google.com> <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
-In-Reply-To: <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 17 May 2022 14:51:49 -0700
-Message-ID: <CAJD7tkbDtO=wDXFDDmnPLDnEeXG6JQXr=xqqeim+OEC6xTOCew@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 2/7] cgroup: bpf: flush bpf stats on rstat flush
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+References: <20220510235653.933868-1-tjmercier@google.com> <3365cd1d750e84fedc8e75d646a77ffd85619d35.camel@ndufresne.ca>
+ <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
+ <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
+ <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com> <Yn6DpUsoSz1/15Kc@slm.duckdns.org>
+In-Reply-To: <Yn6DpUsoSz1/15Kc@slm.duckdns.org>
+From:   "T.J. Mercier" <tjmercier@google.com>
+Date:   Tue, 17 May 2022 16:30:29 -0700
+Message-ID: <CABdmKX1xvm87WMEDkMc9Aye46E4zv1-scenwgaRxHesrOCsaYg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <shuah@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        John Stultz <jstultz@google.com>,
+        Carlos Llamas <cmllamas@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kernel-team@android.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 16, 2022 at 7:08 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, May 13, 2022 at 9:13 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> On Sun, May 15, 2022 at 02:34:59AM +0000, Yosry Ahmed wrote:
-> > +
-> > +void bpf_rstat_flush(struct cgroup *cgrp, int cpu)
-> > +{
-> > +     struct bpf_rstat_flusher *flusher;
-> > +     struct bpf_rstat_flush_ctx ctx = {
-> > +             .cgrp = cgrp,
-> > +             .parent = cgroup_parent(cgrp),
-> > +             .cpu = cpu,
-> > +     };
-> > +
-> > +     rcu_read_lock();
-> > +     migrate_disable();
-> > +     spin_lock(&bpf_rstat_flushers_lock);
-> > +
-> > +     list_for_each_entry(flusher, &bpf_rstat_flushers, list)
-> > +             (void) bpf_prog_run(flusher->prog, &ctx);
-> > +
-> > +     spin_unlock(&bpf_rstat_flushers_lock);
-> > +     migrate_enable();
-> > +     rcu_read_unlock();
-> > +}
-> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> > index 24b5c2ab5598..0285d496e807 100644
-> > --- a/kernel/cgroup/rstat.c
-> > +++ b/kernel/cgroup/rstat.c
-> > @@ -2,6 +2,7 @@
-> >  #include "cgroup-internal.h"
-> >
-> >  #include <linux/sched/cputime.h>
-> > +#include <linux/bpf-rstat.h>
-> >
-> >  static DEFINE_SPINLOCK(cgroup_rstat_lock);
-> >  static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-> > @@ -168,6 +169,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
-> >                       struct cgroup_subsys_state *css;
-> >
-> >                       cgroup_base_stat_flush(pos, cpu);
-> > +                     bpf_rstat_flush(pos, cpu);
+> Hello,
 >
-> Please use the following approach instead:
+> On Thu, May 12, 2022 at 08:43:52PM -0700, T.J. Mercier wrote:
+> > > I'm actually happy I've asked this question, wasn't silly after all. I think the
+> > > problem here is a naming issue. What you really are monitor is "video memory",
+> > > which consist of a memory segment allocated to store data used to render images
+> > > (its not always images of course, GPU an VPU have specialized buffers for their
+> > > purpose).
+> > >
+> > > Whether this should be split between what is used specifically by the GPU
+> > > drivers, the display drivers, the VPU (CODEC and pre/post-processor) or camera
+> > > drivers is something that should be discussed. But in the current approach, you
+> > > really meant Video memory as a superset of the above. Personally, I think
+> > > generically (to de-Andronized your work), en-globing all video memory is
+> > > sufficient. What I fail to understand is how you will manage to distinguished
+> > > DMABuf Heap allocation (which are used outside of Android btw), from Video
+> > > allocation or other type of usage. I'm sure non-video usage will exist in the
+> > > future (think of machine learning, compute, other high bandwidth streaming
+> > > thingy ...)
+> > >
+> > Ok thank you for pointing out the naming issue. The naming is a
+> > consequence of the initial use case, but I guess it's too specific.
+> > What I want out of this change is that android can track dmabufs that
+> > come out of heaps, and drm can track gpu memory. But other drivers
+> > could track different resources under different names. Imagine this
+> > were called a buffer cgroup controller instead of a GPU cgroup
+> > controller. Then the use component ("video memory") isn't tied up with
+> > the name of the controller, but it's up to the name of the bucket the
+> > resource is tracked under. I think this meets the needs of the two use
+> > cases I'm aware of now, while leaving the door open to other future
+> > needs. Really the controller is just enabling abstract named buckets
+> > for tracking and eventually limiting a type of resource.
 >
-> __weak noinline void bpf_rstat_flush(struct cgroup *cgrp, struct cgroup *parent, int cpu)
-> {
-> }
+> So, there hasn't been whole lot of discussion w/ other GPU folks and what
+> comes up still seems to indicate that we're still long way away from having
+> a meaningful gpu controller.
 >
-> and change above line to:
->   bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
->
-> Then tracing bpf fentry progs will be able to attach to bpf_rstat_flush.
-> Pretty much the patches 1, 2, 3 are not necessary.
-> In patch 4 add bpf_cgroup_rstat_updated/flush as two kfuncs instead of stable helpers.
->
-> This way patches 1,2,3,4 will become 2 trivial patches and we will be
-> able to extend the interface between cgroup rstat and bpf whenever we need
-> without worrying about uapi stability.
->
-> We had similar discusison with HID subsystem that plans to use bpf in HID
-> with the same approach.
-> See this patch set:
-> https://lore.kernel.org/bpf/20220421140740.459558-2-benjamin.tissoires@redhat.com/
-> You'd need patch 1 from it to enable kfuncs for tracing.
->
-> Your patch 5 is needed as-is.
-> Yonghong,
-> please review it.
-> Different approach for patch 1-4 won't affect patch 5.
-> Patches 6 and 7 look good.
->
-> With this approach that patch 7 will mostly stay as-is. Instead of:
-> +SEC("rstat/flush")
-> +int vmscan_flush(struct bpf_rstat_flush_ctx *ctx)
-> +{
-> +       struct vmscan_percpu *pcpu_stat;
-> +       struct vmscan *total_stat, *parent_stat;
-> +       struct cgroup *cgrp = ctx->cgrp, *parent = ctx->parent;
->
-> it will become
->
-> SEC("fentry/bpf_rstat_flush")
-> int BPF_PROG(vmscan_flush, struct cgroup *cgrp, struct cgroup *parent, int cpu)
+Yes, and I would still be happy to collaborate.
 
-Thanks so much for taking the time to look into this.
+> For your use case, would it make sense to just
+> add dmabuf as a key to the misc controller?
+>
+Thanks for your suggestion. This almost works. "dmabuf" as a key could
+work, but I'd actually like to account for each heap. Since heaps can
+be dynamically added, I can't accommodate every potential heap name by
+hardcoding registrations in the misc controller.
 
-Indeed, this approach looks cleaner and simpler. I will incorporate
-that into a V1 and send it. Thanks!
+> I'm not sure it makes sense to
+> push "gpu controller" forward if there's no conceptual consensus around what
+> resources are.
+>
+> Thanks.
+>
+> --
+> tejun
