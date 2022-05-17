@@ -2,154 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83552AE93
-	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 01:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDF452AED9
+	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 01:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbiEQXau (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 19:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
+        id S232134AbiEQXwW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 19:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231591AbiEQXas (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 19:30:48 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B88645E
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 16:30:42 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id wh22so473632ejb.7
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 16:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kje1fxePklyTYdwuahnUd7jrh3kjOYPr65ooSYjVE44=;
-        b=BZgE0jkbkeLVvFmb8ruOV8av8A5Vi/cJesgkFUe7yW3/UIFp5JuLCAIksYmq6dxaPC
-         UTmFxH4fn4hS3/gzRePwOA9Zgz2QoeR/e7KsL6wHOQMvCBYOzvoW2yP96YAu1wlsdo/W
-         OYW4HOnAUXA1JVGJiazKgXoK/bUipg6BPRZaPd0iU4I6XDCU9CWewInibc8sy+vWJYxb
-         GbGtI+anWZDqWuOTylV0pzWc9p1n+hpH4zF0jqzCG43N/eDSdV5LLd69UT0bGeoGyGse
-         0mKYTvfzrYVwqtPqL3gqbyjVL7SFmO6Pfdv96YRbeDf3urkh47YcrQa2GcXbFgbNtfr9
-         LXxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kje1fxePklyTYdwuahnUd7jrh3kjOYPr65ooSYjVE44=;
-        b=NjxEo97m5nrMrp4qoq8uJw36uPD/ZQeoYPUqBnA7bxG2e/PlpatxBKDdemPNfKmcfJ
-         bEogKcoHsE3krPFhZoSSQVNkusNEXjgbIE+e4eheSuP1JWRadh8vJ/eswZIQBm7OlTcT
-         tmDvuiwsgqV6/s4Hs4eH/4EviFHEqwBJQ4PU09VYnZcrnUIfzzJw7iAsZJU1mjU+ukGp
-         ojzxb0SAY9narCyRT8WOL11f66M9ZWGFgPTpCtXLXVrPI2BwTb6Fl5cSBkH475fRtkeC
-         s1lfdWWtymni6mRL8Sei5nBC3ywVxWWVVu+AiQJAr2R1cIFXl4Htruy4a0NeYvymeUmk
-         pfeQ==
-X-Gm-Message-State: AOAM531lep9NzIBE6NtYV9JUtD4Qq/ASQXn4opWkajqgJHf451+1lI/b
-        GNKVF6OSCERWMsAu1SIZRrwiB5jn43daWjO6NQpYiQ==
-X-Google-Smtp-Source: ABdhPJynpuiODXlilJ4ccPPw09Oypx2Cww6BUXEGpKKQ1/r4bC3SNcHdzpBPpWcDWLBl7XOueU5+lIF135DZSaWqEEs=
-X-Received: by 2002:a17:906:6a10:b0:6f5:5e4:9d5 with SMTP id
- qw16-20020a1709066a1000b006f505e409d5mr21615657ejc.122.1652830241187; Tue, 17
- May 2022 16:30:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220510235653.933868-1-tjmercier@google.com> <3365cd1d750e84fedc8e75d646a77ffd85619d35.camel@ndufresne.ca>
- <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
- <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
- <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com> <Yn6DpUsoSz1/15Kc@slm.duckdns.org>
-In-Reply-To: <Yn6DpUsoSz1/15Kc@slm.duckdns.org>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Tue, 17 May 2022 16:30:29 -0700
-Message-ID: <CABdmKX1xvm87WMEDkMc9Aye46E4zv1-scenwgaRxHesrOCsaYg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        John Stultz <jstultz@google.com>,
-        Carlos Llamas <cmllamas@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S232136AbiEQXwV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 19:52:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814D252E48;
+        Tue, 17 May 2022 16:52:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2F218B81D16;
+        Tue, 17 May 2022 23:52:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4B0C34117;
+        Tue, 17 May 2022 23:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1652831537;
+        bh=pEz6dre40UCCubkWjCpmYmIXIWT0QJP+YHG6iJ3oqAE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tsprR4zmK/oALRYBT6vfLxQ1klcvHAWxPcTURMr4US/hz7Uw0voe1Rd7mrChl8sdH
+         2miTXW+EY7qU+TEI2unOpAlcbme0xr2QXB48zpwSoZaqLZ+c/nu+dY2yTH5iNx0vo8
+         yhD8XhZUkOY2U6dkpIa/o/EV1/RwxLY79S8QzLW0=
+Date:   Tue, 17 May 2022 16:52:16 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
+Message-Id: <20220517165216.7acd8434f8b25606836e21e6@linux-foundation.org>
+In-Reply-To: <YoKtgaxOAMBVKiCf@cmpxchg.org>
+References: <20220510152847.230957-1-hannes@cmpxchg.org>
+        <20220510152847.230957-7-hannes@cmpxchg.org>
+        <20220511173218.GB31592@blackbody.suse.cz>
+        <YnwJUL90fuoHs3YW@cmpxchg.org>
+        <20220513151426.GC16096@blackbody.suse.cz>
+        <Yn6QfdouzkcrygTR@cmpxchg.org>
+        <20220516143459.GA17557@blackbody.suse.cz>
+        <YoKtgaxOAMBVKiCf@cmpxchg.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 13, 2022 at 9:13 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Thu, May 12, 2022 at 08:43:52PM -0700, T.J. Mercier wrote:
-> > > I'm actually happy I've asked this question, wasn't silly after all. I think the
-> > > problem here is a naming issue. What you really are monitor is "video memory",
-> > > which consist of a memory segment allocated to store data used to render images
-> > > (its not always images of course, GPU an VPU have specialized buffers for their
-> > > purpose).
-> > >
-> > > Whether this should be split between what is used specifically by the GPU
-> > > drivers, the display drivers, the VPU (CODEC and pre/post-processor) or camera
-> > > drivers is something that should be discussed. But in the current approach, you
-> > > really meant Video memory as a superset of the above. Personally, I think
-> > > generically (to de-Andronized your work), en-globing all video memory is
-> > > sufficient. What I fail to understand is how you will manage to distinguished
-> > > DMABuf Heap allocation (which are used outside of Android btw), from Video
-> > > allocation or other type of usage. I'm sure non-video usage will exist in the
-> > > future (think of machine learning, compute, other high bandwidth streaming
-> > > thingy ...)
-> > >
-> > Ok thank you for pointing out the naming issue. The naming is a
-> > consequence of the initial use case, but I guess it's too specific.
-> > What I want out of this change is that android can track dmabufs that
-> > come out of heaps, and drm can track gpu memory. But other drivers
-> > could track different resources under different names. Imagine this
-> > were called a buffer cgroup controller instead of a GPU cgroup
-> > controller. Then the use component ("video memory") isn't tied up with
-> > the name of the controller, but it's up to the name of the bucket the
-> > resource is tracked under. I think this meets the needs of the two use
-> > cases I'm aware of now, while leaving the door open to other future
-> > needs. Really the controller is just enabling abstract named buckets
-> > for tracking and eventually limiting a type of resource.
->
-> So, there hasn't been whole lot of discussion w/ other GPU folks and what
-> comes up still seems to indicate that we're still long way away from having
-> a meaningful gpu controller.
->
-Yes, and I would still be happy to collaborate.
+On Mon, 16 May 2022 16:01:05 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-> For your use case, would it make sense to just
-> add dmabuf as a key to the misc controller?
->
-Thanks for your suggestion. This almost works. "dmabuf" as a key could
-work, but I'd actually like to account for each heap. Since heaps can
-be dynamically added, I can't accommodate every potential heap name by
-hardcoding registrations in the misc controller.
+> > > Flushing unnecessary groups with a ratelimit doesn't sound like an
+> > > improvement to me.
+> > 
+> > Then I'm only concerned about a situation when there's a single deep
+> > memcg that undergoes both workingset_refault() and zswap querying.
+> > The latter (bare call to cgroup_rstat_flush()) won't reset
+> > stats_flush_threshold, so the former (or the async flush more likely)
+> > would attempt a flush too. The flush work (on the leaf memcg) would be
+> > done twice even though it may be within the tolerance of cumulated
+> > error the second time.
+> > 
+> > This is a thing that might require attention in the future (depending on
+> > some data how it actually performs). I see how the current approach is
+> > justified.
+> 
+> Yes, we can optimize it should the need arise. So far it's been fine.
+> 
+> Thanks for your thoughts, Michal.
 
-> I'm not sure it makes sense to
-> push "gpu controller" forward if there's no conceptual consensus around what
-> resources are.
->
-> Thanks.
->
-> --
-> tejun
+Me too.
+
+I think everything is settled here so I plan to import this series into
+mm-stable in a couple of days.
+
+at
+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree/patches/
+
+ documentation-filesystems-proc-update-meminfo-section.patch
+ documentation-filesystems-proc-update-meminfo-section-fix.patch
+ documentation-filesystems-proc-update-meminfo-section-fix-2.patch
+ mm-kconfig-move-swap-and-slab-config-options-to-the-mm-section.patch
+ mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
+ mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
+ mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix.patch
+ mm-kconfig-simplify-zswap-configuration.patch
+ mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
+ zswap-memcg-accounting.patch
+ zswap-memcg-accounting-fix.patch
+ zswap-memcg-accounting-fix-2.patch
+
+
