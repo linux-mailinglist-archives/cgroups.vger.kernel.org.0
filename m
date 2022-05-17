@@ -2,55 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E50C5529964
-	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 08:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86972529989
+	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 08:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbiEQGQJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 02:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
+        id S239543AbiEQG1Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 02:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbiEQGQI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 02:16:08 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2760377F6;
-        Mon, 16 May 2022 23:16:05 -0700 (PDT)
-Received: from kwepemi100018.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L2Qln5BPLzGpnN;
-        Tue, 17 May 2022 14:13:09 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100018.china.huawei.com (7.221.188.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 17 May 2022 14:16:03 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 17 May 2022 14:16:02 +0800
-Subject: Re: [PATCH -next] block: fix io hung of setting throttle limit
- frequently
-To:     Tejun Heo <tj@kernel.org>
-CC:     Zhang Wensheng <zhangwensheng5@huawei.com>,
-        "ming.lei@redhat.com >> Ming Lei" <ming.lei@redhat.com>,
-        <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>
-References: <20220516014429.33723-1-zhangwensheng5@huawei.com>
- <YoKmCOAzwzw3Lz7g@slm.duckdns.org>
- <ca251645-8d52-7a93-6ac2-579d97922a9e@huawei.com>
- <YoMiJIUehq1UyzgQ@slm.duckdns.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <8abf8186-c5c3-47c1-7acd-9116f127fd03@huawei.com>
-Date:   Tue, 17 May 2022 14:16:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S231972AbiEQG1X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 02:27:23 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A0B44A10
+        for <cgroups@vger.kernel.org>; Mon, 16 May 2022 23:27:21 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id u3so3442811qta.8
+        for <cgroups@vger.kernel.org>; Mon, 16 May 2022 23:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/VZ003Tt4Xcs5b5MSVzwdzdu2w+oMn/jVVTXV7pwP0Q=;
+        b=XCkxY17WFQtwiGdPCLF/FDTy/sWzghcmBo2FIvAzjLCKThj+2y3ZyTazBSiiX6MQku
+         1f10aJOY0lnBtQTKrPd4SadJyOVAARsQCGG0YDbJ4BtCK2W5RpS4tAWHz2r25rvQ462y
+         dPEliaOZYCx63Mb87Y3E9K4TKdiH3zjqL3lMm+Xk2YDfqpk8b4nDfFqmrpBFAzvcusgE
+         dVEL8EjODLi22DlqTXW8fj1DpMEQ+L668esvc9boab9aSy3Q4Gglxmt6Nc1mg9feU3Gr
+         V8oIBoJWqj5Ew9ZEYCCUfrnFkJ0lU7y6thUhE4RNQ9uSiFVdXFTIxCos8+Xl1OOa/cAv
+         eBNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/VZ003Tt4Xcs5b5MSVzwdzdu2w+oMn/jVVTXV7pwP0Q=;
+        b=GfYhTWBV7C13zjSzb2ZcvH5Ta2bYFTUlg3vYydC1o7+esmHjKdkWPV8Fz3eIaKYxfK
+         zi0OyZ4fX1Cet4OC94xPjep0AHcKdJOFtX+22U42mFD1ZRQHkHqcw4PwOhT68pYFm/3m
+         laWFcUYfpox/R3ARSEekgdbz8gNQHbJeIyt9Ce+N/zL6jtj6Cj7s2bHXaT0HgCHdKh9Z
+         hcJAsUpwPpBB/GSUiiEl6qOODaUJFDTXXey66Ein8OaQGgxADgNyAI0CJ+If1dWmWowf
+         74MkBP7MwVdxnGJGq0n8ZpVNzYZgWBlPXNPF+aZtt6A4LgQL70R4vpv369fZpjgJvJSf
+         hT7g==
+X-Gm-Message-State: AOAM5316B/O7tEy1RJzk+7pOXes7on2NlL231Z69aRSePfjw/xSgEb03
+        eyYsnI/HEQeirJdhpLE/2dsJFEY2ny6UXwfQL9lpVw==
+X-Google-Smtp-Source: ABdhPJxl0un4AHZJxwo0t2BmM1xU5ZfILBywD7KGYMuBNpRFIoWDikw3gptvL/6bkdYNOyR0T1az7wKTKhl+BjUf+YI=
+X-Received: by 2002:ac8:584d:0:b0:2f3:ec5e:3708 with SMTP id
+ h13-20020ac8584d000000b002f3ec5e3708mr18704435qth.306.1652768840670; Mon, 16
+ May 2022 23:27:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YoMiJIUehq1UyzgQ@slm.duckdns.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <CACGdZYLMW2KHVebfyJZVn9G=15N+Jt4+8oF5gq3wdDTOcXbk9A@mail.gmail.com>
+ <20220513174030.1307720-1-khazhy@google.com> <20220517061238.GB4789@lst.de>
+In-Reply-To: <20220517061238.GB4789@lst.de>
+From:   Khazhy Kumykov <khazhy@google.com>
+Date:   Mon, 16 May 2022 23:27:09 -0700
+Message-ID: <CACGdZYLJjLyKHSSuTJH3_++NufsjDGjdz4vZwj0GKSiYQEvWpA@mail.gmail.com>
+Subject: Re: [RESEND][RFC PATCH] blkcg: rewind seq_file if no stats
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ab485805df2f3baf"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,44 +70,104 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ÔÚ 2022/05/17 12:18, Tejun Heo Ð´µÀ:
-> On Tue, May 17, 2022 at 11:12:28AM +0800, yukuai (C) wrote:
->> Ming added a condition in tg_with_in_bps_limit():
->> -       if (bps_limit == U64_MAX) {
->> +       /* no need to throttle if this bio's bytes have been accounted */
->> +       if (bps_limit == U64_MAX || bio_flagged(bio, BIO_THROTTLED)) {
->>
->> Which will let the first throttled bio to be issued immediately once
->> the config if updated.
->>
->> Do you think this behaviour is OK? If so, we can do the same for
->> tg_with_in_iops_limit.
-> 
-> So, the current behavior is that if the user is being silly, it will get
-> slower and slower. The new behavior would be that if the user is being
-> silly, it can issue IOs faster and faster, which creates a perverse
-> incentive to be silly.
-Yes,
+--000000000000ab485805df2f3baf
+Content-Type: text/plain; charset="UTF-8"
 
-I just found that Ming's patch introduce a new problem:
+On Mon, May 16, 2022 at 11:12 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Fri, May 13, 2022 at 10:40:30AM -0700, Khazhismel Kumykov wrote:
+> > Restores the previous behavior of only displaying devices for which we
+> > have statistics (and removes the current, broken, behavior of printing
+> > devname with no newline if no statistics)
+> >
+> > In lieu of get_seq_buf + seq_commit, provide a way to "undo" writes if
+> > we use seq_printf
+>
+> I have to say I much prefer the simpler fix from Wolfgang.  But
+Wolfgang's fix still results in a change in behavior, and in my
+opinion a worse behavior - we don't need to print out the device names
+if there are no stats.
 
-If multiple bios are throttled, then they will be issued one by one with
-corresponding time. However, after Ming's patch, all throttled bios will
-be issued immediately once the waiting time of first bio is reached. And
-such behaviour is definitely a problem...
+> if we want to go down this route it needs to split into a patch
+> for the seq_file infrastruture and a separate one for the blk-cgroup
+> code.
+Of course - I can spin this into a series if we think it's worthwhile
 
-> 
-> Probably the right thing to do is probably something like translating the
-> existing budget in light of the new configuration so that config change
-> neither gives or takes away the budget which has already accumulated. That
-> said, are you guys seeing this becoming an issue in practice?
+--000000000000ab485805df2f3baf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Agreed, the solution sounds reasonable. And this problem is found during
-test, which issue a large io and in the meantime updating config with
-random value.
-
-Thanks,
-Kuai
-> 
-> Thanks.
-> 
+MIIPmwYJKoZIhvcNAQcCoIIPjDCCD4gCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz1MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+h3dPtFviTyG11HYwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6
+Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYIKwYBBQUH
+AQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2NhL2dzYXRs
+YXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29t
+L2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei6x4schvR
+zV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBAE0ANr7NUOqEcZce4KYP
+SjzlrshSC8sgJ8dKDDbe35PL86vDuMIrytVjiV10p/YUofun9GeHBY6r5kTyh4be5FgftiiNtWzn
+U1W5cxLYMT1hKYxXxnM2sWMQGFl4TkxxbRoVZa3ou/NxFdAZeiQSwGnzk5oIDTBZQc8q3wMa1svm
+A5Rd4MVaIUt+hyk6seAldN6k4/O34O1l2V6D+/BwagyzLWvOeMEM9hClVF+F6a20yy4dcDsprFZZ
+Sk9JzUy9F6FM7L1wT2ndjTNDja4Y2tixf31KuisZLGKmDZsW/fXF1GgWDaM0DbYJwtE3kHylWnMk
+CN4PfYgIa15C5A9lXhExggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
+YWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENBIDIwMjAC
+EAFEftjde/YEIFcjUXqhcBUwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBLm+Sjs
+jWluXaZVzFk/C9pV/A1deiWd/53KiREhYek2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIyMDUxNzA2MjcyMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCMqFxOxY1nI+KIjL/ouxnp8mAS
+ic6oFKsn2Pja8hC6EkwKixGl0Eo2KHbQio8U1D/MYHuOaDhw3SgdcZmNzFK59SkIX9lCKpwmfkiA
+2apHcG1O9ogUi0we8+5yMPYJ/oOlsx0T4lUI68HAZsqqVX7TBCr45ke8bNhMjIZJ32d711GYay3l
+dICyicKBDa2BjsYWYCSqvSu1xJft+72fjhgUbKJ01v88bgqpZJPAErGRgvloiXp61NqZKzcxyMa6
+b7z+c86EhhJvu2YREI9hg/qfMp8DqZyrGzSNAOThr+2J9xy66NLMY95g39kHDBgBd9i2KIGmrN+y
+tidIca+Si3VR
+--000000000000ab485805df2f3baf--
