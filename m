@@ -2,65 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ADE52A9FE
-	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 20:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C0852AA63
+	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 20:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347128AbiEQSHc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 14:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
+        id S230062AbiEQSOz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 14:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351889AbiEQSHZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 14:07:25 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED577517EB
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 11:07:13 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id w4so25772830wrg.12
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 11:07:13 -0700 (PDT)
+        with ESMTP id S1352100AbiEQSOB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 14:14:01 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F83515A3
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 11:13:48 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id v191-20020a1cacc8000000b00397001398c0so1865972wme.5
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 11:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f5miC2kWn/l2e0BUuAIeZlYgpjUY+Gi8Grdp3KqcrK8=;
-        b=UXqcmaywsD5AB9IxCHPt0Uzp0QohHozlmtmz6BUjExY3c7FuVDvcAcFQPalL4lBncW
-         HtxU2aNWgnohBNpUkXNy+DMO7+l8Aegg71l0oKsr2IbYmOXivgmCvqYeFrXCGjan04ps
-         ZvtMyokVjpdqSs/XCEBXmjvND+xdFFHhS4+8FmNzP0sffxiidGouM1ciTVqvVK8lMe4I
-         zEcOxXsXYwHSqvRi89rmltszgIXa2B2qqfRRhcat7Zq59yG6GNoXxAFvzvqtctcP9Mmp
-         fIJIGOBXKWXzGaWOqzbGojB9SYCA0y6yoI2nss/O5wQvCxq6wXVn5a4cAlRTGeth+PyV
-         Bkcg==
+        bh=SxdLGiW7G4yy4xMRD8hfhHfhbpz1FE3G/RxrHKIn0i4=;
+        b=dlOjwguLoSABSlSgnpYbdu/+hz6xKKTWhzMk/C7LJGmIpRXsihQvKoARr8bmjTriEN
+         CnZHHPI2C6oDaLfkZ/omNpk2kv0RAjqvQFOH1wjzYlmNblToLm7kwdYRSORYVgTzy0TX
+         x43CqGlTOW1HisGyl/oCzP8SWveY/V6ov38GxWtdQ8CjCkCQMPiNjeBLGeHRIXMTCCNQ
+         5tFyi/hY0V1RA7m53sC3PKKtrvyTOju4KPAXPgE9CjhmIumupMoyfhcxAfdfeO8b1T18
+         J7mie+Ri7kqib9BUe8Ys0WGxdy5mjIjG5eEIc6KeN0U5Rz8uIL1LV+0NDyoqZqumhfU8
+         BdKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f5miC2kWn/l2e0BUuAIeZlYgpjUY+Gi8Grdp3KqcrK8=;
-        b=1ifQwTRic4pr1zPhWXjur5d0YZoJ8pcL2pX7+4NGZqmtGXrog3sr4WXQGIyTxlBTNE
-         zzzen+iDcrhytBLc3rfR1DnOEGOpeR4y9MVH1Ef3F+K9txjV84BCbEd31iplyK1of4v4
-         4FUdKde1y1ynXRdYqH95ke7dvJc1Es1QGzRVYBVv/AX+zCtfZ85eddYKK/iXXKcKCgj7
-         N1W0+XMvt2FfgvmMWfT5gRBaWTlFq1GfoW9AOBRPZcLWpKh8Irk/7cDEH+BRm5kDN0Yd
-         WLXHQ4wbAMZlfOeJas+kn//egTfFcdlhYvuHj2EKroi/sI57i1vRw9DeXQpzjp/X+qUY
-         VZog==
-X-Gm-Message-State: AOAM532YBW1bhFVEZDdX+AZsyuTwJyBVyOluAE2vr/bXj1VC9z9cYMuh
-        x/Pnvy3I98MRzZQ/NmAM1V/7leLKLWJovH82ZKKDsNhfQxKrDQ==
-X-Google-Smtp-Source: ABdhPJxgPBQ3jZTZo+4lcUoUUl3HUD7KiwclMhzdPE5ncEPURSEx6ftaxhVvrc8sFgY/RBdbkWQeiKwl97+aJV93RCg=
-X-Received: by 2002:a05:6000:1815:b0:20a:deee:3cf0 with SMTP id
- m21-20020a056000181500b0020adeee3cf0mr19322657wrh.210.1652810832119; Tue, 17
- May 2022 11:07:12 -0700 (PDT)
+        bh=SxdLGiW7G4yy4xMRD8hfhHfhbpz1FE3G/RxrHKIn0i4=;
+        b=vvkzwPotLhbmo97D//l3qwhNlj/ysZ47KbLO0yJIUgJt3P5Vh8EhoWvCUk6wv7XXMt
+         EGSOoOaFIDU/Mf9+8KnGGWgt33krubKh1ImIoyEOobcy0tVn3I52C8GAuHVLbVDkhQFL
+         jlJcfialj5B7U5cyazHR5Hk7X7ZKus2ux8AYC+/oBO89nsMWBiSkTzwkvB0hD2krKHJv
+         7u+XYFjRg2J+EFNq+9BiK2Avwl+jazyx0HNo67mMtMqDHwpD4/gtSyyk02MBR+Mo+uZ0
+         ZNOfU6Kqw/Krda/0cl8g8kDXMFk3bLIS/fMokR6OWJyfphGF8sUrTmK4eRL/0XVV0jdE
+         +UEA==
+X-Gm-Message-State: AOAM5308CrMGbsGxCjAOmnWxgMS4ZeCg3fP74W58/8ZoNqy7EL4H6DCT
+        wig9CZls6vzAsRl6rufJf2q76PotZcbsHT6ombPk4w==
+X-Google-Smtp-Source: ABdhPJwoiJ5pxRwzxetMp75okFV9PBCgHVA8ptysLcZUPvY8nSQ/S2080HUHHLeS3rHYTa428cdTOMVUWbutGjM/LlI=
+X-Received: by 2002:a05:600c:1910:b0:394:8517:496e with SMTP id
+ j16-20020a05600c191000b003948517496emr22699150wmq.24.1652811226699; Tue, 17
+ May 2022 11:13:46 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
- <YoNHJwyjR7NJ5kG7@dhcp22.suse.cz>
-In-Reply-To: <YoNHJwyjR7NJ5kG7@dhcp22.suse.cz>
+ <YoPHtHXzpK51F/1Z@carbon>
+In-Reply-To: <YoPHtHXzpK51F/1Z@carbon>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 17 May 2022 11:06:36 -0700
-Message-ID: <CAJD7tkYnBjuwQDzdeo6irHY=so-E8z=Kc_kZe52anMOmRL+8yA@mail.gmail.com>
+Date:   Tue, 17 May 2022 11:13:10 -0700
+Message-ID: <CAJD7tkbbiP0RusWBdCvozjauKN-vhgvzWtsL3Hu5y2dLr63idQ@mail.gmail.com>
 Subject: Re: [RFC] Add swappiness argument to memory.reclaim
-To:     Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Yu Zhao <yuzhao@google.com>,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Chen Wandun <chenwandun@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -74,9 +74,9 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 16, 2022 at 11:56 PM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, May 17, 2022 at 9:05 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> On Mon 16-05-22 15:29:42, Yosry Ahmed wrote:
+> On Mon, May 16, 2022 at 03:29:42PM -0700, Yosry Ahmed wrote:
 > > The discussions on the patch series [1] to add memory.reclaim has
 > > shown that it is desirable to add an argument to control the type of
 > > memory being reclaimed by invoked proactive reclaim using
@@ -89,33 +89,45 @@ On Mon, May 16, 2022 at 11:56 PM Michal Hocko <mhocko@suse.com> wrote:
 > > tasks of different app classes based on their individual QoS needs. It
 > > also helps for use cases when particularly page cache is high and we
 > > want to mainly hit that without swapping out.
+> >
+> > The interface would be something like this (utilizing the nested-keyed
+> > interface we documented earlier):
+> >
+> > $ echo "200M swappiness=30" > memory.reclaim
 >
-> Can you be more specific about the usecase please? Also how do you
+> What are the anticipated use cases except swappiness == 0 and
+> swappiness == system_default?
+>
+> IMO it's better to allow specifying the type of memory to reclaim,
+> e.g. type="file"/"anon"/"slab", it's a way more clear what to expect.
 
-For example for a class of applications it may be known that
-reclaiming one type of pages anon/file is more profitable or will
-incur an overhead, based on userspace knowledge of the nature of the
-app. If most of what an app use for example is anon/tmpfs then it
-might be better to explicitly ask the kernel to reclaim anon, and to
-avoid reclaiming file pages in order not to hurt the file cache
-performance.
+I imagined swappiness would give user space flexibility to reclaim a
+ratio of file vs. anon as it sees fit based on app class or userspace
+policy, but I agree that the guarantees of swappiness are weak and we
+might want an explicit argument that directly controls the return
+value of get_scan_count() or whether or not we call shrink_slab(). My
+fear is that this interface may be less flexible, for example if we
+only want to avoid reclaiming file pages, but we are fine with anon or
+slab. Maybe in the future we will have a new type of memory to
+reclaim, does it get implicitly reclaimed when other types are
+specified or not?
 
-It could also be a less aggressive alternative to /proc/sys/vm/drop_caches.
+Maybe we can use one argument per type instead? E.g.
+    $ echo "200M file=no anon=yes slab=yes" > memory.reclaim
 
-> define the semantic? Behavior like vm_swappiness is rather vague because
-> the kernel is free to ignore (and it does indeed) this knob in many
-> situations. What is the expected behavior when user explicitly requests
-> a certain swappiness?
+The default value would be "yes" for all types unless stated
+otherwise. This is also leaves room for future extensions (maybe
+file=clean to reclaim clean file pages only?). Interested to hear your
+thoughts on this!
 
-My initial thoughts was to have the same behavior as vm_swappiness,
-but stateless. If a user provides a swappiness value then we use it
-instead of vm_swappiness. However, I am aware that the definition is
-vague and there are no guarantees here, the only reason I proposed
-swappiness vs. explicit type arguments (like the original RFC and
-Roman's reply) is flexibility. It looks like explicit type arguments
-would be more practical though. I will continue the discussion
-replying to Roman.
+>
+> E.g. what
+> $ echo "200M swappiness=1" > memory.reclaim
+> means if there is only 10M of pagecache? How much of anon memory will
+> be reclaimed?
 
-> --
-> Michal Hocko
-> SUSE Labs
+Good point. I agree that the type argument or per-type arguments have
+multiple advantages over swappiness.
+
+>
+> Thanks!
