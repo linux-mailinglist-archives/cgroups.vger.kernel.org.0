@@ -2,148 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D145B52ACF2
-	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 22:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D44C52ADAF
+	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 23:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347957AbiEQUpy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 16:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
+        id S229707AbiEQVw3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 17:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351440AbiEQUpw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 16:45:52 -0400
-Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B718315FC3
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 13:45:50 -0700 (PDT)
-Date:   Tue, 17 May 2022 13:45:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1652820349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Em8NsZUR8JQ7Gugh2/gtd6noWd4WuWBv2BitYZODNhk=;
-        b=gzIje8V5/YcreFfY/XovYcV9/bRe+Q+bz7ix4NVeJbUGrDDGGKXA6P1dVzhpOYec180+j1
-        687rvJUDXF+QWBXpMR9zbz3liFxyDGztBFNH/KvWQ5pdpm0KVoHYUpWWXSrliTCmmhEmtG
-        Uj3MXGL4v/J5MCUfWT6Ey4xVnycj/4w=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>
-Subject: Re: [RFC] Add swappiness argument to memory.reclaim
-Message-ID: <YoQJdoqh7/S0FI7a@carbon>
-References: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
- <YoPHtHXzpK51F/1Z@carbon>
- <CAJD7tkbbiP0RusWBdCvozjauKN-vhgvzWtsL3Hu5y2dLr63idQ@mail.gmail.com>
- <YoP8P7hzXIyogQ68@carbon>
- <CAJD7tkaPWcFyisv3Kso0AFUGkQiiAiFmsV2R3ZU2SNc4XP8v+w@mail.gmail.com>
+        with ESMTP id S229643AbiEQVw2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 17:52:28 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AD24CD43
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d21so106717wra.10
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
+        b=lRZ5GxxxrkWxHuTV9nhyvyTmdpz78TOI1zQA1xl82f7kTLOB3C3gakvuMQbXDJXl2J
+         fogZI6IRq2L0TyIBR/A2xVS650k799Zw2lpmLrIq6BDVqOgi8hE7V6afS8zj/ASXKIML
+         hBwLR1q4KHyqWqK02TMxkkTUfiMmnIqO/KZQUBnZY7i4cpePrAZ7IcaqWfDjdYjhsEuv
+         CETs/qZ6oMbCJA3bXYsZ1e739HI5xqLkrgtNhwmuDCLZtqFcXquVY4QfqTGpKwF+W/p1
+         5Nqm7UL1nc1wjchOez5kkQqqyoXFBp6pKjpGucj3YGrBFFJ489gN2zLQOxiFk0KMwXRv
+         IEIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
+        b=0SfOAzjsKRISca+LoCyFTcaLv8lfIqLQFGWJ75hObbx/6Medclur6xIJUJuYb47YwA
+         Dg9smQYb4OFcswL86GIfIaUgTlOv59arpNblgWaB181gxevMRbvUnNV4cl2x+LaTaVq2
+         c5mDzjN91asZVMh91zBzWFF4pB9BEscHsQRXnKi/U3v8E6Hzh19IsQT65xXSuMGkxuex
+         +hAINlleNjYgRJpK9O58beAz9ROAQTVFk2S+puKQk8XIyPyVs40Z/wFVcHrfD1Ke8XeJ
+         CGnDZe6sDwAKGKe5bDW15VdUGq/O44tHlxRkH8GYylWVUK8CIKo2ZuPce9Af5jTaO0QO
+         u9HQ==
+X-Gm-Message-State: AOAM533bbAgBE/JBfGhCASXwhn6I/tiGji9aWNI8O/lijLzZrf0LFsYn
+        oJnJX7G2g+pwR0ovuPr2XhpBSIu5KSLaCQI9fgi5bQ==
+X-Google-Smtp-Source: ABdhPJwkD4NBCsYJCrEGudQHrl3n4XCoQFQunN5fD0Av9+UeGss5C/xYh6EoMYvlQ2BTtWl6HgiteKNolpbFPYtmWKA=
+X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
+ c5-20020adffb05000000b0020ae1138f3fmr20501121wrr.534.1652824345517; Tue, 17
+ May 2022 14:52:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkaPWcFyisv3Kso0AFUGkQiiAiFmsV2R3ZU2SNc4XP8v+w@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220515023504.1823463-1-yosryahmed@google.com>
+ <20220515023504.1823463-3-yosryahmed@google.com> <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
+In-Reply-To: <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 17 May 2022 14:51:49 -0700
+Message-ID: <CAJD7tkbDtO=wDXFDDmnPLDnEeXG6JQXr=xqqeim+OEC6xTOCew@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 2/7] cgroup: bpf: flush bpf stats on rstat flush
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 17, 2022 at 01:11:13PM -0700, Yosry Ahmed wrote:
-> On Tue, May 17, 2022 at 12:49 PM Roman Gushchin
-> <roman.gushchin@linux.dev> wrote:
+On Mon, May 16, 2022 at 7:08 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, May 15, 2022 at 02:34:59AM +0000, Yosry Ahmed wrote:
+> > +
+> > +void bpf_rstat_flush(struct cgroup *cgrp, int cpu)
+> > +{
+> > +     struct bpf_rstat_flusher *flusher;
+> > +     struct bpf_rstat_flush_ctx ctx = {
+> > +             .cgrp = cgrp,
+> > +             .parent = cgroup_parent(cgrp),
+> > +             .cpu = cpu,
+> > +     };
+> > +
+> > +     rcu_read_lock();
+> > +     migrate_disable();
+> > +     spin_lock(&bpf_rstat_flushers_lock);
+> > +
+> > +     list_for_each_entry(flusher, &bpf_rstat_flushers, list)
+> > +             (void) bpf_prog_run(flusher->prog, &ctx);
+> > +
+> > +     spin_unlock(&bpf_rstat_flushers_lock);
+> > +     migrate_enable();
+> > +     rcu_read_unlock();
+> > +}
+> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> > index 24b5c2ab5598..0285d496e807 100644
+> > --- a/kernel/cgroup/rstat.c
+> > +++ b/kernel/cgroup/rstat.c
+> > @@ -2,6 +2,7 @@
+> >  #include "cgroup-internal.h"
 > >
-> > On Tue, May 17, 2022 at 11:13:10AM -0700, Yosry Ahmed wrote:
-> > > On Tue, May 17, 2022 at 9:05 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > >
-> > > > On Mon, May 16, 2022 at 03:29:42PM -0700, Yosry Ahmed wrote:
-> > > > > The discussions on the patch series [1] to add memory.reclaim has
-> > > > > shown that it is desirable to add an argument to control the type of
-> > > > > memory being reclaimed by invoked proactive reclaim using
-> > > > > memory.reclaim.
-> > > > >
-> > > > > I am proposing adding a swappiness optional argument to the interface.
-> > > > > If set, it overwrites vm.swappiness and per-memcg swappiness. This
-> > > > > provides a way to enforce user policy on a stateless per-reclaim
-> > > > > basis. We can make policy decisions to perform reclaim differently for
-> > > > > tasks of different app classes based on their individual QoS needs. It
-> > > > > also helps for use cases when particularly page cache is high and we
-> > > > > want to mainly hit that without swapping out.
-> > > > >
-> > > > > The interface would be something like this (utilizing the nested-keyed
-> > > > > interface we documented earlier):
-> > > > >
-> > > > > $ echo "200M swappiness=30" > memory.reclaim
-> > > >
-> > > > What are the anticipated use cases except swappiness == 0 and
-> > > > swappiness == system_default?
-> > > >
-> > > > IMO it's better to allow specifying the type of memory to reclaim,
-> > > > e.g. type="file"/"anon"/"slab", it's a way more clear what to expect.
-> > >
-> > > I imagined swappiness would give user space flexibility to reclaim a
-> > > ratio of file vs. anon as it sees fit based on app class or userspace
-> > > policy, but I agree that the guarantees of swappiness are weak and we
-> > > might want an explicit argument that directly controls the return
-> > > value of get_scan_count() or whether or not we call shrink_slab(). My
-> > > fear is that this interface may be less flexible, for example if we
-> > > only want to avoid reclaiming file pages, but we are fine with anon or
-> > > slab.
-> > > Maybe in the future we will have a new type of memory to
-> > > reclaim, does it get implicitly reclaimed when other types are
-> > > specified or not?
-> > >
-> > > Maybe we can use one argument per type instead? E.g.
-> > >     $ echo "200M file=no anon=yes slab=yes" > memory.reclaim
-> > >
-> > > The default value would be "yes" for all types unless stated
-> > > otherwise. This is also leaves room for future extensions (maybe
-> > > file=clean to reclaim clean file pages only?). Interested to hear your
-> > > thoughts on this!
+> >  #include <linux/sched/cputime.h>
+> > +#include <linux/bpf-rstat.h>
 > >
-> > The question to answer is do you want the code which is determining
-> > the balance of scanning be a part of the interface?
+> >  static DEFINE_SPINLOCK(cgroup_rstat_lock);
+> >  static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+> > @@ -168,6 +169,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+> >                       struct cgroup_subsys_state *css;
 > >
-> > If not, I'd stick with explicitly specifying a type of memory to scan
-> > (and the "I don't care" mode, where you simply ask to reclaim X bytes).
-> >
-> > Otherwise you need to describe how the artificial memory pressure will
-> > be distributed over different memory types. And with time it might
-> > start being significantly different to what the generic reclaim code does,
-> > because the reclaim path is free to do what's better, there are no
-> > user-visible guarantees.
-> 
-> My understanding is that your question is about the swappiness
-> argument, and I agree it can get complicated. I am on board with
-> explicitly specifying the type(s) to reclaim. I think an interface
-> with one argument per type (whitelist/blacklist approach) could be
-> more flexible in specifying multiple types per invocation (smaller
-> race window between reading usages and writing to memory.reclaim), and
-> has room for future extensions (e.g. file=clean). However, if you
-> still think a type=file/anon/slab parameter is better we can also go
-> with this.
+> >                       cgroup_base_stat_flush(pos, cpu);
+> > +                     bpf_rstat_flush(pos, cpu);
+>
+> Please use the following approach instead:
+>
+> __weak noinline void bpf_rstat_flush(struct cgroup *cgrp, struct cgroup *parent, int cpu)
+> {
+> }
+>
+> and change above line to:
+>   bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
+>
+> Then tracing bpf fentry progs will be able to attach to bpf_rstat_flush.
+> Pretty much the patches 1, 2, 3 are not necessary.
+> In patch 4 add bpf_cgroup_rstat_updated/flush as two kfuncs instead of stable helpers.
+>
+> This way patches 1,2,3,4 will become 2 trivial patches and we will be
+> able to extend the interface between cgroup rstat and bpf whenever we need
+> without worrying about uapi stability.
+>
+> We had similar discusison with HID subsystem that plans to use bpf in HID
+> with the same approach.
+> See this patch set:
+> https://lore.kernel.org/bpf/20220421140740.459558-2-benjamin.tissoires@redhat.com/
+> You'd need patch 1 from it to enable kfuncs for tracing.
+>
+> Your patch 5 is needed as-is.
+> Yonghong,
+> please review it.
+> Different approach for patch 1-4 won't affect patch 5.
+> Patches 6 and 7 look good.
+>
+> With this approach that patch 7 will mostly stay as-is. Instead of:
+> +SEC("rstat/flush")
+> +int vmscan_flush(struct bpf_rstat_flush_ctx *ctx)
+> +{
+> +       struct vmscan_percpu *pcpu_stat;
+> +       struct vmscan *total_stat, *parent_stat;
+> +       struct cgroup *cgrp = ctx->cgrp, *parent = ctx->parent;
+>
+> it will become
+>
+> SEC("fentry/bpf_rstat_flush")
+> int BPF_PROG(vmscan_flush, struct cgroup *cgrp, struct cgroup *parent, int cpu)
 
-If you allow more than one type, how would you balance between them?
-E.g. in your example:
-     $ echo "200M file=no anon=yes slab=yes" > memory.reclaim
-How much slab and anonymous memory will be reclaimed? 100M and 100M?
-Probably not (we don't balance slabs with other types of the memory).
-And if not, the interface becomes very vague: all we can guarantee
-is that *some* pressure will be applied on both anon and slab.
+Thanks so much for taking the time to look into this.
 
-My point is that the interface should have a deterministic behavior
-and not rely on the current state of the memory pressure balancing
-heuristic. It can be likely done in different ways, I don't have
-a strong opinion here.
-
-Thanks!
+Indeed, this approach looks cleaner and simpler. I will incorporate
+that into a V1 and send it. Thanks!
