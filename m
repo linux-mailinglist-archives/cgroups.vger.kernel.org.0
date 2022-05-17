@@ -2,128 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E53852A384
-	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 15:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9433152A797
+	for <lists+cgroups@lfdr.de>; Tue, 17 May 2022 18:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347957AbiEQNfo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 09:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S235701AbiEQQFR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 12:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347907AbiEQNf2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 09:35:28 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9AA4CD5F;
-        Tue, 17 May 2022 06:35:26 -0700 (PDT)
-Received: from kwepemi100006.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L2cY844NkzgYsy;
-        Tue, 17 May 2022 21:34:36 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100006.china.huawei.com (7.221.188.165) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 17 May 2022 21:35:24 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 17 May
- 2022 21:35:23 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <ming.lei@redhat.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next] blk-throttle: delay the setting of 'BIO_THROTTLED' to when throttle is done
-Date:   Tue, 17 May 2022 21:49:09 +0800
-Message-ID: <20220517134909.2910251-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S242554AbiEQQFQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 12:05:16 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B3B50046
+        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 09:05:15 -0700 (PDT)
+Date:   Tue, 17 May 2022 09:05:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1652803513;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QRscBrAyYKCcsJKeuDnK4iX4aYhS2tbsgqstU6o6r+0=;
+        b=E3i7b2DvMjTaav2SXoJjrd4womnB85IlKuEu0WiUCqZOEn75QMduH1dscInT1mHh0d/X2H
+        0jfXW0NcaUEoShRxWykTXdll8ZmIL2hasAGT/f1bR4rCjzHLRtw0/jnJJQshTVZLxaQqBF
+        KkiCSxwcLLhNNQrn0+qH6cl7D3G9GSE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Chen Wandun <chenwandun@huawei.com>
+Subject: Re: [RFC] Add swappiness argument to memory.reclaim
+Message-ID: <YoPHtHXzpK51F/1Z@carbon>
+References: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-commit 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
-introduce a new problem, for example:
+On Mon, May 16, 2022 at 03:29:42PM -0700, Yosry Ahmed wrote:
+> The discussions on the patch series [1] to add memory.reclaim has
+> shown that it is desirable to add an argument to control the type of
+> memory being reclaimed by invoked proactive reclaim using
+> memory.reclaim.
+> 
+> I am proposing adding a swappiness optional argument to the interface.
+> If set, it overwrites vm.swappiness and per-memcg swappiness. This
+> provides a way to enforce user policy on a stateless per-reclaim
+> basis. We can make policy decisions to perform reclaim differently for
+> tasks of different app classes based on their individual QoS needs. It
+> also helps for use cases when particularly page cache is high and we
+> want to mainly hit that without swapping out.
+> 
+> The interface would be something like this (utilizing the nested-keyed
+> interface we documented earlier):
+> 
+> $ echo "200M swappiness=30" > memory.reclaim
 
-[root@localhost ~]# echo "8:0 1024" > /sys/fs/cgroup/blkio/blkio.throttle.write_bps_device
-[root@localhost ~]# echo $$ > /sys/fs/cgroup/blkio/cgroup.procs
-[root@localhost ~]# dd if=/dev/zero of=/dev/sda bs=10k count=1 oflag=direct &
-[1] 620
-[root@localhost ~]# dd if=/dev/zero of=/dev/sda bs=10k count=1 oflag=direct &
-[2] 626
-[root@localhost ~]# 1+0 records in
-1+0 records out
-10240 bytes (10 kB, 10 KiB) copied, 10.0038 s, 1.0 kB/s1+0 records in
-1+0 records out
+What are the anticipated use cases except swappiness == 0 and
+swappiness == system_default?
 
-10240 bytes (10 kB, 10 KiB) copied, 9.23076 s, 1.1 kB/s
--> the second bio is issued after 10s instead of 20s.
+IMO it's better to allow specifying the type of memory to reclaim,
+e.g. type="file"/"anon"/"slab", it's a way more clear what to expect.
 
-This is because if some bios are already queued, current bio is queued
-directly and the flag 'BIO_THROTTLED' is set. And later, when former
-bios are dispatched, this bio will be dispatched without waiting at all,
-this is due to tg_with_in_bps_limit() will return 0 if the flag is set.
+E.g. what
+$ echo "200M swappiness=1" > memory.reclaim
+means if there is only 10M of pagecache? How much of anon memory will
+be reclaimed?
 
-Instead of setting the flag when bio starts throttle, delay to when
-throttle is done to fix the problem.
-
-Fixes: 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 447e1b8722f7..f952f2d942ff 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -811,7 +811,7 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
- 	unsigned int bio_size = throtl_bio_data_size(bio);
- 
- 	/* no need to throttle if this bio's bytes have been accounted */
--	if (bps_limit == U64_MAX || bio_flagged(bio, BIO_THROTTLED)) {
-+	if (bps_limit == U64_MAX) {
- 		if (wait)
- 			*wait = 0;
- 		return true;
-@@ -1226,8 +1226,10 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
- 
- 	spin_lock_irq(&q->queue_lock);
- 	for (rw = READ; rw <= WRITE; rw++)
--		while ((bio = throtl_pop_queued(&td_sq->queued[rw], NULL)))
-+		while ((bio = throtl_pop_queued(&td_sq->queued[rw], NULL))) {
-+			bio_set_flag(bio, BIO_THROTTLED);
- 			bio_list_add(&bio_list_on_stack, bio);
-+		}
- 	spin_unlock_irq(&q->queue_lock);
- 
- 	if (!bio_list_empty(&bio_list_on_stack)) {
-@@ -2134,7 +2136,8 @@ bool __blk_throtl_bio(struct bio *bio)
- 			}
- 			break;
- 		}
--
-+		/* this bio will be issued directly */
-+		bio_set_flag(bio, BIO_THROTTLED);
- 		/* within limits, let's charge and dispatch directly */
- 		throtl_charge_bio(tg, bio);
- 
-@@ -2190,7 +2193,6 @@ bool __blk_throtl_bio(struct bio *bio)
- 
- out_unlock:
- 	spin_unlock_irq(&q->queue_lock);
--	bio_set_flag(bio, BIO_THROTTLED);
- 
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- 	if (throttled || !td->track_bio_latency)
--- 
-2.31.1
-
+Thanks!
