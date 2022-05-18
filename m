@@ -2,99 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB9C52C5D8
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 00:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDACD52C641
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 00:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbiERWC0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 May 2022 18:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S229895AbiERW3l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 May 2022 18:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiERWCG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 May 2022 18:02:06 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9176E326E7;
-        Wed, 18 May 2022 14:51:01 -0700 (PDT)
-Date:   Wed, 18 May 2022 14:50:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1652910659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=02qVginhStaSHo7KGsEK4EkbcmbLK7nbY6S0Hxr/nCs=;
-        b=hMbETtQHahm1PWQMDpmLSNCUjFfulUN/4gcBMHYXScgphqeciT3M7n7fpKLfNjAcSl2GZH
-        pdq2yoyzapR/Ma7PYFJeMR5UFoVtyHvtase62J7+4SOov/nC93PQIPaeMT8U9O8CNobBv6
-        Z6F+B8YxJQrYbYmmHOtw1RZ06WL7euo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Zi Yan <ziy@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH] Revert "mm/vmscan: never demote for memcg reclaim"
-Message-ID: <YoVqPIis1Kk8oY5H@carbon>
-References: <20220518190911.82400-1-hannes@cmpxchg.org>
+        with ESMTP id S229720AbiERW3k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 May 2022 18:29:40 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71E221A94E
+        for <cgroups@vger.kernel.org>; Wed, 18 May 2022 15:29:37 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id i8so3091953plr.13
+        for <cgroups@vger.kernel.org>; Wed, 18 May 2022 15:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=GHsUE9N7qwGKPhSfb7FLSZbI7huX80ouMGDrIjhw1Uk=;
+        b=tok1tK7PAPs2jl/A5+MZDuzJGG74i7qajPVXyIwM3P53jmWgJKGEW7xAVxKnCBpMuW
+         BnKA1MeavVlAHM+qmVYN405lR1GJKzR3fFBXM+n9IgkNThCrONTNOshTDllOgV0aSm2S
+         bpSoI4pRydA/Nn0a0wlg8oLEhiZYRUn3g4325mDVoqBkb0dNlvbTWfaHzn7ZNlNUotWk
+         lNm6knKRwz6jFbdE+onYhm26Cb5FxhurSbjVKHHpKViUX4kmpXEpRm4R4Hv64WsaZg+D
+         s5CpNv4rgXS9RqIgdp3zMSXg1UwgClwDlEWUmWfSEUD++9eq0DBNYmbksnJwUu9qNd6E
+         qINQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GHsUE9N7qwGKPhSfb7FLSZbI7huX80ouMGDrIjhw1Uk=;
+        b=jjBb816OdKHEGeckwKH1NWVahkwEYR+21Xw8fR7gfmkbGfmg/HtUb0C8AjtbqcMMeX
+         kS3YgEViK/31FU2Bxrv+3dHjYRHX4gSnFTRZaFfimJ3/V3o5ps7elcJiI6kHkrdbu7w8
+         pKFgdhDw80tKdINoO28fF3QUDOXDU5jU/hJfl9Eg2ZzFA0a4liXtXgXbqFjThidQZWXS
+         fyy8H14CNa5Cv1MiVakBKDkRMfQcOnM849WyEFddMrkVPkmv9USuMxB4KPK4FsOIUGlx
+         ijmX+BmwrN4H6zg5+npbHFom2yX1bA8WR0MmhSc6XHTHRV1Jv6NX4mxu8ZScdHu7JwgG
+         mA8A==
+X-Gm-Message-State: AOAM532FVOsOW7j0jJ3X6z9FkoxZKYoLvBWMSSf07T+QF3dUOsIwithF
+        IkktnLZA1rgV+qZKKSIdfdOL7g==
+X-Google-Smtp-Source: ABdhPJxPQ+3/S+p5wkyoI6EnBIr0Se7SP74lvulMafErZTqa/eRb6oco6NUfBqYfRV0hsIvy7arjyA==
+X-Received: by 2002:a17:90a:3e81:b0:1df:4c26:1786 with SMTP id k1-20020a17090a3e8100b001df4c261786mr1707941pjc.126.1652912977258;
+        Wed, 18 May 2022 15:29:37 -0700 (PDT)
+Received: from [192.168.1.100] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id im15-20020a170902bb0f00b001616723b8ddsm2231887plb.45.2022.05.18.15.29.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 May 2022 15:29:36 -0700 (PDT)
+Message-ID: <1dad86bb-ae31-5bf8-5810-9e81c68be8ff@kernel.dk>
+Date:   Wed, 18 May 2022 16:29:35 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518190911.82400-1-hannes@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH] blk-cgroup: Remove unnecessary rcu_read_lock/unlock()
+Content-Language: en-US
+To:     Marek Szyprowski <m.szyprowski@samsung.com>, bh1scw@gmail.com,
+        tj@kernel.org
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
+References: <20220516173930.159535-1-bh1scw@gmail.com>
+ <CGME20220518192850eucas1p1458c00d4917c5ed39f2c37c9eb30cd46@eucas1p1.samsung.com>
+ <46253c48-81cb-0787-20ad-9133afdd9e21@samsung.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <46253c48-81cb-0787-20ad-9133afdd9e21@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 18, 2022 at 03:09:11PM -0400, Johannes Weiner wrote:
-> This reverts commit 3a235693d3930e1276c8d9cc0ca5807ef292cf0a.
+On 5/18/22 1:28 PM, Marek Szyprowski wrote:
+> On 16.05.2022 19:39, bh1scw@gmail.com wrote:
+>> From: Fanjun Kong <bh1scw@gmail.com>
+>>
+>> spin_lock_irq/spin_unlock_irq contains preempt_disable/enable().
+>> Which can serve as RCU read-side critical region, so remove
+>> rcu_read_lock/unlock().
+>>
+>> Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
 > 
-> Its premise was that cgroup reclaim cares about freeing memory inside
-> the cgroup, and demotion just moves them around within the cgroup
-> limit. Hence, pages from toptier nodes should be reclaimed directly.
+> This patch landed in today's linux next-20220518 as commit 77c570a1ea85 
+> ("blk-cgroup: Remove unnecessary rcu_read_lock/unlock()").
 > 
-> However, with NUMA balancing now doing tier promotions, demotion is
-> part of the page aging process. Global reclaim demotes the coldest
-> toptier pages to secondary memory, where their life continues and from
-> which they have a chance to get promoted back. Essentially, tiered
-> memory systems have an LRU order that spans multiple nodes.
-> 
-> When cgroup reclaims pages coming off the toptier directly, there can
-> be colder pages on lower tier nodes that were demoted by global
-> reclaim. This is an aging inversion, not unlike if cgroups were to
-> reclaim directly from the active lists while there are inactive pages.
-> 
-> Proactive reclaim is another factor. The goal of that it is to offload
-> colder pages from expensive RAM to cheaper storage. When lower tier
-> memory is available as an intermediate layer, we want offloading to
-> take advantage of it instead of bypassing to storage.
-> 
-> Revert the patch so that cgroups respect the LRU order spanning the
-> memory hierarchy.
-> 
-> Of note is a specific undercommit scenario, where all cgroup limits in
-> the system add up to <= available toptier memory. In that case,
-> shuffling pages out to lower tiers first to reclaim them from there is
-> inefficient. This is something could be optimized/short-circuited
-> later on (although care must be taken not to accidentally recreate the
-> aging inversion). Let's ensure correctness first.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <guro@fb.com>
+> Unfortunately it triggers the following warning on ARM64 based Raspberry 
+> Pi 4B board:>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 1 at block/blk-cgroup.c:301 blkg_create+0x398/0x4e0
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Should this use rcu_read_lock_any_held() rather than rcu_read_lock_held()?
+
+-- 
+Jens Axboe
+
