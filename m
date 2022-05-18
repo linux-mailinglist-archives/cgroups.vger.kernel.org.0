@@ -2,54 +2,43 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDF452AED9
-	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 01:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B3652AEF5
+	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 02:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbiEQXwW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 19:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S232106AbiERAIW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 20:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbiEQXwV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 19:52:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814D252E48;
-        Tue, 17 May 2022 16:52:20 -0700 (PDT)
+        with ESMTP id S231205AbiERAIW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 20:08:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA717E19;
+        Tue, 17 May 2022 17:08:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2F218B81D16;
-        Tue, 17 May 2022 23:52:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4B0C34117;
-        Tue, 17 May 2022 23:52:17 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D01E6B81D97;
+        Wed, 18 May 2022 00:08:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F1F5C385B8;
+        Wed, 18 May 2022 00:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1652831537;
-        bh=pEz6dre40UCCubkWjCpmYmIXIWT0QJP+YHG6iJ3oqAE=;
+        s=korg; t=1652832498;
+        bh=dGo2DK/jcDFeW9OzAZX7pYd8dKE594MPgxl0d5vf08o=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tsprR4zmK/oALRYBT6vfLxQ1klcvHAWxPcTURMr4US/hz7Uw0voe1Rd7mrChl8sdH
-         2miTXW+EY7qU+TEI2unOpAlcbme0xr2QXB48zpwSoZaqLZ+c/nu+dY2yTH5iNx0vo8
-         yhD8XhZUkOY2U6dkpIa/o/EV1/RwxLY79S8QzLW0=
-Date:   Tue, 17 May 2022 16:52:16 -0700
+        b=PuAzQ1xUkMYyjYcicOstd9P9trgynYqqBU+B/c2c5XLaLyMpG8ZFb7oTGcEHuLm28
+         PoiyLQqVLCv4fnNH7dDRn/aAktE47o9fUzo2OtiJyKNlMCgfG01RkCwloZu+jdbZ8T
+         kAcGMpVpaQVVKEem6L1nUmerTDe80ZYkF+mRm8Rw=
+Date:   Tue, 17 May 2022 17:08:17 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
-Message-Id: <20220517165216.7acd8434f8b25606836e21e6@linux-foundation.org>
-In-Reply-To: <YoKtgaxOAMBVKiCf@cmpxchg.org>
-References: <20220510152847.230957-1-hannes@cmpxchg.org>
-        <20220510152847.230957-7-hannes@cmpxchg.org>
-        <20220511173218.GB31592@blackbody.suse.cz>
-        <YnwJUL90fuoHs3YW@cmpxchg.org>
-        <20220513151426.GC16096@blackbody.suse.cz>
-        <Yn6QfdouzkcrygTR@cmpxchg.org>
-        <20220516143459.GA17557@blackbody.suse.cz>
-        <YoKtgaxOAMBVKiCf@cmpxchg.org>
+To:     Wang Cheng <wanngchenng@gmail.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot+ad1b8c404f0959c4bfcc@syzkaller.appspotmail.com
+Subject: Re: [PATCH] mm/mempolicy: fix uninit-value in mpol_rebind_policy()
+Message-Id: <20220517170817.94ca21558bbe035ae06bf6fa@linux-foundation.org>
+In-Reply-To: <20220516094726.b5rrsjg7rvei2od5@ppc.localdomain>
+References: <20220512123428.fq3wofedp6oiotd4@ppc.localdomain>
+        <20220516094726.b5rrsjg7rvei2od5@ppc.localdomain>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -64,46 +53,46 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 16 May 2022 16:01:05 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Mon, 16 May 2022 17:47:26 +0800 Wang Cheng <wanngchenng@gmail.com> wrote:
 
-> > > Flushing unnecessary groups with a ratelimit doesn't sound like an
-> > > improvement to me.
-> > 
-> > Then I'm only concerned about a situation when there's a single deep
-> > memcg that undergoes both workingset_refault() and zswap querying.
-> > The latter (bare call to cgroup_rstat_flush()) won't reset
-> > stats_flush_threshold, so the former (or the async flush more likely)
-> > would attempt a flush too. The flush work (on the leaf memcg) would be
-> > done twice even though it may be within the tolerance of cumulated
-> > error the second time.
-> > 
-> > This is a thing that might require attention in the future (depending on
-> > some data how it actually performs). I see how the current approach is
-> > justified.
 > 
-> Yes, we can optimize it should the need arise. So far it's been fine.
+> ...
+>
+> This patch seems to fix below bug too.
+> KMSAN: uninit-value in mpol_rebind_mm (2)
+> https://syzkaller.appspot.com/bug?id=f2fecd0d7013f54ec4162f60743a2b28df40926b
 > 
-> Thanks for your thoughts, Michal.
+> The uninit-value is pol->w.cpuset_mems_allowed in mpol_rebind_policy().
+> When syzkaller reproducer runs to the beginning of mpol_new(),
+> 
+> 	    mpol_new() mm/mempolicy.c
+> 	  do_mbind() mm/mempolicy.c
+> 	kernel_mbind() mm/mempolicy.c
+> 
+> `mode` is 1(MPOL_PREFERRED), nodes_empty(*nodes) is `true` and `flags`
+> is 0. Then
+> 
+> 	mode = MPOL_LOCAL;
+> 	...
+> 	policy->mode = mode;
+> 	policy->flags = flags;
+> 
+> will be executed. So in mpol_set_nodemask(),
+> 
+> 	    mpol_set_nodemask() mm/mempolicy.c
+> 	  do_mbind()
+> 	kernel_mbind()
+> 
+> pol->mode is 4(MPOL_LOCAL), that `nodemask` in `pol` is not initialized,
+> which will be accessed in mpol_rebind_policy().
 
-Me too.
+Thanks, I added the above to the changelog and I plan to import the
+result into mm-stable later this week.
 
-I think everything is settled here so I plan to import this series into
-mm-stable in a couple of days.
+> IIUC, "#syz fix: mm/mempolicy: fix uninit-value in mpol_rebind_policy()"
+> could be sent to syzbot+ad1b8c404f0959c4bfcc@syzkaller.appspotmail.com
+> to attach the fixing commit to the bug. WDYT?
 
-at
-https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree/patches/
-
- documentation-filesystems-proc-update-meminfo-section.patch
- documentation-filesystems-proc-update-meminfo-section-fix.patch
- documentation-filesystems-proc-update-meminfo-section-fix-2.patch
- mm-kconfig-move-swap-and-slab-config-options-to-the-mm-section.patch
- mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
- mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
- mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix.patch
- mm-kconfig-simplify-zswap-configuration.patch
- mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
- zswap-memcg-accounting.patch
- zswap-memcg-accounting-fix.patch
- zswap-memcg-accounting-fix-2.patch
-
+Could be.  The "syz fix" isn't a thing I've paid much attention to. 
+I'll start doing so ;)
 
