@@ -2,92 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E67052AFEC
-	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 03:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B518A52AFF7
+	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 03:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbiERBcT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 May 2022 21:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S230153AbiERBht (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 May 2022 21:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbiERBcS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 21:32:18 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABFB33363
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 18:32:16 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 137so798874pgb.5
-        for <cgroups@vger.kernel.org>; Tue, 17 May 2022 18:32:16 -0700 (PDT)
+        with ESMTP id S229824AbiERBhs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 May 2022 21:37:48 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94E531340;
+        Tue, 17 May 2022 18:37:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id w17-20020a17090a529100b001db302efed6so568464pjh.4;
+        Tue, 17 May 2022 18:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=xNnxAHcC3RUWM23wBpMAK8Y3L4EOTebAASEZluO85cE=;
-        b=k2hnY/uiyT6WSSX6lxbaW0qn5bcT12bgoL8VXXked6tMGBGzLgQJs7Oe7Ys2h5K7Xf
-         YEszS+nJLBhHDEwuXYcLnFJzch8DPZjWPY9KpBzu6Koq7N/fI8jXZQ79Qn8byopnFSmF
-         1n2nhjhBwPqGgZjKgZYdpYRz1zPMlZwSvDmrXFXrhnDDPUQKtieYV2cOV7bGifIpJEez
-         +pENNh/hdzYuWIFMlS/432DXZoE+hoqz+NKM2fEFmmAvZ6e98hrtoQYalbDp5llI91p1
-         aOt8wgtCo/kWgg6DOOSx6Yw7WdvNHHC9bPkFPK9qa4B6H4POMyPPmkgIEuNtxlrisPLQ
-         fAqQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xx6rePJGi7UaKhXkXrJAOBEtEBFBD4Xp8h1aCNNQ5pk=;
+        b=UQsNDu+K3TL0RoWiqYU8aJzPlG4KoKs+NqzgTjzA9gmgB35p+OeNfvgvxiT+Otn5ux
+         jI5s5WqirBU7Jhbz2L+2B+EJXfZ2e4Cs3jAZ/A0cQMHaqEnA96dxbK2nCn7UlGNwaamT
+         vImHt36Kj+bSNIwtjD+WJcqbXUskciCiPM1BbywHDZQvN8JxmTzU2MFyqB3E1OqyDLPZ
+         vO8A3/HfT0FQ0B2vxv1qWYmZKph3LyIe5s/jDZcMgrwyx4sty97N81e32k6rigUqWKIh
+         CeBuaUr31rQy/LHnS/aJHG3hlw7k5cwRtGBd4X70mYiDYzbWzv3/zupNOkklKPlQW7CU
+         Cu/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=xNnxAHcC3RUWM23wBpMAK8Y3L4EOTebAASEZluO85cE=;
-        b=iracbJ6KJqdmZ7Ce5ds1dTWQWN2BtBHdxinqbnNa4K9KMcRKgM24bw0Qd3oGrN/PaI
-         MzFrF9uev4X/37wlqNy5gSo7aBmxxSjtXUjNqFeb1rzFpQo4GbVNeVZEFQj/lvH13QQo
-         qvHo9JP9fvI74+FrzilQEZ/XMblxozkA01usdfQpzPX7qEwICZicjRJvlZ8IsJx6/a5t
-         NBOR/nOCRxvoVHyb1afVwR9R6Q1krr9o7xwc15M1A2NKHHmmbcqmdt4tP3FWupw/rg5R
-         w9a4Auim6AfauYu7xhW2wMiu+jEbBmeJ1VE5JEQQ3WQYMdl8pB4eJZ5IC81+2oo9237G
-         GUlg==
-X-Gm-Message-State: AOAM5328U12VjrHVX71DXiIeKxkjK5NF5ATAfWbKoWqVecUglhbfOChq
-        Q1etXBa12LBXkzprml9JjsblFhtE19obWA==
-X-Google-Smtp-Source: ABdhPJyyDuelEUIgMnKTcepZxWuBNvDevo2UbPMfYVCqGTACvkXJz5NUXazb0suHLh1CYjIKrN/Iqw==
-X-Received: by 2002:a63:dd14:0:b0:3d8:204c:2f29 with SMTP id t20-20020a63dd14000000b003d8204c2f29mr21542866pgg.512.1652837536250;
-        Tue, 17 May 2022 18:32:16 -0700 (PDT)
-Received: from [127.0.1.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 20-20020a170902ee5400b00161946a7104sm253558plo.86.2022.05.17.18.32.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xx6rePJGi7UaKhXkXrJAOBEtEBFBD4Xp8h1aCNNQ5pk=;
+        b=QNrypGJioS2wh1rQyD/XJJ7IyZk6OEy2imJo+dhDHvDMAJBxGli1tJ4mopcFxOGsdz
+         k3FANd7i6pOuSJKrU+E1FnYwuGGRmYA2nvu5wB6d3fMvz7Ob3z3aM1sZV170ietiJXAd
+         EO4gOcN90sPWAl5YHAI9g2KLQxNzG+QPVKOnZHV+8C/FlZn4Ej5Zo73wai5tUiIs5iTE
+         kjCBAIcoSqZUE8Zpg6/nkEkUclBC6OU3DS8oGEQmQog51G0hlpjk3lamQ0LWXnTzUDeV
+         BKBqL0/tMzRFQBe3xQUF3fS8jR45qOW+arVyFIidcLG+Ii5nvhNqaC450dYA7kkjSBAD
+         CKPg==
+X-Gm-Message-State: AOAM532rEpfPac5CNgyEXuuXJzxQUiOXWuxZsFV8PuLfG44NP5PY5sSI
+        vOWPejxX1IryvCJHXK47S0I=
+X-Google-Smtp-Source: ABdhPJzL1j+HlqKCklCP1DJ3aVsnn6tiCC6/9z58A4PyGRc11yVUV/wuFWJ20A+4USqxe2a+Et2nYQ==
+X-Received: by 2002:a17:90a:c48:b0:1df:6210:48a0 with SMTP id u8-20020a17090a0c4800b001df621048a0mr12119030pje.119.1652837867447;
+        Tue, 17 May 2022 18:37:47 -0700 (PDT)
+Received: from localhost.localdomain ([103.197.71.140])
+        by smtp.gmail.com with ESMTPSA id u191-20020a6385c8000000b003c14af50627sm200052pgd.63.2022.05.17.18.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 18:32:15 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, qiulaibin@huawei.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20220301123919.2381579-1-qiulaibin@huawei.com>
-References: <20220301123919.2381579-1-qiulaibin@huawei.com>
-Subject: Re: [PATCH -next v2] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-Message-Id: <165283753506.124778.6326413719734024023.b4-ty@kernel.dk>
-Date:   Tue, 17 May 2022 19:32:15 -0600
+        Tue, 17 May 2022 18:37:46 -0700 (PDT)
+From:   Shida Zhang <starzhangzsd@gmail.com>
+X-Google-Original-From: Shida Zhang <zhangshida@kylinos.cn>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     zhangshida@kylinos.cn, starzhangzsd@gmail.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v2] cgroup: remove the superfluous judgment
+Date:   Wed, 18 May 2022 09:36:47 +0800
+Message-Id: <20220518013647.1749568-1-zhangshida@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 1 Mar 2022 20:39:19 +0800, Laibin Qiu wrote:
-> 1.In current process, all bio will set the BIO_THROTTLED flag
-> after __blk_throtl_bio().
-> 
-> 2.If bio needs to be throttled, it will start the timer and
-> stop submit bio directly. Bio will submit in
-> blk_throtl_dispatch_work_fn() when the timer expires.But in
-> the current process, if bio is throttled. The BIO_THROTTLED
-> will be set to bio after timer start. If the bio has been
-> completed, it may cause use-after-free blow.
-> 
-> [...]
+Remove the superfluous judgment since the function is
+never called for a root cgroup, as suggested by Tejun.
 
-Applied, thanks!
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+---
+ Changes from v1:
+ - Just remove the superfluous judgment instead.
 
-[1/1] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-      commit: 5a011f889b4832aa80c2a872a5aade5c48d2756f
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index adb820e98f24..7d8a463c461b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5685,7 +5685,7 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
+ 	css_clear_dir(&cgrp->self);
+ 	kernfs_remove(cgrp->kn);
+ 
+-	if (parent && cgroup_is_threaded(cgrp))
++	if (cgroup_is_threaded(cgrp))
+ 		parent->nr_threaded_children--;
+ 
+ 	spin_lock_irq(&css_set_lock);
 -- 
-Jens Axboe
-
+2.25.1
 
