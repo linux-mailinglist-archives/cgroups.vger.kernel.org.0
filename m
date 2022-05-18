@@ -2,130 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456A452B47F
-	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 10:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F8152B4C1
+	for <lists+cgroups@lfdr.de>; Wed, 18 May 2022 10:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbiERIOy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 May 2022 04:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35058 "EHLO
+        id S233001AbiERIXb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 May 2022 04:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbiERIOv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 May 2022 04:14:51 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC75E81998;
-        Wed, 18 May 2022 01:14:50 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id m12so1092370plb.4;
-        Wed, 18 May 2022 01:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WoEf2mJXOA2MejlK2DAjiC6YKTbTSAG0lBrKeEx56e8=;
-        b=JnJoLDdO3Cr3yxlTa2CqxnmoSJWnIgeN9bE1GtOXbZrEi3HH/aUCbqqMPQ1XBmuuDJ
-         CufWXNwnV9NyvbwBtELZ+WkzLZdqsS56GMSgC3kQHMqjWqfnT54P/ue6lfRVzzV1rzES
-         wv7OaWRhgrmMWDNDK1pwopJLJlxnEoS5IjKy8hCTeBmUwvvlS+7icQS5kLusciC2wXhC
-         /hjwWCtRUTnnm1EOpgUHfBmvsFlrP2rmD8SQkTzy4+4aCHWzXXDc+KhJObrWWetXXoMe
-         tujFvcq7DTJF0XhdEM/hvgE+S9mIuWOC9YkMxDtHXmov36dPVh6XKcOavrVzsBQbmrbn
-         VAOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WoEf2mJXOA2MejlK2DAjiC6YKTbTSAG0lBrKeEx56e8=;
-        b=yctqLtarydGG2NaEbnYVf0NrsDmlgZR0fh77sHgmTGfmFVcwEk0O+qRM4zawQmyvwM
-         6HJZFQpKKHOwnhIjwt57QLPB1X8GSWeRlWp5/zhIrTaBb+eeHpP784glCtd523E5DG3D
-         NE/xGIwX0GjqIwrLDE2jK4wVW0jtMFqQQqjz4EGVHtAv0JZxoT7G4ilnxcrNnojospqa
-         OCXGgaMIblr84ngWcvIU3GgQHDHnzHCPa/NGfh7KXa9UU7pQl7cbeQyBiIHicFBfhl/v
-         iwhRZVCvtGkXETcYqi9O5iUmjNiW6dONk4pADd/Ja9JDHcqlanrBszzaJkwSWQTelYru
-         YFgQ==
-X-Gm-Message-State: AOAM533sAD50AxoWELYxVok1v1g84M2VLA/tC95/jpwJUsMrIKrN1of8
-        4n7yqOOwaHYCJdxb98hRq4Y=
-X-Google-Smtp-Source: ABdhPJz4fy3tXiRYqOmcuYo/xV2Tcspgny8tZwqZ8dotVRB60Ql+BGevhIlTyHp9NNG1v3J4MWNoaw==
-X-Received: by 2002:a17:90a:4f05:b0:1df:afae:180b with SMTP id p5-20020a17090a4f0500b001dfafae180bmr2507522pjh.80.1652861689818;
-        Wed, 18 May 2022 01:14:49 -0700 (PDT)
-Received: from localhost ([1.157.44.177])
-        by smtp.gmail.com with ESMTPSA id d7-20020a056a00244700b00512ee2f2363sm1290401pfj.99.2022.05.18.01.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 01:14:48 -0700 (PDT)
-Date:   Wed, 18 May 2022 18:14:45 +1000
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        with ESMTP id S233013AbiERIXa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 May 2022 04:23:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E35910788A;
+        Wed, 18 May 2022 01:23:29 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 944491F9AF;
+        Wed, 18 May 2022 08:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652862207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FJND1+favEk/cOgY0turwQ+6cBnWq+nsb19SAKTVPUA=;
+        b=t/o5epZYvxiBIQDzueYrPOwwiW1warWt2xq1/43b4Mj1nJfRwe5l+xKZd0iZfTWfO74CG4
+        7P318fbQMXRSCtWT9vlEpfhiCbavhA1HuRdRPC5UIYPhedEviCDhQ6jGCzMuYHoBDrdKt5
+        No7H2oBTBt/Q01S/kFrhKyw7lnHceNo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 60317133F5;
+        Wed, 18 May 2022 08:23:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7MepFv+shGK4aQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 18 May 2022 08:23:27 +0000
+Date:   Wed, 18 May 2022 10:23:26 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Yang Yang <yang.yang29@zte.com.cn>
-Subject: Re: [PATCH] mm/memcg: support control THP behaviour in cgroup
-Message-ID: <YoSq9W995QPM6tWQ@balbir-desktop>
-References: <6275d3e7.1c69fb81.1d62.4504@mx.google.com>
- <YnjmPAToTR0C5o8x@dhcp22.suse.cz>
- <6278fa75.1c69fb81.9c598.f794@mx.google.com>
- <Ynj/l+pyFJxKfcbQ@dhcp22.suse.cz>
- <6279c354.1c69fb81.7f6c1.15e0@mx.google.com>
- <CAHbLzkqztB+NXVcxtd7bVo7onH6AcMJ3JWCAHHqH3OAdbZsMOQ@mail.gmail.com>
- <627b1d39.1c69fb81.fe952.6426@mx.google.com>
- <CALvZod5aqZjUE8BBQZxwHDBuSWOSEAOqW4_xE22Am0sGZZs4sw@mail.gmail.com>
- <YnspVPGOtzlo5n+7@carbon>
- <627b2df5.1c69fb81.4a22.160f@mx.google.com>
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 6/6] zswap: memcg accounting
+Message-ID: <20220518082326.GH17557@blackbody.suse.cz>
+References: <20220510152847.230957-1-hannes@cmpxchg.org>
+ <20220510152847.230957-7-hannes@cmpxchg.org>
+ <20220511173218.GB31592@blackbody.suse.cz>
+ <YnwJUL90fuoHs3YW@cmpxchg.org>
+ <20220513151426.GC16096@blackbody.suse.cz>
+ <Yn6QfdouzkcrygTR@cmpxchg.org>
+ <20220516143459.GA17557@blackbody.suse.cz>
+ <YoKtgaxOAMBVKiCf@cmpxchg.org>
+ <20220517165216.7acd8434f8b25606836e21e6@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <627b2df5.1c69fb81.4a22.160f@mx.google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220517165216.7acd8434f8b25606836e21e6@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 11, 2022 at 03:31:00AM +0000, CGEL wrote:
-> On Tue, May 10, 2022 at 08:11:16PM -0700, Roman Gushchin wrote:
-> > On Tue, May 10, 2022 at 07:47:29PM -0700, Shakeel Butt wrote:
-> > > On Tue, May 10, 2022 at 7:19 PM CGEL <cgel.zte@gmail.com> wrote:
-> > > >
-> > > [...]
-> > > > > > >
-> > > > > > > All controls in cgroup v2 should be hierarchical. This is really
-> > > > > > > required for a proper delegation semantic.
-> > > > > > >
-> > > > > >
-> > > > > > Could we align to the semantic of /sys/fs/cgroup/memory.swappiness?
-> > > > > > Some distributions like Ubuntu is still using cgroup v1.
-> > > > >
-> > > > > Other than enable flag, how would you handle the defrag flag
-> > > > > hierarchically? It is much more complicated.
-> > > >
-> > > > Refer to memory.swappiness for cgroup, this new interface better be independent.
-> > > 
-> > > Let me give my 0.02. I buy the use-case of Admin restricting THPs to
-> > > low priority jobs but I don't think memory controller is the right
-> > > place to enforce that policy. Michal gave one way (prctl()) to enforce
-> > > that policy. Have you explored the BPF way to enforce this policy?
-> > 
-> > +1 for bpf
-> > 
-> > I think these THP hints are too implementation-dependent and unstable to become
-> > a part of cgroup API.
-> >
-> 
-> Thanks! If no other suggesting we will submit a bpf version of this patch.
->
+On Tue, May 17, 2022 at 04:52:16PM -0700, Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Mon, 16 May 2022 16:01:05 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > Thanks for your thoughts, Michal.
 
-What is your proposal for BPF? How do you intend to add attach points
-(attach_type) for policy? Is it still going to be per cgroup?
+You're welcome. The change is well-reasoned...
 
-Balbir Singh
+> I think everything is settled here so I plan to import this series into
+> mm-stable in a couple of days.
+
+...and makes sense with the listed fixups.
+
+Michal
