@@ -2,61 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E5E52CEB0
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C9052CEBA
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 10:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbiESIwA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 04:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
+        id S235686AbiESIxu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 04:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbiESIv6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 04:51:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A902DA93
-        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 01:51:56 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 268931F86A;
-        Thu, 19 May 2022 08:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652950315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FCjPr++xl8KWyokuomIbrLcBjRsIcgmfUkDoWFF5TfQ=;
-        b=bdEsvTECKnnG+/TGmv9Jm6Uix+LiSfB64gpLouR5lZEGtMlNKGmBc+PQ+c0zUdzWgdnJei
-        LV6TEuLx2lhInScjYrlGK5Z60rG2ozef/uM1tvsbAXvmYoHTY3VJjc0edx9JUzLjC9tQji
-        dk3ppAYpQPph5pconNU2KexH9Q4yNys=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C84D62C189;
-        Thu, 19 May 2022 08:51:54 +0000 (UTC)
-Date:   Thu, 19 May 2022 10:51:53 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
+        with ESMTP id S235671AbiESIxt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 04:53:49 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254C39CF57
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 01:53:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id i17so4198257pla.10
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 01:53:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qb0g91B4uY7eJRc6xeHQ2DAiXKBk0/y0aultWo/u9CY=;
+        b=RqwsFn2TEA+P6oiyLBWbQ+AUkd9t7DXfQDPEBNB4xm8lld/qbcQsgni+Qt8A5akZAn
+         Q2TA2GnYSjn1HWpwrQ+vUkLlOFRN0Yuil/kEKYFfmAUk+ff6qXesxAWpmAnjVf6sT/HE
+         KRI4OcTynB6Dq9rp0UvorxFA6Icz3Fs1sWZaegWjqOneg0BkOoj1MQ/aky19TaLNcYj9
+         yQucjjZZqQiMN5pWjvGh01DmYwwYrS1KQbq4zBPJfUg+aDGniz1u+gmkn/tAwOoxuvw/
+         wdjyFWOj8f1MfUQTxW/4/OOiGYuW7zFE7ArHBO44jp0CoTPpJ6sp8K8vpkWGAlzd2s3/
+         oQhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qb0g91B4uY7eJRc6xeHQ2DAiXKBk0/y0aultWo/u9CY=;
+        b=KL+Px6IvYfaPojBqQTRldry+OCtaToGjhmblGF2Wvpslr0g0AbaZwXB1QrIyXRGCIy
+         nwZXaNEukNAqtoowriYserjTEkglS7BwLbnnqDvEizeRhsaIFEyN8j2th/sZ+Sl/n7iM
+         sxJzPkOhm68ycfyMlHMnHKrCX4O5DPPm6vpXXuspsCzq5mz0WSLL5MxvGIhoKtSFdrdn
+         6OPOhndcZSVFA+t4Ut8Ue25u2ZWIEV0ALeE5eZnfks7/GCXRFIKIQG/u02wLRr9hGeja
+         9MMqp9X2daqIn0xd6xCR0kurls3DVsf+NagJcHnKS8sMDTrQx9Thz8kYQNfs/O4+nz2Y
+         M7iQ==
+X-Gm-Message-State: AOAM530qF7q9qZScPV8KUjZG7YIvCZC7EgVMHfWXm7imLXkUAfcxxVH/
+        wklUPJADV3ut6BFhfgwbYqTitg==
+X-Google-Smtp-Source: ABdhPJymegXU+LYRYsLtON1UbHo2oi9iTpwUvqyD3wXV6WQW0QT6iUUVcY3jUwxVTHWraQvQRe6peg==
+X-Received: by 2002:a17:902:a9c6:b0:15e:fe5d:cf67 with SMTP id b6-20020a170902a9c600b0015efe5dcf67mr3869503plr.74.1652950426842;
+        Thu, 19 May 2022 01:53:46 -0700 (PDT)
+Received: from localhost ([139.177.225.250])
+        by smtp.gmail.com with ESMTPSA id p127-20020a622985000000b0050dc76281c1sm3486635pfp.155.2022.05.19.01.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 May 2022 01:53:46 -0700 (PDT)
+Date:   Thu, 19 May 2022 16:53:43 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, Zi Yan <ziy@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Yu Zhao <yuzhao@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Chen Wandun <chenwandun@huawei.com>
-Subject: Re: [RFC] Add swappiness argument to memory.reclaim
-Message-ID: <YoYFKdqayKRw2npp@dhcp22.suse.cz>
-References: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
- <YoNHJwyjR7NJ5kG7@dhcp22.suse.cz>
- <CAJD7tkYnBjuwQDzdeo6irHY=so-E8z=Kc_kZe52anMOmRL+8yA@mail.gmail.com>
- <YoQAVeGj19YpSMDb@cmpxchg.org>
- <CAAPL-u8pZ_p+SQZnr=8UV37yiQpWRZny7g9p6YES0wa+g_kMJw@mail.gmail.com>
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH] Revert "mm/vmscan: never demote for memcg reclaim"
+Message-ID: <YoYFl31LJh0Uy+oD@FVFYT0MHHV2J.usts.net>
+References: <20220518190911.82400-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAPL-u8pZ_p+SQZnr=8UV37yiQpWRZny7g9p6YES0wa+g_kMJw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <20220518190911.82400-1-hannes@cmpxchg.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,21 +76,41 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 18-05-22 22:44:13, Wei Xu wrote:
-> On Tue, May 17, 2022 at 1:06 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-[...]
-> > But I don't think an anon/file bias will capture this coefficient?
+On Wed, May 18, 2022 at 03:09:11PM -0400, Johannes Weiner wrote:
+> This reverts commit 3a235693d3930e1276c8d9cc0ca5807ef292cf0a.
 > 
-> It essentially provides the userspace proactive reclaimer an ability
-> to define its own reclaim policy by adding an argument to specify
-> which type of pages to reclaim via memory.reclaim.
+> Its premise was that cgroup reclaim cares about freeing memory inside
+> the cgroup, and demotion just moves them around within the cgroup
+> limit. Hence, pages from toptier nodes should be reclaimed directly.
+> 
+> However, with NUMA balancing now doing tier promotions, demotion is
+> part of the page aging process. Global reclaim demotes the coldest
+> toptier pages to secondary memory, where their life continues and from
+> which they have a chance to get promoted back. Essentially, tiered
+> memory systems have an LRU order that spans multiple nodes.
+> 
+> When cgroup reclaims pages coming off the toptier directly, there can
+> be colder pages on lower tier nodes that were demoted by global
+> reclaim. This is an aging inversion, not unlike if cgroups were to
+> reclaim directly from the active lists while there are inactive pages.
+> 
+> Proactive reclaim is another factor. The goal of that it is to offload
+> colder pages from expensive RAM to cheaper storage. When lower tier
+> memory is available as an intermediate layer, we want offloading to
+> take advantage of it instead of bypassing to storage.
+> 
+> Revert the patch so that cgroups respect the LRU order spanning the
+> memory hierarchy.
+> 
+> Of note is a specific undercommit scenario, where all cgroup limits in
+> the system add up to <= available toptier memory. In that case,
+> shuffling pages out to lower tiers first to reclaim them from there is
+> inefficient. This is something could be optimized/short-circuited
+> later on (although care must be taken not to accidentally recreate the
+> aging inversion). Let's ensure correctness first.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I am not sure the swappiness is really a proper interface for that.
-Historically this tunable has changed behavior several times and the
-reclaim algorithm is free to ignore it completely in many cases. If you
-want to build a userspace reclaim policy, then it really has to have a
-predictable and stable behavior. That would mean that the semantic would
-have to be much stronger than the global vm_swappiness.
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
+Thanks.
