@@ -2,54 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 506AF52C9F7
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 05:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D297752CB62
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 07:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbiESDB0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 May 2022 23:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        id S233906AbiESFIl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 01:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbiESDBZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 May 2022 23:01:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8825F25286;
-        Wed, 18 May 2022 20:01:22 -0700 (PDT)
-Received: from kwepemi100015.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L3ZNr3Q4TzhZDS;
-        Thu, 19 May 2022 11:00:44 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100015.china.huawei.com (7.221.188.125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 11:01:20 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 11:01:20 +0800
-Subject: Re: [PATCH -next v2 2/2] blk-throttle: fix io hung due to
- configuration updates
-From:   "yukuai (C)" <yukuai3@huawei.com>
-To:     kernel test robot <lkp@intel.com>, <tj@kernel.org>,
-        <axboe@kernel.dk>, <ming.lei@redhat.com>
-CC:     <kbuild-all@lists.01.org>, <cgroups@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20220518072751.1188163-3-yukuai3@huawei.com>
- <202205182347.tMOOqyfL-lkp@intel.com>
- <84fe296e-6e56-3ca9-73a8-357beb675c6e@huawei.com>
-Message-ID: <3d6878f4-1902-633d-0af2-276831364a4f@huawei.com>
-Date:   Thu, 19 May 2022 11:01:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <84fe296e-6e56-3ca9-73a8-357beb675c6e@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S233898AbiESFIk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 01:08:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A75C92D2E
+        for <cgroups@vger.kernel.org>; Wed, 18 May 2022 22:08:39 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id b11-20020a5b008b000000b00624ea481d55so3439334ybp.19
+        for <cgroups@vger.kernel.org>; Wed, 18 May 2022 22:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=ssVw9Fz9ZtI8VSN2PnnCy16Ie6cjZqhXq7jkPcwK+VI=;
+        b=p1NA6cOyXSw5ouGNdhysoNKwpC+u544fyrDYu0KRc2c2e3ge13jLIY2R6C9yI7FNxq
+         lvhOpidQwLWrlHfaI75+qsSfVYwYmwzwxfCSsYuVmW20p+OGVFMJ11n4krPvP+4y4yQ3
+         ArzvvSz0qUdPdAjWkkkdSdgrgz6lcxZrq3hcwLXfVX1xbuRBis2dKkf871l1prfl+BVv
+         o7GhGIaYR4wz+MT62Ioh36TOJ/bKjcTPUZdj+8zF3R3erlBHaKgbD6RpGxh8SAEJFC1I
+         DBj+/pEpHKZXlI9DEH4YqWzNp7m8KXD40ml1jejz/hE/UOXcup3+tYdHpbBarswgdd+m
+         TrBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ssVw9Fz9ZtI8VSN2PnnCy16Ie6cjZqhXq7jkPcwK+VI=;
+        b=kNGR63bPxeOj5dds/FHEPrJX/FdVBIJzymS5qS319Vh06NqR/hl1bqt/+180L4FO9G
+         Tza0YbVae0njLDG/UnJM43Yu+0+uat3Ed5SlbegjGIH8qIYFURTc+P2Iui1Op4zV+mW1
+         r5whvYNXGcqYKJrxJNktIVCmnUIzs014fZ0z0t17TaBPAvDSAWvlttWDyGjGXNwWJzib
+         liJbX93PxZ7wiLtlaFBhdxn54E8Sp/+WwOj9nEIJiuKN3iMchI/vmozfbloI9r9Xh/Qb
+         ntYCHHkI1wjGTR64+2I9CYG/aeGpRsCxXxKRbjyuHW0NTzP5UrD4i8guzZ3lzpkqQImm
+         TRDg==
+X-Gm-Message-State: AOAM531SJzvZ9s6RD/oN5Sa61Y951CSSIYjb4CvsBU9NLXnS1UUsIjyk
+        5oHmN7NrNoNOM9zWHlhMPH7oDah6NFITAA==
+X-Google-Smtp-Source: ABdhPJy6egbvWliClWw+tkL9hQFg8B3U3tLKaSMVV5VHERLmykIYj5eKmwucruUJqbwmeTA+EslCfrpd5FE0hQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:a25:8c0c:0:b0:64e:a4ce:62db with SMTP id
+ k12-20020a258c0c000000b0064ea4ce62dbmr2743231ybl.294.1652936918833; Wed, 18
+ May 2022 22:08:38 -0700 (PDT)
+Date:   Thu, 19 May 2022 05:08:35 +0000
+In-Reply-To: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+Message-Id: <20220519050835.ebpiukexgiys6t57@google.com>
+Mime-Version: 1.0
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,60 +74,33 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/05/19 10:11, yukuai (C) 写道:
+On Thu, May 19, 2022 at 04:08:15AM +0530, Vaibhav Jain wrote:
+> [1] Provides a way for user-space to trigger proactive reclaim by introducing
+> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
+> of pages scanned and reclaimed is still not directly available to the
+> user-space.
 > 
+> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
+> readable which returns the number of pages scanned / reclaimed during the
+> reclaim process from 'struct vmpressure' associated with each memcg. This should
+> let user-space asses how successful proactive reclaim triggered from memcg
+> 'memory.reclaim' was ?
 > 
-> 在 2022/05/18 23:52, kernel test robot 写道:
->> Hi Yu,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on next-20220517]
->>
->> url:    
->> https://github.com/intel-lab-lkp/linux/commits/Yu-Kuai/bugfix-for-blk-throttle/20220518-151713 
->>
->> base:    47c1c54d1bcd0a69a56b49473bc20f17b70e5242
->> config: m68k-allyesconfig 
->> (https://download.01.org/0day-ci/archive/20220518/202205182347.tMOOqyfL-lkp@intel.com/config) 
->>
->> compiler: m68k-linux-gcc (GCC) 11.3.0
->> reproduce (this is a W=1 build):
->>          wget 
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->> -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # 
->> https://github.com/intel-lab-lkp/linux/commit/f8345dbaf4ed491742aab29834aff66b4930c087 
->>
->>          git remote add linux-review 
->> https://github.com/intel-lab-lkp/linux
->>          git fetch --no-tags linux-review 
->> Yu-Kuai/bugfix-for-blk-throttle/20220518-151713
->>          git checkout f8345dbaf4ed491742aab29834aff66b4930c087
->>          # save the config file
->>          mkdir build_dir && cp config build_dir/.config
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 
->> make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     m68k-linux-ld: block/blk-throttle.o: in function `tg_conf_updated':
->>>> blk-throttle.c:(.text+0x25bc): undefined reference to `__udivdi3'
->>>> m68k-linux-ld: blk-throttle.c:(.text+0x2626): undefined reference to 
->>>> `__udivdi3'
-> Hi,
+> With the patch following command flow is expected:
 > 
-> I'm confused here, the only place that I can relate to this:
+>  # echo "1M" > memory.reclaim
 > 
->      return dispatched * new_limit / old_limit;
+>  # cat memory.reclaim
+>    scanned 76
+>    reclaimed 32
 > 
-I understand it now. I'm doing (u64 / u64), I should use div64_u64
-> However, I don't understand yet why this is problematic...
->>     `.exit.text' referenced in section `.data' of 
->> sound/soc/codecs/tlv320adc3xxx.o: defined in discarded section 
->> `.exit.text' of sound/soc/codecs/tlv320adc3xxx.o
->>
+
+Yosry already mentioned the race issue with the implementation and I
+would prefer we don't create any new dependency on vmpressure which I
+think we should deprecate.
+
+Anyways my question is how are you planning to use these metrics i.e.
+scanned & reclaimed? I wonder if the data you are interested in can be
+extracted without a stable interface. Have you tried BPF way to get
+these metrics? We already have a tracepoint in vmscan tracing the
+scanned and reclaimed. 
