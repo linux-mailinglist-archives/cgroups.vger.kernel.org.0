@@ -2,172 +2,146 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE48552CC7C
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 09:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209C952CD64
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 09:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbiESHGp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 03:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S234967AbiESHmr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 03:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbiESHGo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 03:06:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C64663F1;
-        Thu, 19 May 2022 00:06:42 -0700 (PDT)
-Received: from kwepemi100024.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L3gqf07bQzhZFN;
-        Thu, 19 May 2022 15:05:49 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100024.china.huawei.com (7.221.188.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 15:06:40 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 15:06:39 +0800
-Subject: Re: [PATCH -next v2 2/2] blk-throttle: fix io hung due to
- configuration updates
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     kernel test robot <lkp@intel.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        <kbuild-all@lists.01.org>, <cgroups@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20220518072751.1188163-3-yukuai3@huawei.com>
- <202205182347.tMOOqyfL-lkp@intel.com>
- <84fe296e-6e56-3ca9-73a8-357beb675c6e@huawei.com>
- <3d6878f4-1902-633d-0af2-276831364a4f@huawei.com>
- <CAMuHMdV6NysKKh+HZ-cgHh+=SVcydmxO6ic82+t3ySTgfkoEOg@mail.gmail.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <20bc6370-999b-ed3c-4b8f-19b2cdba5965@huawei.com>
-Date:   Thu, 19 May 2022 15:06:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S235023AbiESHmn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 03:42:43 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AF5AEE35;
+        Thu, 19 May 2022 00:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652946158; x=1684482158;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=2Ojw62lZylIf6juVQUL8OPlwJ0l8Bpb1S6O2GhP47Ls=;
+  b=LE8/RwUyIr7sU+GGUAvpxQKw4TxUKRY+CGm+NTtSxa2Z9+gvNoazLCt+
+   VmBMvDuSJhqbH1R71K1VRtHq9U4oFxf8aJ2frI9sLfjFW9SmW80MBKXoj
+   SA6M2icuYkHL70lmt0FvQz/BBYWA2qnxKli9gnL9uTXehO99KQ4c4LOJD
+   SF8gRz5R18Ep/HYJEBcSzb/riVXUGJHtXLZve80J0/194N+K/BjhX/mf+
+   C/xSyQDQrwhAOy35RyWE2XfLFrMJSOjbFgmFbUwMKp2IQ2T0xbrs54mHD
+   Q/oDlc+xcE5vEtHbrhlX/r79kW7etXtAHCCDWCp4ak9BjX1qxLVfJji8g
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10351"; a="332695724"
+X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
+   d="scan'208";a="332695724"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 00:42:37 -0700
+X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
+   d="scan'208";a="545950159"
+Received: from xiaominc-mobl1.ccr.corp.intel.com ([10.254.213.242])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 00:42:34 -0700
+Message-ID: <ee1408cb15dbd2e979fe637e2ab91644f6190d0e.camel@intel.com>
+Subject: Re: [PATCH] Revert "mm/vmscan: never demote for memcg reclaim"
+From:   "ying.huang@intel.com" <ying.huang@intel.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Date:   Thu, 19 May 2022 15:42:31 +0800
+In-Reply-To: <20220518190911.82400-1-hannes@cmpxchg.org>
+References: <20220518190911.82400-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdV6NysKKh+HZ-cgHh+=SVcydmxO6ic82+t3ySTgfkoEOg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, 2022-05-18 at 15:09 -0400, Johannes Weiner wrote:
+> This reverts commit 3a235693d3930e1276c8d9cc0ca5807ef292cf0a.
+> 
+> Its premise was that cgroup reclaim cares about freeing memory inside
+> the cgroup, and demotion just moves them around within the cgroup
+> limit. Hence, pages from toptier nodes should be reclaimed directly.
+> 
+> However, with NUMA balancing now doing tier promotions, demotion is
+> part of the page aging process. Global reclaim demotes the coldest
+> toptier pages to secondary memory, where their life continues and from
+> which they have a chance to get promoted back. Essentially, tiered
+> memory systems have an LRU order that spans multiple nodes.
+> 
+> When cgroup reclaims pages coming off the toptier directly, there can
+> be colder pages on lower tier nodes that were demoted by global
+> reclaim. This is an aging inversion, not unlike if cgroups were to
+> reclaim directly from the active lists while there are inactive pages.
+> 
+> Proactive reclaim is another factor. The goal of that it is to offload
+> colder pages from expensive RAM to cheaper storage. When lower tier
+> memory is available as an intermediate layer, we want offloading to
+> take advantage of it instead of bypassing to storage.
+> 
+> Revert the patch so that cgroups respect the LRU order spanning the
+> memory hierarchy.
+> 
+> Of note is a specific undercommit scenario, where all cgroup limits in
+> the system add up to <= available toptier memory. In that case,
+> shuffling pages out to lower tiers first to reclaim them from there is
+> inefficient. This is something could be optimized/short-circuited
+> later on (although care must be taken not to accidentally recreate the
+> aging inversion). Let's ensure correctness first.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Roman Gushchin <guro@fb.com>
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+This is also required by Tim's DRAM partition among cgroups in tiered
+sytstem.
+
+Best Regards,
+Huang, Ying
+
+> ---
+>  mm/vmscan.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index c6918fff06e1..7a4090712177 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -528,13 +528,8 @@ static bool can_demote(int nid, struct scan_control *sc)
+>  {
+>  	if (!numa_demotion_enabled)
+>  		return false;
+> -	if (sc) {
+> -		if (sc->no_demotion)
+> -			return false;
+> -		/* It is pointless to do demotion in memcg reclaim */
+> -		if (cgroup_reclaim(sc))
+> -			return false;
+> -	}
+> +	if (sc && sc->no_demotion)
+> +		return false;
+>  	if (next_demotion_node(nid) == NUMA_NO_NODE)
+>  		return false;
+>  
+> 
+> 
+> 
 
 
-在 2022/05/19 15:01, Geert Uytterhoeven 写道:
-> Hi Yukuai,
-> 
-> On Thu, May 19, 2022 at 5:25 AM yukuai (C) <yukuai3@huawei.com> wrote:
->> 在 2022/05/19 10:11, yukuai (C) 写道:
->>> 在 2022/05/18 23:52, kernel test robot 写道:
->>>> Thank you for the patch! Yet something to improve:
->>>>
->>>> [auto build test ERROR on next-20220517]
->>>>
->>>> url:
->>>> https://github.com/intel-lab-lkp/linux/commits/Yu-Kuai/bugfix-for-blk-throttle/20220518-151713
->>>>
->>>> base:    47c1c54d1bcd0a69a56b49473bc20f17b70e5242
->>>> config: m68k-allyesconfig
->>>> (https://download.01.org/0day-ci/archive/20220518/202205182347.tMOOqyfL-lkp@intel.com/config)
->>>>
->>>> compiler: m68k-linux-gcc (GCC) 11.3.0
->>>> reproduce (this is a W=1 build):
->>>>           wget
->>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
->>>> -O ~/bin/make.cross
->>>>           chmod +x ~/bin/make.cross
->>>>           #
->>>> https://github.com/intel-lab-lkp/linux/commit/f8345dbaf4ed491742aab29834aff66b4930c087
->>>>
->>>>           git remote add linux-review
->>>> https://github.com/intel-lab-lkp/linux
->>>>           git fetch --no-tags linux-review
->>>> Yu-Kuai/bugfix-for-blk-throttle/20220518-151713
->>>>           git checkout f8345dbaf4ed491742aab29834aff66b4930c087
->>>>           # save the config file
->>>>           mkdir build_dir && cp config build_dir/.config
->>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0
->>>> make.cross W=1 O=build_dir ARCH=m68k SHELL=/bin/bash
->>>>
->>>> If you fix the issue, kindly add following tag as appropriate
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>      m68k-linux-ld: block/blk-throttle.o: in function `tg_conf_updated':
->>>>>> blk-throttle.c:(.text+0x25bc): undefined reference to `__udivdi3'
->>>>>> m68k-linux-ld: blk-throttle.c:(.text+0x2626): undefined reference to
->>>>>> `__udivdi3'
->>> Hi,
->>>
->>> I'm confused here, the only place that I can relate to this:
->>>
->>>       return dispatched * new_limit / old_limit;
->>>
->>> However, I don't understand yet why this is problematic...
->>>>      `.exit.text' referenced in section `.data' of
->>>> sound/soc/codecs/tlv320adc3xxx.o: defined in discarded section
->>>> `.exit.text' of sound/soc/codecs/tlv320adc3xxx.o
->>
->> + static u64 throtl_update_bytes_disp(u64 dispatched, u64 new_limit,
->> +                                    u64 old_limit)
->> + {
->> +        if (new_limit == old_limit)
->> +                return dispatched;
->> +
->> +        if (new_limit == U64_MAX)
->> +                return 0;
->> +
->> +        return dispatched * new_limit / old_limit;
->>
->> I understand it now. I'm doing (u64 / u64), I should use div64_u64
-> 
-> Better, use mul_u64_u64_div_u64(), as "dispatched * new_limit"
-> may overflow?
-Hi,
-
-It's right that it  can overflow, I'll handle such case in next version.
-> 
->> + }
->> +
->> + static u32 throtl_update_io_disp(u32 dispatched, u32 new_limit, u32 old_limit)
->> + {
->> +        if (new_limit == old_limit)
->> +                return dispatched;
->> +
->> +        if (new_limit == UINT_MAX)
->> +                return 0;
->> +
->> +        return dispatched * new_limit / old_limit;
-> 
-> This is the same as above, but now operating on u32s instead of u64s.
-> Likewise, can the multiplication overflow?
-same as above.
-
-Thanks,
-Kuai
-> 
->> + }
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                  -- Linus Torvalds
-> .
-> 
