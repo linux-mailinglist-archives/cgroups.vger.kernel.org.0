@@ -2,146 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 209C952CD64
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 09:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0F252CDBE
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 10:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbiESHmr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 03:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S233050AbiESH7w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 03:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235023AbiESHmn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 03:42:43 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AF5AEE35;
-        Thu, 19 May 2022 00:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652946158; x=1684482158;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2Ojw62lZylIf6juVQUL8OPlwJ0l8Bpb1S6O2GhP47Ls=;
-  b=LE8/RwUyIr7sU+GGUAvpxQKw4TxUKRY+CGm+NTtSxa2Z9+gvNoazLCt+
-   VmBMvDuSJhqbH1R71K1VRtHq9U4oFxf8aJ2frI9sLfjFW9SmW80MBKXoj
-   SA6M2icuYkHL70lmt0FvQz/BBYWA2qnxKli9gnL9uTXehO99KQ4c4LOJD
-   SF8gRz5R18Ep/HYJEBcSzb/riVXUGJHtXLZve80J0/194N+K/BjhX/mf+
-   C/xSyQDQrwhAOy35RyWE2XfLFrMJSOjbFgmFbUwMKp2IQ2T0xbrs54mHD
-   Q/oDlc+xcE5vEtHbrhlX/r79kW7etXtAHCCDWCp4ak9BjX1qxLVfJji8g
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10351"; a="332695724"
-X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
-   d="scan'208";a="332695724"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 00:42:37 -0700
-X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
-   d="scan'208";a="545950159"
-Received: from xiaominc-mobl1.ccr.corp.intel.com ([10.254.213.242])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 00:42:34 -0700
-Message-ID: <ee1408cb15dbd2e979fe637e2ab91644f6190d0e.camel@intel.com>
-Subject: Re: [PATCH] Revert "mm/vmscan: never demote for memcg reclaim"
-From:   "ying.huang@intel.com" <ying.huang@intel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        with ESMTP id S234869AbiESH7w (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 03:59:52 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A393F3983C
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 00:59:50 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2fef32314f7so39806867b3.18
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 00:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=5ASte9vGYV8NmyufWXTtDt+wnTToG5G7bVCsDgy4Kpg=;
+        b=gwTVGnSBCH1OItkK8408hxAE3H+3MOivih34m7SBHEGT0+6hAZOMLNPptS8SIvLmuk
+         dn2y46gEkcFMT6rDddZ+v7a37E4u+yB8m9HWh7XNQNIo8o+qpgOH/q9QPz/KwdaFOIVV
+         Nq6tzQ02jiflJjryDeixn4W/tNmMMnumKiTZ36ZxRroI3RPCmJHaY4M7pNq/lV3jccpO
+         rZPjU/9DuAsZ2bqhz0zyrw8D0P4kaiQK7kHNRTbeHzkIcduFAaVBVEqNoXOd8BJqnfd4
+         NYrOoQgzKjbdFMCsMqLS1DyP1f9llOtIzlwbiTSrOq7EO3K9qk7QpbKFIsyOkuDu1TuB
+         Mt5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=5ASte9vGYV8NmyufWXTtDt+wnTToG5G7bVCsDgy4Kpg=;
+        b=x/QEx7/cP/EhXeSlaVLpDKRZiyqrgMMDwT1tqYLpckS1iLtV5VB6xxOi/GGJobrvfC
+         6xuHMSYROvQtsWIZOx76tyO3gt6g78wyYjYtCDwGXts1yZGigLhCvr521Qjr2W8aOlKB
+         2o58Xxpqo4HEO84qvUnVSe2JJnFC2UymxelQUiuD5Q3M13EP08N0CyqiyuCdlbJl5AIt
+         6vZmgFeiUUOLMwaS/MKFe37VPDb1YoZ3NVYhPRGoHKLYsqq+CRXfsiukYOzxekNkVJNm
+         48nkdXimUh+rQnsBGZtdL4dK8psuTxr1egt4WDVCdBa12VLa3fFfb0ZZSNpGaKc9pb4O
+         TRoA==
+X-Gm-Message-State: AOAM5316Ny+ddfSU07vz2YKQsCWux4RqJehtM+QBf0zSJoQIv2cGzcVw
+        cKk+GSDDlzSqf6bT2WNCnW5wtNlXiDEF
+X-Google-Smtp-Source: ABdhPJyhbw5GxCRJe6VzVh23QB1TgeiIWMOLDn0KJ5/UuVta6ydkueOGGL6ATX6pdbrz+U5Okt1rkGQXziIr
+X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:d3bc:20ba:fd8e:8208])
+ (user=gthelen job=sendgmr) by 2002:a25:4bc6:0:b0:64d:efe1:a7d1 with SMTP id
+ y189-20020a254bc6000000b0064defe1a7d1mr3156185yba.70.1652947189788; Thu, 19
+ May 2022 00:59:49 -0700 (PDT)
+Date:   Thu, 19 May 2022 00:59:47 -0700
+In-Reply-To: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+Message-Id: <xr937d6ic5qk.fsf@gthelen2.svl.corp.google.com>
+Mime-Version: 1.0
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+From:   Greg Thelen <gthelen@google.com>
+To:     Vaibhav Jain <vaibhav@linux.ibm.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Date:   Thu, 19 May 2022 15:42:31 +0800
-In-Reply-To: <20220518190911.82400-1-hannes@cmpxchg.org>
-References: <20220518190911.82400-1-hannes@cmpxchg.org>
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2022-05-18 at 15:09 -0400, Johannes Weiner wrote:
-> This reverts commit 3a235693d3930e1276c8d9cc0ca5807ef292cf0a.
-> 
-> Its premise was that cgroup reclaim cares about freeing memory inside
-> the cgroup, and demotion just moves them around within the cgroup
-> limit. Hence, pages from toptier nodes should be reclaimed directly.
-> 
-> However, with NUMA balancing now doing tier promotions, demotion is
-> part of the page aging process. Global reclaim demotes the coldest
-> toptier pages to secondary memory, where their life continues and from
-> which they have a chance to get promoted back. Essentially, tiered
-> memory systems have an LRU order that spans multiple nodes.
-> 
-> When cgroup reclaims pages coming off the toptier directly, there can
-> be colder pages on lower tier nodes that were demoted by global
-> reclaim. This is an aging inversion, not unlike if cgroups were to
-> reclaim directly from the active lists while there are inactive pages.
-> 
-> Proactive reclaim is another factor. The goal of that it is to offload
-> colder pages from expensive RAM to cheaper storage. When lower tier
-> memory is available as an intermediate layer, we want offloading to
-> take advantage of it instead of bypassing to storage.
-> 
-> Revert the patch so that cgroups respect the LRU order spanning the
-> memory hierarchy.
-> 
-> Of note is a specific undercommit scenario, where all cgroup limits in
-> the system add up to <= available toptier memory. In that case,
-> shuffling pages out to lower tiers first to reclaim them from there is
-> inefficient. This is something could be optimized/short-circuited
-> later on (although care must be taken not to accidentally recreate the
-> aging inversion). Let's ensure correctness first.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Michal Hocko <mhocko@suse.com>
+Vaibhav Jain <vaibhav@linux.ibm.com> wrote:
+
+> [1] Provides a way for user-space to trigger proactive reclaim by introducing
+> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
+> of pages scanned and reclaimed is still not directly available to the
+> user-space.
+>
+> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
+> readable which returns the number of pages scanned / reclaimed during the
+> reclaim process from 'struct vmpressure' associated with each memcg. This should
+> let user-space asses how successful proactive reclaim triggered from memcg
+> 'memory.reclaim' was ?
+>
+> With the patch following command flow is expected:
+>
+>  # echo "1M" > memory.reclaim
+>
+>  # cat memory.reclaim
+>    scanned 76
+>    reclaimed 32
+
+I certainly appreciate the ability for shell scripts to demonstrate
+cgroup operations with textual interfaces, but such interface seem like
+they are optimized for ease of use by developers.
+
+I wonder if for runtime production use an ioctl or netlink interface has
+been considered for cgroup? I don't think there are any yet, but such
+approaches seem like a more straightforward ways to get nontrivial
+input/outputs from a single call (e.g. like this proposal). And they
+have the benefit of not requiring ascii serialization/parsing overhead.
+
+> [1]:  https://lore.kernel.org/r/20220425190040.2475377-1-yosryahmed@google.com
+>
 > Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <guro@fb.com>
-
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-
-This is also required by Tim's DRAM partition among cgroups in tiered
-sytstem.
-
-Best Regards,
-Huang, Ying
-
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
 > ---
->  mm/vmscan.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c6918fff06e1..7a4090712177 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -528,13 +528,8 @@ static bool can_demote(int nid, struct scan_control *sc)
->  {
->  	if (!numa_demotion_enabled)
->  		return false;
-> -	if (sc) {
-> -		if (sc->no_demotion)
-> -			return false;
-> -		/* It is pointless to do demotion in memcg reclaim */
-> -		if (cgroup_reclaim(sc))
-> -			return false;
-> -	}
-> +	if (sc && sc->no_demotion)
-> +		return false;
->  	if (next_demotion_node(nid) == NUMA_NO_NODE)
->  		return false;
->  
-> 
-> 
-> 
-
-
+>  Documentation/admin-guide/cgroup-v2.rst | 15 ++++++++++++---
+>  mm/memcontrol.c                         | 14 ++++++++++++++
+>  2 files changed, 26 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 27ebef2485a3..44610165261d 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1209,18 +1209,27 @@ PAGE_SIZE multiple when read back.
+>  	utility is limited to providing the final safety net.
+>  
+>    memory.reclaim
+> -	A write-only nested-keyed file which exists for all cgroups.
+> +	A nested-keyed file which exists for all cgroups.
+>  
+> -	This is a simple interface to trigger memory reclaim in the
+> -	target cgroup.
+> +	This is a simple interface to trigger memory reclaim and retrieve
+> +	reclaim stats in the target cgroup.
+>  
+>  	This file accepts a single key, the number of bytes to reclaim.
+>  	No nested keys are currently supported.
+>  
+> +	Reading the file returns number of pages scanned and number of
+> +	pages reclaimed from the memcg. This information fetched from
+> +	vmpressure info associated with each cgroup.
+> +
+>  	Example::
+>  
+>  	  echo "1G" > memory.reclaim
+>  
+> +	  cat memory.reclaim
+> +
+> +	  scanned 78
+> +	  reclaimed 30
+> +
+>  	The interface can be later extended with nested keys to
+>  	configure the reclaim behavior. For example, specify the
+>  	type of memory to reclaim from (anon, file, ..).
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2e2bfbed4717..9e43580a8726 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6423,6 +6423,19 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+>  	return nbytes;
+>  }
+>  
+> +static int memory_reclaim_show(struct seq_file *m, void *v)
+> +{
+> +	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+> +	struct vmpressure *vmpr = memcg_to_vmpressure(memcg);
+> +
+> +	spin_lock(&vmpr->sr_lock);
+> +	seq_printf(m, "scanned %lu\nreclaimed %lu\n",
+> +		   vmpr->scanned, vmpr->reclaimed);
+> +	spin_unlock(&vmpr->sr_lock);
+> +
+> +	return 0;
+> +}
+> +
+>  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  			      size_t nbytes, loff_t off)
+>  {
+> @@ -6525,6 +6538,7 @@ static struct cftype memory_files[] = {
+>  		.name = "reclaim",
+>  		.flags = CFTYPE_NS_DELEGATABLE,
+>  		.write = memory_reclaim,
+> +		.seq_show  = memory_reclaim_show,
+>  	},
+>  	{ }	/* terminate */
+>  };
