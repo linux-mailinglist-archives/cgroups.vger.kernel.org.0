@@ -2,210 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4460952CF6D
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 11:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCA752CF94
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 11:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbiESJbK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 05:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S233688AbiESJmG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 05:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236049AbiESJbJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 05:31:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2837133A2C;
-        Thu, 19 May 2022 02:31:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 024D3618D8;
-        Thu, 19 May 2022 09:31:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AAA9C385AA;
-        Thu, 19 May 2022 09:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652952665;
-        bh=ymyWwFkIGcEgTX/HoyldR566LvQatVtWXOdUzMjInTY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZsqjEz6v2uriZ2N0Dq+pndBRjvXvXcsjqqD+SvOkF0pAjllZckSSQYaCIQuEcw1Jy
-         2gDuMEW3YDYmQiSxD5oLg6FWYCdEjerCuH613MHsO//W5TSZsctd3moeGrzUDeRe6s
-         A9o4YVEYofn+70aKTfqkQvyQKReky8arKQkuzj+/1fx+lWD15H7ZSBUhsWsqXso+2v
-         pfcgLj1oqEZBMnIQHSVyd/1eNUlHWeCjPPq+0x8B1shXK+tDzT9UJeTpd9qImfciul
-         P2Sn+4aIKue0xebzFbJ0yeibqCMn+utYG9Q8Y8N+qtr7MyADNwqr8dBlCdNZa0fDzj
-         bxurpPC3T8esw==
-From:   eballetbo@kernel.org
-To:     lizefan.x@bytedance.com, corbet@lwn.net, joel@joelfernandes.org,
-        arve@android.com, tjmercier@google.com, maco@android.com,
-        benjamin.gaignard@collabora.com, tj@kernel.org, brauner@kernel.org,
-        sumit.semwal@linaro.org, tkjos@android.com, surenb@google.com,
-        hannes@cmpxchg.org, Brian.Starkey@arm.com,
-        christian.koenig@amd.com, gregkh@linuxfoundation.org,
-        lmark@codeaurora.org, john.stultz@linaro.org, hridya@google.com,
-        shuah@kernel.org, labbott@redhat.com
-Cc:     Enric Balletbo i Serra <eballetbo@kernel.org>,
-        cgroups@vger.kernel.org, kernel-team@android.com,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, cmllamas@google.com,
-        daniel@ffwll.ch, Kenny.Ho@amd.com, linux-kselftest@vger.kernel.org,
-        kaleshsingh@google.com, mkoutny@suse.com, jstultz@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH v7 1/6] gpu: rfc: Proposal for a GPU cgroup controller
-Date:   Thu, 19 May 2022 11:30:35 +0200
-Message-Id: <20220519093034.541481-1-eballetbo@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220510235653.933868-1-tjmercier@google.com>
-References: <20220510235653.933868-1-tjmercier@google.com>
+        with ESMTP id S231214AbiESJmF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 05:42:05 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9083C68F82;
+        Thu, 19 May 2022 02:42:04 -0700 (PDT)
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J9CQhj012521;
+        Thu, 19 May 2022 09:41:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=OJteXu18Mv+sn23pdhZQcdzdXFdGcyM9JOV5loEpHpk=;
+ b=E9lrofY1GFhlXL1u+ccKtgGozb6tczzv0sXWdh/8z6/sni2D8WKZRbk+0xxqC6PREdA5
+ hKqVML5YJKrLG+zKyTMibSol3ByZI1nr4W12Pfpv6NnaooTQSXZ7dF6xvrvlXpS73iJR
+ yB++dUCc/JPs3iAxZ9WsW20lk3vXBXN2RyBWC8ZvNOZfs2pu/Y2gkQWl0MmJqVDr0zky
+ R8zvAb7CQd86cowK+wiiBgzSRN/vyM4A6BLducb3c8++bD/wnICsW0mlNF2c+nMJtJ/d
+ brGN+fNw25c1SWpEMLnCpJE4x2ckWxqRb5yJ0ItgxH+ZijcSntbNSLCueXr8TGnlM9nQ jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g5k25rkxb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:41:52 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24J9fq0L015293;
+        Thu, 19 May 2022 09:41:52 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g5k25rkwc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:41:52 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24J9Slkf014816;
+        Thu, 19 May 2022 09:41:49 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3g23pjf1u7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:41:49 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24J9RqVS46399838
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 May 2022 09:27:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A58B11C04C;
+        Thu, 19 May 2022 09:41:47 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C18E511C050;
+        Thu, 19 May 2022 09:41:42 +0000 (GMT)
+Received: from vajain21.in.ibm.com (unknown [9.43.20.227])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 19 May 2022 09:41:42 +0000 (GMT)
+Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Thu, 19 May 2022 15:11:41 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+In-Reply-To: <20220519050835.ebpiukexgiys6t57@google.com>
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+ <20220519050835.ebpiukexgiys6t57@google.com>
+Date:   Thu, 19 May 2022 15:11:41 +0530
+Message-ID: <875ym1hnai.fsf@vajain21.in.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: w9gfG1UIEqtLgIyzzT7XtvqSo6EaqHG1
+X-Proofpoint-ORIG-GUID: UnqzvSwZfeeq5_Jio2nJQgQmTtH6NjIF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-19_02,2022-05-19_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=802
+ clxscore=1015 malwarescore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2205190055
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Enric Balletbo i Serra <eballetbo@kernel.org>
+Hi,
 
-On Tue, 10 May 2022 23:56:45 +0000, T.J. Mercier wrote:
-> From: Hridya Valsaraju <hridya@google.com>
+Thanks for looking into this patch,
+
+Shakeel Butt <shakeelb@google.com> writes:
+
+> On Thu, May 19, 2022 at 04:08:15AM +0530, Vaibhav Jain wrote:
+>> [1] Provides a way for user-space to trigger proactive reclaim by introducing
+>> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
+>> of pages scanned and reclaimed is still not directly available to the
+>> user-space.
+>> 
+>> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
+>> readable which returns the number of pages scanned / reclaimed during the
+>> reclaim process from 'struct vmpressure' associated with each memcg. This should
+>> let user-space asses how successful proactive reclaim triggered from memcg
+>> 'memory.reclaim' was ?
+>> 
+>> With the patch following command flow is expected:
+>> 
+>>  # echo "1M" > memory.reclaim
+>> 
+>>  # cat memory.reclaim
+>>    scanned 76
+>>    reclaimed 32
+>> 
 >
+> Yosry already mentioned the race issue with the implementation and I
+> would prefer we don't create any new dependency on vmpressure which I
+> think we should deprecate.
+Ok,
 
-Hi T.J. Mercier,
-
-Many thanks for this effort. It caught my attention because we might have a use
-case where this feature can be useful for us. Hence I'd like to jump and be part
-of the discussion, I'd really appreciate if you can cc'me for next versions.
-
-While reading the full patchset I was a bit confused about the status of this
-proposal. In fact, the rfc in the subject combined with the number of iterations
-(already seven) confused me. So I'm wondering if this is a RFC or a 'real'
-proposal already that you want to land.
-
-If this is still a RFC I'd remove the 'rfc: Proposal' and use the more canonical
-way that is put RFC in the []. I.e [PATCH RFC v7] cgroup: Add a GPU cgroup
-controller.
-
-If it is not, I'd just remove the RFC and make the subject in the cgroup
-subsystem instead of the gpu. I.E [PATCH v7] cgroup: Add a GPU cgroup
-
-I don't want to nitpick but IMO that helps new people to join to the history of
-the patchset.
-
-> This patch adds a proposal for a new GPU cgroup controller for
-> accounting/limiting GPU and GPU-related memory allocations.
-
-As far as I can see the only thing that is adding here is the accounting, so I'd
-remove any reference to limiting and just explain what the patch really
-introduces, not the future, otherwise is confusing an you expect more than the
-patch really does.
-
-It is important maintain the commit message sync with what the patch really
-does.
-
-> The proposed controller is based on the DRM cgroup controller[1] and
-> follows the design of the RDMA cgroup controller.
-> 
-> The new cgroup controller would:
-> * Allow setting per-device limits on the total size of buffers
->   allocated by device within a cgroup.
-> * Expose a per-device/allocator breakdown of the buffers charged to a
->   cgroup.
-> 
-> The prototype in the following patches is only for memory accounting
-> using the GPU cgroup controller and does not implement limit setting.
-> 
-> [1]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.welty@intel.com/
-> 
-
-I think this is material for the cover more than the commit message. When I read
-this I was expecting all this in this patch.
-
-> Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> ---
-> v7 changes
-> Remove comment about duplicate name rejection which is not relevant to
-> cgroups users per Michal Koutný.
-> 
-> v6 changes
-> Move documentation into cgroup-v2.rst per Tejun Heo.
-> 
-> v5 changes
-> Drop the global GPU cgroup "total" (sum of all device totals) portion
-> of the design since there is no currently known use for this per
-> Tejun Heo.
-> 
-> Update for renamed functions/variables.
-> 
-> v3 changes
-> Remove Upstreaming Plan from gpu-cgroup.rst per John Stultz.
-> 
-> Use more common dual author commit message format per John Stultz.
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 69d7a6983f78..2e1d26e327c7 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2352,6 +2352,29 @@ first, and stays charged to that cgroup until that resource is freed. Migrating
->  a process to a different cgroup does not move the charge to the destination
->  cgroup where the process has moved.
->  
-> +
-> +GPU
-> +---
-> +
-> +The GPU controller accounts for device and system memory allocated by the GPU
-> +and related subsystems for graphics use. Resource limits are not currently
-> +supported.
-> +
-> +GPU Interface Files
-> +~~~~~~~~~~~~~~~~~~~~
-> +
-> +  gpu.memory.current
-> +	A read-only file containing memory allocations in flat-keyed format. The key
-> +	is a string representing the device name. The value is the size of the memory
-> +	charged to the device in bytes. The device names are globally unique.::
-> +
-> +	  $ cat /sys/kernel/fs/cgroup1/gpu.memory.current
-
-I think this is outdated, you are using cgroup v2, right?
-
-> +	  dev1 4194304
-> +	  dev2 104857600
-> +
-
-When I applied the full series I was expecting see the memory allocated by the
-gpu devices or users of the gpu in this file but, after some experiments, what I
-saw is the memory allocated via any process that uses the dma-buf heap API (not
-necessary gpu users). For example, if you create a small program that allocates
-some memory via the dma-buf heap API and then you cat the gpu.memory.current
-file, you see that the memory accounted is not related to the gpu.
-
-This is really confusing, looks to me that the patches evolved to account memory
-that is not really related to the GPU but allocated vi the dma-buf heap API. IMO
-the name of the file should be according to what really does to avoid
-confusions.
-
-So, is this patchset meant to be GPU specific? If the answer is yes that's good
-but that's not what I experienced. I'm missing something?
-
-If the answer is that evolved to track dma-buf heap allocations I think all the
-patches need some rework to adapt the wording as right now, the gpu wording
-seems confusing to me.
-
-> +	The device name string is set by a device driver when it registers with the
-> +	GPU cgroup controller to participate in resource accounting.
-> +
->  Others
->  ------
 >
+> Anyways my question is how are you planning to use these metrics i.e.
+> scanned & reclaimed? I wonder if the data you are interested in can be
+> extracted without a stable interface. Have you tried BPF way to get
+> these metrics? We already have a tracepoint in vmscan tracing the
+> scanned and reclaimed. 
 >
-Thanks,
- Enric
- 
+Agree that there are enough static trace_mm_vmscan_ tracepoints in
+vmscan to get that info.
+
+Also agree that exposing nr_scanned/nr_reclaimed directly to userspace may not
+be a good idea but knowing the amount of memory reclaimed might be
+useful.
+
+With user-space triggered proactive reclaim user-space code can try to
+write a certain value to "memory.reclaim" in a loop till it returns
+'-EBUSY'.
+
+Right now there is no direct way for it to get feedback on the progress
+of the requested reclaim. Providing a stable interface to ascertain the
+progress of reclaim lets that userspace provide smaller values for
+proactive reclaim 
+
+-- 
+Cheers
+~ Vaibhav
