@@ -2,53 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A9E52D3D6
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 15:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5D652D786
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 17:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbiESNVh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 09:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        id S237803AbiESP3q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 11:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238682AbiESNVc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 09:21:32 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2CB22289;
-        Thu, 19 May 2022 06:21:29 -0700 (PDT)
-Received: from kwepemi100026.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L3r8L64NhzhZH8;
-        Thu, 19 May 2022 21:20:50 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100026.china.huawei.com (7.221.188.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 21:21:27 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 19 May 2022 21:21:26 +0800
-Subject: Re: [PATCH -next 7/8] block, bfq: cleanup
- bfq_bfqq_update_budg_for_activation()
-To:     Jan Kara <jack@suse.cz>
-CC:     <paolo.valente@linaro.org>, <axboe@kernel.dk>, <tj@kernel.org>,
-        <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20220514090522.1669270-1-yukuai3@huawei.com>
- <20220514090522.1669270-8-yukuai3@huawei.com>
- <20220519111856.wvk4oetm7odnkg3w@quack3.lan>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <6de25fae-7d36-c31c-a045-4f1668ef4ee5@huawei.com>
-Date:   Thu, 19 May 2022 21:21:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S235437AbiESP3p (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 11:29:45 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E731265A0
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 08:29:43 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id o2so5552536vsd.13
+        for <cgroups@vger.kernel.org>; Thu, 19 May 2022 08:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TTppzXqGXGzezJ0VNR/10YUamTL+Jpn/a+OS4nEwUs0=;
+        b=aJRufbeVPWWTg6xesgVQ92jTkUBXkj4204NtsTRRuXhSDjPb8Xkpo0bNaK4046hFnv
+         mLKgwhvsh9GAmI2LFDkeF6HnSFJOYseaJ+p8tes7OyljSbloK0G+33o31Bpt84fkfCb4
+         J38wGhcIGfbVqDVaOHU/qKlZO1PRo09oJVwe8Kq8Gjr8j7VY4qHpf1GeZdyugHi00mzw
+         aPj5qp0lnQNuRwPUHk0H544OPn69tIDaGuwVRtFJw5cVWxmIclVYYJ1OVG+xA+X0wkh6
+         EFpAbJrZNyvmy90Vgh11onsTrIn9w5C0EYbSgXGfpC4kZqk73crIwyt6vZPv3EiDdghA
+         AwgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TTppzXqGXGzezJ0VNR/10YUamTL+Jpn/a+OS4nEwUs0=;
+        b=AczcUH2MAXOhJr5OyfXSQYUxjJfWxV9qymA+B+Ao/TVjkXKFwGgC+Zix2q+RtOYjNc
+         ajRpP1WKGGYLRPFHAWN3e+PXY4rOyyx7Emtl2+zwGxGicqlUijPMyH/nCdSouqVSz5Ma
+         NTQ0PSv54qV1lYnKaDgPLbEAocmTWZdOEdrPhR5HWWwSaGarkoqhI6Ysi8uMwA7j7Gog
+         H0Xx3ORzke6siyH6Xsy7X00rOwnuGRY77MetERW05AZJpcdBSYhxQJXjFTKUtdSriCZ6
+         XOamX4UtlLgyUPv4LIk5HHgJ5riAqy7jLmqAQGQsdnF9/gKhcMoXBewhmKkyxUSMHkdi
+         +cRA==
+X-Gm-Message-State: AOAM5327hKQiKUZBUcW2XS0JHE2pYOpsN/blix7EzvQ0e/8QJldaQmOY
+        yNyIqsosQSjlq/QTr21MfKG0+ww47eGM38OJK04lZw==
+X-Google-Smtp-Source: ABdhPJw+n9H3muNanVvnGzkIcR9olge2SWxTCMxOP9MQ1pcplNiacgRpRo43zTNM6++hw02jtLKmONoAGYelF5/06ZQ=
+X-Received: by 2002:a05:6102:3ecf:b0:320:7c27:5539 with SMTP id
+ n15-20020a0561023ecf00b003207c275539mr2699219vsv.59.1652974182955; Thu, 19
+ May 2022 08:29:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220519111856.wvk4oetm7odnkg3w@quack3.lan>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com>
+ <YoNHJwyjR7NJ5kG7@dhcp22.suse.cz> <CAJD7tkYnBjuwQDzdeo6irHY=so-E8z=Kc_kZe52anMOmRL+8yA@mail.gmail.com>
+ <YoQAVeGj19YpSMDb@cmpxchg.org> <CAAPL-u8pZ_p+SQZnr=8UV37yiQpWRZny7g9p6YES0wa+g_kMJw@mail.gmail.com>
+ <YoYFKdqayKRw2npp@dhcp22.suse.cz>
+In-Reply-To: <YoYFKdqayKRw2npp@dhcp22.suse.cz>
+From:   Wei Xu <weixugc@google.com>
+Date:   Thu, 19 May 2022 08:29:32 -0700
+Message-ID: <CAAPL-u-e=yZT7_N2oVNhpPnM=1Fg=JhCF-0xoMoFZfq8Kgw3zQ@mail.gmail.com>
+Subject: Re: [RFC] Add swappiness argument to memory.reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Yu Zhao <yuzhao@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Chen Wandun <chenwandun@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,56 +77,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-ÔÚ 2022/05/19 19:18, Jan Kara Ð´µÀ:
-> On Sat 14-05-22 17:05:21, Yu Kuai wrote:
->> It will only be called from bfq_bfqq_handle_idle_busy_switch() in
->> specific code branch, there is no need to precaculate
->> 'bfqq_wants_to_preempt' each time bfq_bfqq_handle_idle_busy_switch()
->> is caleld.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> 
-> Please see below:
-> 
->> @@ -1816,14 +1807,6 @@ static void bfq_bfqq_handle_idle_busy_switch(struct bfq_data *bfqd,
->>   		  (bfqq->bic || RQ_BIC(rq)->stably_merged) &&
->>   		   (*interactive || soft_rt)));
->>   
->> -	/*
->> -	 * Using the last flag, update budget and check whether bfqq
->> -	 * may want to preempt the in-service queue.
->> -	 */
->> -	bfqq_wants_to_preempt =
->> -		bfq_bfqq_update_budg_for_activation(bfqd, bfqq,
->> -						    arrived_in_time);
->> -
->>   	/*
->>   	 * If bfqq happened to be activated in a burst, but has been
->>   	 * idle for much more than an interactive queue, then we
-> ...
->> @@ -1918,7 +1900,7 @@ static void bfq_bfqq_handle_idle_busy_switch(struct bfq_data *bfqd,
->>   	 * (2) this switch of bfqq to busy changes the scenario.
->>   	 */
->>   	if (bfqd->in_service_queue &&
->> -	    ((bfqq_wants_to_preempt &&
->> +	    ((bfq_bfqq_update_budg_for_activation(bfqd, bfqq) &&
->>   	      bfqq->wr_coeff >= bfqd->in_service_queue->wr_coeff) ||
->>   	     bfq_bfqq_higher_class_or_weight(bfqq, bfqd->in_service_queue) ||
->>   	     !bfq_better_to_idle(bfqd->in_service_queue)) &&
-> 
-> So these changes are actually wrong because
-> bfq_bfqq_update_budg_for_activation() relies on
-> bfq_bfqq_non_blocking_wait_rq() but bfq_add_bfqq_busy() clears that. And
-> bfq_add_bfqq_busy() is called between the place where
-> bfq_bfqq_update_budg_for_activation() was called previously and now so your
-> patch breaks this logic.
+On Thu, May 19, 2022 at 1:51 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 18-05-22 22:44:13, Wei Xu wrote:
+> > On Tue, May 17, 2022 at 1:06 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> [...]
+> > > But I don't think an anon/file bias will capture this coefficient?
+> >
+> > It essentially provides the userspace proactive reclaimer an ability
+> > to define its own reclaim policy by adding an argument to specify
+> > which type of pages to reclaim via memory.reclaim.
+>
+> I am not sure the swappiness is really a proper interface for that.
+> Historically this tunable has changed behavior several times and the
+> reclaim algorithm is free to ignore it completely in many cases. If you
+> want to build a userspace reclaim policy, then it really has to have a
+> predictable and stable behavior. That would mean that the semantic would
+> have to be much stronger than the global vm_swappiness.
 
-Hi,
+I agree. As what I replied to Roman's comments earlier, it is cleaner
+to just specify the type of pages to reclaim.
 
-You are right, thanks for the explanation, I'll remove this patch and
-the next patch in next version.
-
-Kuai
-> 
-> 								Honza
-> 
+> --
+> Michal Hocko
+> SUSE Labs
