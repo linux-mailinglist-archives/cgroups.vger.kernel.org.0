@@ -2,146 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5262F52CFBB
-	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 11:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4057C52CFF3
+	for <lists+cgroups@lfdr.de>; Thu, 19 May 2022 11:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbiESJvS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 May 2022 05:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
+        id S229742AbiESJ5N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 May 2022 05:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236300AbiESJvR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 05:51:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FECB1C125;
-        Thu, 19 May 2022 02:51:15 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4AA302188C;
-        Thu, 19 May 2022 09:51:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1652953874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I8DbhN/hmOIXXZ4piaGn9jvuXkaTo8VWp7TEEneSWwU=;
-        b=YFxzBTOtJeatYq35CXez5bOlSjNY4j0o3mtivxShrX3+r3OGxsUKu4LeTD5d/SWLBWQHZw
-        et1F5ekV2CK0+dO/rT6Z6P3Tc3mMmVNGUJuW4ovJIawZLb0vaTZXSIG2mclSWc4xLg67TK
-        pvtcYKhsS9GpnIBCVqgNTN5bQGKNjh4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7FA8F2C141;
-        Thu, 19 May 2022 09:51:13 +0000 (UTC)
-Date:   Thu, 19 May 2022 11:51:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Zi Yan <ziy@nvidia.com>,
+        with ESMTP id S234279AbiESJ5M (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 May 2022 05:57:12 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D8C92D32;
+        Thu, 19 May 2022 02:57:11 -0700 (PDT)
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J9mmV3001105;
+        Thu, 19 May 2022 09:57:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=cKPPLtUhn1Zdq9Oika82pAtq/kD+uaRcTWRlgTUcvuE=;
+ b=ZpDHUadAU6pwtWhT2zKhV4nm6iGq0zAoMYSHrl73AwJTteBFxmJJYaILbI9rtcLcWqBU
+ bIAl6pQAVHsaKYFmRmwUu9fE7CP0+GSveQRjj39PiBoxvCR1+0YgwHNZYmTD1OrmOzu5
+ O2bNplUCc/SwPgB9ggkYMmrICTV+wBkadCYbWkQYDDxHnq7qqWwY4AMOITe+Xd6PXgOZ
+ dglAMLKOzl+eiR9Yhkl6ElvIDu5EZNIRK53EpzHNSsEi3roZHlWTIHE1itLeFHlP8k32
+ 7KyPMKAc0asMSl2i8NUw3UlZa0z9aBgClpna8ftcc8bIQhbJwshLs7nrlHqz7dmgSjsN 5A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g5kkc84vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:57:04 +0000
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24J9rDSK011040;
+        Thu, 19 May 2022 09:57:04 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g5kkc84us-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:57:04 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24J9qSfk011879;
+        Thu, 19 May 2022 09:57:01 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3g2429f2fy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 May 2022 09:57:01 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24J9uwUg38207958
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 May 2022 09:56:58 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9518FA405B;
+        Thu, 19 May 2022 09:56:58 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E6F66A4054;
+        Thu, 19 May 2022 09:56:53 +0000 (GMT)
+Received: from vajain21.in.ibm.com (unknown [9.43.20.227])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 19 May 2022 09:56:53 +0000 (GMT)
+Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Thu, 19 May 2022 15:26:52 +0530
+From:   Vaibhav Jain <vaibhav@linux.ibm.com>
+To:     Greg Thelen <gthelen@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH] Revert "mm/vmscan: never demote for memcg reclaim"
-Message-ID: <YoYTEDD+c4GT0xYY@dhcp22.suse.cz>
-References: <20220518190911.82400-1-hannes@cmpxchg.org>
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+In-Reply-To: <xr937d6ic5qk.fsf@gthelen2.svl.corp.google.com>
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+ <xr937d6ic5qk.fsf@gthelen2.svl.corp.google.com>
+Date:   Thu, 19 May 2022 15:26:52 +0530
+Message-ID: <8735h5hml7.fsf@vajain21.in.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518190911.82400-1-hannes@cmpxchg.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 52ju57apf4Eux7cGM7kXvW_O-BDPKUUI
+X-Proofpoint-GUID: i_wj5J-0QfvOAm51WZkh71nEImRo5w5x
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-19_02,2022-05-19_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205190055
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 18-05-22 15:09:11, Johannes Weiner wrote:
-> This reverts commit 3a235693d3930e1276c8d9cc0ca5807ef292cf0a.
-> 
-> Its premise was that cgroup reclaim cares about freeing memory inside
-> the cgroup, and demotion just moves them around within the cgroup
-> limit. Hence, pages from toptier nodes should be reclaimed directly.
-> 
-> However, with NUMA balancing now doing tier promotions, demotion is
-> part of the page aging process. Global reclaim demotes the coldest
-> toptier pages to secondary memory, where their life continues and from
-> which they have a chance to get promoted back. Essentially, tiered
-> memory systems have an LRU order that spans multiple nodes.
-> 
-> When cgroup reclaims pages coming off the toptier directly, there can
-> be colder pages on lower tier nodes that were demoted by global
-> reclaim. This is an aging inversion, not unlike if cgroups were to
-> reclaim directly from the active lists while there are inactive pages.
-> 
-> Proactive reclaim is another factor. The goal of that it is to offload
-> colder pages from expensive RAM to cheaper storage. When lower tier
-> memory is available as an intermediate layer, we want offloading to
-> take advantage of it instead of bypassing to storage.
-> 
-> Revert the patch so that cgroups respect the LRU order spanning the
-> memory hierarchy.
+Hi,
 
-I do agree with your reasoning.
+Thanks for looking into this patch,
 
-> Of note is a specific undercommit scenario, where all cgroup limits in
-> the system add up to <= available toptier memory. In that case,
-> shuffling pages out to lower tiers first to reclaim them from there is
-> inefficient. This is something could be optimized/short-circuited
-> later on (although care must be taken not to accidentally recreate the
-> aging inversion). Let's ensure correctness first.
+Greg Thelen <gthelen@google.com> writes:
 
-My slight concern with demotion is that there is no actual "guarantee"
-to reclaim any charges which try_charge depends on to make a forward
-progress. I suspect this is rather unlikely situation, though. The last
-tear (without any fallback) should have some memory to reclaim most of
-the time. Retries should push some pages out but low effort allocation
-requests like GFP_NORETRY might fail but callers should be prepared for
-that.
+> Vaibhav Jain <vaibhav@linux.ibm.com> wrote:
+>
+>> [1] Provides a way for user-space to trigger proactive reclaim by introducing
+>> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
+>> of pages scanned and reclaimed is still not directly available to the
+>> user-space.
+>>
+>> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
+>> readable which returns the number of pages scanned / reclaimed during the
+>> reclaim process from 'struct vmpressure' associated with each memcg. This should
+>> let user-space asses how successful proactive reclaim triggered from memcg
+>> 'memory.reclaim' was ?
+>>
+>> With the patch following command flow is expected:
+>>
+>>  # echo "1M" > memory.reclaim
+>>
+>>  # cat memory.reclaim
+>>    scanned 76
+>>    reclaimed 32
+>
+> I certainly appreciate the ability for shell scripts to demonstrate
+> cgroup operations with textual interfaces, but such interface seem like
+> they are optimized for ease of use by developers.
+>
+Agree that directly exposing nr_scanned/reclaimed might not be a useful
+for users and certainly looks like a dev interface
 
-All that being said the agin inversion is much more real of a problem
-than this.
+> I wonder if for runtime production use an ioctl or netlink interface has
+> been considered for cgroup? I don't think there are any yet, but such
+> approaches seem like a more straightforward ways to get nontrivial
+> input/outputs from a single call (e.g. like this proposal). And they
+> have the benefit of not requiring ascii serialization/parsing overhead.
 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <guro@fb.com>
+I think to a large degree eBPF and existing static tracepoints in vmscan
+can provide access to these metrics as Shakeel Bhat pointed to earlier.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  mm/vmscan.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c6918fff06e1..7a4090712177 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -528,13 +528,8 @@ static bool can_demote(int nid, struct scan_control *sc)
->  {
->  	if (!numa_demotion_enabled)
->  		return false;
-> -	if (sc) {
-> -		if (sc->no_demotion)
-> -			return false;
-> -		/* It is pointless to do demotion in memcg reclaim */
-> -		if (cgroup_reclaim(sc))
-> -			return false;
-> -	}
-> +	if (sc && sc->no_demotion)
-> +		return false;
->  	if (next_demotion_node(nid) == NUMA_NO_NODE)
->  		return false;
->  
-> -- 
-> 2.36.1
+<snip>
 
 -- 
-Michal Hocko
-SUSE Labs
+Cheers
+~ Vaibhav
