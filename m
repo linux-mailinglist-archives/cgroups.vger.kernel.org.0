@@ -2,212 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 805A952F075
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 18:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5510252F070
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 18:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351554AbiETQUx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 12:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S242165AbiETQUl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 12:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351536AbiETQUu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 12:20:50 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDE9559E
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:20:45 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h14so12170726wrc.6
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:20:45 -0700 (PDT)
+        with ESMTP id S231239AbiETQUj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 12:20:39 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055027CDFA;
+        Fri, 20 May 2022 09:20:39 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id m1so7768578plx.3;
+        Fri, 20 May 2022 09:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GarL2Kn/zNIJwCptfjfJ4swfJzGY6bIsUnYiG/oxiuI=;
-        b=TtgVg9kR94FReHMcINrx3ZC/s6A7a4psy4/9RGzmCb8xCqRJZPWW8LNcgsK1sWrGU5
-         ho2BYDZmtkjRspH22M5aAr+RU9dkyIOmWM4MwgpfWKF/iGU0tz/r5P67ilQptFsP60xT
-         Q3gKb4yQ1eQudnLBQXSua2hijgHXcJ97MVbOBBeKTXZ3SHjyElxW0IrGEgvIles1NlSY
-         zYVejH5s8+UGST9GpZVVizOO2UpSavsx1LEFhvf99w/sp5+VrNr/M6yaapC2S09Vbn0u
-         YALTWwv9FeqDgRBHzzPava+DO/9LNGzsLNp0LCHcsRE5JDGH6JkMH01Az6bZ7IeMUK6f
-         0OUg==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MtVzH3UoF12u8L33efNjqLpTUDtaXmlgKBbTF3gWD9k=;
+        b=Dsgg7TZ96W0GRuErppdSf6T4FUWmmZNPMnNO7I+8rmFZ9Wab7KpPZAoYQSzGSPzlhT
+         mb0X1UQ+25OgdIChFrz6rVnxb9d+U0p/aU6V3lmCC6hn6/QqDqNfx/FpekIj9bjlmOA9
+         PFlhK+DZQ8ibN3OaS6/ADJbQOEZiqGuikFY6jTpZYOIj4L9I/e6OWdc0LKeqEgAhkzMe
+         SMiDElqSqUx15bpFQWKQWFSqe+RLP/2OfKdcecnWuwQhOtE/eTNHqm8spfzC1msqPQrZ
+         98s9aR05kcj3vJPjsNqGYraDEGpKWwTldO41pcmFmGFbDG+wsboA+O9roKh5t/tN4SY5
+         K2cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GarL2Kn/zNIJwCptfjfJ4swfJzGY6bIsUnYiG/oxiuI=;
-        b=EogUhlWWfsiAGDcPa1xsvVK2tqbuizYkB+QdR5TOhYSux3LbHZ8smoZiJIO3/vBOUx
-         N8EnT4DB4EsvoIOKKd4zuPARjZo56n8yKDgugjtSqNtX/HR6OhTJM/sG1DFTJ3AlALrG
-         rcsMtNlpjrkGoyfRC/sTtSdLsWE1qB2auQuagiqn9f3vQgSKRy0/nOP4kHr1d9CDE5AH
-         0rugjWlqrzkG4xWUQWz0dxGM9YSgckECgLU32iwz6A6r9DZkiVeQIlTkgKsrKTVLw70A
-         UHvh3qu/0hp3/FiEuxRFAyJk71GXmO5vBDg+JiH74E5qQLYTpa1GFuyssGRXdjJ4dBCy
-         O5wQ==
-X-Gm-Message-State: AOAM531YsVTNlC5ByjlDWX3zbZWtazyPkXnqK26/aUQi2i6bpq9soP0m
-        6y1Y9izBGSlFlChLjETIIHMi+vdzrTroiV49NtltiQ==
-X-Google-Smtp-Source: ABdhPJwXihn6Eo/eN5yZSzV0l8oNjnwxVa2GX1v/ldHoA3ps70mSdd2dNpogTkqoScf7BEeYJR9EV+TAX3/KMcgAu7o=
-X-Received: by 2002:adf:f042:0:b0:20e:5be7:f473 with SMTP id
- t2-20020adff042000000b0020e5be7f473mr8983437wro.80.1653063643790; Fri, 20 May
- 2022 09:20:43 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=MtVzH3UoF12u8L33efNjqLpTUDtaXmlgKBbTF3gWD9k=;
+        b=ecHy213Fv9HkUWSE0jF3Ouwng68yG0bBjwKfnFCjbK5F8/KgfkPF24g95gyfxve20F
+         J82Cr5gErAyJtkgCH1nX6koX7BK/v9fEjVLzAH7og46KjfW8Z/eaGcT3D1gko6nwt/+8
+         VunVuq+r56JodQHf6bV5KBCo2rbIoJyy4hiNqWdRiNR4mXmK6WY4E1u1kfZ+Nlhv5eXw
+         e+u8dNXNMH5/FwlLRLSECQ/xQrRnOOYTI9b137pRyWLHtqZrI5Anz3SV2CqOqzKyh9aZ
+         J8qh7nTNN/UV1lV6kHzHUZBK/P1ieHd0dfROnJaCtC2Rs9jkfbhhopkkKUyd/JJ8sT3v
+         McLg==
+X-Gm-Message-State: AOAM5334X2tZj78FlyGklhn9cbMZa8HmkEa6a30S0ej9LTYfiDK9tquq
+        l0DmiWRJp8kiu1C+1W9Ifh4=
+X-Google-Smtp-Source: ABdhPJxYicDnUkYqugMyMSYpobkXd2eA8l55tKWUoCwezF8GqNS+WhSBNQr8HswLB3GaL+Pd+D/MCg==
+X-Received: by 2002:a17:90b:4a0f:b0:1e0:edc:c1f with SMTP id kk15-20020a17090b4a0f00b001e00edc0c1fmr101197pjb.93.1653063638340;
+        Fri, 20 May 2022 09:20:38 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:1761])
+        by smtp.gmail.com with ESMTPSA id m3-20020a170902db0300b0015e8d4eb23dsm5971304plx.135.2022.05.20.09.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 May 2022 09:20:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 20 May 2022 06:20:36 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     "yukuai (C)" <yukuai3@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com, geert@linux-m68k.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH -next v3 2/2] blk-throttle: fix io hung due to
+ configuration updates
+Message-ID: <Yoe/1BRYzSRI0JBd@slm.duckdns.org>
+References: <20220519085811.879097-1-yukuai3@huawei.com>
+ <20220519085811.879097-3-yukuai3@huawei.com>
+ <20220519095857.GE16096@blackbody.suse.cz>
+ <a8953189-af42-0225-3031-daf61347524a@huawei.com>
+ <20220519161026.GG16096@blackbody.suse.cz>
+ <73464ca6-9412-cc55-d9c0-f2e8a10f0607@huawei.com>
+ <fe3c03f7-9b52-7948-075d-cbdf431363e1@huawei.com>
+ <20220520160305.GA17335@blackbody.suse.cz>
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-3-yosryahmed@google.com> <fa3b35a6-5c3c-42a1-23f0-a8143b4eaa57@fb.com>
- <CAJD7tkanipJ7-9H_L6KMUjpD2qS29-YCrnMXw+8BAKfbOk5P9Q@mail.gmail.com> <eca39189-9258-b1cc-0a1d-a0d7e6027861@fb.com>
-In-Reply-To: <eca39189-9258-b1cc-0a1d-a0d7e6027861@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 May 2022 09:20:07 -0700
-Message-ID: <CAJD7tkZq_GE-nR3UUwXJ+iE9WCDv9HN2MtT8as4bg2NKcNc3xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
- and cgroup_rstat_flush() kfuncs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220520160305.GA17335@blackbody.suse.cz>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 9:16 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/20/22 9:08 AM, Yosry Ahmed wrote:
-> > On Fri, May 20, 2022 at 8:15 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 5/19/22 6:21 PM, Yosry Ahmed wrote:
-> >>> Add cgroup_rstat_updated() and cgroup_rstat_flush() kfuncs to bpf
-> >>> tracing programs. bpf programs that make use of rstat can use these
-> >>> functions to inform rstat when they update stats for a cgroup, and wh=
-en
-> >>> they need to flush the stats.
-> >>>
-> >>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >>> ---
-> >>>    kernel/cgroup/rstat.c | 35 ++++++++++++++++++++++++++++++++++-
-> >>>    1 file changed, 34 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> >>> index e7a88d2600bd..a16a851bc0a1 100644
-> >>> --- a/kernel/cgroup/rstat.c
-> >>> +++ b/kernel/cgroup/rstat.c
-> >>> @@ -3,6 +3,11 @@
-> >>>
-> >>>    #include <linux/sched/cputime.h>
-> >>>
-> >>> +#include <linux/bpf.h>
-> >>> +#include <linux/btf.h>
-> >>> +#include <linux/btf_ids.h>
-> >>> +
-> >>> +
-> >>>    static DEFINE_SPINLOCK(cgroup_rstat_lock);
-> >>>    static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-> >>>
-> >>> @@ -141,7 +146,12 @@ static struct cgroup *cgroup_rstat_cpu_pop_updat=
-ed(struct cgroup *pos,
-> >>>        return pos;
-> >>>    }
-> >>>
-> >>> -/* A hook for bpf stat collectors to attach to and flush their stats=
- */
-> >>> +/*
-> >>> + * A hook for bpf stat collectors to attach to and flush their stats=
-.
-> >>> + * Together with providing bpf kfuncs for cgroup_rstat_updated() and
-> >>> + * cgroup_rstat_flush(), this enables a complete workflow where bpf =
-progs that
-> >>> + * collect cgroup stats can integrate with rstat for efficient flush=
-ing.
-> >>> + */
-> >>>    __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-> >>>                                     struct cgroup *parent, int cpu)
-> >>>    {
-> >>> @@ -476,3 +486,26 @@ void cgroup_base_stat_cputime_show(struct seq_fi=
-le *seq)
-> >>>                   "system_usec %llu\n",
-> >>>                   usage, utime, stime);
-> >>>    }
-> >>> +
-> >>> +/* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush(=
-) */
-> >>> +BTF_SET_START(bpf_rstat_check_kfunc_ids)
-> >>> +BTF_ID(func, cgroup_rstat_updated)
-> >>> +BTF_ID(func, cgroup_rstat_flush)
-> >>> +BTF_SET_END(bpf_rstat_check_kfunc_ids)
-> >>> +
-> >>> +BTF_SET_START(bpf_rstat_sleepable_kfunc_ids)
-> >>> +BTF_ID(func, cgroup_rstat_flush)
-> >>> +BTF_SET_END(bpf_rstat_sleepable_kfunc_ids)
-> >>> +
-> >>> +static const struct btf_kfunc_id_set bpf_rstat_kfunc_set =3D {
-> >>> +     .owner          =3D THIS_MODULE,
-> >>> +     .check_set      =3D &bpf_rstat_check_kfunc_ids,
-> >>> +     .sleepable_set  =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>
-> >> There is a compilation error here:
-> >>
-> >> kernel/cgroup/rstat.c:503:3: error: =E2=80=98const struct btf_kfunc_id=
-_set=E2=80=99 has
-> >> no member named =E2=80=98sleepable_set=E2=80=99; did you mean =E2=80=
-=98release_set=E2=80=99?
-> >>       503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>           |   ^~~~~~~~~~~~~
-> >>           |   release_set
-> >>     kernel/cgroup/rstat.c:503:19: warning: excess elements in struct
-> >> initializer
-> >>       503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>           |                   ^
-> >>     kernel/cgroup/rstat.c:503:19: note: (near initialization for
-> >> =E2=80=98bpf_rstat_kfunc_set=E2=80=99)
-> >>     make[3]: *** [scripts/Makefile.build:288: kernel/cgroup/rstat.o] E=
-rror 1
-> >>
-> >> Please fix.
-> >
-> > This patch series is rebased on top of 2 patches in the mailing list:
-> > - bpf/btf: also allow kfunc in tracing and syscall programs
-> > - btf: Add a new kfunc set which allows to mark a function to be
-> >    sleepable
-> >
-> > I specified this in the cover letter, do I need to do something else
-> > in this situation? Re-send the patches as part of my series?
->
-> At least put a link in the cover letter for the above two patches?
-> This way, people can easily find them to double check.
+Hello,
 
-Right. Will do this in the next version. Sorry for the inconvenience.
+On Fri, May 20, 2022 at 06:03:05PM +0200, Michal Koutný wrote:
+> > Then io hung can be triggered by always submmiting new configuration
+> > before the throttled bio is dispatched.
+> 
+> How big is this a problem actually? Is it only shooting oneself in the leg
+> or can there be a user who's privileged enough to modify throttling
+> configuration yet not privileged enough to justify the hung's
+> consequences (like some global FS locks).
 
->
-> >
-> >
-> >
-> >>
-> >>> +};
-> >>> +
-> >>> +static int __init bpf_rstat_kfunc_init(void)
-> >>> +{
-> >>> +     return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> >>> +                                      &bpf_rstat_kfunc_set);
-> >>> +}
-> >>> +late_initcall(bpf_rstat_kfunc_init);
+So, the problem in itself is of the self-inflicted type and I'd prefer to
+ignore it. Unfortunately, the kernel doesn't have the kind of isolation
+where stalling out some aribtrary tasks is generally safe, especially not
+blk-throtl as it doesn't handle bio_issue_as_root() and thus can have a
+pretty severe priority inversions where IOs which can block system-wide
+operations (e.g. memory reclaim) get trapped in a random cgroup.
+
+Even ignoring that, the kernel in general assumes some forward progress from
+everybody and when a part stalls it's relatively easy to spread to the rest
+of the system, sometimes gradually, sometimes suddenly - e.g. if the stalled
+IO was being performed while holding the mmap_sem, which isn't rare, then
+anything which tries to read its proc cmdline will hang behind it.
+
+So, we wanna avoid a situation where a non-priviledged user can cause
+indefinite UNINTERRUPTIBLE sleeps to prevent local DoS attacks. I mean,
+preventing local attacks is almost never fool proof but we don't want to
+make it too easy at least.
+
+Thanks.
+
+-- 
+tejun
