@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7B252F4EE
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 23:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB7652F551
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 23:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346672AbiETVTX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 17:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S1353639AbiETVt7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 17:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237626AbiETVTX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 17:19:23 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993AF19C752
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 14:19:21 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id k30so13044993wrd.5
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 14:19:21 -0700 (PDT)
+        with ESMTP id S234295AbiETVt6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 17:49:58 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E4119C761
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 14:49:57 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c1so8466789qkf.13
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 14:49:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fjiL3NxvzYrXKj45aHBa+PDLeI3SrPcf1o9kYao+3oU=;
-        b=f1SZJ5wLl9KsySVn8cTyhGlWJMoGbRfZWdXIbT19HvldLNIfxvW+e8t2QACM0vOjjl
-         TTkCnR8Uv4N+prXqmTruAvJV4jPFv1yFQG5Mcwc/JNk/2wd7QMX3xCRWlmOHUKqiOa8m
-         7rN49OeStoRttGDgdidlQT1/mlxLY42xKmmDXWeXODcWslDYXMO/z0UyC6ANAVntoFnN
-         dNYejFKQpABvj/LLi6y+ekG47MHIQYksaSFuqWQxHCnopiPAMI0U+V5dHZGF9MC72GLu
-         k9uItHw/yoSOK+kR4G3a/Qmt5aepyIBViRMr2gyaWIABqizZ0tr7XgaAqAuOnTlWVB55
-         E0tQ==
+        bh=p5lqA4V2Z2dTb6TSdgJsb3QItFMtbNECXgovUnmle3Y=;
+        b=kS4vFnX94EFG9U4QcDfkpXRrX2RNEKg6t5fFXIM1d4BF31cv67BKOWBC2/lKKWdWbn
+         eAiIo+bdJTHT1tFbHYiYmgVpOrVsoU4ftSDk7vordIX8o06a1mV0wVr6JDtOc50c47Y+
+         0GLRmWg6ZMMrDP/lrewoqr2ZIF//PQqiqRIMWoBfc+gkgSVLmF7StWfErdeSzc8IStzs
+         Dpqt3hNNZFs1UiH/n2pe0dgtzveVE5rAsr/WcqdlXXfiGC9hLiZaINDKyifpLvdtlCUs
+         BuqqQ6VdPyyv9LSKYr3Orpz88v4ptMLSyEV3N8jFFGfKGlpEvQiPEU6RQs+WPn2sulTo
+         CTKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fjiL3NxvzYrXKj45aHBa+PDLeI3SrPcf1o9kYao+3oU=;
-        b=XcX58rmQwjIyxB6FCVc8SFlDITvkNmaF80KIFpxEMGDGYy0ReCq5OT5QHqhijWvIDZ
-         hsxss0dEaaIbW2lQhN0F8J7WJikGCgNcpCVxbwsyHGiMp05Vx5vTrpVv9zX1srkMHJQw
-         al6mjPcvK6CVO3wUyW2nTosb5NAJQ+FJ38qCx4OhAvdp06QYCOVevZMeQ4FwUiisyXyd
-         rZgSL70+TkkimSokoUtuPexo5/WY0+MRw5AbU4C6PdPXCoM5FgfipaDw4qRRuCX/YsRS
-         cyqytatD7p9WgBcpy23I3GZbygx7aeAp6zX5IE444m8iEb0MxfN6dPjmaJi0X5q/ujud
-         8mPg==
-X-Gm-Message-State: AOAM533sjAbjjxZsp4ZitBq3b3E1aK4tr4UJK8IRtTWLYKIERXUFZqlS
-        wf9FCkglutICXvw6VKZQEyUn0WhKWm74PnmOtJYu+A==
-X-Google-Smtp-Source: ABdhPJxqSoOtBnq+VE7TR7nxBu5p/47iKtCzXj6VNgKmecJ8rniStzCBDa3ZKu7nYV6YfZMbRec8O2mWvNPLdaBfTb0=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr10019749wrr.534.1653081559944; Fri, 20
- May 2022 14:19:19 -0700 (PDT)
+        bh=p5lqA4V2Z2dTb6TSdgJsb3QItFMtbNECXgovUnmle3Y=;
+        b=4tyWe2hQ4qOjgMy80WpFpDvZitPygw6CUxNd0O3tUCDhDFGk8NqtQeP+INTSAuTWSQ
+         7Ppvpflbmg+Aa5rMxTpxKQ9aqAnw7qHuBNIlRc893d78s1ZdpL9qLOBwRSY6BJWKp/8F
+         NwGRTMktWxCjWVUaLSYejLv1IkBeHf79TQ7O5zKiKo3NZIBf9z48PxphiFL3OlZ14pQq
+         HZbQZQ9duFI9loEZ7/a2Z6jli46Lfl32Z8PJ47Ve3gVtJ2Zdh9XBVXIgqpCHgHbIKlGD
+         /ygmxpYk1VKVqoQCW6AJcaXjQkYzEjW/ghhPkdQqk62iXD5TjS4obM0xPjhCc5Es9xsC
+         i52w==
+X-Gm-Message-State: AOAM533TakphSdsxUC3tD2NW5zAcPdylfSdE7BvyzdcBzACu6DJGpcPb
+        ao/7s9Nw4RNdGY9lypwS5Vwb5ZtWvpdGZ7Mvcnt5gw==
+X-Google-Smtp-Source: ABdhPJxonSSQ4Ctjgy9FHZhPALvEvqDuaDCFX0JXitnObExcsts1K2cefYYK0aJQqCjAgyOsCzzmQzREppJ+UnZ2YeI=
+X-Received: by 2002:ae9:f504:0:b0:69f:ba2d:29ff with SMTP id
+ o4-20020ae9f504000000b0069fba2d29ffmr7651495qkg.583.1653083396226; Fri, 20
+ May 2022 14:49:56 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220520012133.1217211-1-yosryahmed@google.com>
  <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
@@ -51,12 +51,12 @@ References: <20220520012133.1217211-1-yosryahmed@google.com>
  <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
  <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
 In-Reply-To: <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 May 2022 14:18:42 -0700
-Message-ID: <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 20 May 2022 14:49:45 -0700
+Message-ID: <CA+khW7iDDkO3h5WQixEA=nUL-tBmCTh7fMAf3iwNy98UfM-k9g@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-To:     Hao Luo <haoluo@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Yonghong Song <yhs@fb.com>,
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -81,46 +81,21 @@ X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 12:43 PM Hao Luo <haoluo@google.com> wrote:
+Hi Tejun and Yonghong,
+
+On Fri, May 20, 2022 at 12:42 PM Hao Luo <haoluo@google.com> wrote:
 >
 > Hi Tejun and Yonghong,
 >
 > On Fri, May 20, 2022 at 9:45 AM Tejun Heo <tj@kernel.org> wrote:
 > > On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
-> > > Maybe you can have a bpf program signature like below:
-> > >
-> > > int BPF_PROG(dump_vmscan, struct bpf_iter_meta *meta, struct cgroup *cgrp,
-> > > struct cgroup *parent_cgrp)
-> > >
-> > > parent_cgrp is NULL when cgrp is the root cgroup.
-> > >
-> > > I would like the bpf program should send the following information to
-> > > user space:
-> > >    <parent cgroup dir name> <current cgroup dir name>
-> >
-> > I don't think parent cgroup dir name would be sufficient to reconstruct the
-> > path given that multiple cgroups in different subtrees can have the same
-> > name. For live cgroups, userspace can find the path from id (or ino) without
-> > traversing anything by constructing the fhandle, open it open_by_handle_at()
-> > and then reading /proc/self/fd/$FD symlink -
-> > https://lkml.org/lkml/2020/12/2/1126. This isn't available for dead cgroups
-> > but I'm not sure how much that'd matter given that they aren't visible from
-> > userspace anyway.
-> >
->
-> Sending cgroup id is better than cgroup dir name, also because IIUC
-> the path obtained from cgroup id depends on the namespace of the
-> userspace process. So if the dump file may be potentially read by
-> processes within a container, it's better to have the output
-> namespaced IMO.
->
 > > >    <various stats interested by the user>
 > > >
 > > > This way, user space can easily construct the cgroup hierarchy stat like
@@ -142,36 +117,12 @@ On Fri, May 20, 2022 at 12:43 PM Hao Luo <haoluo@google.com> wrote:
 > that cgroup only. If it is not specified, we iterate over all cgroups.
 > If I understand correctly, sounds doable.
 >
-> > > The kernel part of cgroup_iter can call cgroup_rstat_flush()
-> > > before calling cgroup_iter bpf program.
->
-> Sounds good to me as well. But my knowledge on rstat_flush is limited.
-> Yosry can give this a try.
->
-> >
-> > Would it work to just pass in @cgrp and provide a group of helpers so that
-> > the program can do whatever it wanna do including looking up the full path
-> > and passing that to userspace?
-> >
->
-> My understanding is, yes, doable. If we need the full path information
-> of a cgroup, helpers or kfuncs are needed.
->
-> The userspace needs to specify the identity of the cgroup, when
-> creating bpf_iter. This identity could be cgroup id or fd. This
-> identity needs to be converted to cgroup object somewhere before
-> passing into bpf program to use.
 
+Yonghong, I realized that seek() which Tejun has been calling out, can
+be used to specify the target cgroup, rather than adding a new
+parameter. Maybe, we can pass cgroup_id to seek() on cgroup bpf_iter,
+which will instruct read() to return the corresponding cgroup's stats.
+On the other hand, reading without calling seek() beforehand will
+return all the cgroups.
 
-Let's sum up the discussion here, I feel like we are losing track of
-the main problem. IIUC the main concern is that cgroup_iter is not
-effectively an iterator, it rather dumps information for one cgroup. I
-like the suggestion to make it iterate cgroups by default, and an
-optional cgroup_id parameter to make it only "iterate" this one
-cgroup. IIUC, this cgroup_id parameter would be a link parameter,
-similar to the current approach. Basically, we extend the current
-patch so that if cgroup_id is not specified the iterator gets called
-for all cgroups instead of one. This fixes the problem for our use
-case and also keeps cgroup_iter generic enough. Is my understanding
-correct? If yes, I don't see a need to flush rstat in the kernel on
-behalf of cgroup_iter progs.
+WDYT?
