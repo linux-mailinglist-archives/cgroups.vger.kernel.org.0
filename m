@@ -2,54 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B94C952F59B
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 00:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD75552F5BE
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 00:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245429AbiETWT3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 18:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
+        id S1353916AbiETWh0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 18:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353875AbiETWT0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 18:19:26 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4EB1A076B;
-        Fri, 20 May 2022 15:19:24 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 202so1824916pfu.0;
-        Fri, 20 May 2022 15:19:24 -0700 (PDT)
+        with ESMTP id S230317AbiETWhZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 18:37:25 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6707D185C9F
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 15:37:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id e2so1594704wrc.1
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 15:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b7Vm31N1KmiKaz7SbohqBjKzTjmGJnpUAVkpKWUThMY=;
-        b=H3ZjIy79fwHtkOfYF1Ill/fMPUjrPR7E2pkOa/YhCb1jGsvLLxRr6uOQICQCl8yq2h
-         KzSERIApbRFXR9lmG4Uk3nHZvFVq8Uue1kE4LnmFLR/v/rN9npvSJts7f+iytk8LCo9a
-         fpRMMlwIruvdNJLVHaMg5qOJAgX4M5Fc/F1tt0tD6yZZrIAOeapE9xs6S16JiuWCsju2
-         Asxl3i8dLiXmCXxEAOBresM3uaNtP212C8mONg3FwmL4Z7oqEaT+taMPqifRHmMmn/nx
-         2IQLI+zcVqY30ca/PvxFcTrMC7DqzhHrftAfzpFMlIUEPLJgJV9MGm5xgioYQqWSeEHB
-         nm+g==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rjHRlb1I3VbpwM5vlx4HP72yEGIAgQZNiDcXaK4IrWE=;
+        b=CqWaIRBYO4RMPakxBtGQr0gF0h+doHGHgL6p8/uY/2bT1FSn5s8z8EPF3lDt9rHVYn
+         5itjBBvHeFp2Vo1o45+HjsRWft6V3cBTf5aRQI4gxDIoCJ+CfcA90Ir0c7oNRAloniK1
+         1YxLAnp74KeRbPRxZxm8rr9oSTbEUR5wTuxgh1Kc4peUuKD2q70w//S4s5rdx9mdkq8z
+         lEHEdSjqR540R7Ak9Rtm+TwYGHdLqdEiAK1p52r+Zl82Ri960sciviRPXFw93JTz39Dp
+         zZpJ44VH6SOPhSaFZAGCztGyQ/4jt7oyJpC4KD463XIDqi89CL5o476rYfInHk4PdGNz
+         MWRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b7Vm31N1KmiKaz7SbohqBjKzTjmGJnpUAVkpKWUThMY=;
-        b=CMWLtJPDj7rM4ifpTEJnVv7hK+1MX4Egzl1yiDoI66yNBAcCKJYr1dn3idm9L1rrh2
-         YPqr7D+iKQA8kDh2ysmWJAZbvqXkRVboaxGI/F6wxP5iCzWGHKSYLVlPJVkUg137/AhG
-         /hG4oCcr+v1ofdxWwogIiBiN6E0ZMH1UI9gsH5WPbB2J3ol+RJB6j3yu42yP2xQDWtY3
-         qljKbMz7OtsJHmbNYOQwTS8TWtxEywLRMCk48KN2Myrd3ylNm1GGHr71ZjXMTUnM7Mut
-         SY13+WmIEInbHD0Xhdl0s4RgGx2xk4jY2Cn6K7N9ZLQB997W60mWwhSWTh4LSbej77JD
-         K/Xw==
-X-Gm-Message-State: AOAM533PD2bbh9lT193sVem6ulWXOY6Q5nPrUAHnGf15JsN/bMOk3FV/
-        qR2PHZg3uOpeYf8kt5NHnQk=
-X-Google-Smtp-Source: ABdhPJyPatIaMfb0cUQB/du9LTA4vnmzNEjYiWrANLt3pPuau5sPW8xt9dH/j17WoeJK1uo/EDZDAg==
-X-Received: by 2002:a63:dc42:0:b0:3c5:e187:572 with SMTP id f2-20020a63dc42000000b003c5e1870572mr10364737pgj.82.1653085164314;
-        Fri, 20 May 2022 15:19:24 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:500::1:c6aa])
-        by smtp.gmail.com with ESMTPSA id 7-20020a17090a098700b001d25dfb9d39sm2356730pjo.14.2022.05.20.15.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 15:19:23 -0700 (PDT)
-Date:   Fri, 20 May 2022 15:19:19 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rjHRlb1I3VbpwM5vlx4HP72yEGIAgQZNiDcXaK4IrWE=;
+        b=6WQmPCSIkhQXOpRftcl3fY+85pF+2GJycw856Qoc/P/cbMLkR2U/4vHX+QbDnkWY/f
+         pou/rmYcTSxe2FDktfITkmIWVcDGPmXyy0t1nPgnzct3JhiGw/KDBzgaCucUDAyPlbDo
+         3hyACirO3hEkfIknW+SdlRGQ2UE8HaZkVlx+F/YovPnNqrHJx03QdNbtWeLfObKM/f5A
+         6wt9b1dxK93YQ9H/cK+uZXagl5SzvPS4Bc58GQY8kE8LNsBpidZ2yo5fmR8pXEK+ePjW
+         FiovcyaTsszkAYtQcQDqSDtFmStHdsanaXMWPzv33YrhdOVBHfyBywguzvnFwZyKXNOb
+         Oylg==
+X-Gm-Message-State: AOAM5328mJ9ntpVEBYCAtrN+LlNAvdp78c9pJr68OZvzAdGsUPgEBXMP
+        elJN3LbCvM+i7Y0/hrC6mdDmJwRyepNN5s+QBAi7oQ==
+X-Google-Smtp-Source: ABdhPJypRPOYtIiBfhWElJxzVoZrGRTDuStikkjFn5DjehwLSBWHm7H0Z8zWY4JT6S0WJ5gnLML2CYTyrTe1nVMkUmQ=
+X-Received: by 2002:a05:6000:154a:b0:20c:7e65:c79e with SMTP id
+ 10-20020a056000154a00b0020c7e65c79emr10148218wry.582.1653086242817; Fri, 20
+ May 2022 15:37:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
+ <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
+ <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com> <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
+In-Reply-To: <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 20 May 2022 15:36:46 -0700
+Message-ID: <CAJD7tkaa946SOBDksCzPto+7SzF+fDM=KMMOUMj2Ru+MBq5TEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
         Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -71,24 +78,11 @@ Cc:     Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-Message-ID: <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com>
- <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org>
- <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
- <YofFli6UCX4J5YnU@slm.duckdns.org>
- <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
- <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,30 +90,46 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 02:18:42PM -0700, Yosry Ahmed wrote:
+On Fri, May 20, 2022 at 3:19 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, May 20, 2022 at 02:18:42PM -0700, Yosry Ahmed wrote:
+> > >
+> > > The userspace needs to specify the identity of the cgroup, when
+> > > creating bpf_iter. This identity could be cgroup id or fd. This
+> > > identity needs to be converted to cgroup object somewhere before
+> > > passing into bpf program to use.
 > >
-> > The userspace needs to specify the identity of the cgroup, when
-> > creating bpf_iter. This identity could be cgroup id or fd. This
-> > identity needs to be converted to cgroup object somewhere before
-> > passing into bpf program to use.
-> 
-> 
-> Let's sum up the discussion here, I feel like we are losing track of
-> the main problem. IIUC the main concern is that cgroup_iter is not
-> effectively an iterator, it rather dumps information for one cgroup. I
-> like the suggestion to make it iterate cgroups by default, and an
-> optional cgroup_id parameter to make it only "iterate" this one
-> cgroup.
+> >
+> > Let's sum up the discussion here, I feel like we are losing track of
+> > the main problem. IIUC the main concern is that cgroup_iter is not
+> > effectively an iterator, it rather dumps information for one cgroup. I
+> > like the suggestion to make it iterate cgroups by default, and an
+> > optional cgroup_id parameter to make it only "iterate" this one
+> > cgroup.
+>
+> We have bpf_map iterator that walks all bpf maps.
+> When map iterator is parametrized with map_fd the iterator walks
+> all elements of that map.
+> cgroup iterator should have similar semantics.
+> When non-parameterized it will walk all cgroups and their descendent
+> depth first way. I believe that's what Yonghong is proposing.
+> When parametrized it will start from that particular cgroup and
+> walk all descendant of that cgroup only.
+> The bpf prog can stop the iteration right away with ret 1.
+> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
+> the order of iteration css_for_each_descendant_pre vs _post.
+> wdyt?
 
-We have bpf_map iterator that walks all bpf maps.
-When map iterator is parametrized with map_fd the iterator walks
-all elements of that map.
-cgroup iterator should have similar semantics.
-When non-parameterized it will walk all cgroups and their descendent
-depth first way. I believe that's what Yonghong is proposing.
-When parametrized it will start from that particular cgroup and
-walk all descendant of that cgroup only.
-The bpf prog can stop the iteration right away with ret 1.
-Maybe we can add two parameters. One -> cgroup_fd to use and another ->
-the order of iteration css_for_each_descendant_pre vs _post.
-wdyt?
+So basically extend the current patch so that cgroup_id (or cgroup_fd)
+is optional, and it specifies where the iteration starts. If not
+provided, then we start at root. For our use case where we want the
+iterator to only be invoked for one cgroup we make it return 1 to stop
+after the first iteration.
+
+I assume an order parameter is also needed to specify "pre" for our
+use case to make sure we are starting iteration at the top cgroup (the
+one whose cgroup_id is the parameter of the iterator).
+
+Is my understanding correct? If yes, then this sounds very good. It is
+generic enough, actually iterates cgroups, and works for our use case.
