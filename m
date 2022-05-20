@@ -2,57 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C650852EA94
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 13:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7436552EAC2
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 13:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348380AbiETLQO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 07:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        id S1348492AbiETL1u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 07:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348460AbiETLQE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 07:16:04 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28908201AE;
-        Fri, 20 May 2022 04:16:02 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h13so1226896pfq.5;
-        Fri, 20 May 2022 04:16:02 -0700 (PDT)
+        with ESMTP id S1348502AbiETL1m (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 07:27:42 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7035D118009;
+        Fri, 20 May 2022 04:27:41 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y199so7516308pfb.9;
+        Fri, 20 May 2022 04:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=cSj1iULxPa/Q17vQx9CvBh+XXwbDyu32iNxH8BDHGWo=;
-        b=KAl6JiUblhGNLjQZ5H0XrsEH9sR+zAIGiIrYCvRSOx3z++Jx75Eil0AfqhCM8BbmPR
-         qPbECuxldaypu17UE9fgu89sGfMl+EohW1msxEf6R+k1ZrxamBnRam6cYcJcx7mXGEqg
-         g/6VIVWY73HuktEyJ9EyJCB4Lddi2viqjElMH2ai6Q9L+7nv7ma1iOTRAbMr0jGRP0sT
-         T2ga5r8esXHAIG+CzKW2Pt1e8LuhbOIyKuceUi9Yu5OgSv+9+TSt7xFSfM1lI8rZhdxQ
-         aVEFgCYfivV/FDw3ekn39hJpjJ8YmEZ/SpoeZdUduz+g+kLNR+zul2CDNo3FNVhbchS9
-         tEIA==
+        bh=+9muHQcSOPadjELaK4tBcIlD0k856uUfntUxfRazXLk=;
+        b=Ao4YwNxEANIqA3Dyk1b/rxmBdNuHL7GvoYBuDycoCTZQt/Vw7ghB/x/W1uDmrygwUh
+         ZCOdrrAEkOWjqjv6YVqpVG4zrjzsDCqFbhMv46EPRRMudfif5CGT4m7OGe5qGXs2xCH6
+         gdzX9ygA7ovfxwBmlG4x9Irbwdb3DkHTyKqVVGELOPbMvf9k6p/xlMXriOgcjKGO4rLv
+         pPIJvH/5FMQq9/loteNF5RYVpe4mtKF4+lZuVNiVrwpN6GT7rXoipiYq/z2HO9FxiVLd
+         tyeTXejon/ephAWoN7uz4Bdz48sZvRU0qsArH1lB8+SpkRWYtZpMHOweZEBpupJDWxFz
+         zTWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=cSj1iULxPa/Q17vQx9CvBh+XXwbDyu32iNxH8BDHGWo=;
-        b=0w88yCrOL04HwqV5gLOWjIFgDP0uBZPSjC4HwA7j7jzwRJIzIgVsdCu4FqViL5FvQ7
-         MNx4wNSizTpF209qV+DHVEoP95X2w3Oue2vdTgjoHn1uoNT0zBE5ey+NnxVvjTvQxGIi
-         FDpQ+BsXBxUCs3PottXCEglZsGEwypRbBNAOSDSlcyM3qk6Z3/QYMuZg9a90/aHCLiEb
-         DVooyjnx2J+WFfjceGq2+HaMmEKglBxerSlh4zYRyXzfQwxTQWYP2LwXX7Bo3SyTrauX
-         6fXCAmAgYqz/g5jGzkmoszWQNZoVvcdXyJa9i55zjq9j7V6iH6GxHd1UfKAYh4nJh+lj
-         mwiA==
-X-Gm-Message-State: AOAM533hze85FmLKL61QQUsktWisM+oV9UFKK+YoiqhPPoLb2qMRJLJM
-        t1ggoNEy1QLTAwV2bwTj8dy3j/VAgKk=
-X-Google-Smtp-Source: ABdhPJyqsW819iNKjHVYIQggrJBIiy7DKH8+i2ACo/uPCYVrkPdFb8BHaiKm7RUnHS5MzQbqtCRdew==
-X-Received: by 2002:a63:1a1d:0:b0:3f5:eb02:b6b4 with SMTP id a29-20020a631a1d000000b003f5eb02b6b4mr8196749pga.343.1653045362244;
-        Fri, 20 May 2022 04:16:02 -0700 (PDT)
+        bh=+9muHQcSOPadjELaK4tBcIlD0k856uUfntUxfRazXLk=;
+        b=gFuk6fji04CaZOYXOOb06PNv0EwdB6EUqXbflQyPfaGs0/PqX7uyNR6qbwg+9+7O5H
+         6pe8eDsI46ZywuPTLyJr17vrLU3A5CDnPdekKLruMCRinEtvBa1iqp1REK9FFYsZtTXB
+         yn6FWkfCeyCO2bj1aSbBnz6w7z1RqzrBNPS7nFfPA6heeVeeMfgY72aEis+EYFXQsM4i
+         Q9+h22/QfaeZRG0R2MVZzOuau/wVeCPzfzHQJV+Nai0nkgyDUUdFvhlgCIj6Es0iaAPy
+         nHTeypXBfko1BKATB7liAjOIrIsaeFt0gLMQZ6YCbrlQaTIJJUzrzauod82n4iqJJrVV
+         WT6Q==
+X-Gm-Message-State: AOAM530iwUP6UA+0j374oiIOEZO/8r3Xpj7uRzHHvS3pOimC0wh0Ow7J
+        4LiI3QxvWv+3fOfYx4vgkCE=
+X-Google-Smtp-Source: ABdhPJzVYpoaWqwse1P/Re7U5FfhkDWT1ibsEDDckJa02ugpIftbZLj7MqGPlEhmtk6ZJCxajU43KQ==
+X-Received: by 2002:a05:6a00:1690:b0:517:cc9e:3e2d with SMTP id k16-20020a056a00169000b00517cc9e3e2dmr9548003pfc.0.1653046060372;
+        Fri, 20 May 2022 04:27:40 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::4:1761])
-        by smtp.gmail.com with ESMTPSA id y6-20020a62ce06000000b005082a7fd144sm1559042pfg.3.2022.05.20.04.16.01
+        by smtp.gmail.com with ESMTPSA id m9-20020a1709026bc900b0015ea95948ebsm5445350plt.134.2022.05.20.04.27.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 04:16:01 -0700 (PDT)
+        Fri, 20 May 2022 04:27:39 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 20 May 2022 01:16:00 -1000
+Date:   Fri, 20 May 2022 01:27:38 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -71,18 +70,17 @@ Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
- and cgroup_rstat_flush() kfuncs
-Message-ID: <Yod4cN+HayIDhR/c@slm.duckdns.org>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+Message-ID: <Yod7Kt4WHUCQF6ZL@slm.duckdns.org>
 References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-3-yosryahmed@google.com>
- <YodCPWqZodr7Shnj@slm.duckdns.org>
- <CAJD7tkYDLc9irHLFROcYSg1shwCw+Stt5HTS08FW3ceQ5b8vqQ@mail.gmail.com>
- <20220520093607.sadvim2igfde6x22@apollo.legion>
+ <20220520012133.1217211-4-yosryahmed@google.com>
+ <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220520093607.sadvim2igfde6x22@apollo.legion>
+In-Reply-To: <YodNLpxut+Zddnre@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -94,18 +92,15 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 03:06:07PM +0530, Kumar Kartikeya Dwivedi wrote:
-> With static noinline, the compiler will optimize away the function. With global
-> noinline, it can still optimize away the call site, but will keep the function
-> definition, so attach works. Therefore __weak is needed to ensure call is still
-> emitted. With GCC __attribute__((noipa)) might have been more appropritate, but
-> LLVM doesn't support it, so __weak is the next best thing supported by both with
-> the same side effect.
+On Thu, May 19, 2022 at 10:11:26PM -1000, Tejun Heo wrote:
+> If you *must* do the iterator, can you at least make it a proper iterator
+> which supports seeking? AFAICS there's nothing fundamentally preventing bpf
+> iterators from supporting seeking. Or is it that you need something which is
+> pinned to a cgroup so that you can emulate the directory structure?
 
-Ah, okay, so it's to prevent compiler from optimizing away call to a noop
-function by telling it that we don't know what the function might eventually
-be. Thanks for the explanation. Yosry, can you please add a comment
-explaining what's going on?
+Or, alternatively, would it be possible to make a TEST_RUN_PROG to output a
+text file in bpffs? There just doesn't seem to be anything cgroup specific
+that the iterator is doing that can't be done with exposing a couple kfuncs.
 
 Thanks.
 
