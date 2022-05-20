@@ -2,69 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1620B52F008
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 18:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5504F52F01C
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 18:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351341AbiETQH2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 12:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S1351385AbiETQJR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 12:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351338AbiETQH0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 12:07:26 -0400
+        with ESMTP id S1351384AbiETQJQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 12:09:16 -0400
 Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437F6179C08
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:07:24 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id s28so11975286wrb.7
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:07:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A404117CE72
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:09:13 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t6so12117414wra.4
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vjm4J0UEt15jqND8yu0VfF/JH1EN98mQjkeJ7hl8/Ec=;
-        b=pPChiNi8weWzvtqUuLzWWN2Kgh2JKNWRx5//iF1unO8QpnGtgal2d+z5kUsLbQsqKy
-         iHC3AYYDtLWRRgw2yCAySZ8Ywti0zeA2fYn2pv1Xe4XdvkmRTRyUHnRjCLoEL43VJa0g
-         1J8laDrC6/zJaUOeTtGsHCUINSBHrKxQ7oXtFbZabduDuf43ww/MDXDlbez6NkDjViSO
-         LsjWN1wqp7T6IXSp894JQqkMs270xetYAn1vvBHxJ++4OeXX48qWMWNLUTLtcY1aSWDJ
-         pnmt8q1zLR1CrKceQKXburkrirj3qSugVm3o12bP8B2MFxjXwSKaUfM01FpwzqTdSzsH
-         J+WQ==
+         :cc:content-transfer-encoding;
+        bh=owOEosLojpO/D+MbDs1w2txq2unXf52lgcJaM7HE4DE=;
+        b=EEFIHz2FlFU7lsrFCGyJKhaA0AOmpAqaUvkwEHbAEnLn+Cg5XlnfcmlggdBI6HsVAO
+         R5wEj0YC1TWTFA8JNycuLVEidFMsd3Rv1EUZ9/cex33OgIElag3c6E2sBEbV2RfitEvB
+         4fqxupSr2ksoCRo9uddCBs3yOvnd2ZDGkVLlPg5EcpaXuJRU44jmPNOYiBFc+ymg74DA
+         Rq2cmeM/6sv6CbEL8alyEPmUQXstYr7dbmiAgKGI7jRAh0+VQSmuz9a07gD6tRyf1jj8
+         O9nCkVUQbWQBwGNIBr12qoJhaeC847QWhVn2ebeDfdQBP69aM6lCWdr5bbYF0tGIKNG4
+         dCzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vjm4J0UEt15jqND8yu0VfF/JH1EN98mQjkeJ7hl8/Ec=;
-        b=JBMEw+yd5MHXTFcOY48vIBQc3BEJw8sTt8fv+A/hpGtduQviAKIjPx0HQYtvNpmddw
-         Zw0j/nBNwjk1duHmrAZItk3J9OSqq51Y19Cr1TdWHOTTFB1ITcbxIVQp8DgW04mcswEm
-         RVxHZJxATrD3pIS5gOPOFCj6J98sHfUANZqOGyRnAb5Y158hdrC/IxThBHo7ysqbOAnK
-         HxkUHmFNx1b4UE/EnMw8BsD13QZRlpzzLBi8GENemj2eqocU+YQVLvAMd2IEibxQC1nf
-         lLya32+zNoPlyMpqYyNf+8T7NDPGu7FcoCvcsYjDpw1w8J5NHilI4B/6oBcIMhFGybgG
-         DtfQ==
-X-Gm-Message-State: AOAM532z8dGBcNolrtBVBkj5hJFKEstiqn7H/KNcBOLG8BN2/wKRoIQj
-        WOi1y2XPcnjnVDlJCJGbHf8pWkgl9JJH3/ghcqOCbg==
-X-Google-Smtp-Source: ABdhPJyvrAp0ppwCu/vsoKM0hStCVU3p6mote7hU6XHEUMdo4mKSp8lLrUmaB2i0ZQ9fpvWW0qLPhEi2esy86EUcAKM=
-X-Received: by 2002:a5d:6146:0:b0:20d:d42:e954 with SMTP id
- y6-20020a5d6146000000b0020d0d42e954mr8938736wrt.372.1653062842564; Fri, 20
- May 2022 09:07:22 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=owOEosLojpO/D+MbDs1w2txq2unXf52lgcJaM7HE4DE=;
+        b=pKL1qqNw0dfo5Z19DPJTcBQW0d15EjHS6ZmJ26dvpYEBG5+MOK/V2lV9mURuKvxjzX
+         NuKKM+gtn/GAssMnh9ksLhWuLKLijqKorMm0/zlIcPPGyTDSSp280Po65r5m3yotSGAU
+         IB98iNX7/jQjM9Kq0rSlW9S1+r/zUBev5oxLehPgqpg7sYXGOShcV8Hknash4jn4czsJ
+         t0DxFL7BxmWYPWvkxFh7+acbOK8n0cOmMcU5nLUaU+eHD7wgQ5uRtWnH8x9WvOnASwHs
+         XG/S9bbQKhIE8zjO5UHtevCATP2xcxKk+vOVnL74fXmnLzrU9Tm+RA6t0tQNEV3HllXe
+         kCiQ==
+X-Gm-Message-State: AOAM530tfFLTIu/9xA+w29Flbn9sAcbHvgOmJXh8VSAiPAoVLInosysI
+        qVJXAMUdTLtKF0MU09ZqR+rhkFoLvDS9CQ9aD4WWgQ==
+X-Google-Smtp-Source: ABdhPJxCtgPEK8T/hQFW9cJtb5+O8tj3iA+V7lZSLIg2RxmXtW8ox8iXYyffpJ5sIxZyMYIoqjmzx1MucheHoM2Sg0w=
+X-Received: by 2002:a05:6000:1548:b0:20f:c4bb:defd with SMTP id
+ 8-20020a056000154800b0020fc4bbdefdmr149496wry.210.1653062951812; Fri, 20 May
+ 2022 09:09:11 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-3-yosryahmed@google.com> <YodCPWqZodr7Shnj@slm.duckdns.org>
- <CAJD7tkYDLc9irHLFROcYSg1shwCw+Stt5HTS08FW3ceQ5b8vqQ@mail.gmail.com>
- <20220520093607.sadvim2igfde6x22@apollo.legion> <Yod4cN+HayIDhR/c@slm.duckdns.org>
-In-Reply-To: <Yod4cN+HayIDhR/c@slm.duckdns.org>
+ <20220520012133.1217211-3-yosryahmed@google.com> <fa3b35a6-5c3c-42a1-23f0-a8143b4eaa57@fb.com>
+In-Reply-To: <fa3b35a6-5c3c-42a1-23f0-a8143b4eaa57@fb.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 May 2022 09:06:45 -0700
-Message-ID: <CAJD7tkaPD94+61hrdr8qTV66RtfWOC+35=nGb9id_N1LrisCPA@mail.gmail.com>
+Date:   Fri, 20 May 2022 09:08:35 -0700
+Message-ID: <CAJD7tkanipJ7-9H_L6KMUjpD2qS29-YCrnMXw+8BAKfbOk5P9Q@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
  and cgroup_rstat_flush() kfuncs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Shuah Khan <shuah@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
@@ -77,6 +74,7 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -88,29 +86,113 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 4:16 AM Tejun Heo <tj@kernel.org> wrote:
+On Fri, May 20, 2022 at 8:15 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Fri, May 20, 2022 at 03:06:07PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > With static noinline, the compiler will optimize away the function. With global
-> > noinline, it can still optimize away the call site, but will keep the function
-> > definition, so attach works. Therefore __weak is needed to ensure call is still
-> > emitted. With GCC __attribute__((noipa)) might have been more appropritate, but
-> > LLVM doesn't support it, so __weak is the next best thing supported by both with
-> > the same side effect.
+>
+>
+> On 5/19/22 6:21 PM, Yosry Ahmed wrote:
+> > Add cgroup_rstat_updated() and cgroup_rstat_flush() kfuncs to bpf
+> > tracing programs. bpf programs that make use of rstat can use these
+> > functions to inform rstat when they update stats for a cgroup, and when
+> > they need to flush the stats.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >   kernel/cgroup/rstat.c | 35 ++++++++++++++++++++++++++++++++++-
+> >   1 file changed, 34 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> > index e7a88d2600bd..a16a851bc0a1 100644
+> > --- a/kernel/cgroup/rstat.c
+> > +++ b/kernel/cgroup/rstat.c
+> > @@ -3,6 +3,11 @@
+> >
+> >   #include <linux/sched/cputime.h>
+> >
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> > +#include <linux/btf_ids.h>
+> > +
+> > +
+> >   static DEFINE_SPINLOCK(cgroup_rstat_lock);
+> >   static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+> >
+> > @@ -141,7 +146,12 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated=
+(struct cgroup *pos,
+> >       return pos;
+> >   }
+> >
+> > -/* A hook for bpf stat collectors to attach to and flush their stats *=
+/
+> > +/*
+> > + * A hook for bpf stat collectors to attach to and flush their stats.
+> > + * Together with providing bpf kfuncs for cgroup_rstat_updated() and
+> > + * cgroup_rstat_flush(), this enables a complete workflow where bpf pr=
+ogs that
+> > + * collect cgroup stats can integrate with rstat for efficient flushin=
+g.
+> > + */
+> >   __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+> >                                    struct cgroup *parent, int cpu)
+> >   {
+> > @@ -476,3 +486,26 @@ void cgroup_base_stat_cputime_show(struct seq_file=
+ *seq)
+> >                  "system_usec %llu\n",
+> >                  usage, utime, stime);
+> >   }
+> > +
+> > +/* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush() =
+*/
+> > +BTF_SET_START(bpf_rstat_check_kfunc_ids)
+> > +BTF_ID(func, cgroup_rstat_updated)
+> > +BTF_ID(func, cgroup_rstat_flush)
+> > +BTF_SET_END(bpf_rstat_check_kfunc_ids)
+> > +
+> > +BTF_SET_START(bpf_rstat_sleepable_kfunc_ids)
+> > +BTF_ID(func, cgroup_rstat_flush)
+> > +BTF_SET_END(bpf_rstat_sleepable_kfunc_ids)
+> > +
+> > +static const struct btf_kfunc_id_set bpf_rstat_kfunc_set =3D {
+> > +     .owner          =3D THIS_MODULE,
+> > +     .check_set      =3D &bpf_rstat_check_kfunc_ids,
+> > +     .sleepable_set  =3D &bpf_rstat_sleepable_kfunc_ids,
+>
+> There is a compilation error here:
+>
+> kernel/cgroup/rstat.c:503:3: error: =E2=80=98const struct btf_kfunc_id_se=
+t=E2=80=99 has
+> no member named =E2=80=98sleepable_set=E2=80=99; did you mean =E2=80=98re=
+lease_set=E2=80=99?
+>      503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
+>          |   ^~~~~~~~~~~~~
+>          |   release_set
+>    kernel/cgroup/rstat.c:503:19: warning: excess elements in struct
+> initializer
+>      503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
+>          |                   ^
+>    kernel/cgroup/rstat.c:503:19: note: (near initialization for
+> =E2=80=98bpf_rstat_kfunc_set=E2=80=99)
+>    make[3]: *** [scripts/Makefile.build:288: kernel/cgroup/rstat.o] Error=
+ 1
+>
+> Please fix.
 
-Thanks a lot for the explanation!
+This patch series is rebased on top of 2 patches in the mailing list:
+- bpf/btf: also allow kfunc in tracing and syscall programs
+- btf: Add a new kfunc set which allows to mark a function to be
+  sleepable
+
+I specified this in the cover letter, do I need to do something else
+in this situation? Re-send the patches as part of my series?
+
+
 
 >
-> Ah, okay, so it's to prevent compiler from optimizing away call to a noop
-> function by telling it that we don't know what the function might eventually
-> be. Thanks for the explanation. Yosry, can you please add a comment
-> explaining what's going on?
-
-Will add a comment explaining things in the next section.  Thanks for
-reviewing this, Tejun!
-
->
-> Thanks.
->
-> --
-> tejun
+> > +};
+> > +
+> > +static int __init bpf_rstat_kfunc_init(void)
+> > +{
+> > +     return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > +                                      &bpf_rstat_kfunc_set);
+> > +}
+> > +late_initcall(bpf_rstat_kfunc_init);
