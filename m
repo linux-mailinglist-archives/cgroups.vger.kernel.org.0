@@ -2,94 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527C952F10D
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 18:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3169B52F13C
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 19:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343656AbiETQrU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 12:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        id S1352002AbiETRCR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 13:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351896AbiETQrB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 12:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 479BC3B005
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 09:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653065217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ojbIKgxOqxnHAzNXDbRdq8vthjOu4oruqFZ3uDQUp9g=;
-        b=gEDEfkUs+s/6+GSnn7bGgZPogCb4vwCbNgenlVvsfvwahsMDLL8aYaOjTcFrR2jsYLB1Ck
-        QJGyQdp6VhL/2A7s2smmYheLqZY2GIHrG3wkCW/gl1k8c7iuFVUwATkkJS6TumHJrLNiui
-        L5d1Rhh97sm2wStYxShdlovMiRF2rT0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-172-xn3Swnx1M9u2BvhAO2TVkw-1; Fri, 20 May 2022 12:46:54 -0400
-X-MC-Unique: xn3Swnx1M9u2BvhAO2TVkw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6976529AB3F8;
-        Fri, 20 May 2022 16:46:53 +0000 (UTC)
-Received: from [10.22.32.226] (unknown [10.22.32.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 677297AD5;
-        Fri, 20 May 2022 16:46:52 +0000 (UTC)
-Message-ID: <75d31caf-2d26-9fcc-13fb-e8be2f2ad8e5@redhat.com>
-Date:   Fri, 20 May 2022 12:46:52 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v11 0/8] cgroup/cpuset: cpu partition code enhancements
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20220510153413.400020-1-longman@redhat.com>
- <Yoe7FOkZpUwwTTQW@linutronix.de>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Yoe7FOkZpUwwTTQW@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S1351999AbiETRCQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 13:02:16 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2928417EC0A;
+        Fri, 20 May 2022 10:02:15 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a23-20020a17090acb9700b001df4e9f4870so8375012pju.1;
+        Fri, 20 May 2022 10:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=o1byCpdVQiUFM7RT5J0ZZS8QAIMgCRWQMbEspomVBfk=;
+        b=nWUHNztiOOoUrsK+bcjZbH1T/aOSc5WBrgXM3LFXHuiNEWY/GAAuPkB8kcHQihNJZp
+         o342F+m3+6/+5yGNwbS/DDkAQZ1Owt/aUdH4RGMbMgVR4uW2VrLv8X/+zeltewpsD1YS
+         Y96YZEMWY7nqrZ/HCSenS/ploHDKuDPUIL9L9M0B3FCRe643CGAk2bc1bGRMZ+mWJ97U
+         +amIFLkc/XaEbb/O9DHmfsKe5wJeV3yyG2ZrjffZKbo8P/yxIhzpH0OxsGQFuVrqE50K
+         VdjHqHijuIonv7Fy0C/rKErW42y2hE3ul7mzN7qEcfIHRgInZVg/gRQ2IAiH88yUcjYQ
+         fj/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=o1byCpdVQiUFM7RT5J0ZZS8QAIMgCRWQMbEspomVBfk=;
+        b=W5iiYExxO1rcEw/UasGAxSyqdz1ryABXOmovv630n2mOPLkglS1e2Vn8R5dUDkIepT
+         YCkOwlYnmdmJZPD08SPywjnfOC9hILYuEgDhC8y5a72smjZyocggKBrJBBwAjKQVGOo/
+         frASMGXaHQ9fFWZ4ikX6TnmuTT/vjo2Lr71mKgNzb45JxyK0JMeiGQSmO/Z7NNQ/mrNo
+         kqRPgwhRVqIZQQJTcmiZ0zG5wRTh4aMOeOLWJDV7uoFeLeGlU/JPOdEMvkQFjhocJDVE
+         ev2bAGu8AKgPCAGTf1FVgv3rzGOlgs94V5foGmadAGfNPWh2613TxZLaFDnsUjlTU35S
+         NaMg==
+X-Gm-Message-State: AOAM532fefKYKspD8PhyTNepTnR0tPBScKEEDn/LX9Mgl17+RKBZhAdy
+        WZeL8xQ2uR8lGPac0GoM1Po=
+X-Google-Smtp-Source: ABdhPJy0orbrRVTqOzOn8DmBLqe4oIu9EYfHI5f4fkIcgsA4o07Z4zYLdo2EdzMnPSMCyeY2En8XOw==
+X-Received: by 2002:a17:90b:180f:b0:1df:cc0c:bbfd with SMTP id lw15-20020a17090b180f00b001dfcc0cbbfdmr11738327pjb.84.1653066134015;
+        Fri, 20 May 2022 10:02:14 -0700 (PDT)
+Received: from ssy-OptiPlex-7050.mioffice.cn ([43.224.245.236])
+        by smtp.gmail.com with ESMTPSA id v62-20020a622f41000000b0051835ccc008sm2013870pfv.115.2022.05.20.10.02.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 May 2022 10:02:13 -0700 (PDT)
+From:   shisiyuan <shisiyuan19870131@gmail.com>
+X-Google-Original-From: shisiyuan <shisiyuan@xiaomi.com>
+Cc:     shisiyuan <shisiyuan@xiaomi.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cgroup: Return if dst_cgrp equals to src_cgrp
+Date:   Sat, 21 May 2022 01:02:00 +0800
+Message-Id: <1653066120-21262-1-git-send-email-shisiyuan@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/20/22 12:00, Sebastian Andrzej Siewior wrote:
-> On 2022-05-10 11:34:05 [-0400], Waiman Long wrote:
->> v11:
->>   - Fix incorrect spacing in patch 7 and include documentation suggestions
->>     by Michal.
->>   - Move partition_is_populated() check to the last one in list of
->>     conditions to be checked.
-> If I follow this correctly, then this is the latest version of the
-> isolcpus= replacement with cgroup's cpusets, correct?
->
-> Sebastian
+In function cgroup_migrate_add_src(), if dst_cgrp
+equals to src_cgroup which the tasks link, dont
+go on migrating tasks to another css_set.
+This can save the cost of unnecessary migration.
 
-It is just the beginning, there is still a lot of work to do before 
-isolcpus= can be completely replaced.
+Signed-off-by: shisiyuan <shisiyuan@xiaomi.com>
+---
+ kernel/cgroup/cgroup.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Cheers,
-Longman
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 6139460..97d7f68 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2634,6 +2634,9 @@ void cgroup_migrate_add_src(struct css_set *src_cset,
+ 
+ 	src_cgrp = cset_cgroup_from_root(src_cset, dst_cgrp->root);
+ 
++	if (src_cgrp == dst_cgrp)
++		return;
++
+ 	if (!list_empty(&src_cset->mg_preload_node))
+ 		return;
+ 
+@@ -2780,6 +2783,9 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 	rcu_read_unlock();
+ 	spin_unlock_irq(&css_set_lock);
+ 
++	if (list_empty(&mgctx.preloaded_src_csets))
++		return ret;
++
+ 	/* prepare dst csets and commit */
+ 	ret = cgroup_migrate_prepare_dst(&mgctx);
+ 	if (!ret)
+@@ -2927,7 +2933,7 @@ static int cgroup_update_dfl_csses(struct cgroup *cgrp)
+ 	struct cgroup_subsys_state *d_css;
+ 	struct cgroup *dsct;
+ 	struct css_set *src_cset;
+-	int ret;
++	int ret = 0;
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+@@ -2943,6 +2949,9 @@ static int cgroup_update_dfl_csses(struct cgroup *cgrp)
+ 	}
+ 	spin_unlock_irq(&css_set_lock);
+ 
++	if (list_empty(&mgctx.preloaded_src_csets))
++		goto out_finish;
++
+ 	/* NULL dst indicates self on default hierarchy */
+ 	ret = cgroup_migrate_prepare_dst(&mgctx);
+ 	if (ret)
+-- 
+2.7.4
 
