@@ -2,94 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2EE52E434
-	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 07:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81AC52E62F
+	for <lists+cgroups@lfdr.de>; Fri, 20 May 2022 09:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345345AbiETFQK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 01:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
+        id S1344365AbiETHYO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 03:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343793AbiETFQI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 01:16:08 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3D61CFE3;
-        Thu, 19 May 2022 22:16:06 -0700 (PDT)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24K3219w022525;
-        Fri, 20 May 2022 05:15:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=JJh4foNOJwG8ay+rF9OREYoAAGUcy1t9u8UYkcLppDI=;
- b=ELKkv1yz+L8SWhSgdtOrbEXtZvOD+cENx24BoptdFKJngLJFqAFk4gTXTNJ6tG6EB0yF
- JiGrfsBf6gJRSVo7Sb1bkQ6AA1pAL/oR4vJgpke7pfbmhCC/IKyTRKSr4Q4nMWe/kgav
- AIkMzmFjMhAr3rpEbF+raurSOIPtWvkV5AvXlTlmSrLKtmWPUDLhr87OYLEou6LuhXqq
- A5ltkwBf131kfTnPReceOVT54PMoIJCJQejCoP6dewY4M8lJ8otOYiRATJaw/68W5uz+
- RUDj2K+tBQMdhkp8xdt8a93uCsBYzSc48p+lnt+bei2JmuVKNjFB8+u5c0Q3PngIdWYK ng== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g62qn9x50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 May 2022 05:15:55 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24K51Q2l030637;
-        Fri, 20 May 2022 05:15:54 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g62qn9x4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 May 2022 05:15:54 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24K5DW8S032186;
-        Fri, 20 May 2022 05:15:52 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3g4j3gjx92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 May 2022 05:15:51 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24K51rQg27197884
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 May 2022 05:01:53 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 91DC342042;
-        Fri, 20 May 2022 05:15:49 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B5734203F;
-        Fri, 20 May 2022 05:15:45 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.43.28.38])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 20 May 2022 05:15:44 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Fri, 20 May 2022 10:45:43 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
-In-Reply-To: <YoYj4sLJfGke5IGT@dhcp22.suse.cz>
-References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
- <YoYj4sLJfGke5IGT@dhcp22.suse.cz>
-Date:   Fri, 20 May 2022 10:45:43 +0530
-Message-ID: <87zgjcg4xs.fsf@vajain21.in.ibm.com>
+        with ESMTP id S245760AbiETHYL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 03:24:11 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A292214ACB8
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 00:24:09 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id g16so8722595lja.3
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 00:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=qdKh+N5pd3RacKLxyxnq7jBphDna5YoiYMrg0p2wipA=;
+        b=5jgKeLMV735gNvNQvBxyWcKxrinA/LTQb+b782a1NT6dU8Hb8SwexSfGf3rr6Urfg/
+         A4ulspIJhZ3yOgPJZd+EKgl0kpahqXgFG9HCgN1Wc8GjBaWrXg58cC/HpNBxipLfUVmm
+         C4fRFmODcna91lSjcUnQol9cuES8Sfnijsv9sdrHJicrrtFayez6dTiUhjC7pthBoeHx
+         YzHcD5rk+a4JszXIOzAp2/GDY88BpXCM9JJQ5708wwNf3+X8K7fuOM1ykSdVtKAi/wEY
+         AAcr0ZK59rSxCEkQPd0o2XuJ8TO5oJrKJjaWcEdEDp+nfQDK0PNHPwv3MkelltsubHI0
+         Rj8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=qdKh+N5pd3RacKLxyxnq7jBphDna5YoiYMrg0p2wipA=;
+        b=6H/U+4pAkM9r82rWuuXU5gQV2R+ok5jcpXjmB9KocuBYnwrdnNihbz27q+f5ncXWjt
+         UYuZWaq/1+ZjWmD7J0xExPuEQ1gnPl1uK8JC3mvNKKl2Y3eEYSXSepC1lViN2MXCIKbL
+         oQk1R825ElqBJW23dN9OQWNfwKEL/M0wyixjtHf8byn3sX0mi7MqRMmJ9Pu8lcv0fNqQ
+         W9wjPuVaICoMC0g6ELNz8VALyG10lHQVy1PtcXEVD0j7XlrTBNSSLR4FbGtbQzkBw8S2
+         fQFzRNu3NBFOtY7C9E9N14fi9LaVBW+B/9X7xe9XmpiXTbgtO5NdPAFq5Y1bjb/a59JB
+         wPvQ==
+X-Gm-Message-State: AOAM533O33M1AC5donIwxyYziPgjM7Jf7GgYTSvpKQbNxdpR03hovUnS
+        1d07jXcUsrYtxMB19LBVIxLvxQ==
+X-Google-Smtp-Source: ABdhPJy3pZrIblijGkkmbsPnHlT6LOpwgAE+0dEz6mmF+y0dU0RP9kZq360DQ/TaMoF+DperxoWqgA==
+X-Received: by 2002:a2e:a88b:0:b0:24b:5714:213d with SMTP id m11-20020a2ea88b000000b0024b5714213dmr4795246ljq.412.1653031448051;
+        Fri, 20 May 2022 00:24:08 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.185])
+        by smtp.gmail.com with ESMTPSA id n3-20020ac242c3000000b0047255d211e8sm550736lfl.279.2022.05.20.00.24.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 May 2022 00:24:07 -0700 (PDT)
+Message-ID: <740dfcb1-5c5f-6a40-0f71-65f277f976d6@openvz.org>
+Date:   Fri, 20 May 2022 10:24:06 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5T_FrutWWajenUiwrEh1WQrKQwHVVumD
-X-Proofpoint-GUID: Tqq3v_2AuLsqGIjRi0bMvCf5ZZ4XM941
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-20_01,2022-05-19_03,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 clxscore=1011 impostorscore=0 mlxscore=0 bulkscore=0
- adultscore=0 malwarescore=0 mlxlogscore=691 phishscore=0
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2202240000 definitions=main-2205200036
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 3/4] memcg: enable accounting for struct cgroup
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
+References: <Ynv7+VG+T2y9rpdk@carbon>
+ <a17be77f-dc3b-d69a-16e2-f7309959c525@openvz.org>
+ <20220519165325.GA2434@blackbody.suse.cz>
+From:   Vasily Averin <vvs@openvz.org>
+In-Reply-To: <20220519165325.GA2434@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,59 +76,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 5/19/22 19:53, Michal Koutný wrote:
+> On Fri, May 13, 2022 at 06:52:12PM +0300, Vasily Averin <vvs@openvz.org> wrote:
+>> Creating each new cgroup allocates 4Kb for struct cgroup. This is the
+>> largest memory allocation in this scenario and is epecially important
+>> for small VMs with 1-2 CPUs.
+> 
+> What do you mean by this argument?
+> 
+> (On bigger irons, the percpu components becomes dominant, e.g. struct
+> cgroup_rstat_cpu.)
 
-Thanks for looking into this patch Michal,
+Michal, Shakeel,
+thank you very much for your feedback, it helps me understand how to improve
+the methodology of my accounting analyze.
+I considered the general case and looked for places of maximum memory allocations.
+Now I think it would be better to split all called allocations into:
+- common part, called for any cgroup type (i.e. cgroup_mkdir and cgroup_create),
+- per-cgroup parts,
+and focus on 2 corner cases: for single CPU VMs and for "big irons".
+It helps to clarify which allocations are accounting-important and which ones
+can be safely ignored.
 
-Michal Hocko <mhocko@suse.com> writes:
+So right now I'm going to redo the calculations and hope it doesn't take long.
 
-> On Thu 19-05-22 04:08:15, Vaibhav Jain wrote:
->> [1] Provides a way for user-space to trigger proactive reclaim by introducing
->> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
->> of pages scanned and reclaimed is still not directly available to the
->> user-space.
->> 
->> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
->> readable which returns the number of pages scanned / reclaimed during the
->> reclaim process from 'struct vmpressure' associated with each memcg. This should
->> let user-space asses how successful proactive reclaim triggered from memcg
->> 'memory.reclaim' was ?
->> 
->> With the patch following command flow is expected:
->> 
->>  # echo "1M" > memory.reclaim
->> 
->>  # cat memory.reclaim
->>    scanned 76
->>    reclaimed 32
->
-> Why cannot you use memory.stat? Sure it would require to iterate over
-> the reclaimed hierarchy but the information about scanned and reclaimed
-> pages as well as other potentially useful stats is there.
-
-Agree that "memory.stat" is more suitable for scanned/reclaimed stats as
-it already is exposing bunch of other stats.
-
-The discussion on this patch however seems to have split into two parts:
-
-1. Is it a good idea to expose nr_scanned/nr_reclaimed to users-space
-and if yes how ?
-
-IMHO, I think it will be better to expose this info via 'memory.stat' as it
-can be useful insight into the reclaim efficiency  and vmpressure.
-
-
-2. Will it be useful to provide feedback to userspace when it writes to
-'memory.reclaim' on how much memory has been reclaimed ?
-
-IMHO, this will be a useful feeback to userspace to better adjust future
-proactive reclaim requests via 'memory.reclaim'
-
-
--- 
-> Michal Hocko
-> SUSE Labs
->
-
--- 
-Cheers
-~ Vaibhav
+Thank you,
+	Vasily Averin
