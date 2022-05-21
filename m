@@ -2,66 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB2D52F797
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 04:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DDB52F7AA
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 04:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354352AbiEUCe7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 22:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
+        id S239421AbiEUCn0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 22:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbiEUCe6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 22:34:58 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F731796C7
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:34:57 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id hh4so9104592qtb.10
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:34:57 -0700 (PDT)
+        with ESMTP id S239385AbiEUCn0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 22:43:26 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4C5170F10
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:43:24 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id h9so4574204qtx.2
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GPOY2d2iNuO65egkCFZw3rXLU46LbwzRq0Gho1bvrl4=;
-        b=gYTL0x/S9SWMzL5yr5pHjL2Os0iUM04qyTCySwDHjdtl4ZDNWVsWyGNPYQTmwR+Wa5
-         vVvdRd0+/BHBjj+ZE+kimSd/G5xlwM+XO/ecdcutR1uZwUMaxdUWmyB2RMOqH+6zgwko
-         ggJRNM7RXDYfxEO2YdBlTCPs9OiAGlPOnrs9/BOwORDAc5THxIwoVjG1ZxrNO1Wqp1un
-         Xae4Tn5esHxugHU4Md0EVA17aJQTl0MJwZ9IfrTBn0P1+CYouofVbq7Gs1KNJI9rt+Lq
-         hDWArAengQ0djrKjfvMKg39LWXmqeEcUV8yYVD9rNhDOPtjQrbnxQlXYRbWwysYvePbD
-         P4Fw==
+        bh=Ndrz/Orvp7gcBGGOOLwcGhWh997j9sWnxKmSb6IuujM=;
+        b=BDgF8vyyA+xZnKQeleXK8QqAnjkCiXSY0NYaUoybbPy5lZReZm4LJLJRAB4oDF1E0J
+         Ppe2rcbKXC2oj8Qi4MWBmYtHr1ikoaxG+mKJjuPFQ/rngPWYy4Q/NtPmoINXtIUrgBHp
+         WdXsJgie3zycP4uG1rKtTn/E01eKwZ7sCXWGgkNqIGT/ZYIdB07JqIc7XPl4VfxGyS62
+         c/k4oZqOXhjMkzb4cYRFlbPiBfv+JIrAm3Z3As4kkIabRD+ZXVZaF0qz7Xj0Qvgjhzyn
+         wuMxjbep3l3CRiPhTcXqgQ2rz36IvwoT9pvEuYEXuX5XJeeKGbLCQCwuaUnrre94oQD1
+         hz5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GPOY2d2iNuO65egkCFZw3rXLU46LbwzRq0Gho1bvrl4=;
-        b=uXMFCyxxMoQ4TR/pkgMoF8/ftsM/Et2CoNxrNYW+S/GwlN6hJOlGpMj43WvM0ZkTXW
-         /ziGC7opXCnVEMYfg8O+JmDMiTo1Z0ng/HSomiqcmC43yusLvwDRwDJUpuFEM3S3/XdV
-         rG6pRlmnZLviK28mpxsi3xZ1aKAOTNqTeB0Zhh12vSg0RHRQoQN1JQwksNkL2nbr7Aif
-         GMJJ18CViYSO+u0+uj3JlDXejjvhGqtHH9gOim4SbM+793CNpa4sjDSCqAECC9ZCt+ub
-         8InfzhERTerqesWDjwN2d/O13cHH3AdhFudMek26C3hIa0AlCK8AmixY0GQhpIEJJiRv
-         S1VA==
-X-Gm-Message-State: AOAM5324RyH9gYHlFVD28M+pn/sAHqGTD2EEpJl/zp85QDeV4y+kydgp
-        lciHG96vcDXFYgtZesehPIPjyHR9e6G30CrCmreG2Q==
-X-Google-Smtp-Source: ABdhPJwd+HVn4+3QpKDEw2AoM1qT+hYBOJBZ2hv6MdNy7IotYmml2BidH2U0zIMWITMViRtg63Jxg05O6pU/nFgGjzU=
-X-Received: by 2002:ac8:5845:0:b0:2f9:1c6a:f65f with SMTP id
- h5-20020ac85845000000b002f91c6af65fmr5026503qth.168.1653100496556; Fri, 20
- May 2022 19:34:56 -0700 (PDT)
+        bh=Ndrz/Orvp7gcBGGOOLwcGhWh997j9sWnxKmSb6IuujM=;
+        b=IhdFEcWHpF9S5UdUx0uCbTqkbo03WtGe57dY6SEd/brZzdy+zmKuh7Z7iICATMu/04
+         hxsaXAY12VAe6XOc/GEWoOERkJ66mEc9TFuYFaM4ZbUFy+Fg7BzTfXiTIufhXDZvfiHu
+         MrAV1DxbzM6cld/cmVcmVIYoYif8O2CnlR+yIkhdyqDAtad1J8Qgx0crpn3/cEykDZiY
+         PQfldOUh2P6dNKP+964SSLIMZANDPYBG06ZcbLhkVRy51JudGTGrvkjlzflox288PA4R
+         fhZVWlfmvJ8N0o/Lgm2dTMAxldppeofSadWs0AfuHZTCRAUxWXwN3g4yB4ZviBQr1PAa
+         7nYg==
+X-Gm-Message-State: AOAM530jo9zif8UCOwwWSELoYZpQGBDxndjcTFa0ja0XaRM10dXPIlG2
+        CgyNW2mMgrhxe6GBu1n3ejRWx1Wbqfl+KzJN4CoEzA==
+X-Google-Smtp-Source: ABdhPJy7qk5AkC7mPrQlU5XMbGy3TMIZ5unJtuwmwn9G6zlIPcpstv/bXZB69IiBHE4ipIOYfDHIjGXZr48xnITTgeM=
+X-Received: by 2002:a05:622a:54e:b0:2f3:c9db:c512 with SMTP id
+ m14-20020a05622a054e00b002f3c9dbc512mr9752878qtx.478.1653101003376; Fri, 20
+ May 2022 19:43:23 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220520012133.1217211-1-yosryahmed@google.com>
  <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
  <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
  <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
  <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
- <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
- <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
- <Yogc0Kb5ZVDaQ0oU@slm.duckdns.org> <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
-In-Reply-To: <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
+ <CA+khW7iDDkO3h5WQixEA=nUL-tBmCTh7fMAf3iwNy98UfM-k9g@mail.gmail.com> <4cbdd3e9-c6fe-d796-5560-cd09c9220868@fb.com>
+In-Reply-To: <4cbdd3e9-c6fe-d796-5560-cd09c9220868@fb.com>
 From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 20 May 2022 19:34:45 -0700
-Message-ID: <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com>
+Date:   Fri, 20 May 2022 19:43:12 -0700
+Message-ID: <CA+khW7hGcrvihbb1CV4c4o6yO_3Ju3oU4_04G_A+TKh0vLHY3w@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
 To:     Yonghong Song <yhs@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
+Cc:     Tejun Heo <tj@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -93,27 +89,72 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 5:59 PM Yonghong Song <yhs@fb.com> wrote:
-> On 5/20/22 3:57 PM, Tejun Heo wrote:
-> > Hello,
+On Fri, May 20, 2022 at 5:58 PM Yonghong Song <yhs@fb.com> wrote:
+> On 5/20/22 2:49 PM, Hao Luo wrote:
+> > Hi Tejun and Yonghong,
 > >
-> > On Fri, May 20, 2022 at 03:19:19PM -0700, Alexei Starovoitov wrote:
-> >> We have bpf_map iterator that walks all bpf maps.
-> >> When map iterator is parametrized with map_fd the iterator walks
-> >> all elements of that map.
-> >> cgroup iterator should have similar semantics.
-> >> When non-parameterized it will walk all cgroups and their descendent
-> >> depth first way. I believe that's what Yonghong is proposing.
-> >> When parametrized it will start from that particular cgroup and
-> >> walk all descendant of that cgroup only.
-> >> The bpf prog can stop the iteration right away with ret 1.
-> >> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
-> >> the order of iteration css_for_each_descendant_pre vs _post.
-> >> wdyt?
+> > On Fri, May 20, 2022 at 12:42 PM Hao Luo <haoluo@google.com> wrote:
+> >>
+> >> Hi Tejun and Yonghong,
+> >>
+> >> On Fri, May 20, 2022 at 9:45 AM Tejun Heo <tj@kernel.org> wrote:
+> >>> On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
+> >>>>     <various stats interested by the user>
+> >>>>
+> >>>> This way, user space can easily construct the cgroup hierarchy stat like
+> >>>>                             cpu   mem   cpu pressure   mem pressure ...
+> >>>>     cgroup1                 ...
+> >>>>        child1               ...
+> >>>>          grandchild1        ...
+> >>>>        child2               ...
+> >>>>     cgroup 2                ...
+> >>>>        child 3              ...
+> >>>>          ...                ...
+> >>>>
+> >>>> the bpf iterator can have additional parameter like
+> >>>> cgroup_id = ... to only call bpf program once with that
+> >>>> cgroup_id if specified.
+> >>
+> >> Yep, this should work. We just need to make the cgroup_id parameter
+> >> optional. If it is specified when creating bpf_iter_link, we print for
+> >> that cgroup only. If it is not specified, we iterate over all cgroups.
+> >> If I understand correctly, sounds doable.
+> >>
 > >
-> > Sounds perfectly reasonable to me.
+> > Yonghong, I realized that seek() which Tejun has been calling out, can
+> > be used to specify the target cgroup, rather than adding a new
+> > parameter. Maybe, we can pass cgroup_id to seek() on cgroup bpf_iter,
+> > which will instruct read() to return the corresponding cgroup's stats.
+> > On the other hand, reading without calling seek() beforehand will
+> > return all the cgroups.
 >
-> This works for me too. Thanks!
+> Currently, seek is not supported for bpf_iter.
+>
+> const struct file_operations bpf_iter_fops = {
+>          .open           = iter_open,
+>          .llseek         = no_llseek,
+>          .read           = bpf_seq_read,
+>          .release        = iter_release,
+> };
+>
+> But if seek() works, I don't mind to remove this restriction.
+> But not sure what to seek. Do you mean to provide a cgroup_fd/cgroup_id
+> as the seek() syscall parameter? This may work.
+
+Yes, passing a cgroup_id as the seek() syscall parameter was what I meant.
+
+Tejun previously requested us to support seek() for a proper iterator.
+Since Alexei has a nice solution that all of us have ack'ed, I am not
+sure whether we still want to add seek() for bpf_iter as Tejun asked.
+I guess not.
+
+>
+> But considering we have parameterized example (map_fd) and
+> in the future, we may have other parameterized bpf_iter
+> (e.g., for one task). Maybe parameter-based approach is better.
 >
 
-This sounds good to me. Thanks. Let's try to do it in the next iteration.
+Acknowledged.
+
+> >
+> > WDYT?
