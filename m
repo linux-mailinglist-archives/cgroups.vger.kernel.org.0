@@ -2,90 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B8A52FAA9
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 12:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655D752FBF7
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 13:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238517AbiEUKZK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 21 May 2022 06:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S1352991AbiEULaF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 21 May 2022 07:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbiEUKZK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 06:25:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113B654032;
-        Sat, 21 May 2022 03:25:09 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: usama.anjum)
-        with ESMTPSA id CFE571F46413
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1653128707;
-        bh=lBOnXIC7rDI/XGVOI25lydeYhAWS63MlMY/nx5UGlLI=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=GkT6VGFso/wL6JhQo1/m7n2V+8gVKfvw5W0OgrXT76T7QVQmHpDTwOcb44zavI/QJ
-         PWBMDkcVjAxMH0VyLou7Kz+dQ6lMdHBL83AgFO2KfLX84ZYZdfPhIt4s47ZiHgXZAy
-         AMRnl9hLLfnO8pVa+uiZAosCmNIvu61yMgGkDmxXvAbFKseL09c9OMyeBSica2i2fC
-         z7OucM+WeBD4zQPxkwuBrTibedhPZl8tkvPwW9mrw/t4DuAasHb4qfy5zti2Hex0q9
-         nDsiDOOHd4xgYQiaIT5i3sSovhAxKSpd1HemtYndb75Evx/5Z7QBIYlYt43nsfIfXN
-         jfVw0HiauCLLw==
-Message-ID: <0ede5fe6-89c8-5e63-0c0c-265b57ea5ca6@collabora.com>
-Date:   Sat, 21 May 2022 15:24:59 +0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Cc:     usama.anjum@collabora.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Subject: Re: [PATCH v11 8/8] kselftest/cgroup: Add cpuset v2 partition root
- state test
-Content-Language: en-US
-To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S1355913AbiEULW1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 07:22:27 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A563344F1;
+        Sat, 21 May 2022 04:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653131802; x=1684667802;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5KFm4isvsGqNpJBUH/v9LUn20VCp8JnS7lgpH6kfS64=;
+  b=lubdR4kl5GI1eOAf4LZyvWrWK3wnLh1rnatcErpSWwa2EpdDkQDJuyG3
+   KzzPLcK4a3cfuj8lyRF3gPBzVj7C1+fKngJny3UKI1GWTS7S3lILvnBxv
+   B8aue4wAlCllrrjrWVk6zz0ftYGZWwlbk6hr+sCP09jFj4v1tdnA9JtSW
+   NKQnvn/jpbluGQjD325SffOAacSPdmFwEnCePDRvnp9axoOvlQ6euO0k9
+   VjGMuYCIS8p2s4NwOrKCLAGqS+/a4F37mKcy0+GWnEhPE2MJd5OOu6LSw
+   +Zrn3yDvfXWaUOeSTjQp6zFTVFChaJoIslk6DYWTGSGZiwXumP1ZneQUl
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="298154148"
+X-IronPort-AV: E=Sophos;i="5.91,242,1647327600"; 
+   d="scan'208";a="298154148"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2022 04:16:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,242,1647327600"; 
+   d="scan'208";a="640699541"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 21 May 2022 04:16:37 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nsN64-0006EE-GG;
+        Sat, 21 May 2022 11:16:36 +0000
+Date:   Sat, 21 May 2022 19:16:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-References: <20220510153413.400020-1-longman@redhat.com>
- <20220510153413.400020-9-longman@redhat.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20220510153413.400020-9-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH bpf-next v1 1/5] cgroup: bpf: add a hook for bpf progs to
+ attach to rstat flushing
+Message-ID: <202205211949.sJimC9kh-lkp@intel.com>
+References: <20220520012133.1217211-2-yosryahmed@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220520012133.1217211-2-yosryahmed@google.com>
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/10/22 8:34 PM, Waiman Long wrote:
-> diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-> index 745fe25fa0b9..01687418b92f 100644
-> --- a/tools/testing/selftests/cgroup/Makefile
-> +++ b/tools/testing/selftests/cgroup/Makefile
-> @@ -1,10 +1,11 @@
->  # SPDX-License-Identifier: GPL-2.0
->  CFLAGS += -Wall -pthread
->  
-> -all:
-> +all: ${HELPER_PROGS}
->  
->  TEST_FILES     := with_stress.sh
-> -TEST_PROGS     := test_stress.sh
-> +TEST_PROGS     := test_stress.sh test_cpuset_prs.sh
-> +TEST_GEN_FILES := wait_inotify
-Please add wait_inotify to .gitignore file.
+Hi Yosry,
 
->  TEST_GEN_PROGS = test_memcontrol
->  TEST_GEN_PROGS += test_kmem
->  TEST_GEN_PROGS += test_core
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/bpf-rstat-cgroup-hierarchical-stats/20220520-093041
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: hexagon-randconfig-r041-20220519 (https://download.01.org/0day-ci/archive/20220521/202205211949.sJimC9kh-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project e00cbbec06c08dc616a0d52a20f678b8fbd4e304)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/23c4c48fb35b084dc1173c7b9d23d4e6e1a084a3
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Yosry-Ahmed/bpf-rstat-cgroup-hierarchical-stats/20220520-093041
+        git checkout 23c4c48fb35b084dc1173c7b9d23d4e6e1a084a3
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash kernel/cgroup/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/cgroup/rstat.c:145:22: warning: no previous prototype for function 'bpf_rstat_flush' [-Wmissing-prototypes]
+   __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+                        ^
+   kernel/cgroup/rstat.c:145:17: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+                   ^
+                   static 
+   1 warning generated.
+
+
+vim +/bpf_rstat_flush +145 kernel/cgroup/rstat.c
+
+   143	
+   144	/* A hook for bpf stat collectors to attach to and flush their stats */
+ > 145	__weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+   146					     struct cgroup *parent, int cpu)
+   147	{
+   148	}
+   149	
 
 -- 
-Muhammad Usama Anjum
+0-DAY CI Kernel Test Service
+https://01.org/lkp
