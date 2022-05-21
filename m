@@ -2,159 +2,293 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DDB52F7AA
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 04:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6818252F7D2
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 05:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbiEUCn0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 22:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S240222AbiEUDBx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 23:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239385AbiEUCn0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 22:43:26 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4C5170F10
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:43:24 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id h9so4574204qtx.2
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ndrz/Orvp7gcBGGOOLwcGhWh997j9sWnxKmSb6IuujM=;
-        b=BDgF8vyyA+xZnKQeleXK8QqAnjkCiXSY0NYaUoybbPy5lZReZm4LJLJRAB4oDF1E0J
-         Ppe2rcbKXC2oj8Qi4MWBmYtHr1ikoaxG+mKJjuPFQ/rngPWYy4Q/NtPmoINXtIUrgBHp
-         WdXsJgie3zycP4uG1rKtTn/E01eKwZ7sCXWGgkNqIGT/ZYIdB07JqIc7XPl4VfxGyS62
-         c/k4oZqOXhjMkzb4cYRFlbPiBfv+JIrAm3Z3As4kkIabRD+ZXVZaF0qz7Xj0Qvgjhzyn
-         wuMxjbep3l3CRiPhTcXqgQ2rz36IvwoT9pvEuYEXuX5XJeeKGbLCQCwuaUnrre94oQD1
-         hz5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ndrz/Orvp7gcBGGOOLwcGhWh997j9sWnxKmSb6IuujM=;
-        b=IhdFEcWHpF9S5UdUx0uCbTqkbo03WtGe57dY6SEd/brZzdy+zmKuh7Z7iICATMu/04
-         hxsaXAY12VAe6XOc/GEWoOERkJ66mEc9TFuYFaM4ZbUFy+Fg7BzTfXiTIufhXDZvfiHu
-         MrAV1DxbzM6cld/cmVcmVIYoYif8O2CnlR+yIkhdyqDAtad1J8Qgx0crpn3/cEykDZiY
-         PQfldOUh2P6dNKP+964SSLIMZANDPYBG06ZcbLhkVRy51JudGTGrvkjlzflox288PA4R
-         fhZVWlfmvJ8N0o/Lgm2dTMAxldppeofSadWs0AfuHZTCRAUxWXwN3g4yB4ZviBQr1PAa
-         7nYg==
-X-Gm-Message-State: AOAM530jo9zif8UCOwwWSELoYZpQGBDxndjcTFa0ja0XaRM10dXPIlG2
-        CgyNW2mMgrhxe6GBu1n3ejRWx1Wbqfl+KzJN4CoEzA==
-X-Google-Smtp-Source: ABdhPJy7qk5AkC7mPrQlU5XMbGy3TMIZ5unJtuwmwn9G6zlIPcpstv/bXZB69IiBHE4ipIOYfDHIjGXZr48xnITTgeM=
-X-Received: by 2002:a05:622a:54e:b0:2f3:c9db:c512 with SMTP id
- m14-20020a05622a054e00b002f3c9dbc512mr9752878qtx.478.1653101003376; Fri, 20
- May 2022 19:43:23 -0700 (PDT)
+        with ESMTP id S1347782AbiEUDBv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 23:01:51 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D8E3054B;
+        Fri, 20 May 2022 20:01:49 -0700 (PDT)
+Received: from kwepemi500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L4pCP4mH5zCsW8;
+        Sat, 21 May 2022 10:56:49 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500026.china.huawei.com (7.221.188.247) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 21 May 2022 11:01:47 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 21 May 2022 11:01:46 +0800
+Subject: Re: [PATCH -next v3 2/2] blk-throttle: fix io hung due to
+ configuration updates
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <ming.lei@redhat.com>,
+        <geert@linux-m68k.org>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20220519085811.879097-1-yukuai3@huawei.com>
+ <20220519085811.879097-3-yukuai3@huawei.com>
+ <20220519095857.GE16096@blackbody.suse.cz>
+ <a8953189-af42-0225-3031-daf61347524a@huawei.com>
+ <20220519161026.GG16096@blackbody.suse.cz>
+ <73464ca6-9412-cc55-d9c0-f2e8a10f0607@huawei.com>
+ <fe3c03f7-9b52-7948-075d-cbdf431363e1@huawei.com>
+ <20220520160305.GA17335@blackbody.suse.cz>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <a2faaf5a-8e45-ec38-b2f3-7fa0368a393b@huawei.com>
+Date:   Sat, 21 May 2022 11:01:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
- <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
- <CA+khW7iDDkO3h5WQixEA=nUL-tBmCTh7fMAf3iwNy98UfM-k9g@mail.gmail.com> <4cbdd3e9-c6fe-d796-5560-cd09c9220868@fb.com>
-In-Reply-To: <4cbdd3e9-c6fe-d796-5560-cd09c9220868@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 20 May 2022 19:43:12 -0700
-Message-ID: <CA+khW7hGcrvihbb1CV4c4o6yO_3Ju3oU4_04G_A+TKh0vLHY3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20220520160305.GA17335@blackbody.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 5:58 PM Yonghong Song <yhs@fb.com> wrote:
-> On 5/20/22 2:49 PM, Hao Luo wrote:
-> > Hi Tejun and Yonghong,
-> >
-> > On Fri, May 20, 2022 at 12:42 PM Hao Luo <haoluo@google.com> wrote:
-> >>
-> >> Hi Tejun and Yonghong,
-> >>
-> >> On Fri, May 20, 2022 at 9:45 AM Tejun Heo <tj@kernel.org> wrote:
-> >>> On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
-> >>>>     <various stats interested by the user>
-> >>>>
-> >>>> This way, user space can easily construct the cgroup hierarchy stat like
-> >>>>                             cpu   mem   cpu pressure   mem pressure ...
-> >>>>     cgroup1                 ...
-> >>>>        child1               ...
-> >>>>          grandchild1        ...
-> >>>>        child2               ...
-> >>>>     cgroup 2                ...
-> >>>>        child 3              ...
-> >>>>          ...                ...
-> >>>>
-> >>>> the bpf iterator can have additional parameter like
-> >>>> cgroup_id = ... to only call bpf program once with that
-> >>>> cgroup_id if specified.
-> >>
-> >> Yep, this should work. We just need to make the cgroup_id parameter
-> >> optional. If it is specified when creating bpf_iter_link, we print for
-> >> that cgroup only. If it is not specified, we iterate over all cgroups.
-> >> If I understand correctly, sounds doable.
-> >>
-> >
-> > Yonghong, I realized that seek() which Tejun has been calling out, can
-> > be used to specify the target cgroup, rather than adding a new
-> > parameter. Maybe, we can pass cgroup_id to seek() on cgroup bpf_iter,
-> > which will instruct read() to return the corresponding cgroup's stats.
-> > On the other hand, reading without calling seek() beforehand will
-> > return all the cgroups.
->
-> Currently, seek is not supported for bpf_iter.
->
-> const struct file_operations bpf_iter_fops = {
->          .open           = iter_open,
->          .llseek         = no_llseek,
->          .read           = bpf_seq_read,
->          .release        = iter_release,
-> };
->
-> But if seek() works, I don't mind to remove this restriction.
-> But not sure what to seek. Do you mean to provide a cgroup_fd/cgroup_id
-> as the seek() syscall parameter? This may work.
+在 2022/05/21 0:03, Michal Koutný 写道:
+> On Fri, May 20, 2022 at 09:36:11AM +0800, "yukuai (C)" <yukuai3@huawei.com> wrote:
+>> Just to simplify explanation (assum that throtl_slice is greater than
+>> 0.5s):
+>> Without this patch:
+>> wait time is caculated based on issuing 9k from now(3s) without any
+>> bytes aready dispatched.
+> 
+> I acknowledge that pre-patch state is incorrect because it erases
+> already passed wait-time from the previous slice.
+> 
+>> With this patch:
+>> wait time is caculated based on issuing 9k from 0s with 0.5 bytes
+>> aready dispatched.
+> 
+> Thanks for your further hint. Hopefully, I'm getting closer to real
+> understanding. Now, I calculate the wait times as durations between
+> current moment and timepoint when a bio can be dispatched.
+> 
+> IIUC, after config change the ideal wait time of a bio is
+> 
+>      wait_ideal := (disp + bio - Δt*l_old) / l_new
+> 
+> where Δt is the elapsed time of the current slice.
+> You maintain the slice but scale disp, so you get
+> 
+>      wait_kuai := ((l_new/l_old)*disp + bio - Δt*l_lew) / l_new
+>                 = disp / l_old + bio / l_new - Δt
+> 
+> Please confirm we're on the same page here.
+Hi, Michal
 
-Yes, passing a cgroup_id as the seek() syscall parameter was what I meant.
+Yes we're on the same page here.
+> 
+> Then I look at
+> 
+>      error := wait_kuai - wait_ideal
+>            ...
+> 	  = (Δt * l_old - disp) * (1/l_new - 1/l_old)
+> 	  = (Δt * l_old - disp) * (1 - α) / (α * l_old)
+> where
+>      α = l_new / l_old
+> 
+> The leftmost term is a unconsumed IO of the slice. Say it's positive,
+> while the bigger bio is throttled at the moment of a config change.
+> If the config change increases throttling (α < 1), the error grows very
+> high (i.e. over-throttling similar to the existing behavior).
+> If the config change relieves throttling (α > 1), the wait time's
+> slightly shorter (under-throttling) wrt the ideal.
+Yew, you are right.
+> 
+> If I was to propose a correction, it'd be like the patch at the bottom
+> derived from your but not finished (the XXX part). It's for potential
+> further discussion.
+I thought about it, however, I was thing that for such corner case,
+fixing io hung if probably enough. Now with the formula that you sorted
+out, it's right this is better.
 
-Tejun previously requested us to support seek() for a proper iterator.
-Since Alexei has a nice solution that all of us have ack'ed, I am not
-sure whether we still want to add seek() for bpf_iter as Tejun asked.
-I guess not.
-
->
-> But considering we have parameterized example (map_fd) and
-> in the future, we may have other parameterized bpf_iter
-> (e.g., for one task). Maybe parameter-based approach is better.
->
-
-Acknowledged.
-
-> >
-> > WDYT?
+Thanks,
+Kuai
+> 
+> 
+> I had myself carried a way with the formulas. If I go back to the
+> beginning:
+> 
+>> Then io hung can be triggered by always submmiting new configuration
+>> before the throttled bio is dispatched.
+> 
+> How big is this a problem actually? Is it only shooting oneself in the leg
+> or can there be a user who's privileged enough to modify throttling
+> configuration yet not privileged enough to justify the hung's
+> consequences (like some global FS locks).
+> 
+> 
+> Thanks,
+> Michal
+> 
+> --- 8< ---
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 469c483719be..3fd458d16f31 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -1274,7 +1274,62 @@ static int tg_print_conf_uint(struct seq_file *sf, void *v)
+>   	return 0;
+>   }
+>   
+> -static void tg_conf_updated(struct throtl_grp *tg, bool global)
+> +static u64 throtl_update_slice_scale(unsigned int slice_start, u64 new_limit,
+> +				     u64 old_limit)
+> +{
+> +	if (new_limit == old_limit)
+> +		return slice_start;
+> +
+> +	/* This shouldn't really matter but semantically we want to extend the
+> +	 * slice from the earliest possible point of time. */
+> +	if (WARN_ON(new_limit == 0))
+> +		return 0;
+> +
+> +	return jiffies - div64_u64((jiffies - slice_start) * old_limit, new_limit);
+> +}
+> +
+> +static void throtl_update_slice(struct throtl_grp *tg, u64 *old_limits)
+> +{
+> +	/*
+> +	 * How does this work? We're going to calculate new wait time in
+> +	 * tg_with_in_bps_limit(). Ideal wait time after config change is
+> +	 *
+> +	 *   wait_ideal := (disp + bio - Δt*l_old) / l_new
+> +	 *
+> +	 * where Δt = jiffies - tg->slice_start (elapsed time of slice).
+> +	 * In reality, the function has no idea about l_old so it calculates
+> +	 *
+> +	 *   wait_skewed := (disp + bio - Δt*l_new) / l_new
+> +	 *
+> +	 * So we modify slice_start to get correct number
+> +	 *
+> +	 *   wait_fixed := (disp + bio - Δt'*l_new) / l_new == wait_ideal
+> +	 *
+> +	 * from that
+> +	 *   Δt' = Δt * l_old / l_new
+> +	 * or
+> +	 *   jiffies - slice_start' = (jiffies - slice_start) * l_old / l_new
+> +	 * .
+> +	 */
+> +	tg->slice_start[READ]  = throtl_update_slice_scale(tg->slice_start[READ],
+> +							   tg_bps_limit(tg, READ),
+> +							   old_limits[0]);
+> +	tg->slice_start[WRITE] = throtl_update_slice_scale(tg->slice_start[WRITE],
+> +							   tg_bps_limit(tg, WRITE),
+> +							   old_limits[1]);
+> +
+> +	// XXX This looks like OK since we should not change BPS and IOPS limit
+> +	// at the same time but it is not actually OK because scaling
+> +	// slice_start for one limit breaks the other anyway.
+> +	tg->slice_start[READ]  = throtl_update_slice_scale(tg->slice_start[READ],
+> +							   tg_iops_limit(tg, READ),
+> +							   old_limits[2]);
+> +	tg->slice_start[WRITE] = throtl_update_slice_scale(tg->slice_start[WRITE],
+> +							   tg_iops_limit(tg, WRITE),
+> +							   old_limits[3]);
+> +}
+> +
+> +static void tg_conf_updated(struct throtl_grp *tg, u64 *old_limits, bool global)
+>   {
+>   	struct throtl_service_queue *sq = &tg->service_queue;
+>   	struct cgroup_subsys_state *pos_css;
+> @@ -1313,16 +1368,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+>   				parent_tg->latency_target);
+>   	}
+>   
+> -	/*
+> -	 * We're already holding queue_lock and know @tg is valid.  Let's
+> -	 * apply the new config directly.
+> -	 *
+> -	 * Restart the slices for both READ and WRITES. It might happen
+> -	 * that a group's limit are dropped suddenly and we don't want to
+> -	 * account recently dispatched IO with new low rate.
+> -	 */
+> -	throtl_start_new_slice(tg, READ);
+> -	throtl_start_new_slice(tg, WRITE);
+> +	throtl_update_slice(tg, old_limits);
+>   
+>   	if (tg->flags & THROTL_TG_PENDING) {
+>   		tg_update_disptime(tg);
+> @@ -1330,6 +1376,14 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+>   	}
+>   }
+>   
+> +static void tg_get_limits(struct throtl_grp *tg, u64 *limits)
+> +{
+> +	limits[0] = tg_bps_limit(tg, READ);
+> +	limits[1] = tg_bps_limit(tg, WRITE);
+> +	limits[2] = tg_iops_limit(tg, READ);
+> +	limits[3] = tg_iops_limit(tg, WRITE);
+> +}
+> +
+>   static ssize_t tg_set_conf(struct kernfs_open_file *of,
+>   			   char *buf, size_t nbytes, loff_t off, bool is_u64)
+>   {
+> @@ -1338,6 +1392,7 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
+>   	struct throtl_grp *tg;
+>   	int ret;
+>   	u64 v;
+> +	u64 old_limits[4];
+>   
+>   	ret = blkg_conf_prep(blkcg, &blkcg_policy_throtl, buf, &ctx);
+>   	if (ret)
+> @@ -1350,13 +1405,14 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
+>   		v = U64_MAX;
+>   
+>   	tg = blkg_to_tg(ctx.blkg);
+> +	tg_get_limits(tg, old_limits);
+>   
+>   	if (is_u64)
+>   		*(u64 *)((void *)tg + of_cft(of)->private) = v;
+>   	else
+>   		*(unsigned int *)((void *)tg + of_cft(of)->private) = v;
+>   
+> -	tg_conf_updated(tg, false);
+> +	tg_conf_updated(tg, old_limits, false);
+>   	ret = 0;
+>   out_finish:
+>   	blkg_conf_finish(&ctx);
+> @@ -1526,6 +1582,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
+>   	struct blkg_conf_ctx ctx;
+>   	struct throtl_grp *tg;
+>   	u64 v[4];
+> +	u64 old_limits[4];
+>   	unsigned long idle_time;
+>   	unsigned long latency_time;
+>   	int ret;
+> @@ -1536,6 +1593,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
+>   		return ret;
+>   
+>   	tg = blkg_to_tg(ctx.blkg);
+> +	tg_get_limits(tg, old_limits);
+>   
+>   	v[0] = tg->bps_conf[READ][index];
+>   	v[1] = tg->bps_conf[WRITE][index];
+> @@ -1627,7 +1685,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
+>   			tg->td->limit_index = LIMIT_LOW;
+>   	} else
+>   		tg->td->limit_index = LIMIT_MAX;
+> -	tg_conf_updated(tg, index == LIMIT_LOW &&
+> +	tg_conf_updated(tg, old_limits, index == LIMIT_LOW &&
+>   		tg->td->limit_valid[LIMIT_LOW]);
+>   	ret = 0;
+>   out_finish:
+> .
+> 
