@@ -2,49 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8D252F993
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 09:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B8A52FAA9
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 12:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353974AbiEUHVz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 21 May 2022 03:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S238517AbiEUKZK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 21 May 2022 06:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240838AbiEUHVv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 03:21:51 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B70F4C423;
-        Sat, 21 May 2022 00:21:50 -0700 (PDT)
-Received: from kwepemi100019.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L4w4P3YCtzhYsK;
-        Sat, 21 May 2022 15:21:09 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100019.china.huawei.com (7.221.188.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 21 May 2022 15:21:48 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 21 May
- 2022 15:21:47 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <jack@suse.cz>, <axboe@kernel.dk>, <paolo.valente@linaro.org>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next v2 6/6] block, bfq: remove dead code for updating 'rq_in_driver'
-Date:   Sat, 21 May 2022 15:35:23 +0800
-Message-ID: <20220521073523.3118246-7-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220521073523.3118246-1-yukuai3@huawei.com>
-References: <20220521073523.3118246-1-yukuai3@huawei.com>
+        with ESMTP id S231536AbiEUKZK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 06:25:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113B654032;
+        Sat, 21 May 2022 03:25:09 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: usama.anjum)
+        with ESMTPSA id CFE571F46413
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1653128707;
+        bh=lBOnXIC7rDI/XGVOI25lydeYhAWS63MlMY/nx5UGlLI=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=GkT6VGFso/wL6JhQo1/m7n2V+8gVKfvw5W0OgrXT76T7QVQmHpDTwOcb44zavI/QJ
+         PWBMDkcVjAxMH0VyLou7Kz+dQ6lMdHBL83AgFO2KfLX84ZYZdfPhIt4s47ZiHgXZAy
+         AMRnl9hLLfnO8pVa+uiZAosCmNIvu61yMgGkDmxXvAbFKseL09c9OMyeBSica2i2fC
+         z7OucM+WeBD4zQPxkwuBrTibedhPZl8tkvPwW9mrw/t4DuAasHb4qfy5zti2Hex0q9
+         nDsiDOOHd4xgYQiaIT5i3sSovhAxKSpd1HemtYndb75Evx/5Z7QBIYlYt43nsfIfXN
+         jfVw0HiauCLLw==
+Message-ID: <0ede5fe6-89c8-5e63-0c0c-265b57ea5ca6@collabora.com>
+Date:   Sat, 21 May 2022 15:24:59 +0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Cc:     usama.anjum@collabora.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Subject: Re: [PATCH v11 8/8] kselftest/cgroup: Add cpuset v2 partition root
+ state test
+Content-Language: en-US
+To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+References: <20220510153413.400020-1-longman@redhat.com>
+ <20220510153413.400020-9-longman@redhat.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20220510153413.400020-9-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,41 +65,27 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Such code are not even compiled since they are inside marco "#if 0".
+On 5/10/22 8:34 PM, Waiman Long wrote:
+> diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+> index 745fe25fa0b9..01687418b92f 100644
+> --- a/tools/testing/selftests/cgroup/Makefile
+> +++ b/tools/testing/selftests/cgroup/Makefile
+> @@ -1,10 +1,11 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  CFLAGS += -Wall -pthread
+>  
+> -all:
+> +all: ${HELPER_PROGS}
+>  
+>  TEST_FILES     := with_stress.sh
+> -TEST_PROGS     := test_stress.sh
+> +TEST_PROGS     := test_stress.sh test_cpuset_prs.sh
+> +TEST_GEN_FILES := wait_inotify
+Please add wait_inotify to .gitignore file.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- block/bfq-iosched.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+>  TEST_GEN_PROGS = test_memcontrol
+>  TEST_GEN_PROGS += test_kmem
+>  TEST_GEN_PROGS += test_core
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index c0bc463d236c..be75bd9835f5 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2323,22 +2323,6 @@ static sector_t get_sdist(sector_t last_pos, struct request *rq)
- 	return 0;
- }
- 
--#if 0 /* Still not clear if we can do without next two functions */
--static void bfq_activate_request(struct request_queue *q, struct request *rq)
--{
--	struct bfq_data *bfqd = q->elevator->elevator_data;
--
--	bfqd->rq_in_driver++;
--}
--
--static void bfq_deactivate_request(struct request_queue *q, struct request *rq)
--{
--	struct bfq_data *bfqd = q->elevator->elevator_data;
--
--	bfqd->rq_in_driver--;
--}
--#endif
--
- static void bfq_remove_request(struct request_queue *q,
- 			       struct request *rq)
- {
 -- 
-2.31.1
-
+Muhammad Usama Anjum
