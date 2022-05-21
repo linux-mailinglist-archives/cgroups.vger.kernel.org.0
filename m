@@ -2,60 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9961252FE31
+	by mail.lfdr.de (Postfix) with ESMTP id E408452FE32
 	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 18:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbiEUQi1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 21 May 2022 12:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        id S1344944AbiEUQii (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 21 May 2022 12:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238748AbiEUQi0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 12:38:26 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DD661616
-        for <cgroups@vger.kernel.org>; Sat, 21 May 2022 09:38:24 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bu29so19079119lfb.0
-        for <cgroups@vger.kernel.org>; Sat, 21 May 2022 09:38:24 -0700 (PDT)
+        with ESMTP id S1351652AbiEUQii (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 21 May 2022 12:38:38 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DFB62BDB
+        for <cgroups@vger.kernel.org>; Sat, 21 May 2022 09:38:34 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id q1so2972442ljb.5
+        for <cgroups@vger.kernel.org>; Sat, 21 May 2022 09:38:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=openvz-org.20210112.gappssmtp.com; s=20210112;
         h=message-id:date:mime-version:user-agent:from:subject:to:cc
          :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=Wb/V91Pwh4wB3EAs6xgX+enNMi2t+13tZlysFcCX1i4=;
-        b=EhsaiP3edvHWkF6iZ/g4kbDdoucu2Hg9/DwUaWCO1Iu39vG/HSh7DpGYTKIBa8nltX
-         7fjwk8jAcmjbcbZJLhP95KzdEjzefrc50ViZXA78q+dlaTqNOQqO/F7nOOFKaFVThoOP
-         dU7Wj/9rE6xQZzw0Y2K39AqL7cUZtdLf1QAu1TaSF/Ooh8+2Q74tSwpYs/aw/RKVFDBv
-         iDwRJwtQ0zedkl8HFdOeziMW5IH+3q55Nzg0+/Ec12EsHwr+57XmAqP66tl5ItbXKpDQ
-         g1/J1VMpu7IVTmXkHN7siOvn389e2ft7AgNIpbEelIf2PqHCdv7vJ9n/x3Yk81guXbQR
-         9hog==
+        bh=ubEdKOLxNSsh97bDo7kpC8y1FqAK+i/uT0ov6eXAI2o=;
+        b=VGOpXYtocMKIeshgklWD1Zo9cIZadjw/jBv0T7SITGnfSw+kY7kyswsQG+yKDOPdIL
+         lgbOfYW4tytV2kcy9vuPjd1SIFXGAdT0RBbbSvFh+vlWmikbE0fhup438dTlu81UrMd1
+         2ZjPKcME4smlcKI0In8IqM6w/ffUsdXEjJ3xK1yYr0BPOerlii2ms/hIZixBjf8jwAue
+         EFgO8Mj9dhK4TkCHLycE1wR2gkSB23Tgxtl612CMU+p9bfxBlIpcRplIQ7eMihOoZbvx
+         Iple/oQOgga471BAYxfPyoTU+4ZAAVOP71yOR9Cudi0h3whHn+xwG1XL52goc/glgHsH
+         fSQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:from
          :subject:to:cc:references:content-language:in-reply-to
          :content-transfer-encoding;
-        bh=Wb/V91Pwh4wB3EAs6xgX+enNMi2t+13tZlysFcCX1i4=;
-        b=CbAyReeXLTIK5J4PR33jjADrNKVKRTPQ1jLOGxSYKyHVcpiWefzmmVADJQxRzbrVIJ
-         j9OVT5/wKbydqsTh4VJRY7bd2O+DCoLg1Zlh+4JJIGIyoFeJQ/3T4VFlLIOuFNdGc1Pf
-         6AiCzMpG/hrLTLWMlrGuoYUQHJeUGeEwiz6XCGhg0AipWKgwV3PLfENMIfdJClqdByxc
-         j5QRt4c04qu2+koZN0Gin+oHT5kqOx8sRvtAhjM1OhQlZ6yTUwh32uFS6NDjbjzlQnex
-         7NEjkeKYARW56dHPvVbpGKEAaIvzuB+fNJE+cdU7cXl/wARJfcMPlJXWD3FcAkzqPt5B
-         jeQA==
-X-Gm-Message-State: AOAM531wolkDAqxPhcLzgqJYV0445XfvySINwtkLYflEuhFmmSOvCkda
-        7EbmVpTO5TacS7XO98fnQNo9gg==
-X-Google-Smtp-Source: ABdhPJycYdcmWtOeexBDTeDN18dVHF6RUwKxUM2Ot0xLt2OS/9K5EOP0DVYoEuoz4+XoaRxHeoumVg==
-X-Received: by 2002:a19:7104:0:b0:474:d376:2cd3 with SMTP id m4-20020a197104000000b00474d3762cd3mr10438574lfc.175.1653151102636;
-        Sat, 21 May 2022 09:38:22 -0700 (PDT)
+        bh=ubEdKOLxNSsh97bDo7kpC8y1FqAK+i/uT0ov6eXAI2o=;
+        b=38P1BzRkZEXXWdCoFWZkIG+fpzRqK5CkSr0jtQApV2mPKFvnGqFW0J89mwa6Jvlf9i
+         x96lZEUmyRxkgdTGM95IBOGCQbQoOlknHJcTFEL7M7RX+pbQAdUcYi4PyDhsBkAn+KSp
+         V1LF2YbfCLDen4VAZNyfA3RzW4fStG158JC8PSSFJ8Als9tereX/uZaINKZWc7xbIjPQ
+         FTiMbJbHr1OZ8B94rHR4i/bxu8CaGxg4mUMe9lqjGdOiHTTuP16ogOqiG1731pC9SGcQ
+         u2vXqpoGOQtUhyacyyjEYkfNoIU9E9GZoIG5siiO6O5mANKekkWESfj+ty5lq5tmMb96
+         bzrA==
+X-Gm-Message-State: AOAM533SNqr4Fzahq4D4ZCPPitQHudHxvrO5WhYUVZLfaOfrzesb4I1Z
+        jlkGmOOaTkxxX5Aq75ijWiPBAQ==
+X-Google-Smtp-Source: ABdhPJzocSGKezCk9kwFPkKlXP5XOqvNaFEMyyKnjUP6VYzzkVVlmn1aqPy6DwNNJlGzTduXCzbs1w==
+X-Received: by 2002:a2e:b053:0:b0:253:dd50:b93f with SMTP id d19-20020a2eb053000000b00253dd50b93fmr4948944ljl.277.1653151113204;
+        Sat, 21 May 2022 09:38:33 -0700 (PDT)
 Received: from [192.168.1.65] ([46.188.121.185])
-        by smtp.gmail.com with ESMTPSA id bf16-20020a056512259000b00477cb9b8762sm960850lfb.50.2022.05.21.09.38.21
+        by smtp.gmail.com with ESMTPSA id h7-20020ac250c7000000b0047255d21174sm1116566lfm.163.2022.05.21.09.38.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 May 2022 09:38:22 -0700 (PDT)
-Message-ID: <16f17021-61a3-c6f4-f60c-1acd3a0b66b9@openvz.org>
-Date:   Sat, 21 May 2022 19:38:21 +0300
+        Sat, 21 May 2022 09:38:32 -0700 (PDT)
+Message-ID: <c0d01d6e-530c-9be3-1c9b-67a7f8ea09be@openvz.org>
+Date:   Sat, 21 May 2022 19:38:31 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
 From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH mm v2 5/9] memcg: enable accounting for percpu allocation of
- struct psi_group_cpu
+Subject: [PATCH mm v2 6/9] memcg: enable accounting for percpu allocation of
+ struct cgroup_rstat_cpu
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
@@ -78,12 +78,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-struct pci_group_cpu is percpu allocated for each new cgroup and can
-consume a significant portion of all allocated memory on nodes with
-a large number of CPUs.
+struct cgroup_rstat_cpu is percpu allocated for each new cgroup and
+can consume a significant portion of all allocated memory on nodes
+with a large number of CPUs.
 
 Common part of the cgroup creation:
-Allocs  Alloc   $1*$2   Sum     Allocation
+Allocs  Alloc   $1*$2   Sum	Allocation
 number  size
 --------------------------------------------
 16  ~   352     5632    5632    KERNFS
@@ -104,23 +104,23 @@ percpu:
 
 Signed-off-by: Vasily Averin <vvs@openvz.org>
 ---
- kernel/sched/psi.c | 3 ++-
+ kernel/cgroup/rstat.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index a4fa3aadfcba..f0b25380cb12 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -957,7 +957,8 @@ int psi_cgroup_alloc(struct cgroup *cgroup)
- 	if (static_branch_likely(&psi_disabled))
- 		return 0;
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 24b5c2ab5598..f76cb63ae2e0 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -257,7 +257,8 @@ int cgroup_rstat_init(struct cgroup *cgrp)
  
--	cgroup->psi.pcpu = alloc_percpu(struct psi_group_cpu);
-+	cgroup->psi.pcpu = alloc_percpu_gfp(struct psi_group_cpu,
-+					    GFP_KERNEL_ACCOUNT);
- 	if (!cgroup->psi.pcpu)
- 		return -ENOMEM;
- 	group_init(&cgroup->psi);
+ 	/* the root cgrp has rstat_cpu preallocated */
+ 	if (!cgrp->rstat_cpu) {
+-		cgrp->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
++		cgrp->rstat_cpu = alloc_percpu_gfp(struct cgroup_rstat_cpu
++						   GFP_KERNEL_ACCOUNT);
+ 		if (!cgrp->rstat_cpu)
+ 			return -ENOMEM;
+ 	}
 -- 
 2.36.1
 
