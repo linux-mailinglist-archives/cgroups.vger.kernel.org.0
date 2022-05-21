@@ -2,311 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A1052F781
-	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 04:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB2D52F797
+	for <lists+cgroups@lfdr.de>; Sat, 21 May 2022 04:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbiEUCTe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 May 2022 22:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S1354352AbiEUCe7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 May 2022 22:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbiEUCTd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 22:19:33 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C28195EAE
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:19:31 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id rs12so6828085ejb.13
-        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:19:31 -0700 (PDT)
+        with ESMTP id S232004AbiEUCe6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 May 2022 22:34:58 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F731796C7
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:34:57 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id hh4so9104592qtb.10
+        for <cgroups@vger.kernel.org>; Fri, 20 May 2022 19:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sQlK8EPAE1nmulIIgv5jRhcGPrhGOTgo4V3rKxqmaH4=;
-        b=rnCv4bfcViQifT0EnuLazBJP+RPyjJedUNb+XaGcQSXhNUZkgOYt7ievywxjV1c2EE
-         MJycHcYkWvToUmN9fth48vtDpbQ8998jU959vlLAp8q+kxszB9zEEIou0KXawjZ0tTVy
-         gIKIwNNtpdmIBb2uKjvJhKJoClgHdIw4qEo3rWw4wDzrYVOCXfuwX/+junNVwel4K6KY
-         DZMasQmbk8jAgtbeKOxbDF7OHmI6gInClz5ODkttVNJ9T4h+dbgBVX+8jOUQt572JzP/
-         q1QAJRiIxjo0ghtkLxdrCVDrXpSQXDQivzghlBw2O5NyNSWzB32vrSjS7mHu9XuiTqWp
-         PU3g==
+         :cc;
+        bh=GPOY2d2iNuO65egkCFZw3rXLU46LbwzRq0Gho1bvrl4=;
+        b=gYTL0x/S9SWMzL5yr5pHjL2Os0iUM04qyTCySwDHjdtl4ZDNWVsWyGNPYQTmwR+Wa5
+         vVvdRd0+/BHBjj+ZE+kimSd/G5xlwM+XO/ecdcutR1uZwUMaxdUWmyB2RMOqH+6zgwko
+         ggJRNM7RXDYfxEO2YdBlTCPs9OiAGlPOnrs9/BOwORDAc5THxIwoVjG1ZxrNO1Wqp1un
+         Xae4Tn5esHxugHU4Md0EVA17aJQTl0MJwZ9IfrTBn0P1+CYouofVbq7Gs1KNJI9rt+Lq
+         hDWArAengQ0djrKjfvMKg39LWXmqeEcUV8yYVD9rNhDOPtjQrbnxQlXYRbWwysYvePbD
+         P4Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sQlK8EPAE1nmulIIgv5jRhcGPrhGOTgo4V3rKxqmaH4=;
-        b=3e80Rs+0WQOtkt25+vSeTIlnMZtze/nzUqv3k7hX7SrqfjtDEOmawN0hPSMIa3s3D9
-         9VmchybKcdIWSCqzCcxjujneU0f1D9BO39uj5Zq1ckNlXb2DWRGTVa80TXlyl4WJ8psn
-         WOQOgXmoeyaTIo0F5eylr7cq0HEj1zxpkqCHsaaAxUrUJgKpvxsUiAh1iRbfhc+WcN6R
-         9tzfPZ/z0ksUEbQ+TzWlFTicVNZ+W84mzAvJVj1q9KHDuIM1ehSbHefYHwPM/SgGH+0o
-         Y8QuXxTk9I1xUhrgQlbesoeY6cN6Xg+Ej/rH15aQ9kRRMsRjG32alQOWU+PVgtKlaCPq
-         b4Dg==
-X-Gm-Message-State: AOAM530kxZ9EvUXgXXdZyjkYsHK4g3WwRvIGdCyLZnQAhND3EUsebjLO
-        wx9x0yk2/eOeLLIS1/26PBogHf0a+cXpf3YoGwJwGg==
-X-Google-Smtp-Source: ABdhPJzma20Jw8z2jDhsEaXVdc6gwk7GyQZeyDajs1P9GPAR8KSzzRz5P+0if2lufkSUvXOh/v8I91ajvbIFbhkcjPg=
-X-Received: by 2002:a17:906:6a0f:b0:6f5:15cf:2e5 with SMTP id
- qw15-20020a1709066a0f00b006f515cf02e5mr10844216ejc.584.1653099569797; Fri, 20
- May 2022 19:19:29 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=GPOY2d2iNuO65egkCFZw3rXLU46LbwzRq0Gho1bvrl4=;
+        b=uXMFCyxxMoQ4TR/pkgMoF8/ftsM/Et2CoNxrNYW+S/GwlN6hJOlGpMj43WvM0ZkTXW
+         /ziGC7opXCnVEMYfg8O+JmDMiTo1Z0ng/HSomiqcmC43yusLvwDRwDJUpuFEM3S3/XdV
+         rG6pRlmnZLviK28mpxsi3xZ1aKAOTNqTeB0Zhh12vSg0RHRQoQN1JQwksNkL2nbr7Aif
+         GMJJ18CViYSO+u0+uj3JlDXejjvhGqtHH9gOim4SbM+793CNpa4sjDSCqAECC9ZCt+ub
+         8InfzhERTerqesWDjwN2d/O13cHH3AdhFudMek26C3hIa0AlCK8AmixY0GQhpIEJJiRv
+         S1VA==
+X-Gm-Message-State: AOAM5324RyH9gYHlFVD28M+pn/sAHqGTD2EEpJl/zp85QDeV4y+kydgp
+        lciHG96vcDXFYgtZesehPIPjyHR9e6G30CrCmreG2Q==
+X-Google-Smtp-Source: ABdhPJwd+HVn4+3QpKDEw2AoM1qT+hYBOJBZ2hv6MdNy7IotYmml2BidH2U0zIMWITMViRtg63Jxg05O6pU/nFgGjzU=
+X-Received: by 2002:ac8:5845:0:b0:2f9:1c6a:f65f with SMTP id
+ h5-20020ac85845000000b002f91c6af65fmr5026503qth.168.1653100496556; Fri, 20
+ May 2022 19:34:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220510235653.933868-1-tjmercier@google.com> <20220519093034.541481-1-eballetbo@kernel.org>
-In-Reply-To: <20220519093034.541481-1-eballetbo@kernel.org>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Fri, 20 May 2022 19:19:18 -0700
-Message-ID: <CABdmKX17aS3nh0UHf+FoM3VPdvMn5NvrZTkGSisznDgjZyeQxw@mail.gmail.com>
-Subject: Re: [PATCH v7 1/6] gpu: rfc: Proposal for a GPU cgroup controller
-To:     eballetbo@kernel.org
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Tejun Heo <tj@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Todd Kjos <tkjos@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
+ <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
+ <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
+ <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <Yogc0Kb5ZVDaQ0oU@slm.duckdns.org> <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
+In-Reply-To: <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 20 May 2022 19:34:45 -0700
+Message-ID: <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Hridya Valsaraju <hridya@google.com>,
         Shuah Khan <shuah@kernel.org>,
-        Laura Abbott <labbott@redhat.com>, cgroups@vger.kernel.org,
-        kernel-team@android.com, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Carlos Llamas <cmllamas@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Kenny.Ho@amd.com,
-        linux-kselftest@vger.kernel.org,
-        Kalesh Singh <kaleshsingh@google.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        John Stultz <jstultz@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 19, 2022 at 2:31 AM <eballetbo@kernel.org> wrote:
->
-> From: Enric Balletbo i Serra <eballetbo@kernel.org>
->
-> On Tue, 10 May 2022 23:56:45 +0000, T.J. Mercier wrote:
-> > From: Hridya Valsaraju <hridya@google.com>
+On Fri, May 20, 2022 at 5:59 PM Yonghong Song <yhs@fb.com> wrote:
+> On 5/20/22 3:57 PM, Tejun Heo wrote:
+> > Hello,
 > >
+> > On Fri, May 20, 2022 at 03:19:19PM -0700, Alexei Starovoitov wrote:
+> >> We have bpf_map iterator that walks all bpf maps.
+> >> When map iterator is parametrized with map_fd the iterator walks
+> >> all elements of that map.
+> >> cgroup iterator should have similar semantics.
+> >> When non-parameterized it will walk all cgroups and their descendent
+> >> depth first way. I believe that's what Yonghong is proposing.
+> >> When parametrized it will start from that particular cgroup and
+> >> walk all descendant of that cgroup only.
+> >> The bpf prog can stop the iteration right away with ret 1.
+> >> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
+> >> the order of iteration css_for_each_descendant_pre vs _post.
+> >> wdyt?
+> >
+> > Sounds perfectly reasonable to me.
 >
-> Hi T.J. Mercier,
+> This works for me too. Thanks!
 >
-> Many thanks for this effort. It caught my attention because we might have=
- a use
-> case where this feature can be useful for us. Hence I'd like to jump and =
-be part
-> of the discussion, I'd really appreciate if you can cc'me for next versio=
-ns.
->
-Hi Enric,
 
-Sure thing, thanks for engaging.
-
-> While reading the full patchset I was a bit confused about the status of =
-this
-> proposal. In fact, the rfc in the subject combined with the number of ite=
-rations
-> (already seven) confused me. So I'm wondering if this is a RFC or a 'real=
-'
-> proposal already that you want to land.
->
-I'm sorry about this. I'm quite new to kernel development (this is my
-first set of patches) and the point at which I should have
-transitioned from RFC to PATCH was not clear to me. The status now
-could be described as adding initial support for accounting that would
-be built upon to expand what is tracked (more than just buffers from
-heaps) and to add support for limiting. I see you have also commented
-about this below.
-
-> If this is still a RFC I'd remove the 'rfc: Proposal' and use the more ca=
-nonical
-> way that is put RFC in the []. I.e [PATCH RFC v7] cgroup: Add a GPU cgrou=
-p
-> controller.
->
-> If it is not, I'd just remove the RFC and make the subject in the cgroup
-> subsystem instead of the gpu. I.E [PATCH v7] cgroup: Add a GPU cgroup
->
-> I don't want to nitpick but IMO that helps new people to join to the hist=
-ory of
-> the patchset.
->
-> > This patch adds a proposal for a new GPU cgroup controller for
-> > accounting/limiting GPU and GPU-related memory allocations.
->
-> As far as I can see the only thing that is adding here is the accounting,=
- so I'd
-> remove any reference to limiting and just explain what the patch really
-> introduces, not the future, otherwise is confusing an you expect more tha=
-n the
-> patch really does.
->
-> It is important maintain the commit message sync with what the patch real=
-ly
-> does.
->
-Acknowledged, thank you.
-
-> > The proposed controller is based on the DRM cgroup controller[1] and
-> > follows the design of the RDMA cgroup controller.
-> >
-> > The new cgroup controller would:
-> > * Allow setting per-device limits on the total size of buffers
-> >   allocated by device within a cgroup.
-> > * Expose a per-device/allocator breakdown of the buffers charged to a
-> >   cgroup.
-> >
-> > The prototype in the following patches is only for memory accounting
-> > using the GPU cgroup controller and does not implement limit setting.
-> >
-> > [1]: https://lore.kernel.org/amd-gfx/20210126214626.16260-1-brian.welty=
-@intel.com/
-> >
->
-> I think this is material for the cover more than the commit message. When=
- I read
-> this I was expecting all this in this patch.
->
-> > Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > ---
-> > v7 changes
-> > Remove comment about duplicate name rejection which is not relevant to
-> > cgroups users per Michal Koutn=C3=BD.
-> >
-> > v6 changes
-> > Move documentation into cgroup-v2.rst per Tejun Heo.
-> >
-> > v5 changes
-> > Drop the global GPU cgroup "total" (sum of all device totals) portion
-> > of the design since there is no currently known use for this per
-> > Tejun Heo.
-> >
-> > Update for renamed functions/variables.
-> >
-> > v3 changes
-> > Remove Upstreaming Plan from gpu-cgroup.rst per John Stultz.
-> >
-> > Use more common dual author commit message format per John Stultz.
-> > ---
-> >  Documentation/admin-guide/cgroup-v2.rst | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/ad=
-min-guide/cgroup-v2.rst
-> > index 69d7a6983f78..2e1d26e327c7 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -2352,6 +2352,29 @@ first, and stays charged to that cgroup until th=
-at resource is freed. Migrating
-> >  a process to a different cgroup does not move the charge to the destin=
-ation
-> >  cgroup where the process has moved.
-> >
-> > +
-> > +GPU
-> > +---
-> > +
-> > +The GPU controller accounts for device and system memory allocated by =
-the GPU
-> > +and related subsystems for graphics use. Resource limits are not curre=
-ntly
-> > +supported.
-> > +
-> > +GPU Interface Files
-> > +~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +  gpu.memory.current
-> > +     A read-only file containing memory allocations in flat-keyed form=
-at. The key
-> > +     is a string representing the device name. The value is the size o=
-f the memory
-> > +     charged to the device in bytes. The device names are globally uni=
-que.::
-> > +
-> > +       $ cat /sys/kernel/fs/cgroup1/gpu.memory.current
->
-> I think this is outdated, you are using cgroup v2, right?
->
-Oh "cgroup1" was meant to refer to the name of a cgroup, not to cgroup
-v1. A different name would be better here.
-
-> > +       dev1 4194304
-> > +       dev2 104857600
-> > +
->
-> When I applied the full series I was expecting see the memory allocated b=
-y the
-> gpu devices or users of the gpu in this file but, after some experiments,=
- what I
-> saw is the memory allocated via any process that uses the dma-buf heap AP=
-I (not
-> necessary gpu users). For example, if you create a small program that all=
-ocates
-> some memory via the dma-buf heap API and then you cat the gpu.memory.curr=
-ent
-> file, you see that the memory accounted is not related to the gpu.
->
-> This is really confusing, looks to me that the patches evolved to account=
- memory
-> that is not really related to the GPU but allocated vi the dma-buf heap A=
-PI. IMO
-> the name of the file should be according to what really does to avoid
-> confusions.
->
-> So, is this patchset meant to be GPU specific? If the answer is yes that'=
-s good
-> but that's not what I experienced. I'm missing something?
->
-There are two reasons this exists as a GPU controller. The first is
-that most graphics buffers in Android come from these heaps, and this
-is primarily what we are interested in accounting. However the idea is
-to account other graphics memory types more commonly used on desktop
-under different resource names with this controller. The second reason
-predates my involvement, but my understanding is that Hridya tried to
-upstream heap tracking via tracepoints but was asked to try to use GPU
-cgroups instead, which led to her initial version of this series. So
-this is a starting point. Any commentary on why this controller would
-our would not work for any use cases you have in mind (provided the
-appropriate charging/uncharging code is plugged in) would be
-appreciated!
-
-By the way, discussion around earlier proposals on this topic
-suggested the "G" should be for "general" instead of "graphics", I
-think in recognition of the breadth of resources that would eventually
-be tracked by it.
-https://lore.kernel.org/amd-gfx/YBp4ap+1l2KWbqEJ@phenom.ffwll.local/
-
-
-
-> If the answer is that evolved to track dma-buf heap allocations I think a=
-ll the
-> patches need some rework to adapt the wording as right now, the gpu wordi=
-ng
-> seems confusing to me.
->
-> > +     The device name string is set by a device driver when it register=
-s with the
-> > +     GPU cgroup controller to participate in resource accounting.
-> > +
-> >  Others
-> >  ------
-> >
-> >
-> Thanks,
->  Enric
->
+This sounds good to me. Thanks. Let's try to do it in the next iteration.
