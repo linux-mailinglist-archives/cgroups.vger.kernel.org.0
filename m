@@ -2,87 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6995313DB
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 18:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC04F5314AC
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 18:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbiEWN3i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 09:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
+        id S236583AbiEWNsj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 09:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236314AbiEWN3Y (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 09:29:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139E81FCFA;
-        Mon, 23 May 2022 06:29:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A09AC21ACF;
-        Mon, 23 May 2022 13:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653312559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gtxU29oO1IFvVA3hN0PuI5lGfiBVozRsUJAeElrZ+0M=;
-        b=IXT+cH2wydH7nqcS1UuXTHk70XKlgBcSFLBInZA3NzwcOi4YTvYLyHoGDjpnf/0xPS002U
-        7cEHjkPzTdRzhmhZJWszJj4Fmk8JZszqWKwLAE63ifwZ8einhrZsvmylYrUY/hY4mtk3oP
-        EvlUPDNRE0cf0oPb0O2GzeRQU+RCI9M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6867A139F5;
-        Mon, 23 May 2022 13:29:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cuh1GC+Mi2I2WwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 23 May 2022 13:29:19 +0000
-Date:   Mon, 23 May 2022 15:29:17 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S236644AbiEWNse (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 09:48:34 -0400
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5303B5640E;
+        Mon, 23 May 2022 06:48:27 -0700 (PDT)
+Received: by mail-qk1-f181.google.com with SMTP id b200so3816347qkc.7;
+        Mon, 23 May 2022 06:48:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZfWVPz+O1VSySrCT+nJSG/7hKIl6GIpKGGB50irRGQA=;
+        b=Bmy+GrmaprGd+QUoHPtV6p2akpIBOwmGaSVblfNXPYa1i23LW/I/aFXK9blqxsncEv
+         2kZPkZXHc07NwIWUxuLNRqDsPuFSOAQzCYMhPlFJdT/p0quwwPg2Dk33t2MXw+lCCiz/
+         qP5wKeDj3WQrp4VLJtTpRK3HZT3eo6rrYu5lh/xIfU9c+VchrHMcntOcjaKg0nrh83s3
+         WucZLSJ1VF062NnVguCk79DujnqqB3jrv7epKI7SM/XJt9lIjqKuvjMC3SH0oP6eDhbE
+         cO8Xg47+32sgWpx2heKZzjhHBRoeE51UEnfTQY3z4hikWwWNYoR9tG9vsui16qCr+gHR
+         2ivQ==
+X-Gm-Message-State: AOAM531xCWr2V9tm0YzjQ4YBOpxpDUy7fIA22IyswXXtaLK76FHxXx0t
+        aDTA3ehVfxCan7nvOcpWGEs=
+X-Google-Smtp-Source: ABdhPJzRuT8KiH9S+tSHH3yTDcVglcx6KatfL3zJcjRfefdWiIC4BjibdZdsn/zp4XMQgHXguq28xw==
+X-Received: by 2002:a37:62cd:0:b0:6a3:4cbe:e74e with SMTP id w196-20020a3762cd000000b006a34cbee74emr9058442qkb.550.1653313706187;
+        Mon, 23 May 2022 06:48:26 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-020.fbsv.net. [2a03:2880:20ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t6-20020a05622a01c600b002f93aeaf770sm904648qtw.92.2022.05.23.06.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 May 2022 06:48:25 -0700 (PDT)
+Date:   Mon, 23 May 2022 06:48:23 -0700
+From:   David Vernet <void@manifault.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     dan.carpenter@oracle.com, Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Richard Palethorpe <rpalethorpe@suse.de>
-Subject: Re: [PATCH v2 1/5] selftests: memcg: Fix compilation
-Message-ID: <20220523132917.GA4988@blackbody.suse.cz>
-References: <20220518161859.21565-1-mkoutny@suse.com>
- <20220518161859.21565-2-mkoutny@suse.com>
- <5242b7ab-d6b6-55d4-c211-ec27293be795@collabora.com>
+        Muchun Song <songmuchun@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Fix an error handling path in
+ alloc_pagecache_max_30M()
+Message-ID: <20220523134823.lcbruwv5eodueoag@dev0025.ash9.facebook.com>
+References: <628312312eb40e0e39463a2c06415fde5295c716.1653229120.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5242b7ab-d6b6-55d4-c211-ec27293be795@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <628312312eb40e0e39463a2c06415fde5295c716.1653229120.git.christophe.jaillet@wanadoo.fr>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 21, 2022 at 07:11:01PM +0500, Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
-> On 5/18/22 9:18 PM, Michal Koutný wrote:
-> > This fixes mis-applied changes from commit 72b1e03aa725 ("cgroup:
-> > account for memory_localevents in test_memcg_oom_group_leaf_events()").
-> Shouldn't the Fixes tag be added here and in 2/5 patch?
+On Sun, May 22, 2022 at 04:18:51PM +0200, Christophe JAILLET wrote:
+> If the first goto is taken, 'fd' is not opened yet (and is un-initialized).
+> So a direct return is safer.
+> 
+> Fixes: c1a31a2f7a9c ("cgroup: fix racy check in alloc_pagecache_max_30M() helper function")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  tools/testing/selftests/cgroup/test_memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+> index c3d0d5f7b19c..8833359556f3 100644
+> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
+> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+> @@ -448,7 +448,7 @@ static int alloc_pagecache_max_30M(const char *cgroup, void *arg)
+>  	high = cg_read_long(cgroup, "memory.high");
+>  	max = cg_read_long(cgroup, "memory.max");
+>  	if (high != MB(30) && max != MB(30))
+> -		goto cleanup;
+> +		return -1;
+>  
+>  	fd = get_temp_fd();
+>  	if (fd < 0)
+> -- 
+> 2.34.1
+> 
 
-Ad the patch 1/5 -- yes, sounds appropriate.
-
-Ad the patch 2/5 -- that's an effective revert, I don't see reverts
-being marked with Fixes.
-
-I see the patch 5/5 didn't make it to MLs (their public archives, except
-for LKML). So I'll resend the series with the modified commit message
-(if nothing else pops up).
-
-Michal
+Acked-by: David Vernet <void@manifault.com>
