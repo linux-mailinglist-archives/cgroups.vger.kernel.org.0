@@ -2,237 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE050530B40
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 11:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8A3530C35
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 11:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbiEWINH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 04:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        id S232306AbiEWI7Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 04:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbiEWINE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 04:13:04 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B9C63CB;
-        Mon, 23 May 2022 01:13:01 -0700 (PDT)
-Received: from kwepemi100004.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L697G374MzDqNs;
-        Mon, 23 May 2022 16:12:58 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100004.china.huawei.com (7.221.188.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 23 May 2022 16:12:59 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 23 May
- 2022 16:12:59 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <mkoutny@suse.com>, <axboe@kernel.dk>,
-        <ming.lei@redhat.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next v4 4/4] blk-throttle: fix io hung due to config updates
-Date:   Mon, 23 May 2022 16:26:33 +0800
-Message-ID: <20220523082633.2324980-5-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220523082633.2324980-1-yukuai3@huawei.com>
-References: <20220523082633.2324980-1-yukuai3@huawei.com>
+        with ESMTP id S232329AbiEWI7G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 04:59:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D231C3EAB5;
+        Mon, 23 May 2022 01:59:05 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7DC3621998;
+        Mon, 23 May 2022 08:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1653296344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h1QuB3M+BmdTEHvDbJ/48/qLXP8QUk8L4+wxn4b3JqE=;
+        b=rZ+SQ9qfiHZw+b4x1x93KOH97ACbM8txlwl7+4DjUI1B9uu2F8p5huYe0KZJV6PhmLenGI
+        /9pILZIIIJWcMF+BCk6vdTMDMbhQXj+VC8y9+To+2Rs2io0FF/X5sHXKShFqjUWZFpvWD2
+        2Qan9NrxdGvwUwV47jUecy4SyZZwch4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1653296344;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h1QuB3M+BmdTEHvDbJ/48/qLXP8QUk8L4+wxn4b3JqE=;
+        b=UTh5pzrrDqKQxilv/HUuRQHZel4jue/bNpbW5iFLK+uFLL6KEgaRovHb4Cq7L/5LXVPIgN
+        uIHOwEt7pP/JwFAw==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 64E892C141;
+        Mon, 23 May 2022 08:59:04 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E0083A0632; Mon, 23 May 2022 10:59:02 +0200 (CEST)
+Date:   Mon, 23 May 2022 10:59:02 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, paolo.valente@linaro.org,
+        jack@suse.cz, tj@kernel.org, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+Message-ID: <20220523085902.wmxoebyq3crerecr@quack3.lan>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+ <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+ <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
+ <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+ <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If new configuration is submitted while a bio is throttled, then new
-waiting time is recalculated regardless that the bio might aready wait
-for some time:
+On Mon 23-05-22 09:10:38, yukuai (C) wrote:
+> 在 2022/05/21 20:21, Jens Axboe 写道:
+> > On 5/21/22 1:22 AM, yukuai (C) wrote:
+> > > 在 2022/05/14 17:29, yukuai (C) 写道:
+> > > > 在 2022/05/05 9:00, yukuai (C) 写道:
+> > > > > Hi, Paolo
+> > > > > 
+> > > > > Can you take a look at this patchset? It has been quite a long time
+> > > > > since we spotted this problem...
+> > > > > 
+> > > > 
+> > > > friendly ping ...
+> > > friendly ping ...
+> > 
+> > I can't speak for Paolo, but I've mentioned before that the majority
+> > of your messages end up in my spam. That's still the case, in fact
+> > I just marked maybe 10 of them as not spam.
+> > 
+> > You really need to get this issued sorted out, or you will continue
+> > to have patches ignore because folks may simply not see them.
+> > 
+> Hi,
+> 
+> Thanks for your notice.
+> 
+> Is it just me or do you see someone else's messages from *huawei.com
+> end up in spam? I tried to seek help from our IT support, however, they
+> didn't find anything unusual...
 
-tg_conf_updated
- throtl_start_new_slice
-  tg_update_disptime
-  throtl_schedule_next_dispatch
+So actually I have noticed that a lot of (valid) email from huawei.com (not
+just you) ends up in the spam mailbox. For me direct messages usually pass
+(likely matching SPF records for originating mail server save the email
+from going to spam) but messages going through mailing lists are flagged as
+spam because the emails are missing valid DKIM signature but huawei.com
+DMARC config says there should be DKIM signature (even direct messages are
+missing DKIM so this does not seem as a mailing list configuration issue).
+So this seems as some misconfiguration of the mails on huawei.com side
+(likely missing DKIM signing of outgoing email).
 
-Then io hung can be triggered by always submmiting new configuration
-before the throttled bio is dispatched.
-
-Fix the problem by respecting the time that throttled bio aready waited.
-In order to do that, add new fields to record how many bytes/io already
-waited, and use it to calculate wait time for throttled bio under new
-configuration.
-
-Some simple test:
-1)
-cd /sys/fs/cgroup/blkio/
-echo $$ > cgroup.procs
-echo "8:0 2048" > blkio.throttle.write_bps_device
-{
-        sleep 3
-        echo "8:0 1024" > blkio.throttle.write_bps_device
-} &
-sleep 1
-dd if=/dev/zero of=/dev/sda bs=8k count=1 oflag=direct
-
-2)
-cd /sys/fs/cgroup/blkio/
-echo $$ > cgroup.procs
-echo "8:0 1024" > blkio.throttle.write_bps_device
-{
-        sleep 5
-        echo "8:0 2048" > blkio.throttle.write_bps_device
-} &
-sleep 1
-dd if=/dev/zero of=/dev/sda bs=8k count=1 oflag=direct
-
-test results: io finish time
-	before this patch	with this patch
-1)	10s			6s
-2)	8s			6s
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 49 ++++++++++++++++++++++++++++++++++++++------
- block/blk-throttle.h |  4 ++++
- 2 files changed, 47 insertions(+), 6 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index ded0d30ef49e..612bd221783c 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -656,12 +656,17 @@ static inline void throtl_start_new_slice_with_credit(struct throtl_grp *tg,
- 		   tg->slice_end[rw], jiffies);
- }
- 
--static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw)
-+static inline void throtl_start_new_slice(struct throtl_grp *tg, bool rw,
-+					  bool clear_skipped)
- {
- 	tg->bytes_disp[rw] = 0;
- 	tg->io_disp[rw] = 0;
- 	tg->slice_start[rw] = jiffies;
- 	tg->slice_end[rw] = jiffies + tg->td->throtl_slice;
-+	if (clear_skipped) {
-+		tg->bytes_skipped[rw] = 0;
-+		tg->io_skipped[rw] = 0;
-+	}
- 
- 	throtl_log(&tg->service_queue,
- 		   "[%c] new slice start=%lu end=%lu jiffies=%lu",
-@@ -784,6 +789,34 @@ static u64 calculate_bytes_allowed(u64 bps_limit,
- 	return mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed_rnd, (u64)HZ);
- }
- 
-+static void __tg_update_skipped(struct throtl_grp *tg, bool rw)
-+{
-+	unsigned long jiffy_elapsed = jiffies - tg->slice_start[rw];
-+	u64 bps_limit = tg_bps_limit(tg, rw);
-+	u32 iops_limit = tg_iops_limit(tg, rw);
-+
-+	if (bps_limit != U64_MAX)
-+		tg->bytes_skipped[rw] +=
-+			calculate_bytes_allowed(bps_limit, jiffy_elapsed) -
-+			tg->bytes_disp[rw];
-+	if (iops_limit != UINT_MAX)
-+		tg->io_skipped[rw] +=
-+			calculate_io_allowed(iops_limit, jiffy_elapsed) -
-+			tg->io_disp[rw];
-+}
-+
-+static void tg_update_skipped(struct throtl_grp *tg)
-+{
-+	if (tg->service_queue.nr_queued[READ])
-+		__tg_update_skipped(tg, READ);
-+	if (tg->service_queue.nr_queued[WRITE])
-+		__tg_update_skipped(tg, WRITE);
-+
-+	throtl_log(&tg->service_queue, "%s: %llu %llu %u %u\n", __func__,
-+		   tg->bytes_skipped[READ], tg->bytes_skipped[WRITE],
-+		   tg->io_skipped[READ], tg->io_skipped[WRITE]);
-+}
-+
- static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
- 				  u32 iops_limit, unsigned long *wait)
- {
-@@ -801,7 +834,8 @@ static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
- 
- 	/* Round up to the next throttle slice, wait time must be nonzero */
- 	jiffy_elapsed_rnd = roundup(jiffy_elapsed + 1, tg->td->throtl_slice);
--	io_allowed = calculate_io_allowed(iops_limit, jiffy_elapsed_rnd);
-+	io_allowed = calculate_io_allowed(iops_limit, jiffy_elapsed_rnd) +
-+		     tg->io_skipped[rw];
- 	if (tg->io_disp[rw] + 1 <= io_allowed) {
- 		if (wait)
- 			*wait = 0;
-@@ -838,7 +872,8 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
- 		jiffy_elapsed_rnd = tg->td->throtl_slice;
- 
- 	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
--	bytes_allowed = calculate_bytes_allowed(bps_limit, jiffy_elapsed_rnd);
-+	bytes_allowed = calculate_bytes_allowed(bps_limit, jiffy_elapsed_rnd) +
-+			tg->bytes_skipped[rw];
- 	if (tg->bytes_disp[rw] + bio_size <= bytes_allowed) {
- 		if (wait)
- 			*wait = 0;
-@@ -899,7 +934,7 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
- 	 * slice and it should be extended instead.
- 	 */
- 	if (throtl_slice_used(tg, rw) && !(tg->service_queue.nr_queued[rw]))
--		throtl_start_new_slice(tg, rw);
-+		throtl_start_new_slice(tg, rw, true);
- 	else {
- 		if (time_before(tg->slice_end[rw],
- 		    jiffies + tg->td->throtl_slice))
-@@ -1328,8 +1363,8 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 	 * that a group's limit are dropped suddenly and we don't want to
- 	 * account recently dispatched IO with new low rate.
- 	 */
--	throtl_start_new_slice(tg, READ);
--	throtl_start_new_slice(tg, WRITE);
-+	throtl_start_new_slice(tg, READ, false);
-+	throtl_start_new_slice(tg, WRITE, false);
- 
- 	if (tg->flags & THROTL_TG_PENDING) {
- 		tg_update_disptime(tg);
-@@ -1357,6 +1392,7 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
- 		v = U64_MAX;
- 
- 	tg = blkg_to_tg(ctx.blkg);
-+	tg_update_skipped(tg);
- 
- 	if (is_u64)
- 		*(u64 *)((void *)tg + of_cft(of)->private) = v;
-@@ -1543,6 +1579,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 		return ret;
- 
- 	tg = blkg_to_tg(ctx.blkg);
-+	tg_update_skipped(tg);
- 
- 	v[0] = tg->bps_conf[READ][index];
- 	v[1] = tg->bps_conf[WRITE][index];
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index c1b602996127..845909c72f86 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -115,6 +115,10 @@ struct throtl_grp {
- 	uint64_t bytes_disp[2];
- 	/* Number of bio's dispatched in current slice */
- 	unsigned int io_disp[2];
-+	/* Number of bytes will be skipped in current slice */
-+	uint64_t bytes_skipped[2];
-+	/* Number of bio's will be skipped in current slice */
-+	unsigned int io_skipped[2];
- 
- 	unsigned long last_low_overflow_time[2];
- 
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
