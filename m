@@ -2,25 +2,25 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998A7530BAE
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 11:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B02530BA6
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 11:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbiEWINB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 04:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        id S231465AbiEWINE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 04:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbiEWINB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 04:13:01 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422A9FCA;
-        Mon, 23 May 2022 01:12:59 -0700 (PDT)
-Received: from kwepemi100007.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L693q1kVFzQkDD;
-        Mon, 23 May 2022 16:09:59 +0800 (CST)
+        with ESMTP id S231460AbiEWINC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 04:13:02 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D5E635C;
+        Mon, 23 May 2022 01:13:00 -0700 (PDT)
+Received: from kwepemi100006.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L695Z6SgXz1JC8V;
+        Mon, 23 May 2022 16:11:30 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100007.china.huawei.com (7.221.188.115) with Microsoft SMTP Server
+ kwepemi100006.china.huawei.com (7.221.188.165) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 23 May 2022 16:12:57 +0800
+ 15.1.2375.24; Mon, 23 May 2022 16:12:58 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
  (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 23 May
@@ -31,9 +31,9 @@ To:     <tj@kernel.org>, <mkoutny@suse.com>, <axboe@kernel.dk>,
 CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
         <yi.zhang@huawei.com>
-Subject: [PATCH -next v4 1/4] blk-throttle: fix that io throttle can only work for single bio
-Date:   Mon, 23 May 2022 16:26:30 +0800
-Message-ID: <20220523082633.2324980-2-yukuai3@huawei.com>
+Subject: [PATCH -next v4 2/4] blk-throttle: prevent overflow while calculating wait time
+Date:   Mon, 23 May 2022 16:26:31 +0800
+Message-ID: <20220523082633.2324980-3-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220523082633.2324980-1-yukuai3@huawei.com>
 References: <20220523082633.2324980-1-yukuai3@huawei.com>
@@ -53,88 +53,40 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-commit 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
-introduce a new problem, for example:
+in tg_with_in_bps_limit(), 'bps_limit * jiffy_elapsed_rnd' might
+overflow, handle the case by calling mul_u64_u64_div_u64() instead.
 
-[root@localhost ~]# echo "8:0 1024" > /sys/fs/cgroup/blkio/blkio.throttle.write_bps_device
-[root@localhost ~]# echo $$ > /sys/fs/cgroup/blkio/cgroup.procs
-[root@localhost ~]# dd if=/dev/zero of=/dev/sda bs=10k count=1 oflag=direct &
-[1] 620
-[root@localhost ~]# dd if=/dev/zero of=/dev/sda bs=10k count=1 oflag=direct &
-[2] 626
-[root@localhost ~]# 1+0 records in
-1+0 records out
-10240 bytes (10 kB, 10 KiB) copied, 10.0038 s, 1.0 kB/s1+0 records in
-1+0 records out
-
-10240 bytes (10 kB, 10 KiB) copied, 9.23076 s, 1.1 kB/s
--> the second bio is finished after 10s instead of 20s.
-
-This is because if some bios are already queued, current bio is queued
-directly and the flag 'BIO_THROTTLED' is set. And later, when former
-bios are dispatched, this bio will be dispatched without waiting at all,
-this is due to tg_with_in_bps_limit() return 0 for this bio.
-
-In order to fix the problem, don't skip flaged bio in
-tg_with_in_bps_limit(), and for the problem that split bio can be
-double accounted, compensate the over-accounting in __blk_throtl_bio().
-
-Fixes: 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
 ---
- block/blk-throttle.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ block/blk-throttle.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 447e1b8722f7..0c37be08ff28 100644
+index 0c37be08ff28..7e0c31e920dd 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -811,7 +811,7 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+@@ -806,7 +806,7 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 				 u64 bps_limit, unsigned long *wait)
+ {
+ 	bool rw = bio_data_dir(bio);
+-	u64 bytes_allowed, extra_bytes, tmp;
++	u64 bytes_allowed, extra_bytes;
+ 	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
  	unsigned int bio_size = throtl_bio_data_size(bio);
  
- 	/* no need to throttle if this bio's bytes have been accounted */
--	if (bps_limit == U64_MAX || bio_flagged(bio, BIO_THROTTLED)) {
-+	if (bps_limit == U64_MAX) {
- 		if (wait)
- 			*wait = 0;
- 		return true;
-@@ -921,11 +921,8 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
- 	unsigned int bio_size = throtl_bio_data_size(bio);
+@@ -824,10 +824,8 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+ 		jiffy_elapsed_rnd = tg->td->throtl_slice;
  
- 	/* Charge the bio to the group */
--	if (!bio_flagged(bio, BIO_THROTTLED)) {
--		tg->bytes_disp[rw] += bio_size;
--		tg->last_bytes_disp[rw] += bio_size;
--	}
+ 	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
 -
-+	tg->bytes_disp[rw] += bio_size;
-+	tg->last_bytes_disp[rw] += bio_size;
- 	tg->io_disp[rw]++;
- 	tg->last_io_disp[rw]++;
+-	tmp = bps_limit * jiffy_elapsed_rnd;
+-	do_div(tmp, HZ);
+-	bytes_allowed = tmp;
++	bytes_allowed = mul_u64_u64_div_u64(bps_limit, (u64)jiffy_elapsed_rnd,
++					    (u64)HZ);
  
-@@ -2121,6 +2118,21 @@ bool __blk_throtl_bio(struct bio *bio)
- 			tg->last_low_overflow_time[rw] = jiffies;
- 		throtl_downgrade_check(tg);
- 		throtl_upgrade_check(tg);
-+
-+		/*
-+		 * re-entered bio has accounted bytes already, so try to
-+		 * compensate previous over-accounting. However, if new
-+		 * slice is started, just forget it.
-+		 */
-+		if (bio_flagged(bio, BIO_THROTTLED)) {
-+			unsigned int bio_size = throtl_bio_data_size(bio);
-+
-+			if (tg->bytes_disp[rw] >= bio_size)
-+				tg->bytes_disp[rw] -= bio_size;
-+			if (tg->last_bytes_disp[rw] >= bio_size)
-+				tg->last_bytes_disp[rw] -= bio_size;
-+		}
-+
- 		/* throtl is FIFO - if bios are already queued, should queue */
- 		if (sq->nr_queued[rw])
- 			break;
+ 	if (tg->bytes_disp[rw] + bio_size <= bytes_allowed) {
+ 		if (wait)
 -- 
 2.31.1
 
