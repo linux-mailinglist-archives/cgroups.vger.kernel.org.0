@@ -2,39 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4B9531050
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 15:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668355310B3
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 15:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbiEWNFD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 09:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
+        id S235829AbiEWNEq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 09:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbiEWNFB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 09:05:01 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F1449931;
-        Mon, 23 May 2022 06:04:59 -0700 (PDT)
-Received: from kwepemi500007.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4L6HZB1l6Pz1JCF7;
-        Mon, 23 May 2022 21:03:14 +0800 (CST)
+        with ESMTP id S235729AbiEWNEq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 09:04:46 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204F92DF;
+        Mon, 23 May 2022 06:04:45 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L6Hbs0zfJzDqMC;
+        Mon, 23 May 2022 21:04:41 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500007.china.huawei.com (7.221.188.207) with Microsoft SMTP Server
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.24; Mon, 23 May 2022 21:04:42 +0800
 Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
  (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 23 May
- 2022 21:04:41 +0800
+ 2022 21:04:42 +0800
 From:   Yu Kuai <yukuai3@huawei.com>
 To:     <jack@suse.cz>, <tj@kernel.org>, <axboe@kernel.dk>,
         <paolo.valente@linaro.org>
 CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
         <yi.zhang@huawei.com>
-Subject: [PATCH -next v6 0/3] support concurrent sync io for bfq on a specail occasion
-Date:   Mon, 23 May 2022 21:18:15 +0800
-Message-ID: <20220523131818.2798712-1-yukuai3@huawei.com>
+Subject: [PATCH -next v6 1/3] block, bfq: record how many queues are busy in bfq_group
+Date:   Mon, 23 May 2022 21:18:16 +0800
+Message-ID: <20220523131818.2798712-2-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220523131818.2798712-1-yukuai3@huawei.com>
+References: <20220523131818.2798712-1-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -51,134 +53,103 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Resend these patches just in case v5 end up in spam (for Paolo).
-Changes in v6:
- - add reviewed-by tag for patch 1
+Prepare to refactor the counting of 'num_groups_with_pending_reqs'.
 
-Changes in v5:
- - rename bfq_add_busy_queues() to bfq_inc_busy_queues() in patch 1
- - fix wrong definition in patch 1
- - fix spelling mistake in patch 2: leaset -> least
- - update comments in patch 3
- - add reviewed-by tag in patch 2,3
+Add a counter 'busy_queues' in bfq_group, and update it in
+bfq_add/del_bfqq_busy().
 
-Changes in v4:
- - split bfq_update_busy_queues() to bfq_add/dec_busy_queues(),
-   suggested by Jan Kara.
- - remove unused 'in_groups_with_pending_reqs',
-
-Changes in v3:
- - remove the cleanup patch that is irrelevant now(I'll post it
-   separately).
- - instead of hacking wr queues and using weights tree insertion/removal,
-   using bfq_add/del_bfqq_busy() to count the number of groups
-   (suggested by Jan Kara).
-
-Changes in v2:
- - Use a different approch to count root group, which is much simple.
-
-Currently, bfq can't handle sync io concurrently as long as they
-are not issued from root group. This is because
-'bfqd->num_groups_with_pending_reqs > 0' is always true in
-bfq_asymmetric_scenario().
-
-The way that bfqg is counted into 'num_groups_with_pending_reqs':
-
-Before this patchset:
- 1) root group will never be counted.
- 2) Count if bfqg or it's child bfqgs have pending requests.
- 3) Don't count if bfqg and it's child bfqgs complete all the requests.
-
-After this patchset:
- 1) root group is counted.
- 2) Count if bfqg have at least one bfqq that is marked busy.
- 3) Don't count if bfqg doesn't have any busy bfqqs.
-
-The main reason to use busy state of bfqq instead of 'pending requests'
-is that bfqq can stay busy after dispatching the last request if idling
-is needed for service guarantees.
-
-With the above changes, concurrent sync io can be supported if only
-one group is activated.
-
-fio test script(startdelay is used to avoid queue merging):
-[global]
-filename=/dev/nvme0n1
-allow_mounted_write=0
-ioengine=psync
-direct=1
-ioscheduler=bfq
-offset_increment=10g
-group_reporting
-rw=randwrite
-bs=4k
-
-[test1]
-numjobs=1
-
-[test2]
-startdelay=1
-numjobs=1
-
-[test3]
-startdelay=2
-numjobs=1
-
-[test4]
-startdelay=3
-numjobs=1
-
-[test5]
-startdelay=4
-numjobs=1
-
-[test6]
-startdelay=5
-numjobs=1
-
-[test7]
-startdelay=6
-numjobs=1
-
-[test8]
-startdelay=7
-numjobs=1
-
-test result:
-running fio on root cgroup
-v5.18-rc1:	   550 Mib/s
-v5.18-rc1-patched: 550 Mib/s
-
-running fio on non-root cgroup
-v5.18-rc1:	   349 Mib/s
-v5.18-rc1-patched: 550 Mib/s
-
-Note that I also test null_blk with "irqmode=2
-completion_nsec=100000000(100ms) hw_queue_depth=1", and tests show
-that service guarantees are still preserved.
-
-Follow-up cleanup:
-https://lore.kernel.org/all/20220521073523.3118246-1-yukuai3@huawei.com/
-
-Previous versions:
-RFC: https://lore.kernel.org/all/20211127101132.486806-1-yukuai3@huawei.com/
-v1: https://lore.kernel.org/all/20220305091205.4188398-1-yukuai3@huawei.com/
-v2: https://lore.kernel.org/all/20220416093753.3054696-1-yukuai3@huawei.com/
-v3: https://lore.kernel.org/all/20220427124722.48465-1-yukuai3@huawei.com/
-v4: https://lore.kernel.org/all/20220428111907.3635820-1-yukuai3@huawei.com/
-v5: https://lore.kernel.org/all/20220428120837.3737765-1-yukuai3@huawei.com/
-
-Yu Kuai (3):
-  block, bfq: record how many queues are busy in bfq_group
-  block, bfq: refactor the counting of 'num_groups_with_pending_reqs'
-  block, bfq: do not idle if only one group is activated
-
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
  block/bfq-cgroup.c  |  1 +
- block/bfq-iosched.c | 48 +++-----------------------------------
- block/bfq-iosched.h | 57 +++++++--------------------------------------
- block/bfq-wf2q.c    | 35 +++++++++++++++++-----------
- 4 files changed, 35 insertions(+), 106 deletions(-)
+ block/bfq-iosched.h |  2 ++
+ block/bfq-wf2q.c    | 20 ++++++++++++++++++++
+ 3 files changed, 23 insertions(+)
 
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 09574af83566..4d516879d9fa 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -557,6 +557,7 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
+ 				   */
+ 	bfqg->bfqd = bfqd;
+ 	bfqg->active_entities = 0;
++	bfqg->busy_queues = 0;
+ 	bfqg->online = true;
+ 	bfqg->rq_pos_tree = RB_ROOT;
+ }
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index 978ef5d6fe6a..3847f4ab77ac 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -906,6 +906,7 @@ struct bfq_group_data {
+  *                   are groups with more than one active @bfq_entity
+  *                   (see the comments to the function
+  *                   bfq_bfqq_may_idle()).
++ * @busy_queues: number of busy bfqqs.
+  * @rq_pos_tree: rbtree sorted by next_request position, used when
+  *               determining if two or more queues have interleaving
+  *               requests (see bfq_find_close_cooperator()).
+@@ -942,6 +943,7 @@ struct bfq_group {
+ 	struct bfq_entity *my_entity;
+ 
+ 	int active_entities;
++	int busy_queues;
+ 
+ 	struct rb_root rq_pos_tree;
+ 
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index f8eb340381cf..d9ff33e0be38 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -218,6 +218,16 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
+ 	return false;
+ }
+ 
++static void bfq_inc_busy_queues(struct bfq_queue *bfqq)
++{
++	bfqq_group(bfqq)->busy_queues++;
++}
++
++static void bfq_dec_busy_queues(struct bfq_queue *bfqq)
++{
++	bfqq_group(bfqq)->busy_queues--;
++}
++
+ #else /* CONFIG_BFQ_GROUP_IOSCHED */
+ 
+ static bool bfq_update_parent_budget(struct bfq_entity *next_in_service)
+@@ -230,6 +240,14 @@ static bool bfq_no_longer_next_in_service(struct bfq_entity *entity)
+ 	return true;
+ }
+ 
++static void bfq_inc_busy_queues(struct bfq_queue *bfqq)
++{
++}
++
++static void bfq_dec_busy_queues(struct bfq_queue *bfqq)
++{
++}
++
+ #endif /* CONFIG_BFQ_GROUP_IOSCHED */
+ 
+ /*
+@@ -1660,6 +1678,7 @@ void bfq_del_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	bfq_clear_bfqq_busy(bfqq);
+ 
+ 	bfqd->busy_queues[bfqq->ioprio_class - 1]--;
++	bfq_inc_busy_queues(bfqq);
+ 
+ 	if (bfqq->wr_coeff > 1)
+ 		bfqd->wr_busy_queues--;
+@@ -1683,6 +1702,7 @@ void bfq_add_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq)
+ 
+ 	bfq_mark_bfqq_busy(bfqq);
+ 	bfqd->busy_queues[bfqq->ioprio_class - 1]++;
++	bfq_dec_busy_queues(bfqq);
+ 
+ 	if (!bfqq->dispatched)
+ 		if (bfqq->wr_coeff == 1)
 -- 
 2.31.1
 
