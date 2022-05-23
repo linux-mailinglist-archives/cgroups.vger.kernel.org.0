@@ -2,76 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DA2530378
-	for <lists+cgroups@lfdr.de>; Sun, 22 May 2022 16:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDAF5306FC
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 03:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346677AbiEVOTE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 22 May 2022 10:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
+        id S239067AbiEWBKq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 22 May 2022 21:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245249AbiEVOTE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 22 May 2022 10:19:04 -0400
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr [80.12.242.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AC739168
-        for <cgroups@vger.kernel.org>; Sun, 22 May 2022 07:18:59 -0700 (PDT)
-Received: from pop-os.home ([86.243.180.246])
-        by smtp.orange.fr with ESMTPA
-        id smQ0ncTUqeg3psmQ1nn8Nq; Sun, 22 May 2022 16:18:57 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 22 May 2022 16:18:57 +0200
-X-ME-IP: 86.243.180.246
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     dan.carpenter@oracle.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH] cgroup: Fix an error handling path in alloc_pagecache_max_30M()
-Date:   Sun, 22 May 2022 16:18:51 +0200
-Message-Id: <628312312eb40e0e39463a2c06415fde5295c716.1653229120.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S242675AbiEWBKo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 22 May 2022 21:10:44 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E0377DA;
+        Sun, 22 May 2022 18:10:42 -0700 (PDT)
+Received: from kwepemi100024.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L5zfD6V5WzDqKh;
+        Mon, 23 May 2022 09:05:40 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100024.china.huawei.com (7.221.188.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 23 May 2022 09:10:40 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 23 May 2022 09:10:39 +0800
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+To:     Jens Axboe <axboe@kernel.dk>, <paolo.valente@linaro.org>
+CC:     <jack@suse.cz>, <tj@kernel.org>, <linux-block@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+ <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+ <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
+ <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+Date:   Mon, 23 May 2022 09:10:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If the first goto is taken, 'fd' is not opened yet (and is un-initialized).
-So a direct return is safer.
+在 2022/05/21 20:21, Jens Axboe 写道:
+> On 5/21/22 1:22 AM, yukuai (C) wrote:
+>> 在 2022/05/14 17:29, yukuai (C) 写道:
+>>> 在 2022/05/05 9:00, yukuai (C) 写道:
+>>>> Hi, Paolo
+>>>>
+>>>> Can you take a look at this patchset? It has been quite a long time
+>>>> since we spotted this problem...
+>>>>
+>>>
+>>> friendly ping ...
+>> friendly ping ...
+> 
+> I can't speak for Paolo, but I've mentioned before that the majority
+> of your messages end up in my spam. That's still the case, in fact
+> I just marked maybe 10 of them as not spam.
+> 
+> You really need to get this issued sorted out, or you will continue
+> to have patches ignore because folks may simply not see them.
+>
+Hi,
 
-Fixes: c1a31a2f7a9c ("cgroup: fix racy check in alloc_pagecache_max_30M() helper function")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for your notice.
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index c3d0d5f7b19c..8833359556f3 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -448,7 +448,7 @@ static int alloc_pagecache_max_30M(const char *cgroup, void *arg)
- 	high = cg_read_long(cgroup, "memory.high");
- 	max = cg_read_long(cgroup, "memory.max");
- 	if (high != MB(30) && max != MB(30))
--		goto cleanup;
-+		return -1;
- 
- 	fd = get_temp_fd();
- 	if (fd < 0)
--- 
-2.34.1
-
+Is it just me or do you see someone else's messages from *huawei.com
+end up in spam? I tried to seek help from our IT support, however, they
+didn't find anything unusual...
