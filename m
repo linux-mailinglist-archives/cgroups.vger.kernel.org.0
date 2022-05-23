@@ -2,197 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AABE9531DB4
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 23:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE4D531ED6
+	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 00:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbiEWV2l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 17:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S231699AbiEWWvP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 18:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbiEWV2R (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 17:28:17 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F113EA204C
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 14:28:15 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id m25so19360899oih.2
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 14:28:15 -0700 (PDT)
+        with ESMTP id S230335AbiEWWvP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 18:51:15 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472A12AFC
+        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 15:51:12 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id k30so23289724wrd.5
+        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 15:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LZD/Zppu+JV4corcLquFb+tJaC7Y9GLTkq/38/brrSc=;
-        b=iZgYT+c5BVBpgsBQojxO1uEkOvetRImr9YQwwlimnqF43B53R3q4SxlOZUXAtOV3Pn
-         BHwv3wW8FmtlD2Wndm0AGXrw5MMb+awWvf/PvsYx+56x/p3CZUfBABYJbiIc+cRO/LHE
-         MyiPApQQsEjLIUT7PUdeE8s8raT4FE+L4vw8AW+L0iXOUN5ot1U6K267KN8QXfyETDAx
-         Zt2q1sluLeChulHZHvJQzEwz0NDNBn4DjkuZtJceiryK3NG9iygpyvbbiKP/ijtbXitp
-         mH29eWYrA26O4uC2pbOl7KNCbYW1umKr+dI1m2y7b73AtYOZeKt9F6j3LAcZqDEG94Nt
-         jGhw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tNZwUkKZtlmZ14jNWylohEgLi2zUCj6Z0VWU+7uDZNM=;
+        b=r+jnJOIBusH635WqI8fbwufkzACI9oCjiSIfKUDvHLseBJPHh9vUSZlWtwSH8Sydl+
+         p0/3xnIcp17otnrYR/qZYEtr6fCmmo/gji7kOUYPP6UyvM1lhwAZhAh+PfEezkRw1I+b
+         0l+aqABzU+E1xxYyggSXp2yt3nt7hQt8aIVYsfT0XMAZIcoUsbXMGNq3dYHqcSyQidme
+         Y+uNXLp/WE5SR/6z9aJrefZIBRRQrknYRS8H+rvGVbIqlCI6X3PKndf5zmU9QieV6U0v
+         r4hmfFl33JKtb0OxMQi2LHy5P1cGQYOlOTDCinO58dnFAPIIEWMTyKmgebufRzp65StN
+         2U6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LZD/Zppu+JV4corcLquFb+tJaC7Y9GLTkq/38/brrSc=;
-        b=V/kDkQHeUnRWlaxsmyE6U1jNynyQ/GfoXCKjRH2A1K2SKNds8X1JRxYZGvHzjMGcjg
-         EAKBiDHbKFS5N2iD9zfdTSSg6+/smH65HtH2lUWJpjqoR9hQoJOcHaAG+oz9r4dxEM0i
-         RVVI4mEgXirJanliqJWKJb6vd/9RFELIs/XvYUJPOVfX7wwlkMXRggIxN/nIPCDFI82g
-         vejiGNA8ZXfsspdzksKG960LxAQhA7wXS3NUdklz9xfOqYnWmR4/ZK+ARePa8L+Sg+qU
-         P8kiWUtmbo1wIc0ljnOLiNohK2gmUHeG3pQ11fDDlVG6eHxWT4g1WRgQDjDBrgdvICrA
-         kwhQ==
-X-Gm-Message-State: AOAM531Tc8Pun9KCuLr4GmYvTkRKx3OKxUWQgXxWuFuufzDxHpbjhYTh
-        SarB7giKhBhGUPIhxXkIUiQhHNFR5ohmbw==
-X-Google-Smtp-Source: ABdhPJxdbYpNotodQL2bHtqTswSrQDWZO8uC9pio8AkGMlFCNEsqfHD9V3mItvnwn4tVwaUPm6+5cQ==
-X-Received: by 2002:a17:90b:4b50:b0:1df:7b60:f0b3 with SMTP id mi16-20020a17090b4b5000b001df7b60f0b3mr956373pjb.237.1653341285148;
-        Mon, 23 May 2022 14:28:05 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id q7-20020a170902edc700b0016168e90f37sm5587413plk.152.2022.05.23.14.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 May 2022 14:28:04 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tNZwUkKZtlmZ14jNWylohEgLi2zUCj6Z0VWU+7uDZNM=;
+        b=d8SmOk90bdMU0mf2g9f0cNc6Ing9PIU4gS1xZEhL8vfnZYG6Eu6TI2EJkTKtuzCvtv
+         Q3cMYibshCWH1WPAqzV5++bI4wwUWK/T4oIRkjVs7uOnASgEyzVOHzxbcqRjj11dIJMK
+         RKxJQxuckvKASVVMLbHAIPG5C5mhnLtCxlufViGDtMt+hNAwP42yp4dBnhEk09rvKlxh
+         aw5z2sEIvFfUlLbuhwpJPd/3sCa4qG6WOPQqfPL/R3iqlxsqlGo4ouLITa31dYDy7VQE
+         Mk1CEMUhoGxTZwdIabDKzv2xctCfP7zyoyc8dwy8vqY92nu4eAJx6Us0vCa8dKWk3PHh
+         Qkqg==
+X-Gm-Message-State: AOAM532dLNDmUw4ndKAIHr2fyRkPw8gqgP0ajkuZLr3e0NGLKdCTdEEj
+        10KwJrlGDZKHTFPgYbcyz/9EbAOnDZTNp++I1O/IqSgFvJI=
+X-Google-Smtp-Source: ABdhPJwNWihoJDJtk6stNWiKlnvaBN9W1TfY/EaTKT4C/wu5BxD5tfoShvs5v+/05rendS8OylZaKLqH68mkRbWu7qY=
+X-Received: by 2002:a05:6000:1548:b0:20f:c4bb:defd with SMTP id
+ 8-20020a056000154800b0020fc4bbdefdmr11656246wry.210.1653346270703; Mon, 23
+ May 2022 15:51:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+ <YoYj4sLJfGke5IGT@dhcp22.suse.cz> <87zgjcg4xs.fsf@vajain21.in.ibm.com> <YodDaFVeU33bu7yQ@dhcp22.suse.cz>
+In-Reply-To: <YodDaFVeU33bu7yQ@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 23 May 2022 15:50:34 -0700
+Message-ID: <CAJD7tkYwv2LDZeV2F5pxuniw7LCNjBapDCm3WuRhzwTH-jN3PA@mail.gmail.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Tejun Heo <tj@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-Subject: [PATCH v2] cgroups: separate destroy_work into two separate wq
-Date:   Mon, 23 May 2022 14:27:24 -0700
-Message-Id: <20220523212724.233314-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220412192459.227740-1-tadeusz.struk@linaro.org>
-References: <20220412192459.227740-1-tadeusz.struk@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jonathan Corbet <corbet@lwn.net>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Syzbot found a corrupted list bug scenario that can be triggered from
-cgroup css_create(). The reproduces writes to cgroup.subtree_control
-file, which invokes cgroup_apply_control_enable(), css_create(), and
-css_populate_dir(), which then randomly fails with a fault injected -ENOMEM.
-In such scenario the css_create() error path rcu enqueues css_free_rwork_fn
-work for an css->refcnt initialized with css_release() destructor,
-and there is a chance that the css_release() function will be invoked
-for a cgroup_subsys_state, for which a destroy_work has already been
-queued via css_create() error path. This causes a list_add corruption
-as can be seen in the syzkaller report [1].
-This can be fixed by separating the css_release and ref_kill paths
-to work with two separate work_structs.
+On Fri, May 20, 2022 at 12:29 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 20-05-22 10:45:43, Vaibhav Jain wrote:
+> >
+> > Thanks for looking into this patch Michal,
+> >
+> > Michal Hocko <mhocko@suse.com> writes:
+> >
+> > > On Thu 19-05-22 04:08:15, Vaibhav Jain wrote:
+> > >> [1] Provides a way for user-space to trigger proactive reclaim by introducing
+> > >> a write-only memcg file 'memory.reclaim'. However reclaim stats like number
+> > >> of pages scanned and reclaimed is still not directly available to the
+> > >> user-space.
+> > >>
+> > >> This patch proposes to extend [1] to make the memcg file 'memory.reclaim'
+> > >> readable which returns the number of pages scanned / reclaimed during the
+> > >> reclaim process from 'struct vmpressure' associated with each memcg. This should
+> > >> let user-space asses how successful proactive reclaim triggered from memcg
+> > >> 'memory.reclaim' was ?
+> > >>
+> > >> With the patch following command flow is expected:
+> > >>
+> > >>  # echo "1M" > memory.reclaim
+> > >>
+> > >>  # cat memory.reclaim
+> > >>    scanned 76
+> > >>    reclaimed 32
+> > >
+> > > Why cannot you use memory.stat? Sure it would require to iterate over
+> > > the reclaimed hierarchy but the information about scanned and reclaimed
+> > > pages as well as other potentially useful stats is there.
+> >
+> > Agree that "memory.stat" is more suitable for scanned/reclaimed stats as
+> > it already is exposing bunch of other stats.
+> >
+> > The discussion on this patch however seems to have split into two parts:
+> >
+> > 1. Is it a good idea to expose nr_scanned/nr_reclaimed to users-space
+> > and if yes how ?
+> >
+> > IMHO, I think it will be better to expose this info via 'memory.stat' as it
+> > can be useful insight into the reclaim efficiency  and vmpressure.
+>
+> We already do that with some more metrics
+> pgrefill 9801926
+> pgscan 27329762
+> pgsteal 22715987
+> pgactivate 250691267
+> pgdeactivate 9521843
+> pglazyfree 0
+> pglazyfreed 0
+>
+> > 2. Will it be useful to provide feedback to userspace when it writes to
+> > 'memory.reclaim' on how much memory has been reclaimed ?
+> >
+> > IMHO, this will be a useful feeback to userspace to better adjust future
+> > proactive reclaim requests via 'memory.reclaim'
+>
+> How precise this information should be? A very simplistic approach would
+> be
+> cp memory.stat stats.before
+> echo $WHATEVER > memory.reclaim
+> cp memory.stat stats.after
+>
+> This will obviously contain also activity outside of the explicitly
+> triggered reclaim (racing background/direct reclaim) but isn't that what
+> actually matters? Are there any cases where the only metric you care
+> about is the triggered reclaim in isolation?
 
-[1] https://syzkaller.appspot.com/bug?id=e26e54d6eac9d9fb50b221ec3e4627b327465dbd
+I think it might be useful to have a dedicated entry in memory.stat
+for proactively reclaimed memory. A case where this would be useful is
+tuning and evaluating userspace proactive reclaimers. For instance, if
+a userspace agent is asking the kernel to reclaim 100M, but it could
+only reclaim 10M, then most probably the proactive reclaimer is not
+using a good methodology to figure out how much memory do we need to
+reclaim.
 
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: <cgroups@vger.kernel.org>
-Cc: <netdev@vger.kernel.org>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
+IMO this is more useful, and a superset of just reading the last
+reclaim request status through memory.reclaim (read stat before and
+after).
 
-Reported-and-tested-by: syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-Fixes: 8f36aaec9c92 ("cgroup: Use rcu_work instead of explicit rcu and work item")
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
-v2: Add a separate work_struct for the css_ref_kill path instead of
-    checking if a work has already been enqueued.
----
- include/linux/cgroup-defs.h |  5 +++--
- kernel/cgroup/cgroup.c      | 14 +++++++-------
- 2 files changed, 10 insertions(+), 9 deletions(-)
+Additionally, things get complicated if the userspace agent is
+multi-threaded. For a cumulative entry in memory.stat, it shouldn't
+matter by a lot as we are looking at the total for all threads
+cumulatively anyway. If we are only reading the memory reclaimed in
+the last request (through memory.reclaim), then we can easily get the
+results of a request that happened on a different thread.
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 1bfcfb1af352..92b0c5e8c472 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -178,8 +178,9 @@ struct cgroup_subsys_state {
- 	 */
- 	atomic_t online_cnt;
- 
--	/* percpu_ref killing and RCU release */
--	struct work_struct destroy_work;
-+	/* percpu_ref killing, css release, and RCU release work structs */
-+	struct work_struct release_work;
-+	struct work_struct killed_ref_work;
- 	struct rcu_work destroy_rwork;
- 
- 	/*
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index adb820e98f24..3e00a793e15d 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5099,7 +5099,7 @@ static struct cftype cgroup_base_files[] = {
-  *    css_free_work_fn().
-  *
-  * It is actually hairier because both step 2 and 4 require process context
-- * and thus involve punting to css->destroy_work adding two additional
-+ * and thus involve punting to css->release_work adding two additional
-  * steps to the already complex sequence.
-  */
- static void css_free_rwork_fn(struct work_struct *work)
-@@ -5154,7 +5154,7 @@ static void css_free_rwork_fn(struct work_struct *work)
- static void css_release_work_fn(struct work_struct *work)
- {
- 	struct cgroup_subsys_state *css =
--		container_of(work, struct cgroup_subsys_state, destroy_work);
-+		container_of(work, struct cgroup_subsys_state, release_work);
- 	struct cgroup_subsys *ss = css->ss;
- 	struct cgroup *cgrp = css->cgroup;
- 
-@@ -5210,8 +5210,8 @@ static void css_release(struct percpu_ref *ref)
- 	struct cgroup_subsys_state *css =
- 		container_of(ref, struct cgroup_subsys_state, refcnt);
- 
--	INIT_WORK(&css->destroy_work, css_release_work_fn);
--	queue_work(cgroup_destroy_wq, &css->destroy_work);
-+	INIT_WORK(&css->release_work, css_release_work_fn);
-+	queue_work(cgroup_destroy_wq, &css->release_work);
- }
- 
- static void init_and_link_css(struct cgroup_subsys_state *css,
-@@ -5546,7 +5546,7 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- static void css_killed_work_fn(struct work_struct *work)
- {
- 	struct cgroup_subsys_state *css =
--		container_of(work, struct cgroup_subsys_state, destroy_work);
-+		container_of(work, struct cgroup_subsys_state, killed_ref_work);
- 
- 	mutex_lock(&cgroup_mutex);
- 
-@@ -5567,8 +5567,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
- 		container_of(ref, struct cgroup_subsys_state, refcnt);
- 
- 	if (atomic_dec_and_test(&css->online_cnt)) {
--		INIT_WORK(&css->destroy_work, css_killed_work_fn);
--		queue_work(cgroup_destroy_wq, &css->destroy_work);
-+		INIT_WORK(&css->killed_ref_work, css_killed_work_fn);
-+		queue_work(cgroup_destroy_wq, &css->killed_ref_work);
- 	}
- }
- 
--- 
-2.36.1
+>
+> --
+> Michal Hocko
+> SUSE Labs
