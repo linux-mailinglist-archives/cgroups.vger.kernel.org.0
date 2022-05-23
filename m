@@ -2,89 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F725312FF
-	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 18:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056A4531418
+	for <lists+cgroups@lfdr.de>; Mon, 23 May 2022 18:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbiEWNzV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 09:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S237775AbiEWPZ1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 11:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236690AbiEWNzT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 09:55:19 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD72456F93
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 06:55:16 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c2so13171766plh.2
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 06:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Df9yWQ/aDxzNckvtabHN6S/25VXwYOsM+nyYbdaI3a8=;
-        b=TzTbXf5jrW5oQ4yIsnoZCjia8f/YM/jmgfc1tLNqZmzCb3k08ZDczecDygA0fXzxW0
-         M81MuFj8NK6DtCT/7OVTIJAv3BhESb+ZGlV+g6JnG+cYwI4CMLm02QiKYbzV39WLLSMS
-         komvx0Xcb0OjEcfD56VP8GFPwyRc8+XD62mjfdTjYLgCGwqfkwDFeTyxa0gvcwRln5V/
-         eppJDWhh1gIYIIsgZb6SvwT1JFJc8Rc2PSnfcYkaYqyCR0LGr7wqnJA8xusq60qOrKuG
-         qGuAxRsk7r+MPmY10Dyd8BT8HZLGxWoTa7CzLg8N/e+uS1IVHCPP3SOQTgQY7OVwOhG9
-         40mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Df9yWQ/aDxzNckvtabHN6S/25VXwYOsM+nyYbdaI3a8=;
-        b=nZ+YcIpQyM+gUw4zVHK5+jrR5RPuW33ZOu4TelnWzMOSFgiWbErKqnHzAdkck8W7CV
-         VeMQ1Riqo+/2CL2FE6a00G3HIY3o207Ln7FfeMFJyhAttX7rvk8x9vQ7EIh4nIBlWq+G
-         j1mG80JJoFJt2LWyJJIdri7tNBEsUx108khgk6aE0vZFNJdnNEuRANvbb/bwK1t5LRD+
-         z4XBB12gccwvU/mGn5JWiYvKPUs8yYzbC7hXdEUYB+xzDlvDLQLqqc8fSeqTJxkaoOK/
-         Ue/bzJ6eGErU2vh1lSCdezHF/asIclIStfumroS9Fe3CahvHhIa9IcJ9kXvYusjZGd3R
-         6B5g==
-X-Gm-Message-State: AOAM531V7eggtiH0Si+9eFuTuZt7EbXAtgnMQxpiDNO9N5Ej9EdWxSSq
-        o32Qr6Ze5t0QSm4gYg3zllJhuA==
-X-Google-Smtp-Source: ABdhPJzTAKPyvsoV7ZaiJUcH3STTBACV6avvux7V/4Wgew6Anu+8+y7upkEqa6ojZ1VZGLBk9Poqrg==
-X-Received: by 2002:a17:902:a413:b0:156:15b:524a with SMTP id p19-20020a170902a41300b00156015b524amr23014244plq.106.1653314116404;
-        Mon, 23 May 2022 06:55:16 -0700 (PDT)
-Received: from localhost ([2408:8207:18da:2310:2c28:f36b:423b:6bc6])
-        by smtp.gmail.com with ESMTPSA id a15-20020a170902eccf00b0016170bb6528sm5211384plh.113.2022.05.23.06.55.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 May 2022 06:55:15 -0700 (PDT)
-Date:   Mon, 23 May 2022 21:55:10 +0800
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     dan.carpenter@oracle.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
-        David Vernet <void@manifault.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Fix an error handling path in
- alloc_pagecache_max_30M()
-Message-ID: <YouSPobNcFH/cuuu@FVFYT0MHHV2J.usts.net>
-References: <628312312eb40e0e39463a2c06415fde5295c716.1653229120.git.christophe.jaillet@wanadoo.fr>
+        with ESMTP id S237797AbiEWPZU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 11:25:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE4A5DD16;
+        Mon, 23 May 2022 08:25:19 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3B24A210E3;
+        Mon, 23 May 2022 15:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1653319518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ny3U7T9TPhDthVWzP+Xlh6KkiteRPaSckBn6MYhTDIU=;
+        b=mKN9NwBTUIN9be1aZZzF4LcEKRx8m2Wykw27cuNyAUv73E3U9F/40UzXtB8W4/QKjV+zgd
+        zBMGoVIdmznYx+bO/lmkrpn3sGP8x2Km7Ob71s7HL1aE70G+sjbwLjsIZwnDPIk6OQXEHX
+        a9s/i7kRTNUk/o1voCK0VEHuTZUf4aQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1653319518;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ny3U7T9TPhDthVWzP+Xlh6KkiteRPaSckBn6MYhTDIU=;
+        b=izmLbHLPWF4IU0EhHRLxiFpAoMulTKzNYz9PT/LAHestmYQguQTawM64+qCRl1XhxW2WQE
+        I3K35XnPK4ngMoAg==
+Received: from quack3.suse.cz (unknown [10.100.224.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 0420A2C141;
+        Mon, 23 May 2022 15:25:17 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 162EEA0632; Mon, 23 May 2022 17:25:16 +0200 (CEST)
+Date:   Mon, 23 May 2022 17:25:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, "yukuai (C)" <yukuai3@huawei.com>,
+        paolo.valente@linaro.org, tj@kernel.org,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+Message-ID: <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+ <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+ <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
+ <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+ <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+ <20220523085902.wmxoebyq3crerecr@quack3.lan>
+ <25f6703e-9e10-75d9-a893-6df1e6b75254@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <628312312eb40e0e39463a2c06415fde5295c716.1653229120.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <25f6703e-9e10-75d9-a893-6df1e6b75254@kernel.dk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, May 22, 2022 at 04:18:51PM +0200, Christophe JAILLET wrote:
-> If the first goto is taken, 'fd' is not opened yet (and is un-initialized).
-> So a direct return is safer.
+On Mon 23-05-22 06:36:58, Jens Axboe wrote:
+> On 5/23/22 2:59 AM, Jan Kara wrote:
+> > On Mon 23-05-22 09:10:38, yukuai (C) wrote:
+> >> ? 2022/05/21 20:21, Jens Axboe ??:
+> >>> On 5/21/22 1:22 AM, yukuai (C) wrote:
+> >>>> ? 2022/05/14 17:29, yukuai (C) ??:
+> >>>>> ? 2022/05/05 9:00, yukuai (C) ??:
+> >>>>>> Hi, Paolo
+> >>>>>>
+> >>>>>> Can you take a look at this patchset? It has been quite a long time
+> >>>>>> since we spotted this problem...
+> >>>>>>
+> >>>>>
+> >>>>> friendly ping ...
+> >>>> friendly ping ...
+> >>>
+> >>> I can't speak for Paolo, but I've mentioned before that the majority
+> >>> of your messages end up in my spam. That's still the case, in fact
+> >>> I just marked maybe 10 of them as not spam.
+> >>>
+> >>> You really need to get this issued sorted out, or you will continue
+> >>> to have patches ignore because folks may simply not see them.
+> >>>
+> >> Hi,
+> >>
+> >> Thanks for your notice.
+> >>
+> >> Is it just me or do you see someone else's messages from *huawei.com
+> >> end up in spam? I tried to seek help from our IT support, however, they
+> >> didn't find anything unusual...
+> > 
+> > So actually I have noticed that a lot of (valid) email from huawei.com (not
+> > just you) ends up in the spam mailbox. For me direct messages usually pass
+> > (likely matching SPF records for originating mail server save the email
+> > from going to spam) but messages going through mailing lists are flagged as
+> > spam because the emails are missing valid DKIM signature but huawei.com
+> > DMARC config says there should be DKIM signature (even direct messages are
+> > missing DKIM so this does not seem as a mailing list configuration issue).
+> > So this seems as some misconfiguration of the mails on huawei.com side
+> > (likely missing DKIM signing of outgoing email).
 > 
-> Fixes: c1a31a2f7a9c ("cgroup: fix racy check in alloc_pagecache_max_30M() helper function")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> SPF/DKIM was indeed a problem earlier for yukaui patches, but I don't
+> see that anymore. Maybe it's still an issue for some emails, from them
+> or Huawei in general?
 
-Acked-by: Muchun Song <songmuchun@bytedance.com>
+Hum, for me all emails from Huawei I've received even today fail the DKIM
+check. After some more digging there is interesting inconsistency in DMARC
+configuration for huawei.com domain. There is DMARC record for huawei.com
+like:
 
-Thanks.
+huawei.com.		600	IN	TXT	"v=DMARC1;p=none;rua=mailto:dmarc@edm.huawei.com"
+
+which means no DKIM is required but _dmarc.huawei.com has:
+
+_dmarc.huawei.com.	600	IN	TXT	"v=DMARC1;p=quarantine;ruf=mailto:dmarc@huawei.com;rua=mailto:dmarc@huawei.com"
+
+which says that DKIM is required. I guess this inconsistency may be the
+reason why there are problems with DKIM validation for senders from
+huawei.com. Yu Kuai, can you perhaps take this to your IT support to fix
+this? Either make sure huawei.com emails get properly signed with DKIM or
+remove the 'quarantine' record from _dmarc.huawei.com. Thanks!
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
