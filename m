@@ -2,138 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B82C533052
-	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 20:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A16533137
+	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 21:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238051AbiEXSRL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 14:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        id S240777AbiEXTDg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 15:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbiEXSRK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 14:17:10 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF8C72212;
-        Tue, 24 May 2022 11:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653416229; x=1684952229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EBnyAxgG8VMP5VnxxAr+i+RhOOaMEQkB+M7uuFYWkuc=;
-  b=bI/9uEXkSQB7nCmz0HB7w68HgI0v5c8Uw4yDv5r+u40H9Dkn/cbbjYBW
-   PkUboddFrO5oRJZ0GQNCE9G6l64gPQYHCEturdBtI2fM7km57LmskExVf
-   W3IhrAAgw6Wchslegj5KqeiRL3FauVEpdQ/wPvv/tNuxB/vNDpqAYMyGB
-   Og3wyLNSztW5qvRNXt0CqIkDWi6nUppW1OAlhR+FZ9PcEwDBM2mrweO21
-   U19BlAc7DTjgJsB9VQwkytm8Gg9/83J74DQ+l9t4CHBbBilB4c1PcGR+e
-   fper/iAKB53C9FWCU/xKA25cksBfeZItW5STEe/VX9aMZdhkuL2SLAppa
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10357"; a="273614551"
-X-IronPort-AV: E=Sophos;i="5.91,248,1647327600"; 
-   d="scan'208";a="273614551"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2022 11:17:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,248,1647327600"; 
-   d="scan'208";a="717281728"
-Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 24 May 2022 11:17:05 -0700
-Received: from kbuild by db63a1be7222 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1ntZ5d-0002KY-4x;
-        Tue, 24 May 2022 18:17:05 +0000
-Date:   Wed, 25 May 2022 02:16:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
-        longman@redhat.com, Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH v4 09/11] mm: memcontrol: use obj_cgroup APIs to charge
- the LRU pages
-Message-ID: <202205250202.1JanYiVZ-lkp@intel.com>
-References: <20220524060551.80037-10-songmuchun@bytedance.com>
+        with ESMTP id S240847AbiEXTDP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 15:03:15 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC209D4DC
+        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 12:01:44 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id s28so26888512wrb.7
+        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 12:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPoBKVvC2etY1rrj+YwE9RcWhQO3Aeb8jFG7VSlxgGE=;
+        b=eShZOTIUQ93TOWjEzr249Q2WlZgXfVBXRXVkiPqqzxHc3weu9dWI5q3Ho56xWalhYm
+         DNCo2rp9rMlgNBrK8z0XY/wW3LtOYML1vS+M+JPqvzdBIyhIp4u0EN07gBXsnOV6nri8
+         362c3np7lTLklsZKcOFMwfRRupNLAPynTYIAwR6xjCdZj/A/gIhF1Qfk1QwtUz1zpdDg
+         OwP1XDrZlsnRRXavqft/ReWGqQnEA11Wn1yavd6amKib47Nc170P/orJbWp9qtErNk/7
+         CisGNh6vWRjQoZRymrDq8S4Qa8rADzUXLl566tiu679wuf5A6NCGy//TjeVsXiZq3cdx
+         FakQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPoBKVvC2etY1rrj+YwE9RcWhQO3Aeb8jFG7VSlxgGE=;
+        b=o+B4uBq9JbaOuDPYVq74YS4BvsAtIG0TTKfOUIYCj81vBfZczCvYYo0HPKPjIAaSuq
+         2lkD5n2U1MUW3UUvoP0/KNuVuXBeQiouv6PV1FPWdFTPg1c4KS7PQSJtA/vzuHgnXPof
+         5hhENUs7gJ+0zpgcHXdD29zvFs1d4q5jaS8zUWsf+20FjF+Ls3VCz11S+UGuWNWpGG8Y
+         +n7NJQ+91pgQZC54mJsIEWQmdrPhtbS38fd4dxaZrtOj3kTekFUWXd8FvNO3oZrpaGxX
+         A73FHTIcFZi5ZQLRWqXijbHn8y7A2b1CGdNoR7t1UD+6qv841HHo7/jMj7xJL3oqq/rr
+         nk5g==
+X-Gm-Message-State: AOAM531LdptVcPXoY88C8tqr3EDo2pkTfgxB/lkD0iYpTsF8gkD2Nh8A
+        SNAJX3sCdAb9RnXnUho65/k//QAyuqIO4stAhimpcg==
+X-Google-Smtp-Source: ABdhPJzPKmJrseAx4/O0R9Tr5Y5Yi3+iPsfVW2jq7/OFy7Iu3Ypo1SokZ9tOrFY3enB09mHuuuvffQ2Sa5Fxer4lfaM=
+X-Received: by 2002:a05:6000:1548:b0:20f:c4bb:defd with SMTP id
+ 8-20020a056000154800b0020fc4bbdefdmr15202675wry.210.1653418898448; Tue, 24
+ May 2022 12:01:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220524060551.80037-10-songmuchun@bytedance.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
+ <YoYj4sLJfGke5IGT@dhcp22.suse.cz> <87zgjcg4xs.fsf@vajain21.in.ibm.com>
+ <YodDaFVeU33bu7yQ@dhcp22.suse.cz> <CAJD7tkYwv2LDZeV2F5pxuniw7LCNjBapDCm3WuRhzwTH-jN3PA@mail.gmail.com>
+ <YozFZI2euSjWPgDb@cmpxchg.org>
+In-Reply-To: <YozFZI2euSjWPgDb@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 24 May 2022 12:01:01 -0700
+Message-ID: <CAJD7tkZxvmnrrjc4yAe5mC+SL-MZqMkn21yjetiLYyq0B=AhtA@mail.gmail.com>
+Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Muchun,
+On Tue, May 24, 2022 at 4:45 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Mon, May 23, 2022 at 03:50:34PM -0700, Yosry Ahmed wrote:
+> > I think it might be useful to have a dedicated entry in memory.stat
+> > for proactively reclaimed memory. A case where this would be useful is
+> > tuning and evaluating userspace proactive reclaimers. For instance, if
+> > a userspace agent is asking the kernel to reclaim 100M, but it could
+> > only reclaim 10M, then most probably the proactive reclaimer is not
+> > using a good methodology to figure out how much memory do we need to
+> > reclaim.
+> >
+> > IMO this is more useful, and a superset of just reading the last
+> > reclaim request status through memory.reclaim (read stat before and
+> > after).
+>
+> +1
 
-Thank you for the patch! Yet something to improve:
+It might also be useful to have a breakdown of this by memory type:
+file, anon, or shrinkers.
 
-[auto build test ERROR on 4b0986a3613c92f4ec1bdc7f60ec66fea135991f]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Muchun-Song/Use-obj_cgroup-APIs-to-charge-the-LRU-pages/20220524-143056
-base:   4b0986a3613c92f4ec1bdc7f60ec66fea135991f
-config: arm64-buildonly-randconfig-r005-20220524 (https://download.01.org/0day-ci/archive/20220525/202205250202.1JanYiVZ-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 10c9ecce9f6096e18222a331c5e7d085bd813f75)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/bec0ae12106e0cf12dd4e0e21eb0754b99be0ba2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Muchun-Song/Use-obj_cgroup-APIs-to-charge-the-LRU-pages/20220524-143056
-        git checkout bec0ae12106e0cf12dd4e0e21eb0754b99be0ba2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All error/warnings (new ones prefixed by >>):
-
->> mm/memcontrol.c:6826:10: error: call to undeclared function '__get_obj_cgroup_from_memcg'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-           objcg = __get_obj_cgroup_from_memcg(memcg);
-                   ^
->> mm/memcontrol.c:6826:8: warning: incompatible integer to pointer conversion assigning to 'struct obj_cgroup *' from 'int' [-Wint-conversion]
-           objcg = __get_obj_cgroup_from_memcg(memcg);
-                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning and 1 error generated.
-
-
-vim +/__get_obj_cgroup_from_memcg +6826 mm/memcontrol.c
-
-  6818	
-  6819	static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
-  6820				gfp_t gfp)
-  6821	{
-  6822		struct obj_cgroup *objcg;
-  6823		long nr_pages = folio_nr_pages(folio);
-  6824		int ret = 0;
-  6825	
-> 6826		objcg = __get_obj_cgroup_from_memcg(memcg);
-  6827		/* Do not account at the root objcg level. */
-  6828		if (!obj_cgroup_is_root(objcg))
-  6829			ret = try_charge(memcg, gfp, nr_pages);
-  6830		if (ret)
-  6831			goto out;
-  6832	
-  6833		obj_cgroup_get(objcg);
-  6834		commit_charge(folio, objcg);
-  6835	
-  6836		local_irq_disable();
-  6837		mem_cgroup_charge_statistics(memcg, nr_pages);
-  6838		memcg_check_events(memcg, folio_nid(folio));
-  6839		local_irq_enable();
-  6840	out:
-  6841		obj_cgroup_put(objcg);
-  6842		return ret;
-  6843	}
-  6844	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+It would also fit in nicely with a potential type=file/anon/shrinker
+argument to memory.reclaim. Thoughts on this?
