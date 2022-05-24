@@ -2,96 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E98F53299F
-	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 13:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8185329B0
+	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 13:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233273AbiEXLpp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 07:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S233587AbiEXLrz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 07:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbiEXLpo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 07:45:44 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6190FE2B
-        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 04:45:43 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id p123so4660530qke.5
-        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 04:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CR09yeXsFtoUOg9OMladANfYR85/7BwnLnQK+uR1N0Y=;
-        b=fvqp9+cdKj6LUnqaiDF1ifg3kW67yhA7mfjWX6ZFH2sG5F8ll4k55tNdNMuoB1M4to
-         Z1AV36+WHxVDjTPLY6bzHrbo5yJXPiJYOceulRYWs7upkmVU3JGKtI50rd0LWM/Pmo91
-         Z65P8xlljk+pDOkEJB58JvWaTZZdZ5QPbzT38ZFoJGHl/G+l2Jz7Limq9k4aafPrTBoO
-         VQeW7Q/M2I8PndKg6WFmKst0Pc3oRyJmlwI0SCBvP/h9UWXS8S2mRljTo/QRrsFQH+/T
-         7FlXtbCY5LpzOlJWW9Vrj3DkOYOFXiz3oUu1znM50xY05BDXckQpGZUkOI6gWeA7kRD+
-         P8Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CR09yeXsFtoUOg9OMladANfYR85/7BwnLnQK+uR1N0Y=;
-        b=HRqOmQMC2nc+o4bnYxHmPEqljHz0bzq5rb5e7cqh/kIxrgY1Qmy2H0IPORCkFPxBiH
-         6oYPFX0SKSVZKCZlxFll4HD1x5d4IuBr/CgXtLk2PzGiJtsnKTywxtksd0mygMtfaeNx
-         MTuIK9JdmQBNba6TF1UlfMcEiZB+ANLDwDVd1/LWrEqEuVmgNRh4dKM86RxvO/MGC0p5
-         zc8ALf2hSNrEa+Gu9M1Hx+uV7sJM5gfaZ5JK0Fx7WMI5AXTffPR6hThE5GhuZtdHdYhB
-         EkwwxvRiEDyZnxKxfIHNbkuUy3XxC0Z0OmjBgDMSKgRWz8Or1TTWnPYiwjAxdMjyF4Cn
-         jtcA==
-X-Gm-Message-State: AOAM530FPwSEiLhjbmUVFcGADvZMB/CQaREMwj3cWAo6n1tSIujTSfZv
-        eqiF+6JopQUxWl1ksBm3oQhKBQ==
-X-Google-Smtp-Source: ABdhPJy+mRmOWARy6q76pkXL/ov/YwM3Sjk6bTK9qOTgTtk/PBNAMmayhuzsas+dwXg1UhhNSG9LBQ==
-X-Received: by 2002:a05:620a:bc6:b0:67c:ce55:d2d4 with SMTP id s6-20020a05620a0bc600b0067cce55d2d4mr17064770qki.175.1653392742579;
-        Tue, 24 May 2022 04:45:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:741f])
-        by smtp.gmail.com with ESMTPSA id cg7-20020a05622a408700b002f9050bb622sm5988169qtb.69.2022.05.24.04.45.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 May 2022 04:45:42 -0700 (PDT)
-Date:   Tue, 24 May 2022 07:45:40 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
-Message-ID: <YozFZI2euSjWPgDb@cmpxchg.org>
-References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
- <YoYj4sLJfGke5IGT@dhcp22.suse.cz>
- <87zgjcg4xs.fsf@vajain21.in.ibm.com>
- <YodDaFVeU33bu7yQ@dhcp22.suse.cz>
- <CAJD7tkYwv2LDZeV2F5pxuniw7LCNjBapDCm3WuRhzwTH-jN3PA@mail.gmail.com>
+        with ESMTP id S232178AbiEXLrx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 07:47:53 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A142122BCA;
+        Tue, 24 May 2022 04:47:52 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L6snH1B3kzQk91;
+        Tue, 24 May 2022 19:44:51 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 24 May 2022 19:47:50 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 24 May 2022 19:47:49 +0800
+Subject: Re: [PATCH -next v4 4/4] blk-throttle: fix io hung due to config
+ updates
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+CC:     <tj@kernel.org>, <axboe@kernel.dk>, <ming.lei@redhat.com>,
+        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220523082633.2324980-1-yukuai3@huawei.com>
+ <20220523082633.2324980-5-yukuai3@huawei.com>
+ <20220524095936.GB2434@blackbody.suse.cz>
+From:   Yu Kuai <yukuai3@huawei.com>
+Message-ID: <9b3712a1-1f6d-9c9a-4133-a058fe3b111c@huawei.com>
+Date:   Tue, 24 May 2022 19:47:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkYwv2LDZeV2F5pxuniw7LCNjBapDCm3WuRhzwTH-jN3PA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220524095936.GB2434@blackbody.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 23, 2022 at 03:50:34PM -0700, Yosry Ahmed wrote:
-> I think it might be useful to have a dedicated entry in memory.stat
-> for proactively reclaimed memory. A case where this would be useful is
-> tuning and evaluating userspace proactive reclaimers. For instance, if
-> a userspace agent is asking the kernel to reclaim 100M, but it could
-> only reclaim 10M, then most probably the proactive reclaimer is not
-> using a good methodology to figure out how much memory do we need to
-> reclaim.
+在 2022/05/24 17:59, Michal Koutný 写道:
+> On Mon, May 23, 2022 at 04:26:33PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
+>> Fix the problem by respecting the time that throttled bio aready waited.
+>> In order to do that, add new fields to record how many bytes/io already
+>> waited, and use it to calculate wait time for throttled bio under new
+>> configuration.
 > 
-> IMO this is more useful, and a superset of just reading the last
-> reclaim request status through memory.reclaim (read stat before and
-> after).
+> This new approach is correctly conserving the bandwidth upon changes.
+> (Looking and BPS paths.)
+> 
+>>
+>> Some simple test:
+>> 1)
+>> cd /sys/fs/cgroup/blkio/
+>> echo $$ > cgroup.procs
+>> echo "8:0 2048" > blkio.throttle.write_bps_device
+>> {
+>>          sleep 3
+>>          echo "8:0 1024" > blkio.throttle.write_bps_device
+>> } &
+>> sleep 1
+>> dd if=/dev/zero of=/dev/sda bs=8k count=1 oflag=direct
+>>
+>> 2)
+>> cd /sys/fs/cgroup/blkio/
+>> echo $$ > cgroup.procs
+>> echo "8:0 1024" > blkio.throttle.write_bps_device
+>> {
+>>          sleep 5
+>>          echo "8:0 2048" > blkio.throttle.write_bps_device
+>> } &
+>> sleep 1
+>> dd if=/dev/zero of=/dev/sda bs=8k count=1 oflag=direct
+>>
+> 
+> It's interesting that you're getting these numbers (w/patch)
+> 
+>> test results: io finish time
+>> 	before this patch	with this patch
+>> 1)	10s			6s
+>> 2)	8s			6s
+> 
+> wait := (disp + bio - Δt*l_old) / l_new
+> 
+> 1)
+> wait = (0k + 8k - 3s*2k/s) / 1k/s = 2s -> i.e. 5s absolute
+> 
+> 2)
+> wait = (0k + 8k - 5s*1k/s) / 2k/s = 2.5s -> i.e. 6.5s absolute
+> 
+> Are you numbers noisy+rounded or do I still mis anything?
+Hi, Michal
 
-+1
+The way of your caculation is right, however, it seems like you missed
+that io is dispatched after 1s:
+
+sleep 1  -> here
+dd if=/dev/zero of=/dev/sda bs=8k count=1 oflag=direct
+> 
+> (Also isn't it worth having this more permanent in tools/testing/selftest?)
+> 
+>> +static void tg_update_skipped(struct throtl_grp *tg)
+>> +{
+>> +	if (tg->service_queue.nr_queued[READ])
+>> +		__tg_update_skipped(tg, READ);
+>> +	if (tg->service_queue.nr_queued[WRITE])
+>> +		__tg_update_skipped(tg, WRITE);
+> 
+> On one hand, the callers of tg_update_skipped() know whether R/W limit
+> is changed, so only the respective variant could be called.
+> On the other hand, this conditions look implied by tg->flags &
+> THROTL_TG_PENDING.
+> (Just noting, it's likely still not possibly to pass the skipped value
+> only via stack.)
+> 
+> 
+>> @@ -115,6 +115,10 @@ struct throtl_grp {
+>>   	uint64_t bytes_disp[2];
+>>   	/* Number of bio's dispatched in current slice */
+>>   	unsigned int io_disp[2];
+>> +	/* Number of bytes will be skipped in current slice */
+>> +	uint64_t bytes_skipped[2];
+>> +	/* Number of bio's will be skipped in current slice */
+>> +	unsigned int io_skipped[2];
+> 
+> Please add a comment these fields exists to facilitate config updates
+> (the bytes to be skipped is sort of obvious from the name :-).
+Ok, will do that in next iteration.
+
+Thanks,
+Kuai
