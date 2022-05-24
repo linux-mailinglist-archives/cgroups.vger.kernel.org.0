@@ -2,125 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C8D532D07
-	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 17:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1FF532EF3
+	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 18:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238469AbiEXPNR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 11:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S239578AbiEXQaP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 12:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbiEXPNQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 11:13:16 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD265FF10;
-        Tue, 24 May 2022 08:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653405195; x=1684941195;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jg1seA0b2qfEGPEhi40Q5NR3xfGQVSWmwk8f0MnVPS0=;
-  b=fWEieP5FkcOTC1z3dnEqaPpQ/DrBTX8Sjw9munMn9tZ6CInfHFh/mWfT
-   yVUaLJLNvYPZAKc4ZuB5GIYXj6IhnJNqoOpkSgJ6f4M34dxkYy1bOqyH6
-   VVg+OOa+hR4Nt9/yHyOjF9tND67QWS2mQUm+F0e0zDg8vguy97FM3vSxY
-   zAD0Xao1eEFH8jRuU6ZKqOpwSTMGc2/bkoqToWiNiD8W4FfOs6Rt3L0PC
-   v0a/x2J32/NXuFkMXhVGITKE8smkzS/gMu01vTeLa4ROxlNDDaDEgLVEy
-   rynZxaAcUrOAIeLxTM+Oqp9qcE/KxotdvRB9CbFNtyqeXXAXoVRGVTm4p
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10357"; a="253430707"
-X-IronPort-AV: E=Sophos;i="5.91,248,1647327600"; 
-   d="scan'208";a="253430707"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2022 08:13:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,248,1647327600"; 
-   d="scan'208";a="577926540"
-Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 24 May 2022 08:13:13 -0700
-Received: from kbuild by db63a1be7222 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1ntWDg-0002AY-C8;
-        Tue, 24 May 2022 15:13:12 +0000
-Date:   Tue, 24 May 2022 23:12:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     hezhongkun <hezhongkun.hzk@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, lizefan.x@bytedance.com,
-        Hezhongkun <hezhongkun.hzk@bytedance.com>
-Subject: Re: [PATCH] mm: memcontrol: add the mempolicy interface for cgroup
- v2.
-Message-ID: <202205242316.8f8rvh3s-lkp@intel.com>
-References: <20220524103638.473-1-hezhongkun.hzk@bytedance.com>
+        with ESMTP id S239654AbiEXQaP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 12:30:15 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16E037BE1;
+        Tue, 24 May 2022 09:30:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 83F4621A19;
+        Tue, 24 May 2022 16:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1653409811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0aOp5yJI56RJ+SoECoGbDOaEZ7yLii4c891MVbbA4to=;
+        b=vWivk4oDuWVezANW9v3pF+X1FQpt89ke1A10GKiVNLMUJ+jKgPPHySGQopTrxU0imeKFLr
+        k+1ZR6j/nCl9XEAgMYfAPpUpabKowr0uyuLmMwXw0sARrEEeOtbpG4gcmjsoNanvdpJ34L
+        3mSGJgG0AgCIjZnsfZVZLvG7LV9vDyg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 435A913ADF;
+        Tue, 24 May 2022 16:30:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Y49RDxMIjWJaWgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 24 May 2022 16:30:11 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Richard Palethorpe <rpalethorpe@suse.de>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: [PATCH v3 0/5] memcontrol selftests fixups
+Date:   Tue, 24 May 2022 18:29:50 +0200
+Message-Id: <20220524162955.8635-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220524103638.473-1-hezhongkun.hzk@bytedance.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi hezhongkun,
+Hello.
 
-Thank you for the patch! Perhaps something to improve:
+I'm just flushing the patches to make memcontrol selftests check the
+events behavior we had consensus about (test_memcg_low fails).
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v5.18 next-20220524]
-[cannot apply to akpm-mm/mm-everything]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+(test_memcg_reclaim, test_memcg_swap_max fail for me now but it's present
+even before the refactoring.)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/hezhongkun/mm-memcontrol-add-the-mempolicy-interface-for-cgroup-v2/20220524-183922
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 143a6252e1b8ab424b4b293512a97cca7295c182
-config: x86_64-randconfig-a014 (https://download.01.org/0day-ci/archive/20220524/202205242316.8f8rvh3s-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 10c9ecce9f6096e18222a331c5e7d085bd813f75)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/6adb0a02c27c8811bee9783451ee25155baf490e
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review hezhongkun/mm-memcontrol-add-the-mempolicy-interface-for-cgroup-v2/20220524-183922
-        git checkout 6adb0a02c27c8811bee9783451ee25155baf490e
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+The two bigger changes are:
+- adjustment of the protected values to make tests succeed with the given
+  tolerance,
+- both test_memcg_low and test_memcg_min check protection of memory in
+  populated cgroups (actually as per Documentation/admin-guide/cgroup-v2.rst
+  memory.min should not apply to empty cgroups, which is not the case
+  currently. Therefore I unified tests with the populated case in order to to
+  bring more broken tests).
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks,
+Michal
 
-All warnings (new ones prefixed by >>):
+Changes from v2 (https://lore.kernel.org/r/20220518161859.21565-2-mkoutny@suse.com/)
+- rebased on mm-stable 02e34fff195d3a5f67cbb553795dc109a37d1dcf
+- collected acked-bys
+- proper Fixes: tag
 
->> mm/mempolicy.c:179:19: warning: no previous prototype for function 'get_cgrp_or_task_policy' [-Wmissing-prototypes]
-   struct mempolicy *get_cgrp_or_task_policy(struct task_struct *p)
-                     ^
-   mm/mempolicy.c:179:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct mempolicy *get_cgrp_or_task_policy(struct task_struct *p)
-   ^
-   static 
-   1 warning generated.
+Changes from v1 (https://lore.kernel.org/r/20220513171811.730-1-mkoutny@suse.com/)
+- fixed mis-rebase in compilation fix patch,
+- added review, ack tags from v1,
+- applied feedback from v1 (Octave script in git tree),
+- added one more patch extracting common parts,
+- rebased on mm-stable bbe832b9db2e.
 
+Michal Koutný (5):
+  selftests: memcg: Fix compilation
+  selftests: memcg: Expect no low events in unprotected sibling
+  selftests: memcg: Adjust expected reclaim values of protected cgroups
+  selftests: memcg: Remove protection from top level memcg
+  selftests: memcg: Factor out common parts of memory.{low,min} tests
 
-vim +/get_cgrp_or_task_policy +179 mm/mempolicy.c
-
-   178	
- > 179	struct mempolicy *get_cgrp_or_task_policy(struct task_struct *p)
-   180	{
-   181		struct mempolicy *pol;
-   182		struct mem_cgroup *memcg = mem_cgroup_from_task(p);
-   183	
-   184		pol = (memcg && memcg->mempolicy) ? memcg->mempolicy : get_task_policy(p);
-   185		return pol;
-   186	}
-   187	
+ MAINTAINERS                                   |   1 +
+ .../selftests/cgroup/memcg_protection.m       |  89 +++++++
+ .../selftests/cgroup/test_memcontrol.c        | 247 +++++-------------
+ 3 files changed, 152 insertions(+), 185 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/memcg_protection.m
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.35.3
+
