@@ -2,143 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFF1532001
-	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 02:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D25532032
+	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 03:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbiEXAxS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 May 2022 20:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
+        id S229925AbiEXBNq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 May 2022 21:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbiEXAxO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 20:53:14 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C43B84A19
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 17:53:13 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id y15so9518042qtx.4
-        for <cgroups@vger.kernel.org>; Mon, 23 May 2022 17:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x4jbl/h/9IkQPtvCa68VGCFyvxT/KOdRev2otsqHtfM=;
-        b=CLD8VfehPsBJZKAJX5SPjbU2o9Q0pXOcAnEDp/JCvbkisTN6aYTXXFyQR9tQD56GBx
-         aRURvpzT0qMlj0TBitxFWqDDvCT7U90MMnkPOH7LbK07zbOfHREkSn8Li4gc75TrIKyc
-         4uuiItRFMVlt6QQAOggQDGe1AiKerD3SvjRiu1ENyYtAh/rfWdUH/ZJsQT2ThcD8PAv6
-         MpBn3JnnKsqLEd+RT++NjvLR95c5HM9CWQ14xRsasQpZu9B/Kr/L3k4fd7DFsj3y950S
-         k2CC+P/CT3/lw9ZSnEFMFi9WjEGj+g0wqyyOnP98XBItvA/gQpr2iamhbFL0JA0bVPw5
-         pL+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x4jbl/h/9IkQPtvCa68VGCFyvxT/KOdRev2otsqHtfM=;
-        b=kRq6U2UO9FZQ8PodA0IbcQ/eU4kvDqwuE34Wnlsxe28L/ZJVlKKSzkVvC2QAtgN8pV
-         a0hiRWWs2EA+Rw/tHdxutgdc750eFtC82ciJv76CBoJ8yQIpvMQowihCKWycOtU4liHa
-         Yfs2r21CdhU39TgHkEmkmmgJ0cFeOSvHPDhLv1Y9Mv+EuGv91c/TF3XgpMXbMpNUYi+X
-         RZ//YnV+qIJvCnkWsQkXdnZ3DIrwwOyK6Xm8btGVqirIq2iSMfBi7U8sQxVELfpAxzoX
-         jbpnbcuR7xAEqoDnWx75FaWlT5QIkq/s7ToQoeAOZtuT2pHvpZ+0Qe82LE6wEU24e5ok
-         Eu3Q==
-X-Gm-Message-State: AOAM531WLC8tD6EQ9oSHQ+K8W5DUqgyJT2J9Xn80zrZv4B892vof3A1O
-        ue4CTJgyKbO+JBHZrVCthg5ClsH80qGMRyEPB8A62w==
-X-Google-Smtp-Source: ABdhPJyGEys6JfQRUYrN7pDaX/KGucRDwfhBe/O+mHLPshN0j3kd0anhBzJgJBbI6ZnFCsm3UfNhDzfmz09/ZuJ3224=
-X-Received: by 2002:ac8:7d86:0:b0:2f3:c523:19a2 with SMTP id
- c6-20020ac87d86000000b002f3c52319a2mr18366810qtd.566.1653353592069; Mon, 23
- May 2022 17:53:12 -0700 (PDT)
+        with ESMTP id S229470AbiEXBNq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 May 2022 21:13:46 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52118939C7;
+        Mon, 23 May 2022 18:13:44 -0700 (PDT)
+Received: from kwepemi100019.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L6bmz63z7zDqMC;
+        Tue, 24 May 2022 09:13:39 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ kwepemi100019.china.huawei.com (7.221.188.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 24 May 2022 09:13:42 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 24 May 2022 09:13:41 +0800
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+To:     Jan Kara <jack@suse.cz>
+CC:     <paolo.valente@linaro.org>, <tj@kernel.org>,
+        <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+ <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+ <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
+ <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+ <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+ <20220523085902.wmxoebyq3crerecr@quack3.lan>
+ <25f6703e-9e10-75d9-a893-6df1e6b75254@kernel.dk>
+ <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+From:   Yu Kuai <yukuai3@huawei.com>
+Message-ID: <13ad158e-7859-ca61-209e-7d1fe99d0bdb@huawei.com>
+Date:   Tue, 24 May 2022 09:13:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
- <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
- <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
- <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
- <Yogc0Kb5ZVDaQ0oU@slm.duckdns.org> <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
- <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com> <CAEf4BzbaHeyaHK1sChPMF=L4aQsaBGNtU+R3veqCOFz0A+svEA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbaHeyaHK1sChPMF=L4aQsaBGNtU+R3veqCOFz0A+svEA@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 23 May 2022 17:53:00 -0700
-Message-ID: <CA+khW7h-fgo+X=OUxAWDe2sPMyWDXUmp574Kq_J884j9whoBfw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Tejun Heo <tj@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 23, 2022 at 4:58 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, May 20, 2022 at 7:35 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Fri, May 20, 2022 at 5:59 PM Yonghong Song <yhs@fb.com> wrote:
-> > > On 5/20/22 3:57 PM, Tejun Heo wrote:
-> > > > Hello,
-> > > >
-> > > > On Fri, May 20, 2022 at 03:19:19PM -0700, Alexei Starovoitov wrote:
-> > > >> We have bpf_map iterator that walks all bpf maps.
-> > > >> When map iterator is parametrized with map_fd the iterator walks
-> > > >> all elements of that map.
-> > > >> cgroup iterator should have similar semantics.
-> > > >> When non-parameterized it will walk all cgroups and their descendent
-> > > >> depth first way. I believe that's what Yonghong is proposing.
-> > > >> When parametrized it will start from that particular cgroup and
-> > > >> walk all descendant of that cgroup only.
-> > > >> The bpf prog can stop the iteration right away with ret 1.
-> > > >> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
-> > > >> the order of iteration css_for_each_descendant_pre vs _post.
-> > > >> wdyt?
-> > > >
-> > > > Sounds perfectly reasonable to me.
-> > >
-> > > This works for me too. Thanks!
-> > >
-> >
-> > This sounds good to me. Thanks. Let's try to do it in the next iteration.
->
-> Can we, in addition to descendant_pre and descendant_post walk
-> algorithms also add the one that does ascendants walk (i.e., start
-> from specified cgroup and walk up to the root cgroup)? I don't have
-> specific example, but it seems natural to include it for "cgroup
-> iterator" in general. Hopefully it won't add much code to the
-> implementation.
+ÔÚ 2022/05/23 23:25, Jan Kara Ð´µÀ:
+> On Mon 23-05-22 06:36:58, Jens Axboe wrote:
+>> On 5/23/22 2:59 AM, Jan Kara wrote:
+>>> On Mon 23-05-22 09:10:38, yukuai (C) wrote:
+>>>> ? 2022/05/21 20:21, Jens Axboe ??:
+>>>>> On 5/21/22 1:22 AM, yukuai (C) wrote:
+>>>>>> ? 2022/05/14 17:29, yukuai (C) ??:
+>>>>>>> ? 2022/05/05 9:00, yukuai (C) ??:
+>>>>>>>> Hi, Paolo
+>>>>>>>>
+>>>>>>>> Can you take a look at this patchset? It has been quite a long time
+>>>>>>>> since we spotted this problem...
+>>>>>>>>
+>>>>>>>
+>>>>>>> friendly ping ...
+>>>>>> friendly ping ...
+>>>>>
+>>>>> I can't speak for Paolo, but I've mentioned before that the majority
+>>>>> of your messages end up in my spam. That's still the case, in fact
+>>>>> I just marked maybe 10 of them as not spam.
+>>>>>
+>>>>> You really need to get this issued sorted out, or you will continue
+>>>>> to have patches ignore because folks may simply not see them.
+>>>>>
+>>>> Hi,
+>>>>
+>>>> Thanks for your notice.
+>>>>
+>>>> Is it just me or do you see someone else's messages from *huawei.com
+>>>> end up in spam? I tried to seek help from our IT support, however, they
+>>>> didn't find anything unusual...
+>>>
+>>> So actually I have noticed that a lot of (valid) email from huawei.com (not
+>>> just you) ends up in the spam mailbox. For me direct messages usually pass
+>>> (likely matching SPF records for originating mail server save the email
+>>> from going to spam) but messages going through mailing lists are flagged as
+>>> spam because the emails are missing valid DKIM signature but huawei.com
+>>> DMARC config says there should be DKIM signature (even direct messages are
+>>> missing DKIM so this does not seem as a mailing list configuration issue).
+>>> So this seems as some misconfiguration of the mails on huawei.com side
+>>> (likely missing DKIM signing of outgoing email).
+>>
+>> SPF/DKIM was indeed a problem earlier for yukaui patches, but I don't
+>> see that anymore. Maybe it's still an issue for some emails, from them
+>> or Huawei in general?
+> 
+> Hum, for me all emails from Huawei I've received even today fail the DKIM
+> check. After some more digging there is interesting inconsistency in DMARC
+> configuration for huawei.com domain. There is DMARC record for huawei.com
+> like:
+> 
+> huawei.com.		600	IN	TXT	"v=DMARC1;p=none;rua=mailto:dmarc@edm.huawei.com"
+> 
+> which means no DKIM is required but _dmarc.huawei.com has:
+> 
+> _dmarc.huawei.com.	600	IN	TXT	"v=DMARC1;p=quarantine;ruf=mailto:dmarc@huawei.com;rua=mailto:dmarc@huawei.com"
+> 
+> which says that DKIM is required. I guess this inconsistency may be the
+> reason why there are problems with DKIM validation for senders from
+> huawei.com. Yu Kuai, can you perhaps take this to your IT support to fix
+> this? Either make sure huawei.com emails get properly signed with DKIM or
+> remove the 'quarantine' record from _dmarc.huawei.com. Thanks!
+Of course, I'll try to contact our IT support.
 
-Yep. Sounds reasonable and doable. It's just adding a flag to specify
-traversal order, like:
-
-{
-  WALK_DESCENDANT_PRE,
-  WALK_DESCENDANT_POST,
-  WALK_PARENT_UP,
-};
-
-In bpf_iter's seq_next(), change the algorithm to yield the parent of
-the current cgroup.
+Thanks,
+Kuai
+> 
+> 								Honza
+> 
