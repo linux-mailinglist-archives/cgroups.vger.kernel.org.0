@@ -2,62 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D85331EE
-	for <lists+cgroups@lfdr.de>; Tue, 24 May 2022 21:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA68533390
+	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 00:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbiEXTwb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 15:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S242364AbiEXWcf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 18:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241070AbiEXTwa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 15:52:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39A9C5B3D4
-        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 12:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653421947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vsoL5BUtwGtn8srjaBAKLRmvlrQ5HvOClw2yb5AYOdQ=;
-        b=UBrCsITgFApKa9lSS0hQz0i47swfTVDu5GcxRNYGStigCl6ZTpnmSx1OfqlQFsUD0GDdQi
-        Vg1k0jFsrpZBUYRSWE89o55M8lWYacdCnj9cM0IQ8yeZIexOEjsh/CAFwQsYLtUvtTN26n
-        9z5WiC38cZ3lPr8v2pjiFzyL6pvyrAE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-416--36m1xhvMhaLbWszLzkDTg-1; Tue, 24 May 2022 15:52:23 -0400
-X-MC-Unique: -36m1xhvMhaLbWszLzkDTg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 11160185A7B2;
-        Tue, 24 May 2022 19:52:23 +0000 (UTC)
-Received: from [10.22.8.146] (unknown [10.22.8.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 876CE401E4C;
-        Tue, 24 May 2022 19:52:22 +0000 (UTC)
-Message-ID: <78de6197-7de6-9fe7-9567-1321c06c6e9b@redhat.com>
-Date:   Tue, 24 May 2022 15:52:22 -0400
+        with ESMTP id S242360AbiEXWcc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 18:32:32 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F9A762A9
+        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 15:32:29 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id f2so27717015wrc.0
+        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 15:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/hjeyXIou+bR7sgCBUUS9KBiw7ITkpAtyGQPK8WkjHQ=;
+        b=E47CS0uk7HJ3B0+amVIKreQyHTGL6Id/MNM0NxjP7X6opvCgl1WcdBa5SnwKc3EDWw
+         V2RSBPZ5PBv0+cdx0NAoNLXYDyjDup9mou8/UiOBU++4DVMVZrHzrWd+ZVhZFW2K8uMW
+         p9b4jxU7DGV0i8n8hpbveKXjRPZjF7JZfelsg33lCxe6KvbM/3Kw2gy36RExYeMQcSnp
+         QyMMPOr6T3TA59Xk7ew90wKydoDBGM28Fu7tgOmM6JcjUpxvmSbhb9njgSwtUUkrwV/Z
+         SDvlO42njKkIejaVhIiCDGW4sF9Mf28i9mQR4sp9xyvJ2C1xtsrbm5Tfz8hGqHkzJQq/
+         IEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/hjeyXIou+bR7sgCBUUS9KBiw7ITkpAtyGQPK8WkjHQ=;
+        b=MmPrQFaFoKc+3yDEh6V9Fw1PQNp6d4N/rP900mxDk85XpIOSvclRAZktlZkFUX+TpA
+         tM+UujEc6nSqeqygBSEa3I0T1a14UGaCOwKMj/DbP7G0Tbyd24U9jz7bxO9ynhBK/4wS
+         J+e+Sxu9WqisPb2mhlIXStnCZwCEd5WLojDxoJrt+xeeD8X3zStQMAxWeTLS+9gGzuw1
+         w32NXxm98pazTGszjqU7Zvil0vzzlZFS2DLqrlZv2spPhftyn6MJNrfclXEGK2SsCSQ1
+         jqCTsGwaaM7k5YrTLVrlySsZD9dTW5ylbHg6XGH5ckYQV5aKqgJ/gjx/NmvEZyU3Gky2
+         aIJg==
+X-Gm-Message-State: AOAM531AdE5uOaDIA2mMqttzHZI8SuLBf7OUUulAQSDLOc7krOaBB0m7
+        vrI0th6VjB7szgvhBt/MENIZeZ3faWA00Sjyu84WYw==
+X-Google-Smtp-Source: ABdhPJxT4ExN63oIrXSw4yucGOE3FdTxLSSWhIsKQP4q3l+uXQdQtcsiB0ShXvD15pANNDgeH4cCwpElZhKEPpNgNxo=
+X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
+ c5-20020adffb05000000b0020ae1138f3fmr25324902wrr.534.1653431548193; Tue, 24
+ May 2022 15:32:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH v4 04/11] mm: vmscan: rework move_pages_to_lru()
-Content-Language: en-US
-To:     Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com
-References: <20220524060551.80037-1-songmuchun@bytedance.com>
- <20220524060551.80037-5-songmuchun@bytedance.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20220524060551.80037-5-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-2-yosryahmed@google.com> <87ilqoi77b.wl-maz@kernel.org>
+ <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+ <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
+ <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
+ <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
+ <CAJD7tka-5+XRkthNV4qCg8woPCpjcwynQoRBame-3GP1L8y+WQ@mail.gmail.com> <YoeoLJNQTam5fJSu@cmpxchg.org>
+In-Reply-To: <YoeoLJNQTam5fJSu@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 24 May 2022 15:31:52 -0700
+Message-ID: <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Oliver Upton <oupton@google.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,140 +91,69 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/24/22 02:05, Muchun Song wrote:
-> In the later patch, we will reparent the LRU pages. The pages moved to
-> appropriate LRU list can be reparented during the process of the
-> move_pages_to_lru(). So holding a lruvec lock by the caller is wrong, we
-> should use the more general interface of folio_lruvec_relock_irq() to
-> acquire the correct lruvec lock.
+On Fri, May 20, 2022 at 7:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   mm/vmscan.c | 49 +++++++++++++++++++++++++------------------------
->   1 file changed, 25 insertions(+), 24 deletions(-)
+> On Thu, May 19, 2022 at 06:56:54PM -0700, Yosry Ahmed wrote:
+> > On Fri, May 13, 2022 at 10:14 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Fri, May 13, 2022 at 9:12 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > >
+> > > [...]
+> > > >
+> > > > It was mostly an honest question, I too am trying to understand what userspace
+> > > > wants to do with this information.  I was/am also trying to understand the benefits
+> > > > of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
+> > > > already has specific stats for the number of leaf pages mapped into a VM, why not
+> > > > do the same for non-leaf pages?
+> > >
+> > > Let me answer why a more general stat is useful and the potential
+> > > userspace reaction:
+> > >
+> > > For a memory type which is significant enough, it is useful to expose
+> > > it in the general interfaces, so that the general data/stat collection
+> > > infra can collect them instead of having workload dependent stat
+> > > collectors. In addition, not necessarily that stat has to have a
+> > > userspace reaction in an online fashion. We do collect stats for
+> > > offline analysis which greatly influence the priority order of
+> > > optimization workitems.
+> > >
+> > > Next the question is do we really need a separate stat item
+> > > (secondary_pagetable instead of just plain pagetable) exposed in the
+> > > stable API? To me secondary_pagetable is general (not kvm specific)
+> > > enough and can be significant, so having a separate dedicated stat
+> > > should be ok. Though I am ok with lump it with pagetable stat for now
+> > > but we do want it to be accounted somewhere.
+> >
+> > Any thoughts on this? Johannes?
 >
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1678802e03e7..761d5e0dd78d 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2230,23 +2230,28 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
->    * move_pages_to_lru() moves pages from private @list to appropriate LRU list.
->    * On return, @list is reused as a list of pages to be freed by the caller.
->    *
-> - * Returns the number of pages moved to the given lruvec.
-> + * Returns the number of pages moved to the appropriate LRU list.
-> + *
-> + * Note: The caller must not hold any lruvec lock.
->    */
-> -static unsigned int move_pages_to_lru(struct lruvec *lruvec,
-> -				      struct list_head *list)
-> +static unsigned int move_pages_to_lru(struct list_head *list)
->   {
-> -	int nr_pages, nr_moved = 0;
-> +	int nr_moved = 0;
-> +	struct lruvec *lruvec = NULL;
->   	LIST_HEAD(pages_to_free);
-> -	struct page *page;
->   
->   	while (!list_empty(list)) {
-> -		page = lru_to_page(list);
-> +		int nr_pages;
-> +		struct folio *folio = lru_to_folio(list);
-> +		struct page *page = &folio->page;
-> +
-> +		lruvec = folio_lruvec_relock_irq(folio, lruvec);
->   		VM_BUG_ON_PAGE(PageLRU(page), page);
->   		list_del(&page->lru);
->   		if (unlikely(!page_evictable(page))) {
-> -			spin_unlock_irq(&lruvec->lru_lock);
-> +			unlock_page_lruvec_irq(lruvec);
->   			putback_lru_page(page);
-> -			spin_lock_irq(&lruvec->lru_lock);
-> +			lruvec = NULL;
->   			continue;
->   		}
->   
-> @@ -2267,20 +2272,16 @@ static unsigned int move_pages_to_lru(struct lruvec *lruvec,
->   			__clear_page_lru_flags(page);
->   
->   			if (unlikely(PageCompound(page))) {
-> -				spin_unlock_irq(&lruvec->lru_lock);
-> +				unlock_page_lruvec_irq(lruvec);
->   				destroy_compound_page(page);
-> -				spin_lock_irq(&lruvec->lru_lock);
-> +				lruvec = NULL;
->   			} else
->   				list_add(&page->lru, &pages_to_free);
->   
->   			continue;
->   		}
->   
-> -		/*
-> -		 * All pages were isolated from the same lruvec (and isolation
-> -		 * inhibits memcg migration).
-> -		 */
-> -		VM_BUG_ON_PAGE(!folio_matches_lruvec(page_folio(page), lruvec), page);
-> +		VM_BUG_ON_PAGE(!folio_matches_lruvec(folio, lruvec), page);
->   		add_page_to_lru_list(page, lruvec);
->   		nr_pages = thp_nr_pages(page);
->   		nr_moved += nr_pages;
-> @@ -2288,6 +2289,8 @@ static unsigned int move_pages_to_lru(struct lruvec *lruvec,
->   			workingset_age_nonresident(lruvec, nr_pages);
->   	}
->   
-> +	if (lruvec)
-> +		unlock_page_lruvec_irq(lruvec);
->   	/*
->   	 * To save our caller's stack, now use input list for pages to free.
->   	 */
-> @@ -2359,16 +2362,16 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
->   
->   	nr_reclaimed = shrink_page_list(&page_list, pgdat, sc, &stat, false);
->   
-> -	spin_lock_irq(&lruvec->lru_lock);
-> -	move_pages_to_lru(lruvec, &page_list);
-> +	move_pages_to_lru(&page_list);
->   
-> +	local_irq_disable();
->   	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
->   	item = current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
->   	if (!cgroup_reclaim(sc))
->   		__count_vm_events(item, nr_reclaimed);
->   	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
->   	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> -	spin_unlock_irq(&lruvec->lru_lock);
-> +	local_irq_enable();
->   
->   	lru_note_cost(lruvec, file, stat.nr_pageout);
->   	mem_cgroup_uncharge_list(&page_list);
-> @@ -2498,18 +2501,16 @@ static void shrink_active_list(unsigned long nr_to_scan,
->   	/*
->   	 * Move pages back to the lru list.
->   	 */
-> -	spin_lock_irq(&lruvec->lru_lock);
-> -
-> -	nr_activate = move_pages_to_lru(lruvec, &l_active);
-> -	nr_deactivate = move_pages_to_lru(lruvec, &l_inactive);
-> +	nr_activate = move_pages_to_lru(&l_active);
-> +	nr_deactivate = move_pages_to_lru(&l_inactive);
->   	/* Keep all free pages in l_active list */
->   	list_splice(&l_inactive, &l_active);
->   
-> +	local_irq_disable();
->   	__count_vm_events(PGDEACTIVATE, nr_deactivate);
->   	__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
-> -
->   	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
-> -	spin_unlock_irq(&lruvec->lru_lock);
-> +	local_irq_enable();
->   
->   	mem_cgroup_uncharge_list(&l_active);
->   	free_unref_page_list(&l_active);
+> I agree that this memory should show up in vmstat/memory.stat in some
+> form or another.
+>
+> The arguments on whether this should be part of NR_PAGETABLE or a
+> separate entry seem a bit vague to me. I was hoping somebody more
+> familiar with KVM could provide a better picture of memory consumption
+> in that area.
+>
+> Sean had mentioned that these allocations already get tracked through
+> GFP_KERNEL_ACCOUNT. That's good, but if they are significant enough to
+> track, they should be represented in memory.stat in some form. Sean
+> also pointed out though that those allocations tend to scale rather
+> differently than the page tables, so it probably makes sense to keep
+> those two things separate at least.
+>
+> Any thoughts on putting shadow page tables and iommu page tables into
+> the existing NR_PAGETABLE item? If not, what are the cons?
+>
+> And creating (maybe later) a separate NR_VIRT for the other
+> GPF_KERNEL_ACCOUNT allocations in kvm?
 
-Note that the RT engineers will likely change the 
-local_irq_disable()/local_irq_enable() to 
-local_lock_irq()/local_unlock_irq().
+I agree with Sean that a NR_VIRT stat would be inaccurate by omission,
+unless we account for all KVM allocations under this stat. This might
+be an unnecessary burden according to what Sean said, as most other
+allocations scale linearly with the number of vCPUs or the memory
+assigned to the VM.
 
-Cheers,
-Longman
-
+I don't have enough context to say whether we should piggyback KVM MMU
+pages to the existing NR_PAGETABLE item, but from a high level it
+seems like it would be more helpful if they are a separate stat.
+Anyway, I am willing to go with whatever Sean thinks is best.
