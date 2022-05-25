@@ -2,158 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA68533390
-	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 00:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A795334B3
+	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 03:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242364AbiEXWcf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 18:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S239827AbiEYBay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 21:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242360AbiEXWcc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 18:32:32 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F9A762A9
-        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 15:32:29 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id f2so27717015wrc.0
-        for <cgroups@vger.kernel.org>; Tue, 24 May 2022 15:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/hjeyXIou+bR7sgCBUUS9KBiw7ITkpAtyGQPK8WkjHQ=;
-        b=E47CS0uk7HJ3B0+amVIKreQyHTGL6Id/MNM0NxjP7X6opvCgl1WcdBa5SnwKc3EDWw
-         V2RSBPZ5PBv0+cdx0NAoNLXYDyjDup9mou8/UiOBU++4DVMVZrHzrWd+ZVhZFW2K8uMW
-         p9b4jxU7DGV0i8n8hpbveKXjRPZjF7JZfelsg33lCxe6KvbM/3Kw2gy36RExYeMQcSnp
-         QyMMPOr6T3TA59Xk7ew90wKydoDBGM28Fu7tgOmM6JcjUpxvmSbhb9njgSwtUUkrwV/Z
-         SDvlO42njKkIejaVhIiCDGW4sF9Mf28i9mQR4sp9xyvJ2C1xtsrbm5Tfz8hGqHkzJQq/
-         IEHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/hjeyXIou+bR7sgCBUUS9KBiw7ITkpAtyGQPK8WkjHQ=;
-        b=MmPrQFaFoKc+3yDEh6V9Fw1PQNp6d4N/rP900mxDk85XpIOSvclRAZktlZkFUX+TpA
-         tM+UujEc6nSqeqygBSEa3I0T1a14UGaCOwKMj/DbP7G0Tbyd24U9jz7bxO9ynhBK/4wS
-         J+e+Sxu9WqisPb2mhlIXStnCZwCEd5WLojDxoJrt+xeeD8X3zStQMAxWeTLS+9gGzuw1
-         w32NXxm98pazTGszjqU7Zvil0vzzlZFS2DLqrlZv2spPhftyn6MJNrfclXEGK2SsCSQ1
-         jqCTsGwaaM7k5YrTLVrlySsZD9dTW5ylbHg6XGH5ckYQV5aKqgJ/gjx/NmvEZyU3Gky2
-         aIJg==
-X-Gm-Message-State: AOAM531AdE5uOaDIA2mMqttzHZI8SuLBf7OUUulAQSDLOc7krOaBB0m7
-        vrI0th6VjB7szgvhBt/MENIZeZ3faWA00Sjyu84WYw==
-X-Google-Smtp-Source: ABdhPJxT4ExN63oIrXSw4yucGOE3FdTxLSSWhIsKQP4q3l+uXQdQtcsiB0ShXvD15pANNDgeH4cCwpElZhKEPpNgNxo=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr25324902wrr.534.1653431548193; Tue, 24
- May 2022 15:32:28 -0700 (PDT)
+        with ESMTP id S237663AbiEYBax (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 21:30:53 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE1D712FB;
+        Tue, 24 May 2022 18:30:51 -0700 (PDT)
+Date:   Tue, 24 May 2022 18:30:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1653442249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BqHyQcO/EPCHDY1xe0+4wActLlHOlU2jbcY6btA4FPI=;
+        b=IqC3gfAEusYUngfhPDQZyN41hUHpicr6FUJlsvV9XN4K1/O31k7g3yqgW6376yJbiURLyW
+        20n5GAtkF2694sJcddZ7ypbG6LGvwlQK2WiFktmvfV+7xQdG77X9Z7kjg5F/Re/LmpS5+Q
+        s23gJXYBOL5RQRc5tIVrC07aijyGkHk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH mm v2 5/9] memcg: enable accounting for percpu allocation
+ of struct psi_group_cpu
+Message-ID: <Yo2Gw8b09efUWimi@carbon>
+References: <Yn6aL3cO7VdrmHHp@carbon>
+ <16f17021-61a3-c6f4-f60c-1acd3a0b66b9@openvz.org>
 MIME-Version: 1.0
-References: <20220429201131.3397875-1-yosryahmed@google.com>
- <20220429201131.3397875-2-yosryahmed@google.com> <87ilqoi77b.wl-maz@kernel.org>
- <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
- <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
- <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
- <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
- <CAJD7tka-5+XRkthNV4qCg8woPCpjcwynQoRBame-3GP1L8y+WQ@mail.gmail.com> <YoeoLJNQTam5fJSu@cmpxchg.org>
-In-Reply-To: <YoeoLJNQTam5fJSu@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 24 May 2022 15:31:52 -0700
-Message-ID: <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Oliver Upton <oupton@google.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16f17021-61a3-c6f4-f60c-1acd3a0b66b9@openvz.org>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 20, 2022 at 7:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Thu, May 19, 2022 at 06:56:54PM -0700, Yosry Ahmed wrote:
-> > On Fri, May 13, 2022 at 10:14 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Fri, May 13, 2022 at 9:12 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > >
-> > > [...]
-> > > >
-> > > > It was mostly an honest question, I too am trying to understand what userspace
-> > > > wants to do with this information.  I was/am also trying to understand the benefits
-> > > > of doing the tracking through page_state and not a dedicated KVM stat.  E.g. KVM
-> > > > already has specific stats for the number of leaf pages mapped into a VM, why not
-> > > > do the same for non-leaf pages?
-> > >
-> > > Let me answer why a more general stat is useful and the potential
-> > > userspace reaction:
-> > >
-> > > For a memory type which is significant enough, it is useful to expose
-> > > it in the general interfaces, so that the general data/stat collection
-> > > infra can collect them instead of having workload dependent stat
-> > > collectors. In addition, not necessarily that stat has to have a
-> > > userspace reaction in an online fashion. We do collect stats for
-> > > offline analysis which greatly influence the priority order of
-> > > optimization workitems.
-> > >
-> > > Next the question is do we really need a separate stat item
-> > > (secondary_pagetable instead of just plain pagetable) exposed in the
-> > > stable API? To me secondary_pagetable is general (not kvm specific)
-> > > enough and can be significant, so having a separate dedicated stat
-> > > should be ok. Though I am ok with lump it with pagetable stat for now
-> > > but we do want it to be accounted somewhere.
-> >
-> > Any thoughts on this? Johannes?
->
-> I agree that this memory should show up in vmstat/memory.stat in some
-> form or another.
->
-> The arguments on whether this should be part of NR_PAGETABLE or a
-> separate entry seem a bit vague to me. I was hoping somebody more
-> familiar with KVM could provide a better picture of memory consumption
-> in that area.
->
-> Sean had mentioned that these allocations already get tracked through
-> GFP_KERNEL_ACCOUNT. That's good, but if they are significant enough to
-> track, they should be represented in memory.stat in some form. Sean
-> also pointed out though that those allocations tend to scale rather
-> differently than the page tables, so it probably makes sense to keep
-> those two things separate at least.
->
-> Any thoughts on putting shadow page tables and iommu page tables into
-> the existing NR_PAGETABLE item? If not, what are the cons?
->
-> And creating (maybe later) a separate NR_VIRT for the other
-> GPF_KERNEL_ACCOUNT allocations in kvm?
+On Sat, May 21, 2022 at 07:38:21PM +0300, Vasily Averin wrote:
+> struct pci_group_cpu is percpu allocated for each new cgroup and can
+> consume a significant portion of all allocated memory on nodes with
+> a large number of CPUs.
+> 
+> Common part of the cgroup creation:
+> Allocs  Alloc   $1*$2   Sum     Allocation
+> number  size
+> --------------------------------------------
+> 16  ~   352     5632    5632    KERNFS
+> 1   +   4096    4096    9728    (cgroup_mkdir+0xe4)
+> 1       584     584     10312   (radix_tree_node_alloc.constprop.0+0x89)
+> 1       192     192     10504   (__d_alloc+0x29)
+> 2       72      144     10648   (avc_alloc_node+0x27)
+> 2       64      128     10776   (percpu_ref_init+0x6a)
+> 1       64      64      10840   (memcg_list_lru_alloc+0x21a)
+> percpu:
+> 1   +   192     192     192     call_site=psi_cgroup_alloc+0x1e
+> 1   +   96      96      288     call_site=cgroup_rstat_init+0x5f
+> 2       12      24      312     call_site=percpu_ref_init+0x23
+> 1       6       6       318     call_site=__percpu_counter_init+0x22
+> 
+>  '+' -- to be accounted,
+>  '~' -- partially accounted
+> 
+> Signed-off-by: Vasily Averin <vvs@openvz.org>
 
-I agree with Sean that a NR_VIRT stat would be inaccurate by omission,
-unless we account for all KVM allocations under this stat. This might
-be an unnecessary burden according to what Sean said, as most other
-allocations scale linearly with the number of vCPUs or the memory
-assigned to the VM.
-
-I don't have enough context to say whether we should piggyback KVM MMU
-pages to the existing NR_PAGETABLE item, but from a high level it
-seems like it would be more helpful if they are a separate stat.
-Anyway, I am willing to go with whatever Sean thinks is best.
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
