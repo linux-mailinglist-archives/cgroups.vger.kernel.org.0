@@ -2,28 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A795334B3
-	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 03:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A265334B5
+	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 03:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239827AbiEYBay (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 May 2022 21:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
+        id S237663AbiEYBbU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 May 2022 21:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237663AbiEYBax (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 21:30:53 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE1D712FB;
-        Tue, 24 May 2022 18:30:51 -0700 (PDT)
-Date:   Tue, 24 May 2022 18:30:43 -0700
+        with ESMTP id S243205AbiEYBbT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 May 2022 21:31:19 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE2412AF5;
+        Tue, 24 May 2022 18:31:17 -0700 (PDT)
+Date:   Tue, 24 May 2022 18:31:10 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1653442249;
+        t=1653442275;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BqHyQcO/EPCHDY1xe0+4wActLlHOlU2jbcY6btA4FPI=;
-        b=IqC3gfAEusYUngfhPDQZyN41hUHpicr6FUJlsvV9XN4K1/O31k7g3yqgW6376yJbiURLyW
-        20n5GAtkF2694sJcddZ7ypbG6LGvwlQK2WiFktmvfV+7xQdG77X9Z7kjg5F/Re/LmpS5+Q
-        s23gJXYBOL5RQRc5tIVrC07aijyGkHk=
+        bh=OVjueIe9mhvrA27ww7AR0v74gWv/I98eGtND8IZl3vg=;
+        b=VyeEk+zQVrAX1dIxFiZr77PDfHCvUjewxtS5IhtduYYDn5AqfvWy60/KZVUPwogYGH2TRW
+        kTsnAIrSGT+1YJBn+jOgwjZRcYRaOargixCYaEvGQsgsk8LkNNJeTEwc4YfWesQ/W18lCL
+        +/5ggn+QKpfcJrCA07Vjk4tVSQq3s68=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Roman Gushchin <roman.gushchin@linux.dev>
 To:     Vasily Averin <vvs@openvz.org>
@@ -33,15 +33,15 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
         Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH mm v2 5/9] memcg: enable accounting for percpu allocation
- of struct psi_group_cpu
-Message-ID: <Yo2Gw8b09efUWimi@carbon>
+Subject: Re: [PATCH mm v2 6/9] memcg: enable accounting for percpu allocation
+ of struct cgroup_rstat_cpu
+Message-ID: <Yo2G3mVlu6+/zXtP@carbon>
 References: <Yn6aL3cO7VdrmHHp@carbon>
- <16f17021-61a3-c6f4-f60c-1acd3a0b66b9@openvz.org>
+ <c0d01d6e-530c-9be3-1c9b-67a7f8ea09be@openvz.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16f17021-61a3-c6f4-f60c-1acd3a0b66b9@openvz.org>
+In-Reply-To: <c0d01d6e-530c-9be3-1c9b-67a7f8ea09be@openvz.org>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -54,13 +54,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 21, 2022 at 07:38:21PM +0300, Vasily Averin wrote:
-> struct pci_group_cpu is percpu allocated for each new cgroup and can
-> consume a significant portion of all allocated memory on nodes with
-> a large number of CPUs.
+On Sat, May 21, 2022 at 07:38:31PM +0300, Vasily Averin wrote:
+> struct cgroup_rstat_cpu is percpu allocated for each new cgroup and
+> can consume a significant portion of all allocated memory on nodes
+> with a large number of CPUs.
 > 
 > Common part of the cgroup creation:
-> Allocs  Alloc   $1*$2   Sum     Allocation
+> Allocs  Alloc   $1*$2   Sum	Allocation
 > number  size
 > --------------------------------------------
 > 16  ~   352     5632    5632    KERNFS
@@ -82,3 +82,4 @@ On Sat, May 21, 2022 at 07:38:21PM +0300, Vasily Averin wrote:
 > Signed-off-by: Vasily Averin <vvs@openvz.org>
 
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+
