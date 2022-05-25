@@ -2,143 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D534533C1E
+	by mail.lfdr.de (Postfix) with ESMTP id E851F533C1F
 	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 13:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbiEYL46 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 May 2022 07:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
+        id S231358AbiEYL62 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 May 2022 07:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243214AbiEYL4t (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 May 2022 07:56:49 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E9095BA
-        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 04:56:46 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id y15so12438813qtx.4
-        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 04:56:46 -0700 (PDT)
+        with ESMTP id S229828AbiEYL62 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 May 2022 07:58:28 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41BF65E5
+        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 04:58:23 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id p8so19014235pfh.8
+        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 04:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lEk6v60gkjFT68Gj4bJNaNs7k2gNzwxPhiEY5nNwaQQ=;
-        b=XXcCcSNfXU4ZumvEofzKMhDBd7cN4uUTScIpzCQEM+hzYYKUfsKNiF4P7UVF51FKtd
-         5RMh2GAnDESjADbuXOd1AqGedzaXh0w5A9T12BqTWJPxR4mUsbYzVpqI1DeLqcj+jRCv
-         g4Mbz8Isqpigexjq2xgBfxvEZ6XOCfbhrEWV/D3mKfrw49MZYSOCSMLcFNY4bPWoBIIQ
-         R5QYWFwAz8og1bHFYOMrTQ4s+e/PEPEozRRHKxlX3pJQbF9dxpvlI9pbg9wJj7C5geki
-         qkYRTvMTxuO0dTaFgb5ZebuX4LpE/ZIxHighxOWhBpx05saqXnbfuwd4MPhQ1tJOvxUj
-         hZDw==
+        bh=83P9lIf96SgEF4FIz+2NIYTMoqq/3LIlBOcpNeCCdxU=;
+        b=V9H/HXtZcLAXr098dtpBDsWTnNouWEfreWbUot8dXiLuBzVLB4mCHrI6WKX6pVyZBD
+         kiNUVaM5D5ayScwD40y9Txc6lXPYaCgigth5ZN7Ae3+g2nfLeqXrNFEtKPGXdutjjO3n
+         XhABixH/23MX1UYyLqe8AiN6xxOLpLYfmjfZzE4eMmEaIK+3FtTAdD/h92PM9AcDNnvv
+         l3sS52cpVjTlm0KWQFUHr4gAgMldcOrjQLPJSBo5dCH5wXpwJDUCn8jjooO4sCA/4QAp
+         wZktZJWFJjkaF/4ebJ6wXuCrOZYssWMh3qoqUYyRbVykBTT1PCykeNLMxk3ucGph1lD3
+         Oa0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=lEk6v60gkjFT68Gj4bJNaNs7k2gNzwxPhiEY5nNwaQQ=;
-        b=XTkshvElrUqoRyWb84Oy57cG7I6g/XMRdyNCvyGuvwCNh3N3iQ5uFuUxiKGnU5beFV
-         wB7yE41iXc6E9b4SEmRJf6m+e9q1NQkc3TfAceplnXGoZb1LwJvx9F3O/mlFDFs8z8be
-         ZFzzmlOTT39Av91UCxGvK5DTSKZYzT2guYg69JkraYFvoB9a/08+UngDN5fTTkmg7zNc
-         /cTxilTdcZLb94lXhZkEs4qKpU7Y+dINk/tRL+TFVUmJkOJLzwqjBemnilHUUtiYQK0h
-         n0nJFdY2aYHAAuWDnOezdf2fF0i7bdEa28MrP+a5s4VstUDMwQzBBAJGcSwCTAQ5Q0HX
-         Fxlg==
-X-Gm-Message-State: AOAM532tXd6It84LQMwH44iAlQxU2VZYz40GVs5iijsK/Gcpr3tigyaQ
-        h7n/Z8sRUAUCng9oIDqF3bneUg==
-X-Google-Smtp-Source: ABdhPJwFHUkIBHNUiY22IoYqV5QV59CSwCqYRuCiU7sPHckigA3yOeAfSHjhUNo+n/aWFHPqKI7LJA==
-X-Received: by 2002:ac8:4e81:0:b0:2f9:34e4:8955 with SMTP id 1-20020ac84e81000000b002f934e48955mr11600672qtp.459.1653479804938;
-        Wed, 25 May 2022 04:56:44 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:741f])
-        by smtp.gmail.com with ESMTPSA id m25-20020ac84459000000b002f94737333bsm1152559qtn.21.2022.05.25.04.56.43
+        bh=83P9lIf96SgEF4FIz+2NIYTMoqq/3LIlBOcpNeCCdxU=;
+        b=5CxwAey41LY7rtndAmWlLf+l+6X35GVRUuXC0IHlCtIhAFIZcPbzLYF+IktistMWSi
+         kKrGdafrXpg5LB3L6k1JmNzXbwV2fROxpzkb3k8Jl6Eo/ya9H6DlYzR9Zro6nv/jUeoI
+         IlampzilpIua+nx9z6F4UKLZqbRhplWbVRLJsmLiRAXuSGWBHViIcBPnJZLeloxdMVzk
+         u0aFyXfJ+rQPqVZi3THZyR9JXvdgo1A/7uFEIdxinOo2fkEpSE+F1W7H51d/a2wH2qkF
+         DBPv7h5V3N/sC3q4V1Z7YtS+wLzhuzrxbSIaXNueOn6Y1AMfV/cdVlSeaicjxiv7HDaS
+         ekjQ==
+X-Gm-Message-State: AOAM533HmTfYOAc6HJBLGKkt42eOzdQe3DiXWVkr1wynJi2Gbl7fJKfG
+        JUudQ1XSz29wHwZGZydPno19ug==
+X-Google-Smtp-Source: ABdhPJy6C9/wlVQXBjuDdY4kOc2ORx1gRErc2TwqWFNwz6hz8oeSgI2sbVa3QRuLVigKCeQY/mA12Q==
+X-Received: by 2002:a62:14d2:0:b0:518:1576:65f2 with SMTP id 201-20020a6214d2000000b00518157665f2mr33285530pfu.24.1653479903310;
+        Wed, 25 May 2022 04:58:23 -0700 (PDT)
+Received: from localhost ([2408:8207:18da:2310:c40f:7b5:4fa8:df3f])
+        by smtp.gmail.com with ESMTPSA id e24-20020a637458000000b003f5e0c264bcsm8276248pgn.66.2022.05.25.04.58.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 May 2022 04:56:44 -0700 (PDT)
-Date:   Wed, 25 May 2022 07:56:43 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Oliver Upton <oupton@google.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-Message-ID: <Yo4Ze+DZrLqn0PeU@cmpxchg.org>
-References: <87ilqoi77b.wl-maz@kernel.org>
- <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
- <Yn2TGJ4vZ/fst+CY@cmpxchg.org>
- <Yn2YYl98Vhh/UL0w@google.com>
- <Yn5+OtZSSUZZgTQj@cmpxchg.org>
- <Yn6DeEGLyR4Q0cDp@google.com>
- <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
- <CAJD7tka-5+XRkthNV4qCg8woPCpjcwynQoRBame-3GP1L8y+WQ@mail.gmail.com>
- <YoeoLJNQTam5fJSu@cmpxchg.org>
- <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
+        Wed, 25 May 2022 04:58:22 -0700 (PDT)
+Date:   Wed, 25 May 2022 19:58:16 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        longman@redhat.com
+Subject: Re: [PATCH v4 10/11] mm: lru: add VM_BUG_ON_FOLIO to lru maintenance
+ function
+Message-ID: <Yo4Z2KfGxGyIlmmI@FVFYT0MHHV2J.usts.net>
+References: <20220524060551.80037-1-songmuchun@bytedance.com>
+ <20220524060551.80037-11-songmuchun@bytedance.com>
+ <Yo2XBdLxcJ/J6KJp@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
+In-Reply-To: <Yo2XBdLxcJ/J6KJp@carbon>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 24, 2022 at 03:31:52PM -0700, Yosry Ahmed wrote:
-> On Fri, May 20, 2022 at 7:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > I agree that this memory should show up in vmstat/memory.stat in some
-> > form or another.
-> >
-> > The arguments on whether this should be part of NR_PAGETABLE or a
-> > separate entry seem a bit vague to me. I was hoping somebody more
-> > familiar with KVM could provide a better picture of memory consumption
-> > in that area.
-> >
-> > Sean had mentioned that these allocations already get tracked through
-> > GFP_KERNEL_ACCOUNT. That's good, but if they are significant enough to
-> > track, they should be represented in memory.stat in some form. Sean
-> > also pointed out though that those allocations tend to scale rather
-> > differently than the page tables, so it probably makes sense to keep
-> > those two things separate at least.
-> >
-> > Any thoughts on putting shadow page tables and iommu page tables into
-> > the existing NR_PAGETABLE item? If not, what are the cons?
-> >
-> > And creating (maybe later) a separate NR_VIRT for the other
-> > GPF_KERNEL_ACCOUNT allocations in kvm?
+On Tue, May 24, 2022 at 07:40:05PM -0700, Roman Gushchin wrote:
+> On Tue, May 24, 2022 at 02:05:50PM +0800, Muchun Song wrote:
+> > We need to make sure that the page is deleted from or added to the
+> > correct lruvec list. So add a VM_BUG_ON_FOLIO() to catch invalid
+> > users.
+> > 
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/mm_inline.h | 6 ++++++
+> >  mm/vmscan.c               | 1 -
+> >  2 files changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+> > index ac32125745ab..30d2393da613 100644
+> > --- a/include/linux/mm_inline.h
+> > +++ b/include/linux/mm_inline.h
+> > @@ -97,6 +97,8 @@ void lruvec_add_folio(struct lruvec *lruvec, struct folio *folio)
+> >  {
+> >  	enum lru_list lru = folio_lru_list(folio);
+> >  
+> > +	VM_BUG_ON_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
+> > +
+> >  	update_lru_size(lruvec, lru, folio_zonenum(folio),
+> >  			folio_nr_pages(folio));
+> >  	if (lru != LRU_UNEVICTABLE)
+> > @@ -114,6 +116,8 @@ void lruvec_add_folio_tail(struct lruvec *lruvec, struct folio *folio)
+> >  {
+> >  	enum lru_list lru = folio_lru_list(folio);
+> >  
+> > +	VM_BUG_ON_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
+> > +
+> >  	update_lru_size(lruvec, lru, folio_zonenum(folio),
+> >  			folio_nr_pages(folio));
+> >  	/* This is not expected to be used on LRU_UNEVICTABLE */
+> > @@ -131,6 +135,8 @@ void lruvec_del_folio(struct lruvec *lruvec, struct folio *folio)
+> >  {
+> >  	enum lru_list lru = folio_lru_list(folio);
+> >  
+> > +	VM_BUG_ON_FOLIO(!folio_matches_lruvec(folio, lruvec), folio);
+> > +
+> >  	if (lru != LRU_UNEVICTABLE)
+> >  		list_del(&folio->lru);
+> >  	update_lru_size(lruvec, lru, folio_zonenum(folio),
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 761d5e0dd78d..6c9e2eafc8f9 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -2281,7 +2281,6 @@ static unsigned int move_pages_to_lru(struct list_head *list)
+> >  			continue;
+> >  		}
+> >  
+> > -		VM_BUG_ON_PAGE(!folio_matches_lruvec(folio, lruvec), page);
 > 
-> I agree with Sean that a NR_VIRT stat would be inaccurate by omission,
-> unless we account for all KVM allocations under this stat. This might
-> be an unnecessary burden according to what Sean said, as most other
-> allocations scale linearly with the number of vCPUs or the memory
-> assigned to the VM.
+> The commit log describes well why we need to add new BUG_ON's. Please, add
+> something on why this is removed.
+>
 
-I think it's fine to table the addition of NR_VIRT for now. My
-conclusion from this discussion was just that if we do want to add
-more KVM-related allocation sites later on, they likely would be
-something separate and not share an item with the shadow tables. This
-simplifies the discussion around how to present the shadow tables.
+OK. Will do in v5.
 
-That said, stats can be incremental and still useful. memory.current
-itself lies by ommission. It's more important to catch what's of
-significance and allow users to narrow down pathological cases.
-
-> I don't have enough context to say whether we should piggyback KVM MMU
-> pages to the existing NR_PAGETABLE item, but from a high level it
-> seems like it would be more helpful if they are a separate stat.
-> Anyway, I am willing to go with whatever Sean thinks is best.
-
-Somebody should work this out and put it into a changelog. It's
-permanent ABI.
+Thanks. 
