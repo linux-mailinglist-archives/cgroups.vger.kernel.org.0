@@ -2,97 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECD35338EE
-	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 10:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537BB533A08
+	for <lists+cgroups@lfdr.de>; Wed, 25 May 2022 11:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbiEYI7W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 May 2022 04:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S237872AbiEYJis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 May 2022 05:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbiEYI7W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 May 2022 04:59:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB916FA2C;
-        Wed, 25 May 2022 01:59:20 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 019C41F905;
-        Wed, 25 May 2022 08:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653469159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AdJCYZHOyhpjXySt6nTPMBOK5Q7ap+5mhsb0yD0IbJk=;
-        b=aiV6xLIl8yHWP30wU/K3GtbE85ZdBM0U1BgBzJcKlHVA+4+eXIlhgfUdcIjT7dEY9LCayY
-        qdR0ughVWk+eDMKIj1MpdBpoaBSWF8+Uz2ja25zdBKLZBcBtbHqJdJEWm2SbGqjXX7AsZz
-        UMe64oVsol7td+qJimhHkcqUGFKpgnI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7B3F12C142;
-        Wed, 25 May 2022 08:59:18 +0000 (UTC)
-Date:   Wed, 25 May 2022 10:59:18 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH] memcg: provide reclaim stats via 'memory.reclaim'
-Message-ID: <Yo3v5k8UBNHF6QRi@dhcp22.suse.cz>
-References: <20220518223815.809858-1-vaibhav@linux.ibm.com>
- <YoYj4sLJfGke5IGT@dhcp22.suse.cz>
- <87zgjcg4xs.fsf@vajain21.in.ibm.com>
- <YodDaFVeU33bu7yQ@dhcp22.suse.cz>
- <CAJD7tkYwv2LDZeV2F5pxuniw7LCNjBapDCm3WuRhzwTH-jN3PA@mail.gmail.com>
- <YozFZI2euSjWPgDb@cmpxchg.org>
- <CAJD7tkZxvmnrrjc4yAe5mC+SL-MZqMkn21yjetiLYyq0B=AhtA@mail.gmail.com>
+        with ESMTP id S237803AbiEYJir (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 May 2022 05:38:47 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7516567
+        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 02:38:47 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id v5-20020a17090a7c0500b001df84fa82f8so4530829pjf.5
+        for <cgroups@vger.kernel.org>; Wed, 25 May 2022 02:38:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Sl7ih2YcYfsKEJm1KeaU131K5lwzTZba3+OLLF53Vww=;
+        b=Rn2pap2S0KViSmWOIIHDkjxdgyfSovtzuKxNe2Ls2oS3VWSeEsTOBJ7CaNAkB8SxJo
+         gCC717pKh8MadpjyqV8DcX8KykwT4iGOgd66to1uZTIxylcRuPrzke0u5sn2RHbXhCM0
+         yy/02qaaTXJyJlqE/KyvV9jXXe7H6GdcX9qcNV9ovWcGxqfw5acK3KAh3EAPjtm9fxZv
+         4WtI49bHN3Y/EV44y9ND2e4WUKF1EQxQX381CosCpZiOhaw6JWbF++Cxnv3sQRKq7Stq
+         KlHpR4b8Ab1tvHM2RpmS3ctwg2v9j3oYfsnU8Bu+djUNashMDbSsk/LuKGGz7vylEvab
+         LwMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Sl7ih2YcYfsKEJm1KeaU131K5lwzTZba3+OLLF53Vww=;
+        b=bKUiuDCJ+ghevmwFawOQN+pG7cIXzESwPz2ClNYQLMv9U54vDxmOULLUO7eeYJNCyb
+         PnYNr3TieQ13yBhMUG90LdQJz1p/RDS/gJmH+23vxyxjX7PFDi0UulBAqiaPDiFO5ZRF
+         TaMuVAXBRG8lYkhpF5AKYbruDz8f18pWbu1mVaB2BKoOaW3KgJm+rt+ChNPsNlTclI8a
+         EBWsV6Sey8389CnqgFebAaeiRB1+UzO/Ck47zrvzxSWQSOAJtZlSsmj5dtFgTxkS5+iN
+         BBAAcAMr3OA2uHvwjnFE+E0bpyiA+Jx9QPcPxYp3Gfzujp6571DdZ1Gk/iLfNU95X7y7
+         CTgw==
+X-Gm-Message-State: AOAM531DgrNpTvYvPyQtGzRGOp+OofWjVOn9Cs7Y4fQGsMimrch7lVh1
+        WAWUY8PPyNbrsJyBNc1wW7Db9Q==
+X-Google-Smtp-Source: ABdhPJzs4mYbPl2+GVN3dqT2Kjrn2lZklnRuhZcuefWSSk5g14iB9r2baDj7hF1oIxX9Mj3ico58tw==
+X-Received: by 2002:a17:90b:1642:b0:1e0:96b:c3f2 with SMTP id il2-20020a17090b164200b001e0096bc3f2mr9424262pjb.228.1653471526466;
+        Wed, 25 May 2022 02:38:46 -0700 (PDT)
+Received: from localhost ([2408:8207:18da:2310:c40f:7b5:4fa8:df3f])
+        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b0015edb22aba1sm8984602plg.270.2022.05.25.02.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 May 2022 02:38:46 -0700 (PDT)
+Date:   Wed, 25 May 2022 17:38:41 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        longman@redhat.com
+Subject: Re: [PATCH v4 02/11] mm: memcontrol: introduce
+ compact_folio_lruvec_lock_irqsave
+Message-ID: <Yo35ITjnDUrvLpfC@FVFYT0MHHV2J.googleapis.com>
+References: <20220524060551.80037-1-songmuchun@bytedance.com>
+ <20220524060551.80037-3-songmuchun@bytedance.com>
+ <Yo0wj9OAPptmUoWM@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJD7tkZxvmnrrjc4yAe5mC+SL-MZqMkn21yjetiLYyq0B=AhtA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <Yo0wj9OAPptmUoWM@cmpxchg.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 24-05-22 12:01:01, Yosry Ahmed wrote:
-> On Tue, May 24, 2022 at 4:45 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Mon, May 23, 2022 at 03:50:34PM -0700, Yosry Ahmed wrote:
-> > > I think it might be useful to have a dedicated entry in memory.stat
-> > > for proactively reclaimed memory. A case where this would be useful is
-> > > tuning and evaluating userspace proactive reclaimers. For instance, if
-> > > a userspace agent is asking the kernel to reclaim 100M, but it could
-> > > only reclaim 10M, then most probably the proactive reclaimer is not
-> > > using a good methodology to figure out how much memory do we need to
-> > > reclaim.
-> > >
-> > > IMO this is more useful, and a superset of just reading the last
-> > > reclaim request status through memory.reclaim (read stat before and
-> > > after).
-> >
-> > +1
+On Tue, May 24, 2022 at 03:22:55PM -0400, Johannes Weiner wrote:
+> On Tue, May 24, 2022 at 02:05:42PM +0800, Muchun Song wrote:
+> > If we reuse the objcg APIs to charge LRU pages, the folio_memcg()
+> > can be changed when the LRU pages reparented. In this case, we need
+> > to acquire the new lruvec lock.
+> > 
+> >     lruvec = folio_lruvec(folio);
+> > 
+> >     // The page is reparented.
+> > 
+> >     compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+> > 
+> >     // Acquired the wrong lruvec lock and need to retry.
+> > 
+> > But compact_lock_irqsave() only take lruvec lock as the parameter,
+> > we cannot aware this change. If it can take the page as parameter
+> > to acquire the lruvec lock. When the page memcg is changed, we can
+> > use the folio_memcg() detect whether we need to reacquire the new
+> > lruvec lock. So compact_lock_irqsave() is not suitable for us.
+> > Similar to folio_lruvec_lock_irqsave(), introduce
+> > compact_folio_lruvec_lock_irqsave() to acquire the lruvec lock in
+> > the compaction routine.
+> > 
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > 
-> It might also be useful to have a breakdown of this by memory type:
-> file, anon, or shrinkers.
+> This looks generally good to me.
 > 
-> It would also fit in nicely with a potential type=file/anon/shrinker
-> argument to memory.reclaim. Thoughts on this?
+> It did raise the question how deferencing lruvec is safe before the
+> lock is acquired when reparenting can race. The answer is in the next
+> patch when you add the rcu_read_lock(). Since the patches aren't big,
+> it would probably be better to merge them.
+>
 
-Can we start simple and see what real usecases actually will need? 
--- 
-Michal Hocko
-SUSE Labs
+Will do in v5.
+ 
+> > @@ -509,6 +509,29 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+> >  	return true;
+> >  }
+> >  
+> > +static struct lruvec *
+> > +compact_folio_lruvec_lock_irqsave(struct folio *folio, unsigned long *flags,
+> > +				  struct compact_control *cc)
+> > +{
+> > +	struct lruvec *lruvec;
+> > +
+> > +	lruvec = folio_lruvec(folio);
+> > +
+> > +	/* Track if the lock is contended in async mode */
+> > +	if (cc->mode == MIGRATE_ASYNC && !cc->contended) {
+> > +		if (spin_trylock_irqsave(&lruvec->lru_lock, *flags))
+> > +			goto out;
+> > +
+> > +		cc->contended = true;
+> > +	}
+> > +
+> > +	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+> 
+> Can you implement this on top of the existing one?
+> 
+> 	lruvec = folio_lruvec(folio);
+> 	compact_lock_irqsave(&lruvec->lru_lock, flags);
+> 	lruvec_memcg_debug(lruvec, folio);
+> 	return lruvec;
+> 
+
+I'll do a try. Thanks for your suggestions.
