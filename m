@@ -2,94 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D22D535399
-	for <lists+cgroups@lfdr.de>; Thu, 26 May 2022 20:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671F9535456
+	for <lists+cgroups@lfdr.de>; Thu, 26 May 2022 22:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347383AbiEZSzH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 May 2022 14:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
+        id S233282AbiEZURe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 May 2022 16:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348563AbiEZSzE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 May 2022 14:55:04 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4FBCC169;
-        Thu, 26 May 2022 11:55:02 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 137so2029788pgb.5;
-        Thu, 26 May 2022 11:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JdImCzgSPz0H+mIzVDv7OFJ66SmMuOrOg3W+mTgl2b8=;
-        b=iyo4DkmN0bT2b6K66vlwNX8B0+jYAq4KpN+s1rvNcR6rzI68koNDIx7pAfkXhb9yPp
-         TBZ3zkWl4mgRPOi7Cqc7gKvXu/8HNeQpxnxnY+mjwWqbFI+B/mV8WKWDWdNPLe1xNzix
-         ZQNTk2uaN+a4ZPNPSH3SOmTbm6OJTOK24u1x+/0alfhkxLHzOXWZrDf+yrltDPwhayMu
-         y5vrXBezGsB26WB2ivlwNSuXP08LsF7yTLW9+zxXlJ0MbwOVY+H3LyPuf+VF/4POoHRu
-         8OMZpNMvCITCIJ3qV1bIMAZCUY8O2eSx5+NlqQNqjkmMM+1wmGOMiUVNZk7hJYFKV5iQ
-         fJtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JdImCzgSPz0H+mIzVDv7OFJ66SmMuOrOg3W+mTgl2b8=;
-        b=4pWaAdBaslQAgva20dGbo13FWLWrJfqKKqha2kVe/3FnF1XPCsJqChf/Wu9nzCqBFW
-         M+Gx2ksJ8DL24ypc9Hbb9cSOWkNPAYbUMrQfLA3kCoSksha7LXyTt7fHoirTsgVeMN6F
-         hPwNYtoUhGsToJUGWT7UEzA7xNbMKHlEpYm0lMiDYGjwu3NYOhUoda1VqPzS7kXuM3QO
-         0K3CI16wzebOp5kv+SYQTmsPSr0N87yaR8qRJVVFVBX1tHVmC6SNj3psmTsrml4K/p58
-         mDV5GaOtqTrij2tJqVTM9Y36P6X0kGoHvDQhkx/0INI+fKY9ZrvGPt5sekMI/iDlo3Kq
-         43sg==
-X-Gm-Message-State: AOAM530iiasmxKTEsjjGNlZw70uSrDUf0+LIHbANLzly4DXbqlohgFAk
-        TTdYEfPX83w2mcZbdtm/GBI=
-X-Google-Smtp-Source: ABdhPJxEI1mid1l84j+LecJ0uD8noGSrwb+fg3wwH5yITMvbO0acen43mKUweAuvykyfeDd6NdjQjQ==
-X-Received: by 2002:a63:4758:0:b0:3f6:e04:2ba4 with SMTP id w24-20020a634758000000b003f60e042ba4mr33749043pgk.100.1653591301971;
-        Thu, 26 May 2022 11:55:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:aafd])
-        by smtp.gmail.com with ESMTPSA id 66-20020a621545000000b0051849bc0c23sm1843481pfv.23.2022.05.26.11.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 May 2022 11:55:01 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 26 May 2022 08:54:59 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chen Wandun <chenwandun@huawei.com>, lizefan.x@bytedance.com,
-        surenb@google.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] psi: dont alloc memory for psi by default
-Message-ID: <Yo/NAytP6mnmeW2M@slm.duckdns.org>
-References: <20220526122656.256274-1-chenwandun@huawei.com>
- <Yo+mXVefsRSxjTMY@cmpxchg.org>
+        with ESMTP id S231177AbiEZURd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 May 2022 16:17:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDF4FF583
+        for <cgroups@vger.kernel.org>; Thu, 26 May 2022 13:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653596251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KcZz6yVLgZ62yrFoGOM5DElgQzD6OwyWHQ72tERIC7w=;
+        b=N7dvC4O/ULBzOmQbXN11u4LrUcSGzunlR9vocUMbkG/7APyoPg/8q0fJ8H+l9yR+vyaKj8
+        g+eY8NKsezseF/4949q7taNi7k7bFBYSlgw+ZQ42NU47KlWXNMphOg4pnSEUtWnckIni81
+        Gvis44TkSUZqxVey52RWkwqe0WB3nJ0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-511-dYebSbIfM4yLfnBJjQQ3eg-1; Thu, 26 May 2022 16:17:28 -0400
+X-MC-Unique: dYebSbIfM4yLfnBJjQQ3eg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B89FF185A7A4;
+        Thu, 26 May 2022 20:17:27 +0000 (UTC)
+Received: from [10.22.8.143] (unknown [10.22.8.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 389B12026D64;
+        Thu, 26 May 2022 20:17:27 +0000 (UTC)
+Message-ID: <9fe57cf7-9d21-3f91-ef27-e046b426c219@redhat.com>
+Date:   Thu, 26 May 2022 16:17:27 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yo+mXVefsRSxjTMY@cmpxchg.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH v4 03/11] mm: memcontrol: make lruvec lock safe when LRU
+ pages are reparented
+Content-Language: en-US
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com
+References: <20220524060551.80037-1-songmuchun@bytedance.com>
+ <20220524060551.80037-4-songmuchun@bytedance.com>
+ <Yo0xmKOkBkhRy+bq@cmpxchg.org> <Yo38mlkMBFz2h+yP@FVFYT0MHHV2J.googleapis.com>
+ <Yo4hVw7B+bUlMzLX@cmpxchg.org> <Yo4pPw+IHPBZvZUv@FVFYT0MHHV2J.googleapis.com>
+ <Yo5B1tLcYPUoaACS@cmpxchg.org> <Yo5NdncOsqL0xP8Q@FVFYT0MHHV2J.googleapis.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <Yo5NdncOsqL0xP8Q@FVFYT0MHHV2J.googleapis.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 26, 2022 at 12:10:05PM -0400, Johannes Weiner wrote:
-> On Thu, May 26, 2022 at 08:26:56PM +0800, Chen Wandun wrote:
-> > Memory about struct psi_group is allocated by default for
-> > each cgroup even if psi_disabled is true, in this case, these
-> > allocated memory is waste, so alloc memory for struct psi_group
-> > only when psi_disabled is false.
-> > 
-> > Signed-off-by: Chen Wandun <chenwandun@huawei.com>
-> 
-> Looks good to me,
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Tejun, would you mind taking this through the cgroup tree?
+On 5/25/22 11:38, Muchun Song wrote:
+> On Wed, May 25, 2022 at 10:48:54AM -0400, Johannes Weiner wrote:
+>> On Wed, May 25, 2022 at 09:03:59PM +0800, Muchun Song wrote:
+>>> On Wed, May 25, 2022 at 08:30:15AM -0400, Johannes Weiner wrote:
+>>>> On Wed, May 25, 2022 at 05:53:30PM +0800, Muchun Song wrote:
+>>>>> On Tue, May 24, 2022 at 03:27:20PM -0400, Johannes Weiner wrote:
+>>>>>> On Tue, May 24, 2022 at 02:05:43PM +0800, Muchun Song wrote:
+>>>>>>> @@ -1230,10 +1213,23 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio)
+>>>>>>>    */
+>>>>>>>   struct lruvec *folio_lruvec_lock(struct folio *folio)
+>>>>>>>   {
+>>>>>>> -	struct lruvec *lruvec = folio_lruvec(folio);
+>>>>>>> +	struct lruvec *lruvec;
+>>>>>>>   
+>>>>>>> +	rcu_read_lock();
+>>>>>>> +retry:
+>>>>>>> +	lruvec = folio_lruvec(folio);
+>>>>>>>   	spin_lock(&lruvec->lru_lock);
+>>>>>>> -	lruvec_memcg_debug(lruvec, folio);
+>>>>>>> +
+>>>>>>> +	if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+>>>>>>> +		spin_unlock(&lruvec->lru_lock);
+>>>>>>> +		goto retry;
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>> +	/*
+>>>>>>> +	 * Preemption is disabled in the internal of spin_lock, which can serve
+>>>>>>> +	 * as RCU read-side critical sections.
+>>>>>>> +	 */
+>>>>>>> +	rcu_read_unlock();
+>>>>>> The code looks right to me, but I don't understand the comment: why do
+>>>>>> we care that the rcu read-side continues? With the lru_lock held,
+>>>>>> reparenting is on hold and the lruvec cannot be rcu-freed anyway, no?
+>>>>>>
+>>>>> Right. We could hold rcu read lock until end of reparting.  So you mean
+>>>>> we do rcu_read_unlock in folio_lruvec_lock()?
+>>>> The comment seems to suggest that disabling preemption is what keeps
+>>>> the lruvec alive. But it's the lru_lock that keeps it alive. The
+>>>> cgroup destruction path tries to take the lru_lock long before it even
+>>>> gets to synchronize_rcu(). Once you hold the lru_lock, having an
+>>>> implied read-side critical section as well doesn't seem to matter.
+>>>>
+>>> Well, I thought that spinlocks have implicit read-side critical sections
+>>> because it disables preemption (I learned from the comments above
+>>> synchronize_rcu() that says interrupts, preemption, or softirqs have been
+>>> disabled also serve as RCU read-side critical sections).  So I have a
+>>> question: is it still true in a PREEMPT_RT kernel (I am not familiar with
+>>> this)?
+>> Yes, but you're missing my point.
+>>
+>>>> Should the comment be deleted?
+>>> I think we could remove the comments. If the above question is false, seems
+>>> like we should continue holding rcu read lock.
+>> It's true.
+>>
+> Thanks for your answer.
+>
+>> But assume it's false for a second. Why would you need to continue
+>> holding it? What would it protect? The lruvec would be pinned by the
+>> spinlock even if it DIDN'T imply an RCU lock, right?
+>>
+>> So I don't understand the point of the comment. If the implied RCU
+>> lock is protecting something not covered by the bare spinlock itself,
+>> it should be added to the comment. Otherwise, the comment should go.
+>>
+> Got it. Thanks for your nice explanation. I'll remove
+> the comment here.
 
-Will do once rc1 drops.
+Note that there is a similar comment in patch 6 which may have to be 
+removed as well.
 
-Thanks.
+Cheers,
+Longman
 
--- 
-tejun
