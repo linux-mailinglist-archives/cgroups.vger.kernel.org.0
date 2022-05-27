@@ -2,107 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCFC5366AD
-	for <lists+cgroups@lfdr.de>; Fri, 27 May 2022 19:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E075366F3
+	for <lists+cgroups@lfdr.de>; Fri, 27 May 2022 20:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236171AbiE0Rr7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 27 May 2022 13:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        id S1353924AbiE0SeI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 May 2022 14:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbiE0Rr6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 27 May 2022 13:47:58 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E21717A88;
-        Fri, 27 May 2022 10:47:56 -0700 (PDT)
-Date:   Fri, 27 May 2022 10:47:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1653673673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GyZxhrFIbciyaIa9/uGSSo/bdh7XAme4AdSjV5SMRRg=;
-        b=ZqRzG1adM/lY8etIuMIydjIQZ2VDwDQ5EbKSiqF0cCHyjgI7PSsx0GyLAGXqymvqrQRzFy
-        m6d0oBpA7fhs0ygGeSr6RnfWTd1tWH9vTAM0+lt4j3iZs9fDLjDmE6+9DdMx46FFB12loF
-        fpzD0JKuyQ8nOhyDo8hiz7eW4QtIg5s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Vasily Averin <vvs@openvz.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH] XArray: handle XA_FLAGS_ACCOUNT in xas_split_alloc
-Message-ID: <YpEOwrBe2UzJZr9E@carbon>
-References: <348dc099-737d-94ba-55ad-2db285084c73@openvz.org>
- <YpAnqqY/c3Y5ZkPG@casper.infradead.org>
- <CALvZod7iyO5Ti5xhzq36UjDFNAmfEyPk1MQv_t4kUHKuPCeNng@mail.gmail.com>
- <d4e81087-d057-4edb-5df0-47d99a1c72d9@openvz.org>
+        with ESMTP id S235449AbiE0SeH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 May 2022 14:34:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B8B7CDE9
+        for <cgroups@vger.kernel.org>; Fri, 27 May 2022 11:34:05 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id l30so6883386wrb.8
+        for <cgroups@vger.kernel.org>; Fri, 27 May 2022 11:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZMRaR78nxxjwROTv5Xv0uCrlGpUNKsmrgGJVBdvr8Ow=;
+        b=MkzqrGgvYlJnACcMhuImZMacQWLHV1sfIdXNuvsTHnrOm/OtJW/K9hyD3QxlczsLoT
+         y8wk264wphMEIWY/RDJ7JWPjvXefBQcB7eVBOUBhZ+RsMwz/xaX7hq5oPUFVoNm6gk+9
+         ECC8TXoBKcjMQzd/Lx+VaeiZUjV0ikBmp5ZprAw/qhOBi6WaPZolyclGk7kbaG4wUmNU
+         +mIFZCiGrm+cA09ar5e2i9xVloL7GuFnwLMsoJoJXN3aAZ1DbrqnVYdqcioLJkScP577
+         ZEsHAj7/WcJolt2zrK/cc8Q5BlFMYbDm2Oga3A+8NHOYgCiMkGz8pf41smTE0Irti5Jf
+         eM3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZMRaR78nxxjwROTv5Xv0uCrlGpUNKsmrgGJVBdvr8Ow=;
+        b=duz4JnahHvN4WI+9JtFWRlN7OGpSDTgEVq/116AGKgxyVUBi+6SqpToOzP0dVliexP
+         pFXWzwlVBySrsFaneCjEJySokviW4f21KDN4XEOIwa74VzSKfthEpj8FN4HEFaT1T4rY
+         phE77C6qSS0wQkxzAHFGh2V54Vm3C8CUJTDsZEHzpcvJYbHJUVZ5ueZ9PzjSpP29KIun
+         MAgzwaxFNcv6H9MR6N19cELti5rVEm8lnOyL5AYTJW7ej8duK+LIwqXnu6+677MNUxjg
+         xCWz7NV541Cjy42ncluzfA4pdoei9v+Y3NK+URo7tgBOQDC3YncKWHgzrceqtoiUKILr
+         hMoQ==
+X-Gm-Message-State: AOAM532i2gvMXBD8ISLVvKftwouI4blb1vwOJ06yVqpFIr9p0hX4yu3r
+        VzTgIuwrhkPRjbq6ThMsf5ShwGMgyW0i668Ve/8bhQ==
+X-Google-Smtp-Source: ABdhPJxUkKLq8UKhcdaeqCHY4EBxsrPSLnU5/L22u7NUw4uGgA00AplmrdnobCWk7FoVQrgXmXTGsKhVFFO9PCXmQT8=
+X-Received: by 2002:a05:6000:544:b0:20f:ca41:cc4c with SMTP id
+ b4-20020a056000054400b0020fca41cc4cmr26548956wrf.582.1653676444165; Fri, 27
+ May 2022 11:34:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d4e81087-d057-4edb-5df0-47d99a1c72d9@openvz.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJD7tkY7JF25XXUFq2mGroetMkfo-2zGOaQC94pjZE3D42+oaw@mail.gmail.com>
+ <Yn2TGJ4vZ/fst+CY@cmpxchg.org> <Yn2YYl98Vhh/UL0w@google.com>
+ <Yn5+OtZSSUZZgTQj@cmpxchg.org> <Yn6DeEGLyR4Q0cDp@google.com>
+ <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
+ <CAJD7tka-5+XRkthNV4qCg8woPCpjcwynQoRBame-3GP1L8y+WQ@mail.gmail.com>
+ <YoeoLJNQTam5fJSu@cmpxchg.org> <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
+ <Yo4Ze+DZrLqn0PeU@cmpxchg.org> <Yo7MHA2aUaprvgl8@google.com>
+In-Reply-To: <Yo7MHA2aUaprvgl8@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 27 May 2022 11:33:27 -0700
+Message-ID: <CAJD7tkYoz=rYvBV3tcp4aLgiyEtr-sBwbncFduZsOq+c8wk5sA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Oliver Upton <oupton@google.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 27, 2022 at 02:22:19PM +0300, Vasily Averin wrote:
-> On 5/27/22 04:40, Shakeel Butt wrote:
-> > On Thu, May 26, 2022 at 6:21 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >>
-> >> On Wed, May 25, 2022 at 11:26:37AM +0300, Vasily Averin wrote:
-> >>> Commit 7b785645e8f1 ("mm: fix page cache convergence regression")
-> >>> added support of new XA_FLAGS_ACCOUNT flag into all Xarray allocation
-> >>> functions. Later commit 8fc75643c5e1 ("XArray: add xas_split")
-> >>> introduced xas_split_alloc() but missed about XA_FLAGS_ACCOUNT
-> >>> processing.
-> >>
-> >> Thanks, Vasily.
-> >>
-> >> Johannes, Shakeel, is this right?  I don't fully understand the accounting
-> >> stuff.
-> >>
-> > 
-> > If called from __filemap_add_folio() then this is correct.
-> > 
-> > However from split_huge_page_to_list(), we can not use the memcg from
-> > current as that codepath is called from reclaim which can be triggered
-> > by processes of other memcgs.
-> Btw, Shakeel, Johannes,
-> I would like to understand, when Xarray should use XA_FLAGS_ACCOUNT ?
-> 
-> From my point of view, this should be useless:
-> a) if Xarray stores some index (idr?) - his memory is quite small,
-> and his accounting can be ignored.
-> b) if Xarray stores some accounted - the size of the corresponding Xarray
-> infrastructure is usually significantly smaller than the size of the stored object,
-> sо his accounting can be skipped too.
-> c) if Xarray stores some non-accounted objects - it makes no sense to account 
-> corresponding Xarray infrastructure. In case of necessary it makes much more sense
-> to enable accounting for stored objects (and return to case b).
-> 
-> Am I missed something important perhaps?
-> 
-> I looked for the description of 7b785645e8f1, but o be honest I'm still not sure
-> that I understand correctly why XA_FLAGS_ACCOUNT flag solved the described problem.
-> 
-> Could you please explain this in more details?
-> 
-> Was it because the non-accounted Xarray kept a reference to the stored object
-> and thus prevents it from being reclaimed?
-> 
-> If so, was it some special case, or should it affect all such cases,
-> and my b) statement above is not correct?
+On Wed, May 25, 2022 at 5:39 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, May 25, 2022, Johannes Weiner wrote:
+> > On Tue, May 24, 2022 at 03:31:52PM -0700, Yosry Ahmed wrote:
+> > > I don't have enough context to say whether we should piggyback KVM MMU
+> > > pages to the existing NR_PAGETABLE item, but from a high level it
+> > > seems like it would be more helpful if they are a separate stat.
+> > > Anyway, I am willing to go with whatever Sean thinks is best.
+> >
+> > Somebody should work this out and put it into a changelog. It's
+> > permanent ABI.
+>
+> After a lot of waffling, my vote is to add a dedicated NR_SECONDARY_PAGETABLE.
+>
+> It's somewhat redundant from a KVM perspective, as NR_SECONDARY_PAGETABLE will
+> scale with KVM's per-VM pages_{4k,2m,1g} stats unless the guest is doing something
+> bizarre, e.g. accessing only 4kb chunks of 2mb pages so that KVM is forced to
+> allocate a large number of page tables even though the guest isn't accessing that
+> much memory.
+>
+> But, someone would need to either understand how KVM works to make that connection,
+> or know (or be told) to go look at KVM's stats if they're running VMs to better
+> decipher the stats.
+>
+> And even in the little bit of time I played with this, I found having
+> nr_page_table_pages side-by-side with nr_secondary_page_table_pages to be very
+> informative.  E.g. when backing a VM with THP versus HugeTLB,
+> nr_secondary_page_table_pages is roughly the same, but nr_page_table_pages is an
+> order of a magnitude higher with THP.  I'm guessing the THP behavior is due to
+> something triggering DoubleMap, but now I want to find out why that's happening.
+>
+> So while I'm pretty sure a clever user could glean the same info by cross-referencing
+> NR_PAGETABLE stats with KVM stats, I think having NR_SECONDARY_PAGETABLE will at the
+> very least prove to be helpful for understanding tradeoffs between VM backing types,
+> and likely even steer folks towards potential optimizations.
+>
+> Baseline:
+>   # grep page_table /proc/vmstat
+>   nr_page_table_pages 2830
+>   nr_secondary_page_table_pages 0
+>
+> THP:
+>   # grep page_table /proc/vmstat
+>   nr_page_table_pages 7584
+>   nr_secondary_page_table_pages 140
+>
+> HugeTLB:
+>   # grep page_table /proc/vmstat
+>   nr_page_table_pages 3153
+>   nr_secondary_page_table_pages 153
+>
 
-
-It's all about shadow entries, which are small, so b) is not true for them.
-There is a good description on how it works on top of mm/workingset.c
+Interesting findings! Thanks for taking the time to look into this, Sean!
+I will refresh this patchset and summarize the discussion in the
+commit message, and also fix some nits on the KVM side. Does this
+sound good to everyone?
