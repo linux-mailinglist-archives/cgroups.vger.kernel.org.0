@@ -2,49 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B75F536B28
-	for <lists+cgroups@lfdr.de>; Sat, 28 May 2022 08:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BBB536B9A
+	for <lists+cgroups@lfdr.de>; Sat, 28 May 2022 10:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355864AbiE1Gak (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 28 May 2022 02:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
+        id S236817AbiE1ISM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 28 May 2022 04:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355854AbiE1GaY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 28 May 2022 02:30:24 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3F66007E;
-        Fri, 27 May 2022 23:30:08 -0700 (PDT)
-Received: from kwepemi500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L9BXl3LnNzRhW7;
-        Sat, 28 May 2022 14:27:03 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi500005.china.huawei.com (7.221.188.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 28 May 2022 14:30:06 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 28 May
- 2022 14:30:05 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <mkoutny@suse.com>, <axboe@kernel.dk>,
-        <ming.lei@redhat.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH -next v5 8/8] blk-throttle: clean up flag 'THROTL_TG_PENDING'
-Date:   Sat, 28 May 2022 14:43:30 +0800
-Message-ID: <20220528064330.3471000-9-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220528064330.3471000-1-yukuai3@huawei.com>
-References: <20220528064330.3471000-1-yukuai3@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        with ESMTP id S235940AbiE1ISL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 28 May 2022 04:18:11 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CAEDAB
+        for <cgroups@vger.kernel.org>; Sat, 28 May 2022 01:18:08 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id rs12so12395220ejb.13
+        for <cgroups@vger.kernel.org>; Sat, 28 May 2022 01:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=1CT1M4q9x/F1LvMuC7ejZ75BshMSN5GVHe0OC5UIK3I=;
+        b=IqkEfDGcjR6ZSjvTXzpfjz9jvMRNgTDZTCwKII1/mNVN+pHuwaUKb7HOs3ttYIZ5Oq
+         IkI81WvAgM5OSkNCQK1HsOpC4BbqRksGW6/3KOrN56OzxW0igQM41STGSZintMntb238
+         ZTKLHecIdPgDAR4JjqyHESC6A/8c3yx4DypzZIwRpvjiz/OfmU4JrRzuJ2Illq8Lwuln
+         ve+mlvLfGGU4qp1/cZMTppci1++lbF9IQfzMwVyB1Mph0k+RTA3FAb74FHM0QycneFcL
+         x30PVXifOXuM259SLbBuQeH+sTz8uwOrk5koVuclcSLYNWyZ0AL4CMt45Mr6T0neIw4L
+         /eOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=1CT1M4q9x/F1LvMuC7ejZ75BshMSN5GVHe0OC5UIK3I=;
+        b=5YnNjlqYtXuHVVOb8mCUpwAhCgfEl3t6G4pva0X1/mDwuCEU08YMoOFbhuHE4vi6gO
+         592aQsT41gWLTKlB5azjyIAjKjWIN/hNGMBWWbbZlCfRZ6pjn3La8abnEaT5EuOD7Frk
+         2yLxhkJwno/V8iQHFvbjKOFTXG81UXhe9eaT4FF/4eZaM49I55ksGgrnxU/OXAJuRrKg
+         9/Lq/9h7iA51VrYKScGSCNbH5AmTgu2JKrVNrk/xuEbHnHmJVBu+wKLAeSh6CAwuiWKp
+         DPOn9ujT5ERle2eKKY2CFv9vqSeE/gI4AMyw/lb0dT2A89FGKbiq1ih0CFeQSxpuZYk/
+         3B9A==
+X-Gm-Message-State: AOAM532Hj1VIiy94I2EuTCDiql788rRgXAITZ21h0t3mbY7oH50mNB9P
+        kmqB2OTryw46H2/FHs1CIjjBB00B3FRvGQ==
+X-Google-Smtp-Source: ABdhPJzjmDtnRPCXsFm7fSlHGomICMQNqQhsD569ZC1mBguJl/wzEnkiniwN9KLsoCeVr9EHpoLWcA==
+X-Received: by 2002:a17:907:3f12:b0:6fe:f8c6:257 with SMTP id hq18-20020a1709073f1200b006fef8c60257mr22661053ejc.544.1653725887367;
+        Sat, 28 May 2022 01:18:07 -0700 (PDT)
+Received: from mbp-di-paolo.station (net-93-144-98-177.cust.vodafonedsl.it. [93.144.98.177])
+        by smtp.gmail.com with ESMTPSA id g20-20020a170906955400b006feec47dae9sm2126208ejy.157.2022.05.28.01.18.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 28 May 2022 01:18:06 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH -next v6 0/3] support concurrent sync io for bfq on a
+ specail occasion
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20220523131818.2798712-1-yukuai3@huawei.com>
+Date:   Sat, 28 May 2022 10:18:05 +0200
+Cc:     Jan Kara <jack@suse.cz>, tj@kernel.org, axboe@kernel.dk,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <09387792-EBE6-41CC-89F8-A857ECDE4634@linaro.org>
+References: <20220523131818.2798712-1-yukuai3@huawei.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,88 +73,155 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-All related operations are inside 'queue_lock', there is no need to use
-the flag, we only need to make sure throtl_enqueue_tg() is called when
-the first bio is throttled, and throtl_dequeue_tg() is called when the
-last throttled bio is dispatched.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 22 ++++++++--------------
- block/blk-throttle.h |  7 +++----
- 2 files changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 297ce54ceaa3..fe7f01c61ba8 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -561,23 +561,16 @@ static void tg_service_queue_add(struct throtl_grp *tg)
- 
- static void throtl_enqueue_tg(struct throtl_grp *tg)
- {
--	if (!(tg->flags & THROTL_TG_PENDING)) {
--		tg_service_queue_add(tg);
--		tg->flags |= THROTL_TG_PENDING;
--		tg->service_queue.parent_sq->nr_pending++;
--	}
-+	tg_service_queue_add(tg);
-+	tg->service_queue.parent_sq->nr_pending++;
- }
- 
- static void throtl_dequeue_tg(struct throtl_grp *tg)
- {
--	if (tg->flags & THROTL_TG_PENDING) {
--		struct throtl_service_queue *parent_sq =
--			tg->service_queue.parent_sq;
-+	struct throtl_service_queue *parent_sq = tg->service_queue.parent_sq;
- 
--		throtl_rb_erase(&tg->rb_node, parent_sq);
--		--parent_sq->nr_pending;
--		tg->flags &= ~THROTL_TG_PENDING;
--	}
-+	throtl_rb_erase(&tg->rb_node, parent_sq);
-+	--parent_sq->nr_pending;
- }
- 
- /* Call with queue lock held */
-@@ -1015,8 +1008,9 @@ static void throtl_add_bio_tg(struct bio *bio, struct throtl_qnode *qn,
- 
- 	throtl_qnode_add_bio(bio, qn, &sq->queued[rw]);
- 
-+	if (!sq->nr_queued[READ] && !sq->nr_queued[WRITE])
-+		throtl_enqueue_tg(tg);
- 	sq->nr_queued[rw]++;
--	throtl_enqueue_tg(tg);
- }
- 
- static void tg_update_disptime(struct throtl_grp *tg)
-@@ -1371,7 +1365,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 	throtl_start_new_slice(tg, READ, false);
- 	throtl_start_new_slice(tg, WRITE, false);
- 
--	if (tg->flags & THROTL_TG_PENDING) {
-+	if (sq->nr_queued[READ] || sq->nr_queued[WRITE]) {
- 		tg_update_disptime(tg);
- 		throtl_schedule_next_dispatch(sq->parent_sq, true);
- 	}
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index b8178e6b4d30..f68b95999f83 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -53,10 +53,9 @@ struct throtl_service_queue {
- };
- 
- enum tg_state_flags {
--	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
--	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
--	THROTL_TG_HAS_IOPS_LIMIT = 1 << 2,	/* tg has iops limit */
--	THROTL_TG_CANCELING	= 1 << 3,	/* starts to cancel bio */
-+	THROTL_TG_WAS_EMPTY	= 1 << 0,	/* bio_lists[] became non-empty */
-+	THROTL_TG_HAS_IOPS_LIMIT = 1 << 1,	/* tg has iops limit */
-+	THROTL_TG_CANCELING	= 1 << 2,	/* starts to cancel bio */
- };
- 
- enum {
--- 
-2.31.1
+> Il giorno 23 mag 2022, alle ore 15:18, Yu Kuai <yukuai3@huawei.com> ha =
+scritto:
+>=20
+> Resend these patches just in case v5 end up in spam (for Paolo).
+
+Thank you for resending, I do think I lost some email before.
+
+Paolo
+
+> Changes in v6:
+> - add reviewed-by tag for patch 1
+>=20
+> Changes in v5:
+> - rename bfq_add_busy_queues() to bfq_inc_busy_queues() in patch 1
+> - fix wrong definition in patch 1
+> - fix spelling mistake in patch 2: leaset -> least
+> - update comments in patch 3
+> - add reviewed-by tag in patch 2,3
+>=20
+> Changes in v4:
+> - split bfq_update_busy_queues() to bfq_add/dec_busy_queues(),
+>   suggested by Jan Kara.
+> - remove unused 'in_groups_with_pending_reqs',
+>=20
+> Changes in v3:
+> - remove the cleanup patch that is irrelevant now(I'll post it
+>   separately).
+> - instead of hacking wr queues and using weights tree =
+insertion/removal,
+>   using bfq_add/del_bfqq_busy() to count the number of groups
+>   (suggested by Jan Kara).
+>=20
+> Changes in v2:
+> - Use a different approch to count root group, which is much simple.
+>=20
+> Currently, bfq can't handle sync io concurrently as long as they
+> are not issued from root group. This is because
+> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+> bfq_asymmetric_scenario().
+>=20
+> The way that bfqg is counted into 'num_groups_with_pending_reqs':
+>=20
+> Before this patchset:
+> 1) root group will never be counted.
+> 2) Count if bfqg or it's child bfqgs have pending requests.
+> 3) Don't count if bfqg and it's child bfqgs complete all the requests.
+>=20
+> After this patchset:
+> 1) root group is counted.
+> 2) Count if bfqg have at least one bfqq that is marked busy.
+> 3) Don't count if bfqg doesn't have any busy bfqqs.
+>=20
+> The main reason to use busy state of bfqq instead of 'pending =
+requests'
+> is that bfqq can stay busy after dispatching the last request if =
+idling
+> is needed for service guarantees.
+>=20
+> With the above changes, concurrent sync io can be supported if only
+> one group is activated.
+>=20
+> fio test script(startdelay is used to avoid queue merging):
+> [global]
+> filename=3D/dev/nvme0n1
+> allow_mounted_write=3D0
+> ioengine=3Dpsync
+> direct=3D1
+> ioscheduler=3Dbfq
+> offset_increment=3D10g
+> group_reporting
+> rw=3Drandwrite
+> bs=3D4k
+>=20
+> [test1]
+> numjobs=3D1
+>=20
+> [test2]
+> startdelay=3D1
+> numjobs=3D1
+>=20
+> [test3]
+> startdelay=3D2
+> numjobs=3D1
+>=20
+> [test4]
+> startdelay=3D3
+> numjobs=3D1
+>=20
+> [test5]
+> startdelay=3D4
+> numjobs=3D1
+>=20
+> [test6]
+> startdelay=3D5
+> numjobs=3D1
+>=20
+> [test7]
+> startdelay=3D6
+> numjobs=3D1
+>=20
+> [test8]
+> startdelay=3D7
+> numjobs=3D1
+>=20
+> test result:
+> running fio on root cgroup
+> v5.18-rc1:	   550 Mib/s
+> v5.18-rc1-patched: 550 Mib/s
+>=20
+> running fio on non-root cgroup
+> v5.18-rc1:	   349 Mib/s
+> v5.18-rc1-patched: 550 Mib/s
+>=20
+> Note that I also test null_blk with "irqmode=3D2
+> completion_nsec=3D100000000(100ms) hw_queue_depth=3D1", and tests show
+> that service guarantees are still preserved.
+>=20
+> Follow-up cleanup:
+> =
+https://lore.kernel.org/all/20220521073523.3118246-1-yukuai3@huawei.com/
+>=20
+> Previous versions:
+> RFC: =
+https://lore.kernel.org/all/20211127101132.486806-1-yukuai3@huawei.com/
+> v1: =
+https://lore.kernel.org/all/20220305091205.4188398-1-yukuai3@huawei.com/
+> v2: =
+https://lore.kernel.org/all/20220416093753.3054696-1-yukuai3@huawei.com/
+> v3: =
+https://lore.kernel.org/all/20220427124722.48465-1-yukuai3@huawei.com/
+> v4: =
+https://lore.kernel.org/all/20220428111907.3635820-1-yukuai3@huawei.com/
+> v5: =
+https://lore.kernel.org/all/20220428120837.3737765-1-yukuai3@huawei.com/
+>=20
+> Yu Kuai (3):
+>  block, bfq: record how many queues are busy in bfq_group
+>  block, bfq: refactor the counting of 'num_groups_with_pending_reqs'
+>  block, bfq: do not idle if only one group is activated
+>=20
+> block/bfq-cgroup.c  |  1 +
+> block/bfq-iosched.c | 48 +++-----------------------------------
+> block/bfq-iosched.h | 57 +++++++--------------------------------------
+> block/bfq-wf2q.c    | 35 +++++++++++++++++-----------
+> 4 files changed, 35 insertions(+), 106 deletions(-)
+>=20
+> --=20
+> 2.31.1
+>=20
 
