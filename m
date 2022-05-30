@@ -2,36 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 902685384C0
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 17:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C4653854E
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 17:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbiE3PWX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 11:22:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
+        id S240023AbiE3Psm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 11:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241993AbiE3PVk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 11:21:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FC61C0C86;
-        Mon, 30 May 2022 07:23:22 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 83E9721B02;
-        Mon, 30 May 2022 14:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653920560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R1q2pfo2QzLbUTyCNmaIYF0n/fj7XyAs77ZlAUjQ6ak=;
-        b=lwzC5Fk0mpiDTx3KNaKbU0hkbTWL5JORAz04k/a1jlcG0T/BzcVAhTgQNNKKXmGTqPTrz4
-        LX+DskAB/Ytzxmb9xe7q/xAVI2oE4tZVPSqopcWzPvH5ro6oNis8YpZ9wLQ5oLCuGAqyQw
-        PRdffCQMfEglqhDe1R6XROoKtU4kWYU=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B16172C141;
-        Mon, 30 May 2022 14:22:39 +0000 (UTC)
-Date:   Mon, 30 May 2022 16:22:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        with ESMTP id S242216AbiE3Ps2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 11:48:28 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C68D168D1F
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 08:04:29 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id s68so10346254pgs.10
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HQ1N4ofCE0FRNNVNz7Ejwc9uv4RLnDojLdDFtHXcOM0=;
+        b=UOHCjQRYQOJ0d8oQ+coX3IGMta5po6IRFVkKXGGERa09qLlnww35pEhAE8RFYrvNEh
+         g7dl3TBpN01zrH5w5Zvj/2osjLNrGYpnrF9cEuKJeUXwkLw/zFQKawreydVtAfmquOS7
+         pEQ9G6R2UHElwNduZlhMaxByqfcylwAddIOiNAmxaZUSJdz731a33yBDZaNPZGCG95NC
+         BEyraIJD/cZIDOFfNMSocvxckFWaPV2m0vem4wSHCyuSyKvVoshHU98nZTlvuOrRBj0/
+         uVu9qLUcJ/D8TMv/L6Pssqa/NsNKCjJOaM0Nj3hQ1oM47X9rz7ZFyURx+hREhnYIxMZl
+         TQ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HQ1N4ofCE0FRNNVNz7Ejwc9uv4RLnDojLdDFtHXcOM0=;
+        b=BqzEgbkZ3BSkLlHfuG6v0oCLkzU3mjXJlro3ndhIS7iDDpeAaj4x2iGXuj2wCLUlC+
+         D+BIGYOf/auik6CnpV6UX0HKu1tBjy7jfxl1JhruE3cNlLj74LD8O95o2yPLnxB+0zD2
+         OdPUfWDB6mMz7Inc0XY5xs0YekPrWjq0g1T1iw+pTSrOTQtRTaOPu3YatKf9xGX8330W
+         SH88FNwmOdeWMKsa0Of3NpfzW3FGRIECA2cUeiQGM3uafUiUPnD872cmGgwUa8aIEiQw
+         3eNK4ZPBjqSnHsBix6DibG4oK753MIbjOZ7rke2RjkKj3Zz0cXV0cc0TfDWeu0zywyfp
+         Ppyg==
+X-Gm-Message-State: AOAM530e7dCh/4QnsyJMU2CuMeTo7bwvZygBegSHnU5xyIjaK5etxxb0
+        ztMShH1wzk0WEgMelsF5EWbDqA==
+X-Google-Smtp-Source: ABdhPJx8IDuNFYLfdmyWIjTqL/G5fyCSXwYWny/jWfJoXNed1Z33IwfQHJWhlx+y7KmjBv/Hrqwi+Q==
+X-Received: by 2002:a62:e819:0:b0:518:6a98:b02 with SMTP id c25-20020a62e819000000b005186a980b02mr50782621pfi.74.1653923068523;
+        Mon, 30 May 2022 08:04:28 -0700 (PDT)
+Received: from localhost ([2408:8207:18da:2310:2071:e13a:8aa:cacf])
+        by smtp.gmail.com with ESMTPSA id p6-20020a62ab06000000b0051843980605sm8908344pff.181.2022.05.30.08.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 May 2022 08:04:28 -0700 (PDT)
+Date:   Mon, 30 May 2022 23:04:21 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
 To:     Vasily Averin <vvs@openvz.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -39,90 +56,53 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH mm v3 0/9] memcg: accounting for objects allocated by
- mkdir cgroup
-Message-ID: <YpTTL3Ys35kgYyAW@dhcp22.suse.cz>
+        Michal Hocko <mhocko@suse.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH mm v3 6/9] memcg: enable accounting for percpu allocation
+ of struct cgroup_rstat_cpu
+Message-ID: <YpTc9Xww7Y09HkD8@FVFYT0MHHV2J.googleapis.com>
 References: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
- <3e1d6eab-57c7-ba3d-67e1-c45aa0dfa2ab@openvz.org>
- <YpSwvii5etfnOYC9@dhcp22.suse.cz>
- <ef9f7516-853d-ffe4-9a7a-5e87556bdbbe@openvz.org>
+ <cover.1653899364.git.vvs@openvz.org>
+ <2fbede88-6ef7-4ce7-b3a3-ec349bc2cc06@openvz.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef9f7516-853d-ffe4-9a7a-5e87556bdbbe@openvz.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <2fbede88-6ef7-4ce7-b3a3-ec349bc2cc06@openvz.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 30-05-22 16:09:00, Vasily Averin wrote:
-> On 5/30/22 14:55, Michal Hocko wrote:
-> > On Mon 30-05-22 14:25:45, Vasily Averin wrote:
-> >> Below is tracing results of mkdir /sys/fs/cgroup/vvs.test on 
-> >> 4cpu VM with Fedora and self-complied upstream kernel. The calculations
-> >> are not precise, it depends on kernel config options, number of cpus,
-> >> enabled controllers, ignores possible page allocations etc.
-> >> However this is enough to clarify the general situation.
-> >> All allocations are splited into:
-> >> - common part, always called for each cgroup type
-> >> - per-cgroup allocations
-> >>
-> >> In each group we consider 2 corner cases:
-> >> - usual allocations, important for 1-2 CPU nodes/Vms
-> >> - percpu allocations, important for 'big irons'
-> >>
-> >> common part: 	~11Kb	+  318 bytes percpu
-> >> memcg: 		~17Kb	+ 4692 bytes percpu
-> >> cpu:		~2.5Kb	+ 1036 bytes percpu
-> >> cpuset:		~3Kb	+   12 bytes percpu
-> >> blkcg:		~3Kb	+   12 bytes percpu
-> >> pid:		~1.5Kb	+   12 bytes percpu		
-> >> perf:		 ~320b	+   60 bytes percpu
-> >> -------------------------------------------
-> >> total:		~38Kb	+ 6142 bytes percpu
-> >> currently accounted:	  4668 bytes percpu
-> >>
-> >> - it's important to account usual allocations called
-> >> in common part, because almost all of cgroup-specific allocations
-> >> are small. One exception here is memory cgroup, it allocates a few
-> >> huge objects that should be accounted.
-> >> - Percpu allocation called in common part, in memcg and cpu cgroups
-> >> should be accounted, rest ones are small an can be ignored.
-> >> - KERNFS objects are allocated both in common part and in most of
-> >> cgroups 
-> >>
-> >> Details can be found here:
-> >> https://lore.kernel.org/all/d28233ee-bccb-7bc3-c2ec-461fd7f95e6a@openvz.org/
-> >>
-> >> I checked other cgroups types was found that they all can be ignored.
-> >> Additionally I found allocation of struct rt_rq called in cpu cgroup 
-> >> if CONFIG_RT_GROUP_SCHED was enabled, it allocates huge (~1700 bytes)
-> >> percpu structure and should be accounted too.
-> > 
-> > One thing that the changelog is missing is an explanation why do we need
-> > to account those objects. Users are usually not empowered to create
-> > cgroups arbitrarily. Or at least they shouldn't because we can expect
-> > more problems to happen.
-> > 
-> > Could you clarify this please?
+On Mon, May 30, 2022 at 02:26:36PM +0300, Vasily Averin wrote:
+> struct cgroup_rstat_cpu is percpu allocated for each new cgroup and
+> can consume a significant portion of all allocated memory on nodes
+> with a large number of CPUs.
 > 
-> The problem is actual for OS-level containers: LXC or OpenVz.
-> They are widely used for hosting and allow to run containers
-> by untrusted end-users. Root inside such containers is able
-> to create groups inside own container and consume host memory
-> without its proper accounting.
+> Common part of the cgroup creation:
+> Allocs  Alloc   $1*$2   Sum	Allocation
+> number  size
+> --------------------------------------------
+> 16  ~   352     5632    5632    KERNFS
+> 1   +   4096    4096    9728    (cgroup_mkdir+0xe4)
+> 1       584     584     10312   (radix_tree_node_alloc.constprop.0+0x89)
+> 1       192     192     10504   (__d_alloc+0x29)
+> 2       72      144     10648   (avc_alloc_node+0x27)
+> 2       64      128     10776   (percpu_ref_init+0x6a)
+> 1       64      64      10840   (memcg_list_lru_alloc+0x21a)
+> percpu:
+> 1   +   192     192     192     call_site=psi_cgroup_alloc+0x1e
+> 1   +   96      96      288     call_site=cgroup_rstat_init+0x5f
+> 2       12      24      312     call_site=percpu_ref_init+0x23
+> 1       6       6       318     call_site=__percpu_counter_init+0x22
+> 
+>  '+' -- to be accounted,
+>  '~' -- partially accounted
+> 
+> Signed-off-by: Vasily Averin <vvs@openvz.org>
 
-Is the unaccounted memory really the biggest problem here?
-IIRC having really huge cgroup trees can hurt quite some controllers.
-E.g. how does the cpu controller deal with too many or too deep
-hierarchies?
+Acked-by: Muchun Song <songmuchun@bytedance.com>
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks.
