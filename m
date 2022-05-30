@@ -2,60 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A283A5379E2
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3771D5379DB
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbiE3L26 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 07:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
+        id S233224AbiE3L1a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 07:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235774AbiE3L1K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:27:10 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818F71FCF4
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:02 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id e4so11271621ljb.13
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:02 -0700 (PDT)
+        with ESMTP id S235788AbiE3L1O (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:27:14 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B57E4CD51
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:10 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id l13so16186444lfp.11
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=openvz-org.20210112.gappssmtp.com; s=20210112;
         h=message-id:date:mime-version:user-agent:from:subject:to:cc
          :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=1bz2HF6EsnuVkI8ZLNySbZ6/e4i0Dqd56vDd6/MtYsM=;
-        b=MJH7jgZ0nByKKabpLoAPA5HN9v21BI0dbjoYKv7JTJsZIG9t7CYmKL10/W6A4CAJjz
-         YjoRkjjkc7rnBG4iIl52t8YBffLXDTaOk0FPU+R/iUFJxypPSriGxh9W/Yp0Xb2YBS3n
-         u8rGfnyQ69D7OdxyAxhEqBpRbcEOZtgatuzFi1ROaPTtGWFVuQ8Ynlz3uO4xDFqo8r4l
-         WK/pDR4j7nZ8vJmIiytexPw++UZNwa2TUENNay2Qdqs1hgi/d47tM/IS92zI/+yxh40n
-         /qegCkoMk0oOX1fRJCG8CUX8qr6p2SS7H4vuyz1TCOxloqJz6bEygG1OkLqHyZ3QIEiK
-         J+yA==
+        bh=ZH9yvId2NMAw4oN1iqMKqU61/DZ/rIDZexlE6dKv8SU=;
+        b=qSiaNr2ftUqSRvmOy75IJeNCKAVgq/jO6yIuIwj9lTeotjFVJ4+oMFaIk5uft9Qvbs
+         l+4EitDawXs9/hDAY1ZW4DMfHukqi6UArXkOO1Fsh++NpRhYgntK5BVNeajvyod0xNbd
+         /yEKhndXFUITINHf3AsuCHklX308rL2W0TxU0lyGgS31a7Um1/qC8RkNmyIWqmdjEZqv
+         sBD3tvK7pX9DrDUQh/vJKdquM5bFHwtxZMMOdowmUVGdozFLqM96xAnlkIXWMx6XY71P
+         q0W2yFeBw4MsVyY5vKggC//seES0ntiWnGoRO7EkwhlnsldeBMzNk5fW75QX3HKgwNYo
+         7OeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:from
          :subject:to:cc:references:content-language:in-reply-to
          :content-transfer-encoding;
-        bh=1bz2HF6EsnuVkI8ZLNySbZ6/e4i0Dqd56vDd6/MtYsM=;
-        b=J9MO0IupE9sQ+aRehE/UQ9puV01U5+aTdqfdLrh5M/jJIvTCO6KvJFgGiSJwqNapTM
-         hS/bFLl5HJ4CBW1RXbpYfdEHdemXq4AXSnHq9OKu/7oiftpeSZhDmnOCRz5qcoY0w3td
-         hyRqXfyKP2VSR23aQehlXfh03fReX2d/jLUBXkJEh8qreet1pEDKLUugWrBrrQziQSxg
-         KlHIaOdZagZYivGpDKe22u9pRw5twoLdcbFovkEd/xugQKYW6XlJx0aLJXIDiZiVq7nj
-         Lh+xMEHTJ0YiD7eDPujLMJLgomYG2K0NDbuGC4c5TIYdbBnAlFmCTZheu3iKUdBFTIOr
-         CYZg==
-X-Gm-Message-State: AOAM530KgUCgg5YnDsfXwOAwKxBjRm5o+UPRY3UsjO5Wr0ra+FMEYLYy
-        X/UxS5sGdgMGba0CaEKvgE7eVQ==
-X-Google-Smtp-Source: ABdhPJxchjq+vPEv7BDN5f83/B73zaDF6zRhHb+aUExV2DDt1M6CIZoAIgyJaA82Tud2AlFiPpMv+A==
-X-Received: by 2002:a2e:a448:0:b0:24c:8fe8:f3c6 with SMTP id v8-20020a2ea448000000b0024c8fe8f3c6mr32212835ljn.115.1653910021164;
-        Mon, 30 May 2022 04:27:01 -0700 (PDT)
+        bh=ZH9yvId2NMAw4oN1iqMKqU61/DZ/rIDZexlE6dKv8SU=;
+        b=pBEW1FkKmFbu+tZtJx98dQKZPXjA4APOthB7m18uTONmknSx72cwDLRE1jakV7IOgK
+         9O7KhhDFK0sflYwahVo0+Go1qOroW8UX3M4JKRgZRrvkKPw41yNMq1idpcjI1T68xLHF
+         6q2GHRw1e4ImBB/Rj6+Ktwef6SDxZh/cVVkOEM+RbWpoqYGTVtiO1XkrSRsZSqPpHg7l
+         tqWkXfbHoj16FMmKkdpFuEN11XewWnM8MXN+f0QURZAJPfjv4pjB0aTCt9IIBti6TSxA
+         YsNeuQDU1TdJHcYgqfo010Jtv+YCDwkEtFv3d/HehP92PE1yRl4iAIkKy+VAaqsRcYtG
+         E93Q==
+X-Gm-Message-State: AOAM532+OasS4DnTwKezLF/bw6aX1bL4+FMsLMjA42Fph3iEFkwGNNLc
+        SrBLUCNwhlpQY2jxEPJHrc6K3Q==
+X-Google-Smtp-Source: ABdhPJxWZqPdDmaExmQ+szJPGiMjUbrO/s6wpfxiy7JGg6o16TpJ95IhHVKm74g0zXeSMO1rmg/5jg==
+X-Received: by 2002:a05:6512:22cb:b0:478:d66d:f750 with SMTP id g11-20020a05651222cb00b00478d66df750mr5768811lfu.291.1653910028823;
+        Mon, 30 May 2022 04:27:08 -0700 (PDT)
 Received: from [192.168.1.65] ([46.188.121.129])
-        by smtp.gmail.com with ESMTPSA id x37-20020a056512132500b0047255d2115csm2254247lfu.139.2022.05.30.04.27.00
+        by smtp.gmail.com with ESMTPSA id a2-20020a19e302000000b0047255d211bfsm2253577lfh.238.2022.05.30.04.27.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 May 2022 04:27:00 -0700 (PDT)
-Message-ID: <ea77f3ea-3832-83e8-b33d-6df40b01ee67@openvz.org>
-Date:   Mon, 30 May 2022 14:26:59 +0300
+        Mon, 30 May 2022 04:27:08 -0700 (PDT)
+Message-ID: <a1fcdab2-a208-0fad-3f4e-233317ab828f@openvz.org>
+Date:   Mon, 30 May 2022 14:27:07 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
 From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH mm v3 8/9] memcg: enable accounting for allocations in
- alloc_fair_sched_group
+Subject: [PATCH mm v3 9/9] memcg: enable accounting for perpu allocation of
+ struct rt_rq
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
@@ -69,7 +69,7 @@ References: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
 Content-Language: en-US
 In-Reply-To: <cover.1653899364.git.vvs@openvz.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -79,45 +79,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Creating of each new cpu cgroup allocates two 512-bytes kernel objects
-per CPU. This is especially important for cgroups shared parent memory
-cgroup. In this scenario, on nodes with multiple processors, these
-allocations become one of the main memory consumers.
+If enabled in config, alloc_rt_sched_group() is called for each new
+cpu cgroup and allocates a huge (~1700 bytes) percpu struct rt_rq.
+This significantly exceeds the size of the percpu allocation in the
+common part of cgroup creation.
 
-Memory allocated during new cpu cgroup creation:
-common part: 	~11Kb	+  318 bytes percpu
-cpu cgroup:	~2.5Kb	+ 1036 bytes percpu
+Memory allocated during new cpu cgroup creation
+(with enabled RT_GROUP_SCHED):
+common part:    ~11Kb   +   318 bytes percpu
+cpu cgroup:     ~2.5Kb  + ~2800 bytes percpu
 
 Accounting for this memory helps to avoid misuse inside memcg-limited
-contianers.
+containers.
 
 Signed-off-by: Vasily Averin <vvs@openvz.org>
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
 Acked-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 ---
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/rt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8c5b74f66bd3..f4fc39d5aa4b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -11499,12 +11499,12 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 8c9ed9664840..44a8fc096e33 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -256,7 +256,7 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
  
  	for_each_possible_cpu(i) {
- 		cfs_rq = kzalloc_node(sizeof(struct cfs_rq),
--				      GFP_KERNEL, cpu_to_node(i));
-+				      GFP_KERNEL_ACCOUNT, cpu_to_node(i));
- 		if (!cfs_rq)
+ 		rt_rq = kzalloc_node(sizeof(struct rt_rq),
+-				     GFP_KERNEL, cpu_to_node(i));
++				     GFP_KERNEL_ACCOUNT, cpu_to_node(i));
+ 		if (!rt_rq)
  			goto err;
- 
- 		se = kzalloc_node(sizeof(struct sched_entity_stats),
--				  GFP_KERNEL, cpu_to_node(i));
-+				  GFP_KERNEL_ACCOUNT, cpu_to_node(i));
- 		if (!se)
- 			goto err_free_rq;
  
 -- 
 2.36.1
