@@ -2,116 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3771D5379DB
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF3F537A37
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbiE3L1a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 07:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
+        id S233826AbiE3Lzq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 07:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235788AbiE3L1O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:27:14 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B57E4CD51
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:10 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id l13so16186444lfp.11
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=ZH9yvId2NMAw4oN1iqMKqU61/DZ/rIDZexlE6dKv8SU=;
-        b=qSiaNr2ftUqSRvmOy75IJeNCKAVgq/jO6yIuIwj9lTeotjFVJ4+oMFaIk5uft9Qvbs
-         l+4EitDawXs9/hDAY1ZW4DMfHukqi6UArXkOO1Fsh++NpRhYgntK5BVNeajvyod0xNbd
-         /yEKhndXFUITINHf3AsuCHklX308rL2W0TxU0lyGgS31a7Um1/qC8RkNmyIWqmdjEZqv
-         sBD3tvK7pX9DrDUQh/vJKdquM5bFHwtxZMMOdowmUVGdozFLqM96xAnlkIXWMx6XY71P
-         q0W2yFeBw4MsVyY5vKggC//seES0ntiWnGoRO7EkwhlnsldeBMzNk5fW75QX3HKgwNYo
-         7OeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=ZH9yvId2NMAw4oN1iqMKqU61/DZ/rIDZexlE6dKv8SU=;
-        b=pBEW1FkKmFbu+tZtJx98dQKZPXjA4APOthB7m18uTONmknSx72cwDLRE1jakV7IOgK
-         9O7KhhDFK0sflYwahVo0+Go1qOroW8UX3M4JKRgZRrvkKPw41yNMq1idpcjI1T68xLHF
-         6q2GHRw1e4ImBB/Rj6+Ktwef6SDxZh/cVVkOEM+RbWpoqYGTVtiO1XkrSRsZSqPpHg7l
-         tqWkXfbHoj16FMmKkdpFuEN11XewWnM8MXN+f0QURZAJPfjv4pjB0aTCt9IIBti6TSxA
-         YsNeuQDU1TdJHcYgqfo010Jtv+YCDwkEtFv3d/HehP92PE1yRl4iAIkKy+VAaqsRcYtG
-         E93Q==
-X-Gm-Message-State: AOAM532+OasS4DnTwKezLF/bw6aX1bL4+FMsLMjA42Fph3iEFkwGNNLc
-        SrBLUCNwhlpQY2jxEPJHrc6K3Q==
-X-Google-Smtp-Source: ABdhPJxWZqPdDmaExmQ+szJPGiMjUbrO/s6wpfxiy7JGg6o16TpJ95IhHVKm74g0zXeSMO1rmg/5jg==
-X-Received: by 2002:a05:6512:22cb:b0:478:d66d:f750 with SMTP id g11-20020a05651222cb00b00478d66df750mr5768811lfu.291.1653910028823;
-        Mon, 30 May 2022 04:27:08 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.129])
-        by smtp.gmail.com with ESMTPSA id a2-20020a19e302000000b0047255d211bfsm2253577lfh.238.2022.05.30.04.27.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 May 2022 04:27:08 -0700 (PDT)
-Message-ID: <a1fcdab2-a208-0fad-3f4e-233317ab828f@openvz.org>
-Date:   Mon, 30 May 2022 14:27:07 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH mm v3 9/9] memcg: enable accounting for perpu allocation of
- struct rt_rq
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        with ESMTP id S233023AbiE3Lzq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:55:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5896FA2E;
+        Mon, 30 May 2022 04:55:44 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6D6281F88D;
+        Mon, 30 May 2022 11:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1653911743; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=K5eN5/cePnHED6LIz60pf/vSdydS33X2AATbO9NoXNo=;
+        b=EcpslcQfWh6nAGTYnwJ3a24s1aWzIfX8p6opHBvq34+UJVRbdsJ4azT+ozFRxQ0cW9KcZG
+        YX1NbUCM5sG8Z00Y2NhK4zhIybN+kYYJVh3fBzoeUIkmJ0Rr1CCkET+Ovj/PeBYyDjBpcI
+        2zpZpWLlE2hsSiciEG+XJ53o4kSBQyU=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D9A0E2C141;
+        Mon, 30 May 2022 11:55:42 +0000 (UTC)
+Date:   Mon, 30 May 2022 13:55:42 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
         Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH mm v3 0/9] memcg: accounting for objects allocated by
+ mkdir cgroup
+Message-ID: <YpSwvii5etfnOYC9@dhcp22.suse.cz>
 References: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
- <cover.1653899364.git.vvs@openvz.org>
-Content-Language: en-US
-In-Reply-To: <cover.1653899364.git.vvs@openvz.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+ <3e1d6eab-57c7-ba3d-67e1-c45aa0dfa2ab@openvz.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e1d6eab-57c7-ba3d-67e1-c45aa0dfa2ab@openvz.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If enabled in config, alloc_rt_sched_group() is called for each new
-cpu cgroup and allocates a huge (~1700 bytes) percpu struct rt_rq.
-This significantly exceeds the size of the percpu allocation in the
-common part of cgroup creation.
+On Mon 30-05-22 14:25:45, Vasily Averin wrote:
+> Below is tracing results of mkdir /sys/fs/cgroup/vvs.test on 
+> 4cpu VM with Fedora and self-complied upstream kernel. The calculations
+> are not precise, it depends on kernel config options, number of cpus,
+> enabled controllers, ignores possible page allocations etc.
+> However this is enough to clarify the general situation.
+> All allocations are splited into:
+> - common part, always called for each cgroup type
+> - per-cgroup allocations
+> 
+> In each group we consider 2 corner cases:
+> - usual allocations, important for 1-2 CPU nodes/Vms
+> - percpu allocations, important for 'big irons'
+> 
+> common part: 	~11Kb	+  318 bytes percpu
+> memcg: 		~17Kb	+ 4692 bytes percpu
+> cpu:		~2.5Kb	+ 1036 bytes percpu
+> cpuset:		~3Kb	+   12 bytes percpu
+> blkcg:		~3Kb	+   12 bytes percpu
+> pid:		~1.5Kb	+   12 bytes percpu		
+> perf:		 ~320b	+   60 bytes percpu
+> -------------------------------------------
+> total:		~38Kb	+ 6142 bytes percpu
+> currently accounted:	  4668 bytes percpu
+> 
+> - it's important to account usual allocations called
+> in common part, because almost all of cgroup-specific allocations
+> are small. One exception here is memory cgroup, it allocates a few
+> huge objects that should be accounted.
+> - Percpu allocation called in common part, in memcg and cpu cgroups
+> should be accounted, rest ones are small an can be ignored.
+> - KERNFS objects are allocated both in common part and in most of
+> cgroups 
+> 
+> Details can be found here:
+> https://lore.kernel.org/all/d28233ee-bccb-7bc3-c2ec-461fd7f95e6a@openvz.org/
+> 
+> I checked other cgroups types was found that they all can be ignored.
+> Additionally I found allocation of struct rt_rq called in cpu cgroup 
+> if CONFIG_RT_GROUP_SCHED was enabled, it allocates huge (~1700 bytes)
+> percpu structure and should be accounted too.
 
-Memory allocated during new cpu cgroup creation
-(with enabled RT_GROUP_SCHED):
-common part:    ~11Kb   +   318 bytes percpu
-cpu cgroup:     ~2.5Kb  + ~2800 bytes percpu
+One thing that the changelog is missing is an explanation why do we need
+to account those objects. Users are usually not empowered to create
+cgroups arbitrarily. Or at least they shouldn't because we can expect
+more problems to happen.
 
-Accounting for this memory helps to avoid misuse inside memcg-limited
-containers.
-
-Signed-off-by: Vasily Averin <vvs@openvz.org>
-Acked-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- kernel/sched/rt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8c9ed9664840..44a8fc096e33 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -256,7 +256,7 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
- 
- 	for_each_possible_cpu(i) {
- 		rt_rq = kzalloc_node(sizeof(struct rt_rq),
--				     GFP_KERNEL, cpu_to_node(i));
-+				     GFP_KERNEL_ACCOUNT, cpu_to_node(i));
- 		if (!rt_rq)
- 			goto err;
- 
+Could you clarify this please?
 -- 
-2.36.1
-
+Michal Hocko
+SUSE Labs
