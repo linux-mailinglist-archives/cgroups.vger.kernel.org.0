@@ -2,149 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6A753785C
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 12:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63DC5379C4
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbiE3Jii (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 05:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S235678AbiE3LZw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 07:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233207AbiE3Jii (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 05:38:38 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABCE75231
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 02:38:35 -0700 (PDT)
-Message-ID: <ca0ba233-ed09-5dce-5f38-2e05b1114610@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1653903513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0tAu1yDybljG9v6H3XFTvFlglCilUlg/TAc4Sssj5FY=;
-        b=nb/TIC8Z25okb0Miptwsm4FaawVL2rNW/B9T1O0x0tFfmsH0CSEdbsxRXUnG4LxdbB3pyf
-        SNmmhDVwMyuNGJIHhLB1libYq6Iwt1Oh8nSnW35aQjnDPVOFrt2pJJXWwXJOqFinxElI7Q
-        G/JjfHmMV0OVdoZhyoIdK9HzHvergAo=
-Date:   Mon, 30 May 2022 12:38:28 +0300
+        with ESMTP id S234459AbiE3LZu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:25:50 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EC97DE08
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:25:48 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id br17so16290623lfb.2
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=IK1h75QrK4dLAeCcHF6vHO4eDXNyXwLtZQJf9O+8m78=;
+        b=XPNvq5NbB2kQePetWgiJpCVF9J44XxrjS/Fy/stHVxJC8lmeUymcBCUm67p4d1i4cZ
+         qnXlnY6v2ktg2Yxt9sZ7Qb5LQooZmoGKsQkH4KxqykKI/mPw6t3xpTHDkwkG0hWfB4mS
+         6P7rjpWQ/xXC3Uj/qVEsuI/XpPeotY6Mon2SrfSTES1WWK2jh5LcRYYuBCaW3sA28sqB
+         /7wJCIyZKMIn86gR9iZ0rN0ZrA2wz5667OJEMKgDBsFCR5bK6mo5YOtmADsqmMBbeoZ0
+         X9zJe7NDh4yO3uILPz/BLIkNy0JCVPgedXFPhYxZ51dXuoXgH1/QHI+8g9nl2zeyeQco
+         88hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=IK1h75QrK4dLAeCcHF6vHO4eDXNyXwLtZQJf9O+8m78=;
+        b=l113s5nhvyxm47xbAsdw7qEApyGL34yLZ1OfTDO7XWL5/e/2eenE1lOrpr64WKibxK
+         ypCFSD2DqDiQvppB4Er46ECZH19haKW4yZjJlflJ5rAO+Pjs8D8UZB7C8RYkWinFd0Fc
+         gOpq72pV1q5479DZKX6ux3HY06XA6B5tjTaerNIIwTrP5DWViVE3g0/CnX4xA3n/rMB6
+         5PYqYBal5qabbxlyrUGs9gXKSJ0qqrCRQOilv9U3P4Ne124DAPtyFMY2iVVwik7WRNuj
+         MjTZvpPY+evMivMtNBveCQ1TKvkCREcvXFGyKNMC4LN6rBp33zj4xM0GcCf5BMYsD2zC
+         Kq3Q==
+X-Gm-Message-State: AOAM532Acx7rGfC5YlMqGbMG9R0xondQyZJpaaGQeMvoeJfv5cGq6fNO
+        UkCKQvMTT7wxrQRHpqv6U1+w0Q==
+X-Google-Smtp-Source: ABdhPJwzelp6MGsEyWHyl4Z2g5aIy6KrZEDZy0z+0yaQvfyUvpeFNqJr0TUTIBw8RZ8X8rhaKsnU6Q==
+X-Received: by 2002:a05:6512:3092:b0:478:786f:9fc0 with SMTP id z18-20020a056512309200b00478786f9fc0mr25734944lfd.562.1653909947060;
+        Mon, 30 May 2022 04:25:47 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.129])
+        by smtp.gmail.com with ESMTPSA id y26-20020a05651c107a00b00253bb2564cbsm1404094ljm.134.2022.05.30.04.25.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 May 2022 04:25:46 -0700 (PDT)
+Message-ID: <3e1d6eab-57c7-ba3d-67e1-c45aa0dfa2ab@openvz.org>
+Date:   Mon, 30 May 2022 14:25:45 +0300
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vasily Averin <vasily.averin@linux.dev>
-Subject: Re: [PATCH] memcg: enable accounting in keyctl subsys
-Content-Language: en-US
-Cc:     Yutian Yang <nglaive@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, shenwenbo@zju.edu.cn,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        Jarkko Sakkinen <jarkko@kernel.org>
-References: <1626682667-10771-1-git-send-email-nglaive@gmail.com>
- <0017e4c6-84d8-6d62-2ceb-4851771fec18@linux.dev>
- <YovnzLqXqEHY6SAC@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+From:   Vasily Averin <vvs@openvz.org>
+Subject: [PATCH mm v3 0/9] memcg: accounting for objects allocated by mkdir
+ cgroup
 To:     Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <YovnzLqXqEHY6SAC@kernel.org>
+Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
+References: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
+Content-Language: en-US
+In-Reply-To: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear Andrew,
-could you please pick up this patch too?
+Below is tracing results of mkdir /sys/fs/cgroup/vvs.test on 
+4cpu VM with Fedora and self-complied upstream kernel. The calculations
+are not precise, it depends on kernel config options, number of cpus,
+enabled controllers, ignores possible page allocations etc.
+However this is enough to clarify the general situation.
+All allocations are splited into:
+- common part, always called for each cgroup type
+- per-cgroup allocations
 
-Thank you,
-	Vasily Averin
+In each group we consider 2 corner cases:
+- usual allocations, important for 1-2 CPU nodes/Vms
+- percpu allocations, important for 'big irons'
 
-On 5/23/22 23:00, Jarkko Sakkinen wrote:
-> On Mon, May 23, 2022 at 12:45:09PM +0300, Vasily Averin wrote:
->> On 7/19/21 11:17, Yutian Yang wrote:
->>> This patch enables accounting for key objects and auth record objects.
->>> Allocation of the objects are triggerable by syscalls from userspace.
->>>
->>> We have written a PoC to show that the missing-charging objects lead to
->>> breaking memcg limits. The PoC program takes around 2.2GB unaccounted
->>> memory, while it is charged for only 24MB memory usage. We evaluate the
->>> PoC on QEMU x86_64 v5.2.90 + Linux kernel v5.10.19 + Debian buster. All
->>> the limitations including ulimits and sysctl variables are set as default.
->>> Specifically, we set kernel.keys.maxbytes = 20000 and 
->>> kernel.keys.maxkeys = 200.
->>>
->>> /*------------------------- POC code ----------------------------*/
->> [skipped]
->>> /*-------------------------- end --------------------------------*/
->>
->> I experimented with "keyctl request2 user debug: X:Y Z" inside the container
->> and found that the problem is still relevant and the proposed patch solves it
->> correctly.
->>
->> I didn't find any complaints about this patch, could someone explain why
->> it wasn't applied? If no one objects, I'd like to push it.
->>
->>> Signed-off-by: Yutian Yang <nglaive@gmail.com>
->> Reviewed-by: Vasily Averin <vvs@openvz.org>
->>
->> Thank you,
->> 	Vasily Averin
->>
->> PS. Should I perhaps resend it?
->>
->>> ---
->>>  security/keys/key.c              | 4 ++--
->>>  security/keys/request_key_auth.c | 4 ++--
->>>  2 files changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/security/keys/key.c b/security/keys/key.c
->>> index e282c6179..925d85c2e 100644
->>> --- a/security/keys/key.c
->>> +++ b/security/keys/key.c
->>> @@ -279,7 +279,7 @@ struct key *key_alloc(struct key_type *type, const char *desc,
->>>  		goto no_memory_2;
->>>  
->>>  	key->index_key.desc_len = desclen;
->>> -	key->index_key.description = kmemdup(desc, desclen + 1, GFP_KERNEL);
->>> +	key->index_key.description = kmemdup(desc, desclen + 1, GFP_KERNEL_ACCOUNT);
->>>  	if (!key->index_key.description)
->>>  		goto no_memory_3;
->>>  	key->index_key.type = type;
->>> @@ -1198,7 +1198,7 @@ void __init key_init(void)
->>>  {
->>>  	/* allocate a slab in which we can store keys */
->>>  	key_jar = kmem_cache_create("key_jar", sizeof(struct key),
->>> -			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
->>> +			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_ACCOUNT, NULL);
->>>  
->>>  	/* add the special key types */
->>>  	list_add_tail(&key_type_keyring.link, &key_types_list);
->>> diff --git a/security/keys/request_key_auth.c b/security/keys/request_key_auth.c
->>> index 41e973500..ed50a100a 100644
->>> --- a/security/keys/request_key_auth.c
->>> +++ b/security/keys/request_key_auth.c
->>> @@ -171,10 +171,10 @@ struct key *request_key_auth_new(struct key *target, const char *op,
->>>  	kenter("%d,", target->serial);
->>>  
->>>  	/* allocate a auth record */
->>> -	rka = kzalloc(sizeof(*rka), GFP_KERNEL);
->>> +	rka = kzalloc(sizeof(*rka), GFP_KERNEL_ACCOUNT);
->>>  	if (!rka)
->>>  		goto error;
->>> -	rka->callout_info = kmemdup(callout_info, callout_len, GFP_KERNEL);
->>> +	rka->callout_info = kmemdup(callout_info, callout_len, GFP_KERNEL_ACCOUNT);
->>>  	if (!rka->callout_info)
->>>  		goto error_free_rka;
->>>  	rka->callout_len = callout_len;
->>
-> 
-> 
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> BR, Jarkko
+common part: 	~11Kb	+  318 bytes percpu
+memcg: 		~17Kb	+ 4692 bytes percpu
+cpu:		~2.5Kb	+ 1036 bytes percpu
+cpuset:		~3Kb	+   12 bytes percpu
+blkcg:		~3Kb	+   12 bytes percpu
+pid:		~1.5Kb	+   12 bytes percpu		
+perf:		 ~320b	+   60 bytes percpu
+-------------------------------------------
+total:		~38Kb	+ 6142 bytes percpu
+currently accounted:	  4668 bytes percpu
+
+- it's important to account usual allocations called
+in common part, because almost all of cgroup-specific allocations
+are small. One exception here is memory cgroup, it allocates a few
+huge objects that should be accounted.
+- Percpu allocation called in common part, in memcg and cpu cgroups
+should be accounted, rest ones are small an can be ignored.
+- KERNFS objects are allocated both in common part and in most of
+cgroups 
+
+Details can be found here:
+https://lore.kernel.org/all/d28233ee-bccb-7bc3-c2ec-461fd7f95e6a@openvz.org/
+
+I checked other cgroups types was found that they all can be ignored.
+Additionally I found allocation of struct rt_rq called in cpu cgroup 
+if CONFIG_RT_GROUP_SCHED was enabled, it allocates huge (~1700 bytes)
+percpu structure and should be accounted too.
+
+
+v3:
+ 1) re-based to current upstream (v5.18-11267-gb00ed48bb0a7)
+ 2) fixed few typos
+ 3) added received approvals
+
+v2:
+ 1) re-split to simplify possible bisect, re-ordered
+ 2) added accounting for percpu psi_group_cpu and cgroup_rstat_cpu,
+     allocated in common part
+ 3) added accounting for percpu allocation of struct rt_rq
+     (actual if CONFIG_RT_GROUP_SCHED is enabled)
+ 4) improved patches descriptions 
+
+
+Vasily Averin (9):
+  memcg: enable accounting for struct cgroup
+  memcg: enable accounting for kernfs nodes
+  memcg: enable accounting for kernfs iattrs
+  memcg: enable accounting for struct simple_xattr
+  memcg: enable accounting for percpu allocation of struct psi_group_cpu
+  memcg: enable accounting for percpu allocation of struct
+    cgroup_rstat_cpu
+  memcg: enable accounting for large allocations in mem_cgroup_css_alloc
+  memcg: enable accounting for allocations in alloc_fair_sched_group
+  memcg: enable accounting for perpu allocation of struct rt_rq
+
+ fs/kernfs/mount.c      | 6 ++++--
+ fs/xattr.c             | 2 +-
+ kernel/cgroup/cgroup.c | 2 +-
+ kernel/cgroup/rstat.c  | 3 ++-
+ kernel/sched/fair.c    | 4 ++--
+ kernel/sched/psi.c     | 3 ++-
+ kernel/sched/rt.c      | 2 +-
+ mm/memcontrol.c        | 4 ++--
+ 8 files changed, 15 insertions(+), 11 deletions(-)
+
+-- 
+2.36.1
 
