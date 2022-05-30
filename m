@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502D75379CC
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E955379C8
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 13:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbiE3L0I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 07:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52522 "EHLO
+        id S234280AbiE3L0S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 07:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235682AbiE3L0F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:26:05 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F0E7DE05
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:26:03 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id q1so11306568ljb.5
-        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:26:03 -0700 (PDT)
+        with ESMTP id S235701AbiE3L0O (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 07:26:14 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964B57E1C7
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:26:11 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id s6so299080lfo.13
+        for <cgroups@vger.kernel.org>; Mon, 30 May 2022 04:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=openvz-org.20210112.gappssmtp.com; s=20210112;
         h=message-id:date:mime-version:user-agent:from:subject:to:cc
          :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=gx5BulmdWVt1E6J23Q6sWTUkZpDqVLFQzvPT6hFPLlw=;
-        b=HI2S3D2LaM+CpJncitps90D3zTHWFeNVbRo1proDv/epa86UIsO3B+emCKjHD05m4E
-         qaz6ChKh6pu6uXKvY4S+1hqcRalF7rqVye6N2mRkVsZBcCOfpslnrDjEWUzDp+5aaXyk
-         tX2/q17/WDl//b5r1mGa7Tq3zVSZPou91Tp/ZcFweUHcJ2JUTj+EhVRNwd5zDCtSX0FG
-         7cSJ76MxlShzeRJ6K2QGxobnEb8yF6DKMGiaLkKYKeKo38m8hCPfsMYL2Hm+58LsRZDB
-         drNrbEsCzPbVlFCfAbrszHoJLFdt1COVb1PrGklTomSfK6+fAnL5CpYezD9s7NiYDo8P
-         IWbQ==
+        bh=buhJIxm8AqBO3bD99fC3A2PxIb9sSGllubXvwSLnjxI=;
+        b=VleSeEOpRENeXIkb3VS63vsilwSdU8qMSP4avGdnDh5rwRnYa2jz2RVYenqeO3pM0E
+         DHnSyyUm/QZ5EmzHYl3Jb+ZfcIpTLRDZmxkC/M0yZtrJnPBT7FMzovaP80spNmx1AGfC
+         YeM+BMD+j8eeiwA3YZgXNeSwjCueUasrWx79lcZTTgD3by9/hKVr+WE8TfaHyDrWDjY7
+         fvLW1OqA44WVwKYAS5KnteFlnEFDxA/qb7HSBCHdOyxAeCZJXY07V5g1Ad8JgbV1T1LH
+         9yVcRSF1uk10P9ADPpKBifUv+jJk3ErpO+yVNp/RCuMrSeI9wAh2n2OFB9aEnkWJPam2
+         Yg4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:from
          :subject:to:cc:references:content-language:in-reply-to
          :content-transfer-encoding;
-        bh=gx5BulmdWVt1E6J23Q6sWTUkZpDqVLFQzvPT6hFPLlw=;
-        b=Z1wyLDFXxdzM5MFFQs95fiH8y2u8Nk5HmBwNIEZwAKzjZmWk52tO0jFFF6tPZOqMPF
-         VG51WQgsXyFKLlZMgtikbg+uSnbokZIQzI2ZxFe35IX3LpZ6eSp8a62YcKlT4wH1IzAV
-         g3b1Z8noHAzeIIUd8FT+V2t4/uMvmNbqO0yO7FABI/1BGGu0Rum18dAT37Bay/J7RRqo
-         ftWpG06IM+EJdv/r5MsN8zJDgwhbiTxT+wIedsI7w2Y9yYh8K2fAj+29gX6+HRKdJS9k
-         LJ81o5sRFKXrpmmF1vaoRInk56XjBJ2oUqvzBRAXyzgZauO6mItV/dH0dD6iAUDu9K8I
-         Mohw==
-X-Gm-Message-State: AOAM530o1nrAZpfX1a8IyZhmJyYGFPYz6XNKe80Lqkkbi0us1yZtCNSj
-        2YyTaW6j1MbuXWN/EXim7TRuQdNyUCK4UQ==
-X-Google-Smtp-Source: ABdhPJwD9LSfSBRnWiwlpIefSTvogQriUgx1hTSg0IhVk8GLzaUQIgiJC9ckHwGLQaN1U8YmUtU/eQ==
-X-Received: by 2002:a05:651c:556:b0:255:5125:309 with SMTP id q22-20020a05651c055600b0025551250309mr1693556ljp.201.1653909961957;
-        Mon, 30 May 2022 04:26:01 -0700 (PDT)
+        bh=buhJIxm8AqBO3bD99fC3A2PxIb9sSGllubXvwSLnjxI=;
+        b=yR74z9uVcNWnQvTXY8AD7jFYt25GrJ4O1z8U90nGxofHhhFxRl8AwGhyMFf+jte2mc
+         HtNeLp51afFsoYbucH9nj4M3k+1EJBfC8ncIlQJpeRmmfcM3SlseRZEQMuBcXRZMwlM7
+         NNUHbXu+HVKHlq4TKFBfm9cCNfX+m8BiXzRKwJEI+aAmj6NzP2I2TlEUXzN7LtgcOiwN
+         MEIFVar0qwahkeJPol7JpXVcS6ixdiQY7sozIuKlUgZyQdQe3tm110zIYXpivqcoCXCG
+         Zc/RYkmNUZR0QnqrNZZuCURnaTjoFAdOTtSBnNb3lrZq4KESHYr6eD/VYmO7HMNp9Jkv
+         BeXQ==
+X-Gm-Message-State: AOAM531iYJxUa4Msatq5Bcf+zKt3026cW1XXxhjdijz/kE5QFYHMbvxM
+        7LfoXu+UhLlvws9jS6sI2FupjA==
+X-Google-Smtp-Source: ABdhPJzpWuEoQbBQ6wQAD00lTrkjyUo0hR77U+wtdpC11GHVbqf2v9hXGKCM5qrHCA7Zd3LVUwl52w==
+X-Received: by 2002:a05:6512:3403:b0:475:afe3:740b with SMTP id i3-20020a056512340300b00475afe3740bmr39209070lfr.436.1653909969542;
+        Mon, 30 May 2022 04:26:09 -0700 (PDT)
 Received: from [192.168.1.65] ([46.188.121.129])
-        by smtp.gmail.com with ESMTPSA id d16-20020ac244d0000000b0047255d21188sm2255883lfm.183.2022.05.30.04.26.01
+        by smtp.gmail.com with ESMTPSA id x20-20020a056512079400b0047255d21158sm2253567lfr.135.2022.05.30.04.26.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 May 2022 04:26:01 -0700 (PDT)
-Message-ID: <aeb2adf8-04ad-2f7a-dc03-c1bf0f71450a@openvz.org>
-Date:   Mon, 30 May 2022 14:26:00 +0300
+        Mon, 30 May 2022 04:26:09 -0700 (PDT)
+Message-ID: <8bb350bb-4109-0065-d95d-bb6777e4391e@openvz.org>
+Date:   Mon, 30 May 2022 14:26:08 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
 From:   Vasily Averin <vvs@openvz.org>
-Subject: [PATCH mm v3 2/9] memcg: enable accounting for kernfs nodes
+Subject: [PATCH mm v3 3/9] memcg: enable accounting for kernfs iattrs
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     kernel@openvz.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
@@ -94,18 +94,18 @@ scenarios where it consumes significant piece of all allocated memory:
 
 Usually new kernfs node creates few other objects:
 
-Allocs  Alloc   Allocation
+Allocs  Alloc    Allocation
 number  size
 --------------------------------------------
-1   +  128      (__kernfs_new_node+0x4d)	kernfs node
-1   +   88      (__kernfs_iattrs+0x57)		kernfs iattrs
-1   +   96      (simple_xattr_alloc+0x28)	simple_xattr, can grow over 4Kb
+1   +  128      (__kernfs_new_node+0x4d)        kernfs node
+1   +   88      (__kernfs_iattrs+0x57)          kernfs iattrs
+1   +   96      (simple_xattr_alloc+0x28)       simple_xattr, can grow over 4Kb
 1       32      (simple_xattr_set+0x59)
 1       8       (__kernfs_new_node+0x30)
 
 '+' -- to be accounted
 
-This patch enables accounting for kernfs nodes slab cache.
+This patch enables accounting for kernfs_iattrs_cache slab cache
 
 Signed-off-by: Vasily Averin <vvs@openvz.org>
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
@@ -117,19 +117,17 @@ Reviewed-by: Muchun Song <songmuchun@bytedance.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index cfa79715fc1a..3ac4191b1c40 100644
+index 3ac4191b1c40..40e896c7c86b 100644
 --- a/fs/kernfs/mount.c
 +++ b/fs/kernfs/mount.c
-@@ -391,7 +391,8 @@ void __init kernfs_init(void)
- {
- 	kernfs_node_cache = kmem_cache_create("kernfs_node_cache",
- 					      sizeof(struct kernfs_node),
+@@ -397,5 +397,6 @@ void __init kernfs_init(void)
+ 	/* Creates slab cache for kernfs inode attributes */
+ 	kernfs_iattrs_cache  = kmem_cache_create("kernfs_iattrs_cache",
+ 					      sizeof(struct kernfs_iattrs),
 -					      0, SLAB_PANIC, NULL);
 +					      0, SLAB_PANIC | SLAB_ACCOUNT,
 +					      NULL);
- 
- 	/* Creates slab cache for kernfs inode attributes */
- 	kernfs_iattrs_cache  = kmem_cache_create("kernfs_iattrs_cache",
+ }
 -- 
 2.36.1
 
