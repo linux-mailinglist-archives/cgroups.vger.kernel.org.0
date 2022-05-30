@@ -2,46 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F8D537D4C
-	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 15:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB05537E86
+	for <lists+cgroups@lfdr.de>; Mon, 30 May 2022 16:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237726AbiE3Nij (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 09:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
+        id S238351AbiE3NyJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 09:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237678AbiE3Ngz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 09:36:55 -0400
+        with ESMTP id S238667AbiE3NxM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 09:53:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECA91C10D;
-        Mon, 30 May 2022 06:30:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD0E8A06F;
+        Mon, 30 May 2022 06:37:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DEAEA60DD4;
-        Mon, 30 May 2022 13:30:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 564BCC3411A;
-        Mon, 30 May 2022 13:30:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE29060F99;
+        Mon, 30 May 2022 13:37:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37885C3411A;
+        Mon, 30 May 2022 13:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917443;
-        bh=ycLUjmMHzdDC3CERFJqNRWnivcnpn9dj7vhSjrVVdc4=;
+        s=k20201202; t=1653917852;
+        bh=aD2bwhTaBdhLJlZgj84uncUpqKZ/Ttho7VUAKt9ILjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cq+7Rb9JtmSMIkrtrAFXWWmuEEDMNHvsPdHLhTlOEydjewe2/keC4hkVE2lBvIGEj
-         ahiA1tG+rR9rf81dgFvK1yOw7V+19aeVukVhU1+YMp0brqjHrL0VSeralgYBOUO5KT
-         OowMeXRGcqdRKDbEaGwDqBBcgP052+eHfAKUmpIQQCPdvFxg75Fn/oy3z3tV/N9d56
-         yBsd7wrb3+WIvKXOiZOloNu3Vv33IhFYEUDQiFqHfv+FWTVXjRupCxTXBoz0PYrorN
-         sUY9zwn+JXpSZ10eQtqXS0AqHAfxJonw4JQrD73QxV45rtOgCIBV61kiJIFABKYNXg
-         p66WBMq+pTzzg==
+        b=S/L2dHskkKGX7y268KAv8rESvV+Vh96rX75hx8QJYrYpq34esQjD2k7JBJzAU7PBo
+         uN6jkiOvBZtJBllws3EGL8ZCu+qOGMAqVN1FNHUxcvV+tgSW4skOQrGepWAnssrB4D
+         Jyq2X8dXYshGhrJDmkSsbpir8qj4r7PJGZR+urKlbwBFtSthr1AWu06fzY0sOHQ27P
+         Ucnf5p/6QUVLcKVZBk9DnRcCZiD/l2xfQOiJTSbwilUhdBIgxhyFFlDmx5x3Q6+h3/
+         xiZvsxD80Uvs2Omzj4FcmH0epxN/1QiZTVthjJRa43Ijpi28BO87OHQnhU2Yt8w4O0
+         COeT/eFyRddxQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Laibin Qiu <qiulaibin@huawei.com>, Ming Lei <ming.lei@redhat.com>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         tj@kernel.org, cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 139/159] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-Date:   Mon, 30 May 2022 09:24:04 -0400
-Message-Id: <20220530132425.1929512-139-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 117/135] blk-throttle: Set BIO_THROTTLED when bio has been throttled
+Date:   Mon, 30 May 2022 09:31:15 -0400
+Message-Id: <20220530133133.1931716-117-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
-References: <20220530132425.1929512-1-sashal@kernel.org>
+In-Reply-To: <20220530133133.1931716-1-sashal@kernel.org>
+References: <20220530133133.1931716-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -155,10 +155,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 469c483719be..5c5f2741a95f 100644
+index 87769b337fc5..e1b253775a56 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -2189,13 +2189,14 @@ bool __blk_throtl_bio(struct bio *bio)
+@@ -2167,13 +2167,14 @@ bool __blk_throtl_bio(struct bio *bio)
  	}
  
  out_unlock:
