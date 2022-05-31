@@ -2,78 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9236B5389FE
-	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 04:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E325538A46
+	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 05:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243474AbiEaCqc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 22:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        id S243738AbiEaDuZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 May 2022 23:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbiEaCqb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 22:46:31 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDFF94185;
-        Mon, 30 May 2022 19:46:30 -0700 (PDT)
-Date:   Mon, 30 May 2022 19:46:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1653965188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CWLskQLKMPVKxlcT8cF2mhzS9rXCoBmCHqKI67gGiCw=;
-        b=f5jx0zSo1IDRLLA2GZuXmPBxAvu6IPoXlGGFIPAW6XeA5oP8KzsIUya+c1dZtZ3UwqO1Y6
-        alTzIKwUDxFq+Ya5GGK63RBl/slscys5MmU+WjXwPXiLMFoPRataIRfeAwFWACW+GEE26w
-        rUWXxNveDigVU/2Y0MKCi5DvmbtlULU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, shakeelb@google.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, longman@redhat.com
-Subject: Re: [PATCH v5 00/11] Use obj_cgroup APIs to charge the LRU pages
-Message-ID: <YpWBfPviP0TTSF4d@carbon>
-References: <20220530074919.46352-1-songmuchun@bytedance.com>
- <20220530141711.6cf70dcf200e28aa40407f6e@linux-foundation.org>
+        with ESMTP id S238368AbiEaDuA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 23:50:00 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E113892D1C;
+        Mon, 30 May 2022 20:49:58 -0700 (PDT)
+Received: from [10.180.13.185] (unknown [10.180.13.185])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cxn+ZhkJViHEUJAA--.42980S3;
+        Tue, 31 May 2022 11:49:55 +0800 (CST)
+Subject: Re: [PATCH] cgroup: wait for css offline when rmdir
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1653619158-27607-1-git-send-email-zhanghongchen@loongson.cn>
+ <YpCQZ5RRnxwh7fmK@slm.duckdns.org>
+ <e74e03f1-cb54-b158-a085-2965fd088d1d@loongson.cn>
+ <YpVo4XiIDu68w40Z@slm.duckdns.org>
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+Message-ID: <fbb820c5-dbcb-0f00-c365-d3c57ca27edf@loongson.cn>
+Date:   Tue, 31 May 2022 11:49:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220530141711.6cf70dcf200e28aa40407f6e@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <YpVo4XiIDu68w40Z@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Cxn+ZhkJViHEUJAA--.42980S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1DXF1DAFWDJw4rJF1xuFg_yoWDZwc_Wa
+        yIkw1Duw1DCF1kua1UKr4YvrW2kFWDWa98X3saqw4aga4UJF98JF47Wr1rZw1aqF4Syrnx
+        Kr95Aw1FqrnFvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
+        02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8
+        P5r7UUUUU==
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 30, 2022 at 02:17:11PM -0700, Andrew Morton wrote:
-> On Mon, 30 May 2022 15:49:08 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+On 2022/5/31 上午9:01, Tejun Heo wrote:
+> Hello,
 > 
-> > This version is rebased on v5.18.
+> On Mon, May 30, 2022 at 09:53:51AM +0800, Hongchen Zhang wrote:
+>>    When I test the LTP's memcg_test_3 testcase at 8 Node server,I get the
+>> -ENOMEM error,which caused by no avaliable idr found in mem_cgroup_idr.
+>> the reason is the use of idr in mem_cgroup_idr is too fast than the free.In
+>> the specific case,the idr is used and freed cyclically,so when we rmdir one
+>> cgroup dir, we can synchronize the idr free through wating for the memcg css
+>> offlined,and then we can use it the next cycle.
 > 
-> Not a great choice of base, really.  mm-stable or mm-unstable or
-> linux-next or even linus-of-the-day are all much more up to date.
+> This is a micro benchmark specific problem and it doesn't make sense to
+> change the overall behavior for this as the suggested change is neither
+> desirable or logical. Maybe you can just incur the delay only after idr
+> allocation fails and then retry?
 > 
-> Although the memcg reviewer tags are pretty thin, I was going to give
-> it a run.  But after fixing a bunch of conflicts I got about halfway
-> through then gave up on a big snarl in get_obj_cgroup_from_current().
+> Thanks.
 > 
-> > RFC v1: https://lore.kernel.org/all/20210330101531.82752-1-songmuchun@bytedance.com/
-> 
-> Surprising, that was over a year ago.  Why has is taken so long?
+Hi Tejun,
 
-It's partially my fault: I was thinking (and to some extent still are)
-that using objcg is not the best choice long-term and was pushing on the
-idea to used per-memcg lru vectors as intermediate objects instead.
-But it looks like I underestimated the complexity and a potential overhead
-of this solution.
+Yes, the problem would disappear when add some reasonable delay. But I 
+think if we can increase the MEM_CGROUP_ID_MAX to INT_MAX.Thus the 
+-ENOMEM error would be never occured,even if the system is out of memory.
 
-The objcg-based approach can solve the problem right now and it shouldn't
-bring any long-term issues. So I asked Muchun to revive the patchset.
+Thanks.
 
-Thanks!
