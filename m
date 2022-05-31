@@ -2,90 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E325538A46
-	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 05:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CD0538BE1
+	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 09:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243738AbiEaDuZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 May 2022 23:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
+        id S244464AbiEaHQy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 May 2022 03:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238368AbiEaDuA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 May 2022 23:50:00 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E113892D1C;
-        Mon, 30 May 2022 20:49:58 -0700 (PDT)
-Received: from [10.180.13.185] (unknown [10.180.13.185])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cxn+ZhkJViHEUJAA--.42980S3;
-        Tue, 31 May 2022 11:49:55 +0800 (CST)
-Subject: Re: [PATCH] cgroup: wait for css offline when rmdir
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1653619158-27607-1-git-send-email-zhanghongchen@loongson.cn>
- <YpCQZ5RRnxwh7fmK@slm.duckdns.org>
- <e74e03f1-cb54-b158-a085-2965fd088d1d@loongson.cn>
- <YpVo4XiIDu68w40Z@slm.duckdns.org>
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-Message-ID: <fbb820c5-dbcb-0f00-c365-d3c57ca27edf@loongson.cn>
-Date:   Tue, 31 May 2022 11:49:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        with ESMTP id S244461AbiEaHQw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 May 2022 03:16:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AF84477C;
+        Tue, 31 May 2022 00:16:51 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 309B51F8E6;
+        Tue, 31 May 2022 07:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1653981410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8JRzXAFyBJ83o3cQYXfJAjgf/18XPkXFhsvvS1XfXo8=;
+        b=LoroXGjQaGygCf+ii5RaT5Q6MKzPcDtkhbE5h0W3gOfcb/7CQvzVuGFV/fknsIsXESUz2X
+        Eq5mSiyZmpaIS0fl79wzRLZ7o2tmFDJCW3MTNZONWSCfx9BQdH2fGTHP02Kcs+dcmpJE/S
+        oCqKSXqNAAlLDjO78RW+1p4mEJh29eU=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 080FB2C141;
+        Tue, 31 May 2022 07:16:48 +0000 (UTC)
+Date:   Tue, 31 May 2022 09:16:47 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH mm v3 0/9] memcg: accounting for objects allocated by
+ mkdir cgroup
+Message-ID: <YpXA35F33hvrxNLf@dhcp22.suse.cz>
+References: <06505918-3b8a-0ad5-5951-89ecb510138e@openvz.org>
+ <3e1d6eab-57c7-ba3d-67e1-c45aa0dfa2ab@openvz.org>
+ <YpSwvii5etfnOYC9@dhcp22.suse.cz>
+ <ef9f7516-853d-ffe4-9a7a-5e87556bdbbe@openvz.org>
+ <YpTTL3Ys35kgYyAW@dhcp22.suse.cz>
+ <3a1d8554-755f-7976-1e00-a0e7fb62c86e@openvz.org>
 MIME-Version: 1.0
-In-Reply-To: <YpVo4XiIDu68w40Z@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Cxn+ZhkJViHEUJAA--.42980S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Wr1DXF1DAFWDJw4rJF1xuFg_yoWDZwc_Wa
-        yIkw1Duw1DCF1kua1UKr4YvrW2kFWDWa98X3saqw4aga4UJF98JF47Wr1rZw1aqF4Syrnx
-        Kr95Aw1FqrnFvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8
-        P5r7UUUUU==
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a1d8554-755f-7976-1e00-a0e7fb62c86e@openvz.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/5/31 上午9:01, Tejun Heo wrote:
-> Hello,
+On Mon 30-05-22 22:58:30, Vasily Averin wrote:
+> On 5/30/22 17:22, Michal Hocko wrote:
+> > On Mon 30-05-22 16:09:00, Vasily Averin wrote:
+> >> On 5/30/22 14:55, Michal Hocko wrote:
+> >>> On Mon 30-05-22 14:25:45, Vasily Averin wrote:
+> >>>> Below is tracing results of mkdir /sys/fs/cgroup/vvs.test on 
+> >>>> 4cpu VM with Fedora and self-complied upstream kernel. The calculations
+> >>>> are not precise, it depends on kernel config options, number of cpus,
+> >>>> enabled controllers, ignores possible page allocations etc.
+> >>>> However this is enough to clarify the general situation.
+> >>>> All allocations are splited into:
+> >>>> - common part, always called for each cgroup type
+> >>>> - per-cgroup allocations
+> >>>>
+> >>>> In each group we consider 2 corner cases:
+> >>>> - usual allocations, important for 1-2 CPU nodes/Vms
+> >>>> - percpu allocations, important for 'big irons'
+> >>>>
+> >>>> common part: 	~11Kb	+  318 bytes percpu
+> >>>> memcg: 		~17Kb	+ 4692 bytes percpu
+> >>>> cpu:		~2.5Kb	+ 1036 bytes percpu
+> >>>> cpuset:		~3Kb	+   12 bytes percpu
+> >>>> blkcg:		~3Kb	+   12 bytes percpu
+> >>>> pid:		~1.5Kb	+   12 bytes percpu		
+> >>>> perf:		 ~320b	+   60 bytes percpu
+> >>>> -------------------------------------------
+> >>>> total:		~38Kb	+ 6142 bytes percpu
+> >>>> currently accounted:	  4668 bytes percpu
+> >>>>
+> >>>> - it's important to account usual allocations called
+> >>>> in common part, because almost all of cgroup-specific allocations
+> >>>> are small. One exception here is memory cgroup, it allocates a few
+> >>>> huge objects that should be accounted.
+> >>>> - Percpu allocation called in common part, in memcg and cpu cgroups
+> >>>> should be accounted, rest ones are small an can be ignored.
+> >>>> - KERNFS objects are allocated both in common part and in most of
+> >>>> cgroups 
+> >>>>
+> >>>> Details can be found here:
+> >>>> https://lore.kernel.org/all/d28233ee-bccb-7bc3-c2ec-461fd7f95e6a@openvz.org/
+> >>>>
+> >>>> I checked other cgroups types was found that they all can be ignored.
+> >>>> Additionally I found allocation of struct rt_rq called in cpu cgroup 
+> >>>> if CONFIG_RT_GROUP_SCHED was enabled, it allocates huge (~1700 bytes)
+> >>>> percpu structure and should be accounted too.
+> >>>
+> >>> One thing that the changelog is missing is an explanation why do we need
+> >>> to account those objects. Users are usually not empowered to create
+> >>> cgroups arbitrarily. Or at least they shouldn't because we can expect
+> >>> more problems to happen.
+> >>>
+> >>> Could you clarify this please?
+> >>
+> >> The problem is actual for OS-level containers: LXC or OpenVz.
+> >> They are widely used for hosting and allow to run containers
+> >> by untrusted end-users. Root inside such containers is able
+> >> to create groups inside own container and consume host memory
+> >> without its proper accounting.
+> > 
+> > Is the unaccounted memory really the biggest problem here?
+> > IIRC having really huge cgroup trees can hurt quite some controllers.
+> > E.g. how does the cpu controller deal with too many or too deep
+> > hierarchies?
 > 
-> On Mon, May 30, 2022 at 09:53:51AM +0800, Hongchen Zhang wrote:
->>    When I test the LTP's memcg_test_3 testcase at 8 Node server,I get the
->> -ENOMEM error,which caused by no avaliable idr found in mem_cgroup_idr.
->> the reason is the use of idr in mem_cgroup_idr is too fast than the free.In
->> the specific case,the idr is used and freed cyclically,so when we rmdir one
->> cgroup dir, we can synchronize the idr free through wating for the memcg css
->> offlined,and then we can use it the next cycle.
+> Could you please describe it in more details?
+> Maybe it was passed me by, maybe I messed or forgot something,
+> however I cannot remember any other practical cgroup-related issues.
 > 
-> This is a micro benchmark specific problem and it doesn't make sense to
-> change the overall behavior for this as the suggested change is neither
-> desirable or logical. Maybe you can just incur the delay only after idr
-> allocation fails and then retry?
-> 
-> Thanks.
-> 
-Hi Tejun,
+> Maybe deep hierarchies does not work well.
+> however, I have not heard that the internal configuration of cgroup
+> can affect the upper level too.
 
-Yes, the problem would disappear when add some reasonable delay. But I 
-think if we can increase the MEM_CGROUP_ID_MAX to INT_MAX.Thus the 
--ENOMEM error would be never occured,even if the system is out of memory.
+My first thought was any controller with a fixed math constrains like
+cpu controller. But I have to admit that I haven't really checked
+whether imprecision can accumulate and propagate outside of the
+hierarchy.
 
-Thanks.
+Another concern I would have is a id space depletion. At least memory
+controller depends on idr ids which have a space that is rather limited
+#define MEM_CGROUP_ID_MAX       USHRT_MAX
 
+Also the runtime overhead would increase with a large number of cgroups.
+Take a global memory reclaim as an example. All the cgroups have to be
+iterated. This will have an impact outside of the said hierarchy. One
+could argue that limiting untrusted top level cgroups would be a certain
+mitigation but I can imagine this could get very non trivial easily.
+
+Anyway, let me just be explicit. I am not against these patches. In fact
+I cannot really judge their overhead. But right now I am not really sure
+they are going to help much against untrusted users.
+-- 
+Michal Hocko
+SUSE Labs
