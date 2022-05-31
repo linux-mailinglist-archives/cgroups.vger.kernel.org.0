@@ -2,29 +2,29 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F3D538DA4
-	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 11:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A67538DC3
+	for <lists+cgroups@lfdr.de>; Tue, 31 May 2022 11:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245034AbiEaJYM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 May 2022 05:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        id S245250AbiEaJdd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 May 2022 05:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245155AbiEaJYK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 May 2022 05:24:10 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A460B90CCA;
-        Tue, 31 May 2022 02:24:08 -0700 (PDT)
-Received: from kwepemi100025.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LC6JL1skwzjWyv;
-        Tue, 31 May 2022 17:22:58 +0800 (CST)
+        with ESMTP id S237326AbiEaJdc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 May 2022 05:33:32 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECBD22B0F;
+        Tue, 31 May 2022 02:33:29 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LC6VY1rRpz1JCSF;
+        Tue, 31 May 2022 17:31:49 +0800 (CST)
 Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- kwepemi100025.china.huawei.com (7.221.188.158) with Microsoft SMTP Server
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 31 May 2022 17:24:06 +0800
+ 15.1.2375.24; Tue, 31 May 2022 17:33:27 +0800
 Received: from [10.174.176.73] (10.174.176.73) by
  kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 31 May 2022 17:24:05 +0800
+ 15.1.2375.24; Tue, 31 May 2022 17:33:26 +0800
 Subject: Re: [PATCH -next v7 2/3] block, bfq: refactor the counting of
  'num_groups_with_pending_reqs'
 To:     Paolo Valente <paolo.valente@unimore.it>
@@ -41,8 +41,8 @@ References: <20220528095020.186970-1-yukuai3@huawei.com>
  <a0d8452c-e421-45d3-b012-5355207fc0e1@huawei.com>
  <81214347-3806-4F54-B60F-3E5A1A5EC84D@unimore.it>
 From:   Yu Kuai <yukuai3@huawei.com>
-Message-ID: <8ffa050c-1254-0974-1457-4ce4cb39dcb4@huawei.com>
-Date:   Tue, 31 May 2022 17:24:05 +0800
+Message-ID: <756631ee-6a85-303c-aca1-d60aaf477d0d@huawei.com>
+Date:   Tue, 31 May 2022 17:33:25 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
@@ -50,7 +50,7 @@ In-Reply-To: <81214347-3806-4F54-B60F-3E5A1A5EC84D@unimore.it>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600009.china.huawei.com (7.193.23.164)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -155,19 +155,16 @@ X-Mailing-List: cgroups@vger.kernel.org
 > It returns true only is the scenario is symmetric.  Not counting bfqqs
 > with in-flight requests makes an asymmetric scenario be considered
 > wrongly symmetric.  See function bfq_asymmetric_scenario().
-Hi,
 
-Yes, with this patchset, If there are more than one bfqg that is
-activatied(contain busy bfqq), bfq_asymmetric_scenario() will return
-true:
+Hi, Paolo
 
-bfq_asymmetric_scenario()
-  	return varied_queue_weights || multiple_classes_busy
-  #ifdef CONFIG_BFQ_GROUP_IOSCHED
-	       || bfqd->num_groups_with_busy_queues > 1
-  #endif
+Do you mean this gap?
 
- From what I see, bfqd->num_groups_with_busy_queues > 1 is always true...
+1. io1 is issued from bfqq1(from bfqg1)
+2. bfqq1 dispatched this io, it's busy is cleared
+3. *before io1 is completed*, io2 is issued from bfqq2(bfqg2)
+4. with this patchset, while dispatching io2 from bfqq2, the scenario
+should be symmetric while it's considered wrongly asymmetric.
 > 
 > Paolo
 > 
