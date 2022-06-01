@@ -2,69 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7A153AE22
-	for <lists+cgroups@lfdr.de>; Wed,  1 Jun 2022 22:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4640E53AF15
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jun 2022 00:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbiFAUpm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Jun 2022 16:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
+        id S231347AbiFAVSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Jun 2022 17:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbiFAUpU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Jun 2022 16:45:20 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFD6261293
-        for <cgroups@vger.kernel.org>; Wed,  1 Jun 2022 13:32:00 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id l84so4116097oif.10
-        for <cgroups@vger.kernel.org>; Wed, 01 Jun 2022 13:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
-        b=RGd9c1aErSn0Z6Ze8KLoF3EWbTH/9kTlwI+HC+SAx7dzvBrwHHsKOlh0JbRb09xcBP
-         iM2OCHeO/Jrl9Xle2mDSw6T0q2WeDDZSG5qe5a4Dg+cUelC504vEzjOQufYXWP9aJXgI
-         V/LFJCahzAFFpJlr1tiv2Vp4M01X+B3LdrfN7rOxB8bGQcOq43FjV1KDwVfyhOisNkOG
-         FD6f0xHzXypVyOoc2S2G61yyKZweooFWr6HTnKbFSpcoQrcxWgeekfUkx9WrMRo9A/lx
-         1hTIaXz5Rg+fQ0IRlejP5CxzHN8QjtW4TV9t29PD5AzmW/wzytk4/unH4gfxTM3MusEo
-         OocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=Gk4nfCem3ECRa7Gml0J0mN/3RZoOAdfGaQAqyHPKtiI=;
-        b=PLnCDSGDymeQe+GgyQ6Fb5VLecg68EuG6HlnkuFPy2lL2XQkb3+YL0pjPS+hx9/dYC
-         QmeHlxVgFELzWJgD8xa5HI2EWq3GQSqnp+phRJcLNW4pOYJ6tpwuIQOFJaMhN9v641H+
-         o0sJPHHZVsnFM3hpKddBIzfgTd/WyFF3p+gD/G8+Xzst/ddXqP1YxGA00VWT8K3bhESc
-         urDPbehICNxWw1qzhguDPzNp/vsI0qYg9k09HTd0UQ4qTK6NdlDAYPIS1LIB91b1hrT1
-         ITq9vO8CrCraCog//TH8DUuEHo+H1A25wmvBMV4Nm23dVK2ROglRKTIRhRcMToOv5JfP
-         13sQ==
-X-Gm-Message-State: AOAM530sljUdIaOi77HKqu7K/bErW8RQ7WhIAyrAoFNHGTlhqL0tQAQk
-        0JN0QaeZ2dETgKX3DFzyqRmv06m6P/bj8Es8nFk4GHmUsCA=
-X-Google-Smtp-Source: ABdhPJw3lgUh0oxmgmjzAwlNNZ94ksw/9I0mOwLnUtgereG7iWZKY4s1I5RZI0o0mPKS7RYxDWrvjq+R1cXj2tliMpE=
-X-Received: by 2002:a05:6870:4619:b0:f1:e78d:fd54 with SMTP id
- z25-20020a056870461900b000f1e78dfd54mr18171419oao.195.1654111014269; Wed, 01
- Jun 2022 12:16:54 -0700 (PDT)
+        with ESMTP id S231334AbiFAVSp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Jun 2022 17:18:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3AE146EC4A
+        for <cgroups@vger.kernel.org>; Wed,  1 Jun 2022 14:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654118320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=seAyGrXVhGHy02fnfQMGyuhJnciw9mNYlFqWhJVOexM=;
+        b=Uks3lRGKm3GOGmPE1QyEWV2JadbAYwiZf59RRL/dKXFqnt1UfkV3JIcyWR8k6MZOHnOxPU
+        IbYkyQphD7lGo7NSfXFoJBqNNRgE+i/fEpZqs7OtZFRJVIvQeQ1ccrggQKfdSjuhLj3kKW
+        eqp0PX8xNocZERlRizWiqif6nwzTpZk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-611-tE27wxA5NQiVQqmP-8w7Rg-1; Wed, 01 Jun 2022 17:18:37 -0400
+X-MC-Unique: tE27wxA5NQiVQqmP-8w7Rg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C1371185A7B2;
+        Wed,  1 Jun 2022 21:18:36 +0000 (UTC)
+Received: from llong.com (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 71C4C40CF8EB;
+        Wed,  1 Jun 2022 21:18:36 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/2] blk-cgroup: Optimize blkcg_rstat_flush()
+Date:   Wed,  1 Jun 2022 17:18:22 -0400
+Message-Id: <20220601211824.89626-1-longman@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6358:3601:b0:a3:2139:251d with HTTP; Wed, 1 Jun 2022
- 12:16:53 -0700 (PDT)
-Reply-To: johnwinery@online.ee
-In-Reply-To: <CAFqHCSRskayxkisB-+u26DtbT6KFL5dAQ+X5s5W-kcBz_DGgTw@mail.gmail.com>
-References: <CAFqHCSRskayxkisB-+u26DtbT6KFL5dAQ+X5s5W-kcBz_DGgTw@mail.gmail.com>
-From:   johnwinery <alicejohnson8974@gmail.com>
-Date:   Wed, 1 Jun 2022 12:16:53 -0700
-Message-ID: <CAFqHCSSwNksOc4c+jJ+6tiF2b2hWGn9JARB6iPpgQJTeHU_7AA@mail.gmail.com>
-Subject: Re: good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Greeting ,I had written an earlier mail to you but without response
+This is a follow-up of [1]. There is no change in patch 1. Patch 2 has
+the following changes:
+ - Update comments in patch 2.
+ - Put rcu_read_lock/unlock() in blkcg_rstat_flush().
+ - Use READ_ONCE/WRITE_ONCE() to access lnode->next to reduce data
+   races.
+ - Get a blkg reference when putting into the lockless list and put it
+   back when removed.
+
+[1] https://lore.kernel.org/lkml/20220601165324.60892-1-longman@redhat.com/
+
+Waiman Long (2):
+  blk-cgroup: Correctly free percpu iostat_cpu in blkg on error exit
+  blk-cgroup: Optimize blkcg_rstat_flush()
+
+ block/blk-cgroup.c | 92 ++++++++++++++++++++++++++++++++++++++++++----
+ block/blk-cgroup.h |  9 +++++
+ 2 files changed, 93 insertions(+), 8 deletions(-)
+
+-- 
+2.31.1
+
