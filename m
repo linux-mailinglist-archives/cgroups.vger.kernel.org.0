@@ -2,115 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7A053B809
-	for <lists+cgroups@lfdr.de>; Thu,  2 Jun 2022 13:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F199D53B9E0
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jun 2022 15:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbiFBLrS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Jun 2022 07:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        id S235406AbiFBNgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Jun 2022 09:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbiFBLrP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Jun 2022 07:47:15 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E552250682;
-        Thu,  2 Jun 2022 04:47:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C787B21B6F;
-        Thu,  2 Jun 2022 11:47:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654170426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        with ESMTP id S235425AbiFBNf7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Jun 2022 09:35:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A1BA6FD3F
+        for <cgroups@vger.kernel.org>; Thu,  2 Jun 2022 06:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654176957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yU2c05v5u7FyIeRoQARLGBGxinXGPSbObbAhOHtlivk=;
-        b=iS7l6vTGZLN97NTh5jQeXGGRyx3mXhgVrXT1uZlWRBfP5ckC33GgQkOvK2jzKixSmNQ/eQ
-        TW9e7UxBek/WCPm7Rrd+FAokOBEQg2hgxLXU30+gB/fe5Ka5Lr5WlARJfeaJax9PlVF2Yj
-        1Z+PbHJR0Yh1xFV8MIz5ychDM22WHTU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=RM/VM/BkJCFXBDQbLQtl/dczfhsVjGbr9q7yL7pUo/s=;
+        b=gGG0StbbnAMlRDEvekijcTVrPsG81RLlk3N8xZ972Srta2Q2UCbe4gfGKfwclJepivdf6b
+        qnvLkBdCLn6bDMLat7+U6dUtKjrMn72tXxcUvkU9VG9vsvVODrAt6YtTbntXt18owFvvSi
+        fmWLqJPzjugM8S9XYtg0OfBV49Npv90=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-644-QpfwInDINwOXB57FDsZcwA-1; Thu, 02 Jun 2022 09:35:52 -0400
+X-MC-Unique: QpfwInDINwOXB57FDsZcwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9AA36134F3;
-        Thu,  2 Jun 2022 11:47:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SIKzJDqjmGIgCQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 02 Jun 2022 11:47:06 +0000
-Date:   Thu, 2 Jun 2022 13:47:05 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: Re: [PATCH 2/2] cgroup: Use separate work structs on css release path
-Message-ID: <20220602114705.GB21320@blackbody.suse.cz>
-References: <Yo/DtjEU/kYr190u@slm.duckdns.org>
- <0babd7df-bdef-9edc-3682-1144bc0c2d2b@linaro.org>
- <Ypf0VnKUMiuRgZqT@slm.duckdns.org>
- <1fb4d8d7-ccc0-b020-715e-38c2dfd94c23@linaro.org>
- <Ypf5jpI7dSmpi4W0@slm.duckdns.org>
- <c3bd8e63-7204-f86d-8efa-254db71185fc@linaro.org>
- <Ypf/MpwzByOrSp6A@slm.duckdns.org>
- <416dc60a-f0e5-7d05-1613-3cd0ca415768@linaro.org>
- <YpgEY/lJbLidLOhc@slm.duckdns.org>
- <0fd1c3fd-fa86-dbed-f3f0-74c91b1efa11@linaro.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D160B811E81;
+        Thu,  2 Jun 2022 13:35:51 +0000 (UTC)
+Received: from llong.com (unknown [10.22.32.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AF3C2166B2C;
+        Thu,  2 Jun 2022 13:35:51 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v5 0/3] blk-cgroup: Optimize blkcg_rstat_flush()
+Date:   Thu,  2 Jun 2022 09:35:40 -0400
+Message-Id: <20220602133543.128088-1-longman@redhat.com>
+In-Reply-To: <20220601211824.89626-1-longman@redhat.com>
+References: <20220601211824.89626-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fd1c3fd-fa86-dbed-f3f0-74c91b1efa11@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 05:40:51PM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
-> css_killed_ref_fn() will be called regardless of the value of refcnt (via percpu_ref_kill_and_confirm())
-> and it will only enqueue the css_killed_work_fn() to be called later.
-> Then css_put()->css_release() will be called before the css_killed_work_fn() will even
-> get a chance to run, and it will also *only* enqueue css_release_work_fn() to be called later.
-> The problem happens on the second enqueue. So there need to be something in place that
-> will make sure that css_killed_work_fn() is done before css_release() can enqueue
-> the second job.
+ v5:
+  - Add a new patch 2 to eliminate the use of intermediate "ret"
+    variable in blkcg_css_alloc() to fix compilation warning reported
+    by kernel test robot.
 
-IIUC, here you describe the same scenario I broke down at [1].
+ v4:
+  - Update comment and eliminate "inline" keywords as suggested by TJ.
 
-> Does it sound right?
+ v3:
+  - Update comments in patch 2.
+  - Put rcu_read_lock/unlock() in blkcg_rstat_flush().
+  - Use READ_ONCE/WRITE_ONCE() to access lnode->next to reduce data
+    races.
+  - Get a blkg reference when putting into the lockless list and put it
+    back when removed.
+ 
+This patch series improves blkcg_rstat_flush() performance by eliminating
+unnecessary blkg enumeration and flush operations for those blkg's and
+blkg_iostat_set's that haven't been updated since the last flush.
 
-I added a parameter A there (that is sum of base and percpu references
-before kill_css()).
-I thought it fails because A == 1 (i.e. killing the base reference),
-however, that seems an unlikely situation (because cgroup code uses a
-"fuse" reference to pin css for offline_css()).
+Waiman Long (3):
+  blk-cgroup: Correctly free percpu iostat_cpu in blkg on error exit
+  blk-cgroup: Return -ENOMEM directly in blkcg_css_alloc() error path
+  blk-cgroup: Optimize blkcg_rstat_flush()
 
-So the remaining option (at least I find it more likely now) is that
-A == 0 (A < 0 would trigger the warning in
-percpu_ref_switch_to_atomic_rcu()), aka the ref imbalance. I hope we can
-get to the bottom of this with detailed enough tracing of gets/puts.
+ block/blk-cgroup.c | 103 ++++++++++++++++++++++++++++++++++++++-------
+ block/blk-cgroup.h |   9 ++++
+ 2 files changed, 96 insertions(+), 16 deletions(-)
 
-Splitting the work struct is condradictive to the existing approach with
-the "fuse" reference.
+-- 
+2.31.1
 
-(BTW you also wrote On Wed, Jun 01, 2022 at 05:00:44PM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
-> The fact the css_release() is called (via cgroup_kn_unlock()) just after
-> kill_css() causes the css->destroy_work to be enqueued twice on the same WQ
-> (cgroup_destroy_wq), just with different function. This results in the
-> BUG: corrupted list in insert_work issue.
-
-Where do you see a critical css_release called from cgroup_kn_unlock()?
-I always observed the css_release() being called via
-percpu_ref_call_confirm_rcu() (in the original and subsequent syzbot
-logs.))
-
-Thanks,
-Michal
-
-[1] https://lore.kernel.org/r/Yo7KfEOz92kS2z5Y@blackbook/
