@@ -2,88 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB63F53BE5A
-	for <lists+cgroups@lfdr.de>; Thu,  2 Jun 2022 21:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA3053BE75
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jun 2022 21:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238279AbiFBTFU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Jun 2022 15:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S238322AbiFBTNB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 2 Jun 2022 15:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238319AbiFBTFT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Jun 2022 15:05:19 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B690BF1;
-        Thu,  2 Jun 2022 12:05:17 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id a10so5713267pju.3;
-        Thu, 02 Jun 2022 12:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ErkdigvWJC7gN35TT0Xai2a2txPxDnW6A23kYtrzY/M=;
-        b=NNZemRytfEOcVt9JCTksweDQQDt81iD8tK+Ty4aZJywf8A7xvEXGpdyZF6PH87xFnr
-         8dZwvXFWWQy8oU9PeEZMDpmwEiasGU8yj1jZEZ72W/V9rbsCPw4qtl5+Gil3MfPROT4X
-         tmf5gxBDK8odvuXWg8zyxNwf1ktizZcbcP8wzxGlt2kBYuDCp3jk1TgjI+EtocvTW5ju
-         mSJv+h/dHVcy9ufFRY8gy1Eb0MPqjZL0vW5yim5PxacPhhL0LqkICfdUMeiqK7QRMwan
-         rC0uEztTTcXSodh4PcYysHxue8AAl5rIHTM6YjJh+CV7vEh7obsvjqJZYb9uTbIYB2rN
-         YdTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ErkdigvWJC7gN35TT0Xai2a2txPxDnW6A23kYtrzY/M=;
-        b=sskQ6VMZQ6uuKBsatctTiYx3Qh3e1ulPiZ3IDErjAHoC2B7fwZxnbBibF9qSvK7yBS
-         cW5aCDGUwZmcH6+bdZEpUzFszzNbcpdDhcyfK6LwkPMFJTfKbzbYMel3+XQjo+CDlyGi
-         dgPGF4loYdQCRPMti8Hh9AQxlYWzanNo67NkEJEgVv25PUFnlZor1pCYukVfyS0J1n+T
-         nMCyqFttnqZ5/pEOJQrorz81utnRj0yz3+mEboAEU5Z14jYXhBn52Css+1VvH0IbQMzA
-         /Eb7A63wndqNn6hTpira58wI8irDhXHO15cjod13u2UzAyWLNKDjsj4BxvcyzMuL+cRE
-         nN2g==
-X-Gm-Message-State: AOAM532hgxnfqqx3qjZZ5yUQMyVxbJeFmcRPhdNz5H/Wetio7JZIZBLC
-        fpyXXxzlC4knOKYiG8HX83M=
-X-Google-Smtp-Source: ABdhPJwsmlLDRJNrizBhCrCzqikbFQQ9w6ocCYHwh+qkEcGHzSvvqOd1b1rU60Gjr+0bbfGwAahZgA==
-X-Received: by 2002:a17:90a:e7c6:b0:1e0:9cf7:d042 with SMTP id kb6-20020a17090ae7c600b001e09cf7d042mr6789683pjb.234.1654196716779;
-        Thu, 02 Jun 2022 12:05:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:49ff])
-        by smtp.gmail.com with ESMTPSA id b11-20020a17090a6acb00b001d2bff34228sm6217735pjm.9.2022.06.02.12.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jun 2022 12:05:15 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 2 Jun 2022 09:05:14 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
+        with ESMTP id S238422AbiFBTNA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Jun 2022 15:13:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18C1510D5
+        for <cgroups@vger.kernel.org>; Thu,  2 Jun 2022 12:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654197179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ura6WzJRfDCe639hKtMahR5YURQ9sPrCG1JQZM8gR34=;
+        b=S6rlxM7HbD3d17TGM8/czeA9cqUqnGMJOgaUcnCv4POcNr/+40EqpJz230hOZx4ngvC7Xd
+        kSrYTZoTBNdQAjiyG0cuMpAxGGUlavwKFYBpTcCwE6+7L+23uaoSRxlOB9o5K25stG1odS
+        ML3GeucOvtYqSRnNBrx3M4Hr/zhljHU=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-283-l6nvbvmKOSeZhTBelqCCeQ-1; Thu, 02 Jun 2022 15:12:54 -0400
+X-MC-Unique: l6nvbvmKOSeZhTBelqCCeQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 993753C10142;
+        Thu,  2 Jun 2022 19:12:53 +0000 (UTC)
+Received: from [10.22.32.147] (unknown [10.22.32.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CD8F403371;
+        Thu,  2 Jun 2022 19:12:53 +0000 (UTC)
+Message-ID: <3ba0799f-c008-bbdf-bbc1-626d8bb4b821@redhat.com>
+Date:   Thu, 2 Jun 2022 15:12:53 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v5 4/4] blk-cgroup: Document the design of new lockless
+ iostat_cpu list
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Ming Lei <ming.lei@redhat.com>
-Subject: Re: [PATCH v5 4/4] blk-cgroup: Document the design of new lockless
- iostat_cpu list
-Message-ID: <YpkJ6rDTR24ScuEq@slm.duckdns.org>
 References: <20220602133543.128088-2-longman@redhat.com>
  <20220602185401.162937-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220602185401.162937-1-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+ <YpkJ6rDTR24ScuEq@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YpkJ6rDTR24ScuEq@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 02, 2022 at 02:54:01PM -0400, Waiman Long wrote:
-> A set of percpu lockless lists per block cgroup (blkcg) is added to
-> track the set of recently updated iostat_cpu structures. Add comment
-> in the code to document the design of this new set of lockless lists.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On 6/2/22 15:05, Tejun Heo wrote:
+> On Thu, Jun 02, 2022 at 02:54:01PM -0400, Waiman Long wrote:
+>> A set of percpu lockless lists per block cgroup (blkcg) is added to
+>> track the set of recently updated iostat_cpu structures. Add comment
+>> in the code to document the design of this new set of lockless lists.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+>
+> Thanks.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+I have just realized that I forgot to free the percpu blkcg->lhead in 
+blkcg_css_free(). I will send out v6 with this change as well as 
+integrating this documentation patch back. Sorry for the omission.
 
-Thanks.
+Thanks,
+Longman
 
--- 
-tejun
