@@ -2,158 +2,242 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3CC53CD5E
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jun 2022 18:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B9653CE24
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jun 2022 19:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242915AbiFCQmV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jun 2022 12:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S240191AbiFCRfU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jun 2022 13:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237834AbiFCQmU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jun 2022 12:42:20 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D4E1EC58
-        for <cgroups@vger.kernel.org>; Fri,  3 Jun 2022 09:42:18 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id 15so1191409qki.6
-        for <cgroups@vger.kernel.org>; Fri, 03 Jun 2022 09:42:18 -0700 (PDT)
+        with ESMTP id S1344493AbiFCRfS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jun 2022 13:35:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F3752E4A
+        for <cgroups@vger.kernel.org>; Fri,  3 Jun 2022 10:35:16 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id gd1so7861451pjb.2
+        for <cgroups@vger.kernel.org>; Fri, 03 Jun 2022 10:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pZiq+DaP0uIJbqmhpHEQocGuha+dXUbZZZqTwIB2IaE=;
-        b=rrQxT3vbT7GMAWiBE8NKh82hTKWmXoBOIgjSoB8gWHlxJCtpicQfJi6YHcKEu0Skmg
-         abttTcfRqmTOcz4L3ohQC6WWhlA31fuHxoEfeuJpbUAg7kX6/vtplGcJ9j4IrzJVxD9O
-         vdLoYfObodGls9T269h7hJyDm997n4snH1eyk5q8lGm0DuwzVfKoDQFEQSeKxajjX2Yz
-         5TiL9zM/J27+HT1KqOA1cB9necDYn5jb3A6o3ARG7LxeA2ES2j5uBkLAZdLyHaiO4lvt
-         ER/oF7LY8Hxyq/pFtt8IclZxYPm5bLZuRep0Ojk6gIJnuU/og9qHiw7H4aRy54/0OtvI
-         pIJA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wsGkporiWQeNHg4v1skX8MmfnPHmZ0ni6U0Bq1ri7HA=;
+        b=a1sktZ6PwTtJdZaiQGYWK4MxHPhEr3vs5B0FyLaZOmVggg3/BzW2lFLLjb4vdmZ2CM
+         5tdYsRV4Tl1/efkLpIahk9F3SmrQ5a9wS/pdsPXgydC6nU6Aq+3QE1TAZjfLTiGszZJP
+         wWHnm8d+dE53knPFb08NqEB0r1WGlH+WTqimSxLxIUH9Co088ymYV3G03+rGClHdUdLD
+         1VUHbZUkzEzNAdMDaY7zwRX0M1bCniqdHONnnQn3TCRwa/eTtQrTEPFkfZZ3Vb+9u42t
+         Jnt6wzCrwFif404LEePDQmE5XXMq3Ly9WbIA1zCToHxYzdXKwCXsPqlzpQPM+YkmOoWQ
+         fAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pZiq+DaP0uIJbqmhpHEQocGuha+dXUbZZZqTwIB2IaE=;
-        b=xiCto4pATvBOppUD/UdHJFLzRXzx1s6IAYTM+z6ozBBiI4cIw9IuZcfDjyAGM9qqa5
-         wimtPHPacOsNaXlVrO/WFfkRVmgTiOggv57KzT850xmguuvevOiccBoONJ/CouyAl0DZ
-         rjr5ohK3UpNEdXRmzk7IZUYKpMGZmrTkKL3C69a1DWSNheGppPh8dy9+bFgJsrG385/g
-         QY7w+UuICepQKOOZos/mU94/96LnEn6YtMG//n4eGAoewUsTIPkv2KkP6/dk6rT7RhId
-         Rv/2YCCH9S8eKmbHoj9qYqhvN1/JpfYLHNKHImBw+NMYV5m8iIfxSWrDBvYjr/u+1VeT
-         LIUg==
-X-Gm-Message-State: AOAM532csbO3TOm4hVNaXgLh83rZ2ki+YwM+srXEqnGvSRqqCMnvNJ0a
-        w+TWGXBWzwpryCc1abLFElGu9w==
-X-Google-Smtp-Source: ABdhPJwD1IT8PgvyiFpaFJ0oQgGHCzkg9tknn5j7X5fVKzbiMKtPXk1vgrTU2p+vhNcLbOMRztlAVw==
-X-Received: by 2002:a05:620a:2845:b0:6a3:646f:9ba8 with SMTP id h5-20020a05620a284500b006a3646f9ba8mr7509475qkp.56.1654274537770;
-        Fri, 03 Jun 2022 09:42:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:1d66])
-        by smtp.gmail.com with ESMTPSA id w184-20020a3794c1000000b006a098381abcsm5550650qkd.114.2022.06.03.09.42.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wsGkporiWQeNHg4v1skX8MmfnPHmZ0ni6U0Bq1ri7HA=;
+        b=Zwhtv+n0DNHKroe3SAQZXBYxhqG3lsYrRrPWaTKzqSC9Fn+adRM3mcyf8ZGbKd8xQQ
+         /QAbbNv9+qXbIT1Auwuwv5DiMzk3pCqW8zctaMyJGoND0L/8E6cV/c2E0O/OdWJD82wj
+         KK1RYxUxiUOow9/hJiT1+xl/thbUfFmIGpQzRWiu/v4a1tu+RX/fz0JutNMM8OPpbps/
+         KxiKnOeubTY6fdgDLWsYHzbYXgLEOT/YvDJWWljchysImYIq1d78ZCctQq271VTyvbYm
+         JYg2PqSyMN83o7P7yJYuMPvncOeCUvmqfVmx7yWw1N8Izc5/VJPsoMpOIXwhGg3ktvqX
+         FWRg==
+X-Gm-Message-State: AOAM531WwOSTfU0eu9X9y6Amwxi8ZYbQFhwVcKRdyHv9y8+quKVJ4XUX
+        gBakTCRhcfckpsV4TncoWC3WdA==
+X-Google-Smtp-Source: ABdhPJx88jfqJGvlh85IKtdIkpIo1pu4gJb5NXPiJ/0S9jrCIk/XxyxIGjdKNFq7q+cF1hUVJ66yCQ==
+X-Received: by 2002:a17:902:d2d1:b0:167:4c33:d5d3 with SMTP id n17-20020a170902d2d100b001674c33d5d3mr3799752plc.81.1654277715866;
+        Fri, 03 Jun 2022 10:35:15 -0700 (PDT)
+Received: from localhost.localdomain ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id x17-20020a056a000bd100b0051be1b4cfb5sm1730265pfu.5.2022.06.03.10.35.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jun 2022 09:42:17 -0700 (PDT)
-Date:   Fri, 3 Jun 2022 12:42:15 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marc Zyngier <maz@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Fri, 03 Jun 2022 10:35:15 -0700 (PDT)
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Michal Koutny <mkoutny@suse.com>,
         Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Oliver Upton <oupton@google.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-Message-ID: <Ypo550pGxmnJnGBe@cmpxchg.org>
-References: <Yn2YYl98Vhh/UL0w@google.com>
- <Yn5+OtZSSUZZgTQj@cmpxchg.org>
- <Yn6DeEGLyR4Q0cDp@google.com>
- <CALvZod6nERq4j=L0V+pc-rd5+QKi4yb_23tWV-1MF53xL5KE6Q@mail.gmail.com>
- <CAJD7tka-5+XRkthNV4qCg8woPCpjcwynQoRBame-3GP1L8y+WQ@mail.gmail.com>
- <YoeoLJNQTam5fJSu@cmpxchg.org>
- <CAJD7tkYjcmwBeUx-=MTQeUf78uqFDvfpy7OuKy4OvoS7HiVO1Q@mail.gmail.com>
- <Yo4Ze+DZrLqn0PeU@cmpxchg.org>
- <Yo7MHA2aUaprvgl8@google.com>
- <CAJD7tkYoz=rYvBV3tcp4aLgiyEtr-sBwbncFduZsOq+c8wk5sA@mail.gmail.com>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Subject: [PATCH] cgroup: serialize css kill and release paths
+Date:   Fri,  3 Jun 2022 10:34:55 -0700
+Message-Id: <20220603173455.441537-1-tadeusz.struk@linaro.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkYoz=rYvBV3tcp4aLgiyEtr-sBwbncFduZsOq+c8wk5sA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 27, 2022 at 11:33:27AM -0700, Yosry Ahmed wrote:
-> On Wed, May 25, 2022 at 5:39 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Wed, May 25, 2022, Johannes Weiner wrote:
-> > > On Tue, May 24, 2022 at 03:31:52PM -0700, Yosry Ahmed wrote:
-> > > > I don't have enough context to say whether we should piggyback KVM MMU
-> > > > pages to the existing NR_PAGETABLE item, but from a high level it
-> > > > seems like it would be more helpful if they are a separate stat.
-> > > > Anyway, I am willing to go with whatever Sean thinks is best.
-> > >
-> > > Somebody should work this out and put it into a changelog. It's
-> > > permanent ABI.
-> >
-> > After a lot of waffling, my vote is to add a dedicated NR_SECONDARY_PAGETABLE.
-> >
-> > It's somewhat redundant from a KVM perspective, as NR_SECONDARY_PAGETABLE will
-> > scale with KVM's per-VM pages_{4k,2m,1g} stats unless the guest is doing something
-> > bizarre, e.g. accessing only 4kb chunks of 2mb pages so that KVM is forced to
-> > allocate a large number of page tables even though the guest isn't accessing that
-> > much memory.
-> >
-> > But, someone would need to either understand how KVM works to make that connection,
-> > or know (or be told) to go look at KVM's stats if they're running VMs to better
-> > decipher the stats.
-> >
-> > And even in the little bit of time I played with this, I found having
-> > nr_page_table_pages side-by-side with nr_secondary_page_table_pages to be very
-> > informative.  E.g. when backing a VM with THP versus HugeTLB,
-> > nr_secondary_page_table_pages is roughly the same, but nr_page_table_pages is an
-> > order of a magnitude higher with THP.  I'm guessing the THP behavior is due to
-> > something triggering DoubleMap, but now I want to find out why that's happening.
-> >
-> > So while I'm pretty sure a clever user could glean the same info by cross-referencing
-> > NR_PAGETABLE stats with KVM stats, I think having NR_SECONDARY_PAGETABLE will at the
-> > very least prove to be helpful for understanding tradeoffs between VM backing types,
-> > and likely even steer folks towards potential optimizations.
-> >
-> > Baseline:
-> >   # grep page_table /proc/vmstat
-> >   nr_page_table_pages 2830
-> >   nr_secondary_page_table_pages 0
-> >
-> > THP:
-> >   # grep page_table /proc/vmstat
-> >   nr_page_table_pages 7584
-> >   nr_secondary_page_table_pages 140
-> >
-> > HugeTLB:
-> >   # grep page_table /proc/vmstat
-> >   nr_page_table_pages 3153
-> >   nr_secondary_page_table_pages 153
-> >
-> 
-> Interesting findings! Thanks for taking the time to look into this, Sean!
-> I will refresh this patchset and summarize the discussion in the
-> commit message, and also fix some nits on the KVM side. Does this
-> sound good to everyone?
+Syzbot found a corrupted list bug scenario that can be triggered from
+cgroup_subtree_control_write(cgrp). The reproduces writes to
+cgroup.subtree_control file, which invokes:
+cgroup_apply_control_enable()->css_create()->css_populate_dir(), which
+then fails with a fault injected -ENOMEM.
+In such scenario the css_killed_work_fn will be en-queued via
+cgroup_apply_control_disable(cgrp)->kill_css(css), and bail out to
+cgroup_kn_unlock(). Then cgroup_kn_unlock() will call:
+cgroup_put(cgrp)->css_put(&cgrp->self), which will try to enqueue
+css_release_work_fn for the same css instance, causing a list_add
+corruption bug, as can be seen in the syzkaller report [1].
 
-Yes, thanks for summarizing this. Sounds good to me!
+Fix this by synchronizing the css ref_kill and css_release jobs.
+css_release() function will check if the css_killed_work_fn() has been
+scheduled for the css and only en-queue the css_release_work_fn()
+if css_killed_work_fn wasn't already en-queued. Otherwise css_release() will
+set the CSS_REL_LATER flag for that css. This will cause the css_release_work_fn()
+work to be executed after css_killed_work_fn() is finished.
 
+Two scc flags have been introduced to implement this serialization mechanizm:
+
+ * CSS_KILL_ENQED, which will be set when css_killed_work_fn() is en-queued, and
+ * CSS_REL_LATER, which, if set, will cause the css_release_work_fn() to be
+   scheduled after the css_killed_work_fn is finished.
+
+There is also a new lock, which will protect the integrity of the css flags.
+
+[1] https://syzkaller.appspot.com/bug?id=e26e54d6eac9d9fb50b221ec3e4627b327465dbd
+
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Michal Koutny <mkoutny@suse.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: <cgroups@vger.kernel.org>
+Cc: <netdev@vger.kernel.org>
+Cc: <bpf@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+
+Reported-and-tested-by: syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Fixes: 8f36aaec9c92 ("cgroup: Use rcu_work instead of explicit rcu and work item")
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+---
+ include/linux/cgroup-defs.h |  4 ++++
+ kernel/cgroup/cgroup.c      | 35 ++++++++++++++++++++++++++++++++---
+ 2 files changed, 36 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 1bfcfb1af352..8dc8b4edb242 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -53,6 +53,8 @@ enum {
+ 	CSS_RELEASED	= (1 << 2), /* refcnt reached zero, released */
+ 	CSS_VISIBLE	= (1 << 3), /* css is visible to userland */
+ 	CSS_DYING	= (1 << 4), /* css is dying */
++	CSS_KILL_ENQED	= (1 << 5), /* kill work enqueued for the css */
++	CSS_REL_LATER	= (1 << 6), /* release needs to be done after kill */
+ };
+ 
+ /* bits in struct cgroup flags field */
+@@ -162,6 +164,8 @@ struct cgroup_subsys_state {
+ 	 */
+ 	int id;
+ 
++	/* lock to protect flags */
++	spinlock_t lock;
+ 	unsigned int flags;
+ 
+ 	/*
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1779ccddb734..a0ceead4b390 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5210,8 +5210,23 @@ static void css_release(struct percpu_ref *ref)
+ 	struct cgroup_subsys_state *css =
+ 		container_of(ref, struct cgroup_subsys_state, refcnt);
+ 
+-	INIT_WORK(&css->destroy_work, css_release_work_fn);
+-	queue_work(cgroup_destroy_wq, &css->destroy_work);
++	spin_lock_bh(&css->lock);
++
++	/*
++	 * Check if the css_killed_work_fn work has been scheduled for this
++	 * css and enqueue css_release_work_fn only if it wasn't.
++	 * Otherwise set the CSS_REL_LATER flag, which will cause
++	 * release to be enqueued after css_killed_work_fn is finished.
++	 * This is to prevent list corruption by en-queuing two instance
++	 * of the same work struct on the same WQ, namely cgroup_destroy_wq.
++	 */
++	if (!(css->flags & CSS_KILL_ENQED)) {
++		INIT_WORK(&css->destroy_work, css_release_work_fn);
++		queue_work(cgroup_destroy_wq, &css->destroy_work);
++	} else {
++		css->flags |= CSS_REL_LATER;
++	}
++	spin_unlock_bh(&css->lock);
+ }
+ 
+ static void init_and_link_css(struct cgroup_subsys_state *css,
+@@ -5230,6 +5245,7 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+ 	INIT_LIST_HEAD(&css->rstat_css_node);
+ 	css->serial_nr = css_serial_nr_next++;
+ 	atomic_set(&css->online_cnt, 0);
++	spin_lock_init(&css->lock);
+ 
+ 	if (cgroup_parent(cgrp)) {
+ 		css->parent = cgroup_css(cgroup_parent(cgrp), ss);
+@@ -5545,10 +5561,12 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+  */
+ static void css_killed_work_fn(struct work_struct *work)
+ {
+-	struct cgroup_subsys_state *css =
++	struct cgroup_subsys_state *css_killed, *css =
+ 		container_of(work, struct cgroup_subsys_state, destroy_work);
+ 
+ 	mutex_lock(&cgroup_mutex);
++	css_killed = css;
++	css_killed->flags &= ~CSS_KILL_ENQED;
+ 
+ 	do {
+ 		offline_css(css);
+@@ -5557,6 +5575,14 @@ static void css_killed_work_fn(struct work_struct *work)
+ 		css = css->parent;
+ 	} while (css && atomic_dec_and_test(&css->online_cnt));
+ 
++	spin_lock_bh(&css->lock);
++	if (css_killed->flags & CSS_REL_LATER) {
++		/* If css_release work was delayed for the css enqueue it now. */
++		INIT_WORK(&css_killed->destroy_work, css_release_work_fn);
++		queue_work(cgroup_destroy_wq, &css_killed->destroy_work);
++		css_killed->flags &= ~CSS_REL_LATER;
++	}
++	spin_unlock_bh(&css->lock);
+ 	mutex_unlock(&cgroup_mutex);
+ }
+ 
+@@ -5566,10 +5592,13 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+ 	struct cgroup_subsys_state *css =
+ 		container_of(ref, struct cgroup_subsys_state, refcnt);
+ 
++	spin_lock_bh(&css->lock);
+ 	if (atomic_dec_and_test(&css->online_cnt)) {
++		css->flags |= CSS_KILL_ENQED;
+ 		INIT_WORK(&css->destroy_work, css_killed_work_fn);
+ 		queue_work(cgroup_destroy_wq, &css->destroy_work);
+ 	}
++	spin_unlock_bh(&css->lock);
+ }
+ 
+ /**
+-- 
+2.36.1
