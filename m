@@ -2,131 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C59453D27E
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jun 2022 21:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC4B53D4CC
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jun 2022 04:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346628AbiFCTxI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jun 2022 15:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44428 "EHLO
+        id S1350070AbiFDCJC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jun 2022 22:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242499AbiFCTxH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jun 2022 15:53:07 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3817F1AD84
-        for <cgroups@vger.kernel.org>; Fri,  3 Jun 2022 12:53:05 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id k36-20020a05600c1ca400b0039c2a3394caso3188096wms.2
-        for <cgroups@vger.kernel.org>; Fri, 03 Jun 2022 12:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=75r9OCRaKxDbstDb8Q6rmHNx4VG7/Ol3FIsxmmQpCKE=;
-        b=OFS10OD5jepWzQUQgDwqO+/YoB6ZmGdD0wKjnuqRWMntCfyc/zl6FJU7+8IfeQ28pE
-         xXfqBHZknnzrk9L1ttKK0MWceb5jWsOOQGLBa0wl39d8rGlcGwBUk2ZanvmgXNAtJyZr
-         60Sf9V22ufhliS6cH9dvm+s6oX7B+irq5RWBwlaMWJ4Xko5YT9bz2OEzwuwSJ7i+fw0Z
-         HR7HtVHJFw3Nj/n/X/vSCH6u1nQYW0Y81pb2f61wqTFPRYwQMCGNLv7vUeDBbRKT3Ig5
-         +QjBWVhxJyQFtQQtDtDUdoy97HliJNHK5A1yPoWyiD/mzBH/EmKmZkHNRagT44RS6jjS
-         ZZEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=75r9OCRaKxDbstDb8Q6rmHNx4VG7/Ol3FIsxmmQpCKE=;
-        b=BHlZ4kFpen+zbburTH1c2+s1w4ceK39JfaoyvVP8Krnuvx8RtaBX22b60d4cHPqxjv
-         wC0tzuPVQVbGzh+kil7zc8qRylg8kFsXcrToTpob6DQ9c3i0cJ72/cbroGDsTSNwg1ne
-         QPGh9e3Hd4P33MhXHjMtbY0oulPJc1eJxx5QZipujogufkl/nPFPqZwqR50B+wFDImf2
-         PaLuL04fkQdhTaGf+IT9Uilqjp119zMMLpAgsRfJ+R6W2ctBxdPZmhPSETvMi2kx3fvT
-         mL5QIC1/D13pr5xms8Yk0cGz/zKXOqWpQ7S6GKFPwb1bSK3R0Hpf1SPq8BbJd+Z+psZh
-         lNLQ==
-X-Gm-Message-State: AOAM530IfuYltu4GDmUJC1xybnY4zENb+6HzYOI6PXp6veeeJL2/FzpN
-        5S1xjS6EixS/Npon7n5jFABy/z3GlsSNgkMPQtGfQw==
-X-Google-Smtp-Source: ABdhPJwuIVg8jNRLLKtimZoxTZU6/bvcyWF6n4woePM0h8xaQiqgd73SV9wNp6ELv1Q5jfaQTtZvszkc2RZLgXb8uqY=
-X-Received: by 2002:a05:600c:3788:b0:39c:3a20:a50e with SMTP id
- o8-20020a05600c378800b0039c3a20a50emr6019549wmr.196.1654285983632; Fri, 03
- Jun 2022 12:53:03 -0700 (PDT)
+        with ESMTP id S1345631AbiFDCJB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jun 2022 22:09:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A631335DC0
+        for <cgroups@vger.kernel.org>; Fri,  3 Jun 2022 19:09:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1654308539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wz/tZ37kUmFWQ6HkHJXHebNCC4sxDl8GdAywmW5KYk4=;
+        b=SpoAaKQoX+B91ClagWDPNP/91degqU/dkisaqEVEXC4yRxO+SeK6ReIt0uK90+mpqh48Gu
+        pMX8r6BraWgv4h6sbbwr4oBGF1hJqizYDyHjE1AHhZ/3nqFprBTMBa0FQzuUG+ss/xIlc3
+        3OsyoMqTqjkynDy34XT5BjtysTG8s40=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-50-AGSMn1-FMN2cGsQOaJpppg-1; Fri, 03 Jun 2022 22:08:58 -0400
+X-MC-Unique: AGSMn1-FMN2cGsQOaJpppg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C57431C0513E;
+        Sat,  4 Jun 2022 02:08:57 +0000 (UTC)
+Received: from T590 (ovpn-8-17.pek2.redhat.com [10.72.8.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D3E02166B26;
+        Sat,  4 Jun 2022 02:08:53 +0000 (UTC)
+Date:   Sat, 4 Jun 2022 10:08:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] blk-cgroup: Correctly free percpu iostat_cpu in
+ blkg on error exit
+Message-ID: <Ypq+sPnh6J14PvIZ@T590>
+References: <20220602192020.166940-1-longman@redhat.com>
+ <20220602192020.166940-2-longman@redhat.com>
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-6-yosryahmed@google.com> <20220603162339.GA25043@blackbody.suse.cz>
-In-Reply-To: <20220603162339.GA25043@blackbody.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 3 Jun 2022 12:52:27 -0700
-Message-ID: <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/5] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220602192020.166940-2-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for taking a look at this!
+On Thu, Jun 02, 2022 at 03:20:18PM -0400, Waiman Long wrote:
+> Commit f73316482977 ("blk-cgroup: reimplement basic IO stats using cgroup
+> rstat") changes block cgroup IO stats to use the rstat APIs. It added
+> a new percpu iostat_cpu field into blkg. The blkg_alloc() was modified
+> to allocate the new percpu iostat_cpu but didn't free it when an error
+> happened. Fix this by freeing the percpu iostat_cpu on error exit.
+> 
+> Fixes: f73316482977 ("blk-cgroup: reimplement basic IO stats using cgroup rstat")
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> ---
+>  block/blk-cgroup.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 40161a3f68d0..acd9b0aa8dc8 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -219,11 +219,11 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
+>  		return NULL;
+>  
+>  	if (percpu_ref_init(&blkg->refcnt, blkg_release, 0, gfp_mask))
+> -		goto err_free;
+> +		goto err_free_blkg;
+>  
+>  	blkg->iostat_cpu = alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask);
+>  	if (!blkg->iostat_cpu)
+> -		goto err_free;
+> +		goto err_free_blkg;
+>  
+>  	if (!blk_get_queue(q))
+>  		goto err_free;
+> @@ -259,6 +259,9 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
+>  	return blkg;
+>  
+>  err_free:
+> +	free_percpu(blkg->iostat_cpu);
+> +
+> +err_free_blkg:
+>  	blkg_free(blkg);
 
-On Fri, Jun 3, 2022 at 9:23 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> On Fri, May 20, 2022 at 01:21:33AM +0000, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > +#define CGROUP_PATH(p, n) {.name =3D #n, .path =3D #p"/"#n}
-> > +
-> > +static struct {
-> > +     const char *name, *path;
->
-> Please unify the order of path and name with the macro (slightly
-> confusing ;-).
+Hi Waiman,
 
-Totally agree, will do.
+But blkg_free() frees blkg->iostat_cpu via blkg_free_workfn(), so I am
+confused where the leak is in failure path?
 
->
-> > +SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
-> > +int BPF_PROG(vmscan_end, struct lruvec *lruvec, struct scan_control *s=
-c)
-> > +{
-> > [...]
-> > +     struct cgroup *cgrp =3D task_memcg(current);
-> > [...]
-> > +     /* cgrp may not have memory controller enabled */
-> > +     if (!cgrp)
-> > +             return 0;
->
-> Yes, the controller may not be enabled (for a cgroup).
-> Just noting that the task_memcg() implementation will fall back to
-> root_mem_cgroup in such a case (or nearest ancestor), you may want to
-> use cgroup_ss_mask() for proper detection.
 
-Good catch. I get confused between cgrp->subsys and
-task->cgroups->subsys sometimes because of different fallback
-behavior. IIUC cgrp->subsys should have NULL if the memory controller
-is not enabled (no nearest ancestor fallback), and hence I can use
-memory_subsys_enabled() that I defined just above task_memcg() to test
-for this (I have no idea why I am not already using it here). Is my
-understanding correct?
+Thanks
+Ming
 
->
-> Regards,
-> Michal
