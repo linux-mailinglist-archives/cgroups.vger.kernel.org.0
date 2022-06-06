@@ -2,85 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728FB53EF14
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jun 2022 22:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8501653F20F
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 00:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbiFFUBN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jun 2022 16:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        id S232210AbiFFWVL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jun 2022 18:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbiFFUBM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 16:01:12 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE28F1A050
-        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 13:01:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z17so3361293wmi.1
-        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 13:01:09 -0700 (PDT)
+        with ESMTP id S232099AbiFFWVJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 18:21:09 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59646D95A
+        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 15:21:07 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id b15-20020a170902d50f00b00167501814edso4659248plg.8
+        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 15:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W5TqJYafwftJ1q16jDwsapCbeMrbhqufuDDjVq8Z1/0=;
-        b=dRai72lfgPZVIbcYWbUJgQZW62213vXNScspB3WEJ8uXaErK7Wm69WAfoUX4ybfir5
-         hGG+oasznTALQNkRvzo4k3jjOa5QWG4Q7qaLY2vlMOL0HIQvV8DB/wJc4HPztmZJKHQg
-         bgjw9FszVQUdeqkBcBCL7z1i3oUV4vGRLv7xGkQN+5dXsdh9YvZWGM8+UsJL45omX6bt
-         OJMtAV9tYU83SJwh93SuVYmMkYMj96481RHZ/H7H9FNMPH5GSpI9UOCOvRo+0FZqUHkj
-         DF/AA5b1zGXOO1kcS9aRFg/N6xzK0ao4g3Ic4hAsHSIMDrNE5Gmm9zTqm4+LahveQS/A
-         nL+w==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=IJS83ZKmvay92IEqxRhRKAGkk5kusGJyLJThB250L6U=;
+        b=OBqMy3wK2eu42u4CbtznTgnyseS6gsaJLr5FDK08zli4P+8VmL18aLuhw+bSnMdM7k
+         iFz03jncbwfAA7r/AGTwPC55fSnuiaen+bze1yfaaUyFA+CNkxQfCc05giglU0XkUEVo
+         t0wTaD5v0fh6UuTsvLua6zwa4GLFp9MUBqwGr5TCmjvLaGNwvrJnSC+2h7QKCddI9v2O
+         1AvKbLWw/YHC21qUQMpix/9u1/qvIqsCc78g0RrjeITNLQzJr0ZmEpnbP1xHYGLnKYVq
+         HF3gC2h07Gg4ZKzkzeDiB+DLw++z+7xHgEUcgkjKGWNrPJUIIGcun4GT14NaNl+uGKgC
+         0Sxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W5TqJYafwftJ1q16jDwsapCbeMrbhqufuDDjVq8Z1/0=;
-        b=TFbam5UzOXPOVTItZwGlsdGipN4anpOJMhRhFfVqZrLHRCA8qp+PxMTIhKH0NaYpY2
-         LLWTueJt1NUjnQsKTiZk/ufPLXOHvC2JT9j+ULAWl6jYH0LZ34MlFxPHiG6kmGK70TIp
-         x6XnPuPzp5thMwJp1v0ZaxQk0cqLEGE4SWHTqfrU56we1Hsby7wkXPhACTjq02Y0s4/Z
-         Eljp0//KgGbyLGgyaUcwFPlQ1QWRJ2qE58Jm7AKnMjWN1MtmSaEP7oMkbMl7CIZxM5by
-         o1zkzdBtfRFsdwX7vMqf2dFTYtwe8tGvjqPDZ+Y61pqVqqsVfIcWlzQuC6mXc+shy1Ct
-         htMg==
-X-Gm-Message-State: AOAM531BGZcYxTlW3/IoRjZP8cdtvQnvuuLn0WpKT+Ju2VT6omyKDRAb
-        EsTtY3Mlx5nfmFE8tl/4qN28RLiQubWrjVNuDBgTHw==
-X-Google-Smtp-Source: ABdhPJyEMUN07Nx+Z6Hur5B7Ckxoi3WjMhd9MJBUwtTUCWQoJCvlJDkV6RZ2FWrtlkbBQxf7z3rq1LujRmEt7yno97I=
-X-Received: by 2002:a7b:c7c3:0:b0:398:934f:a415 with SMTP id
- z3-20020a7bc7c3000000b00398934fa415mr25516158wmk.27.1654545667336; Mon, 06
- Jun 2022 13:01:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220603162247.GC16134@blackbody.suse.cz> <CAJD7tkbp9Tw4oGtxsnHQB+5VZHMFa4J0qvJGRyj3VuuQ4UPF=g@mail.gmail.com>
- <20220606123209.GE6928@blackbody.suse.cz> <CAJD7tkZeNhyEL4WtkEMOUeLsLX4x4roMuNCocEhz5yHm7=h4vw@mail.gmail.com>
- <20220606195454.byivqaarp6ra7dpc@apollo.legion>
-In-Reply-To: <20220606195454.byivqaarp6ra7dpc@apollo.legion>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=IJS83ZKmvay92IEqxRhRKAGkk5kusGJyLJThB250L6U=;
+        b=Pju8ctX0DE9148Xu0Kkz3+A2TJPqHW5oqVduJmNbWJ3M+XhA7NtIh5X/96T5xBtW5n
+         M1Yae0Vit5LtgnPDgp1KqkyJVgkEnrw87g5njtSNzi+JHg4FjKhhbeVVVSJBJAN282OL
+         IB/ztUq6qY9IqkEUTjhPscva1HjlxVdJD94hDkW31Vg+ULBoj3RdKOYhR9KaRoEiIFDd
+         h/ztqdPBSMp2NgJcUusW0lhACbxwI1kf+g9Tv/BB1G6uTda+K9GEUIE/q7E6Cv3/er7R
+         uEpLcf2ZI0DkuiHIj0PVKi4eSJS+9N9W9UEIH/FbeabN27jb/Ab8+MzR8bwUYS4Ppom8
+         1mDw==
+X-Gm-Message-State: AOAM533vRhFYfdFlcwlycimZbFA4hZEy25V4uUrXQF2S06NLu7T8H60Y
+        S4jwpLyROgN2yPtNZtyMAhwZ5IXmWuLPU8to
+X-Google-Smtp-Source: ABdhPJx1wdZontdtDHAURSxbRB7De+X97i6gu5k06GDDv+Ku0jwJHaJ3ZGwcu97YUcHYEb+wa/3Y2TiM5NS+scjm
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:d584:b0:167:6ab9:b094 with SMTP
+ id k4-20020a170902d58400b001676ab9b094mr12694803plh.16.1654554067166; Mon, 06
+ Jun 2022 15:21:07 -0700 (PDT)
+Date:   Mon,  6 Jun 2022 22:20:54 +0000
+Message-Id: <20220606222058.86688-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.1.255.ge46751e96f-goog
+Subject: [PATCH v5 0/4] KVM: mm: count KVM mmu usage in memory stats
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 6 Jun 2022 13:00:30 -0700
-Message-ID: <CAJD7tkbOFHW+Z48CbpsG3O8wvh0GYjChDgNhoiVJ=_LZsND8wQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/5] bpf: rstat: cgroup hierarchical stats
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
+        Oliver Upton <oupton@google.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,70 +81,86 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 12:55 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Tue, Jun 07, 2022 at 01:02:04AM IST, Yosry Ahmed wrote:
-> > On Mon, Jun 6, 2022 at 5:32 AM Michal Koutn=C3=BD <mkoutny@suse.com> wr=
-ote:
-> > >
-> > > On Fri, Jun 03, 2022 at 12:47:19PM -0700, Yosry Ahmed <yosryahmed@goo=
-gle.com> wrote:
-> > > > In short, think of these bpf maps as equivalents to "struct
-> > > > memcg_vmstats" and "struct memcg_vmstats_percpu" in the memory
-> > > > controller. They are just containers to store the stats in, they do
-> > > > not have any subgraph structure and they have no use beyond storing
-> > > > percpu and total stats.
-> > >
-> > > Thanks for the explanation.
-> > >
-> > > > I run small microbenchmarks that are not worth posting, they compar=
-ed
-> > > > the latency of bpf stats collection vs. in-kernel code that adds st=
-ats
-> > > > to struct memcg_vmstats[_percpu] and flushes them accordingly, the
-> > > > difference was marginal.
-> > >
-> > > OK, that's a reasonable comparison.
-> > >
-> > > > The main reason for this is to provide data in a similar fashion to
-> > > > cgroupfs, in text file per-cgroup. I will include this clearly in t=
-he
-> > > > next cover message.
-> > >
-> > > Thanks, it'd be great to have that use-case captured there.
-> > >
-> > > > AFAIK loading bpf programs requires a privileged user, so someone h=
-as
-> > > > to approve such a program. Am I missing something?
-> > >
-> > > A sysctl unprivileged_bpf_disabled somehow stuck in my head. But as I
-> > > wrote, this adds a way how to call cgroup_rstat_updated() directly, i=
-t's
-> > > not reserved for privilged users anyhow.
-> >
-> > I am not sure if kfuncs have different privilege requirements or if
-> > there is a way to mark a kfunc as privileged. Maybe someone with more
-> > bpf knowledge can help here. But I assume if unprivileged_bpf_disabled
-> > is not set then there is a certain amount of risk/trust that you are
-> > taking anyway?
-> >
->
-> It requires CAP_BPF or CAP_SYS_ADMIN, see verifier.c:add_subprog_or_kfunc=
-.
+We keep track of several kernel memory stats (total kernel memory, page
+tables, stack, vmalloc, etc) on multiple levels (global, per-node,
+per-memcg, etc). These stats give insights to users to how much memory
+is used by the kernel and for what purposes.
 
-Thanks for the clarification!
+Currently, memory used by kvm mmu is not accounted in any of those
+kernel memory stats. This patch series accounts the memory pages
+used by KVM for page tables in those stats in a new
+NR_SECONDARY_PAGETABLE stat. This stat can be later extended to account
+for other types of secondary pages tables (e.g. iommu page tables).
 
->
-> > >
-> > > > bpf_iter_run_prog() is used to run bpf iterator programs, and it gr=
-abs
-> > > > rcu read lock before doing so. So AFAICT we are good on that front.
-> > >
-> > > Thanks for the clarification.
-> > >
-> > >
-> > > Michal
->
-> --
-> Kartikeya
+KVM has a decent number of large allocations that aren't for page
+tables, but for most of them, the number/size of those allocations
+scales linearly with either the number of vCPUs or the amount of memory
+assigned to the VM. KVM's secondary page table allocations do not scale
+linearly, especially when nested virtualization is in use.
+
+From a KVM perspective, NR_SECONDARY_PAGETABLE will scale with KVM's
+per-VM pages_{4k,2m,1g} stats unless the guest is doing something
+bizarre (e.g. accessing only 4kb chunks of 2mb pages so that KVM is
+forced to allocate a large number of page tables even though the guest
+isn't accessing that much memory). However, someone would need to either
+understand how KVM works to make that connection, or know (or be told) to
+go look at KVM's stats if they're running VMs to better decipher the stats.
+
+Also, having NR_PAGETABLE side-by-side with NR_SECONDARY_PAGETABLE is
+informative. For example, when backing a VM with THP vs. HugeTLB,
+NR_SECONDARY_PAGETABLE is roughly the same, but NR_PAGETABLE is an order
+of magnitude higher with THP. So having this stat will at the very least
+prove to be useful for understanding tradeoffs between VM backing types,
+and likely even steer folks towards potential optimizations.
+
+---
+
+Chnages in V5:
+- Updated cover letter to explain more the rationale behind the change
+  (Thanks to contributions by Sean Christopherson).
+- Removed extraneous + in arm64 patch (Oliver Upton, Marc Zyngier).
+- Shortened secondary_pagetables to sec_pagetables (Shakeel Butt).
+- Removed dependency on other patchsets (applies to queue branch).
+
+Changes in V4:
+- Changed accounting hooks in arm64 to only account s2 page tables and
+  refactored them to a much cleaner form, based on recommendations from
+  Oliver Upton and Marc Zyngier.
+- Dropped patches for mips and riscv. I am not interested in those archs
+  anyway and don't have the resources to test them. I posted them for
+  completeness but it doesn't seem like anyone was interested.
+
+Changes in V3:
+- Added NR_SECONDARY_PAGETABLE instead of piggybacking on NR_PAGETABLE
+  stats.
+
+Changes in V2:
+- Added accounting stats for other archs than x86.
+- Changed locations in the code where x86 KVM page table stats were
+  accounted based on suggestions from Sean Christopherson.
+
+---
+
+Yosry Ahmed (4):
+  mm: add NR_SECONDARY_PAGETABLE to count secondary page table uses.
+  KVM: mmu: add a helper to account memory used by KVM MMU.
+  KVM: x86/mmu: count KVM mmu usage in secondary pagetable stats.
+  KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
+
+ Documentation/admin-guide/cgroup-v2.rst |  5 ++++
+ Documentation/filesystems/proc.rst      |  4 +++
+ arch/arm64/kvm/mmu.c                    | 35 ++++++++++++++++++++++---
+ arch/x86/kvm/mmu/mmu.c                  | 16 +++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c              | 12 +++++++++
+ drivers/base/node.c                     |  2 ++
+ fs/proc/meminfo.c                       |  2 ++
+ include/linux/kvm_host.h                |  9 +++++++
+ include/linux/mmzone.h                  |  1 +
+ mm/memcontrol.c                         |  1 +
+ mm/page_alloc.c                         |  6 ++++-
+ mm/vmstat.c                             |  1 +
+ 12 files changed, 87 insertions(+), 7 deletions(-)
+
+-- 
+2.36.1.255.ge46751e96f-goog
+
