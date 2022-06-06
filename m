@@ -2,75 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC53D53E9C1
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jun 2022 19:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0D853E6FB
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jun 2022 19:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbiFFMcl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jun 2022 08:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
+        id S237390AbiFFMjP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jun 2022 08:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237101AbiFFMch (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 08:32:37 -0400
+        with ESMTP id S237386AbiFFMjP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 08:39:15 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A695006B;
-        Mon,  6 Jun 2022 05:32:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8F1F99CD;
+        Mon,  6 Jun 2022 05:39:13 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 567FC218A0;
-        Mon,  6 Jun 2022 12:32:24 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D658421A67;
+        Mon,  6 Jun 2022 12:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1654518744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1654519151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9PH08cMIB+cEkHAUwWnoV2Rdrv9uIuIlFs1vAUeLjT8=;
-        b=kkcGeuhVE5Zp7oPO/179KJdiOaqFznXyMnLXtvm36fYBU0bVl0mvNwBtpbRJl9dfr/+RiE
-        6+V2g6bvqx/sqvTs8KJxLuwtOPyRCN+64wkDcfUBnK2Kl4cuUe61yYbnAbyigE+nfD07VX
-        PxiKWoJJKcspi04Ocy896GgXS5pzquw=
+        bh=S16O+A6T24T23c0/paG1pu0dx4tXfDlUNTS+nP+cphE=;
+        b=U+4ZaQnCAkAGLVYgMbcQ8yOw2leTw/G6XgP0SWYOPzpKwuYpVOOYoLHknUOva5iMzb3EtS
+        M85t36oJc92vhEOXG3fj8bROYoQennKsr8Ma34tiOlPA+RSMR/AT8JPnwEBnkHxlfSl30o
+        ULznUdIGJrExqifnQZHozgX7CxQbDEI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 888FD139F5;
-        Mon,  6 Jun 2022 12:32:23 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AA02139F5;
+        Mon,  6 Jun 2022 12:39:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id UhHOH9fznWIuPQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 06 Jun 2022 12:32:23 +0000
-Date:   Mon, 6 Jun 2022 14:32:22 +0200
+        id TzjmHG/1nWISPwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 06 Jun 2022 12:39:11 +0000
+Date:   Mon, 6 Jun 2022 14:39:10 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 5/5] bpf: add a selftest for cgroup
- hierarchical stats collection
-Message-ID: <20220606123222.GA4377@blackbody.suse.cz>
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-6-yosryahmed@google.com>
- <20220603162339.GA25043@blackbody.suse.cz>
- <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com>
+        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] cgroup: serialize css kill and release paths
+Message-ID: <20220606123910.GF6928@blackbody.suse.cz>
+References: <20220603173455.441537-1-tadeusz.struk@linaro.org>
+ <20220603181321.443716-1-tadeusz.struk@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com>
+In-Reply-To: <20220603181321.443716-1-tadeusz.struk@linaro.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -82,26 +73,20 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jun 03, 2022 at 12:52:27PM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
-> Good catch. I get confused between cgrp->subsys and
-> task->cgroups->subsys sometimes because of different fallback
-> behavior. IIUC cgrp->subsys should have NULL if the memory controller
-> is not enabled (no nearest ancestor fallback), and hence I can use
-> memory_subsys_enabled() that I defined just above task_memcg() to test
-> for this (I have no idea why I am not already using it here). Is my
-> understanding correct?
+Hello.
 
-You're correct, css_set (task->cgroups) has a css (memcg) always defined
-(be it root only (or even a css from v1 hierarchy but that should not
-relevant here)). A particular cgroup can have the css set to NULL.
+On Fri, Jun 03, 2022 at 11:13:21AM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> In such scenario the css_killed_work_fn will be en-queued via
+> cgroup_apply_control_disable(cgrp)->kill_css(css), and bail out to
+> cgroup_kn_unlock(). Then cgroup_kn_unlock() will call:
+> cgroup_put(cgrp)->css_put(&cgrp->self), which will try to enqueue
+> css_release_work_fn for the same css instance, causing a list_add
+> corruption bug, as can be seen in the syzkaller report [1].
 
-When I think about your stats collecting example now, task_memcg() looks
-more suitable to achieve proper hierarchical counting in the end (IOW
-you'd lose info from tasks who don't reside in memcg-enabled leaf).
+This hypothesis doesn't add up to me (I am sorry).
 
-(It's just that task_memcg won't return NULL. Unless the kernel is
-compiled without memcg support completely, which makes me think how do
-the config-dependent values propagate to BPF programs?)
+The kill_css(css) would be a css associated with a subsys (css.ss !=
+NULL) whereas css_put(&cgrp->self) is a different css just for the
+cgroup (css.ss == NULL).
 
-Thanks,
 Michal
