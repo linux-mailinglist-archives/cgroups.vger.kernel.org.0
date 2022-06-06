@@ -2,52 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8501653F20F
+	by mail.lfdr.de (Postfix) with ESMTP id 69DA153F20E
 	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 00:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbiFFWVL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S232099AbiFFWVL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Mon, 6 Jun 2022 18:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbiFFWVJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 18:21:09 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59646D95A
-        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 15:21:07 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id b15-20020a170902d50f00b00167501814edso4659248plg.8
-        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 15:21:07 -0700 (PDT)
+        with ESMTP id S232164AbiFFWVL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 18:21:11 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3864B6D871
+        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 15:21:10 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id 18-20020a621512000000b0051b90b3a793so8399173pfv.8
+        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 15:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=IJS83ZKmvay92IEqxRhRKAGkk5kusGJyLJThB250L6U=;
-        b=OBqMy3wK2eu42u4CbtznTgnyseS6gsaJLr5FDK08zli4P+8VmL18aLuhw+bSnMdM7k
-         iFz03jncbwfAA7r/AGTwPC55fSnuiaen+bze1yfaaUyFA+CNkxQfCc05giglU0XkUEVo
-         t0wTaD5v0fh6UuTsvLua6zwa4GLFp9MUBqwGr5TCmjvLaGNwvrJnSC+2h7QKCddI9v2O
-         1AvKbLWw/YHC21qUQMpix/9u1/qvIqsCc78g0RrjeITNLQzJr0ZmEpnbP1xHYGLnKYVq
-         HF3gC2h07Gg4ZKzkzeDiB+DLw++z+7xHgEUcgkjKGWNrPJUIIGcun4GT14NaNl+uGKgC
-         0Sxg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=NtBA8Sqzg/ANXHqLeQc66mc9yLDuJrDnywxO48cdPTY=;
+        b=lhoDjsJJivI4YcN+GY3a4UuQhdmm2LU8NrC8tdLW+iLWyVukh4+enforN2x7LeMj7E
+         A6OLNAzrYEkzhYLMj5Xp0aBQHiTwBRzlNlO/CcRltbJLZGR0DMcqDFQK5qU39D2sUgPy
+         368qtckFiKeUCC74FQ8sT69l61idfgROS4ca8o8w3ito6OKvJD9HlBYC3D22IZXT7pPV
+         UgrnRnRk8yd1DN5zGMPAcXvjMitHOlLpt0s5OFQ+OU+Iv51tZbyZOuF/Y2l61DaRXF3+
+         Ka4Py/vnc2Mm+8UUxnUR3tQCienQ0XFN4zDcDuj2WczGfWpSqQfc5X/biLm1d5tPQnGg
+         mWCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=IJS83ZKmvay92IEqxRhRKAGkk5kusGJyLJThB250L6U=;
-        b=Pju8ctX0DE9148Xu0Kkz3+A2TJPqHW5oqVduJmNbWJ3M+XhA7NtIh5X/96T5xBtW5n
-         M1Yae0Vit5LtgnPDgp1KqkyJVgkEnrw87g5njtSNzi+JHg4FjKhhbeVVVSJBJAN282OL
-         IB/ztUq6qY9IqkEUTjhPscva1HjlxVdJD94hDkW31Vg+ULBoj3RdKOYhR9KaRoEiIFDd
-         h/ztqdPBSMp2NgJcUusW0lhACbxwI1kf+g9Tv/BB1G6uTda+K9GEUIE/q7E6Cv3/er7R
-         uEpLcf2ZI0DkuiHIj0PVKi4eSJS+9N9W9UEIH/FbeabN27jb/Ab8+MzR8bwUYS4Ppom8
-         1mDw==
-X-Gm-Message-State: AOAM533vRhFYfdFlcwlycimZbFA4hZEy25V4uUrXQF2S06NLu7T8H60Y
-        S4jwpLyROgN2yPtNZtyMAhwZ5IXmWuLPU8to
-X-Google-Smtp-Source: ABdhPJx1wdZontdtDHAURSxbRB7De+X97i6gu5k06GDDv+Ku0jwJHaJ3ZGwcu97YUcHYEb+wa/3Y2TiM5NS+scjm
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=NtBA8Sqzg/ANXHqLeQc66mc9yLDuJrDnywxO48cdPTY=;
+        b=aIanzkE898RnlMO7rkYejPih4VAX6kMYPNX4mwQRDfhWnwX94i77gys8GqBj92CIG1
+         iJ0GL/E6hu0Ef/yah1KXUeC8qoIQwBGy7kDQit397j6+7jsJfvGRWbI3IwkLtgbN67RP
+         DDO17djDY2hnZzg4KxDcWJH1boN/dyVP0HofofYAfqU3JcA+8TpUZ1hFIj5e5gCACmzv
+         i66MyCi1rzbtw6LAXjvYEHu+laP2DyUt0bnzt1Qn4sB8UiEwUoTeKpNjYvsnzxkHXte6
+         uAEIr6NsYapVvpNrpyzp2l8c86o6JePn1ETWfvWKEP9J89DMZJgXp1dlY3MfggRACckV
+         eVrQ==
+X-Gm-Message-State: AOAM530FqpswRLgtz7E6Z6UZSKtKOpfrpRTMXjazpRvS4ufHy5V1VgHK
+        UHn5/+GviPxb/FvzEJAJrEfSJ81+z2m64tHF
+X-Google-Smtp-Source: ABdhPJzAWBQopeJnhqeXkwVh1qlsCErBI46BZPiFkHlAwrIuk4tcQ8MC3Yvb7P9pASMQQTBKhRKJylWwS9VoO0iv
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:902:d584:b0:167:6ab9:b094 with SMTP
- id k4-20020a170902d58400b001676ab9b094mr12694803plh.16.1654554067166; Mon, 06
- Jun 2022 15:21:07 -0700 (PDT)
-Date:   Mon,  6 Jun 2022 22:20:54 +0000
-Message-Id: <20220606222058.86688-1-yosryahmed@google.com>
+ (user=yosryahmed job=sendgmr) by 2002:a17:90a:178f:b0:1e3:3ba:c185 with SMTP
+ id q15-20020a17090a178f00b001e303bac185mr276788pja.1.1654554068863; Mon, 06
+ Jun 2022 15:21:08 -0700 (PDT)
+Date:   Mon,  6 Jun 2022 22:20:55 +0000
+In-Reply-To: <20220606222058.86688-1-yosryahmed@google.com>
+Message-Id: <20220606222058.86688-2-yosryahmed@google.com>
 Mime-Version: 1.0
+References: <20220606222058.86688-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.36.1.255.ge46751e96f-goog
-Subject: [PATCH v5 0/4] KVM: mm: count KVM mmu usage in memory stats
+Subject: [PATCH v5 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary page
+ table uses.
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
@@ -74,93 +79,177 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We keep track of several kernel memory stats (total kernel memory, page
-tables, stack, vmalloc, etc) on multiple levels (global, per-node,
-per-memcg, etc). These stats give insights to users to how much memory
-is used by the kernel and for what purposes.
+Add NR_SECONDARY_PAGETABLE stat to count secondary page table uses, e.g.
+KVM mmu. This provides more insights on the kernel memory used
+by a workload.
 
-Currently, memory used by kvm mmu is not accounted in any of those
-kernel memory stats. This patch series accounts the memory pages
-used by KVM for page tables in those stats in a new
-NR_SECONDARY_PAGETABLE stat. This stat can be later extended to account
-for other types of secondary pages tables (e.g. iommu page tables).
+This stat will be used by subsequent patches to count KVM mmu
+memory usage.
 
-KVM has a decent number of large allocations that aren't for page
-tables, but for most of them, the number/size of those allocations
-scales linearly with either the number of vCPUs or the amount of memory
-assigned to the VM. KVM's secondary page table allocations do not scale
-linearly, especially when nested virtualization is in use.
-
-From a KVM perspective, NR_SECONDARY_PAGETABLE will scale with KVM's
-per-VM pages_{4k,2m,1g} stats unless the guest is doing something
-bizarre (e.g. accessing only 4kb chunks of 2mb pages so that KVM is
-forced to allocate a large number of page tables even though the guest
-isn't accessing that much memory). However, someone would need to either
-understand how KVM works to make that connection, or know (or be told) to
-go look at KVM's stats if they're running VMs to better decipher the stats.
-
-Also, having NR_PAGETABLE side-by-side with NR_SECONDARY_PAGETABLE is
-informative. For example, when backing a VM with THP vs. HugeTLB,
-NR_SECONDARY_PAGETABLE is roughly the same, but NR_PAGETABLE is an order
-of magnitude higher with THP. So having this stat will at the very least
-prove to be useful for understanding tradeoffs between VM backing types,
-and likely even steer folks towards potential optimizations.
-
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
+ Documentation/admin-guide/cgroup-v2.rst | 5 +++++
+ Documentation/filesystems/proc.rst      | 4 ++++
+ drivers/base/node.c                     | 2 ++
+ fs/proc/meminfo.c                       | 2 ++
+ include/linux/mmzone.h                  | 1 +
+ mm/memcontrol.c                         | 1 +
+ mm/page_alloc.c                         | 6 +++++-
+ mm/vmstat.c                             | 1 +
+ 8 files changed, 21 insertions(+), 1 deletion(-)
 
-Chnages in V5:
-- Updated cover letter to explain more the rationale behind the change
-  (Thanks to contributions by Sean Christopherson).
-- Removed extraneous + in arm64 patch (Oliver Upton, Marc Zyngier).
-- Shortened secondary_pagetables to sec_pagetables (Shakeel Butt).
-- Removed dependency on other patchsets (applies to queue branch).
-
-Changes in V4:
-- Changed accounting hooks in arm64 to only account s2 page tables and
-  refactored them to a much cleaner form, based on recommendations from
-  Oliver Upton and Marc Zyngier.
-- Dropped patches for mips and riscv. I am not interested in those archs
-  anyway and don't have the resources to test them. I posted them for
-  completeness but it doesn't seem like anyone was interested.
-
-Changes in V3:
-- Added NR_SECONDARY_PAGETABLE instead of piggybacking on NR_PAGETABLE
-  stats.
-
-Changes in V2:
-- Added accounting stats for other archs than x86.
-- Changed locations in the code where x86 KVM page table stats were
-  accounted based on suggestions from Sean Christopherson.
-
----
-
-Yosry Ahmed (4):
-  mm: add NR_SECONDARY_PAGETABLE to count secondary page table uses.
-  KVM: mmu: add a helper to account memory used by KVM MMU.
-  KVM: x86/mmu: count KVM mmu usage in secondary pagetable stats.
-  KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
-
- Documentation/admin-guide/cgroup-v2.rst |  5 ++++
- Documentation/filesystems/proc.rst      |  4 +++
- arch/arm64/kvm/mmu.c                    | 35 ++++++++++++++++++++++---
- arch/x86/kvm/mmu/mmu.c                  | 16 +++++++++--
- arch/x86/kvm/mmu/tdp_mmu.c              | 12 +++++++++
- drivers/base/node.c                     |  2 ++
- fs/proc/meminfo.c                       |  2 ++
- include/linux/kvm_host.h                |  9 +++++++
- include/linux/mmzone.h                  |  1 +
- mm/memcontrol.c                         |  1 +
- mm/page_alloc.c                         |  6 ++++-
- mm/vmstat.c                             |  1 +
- 12 files changed, 87 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 69d7a6983f781..307a284b99189 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1312,6 +1312,11 @@ PAGE_SIZE multiple when read back.
+ 	  pagetables
+                 Amount of memory allocated for page tables.
+ 
++	  sec_pagetables
++		Amount of memory allocated for secondary page tables,
++		this currently includes KVM mmu allocations on x86
++		and arm64.
++
+ 	  percpu (npn)
+ 		Amount of memory used for storing per-cpu kernel
+ 		data structures.
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 061744c436d99..894d6317f3bdc 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -973,6 +973,7 @@ You may not have all of these fields.
+     SReclaimable:   159856 kB
+     SUnreclaim:     124508 kB
+     PageTables:      24448 kB
++    SecPageTables:	 0 kB
+     NFS_Unstable:        0 kB
+     Bounce:              0 kB
+     WritebackTmp:        0 kB
+@@ -1067,6 +1068,9 @@ SUnreclaim
+ PageTables
+               amount of memory dedicated to the lowest level of page
+               tables.
++SecPageTables
++	      amount of memory dedicated to secondary page tables, this
++	      currently includes KVM mmu allocations on x86 and arm64.
+ NFS_Unstable
+               Always zero. Previous counted pages which had been written to
+               the server, but has not been committed to stable storage.
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index ec8bb24a5a227..9fe716832546f 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -433,6 +433,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 			     "Node %d ShadowCallStack:%8lu kB\n"
+ #endif
+ 			     "Node %d PageTables:     %8lu kB\n"
++			     "Node %d SecPageTables:  %8lu kB\n"
+ 			     "Node %d NFS_Unstable:   %8lu kB\n"
+ 			     "Node %d Bounce:         %8lu kB\n"
+ 			     "Node %d WritebackTmp:   %8lu kB\n"
+@@ -459,6 +460,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ 			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
+ #endif
+ 			     nid, K(node_page_state(pgdat, NR_PAGETABLE)),
++			     nid, K(node_page_state(pgdat, NR_SECONDARY_PAGETABLE)),
+ 			     nid, 0UL,
+ 			     nid, K(sum_zone_node_page_state(nid, NR_BOUNCE)),
+ 			     nid, K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 6fa761c9cc78e..fad29024eb2e0 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -108,6 +108,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ #endif
+ 	show_val_kb(m, "PageTables:     ",
+ 		    global_node_page_state(NR_PAGETABLE));
++	show_val_kb(m, "SecPageTables:	",
++		    global_node_page_state(NR_SECONDARY_PAGETABLE));
+ 
+ 	show_val_kb(m, "NFS_Unstable:   ", 0);
+ 	show_val_kb(m, "Bounce:         ",
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 46ffab808f037..81d109e6c623a 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -219,6 +219,7 @@ enum node_stat_item {
+ 	NR_KERNEL_SCS_KB,	/* measured in KiB */
+ #endif
+ 	NR_PAGETABLE,		/* used for pagetables */
++	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
+ #ifdef CONFIG_SWAP
+ 	NR_SWAPCACHE,
+ #endif
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 598fece89e2b7..ee1c3d464857c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1398,6 +1398,7 @@ static const struct memory_stat memory_stats[] = {
+ 	{ "kernel",			MEMCG_KMEM			},
+ 	{ "kernel_stack",		NR_KERNEL_STACK_KB		},
+ 	{ "pagetables",			NR_PAGETABLE			},
++	{ "sec_pagetables",		NR_SECONDARY_PAGETABLE		},
+ 	{ "percpu",			MEMCG_PERCPU_B			},
+ 	{ "sock",			MEMCG_SOCK			},
+ 	{ "vmalloc",			MEMCG_VMALLOC			},
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0e42038382c12..29a7e9cd28c74 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5932,7 +5932,8 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 		" active_file:%lu inactive_file:%lu isolated_file:%lu\n"
+ 		" unevictable:%lu dirty:%lu writeback:%lu\n"
+ 		" slab_reclaimable:%lu slab_unreclaimable:%lu\n"
+-		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
++		" mapped:%lu shmem:%lu pagetables:%lu\n"
++		" sec_pagetables:%lu bounce:%lu\n"
+ 		" kernel_misc_reclaimable:%lu\n"
+ 		" free:%lu free_pcp:%lu free_cma:%lu\n",
+ 		global_node_page_state(NR_ACTIVE_ANON),
+@@ -5949,6 +5950,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 		global_node_page_state(NR_FILE_MAPPED),
+ 		global_node_page_state(NR_SHMEM),
+ 		global_node_page_state(NR_PAGETABLE),
++		global_node_page_state(NR_SECONDARY_PAGETABLE),
+ 		global_zone_page_state(NR_BOUNCE),
+ 		global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE),
+ 		global_zone_page_state(NR_FREE_PAGES),
+@@ -5982,6 +5984,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 			" shadow_call_stack:%lukB"
+ #endif
+ 			" pagetables:%lukB"
++			" sec_pagetables:%lukB"
+ 			" all_unreclaimable? %s"
+ 			"\n",
+ 			pgdat->node_id,
+@@ -6007,6 +6010,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 			node_page_state(pgdat, NR_KERNEL_SCS_KB),
+ #endif
+ 			K(node_page_state(pgdat, NR_PAGETABLE)),
++			K(node_page_state(pgdat, NR_SECONDARY_PAGETABLE)),
+ 			pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
+ 				"yes" : "no");
+ 	}
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index b75b1a64b54cb..06eb52fe5be94 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1240,6 +1240,7 @@ const char * const vmstat_text[] = {
+ 	"nr_shadow_call_stack",
+ #endif
+ 	"nr_page_table_pages",
++	"nr_sec_page_table_pages",
+ #ifdef CONFIG_SWAP
+ 	"nr_swapcached",
+ #endif
 -- 
 2.36.1.255.ge46751e96f-goog
 
