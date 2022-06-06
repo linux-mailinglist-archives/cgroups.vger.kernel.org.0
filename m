@@ -2,57 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B8853EEA6
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jun 2022 21:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B85A53EEC5
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jun 2022 21:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbiFFTco (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jun 2022 15:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
+        id S232599AbiFFTlr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jun 2022 15:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbiFFTco (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 15:32:44 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB0C2AC7D
-        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 12:32:42 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id q26so10789858wra.1
-        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 12:32:42 -0700 (PDT)
+        with ESMTP id S232590AbiFFTlq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 15:41:46 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766B7ED3C5
+        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 12:41:44 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id h5so21242081wrb.0
+        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 12:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=j/cPLNIZM1LCsTUDc6o0FCtYbw+beYsEKBGs5kqXcMs=;
-        b=lzQFh/atdk+9YeyfEh+QiYmsQCHdhCw9He8IoqDkUDh70z79xt9WOeE69lDZxpcNjT
-         bR141LudvjepsqtckXsTJExKjujhfBySeXX3lGBZdMyWw9Hj5GReFM3OKFmwi+TUoHQx
-         oZsvwJKkDPX7u3JPtJIYSiEXF4g85cRoAjyT5U30WiD4Rahyvl6mTNRbQ2VRSRHhrZnc
-         gLT5O+zMpFuaRqq5Q7CgrD1ALwUtROj44xO70cNoml5i78IH05nNERpThsHZQjrORuAS
-         J1Hqkgqr3u7D3bTCMmD0YQ1IC4S8CknEj7+oNzqmijDOQei148Z/nshaGmchHBnxO64F
-         DUFw==
+        bh=9yJbx0i06GNbf8v7gInYN9hw57l8mmMKWeeJflk0qEI=;
+        b=OfvEIo74VLd9T5IwhXy5EMZxZvHlk4ZiGd7W3x3BSiifBAa2m3eM7+P6GPdioIC0Qn
+         iz6ZKfl/E1j1awO/0mJ51oC6k4LOuwaAlWqWPzNM+SuMDSeeyGIIGwgQU9iaetClFXA4
+         2F0EHH1Wesx4Auk9Qp16xrq/u4OxkVDuXgbmHdGQWwflbQeqFjx95Mk6emG7pXdBU41G
+         3NOtqqJsLeFht46E4vKE8nMQCMQrk5T7oswlFJLm+zjSAp54SqwK64fs7Gs6gUDSoijw
+         GLxqGoBFMP7+UTCl1x9R8zJq26z9FFrFzDIAHxntIj10oKxJPrtwb2l3/EvgoowqzGl6
+         /YEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j/cPLNIZM1LCsTUDc6o0FCtYbw+beYsEKBGs5kqXcMs=;
-        b=tOcBb9TJ1fi+t5RE64IGBE3j6qplUSPNIlnrHDMm2lfSIjyKKNVFCs2o00Qxg8xGXf
-         YWQFhPRv4m7b1e9uA6QuGn9qdH8yJ1eRRUZ8BhTpNLcDvcBkzqQgqimsQkwmx9gTeukG
-         9jDi/BoirET2VfWFgrFXubLdZoFvKLFLCWNdCPr0TP9pmsRCP1kcCbMiSjo4V7Emna5m
-         bEX+HO+lZIPHGUZlf1Fw+5FkJnfhEd1Jr0FSSJnjxSEqBReDNlJUAfU3UOzau46Icwnc
-         cCV4Ijlz9ssrRwrUICuk1aKjQAYiUDvDT6tELKQ4xc2y8iCml4U1ICa9n3ERTNUUlA2I
-         QaMA==
-X-Gm-Message-State: AOAM5301d7lmigl1VzDUSKyP8fMi2iflvGzf2pMQ15aSQI0CzeyJ+fIL
-        GRo0tcSj6my5fHwQg8yd+qu7LXnDsNwsBS5USX7tZw==
-X-Google-Smtp-Source: ABdhPJzOrH3W8CG5y0UhEiUwZCc/frlgpaMAC/wiDonpCoj3ndzKhQc7jzNy9XpNg/VeI6CYpTOKxRkUoRt6Vw65fS0=
-X-Received: by 2002:adf:f688:0:b0:215:6e4d:4103 with SMTP id
- v8-20020adff688000000b002156e4d4103mr16603122wrp.372.1654543960673; Mon, 06
- Jun 2022 12:32:40 -0700 (PDT)
+        bh=9yJbx0i06GNbf8v7gInYN9hw57l8mmMKWeeJflk0qEI=;
+        b=yUJKoSTEw7Ug8xZY2Pg2QMvFBHeqGenBrqUi69/P5q9CtSQlVyePsbVQgiD0hZjx6V
+         WLZXS8rzX3PVpYo8vmfvnmqlLYnHl1hGRqNnx8qk+Hg7JKlL0FR02izVF+O1RKfgebqW
+         TrnV7jDrjyReB7XOUS4bvdaJMTcQeBIudhycElAAiC659vKHpNCQRHsp9OGME6cr+LaH
+         4UhBVJuIMaimenGi6neKQFO7Ks0DKBRoCJBbrxcbWFV1ORquwNRB+Ew76qi5+skJ45js
+         nn6Oacgs5Ay0nZ0Rx1NAUMFYroZxeJJFHQFkojfKEzg7+v2fAv8BsBFgNXdV6Gps4BLB
+         aPeQ==
+X-Gm-Message-State: AOAM531PX7INJflFEW+vuq3gJViW5u5SftBoqOynm1oCHYT/CGSoqeYk
+        h+ALUAc8DDx9i+YIqcqR/ly/f0w06jZjy0JldeBHJg==
+X-Google-Smtp-Source: ABdhPJwKE3oJwxygAKjMumZvwdl1/otPjldbrkO/5D8AlW9o41lzGar3s4aoJv5kxNLWsT97LTDBftvGw8978dyAwgQ=
+X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
+ c5-20020adffb05000000b0020ae1138f3fmr23580389wrr.534.1654544502734; Mon, 06
+ Jun 2022 12:41:42 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220603162247.GC16134@blackbody.suse.cz> <CAJD7tkbp9Tw4oGtxsnHQB+5VZHMFa4J0qvJGRyj3VuuQ4UPF=g@mail.gmail.com>
- <20220606123209.GE6928@blackbody.suse.cz>
-In-Reply-To: <20220606123209.GE6928@blackbody.suse.cz>
+ <20220520012133.1217211-6-yosryahmed@google.com> <20220603162339.GA25043@blackbody.suse.cz>
+ <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com> <20220606123222.GA4377@blackbody.suse.cz>
+In-Reply-To: <20220606123222.GA4377@blackbody.suse.cz>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 6 Jun 2022 12:32:04 -0700
-Message-ID: <CAJD7tkZeNhyEL4WtkEMOUeLsLX4x4roMuNCocEhz5yHm7=h4vw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/5] bpf: rstat: cgroup hierarchical stats
+Date:   Mon, 6 Jun 2022 12:41:06 -0700
+Message-ID: <CAJD7tkbi7Gnnf4NiUt-J61G7185NsRcySvP6qOQsFKMou7qZJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/5] bpf: add a selftest for cgroup
+ hierarchical stats collection
 To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -88,47 +89,46 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Mon, Jun 6, 2022 at 5:32 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
 >
-> On Fri, Jun 03, 2022 at 12:47:19PM -0700, Yosry Ahmed <yosryahmed@google.=
+> On Fri, Jun 03, 2022 at 12:52:27PM -0700, Yosry Ahmed <yosryahmed@google.=
 com> wrote:
-> > In short, think of these bpf maps as equivalents to "struct
-> > memcg_vmstats" and "struct memcg_vmstats_percpu" in the memory
-> > controller. They are just containers to store the stats in, they do
-> > not have any subgraph structure and they have no use beyond storing
-> > percpu and total stats.
+> > Good catch. I get confused between cgrp->subsys and
+> > task->cgroups->subsys sometimes because of different fallback
+> > behavior. IIUC cgrp->subsys should have NULL if the memory controller
+> > is not enabled (no nearest ancestor fallback), and hence I can use
+> > memory_subsys_enabled() that I defined just above task_memcg() to test
+> > for this (I have no idea why I am not already using it here). Is my
+> > understanding correct?
 >
-> Thanks for the explanation.
+> You're correct, css_set (task->cgroups) has a css (memcg) always defined
+> (be it root only (or even a css from v1 hierarchy but that should not
+> relevant here)). A particular cgroup can have the css set to NULL.
 >
-> > I run small microbenchmarks that are not worth posting, they compared
-> > the latency of bpf stats collection vs. in-kernel code that adds stats
-> > to struct memcg_vmstats[_percpu] and flushes them accordingly, the
-> > difference was marginal.
->
-> OK, that's a reasonable comparison.
->
-> > The main reason for this is to provide data in a similar fashion to
-> > cgroupfs, in text file per-cgroup. I will include this clearly in the
-> > next cover message.
->
-> Thanks, it'd be great to have that use-case captured there.
->
-> > AFAIK loading bpf programs requires a privileged user, so someone has
-> > to approve such a program. Am I missing something?
->
-> A sysctl unprivileged_bpf_disabled somehow stuck in my head. But as I
-> wrote, this adds a way how to call cgroup_rstat_updated() directly, it's
-> not reserved for privilged users anyhow.
+> When I think about your stats collecting example now, task_memcg() looks
+> more suitable to achieve proper hierarchical counting in the end (IOW
+> you'd lose info from tasks who don't reside in memcg-enabled leaf).
 
-I am not sure if kfuncs have different privilege requirements or if
-there is a way to mark a kfunc as privileged. Maybe someone with more
-bpf knowledge can help here. But I assume if unprivileged_bpf_disabled
-is not set then there is a certain amount of risk/trust that you are
-taking anyway?
+I guess it depends on how userspace reasons about this, and whether or
+not you want to collect stats from leaves that don't reside in a
+memcg-enabled leaf. I will go through all the memcg-enabled checks and
+make sure they make sense and are consistent, maybe add some comments
+to make the userspace policy here clear.
 
 >
-> > bpf_iter_run_prog() is used to run bpf iterator programs, and it grabs
-> > rcu read lock before doing so. So AFAICT we are good on that front.
+> (It's just that task_memcg won't return NULL. Unless the kernel is
+> compiled without memcg support completely, which makes me think how do
+> the config-dependent values propagate to BPF programs?)
+
+I don't know if there is a standard way to handle this, but I think
+you should know the configs of your kernel when you are loading a bpf
+program? In this particular case, if CONFIG_CGROUPS=3D0 then the bpf
+programs will not even load due to lack of hook points or kfuncs won't
+exist. If the CONFIG_CGROUPS=3D1 but CONFIG_MEMCG=3D0 I think everything
+will work normally except that task_memcg() will always return NULL so
+no stats will be collected, which makes sense. There will be some
+overhead to running bpf programs that will always do nothing, but I
+would argue that it's the userspace's fault here for loading bpf
+programs on a non-compatible kernel.
+
 >
-> Thanks for the clarification.
->
->
+> Thanks,
 > Michal
