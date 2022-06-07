@@ -2,169 +2,146 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6445D53F217
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 00:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5050253F453
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 05:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbiFFWVW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jun 2022 18:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        id S236197AbiFGDKf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jun 2022 23:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbiFFWVT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 18:21:19 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D511A0D2B
-        for <cgroups@vger.kernel.org>; Mon,  6 Jun 2022 15:21:14 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id y15-20020a17090a16cf00b001e03ac27c30so8255780pje.5
-        for <cgroups@vger.kernel.org>; Mon, 06 Jun 2022 15:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=lCj5vf6+ANqLHv3122ZbLr+VtIsIBzbS/r0LeVNVl3w=;
-        b=fhNqTQhqkFux/ukIEgHzIyWXf7nWgidEa7EZyE6ojT7eSM39dn6EJghTF0Wz+po+G8
-         NrXJEpS7gJdVDOJob5aQvoGsOmcx+ynWrkIQ6mokqSgyj8IvYWY1o4fPwhteMr1UyxnN
-         +cNHE3z/DMTyLaXYmsi6tOorj2M77FxEsSXaEjz/7pr793GUJ9HhGSRtQN77II9Kyt1x
-         VCEb+fRiffbhSZD7SWq09vE6VbwZtBwVsEFs3id87zkSeTVMGB608xT5Z3874uG8vwE8
-         TehuFGa8lHQuFkXATbjbgXalldhf4GeMOqL5oJbujtgTwTrXOyonxqdb6ZfbN2/Hk4qK
-         UzxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=lCj5vf6+ANqLHv3122ZbLr+VtIsIBzbS/r0LeVNVl3w=;
-        b=AMIftnXKRc4R8REQ/FmBsjrayIvll/Ip0wga68ykZyA4U7LWpybLHX/69zoAAp2sWo
-         fcwdtkFFGGAYNRWvEVdvBorAeAl/OMP04QNRM8BD6cQhUwckpWi9HDxNFPIzPf35jard
-         YS8w8b+j/NChHGQTNeoLYP4Q62tqkJ2ZILywu5aQBYFGQThHz7802ouVnzZkED8dOlkm
-         IWRX49oMjbNb0b4cDGB5FVx1eztUmrpc15eCISJXEAAHN4IsFptNxJLa+NecKrd37LXl
-         FxVnVSkWrCbCIVJs8KL6nmQrWwjP4o4DjNgl1xRsTp1/pAJmBYLpXdTszXVVFMixKfCZ
-         5fwA==
-X-Gm-Message-State: AOAM532kp3N72WHjMhFXw5dQP/VHNPSuD8wFX0/sSY9s7xQRK6ps4h/y
-        8fsMqDeBKZxDEQrb5WqLBu88PqvsnHQ5R9KK
-X-Google-Smtp-Source: ABdhPJzBKxlko2XskCwZ7XghA3/1uxqpH481I1Y3w7YnTvGyWNqjKRB0PQYcZSZzhwqgcHglYMcExUynh375FBjd
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:902:cf0f:b0:15a:24e0:d9b0 with SMTP
- id i15-20020a170902cf0f00b0015a24e0d9b0mr25703791plg.42.1654554074043; Mon,
- 06 Jun 2022 15:21:14 -0700 (PDT)
-Date:   Mon,  6 Jun 2022 22:20:58 +0000
-In-Reply-To: <20220606222058.86688-1-yosryahmed@google.com>
-Message-Id: <20220606222058.86688-5-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20220606222058.86688-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.36.1.255.ge46751e96f-goog
-Subject: [PATCH v5 4/4] KVM: arm64/mmu: count KVM s2 mmu usage in secondary
- pagetable stats
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S229470AbiFGDKd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jun 2022 23:10:33 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB55B0D26;
+        Mon,  6 Jun 2022 20:10:31 -0700 (PDT)
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LHFdf2GRkzRhpp;
+        Tue,  7 Jun 2022 11:07:18 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 7 Jun 2022 11:10:29 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 7 Jun 2022 11:10:28 +0800
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+To:     Jan Kara <jack@suse.cz>
+CC:     <paolo.valente@linaro.org>, <tj@kernel.org>,
+        <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>
+References: <20220428120837.3737765-1-yukuai3@huawei.com>
+ <d50df657-d859-79cf-c292-412eaa383d2c@huawei.com>
+ <61b67d5e-829c-8130-7bda-81615d654829@huawei.com>
+ <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+ <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+ <20220523085902.wmxoebyq3crerecr@quack3.lan>
+ <25f6703e-9e10-75d9-a893-6df1e6b75254@kernel.dk>
+ <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+From:   Yu Kuai <yukuai3@huawei.com>
+Message-ID: <21cd1c49-838a-7f03-ab13-9a4f2ac65979@huawei.com>
+Date:   Tue, 7 Jun 2022 11:10:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Count the pages used by KVM in arm64 for stage2 mmu in secondary pagetable
-stats.
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- arch/arm64/kvm/mmu.c | 36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index f5651a05b6a85..80bc92601fd96 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -92,9 +92,13 @@ static bool kvm_is_device_pfn(unsigned long pfn)
- static void *stage2_memcache_zalloc_page(void *arg)
- {
- 	struct kvm_mmu_memory_cache *mc = arg;
-+	void *virt;
- 
- 	/* Allocated with __GFP_ZERO, so no need to zero */
--	return kvm_mmu_memory_cache_alloc(mc);
-+	virt = kvm_mmu_memory_cache_alloc(mc);
-+	if (virt)
-+		kvm_account_pgtable_pages(virt, 1);
-+	return virt;
- }
- 
- static void *kvm_host_zalloc_pages_exact(size_t size)
-@@ -102,6 +106,21 @@ static void *kvm_host_zalloc_pages_exact(size_t size)
- 	return alloc_pages_exact(size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- }
- 
-+static void *kvm_s2_zalloc_pages_exact(size_t size)
-+{
-+	void *virt = kvm_host_zalloc_pages_exact(size);
-+
-+	if (virt)
-+		kvm_account_pgtable_pages(virt, (size >> PAGE_SHIFT));
-+	return virt;
-+}
-+
-+static void kvm_s2_free_pages_exact(void *virt, size_t size)
-+{
-+	kvm_account_pgtable_pages(virt, -(size >> PAGE_SHIFT));
-+	free_pages_exact(virt, size);
-+}
-+
- static void kvm_host_get_page(void *addr)
- {
- 	get_page(virt_to_page(addr));
-@@ -112,6 +131,15 @@ static void kvm_host_put_page(void *addr)
- 	put_page(virt_to_page(addr));
- }
- 
-+static void kvm_s2_put_page(void *addr)
-+{
-+	struct page *p = virt_to_page(addr);
-+	/* Dropping last refcount, the page will be freed */
-+	if (page_count(p) == 1)
-+		kvm_account_pgtable_pages(addr, -1);
-+	put_page(p);
-+}
-+
- static int kvm_host_page_count(void *addr)
- {
- 	return page_count(virt_to_page(addr));
-@@ -625,10 +653,10 @@ static int get_user_mapping_size(struct kvm *kvm, u64 addr)
- 
- static struct kvm_pgtable_mm_ops kvm_s2_mm_ops = {
- 	.zalloc_page		= stage2_memcache_zalloc_page,
--	.zalloc_pages_exact	= kvm_host_zalloc_pages_exact,
--	.free_pages_exact	= free_pages_exact,
-+	.zalloc_pages_exact	= kvm_s2_zalloc_pages_exact,
-+	.free_pages_exact	= kvm_s2_free_pages_exact,
- 	.get_page		= kvm_host_get_page,
--	.put_page		= kvm_host_put_page,
-+	.put_page		= kvm_s2_put_page,
- 	.page_count		= kvm_host_page_count,
- 	.phys_to_virt		= kvm_host_va,
- 	.virt_to_phys		= kvm_host_pa,
--- 
-2.36.1.255.ge46751e96f-goog
+ÔÚ 2022/05/23 23:25, Jan Kara Ð´µÀ:
+> On Mon 23-05-22 06:36:58, Jens Axboe wrote:
+>> On 5/23/22 2:59 AM, Jan Kara wrote:
+>>> On Mon 23-05-22 09:10:38, yukuai (C) wrote:
+>>>> ? 2022/05/21 20:21, Jens Axboe ??:
+>>>>> On 5/21/22 1:22 AM, yukuai (C) wrote:
+>>>>>> ? 2022/05/14 17:29, yukuai (C) ??:
+>>>>>>> ? 2022/05/05 9:00, yukuai (C) ??:
+>>>>>>>> Hi, Paolo
+>>>>>>>>
+>>>>>>>> Can you take a look at this patchset? It has been quite a long time
+>>>>>>>> since we spotted this problem...
+>>>>>>>>
+>>>>>>>
+>>>>>>> friendly ping ...
+>>>>>> friendly ping ...
+>>>>>
+>>>>> I can't speak for Paolo, but I've mentioned before that the majority
+>>>>> of your messages end up in my spam. That's still the case, in fact
+>>>>> I just marked maybe 10 of them as not spam.
+>>>>>
+>>>>> You really need to get this issued sorted out, or you will continue
+>>>>> to have patches ignore because folks may simply not see them.
+>>>>>
+>>>> Hi,
+>>>>
+>>>> Thanks for your notice.
+>>>>
+>>>> Is it just me or do you see someone else's messages from *huawei.com
+>>>> end up in spam? I tried to seek help from our IT support, however, they
+>>>> didn't find anything unusual...
+>>>
+>>> So actually I have noticed that a lot of (valid) email from huawei.com (not
+>>> just you) ends up in the spam mailbox. For me direct messages usually pass
+>>> (likely matching SPF records for originating mail server save the email
+>>> from going to spam) but messages going through mailing lists are flagged as
+>>> spam because the emails are missing valid DKIM signature but huawei.com
+>>> DMARC config says there should be DKIM signature (even direct messages are
+>>> missing DKIM so this does not seem as a mailing list configuration issue).
+>>> So this seems as some misconfiguration of the mails on huawei.com side
+>>> (likely missing DKIM signing of outgoing email).
+>>
+>> SPF/DKIM was indeed a problem earlier for yukaui patches, but I don't
+>> see that anymore. Maybe it's still an issue for some emails, from them
+>> or Huawei in general?
+> 
+> Hum, for me all emails from Huawei I've received even today fail the DKIM
+> check. After some more digging there is interesting inconsistency in DMARC
+> configuration for huawei.com domain. There is DMARC record for huawei.com
+> like:
+> 
+> huawei.com.		600	IN	TXT	"v=DMARC1;p=none;rua=mailto:dmarc@edm.huawei.com"
+> 
+> which means no DKIM is required but _dmarc.huawei.com has:
+> 
+> _dmarc.huawei.com.	600	IN	TXT	"v=DMARC1;p=quarantine;ruf=mailto:dmarc@huawei.com;rua=mailto:dmarc@huawei.com"
+> 
+> which says that DKIM is required. I guess this inconsistency may be the
+> reason why there are problems with DKIM validation for senders from
+> huawei.com. Yu Kuai, can you perhaps take this to your IT support to fix
+> this? Either make sure huawei.com emails get properly signed with DKIM or
+> remove the 'quarantine' record from _dmarc.huawei.com. Thanks!
+> 
+> 								Honza
+> 
+Hi, Jan and Jens
 
+I just got response from our IT support:
+
+'fo' is not set in our dmarc configuration(default is 0), which means
+SPF and DKIM verify both failed so that emails will end up in spam.
+
+It right that DKIM verify is failed because there is no signed key,
+however, our IT support are curious how SPF verify faild.
+
+Can you guys please take a look at ip address of sender? So our IT
+support can take a look if they miss it from SPF records.
+
+Thanks,
+Kuai
