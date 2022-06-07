@@ -2,152 +2,230 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C89854173C
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 23:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992AA5422FE
+	for <lists+cgroups@lfdr.de>; Wed,  8 Jun 2022 08:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377548AbiFGVCp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Jun 2022 17:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        id S232077AbiFHAnf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jun 2022 20:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379228AbiFGVCN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 17:02:13 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2632126B
-        for <cgroups@vger.kernel.org>; Tue,  7 Jun 2022 11:47:02 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id o6so10479858plg.2
-        for <cgroups@vger.kernel.org>; Tue, 07 Jun 2022 11:47:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
-        b=tc1I+sdA0FwDJ/gsRcalhTdWIHb3oeBmUEKkK8g4OZEMjXtAlRTZvaNhHDSk/3+9Zf
-         ZCnTm71Ikwc9fj78Z6tJ+r+s3NKyZPGXQUM5GKc63uB2wcSoTM+yHLH1Ir/Fm51e9ot0
-         iPOjiMnofGcQT1I4z3zOljtH0zbFxSybwkGC8Uh8OTfQAgLL0VB/fu8yQm7VfTWTj1iK
-         ViabI4/ZPV3krTjB9RtlTrwxbRjkqxfKSGqc7GY05gqlqamDH4sYLLUCxRq+Tg2RE6e2
-         AQwMtPhyN/4yV7ZESuVPupvYQ3xLbWu98R4sqW9Vc3joiZka92axUvzIDfM/7JpyJlSZ
-         AErQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
-        b=v3+qkw8bCUTo9KmpFrSG9Pn/5ydJKch1J1snaVllVR1PFHeYG6UWQ/DyJvTGQV2+MX
-         BC5rwWv8Cyc2MpAMHEAFfqacDR+yci9QDFu4W5iqgvsIWTE/NS4gUqNY1rQ2p1TE4p+0
-         vpeo1Psbj0thYRDL06+sdDTzJVe3Vr05LRg6i9loDHPrZKgNyKpTJYBMPEq6/+vdLbYS
-         sPzOr+u04NNuv9It8Mluh/GB1ToMYuKlYtidaUnfK9r/t0y+TfwCFjLRpsCR85u0W2Cu
-         hcD2qeg16Miq0ANFr23B+Dqi8KDLvoE+j789nk9znRIJ2ENS2fPYlgPtdNJfo31JQofk
-         K98g==
-X-Gm-Message-State: AOAM532y6aHdghafiTAi3LCXVUu13u40asCH+2GH8W9jvbS8mEm7jTdW
-        jcaYxlrfY1ld5ugNSec0sIGqLA==
-X-Google-Smtp-Source: ABdhPJzC+jPXqON9HpNHUt08r2bqtxWHt/ITCvwKc/1nQ9S2LBfu4fKx7HHimoSJfCLrrW0kyL4vcg==
-X-Received: by 2002:a17:902:ec92:b0:166:3502:ecb1 with SMTP id x18-20020a170902ec9200b001663502ecb1mr30357875plg.62.1654627621789;
-        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
-Received: from [192.168.254.36] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id a2-20020a170902710200b0016141e6c5acsm13036791pll.296.2022.06.07.11.47.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
-Message-ID: <d079b7d4-c538-8a50-3375-fab0d3a0f0e6@linaro.org>
-Date:   Tue, 7 Jun 2022 11:47:00 -0700
+        with ESMTP id S1447492AbiFGXG5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 19:06:57 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12CB30B6C7;
+        Tue,  7 Jun 2022 13:37:58 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BEA211F92D;
+        Tue,  7 Jun 2022 20:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1654633808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S662GbsRJEF6AHR2EvNBu53yF5E9DczgAYsnFafgTMM=;
+        b=y+HqAzNlLnb/PDQh+aDQgxfaXgDgFlpkBvWu4r6aN2XYXDxi3irQSc60/Y6dgoXm04rQFz
+        sMIP6F+daG66o5WdjUGi8iXe0PX2bcB6wbrwQ2R2UcXjAnNoLODEBL5wUSyeLtPeK9WQ/b
+        3OsfhBPVSLIhjCFDsHZphJ5Ha5hkf30=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1654633808;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S662GbsRJEF6AHR2EvNBu53yF5E9DczgAYsnFafgTMM=;
+        b=TcXr8fp5++MDzVzG7XmA0OcwUhraygWKTXnVJ0DJDg28V6CTQfFJS6yQY+qyTnTVBROKFH
+        KpQDy3na/34Y1jCw==
+Received: from quack3.suse.cz (unknown [10.163.28.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 9D1392C141;
+        Tue,  7 Jun 2022 20:30:08 +0000 (UTC)
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 251ABA0633; Tue,  7 Jun 2022 22:30:08 +0200 (CEST)
+Date:   Tue, 7 Jun 2022 22:30:08 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, paolo.valente@linaro.org, tj@kernel.org,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH -next v5 0/3] support concurrent sync io for bfq on a
+ specail occasion
+Message-ID: <20220607203008.nk4cpcny5sfl4am7@quack3.lan>
+References: <81411289-e13c-20f5-df63-c059babca57a@huawei.com>
+ <d5a90a08-1ac6-587a-e900-0436bd45543a@kernel.dk>
+ <55919e29-1f22-e8aa-f3d2-08c57d9e1c22@huawei.com>
+ <20220523085902.wmxoebyq3crerecr@quack3.lan>
+ <25f6703e-9e10-75d9-a893-6df1e6b75254@kernel.dk>
+ <20220523152516.7sr247i3bzwhr44w@quack3.lan>
+ <21cd1c49-838a-7f03-ab13-9a4f2ac65979@huawei.com>
+ <20220607095430.kac5jgzm2gvd7x3c@quack3.lan>
+ <9a51c7b1-ba6c-0a56-85cf-5e602b9c6ec2@huawei.com>
+ <75ebf18b-0e21-3906-7862-6ca80b2f181d@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
-References: <20220603173455.441537-1-tadeusz.struk@linaro.org>
- <20220603181321.443716-1-tadeusz.struk@linaro.org>
- <20220606123910.GF6928@blackbody.suse.cz>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH v2] cgroup: serialize css kill and release paths
-In-Reply-To: <20220606123910.GF6928@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <75ebf18b-0e21-3906-7862-6ca80b2f181d@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/6/22 05:39, Michal Koutný wrote:
-> On Fri, Jun 03, 2022 at 11:13:21AM -0700, Tadeusz Struk<tadeusz.struk@linaro.org>  wrote:
->> In such scenario the css_killed_work_fn will be en-queued via
->> cgroup_apply_control_disable(cgrp)->kill_css(css), and bail out to
->> cgroup_kn_unlock(). Then cgroup_kn_unlock() will call:
->> cgroup_put(cgrp)->css_put(&cgrp->self), which will try to enqueue
->> css_release_work_fn for the same css instance, causing a list_add
->> corruption bug, as can be seen in the syzkaller report [1].
-> This hypothesis doesn't add up to me (I am sorry).
+On Tue 07-06-22 21:06:55, Yu Kuai wrote:
+> 在 2022/06/07 19:51, Yu Kuai 写道:
+> > 在 2022/06/07 17:54, Jan Kara 写道:
+> > > On Tue 07-06-22 11:10:27, Yu Kuai wrote:
+> > > > 在 2022/05/23 23:25, Jan Kara 写道:
+> > > > > Hum, for me all emails from Huawei I've received even today
+> > > > > fail the DKIM
+> > > > > check. After some more digging there is interesting
+> > > > > inconsistency in DMARC
+> > > > > configuration for huawei.com domain. There is DMARC record
+> > > > > for huawei.com
+> > > > > like:
+> > > > > 
+> > > > > huawei.com.        600    IN    TXT
+> > > > > "v=DMARC1;p=none;rua=mailto:dmarc@edm.huawei.com"
+> > > > > 
+> > > > > which means no DKIM is required but _dmarc.huawei.com has:
+> > > > > 
+> > > > > _dmarc.huawei.com.    600    IN    TXT    "v=DMARC1;p=quarantine;ruf=mailto:dmarc@huawei.com;rua=mailto:dmarc@huawei.com"
+> > > > > 
+> > > > > 
+> > > > > which says that DKIM is required. I guess this inconsistency may be the
+> > > > > reason why there are problems with DKIM validation for senders from
+> > > > > huawei.com. Yu Kuai, can you perhaps take this to your IT
+> > > > > support to fix
+> > > > > this? Either make sure huawei.com emails get properly signed
+> > > > > with DKIM or
+> > > > > remove the 'quarantine' record from _dmarc.huawei.com. Thanks!
+> > > > > 
+> > > > >                                 Honza
+> > > > > 
+> > > > Hi, Jan and Jens
+> > > > 
+> > > > I just got response from our IT support:
+> > > > 
+> > > > 'fo' is not set in our dmarc configuration(default is 0), which means
+> > > > SPF and DKIM verify both failed so that emails will end up in spam.
+> > > > 
+> > > > It right that DKIM verify is failed because there is no signed key,
+> > > > however, our IT support are curious how SPF verify faild.
+> > > > 
+> > > > Can you guys please take a look at ip address of sender? So our IT
+> > > > support can take a look if they miss it from SPF records.
+> > > 
+> > > So SPF is what makes me receive direct emails from you. For example
+> > > on this
+> > > email I can see:
+> > > 
+> > > Received: from frasgout.his.huawei.com (frasgout.his.huawei.com
+> > >          [185.176.79.56])
+> > >          (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256
+> > > (128/128
+> > >          bits))
+> > >          (No client certificate requested)
+> > >          by smtp-in2.suse.de (Postfix) with ESMTPS id 4LHFjN2L0dzZfj
+> > >          for <jack@suse.cz>; Tue,  7 Jun 2022 03:10:32 +0000 (UTC)
+> > > ...
+> > > Authentication-Results: smtp-in2.suse.de;
+> > >          dkim=none;
+> > >          dmarc=pass (policy=quarantine) header.from=huawei.com;
+> > >          spf=pass (smtp-in2.suse.de: domain of yukuai3@huawei.com
+> > > designates
+> > >          185.176.79.56 as permitted sender)
+> > > smtp.mailfrom=yukuai3@huawei.com
+> > > 
+> > > So indeed frasgout.his.huawei.com is correct outgoing server which makes
+> > > smtp-in2.suse.de believe the email despite missing DKIM signature.
+> > > But the
+> > > problem starts when you send email to a mailing list. Let me take for
+> > > example your email from June 2 with Message-ID
+> > > <20220602082129.2805890-1-yukuai3@huawei.com>, subject "[PATCH -next]
+> > > mm/filemap: fix that first page is not mark accessed in filemap_read()".
+> > > There the mailing list server forwards the email so we have:
+> > > 
+> > > Received: from smtp-in2.suse.de ([192.168.254.78])
+> > >          (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256
+> > > bits))
+> > >          by dovecot-director2.suse.de with LMTPS
+> > >          id 8MC5NfVvmGIPLwAApTUePA
+> > >          (envelope-from <linux-fsdevel-owner@vger.kernel.org>)
+> > >          for <jack@imap.suse.de>; Thu, 02 Jun 2022 08:08:21 +0000
+> > > Received: from out1.vger.email (out1.vger.email
+> > > [IPv6:2620:137:e000::1:20])
+> > >          by smtp-in2.suse.de (Postfix) with ESMTP id 4LDJYK5bf0zZg5
+> > >          for <jack@suse.cz>; Thu,  2 Jun 2022 08:08:21 +0000 (UTC)
+> > > Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+> > >          id S232063AbiFBIIM (ORCPT <rfc822;jack@suse.cz>);
+> > >          Thu, 2 Jun 2022 04:08:12 -0400
+> > > Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56178 "EHLO
+> > >          lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by
+> > >          vger.kernel.org
+> > >          with ESMTP id S232062AbiFBIIL (ORCPT
+> > >          <rfc822;linux-fsdevel@vger.kernel.org>);
+> > >          Thu, 2 Jun 2022 04:08:11 -0400
+> > > Received: from szxga02-in.huawei.com (szxga02-in.huawei.com
+> > > [45.249.212.188])
+> > >          by lindbergh.monkeyblade.net (Postfix) with ESMTPS id
+> > >          75DDB25FE;
+> > >          Thu,  2 Jun 2022 01:08:08 -0700 (PDT)
+> > > 
+> > > and thus smtp-in2.suse.de complains:
+> > > 
+> > > Authentication-Results: smtp-in2.suse.de;
+> > >          dkim=none;
+> > >          dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM"
+> > >          header.from=huawei.com (policy=quarantine);
+> > >          spf=pass (smtp-in2.suse.de: domain of
+> > >          linux-fsdevel-owner@vger.kernel.org designates
+> > > 2620:137:e000::1:20 as
+> > >          permitted sender)
+> > > smtp.mailfrom=linux-fsdevel-owner@vger.kernel.org
+> > > 
+> > > Because now we've got email with "From" header from huawei.com
+> > > domain from
+> > > a vger mail server which was forwarding it. So SPF has no chance to match
+> > > (in fact SPF did pass for the Return-Path header which points to
+> > > vger.kernel.org but DMARC defines that if "From" and "Return-Path" do not
+> > > match, additional validation is needed - this is the "SPF not aligned
+> > > (relaxed)" message above). And missing DKIM (the additional validation
+> > > method) sends the email to spam.
+> > 
+> > Thanks a lot for your analysis, afaics, in order to fix the
+> > problem, either your mail server change the configuration to set
+> > alignment mode to "relaxed" instead of "strict", or our mail server
+> > add correct DKIM signature for emails.
+> > 
+> > I'll contact with our IT support and try to add DKIM signature.
+> > 
+> > Thanks,
+> > Kuai
 > 
-> The kill_css(css) would be a css associated with a subsys (css.ss !=
-> NULL) whereas css_put(&cgrp->self) is a different css just for the
-> cgroup (css.ss == NULL).
+> Hi, Jan
+> 
+> Our IT support is worried that add DKIM signature will degrade
+> performance, may I ask that how is your mail server configuation? policy
+> is quarantine or none, and dkim signature is supportted or not.
 
-Yes, you are right. I couldn't figure it out where the extra css_put()
-is called from, and the only place that fitted into my theory was from
-the cgroup_kn_unlock() in cgroup_apply_control_disable().
-After some more debugging I can see that, as you said, the cgrp->self
-is a different css. The offending _put() is actually called by the
-percpu_ref_kill_and_confirm(), as it not only calls the passed confirm_kill
-percpu_ref_func_t, but also it puts the refcnt iself.
-Because the cgroup_apply_control_disable() will loop for_each_live_descendant,
-and call css_kill() on all css'es, and css_killed_work_fn() will also loop
-and call css_put() on all parents, the css_release() will be called on the
-first parent prematurely, causing the BUG(). What I think should be done
-to balance put/get is to call css_get() for all the parents in kill_css():
+The DMARC policy (relaxed / quarantine) is not configured on the side of
+the receiving mail server but on huawei.com side. As I wrote above it is
+this DMARC record in DNS of huawei.com domain that makes receiving mail
+servers refuse the email without DKIM signature (if SPF does not match):
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index c1e1a5c34e77..3ca61325bc4e 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5527,6 +5527,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
-   */
-  static void kill_css(struct cgroup_subsys_state *css)
-  {
-+       struct cgroup_subsys_state *_css = css;
-+
-         lockdep_assert_held(&cgroup_mutex);
-  
-         if (css->flags & CSS_DYING)
-@@ -5541,10 +5543,13 @@ static void kill_css(struct cgroup_subsys_state *css)
-         css_clear_dir(css);
-  
-         /*
--        * Killing would put the base ref, but we need to keep it alive
--        * until after ->css_offline().
-+        * Killing would put the base ref, but we need to keep it alive,
-+        * and all its parents, until after ->css_offline().
-          */
--       css_get(css);
-+       do {
-+               css_get(_css);
-+               _css = _css->parent;
-+       } while (_css && atomic_read(&_css->online_cnt));
-  
-         /*
-          * cgroup core guarantees that, by the time ->css_offline() is
+_dmarc.huawei.com.    600    IN    TXT    "v=DMARC1;p=quarantine;ruf=mailto:dmarc@huawei.com;rua=mailto:dmarc@huawei.com"
 
-This will be then "reverted" in css_killed_work_fn()
-Please let me know if it makes sense to you.
-I'm still testing it, but syzbot is very slow today.
+So if your IT admins do not want to introduce DKIM signatures on outgoing
+email, they should set policy to 'p=none' in the DMARC DNS record to tell
+that fact to receiving mail servers.
 
+								Honza
 -- 
-Thanks,
-Tadeusz
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
