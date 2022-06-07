@@ -2,86 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0957F540471
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 19:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335645408A2
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 20:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345341AbiFGRM1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Jun 2022 13:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
+        id S1348021AbiFGSDA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jun 2022 14:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344733AbiFGRMZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 13:12:25 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A341E17599;
-        Tue,  7 Jun 2022 10:12:24 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id u2so16079448pfc.2;
-        Tue, 07 Jun 2022 10:12:24 -0700 (PDT)
+        with ESMTP id S1351323AbiFGSB5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 14:01:57 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAEF151FC8
+        for <cgroups@vger.kernel.org>; Tue,  7 Jun 2022 10:44:14 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id k19so25147023wrd.8
+        for <cgroups@vger.kernel.org>; Tue, 07 Jun 2022 10:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KLGsBB+R+Y7B7KHGHWSxqZCFvRmylkKZbWB3sA14MH0=;
-        b=oLvveGNDVWzqyzP67UJA4WVF9pRh7nH3lgY7otES74HwEqlpsHB2KuZ73+XbuTnCG3
-         NQ0W4JcSrDbByxyqCSz5HcmIxSIhE+/6k4jTxOnoHZrf5frvi3VWiE5cnv68GWllEDaE
-         /JaT35fAp+rhmFa9SnKCYlXe4HyWRnYlwAoFSrPib4PZQidKpNLVZPjfdQTwbGOjPGyg
-         U/4wWGgbim+Dw47QFdLJHfYaWe2OgndP8vp9NbX00eP+SEdbgFn94eB7wuARP8te7BEE
-         ihq3Cw1VCttarncMGtOKyi9Uw7SONKrvAQegMoFP7XAopWPALVkixmmK2h9s/hzVkgsw
-         AWpA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Avvoh8CnIiqiG7pt5w+f0B0Z6X7OPhtWirg6KypOnRk=;
+        b=VJgCpuVqKSXl0XX58PrPxmWGKDkQdIE6BEthpBh1qGGSHXZS3+YISNnwTYkYarnho9
+         MvxMYs2TMqZiGshTbPZ0zIzK1VVVXZpVgaziJrABATtPimx965adbeB6GqOUlTuNnyhz
+         NPWJKmZexcPAKl4rzq3JtNd9/PXX0JeVvORheEEpbcyms/Ra+vjsuG5Kqeil6AQzy6/V
+         KHCGQPlibPQzrK3H2wed7BEJ3UlHPtrRePVo21DyyddSbOjiJ+ttt3X/L876GbyiyvAw
+         UJZAGIQaLuw88L2APyzR3tLX+5EFi65VfUbyfbBKfXfwkl++cELNNBZ8yhYU7i7NZ9fd
+         954g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KLGsBB+R+Y7B7KHGHWSxqZCFvRmylkKZbWB3sA14MH0=;
-        b=X/j6uRNeToCNB6/NFCDinA8Db9wIx+F9eaGwXzIIvJJ5XheEfRcnweWSnPOB3XuYbB
-         HxV3K3izY1y2wYsywfTsKrZ02fUPMMNbKE3hLfL7wp8s97OL/AT3TQeyE6Lu/AYkxvoo
-         27116A1v6ds1j6t1de82Ng20ildPHWOKEaxn5RyE8z3lMxH6lkq089ZJ8f26ELDCrVvF
-         qExmQXAhAemJFdg+LzSsovIbJwecIaGZPEpAyoB8L/IiKnM+Hif3Dayr3dSJrSqjxzbI
-         EEE2rdbduO0734FsFeetHnSS26Ers0JmmWnSATcX8ojvPmPfpZEvBZP93wo1NoC90rkY
-         Rklw==
-X-Gm-Message-State: AOAM533SQ0hT51MkU6IvfXNtTCT7AXT03O9G0qpjZMIHZM3j0igoYjv/
-        H41VqJclDKw0xgUvECcrG7Y=
-X-Google-Smtp-Source: ABdhPJw/swvVhpkFaFtR2C6K6VFvPTPLIk7gQYLECmRs/XM05IqUFhwbmvSbPgoSSY/Mi5wmcjdqcQ==
-X-Received: by 2002:a65:6a15:0:b0:3fd:c66:eb3d with SMTP id m21-20020a656a15000000b003fd0c66eb3dmr22512042pgu.111.1654621943998;
-        Tue, 07 Jun 2022 10:12:23 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:fa4d])
-        by smtp.gmail.com with ESMTPSA id x5-20020a170902a38500b001640beeebf1sm12764857pla.268.2022.06.07.10.12.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 10:12:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 7 Jun 2022 07:12:22 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Chen Wandun <chenwandun@huawei.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, surenb@google.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] psi: dont alloc memory for psi by default
-Message-ID: <Yp+G9o2wuJNfLuLk@slm.duckdns.org>
-References: <20220526122656.256274-1-chenwandun@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Avvoh8CnIiqiG7pt5w+f0B0Z6X7OPhtWirg6KypOnRk=;
+        b=hKCTQso/iz3AKHOhZl9qKM+VTEFODTYzjq6uAWgwXOP04mRrAXsrbbUMlecIpwK3x3
+         a8KgomKR5sy816bXovQfA9qWZhuKUWzzL+5dZhnZ2xXu/OBJ30Ky1TJQV66zvMdR4DGn
+         6gxDZ1RrTd0YhV+qXS/AMXIact6feiorWyfq6YgnlepSmSHlXIPGJXGuVQZfkmaaMy7s
+         rhDYeVsrPAIh4Es4dLX4RNs2yYtQZmcQ7UAsuGDoZzYMR5uyvlfOuBb7eVFzAbZw/V60
+         mpK9LbnUuv+zpyfEEOCWILzwP0nnwIEc2d7C8pCBzJOoRlY8ZgHTBggiTaBC/lg0KAng
+         JQuQ==
+X-Gm-Message-State: AOAM533oIDkVd9QEQ87YDX+k3voU9VyDQHtFhrcG9Hy5j5Olhj8Ehyon
+        Ewea3OIcrgfPLOkPJ0Z+JQHXKzMYhaWaBkbSPDqgeg==
+X-Google-Smtp-Source: ABdhPJyFuoW87JmCWjoEcQfJUeb0WIaes2z5fAnqfq4EfroINBdg/KTV/oyVRDvIVcWJxGZ+BbW1f/v1QcNJHtOHOBw=
+X-Received: by 2002:adf:eeca:0:b0:217:56ae:c657 with SMTP id
+ a10-20020adfeeca000000b0021756aec657mr15290057wrp.210.1654623852628; Tue, 07
+ Jun 2022 10:44:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220526122656.256274-1-chenwandun@huawei.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-6-yosryahmed@google.com> <20220603162339.GA25043@blackbody.suse.cz>
+ <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com>
+ <20220606123222.GA4377@blackbody.suse.cz> <CAJD7tkbi7Gnnf4NiUt-J61G7185NsRcySvP6qOQsFKMou7qZJg@mail.gmail.com>
+ <20220607121237.GC31717@blackbody.suse.cz>
+In-Reply-To: <20220607121237.GC31717@blackbody.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 7 Jun 2022 10:43:35 -0700
+Message-ID: <CAJD7tkYa3u52c77cnRxZ6D_4u5fkDG545r5a9SdK3Ys9Uuorig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 5/5] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 26, 2022 at 08:26:56PM +0800, Chen Wandun wrote:
-> Memory about struct psi_group is allocated by default for
-> each cgroup even if psi_disabled is true, in this case, these
-> allocated memory is waste, so alloc memory for struct psi_group
-> only when psi_disabled is false.
-> 
-> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+On Tue, Jun 7, 2022 at 5:12 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> On Mon, Jun 06, 2022 at 12:41:06PM -0700, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > I don't know if there is a standard way to handle this, but I think
+> > you should know the configs of your kernel when you are loading a bpf
+> > program?
+>
+> Isn't this one of purposes of BTF? (I don't know, I'm genuinely asking.)
+>
+> > If the CONFIG_CGROUPS=3D1 but CONFIG_MEMCG=3D0 I think everything will
+> > work normally except that task_memcg() will always return NULL so no
+> > stats will be collected, which makes sense.
+>
+> I was not able to track down what is the include chain to
+> tools/testing/selftests/bpf/progs/cgroup_vmscan.c, i.e. how is the enum
+> value memory_cgrp_id defined.
 
-Applied to cgroup/for-5.20.
+memory_cgrp_id is defined in "vmlinux.h" (generated from BTF) which is
+included through "bpf_iter.h". If the kernel is not compiled with
+CONFIG_MEMCG then this enum value will not be defined and the bpf prog
+should not compile.
 
-Thanks.
-
--- 
-tejun
+>
+> (A custom kernel module build requires target kernel's header files, I
+> could understand that compiling a BPF program requires them likewise and
+> that's how this could work.
+> Although, it goes against my undestanding of the CO-RE principle.)
+>
+> > There will be some overhead to running bpf programs that will always
+> > do nothing, but I would argue that it's the userspace's fault here for
+> > loading bpf programs on a non-compatible kernel.
+>
+> Yeah, running an empty program is non-issue in my eyes, I was rather
+> considering whether the program uses proper offsets.
+>
+> Michal
+>
