@@ -2,126 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6975400C2
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 16:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0957F540471
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 19:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbiFGOLG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Jun 2022 10:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S1345341AbiFGRM1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jun 2022 13:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237341AbiFGOLG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 10:11:06 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F0A9B184
-        for <cgroups@vger.kernel.org>; Tue,  7 Jun 2022 07:11:04 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id h192so9182340pgc.4
-        for <cgroups@vger.kernel.org>; Tue, 07 Jun 2022 07:11:04 -0700 (PDT)
+        with ESMTP id S1344733AbiFGRMZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 13:12:25 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A341E17599;
+        Tue,  7 Jun 2022 10:12:24 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id u2so16079448pfc.2;
+        Tue, 07 Jun 2022 10:12:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SdrNomF4nhx1466F59Cs0XBm4DrFs3fSMmHF2b5d1e0=;
-        b=YWdHmyRPgXwT5Qi5R4fjTlaDOegA5ZwY7kd0cNW+AniEZ9gqycaerLcysiv7Yc87yE
-         2C70wH3f79NoW84qA7fZusj7t6pLZo9I8/HVY/ZYiQ7+fljY1WecjXZJrX7H0RSA1Khe
-         1FTrcwTQayTr7bGlBZpLDOsKqNgr9KglwIATX+xf6dgFs92JIcXMqSfh2wdTOI39fC9y
-         5eiGZ0pqhBeO8FhoE0bNopfv901Cnm/WzyIQ7K3rjxGPImJO+7L0MCpgOqdojh95CTxg
-         RoOhILHg9P9RcEGMr0E/A2rQr//BDDMwkFwZOdonsdSq3T36wqQkbmUJmO8YvCEQUTw3
-         78vw==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KLGsBB+R+Y7B7KHGHWSxqZCFvRmylkKZbWB3sA14MH0=;
+        b=oLvveGNDVWzqyzP67UJA4WVF9pRh7nH3lgY7otES74HwEqlpsHB2KuZ73+XbuTnCG3
+         NQ0W4JcSrDbByxyqCSz5HcmIxSIhE+/6k4jTxOnoHZrf5frvi3VWiE5cnv68GWllEDaE
+         /JaT35fAp+rhmFa9SnKCYlXe4HyWRnYlwAoFSrPib4PZQidKpNLVZPjfdQTwbGOjPGyg
+         U/4wWGgbim+Dw47QFdLJHfYaWe2OgndP8vp9NbX00eP+SEdbgFn94eB7wuARP8te7BEE
+         ihq3Cw1VCttarncMGtOKyi9Uw7SONKrvAQegMoFP7XAopWPALVkixmmK2h9s/hzVkgsw
+         AWpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SdrNomF4nhx1466F59Cs0XBm4DrFs3fSMmHF2b5d1e0=;
-        b=S8HqY3ZuVl4pcUY1/r9AtnjKdyvWmEAxzdWDsBzWUT6td9yKyBd18+iPqyVKanIHk4
-         26qtNTNfqB2am3en9Y1ogkNUE6ER5gPS0D7YTec4XtF9FaFr0r7seu9W2lFfccMBeGBi
-         Vv7Ij31UXad4SFLxPOhRujkSRh66mhhWZc3ij4o45IR/xWUjful7rgnPO5y/ZUz/Z1nU
-         CKp7l2OKeu/f9zMNl+RMDpap2I30wfr5fHM0pbAf4Rr3aFLSstpnpL6Ze+dMKrmUDZDj
-         Ny50/M8gfGMEx4wn7aC+2Vire00bpyS/i/WmoZnoaIo0DcSPZNzKqJl36OSvYWxc9NgD
-         rpHQ==
-X-Gm-Message-State: AOAM533sRuYH8EOAa5zCByoF9QiIVIQUcZemkSOc/dzRi4s09OeVXMCp
-        Yx6sxEDUuWEG6KL2Z4QM9VyFMVYAxcT2qAEHjO8x0Q==
-X-Google-Smtp-Source: ABdhPJw6uvsovKcKEsVatuSAukDIo0+3pI8rZnaWuOqZGty1hm85rKto4OfXHOtKKjKiaDxzPIkUG/cz9GuFDKZA0VE=
-X-Received: by 2002:a63:4c09:0:b0:3fc:a85f:8c07 with SMTP id
- z9-20020a634c09000000b003fca85f8c07mr25624592pga.509.1654611063721; Tue, 07
- Jun 2022 07:11:03 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=KLGsBB+R+Y7B7KHGHWSxqZCFvRmylkKZbWB3sA14MH0=;
+        b=X/j6uRNeToCNB6/NFCDinA8Db9wIx+F9eaGwXzIIvJJ5XheEfRcnweWSnPOB3XuYbB
+         HxV3K3izY1y2wYsywfTsKrZ02fUPMMNbKE3hLfL7wp8s97OL/AT3TQeyE6Lu/AYkxvoo
+         27116A1v6ds1j6t1de82Ng20ildPHWOKEaxn5RyE8z3lMxH6lkq089ZJ8f26ELDCrVvF
+         qExmQXAhAemJFdg+LzSsovIbJwecIaGZPEpAyoB8L/IiKnM+Hif3Dayr3dSJrSqjxzbI
+         EEE2rdbduO0734FsFeetHnSS26Ers0JmmWnSATcX8ojvPmPfpZEvBZP93wo1NoC90rkY
+         Rklw==
+X-Gm-Message-State: AOAM533SQ0hT51MkU6IvfXNtTCT7AXT03O9G0qpjZMIHZM3j0igoYjv/
+        H41VqJclDKw0xgUvECcrG7Y=
+X-Google-Smtp-Source: ABdhPJw/swvVhpkFaFtR2C6K6VFvPTPLIk7gQYLECmRs/XM05IqUFhwbmvSbPgoSSY/Mi5wmcjdqcQ==
+X-Received: by 2002:a65:6a15:0:b0:3fd:c66:eb3d with SMTP id m21-20020a656a15000000b003fd0c66eb3dmr22512042pgu.111.1654621943998;
+        Tue, 07 Jun 2022 10:12:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:fa4d])
+        by smtp.gmail.com with ESMTPSA id x5-20020a170902a38500b001640beeebf1sm12764857pla.268.2022.06.07.10.12.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jun 2022 10:12:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 7 Jun 2022 07:12:22 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Chen Wandun <chenwandun@huawei.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, surenb@google.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] psi: dont alloc memory for psi by default
+Message-ID: <Yp+G9o2wuJNfLuLk@slm.duckdns.org>
+References: <20220526122656.256274-1-chenwandun@huawei.com>
 MIME-Version: 1.0
-References: <6b362c6e-9c80-4344-9430-b831f9871a3c@openvz.org>
- <f9394752-e272-9bf9-645f-a18c56d1c4ec@openvz.org> <Yp4F6n2Ie32re7Ed@qian>
- <360a2672-65a7-4ad4-c8b8-cc4c1f0c02cd@openvz.org> <CALvZod7+tpgKSQpMAgNKDtcsimcSjoh4rbKmUsy3G=QcRHci+Q@mail.gmail.com>
- <183333fc-e824-5c85-7c44-270474f5473a@openvz.org>
-In-Reply-To: <183333fc-e824-5c85-7c44-270474f5473a@openvz.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 7 Jun 2022 07:10:52 -0700
-Message-ID: <CALvZod5fizxoqC5cWtKFt4mkd9bvHhRhKs=H+McDtWvYz3Yq2g@mail.gmail.com>
-Subject: Re: [PATCH memcg v6] net: set proper memcg for net_init hooks allocations
-To:     Vasily Averin <vvs@openvz.org>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>, kernel@openvz.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220526122656.256274-1-chenwandun@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 7, 2022 at 5:37 AM Vasily Averin <vvs@openvz.org> wrote:
->
-> On 6/7/22 08:58, Shakeel Butt wrote:
-> > On Mon, Jun 6, 2022 at 11:45 AM Vasily Averin <vvs@openvz.org> wrote:
-> >>
-> > [...]
-> >>
-> >> As far as I understand this report means that 'init_net' have incorrect
-> >> virtual address on arm64.
-> >
-> > So, the two call stacks tell the addresses belong to the kernel
-> > modules (nfnetlink and nf_tables) whose underlying memory is allocated
-> > through vmalloc and virt_to_page() does not work on vmalloc()
-> > addresses.
->
-> However in both these cases get_mem_cgroup_from_obj() -> mem_cgroup_from_obj() ->
-> virt_to_folio() -> virt_to_page() -> virt_to_pfn() -> __virt_to_phys()
-> handles address of struct net taken from for_each_net().
-> The only net namespace that exists at this stage is init_net,
-> and dmesg output confirms this:
-> "virt_to_phys used for non-linear address: ffffd8efe2d2fe00 (init_net)"
->
-> >> Roman, Shakeel, I need your help
-> >>
-> >> Should we perhaps verify kaddr via virt_addr_valid() before using virt_to_page()
-> >> If so, where it should be checked?
-> >
-> > I think virt_addr_valid() check in mem_cgroup_from_obj() should work
-> > but I think it is expensive on the arm64 platform. The cheaper and a
-> > bit hacky way to avoid such addresses is to directly use
-> > is_vmalloc_addr() directly.
->
-> I do not understand why you mean that processed address is vmalloc-specific.
-> As far as I understand it is valid address of static variable, and for some reason
-> arm64 does not consider them valid virtual addresses.
->
+On Thu, May 26, 2022 at 08:26:56PM +0800, Chen Wandun wrote:
+> Memory about struct psi_group is allocated by default for
+> each cgroup even if psi_disabled is true, in this case, these
+> allocated memory is waste, so alloc memory for struct psi_group
+> only when psi_disabled is false.
+> 
+> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
 
-Indeed you are right as we are using the addresses of net namespaces
-and the report already has the information on the address
-ffffd8efe2d2fe00 which is init_net.
+Applied to cgroup/for-5.20.
 
-I don't know what is the right way to handle such addresses on arm64.
-BTW there is a separate report on this issue and arm maintainers are
-also CCed. Why not ask this question on that report?
+Thanks.
+
+-- 
+tejun
