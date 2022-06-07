@@ -2,128 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335645408A2
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 20:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C89854173C
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jun 2022 23:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348021AbiFGSDA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Jun 2022 14:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        id S1377548AbiFGVCp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jun 2022 17:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351323AbiFGSB5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 14:01:57 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAEF151FC8
-        for <cgroups@vger.kernel.org>; Tue,  7 Jun 2022 10:44:14 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id k19so25147023wrd.8
-        for <cgroups@vger.kernel.org>; Tue, 07 Jun 2022 10:44:14 -0700 (PDT)
+        with ESMTP id S1379228AbiFGVCN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jun 2022 17:02:13 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2632126B
+        for <cgroups@vger.kernel.org>; Tue,  7 Jun 2022 11:47:02 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id o6so10479858plg.2
+        for <cgroups@vger.kernel.org>; Tue, 07 Jun 2022 11:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Avvoh8CnIiqiG7pt5w+f0B0Z6X7OPhtWirg6KypOnRk=;
-        b=VJgCpuVqKSXl0XX58PrPxmWGKDkQdIE6BEthpBh1qGGSHXZS3+YISNnwTYkYarnho9
-         MvxMYs2TMqZiGshTbPZ0zIzK1VVVXZpVgaziJrABATtPimx965adbeB6GqOUlTuNnyhz
-         NPWJKmZexcPAKl4rzq3JtNd9/PXX0JeVvORheEEpbcyms/Ra+vjsuG5Kqeil6AQzy6/V
-         KHCGQPlibPQzrK3H2wed7BEJ3UlHPtrRePVo21DyyddSbOjiJ+ttt3X/L876GbyiyvAw
-         UJZAGIQaLuw88L2APyzR3tLX+5EFi65VfUbyfbBKfXfwkl++cELNNBZ8yhYU7i7NZ9fd
-         954g==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
+        b=tc1I+sdA0FwDJ/gsRcalhTdWIHb3oeBmUEKkK8g4OZEMjXtAlRTZvaNhHDSk/3+9Zf
+         ZCnTm71Ikwc9fj78Z6tJ+r+s3NKyZPGXQUM5GKc63uB2wcSoTM+yHLH1Ir/Fm51e9ot0
+         iPOjiMnofGcQT1I4z3zOljtH0zbFxSybwkGC8Uh8OTfQAgLL0VB/fu8yQm7VfTWTj1iK
+         ViabI4/ZPV3krTjB9RtlTrwxbRjkqxfKSGqc7GY05gqlqamDH4sYLLUCxRq+Tg2RE6e2
+         AQwMtPhyN/4yV7ZESuVPupvYQ3xLbWu98R4sqW9Vc3joiZka92axUvzIDfM/7JpyJlSZ
+         AErQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Avvoh8CnIiqiG7pt5w+f0B0Z6X7OPhtWirg6KypOnRk=;
-        b=hKCTQso/iz3AKHOhZl9qKM+VTEFODTYzjq6uAWgwXOP04mRrAXsrbbUMlecIpwK3x3
-         a8KgomKR5sy816bXovQfA9qWZhuKUWzzL+5dZhnZ2xXu/OBJ30Ky1TJQV66zvMdR4DGn
-         6gxDZ1RrTd0YhV+qXS/AMXIact6feiorWyfq6YgnlepSmSHlXIPGJXGuVQZfkmaaMy7s
-         rhDYeVsrPAIh4Es4dLX4RNs2yYtQZmcQ7UAsuGDoZzYMR5uyvlfOuBb7eVFzAbZw/V60
-         mpK9LbnUuv+zpyfEEOCWILzwP0nnwIEc2d7C8pCBzJOoRlY8ZgHTBggiTaBC/lg0KAng
-         JQuQ==
-X-Gm-Message-State: AOAM533oIDkVd9QEQ87YDX+k3voU9VyDQHtFhrcG9Hy5j5Olhj8Ehyon
-        Ewea3OIcrgfPLOkPJ0Z+JQHXKzMYhaWaBkbSPDqgeg==
-X-Google-Smtp-Source: ABdhPJyFuoW87JmCWjoEcQfJUeb0WIaes2z5fAnqfq4EfroINBdg/KTV/oyVRDvIVcWJxGZ+BbW1f/v1QcNJHtOHOBw=
-X-Received: by 2002:adf:eeca:0:b0:217:56ae:c657 with SMTP id
- a10-20020adfeeca000000b0021756aec657mr15290057wrp.210.1654623852628; Tue, 07
- Jun 2022 10:44:12 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
+        b=v3+qkw8bCUTo9KmpFrSG9Pn/5ydJKch1J1snaVllVR1PFHeYG6UWQ/DyJvTGQV2+MX
+         BC5rwWv8Cyc2MpAMHEAFfqacDR+yci9QDFu4W5iqgvsIWTE/NS4gUqNY1rQ2p1TE4p+0
+         vpeo1Psbj0thYRDL06+sdDTzJVe3Vr05LRg6i9loDHPrZKgNyKpTJYBMPEq6/+vdLbYS
+         sPzOr+u04NNuv9It8Mluh/GB1ToMYuKlYtidaUnfK9r/t0y+TfwCFjLRpsCR85u0W2Cu
+         hcD2qeg16Miq0ANFr23B+Dqi8KDLvoE+j789nk9znRIJ2ENS2fPYlgPtdNJfo31JQofk
+         K98g==
+X-Gm-Message-State: AOAM532y6aHdghafiTAi3LCXVUu13u40asCH+2GH8W9jvbS8mEm7jTdW
+        jcaYxlrfY1ld5ugNSec0sIGqLA==
+X-Google-Smtp-Source: ABdhPJzC+jPXqON9HpNHUt08r2bqtxWHt/ITCvwKc/1nQ9S2LBfu4fKx7HHimoSJfCLrrW0kyL4vcg==
+X-Received: by 2002:a17:902:ec92:b0:166:3502:ecb1 with SMTP id x18-20020a170902ec9200b001663502ecb1mr30357875plg.62.1654627621789;
+        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
+Received: from [192.168.254.36] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id a2-20020a170902710200b0016141e6c5acsm13036791pll.296.2022.06.07.11.47.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
+Message-ID: <d079b7d4-c538-8a50-3375-fab0d3a0f0e6@linaro.org>
+Date:   Tue, 7 Jun 2022 11:47:00 -0700
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-6-yosryahmed@google.com> <20220603162339.GA25043@blackbody.suse.cz>
- <CAJD7tkYwU5dW9Oof+pC81R9Bi-F=-EuiXpTn+HDeqbhTOTCcuw@mail.gmail.com>
- <20220606123222.GA4377@blackbody.suse.cz> <CAJD7tkbi7Gnnf4NiUt-J61G7185NsRcySvP6qOQsFKMou7qZJg@mail.gmail.com>
- <20220607121237.GC31717@blackbody.suse.cz>
-In-Reply-To: <20220607121237.GC31717@blackbody.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 7 Jun 2022 10:43:35 -0700
-Message-ID: <CAJD7tkYa3u52c77cnRxZ6D_4u5fkDG545r5a9SdK3Ys9Uuorig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/5] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+References: <20220603173455.441537-1-tadeusz.struk@linaro.org>
+ <20220603181321.443716-1-tadeusz.struk@linaro.org>
+ <20220606123910.GF6928@blackbody.suse.cz>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH v2] cgroup: serialize css kill and release paths
+In-Reply-To: <20220606123910.GF6928@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 7, 2022 at 5:12 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> On Mon, Jun 06, 2022 at 12:41:06PM -0700, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > I don't know if there is a standard way to handle this, but I think
-> > you should know the configs of your kernel when you are loading a bpf
-> > program?
->
-> Isn't this one of purposes of BTF? (I don't know, I'm genuinely asking.)
->
-> > If the CONFIG_CGROUPS=3D1 but CONFIG_MEMCG=3D0 I think everything will
-> > work normally except that task_memcg() will always return NULL so no
-> > stats will be collected, which makes sense.
->
-> I was not able to track down what is the include chain to
-> tools/testing/selftests/bpf/progs/cgroup_vmscan.c, i.e. how is the enum
-> value memory_cgrp_id defined.
+On 6/6/22 05:39, Michal Koutný wrote:
+> On Fri, Jun 03, 2022 at 11:13:21AM -0700, Tadeusz Struk<tadeusz.struk@linaro.org>  wrote:
+>> In such scenario the css_killed_work_fn will be en-queued via
+>> cgroup_apply_control_disable(cgrp)->kill_css(css), and bail out to
+>> cgroup_kn_unlock(). Then cgroup_kn_unlock() will call:
+>> cgroup_put(cgrp)->css_put(&cgrp->self), which will try to enqueue
+>> css_release_work_fn for the same css instance, causing a list_add
+>> corruption bug, as can be seen in the syzkaller report [1].
+> This hypothesis doesn't add up to me (I am sorry).
+> 
+> The kill_css(css) would be a css associated with a subsys (css.ss !=
+> NULL) whereas css_put(&cgrp->self) is a different css just for the
+> cgroup (css.ss == NULL).
 
-memory_cgrp_id is defined in "vmlinux.h" (generated from BTF) which is
-included through "bpf_iter.h". If the kernel is not compiled with
-CONFIG_MEMCG then this enum value will not be defined and the bpf prog
-should not compile.
+Yes, you are right. I couldn't figure it out where the extra css_put()
+is called from, and the only place that fitted into my theory was from
+the cgroup_kn_unlock() in cgroup_apply_control_disable().
+After some more debugging I can see that, as you said, the cgrp->self
+is a different css. The offending _put() is actually called by the
+percpu_ref_kill_and_confirm(), as it not only calls the passed confirm_kill
+percpu_ref_func_t, but also it puts the refcnt iself.
+Because the cgroup_apply_control_disable() will loop for_each_live_descendant,
+and call css_kill() on all css'es, and css_killed_work_fn() will also loop
+and call css_put() on all parents, the css_release() will be called on the
+first parent prematurely, causing the BUG(). What I think should be done
+to balance put/get is to call css_get() for all the parents in kill_css():
 
->
-> (A custom kernel module build requires target kernel's header files, I
-> could understand that compiling a BPF program requires them likewise and
-> that's how this could work.
-> Although, it goes against my undestanding of the CO-RE principle.)
->
-> > There will be some overhead to running bpf programs that will always
-> > do nothing, but I would argue that it's the userspace's fault here for
-> > loading bpf programs on a non-compatible kernel.
->
-> Yeah, running an empty program is non-issue in my eyes, I was rather
-> considering whether the program uses proper offsets.
->
-> Michal
->
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index c1e1a5c34e77..3ca61325bc4e 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5527,6 +5527,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+   */
+  static void kill_css(struct cgroup_subsys_state *css)
+  {
++       struct cgroup_subsys_state *_css = css;
++
+         lockdep_assert_held(&cgroup_mutex);
+  
+         if (css->flags & CSS_DYING)
+@@ -5541,10 +5543,13 @@ static void kill_css(struct cgroup_subsys_state *css)
+         css_clear_dir(css);
+  
+         /*
+-        * Killing would put the base ref, but we need to keep it alive
+-        * until after ->css_offline().
++        * Killing would put the base ref, but we need to keep it alive,
++        * and all its parents, until after ->css_offline().
+          */
+-       css_get(css);
++       do {
++               css_get(_css);
++               _css = _css->parent;
++       } while (_css && atomic_read(&_css->online_cnt));
+  
+         /*
+          * cgroup core guarantees that, by the time ->css_offline() is
+
+This will be then "reverted" in css_killed_work_fn()
+Please let me know if it makes sense to you.
+I'm still testing it, but syzbot is very slow today.
+
+-- 
+Thanks,
+Tadeusz
