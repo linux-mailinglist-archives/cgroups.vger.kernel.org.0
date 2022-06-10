@@ -2,91 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A856E5459DC
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jun 2022 04:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BE8545A37
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jun 2022 04:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345903AbiFJCE0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Jun 2022 22:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
+        id S233688AbiFJCpS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Jun 2022 22:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345916AbiFJCEP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Jun 2022 22:04:15 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B083E8A30F;
-        Thu,  9 Jun 2022 19:03:54 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LK43x2MVTzjX9C;
-        Fri, 10 Jun 2022 10:02:53 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 10 Jun 2022 10:03:52 +0800
-Received: from huawei.com (10.175.127.227) by kwepemm600009.china.huawei.com
- (7.193.23.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 10 Jun
- 2022 10:03:51 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <paolo.valente@linaro.org>, <jack@suse.cz>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>
-CC:     <tj@kernel.org>, <axboe@kernel.dk>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH -next v10 4/4] block, bfq: do not idle if only one group is activated
-Date:   Fri, 10 Jun 2022 10:17:01 +0800
-Message-ID: <20220610021701.2347602-5-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220610021701.2347602-1-yukuai3@huawei.com>
-References: <20220610021701.2347602-1-yukuai3@huawei.com>
+        with ESMTP id S233634AbiFJCpR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Jun 2022 22:45:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F561E0AD6;
+        Thu,  9 Jun 2022 19:45:15 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c196so22698698pfb.1;
+        Thu, 09 Jun 2022 19:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wD58Q0nVdN+lpK7XOvbDvW4lZ7h1rqEWk+skYGgOvJ0=;
+        b=Y6A0K30lWxEicLPPmjfvigg4Z03uPa39KfSU4jwd5vx9b6x5HxdPlyyVwybkBiEqAQ
+         Q15JzwoiSLcUKwmQqfQZLOkbHx/bvsG8q4SQ8dnhpsKngiFuu+nYfYjMZ833CCyEKYQ3
+         ztpR4i6TcGQUIE04Cq3wSu0pyDOglJGCx/URJroH+yN+0OWdOj7YUB99S07kecNm+T+g
+         4bllY4ycfzaVRA7UJyChYPED0DNusFEaXz4h1vP61YO/M9cxKQvuTojmGDS6I4WOlYll
+         qgjVIfP0PHaKlStMD0rk8R34u2rMEgjY54g2rkFPYv5zx6TbRkXI1gbkW6+ipw/bPz4t
+         NhOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wD58Q0nVdN+lpK7XOvbDvW4lZ7h1rqEWk+skYGgOvJ0=;
+        b=yH3w87WQsDUYDf3L+HyYxPp5dZaAc/NsmBcs3mFn8NaSFtSKtNi9Jl5NfkgJz9rS/2
+         GrHmU2MK4Shbw8Cxr5qcCWAogxGckLXouN5/4ss5G9/Bz6nSyWK0njWOhJ7lJVWBBWcf
+         JsgmAUd1M486apdSxgxKuPS5KBhUBG7PZqmnW+4Jh2Yz1D9DHatw6ul8coHrwFV7gexD
+         iFr+8erJqNEezxwdXOEmXw/ZLvRRCrsB27fYx0R8B8kVoTmKHmF91HxtEf226wvNoYEa
+         UAOaMT8j9yruFyNkgpuIAhWqO9wtrVi3rFPDEt8iigNrv+WN0O4+ztDIheVCRN9Hn55w
+         hjrA==
+X-Gm-Message-State: AOAM532PvU49A6TCZaQqYCNN+7jdT0kSf07P9YnGGFvNLZIOOjGU+g1I
+        Z471de+e2Tb5h1F0FrZi+Y4=
+X-Google-Smtp-Source: ABdhPJzXoeE6YpY5U1nxIZxvEZy9G6CyhdPsDVTXr9N4njk0dTSSPoL3DwikxvApkTiURMuoC0DoBQ==
+X-Received: by 2002:aa7:9e9c:0:b0:51b:e1b8:271c with SMTP id p28-20020aa79e9c000000b0051be1b8271cmr36159630pfq.73.1654829114947;
+        Thu, 09 Jun 2022 19:45:14 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id jg15-20020a17090326cf00b001640594376dsm17562244plb.183.2022.06.09.19.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 19:45:14 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.yang29@zte.com.cn
+To:     mhocko@kernel.org, roman.gushchin@linux.dev
+Cc:     hannes@cmpxchg.org, shakeelb@google.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
+Subject: [PATCH] mm: memcontrol: reference to tools/cgroup/memcg_slabinfo.py
+Date:   Fri, 10 Jun 2022 02:44:52 +0000
+Message-Id: <20220610024451.744135-1-yang.yang29@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now that root group is counted into 'num_groups_with_pending_reqs',
-'num_groups_with_pending_reqs > 0' is always true in
-bfq_asymmetric_scenario(). Thus change the condition to '> 1'.
+From: Yang Yang <yang.yang29@zte.com.cn>
 
-On the other hand, this change can enable concurrent sync io if only
-one group is activated.
+There is no slabinfo.py in tools/cgroup, but has memcg_slabinfo.py instead.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
 ---
- block/bfq-iosched.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 03b04892440c..a2aa243505dc 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -820,7 +820,7 @@ bfq_pos_tree_add_move(struct bfq_data *bfqd, struct bfq_queue *bfqq)
-  * much easier to maintain the needed state:
-  * 1) all active queues have the same weight,
-  * 2) all active queues belong to the same I/O-priority class,
-- * 3) there are no active groups.
-+ * 3) there is at most one active group.
-  * In particular, the last condition is always true if hierarchical
-  * support or the cgroups interface are not enabled, thus no state
-  * needs to be maintained in this case.
-@@ -852,7 +852,7 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
- 
- 	return varied_queue_weights || multiple_classes_busy
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
--	       || bfqd->num_groups_with_pending_reqs > 0
-+	       || bfqd->num_groups_with_pending_reqs > 1
- #endif
- 		;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index dfbc84313745..ca714699a8e9 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4820,7 +4820,7 @@ static int mem_cgroup_slab_show(struct seq_file *m, void *p)
+ {
+ 	/*
+ 	 * Deprecated.
+-	 * Please, take a look at tools/cgroup/slabinfo.py .
++	 * Please, take a look at tools/cgroup/memcg_slabinfo.py .
+ 	 */
+ 	return 0;
  }
 -- 
-2.31.1
+2.25.1
 
