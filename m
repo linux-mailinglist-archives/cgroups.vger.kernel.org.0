@@ -2,154 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D116549D30
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A56B549D6B
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbiFMTP1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jun 2022 15:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        id S1349007AbiFMTVi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jun 2022 15:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349230AbiFMTNo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:13:44 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816AF50E29
-        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:12:02 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id u8so7924780wrm.13
-        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:12:02 -0700 (PDT)
+        with ESMTP id S1349089AbiFMTVS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:21:18 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CABA1CB22;
+        Mon, 13 Jun 2022 10:23:06 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s37so3637895pfg.11;
+        Mon, 13 Jun 2022 10:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BwfpdGVZuLzhMRO0qDkUrzUSE4uGJ0s4izOa+gswkLc=;
-        b=iyoFryyCEMOgC7rXLKu4nOmoJ4Ev3bSJmT6ed09FE5xCAAc5dBkkwtXxpcvvGQ+P+z
-         ETT+TDFbc4w3QEtd0CSTtGopVeE/ROGO0WHkEbyE/LYwiv3H3TW3pyxouKMCLv+KqkYZ
-         yNXDxA5s4wHBPNNleteRDWB0OVGKRy46fxusIatVg7fbsU3f8NuQHDDwXuooOAhihX5c
-         apRzdEm4Qcxw1Vp4x8eHSJ0zk6RBYV1Jvu3JCqD8yM8Yczm4FlFHmh8FmzU3HH+SvYZl
-         N0nY66gFj0te0BB1xSoY4rr990nbGbzyauUa8tb8y8DjQzQQuFKjHb8vPu4IK/5VClaZ
-         mw/g==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7M+A4Tkcl4j2ZEYJxnHofmbHWBP8K2O9jymdDhG9tv0=;
+        b=SfbzRvanLsSXpQIXsHN2DLvLUMY5t8/g0db/VVEH7eeh+ei07KzvHZObXvbjTtVeim
+         QqAtDY4GBjmFmerP5kZz+/mf7m/AS/3Q5XZMZOj/OJ8HDObBVWj2SDvQTRMUldRoZMZ+
+         SeJLzy0p5MzASUh/0RwJPnMgBysfdsAoMl1zLmYslcAO+FOxbb8NVeSW1lz0Tf3iyUJ1
+         7LDCIUE5aIDnihc8OtiMhEzJchy+X65LWl8FCJEPOHTTeMSAznyrJtD842u6apyMxgiI
+         ZuePfGPvvzwdUYaLN3R4KH78h6kCwyviro32caqZmQSWGivj6/D750j/QfJwc+em2o6W
+         8ANw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BwfpdGVZuLzhMRO0qDkUrzUSE4uGJ0s4izOa+gswkLc=;
-        b=aqZQUpBT2aKru4Ja0LZmX0DGSaCu1NOD18Tss+iinDn38k9UCK3Dkcw+DBMpG/0Oyg
-         efQvQXErmJJ+fXG1/SYp+77eWll9GuwZ3wt+/I8p2pjtc5CMNueMbPDt7tZnPko3P9cZ
-         LgokeojIEdNgpf5m0Ws0GISyPHC2OQZndt/jugOqeDDR7aRGaISXtzzKuGBw7LfTASpc
-         I5+Gw9fGf/rwXL3gbmfJGL4R/PnjJAOHkkkSCTPnyLpPf/Vgm6JspOSpnmO/uaEWTnDe
-         cxEXVWCWvkLkw+6A7khzRKgzf4iOqZoaKuDvQHMxU5qeL9xw4z2o726ZAdiEAF4Bxr9v
-         Snyw==
-X-Gm-Message-State: AJIora/fOU3jzpl4U6sk0RwR6VySGXwlA+wHvIZwS8Vbto8zGY0JkeGU
-        b58sR4QsSw582bzgcQA/c3FMIgZAI0I9aaJWg7O88w==
-X-Google-Smtp-Source: AGRyM1s6B0qb0T2WacCoWhhkywiiU+ZvFODg5mDtSwgELuEdOO1P7hQRTSX7NI4gasI6mKDBJY57NrqOabVTnciF7VA=
-X-Received: by 2002:adf:f688:0:b0:215:6e4d:4103 with SMTP id
- v8-20020adff688000000b002156e4d4103mr802713wrp.372.1655140320646; Mon, 13 Jun
- 2022 10:12:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220606222058.86688-1-yosryahmed@google.com> <20220606222058.86688-2-yosryahmed@google.com>
- <bdfea446-623c-d423-673f-496b3725ec2c@intel.com>
-In-Reply-To: <bdfea446-623c-d423-673f-496b3725ec2c@intel.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 13 Jun 2022 10:11:23 -0700
-Message-ID: <CAJD7tkbUXb7qBm1GAMDr29DcsC90_bPzwffkdtAu_Na+inVzVg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     "Huang, Shaoqin" <shaoqin.huang@intel.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=7M+A4Tkcl4j2ZEYJxnHofmbHWBP8K2O9jymdDhG9tv0=;
+        b=t3DkZMS/cctafLZdQLmxZP854yMY27zMd3yQMrXvqyh8klLUZAh1a8p1Yg3DldYyXG
+         1Y6I47mjQxw0VkSicPFwXJkPaw9VgcJ5o1Uz3aBm3RKqAw7KeMkzFvIZQH2bslvRsM+K
+         ohuOWNPBBN3yjD/xEa+soqp+6a7nj77qDycRfjGMDXqbAoxR7oAR34RmTRwM0SlufChL
+         6Uzp2r7InXKbTsVAGao0SaCE3aj5FRtkte/esTEJDQmTGQxuI0mGvKbCO/SlA+m4pC0C
+         eYnTWuZ7kV89ZHDgMKIUpU0MOgsuEOMGRCkTfu8fJswXUic1ksdCUebQukqM8Y+18oMu
+         GNCw==
+X-Gm-Message-State: AOAM531gkt+L5SdHB/8PZ9u3H9D0zXCWxttkv8Szo7ecXSbAs0NqtrLY
+        VJU1CZv1DIyGLCTPgAKNgeo=
+X-Google-Smtp-Source: ABdhPJw4VXb316KPeH1PJV6+trUh6zgGxF5VJQRHS1G9M7KvTAY4ypmt5bbKi2jd6R5tOl/qrqr8KQ==
+X-Received: by 2002:a63:1f55:0:b0:3fd:41c5:b53a with SMTP id q21-20020a631f55000000b003fd41c5b53amr529334pgm.441.1655140985316;
+        Mon, 13 Jun 2022 10:23:05 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id s194-20020a6377cb000000b003fd1111d73csm5956795pgc.4.2022.06.13.10.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 10:23:04 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Jun 2022 07:23:03 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v11 3/8] cgroup/cpuset: Allow no-task partition to have
+ empty cpuset.cpus.effective
+Message-ID: <Yqdydz3vNgfVMgDf@slm.duckdns.org>
+References: <20220510153413.400020-1-longman@redhat.com>
+ <20220510153413.400020-4-longman@redhat.com>
+ <YqYlCRywdgSYtwKk@slm.duckdns.org>
+ <YqYlOQjKtQCBsQuT@slm.duckdns.org>
+ <ce3106c1-a3c4-b449-bafc-6940d672bd94@redhat.com>
+ <YqanEZZooeZwtutA@slm.duckdns.org>
+ <20220613140206.GA6910@blackbody.suse.cz>
+ <f1c33447-1f82-9698-6b0c-fc9ffb12b4bb@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f1c33447-1f82-9698-6b0c-fc9ffb12b4bb@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Jun 12, 2022 at 8:18 PM Huang, Shaoqin <shaoqin.huang@intel.com> wrote:
->
->
->
-> On 6/7/2022 6:20 AM, Yosry Ahmed wrote:
-> > Add NR_SECONDARY_PAGETABLE stat to count secondary page table uses, e.g.
-> > KVM mmu. This provides more insights on the kernel memory used
-> > by a workload.
-> >
-> > This stat will be used by subsequent patches to count KVM mmu
-> > memory usage.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >   Documentation/admin-guide/cgroup-v2.rst | 5 +++++
-> >   Documentation/filesystems/proc.rst      | 4 ++++
-> >   drivers/base/node.c                     | 2 ++
-> >   fs/proc/meminfo.c                       | 2 ++
-> >   include/linux/mmzone.h                  | 1 +
-> >   mm/memcontrol.c                         | 1 +
-> >   mm/page_alloc.c                         | 6 +++++-
-> >   mm/vmstat.c                             | 1 +
-> >   8 files changed, 21 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > index 69d7a6983f781..307a284b99189 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -1312,6 +1312,11 @@ PAGE_SIZE multiple when read back.
-> >         pagetables
-> >                   Amount of memory allocated for page tables.
-> >
-> > +       sec_pagetables
-> > +             Amount of memory allocated for secondary page tables,
-> > +             this currently includes KVM mmu allocations on x86
-> > +             and arm64.
-> > +
-> >         percpu (npn)
-> >               Amount of memory used for storing per-cpu kernel
-> >               data structures.
-> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> > index 061744c436d99..894d6317f3bdc 100644
-> > --- a/Documentation/filesystems/proc.rst
-> > +++ b/Documentation/filesystems/proc.rst
-> > @@ -973,6 +973,7 @@ You may not have all of these fields.
-> >       SReclaimable:   159856 kB
-> >       SUnreclaim:     124508 kB
-> >       PageTables:      24448 kB
-> > +    SecPageTables:    0 kB
-> >       NFS_Unstable:        0 kB
-> >       Bounce:              0 kB
-> >       WritebackTmp:        0 kB
-> > @@ -1067,6 +1068,9 @@ SUnreclaim
-> >   PageTables
-> >                 amount of memory dedicated to the lowest level of page
-> >                 tables.
-> > +SecPageTables
-> > +           amount of memory dedicated to secondary page tables, this
-> > +           currently includes KVM mmu allocations on x86 and arm64.
->
-> Just a notice. This patch in the latest 5.19.0-rc2+ have a conflict in
-> Documentation/filesystems/proc.rst file. But that's not a problem.
+Hello,
 
-Thanks for pointing this out. Let me know if a rebase and resend is necessary.
+On Mon, Jun 13, 2022 at 12:47:37PM -0400, Waiman Long wrote:
+> On 6/13/22 10:02, Michal Koutný wrote:
+> > On Sun, Jun 12, 2022 at 04:55:13PM -1000, Tejun Heo <tj@kernel.org> wrote:
+> > > But how would that happen? A lot of other things would break too if that
+> > > were to happen.
+> > cpuset is a threaded controller where the internal-node-constraint does
+> > not hold. So the additional condition for cpuset migrations is IMO
+> > warranted (and needed if there's no "fall up").
+> 
+> Yes, you are right. cpuset is threaded and so it may have tasks even if it
+> is not the leaf node.
 
-<snip>
+And we had this same exchange the last time. Can you please add a comment?
+We might also already have had this exchange before too but is it necessary
+to allow threaded cgroups to be isolated roots? The interaction between
+being threaded and isolated is cleaner at that layer as it's interactions
+between two explicit mode changes.
+
+Thanks.
+
+-- 
+tejun
