@@ -2,76 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2384549CC2
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928FE549D07
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346412AbiFMTEU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jun 2022 15:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S1348769AbiFMTKw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jun 2022 15:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348423AbiFMTDn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:03:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5484E1059F6
-        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 09:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655138862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PtMrsrYPM0J5i/yjkLVXsmYxyhse0DEHxO9KbSLC6N4=;
-        b=NVm6JHcqgeYrZPnJbsnO4rOARkx/0Tby1Eo96q+HGKo/dfsqvRg9EnggvRTlPnzn8XvBNv
-        THSzrRDXJLa+1+zSAmWJLHA/rHZhlyAhQOjUeWN1bPWAMTfonFk+0ED5d5rGvBXmLwjlR5
-        lMsvX6tb50kaPLCgA0FEW2VaCQTfv9U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-344-xlhnHyQEOVexYZQQbhyPUQ-1; Mon, 13 Jun 2022 12:47:38 -0400
-X-MC-Unique: xlhnHyQEOVexYZQQbhyPUQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2E0FB802804;
-        Mon, 13 Jun 2022 16:47:38 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 820BE2166B26;
-        Mon, 13 Jun 2022 16:47:37 +0000 (UTC)
-Message-ID: <f1c33447-1f82-9698-6b0c-fc9ffb12b4bb@redhat.com>
-Date:   Mon, 13 Jun 2022 12:47:37 -0400
+        with ESMTP id S1349243AbiFMTIo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:08:44 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F0350030
+        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:06:02 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u8so7905490wrm.13
+        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:06:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KoHbfQqPxgY9yzkcDMM8WJkeOP/2rasHhf0aBaG7YMk=;
+        b=CGQlrM5BP7x7O5U5HXhVD5E6vhiC48JFPNq/iEHbZugUGF1PH9mRo1PEbdLg95PhIT
+         85sgUpFKPx6kQ0goj4wa4ZGoO+Agj+ijb78wILvKTIUWV4R1ylkwaTwj+QJNJ59U3kV2
+         EvmdCDyDRC6z34zBOyxBfhggAWuE5PeN3eIW7NxGN0nA1/Ff9Mlb5Dpwf6qQHpvIU873
+         CYR4KBRtjQ6a/yi3Qft7sU6fZOAU5sBJsiPl6NCNDhcKTH294QdGfYDpV70YW4zda0vY
+         0pahJvLUSaRLuf63uiUYZCaC4Jvi0Vs7J+7ZzBHghgaKHmKJvIquFADEf+ZbvuP2pIaT
+         t5GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KoHbfQqPxgY9yzkcDMM8WJkeOP/2rasHhf0aBaG7YMk=;
+        b=ruFT2/FueWMyjFcOpccAF3ivZzg0xXsUpU9fhnPHNV/pD1QBf6MszmN0Y9Emkfwvy6
+         y9Iepo3V2lNTvUrBkVszqHdNkuGTYV+il/4IM+rIm6y0qxqd0WLlwy3jPW1AYCV4yNKj
+         U1mzyPHSSR5cuX4nxz/KO6lfWHdELKqkSmAk5pzk5ITFL6sNUID8xisp5IpJ1UbuA8Ol
+         kp2Zdjs3wEI8HGjVP6PIkVFOsqkBIh1kCSqqKLJqDG8+yO2JCWi1/PVy3sWi/4eUvyjY
+         pAMMJqDDeauw1HeaekNcyjKB4lo0pXC70bIn8RU5f44HsndrJH6KozrUqrLHq/uIjG9u
+         qxOw==
+X-Gm-Message-State: AJIora8CQcOlFchZNeaac+QSfdp+WT4JV2h//TTY4CCtr/j0apCtbRHV
+        nTYe0pvGay/lQt0IvB+kwBIo1Nk6zexoQ7DytOmxaw==
+X-Google-Smtp-Source: AGRyM1vH+ZqkS8LKL5LOCrHzAkkw8d8wc3YcYVokHj4BKFHYsc3/bdOlTwXRmbj6z9xJr4PtQ+69Y4b8cHmSbVkBgOY=
+X-Received: by 2002:adf:f688:0:b0:215:6e4d:4103 with SMTP id
+ v8-20020adff688000000b002156e4d4103mr779245wrp.372.1655139960476; Mon, 13 Jun
+ 2022 10:06:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v11 3/8] cgroup/cpuset: Allow no-task partition to have
- empty cpuset.cpus.effective
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
+References: <20220610194435.2268290-7-yosryahmed@google.com>
+ <202206110544.D5cTU0WQ-lkp@intel.com> <CAJD7tkZqCrqx0UFHVXv3VMNNk8YJrJGtVVy_tP3GDTryh375PQ@mail.gmail.com>
+ <20220611195706.j62cqsodmlnd2ba3@macbook-pro-3.dhcp.thefacebook.com>
+In-Reply-To: <20220611195706.j62cqsodmlnd2ba3@macbook-pro-3.dhcp.thefacebook.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 13 Jun 2022 10:05:24 -0700
+Message-ID: <CAJD7tkba1Ojd+jd7WCa5Lc4sr=3e=4E4_UviHyhLtPfxZcyzpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/8] cgroup: bpf: enable bpf programs to
+ integrate with rstat
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-References: <20220510153413.400020-1-longman@redhat.com>
- <20220510153413.400020-4-longman@redhat.com>
- <YqYlCRywdgSYtwKk@slm.duckdns.org> <YqYlOQjKtQCBsQuT@slm.duckdns.org>
- <ce3106c1-a3c4-b449-bafc-6940d672bd94@redhat.com>
- <YqanEZZooeZwtutA@slm.duckdns.org> <20220613140206.GA6910@blackbody.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20220613140206.GA6910@blackbody.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Michal Hocko <mhocko@kernel.org>, kbuild-all@lists.01.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,17 +87,19 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/13/22 10:02, Michal Koutný wrote:
-> On Sun, Jun 12, 2022 at 04:55:13PM -1000, Tejun Heo <tj@kernel.org> wrote:
->> But how would that happen? A lot of other things would break too if that
->> were to happen.
-> cpuset is a threaded controller where the internal-node-constraint does
-> not hold. So the additional condition for cpuset migrations is IMO
-> warranted (and needed if there's no "fall up").
+On Sat, Jun 11, 2022 at 12:57 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jun 10, 2022 at 02:30:00PM -0700, Yosry Ahmed wrote:
+> >
+> > AFAICT these failures are because the patch series depends on a patch
+> > in the mailing list [1] that is not in bpf-next, as explained by the
+> > cover letter.
+> >
+> > [1] https://lore.kernel.org/bpf/20220421140740.459558-5-benjamin.tissoires@redhat.com/
+>
+> You probably want to rebase and include that patch as patch 1 in your series
+> preserving Benjamin's SOB and cc-ing him on the series.
+> Otherwise we cannot land the set, BPF CI cannot test it, and review is hard to do.
 
-Yes, you are right. cpuset is threaded and so it may have tasks even if 
-it is not the leaf node.
-
-Thanks,
-Longman
-
+Sounds good. Will rebase do that and send a v3.
