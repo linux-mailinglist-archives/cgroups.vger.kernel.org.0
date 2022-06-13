@@ -2,77 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 080FD549D09
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D116549D30
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jun 2022 21:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348545AbiFMTKz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jun 2022 15:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
+        id S234677AbiFMTP1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jun 2022 15:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349328AbiFMTIq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:08:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62E58443EA
-        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655139985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s7hhCYT7OGqCx5nH+qXS1ao3TYt75AzmKiJLPQv1MlY=;
-        b=LyGOcJOyGr+gseoqj4lb+lpTC0NwdJwLwgxSBW2vvLjhQMxO6hnmfikkma78p3NXSv+ZDJ
-        ohSF7LQyvUs5jZSeUVNP8Voga/dYlOSBBmxQCFOaXTevLsdUBmzvVn0gDTFkApflChHo7h
-        zg7L7QQTDe6ZkMtVKXkTaUT8yg+QIGo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-29-u9ZkP3_qMFWE3PS8XzGi6A-1; Mon, 13 Jun 2022 13:06:22 -0400
-X-MC-Unique: u9ZkP3_qMFWE3PS8XzGi6A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3825D801756;
-        Mon, 13 Jun 2022 17:06:21 +0000 (UTC)
-Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 68A6F2026D64;
-        Mon, 13 Jun 2022 17:06:20 +0000 (UTC)
-Message-ID: <c91a8c45-123d-dbae-b07c-83772add082d@redhat.com>
-Date:   Mon, 13 Jun 2022 13:06:20 -0400
+        with ESMTP id S1349230AbiFMTNo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jun 2022 15:13:44 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816AF50E29
+        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:12:02 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id u8so7924780wrm.13
+        for <cgroups@vger.kernel.org>; Mon, 13 Jun 2022 10:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BwfpdGVZuLzhMRO0qDkUrzUSE4uGJ0s4izOa+gswkLc=;
+        b=iyoFryyCEMOgC7rXLKu4nOmoJ4Ev3bSJmT6ed09FE5xCAAc5dBkkwtXxpcvvGQ+P+z
+         ETT+TDFbc4w3QEtd0CSTtGopVeE/ROGO0WHkEbyE/LYwiv3H3TW3pyxouKMCLv+KqkYZ
+         yNXDxA5s4wHBPNNleteRDWB0OVGKRy46fxusIatVg7fbsU3f8NuQHDDwXuooOAhihX5c
+         apRzdEm4Qcxw1Vp4x8eHSJ0zk6RBYV1Jvu3JCqD8yM8Yczm4FlFHmh8FmzU3HH+SvYZl
+         N0nY66gFj0te0BB1xSoY4rr990nbGbzyauUa8tb8y8DjQzQQuFKjHb8vPu4IK/5VClaZ
+         mw/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BwfpdGVZuLzhMRO0qDkUrzUSE4uGJ0s4izOa+gswkLc=;
+        b=aqZQUpBT2aKru4Ja0LZmX0DGSaCu1NOD18Tss+iinDn38k9UCK3Dkcw+DBMpG/0Oyg
+         efQvQXErmJJ+fXG1/SYp+77eWll9GuwZ3wt+/I8p2pjtc5CMNueMbPDt7tZnPko3P9cZ
+         LgokeojIEdNgpf5m0Ws0GISyPHC2OQZndt/jugOqeDDR7aRGaISXtzzKuGBw7LfTASpc
+         I5+Gw9fGf/rwXL3gbmfJGL4R/PnjJAOHkkkSCTPnyLpPf/Vgm6JspOSpnmO/uaEWTnDe
+         cxEXVWCWvkLkw+6A7khzRKgzf4iOqZoaKuDvQHMxU5qeL9xw4z2o726ZAdiEAF4Bxr9v
+         Snyw==
+X-Gm-Message-State: AJIora/fOU3jzpl4U6sk0RwR6VySGXwlA+wHvIZwS8Vbto8zGY0JkeGU
+        b58sR4QsSw582bzgcQA/c3FMIgZAI0I9aaJWg7O88w==
+X-Google-Smtp-Source: AGRyM1s6B0qb0T2WacCoWhhkywiiU+ZvFODg5mDtSwgELuEdOO1P7hQRTSX7NI4gasI6mKDBJY57NrqOabVTnciF7VA=
+X-Received: by 2002:adf:f688:0:b0:215:6e4d:4103 with SMTP id
+ v8-20020adff688000000b002156e4d4103mr802713wrp.372.1655140320646; Mon, 13 Jun
+ 2022 10:12:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v11 7/8] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
+References: <20220606222058.86688-1-yosryahmed@google.com> <20220606222058.86688-2-yosryahmed@google.com>
+ <bdfea446-623c-d423-673f-496b3725ec2c@intel.com>
+In-Reply-To: <bdfea446-623c-d423-673f-496b3725ec2c@intel.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 13 Jun 2022 10:11:23 -0700
+Message-ID: <CAJD7tkbUXb7qBm1GAMDr29DcsC90_bPzwffkdtAu_Na+inVzVg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     "Huang, Shaoqin" <shaoqin.huang@intel.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20220510153413.400020-1-longman@redhat.com>
- <20220510153413.400020-8-longman@redhat.com>
- <YqYnQ4U4t6j/3UaL@slm.duckdns.org>
- <404171dc-0da3-21f2-5003-9718f875e967@redhat.com>
- <YqarMyNo9oHxhZFh@slm.duckdns.org>
- <8d7ddb5a-0d0b-3f2e-e049-900360e95fc6@redhat.com>
-In-Reply-To: <8d7ddb5a-0d0b-3f2e-e049-900360e95fc6@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,46 +87,69 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/13/22 09:18, Waiman Long wrote:
-> On 6/12/22 23:12, Tejun Heo wrote:
->> Hello,
->>
->> On Sun, Jun 12, 2022 at 11:02:38PM -0400, Waiman Long wrote:
->>> That is the behavior enforced by setting the CPU_EXCLUSIVE bit in 
->>> cgroup v1.
->>> I haven't explicitly change it to make it different in cgroup v2. 
->>> The major
->>> reason is that I don't want change to one cpuset to affect a sibling
->>> partition as it may make the code more complicate to validate if a 
->>> partition
->>> is valid.
->> If at all possible, I'd really like to avoid situations where a 
->> parent can't
->> withdraw resources due to something that a descendant does.
+On Sun, Jun 12, 2022 at 8:18 PM Huang, Shaoqin <shaoqin.huang@intel.com> wrote:
 >
-> No, it doesn't affect parent at all. It just limit whats the siblings 
-> can do due to their mutual constraint. If this is what the confusion 
-> is about, I will try to reword the doc text.
+>
+>
+> On 6/7/2022 6:20 AM, Yosry Ahmed wrote:
+> > Add NR_SECONDARY_PAGETABLE stat to count secondary page table uses, e.g.
+> > KVM mmu. This provides more insights on the kernel memory used
+> > by a workload.
+> >
+> > This stat will be used by subsequent patches to count KVM mmu
+> > memory usage.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >   Documentation/admin-guide/cgroup-v2.rst | 5 +++++
+> >   Documentation/filesystems/proc.rst      | 4 ++++
+> >   drivers/base/node.c                     | 2 ++
+> >   fs/proc/meminfo.c                       | 2 ++
+> >   include/linux/mmzone.h                  | 1 +
+> >   mm/memcontrol.c                         | 1 +
+> >   mm/page_alloc.c                         | 6 +++++-
+> >   mm/vmstat.c                             | 1 +
+> >   8 files changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> > index 69d7a6983f781..307a284b99189 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1312,6 +1312,11 @@ PAGE_SIZE multiple when read back.
+> >         pagetables
+> >                   Amount of memory allocated for page tables.
+> >
+> > +       sec_pagetables
+> > +             Amount of memory allocated for secondary page tables,
+> > +             this currently includes KVM mmu allocations on x86
+> > +             and arm64.
+> > +
+> >         percpu (npn)
+> >               Amount of memory used for storing per-cpu kernel
+> >               data structures.
+> > diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> > index 061744c436d99..894d6317f3bdc 100644
+> > --- a/Documentation/filesystems/proc.rst
+> > +++ b/Documentation/filesystems/proc.rst
+> > @@ -973,6 +973,7 @@ You may not have all of these fields.
+> >       SReclaimable:   159856 kB
+> >       SUnreclaim:     124508 kB
+> >       PageTables:      24448 kB
+> > +    SecPageTables:    0 kB
+> >       NFS_Unstable:        0 kB
+> >       Bounce:              0 kB
+> >       WritebackTmp:        0 kB
+> > @@ -1067,6 +1068,9 @@ SUnreclaim
+> >   PageTables
+> >                 amount of memory dedicated to the lowest level of page
+> >                 tables.
+> > +SecPageTables
+> > +           amount of memory dedicated to secondary page tables, this
+> > +           currently includes KVM mmu allocations on x86 and arm64.
+>
+> Just a notice. This patch in the latest 5.19.0-rc2+ have a conflict in
+> Documentation/filesystems/proc.rst file. But that's not a problem.
 
-I am planning to make the following change to the documentation patch. 
-Please let me know if that can clarify the confusion, if any.
+Thanks for pointing this out. Let me know if a rebase and resend is necessary.
 
-Thanks,
-Longman
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst 
-b/Documentation/admin-guid>
-index 9184a09e0fc9..9cbfa25dab97 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2176,7 +2175,8 @@ Cpuset Interface Files
-
-         For a valid partition root or an invalid partition root with
-         the exclusivity rule enabled, changes made to "cpuset.cpus"
--       that violate the exclusivity rule will not be allowed.
-+       that violate the exclusivity rule with its siblings will not
-+       be allowed.
-
-         A valid non-root parent partition may distribute out all its CPUs
-         to its child partitions when there is no task associated with it.
-
+<snip>
