@@ -2,40 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FD854ADE6
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jun 2022 12:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C43754AF92
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jun 2022 13:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiFNKGX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Jun 2022 06:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S241889AbiFNLxw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Jun 2022 07:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242144AbiFNKGH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jun 2022 06:06:07 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3152D1F1;
-        Tue, 14 Jun 2022 03:06:05 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1655201164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GTMScp+nfQrh9LZR7Rnix9tWdvmjglsycVb9AO//NiI=;
-        b=ohrUS6cI+TdOOoC7vg7EsWgZfarq4Fbd6sazsDnmVsMnwPryoLRA63EWd6S4bA/RbOKWJ1
-        6ngjdFhrFlixB6SUDdwg+DL8ZUGtQ3262duv4Xh4xrhjlqManyQmc7MF+ERVxTDDG/80Xf
-        Vr/66fEpj6JFDgtjaOySUGph8xaFArI=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH] block: update comment for blkcg_init_queue
-Date:   Tue, 14 Jun 2022 18:05:56 +0800
-Message-Id: <20220614100556.20899-1-guoqing.jiang@linux.dev>
+        with ESMTP id S241585AbiFNLxu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jun 2022 07:53:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E3B366BA;
+        Tue, 14 Jun 2022 04:53:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D43451F953;
+        Tue, 14 Jun 2022 11:53:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655207627; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=enED3+mwpyEj3HYd1xYYpNVTbgUm7frMywot5/XVq7k=;
+        b=MKNAdTBQZJDywcGSMhM7eKVDS9hIFTqkt9SPhb/KumTuThcjnWgew5g35qS1WfIN35FvMH
+        +jmoTfwK7Sml47xjNTXbVEOEhtfUIjQJ3l2yz4rYR/B37fK1VH4zw9FonngffORHliRegZ
+        t1BTLwB3rgE1pXUmN+ycYXWzqtGXp5U=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53F0D139EC;
+        Tue, 14 Jun 2022 11:53:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OdGjE8t2qGJdfAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 14 Jun 2022 11:53:47 +0000
+Date:   Tue, 14 Jun 2022 13:53:45 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v11 7/8] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20220614115345.GA6771@blackbody.suse.cz>
+References: <20220510153413.400020-1-longman@redhat.com>
+ <20220510153413.400020-8-longman@redhat.com>
+ <YqYnQ4U4t6j/3UaL@slm.duckdns.org>
+ <404171dc-0da3-21f2-5003-9718f875e967@redhat.com>
+ <YqarMyNo9oHxhZFh@slm.duckdns.org>
+ <20220613142452.GB6910@blackbody.suse.cz>
+ <YqdzuSQuAeiPXQvy@slm.duckdns.org>
+ <20220613175548.GB21665@blackbody.suse.cz>
+ <Yqd7WMFj6AEyV3Cy@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3V7upXqbjpZ4EhLz"
+Content-Disposition: inline
+In-Reply-To: <Yqd7WMFj6AEyV3Cy@slm.duckdns.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,28 +82,41 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-It was called from __alloc_disk_node since commit 1059699f87eb ("block:
-move blkcg initialization/destroy into disk allocation/release handler).
-Let's change the comment accordingly.
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
- block/blk-cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--3V7upXqbjpZ4EhLz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 764e740b0c0f..48ea9919e3ce 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1256,7 +1256,7 @@ static int blkcg_css_online(struct cgroup_subsys_state *css)
-  * blkcg_init_queue - initialize blkcg part of request queue
-  * @q: request_queue to initialize
-  *
-- * Called from blk_alloc_queue(). Responsible for initializing blkcg
-+ * Called from __alloc_disk_node(). Responsible for initializing blkcg
-  * part of new request_queue @q.
-  *
-  * RETURNS:
--- 
-2.31.1
+On Mon, Jun 13, 2022 at 08:00:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> Yeah, I don't know why this part is different from any other errors that the
+> parent can make.
 
+It's different because a write to parent's cpuset.cpus is independent of
+whether cpuset.cpus of its children are exclusive or not.
+In an extreme case the children may be non-exclusive
+
+    parent	cpuset.cpus=0-3 //   valid partition
+    `- child_1	cpuset.cpus=0-1	// invalid partition
+    `- child_2	cpuset.cpus=1-2 // invalid partition
+
+but the parent can still be a valid partition (thanks to cpu no. 3 in
+the example above).
+
+Do I miss anything?
+
+Thanks,
+Michal
+
+--3V7upXqbjpZ4EhLz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYqh2xwAKCRAkDQmsBEOq
+uYpOAQCf85csUj8650NOSj8/SYGx1Rke2TaokzgsJH1Dl9CDigD9GRFyEDBK4gUH
+O3ICbyDSHByTv2ncDcIRjpX6QGMWSAM=
+=mVZv
+-----END PGP SIGNATURE-----
+
+--3V7upXqbjpZ4EhLz--
