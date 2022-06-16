@@ -2,79 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C0654DE90
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 12:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66C554DF42
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 12:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359757AbiFPKCU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jun 2022 06:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        id S229479AbiFPKjY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jun 2022 06:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbiFPKCU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 06:02:20 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465485C875
-        for <cgroups@vger.kernel.org>; Thu, 16 Jun 2022 03:02:19 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-317710edb9dso9334277b3.0
-        for <cgroups@vger.kernel.org>; Thu, 16 Jun 2022 03:02:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
-        b=im/ZYAbaiwMmTl007UtG2Mzgn+aLC1QQFGl4tkRyYYRy7NWdW08nJiEtfIMLjlnqzL
-         zRtAKjKIM0QpRHCnscWeujsZoWuHRijmsV2rXyHgtdpW2/O/pS5K8oJmfWfLo1k1gBP6
-         wtQ8C3ZF64NkRso/Tk2Pb7uTgQ6LGMShw+KptXXQQbbS3amf6LnnsujwD1xQQ0+eG3Gz
-         oU4s6VZ0KAIHJe2Mc4jGse0WeTKmD0K6g5gXg7jAj3QXgftcIfGdRA5xHwlT4OVHWalv
-         D2e5spKWmTOPLHVtNi5I+/ySeqpVLLPdrlKKY2Lr/KkWRrIviF+8+zjM0+ZZXEjzYwKW
-         v6MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=lLG88JCPgF7Yhflf4FNi4GQedsSNMbwmPtgneUr9Mu0=;
-        b=O6TvjWV5n+kbjG2M68ZYnyzUaJqj/H2Wupj+dvFF2h1r7/fCfreKccF3BMgxOlu+Sx
-         z64RsFw1HBm6W8E7Yddvs2750xPzbXnIOukCPgT6dUAg+A6m9YErGi3ztJD0zXTLc5G0
-         bSNJRmy+4+pA3BmveDxfg6hFs+zPmgvvjGPcpgIaqGYKZtwo/O/78kp5oZARboIM+n67
-         rrhyJDAVodrUQyz93JftMSvAXewwjzUC/1UHYhCwHUcuq9YI25bVSJ6i20pIgC6SOdSe
-         RWqbjYAOfaLtDRC4FeOE2RaxzFGx7Db/EBMH+Nd54a0yo1iHxz9HXnvhn5vnBKMUvbRc
-         2D1w==
-X-Gm-Message-State: AJIora+jFBMERDNud4rijW8SNvOSjZOQLjhoTP4Tipv4Gvw6nFC3oHgT
-        88TvhRBDg3nsh7Lu/4Po9QY7xMrNqOAHlaUGrRk=
-X-Google-Smtp-Source: AGRyM1tvjJHtAefwAtNNFpmFBZex0LSOH58L6c5ShNsEUo/rYmZQBVjl8Z/MQMy4Jge7DkTta6gnXgiflacWGCGxpiE=
-X-Received: by 2002:a81:1341:0:b0:30c:3a7e:65e9 with SMTP id
- 62-20020a811341000000b0030c3a7e65e9mr4792110ywt.7.1655373738493; Thu, 16 Jun
- 2022 03:02:18 -0700 (PDT)
+        with ESMTP id S230394AbiFPKjX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 06:39:23 -0400
+Received: from zg8tmtyylji0my4xnjqunzqa.icoremail.net (zg8tmtyylji0my4xnjqunzqa.icoremail.net [162.243.164.74])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 27AB75B3EC;
+        Thu, 16 Jun 2022 03:39:18 -0700 (PDT)
+Received: from fedora33.wangsu.com (unknown [59.61.78.232])
+        by app2 (Coremail) with SMTP id SyJltAAnHAgyCKtikEYEAA--.7274S2;
+        Thu, 16 Jun 2022 18:38:49 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linf@wangsu.com
+Subject: [PATCH] cgroup.c: add helper __cset_cgroup_from_root to cleanup duplicated codes
+Date:   Thu, 16 Jun 2022 18:38:30 +0800
+Message-Id: <20220616103830.197458-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a05:7110:808e:b0:184:acf6:584a with HTTP; Thu, 16 Jun 2022
- 03:02:18 -0700 (PDT)
-Reply-To: clmloans9@gmail.com
-From:   MR ANTHONY EDWARD <fizzypeace01@gmail.com>
-Date:   Thu, 16 Jun 2022 11:02:18 +0100
-Message-ID: <CALtVAbeCjx1cBxrNbOJa_Qq+nvdehvjazNn2+JZ-BhsfsQXy9A@mail.gmail.com>
-Subject: DARLEHENSANGEBOT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: SyJltAAnHAgyCKtikEYEAA--.7274S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFykWw4fZFyfWrWkAF43Jrb_yoW8tF4fpF
+        srArZ3tw4rW3W5Ww4Sq3y0va4Sgay8Xw17KrW7Zw4rAr1xArWYqF1xu34fXryYyasrG3W3
+        KF4YkrWSgw1IqaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
+        xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r4j6F4UMcIj6x8ErcxFaVAv
+        8VW8GwAv7VCY1x0262k0Y48FwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2
+        IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8twCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+        fUFdb1DUUUU
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=20
-Ben=C3=B6tigen Sie ein Gesch=C3=A4ftsdarlehen oder ein Darlehen jeglicher A=
-rt?
-Wenn ja, kontaktieren Sie uns
+No funtionality change, but save us some lines.
 
-*Vollst=C3=A4ndiger Name:
-* Ben=C3=B6tigte Menge:
-*Leihdauer:
-*Mobiltelefon:
-*Land:
+Signed-off-by: Lin Feng <linf@wangsu.com>
+---
+ kernel/cgroup/cgroup.c | 58 ++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1779ccddb734..a8a46eb66f21 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1376,6 +1376,31 @@ static void cgroup_destroy_root(struct cgroup_root *root)
+ 	cgroup_free_root(root);
+ }
+ 
++static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
++					    struct cgroup_root *root)
++{
++	struct cgroup *res_cgroup = NULL;
++
++	if (cset == &init_css_set) {
++		res_cgroup = &root->cgrp;
++	} else if (root == &cgrp_dfl_root) {
++		res_cgroup = cset->dfl_cgrp;
++	} else {
++		struct cgrp_cset_link *link;
++
++		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
++			struct cgroup *c = link->cgrp;
++
++			if (c->root == root) {
++				res_cgroup = c;
++				break;
++			}
++		}
++	}
++
++	return res_cgroup;
++}
++
+ /*
+  * look up cgroup associated with current task's cgroup namespace on the
+  * specified hierarchy
+@@ -1391,22 +1416,8 @@ current_cgns_cgroup_from_root(struct cgroup_root *root)
+ 	rcu_read_lock();
+ 
+ 	cset = current->nsproxy->cgroup_ns->root_cset;
+-	if (cset == &init_css_set) {
+-		res = &root->cgrp;
+-	} else if (root == &cgrp_dfl_root) {
+-		res = cset->dfl_cgrp;
+-	} else {
+-		struct cgrp_cset_link *link;
+-
+-		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+-			struct cgroup *c = link->cgrp;
++	res = __cset_cgroup_from_root(cset, root);
+ 
+-			if (c->root == root) {
+-				res = c;
+-				break;
+-			}
+-		}
+-	}
+ 	rcu_read_unlock();
+ 
+ 	BUG_ON(!res);
+@@ -1422,22 +1433,7 @@ static struct cgroup *cset_cgroup_from_root(struct css_set *cset,
+ 	lockdep_assert_held(&cgroup_mutex);
+ 	lockdep_assert_held(&css_set_lock);
+ 
+-	if (cset == &init_css_set) {
+-		res = &root->cgrp;
+-	} else if (root == &cgrp_dfl_root) {
+-		res = cset->dfl_cgrp;
+-	} else {
+-		struct cgrp_cset_link *link;
+-
+-		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+-			struct cgroup *c = link->cgrp;
+-
+-			if (c->root == root) {
+-				res = c;
+-				break;
+-			}
+-		}
+-	}
++	res = __cset_cgroup_from_root(cset, root);
+ 
+ 	BUG_ON(!res);
+ 	return res;
+-- 
+2.31.1
+
