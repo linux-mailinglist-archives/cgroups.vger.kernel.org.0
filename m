@@ -2,65 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF6F54EA35
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 21:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D06D54EA42
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 21:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378353AbiFPTfO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jun 2022 15:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
+        id S1378430AbiFPTis (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jun 2022 15:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377357AbiFPTfN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 15:35:13 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9145C57B01;
-        Thu, 16 Jun 2022 12:35:12 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id z14so2154568pgh.0;
-        Thu, 16 Jun 2022 12:35:12 -0700 (PDT)
+        with ESMTP id S1378419AbiFPTir (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 15:38:47 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D91957159;
+        Thu, 16 Jun 2022 12:38:47 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id e9so2205287pju.5;
+        Thu, 16 Jun 2022 12:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=a4KSlJmtWZkjiLfN9g3so1P7qbrnH5UxDi6TOibKZrg=;
-        b=pTI+QTB9FI8Yf2Lnf49gZQgDsuzRXp2tqdWSqdZaO3ef+cvD0oHeUJiaZ+6C2Pve3y
-         gEJ3Q3vGopGnx8wzqSe8eBoEej89TmAy4RS9Lir82ibduS4MvW6pMe0UjsHPebCh4Na9
-         6QvGYjrJ8B7zmkZap+DXhQF4/62bkYyQLchUis/jHLymP8zQtjbnluu5K+weZ0uoZNdm
-         dLo9r45NKoe4TD/1MECXonhVHlYDqLag4sD7UGLzttnJk+tTt7XO9nf8clTh0wCXbPIN
-         RjpZC1h8LlUbKx2i4Awvn1E1q+0F4+nRsrNuhYE6ylsPjIMnTJbgupQkSYuJTCKPdN9n
-         EtFw==
+        bh=3mANjjY0moGxiXZnHLX+UHOhvERe+q5moP+dgBuCZ9M=;
+        b=F9CvRl3u0bPQkegn8gRDzTFpWVRsfPRpQInrBIe0BVAlITR/VWYRRA4RaFrE1lJ1BN
+         QxOPr5FPEK7ztGZKRsasgt/szMabvzttgNQVb6YRE/J+GWn8Stg4Vse23xGOe+nL0Vi+
+         oiTdkNApvaHhAmQdM+bRBQxjIvFtyNw8XoGkJ3auyWS3Je5pWqzGomJkA9LODLwhvxtC
+         lgo3KyUHcvXBM8/Ac5BQIq8v9JKGO45rDaVaEWSRRimbJP0SbQaCElw22ENg/zyshET3
+         +xY//2BI38BXicqIzmJGJGA2wyWUMOYoi858u/xLbGZkFFq3N1UYF+2HDkHv+i3CUNjp
+         AFUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=a4KSlJmtWZkjiLfN9g3so1P7qbrnH5UxDi6TOibKZrg=;
-        b=UyD2ZfN17HCHVXM3mULyWdhuTl5ZEfFThp8iyA1fmh4APktk7USmuFnj2bK4T4LRQK
-         yQ3uVl2JhMJLvnNOo9TiQyoWEhyBuhp5zeqdicUFo4jkjVwjXUz3otAbVbfuXJQBq8YT
-         nx8rMg1NnhBhtyBRc1pB/73h6Rivsay+gbIfwh8e6ZAu5Pq7e7yvss+mPuDNWBL32zUC
-         AWYsOJLOu+CWn47sSJKlgK7S/SHOjmKluhzeSJsvP1+W1WFLIepHJZJvvK+3S3ke2U9j
-         3rrTUUpqTi7nNYtNB3uesutR/e7rOYa25MwcFG6ID9WaB8ST8xKNJftQkJ3c0Vf8k6H6
-         M3xA==
-X-Gm-Message-State: AJIora9290hgLWnLiKgo7T68qAmHX+IUNa06CN/fzsp0yEnr5g/cc+sI
-        lJdlNKS12Jm91r9QrLDl07Q=
-X-Google-Smtp-Source: AGRyM1sGCAwL+H4L4Br2Fey7tXGFqw+O7li6846XUkvrmrgcUemMR8GH8Q8jlAlv32fUzMcTYf7xQQ==
-X-Received: by 2002:a63:87c3:0:b0:401:eaf0:ff18 with SMTP id i186-20020a6387c3000000b00401eaf0ff18mr5866531pge.153.1655408111909;
-        Thu, 16 Jun 2022 12:35:11 -0700 (PDT)
+        bh=3mANjjY0moGxiXZnHLX+UHOhvERe+q5moP+dgBuCZ9M=;
+        b=oTXBPCCPqpyfjO+jOAFbgFaPE+OUtMYhPNjFUrgocOf2vMQqzLCU4LGLfv87Sn4ttv
+         wctLIqHQdh/N2gpjZc1IBPleTdF0ytJh2TOgo95SsK+su3O70A4g5pkZKMVRQpFZPapi
+         qjMsAAilgtL1mZuyRZEk54tpMJtjx67IswF185XwkAaNhEiXiCgqL6KyJJ6oFZqlgORS
+         Ogxusm7LvWP1vXAWdmFP/3PkLP5lDumGTddaJ0LypEJKatOiM9gZAUlR/0aTYV8ZTfPb
+         /S2Xlli8v3J4ZcHixNzUAHhYLz3Zq0MfOmrwA9vlalV9cSmgNgTnrYgSCtoz5TvwBu2/
+         y3gw==
+X-Gm-Message-State: AJIora+TVWPK+AqDL4PPUidmmu7yniakuL5Ncg5MD2nnOsQWImCtGemm
+        JeOrSqBULZAR/SK3nThVGsQ=
+X-Google-Smtp-Source: AGRyM1sK5DS6R3nuQSXiuNFAv5tzrx8Y+NYiYuVnj2DYE5e2vGjO1uAj8Df9AuNCkIKdsfJrOS9lHA==
+X-Received: by 2002:a17:902:ea03:b0:166:ab55:d7ee with SMTP id s3-20020a170902ea0300b00166ab55d7eemr5940058plg.103.1655408326629;
+        Thu, 16 Jun 2022 12:38:46 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::4:330c])
-        by smtp.gmail.com with ESMTPSA id c9-20020a63a409000000b003faf4acac63sm2162064pgf.13.2022.06.16.12.35.11
+        by smtp.gmail.com with ESMTPSA id s2-20020a17090302c200b00163fa4b7c12sm1882140plk.34.2022.06.16.12.38.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jun 2022 12:35:11 -0700 (PDT)
+        Thu, 16 Jun 2022 12:38:46 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 16 Jun 2022 09:35:09 -1000
+Date:   Thu, 16 Jun 2022 09:38:44 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Lin Feng <linf@wangsu.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup.c: add helper __cset_cgroup_from_root to cleanup
- duplicated codes
-Message-ID: <YquF7TzuCjqP8aGZ@slm.duckdns.org>
-References: <20220616103830.197458-1-linf@wangsu.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     paulmck@kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, brauner@kernel.org, hannes@cmpxchg.org,
+        shisiyuan <shisiyuan19870131@gmail.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH cgroup/for-5.19-fixes] cgroup: Use separate src/dst nodes
+ when preloading css_sets for migration
+Message-ID: <YquGxN1IWLegNyh6@slm.duckdns.org>
+References: <549de740-1356-7ad2-3ee5-c52bc355fd99@quicinc.com>
+ <Yh+RGIJ0f3nrqIiN@slm.duckdns.org>
+ <8d21e655-4ce9-c7b3-2010-e484161bdbe9@quicinc.com>
+ <20220516203417.GY1790663@paulmck-ThinkPad-P17-Gen-1>
+ <9a93cf2d-0efe-5a46-dcd5-7dcd8f173188@quicinc.com>
+ <Yqe4BjMZRohur3UM@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616103830.197458-1-linf@wangsu.com>
+In-Reply-To: <Yqe4BjMZRohur3UM@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -72,12 +80,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 06:38:30PM +0800, Lin Feng wrote:
-> No funtionality change, but save us some lines.
-> 
-> Signed-off-by: Lin Feng <linf@wangsu.com>
+On Mon, Jun 13, 2022 at 12:19:50PM -1000, Tejun Heo wrote:
+> Each cset (css_set) is pinned by its tasks. When we're moving tasks around
+> across csets for a migration, we need to hold the source and destination
+> csets to ensure that they don't go away while we're moving tasks about. This
+> is done by linking cset->mg_preload_node on either the
+> mgctx->preloaded_dst_csets or mgctx->preloaded_dst_csets list. Using the
+> same cset->mg_preload_node for both the src and dst lists was deemed okay as
+> a cset can't be both the source and destination at the same time.
 
-Applied to cgroup/for-5.20.
+Applied to cgroup/for-5.19-fixes w/ patch description fixed.
 
 Thanks.
 
