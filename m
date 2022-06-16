@@ -2,165 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1447054E191
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 15:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF6F54EA35
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jun 2022 21:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbiFPNNh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jun 2022 09:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
+        id S1378353AbiFPTfO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jun 2022 15:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376906AbiFPNNd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 09:13:33 -0400
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com [199.106.114.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938352DAA3;
-        Thu, 16 Jun 2022 06:13:32 -0700 (PDT)
+        with ESMTP id S1377357AbiFPTfN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jun 2022 15:35:13 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9145C57B01;
+        Thu, 16 Jun 2022 12:35:12 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id z14so2154568pgh.0;
+        Thu, 16 Jun 2022 12:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1655385212; x=1686921212;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=g4hwdW93fGoTn7LgrmQ5ZdqeG0AbiIa9tqo2kkr2L28=;
-  b=ywduekpZNitFFHDaSdnD6rtHppOJeLe1jKlXzU5OQzBFyPPt65vOeO6t
-   jJu+RAiUqw0uHXFErlC64RzgOo/SxaRMcinlqmR0sKSXs2dtq7uAG4pYK
-   TqmZuThZfD7gyO+0173CtUVWESk1ZaaQmSmvkl0LY17Ef0LC3mRrBGlRQ
-   0=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 16 Jun 2022 06:13:32 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 06:13:32 -0700
-Received: from [10.216.41.43] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.47.97.222) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Thu, 16 Jun
- 2022 06:13:29 -0700
-Message-ID: <b4393af3-d2ec-85b5-4be8-d5abd8847499@quicinc.com>
-Date:   Thu, 16 Jun 2022 18:43:24 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a4KSlJmtWZkjiLfN9g3so1P7qbrnH5UxDi6TOibKZrg=;
+        b=pTI+QTB9FI8Yf2Lnf49gZQgDsuzRXp2tqdWSqdZaO3ef+cvD0oHeUJiaZ+6C2Pve3y
+         gEJ3Q3vGopGnx8wzqSe8eBoEej89TmAy4RS9Lir82ibduS4MvW6pMe0UjsHPebCh4Na9
+         6QvGYjrJ8B7zmkZap+DXhQF4/62bkYyQLchUis/jHLymP8zQtjbnluu5K+weZ0uoZNdm
+         dLo9r45NKoe4TD/1MECXonhVHlYDqLag4sD7UGLzttnJk+tTt7XO9nf8clTh0wCXbPIN
+         RjpZC1h8LlUbKx2i4Awvn1E1q+0F4+nRsrNuhYE6ylsPjIMnTJbgupQkSYuJTCKPdN9n
+         EtFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=a4KSlJmtWZkjiLfN9g3so1P7qbrnH5UxDi6TOibKZrg=;
+        b=UyD2ZfN17HCHVXM3mULyWdhuTl5ZEfFThp8iyA1fmh4APktk7USmuFnj2bK4T4LRQK
+         yQ3uVl2JhMJLvnNOo9TiQyoWEhyBuhp5zeqdicUFo4jkjVwjXUz3otAbVbfuXJQBq8YT
+         nx8rMg1NnhBhtyBRc1pB/73h6Rivsay+gbIfwh8e6ZAu5Pq7e7yvss+mPuDNWBL32zUC
+         AWYsOJLOu+CWn47sSJKlgK7S/SHOjmKluhzeSJsvP1+W1WFLIepHJZJvvK+3S3ke2U9j
+         3rrTUUpqTi7nNYtNB3uesutR/e7rOYa25MwcFG6ID9WaB8ST8xKNJftQkJ3c0Vf8k6H6
+         M3xA==
+X-Gm-Message-State: AJIora9290hgLWnLiKgo7T68qAmHX+IUNa06CN/fzsp0yEnr5g/cc+sI
+        lJdlNKS12Jm91r9QrLDl07Q=
+X-Google-Smtp-Source: AGRyM1sGCAwL+H4L4Br2Fey7tXGFqw+O7li6846XUkvrmrgcUemMR8GH8Q8jlAlv32fUzMcTYf7xQQ==
+X-Received: by 2002:a63:87c3:0:b0:401:eaf0:ff18 with SMTP id i186-20020a6387c3000000b00401eaf0ff18mr5866531pge.153.1655408111909;
+        Thu, 16 Jun 2022 12:35:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:330c])
+        by smtp.gmail.com with ESMTPSA id c9-20020a63a409000000b003faf4acac63sm2162064pgf.13.2022.06.16.12.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 12:35:11 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 16 Jun 2022 09:35:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Lin Feng <linf@wangsu.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] cgroup.c: add helper __cset_cgroup_from_root to cleanup
  duplicated codes
-Content-Language: en-US
-To:     Lin Feng <linf@wangsu.com>, <tj@kernel.org>,
-        <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>
-CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Message-ID: <YquF7TzuCjqP8aGZ@slm.duckdns.org>
 References: <20220616103830.197458-1-linf@wangsu.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20220616103830.197458-1-linf@wangsu.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.47.97.222)
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
-
-On 6/16/2022 4:08 PM, Lin Feng wrote:
+On Thu, Jun 16, 2022 at 06:38:30PM +0800, Lin Feng wrote:
 > No funtionality change, but save us some lines.
 > 
 > Signed-off-by: Lin Feng <linf@wangsu.com>
-> ---
->   kernel/cgroup/cgroup.c | 58 ++++++++++++++++++++----------------------
->   1 file changed, 27 insertions(+), 31 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 1779ccddb734..a8a46eb66f21 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1376,6 +1376,31 @@ static void cgroup_destroy_root(struct cgroup_root *root)
->   	cgroup_free_root(root);
->   }
->   
-> +static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
-> +					    struct cgroup_root *root)
-> +{
-> +	struct cgroup *res_cgroup = NULL;
-> +
-> +	if (cset == &init_css_set) {
-> +		res_cgroup = &root->cgrp;
-> +	} else if (root == &cgrp_dfl_root) {
-> +		res_cgroup = cset->dfl_cgrp;
-> +	} else {
-> +		struct cgrp_cset_link *link;
-> +
-> +		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-> +			struct cgroup *c = link->cgrp;
-> +
-> +			if (c->root == root) {
-> +				res_cgroup = c;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +
-> +	return res_cgroup;
-> +}
-> +
->   /*
->    * look up cgroup associated with current task's cgroup namespace on the
->    * specified hierarchy
-> @@ -1391,22 +1416,8 @@ current_cgns_cgroup_from_root(struct cgroup_root *root)
->   	rcu_read_lock();
->   
->   	cset = current->nsproxy->cgroup_ns->root_cset;
-> -	if (cset == &init_css_set) {
-> -		res = &root->cgrp;
-> -	} else if (root == &cgrp_dfl_root) {
-> -		res = cset->dfl_cgrp;
-> -	} else {
-> -		struct cgrp_cset_link *link;
-> -
-> -		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-> -			struct cgroup *c = link->cgrp;
-> +	res = __cset_cgroup_from_root(cset, root);
->   
-> -			if (c->root == root) {
-> -				res = c;
-> -				break;
-> -			}
-> -		}
-> -	}
->   	rcu_read_unlock();
->   
->   	BUG_ON(!res);
-> @@ -1422,22 +1433,7 @@ static struct cgroup *cset_cgroup_from_root(struct css_set *cset,
->   	lockdep_assert_held(&cgroup_mutex);
->   	lockdep_assert_held(&css_set_lock);
->   
-> -	if (cset == &init_css_set) {
-> -		res = &root->cgrp;
-> -	} else if (root == &cgrp_dfl_root) {
-> -		res = cset->dfl_cgrp;
-> -	} else {
-> -		struct cgrp_cset_link *link;
-> -
-> -		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-> -			struct cgroup *c = link->cgrp;
-> -
-> -			if (c->root == root) {
-> -				res = c;
-> -				break;
-> -			}
-> -		}
-> -	}
-> +	res = __cset_cgroup_from_root(cset, root);
->   
->   	BUG_ON(!res);
->   	return res;
 
+Applied to cgroup/for-5.20.
 
-Thanks for the patch
-Liked the idea.
+Thanks.
 
-Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
-
--Mukesh
+-- 
+tejun
