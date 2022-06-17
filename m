@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC4254F2AC
+	by mail.lfdr.de (Postfix) with ESMTP id 57BF954F2AD
 	for <lists+cgroups@lfdr.de>; Fri, 17 Jun 2022 10:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380549AbiFQITi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jun 2022 04:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        id S1380384AbiFQITj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jun 2022 04:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380384AbiFQITg (ORCPT
+        with ESMTP id S1380522AbiFQITg (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jun 2022 04:19:36 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6A368315
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A957B68328
         for <cgroups@vger.kernel.org>; Fri, 17 Jun 2022 01:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1655453975; x=1686989975;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=QkbnNOkfJjk6SPCmmGAqBMkFQDl4YtJg+u0+29qGYYc=;
-  b=KkuOnLzZtJaCtJJ6Hf9jc9Qk/JVHkz1Qh7+e2wWK6TqL2kKULfmC5VGO
-   NX+pun5gBasWxmomalOG6z/wU/S6TbzPGqLGJcJgV7wSzPY/bxU8+WCme
-   kA7NRaV7p+FE/gqHNo60tI3hD/Vfkky7EpAAdGJmy/gyiPyOf49PzT39O
-   j8/OJCF98NSKTHMQYl4u/08d/6PQsVfTEiROm0aCaLTMzPeUuKIpWrKzB
-   52Gnc0cZYZewq2tw/FXkXUAbCKKb6Y8G0zVcEhnE1TwfPG5E/WcjlRI6o
-   FFgq4fMbrzJDUS7BdNnMIHU0uJYfJiIAe+DPQkU1wRLIdAGZaflv7F4e/
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="365803478"
+  bh=6YnytWROV/tIU1qZhTUioFW3IhwzXL1cUBSQEM/9204=;
+  b=mVjfBt6tL2kGVsgSnU21sLcZBH9OiXydX7TNG1G49WLfEzgpTvOnvzz8
+   CN7FMrNwdra6k3Mol52nlPUQR9cUmPVleHupPEHKiqIE+sgZKp8FZRH+7
+   9eVQrb4v671TEsmlctXAcuSseYgAPWVezgT1pKBWJhfwPgDspI9REft31
+   qKO9L5rUgGcOHAtB2ftHlJggB9DAemDD6WXlTjD0YsKWzckG/tHjTEpdB
+   ZAyMmXlRu+YVaAdDDjSlJl4sY2fMuLSBFf/O/WfhbeaH4r8E8hMbvqrbD
+   tfrcAkMI2TkArj2v+XMYrGMo3/BcXeSvi8BU4iz8A8QFZv5g2zEhJDbv3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="341106633"
 X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="365803478"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2022 01:19:35 -0700
+   d="scan'208";a="341106633"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2022 01:19:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="675401430"
+   d="scan'208";a="831946771"
 Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Jun 2022 01:19:34 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 17 Jun 2022 01:19:33 -0700
 Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1o27CX-000PF9-Cj;
+        id 1o27CX-000PF7-C9;
         Fri, 17 Jun 2022 08:19:33 +0000
-Date:   Fri, 17 Jun 2022 16:18:33 +0800
+Date:   Fri, 17 Jun 2022 16:19:19 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 507c8695c65aeea1e9ff67a76961c201dbd8e124
-Message-ID: <62ac38d9.r/v9dlnOBzwcCRLV%lkp@intel.com>
+Subject: [tj-cgroup:for-5.20] BUILD SUCCESS
+ e210a89f5b07680fe21d21e846e6817346c5ba3b
+Message-ID: <62ac3907.GC+sHff7oqkxRvOc%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -62,10 +62,10 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 507c8695c65aeea1e9ff67a76961c201dbd8e124  Merge branch 'for-5.19-fixes' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.20
+branch HEAD: e210a89f5b07680fe21d21e846e6817346c5ba3b  cgroup.c: add helper __cset_cgroup_from_root to cleanup duplicated codes
 
-elapsed time: 726m
+elapsed time: 728m
 
 configs tested: 120
 configs skipped: 3
