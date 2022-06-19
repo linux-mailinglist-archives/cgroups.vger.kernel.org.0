@@ -2,28 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F626550CD3
-	for <lists+cgroups@lfdr.de>; Sun, 19 Jun 2022 21:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB0550CED
+	for <lists+cgroups@lfdr.de>; Sun, 19 Jun 2022 22:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbiFSTte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 19 Jun 2022 15:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S230121AbiFSUc1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 19 Jun 2022 16:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbiFSTtd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Jun 2022 15:49:33 -0400
+        with ESMTP id S235930AbiFSUc1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Jun 2022 16:32:27 -0400
 Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEC3F4F;
-        Sun, 19 Jun 2022 12:49:32 -0700 (PDT)
-Date:   Sun, 19 Jun 2022 12:49:21 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9E5E71;
+        Sun, 19 Jun 2022 13:32:25 -0700 (PDT)
+Date:   Sun, 19 Jun 2022 13:32:18 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1655668170;
+        t=1655670744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XTYDF9D1xRBqvEkIY/ONzMnvR1i6T1Y9BCxsJP7NEik=;
-        b=iL6YfmMAG2p0X/5gbwURAp46tCZ3JVCg5XQj8j0kJcfdzd8GpZcwIqK+rrSh2+DfTLgrS/
-        fHu0/cvEEvB2i/JDQmg9tGfO7fv+/SvuWHRs+6CJwMgnFSjnJifTMszZdW4NvhhpIw0Y0p
-        AqIgK1bpEvvdpQX1YXV1oWGvXxQUtqw=
+        bh=/iFzVnSMJWQfW6ecslMrsDUmHZ1b88XfEpJU+8AWm4I=;
+        b=jdnZFEZHOLbOp782xUrFZDV9bkoz87qvOXXknUfwfEDMS6vQCKYIHqWX9FuG3L49Ub8CqO
+        X2SHeiVHXr59jzxUDeShfbhkM1/S8dJKtZWUxV3s1aCoQSk3UGq8JQ4OQBiQdMsu6iT7jb
+        qHFttOTcjUj8VNbKGY4/L59wUe54hKQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Roman Gushchin <roman.gushchin@linux.dev>
 To:     Muchun Song <songmuchun@bytedance.com>
@@ -31,15 +31,15 @@ Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
         akpm@linux-foundation.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         duanxiongchun@bytedance.com, longman@redhat.com
-Subject: Re: [PATCH v5 10/11] mm: lru: add VM_BUG_ON_FOLIO to lru maintenance
- function
-Message-ID: <Yq99wcC8wJ/2swzw@castle>
+Subject: Re: [PATCH v5 09/11] mm: memcontrol: use obj_cgroup APIs to charge
+ the LRU pages
+Message-ID: <Yq+H0v0/nuxPRLX+@castle>
 References: <20220530074919.46352-1-songmuchun@bytedance.com>
- <20220530074919.46352-11-songmuchun@bytedance.com>
+ <20220530074919.46352-10-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220530074919.46352-11-songmuchun@bytedance.com>
+In-Reply-To: <20220530074919.46352-10-songmuchun@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -52,12 +52,50 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 30, 2022 at 03:49:18PM +0800, Muchun Song wrote:
-> We need to make sure that the page is deleted from or added to the
-> correct lruvec list. So add a VM_WARN_ON_ONCE_FOLIO() to catch
-> invalid users.  Then the VM_BUG_ON_PAGE() in move_pages_to_lru()
-> could be removed since add_page_to_lru_list() will check that.
+On Mon, May 30, 2022 at 03:49:17PM +0800, Muchun Song wrote:
+> We will reuse the obj_cgroup APIs to charge the LRU pages. Finally,
+> page->memcg_data will have 2 different meanings.
+> 
+>   - For the slab pages, page->memcg_data points to an object cgroups
+>     vector.
+> 
+>   - For the kmem pages (exclude the slab pages) and the LRU pages,
+>     page->memcg_data points to an object cgroup.
+> 
+> In this patch, we reuse obj_cgroup APIs to charge LRU pages. In the end,
+> The page cache cannot prevent long-living objects from pinning the original
+> memory cgroup in the memory.
+> 
+> At the same time we also changed the rules of page and objcg or memcg
+> binding stability. The new rules are as follows.
+> 
+> For a page any of the following ensures page and objcg binding stability:
+> 
+>   - the page lock
+>   - LRU isolation
+>   - lock_page_memcg()
+>   - exclusive reference
+> 
+> Based on the stable binding of page and objcg, for a page any of the
+> following ensures page and memcg binding stability:
+> 
+>   - objcg_lock
+>   - cgroup_mutex
+>   - the lruvec lock
+>   - the split queue lock (only THP page)
+> 
+> If the caller only want to ensure that the page counters of memcg are
+> updated correctly, ensure that the binding stability of page and objcg
+> is sufficient.
 > 
 > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
+Aside from two questions, which I raised in the comments to previous patches
+in the series:
+1) perf impact,
+2) should we open-code the reparenting procedure to show the locking in a more
+explicit ways?
+
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Thanks!
