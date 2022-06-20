@@ -2,100 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FB0550CED
-	for <lists+cgroups@lfdr.de>; Sun, 19 Jun 2022 22:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976C755101F
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jun 2022 08:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiFSUc1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 19 Jun 2022 16:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
+        id S238605AbiFTGNv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jun 2022 02:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235930AbiFSUc1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Jun 2022 16:32:27 -0400
-Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9E5E71;
-        Sun, 19 Jun 2022 13:32:25 -0700 (PDT)
-Date:   Sun, 19 Jun 2022 13:32:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1655670744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/iFzVnSMJWQfW6ecslMrsDUmHZ1b88XfEpJU+8AWm4I=;
-        b=jdnZFEZHOLbOp782xUrFZDV9bkoz87qvOXXknUfwfEDMS6vQCKYIHqWX9FuG3L49Ub8CqO
-        X2SHeiVHXr59jzxUDeShfbhkM1/S8dJKtZWUxV3s1aCoQSk3UGq8JQ4OQBiQdMsu6iT7jb
-        qHFttOTcjUj8VNbKGY4/L59wUe54hKQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Muchun Song <songmuchun@bytedance.com>
+        with ESMTP id S238305AbiFTGNt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jun 2022 02:13:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2F760DC
+        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id w19-20020a17090a8a1300b001ec79064d8dso6472949pjn.2
+        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YkPqpfUX+L0hoB9Kerf1NXcOCvW4O6Wrp9vBOyavaFk=;
+        b=Sppa+cznksmSnBN0Hb4tnd39OxbExYMGS14dgliIM6xPRw/js90Q5vuen3RaccDVM5
+         +QsuOAQ6T9HD8irEpLB3MO7T0xKMmuoJJ0WLppjaITPcl7icv0Bq2MVpw1ms1v3D/HMS
+         jJt2W+zx39RpJMloaVl7FFXL++y0Pn4GxUjeX9dHHQuFeo000sEeq5s3rvlYAO0WagjC
+         SjwvH+1PBzGF1nb56G64rpo33emu3MTDoVT7HEKIq2Iz6jFVnjESTWXXB6o6tMApC3Bw
+         E8zzdoHnBmgYPoiJ3VaklC+iP71Uk1xULCza4MWM+Z+egAVv/pu9bQcMgLXW83rHwh+A
+         nRtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YkPqpfUX+L0hoB9Kerf1NXcOCvW4O6Wrp9vBOyavaFk=;
+        b=PDijclQ+Q41gnoYa72ta//hGnuhhu5lYnj8pLEM/GdISuNDac2VOuWM2m/hq1j4+D7
+         e2fX/IMqoLduHtC5QgRLupy9ouV7PVSsVGj+fL5T/CFAWwBy9XYaAWW7o7iA8Xc3glmp
+         1T14s00KpTPokD76A2LDM+wCTIOvKTyXD3yEDFI3pnXCCDq0DjiCGGsB9z0C/HxkDDzm
+         Zg7wpHghYwT7xFCVAZR5Z6qO2+JR+fccq49Eb0wvVrbNKNxW4hIjcnSZr/YkGtfi4A4b
+         MYdBm1HR4jcbvQ+3neLqLkqJTtgCoAnL/w+EP7pfbBRx96+M2foQz/RFMze4itLVOU3q
+         z4lg==
+X-Gm-Message-State: AJIora8Hg/b4mONGSW/UjsSMjgtwl+GYvUxASqMeN3RP/FR4zgET+/U1
+        sm9lpvGfQaxGJoPS9h6DQTqsOZO9CUANF99D5Ug=
+X-Google-Smtp-Source: AGRyM1vb+i5Qz13vCcA6u03mQcnnNFh6BLT1nElkzwn7cdTPYhep/s6hfBC6ak+0NcZXC8GxZkB7/g==
+X-Received: by 2002:a17:902:a58b:b0:168:b680:c769 with SMTP id az11-20020a170902a58b00b00168b680c769mr23332488plb.32.1655705628395;
+        Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
+Received: from localhost ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id x19-20020a63b213000000b0040c9df2b060sm2363931pge.30.2022.06.19.23.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 14:13:43 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
 Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
         akpm@linux-foundation.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         duanxiongchun@bytedance.com, longman@redhat.com
-Subject: Re: [PATCH v5 09/11] mm: memcontrol: use obj_cgroup APIs to charge
- the LRU pages
-Message-ID: <Yq+H0v0/nuxPRLX+@castle>
+Subject: Re: [PATCH v5 07/11] mm: memcontrol: make all the callers of
+ {folio,page}_memcg() safe
+Message-ID: <YrAQFysifBga7H8k@FVFYT0MHHV2J.usts.net>
 References: <20220530074919.46352-1-songmuchun@bytedance.com>
- <20220530074919.46352-10-songmuchun@bytedance.com>
+ <20220530074919.46352-8-songmuchun@bytedance.com>
+ <Yq96/NEanbbUUUIW@castle>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220530074919.46352-10-songmuchun@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <Yq96/NEanbbUUUIW@castle>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, May 30, 2022 at 03:49:17PM +0800, Muchun Song wrote:
-> We will reuse the obj_cgroup APIs to charge the LRU pages. Finally,
-> page->memcg_data will have 2 different meanings.
+On Sun, Jun 19, 2022 at 12:37:32PM -0700, Roman Gushchin wrote:
+> On Mon, May 30, 2022 at 03:49:15PM +0800, Muchun Song wrote:
+> > When we use objcg APIs to charge the LRU pages, the page will not hold
+> > a reference to the memcg associated with the page. So the caller of the
+> > {folio,page}_memcg() should hold an rcu read lock or obtain a reference
+> > to the memcg associated with the page to protect memcg from being
+> > released. So introduce get_mem_cgroup_from_{page,folio}() to obtain a
+> > reference to the memory cgroup associated with the page.
+> > 
+> > In this patch, make all the callers hold an rcu read lock or obtain a
+> > reference to the memcg to protect memcg from being released when the LRU
+> > pages reparented.
+> > 
+> > We do not need to adjust the callers of {folio,page}_memcg() during
+> > the whole process of mem_cgroup_move_task(). Because the cgroup migration
+> > and memory cgroup offlining are serialized by @cgroup_mutex. In this
+> > routine, the LRU pages cannot be reparented to its parent memory cgroup.
+> > So {folio,page}_memcg() is stable and cannot be released.
+> > 
+> > This is a preparation for reparenting the LRU pages.
+> > 
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > 
->   - For the slab pages, page->memcg_data points to an object cgroups
->     vector.
-> 
->   - For the kmem pages (exclude the slab pages) and the LRU pages,
->     page->memcg_data points to an object cgroup.
-> 
-> In this patch, we reuse obj_cgroup APIs to charge LRU pages. In the end,
-> The page cache cannot prevent long-living objects from pinning the original
-> memory cgroup in the memory.
-> 
-> At the same time we also changed the rules of page and objcg or memcg
-> binding stability. The new rules are as follows.
-> 
-> For a page any of the following ensures page and objcg binding stability:
-> 
->   - the page lock
->   - LRU isolation
->   - lock_page_memcg()
->   - exclusive reference
-> 
-> Based on the stable binding of page and objcg, for a page any of the
-> following ensures page and memcg binding stability:
-> 
->   - objcg_lock
->   - cgroup_mutex
->   - the lruvec lock
->   - the split queue lock (only THP page)
-> 
-> If the caller only want to ensure that the page counters of memcg are
-> updated correctly, ensure that the binding stability of page and objcg
-> is sufficient.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+>
 
-Aside from two questions, which I raised in the comments to previous patches
-in the series:
-1) perf impact,
-2) should we open-code the reparenting procedure to show the locking in a more
-explicit ways?
+Thanks for your review.
+ 
+> The locking seems to be correct. I'm slightly worried about a potential
+> perf degradation, especially on dying cgroups, where css_get() is relatively
+> expensive. I hope getting it into mm-unstable will help to determine
+> whether it's actually a problem.
+> 
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+I'll send a new version based on mm-unstable ASAP.
 
-Thanks!
+Thanks.
+
+> Thanks!
+> 
