@@ -2,86 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A943551023
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jun 2022 08:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961A755112C
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jun 2022 09:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238265AbiFTGOe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jun 2022 02:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
+        id S239204AbiFTHOm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jun 2022 03:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238194AbiFTGOb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jun 2022 02:14:31 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0E463BC
-        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:14:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id d14so5810422pjs.3
-        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:14:30 -0700 (PDT)
+        with ESMTP id S239200AbiFTHOd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jun 2022 03:14:33 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A26DE086
+        for <cgroups@vger.kernel.org>; Mon, 20 Jun 2022 00:14:32 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id g8so8955253plt.8
+        for <cgroups@vger.kernel.org>; Mon, 20 Jun 2022 00:14:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=rkrgLubJwdtOwiQSZV73I/R5b/hl34THH/3G/dpfdrs=;
-        b=fAd3F+d939T3B6zUF8ALYs+gYnv8DGu5jHrZtEIuo6wYhQv4c0Fqqi2wT2VmDLb9oq
-         EljyfquqX+O/N94k9DVeI/xL0bc/pNPNjKrg4Ff8eFs3ttWPMQkLyCFK70rmLGyaNQH/
-         vPRpDnPz2Wd6OSBfVeO4tVqlOam7Jlv0bjzNN/2GgIXXDPKQ08LUNBsVkxFTjUoFclnp
-         bfMBB8akY65j7COVWDr9jP87Q8ji1BXzRjzCBm6Svhi2fWZau2isuipWP5ZtJ8+bFmrX
-         nCg3vbWAhZZhPP2+S+8vfZF9qOfE1RgTfMd5V1dyytGKrOdHSh+vo0IclDPzyxkZxW4u
-         CZTg==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eje5eCQ8r99TF3Jk0Qo8Mipd7vUdFeKKOC/KwGU7LYo=;
+        b=5rjycCsWpc48JYQSoB4UcNVOmG+xAyesyo1mdm5rRUN994NyEiZ9k1gWuZ8JtZpRMP
+         +t2ea1U2dv3RAM5uPoEEheqmZOFdxYojQE4qK1jJiWODWj7qtMc9qreieOw7jgRi3Gru
+         CPQKm469WxG0mK9uHF8ugLNBD9vNZqHP0iscnj9b6MT52CKIda2e4NasxL+5tUKOxTOh
+         NyfiZR36HKx1Bor2GxITw1ZyRLZ4XW+Qdtc42fjrzuFgzmH9UkQ5/fN/NQv2MgLO8+mA
+         ssZzqrrmOpBYjTaya8uuD4A6lIQrGOXoCTbtrCcSo3ZV+2R4u94IGcyvAyggnunAWW9a
+         Pc/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=rkrgLubJwdtOwiQSZV73I/R5b/hl34THH/3G/dpfdrs=;
-        b=RbCeWql+xy6/dXuLubvQGsiCfglTeFIfSUB2ZBlhgNhG674G7qTJU5tpWAgr68NXdQ
-         Z6I1ve296aO6hZ67WVUQPndI1z19MfXomXk6vI5ltLcXuT7D4rnJPV4MjQKkJaL4XSuO
-         RqYV4mJtYxeOJQtwrfuXEKwxcH6UNSRwWkmM/y+pwXAHGH1UFwvqToU9T43DaotlCni3
-         B9XpNnZOjs1QVfBAkdXX/v3YESEPsT8npPV+ewdcIHTNKi3u27S+ZI7lJApI7CKdogmv
-         TogxXu1337HFBIbslCKuDZKEnOe9/sFScgwlOkksHr19ReBTAxC6a30OseUknQxtNGnp
-         JcDA==
-X-Gm-Message-State: AJIora+Ea8T0/4qXfCgUWm4lQCtAzCE9tvFamyDa0xJkZfrbVyZhxFSM
-        RF2FEllDoWjZx2KFBu9mL18ayMEL3wIVTVDInQY=
-X-Google-Smtp-Source: AGRyM1ueuvnnTGhCmn7++yb0aipWsdnmWiGeB774qPLk6YYh/Bw2vt9lCf7tzmqXcxEb9lEu5+rTJ4UeqRoIyCdHW28=
-X-Received: by 2002:a17:90a:a882:b0:1ec:918a:150d with SMTP id
- h2-20020a17090aa88200b001ec918a150dmr9879488pjq.137.1655705669942; Sun, 19
- Jun 2022 23:14:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eje5eCQ8r99TF3Jk0Qo8Mipd7vUdFeKKOC/KwGU7LYo=;
+        b=ztuQFguLqlnMhxO/SOOGHdIzl1xxkZkHO1xwKVAHwMq3xXoA0/d12KrfmfYaJUvxlS
+         ZmUajsSNDMs5+0oepoJlsR9ZXGbIXFr5Ap4Sp6uzbxtxrLBvuQVoSG8PpTdjFsM3rqgI
+         UFSw1YnHNNvdAPK0CFLN1s0LNV6XXegYvqZCv7OJQWi6l0yG0bfslz4WGSqEKq4iXJtc
+         hgsqjVMbvggC5ck+BBaPfqDQ32TgBNbTccR2/wQ0Di5aDydrbQN+LMeXoo47Ymtccb65
+         iM/8UUV0CXLbsyJVjN5iIDglHjgnHVxIUCZRZlyuBPrwrwGY9UZ894SxPrNd7FFG9wFd
+         LnDg==
+X-Gm-Message-State: AJIora9oEBsRZuzx5TWrjzYAIW8PDG4nQ5y7dpol5ekdfhSHBBksvlk5
+        AHCCaLJ6KWRZGZsCU1U+4h5dHw==
+X-Google-Smtp-Source: AGRyM1tSD/PcZEEst4MVznqWWeY3KmDeC0shEVp/6sGC9nq7iORMis0MpgAxZTqLlpVES7+Lm1YvQw==
+X-Received: by 2002:a17:90b:38c8:b0:1e8:5202:f6d4 with SMTP id nn8-20020a17090b38c800b001e85202f6d4mr25245023pjb.149.1655709271470;
+        Mon, 20 Jun 2022 00:14:31 -0700 (PDT)
+Received: from localhost ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id j3-20020a170903024300b001624965d83bsm7892935plh.228.2022.06.20.00.14.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jun 2022 00:14:31 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 15:14:27 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        duanxiongchun@bytedance.com, longman@redhat.com
+Subject: Re: [PATCH v5 08/11] mm: memcontrol: introduce memcg_reparent_ops
+Message-ID: <YrAeU7yy6jhh+4zd@FVFYT0MHHV2J.usts.net>
+References: <20220530074919.46352-1-songmuchun@bytedance.com>
+ <20220530074919.46352-9-songmuchun@bytedance.com>
+ <Yq99W9ps1b/+XOwh@castle>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:6922:b0:67:f674:f3a8 with HTTP; Sun, 19 Jun 2022
- 23:14:29 -0700 (PDT)
-Reply-To: ed2776012@gmail.com
-From:   Elizabeth Domigo <garbahussaini9354@gmail.com>
-Date:   Mon, 20 Jun 2022 09:14:29 +0300
-Message-ID: <CAKEHr2EP1U4hyqMUBX6kQTM=DWPZ2WVPji-eNb4-W83fwEju0Q@mail.gmail.com>
-Subject: Darlehen
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yq99W9ps1b/+XOwh@castle>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---=20
-Hallo,
+On Sun, Jun 19, 2022 at 12:47:39PM -0700, Roman Gushchin wrote:
+> On Mon, May 30, 2022 at 03:49:16PM +0800, Muchun Song wrote:
+> > In the previous patch, we know how to make the lruvec lock safe when LRU
+> > pages are reparented. We should do something like following.
+> > 
+> >     memcg_reparent_objcgs(memcg)
+> >         1) lock
+> >         // lruvec belongs to memcg and lruvec_parent belongs to parent memcg.
+> >         spin_lock(&lruvec->lru_lock);
+> >         spin_lock(&lruvec_parent->lru_lock);
+> > 
+> >         2) relocate from current memcg to its parent
+> >         // Move all the pages from the lruvec list to the parent lruvec list.
+> > 
+> >         3) unlock
+> >         spin_unlock(&lruvec_parent->lru_lock);
+> >         spin_unlock(&lruvec->lru_lock);
+> > 
+> > Apart from the page lruvec lock, the deferred split queue lock (THP only)
+> > also needs to do something similar. So we extract the necessary three steps
+> > in the memcg_reparent_objcgs().
+> > 
+> >     memcg_reparent_objcgs(memcg)
+> >         1) lock
+> >         memcg_reparent_ops->lock(memcg, parent);
+> > 
+> >         2) relocate
+> >         memcg_reparent_ops->relocate(memcg, reparent);
+> > 
+> >         3) unlock
+> >         memcg_reparent_ops->unlock(memcg, reparent);
+> > 
+> > Now there are two different locks (e.g. lruvec lock and deferred split
+> > queue lock) need to use this infrastructure. In the next patch, we will
+> > use those APIs to make those locks safe when the LRU pages reparented.
+> > 
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> I've mixed feelings about this: it looks nice, but maybe too nice. I wonder
+> if it's better to open-code it. Not very confident, I wonder what others are
+> thinking.
+>
 
-Suchen Sie ein Gesch=C3=A4ftsdarlehen, Privatdarlehen, Hausdarlehen,
-Autodarlehen, Studentendarlehen, Schuldenkonsolidierungsdarlehen,
-unbesicherte Darlehen, Risikokapital usw. ..
+I also thought about this. Open-code is not simplified than this since
+memcg_reparent_ops can be used for 3 locks which simplifies code a lot.
+I also want to hear others' thoughts on this.
+ 
+> 1) Because the lock callback is first called for all ops, then relocate, then
+> unlock, implicit lock dependencies are created. Now it depends on the order
+> of elements in the memcg_reparent_ops array, which isn't very obvious.
 
-Oder Ihnen wurde ein Kredit von einer Bank oder eine finanzielle
-Konfiguration aus einem oder mehreren Gr=C3=BCnden verweigert.
+Maybe we can add some comments explaining the lock dependency depends on the
+element order in array.
 
-Wir sind ehrliche und private Kreditgeber, die Kredite an Unternehmen
-und Privatpersonen zu einem niedrigen und erschwinglichen Zinssatz von
-1,8 % vergeben. Interessiert?
+> 2) Unlikely there will be a lot of new ops added in the future.
+>
 
-Kontaktieren Sie uns, um das Darlehen innerhalb von 48 Stunden nach
-der =C3=9Cberweisung zu bearbeiten.
+Yep. I think so.
 
-Vielen Dank.
+Thanks.
+
+> The code looks correct though.
+> 
+> Thanks!
+> 
