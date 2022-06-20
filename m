@@ -2,114 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976C755101F
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jun 2022 08:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A943551023
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jun 2022 08:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238605AbiFTGNv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jun 2022 02:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
+        id S238265AbiFTGOe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jun 2022 02:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238305AbiFTGNt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jun 2022 02:13:49 -0400
+        with ESMTP id S238194AbiFTGOb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jun 2022 02:14:31 -0400
 Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2F760DC
-        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id w19-20020a17090a8a1300b001ec79064d8dso6472949pjn.2
-        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0E463BC
+        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:14:30 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id d14so5810422pjs.3
+        for <cgroups@vger.kernel.org>; Sun, 19 Jun 2022 23:14:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YkPqpfUX+L0hoB9Kerf1NXcOCvW4O6Wrp9vBOyavaFk=;
-        b=Sppa+cznksmSnBN0Hb4tnd39OxbExYMGS14dgliIM6xPRw/js90Q5vuen3RaccDVM5
-         +QsuOAQ6T9HD8irEpLB3MO7T0xKMmuoJJ0WLppjaITPcl7icv0Bq2MVpw1ms1v3D/HMS
-         jJt2W+zx39RpJMloaVl7FFXL++y0Pn4GxUjeX9dHHQuFeo000sEeq5s3rvlYAO0WagjC
-         SjwvH+1PBzGF1nb56G64rpo33emu3MTDoVT7HEKIq2Iz6jFVnjESTWXXB6o6tMApC3Bw
-         E8zzdoHnBmgYPoiJ3VaklC+iP71Uk1xULCza4MWM+Z+egAVv/pu9bQcMgLXW83rHwh+A
-         nRtQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=rkrgLubJwdtOwiQSZV73I/R5b/hl34THH/3G/dpfdrs=;
+        b=fAd3F+d939T3B6zUF8ALYs+gYnv8DGu5jHrZtEIuo6wYhQv4c0Fqqi2wT2VmDLb9oq
+         EljyfquqX+O/N94k9DVeI/xL0bc/pNPNjKrg4Ff8eFs3ttWPMQkLyCFK70rmLGyaNQH/
+         vPRpDnPz2Wd6OSBfVeO4tVqlOam7Jlv0bjzNN/2GgIXXDPKQ08LUNBsVkxFTjUoFclnp
+         bfMBB8akY65j7COVWDr9jP87Q8ji1BXzRjzCBm6Svhi2fWZau2isuipWP5ZtJ8+bFmrX
+         nCg3vbWAhZZhPP2+S+8vfZF9qOfE1RgTfMd5V1dyytGKrOdHSh+vo0IclDPzyxkZxW4u
+         CZTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YkPqpfUX+L0hoB9Kerf1NXcOCvW4O6Wrp9vBOyavaFk=;
-        b=PDijclQ+Q41gnoYa72ta//hGnuhhu5lYnj8pLEM/GdISuNDac2VOuWM2m/hq1j4+D7
-         e2fX/IMqoLduHtC5QgRLupy9ouV7PVSsVGj+fL5T/CFAWwBy9XYaAWW7o7iA8Xc3glmp
-         1T14s00KpTPokD76A2LDM+wCTIOvKTyXD3yEDFI3pnXCCDq0DjiCGGsB9z0C/HxkDDzm
-         Zg7wpHghYwT7xFCVAZR5Z6qO2+JR+fccq49Eb0wvVrbNKNxW4hIjcnSZr/YkGtfi4A4b
-         MYdBm1HR4jcbvQ+3neLqLkqJTtgCoAnL/w+EP7pfbBRx96+M2foQz/RFMze4itLVOU3q
-         z4lg==
-X-Gm-Message-State: AJIora8Hg/b4mONGSW/UjsSMjgtwl+GYvUxASqMeN3RP/FR4zgET+/U1
-        sm9lpvGfQaxGJoPS9h6DQTqsOZO9CUANF99D5Ug=
-X-Google-Smtp-Source: AGRyM1vb+i5Qz13vCcA6u03mQcnnNFh6BLT1nElkzwn7cdTPYhep/s6hfBC6ak+0NcZXC8GxZkB7/g==
-X-Received: by 2002:a17:902:a58b:b0:168:b680:c769 with SMTP id az11-20020a170902a58b00b00168b680c769mr23332488plb.32.1655705628395;
-        Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
-Received: from localhost ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id x19-20020a63b213000000b0040c9df2b060sm2363931pge.30.2022.06.19.23.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jun 2022 23:13:48 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 14:13:43 +0800
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, longman@redhat.com
-Subject: Re: [PATCH v5 07/11] mm: memcontrol: make all the callers of
- {folio,page}_memcg() safe
-Message-ID: <YrAQFysifBga7H8k@FVFYT0MHHV2J.usts.net>
-References: <20220530074919.46352-1-songmuchun@bytedance.com>
- <20220530074919.46352-8-songmuchun@bytedance.com>
- <Yq96/NEanbbUUUIW@castle>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=rkrgLubJwdtOwiQSZV73I/R5b/hl34THH/3G/dpfdrs=;
+        b=RbCeWql+xy6/dXuLubvQGsiCfglTeFIfSUB2ZBlhgNhG674G7qTJU5tpWAgr68NXdQ
+         Z6I1ve296aO6hZ67WVUQPndI1z19MfXomXk6vI5ltLcXuT7D4rnJPV4MjQKkJaL4XSuO
+         RqYV4mJtYxeOJQtwrfuXEKwxcH6UNSRwWkmM/y+pwXAHGH1UFwvqToU9T43DaotlCni3
+         B9XpNnZOjs1QVfBAkdXX/v3YESEPsT8npPV+ewdcIHTNKi3u27S+ZI7lJApI7CKdogmv
+         TogxXu1337HFBIbslCKuDZKEnOe9/sFScgwlOkksHr19ReBTAxC6a30OseUknQxtNGnp
+         JcDA==
+X-Gm-Message-State: AJIora+Ea8T0/4qXfCgUWm4lQCtAzCE9tvFamyDa0xJkZfrbVyZhxFSM
+        RF2FEllDoWjZx2KFBu9mL18ayMEL3wIVTVDInQY=
+X-Google-Smtp-Source: AGRyM1ueuvnnTGhCmn7++yb0aipWsdnmWiGeB774qPLk6YYh/Bw2vt9lCf7tzmqXcxEb9lEu5+rTJ4UeqRoIyCdHW28=
+X-Received: by 2002:a17:90a:a882:b0:1ec:918a:150d with SMTP id
+ h2-20020a17090aa88200b001ec918a150dmr9879488pjq.137.1655705669942; Sun, 19
+ Jun 2022 23:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yq96/NEanbbUUUIW@castle>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7300:6922:b0:67:f674:f3a8 with HTTP; Sun, 19 Jun 2022
+ 23:14:29 -0700 (PDT)
+Reply-To: ed2776012@gmail.com
+From:   Elizabeth Domigo <garbahussaini9354@gmail.com>
+Date:   Mon, 20 Jun 2022 09:14:29 +0300
+Message-ID: <CAKEHr2EP1U4hyqMUBX6kQTM=DWPZ2WVPji-eNb4-W83fwEju0Q@mail.gmail.com>
+Subject: Darlehen
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Jun 19, 2022 at 12:37:32PM -0700, Roman Gushchin wrote:
-> On Mon, May 30, 2022 at 03:49:15PM +0800, Muchun Song wrote:
-> > When we use objcg APIs to charge the LRU pages, the page will not hold
-> > a reference to the memcg associated with the page. So the caller of the
-> > {folio,page}_memcg() should hold an rcu read lock or obtain a reference
-> > to the memcg associated with the page to protect memcg from being
-> > released. So introduce get_mem_cgroup_from_{page,folio}() to obtain a
-> > reference to the memory cgroup associated with the page.
-> > 
-> > In this patch, make all the callers hold an rcu read lock or obtain a
-> > reference to the memcg to protect memcg from being released when the LRU
-> > pages reparented.
-> > 
-> > We do not need to adjust the callers of {folio,page}_memcg() during
-> > the whole process of mem_cgroup_move_task(). Because the cgroup migration
-> > and memory cgroup offlining are serialized by @cgroup_mutex. In this
-> > routine, the LRU pages cannot be reparented to its parent memory cgroup.
-> > So {folio,page}_memcg() is stable and cannot be released.
-> > 
-> > This is a preparation for reparenting the LRU pages.
-> > 
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> 
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
->
+--=20
+Hallo,
 
-Thanks for your review.
- 
-> The locking seems to be correct. I'm slightly worried about a potential
-> perf degradation, especially on dying cgroups, where css_get() is relatively
-> expensive. I hope getting it into mm-unstable will help to determine
-> whether it's actually a problem.
-> 
+Suchen Sie ein Gesch=C3=A4ftsdarlehen, Privatdarlehen, Hausdarlehen,
+Autodarlehen, Studentendarlehen, Schuldenkonsolidierungsdarlehen,
+unbesicherte Darlehen, Risikokapital usw. ..
 
-I'll send a new version based on mm-unstable ASAP.
+Oder Ihnen wurde ein Kredit von einer Bank oder eine finanzielle
+Konfiguration aus einem oder mehreren Gr=C3=BCnden verweigert.
 
-Thanks.
+Wir sind ehrliche und private Kreditgeber, die Kredite an Unternehmen
+und Privatpersonen zu einem niedrigen und erschwinglichen Zinssatz von
+1,8 % vergeben. Interessiert?
 
-> Thanks!
-> 
+Kontaktieren Sie uns, um das Darlehen innerhalb von 48 Stunden nach
+der =C3=9Cberweisung zu bearbeiten.
+
+Vielen Dank.
