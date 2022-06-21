@@ -2,107 +2,188 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22259552E6D
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jun 2022 11:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37B655322A
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jun 2022 14:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348993AbiFUJec (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Jun 2022 05:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S1349502AbiFUMf5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Jun 2022 08:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348964AbiFUJea (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jun 2022 05:34:30 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEDE25E83
-        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 02:34:23 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id r3so23480165ybr.6
-        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 02:34:23 -0700 (PDT)
+        with ESMTP id S1349594AbiFUMfy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jun 2022 08:35:54 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2949B18E16
+        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 05:35:53 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so13516602pjl.5
+        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 05:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
-        b=TGKGtvXFzX943S3t2fE/QTFCiES2rfAkp4/8PK0Evuh6gxlBGfgvSXb2d0Aj7N3SFV
-         3RSjxh5DOJV0jmXwuEbqZiB4hfTWlFVTIyp8X/Zc3RLtbaBeNUXcNvoqxeLVAdQ/x0oF
-         NZprQ2OrRJoH4WtIh2yTlndSaiLEqAvQWbhYFk6FWnGgJQp79HG59IfbCch3EFV3b4a9
-         agHy6xtKPqYNDyPu0nL/sFBSr7jBokoLoE+/btQr9tHsY5HwR4V6rEJ3qHdt97pUrhmn
-         D2zgtntMNQr3BedvC/sl33fIxg/XSkOjdVFs8IHTezIi5WNwUn/p9QlwrDpeeMggwm7w
-         6OAA==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EjlDmuV/uOVKT3BSmFT2nXl++EN3szZ0zzti8E6q644=;
+        b=3VQV7AhNbEPddrWLGOd8BC8ju9GERSEC+GjCVKfDY9DBIs9bLhRYp56IQtNtupvHvR
+         64ceScHBlOiAtQdDXzQQipdPSMZnVn2/nmHovXnkbOKdICbg2ocSBdXZ0BJ2eaPERXJQ
+         wqhLg5735a5oxSmK1XYnFFJT74fh3JEOncfmiKZ7ndvZlvRFvAZ+lvbernA9KKUwLDpd
+         HB5LZjcihcSITR+WCOys22YdE7q1rFUfkvIB0LVvZYegrHu8c7jxYG4riYiqjXw4G0LN
+         /JyQ1d4BButexZoooYeeoeUxc/IxHY6c01RJs0VwViNEdkvTEZZpjx86+zB6dz4aN++J
+         KuqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
-        b=1na+xSAwUS7zkjADlGRAY3I+L7PqwC33BMbs2KlsFM3Jg1GTQ1aBbLuyGAzEqtZJ57
-         xwsS2QZnIWdOwaV3pAugU9mju+qnygFAIZ4IRcH/4hjC7YJXG4Z1NcVozGcLuofEJzOw
-         DdmdlxPy9spwdBd811R/qsIDtRn2VsT+48njYjCL+ix9zLZrUqmQTr9DTLRISJsPOppO
-         hN+gij2MxyJeOFCrfmkNBw3d6mCekfJpBkoRCU38jmrw8qb8iGUhwEGFMQLcTqAKf6mU
-         KXB6JW3kvVIActItbGT3FHx0hxOuimOmWEh/oJ5idgigGndZH5SyJuaXxZRWvFs4unog
-         uzog==
-X-Gm-Message-State: AJIora+c7Pwof+xBJdwyzcfU49K/UDyVoU8fvrbfkgXNDzm80dWnSTj5
-        qOgEFIYw28m6QOUZmE7BqCEdOmsR+xM4zYXMUCA=
-X-Google-Smtp-Source: AGRyM1vH0iOPKx7+Q75J23TVZ2dG7fpvKqOKC9BhDPlf4SXyt7YNCoy6Uw2K1GV77qaZ4qmRJ0kxvBBnwaYfcVhV1p0=
-X-Received: by 2002:a5b:b0f:0:b0:668:d864:ea12 with SMTP id
- z15-20020a5b0b0f000000b00668d864ea12mr15196736ybp.25.1655804062762; Tue, 21
- Jun 2022 02:34:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EjlDmuV/uOVKT3BSmFT2nXl++EN3szZ0zzti8E6q644=;
+        b=5BMt0xnb5jB26IXtrROb/zO7TiqEfD/sEtqbhcZemlw4iHTvay/NeWszRuado6QdMT
+         JLr1iV/rdxt32EHiK7HmQiPCR169DOaTVO+A5ZJyW/an/w1LsLR093xJQSYjDs0Dw/Be
+         554p2Z/OG9Ndbh8e4zF60SYzVclZvCkmUcmLPPIaLpjtsqvVxueUYsMygNNFocCz40Yx
+         Tisczt6saR/aWjuG82yOWRzuKOlWwkRx97GOjeScgsxVB5Uyw3xJFPueZQg0QD0Mdduq
+         bXAy0mTnzwNhINYdATQck3m+Pleck5O6UZWmH5hlRn1xm6aUXsJ9KS/5s4J7E5WktFE0
+         unnQ==
+X-Gm-Message-State: AJIora99D3obBUuXIrO3NHkX2IrBZr6N+lpmy+dv814stXm6YugpDKvl
+        MpSjafuXbDw9T9FffjSLgNW7hA==
+X-Google-Smtp-Source: AGRyM1s92KMqIYGp268l+2CBnUMcBeQOhx/rpG4gHq3pRg7Uuy2vgBBuqnQD7+Bgvcr0COlmuTB86A==
+X-Received: by 2002:a17:902:f7cb:b0:169:c7d1:2a7 with SMTP id h11-20020a170902f7cb00b00169c7d102a7mr24731850plw.141.1655814952649;
+        Tue, 21 Jun 2022 05:35:52 -0700 (PDT)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id c11-20020a62f84b000000b0051844a64d3dsm11154791pfm.25.2022.06.21.05.35.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jun 2022 05:35:52 -0700 (PDT)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH] sched: RT bandwidth interface for cgroup unified hierarchy
+Date:   Tue, 21 Jun 2022 20:35:42 +0800
+Message-Id: <20220621123542.1444-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
- 02:34:22 -0700 (PDT)
-Reply-To: dimitryedik@gmail.com
-From:   Dimitry Edik <lsbthdwrds@gmail.com>
-Date:   Tue, 21 Jun 2022 02:34:22 -0700
-Message-ID: <CAGrL05Z7oR_hhk+jooLqL3OLCZVoq1g4RUkctpNcQNayZGBVJg@mail.gmail.com>
-Subject: Dear Partner,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
-        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b29 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [lsbthdwrds[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Dear,
+We need to run RT threads in cgroup unified hierarchy, but we can't
+since the default rt_bandwidth.rt_runtime of non-root task_group is 0
+and we haven't interface to update it.
 
-My Name is Dimitry Edik from Russia A special assistance to my Russia
-boss who deals in oil import and export He was killed by the Ukraine
-soldiers at the border side. He supplied
-oil to the Philippines company and he was paid over 90 per cent of the
-transaction and the remaining $18.6 Million dollars have been paid into a
-Taiwan bank in the Philippines..i want a partner that will assist me
-with the claims. Is a (DEAL ) 40% for you and 60% for me
-I have all information for the claims.
-Kindly read and reply to me back is 100 per cent risk-free
+This patch add RT bandwidth interface "cpu.max.rt" and update the
+documentation accordingly.
 
-Yours Sincerely
-Dimitry Edik
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 13 +++++++++++
+ kernel/sched/core.c                     | 31 +++++++++++++++++++++++++
+ kernel/sched/rt.c                       |  2 +-
+ kernel/sched/sched.h                    |  1 +
+ 4 files changed, 46 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 176298f2f4de..3d2949e16e04 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1055,6 +1055,19 @@ All time durations are in microseconds.
+ 
+ 	The burst in the range [0, $MAX].
+ 
++  cpu.max.rt
++	A read-write two value file which exists on all cgroups when
++	CONFIG_RT_GROUP_SCHED enabled, to control CPU bandwidth for
++	RT threads in the task group.
++
++	The maximum bandwidth limit.  It's in the following format::
++
++	  $MAX $PERIOD
++
++	which indicates that RT threads in the group may consume upto
++	$MAX in each $PERIOD duration.  "max" for $MAX indicates no
++	limit.  If only one number is written, $MAX is updated.
++
+   cpu.pressure
+ 	A read-write nested-keyed file.
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index daadedc78fd9..c16f8cc5de08 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -11047,6 +11047,30 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
+ }
+ #endif
+ 
++#ifdef CONFIG_RT_GROUP_SCHED
++static int cpu_max_rt_show(struct seq_file *sf, void *v)
++{
++	struct task_group *tg = css_tg(seq_css(sf));
++
++	cpu_period_quota_print(sf, sched_group_rt_period(tg), sched_group_rt_runtime(tg));
++	return 0;
++}
++
++static ssize_t cpu_max_rt_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off)
++{
++	struct task_group *tg = css_tg(of_css(of));
++	u64 period = sched_group_rt_period(tg);
++	u64 runtime;
++	int ret;
++
++	ret = cpu_period_quota_parse(buf, &period, &runtime);
++	if (!ret)
++		ret = tg_set_rt_bandwidth(tg, period, runtime);
++	return ret ?: nbytes;
++}
++#endif
++
+ static struct cftype cpu_files[] = {
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	{
+@@ -11082,6 +11106,13 @@ static struct cftype cpu_files[] = {
+ 		.write_u64 = cpu_cfs_burst_write_u64,
+ 	},
+ #endif
++#ifdef CONFIG_RT_GROUP_SCHED
++	{
++		.name = "max.rt",
++		.seq_show = cpu_max_rt_show,
++		.write = cpu_max_rt_write,
++	},
++#endif
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	{
+ 		.name = "uclamp.min",
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 8c9ed9664840..319ce586446f 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -2819,7 +2819,7 @@ static int __rt_schedulable(struct task_group *tg, u64 period, u64 runtime)
+ 	return ret;
+ }
+ 
+-static int tg_set_rt_bandwidth(struct task_group *tg,
++int tg_set_rt_bandwidth(struct task_group *tg,
+ 		u64 rt_period, u64 rt_runtime)
+ {
+ 	int i, err = 0;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 7b19a72408b1..317480d535b0 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -486,6 +486,7 @@ extern int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent
+ extern void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+ 		struct sched_rt_entity *rt_se, int cpu,
+ 		struct sched_rt_entity *parent);
++extern int tg_set_rt_bandwidth(struct task_group *tg, u64 rt_period, u64 rt_runtime);
+ extern int sched_group_set_rt_runtime(struct task_group *tg, long rt_runtime_us);
+ extern int sched_group_set_rt_period(struct task_group *tg, u64 rt_period_us);
+ extern long sched_group_rt_runtime(struct task_group *tg);
+-- 
+2.36.1
+
