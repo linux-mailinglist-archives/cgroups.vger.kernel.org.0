@@ -2,108 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBB9552E30
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jun 2022 11:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22259552E6D
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jun 2022 11:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348190AbiFUJYX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Jun 2022 05:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        id S1348993AbiFUJec (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Jun 2022 05:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347838AbiFUJYR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jun 2022 05:24:17 -0400
-Received: from azure-sdnproxy-1.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 0CDA521E3F;
-        Tue, 21 Jun 2022 02:24:10 -0700 (PDT)
-Received: from fedora33.wangsu.com (unknown [59.61.78.232])
-        by app2 (Coremail) with SMTP id SyJltACXnuIyjrFip5sGAA--.10560S2;
-        Tue, 21 Jun 2022 17:24:06 +0800 (CST)
-From:   Lin Feng <linf@wangsu.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linf@wangsu.com
-Subject: [PATCH] cgroup.c: remove redundant check for mixable cgroup in cgroup_migrate_vet_dst
-Date:   Tue, 21 Jun 2022 17:23:58 +0800
-Message-Id: <20220621092358.223594-1-linf@wangsu.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S1348964AbiFUJea (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jun 2022 05:34:30 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEDE25E83
+        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 02:34:23 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id r3so23480165ybr.6
+        for <cgroups@vger.kernel.org>; Tue, 21 Jun 2022 02:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=TGKGtvXFzX943S3t2fE/QTFCiES2rfAkp4/8PK0Evuh6gxlBGfgvSXb2d0Aj7N3SFV
+         3RSjxh5DOJV0jmXwuEbqZiB4hfTWlFVTIyp8X/Zc3RLtbaBeNUXcNvoqxeLVAdQ/x0oF
+         NZprQ2OrRJoH4WtIh2yTlndSaiLEqAvQWbhYFk6FWnGgJQp79HG59IfbCch3EFV3b4a9
+         agHy6xtKPqYNDyPu0nL/sFBSr7jBokoLoE+/btQr9tHsY5HwR4V6rEJ3qHdt97pUrhmn
+         D2zgtntMNQr3BedvC/sl33fIxg/XSkOjdVFs8IHTezIi5WNwUn/p9QlwrDpeeMggwm7w
+         6OAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=1na+xSAwUS7zkjADlGRAY3I+L7PqwC33BMbs2KlsFM3Jg1GTQ1aBbLuyGAzEqtZJ57
+         xwsS2QZnIWdOwaV3pAugU9mju+qnygFAIZ4IRcH/4hjC7YJXG4Z1NcVozGcLuofEJzOw
+         DdmdlxPy9spwdBd811R/qsIDtRn2VsT+48njYjCL+ix9zLZrUqmQTr9DTLRISJsPOppO
+         hN+gij2MxyJeOFCrfmkNBw3d6mCekfJpBkoRCU38jmrw8qb8iGUhwEGFMQLcTqAKf6mU
+         KXB6JW3kvVIActItbGT3FHx0hxOuimOmWEh/oJ5idgigGndZH5SyJuaXxZRWvFs4unog
+         uzog==
+X-Gm-Message-State: AJIora+c7Pwof+xBJdwyzcfU49K/UDyVoU8fvrbfkgXNDzm80dWnSTj5
+        qOgEFIYw28m6QOUZmE7BqCEdOmsR+xM4zYXMUCA=
+X-Google-Smtp-Source: AGRyM1vH0iOPKx7+Q75J23TVZ2dG7fpvKqOKC9BhDPlf4SXyt7YNCoy6Uw2K1GV77qaZ4qmRJ0kxvBBnwaYfcVhV1p0=
+X-Received: by 2002:a5b:b0f:0:b0:668:d864:ea12 with SMTP id
+ z15-20020a5b0b0f000000b00668d864ea12mr15196736ybp.25.1655804062762; Tue, 21
+ Jun 2022 02:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: SyJltACXnuIyjrFip5sGAA--.10560S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy8KrWfGFWfZrykAr13urg_yoW8JFW7pr
-        4DArW2y3yFkF1Dtw40q3yqgFWFkw40qr1Utas5Ww1UZw17Jw1aqrna9a4UAr15AFZ7Kr1f
-        JFWYyrWjkw4xtaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r1j6r4UMcIj6x8ErcxFaVAv
-        8VW8GwAv7VCY1x0262k0Y48FwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2
-        IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8uwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        fUzc_-DUUUU
-X-CM-SenderInfo: holqwq5zdqw23xof0z/
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR autolearn=no autolearn_force=no
-        version=3.4.6
+Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
+ 02:34:22 -0700 (PDT)
+Reply-To: dimitryedik@gmail.com
+From:   Dimitry Edik <lsbthdwrds@gmail.com>
+Date:   Tue, 21 Jun 2022 02:34:22 -0700
+Message-ID: <CAGrL05Z7oR_hhk+jooLqL3OLCZVoq1g4RUkctpNcQNayZGBVJg@mail.gmail.com>
+Subject: Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b29 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [lsbthdwrds[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We have:
-int cgroup_migrate_vet_dst(struct cgroup *dst_cgrp)
-{
-...
-	/* mixables don't care */
-	if (cgroup_is_mixable(dst_cgrp))
-		return 0;
+Hello Dear,
 
-	/*
-	 * If @dst_cgrp is already or can become a thread root or is
-	 * threaded, it doesn't matter.
-	 */
-	if (cgroup_can_be_thread_root(dst_cgrp) || cgroup_is_threaded(dst_cgrp))
-		return 0;
-...
-}
+My Name is Dimitry Edik from Russia A special assistance to my Russia
+boss who deals in oil import and export He was killed by the Ukraine
+soldiers at the border side. He supplied
+oil to the Philippines company and he was paid over 90 per cent of the
+transaction and the remaining $18.6 Million dollars have been paid into a
+Taiwan bank in the Philippines..i want a partner that will assist me
+with the claims. Is a (DEAL ) 40% for you and 60% for me
+I have all information for the claims.
+Kindly read and reply to me back is 100 per cent risk-free
 
-but in fact the entry of cgroup_can_be_thread_root() covers case that
-checking cgroup_is_mixable() as following:
-static bool cgroup_can_be_thread_root(struct cgroup *cgrp)
-{
-        /* mixables don't care */
-        if (cgroup_is_mixable(cgrp))
-                return true;
-...
-}
-
-so explicitly checking in cgroup_migrate_vet_dst is unnecessary.
-
-Signed-off-by: Lin Feng <linf@wangsu.com>
----
- kernel/cgroup/cgroup.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1779ccddb734..ad4aa08ec988 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2570,10 +2570,6 @@ int cgroup_migrate_vet_dst(struct cgroup *dst_cgrp)
- 	if (!cgroup_is_valid_domain(dst_cgrp->dom_cgrp))
- 		return -EOPNOTSUPP;
- 
--	/* mixables don't care */
--	if (cgroup_is_mixable(dst_cgrp))
--		return 0;
--
- 	/*
- 	 * If @dst_cgrp is already or can become a thread root or is
- 	 * threaded, it doesn't matter.
--- 
-2.31.1
-
+Yours Sincerely
+Dimitry Edik
