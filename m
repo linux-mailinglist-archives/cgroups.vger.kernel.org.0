@@ -2,180 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8FB554F62
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jun 2022 17:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6579D555254
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jun 2022 19:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357804AbiFVPeB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Jun 2022 11:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S230476AbiFVR02 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Jun 2022 13:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236240AbiFVPd7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jun 2022 11:33:59 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB369393EF
-        for <cgroups@vger.kernel.org>; Wed, 22 Jun 2022 08:33:58 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e63so14913708pgc.5
-        for <cgroups@vger.kernel.org>; Wed, 22 Jun 2022 08:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RXwf/7JkcWaT1IRzr2kx6bS4ycLeK+ZNTB+dlyU4xh8=;
-        b=2Tfg4m5w9Saco7OKn8up5/4aMelTZerwjvK3vPd9X+dN4Jy7w7tCmZVJaJRlsWrJ3E
-         XLhDgBeGy40VicRIaJ7kqr/EkOuarKwXYqCdDmwt6w94QlGk0rreY1uh+zbijQo9NZj1
-         iLvUeYzkEOvaBjkZYu9HolnewSsUjEuX4wK7Q0yVzqrRn9OCCCYrNvdnQues64E+C9BY
-         hzZ5Ow3X1De0GAl913hw+fyyrdZX8zDA+MwZshRayJKF8sHiMRdrhTr7KS9YVB5qCaiT
-         YKcFm+6u6VRO+6thSEKc6L6Lo8+QuXz3mQx2ccmeqK0Y7dh6uLU0a0kvht5HjiqOybAV
-         3TLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RXwf/7JkcWaT1IRzr2kx6bS4ycLeK+ZNTB+dlyU4xh8=;
-        b=GJDhknTVkrUk3mGgDSmFK04LmCbR1V8gKI82B0kY4cm3RBiJdvIB4pw43xSsNd4JpR
-         mFwuiHuCUPhv9vJUP3YSBC+hBEwZ0U+8TjyjkR9WtnmE5szZJNGAsJ+8g9nwPrhwhLKc
-         fNgY07jrNGt99IduUoDZLx/peFkosnkQpYgt8VqLo0BjG7orLHk95jNd6dS8Pgd5m/eo
-         AjgB/JU9i8h0ZfXwfTiWkbK3xRTaj8FM5kDMERV1oWbHoMbITfNuGdLoHxhLOPRWbi0L
-         cEpRILmesFxVcR3cpWZDRzM0imctLr4Y99DFcjvF1+0CvqRegBooycEWGxqNrIbNKtvO
-         kT0Q==
-X-Gm-Message-State: AJIora/ENJM63Xm6iU9NeEO4/7jz9GGAipQ4zh2p4H8RBB7vVctYrJdN
-        ZZA0rAYMv9GzGsqPDODZcNf/fg==
-X-Google-Smtp-Source: AGRyM1vHCjeCuwVlhow9RRnI14l8Li5ye9Z0Amr4Q+HiO9Z++ZxuKJ+shDCeREoLDyxsV46Ct87Pew==
-X-Received: by 2002:a05:6a02:10a:b0:3fd:da84:8859 with SMTP id bg10-20020a056a02010a00b003fdda848859mr3411759pgb.412.1655912038182;
-        Wed, 22 Jun 2022 08:33:58 -0700 (PDT)
-Received: from localhost ([2408:8207:18da:2310:6954:eb2b:9375:6970])
-        by smtp.gmail.com with ESMTPSA id f1-20020a170902684100b0016a3f9e4865sm2966430pln.148.2022.06.22.08.33.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 08:33:57 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 23:33:48 +0800
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     syzbot <syzbot+ec972d37869318fc3ffb@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in folio_lruvec_lock_irqsave
-Message-ID: <YrM2XCwzu65cb81r@FVFYT0MHHV2J.googleapis.com>
-References: <0000000000004b03c805e2099bf0@google.com>
+        with ESMTP id S1377042AbiFVR0Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jun 2022 13:26:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1211B28E05;
+        Wed, 22 Jun 2022 10:26:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9B0EF1F92F;
+        Wed, 22 Jun 2022 17:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1655918782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jml0n4rcqjuj+OPSJZyRw7ItN6cmTrfRr6AuCXrU/lE=;
+        b=vNbktpf1xKsoPuXRFhRhomPfTR6dR5KLyWvi9TFcnR+ZqXyNArdoJuXxTgbYme3q8UadJH
+        XKlk6G10CYi/ZJCtdhvOwXdtgJDAVAV0aB+qpx8o39KbwaMH4vjcH/zIBlR0OxMdF2R3Il
+        4x7uE3VXXiNbg7wXwktEv49H5kyWf0Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7121213A5D;
+        Wed, 22 Jun 2022 17:26:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GhLIGr5Qs2JrKgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 22 Jun 2022 17:26:22 +0000
+Date:   Wed, 22 Jun 2022 19:26:21 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     tj@kernel.org, axboe@kernel.dk, ming.lei@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH -next v5 4/8] blk-throttle: fix io hung due to config
+ updates
+Message-ID: <20220622172621.GA28246@blackbody.suse.cz>
+References: <20220528064330.3471000-1-yukuai3@huawei.com>
+ <20220528064330.3471000-5-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
 Content-Disposition: inline
-In-Reply-To: <0000000000004b03c805e2099bf0@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220528064330.3471000-5-yukuai3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 06:49:31AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    ac0ba5454ca8 Add linux-next specific files for 20220622
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14354c18080000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=12809dacb9e7c5e0
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ec972d37869318fc3ffb
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ec972d37869318fc3ffb@syzkaller.appspotmail.com
-> 
->  folio_put include/linux/mm.h:1227 [inline]
->  put_page+0x217/0x280 include/linux/mm.h:1279
->  unmap_and_move_huge_page mm/migrate.c:1343 [inline]
->  migrate_pages+0x3dc3/0x5a10 mm/migrate.c:1440
->  do_mbind mm/mempolicy.c:1332 [inline]
->  kernel_mbind+0x4d7/0x7d0 mm/mempolicy.c:1479
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> page has been migrated, last migrate reason: mempolicy_mbind
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 18925 at include/linux/memcontrol.h:800 folio_lruvec include/linux/memcontrol.h:800 [inline]
 
-The warning here is "VM_WARN_ON_ONCE_FOLIO(!memcg && !mem_cgroup_disabled(), folio)",
-the memcg returned by folio_memcg() seems to be NULL which has 2 possibility, one is
-that objcg returned by folio_objcg() is NULL, another is that obj_cgroup_memcg(objcg)
-returns NULL. However, obj_cgroup_memcg() always returns a valid memcg. So Most likely
-objcg is NULL meaning this page is not charged to memcg. Is this possible for LRU pages?
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am not sure if this issue is caused by my commit cca700a8e695 ("mm: lru: use lruvec
-lock to serialize memcg changes") since I have removed folio_test_clear_lru() check
-from folio_batch_move_lru(). We know that a non-lru page may be not charged to memcg.
-But is it possible for a non-lru page to be passed to folio_batch_move_lru()? Seems
-impossible. Right? I am not very confident about this commit, hopefully, someone can
-review it.
+(Apologies for taking so long before answering.)
 
-Thanks.
+On Sat, May 28, 2022 at 02:43:26PM +0800, Yu Kuai <yukuai3@huawei.com> wrot=
+e:
+> Some simple test:
+> 1)
+> cd /sys/fs/cgroup/blkio/
+> echo $$ > cgroup.procs
+> echo "8:0 2048" > blkio.throttle.write_bps_device
+> {
+>         sleep 2
+>         echo "8:0 1024" > blkio.throttle.write_bps_device
+> } &
+> dd if=3D/dev/zero of=3D/dev/sda bs=3D8k count=3D1 oflag=3Ddirect
+>=20
+> 2)
+> cd /sys/fs/cgroup/blkio/
+> echo $$ > cgroup.procs
+> echo "8:0 1024" > blkio.throttle.write_bps_device
+> {
+>         sleep 4
+>         echo "8:0 2048" > blkio.throttle.write_bps_device
+> } &
+> dd if=3D/dev/zero of=3D/dev/sda bs=3D8k count=3D1 oflag=3Ddirect
+>=20
+> test results: io finish time
+> 	before this patch	with this patch
+> 1)	10s			6s
+> 2)	8s			6s
 
-> WARNING: CPU: 1 PID: 18925 at include/linux/memcontrol.h:800 folio_lruvec_lock_irqsave+0x2fd/0x4f0 mm/memcontrol.c:1424
-> Modules linked in:
-> CPU: 1 PID: 18925 Comm: syz-executor.3 Not tainted 5.19.0-rc3-next-20220622-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:folio_lruvec include/linux/memcontrol.h:800 [inline]
-> RIP: 0010:folio_lruvec_lock_irqsave+0x2fd/0x4f0 mm/memcontrol.c:1424
-> Code: 1f 44 00 00 45 31 e4 80 3d 06 3e da 0b 00 0f 85 01 fe ff ff 48 c7 c6 40 6f da 89 4c 89 f7 e8 0a 44 e2 ff c6 05 ea 3d da 0b 01 <0f> 0b e9 e4 fd ff ff e8 67 be ad 07 85 c0 0f 84 37 fd ff ff 80 3d
-> RSP: 0018:ffffc9000b84f2c8 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: fffff9400027e007 RCX: ffffc900135af000
-> RDX: 0000000000040000 RSI: ffffffff81ce36a6 RDI: fffff52001709e28
-> RBP: dffffc0000000000 R08: 000000000000003c R09: 0000000000000000
-> R10: 0000000080000001 R11: 0000000000000001 R12: 0000000000000000
-> R13: fffff9400027e000 R14: ffffea00013f0000 R15: 0000000000000000
-> FS:  00007f5cfbb96700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000002073f000 CR3: 0000000074b9f000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  folio_lruvec_relock_irqsave include/linux/memcontrol.h:1666 [inline]
->  folio_batch_move_lru+0xf9/0x500 mm/swap.c:242
->  folio_batch_add_and_move+0xd4/0x130 mm/swap.c:258
->  deactivate_file_folio+0x222/0x580 mm/swap.c:678
->  invalidate_mapping_pagevec+0x38d/0x5c0 mm/truncate.c:535
->  drop_pagecache_sb+0xcf/0x2a0 fs/drop_caches.c:39
->  iterate_supers+0x13c/0x290 fs/super.c:694
->  drop_caches_sysctl_handler+0xdb/0x110 fs/drop_caches.c:62
->  proc_sys_call_handler+0x4a1/0x6e0 fs/proc/proc_sysctl.c:611
->  call_write_iter include/linux/fs.h:2057 [inline]
->  do_iter_readv_writev+0x3d1/0x640 fs/read_write.c:742
->  do_iter_write+0x182/0x700 fs/read_write.c:868
->  vfs_iter_write+0x70/0xa0 fs/read_write.c:909
->  iter_file_splice_write+0x723/0xc70 fs/splice.c:689
->  do_splice_from fs/splice.c:767 [inline]
->  direct_splice_actor+0x110/0x180 fs/splice.c:936
->  splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
->  do_splice_direct+0x1a7/0x270 fs/splice.c:979
->  do_sendfile+0xae0/0x1240 fs/read_write.c:1262
->  __do_sys_sendfile64 fs/read_write.c:1321 [inline]
->  __se_sys_sendfile64 fs/read_write.c:1313 [inline]
->  __x64_sys_sendfile64+0x149/0x210 fs/read_write.c:1313
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7f5cfaa89109
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f5cfbb96168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-> RAX: ffffffffffffffda RBX: 00007f5cfab9c030 RCX: 00007f5cfaa89109
-> RDX: 0000000020002080 RSI: 0000000000000005 RDI: 0000000000000006
-> RBP: 00007f5cfaae305d R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000262 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007fff1ef394df R14: 00007f5cfbb96300 R15: 0000000000022000
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
+I agree these are consistent and correct times.
+
+And the new implementation won't make it worse (in terms of delaying a
+bio) than configuring minimal limits from the beginning, AFACT.
+
+> @@ -801,7 +836,8 @@ static bool tg_with_in_iops_limit(struct throtl_grp *=
+tg, struct bio *bio,
+> =20
+>  	/* Round up to the next throttle slice, wait time must be nonzero */
+>  	jiffy_elapsed_rnd =3D roundup(jiffy_elapsed + 1, tg->td->throtl_slice);
+> -	io_allowed =3D calculate_io_allowed(iops_limit, jiffy_elapsed_rnd);
+> +	io_allowed =3D calculate_io_allowed(iops_limit, jiffy_elapsed_rnd) +
+> +		     tg->io_skipped[rw];
+>  	if (tg->io_disp[rw] + 1 <=3D io_allowed) {
+>  		if (wait)
+>  			*wait =3D 0;
+> @@ -838,7 +874,8 @@ static bool tg_with_in_bps_limit(struct throtl_grp *t=
+g, struct bio *bio,
+>  		jiffy_elapsed_rnd =3D tg->td->throtl_slice;
+> =20
+>  	jiffy_elapsed_rnd =3D roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
+> -	bytes_allowed =3D calculate_bytes_allowed(bps_limit, jiffy_elapsed_rnd);
+> +	bytes_allowed =3D calculate_bytes_allowed(bps_limit, jiffy_elapsed_rnd)=
+ +
+> +			tg->bytes_skipped[rw];
+>  	if (tg->bytes_disp[rw] + bio_size <=3D bytes_allowed) {
+>  		if (wait)
+>  			*wait =3D 0;
+>
+
+Here we may allow to dispatch a bio above current slice's
+calculate_bytes_allowed() if bytes_skipped is already >0.
+
+bytes_disp + bio_size <=3D calculate_bytes_allowed() + bytes_skipped
+
+Then on the next update
+
+> [shuffle]
+> +static void __tg_update_skipped(struct throtl_grp *tg, bool rw)
+> +{
+> +	unsigned long jiffy_elapsed =3D jiffies - tg->slice_start[rw];
+> +	u64 bps_limit =3D tg_bps_limit(tg, rw);
+> +	u32 iops_limit =3D tg_iops_limit(tg, rw);
+> +
+> +	if (bps_limit !=3D U64_MAX)
+> +		tg->bytes_skipped[rw] +=3D
+> +			calculate_bytes_allowed(bps_limit, jiffy_elapsed) -
+> +			tg->bytes_disp[rw];
+> +	if (iops_limit !=3D UINT_MAX)
+> +		tg->io_skipped[rw] +=3D
+> +			calculate_io_allowed(iops_limit, jiffy_elapsed) -
+> +			tg->io_disp[rw];
+> +}
+
+the difference(s) here could be negative. bytes_skipped should be
+reduced to account for the additionally dispatched bio.
+This is all unsigned so negative numbers underflow, however, we add them
+again to the unsigned, so thanks to modular arithmetics the result is
+correctly updated bytes_skipped.
+
+Maybe add a comment about this (unsigned) intention?
+
+(But can this happen? The discussed bio would have to outrun another bio
+(the one which defined the current slice_end) but since blk-throttle
+uses queues (FIFO) everywhere this shouldn't really happen. But it's
+good to know this works as intended.)
+
+This patch can have
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYrNQpAAKCRAkDQmsBEOq
+uZ3BAQCL8oobgb+B0o8EQKGsxtLcjkKWGAXteGs1+CHNsFrUGAD/V+B+r/Bv3hQR
+A5tMH+4VD4tzI0yNIrKNYH5LIKu2ZgU=
+=HsKx
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
