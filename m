@@ -2,58 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB3C55525A
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jun 2022 19:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629BB555297
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jun 2022 19:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359659AbiFVR1L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Jun 2022 13:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        id S1376485AbiFVRje (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Jun 2022 13:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359637AbiFVR1K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jun 2022 13:27:10 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD62727FCE;
-        Wed, 22 Jun 2022 10:27:09 -0700 (PDT)
+        with ESMTP id S1359087AbiFVRjd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jun 2022 13:39:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF08F2CE1A;
+        Wed, 22 Jun 2022 10:39:32 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7445221C7E;
-        Wed, 22 Jun 2022 17:27:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B1251F38A;
+        Wed, 22 Jun 2022 17:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1655918828; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1655919571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=25UMif2KJVLcBXrmfApxtfUU35dfSSw3fpcCICtxyW8=;
-        b=VvwAIGoDz+l1mAkHZ7Ci8GmQbbrSdA4ZL7MGpC7pXWaXvzYecJ0zZa3bjiNVxhWwXxQPOi
-        c1ahBZimSpktVbRlaNbZivz7OeL07LjMauFEFAtU+9izL/QdsVNVvawoLRT1F257ZjbKfn
-        ADVQi1piODXNJyF1VM1Ev4FipKeeVEk=
+        bh=qjLsn3chRmVR7wBslFm7Nmwci+bvj1b1+qTpUK32rXQ=;
+        b=iGD8LGlhBV+ijnTy+c24IKvp3gS6t3Xd7fZf0W5mhS4jcdaQdBdVobDGrLTSUQYAXoEATz
+        JokCZyEMcnVxZEGqwjaMlMEyZdB0kDdegEDn9d5unKiSxSMx7nn9t4BUaYxsUPslHkd98r
+        aF5iZpfXyd/FBxVY1CTQo6j408qFIqM=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 47A7913A5D;
-        Wed, 22 Jun 2022 17:27:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22E08134A9;
+        Wed, 22 Jun 2022 17:39:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5qGOEOxQs2LFKgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Wed, 22 Jun 2022 17:27:08 +0000
-Date:   Wed, 22 Jun 2022 19:27:06 +0200
+        id 571xB9NTs2JaLwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Wed, 22 Jun 2022 17:39:31 +0000
+Date:   Wed, 22 Jun 2022 19:39:29 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, ming.lei@redhat.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH -next v5 3/8] blk-throttle: factor out code to calculate
- ios/bytes_allowed
-Message-ID: <20220622172706.GA28777@blackbody.suse.cz>
-References: <20220528064330.3471000-1-yukuai3@huawei.com>
- <20220528064330.3471000-4-yukuai3@huawei.com>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     rdunlap@infradead.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched: RT bandwidth interface for cgroup unified
+ hierarchy
+Message-ID: <20220622173929.GA669@blackbody.suse.cz>
+References: <20220622015557.7497-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220528064330.3471000-4-yukuai3@huawei.com>
+In-Reply-To: <20220622015557.7497-1-zhouchengming@bytedance.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -65,29 +66,21 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello Chengming.
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, Jun 22, 2022 at 09:55:57AM +0800, Chengming Zhou <zhouchengming@bytedance.com> wrote:
+> We need to run RT threads in cgroup unified hierarchy, but we can't
+> since the default rt_bandwidth.rt_runtime of non-root task_group is 0
+> and we haven't interface to update it.
 
-On Sat, May 28, 2022 at 02:43:25PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
-> +static u64 calculate_bytes_allowed(u64 bps_limit,
-> +				   unsigned long jiffy_elapsed_rnd)
+Do you really want to make use of group RT schedulling
+(CONFIG_RT_GROUP_SCHED) or just be able to run RT threads in the unified
+hieararchy with cpu controller enabled?
 
-Just noticed with all series applied this argument needn't be called
-_rnd. (It's a nit.)
+Those are two different use cases, the former is more complex and it's a
+reason why v2 doesn't expose the RT attributes (yet).
+The latter is typically achieved by unsetting CONFIG_RT_GROUP_SCHED (and
+relying on the global rt_runtime limit).
 
-
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYrNQ5QAKCRAkDQmsBEOq
-uRC5AQC2JzZNZsl22etM1LtHU6Wno1hgy9s1Fj5YailfIQfTJwD/c6sCNnhojsjQ
-PCgMBZaodtkg4p+8C/tt1eXOMBvsGgo=
-=UiWF
------END PGP SIGNATURE-----
-
---wRRV7LY7NUeQGEoC--
+Thanks,
+Michal
