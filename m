@@ -2,204 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D654C55A369
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jun 2022 23:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAF455A433
+	for <lists+cgroups@lfdr.de>; Sat, 25 Jun 2022 00:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbiFXVSH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Jun 2022 17:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
+        id S230180AbiFXWKz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 Jun 2022 18:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbiFXVSF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Jun 2022 17:18:05 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C32A63F7
-        for <cgroups@vger.kernel.org>; Fri, 24 Jun 2022 14:18:02 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id mf9so7263302ejb.0
-        for <cgroups@vger.kernel.org>; Fri, 24 Jun 2022 14:18:02 -0700 (PDT)
+        with ESMTP id S230008AbiFXWKy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Jun 2022 18:10:54 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D661987D4C
+        for <cgroups@vger.kernel.org>; Fri, 24 Jun 2022 15:10:53 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-3137316bb69so37006027b3.10
+        for <cgroups@vger.kernel.org>; Fri, 24 Jun 2022 15:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kOvhoEpSE/InAZniXEti7vxsLeyf1a5ZFLlDrYfEPAA=;
-        b=M1hPxnJUFy/KS9mddV1ZPCrOTUCJOFrbdOpyi7j0ftrXkyhBEEnYliwfUMRIJpc302
-         UerGSaJuJ0U+ZQOOBbu9YnTTWBPqzn6BGm20kcHK021zUKyUQcLbeROv76yKvkCA4wL5
-         TKPV/NeXPSFred9jnh+TebuOPhqPca6DgiiGGp4t7notg/0HrutadjdFHCaRzrR60/SS
-         kEf+UPdtfuMWWyAGy3sWvPgk2BDAIWToAkVEoiSpYe94Nv1jd3nvOoAgAb/ln/G4XSiC
-         GAFPYKei8IcLsfKWZvc/9gQfNai9RmMKWnJqWlZq+QZRlzREX3RhLKN999kWcpZY7b77
-         80Uw==
+        bh=MPUT7b82LF4hqDUUtgfdWYg7XHkm0MfnLKUixSkaz7k=;
+        b=WnBDdY1sKHZ43lWqKHRdAuYvybd/8kSb8TjkZR2KOTjX+5fZb8SKXr70R8vn/Nm6uk
+         yy4AZjujv1MOQ5qE2LXrfnBKvSwrWHTd+o3nonjwTNHkV7um3J8BSZL7ce36KLQ2EZgg
+         lfUXVN9saCk3H6SQLSe4zS4iFH8wJseir8mwv6IN1oJDaxd8zJt5GHB3m1qxUpL7EEdS
+         0WSlfRFS3DcyX+dYA06LrxbMRqCjvo+gegjH7Rm50Z6JkIqTm6Qw8Vk3VMpGxXEEsGHY
+         3NWLPplEPK76M2TowCn8uxsEhEV2i1ID5pLJpgrCXm3/ymUus4LDoeK9Zq01HuUBqIPr
+         Ot/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kOvhoEpSE/InAZniXEti7vxsLeyf1a5ZFLlDrYfEPAA=;
-        b=4oIxGdSN3YTrh3+3yK58xtNz4/PVOSOD4lL1Zj4Q5eOMwAL+tdHtm5jPMHaZg9kj4U
-         zVd8rWyZDTARcJKEkAq3Ry1JN/NH35kwwj7bMOWNYq3UDRfgV3r8KQmxPKe53Ov1eb+p
-         xwFWW3v/3SpzObtp3JDuvNsPrZze/iLnOwm1Cr4LloUkqAysEbnyuDp20aUSHujn8/Y6
-         YB94ED71vuhXoSIhm1MyIC/YSGZUG4xpd/RRVUZs24xZZt4buQgpAvABF7ppyhN4n3ox
-         gInZqysJfOXAa7VlBF+IypIhp+s7Ed+gm6mbQihshSdFmTR2ew6mTEAcs4m4PDMxTxqy
-         wJKg==
-X-Gm-Message-State: AJIora9bxa3VfDQKDOwhDsHO5UVZsrk/bIp7qm1FoDcH+Gg+qJKmMo+f
-        ypXpRU5wGZRjoEYh8gHPjAvl6fWpyLI4QJWCmL7qsw==
-X-Google-Smtp-Source: AGRyM1sSg7LIinwzTB+qnSxgsQphAXAb9tAoVzunteBdzvrsgIwf9MXdDqBKLlkpEVBLtUpHvFPPJdLDYUqh2lPKgqo=
-X-Received: by 2002:a17:907:d25:b0:711:ea61:63aa with SMTP id
- gn37-20020a1709070d2500b00711ea6163aamr992776ejc.584.1656105480525; Fri, 24
- Jun 2022 14:18:00 -0700 (PDT)
+        bh=MPUT7b82LF4hqDUUtgfdWYg7XHkm0MfnLKUixSkaz7k=;
+        b=F5nL+HOdjHlXh2JEtdbw7/uTMJexq4s7uO2MTuQWLveVIb4w+QQeG4342YcYvJ+dGW
+         D4ZcCq3eZUrlDkR4dG0DwR5gY2F4sO+NjuZ/bx2t1euRFbSvq3aIkxnt59iZXIsI8N4R
+         gmVExbvcM+4shgLxjkKb4E4IU7kro5mZpucer13qzOJDZgXmyqhEwwbyu1ta9nd5Biyx
+         8bwmftEqoZdxBcnSiPfkk87H+eJI/05V6+9UX4LflOjV8CxG3mGf1legdWLUndCodWYU
+         VigdkiwZ3QnLy/qbpMkE6VTvliuFVQbSp/DrIlecPOcPVHBPTLozlXyktZCGwnqAAOaw
+         PLug==
+X-Gm-Message-State: AJIora9JQsfsidPPsufMu181gEIcIiHBZhX/JukOfdGq2YWEsjGnEcKx
+        FMOb9FAcOMxsNH4lC3fzZGJbtocF/9ec21B3LbMP8A==
+X-Google-Smtp-Source: AGRyM1sxAxV70UIIWovLfc+/KoZfgfG1H160vS226s5+FEkGtuxLMGsy88z4J48RiBrNZTyFJb70K7XvMmCwJTSSeXw=
+X-Received: by 2002:a81:990f:0:b0:2f8:c347:d11a with SMTP id
+ q15-20020a81990f000000b002f8c347d11amr1212049ywg.507.1656108652897; Fri, 24
+ Jun 2022 15:10:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CABdmKX3ZV6-u-oLvW_wWavAMBfrsZ=C_rCgK_Uz4VjxcRvRFew@mail.gmail.com>
- <81026ef07c1ce20f8673b75b17bab79a2b39c548.camel@ndufresne.ca>
- <CABdmKX2LxZ6zZR=fhXfnuWCB2BR+gzDd1-t1DD2A2XP24wvuGQ@mail.gmail.com>
- <Yn6DpUsoSz1/15Kc@slm.duckdns.org> <CABdmKX1xvm87WMEDkMc9Aye46E4zv1-scenwgaRxHesrOCsaYg@mail.gmail.com>
- <YodHjYlMx1XGtM2+@slm.duckdns.org> <CABdmKX2Ok023rN1drQgXVZLKUO_DVYrzmEamCgMMu6BPO67yhQ@mail.gmail.com>
- <CABdmKX0WV8VWgeafVGJ++nJ4xsJD7Wpz=3KX=BW1du=huttfvw@mail.gmail.com>
- <YrYbwu0iIAJJGXVg@phenom.ffwll.local> <CANDhNCqGjaq-SFvWwkqnEFj4tJcRqCYupZ03wLyCexqTH5MqMg@mail.gmail.com>
- <YrYgWCTtZqfvCt5D@phenom.ffwll.local>
-In-Reply-To: <YrYgWCTtZqfvCt5D@phenom.ffwll.local>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Fri, 24 Jun 2022 14:17:49 -0700
-Message-ID: <CABdmKX0bJDLwK7JEDGVb=KHtoVbZgnXYr8UE5eUpLYuAyiWwyw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Proposal for a GPU cgroup controller
-To:     John Stultz <jstultz@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>, Tejun Heo <tj@kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Zefan Li <lizefan.x@bytedance.com>,
+References: <20220623000530.1194226-1-yosryahmed@google.com>
+ <YrQe5A+FXnbgOR1f@dhcp22.suse.cz> <CAJD7tkanavKpKrQr8-jA8pukgD7OY4eOwJRZufJ2NoThD12G+Q@mail.gmail.com>
+ <YrQ1o3CeaZWhm+h4@dhcp22.suse.cz> <CAJD7tkadsLOV7GMFAm+naX4Y1WpZ-4=NkAhAMxNw60iaRPWx=w@mail.gmail.com>
+ <YrSWruhPlJV1X9kp@dhcp22.suse.cz> <CALvZod6eLa1X1FJ2Qi6FXhFA-qBCP4mN2SB31MSgjj+g8hKo6Q@mail.gmail.com>
+ <YrSdFy3qYdG+rGR6@dhcp22.suse.cz> <CAJD7tkZNEtzJMDsLMHuNHkxFfurS37UuK=zFcPCkOkWfN-dbJQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkZNEtzJMDsLMHuNHkxFfurS37UuK=zFcPCkOkWfN-dbJQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 24 Jun 2022 15:10:42 -0700
+Message-ID: <CAJuCfpG6D1fhc4c_-0cL=rmXUbhdROSWsObYrZ7Mp4=+sBkT7Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: vmpressure: don't count userspace-induced reclaim as
+ memory pressure
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Kalesh Singh <kaleshsingh@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kernel-team@android.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kselftest@vger.kernel.org
-Cc:     Daniel Vetter <daniel@ffwll.ch>
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
+        Alistair Popple <apopple@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 1:36 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Thu, Jun 23, 2022 at 10:26 AM Yosry Ahmed <yosryahmed@google.com> wrote:
 >
-> On Fri, Jun 24, 2022 at 01:32:45PM -0700, John Stultz wrote:
-> > On Fri, Jun 24, 2022 at 1:17 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Wed, Jun 15, 2022 at 10:31:21AM -0700, T.J. Mercier wrote:
-> > > > On Fri, May 20, 2022 at 9:25 AM T.J. Mercier <tjmercier@google.com> wrote:
-> > > > >
-> > > > > On Fri, May 20, 2022 at 12:47 AM Tejun Heo <tj@kernel.org> wrote:
-> > > > > >
-> > > > > > Hello,
-> > > > > >
-> > > > > > On Tue, May 17, 2022 at 04:30:29PM -0700, T.J. Mercier wrote:
-> > > > > > > Thanks for your suggestion. This almost works. "dmabuf" as a key could
-> > > > > > > work, but I'd actually like to account for each heap. Since heaps can
-> > > > > > > be dynamically added, I can't accommodate every potential heap name by
-> > > > > > > hardcoding registrations in the misc controller.
-> > > > > >
-> > > > > > On its own, that's a pretty weak reason to be adding a separate gpu
-> > > > > > controller especially given that it doesn't really seem to be one with
-> > > > > > proper abstractions for gpu resources. We don't want to keep adding random
-> > > > > > keys to misc controller but can definitely add limited flexibility. What
-> > > > > > kind of keys do you need?
-> > > > > >
-> > > > > Well the dmabuf-from-heaps component of this is the initial use case.
-> > > > > I was envisioning we'd have additional keys as discussed here:
-> > > > > https://lore.kernel.org/lkml/20220328035951.1817417-1-tjmercier@google.com/T/#m82e5fe9d8674bb60160701e52dae4356fea2ddfa
-> > > > > So we'd end up with a well-defined core set of keys like "system", and
-> > > > > then drivers would be free to use their own keys for their own unique
-> > > > > purposes which could be complementary or orthogonal to the core set.
-> > > > > Yesterday I was talking with someone who is interested in limiting gpu
-> > > > > cores and bus IDs in addition to gpu memory. How to define core keys
-> > > > > is the part where it looks like there's trouble.
-> > > > >
-> > > > > For my use case it would be sufficient to have current and maximum
-> > > > > values for an arbitrary number of keys - one per heap. So the only
-> > > > > part missing from the misc controller (for my use case) is the ability
-> > > > > to register a new key at runtime as heaps are added. Instead of
-> > > > > keeping track of resources with enum misc_res_type, requesting a
-> > > > > resource handle/ID from the misc controller at runtime is what I think
-> > > > > would be required instead.
-> > > > >
-> > > > Quick update: I'm going to make an attempt to modify the misc
-> > > > controller to support a limited amount of dynamic resource
-> > > > registration/tracking in place of the new controller in this series.
-> > > >
-> > > > Thanks everyone for the feedback.
-> > >
-> > > Somehow I missed this entire chain here.
-> > >
-> > > I'm not a fan, because I'm kinda hoping we could finally unify gpu memory
-> > > account. Atm everyone just adds their one-off solution in a random corner:
-> > > - total tracking in misc cgroup controller
-> > > - dma-buf sysfs files (except apparently too slow so it'll get deleted
-> > >   again)
-> > > - random other stuff on open device files os OOM killer can see it
-> > >
-> > > This doesn't look good.
+> On Thu, Jun 23, 2022 at 10:04 AM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > But I also think one could see it as "gpu memory" is the drm subsystem
-> > doing the same thing (in that it's artificially narrow to gpus). It
-> > seems we need something to account for buffers allocated by drivers,
-> > no matter which subsystem it was in (drm, v4l2, or networking or
-> > whatever).
+> > On Thu 23-06-22 09:42:43, Shakeel Butt wrote:
+> > > On Thu, Jun 23, 2022 at 9:37 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 23-06-22 09:22:35, Yosry Ahmed wrote:
+> > > > > On Thu, Jun 23, 2022 at 2:43 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Thu 23-06-22 01:35:59, Yosry Ahmed wrote:
+> > > > [...]
+> > > > > > > In our internal version of memory.reclaim that we recently upstreamed,
+> > > > > > > we do not account vmpressure during proactive reclaim (similar to how
+> > > > > > > psi is handled upstream). We want to make sure this behavior also
+> > > > > > > exists in the upstream version so that consolidating them does not
+> > > > > > > break our users who rely on vmpressure and will start seeing increased
+> > > > > > > pressure due to proactive reclaim.
+> > > > > >
+> > > > > > These are good reasons to have this patch in your tree. But why is this
+> > > > > > patch benefitial for the upstream kernel? It clearly adds some code and
+> > > > > > some special casing which will add a maintenance overhead.
+> > > > >
+> > > > > It is not just Google, any existing vmpressure users will start seeing
+> > > > > false pressure notifications with memory.reclaim. The main goal of the
+> > > > > patch is to make sure memory.reclaim does not break pre-existing users
+> > > > > of vmpressure, and doing it in a way that is consistent with psi makes
+> > > > > sense.
+> > > >
+> > > > memory.reclaim is v2 only feature which doesn't have vmpressure
+> > > > interface. So I do not see how pre-existing users of the upstream kernel
+> > > > can see any breakage.
+> > > >
+> > >
+> > > Please note that vmpressure is still being used in v2 by the
+> > > networking layer (see mem_cgroup_under_socket_pressure()) for
+> > > detecting memory pressure.
+> >
+> > I have missed this. It is hidden quite good. I thought that v2 is
+> > completely vmpressure free. I have to admit that the effect of
+> > mem_cgroup_under_socket_pressure is not really clear to me. Not to
+> > mention whether it should or shouldn't be triggered for the user
+> > triggered memory reclaim. So this would really need some explanation.
 >
-> This is what the gpucg was. It wasn't called the dmabuf cg because we want
-> to account also memory of other types (e.g. drm gem buffer objects which
-> aren't exported), and I guess people didn't dare call it an xpu.
+> vmpressure was tied into socket pressure by 8e8ae645249b ("mm:
+> memcontrol: hook up vmpressure to socket pressure"). A quick look at
+> the commit log and the code suggests that this is used all over the
+> socket and tcp code to throttles the memory consumption of the
+> networking layer if we are under pressure.
 >
-> But this was absolutely for a lot more than just "gpu drivers in drm".
-> Better names welcome.
-> -Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> However, for proactive reclaim like memory.reclaim, the target is to
+> probe the memcg for cold memory. Reclaiming such memory should not
+> have a visible effect on the workload performance. I don't think that
+> any network throttling side effects are correct here.
 
-From an API perspective the two approaches (misc vs GPU) seem similar
-to me. Someone comes up with a name of a resource they want to track,
-and it's added as a key in a cgroup interface file as drivers register
-and perform accounting on that resource. Considering just the naming,
-what do you see as the appeal of a controller named GPU/XPU vs one
-named Misc? Folks seem to have assumptions about the type of resources
-a "GPU" controller should be tracking, and potentially also how
-different resources are grouped under a single resource name. So is
-your thought that non-graphics related accounting of the same sort
-should be using a differently named controller, even if that
-controller could have the same implementation?
+IIUC, this change is fixing two mechanisms during userspace-induced
+memory pressure:
+1. psi accounting, which I think is not controversial and makes sense to me;
+2. vmpressure signal, which is a "kinda" obsolete interface and might
+be viewed as controversial.
+I would suggest splitting the patch into two, first to fix psi
+accounting and second to fix vmpressure signal. This way the first one
+(probably the bigger of the two) can be reviewed and accepted easily
+while debates continue on the second one.
 
-My thought is that the resource names should be as specific as
-possible to allow fine-grained accounting, and leave any grouping of
-resources to userspace. We can do that under any controller. If you'd
-like to see a separate controller for graphics related stuff... well
-that's what I was aiming for with the GPU cgroup controller. It's just
-that dmabufs from heaps are the first use-case wired up.
-
-I haven't put much time into the misc controller effort yet, and I'd
-still be happy to see the GPU controller accepted if we can agree
-about how it'd be used going forward. Daniel, I think you're in a
-great position to comment about this. :) If there's a place where the
-implementation is missing the mark, then let's change it. Are the
-controller and resource naming the only issues?
+>
+> >
+> > > Though IMO we should deprecate vmpressure altogether.
+> >
+> > Yes it should be really limited to v1. But as I've said the effect on
+> > mem_cgroup_under_socket_pressure is not really clear to me. It really
+> > seems the v2 support has been introduced deliberately.
+> >
+> > --
+> > Michal Hocko
+> > SUSE Labs
