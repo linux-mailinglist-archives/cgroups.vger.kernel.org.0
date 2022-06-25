@@ -2,87 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DF955A81B
-	for <lists+cgroups@lfdr.de>; Sat, 25 Jun 2022 10:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EB355A857
+	for <lists+cgroups@lfdr.de>; Sat, 25 Jun 2022 11:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbiFYIgj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 25 Jun 2022 04:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S232280AbiFYI6s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 25 Jun 2022 04:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231923AbiFYIgj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Jun 2022 04:36:39 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E5B313BF;
-        Sat, 25 Jun 2022 01:36:38 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LVS2m62Ydz1KC6N;
-        Sat, 25 Jun 2022 16:34:24 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 25 Jun 2022 16:36:35 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 25 Jun 2022 16:36:34 +0800
-Subject: Re: [PATCH -next v5 4/8] blk-throttle: fix io hung due to config
- updates
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>, <tj@kernel.org>
-CC:     <axboe@kernel.dk>, <ming.lei@redhat.com>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20220528064330.3471000-1-yukuai3@huawei.com>
- <20220528064330.3471000-5-yukuai3@huawei.com>
- <20220622172621.GA28246@blackbody.suse.cz>
- <f5165488-2461-8946-593f-14154e404850@huawei.com>
- <20220623162620.GB16004@blackbody.suse.cz>
-From:   Yu Kuai <yukuai3@huawei.com>
-Message-ID: <75b3cdcc-1aa3-7259-4900-f09a2a081716@huawei.com>
-Date:   Sat, 25 Jun 2022 16:36:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S232258AbiFYI6q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 25 Jun 2022 04:58:46 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194A82CDDD
+        for <cgroups@vger.kernel.org>; Sat, 25 Jun 2022 01:58:45 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id h9-20020a17090a648900b001ecb8596e43so4889232pjj.5
+        for <cgroups@vger.kernel.org>; Sat, 25 Jun 2022 01:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yBLfi92gAlfWDayXHgzw4YwyIEMK5sbZZcp3v3R4WvY=;
+        b=vWECR4lLdOmckfTvOtrYhFODIrM4aq0XBkbDVkccpRjJ3+cMeUvXRYavTTP+yfUnbX
+         w6+J8m/kcwHkSZzmeu90jyJ4IHHBP0StpdY3RIXtbqNihYBxZAT27XARGx07UqgXeU3y
+         01EYfl9HNI/lphnYRGJjUaO46ig2ViHWHtRFePaayXwsyi8aoJCj72pwSANRc1WThHL1
+         tmtUkNuzPsKLzhrXfUX7uXSPKmb3opDWoWCq8GFZe3XYLVPj4P86uCXjA1fiZoOMC3kA
+         g8mg9T5IRuUlgBoPJ7tT/uIOH458e1rOQLqTqaGGZ9RSmZ07ahQTQbgL0xbfqf4bvYR8
+         FB5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yBLfi92gAlfWDayXHgzw4YwyIEMK5sbZZcp3v3R4WvY=;
+        b=L2kFVdh8XF41SeTiNjxI5tIxoQjxEjOm0w8Cg0jLpuqOodvFLcYYjsgbS5j7BTay3k
+         xPr0eu46wE7/awSWtMzjZibEUaIV8AyNjkfqFTdqX/xpzwuA6jR2ABS6129DKnWR84IJ
+         PJ0qPIvhB0DxmsXZ2MrGtxe4ZwMc1nR9aL8NxG2/pIFRvkZWYoIm2juc5HcoKdZ88TB1
+         YvO5+FQwxeXOTJFkZhwZNHm9rWtH5P4BC7DPuUhA2iizvHWlAceDR+Vjt1YB8VaSUSHD
+         gokOqAkTP8j65nMqB1Npy+icLSQdi0A5hOmR7L/4kiPiJ/ivouMBS6yydyYH8aZync9Z
+         zQsw==
+X-Gm-Message-State: AJIora9OhhqkEKwTZPxrliSWKTy3UCQ2xTcP70rahL+KVarBhQ+8YceB
+        bC19EfcZiDV52dmKjTFAKHTTAmAFo78DEICQ
+X-Google-Smtp-Source: AGRyM1sYJQcyA2mxkXzZ9zdfOKE7155NN545ntISrtYfLfZWk2r2d66rK3coFs1+Gxw1q5DvzPxpBQ==
+X-Received: by 2002:a17:90a:bf86:b0:1ec:cc6d:c0f with SMTP id d6-20020a17090abf8600b001eccc6d0c0fmr3451167pjs.202.1656147524621;
+        Sat, 25 Jun 2022 01:58:44 -0700 (PDT)
+Received: from localhost ([2408:8207:18da:2310:c80d:fa4f:de4d:bed5])
+        by smtp.gmail.com with ESMTPSA id e14-20020a170902ef4e00b0016a275623c1sm3157808plx.219.2022.06.25.01.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jun 2022 01:58:44 -0700 (PDT)
+Date:   Sat, 25 Jun 2022 16:58:38 +0800
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     Xiang Yang <xiangyang3@huawei.com>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mm/memcontrol.c: replace cgroup_memory_nokmem with
+ mem_cgroup_kmem_disabled()
+Message-ID: <YrbOPktTSb00DvYw@FVFYT0MHHV2J.usts.net>
+References: <20220625061844.226764-1-xiangyang3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20220623162620.GB16004@blackbody.suse.cz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220625061844.226764-1-xiangyang3@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/06/24 0:26, Michal Koutný 写道:
-> On Thu, Jun 23, 2022 at 08:27:11PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
->>> Here we may allow to dispatch a bio above current slice's
->>> calculate_bytes_allowed() if bytes_skipped is already >0.
->>
->> Hi, I don't expect that to happen. For example, if a bio is still
->> throttled, then old slice is keeped with proper 'bytes_skipped',
->> then new wait time is caculated based on (bio_size - bytes_skipped).
->>
->> After the bio is dispatched(I assum that other bios can't preempt),
+On Sat, Jun 25, 2022 at 02:18:44PM +0800, Xiang Yang wrote:
+> mem_cgroup_kmem_disabled() checks whether the kmem accounting is off.
+> Therefore, replace cgroup_memory_nokmem with mem_cgroup_kmem_disabled(),
+> which is the same work in percpu.c and slab_common.c.
 > 
-> With this assumptions it adds up as you write. I believe we're in
-> agreement.
-> 
-> It's the same assumption I made below (FIFO everywhere, i.e. no
-> reordering). So the discussed difference shouldn't really be negative
-> (and if the assumption didn't hold, so the modular arithmetic yields
-> corerct bytes_skipped value).
-Yes, nice that we're in aggreement.
+> Signed-off-by: Xiang Yang <xiangyang3@huawei.com>
 
-I'll wait to see if Tejun has any suggestions.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Thanks,
-Kuai
-> 
-> Michal
-> .
-> 
+Thanks.
