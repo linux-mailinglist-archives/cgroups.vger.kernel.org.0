@@ -2,149 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302B655CCC4
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0CC55DA3C
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbiF0REc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Jun 2022 13:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S236183AbiF0TKf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jun 2022 15:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235550AbiF0REc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 13:04:32 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3046814D2E
-        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 10:04:31 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id i1so9471864wrb.11
-        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 10:04:31 -0700 (PDT)
+        with ESMTP id S240365AbiF0TKd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 15:10:33 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A003B5597;
+        Mon, 27 Jun 2022 12:10:32 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id n16-20020a17090ade9000b001ed15b37424so10310355pjv.3;
+        Mon, 27 Jun 2022 12:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ZvfkO3IFf3n/ZVC71sBF9P6CPQM5ABge97UmMt98ps=;
-        b=MjiW4IZIKNvnRLaZM4hrpDs4I/vEqDj5/3xOzyG/gv8hlURBfdXynnwR5LA4UVW70b
-         o6v1EJHUzimguE8TQT2qD+Ab522RK1leX7GKKUj72qeBt/3gTwNZo3T7zB5s5GAWR77C
-         kmZiLNM8c8QVC160v7Ww9LlRpm1EKOj9ecAo/uAQCARN/f/mgZjude7rkreOk0yXGga4
-         Yc2oi4K5OYLJIn0wx5Z3wx0IbtNw5aTVQ4dxcBthCiW5NNtCuEvfM0Mj9ZlgHR8TiiCA
-         U8V6ZkaLIF2+CvNbXCBVwy7P4laWgV05N1TKs+pMvPm7BtkXpcmeznV712/+QiAYbgHU
-         HMwQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/TJYBcpsxpHM1dgljke9KHv7g4SupUF3o95Sw1aZ2ck=;
+        b=IUrCqExbfNSEqdj1+aclN5lVCX6iP7eBPxz3UnA29I42X7w8qUJC0d2QFa6lECfvHS
+         lTMdErf6FACs1/hyp38L86tGz+o787pLf2VIheb7iIKAGcJlc9+ImxpPc6dZHKPr2Lnd
+         297Swn9MhvVXOe5pLyL9hyobmlUtJUylIgtVuWFNUy7M/cvy0Ei9a+7/6RNLP/vuaWpm
+         qPXLfyJ7VkpxIpiy0dSvQGEwS2wO1IikzptCMphwHEF+yGlRha2BCj6vVKJloizO0jzV
+         wtWURRXun0tZKmoLu2aju0/0SznVwcWbO33ww6x17xU68Xd6vEBZdnna3JSmuqObPHbN
+         196g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ZvfkO3IFf3n/ZVC71sBF9P6CPQM5ABge97UmMt98ps=;
-        b=Ta2kmcQOV6W9/LXrfHU40i3kgyCkjtpR2DB+DLS9gfczF7KE2RvwzgDPTzHIfeeHWe
-         f6uVfXaQk2Yg/z8+7QTBqObQeRKWnF9Y/0cfD8TH+cMgRBgzhqk9fzIxAXWNkMTd3/9E
-         FfcfckmwrAMoagXjc9Lx5wJfqQA2ShsHKSipu+1Bz/UvsBVcz33bPWpbFEKMKfnUxs27
-         Gkj9TeftpcE+OnJk87vLLkTguU2awhj0lfHRWwlGAFvS5eIlhhJSj4jENQvqnAWP8D3Z
-         V1vwAs8mb5IhsDxOULfIB/QIe7k9ffypoUrdXhOBYz95Mu+pMdgxuB/1lHfxDkbBNl80
-         ub5A==
-X-Gm-Message-State: AJIora86fQOMf4aHdYfucPN73nKCxYGswlvTgBVW13TSc9TORRV7XX1c
-        SYWblGUKTuivJGyLiDHem0B1pBulFQwxxUDBcyU5qQ==
-X-Google-Smtp-Source: AGRyM1tsM6jtK4W1ydOvV8tE+BMi6c/Kd8ao252QMgYmdkd1sbM1VIU0dS/5S3UTvHRiwBpXdREowoHR7zHRMY+vfNk=
-X-Received: by 2002:a5d:6ac4:0:b0:21b:a724:1711 with SMTP id
- u4-20020a5d6ac4000000b0021ba7241711mr13037659wrw.80.1656349469508; Mon, 27
- Jun 2022 10:04:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <YrQ1o3CeaZWhm+h4@dhcp22.suse.cz> <CAJD7tkadsLOV7GMFAm+naX4Y1WpZ-4=NkAhAMxNw60iaRPWx=w@mail.gmail.com>
- <YrSWruhPlJV1X9kp@dhcp22.suse.cz> <CALvZod6eLa1X1FJ2Qi6FXhFA-qBCP4mN2SB31MSgjj+g8hKo6Q@mail.gmail.com>
- <YrSdFy3qYdG+rGR6@dhcp22.suse.cz> <CAJD7tkZNEtzJMDsLMHuNHkxFfurS37UuK=zFcPCkOkWfN-dbJQ@mail.gmail.com>
- <YrlpcdgF1HzA7bHS@dhcp22.suse.cz> <CAJD7tkYVy2uNwaPiiJdPKT5P_O-9WgxD68iFJ6vw=TLJcQV3Ag@mail.gmail.com>
- <Yrl2T632Vfv8QGPn@dhcp22.suse.cz> <CAJD7tkZzwzHq7Q7KKUdVSdO4LWTPkrGprp0Q-ze_SWhUd_mTMw@mail.gmail.com>
- <YrmjH2FZF7iNn8da@dhcp22.suse.cz>
-In-Reply-To: <YrmjH2FZF7iNn8da@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 27 Jun 2022 10:03:53 -0700
-Message-ID: <CAJD7tkYemNQqu_O2nYG3cqxPWGELvc6Lh5i+KKNCtv6cgSPmdA@mail.gmail.com>
-Subject: Re: [PATCH] mm: vmpressure: don't count userspace-induced reclaim as
- memory pressure
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=/TJYBcpsxpHM1dgljke9KHv7g4SupUF3o95Sw1aZ2ck=;
+        b=IMOxxCH+3YW5q69QljDGHjGdATj/9ipfgW8YCq9jPRqEyKqBRh2RZXFh4D7ZsUEVfT
+         mzyE2c4HHjZRyqIbUedzt1hnDzWumsvZ+nLG3+Sk/z0xcWNMzal8k1FLfXDcQnoHeIKl
+         ILWXqMi+/qF5Wbcni0hFrj1L/19CjIzt39lLEcCfP8PfC01hO3DDcPajvIXh4/pDcDga
+         6EsNtsdJOaojsCFXBewDrTw4w8ViVOiRXUqN/RAi5JStChLWQHyqii4df9+DRv5dzjMh
+         LKUvfXKhMiBz2PyciB+RSaywmCZCkwZ6DeoS/bqambujl3RFc+c8KYEAbumVLkh3K+qX
+         uxqQ==
+X-Gm-Message-State: AJIora91OBj6bihYl7CPX5A7XSvvfFZyAdfauZt6Awu7PWCc9g02kP2J
+        0C8f7S8c2PRRSttO0AzNRnY=
+X-Google-Smtp-Source: AGRyM1v4pZPlgtYqoeaDHgmUszlXO0IEON1F8nITnkj9iOAgcw3+OR56oHGI6Qm3c0Gt8vy7rjuFZw==
+X-Received: by 2002:a17:902:bc4c:b0:16a:4849:ddbe with SMTP id t12-20020a170902bc4c00b0016a4849ddbemr816273plz.25.1656357031911;
+        Mon, 27 Jun 2022 12:10:31 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:4120])
+        by smtp.gmail.com with ESMTPSA id t5-20020a17090aae0500b001ec4f258028sm7805995pjq.55.2022.06.27.12.10.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jun 2022 12:10:31 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 28 Jun 2022 04:10:29 +0900
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v11 7/8] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YroApRMPV/6zO5I8@mtj.duckdns.org>
+References: <20220510153413.400020-1-longman@redhat.com>
+ <20220510153413.400020-8-longman@redhat.com>
+ <YqYnQ4U4t6j/3UaL@slm.duckdns.org>
+ <404171dc-0da3-21f2-5003-9718f875e967@redhat.com>
+ <YqarMyNo9oHxhZFh@slm.duckdns.org>
+ <20220613142452.GB6910@blackbody.suse.cz>
+ <YqdzuSQuAeiPXQvy@slm.duckdns.org>
+ <20220613175548.GB21665@blackbody.suse.cz>
+ <Yqd7WMFj6AEyV3Cy@slm.duckdns.org>
+ <20220614115345.GA6771@blackbody.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220614115345.GA6771@blackbody.suse.cz>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 5:31 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 27-06-22 02:39:49, Yosry Ahmed wrote:
-> [...]
-> > (a) Do not count vmpressure for mem_cgroup_resize_max() and
-> > mem_cgroup_force_empty() in v1.
->
-> yes, unless you have a very good reason to change that. E.g. this has
-> been buggy and we have finally understood that. But I do not see any
-> indications so far.
+Hello,
 
-I don't have any bug reports. It makes sense that users do not expect
-vmpressure notifications when they resize the limits below the current
-usage, because it should be expected that reclaim will happen so
-receiving notifications here is redundant, and may be incorrectly
-perceived by a different user space thread as being under memory
-pressure. But I get your point that what the user sees as memory
-pressure or not could be different, and is probably already defined by
-the current behavior anyway, whether it makes sense or not.
+On Tue, Jun 14, 2022 at 01:53:45PM +0200, Michal Koutný wrote:
+> On Mon, Jun 13, 2022 at 08:00:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> > Yeah, I don't know why this part is different from any other errors that the
+> > parent can make.
+> 
+> It's different because a write to parent's cpuset.cpus is independent of
+> whether cpuset.cpus of its children are exclusive or not.
+> In an extreme case the children may be non-exclusive
+> 
+>     parent	cpuset.cpus=0-3 //   valid partition
+>     `- child_1	cpuset.cpus=0-1	// invalid partition
+>     `- child_2	cpuset.cpus=1-2 // invalid partition
+> 
+> but the parent can still be a valid partition (thanks to cpu no. 3 in
+> the example above).
+> 
+> Do I miss anything?
 
-I can also see some userspace applications depending on this behavior
-in some way, either by handling that limit resize notification in a
-certain way or deliberately dropping it. Either way, making this
-change could throw them off. I don't expect any userspace applications
-to crash of course (because there are cases where they won't receive
-notifications, e.g. scanned < vmpressure_win), but perhaps it's not
-worth even risk misguiding them.
+What I'm trying to say is that cpuset.cpus of child_1 and child_2 are
+owned by the parent, so a feature which blocks siblings from
+intersecting each other doesn't make whole lot of sense because all
+those files are under the control of the parent who would have the
+power to enable or disable the restrition anyway.
 
-So I agree that just because it doesn't make sense or is inconsistent
-with other definitions of behavior then we can make a visible change
-for userspace. I will drop the v1 changes in the next version anyway.
+The partition mode file is owned by the parent too, right? So, all
+these are to be configured by the same entity and the errors can be
+reported the same way, no?
 
-Thanks!
+Thanks.
 
->
-> > (b) Do not count vmpressure (consequently,
-> > mem_cgroup_under_socket_pressure()) in v2 where psi is not counted
-> > (writing to memory.max, memory.high, and memory.reclaim).
->
-> I can see clear arguments for memory.reclaim opt out for vmpressure
-> because we have established that this is not a measure to express a
-> memory pressure on the cgroup.
->
-> Max/High are less clear to me, TBH. I do understand reasoning for PSI
-> exclusion because considering the calling process to be stalled and
-> non-productive is misleading. It just does its work so in a way it is
-> a productive time in the end. For the vmpressure, which measures how
-> hard/easy it is to reclaim memory why this should special for this
-> particular reclaim?
->
-> Again, an explanation of the effect on the socket pressure could give a
-> better picture. Say that I somebody reduces the limit (hard/high) and it
-> takes quite some effort to shrink the consumption down. Should the
-> networking layer react to that in any way or should it wait for the
-> active allocation during that process to find that out?
-
-I am out of my depth here. Any answer on my side would be purely
-speculation at this point. Shakeel, can you help us here or tag some
-networking people?
-Thanks!
-
-> --
-> Michal Hocko
-> SUSE Labs
+-- 
+tejun
