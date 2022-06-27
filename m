@@ -2,107 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8444555C1ED
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 14:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31FA55C2B5
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 14:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236125AbiF0Mbi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Jun 2022 08:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        id S238888AbiF0QH7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jun 2022 12:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbiF0Mba (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 08:31:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79922DED1;
-        Mon, 27 Jun 2022 05:31:29 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 23B0F21CE4;
-        Mon, 27 Jun 2022 12:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1656333088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H2x18KoFRy5eal2D3ylc2+U1rybp7813ga/wOUoNe6s=;
-        b=MN+FbeFBztRg1vQn/aZS6WgzpJcvWE6GlhrAy1Bn2uYz6Fgk3nG1G2IBxSamszzE041LHN
-        FYiV/4Oov7dyHxK7Ap2HTWMY4KowzOrjMf2zZGO5NgGZfnmfaD9ie3tBC7hiO/8eBkBjto
-        EEejyW10KiaUFmPLEkSEZ9i8fEwxLpw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 87FAA2C141;
-        Mon, 27 Jun 2022 12:31:27 +0000 (UTC)
-Date:   Mon, 27 Jun 2022 14:31:27 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        with ESMTP id S239000AbiF0QHh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 12:07:37 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C5314D2A
+        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:07:36 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id w19-20020a17090a8a1300b001ec79064d8dso12945605pjn.2
+        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l0pibN8bjG0PnvfGdr94sagjrAjKQlwTKx4ke7hg5TE=;
+        b=KXpJaULYCMOBvM0KZ+Y0QmYKcs5GsOT3UDoT12OxOmZTuofXiRwwGm/WgJTM1heXoI
+         t1dv3k342OQnZ9iooXjd608cniWLl0qlDw2/EFrZO3JITiMUniSnoS9vRpsVYcQj8vN/
+         I7nko6H+yxfXlWmj6BpVmIQCvWqpF55RTmiG3dExwV8krl6JWA8dxuz7o3cuKUtlCKLL
+         AUH1GrHaKcLi0AxNkq1Q0RlPIztx9SDq4ccjZXK7Aa2jkpBZXbRVUSJ+/fIBfJxIB9bo
+         wqHrvEDbll+Qw87/iH2rzRcMOLCQ34VpKyfcZXoB0fUgM3GYU80A2xB80LHN6E80KQa1
+         5riQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l0pibN8bjG0PnvfGdr94sagjrAjKQlwTKx4ke7hg5TE=;
+        b=TgoTEC0xZ+/b0YkvQKmUy2WJ1xdFn7Vquw6FJ+jUmRE6IZ/ewHELDojqyjqpfx4++g
+         ngibKOj+busIIftkKrICvdIpawBdPPZ0gw5ZgX7GSuhU0h57qq4+nMZanrrsWe5AtL9f
+         CW9Rr1vWtoopXXB42uMBHRexkEEjcLMOFfE+BEhvHTqNHSxMjV3ejPyXk2WOrJtT5gTC
+         La4WLFVPE3Q66t/BsBkmg5swoGxkagCKHhNeD1kPzZl/biNlIPnKxewsXdhQ9M5s1ipQ
+         6bduYSetpSFjV2O2dK56c3RdUvj1gEfv+0FWV2Mf4o6K86Zqz/yjHlT+UjrZsR7JE4CB
+         Me/Q==
+X-Gm-Message-State: AJIora8tdUTc5YtZqRR7opHb0Ix3b5ELCPAfCQdyicm0GCBCSy8gaZcj
+        IzH/rdHP0P7BXFs6bypHRfQc/Q==
+X-Google-Smtp-Source: AGRyM1uyfo5AfaNgmfF7G/qEE7dWnvzScXgctBWfKk3cum7fj6D7nx+TeglAS/qAbSPCsy6MAsmoPA==
+X-Received: by 2002:a17:902:9f97:b0:16a:9b9:fb63 with SMTP id g23-20020a1709029f9700b0016a09b9fb63mr15547216plq.7.1656346056250;
+        Mon, 27 Jun 2022 09:07:36 -0700 (PDT)
+Received: from google.com (123.65.230.35.bc.googleusercontent.com. [35.230.65.123])
+        by smtp.gmail.com with ESMTPSA id g17-20020aa78191000000b005254bd90f22sm7528584pfi.150.2022.06.27.09.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jun 2022 09:07:35 -0700 (PDT)
+Date:   Mon, 27 Jun 2022 16:07:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
 To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: vmpressure: don't count userspace-induced reclaim as
- memory pressure
-Message-ID: <YrmjH2FZF7iNn8da@dhcp22.suse.cz>
-References: <YrQ1o3CeaZWhm+h4@dhcp22.suse.cz>
- <CAJD7tkadsLOV7GMFAm+naX4Y1WpZ-4=NkAhAMxNw60iaRPWx=w@mail.gmail.com>
- <YrSWruhPlJV1X9kp@dhcp22.suse.cz>
- <CALvZod6eLa1X1FJ2Qi6FXhFA-qBCP4mN2SB31MSgjj+g8hKo6Q@mail.gmail.com>
- <YrSdFy3qYdG+rGR6@dhcp22.suse.cz>
- <CAJD7tkZNEtzJMDsLMHuNHkxFfurS37UuK=zFcPCkOkWfN-dbJQ@mail.gmail.com>
- <YrlpcdgF1HzA7bHS@dhcp22.suse.cz>
- <CAJD7tkYVy2uNwaPiiJdPKT5P_O-9WgxD68iFJ6vw=TLJcQV3Ag@mail.gmail.com>
- <Yrl2T632Vfv8QGPn@dhcp22.suse.cz>
- <CAJD7tkZzwzHq7Q7KKUdVSdO4LWTPkrGprp0Q-ze_SWhUd_mTMw@mail.gmail.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v5 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+Message-ID: <YrnVxM/5KjVhkOnn@google.com>
+References: <20220606222058.86688-1-yosryahmed@google.com>
+ <20220606222058.86688-2-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJD7tkZzwzHq7Q7KKUdVSdO4LWTPkrGprp0Q-ze_SWhUd_mTMw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220606222058.86688-2-yosryahmed@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 27-06-22 02:39:49, Yosry Ahmed wrote:
-[...]
-> (a) Do not count vmpressure for mem_cgroup_resize_max() and
-> mem_cgroup_force_empty() in v1.
+On Mon, Jun 06, 2022, Yosry Ahmed wrote:
+> Add NR_SECONDARY_PAGETABLE stat to count secondary page table uses, e.g.
+> KVM mmu. This provides more insights on the kernel memory used
+> by a workload.
 
-yes, unless you have a very good reason to change that. E.g. this has
-been buggy and we have finally understood that. But I do not see any
-indications so far.
+Please provide more justification for NR_SECONDARY_PAGETABLE in the changelog.
+Specially, answer the questions that were asked in the previous version:
 
-> (b) Do not count vmpressure (consequently,
-> mem_cgroup_under_socket_pressure()) in v2 where psi is not counted
-> (writing to memory.max, memory.high, and memory.reclaim).
+  1. Why not piggyback NR_PAGETABLE?
+  2. Why a "generic" NR_SECONDARY_PAGETABLE instead of NR_VIRT_PAGETABLE?
 
-I can see clear arguments for memory.reclaim opt out for vmpressure
-because we have established that this is not a measure to express a
-memory pressure on the cgroup.
+It doesn't have to be super long, but provide enough info so that reviewers and
+future readers don't need to go spelunking to understand the motivation for the
+new counter type.
 
-Max/High are less clear to me, TBH. I do understand reasoning for PSI
-exclusion because considering the calling process to be stalled and
-non-productive is misleading. It just does its work so in a way it is
-a productive time in the end. For the vmpressure, which measures how
-hard/easy it is to reclaim memory why this should special for this
-particular reclaim?
+And it's probably worth an explicit Link to Marc's question that prompted the long
+discussion in the previous version, that way if someone does want the gory details
+they have a link readily available.
 
-Again, an explanation of the effect on the socket pressure could give a
-better picture. Say that I somebody reduces the limit (hard/high) and it
-takes quite some effort to shrink the consumption down. Should the
-networking layer react to that in any way or should it wait for the
-active allocation during that process to find that out?
--- 
-Michal Hocko
-SUSE Labs
+Link: https://lore.kernel.org/all/87ilqoi77b.wl-maz@kernel.org
