@@ -2,71 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E102455B5DD
-	for <lists+cgroups@lfdr.de>; Mon, 27 Jun 2022 05:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D15455D949
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbiF0Deh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 26 Jun 2022 23:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
+        id S232454AbiF0Gt1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jun 2022 02:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbiF0Deg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 26 Jun 2022 23:34:36 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0325585
-        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 20:34:35 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-3176b6ed923so72824447b3.11
-        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 20:34:35 -0700 (PDT)
+        with ESMTP id S232415AbiF0GtY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 02:49:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7D9C11
+        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 23:49:21 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j21so14945866lfe.1
+        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 23:49:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=udYx9yVhBp19zfd4dxd6NWb/kHxWi5c9y7nXzGrjJEY=;
-        b=Ntxnvqwm+4atSA7oH8HbS0qWbiyLl9hwKQPjhaoe5CikG0EkSFeR0jzF9Fwgs89O4j
-         ozapg21g9OejXt5DBNn8WHlCY7d3wYaGk6oVysdhLX5uDoB0lr4Yj2j5BFkI8663a8CI
-         vEn9f5StKVKnsH4GCtCWGuUIEclxpY7VETIg4LAbikp2xJIoxYRU/G60aZC+L5uz0YMX
-         gAFxNaaPYcAbhKgIJuuMQXi6TMfdYpZvDjd1AL92PLhymq6SZ1HHzQqn1/sc6ctNL/67
-         0YEX5l2JvW2MC4YiaTeERP3HtTy2l0iDOGc3MhIAtFpGeaEHSo0XcpN+idqgqzAYWKXG
-         v33w==
+        d=openvz-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=jB9gmLMPTj46OngTeaDoiv6CEvUyIMLR8V7jwVzji04=;
+        b=FC6ETplDrOSrvKwinUtNxD54YXyc1Tqr5kU/AHTxIqhiecrK8dLL0Buj583oTUDfBT
+         x32T5x0pbVTqQwo0kPnIYpBqjx0tbwH8f74480tzNPj24NqzVX2kNKUl8IHxJ2zlTe8A
+         9zWG0tXAmmNpmy2F3QDERfa/yKDcFuoCGv6w5yZOO/bTPCozu4QLFDUf0MK1/1FPa3In
+         wO6R725pJJ7Z3OlOeABc1wL+pdv/CcmXNVMce062QhR0ur3HPu0RHKTP4bh+bgfxh/Jx
+         IZCgDPgOcn6Mq+i+OAIznu6URXW/rdI3w0X8dJT3x9miytTnfhAD6sj3hihCmxXJHx+Q
+         ZRIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=udYx9yVhBp19zfd4dxd6NWb/kHxWi5c9y7nXzGrjJEY=;
-        b=FENWcwAqPXHtw5Daovq8BwR4Ec+EwdmnPLtIp4vVSyOHeVxxb6gQVTg2z/RsGGNJBy
-         YiPI0J3qZqJzcBh9ygBKqoCBCCCYHHXO9AR2/vTDG7zpAEr8e37tBOXy8zNDYULstW8K
-         eWb6VopgdZWuiSB400qRJdd0fjOMgEHzxGU+g/UI1OmlYpnQQxRbUO3bn5GsPRYVtRXK
-         KDvzRf8iSX3vveHWisywt6yuHUFkveVc1+3bjJm4VtR0KDvOGkB+vZxYLIayxg2PpHUg
-         g1Lj/aDQsoCn8g7SJtnxg6d28NkyPGJX3r+aSyEtiKehAlj92f3LdIUgYXd+qPcS6/qi
-         wlpA==
-X-Gm-Message-State: AJIora+ID6AlmU87IaB02GedUpYq+DB3Z0uwGcRixF2yGlcoXK6vl23e
-        u//sYwGCsK0FK/3qU+mNSbxU7b4ZbhOwA9HGX/Xg1A==
-X-Google-Smtp-Source: AGRyM1u1N/MM546IwEfu4pxLiWE2+9UtIyWwwrr/JEDz3XtCt5/tu6Z+IVxr9dZDJZdt/Z3XI5k3yf+zQdPyps+kfFc=
-X-Received: by 2002:a81:5e42:0:b0:31b:6254:1c2b with SMTP id
- s63-20020a815e42000000b0031b62541c2bmr13394314ywb.35.1656300874622; Sun, 26
- Jun 2022 20:34:34 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=jB9gmLMPTj46OngTeaDoiv6CEvUyIMLR8V7jwVzji04=;
+        b=IRRAAeJ0UHdZ7VKZhD8hT2YLaFH/53TZPBQyrpPiUBPf3n+uJKl1oEyTTOWhetM9Vy
+         M4fjrHuuyEyGahSnHQkq8R8UgpfcOsmYz5aMLMeEckWggmE2G4mXlOfwv/+Kj23Z99VI
+         5wvvX1dDCHOSoRHxnv642+OR4YrzVbGRIST9mmJXHgXQVlxpSW1IoJe859LfT+3+PPng
+         /vsUf56vkwzcBbzZKE6XA6kRG2JW30KFUW565LZif1lNkXpM2IQyZ2Odu7vdm+eRwoxL
+         ew721feYiV7RNPO3EoOPwOEIrCuIsVlkiaZjg3WGvfWGYrxcZNGkeHNOgXyn2tbfSrPB
+         T/CA==
+X-Gm-Message-State: AJIora8CdJtcGk2qYVH7zgjFoSez0Bi1gpkElv/KAtT0JfOKWkyJrObB
+        qQ//BDa8qrLG9Fo1jpil4npeYg==
+X-Google-Smtp-Source: AGRyM1sM6tpzoBZ6tC5pcfi1SX3LclsBzlCc0hFeeoPkOvsFhG1IUa0XGOKStU0B7Psoe06QCH4QEQ==
+X-Received: by 2002:a05:6512:2390:b0:481:6f3:2de7 with SMTP id c16-20020a056512239000b0048106f32de7mr6403105lfv.497.1656312560374;
+        Sun, 26 Jun 2022 23:49:20 -0700 (PDT)
+Received: from [192.168.1.65] ([46.188.121.129])
+        by smtp.gmail.com with ESMTPSA id p26-20020ac246da000000b0047f797dcbd1sm1672606lfo.189.2022.06.26.23.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jun 2022 23:49:19 -0700 (PDT)
+Message-ID: <f3e4059c-69ea-eccd-a22f-9f6c6780f33a@openvz.org>
+Date:   Mon, 27 Jun 2022 09:49:18 +0300
 MIME-Version: 1.0
-References: <186d5b5b-a082-3814-9963-bf57dfe08511@openvz.org> <d8a9e9c6-856e-1502-95ac-abf9700ff568@openvz.org>
-In-Reply-To: <d8a9e9c6-856e-1502-95ac-abf9700ff568@openvz.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 27 Jun 2022 11:33:58 +0800
-Message-ID: <CAMZfGtWrqFiXUtGkhQwuR3wk1a8xH4Z1+B8zCwRTzny7EJGG-Q@mail.gmail.com>
-Subject: Re: [PATCH cgroup] cgroup: set the correct return code if hierarchy
- limits are reached
-To:     Vasily Averin <vvs@openvz.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH mm v2] memcg: notify about global mem_cgroup_id space
+ depletion
+Content-Language: en-US
+To:     Muchun Song <songmuchun@bytedance.com>
 Cc:     Shakeel Butt <shakeelb@google.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Michal Hocko <mhocko@suse.com>, kernel@openvz.org,
         LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <Yre8tNUY8vBrO0yl@castle>
+ <97bed1fd-f230-c2ea-1cb6-8230825a9a64@openvz.org>
+ <CAMZfGtWQEFmyuDngPfg59D-+b9sf58m9qhGoVPSQ_jAGmgT+sg@mail.gmail.com>
+From:   Vasily Averin <vvs@openvz.org>
+In-Reply-To: <CAMZfGtWQEFmyuDngPfg59D-+b9sf58m9qhGoVPSQ_jAGmgT+sg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,14 +83,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 10:12 AM Vasily Averin <vvs@openvz.org> wrote:
->
-> When cgroup_mkdir reaches the limits of the cgroup hierarchy, it should
-> not return -EAGAIN, but instead react similarly to reaching the global
-> limit.
->
-> Signed-off-by: Vasily Averin <vvs@openvz.org>
+On 6/27/22 06:23, Muchun Song wrote:
+> If the caller can know -ENOSPC is returned by mkdir(), then I
+> think the user (perhaps systemd) is the best place to throw out the
+> error message instead of in the kernel log. Right?
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Such an incident may occur inside the container.
+OpenVZ nodes can host 300-400 containers, and the host admin cannot
+monitor guest logs. the dmesg message is necessary to inform the host
+owner that the global limit has been reached, otherwise he can
+continue to believe that there are no problems on the node.
 
-Thanks.
+Thank you,
+	Vasily Averin
