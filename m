@@ -2,97 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D15455D949
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF36455E078
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbiF0Gt1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Jun 2022 02:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
+        id S232233AbiF0Gua (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jun 2022 02:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232415AbiF0GtY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 02:49:24 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7D9C11
-        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 23:49:21 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j21so14945866lfe.1
-        for <cgroups@vger.kernel.org>; Sun, 26 Jun 2022 23:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openvz-org.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=jB9gmLMPTj46OngTeaDoiv6CEvUyIMLR8V7jwVzji04=;
-        b=FC6ETplDrOSrvKwinUtNxD54YXyc1Tqr5kU/AHTxIqhiecrK8dLL0Buj583oTUDfBT
-         x32T5x0pbVTqQwo0kPnIYpBqjx0tbwH8f74480tzNPj24NqzVX2kNKUl8IHxJ2zlTe8A
-         9zWG0tXAmmNpmy2F3QDERfa/yKDcFuoCGv6w5yZOO/bTPCozu4QLFDUf0MK1/1FPa3In
-         wO6R725pJJ7Z3OlOeABc1wL+pdv/CcmXNVMce062QhR0ur3HPu0RHKTP4bh+bgfxh/Jx
-         IZCgDPgOcn6Mq+i+OAIznu6URXW/rdI3w0X8dJT3x9miytTnfhAD6sj3hihCmxXJHx+Q
-         ZRIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=jB9gmLMPTj46OngTeaDoiv6CEvUyIMLR8V7jwVzji04=;
-        b=IRRAAeJ0UHdZ7VKZhD8hT2YLaFH/53TZPBQyrpPiUBPf3n+uJKl1oEyTTOWhetM9Vy
-         M4fjrHuuyEyGahSnHQkq8R8UgpfcOsmYz5aMLMeEckWggmE2G4mXlOfwv/+Kj23Z99VI
-         5wvvX1dDCHOSoRHxnv642+OR4YrzVbGRIST9mmJXHgXQVlxpSW1IoJe859LfT+3+PPng
-         /vsUf56vkwzcBbzZKE6XA6kRG2JW30KFUW565LZif1lNkXpM2IQyZ2Odu7vdm+eRwoxL
-         ew721feYiV7RNPO3EoOPwOEIrCuIsVlkiaZjg3WGvfWGYrxcZNGkeHNOgXyn2tbfSrPB
-         T/CA==
-X-Gm-Message-State: AJIora8CdJtcGk2qYVH7zgjFoSez0Bi1gpkElv/KAtT0JfOKWkyJrObB
-        qQ//BDa8qrLG9Fo1jpil4npeYg==
-X-Google-Smtp-Source: AGRyM1sM6tpzoBZ6tC5pcfi1SX3LclsBzlCc0hFeeoPkOvsFhG1IUa0XGOKStU0B7Psoe06QCH4QEQ==
-X-Received: by 2002:a05:6512:2390:b0:481:6f3:2de7 with SMTP id c16-20020a056512239000b0048106f32de7mr6403105lfv.497.1656312560374;
-        Sun, 26 Jun 2022 23:49:20 -0700 (PDT)
-Received: from [192.168.1.65] ([46.188.121.129])
-        by smtp.gmail.com with ESMTPSA id p26-20020ac246da000000b0047f797dcbd1sm1672606lfo.189.2022.06.26.23.49.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Jun 2022 23:49:19 -0700 (PDT)
-Message-ID: <f3e4059c-69ea-eccd-a22f-9f6c6780f33a@openvz.org>
-Date:   Mon, 27 Jun 2022 09:49:18 +0300
+        with ESMTP id S232320AbiF0Gua (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 02:50:30 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F3726C5;
+        Sun, 26 Jun 2022 23:50:28 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LWdYs5GQtzShYT;
+        Mon, 27 Jun 2022 14:46:57 +0800 (CST)
+Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 27 Jun 2022 14:50:26 +0800
+Received: from [10.67.111.186] (10.67.111.186) by
+ dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 27 Jun 2022 14:50:25 +0800
+Message-ID: <5987be34-b527-4ff5-a17d-5f6f0dc94d6d@huawei.com>
+Date:   Mon, 27 Jun 2022 14:50:25 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH mm v2] memcg: notify about global mem_cgroup_id space
- depletion
-Content-Language: en-US
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Michal Hocko <mhocko@suse.com>, kernel@openvz.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Cgroups <cgroups@vger.kernel.org>
-References: <Yre8tNUY8vBrO0yl@castle>
- <97bed1fd-f230-c2ea-1cb6-8230825a9a64@openvz.org>
- <CAMZfGtWQEFmyuDngPfg59D-+b9sf58m9qhGoVPSQ_jAGmgT+sg@mail.gmail.com>
-From:   Vasily Averin <vvs@openvz.org>
-In-Reply-To: <CAMZfGtWQEFmyuDngPfg59D-+b9sf58m9qhGoVPSQ_jAGmgT+sg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+From:   Zhang Qiao <zhangqiao22@huawei.com>
+Subject: [Question] The system may be stuck if there is a cpu cgroup
+ cpu.cfs_quato_us is very low
+To:     Tejun Heo <tj@kernel.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+CC:     <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        <vschneid@redhat.com>, <dietmar.eggemann@arm.com>,
+        <bristot@redhat.com>, <bsegall@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>, <mgorman@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.67.111.186]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500018.china.huawei.com (7.185.36.186)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/27/22 06:23, Muchun Song wrote:
-> If the caller can know -ENOSPC is returned by mkdir(), then I
-> think the user (perhaps systemd) is the best place to throw out the
-> error message instead of in the kernel log. Right?
+Hi all,
 
-Such an incident may occur inside the container.
-OpenVZ nodes can host 300-400 containers, and the host admin cannot
-monitor guest logs. the dmesg message is necessary to inform the host
-owner that the global limit has been reached, otherwise he can
-continue to believe that there are no problems on the node.
+I'm working on debuging a problem.
+The testcase does follew operations:
+1) create a test task cgroup, set cpu.cfs_quota_us=2000,cpu.cfs_period_us=100000.
+2) run 20 test_fork[1] test process in the test task cgroup.
+3) create 100 new containers:
+   for i in {1..100}; do docker run -itd  --health-cmd="ls" --health-interval=1s ubuntu:latest  bash; done
 
-Thank you,
-	Vasily Averin
+These operations are expected to succeed and 100 containers create success. however, when creating containers,
+the system will get stuck and create container failed.
+
+After debug this, I found the test_fork process frequently sleep in freezer_fork()->mutex_lock()->might_sleep()
+with taking the cgroup_threadgroup_rw_sem lock, as follow:
+
+copy_process():
+	cgroup_can_fork()			---> lock cgroup_threadgroup_rw_sem
+	sched_cgroup_fork();
+	  ->task_fork_fair(){
+	      ->update_curr(){
+		  ->__account_cfs_rq_runtime() {
+			resched_curr();		---> the quota is used up, and set flag TIF_NEED_RESCHED to current
+		   }
+	cgroup_post_fork();   		
+	  ->feezer_fork()
+	      ->mutex_lock() {	
+		  ->might_sleep()  		---> schedule() and the current task will be throttled long time.
+
+	  ->cgroup_css_set_put_fork()    	---> unlock cgroup_threadgroup_rw_sem
+
+
+Becuase the task cgroup's cpu.cfs_quota_us is very small and test_fork's load is very heavy, the test_fork
+may be throttled long time, therefore, the cgroup_threadgroup_rw_sem read lock is held for a long time, other
+processes will get stuck waiting for the lock:
+
+1) a task fork child, will wait at copy_process()->cgroup_can_fork();
+
+2) a task exiting will wait at exit_signals();
+
+3) a task write cgroup.procs file will wait at cgroup_file_write()->__cgroup1_procs_write();
+...
+
+even the whole system will get stuck.
+
+Anyone know how to slove this? Except for changing the cpu.cfs_quota_us.
+
+
+[1] test_fork.c
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main(int argc, char **argv)
+{
+    pid_t pid;
+    int count = 20;
+
+    while(1) {
+        for (int i = 0; i < count; i++) {
+            if ((pid = fork()) <0) {
+                printf("fork error");
+                return 1;
+            } else if (pid ==0) {
+                exit(0);
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+            wait(NULL);
+        }
+	sleep(1);
+    }
+    return 0;
+}
+
+Thanks a lot.
+-Qiao
+-
