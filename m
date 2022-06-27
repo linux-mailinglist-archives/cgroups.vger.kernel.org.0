@@ -2,54 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FD455C60B
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 14:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DE855D6CF
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239148AbiF0QWw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Jun 2022 12:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
+        id S239115AbiF0QYf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jun 2022 12:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239261AbiF0QWv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 12:22:51 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94CA63B7
-        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:22:50 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id r1so8605037plo.10
-        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:22:50 -0700 (PDT)
+        with ESMTP id S235117AbiF0QYd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jun 2022 12:24:33 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B8CB847
+        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:24:32 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id b26so1425092wrc.2
+        for <cgroups@vger.kernel.org>; Mon, 27 Jun 2022 09:24:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cV3hVzy9TYCqPFueATEq37SOh6vFTuLA/SrvAB62Xzg=;
-        b=BseriqoiozT548bWf87kfEM21QE/lsC7Xh53iRBx2LmFdeNav386MocuZafko2ZdzZ
-         JQe5ovxOhcstFhT8iCD21C825q81Za8C3tdgW13ebnSYPD7k8WHS3yPH0VHQSCGZnmQf
-         FicGbHrtEuD0O3jI+Q4LIietAgpYwoWp5qedMxPLBADENHHnn+UkkXouxHyxDA/j0F9g
-         moM6KAIDklQszHLohnncrg9SWHa8qDcecTbUS930nHP7JYFxSIbGRQKh+59wLE+AXy7E
-         fCLhJT8SPzPCj5eph3yGYAVFqleuzS1aYTb4Me1axhRhNHXk+NS3u9/PAs9nbb1c6HO+
-         fcfA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3xCqZKogDypv6eypnWAIX07mm+p6TcVFKXGmBz5uwGo=;
+        b=EFJ93YBppveZN8tb8RoZSuAH5W5SG1LiH1nd2yGt5BUolxb7x2ATW1Kz7biQm14+S1
+         UM+Fp8eufEM8rSzaN98Vxy+yjs/rNMirq3kcwGggDlKitVyql4aB21ps9KcBglapj9Ua
+         1W4ZjfHFR1OX+l2hu2sbJa8kLFx8xcw+LngOMpTPoS5at+/yURveHnzp5IGPSJMu7ZvB
+         x275CN6l1938KDghGgk+NqN925rKkvVMXE8N/H2EY4ZUpwt+isaWFqtc66lQKg5sW1P0
+         qe563ZBGvDzi6k6E6WBMqiK4kFc+qfzpLTjoypM7LjJTmsiLm26bxb/pjD6ij7bCgcHB
+         9Yqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cV3hVzy9TYCqPFueATEq37SOh6vFTuLA/SrvAB62Xzg=;
-        b=liEA1l/Mt0t3vwrhv+1cg3dKMlq4Ww26DS6i2zX7RHi3k9AGcRa5xRpgkcZhDUqSbA
-         ol8eHHaQEKjwEf4+KJe4OolYhWVway8zGkAeDOXwt4xbvynzg12hx9QomHIXG5A4XUa4
-         vLUd4PzoeFWFNpSNQkMmW4JNvU4frJ8PaUtw8bPnACYeQ1vvLnhCuvNioz8Bq6DhQD2G
-         oYsx1ub47giPdl9SJgxB3b6Kzr5GG7B4apjWlyIxyh8lhbOPBCJyX9d58ma3E+ddHlOi
-         5pQZ4eW5u2uiOtUCOOqwtB5RwH/5oLz9xacRMIqSPgvnLrOaYSdcgXPzqwkAa2YlknEp
-         Nq4A==
-X-Gm-Message-State: AJIora8P6I16RoQBQlLIntEG2QlA4boyGN8BMTlXE00Xd0lZIR/TI/C4
-        gQYw+J0tDxLKA+CgDl+/UHgkBg==
-X-Google-Smtp-Source: AGRyM1v1/klo71FJcOnTZoW3zB85VLk+X/utjbZmu0W37du2cpFLJFufJZy1ShhykQNqxxTcsGcOvw==
-X-Received: by 2002:a17:902:e54f:b0:16a:29de:9603 with SMTP id n15-20020a170902e54f00b0016a29de9603mr15741779plf.46.1656346970060;
-        Mon, 27 Jun 2022 09:22:50 -0700 (PDT)
-Received: from google.com (123.65.230.35.bc.googleusercontent.com. [35.230.65.123])
-        by smtp.gmail.com with ESMTPSA id o14-20020a17090a4e8e00b001e2bd411079sm9752135pjh.20.2022.06.27.09.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jun 2022 09:22:49 -0700 (PDT)
-Date:   Mon, 27 Jun 2022 16:22:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3xCqZKogDypv6eypnWAIX07mm+p6TcVFKXGmBz5uwGo=;
+        b=3do9r9JpqST1oZiVbu/M+eOOvx2vk04KIxxG7ien5MoSb89kOaa2PEvEwEpMBY/iwa
+         U8nkYybkAbtYgUaLQSaq08L9Ak2mMXnJOBmhkaoM0Pfd/77pcoqafxB0u7cWi7AdDdP7
+         jL/HN90rVMGoHUEmzhIR0S9NKWhUXFHl2dc9l1bQJLoRUs1fxAC2BgsP/RlUqzOZDm9P
+         Ic/Gf/rXacPOfXVKwfl0eo4GmPxuQq19ylMtM7xcbXYW/WWVUCMN3sWvZCJVYFvmphur
+         GupLeCgFhdLTnccjFIW8vjmglvwxnFIvUHvLiutpF9qqfkxmBileiGCrlyRTO4wvwveh
+         jMpw==
+X-Gm-Message-State: AJIora/mPAtLc2INdrLkz2XgbooQRek4YxkkL1xBuR0u39vPQWqRmdee
+        uQIsuyjzlqfva14LA+Bb7yJfwetIhKRi6XtX22s7Pw==
+X-Google-Smtp-Source: AGRyM1tEYhoQe960g1sn2OovJNLpmUQIbQxWnmCUUyO6DqjFG9AG5gJFJE0O7TF8AscROp1Q2QZs7ydLv2dJU1UWp8U=
+X-Received: by 2002:a05:6000:a1e:b0:21b:8c8d:3cb5 with SMTP id
+ co30-20020a0560000a1e00b0021b8c8d3cb5mr13353164wrb.372.1656347071360; Mon, 27
+ Jun 2022 09:24:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220606222058.86688-1-yosryahmed@google.com> <20220606222058.86688-2-yosryahmed@google.com>
+ <YrnVxM/5KjVhkOnn@google.com>
+In-Reply-To: <YrnVxM/5KjVhkOnn@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 27 Jun 2022 09:23:55 -0700
+Message-ID: <CAJD7tkaMYhG7_AQgn6fLGFVuSB4wDpY_GzcvSS99tSzTUKFkTw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
 Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Marc Zyngier <maz@kernel.org>,
@@ -65,36 +69,50 @@ Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v5 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
- pagetable stats.
-Message-ID: <YrnZVgq1E/u1nYm0@google.com>
-References: <20220606222058.86688-1-yosryahmed@google.com>
- <20220606222058.86688-4-yosryahmed@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220606222058.86688-4-yosryahmed@google.com>
+        Oliver Upton <oupton@google.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 06, 2022, Yosry Ahmed wrote:
-> Count the pages used by KVM mmu on x86 for in secondary pagetable stats.
+On Mon, Jun 27, 2022 at 9:07 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Jun 06, 2022, Yosry Ahmed wrote:
+> > Add NR_SECONDARY_PAGETABLE stat to count secondary page table uses, e.g.
+> > KVM mmu. This provides more insights on the kernel memory used
+> > by a workload.
+>
+> Please provide more justification for NR_SECONDARY_PAGETABLE in the changelog.
+> Specially, answer the questions that were asked in the previous version:
+>
+>   1. Why not piggyback NR_PAGETABLE?
+>   2. Why a "generic" NR_SECONDARY_PAGETABLE instead of NR_VIRT_PAGETABLE?
+>
+> It doesn't have to be super long, but provide enough info so that reviewers and
+> future readers don't need to go spelunking to understand the motivation for the
+> new counter type.
 
-"for in" is funky.  And it's worth providing a brief explanation of what the
-secondary pagetable stats actually are.  "secondary" is confusingly close to
-"second level pagetables", e.g. might be misconstrued as KVM counters for the
-number of stage-2 / two-dimension paging page (TDP) tables.
+I added such justification in the cover letter, is it better to
+include it here alternatively?
+or do you think the description in the cover letter is lacking?
 
-Code looks good, though it needs a rebased on kvm/queue.
+>
+> And it's probably worth an explicit Link to Marc's question that prompted the long
+> discussion in the previous version, that way if someone does want the gory details
+> they have a link readily available.
+>
+> Link: https://lore.kernel.org/all/87ilqoi77b.wl-maz@kernel.org
+
+I will include the link in the next version.
+Thanks!
