@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FDE55DC90
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C048855DADC
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbiF1HPR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Jun 2022 03:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48206 "EHLO
+        id S241969AbiF1HoM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Jun 2022 03:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238792AbiF1HPO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 03:15:14 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06252C132
-        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 00:15:11 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i1so11760965wrb.11
-        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 00:15:11 -0700 (PDT)
+        with ESMTP id S241501AbiF1HoL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 03:44:11 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A690E2601
+        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 00:44:06 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id i25so10838129wrc.13
+        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 00:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=i+Lb07nAOniw4SU/QHy3UQmxVIlKr3186wntT05CTeY=;
-        b=Y8xvbEXvbzQ6mbLwel2ze+Vlx3M58ABTKMpNzWbZ5eI/BALTW9FswkAMJLM2qlT6af
-         LJ8vnM521DgHvXp7MYgRcddEzYscDH9u2qsi1W8mtqWQJFeLsMv/FNETBr92vRVlBc0d
-         n/uf66dsmhTnyEhtLtiWzcpQLwGJFCCsSqFh2zPHoLrBuRTDZfsD60iHLwnYN+HWqcJb
-         jtmIu+vZm4IPQcXGxgiMHPbt8CUAHCa2clsHluoeT7zJncDNSOeGJaQBUrEdg65L2BUH
-         q5nO5gohmSgZ8jPkymhv3JLz8CTEgftB7cfuMewp/THe3xUdZ1p9qIufHTnYIMehEZrt
-         /eaA==
+        bh=u6ggXRO11FTu/8FIHZeboB1kewGhJtnNr1j3aBIk+94=;
+        b=tLhUAaysmE6YD7G7xOGcd/ihPxp0qfum+urqElPDE0LZbn/gq2M30xSk4vheXd0PKq
+         hw6fQTEFxq/Ul7hWIzkJBujoeTfTWqTHzAbRniUhF8o7/FGkgggWlOQEp2OriBKjk/gQ
+         QvYjxrb5MIp71ngc24H83rQHk4dceBBDqtVLzllBscDCxmm0ZwoTlbdcD0JccFnTEya0
+         OBaNs44+bdS1B3OWagvSkxJkyiEsdh62q8sGZex8M+7i6a2oz89y1FoLMeiVYNnj+fln
+         HxrIQ2SDUzLtgjT0j0OeeU+kqN9XwVeDHFszncb8Q0uZ3gL85+qIvmmakW/bGoPn4B51
+         p98g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i+Lb07nAOniw4SU/QHy3UQmxVIlKr3186wntT05CTeY=;
-        b=3yeeg6Kw1TjqHYM7yeRbiitTI/gXGdTRIJw5L1uaYOe8PFw+Ps1kDcIwuRr369OR/J
-         KDoK9V2HoybCXtP6aJcdXWP8mYEwE49cSVUD/GgZ7yDXtZ5hGu7h6JfBTa4Z8eezZnGL
-         vI0/0LF/aMcxUuMu7wgNfyYkOy+GS0aldrdHevo87OV0PqAqWxfeTULXbT7MReN6T2pi
-         qNqj9e9vVH5P0rxoPQDMGDQOrsCSqL2vv1OIYnc0sIL/jg23AXAThk5R8NMxmPtxNrLf
-         ECSD8fsPoH6jNi2ms8zNn4XoRmV4S5aKwYxItLz7TAPLEm+D6JjXmJ7gd2tgiRx09ZBm
-         cxvA==
-X-Gm-Message-State: AJIora/Xz4s4VqxM69S2OSahSxMicTxUcW0eNFEtzc9QJ0tWSBtAaCQW
-        0fmwbxTZIKa23IA6HtcUMczOVRgNrnKW4+htDI80zQ==
-X-Google-Smtp-Source: AGRyM1teHVmBxgkWP/tGJMiPHmjD9t1iW8Xq2PXcjmXgB5zKeO0ndwqRGsWJngA8jImV9XcVKf5HmAs9m22mJAzC/eE=
-X-Received: by 2002:a5d:4308:0:b0:219:e5a4:5729 with SMTP id
- h8-20020a5d4308000000b00219e5a45729mr16965489wrq.210.1656400510159; Tue, 28
- Jun 2022 00:15:10 -0700 (PDT)
+        bh=u6ggXRO11FTu/8FIHZeboB1kewGhJtnNr1j3aBIk+94=;
+        b=UXaI+Gujk+thJ6a++UTvdFMITTjVvSHCOW+2ZHkEIFkssnaXd+AHWg29Uw7YilV5gj
+         67TwmCbLkMu3MFh1AGLRItnBLg51X2r0wxE8rHbS9H7REH9d1LXpgGiprTqZlni3stDY
+         uV3Sy/7wcPjB6JF2Opb1RPyUs++UtTYZpwV5xI9aU/z6G+jUxswYqm5lUHUP6tFDW7Qm
+         qGejhdGGiTmPNw+grvyetzeIW23/BDQ1dWzCFXHS2MyKlfEp8wkVyhsL3jzUh44/t92l
+         m01+RJHeC6d2hHPmobh5UXNweKBOhd696r+Wr6gJdGgPKA9BDchGqHb/aAeZFI/Ur2+5
+         wh5Q==
+X-Gm-Message-State: AJIora/Je9Tl1iocdJSnplFUdX/fFz67mi5ikHfPJ1UfXrS4jVbNRJE7
+        +rd5/Qc7NFpa6LVD1y4UH9hD++IYQ6jsr40LaMHd7A==
+X-Google-Smtp-Source: AGRyM1vk4OMmjwp0kku/o3oKtOZB29esVN5yBEI/0FyPz8q6tXWb8nfWdWo5aC+AJRp1tNDwUX2im+qMLIIIy7QfPVY=
+X-Received: by 2002:a5d:664d:0:b0:21a:3b82:6bb2 with SMTP id
+ f13-20020a5d664d000000b0021a3b826bb2mr16378246wrw.534.1656402244783; Tue, 28
+ Jun 2022 00:44:04 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220610194435.2268290-1-yosryahmed@google.com>
  <20220610194435.2268290-9-yosryahmed@google.com> <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
  <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
 In-Reply-To: <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 28 Jun 2022 00:14:33 -0700
-Message-ID: <CAJD7tkZ3AEPEUD9V-5nxUgmS5SLc6qp50ZyrRoAQgdzPM=a-Hg@mail.gmail.com>
+Date:   Tue, 28 Jun 2022 00:43:28 -0700
+Message-ID: <CAJD7tkbOztCEWgMzoCOdD+g3whMMQWW2e0gwo9p0tVK=3hqmcw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
  hierarchical stats collection
 To:     Yonghong Song <yhs@fb.com>
@@ -74,7 +74,7 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000000459be05e27cccdd"
+Content-Type: multipart/mixed; boundary="0000000000006885d305e27d3323"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -86,7 +86,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---0000000000000459be05e27cccdd
+--0000000000006885d305e27d3323
 Content-Type: text/plain; charset="UTF-8"
 
 On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
@@ -170,19 +170,6 @@ On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 > something outside the setup done by the test that can cause the test
 > to fail.
 >
-
-I can't reproduce the failure on my machine. It seems like for some
-reason reclaim is not invoked in one of the test cgroups which results
-in the expected stats not being there. I have a few suspicions as to
-what might cause this but I am not sure.
-
-If you have the capacity, do you mind re-running the test with the
-attached diff1.patch? (and maybe diff2.patch if that fails, this will
-cause OOMs in the test cgroup, you might see some process killed
-warnings).
-Thanks!
-
-
 > >
 > > Also an existing test also failed.
 > >
@@ -204,6 +191,22 @@ Thanks!
 > add a patch in the next version that updates the btf_dump_data test
 > accordingly. Thanks.
 >
+
+So I actually tried the attached diff to updated the expected dump of
+bpf_iter_link_info in this test, but the test still failed:
+
+btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+expected/actual match: actual '(union bpf_iter_link_info){.map =
+(struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+(__u32)1,},}'  != expected '(union bpf_iter_link_info){.map =
+(struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+(__u32)1,.traversal_order = (__u32)1},}'
+
+It seems to me that the actual output in this case is not right, it is
+missing traversal_order. Did we accidentally find a bug in btf dumping
+of unions with nested structs, or am I missing something here?
+Thanks!
+
 > >
 > > test_btf_dump_struct_data:PASS:unexpected return value dumping sk_buff 0
 > > nsec
@@ -841,51 +844,29 @@ Thanks!
 > > > +     return 1;
 > > > +}
 
---0000000000000459be05e27cccdd
-Content-Type: application/octet-stream; name="diff1.patch"
-Content-Disposition: attachment; filename="diff1.patch"
+--0000000000006885d305e27d3323
+Content-Type: application/octet-stream; name="btf_dump_fix.patch"
+Content-Disposition: attachment; filename="btf_dump_fix.patch"
 Content-Transfer-Encoding: base64
-Content-ID: <f_l4xu2lc50>
-X-Attachment-Id: f_l4xu2lc50
+Content-ID: <f_l4xv3t100>
+X-Attachment-Id: f_l4xv3t100
 
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2Nncm91
-cF9oaWVyYXJjaGljYWxfc3RhdHMuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9n
-X3Rlc3RzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMuYwppbmRleCBiNzhhNDA0M2RhNDlhLi5i
-YzA5OThmZTI1NWYwIDEwMDY0NAotLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJv
-Z190ZXN0cy9jZ3JvdXBfaGllcmFyY2hpY2FsX3N0YXRzLmMKKysrIGIvdG9vbHMvdGVzdGluZy9z
-ZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvY2dyb3VwX2hpZXJhcmNoaWNhbF9zdGF0cy5jCkBAIC0x
-ODQsNyArMTg0LDYgQEAgc3RhdGljIGludCBpbmR1Y2Vfdm1zY2FuKHZvaWQpCiAKIAkJCS8qIEFs
-bG9jYXRlIG1vcmUgbWVtb3J5IHRoYW4gbWVtb3J5LmhpZ2ggKi8KIAkJCWFsbG9jX2Fub24oTUIo
-MikpOwotCQkJZXhpdCgwKTsKIAkJfSBlbHNlIHsKIAkJCS8qIFdhaXQgZm9yIGNoaWxkIHRvIGNh
-dXNlIHJlY2xhaW0gdGhlbiBraWxsIGl0ICovCiAJCQlpZiAoIUFTU0VSVF9HVChwaWQsIDAsICJm
-b3JrIikpCg==
---0000000000000459be05e27cccdd
-Content-Type: application/octet-stream; name="diff2.patch"
-Content-Disposition: attachment; filename="diff2.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l4xu2lcc1>
-X-Attachment-Id: f_l4xu2lcc1
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2Nncm91
-cF9oaWVyYXJjaGljYWxfc3RhdHMuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9n
-X3Rlc3RzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMuYwppbmRleCBiNzhhNDA0M2RhNDlhLi5h
-YzIzOTBmOGY0MGIwIDEwMDY0NAotLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJv
-Z190ZXN0cy9jZ3JvdXBfaGllcmFyY2hpY2FsX3N0YXRzLmMKKysrIGIvdG9vbHMvdGVzdGluZy9z
-ZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvY2dyb3VwX2hpZXJhcmNoaWNhbF9zdGF0cy5jCkBAIC0x
-NjQsMTIgKzE2NCwxMiBAQCBzdGF0aWMgaW50IGluZHVjZV92bXNjYW4odm9pZCkKIAlpbnQgaSwg
-ZXJyOwogCiAJLyoKLQkgKiBTZXQgbWVtb3J5LmhpZ2ggZm9yIHRlc3QgcGFyZW50IGNncm91cCB0
-byAxIE1CIHRvIHRocm90dGxlCisJICogU2V0IG1lbW9yeS5tYXggZm9yIHRlc3QgcGFyZW50IGNn
-cm91cCB0byAxIE1CIHRvIHRocm90dGxlCiAJICogYWxsb2NhdGlvbnMgYW5kIGludm9rZSByZWNs
-YWltIGluIGNoaWxkcmVuLgogCSAqLwogCXNucHJpbnRmKHNpemUsIDEyOCwgIiVkIiwgTUIoMSkp
-OwotCWVyciA9IHdyaXRlX2Nncm91cF9maWxlKGNncm91cHNbMF0ucGF0aCwgIm1lbW9yeS5oaWdo
-IiwJc2l6ZSk7Ci0JaWYgKCFBU1NFUlRfT0soZXJyLCAid3JpdGUgbWVtb3J5LmhpZ2giKSkKKwll
-cnIgPSB3cml0ZV9jZ3JvdXBfZmlsZShjZ3JvdXBzWzBdLnBhdGgsICJtZW1vcnkubWF4IiwJc2l6
-ZSk7CisJaWYgKCFBU1NFUlRfT0soZXJyLCAid3JpdGUgbWVtb3J5Lm1heCIpKQogCQlyZXR1cm4g
-ZXJyOwogCS8qCiAJICogSW4gZXZlcnkgbGVhZiBjZ3JvdXAsIHJ1biBhIG1lbW9yeSBob2cgZm9y
-IGEgZmV3IHNlY29uZHMgdG8gaW5kdWNlCkBAIC0xODIsNyArMTgyLDcgQEAgc3RhdGljIGludCBp
-bmR1Y2Vfdm1zY2FuKHZvaWQpCiAJCQkvKiBKb2luIGNncm91cCBpbiB0aGUgcGFyZW50IHByb2Nl
-c3Mgd29ya2RpciAqLwogCQkJam9pbl9wYXJlbnRfY2dyb3VwKGNncm91cHNbaV0ucGF0aCk7CiAK
-LQkJCS8qIEFsbG9jYXRlIG1vcmUgbWVtb3J5IHRoYW4gbWVtb3J5LmhpZ2ggKi8KKwkJCS8qIEFs
-bG9jYXRlIG1vcmUgbWVtb3J5IHRoYW4gbWVtb3J5Lm1heCAqLwogCQkJYWxsb2NfYW5vbihNQigy
-KSk7CiAJCQlleGl0KDApOwogCQl9IGVsc2Ugewo=
---0000000000000459be05e27cccdd--
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2J0Zl9k
+dW1wLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9idGZfZHVtcC5j
+CmluZGV4IDVmY2U3MDA4ZDFmZjMuLmE3YjdlMDA4ZGQ2ZjggMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rl
+c3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2J0Zl9kdW1wLmMKKysrIGIvdG9vbHMvdGVz
+dGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvYnRmX2R1bXAuYwpAQCAtNzY0LDggKzc2NCw4
+IEBAIHN0YXRpYyB2b2lkIHRlc3RfYnRmX2R1bXBfc3RydWN0X2RhdGEoc3RydWN0IGJ0ZiAqYnRm
+LCBzdHJ1Y3QgYnRmX2R1bXAgKmQsCiAKIAkvKiB1bmlvbiB3aXRoIG5lc3RlZCBzdHJ1Y3QgKi8K
+IAlURVNUX0JURl9EVU1QX0RBVEEoYnRmLCBkLCAidW5pb24iLCBzdHIsIHVuaW9uIGJwZl9pdGVy
+X2xpbmtfaW5mbywgQlRGX0ZfQ09NUEFDVCwKLQkJCSAgICIodW5pb24gYnBmX2l0ZXJfbGlua19p
+bmZvKXsubWFwID0gKHN0cnVjdCl7Lm1hcF9mZCA9IChfX3UzMikxLH0sfSIsCi0JCQkgICB7IC5t
+YXAgPSB7IC5tYXBfZmQgPSAxIH19KTsKKwkJCSAgICIodW5pb24gYnBmX2l0ZXJfbGlua19pbmZv
+KXsubWFwID0gKHN0cnVjdCl7Lm1hcF9mZCA9IChfX3UzMikxLH0sLmNncm91cCA9IChzdHJ1Y3Qp
+ey5jZ3JvdXBfZmQgPSAoX191MzIpMSwudHJhdmVyc2FsX29yZGVyID0gKF9fdTMyKTF9LH0iLAor
+CQkJICAgeyAubWFwID0geyAubWFwX2ZkID0gMSB9LCAuY2dyb3VwID0gey5jZ3JvdXBfZmQgPSAx
+LCAudHJhdmVyc2FsX29yZGVyID0gQlBGX0lURVJfQ0dST1VQX1BSRSB9fSk7CiAKIAkvKiBzdHJ1
+Y3Qgc2tiIHdpdGggbmVzdGVkIHN0cnVjdHMvdW5pb25zOyBiZWNhdXNlIHR5cGUgb3V0cHV0IGlz
+IHNvCiAJICogY29tcGxleCwgd2UgZG9uJ3QgZG8gYSBzdHJpbmcgY29tcGFyaXNvbiwganVzdCB2
+ZXJpZnkgd2UgcmV0dXJuCg==
+--0000000000006885d305e27d3323--
