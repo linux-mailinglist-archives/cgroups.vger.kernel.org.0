@@ -2,174 +2,232 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CED55F0E3
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jun 2022 00:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7DB55F21F
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jun 2022 01:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbiF1WKB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Jun 2022 18:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        id S229514AbiF1Xzn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Jun 2022 19:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbiF1WJw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 18:09:52 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40B8344FA
-        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 15:09:50 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-31bf3674d86so32980287b3.5
-        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 15:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=gnqIHh9MJ79JR8UHARjL1RMMQDUE9yqN/1O215pAM3E=;
-        b=eXguEcbgPyavlFpFOa1EXxahxW4srMGJ+98b4fGFkzQpEbd3YWNtmcD67PovTdc4qA
-         fXnRa14oxMCR4UzPA0Rb69W3dduRCCg0msVdImAHNCCE0uDoC3mW7NalrpLVU3hHsOy9
-         koYlPCtWay2m9JrKZUWMOsdgiToa/uk85soHL8fXEJO2p2w5GSqWn2DoRSdBc4YiKjuw
-         wiArVtT3yDZqnyEvlczLci1xDNiA+fCBpfkNXsG99ycgHGB7/+E389xZxGCvQYTgsHR8
-         5q1viEr/xOHOxyNWdhiNTKu9+6+r+bupS/AqK5Zk2ocnv1T5fbQgq4oIep2tspVynMLG
-         y+lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=gnqIHh9MJ79JR8UHARjL1RMMQDUE9yqN/1O215pAM3E=;
-        b=NVx24u81mCj75y38GHrJXw/CfyrkyrGIsSLiAyBSNP/A5EZQ/5j81vCDWRrtejyAg3
-         X4A+eCmDmMFJrfa1lC0FL4rfWHiOjkc5jTlZbZk32FJF7HPb3lN2LRjCrjpdCap3LoSk
-         ESBBVAbvFPRMCWdg3Xx9au39d8QrKB9IObcQwvi69hfCZYHOoCcZIHH5KsocOmB+jz2O
-         gv1Nlhk753lTl4CCone9iRCDQbKh62ExjpIsAFuPEov5oxUPmXrqlxVDvfFA6eivySsA
-         5ngrZRPs6Yrou3Kjvj7ZPYvOtQaBGA9j/JRPf69Gd1bfthyTYjrGt2aacYyPHdYnO9Fu
-         xDPA==
-X-Gm-Message-State: AJIora/wmUtUn0T2t8jpG6yU+bODeFdAca1EMPSpZqDHrRISCTuWC9YW
-        xTLAHFKeZu0kZNMi06/5icjV0IBjrIRtgmyW
-X-Google-Smtp-Source: AGRyM1umi2UgIYQTv46Vc6mzeFvchYWcjhInaiO2bwyjS9I41B8ANnPYWxN9MPXv8KH+kwsaKoJa5m5b80k5y5ta
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a25:9f0a:0:b0:66c:8ecd:9d18 with SMTP
- id n10-20020a259f0a000000b0066c8ecd9d18mr18915199ybq.345.1656454190140; Tue,
- 28 Jun 2022 15:09:50 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 22:09:38 +0000
-In-Reply-To: <20220628220938.3657876-1-yosryahmed@google.com>
-Message-Id: <20220628220938.3657876-5-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20220628220938.3657876-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH v6 4/4] KVM: arm64/mmu: count KVM s2 mmu usage in secondary
- pagetable stats
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>
-Cc:     Huang@google.com, Shaoqin <shaoqin.huang@intel.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S229450AbiF1Xzm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 19:55:42 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44EA193C0
+        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 16:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656460541; x=1687996541;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hF622s0f+n8alNjQgMYY6bo2AHVzSBaMBb5NtLm94wk=;
+  b=V8ZxwDZsJNYoCVdNBm6t1nP820PFYz09U59iB7/ij9SAX+Bia88FSeKL
+   McQQn4bDS/D0625HzX7yIUBsXDtkUCg4StbZ5hfUVZeaLfXZRkBS7iByp
+   21g7kTiUxo3KJeGWoQcoE5byFu0X17If69TDn/DnPhR7ZoRU5jgn7FTu6
+   BICMLxB+EJQjpbRY5AqM+pMJLpZhVmnJr35urwX70Vt3Y8v5bpXdA03W4
+   ULx/rWKk41IngkHAQZMaExqPjFV82lKDuti421/d/OIxiTGCOz6RxECfb
+   T8tACCoF1jHOGVJ3p3hCa+uADjm6Tmh1H42jihbIKoYgHIUU1c/WhERgk
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10392"; a="279423466"
+X-IronPort-AV: E=Sophos;i="5.92,230,1650956400"; 
+   d="scan'208";a="279423466"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2022 16:55:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,230,1650956400"; 
+   d="scan'208";a="917376482"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Jun 2022 16:55:40 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o6L3T-000Ako-SH;
+        Tue, 28 Jun 2022 23:55:39 +0000
+Date:   Wed, 29 Jun 2022 07:55:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-5.20] BUILD SUCCESS
+ d75cd55ae2dedeee5382bb48832c322673b9781c
+Message-ID: <62bb94df.JxkZiXrSpv5wx47P%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Count the pages used by KVM in arm64 for stage2 mmu in memory stats
-under secondary pagetable stats (e.g. "SecPageTables" in /proc/meminfo)
-to give better visibility into the memory consumption of KVM mmu in a
-similar way to how normal user page tables are accounted.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.20
+branch HEAD: d75cd55ae2dedeee5382bb48832c322673b9781c  cgroup.c: remove redundant check for mixable cgroup in cgroup_migrate_vet_dst
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
----
- arch/arm64/kvm/mmu.c | 36 ++++++++++++++++++++++++++++++++----
- 1 file changed, 32 insertions(+), 4 deletions(-)
+elapsed time: 2285m
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 87f1cd0df36ea..9d5a8e93d2fdc 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -92,9 +92,13 @@ static bool kvm_is_device_pfn(unsigned long pfn)
- static void *stage2_memcache_zalloc_page(void *arg)
- {
- 	struct kvm_mmu_memory_cache *mc = arg;
-+	void *virt;
- 
- 	/* Allocated with __GFP_ZERO, so no need to zero */
--	return kvm_mmu_memory_cache_alloc(mc);
-+	virt = kvm_mmu_memory_cache_alloc(mc);
-+	if (virt)
-+		kvm_account_pgtable_pages(virt, 1);
-+	return virt;
- }
- 
- static void *kvm_host_zalloc_pages_exact(size_t size)
-@@ -102,6 +106,21 @@ static void *kvm_host_zalloc_pages_exact(size_t size)
- 	return alloc_pages_exact(size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- }
- 
-+static void *kvm_s2_zalloc_pages_exact(size_t size)
-+{
-+	void *virt = kvm_host_zalloc_pages_exact(size);
-+
-+	if (virt)
-+		kvm_account_pgtable_pages(virt, (size >> PAGE_SHIFT));
-+	return virt;
-+}
-+
-+static void kvm_s2_free_pages_exact(void *virt, size_t size)
-+{
-+	kvm_account_pgtable_pages(virt, -(size >> PAGE_SHIFT));
-+	free_pages_exact(virt, size);
-+}
-+
- static void kvm_host_get_page(void *addr)
- {
- 	get_page(virt_to_page(addr));
-@@ -112,6 +131,15 @@ static void kvm_host_put_page(void *addr)
- 	put_page(virt_to_page(addr));
- }
- 
-+static void kvm_s2_put_page(void *addr)
-+{
-+	struct page *p = virt_to_page(addr);
-+	/* Dropping last refcount, the page will be freed */
-+	if (page_count(p) == 1)
-+		kvm_account_pgtable_pages(addr, -1);
-+	put_page(p);
-+}
-+
- static int kvm_host_page_count(void *addr)
- {
- 	return page_count(virt_to_page(addr));
-@@ -625,10 +653,10 @@ static int get_user_mapping_size(struct kvm *kvm, u64 addr)
- 
- static struct kvm_pgtable_mm_ops kvm_s2_mm_ops = {
- 	.zalloc_page		= stage2_memcache_zalloc_page,
--	.zalloc_pages_exact	= kvm_host_zalloc_pages_exact,
--	.free_pages_exact	= free_pages_exact,
-+	.zalloc_pages_exact	= kvm_s2_zalloc_pages_exact,
-+	.free_pages_exact	= kvm_s2_free_pages_exact,
- 	.get_page		= kvm_host_get_page,
--	.put_page		= kvm_host_put_page,
-+	.put_page		= kvm_s2_put_page,
- 	.page_count		= kvm_host_page_count,
- 	.phys_to_virt		= kvm_host_va,
- 	.virt_to_phys		= kvm_host_pa,
+configs tested: 149
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20220627
+s390                          debug_defconfig
+arm                          gemini_defconfig
+sparc64                             defconfig
+sparc64                          alldefconfig
+mips                           xway_defconfig
+sh                        sh7785lcr_defconfig
+sh                               j2_defconfig
+sh                           se7343_defconfig
+parisc64                         alldefconfig
+arm                        spear6xx_defconfig
+xtensa                    smp_lx200_defconfig
+powerpc                       holly_defconfig
+powerpc                      ppc40x_defconfig
+arm                        realview_defconfig
+arm                            pleb_defconfig
+parisc64                            defconfig
+arm                          pxa910_defconfig
+mips                      maltasmvp_defconfig
+arc                        nsim_700_defconfig
+arc                           tb10x_defconfig
+sh                   sh7770_generic_defconfig
+arm                          iop32x_defconfig
+sh                           sh2007_defconfig
+sh                           se7750_defconfig
+sh                         ap325rxa_defconfig
+openrisc                 simple_smp_defconfig
+sh                          rsk7201_defconfig
+sh                          sdk7780_defconfig
+arm                            hisi_defconfig
+arc                     nsimosci_hs_defconfig
+arm                            lart_defconfig
+sh                     magicpanelr2_defconfig
+mips                             allmodconfig
+sh                         ecovec24_defconfig
+arm                        cerfcube_defconfig
+arc                    vdk_hs38_smp_defconfig
+powerpc                 mpc837x_mds_defconfig
+sh                           se7712_defconfig
+arm                      jornada720_defconfig
+arm                       omap2plus_defconfig
+powerpc                         ps3_defconfig
+m68k                          sun3x_defconfig
+powerpc                      bamboo_defconfig
+powerpc                     tqm8541_defconfig
+arc                     haps_hs_smp_defconfig
+powerpc                     mpc83xx_defconfig
+xtensa                    xip_kc705_defconfig
+parisc                           allyesconfig
+sparc                               defconfig
+xtensa                           allyesconfig
+csky                                defconfig
+sparc                            allyesconfig
+x86_64                                  kexec
+powerpc                          allyesconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allyesconfig
+nios2                            allyesconfig
+nios2                               defconfig
+parisc                              defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+x86_64               randconfig-c001-20220627
+arm                  randconfig-c002-20220627
+ia64                             allmodconfig
+x86_64               randconfig-k001-20220627
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64               randconfig-a013-20220627
+x86_64               randconfig-a012-20220627
+x86_64               randconfig-a016-20220627
+x86_64               randconfig-a015-20220627
+x86_64               randconfig-a011-20220627
+x86_64               randconfig-a014-20220627
+i386                 randconfig-a014-20220627
+i386                 randconfig-a011-20220627
+i386                 randconfig-a012-20220627
+i386                 randconfig-a015-20220627
+i386                 randconfig-a016-20220627
+i386                 randconfig-a013-20220627
+arc                  randconfig-r043-20220627
+riscv                randconfig-r042-20220627
+s390                 randconfig-r044-20220627
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+s390                 randconfig-c005-20220627
+x86_64               randconfig-c007-20220627
+mips                 randconfig-c004-20220627
+i386                 randconfig-c001-20220627
+powerpc              randconfig-c003-20220627
+riscv                randconfig-c006-20220627
+arm                  randconfig-c002-20220627
+arm                        multi_v5_defconfig
+powerpc                     skiroot_defconfig
+powerpc                     ppa8548_defconfig
+mips                           rs90_defconfig
+arm                           spitz_defconfig
+powerpc                     tqm5200_defconfig
+mips                        bcm63xx_defconfig
+arm                     am200epdkit_defconfig
+arm                      pxa255-idp_defconfig
+arm                            dove_defconfig
+powerpc                      acadia_defconfig
+mips                           ip27_defconfig
+arm                        neponset_defconfig
+powerpc                     ksi8560_defconfig
+x86_64               randconfig-a004-20220627
+x86_64               randconfig-a006-20220627
+x86_64               randconfig-a001-20220627
+x86_64               randconfig-a005-20220627
+x86_64               randconfig-a002-20220627
+x86_64               randconfig-a003-20220627
+i386                 randconfig-a005-20220627
+i386                 randconfig-a001-20220627
+i386                 randconfig-a006-20220627
+i386                 randconfig-a004-20220627
+i386                 randconfig-a003-20220627
+i386                 randconfig-a002-20220627
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r041-20220627
+hexagon              randconfig-r045-20220627
+
 -- 
-2.37.0.rc0.161.g10f37bed90-goog
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
