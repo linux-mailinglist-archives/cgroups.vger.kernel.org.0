@@ -2,106 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1478255D818
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7AB55E40B
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbiF1JXG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Jun 2022 05:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        id S231389AbiF1NJ4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Jun 2022 09:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344236AbiF1JWi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 05:22:38 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591611D314;
-        Tue, 28 Jun 2022 02:22:37 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n10so10587417plp.0;
-        Tue, 28 Jun 2022 02:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/RPscv3+8g8rx4jXo23oMEeXPiuNo7BXGYwm+0AjXxs=;
-        b=To1tuJ6ezfSPRvfvYleOSb9lKKOhueWfZvhziXTEgCM9PUQE9mQ/xhT/GQKDwAx3+K
-         VCwO+26BUmVeT7tjCm709OpoNluVA5TQnQMiEBOnZWK6u0h7/2MQKkzXLs/QTBPtLd+t
-         uaEv/5/AD3aMBX+7rY78FIuqtsaMYfGOxtLmBiFL7mE3st9gwwEYdkaho0GnDCcCS+C6
-         4iEp8WxQDcPWTMDrt/QPMRtV+Nsnq3jb5UHhTTcpJedWllF567kplSbpUcwnVLjnZnAa
-         /5C8nTucMrmiuELtf9puqfjdHfigFReLoMkmJ6zo4PcDCEvdsypTDDGCHRq1camco5J+
-         ++lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=/RPscv3+8g8rx4jXo23oMEeXPiuNo7BXGYwm+0AjXxs=;
-        b=u82EjJlCCIcvKHmEVtCSWd6+mXAy1iqPxgQKMvYluUpYtFi6PmtvolOQkWCxY0vAI/
-         YLUBlP6gIc7FhqO0M2PvcG5v9I/YgpjXtLbXOqXwgnVLyq6cBbzB0/9uZTpR+Mgnpdew
-         zE3fu/dshLAm9jjiXIFIB5RvpFhgFGP8btvfa5jjIRxlZ+FhFSyGtpcFL1Nn0RHYIU8o
-         hOpMWqyKfPxXsaHQt0oUnIA2D7p6+Kr2kJZOSzvk8/yReIsJuWaenPf/kMJbGFq4Duc+
-         pGn3IQBNgeFWg06r9jBvEPhNlLwu/jT42or8Oy1tpYrpR8M77HmuTlf8QYSB5AfVHm1v
-         ZVsA==
-X-Gm-Message-State: AJIora/RqHoZziuODpDtdhb1mxlvzz0+/MGni9AIjxSRm3i0vIJR5nBV
-        ffN1UlIVP5BEM/ErWQxRBxU=
-X-Google-Smtp-Source: AGRyM1uO4shhe2Mc2XBAl9CUgG5Vgh4gk8x1TLLyeTMM88uYJk5piLi8VUIAziOH8v19ngumbUBM/A==
-X-Received: by 2002:a17:90b:1e0e:b0:1ec:b2a6:c9d0 with SMTP id pg14-20020a17090b1e0e00b001ecb2a6c9d0mr26659992pjb.230.1656408156659;
-        Tue, 28 Jun 2022 02:22:36 -0700 (PDT)
-Received: from localhost ([121.167.227.144])
-        by smtp.gmail.com with ESMTPSA id p9-20020a1709026b8900b0016372486febsm8688757plk.297.2022.06.28.02.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 02:22:36 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 28 Jun 2022 18:22:33 +0900
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Vasily Averin <vvs@openvz.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH cgroup] cgroup: set the correct return code if hierarchy
- limits are reached
-Message-ID: <YrrIWe/nn5hoVyu9@mtj.duckdns.org>
-References: <186d5b5b-a082-3814-9963-bf57dfe08511@openvz.org>
- <d8a9e9c6-856e-1502-95ac-abf9700ff568@openvz.org>
- <YrpO9CUDt8hpUprr@castle>
- <17916824-ba97-68ba-8166-9402d5f4440c@openvz.org>
- <20220628091648.GA12249@blackbody.suse.cz>
+        with ESMTP id S229825AbiF1NJy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 09:09:54 -0400
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13925645E
+        for <cgroups@vger.kernel.org>; Tue, 28 Jun 2022 06:09:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=escape@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VHiiN6W_1656421788;
+Received: from 30.225.28.103(mailfrom:escape@linux.alibaba.com fp:SMTPD_---0VHiiN6W_1656421788)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Jun 2022 21:09:49 +0800
+Message-ID: <1c9d5118-25fa-e791-8aed-b1430cf23d36@linux.alibaba.com>
+Date:   Tue, 28 Jun 2022 21:09:48 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.1
+From:   "taoyi.ty" <escape@linux.alibaba.com>
+Subject: Question about disallowing rename(2) in cgroup v2
+To:     lizefan.x@bytedance.com, Tejun Heo <tj@kernel.org>,
+        hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220628091648.GA12249@blackbody.suse.cz>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 11:16:48AM +0200, Michal Koutný wrote:
-> The mkdir(2) manpage doesn't list EAGAIN at all. ENOSPC makes better
-> sense here. (And I suspect the dependency on this particular value won't
-> be very wide spread.)
+hi all,
 
-Given how we use these system calls as triggers for random kernel
-operations, I don't think adhering to posix standard is necessary or
-possible. Using an error code which isn't listed in the man page isn't
-particularly high in the list of discrepancies.
+I found that rename(2) can be used in cgroup v1 but is disallowed in 
+cgroup v2, what's the reason for this design?
 
-Again, I'm not against changing it but I'd like to see better
-rationales. On one side, we have "it's been this way for a long time
-and there's nothing particularly broken about it". I'm not sure the
-arguments we have for the other side is strong enough yet.
+rename(2) is critical when managing a cgroup pool in userspace, which 
+uses rename to reuse cgroup rather than mkdir to create a new oneï¼Œthis 
+can improve the performance of container concurrent startup, because 
+renaming cgroup is much more lightweight compared with creating cgroup.
 
-Thanks.
+For new features in cgroup v2, I switch to cgroup v2 and meet this 
+problem, I think renaming cgroup in v2 is similar to v1 and realizing it 
+is not a hard problem, so I send this mail to learn the initial design.
 
--- 
-tejun
+Thanks,
+-escape
