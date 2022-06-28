@@ -2,66 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AEC55CEA2
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 15:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6902555C614
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jun 2022 14:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344060AbiF1JIY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Jun 2022 05:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        id S1343634AbiF1JQx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Jun 2022 05:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234062AbiF1JIW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 05:08:22 -0400
+        with ESMTP id S242975AbiF1JQw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jun 2022 05:16:52 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1660B766F;
-        Tue, 28 Jun 2022 02:08:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD011838E;
+        Tue, 28 Jun 2022 02:16:51 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C89A51F9D9;
-        Tue, 28 Jun 2022 09:08:20 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6B0341FD97;
+        Tue, 28 Jun 2022 09:16:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1656407300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1656407810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z/CFWoysazPYOJ+RT+MoOQfwRcysVEsHRQF675n1OGQ=;
-        b=JANHdKn0mmgpP88tAVTqM1LNjgntd0zv2uCWTJynSPXs4KRj2VMbaxE1WDbZpQZfBDRBC7
-        /GxsxqrefLx2qwvL6P8kRKQJWWWolvM97j34XoT+6tfkvvfSzrs8eHKiO+zd0BJYf5cxEi
-        LyXDetrh6tArsfPoS7eKN7rW3YmjliA=
+        bh=23v656EJZgZ2B3RKrxYupmYVBHtGwcHmW+F/2IUSaFE=;
+        b=O5kYOGNEuWcGqJsOSHgLzYULiCCU0PUt++61xI0DIuCuCUtRWjJEKfxOKzyFWoxdBB0XJu
+        7NkDIhBZwwj1lpQ1NmhL/PBQ6RhDgr4rjeikGdfq+oJAVz76W6bNJMKoFaY6DHgUhwwfjV
+        pANFO/pJwqXmHAQJ4E1yl2rFcInDtws=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D158139E9;
-        Tue, 28 Jun 2022 09:08:20 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 301DB139E9;
+        Tue, 28 Jun 2022 09:16:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wxFzIQTFumKKQAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 28 Jun 2022 09:08:20 +0000
-Date:   Tue, 28 Jun 2022 11:08:19 +0200
+        id /YTtCgLHumI1RQAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 28 Jun 2022 09:16:50 +0000
+Date:   Tue, 28 Jun 2022 11:16:48 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Vasily Averin <vvs@openvz.org>,
-        Muchun Song <songmuchun@bytedance.com>,
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, kernel@openvz.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Vlastimil Babka <vbabka@suse.cz>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH mm v2] memcg: notify about global mem_cgroup_id space
- depletion
-Message-ID: <20220628090819.GB30543@blackbody.suse.cz>
-References: <Yre8tNUY8vBrO0yl@castle>
- <97bed1fd-f230-c2ea-1cb6-8230825a9a64@openvz.org>
- <CAMZfGtWQEFmyuDngPfg59D-+b9sf58m9qhGoVPSQ_jAGmgT+sg@mail.gmail.com>
- <f3e4059c-69ea-eccd-a22f-9f6c6780f33a@openvz.org>
- <YrpVP6rpYGFsl3jj@castle>
+        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH cgroup] cgroup: set the correct return code if hierarchy
+ limits are reached
+Message-ID: <20220628091648.GA12249@blackbody.suse.cz>
+References: <186d5b5b-a082-3814-9963-bf57dfe08511@openvz.org>
+ <d8a9e9c6-856e-1502-95ac-abf9700ff568@openvz.org>
+ <YrpO9CUDt8hpUprr@castle>
+ <17916824-ba97-68ba-8166-9402d5f4440c@openvz.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YrpVP6rpYGFsl3jj@castle>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17916824-ba97-68ba-8166-9402d5f4440c@openvz.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -73,22 +74,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 06:11:27PM -0700, Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> I think a better approach will be to add a cgroup event (displayed via
-> cgroup.events) about reaching the maximum limit of cgroups. E.g.
-> cgroups.events::max_nr_reached.
+On Tue, Jun 28, 2022 at 06:59:06AM +0300, Vasily Averin <vvs@openvz.org> wrote:
+> I would agree with you, however in my opinion EAGAIN is used to restart an
+> interrupted system call. Thus, I worry its return can loop the user space without
+> any chance of continuation.
+> 
+> However, maybe I'm confusing something?
 
-This sounds like a good generalization.
+The mkdir(2) manpage doesn't list EAGAIN at all. ENOSPC makes better
+sense here. (And I suspect the dependency on this particular value won't
+be very wide spread.)
 
-> Then you can set cgroup.max.descendants to some value below memcg_id
-> space size. It's more work, but IMO it's a better way to communicate
-> this event. As a bonus, you can easily get an idea which cgroup
-> depletes the limit.
-
-Just mind there's a difference between events: what cgroup's limit was
-hit and what cgroup was affected by the limit [1] (the former is more
-useful for the calibration if I understand the situation).
-
+0.02€
 Michal
-
-[1] https://lore.kernel.org/all/20200205134426.10570-2-mkoutny@suse.com/
