@@ -2,102 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268FB55FD35
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jun 2022 12:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4337560A43
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jun 2022 21:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbiF2Kai (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Jun 2022 06:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S229478AbiF2T0D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Jun 2022 15:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbiF2Kah (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Jun 2022 06:30:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0F23DDD7;
-        Wed, 29 Jun 2022 03:30:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8B619B8227C;
-        Wed, 29 Jun 2022 10:30:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADA7C341C8;
-        Wed, 29 Jun 2022 10:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656498634;
-        bh=FWingHSiicpAR3nuU10lYv4eU+baMLYlpSa5drYSn54=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MoC+YDJ3ltoGd49syVpPFS76B0w4Ai9FjIw+k7zrNavvqWXc9B14SZ/kTf1KbNIdL
-         ZdjpELi4vH8X2q86nonqL0vvy+Mwhx9gOKQicN2pFXoKTlFRVMcdweCJQp3xC41ewU
-         DWNpHzh3/akaC66ltPyjUfUFd/ApRyCibrC4be03PUlkxMTALSCMTGh0ET+eroEBDN
-         foK6cJjRES98IZ+5jFtKn6947tsOrDbDev1WAaKaX54TCPY8xw5OB1SbZ3tVoSgmYW
-         Zv07anQ2bUq4PQ8a2gQ8gSfq6Y71asIa4qNDuGC+ydS+ncnSNpSWYilQwESJsnmul2
-         Q/ecmAo3pNGEw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1o6Uxr-0042Tm-Ts;
-        Wed, 29 Jun 2022 11:30:32 +0100
-Date:   Wed, 29 Jun 2022 11:30:31 +0100
-Message-ID: <87zghv2248.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        with ESMTP id S229975AbiF2T0B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Jun 2022 15:26:01 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CC9393F4;
+        Wed, 29 Jun 2022 12:26:00 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id n12so16074538pfq.0;
+        Wed, 29 Jun 2022 12:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FOvU7kkY3061/Y6ML2riqvq9E9PyjzheNXe1X2hbYKw=;
+        b=V9dUu8WtJeBE8oGYB7nq+4RFkzp3O7qiE28jpnaaEt3/FzsvCqubr9YdtYM6mODSY8
+         dIUJluVOX75DHnavuyZ+/jgaLm4g8f4cYXnC8EMbWW/f54M1wsTwqtBLsQZzSnDQjQhu
+         4fCs36fLopglf6HJXBUSbNnZPK18HlPzMa/J/sN4owOeqydod23RerxcOZIP5cpVTjWP
+         77ukE+oErNdhKUIj9uRPop6ewX/GaseO3pgjt7dRfQIhgFu9YBcvdOrA0AW4z9yXjnTl
+         +bpTkGSPWzroB99J7apjT2zvpSRe4o81bpRqoo1JMcNLcnp8Ou1XO/++4YqaIB3s0AfA
+         DJ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=FOvU7kkY3061/Y6ML2riqvq9E9PyjzheNXe1X2hbYKw=;
+        b=deyC3/FXV0DNoltGsny951WiukZAWXp7PPW1pCGyWqowkJINc7+UjuLrtqmoq5UF+s
+         e8fQq1YMnvOJFzAKX/nV2pFdbLxXjS9WRJF1qZuvC/a2r22+GFZreYvyBCBpTEHxdZTy
+         yArS3CkBDZQ+H1HV7r8fvGFXss3km4P5/rvMhHmhZxGwPTwnyNG6Jkep8VFNjVzYV6sL
+         sXnJ6gWYv9B9+DfYEs3aLSU0zZ9bteblLIf+vpOzucA0y0XCA4b3UWayFxAoiCEDZM8d
+         yawZbhZKGgtLr35g2dLrNvL0168IOOA2coA/PQOq5TQzVbC2z4/+5z5dJIVEq5duVuP7
+         SXIA==
+X-Gm-Message-State: AJIora/qRhD5UyPOCaySVfWvKb0/h5kBs7vtr37gWnPGSWT8QvFlHB4C
+        ii4vQOIi3kfS28EqvE/r5SM=
+X-Google-Smtp-Source: AGRyM1s9PWFUePsrgxouv4bRlaFMJX43z4TgMgAlzze33zra36HsiJNiy8+Ij5rCI2jNQP8TjRo+fA==
+X-Received: by 2002:a63:5203:0:b0:40d:bf0c:d123 with SMTP id g3-20020a635203000000b0040dbf0cd123mr4133227pgb.287.1656530760072;
+        Wed, 29 Jun 2022 12:26:00 -0700 (PDT)
+Received: from localhost ([121.167.227.144])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a0a8900b001eee5416138sm2566952pjw.52.2022.06.29.12.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jun 2022 12:25:59 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 30 Jun 2022 04:25:57 +0900
+From:   Tejun Heo <tj@kernel.org>
+To:     Vasily Averin <vvs@openvz.org>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        linux-mm@kvack.org, Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: [PATCH v6 4/4] KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
-In-Reply-To: <20220628220938.3657876-5-yosryahmed@google.com>
-References: <20220628220938.3657876-1-yosryahmed@google.com>
-        <20220628220938.3657876-5-yosryahmed@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: yosryahmed@google.com, tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, akpm@linux-foundation.org, mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com, oupton@google.com, Huang@google.com, shaoqin.huang@intel.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-mm@kvack.org, oliver.upton@linux.dev
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Michal Hocko <mhocko@suse.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH cgroup] cgroup: set the correct return code if hierarchy
+ limits are reached
+Message-ID: <YrynRcW4/B2nl/kK@mtj.duckdns.org>
+References: <186d5b5b-a082-3814-9963-bf57dfe08511@openvz.org>
+ <d8a9e9c6-856e-1502-95ac-abf9700ff568@openvz.org>
+ <YrpO9CUDt8hpUprr@castle>
+ <17916824-ba97-68ba-8166-9402d5f4440c@openvz.org>
+ <20220628091648.GA12249@blackbody.suse.cz>
+ <YrrIWe/nn5hoVyu9@mtj.duckdns.org>
+ <525a3eea-8431-64ad-e464-5503f3297722@openvz.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <525a3eea-8431-64ad-e464-5503f3297722@openvz.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 28 Jun 2022 23:09:38 +0100,
-Yosry Ahmed <yosryahmed@google.com> wrote:
+On Wed, Jun 29, 2022 at 09:13:02AM +0300, Vasily Averin wrote:
+> I experimented on fedora36 node with LXC and centos stream 9 container.
+> and I did not noticed any critical systemd troubles with original -EAGAIN.
+> When cgroup's limit is reached systemd cannot start new services, 
+> for example lxc-attach generates following output:
 > 
-> Count the pages used by KVM in arm64 for stage2 mmu in memory stats
-> under secondary pagetable stats (e.g. "SecPageTables" in /proc/meminfo)
-> to give better visibility into the memory consumption of KVM mmu in a
-> similar way to how normal user page tables are accounted.
+> [root@fc34-vvs ~]# lxc-attach c9s
+> lxc-attach: c9s: cgroups/cgfsng.c: cgroup_attach_leaf: 2084 Resource temporarily unavailable - Failed to create leaf cgroup ".lxc"
+> lxc-attach: c9s: cgroups/cgfsng.c: __cgroup_attach_many: 3517 Resource temporarily unavailable - Failed to attach to cgroup fd 11
+> lxc-attach: c9s: attach.c: lxc_attach: 1679 Resource temporarily unavailable - Failed to attach cgroup
+> lxc-attach: c9s: attach.c: do_attach: 1237 No data available - Failed to receive lsm label fd
+> lxc-attach: c9s: attach.c: do_attach: 1375 Failed to attach to container
 > 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+> I did not found any loop in userspace caused by EAGAIN.
+> Messages looks unclear, however situation with the patched kernel is not much better:
+> 
+> [root@fc34-vvs ~]# lxc-attach c9s
+> lxc-attach: c9s: cgroups/cgfsng.c: cgroup_attach_leaf: 2084 No space left on device - Failed to create leaf cgroup ".lxc"
+> lxc-attach: c9s: cgroups/cgfsng.c: __cgroup_attach_many: 3517 No space left on device - Failed to attach to cgroup fd 11
+> lxc-attach: c9s: attach.c: lxc_attach: 1679 No space left on device - Failed to attach cgroup
+> lxc-attach: c9s: attach.c: do_attach: 1237 No data available - Failed to receive lsm label fd
+> lxc-attach: c9s: attach.c: do_attach: 1375 Failed to attach to container
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+I'd say "resource temporarily unavailable" is better fitting than "no
+space left on device" and the syscall restart thing isn't handled by
+-EAGAIN return value. Grep restart_block for that.
 
-	M.
+Thanks.
 
 -- 
-Without deviation from the norm, progress is not possible.
+tejun
