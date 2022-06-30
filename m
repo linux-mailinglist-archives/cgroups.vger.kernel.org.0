@@ -2,132 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054BC5614D7
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 10:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71145614FB
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 10:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbiF3IWk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jun 2022 04:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        id S233470AbiF3I0b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jun 2022 04:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231512AbiF3IWZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 04:22:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF914328;
-        Thu, 30 Jun 2022 01:22:21 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A57CD21CA3;
-        Thu, 30 Jun 2022 08:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1656577340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VazjpIcq3Rp1eYxn5z7a3G7XqRklXOW4+Iv+aLJycac=;
-        b=Z4q7b7Tv2K4y6bML5JDMKNXAp/3cMhrw1YjTHkivEtZmt0HRHEcPn1LT7wVU5jJ+CuX9AX
-        ZGMpT+XS8r5g90JtJgzl+AR29D1omYEZ+O9qayyZTh/y+Ubo1diTU+Y6QJjnphzSqTeo1E
-        Fc1wPLLAl5HxlD1w1Y1Anr89gy5iC/E=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CF5A32C141;
-        Thu, 30 Jun 2022 08:22:19 +0000 (UTC)
-Date:   Thu, 30 Jun 2022 10:22:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: vmpressure: don't count userspace-induced reclaim as
- memory pressure
-Message-ID: <Yr1dOxHo0HsyG2X7@dhcp22.suse.cz>
-References: <YrSdFy3qYdG+rGR6@dhcp22.suse.cz>
- <CAJD7tkZNEtzJMDsLMHuNHkxFfurS37UuK=zFcPCkOkWfN-dbJQ@mail.gmail.com>
- <YrlpcdgF1HzA7bHS@dhcp22.suse.cz>
- <CAJD7tkYVy2uNwaPiiJdPKT5P_O-9WgxD68iFJ6vw=TLJcQV3Ag@mail.gmail.com>
- <Yrl2T632Vfv8QGPn@dhcp22.suse.cz>
- <CAJD7tkZzwzHq7Q7KKUdVSdO4LWTPkrGprp0Q-ze_SWhUd_mTMw@mail.gmail.com>
- <YrmjH2FZF7iNn8da@dhcp22.suse.cz>
- <CAJD7tkYemNQqu_O2nYG3cqxPWGELvc6Lh5i+KKNCtv6cgSPmdA@mail.gmail.com>
- <CALvZod68WdrXEmBpOkadhB5GPYmCXaDZzXH=yyGOCAjFRn4NDQ@mail.gmail.com>
- <CAJD7tkZeySa9V+nuoGfmugrOcxaiaXFspPKLkgTFkvsrri=J3g@mail.gmail.com>
+        with ESMTP id S233901AbiF3I0N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 04:26:13 -0400
+Received: from azure-sdnproxy-1.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 483F7655B;
+        Thu, 30 Jun 2022 01:26:02 -0700 (PDT)
+Received: from fedora33.wangsu.com (unknown [59.61.78.232])
+        by app2 (Coremail) with SMTP id SyJltACniUYFXr1i9U4BAA--.2324S2;
+        Thu, 30 Jun 2022 16:25:51 +0800 (CST)
+From:   Lin Feng <linf@wangsu.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linf@wangsu.com
+Subject: [PATCH] cgroup-v1: use find granularity format identifiers to make /proc/cgroups show pretty
+Date:   Thu, 30 Jun 2022 16:25:39 +0800
+Message-Id: <20220630082539.83602-1-linf@wangsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkZeySa9V+nuoGfmugrOcxaiaXFspPKLkgTFkvsrri=J3g@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: SyJltACniUYFXr1i9U4BAA--.2324S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFy5Zr43Zr4kZw1DGw47CFg_yoW8Gr4xpF
+        s8CryFyw45K348Kw12y34v93yrKws7Xw4jg3ZrJ34ayF13A39Fqr1vv3W2qrZYvFWSkF4q
+        vFW5Zr4I93WDJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyC1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
+        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26r48McIj6xkF7I0En7xvr7AKxVW8
+        Jr0_Cr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
+        AqYI8I648v4I1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
+        Y20_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+        7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0Jj1MKtUUUUU=
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 29-06-22 19:08:42, Yosry Ahmed wrote:
-> On Wed, Jun 29, 2022 at 6:07 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Mon, Jun 27, 2022 at 10:04 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > >
-> > > On Mon, Jun 27, 2022 at 5:31 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > [...]
-> > > >
-> > > > I can see clear arguments for memory.reclaim opt out for vmpressure
-> > > > because we have established that this is not a measure to express a
-> > > > memory pressure on the cgroup.
-> > > >
-> > > > Max/High are less clear to me, TBH. I do understand reasoning for PSI
-> > > > exclusion because considering the calling process to be stalled and
-> > > > non-productive is misleading. It just does its work so in a way it is
-> > > > a productive time in the end. For the vmpressure, which measures how
-> > > > hard/easy it is to reclaim memory why this should special for this
-> > > > particular reclaim?
-> > > >
-> > > > Again, an explanation of the effect on the socket pressure could give a
-> > > > better picture. Say that I somebody reduces the limit (hard/high) and it
-> > > > takes quite some effort to shrink the consumption down. Should the
-> > > > networking layer react to that in any way or should it wait for the
-> > > > active allocation during that process to find that out?
-> > >
-> > > I am out of my depth here. Any answer on my side would be purely
-> > > speculation at this point. Shakeel, can you help us here or tag some
-> > > networking people?
-> >
-> > So, the effect of returning true from mem_cgroup_under_socket_pressure() are:
-> >
-> > 1. Reducing send and receive buffers of the current socket.
-> > 2. May drop packets on the rx path.
-> > 3. May throttle current thread on the tx path.
-> >
-> > Now regarding the behavior from the reclaim due to reducing max or
-> > high, I think the kernel should not ignore vmpressure. Please note
-> > that unlike PSI which is associated with the current process,
-> > vmpressure is associated with the target memcg. So, any reclaim on
-> > that memcg due to real shortage of memory should not be ignored. That
-> > reclaim can be global reclaim or limit reclaim of ancestor or itself
-> > or reclaim due to lowering the limit of ancestor or itself.
-> 
-> So it seems like we should only ignore vmpressure for proactive
-> reclaim (aka memory.reclaim).
-> 
-> Michal, let me know what you think here, I can drop psi and
-> limit-setting changes in v3 and basically just ignore vmpressure for
-> memory.reclaim (MEMCG_RECLAIM_PROACTIVE / sc->proactive instead of
-> MEMCG_RECLAIM_CONTROLLED / sc->controlled maybe).
+The listing subsys info is unaligned with the header columns and we can
+make the output more intuitive to read by specifying "left alignment"
+and "fixed length" format styles for seq_printf.
 
-Yes, that makes much more sense to me.
+# cat /proc/cgroups
 
+the output originally:
+
+#subsys_name	hierarchy	num_cgroups	enabled
+cpuset	11	19	1
+cpu	5	122	1
+cpuacct	5	122	1
+blkio	4	122	1
+memory	10	129	1
+devices	6	122	1
+freezer	9	19	1
+net_cls	8	19	1
+perf_event	3	19	1
+net_prio	8	19	1
+hugetlb	7	19	1
+pids	12	122	1
+rdma	2	1	1
+
+output after this patch:
+
+#subsys_name	hierarchy	num_cgroups	enabled
+cpuset      	11        	19      	1
+cpu         	5         	122     	1
+cpuacct     	5         	122     	1
+blkio       	4         	122     	1
+memory      	10        	129     	1
+devices     	6         	122     	1
+freezer     	9         	19      	1
+net_cls     	8         	19      	1
+perf_event  	3         	19      	1
+net_prio    	8         	19      	1
+hugetlb     	7         	19      	1
+pids        	12        	122     	1
+rdma        	2         	1       	1
+
+Signed-off-by: Lin Feng <linf@wangsu.com>
+---
+ kernel/cgroup/cgroup-v1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index afc6c0e9c966..1a74b0c504aa 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -677,7 +677,7 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
+ 	 */
+ 
+ 	for_each_subsys(ss, i)
+-		seq_printf(m, "%s\t%d\t%d\t%d\n",
++		seq_printf(m, "%-12s\t%-10d\t%-10d\t%-d\n",
+ 			   ss->legacy_name, ss->root->hierarchy_id,
+ 			   atomic_read(&ss->root->nr_cgrps),
+ 			   cgroup_ssid_enabled(i));
 -- 
-Michal Hocko
-SUSE Labs
+2.31.1
+
