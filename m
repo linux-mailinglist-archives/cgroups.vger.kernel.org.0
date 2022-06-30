@@ -2,59 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1BE561892
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 12:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9E5561E2A
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 16:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbiF3Kwe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jun 2022 06:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S237147AbiF3OhN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jun 2022 10:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233226AbiF3KwZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 06:52:25 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409F438181;
-        Thu, 30 Jun 2022 03:52:17 -0700 (PDT)
-X-UUID: 5ade9aec18a844b9bf34d19669efdc4c-20220630
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.7,REQID:2fb03b3d-f589-47bb-b35a-bfe5ff64c847,OB:0,LO
-        B:0,IP:0,URL:5,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,RULE:Release_Ham,ACT
-        ION:release,TS:0
-X-CID-META: VersionHash:87442a2,CLOUDID:d9850f63-0b3f-4b2c-b3a6-ed5c044366a0,C
-        OID:IGNORED,Recheck:0,SF:nil,TC:nil,Content:0,EDM:-3,IP:nil,URL:1,File:nil
-        ,QS:nil,BEC:nil,COL:0
-X-UUID: 5ade9aec18a844b9bf34d19669efdc4c-20220630
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <jing-ting.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1588602314; Thu, 30 Jun 2022 18:52:12 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Thu, 30 Jun 2022 18:52:11 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs11n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Thu, 30 Jun 2022 18:52:11 +0800
-Message-ID: <1978e209e71905d89651e61abd07285912d412a1.camel@mediatek.com>
-Subject: [Bug] race condition at rebind_subsystems()
-From:   Jing-Ting Wu <jing-ting.wu@mediatek.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        <wsd_upstream@mediatek.com>, <lixiong.liu@mediatek.com>,
-        <wenju.xu@mediatek.com>, <jonathan.jmchen@mediatek.com>
-Date:   Thu, 30 Jun 2022 18:52:10 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        with ESMTP id S235979AbiF3Ogz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 10:36:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286CA201A6;
+        Thu, 30 Jun 2022 07:32:14 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CB1B921EFB;
+        Thu, 30 Jun 2022 14:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1656599532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r+2jSverPOfqGEKU6YL54SGkmzqRewq0zi4aTwuQWVg=;
+        b=NQJFxWMbAHm7LziJAaX0qwJ3jblN0hLNNfEOc+ukjrHuS04pTcAJtGu2PvLSHHm2baWcLi
+        6d6yoEW/ti0PFPza/gAw0Pv8kuPVwzG0Cqo/igYQU3BYxnCm+v4Hr+jEtN7Hz8DTdG0u0/
+        9iFRnVdTN7We1cfra567KIbMx3damAM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FB7913A5C;
+        Thu, 30 Jun 2022 14:32:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +DZiHuyzvWJHbAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 30 Jun 2022 14:32:12 +0000
+Date:   Thu, 30 Jun 2022 16:32:11 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: Re: [PATCH v11 7/8] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <20220630143211.GA22105@blackbody.suse.cz>
+References: <20220510153413.400020-8-longman@redhat.com>
+ <YqYnQ4U4t6j/3UaL@slm.duckdns.org>
+ <404171dc-0da3-21f2-5003-9718f875e967@redhat.com>
+ <YqarMyNo9oHxhZFh@slm.duckdns.org>
+ <20220613142452.GB6910@blackbody.suse.cz>
+ <YqdzuSQuAeiPXQvy@slm.duckdns.org>
+ <20220613175548.GB21665@blackbody.suse.cz>
+ <Yqd7WMFj6AEyV3Cy@slm.duckdns.org>
+ <20220614115345.GA6771@blackbody.suse.cz>
+ <YroApRMPV/6zO5I8@mtj.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MTK:  N
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_MSPIKE_H2,T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,
-        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YroApRMPV/6zO5I8@mtj.duckdns.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,95 +84,54 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Johannes
+On Tue, Jun 28, 2022 at 04:10:29AM +0900, Tejun Heo <tj@kernel.org> wrote:
+> What I'm trying to say is that cpuset.cpus of child_1 and child_2 are
+> owned by the parent,
 
+Cf
 
+On Mon, Jun 13, 2022 at 08:00:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> On Mon, Jun 13, 2022 at 07:55:49PM +0200, Michal Koutn=FD wrote:
+> > I don't think child_*/cpuset.cpus must be owned by root.
+>=20
+> I meant the parent.
 
-We find the KE(kernel exception) happened when test the reboot test
-case in T SW version with kernel-5.15.
-The issue is unable to handle kernel paging request at virtual address.
+I'm slightly confused.
 
-Root cause:
-The rebind_subsystems() is no lock held when move css object from A
-list to B list,then let B's head be treated as css node at
-list_for_each_entry_rcu().
-Use the wrong css to get css->ss->css_rstat_flush should get a wrong
-address.
+> so a feature which blocks siblings from intersecting each other
+> doesn't make whole lot of sense because all those files are under the
+> control of the parent who would have the power to enable or disable
+> the restrition anyway.
 
-The call stack as following:
-kthread
--> worker_thread
--> process_one_work
--> flush_memcg_stats_dwork
--> __mem_cgroup_flush_stats
--> cgroup_rstat_flush_irqsafe
--> cgroup_rstat_flush_locked
+file				owner
+parent/				user (mkdir)
+`- cpuset.cpus			root
+`- cpuset.cpus.partition	root	(P)
+`- child_1/			user
+  ` cpuset.cpus			user	(*)
+`- child_2/			user
+  ` cpuset.cpus			user	(*)
 
-Detail:
-static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool
-may_sleep)
-{
-...
-   rcu_read_lock();
-   list_for_each_entry_rcu(css, &pos->rstat_css_list,
-                             rstat_css_node)
-        css->ss->css_rstat_flush(css, cpu);
-   rcu_read_unlock();
-...
-}
+The writes to child cpuset.cpus may/may not invalidate parent's (P)
+partition validity (whether a cpu is left to it to host possible tasks).
+child_1 vs child_2 overlap affects only whether the children cgroups are
+a valid partition.
 
-Because the content of css->ss is not a function address,
-once the css_rstat_flush is called, kernel exception will happen.
-When the issue happened, the list of pos->rstat_css_list at group A is
-empty.
-There must be racing conditions.
+I think you mean: writes to children cpuset.cpus should be allowed,
+possible exclusivity violation should be reported in
+parent/cpuset.cpus.partition.
 
-From reviewing code, we find rebind_subsystems() is no lock held when
-move css object to other list.
+What I thought was OK: prevent (fail) writes to children cpuset.cpus
+that'd violate the exclusivity (or would take the last cpu from parent
+if it's necessary to host a task).
+IMO, it's similar to failed writes to parent/cgroup.subtree_control in a
+delegated subtree if the parent still has some tasks (that'd violate
+internal node constraint).
 
-int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
-{
-...
-   if (ss->css_rstat_flush) {
-         list_del_rcu(&css->rstat_css_node);
-         list_add_rcu(&css->rstat_css_node,
-                      &dcgrp->rstat_css_list);
-   }
-...
-}
+What I think might still be OK: allow writes to children cpuset.cpus
+that violate exclusivity and report that in children's
+cpuset.cpus.partition. Writes that'd take last cpu from parent should
+still fail (similar to the failing subtree_control writes above).
 
-If we held a css object from A group list, at same time this css object
-was moved to B group list.
-Because current pos is in B’s list, link list was link the pos->next to
-B’s head, so the pos->member will never equal A’s head, then the B’s
-head(cgroup_root->cgroup->rstat_css_list) will be treated as css
-node(css->rstat_css_node).
-list_for_each_entry_rcu() use the container_of() to get css address,
-and it treated the address of [cgroup_root->cgroup->rstat_css_list -
-rstat_css_node] to be a css address.
-cgroup_rstat_flush_locked() use the wrong css address to do css->ss-
->css_rstat_flush, then the wrong function address will be jump.
-
-#define list_for_each_entry_rcu(pos, head, member,
-cond...)             \
-   for (__list_check_rcu(dummy, ## cond, 0), \
-     pos = list_entry_rcu((head)->next, typeof(*pos), member); \
-        &pos->member != (head);                                \
-        pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-
-
-We look the patch of move css object from A list to B list is merged by
-following link:
-
-https://android.googlesource.com/kernel/common/+/a7df69b81aac5bdeb5c5aef9addd680ce22feebf%5E%21/#F0
-
-
-Do you have any suggestion for this issue?
-Thank you.
-
-
-
-Best Regards,
-Jing-Ting Wu
-
-
+Hope that clarifies,
+Michal
