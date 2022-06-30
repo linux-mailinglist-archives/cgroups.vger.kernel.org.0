@@ -2,93 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992B0561EB0
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 17:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53F65624C1
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 23:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbiF3PCX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jun 2022 11:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        id S237032AbiF3VCj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jun 2022 17:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234841AbiF3PCW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 11:02:22 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2A11FCC4
-        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 08:02:21 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so3363041pjl.5
-        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 08:02:21 -0700 (PDT)
+        with ESMTP id S237264AbiF3VCc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 17:02:32 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FB44D158
+        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 14:02:31 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id k22so330405wrd.6
+        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 14:02:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9sVpG9rw+5yvfJDEn00fP0oAwAgYQhlkWm1yb+6MkVQ=;
-        b=NiW6mwj9iUsBV+W7Ai/+PWhAw39Y9q6S++ER4iQXFo1lO5ubXIPgQGODZnubh4TpZ9
-         0N2XCniSpn8Y8y6CCkYJty8KQ9Iot6ipgDn8K1kbsIRsp5bm2Y3+1OpgSLWu3VhYSIam
-         NPFLUooLt7L7siRALdEECBO9DTHlbHS4Vq131X17ZqvvLP4ozqDximEx5OzBtbGuGzkZ
-         zPXeaESFKYAtphPdPOeq5RUameMhlbkH6tuWpqq6yLpzFQxr6hWYPN/0VxiWJshDRhKC
-         +rMkNz+405Ymt7j75iU6v0ugXDphKKBxrFsJ5Kz24upvEQLX1rK0J/ygvYxNaepQ5HNq
-         gI9Q==
+        bh=VtUlpkuhliUwoUgmaGEH+kEoEeunaS6PJnDK/W1XYz4=;
+        b=JfrrtzAQjyLxnw8RtQ5sQiSNUfohoaMNZW2kYvifXlmGWgHr7XJMl/LQ5yWh4ZDLRh
+         EIUPHXZDb5Va4mirbCSRVDZCPMlakbWCUXbrVx3s9CYunFEZ1slL1J+n0+lLyBmkjvq6
+         dywxS4/phRbyRQsua97BR94hWDn23Q49DbtcSC9+zkt3E5pfCOfz49pW3hhqdvrjGdv+
+         pKKf1x3hKQqAQrlbcPos/8s8jUYluEAVcvGGsPGpoOXyv0wrj0LnCa606tZy9ddxQBAt
+         cF8lFcME2E999BhE7foEKF9XdpoRPCaTJec6Ks6Sa9LMwb5hg+yO+AGHFhUc1+iXyNs+
+         Ct9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9sVpG9rw+5yvfJDEn00fP0oAwAgYQhlkWm1yb+6MkVQ=;
-        b=k8YbV/+OYeTOoG+twGuW+w/C166rHpNGcXw33+O4sad4cU9TsgM7yPbXE2jHmaqxCC
-         d+pymxjLz/tGoXVc8sqC9GhdZJWsQPq4RDkWoxpzSHIvPNNmKvnNUAy0nwNMO3whCmwu
-         Mxnfh0GbuE9yFtGsHa3WHfgGvaMRuV3+9z7mB+0i/vH2zXuqFDvwBNuQLQEV5TwjNpyx
-         fHOnyMUp9zBfv8/fCQ1SWdeY7jlU3Utd2EStTxRYNXOuLRv0wmzX17pq+WherIaVFARE
-         iyNpuaLuLg1KZq5Kf5E+/ltGRCHNLMF1ETp+cMpkceek7FNCxiGGeZTkVnD0Qyo5uC0n
-         7OlQ==
-X-Gm-Message-State: AJIora86p9kf0dqWVkLeSE/n86yPFfjWyu9gdK2WypO5yAXdSvGCd82F
-        Ko+tpiDVGrtxVD0EocIDVN+PwvKaypS7+aWTvsF56Q==
-X-Google-Smtp-Source: AGRyM1u27TEN+VQNqG5ylin9u0PllIdI94eXfKZEQCbN5w4n9kKS+0BOVyUk+UR7emocZGKred4OE4zPUfo90QF4eYc=
-X-Received: by 2002:a17:90b:1d8c:b0:1ed:54c3:dcca with SMTP id
- pf12-20020a17090b1d8c00b001ed54c3dccamr12512122pjb.126.1656601340985; Thu, 30
- Jun 2022 08:02:20 -0700 (PDT)
+        bh=VtUlpkuhliUwoUgmaGEH+kEoEeunaS6PJnDK/W1XYz4=;
+        b=poNAlQFManSHZBd4WfSwA96D1Ztt4ZoUjeOdqzGe0nogC7IWPXlMVYyPi6O/xF4rAT
+         LJ6jvpmyJ8eZ+mooeF6vH+2akNi1yvkaeFEsUf7rOK0xugoXyOrw/jEyQwSvmEbI7kHh
+         RvCftX48qMCwGL176aZAw9rA65mo9yuN0yI2KLdxQsHBJPAnLdrFRiE+GVkuNFW4Xy2f
+         ZMWJ+UzjXOqDImymihpZ60HWJ/KB6JiyNpgiGTiUUmpZQDx/4gYqfrND0l622DVJYZTc
+         Av+flgQGFjsLQPqWj5R3K3VVKVRr4jaM+LJ0pyRIUUYFwkat250o9bhIanhgUKPQU/VB
+         BuCA==
+X-Gm-Message-State: AJIora+9Z3l2KveCBo0tcsygb/UsHVHJoOWYf2JWuVYbU+m0SrmPfz8V
+        BsBa7GthND7wrU1oP8rUcdrmOcZslrNyYYodQxgPTA==
+X-Google-Smtp-Source: AGRyM1tplZDxrLp9WaTGqMe3midVuGQbVARcYH1sMixpR7FPn6Bu0DJJ+rFZvHMXvlCiQJACUGtNy4P+3OS3+ElQNfs=
+X-Received: by 2002:a05:6000:a1e:b0:21b:8c8d:3cb5 with SMTP id
+ co30-20020a0560000a1e00b0021b8c8d3cb5mr10358939wrb.372.1656622949489; Thu, 30
+ Jun 2022 14:02:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220630083044.997474-1-yosryahmed@google.com>
-In-Reply-To: <20220630083044.997474-1-yosryahmed@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 30 Jun 2022 08:02:10 -0700
-Message-ID: <CALvZod4n1GqdNU49YVDxC1Ek_6Ob-HKUSm+48GJ_Y_gZw24pCQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: vmpressure: don't count proactive reclaim in vmpressure
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
+References: <20220628220938.3657876-1-yosryahmed@google.com>
+In-Reply-To: <20220628220938.3657876-1-yosryahmed@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 30 Jun 2022 14:01:52 -0700
+Message-ID: <CAJD7tkb3bDwt0gzOhS+3sSiy20Qy=G_AD8jZeY5DYh4=NyX3Bg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/4] KVM: mm: count KVM mmu usage in memory stats
+To:     Paolo Bonzini <pbonzini@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+        Marc Zyngier <maz@kernel.org>
+Cc:     Huang@google.com, Tejun Heo <tj@kernel.org>,
+        Shaoqin <shaoqin.huang@intel.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        James Morse <james.morse@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Oliver Upton <oupton@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        Zefan Li <lizefan.x@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 1:30 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> vmpressure is used in cgroup v1 to notify userspace of reclaim
-> efficiency events, and is also used in both cgroup v1 and v2 as a signal
-> for memory pressure for networking, see
-> mem_cgroup_under_socket_pressure().
->
-> Proactive reclaim intends to probe memcgs for cold memory, without
-> affecting their performance. Hence, reclaim caused by writing to
-> memory.reclaim should not trigger vmpressure.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+If/when this patchset gets merged, would it be through the mm tree or
+kvm tree? It is based on the kvm-queue branch so I am guessing it
+could be easier to go through kvm but I am not sure what the policy is
+here. Andrew or Paolo, do you mind clarifying the policy on such
+patchsets? Thanks!
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+On Tue, Jun 28, 2022 at 3:09 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> Add NR_SECONDARY_PAGETABLE memory stat and use it to account KVM mmu
+> usage as the first type of accounted secondary page tables. This stat
+> can be later extended to account for other types of secondary pages
+> tables (e.g. iommu page tables).
+>
+> Rationale behind why this is useful and link to extended discussion in
+> the first patch.
+>
+> ---
+>
+> Changes in V6:
+> - Rebased on top of kvm/queue and fixed conflicts.
+> - Fixed docs spaces and tabs (Sean).
+> - More narrative commit logs (Sean and Oliver).
+> - Updated kvm_account_pgtable_pages() documentation to describe the
+>   rules of using it more clearly (Sean).
+> - Collected Acks and Reviewed-by's by Shakeel and Oliver (Thanks!)
+>
+> Changes in V5:
+> - Updated cover letter to explain more the rationale behind the change
+>   (Thanks to contributions by Sean Christopherson).
+> - Removed extraneous + in arm64 patch (Oliver Upton, Marc Zyngier).
+> - Shortened secondary_pagetables to sec_pagetables (Shakeel Butt).
+> - Removed dependency on other patchsets (applies to queue branch).
+>
+> Changes in V4:
+> - Changed accounting hooks in arm64 to only account s2 page tables and
+>   refactored them to a much cleaner form, based on recommendations from
+>   Oliver Upton and Marc Zyngier.
+> - Dropped patches for mips and riscv. I am not interested in those archs
+>   anyway and don't have the resources to test them. I posted them for
+>   completeness but it doesn't seem like anyone was interested.
+>
+> Changes in V3:
+> - Added NR_SECONDARY_PAGETABLE instead of piggybacking on NR_PAGETABLE
+>   stats.
+>
+> Changes in V2:
+> - Added accounting stats for other archs than x86.
+> - Changed locations in the code where x86 KVM page table stats were
+>   accounted based on suggestions from Sean Christopherson.
+>
+> ---
+>
+> Yosry Ahmed (4):
+>   mm: add NR_SECONDARY_PAGETABLE to count secondary page table uses.
+>   KVM: mmu: add a helper to account memory used by KVM MMU.
+>   KVM: x86/mmu: count KVM mmu usage in secondary pagetable stats.
+>   KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
+>
+>  Documentation/admin-guide/cgroup-v2.rst |  5 ++++
+>  Documentation/filesystems/proc.rst      |  4 +++
+>  arch/arm64/kvm/mmu.c                    | 36 ++++++++++++++++++++++---
+>  arch/x86/kvm/mmu/mmu.c                  | 16 +++++++++--
+>  arch/x86/kvm/mmu/tdp_mmu.c              | 12 +++++++++
+>  drivers/base/node.c                     |  2 ++
+>  fs/proc/meminfo.c                       |  2 ++
+>  include/linux/kvm_host.h                | 10 +++++++
+>  include/linux/mmzone.h                  |  1 +
+>  mm/memcontrol.c                         |  1 +
+>  mm/page_alloc.c                         |  6 ++++-
+>  mm/vmstat.c                             |  1 +
+>  12 files changed, 89 insertions(+), 7 deletions(-)
+>
+> --
+> 2.37.0.rc0.161.g10f37bed90-goog
+>
