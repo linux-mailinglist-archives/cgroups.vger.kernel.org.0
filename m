@@ -2,136 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9E5561E2A
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 16:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992B0561EB0
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jun 2022 17:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237147AbiF3OhN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jun 2022 10:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        id S235227AbiF3PCX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jun 2022 11:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235979AbiF3Ogz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 10:36:55 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286CA201A6;
-        Thu, 30 Jun 2022 07:32:14 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CB1B921EFB;
-        Thu, 30 Jun 2022 14:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1656599532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r+2jSverPOfqGEKU6YL54SGkmzqRewq0zi4aTwuQWVg=;
-        b=NQJFxWMbAHm7LziJAaX0qwJ3jblN0hLNNfEOc+ukjrHuS04pTcAJtGu2PvLSHHm2baWcLi
-        6d6yoEW/ti0PFPza/gAw0Pv8kuPVwzG0Cqo/igYQU3BYxnCm+v4Hr+jEtN7Hz8DTdG0u0/
-        9iFRnVdTN7We1cfra567KIbMx3damAM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FB7913A5C;
-        Thu, 30 Jun 2022 14:32:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id +DZiHuyzvWJHbAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 30 Jun 2022 14:32:12 +0000
-Date:   Thu, 30 Jun 2022 16:32:11 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Waiman Long <longman@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH v11 7/8] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <20220630143211.GA22105@blackbody.suse.cz>
-References: <20220510153413.400020-8-longman@redhat.com>
- <YqYnQ4U4t6j/3UaL@slm.duckdns.org>
- <404171dc-0da3-21f2-5003-9718f875e967@redhat.com>
- <YqarMyNo9oHxhZFh@slm.duckdns.org>
- <20220613142452.GB6910@blackbody.suse.cz>
- <YqdzuSQuAeiPXQvy@slm.duckdns.org>
- <20220613175548.GB21665@blackbody.suse.cz>
- <Yqd7WMFj6AEyV3Cy@slm.duckdns.org>
- <20220614115345.GA6771@blackbody.suse.cz>
- <YroApRMPV/6zO5I8@mtj.duckdns.org>
+        with ESMTP id S234841AbiF3PCW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 11:02:22 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2A11FCC4
+        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 08:02:21 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so3363041pjl.5
+        for <cgroups@vger.kernel.org>; Thu, 30 Jun 2022 08:02:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9sVpG9rw+5yvfJDEn00fP0oAwAgYQhlkWm1yb+6MkVQ=;
+        b=NiW6mwj9iUsBV+W7Ai/+PWhAw39Y9q6S++ER4iQXFo1lO5ubXIPgQGODZnubh4TpZ9
+         0N2XCniSpn8Y8y6CCkYJty8KQ9Iot6ipgDn8K1kbsIRsp5bm2Y3+1OpgSLWu3VhYSIam
+         NPFLUooLt7L7siRALdEECBO9DTHlbHS4Vq131X17ZqvvLP4ozqDximEx5OzBtbGuGzkZ
+         zPXeaESFKYAtphPdPOeq5RUameMhlbkH6tuWpqq6yLpzFQxr6hWYPN/0VxiWJshDRhKC
+         +rMkNz+405Ymt7j75iU6v0ugXDphKKBxrFsJ5Kz24upvEQLX1rK0J/ygvYxNaepQ5HNq
+         gI9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9sVpG9rw+5yvfJDEn00fP0oAwAgYQhlkWm1yb+6MkVQ=;
+        b=k8YbV/+OYeTOoG+twGuW+w/C166rHpNGcXw33+O4sad4cU9TsgM7yPbXE2jHmaqxCC
+         d+pymxjLz/tGoXVc8sqC9GhdZJWsQPq4RDkWoxpzSHIvPNNmKvnNUAy0nwNMO3whCmwu
+         Mxnfh0GbuE9yFtGsHa3WHfgGvaMRuV3+9z7mB+0i/vH2zXuqFDvwBNuQLQEV5TwjNpyx
+         fHOnyMUp9zBfv8/fCQ1SWdeY7jlU3Utd2EStTxRYNXOuLRv0wmzX17pq+WherIaVFARE
+         iyNpuaLuLg1KZq5Kf5E+/ltGRCHNLMF1ETp+cMpkceek7FNCxiGGeZTkVnD0Qyo5uC0n
+         7OlQ==
+X-Gm-Message-State: AJIora86p9kf0dqWVkLeSE/n86yPFfjWyu9gdK2WypO5yAXdSvGCd82F
+        Ko+tpiDVGrtxVD0EocIDVN+PwvKaypS7+aWTvsF56Q==
+X-Google-Smtp-Source: AGRyM1u27TEN+VQNqG5ylin9u0PllIdI94eXfKZEQCbN5w4n9kKS+0BOVyUk+UR7emocZGKred4OE4zPUfo90QF4eYc=
+X-Received: by 2002:a17:90b:1d8c:b0:1ed:54c3:dcca with SMTP id
+ pf12-20020a17090b1d8c00b001ed54c3dccamr12512122pjb.126.1656601340985; Thu, 30
+ Jun 2022 08:02:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YroApRMPV/6zO5I8@mtj.duckdns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220630083044.997474-1-yosryahmed@google.com>
+In-Reply-To: <20220630083044.997474-1-yosryahmed@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 30 Jun 2022 08:02:10 -0700
+Message-ID: <CALvZod4n1GqdNU49YVDxC1Ek_6Ob-HKUSm+48GJ_Y_gZw24pCQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: vmpressure: don't count proactive reclaim in vmpressure
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
+        Alistair Popple <apopple@nvidia.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 04:10:29AM +0900, Tejun Heo <tj@kernel.org> wrote:
-> What I'm trying to say is that cpuset.cpus of child_1 and child_2 are
-> owned by the parent,
+On Thu, Jun 30, 2022 at 1:30 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> vmpressure is used in cgroup v1 to notify userspace of reclaim
+> efficiency events, and is also used in both cgroup v1 and v2 as a signal
+> for memory pressure for networking, see
+> mem_cgroup_under_socket_pressure().
+>
+> Proactive reclaim intends to probe memcgs for cold memory, without
+> affecting their performance. Hence, reclaim caused by writing to
+> memory.reclaim should not trigger vmpressure.
+>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-Cf
-
-On Mon, Jun 13, 2022 at 08:00:56AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> On Mon, Jun 13, 2022 at 07:55:49PM +0200, Michal Koutn=FD wrote:
-> > I don't think child_*/cpuset.cpus must be owned by root.
->=20
-> I meant the parent.
-
-I'm slightly confused.
-
-> so a feature which blocks siblings from intersecting each other
-> doesn't make whole lot of sense because all those files are under the
-> control of the parent who would have the power to enable or disable
-> the restrition anyway.
-
-file				owner
-parent/				user (mkdir)
-`- cpuset.cpus			root
-`- cpuset.cpus.partition	root	(P)
-`- child_1/			user
-  ` cpuset.cpus			user	(*)
-`- child_2/			user
-  ` cpuset.cpus			user	(*)
-
-The writes to child cpuset.cpus may/may not invalidate parent's (P)
-partition validity (whether a cpu is left to it to host possible tasks).
-child_1 vs child_2 overlap affects only whether the children cgroups are
-a valid partition.
-
-I think you mean: writes to children cpuset.cpus should be allowed,
-possible exclusivity violation should be reported in
-parent/cpuset.cpus.partition.
-
-What I thought was OK: prevent (fail) writes to children cpuset.cpus
-that'd violate the exclusivity (or would take the last cpu from parent
-if it's necessary to host a task).
-IMO, it's similar to failed writes to parent/cgroup.subtree_control in a
-delegated subtree if the parent still has some tasks (that'd violate
-internal node constraint).
-
-What I think might still be OK: allow writes to children cpuset.cpus
-that violate exclusivity and report that in children's
-cpuset.cpus.partition. Writes that'd take last cpu from parent should
-still fail (similar to the failing subtree_control writes above).
-
-Hope that clarifies,
-Michal
+Acked-by: Shakeel Butt <shakeelb@google.com>
