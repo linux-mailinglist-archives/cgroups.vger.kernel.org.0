@@ -2,123 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7245563CAE
-	for <lists+cgroups@lfdr.de>; Sat,  2 Jul 2022 01:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F05563CC3
+	for <lists+cgroups@lfdr.de>; Sat,  2 Jul 2022 01:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbiGAXJx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Jul 2022 19:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
+        id S230320AbiGAX2Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Jul 2022 19:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbiGAXJv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 19:09:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C6871BF1;
-        Fri,  1 Jul 2022 16:09:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B67BFB8321E;
-        Fri,  1 Jul 2022 23:09:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD699C3411E;
-        Fri,  1 Jul 2022 23:09:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1656716988;
-        bh=4nB0U7nhrm6VCb6tiMM+/XZLx4kueqSVr4+hr+wiTWE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rmqt7SRzy8UX3MGyyYcpwqkGOOwD33znN26rtMMJE+WjxrfG547paZYOkVmgLGK9q
-         TyB8p5PrTf2zhjjJ5CluZBO1gEbEy5bjSrvfrE1fuoPBqUQYBA+TsHzmrG10wW8xM9
-         Q9oNEUhltPuJzvreon2BKDVDd1L6udVESo8+Wnf4=
-Date:   Fri, 1 Jul 2022 16:09:47 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S229808AbiGAX2Y (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 19:28:24 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC98525C57
+        for <cgroups@vger.kernel.org>; Fri,  1 Jul 2022 16:28:23 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id ck6so1750272qtb.7
+        for <cgroups@vger.kernel.org>; Fri, 01 Jul 2022 16:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vB+wIPmejTn5guDzm5cOLEtXJ3nVXhdD7b4J4pd+cFY=;
+        b=g6OkOcxXIvG59akpnlImlIcETkdMs26zUNWZQ7dS0paRnswQFjyUzljmU0lm45Ib0h
+         0G/oxnjfVsmFsfH9s8GG0BWyLSiR43LrciR6mGgnaBm1jZmpQxOM+VER18y0zlcr2kfM
+         2/TQ/BiTV0uXVtJBx3k/DlrG4G5htuJ4I0T2sN4KYYSSQAGYRhaG3AuEkPZbLt3h5pXf
+         5WALSJGk8C8SFulTVbniylYxiH6EBhxnRVlM/VcL3kHGVTyle1R047fofkkf62Bxghqo
+         pqw/irKAUFGsBAXs+wUObzD/Q0FAxX1Hk8lrghs+vElBBVNb7lf7JhOHrcR9IpYWq4kn
+         z9Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vB+wIPmejTn5guDzm5cOLEtXJ3nVXhdD7b4J4pd+cFY=;
+        b=pmIXRIxySCPoid4TIfWk/yt0jchmdgWAYioHf0VkGuxllKVudNSCMhx6bCOVWmp7UA
+         7DtiWtq7kXSws6jhWxHoFVxQzRayikv25nXxPPuUq9Dl9YM744B1o9lVQJPMraeyPMAz
+         puAdx367SxUydCrw0/8iqDgRDHKtFR4Ji5mUlDC+YFSk7xeyoi3FTgiU/xKsRAgb6D+a
+         3JSHZBLBwi5cb8gRt6OufeAXY+p+Fv1rOxNsswWCh6OOtLiHM3M1KqJ24HmE6mwlionL
+         VENrQlFn7dENcjFBTorPGIbN0BhECUJ5OvYsuoxvMuvkXK2LvpJVwYFnm2obzAh6V4IP
+         CzoQ==
+X-Gm-Message-State: AJIora8vKro6cMC1hQUtGIwpUAV0PuLPcET0Bg67WyMt1XZu9EKd95cU
+        H7zrOGJ7suHBKzdFXga7DVbqm6dAMwkroR36yLOZeg==
+X-Google-Smtp-Source: AGRyM1syrEY6iPUk1ySOigzAfhn29UJW//l7jUCeAyTBPKAPp9fI/2FxH8eSUodfOrelgdQ9aHzBYPO6D0gD2l3ljtc=
+X-Received: by 2002:a05:6214:202f:b0:432:4810:1b34 with SMTP id
+ 15-20020a056214202f00b0043248101b34mr18957932qvf.35.1656718102554; Fri, 01
+ Jul 2022 16:28:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220610194435.2268290-1-yosryahmed@google.com>
+ <20220610194435.2268290-9-yosryahmed@google.com> <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
+ <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
+ <CAJD7tkbOztCEWgMzoCOdD+g3whMMQWW2e0gwo9p0tVK=3hqmcw@mail.gmail.com> <59376285-21bc-ff12-3d64-3ea7257becb2@fb.com>
+In-Reply-To: <59376285-21bc-ff12-3d64-3ea7257becb2@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 1 Jul 2022 16:28:11 -0700
+Message-ID: <CA+khW7jLLwgLBxpyn5s6Nc8V=0fjfH22193kjP1STbU2A+3v6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3] mm: vmpressure: don't count proactive reclaim in
- vmpressure
-Message-Id: <20220701160947.e4902e5b0484ed084db5d41f@linux-foundation.org>
-In-Reply-To: <20220630083044.997474-1-yosryahmed@google.com>
-References: <20220630083044.997474-1-yosryahmed@google.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 30 Jun 2022 08:30:44 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
-
-> vmpressure is used in cgroup v1 to notify userspace of reclaim
-> efficiency events, and is also used in both cgroup v1 and v2 as a signal
-> for memory pressure for networking, see
-> mem_cgroup_under_socket_pressure().
-> 
-> Proactive reclaim intends to probe memcgs for cold memory, without
-> affecting their performance. Hence, reclaim caused by writing to
-> memory.reclaim should not trigger vmpressure.
-> 
-> ...
+On Tue, Jun 28, 2022 at 11:27 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2319,6 +2319,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
->  				  gfp_t gfp_mask)
->  {
->  	unsigned long nr_reclaimed = 0;
-> +	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
->  
->  	do {
->  		unsigned long pflags;
-> @@ -2331,7 +2332,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
->  
->  		psi_memstall_enter(&pflags);
->  		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
-> -							     gfp_mask, true);
-> +							     gfp_mask,
-> +							     reclaim_options);
+>
+>
+> On 6/28/22 12:43 AM, Yosry Ahmed wrote:
+> > On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>
+> >> On Mon, Jun 27, 2022 at 11:14 PM Yonghong Song <yhs@fb.com> wrote:
+[...]
+> >>> btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+> >>> expected/actual match: actual '(union bpf_iter_link_info){.map =
+> >>> (struct){.map_fd = (__u32)1,},.cgroup '
+> >>> test_btf_dump_struct_data:PASS:find struct sk_buff 0 nsec
+> >>>
+> >>
+> >> Yeah I see what happened there. bpf_iter_link_info was changed by the
+> >> patch that introduced cgroup_iter, and this specific union is used by
+> >> the test to test the "union with nested struct" btf dumping. I will
+> >> add a patch in the next version that updates the btf_dump_data test
+> >> accordingly. Thanks.
+> >>
+> >
+> > So I actually tried the attached diff to updated the expected dump of
+> > bpf_iter_link_info in this test, but the test still failed:
+> >
+> > btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+> > expected/actual match: actual '(union bpf_iter_link_info){.map =
+> > (struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+> > (__u32)1,},}'  != expected '(union bpf_iter_link_info){.map =
+> > (struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+> > (__u32)1,.traversal_order = (__u32)1},}'
+> >
+> > It seems to me that the actual output in this case is not right, it is
+> > missing traversal_order. Did we accidentally find a bug in btf dumping
+> > of unions with nested structs, or am I missing something here?
+>
+> Probably there is an issue in btf_dump_data() function in
+> tools/lib/bpf/btf_dump.c. Could you take a look at it?
+>
 
-It's a bit irksome to create all these unneeded local variables.  Why
-not simply add the constant arg to the try_to_free_mem_cgroup_pages()
-call?
+Regarding this failure of btf_dump_data, the cause seems that:
 
->  		psi_memstall_leave(&pflags);
->  	} while ((memcg = parent_mem_cgroup(memcg)) &&
->  		 !mem_cgroup_is_root(memcg));
-> @@ -2576,7 +2578,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	struct page_counter *counter;
->  	unsigned long nr_reclaimed;
->  	bool passed_oom = false;
-> -	bool may_swap = true;
-> +	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
->  	bool drained = false;
->  	unsigned long pflags;
->  
-> @@ -2593,7 +2595,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  		mem_over_limit = mem_cgroup_from_counter(counter, memory);
->  	} else {
->  		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
-> -		may_swap = false;
-> +		reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
+I added a new struct in 'union bpf_iter_link_info' in this patch
+series, which expanded bpf_iter_link_info's size from 32bit to 64bit.
+However, the test still used the old struct to initialize, which makes
+a temporary stack variable (of type bpf_iter_link_info) partially
+initialized. If I initialize the type by the larger new struct only,
+btf_dump_data will output the correct content and the said test will
+pass.
 
-	reclaim_options = 0
+Yosry, we need to fold the said solution in the patch which introduced
+changes to bpf_iter_link_info, so that it won't break the test.
 
-would be clearer?
+I haven't dug into btf_dump_data() on why partially initialized union
+fails. I need to look at the get_cgroup_vmscan_delay selftest in this
+patch now.
 
-
+Hao
