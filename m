@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 586BF562D13
-	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 09:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C571B562D28
+	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 09:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbiGAHzM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Jul 2022 03:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S235677AbiGAHzT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Jul 2022 03:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiGAHzK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 03:55:10 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6036D56D;
-        Fri,  1 Jul 2022 00:55:09 -0700 (PDT)
+        with ESMTP id S235569AbiGAHzO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 03:55:14 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061916D56B;
+        Fri,  1 Jul 2022 00:55:13 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LZ6Sg1Cgpzl5Bv;
-        Fri,  1 Jul 2022 15:36:03 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4LZ6SX2qkYz6R4Y2;
+        Fri,  1 Jul 2022 15:35:56 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgAXFWgIpL5igL73AA--.48972S10;
+        by APP3 (Coremail) with SMTP id _Ch0CgAXFWgIpL5igL73AA--.48972S11;
         Fri, 01 Jul 2022 15:36:45 +0800 (CST)
 From:   Yu Kuai <yukuai3@huawei.com>
 To:     tj@kernel.org, mkoutny@suse.com, axboe@kernel.dk,
@@ -26,18 +26,18 @@ To:     tj@kernel.org, mkoutny@suse.com, axboe@kernel.dk,
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH v6 5/8] blk-throttle: use 'READ/WRITE' instead of '0/1'
-Date:   Fri,  1 Jul 2022 15:49:20 +0800
-Message-Id: <20220701074923.657426-7-yukuai3@huawei.com>
+Subject: [PATCH v6 6/8] blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
+Date:   Fri,  1 Jul 2022 15:49:21 +0800
+Message-Id: <20220701074923.657426-8-yukuai3@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220701074923.657426-1-yukuai3@huawei.com>
 References: <20220701074923.657426-1-yukuai3@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgAXFWgIpL5igL73AA--.48972S10
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFyfJFy5Aw4xXw17CFWfXwb_yoWkKrgEvF
-        yUGrWjvrs8Gwn3XFykG3WY9r95Ka13XFyIgay09F9rWF4UA3Z8A3W3Z3sIkr42kayIkr93
-        X34rG348Ar18tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: _Ch0CgAXFWgIpL5igL73AA--.48972S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr4xKFy8ZryrGFW3JryrJFb_yoWfCrg_ZF
+        yfCr40krn8uwn7Ja4rJF1rur9Ygw4FgFy2gay0kFy7WF15Jwn8Xw13JrWa9wsxZay0kr4f
+        Xw1DWr4UAr40qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbm8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
         Y4v20xvaj40_Jr0_Jr4l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
         0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -64,37 +64,35 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Make the code easier to read, like everywhere else.
+It's a litter weird to call throtl_dequeue_tg() unconditionally in
+throtl_select_dispatch(), since it will be called in
+tg_update_disptime() again if some bio is still throttled.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-throttle.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-throttle.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 7b09b48577ba..e690dc1c1cde 100644
+index e690dc1c1cde..ab30efedff4e 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -329,8 +329,8 @@ static struct bio *throtl_pop_queued(struct list_head *queued,
- /* init a service_queue, assumes the caller zeroed it */
- static void throtl_service_queue_init(struct throtl_service_queue *sq)
- {
--	INIT_LIST_HEAD(&sq->queued[0]);
--	INIT_LIST_HEAD(&sq->queued[1]);
-+	INIT_LIST_HEAD(&sq->queued[READ]);
-+	INIT_LIST_HEAD(&sq->queued[WRITE]);
- 	sq->pending_tree = RB_ROOT_CACHED;
- 	timer_setup(&sq->pending_timer, throtl_pending_timer_fn, 0);
- }
-@@ -1156,7 +1156,7 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
+@@ -1151,13 +1151,13 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
+ 		if (time_before(jiffies, tg->disptime))
+ 			break;
+ 
+-		throtl_dequeue_tg(tg);
+-
  		nr_disp += throtl_dispatch_tg(tg);
  
  		sq = &tg->service_queue;
--		if (sq->nr_queued[0] || sq->nr_queued[1])
-+		if (sq->nr_queued[READ] || sq->nr_queued[WRITE])
+ 		if (sq->nr_queued[READ] || sq->nr_queued[WRITE])
  			tg_update_disptime(tg);
++		else
++			throtl_dequeue_tg(tg);
  
  		if (nr_disp >= THROTL_QUANTUM)
+ 			break;
 -- 
 2.31.1
 
