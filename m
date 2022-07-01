@@ -2,98 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3434C56321E
-	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 13:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31674563A93
+	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 22:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbiGALDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Jul 2022 07:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        id S230180AbiGAUIi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Jul 2022 16:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbiGALDx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 07:03:53 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D7238BF5;
-        Fri,  1 Jul 2022 04:03:52 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1D068220B1;
-        Fri,  1 Jul 2022 11:03:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1656673431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EQQ0uDHhygYXehLqsJhyCr+6to0zpT4yOYb+B/7ePOc=;
-        b=WWJPQ2EXAZR1zW9+IVv5suuOU1NIHYrBg7iDSfv1oLM8W8yVOIyB5PnitFb/O8WjrQ65cw
-        Rz3zvj+Qg7utK8xqKR8INSt6F2FnWqIzRi9ByD9vyq9spx9KQ6lUiOWwAHhO7EBzxT6J0J
-        rcITBGmSTcrqyllxoSdrgRADn4cis5g=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9BFAC2C141;
-        Fri,  1 Jul 2022 11:03:50 +0000 (UTC)
-Date:   Fri, 1 Jul 2022 13:03:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Vasily Averin <vvs@openvz.org>, kernel@openvz.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH mm v5 0/9] memcg: accounting for objects allocated by
- mkdir, cgroup
-Message-ID: <Yr7Ukyy0vhBjebo4@dhcp22.suse.cz>
-References: <4e685057-b07d-745d-fdaa-1a6a5a681060@openvz.org>
- <0fe836b4-5c0f-0e32-d511-db816d359748@openvz.org>
- <c516033f-a9e4-3485-26d9-a68afa694c1d@openvz.org>
- <YrSP25ebDmXE+kPS@dhcp22.suse.cz>
- <CALvZod4WsmrpfZtfnP4AmvtnkvBRngXXGyhM6+aQzkdfjsinAQ@mail.gmail.com>
- <YrXDV7uPpmDigh3G@dhcp22.suse.cz>
- <CALvZod6U8DvMUcuUNfpQRwfkevQB7=nP4ZLA2gWGNf_JGdyARQ@mail.gmail.com>
+        with ESMTP id S229808AbiGAUIh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 16:08:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAFF4D4FA
+        for <cgroups@vger.kernel.org>; Fri,  1 Jul 2022 13:08:35 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id b12-20020a17090a6acc00b001ec2b181c98so7467437pjm.4
+        for <cgroups@vger.kernel.org>; Fri, 01 Jul 2022 13:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=PSFngJKHrho0FhjB6XnRsy4TL/BbcPjIjM6hLwlPgJM=;
+        b=KJN2es13TaWWapgFPPSZUr0HDQneLNPJI+FpW3g3pKbHwyoLr5ukOqQ6PfvGZyYsU6
+         YVE0xVKLE5FZWNKxeqTTW+m7OM/XFUX1SlvFAOjo0BJ8/aHXDgD48rsY8qDd2KLt88Db
+         ff7QI/rSlge0DvRdZBvMUsEeZ8SfK0/0omobRfhDo7MsVfXGQ4x5kDHFAE5hag/K4G/G
+         PrQjSWop/84u7Wap/121fKfSYZCcbZ5NdvrlGhCvdqfjRSJmJzIu2frxoQU9qoIoWOYX
+         H8eoFH4xEkWhBA7aOf5/hVkTmA+sZ86c5LnrhhRjqUta5cLGNt2r9DsFTDCsAKiyk02a
+         u0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version:content-transfer-encoding;
+        bh=PSFngJKHrho0FhjB6XnRsy4TL/BbcPjIjM6hLwlPgJM=;
+        b=jhK61K8ecEOb8pAdFLLcmhpGCC6wPJJ+M6xwRur5/uCHgO+kqWqZjXSgZJHgGlQPK3
+         NnxqsnEJQUPVQsJBpgF2yyjgZgWFfHawjrR2oSh3ki+BH1pixOozl3BAph74YTD4RE1e
+         fihycvpJv0tkpmqgMm7x5vY6SKm4ST2D9qwtvMHnUcqW8aMz39fxjZP61UQ8Vwxkb5rn
+         7/7/xlGyfN3wLs8uEHDjYn2w2uBynA2PTHM+LQoeVsqNaKjxrSGfkuKm7llmQDGWHQJL
+         ZBm21g+uI3TfRdaWDbToYsYX9qfAcuWth25NN5+1ixcy2+l/8B9K2RhveJ5re+EUjcuD
+         Ic0Q==
+X-Gm-Message-State: AJIora9vfKiMYcCIEkWt6p0ZAYODQqBvqBUCEwHxBpWuKXT5/UDTDoq5
+        uc4yiETU3+hVDTEvOljHMVDBlA==
+X-Google-Smtp-Source: AGRyM1vAh19dm+1k/OOm9aJo8kezXqibtQ121c9P50XCzJwgPwvviajf4WtwsUzOazG5i+60HoPygA==
+X-Received: by 2002:a17:90a:d3d7:b0:1ef:ebe:d613 with SMTP id d23-20020a17090ad3d700b001ef0ebed613mr18287246pjw.240.1656706115012;
+        Fri, 01 Jul 2022 13:08:35 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-67-188-112-16.hsd1.ca.comcast.net. [67.188.112.16])
+        by smtp.gmail.com with ESMTPSA id m17-20020a170902db1100b0016a275623c1sm8463737plx.219.2022.07.01.13.08.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Jul 2022 13:08:33 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Zhang Qiao <zhangqiao22@huawei.com>
+Cc:     Tejun Heo <tj@kernel.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        <vschneid@redhat.com>, <dietmar.eggemann@arm.com>,
+        <bristot@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+        <mgorman@suse.de>
+Subject: Re: [Question] The system may be stuck if there is a cpu cgroup
+ cpu.cfs_quato_us is very low
+References: <5987be34-b527-4ff5-a17d-5f6f0dc94d6d@huawei.com>
+        <YrlrBmF3oOfS3+fq@mtj.duckdns.org>
+        <f0f55f89-14db-de29-c182-32539f8d4e4d@huawei.com>
+Date:   Fri, 01 Jul 2022 13:08:21 -0700
+In-Reply-To: <f0f55f89-14db-de29-c182-32539f8d4e4d@huawei.com> (Zhang Qiao's
+        message of "Fri, 1 Jul 2022 15:34:41 +0800")
+Message-ID: <xm26czeoioju.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6U8DvMUcuUNfpQRwfkevQB7=nP4ZLA2gWGNf_JGdyARQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 27-06-22 09:37:14, Shakeel Butt wrote:
-> On Fri, Jun 24, 2022 at 6:59 AM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > Is it even possible to prevent from id
-> > depletion by the memory consumption? Any medium sized memcg can easily
-> > consume all the ids AFAICS.
-> 
-> Though the patch series is pitched as protection against OOMs, I think
-> it is beneficial irrespective. Protection against an adversarial actor
-> should not be the aim here. IMO this patch series improves the memory
-> association to the actual user which is better than unattributed
-> memory treated as system overhead.
+Zhang Qiao <zhangqiao22@huawei.com> writes:
 
-Considering the amount of memory and "normal" cgroup usage (I guess we
-can agree that delegated subtrees do not count their cgroups in
-thousands) is this really something that is worth bothering with?
+> Hi, tejun
+>
+> Thanks for your reply.
+>
+> =E5=9C=A8 2022/6/27 16:32, Tejun Heo =E5=86=99=E9=81=93:
+>> Hello,
+>>=20
+>> On Mon, Jun 27, 2022 at 02:50:25PM +0800, Zhang Qiao wrote:
+>>> Becuase the task cgroup's cpu.cfs_quota_us is very small and
+>>> test_fork's load is very heavy, the test_fork may be throttled long
+>>> time, therefore, the cgroup_threadgroup_rw_sem read lock is held for
+>>> a long time, other processes will get stuck waiting for the lock:
+>>=20
+>> Yeah, this is a known problem and can happen with other locks too. The
+>> solution prolly is only throttling while in or when about to return to
+>> userspace. There is one really important and wide-spread assumption in
+>> the kernel:
+>>=20
+>>   If things get blocked on some shared resource, whatever is holding
+>>   the resource ends up using more of the system to exit the critical
+>>   section faster and thus unblocks others ASAP. IOW, things running in
+>>   kernel are work-conserving.
+>>=20
+>> The cpu bw controller gives the userspace a rather easy way to break
+>> this assumption and thus is rather fundamentally broken. This is
+>> basically the same problem we had with the old cgroup freezer
+>> implementation which trapped threads in random locations in the
+>> kernel.
+>>=20
+>
+> so, if we want to completely slove this problem, is the best way to
+> change the cfs bw controller throttle mechanism? for example, throttle
+> tasks in a safe location.
 
-I mean, these patches are really small and not really disruptive so I do
-not really see any problem with them. Except that they clearly add a
-maintenance overhead. Not directly with the memory they track but any
-future cgroup/memcg metadata related objects would need to be tracked as
-well and I am worried this will get quickly out of sync. So we will have
-a half assed solution in place that doesn't really help any containment
-nor it provides a good and robust consumption tracking.
-
-All that being said I find these changes rather without a great value or
-use.
-
--- 
-Michal Hocko
-SUSE Labs
+Yes, fixing (kernel) priority inversion due to CFS_BANDWIDTH requires a
+serious reworking of how it works, because it would need to dequeue
+tasks individually rather than doing the entire cfs_rq at a time (and
+would require some effort to avoid pinging every throttling task to get
+it into the kernel).
