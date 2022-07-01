@@ -2,89 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D7A5627FC
-	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 03:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0C456288F
+	for <lists+cgroups@lfdr.de>; Fri,  1 Jul 2022 03:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbiGABJp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jun 2022 21:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S231516AbiGABuU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jun 2022 21:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiGABJo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 21:09:44 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E1B599E7;
-        Thu, 30 Jun 2022 18:09:43 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id o18so927497plg.2;
-        Thu, 30 Jun 2022 18:09:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ygHT2jAw914f43IVltgvjT9GLQcCfN55KKGJRNI/BxE=;
-        b=TCbSrA2CBbCo9r/tWWtCU9TspHb5SREc2B0ylUhPwlb2whHLQfZFQzJi65Z+vfWSbd
-         uP2dWtdU3KgH+GVGXOSsufjmUvdD/CJNe+3EYzSboinSUektABBkXvJSdsCgGT20YU8+
-         /Ynz+i5I93xJUPaVJwlt0gN21yvCKCPf/rOr7C8TBfdxzRLoYG9ThANACmZ7cBNE9Wha
-         OyJM9vDGT+FDZOcejtNfzZtlyEsfRsSdwNxn3gAwmGoM0YPxIc/eqkUhHyCZeaVJiZiz
-         8AKXVAsicGkNEF5XMjb8Lw81j9YpQH6mA/pQQQYurQ1VI+TfBB92M0uLtCvqQvybytzr
-         hRag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ygHT2jAw914f43IVltgvjT9GLQcCfN55KKGJRNI/BxE=;
-        b=UezIONrFFpnsOxpr4v/t7/+QpmsBJw+Zj5TxhB1kHWITbowjQgRAHDrHFxuWYJ+Ft+
-         ZRFAC+HQNH5Ga0afyG724R+IDPbv7PFwmKdj56A5OxnEgjYFWjrlqItBACkhcidehGV/
-         ftDh0jsfg+vShf4HAZESW6gptTyXfVCaJjKsJ6PcHq4GW3nNvX2+hB3Kn9nsI/rIcfY4
-         UXNjnFt9bNyyPh752gVUTCUGk5/XH/fjuFCYVttgApVWyYL7UMSxtkqJmbVyJeZcYrKz
-         FBqDI6rjmnVtw7qMP1kXyGNkynkBS7xGNhcMfQsrxhn59rnurK+hqfmQ1KuMTUpYoP3U
-         YrEQ==
-X-Gm-Message-State: AJIora/UKchaifISSadQAflvRrUhYCvE9QwtECHuqZg4e4QdsTL4kYfZ
-        WNDcVWE0+djDEyCyDlPxyKe97aKCF9ZQeA==
-X-Google-Smtp-Source: AGRyM1uyMm/xC2AAvG7JSDusG2mttPqtTbBPGHurL1wklNY/ixZQWHF9kfJMQP5wI/wPHO26Yuo6wA==
-X-Received: by 2002:a17:902:cec9:b0:16a:416c:3d27 with SMTP id d9-20020a170902cec900b0016a416c3d27mr18407818plg.107.1656637783113;
-        Thu, 30 Jun 2022 18:09:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4f4a])
-        by smtp.gmail.com with ESMTPSA id y17-20020a1709027c9100b0016648412514sm14107965pll.188.2022.06.30.18.09.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 18:09:42 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 1 Jul 2022 10:09:40 +0900
-From:   Tejun Heo <tj@kernel.org>
-To:     Lin Feng <linf@wangsu.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+        with ESMTP id S229480AbiGABuO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jun 2022 21:50:14 -0400
+Received: from zg8tmtyylji0my4xnjqunzqa.icoremail.net (zg8tmtyylji0my4xnjqunzqa.icoremail.net [162.243.164.74])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 95D8917594;
+        Thu, 30 Jun 2022 18:50:09 -0700 (PDT)
+Received: from [10.8.148.37] (unknown [59.61.78.232])
+        by app2 (Coremail) with SMTP id SyJltABXOEW6Ur5io5YBAA--.508S2;
+        Fri, 01 Jul 2022 09:49:47 +0800 (CST)
+Message-ID: <5a6df5c4-e24d-1171-87a8-b013f861f0d5@wangsu.com>
+Date:   Fri, 1 Jul 2022 09:49:46 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Subject: Re: [PATCH] cgroup-v1: use find granularity format identifiers to
  make /proc/cgroups show pretty
-Message-ID: <Yr5JVHhSUCrbT8OH@mtj.duckdns.org>
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20220630082539.83602-1-linf@wangsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220630082539.83602-1-linf@wangsu.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+ <Yr5JVHhSUCrbT8OH@mtj.duckdns.org>
+From:   Lin Feng <linf@wangsu.com>
+In-Reply-To: <Yr5JVHhSUCrbT8OH@mtj.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: SyJltABXOEW6Ur5io5YBAA--.508S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw1rGr1xCw48GFW5Aw15CFg_yoWkGrg_ur
+        yktws2kw1DGFs0v3ZFyrsxXrWDKrWUWr98Z3y0qry7t34rZFZxGF4Fkr93Zr1rGF47AFn8
+        CFZ5tw4j9342gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8YjsxI4VWkKwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+        8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VW8GwAv
+        7VCY1x0262k0Y48FwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCF04k2
+        0xvE74AGY7Cv6cx26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUhtx6UUUUU
+X-CM-SenderInfo: holqwq5zdqw23xof0z/
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 04:25:39PM +0800, Lin Feng wrote:
-> The listing subsys info is unaligned with the header columns and we can
-> make the output more intuitive to read by specifying "left alignment"
-> and "fixed length" format styles for seq_printf.
+Hi Tejun,
 
-This has been proposed before but the file is useful only in cgroup1
-which is in maintenance mode and the format has been like that since
-forever. Given that there's some chance that it can break dumb
-parsers, the choice has been to leave it alone. It's such a dumb file
-format to begin with and just leaving it to wither and die seems to be
-the right direction.
+On 7/1/22 09:09, Tejun Heo wrote:
+> On Thu, Jun 30, 2022 at 04:25:39PM +0800, Lin Feng wrote:
+>> The listing subsys info is unaligned with the header columns and we can
+>> make the output more intuitive to read by specifying "left alignment"
+>> and "fixed length" format styles for seq_printf.
+> This has been proposed before but the file is useful only in cgroup1
+> which is in maintenance mode and the format has been like that since
+> forever. Given that there's some chance that it can break dumb
+> parsers, the choice has been to leave it alone. It's such a dumb file
+> format to begin with and just leaving it to wither and die seems to be
+> the right direction.
 
-Thanks.
+Thanks for your explanation and sorry that I missed we have such a consensus
+before.
 
--- 
-tejun
+I had considered that if this change would break the parsers, but it's likely
+that it won't else the parser is really a broken one and needs some improvements.
+On the other hand, cgroup-v1 still has many old users and kernel still has to
+maintain it for some time for back compatible reason, so I think this tiny fix
+should not be a bad idea.
+
+Thanks,
+linfeng
+
