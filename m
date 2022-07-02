@@ -2,161 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F80C563D15
-	for <lists+cgroups@lfdr.de>; Sat,  2 Jul 2022 02:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65704563D56
+	for <lists+cgroups@lfdr.de>; Sat,  2 Jul 2022 03:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbiGBAzj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Jul 2022 20:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
+        id S231209AbiGBBDk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 1 Jul 2022 21:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiGBAzi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 20:55:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB531530;
-        Fri,  1 Jul 2022 17:55:36 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 261Nt5Ok030494;
-        Fri, 1 Jul 2022 17:55:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Nf+sC10BxO/4n9+I8Wtyh+SF0datPkG1O5cpmLbL6dg=;
- b=g2RguzOL57uORzo96cn0DbGgq1djEzfDpTvnToKO0+Muix/Xjqqc9HpOLx9Ii48fUJFm
- SjBpds2MA49cTJ0p+tq8g9sBxsbNbE7gETf2rrDUd6ZfKuMetpmRW3EkhMKay2E0vr4J
- 55zqz3AJ8FEJNRt1Y17cSb6S+rYf/T2MGx4= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3h195acbr6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Jul 2022 17:55:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M60GjlDdQNtvLpKFsNjNXyGfI782vLB67MpeU09UddGaJ6XVHSZ2gLahtM+TXHusl8Ym1dnC8jFucqxnttsoB8BIIXdjXeC2+LfPW/eVF0bl77ayttkzwwyXTYLjn5+79oGzTn4ikR01dPDOakE7V2ux34D5Euu8NwHZWK9IG8sryMBo+BHBrqcaLgTxd7bAJPa4lUty4HmomaDa5UNvn/kewobPphE1WrWCzeZG+u3+4cIO36Ff53DOVSTKuwpWlCsrhpwY3wVX+ywGWPp410dWp57n0DkgxkE7JCQYmG9eczRY/MfSjvvFEbDZxQRB53W0bTy9ksYvZhCSWk4evQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nf+sC10BxO/4n9+I8Wtyh+SF0datPkG1O5cpmLbL6dg=;
- b=Bs988+PlHaAlUvCwzN9qGt5Sz/aBHStnHAZ/UQ4tdbPOXjoWwref3DiKIKCPEJ+dIKM2dlv1yYinBBrvQYQTZ5MAHKi0r/uabDiyvDNAfkCES3Ro3mBETpCFXUNsApO27j01y3URwWDUw9CVdkfLlbDB+9fww8WnkXh6jkhSNkgQZmDZsbMgOAxSF1GU234fNVtly1A72WHGJZt2FKbz0l/Je5Xwa1dX7024rHgquhAbbQEkqmc6W0LOHVe+gfYB0ke3PCyJPVmJqBE79HgQ01B2+OBeFIZ0M4QE1Mo7y3uca4cXEmZX/ZwtKuKCsRQVeZT+FcefcgoAIzd9uPcvxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB4315.namprd15.prod.outlook.com (2603:10b6:5:1fa::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Sat, 2 Jul
- 2022 00:55:13 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5395.015; Sat, 2 Jul 2022
- 00:55:13 +0000
-Message-ID: <d144ca6b-7f25-f3fa-def7-6c63a6dfc1aa@fb.com>
-Date:   Fri, 1 Jul 2022 17:55:10 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-References: <20220610194435.2268290-1-yosryahmed@google.com>
- <20220610194435.2268290-9-yosryahmed@google.com>
- <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
- <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
- <CAJD7tkZ3AEPEUD9V-5nxUgmS5SLc6qp50ZyrRoAQgdzPM=a-Hg@mail.gmail.com>
- <CAJD7tkarwnbcqR1DUN-iJmt0k_njwBfDMd=P8ket8DfEfRRYjw@mail.gmail.com>
- <6dc9d46b-f1df-fb1d-8efd-580b7a6a7a6e@fb.com>
- <CAJD7tkYsAyFguCOFCKYCaGyaqipCrTE1Q0ecvnrpY1fwG4j=Pg@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <CAJD7tkYsAyFguCOFCKYCaGyaqipCrTE1Q0ecvnrpY1fwG4j=Pg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: SJ0P220CA0030.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:a03:41b::6) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f31e7091-f3f2-40e9-94c3-08da5bc58573
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4315:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DZIc/72DKf4/g0OKeLC2QoMktpuvkSBEixWQeyUwnupPCULGbEJMJ1j1wEVT5SGQAtremq071PKwnYkG+kSHE4jsWM3XVMQkSRf84zsrq9q9KIlEfKMcX3T7xmM/MQ1tUmMsJS1RzEMOKgIq+71aDw/KBESJw+8j1RiFwkVrDI7mY3SGLYnc06vuvT/1jNzXfe4IPCp/OPYvDF22reyXKrP7YTtmg3FN69vzBL3q0JlCvAky9KuU+98cBYiwgl9hRr4Bd1+2E3c1Hl3fvT7f6wBQmK/NFkIjWV1nwnaGDgIIkqOAkTHs42YBcwwle9yGTb5LlD8r1LYpJzNPY80GASxQr24eRu94luKM1QagJYPAe9dttvlPgsjRctE2slVCaUnsrYlCoeV+BhO4whF8pYRimqbp0iydc/R8k/lA0ocAjrSUXD+jUxKlNtfY4zdCnjT1pgvb5nuU1fAzag8C0F9ioXfMn368UScocxddxCZZf+dAB8lX/KwKPlWg4wX9CEGRzMDmqFlCaoA1zsHbVJ+ahg4MC8bClqZbTdATEeVwG1PwJ40r2rIANo4HrX/TxnK5fCBiwEjrCkYvolCoN4iXE7CTn6rXs3/sT4/wilKe/MSDbPMcSyZ0drFNWS0VcVZfTKULSGB5zUD1CYAJWbbNSAUO7VZW4i2xuDalpMWzhCaJn+Ko/swuxo2NZdUEsXHqpwLA4++z221oX93af/IpCRuWOIZDnaQLQqvcZGBBJSh1Qn1NdTyPT5/zpu1dW1+chOuxAKRkfTw12fIl7ac49Ym7jvRL65NOMJyJdtT9pNsJvhXLlHyZgooddnrgivN8BDFyFQRps+fDmKlOyeJxaxj1r6ajGXrwH/NGHiQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(366004)(346002)(396003)(376002)(5660300002)(7416002)(66476007)(66556008)(31696002)(8676002)(66946007)(8936002)(4326008)(2906002)(36756003)(86362001)(6916009)(83380400001)(38100700002)(31686004)(41300700001)(478600001)(6506007)(316002)(53546011)(6512007)(6486002)(2616005)(54906003)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTgvZG1NeTB6VHkxTFprMFZXMTRvYWs0ZWdWYm5Gb0pjV3ZDVENqU2hQRnoy?=
- =?utf-8?B?TE9iOG5SM2NTSmtSQWZQOTNJdFNRdEtLNncydTI3MU5BRUZyNVB3VjhsU094?=
- =?utf-8?B?RFJ4Yi9sQXczR0NhV0VMT0dTWjhhMUsxeVFvUk5RVldkVHRLcXlVR3BPZ1VD?=
- =?utf-8?B?Y095ZmRDRC9OZm1xZ1FPUWJjQWZnbjRlUDhDOGdwQkxpYkFaZ3VvcjJ2NjEy?=
- =?utf-8?B?VGdFZk9NcThOYmdBQ0xEU1NjSVFsWGFMSlQ5RXdBUHRXZjAxdC91bC9ISG1m?=
- =?utf-8?B?MW9HYnhUV2NWbG45cmgzMW9VZDhDTVEwMnN0Ni9zSUExQk1TOURGZ25jOUhZ?=
- =?utf-8?B?L0FKUFdiUE02K2hvVE1LWG1lL1kwQ3lSSUcvREsrQmN1THVRYVE3T25zK2ho?=
- =?utf-8?B?S0JwVmZmVGFTNnl3NmNibkF1a2hlaXBhV3FWT2MvV2pCYko5YjgvckNZSUNG?=
- =?utf-8?B?bVl4SFAwZ3dkYk1YbEJRMWkrU29YdUpKU1F5YnkvVTVkRCtmcDNqUWY2RzA1?=
- =?utf-8?B?MFltN3d2UmVjSFYwNnM0TmxZYzFIZHRYTFNseW9OTkhubDdpckZYbFJJZFAv?=
- =?utf-8?B?cXVKSWRZK1A0azBubkQvV1l4dHQyN3YyWDQyWE5tWG16Q2JZNm5PZWNEZS9P?=
- =?utf-8?B?a2tsR29tdkg0S1E2R2JZeEVJL01TdHBnaTZGZTkwNnNDQ3k2elJYMW1sNnhq?=
- =?utf-8?B?dmhSSS9vU3VxaDBJcmNvSXlFK3E0QU95dWZDWk5wK0pXUE16RDBrNngxMjZj?=
- =?utf-8?B?ZU9uaGhCei8zd0xwK2lTNkwrOVFxZFA3eWdPZ3dMU0dFWmVIaVQ0L0RhNDI4?=
- =?utf-8?B?WlczdDJRSk8reVlISnN0UTAzV3FucWRGdndPaVRCZ1RZLzdCOEdWTE9jL2JG?=
- =?utf-8?B?SFRrbkovKzNpRFpVMDNpUXhod2tqQ1VucitUQURkTzR4Y1BQNmtOandUbjY5?=
- =?utf-8?B?QnNxUFFKMEdqazNZS1VhalByT0VTK1RSOUNKS094WEc3N3p5OWY4cWRPcW1h?=
- =?utf-8?B?SFF4dU1aRE5qZHphN1RjemhaQktTZ1RmNW1SM0Z0OWd1eGh1L0k3S2xFTGFH?=
- =?utf-8?B?VDZRN2ZNVjF0Tnd6d0FSeGF6dzlJTUI0N3ZONkovVlBXK1V4YXVwaW5lWkNm?=
- =?utf-8?B?QnBETncxSHh2NnRESk1WdTVNZmpXZ21kVEIzTzhud0kxUHJBMlpFWU1UaGRt?=
- =?utf-8?B?SUpndTQvaURhTGk4OUhzSzZDZTArSUkyMUVrMG11VEY5N0d6S0liQTFoMXNO?=
- =?utf-8?B?aEdDTklKVWhaeWRsbitadlI2M2E5eHh4UUlQcTV4WlNMNFZlVXdPZTNBL0NU?=
- =?utf-8?B?UlZ2bllHd0hHN1VHUExZM2E3Um9FRHY0bEVOcXdYT0FyWmtySzNRM1BEaVlz?=
- =?utf-8?B?VE1ZZzdRRGxRVWdmK1cycjkvbmVVa2R2TGtZWndwMzRYQ1JDNTVJYUtwdUhh?=
- =?utf-8?B?clRNb3JOR2N4dkIvdW5QRXN0UHVNbWUybmtVckdNYzVweFV2ZVRQUFJTTUFK?=
- =?utf-8?B?S0lhOFo3SW1MQTdISVRGdnBmUjhRcWlqV0k1S0F5TEhSOVhqQkYvSENhalFp?=
- =?utf-8?B?MlFXb1RGQXNWS1lsYnAwaks1L2xOTG9ERmgxZ1ZOZkFVY0ZLNmFWeGZkQ3hC?=
- =?utf-8?B?bS80Tm1xUXhPTlVxdDNYRkdMQkVDUCtrZFhRVFhGaWhqZzdsSXFVT3N3UzRZ?=
- =?utf-8?B?dzdXYjF1M3BOc1ZiemxiekoxOWZDbmpDL0JCdkpJVWg2MW9NWDVWQ1lUemdk?=
- =?utf-8?B?LzhZU1FaWmw0NkRBRGNWSXJGU3pLOCtubkk4QjJGK0hhMDM5QlpkVXd6VFYz?=
- =?utf-8?B?MTF3dG83TjEzRUtpNENRSXJuekhqeEY1L1kwNjJZTU9OdU5ENHlQRTVpbEFB?=
- =?utf-8?B?R0JuMzVCUVU1VWkxaHUvZGJGUnlxc0tpNWdlUG55OHBpbjE2aStmOWdSaTlq?=
- =?utf-8?B?eUl0M1BJazJzcUFoaHd3c1JBTEFmU0ZoREVxN0R1bTArcFRwNklDSG9LSXJq?=
- =?utf-8?B?clowbnBNM3hoOU1hSTAyU1FxbERLRnRva0xyWEFFelZBUm50ZUZCNFN5WHZt?=
- =?utf-8?B?cERZWVFvYnEzemVuOFI0TmNUTGJFMWVsYUJMUERVTWNQRUxFVG1DeGZEbXpx?=
- =?utf-8?Q?2Q8jh/wL4/5WzbZUgI0bB9NkW?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f31e7091-f3f2-40e9-94c3-08da5bc58573
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2022 00:55:13.4944
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vr0/+la6uJZxJ/QGcWu4/VO2PB1TEZgeYsfBzLrxqi+LqdAZRdBdy6s6bUNdDcQD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4315
-X-Proofpoint-GUID: uhumkXia-ojxBMoYx2xwrg7Ddv-6tVcw
-X-Proofpoint-ORIG-GUID: uhumkXia-ojxBMoYx2xwrg7Ddv-6tVcw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S231173AbiGBBDi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 1 Jul 2022 21:03:38 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4682409E;
+        Fri,  1 Jul 2022 18:03:35 -0700 (PDT)
+Date:   Fri, 1 Jul 2022 18:03:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1656723813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UefsvJWBOCsJEHG/jcpgIGR+KBtUCRUqjXcROu7qjh4=;
+        b=oGHlDm4tgr6UzDbC5z/sb7q2WEts5mi8mJ8aiIMXBOzW75BRr4BaIuszRL9hOCzoFfVxku
+        tmO6BM7R9GzDDzZbe/MQeyeOEOAx+3VHqH/w/8ecEZ7fImffcNYGlal4Cw/gQ26E9Sym1J
+        usYWeNXz8OdB9Vt23HLuxwKOwXbZ7ng=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        usbb2k-api-dev@nongnu.org, tipc-discussion@lists.sourceforge.net,
+        target-devel@vger.kernel.org, sound-open-firmware@alsa-project.org,
+        samba-technical@lists.samba.org, rds-devel@oss.oracle.com,
+        patches@opensource.cirrus.com, osmocom-net-gprs@lists.osmocom.org,
+        openipmi-developer@lists.sourceforge.net, nvdimm@lists.linux.dev,
+        ntb@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
+        megaraidlinux.pdl@broadcom.com, linuxppc-dev@lists.ozlabs.org,
+        linux1394-devel@lists.sourceforge.net, linux-x25@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+        linux-sctp@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-parport@lists.infradead.org,
+        linux-parisc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-nfc@lists.01.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-bcache@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linaro-mm-sig@lists.linaro.org,
+        legousb-devel@lists.sourceforge.net, kvm@vger.kernel.org,
+        keyrings@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+        iommu@lists.linux.dev, iommu@lists.linux-foundation.org,
+        intel-wired-lan@lists.osuosl.org, dri-devel@lists.freedesktop.org,
+        dm-devel@redhat.com, devicetree@vger.kernel.org,
+        dev@openvswitch.org, dccp@vger.kernel.org, damon@lists.linux.dev,
+        coreteam@netfilter.org, cgroups@vger.kernel.org,
+        ceph-devel@vger.kernel.org, apparmor@lists.ubuntu.com,
+        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
+        accessrunner-general@lists.sourceforge.net
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 6cc11d2a1759275b856e464265823d94aabd5eaf
+Message-ID: <Yr+ZTnLb9lJk6fJO@castle>
+References: <62be3696.+PAAAVlbtWK6G2hk%lkp@intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-01_16,2022-06-28_01,2022-06-22_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62be3696.+PAAAVlbtWK6G2hk%lkp@intel.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -164,225 +96,99 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 6/29/22 1:04 AM, Yosry Ahmed wrote:
-> On Tue, Jun 28, 2022 at 11:48 PM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 6/28/22 5:09 PM, Yosry Ahmed wrote:
->>> On Tue, Jun 28, 2022 at 12:14 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->>>>
->>>> On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->>>>>
->>>>> On Mon, Jun 27, 2022 at 11:14 PM Yonghong Song <yhs@fb.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 6/10/22 12:44 PM, Yosry Ahmed wrote:
->>>>>>> Add a selftest that tests the whole workflow for collecting,
->>>>>>> aggregating (flushing), and displaying cgroup hierarchical stats.
->>>>>>>
->>>>>>> TL;DR:
->>>>>>> - Whenever reclaim happens, vmscan_start and vmscan_end update
->>>>>>>      per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
->>>>>>>      have updates.
->>>>>>> - When userspace tries to read the stats, vmscan_dump calls rstat to flush
->>>>>>>      the stats, and outputs the stats in text format to userspace (similar
->>>>>>>      to cgroupfs stats).
->>>>>>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
->>>>>>>      updates, vmscan_flush aggregates cpu readings and propagates updates
->>>>>>>      to parents.
->>>>>>>
->>>>>>> Detailed explanation:
->>>>>>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
->>>>>>>      measure the latency of cgroup reclaim. Per-cgroup ratings are stored in
->>>>>>>      percpu maps for efficiency. When a cgroup reading is updated on a cpu,
->>>>>>>      cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
->>>>>>>      rstat updated tree on that cpu.
->>>>>>>
->>>>>>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
->>>>>>>      each cgroup. Reading this file invokes the program, which calls
->>>>>>>      cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
->>>>>>>      cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
->>>>>>>      the stats are exposed to the user. vmscan_dump returns 1 to terminate
->>>>>>>      iteration early, so that we only expose stats for one cgroup per read.
->>>>>>>
->>>>>>> - An ftrace program, vmscan_flush, is also loaded and attached to
->>>>>>>      bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
->>>>>>>      once for each (cgroup, cpu) pair that has updates. cgroups are popped
->>>>>>>      from the rstat tree in a bottom-up fashion, so calls will always be
->>>>>>>      made for cgroups that have updates before their parents. The program
->>>>>>>      aggregates percpu readings to a total per-cgroup reading, and also
->>>>>>>      propagates them to the parent cgroup. After rstat flushing is over, all
->>>>>>>      cgroups will have correct updated hierarchical readings (including all
->>>>>>>      cpus and all their descendants).
->>>>>>>
->>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->>>>>>
->>>>>> There are a selftest failure with test:
->>>>>>
->>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
->>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
->>>>>> get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
->>>>>> get_cgroup_vmscan_delay:PASS:read cgroup_iter 0 nsec
->>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
->>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
->>>>>> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
->>>>>> actual 0 <= expected 0
->>>>>> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
->>>>>> 781874 != expected 382092
->>>>>> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
->>>>>> -1 != expected -2
->>>>>> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
->>>>>> 781874 != expected 781873
->>>>>> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
->>>>>> expected 781874
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
->>>>>> destroy_progs:PASS:remove cgroup_iter root pin 0 nsec
->>>>>> cleanup_bpffs:PASS:rmdir /sys/fs/bpf/vmscan/ 0 nsec
->>>>>> #33      cgroup_hierarchical_stats:FAIL
->>>>>>
->>>>>
->>>>> The test is passing on my setup. I am trying to figure out if there is
->>>>> something outside the setup done by the test that can cause the test
->>>>> to fail.
->>>>>
->>>>
->>>> I can't reproduce the failure on my machine. It seems like for some
->>>> reason reclaim is not invoked in one of the test cgroups which results
->>>> in the expected stats not being there. I have a few suspicions as to
->>>> what might cause this but I am not sure.
->>>>
->>>> If you have the capacity, do you mind re-running the test with the
->>>> attached diff1.patch? (and maybe diff2.patch if that fails, this will
->>>> cause OOMs in the test cgroup, you might see some process killed
->>>> warnings).
->>>> Thanks!
->>>>
->>>
->>> In addition to that, it looks like one of the cgroups has a "0" stat
->>> which shouldn't happen unless one of the map update/lookup operations
->>> failed, which should log something using bpf_printk. I need to
->>> reproduce the test failure to investigate this properly. Did you
->>> observe this failure on your machine or in CI? Any instructions on how
->>> to reproduce or system setup?
->>
->> I got "0" as well.
->>
->> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
->> actual 0 <= expected 0
->> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
->> 676612 != expected 339142
->> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
->> -1 != expected -2
->> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
->> 676612 != expected 676611
->> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
->> expected 676612
->>
->> I don't have special config. I am running on qemu vm, similar to
->> ci environment but may have a slightly different config.
->>
->> The CI for this patch set won't work since the sleepable kfunc support
->> patch is not available. Once you have that patch, bpf CI should be able
->> to compile the patch set and run the tests.
->>
+esOn Fri, Jul 01, 2022 at 07:49:42AM +0800, kbuild test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: 6cc11d2a1759275b856e464265823d94aabd5eaf  Add linux-next specific files for 20220630
 > 
-> I will include this patch in the next version anyway, but I am trying
-> to find out why this selftest is failing for you before I send it out.
-> I am trying to reproduce the problem but no luck so far.
-
-I debugged this a little bit and found that this two programs
-
-SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-int BPF_PROG(vmscan_start, struct lruvec *lruvec, struct scan_control *sc)
-
-and
-
-SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
-int BPF_PROG(vmscan_end, struct lruvec *lruvec, struct scan_control *sc)
-
-are not triggered.
-
-I do have CONFIG_MEMCG enabled in my config file:
-...
-CONFIG_MEMCG=y
-CONFIG_MEMCG_SWAP=y
-CONFIG_MEMCG_KMEM=y
-...
-
-Maybe when cgroup_rstat_flush() is called, some code path won't trigger
-mm_vmscan_memcg_reclaim_begin/end()?
-
+> Error/Warning reports:
 > 
->>>
->>>>
->>>>>>
->>>>>> Also an existing test also failed.
->>>>>>
->>>>>> btf_dump_data:PASS:find type id 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:failed/unexpected type_sz 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
->>>>>> expected/actual match: actual '(union bpf_iter_link_info){.map =
->>>>>> (struct){.map_fd = (__u32)1,},.cgroup '
->>>>>> test_btf_dump_struct_data:PASS:find struct sk_buff 0 nsec
->>>>>>
->>>>>
->>>>> Yeah I see what happened there. bpf_iter_link_info was changed by the
->>>>> patch that introduced cgroup_iter, and this specific union is used by
->>>>> the test to test the "union with nested struct" btf dumping. I will
->>>>> add a patch in the next version that updates the btf_dump_data test
->>>>> accordingly. Thanks.
->>>>>
->>>>>>
->>>>>> test_btf_dump_struct_data:PASS:unexpected return value dumping sk_buff 0
->>>>>> nsec
->>>>>>
->>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:find type id 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:find type id 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
->>>>>>
->>>>>>
->>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
->>>>>>
->>>>>>
->>>>>> #21/14   btf_dump/btf_dump: struct_data:FAIL
->>>>>>
->>>>>> please take a look.
->>>>>>
->>>>>>> ---
->>>>>>>     .../prog_tests/cgroup_hierarchical_stats.c    | 351 ++++++++++++++++++
->>>>>>>     .../bpf/progs/cgroup_hierarchical_stats.c     | 234 ++++++++++++
->>>>>>>     2 files changed, 585 insertions(+)
->>>>>>>     create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
->>>>>>>     create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
->>>>>>>
->> [...]
+> https://lore.kernel.org/linux-mm/202206301859.UodBCrva-lkp@intel.com
+> 
+> Error/Warning: (recently discovered and may have been fixed)
+> 
+> arch/powerpc/kernel/interrupt.c:542:55: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+> arch/powerpc/kernel/interrupt.c:542:55: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+> drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
+> drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
+> mm/shrinker_debug.c:143:9: warning: function 'shrinker_debugfs_rename' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+> mm/shrinker_debug.c:217:9: warning: function 'shrinker_debugfs_rename' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+> mm/vmscan.c:637:9: warning: function 'prealloc_shrinker' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+> mm/vmscan.c:642:9: warning: function 'prealloc_shrinker' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+> mm/vmscan.c:697:9: warning: function 'register_shrinker' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+> mm/vmscan.c:702:9: warning: function 'register_shrinker' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+
+Shrinker-related warnings should be fixed by the following patch.
+
+Thanks!
+
+--
+
+From c399aff65c7745a209397a531c5b28fd404d83c2 Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Date: Fri, 1 Jul 2022 17:38:31 -0700
+Subject: [PATCH] mm:shrinkers: fix build warnings
+
+Add __printf(a, b) attributes to shrinker functions taking shrinker
+name as an argument to avoid compiler warnings like:
+
+mm/shrinker_debug.c:143:9: warning: function 'shrinker_debugfs_rename'
+  might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+mm/shrinker_debug.c:217:9: warning: function 'shrinker_debugfs_rename'
+  might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+mm/vmscan.c:637:9: warning: function 'prealloc_shrinker' might be a
+  candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+mm/vmscan.c:642:9: warning: function 'prealloc_shrinker' might be a
+  candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+mm/vmscan.c:697:9: warning: function 'register_shrinker' might be a
+  candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+mm/vmscan.c:702:9: warning: function 'register_shrinker' might be a
+  candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
+
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+---
+ include/linux/shrinker.h | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+index 64416f3e0a1f..08e6054e061f 100644
+--- a/include/linux/shrinker.h
++++ b/include/linux/shrinker.h
+@@ -93,9 +93,11 @@ struct shrinker {
+  */
+ #define SHRINKER_NONSLAB	(1 << 3)
+ 
+-extern int prealloc_shrinker(struct shrinker *shrinker, const char *fmt, ...);
++extern int __printf(2, 3) prealloc_shrinker(struct shrinker *shrinker,
++					    const char *fmt, ...);
+ extern void register_shrinker_prepared(struct shrinker *shrinker);
+-extern int register_shrinker(struct shrinker *shrinker, const char *fmt, ...);
++extern int __printf(2, 3) register_shrinker(struct shrinker *shrinker,
++					    const char *fmt, ...);
+ extern void unregister_shrinker(struct shrinker *shrinker);
+ extern void free_prealloced_shrinker(struct shrinker *shrinker);
+ extern void synchronize_shrinkers(void);
+@@ -103,8 +105,8 @@ extern void synchronize_shrinkers(void);
+ #ifdef CONFIG_SHRINKER_DEBUG
+ extern int shrinker_debugfs_add(struct shrinker *shrinker);
+ extern void shrinker_debugfs_remove(struct shrinker *shrinker);
+-extern int shrinker_debugfs_rename(struct shrinker *shrinker,
+-				   const char *fmt, ...);
++extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
++						  const char *fmt, ...);
+ #else /* CONFIG_SHRINKER_DEBUG */
+ static inline int shrinker_debugfs_add(struct shrinker *shrinker)
+ {
+@@ -113,8 +115,8 @@ static inline int shrinker_debugfs_add(struct shrinker *shrinker)
+ static inline void shrinker_debugfs_remove(struct shrinker *shrinker)
+ {
+ }
+-static inline int shrinker_debugfs_rename(struct shrinker *shrinker,
+-					  const char *fmt, ...)
++static inline __printf(2, 3)
++int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
+ {
+ 	return 0;
+ }
+-- 
+2.36.1
+
