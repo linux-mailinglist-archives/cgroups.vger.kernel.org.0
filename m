@@ -2,87 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50A564A87
-	for <lists+cgroups@lfdr.de>; Mon,  4 Jul 2022 01:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4850A56596E
+	for <lists+cgroups@lfdr.de>; Mon,  4 Jul 2022 17:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiGCXXq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 3 Jul 2022 19:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
+        id S231549AbiGDPJQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Jul 2022 11:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiGCXXp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 3 Jul 2022 19:23:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236B15FE7;
-        Sun,  3 Jul 2022 16:23:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S234217AbiGDPIx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Jul 2022 11:08:53 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C35F11152;
+        Mon,  4 Jul 2022 08:07:33 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2B7C5223F3;
+        Mon,  4 Jul 2022 15:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1656947252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MMcU4YZLWa62WL4qNjLSZtdaYqVxLE3tGmHxxRtKj8I=;
+        b=gOoq5r7E88AEp+yuoaei6H/O0LSENbP/CeN7WrhkHFWCCiK93dOpZbNpl2GmwAR+MWv6Wb
+        6+gjoznSiW0AvV3tSSblMVjCSSr0EM9rX8ij6MGjo2LaHhu31dr+o9YMZ631Jf2Ff6U/g3
+        HBWQyMHHQc6kbAkoTs+pB6sEoEJt/ao=
+Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D6A8FB80BEB;
-        Sun,  3 Jul 2022 23:23:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7FFC341C6;
-        Sun,  3 Jul 2022 23:23:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1656890621;
-        bh=EDIwVumbRS+j2biW/LWEapjenLtWMcKX8aj62iSrHFs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UGoty1uxOxulUsQC/avpz8A7yZpRuf7BdzfbceCmcdN+XaD+urZDeSlb6tyAxPZfO
-         K+dIpKI3tvnIYwdfDirzlucGlozflAtVanLk5BUjPWntuAOYGjHdgLNk2BtL9kDtrk
-         IJ+i8dgF7XEGChVK7VyVarTJ4q9rqmJJCYvnN130=
-Date:   Sun, 3 Jul 2022 16:23:40 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, longman@redhat.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        cgroups@vger.kernel.org, duanxiongchun@bytedance.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v6 00/11] Use obj_cgroup APIs to charge the LRU pages
-Message-Id: <20220703162340.cb90924355dacbb7437ab595@linux-foundation.org>
-In-Reply-To: <20220621125658.64935-1-songmuchun@bytedance.com>
-References: <20220621125658.64935-1-songmuchun@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        by relay2.suse.de (Postfix) with ESMTPS id 80B0D2C141;
+        Mon,  4 Jul 2022 15:07:31 +0000 (UTC)
+Date:   Mon, 4 Jul 2022 17:07:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for
+ enforced allocations
+Message-ID: <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+ <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+ <YsBmoqEBCa7ra7w2@castle>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YsBmoqEBCa7ra7w2@castle>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 21 Jun 2022 20:56:47 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+On Sat 02-07-22 08:39:14, Roman Gushchin wrote:
+> On Fri, Jul 01, 2022 at 10:50:40PM -0700, Shakeel Butt wrote:
+> > On Fri, Jul 1, 2022 at 8:35 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > >
+> > > Yafang Shao reported an issue related to the accounting of bpf
+> > > memory: if a bpf map is charged indirectly for memory consumed
+> > > from an interrupt context and allocations are enforced, MEMCG_MAX
+> > > events are not raised.
+> > >
+> > > It's not/less of an issue in a generic case because consequent
+> > > allocations from a process context will trigger the reclaim and
+> > > MEMCG_MAX events. However a bpf map can belong to a dying/abandoned
+> > > memory cgroup, so it might never happen.
+> > 
+> > The patch looks good but the above sentence is confusing. What might
+> > never happen? Reclaim or MAX event on dying memcg?
+> 
+> Direct reclaim and MAX events. I agree it might be not clear without
+> looking into the code. How about something like this?
+> 
+> "It's not/less of an issue in a generic case because consequent
+> allocations from a process context will trigger the direct reclaim
+> and MEMCG_MAX events will be raised. However a bpf map can belong
+> to a dying/abandoned memory cgroup, so there will be no allocations
+> from a process context and no MEMCG_MAX events will be triggered."
 
-> This version is rebased on mm-unstable. Hopefully, Andrew can get this series
-> into mm-unstable which will help to determine whether there is a problem or
-> degradation. I am also doing some benchmark tests in parallel.
-> 
-> Since the following patchsets applied. All the kernel memory are charged
-> with the new APIs of obj_cgroup.
-> 
-> 	commit f2fe7b09a52b ("mm: memcg/slab: charge individual slab objects instead of pages")
-> 	commit b4e0b68fbd9d ("mm: memcontrol: use obj_cgroup APIs to charge kmem pages")
-> 
-> But user memory allocations (LRU pages) pinning memcgs for a long time -
-> it exists at a larger scale and is causing recurring problems in the real
-> world: page cache doesn't get reclaimed for a long time, or is used by the
-> second, third, fourth, ... instance of the same job that was restarted into
-> a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
-> and make page reclaim very inefficient.
-> 
-> We can convert LRU pages and most other raw memcg pins to the objcg direction
-> to fix this problem, and then the LRU pages will not pin the memcgs.
-> 
-> This patchset aims to make the LRU pages to drop the reference to memory
-> cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
-> of the dying cgroups will not increase if we run the following test script.
-> 
-> ...
->
+Could you expand little bit more on the situation? Can those charges to
+offline memcg happen indefinetely? How can it ever go away then? Also is
+this something that we actually want to encourage?
 
-I don't have reviewer or acker tags on a couple of these, but there is
-still time - I plan to push this series into mm-stable around July 8.
-
+In other words shouldn't those remote charges be redirected when the
+target memcg is offline?
+-- 
+Michal Hocko
+SUSE Labs
