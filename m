@@ -2,70 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA04656932F
-	for <lists+cgroups@lfdr.de>; Wed,  6 Jul 2022 22:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AA956945B
+	for <lists+cgroups@lfdr.de>; Wed,  6 Jul 2022 23:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbiGFUUf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 6 Jul 2022 16:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
+        id S234430AbiGFVad (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 6 Jul 2022 17:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbiGFUUf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Jul 2022 16:20:35 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3E71EEDC
-        for <cgroups@vger.kernel.org>; Wed,  6 Jul 2022 13:20:33 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id g39-20020a05600c4ca700b003a03ac7d540so12221305wmp.3
-        for <cgroups@vger.kernel.org>; Wed, 06 Jul 2022 13:20:33 -0700 (PDT)
+        with ESMTP id S234279AbiGFVac (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Jul 2022 17:30:32 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A0725E8B
+        for <cgroups@vger.kernel.org>; Wed,  6 Jul 2022 14:30:29 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id s1so23750299wra.9
+        for <cgroups@vger.kernel.org>; Wed, 06 Jul 2022 14:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zN05oMg9A5eMExVvuhLNwOOx17/+XHETTJXVnUtgWnA=;
-        b=T6LSPKDIQlfkCde1dkkcPrJsSgkHNqUSJpiXKz/0vT1OX0fc18YBReSbC51uYTchM9
-         /gQT9y8WsL8XZQPIyiTT2IU6yDNYMTHbdkW4gKnLR0WEBfSxw0mcKXEyrIVwnn6Bov8U
-         IpqUrIX6zjWpKYr3tV3SGFvdrx2ZvGxsSPDVC7jOAeSy6CcZtY//HpliLN50I4rR+KpV
-         xW/f9UEvQHE52zXqJGyZKMr7jZhWHUAs9uWPj51w0ZZFp8GYPDTG3N3b8v9O5wyBf2QR
-         RD0vMPEqy0M85Z3kt0tDYjQre0PGe7u18n6V4HvBonyimUFpLgkq7R0p1ENxG7VI13To
-         8fEA==
+        bh=rQw39tPtKwwT0TwawC+SleFl+XxjNJEpZjL17UZWqD0=;
+        b=TJ0JwctkW4FEMEufZxjl6PXg89sMUFNRoAy0Z5jhygDZZFckNW8E4XxJ8eCgL/hDjV
+         hpoomx5AObK3ULKhJgcDQLBiab+fZf8xg/BY/LryOR1DX8vA3JDoAj8gpSib9lNy/s/e
+         /jzooYkBVmWDEH5zOICcV4QgtMCIhgJSD6R5rt6p8JNkeUND/+ROwETEoXbXZcSx3Pw5
+         +kO8Eawr7OH8uiz5h4pEiZrUnntkQIZncf0aUqDcaOyWbRd8t3dclS0SKnZIHTtW5x8L
+         dikFgDoKYwxUBoOszJ6rcwJsmQibZ2dVNTX63FmKNc/RgDWCF4smHfVSDETfonEAlYnp
+         OgTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zN05oMg9A5eMExVvuhLNwOOx17/+XHETTJXVnUtgWnA=;
-        b=SI1idm7KQaKYJMddhf9MKBVNYBZsqJ6rb0xG4UOEizsdzcsiB01QWNAG5Scey6bBqC
-         s/ONGVJX9EqnBjkzVb8Jrw1Fwimj4NbmZTaSi2un0VsVwZM/qjw0H0RGYilbu3lWifNE
-         JZtN9gTTc5oE5xHaYf3qngfpb1ckl/2C2m3d0j9vwXuoE3eap1tvy/HVOVWF4cKOIQmC
-         bqKSmaZWMpQcDU2Yjkv6wf3Nen2cUjQRDq3QwY2GQIanRbctPkrKxPKrsJ2bLZK4cOar
-         aYh3jdzb/+r+fIYPpHTFhgP8E+XAQKHvP6tI9OoHqYb71TncxWcrwt4GM/CULdEq5I/o
-         JCXA==
-X-Gm-Message-State: AJIora8P8U77KG+idAFuxMRxoRtEWMPFdYrDoMJWE7YxmUDAfDFlL8sC
-        NpFwKePSXih25+S9PR1TYGNyI4LZODwBKUx/9YRnOg==
-X-Google-Smtp-Source: AGRyM1uHudEeLtBIqriGM1ShXbu7TbT6VofLjKwqY3M+ttN0eioirnkaGM47kiambaWwwsJG2xJ5dDvyBP0v3Qw4IKA=
-X-Received: by 2002:a05:600c:1e8e:b0:3a2:c1b4:922c with SMTP id
- be14-20020a05600c1e8e00b003a2c1b4922cmr417065wmb.24.1657138832379; Wed, 06
- Jul 2022 13:20:32 -0700 (PDT)
+        bh=rQw39tPtKwwT0TwawC+SleFl+XxjNJEpZjL17UZWqD0=;
+        b=bw1eOa7VT1enGKp6tgGja1CjZM+P6KFt/0zpT19oUBoS0iAzNGhX3PL2aXqVxWjy35
+         rL011++OHbnM6iag8s8JwbAyAVm9Bom5cat+TQ5SCe8C1PfXSbZRhVB6aZyTuY3w2S/z
+         nCIicFwIlAUqGa8Sq3GOid5WQbB2ZQYwSOTV8SFyV6Tm4ONzVrcjnPUJrkx/YPZh9fmU
+         +RtItVSYvzcniEnlSqYG1j2Twg05VDVZXV6tqsgQiogUwoxmvQMh/Nfg1POQO9dXICpc
+         tfJ4hK603tgB2oAFr/ymhdrhu2KRoC1lnmkvN91shfVyUxOXhcSDSJXnOsFNKEci58Wh
+         c+lQ==
+X-Gm-Message-State: AJIora9EgMrgGnUEmhgwbnubTWAMzA70LvQ/eEVZNMswuN6tBFZc4bN+
+        zV3huter6dVpEZrONtNifbWGeNOOoKgnhb/vZQbH5g==
+X-Google-Smtp-Source: AGRyM1sa1KLvVwiqE5w//w51IOO4ULLgKKe5OZNbipaSgJ+tftt4F/w5yFFO60u5gE8GvclfS23cyFQEJzqOqzwpxUg=
+X-Received: by 2002:a5d:664d:0:b0:21a:3b82:6bb2 with SMTP id
+ f13-20020a5d664d000000b0021a3b826bb2mr39462129wrw.534.1657143028112; Wed, 06
+ Jul 2022 14:30:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220630083044.997474-1-yosryahmed@google.com> <20220701160947.e4902e5b0484ed084db5d41f@linux-foundation.org>
-In-Reply-To: <20220701160947.e4902e5b0484ed084db5d41f@linux-foundation.org>
+References: <20220610194435.2268290-1-yosryahmed@google.com>
+ <20220610194435.2268290-9-yosryahmed@google.com> <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
+ <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
+ <CAJD7tkZ3AEPEUD9V-5nxUgmS5SLc6qp50ZyrRoAQgdzPM=a-Hg@mail.gmail.com>
+ <CAJD7tkarwnbcqR1DUN-iJmt0k_njwBfDMd=P8ket8DfEfRRYjw@mail.gmail.com>
+ <6dc9d46b-f1df-fb1d-8efd-580b7a6a7a6e@fb.com> <CAJD7tkYsAyFguCOFCKYCaGyaqipCrTE1Q0ecvnrpY1fwG4j=Pg@mail.gmail.com>
+ <d144ca6b-7f25-f3fa-def7-6c63a6dfc1aa@fb.com>
+In-Reply-To: <d144ca6b-7f25-f3fa-def7-6c63a6dfc1aa@fb.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 6 Jul 2022 13:19:56 -0700
-Message-ID: <CAJD7tkZ7haRwRgE5723Sfqr4WzeoATy-3SUROgAZpinyxsMt2Q@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: vmpressure: don't count proactive reclaim in vmpressure
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Wed, 6 Jul 2022 14:29:51 -0700
+Message-ID: <CAJD7tkYpiuHi0aFNUoeELPi=o0v=owexMgf_HhC7qqr6X9jG8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -78,81 +90,247 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 1, 2022 at 4:09 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+On Fri, Jul 1, 2022 at 5:55 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, 30 Jun 2022 08:30:44 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
 >
-> > vmpressure is used in cgroup v1 to notify userspace of reclaim
-> > efficiency events, and is also used in both cgroup v1 and v2 as a signal
-> > for memory pressure for networking, see
-> > mem_cgroup_under_socket_pressure().
-> >
-> > Proactive reclaim intends to probe memcgs for cold memory, without
-> > affecting their performance. Hence, reclaim caused by writing to
-> > memory.reclaim should not trigger vmpressure.
-> >
-> > ...
-> >
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2319,6 +2319,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
-> >                                 gfp_t gfp_mask)
-> >  {
-> >       unsigned long nr_reclaimed = 0;
-> > +     unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-> >
-> >       do {
-> >               unsigned long pflags;
-> > @@ -2331,7 +2332,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
-> >
-> >               psi_memstall_enter(&pflags);
-> >               nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
-> > -                                                          gfp_mask, true);
-> > +                                                          gfp_mask,
-> > +                                                          reclaim_options);
 >
-> It's a bit irksome to create all these unneeded local variables.  Why
-> not simply add the constant arg to the try_to_free_mem_cgroup_pages()
-> call?
+> On 6/29/22 1:04 AM, Yosry Ahmed wrote:
+> > On Tue, Jun 28, 2022 at 11:48 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 6/28/22 5:09 PM, Yosry Ahmed wrote:
+> >>> On Tue, Jun 28, 2022 at 12:14 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>>>
+> >>>> On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>>>>
+> >>>>> On Mon, Jun 27, 2022 at 11:14 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 6/10/22 12:44 PM, Yosry Ahmed wrote:
+> >>>>>>> Add a selftest that tests the whole workflow for collecting,
+> >>>>>>> aggregating (flushing), and displaying cgroup hierarchical stats.
+> >>>>>>>
+> >>>>>>> TL;DR:
+> >>>>>>> - Whenever reclaim happens, vmscan_start and vmscan_end update
+> >>>>>>>      per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
+> >>>>>>>      have updates.
+> >>>>>>> - When userspace tries to read the stats, vmscan_dump calls rstat to flush
+> >>>>>>>      the stats, and outputs the stats in text format to userspace (similar
+> >>>>>>>      to cgroupfs stats).
+> >>>>>>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
+> >>>>>>>      updates, vmscan_flush aggregates cpu readings and propagates updates
+> >>>>>>>      to parents.
+> >>>>>>>
+> >>>>>>> Detailed explanation:
+> >>>>>>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
+> >>>>>>>      measure the latency of cgroup reclaim. Per-cgroup ratings are stored in
+> >>>>>>>      percpu maps for efficiency. When a cgroup reading is updated on a cpu,
+> >>>>>>>      cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
+> >>>>>>>      rstat updated tree on that cpu.
+> >>>>>>>
+> >>>>>>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
+> >>>>>>>      each cgroup. Reading this file invokes the program, which calls
+> >>>>>>>      cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
+> >>>>>>>      cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
+> >>>>>>>      the stats are exposed to the user. vmscan_dump returns 1 to terminate
+> >>>>>>>      iteration early, so that we only expose stats for one cgroup per read.
+> >>>>>>>
+> >>>>>>> - An ftrace program, vmscan_flush, is also loaded and attached to
+> >>>>>>>      bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
+> >>>>>>>      once for each (cgroup, cpu) pair that has updates. cgroups are popped
+> >>>>>>>      from the rstat tree in a bottom-up fashion, so calls will always be
+> >>>>>>>      made for cgroups that have updates before their parents. The program
+> >>>>>>>      aggregates percpu readings to a total per-cgroup reading, and also
+> >>>>>>>      propagates them to the parent cgroup. After rstat flushing is over, all
+> >>>>>>>      cgroups will have correct updated hierarchical readings (including all
+> >>>>>>>      cpus and all their descendants).
+> >>>>>>>
+> >>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> >>>>>>
+> >>>>>> There are a selftest failure with test:
+> >>>>>>
+> >>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:PASS:read cgroup_iter 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+> >>>>>> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
+> >>>>>> actual 0 <= expected 0
+> >>>>>> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
+> >>>>>> 781874 != expected 382092
+> >>>>>> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
+> >>>>>> -1 != expected -2
+> >>>>>> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
+> >>>>>> 781874 != expected 781873
+> >>>>>> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
+> >>>>>> expected 781874
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>>>>> destroy_progs:PASS:remove cgroup_iter root pin 0 nsec
+> >>>>>> cleanup_bpffs:PASS:rmdir /sys/fs/bpf/vmscan/ 0 nsec
+> >>>>>> #33      cgroup_hierarchical_stats:FAIL
+> >>>>>>
+> >>>>>
+> >>>>> The test is passing on my setup. I am trying to figure out if there is
+> >>>>> something outside the setup done by the test that can cause the test
+> >>>>> to fail.
+> >>>>>
+> >>>>
+> >>>> I can't reproduce the failure on my machine. It seems like for some
+> >>>> reason reclaim is not invoked in one of the test cgroups which results
+> >>>> in the expected stats not being there. I have a few suspicions as to
+> >>>> what might cause this but I am not sure.
+> >>>>
+> >>>> If you have the capacity, do you mind re-running the test with the
+> >>>> attached diff1.patch? (and maybe diff2.patch if that fails, this will
+> >>>> cause OOMs in the test cgroup, you might see some process killed
+> >>>> warnings).
+> >>>> Thanks!
+> >>>>
+> >>>
+> >>> In addition to that, it looks like one of the cgroups has a "0" stat
+> >>> which shouldn't happen unless one of the map update/lookup operations
+> >>> failed, which should log something using bpf_printk. I need to
+> >>> reproduce the test failure to investigate this properly. Did you
+> >>> observe this failure on your machine or in CI? Any instructions on how
+> >>> to reproduce or system setup?
+> >>
+> >> I got "0" as well.
+> >>
+> >> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
+> >> actual 0 <= expected 0
+> >> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
+> >> 676612 != expected 339142
+> >> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
+> >> -1 != expected -2
+> >> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
+> >> 676612 != expected 676611
+> >> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
+> >> expected 676612
+> >>
+> >> I don't have special config. I am running on qemu vm, similar to
+> >> ci environment but may have a slightly different config.
+> >>
+> >> The CI for this patch set won't work since the sleepable kfunc support
+> >> patch is not available. Once you have that patch, bpf CI should be able
+> >> to compile the patch set and run the tests.
+> >>
+> >
+> > I will include this patch in the next version anyway, but I am trying
+> > to find out why this selftest is failing for you before I send it out.
+> > I am trying to reproduce the problem but no luck so far.
+>
+> I debugged this a little bit and found that this two programs
+>
+> SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
+> int BPF_PROG(vmscan_start, struct lruvec *lruvec, struct scan_control *sc)
+>
+> and
+>
+> SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
+> int BPF_PROG(vmscan_end, struct lruvec *lruvec, struct scan_control *sc)
+>
+> are not triggered.
+
+Thanks so much for doing this. I am still failing to reproduce the
+problem so this is very useful. I believe if those programs are not
+triggered at all then we are not walking the memcg reclaim path, which
+shouldn't happen since we are setting memory.high to a limit and then
+allocating more memory, which should trigger memcg reclaim.
+
+I am looking at the code now, and there are some conditions that will
+cause memory.high to not invoke reclaim (at least synchronously). Did
+you try diff2.patch attached in the previous email? It changes the
+test to use memory.max instead of memory.high, this will cause an OOM
+kill of the test child process, but it should be a stronger guarantee
+that reclaim happens and we hit mm_vmscan_memcg_reclaim_begin/end().
+If diff2.patch above works, is it okay to keep it? Is it okay to have
+some test processes OOM killed during testing?
+
+>
+> I do have CONFIG_MEMCG enabled in my config file:
+> ...
+> CONFIG_MEMCG=y
+> CONFIG_MEMCG_SWAP=y
+> CONFIG_MEMCG_KMEM= > ...
+>
+> Maybe when cgroup_rstat_flush() is called, some code path won't trigger
+> mm_vmscan_memcg_reclaim_begin/end()?
 >
 
-I was trying to improve readability by trying to have consistent
-reclaim_options local variable passed into
-try_to_free_mem_cgroup_pages(), and also to avoid nested line-wrapping
-in cases where reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-MEMCG_RECLAIM_PROACTIVE (like in memory_reclaim()). Since you found it
-irksome, I obviously failed :)
+cgroup_rstat_flush() should be completely separate in this regard, and
+should not affect the code path that triggers
+mm_vmscan_memcg_reclaim_begin/end().
 
-Will remove the local variables where possible and send a v4. Thanks
-for taking a look!
-
-> >               psi_memstall_leave(&pflags);
-> >       } while ((memcg = parent_mem_cgroup(memcg)) &&
-> >                !mem_cgroup_is_root(memcg));
-> > @@ -2576,7 +2578,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >       struct page_counter *counter;
-> >       unsigned long nr_reclaimed;
-> >       bool passed_oom = false;
-> > -     bool may_swap = true;
-> > +     unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-> >       bool drained = false;
-> >       unsigned long pflags;
 > >
-> > @@ -2593,7 +2595,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >               mem_over_limit = mem_cgroup_from_counter(counter, memory);
-> >       } else {
-> >               mem_over_limit = mem_cgroup_from_counter(counter, memsw);
-> > -             may_swap = false;
-> > +             reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
->
->         reclaim_options = 0
->
-> would be clearer?
->
-
-I feel like the current code is more clear to the reader and
-future-proof. If we can't swap, we want to remove the MAY_SWAP flag,
-we don't want to remove all existing flags. In this case it's the
-same, but maybe in the future it won't be and someone will miss
-updating this line. Anyway, I don't have a strong opinion, let me know
-what you prefer for v4.
+> >>>
+> >>>>
+> >>>>>>
+> >>>>>> Also an existing test also failed.
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:find type id 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:failed/unexpected type_sz 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+> >>>>>> expected/actual match: actual '(union bpf_iter_link_info){.map =
+> >>>>>> (struct){.map_fd = (__u32)1,},.cgroup '
+> >>>>>> test_btf_dump_struct_data:PASS:find struct sk_buff 0 nsec
+> >>>>>>
+> >>>>>
+> >>>>> Yeah I see what happened there. bpf_iter_link_info was changed by the
+> >>>>> patch that introduced cgroup_iter, and this specific union is used by
+> >>>>> the test to test the "union with nested struct" btf dumping. I will
+> >>>>> add a patch in the next version that updates the btf_dump_data test
+> >>>>> accordingly. Thanks.
+> >>>>>
+> >>>>>>
+> >>>>>> test_btf_dump_struct_data:PASS:unexpected return value dumping sk_buff 0
+> >>>>>> nsec
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:find type id 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:find type id 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
+> >>>>>>
+> >>>>>>
+> >>>>>> #21/14   btf_dump/btf_dump: struct_data:FAIL
+> >>>>>>
+> >>>>>> please take a look.
+> >>>>>>
+> >>>>>>> ---
+> >>>>>>>     .../prog_tests/cgroup_hierarchical_stats.c    | 351 ++++++++++++++++++
+> >>>>>>>     .../bpf/progs/cgroup_hierarchical_stats.c     | 234 ++++++++++++
+> >>>>>>>     2 files changed, 585 insertions(+)
+> >>>>>>>     create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+> >>>>>>>     create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> >>>>>>>
+> >> [...]
