@@ -2,335 +2,338 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AA956945B
-	for <lists+cgroups@lfdr.de>; Wed,  6 Jul 2022 23:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B61569AE5
+	for <lists+cgroups@lfdr.de>; Thu,  7 Jul 2022 08:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbiGFVad (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 6 Jul 2022 17:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        id S233957AbiGGG55 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Jul 2022 02:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbiGFVac (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Jul 2022 17:30:32 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A0725E8B
-        for <cgroups@vger.kernel.org>; Wed,  6 Jul 2022 14:30:29 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id s1so23750299wra.9
-        for <cgroups@vger.kernel.org>; Wed, 06 Jul 2022 14:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rQw39tPtKwwT0TwawC+SleFl+XxjNJEpZjL17UZWqD0=;
-        b=TJ0JwctkW4FEMEufZxjl6PXg89sMUFNRoAy0Z5jhygDZZFckNW8E4XxJ8eCgL/hDjV
-         hpoomx5AObK3ULKhJgcDQLBiab+fZf8xg/BY/LryOR1DX8vA3JDoAj8gpSib9lNy/s/e
-         /jzooYkBVmWDEH5zOICcV4QgtMCIhgJSD6R5rt6p8JNkeUND/+ROwETEoXbXZcSx3Pw5
-         +kO8Eawr7OH8uiz5h4pEiZrUnntkQIZncf0aUqDcaOyWbRd8t3dclS0SKnZIHTtW5x8L
-         dikFgDoKYwxUBoOszJ6rcwJsmQibZ2dVNTX63FmKNc/RgDWCF4smHfVSDETfonEAlYnp
-         OgTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rQw39tPtKwwT0TwawC+SleFl+XxjNJEpZjL17UZWqD0=;
-        b=bw1eOa7VT1enGKp6tgGja1CjZM+P6KFt/0zpT19oUBoS0iAzNGhX3PL2aXqVxWjy35
-         rL011++OHbnM6iag8s8JwbAyAVm9Bom5cat+TQ5SCe8C1PfXSbZRhVB6aZyTuY3w2S/z
-         nCIicFwIlAUqGa8Sq3GOid5WQbB2ZQYwSOTV8SFyV6Tm4ONzVrcjnPUJrkx/YPZh9fmU
-         +RtItVSYvzcniEnlSqYG1j2Twg05VDVZXV6tqsgQiogUwoxmvQMh/Nfg1POQO9dXICpc
-         tfJ4hK603tgB2oAFr/ymhdrhu2KRoC1lnmkvN91shfVyUxOXhcSDSJXnOsFNKEci58Wh
-         c+lQ==
-X-Gm-Message-State: AJIora9EgMrgGnUEmhgwbnubTWAMzA70LvQ/eEVZNMswuN6tBFZc4bN+
-        zV3huter6dVpEZrONtNifbWGeNOOoKgnhb/vZQbH5g==
-X-Google-Smtp-Source: AGRyM1sa1KLvVwiqE5w//w51IOO4ULLgKKe5OZNbipaSgJ+tftt4F/w5yFFO60u5gE8GvclfS23cyFQEJzqOqzwpxUg=
-X-Received: by 2002:a5d:664d:0:b0:21a:3b82:6bb2 with SMTP id
- f13-20020a5d664d000000b0021a3b826bb2mr39462129wrw.534.1657143028112; Wed, 06
- Jul 2022 14:30:28 -0700 (PDT)
+        with ESMTP id S233366AbiGGG5x (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jul 2022 02:57:53 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AEA2CDFF;
+        Wed,  6 Jul 2022 23:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657177070; x=1688713070;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hUaxS4FbU98cO1hd7qPjY6PMv7SAZrQrjnJcWkGCO9c=;
+  b=BJx3Ce5sJvWSeURQApb4aBJaKqQCevfAKIpd7wuJqkTIWiTvR5jzxuLi
+   Ji8JqnCzRA89jV8XM69YqgAEgmX+cl8FnUqh6NHLm7+08eIh1r34BOiVK
+   o3MMVUl3ZJY62N1T9uaS5v4NZTkcoe9BXs26agl02FavUpClfhVGSIMvQ
+   gP/sCdh0dD17hv72p/gZWgU9TBYX9RQbaL6mguKqsI9t9jr6em0RCp2lf
+   s6K9KC9hb/8GCXMNYdRKe6ZKzTKTGHxBr1FA4HAQZqwCl6eSn/mmVKsYr
+   DiR0O6wHLr6bKqQno7Wn1i6jbqzc5O5y1B4QUXN0fAHH04MS2ZT8s+dDr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="347932686"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
+   d="scan'208";a="347932686"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2022 23:57:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
+   d="scan'208";a="651007648"
+Received: from lkp-server01.sh.intel.com (HELO 68b931ab7ac1) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Jul 2022 23:57:29 -0700
+Received: from kbuild by 68b931ab7ac1 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1o9LS4-000LgU-Lh;
+        Thu, 07 Jul 2022 06:57:28 +0000
+Date:   Thu, 07 Jul 2022 14:56:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        usbb2k-api-dev@nongnu.org, tipc-discussion@lists.sourceforge.net,
+        target-devel@vger.kernel.org, sound-open-firmware@alsa-project.org,
+        samba-technical@lists.samba.org, rds-devel@oss.oracle.com,
+        patches@opensource.cirrus.com, osmocom-net-gprs@lists.osmocom.org,
+        openipmi-developer@lists.sourceforge.net, nvdimm@lists.linux.dev,
+        ntb@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, mjpeg-users@lists.sourceforge.net,
+        megaraidlinux.pdl@broadcom.com, linuxppc-dev@lists.ozlabs.org,
+        linux1394-devel@lists.sourceforge.net, linux-x25@vger.kernel.org,
+        linux-wpan@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
+        linux-sctp@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-perf-users@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-parport@lists.infradead.org,
+        linux-parisc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-nfc@lists.01.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-mm@kvack.org,
+        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-cxl@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linaro-mm-sig@lists.linaro.org,
+        legousb-devel@lists.sourceforge.net, kvm@vger.kernel.org,
+        keyrings@vger.kernel.org, isdn4linux@listserv.isdn4linux.de,
+        iommu@lists.linux.dev, iommu@lists.linux-foundation.org,
+        intel-wired-lan@lists.osuosl.org, greybus-dev@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, dm-devel@redhat.com,
+        devicetree@vger.kernel.org, dev@openvswitch.org,
+        dccp@vger.kernel.org, damon@lists.linux.dev,
+        coreteam@netfilter.org, cgroups@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ath11k@lists.infradead.org,
+        apparmor@lists.ubuntu.com, amd-gfx@lists.freedesktop.org,
+        alsa-devel@alsa-project.org,
+        accessrunner-general@lists.sourceforge.net,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 088b9c375534d905a4d337c78db3b3bfbb52c4a0
+Message-ID: <62c683a2.g1VSVt6BrQC6ZzOz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220610194435.2268290-1-yosryahmed@google.com>
- <20220610194435.2268290-9-yosryahmed@google.com> <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
- <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
- <CAJD7tkZ3AEPEUD9V-5nxUgmS5SLc6qp50ZyrRoAQgdzPM=a-Hg@mail.gmail.com>
- <CAJD7tkarwnbcqR1DUN-iJmt0k_njwBfDMd=P8ket8DfEfRRYjw@mail.gmail.com>
- <6dc9d46b-f1df-fb1d-8efd-580b7a6a7a6e@fb.com> <CAJD7tkYsAyFguCOFCKYCaGyaqipCrTE1Q0ecvnrpY1fwG4j=Pg@mail.gmail.com>
- <d144ca6b-7f25-f3fa-def7-6c63a6dfc1aa@fb.com>
-In-Reply-To: <d144ca6b-7f25-f3fa-def7-6c63a6dfc1aa@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 6 Jul 2022 14:29:51 -0700
-Message-ID: <CAJD7tkYpiuHi0aFNUoeELPi=o0v=owexMgf_HhC7qqr6X9jG8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 1, 2022 at 5:55 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 6/29/22 1:04 AM, Yosry Ahmed wrote:
-> > On Tue, Jun 28, 2022 at 11:48 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 6/28/22 5:09 PM, Yosry Ahmed wrote:
-> >>> On Tue, Jun 28, 2022 at 12:14 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >>>>
-> >>>> On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >>>>>
-> >>>>> On Mon, Jun 27, 2022 at 11:14 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 6/10/22 12:44 PM, Yosry Ahmed wrote:
-> >>>>>>> Add a selftest that tests the whole workflow for collecting,
-> >>>>>>> aggregating (flushing), and displaying cgroup hierarchical stats.
-> >>>>>>>
-> >>>>>>> TL;DR:
-> >>>>>>> - Whenever reclaim happens, vmscan_start and vmscan_end update
-> >>>>>>>      per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-> >>>>>>>      have updates.
-> >>>>>>> - When userspace tries to read the stats, vmscan_dump calls rstat to flush
-> >>>>>>>      the stats, and outputs the stats in text format to userspace (similar
-> >>>>>>>      to cgroupfs stats).
-> >>>>>>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-> >>>>>>>      updates, vmscan_flush aggregates cpu readings and propagates updates
-> >>>>>>>      to parents.
-> >>>>>>>
-> >>>>>>> Detailed explanation:
-> >>>>>>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-> >>>>>>>      measure the latency of cgroup reclaim. Per-cgroup ratings are stored in
-> >>>>>>>      percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-> >>>>>>>      cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-> >>>>>>>      rstat updated tree on that cpu.
-> >>>>>>>
-> >>>>>>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-> >>>>>>>      each cgroup. Reading this file invokes the program, which calls
-> >>>>>>>      cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
-> >>>>>>>      cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
-> >>>>>>>      the stats are exposed to the user. vmscan_dump returns 1 to terminate
-> >>>>>>>      iteration early, so that we only expose stats for one cgroup per read.
-> >>>>>>>
-> >>>>>>> - An ftrace program, vmscan_flush, is also loaded and attached to
-> >>>>>>>      bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
-> >>>>>>>      once for each (cgroup, cpu) pair that has updates. cgroups are popped
-> >>>>>>>      from the rstat tree in a bottom-up fashion, so calls will always be
-> >>>>>>>      made for cgroups that have updates before their parents. The program
-> >>>>>>>      aggregates percpu readings to a total per-cgroup reading, and also
-> >>>>>>>      propagates them to the parent cgroup. After rstat flushing is over, all
-> >>>>>>>      cgroups will have correct updated hierarchical readings (including all
-> >>>>>>>      cpus and all their descendants).
-> >>>>>>>
-> >>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >>>>>>
-> >>>>>> There are a selftest failure with test:
-> >>>>>>
-> >>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:PASS:read cgroup_iter 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> >>>>>> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
-> >>>>>> actual 0 <= expected 0
-> >>>>>> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
-> >>>>>> 781874 != expected 382092
-> >>>>>> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
-> >>>>>> -1 != expected -2
-> >>>>>> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
-> >>>>>> 781874 != expected 781873
-> >>>>>> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
-> >>>>>> expected 781874
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
-> >>>>>> destroy_progs:PASS:remove cgroup_iter root pin 0 nsec
-> >>>>>> cleanup_bpffs:PASS:rmdir /sys/fs/bpf/vmscan/ 0 nsec
-> >>>>>> #33      cgroup_hierarchical_stats:FAIL
-> >>>>>>
-> >>>>>
-> >>>>> The test is passing on my setup. I am trying to figure out if there is
-> >>>>> something outside the setup done by the test that can cause the test
-> >>>>> to fail.
-> >>>>>
-> >>>>
-> >>>> I can't reproduce the failure on my machine. It seems like for some
-> >>>> reason reclaim is not invoked in one of the test cgroups which results
-> >>>> in the expected stats not being there. I have a few suspicions as to
-> >>>> what might cause this but I am not sure.
-> >>>>
-> >>>> If you have the capacity, do you mind re-running the test with the
-> >>>> attached diff1.patch? (and maybe diff2.patch if that fails, this will
-> >>>> cause OOMs in the test cgroup, you might see some process killed
-> >>>> warnings).
-> >>>> Thanks!
-> >>>>
-> >>>
-> >>> In addition to that, it looks like one of the cgroups has a "0" stat
-> >>> which shouldn't happen unless one of the map update/lookup operations
-> >>> failed, which should log something using bpf_printk. I need to
-> >>> reproduce the test failure to investigate this properly. Did you
-> >>> observe this failure on your machine or in CI? Any instructions on how
-> >>> to reproduce or system setup?
-> >>
-> >> I got "0" as well.
-> >>
-> >> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
-> >> actual 0 <= expected 0
-> >> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
-> >> 676612 != expected 339142
-> >> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
-> >> -1 != expected -2
-> >> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
-> >> 676612 != expected 676611
-> >> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
-> >> expected 676612
-> >>
-> >> I don't have special config. I am running on qemu vm, similar to
-> >> ci environment but may have a slightly different config.
-> >>
-> >> The CI for this patch set won't work since the sleepable kfunc support
-> >> patch is not available. Once you have that patch, bpf CI should be able
-> >> to compile the patch set and run the tests.
-> >>
-> >
-> > I will include this patch in the next version anyway, but I am trying
-> > to find out why this selftest is failing for you before I send it out.
-> > I am trying to reproduce the problem but no luck so far.
->
-> I debugged this a little bit and found that this two programs
->
-> SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-> int BPF_PROG(vmscan_start, struct lruvec *lruvec, struct scan_control *sc)
->
-> and
->
-> SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
-> int BPF_PROG(vmscan_end, struct lruvec *lruvec, struct scan_control *sc)
->
-> are not triggered.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 088b9c375534d905a4d337c78db3b3bfbb52c4a0  Add linux-next specific files for 20220706
 
-Thanks so much for doing this. I am still failing to reproduce the
-problem so this is very useful. I believe if those programs are not
-triggered at all then we are not walking the memcg reclaim path, which
-shouldn't happen since we are setting memory.high to a limit and then
-allocating more memory, which should trigger memcg reclaim.
+Error/Warning reports:
 
-I am looking at the code now, and there are some conditions that will
-cause memory.high to not invoke reclaim (at least synchronously). Did
-you try diff2.patch attached in the previous email? It changes the
-test to use memory.max instead of memory.high, this will cause an OOM
-kill of the test child process, but it should be a stronger guarantee
-that reclaim happens and we hit mm_vmscan_memcg_reclaim_begin/end().
-If diff2.patch above works, is it okay to keep it? Is it okay to have
-some test processes OOM killed during testing?
+https://lore.kernel.org/linux-doc/202207070644.x48XOOvs-lkp@intel.com
 
->
-> I do have CONFIG_MEMCG enabled in my config file:
-> ...
-> CONFIG_MEMCG=y
-> CONFIG_MEMCG_SWAP=y
-> CONFIG_MEMCG_KMEM= > ...
->
-> Maybe when cgroup_rstat_flush() is called, some code path won't trigger
-> mm_vmscan_memcg_reclaim_begin/end()?
->
+Error/Warning: (recently discovered and may have been fixed)
 
-cgroup_rstat_flush() should be completely separate in this regard, and
-should not affect the code path that triggers
-mm_vmscan_memcg_reclaim_begin/end().
+Documentation/arm/google/chromebook-boot-flow.rst: WARNING: document isn't included in any toctree
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1108): undefined reference to `__aeabi_ddiv'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1124): undefined reference to `__aeabi_ui2d'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1164): undefined reference to `__aeabi_dmul'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1170): undefined reference to `__aeabi_dadd'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1180): undefined reference to `__aeabi_dsub'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1190): undefined reference to `__aeabi_d2uiz'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x162c): undefined reference to `__aeabi_d2iz'
+arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x16b0): undefined reference to `__aeabi_i2d'
+dc_dmub_srv.c:(.text+0x10f8): undefined reference to `__aeabi_ui2d'
+dc_dmub_srv.c:(.text+0x464): undefined reference to `__floatunsidf'
+dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x33c): undefined reference to `__floatunsidf'
+drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
+drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
+drivers/vfio/vfio_iommu_type1.c:2141:35: warning: cast to smaller integer type 'enum iommu_cap' from 'void *' [-Wvoid-pointer-to-enum-cast]
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x34c): undefined reference to `__floatunsidf'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x378): undefined reference to `__divdf3'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x38c): undefined reference to `__muldf3'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3a0): undefined reference to `__adddf3'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3b4): undefined reference to `__subdf3'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3d4): undefined reference to `__fixunsdfsi'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x750): undefined reference to `__fixdfsi'
+mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x7c0): undefined reference to `__floatsidf'
+powerpc-linux-ld: drivers/pci/endpoint/functions/pci-epf-vntb.c:174: undefined reference to `ntb_link_event'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x468): undefined reference to `__divdf3'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x46c): undefined reference to `__muldf3'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x470): undefined reference to `__adddf3'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x474): undefined reference to `__subdf3'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x478): undefined reference to `__fixunsdfsi'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x47c): undefined reference to `__fixdfsi'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x480): undefined reference to `__floatsidf'
+xtensa-linux-ld: dc_dmub_srv.c:(.text+0x60c): undefined reference to `__floatunsidf'
 
-> >
-> >>>
-> >>>>
-> >>>>>>
-> >>>>>> Also an existing test also failed.
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:find type id 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:failed/unexpected type_sz 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
-> >>>>>> expected/actual match: actual '(union bpf_iter_link_info){.map =
-> >>>>>> (struct){.map_fd = (__u32)1,},.cgroup '
-> >>>>>> test_btf_dump_struct_data:PASS:find struct sk_buff 0 nsec
-> >>>>>>
-> >>>>>
-> >>>>> Yeah I see what happened there. bpf_iter_link_info was changed by the
-> >>>>> patch that introduced cgroup_iter, and this specific union is used by
-> >>>>> the test to test the "union with nested struct" btf dumping. I will
-> >>>>> add a patch in the next version that updates the btf_dump_data test
-> >>>>> accordingly. Thanks.
-> >>>>>
-> >>>>>>
-> >>>>>> test_btf_dump_struct_data:PASS:unexpected return value dumping sk_buff 0
-> >>>>>> nsec
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:find type id 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:verify prefix match 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:find type id 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
-> >>>>>>
-> >>>>>>
-> >>>>>> #21/14   btf_dump/btf_dump: struct_data:FAIL
-> >>>>>>
-> >>>>>> please take a look.
-> >>>>>>
-> >>>>>>> ---
-> >>>>>>>     .../prog_tests/cgroup_hierarchical_stats.c    | 351 ++++++++++++++++++
-> >>>>>>>     .../bpf/progs/cgroup_hierarchical_stats.c     | 234 ++++++++++++
-> >>>>>>>     2 files changed, 585 insertions(+)
-> >>>>>>>     create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> >>>>>>>     create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> >>>>>>>
-> >> [...]
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
+drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
+drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
+drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
+drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
+drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
+drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/infiniband/hw/irdma/hw.c:1484:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/md/dm-mpath.c:1681:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/dvb-frontends/mxl692.c:49:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/i2c/ov5647.c:636:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/i2c/st-mipid02.c:271:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/platform/qcom/venus/vdec.c:1505:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/platform/st/sti/delta/delta-v4l2.c:719:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/media/tuners/msi001.c:81:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/mfd/sec-core.c:429:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/mmc/core/core.c:471:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/mmc/host/sh_mmcif.c:1318:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/bonding/bond_main.c:4647:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:1388:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/faraday/ftgmac100.c:854:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/hisilicon/hns/hnae.c:436:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/intel/i40e/i40e_main.c:9347:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/intel/ice/ice_base.c:1003:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/intel/ice/ice_dcb_lib.c:520:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/intel/ice/ice_vlan_mode.c:379:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/intel/igb/e1000_phy.c:1185:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/microchip/encx24j600.c:827:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/microchip/lan743x_main.c:1238:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/smsc/smsc9420.c:451:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/ethernet/vertexcom/mse102x.c:422:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/phy/dp83640.c:890:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/usb/cdc_ncm.c:195:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/usb/rtl8150.c:176:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/wireless/ath/ath11k/dp.c:334:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/wireless/ath/ath11k/mac.c:6142:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/wireless/ath/ath11k/qmi.c:2271:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/net/wireless/ath/ath11k/reg.c:226:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/parport/ieee1284_ops.c:615:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/scsi/elx/efct/efct_unsol.c:297:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/scsi/elx/libefc/efc_domain.c:692:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/scsi/megaraid/megaraid_sas_fp.c:297:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/soc/mediatek/mtk-mutex.c:799:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/staging/media/zoran/zr36016.c:430:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/staging/media/zoran/zr36050.c:829:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/staging/media/zoran/zr36060.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/target/iscsi/iscsi_target.c:2348:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/thunderbolt/tmu.c:758:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/thunderbolt/tunnel.c:1264:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/tty/serial/atmel_serial.c:1442:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/usb/host/uhci-q.c:1367:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/usb/serial/digi_acceleport.c:1167:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+drivers/video/backlight/qcom-wled.c:871:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+fs/ext4/mballoc.c:3612:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+fs/kernel_read_file.c:61 kernel_read_file() warn: impossible condition '(i_size > (((~0) >> 1))) => (s64min-s64max > s64max)'
+fs/ubifs/recovery.c:1062:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+kernel/cgroup/cgroup-v1.c:150:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+kernel/cgroup/cgroup.c:2813:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+kernel/sched/core.c:2076:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+mm/filemap.c:1354:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+mm/memory.c:5157:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+mm/page_alloc.c:3813 rmqueue_pcplist() warn: inconsistent returns 'flags'.
+mm/page_alloc.c:7692:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+mm/slub.c:5434:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+net/bluetooth/hci_event.c:5926:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+net/qrtr/mhi.c:102:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+net/wireless/reg.c:205:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+net/wireless/scan.c:1470:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/pci/lola/lola.c:178:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/pci/pcxhr/pcxhr_core.c:134:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/pci/rme9652/hdsp.c:666:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/soc/fsl/fsl_spdif.c:1467:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/soc/sh/rcar/core.c:1602:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+sound/soc/sof/intel/mtl.c:547:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+{standard input}:2311: Error: expecting )
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_read
+|   `-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_write
+|-- arc-allyesconfig
+|   |-- block-partitions-efi.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- block-sed-opal.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- crypto-asymmetric_keys-pkcs7_verify.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-ata-libata-core.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-ata-libata-eh.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-ata-sata_dwc_460ex.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-base-power-runtime.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-block-rbd.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-bluetooth-hci_ll.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-bluetooth-hci_qca.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-cdrom-cdrom.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-char-ipmi-ipmi_ssif.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-char-pcmcia-cm4000_cs.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-char-random.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-char-tpm-tpm_tis_core.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-clk-bcm-clk-iproc-armpll.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-clk-clk-bd718x7.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-clk-clk-lochnagar.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-crypto-ccree-cc_request_mgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-crypto-qce-sha.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-crypto-qce-skcipher.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-cxl-core-hdm.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-cxl-core-pci.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-dma-buf-dma-buf.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-firmware-arm_scmi-bus.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-firmware-arm_scmi-clock.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-firmware-arm_scmi-powercap.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-firmware-arm_scmi-sensors.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-firmware-arm_scmi-voltage.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-fpga-dfl-fme-mgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gnss-usb.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_debug.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce110-dce110_resource.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce112-dce112_resource.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-smu7_hwmgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-smu8_hwmgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-vega10_powertune.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-smumgr-smu7_smumgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ttm.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-bridge-cadence-cdns-mhdp8546-hdcp.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-bridge-ite-it66121.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-bridge-lontium-lt9211.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-bridge-sii902x.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+|   |-- drivers-gpu-drm-mcde-mcde_dsi.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+clang_recent_errors
+|-- arm64-randconfig-r023-20220706
+|   `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+|-- arm64-randconfig-r025-20220706
+|   `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+`-- s390-randconfig-r044-20220706
+    `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+
+elapsed time: 1179m
+
+configs tested: 25
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+powerpc                           allnoconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+sh                               allmodconfig
+alpha                            allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+m68k                             allyesconfig
+x86_64                        randconfig-a015
+i386                          randconfig-a016
+arc                  randconfig-r043-20220706
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64                        randconfig-a016
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220706
+hexagon              randconfig-r045-20220706
+riscv                randconfig-r042-20220706
+s390                 randconfig-r044-20220706
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
