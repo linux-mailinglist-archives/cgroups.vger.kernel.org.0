@@ -2,45 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51101569DB8
-	for <lists+cgroups@lfdr.de>; Thu,  7 Jul 2022 10:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CA456A4E7
+	for <lists+cgroups@lfdr.de>; Thu,  7 Jul 2022 16:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234919AbiGGIpL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Jul 2022 04:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S235675AbiGGODK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Jul 2022 10:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbiGGIpJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jul 2022 04:45:09 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563D813F9F;
-        Thu,  7 Jul 2022 01:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657183508; x=1688719508;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=edbKoKalbvq90CBmxogPesuIiDjl8rwJ49B+zZvetjQ=;
-  b=BfVKisWKCdx8CvBHxqsYg7j9cXv26yoQXE72HrhvrsHZACMcDf+Q4QeE
-   iezKOt76usGXV+kbwaKO7ucB7IaYA4gBUybR0oLB4xyC1Vm4hlMy3Mfqh
-   9orF/TMUfYsnaA4siDN3OfNN2ZHi8li2Tg62mdzzqPrFaDG0JJbV+DRPP
-   iwpbPp2cvvpvUZ62IKMOCHbcsc96XaEccZnOxR3WRawWvB7mbC3jKctJN
-   8CAuCUDBdHrDFmaFdIMnnGGbzhA6JCPGgQiHYVbqMyi9DeZgOTiWpgxom
-   oJhCT3UL+2okh6qNBEUcmQZZmIof0uguLdB3ImckLr4T46d5mInnCBOBg
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="345659129"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="345659129"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:45:06 -0700
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; 
-   d="scan'208";a="651047273"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.31.6]) ([10.255.31.6])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 01:44:45 -0700
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 088b9c375534d905a4d337c78db3b3bfbb52c4a0
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S235541AbiGGODD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jul 2022 10:03:03 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3B429CA7;
+        Thu,  7 Jul 2022 07:03:01 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id e16so6803647pfm.11;
+        Thu, 07 Jul 2022 07:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=afbiyF16Fd4Ewaaf3EKKCpvpR7aHAsNAQp7K3TuQXs4=;
+        b=EzpeppBfdoHkOWruUNAYNHzOi8S5lBuVkWR/uarc/O7MDVJ2qM1NUNdy3hxzZeKinw
+         1f6tPe15AftcBiSP1Sugt5jiQpAKlLcyz+gPyHgHTvK6IkiuSg6SYHkmzqBCpGaHkm3K
+         GirawtqITR+EFkG0pF8QxPm0bxzk97EH7JYJxQXFRi4d1kRfsZVOuxKRapjByLByJ3DF
+         qAVqAZfaAfJT+F8T/W2rPtPmXy6/uaYwejGaDWQ5Frl3XCXwsQlqWF67lU3BIXdseGBS
+         CTJ5pH+oR76s++4uNTCxHCZwHNyWF4xdxY3ay2k5fQlKGRbstnEbIjnAVDZkl7wMQgN9
+         oSpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=afbiyF16Fd4Ewaaf3EKKCpvpR7aHAsNAQp7K3TuQXs4=;
+        b=h9qday3Z6QtmC9RuMlgRhS9l10QWS3D80lqsSnqgBKC1+CKaNJRllCV1qHMEPzZaUM
+         3G4Ul8qgrHisl2n4W631fHuwsdqtWunnfaPvAeGcwV2SjB8YFxGBPM0fbntZUylk9IgL
+         fNwlkHrks28txUTJtICEOG3hV00TiGJeVsYDEd6xIlS0KEuxKgttgVOj1OT2wP8v2E9M
+         JVZQbxroyOnwkD5a9se5zP6O77TDb2VM30ByrUn6H2BGlo/Re0Z+1dExBMcaZTp24oh6
+         A3v83thqObnrjc1T9Z8rnW1KxG52OOaWwjbYRjmhQ7UjKzMSvlXymn+xyEQmMmHsHvAT
+         RX3g==
+X-Gm-Message-State: AJIora9YSLCW5JWGVsmJCaVyIp2MX3BQGmqg5tHK/FJjeqigK/qnJsvY
+        qcPc/QB7vncBioq1CQXdz9E=
+X-Google-Smtp-Source: AGRyM1uGEg1zRLKU3mt/8yK/HfEqKFBdv1eoQpzxhqHLW6DjIp1gLh6JEsU/RWRdBfoHFypH/TfaNQ==
+X-Received: by 2002:a17:90b:4c8f:b0:1ec:cdd0:41b7 with SMTP id my15-20020a17090b4c8f00b001eccdd041b7mr5420238pjb.119.1657202580508;
+        Thu, 07 Jul 2022 07:03:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k127-20020a632485000000b004148cbdd4e5sm1215293pgk.57.2022.07.07.07.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jul 2022 07:02:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 7 Jul 2022 07:02:58 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         virtualization@lists.linux-foundation.org,
         usbb2k-api-dev@nongnu.org, tipc-discussion@lists.sourceforge.net,
         target-devel@vger.kernel.org, sound-open-firmware@alsa-project.org,
@@ -92,103 +104,54 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         apparmor@lists.ubuntu.com, amd-gfx@lists.freedesktop.org,
         alsa-devel@alsa-project.org,
         accessrunner-general@lists.sourceforge.net
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 088b9c375534d905a4d337c78db3b3bfbb52c4a0
+Message-ID: <20220707140258.GA3492673@roeck-us.net>
 References: <62c683a2.g1VSVt6BrQC6ZzOz%lkp@intel.com>
  <YsaUgfPbOg7WuBuB@kroah.com>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <c86816fd-aaba-01a9-5def-44868f0a46c9@intel.com>
-Date:   Thu, 7 Jul 2022 16:44:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <YsaUgfPbOg7WuBuB@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Jul 07, 2022 at 10:08:33AM +0200, Greg KH wrote:
 
-
-On 7/7/2022 4:08 PM, Greg KH wrote:
-> On Thu, Jul 07, 2022 at 02:56:34PM +0800, kernel test robot wrote:
->> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
->> branch HEAD: 088b9c375534d905a4d337c78db3b3bfbb52c4a0  Add linux-next specific files for 20220706
->>
->> Error/Warning reports:
->>
->> https://lore.kernel.org/linux-doc/202207070644.x48XOOvs-lkp@intel.com
->>
->> Error/Warning: (recently discovered and may have been fixed)
->>
->> Documentation/arm/google/chromebook-boot-flow.rst: WARNING: document isn't included in any toctree
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1108): undefined reference to `__aeabi_ddiv'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1124): undefined reference to `__aeabi_ui2d'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1164): undefined reference to `__aeabi_dmul'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1170): undefined reference to `__aeabi_dadd'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1180): undefined reference to `__aeabi_dsub'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x1190): undefined reference to `__aeabi_d2uiz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x162c): undefined reference to `__aeabi_d2iz'
->> arm-linux-gnueabi-ld: dc_dmub_srv.c:(.text+0x16b0): undefined reference to `__aeabi_i2d'
->> dc_dmub_srv.c:(.text+0x10f8): undefined reference to `__aeabi_ui2d'
->> dc_dmub_srv.c:(.text+0x464): undefined reference to `__floatunsidf'
->> dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x33c): undefined reference to `__floatunsidf'
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
->> drivers/vfio/vfio_iommu_type1.c:2141:35: warning: cast to smaller integer type 'enum iommu_cap' from 'void *' [-Wvoid-pointer-to-enum-cast]
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x34c): undefined reference to `__floatunsidf'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x378): undefined reference to `__divdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x38c): undefined reference to `__muldf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3a0): undefined reference to `__adddf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3b4): undefined reference to `__subdf3'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x3d4): undefined reference to `__fixunsdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x750): undefined reference to `__fixdfsi'
->> mips-linux-ld: dc_dmub_srv.c:(.text.dc_dmub_setup_subvp_dmub_command+0x7c0): undefined reference to `__floatsidf'
->> powerpc-linux-ld: drivers/pci/endpoint/functions/pci-epf-vntb.c:174: undefined reference to `ntb_link_event'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x468): undefined reference to `__divdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x46c): undefined reference to `__muldf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x470): undefined reference to `__adddf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x474): undefined reference to `__subdf3'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x478): undefined reference to `__fixunsdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x47c): undefined reference to `__fixdfsi'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x480): undefined reference to `__floatsidf'
->> xtensa-linux-ld: dc_dmub_srv.c:(.text+0x60c): undefined reference to `__floatunsidf'
->>
->> Unverified Error/Warning (likely false positive, please contact us if interested):
->>
->> arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
->> drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
->> drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
->> drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
->> drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
->> drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
->> drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
->> drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+[ ... ]
+> > 
+> > Unverified Error/Warning (likely false positive, please contact us if interested):
+> > 
+> > arch/x86/events/core.c:2114 init_hw_perf_events() warn: missing error code 'err'
+> > drivers/android/binder.c:1481:19-23: ERROR: from is NULL but dereferenced.
+> > drivers/android/binder.c:2920:29-33: ERROR: target_thread is NULL but dereferenced.
+> > drivers/android/binder.c:353:25-35: ERROR: node -> proc is NULL but dereferenced.
+> > drivers/android/binder.c:4888:16-20: ERROR: t is NULL but dereferenced.
+> > drivers/base/regmap/regmap.c:1996:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/char/random.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/gpu/drm/amd/display/dc/os_types.h: drm/drm_print.h is included more than once.
+> > drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> > drivers/greybus/operation.c:617:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
 > 
 > <snip>
 > 
 > When the compiler crashes, why are you blaming all of these different
 > mailing lists?  Perhaps you need to fix your compiler :)
 > 
-> thanks,
-> 
-> greg k-h
-> 
 
-Hi Greg,
+To be fair, it says above "likely false positive, please contact us
+if interested". Also, the 32-bit build errors _are_ real, and the NULL
+dereferences in the binder driver are at the very least suspicious.
 
-Sorry for the inconvience, we'll fix it ASAP.
-
-Best Regards,
-Rong Chen
+Guenter
