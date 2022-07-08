@@ -2,123 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E3756AF13
-	for <lists+cgroups@lfdr.de>; Fri,  8 Jul 2022 01:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F12F56B0E4
+	for <lists+cgroups@lfdr.de>; Fri,  8 Jul 2022 05:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbiGGXgh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Jul 2022 19:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S237061AbiGHDTE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Jul 2022 23:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236354AbiGGXgg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jul 2022 19:36:36 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3092CE12
-        for <cgroups@vger.kernel.org>; Thu,  7 Jul 2022 16:36:35 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id c13so25087795qtq.10
-        for <cgroups@vger.kernel.org>; Thu, 07 Jul 2022 16:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XH4cPztGrQqsT+SfmP8eyqdVMM+gtgpNj/VjG8VG1nM=;
-        b=RFDw+QHkFGDIWwRdYchdMvdzsKCZaAPs4rT4ufLkxWlPRK1TI6fo0tjk8JODZtXKd4
-         O72HgDCHviGjhjlEXZIeWeRgMHge4ii8LtPQRk1ZM82WyleakaHT/bxJQNT7uYoRE8yd
-         SOGYpBPdjvDJJFdnTOaO+cMv6a2l85flA9T+BpAnhJq3g+mfulEU+5cpzBnFASy/TLUZ
-         N9Cwcsd0p4otAVw0a9HYeTSCK1Sxz4CS2n9g8UPBtXsPDroiRwmeHTmafUJH0EaJcSGS
-         O/nPs75YVwnKxl4fHAQR8KMDd+7m3K4UhR5DhjExN/y7NOq4kENl9IZ+KDKOPDR2/Q/9
-         7jBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XH4cPztGrQqsT+SfmP8eyqdVMM+gtgpNj/VjG8VG1nM=;
-        b=StEBp692xxP3gSkQ9Dehqmik4tMpnY6L3zj91ZjYwOEJL4GreyIqIoOPPn8bXWrWN4
-         7WBrzhaq2kxnQ9Mh+UXHdk6rnENXerc0S3lFtxwxAiear3FQYBIp//lhHj3E9lMKG2P0
-         JsVzMGsF69MpWtR9/m5cmDYlgGQipkaUzEuqZyP0OrhH8dFnmDqAOilWoto3PJHnZaMU
-         oVsu4RBAq9uIUc8DRTz8t/lqBs77qdUSY+2WnWJiY5phbHlTvIB/QvHw2JMt9G9R0b8U
-         IcR0cCrzvPE/Q+VWCzH97lRSnE+Goo32/MkyVymUd4q4BV0J5euKF37wnFoUZZZsYLIP
-         Rqrw==
-X-Gm-Message-State: AJIora/Kys+AKHUhG01hXEN0VgXk+3o2JpkNno1zuWI/eS4Kh8DaX4Ki
-        OU0XaHezwjZHR7AAn4EPEhClDRoWh61gtJW6J7rjzw==
-X-Google-Smtp-Source: AGRyM1sBme6J6p5RCO5xjhv3NKpjQ0wj5ST2F+p/Xh1EL/z7+dP5eFQHgL71McKnLl+LsLYXpBQv/G7H5+l03mEnHyY=
-X-Received: by 2002:a05:6214:c6c:b0:470:a322:6777 with SMTP id
- t12-20020a0562140c6c00b00470a3226777mr501392qvj.85.1657236994169; Thu, 07 Jul
- 2022 16:36:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220610194435.2268290-1-yosryahmed@google.com>
- <20220610194435.2268290-5-yosryahmed@google.com> <40114462-d5e2-ab07-7af9-5e60180027f9@fb.com>
-In-Reply-To: <40114462-d5e2-ab07-7af9-5e60180027f9@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 7 Jul 2022 16:36:23 -0700
-Message-ID: <CA+khW7hqVbNWFbZcJz2QWV=c5SD1ci5KOD+t4drYt2-yqpyNTg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/8] bpf: Introduce cgroup iter
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
+        with ESMTP id S237059AbiGHDTE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jul 2022 23:19:04 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3785D747AD;
+        Thu,  7 Jul 2022 20:19:00 -0700 (PDT)
+Date:   Thu, 7 Jul 2022 20:18:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1657250338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzXf77ZnSEJIjuevx+EB4GpaxQjdHtz9/POLfph/nBE=;
+        b=Qy4O0B3TXJnXaPohoJlWl3VViPm/HiAjQYjCu92SV5MLaTSvFAV+asc6HCYkyU8p29uqsK
+        PkUyYZY6tI8B3J1zEbsMAdtKcYG8wSnd5IjAKW9MMeB6HBjelCfaH6lEOd/IoUOOQGqtdu
+        qmer4OS87yqwZODPooty6DN/RPX+W9E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>,
         Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for
+ enforced allocations
+Message-ID: <YseiHOgqLapJPiyC@castle>
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+ <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+ <YsBmoqEBCa7ra7w2@castle>
+ <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
+ <YsSj6rZmUkR8amT2@castle>
+ <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
+ <YsUBQsTjVuXvt1Wr@castle>
+ <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
+ <YsUH7pgBVnWSkC1q@castle>
+ <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 9:14 PM Yonghong Song <yhs@fb.com> wrote:
->
-> > +static int __cgroup_iter_seq_show(struct seq_file *seq,
-> > +                               struct cgroup_subsys_state *css, int in_stop)
-> > +{
-> > +     struct cgroup_iter_priv *p = seq->private;
-> > +     struct bpf_iter__cgroup ctx;
-> > +     struct bpf_iter_meta meta;
-> > +     struct bpf_prog *prog;
-> > +     int ret = 0;
-> > +
-> > +     /* cgroup is dead, skip this element */
-> > +     if (css && cgroup_is_dead(css->cgroup))
-> > +             return 0;
-> > +
-> > +     ctx.meta = &meta;
-> > +     ctx.cgroup = css ? css->cgroup : NULL;
-> > +     meta.seq = seq;
-> > +     prog = bpf_iter_get_info(&meta, in_stop);
-> > +     if (prog)
-> > +             ret = bpf_iter_run_prog(prog, &ctx);
->
-> Do we need to do anything special to ensure bpf program gets
-> up-to-date stat from ctx.cgroup?
->
+On Thu, Jul 07, 2022 at 03:41:11PM -0700, Alexei Starovoitov wrote:
+> On Tue, Jul 5, 2022 at 9:24 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> >
+> > Anyway, here is the patch for reparenting bpf maps:
+> > https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
+> >
+> > I gonna post it to bpf@ after some testing.
+> 
+> Please do. It looks good.
+> It needs #ifdef CONFIG_MEMCG_KMEM
+> because get_obj_cgroup_from_current() is undefined otherwise.
+> Ideally just adding a static inline to a .h ?
 
-Let's leave that to be handled by bpf programs. The kfunc rstat_flush
-can be called to sync stats, if using rstat.
+Actually all call sites are already under CONFIG_MEMCG_KMEM.
 
-> > +
-> > +     /* if prog returns > 0, terminate after this element. */
-> > +     if (ret != 0)
-> > +             p->terminate = true;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> [...]
+> 
+> and
+> if (map->objcg)
+>    memcg = get_mem_cgroup_from_objcg(map->objcg);
+> 
+> or !NULL check inside get_mem_cgroup_from_objcg()
+> which would be better.
+
+Yes, you're right, as now we need to handle it specially.
+
+In the near future it won't be necessary. There are patches in
+mm-unstable which make objcg API useful outside of CONFIG_MEMCG_KMEM.
+In particular it means that objcg will be created for the root_mem_cgroup.
+So map->objcg can always point at a valid objcg and we will be able
+to drop this check.
+
+Will post an updated version shortly.
+
+Thanks!
