@@ -2,74 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824AA56C853
-	for <lists+cgroups@lfdr.de>; Sat,  9 Jul 2022 11:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D763A56CC71
+	for <lists+cgroups@lfdr.de>; Sun, 10 Jul 2022 04:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbiGIJYc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 9 Jul 2022 05:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S229587AbiGJCjq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 9 Jul 2022 22:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbiGIJYb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 9 Jul 2022 05:24:31 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289C867C9D
-        for <cgroups@vger.kernel.org>; Sat,  9 Jul 2022 02:24:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n185so548172wmn.4
-        for <cgroups@vger.kernel.org>; Sat, 09 Jul 2022 02:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=126CWGN5qiy3Zj/NevNLvXFANwNzM4+jpf1dHEnzN4A=;
-        b=hBT22x6jPJ0XS5lnS0XSQHSfcM1oeEq8FX/01tuWtCZWzr4+Ews52yuLIKF5AwH925
-         6NmhQGjXBcTNVbD20KJ2pLEKnNz8sNco9Sm+npt8tM5Rm1h2E6y5+LNgetYc1YRLZj6K
-         k04sNO7EkeKHPQFQzWlGGxznXeMLU3mH3egs54XcKh+SCZz9e+mriR7mlHlFCUgcSJ75
-         JzLgkMtQAbvlIiZlJUTLRYgp4mQX4xOV0LXMkn7bF/9EY/C2In61BgXoQVp/jvKkJEiF
-         8gRiu0pJjzZ2+njwc0tLo3zl/kDWjlraG9Cn9/nquJbhYDZZBE3zDmHFi81bM4KSG4s9
-         vJ1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=126CWGN5qiy3Zj/NevNLvXFANwNzM4+jpf1dHEnzN4A=;
-        b=NsZYFYdywzF0wGmDLMu2qqbNblhec9ghYLfcIM/Wcw2HN8pY08eAQDJ5LnEZRduF4n
-         XriD5oGePEoDI+CAztHvMceyLbJV0oGs3+ofSBDG+nz9isd9UNRQSRaofSKtNCsMEUgN
-         EGvxhILoFTBGHG9ObPqlH7ObeNLXq8aBkZv5pAc8NwwoCzx1zz5kQBycYZ9/8f6vOCFt
-         wzBrhpD+KmECfFzTFCRbyEVhKTb37RYyIFJJ1tD/P6+nYJt8ZhHqYe0N2ZfKqWZn8OQD
-         6DQyl7RURXDRqQ/eoqFxazJo45XVEPJiUvp0DKQsW51JOkPs7qgSpoghYWQKrVNxykLy
-         WRmA==
-X-Gm-Message-State: AJIora/DcyvPb8hNvmTXVILKPJWJ0Syz8sM3qZ51uknbWa2s8CSNoggB
-        HNe+l9h1y1DRZrShUEfjZB6l25yB5gBPPpldzyQn8w==
-X-Google-Smtp-Source: AGRyM1ug7A88FKaND5fMhkgUxdh8u0RqCfTxfeN34ODHRXUGgzVyR9LL3r3bRDVAGpyu6BiRCsiHygrJt95nUw8wZIE=
-X-Received: by 2002:a1c:7918:0:b0:3a2:e17c:cbfe with SMTP id
- l24-20020a1c7918000000b003a2e17ccbfemr1708135wme.80.1657358667432; Sat, 09
- Jul 2022 02:24:27 -0700 (PDT)
+        with ESMTP id S229561AbiGJCjp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 9 Jul 2022 22:39:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CB612764;
+        Sat,  9 Jul 2022 19:39:43 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LgWPf57vszhYsn;
+        Sun, 10 Jul 2022 10:37:10 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 10 Jul 2022 10:39:38 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 10 Jul 2022 10:39:37 +0800
+Subject: Re: [PATCH RESEND v6 0/8] bugfix and cleanup for blk-throttle
+To:     Yu Kuai <yukuai1@huaweicloud.com>, <tj@kernel.org>,
+        <mkoutny@suse.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai3@huawei.com>
+Message-ID: <a146b8ff-4287-44b7-00b2-74681963ac49@huawei.com>
+Date:   Sun, 10 Jul 2022 10:39:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220621125658.64935-1-songmuchun@bytedance.com>
- <CAJD7tkbeTtkMcVri9vzKHATjxAVZfC_vPNfApJiyRxY53c8pZQ@mail.gmail.com>
- <YrlYG0ecJyzFTVVz@FVFYT0MHHV2J.usts.net> <CAJD7tkbk-E+Skkj3xxELuGFHet940DovKi0z8NxPqePzXa-Wug@mail.gmail.com>
- <YsfUIpM5NlWZhUDT@FVFYT0MHHV2J.usts.net> <CAJD7tkazvC+kZgGaV3idapQp-zPFaWBxoHwnrqTFoodHZGQcPA@mail.gmail.com>
- <YskXXlUAB1YZikkG@FVFYT0MHHV2J.usts.net>
-In-Reply-To: <YskXXlUAB1YZikkG@FVFYT0MHHV2J.usts.net>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Sat, 9 Jul 2022 02:23:51 -0700
-Message-ID: <CAJD7tkZF_EW9GC22G-6=j8wVYYS2hTRGRPjwUJfTRr9Ah14Oqg@mail.gmail.com>
-Subject: Re: [PATCH v6 00/11] Use obj_cgroup APIs to charge the LRU pages
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, longman@redhat.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Cgroups <cgroups@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+In-Reply-To: <20220701093441.885741-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,417 +53,73 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 10:51 PM Muchun Song <songmuchun@bytedance.com> wrot=
-e:
->
-> On Fri, Jul 08, 2022 at 02:26:08AM -0700, Yosry Ahmed wrote:
-> > On Thu, Jul 7, 2022 at 11:52 PM Muchun Song <songmuchun@bytedance.com> =
-wrote:
-> > >
-> > > On Thu, Jul 07, 2022 at 03:14:26PM -0700, Yosry Ahmed wrote:
-> > > > On Mon, Jun 27, 2022 at 12:11 AM Muchun Song <songmuchun@bytedance.=
-com> wrote:
-> > > > >
-> > > > > On Sun, Jun 26, 2022 at 03:32:02AM -0700, Yosry Ahmed wrote:
-> > > > > > On Tue, Jun 21, 2022 at 5:57 AM Muchun Song <songmuchun@bytedan=
-ce.com> wrote:
-> > > > > > >
-> > > > > > > This version is rebased on mm-unstable. Hopefully, Andrew can=
- get this series
-> > > > > > > into mm-unstable which will help to determine whether there i=
-s a problem or
-> > > > > > > degradation. I am also doing some benchmark tests in parallel=
-.
-> > > > > > >
-> > > > > > > Since the following patchsets applied. All the kernel memory =
-are charged
-> > > > > > > with the new APIs of obj_cgroup.
-> > > > > > >
-> > > > > > >         commit f2fe7b09a52b ("mm: memcg/slab: charge individu=
-al slab objects instead of pages")
-> > > > > > >         commit b4e0b68fbd9d ("mm: memcontrol: use obj_cgroup =
-APIs to charge kmem pages")
-> > > > > > >
-> > > > > > > But user memory allocations (LRU pages) pinning memcgs for a =
-long time -
-> > > > > > > it exists at a larger scale and is causing recurring problems=
- in the real
-> > > > > > > world: page cache doesn't get reclaimed for a long time, or i=
-s used by the
-> > > > > > > second, third, fourth, ... instance of the same job that was =
-restarted into
-> > > > > > > a new cgroup every time. Unreclaimable dying cgroups pile up,=
- waste memory,
-> > > > > > > and make page reclaim very inefficient.
-> > > > > > >
-> > > > > > > We can convert LRU pages and most other raw memcg pins to the=
- objcg direction
-> > > > > > > to fix this problem, and then the LRU pages will not pin the =
-memcgs.
-> > > > > > >
-> > > > > > > This patchset aims to make the LRU pages to drop the referenc=
-e to memory
-> > > > > > > cgroup by using the APIs of obj_cgroup. Finally, we can see t=
-hat the number
-> > > > > > > of the dying cgroups will not increase if we run the followin=
-g test script.
-> > > > > >
-> > > > > > This is amazing work!
-> > > > > >
-> > > > > > Sorry if I came late, I didn't follow the threads of previous v=
-ersions
-> > > > > > so this might be redundant, I just have a couple of questions.
-> > > > > >
-> > > > > > a) If LRU pages keep getting parented until they reach root_mem=
-_cgroup
-> > > > > > (assuming they can), aren't these pages effectively unaccounted=
- at
-> > > > > > this point or leaked? Is there protection against this?
-> > > > > >
-> > > > >
-> > > > > In this case, those pages are accounted in root memcg level. Unfo=
-rtunately,
-> > > > > there is no mechanism now to transfer a page's memcg from one to =
-another.
-> > > > >
-> > > >
-> > > > Hey Muchun,
-> > > >
-> > > > Quick question regarding the behavior of this change on cgroup v1 (=
-I
-> > > > know .. I know .. sorry):
-> > > >
-> > > > When a memcg dies, its LRU pages are reparented, but what happens t=
-o
-> > > > the charge? IIUC we don't do anything because the pages are already
-> > > > hierarchically charged to the parent. Is this correct?
-> > > >
-> > >
-> > > Correct.
-> > >
-> > > > In cgroup v1, we have non-hierarchical stats as well, so I am tryin=
-g
-> > > > to understand if the reparented memory will appear in the
-> > > > non-hierarchical stats of the parent (my understanding is that the
-> > > > will not). I am also particularly interested in the charging behavi=
-or
-> > > > of pages that get reparented to root_mem_cgroup.
-> > > >
-> > >
-> > > I didn't change any memory stats when reparenting.
-> > >
-> > > > The main reason I am asking is that (hierarchical_usage -
-> > > > non-hierarchical_usage - children_hierarchical_usage) is *roughly*
-> > > > something that we use, especially at the root level, to estimate
-> > > > zombie memory usage. I am trying to see if this change will break s=
-uch
-> > > > calculations. Thanks!
-> > > >
-> > >
-> > > So I think your calculations will still be correct. If you have
-> > > any unexpected result, please let me know. Thanks.
-> >
-> > I have been looking at the code and the patchset and I think there
-> > might be a problem with the stats, at least for cgroup v1. Lets say we
-> > have a parent memcg P, which has a child memcg C. When processes in
-> > memcg C allocate memory the stats (e.g. NR_ANON_MAPPED) are updated
-> > for C (non-hierarchical per-cpu counters, memcg->vmstats_percpu), and
-> > for P (aggregated stats, memcg->vmstats).
-> >
-> > When memcg C is offlined, its pages are reparented to memcg P, so far
-> > P->vmstats (hierarchical) still have those pages, and
-> > P->vmstats_percpu (non-hierarchical) don't. So far so good.
-> >
-> > Now those reparented pages get uncharged, but their memcg is P now, so
-> > they get subtracted from P's *non-hierarchical* stats (and eventually
-> > hierarchical stats as well). So now P->vmstats (hierarchical)
-> > decreases, which is correct, but P->vmstats_percpu (non-hierarchical)
-> > also decreases, which is wrong, as those stats were never added to
-> > P->vmstats_percpu to begin with.
-> >
-> > From a cgroup v2 perspective *maybe* everything continues to work, but
-> > this breaks cgroup v1 non-hierarchical stats. In fact, if the
-> > reparented memory exceeds the original non-hierarchical memory in P,
-> > we can underflow those stats  because we are subtracting stats that
-> > were never added in the first place.
-> >
-> > Please let me know if I am misunderstanding something and there is
-> > actually no problem with the non-hierarchical stats (you can stop
-> > reading here if this is all in my head and there's actually no
-> > problem).
-> >
->
-> Thanks for patient explanation. Now I got your point.
->
-> > Off the top of my mind we can handle stats modifications of reparented
-> > memory separately. We should not updated local per-cpu counters, maybe
-> > we should rather update memcg->vmstat.state_pending directly so that
-> > the changes appear as if they come from a child memcg. Two problems
-> > come with such an approach:
-> >
->
-> Instead of avoiding updating local per-cpu counters for reparented pages,
-> after reparenting, how about propagating the child memcg's local per-cpu
-> counters to its parent after LRU pages reparenting? And we do not need to
-> propagate all vmstats, just some vmstats exposed to cgroup v1 users (like
-> memcg1_stats, memcg1_events and lru list pages). I think a reparented pag=
-e
-> is just a little bit of difference compared to other non-reparented pages=
-,
-> propagating local per-cpu counters may be acceptable. What do you think?
->
+Hi!
 
-I think this introduces another problem. Now the non-hierarchical
-stats of a parent memcg (P in the above example) would include
-reparented memory. This hides zombie memory usage. As I elaborated
-earlier, parent_hierarchical_usage - parent_non_hierarchical_usage -
-SUM(children_hierarchical_usage) should give an estimate of the zombie
-memory under parent. If we propagate reparented memory stats (aka
-zombies) to the parent's non-hierarchical stats, then we have no way
-of finding out how much zombie memory lives in a memcg. This problem
-becomes more significant when we are reparenting to root, where zombie
-memory is part of unaccounted system overhead.
+ÔÚ 2022/07/01 17:34, Yu Kuai Ð´µÀ:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Resend v5 by a new mail address(huaweicloud.com) because old
+> address(huawei.com)has some problem that emails can end up in spam.
+> Please let me know if anyone still see this patchset end up in spam.
+> 
+> Changes in v6:
+>   - rename parameter in patch 3
+>   - add comments and reviewed tag for patch 4
+> Changes in v5:
+>   - add comments in patch 4
+>   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+>   patch 4
+>   - and cleanup patches 5-8
+> Changes in v4:
+>   - add reviewed-by tag for patch 1
+>   - add patch 2,3
+>   - use a different way to fix io hung in patch 4
+> Changes in v3:
+>   - fix a check in patch 1
+>   - fix link err in patch 2 on 32-bit platform
+>   - handle overflow in patch 2
+> Changes in v2:
+>   - use a new solution suggested by Ming
+>   - change the title of patch 1
+>   - add patch 2
+> 
+> Patch 1 fix that blk-throttle can't work if multiple bios are throttle,
+> Patch 2 fix overflow while calculating wait time
+> Patch 3,4 fix io hung due to configuration updates.
+> Patch 5-8 are cleanup patches, there are no functional changes, just
+> some places that I think can be optimized during code review.
 
-Actually there is a different problem even in cgroup v2. At root level
-there will be no way of finding out whether unaccounted system
-overhead (root_usage - SUM(top_level_memcgs_usage)) comes from zombie
-memcgs or not, because zombie memcgs will no longer exist and
-reparented/zombie memory can be indistinguishable from memory that has
-always lived in root. This makes debugging high system overhead even
-harder, but that's a problem with the reparenting approach in general,
-unrelated to the non-hierarchical stats problem.
+Jens and Michal,
 
-> > 1) memcg->vmstat.state_pending is shared between cpus, and so far is
-> > only modified by mem_cgroup_css_rstat_flush() in locked context. A
-> > solution would be to add reparented state to
-> > memcg->vmstat.state_percpu instead and treat it like
-> > memcg->vmstat.state_pending in mem_cgroup_css_rstat_flush(). Keep in
-> > mind that this adds a tiny bit of memory overhead (roughly 8
-> > bytes*num_cpus for each memcg).
-> >
-> > 2) Identifying that we are updating stats of reparented memory. This
-> > should be easy if we have a pointer to the page to compare page->objcg
-> > with page->objcg->memcg->objcg, but AFAICT the memcg stats are updated
-> > in __mod_memcg_state() and __mod_memcg_lruvec_state(), and we have no
-> > idea in each of these what page(s) is the stats update associated
-> > with. They are called from many different places, it would be
-> > troublesome to pass such information down from all call sites. I have
-> > nothing off the top of my head to fix this problem except passing the
-> > necessary info through all code paths to __mod_memcg_state() and
-> > __mod_memcg_lruvec_state(), which is far from ideal.
-> >
-> > Again, I am sorry if these discussions are late, I didn't have time to
-> > look at previous versions of this patchset.
-> >
->
-> Not late, thanks for your feedback.
->
-> > >
-> > > > > > b) Since moving charged pages between memcgs is now becoming ea=
-sier by
-> > > > > > using the APIs of obj_cgroup, I wonder if this opens the door f=
-or
-> > > > > > future work to transfer charges to memcgs that are actually usi=
-ng
-> > > > > > reparented resources. For example, let's say cgroup A reads a f=
-ew
-> > > > > > pages into page cache, and then they are no longer used by cgro=
-up A.
-> > > > > > cgroup B, however, is using the same pages that are currently c=
-harged
-> > > > > > to cgroup A, so it keeps taxing cgroup A for its use. When cgro=
-up A
-> > > > > > dies, and these pages are reparented to A's parent, can we poss=
-ibly
-> > > > > > mark these reparented pages (maybe in the page tables somewhere=
-) so
-> > > > > > that next time they get accessed we recharge them to B instead
-> > > > > > (possibly asynchronously)?
-> > > > > > I don't have much experience about page tables but I am pretty =
-sure
-> > > > > > they are loaded so maybe there is no room in PTEs for something=
- like
-> > > > > > this, but I have always wondered about what we can do for this =
-case
-> > > > > > where a cgroup is consistently using memory charged to another =
-cgroup.
-> > > > > > Maybe when this memory is reparented is a good point in time to=
- decide
-> > > > > > to recharge appropriately. It would also fix the reparenty leak=
- to
-> > > > > > root problem (if it even exists).
-> > > > > >
-> > > > >
-> > > > > From my point of view, this is going to be an improvement to the =
-memcg
-> > > > > subsystem in the future.  IIUC, most reparented pages are page ca=
-che
-> > > > > pages without be mapped to users. So page tables are not a suitab=
-le
-> > > > > place to record this information. However, we already have this i=
-nformation
-> > > > > in struct obj_cgroup and struct mem_cgroup. If a page's obj_cgrou=
-p is not
-> > > > > equal to the page's obj_cgroup->memcg->objcg, it means this page =
-have
-> > > > > been reparented. I am thinking if a place where a page is mapped =
-(probably
-> > > > > page fault patch) or page (cache) is written (usually vfs write p=
-ath)
-> > > > > is suitable to transfer page's memcg from one to another. But nee=
-d more
-> > > > > thinking, e.g. How to decide if a reparented page needs to be tra=
-nsferred?
-> > > > > If we need more information to make this decision, where to store=
- those
-> > > > > information? This is my primary thoughts on this question.
-> > > > >
-> > > > > Thanks.
-> > > > >
-> > > > > > Thanks again for this work and please excuse my ignorance if an=
-y part
-> > > > > > of what I said doesn't make sense :)
-> > > > > >
-> > > > > > >
-> > > > > > > ```bash
-> > > > > > > #!/bin/bash
-> > > > > > >
-> > > > > > > dd if=3D/dev/zero of=3Dtemp bs=3D4096 count=3D1
-> > > > > > > cat /proc/cgroups | grep memory
-> > > > > > >
-> > > > > > > for i in {0..2000}
-> > > > > > > do
-> > > > > > >         mkdir /sys/fs/cgroup/memory/test$i
-> > > > > > >         echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
-> > > > > > >         cat temp >> log
-> > > > > > >         echo $$ > /sys/fs/cgroup/memory/cgroup.procs
-> > > > > > >         rmdir /sys/fs/cgroup/memory/test$i
-> > > > > > > done
-> > > > > > >
-> > > > > > > cat /proc/cgroups | grep memory
-> > > > > > >
-> > > > > > > rm -f temp log
-> > > > > > > ```
-> > > > > > >
-> > > > > > > v5: https://lore.kernel.org/all/20220530074919.46352-1-songmu=
-chun@bytedance.com/
-> > > > > > > v4: https://lore.kernel.org/all/20220524060551.80037-1-songmu=
-chun@bytedance.com/
-> > > > > > > v3: https://lore.kernel.org/all/20220216115132.52602-1-songmu=
-chun@bytedance.com/
-> > > > > > > v2: https://lore.kernel.org/all/20210916134748.67712-1-songmu=
-chun@bytedance.com/
-> > > > > > > v1: https://lore.kernel.org/all/20210814052519.86679-1-songmu=
-chun@bytedance.com/
-> > > > > > > RFC v4: https://lore.kernel.org/all/20210527093336.14895-1-so=
-ngmuchun@bytedance.com/
-> > > > > > > RFC v3: https://lore.kernel.org/all/20210421070059.69361-1-so=
-ngmuchun@bytedance.com/
-> > > > > > > RFC v2: https://lore.kernel.org/all/20210409122959.82264-1-so=
-ngmuchun@bytedance.com/
-> > > > > > > RFC v1: https://lore.kernel.org/all/20210330101531.82752-1-so=
-ngmuchun@bytedance.com/
-> > > > > > >
-> > > > > > > v6:
-> > > > > > >  - Collect Acked-by and Reviewed-by from Roman and Michal Kou=
-tn=C3=BD. Thanks.
-> > > > > > >  - Rebase to mm-unstable.
-> > > > > > >
-> > > > > > > v5:
-> > > > > > >  - Lots of improvements from Johannes, Roman and Waiman.
-> > > > > > >  - Fix lockdep warning reported by kernel test robot.
-> > > > > > >  - Add two new patches to do code cleanup.
-> > > > > > >  - Collect Acked-by and Reviewed-by from Johannes and Roman.
-> > > > > > >  - I didn't replace local_irq_disable/enable() to local_lock/=
-unlock_irq() since
-> > > > > > >    local_lock/unlock_irq() takes an parameter, it needs more =
-thinking to transform
-> > > > > > >    it to local_lock.  It could be an improvement in the futur=
-e.
-> > > > > > >
-> > > > > > > v4:
-> > > > > > >  - Resend and rebased on v5.18.
-> > > > > > >
-> > > > > > > v3:
-> > > > > > >  - Removed the Acked-by tags from Roman since this version is=
- based on
-> > > > > > >    the folio relevant.
-> > > > > > >
-> > > > > > > v2:
-> > > > > > >  - Rename obj_cgroup_release_kmem() to obj_cgroup_release_byt=
-es() and the
-> > > > > > >    dependencies of CONFIG_MEMCG_KMEM (suggested by Roman, Tha=
-nks).
-> > > > > > >  - Rebase to linux 5.15-rc1.
-> > > > > > >  - Add a new pacth to cleanup mem_cgroup_kmem_disabled().
-> > > > > > >
-> > > > > > > v1:
-> > > > > > >  - Drop RFC tag.
-> > > > > > >  - Rebase to linux next-20210811.
-> > > > > > >
-> > > > > > > RFC v4:
-> > > > > > >  - Collect Acked-by from Roman.
-> > > > > > >  - Rebase to linux next-20210525.
-> > > > > > >  - Rename obj_cgroup_release_uncharge() to obj_cgroup_release=
-_kmem().
-> > > > > > >  - Change the patch 1 title to "prepare objcg API for non-kme=
-m usage".
-> > > > > > >  - Convert reparent_ops_head to an array in patch 8.
-> > > > > > >
-> > > > > > > Thanks for Roman's review and suggestions.
-> > > > > > >
-> > > > > > > RFC v3:
-> > > > > > >  - Drop the code cleanup and simplification patches. Gather t=
-hose patches
-> > > > > > >    into a separate series[1].
-> > > > > > >  - Rework patch #1 suggested by Johannes.
-> > > > > > >
-> > > > > > > RFC v2:
-> > > > > > >  - Collect Acked-by tags by Johannes. Thanks.
-> > > > > > >  - Rework lruvec_holds_page_lru_lock() suggested by Johannes.=
- Thanks.
-> > > > > > >  - Fix move_pages_to_lru().
-> > > > > > >
-> > > > > > > Muchun Song (11):
-> > > > > > >   mm: memcontrol: remove dead code and comments
-> > > > > > >   mm: rename unlock_page_lruvec{_irq, _irqrestore} to
-> > > > > > >     lruvec_unlock{_irq, _irqrestore}
-> > > > > > >   mm: memcontrol: prepare objcg API for non-kmem usage
-> > > > > > >   mm: memcontrol: make lruvec lock safe when LRU pages are re=
-parented
-> > > > > > >   mm: vmscan: rework move_pages_to_lru()
-> > > > > > >   mm: thp: make split queue lock safe when LRU pages are repa=
-rented
-> > > > > > >   mm: memcontrol: make all the callers of {folio,page}_memcg(=
-) safe
-> > > > > > >   mm: memcontrol: introduce memcg_reparent_ops
-> > > > > > >   mm: memcontrol: use obj_cgroup APIs to charge the LRU pages
-> > > > > > >   mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance funct=
-ion
-> > > > > > >   mm: lru: use lruvec lock to serialize memcg changes
-> > > > > > >
-> > > > > > >  fs/buffer.c                      |   4 +-
-> > > > > > >  fs/fs-writeback.c                |  23 +-
-> > > > > > >  include/linux/memcontrol.h       | 218 +++++++++------
-> > > > > > >  include/linux/mm_inline.h        |   6 +
-> > > > > > >  include/trace/events/writeback.h |   5 +
-> > > > > > >  mm/compaction.c                  |  39 ++-
-> > > > > > >  mm/huge_memory.c                 | 153 ++++++++--
-> > > > > > >  mm/memcontrol.c                  | 584 +++++++++++++++++++++=
-++++++------------
-> > > > > > >  mm/migrate.c                     |   4 +
-> > > > > > >  mm/mlock.c                       |   2 +-
-> > > > > > >  mm/page_io.c                     |   5 +-
-> > > > > > >  mm/swap.c                        |  49 ++--
-> > > > > > >  mm/vmscan.c                      |  66 ++---
-> > > > > > >  13 files changed, 776 insertions(+), 382 deletions(-)
-> > > > > > >
-> > > > > > >
-> > > > > > > base-commit: 882be1ed6b1b5073fc88552181b99bd2b9c0031f
-> > > > > > > --
-> > > > > > > 2.11.0
-> > > > > > >
-> > > > > > >
-> > > > > >
-> > > >
-> >
+Can you receive this patchset normally(not end up in spam)?
+
+If so, Tejun, can you take a look? This patchset do fix some problems in
+blk-throttle.
+
+BTW, Michal and Ming, it'll be great if you can take a look at other
+patches as well.
+
+Thansk,
+Kuai
+> 
+> Previous version:
+> v1: https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
+> v2: https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
+> v3: https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
+> v4: https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
+> v5: https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
+> 
+> Yu Kuai (8):
+>    blk-throttle: fix that io throttle can only work for single bio
+>    blk-throttle: prevent overflow while calculating wait time
+>    blk-throttle: factor out code to calculate ios/bytes_allowed
+>    blk-throttle: fix io hung due to config updates
+>    blk-throttle: use 'READ/WRITE' instead of '0/1'
+>    blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
+>    blk-throttle: cleanup tg_update_disptime()
+>    blk-throttle: clean up flag 'THROTL_TG_PENDING'
+> 
+>   block/blk-throttle.c | 168 +++++++++++++++++++++++++++++--------------
+>   block/blk-throttle.h |  16 +++--
+>   2 files changed, 128 insertions(+), 56 deletions(-)
+> 
