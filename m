@@ -2,163 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80099572984
-	for <lists+cgroups@lfdr.de>; Wed, 13 Jul 2022 00:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD4F57299C
+	for <lists+cgroups@lfdr.de>; Wed, 13 Jul 2022 01:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbiGLWwd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Jul 2022 18:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S233507AbiGLXDm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Jul 2022 19:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbiGLWwc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jul 2022 18:52:32 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C489FCAF10
-        for <cgroups@vger.kernel.org>; Tue, 12 Jul 2022 15:52:31 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id n206so3455680oia.6
-        for <cgroups@vger.kernel.org>; Tue, 12 Jul 2022 15:52:31 -0700 (PDT)
+        with ESMTP id S231161AbiGLXDk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jul 2022 19:03:40 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF86BC25
+        for <cgroups@vger.kernel.org>; Tue, 12 Jul 2022 16:03:39 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id i126so12393839oih.4
+        for <cgroups@vger.kernel.org>; Tue, 12 Jul 2022 16:03:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=htaxsmbLkerK/WzSwDGnn60xtZCz4ZbFlZTWngCZmEo=;
-        b=PJvAiv/DmAKyikrJij5JE66g75DNqz4DHzNmHd/JdP5z0zk7MZqnCrSzDvKAn/vIHL
-         /D1NSeoCJVH6odh+Uj/o+s5cBf7HLPhJcKRVVRRPWXogWz+S1pndViMAUC1Zvw5ESZAP
-         a4uDkbnnM/6ytDcaYwsBLjwLxeO9Rih93Gr+RXKEKTPt1wqx/q0JXbde46/8Bpzm1NLV
-         78Bw7c0NvdCwXjhEsfKVunNKJ9ihm2+YXJqQWj5UFZzKq30VoqbtCJCBYX34Eh3+yLHx
-         tX5KytQJPfANtkoIvguy1zTKRUksrSmQqW7JiP3kjvDh4jRUVC8MV/aTs5+JNNpJOxnR
-         3ZKw==
+        bh=qHwuHViFSN86tj0ChYoibxcY4E2c7D4JyTppJFZI4so=;
+        b=Lhh55GnSdOjPhbJGduTnxEGnWccw6kHOeEeY08jAZgJe0VqjmPoBdTPnONumi/pAun
+         p+cHg4gHnhGSvibmw9wIMHwGbOMlbmWVVet0lyBNoQFKw49iIOLl44zlrlp+lgOkWr4N
+         nI06n4Ji3hwluei1aEEzHQyZHr8WFbhVYRiJlwQVHmUD64NqpTZjoyhfvNHbS2GCc5aR
+         uNpAcmjt7Eo2ZLV4iQ/jGK1hfJ4aVbxJui0znZqX9547wQXUukqWF8+PFEtZcDsj6osq
+         cNrlBGb2ZoHRdeHJDRKTLI+onjdNABpheW4De5nAankciyk7viUqVbyzzoaaEs5liuGY
+         qvhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=htaxsmbLkerK/WzSwDGnn60xtZCz4ZbFlZTWngCZmEo=;
-        b=8B2YHCsU/lA3v1AURIydqHOfICd68WZh+lgmZbV/zenlgWB0OctXcTairZbg9fTGXI
-         FK+FFP1a9c/ydE7YdYtr4WDUgm4c2XYR/IO3axkb1HV6eSWF86gDpquQlLMqi4IsZ45g
-         qJjRtOo6s04iG6n8Zv8PCcA3ITNkSE5q0dC/t1mWTxTAgj1MSbVPogIrQPRehfBCa8Rv
-         fjn8sybVekZqR80XpkOw5DHu2RQMflJVlvKud7TfoWDcvE1fEHB6B5ysiH3SIvG1vCJr
-         7WmJtGS0PfEvXDYMxG2fu11ugS9PS53mWwjK+H+rRff/xaUEG2Z2JiyYXtcViuq+AJfM
-         xxvw==
-X-Gm-Message-State: AJIora8FlGqjKZsp9ZYDgi54FREqGR3LcfydFOFPktjkgitoJ1RauKUM
-        C2fDm2g/3FZ1pfo1R2BGDjCr3uxmhbKXT6zxqSPcsw==
-X-Google-Smtp-Source: AGRyM1v5ZQYkfQFzh3Q+CTwzVWkW3rKZ4YQSPbjjNofA8KjFTYODA3mdjroafcnyMFZaGWXf9o9yfeVXNks1gmZ3kmU=
-X-Received: by 2002:a05:6808:1a10:b0:335:9e39:693b with SMTP id
- bk16-20020a0568081a1000b003359e39693bmr216623oib.165.1657666350921; Tue, 12
- Jul 2022 15:52:30 -0700 (PDT)
+        bh=qHwuHViFSN86tj0ChYoibxcY4E2c7D4JyTppJFZI4so=;
+        b=dJELb8CeRCTMsuoF5IC0uj5WShflbsjAiAzvFb+JDhiq7pKmyd/MvW8ofttJPy6FAc
+         4gZ7HjHPilsCuws2kn7Irm8XCv/zwetjInF1Pd5pZ+MX1sT/Qd9RmxwWt2GOsz3sOX6X
+         92csn1MyGUYtQKvStHi3ZiUWfmyVgP0WUBTehyrvx2yUAjIFadaG3qMMAK/hmPLWBvXl
+         eceiw8eRrhn6NS00dlUqJ9gypiZzmqS4EZdTp35/ZldI510FxBLjE5BgR/tHAZKkPgEO
+         Mn/n7zM/mc/cVjhM0eFN5KKOcVDVG6nk3mxtuDHqh28JthGJi2ZRWepO5AVAyK1Aqv65
+         amQQ==
+X-Gm-Message-State: AJIora9n5PpihYMDtGnCen7hWxEmaBzz3pawgMeeK8SwYfHbzHdwWs36
+        2TthdRFUNV20g63gt7Z1pGYVaOLxJEo9cdyyWJBvbg==
+X-Google-Smtp-Source: AGRyM1sv6/a3j0mcFzaoNZorrDTb4kx9QsLkQ7zFGrGqxGPqVxoEEPKoh5NgLCA2o5UhH33aMTJl+s4tUNJhAnFoewI=
+X-Received: by 2002:aca:e043:0:b0:32e:1ad1:2d4 with SMTP id
+ x64-20020acae043000000b0032e1ad102d4mr3357976oig.235.1657667018762; Tue, 12
+ Jul 2022 16:03:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220630083044.997474-1-yosryahmed@google.com>
- <20220701160947.e4902e5b0484ed084db5d41f@linux-foundation.org> <CAJD7tkZ7haRwRgE5723Sfqr4WzeoATy-3SUROgAZpinyxsMt2Q@mail.gmail.com>
-In-Reply-To: <CAJD7tkZ7haRwRgE5723Sfqr4WzeoATy-3SUROgAZpinyxsMt2Q@mail.gmail.com>
+References: <20220628220938.3657876-1-yosryahmed@google.com>
+ <20220628220938.3657876-2-yosryahmed@google.com> <YsdJPeVOqlj4cf2a@google.com>
+In-Reply-To: <YsdJPeVOqlj4cf2a@google.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 12 Jul 2022 15:51:54 -0700
-Message-ID: <CAJD7tkbvPX+jMHOF6TbhBYvX-3nZ+k4-7NEKX5cudBS7ZuSNdQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: vmpressure: don't count proactive reclaim in vmpressure
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Tue, 12 Jul 2022 16:03:02 -0700
+Message-ID: <CAJD7tkYE+pZdk=-psEP_Rq_1CmDjY7Go+s1LXm-ctryWvUdgLA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>,
+        Oliver Upton <oupton@google.com>, Huang@google.com,
+        Shaoqin <shaoqin.huang@intel.com>,
+        Cgroups <cgroups@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 1:19 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> On Fri, Jul 1, 2022 at 4:09 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Thu, 30 Jun 2022 08:30:44 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > > vmpressure is used in cgroup v1 to notify userspace of reclaim
-> > > efficiency events, and is also used in both cgroup v1 and v2 as a signal
-> > > for memory pressure for networking, see
-> > > mem_cgroup_under_socket_pressure().
-> > >
-> > > Proactive reclaim intends to probe memcgs for cold memory, without
-> > > affecting their performance. Hence, reclaim caused by writing to
-> > > memory.reclaim should not trigger vmpressure.
-> > >
-> > > ...
-> > >
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2319,6 +2319,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
-> > >                                 gfp_t gfp_mask)
-> > >  {
-> > >       unsigned long nr_reclaimed = 0;
-> > > +     unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-> > >
-> > >       do {
-> > >               unsigned long pflags;
-> > > @@ -2331,7 +2332,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
-> > >
-> > >               psi_memstall_enter(&pflags);
-> > >               nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
-> > > -                                                          gfp_mask, true);
-> > > +                                                          gfp_mask,
-> > > +                                                          reclaim_options);
-> >
-> > It's a bit irksome to create all these unneeded local variables.  Why
-> > not simply add the constant arg to the try_to_free_mem_cgroup_pages()
-> > call?
-> >
->
-> I was trying to improve readability by trying to have consistent
-> reclaim_options local variable passed into
-> try_to_free_mem_cgroup_pages(), and also to avoid nested line-wrapping
-> in cases where reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-> MEMCG_RECLAIM_PROACTIVE (like in memory_reclaim()). Since you found it
-> irksome, I obviously failed :)
->
-> Will remove the local variables where possible and send a v4. Thanks
-> for taking a look!
->
-> > >               psi_memstall_leave(&pflags);
-> > >       } while ((memcg = parent_mem_cgroup(memcg)) &&
-> > >                !mem_cgroup_is_root(memcg));
-> > > @@ -2576,7 +2578,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > >       struct page_counter *counter;
-> > >       unsigned long nr_reclaimed;
-> > >       bool passed_oom = false;
-> > > -     bool may_swap = true;
-> > > +     unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-> > >       bool drained = false;
-> > >       unsigned long pflags;
-> > >
-> > > @@ -2593,7 +2595,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > >               mem_over_limit = mem_cgroup_from_counter(counter, memory);
-> > >       } else {
-> > >               mem_over_limit = mem_cgroup_from_counter(counter, memsw);
-> > > -             may_swap = false;
-> > > +             reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
-> >
-> >         reclaim_options = 0
-> >
-> > would be clearer?
-> >
->
-> I feel like the current code is more clear to the reader and
-> future-proof. If we can't swap, we want to remove the MAY_SWAP flag,
-> we don't want to remove all existing flags. In this case it's the
-> same, but maybe in the future it won't be and someone will miss
-> updating this line. Anyway, I don't have a strong opinion, let me know
-> what you prefer for v4.
+Thanks for taking another look at this!
 
+On Thu, Jul 7, 2022 at 1:59 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Jun 28, 2022, Yosry Ahmed wrote:
+> > We keep track of several kernel memory stats (total kernel memory, page
+> > tables, stack, vmalloc, etc) on multiple levels (global, per-node,
+> > per-memcg, etc). These stats give insights to users to how much memory
+> > is used by the kernel and for what purposes.
+> >
+> > Currently, memory used by kvm mmu is not accounted in any of those
+>
+> Nit, capitalize KVM (mainly to be consistent).
+>
+> > @@ -1085,6 +1086,9 @@ KernelStack
+> >                Memory consumed by the kernel stacks of all tasks
+> >  PageTables
+> >                Memory consumed by userspace page tables
+> > +SecPageTables
+> > +              Memory consumed by secondary page tables, this currently
+> > +           currently includes KVM mmu allocations on x86 and arm64.
+>
+> Nit, this line has a tab instead of eight spaces.  Not sure if it actually matters,
+> there are plenty of tabs elsewhere in the file, but all the entries in this block
+> use only spaces.
+>
 
-Andrew, any preferences on this before I send v4?
+Will fix it.
+
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index aab70355d64f3..13190d298c986 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -216,6 +216,7 @@ enum node_stat_item {
+> >       NR_KERNEL_SCS_KB,       /* measured in KiB */
+> >  #endif
+> >       NR_PAGETABLE,           /* used for pagetables */
+> > +     NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
+>
+> Nit, s/kvm/KVM, and drop the "shadow", which might be misinterpreted as saying KVM
+> pagetables are only accounted when KVM is using shadow paging.  KVM's usage of "shadow"
+> is messy, so I totally understand why you included it, but in this case it's unnecessary
+> and potentially confusing.
+>
+> And finally, something that's not a nit.  Should this be wrapped with CONFIG_KVM
+> (using IS_ENABLED() because KVM can be built as a module)?  That could be removed
+> if another non-KVM secondary MMU user comes along, but until then, #ifdeffery for
+> stats the depend on a single feature seems to be the status quo for this code.
+>
+
+I will #ifdef the stat, but I will emphasize in the docs that is
+currently *only* used for KVM so that it makes sense if users without
+KVM don't see the stat at all. I will also remove the stat from
+show_free_areas() in mm/page_alloc.c as it seems like none of the
+#ifdefed stats show up there.
+
+> >  #ifdef CONFIG_SWAP
+> >       NR_SWAPCACHE,
+> >  #endif
