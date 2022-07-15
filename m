@@ -2,61 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D97576104
-	for <lists+cgroups@lfdr.de>; Fri, 15 Jul 2022 13:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F176576207
+	for <lists+cgroups@lfdr.de>; Fri, 15 Jul 2022 14:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbiGOL7m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Jul 2022 07:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
+        id S230198AbiGOMpn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Jul 2022 08:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbiGOL7m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jul 2022 07:59:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF5D2E69F;
-        Fri, 15 Jul 2022 04:59:41 -0700 (PDT)
+        with ESMTP id S229595AbiGOMpm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jul 2022 08:45:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6046C129
+        for <cgroups@vger.kernel.org>; Fri, 15 Jul 2022 05:45:41 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BDACF1FD85;
-        Fri, 15 Jul 2022 11:59:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DA45B34D8F;
+        Fri, 15 Jul 2022 12:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657886379; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1657889139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4RmIBDmA7HuVmZSyUWJ93x5lRlH/NRx1RsQwV9uMu1M=;
-        b=AqIscoSlqIjk/nPYNDWwjjd9fWwuEi5DU9TQYGiCa2z4jdMdkfWhltCvjGsN96UZJW0NAs
-        6L+wRg97LtJ2t5o+ij77C/gmHsm/RNCv6KvgTwiT1a08v/liV6xg053aQ9bRMAY8GzRHK8
-        vQqWrDGD6pEi5J/g/siParyxrugja7U=
+        bh=gZa4+jMpT3rkbUbFtzmtQFirgHMD5Uw1UtC1qekP12c=;
+        b=H/DS2GYvkohsGsKHCbE2JLE/fFca54l4n/YuYnlwfn7LbkXkOfRLUSOVMtiWaF2+M2ap9p
+        PGgCQW4eGeRbY0Rr2U62vWbmYtwaXYpW2IqdNxA55FmUBpznKKthHc0YqBcd3QNHaOs/e/
+        wZgU2xHoStzDXp+AVK8+/kgt3ZgDup4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 792A913754;
-        Fri, 15 Jul 2022 11:59:39 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B7F8113AC3;
+        Fri, 15 Jul 2022 12:45:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id lTDPHKtW0WKsAgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 15 Jul 2022 11:59:39 +0000
-Date:   Fri, 15 Jul 2022 13:59:38 +0200
+        id JS/eK3Nh0WK9FgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 15 Jul 2022 12:45:39 +0000
+Date:   Fri, 15 Jul 2022 14:45:38 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Jing-Ting Wu <jing-ting.wu@mediatek.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Shakeel Butt <shakeelb@google.com>, wsd_upstream@mediatek.com,
-        lixiong.liu@mediatek.com, wenju.xu@mediatek.com,
-        jonathan.jmchen@mediatek.com
-Subject: Re: [Bug] race condition at rebind_subsystems()
-Message-ID: <20220715115938.GA8646@blackbody.suse.cz>
-References: <1978e209e71905d89651e61abd07285912d412a1.camel@mediatek.com>
+To:     "taoyi.ty" <escape@linux.alibaba.com>
+Cc:     lizefan.x@bytedance.com, Tejun Heo <tj@kernel.org>,
+        hannes@cmpxchg.org, cgroups@vger.kernel.org
+Subject: Re: Question about disallowing rename(2) in cgroup v2
+Message-ID: <20220715124538.GB8646@blackbody.suse.cz>
+References: <1c9d5118-25fa-e791-8aed-b1430cf23d36@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1978e209e71905d89651e61abd07285912d412a1.camel@mediatek.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c9d5118-25fa-e791-8aed-b1430cf23d36@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
@@ -67,81 +62,31 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Jing-Ting.
+Hi Escape.
 
-On Thu, Jun 30, 2022 at 06:52:10PM +0800, Jing-Ting Wu <jing-ting.wu@mediatek.com> wrote:
-> Root cause:
-> The rebind_subsystems() is no lock held when move css object from A
-> list to B list,then let B's head be treated as css node at
-> list_for_each_entry_rcu().
+On Tue, Jun 28, 2022 at 09:09:48PM +0800, "taoyi.ty" <escape@linux.alibaba.com> wrote:
+> I found that rename(2) can be used in cgroup v1 but is disallowed in cgroup
+> v2, what's the reason for this design?
 
-Nice outcome of the analysis.
+There's some info in the commit 6db8e85c5c1f89cd0183b76dab027c81009f129f.
 
-> The call stack as following:
-> kthread
-> -> worker_thread
-> -> process_one_work
-> -> flush_memcg_stats_dwork
-> -> __mem_cgroup_flush_stats
-> -> cgroup_rstat_flush_irqsafe
-> -> cgroup_rstat_flush_locked
-> 
-> Detail:
-> static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool
-> may_sleep)
-> {
-> ...
->    rcu_read_lock();
->    list_for_each_entry_rcu(css, &pos->rstat_css_list,
->                              rstat_css_node)
->         css->ss->css_rstat_flush(css, cpu);
->    rcu_read_unlock();
-> ...
-> }
-> 
-> Because the content of css->ss is not a function address,
-> once the css_rstat_flush is called, kernel exception will happen.
+> rename(2) is critical when managing a cgroup pool in userspace, which uses
+> rename to reuse cgroup rather than mkdir to create a new one，
 
-I agree with your analysis. The list_for_each_entry_rcu() is not
-accounting for the move from A to B and the head's rstat_css_list is
-invalid in the cgroup_rstat_flush() context.
+Strictly speaking, it's not critical if you decouple your job and cgroup
+naming scheme (i.e. use the cgroup with the old name).
 
-> When the issue happened, the list of pos->rstat_css_list at group A is
-> empty.
-> There must be racing conditions.
-> 
-> From reviewing code, we find rebind_subsystems() is no lock held when
-> move css object to other list.
-> 
-> int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
-> {
-> ...
->    if (ss->css_rstat_flush) {
->          list_del_rcu(&css->rstat_css_node);
->          list_add_rcu(&css->rstat_css_node,
->                       &dcgrp->rstat_css_list);
->    }
-> ...
-> }
-> 
-> If we held a css object from A group list, at same time this css object
-> was moved to B group list.
-> [...]
-> Do you have any suggestion for this issue?
+> this can improve the performance of container concurrent startup,
+> because renaming cgroup is much more lightweight compared with
+> creating cgroup.
 
-The css->rstat_css_node should not be modified if there are possible RCU
-readers elsewhere.
-One way to fix this would be to insert synchronize_rcu() after
-list_del_rcu() and before list_add_rcu().
-(A further alternative (I've heard about) would be to utilize 'nulls'
-RCU lists [1] to make the move between lists detectable.)
+Do you have some numbers for this?
+You can save work with not rmdir/mkdir'ing but you mention
+concurrent startup specifically. And you still need to (re)setup
+the cgroups after reuse and that also isn't parallelizable (at least you
+need to (re)populate each reused cgroup, which is mostly under one
+lock). (Even cgroup1_rename() has an exclusive section under
+cgroup_mutex but it looks relatively simply.)
 
-But as I'm looking at it from distance, it may be simpler and sufficient
-to just take cgroup_rstat_lock around the list migration (the nesting
-under cgroup_mutex that's held with rebind_subsystems() is fine).
 
-HTH,
 Michal
-
-[1] https://www.kernel.org/doc/html/latest/RCU/rculist_nulls.html
-
