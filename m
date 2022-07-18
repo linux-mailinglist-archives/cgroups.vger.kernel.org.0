@@ -2,132 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E995E578985
-	for <lists+cgroups@lfdr.de>; Mon, 18 Jul 2022 20:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EDF578A9D
+	for <lists+cgroups@lfdr.de>; Mon, 18 Jul 2022 21:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235963AbiGRS0k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Jul 2022 14:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S235706AbiGRTWy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Jul 2022 15:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbiGRS0k (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Jul 2022 14:26:40 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073842D1D7
-        for <cgroups@vger.kernel.org>; Mon, 18 Jul 2022 11:26:39 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id bu1so18280386wrb.9
-        for <cgroups@vger.kernel.org>; Mon, 18 Jul 2022 11:26:38 -0700 (PDT)
+        with ESMTP id S235704AbiGRTWw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Jul 2022 15:22:52 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31AF2F67D;
+        Mon, 18 Jul 2022 12:22:51 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id v4-20020a17090abb8400b001ef966652a3so19138500pjr.4;
+        Mon, 18 Jul 2022 12:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WVvDU2AL8s0vVVLudVvrgZ7AYHAWM81ym6o0jyabuV4=;
-        b=NQ0Qe4cWnPa0u8OvVOwy8y1gQzlLdYgCBimHOn9YHa4Latcfsm8LyZWdrE80LvfLNc
-         tXy9exDSQ3Y8+XgnPNrfrHKHIK7WHqJjLLs4ZKL3zqZf6W5Xlj4yqoBEvXm+WpLrm0JK
-         nc+V6DOQP5AGz2bXTOdUzCzQ1YAp4XOyOvKRo9GvABDJSc2/Y2J3ShxELHCOlHxEUJpo
-         ti2ZhHov/v/Po0RulIPBMJvjoIktisJSzAOhmFKMTwaSDEisYz9bQgmq4q0t8npT63yx
-         Y3MItMbE+E1nY/7Zk0F2qpNd3Q0ouCIublcith4nRKDQch7WB3I3FYuxo2LIS7fvtbtL
-         9RXA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L49cEqnvIqcH6kuvpQrqn6Zje6ktkAbRLUeIUPxx/7E=;
+        b=AOJiH+SXnVmQJ+bGNsZclRXLODxNSpRAvPfO/VxS7r8q2g5X+8Xlta47Sl1pGHzkV+
+         FwVS6nFN35kueD5zFoeT2Vv3mlbHyBS2eLHAXHY+HA81SCyD7KP1t86n3llHw0BDRhTg
+         7ch/aSQGS5uqNET+mWyGr9MIsDr6aTo1b+6izOguOwAcCZPuG46lc3d9yq3pl2ncn2vD
+         Viw2Q0xjJXJVjT2AMQBZ1fIMD63Tief5fi+JCPArIrudaYNEp/+tca6nW5kzvPHK8EvX
+         OrRROGhSWJzS0qyYOUQQX6nlYAPRZP8RFAaRlfraANgBC65PrFNL+zLE+OpIUFOPlbpB
+         kS5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WVvDU2AL8s0vVVLudVvrgZ7AYHAWM81ym6o0jyabuV4=;
-        b=YcdNnQAMw9UjQmaxrRUR3oDHMRKxIOOwwZCEwZ7cwRWjkl5wtdnhlEwSVDAN1FWtai
-         TJ8CifgLqF4qIHHeqgUXjxlxb7+7R8SYgE6PEBwirwFrlwBkP83nY58AG7pvYTgRr9Q3
-         mir0zZ2XjQCKet7FyG33S1uGr2cmrofqMzYf0RJgOF8jGBnLbrXInJOdPLiuiusq+w4Z
-         P+QatHLzx3ZbmMF3xq+NxGFI2oqHPX0zBcWzCgL0iFITC2PJnUSsPQ/MC2sfhYBX3gmb
-         gJfeO/U9s2QZzaUfgq1IiuzhUyW2ibIExs9g/hN6X1LXkdaZEBfaN1JB+8n+RYfWWV+E
-         0eIQ==
-X-Gm-Message-State: AJIora+ipHw67HcS07Ajf126esJqaZVlwR/Se2WFt4hFLeOIMXdvRdKs
-        TWF5sGqE7rlnyWtpbs2BqfxvF1Xt1ulOcfGrRKghjA==
-X-Google-Smtp-Source: AGRyM1vritCRy15xhjiGgheVI5ODnh3bq50PA2xHbfPtyQKW+GDSprNhKc2C1SNuU6IDGLnp3HBkT8HTXtmuIDMx9I4=
-X-Received: by 2002:a5d:588b:0:b0:21d:a918:65a5 with SMTP id
- n11-20020a5d588b000000b0021da91865a5mr24265604wrf.210.1658168797460; Mon, 18
- Jul 2022 11:26:37 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=L49cEqnvIqcH6kuvpQrqn6Zje6ktkAbRLUeIUPxx/7E=;
+        b=hiZlLRGpZBgPitM7gSsX/2JZbHyPCZ/DtY93s4gPByhpAloBBUdCjAg/Go1iK3cF9r
+         qeCaPDyRWEHIktgfxyNSlBKrkLU6f1mb7GNz35XbE3HrBppGAhkh3KJGimx4iEl+cW7E
+         EkdUVyanO/4HhmNdkoGiLT6+ojicMPhVlagt0EomAmAq1+dQ5lqizTTVGhxr7VOx4zHx
+         P+T9z+cEOUT2xx1N2XflOsNNgK2uMcJapg1rviOQiRtaafjJggg84aQthIevtUyOGRBc
+         m2PKCQ92CRPPafLeORnRn50pIq86a9Uz2x/QrCeLwurG3txGYhUvNMuYsDc0tRgZp3a+
+         VPlw==
+X-Gm-Message-State: AJIora8CL1WilHca2HYj51N36fT09dMkairTf7krh9OY+F2fe1NvwvPP
+        K8L94F9uc5kHYeuEgI0yISopTII1864=
+X-Google-Smtp-Source: AGRyM1tq50m0ES0OTSxOpN5pOU2LngotNJr4NPiFELTsNZIQFAUcI3uyp1uiOJvpro1TX2XYoK7uXQ==
+X-Received: by 2002:a17:902:f708:b0:153:839f:bf2c with SMTP id h8-20020a170902f70800b00153839fbf2cmr28645338plo.113.1658172170867;
+        Mon, 18 Jul 2022 12:22:50 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id e15-20020a056a0000cf00b005255489187fsm9620296pfj.135.2022.07.18.12.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jul 2022 12:22:49 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 18 Jul 2022 09:22:47 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Jinke Han <hanjinke.666@bytedance.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] block: don't allow the same type rq_qos add more than
+ once
+Message-ID: <YtWzB6T7GBb7fiNe@slm.duckdns.org>
+References: <20220718083646.67601-1-hanjinke.666@bytedance.com>
 MIME-Version: 1.0
-References: <20220628220938.3657876-1-yosryahmed@google.com>
- <20220628220938.3657876-2-yosryahmed@google.com> <YsdJPeVOqlj4cf2a@google.com>
- <CAJD7tkYE+pZdk=-psEP_Rq_1CmDjY7Go+s1LXm-ctryWvUdgLA@mail.gmail.com> <Ys3+UTTC4Qgbm7pQ@google.com>
-In-Reply-To: <Ys3+UTTC4Qgbm7pQ@google.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 18 Jul 2022 11:26:01 -0700
-Message-ID: <CAJD7tkY91oiDWTj5FY2Upc5vabsjLk+CBMNzAepXLUdF_GS11w@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220718083646.67601-1-hanjinke.666@bytedance.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 4:06 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, Jul 12, 2022, Yosry Ahmed wrote:
-> > Thanks for taking another look at this!
-> >
-> > On Thu, Jul 7, 2022 at 1:59 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Tue, Jun 28, 2022, Yosry Ahmed wrote:
-> > > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > > > index aab70355d64f3..13190d298c986 100644
-> > > > --- a/include/linux/mmzone.h
-> > > > +++ b/include/linux/mmzone.h
-> > > > @@ -216,6 +216,7 @@ enum node_stat_item {
-> > > >       NR_KERNEL_SCS_KB,       /* measured in KiB */
-> > > >  #endif
-> > > >       NR_PAGETABLE,           /* used for pagetables */
-> > > > +     NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
-> > >
-> > > Nit, s/kvm/KVM, and drop the "shadow", which might be misinterpreted as saying KVM
-> > > pagetables are only accounted when KVM is using shadow paging.  KVM's usage of "shadow"
-> > > is messy, so I totally understand why you included it, but in this case it's unnecessary
-> > > and potentially confusing.
-> > >
-> > > And finally, something that's not a nit.  Should this be wrapped with CONFIG_KVM
-> > > (using IS_ENABLED() because KVM can be built as a module)?  That could be removed
-> > > if another non-KVM secondary MMU user comes along, but until then, #ifdeffery for
-> > > stats the depend on a single feature seems to be the status quo for this code.
-> > >
-> >
-> > I will #ifdef the stat, but I will emphasize in the docs that is
-> > currently *only* used for KVM so that it makes sense if users without
-> > KVM don't see the stat at all. I will also remove the stat from
-> > show_free_areas() in mm/page_alloc.c as it seems like none of the
-> > #ifdefed stats show up there.
->
-> It's might be worth getting someone from mm/ to weigh in before going through the
-> trouble, my suggestion/question is based purely on the existing code.
+Hello,
 
-Any mm folks with an opinion about this?
+On Mon, Jul 18, 2022 at 04:36:46PM +0800, Jinke Han wrote:
+> When the io.cost.qos file is written by two cpu concurrently, rq_qos may
+> be added to one disk twice. In that case, there will be two iocs enabled
+> and running on one disk. They own different iocgs on their active list.
+> In the ioc_timer_fn function, because of the iocgs from two ioc have the
+> same root iocg, the root iocg's walk_list may be overwritten by each
+> other and this lead to list add/del corrutions in building or destorying
+> the inner_walk list.
+> 
+> And so far, the blk-rq-qos framework works in case that one instance for
+> one type rq_qos per queue by default. This patch make this explicit and
+> also fix the crash above.
 
-Any preference on whether we should wrap NR_SECONDARY_PAGETABLE stats
-with #ifdef CONFIG_KVM for now as it is currently the only source for
-this stat?
+Ah, good catch. Looks great. Just a few nits below.
+
+> Signed-off-by: hanjinke <hanjinke.666@bytedance.com>
+
+Can you please use your full name in FIRST LAST form on the SOB line?
+
+> --- a/block/blk-iocost.c
+> +++ b/block/blk-iocost.c
+> @@ -2886,7 +2886,12 @@ static int blk_iocost_init(struct request_queue *q)
+>  	 * called before policy activation completion, can't assume that the
+>  	 * target bio has an iocg associated and need to test for NULL iocg.
+>  	 */
+> -	rq_qos_add(q, rqos);
+> +	ret = rq_qos_add(q, rqos);
+> +	if (ret) {
+> +		free_percpu(ioc->pcpu_stat);
+> +		kfree(ioc);
+> +		return ret;
+
+Given that these get repeated for policy activation failure, it'd prolly be
+better to factor them out at the end and use gotos and make all of the users
+use the same pattern.
+
+> +static inline int rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+>  {
+>  	/*
+>  	 * No IO can be in-flight when adding rqos, so freeze queue, which
+> @@ -98,6 +98,8 @@ static inline void rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+>  	blk_mq_freeze_queue(q);
+>  
+>  	spin_lock_irq(&q->queue_lock);
+> +	if (rq_qos_id(q, rqos->id))
+> +		goto out;
+
+Maybe rename the goto label to ebusy so that it's `goto ebusy`?
+
+Other than the nits, please feel free to add
+
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
