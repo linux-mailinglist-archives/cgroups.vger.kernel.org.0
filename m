@@ -2,89 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BEA57A4B4
-	for <lists+cgroups@lfdr.de>; Tue, 19 Jul 2022 19:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983C357A543
+	for <lists+cgroups@lfdr.de>; Tue, 19 Jul 2022 19:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238202AbiGSRMS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jul 2022 13:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S239348AbiGSR2c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jul 2022 13:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238312AbiGSRMO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jul 2022 13:12:14 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743A957E36
-        for <cgroups@vger.kernel.org>; Tue, 19 Jul 2022 10:12:13 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 72so14089854pge.0
-        for <cgroups@vger.kernel.org>; Tue, 19 Jul 2022 10:12:13 -0700 (PDT)
+        with ESMTP id S239430AbiGSR2Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jul 2022 13:28:16 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9824F1A1
+        for <cgroups@vger.kernel.org>; Tue, 19 Jul 2022 10:28:14 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id z12so22654614wrq.7
+        for <cgroups@vger.kernel.org>; Tue, 19 Jul 2022 10:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=xlsTXlXgkqcwZmlKCHkSKeWcBmUe/4Yks4XD/IOGgJ8=;
-        b=ZQIQV7tJormcdXT5Y2BwVjedCW7zwEhbrZ4sYHPgObfAxoVc9msrDpayMhUw1YxOTY
-         exrX/3rKOc3Y+Y+EQoIWutn6Ux8jV3GscFW7NzxCst8uCmuR+mBF/8YEvnsazGauTHUg
-         waETftJEUk8j37dqhW//H5FRO/6EPxAjugJ0Xt8dA6E3eptOkt58/c7lM6dUKoI9jDrq
-         oOezV0oj2E4VKjOhr2VyajXXmjh7b+QTrRFYQYp9/at1Z+19ei4Gx7VsEe90rb3xK9f4
-         H8BltzEcTBBfoViuLK/am//c4djPNcVznBEgRxiRnJRH4QM5GL4LyGifiPIcInmUis3B
-         KyPw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JGWTrJ/A2ihWU/Ug7aQjRrDit++Zh+gpJdGLbqVf1ag=;
+        b=aQcLJHLSmAz57vMuBvrLAMuiJ9nsj6bTyOPDKgofJNdmDLyZvDjGqvPFf8eyewoclH
+         l1l5WETYZVlZ8uJmvS1H1ti0C5X06q29fxB0wCYYKPJxZfRH94Xb1Mn5EMR6/0o1UY8j
+         145zovNXLJSR4DnmMp+8wX78v/m524bvc3tJ+FzQf0nT7yT7yXfSyHDUUj3Hy0aaa4lA
+         2P6GzyXXUlsVQ6hDfqddxLzfkhz8yvCLArXMHBH3qtEjNqAPGY+Meno0NzZjndBqiLbZ
+         KocO65DubKojur00kb9JuLMzyBK5C5SHKSqew69Pcn4b2KCT1iox6ILhl/V1vBrI7fDX
+         yCBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=xlsTXlXgkqcwZmlKCHkSKeWcBmUe/4Yks4XD/IOGgJ8=;
-        b=uU8OxtX9ZfHhGf5b8XrmrxSmlNEdvYP7YiV3MqX+IJhxXhjCUHQOeTPA+OKa5PqXUq
-         7DrsDeyq5Zpj4Bw1GD34tuiR1QXEGvK/R/6Ttn+FYURGP6X2efy+5bi7+H99avcvKPbt
-         dzFKJK67HINxbIZWOljUdWMit7B9FOnm2wWmDtafQX0Kf6ihwatMaEwOH1hGQZnNgVYJ
-         HDgJOkgvtET0uxGcgIELmb1hPMxzh5PH2yVlLJrlhpftQZRX9w3fefZFDvjea+LWRFnC
-         MzgdPWJMFw/SvYfuAvqzR4RHICSilKmU4FRM8I/8GtsBf0xu+G98O8RzjDXmX/yhlvVi
-         4ahw==
-X-Gm-Message-State: AJIora+KSQser9y1dIH9dJOdpomIImjRNC5H5KXuH8LlCUcSoeYMtWnn
-        4v2IyHd/ESrEJoyT+iiAG4izrQ==
-X-Google-Smtp-Source: AGRyM1u0OqFaN5bR5kLMvbIxDbCjNtYUTNT4RMDYwcRrouitJfNNXVr7HZIeA2S96pKZGVQg4EWvAA==
-X-Received: by 2002:a63:1658:0:b0:41a:4118:f4b9 with SMTP id 24-20020a631658000000b0041a4118f4b9mr6025950pgw.153.1658250732654;
-        Tue, 19 Jul 2022 10:12:12 -0700 (PDT)
-Received: from [10.4.188.211] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id g3-20020a170902e38300b0015e8d4eb1c8sm11811311ple.18.2022.07.19.10.12.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jul 2022 10:12:12 -0700 (PDT)
-Message-ID: <17df93c3-5d12-aea9-95df-a46437ea798a@bytedance.com>
-Date:   Wed, 20 Jul 2022 01:12:06 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGWTrJ/A2ihWU/Ug7aQjRrDit++Zh+gpJdGLbqVf1ag=;
+        b=vt5JNBeoLf55ObMcb+u0D3RlELyTR1ESZOeYKp6IavCBnJZ4VZGlWuPAeJqd60kem6
+         belLhzT1ii+3nAvF7WcwCP322QXC03tsKDsJVmaijUIMrjZYwiJyKsFoxPIyEzfpoea4
+         Xn8IRVrR+CgJPi0TgpDz1o/Vm6HjnCGoBC4AFR8ghCansmD3DjVImLG+4fBEuLiq37W1
+         puncEZkDa3A9AQUJOqqL2CNz6UKOxS8DGoB7Xsgflgtai+fz87O+zLn0G4Oko+cwxeC/
+         Amkoa60nWTVcUFBSVTLosvm7SLKhAIeZVR2lnYsfNJ3tqBOERz1TtdzhT6kjcPN2mBaV
+         Lpuw==
+X-Gm-Message-State: AJIora+NhmHRgT4Mk15JiRJRkt5r9NsyepmgHS07QCNdXdS13oBtO2h6
+        X8naM+EZcVDqfLwEaxWWr3MT2Lj7OA49q8GwRgF53A==
+X-Google-Smtp-Source: AGRyM1tBJsBbqZfOaPheraq2qdKwFMuN2cYbU2/3gDb2ExcHHWknED0R67mCoawJmgennwfCC5j2IF55QsfrJAGvaF0=
+X-Received: by 2002:a5d:5a82:0:b0:21e:2899:60bd with SMTP id
+ bp2-20020a5d5a82000000b0021e289960bdmr5795825wrb.80.1658251692855; Tue, 19
+ Jul 2022 10:28:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.10.0
-Subject: Re: [External] Re: [PATCH v3] block: don't allow the same type rq_qos
- add more than once
-To:     Jens Axboe <axboe@kernel.dk>, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        stable@vger.kernel.org
-References: <20220719165313.51887-1-hanjinke.666@bytedance.com>
- <036e5ae0-4908-d4ab-c2e5-56e9ca85e26d@kernel.dk>
-From:   hanjinke <hanjinke.666@bytedance.com>
-In-Reply-To: <036e5ae0-4908-d4ab-c2e5-56e9ca85e26d@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <YtZ9Yu6HSQ2sT+O/@kili>
+In-Reply-To: <YtZ9Yu6HSQ2sT+O/@kili>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 19 Jul 2022 10:27:36 -0700
+Message-ID: <CAJD7tkYCSY1C_iif4dxF9O3dAgZV4u8o9DFGsqeTyaq_FTT+mQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests: memcg: uninitialized variable in test_memcg_reclaim()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-okay, I will do it.
+Hi Dan!
 
-在 2022/7/20 上午12:56, Jens Axboe 写道:
-> On 7/19/22 10:53 AM, Jinke Han wrote:
->> From: Jinke Han <hanjinke.666@bytedance.com>
->>
->> In our test of iocost, we encounttered some list add/del corrutions of
->> inner_walk list in ioc_timer_fn.
-> 
-> This still fails for 5.20 and you didn't correct any of the spelling
-> mistakes I identified.
-> 
-> Please take your time to get this right rather than attempt to rush it
-> and needing to send new versions all of the time.
-> 
+On Tue, Jul 19, 2022 at 2:46 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> The "fd" is used on the clean up path without ever being initialized.
+>
+> Fixes: eae3cb2e87ff ("selftests: cgroup: add a selftest for memory.reclaim")
+
+Thanks for fixing this :)
+
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> I kind of went over kill on fixing this as if it were real code which
+> matters.  :P
+>
+>  .../selftests/cgroup/test_memcontrol.c        | 23 +++++++++++--------
+>  1 file changed, 13 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+> index 8833359556f3..08681699c2f9 100644
+> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
+> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+> @@ -658,18 +658,18 @@ static int test_memcg_reclaim(const char *root)
+>
+>         memcg = cg_name(root, "memcg_test");
+>         if (!memcg)
+> -               goto cleanup;
+> +               return KSFT_FAIL;
+
+Nit: Just goto free here as well, free ignores NULLs anyway. It's
+easier to have fewer return paths and more consistent with other
+tests.
+
+>
+>         if (cg_create(memcg))
+> -               goto cleanup;
+> +               goto free_memcg;
+>
+>         current = cg_read_long(memcg, "memory.current");
+>         if (current != 0)
+> -               goto cleanup;
+> +               goto destroy_memcg;
+>
+>         fd = get_temp_fd();
+>         if (fd < 0)
+> -               goto cleanup;
+> +               goto destroy_memcg;
+>
+>         cg_run_nowait(memcg, alloc_pagecache_50M_noexit, (void *)(long)fd);
+>
+> @@ -697,7 +697,7 @@ static int test_memcg_reclaim(const char *root)
+>                         fprintf(stderr,
+>                                 "failed to allocate %ld for memcg reclaim test\n",
+>                                 expected_usage);
+> -                       goto cleanup;
+> +                       goto close;
+>                 }
+>         }
+>
+> @@ -717,7 +717,7 @@ static int test_memcg_reclaim(const char *root)
+>                  * not reclaim the full amount.
+>                  */
+>                 if (to_reclaim <= 0)
+> -                       goto cleanup;
+> +                       goto close;
+>
+>
+>                 snprintf(buf, sizeof(buf), "%ld", to_reclaim);
+> @@ -729,7 +729,7 @@ static int test_memcg_reclaim(const char *root)
+>                          */
+>                         current = cg_read_long(memcg, "memory.current");
+>                         if (!values_close(current, MB(30), 3) && current > MB(30))
+> -                               goto cleanup;
+> +                               goto close;
+>                         break;
+>                 }
+>
+> @@ -738,14 +738,17 @@ static int test_memcg_reclaim(const char *root)
+>                         continue;
+>
+>                 /* We got an unexpected error or ran out of retries. */
+> -               goto cleanup;
+> +               goto close;
+>         }
+>
+>         ret = KSFT_PASS;
+> -cleanup:
+> +
+> +close:
+> +       close(fd);
+> +destroy_memcg:
+>         cg_destroy(memcg);
+> +free_memcg:
+>         free(memcg);
+> -       close(fd);
+>
+>         return ret;
+>  }
+
+Nit: keep the cleanup_* naming for labels to make it obvious and to be
+consistent with the rest of the file (e.g. cleanup_free,
+cleanup_memcg, cleanup_file/cleanup_all). See
+test_memcg_subtree_control().
+
+I would honestly have one label to cleanup the memcg. Calling
+cg_destroy() on a non-existent memcg should be fine. rmdir() will just
+fail silently. All other tests do this and it's easier to read when we
+have fewer return paths. My advice would be cleanup_file and
+cleanup_memcg labels.
+
+Thanks!
+
+With these nits:
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+
+> --
+> 2.35.1
+>
