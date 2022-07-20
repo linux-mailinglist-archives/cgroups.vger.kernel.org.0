@@ -2,152 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D14857B3D1
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 11:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E7B57B3F9
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 11:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbiGTJ3t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jul 2022 05:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S237258AbiGTJgt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 05:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbiGTJ3s (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 05:29:48 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72955465D;
-        Wed, 20 Jul 2022 02:29:47 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26K6f8Ti031777;
-        Wed, 20 Jul 2022 09:29:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2022-7-12;
- bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
- b=QBzLv0LkmgR1tKRtnnHBiGo60NNKyR9iRPamURknYzMm3tMGsv02qoKMzaFw0WAF4K+9
- 84QFDn68qLHWU5PvoSzxsbvadEhcb26BkzEe8Ff0sKLCzlB5UekDurv6W7wOTf0J1zzd
- eNOYhNwhPZzKEJ2KK7p5kzrRaPFuyHJmtbPcXZUWH7nSyG4Jm6n0KcHQusqnjKslXzpv
- IHwarWwnot575eQmToQjOatVOl1XP7fbk7HpP4v8LpGd3qetHS2//z/00YLwr7FGdftU
- 69YTiTBoohY5r3B/A0bpGuoMLHK1vvpRvRB9YKMUIM0ci1M3JSqy6DmTDjlr/Q/UhGrD SQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbnvtgye6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jul 2022 09:29:35 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26K6SI0Z016449;
-        Wed, 20 Jul 2022 09:29:34 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1enak2c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jul 2022 09:29:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B5ag18/dJn//V9W4z3FXZd7xJC3ypu/9dR6JDbBF3G7nUMulILBzvV+x6Tyeeji2m1q+2jpMzEU+hQf+42aTeoSlW2noPuGzZfQJKkBt+yZ1YterfLxI6EkwWRmQArOCHJb8kshZn2Qk3Op/SL/uSjaMOuCkYOTUBn1LeVe/t3BiLeoE0Ko79P2S/Xrt/X2xgrdMI0jR6p1SM/ZPNZGIcDuSYnbObo5i6lNB5AGu1dGwhtWf2NYiqp6BXJ7PAAuugeQjdwVYu5BwjcNBZnFPVFgDxbTdhdlnAow4Ff9zpesC+L+A9vegp3hzUPzvlStiYRaPn4Mzi/gKus3ux6xjSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
- b=X59JgyDuUUjP+Kfi5gcsY4ek8QAYc7QUysMbBjcn5BbLc49q+VO8f9YRcMHO4DNjnKcK5YAnKhSIWshRV77XLb3aHC/E4EDO2PiZBXOVhP5jYdPK2UHeZ1SssPy3Rn9YJRZ0HnVKsKcS4UtQg5GX/1RNApJ6/DtsJ3DXQhx5Vnk6gtGI6vqPJIN25aSeuE0B33gy3038mpBYU6sdc0yMiqRRbPFtAekPPdVWj37DrJwETGkaeRZuL+SIvH5q8Mz3XRcVweTLqwX+W61prqIpjryRRqYshw8Ow0f6MKOywlzT0o5ZQnMiOBuCGvVx1MZukMjql1Hs2HOdiozydbKFSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S231552AbiGTJgo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 05:36:44 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4325865D5C
+        for <cgroups@vger.kernel.org>; Wed, 20 Jul 2022 02:36:35 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id bk6-20020a17090b080600b001f2138a2a7bso1938024pjb.1
+        for <cgroups@vger.kernel.org>; Wed, 20 Jul 2022 02:36:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
- b=MXx0H8GQN/g7O5Y1EK273Z+POYafO7eobASxK6A85OC+S+8It0fEquoVrMpHhDmfi4IUjhy+H1nx7gxyk2skIIe3fwnbn5HGUu9zkI7EdCvrR1OkgcjJRWaE8zsDgwpJyOJZ0p6nJWV/uGvcrKCwoFNJI2Ngf/3pgTxZLc5l8ws=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by DM6PR10MB4298.namprd10.prod.outlook.com
- (2603:10b6:5:21f::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Wed, 20 Jul
- 2022 09:29:32 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::24dc:9f9a:c139:5c97]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::24dc:9f9a:c139:5c97%4]) with mapi id 15.20.5458.018; Wed, 20 Jul 2022
- 09:29:32 +0000
-Date:   Wed, 20 Jul 2022 12:29:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] selftests: memcg: uninitialized variable in
- test_memcg_reclaim()
-Message-ID: <20220720092918.GD2316@kadam>
-References: <YtZ9Yu6HSQ2sT+O/@kili>
- <CAJD7tkYCSY1C_iif4dxF9O3dAgZV4u8o9DFGsqeTyaq_FTT+mQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkYCSY1C_iif4dxF9O3dAgZV4u8o9DFGsqeTyaq_FTT+mQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MR1P264CA0056.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:3e::20) To MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28)
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oXKrqXNoQbGqXRKsJ331SBJ7YG/0WKRR7aaK+WgaUgE=;
+        b=joNrTJHxlVPnJRGb4f5KBM5NAjHQOSGvKdfYEBNnHb8bcv1/Cdl6rj5AtCz2mXeGsc
+         +zeKQDsw5+SGysz+Zn8WbGnYPEOF9wEd8xMZr60qGCNCFk7lUkxLi7bF7xKlvFVr6lam
+         3TXrUBnFuLI3eDmOUseVnQV+2f8rBmyqjlHAN1ZLBPXNqC0UPGcEyqSjDfQRad2lcj70
+         31HL/lKNDBycUOE5opjsi7vGRYVlh6XQHrM52h6Pnn0TGM9joWEB2HY/it4SzmjknpuI
+         xKjTJE8SF8n4ik1FteRU7FclP6t3uzinZkzJsc2YGJs1pqgMLWtGZ/U03nKtca6ZhOFm
+         SLQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oXKrqXNoQbGqXRKsJ331SBJ7YG/0WKRR7aaK+WgaUgE=;
+        b=F9rnvpbgeXV0UWN8tGHfKO5AdCkDSJQdjNmf5tKbnESZrsEkxlpzOtThZuQSawllAz
+         HGGpy0zUAf20G4PXHY5Fbn7q5kKeSZwVaEMYKT77Y25skLv6dzkoAVcJ7FESUlStex3+
+         x+wrI1W6RB7wDSDUutjYI6WaenZ8Li0ORVVUTBIMgXKpipjqnVbmy/J8YlsBJwwJ7kOS
+         E/hCHxYCSdtL/wKfsiNFB/bMxll3+5v5GftL/M/P0cWG7TzpgWm+0eQ/NgLiw6FPRLSm
+         /o/SPT2BTN2Y+HPpnVhmC3GZ0ImbWbSdZn6DkVoyyubmixdls28MlNQjGLoA8lngBy4M
+         3zBQ==
+X-Gm-Message-State: AJIora+NTQTyjvC52IcpVZiPfQeiJD7JvGM+c03BkxAYfIx5T1B5gfek
+        C4TPj6ouUhRehp0vZ6W52vnxIw==
+X-Google-Smtp-Source: AGRyM1vJd0HvTrmLBpXtrQNAYeXvkixWEGjOk8pk9/gZVY4S2kx0V2mdBKCX5F7RInlezFy6V4SvJg==
+X-Received: by 2002:a17:90b:3ec2:b0:1f0:3e9e:4f1d with SMTP id rm2-20020a17090b3ec200b001f03e9e4f1dmr4476777pjb.172.1658309794699;
+        Wed, 20 Jul 2022 02:36:34 -0700 (PDT)
+Received: from C02GD5ZHMD6R.bytedance.net ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id w15-20020a63c10f000000b004114cc062f0sm11355811pgf.65.2022.07.20.02.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 02:36:34 -0700 (PDT)
+From:   Jinke Han <hanjinke.666@bytedance.com>
+X-Google-Original-From: Jinke Han <hnajinke.666@bytedance>
+To:     axboe@kernel.dk, tj@kernel.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Jinke Han <hanjinke.666@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>, stable@vger.kernel.org
+Subject: [PATCH v4] block: don't allow the same type rq_qos add more than once
+Date:   Wed, 20 Jul 2022 17:36:16 +0800
+Message-Id: <20220720093616.70584-1-hanjinke.666@bytedance.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+In-Reply-To: <20220719165313.51887-1-hanjinke.666@bytedance.com>
+References: <20220719165313.51887-1-hanjinke.666@bytedance.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b0cc39ca-8e15-4577-fee8-08da6a325a4e
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4298:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9/VYiIyGo1n01MNZ3awb5+WsCb4runUH22QZWGtVFed4jsVBROI3FeNy82PYCPZNnpazBFk8Fqm/Gw05tiPOTS51NO+Va/kPcMV2hNoiZ6qiJChq1T0HpV0GiyZEdWTpIxPytNSpwPyg7O93CzQHQlnzrewjUtxqi7EoK3/QedH0mUOm7TZ+WNdzMJ3aDo5AzfRYc9ts95avycmrG+rMUn7C132J2IiypmCbEmRta0U7SAEtWNOuuUPs06oYsgXabk96eoI+2aJps/EUSI3pboUCnCjyAfrEgoa8uuDXpK1//AyXkIZmCt9oTqImZH9TN9HU+C7swN42eLQKh4D66n0wvZouR7GVaGlNXmSq8k4V/zkT5/uxLRJggGJOT1qnwyc9EcE7dQ/1XPcgPQqXAL3ziJjvfxY/uu31DLEd3JlDTk/dTXFvElVlSujEjt+u/BN+vqey9bm4eoXDJlJkeRWauDhVcz3c/cgDJNiwL2VauMl5vmVs0xrpzyn5vbr+r2mm7EQfK4tVYueWKRspWQz6A4vZehawjIpGiccuBQ5B432WCZgF432xhxN1CTpd1fjXi5lbPJFHpze9GlMrG363WX1khRAkgZsDeveE+AGxQFnOd3MhmM23sLl9iE6e/Tbwlk2pxTLDRjwwn9Z4sqXJYEoeDHM8LhEU9awSSOCajXPBSn+PiLQnYUHY5wLNUGnihaagYhb/sgXHhQivjJiOpMuRzeji073d61OdzXSEhzOi5gk8QC+HF/0igx0AyecsYwrW1VhoRk///rNNxYby5I6NhIubh/xlMIwrCkPddIuKHajJhPUHC8kQC6Bf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(39860400002)(346002)(376002)(366004)(136003)(396003)(2906002)(6486002)(6666004)(38100700002)(38350700002)(6506007)(33716001)(33656002)(66946007)(66476007)(66556008)(52116002)(8676002)(4326008)(9686003)(6512007)(86362001)(26005)(1076003)(5660300002)(8936002)(186003)(44832011)(316002)(4744005)(41300700001)(54906003)(478600001)(7416002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hWsW3yxsD7vYJizdnGO4oseMpNHHqhamKxKfVSXWBRy1Tt+TLpHbv4iq6Rp1?=
- =?us-ascii?Q?CPC/WZGaHHk+t/oUEHJHLEjoBn3CyqDybCEYlcI9eTOzXdHsd4GdLaalqEX+?=
- =?us-ascii?Q?ZEOo9oS4UciuJ9HZ2FP8MhtcQNyMoMu9IX1gzJs63M+Zws5QKvRkVYheGAlH?=
- =?us-ascii?Q?mx4RNnIC38v/SzdhMKcNAFF/X3sV8dMgOkLI5WaI3s7KOUvovooX/1QNYwPF?=
- =?us-ascii?Q?k89GqzXsi4QISDn0xhej9LvSVRnwOhIm4/Hm0/TlX3IdC7LyYHF4f0eb2VBZ?=
- =?us-ascii?Q?+WFyR9YrfUe5cg3FfFrsgVJZquBvEaBkt0lfvBpMH1Lhgt2vGrumb1A19EGQ?=
- =?us-ascii?Q?9OADkPaE3nhe2/9ERKFhHqcwZ3SP2AZESYhcUKxF0W+uSiI/4GmtDQ0WrcUb?=
- =?us-ascii?Q?Efyap++b4cmX7OjlZ6RvSbAu1EIPT4vrWCnVCtQpGlIv08yra/P4yE0mOzuP?=
- =?us-ascii?Q?2TXTZdRRazBXRwoxvTviGseZCAWmIyCWHfMhaKWgpncILTnb+wgxDLYMoZRk?=
- =?us-ascii?Q?mnnvQ/4iHAnFRSf3vrdupgE3SUHKKgAAe9DaNRxiWE490Af88tqb+OFhBujH?=
- =?us-ascii?Q?MtjrDeRjw7LJAudYq02gdspOqiwQVIPoGBT7y5B7bUJAJ8I5Ajc7PraYDDLa?=
- =?us-ascii?Q?xB/xxHypLlHKdRgNAQ8VhEh9Y0CWqVBQAQ4vteosP+ZJjOsLYi3V/Bt363Z9?=
- =?us-ascii?Q?WqOZVwvNEFwtZFU5uPaTE5ZcZ+RVq0HKKdjadHBc+iG/BwPVTIyOJxceqAHZ?=
- =?us-ascii?Q?e+XvgIy6Cc0GaYeBVE300rzG0Gb6bFan5EZ2IVkEZwxQVsEk00cDHGujOYNn?=
- =?us-ascii?Q?9me8ko9PLWJ/JJO7V8C6qcTMl4SJFcELewi298ylAZPJ62GfJfmt6vNy/fVX?=
- =?us-ascii?Q?NeNHHmmWyJqptzy6Mmfp3bfoeutorWcZLWith4FcelZ8kSctcdC37IY6LEn7?=
- =?us-ascii?Q?Ev48oaZR/QjwNgTfRPCaNdRCnPIyZFwkFJOlHVECFpEbF6bvNJvjfjiDFmJL?=
- =?us-ascii?Q?E+RRCm6ffPWQnd6Bf+JODYXh3SRTlyJhyCf+9SfOTy+VI6KrZVGT2YvQyRiM?=
- =?us-ascii?Q?LqhhYtFd75mNsYFVAXuujPfH30bvSPV8BGN84ZYEgTjOK0IsNqKY3obhWsjL?=
- =?us-ascii?Q?215XEvAUlzt9mpUtu2hry6ItYY4UT3OfGOfvsX1UCIuUAkcQNkF+9fBTSNWY?=
- =?us-ascii?Q?etgsDbKOeRBh1L/CV4dTijjjP1fHYctizY61Qvwfrg7dj/6yxsa0SgTsefNx?=
- =?us-ascii?Q?YUO9rWnbqeApjuqwoR7+4AcjZxtbIKCUva/AgN/fYjLRp2rJ0fBdocJf6B/j?=
- =?us-ascii?Q?D8MPkSYPKVi9o3ElYVHPjiK7HyH9+XH8Fi2UJqtEOcfXkz2KYdwPnr+l/w8L?=
- =?us-ascii?Q?YeE3/bChvvcYQXueqB7qJWXuPZ0vzqVNx51q7w8HuIvKNmE8PCUKHWcJh8nn?=
- =?us-ascii?Q?9P/WKm0bvtJ9K7wMab6SVLrCjWYG2w0D58debSQK0ZVuyBGOLf0lRU/IujjD?=
- =?us-ascii?Q?JVh5ZVCoeq0/iGqxzO7DQ2YG/9wRTc8sBJmC1GToEFUvS/M42k9Aod5oM+Dp?=
- =?us-ascii?Q?tU0dg/jgVqrZb9XIrAhLiHQGQgGxmocqGcVNbW0AkUgTMfyOFOiVi8/+GaJw?=
- =?us-ascii?Q?Wg=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0cc39ca-8e15-4577-fee8-08da6a325a4e
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2022 09:29:32.5819
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n9BgE135GypPmRJY7ZDCGVYVGRLYbVOGLjKpZkBfbE5TlaAPN3C8Ie4EHwKeDJJQzuDlx1Lvb+LLdy8cJnw94KS+rj334jAAqIj15dNMrPc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4298
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-20_05,2022-07-19_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=667
- suspectscore=0 phishscore=0 adultscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
- definitions=main-2207200039
-X-Proofpoint-GUID: ka_5VC5_HPPN3MVLdaOkAFMeODbQANGv
-X-Proofpoint-ORIG-GUID: ka_5VC5_HPPN3MVLdaOkAFMeODbQANGv
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -155,23 +70,197 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 10:27:36AM -0700, Yosry Ahmed wrote:
-> 
-> Nit: keep the cleanup_* naming for labels to make it obvious and to be
-> consistent with the rest of the file (e.g. cleanup_free,
-> cleanup_memcg, cleanup_file/cleanup_all). See
-> test_memcg_subtree_control().
-> 
-> I would honestly have one label to cleanup the memcg. Calling
-> cg_destroy() on a non-existent memcg should be fine. rmdir() will just
-> fail silently. All other tests do this and it's easier to read when we
-> have fewer return paths. My advice would be cleanup_file and
-> cleanup_memcg labels.
+From: Jinke Han <hanjinke.666@bytedance.com>
 
-One error label handling is very bug prone.  You always end up freeing
-things which have not been initialized/allocated.  Or dereferencing
-pointers which are NULL.  Or, since most kernel functions clean up
-after themselves, you end up double freeing things.
+In our test of iocost, we encountered some list add/del corruptions of
+inner_walk list in ioc_timer_fn.
 
-regards,
-dan carpenter
+The reason can be described as follow:
+cpu 0						cpu 1
+ioc_qos_write					ioc_qos_write
+
+ioc = q_to_ioc(bdev_get_queue(bdev));
+if (!ioc) {
+        ioc = kzalloc();			ioc = q_to_ioc(bdev_get_queue(bdev));
+						if (!ioc) {
+							ioc = kzalloc();
+							...
+							rq_qos_add(q, rqos);
+						}
+        ...
+        rq_qos_add(q, rqos);
+        ...
+}
+
+When the io.cost.qos file is written by two cpus concurrently, rq_qos may
+be added to one disk twice. In that case, there will be two iocs enabled
+and running on one disk. They own different iocgs on their active list.
+In the ioc_timer_fn function, because of the iocgs from two iocs have the
+same root iocg, the root iocg's walk_list may be overwritten by each
+other and this leads to list add/del corruptions in building or destroying
+the inner_walk list.
+
+And so far, the blk-rq-qos framework works in case that one instance for
+one type rq_qos per queue by default. This patch make this explicit and
+also fix the crash above.
+
+Signed-off-by: Jinke Han <hanjinke.666@bytedance.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: <stable@vger.kernel.org>
+---
+Changes in v2
+-use goto pattern in iocost and rename the ebusy label
+Changes in v3
+-use goto in all places
+Changes in v4
+-correct some spell errors and resolve conflict with next kernel
+
+ block/blk-iocost.c    | 20 +++++++++++++-------
+ block/blk-iolatency.c | 18 +++++++++++-------
+ block/blk-rq-qos.h    | 11 ++++++++++-
+ block/blk-wbt.c       | 12 +++++++++++-
+ 4 files changed, 45 insertions(+), 16 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index b7082f2aed9c..7936e5f5821c 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2886,15 +2886,21 @@ static int blk_iocost_init(struct request_queue *q)
+ 	 * called before policy activation completion, can't assume that the
+ 	 * target bio has an iocg associated and need to test for NULL iocg.
+ 	 */
+-	rq_qos_add(q, rqos);
++	ret = rq_qos_add(q, rqos);
++	if (ret)
++		goto err_free_ioc;
++
+ 	ret = blkcg_activate_policy(q, &blkcg_policy_iocost);
+-	if (ret) {
+-		rq_qos_del(q, rqos);
+-		free_percpu(ioc->pcpu_stat);
+-		kfree(ioc);
+-		return ret;
+-	}
++	if (ret)
++		goto err_del_qos;
+ 	return 0;
++
++err_del_qos:
++	rq_qos_del(q, rqos);
++err_free_ioc:
++	free_percpu(ioc->pcpu_stat);
++	kfree(ioc);
++	return ret;
+ }
+ 
+ static struct blkcg_policy_data *ioc_cpd_alloc(gfp_t gfp)
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index 79745c6d8e15..e285152345a2 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -771,19 +771,23 @@ int blk_iolatency_init(struct request_queue *q)
+ 	rqos->ops = &blkcg_iolatency_ops;
+ 	rqos->q = q;
+ 
+-	rq_qos_add(q, rqos);
+-
++	ret = rq_qos_add(q, rqos);
++	if (ret)
++		goto err_free;
+ 	ret = blkcg_activate_policy(q, &blkcg_policy_iolatency);
+-	if (ret) {
+-		rq_qos_del(q, rqos);
+-		kfree(blkiolat);
+-		return ret;
+-	}
++	if (ret)
++		goto err_qos_del;
+ 
+ 	timer_setup(&blkiolat->timer, blkiolatency_timer_fn, 0);
+ 	INIT_WORK(&blkiolat->enable_work, blkiolatency_enable_work_fn);
+ 
+ 	return 0;
++
++err_qos_del:
++	rq_qos_del(q, rqos);
++err_free:
++	kfree(blkiolat);
++	return ret;
+ }
+ 
+ static void iolatency_set_min_lat_nsec(struct blkcg_gq *blkg, u64 val)
+diff --git a/block/blk-rq-qos.h b/block/blk-rq-qos.h
+index 0e46052b018a..08b856570ad1 100644
+--- a/block/blk-rq-qos.h
++++ b/block/blk-rq-qos.h
+@@ -86,7 +86,7 @@ static inline void rq_wait_init(struct rq_wait *rq_wait)
+ 	init_waitqueue_head(&rq_wait->wait);
+ }
+ 
+-static inline void rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
++static inline int rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+ {
+ 	/*
+ 	 * No IO can be in-flight when adding rqos, so freeze queue, which
+@@ -98,6 +98,8 @@ static inline void rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+ 	blk_mq_freeze_queue(q);
+ 
+ 	spin_lock_irq(&q->queue_lock);
++	if (rq_qos_id(q, rqos->id))
++		goto ebusy;
+ 	rqos->next = q->rq_qos;
+ 	q->rq_qos = rqos;
+ 	spin_unlock_irq(&q->queue_lock);
+@@ -109,6 +111,13 @@ static inline void rq_qos_add(struct request_queue *q, struct rq_qos *rqos)
+ 		blk_mq_debugfs_register_rqos(rqos);
+ 		mutex_unlock(&q->debugfs_mutex);
+ 	}
++
++	return 0;
++ebusy:
++	spin_unlock_irq(&q->queue_lock);
++	blk_mq_unfreeze_queue(q);
++	return -EBUSY;
++
+ }
+ 
+ static inline void rq_qos_del(struct request_queue *q, struct rq_qos *rqos)
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index f2e4bf1dca47..a9982000b667 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -820,6 +820,7 @@ int wbt_init(struct request_queue *q)
+ {
+ 	struct rq_wb *rwb;
+ 	int i;
++	int ret;
+ 
+ 	rwb = kzalloc(sizeof(*rwb), GFP_KERNEL);
+ 	if (!rwb)
+@@ -846,7 +847,10 @@ int wbt_init(struct request_queue *q)
+ 	/*
+ 	 * Assign rwb and add the stats callback.
+ 	 */
+-	rq_qos_add(q, &rwb->rqos);
++	ret = rq_qos_add(q, &rwb->rqos);
++	if (ret)
++		goto err_free;
++
+ 	blk_stat_add_callback(q, rwb->cb);
+ 
+ 	rwb->min_lat_nsec = wbt_default_latency_nsec(q);
+@@ -855,4 +859,10 @@ int wbt_init(struct request_queue *q)
+ 	wbt_set_write_cache(q, test_bit(QUEUE_FLAG_WC, &q->queue_flags));
+ 
+ 	return 0;
++
++err_free:
++	blk_stat_free_callback(rwb->cb);
++	kfree(rwb);
++	return ret;
++
+ }
+-- 
+2.20.1
+
