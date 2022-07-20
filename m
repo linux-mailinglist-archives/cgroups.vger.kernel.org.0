@@ -2,319 +2,176 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0BE57B3C0
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 11:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D14857B3D1
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 11:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbiGTJYQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jul 2022 05:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        id S231996AbiGTJ3t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 05:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238778AbiGTJYO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 05:24:14 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ED44B48A;
-        Wed, 20 Jul 2022 02:24:13 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2014720720;
-        Wed, 20 Jul 2022 09:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658309051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Su3HLAuy7lHq0rdQpeNwNVroUq7F2bc2C0CpI11UKgk=;
-        b=IPBQ63dpffvjumpNL7egBgA3pT4P2hB9jwBDQAA7O/J1ymTnxLQyb8tCHIn6jUxaFK/lJ3
-        LPFdMoZicNGvesr364u2snSh9MsfW0jm4pGacRFCIbfvfHvGfwObCpq7qIXdV1gTh322FP
-        1kmnMo1qYUR23pCiqDF4i+hlT8BaKDg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8EC382C141;
-        Wed, 20 Jul 2022 09:24:10 +0000 (UTC)
-Date:   Wed, 20 Jul 2022 11:24:10 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        with ESMTP id S231542AbiGTJ3s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 05:29:48 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72955465D;
+        Wed, 20 Jul 2022 02:29:47 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26K6f8Ti031777;
+        Wed, 20 Jul 2022 09:29:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2022-7-12;
+ bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
+ b=QBzLv0LkmgR1tKRtnnHBiGo60NNKyR9iRPamURknYzMm3tMGsv02qoKMzaFw0WAF4K+9
+ 84QFDn68qLHWU5PvoSzxsbvadEhcb26BkzEe8Ff0sKLCzlB5UekDurv6W7wOTf0J1zzd
+ eNOYhNwhPZzKEJ2KK7p5kzrRaPFuyHJmtbPcXZUWH7nSyG4Jm6n0KcHQusqnjKslXzpv
+ IHwarWwnot575eQmToQjOatVOl1XP7fbk7HpP4v8LpGd3qetHS2//z/00YLwr7FGdftU
+ 69YTiTBoohY5r3B/A0bpGuoMLHK1vvpRvRB9YKMUIM0ci1M3JSqy6DmTDjlr/Q/UhGrD SQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbnvtgye6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jul 2022 09:29:35 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26K6SI0Z016449;
+        Wed, 20 Jul 2022 09:29:34 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1enak2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jul 2022 09:29:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B5ag18/dJn//V9W4z3FXZd7xJC3ypu/9dR6JDbBF3G7nUMulILBzvV+x6Tyeeji2m1q+2jpMzEU+hQf+42aTeoSlW2noPuGzZfQJKkBt+yZ1YterfLxI6EkwWRmQArOCHJb8kshZn2Qk3Op/SL/uSjaMOuCkYOTUBn1LeVe/t3BiLeoE0Ko79P2S/Xrt/X2xgrdMI0jR6p1SM/ZPNZGIcDuSYnbObo5i6lNB5AGu1dGwhtWf2NYiqp6BXJ7PAAuugeQjdwVYu5BwjcNBZnFPVFgDxbTdhdlnAow4Ff9zpesC+L+A9vegp3hzUPzvlStiYRaPn4Mzi/gKus3ux6xjSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
+ b=X59JgyDuUUjP+Kfi5gcsY4ek8QAYc7QUysMbBjcn5BbLc49q+VO8f9YRcMHO4DNjnKcK5YAnKhSIWshRV77XLb3aHC/E4EDO2PiZBXOVhP5jYdPK2UHeZ1SssPy3Rn9YJRZ0HnVKsKcS4UtQg5GX/1RNApJ6/DtsJ3DXQhx5Vnk6gtGI6vqPJIN25aSeuE0B33gy3038mpBYU6sdc0yMiqRRbPFtAekPPdVWj37DrJwETGkaeRZuL+SIvH5q8Mz3XRcVweTLqwX+W61prqIpjryRRqYshw8Ow0f6MKOywlzT0o5ZQnMiOBuCGvVx1MZukMjql1Hs2HOdiozydbKFSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oK1oHKWTe+ZVhSt1gQCnST549v6XO4qsHJB62fdEhl4=;
+ b=MXx0H8GQN/g7O5Y1EK273Z+POYafO7eobASxK6A85OC+S+8It0fEquoVrMpHhDmfi4IUjhy+H1nx7gxyk2skIIe3fwnbn5HGUu9zkI7EdCvrR1OkgcjJRWaE8zsDgwpJyOJZ0p6nJWV/uGvcrKCwoFNJI2Ngf/3pgTxZLc5l8ws=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by DM6PR10MB4298.namprd10.prod.outlook.com
+ (2603:10b6:5:21f::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Wed, 20 Jul
+ 2022 09:29:32 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::24dc:9f9a:c139:5c97]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::24dc:9f9a:c139:5c97%4]) with mapi id 15.20.5458.018; Wed, 20 Jul 2022
+ 09:29:32 +0000
+Date:   Wed, 20 Jul 2022 12:29:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>,
+        David Rientjes <rientjes@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
-        Alistair Popple <apopple@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: vmpressure: don't count proactive reclaim in
- vmpressure
-Message-ID: <YtfJug77XJ9BPA8L@dhcp22.suse.cz>
-References: <20220714064918.2576464-1-yosryahmed@google.com>
-MIME-Version: 1.0
+        Cgroups <cgroups@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] selftests: memcg: uninitialized variable in
+ test_memcg_reclaim()
+Message-ID: <20220720092918.GD2316@kadam>
+References: <YtZ9Yu6HSQ2sT+O/@kili>
+ <CAJD7tkYCSY1C_iif4dxF9O3dAgZV4u8o9DFGsqeTyaq_FTT+mQ@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220714064918.2576464-1-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkYCSY1C_iif4dxF9O3dAgZV4u8o9DFGsqeTyaq_FTT+mQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MR1P264CA0056.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:3e::20) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0cc39ca-8e15-4577-fee8-08da6a325a4e
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4298:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9/VYiIyGo1n01MNZ3awb5+WsCb4runUH22QZWGtVFed4jsVBROI3FeNy82PYCPZNnpazBFk8Fqm/Gw05tiPOTS51NO+Va/kPcMV2hNoiZ6qiJChq1T0HpV0GiyZEdWTpIxPytNSpwPyg7O93CzQHQlnzrewjUtxqi7EoK3/QedH0mUOm7TZ+WNdzMJ3aDo5AzfRYc9ts95avycmrG+rMUn7C132J2IiypmCbEmRta0U7SAEtWNOuuUPs06oYsgXabk96eoI+2aJps/EUSI3pboUCnCjyAfrEgoa8uuDXpK1//AyXkIZmCt9oTqImZH9TN9HU+C7swN42eLQKh4D66n0wvZouR7GVaGlNXmSq8k4V/zkT5/uxLRJggGJOT1qnwyc9EcE7dQ/1XPcgPQqXAL3ziJjvfxY/uu31DLEd3JlDTk/dTXFvElVlSujEjt+u/BN+vqey9bm4eoXDJlJkeRWauDhVcz3c/cgDJNiwL2VauMl5vmVs0xrpzyn5vbr+r2mm7EQfK4tVYueWKRspWQz6A4vZehawjIpGiccuBQ5B432WCZgF432xhxN1CTpd1fjXi5lbPJFHpze9GlMrG363WX1khRAkgZsDeveE+AGxQFnOd3MhmM23sLl9iE6e/Tbwlk2pxTLDRjwwn9Z4sqXJYEoeDHM8LhEU9awSSOCajXPBSn+PiLQnYUHY5wLNUGnihaagYhb/sgXHhQivjJiOpMuRzeji073d61OdzXSEhzOi5gk8QC+HF/0igx0AyecsYwrW1VhoRk///rNNxYby5I6NhIubh/xlMIwrCkPddIuKHajJhPUHC8kQC6Bf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(39860400002)(346002)(376002)(366004)(136003)(396003)(2906002)(6486002)(6666004)(38100700002)(38350700002)(6506007)(33716001)(33656002)(66946007)(66476007)(66556008)(52116002)(8676002)(4326008)(9686003)(6512007)(86362001)(26005)(1076003)(5660300002)(8936002)(186003)(44832011)(316002)(4744005)(41300700001)(54906003)(478600001)(7416002)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hWsW3yxsD7vYJizdnGO4oseMpNHHqhamKxKfVSXWBRy1Tt+TLpHbv4iq6Rp1?=
+ =?us-ascii?Q?CPC/WZGaHHk+t/oUEHJHLEjoBn3CyqDybCEYlcI9eTOzXdHsd4GdLaalqEX+?=
+ =?us-ascii?Q?ZEOo9oS4UciuJ9HZ2FP8MhtcQNyMoMu9IX1gzJs63M+Zws5QKvRkVYheGAlH?=
+ =?us-ascii?Q?mx4RNnIC38v/SzdhMKcNAFF/X3sV8dMgOkLI5WaI3s7KOUvovooX/1QNYwPF?=
+ =?us-ascii?Q?k89GqzXsi4QISDn0xhej9LvSVRnwOhIm4/Hm0/TlX3IdC7LyYHF4f0eb2VBZ?=
+ =?us-ascii?Q?+WFyR9YrfUe5cg3FfFrsgVJZquBvEaBkt0lfvBpMH1Lhgt2vGrumb1A19EGQ?=
+ =?us-ascii?Q?9OADkPaE3nhe2/9ERKFhHqcwZ3SP2AZESYhcUKxF0W+uSiI/4GmtDQ0WrcUb?=
+ =?us-ascii?Q?Efyap++b4cmX7OjlZ6RvSbAu1EIPT4vrWCnVCtQpGlIv08yra/P4yE0mOzuP?=
+ =?us-ascii?Q?2TXTZdRRazBXRwoxvTviGseZCAWmIyCWHfMhaKWgpncILTnb+wgxDLYMoZRk?=
+ =?us-ascii?Q?mnnvQ/4iHAnFRSf3vrdupgE3SUHKKgAAe9DaNRxiWE490Af88tqb+OFhBujH?=
+ =?us-ascii?Q?MtjrDeRjw7LJAudYq02gdspOqiwQVIPoGBT7y5B7bUJAJ8I5Ajc7PraYDDLa?=
+ =?us-ascii?Q?xB/xxHypLlHKdRgNAQ8VhEh9Y0CWqVBQAQ4vteosP+ZJjOsLYi3V/Bt363Z9?=
+ =?us-ascii?Q?WqOZVwvNEFwtZFU5uPaTE5ZcZ+RVq0HKKdjadHBc+iG/BwPVTIyOJxceqAHZ?=
+ =?us-ascii?Q?e+XvgIy6Cc0GaYeBVE300rzG0Gb6bFan5EZ2IVkEZwxQVsEk00cDHGujOYNn?=
+ =?us-ascii?Q?9me8ko9PLWJ/JJO7V8C6qcTMl4SJFcELewi298ylAZPJ62GfJfmt6vNy/fVX?=
+ =?us-ascii?Q?NeNHHmmWyJqptzy6Mmfp3bfoeutorWcZLWith4FcelZ8kSctcdC37IY6LEn7?=
+ =?us-ascii?Q?Ev48oaZR/QjwNgTfRPCaNdRCnPIyZFwkFJOlHVECFpEbF6bvNJvjfjiDFmJL?=
+ =?us-ascii?Q?E+RRCm6ffPWQnd6Bf+JODYXh3SRTlyJhyCf+9SfOTy+VI6KrZVGT2YvQyRiM?=
+ =?us-ascii?Q?LqhhYtFd75mNsYFVAXuujPfH30bvSPV8BGN84ZYEgTjOK0IsNqKY3obhWsjL?=
+ =?us-ascii?Q?215XEvAUlzt9mpUtu2hry6ItYY4UT3OfGOfvsX1UCIuUAkcQNkF+9fBTSNWY?=
+ =?us-ascii?Q?etgsDbKOeRBh1L/CV4dTijjjP1fHYctizY61Qvwfrg7dj/6yxsa0SgTsefNx?=
+ =?us-ascii?Q?YUO9rWnbqeApjuqwoR7+4AcjZxtbIKCUva/AgN/fYjLRp2rJ0fBdocJf6B/j?=
+ =?us-ascii?Q?D8MPkSYPKVi9o3ElYVHPjiK7HyH9+XH8Fi2UJqtEOcfXkz2KYdwPnr+l/w8L?=
+ =?us-ascii?Q?YeE3/bChvvcYQXueqB7qJWXuPZ0vzqVNx51q7w8HuIvKNmE8PCUKHWcJh8nn?=
+ =?us-ascii?Q?9P/WKm0bvtJ9K7wMab6SVLrCjWYG2w0D58debSQK0ZVuyBGOLf0lRU/IujjD?=
+ =?us-ascii?Q?JVh5ZVCoeq0/iGqxzO7DQ2YG/9wRTc8sBJmC1GToEFUvS/M42k9Aod5oM+Dp?=
+ =?us-ascii?Q?tU0dg/jgVqrZb9XIrAhLiHQGQgGxmocqGcVNbW0AkUgTMfyOFOiVi8/+GaJw?=
+ =?us-ascii?Q?Wg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0cc39ca-8e15-4577-fee8-08da6a325a4e
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2022 09:29:32.5819
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: n9BgE135GypPmRJY7ZDCGVYVGRLYbVOGLjKpZkBfbE5TlaAPN3C8Ie4EHwKeDJJQzuDlx1Lvb+LLdy8cJnw94KS+rj334jAAqIj15dNMrPc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4298
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-20_05,2022-07-19_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=667
+ suspectscore=0 phishscore=0 adultscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207200039
+X-Proofpoint-GUID: ka_5VC5_HPPN3MVLdaOkAFMeODbQANGv
+X-Proofpoint-ORIG-GUID: ka_5VC5_HPPN3MVLdaOkAFMeODbQANGv
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 14-07-22 06:49:18, Yosry Ahmed wrote:
-> vmpressure is used in cgroup v1 to notify userspace of reclaim
-> efficiency events, and is also used in both cgroup v1 and v2 as a signal
-> for memory pressure for networking, see
-> mem_cgroup_under_socket_pressure().
+On Tue, Jul 19, 2022 at 10:27:36AM -0700, Yosry Ahmed wrote:
 > 
-> Proactive reclaim intends to probe memcgs for cold memory, without
-> affecting their performance. Hence, reclaim caused by writing to
-> memory.reclaim should not trigger vmpressure.
-
-I am not against the change but this is rather vague statement. Please
-be more specific. You are not really explaining what kind of side effect
-this does and why that is really desirable. Sure pro-active reclaim can
-be used to probe for a cold memory but it can also be used to balance
-the memory consumption or other potential usecases.
-
-I think what we are missing here is
-- explain that this doesn't have any effect on existing users of
-  vmpressure user interface because that is cgroup v1 and memory.reclaim
-  is v2 feature. This is a trivial statement but quite useful for future
-  readers of this commit
-- explain the effect on the networking layer and typical usecases
-  memory.reclaim is used for currently and ideally document that.
-- how are we going to deal with users who would really want to use
-  memory.reclaim interface as a replacement for existing hard/high
-  memory reclaim? Is that even something that the interface is intended
-  for?
-
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Shakeel Butt <shakeelb@google.com>
-
-The patch itself looks good to me.
-
-> ---
-> Changes in v4:
-> - Removed unneeded reclaim_options local variables (Andrew).
+> Nit: keep the cleanup_* naming for labels to make it obvious and to be
+> consistent with the rest of the file (e.g. cleanup_free,
+> cleanup_memcg, cleanup_file/cleanup_all). See
+> test_memcg_subtree_control().
 > 
-> Changes in v3:
-> - Limited the vmpressure change to memory.reclaim, dropped psi changes,
->   updated changelog to reflect new behavior (Michal, Shakeel)
-> 
-> Changes in v2:
-> - Removed unnecessary initializations to zero (Andrew).
-> - Separate declarations and initializations when it causes line wrapping
->   (Andrew).
-> 
-> ---
->  include/linux/swap.h |  5 ++++-
->  mm/memcontrol.c      | 24 ++++++++++++++----------
->  mm/vmscan.c          | 27 +++++++++++++++++----------
->  3 files changed, 35 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 0c0fed1b348f..f6e9eaa2339f 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -411,10 +411,13 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
->  extern unsigned long zone_reclaimable_pages(struct zone *zone);
->  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->  					gfp_t gfp_mask, nodemask_t *mask);
-> +
-> +#define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
-> +#define MEMCG_RECLAIM_PROACTIVE (1 << 2)
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  						  unsigned long nr_pages,
->  						  gfp_t gfp_mask,
-> -						  bool may_swap);
-> +						  unsigned int reclaim_options);
->  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
->  						gfp_t gfp_mask, bool noswap,
->  						pg_data_t *pgdat,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a550042d88c3..b668224142c7 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2331,7 +2331,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
->  
->  		psi_memstall_enter(&pflags);
->  		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
-> -							     gfp_mask, true);
-> +							gfp_mask,
-> +							MEMCG_RECLAIM_MAY_SWAP);
->  		psi_memstall_leave(&pflags);
->  	} while ((memcg = parent_mem_cgroup(memcg)) &&
->  		 !mem_cgroup_is_root(memcg));
-> @@ -2576,7 +2577,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	struct page_counter *counter;
->  	unsigned long nr_reclaimed;
->  	bool passed_oom = false;
-> -	bool may_swap = true;
-> +	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
->  	bool drained = false;
->  	unsigned long pflags;
->  
-> @@ -2593,7 +2594,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  		mem_over_limit = mem_cgroup_from_counter(counter, memory);
->  	} else {
->  		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
-> -		may_swap = false;
-> +		reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
->  	}
->  
->  	if (batch > nr_pages) {
-> @@ -2620,7 +2621,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  
->  	psi_memstall_enter(&pflags);
->  	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
-> -						    gfp_mask, may_swap);
-> +						    gfp_mask, reclaim_options);
->  	psi_memstall_leave(&pflags);
->  
->  	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-> @@ -3402,8 +3403,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
->  			continue;
->  		}
->  
-> -		if (!try_to_free_mem_cgroup_pages(memcg, 1,
-> -					GFP_KERNEL, !memsw)) {
-> +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> +					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
->  			ret = -EBUSY;
->  			break;
->  		}
-> @@ -3513,7 +3514,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
->  		if (signal_pending(current))
->  			return -EINTR;
->  
-> -		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
-> +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> +						  MEMCG_RECLAIM_MAY_SWAP))
->  			nr_retries--;
->  	}
->  
-> @@ -6248,7 +6250,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  		}
->  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -							 GFP_KERNEL, true);
-> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
->  
->  		if (!reclaimed && !nr_retries--)
->  			break;
-> @@ -6297,7 +6299,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
->  
->  		if (nr_reclaims) {
->  			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
-> -							  GFP_KERNEL, true))
-> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
->  				nr_reclaims--;
->  			continue;
->  		}
-> @@ -6426,6 +6428,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
->  	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
->  	unsigned long nr_to_reclaim, nr_reclaimed = 0;
-> +	unsigned int reclaim_options;
->  	int err;
->  
->  	buf = strstrip(buf);
-> @@ -6433,6 +6436,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  	if (err)
->  		return err;
->  
-> +	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
->  	while (nr_reclaimed < nr_to_reclaim) {
->  		unsigned long reclaimed;
->  
-> @@ -6449,7 +6453,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
->  						nr_to_reclaim - nr_reclaimed,
-> -						GFP_KERNEL, true);
-> +						GFP_KERNEL, reclaim_options);
->  
->  		if (!reclaimed && !nr_retries--)
->  			return -EAGAIN;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f7d9a683e3a7..0969e6408a53 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -102,6 +102,9 @@ struct scan_control {
->  	/* Can pages be swapped as part of reclaim? */
->  	unsigned int may_swap:1;
->  
-> +	/* Proactive reclaim invoked by userspace through memory.reclaim */
-> +	unsigned int proactive:1;
-> +
->  	/*
->  	 * Cgroup memory below memory.low is protected as long as we
->  	 * don't threaten to OOM. If any cgroup is reclaimed at
-> @@ -3125,9 +3128,10 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  			    sc->priority);
->  
->  		/* Record the group's reclaim efficiency */
-> -		vmpressure(sc->gfp_mask, memcg, false,
-> -			   sc->nr_scanned - scanned,
-> -			   sc->nr_reclaimed - reclaimed);
-> +		if (!sc->proactive)
-> +			vmpressure(sc->gfp_mask, memcg, false,
-> +				   sc->nr_scanned - scanned,
-> +				   sc->nr_reclaimed - reclaimed);
->  
->  	} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
->  }
-> @@ -3250,9 +3254,10 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->  	}
->  
->  	/* Record the subtree's reclaim efficiency */
-> -	vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
-> -		   sc->nr_scanned - nr_scanned,
-> -		   sc->nr_reclaimed - nr_reclaimed);
-> +	if (!sc->proactive)
-> +		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
-> +			   sc->nr_scanned - nr_scanned,
-> +			   sc->nr_reclaimed - nr_reclaimed);
->  
->  	if (sc->nr_reclaimed - nr_reclaimed)
->  		reclaimable = true;
-> @@ -3534,8 +3539,9 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
->  		__count_zid_vm_events(ALLOCSTALL, sc->reclaim_idx, 1);
->  
->  	do {
-> -		vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
-> -				sc->priority);
-> +		if (!sc->proactive)
-> +			vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
-> +					sc->priority);
->  		sc->nr_scanned = 0;
->  		shrink_zones(zonelist, sc);
->  
-> @@ -3825,7 +3831,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
->  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  					   unsigned long nr_pages,
->  					   gfp_t gfp_mask,
-> -					   bool may_swap)
-> +					   unsigned int reclaim_options)
->  {
->  	unsigned long nr_reclaimed;
->  	unsigned int noreclaim_flag;
-> @@ -3838,7 +3844,8 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->  		.priority = DEF_PRIORITY,
->  		.may_writepage = !laptop_mode,
->  		.may_unmap = 1,
-> -		.may_swap = may_swap,
-> +		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
-> +		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
->  	};
->  	/*
->  	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
-> -- 
-> 2.37.0.144.g8ac04bfd2-goog
+> I would honestly have one label to cleanup the memcg. Calling
+> cg_destroy() on a non-existent memcg should be fine. rmdir() will just
+> fail silently. All other tests do this and it's easier to read when we
+> have fewer return paths. My advice would be cleanup_file and
+> cleanup_memcg labels.
 
--- 
-Michal Hocko
-SUSE Labs
+One error label handling is very bug prone.  You always end up freeing
+things which have not been initialized/allocated.  Or dereferencing
+pointers which are NULL.  Or, since most kernel functions clean up
+after themselves, you end up double freeing things.
+
+regards,
+dan carpenter
