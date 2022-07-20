@@ -2,50 +2,44 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940DA57B5AE
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 13:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F7A57B5C2
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 13:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240407AbiGTLiL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jul 2022 07:38:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        id S233255AbiGTLpj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 07:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239720AbiGTLiK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 07:38:10 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DB970E44;
-        Wed, 20 Jul 2022 04:38:09 -0700 (PDT)
+        with ESMTP id S232403AbiGTLph (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 07:45:37 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ECD95B6;
+        Wed, 20 Jul 2022 04:45:35 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Lntvx5CJBzKFjd;
-        Wed, 20 Jul 2022 19:37:01 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Lnv4X4kRZz6PZVH;
+        Wed, 20 Jul 2022 19:44:28 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP3 (Coremail) with SMTP id _Ch0CgB32mke6ddidVDsAw--.50758S3;
-        Wed, 20 Jul 2022 19:38:07 +0800 (CST)
-Subject: Re: [PATCH -next v10 3/4] block, bfq: refactor the counting of
- 'num_groups_with_pending_reqs'
-To:     Paolo VALENTE <paolo.valente@unimore.it>,
-        Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
-References: <20220610021701.2347602-1-yukuai3@huawei.com>
- <20220610021701.2347602-4-yukuai3@huawei.com>
- <27F2DF19-7CC6-42C5-8CEB-43583EB4AE46@linaro.org>
- <abdbb5db-e280-62f8-0670-536fcb8ec4d9@huaweicloud.com>
- <C2CF100A-9A7C-4300-9A70-1295BC939C66@unimore.it>
+        by APP3 (Coremail) with SMTP id _Ch0CgAXFWjb6tdiEYbsAw--.60219S3;
+        Wed, 20 Jul 2022 19:45:33 +0800 (CST)
+Subject: Re: [PATCH RESEND v6 0/8] bugfix and cleanup for blk-throttle
+To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, mkoutny@suse.com,
+        axboe@kernel.dk, ming.lei@redhat.com
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
+ <e1d6b26d-2eae-7b78-277a-0bb737dc9c4b@huaweicloud.com>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <9b2d667f-6636-9347-08a1-8bd0aa2346f2@huaweicloud.com>
-Date:   Wed, 20 Jul 2022 19:38:06 +0800
+Message-ID: <b0dbbdbd-d8cb-babe-5013-208dcb451646@huaweicloud.com>
+Date:   Wed, 20 Jul 2022 19:45:31 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <C2CF100A-9A7C-4300-9A70-1295BC939C66@unimore.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e1d6b26d-2eae-7b78-277a-0bb737dc9c4b@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgB32mke6ddidVDsAw--.50758S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtrW3ZrW8AF1DAryrJFWUurg_yoW7Cw18p3
-        9xKa17uw4UXr13Xr15t3WUXrySq3s3Ary8Grs8tr1Syr9IyFn7tFnFyw4ruFy8Zr93Jr12
-        vr1jg3s7uw1UtFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: _Ch0CgAXFWjb6tdiEYbsAw--.60219S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFykGFyrZrWkAr1xtr48Xrb_yoW5Wr48pF
+        WaqrW5CrWUCrn2kw43Gw43ZFy5Kw4ktwn8J3sxJ34rCF4qvr9rtr4093WruFyIvFZ2gw4I
+        9r17tr92yry8Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
         1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
@@ -69,164 +63,84 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi
+在 2022/07/10 10:40, Yu Kuai 写道:
+> Hi!
+> 
+> 在 2022/07/01 17:34, Yu Kuai 写道:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Resend v5 by a new mail address(huaweicloud.com) because old
+>> address(huawei.com)has some problem that emails can end up in spam.
+>> Please let me know if anyone still see this patchset end up in spam.
+>>
+>> Changes in v6:
+>>   - rename parameter in patch 3
+>>   - add comments and reviewed tag for patch 4
+>> Changes in v5:
+>>   - add comments in patch 4
+>>   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+>>   patch 4
+>>   - and cleanup patches 5-8
+>> Changes in v4:
+>>   - add reviewed-by tag for patch 1
+>>   - add patch 2,3
+>>   - use a different way to fix io hung in patch 4
+>> Changes in v3:
+>>   - fix a check in patch 1
+>>   - fix link err in patch 2 on 32-bit platform
+>>   - handle overflow in patch 2
+>> Changes in v2:
+>>   - use a new solution suggested by Ming
+>>   - change the title of patch 1
+>>   - add patch 2
+>>
+>> Patch 1 fix that blk-throttle can't work if multiple bios are throttle,
+>> Patch 2 fix overflow while calculating wait time
+>> Patch 3,4 fix io hung due to configuration updates.
+>> Patch 5-8 are cleanup patches, there are no functional changes, just
+>> some places that I think can be optimized during code review.
+>>
+> Jens and Michal,
+> 
+> Can you receive this patchset normally(not end up in spam)?
+> 
+> If so, Tejun, can you take a look? This patchset do fix some problems in
+> blk-throttle.
 
-在 2022/07/20 19:24, Paolo VALENTE 写道:
+friendly ping ...
 > 
+> BTW, Michal and Ming, it'll be great if you can take a look at other
+> patches as well.
 > 
->> Il giorno 12 lug 2022, alle ore 15:30, Yu Kuai 
->> <yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com>> ha scritto:
+> Thansk,
+> Kuai
+>> Previous version:
+>> v1: 
+>> https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
+>> v2: 
+>> https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
+>> v3: 
+>> https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
+>> v4: 
+>> https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
+>> v5: 
+>> https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
 >>
->> Hi!
+>> Yu Kuai (8):
+>>    blk-throttle: fix that io throttle can only work for single bio
+>>    blk-throttle: prevent overflow while calculating wait time
+>>    blk-throttle: factor out code to calculate ios/bytes_allowed
+>>    blk-throttle: fix io hung due to config updates
+>>    blk-throttle: use 'READ/WRITE' instead of '0/1'
+>>    blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
+>>    blk-throttle: cleanup tg_update_disptime()
+>>    blk-throttle: clean up flag 'THROTL_TG_PENDING'
 >>
->> I'm copying my reply with new mail address, because Paolo seems
->> didn't receive my reply.
->>
->> 在 2022/06/23 23:32, Paolo Valente 写道:
->>> Sorry for the delay.
->>>> Il giorno 10 giu 2022, alle ore 04:17, Yu Kuai <yukuai3@huawei.com 
->>>> <mailto:yukuai3@huawei.com>> ha scritto:
->>>>
->>>> Currently, bfq can't handle sync io concurrently as long as they
->>>> are not issued from root group. This is because
->>>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
->>>> bfq_asymmetric_scenario().
->>>>
->>>> The way that bfqg is counted into 'num_groups_with_pending_reqs':
->>>>
->>>> Before this patch:
->>>> 1) root group will never be counted.
->>>> 2) Count if bfqg or it's child bfqgs have pending requests.
->>>> 3) Don't count if bfqg and it's child bfqgs complete all the requests.
->>>>
->>>> After this patch:
->>>> 1) root group is counted.
->>>> 2) Count if bfqg have pending requests.
->>>> 3) Don't count if bfqg complete all the requests.
->>>>
->>>> With this change, the occasion that only one group is activated can be
->>>> detected, and next patch will support concurrent sync io in the
->>>> occasion.
->>>>
->>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com <mailto:yukuai3@huawei.com>>
->>>> Reviewed-by: Jan Kara <jack@suse.cz <mailto:jack@suse.cz>>
->>>> ---
->>>> block/bfq-iosched.c | 42 ------------------------------------------
->>>> block/bfq-iosched.h | 18 +++++++++---------
->>>> block/bfq-wf2q.c    | 19 ++++---------------
->>>> 3 files changed, 13 insertions(+), 66 deletions(-)
->>>>
->>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->>>> index 0ec21018daba..03b04892440c 100644
->>>> --- a/block/bfq-iosched.c
->>>> +++ b/block/bfq-iosched.c
->>>> @@ -970,48 +970,6 @@ void __bfq_weights_tree_remove(struct bfq_data 
->>>> *bfqd,
->>>> void bfq_weights_tree_remove(struct bfq_data *bfqd,
->>>>     struct bfq_queue *bfqq)
->>>> {
->>>> -struct bfq_entity *entity = bfqq->entity.parent;
->>>> -
->>>> -for_each_entity(entity) {
->>>> -struct bfq_sched_data *sd = entity->my_sched_data;
->>>> -
->>>> -if (sd->next_in_service || sd->in_service_entity) {
->>>> -/*
->>>> -* entity is still active, because either
->>>> -* next_in_service or in_service_entity is not
->>>> -* NULL (see the comments on the definition of
->>>> -* next_in_service for details on why
->>>> -* in_service_entity must be checked too).
->>>> -*
->>>> -* As a consequence, its parent entities are
->>>> -* active as well, and thus this loop must
->>>> -* stop here.
->>>> -*/
->>>> -break;
->>>> -}
->>>> -
->>>> -/*
->>>> -* The decrement of num_groups_with_pending_reqs is
->>>> -* not performed immediately upon the deactivation of
->>>> -* entity, but it is delayed to when it also happens
->>>> -* that the first leaf descendant bfqq of entity gets
->>>> -* all its pending requests completed. The following
->>>> -* instructions perform this delayed decrement, if
->>>> -* needed. See the comments on
->>>> -* num_groups_with_pending_reqs for details.
->>>> -*/
->>>> -if (entity->in_groups_with_pending_reqs) {
->>>> -entity->in_groups_with_pending_reqs = false;
->>>> -bfqd->num_groups_with_pending_reqs--;
->>>> -}
->>>> -}
->>> With this part removed, I'm missing how you handle the following
->>> sequence of events:
->>> 1.  a queue Q becomes non busy but still has dispatched requests, so
->>> it must not be removed from the counter of queues with pending reqs
->>> yet
->>> 2.  the last request of Q is completed with Q being still idle (non
->>> busy).  At this point Q must be removed from the counter.  It seems to
->>> me that this case is not handled any longer
->> Hi, Paolo
->>
->> 1) At first, patch 1 support to track if bfqq has pending requests, it's
->> done by setting the flag 'entity->in_groups_with_pending_reqs' when the
->> first request is inserted to bfqq, and it's cleared when the last
->> request is completed(based on weights_tree insertion and removal).
+>>   block/blk-throttle.c | 168 +++++++++++++++++++++++++++++--------------
+>>   block/blk-throttle.h |  16 +++--
+>>   2 files changed, 128 insertions(+), 56 deletions(-)
 >>
 > 
-> In patch 1 I don't see the flag cleared for the request-completion event :(
+> .
 > 
-> The piece of code involved is this:
-> 
-> static void bfq_completed_request(struct bfq_queue *bfqq, struct 
-> bfq_data *bfqd)
-> {
-> u64 now_ns;
-> u32 delta_us;
-> 
-> bfq_update_hw_tag(bfqd);
-> 
-> bfqd->rq_in_driver[bfqq->actuator_idx]--;
-> bfqd->tot_rq_in_driver--;
-> bfqq->dispatched--;
-> 
-> if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
-> /*
-> * Set budget_timeout (which we overload to store the
-> * time at which the queue remains with no backlog and
-> * no outstanding request; used by the weight-raising
-> * mechanism).
-> */
-> bfqq->budget_timeout = jiffies;
-> 
-> bfq_weights_tree_remove(bfqd, bfqq);
-> }
-> ...
-> 
-> Am I missing something?
-
-I add a new api bfq_del_bfqq_in_groups_with_pending_reqs() in patch 1
-to clear the flag, and it's called both from bfq_del_bfqq_busy() and
-bfq_completed_request(). I think you may miss the later:
-
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 0d46cb728bbf..0ec21018daba 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -6263,6 +6263,7 @@ static void bfq_completed_request(struct bfq_queue 
-*bfqq, struct bfq_data *bfqd)
-  		 */
-  		bfqq->budget_timeout = jiffies;
-
-+		bfq_del_bfqq_in_groups_with_pending_reqs(bfqq);
-  		bfq_weights_tree_remove(bfqd, bfqq);
-  	}
-
-Thanks,
-Kuai
-> 
-> Thanks,
-> Paolo
 
