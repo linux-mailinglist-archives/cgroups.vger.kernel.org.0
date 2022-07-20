@@ -2,201 +2,319 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C8057AF78
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 05:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0BE57B3C0
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234432AbiGTD2d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jul 2022 23:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        id S229744AbiGTJYQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 05:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbiGTD2L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jul 2022 23:28:11 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013D843E40;
-        Tue, 19 Jul 2022 20:28:10 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26K0JP4s031784;
-        Wed, 20 Jul 2022 03:27:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=4YBNVusGpdz5SOEFgMufVD6zRMtqYM3KOMIqUWpMezs=;
- b=VpCPbJ2qrcYudrNeddVS03dNwZQ0z187TlYeN6Fnblc66xEu8SvYHgNNV712r33PQoLD
- Sg+YREDqQamy1h9Af6cU21u7qQdRceY6Qb5TgTdP/2STnHbumXbL/e8F3IQqzt8RSY0E
- ZFxd0hRh+0U8L76tZ0gLUUconqdNMou2P3of8GmCf5pw28Y05VWjuPeHF41u6oBMvmia
- NufXSyIpWZk7XDy1czBU0wLS+oqoiFj0FR7U8ZbBvZiFQRHDqdkhiSQA6prodotNm27A
- EVV0M5W/D6A4FJWLqZealfkIMTeulqKGD1qXPQJuGBVeBNCOS/t428rbyLOMGVVX6dv/ KQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbnvtg8jd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jul 2022 03:27:45 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26K1e9an016461;
-        Wed, 20 Jul 2022 03:27:45 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1en3vt4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jul 2022 03:27:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yrg59xx3r1tn1xUmaIaBn3cmfGO6btJIzSopYPlIw0w/VlQ+pFx5Gy8lXYef42k3VYhbSzfGnuMfp8gHXPHMT4XghJlZvGnNidmt7C/VjDFz8RmiJcHucsemoaojUBekpEPsws/aLGMxzZvirW7r/W5DpU3L3TL08EOdjiDl2dPkN9OlFu1pnn37zMpE3ZEGm5p2PEhJmsVOcf2qTqHbpI3N4MeBFFCDwvMCXle67TPQgcSW4rvY9cNgztYjbQnhgHbHp1hZR9lZTz8BDlJW1N0zxGVR7fgtCIa1um2zoyY7OLZjR8R4vgs1STniXi2ffwITp7bpLvGEKnlyOld6zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4YBNVusGpdz5SOEFgMufVD6zRMtqYM3KOMIqUWpMezs=;
- b=dRGixwH2/gNFU2GPDkSqI+vL0GHoMjAqw4CbF0fyZNKGeYTZ4f8hARZHGlsWBeAXLXGwQSdlnCC/au9mqw1XISx7E6rCcYmtjBoC2WSwccvDUcqtlU/xJpOEeIhvok3R5t4qNJkhrWkY33AON5ujfhwgn2sjauRhrIGnGkPk+SK6uLqpnYfhboleUf8U5aDYt12q0cW6wVboBpR3UHpJXiJjIE5m0nnmRAyEE355I5n0YtD6XQoL44xHdKuDmrlUVIZkOHqpLRiNZd2ue83y7Z/4OtQ/q8evADi8v3SCFvE61dBpzDfAqm538ANNzWesaJaK4D+E+X36E+gnWUoO7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4YBNVusGpdz5SOEFgMufVD6zRMtqYM3KOMIqUWpMezs=;
- b=He2Bg/Wm09aHwihLBcCFUcENiwhBfJMhUK7EQwDB+PGBb0JNhquWkXrCrpgkRkkNQGhLcLgoGfWImLrg5ixINlz5LuAtv1Bi7XWInkMp4MrfPXsx0cnPwvJqkQJW5dAGuOurQjIecteFPQj22AioQYvOljc30466hz3Y04/JyRc=
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com (2603:10b6:303:6c::24)
- by DM6PR10MB2921.namprd10.prod.outlook.com (2603:10b6:5:6e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.17; Wed, 20 Jul
- 2022 03:27:43 +0000
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::dd9d:e9dd:d864:524c]) by CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::dd9d:e9dd:d864:524c%9]) with mapi id 15.20.5458.018; Wed, 20 Jul 2022
- 03:27:43 +0000
-Message-ID: <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
-Date:   Wed, 20 Jul 2022 13:27:28 +1000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Query regarding deadlock involving cgroup_threadgroup_rwsem and
- cpu_hotplug_lock
-Content-Language: en-US
-From:   Imran Khan <imran.f.khan@oracle.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        tglx@linutronix.de, steven.price@arm.com, peterz@infradead.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
- <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
-In-Reply-To: <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0185.apcprd04.prod.outlook.com
- (2603:1096:4:14::23) To CO1PR10MB4468.namprd10.prod.outlook.com
- (2603:10b6:303:6c::24)
+        with ESMTP id S238778AbiGTJYO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 05:24:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ED44B48A;
+        Wed, 20 Jul 2022 02:24:13 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2014720720;
+        Wed, 20 Jul 2022 09:24:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658309051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Su3HLAuy7lHq0rdQpeNwNVroUq7F2bc2C0CpI11UKgk=;
+        b=IPBQ63dpffvjumpNL7egBgA3pT4P2hB9jwBDQAA7O/J1ymTnxLQyb8tCHIn6jUxaFK/lJ3
+        LPFdMoZicNGvesr364u2snSh9MsfW0jm4pGacRFCIbfvfHvGfwObCpq7qIXdV1gTh322FP
+        1kmnMo1qYUR23pCiqDF4i+hlT8BaKDg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8EC382C141;
+        Wed, 20 Jul 2022 09:24:10 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 11:24:10 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
+        Alistair Popple <apopple@nvidia.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4] mm: vmpressure: don't count proactive reclaim in
+ vmpressure
+Message-ID: <YtfJug77XJ9BPA8L@dhcp22.suse.cz>
+References: <20220714064918.2576464-1-yosryahmed@google.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e2b4c00-8595-4fe7-39bf-08da69ffce40
-X-MS-TrafficTypeDiagnostic: DM6PR10MB2921:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ErcP2FA/1cTxPFRNVfHV/9Vv4TE+VkdQTLwwov9Qd9n+EDqETji0LbIcC7YVcdArXH1ogLMpSMXZNF0+6nhY5bvFvMfPAzf89q/worVVfCFfGfTTjzREGSZR/EKEn9IzYbUKbz50doGluY8YqmDdUrk/FlRFFqSJbtC9ju8jG0iVgoCvBtH8R46+fo/M0LYej3DtwMuGskOO6ZZ40udammCzgBErow1r97+fNpMR3Z2izUB09IZW293ni0AFsSJEAqpBVGb60uMRPaG+cfvqqkBWA6i/nG+CgAG6MXqNGzkaoDDDtAOny7RVLX4oyJAsOLabWp85G2cLYCK24GQw4db3Q2S3RI6csPxJl6rdvb9fA1kcJh5lgMSYF7y0VRDejMs7WKbUgDWaVlpnBxzWJB9jVVkeQzTsxud+UCsjeLVuJzPEIkeK7XB6z23/thLLXTQRjukz4fOJREAsdUlQtNvo9dQi/u5uvThRTiHAKcvbXHGfoKy5Rv3QKvwt+Uvsp2+/ivPikrzllg/bpUvCCzk51eg3Cw79t9/rS3fXwjqnkd65HwPjjpxz526akiqYJGuFQ+xm6EQLnx8yrzeu+6MISgJ0Ax6DmERhKH/QJzMBeIZbuhWjirXt4isj1hcqNdxHgRN+9eWBN0/J97K874zXcR4yp25UoY4C4m0i+t3uYjyLJi8O0OZ/iEyw7TPEbrG9izu643X7S2ni3laYOo1KAWilajJOXJqnQUvRmOmctHB2NHYSdNpmdN7eLtKmrBGEs3XvUAX69PdULepY4SYvxXFO/mlZF3r/j8VQA7jb/SziWDi6oQnHaLICtcKDiNTLvhHcBUjpb9xY0t1B5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4468.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(136003)(396003)(366004)(346002)(39860400002)(376002)(8676002)(31696002)(6666004)(478600001)(66476007)(83380400001)(26005)(41300700001)(2906002)(86362001)(6512007)(6506007)(2616005)(8936002)(5660300002)(186003)(6486002)(316002)(31686004)(66946007)(36756003)(38100700002)(66556008)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWFPaEtNWlZrWjJmb3E1Z1FpYS9Ed3JPVXQ4WUozNUl1T2ZsY1pUYXVYZGNi?=
- =?utf-8?B?OTVpaW5sTWlYTkJBOUtnQWpFcVE3NTYrMVVGZEo5dDhHYS9BL0lTc1p5eEln?=
- =?utf-8?B?U1FGOVNaWGpmSmpGbG1mOThpUmpnMTlLNkpYZWhDV2dWemc5a05qekh5VVN6?=
- =?utf-8?B?R2JNK1JuelBXNHVOdVVhdDBZM0VNT1dqaXRCdnRaZEl6cVlqeTNGcVJHalN0?=
- =?utf-8?B?blNINmpmdysyck5vSENTZzdKSGJPVnVUak1raVVBbTVGdDdJRW5FdC9yV1cx?=
- =?utf-8?B?Q2FrMHcyU1FHMTR0emVEUCs3ZzAvQm5MaWZCeXhSTlVOQzdINVdQaldOU2R0?=
- =?utf-8?B?MjRGRkdYZmRqUnlxTmdpcXNUMEVwNmVnSDBOTHJGRlBCQW1ZTllFL1gxTmVv?=
- =?utf-8?B?emZaNzRVUXJERUZ4Y2VOQm1WSHY4Zk92MmZ0OVhpQVpKZlFabW9tcHFlL3Nv?=
- =?utf-8?B?ZFRCcUd1TEZNMzlNeURjT2VOUXMyelZ1WENDdVRjMFhteGdXakJpVjNUVlVG?=
- =?utf-8?B?S2htSm9UZlA0VjB2MVIrZzUyTitjdnFVQUI1VlZTempXZTFjU1J5bXVSRG8y?=
- =?utf-8?B?eGdsQlRWdXFCVEFISWxKV2MzbXhCWmw4RTNwNVJBeEpXNUZSMFhsRVJqQ1hF?=
- =?utf-8?B?THhXM0ZvV1AwMTJkNE16bUIxVGxVTmxuTmQ1Q0FhNjVOQmxCTnJSZnhFL3lp?=
- =?utf-8?B?WExmaTB3a3QxUnY0WU01MHJMMjUvalNPd204UFpwc3h0d1AvQUgvMHRLWkwr?=
- =?utf-8?B?RGpmdytxaCtycWVoT3FFNUg4dHdQZGdVbzBoZ09JSjVFRTlQanRwY3J1UENJ?=
- =?utf-8?B?czVVMC8rNHNTWmJ3YnRUUWdTRzNvcFhxblF3WGNad2FvMlhmUFBHeTUyanhW?=
- =?utf-8?B?aThCajQ4WThuTjVtb1NFeDBqVTNoS1M1ZUg1N1BVUmRFMWRMcHBheGVWdGRs?=
- =?utf-8?B?UllaMmdublNKa1NNcWpvR2hIdjVsWG5mcGJ2MDF4R2ZLYkpablYyNFVZR0pm?=
- =?utf-8?B?TFhpYy8vMDFJRUNvTm5aRjZpanR6bnphZitUdHNOdUVURjYvVmdxRnFuelpu?=
- =?utf-8?B?YVViSHdNeER6QzdvWitlU29mT2xHbUlyaTc2Z0ZsOHBQMUJPUUJXZktjL1Rm?=
- =?utf-8?B?UVY2ZkVNZWtuT0lONndEQVljMCszSzc4S0hIMkF4RDBFWTBqSjBuV0xSb3R6?=
- =?utf-8?B?UThYaWZUTkZZV1VPckR0ZmlLQWtWdzBhcG1jZUtXL2F5bEdQb0tMRzFUNWlt?=
- =?utf-8?B?c3RlQllXNGxmVjVZWFZ6SVA0MWtMK0tGZWNVQlVIYS9zTUgzamIzUzBvMTB6?=
- =?utf-8?B?ZGNVSFkvczlpZngwWDJ6c0dlVGM5anZ1Kzl3czdsOVhyUHdJTm5uaHdKVnp1?=
- =?utf-8?B?OEorbUhmc2x2RGlsWmlqeW9yWURuQ0lCODBLRmVGRU9zcVg1VHB1aEZtSC8w?=
- =?utf-8?B?UmpLdC9va3ZIdkQvbS9Qc1F4Vnowb1kvcFJDbElKTFhrdjBBTGVwYTBpc3RV?=
- =?utf-8?B?aXR5L1U2UUxiZnZkWWFydVdzZjM2bnZwNi9mTndYMXBVVWpTZnN1Nm1BUjB5?=
- =?utf-8?B?UVVnV2NYenBCU1oxcXJON0tlRzlTZFdvZTBPOVc5TnVwRkhDQ1pkaUFxdURF?=
- =?utf-8?B?Y2NpTlRFdXo4RGt5eFNPTDkyQUtJNkNNbFRrNHYxV1JwazVBR0N4Rjk2cmpV?=
- =?utf-8?B?bGh2ZTZMRjZRajRncHA2dVNtVmpPeU9iNUFSRkt3TVlNellUMXhhaTIwb3pL?=
- =?utf-8?B?ZDNTL2JXaHdrTVlkZjZOVDVvUjUxWmdsS2dnOG9Eem14ZmFxTmp2eHEramRp?=
- =?utf-8?B?aEZHYVdSRGYwUnZIZnhGRFVobWtEcm5lOWlkcjNRZXpiS3VSZC9nUmlRRjVY?=
- =?utf-8?B?UjlVcUJnV25wS0RoYi9pZndMMjZISnlhVGhtekFjcjdCZVZiMmpMbzhyajZx?=
- =?utf-8?B?b3l4cTRRMmVEWU8xQmVDZzZqamsxVGRRS2dnMmd4RE9kT3RTdkNuK0ZtVkg5?=
- =?utf-8?B?ZTM0Zk1SUmxtdkhWbG4zVHUvRU40OUJNWFM3c2g3TUxKazRKSVJIRHoxSE9T?=
- =?utf-8?B?WE9xOGR5cVpYbTRhdFRGRUl6VXdHTmJ2NWtwaWwyYURrRnVNQ0R3dEZ6bEtH?=
- =?utf-8?Q?iO67tw6KsMGyOfboU8PO1VcxV?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e2b4c00-8595-4fe7-39bf-08da69ffce40
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4468.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2022 03:27:42.9131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BZZ6eSuYQHsG9feGqjFpm2eg99aDkdxf0X6hxt+KXKEeWRFCRIzCleNcpY61/ZzR72WYg1EG8waUI7ODaG8ggg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2921
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-19_10,2022-07-19_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=943
- suspectscore=0 phishscore=0 adultscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
- definitions=main-2207200012
-X-Proofpoint-GUID: iFSDoTS_U1orb_dQVN6qJjbUd82ADDWz
-X-Proofpoint-ORIG-GUID: iFSDoTS_U1orb_dQVN6qJjbUd82ADDWz
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220714064918.2576464-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello everyone,
+On Thu 14-07-22 06:49:18, Yosry Ahmed wrote:
+> vmpressure is used in cgroup v1 to notify userspace of reclaim
+> efficiency events, and is also used in both cgroup v1 and v2 as a signal
+> for memory pressure for networking, see
+> mem_cgroup_under_socket_pressure().
+> 
+> Proactive reclaim intends to probe memcgs for cold memory, without
+> affecting their performance. Hence, reclaim caused by writing to
+> memory.reclaim should not trigger vmpressure.
 
-I am seeing a deadlock between cgroup_threadgroup_rwsem and cpu_hotplug_lock in
-5.4 kernel.
+I am not against the change but this is rather vague statement. Please
+be more specific. You are not really explaining what kind of side effect
+this does and why that is really desirable. Sure pro-active reclaim can
+be used to probe for a cold memory but it can also be used to balance
+the memory consumption or other potential usecases.
 
-Due to some missing drivers I don't have this test setup for latest upstream
-kernel but looking at the code the issue seems to be present in the latest
-kernel as well. If needed I can provide stack traces and other relevant info
-from the vmcore that I have got from 5.4 setup.
+I think what we are missing here is
+- explain that this doesn't have any effect on existing users of
+  vmpressure user interface because that is cgroup v1 and memory.reclaim
+  is v2 feature. This is a trivial statement but quite useful for future
+  readers of this commit
+- explain the effect on the networking layer and typical usecases
+  memory.reclaim is used for currently and ideally document that.
+- how are we going to deal with users who would really want to use
+  memory.reclaim interface as a replacement for existing hard/high
+  memory reclaim? Is that even something that the interface is intended
+  for?
 
-The description of the problem is as follows (I am using 5.19-rc7 as reference
-below):
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
 
-__cgroup_procs_write acquires cgroup_threadgroup_rwsem via
-cgroup_procs_write_start and then invokes cgroup_attach_task. Now
-cgroup_attach_task can invoke following call chain:
+The patch itself looks good to me.
 
-cgroup_attach_task --> cgroup_migrate --> cgroup_migrate_execute --> cpuset_attach
+> ---
+> Changes in v4:
+> - Removed unneeded reclaim_options local variables (Andrew).
+> 
+> Changes in v3:
+> - Limited the vmpressure change to memory.reclaim, dropped psi changes,
+>   updated changelog to reflect new behavior (Michal, Shakeel)
+> 
+> Changes in v2:
+> - Removed unnecessary initializations to zero (Andrew).
+> - Separate declarations and initializations when it causes line wrapping
+>   (Andrew).
+> 
+> ---
+>  include/linux/swap.h |  5 ++++-
+>  mm/memcontrol.c      | 24 ++++++++++++++----------
+>  mm/vmscan.c          | 27 +++++++++++++++++----------
+>  3 files changed, 35 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 0c0fed1b348f..f6e9eaa2339f 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -411,10 +411,13 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
+>  extern unsigned long zone_reclaimable_pages(struct zone *zone);
+>  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>  					gfp_t gfp_mask, nodemask_t *mask);
+> +
+> +#define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+> +#define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  						  unsigned long nr_pages,
+>  						  gfp_t gfp_mask,
+> -						  bool may_swap);
+> +						  unsigned int reclaim_options);
+>  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+>  						gfp_t gfp_mask, bool noswap,
+>  						pg_data_t *pgdat,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a550042d88c3..b668224142c7 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2331,7 +2331,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+>  
+>  		psi_memstall_enter(&pflags);
+>  		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
+> -							     gfp_mask, true);
+> +							gfp_mask,
+> +							MEMCG_RECLAIM_MAY_SWAP);
+>  		psi_memstall_leave(&pflags);
+>  	} while ((memcg = parent_mem_cgroup(memcg)) &&
+>  		 !mem_cgroup_is_root(memcg));
+> @@ -2576,7 +2577,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	struct page_counter *counter;
+>  	unsigned long nr_reclaimed;
+>  	bool passed_oom = false;
+> -	bool may_swap = true;
+> +	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
+>  	bool drained = false;
+>  	unsigned long pflags;
+>  
+> @@ -2593,7 +2594,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  		mem_over_limit = mem_cgroup_from_counter(counter, memory);
+>  	} else {
+>  		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
+> -		may_swap = false;
+> +		reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
+>  	}
+>  
+>  	if (batch > nr_pages) {
+> @@ -2620,7 +2621,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  
+>  	psi_memstall_enter(&pflags);
+>  	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+> -						    gfp_mask, may_swap);
+> +						    gfp_mask, reclaim_options);
+>  	psi_memstall_leave(&pflags);
+>  
+>  	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
+> @@ -3402,8 +3403,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+>  			continue;
+>  		}
+>  
+> -		if (!try_to_free_mem_cgroup_pages(memcg, 1,
+> -					GFP_KERNEL, !memsw)) {
+> +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> +					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
+>  			ret = -EBUSY;
+>  			break;
+>  		}
+> @@ -3513,7 +3514,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+>  		if (signal_pending(current))
+>  			return -EINTR;
+>  
+> -		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
+> +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+> +						  MEMCG_RECLAIM_MAY_SWAP))
+>  			nr_retries--;
+>  	}
+>  
+> @@ -6248,7 +6250,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  		}
+>  
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> -							 GFP_KERNEL, true);
+> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
+>  
+>  		if (!reclaimed && !nr_retries--)
+>  			break;
+> @@ -6297,7 +6299,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+>  
+>  		if (nr_reclaims) {
+>  			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
+> -							  GFP_KERNEL, true))
+> +					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
+>  				nr_reclaims--;
+>  			continue;
+>  		}
+> @@ -6426,6 +6428,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+>  	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+>  	unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> +	unsigned int reclaim_options;
+>  	int err;
+>  
+>  	buf = strstrip(buf);
+> @@ -6433,6 +6436,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  	if (err)
+>  		return err;
+>  
+> +	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
+>  	while (nr_reclaimed < nr_to_reclaim) {
+>  		unsigned long reclaimed;
+>  
+> @@ -6449,7 +6453,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+>  						nr_to_reclaim - nr_reclaimed,
+> -						GFP_KERNEL, true);
+> +						GFP_KERNEL, reclaim_options);
+>  
+>  		if (!reclaimed && !nr_retries--)
+>  			return -EAGAIN;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index f7d9a683e3a7..0969e6408a53 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -102,6 +102,9 @@ struct scan_control {
+>  	/* Can pages be swapped as part of reclaim? */
+>  	unsigned int may_swap:1;
+>  
+> +	/* Proactive reclaim invoked by userspace through memory.reclaim */
+> +	unsigned int proactive:1;
+> +
+>  	/*
+>  	 * Cgroup memory below memory.low is protected as long as we
+>  	 * don't threaten to OOM. If any cgroup is reclaimed at
+> @@ -3125,9 +3128,10 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>  			    sc->priority);
+>  
+>  		/* Record the group's reclaim efficiency */
+> -		vmpressure(sc->gfp_mask, memcg, false,
+> -			   sc->nr_scanned - scanned,
+> -			   sc->nr_reclaimed - reclaimed);
+> +		if (!sc->proactive)
+> +			vmpressure(sc->gfp_mask, memcg, false,
+> +				   sc->nr_scanned - scanned,
+> +				   sc->nr_reclaimed - reclaimed);
+>  
+>  	} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+>  }
+> @@ -3250,9 +3254,10 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  	}
+>  
+>  	/* Record the subtree's reclaim efficiency */
+> -	vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> -		   sc->nr_scanned - nr_scanned,
+> -		   sc->nr_reclaimed - nr_reclaimed);
+> +	if (!sc->proactive)
+> +		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> +			   sc->nr_scanned - nr_scanned,
+> +			   sc->nr_reclaimed - nr_reclaimed);
+>  
+>  	if (sc->nr_reclaimed - nr_reclaimed)
+>  		reclaimable = true;
+> @@ -3534,8 +3539,9 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+>  		__count_zid_vm_events(ALLOCSTALL, sc->reclaim_idx, 1);
+>  
+>  	do {
+> -		vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
+> -				sc->priority);
+> +		if (!sc->proactive)
+> +			vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
+> +					sc->priority);
+>  		sc->nr_scanned = 0;
+>  		shrink_zones(zonelist, sc);
+>  
+> @@ -3825,7 +3831,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  					   unsigned long nr_pages,
+>  					   gfp_t gfp_mask,
+> -					   bool may_swap)
+> +					   unsigned int reclaim_options)
+>  {
+>  	unsigned long nr_reclaimed;
+>  	unsigned int noreclaim_flag;
+> @@ -3838,7 +3844,8 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  		.priority = DEF_PRIORITY,
+>  		.may_writepage = !laptop_mode,
+>  		.may_unmap = 1,
+> -		.may_swap = may_swap,
+> +		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+> +		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+>  	};
+>  	/*
+>  	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+> -- 
+> 2.37.0.144.g8ac04bfd2-goog
 
-Here cpuset_attach tries to take cpu_hotplug_lock.
-
-But by this time if some other context
-
-1. is already in the middle of cpu hotplug and has acquired cpu_hotplug_lock in
-_cpu_up but
-2. has not yet reached CPUHP_ONLINE state and
-3. one of the intermediate hotplug states (in my case CPUHP_AP_ONLINE_DYN ) has
-a callback which involves creation of a thread (or invocation of copy_process
-via some other path) the invoked copy_process will get blocked on
-cgroup_threadgroup_rwsem in following call chain:
-
-   copy_process --> cgroup_can_fork --> cgroup_css_set_fork -->
-cgroup_threadgroup_change_begin
-
-
-I am looking for suggestions to fix this deadlock.
-
-Or if I am missing something in the above analysis and the above mention
-scenario can't happen in latest upstream kernel, then please let me know as that
-would help me in back porting relevant changes to 5.4 kernel because the issue
-definitely exists in 5.4 kernel.
-
-Thanks,
--- Imran
+-- 
+Michal Hocko
+SUSE Labs
