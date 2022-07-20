@@ -2,60 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F7A57B5C2
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 13:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F9E57B60C
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 14:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbiGTLpj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jul 2022 07:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
+        id S229996AbiGTMCQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 08:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbiGTLph (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 07:45:37 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ECD95B6;
-        Wed, 20 Jul 2022 04:45:35 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Lnv4X4kRZz6PZVH;
-        Wed, 20 Jul 2022 19:44:28 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP3 (Coremail) with SMTP id _Ch0CgAXFWjb6tdiEYbsAw--.60219S3;
-        Wed, 20 Jul 2022 19:45:33 +0800 (CST)
-Subject: Re: [PATCH RESEND v6 0/8] bugfix and cleanup for blk-throttle
-To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, mkoutny@suse.com,
-        axboe@kernel.dk, ming.lei@redhat.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
- <e1d6b26d-2eae-7b78-277a-0bb737dc9c4b@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <b0dbbdbd-d8cb-babe-5013-208dcb451646@huaweicloud.com>
-Date:   Wed, 20 Jul 2022 19:45:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S231373AbiGTMCO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 08:02:14 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA506B241;
+        Wed, 20 Jul 2022 05:02:13 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26KBvTUF023688;
+        Wed, 20 Jul 2022 12:02:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=PounAutb3kLS4hWLQOwWstVt1Gn/0IZTeXgbAgcBKLU=;
+ b=OhZNbju618cRfiZf7Eyko8mruqAG2W2TCSBDQiXAkINfmhpxzeQliRmkQyV/kZIjmWLG
+ LzLAUrEVAgn8NK5k826QKAFr7spN01LkN9eCPlejYs+qRldvQFjqtHu4lPCmXhfc1Cep
+ 857O1djV0+Xj13rnAjGYUG0kG5E4vvT1wjyv+dwpAmj3V1Rv8Lwf4jHZ2nUhB7eQ9Ivy
+ CrgLdIEtEU/AUiUlg/U1NlqP577UGnOCMlBRKm9WkAaEhq9JlwvnD7y3myufxuLaAmcX
+ Ra9SYA0ssy+T5KYZXHLA1VwHUGBJ7+dj14aO6mzhNS0Jhe6okjRgxhaSJPTYGmt5Fz4M Yg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3hdyenan0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 12:02:01 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.47.97.222])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 26KC20pX031544
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 12:02:00 GMT
+Received: from [10.216.42.116] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.47.97.222) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 20 Jul
+ 2022 05:01:56 -0700
+Message-ID: <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
+Date:   Wed, 20 Jul 2022 17:31:51 +0530
 MIME-Version: 1.0
-In-Reply-To: <e1d6b26d-2eae-7b78-277a-0bb737dc9c4b@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: Query regarding deadlock involving cgroup_threadgroup_rwsem and
+ cpu_hotplug_lock
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     Imran Khan <imran.f.khan@oracle.com>, <tj@kernel.org>,
+        <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <tglx@linutronix.de>, <steven.price@arm.com>,
+        <peterz@infradead.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
+ <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
+ <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
+ <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
+In-Reply-To: <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgAXFWjb6tdiEYbsAw--.60219S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFykGFyrZrWkAr1xtr48Xrb_yoW5Wr48pF
-        WaqrW5CrWUCrn2kw43Gw43ZFy5Kw4ktwn8J3sxJ34rCF4qvr9rtr4093WruFyIvFZ2gw4I
-        9r17tr92yry8Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aP
-        UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.47.97.222)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: puTMElQ4vtFXSKIlvddnNTps20B_11BW
+X-Proofpoint-ORIG-GUID: puTMElQ4vtFXSKIlvddnNTps20B_11BW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-20_05,2022-07-20_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 priorityscore=1501 malwarescore=0 adultscore=0
+ impostorscore=0 spamscore=0 phishscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207200050
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,84 +83,78 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-在 2022/07/10 10:40, Yu Kuai 写道:
-> Hi!
-> 
-> 在 2022/07/01 17:34, Yu Kuai 写道:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Resend v5 by a new mail address(huaweicloud.com) because old
->> address(huawei.com)has some problem that emails can end up in spam.
->> Please let me know if anyone still see this patchset end up in spam.
->>
->> Changes in v6:
->>   - rename parameter in patch 3
->>   - add comments and reviewed tag for patch 4
->> Changes in v5:
->>   - add comments in patch 4
->>   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
->>   patch 4
->>   - and cleanup patches 5-8
->> Changes in v4:
->>   - add reviewed-by tag for patch 1
->>   - add patch 2,3
->>   - use a different way to fix io hung in patch 4
->> Changes in v3:
->>   - fix a check in patch 1
->>   - fix link err in patch 2 on 32-bit platform
->>   - handle overflow in patch 2
->> Changes in v2:
->>   - use a new solution suggested by Ming
->>   - change the title of patch 1
->>   - add patch 2
->>
->> Patch 1 fix that blk-throttle can't work if multiple bios are throttle,
->> Patch 2 fix overflow while calculating wait time
->> Patch 3,4 fix io hung due to configuration updates.
->> Patch 5-8 are cleanup patches, there are no functional changes, just
->> some places that I think can be optimized during code review.
->>
-> Jens and Michal,
-> 
-> Can you receive this patchset normally(not end up in spam)?
-> 
-> If so, Tejun, can you take a look? This patchset do fix some problems in
-> blk-throttle.
+Looks like these patches are the fixes.
 
-friendly ping ...
-> 
-> BTW, Michal and Ming, it'll be great if you can take a look at other
-> patches as well.
-> 
-> Thansk,
-> Kuai
->> Previous version:
->> v1: 
->> https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
->> v2: 
->> https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
->> v3: 
->> https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
->> v4: 
->> https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
->> v5: 
->> https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
->>
->> Yu Kuai (8):
->>    blk-throttle: fix that io throttle can only work for single bio
->>    blk-throttle: prevent overflow while calculating wait time
->>    blk-throttle: factor out code to calculate ios/bytes_allowed
->>    blk-throttle: fix io hung due to config updates
->>    blk-throttle: use 'READ/WRITE' instead of '0/1'
->>    blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
->>    blk-throttle: cleanup tg_update_disptime()
->>    blk-throttle: clean up flag 'THROTL_TG_PENDING'
->>
->>   block/blk-throttle.c | 168 +++++++++++++++++++++++++++++--------------
->>   block/blk-throttle.h |  16 +++--
->>   2 files changed, 128 insertions(+), 56 deletions(-)
->>
-> 
-> .
-> 
+https://lore.kernel.org/all/YtDvN0wJ6CKaEPN8@slm.duckdns.org/#r
 
+Would let Tejun confirm this .
+
+-Mukesh
+
+On 7/20/2022 4:36 PM, Mukesh Ojha wrote:
+> Hi,
+> 
+> On 7/20/2022 8:57 AM, Imran Khan wrote:
+>> Hello everyone,
+>>
+>> I am seeing a deadlock between cgroup_threadgroup_rwsem and 
+>> cpu_hotplug_lock in
+>> 5.4 kernel.
+>>
+>> Due to some missing drivers I don't have this test setup for latest 
+>> upstream
+>> kernel but looking at the code the issue seems to be present in the 
+>> latest
+>> kernel as well. If needed I can provide stack traces and other 
+>> relevant info
+>> from the vmcore that I have got from 5.4 setup.
+>>
+>> The description of the problem is as follows (I am using 5.19-rc7 as 
+>> reference
+>> below):
+>>
+>> __cgroup_procs_write acquires cgroup_threadgroup_rwsem via
+>> cgroup_procs_write_start and then invokes cgroup_attach_task. Now
+>> cgroup_attach_task can invoke following call chain:
+>>
+>> cgroup_attach_task --> cgroup_migrate --> cgroup_migrate_execute --> 
+>> cpuset_attach
+>>
+>> Here cpuset_attach tries to take cpu_hotplug_lock.
+>>
+>> But by this time if some other context
+>>
+>> 1. is already in the middle of cpu hotplug and has acquired 
+>> cpu_hotplug_lock in
+>> _cpu_up but
+>> 2. has not yet reached CPUHP_ONLINE state and
+>> 3. one of the intermediate hotplug states (in my case 
+>> CPUHP_AP_ONLINE_DYN ) has
+>> a callback which involves creation of a thread (or invocation of 
+>> copy_process
+>> via some other path) the invoked copy_process will get blocked on
+>> cgroup_threadgroup_rwsem in following call chain:
+>>
+>>     copy_process --> cgroup_can_fork --> cgroup_css_set_fork -->
+>> cgroup_threadgroup_change_begin
+> 
+> Similar discussion is at [1], not sure on the conclusion.
+> 
+> [1]
+> https://lore.kernel.org/lkml/20220705123705.764-1-xuewen.yan@unisoc.com/
+> 
+> -Mukesh
+> 
+>>
+>>
+>> I am looking for suggestions to fix this deadlock.
+>>
+>> Or if I am missing something in the above analysis and the above mention
+>> scenario can't happen in latest upstream kernel, then please let me 
+>> know as that
+>> would help me in back porting relevant changes to 5.4 kernel because 
+>> the issue
+>> definitely exists in 5.4 kernel.
+>>
+>> Thanks,
+>> -- Imran
