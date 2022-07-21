@@ -2,86 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA7157D261
-	for <lists+cgroups@lfdr.de>; Thu, 21 Jul 2022 19:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CDF57D29A
+	for <lists+cgroups@lfdr.de>; Thu, 21 Jul 2022 19:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbiGURWS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Jul 2022 13:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S229449AbiGURaY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Jul 2022 13:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbiGURWH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Jul 2022 13:22:07 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B7C19C07
-        for <cgroups@vger.kernel.org>; Thu, 21 Jul 2022 10:22:06 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id h206-20020a1c21d7000000b003a2fa488efdso1166262wmh.4
-        for <cgroups@vger.kernel.org>; Thu, 21 Jul 2022 10:22:06 -0700 (PDT)
+        with ESMTP id S229622AbiGURaV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Jul 2022 13:30:21 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F9425C79
+        for <cgroups@vger.kernel.org>; Thu, 21 Jul 2022 10:30:20 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id x71-20020a63314a000000b00419699fc9afso1153005pgx.1
+        for <cgroups@vger.kernel.org>; Thu, 21 Jul 2022 10:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S3C8q1laz4rBJ9aGVPrsPOjt/QLLVMunUdYBJjHo4DE=;
-        b=FilIoPgSWSX+M9Q5xzcjR7Bm7oSCIxKHBRehRGwnQpyGPiolhL1PxrDc/gy3NEOgOA
-         WtGktAZpu/0N7X96yPfmjrLk2bK/wsS8TEOdha+N5u6sMaZkwMhw8bnIsVuTtsAWfZ9o
-         htlMSo/fKYogD8FOwfdEzo5i+r75wKKrQSZlleXpxHTTDFqyRHQyrtEU3d8Qj5hwOytl
-         2Vl8qkFZwE4dMFP7JDWy90fDAGFnFDYaM5yEfdAeOrfMN5c4raOQQd17eiuYR0t0J5A5
-         vpib/yCSI2QQxVVS5XwklwcxvCmxO2tOy1SVFzfY7kFlxniF2kdvaqzNIhWOLJ+DZBJ+
-         dnaQ==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qosrya1g8eVkrTv50jUgBRv5+TcztxFe4XIGyFxN01k=;
+        b=YTga45edmDwuGDhmFqnaSc+J1ncxx/EB7aNg8NIcrQT7jmOFVGgE5w8byouxkTKavg
+         3jH2NaSi8f5pG56XvpAjsTyh7rx5bp5JHnRYaZB/p0TudwyVVds4K6eeENfrRTuWh8yy
+         tQRumwPajNL4sXNmuKi+EYF++g6eV1RFt+CPuucL4+wG2Qh4rSYKqfTbVSVPxPCODSh6
+         AUZC/Hhg3azg/YwiOPTgN8QzA1vp3JFq2wMHlnwxP45K0zC2hPQugsmKNrxrutvTqMT+
+         ivZPqtmnCYEMJz+1DC+d1I1SIdqUCmzgsO7P50CN/5tof7vDbwQXRUi5WuZ9WKqnVbqg
+         K6RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S3C8q1laz4rBJ9aGVPrsPOjt/QLLVMunUdYBJjHo4DE=;
-        b=X8BAePHAx8JG8pj2eC1e9Q8RiutWeNk4dkTvIq8JdBo8AHVmgjsIfbF1WDmjZGzlw3
-         0uzhzwOCYocD3zN6SVbhDIqqFGb5blfL03pGrpgPTEtnWzILfEK1KaTpICMUROEO9BZi
-         VRiByMlsduUhtHEJomcUFwQXY71ulvHf8O3/yIx/1p8Seri8SNUjJjsCs3H89VQB8m0z
-         6639UujWqq3O2FD9SWo0YAc/aqA58JoIDhTunvu37DPkAZBJgL2diAW46Y727GuCT0dC
-         zuGk7PeDV9QdE9PoD/vmwxFUbpgrYhJ3nKA/2oEte9AELw1o4LKN7pj1S8QsNqymkk48
-         nUSQ==
-X-Gm-Message-State: AJIora9s+HL7GTDM5EkqSCRNvVuwmjsWDs0qkLF1jcATkiEQLQ40Uazy
-        dui5suxKR7pRdK9MhmxuAr64IPeFtuXDV0vd943S2w==
-X-Google-Smtp-Source: AGRyM1t48kSCXbpdLtCbqUKCWIaKHfAn7MwO5VCXmGix7BhsPk0uKaPuE/mS8Vwzif/e/0r5f/Ku//506/LwFKbrjMM=
-X-Received: by 2002:a05:600c:354e:b0:3a3:2ede:853d with SMTP id
- i14-20020a05600c354e00b003a32ede853dmr4107316wmq.61.1658424124442; Thu, 21
- Jul 2022 10:22:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220709000439.243271-1-yosryahmed@google.com>
- <20220709000439.243271-5-yosryahmed@google.com> <370cb480-a427-4d93-37d9-3c6acd73b967@fb.com>
- <a6d048b8-d017-ea7e-36f0-1c4f88fc4399@fb.com> <CA+khW7gmVmXMg4YP4fxTtgqNyAr4mQqnXbP=z0nUeQ8=hfGC3g@mail.gmail.com>
- <2a26b45d-6fab-b2a2-786e-5cb4572219ea@fb.com> <CA+khW7jp+0AadVagqCcV8ELNRphP47vJ6=jGyuMJGnTtYynF+Q@mail.gmail.com>
- <3f3ffe0e-d2ac-c868-a1bf-cdf1b58fd666@fb.com>
-In-Reply-To: <3f3ffe0e-d2ac-c868-a1bf-cdf1b58fd666@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 21 Jul 2022 10:21:53 -0700
-Message-ID: <CA+khW7ihQmjwGuVPCEuZ5EXMiMWWaxiAatmjpo1xiaWokUNRGw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/8] bpf: Introduce cgroup iter
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qosrya1g8eVkrTv50jUgBRv5+TcztxFe4XIGyFxN01k=;
+        b=Li+B7H1wC1rU3QvxORdzpHhVQ5sfp0Y+VEtE1M1WdC8bzwCzgMHyLRTOKDYpCvZmH+
+         Yiu5RKngA8frcSaf3NwkErrDCIf5eqUFUX3LBtOz1nGMj8lpP7hw78pN6oBwlm8vHDsn
+         CH1kHd04zMEZRhny4Zb70zNDqmJMzPnzCH3eUj86lak7Z2szAOU3bM2iDlNrTqUe4BBe
+         GzsHqU38LCD3ujeO0sztXbXKXO+p3pLxxYbC+A2RCowi7+/IDvkSUz9hr+L6TgGceSQd
+         dqTHc8798Yb3NYEKFD6DqIqbVx1R0S8JDZRhRwDH26wADO9tEC6d+DZNEFx3DZ07ZloN
+         xjMg==
+X-Gm-Message-State: AJIora+sxd9nXACe2dLwWlTAlBB2qgRC7b+2EnOnyqAs9Ut2xp4pFSuN
+        uBOja5tRaUhAN/wm+v0W4FmUWFJKQmAxGk4E
+X-Google-Smtp-Source: AGRyM1uQlxu1sUASrct8+nu0Mlvi1BxdCDbaJ5lDljywcWA7QmXztm3dDy/MYnyc7M4I+4POvXOYfFByVyvWZZj2
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6a00:16c1:b0:520:6ede:24fb with
+ SMTP id l1-20020a056a0016c100b005206ede24fbmr45182744pfc.7.1658424619892;
+ Thu, 21 Jul 2022 10:30:19 -0700 (PDT)
+Date:   Thu, 21 Jul 2022 17:30:15 +0000
+Message-Id: <20220721173015.2643248-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.1.359.gd136c6c3e2-goog
+Subject: [PATCH v5] mm: vmpressure: don't count proactive reclaim in vmpressure
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, NeilBrown <neilb@suse.de>,
+        Alistair Popple <apopple@nvidia.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,101 +75,252 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 9:15 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/20/22 5:40 PM, Hao Luo wrote:
-> > On Mon, Jul 11, 2022 at 8:45 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >> On 7/11/22 5:42 PM, Hao Luo wrote:
-> > [...]
-> >>>>>> +
-> >>>>>> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
-> >>>>>> +{
-> >>>>>> +    struct cgroup_iter_priv *p = seq->private;
-> >>>>>> +
-> >>>>>> +    mutex_lock(&cgroup_mutex);
-> >>>>>> +
-> >>>>>> +    /* support only one session */
-> >>>>>> +    if (*pos > 0)
-> >>>>>> +        return NULL;
-> >>>>>
-> >>>>> This might be okay. But want to check what is
-> >>>>> the practical upper limit for cgroups in a system
-> >>>>> and whether we may miss some cgroups. If this
-> >>>>> happens, it will be a surprise to the user.
-> >>>>>
-> >>>
-> >>> Ok. What's the max number of items supported in a single session?
-> >>
-> >> The max number of items (cgroups) in a single session is determined
-> >> by kernel_buffer_size which equals to 8 * PAGE_SIZE. So it really
-> >> depends on how much data bpf program intends to send to user space.
-> >> If each bpf program run intends to send 64B to user space, e.g., for
-> >> cpu, memory, cpu pressure, mem pressure, io pressure, read rate, write
-> >> rate, read/write rate. Then each session can support 512 cgroups.
-> >>
-> >
-> > Hi Yonghong,
-> >
-> > Sorry about the late reply. It's possible that the number of cgroup
-> > can be large, 1000+, in our production environment. But that may not
-> > be common. Would it be good to leave handling large number of cgroups
-> > as follow up for this patch? If it turns out to be a problem, to
-> > alleviate it, we could:
-> >
-> > 1. tell users to write program to skip a certain uninteresting cgroups.
-> > 2. support requesting large kernel_buffer_size for bpf_iter, maybe as
-> > a new bpf_iter flag.
->
-> Currently if we intend to support multiple read() for cgroup_iter,
-> the following is a very inefficient approach:
->
-> in seq_file private data structure, remember the last cgroup visited
-> and for the second read() syscall, do the traversal again (but not
-> calling bpf program) until the last cgroup and proceed from there.
-> This is inefficient and probably works. But if the last cgroup is
-> gone from the hierarchy, that the above approach won't work. One
-> possibility is to remember the last two cgroups. If the last cgroup
-> is gone, check the 'next' cgroup based on the one before the last
-> cgroup. If both are gone, we return NULL.
->
+memory.reclaim is a cgroup v2 interface that allows users to
+proactively reclaim memory from a memcg, without real memory pressure.
+Reclaim operations invoke vmpressure, which is used:
+(a) To notify userspace of reclaim efficiency in cgroup v1, and
+(b) As a signal for a memcg being under memory pressure for networking
+(see mem_cgroup_under_socket_pressure()).
 
-I suspect in reality, just remembering the last cgroup (or two
-cgroups) may not be sufficient. First, I don't want to hold
-cgroup_mutex across multiple sessions. I assume it's also not safe to
-release cgroup_mutex in the middle of walking cgroup hierarchy.
-Supporting multiple read() can be nasty for cgroup_iter.
+For (a), vmpressure notifications in v1 are not affected by this change
+since memory.reclaim is a v2 feature.
 
-> But in any case, if there are additional cgroups not visited,
-> in the second read(), we should not return NULL which indicates
-> done with all cgroups. We may return EOPNOTSUPP to indicate there
-> are missing cgroups due to not supported.
->
-> Once users see EOPNOTSUPP which indicates there are missing
-> cgroups, they can do more filtering in bpf program to avoid
-> large data volume to user space.
->
+For (b), the effects of the vmpressure signal (according to Shakeel [1])
+are as follows:
+1. Reducing send and receive buffers of the current socket.
+2. May drop packets on the rx path.
+3. May throttle current thread on the tx path.
 
-Makes sense. Yonghong, one question to confirm, if the first read()
-overflows, does the user still get partial data?
+Since proactive reclaim is invoked directly by userspace, not by
+memory pressure, it makes sense not to throttle networking. Hence,
+this change makes sure that proactive reclaim caused by memory.reclaim
+does not trigger vmpressure.
 
-I'll change the return code to EOPNOTSUPP in v4 of this patchset.
+[1] https://lore.kernel.org/lkml/CALvZod68WdrXEmBpOkadhB5GPYmCXaDZzXH=yyGOCAjFRn4NDQ@mail.gmail.com/
 
-> To provide a way to truely visit *all* cgroups,
-> we can either use bpf_iter link_create->flags
-> to increase the buffer size as your suggested in the above so
-> user can try to allocate more kernel buffer size. Or implement
-> proper second read() traversal which I don't have a good idea
-> how to do it efficiently.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  7 +++++++
+ include/linux/swap.h                    |  5 ++++-
+ mm/memcontrol.c                         | 24 +++++++++++++---------
+ mm/vmscan.c                             | 27 ++++++++++++++++---------
+ 4 files changed, 42 insertions(+), 21 deletions(-)
 
-I will try the buffer size increase first. Looks more doable. Do you
-mind putting this support as a follow-up?
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 176298f2f4de..72847462c66d 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1229,6 +1229,13 @@ PAGE_SIZE multiple when read back.
+ 	the target cgroup. If less bytes are reclaimed than the
+ 	specified amount, -EAGAIN is returned.
+ 
++	Please note that the proactive reclaim (triggered by this
++	interface) is not meant to indicate memory pressure on the
++	memory cgroup. Therefore socket memory balancing triggered by
++	the memory reclaim normally is not exercised in this case.
++	This means that the networking layer will not adapt based on
++	reclaim induced by memory.reclaim.
++
+   memory.peak
+ 	A read-only single value file which exists on non-root
+ 	cgroups.
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 0c0fed1b348f..f6e9eaa2339f 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -411,10 +411,13 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
+ extern unsigned long zone_reclaimable_pages(struct zone *zone);
+ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+ 					gfp_t gfp_mask, nodemask_t *mask);
++
++#define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
++#define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+ extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 						  unsigned long nr_pages,
+ 						  gfp_t gfp_mask,
+-						  bool may_swap);
++						  unsigned int reclaim_options);
+ extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+ 						gfp_t gfp_mask, bool noswap,
+ 						pg_data_t *pgdat,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a550042d88c3..b668224142c7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2331,7 +2331,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+ 
+ 		psi_memstall_enter(&pflags);
+ 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
+-							     gfp_mask, true);
++							gfp_mask,
++							MEMCG_RECLAIM_MAY_SWAP);
+ 		psi_memstall_leave(&pflags);
+ 	} while ((memcg = parent_mem_cgroup(memcg)) &&
+ 		 !mem_cgroup_is_root(memcg));
+@@ -2576,7 +2577,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	struct page_counter *counter;
+ 	unsigned long nr_reclaimed;
+ 	bool passed_oom = false;
+-	bool may_swap = true;
++	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
+ 	bool drained = false;
+ 	unsigned long pflags;
+ 
+@@ -2593,7 +2594,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		mem_over_limit = mem_cgroup_from_counter(counter, memory);
+ 	} else {
+ 		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
+-		may_swap = false;
++		reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
+ 	}
+ 
+ 	if (batch > nr_pages) {
+@@ -2620,7 +2621,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 
+ 	psi_memstall_enter(&pflags);
+ 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+-						    gfp_mask, may_swap);
++						    gfp_mask, reclaim_options);
+ 	psi_memstall_leave(&pflags);
+ 
+ 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
+@@ -3402,8 +3403,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+ 			continue;
+ 		}
+ 
+-		if (!try_to_free_mem_cgroup_pages(memcg, 1,
+-					GFP_KERNEL, !memsw)) {
++		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
++					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
+ 			ret = -EBUSY;
+ 			break;
+ 		}
+@@ -3513,7 +3514,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+ 		if (signal_pending(current))
+ 			return -EINTR;
+ 
+-		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
++		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
++						  MEMCG_RECLAIM_MAY_SWAP))
+ 			nr_retries--;
+ 	}
+ 
+@@ -6248,7 +6250,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 		}
+ 
+ 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+-							 GFP_KERNEL, true);
++					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
+ 
+ 		if (!reclaimed && !nr_retries--)
+ 			break;
+@@ -6297,7 +6299,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+ 
+ 		if (nr_reclaims) {
+ 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
+-							  GFP_KERNEL, true))
++					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
+ 				nr_reclaims--;
+ 			continue;
+ 		}
+@@ -6426,6 +6428,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+ 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+ 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
++	unsigned int reclaim_options;
+ 	int err;
+ 
+ 	buf = strstrip(buf);
+@@ -6433,6 +6436,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 	if (err)
+ 		return err;
+ 
++	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
+ 	while (nr_reclaimed < nr_to_reclaim) {
+ 		unsigned long reclaimed;
+ 
+@@ -6449,7 +6453,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 
+ 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+ 						nr_to_reclaim - nr_reclaimed,
+-						GFP_KERNEL, true);
++						GFP_KERNEL, reclaim_options);
+ 
+ 		if (!reclaimed && !nr_retries--)
+ 			return -EAGAIN;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index f7d9a683e3a7..0969e6408a53 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -102,6 +102,9 @@ struct scan_control {
+ 	/* Can pages be swapped as part of reclaim? */
+ 	unsigned int may_swap:1;
+ 
++	/* Proactive reclaim invoked by userspace through memory.reclaim */
++	unsigned int proactive:1;
++
+ 	/*
+ 	 * Cgroup memory below memory.low is protected as long as we
+ 	 * don't threaten to OOM. If any cgroup is reclaimed at
+@@ -3125,9 +3128,10 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+ 			    sc->priority);
+ 
+ 		/* Record the group's reclaim efficiency */
+-		vmpressure(sc->gfp_mask, memcg, false,
+-			   sc->nr_scanned - scanned,
+-			   sc->nr_reclaimed - reclaimed);
++		if (!sc->proactive)
++			vmpressure(sc->gfp_mask, memcg, false,
++				   sc->nr_scanned - scanned,
++				   sc->nr_reclaimed - reclaimed);
+ 
+ 	} while ((memcg = mem_cgroup_iter(target_memcg, memcg, NULL)));
+ }
+@@ -3250,9 +3254,10 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	}
+ 
+ 	/* Record the subtree's reclaim efficiency */
+-	vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+-		   sc->nr_scanned - nr_scanned,
+-		   sc->nr_reclaimed - nr_reclaimed);
++	if (!sc->proactive)
++		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
++			   sc->nr_scanned - nr_scanned,
++			   sc->nr_reclaimed - nr_reclaimed);
+ 
+ 	if (sc->nr_reclaimed - nr_reclaimed)
+ 		reclaimable = true;
+@@ -3534,8 +3539,9 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+ 		__count_zid_vm_events(ALLOCSTALL, sc->reclaim_idx, 1);
+ 
+ 	do {
+-		vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
+-				sc->priority);
++		if (!sc->proactive)
++			vmpressure_prio(sc->gfp_mask, sc->target_mem_cgroup,
++					sc->priority);
+ 		sc->nr_scanned = 0;
+ 		shrink_zones(zonelist, sc);
+ 
+@@ -3825,7 +3831,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 					   unsigned long nr_pages,
+ 					   gfp_t gfp_mask,
+-					   bool may_swap)
++					   unsigned int reclaim_options)
+ {
+ 	unsigned long nr_reclaimed;
+ 	unsigned int noreclaim_flag;
+@@ -3838,7 +3844,8 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 		.priority = DEF_PRIORITY,
+ 		.may_writepage = !laptop_mode,
+ 		.may_unmap = 1,
+-		.may_swap = may_swap,
++		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
++		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+ 	};
+ 	/*
+ 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+-- 
+2.37.1.359.gd136c6c3e2-goog
 
-> >
-> > Hao
-> >
-> >>>
-> > [...]
-> >>>>> [...]
