@@ -2,92 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCFF57BD5C
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jul 2022 20:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38A757C1B2
+	for <lists+cgroups@lfdr.de>; Thu, 21 Jul 2022 02:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbiGTSFL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jul 2022 14:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S231250AbiGUAlH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jul 2022 20:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236682AbiGTSFJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 14:05:09 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24D4B33;
-        Wed, 20 Jul 2022 11:05:05 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id l14-20020a17090a72ce00b001f20ed3c55dso3016381pjk.5;
-        Wed, 20 Jul 2022 11:05:05 -0700 (PDT)
+        with ESMTP id S230419AbiGUAlG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jul 2022 20:41:06 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FEF69F23
+        for <cgroups@vger.kernel.org>; Wed, 20 Jul 2022 17:41:05 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id m7so260241qkk.6
+        for <cgroups@vger.kernel.org>; Wed, 20 Jul 2022 17:41:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YWTDneNY8P5vWW2QTCkwFAjSMu7YWo8lKAMC6oCSaaQ=;
-        b=oOtz9PsBinTflz88HKUTWrJh15Cle1xn8l7q18DcwWR4RAQQoC1u4AiUoWdbGWqesa
-         62bNh9C6BftUhOKODBoCr/KkXyz9BeZkLIw7iOlBiHkRUzEkts542clfCFazWIHo4cq0
-         eDo8cdN3gyi3x8DSn8uwPy8crW/bairzY9qvpP1bGcHdIRL3aZDrk1yg6qvDA0Fj3JXp
-         d+kdlb5JmQ5RnOGq+xgkxrpa3j8vmneroyZgjaE1LRiW+aaunRjbo4eu6y4pcpz/qLkD
-         KzylACtgOLbHjyysmtuUB5LfKCwwCQRhvLzvpaL/68Yzm7dnzisw3BClyDoYi0lcYzLa
-         MPag==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NLPMp1+Mt0L/+E6R8JU+BLoZczUGaly/ZIP7N/DIUjk=;
+        b=c/VUBK2QvK2vfwdHRofaHZt9HYM7EXslS5s2wi+6Jwim5NYju5JdGCOAHrTetv5xzX
+         P6KxFVcy1D5RFcg/Lvl97dO+5pxv0GXUlzN44Cy5TuZ/gA81BWqp9haTPUM6xx64N0bs
+         SHW6Vm0sBminmKxtKqvJupkRFTQNNDwJV4AcYgtn0fbG/utFhqyLDZJA1eq3+H7nQ+j7
+         BJsTZb0EboDNRuH2YyK6pgTy5VpPPpWotY6gCwtNSxHpU8gv/rBsdETPlA3GXuCsgPb9
+         76rbDja4enOdfJIlMTAQPtwAl4IndOKluUlnQfdcLMztE4Dp/VpnhnLxp0iOhX56xuDc
+         ggBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=YWTDneNY8P5vWW2QTCkwFAjSMu7YWo8lKAMC6oCSaaQ=;
-        b=3nkKKYJVnmM4K7eS9oHBWT55CQe5RtIWN0Vpjx53K6TvLma59pSU8W+jvtygkn1KVT
-         bqai3ORJRd8k0auX/VjYE66vqbODswUoZBE1kSyiPNLxVs0NkHQRHy+pmvOc/s/j3/82
-         iVQbeHWdtACHIQw4PAf001+b58S31GRsqrLC/h8MJJ78IkmbzsaMY6Y1mtAXOVIAVTMM
-         LgeHwXw+JW+36B/4zthG5Cvl6cA0kqjjcUCuhRmGhJgn1t3F75f/cxjP85tW10w/uM0W
-         e8FlgkR1hltQ3IhbZ26BnRZeWGrHhd+ZareevDvlVXp7AbqKsvsqbKHZMODap+P5/EPh
-         TOJQ==
-X-Gm-Message-State: AJIora8BgsDAH8CfmTTNJQWR5iEk9iDL4VJkCY238x9EymZy3R3QyTvu
-        uXSafFPfKwA8RZcqHBfr6GI=
-X-Google-Smtp-Source: AGRyM1v0TtSLkkoduTln9t8wmKX8ivsSt4WboCxqUEcsf7Y5mUAxn1qBKJsKxBef83qntl3xCijY7A==
-X-Received: by 2002:a17:90b:2243:b0:1f0:b0a:e40c with SMTP id hk3-20020a17090b224300b001f00b0ae40cmr7053364pjb.76.1658340305346;
-        Wed, 20 Jul 2022 11:05:05 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:f3dd])
-        by smtp.gmail.com with ESMTPSA id r18-20020a632b12000000b00415d873b7a2sm12030959pgr.11.2022.07.20.11.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 11:05:04 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 20 Jul 2022 08:05:03 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     Imran Khan <imran.f.khan@oracle.com>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, tglx@linutronix.de, steven.price@arm.com,
-        peterz@infradead.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Query regarding deadlock involving cgroup_threadgroup_rwsem and
- cpu_hotplug_lock
-Message-ID: <YthDz4BnfYHce1od@slm.duckdns.org>
-References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
- <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
- <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
- <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
- <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NLPMp1+Mt0L/+E6R8JU+BLoZczUGaly/ZIP7N/DIUjk=;
+        b=WaosMAfcx2WjIrjN2n6Drhe0kcnpPcKdUCmxLDiqiwpJDquNFt2dXlSNut56W6XMd2
+         8JbEULnV60cvqSjN9dTGjktYn1VH2E+nezjLRIE5/ckYrc1P6+chnIqojosQOQndR1HH
+         xAG1Lt35GqGijKfU75xb9rAQsp2gmoXz75iwq+pGB6LcvpgGSp6nTf4fF1GwUh/wz6gz
+         sDhFgKp314X0wLGAtkp7u8yINBlxNbstFSOzd+Eaf78oSdijKPpKwcGizhf6eGyv4adf
+         bo51U9Vp2pjg/2qWji8xANTiF2KMA5kHCLypUyPrChq+djWoOZcJAuaCHy6hmBsn5Dcx
+         d82g==
+X-Gm-Message-State: AJIora85T3OYX1CQ0jv+UgDATGbCsiwl+P2YRbK2JXQTxf4vC8O8uyc0
+        3FfOwSONbm+1lLqvPSdQzyof+CzcxXgo4/yndwS8kA==
+X-Google-Smtp-Source: AGRyM1t7L3IvjLTHGAVSqlP7orZ4xN16eJegyERHUQa/h5YTRHg7oWqGSwg34qaRWfWGU6zWV64OePdr5YgV/f6wBcM=
+X-Received: by 2002:a05:620a:4590:b0:6b5:e884:2d2c with SMTP id
+ bp16-20020a05620a459000b006b5e8842d2cmr12236347qkb.267.1658364064440; Wed, 20
+ Jul 2022 17:41:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20220709000439.243271-1-yosryahmed@google.com>
+ <20220709000439.243271-5-yosryahmed@google.com> <370cb480-a427-4d93-37d9-3c6acd73b967@fb.com>
+ <a6d048b8-d017-ea7e-36f0-1c4f88fc4399@fb.com> <CA+khW7gmVmXMg4YP4fxTtgqNyAr4mQqnXbP=z0nUeQ8=hfGC3g@mail.gmail.com>
+ <2a26b45d-6fab-b2a2-786e-5cb4572219ea@fb.com>
+In-Reply-To: <2a26b45d-6fab-b2a2-786e-5cb4572219ea@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 20 Jul 2022 17:40:53 -0700
+Message-ID: <CA+khW7jp+0AadVagqCcV8ELNRphP47vJ6=jGyuMJGnTtYynF+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/8] bpf: Introduce cgroup iter
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 05:31:51PM +0530, Mukesh Ojha wrote:
-> Looks like these patches are the fixes.
-> 
-> https://lore.kernel.org/all/YtDvN0wJ6CKaEPN8@slm.duckdns.org/#r
-> 
-> Would let Tejun confirm this .
+On Mon, Jul 11, 2022 at 8:45 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> On 7/11/22 5:42 PM, Hao Luo wrote:
+[...]
+> >>>> +
+> >>>> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
+> >>>> +{
+> >>>> +    struct cgroup_iter_priv *p = seq->private;
+> >>>> +
+> >>>> +    mutex_lock(&cgroup_mutex);
+> >>>> +
+> >>>> +    /* support only one session */
+> >>>> +    if (*pos > 0)
+> >>>> +        return NULL;
+> >>>
+> >>> This might be okay. But want to check what is
+> >>> the practical upper limit for cgroups in a system
+> >>> and whether we may miss some cgroups. If this
+> >>> happens, it will be a surprise to the user.
+> >>>
+> >
+> > Ok. What's the max number of items supported in a single session?
+>
+> The max number of items (cgroups) in a single session is determined
+> by kernel_buffer_size which equals to 8 * PAGE_SIZE. So it really
+> depends on how much data bpf program intends to send to user space.
+> If each bpf program run intends to send 64B to user space, e.g., for
+> cpu, memory, cpu pressure, mem pressure, io pressure, read rate, write
+> rate, read/write rate. Then each session can support 512 cgroups.
+>
 
-Yeah, looks like the same issue. I'll write up a patch later this week /
-early next unless someone beats me to it.
+Hi Yonghong,
 
-Thanks.
+Sorry about the late reply. It's possible that the number of cgroup
+can be large, 1000+, in our production environment. But that may not
+be common. Would it be good to leave handling large number of cgroups
+as follow up for this patch? If it turns out to be a problem, to
+alleviate it, we could:
 
--- 
-tejun
+1. tell users to write program to skip a certain uninteresting cgroups.
+2. support requesting large kernel_buffer_size for bpf_iter, maybe as
+a new bpf_iter flag.
+
+Hao
+
+> >
+[...]
+> >>> [...]
