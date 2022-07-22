@@ -2,194 +2,328 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FA257E61C
-	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 19:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FB657E6A1
+	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 20:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbiGVR6E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Jul 2022 13:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
+        id S233167AbiGVSgP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Jul 2022 14:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235292AbiGVR6D (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 13:58:03 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87B65A14B;
-        Fri, 22 Jul 2022 10:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658512682; x=1690048682;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xW2SYVOgh4nIyD0QWhReFtVoFFXTUHDlPI8kPQCqskY=;
-  b=CjMmDdiHe81cMSlA0BTyST43kDIJOD7OUaq+lRvMc9jxc167AA2a5xPL
-   8JNyK+xsDItk9v/pIqoiQcSQuh03PwpZGZ3JL735x9VlrXRJNnlvgNS6B
-   /oK/J8e8KRLI0GD998Und+yyDTtKPnNRsQ6dBwSX+yijYXEFOpf24EWml
-   6omqJTB/cdb8sgDnjC/T6O6ajt1fkXUOYFkbnwrrDzWwVeZUVa85YI0px
-   EBUNNrqvMaeYBmsJK90EXV3jgaIGgSmReP6AoEMbmpUUPZBhVSheZahqH
-   fjp0iu3z7NE4gH3EO0yb6jL91jHVAS1wxIcuj/MI142pa6sd97sYnOu8b
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10416"; a="286134671"
-X-IronPort-AV: E=Sophos;i="5.93,186,1654585200"; 
-   d="scan'208";a="286134671"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2022 10:58:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,186,1654585200"; 
-   d="scan'208";a="725497569"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga004.jf.intel.com with ESMTP; 22 Jul 2022 10:57:59 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 22 Jul 2022 10:57:59 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 22 Jul 2022 10:57:58 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28 via Frontend Transport; Fri, 22 Jul 2022 10:57:58 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Fri, 22 Jul 2022 10:57:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ff8b5VjiPQ7Lr1+NoEv3rDVAxaGPJ7by6mT07lYknob1MNOMzetwyQveHsP4QHCDssjdT/SjRZaFuO82sHr0N6zfi41usG43R0W7nOyFomPuh/XWQEcy1Ai97xRklkRak1QhGO0H6wM8yEhGj0L41YhGnilfd3V1grQ1LIdkxhsNInj5Enw8UjpxlobggkPB2KuualSSDK1XQBp4NFGJ+sN2CjQLQX1d+1WY2YdHUjSiRbyYZlQ7lvaE1PbkN7PYN7guNAmn3Jp8qj7TuVakR/pQfxf+5B6Ghi+294SqAYJ0P7BsBPd7BZTAQfZVTLwKzsYWuPVRpbBSMEnTPnWThQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xW2SYVOgh4nIyD0QWhReFtVoFFXTUHDlPI8kPQCqskY=;
- b=W22mju6Gw9z3EQaSO9blk4OeZjFYrA4YO63CPHd6r426T2UjDSk4ZT8SLLoSdFjrQTpBwb86h3zPHKTDiY0TAJIaK/uuluB0nt4O46QB6WYGacesb+JlGXS7ictndXKE7koAbppppuf8goVNtEOnuns31AZOjr/d2K2uQsp6wzXYWjGce/zmUdzWHiBnUypldpShukGA+TIM2knPXej2KZuXFWrv5tu/3LrYD3PBnXyVrGcCuPxvZb1HgB0O/f3ycqCYuROs0oYtbYEaGoQ7XT2GRO9XeEnPNpBrwgxT0fFXL+JgQD4VaiKUSC1P88VOoPkyfpP6+IqPPNrK4N/TQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM6PR11MB4107.namprd11.prod.outlook.com (2603:10b6:5:198::24)
- by SJ0PR11MB5005.namprd11.prod.outlook.com (2603:10b6:a03:2d3::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Fri, 22 Jul
- 2022 17:57:56 +0000
-Received: from DM6PR11MB4107.namprd11.prod.outlook.com
- ([fe80::fc6e:95eb:15c0:847c]) by DM6PR11MB4107.namprd11.prod.outlook.com
- ([fe80::fc6e:95eb:15c0:847c%3]) with mapi id 15.20.5458.019; Fri, 22 Jul 2022
- 17:57:56 +0000
-From:   "Chen, Tim C" <tim.c.chen@intel.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        "Sun, Jiebin" <jiebin.sun@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "songmuchun@bytedance.com" <songmuchun@bytedance.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "amadeuszx.slawinski@linux.intel.com" 
-        <amadeuszx.slawinski@linux.intel.com>,
-        "Li, Tianyou" <tianyou.li@intel.com>,
-        "Guo, Wangyang" <wangyang.guo@intel.com>
-Subject: RE: [PATCH] mm: Remove the redundant updating of
- stats_flush_threshold
-Thread-Topic: [PATCH] mm: Remove the redundant updating of
- stats_flush_threshold
-Thread-Index: AQHYnaWE7yyZOgM2eEyGrUJNmSgBKa2Kn0CAgAAOJCA=
-Date:   Fri, 22 Jul 2022 17:57:56 +0000
-Message-ID: <DM6PR11MB410736BFD198D38BBCE9E064DC909@DM6PR11MB4107.namprd11.prod.outlook.com>
-References: <20220722164949.47760-1-jiebin.sun@intel.com>
- <YtrY5V+dZl4+Gtz4@castle>
-In-Reply-To: <YtrY5V+dZl4+Gtz4@castle>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.500.17
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 58dc55e7-ad14-4f38-9c2d-08da6c0bb52a
-x-ms-traffictypediagnostic: SJ0PR11MB5005:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3blp/63hNoUdwfKVFBEmGqAZdKhG5R6ZPvJlSPIVZ/Pl+0iW9LVTobDqv8+NdX4dUcnoxUSzYgg+Ufuj0zT7eBtPhkNmnko3IuN/5FF8llre0lqj8iBb12CRecSiNHDH9PJkhR63Koo5VXNLm1na8iBdtGeUHcyhjvYFlRFyvBR8onAciWQoGG0wtX9nXD/+BFTqX70FXDIrFTIkwp4AOk40X7cKDupnlmZHJ3LQzlqxy8ZflDnvl4BXQv8seuDU7sbnXMvHReE9Q8ySM4WyIdor8b1f9cJqGMQnBKl0q8vB65cDLmZfmbvZiGQ6COXdrEppD0JU/Pr+GKfbCQSj41jEFfqr43c5xjimUkGUCyl4ArJwoPC+d4Nc0fuos+VayNkGEBWMr3GFvQEzIb4IBRNMGNi9MmQ12JDLuz+qoZGjA9Fzjbl8ny3ogo1+aCvUZypITp+ncodabZOkItS6aQYMtEjbeMcwKZnA5hHbyIFBHgLawP9K+WiOeh8hXOK7oKxGRlGQYpIU2K8HMX8dqoiih25Lj1NQOYLPOL79X+obf2Xs+Q+rAjq/TEuM0jeszeviiFY76exFrAYjFHdER8hODgceRAE45BhzLa1888h5kbweYp+o+j3FLa5UoKjmSZibbqEYOr2QwRvOizJYelwSG6f1nSXYBeL5Nz4hvkXiYy3cv6UwxZRdp6WR35eaE+Kk0FHacC+NeyjIp5B7ESkDqA4tzKXr3K5CHTGYuNRwN/zG1Wx6nGVPBVTIbhYgNNcwesEYCuHk4wV5kzmSvtZrtvjHUYWtAMY+7KqH8mvKF5R2UMGvP+THuGq8qoPq
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(396003)(376002)(39860400002)(136003)(366004)(346002)(54906003)(6636002)(110136005)(41300700001)(316002)(71200400001)(38100700002)(478600001)(122000001)(83380400001)(26005)(38070700005)(7696005)(6506007)(9686003)(82960400001)(186003)(4744005)(2906002)(5660300002)(52536014)(33656002)(7416002)(8936002)(76116006)(66476007)(66446008)(66946007)(4326008)(86362001)(66556008)(64756008)(8676002)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vXeCIb3tu05ao2n5HtsVg45Ma/6NJ2s0OaTJzJBD55Lozj0z6OFFGtvtQr9I?=
- =?us-ascii?Q?7v+V2ClEOS1G+j0QjyKN5MbNq1GMnrT43V4MGD3eaIJ4z5ODYUlpvJLYMF5V?=
- =?us-ascii?Q?JjAuCMKYOVDsYpbkwTzNupYEc14iN1Zb3Uzjx/fzCIOZ8ySYb1N+sVeE0x7K?=
- =?us-ascii?Q?ZpZetihoNHDCwto+wl7TD+xQ7ncl0HzZUgyOimOPmZQVzzEBdVZ6ozMRTlNB?=
- =?us-ascii?Q?a1FBlQ4Zq0Zv8zT3KNcMtGgc5aPefqgRIMN3f99uE0r+NheTu31jBafRstVS?=
- =?us-ascii?Q?8BKcnVWSLeYEGjFBJXC66aM2ixZZhWRByAlhuBTJ6iCwt2T9eqxurV0wDGMh?=
- =?us-ascii?Q?LHsBcAQAjKJlo/inVhPVbOItIPF+Q8PW7yvXje2bKnDh5qlNaPvrLhSJt9Hl?=
- =?us-ascii?Q?DFnqDsJ1q9XquIg56MEZyFXjBGWq+b9FW+BGnDch8qemUgw5WFM+saeWl8KH?=
- =?us-ascii?Q?1AIgZYC2R7ejt+U8WFi845IGBKkQn9CNuF/gyHp5p4uT0zltxfg5WdX+vNvr?=
- =?us-ascii?Q?QZY1EScd7Oew6d94GJlymkhcudIGk1V39QeFPT2oEA7FrpMF1cAiHatdUgYS?=
- =?us-ascii?Q?nBS/x6EoKSUtYWLavjfdVYEaSdOoFoYciivUj3OYgF+3n23x4qRWDTeAmZAc?=
- =?us-ascii?Q?RBy1K2MaBNtHWjxUXANmfdvSj2cxFXvXHDXWOIyGlO8CfLTB4MppFgGRWBzB?=
- =?us-ascii?Q?+2Z5HFzskMuX0fKdFl6h8GJJrpsknwq3CmJ+hXI3t2AsmRw8JI9iHO4u+X8U?=
- =?us-ascii?Q?VRt3w9UmqoT8mYzKizCaVzBElkx8aKeN2qtOEOL08kFvmqJqHvy5XcESS9nJ?=
- =?us-ascii?Q?/tsZQ/12Oafh5exfN68NM7nS90wFLugtZumtX6ADZgtKb3+DJPFMEPPFxisJ?=
- =?us-ascii?Q?78NY1HlscA8VBJlMcy0ncH0fNj9rZhFcQLny0Mx/j0hZq4igWOlufvySOMJO?=
- =?us-ascii?Q?E45GWx1ShGW7US4SWjbhEjbcPDEf5gMK7i5JS74DrvHNE9uRk8Xljan1yzoq?=
- =?us-ascii?Q?AojUpDSL6sxRb7UL1AzHePfd2+3LuFjs3XLCHeKlcmf+nS4r8tctS2+4LmO7?=
- =?us-ascii?Q?sFGs7dUNnngJ31Leq1SgDDLJpKV2GXM6HDKAyZs88JrFHarQ7pmu4NybIYcE?=
- =?us-ascii?Q?+zKlWNnBhN+O93aBKPxXEAe7+455KzMO4sBE9wxKmw8PwAeoIP0YdZNZxq/A?=
- =?us-ascii?Q?beWux2pwil1TEet9MZZnuXIOUoD1GsAYJySSmeJwCx+o80eR/PY9gmu30P9B?=
- =?us-ascii?Q?My+ep2PZ01TWKFYncwmnsQHRkhlGHGqjDdGfzSHZZ687KgOp1H/kvfqJIHNF?=
- =?us-ascii?Q?qB6Um7S5A72AFIwaCFkV3JN/P2HYgHEZKc8KgG8UGMKpwFdDlCRXokGVJ7Fv?=
- =?us-ascii?Q?r+q4fKUEJtHAjTJqOBWzl6g1pWW9p+N9CkaygUM3KHnOzuBKvAsxrvwuxN42?=
- =?us-ascii?Q?FbCEWaDr4KTEeC2fHrjCKdUHsIP16jqmd4maBuy0Mj70SQE6FCBPzaT9jNAI?=
- =?us-ascii?Q?VUTZOrwPYKbCh4pu/a74md8K0jRuFLR8BiLNvLO25DMfZXM1JmlCIfwzk8G9?=
- =?us-ascii?Q?VZuC+dJ5DHvXdBeZ0MsdGnDyvYURykHT3n1ACW1S?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229667AbiGVSgP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 14:36:15 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D349C25A;
+        Fri, 22 Jul 2022 11:36:14 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id l24so4247711ion.13;
+        Fri, 22 Jul 2022 11:36:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ino7IXOaHqMKyaw3vJixiAOpbn79CzPNiK8ELQbPlz8=;
+        b=XHpPvvmdpyJGD922yg2YMzXqPIGNIkE6SzohAeHNKMXN3/64xnj9t+6XoZYCwO1Hoc
+         +yH45+Oxz45BpXi0vjcpmdg0AixDDub1A0+xN/1hFhKEKuN4kGGZ9eI5FpoVwely4rH6
+         AdWTiahSdj+5XCFW4EbvZyWE3Xmpy/tB52FoZNF27fnfCTNdE9B8aK4Nitdf+jICEoAA
+         Mc9G2aZsRdj43fnxSxb6iKlzjiaaMrOprmKQM3ZczHda/bHdhwZStd4Wdwzf90QA3vYF
+         /Kp9WSLbrNbmGiZJOtAs+ulFImUu+2xO1IfO9aMctGH9N6+kfUxNqR1NfRWjOGRf4kgG
+         ePig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ino7IXOaHqMKyaw3vJixiAOpbn79CzPNiK8ELQbPlz8=;
+        b=l8GXyXce7LwNj9SBKZrctDqFSFb3cV7AaxbC17ZpKsf7rQsW+93l2eESBti0CUlPIR
+         kw9CeHRcATzxVv3M5SBya5GmmxpLq6YRT6kilpRQyb2mkj5/PqX5ScQPjaLAzVZKZ4jl
+         juLUDNAllDHQkkssz2rDH2QTn/ujyff31GcFzUw2tFcGTNgqujwWkHWARVEWDVavzE8D
+         +m2HWtKCww8pGGCbAD6F9JLMtAsB9/Kf0S6g2DdP7QQIxAyU/FdKdNpvMuFxOrzlB18+
+         IFvfxc1fT0iOtz3Fr9Y6mniWauKZbd5FX0+mLH/7pialqZ4v/y/LUBEAtha0GloHcQE9
+         DGPA==
+X-Gm-Message-State: AJIora9BO1JpxbJ5jnPzsedIAUmuuYBd92Z735Dmhelh1XniscFaevER
+        UQ4t1wKIdROWQDVpBMXbooDom4mSwjNSaofHhns=
+X-Google-Smtp-Source: AGRyM1sxH88UE4fCxrgUC3MpOCqT4XX4yJGsjriF9vUK4ZVhNqLTojFKQMk0uXyUchpLT6/+ijIQdUDT//eht7uc2sA=
+X-Received: by 2002:a05:6638:339b:b0:33f:5a4c:4d8e with SMTP id
+ h27-20020a056638339b00b0033f5a4c4d8emr582334jav.93.1658514973503; Fri, 22 Jul
+ 2022 11:36:13 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58dc55e7-ad14-4f38-9c2d-08da6c0bb52a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2022 17:57:56.5942
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ojLXAPWEs7066FiQLOCmFHCU1LOVSipe0KfIZ8Hyh0nwzgj8o+WAaLdAIDEs5+nGzHbX07Pb/mijmo7QqX6b5w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5005
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220722174829.3422466-1-yosryahmed@google.com> <20220722174829.3422466-5-yosryahmed@google.com>
+In-Reply-To: <20220722174829.3422466-5-yosryahmed@google.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Fri, 22 Jul 2022 20:35:34 +0200
+Message-ID: <CAP01T76p7CCj2i4X7PmZiG3G3-Bfx_ygnO0Eg+DnfwLHQiEPbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri, 22 Jul 2022 at 19:52, Yosry Ahmed <yosryahmed@google.com> wrote:
 >
->On Sat, Jul 23, 2022 at 12:49:49AM +0800, Jiebin Sun wrote:
->> From: jiebin sun <jiebin.sun@intel.com>
->>
->> Remove the redundant updating of stats_flush_threshold. If the global
->> var stats_flush_threshold has exceeded the trigger value for
->> __mem_cgroup_flush_stats, further increment is unnecessary.
->>
->> Apply the patch and test the pts/hackbench-1.0.0 Count:4 (160 threads).
->>
->> Score gain: 1.95x
->> Reduce CPU cycles in __mod_memcg_lruvec_state (44.88% -> 0.12%)
->>
->> CPU: ICX 8380 x 2 sockets
->> Core number: 40 x 2 physical cores
->> Benchmark: pts/hackbench-1.0.0 Count:4 (160 threads)
->>
->> Signed-off-by: Jiebin Sun <jiebin.sun@intel.com>
+> From: Hao Luo <haoluo@google.com>
 >
->Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
 >
->Good optimization, thanks!
+>  - walking a cgroup's descendants in pre-order.
+>  - walking a cgroup's descendants in post-order.
+>  - walking a cgroup's ancestors.
+>
+> When attaching cgroup_iter, one can set a cgroup to the iter_link
+> created from attaching. This cgroup is passed as a file descriptor and
+> serves as the starting point of the walk. If no cgroup is specified,
+> the starting point will be the root cgroup.
+>
+> For walking descendants, one can specify the order: either pre-order or
+> post-order. For walking ancestors, the walk starts at the specified
+> cgroup and ends at the root.
+>
+> One can also terminate the walk early by returning 1 from the iter
+> program.
+>
+> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+> program is called with cgroup_mutex held.
+>
+> Currently only one session is supported, which means, depending on the
+> volume of data bpf program intends to send to user space, the number
+> of cgroups that can be walked is limited. For example, given the current
+> buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> cgroup, the total number of cgroups that can be walked is 512. This is
+> a limitation of cgroup_iter. If the output data is larger than the
+> buffer size, the second read() will signal EOPNOTSUPP. In order to work
+> around, the user may have to update their program to reduce the volume
+> of data sent to output. For example, skip some uninteresting cgroups.
+> In future, we may extend bpf_iter flags to allow customizing buffer
+> size.
+>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf.h                           |   8 +
+>  include/uapi/linux/bpf.h                      |  30 +++
+>  kernel/bpf/Makefile                           |   3 +
+>  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h                |  30 +++
+>  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+>  6 files changed, 325 insertions(+), 2 deletions(-)
+>  create mode 100644 kernel/bpf/cgroup_iter.c
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index a97751d845c9..9061618fe929 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -47,6 +47,7 @@ struct kobject;
+>  struct mem_cgroup;
+>  struct module;
+>  struct bpf_func_state;
+> +struct cgroup;
+>
+>  extern struct idr btf_idr;
+>  extern spinlock_t btf_idr_lock;
+> @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+>         int __init bpf_iter_ ## target(args) { return 0; }
+>
+>  struct bpf_iter_aux_info {
+> +       /* for map_elem iter */
+>         struct bpf_map *map;
+> +
+> +       /* for cgroup iter */
+> +       struct {
+> +               struct cgroup *start; /* starting cgroup */
+> +               int order;
+> +       } cgroup;
+>  };
+>
+>  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ffcbf79a556b..fe50c2489350 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
+>         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+>  };
+>
+> +enum bpf_iter_cgroup_traversal_order {
+> +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
+> +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
+> +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+> +};
+> +
+>  union bpf_iter_link_info {
+>         struct {
+>                 __u32   map_fd;
+>         } map;
+> +
+> +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
+> +        * ancestors of a given cgroup.
+> +        */
+> +       struct {
+> +               /* Cgroup file descriptor. This is root of the subtree if walking
+> +                * descendants; it's the starting cgroup if walking the ancestors.
+> +                * If it is left 0, the traversal starts from the default cgroup v2
+> +                * root. For walking v1 hierarchy, one should always explicitly
+> +                * specify the cgroup_fd.
+> +                */
+> +               __u32   cgroup_fd;
+> +               __u32   traversal_order;
+> +       } cgroup;
+>  };
+>
+>  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> @@ -6136,6 +6156,16 @@ struct bpf_link_info {
+>                                         __u32 map_id;
+>                                 } map;
+>                         };
+> +                       union {
+> +                               struct {
+> +                                       __u64 cgroup_id;
+> +                                       __u32 traversal_order;
+> +                               } cgroup;
+> +                       };
+> +                       /* For new iters, if the first field is larger than __u32,
+> +                        * the struct should be added in the second union. Otherwise,
+> +                        * it will create holes before map_id, breaking uapi.
+> +                        */
+>                 } iter;
+>                 struct  {
+>                         __u32 netns_ino;
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 057ba8e01e70..00e05b69a4df 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -24,6 +24,9 @@ endif
+>  ifeq ($(CONFIG_PERF_EVENTS),y)
+>  obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+>  endif
+> +ifeq ($(CONFIG_CGROUPS),y)
+> +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
+> +endif
+>  obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+>  ifeq ($(CONFIG_INET),y)
+>  obj-$(CONFIG_BPF_SYSCALL) += reuseport_array.o
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> new file mode 100644
+> index 000000000000..1027faed0b8b
+> --- /dev/null
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -0,0 +1,252 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2022 Google */
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/cgroup.h>
+> +#include <linux/kernel.h>
+> +#include <linux/seq_file.h>
+> +
+> +#include "../cgroup/cgroup-internal.h"  /* cgroup_mutex and cgroup_is_dead */
+> +
+> +/* cgroup_iter provides three modes of traversal to the cgroup hierarchy.
+> + *
+> + *  1. Walk the descendants of a cgroup in pre-order.
+> + *  2. Walk the descendants of a cgroup in post-order.
+> + *  2. Walk the ancestors of a cgroup.
+> + *
+> + * For walking descendants, cgroup_iter can walk in either pre-order or
+> + * post-order. For walking ancestors, the iter walks up from a cgroup to
+> + * the root.
+> + *
+> + * The iter program can terminate the walk early by returning 1. Walk
+> + * continues if prog returns 0.
+> + *
+> + * The prog can check (seq->num == 0) to determine whether this is
+> + * the first element. The prog may also be passed a NULL cgroup,
+> + * which means the walk has completed and the prog has a chance to
+> + * do post-processing, such as outputing an epilogue.
+> + *
+> + * Note: the iter_prog is called with cgroup_mutex held.
+> + *
+> + * Currently only one session is supported, which means, depending on the
+> + * volume of data bpf program intends to send to user space, the number
+> + * of cgroups that can be walked is limited. For example, given the current
+> + * buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> + * cgroup, the total number of cgroups that can be walked is 512. This is
+> + * a limitation of cgroup_iter. If the output data is larger than the
+> + * buffer size, the second read() will signal EOPNOTSUPP. In order to work
+> + * around, the user may have to update their program to reduce the volume
+> + * of data sent to output. For example, skip some uninteresting cgroups.
+> + */
+> +
+> +struct bpf_iter__cgroup {
+> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +       __bpf_md_ptr(struct cgroup *, cgroup);
+> +};
+> +
+> +struct cgroup_iter_priv {
+> +       struct cgroup_subsys_state *start_css;
+> +       bool terminate;
+> +       int order;
+> +};
+> +
+> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +       struct cgroup_iter_priv *p = seq->private;
+> +
+> +       mutex_lock(&cgroup_mutex);
+> +
+> +       /* cgroup_iter doesn't support read across multiple sessions. */
+> +       if (*pos > 0)
+> +               return ERR_PTR(-EOPNOTSUPP);
+> +
+> +       ++*pos;
+> +       p->terminate = false;
+> +       if (p->order == BPF_ITER_CGROUP_PRE)
+> +               return css_next_descendant_pre(NULL, p->start_css);
+> +       else if (p->order == BPF_ITER_CGROUP_POST)
+> +               return css_next_descendant_post(NULL, p->start_css);
+> +       else /* BPF_ITER_CGROUP_PARENT_UP */
+> +               return p->start_css;
+> +}
+> +
+> +static int __cgroup_iter_seq_show(struct seq_file *seq,
+> +                                 struct cgroup_subsys_state *css, int in_stop);
+> +
+> +static void cgroup_iter_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +       /* pass NULL to the prog for post-processing */
+> +       if (!v)
+> +               __cgroup_iter_seq_show(seq, NULL, true);
+> +       mutex_unlock(&cgroup_mutex);
 
-Looks good. Nice performance improvement.
+I'm just curious, but would it be a good optimization (maybe in a
+follow up) to move this mutex_unlock before the check on v? That
+allows you to store/buffer some info you want to print as a compressed
+struct in a map, then write the full text to the seq_file outside the
+cgroup_mutex lock in the post-processing invocation.
 
-Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+It probably also allows you to walk the whole hierarchy, if one
+doesn't want to run into seq_file buffer limit (or it can decide what
+to print within the limit in the post processing invocation), or it
+can use some out of band way (ringbuf, hashmap, etc.) to send the data
+to userspace. But all of this can happen without holding cgroup_mutex
+lock.
