@@ -2,122 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 432F157DB52
-	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 09:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D59B57DC65
+	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 10:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbiGVHdZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Jul 2022 03:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
+        id S234605AbiGVIby (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Jul 2022 04:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234070AbiGVHdY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 03:33:24 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DD932EF6
-        for <cgroups@vger.kernel.org>; Fri, 22 Jul 2022 00:33:22 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c139so3833895pfc.2
-        for <cgroups@vger.kernel.org>; Fri, 22 Jul 2022 00:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aBbLSX1JockKc7+DXzMhzivNTlzRCnKzS9NOsdu1GjE=;
-        b=FH5lfoYy5vxWwh++51JNpjlucwlsQS4ixmz+0B3NZkoe7RPCjTMHjThSddtl0swkZl
-         9T4ukJZEb1V3D9PIKn1QSBahL4OsSxSyt8Ev8RV4nP+gW5w5H2fIC/DbwpMSiWPA2ABJ
-         9FSCGJfesuGhbecSsxNaGU78fp4xK1ZtEG/Np1qnnavUKZQATQlqlnvHMnPQ00jbhhsT
-         ZaIaZWJolnaAzbuXrVkj8YgfeHBhH8cSKbNy7isQ8DnR22sFEzBY+JDKCN7FQU7X7pO6
-         9kesoGgKTzbUtS+7SlzHe9ECnLkHLRESFh5vhGRoZ0tXFvogf0IDqb82FrSDH0kDDKH0
-         +zyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=aBbLSX1JockKc7+DXzMhzivNTlzRCnKzS9NOsdu1GjE=;
-        b=rMWuia1g5sAuMKUvWb45OuJGkRjNJhDoL6uHGoS4wuiuroZAWjeFrDYsUu9g5NGr+t
-         rUBCpuiG1DVaJNydm9lvpo0AFiP5dp/HrvkDy09aBcaOZzkw92d2f5XmmLELYBD6uJ+u
-         aNMGaOa9n6fmVOfN7apuU+vzYuvZTba5ZbqPf8vYp5+y15LZjjw4u1MVA4lmKX7JTcGo
-         VzRMtMIkXyvTjQ9GG7iEZO9nT69/GwKiTo2XYgEbxcrx2W62X9Gf/Ze7VJkubxtmghup
-         QvNs0tFRxgPeieL2DG8HQPDwFK92Es2bDqtNci7/HLLmNb5j7bkjEfJ+RrPgQ3LWhmvX
-         VHxA==
-X-Gm-Message-State: AJIora/CkMab+dMoWXanQUF4PEbfsgDieozMJgQk6sBWpdyfSXoc1bAL
-        +3LnVnZwPe6cjlALv/8hOh2Ca6nVKSFD2A==
-X-Google-Smtp-Source: AGRyM1tIBYKqs//Fx7yUJnJ9z6HtvRCo591eHv4D/RHr1WN4SAHATgGqm640z6NmQmxJ17TqLF2vKg==
-X-Received: by 2002:a65:6a05:0:b0:3db:27cb:9123 with SMTP id m5-20020a656a05000000b003db27cb9123mr2047983pgu.497.1658475202162;
-        Fri, 22 Jul 2022 00:33:22 -0700 (PDT)
-Received: from [10.255.164.21] ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id 193-20020a6307ca000000b0041a27e7284bsm2763448pgh.48.2022.07.22.00.33.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jul 2022 00:33:21 -0700 (PDT)
-Message-ID: <ab445d4d-70d2-9e6f-dd1d-9e71f00c1796@bytedance.com>
-Date:   Fri, 22 Jul 2022 15:33:14 +0800
+        with ESMTP id S229637AbiGVIby (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 04:31:54 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615E99E78A;
+        Fri, 22 Jul 2022 01:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658478713; x=1690014713;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uv07SzM5PWTt1IVQuWHDCVeHL3I17tUX88W1yhEAfGk=;
+  b=Lhy5jvwu90NJ7gdKMPIIfYuQ85pf9L39j38JfJ3JErfSNcOXmb5hutTT
+   ZUUXR/+FXrE8uq3+o6eHJCfyl3Y4EC3FWPBZ/r+DWhvGl3yd6wHnCDNQ/
+   YfzEymxIDMdCdhXWsN+FF64aBA6rSZXwYn5Ew3qRR0UdOovdXJlrCtTuZ
+   23khOisxGersi0DSJGITTa8SN1kiSu4uAezyUK+VZHbMdD1Odtrbz6Lqw
+   zW+kwVlNGJG5otnCVdBrbQEpIUhlfXwKtEWpPm9D8a2Tu9jomss6dQXfn
+   tLerFdbPPPgilSCUj6Y/25fg5ydRW7wS0WIfP+Ci/qfLosdsMYeD8z/5b
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10415"; a="288022524"
+X-IronPort-AV: E=Sophos;i="5.93,185,1654585200"; 
+   d="scan'208";a="288022524"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2022 01:31:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,185,1654585200"; 
+   d="scan'208";a="666603605"
+Received: from linux-pnp-server-12.sh.intel.com ([10.239.176.103])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2022 01:31:49 -0700
+From:   Jiebin Sun <jiebin.sun@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, songmuchun@bytedance.com,
+        akpm@linux-foundation.org, tim.c.chen@intel.com,
+        ying.huang@intel.com, amadeuszx.slawinski@linux.intel.com,
+        tianyou.li@intel.com, wangyang.guo@intel.com,
+        jiebin sun <jiebin.sun@intel.com>
+Subject: [PATCH] mm: Remove the redundant updating of stats_flush_threshold
+Date:   Sat, 23 Jul 2022 00:49:49 +0800
+Message-Id: <20220722164949.47760-1-jiebin.sun@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.0.1
-Subject: Re: [PATCH 9/9] sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ pressure
-Content-Language: en-US
-To:     Abel Wu <wuyun.abel@bytedance.com>, hannes@cmpxchg.org,
-        surenb@google.com, mingo@redhat.com, peterz@infradead.org,
-        tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        rdunlap@infradead.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, cgroups@vger.kernel.org
-References: <20220721040439.2651-1-zhouchengming@bytedance.com>
- <20220721040439.2651-10-zhouchengming@bytedance.com>
- <65d9f79b-be9b-e21e-0624-5c9f2cc0c0b2@bytedance.com>
- <ce22fa9d-aad0-fc23-d304-14fdd27130f4@bytedance.com>
- <5e5d41e2-5f89-8c52-11e5-0c55c5595a88@bytedance.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <5e5d41e2-5f89-8c52-11e5-0c55c5595a88@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/7/22 15:14, Abel Wu wrote:
-> On 7/22/22 2:13 PM, Chengming Zhou Wrote:
->> On 2022/7/22 11:30, Abel Wu wrote:
->>> Hi Chengming,
->>>
->>> On 7/21/22 12:04 PM, Chengming Zhou Wrote:
->>>> Now PSI already tracked workload pressure stall information for
->>>> CPU, memory and IO. Apart from these, IRQ/SOFTIRQ could have
->>>> obvious impact on some workload productivity, such as web service
->>>> workload.
->>>>
->>>> When CONFIG_IRQ_TIME_ACCOUNTING, we can get IRQ/SOFTIRQ delta time
->>>> from update_rq_clock_task(), in which we can record that delta
->>>> to CPU curr task's cgroups as PSI_IRQ_FULL status.
->>>
->>> The {soft,}irq affection should be equal to all the runnable tasks
->>> on that cpu, not only rq->curr. Further I think irqstall is per-cpu
->>> rather than per-cgroup.
->>
->> Although IRQ/SOFTIRQ is per-cpu, it's the rq->curr who own the CPU at the time
->> and pay for it, meanwhile other groups would be thought as PSI_CPU_FULL.
-> 
-> I don't think rq->curr pays for it if you mean consuming quota here.
+From: jiebin sun <jiebin.sun@intel.com>
 
-Yes, it makes rq->curr's groups look more productive than it actually is,
-which are clearly different from other groups.
+Remove the redundant updating of stats_flush_threshold. If the
+global var stats_flush_threshold has exceeded the trigger value
+for __mem_cgroup_flush_stats, further increment is unnecessary.
 
-> And it doesn't seem appropriate to let other groups treat it as cpu
-> stall because the rq->curr is also the victim rather than the one
-> causes stall (so it's different from rq->curr causing memstall and
-> observed as cpustall by others).
+Apply the patch and test the pts/hackbench-1.0.0 Count:4 (160 threads).
 
-IMHO, we don't care who causes stall, instead we care about what affects
-workload productivity.
+Score gain: 1.95x
+Reduce CPU cycles in __mod_memcg_lruvec_state (44.88% -> 0.12%)
 
+CPU: ICX 8380 x 2 sockets
+Core number: 40 x 2 physical cores
+Benchmark: pts/hackbench-1.0.0 Count:4 (160 threads)
 
-> 
->>
->> So I think it's reasonable to account this IRQ/SOFTIRQ delta to rq->curr's groups
->> as PSI_IRQ_FULL pressure stall. And per-cpu IRQ stall can also get from psi_system.
->>
-> 
+Signed-off-by: Jiebin Sun <jiebin.sun@intel.com>
+---
+ mm/memcontrol.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index abec50f31fe6..9e8c6f24c694 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -626,7 +626,14 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ 
+ 	x = __this_cpu_add_return(stats_updates, abs(val));
+ 	if (x > MEMCG_CHARGE_BATCH) {
+-		atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
++		/*
++		 * If stats_flush_threshold exceeds the threshold
++		 * (>num_online_cpus()), cgroup stats update will be triggered
++		 * in __mem_cgroup_flush_stats(). Increasing this var further
++		 * is redundant and simply adds overhead in atomic update.
++		 */
++		if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
++			atomic_add(x / MEMCG_CHARGE_BATCH, &stats_flush_threshold);
+ 		__this_cpu_write(stats_updates, 0);
+ 	}
+ }
+-- 
+2.31.1
+
