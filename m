@@ -2,84 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3058F57E440
-	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 18:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F0657E445
+	for <lists+cgroups@lfdr.de>; Fri, 22 Jul 2022 18:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbiGVQUx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 Jul 2022 12:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
+        id S231304AbiGVQXC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 22 Jul 2022 12:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbiGVQUw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 12:20:52 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E217F87228;
-        Fri, 22 Jul 2022 09:20:50 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z22so6452218edd.6;
-        Fri, 22 Jul 2022 09:20:50 -0700 (PDT)
+        with ESMTP id S230380AbiGVQXB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 22 Jul 2022 12:23:01 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E236187228
+        for <cgroups@vger.kernel.org>; Fri, 22 Jul 2022 09:23:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z6-20020a056902054600b00670e3c8b43fso1837332ybs.23
+        for <cgroups@vger.kernel.org>; Fri, 22 Jul 2022 09:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=cVC7VH4dan2A6lIJvHCy/zypzAUG5xpdNLmt95eeeH0=;
-        b=Q1d+Pjppof/gqv0B7nIuyeAH00eiJSaKutpIB2CZ/+EK1FONt/1ST2s+gYIOMqs5lq
-         e99rqflAaCuYMucMnb2LavMYUkIVzd6Knm4mvn35pGM2uEUuYLEv39lYAyTR/KCF1J3k
-         K0nDSsL6/7nfcBMeecaXQzhaKdyGxEiYlPV1fwl0AUBYXYlrPIenQBNO7NzotEo0oJmk
-         7mon5tTLOnFSLAsHYRgueRTjmir9uSaFCNWhNNooiw6lmV/fl/C8fKqfqVWk/96FX0Bl
-         N5qbgF983FkNt1YzwmVUZt+2BLjjvZHBZ+BE77IemHcvDwkVawmzkDdKJDp9PqVaOZpl
-         EamQ==
+        bh=1v2THhkhdYklOspAmtCEFIjJCUUKeZARMXv38MhEpow=;
+        b=UdOoN7qszmGcLnXMR4Ew1xMk2ipFrNQlnWb3XVRdsbye4OO074AP9hVBoaK+o/nqK/
+         CwKsZVRH5EgCwsoFrJMaA1WNLMs35xMsQgcbYZN/OGUI1c0YAVZY7U60QZJ0pz/GkYg1
+         O53wc4BVKC5ra0Dz2rtYq9nfp8be8Fz1BprUoXtxN1kdcLIcWwcoFHfg5otCLDGgQVeN
+         KxJVE/sLDbVrbc17rkla+7UpCEF4GFgUU1vEEoDCBaSF+fDLyzn89cShgYYjgx7BnkNB
+         XPBHkIJ6zv2qG5FtDrr9wveeK/ub8/0hS0rM0Wu1atXR494PpbVCtp3fMS5dI5EyK9jU
+         wUTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cVC7VH4dan2A6lIJvHCy/zypzAUG5xpdNLmt95eeeH0=;
-        b=sUCpPLRuDP5MQY7xj0RSdYxnAY0qViZMBg4yhuBuK4Bq2hOVlNpYlJl0La3fZ+xLo6
-         xx27lXFKE/AeykTMjO9B+Szy1I/8bMMjHGUOVEEzy4bx3LPe8kIjpZ9d0PKp9on65jwl
-         GXjxouDtrVMjLDD1iwtn5SF8d7eAp5yG1ToO0ZoVpZtqUJMLAbeCy/4onDKZy3ieS/Fs
-         TuC/zg4dsZLbQZTuyLnO0zSmIh1bkgykl/wB3OQoYsStH4aJY96S8IepwfLbCUCxc7fH
-         GGTMoEze/55etiw9eA9dq3bSa9RioBv/+iTwmSQlxKfxw2nFZU7vdwajvVNdrDkjAldq
-         MLwg==
-X-Gm-Message-State: AJIora+r15rm/yLo9U3YO+165WA+QR/hyhWaS30DNCy2YVuzoth2xjT4
-        7Pr8mGJWGNN1vecWEtsRWoGaACXXvlzLOajYu9g=
-X-Google-Smtp-Source: AGRyM1v8tX9AlPjaUUQNq6sWzJYaGf5FllTis+XOUgeI5WKLL4UcG0LqykqgOOfxD5pSj/RLtAmDFMoEaYztTEZfog8=
-X-Received: by 2002:a05:6402:350c:b0:43a:e25f:d73 with SMTP id
- b12-20020a056402350c00b0043ae25f0d73mr680596edd.66.1658506849261; Fri, 22 Jul
- 2022 09:20:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220722021313.3150035-1-yosryahmed@google.com> <20220722021313.3150035-2-yosryahmed@google.com>
-In-Reply-To: <20220722021313.3150035-2-yosryahmed@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 22 Jul 2022 09:20:38 -0700
-Message-ID: <CAADnVQ+c7uuVXukguvy9x2HjM9K8rj6LOa_QJ_n+MVB-bOx3uQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/8] btf: Add a new kfunc set which allows to
- mark a function to be sleepable
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=1v2THhkhdYklOspAmtCEFIjJCUUKeZARMXv38MhEpow=;
+        b=Dfsuu3yRSY79HPVa81BMn5t2AMEhnb33OrVL+9z8tJY5dFWZeYd9lsh9xB2NJmkVuc
+         0vvcgnWtNx6qu3KiVCV/FUlAv9OhXzlbeddNjw8IxTRZ7RiWuCS+x+NpfUJuJUyngH51
+         iWED/0w7+eTm2hRDpkWafAcp795dWVVJGME4mmwoNyA5OfPZvRuUnj4phRxfQNMu7O4h
+         PMUojamYWQ1YHA9tluRt/9vaVBChUBRwU22HVaQtbiBmv04LvKmp+K9Y6gY6HcaPPHHt
+         immckZM6JN5ctrnv1bWeGAweC/r6zZ24OXxfjIhEh2DDZcz77xY9KVsLRBPPWWBawivN
+         qGwA==
+X-Gm-Message-State: AJIora/Dn7oMuA4XN8JaYu750kci+ggpK9EvS9uvFtF9okQYJFpi5ERT
+        n19cblrmuYBhM0Obtl/50kJlGAkDA4CsDg==
+X-Google-Smtp-Source: AGRyM1sCNegJrDtUYTOOamWo7IQ6uTZYQOQ02ojmyPBnKh++Q7EWMLoeNc8UwznTaOuo39YXrVrI3Msk2Qp5Zg==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:a25:d406:0:b0:66e:c6b3:f11e with SMTP id
+ m6-20020a25d406000000b0066ec6b3f11emr692378ybf.354.1658506980198; Fri, 22 Jul
+ 2022 09:23:00 -0700 (PDT)
+Date:   Fri, 22 Jul 2022 16:22:57 +0000
+In-Reply-To: <20220722164949.47760-1-jiebin.sun@intel.com>
+Message-Id: <20220722162257.bl5zhc7ta6jvuy5e@google.com>
+Mime-Version: 1.0
+References: <20220722164949.47760-1-jiebin.sun@intel.com>
+Subject: Re: [PATCH] mm: Remove the redundant updating of stats_flush_threshold
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Jiebin Sun <jiebin.sun@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, songmuchun@bytedance.com,
+        akpm@linux-foundation.org, tim.c.chen@intel.com,
+        ying.huang@intel.com, amadeuszx.slawinski@linux.intel.com,
+        tianyou.li@intel.com, wangyang.guo@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,33 +70,26 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 7:13 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
-> This allows to declare a kfunc as sleepable and prevents its use in
-> a non sleepable program.
->
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  include/linux/btf.h |  2 ++
->  kernel/bpf/btf.c    | 13 +++++++++++--
->  2 files changed, 13 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 1bfed7fa0428..6e7517573d9e 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -18,6 +18,7 @@ enum btf_kfunc_type {
->         BTF_KFUNC_TYPE_RELEASE,
->         BTF_KFUNC_TYPE_RET_NULL,
->         BTF_KFUNC_TYPE_KPTR_ACQUIRE,
-> +       BTF_KFUNC_TYPE_SLEEPABLE,
->         BTF_KFUNC_TYPE_MAX,
->  };
+On Sat, Jul 23, 2022 at 12:49:49AM +0800, Jiebin Sun wrote:
+> From: jiebin sun <jiebin.sun@intel.com>
+> 
+> Remove the redundant updating of stats_flush_threshold. If the
+> global var stats_flush_threshold has exceeded the trigger value
+> for __mem_cgroup_flush_stats, further increment is unnecessary.
+> 
+> Apply the patch and test the pts/hackbench-1.0.0 Count:4 (160 threads).
+> 
+> Score gain: 1.95x
+> Reduce CPU cycles in __mod_memcg_lruvec_state (44.88% -> 0.12%)
+> 
+> CPU: ICX 8380 x 2 sockets
+> Core number: 40 x 2 physical cores
+> Benchmark: pts/hackbench-1.0.0 Count:4 (160 threads)
+> 
+> Signed-off-by: Jiebin Sun <jiebin.sun@intel.com>
 
-This patch needs refactoring using the new BTF_ID_FLAGS scheme.
-When you do that please update the Documentation/bpf/kfuncs.rst as well.
+Yes, this makes sense. No need to dirty a cacheline if we are already
+over the threshold.
 
-Thanks!
+Acked-by: Shakeel Butt <shakeelb@google.com>
+
