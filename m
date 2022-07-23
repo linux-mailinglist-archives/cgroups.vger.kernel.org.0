@@ -2,84 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AB857EC2F
-	for <lists+cgroups@lfdr.de>; Sat, 23 Jul 2022 07:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E38C57EF17
+	for <lists+cgroups@lfdr.de>; Sat, 23 Jul 2022 13:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbiGWFMN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Jul 2022 01:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
+        id S234269AbiGWL4t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Sat, 23 Jul 2022 07:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbiGWFMN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Jul 2022 01:12:13 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40683796BA;
-        Fri, 22 Jul 2022 22:12:11 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id y24so6119616plh.7;
-        Fri, 22 Jul 2022 22:12:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vQfcrjLQfJsHyJARxdU3O2zsQqRoNOwqh6fsHaYV9SA=;
-        b=WD63DTaXf4JL2gAONMBONT0m5CXaWi5ga05M8g23sp9GgXRD4ohr4/mB9b5nyuKjVU
-         9/voD4gn+EsXbKbNZ9GixOR/zzQw0i6b5CMeeEHM8bAn90lsiBxnK58nTttW8U88/q4T
-         SUZE+IuFRbR7XlLpa5KAySMiHGQhNdY661OhQBnNTvwTDTet2/o3eP0gZPU+IIEXVbOx
-         hGTnippenOJiJkAdOJfN30E26pDGRdb1MrfndfSDxMyA4TpSa1EFcO5l46SQCLFZB9we
-         kOFpvKQVAMzQykhPDydAvQ8yE2P9Uzpajju0qpp0fI1qOphFUzXGaeqA+XSQyw1z9B2w
-         EbcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vQfcrjLQfJsHyJARxdU3O2zsQqRoNOwqh6fsHaYV9SA=;
-        b=CXZLPcuJuUN1lNHX+uh98JXFWunQMfbUPJ4wlF5eDUz3jrFsTiTh7Z6Vsx9xNhlGig
-         FVrLvZL6sRotANG5b3lwefAb4gyf1zDJ9HcH85U6qNMmzvZRxkBaWJG8QQ7ZPaAtWtvG
-         cIeMn2NFvdtLwOTRqL+NczoRO0gcRybflFIgqlC6fBmHrwHkJUTH+HvmyUdphkwvrCOW
-         aLCSjnJHRHEPPb3EsNRh0vbs90GVDkpTieA3PV0nZJ91X0i+Pl0NU9yPuV55D4eWns7h
-         ns4Endwri+I7PcVWquxTkx2uy/561XJikopkxB8mLo/MEVEZMGgz07vNNNdPkd5DJmMb
-         lR8g==
-X-Gm-Message-State: AJIora/gQ4s0Bqra7tzY/1NQsBxu6eDSDY7Kk23EA5NKqYXHvMHSePmm
-        WfapHBDd8kSw63S8K6n/lCs=
-X-Google-Smtp-Source: AGRyM1tTSorjYKZpsV+BcTjIZDgnVKAYMFfTyH4gjcPufnrFd3yYTmQLrLVT5LYrHh8ED1x0nDaQgw==
-X-Received: by 2002:a17:902:d2d1:b0:16c:223e:a3db with SMTP id n17-20020a170902d2d100b0016c223ea3dbmr3153432plc.37.1658553130337;
-        Fri, 22 Jul 2022 22:12:10 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:d97e])
-        by smtp.gmail.com with ESMTPSA id 186-20020a6214c3000000b00525496442ccsm942023pfu.216.2022.07.22.22.12.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jul 2022 22:12:09 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 22 Jul 2022 19:12:07 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Dmitry Shmidt <dimitrysh@google.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 3/3 cgroup/for-5.20] cgroup: Make !percpu
- threadgroup_rwsem operations optional
-Message-ID: <YtuDJ7DijEEy3PfS@slm.duckdns.org>
-References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
- <YtDvU4jRPSsarcNp@slm.duckdns.org>
- <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
+        with ESMTP id S230010AbiGWL4s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Jul 2022 07:56:48 -0400
+X-Greylist: delayed 19364 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 23 Jul 2022 04:56:48 PDT
+Received: from iara.government.bg (mail.iara.government.bg [95.43.208.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6A21CFDE
+        for <cgroups@vger.kernel.org>; Sat, 23 Jul 2022 04:56:48 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by iara.government.bg (Postfix) with ESMTP id 0AB3C19A9ADD;
+        Sat, 23 Jul 2022 06:41:46 +0300 (EEST)
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ql58wG7zNCqn; Sat, 23 Jul 2022 06:41:45 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by iara.government.bg (Postfix) with ESMTP id 078E919A631D;
+        Sat, 23 Jul 2022 06:12:29 +0300 (EEST)
+X-Virus-Scanned: amavisd-new at iara.government.bg
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id e4nS7cj-FZ-X; Sat, 23 Jul 2022 06:12:28 +0300 (EEST)
+Received: from [51.89.160.112] (cvdcdy7n.indoordelivery.online [51.89.160.112])
+        by iara.government.bg (Postfix) with ESMTPSA id 90BA5197006F;
+        Sat, 23 Jul 2022 05:27:54 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: text GT
+To:     Recipients <Borislav.Chardakov@iara.government.bg>
+From:   Borislav.Chardakov@iara.government.bg
+Date:   Fri, 22 Jul 2022 19:27:52 -0700
+Reply-To: lerynnewest5412@gmail.com
+Message-Id: <20220723022755.90BA5197006F@iara.government.bg>
+X-Spam-Status: Yes, score=6.0 required=5.0 tests=BAYES_80,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,NIXSPAM_IXHASH,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,REPTO_419_FRAUD_GM_LOOSE,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -2.3 RCVD_IN_DNSWL_MED RBL: Sender listed at https://www.dnswl.org/,
+        *       medium trust
+        *      [95.43.208.99 listed in list.dnswl.org]
+        *  2.0 BAYES_80 BODY: Bayes spam probability is 80 to 95%
+        *      [score: 0.8953]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [lerynnewest5412[at]gmail.com]
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
+        *      [95.43.208.99 listed in wl.mailspike.net]
+        *  3.0 NIXSPAM_IXHASH http://www.nixspam.org/
+        *  1.0 REPTO_419_FRAUD_GM_LOOSE Ends-in-digits Reply-To is similar to
+        *      known advance fee fraud collector mailbox
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Applying 1-3 to cgroup/for-5.20.
+Is this email address active? We sent you a message earlier regarding
+the claiming of your €2.8 million donation. Please confirm your email
+and contact us by email
 
-Thanks.
-
--- 
-tejun
+Best Regard
+Mrs. Lerynne West
