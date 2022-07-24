@@ -2,71 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B68FC57F394
-	for <lists+cgroups@lfdr.de>; Sun, 24 Jul 2022 09:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA8F57F5EE
+	for <lists+cgroups@lfdr.de>; Sun, 24 Jul 2022 18:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbiGXHEz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 24 Jul 2022 03:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
+        id S229598AbiGXQCN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Sun, 24 Jul 2022 12:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiGXHEy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 24 Jul 2022 03:04:54 -0400
-Received: from smtpbg.qq.com (unknown [43.155.67.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADDC167D0;
-        Sun, 24 Jul 2022 00:04:47 -0700 (PDT)
-X-QQ-mid: bizesmtp81t1658646283tv99idw0
-Received: from localhost.localdomain ( [125.70.163.183])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 24 Jul 2022 15:04:41 +0800 (CST)
-X-QQ-SSF: 01000000002000007000B00A0000000
-X-QQ-FEAT: QityeSR92A2um1S4Mab87VbEW/8LxWZAgASXUNLJmIJiMQSes6kY7uX9m3700
-        OQItUh3WFmF79lezzi81zuBdO2c1xnZEY2RjgHDo+xLHjHBpIVfA0uo/8aFFkCPnWdu6aiG
-        P60gSFh3ZIu+Qjxn6J1AcelFdM0OrTc8fdAWuHQCzTagT+rE4ZoD/3c0kYdZzFb19dfg94D
-        nSdda7pz83fEzMoJ8y2CTdkouk9zxsZXvdzkWpqkcldtQBZv7KH6REQzoHUF8oCWja/LFbp
-        nT9ptUMRQMZvBWmW57cBmqGtIU07l2kPPDXj4ThVjYonQIsI3D0yr1h1m6ds5XUFV9RvG+Y
-        0y9HAgAHFcqDQFQ2bZrSpn+YpCFlTA9C/A3AgTT0Zrt9o+Z0gA=
-X-QQ-GoodBg: 0
-From:   wangjianli <wangjianli@cdjrlc.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        shuah@kernel.org
+        with ESMTP id S229469AbiGXQCK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 24 Jul 2022 12:02:10 -0400
+Received: from relay.hostedemail.com (smtprelay0011.hostedemail.com [216.40.44.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C18B2DC
+        for <cgroups@vger.kernel.org>; Sun, 24 Jul 2022 09:02:08 -0700 (PDT)
+Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay03.hostedemail.com (Postfix) with ESMTP id E3711A018E;
+        Sun, 24 Jul 2022 15:52:47 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 8784C20019;
+        Sun, 24 Jul 2022 15:52:46 +0000 (UTC)
+Message-ID: <63f42f9440b9d6d2f3e70902764e7a0c36e2f822.camel@perches.com>
+Subject: Re: [PATCH] selftests/cgroup: fix repeated words in comments
+From:   Joe Perches <joe@perches.com>
+To:     wangjianli <wangjianli@cdjrlc.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org, shuah@kernel.org
 Cc:     cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangjianli <wangjianli@cdjrlc.com>
-Subject: [PATCH] selftests/cgroup: fix repeated words in comments
-Date:   Sun, 24 Jul 2022 15:04:35 +0800
-Message-Id: <20220724070435.7999-1-wangjianli@cdjrlc.com>
-X-Mailer: git-send-email 2.36.1
+        linux-kernel@vger.kernel.org
+Date:   Sun, 24 Jul 2022 08:52:45 -0700
+In-Reply-To: <20220724070435.7999-1-wangjianli@cdjrlc.com>
+References: <20220724070435.7999-1-wangjianli@cdjrlc.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.1-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr7
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_NONE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Stat-Signature: k76ay91j9jqsdqw3pftws5snd9oxise5
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 8784C20019
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18/wXezpvMNvbRSUduNys8ACV7DDKLW0Gs=
+X-HE-Tag: 1658677966-267910
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Delete the redundant word 'in'.
+On Sun, 2022-07-24 at 15:04 +0800, wangjianli wrote:
+> Delete the redundant word 'in'.
+[]
+> diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
+[]
+> @@ -740,7 +740,7 @@ static int test_cgfreezer_ptraced(const char *root)
+>  
+>  	/*
+>  	 * cg_check_frozen(cgroup, true) will fail here,
+> -	 * because the task in in the TRACEd state.
+> +	 * because the task in the TRACEd state.
 
-Signed-off-by: wangjianli <wangjianli@cdjrlc.com>
----
- tools/testing/selftests/cgroup/test_freezer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+presumably "is in"
 
-diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
-index ff519029f6f4..b479434e87b7 100644
---- a/tools/testing/selftests/cgroup/test_freezer.c
-+++ b/tools/testing/selftests/cgroup/test_freezer.c
-@@ -740,7 +740,7 @@ static int test_cgfreezer_ptraced(const char *root)
- 
- 	/*
- 	 * cg_check_frozen(cgroup, true) will fail here,
--	 * because the task in in the TRACEd state.
-+	 * because the task in the TRACEd state.
- 	 */
- 	if (cg_freeze_wait(cgroup, false))
- 		goto cleanup;
--- 
-2.36.1
+>  	 */
+>  	if (cg_freeze_wait(cgroup, false))
+>  		goto cleanup;
 
