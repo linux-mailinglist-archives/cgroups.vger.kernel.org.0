@@ -2,379 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7B257EFA5
-	for <lists+cgroups@lfdr.de>; Sat, 23 Jul 2022 16:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5161957F2C6
+	for <lists+cgroups@lfdr.de>; Sun, 24 Jul 2022 05:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbiGWO2g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Jul 2022 10:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S239583AbiGXDpc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 23 Jul 2022 23:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbiGWO2f (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Jul 2022 10:28:35 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B0D13F9C;
-        Sat, 23 Jul 2022 07:28:31 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d10so6689916pfd.9;
-        Sat, 23 Jul 2022 07:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=iXTEGIWZmjgwfsJ/RdqwpvQ7Oe1IR7cF5Wjfs1PckEA=;
-        b=h9PL3fbnsUBo/gnY69vnKa0otkR5ryMB3SgIyfWBCDml8ASbNc4zGdsX9BXKE6Z3Go
-         eDroGnkHR+2lW1V5+7abkPqDIMGThijkEj4lVifGrMlhmucXmx7cA6sKJaLTLwZIO4UP
-         ZFFfMKs/S+EVxTUT0hwc0nPmd/SQm825cTwb+y5nnuQWqm5o893SdsL8IT2MuEd/APiy
-         KmSJ6MaHxwaAix1kX/cyjOnsSwiz+tXLA2jBnsa+9Q6kE1ewTmMKhpAJ2TiRHImCgPpN
-         SXcxNW8bV6Y0ZRXjRjRkcIdTTayHMo4bwt9UknTtThI1o9cUb5+Z2BKj3keeMGorRVDd
-         85JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=iXTEGIWZmjgwfsJ/RdqwpvQ7Oe1IR7cF5Wjfs1PckEA=;
-        b=4U5naBswJRR+1IpuXa20e7g7mkKuypOgxJfnoZ1VItKIGlKmQJtJ/czawauIpnpfZ4
-         4YhYgnlMSCOEXR0QCFPWknhuTwtO+AyL3H21wRdtnCG/hOdc4Ig4ecwhDrCHzCP2icTu
-         j2Dynv3LGTVvjZMSiy+fdC/tXVc98Dqs3zZRIl7mRhZV+Myw77A1T4eXQuk8pCZb4wjT
-         azzl4KTlxFkA/QvncwMbPDpE9c3qc+YWXs9dIClBLiwzTh/0dAfmiWk7bGuCJCbVCnie
-         W4YKRQ54LSB+cUXTMIybgzKYLcVoPCMWutZAW3k3mnsltIJb7xMFSo4psp2BuIUOJz/v
-         jLuw==
-X-Gm-Message-State: AJIora9jeA98Hd8N9MB8uTm3l0B1H4urFXmmlqwv9TtNAhFNEZ/AyWjE
-        su5CPDXiNFbtIqsFRV9+FJJX+1GwQWM=
-X-Google-Smtp-Source: AGRyM1uRGxogbvVk24HhZIl2nQdlX0mV2bFdci76PnpMQuoiUt4lLLBSWcBbvYfwouYz07wo59FeJA==
-X-Received: by 2002:a63:d5:0:b0:41a:58f:929e with SMTP id 204-20020a6300d5000000b0041a058f929emr4077256pga.260.1658586510549;
-        Sat, 23 Jul 2022 07:28:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:d97e])
-        by smtp.gmail.com with ESMTPSA id z1-20020a170902ccc100b0016d42244871sm3357453ple.6.2022.07.23.07.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jul 2022 07:28:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sat, 23 Jul 2022 04:28:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Dmitry Shmidt <dimitrysh@google.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH RESEND 3/3 cgroup/for-5.20] cgroup: Make !percpu
- threadgroup_rwsem operations optional
-Message-ID: <YtwFjPnCtw8ySnuv@slm.duckdns.org>
-References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
- <YtDvU4jRPSsarcNp@slm.duckdns.org>
- <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
+        with ESMTP id S239578AbiGXDp3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Jul 2022 23:45:29 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2988FE0EC
+        for <cgroups@vger.kernel.org>; Sat, 23 Jul 2022 20:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658634327; x=1690170327;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tXTRGfVOyX64rXW9Adgpf02Ds8hM0NdjqtiDxM3Mp78=;
+  b=OgQHFDfU+RdEt7nhv64C5rEtjDB+e1dn/KQpx5KwI+WeduFJ7y3yrqbo
+   UgtUQvsYtj6j4S6uMx9Wwy0EqYotu5aAM28UmIJ2YPON23TjJrtuvRikz
+   h85N8mBgjD2LrSrHzBccWmWplLo/krba3/NbcfFPkI+3zWHTHeNDobb7L
+   RDtkP/rtE3g86GMampNnX+cHKnUtvsGmyrTaN8F8GtY3wYAMGpMy8mcw+
+   7DlqJYLdad/Qzcec7u9EPXVlF8wLHXrWO0KEhRzVCOGHimMc2PtmMzWjR
+   6PEHa8fnSZzU7SstpgtPPE5VBYgIpAYwE9fBRGaZFlrvdKFWsfW8mCfH1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10417"; a="349209744"
+X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
+   d="scan'208";a="349209744"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2022 20:45:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
+   d="scan'208";a="926486225"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2022 20:45:24 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oFSYW-0003VJ-0h;
+        Sun, 24 Jul 2022 03:45:24 +0000
+Date:   Sun, 24 Jul 2022 11:44:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ dfce5395b3a007a1a5c3a99a8523a4fc266d858a
+Message-ID: <62dcc02e.K9qoXN0TyDfSwFoW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-3942a9bd7b58 ("locking, rcu, cgroup: Avoid synchronize_sched() in
-__cgroup_procs_write()") disabled percpu operations on threadgroup_rwsem
-because the impiled synchronize_rcu() on write locking was pushing up the
-latencies too much for android which constantly moves processes between
-cgroups.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: dfce5395b3a007a1a5c3a99a8523a4fc266d858a  Merge branch 'for-5.20' into for-next
 
-This makes the hotter paths - fork and exit - slower as they're always
-forced into the slow path. There is no reason to force this on everyone
-especially given that more common static usage pattern can now completely
-avoid write-locking the rwsem. Write-locking is elided when turning on and
-off controllers on empty sub-trees and CLONE_INTO_CGROUP enables seeding a
-cgroup without grabbing the rwsem.
+elapsed time: 720m
 
-Restore the default percpu operations and introduce the mount option
-"favordynmods" and config option CGROUP_FAVOR_DYNMODS for users who need
-lower latencies for the dynamic operations.
+configs tested: 129
+configs skipped: 5
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Michal Koutný <mkoutny@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Dmitry Shmidt <dimitrysh@google.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
----
-I messed up patch generation and the patch was missing diffs for a few
-files.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks.
+gcc tested configs:
+arm64                            allyesconfig
+arm                                 defconfig
+arm                              allyesconfig
+powerpc              randconfig-c003-20220724
+i386                          randconfig-c001
+sh                               alldefconfig
+arm                          lpd270_defconfig
+m68k                            mac_defconfig
+um                                  defconfig
+arm                           h5000_defconfig
+mips                  decstation_64_defconfig
+mips                         mpc30x_defconfig
+powerpc                     pq2fads_defconfig
+mips                       bmips_be_defconfig
+mips                         bigsur_defconfig
+sh                          rsk7269_defconfig
+sh                     magicpanelr2_defconfig
+sh                          r7785rp_defconfig
+parisc                           alldefconfig
+m68k                          amiga_defconfig
+mips                 decstation_r4k_defconfig
+sh                        sh7763rdp_defconfig
+m68k                         amcore_defconfig
+arm                            hisi_defconfig
+sh                         ap325rxa_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                           stm32_defconfig
+arm                           tegra_defconfig
+sh                                  defconfig
+parisc                generic-64bit_defconfig
+riscv                               defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                          rb532_defconfig
+openrisc                         alldefconfig
+arm                          simpad_defconfig
+mips                           ci20_defconfig
+sh                          kfr2r09_defconfig
+powerpc                     tqm8548_defconfig
+m68k                       m5208evb_defconfig
+sh                            titan_defconfig
+arm                            pleb_defconfig
+ia64                         bigsur_defconfig
+loongarch                           defconfig
+parisc64                         alldefconfig
+s390                                defconfig
+s390                             allmodconfig
+arc                                 defconfig
+alpha                               defconfig
+s390                             allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+loongarch                         allnoconfig
+i386                          debian-10.3-kvm
+i386                        debian-10.3-kunit
+i386                         debian-10.3-func
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220724
+ia64                             allmodconfig
+csky                              allnoconfig
+alpha                             allnoconfig
+arc                               allnoconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+powerpc                          allmodconfig
+mips                             allyesconfig
+powerpc                           allnoconfig
+sh                               allmodconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+s390                 randconfig-r044-20220724
+arc                  randconfig-r043-20220724
+riscv                randconfig-r042-20220724
+arc                  randconfig-r043-20220723
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                           rhel-8.3-kvm
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
 
- Documentation/admin-guide/cgroup-v2.rst |    8 +++++
- include/linux/cgroup-defs.h             |   19 +++++++++++---
- init/Kconfig                            |   10 +++++++
- kernel/cgroup/cgroup-internal.h         |    1 
- kernel/cgroup/cgroup-v1.c               |   17 +++++++++++-
- kernel/cgroup/cgroup.c                  |   43 ++++++++++++++++++++++++++------
- 6 files changed, 87 insertions(+), 11 deletions(-)
+clang tested configs:
+mips                          malta_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                       mainstone_defconfig
+mips                        qi_lb60_defconfig
+mips                        bcm63xx_defconfig
+riscv                    nommu_virt_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                     ppa8548_defconfig
+mips                      malta_kvm_defconfig
+mips                           rs90_defconfig
+powerpc                   microwatt_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                        spear3xx_defconfig
+x86_64                        randconfig-k001
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220724
+hexagon              randconfig-r045-20220724
+hexagon              randconfig-r041-20220723
+riscv                randconfig-r042-20220723
+hexagon              randconfig-r045-20220723
+s390                 randconfig-r044-20220723
 
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -184,6 +184,14 @@ cgroup v2 currently supports the followi
- 	ignored on non-init namespace mounts.  Please refer to the
- 	Delegation section for details.
- 
-+  [no]favordynmods
-+        Reduce the latencies of dynamic cgroup modifications such as
-+        task migrations and controller on/offs at the cost of making
-+        hot path operations such as forks and exits more expensive.
-+        The static usage pattern of creating a cgroup, enabling
-+        controllers, and then seeding it with CLONE_INTO_CGROUP is
-+        not affected by this option.
-+
-   memory_[no]localevents
-         Only populate memory.events with data for the current cgroup,
-         and not any subtrees. This is legacy behaviour, the default
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -89,19 +89,32 @@ enum {
- 	CGRP_ROOT_NS_DELEGATE	= (1 << 3),
- 
- 	/*
-+	 * Reduce latencies on dynamic cgroup modifications such as task
-+	 * migrations and controller on/offs by disabling percpu operation on
-+	 * cgroup_threadgroup_rwsem. This makes hot path operations such as
-+	 * forks and exits into the slow path and more expensive.
-+	 *
-+	 * The static usage pattern of creating a cgroup, enabling controllers,
-+	 * and then seeding it with CLONE_INTO_CGROUP doesn't require write
-+	 * locking cgroup_threadgroup_rwsem and thus doesn't benefit from
-+	 * favordynmod.
-+	 */
-+	CGRP_ROOT_FAVOR_DYNMODS = (1 << 4),
-+
-+	/*
- 	 * Enable cpuset controller in v1 cgroup to use v2 behavior.
- 	 */
--	CGRP_ROOT_CPUSET_V2_MODE = (1 << 4),
-+	CGRP_ROOT_CPUSET_V2_MODE = (1 << 16),
- 
- 	/*
- 	 * Enable legacy local memory.events.
- 	 */
--	CGRP_ROOT_MEMORY_LOCAL_EVENTS = (1 << 5),
-+	CGRP_ROOT_MEMORY_LOCAL_EVENTS = (1 << 17),
- 
- 	/*
- 	 * Enable recursive subtree protection
- 	 */
--	CGRP_ROOT_MEMORY_RECURSIVE_PROT = (1 << 6),
-+	CGRP_ROOT_MEMORY_RECURSIVE_PROT = (1 << 18),
- };
- 
- /* cftype->flags */
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -936,6 +936,16 @@ if CGROUPS
- config PAGE_COUNTER
- 	bool
- 
-+config CGROUP_FAVOR_DYNMODS
-+        bool "Favor dynamic modification latency reduction by default"
-+        help
-+          This option enables the "favordynmods" mount option by default
-+          which reduces the latencies of dynamic cgroup modifications such
-+          as task migrations and controller on/offs at the cost of making
-+          hot path operations such as forks and exits more expensive.
-+
-+          Say N if unsure.
-+
- config MEMCG
- 	bool "Memory controller"
- 	select PAGE_COUNTER
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -233,6 +233,7 @@ void cgroup_kn_unlock(struct kernfs_node
- int cgroup_path_ns_locked(struct cgroup *cgrp, char *buf, size_t buflen,
- 			  struct cgroup_namespace *ns);
- 
-+void cgroup_favor_dynmods(struct cgroup_root *root, bool favor);
- void cgroup_free_root(struct cgroup_root *root);
- void init_cgroup_root(struct cgroup_fs_context *ctx);
- int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask);
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -875,6 +875,8 @@ static int cgroup1_show_options(struct s
- 		seq_puts(seq, ",xattr");
- 	if (root->flags & CGRP_ROOT_CPUSET_V2_MODE)
- 		seq_puts(seq, ",cpuset_v2_mode");
-+	if (root->flags & CGRP_ROOT_FAVOR_DYNMODS)
-+		seq_puts(seq, ",favordynmods");
- 
- 	spin_lock(&release_agent_path_lock);
- 	if (strlen(root->release_agent_path))
-@@ -898,6 +900,8 @@ enum cgroup1_param {
- 	Opt_noprefix,
- 	Opt_release_agent,
- 	Opt_xattr,
-+	Opt_favordynmods,
-+	Opt_nofavordynmods,
- };
- 
- const struct fs_parameter_spec cgroup1_fs_parameters[] = {
-@@ -909,6 +913,8 @@ const struct fs_parameter_spec cgroup1_f
- 	fsparam_flag  ("noprefix",	Opt_noprefix),
- 	fsparam_string("release_agent",	Opt_release_agent),
- 	fsparam_flag  ("xattr",		Opt_xattr),
-+	fsparam_flag  ("favordynmods",	Opt_favordynmods),
-+	fsparam_flag  ("nofavordynmods", Opt_nofavordynmods),
- 	{}
- };
- 
-@@ -960,6 +966,12 @@ int cgroup1_parse_param(struct fs_contex
- 	case Opt_xattr:
- 		ctx->flags |= CGRP_ROOT_XATTR;
- 		break;
-+	case Opt_favordynmods:
-+		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-+		break;
-+	case Opt_nofavordynmods:
-+		ctx->flags &= ~CGRP_ROOT_FAVOR_DYNMODS;
-+		break;
- 	case Opt_release_agent:
- 		/* Specifying two release agents is forbidden */
- 		if (ctx->release_agent)
-@@ -1211,8 +1223,11 @@ static int cgroup1_root_to_use(struct fs
- 	init_cgroup_root(ctx);
- 
- 	ret = cgroup_setup_root(root, ctx->subsys_mask);
--	if (ret)
-+	if (!ret)
-+		cgroup_favor_dynmods(root, ctx->flags & CGRP_ROOT_FAVOR_DYNMODS);
-+	else
- 		cgroup_free_root(root);
-+
- 	return ret;
- }
- 
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1305,6 +1305,20 @@ struct cgroup_root *cgroup_root_from_kf(
- 	return root_cgrp->root;
- }
- 
-+void cgroup_favor_dynmods(struct cgroup_root *root, bool favor)
-+{
-+	bool favoring = root->flags & CGRP_ROOT_FAVOR_DYNMODS;
-+
-+	/* see the comment above CGRP_ROOT_FAVOR_DYNMODS definition */
-+	if (favor && !favoring) {
-+		rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
-+		root->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-+	} else if (!favor && favoring) {
-+		rcu_sync_exit(&cgroup_threadgroup_rwsem.rss);
-+		root->flags &= ~CGRP_ROOT_FAVOR_DYNMODS;
-+	}
-+}
-+
- static int cgroup_init_root_id(struct cgroup_root *root)
- {
- 	int id;
-@@ -1365,6 +1379,7 @@ static void cgroup_destroy_root(struct c
- 		cgroup_root_count--;
- 	}
- 
-+	cgroup_favor_dynmods(root, false);
- 	cgroup_exit_root_id(root);
- 
- 	mutex_unlock(&cgroup_mutex);
-@@ -1858,6 +1873,7 @@ int cgroup_show_path(struct seq_file *sf
- 
- enum cgroup2_param {
- 	Opt_nsdelegate, Opt_nonsdelegate,
-+	Opt_favordynmods, Opt_nofavordynmods,
- 	Opt_memory_localevents, Opt_memory_nolocalevents,
- 	Opt_memory_recursiveprot, Opt_memory_norecursiveprot,
- 	nr__cgroup2_params
-@@ -1866,6 +1882,8 @@ enum cgroup2_param {
- static const struct fs_parameter_spec cgroup2_fs_parameters[] = {
- 	fsparam_flag("nsdelegate",		Opt_nsdelegate),
- 	fsparam_flag("nonsdelegate",		Opt_nonsdelegate),
-+	fsparam_flag("favordynmods",		Opt_favordynmods),
-+	fsparam_flag("nofavordynmods",		Opt_nofavordynmods),
- 	fsparam_flag("memory_localevents",	Opt_memory_localevents),
- 	fsparam_flag("memory_nolocalevents",	Opt_memory_nolocalevents),
- 	fsparam_flag("memory_recursiveprot",	Opt_memory_recursiveprot),
-@@ -1890,6 +1908,12 @@ static int cgroup2_parse_param(struct fs
- 	case Opt_nonsdelegate:
- 		ctx->flags &= ~CGRP_ROOT_NS_DELEGATE;
- 		return 0;
-+	case Opt_favordynmods:
-+		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-+		return 0;
-+	case Opt_nofavordynmods:
-+		ctx->flags &= ~CGRP_ROOT_FAVOR_DYNMODS;
-+		return 0;
- 	case Opt_memory_localevents:
- 		ctx->flags |= CGRP_ROOT_MEMORY_LOCAL_EVENTS;
- 		return 0;
-@@ -1914,6 +1938,9 @@ static void apply_cgroup_root_flags(unsi
- 		else
- 			cgrp_dfl_root.flags &= ~CGRP_ROOT_NS_DELEGATE;
- 
-+		cgroup_favor_dynmods(&cgrp_dfl_root,
-+				     root_flags & CGRP_ROOT_FAVOR_DYNMODS);
-+
- 		if (root_flags & CGRP_ROOT_MEMORY_LOCAL_EVENTS)
- 			cgrp_dfl_root.flags |= CGRP_ROOT_MEMORY_LOCAL_EVENTS;
- 		else
-@@ -1930,6 +1957,8 @@ static int cgroup_show_options(struct se
- {
- 	if (cgrp_dfl_root.flags & CGRP_ROOT_NS_DELEGATE)
- 		seq_puts(seq, ",nsdelegate");
-+	if (cgrp_dfl_root.flags & CGRP_ROOT_FAVOR_DYNMODS)
-+		seq_puts(seq, ",favordynmods");
- 	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_LOCAL_EVENTS)
- 		seq_puts(seq, ",memory_localevents");
- 	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_RECURSIVE_PROT)
-@@ -1980,7 +2009,8 @@ void init_cgroup_root(struct cgroup_fs_c
- 	cgrp->root = root;
- 	init_cgroup_housekeeping(cgrp);
- 
--	root->flags = ctx->flags;
-+	/* DYNMODS must be modified through cgroup_favor_dynmods() */
-+	root->flags = ctx->flags & ~CGRP_ROOT_FAVOR_DYNMODS;
- 	if (ctx->release_agent)
- 		strscpy(root->release_agent_path, ctx->release_agent, PATH_MAX);
- 	if (ctx->name)
-@@ -2202,6 +2232,10 @@ static int cgroup_init_fs_context(struct
- 	put_user_ns(fc->user_ns);
- 	fc->user_ns = get_user_ns(ctx->ns->user_ns);
- 	fc->global = true;
-+
-+#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
-+	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-+#endif
- 	return 0;
- }
- 
-@@ -5854,12 +5888,6 @@ int __init cgroup_init(void)
- 
- 	cgroup_rstat_boot();
- 
--	/*
--	 * The latency of the synchronize_rcu() is too high for cgroups,
--	 * avoid it at the cost of forcing all readers into the slow path.
--	 */
--	rcu_sync_enter_start(&cgroup_threadgroup_rwsem.rss);
--
- 	get_user_ns(init_cgroup_ns.user_ns);
- 
- 	mutex_lock(&cgroup_mutex);
-@@ -6771,6 +6799,7 @@ static ssize_t features_show(struct kobj
- {
- 	return snprintf(buf, PAGE_SIZE,
- 			"nsdelegate\n"
-+			"favordynmods\n"
- 			"memory_localevents\n"
- 			"memory_recursiveprot\n");
- }
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
