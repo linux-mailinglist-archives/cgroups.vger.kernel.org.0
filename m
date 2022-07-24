@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5161957F2C6
-	for <lists+cgroups@lfdr.de>; Sun, 24 Jul 2022 05:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E2B57F34C
+	for <lists+cgroups@lfdr.de>; Sun, 24 Jul 2022 07:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbiGXDpc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 23 Jul 2022 23:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        id S231558AbiGXFNp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 24 Jul 2022 01:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239578AbiGXDp3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 23 Jul 2022 23:45:29 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2988FE0EC
-        for <cgroups@vger.kernel.org>; Sat, 23 Jul 2022 20:45:26 -0700 (PDT)
+        with ESMTP id S229453AbiGXFNn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 24 Jul 2022 01:13:43 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD151186F0
+        for <cgroups@vger.kernel.org>; Sat, 23 Jul 2022 22:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658634327; x=1690170327;
+  t=1658639621; x=1690175621;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=tXTRGfVOyX64rXW9Adgpf02Ds8hM0NdjqtiDxM3Mp78=;
-  b=OgQHFDfU+RdEt7nhv64C5rEtjDB+e1dn/KQpx5KwI+WeduFJ7y3yrqbo
-   UgtUQvsYtj6j4S6uMx9Wwy0EqYotu5aAM28UmIJ2YPON23TjJrtuvRikz
-   h85N8mBgjD2LrSrHzBccWmWplLo/krba3/NbcfFPkI+3zWHTHeNDobb7L
-   RDtkP/rtE3g86GMampNnX+cHKnUtvsGmyrTaN8F8GtY3wYAMGpMy8mcw+
-   7DlqJYLdad/Qzcec7u9EPXVlF8wLHXrWO0KEhRzVCOGHimMc2PtmMzWjR
-   6PEHa8fnSZzU7SstpgtPPE5VBYgIpAYwE9fBRGaZFlrvdKFWsfW8mCfH1
+  bh=+GBD/kwtlUB3+faJEeMz3I7wHgY2Uv5G84/vMfITpLo=;
+  b=IRplb8/6QiI6YjKuIFWwzO8fzblk7uuoGmCHRNRnBgQzVMdmjjRtRlwm
+   CqNZx/MSVcjrdnxBcgBeA5oRoT//YQ/MiYE6tQuGmanSYjZFpr8k0DZk+
+   w/U0/QM7yt0YB/wDGbFYYXqPngwErBYPxHaW6Ox4O7Wt3YFfe/bQROBpi
+   kYeQ+kYMpxg8kiJX/E1kaD7sDo9ApmjnkcnimiLFNYvOaG2cjde3DMyuk
+   6z8PLKAazxvtkdi/bzuODd/mjwrWD3hoK5UVzM7A/49BcFAHHAgLEuol6
+   e4CIzO9864pAmXc/w4bDMqeQz72S9CzPLEPi425c0rIZ+i8yKrN7M5boa
    Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10417"; a="349209744"
+X-IronPort-AV: E=McAfee;i="6400,9594,10417"; a="267907817"
 X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
-   d="scan'208";a="349209744"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2022 20:45:26 -0700
+   d="scan'208";a="267907817"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2022 22:13:41 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,189,1654585200"; 
-   d="scan'208";a="926486225"
+   d="scan'208";a="702110708"
 Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2022 20:45:24 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 23 Jul 2022 22:13:40 -0700
 Received: from kbuild by e0eace57cfef with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1oFSYW-0003VJ-0h;
-        Sun, 24 Jul 2022 03:45:24 +0000
-Date:   Sun, 24 Jul 2022 11:44:46 +0800
+        id 1oFTvv-0003aF-1x;
+        Sun, 24 Jul 2022 05:13:39 +0000
+Date:   Sun, 24 Jul 2022 13:13:18 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- dfce5395b3a007a1a5c3a99a8523a4fc266d858a
-Message-ID: <62dcc02e.K9qoXN0TyDfSwFoW%lkp@intel.com>
+Subject: [tj-cgroup:for-5.20] BUILD SUCCESS
+ 6a010a49b63ac8465851a79185d8deff966f8e1a
+Message-ID: <62dcd4ee.yQiq+Be9uu2ccqtF%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -61,12 +61,12 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: dfce5395b3a007a1a5c3a99a8523a4fc266d858a  Merge branch 'for-5.20' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.20
+branch HEAD: 6a010a49b63ac8465851a79185d8deff966f8e1a  cgroup: Make !percpu threadgroup_rwsem operations optional
 
-elapsed time: 720m
+elapsed time: 809m
 
-configs tested: 129
+configs tested: 126
 configs skipped: 5
 
 The following configs have been built successfully.
@@ -142,25 +142,22 @@ m68k                             allyesconfig
 m68k                             allmodconfig
 arc                              allyesconfig
 alpha                            allyesconfig
-powerpc                          allmodconfig
-mips                             allyesconfig
 powerpc                           allnoconfig
+powerpc                          allmodconfig
 sh                               allmodconfig
+mips                             allyesconfig
 i386                             allyesconfig
 i386                                defconfig
 x86_64                        randconfig-a004
 x86_64                        randconfig-a002
 x86_64                        randconfig-a006
-i386                          randconfig-a001
-i386                          randconfig-a003
-i386                          randconfig-a005
 i386                          randconfig-a012
 i386                          randconfig-a014
 i386                          randconfig-a016
-s390                 randconfig-r044-20220724
 arc                  randconfig-r043-20220724
+s390                 randconfig-r044-20220724
 riscv                randconfig-r042-20220724
-arc                  randconfig-r043-20220723
+arc                  randconfig-r043-20220721
 x86_64                    rhel-8.3-kselftests
 um                             i386_defconfig
 um                           x86_64_defconfig
@@ -169,8 +166,8 @@ x86_64                           allyesconfig
 x86_64                               rhel-8.3
 x86_64                           rhel-8.3-kvm
 x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
 x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
 
 clang tested configs:
 mips                          malta_defconfig
@@ -191,8 +188,8 @@ x86_64                        randconfig-a005
 x86_64                        randconfig-a003
 x86_64                        randconfig-a001
 i386                          randconfig-a002
-i386                          randconfig-a004
 i386                          randconfig-a006
+i386                          randconfig-a004
 x86_64                        randconfig-a012
 x86_64                        randconfig-a014
 x86_64                        randconfig-a016
@@ -201,10 +198,10 @@ i386                          randconfig-a011
 i386                          randconfig-a015
 hexagon              randconfig-r041-20220724
 hexagon              randconfig-r045-20220724
-hexagon              randconfig-r041-20220723
-riscv                randconfig-r042-20220723
-hexagon              randconfig-r045-20220723
-s390                 randconfig-r044-20220723
+hexagon              randconfig-r041-20220721
+hexagon              randconfig-r045-20220721
+riscv                randconfig-r042-20220721
+s390                 randconfig-r044-20220721
 
 -- 
 0-DAY CI Kernel Test Service
