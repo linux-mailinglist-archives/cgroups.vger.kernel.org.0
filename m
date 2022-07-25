@@ -2,91 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9757B580091
-	for <lists+cgroups@lfdr.de>; Mon, 25 Jul 2022 16:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062A85801F4
+	for <lists+cgroups@lfdr.de>; Mon, 25 Jul 2022 17:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbiGYOQ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 25 Jul 2022 10:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51056 "EHLO
+        id S233790AbiGYPef (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 Jul 2022 11:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbiGYOQ6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Jul 2022 10:16:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C774DF12;
-        Mon, 25 Jul 2022 07:16:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E203DB80ED0;
-        Mon, 25 Jul 2022 14:16:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98914C341C6;
-        Mon, 25 Jul 2022 14:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658758614;
-        bh=p9/gFb1902RLnmreUeNFAHcbKgrOvbu9N0D0jG7+uBE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AkOKY3UMzdkfecaitmz6IXmVhF5eNwiBrQE/mS4uiWu2IL70SzLVLCisC10ETcVtI
-         enMoVGVUa76JLUafYZ7b+snwHVt6YHktjb+0COvfAyK44Jc/bmBGa0ivJ5KLrmz4jY
-         RuCK5I8BIFEWanDSM1IHJImxMAj3y5K+Z1ulenmactWnPMMG2huJGlONVz0agoXahA
-         /KtXIk8smhLeMBRh2brDlTf56bx9iirwtnFhOOkLn/Crgy7zEFiAxUXXQuzv62r3z3
-         mJRjANXJft/74cvd9pymtRgZBano2iJxOsLU02p72Ymcsgjc3Bewp86Gs2F1WP+dEi
-         m2LhCzQRgnEOQ==
-Date:   Mon, 25 Jul 2022 16:16:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Dmitry Shmidt <dimitrysh@google.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        with ESMTP id S233374AbiGYPec (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 25 Jul 2022 11:34:32 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C0EB4A3
+        for <cgroups@vger.kernel.org>; Mon, 25 Jul 2022 08:34:31 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id u12so8506130qtk.0
+        for <cgroups@vger.kernel.org>; Mon, 25 Jul 2022 08:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=67je02j6uPzSAKV5fALusQHcJaLZtd8UN7xVwkpfhMI=;
+        b=cqYIXD8d4R3afensKf+99266lB8CnpoCR0cvyQJleALFFxfA893nPv3nDzZXt3p9za
+         s8ObwE74BOHxU+40bwlVdDr3a0JISs43bgIQOwzuJcNzM0xST3u+iLxR8hwv1zNTXHS6
+         Grd3BJJSVOsa4373326OgtzSlvStT0S1VDd14qQS8J0boaE438X2O4r5roAtieEZRa6h
+         SNNVP2akwjO8VpRxcok8o5upBwDLt09kWP3F6AcTwTqmdW5Me+jybiLbG/C3AXfnQHXy
+         6oThJosmja+RHL1pI0goIfSDiDz5HrJwrK5df6TJlo/cSxTG7pIONBV6cRi62GYTHyug
+         bsxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=67je02j6uPzSAKV5fALusQHcJaLZtd8UN7xVwkpfhMI=;
+        b=E6UReA3gQw5Thsp9ylH4yokIeOl0dCAMcROEQMKkJGA/AC2DTzJvHLcnOQG2BT8Fxh
+         7ZkbwubmD+WNl0L9f2U9g+hzoN2rryYZcpOylCNTPDyPX/P6wXBZ8Hq3pcEjw+GYBKhD
+         nvFxQ1mFOefwom8Qrsv9jLzCR6GL2Pa0axJjbwGLx56C+I/ErHFmiyO7NYbK3rZpNqsA
+         usmgsUWHZs47/b0q62cxJpabduKGO3i1BaaN4pjZqnuIIb14uSzjj8MsFT4RChTf3sn8
+         dLrYVdYpllRwChPVK7MyrmsfpWC0GrKzb1w/VaGaPfbN0PDG5eAenIS0H3wJkfhAxgS3
+         YmoA==
+X-Gm-Message-State: AJIora/7MLq8EsorQ+FmMTBXbkAl76qu706mhEpulwP2h+FLj1NrsEXj
+        4OEJ9afUqcpeVjqf5CyRe6cIAg==
+X-Google-Smtp-Source: AGRyM1vgqIkAXbToyHYJQiompUrodEA+PwnkTXUl3kHFv5+9uA0m41T7e88PjoGYpUJEUXXNPNijFg==
+X-Received: by 2002:ac8:5ac2:0:b0:31f:d13:de85 with SMTP id d2-20020ac85ac2000000b0031f0d13de85mr10923232qtd.397.1658763270030;
+        Mon, 25 Jul 2022 08:34:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:994f])
+        by smtp.gmail.com with ESMTPSA id q3-20020a05622a030300b0031eb393aa45sm7783893qtw.40.2022.07.25.08.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jul 2022 08:34:29 -0700 (PDT)
+Date:   Mon, 25 Jul 2022 11:34:28 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     surenb@google.com, mingo@redhat.com, peterz@infradead.org,
+        tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
         cgroups@vger.kernel.org
-Subject: Re: [PATCH RESEND 3/3 cgroup/for-5.20] cgroup: Make !percpu
- threadgroup_rwsem operations optional
-Message-ID: <20220725141649.ou7tsntv4xnqtbmc@wittgenstein>
-References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
- <YtDvU4jRPSsarcNp@slm.duckdns.org>
- <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
- <YtwFjPnCtw8ySnuv@slm.duckdns.org>
+Subject: Re: [PATCH 1/9] sched/psi: fix periodic aggregation shut off
+Message-ID: <Yt64BKsrUbD0xxYI@cmpxchg.org>
+References: <20220721040439.2651-1-zhouchengming@bytedance.com>
+ <20220721040439.2651-2-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YtwFjPnCtw8ySnuv@slm.duckdns.org>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220721040439.2651-2-zhouchengming@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jul 23, 2022 at 04:28:28AM -1000, Tejun Heo wrote:
-> 3942a9bd7b58 ("locking, rcu, cgroup: Avoid synchronize_sched() in
-> __cgroup_procs_write()") disabled percpu operations on threadgroup_rwsem
-> because the impiled synchronize_rcu() on write locking was pushing up the
-> latencies too much for android which constantly moves processes between
-> cgroups.
+On Thu, Jul 21, 2022 at 12:04:31PM +0800, Chengming Zhou wrote:
+> We don't want to wake periodic aggregation work back up if the
+> task change is the aggregation worker itself going to sleep, or
+> we'll ping-pong forever.
 > 
-> This makes the hotter paths - fork and exit - slower as they're always
-> forced into the slow path. There is no reason to force this on everyone
-> especially given that more common static usage pattern can now completely
-> avoid write-locking the rwsem. Write-locking is elided when turning on and
-> off controllers on empty sub-trees and CLONE_INTO_CGROUP enables seeding a
-> cgroup without grabbing the rwsem.
+> Previously, we would use psi_task_change() in psi_dequeue() when
+> task going to sleep, so this check was put in psi_task_change().
 > 
-> Restore the default percpu operations and introduce the mount option
-> "favordynmods" and config option CGROUP_FAVOR_DYNMODS for users who need
-> lower latencies for the dynamic operations.
+> But commit 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
+> defer task sleep handling to psi_task_switch(), won't go through
+> psi_task_change() anymore.
 > 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Michal Koutný <mkoutny@suse.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Dmitry Shmidt <dimitrysh@google.com>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> ---
+> So this patch move this check to psi_task_switch(). Note for defer sleep
+> case, we should wake periodic avgs work for common ancestors groups,
+> since those groups have next task sched_in.
+> 
+> Fixes: 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Seems sane,
-Acked-by: Christian Brauner (Microsoft) <brauner@kernel.org>
+Good catch!
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
