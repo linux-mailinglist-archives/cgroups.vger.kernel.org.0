@@ -2,128 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD0B581558
-	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 16:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154A65816C4
+	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 17:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239102AbiGZOdD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jul 2022 10:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        id S239319AbiGZPuM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jul 2022 11:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239307AbiGZOdC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 10:33:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A346129813;
-        Tue, 26 Jul 2022 07:33:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2758437EFB;
-        Tue, 26 Jul 2022 14:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658845979; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GmzxlrD4MfGqasLwf7DeQPvyp1YsjrHWacTayMiVBgs=;
-        b=VzaexPvcMynfjlBtImA2nTgG3+dH5jaMLEtGNj2QeksXbstkDRq1u8e7ogp2JZUAqJFhEK
-        +TgJXVLp7L7TwUNj+MkJRDnMCThwYCv0CKz6ZWhZFabsQjJMSm9ABubb+3Vf685KftagjK
-        IyigtmDwXokwRz35tcgFW3KQ/BGxWfg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F40C413322;
-        Tue, 26 Jul 2022 14:32:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1FjDOhr732J3PwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 26 Jul 2022 14:32:58 +0000
-Date:   Tue, 26 Jul 2022 16:32:57 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Dmitry Shmidt <dimitrysh@google.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH RESEND 3/3 cgroup/for-5.20] cgroup: Make !percpu
- threadgroup_rwsem operations optional
-Message-ID: <20220726143257.GA23882@blackbody.suse.cz>
-References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
- <YtDvU4jRPSsarcNp@slm.duckdns.org>
- <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
- <YtwFjPnCtw8ySnuv@slm.duckdns.org>
+        with ESMTP id S239225AbiGZPuL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 11:50:11 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C973DBF8
+        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 08:50:09 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id f11-20020a056e02168b00b002dc8abbf7f9so9335235ila.12
+        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 08:50:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9GYqC1SZgEt4OU0y/SLneyFSp1BWvBVjECk5yA8DcYM=;
+        b=SRJqylczpqSZeKBpiFSIhKDxOcREBqhscN9o99aq493c4NsAntP7XUY9s1BWJsPOAH
+         iz+S79s2AQci+MFppkYqswDEQJ6SpHUX0IJzvvbRX/Sn0HSmieu6YYD4+PnRRJnmbUDI
+         QsTydSoWDePSf58XLezPEBFdESweSGuUspN4/1ABHpvwKtcMtejFauqtS60nHbLVqh/G
+         1gxxlBy3Mj+e7Q+HBioa0MP1UkVOVejYqO+0Fn2ld8dXjRgmo9v02kpIvGRrKzpDLCUG
+         vm3Mm+zJYmotiTzZoCHIc+xYlIKRBcCCsIil2CjXiGKYWBhZjD28Qfo3//eRS/2B7YcM
+         aYgA==
+X-Gm-Message-State: AJIora9JhGK10y3/R/8H7CqBXToBBVf3JBCdOY0yp8kpkQPOej9Zi1/+
+        +hVhdRqqvr9aIw8SMexSPWV8p+O4HRAqx7kb9pnM4ZIG+9FQ
+X-Google-Smtp-Source: AGRyM1vBd0kqUwkUfm5c1V+ohC7MFmfH5XMdmZakPq54XdOfuY0OBKqF5lk3fVr3SxlyFz09/GlrCA3SVG/TcLfJN1P1MSUnspC3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <YtwFjPnCtw8ySnuv@slm.duckdns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a6b:3ec2:0:b0:67c:6baf:a51f with SMTP id
+ l185-20020a6b3ec2000000b0067c6bafa51fmr6408311ioa.160.1658850609194; Tue, 26
+ Jul 2022 08:50:09 -0700 (PDT)
+Date:   Tue, 26 Jul 2022 08:50:09 -0700
+In-Reply-To: <00000000000026864605c611cc51@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004bee3605e4b74106@google.com>
+Subject: Re: [syzbot] INFO: rcu detected stall in net_tx_action
+From:   syzbot <syzbot+3ba0493d523d007b3819@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, cgroups@vger.kernel.org, fweisbec@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mingo@kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 0a9a25ca78437b39e691bcc3dc8240455b803d8d
+Author: Ming Lei <ming.lei@redhat.com>
+Date:   Fri Mar 18 13:01:43 2022 +0000
 
-On Sat, Jul 23, 2022 at 04:28:28AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> This makes the hotter paths - fork and exit - slower as they're always
-> forced into the slow path. There is no reason to force this on everyone
-> especially given that more common static usage pattern can now completely
-> avoid write-locking the rwsem. Write-locking is elided when turning on and
-> off controllers on empty sub-trees and CLONE_INTO_CGROUP enables seeding a
-> cgroup without grabbing the rwsem.
+    block: let blkcg_gq grab request queue's refcnt
 
-Just a practical note that CLONE_INTO_CGROUP may not be so widespread
-yet [1][2].
-But generally, the change makes sense to me.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1004f05a080000
+start commit:   d6765985a42a Revert "be2net: disable bh with spin_lock in ..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ca96a2d153c74b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ba0493d523d007b3819
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c9edc8300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172463c8300000
 
+If the result looks correct, please mark the issue as fixed by replying with:
 
-> +	CGRP_ROOT_FAVOR_DYNMODS =3D (1 << 4),
-> +
-> +	/*
->  	 * Enable cpuset controller in v1 cgroup to use v2 behavior.
->  	 */
-> -	CGRP_ROOT_CPUSET_V2_MODE =3D (1 << 4),
-> +	CGRP_ROOT_CPUSET_V2_MODE =3D (1 << 16),
-> =20
->  	/*
->  	 * Enable legacy local memory.events.
->  	 */
-> -	CGRP_ROOT_MEMORY_LOCAL_EVENTS =3D (1 << 5),
-> +	CGRP_ROOT_MEMORY_LOCAL_EVENTS =3D (1 << 17),
-> =20
->  	/*
->  	 * Enable recursive subtree protection
->  	 */
-> -	CGRP_ROOT_MEMORY_RECURSIVE_PROT =3D (1 << 6),
-> +	CGRP_ROOT_MEMORY_RECURSIVE_PROT =3D (1 << 18),
+#syz fix: block: let blkcg_gq grab request queue's refcnt
 
-Why this new gap in flag bits?
-
-[1] https://github.com/systemd/systemd/pull/16706
-[2] https://github.com/search?q=3Dorg%3Aopencontainers+CLONE_INTO_CGROUP&ty=
-pe=3Dall (empty)
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYt/7FwAKCRAkDQmsBEOq
-uUu7AQCTUIpH8K9WfOjrd4atmJg3ivYL9Dq6gqtpvNZrS7XStgD+Prz9fzwjGXvO
-Fw86GZpQI02CRHvZdUw+lRMJ8r7qhAQ=
-=bB6g
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
