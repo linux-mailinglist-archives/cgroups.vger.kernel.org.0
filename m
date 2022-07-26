@@ -2,120 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784EE58193B
-	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 19:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B597A581948
+	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 20:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239740AbiGZRzZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jul 2022 13:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S239012AbiGZSED (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jul 2022 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239732AbiGZRy6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 13:54:58 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC81B32D96;
-        Tue, 26 Jul 2022 10:54:37 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id y1so5985375pja.4;
-        Tue, 26 Jul 2022 10:54:37 -0700 (PDT)
+        with ESMTP id S230086AbiGZSEC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 14:04:02 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F74C27CC3
+        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 11:04:02 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id b9so13899737pfp.10
+        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 11:04:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=DFgeZNTjRjBYgNmkhdouEdidU0qh0nBq3Cx2lZF1bjo=;
-        b=CwrXMvt6/2k2vhgXq2Vb5DoxMilL8fBFiWso9p0CwMybnJwusgl9XqfCmfL15TCl/f
-         YO5t7j9otoleOuTxlsKptSB13ABGonnW0GPUIS+uJYv/KPEJI3j4aJ/DtNBD8Pm0JAxr
-         dBjWNczvJno4T49bQoez0qCGdPbHxMN/MSz3IvTKlsDq6A/StReJkCFryjZ9J/mjme06
-         sXd0PRLlqo6DYc57xeeYIBSiV6psMdtqGem+lhK6UtyvHa1s2UFzW3Y2xnRvTScWajy1
-         qVHrNKaL1jqhqbmuoEooMh2JbJgjKpWnzfD58J0gqQf58R3RPlcvmbjpNbpRi+zPEh/H
-         29Xg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jhdzRZUAOMTnCV/vW7pBqgsIJIfjNF/pYz/pr69nELI=;
+        b=ptd/st7Qx1CEBd6nXVmofsETHlqEG5YHpXzAHoHWMHaxaLqLQRwhFD8DrqTGh313HP
+         IhmbQkRu0orlHojxKg773kXGBU90oYKT/i2R8RIWnvFI/6XWjOJwk/NLwViv8Eohzc71
+         0u1CxuXzpRO+SKGj4rghNIk24TUgiK6N5EMVsSWyZucFXHEwqrREOemBmRGcO21GlJv+
+         BHPELPoCCxRkiXuj0q4tx3KOjfEFuVK8aaztJ92oE13l2AqbgmCf3A+ZhaLe8cNklHQ/
+         gZtTgJkayqLParwE71HzxpR93H5vfYmTwDBbX/RNcN9pr066yekhsOaOlX87QwoQCIMQ
+         U+yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=DFgeZNTjRjBYgNmkhdouEdidU0qh0nBq3Cx2lZF1bjo=;
-        b=Do7zoDzmKq3mTqykYOz/A7O2zRdIaGjqY/5rdMynZ0k4Y6Ek3/t9DSMELqWNOe0p1F
-         38RzLamfPUctuMIrS3ycxW/30jM5XkgvaFg7rWTlu8Hfr0KgLdMZwabI7JmH9Ol0mD6v
-         qXfekNJUkt+TyLWRlqwrlcPWY3noXmUtuuAPKAEp/qYO/ICC1qvLcP/kkWdLJpCC2d+y
-         G9wTwbKvKOASWpGINDhQZFtOJV2/M0+OZ3GgQPv1GQXpexphNFxMdVEeYNIVLBhfq3bX
-         Lkt4G26zGi+CFmqhFb+ArcLhONkl3mfq41CNY9Rqq3TOPakMwmiWakZ21cySoihf6Guu
-         NIMg==
-X-Gm-Message-State: AJIora/kXcbJOpAK5VTkEn6sKj1N000/RjZSRP60HCNXFv0S6owYndrJ
-        ryPzltkLdhp7fiaGPzYSj/4=
-X-Google-Smtp-Source: AGRyM1ud25FajCVCktAoc541/7Za4Wpo53h5rofIYfCdMuUyIOw0RhCVOBbsOD8yCzUyfX1E6liCSw==
-X-Received: by 2002:a17:902:ec8c:b0:16d:4644:950d with SMTP id x12-20020a170902ec8c00b0016d4644950dmr17679208plg.141.1658858077176;
-        Tue, 26 Jul 2022 10:54:37 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:370d])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1709029a0200b0016d2db82962sm11720422plp.16.2022.07.26.10.54.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jhdzRZUAOMTnCV/vW7pBqgsIJIfjNF/pYz/pr69nELI=;
+        b=pWVY3apyPC8UcyWKZLPrfLzSbhjllhvtSC3I8WmXBdpaM1o4RmNybLhAtW5g3pIl5T
+         NfRUew1SV/7e2NJMx/dMIGGi3aBHuECAsRkKU7MTcF1XqOgHZD7VBOzfVUSp2sZbvGU+
+         rwh69eutRSUzK64jlBQNXHsRCUtMgaSiX9dTW83PZ2A+7m+IidP9khaZuLFJOURa5Ei2
+         9GPo+9g2MxiJpovW54g/DV2iA4nuRsBc3+/yIOT7Dw7ZKUN8aKBDGwmDgk/6AHlkJ15I
+         uq0fbgQ+xCYPiJ+w4A43D3l+gY4smRZcH8WvsK1VkbYU0T6hjqZR600lerFAZqfrsteF
+         M3TQ==
+X-Gm-Message-State: AJIora+jTnYilTGbN2Lw7O+I8FG6kBpljfk33Ck28A5hHqljCIz3N6Eg
+        xoIwdGmez4ZBRTTzAR5nW7otZg==
+X-Google-Smtp-Source: AGRyM1uKR6/hOW723JGGrSJD19noCDp0+vmsYlXYClvLLQpEtHJHtnV8BUou5cQTx2omdbkUrVjS2Q==
+X-Received: by 2002:a05:6a00:1c54:b0:52b:a70e:8207 with SMTP id s20-20020a056a001c5400b0052ba70e8207mr18313321pfw.48.1658858641379;
+        Tue, 26 Jul 2022 11:04:01 -0700 (PDT)
+Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
+        by smtp.gmail.com with ESMTPSA id f4-20020a170902860400b0016be0d5483asm11848682plo.252.2022.07.26.11.04.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 10:54:35 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 26 Jul 2022 07:54:34 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>, surenb@google.com,
-        mingo@redhat.com, peterz@infradead.org, corbet@lwn.net,
-        akpm@linux-foundation.org, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 8/9] sched/psi: add kernel cmdline parameter
- psi_inner_cgroup
-Message-ID: <YuAqWprKd6NsWs7C@slm.duckdns.org>
-References: <20220721040439.2651-1-zhouchengming@bytedance.com>
- <20220721040439.2651-9-zhouchengming@bytedance.com>
- <Yt7KQc0nnOypB2b2@cmpxchg.org>
+        Tue, 26 Jul 2022 11:04:00 -0700 (PDT)
+Date:   Tue, 26 Jul 2022 18:03:57 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
+ pagetable stats.
+Message-ID: <YuAsjZbnCN/PrNKw@google.com>
+References: <20220429201131.3397875-1-yosryahmed@google.com>
+ <20220429201131.3397875-4-yosryahmed@google.com>
+ <YtsPk5+hZNMEwT0c@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yt7KQc0nnOypB2b2@cmpxchg.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <YtsPk5+hZNMEwT0c@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Mon, Jul 25, 2022 at 12:52:17PM -0400, Johannes Weiner wrote:
-> On Thu, Jul 21, 2022 at 12:04:38PM +0800, Chengming Zhou wrote:
-> > PSI accounts stalls for each cgroup separately and aggregates it
-> > at each level of the hierarchy. This may case non-negligible overhead
-> > for some workloads when under deep level of the hierarchy.
+On Fri, Jul 22, 2022, Mingwei Zhang wrote:
+> On Fri, Apr 29, 2022, Yosry Ahmed wrote:
+> > Count the pages used by KVM mmu on x86 for in secondary pagetable stats.
 > > 
-> > commit 3958e2d0c34e ("cgroup: make per-cgroup pressure stall tracking configurable")
-> > make PSI to skip per-cgroup stall accounting, only account system-wide
-> > to avoid this each level overhead.
+> > For the legacy mmu, accounting pagetable stats is combined KVM's
+> > existing for mmu pages in newly introduced kvm_[un]account_mmu_page()
+> > helpers.
 > > 
-> > For our use case, we also want leaf cgroup PSI accounted for userspace
-> > adjustment on that cgroup, apart from only system-wide management.
+> > For tdp mmu, introduce new tdp_[un]account_mmu_page() helpers. That
+> > combines accounting pagetable stats with the tdp_mmu_pages counter
+> > accounting.
+> > 
+> > tdp_mmu_pages counter introduced in this series [1]. This patch was
+> > rebased on top of the first two patches in that series.
+> > 
+> > [1]https://lore.kernel.org/lkml/20220401063636.2414200-1-mizhang@google.com/
+> > 
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
 > 
-> I hear the overhead argument. But skipping accounting in intermediate
-> levels is a bit odd and unprecedented in the cgroup interface. Once we
-> do this, it's conceivable people would like to do the same thing for
-> other stats and accounting, like for instance memory.stat.
-> 
-> Tejun, what are your thoughts on this?
+> It looks like there are two metrics for mmu in x86: one for shadow mmu
+> and the other for TDP mmu. Is there any plan to merge them together?
 
-Given that PSI requires on-the-spot recursive accumulation unlike other
-stats, it can add quite a bit of overhead, so I'm sympathetic to the
-argument because PSI can't be made cheaper by kernel being better (or at
-least we don't know how to yet).
+There aren't two _separate_ metrics per se, rather that the TDP MMU (intentionally)
+doesn't honor KVM_SET_NR_MMU_PAGES, nor does it play nice the the core mm shrinkers.
+Thus, the TDP MMU doesn't udpate kvm_mod_used_mmu_pages(), which feeds into both of
+those things.
 
-That said, "leaf-only" feels really hacky to me. My memory is hazy but
-there's nothing preventing any cgroup from being skipped over when updating
-PSI states, right? The state count propagation is recursive but it's each
-task's state being propagated upwards not the child cgroup's, so we can skip
-over any cgroup arbitrarily. ie. we can at least turn off PSI reporting on
-any given cgroup without worrying about affecting others. Am I correct?
+Long term, I don't think the TDP MMU will ever honor KVM_SET_NR_MMU_PAGES.  That
+particular knob predates proper integration with memcg and probably should be
+deprecated.
 
-Assuming the above isn't wrong, if we can figure out how we can re-enable
-it, which is more difficult as the counters need to be resynchronized with
-the current state, that'd be ideal. Then, we can just allow each cgroup to
-enable / disable PSI reporting dynamically as they see fit.
-
-Thanks.
-
--- 
-tejun
+As for supporting shrinkers in the TDP MMU, it's unclear whether or not that's truly
+necessary.  And until mmu_shrink_scan() is made a _lot_ smarter, it's somewhat of a
+moot point because KVM's shrinker implementation is just too naive for it to be a net
+positive, e.g. it tends to zap upper level entries and wipe out large swaths of KVM's
+page tables.  KVM_SET_NR_MMU_PAGES uses the same naive algorithm, so it's not any better.
