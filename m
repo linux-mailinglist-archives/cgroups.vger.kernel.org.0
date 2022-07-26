@@ -2,129 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B597A581948
-	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 20:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C01581AA3
+	for <lists+cgroups@lfdr.de>; Tue, 26 Jul 2022 22:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239012AbiGZSED (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jul 2022 14:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        id S239317AbiGZUBJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jul 2022 16:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbiGZSEC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 14:04:02 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F74C27CC3
-        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 11:04:02 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id b9so13899737pfp.10
-        for <cgroups@vger.kernel.org>; Tue, 26 Jul 2022 11:04:02 -0700 (PDT)
+        with ESMTP id S239511AbiGZUBI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jul 2022 16:01:08 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC6326ED;
+        Tue, 26 Jul 2022 13:01:07 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id p1so5795280plr.11;
+        Tue, 26 Jul 2022 13:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jhdzRZUAOMTnCV/vW7pBqgsIJIfjNF/pYz/pr69nELI=;
-        b=ptd/st7Qx1CEBd6nXVmofsETHlqEG5YHpXzAHoHWMHaxaLqLQRwhFD8DrqTGh313HP
-         IhmbQkRu0orlHojxKg773kXGBU90oYKT/i2R8RIWnvFI/6XWjOJwk/NLwViv8Eohzc71
-         0u1CxuXzpRO+SKGj4rghNIk24TUgiK6N5EMVsSWyZucFXHEwqrREOemBmRGcO21GlJv+
-         BHPELPoCCxRkiXuj0q4tx3KOjfEFuVK8aaztJ92oE13l2AqbgmCf3A+ZhaLe8cNklHQ/
-         gZtTgJkayqLParwE71HzxpR93H5vfYmTwDBbX/RNcN9pr066yekhsOaOlX87QwoQCIMQ
-         U+yA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yv3KulA6SXC2d8qM1b4VH3vnSrCIQuVcceAGzMpyLq8=;
+        b=WbRPhU62l5iVyr4AcFYCotiJR0a3zh4yuvzp5Pd70CDeFQKGfrxYJbWXPGYF6U77pc
+         h5Xmz9Dx5kcvff7vnNyIjlyxmGcdBUEi/f/SeyWO3qqTx+jnReUp57Sg5fkReqxh+3Q+
+         sUUp3ZGpYVjB27BiFwPry4pwxt2+Jdo28gB3WuTk0BYAtVge24qHNPNGAPZeKZZNuOez
+         xorfG80VYE2snEUfiEvGCLZHBc20QLBe0gjtW3e7PuYRDH9f62HUnO2qsNdTIYT8igpI
+         2BvIX5HHGwgInkdtHjsrpWV+HMu4nzq3YnxNOarw1Mbmh9sBvPPd2gr54eaPXvm5qXCR
+         tPtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jhdzRZUAOMTnCV/vW7pBqgsIJIfjNF/pYz/pr69nELI=;
-        b=pWVY3apyPC8UcyWKZLPrfLzSbhjllhvtSC3I8WmXBdpaM1o4RmNybLhAtW5g3pIl5T
-         NfRUew1SV/7e2NJMx/dMIGGi3aBHuECAsRkKU7MTcF1XqOgHZD7VBOzfVUSp2sZbvGU+
-         rwh69eutRSUzK64jlBQNXHsRCUtMgaSiX9dTW83PZ2A+7m+IidP9khaZuLFJOURa5Ei2
-         9GPo+9g2MxiJpovW54g/DV2iA4nuRsBc3+/yIOT7Dw7ZKUN8aKBDGwmDgk/6AHlkJ15I
-         uq0fbgQ+xCYPiJ+w4A43D3l+gY4smRZcH8WvsK1VkbYU0T6hjqZR600lerFAZqfrsteF
-         M3TQ==
-X-Gm-Message-State: AJIora+jTnYilTGbN2Lw7O+I8FG6kBpljfk33Ck28A5hHqljCIz3N6Eg
-        xoIwdGmez4ZBRTTzAR5nW7otZg==
-X-Google-Smtp-Source: AGRyM1uKR6/hOW723JGGrSJD19noCDp0+vmsYlXYClvLLQpEtHJHtnV8BUou5cQTx2omdbkUrVjS2Q==
-X-Received: by 2002:a05:6a00:1c54:b0:52b:a70e:8207 with SMTP id s20-20020a056a001c5400b0052ba70e8207mr18313321pfw.48.1658858641379;
-        Tue, 26 Jul 2022 11:04:01 -0700 (PDT)
-Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902860400b0016be0d5483asm11848682plo.252.2022.07.26.11.04.00
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=yv3KulA6SXC2d8qM1b4VH3vnSrCIQuVcceAGzMpyLq8=;
+        b=rTExuknG5sQP0NcuZPRRipl0KQhntoRc0WLS1yvva7c84ASEU02tT3kORODN0A/VQQ
+         R776swRTemGeCw/Rr4SttFxn/PVR2Mh1SjDodEFiLmiG2QgzZc4sX7bJsWNZ+iFunMj0
+         kOwGUtHbB8fCmZYWDxGVDEsKJpOZJkNcyh4pxOGYqx7JgMiilBpyqkxLVgUltW5EB5xu
+         wQc6bDTLgkRXDceKKKHwLjUOEnb9JojD11k5UHt6UgZTkF/zUjMmR1E6eo68whUWEEuU
+         wrqsnNa/fB/ueX3bhbaRwsfbcpnF+DDFpof4DyiMOs/S5B5yq12J8MSCFe6ZSJFtms1C
+         tYHQ==
+X-Gm-Message-State: AJIora8we/vIrnzN1CfO5fCWSlvyM1eD9ufDMVT/kqM+O24E08rZM8WL
+        UOBpdSduUrwqBTZI6pX09n0=
+X-Google-Smtp-Source: AGRyM1tnb5AxLOGD2jbQ8XPz7xI0xp2eAgfdLGv/eQNKyE3usSewXXjOp9DnRkmXq35ENuJsApF8lA==
+X-Received: by 2002:a17:90b:2c02:b0:1f2:fdb2:dc23 with SMTP id rv2-20020a17090b2c0200b001f2fdb2dc23mr744968pjb.182.1658865666856;
+        Tue, 26 Jul 2022 13:01:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:370d])
+        by smtp.gmail.com with ESMTPSA id e15-20020a17090a280f00b001f2f301fd6bsm1840795pjd.38.2022.07.26.13.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 11:04:00 -0700 (PDT)
-Date:   Tue, 26 Jul 2022 18:03:57 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4 3/4] KVM: x86/mmu: count KVM mmu usage in secondary
- pagetable stats.
-Message-ID: <YuAsjZbnCN/PrNKw@google.com>
-References: <20220429201131.3397875-1-yosryahmed@google.com>
- <20220429201131.3397875-4-yosryahmed@google.com>
- <YtsPk5+hZNMEwT0c@google.com>
+        Tue, 26 Jul 2022 13:01:06 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 26 Jul 2022 10:01:04 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Dmitry Shmidt <dimitrysh@google.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/3 cgroup/for-5.20] cgroup: Add "no" prefixed mount
+ options
+Message-ID: <YuBIACfZDk72yjI3@slm.duckdns.org>
+References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
+ <YtDvU4jRPSsarcNp@slm.duckdns.org>
+ <20220726143246.GA23794@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YtsPk5+hZNMEwT0c@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220726143246.GA23794@blackbody.suse.cz>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 22, 2022, Mingwei Zhang wrote:
-> On Fri, Apr 29, 2022, Yosry Ahmed wrote:
-> > Count the pages used by KVM mmu on x86 for in secondary pagetable stats.
-> > 
-> > For the legacy mmu, accounting pagetable stats is combined KVM's
-> > existing for mmu pages in newly introduced kvm_[un]account_mmu_page()
-> > helpers.
-> > 
-> > For tdp mmu, introduce new tdp_[un]account_mmu_page() helpers. That
-> > combines accounting pagetable stats with the tdp_mmu_pages counter
-> > accounting.
-> > 
-> > tdp_mmu_pages counter introduced in this series [1]. This patch was
-> > rebased on top of the first two patches in that series.
-> > 
-> > [1]https://lore.kernel.org/lkml/20220401063636.2414200-1-mizhang@google.com/
-> > 
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
+Hello,
+
+On Tue, Jul 26, 2022 at 04:32:46PM +0200, Michal Koutný wrote:
+> On Thu, Jul 14, 2022 at 06:38:43PM -1000, Tejun Heo <tj@kernel.org> wrote:
+> > We allow modifying these mount options via remount. Let's add "no" prefixed
+> > variants so that they can be turned off too.
 > 
-> It looks like there are two metrics for mmu in x86: one for shadow mmu
-> and the other for TDP mmu. Is there any plan to merge them together?
+> They can be turned off:
+> 
+> > // on v5.19-rc?
+> > :~ # grep cg /proc/mounts
+> > cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0
+> > :~ # mount -t cgroup2 cgroup2 /sys/fs/cgroup/ -oremount
+> > :~ # grep cg /proc/mounts
+> > cgroup2 /sys/fs/cgroup cgroup2 rw,relatime 0 0
+> 
+> The mount(2) says about remounting:
+> > The  mountflags  and  data  arguments should match the values used in
+> > the original mount() call, except for those parameters that are being
+> > deliberately changed.
+>
+> Or is this a provision for the fsconfig(2) API?
 
-There aren't two _separate_ metrics per se, rather that the TDP MMU (intentionally)
-doesn't honor KVM_SET_NR_MMU_PAGES, nor does it play nice the the core mm shrinkers.
-Thus, the TDP MMU doesn't udpate kvm_mod_used_mmu_pages(), which feeds into both of
-those things.
+It's just me not knowing how these things work. I just looked at other real
+filesystems and copied.
 
-Long term, I don't think the TDP MMU will ever honor KVM_SET_NR_MMU_PAGES.  That
-particular knob predates proper integration with memcg and probably should be
-deprecated.
+> > +	fsparam_flag("memory_nolocalevents",	Opt_memory_nolocalevents),
+> > +	fsparam_flag("memory_norecursiveprot",	Opt_memory_norecursiveprot),
+> 
+> These are not 'no' prefixes of the option :-)
 
-As for supporting shrinkers in the TDP MMU, it's unclear whether or not that's truly
-necessary.  And until mmu_shrink_scan() is made a _lot_ smarter, it's somewhat of a
-moot point because KVM's shrinker implementation is just too naive for it to be a net
-positive, e.g. it tends to zap upper level entries and wipe out large swaths of KVM's
-page tables.  KVM_SET_NR_MMU_PAGES uses the same naive algorithm, so it's not any better.
+Oh, I tried that first but nomemory_recursiveprot looked really weird. The
+thing is that the underbar is added to separate the subsystem from the
+actual option and we're now prepending no to the subsystem part of the name.
+I'm not super attached to the current names tho.
+
+> I.e. it seem more consistent to prefix whole boolean option name (in
+> accordance with other FS options but I know limited subset of them).
+> In the end, this should be handled generically for boolean options in
+> the VFS and not via custom options.
+> 
+> Also, this allows both
+> 	'nsdelegate,nonsdelegate'
+> and
+> 	'nonsdelegate,nsdelegate'
+> (nsdelegate is just an example) where the 'no' always overrides being a
+> hidden implementation detail.
+> 
+> I find this patch a bit weird.
+
+It is a bit weird. Lemme play a bit with turning off the options and I'll
+remove the no options if they can be turned off without explicitly
+specifying them.
+
+Thanks.
+
+-- 
+tejun
