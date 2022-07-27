@@ -2,126 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B219582A47
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 18:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD1F583234
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbiG0QHm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Jul 2022 12:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S234524AbiG0SmR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Jul 2022 14:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbiG0QHl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 12:07:41 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538182A71C;
-        Wed, 27 Jul 2022 09:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w9r9iD1+VJ1bB5BUofHhTNtVicBr0akZlYlPe4WCSQQ=; b=lvZsnsMXIad6IuUpCnGPnR81q2
-        acnY8KBBOU1hGSV7O0ISRk6vrJNFl/RF2gWT57/zETylrGdz0kZotBUWTPyxYZkRRefybX1Zc3PMM
-        OS/zAgpdVMu6hShabM3s88zg7aZWoAGhmJRap+XqlOdif7iB/6s6HyThVCwY1Gy1xbYX6U4GUSU8y
-        eenB9BdltjQlPKr5ZSxn8CH1RSQ6oHLkErzSEYeYnyVqBG6KbNXc7Ipgay4x4IaYfFa6IXLqENYcI
-        lZ49/7TVmlRFOWE8wJMSRk2EtilZ6o0Sx/tOtqDxsMVt2+LJXmySQ8r5lIDvmsJAuk793m0L+l/Xe
-        Uhd2GcCA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oGjZ7-000kBA-BG; Wed, 27 Jul 2022 16:07:19 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EA6A2980403; Wed, 27 Jul 2022 18:07:16 +0200 (CEST)
-Date:   Wed, 27 Jul 2022 18:07:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     hannes@cmpxchg.org, surenb@google.com, mingo@redhat.com,
-        tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 9/9] sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ pressure
-Message-ID: <YuFitL6KuCfuqujn@worktop.programming.kicks-ass.net>
-References: <20220721040439.2651-1-zhouchengming@bytedance.com>
- <20220721040439.2651-10-zhouchengming@bytedance.com>
+        with ESMTP id S233927AbiG0SmA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 14:42:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E31987C16
+        for <cgroups@vger.kernel.org>; Wed, 27 Jul 2022 10:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658943555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R5b5gVej4MQa9hZ7l9p+CF9FxGIX65gr66TPXFnDVek=;
+        b=htknciyco9Q8g5xVq50hhmYD67cvzuMCM7CweoGB8idlFisjYflQ6kL87RP90gmMOgpg2Y
+        1FdmhHuJaZ7TcWNwMRYvjSR9OPrr92qzVr30ajqxeKBlcNuB4XFjtgV3X6wNrJf1vSlVMZ
+        0576FxkzW8ZMmZWrMeZP/0tqCRpG3ho=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-392-1FOChaSJNo2NPllRWIsRog-1; Wed, 27 Jul 2022 13:39:11 -0400
+X-MC-Unique: 1FOChaSJNo2NPllRWIsRog-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2494785A58A;
+        Wed, 27 Jul 2022 17:39:11 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.193])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1541C2026D64;
+        Wed, 27 Jul 2022 17:39:08 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 27 Jul 2022 19:39:10 +0200 (CEST)
+Date:   Wed, 27 Jul 2022 19:39:08 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Dmitry Shmidt <dimitrysh@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH RESEND 3/3 cgroup/for-5.20] cgroup: Make !percpu
+ threadgroup_rwsem operations optional
+Message-ID: <20220727173906.GB18822@redhat.com>
+References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
+ <YtDvU4jRPSsarcNp@slm.duckdns.org>
+ <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
+ <YtwFjPnCtw8ySnuv@slm.duckdns.org>
+ <20220725121208.GB28662@redhat.com>
+ <YuB1QW6Kce5nkBu6@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220721040439.2651-10-zhouchengming@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YuB1QW6Kce5nkBu6@slm.duckdns.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 12:04:39PM +0800, Chengming Zhou wrote:
-> diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
-> index c124f7d186d0..195f123b1cd1 100644
-> --- a/include/linux/psi_types.h
-> +++ b/include/linux/psi_types.h
-> @@ -47,7 +47,8 @@ enum psi_res {
->  	PSI_IO,
->  	PSI_MEM,
->  	PSI_CPU,
-> -	NR_PSI_RESOURCES = 3,
-> +	PSI_IRQ,
-> +	NR_PSI_RESOURCES = 4,
->  };
->  
->  /*
-> @@ -63,9 +64,11 @@ enum psi_states {
->  	PSI_MEM_FULL,
->  	PSI_CPU_SOME,
->  	PSI_CPU_FULL,
-> +	PSI_IRQ_SOME,
-> +	PSI_IRQ_FULL,
->  	/* Only per-CPU, to weigh the CPU in the global average: */
->  	PSI_NONIDLE,
-> -	NR_PSI_STATES = 7,
-> +	NR_PSI_STATES = 9,
->  };
->  
->  enum psi_aggregators {
+Hi Tejun,
 
-$ pahole -EC psi_group_cpu defconfig-build/kernel/sched/build_utility.o
-struct psi_group_cpu {
-        /* typedef seqcount_t */ struct seqcount {
-                unsigned int       sequence;                                             /*     0     4 */
-        } seq __attribute__((__aligned__(64))); /*     0     4 */
-        unsigned int               tasks[5];                                             /*     4    20 */
-        /* typedef u32 -> __u32 */ unsigned int               state_mask;                /*    24     4 */
-        /* typedef u32 -> __u32 */ unsigned int               times[7];                  /*    28    28 */
-        /* typedef u64 -> __u64 */ long long unsigned int     state_start;               /*    56     8 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        /* typedef u32 -> __u32 */ unsigned int               times_prev[2][7] __attribute__((__aligned__(64))); /*    64    56 */
+On 07/26, Tejun Heo wrote:
+>
+> > __rcu_sync_enter(rsp, false) works just like rcu_sync_enter_start() but it can
+> > be safely called at any moment.
+>
+> Yeah, I originally used rcu_sync_enter_start() but quickly found out that it
+> can't be reverted reliably. Given how cold the option switching path is, I
+> think it's fine to pay an extra synchronize_rcu() there rather than adding
+> more complexity to rcu_sync_enter() unless this will be useful somewhere
+> else too.
 
-        /* size: 128, cachelines: 2, members: 6 */
-        /* padding: 8 */
-        /* forced alignments: 2 */
-} __attribute__((__aligned__(64)));
+Yes, agreed. As I said, this is just for record, so that I can find this (simple)
+patch on lkml if we have another user of __rcu_sync_enter(rsp, bool wait).
 
+> > And can't resist, off-topic question... Say, cgroup_attach_task_all() does
+> >
+> > 	mutex_lock(&cgroup_mutex);
+> > 	percpu_down_write(&cgroup_threadgroup_rwsem);
+> >
+> > and this means that synchronize_rcu() can be called with cgroup_mutex held.
+> > Perhaps it makes sense to change this code to do
+> >
+> > 	rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
+> > 	mutex_lock(&cgroup_mutex);
+> > 	percpu_down_write(&cgroup_threadgroup_rwsem);
+> > 	...
+> > 	percpu_up_write(&cgroup_threadgroup_rwsem);
+> > 	mutex_unlock(&cgroup_mutex);
+> > 	rcu_sync_exit(&cgroup_threadgroup_rwsem.rss);
+> >
+> > ? Just curious.
+>
+> I'm not quite following.
 
-$ pahole -EC psi_group_cpu defconfig-build/kernel/sched/build_utility.o
-struct psi_group_cpu {
-        /* typedef seqcount_t */ struct seqcount {
-                unsigned int       sequence;                                             /*     0     4 */
-        } seq __attribute__((__aligned__(64))); /*     0     4 */
-        unsigned int               tasks[5];                                             /*     4    20 */
-        /* typedef u32 -> __u32 */ unsigned int               state_mask;                /*    24     4 */
-        /* typedef u32 -> __u32 */ unsigned int               times[9];                  /*    28    36 */
-        /* --- cacheline 1 boundary (64 bytes) --- */
-        /* typedef u64 -> __u64 */ long long unsigned int     state_start;               /*    64     8 */
+Me too ;)
 
-        /* XXX 56 bytes hole, try to pack */
+> Are you saying that if we switching the rwsem into
+> slow mode before grabbing the locks, we can avoid inducing latencies on
+> other users?
 
-        /* --- cacheline 2 boundary (128 bytes) --- */
-        /* typedef u32 -> __u32 */ unsigned int               times_prev[2][9] __attribute__((__aligned__(64))); /*   128    72 */
+Well yes, in that another mutex_lock(&cgroup_mutex) won't sleep until
+synchronize_rcu() (called under cgroup_mutex) completes.
 
-        /* size: 256, cachelines: 4, members: 6 */
-        /* sum members: 144, holes: 1, sum holes: 56 */
-        /* padding: 56 */
-        /* forced alignments: 2, forced holes: 1, sum forced holes: 56 */
-} __attribute__((__aligned__(64)));
+> Hmm... assuming that I'm understanding you correctly, one
+> problem with that approach is that everyone would be doing synchronize_rcu()
+> whether they want to change favoring state.
 
+Hmm... I didn't mean the changing if favoring state... And in any case,
+this won't cause any additional synchronize_rcu().
 
-So yeah, I think not.
+Nevermind, please forget, this probably makes no sense.
+
+Oleg.
+
