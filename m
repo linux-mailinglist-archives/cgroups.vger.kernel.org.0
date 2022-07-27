@@ -2,89 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B239D583302
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 21:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5E05833AC
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 21:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235658AbiG0TI2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Jul 2022 15:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
+        id S230349AbiG0Td2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Jul 2022 15:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbiG0TIO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 15:08:14 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C8961B31;
-        Wed, 27 Jul 2022 11:44:32 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id b133so16870430pfb.6;
-        Wed, 27 Jul 2022 11:44:32 -0700 (PDT)
+        with ESMTP id S229680AbiG0Td1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 15:33:27 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F48E3AE52;
+        Wed, 27 Jul 2022 12:33:27 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e132so16694312pgc.5;
+        Wed, 27 Jul 2022 12:33:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=om6BXy1+SA87/CyEYzLsfCaTtqizfiZkOOEb0xpUUBA=;
-        b=B7/ER0VlJBi4Wqn6vZTg4IUv5o+ct1e++q+yV5mOqrDaPKS3wfHQVW1mQ/WfT13sbj
-         PjX3ewiWbtX2QMD8qJrELmgFn5JY2jozltHeSCumUdlF6S6wAcFFTt+CbLs9JLMM/zbM
-         OrvrvcthcbZDzrTRYY3MlZsImCnihzTJAQ2UMDm9P1thCMUJe7g69uEztIlHwKUJi7+8
-         lQzgfVN5rM4l0MpEflVgy5AAbZOcDEwCxM3wFWKM940MOQFcQwU3mGJk4FDcby0kv+w/
-         Sqxy21ZI6VoXDQzErkTC2yEw7n/V6LcETt89rlh0v8127+MFzwjRMJHen9+7RsVp3EY3
-         XiKg==
+        h=84;0;0cto:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:from:date:sender:from:to:cc;
+        bh=6pnTblxCyJMu4c6E/4UqG0qh2Y7YbnKnimTleXn2d64=;
+        b=JrjKtZg0AWloTpMMF1BWDJo8qbcS/l1KoteqVQntHR87K9jNSXqRl1tmDCq7pgkQ7Y
+         W5UoJsZ8ypj+r8vmNk7aXOoh1fPNs5umdWf4mdKl7PqRFbzlxlEIb2S4HIjaYZCxMA+z
+         g7/9MYr9YNJP1OFIYZb8qpI34w15h3v8rA5QtBfEu57mL+J0uLkAxz0sYTzfhFVQ08Q+
+         9E8G3lgnEEzxX+r1ZNlVg1h90WP3uVjsM7oQeNCm1MWCpKjDc0nTLcY/dsMgZV6JBtIt
+         8LzxiF7pv6ihLoNey3IiHkBANXEL7CSaQ9fHIFxA8f/qt2F9Nbg9jh/jQGTP1f8zYVOP
+         5nTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=om6BXy1+SA87/CyEYzLsfCaTtqizfiZkOOEb0xpUUBA=;
-        b=rn0/oOOo0mB94qT7xee/gjMdv3q9GYFFM9x+dOB6/X5wzDYku7kJZ21+Ulq/g6Acew
-         F9ZeSj9JAAtpucv0vdkrJfm2Y1ok7aQKoJq3g2JzLMqp2YcwxagegpueNnvVtf/F02ms
-         khtOoVW3N5RkrmigFVjD9Be0nqRGBzrLrAiF7V2f1D5//Jetq4nxucTO3xZhpYgDVOvU
-         sayOJpXsyN6Kh9ZLI/sSyoR9UztUOL9bzlGJYeRON1k6YmvOdABhupN3V7PMsD2bdrqg
-         QJ4bumxV64XPQZNx7uDvj+QIbbxfCIB6M0aP+B2CLrWQd/DITiCG1pEugSifh4slv8zH
-         TpCA==
-X-Gm-Message-State: AJIora/UdebAj6jcX8jXFinW95396GXv1FcTuYp7ZPQHC8jFNo3jhyk/
-        IxPVgts89ktJvdppXGHSszQ=
-X-Google-Smtp-Source: AGRyM1tveaaJIUdeJQ3voQs/C4iVq+FCkaGjBMCwGE4eIDBbabbJr2KvV/+/cfMbU/DU6ZpXPots3Q==
-X-Received: by 2002:a05:6a00:2312:b0:52b:928:99dd with SMTP id h18-20020a056a00231200b0052b092899ddmr22973465pfh.77.1658947472107;
-        Wed, 27 Jul 2022 11:44:32 -0700 (PDT)
+        h=84;0;0cto:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:from:date:sender:x-gm-message-state:from:to
+         :cc;
+        bh=6pnTblxCyJMu4c6E/4UqG0qh2Y7YbnKnimTleXn2d64=;
+        b=R+cBWGTWIgOsGSyeihO+a5Tf/X0HhE3p3773GU9K7r3oYw0Qsf75mBt1dzTwmZtqCH
+         O4hiblPjdsSwsgP7pkCa4gPQe65a6pmwFWOE41KvlorJ9SEYErfMNDTh9TnWXNKHAI7w
+         mJiAVfWJ1fDWLcLd8sPTzr2P3H9J+RsawzMemxreExtbXMq4Xr4PunAsDyHrqlkp0pJo
+         +HFpHDCelkf4VnVuqO3Ijh1xLj8ZoSOH2zQ5mLLpWyVeBNa2vZcBVswAoirMCPa+sdPu
+         3ZnZIPJO6yvyI77FUvK+qJRkxKadx+XMlDAmhSv/PM0wvLcPgVHEZapH0uJA6hTaD46A
+         FzSw==
+X-Gm-Message-State: AJIora+Y0m2/afbh1w2nJqKSqXmHpaxdinyTXFJ+ZLGAQcb4HwRHMcJJ
+        lQUrynPWumPeZ/LJBYcoQ5s=
+X-Google-Smtp-Source: AGRyM1uRC/uKhHvXoAjn4IxP2UWh2xu80qLkDbo6u7WMC0tNhq1YZdk1xDSPH8ZWrtfzcJtJgdTtdg==
+X-Received: by 2002:a65:6714:0:b0:41a:49fa:2bd7 with SMTP id u20-20020a656714000000b0041a49fa2bd7mr20062879pgf.331.1658950406370;
+        Wed, 27 Jul 2022 12:33:26 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:5a55])
-        by smtp.gmail.com with ESMTPSA id bi5-20020a170902bf0500b0016bfea13321sm13969740plb.243.2022.07.27.11.44.31
+        by smtp.gmail.com with ESMTPSA id u8-20020a1709026e0800b0016d01c133e1sm6961575plk.248.2022.07.27.12.33.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jul 2022 11:44:31 -0700 (PDT)
+        Wed, 27 Jul 2022 12:33:25 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 27 Jul 2022 08:44:29 -1000
+Date:   Wed, 27 Jul 2022 09:33:24 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH RESEND v6 8/8] blk-throttle: clean up flag
- 'THROTL_TG_PENDING'
-Message-ID: <YuGHjf9MWjirOWcm@slm.duckdns.org>
-References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
- <20220701093441.885741-9-yukuai1@huaweicloud.com>
+Cc:     Imran Khan <imran.f.khan@oracle.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, tglx@linutronix.de, steven.price@arm.com,
+        peterz@infradead.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Query regarding deadlock involving cgroup_threadgroup_rwsem and
+ cpu_hotplug_lock
+Message-ID: <YuGTBLkFerUboctl@slm.duckdns.org>
+References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
+ <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
+ <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
+ <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
+ <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
+ <YthDz4BnfYHce1od@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220701093441.885741-9-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <YthDz4BnfYHce1od@slm.duckdns.org>
+84;0;0cTo: Mukesh Ojha <quic_mojha@quicinc.com>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        MISSING_HEADERS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 01, 2022 at 05:34:41PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Wed, Jul 20, 2022 at 08:05:03AM -1000, Tejun Heo wrote:
+> On Wed, Jul 20, 2022 at 05:31:51PM +0530, Mukesh Ojha wrote:
+> > Looks like these patches are the fixes.
+> > 
+> > https://lore.kernel.org/all/YtDvN0wJ6CKaEPN8@slm.duckdns.org/#r
+> > 
+> > Would let Tejun confirm this .
 > 
-> All related operations are inside 'queue_lock', there is no need to use
-> the flag, we only need to make sure throtl_enqueue_tg() is called when
-> the first bio is throttled, and throtl_dequeue_tg() is called when the
-> last throttled bio is dispatched.
+> Yeah, looks like the same issue. I'll write up a patch later this week /
+> early next unless someone beats me to it.
 
-Ah, okay, so the prev patch was to enable this cleanup. Can you please note
-so in the previous patch and also that this doesn't cause any functional
-changes?
+https://lore.kernel.org/lkml/20220705123705.764-1-xuewen.yan@unisoc.com/ is
+the thread with the same issue. Let's follow up there.
 
 Thanks.
 
