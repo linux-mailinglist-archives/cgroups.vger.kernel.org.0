@@ -2,129 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD1F583234
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 20:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E4D583288
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 20:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbiG0SmR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Jul 2022 14:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        id S229898AbiG0S4d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Jul 2022 14:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233927AbiG0SmA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 14:42:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E31987C16
-        for <cgroups@vger.kernel.org>; Wed, 27 Jul 2022 10:39:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658943555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R5b5gVej4MQa9hZ7l9p+CF9FxGIX65gr66TPXFnDVek=;
-        b=htknciyco9Q8g5xVq50hhmYD67cvzuMCM7CweoGB8idlFisjYflQ6kL87RP90gmMOgpg2Y
-        1FdmhHuJaZ7TcWNwMRYvjSR9OPrr92qzVr30ajqxeKBlcNuB4XFjtgV3X6wNrJf1vSlVMZ
-        0576FxkzW8ZMmZWrMeZP/0tqCRpG3ho=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-392-1FOChaSJNo2NPllRWIsRog-1; Wed, 27 Jul 2022 13:39:11 -0400
-X-MC-Unique: 1FOChaSJNo2NPllRWIsRog-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2494785A58A;
-        Wed, 27 Jul 2022 17:39:11 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.193])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1541C2026D64;
-        Wed, 27 Jul 2022 17:39:08 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed, 27 Jul 2022 19:39:10 +0200 (CEST)
-Date:   Wed, 27 Jul 2022 19:39:08 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S234475AbiG0S4A (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 14:56:00 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E403053D26;
+        Wed, 27 Jul 2022 10:56:02 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b22so178835plz.9;
+        Wed, 27 Jul 2022 10:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc;
+        bh=FNJqWOgunTysXo2x6MYgmJbijH0daSpLu5NGEZRQviE=;
+        b=A/u3Wjgc6Pq6XfpcsLe9ZPc/0GNdFxt8A6JJ8VmjPhGMKdLSNN0EOiS3dWtui4azMj
+         jn+/Al0U4PLfPbF/zMf5d86WrI52ysytboMjjFBBeB648qMEb8Aqz+lZbCbQyc57iKpo
+         oKudOAu9TkIAt9p86u7HAMxUvTwWdKk1L1IUsue7nMeXmd15oOllnyTw3zhykckM7Y+U
+         FIJSVm1SxY6FrxyjbHs06eOwTeYNwwU5vX0hJdD170g4TLSKUb2BEfS6OdC0gHLwKLNE
+         qnf4v73uF3y43EfbJUa8wb/VLBO59ynVFHOdiixIpZXo/amlH+T+In2IblGizPkTzNh+
+         MXkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc;
+        bh=FNJqWOgunTysXo2x6MYgmJbijH0daSpLu5NGEZRQviE=;
+        b=Px/LucuhAfcFZE3AAu2h8J9FCVRnJ+LQmq4zVSURZ/G6W9daOTWO8tlqPKozW7clHg
+         nSWDzpVqbAW6iS2ztDiaG2JpcN6NHGmCB+J0gwl4D8TqCTBCVck5+cy9OtxaTDCmv7LO
+         z/jfrefipCphBgFe76TnRGIjxKx4GAAOuCkRXZiLdSfEddaTHO3hYe3ij1NrGDxUceSr
+         ZSbRAnDbRwkzxA56RMxnpydLb4qXBcRFA89c0/vKiL2HWHNamN4RJmML13CbFK6ro4E+
+         VT2TevF7ejOftXpTko2QOwNS3Ds9vyWNzb6NkrlNV4cE3BEmB4sThC7Gw/yeTFgaAH7v
+         oz5Q==
+X-Gm-Message-State: AJIora9SmmgU5LJ2HqRCB4bMgU23Pok0AtiRvwaQeEtinT0q21DoOXcQ
+        BNuT7QqfqeitjQFyLW26WLk=
+X-Google-Smtp-Source: AGRyM1vtw0uIJ2M7Ps/ai2eBKkXMxcto+mK+opMvLe2CBHf2/mbesFYUsC65FJyktEAbZTHaPPV2sQ==
+X-Received: by 2002:a17:903:2281:b0:16d:614a:63a0 with SMTP id b1-20020a170903228100b0016d614a63a0mr18846955plh.140.1658944561122;
+        Wed, 27 Jul 2022 10:56:01 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:5a55])
+        by smtp.gmail.com with ESMTPSA id u8-20020a1709026e0800b0016d01c133e1sm6882006plk.248.2022.07.27.10.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jul 2022 10:55:59 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 27 Jul 2022 07:55:58 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         John Stultz <john.stultz@linaro.org>,
         Dmitry Shmidt <dimitrysh@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH RESEND 3/3 cgroup/for-5.20] cgroup: Make !percpu
- threadgroup_rwsem operations optional
-Message-ID: <20220727173906.GB18822@redhat.com>
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH cgroup/for-5.20] cgroup: remove "no" prefixed mount
+ options options
+Message-ID: <YuF8LrDcd9tpYLnX@slm.duckdns.org>
 References: <YtDvN0wJ6CKaEPN8@slm.duckdns.org>
  <YtDvU4jRPSsarcNp@slm.duckdns.org>
- <YtDvl7Qjc5zI3e/b@slm.duckdns.org>
- <YtwFjPnCtw8ySnuv@slm.duckdns.org>
- <20220725121208.GB28662@redhat.com>
- <YuB1QW6Kce5nkBu6@slm.duckdns.org>
+ <20220726143246.GA23794@blackbody.suse.cz>
+ <YuBIACfZDk72yjI3@slm.duckdns.org>
+ <YuB5ICv3bXsy5Xuh@slm.duckdns.org>
+ <YuB9QXapVUy1t8TZ@slm.duckdns.org>
+ <20220727092715.GA1569@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YuB1QW6Kce5nkBu6@slm.duckdns.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220727092715.GA1569@blackbody.suse.cz>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+On Wed, Jul 27, 2022 at 11:27:15AM +0200, Michal Koutný wrote:
+> On Tue, Jul 26, 2022 at 01:48:17PM -1000, Tejun Heo <tj@kernel.org> wrote:
+> Thanks.
+> 
+> > While a bit confusing, given that there is a way to turn off the options,
+> > there's no reason to have the explicit "no" prefixed options. Let's remove
+> > them.
+> 
+> This is sensible...
+> 
+> >  Documentation/admin-guide/cgroup-v2.rst |    8 ++++----
+> >  kernel/cgroup/cgroup.c                  |   24 ++++--------------------
+> >  2 files changed, 8 insertions(+), 24 deletions(-)
+> 
+> ...and cleaner.
 
-On 07/26, Tejun Heo wrote:
->
-> > __rcu_sync_enter(rsp, false) works just like rcu_sync_enter_start() but it can
-> > be safely called at any moment.
->
-> Yeah, I originally used rcu_sync_enter_start() but quickly found out that it
-> can't be reverted reliably. Given how cold the option switching path is, I
-> think it's fine to pay an extra synchronize_rcu() there rather than adding
-> more complexity to rcu_sync_enter() unless this will be useful somewhere
-> else too.
+Alright, applied to cgroup/for-5.20.
 
-Yes, agreed. As I said, this is just for record, so that I can find this (simple)
-patch on lkml if we have another user of __rcu_sync_enter(rsp, bool wait).
+Thanks.
 
-> > And can't resist, off-topic question... Say, cgroup_attach_task_all() does
-> >
-> > 	mutex_lock(&cgroup_mutex);
-> > 	percpu_down_write(&cgroup_threadgroup_rwsem);
-> >
-> > and this means that synchronize_rcu() can be called with cgroup_mutex held.
-> > Perhaps it makes sense to change this code to do
-> >
-> > 	rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
-> > 	mutex_lock(&cgroup_mutex);
-> > 	percpu_down_write(&cgroup_threadgroup_rwsem);
-> > 	...
-> > 	percpu_up_write(&cgroup_threadgroup_rwsem);
-> > 	mutex_unlock(&cgroup_mutex);
-> > 	rcu_sync_exit(&cgroup_threadgroup_rwsem.rss);
-> >
-> > ? Just curious.
->
-> I'm not quite following.
-
-Me too ;)
-
-> Are you saying that if we switching the rwsem into
-> slow mode before grabbing the locks, we can avoid inducing latencies on
-> other users?
-
-Well yes, in that another mutex_lock(&cgroup_mutex) won't sleep until
-synchronize_rcu() (called under cgroup_mutex) completes.
-
-> Hmm... assuming that I'm understanding you correctly, one
-> problem with that approach is that everyone would be doing synchronize_rcu()
-> whether they want to change favoring state.
-
-Hmm... I didn't mean the changing if favoring state... And in any case,
-this won't cause any additional synchronize_rcu().
-
-Nevermind, please forget, this probably makes no sense.
-
-Oleg.
-
+-- 
+tejun
