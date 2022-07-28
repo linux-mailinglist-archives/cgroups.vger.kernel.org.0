@@ -2,99 +2,165 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5E05833AC
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jul 2022 21:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C7E58361C
+	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 02:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbiG0Td2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 Jul 2022 15:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S233811AbiG1A6l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Jul 2022 20:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiG0Td1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 15:33:27 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F48E3AE52;
-        Wed, 27 Jul 2022 12:33:27 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e132so16694312pgc.5;
-        Wed, 27 Jul 2022 12:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=84;0;0cto:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:from:date:sender:from:to:cc;
-        bh=6pnTblxCyJMu4c6E/4UqG0qh2Y7YbnKnimTleXn2d64=;
-        b=JrjKtZg0AWloTpMMF1BWDJo8qbcS/l1KoteqVQntHR87K9jNSXqRl1tmDCq7pgkQ7Y
-         W5UoJsZ8ypj+r8vmNk7aXOoh1fPNs5umdWf4mdKl7PqRFbzlxlEIb2S4HIjaYZCxMA+z
-         g7/9MYr9YNJP1OFIYZb8qpI34w15h3v8rA5QtBfEu57mL+J0uLkAxz0sYTzfhFVQ08Q+
-         9E8G3lgnEEzxX+r1ZNlVg1h90WP3uVjsM7oQeNCm1MWCpKjDc0nTLcY/dsMgZV6JBtIt
-         8LzxiF7pv6ihLoNey3IiHkBANXEL7CSaQ9fHIFxA8f/qt2F9Nbg9jh/jQGTP1f8zYVOP
-         5nTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=84;0;0cto:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:from:date:sender:x-gm-message-state:from:to
-         :cc;
-        bh=6pnTblxCyJMu4c6E/4UqG0qh2Y7YbnKnimTleXn2d64=;
-        b=R+cBWGTWIgOsGSyeihO+a5Tf/X0HhE3p3773GU9K7r3oYw0Qsf75mBt1dzTwmZtqCH
-         O4hiblPjdsSwsgP7pkCa4gPQe65a6pmwFWOE41KvlorJ9SEYErfMNDTh9TnWXNKHAI7w
-         mJiAVfWJ1fDWLcLd8sPTzr2P3H9J+RsawzMemxreExtbXMq4Xr4PunAsDyHrqlkp0pJo
-         +HFpHDCelkf4VnVuqO3Ijh1xLj8ZoSOH2zQ5mLLpWyVeBNa2vZcBVswAoirMCPa+sdPu
-         3ZnZIPJO6yvyI77FUvK+qJRkxKadx+XMlDAmhSv/PM0wvLcPgVHEZapH0uJA6hTaD46A
-         FzSw==
-X-Gm-Message-State: AJIora+Y0m2/afbh1w2nJqKSqXmHpaxdinyTXFJ+ZLGAQcb4HwRHMcJJ
-        lQUrynPWumPeZ/LJBYcoQ5s=
-X-Google-Smtp-Source: AGRyM1uRC/uKhHvXoAjn4IxP2UWh2xu80qLkDbo6u7WMC0tNhq1YZdk1xDSPH8ZWrtfzcJtJgdTtdg==
-X-Received: by 2002:a65:6714:0:b0:41a:49fa:2bd7 with SMTP id u20-20020a656714000000b0041a49fa2bd7mr20062879pgf.331.1658950406370;
-        Wed, 27 Jul 2022 12:33:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:5a55])
-        by smtp.gmail.com with ESMTPSA id u8-20020a1709026e0800b0016d01c133e1sm6961575plk.248.2022.07.27.12.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jul 2022 12:33:25 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 27 Jul 2022 09:33:24 -1000
-From:   Tejun Heo <tj@kernel.org>
-Cc:     Imran Khan <imran.f.khan@oracle.com>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, tglx@linutronix.de, steven.price@arm.com,
-        peterz@infradead.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Query regarding deadlock involving cgroup_threadgroup_rwsem and
- cpu_hotplug_lock
-Message-ID: <YuGTBLkFerUboctl@slm.duckdns.org>
-References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
- <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com>
- <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
- <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
- <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
- <YthDz4BnfYHce1od@slm.duckdns.org>
+        with ESMTP id S230007AbiG1A6l (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jul 2022 20:58:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DAAC15A3DC
+        for <cgroups@vger.kernel.org>; Wed, 27 Jul 2022 17:58:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658969918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BmJWjBY43RDpj3JT97t8mjKUtc70HW3e4aiC0GvyquU=;
+        b=HdetwII5UdxZF0jjNacU/RmvlXiu8giJ56ORNN6sCaNnkpesq/eOFSfYVtZ5B3pGAsOOvw
+        T9sF2zltQ2L+vvLVes/O0WeYqBMGVTE5pCJ2+3BQl8MwrWORHkyhul6vzFuK1WenMfMgKs
+        MSZx/OyGBhJtfNjeMD/dXBrjxCbIoBc=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-9-s2gKf7mUM02v7tes66gJhA-1; Wed, 27 Jul 2022 20:58:36 -0400
+X-MC-Unique: s2gKf7mUM02v7tes66gJhA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7DD601C01B3B;
+        Thu, 28 Jul 2022 00:58:35 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51A2EC28100;
+        Thu, 28 Jul 2022 00:58:34 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH 1/2] cgroup/cpuset: Keep current cpus list if cpus affinity was explicitly set
+Date:   Wed, 27 Jul 2022 20:58:14 -0400
+Message-Id: <20220728005815.1715522-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YthDz4BnfYHce1od@slm.duckdns.org>
-84;0;0cTo: Mukesh Ojha <quic_mojha@quicinc.com>
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        MISSING_HEADERS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 08:05:03AM -1000, Tejun Heo wrote:
-> On Wed, Jul 20, 2022 at 05:31:51PM +0530, Mukesh Ojha wrote:
-> > Looks like these patches are the fixes.
-> > 
-> > https://lore.kernel.org/all/YtDvN0wJ6CKaEPN8@slm.duckdns.org/#r
-> > 
-> > Would let Tejun confirm this .
-> 
-> Yeah, looks like the same issue. I'll write up a patch later this week /
-> early next unless someone beats me to it.
+It was found that any change to the current cpuset hierarchy may reset
+the cpus_allowed list of the tasks in the affected cpusets to the
+default cpuset value even if those tasks have cpus affinity explicitly
+set by the users before. That is especially easy to trigger under a
+cgroup v2 environment where writing "+cpuset" to the root cgroup's
+cgroup.subtree_control file will reset the cpus affinity of all the
+processes in the system.
 
-https://lore.kernel.org/lkml/20220705123705.764-1-xuewen.yan@unisoc.com/ is
-the thread with the same issue. Let's follow up there.
+That is especially problematic in a nohz_full environment where the
+tasks running in the nohz_full CPUs usually have their cpus affinity
+explicitly set and will behave incorrectly if cpus affinity changes.
 
-Thanks.
+Fix this problem by adding a flag in the task structure to indicate that
+a task has their cpus affinity explicitly set before and make cpuset
+code not to change their cpus_allowed list unless the user chosen cpu
+list is no longer a subset of the cpus_allowed list of the cpuset itself.
 
+With that change in place, it was verified that tasks that have its
+cpus affinity explicitly set will not be affected by changes made to
+the v2 cgroup.subtree_control files.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ include/linux/sched.h  |  1 +
+ kernel/cgroup/cpuset.c | 18 ++++++++++++++++--
+ kernel/sched/core.c    |  1 +
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index c46f3a63b758..60ae022fa842 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -815,6 +815,7 @@ struct task_struct {
+ 
+ 	unsigned int			policy;
+ 	int				nr_cpus_allowed;
++	int				cpus_affinity_set;
+ 	const cpumask_t			*cpus_ptr;
+ 	cpumask_t			*user_cpus_ptr;
+ 	cpumask_t			cpus_mask;
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 71a418858a5e..c47757c61f39 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -704,6 +704,20 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+ 	return ret;
+ }
+ 
++/*
++ * Don't change the cpus_allowed list if cpus affinity has been explicitly
++ * set before unless the current cpu list is not a subset of the new cpu list.
++ */
++static int cpuset_set_cpus_allowed_ptr(struct task_struct *p,
++				       const struct cpumask *new_mask)
++{
++	if (p->cpus_affinity_set && cpumask_subset(p->cpus_ptr, new_mask))
++		return 0;
++
++	p->cpus_affinity_set = 0;
++	return set_cpus_allowed_ptr(p, new_mask);
++}
++
+ #ifdef CONFIG_SMP
+ /*
+  * Helper routine for generate_sched_domains().
+@@ -1130,7 +1144,7 @@ static void update_tasks_cpumask(struct cpuset *cs)
+ 
+ 	css_task_iter_start(&cs->css, 0, &it);
+ 	while ((task = css_task_iter_next(&it)))
+-		set_cpus_allowed_ptr(task, cs->effective_cpus);
++		cpuset_set_cpus_allowed_ptr(task, cs->effective_cpus);
+ 	css_task_iter_end(&it);
+ }
+ 
+@@ -2303,7 +2317,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+ 		 * can_attach beforehand should guarantee that this doesn't
+ 		 * fail.  TODO: have a better way to handle failure here
+ 		 */
+-		WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
++		WARN_ON_ONCE(cpuset_set_cpus_allowed_ptr(task, cpus_attach));
+ 
+ 		cpuset_change_task_nodemask(task, &cpuset_attach_nodemask_to);
+ 		cpuset_update_task_spread_flag(cs, task);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index da0bf6fe9ecd..ab8ea6fa92db 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8034,6 +8034,7 @@ __sched_setaffinity(struct task_struct *p, const struct cpumask *mask)
+ 	if (retval)
+ 		goto out_free_new_mask;
+ 
++	p->cpus_affinity_set = 1;
+ 	cpuset_cpus_allowed(p, cpus_allowed);
+ 	if (!cpumask_subset(new_mask, cpus_allowed)) {
+ 		/*
 -- 
-tejun
+2.31.1
+
