@@ -2,76 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47BE584502
-	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 19:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A479584521
+	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbiG1R13 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Jul 2022 13:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38044 "EHLO
+        id S229482AbiG1RfT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Jul 2022 13:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbiG1R12 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 13:27:28 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBCABF44;
-        Thu, 28 Jul 2022 10:27:28 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id x10so1669264plb.3;
-        Thu, 28 Jul 2022 10:27:28 -0700 (PDT)
+        with ESMTP id S229447AbiG1RfR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 13:35:17 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359F46151;
+        Thu, 28 Jul 2022 10:35:17 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id t2-20020a17090a4e4200b001f21572f3a4so2904095pjl.0;
+        Thu, 28 Jul 2022 10:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc;
-        bh=VbEpbcnRCKhYT7BZ0HSKVgFvbMAakayClnOZvBHVLDM=;
-        b=i00rVjg3DaYMhQYt2uaTPpDZXUdlQ+KaCLpjoz3IEIhO1KJkqSkwWpy1/U7Uf/F/aD
-         nmFgTkH1TiexdN5J0xFNoxsNwasPcbARyEDdluyAxzkqtOoUZni9gh2nJsVmmZVUf4Xt
-         cV/aq3fSAIIAqz8k9rp+jo+k1XdHNaYlqrx0nfsdz0stk4DaDTrhBl4iyUw7qpidmOac
-         GGvOSFwVaZrE6LDxLSV1yebcuuUAeZ3zPpMZWUBNFispkFDqlVx2Rk5aLw7LNWPr+Tw7
-         ldPZYan//l8svd7n01XrDz4bRjQrKC3gazwQ+N+G9xjNJxI+R0+fooIua330gEkmXpku
-         6JWA==
+        bh=QspELtFwrGd992ER4IywagKhOwPAd04XFlDr4WU6NiI=;
+        b=mr2y8Nixp9iQYiaPkk1ld3aAvfXUbpKTeQ15WW56UqOrHJT7F6ygOyrLj1DDaCkTiT
+         Btb3DBlO0KaSYzChaNk/QE5FisTCujb6TIsaKo4sDfHWGqDOXRI4z6wzpsc71giBkXAE
+         UhjaXLzeSQ2FYrOgzCYkyCnkLpH0GqfV6Nyk/MXzhQHa6peGkiIqaB74rxQlVlC4CRMH
+         0m98YNTpKu9tGdkZ38JBZ7DKi8bs2oCmbjDgzVxUBHk1Hvy75bihPcG4YlLTiseIQnl8
+         KKQA0QK0h3Dm+kDcrY67cJ6p/LBOkjXG3TRzWjzbNxxOvxuxKDD6/OsYCaLaW7q16zWD
+         FPqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=VbEpbcnRCKhYT7BZ0HSKVgFvbMAakayClnOZvBHVLDM=;
-        b=YnsCkskJY6Q5ebe6ZSvcmHnQMwriBaQ+jnMKwm+BEp9S90a0anBmTsnHePxanFAK6A
-         mayuBBCLRAzNBgU1SveLqaIG+P7n/unFD+bXj9Z/kpESOX9iEgZMkhDBS/XPls+dpIz+
-         EeZ7MIm0guE+YELKT0Ib8VWNEN2Dgprm3Z0Y9R/QHSYlG5Y6sytLQnh0AUY0lwAJYdVI
-         NVU3tcyW9/HUMiTA03ypNwrgfhBoJ0aN8nxCB5rr2xGtoykq3f1o1stpZpakiQoOO8x/
-         y9HKll6k6qynWjh3HT/IDTRSahR1A4bNXabaNQbIsLsASMR7tI9BSzZmbRg7d7xbJTyP
-         xbxw==
-X-Gm-Message-State: AJIora9nqhHEqt+oODMkXzH8nk2IGOYljrdEjRl3djZKTnHkzmJGThDU
-        y6kvt7yP6ph4myQn1q8z0KI=
-X-Google-Smtp-Source: AGRyM1u5+4hMr4oZu9issv6Q/ERTdCcJGxEq3gDZsmq0mWG7JasQl8j1W+FQA8t4s9nHhjTnafpYvw==
-X-Received: by 2002:a17:902:bd8a:b0:16c:dfcf:38ba with SMTP id q10-20020a170902bd8a00b0016cdfcf38bamr26699504pls.35.1659029247629;
-        Thu, 28 Jul 2022 10:27:27 -0700 (PDT)
+        bh=QspELtFwrGd992ER4IywagKhOwPAd04XFlDr4WU6NiI=;
+        b=cd7rWHuNS5uDB7il2YX4eDJx0qj+jLnLXs/4kxa3TC/DKhvsacr0iWVVPP97fMw2Iq
+         BjjXkN03w/KU1CqbJjiXG1JEINRRimJbg1PzUFtksfVPI6fcJ5spYVRrhCgVn/FXWgWb
+         zxmKjRWq4DRhYhIdJxBuKfSqSBtnTIV24tMiJs/th93BPNHSzzt8EBV3UEPf/VrGfj+r
+         PSfVV9SDH3bzxRLtMd3zcSxY1SdTpyQ1V8Bi9I7txolqPj914Z584ASgk73P+kBNHM8B
+         m6W39kMpz/TlwFKwJqRC4id/uVY4vRiSJ278/LwefAzvqGd/6yWu3Iwq5yXP27NcU9WG
+         phlA==
+X-Gm-Message-State: ACgBeo1FzFWIEnXFKBKHvfddWEEQXFyHY7aQ+Hz5/c5gr4BB6EhLnVuL
+        yulW5q2pktzlWSXh7N7WmBNpeJ/zMjM=
+X-Google-Smtp-Source: AA6agR7okzIQnyApf+9UYpAca/XBs/2oCNUQhHi1ypbpfNRIB7ZTqTSnbha72zmPDlumuwhqNZoOww==
+X-Received: by 2002:a17:90a:4809:b0:1f0:59d7:7ee2 with SMTP id a9-20020a17090a480900b001f059d77ee2mr464354pjh.240.1659029716495;
+        Thu, 28 Jul 2022 10:35:16 -0700 (PDT)
 Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170902f64500b0016cd74e5f87sm1546605plg.240.2022.07.28.10.27.26
+        by smtp.gmail.com with ESMTPSA id c204-20020a621cd5000000b0052baa22575asm1035532pfc.134.2022.07.28.10.35.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jul 2022 10:27:27 -0700 (PDT)
+        Thu, 28 Jul 2022 10:35:15 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 28 Jul 2022 07:27:25 -1000
+Date:   Thu, 28 Jul 2022 07:35:14 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] cgroup: Skip subtree root in
- cgroup_update_dfl_csses()
-Message-ID: <YuLG/RzJASE/8uTV@slm.duckdns.org>
-References: <20220728005815.1715522-1-longman@redhat.com>
- <20220728005815.1715522-2-longman@redhat.com>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
+Message-ID: <YuLI0jh8Csq0mErM@slm.duckdns.org>
+References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-5-yosryahmed@google.com>
+ <YuK+eg3lgwJ2CJnJ@slm.duckdns.org>
+ <CA+khW7gfzoeHVd5coTSWXuYVfqiVMwoSjXkWsP-CeVdmOm0FqA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220728005815.1715522-2-longman@redhat.com>
+In-Reply-To: <CA+khW7gfzoeHVd5coTSWXuYVfqiVMwoSjXkWsP-CeVdmOm0FqA@mail.gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -82,16 +92,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 08:58:15PM -0400, Waiman Long wrote:
-> The cgroup_update_dfl_csses() function updates css associations when a
-> cgroup's subtree_control file is modified. Any changes made to a cgroup's
-> subtree_control file, however, will only affect its descendants but not
-> the cgroup itself. So there is no point in migrating csses associated
-> with that cgroup. We can skip them instead.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On Thu, Jul 28, 2022 at 10:20:46AM -0700, Hao Luo wrote:
+...
+> is a good feature of this convention. My thoughts: It seems that ID
+> may be better, for two reasons. First, because ID is stateless, the
+> userspace doesn't have to remember closing the FD. Second, using
+> different identifications in two directions (userspace specifies
+> cgroup using FD, while kernel reports cgroup using ID) introduces a
+> little complexity when connecting them together.
 
-Applied to cgroup/for-5.20.
+Yeah, you can pass the IDs around different processes, print and log them in
+meaningful ways and so on because they're actual IDs, so my preference is
+towards using them for anything new.
 
 Thanks.
 
