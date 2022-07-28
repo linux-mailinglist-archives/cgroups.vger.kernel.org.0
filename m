@@ -2,106 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71657583B47
-	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 11:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5AC583BF7
+	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 12:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbiG1Jdv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Jul 2022 05:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
+        id S235404AbiG1KXr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Jul 2022 06:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbiG1Jdt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 05:33:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142A461D97;
-        Thu, 28 Jul 2022 02:33:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C0E3B209AA;
-        Thu, 28 Jul 2022 09:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1659000827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SB6tJ4z7ixYCC4m5qWSYZT9XjUVOUuyqFKcfB92kx20=;
-        b=hRehc4W65y4S7gZEYw54uweayg3E0ArpqGQbQyLN0cKr7UkMOcM3LGxp1AJoL2gltZtfYf
-        9/67Du5A+am+IryU8wF2FrkwkiQm/O6/BS34np2EarxFoT4CF1HfFJuklyvvIzMp0NoZiW
-        cTWD9/HFZfvIDiF+6tNyd0lEkZR0wfI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9058713A7E;
-        Thu, 28 Jul 2022 09:33:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yCdBIvtX4mLxUAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Thu, 28 Jul 2022 09:33:47 +0000
-Date:   Thu, 28 Jul 2022 11:33:46 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-        ming.lei@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com
-Subject: Re: [PATCH RESEND v6 4/8] blk-throttle: fix io hung due to config
- updates
-Message-ID: <20220728093346.GA2281@blackbody.suse.cz>
+        with ESMTP id S233296AbiG1KXr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 06:23:47 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8729B32EC4;
+        Thu, 28 Jul 2022 03:23:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LtmtV0yfczl88b;
+        Thu, 28 Jul 2022 18:22:42 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgDnSWmtY+JitiImBQ--.10228S3;
+        Thu, 28 Jul 2022 18:23:43 +0800 (CST)
+Subject: Re: [PATCH RESEND v6 2/8] blk-throttle: prevent overflow while
+ calculating wait time
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
 References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
- <20220701093441.885741-5-yukuai1@huaweicloud.com>
- <YuGGVxdlOVk/eF2l@slm.duckdns.org>
+ <20220701093441.885741-3-yukuai1@huaweicloud.com>
+ <YuGD1s2TJ9euYpCv@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d09703dd-d733-4e93-4219-96353a3f6551@huaweicloud.com>
+Date:   Thu, 28 Jul 2022 18:23:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AqsLC8rIMeq19msA"
-Content-Disposition: inline
-In-Reply-To: <YuGGVxdlOVk/eF2l@slm.duckdns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YuGD1s2TJ9euYpCv@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgDnSWmtY+JitiImBQ--.10228S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+        rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+ÔÚ 2022/07/28 2:28, Tejun Heo Ð´µÀ:
+> On Fri, Jul 01, 2022 at 05:34:35PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> In tg_with_in_bps_limit(), 'bps_limit * jiffy_elapsed_rnd' might
+>> overflow. FIx the problem by calling mul_u64_u64_div_u64() instead.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> 
+> Acked-by: Tejun Heo <tj@kernel.org>
+> 
+> BTW, have you observed this happening or is it from just reviewing the code?
 
---AqsLC8rIMeq19msA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It's just from code review.
 
-On Wed, Jul 27, 2022 at 08:39:19AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> I'm not quiet sure this is correct. What if the limit keeps changing across
-> different values? Then we'd be calculating the skipped amount based on the
-> last configuration only which would be incorrect.
+Thanks.
+> 
+> Thanks.
+> 
 
-When one change of configuration is correct, then all changes must be
-correct by induction. It's sufficient to take into account only the one
-old config and the new one.
-
-This __tg_update_skipped() calculates bytes_skipped with the limit
-before the change and bytes_skipped are used (divided by) the new limit
-in tg_with_in_bps_limit().
-The accumulation of bytes_skipped across multiple changes (until slice
-properly ends) is proportional to how bytes_allowed would grow over
-time.
-That's why I find this correct (I admit I had to look back into my
-notes when this was first discussed).
-
-HTH,
-Michal
-
---AqsLC8rIMeq19msA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTrXXag4J0QvXXBmkMkDQmsBEOquQUCYuJX3wAKCRAkDQmsBEOq
-uen2AP9DlRReKs7tBs0MfsBYoy0j+l23U/bpUzVeRFefU6hqBQD/dwu4UjPCbCwb
-oYbP30IoXD0s6tsiKY9PSyDBkf1xMAU=
-=r1c9
------END PGP SIGNATURE-----
-
---AqsLC8rIMeq19msA--
