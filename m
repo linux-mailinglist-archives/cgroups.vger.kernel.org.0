@@ -2,65 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D753583847
-	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 07:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CBE58390B
+	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 08:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbiG1FyE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Jul 2022 01:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S234371AbiG1G4b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Jul 2022 02:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiG1FyD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 01:54:03 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C46F56BBA;
-        Wed, 27 Jul 2022 22:54:01 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26S17nBP001472;
-        Wed, 27 Jul 2022 22:53:38 -0700
+        with ESMTP id S232715AbiG1G43 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 02:56:29 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E27B2E688;
+        Wed, 27 Jul 2022 23:56:27 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26S17uSZ010636;
+        Wed, 27 Jul 2022 23:56:00 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=TrvsotiIAMv6WxTEUpaphVsgY98raZZnBK/yyEVpYZY=;
- b=I9ryAaXrYotG6c99+5Xmel6zWjPq7SiVZWQdSgU7o9kmr2cVblS+WTRo8cKUy78tDbCa
- cIwYO93AdhtYZFu4k6kuKc4J6a2rRFubqHPGMppOIletlshEo4Ia52iYkNlK41MIkGK+
- vRPpJ8Ez9L0TUJRZV57yeSIzTZasVdUljRU= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hk4stxr83-1
+ bh=75HCixyYdb3b6Q4e6sNvQvIRsYzA4zD5zmgZyi+geZI=;
+ b=d+BEptjAaRAHzq2bAivJjXq7nvUpp+BMX/CSts7SQCTvkDmqek166LGfLOVVQnrb0kpX
+ BgEDL/ehqf+4tiEaPziZQQyMmYtSX1Uivk36BswOkQlvnuBpm9yZjZE1WF00Prj4VlXj
+ TEPbyYeNIOqMUHhJxZLiggLtYqbSqVB8svg= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hk3ck7exm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jul 2022 22:53:38 -0700
+        Wed, 27 Jul 2022 23:55:59 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FxmromB04ny7NHOOjwD16KHgawOAJApAgjxJe5C6oAFOB7ifvde1I2VtVuAPRHos96IpO/CFTVPwfqN5xRvARPYgMc//hRGvDJtzQ/FyiBLGALVOVmYHxmh1MgqnRrVfJva04x5Wv30Zt1LphlCcRsFggfJi4oqybZtLDgQK9D+aObUd9Cp6sPXc5kfDC29dzJKOOXoqS7Oz7adi9nPzZFLKF23mr341odsFxE48/xWkZBWsuU7h8ZRcohtNfCZUi+ti+tgY6swK5LHgcERN6g22WH52dtG9Uq6Wmfd3hWjz2DI3ekEDiaZYCyIL8vUOx8a55yY/fUU9cSyWociu0w==
+ b=D+DfxfPM4tlATP2GxogE9k6/ECeJktaL3KAsPtRggsyTzzqdwTZ93nsgsGaI6q/WsYXFXu9gczzm3i3+V93L7Mxq8BI/r2dWsZC6jeMDAxoo4Fy/QMxVPVRUJv1z5M6ilpFzVdt+zEav5lpJVuubDwNC7++tob3FTtMi9cyYXdG2LKUBhPpVHLooq+Qu99EHW+G9MIubCRWKuGCyyCWCp+4aa0WvaHX+3Xkw9txpO/QSSZXaJTuzDOXfEJxN/HURu+4jVb8ijiDoOAoXyWGtXrTomDQGVU1nGfXa39hIgwzxK/iA3YfAZ3s0DOwu3xV9ZcAMmV2RkSJvh0wx9A/KHA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TrvsotiIAMv6WxTEUpaphVsgY98raZZnBK/yyEVpYZY=;
- b=WapTnZy+0NJUxeYRp3BnaKmVrdJ1Cvm5XoPjRw6DTVCKDJJtlSn6ZRjn97Vw2aleATLmhSWDM5Y3oDO1lrPh2ALgmtfDi7GYebhyQmm9AcUWax9WZPuXZkKu2GyP1Ya8e2Vou9iXs+nucf/mhF7lenpD2k3JRjWAxSbN36vxv+n4PC2zLpoAlOSsO7cnbb8pfcku8cKpaa3cQhCjNA2Rt7/vYGBvuxSBRYNRFd+hHGsMfm2b4wg+DF7WelDYWhDfVUtWRUdUufLdZnuVgIAIDoRtHtFcMMNQKQY/OWQ/gYgdjQsAjTpTejNwrEK6gaYUysPch9+J2VG/RlxBCsUySg==
+ bh=75HCixyYdb3b6Q4e6sNvQvIRsYzA4zD5zmgZyi+geZI=;
+ b=imggRBEoBg12nyU+4GW2GB22ecrn43y29OoDK9tK82PNkGeOf+hlmgHJhAU/1X84Wq2uPBM3OTyhtUkE1Y5fy0lCNRaZF8htNWI/FhH0gcUSKnMgd0PfF0Gf9fVB6q4vHC3iiQEF8V+H3TUbAZ10sWqw7nTcPAVAnV3uXrN5LxRcZM531jdQ9VN0t8ztmeWmJCQStZOV0Kuqcr/MkWDj8NnuhH4eoF96iJNuw2yuee22KhY4dSXH4YL85wHCFivcehRzDVoEcE9M/+V/Ika9lMrIfhVykvM4DWBe+06mqPInyETIUCF3CtstRFhj1CDMNU9ed/6J2twQ/XIdBO40Zg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB4080.namprd15.prod.outlook.com (2603:10b6:806:87::16) with
+ by DM6PR15MB2252.namprd15.prod.outlook.com (2603:10b6:5:88::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.6; Thu, 28 Jul
- 2022 05:53:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.11; Thu, 28 Jul
+ 2022 06:55:57 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5458.024; Thu, 28 Jul 2022
- 05:53:36 +0000
-Message-ID: <33b05315-598d-5b6e-a8a0-ae8819ba98e8@fb.com>
-Date:   Wed, 27 Jul 2022 22:53:33 -0700
+ 06:55:57 +0000
+Message-ID: <639f575e-bc8c-46b9-b21b-bd9fbba835c1@fb.com>
+Date:   Wed, 27 Jul 2022 23:55:54 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH bpf-next v5 0/8] bpf: rstat: cgroup hierarchical stats
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
 Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>,
+To:     Hao Luo <haoluo@google.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Shuah Khan <shuah@kernel.org>,
         Michal Hocko <mhocko@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
@@ -75,78 +77,79 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, cgroups@vger.kernel.org
 References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-5-yosryahmed@google.com>
+ <CAP01T76p7CCj2i4X7PmZiG3G3-Bfx_ygnO0Eg+DnfwLHQiEPbA@mail.gmail.com>
+ <CA+khW7g2kriOb7on0u_UpGpS2A0bftrQowTB0+AJ=S7rpLKaZA@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220722174829.3422466-1-yosryahmed@google.com>
+In-Reply-To: <CA+khW7g2kriOb7on0u_UpGpS2A0bftrQowTB0+AJ=S7rpLKaZA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BY5PR13CA0006.namprd13.prod.outlook.com
- (2603:10b6:a03:180::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR17CA0031.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::44) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94cada8f-f418-4dec-995d-08da705d834c
-X-MS-TrafficTypeDiagnostic: SA0PR15MB4080:EE_
+X-MS-Office365-Filtering-Correlation-Id: a147486a-660b-4787-0f38-08da706638f7
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2252:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YOpFn3Jo6xQnTipxWV6gYEWNBZm5mugOtK+smwDr+W2ng+dHXvl+YCUPAKfvXfAqMpxZ76hkWFU+XhhAy5uSl1N/fHysxzj69U/H/MHyqcBp7PFTGuG34MSBJKT4BiR1fWjPlnmNdiViCevNRUM3OW86WhCx4xx2/GiWOop9jynqq4kq/4WKksY/Xv4lDSR4hiogFu6eNMoOBbkin3KF5XZCmMBbs+eU7qqvVRsO3kjEjkyV6pjJ7nvMNknDv34sATM50guxQQCky/UrCOWJ0khmGwU1H32nW5YvmLwaxzc5eOFQoe+itButk9oS/QTEh5XnqguoGpK/LX7fYw2+bGwDKOJ+yr+k+V1L7/brHS62s/yFaKNGOAnJUYWeylvuAKMg9MGM/zFBYrjaM5U87m+M0JlhcqQBMQRSyUU+igcw94lH4D/S5YRmkOWhEaqhVAJQzx9shqqVQDrWHDTxaeQg0EtUEG6akoJ1AM/OIj3xn2Hsft1T+sVAFxzm2OHZDNlYAVNDwJi0Dh/970nEnrk4n9IE9fBnlq7/lG3xIMR0wMAXTGLf5HYvtt66vgQ0N4/jLIv5cRn97jjhIuQlKnuN5S+RWc3r+UdTwpCmpzpxnfVvgtMlDkZV2HyqSlhgUIP6kIR8uEOjWPyJS0fWbMo3lEjRFWcO0uBme0/MG1eYbONNYzed5g+7UvZ4NLwr5s5hK45wjZZpmP6YT0ZdG6P+g0OgnoYN2jKeNp8SfKvdXiCgmf0m50DIx3WxIPQ8NVoohPHeaat+PxeEq9q8FYVwnRBZZwHCbd+8MY6T+MIPR/yzT69L7xTU01yfVyWaOG3yjiejmxtqHUUxnjYX8jXl0KGDCR7Vm2gZGfHv/6xoppPyaGmyvx8dHum+v4/n4yLaUG42gtbtHcmnsITD0w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(366004)(136003)(346002)(39860400002)(38100700002)(31686004)(110136005)(54906003)(316002)(66946007)(83380400001)(8676002)(66476007)(66556008)(7416002)(41300700001)(6486002)(2906002)(966005)(36756003)(53546011)(6666004)(5660300002)(6506007)(2616005)(186003)(6512007)(4326008)(86362001)(31696002)(478600001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: A4shZuOj8d6rUM//S7Y+xySAZAPufYcFtZAWSvoTtJ4bumg2grpvlSnprCPgUaWsF0g22jgj6kHGSDpPqVEH7HU0qrwc4i2AtV7APSmpzOiOgr1k0rrDL+BcmgpcjaWv/QyZm0Z+58wkE8m3XaYTvngiAQkXY4cnwMLJYJSzTBklNrsVCyU3SgSClowFVdA96AnZXydpLd75W7UEc+b35I0VTqe7q+RupNAJqlft/yRb181ImOJ6lfkom2ze7F6ltGBflPKhLd2UHAuuWE0Wz+n7Bv54qZG3KvTZI3oSWLLDuStHTbAAO9VX28cIWwzj+/mnBII8qdo7DDPuMiwd1FddUIVKk8fL2GvTH9OptbRNsquKru42lXF36w0qmDSRmma1XwvxXXYVXhUKSfrK6OFn8AGICzQVbTkTti8B8sgZmKyq8/jn2vrzypXguecp56qmRPm2HdakWO/tyWl4nKAVuuPVhvookqeaD8O8bK5HO+ED/uxK71cEtUAYa1d2wHxF8Pz2Mc03NhriJBLeVMOgcN2x/FtuVAxB04P6mW0h0CQi11ELgwBq43Xehcu+0SAy35vIdwsMMEDy1tTj48XNAKVQKjYX8CguKy9R8BeY27Y9ZLC6rvuY0JNRro1Q2spMgNCkC4mIXdRFXDneXeBZ6Mye8Hwx9Yfdp4V4kFQNePTkPeCVnwqaJJJGvL+3T4gvobgpOz1eKWJxZ7UWHsvc/0zNVdSB59ZtawEJ6i6YjfwHY1KvtPukCw/jFmjHVq88dLiJ7yXjcs8q1Y+NYLhkTRqpDW36sS7iRkampF9Y8RcpuqoRFee+grYrZ/278J1tRDO5bbP/wJejDUTkdQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(136003)(39860400002)(376002)(366004)(396003)(5660300002)(6512007)(6666004)(53546011)(6506007)(8936002)(7416002)(30864003)(6486002)(41300700001)(31686004)(36756003)(478600001)(186003)(2616005)(83380400001)(38100700002)(31696002)(86362001)(316002)(110136005)(4326008)(2906002)(54906003)(66476007)(8676002)(66556008)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VzdXVkdSVEZRVklYWFhOeE5lMTgwMU9HZElLNWM1dnhVQ0FEaUVvTHNKTnBj?=
- =?utf-8?B?UTJWd3RQUlFNOWJHbXBPTGpFQTlTZzU3SnU3WE5FTlh0OHhHRXFUUzQyNW5U?=
- =?utf-8?B?bFdSOTROUyt4V0pMUFBsbEN1UGdab3JRenFlVGp1UDE1dHYzUk9JbysvYjI4?=
- =?utf-8?B?UlVMb25VUk5MT252SFZGMDhaOE45SE14UmJ5a1M3YVYzbmp4TEEwTHRGNDA5?=
- =?utf-8?B?VzVSbHhJWkNoQXN3dDBOVGtsN3RxVVU3SHcwS1dZbldIQkVJVHBBcTBIeXQv?=
- =?utf-8?B?bTk1bmlLUlVLeEdWRnYzNWpTNWt0TGE5NFJpTzZaMDNCeVh0NjROUFkrVFFI?=
- =?utf-8?B?aEE5Mkc4ZEk0TlFDdm5OTWJzcG40REVWSWhYVDBpTUJrNFBCRW1JSm4zdW8v?=
- =?utf-8?B?bXpESXdZK2o5WlV1M1QxTkI3YlY2QVJUUUNFTy9RandZNTlrcjdlb25XTGxU?=
- =?utf-8?B?eUplSmlPVXJ1Y2ZyMmZOQTgzbDN1ZFg2RWNvdHhDZDQ0RFQ3M2o0bmxwYloy?=
- =?utf-8?B?Y2s0aGlMT0E3dk1leWtaWnJLOTBwSzFjNlJaQzB1bERWYkFSTzN1WHY3d3RM?=
- =?utf-8?B?T2lVdHZUcXNZU204S3dEd2o3SUYzVGk1WmdlRnhrWFIyMUdWNU01UUh6d3NL?=
- =?utf-8?B?NUliOFZwdzFnUXcydHM4VkJHS3NpTDNBV3RtMHY2aE00cmh4ZXRIY0tOUTZ4?=
- =?utf-8?B?NEtzUXBwOExLbHVKVmpWUm96L3d6Y0xoTXFrN2k5MzFYckJaS2JDUXVvSWZW?=
- =?utf-8?B?WkJrUUg5dVhOVkI2UmxEeVkxdjR6QzN0S2ZZdXdPMFYzeTN0cDhCUzY0QTJC?=
- =?utf-8?B?bVBHYktzYTkyTXFsTGRwOU4xWHhnR2dpVGdoeGZ0RlJGZmRIZ0d2N1kwNTJi?=
- =?utf-8?B?QkZhRmRMbjFrNzNzVkVJZmdZV21rSFdLSEVYbFByUFF6SlU5U3Rtelp2bWRm?=
- =?utf-8?B?U3hGQTBIaHlmTzlpRGZVcC9lUFVIMHN1UUZSVXdvOGNMZVMrZzN5L1ZQaUlG?=
- =?utf-8?B?R0liZGpNeHR1cUtrcHRTUmlub0FnWkZoRE5Gb2RWYWphc1Iydzl2cEZyclpP?=
- =?utf-8?B?ZGVsUnlnUnl0SDJzU3NLOFNkN1gwN1pYVjVxakFCNDY1ZEhnSnFZclJiQ0o2?=
- =?utf-8?B?VzJLWS9vOEEzUG9tejMxL0p6UHE5NEo4WlRtdTVmSUZ2ZDRjR0JxMEZnbTd6?=
- =?utf-8?B?Nms4Z1JZQ0NsNGsyUnA2SlR6K0U1WmhMTWJtL1JlME9RNFZ6VzlZM3MwV2F1?=
- =?utf-8?B?Z3lhRmhKWTF2ZGlKRDI4dHh5eC9Tem53N3ZQL3dXY2wvbysyUzZtSmdkYTNa?=
- =?utf-8?B?amh3dGVJSzFiNE40cnNGZk9DMzRoejZPYjBVdkxSelduWktMTitsd0xVTkFu?=
- =?utf-8?B?cWlFSVVJeXZ1bDlkSkF1dFl3QnQ0djNSRitnVzRPMGE0WDBMWGdyZXhuZkdN?=
- =?utf-8?B?eGkxajFkK2dodVA2TzY2ZzNxdUFEQjU1QnEwRGROK00wbmhOTmFqWXJjU1pu?=
- =?utf-8?B?QUJ5ZHE2NXZ2RzV6bStRU0lRQzhTdXJlSVZoelhoczZaY2VPUW55U3RmSks0?=
- =?utf-8?B?bDdlWTBYamJOeVBYTSsrOE9PeGpJYXFoMTFJZmhqYzJ3TWFvbi9mK0V0eXBO?=
- =?utf-8?B?VlhId2c2cmc5RTIzWTNmN3JUSWo4THdRaTRxVFYyZFBOSHc0MnY5TkNsZWVC?=
- =?utf-8?B?WGNYZW9nMk5GUStzNTRPaEJOYWNqTy82VkV3enpkb25VeGFWWnNGYncxbXVn?=
- =?utf-8?B?bFNhdlRtdE54UmJRVFBHWjZDamFlcTV1aEFiY21pUzJaTFllL09mdWtrZXo0?=
- =?utf-8?B?MENXdkJ2eTBBbEJCMWExU3ZGcWcybDJ0VkhBcHhWb1Q2MWhOR2hKV0hxSEdw?=
- =?utf-8?B?V29uZEdaVFRpR2F3WldQZDNDTVUvTkRnNlFxc01DUUZxQTNoNHQvS0dxRE5H?=
- =?utf-8?B?T09RcjROemZFMUFkWGlCb1ZlTnpUbURiUGozandiMXROZW9nVzBoMDdqM1BO?=
- =?utf-8?B?Z3hNN3E2cm5oT083ZEcxdGlLZmRBV1BNU0s5MkJldmZ3Z0Vzd0RWZ3JMM3U4?=
- =?utf-8?B?YUlDb0RsY1N3MmNUeHREcnBFKzlGOThwQnBVUU5iTlV1V0tJdElpejI0VlEr?=
- =?utf-8?B?WkcyVjExeUpkbUhXL0lSWE9kdEN2aW1leWhhdm1NeExEWEJHOHo1Q29TK3Jn?=
- =?utf-8?B?Rmc9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dHFSaHVjbC90RmEzTDJsTXQyeW1KdTQ5SWUzVXdRdmtUeEVheG80eWJYTFlj?=
+ =?utf-8?B?djJYTkFWRUUwTEZ3OW5tU3VYQTBBd0lWMDVUQ3dhc1FyZmZnL3Y2elAxRDV6?=
+ =?utf-8?B?TkV3S3h6VzdWUzNad0VqNEdFRU1tWVBmcUdpc28xSFV1ams2Qm1XN0ZOK3I0?=
+ =?utf-8?B?bHNmZCt4THFzdE1kMld4TXBaWUNVeGg2dkptN1EvcW4vMUMyVklENGRMTlMv?=
+ =?utf-8?B?dlBNN0trQkxPLzdGcVNOQmhvVUF5UnBrekRrdHZXUFBDUTFvV3RyZFR5amJV?=
+ =?utf-8?B?NDF6S0dBMWtqWXVzVGVZRkYyS1pZM01ERzJlVk40akhmSi8zeElZenRaN0N6?=
+ =?utf-8?B?eTU1SkVIWHpHYnJGY0IrQU1SOFJIdlZLZWdhcmQ1NWhkdVRTSlBHRjYwdDRO?=
+ =?utf-8?B?TXF0ZVJ3NUlmOURhTzRPZ0hlbUt0U0gwZVphem4vMGhXUGp6SEJ4QXowQVdO?=
+ =?utf-8?B?enBqNjFsZVBDWVh1UklIQThrRlBMcVhnUmtId0pmMllZRnVaZ1dsTFg1VFFS?=
+ =?utf-8?B?bW13SnZEanJzT01pNmtaT0cwU3Bld3VjZXR6QUhUWFY3RFhDN2xYRHhxS25l?=
+ =?utf-8?B?ZnVWQkdqUEs3TTkwY0MrNjFUNEtIYUdqSXltc0dFQ1hpYkswd0FBSHJFZk5q?=
+ =?utf-8?B?ZytOVG9CUmwyOTM4anhIOG5Nc28rdUZMc3ErZkp6cGN6eHBKdmZwdnBIM3Vk?=
+ =?utf-8?B?azNXK2EyY2dvRVk0Z0RyRkMwS21kL3FBUDcxS0gvV3lnTWt4THFEbVRveTlz?=
+ =?utf-8?B?NVlDNWRGQnBGQ1p0VlQwWndVdjFjdHhDb2htK1JkSU9sWjMvRmtQSG9XZGRt?=
+ =?utf-8?B?TWZ0SnJYdnJyeHV2eHlEVGU4K1B5SVo4WTRid2J0UlA3bnVCSkczOW10ZndF?=
+ =?utf-8?B?Vyt3bWtqM01JYm0zQzRvdUUxb3ppWjF3dDBsTndQWXFrQlNHQ2xCQWdaL2k4?=
+ =?utf-8?B?bUowQVI5Sld2UU5JTkF0TUtlM014WVFFTTh5UUl3NVVqZ2FCclRSb1FKNGpY?=
+ =?utf-8?B?RzhJUVVhK050SzRxemJnSEJZeEV6OUx4YlRNMTBmQzNDaXRoZmFadUVXM25N?=
+ =?utf-8?B?ODdnWUs3cEMvMXZhK1lOd20xTmUzM0xyWXZkTVBXTnBjbnBaVkhqci8yMTJD?=
+ =?utf-8?B?dWpXWTU0SXBvSVJFQkdibk5qbkFpMnA0TWlURXBQeEdZa3JJeEZpcUd1eHAy?=
+ =?utf-8?B?WVg4cWZkcDZmVk1PbFF5bW5YVzVIOGkrd01iZm1KUE50WXQ3WW9sZ212Yitn?=
+ =?utf-8?B?UEZSNEhwY2diSUpqWEkyK2sxNWs1QWtKd3lLMWk5ekE5MnRDWGk1WkY5Y0Rp?=
+ =?utf-8?B?WFhKN290cFNqNTBOczdwVEYza1B2NnhvdEtMWFJScXJ3VzBZckNvbExHUk1l?=
+ =?utf-8?B?clh3N2E4RHFDbWlJMS9oVVdhODZaUWNJZGZXRGRhcXpQK0hNVkhqMkxXZStZ?=
+ =?utf-8?B?RjEzWUdLMDIrOHNCSjkzNzdYSzBLQ1lQa2xjV1p2RTFJZlZmUjNrc0lLaVRT?=
+ =?utf-8?B?UEs2S3UzdWNnMHRRQmh3NTIvTTI1U3RSQmhta1FTVVEvRUR5d3ZXNHE5NThH?=
+ =?utf-8?B?am82bDQvSGd3RURkbSt3U2U3UHlhcWZ6MWFsOC92S0xBbDRZZnlYT0p1bENn?=
+ =?utf-8?B?VTAwMlk3SFhWRVV0emFBQVNYdTFuZFl4ZlF5aFFndzBaVHhPVWp1MlFuZFcr?=
+ =?utf-8?B?ZWFKK1lwYmFDUjVTUE51dG9hVExxYUdmQ0Fuenp1WGRSd0JHWFJER1VJamox?=
+ =?utf-8?B?WkZjTEZmR0RxS2dHTUFWOENRTkhkc2ExUXNqZGpGdFZXaUljdTBqRzI0MXJM?=
+ =?utf-8?B?NXB0cFdKbit5MDMvbVJZM2dnRkpSWTZtd1MvdUJ0SytEWW11SmM1OERSaUxC?=
+ =?utf-8?B?eWRSUjFVeTFtMWlSeitiTlphZDJ6TUZsWThzdmMyMTBvYjdyMGl4Y1ptNEZC?=
+ =?utf-8?B?UGpmWWNsa2ZKN0MrQnFtblV4UVNia28vcG96M0srSER2L0w1cnIzaWhWVWhV?=
+ =?utf-8?B?YUkyZVQxWCtyTzczYUQyaHZLMWkxR0hpaXB3WGg1V0ljOVBlVDBBTjRDR1Yz?=
+ =?utf-8?B?R0ZoSUhoOExodCsxVSsxcHJzendNUjZZMmladURvUWhFUDlWYUc5eS81Qzk1?=
+ =?utf-8?Q?U9DKgRw3SNxd1yu1unbA7gH69?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94cada8f-f418-4dec-995d-08da705d834c
+X-MS-Exchange-CrossTenant-Network-Message-Id: a147486a-660b-4787-0f38-08da706638f7
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2022 05:53:36.5013
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2022 06:55:57.2286
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wgYfQzx3mdTa4iQXgHv/cfVX7SMKUgnqoyZgbnpn5HSz7mOdbcdYpsu0bwriaeme
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4080
-X-Proofpoint-ORIG-GUID: 8TL01vOo9FBPpbBmr7ax7fnEBFWRTTap
-X-Proofpoint-GUID: 8TL01vOo9FBPpbBmr7ax7fnEBFWRTTap
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: 66IXwIaPmfjM9qeI6LZaZPByAzFoW9ysl03uVMXHsoQco2yigksuQVtWATVLeJFQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2252
+X-Proofpoint-ORIG-GUID: LcSnYiplYZgkSzRruyy6p654Spt_cZ2j
+X-Proofpoint-GUID: LcSnYiplYZgkSzRruyy6p654Spt_cZ2j
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-27_08,2022-07-28_01,2022-06-22_01
+ definitions=2022-07-28_01,2022-07-28_01,2022-06-22_01
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -159,217 +162,263 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-On 7/22/22 10:48 AM, Yosry Ahmed wrote:
-> This patch series allows for using bpf to collect hierarchical cgroup
-> stats efficiently by integrating with the rstat framework. The rstat
-> framework provides an efficient way to collect cgroup stats percpu and
-> propagate them through the cgroup hierarchy.
+On 7/22/22 1:33 PM, Hao Luo wrote:
+> On Fri, Jul 22, 2022 at 11:36 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+>>
+>> On Fri, 22 Jul 2022 at 19:52, Yosry Ahmed <yosryahmed@google.com> wrote:
+>>>
+>>> From: Hao Luo <haoluo@google.com>
+>>>
+>>> Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
+>>>
+>>>   - walking a cgroup's descendants in pre-order.
+>>>   - walking a cgroup's descendants in post-order.
+>>>   - walking a cgroup's ancestors.
+>>>
+>>> When attaching cgroup_iter, one can set a cgroup to the iter_link
+>>> created from attaching. This cgroup is passed as a file descriptor and
+>>> serves as the starting point of the walk. If no cgroup is specified,
+>>> the starting point will be the root cgroup.
+>>>
+>>> For walking descendants, one can specify the order: either pre-order or
+>>> post-order. For walking ancestors, the walk starts at the specified
+>>> cgroup and ends at the root.
+>>>
+>>> One can also terminate the walk early by returning 1 from the iter
+>>> program.
+>>>
+>>> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+>>> program is called with cgroup_mutex held.
+>>>
+>>> Currently only one session is supported, which means, depending on the
+>>> volume of data bpf program intends to send to user space, the number
+>>> of cgroups that can be walked is limited. For example, given the current
+>>> buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+>>> cgroup, the total number of cgroups that can be walked is 512. This is
+>>> a limitation of cgroup_iter. If the output data is larger than the
+>>> buffer size, the second read() will signal EOPNOTSUPP. In order to work
+>>> around, the user may have to update their program to reduce the volume
+>>> of data sent to output. For example, skip some uninteresting cgroups.
+>>> In future, we may extend bpf_iter flags to allow customizing buffer
+>>> size.
+>>>
+>>> Signed-off-by: Hao Luo <haoluo@google.com>
+>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>>> Acked-by: Yonghong Song <yhs@fb.com>
+>>> ---
+>>>   include/linux/bpf.h                           |   8 +
+>>>   include/uapi/linux/bpf.h                      |  30 +++
+>>>   kernel/bpf/Makefile                           |   3 +
+>>>   kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
+>>>   tools/include/uapi/linux/bpf.h                |  30 +++
+>>>   .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+>>>   6 files changed, 325 insertions(+), 2 deletions(-)
+>>>   create mode 100644 kernel/bpf/cgroup_iter.c
+>>>
+>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>> index a97751d845c9..9061618fe929 100644
+>>> --- a/include/linux/bpf.h
+>>> +++ b/include/linux/bpf.h
+>>> @@ -47,6 +47,7 @@ struct kobject;
+>>>   struct mem_cgroup;
+>>>   struct module;
+>>>   struct bpf_func_state;
+>>> +struct cgroup;
+>>>
+>>>   extern struct idr btf_idr;
+>>>   extern spinlock_t btf_idr_lock;
+>>> @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+>>>          int __init bpf_iter_ ## target(args) { return 0; }
+>>>
+>>>   struct bpf_iter_aux_info {
+>>> +       /* for map_elem iter */
+>>>          struct bpf_map *map;
+>>> +
+>>> +       /* for cgroup iter */
+>>> +       struct {
+>>> +               struct cgroup *start; /* starting cgroup */
+>>> +               int order;
+>>> +       } cgroup;
+>>>   };
+>>>
+>>>   typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index ffcbf79a556b..fe50c2489350 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
+>>>          __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+>>>   };
+>>>
+>>> +enum bpf_iter_cgroup_traversal_order {
+>>> +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
+>>> +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
+>>> +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+>>> +};
+>>> +
+>>>   union bpf_iter_link_info {
+>>>          struct {
+>>>                  __u32   map_fd;
+>>>          } map;
+>>> +
+>>> +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
+>>> +        * ancestors of a given cgroup.
+>>> +        */
+>>> +       struct {
+>>> +               /* Cgroup file descriptor. This is root of the subtree if walking
+>>> +                * descendants; it's the starting cgroup if walking the ancestors.
+>>> +                * If it is left 0, the traversal starts from the default cgroup v2
+>>> +                * root. For walking v1 hierarchy, one should always explicitly
+>>> +                * specify the cgroup_fd.
+>>> +                */
+>>> +               __u32   cgroup_fd;
+>>> +               __u32   traversal_order;
+>>> +       } cgroup;
+>>>   };
+>>>
+>>>   /* BPF syscall commands, see bpf(2) man-page for more details. */
+>>> @@ -6136,6 +6156,16 @@ struct bpf_link_info {
+>>>                                          __u32 map_id;
+>>>                                  } map;
+>>>                          };
+>>> +                       union {
+>>> +                               struct {
+>>> +                                       __u64 cgroup_id;
+>>> +                                       __u32 traversal_order;
+>>> +                               } cgroup;
+>>> +                       };
+>>> +                       /* For new iters, if the first field is larger than __u32,
+>>> +                        * the struct should be added in the second union. Otherwise,
+>>> +                        * it will create holes before map_id, breaking uapi.
+>>> +                        */
+>>>                  } iter;
+>>>                  struct  {
+>>>                          __u32 netns_ino;
+>>> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+>>> index 057ba8e01e70..00e05b69a4df 100644
+>>> --- a/kernel/bpf/Makefile
+>>> +++ b/kernel/bpf/Makefile
+>>> @@ -24,6 +24,9 @@ endif
+>>>   ifeq ($(CONFIG_PERF_EVENTS),y)
+>>>   obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+>>>   endif
+>>> +ifeq ($(CONFIG_CGROUPS),y)
+>>> +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
+>>> +endif
+>>>   obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+>>>   ifeq ($(CONFIG_INET),y)
+>>>   obj-$(CONFIG_BPF_SYSCALL) += reuseport_array.o
+>>> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+>>> new file mode 100644
+>>> index 000000000000..1027faed0b8b
+>>> --- /dev/null
+>>> +++ b/kernel/bpf/cgroup_iter.c
+>>> @@ -0,0 +1,252 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/* Copyright (c) 2022 Google */
+>>> +#include <linux/bpf.h>
+>>> +#include <linux/btf_ids.h>
+>>> +#include <linux/cgroup.h>
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/seq_file.h>
+>>> +
+>>> +#include "../cgroup/cgroup-internal.h"  /* cgroup_mutex and cgroup_is_dead */
+>>> +
+>>> +/* cgroup_iter provides three modes of traversal to the cgroup hierarchy.
+>>> + *
+>>> + *  1. Walk the descendants of a cgroup in pre-order.
+>>> + *  2. Walk the descendants of a cgroup in post-order.
+>>> + *  2. Walk the ancestors of a cgroup.
+>>> + *
+>>> + * For walking descendants, cgroup_iter can walk in either pre-order or
+>>> + * post-order. For walking ancestors, the iter walks up from a cgroup to
+>>> + * the root.
+>>> + *
+>>> + * The iter program can terminate the walk early by returning 1. Walk
+>>> + * continues if prog returns 0.
+>>> + *
+>>> + * The prog can check (seq->num == 0) to determine whether this is
+>>> + * the first element. The prog may also be passed a NULL cgroup,
+>>> + * which means the walk has completed and the prog has a chance to
+>>> + * do post-processing, such as outputing an epilogue.
+>>> + *
+>>> + * Note: the iter_prog is called with cgroup_mutex held.
+>>> + *
+>>> + * Currently only one session is supported, which means, depending on the
+>>> + * volume of data bpf program intends to send to user space, the number
+>>> + * of cgroups that can be walked is limited. For example, given the current
+>>> + * buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+>>> + * cgroup, the total number of cgroups that can be walked is 512. This is
+>>> + * a limitation of cgroup_iter. If the output data is larger than the
+>>> + * buffer size, the second read() will signal EOPNOTSUPP. In order to work
+>>> + * around, the user may have to update their program to reduce the volume
+>>> + * of data sent to output. For example, skip some uninteresting cgroups.
+>>> + */
+>>> +
+>>> +struct bpf_iter__cgroup {
+>>> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
+>>> +       __bpf_md_ptr(struct cgroup *, cgroup);
+>>> +};
+>>> +
+>>> +struct cgroup_iter_priv {
+>>> +       struct cgroup_subsys_state *start_css;
+>>> +       bool terminate;
+>>> +       int order;
+>>> +};
+>>> +
+>>> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
+>>> +{
+>>> +       struct cgroup_iter_priv *p = seq->private;
+>>> +
+>>> +       mutex_lock(&cgroup_mutex);
+>>> +
+>>> +       /* cgroup_iter doesn't support read across multiple sessions. */
+>>> +       if (*pos > 0)
+>>> +               return ERR_PTR(-EOPNOTSUPP);
+>>> +
+>>> +       ++*pos;
+>>> +       p->terminate = false;
+>>> +       if (p->order == BPF_ITER_CGROUP_PRE)
+>>> +               return css_next_descendant_pre(NULL, p->start_css);
+>>> +       else if (p->order == BPF_ITER_CGROUP_POST)
+>>> +               return css_next_descendant_post(NULL, p->start_css);
+>>> +       else /* BPF_ITER_CGROUP_PARENT_UP */
+>>> +               return p->start_css;
+>>> +}
+>>> +
+>>> +static int __cgroup_iter_seq_show(struct seq_file *seq,
+>>> +                                 struct cgroup_subsys_state *css, int in_stop);
+>>> +
+>>> +static void cgroup_iter_seq_stop(struct seq_file *seq, void *v)
+>>> +{
+>>> +       /* pass NULL to the prog for post-processing */
+>>> +       if (!v)
+>>> +               __cgroup_iter_seq_show(seq, NULL, true);
+>>> +       mutex_unlock(&cgroup_mutex);
+>>
+>> I'm just curious, but would it be a good optimization (maybe in a
+>> follow up) to move this mutex_unlock before the check on v? That
+>> allows you to store/buffer some info you want to print as a compressed
+>> struct in a map, then write the full text to the seq_file outside the
+>> cgroup_mutex lock in the post-processing invocation.
+>>
+>> It probably also allows you to walk the whole hierarchy, if one
+>> doesn't want to run into seq_file buffer limit (or it can decide what
+>> to print within the limit in the post processing invocation), or it
+>> can use some out of band way (ringbuf, hashmap, etc.) to send the data
+>> to userspace. But all of this can happen without holding cgroup_mutex
+>> lock.
 > 
-> The stats are exposed to userspace in textual form by reading files in
-> bpffs, similar to cgroupfs stats by using a cgroup_iter program.
-> cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
-> - walking a cgroup's descendants in pre-order.
-> - walking a cgroup's descendants in post-order.
-> - walking a cgroup's ancestors.
+> Thanks Kumar.
 > 
-> When attaching cgroup_iter, one needs to set a cgroup to the iter_link
-> created from attaching. This cgroup is passed as a file descriptor and
-> serves as the starting point of the walk.
-> 
-> One can also terminate the walk early by returning 1 from the iter
-> program.
-> 
-> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> program is called with cgroup_mutex held.
-> 
-> ** Background on rstat for stats collection **
-> (I am using a subscriber analogy that is not commonly used)
-> 
-> The rstat framework maintains a tree of cgroups that have updates and
-> which cpus have updates. A subscriber to the rstat framework maintains
-> their own stats. The framework is used to tell the subscriber when
-> and what to flush, for the most efficient stats propagation. The
-> workflow is as follows:
-> 
-> - When a subscriber updates a cgroup on a cpu, it informs the rstat
->    framework by calling cgroup_rstat_updated(cgrp, cpu).
-> 
-> - When a subscriber wants to read some stats for a cgroup, it asks
->    the rstat framework to initiate a stats flush (propagation) by calling
->    cgroup_rstat_flush(cgrp).
-> 
-> - When the rstat framework initiates a flush, it makes callbacks to
->    subscribers to aggregate stats on cpus that have updates, and
->    propagate updates to their parent.
-> 
-> Currently, the main subscribers to the rstat framework are cgroup
-> subsystems (e.g. memory, block). This patch series allow bpf programs to
-> become subscribers as well.
-> 
-> This patch series includes a resend of a patch from the mailing list by
-> Benjamin Tissoires to support sleepable kfuncs [1], modified to use the
-> new kfunc flags infrastructure.
-> 
-> Patches in this series are organized as follows:
-> * Patch 1 is the updated sleepable kfuncs patch.
-> * Patch 2 enables the use of cgroup_get_from_file() in cgroup1.
->    This is useful because it enables cgroup_iter to work with cgroup1, and
->    allows the entire stat collection workflow to be cgroup1-compatible.
-> * Patches 3-5 introduce cgroup_iter prog, and a selftest.
-> * Patches 6-8 allow bpf programs to integrate with rstat by adding the
->    necessary hook points and kfunc. A comprehensive selftest that
->    demonstrates the entire workflow for using bpf and rstat to
->    efficiently collect and output cgroup stats is added.
-> 
-> ---
-> Changelog:
-> 
-> v4 -> v5:
-> - Rebased on top of new kfunc flags infrastructure, updated patch 1 and
->    patch 6 accordingly.
-> - Added docs for sleepable kfuncs.
-> 
-> v3 -> v4:
-> - cgroup_iter:
->    * reorder fields in bpf_link_info to avoid break uapi (Yonghong)
->    * comment the behavior when cgroup_fd=0 (Yonghong)
->    * comment on the limit of number of cgroups supported by cgroup_iter.
->      (Yonghong)
-> - cgroup_hierarchical_stats selftest:
->    * Do not return -1 if stats are not found (causes overflow in userspace).
->    * Check if child process failed to join cgroup.
->    * Make buf and path arrays in get_cgroup_vmscan_delay() static.
->    * Increase the test map sizes to accomodate cgroups that are not
->      created by the test.
-> 
-> v2 -> v3:
-> - cgroup_iter:
->    * Added conditional compilation of cgroup_iter.c in kernel/bpf/Makefile
->      (kernel test) and dropped the !CONFIG_CGROUP patch.
->    * Added validation of traversal_order when attaching (Yonghong).
->    * Fixed previous wording "two modes" to "three modes" (Yonghong).
->    * Fixed the btf_dump selftest broken by this patch (Yonghong).
->    * Fixed ctx_arg_info[0] to use "PTR_TO_BTF_ID_OR_NULL" instead of
->      "PTR_TO_BTF_ID", because the "cgroup" pointer passed to iter prog can
->       be null.
-> - Use __diag_push to eliminate __weak noinline warning in
->    bpf_rstat_flush().
-> - cgroup_hierarchical_stats selftest:
->    * Added write_cgroup_file_parent() helper.
->    * Added error handling for failed map updates.
->    * Added null check for cgroup in vmscan_flush.
->    * Fixed the signature of vmscan_[start/end].
->    * Correctly return error code when attaching trace programs fail.
->    * Make sure all links are destroyed correctly and not leaking in
->      cgroup_hierarchical_stats selftest.
->    * Use memory.reclaim instead of memory.high as a more reliable way to
->      invoke reclaim.
->    * Eliminated sleeps, the test now runs faster.
-> 
-> v1 -> v2:
-> - Redesign of cgroup_iter from v1, based on Alexei's idea [2]:
->    * supports walking cgroup subtree.
->    * supports walking ancestors of a cgroup. (Andrii)
->    * supports terminating the walk early.
->    * uses fd instead of cgroup_id as parameter for iter_link. Using fd is
->      a convention in bpf.
->    * gets cgroup's ref at attach time and deref at detach.
->    * brought back cgroup1 support for cgroup_iter.
-> - Squashed the patches adding the rstat flush hook points and kfuncs
->    (Tejun).
-> - Added a comment explaining why bpf_rstat_flush() needs to be weak
->    (Tejun).
-> - Updated the final selftest with the new cgroup_iter design.
-> - Changed CHECKs in the selftest with ASSERTs (Yonghong, Andrii).
-> - Removed empty line at the end of the selftest (Yonghong).
-> - Renamed test files to cgroup_hierarchical_stats.c.
-> - Reordered CGROUP_PATH params order to match struct declaration
->    in the selftest (Michal).
-> - Removed memory_subsys_enabled() and made sure memcg controller
->    enablement checks make sense and are documented (Michal).
-> 
-> RFC v2 -> v1:
-> - Instead of introducing a new program type for rstat flushing, add an
->    empty hook point, bpf_rstat_flush(), and use fentry bpf programs to
->    attach to it and flush bpf stats.
-> - Instead of using helpers, use kfuncs for rstat functions.
-> - These changes simplify the patchset greatly, with minimal changes to
->    uapi.
-> 
-> RFC v1 -> RFC v2:
-> - Instead of rstat flush programs attach to subsystems, they now attach
->    to rstat (global flushers, not per-subsystem), based on discussions
->    with Tejun. The first patch is entirely rewritten.
-> - Pass cgroup pointers to rstat flushers instead of cgroup ids. This is
->    much more flexibility and less likely to need a uapi update later.
-> - rstat helpers are now only defined if CGROUP_CONFIG.
-> - Most of the code is now only defined if CGROUP_CONFIG and
->    CONFIG_BPF_SYSCALL.
-> - Move rstat helper protos from bpf_base_func_proto() to
->    tracing_prog_func_proto().
-> - rstat helpers argument (cgroup pointer) is now ARG_PTR_TO_BTF_ID, not
->    ARG_ANYTHING.
-> - Rewrote the selftest to use the cgroup helpers.
-> - Dropped bpf_map_lookup_percpu_elem (already added by Feng).
-> - Dropped patch to support cgroup v1 for cgroup_iter.
-> - Dropped patch to define some cgroup_put() when !CONFIG_CGROUP. The
->    code that calls it is no longer compiled when !CONFIG_CGROUP.
-> 
-> cgroup_iter was originally introduced in a different patch series[3].
-> Hao and I agreed that it fits better as part of this series.
-> RFC v1 of this patch series had the following changes from [3]:
-> - Getting the cgroup's reference at the time at attaching, instead of
->    at the time when iterating. (Yonghong)
-> - Remove .init_seq_private and .fini_seq_private callbacks for
->    cgroup_iter. They are not needed now. (Yonghong)
-> 
-> [1] https://lore.kernel.org/bpf/20220421140740.459558-5-benjamin.tissoires@redhat.com/
-> [2] https://lore.kernel.org/bpf/20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com/
-> [3] https://lore.kernel.org/lkml/20220225234339.2386398-9-haoluo@google.com/
-> ---
-> 
-> Benjamin Tissoires (1):
->    btf: Add a new kfunc flag which allows to mark a function to be
->      sleepable
-> 
-> Hao Luo (3):
->    bpf, iter: Fix the condition on p when calling stop.
->    bpf: Introduce cgroup iter
->    selftests/bpf: Test cgroup_iter.
-> 
-> Yosry Ahmed (4):
->    cgroup: enable cgroup_get_from_file() on cgroup1
->    cgroup: bpf: enable bpf programs to integrate with rstat
->    selftests/bpf: extend cgroup helpers
->    bpf: add a selftest for cgroup hierarchical stats collection
+> It sounds like an idea, but the key thing is not about moving
+> cgroup_mutex unlock before the check IMHO. The user can achieve
+> compression using the current infra. Compression could actually be
+> done in the bpf program. user can define and output binary content and
+> implement a userspace library to parse/decompress when reading out the
+> data.
 
-It would be great cgroup maintainers (Tejun?) can look at the above two 
-cgroup related patches.
-
-> 
->   Documentation/bpf/kfuncs.rst                  |   6 +
->   include/linux/bpf.h                           |   8 +
->   include/linux/btf.h                           |   1 +
->   include/uapi/linux/bpf.h                      |  30 ++
->   kernel/bpf/Makefile                           |   3 +
->   kernel/bpf/bpf_iter.c                         |   5 +
->   kernel/bpf/btf.c                              |   9 +
->   kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++
->   kernel/cgroup/cgroup.c                        |   5 -
->   kernel/cgroup/rstat.c                         |  49 +++
->   tools/include/uapi/linux/bpf.h                |  30 ++
->   tools/testing/selftests/bpf/cgroup_helpers.c  | 201 ++++++++--
->   tools/testing/selftests/bpf/cgroup_helpers.h  |  19 +-
->   .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
->   .../prog_tests/cgroup_hierarchical_stats.c    | 364 ++++++++++++++++++
->   .../selftests/bpf/prog_tests/cgroup_iter.c    | 190 +++++++++
->   tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
->   .../bpf/progs/cgroup_hierarchical_stats.c     | 239 ++++++++++++
->   .../testing/selftests/bpf/progs/cgroup_iter.c |  39 ++
->   19 files changed, 1407 insertions(+), 54 deletions(-)
->   create mode 100644 kernel/bpf/cgroup_iter.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
->   create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
->   create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
-> 
+Right mutex_unlock() can be moved to the beginning of the
+function since the cgroup is not used in
+   __cgroup_iter_seq_show(seq, NULL, true)
