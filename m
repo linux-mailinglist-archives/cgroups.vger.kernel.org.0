@@ -2,48 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C73584229
-	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 16:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1398584276
+	for <lists+cgroups@lfdr.de>; Thu, 28 Jul 2022 16:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbiG1Otc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Jul 2022 10:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S230365AbiG1O7N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Jul 2022 10:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiG1Ota (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 10:49:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1904A52E62
-        for <cgroups@vger.kernel.org>; Thu, 28 Jul 2022 07:49:30 -0700 (PDT)
+        with ESMTP id S230341AbiG1O7L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 10:59:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE90112D12
+        for <cgroups@vger.kernel.org>; Thu, 28 Jul 2022 07:59:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659019769;
+        s=mimecast20190719; t=1659020349;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y72epJF5d8qli+9Ce0BVC/x2v9XQ9z23UFNcVj/FJ4A=;
-        b=invJ8yjyj83zcaftgHCipsYac8x/U1edVPR6E9Gvwya9dxo86/KYdr2DE0BejxhY1sGESI
-        oZndxhGEOgxG4PFsyvzSiwvSOO0Jul+MzAPD3NXyy55h6pwtN5NB9Ojynt3LssUMEg+F4Z
-        Hicr55mRZbOWEqavqJHbJ+OigUfYQoc=
+        bh=z/5IAGid/MkaGLoGKjcup59KN/CNT4vmw2F2KlJ1qxE=;
+        b=iy/CWFy2ERcNaDYBIusjuZmZzM2djzl3Ob9ZYUFU4SLuxVobavzg6W/LkgiITBlML+6mv+
+        lYQVD+GvcQh4JBl9nlexWzpa32MZbfi4xwN31DbQ2r/zMojD3Ey56MVOOgI1OMG1SjJkEX
+        wznnx+XRolb1+lDBHPrr1fEMNhnA0YA=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-534-XijDdIi4PyCKyGWgOxNPkA-1; Thu, 28 Jul 2022 10:49:24 -0400
-X-MC-Unique: XijDdIi4PyCKyGWgOxNPkA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+ us-mta-25-pUuMEUEVMhqVl6KTPnjYeA-1; Thu, 28 Jul 2022 10:59:04 -0400
+X-MC-Unique: pUuMEUEVMhqVl6KTPnjYeA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 513D81C0BC6A;
-        Thu, 28 Jul 2022 14:49:23 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22A903817A70;
+        Thu, 28 Jul 2022 14:59:03 +0000 (UTC)
 Received: from [10.22.9.86] (unknown [10.22.9.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4854740CF8EB;
-        Thu, 28 Jul 2022 14:49:22 +0000 (UTC)
-Message-ID: <8e0a41e6-8d03-b0ad-02b5-04449c49c470@redhat.com>
-Date:   Thu, 28 Jul 2022 10:49:21 -0400
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C81B2026D64;
+        Thu, 28 Jul 2022 14:59:02 +0000 (UTC)
+Message-ID: <a58852b4-313a-9271-f31d-f79a91ec188b@redhat.com>
+Date:   Thu, 28 Jul 2022 10:59:01 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH 2/2] cgroup: Skip subtree root in
- cgroup_update_dfl_csses()
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Keep current cpus list if cpus
+ affinity was explicitly set
 Content-Language: en-US
 To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
 Cc:     Ingo Molnar <mingo@redhat.com>,
@@ -59,16 +59,15 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20220728005815.1715522-1-longman@redhat.com>
- <20220728005815.1715522-2-longman@redhat.com>
- <20220728144426.GA26631@blackbody.suse.cz>
+ <20220728144420.GA27407@blackbody.suse.cz>
 From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20220728144426.GA26631@blackbody.suse.cz>
+In-Reply-To: <20220728144420.GA27407@blackbody.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,30 +75,67 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
 On 7/28/22 10:44, Michal Koutný wrote:
-> On Wed, Jul 27, 2022 at 08:58:15PM -0400, Waiman Long <longman@redhat.com> wrote:
->> The cgroup_update_dfl_csses() function updates css associations when a
->> cgroup's subtree_control file is modified. Any changes made to a cgroup's
->> subtree_control file, however, will only affect its descendants but not
->> the cgroup itself.
-> I find this correct.
+> Hello.
 >
->> So there is no point in migrating csses associated with that cgroup.
->> We can skip them instead.
-> Alone it's not such a big win but it componds with the recent Tejun's
-> threadgroup_rwsem elision.
+> On Wed, Jul 27, 2022 at 08:58:14PM -0400, Waiman Long <longman@redhat.com> wrote:
+>> It was found that any change to the current cpuset hierarchy may reset
+>> the cpus_allowed list of the tasks in the affected cpusets to the
+>> default cpuset value even if those tasks have cpus affinity explicitly
+>> set by the users before.
+> I'm surprised this went so long unnoticed / unreported.
 >
-It is more an optimization patch trying to not waste cpu time doing 
-unnecessary work.
->> ---
->>   kernel/cgroup/cgroup.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
-> Feel free to have
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> Could it be users relied on that implicit affinity reset?
+
+As said, it is more easily triggered in a cgroup v2 environment. 
+Systemd, on a cgroup v2 environment, will write "+cpuset" to the root 
+cgroup's subtree_control file when a new container is instantiated. I 
+don't know why it is doing that, but that cause problem as it resets all 
+the cpus_allowed list assignment. Cgroup v1 doesn't have this problem.
+
+
+>> That is especially easy to trigger under a cgroup v2 environment where
+>> writing "+cpuset" to the root cgroup's cgroup.subtree_control file
+>> will reset the cpus affinity of all the processes in the system.
+> This should apply only to tasks that were extracted out of the root
+> cgroup, no? (OK, those are all processes practically.)
+The reset is done on all cgroups in a particular subtree. In the case of 
+cgroup root, it is all the processes in the system.
 >
-Thanks for the review.
+> (Even without your second patch, the scope should be limited because of
+> src_cset==dst_cset check in cgroup_migrate_prepare_dst().)
+>
+>> That is especially problematic in a nohz_full environment where the
+>> tasks running in the nohz_full CPUs usually have their cpus affinity
+>> explicitly set and will behave incorrectly if cpus affinity changes.
+> One could also argue that for such processes, cgroup hierarchy should be
+> first configured and only then they start and set own affinity.
+>
+>> Fix this problem by adding a flag in the task structure to indicate that
+>> a task has their cpus affinity explicitly set before and make cpuset
+>> code not to change their cpus_allowed list unless the user chosen cpu
+>> list is no longer a subset of the cpus_allowed list of the cpuset itself.
+> I'm uneasy with the occasional revert of this flag, i.e. the task who
+> set their affinity would sometimes have it overwritten and sometimes
+> not (which might have been relied on, especially with writes into
+> cpuset.cpus).
+> (But I have no better answer than the counter-argument above since
+> there's no easier way to detect the implicit migrations.)
+I also thought about that. Another possible alternative is to use the 
+intersection of cpuset's cpu list and task's own cpu list as long as it 
+is not empty. Reducing the number of cpus assigned to a task may produce 
+some unexpected behavior too.
+>
+> Also, is there similar effect with memory binding?
+
+I think so, but memory binding is less frequently used and its effect is 
+less noticeable.
 
 Cheers,
 Longman
+
+>
+> Thanks,
+> Michal
+>
 
