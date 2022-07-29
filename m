@@ -2,390 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D341458485D
-	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 00:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA7A584BFE
+	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 08:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbiG1Wk3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Jul 2022 18:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        id S235242AbiG2Gd2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Jul 2022 02:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbiG1Wk2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Jul 2022 18:40:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8274D807;
-        Thu, 28 Jul 2022 15:40:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id fy29so5456979ejc.12;
-        Thu, 28 Jul 2022 15:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=hU+tIyCTCzDGpvGficmypC59ILjihDtg8eubpS2MB+M=;
-        b=ctkKq/5RCTBxi7b2hC6U/JxbSKhpTStnC3sxwMCoIKiqqLX3iHl+Mjod+x+5GWrlPN
-         uOpbCuVMRDbn8VF8tARoHGys42Rwb5GLbomrWHrXoNmhWVxSl4InKrDWqIVJ+1L1fdFc
-         TVYTN4qbapIYjn/0aepYmiuZawoscrUp6QUgZPDd7a3bNFrPG0lE1J4WRoFsmUlcGSDa
-         sXQ9x1FPOapV2tfze3rbwEOXmSfsbNOkQ7y9FEfofkRjYsndo/09VgGjgcnmnVj527Bg
-         r0jnZoqYkQq/JqaVh6Xolxu334GPphoza6TH/spkuqrNCRzePL2KnxjabyZSkdgKzvNV
-         lh/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=hU+tIyCTCzDGpvGficmypC59ILjihDtg8eubpS2MB+M=;
-        b=VTGNDi+4Ks8rW8S18GRL9MbXlomFS5ixpUbex4xX8Cke76IGCCatQkdoidIt61tlDf
-         xXAzllJRJ+hshtr9i+t6QCc/0JhdQ4nWvdv2BUz1UNNPQIdciP1wKVTqyOvF+TVVzTqS
-         pJUwZTSeSZvCIPfErBhK7M2c2pjtTVDRPqeMaq4FoY+JLcLlp/FiaAVJIS94NwuiWBUj
-         1pjpR++lUJQ3SF/HU7tukxGkpC6bXD561P2HUTHaDgTf5ehHVASV22+MWflIR86L01jO
-         IBM29BIqMGE+1CVR3dLxcPG1o8G02jjLaO9D9W1rODIjzaQfq32s9BPDup/bYYYktZ9S
-         ejsA==
-X-Gm-Message-State: AJIora+Fv+vXktXmQxXO6aee+EXJD6xikW0xxBlWKbBqystGl/BaP6zW
-        CK0CEk4yxESy/aFa19KzSyiU9O83y7nZ5iJ4PFs=
-X-Google-Smtp-Source: AGRyM1uGomf9rVmJXR5SvFm/ATqlV9ugG14sJmJGwpO1tDoEZ2kp6PTiSt55dmdYCeSZp6mmQkl0FMltt+ilDW+4ZqQ=
-X-Received: by 2002:a17:907:2808:b0:72b:4d49:b2e9 with SMTP id
- eb8-20020a170907280800b0072b4d49b2e9mr787212ejc.176.1659048024178; Thu, 28
- Jul 2022 15:40:24 -0700 (PDT)
+        with ESMTP id S235096AbiG2Gcw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Jul 2022 02:32:52 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8562A7FE5B;
+        Thu, 28 Jul 2022 23:32:40 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LvHj93xgPzKF21;
+        Fri, 29 Jul 2022 14:31:25 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgAXemkEf+Nilj1HBQ--.43256S3;
+        Fri, 29 Jul 2022 14:32:38 +0800 (CST)
+Subject: Re: [PATCH RESEND v6 1/8] blk-throttle: fix that io throttle can only
+ work for single bio
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20220701093441.885741-1-yukuai1@huaweicloud.com>
+ <20220701093441.885741-2-yukuai1@huaweicloud.com>
+ <YuGDjFkxDSsVrcRw@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <7f01aba1-43ab-38ab-5755-7ac22d0a78d5@huaweicloud.com>
+Date:   Fri, 29 Jul 2022 14:32:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com> <20220722174829.3422466-9-yosryahmed@google.com>
-In-Reply-To: <20220722174829.3422466-9-yosryahmed@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Jul 2022 15:40:12 -0700
-Message-ID: <CAEf4BzZQwMeJ5xfzEWWRcTf1Hick862x2qSZ3O0DX47Q++2-4w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YuGDjFkxDSsVrcRw@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgAXemkEf+Nilj1HBQ--.43256S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr4rZw4rAFWfJr1xJrWxCrg_yoWrGr1rpF
+        48CFZ3Kw4kXrs7tr1DX3WfXFyFqr4rAr98KrW3G3W5Aws8WrnYgrnrCrWF9a43urn5Cw1k
+        ZrnxKwnrGF48GFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+        Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 10:49 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> Add a selftest that tests the whole workflow for collecting,
-> aggregating (flushing), and displaying cgroup hierarchical stats.
->
-> TL;DR:
-> - Userspace program creates a cgroup hierarchy and induces memcg reclaim
->   in parts of it.
-> - Whenever reclaim happens, vmscan_start and vmscan_end update
->   per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
->   have updates.
-> - When userspace tries to read the stats, vmscan_dump calls rstat to flush
->   the stats, and outputs the stats in text format to userspace (similar
->   to cgroupfs stats).
-> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
->   updates, vmscan_flush aggregates cpu readings and propagates updates
->   to parents.
-> - Userspace program makes sure the stats are aggregated and read
->   correctly.
->
-> Detailed explanation:
-> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
->   measure the latency of cgroup reclaim. Per-cgroup readings are stored in
->   percpu maps for efficiency. When a cgroup reading is updated on a cpu,
->   cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
->   rstat updated tree on that cpu.
->
-> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
->   each cgroup. Reading this file invokes the program, which calls
->   cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
->   cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
->   the stats are exposed to the user. vmscan_dump returns 1 to terminate
->   iteration early, so that we only expose stats for one cgroup per read.
->
-> - An ftrace program, vmscan_flush, is also loaded and attached to
->   bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
->   once for each (cgroup, cpu) pair that has updates. cgroups are popped
->   from the rstat tree in a bottom-up fashion, so calls will always be
->   made for cgroups that have updates before their parents. The program
->   aggregates percpu readings to a total per-cgroup reading, and also
->   propagates them to the parent cgroup. After rstat flushing is over, all
->   cgroups will have correct updated hierarchical readings (including all
->   cpus and all their descendants).
->
-> - Finally, the test creates a cgroup hierarchy and induces memcg reclaim
->   in parts of it, and makes sure that the stats collection, aggregation,
->   and reading workflow works as expected.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  .../prog_tests/cgroup_hierarchical_stats.c    | 364 ++++++++++++++++++
->  .../bpf/progs/cgroup_hierarchical_stats.c     | 239 ++++++++++++
->  2 files changed, 603 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
->  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> new file mode 100644
-> index 000000000000..1eafd94af4fe
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> @@ -0,0 +1,364 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Functions to manage eBPF programs attached to cgroup subsystems
-> + *
-> + * Copyright 2022 Google LLC.
-> + */
-> +#include <errno.h>
-> +#include <sys/types.h>
-> +#include <sys/mount.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
-> +
-> +#include <test_progs.h>
-> +#include <bpf/libbpf.h>
-> +#include <bpf/bpf.h>
-> +
-> +#include "cgroup_helpers.h"
-> +#include "cgroup_hierarchical_stats.skel.h"
-> +
-> +#define PAGE_SIZE 4096
-> +#define MB(x) (x << 20)
-> +
-> +#define BPFFS_ROOT "/sys/fs/bpf/"
-> +#define BPFFS_VMSCAN BPFFS_ROOT"vmscan/"
-> +
-> +#define CG_ROOT_NAME "root"
-> +#define CG_ROOT_ID 1
-> +
-> +#define CGROUP_PATH(p, n) {.path = #p"/"#n, .name = #n}
-> +
-> +static struct {
-> +       const char *path, *name;
-> +       unsigned long long id;
-> +       int fd;
-> +} cgroups[] = {
-> +       CGROUP_PATH(/, test),
-> +       CGROUP_PATH(/test, child1),
-> +       CGROUP_PATH(/test, child2),
-> +       CGROUP_PATH(/test/child1, child1_1),
-> +       CGROUP_PATH(/test/child1, child1_2),
-> +       CGROUP_PATH(/test/child2, child2_1),
-> +       CGROUP_PATH(/test/child2, child2_2),
+Hi, Tejun!
 
-nit: why are these arguments not explicit string literals?...
-CGROUP_PATH("/test/child1", "child1_1") explicitly shows that those
-values are used as strings
+ÔÚ 2022/07/28 2:27, Tejun Heo Ð´µÀ:
+> Sorry about the long delay.
+> 
+> So, the code looks nice but I have a difficult time following the logic.
+> 
+> On Fri, Jul 01, 2022 at 05:34:34PM +0800, Yu Kuai wrote:
+>> @@ -811,7 +811,7 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
+>>   	unsigned int bio_size = throtl_bio_data_size(bio);
+>>   
+>>   	/* no need to throttle if this bio's bytes have been accounted */
+>> -	if (bps_limit == U64_MAX || bio_flagged(bio, BIO_THROTTLED)) {
+>> +	if (bps_limit == U64_MAX) {
+>>   		if (wait)
+>>   			*wait = 0;
+>>   		return true;
+>> @@ -921,11 +921,8 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
+>>   	unsigned int bio_size = throtl_bio_data_size(bio);
+>>   
+>>   	/* Charge the bio to the group */
+>> -	if (!bio_flagged(bio, BIO_THROTTLED)) {
+>> -		tg->bytes_disp[rw] += bio_size;
+>> -		tg->last_bytes_disp[rw] += bio_size;
+>> -	}
+>> -
+>> +	tg->bytes_disp[rw] += bio_size;
+>> +	tg->last_bytes_disp[rw] += bio_size;
+>>   	tg->io_disp[rw]++;
+>>   	tg->last_io_disp[rw]++;
+> 
+> So, we're charging and controlling whether it has already been throttled or
+> not.
+> 
+>> @@ -2121,6 +2118,21 @@ bool __blk_throtl_bio(struct bio *bio)
+>>   			tg->last_low_overflow_time[rw] = jiffies;
+>>   		throtl_downgrade_check(tg);
+>>   		throtl_upgrade_check(tg);
+>> +
+>> +		/*
+>> +		 * re-entered bio has accounted bytes already, so try to
+>> +		 * compensate previous over-accounting. However, if new
+>> +		 * slice is started, just forget it.
+>> +		 */
+>> +		if (bio_flagged(bio, BIO_THROTTLED)) {
+>> +			unsigned int bio_size = throtl_bio_data_size(bio);
+>> +
+>> +			if (tg->bytes_disp[rw] >= bio_size)
+>> +				tg->bytes_disp[rw] -= bio_size;
+>> +			if (tg->last_bytes_disp[rw] >= bio_size)
+>> +				tg->last_bytes_disp[rw] -= bio_size;
+>> +		}
+> 
+> and trying to restore the overaccounting. However, it's not clear why this
+> helps with the problem you're describing. The comment should be clearly
+> spelling out why it's done this way and how this works.
+> 
+> Also, blk_throttl_bio() doesn't call into __blk_throtl_bio() at all if
+> THROTTLED is set and HAS_IOPS_LIMIT is not, so if there are only bw limits,
+> we end up accounting these IOs twice?
+> 
 
-> +};
-> +
-> +#define N_CGROUPS ARRAY_SIZE(cgroups)
-> +#define N_NON_LEAF_CGROUPS 3
-> +
-> +int root_cgroup_fd;
-> +bool mounted_bpffs;
-> +
+We need to make sure following conditions is always hold:
 
-static?
+1) If a bio is splited, iops limits should count multiple times, while
+bps limits should only count once.
+2) If a bio is issued while some bios are already throttled, bps limits
+should not be ignored.
 
-> +static int read_from_file(const char *path, char *buf, size_t size)
-> +{
-> +       int fd, len;
-> +
-> +       fd = open(path, O_RDONLY);
-> +       if (fd < 0) {
-> +               log_err("Open %s", path);
-> +               return 1;
-> +       }
-> +       len = read(fd, buf, size);
-> +       if (len < 0)
-> +               log_err("Read %s", path);
-> +       else
-> +               buf[len] = 0;
-> +       close(fd);
-> +       return len < 0;
-> +}
-> +
+commit 9f5ede3c01f9 ("block: throttle split bio in case of iops limit")
+fixes that 1) is not hold, while it breaks 2). Root cause is that such
+bio will be flaged in __blk_throtl_bio(), and later
+tg_with_in_bps_limit() will skip flaged bio.
 
-[...]
+In order to fix this problem, at first, I change that flaged bio won't
+be skipped in tg_with_in_bps_limit():
 
-> +       /* Also dump stats for root */
-> +       err = setup_cgroup_iter(obj, root_cgroup_fd, CG_ROOT_NAME);
-> +       if (!ASSERT_OK(err, "setup_cgroup_iter"))
-> +               return err;
-> +
-> +       /* Attach rstat flusher */
-> +       link = bpf_program__attach(obj->progs.vmscan_flush);
-> +       if (!ASSERT_OK_PTR(link, "attach rstat"))
-> +               return libbpf_get_error(link);
+-	if (!bio_flagged(bio, BIO_THROTTLED)) {
+-		tg->bytes_disp[rw] += bio_size;
+-		tg->last_bytes_disp[rw] += bio_size;
+-	}
+-
++	tg->bytes_disp[rw] += bio_size;
++	tg->last_bytes_disp[rw] += bio_size;
 
-this is dangerous, because ASSERT_OK_PTR might overwrite errno by the
-time we get to libbpf_get_error() call. link is NULL and
-libbpf_get_error() extracts error from errno. It's best to just return
-fixed error code here, or otherwise you'd need to remember err before
-ASSERT_OK_PTR() call.
+However, this will break that bps limits should only count once. Thus I
+try to restore the overaccounting in __blk_throtl_bio() in such case:
 
-> +       obj->links.vmscan_flush = link;
-> +
-> +       /* Attach tracing programs that will calculate vmscan delays */
-> +       link = bpf_program__attach(obj->progs.vmscan_start);
-> +       if (!ASSERT_OK_PTR(obj, "attach raw_tracepoint"))
-> +               return libbpf_get_error(link);
-> +       obj->links.vmscan_start = link;
-> +
-> +       link = bpf_program__attach(obj->progs.vmscan_end);
-> +       if (!ASSERT_OK_PTR(obj, "attach raw_tracepoint"))
-> +               return libbpf_get_error(link);
-> +       obj->links.vmscan_end = link;
-> +
-> +       *skel = obj;
-> +       return 0;
-> +}
-> +
-> +void destroy_progs(struct cgroup_hierarchical_stats *skel)
++		if (bio_flagged(bio, BIO_THROTTLED)) {
++			unsigned int bio_size = throtl_bio_data_size(bio);
++
++			if (tg->bytes_disp[rw] >= bio_size)
++				tg->bytes_disp[rw] -= bio_size;
++			if (tg->last_bytes_disp[rw] >= bio_size)
++				tg->last_bytes_disp[rw] -= bio_size;
++		}
 
-static?
+If new slice is not started, then the decrement should make sure this
+bio won't be counted again. However, if new slice is started and the
+condition 'bytes_disp >= bio_size' doesn't hold, this bio will end up
+accounting twice.
 
-> +{
-> +       char path[128];
-> +       int i;
-> +
-> +       for (i = 0; i < N_CGROUPS; i++) {
-> +               /* Delete files in bpffs that cgroup_iters are pinned in */
-> +               snprintf(path, 128, "%s%s", BPFFS_VMSCAN,
-> +                        cgroups[i].name);
-> +               ASSERT_OK(remove(path), "remove cgroup_iter pin");
-> +       }
-> +
-> +       /* Delete root file in bpffs */
-> +       snprintf(path, 128, "%s%s", BPFFS_VMSCAN, CG_ROOT_NAME);
-> +       ASSERT_OK(remove(path), "remove cgroup_iter root pin");
-> +       cgroup_hierarchical_stats__destroy(skel);
-> +}
-> +
-> +void test_cgroup_hierarchical_stats(void)
-> +{
-> +       struct cgroup_hierarchical_stats *skel = NULL;
-> +
-> +       if (setup_hierarchy())
-> +               goto hierarchy_cleanup;
-> +       if (setup_progs(&skel))
-> +               goto cleanup;
-> +       if (induce_vmscan())
-> +               goto cleanup;
-> +       check_vmscan_stats();
-> +cleanup:
-> +       destroy_progs(skel);
-> +hierarchy_cleanup:
-> +       destroy_hierarchy();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> new file mode 100644
-> index 000000000000..85a65a72482e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> @@ -0,0 +1,239 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Functions to manage eBPF programs attached to cgroup subsystems
-> + *
-> + * Copyright 2022 Google LLC.
-> + */
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +/*
-> + * Start times are stored per-task, not per-cgroup, as multiple tasks in one
-> + * cgroup can perform reclain concurrently.
+Pleas let me know if you think this suituation is problematic, I'll try
+to figure out a new way...
 
-typo: reclaim?
+Thanks,
+Kuai
 
-> + */
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-> +       __uint(map_flags, BPF_F_NO_PREALLOC);
-> +       __type(key, int);
-> +       __type(value, __u64);
-> +} vmscan_start_time SEC(".maps");
-> +
-
-[...]
-
-> +static inline int create_vmscan_percpu_elem(__u64 cg_id, __u64 state)
-> +{
-> +       struct vmscan_percpu pcpu_init = {.state = state, .prev = 0};
-> +       int err;
-> +
-> +       err = bpf_map_update_elem(&pcpu_cgroup_vmscan_elapsed, &cg_id,
-> +                                 &pcpu_init, BPF_NOEXIST);
-> +       if (err) {
-> +               bpf_printk("failed to create pcpu entry for cgroup %llu: %d\n"
-> +                          , cg_id, err);
-> +               return 1;
-> +       }
-> +       return 0;
-> +}
-> +
-> +static inline int create_vmscan_elem(__u64 cg_id, __u64 state, __u64 pending)
-
-all those inlines above are not necessary, they don't have to be
-actually inlined, right?
-
-> +{
-> +       struct vmscan init = {.state = state, .pending = pending};
-> +       int err;
-> +
-> +       err = bpf_map_update_elem(&cgroup_vmscan_elapsed, &cg_id,
-> +                                 &init, BPF_NOEXIST);
-> +       if (err) {
-> +               bpf_printk("failed to create entry for cgroup %llu: %d\n"
-> +                          , cg_id, err);
-> +               return 1;
-> +       }
-> +       return 0;
-> +}
-> +
-> +SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-> +int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-> +{
-> +       struct task_struct *task = bpf_get_current_task_btf();
-> +       __u64 *start_time_ptr;
-> +
-> +       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
-> +                                         BPF_LOCAL_STORAGE_GET_F_CREATE);
-> +       if (!start_time_ptr) {
-> +               bpf_printk("error retrieving storage\n");
-
-does user-space part read these trace_printk messages? If not, let's
-remove them from the test
-
-> +               return 0;
-> +       }
-> +
-> +       *start_time_ptr = bpf_ktime_get_ns();
-> +       return 0;
-> +}
-> +
-
-[...]
