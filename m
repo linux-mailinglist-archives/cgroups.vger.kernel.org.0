@@ -2,154 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF943584C0F
-	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 08:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A60585160
+	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 16:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbiG2GgR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Jul 2022 02:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        id S236189AbiG2OPw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Jul 2022 10:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235167AbiG2GgE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Jul 2022 02:36:04 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F657391C
-        for <cgroups@vger.kernel.org>; Thu, 28 Jul 2022 23:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659076531; x=1690612531;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=wmrB32ud727k1HoVT2qjOvqbMhSqmy8KWN0Rbdoy5tg=;
-  b=JfnUqYOCFfLdPuKE0fgZgrETMyTg2ehy/lXKIV/xNjr2PEtIywXVODdY
-   FuOx4BgzjkExZfNVIOFDa46EPmMV8DSrwkIzlEXAA3d4joGOyipN76gIM
-   J88KQAWduE3bobat/ES6xzBs/GhYfhuqYg1Kr/w02Dq6JTEmKxhlvagRt
-   hUq/WOIkfUrIGqCg+ubfW7O2sLwLNMsXV+YLuU+t9AXUBvxlRU8Dhsl1R
-   TH2a4manAe/Bz7EcYmq2w0GV/JUeJ9x/1S3Gi5rx38+ttUAcs2bdi2Wdz
-   ku/5YagKqUGUT0Rka/Vz2QlCHLj3sIa/8i81DLz0XiQMh28jcm338DiFb
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10422"; a="289474512"
-X-IronPort-AV: E=Sophos;i="5.93,200,1654585200"; 
-   d="scan'208";a="289474512"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2022 23:35:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,200,1654585200"; 
-   d="scan'208";a="743432487"
-Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2022 23:35:29 -0700
-Received: from kbuild by e0eace57cfef with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oHJar-000BEa-0o;
-        Fri, 29 Jul 2022 06:35:29 +0000
-Date:   Fri, 29 Jul 2022 14:34:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 3109920b3d95ebee86198757328eefe51f458b06
-Message-ID: <62e37f77.X2YzH9qbG5BBPuo+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S236626AbiG2OPv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Jul 2022 10:15:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BB3E79EC2
+        for <cgroups@vger.kernel.org>; Fri, 29 Jul 2022 07:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1659104149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rFA+uxNGNsudolD18ZmOlov1noIaWvtogHjG67RGCQY=;
+        b=AoFFYk9aGKHH9UjwkvrbkdA9164xIah9vbHb0oZ7hxbbbbxCZ0dar1ZNXmZ9/hXw0Qm0Qt
+        T2X8naO+qd1y/8sJBEkRFOXL9fIrf92Mwu2GdjeMszxXku3yfD+m5bQ5CgTpTL/Thukq3R
+        Fo74Mz3t57N83S/M7lMgj0W149xOGBM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-628-sv2RnfSdM-C0amhEFS75qQ-1; Fri, 29 Jul 2022 10:15:48 -0400
+X-MC-Unique: sv2RnfSdM-C0amhEFS75qQ-1
+Received: by mail-wr1-f70.google.com with SMTP id e14-20020adfa44e000000b0021f15a9f984so248913wra.20
+        for <cgroups@vger.kernel.org>; Fri, 29 Jul 2022 07:15:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc;
+        bh=rFA+uxNGNsudolD18ZmOlov1noIaWvtogHjG67RGCQY=;
+        b=7v7cTNzoNLrArk9lKokzfY7iW1ROaQYgIO+FavdJR+C87FbNG2Xmo5GpD2PFndIruG
+         jKP01MaS/J1xnNNk7oB/H8+yX1nJ9O9EeACGKvtgbRCN8ocCEBUMtMtkxMnqRbcZInxg
+         8OjlAvsG6YikOginjkZTRfg3d2F86Sga3PcbuhC4LqCSJmwHOXSN5QRS2Miyh/7mA0rN
+         rsk/6QmPgDWiZ8KpoeEcp1YRhqmPEssgj19qojuALpv/G/pf1Q4lbXB1rOHibQtppMoF
+         CgrrAx2meYRc9xcrOuLAVupIHEV0AI3Z4ssvPHk9dTLCGnq//0xUk6fTuNmBKzjT31S1
+         8SnQ==
+X-Gm-Message-State: AJIora972WxH9q20yPML3/iE9eF8fE1WFcjw4uFq3/pzalHcOzOyb5QC
+        tPQ227jgr+J8Gl3McNTChu4lWPEAsq5Vn2GEL9DdjovVC8753x9I5FdHK/KiuomKTstG4qSGaoy
+        fuKBmnDTOZ/aC6tDMfA==
+X-Received: by 2002:a05:600c:1e8a:b0:3a3:20fc:a651 with SMTP id be10-20020a05600c1e8a00b003a320fca651mr2700405wmb.39.1659104147033;
+        Fri, 29 Jul 2022 07:15:47 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1u/OiyyNpQFBL5eR2cI25OBjX69l2o77DctSBOzjH5C7szig2PiUhKPK6V052IXgZtMuA1mQA==
+X-Received: by 2002:a05:600c:1e8a:b0:3a3:20fc:a651 with SMTP id be10-20020a05600c1e8a00b003a320fca651mr2700386wmb.39.1659104146777;
+        Fri, 29 Jul 2022 07:15:46 -0700 (PDT)
+Received: from vschneid.remote.csb ([185.11.37.247])
+        by smtp.gmail.com with ESMTPSA id l21-20020a05600c1d1500b003a326b84340sm9677332wms.44.2022.07.29.07.15.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jul 2022 07:15:46 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Keep current cpus list if cpus
+ affinity was explicitly set
+In-Reply-To: <YuMCB86fH2K3NcqM@slm.duckdns.org>
+References: <20220728005815.1715522-1-longman@redhat.com>
+ <YuLF+xXaCzwWi2BR@slm.duckdns.org>
+ <1ae1cc6c-dca9-4958-6b22-24a5777c5e8d@redhat.com>
+ <YuLdX7BYGvo57LNU@slm.duckdns.org>
+ <606ed69e-8ad0-45d5-9de7-48739df7f48d@redhat.com>
+ <YuL1NijxSEv2xadk@slm.duckdns.org>
+ <c470d3f7-f0f8-b8e6-4a95-7b334f0a824b@redhat.com>
+ <YuMCB86fH2K3NcqM@slm.duckdns.org>
+Date:   Fri, 29 Jul 2022 15:15:45 +0100
+Message-ID: <xhsmhy1wcc8dq.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 3109920b3d95ebee86198757328eefe51f458b06  Merge branch 'for-5.20' into for-next
+On 28/07/22 11:39, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Thu, Jul 28, 2022 at 05:04:19PM -0400, Waiman Long wrote:
+>> > So, the patch you proposed is making the code remember one special aspect of
+>> > user requested configuration - whether it configured it or not, and trying
+>> > to preserve that particular state as cpuset state changes. It addresses the
+>> > immediate problem but it is a very partial approach. Let's say a task wanna
+>> > be affined to one logical thread of each core and set its mask to 0x5555.
+>> > Now, let's say cpuset got enabled and enforced 0xff and affined the task to
+>> > 0xff. After a while, the cgroup got more cpus allocated and its cpuset now
+>> > has 0xfff. Ideally, what should happen is the task now having the effective
+>> > mask of 0x555. In practice, tho, it either would get 0xf55 or 0x55 depending
+>> > on which way we decide to misbehave.
+>>
+>> OK, I see what you want to accomplish. To fully address this issue, we will
+>> need to have a new cpumask variable in the the task structure which will be
+>> allocated if sched_setaffinity() is ever called. I can rework my patch to
+>> use this approach.
+>
+> Yeah, we'd need to track what user requested separately from the currently
+> effective cpumask. Let's make sure that the scheduler folks are on board
+> before committing to the idea tho. Peter, Ingo, what do you guys think?
+>
 
-elapsed time: 723m
+FWIW on a runtime overhead side of things I think it'll be OK as that
+should be just an extra mask copy  in sched_setaffinity() and a subset
+check / cpumask_and() in set_cpus_allowed_ptr(). The policy side is a bit
+less clear (when, if ever, do we clear the user-defined mask? Will it keep
+haunting us even after moving a task to a disjoint cpuset partition?).
 
-configs tested: 73
-configs skipped: 2
+There's also if/how that new mask should be exposed, because attaching a
+task to a cpuset will now yield a not-necessarily-obvious affinity -
+e.g. in the thread affinity example above, if the initial affinity setting
+was done ages ago by some system tool, IMO the user needs a way to be able
+to expect/understand the result of 0x555 rather than 0xfff.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+While I'm saying this, I don't think anything exposes p->user_cpus_ptr, but
+then again that one is for "special" hardware...
 
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                                defconfig
-i386                          randconfig-a001
-powerpc                          allmodconfig
-i386                          randconfig-a003
-i386                          randconfig-a005
-sh                               allmodconfig
-i386                             allyesconfig
-x86_64                        randconfig-a013
-mips                             allyesconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a015
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-arm                                 defconfig
-i386                          randconfig-a014
-i386                          randconfig-a012
-i386                          randconfig-a016
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-kvm
-x86_64                        randconfig-a004
-x86_64                           rhel-8.3-syz
-x86_64                        randconfig-a002
-x86_64                        randconfig-a006
-arc                  randconfig-r043-20220728
-arm64                            allyesconfig
-arm                              allyesconfig
-s390                 randconfig-r044-20220728
-riscv                randconfig-r042-20220728
-ia64                             allmodconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                           allyesconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-ia64                          tiger_defconfig
-microblaze                          defconfig
-arm                         axm55xx_defconfig
-nios2                         10m50_defconfig
-alpha                               defconfig
-m68k                        m5407c3_defconfig
-powerpc                     taishan_defconfig
-sh                         ap325rxa_defconfig
-powerpc                      tqm8xx_defconfig
-arm                          lpd270_defconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
+> Thanks.
+>
+> --
+> tejun
 
-clang tested configs:
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-hexagon              randconfig-r045-20220728
-hexagon              randconfig-r041-20220728
-x86_64                        randconfig-a005
-powerpc                      katmai_defconfig
-arm                  colibri_pxa300_defconfig
-arm                        magician_defconfig
-x86_64                        randconfig-k001
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
