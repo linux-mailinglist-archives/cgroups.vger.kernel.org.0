@@ -2,165 +2,212 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C79845854FF
-	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 20:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3C9585571
+	for <lists+cgroups@lfdr.de>; Fri, 29 Jul 2022 21:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238287AbiG2SbM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Jul 2022 14:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S238278AbiG2TH5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Jul 2022 15:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbiG2SbJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Jul 2022 14:31:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D59891D320
-        for <cgroups@vger.kernel.org>; Fri, 29 Jul 2022 11:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659119466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aWKVK6OoM1bKr67knlvEgc7AaGfjBxkEmDKqD2fNc5c=;
-        b=Wh5qmbewGcqCiYMrQARW1kBIi6g9bmakX+CqLkz68N62F8Ud0XtIucy6z+0xtTjL+NzdET
-        BjeTOdYPRW2U+sI4ivTZybz51VcAyTrSV4Sld5TkNpP7gMEAkCfoNPo/3pXsJHgHyPK5s+
-        Cim0Sl5/ZwYxbuqky4XC10QdcZyZOwY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-647-HEfqHrfIM6a6xvhRHbdgkQ-1; Fri, 29 Jul 2022 14:31:03 -0400
-X-MC-Unique: HEfqHrfIM6a6xvhRHbdgkQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D87AC185A7A4;
-        Fri, 29 Jul 2022 18:31:02 +0000 (UTC)
-Received: from [10.22.34.17] (unknown [10.22.34.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF117404D883;
-        Fri, 29 Jul 2022 18:31:01 +0000 (UTC)
-Message-ID: <c9d82d78-b47d-0f4a-f1ca-81df78e1baa6@redhat.com>
-Date:   Fri, 29 Jul 2022 14:31:00 -0400
+        with ESMTP id S238666AbiG2THo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Jul 2022 15:07:44 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFC18AB3F;
+        Fri, 29 Jul 2022 12:06:28 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id y141so5401462pfb.7;
+        Fri, 29 Jul 2022 12:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc;
+        bh=uLQq543zzaP6K6uM2P4doohHRVa2+DxlHja/0GeLtJM=;
+        b=a1pa96GKeVk8nUGVWzvitE5LFMPojG7MJ/BBtGXKp2C+WlFDMudd7HhhUKYxId7XYd
+         DIkHccq5lh2HOp4ViiS9OvRAtw6BlcOdnwP1RKU4pEm8h4O5nsv7Yysc4xwSyOgn60Il
+         RcUHSz0FvQCn31sY6Bs4GDilUdSZAEr66+mpOx582AjFdxbGge1r3L08/bt8O7143QFQ
+         fsZzKvI5v4l8qFZ3EYEjUabhzkKI48c094BRBv1RJUXzhPP07Ir5N2QjmG9Zmvq8myoE
+         8Pz12bJeNHX+WWJBdiPrJvhRbLiM4dNYxbJcl8/CBQdwaQmIaqWPUSCjZ5gHakTfLQ8Q
+         eiZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc;
+        bh=uLQq543zzaP6K6uM2P4doohHRVa2+DxlHja/0GeLtJM=;
+        b=QvLZoHM5/1DJZUVGAaKQPszm2B/gfFm8eDlFQS61foF2UxTsm8mVPf5xQgRwvP2rN0
+         d28sMW1TW5q8+Dvi2moZi9anDthZ/munHY3D8tsbYOq29o/SWy3auQAT+Kkq5rSby1Q+
+         778Hb6n+pOkmyWvlSDByi/4RP80c2gLHlg2TfATWnVn9IMeskuB3nYqMDe9h9EZjXtRU
+         1na1xuAAlK85nkCt6/k48ZKaqGDchjMLRhTqcFOYDW1TYpUzNF4TRtbhz07UckwMZA21
+         Fn0s/XJqM2te+2Q1bGvhDN3xYb8yHSFIKh8BHRgab8WzMQWfACRJccC7PNeCDl3VxL+g
+         o1LQ==
+X-Gm-Message-State: AJIora/XtMJYW1wWH1iBUTS/PcO8rK+euixGRynOS7mgkIQh24YFEdoQ
+        S8AFOLkKXsPQvw2IoajkP53gKX0dJ9I=
+X-Google-Smtp-Source: AGRyM1vJPZifYAAesQi6iHBXj0elaShPjxKqT1uaup506flc6MzaCg5XhFxjvxAy6yzSldQWXs6z4Q==
+X-Received: by 2002:a05:6a00:2495:b0:52b:7a9:9c72 with SMTP id c21-20020a056a00249500b0052b07a99c72mr5110530pfv.46.1659121586652;
+        Fri, 29 Jul 2022 12:06:26 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:df80])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170902e80b00b0016d88f68dbfsm4050738plg.63.2022.07.29.12.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jul 2022 12:05:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 29 Jul 2022 09:05:20 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Namhyung Kim <namhyung@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH cgroup/for-5.20] cgroup: Replace cgroup->ancestor_ids[] with
+ ->ancestors[]
+Message-ID: <YuQvcCrcgNWbtndU@slm.duckdns.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Keep current cpus list if cpus
- affinity was explicitly set
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-To:     Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>
-References: <20220728005815.1715522-1-longman@redhat.com>
- <YuLF+xXaCzwWi2BR@slm.duckdns.org>
- <1ae1cc6c-dca9-4958-6b22-24a5777c5e8d@redhat.com>
- <YuLdX7BYGvo57LNU@slm.duckdns.org>
- <606ed69e-8ad0-45d5-9de7-48739df7f48d@redhat.com>
- <YuL1NijxSEv2xadk@slm.duckdns.org>
- <c470d3f7-f0f8-b8e6-4a95-7b334f0a824b@redhat.com>
- <YuMCB86fH2K3NcqM@slm.duckdns.org> <xhsmhy1wcc8dq.mognet@vschneid.remote.csb>
- <92f68392-12d2-f64a-9bb9-1a3a15f99d02@redhat.com>
-In-Reply-To: <92f68392-12d2-f64a-9bb9-1a3a15f99d02@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.2
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/29/22 10:50, Waiman Long wrote:
-> On 7/29/22 10:15, Valentin Schneider wrote:
->> On 28/07/22 11:39, Tejun Heo wrote:
->>> Hello, Waiman.
->>>
->>> On Thu, Jul 28, 2022 at 05:04:19PM -0400, Waiman Long wrote:
->>>>> So, the patch you proposed is making the code remember one special 
->>>>> aspect of
->>>>> user requested configuration - whether it configured it or not, 
->>>>> and trying
->>>>> to preserve that particular state as cpuset state changes. It 
->>>>> addresses the
->>>>> immediate problem but it is a very partial approach. Let's say a 
->>>>> task wanna
->>>>> be affined to one logical thread of each core and set its mask to 
->>>>> 0x5555.
->>>>> Now, let's say cpuset got enabled and enforced 0xff and affined 
->>>>> the task to
->>>>> 0xff. After a while, the cgroup got more cpus allocated and its 
->>>>> cpuset now
->>>>> has 0xfff. Ideally, what should happen is the task now having the 
->>>>> effective
->>>>> mask of 0x555. In practice, tho, it either would get 0xf55 or 0x55 
->>>>> depending
->>>>> on which way we decide to misbehave.
->>>> OK, I see what you want to accomplish. To fully address this issue, 
->>>> we will
->>>> need to have a new cpumask variable in the the task structure which 
->>>> will be
->>>> allocated if sched_setaffinity() is ever called. I can rework my 
->>>> patch to
->>>> use this approach.
->>> Yeah, we'd need to track what user requested separately from the 
->>> currently
->>> effective cpumask. Let's make sure that the scheduler folks are on 
->>> board
->>> before committing to the idea tho. Peter, Ingo, what do you guys think?
->>>
->> FWIW on a runtime overhead side of things I think it'll be OK as that
->> should be just an extra mask copy  in sched_setaffinity() and a subset
->> check / cpumask_and() in set_cpus_allowed_ptr(). The policy side is a 
->> bit
->> less clear (when, if ever, do we clear the user-defined mask? Will it 
->> keep
->> haunting us even after moving a task to a disjoint cpuset partition?).
->
-> The runtime overhead should be minimal. It is the behavioral side that 
-> we should be careful about. It is a change in existing behavior and we 
-> don't want to cause surprise to the users. Currently, a task that set 
-> its cpu affinity explicitly will have its affinity reset whenever 
-> there is any change to the cpuset it belongs to or a hotplug event 
-> touch any cpu in the current cpuset. The new behavior we are proposing 
-> here is that it will try its best to keep the cpu affinity that the 
-> user requested within the constraint of the current cpuset as well as 
-> the cpu hotplug state.
->
->
->>
->> There's also if/how that new mask should be exposed, because attaching a
->> task to a cpuset will now yield a not-necessarily-obvious affinity -
->> e.g. in the thread affinity example above, if the initial affinity 
->> setting
->> was done ages ago by some system tool, IMO the user needs a way to be 
->> able
->> to expect/understand the result of 0x555 rather than 0xfff.
->
-> Users can use sched_getaffinity(2) to retrieve the current cpu 
-> affinity. It is up to users to set another one if they don't like the 
-> current one. I don't think we need to return what the previous 
-> requested cpu affinity is. They are suppose to know that or they can 
-> set their own if they don't like it. \
+Every cgroup knows all its ancestors through its ->ancestor_ids[]. While all
+the existing users only need the IDs, there's no advantage to remembering
+the IDs instead of the pointers directly. Let's replace
+cgroup->ancestor_ids[] with ->ancestors[] so that it's easy to access non-ID
+ancestor fields.
 
-Looking at Will's series that introduced user_cpus_ptr, I think we can 
-overlay our proposal on top of that. So calling sched_setaffinity() will 
-also update user_cpus_ptr. We may still need a flag to indicate whether 
-user_cpus_ptr is set up because of sched_setaffinity() or due to a call 
-to force_compatible_cpus_allowed_ptr() from arm64 arch code. That will 
-make our work easier as some of the infrastructure is already there. I 
-am looking forward for your feedback.
+This patch shouldn't cause any behavior differences.
 
-Thanks,
-Longman
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+Namhyung, I think the change in bperf_cgroup is correct but couldn't figure
+out how to test it (normal perf build wouldn't compile it). Can you please
+see whether it's correct?
 
+Thanks.
+
+ include/linux/cgroup-defs.h                 |   10 +++++-----
+ include/linux/cgroup.h                      |    2 +-
+ kernel/cgroup/cgroup.c                      |    7 +++----
+ net/netfilter/nft_socket.c                  |    5 +++--
+ tools/perf/util/bpf_skel/bperf_cgroup.bpf.c |    2 +-
+ 5 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 63bf43c7ca3b..51fa744c2e9d 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -379,7 +379,7 @@ struct cgroup {
+ 	/*
+ 	 * The depth this cgroup is at.  The root is at depth zero and each
+ 	 * step down the hierarchy increments the level.  This along with
+-	 * ancestor_ids[] can determine whether a given cgroup is a
++	 * ancestors[] can determine whether a given cgroup is a
+ 	 * descendant of another without traversing the hierarchy.
+ 	 */
+ 	int level;
+@@ -499,8 +499,8 @@ struct cgroup {
+ 	/* Used to store internal freezer state */
+ 	struct cgroup_freezer_state freezer;
+ 
+-	/* ids of the ancestors at each level including self */
+-	u64 ancestor_ids[];
++	/* All ancestors including self */
++	struct cgroup *ancestors[];
+ };
+ 
+ /*
+@@ -520,8 +520,8 @@ struct cgroup_root {
+ 	/* The root cgroup.  Root is destroyed on its release. */
+ 	struct cgroup cgrp;
+ 
+-	/* for cgrp->ancestor_ids[0] */
+-	u64 cgrp_ancestor_id_storage;
++	/* for cgrp->ancestors[0] */
++	u64 cgrp_ancestor_storage;
+ 
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index ed53bfe7c46c..5334b6134399 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -574,7 +574,7 @@ static inline bool cgroup_is_descendant(struct cgroup *cgrp,
+ {
+ 	if (cgrp->root != ancestor->root || cgrp->level < ancestor->level)
+ 		return false;
+-	return cgrp->ancestor_ids[ancestor->level] == cgroup_id(ancestor);
++	return cgrp->ancestors[ancestor->level] == ancestor;
+ }
+ 
+ /**
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 85fa4c8587a8..ce587fe43dab 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2047,7 +2047,7 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
+ 	}
+ 	root_cgrp->kn = kernfs_root_to_node(root->kf_root);
+ 	WARN_ON_ONCE(cgroup_ino(root_cgrp) != 1);
+-	root_cgrp->ancestor_ids[0] = cgroup_id(root_cgrp);
++	root_cgrp->ancestors[0] = root_cgrp;
+ 
+ 	ret = css_populate_dir(&root_cgrp->self);
+ 	if (ret)
+@@ -5391,8 +5391,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	int ret;
+ 
+ 	/* allocate the cgroup and its ID, 0 is reserved for the root */
+-	cgrp = kzalloc(struct_size(cgrp, ancestor_ids, (level + 1)),
+-		       GFP_KERNEL);
++	cgrp = kzalloc(struct_size(cgrp, ancestors, (level + 1)), GFP_KERNEL);
+ 	if (!cgrp)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -5444,7 +5443,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 
+ 	spin_lock_irq(&css_set_lock);
+ 	for (tcgrp = cgrp; tcgrp; tcgrp = cgroup_parent(tcgrp)) {
+-		cgrp->ancestor_ids[tcgrp->level] = cgroup_id(tcgrp);
++		cgrp->ancestors[tcgrp->level] = tcgrp;
+ 
+ 		if (tcgrp != cgrp) {
+ 			tcgrp->nr_descendants++;
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index 05ae5a338b6f..d64784d4bd02 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -40,6 +40,7 @@ static noinline bool
+ nft_sock_get_eval_cgroupv2(u32 *dest, struct sock *sk, const struct nft_pktinfo *pkt, u32 level)
+ {
+ 	struct cgroup *cgrp;
++	u64 cgid;
+ 
+ 	if (!sk_fullsock(sk))
+ 		return false;
+@@ -48,8 +49,8 @@ nft_sock_get_eval_cgroupv2(u32 *dest, struct sock *sk, const struct nft_pktinfo
+ 	if (level > cgrp->level)
+ 		return false;
+ 
+-	memcpy(dest, &cgrp->ancestor_ids[level], sizeof(u64));
+-
++	cgid = cgroup_id(cgrp->ancestors[level]);
++	memcpy(dest, &cgid, sizeof(u64));
+ 	return true;
+ }
+ #endif
+diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+index 292c430768b5..bd6a420acc8f 100644
+--- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
++++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+@@ -68,7 +68,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
+ 			break;
+ 
+ 		// convert cgroup-id to a map index
+-		cgrp_id = BPF_CORE_READ(cgrp, ancestor_ids[i]);
++		cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
+ 		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
+ 		if (!elem)
+ 			continue;
