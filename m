@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027AF58741E
-	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 00:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15A858742B
+	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 01:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235481AbiHAW4B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Aug 2022 18:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
+        id S233235AbiHAXAI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Aug 2022 19:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235475AbiHAW4A (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Aug 2022 18:56:00 -0400
+        with ESMTP id S229787AbiHAXAH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Aug 2022 19:00:07 -0400
 Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3412982F
-        for <cgroups@vger.kernel.org>; Mon,  1 Aug 2022 15:55:55 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id b25so9504376qka.11
-        for <cgroups@vger.kernel.org>; Mon, 01 Aug 2022 15:55:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED6E2AC73
+        for <cgroups@vger.kernel.org>; Mon,  1 Aug 2022 16:00:05 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id n2so9512933qkk.8
+        for <cgroups@vger.kernel.org>; Mon, 01 Aug 2022 16:00:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C5gulj3V+LjVOIWRA41K2fBbqvQq1arjIETo1B+W8Bc=;
-        b=AvaU/i6IarMIHH8auej+84EEnlucOm6JPsbblnmJsKfFSucB0wbidIBB9ImaoESPuy
-         D/vBYWruOWw+txPsHm4S1q/DyUBkvWFghGHvWwre5vgzRWy5XumhQbW4R68er0hrzV2C
-         FQ1LAn2CTfvRwIB87bZM1HRFEAck2joY9DuICCp38Khk74qg5BlXOm/YrKr/0vPDdp67
-         y55BhBcB1o3ow6/CoLlBtqbUX4T1g7vDBMDuUfkU61w3X1Answ8BhsyYBmVCDvh9fip8
-         BmERpPLyRVAB9KcgcuVZbXY+J0fZggzlxmmixfr1NUAwO3k8ScFlbII7wwwMh79rpQcT
-         HHfw==
+        bh=OxoisoQrWhay6j5BeHUyCyZC1z5Zrwne8z9v746EFLw=;
+        b=Td76G3pnsEYGodHWDyS8pYp3VYOSNNolQqHodrjcKrfGuCz09VlTpgXFTBJ88tTB5f
+         ooUAyTdMrZP0qqPKFs23MUPcBr/KK9rAy+yax8oE/jpzxL3HVqO4PUqEQMAp9Ef0U1ii
+         eysLCB+yXBbieXnwtHXatx31+diSavqEdO79TY3G+dzuIDL3YA8z5CLCt07mBy4AuMYh
+         G+yUHSggy2s8+1Z09ocdEQyAAuS/nZQCjPa2WRf8OJtCtiXr3uQH18iaUPtBHwuAJ/U6
+         1CopX5v6ID0F4wsjpl5MfehLuOjiW67kbhz3V1frJGh4jduTU6ARRbr12hIqyWPSm5jH
+         fizw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C5gulj3V+LjVOIWRA41K2fBbqvQq1arjIETo1B+W8Bc=;
-        b=mUd2Zs/xXoPFHjOBUtghLIQ81mLrHuHevi2+xaaLAs98MFh6/1OeJpBSiep8AWfWLE
-         XNuFJv+XeQyVL80/Ztmz6FwrF7gTNzU1oaXVy/S4eTYsoGI0En5LhWHT6GNtUDQl+e3p
-         Xci+5H5LzxWBAVaC0pLYJIgv9mFJfMiv+MUArcllkwH3SCrPnZg946vj+eboI5CCZYeW
-         B859xSpNyavQYUNhGfFGE3crr5rSXkFA7dKItDlOjsIRxw6FlOlybMcbn1qR0Yyo1aC5
-         nclQwye0LCNhB4Y2P/+pGvmJF1s32b+DBBjyP9Rm0cV76I37EYOWg9z9WbBP8S2FubWm
-         PUzw==
-X-Gm-Message-State: AJIora/BTuI9pr46jWDvrddmqOVNrwhmWspz5kfHSbFvAzV7Vix0HOUV
-        jTyART6x2eCv2Vgfcn9tnEBZT47ahWy/Uz3x/5MIKw==
-X-Google-Smtp-Source: AGRyM1tQWSH4FHcIXB/c1Om86xADkwc7GvPByRKGk241cmYYjcVU0Tb3fJawlIkwsscnpXTkE4OTfz6uJf2hwZwkTnY=
-X-Received: by 2002:a05:620a:4590:b0:6b5:e884:2d2c with SMTP id
- bp16-20020a05620a459000b006b5e8842d2cmr13691502qkb.267.1659394554140; Mon, 01
- Aug 2022 15:55:54 -0700 (PDT)
+        bh=OxoisoQrWhay6j5BeHUyCyZC1z5Zrwne8z9v746EFLw=;
+        b=uHf5DCtufBpmrU1uFbi4zqFdbfIbVQNriKjlcYGfcnFaFOoV2eEgcihtno/B391OE3
+         Pj/MBPNlLpiCMFJnxIIEd1SVCcjpH7oY8EEx/OEh+x44jLH3nu3/FQzdAZEa3vrorJoO
+         i9CHEVuzQ+J8QmKyxy6+xFkFK3CJyzyCnhpD2aqHqXMrUHMHzMLDGnhkzDiZGkvFz07x
+         1liiv2JiHx0sqEpqv87rGbic6vIMak0qjOJg4JrRBRdhVbh/BwkH+fQdhhEUmgk/US19
+         vZdAmiTsOx49105xX7daRXbdzE6TjVlgqQA0AOTcuFK6PIlmCyW8ZcxNIWeH7tpyD39v
+         wNrQ==
+X-Gm-Message-State: AJIora93R1+jG6cF+uXzf7NSQul0AOW+jCwnwY1a3BpZtd3UIbxcYmp1
+        4mU0H/l1TNa3K29hQT0OR7ng1PR6X4TY1DcQOzcpgQ==
+X-Google-Smtp-Source: AGRyM1t+1ZUxzKRxT13ygiAgkfs/P8HsXxLsVBttZ+GEHBI63/MsNU0EG66EW+Ys82VZgEJ9cw3nCIE6gryEGey2i9w=
+X-Received: by 2002:a05:620a:f0e:b0:6b5:48f6:91da with SMTP id
+ v14-20020a05620a0f0e00b006b548f691damr13315101qkl.446.1659394804965; Mon, 01
+ Aug 2022 16:00:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220801175407.2647869-1-haoluo@google.com> <20220801175407.2647869-6-haoluo@google.com>
- <CAEf4Bzbdz7=Cg-87G2tak1Mr=1wJkqr6g2d=dkHqu0YH+j2unA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbdz7=Cg-87G2tak1Mr=1wJkqr6g2d=dkHqu0YH+j2unA@mail.gmail.com>
+References: <20220801175407.2647869-1-haoluo@google.com> <20220801175407.2647869-9-haoluo@google.com>
+ <CAEf4Bza0BzW1urrDghOw2oynftOQ6jP7_k4VvEq-UgyBHp6D8g@mail.gmail.com>
+In-Reply-To: <CAEf4Bza0BzW1urrDghOw2oynftOQ6jP7_k4VvEq-UgyBHp6D8g@mail.gmail.com>
 From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 1 Aug 2022 15:55:43 -0700
-Message-ID: <CA+khW7jiW=oAHS-N1ADLbqB74jTwAaLqUFFvYgb4xTz9WFwtZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 5/8] selftests/bpf: Test cgroup_iter.
+Date:   Mon, 1 Aug 2022 15:59:54 -0700
+Message-ID: <CA+khW7iQiK0nqtpyc4CRjLkoaL5-w_mPqJ19mn6+7tHDMz4gew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 8/8] selftests/bpf: add a selftest for cgroup
+ hierarchical stats collection
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         cgroups@vger.kernel.org, netdev@vger.kernel.org,
@@ -76,7 +77,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,224 +85,45 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 2:51 PM Andrii Nakryiko
+On Mon, Aug 1, 2022 at 3:00 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Mon, Aug 1, 2022 at 10:54 AM Hao Luo <haoluo@google.com> wrote:
 > >
-> > Add a selftest for cgroup_iter. The selftest creates a mini cgroup tree
-> > of the following structure:
-> >
-> >     ROOT (working cgroup)
-> >      |
-> >    PARENT
-> >   /      \
-> > CHILD1  CHILD2
-> >
-> > and tests the following scenarios:
-> >
-> >  - invalid cgroup fd.
-> >  - pre-order walk over descendants from PARENT.
-> >  - post-order walk over descendants from PARENT.
-> >  - walk of ancestors from PARENT.
-> >  - early termination.
-> >
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: Hao Luo <haoluo@google.com>
+[...]
 > > ---
-> >  .../selftests/bpf/prog_tests/cgroup_iter.c    | 193 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
-> >  .../testing/selftests/bpf/progs/cgroup_iter.c |  39 ++++
-> >  3 files changed, 239 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
+> >  .../prog_tests/cgroup_hierarchical_stats.c    | 358 ++++++++++++++++++
+> >  .../bpf/progs/cgroup_hierarchical_stats.c     | 218 +++++++++++
+> >  2 files changed, 576 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> > new file mode 100644
-> > index 000000000000..5dc843a3f507
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> > @@ -0,0 +1,193 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2022 Google */
-> > +
-> > +#include <test_progs.h>
-> > +#include <bpf/libbpf.h>
-> > +#include <bpf/btf.h>
-> > +#include "cgroup_iter.skel.h"
-> > +#include "cgroup_helpers.h"
-> > +
-> > +#define ROOT           0
-> > +#define PARENT         1
-> > +#define CHILD1         2
-> > +#define CHILD2         3
-> > +#define NUM_CGROUPS    4
-> > +
-> > +#define PROLOGUE       "prologue\n"
-> > +#define EPILOGUE       "epilogue\n"
-> > +
-> > +#define format_expected_output1(cg_id1) \
-> > +       snprintf(expected_output, sizeof(expected_output), \
-> > +                PROLOGUE "%8llu\n" EPILOGUE, (cg_id1))
-> > +
-> > +#define format_expected_output2(cg_id1, cg_id2) \
-> > +       snprintf(expected_output, sizeof(expected_output), \
-> > +                PROLOGUE "%8llu\n%8llu\n" EPILOGUE, \
-> > +                (cg_id1), (cg_id2))
-> > +
-> > +#define format_expected_output3(cg_id1, cg_id2, cg_id3) \
-> > +       snprintf(expected_output, sizeof(expected_output), \
-> > +                PROLOGUE "%8llu\n%8llu\n%8llu\n" EPILOGUE, \
-> > +                (cg_id1), (cg_id2), (cg_id3))
-> > +
->
-> you use format_expected_output{1,2} just once and
-> format_expected_output3 twice. Is it worth defining macros for that?
->
-
-If not, we'd see this snprintf and format all over the place. It looks
-worse than the current one I think, prefer leave as-is.
-
-> > +const char *cg_path[] = {
-> > +       "/", "/parent", "/parent/child1", "/parent/child2"
-> > +};
-> > +
-> > +static int cg_fd[] = {-1, -1, -1, -1};
-> > +static unsigned long long cg_id[] = {0, 0, 0, 0};
-> > +static char expected_output[64];
-> > +
-> > +int setup_cgroups(void)
-> > +{
-> > +       int fd, i = 0;
-> > +
-> > +       for (i = 0; i < NUM_CGROUPS; i++) {
-> > +               fd = create_and_get_cgroup(cg_path[i]);
-> > +               if (fd < 0)
-> > +                       return fd;
-> > +
-> > +               cg_fd[i] = fd;
-> > +               cg_id[i] = get_cgroup_id(cg_path[i]);
-> > +       }
-> > +       return 0;
-> > +}
-> > +
-> > +void cleanup_cgroups(void)
->
-> some more statics to cover (same for setup_cgroups)
->
-
-Oops. Will fix.
-
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < NUM_CGROUPS; i++)
-> > +               close(cg_fd[i]);
-> > +}
-> > +
-> > +static void read_from_cgroup_iter(struct bpf_program *prog, int cgroup_fd,
-> > +                                 int order, const char *testname)
-> > +{
-> > +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> > +       union bpf_iter_link_info linfo;
-> > +       struct bpf_link *link;
-> > +       int len, iter_fd;
-> > +       static char buf[64];
-> > +
-> > +       memset(&linfo, 0, sizeof(linfo));
-> > +       linfo.cgroup.cgroup_fd = cgroup_fd;
-> > +       linfo.cgroup.traversal_order = order;
-> > +       opts.link_info = &linfo;
-> > +       opts.link_info_len = sizeof(linfo);
-> > +
-> > +       link = bpf_program__attach_iter(prog, &opts);
-> > +       if (!ASSERT_OK_PTR(link, "attach_iter"))
-> > +               return;
-> > +
-> > +       iter_fd = bpf_iter_create(bpf_link__fd(link));
-> > +       if (iter_fd < 0)
-> > +               goto free_link;
-> > +
-> > +       memset(buf, 0, sizeof(buf));
-> > +       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-> > +               ;
->
-> this is broken, in general, you are overriding buffer content with
-> each call to len
->
-> I think you intended to advance buf after each read() call (and reduce
-> remaining available buf size)?
->
-
-Ah. My bad. Copied from bpf_iter but didn't realize that in the
-bpf_iter case, it didn't care about the content read from buffer. Will
-fix.
-
-> > +
-> > +       ASSERT_STREQ(buf, expected_output, testname);
-> > +
-> > +       /* read() after iter finishes should be ok. */
-> > +       if (len == 0)
-> > +               ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
-> > +
-> > +       close(iter_fd);
-> > +free_link:
-> > +       bpf_link__destroy(link);
-> > +}
-> > +
-> > +/* Invalid cgroup. */
-> > +static void test_invalid_cgroup(struct cgroup_iter *skel)
-> > +{
-> > +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> > +       union bpf_iter_link_info linfo;
-> > +       struct bpf_link *link;
-> > +
-> > +       memset(&linfo, 0, sizeof(linfo));
-> > +       linfo.cgroup.cgroup_fd = (__u32)-1;
-> > +       opts.link_info = &linfo;
-> > +       opts.link_info_len = sizeof(linfo);
-> > +
-> > +       link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
-> > +       if (!ASSERT_ERR_PTR(link, "attach_iter"))
-> > +               bpf_link__destroy(link);
->
-> nit: you can call bpf_link__destroy() even if link is NULL or IS_ERR
->
-
-Ack. Still need to ASSERT on 'link' though, so the saving is probably
-just an indentation. Anyway, will change.
-
-> > +}
-> > +
 >
 > [...]
 >
-> > diff --git a/tools/testing/selftests/bpf/progs/cgroup_iter.c b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-> > new file mode 100644
-> > index 000000000000..2a34d146d6df
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-> > @@ -0,0 +1,39 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2022 Google */
+> > +extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __ksym;
+> > +extern void cgroup_rstat_flush(struct cgroup *cgrp) __ksym;
 > > +
-> > +#include "bpf_iter.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +volatile int terminate_early = 0;
-> > +volatile u64 terminal_cgroup = 0;
-> > +
+> > +static struct cgroup *task_memcg(struct task_struct *task)
+> > +{
+> > +       return task->cgroups->subsys[memory_cgrp_id]->cgroup;
 >
-> nit: you shouldn't need volatile for non-const global variables. Did
-> you see any problems without volatile?
+> memory_cgrp_id is kernel-defined internal enum which actually can
+> change based on kernel configuration (i.e., which cgroup subsystems
+> are enabled or not), is that right?
+>
+> In practice you wouldn't hard-code it, it's better to use
+> bpf_core_enum_value() to capture enum's value in CO-RE-relocatable
+> way.
+>
+> So it might be a good idea to demonstrate that here.
 >
 
-Nah. I don't know about that and see there are other tests that have
-this pattern. Will fix.
+Makes sense. Will use bpf_core_enum_value. Thanks!
 
-> > +static inline u64 cgroup_id(struct cgroup *cgrp)
+> > +}
+> > +
+> > +static uint64_t cgroup_id(struct cgroup *cgrp)
 > > +{
 > > +       return cgrp->kn->id;
 > > +}
