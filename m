@@ -2,77 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87433587607
-	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 05:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1CD587629
+	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 06:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235450AbiHBDnD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Aug 2022 23:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        id S233023AbiHBEJk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Aug 2022 00:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbiHBDnC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Aug 2022 23:43:02 -0400
+        with ESMTP id S229455AbiHBEJj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Aug 2022 00:09:39 -0400
 Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999901CB0D;
-        Mon,  1 Aug 2022 20:43:00 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id m4so1959719ejr.3;
-        Mon, 01 Aug 2022 20:43:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8611A1B7B0;
+        Mon,  1 Aug 2022 21:09:38 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id i14so5096991ejg.6;
+        Mon, 01 Aug 2022 21:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=5uie0B2JCGsqUwle4bwXCVdTJiXih+Q0BvylZoDUVgI=;
-        b=KPvelusiLrC3gfPAgC/hfczD/Hld3G0PsHAtonH6PmqI/aYd/eU7d41sB+uE9QeQ4x
-         z+/bw1xzVcLPUbuhrWkVJu69gmscSaYhSuSKz2wWFgg3OWOBmsAAbKWtRBFXQsTD2OT8
-         sCq7qJRxCKk4oqdywrb/fi6/ojNV0lnyADkRkTRXj3mjswD/gchUPCscYMRuUmIV02/y
-         AJI+y0CAYU4vxO8AOK4/BbwhdYX97R2KTOHKDmyj+yjzbaZcmKoke9q3FeQaT4b4kgGt
-         PfyOJNEgW64TVSeq8NHjoysyTwOlTMqCH23j/JiruUVH1igwkIVJEpdEXeFy6RMAsDIZ
-         xsMQ==
+        bh=UocwHfpqhdsaKRBjXUO3oWoo5VgvByxIYhhk++TJzww=;
+        b=jx4n8eOOxofhaSZH8qAE8+C6TnYGtkoSskRxtdK6cpEuJs3B2/r/mtS+LfGdb607Z+
+         Pt706y5owNULu/vT+bzuxlMpb2iAnCL2E0Y5Wi5ngS2662xLzjr/k72ssPZBwg7ee0M/
+         zepD+iNbd8FUgpsRoAHdZUDWBWHTxN/pdEOFPX5Uha6kIcv96xO8u3cQvd4100gd9i1E
+         O8ysJtP8T++KWGFyqQ68Xvs7n5ypjil/P8MXrTBcSLTJBBoeAg7ayjvnfyNgCh3r8xV8
+         3LnE2hkBGhoIu41apN04xmyBhTNU+cphPbdgr5N+UbDCDF2MJhvMjx495VwSEh1m0AKL
+         FxUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=5uie0B2JCGsqUwle4bwXCVdTJiXih+Q0BvylZoDUVgI=;
-        b=5hLFflAevhoX3ZAd2KT4zW3HWUYQ6l7JsiBhsWpNHFJORpKBBdHOtqeEJyim/8vLw3
-         5aCoP9W7jW8TaaADP7YT/CLPGGweSFdm4WdhfxjacrGSdpHj1siWlRMywdDkc324WiWQ
-         DyZQf3fCIW4Pfs7fAXS7L8K2eGm0oL6aqmTcGsQ9wV0lusA8HZreUFzxHTekOVDmnKaZ
-         R0AbEq1ltWbnLCmQbp/EzUxiKlhP6KrrzzPlM4TScTNg1zxr3j4KSL6zZgeVo9OZFKQE
-         Gc8JY2NCUeO4sukQABSVknVP6PRiCM+aITWjGkyphaUDGcv1gBs7OcjHLGBe0jqi3b7B
-         nVTg==
-X-Gm-Message-State: AJIora/ZsABJMFe1bpOBSop73+Mom+ts7Aq7t6mOETeIOBB7OIPx6CqP
-        VM+Qxkay3demn1cyqY2IVxBXRFjIvj6njqn1423EA5Ew8nE=
-X-Google-Smtp-Source: AGRyM1v8QAwl9+8b9hQu7QS3XjvrpiHsbrUt+9FekIyEJgRW/HlVXGc418Y/OI28HaNbvFLdvArkxxr3/Td3GC1cvaE=
+        bh=UocwHfpqhdsaKRBjXUO3oWoo5VgvByxIYhhk++TJzww=;
+        b=dmgK/cuh/Jx8iy0LSFNBUkx61D/OU3Z8GHxNI+V4k+ffZzsZZtE8JRFMINFb9fzvu6
+         n17oVL/EIcduB1HYUWwQtZa320Z2OBr/CLqEhWJp1gjTVGjdD0m3Ml9Wpm06JuW1zrbx
+         KJuTpSeyMakvEgIl4boHLJXcoD8FMUuXJsi4yDK/TVBYW2AUNQSkmJueEPzX714FgAto
+         2vzw4pyAoSyln6vvJIGAAeuI2NhE1W6wR8adguNrKVtVYWAsES/K3WYCMXsIO+S+Ev3c
+         FUQy/Ix6VrmHyzmsVyYSFtJijtl5iEpAp9F7R1ttppnlkarD0qrlBfhhKqrmrIDRwyVY
+         tP5g==
+X-Gm-Message-State: AJIora+MHXkvGH5o5N9qKlP8KcfzTjmQCkx/J4VF8NKZ6O/tM0a0RpSA
+        e/TKeOTX7kbG1Jq/cfUi/NMOEtW1KdxZOF/4rb88BzAG8ZQ=
+X-Google-Smtp-Source: AGRyM1ty5sQTlF8ub0NnxUzp5syP51LYgsz8b9F8DDUIfoi9492DqzuJLw/BVfKhXCQt6hC71NiFlKdCphZTEUPiAWI=
 X-Received: by 2002:a17:907:2ccc:b0:72b:6907:fce6 with SMTP id
- hg12-20020a1709072ccc00b0072b6907fce6mr14966848ejc.115.1659411779170; Mon, 01
- Aug 2022 20:42:59 -0700 (PDT)
+ hg12-20020a1709072ccc00b0072b6907fce6mr15019557ejc.115.1659413377003; Mon, 01
+ Aug 2022 21:09:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com> <20220722174829.3422466-5-yosryahmed@google.com>
-In-Reply-To: <20220722174829.3422466-5-yosryahmed@google.com>
+References: <20220801175407.2647869-1-haoluo@google.com> <20220801175407.2647869-6-haoluo@google.com>
+ <CAEf4Bzbdz7=Cg-87G2tak1Mr=1wJkqr6g2d=dkHqu0YH+j2unA@mail.gmail.com> <CA+khW7jiW=oAHS-N1ADLbqB74jTwAaLqUFFvYgb4xTz9WFwtZg@mail.gmail.com>
+In-Reply-To: <CA+khW7jiW=oAHS-N1ADLbqB74jTwAaLqUFFvYgb4xTz9WFwtZg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Aug 2022 20:42:47 -0700
-Message-ID: <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 1 Aug 2022 21:09:25 -0700
+Message-ID: <CAEf4BzZcwN3N-8iHrHWFmunoWAVP4-snUs7kxpLLnQJpOtR+rw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 5/8] selftests/bpf: Test cgroup_iter.
+To:     Hao Luo <haoluo@google.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michal Koutny <mkoutny@suse.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         David Rientjes <rientjes@google.com>,
         Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
         Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -84,158 +83,100 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Mon, Aug 1, 2022 at 3:55 PM Hao Luo <haoluo@google.com> wrote:
 >
-> From: Hao Luo <haoluo@google.com>
->
-> Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
->
->  - walking a cgroup's descendants in pre-order.
->  - walking a cgroup's descendants in post-order.
->  - walking a cgroup's ancestors.
->
-> When attaching cgroup_iter, one can set a cgroup to the iter_link
-> created from attaching. This cgroup is passed as a file descriptor and
-> serves as the starting point of the walk. If no cgroup is specified,
-> the starting point will be the root cgroup.
->
-> For walking descendants, one can specify the order: either pre-order or
-> post-order. For walking ancestors, the walk starts at the specified
-> cgroup and ends at the root.
->
-> One can also terminate the walk early by returning 1 from the iter
-> program.
->
-> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> program is called with cgroup_mutex held.
->
-> Currently only one session is supported, which means, depending on the
-> volume of data bpf program intends to send to user space, the number
-> of cgroups that can be walked is limited. For example, given the current
-> buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
-> cgroup, the total number of cgroups that can be walked is 512. This is
-> a limitation of cgroup_iter. If the output data is larger than the
-> buffer size, the second read() will signal EOPNOTSUPP. In order to work
-> around, the user may have to update their program to reduce the volume
-> of data sent to output. For example, skip some uninteresting cgroups.
-> In future, we may extend bpf_iter flags to allow customizing buffer
-> size.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/bpf.h                           |   8 +
->  include/uapi/linux/bpf.h                      |  30 +++
->  kernel/bpf/Makefile                           |   3 +
->  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
->  tools/include/uapi/linux/bpf.h                |  30 +++
->  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
->  6 files changed, 325 insertions(+), 2 deletions(-)
->  create mode 100644 kernel/bpf/cgroup_iter.c
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index a97751d845c9..9061618fe929 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -47,6 +47,7 @@ struct kobject;
->  struct mem_cgroup;
->  struct module;
->  struct bpf_func_state;
-> +struct cgroup;
->
->  extern struct idr btf_idr;
->  extern spinlock_t btf_idr_lock;
-> @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
->         int __init bpf_iter_ ## target(args) { return 0; }
->
->  struct bpf_iter_aux_info {
-> +       /* for map_elem iter */
->         struct bpf_map *map;
-> +
-> +       /* for cgroup iter */
-> +       struct {
-> +               struct cgroup *start; /* starting cgroup */
-> +               int order;
-> +       } cgroup;
->  };
->
->  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ffcbf79a556b..fe50c2489350 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
->         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
->  };
->
-> +enum bpf_iter_cgroup_traversal_order {
-> +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
-> +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
-> +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+> On Mon, Aug 1, 2022 at 2:51 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Aug 1, 2022 at 10:54 AM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Add a selftest for cgroup_iter. The selftest creates a mini cgroup tree
+> > > of the following structure:
+> > >
+> > >     ROOT (working cgroup)
+> > >      |
+> > >    PARENT
+> > >   /      \
+> > > CHILD1  CHILD2
+> > >
+> > > and tests the following scenarios:
+> > >
+> > >  - invalid cgroup fd.
+> > >  - pre-order walk over descendants from PARENT.
+> > >  - post-order walk over descendants from PARENT.
+> > >  - walk of ancestors from PARENT.
+> > >  - early termination.
+> > >
+> > > Acked-by: Yonghong Song <yhs@fb.com>
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/cgroup_iter.c    | 193 ++++++++++++++++++
+> > >  tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+> > >  .../testing/selftests/bpf/progs/cgroup_iter.c |  39 ++++
+> > >  3 files changed, 239 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
+> > >
 
-I've just put up my arguments why it's a good idea to also support a
-"trivial" mode of only traversing specified cgroup and no descendants
-or parents. Please see [0]. I think the same applies here, especially
-considering that it seems like a good idea to support
-task/task_vma/task_files iteration within a cgroup. So depending on
-how successful I am in arguing for supporting task iterator with
-target cgroup, I think we should reuse *exactly* this
-bpf_iter_cgroup_traversal_order and how we specify cgroup (FD or ID,
-see some more below) *as is* in task iterators as well. In the latter
-case, having an ability to say "iterate task for only given cgroup" is
-very useful, and for such mode all the PRE/POST/PARENT_UP is just an
-unnecessary nuisance.
+[...]
 
-So please consider also adding and supporting BPF_ITER_CGROUP_SELF (or
-whatever naming makes most sense).
-
-
-Some more naming nits. I find BPF_ITER_CGROUP_PRE and
-BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
-have css_next_descendant_pre/css_next_descendant_post, so why not
-reflect the fact that we are going to iterate descendants:
-BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
-"descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
-probably is fine, but seems a bit redundant (unless we consider a
-somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
-then descend through preceding parents until we reach specified
-cgroup; seems a bit exotic).
-
-  [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
-
-> +};
-> +
->  union bpf_iter_link_info {
->         struct {
->                 __u32   map_fd;
->         } map;
-> +
-> +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
-> +        * ancestors of a given cgroup.
-> +        */
-> +       struct {
-> +               /* Cgroup file descriptor. This is root of the subtree if walking
-> +                * descendants; it's the starting cgroup if walking the ancestors.
-> +                * If it is left 0, the traversal starts from the default cgroup v2
-> +                * root. For walking v1 hierarchy, one should always explicitly
-> +                * specify the cgroup_fd.
-> +                */
-> +               __u32   cgroup_fd;
-
-Now, similar to what I argued in regard of pidfd vs pid, I think the
-same applied to cgroup_fd vs cgroup_id. Why can't we support both?
-cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
-and not having to open/close/keep extra FDs (which can add up if we
-want to periodically query something about a large set of cgroups).
-Please see my arguments from [0] above.
-
-Thoughts?
-
-> +               __u32   traversal_order;
-> +       } cgroup;
->  };
+> > > +#define format_expected_output3(cg_id1, cg_id2, cg_id3) \
+> > > +       snprintf(expected_output, sizeof(expected_output), \
+> > > +                PROLOGUE "%8llu\n%8llu\n%8llu\n" EPILOGUE, \
+> > > +                (cg_id1), (cg_id2), (cg_id3))
+> > > +
+> >
+> > you use format_expected_output{1,2} just once and
+> > format_expected_output3 twice. Is it worth defining macros for that?
+> >
 >
->  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> If not, we'd see this snprintf and format all over the place. It looks
+> worse than the current one I think, prefer leave as-is.
+
+All over the place == 4 places where it matters.
+
+We are not trying to write the most beautiful code through macro
+obfuscation. The point is to write tests that are easy to follow,
+debug, understand, and potentially modify. Adding extra layers of
+macros goes against this. Instead of clearly seeing in each individual
+subtest that we expect "%llu\n%llu\n", I need to search what
+"format_expected_output3" is actually doing, then I'm wondering where
+expected_output is coming from (I scan macro input args, see nothing,
+then I conclude it must be coming from the environment; I jump to one
+of the format_expected_output3 invocation sites, see no local variable
+named "expected_output", then I look around and see global variable;
+aha, finally!) Sure it's a rather trivial thing, but this adds up.
+
+*Unnecessary* macros are bad and a hindrance. Please avoid them, if
+possible. Saving 20 characters is not a sufficient justification in my
+view.
+
+>
+> > > +const char *cg_path[] = {
+> > > +       "/", "/parent", "/parent/child1", "/parent/child2"
+> > > +};
+> > > +
+
+[...]
+
+> > > +       link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
+> > > +       if (!ASSERT_ERR_PTR(link, "attach_iter"))
+> > > +               bpf_link__destroy(link);
+> >
+> > nit: you can call bpf_link__destroy() even if link is NULL or IS_ERR
+> >
+>
+> Ack. Still need to ASSERT on 'link' though, so the saving is probably
+> just an indentation. Anyway, will change.
+
+Yeah, of course you need to assert. But it's nice to have
+unconditional assertion.
+
+>
+> > > +}
+> > > +
+> >
+> > [...]
+> >
 
 [...]
