@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2727E587D8C
-	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 15:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAD0587D86
+	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 15:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbiHBNwp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Aug 2022 09:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
+        id S236991AbiHBNwo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Aug 2022 09:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236871AbiHBNwf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Aug 2022 09:52:35 -0400
+        with ESMTP id S236858AbiHBNwe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Aug 2022 09:52:34 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13D527B14;
-        Tue,  2 Aug 2022 06:52:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B56027CDF;
+        Tue,  2 Aug 2022 06:52:25 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LxxGg0Q08zKPm2;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LxxGg3K1WzKPmX;
         Tue,  2 Aug 2022 21:51:07 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgDXLsMQLOlivtl0AA--.20757S9;
+        by APP3 (Coremail) with SMTP id _Ch0CgDXLsMQLOlivtl0AA--.20757S10;
         Tue, 02 Aug 2022 21:52:23 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     tj@kernel.org, mkoutny@suse.com, axboe@kernel.dk,
@@ -26,18 +26,18 @@ To:     tj@kernel.org, mkoutny@suse.com, axboe@kernel.dk,
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH v7 5/9] blk-throttle: improve handling of re-entered bio for bps limit
-Date:   Tue,  2 Aug 2022 22:04:11 +0800
-Message-Id: <20220802140415.2960284-6-yukuai1@huaweicloud.com>
+Subject: [PATCH v7 6/9] blk-throttle: use 'READ/WRITE' instead of '0/1'
+Date:   Tue,  2 Aug 2022 22:04:12 +0800
+Message-Id: <20220802140415.2960284-7-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
 References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgDXLsMQLOlivtl0AA--.20757S9
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr43Zry7KFyxKw4DAFW8Zwb_yoW8uF17pF
-        W7Xr95Gr1qgFnIgws5G3WfXFW5X3yrA345GrZ8G3W3JwnrGr1v9F1kGrWFk3yruF93Ca1k
-        Xwn2qryxAF4UGaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: _Ch0CgDXLsMQLOlivtl0AA--.20757S10
+X-Coremail-Antispam: 1UD129KBjvJXoW7KryfGryDGw4xuFWDAry3twb_yoW8JF4xpa
+        45Gr48Aa40qr4q9ry3Kr47XayYgan7ZrW3C393Ga1ayrW7JFnFgFnrZF90va18AFs3Can0
+        9ryUWrZ8GF1UG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -64,55 +64,38 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Currently, if new slice is started while bio is re-entered, such bio
-will count multiple times for bps limit. Since 'bytes_skipped'
-represents how many bytes will be skipped while dispatching bios, which
-can handle that case, increasing it instead of decreasing 'bytes_disp'.
+Make the code easier to read, like everywhere else.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
 ---
- block/blk-throttle.c | 8 ++++----
- block/blk-throttle.h | 4 +++-
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ block/blk-throttle.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 621402cf2576..237668328e98 100644
+index 237668328e98..907001eede85 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -2183,14 +2183,14 @@ bool __blk_throtl_bio(struct bio *bio)
- 		 * Splited bios can be re-entered because iops limit should be
- 		 * counted again, however, bps limit should not. Since bps limit
- 		 * will be counted again while dispatching it, compensate the
--		 * over-accounting here. Noted that compensation can fail if
--		 * new slice is started.
-+		 * over-accounting here. Since decrement of 'bytes_disp' can't
-+		 * handle the case that new slice is started, increase
-+		 * 'bytes_skipped' instead.
- 		 */
- 		if (bio_flagged(bio, BIO_THROTTLED)) {
- 			unsigned int bio_size = throtl_bio_data_size(bio);
+@@ -329,8 +329,8 @@ static struct bio *throtl_pop_queued(struct list_head *queued,
+ /* init a service_queue, assumes the caller zeroed it */
+ static void throtl_service_queue_init(struct throtl_service_queue *sq)
+ {
+-	INIT_LIST_HEAD(&sq->queued[0]);
+-	INIT_LIST_HEAD(&sq->queued[1]);
++	INIT_LIST_HEAD(&sq->queued[READ]);
++	INIT_LIST_HEAD(&sq->queued[WRITE]);
+ 	sq->pending_tree = RB_ROOT_CACHED;
+ 	timer_setup(&sq->pending_timer, throtl_pending_timer_fn, 0);
+ }
+@@ -1161,7 +1161,7 @@ static int throtl_select_dispatch(struct throtl_service_queue *parent_sq)
+ 		nr_disp += throtl_dispatch_tg(tg);
  
--			if (tg->bytes_disp[rw] >= bio_size)
--				tg->bytes_disp[rw] -= bio_size;
-+			tg->bytes_skipped[rw] += bio_size;
- 			if (tg->last_bytes_disp[rw] >= bio_size)
- 				tg->last_bytes_disp[rw] -= bio_size;
- 		}
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index 0163aa9104c3..c9545616ba12 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -121,7 +121,9 @@ struct throtl_grp {
- 	 * bytes/io are waited already in previous configuration, and they will
- 	 * be used to calculate wait time under new configuration.
- 	 *
--	 * Number of bytes will be skipped in current slice
-+	 * Number of bytes will be skipped in current slice. In addition, this
-+	 * field will help to handle re-entered bio for bps limit, see details
-+	 * in __blk_throtl_bio().
- 	 */
- 	uint64_t bytes_skipped[2];
- 	/* Number of bio will be skipped in current slice */
+ 		sq = &tg->service_queue;
+-		if (sq->nr_queued[0] || sq->nr_queued[1])
++		if (sq->nr_queued[READ] || sq->nr_queued[WRITE])
+ 			tg_update_disptime(tg);
+ 
+ 		if (nr_disp >= THROTL_QUANTUM)
 -- 
 2.31.1
 
