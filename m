@@ -2,42 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4767587D92
-	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 15:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B93A587D93
+	for <lists+cgroups@lfdr.de>; Tue,  2 Aug 2022 15:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbiHBNw6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Aug 2022 09:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        id S236518AbiHBNw4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Aug 2022 09:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236788AbiHBNwj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Aug 2022 09:52:39 -0400
+        with ESMTP id S236884AbiHBNwk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Aug 2022 09:52:40 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D015286D7;
-        Tue,  2 Aug 2022 06:52:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66D7286E3;
+        Tue,  2 Aug 2022 06:52:28 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LxxGv4hKQzlDVk;
-        Tue,  2 Aug 2022 21:51:19 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LxxGw0bXlzlDjv;
+        Tue,  2 Aug 2022 21:51:20 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgDXLsMQLOlivtl0AA--.20757S12;
-        Tue, 02 Aug 2022 21:52:24 +0800 (CST)
+        by APP3 (Coremail) with SMTP id _Ch0CgDXLsMQLOlivtl0AA--.20757S13;
+        Tue, 02 Aug 2022 21:52:25 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     tj@kernel.org, mkoutny@suse.com, axboe@kernel.dk,
         ming.lei@redhat.com
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com
-Subject: [PATCH v7 8/9] blk-throttle: cleanup tg_update_disptime()
-Date:   Tue,  2 Aug 2022 22:04:14 +0800
-Message-Id: <20220802140415.2960284-9-yukuai1@huaweicloud.com>
+Subject: [PATCH v7 9/9] blk-throttle: clean up flag 'THROTL_TG_PENDING'
+Date:   Tue,  2 Aug 2022 22:04:15 +0800
+Message-Id: <20220802140415.2960284-10-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
 References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgDXLsMQLOlivtl0AA--.20757S12
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1rZF13CFWUCFW8CFWDtwb_yoW8ArWxpF
-        W7CF4rGa18Jr4qkrW5XFsrXFWfJan7JFWfZ397GayfA3yjqr1vgF1vvr1rZay8AF93XrW5
-        ZFsrt3y8Aa1UZ3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: _Ch0CgDXLsMQLOlivtl0AA--.20757S13
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4UuFW5KF1UXrWkuw4fuFg_yoW5AFWDpr
+        y3AF4fGw48tr4qgrWYqF47GFWSvan3JrWfA3srJa1fJr42vr92gr4DZFyFqayrAFZ3CFW3
+        ZF4Dt3y8Ja18X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -64,54 +64,89 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-tg_update_disptime() only need to adjust postion for 'tg' in
-'parent_sq', there is no need to call throtl_enqueue/dequeue_tg().
-
-Save a little overhead in tg_update_disptime() and prepare to cleanup
-flag 'THROTL_TG_PENDING', there are no functional changes.
+All related operations are inside 'queue_lock', there is no need to use
+the flag, we only need to make sure throtl_enqueue_tg() is called when
+the first bio is throttled, and throtl_dequeue_tg() is called when the
+last throttled bio is dispatched. There are no functional changes in
+this patch.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-throttle.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ block/blk-throttle.c | 22 ++++++++--------------
+ block/blk-throttle.h |  7 +++----
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index f7048f87b19f..6b2096e95221 100644
+index 6b2096e95221..778c0131adb1 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -520,7 +520,6 @@ static void throtl_rb_erase(struct rb_node *n,
+@@ -561,23 +561,16 @@ static void tg_service_queue_add(struct throtl_grp *tg)
+ 
+ static void throtl_enqueue_tg(struct throtl_grp *tg)
  {
- 	rb_erase_cached(n, &parent_sq->pending_tree);
- 	RB_CLEAR_NODE(n);
--	--parent_sq->nr_pending;
+-	if (!(tg->flags & THROTL_TG_PENDING)) {
+-		tg_service_queue_add(tg);
+-		tg->flags |= THROTL_TG_PENDING;
+-		tg->service_queue.parent_sq->nr_pending++;
+-	}
++	tg_service_queue_add(tg);
++	tg->service_queue.parent_sq->nr_pending++;
  }
  
- static void update_min_dispatch_time(struct throtl_service_queue *parent_sq)
-@@ -572,7 +571,11 @@ static void throtl_enqueue_tg(struct throtl_grp *tg)
  static void throtl_dequeue_tg(struct throtl_grp *tg)
  {
- 	if (tg->flags & THROTL_TG_PENDING) {
--		throtl_rb_erase(&tg->rb_node, tg->service_queue.parent_sq);
-+		struct throtl_service_queue *parent_sq =
-+			tg->service_queue.parent_sq;
-+
-+		throtl_rb_erase(&tg->rb_node, parent_sq);
-+		--parent_sq->nr_pending;
- 		tg->flags &= ~THROTL_TG_PENDING;
- 	}
+-	if (tg->flags & THROTL_TG_PENDING) {
+-		struct throtl_service_queue *parent_sq =
+-			tg->service_queue.parent_sq;
++	struct throtl_service_queue *parent_sq = tg->service_queue.parent_sq;
+ 
+-		throtl_rb_erase(&tg->rb_node, parent_sq);
+-		--parent_sq->nr_pending;
+-		tg->flags &= ~THROTL_TG_PENDING;
+-	}
++	throtl_rb_erase(&tg->rb_node, parent_sq);
++	--parent_sq->nr_pending;
  }
-@@ -1045,9 +1048,9 @@ static void tg_update_disptime(struct throtl_grp *tg)
- 	disptime = jiffies + min_wait;
  
- 	/* Update dispatch time */
--	throtl_dequeue_tg(tg);
-+	throtl_rb_erase(&tg->rb_node, tg->service_queue.parent_sq);
- 	tg->disptime = disptime;
+ /* Call with queue lock held */
+@@ -1026,8 +1019,9 @@ static void throtl_add_bio_tg(struct bio *bio, struct throtl_qnode *qn,
+ 
+ 	throtl_qnode_add_bio(bio, qn, &sq->queued[rw]);
+ 
++	if (!sq->nr_queued[READ] && !sq->nr_queued[WRITE])
++		throtl_enqueue_tg(tg);
+ 	sq->nr_queued[rw]++;
 -	throtl_enqueue_tg(tg);
-+	tg_service_queue_add(tg);
+ }
  
- 	/* see throtl_add_bio_tg() */
- 	tg->flags &= ~THROTL_TG_WAS_EMPTY;
+ static void tg_update_disptime(struct throtl_grp *tg)
+@@ -1382,7 +1376,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
+ 	throtl_start_new_slice(tg, READ, false);
+ 	throtl_start_new_slice(tg, WRITE, false);
+ 
+-	if (tg->flags & THROTL_TG_PENDING) {
++	if (sq->nr_queued[READ] || sq->nr_queued[WRITE]) {
+ 		tg_update_disptime(tg);
+ 		throtl_schedule_next_dispatch(sq->parent_sq, true);
+ 	}
+diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+index c9545616ba12..2ae5ac8fe76e 100644
+--- a/block/blk-throttle.h
++++ b/block/blk-throttle.h
+@@ -53,10 +53,9 @@ struct throtl_service_queue {
+ };
+ 
+ enum tg_state_flags {
+-	THROTL_TG_PENDING	= 1 << 0,	/* on parent's pending tree */
+-	THROTL_TG_WAS_EMPTY	= 1 << 1,	/* bio_lists[] became non-empty */
+-	THROTL_TG_HAS_IOPS_LIMIT = 1 << 2,	/* tg has iops limit */
+-	THROTL_TG_CANCELING	= 1 << 3,	/* starts to cancel bio */
++	THROTL_TG_WAS_EMPTY	= 1 << 0,	/* bio_lists[] became non-empty */
++	THROTL_TG_HAS_IOPS_LIMIT = 1 << 1,	/* tg has iops limit */
++	THROTL_TG_CANCELING	= 1 << 2,	/* starts to cancel bio */
+ };
+ 
+ enum {
 -- 
 2.31.1
 
