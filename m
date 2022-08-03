@@ -2,102 +2,262 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0212C5892E2
-	for <lists+cgroups@lfdr.de>; Wed,  3 Aug 2022 21:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EA358933B
+	for <lists+cgroups@lfdr.de>; Wed,  3 Aug 2022 22:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236700AbiHCTsX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Aug 2022 15:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S238723AbiHCUaF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Aug 2022 16:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233409AbiHCTsW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Aug 2022 15:48:22 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C37A20BD9;
-        Wed,  3 Aug 2022 12:48:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id e8-20020a17090a280800b001f2fef7886eso3198166pjd.3;
-        Wed, 03 Aug 2022 12:48:21 -0700 (PDT)
+        with ESMTP id S238718AbiHCUaF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Aug 2022 16:30:05 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2B75B78B
+        for <cgroups@vger.kernel.org>; Wed,  3 Aug 2022 13:30:03 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id h7so1569197qtu.2
+        for <cgroups@vger.kernel.org>; Wed, 03 Aug 2022 13:30:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=/TnexTjdFrc/Gu2edl42Moooc6kFX3TgYFD+N6FTpm4=;
-        b=QDt3cfQte/Zl4k0s/nJQy5IJo4lGn44+dOrM6ddgvuwo9jKvKLbbnFoL0T8cgQYOoj
-         uyUgupOxmCC9zuOi67Jlg1e05mjmaBm5vyCdVxr8VZ+3I3kbNaPxUxd5pndHkzsGdXVR
-         n6bZmfKul/vPUIzryzxQ2Ft1gRS7bSyHNWqwz9AgtmOVYtR25fuSYtUDLA+QVH8PZ2Pk
-         7HRvQUPlLZBaBFjljW4kobGO084v6+zwuGGUoLlSx6QX8wCQBzBMrxxbP81PFCwFzTvl
-         8wxBz+pFiD2rTjn1YZJw3IIgfYhVurD3fyzwJJ324pEp5BArGPhMHE4/0WcYjnYCgi7v
-         gV0w==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dsz8IHMohhYZ2cZL5pWvVqmp+AxFsLxkDLJLSy2o2N4=;
+        b=qhvgEU9aNbRaLz1LZz5Di83doxE96N37k+dzlmaEWg5j2FL+um8PmgRkdOPCt9li8w
+         d6I9EofHmCIIm5a5qQKRxvYyHNjc/oSKXVrzBEYTWXJxPsC9SdRj1z3GYLR95V0+NkFw
+         lgyrS8WvaiBPjACPGlGDABCkAa+ybGB/6Uv/er7mt+cMRI1NTghVCOUPKzd2udTCZ6Kc
+         +Ti6RiS7W6hdxcjcgYGDJ/Ujgc9ms5B7xl43PRhb/E298i9nxm26sTuM2DhKkPlQ9DEg
+         Q2NcVHoYtWH31WyzoWtwIiBrvvxg4ctBJQuILoR82lLcUyoK2mZZvbPldxUKnIwE1sE7
+         EVeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=/TnexTjdFrc/Gu2edl42Moooc6kFX3TgYFD+N6FTpm4=;
-        b=vCyfse7aBBn9wj0bj6Z9cTDuFsMtu0KvaoSzoPtFOS6Laxy00VDBy2LKPOUTuYgHM8
-         UB2EL2gy+ROZfh3IGu0JXYFsWg4ubtiXU19GdsLrk1CeIpxbBqhsIFrO0ujbbL2+l6bk
-         bakFQTCoQfJrgjP7tx8hCiLyIwVCOP1ZB9CZ+O2Qf5xHX4rgXSRe1wlSzNxMqMq/Y8J7
-         AcZxG7NR8CkHv697eyFy/2lfdCRPIrZ5HwHPXRmzffrhNZuxZD29lfvYkxHfnwMdNx//
-         LLlBqN9/RJMbSwltDHRLSgWMCJPCijfRv/YZDX4Y+xZ7SWk2uUY2A1F9E5qyLvVKg+Pm
-         SmZA==
-X-Gm-Message-State: ACgBeo0R1HakEI0SbXDCHRZOlNWVCiOzWwPUIiJHEaVJ836mK49hmfd8
-        9sWXL8/NMYTE/qFPTI0Fzro=
-X-Google-Smtp-Source: AA6agR4MAA7iZXP0Vp6HgNcIKaEx75jEF2GI4Q5XeVva0iVZGej1zllK3JXKe+IVCW9uLC3y4JNyJQ==
-X-Received: by 2002:a17:902:d4c2:b0:16d:c317:ee9d with SMTP id o2-20020a170902d4c200b0016dc317ee9dmr26053515plg.25.1659556100608;
-        Wed, 03 Aug 2022 12:48:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:7c3a])
-        by smtp.gmail.com with ESMTPSA id w1-20020a656941000000b0041a919ed63dsm11347439pgq.3.2022.08.03.12.48.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Aug 2022 12:48:20 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 3 Aug 2022 09:48:18 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>, surenb@google.com,
-        mingo@redhat.com, peterz@infradead.org, corbet@lwn.net,
-        akpm@linux-foundation.org, rdunlap@infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 8/9] sched/psi: add kernel cmdline parameter
- psi_inner_cgroup
-Message-ID: <YurRAnUEloaYMx0W@slm.duckdns.org>
-References: <20220721040439.2651-1-zhouchengming@bytedance.com>
- <20220721040439.2651-9-zhouchengming@bytedance.com>
- <Yt7KQc0nnOypB2b2@cmpxchg.org>
- <YuAqWprKd6NsWs7C@slm.duckdns.org>
- <5a3410d6-428d-9ad1-3e5a-01ca805ceeeb@bytedance.com>
- <Yuq3Q6Y9dRnjjcPt@slm.duckdns.org>
- <YurK6MXdJPrV2VYS@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dsz8IHMohhYZ2cZL5pWvVqmp+AxFsLxkDLJLSy2o2N4=;
+        b=rqUPcYidI3iA7SgGpnJuXwmbiKTyCditFWSxNeQkI0vmzmXk7e2/QpF2dAkSrLGz6L
+         TH1DjHSFm6bKBWj7XVgdVxBuQFcscYe+oJoO86bH9mQyu7IAdh6BXE5aW1jWDabUjnyJ
+         8tOuOXNTg6tGAlUwmcIZ26SPkTsujbPMROM5VFe+fQlTWgvmNHSBzN7x27PWWgnvdcwX
+         2X3cydji19YdTddNMwewYXpe/TOb4sY6/YHzTgmK74tL1z3wTaI9Dyo0aNTqAO/PE6QS
+         BsDSv3+Yus9Qy9fiKUl3NtwxL2iql7jOsBZisN2XXENo6kNJM1MJaDORYTHrtTgrIT/N
+         8M/g==
+X-Gm-Message-State: AJIora8QX95ILeCW0pNWd0HxWO5JmTVg1XdPzUBOUc+qm7mqk0IGoZv+
+        4TjP0KlxywKEvhF4NE/eRcSoOEhVamkLlPXKtQegLA==
+X-Google-Smtp-Source: AGRyM1ti9ieZjz4Bqd1rv5WpcT/IAZQJCQDgsCwKz5/2E/kmqsJiz+J94HVKuJdGxSnCmLHnF8Cz6vGIuC+uc33d2sw=
+X-Received: by 2002:a05:622a:8e:b0:31f:371f:e6a1 with SMTP id
+ o14-20020a05622a008e00b0031f371fe6a1mr24197038qtw.565.1659558602311; Wed, 03
+ Aug 2022 13:30:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YurK6MXdJPrV2VYS@cmpxchg.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
+ <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com> <CAEf4BzYDqaTQr-S8TuLkysQ+FhT+6qMS0z=Sp_7+-wk84_4h6Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzYDqaTQr-S8TuLkysQ+FhT+6qMS0z=Sp_7+-wk84_4h6Q@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Wed, 3 Aug 2022 13:29:51 -0700
+Message-ID: <CA+khW7jDD9p80xnZj0Z3m5oFHjb2u___NAiJkbyRgD5FKopGhg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        Kui-Feng Lee <kuifeng@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Tue, Aug 2, 2022 at 3:50 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Aug 2, 2022 at 3:27 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Hi Andrii,
+> >
+> > On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+[...]
+> > > >
+> > > > +enum bpf_iter_cgroup_traversal_order {
+> > > > +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
+> > > > +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
+> > > > +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+> > >
+> > > I've just put up my arguments why it's a good idea to also support a
+> > > "trivial" mode of only traversing specified cgroup and no descendants
+> > > or parents. Please see [0].
+> >
+> > cc Kui-Feng in this thread.
+> >
+> > Yeah, I think it's a good idea. It's useful when we only want to show
+> > a single object, which can be common. Going further, I think we may
+> > want to restructure bpf_iter to optimize for this case.
+> >
+> > > I think the same applies here, especially
+> > > considering that it seems like a good idea to support
+> > > task/task_vma/task_files iteration within a cgroup.
+> >
+> > I have reservations on these use cases. I don't see immediate use of
+> > iterating vma or files within a cgroup. Tasks within a cgroup? Maybe.
+> > :)
+> >
+>
+> iter/task was what I had in mind in the first place. But I can also
+> imagine tools utilizing iter/task_files for each process within a
+> cgroup, so given iter/{task, task_file, task_vma} share the same UAPI
+> and internals, I don't see why we'd restrict this to only iter/task.
 
-On Wed, Aug 03, 2022 at 03:22:16PM -0400, Johannes Weiner wrote:
-> Where it gets trickier is also stopping the tracking of task counts in
-> a cgroup. For re-enabling afterwards, we'd have to freeze scheduler
-> and cgroup state and find all tasks of interest across all CPUs for
-> the given cgroup to recreate the counts. I'm not quite sure whether
-> that's feasible, and if so, whether it's worth the savings.
+No problem. I was hoping we don't over-design the interface. IMHO keep
+it simple stupid. :)
 
-If this turns out to be necessary, I wonder whether we can just be
-opportunistic. ie. don't bother with walking all the tasks but only remember
-whether a task is accounted at a given level or not (this can be a bitmap
-which is allocated at cgroup attach type and in most caess will be pretty
-small). Then, maybe we can just start accounting them as they cycle through
-state transitions - we ignore the ones leaving states that they weren't
-accounted for and start remembering the new states they enter.
+>
+[...]
+> >
+> > [1] https://lwn.net/Articles/902405/
+> >
+> > >
+> > > Some more naming nits. I find BPF_ITER_CGROUP_PRE and
+> > > BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
+> > > have css_next_descendant_pre/css_next_descendant_post, so why not
+> > > reflect the fact that we are going to iterate descendants:
+> > > BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
+> > > "descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
+> > > probably is fine, but seems a bit redundant (unless we consider a
+> > > somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
+> > > then descend through preceding parents until we reach specified
+> > > cgroup; seems a bit exotic).
+> > >
+> >
+> > BPF_ITER_CGROUP_DESCENDANTS_PRE is too verbose. If there is a
+> > possibility of merging rbtree and supporting walk order of rbtree
+> > iter, maybe the name here could be general, like
+> > BPF_ITER_DESCENDANTS_PRE, which seems better.
+>
+> it's not like you'll be typing this hundreds of type, so verboseness
+> doesn't seem to be too problematic, but sure, BPF_ITER_DESCENDANTS_PRE
+> is fine with me
+>
+> >
+> > >   [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
+> > >
+> > > > +};
+> > > > +
+> > > >  union bpf_iter_link_info {
+> > > >         struct {
+> > > >                 __u32   map_fd;
+> > > >         } map;
+> > > > +
+> > > > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
+> > > > +        * ancestors of a given cgroup.
+> > > > +        */
+> > > > +       struct {
+> > > > +               /* Cgroup file descriptor. This is root of the subtree if walking
+> > > > +                * descendants; it's the starting cgroup if walking the ancestors.
+> > > > +                * If it is left 0, the traversal starts from the default cgroup v2
+> > > > +                * root. For walking v1 hierarchy, one should always explicitly
+> > > > +                * specify the cgroup_fd.
+> > > > +                */
+> > > > +               __u32   cgroup_fd;
+> > >
+> > > Now, similar to what I argued in regard of pidfd vs pid, I think the
+> > > same applied to cgroup_fd vs cgroup_id. Why can't we support both?
+> > > cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
+> > > and not having to open/close/keep extra FDs (which can add up if we
+> > > want to periodically query something about a large set of cgroups).
+> > > Please see my arguments from [0] above.
+> > >
+> > > Thoughts?
+> > >
+> >
+> > We can support both, it's a good idea IMO. But what exactly is the
+> > interface going to look like? Can you be more specific about that?
+> > Below is something I tried based on your description.
+> >
+> > @@ -91,6 +91,18 @@ union bpf_iter_link_info {
+> >         struct {
+> >                 __u32   map_fd;
+> >         } map;
+> > +       struct {
+> > +               /* PRE/POST/UP/SELF */
+> > +               __u32 order;
+> > +               struct {
+> > +                       __u32 cgroup_fd;
+> > +                       __u64 cgroup_id;
+> > +               } cgroup;
+> > +               struct {
+> > +                       __u32 pid_fd;
+> > +                       __u64 pid;
+> > +               } task;
+> > +       };
+> >  };
+> >
+>
+> So I wouldn't combine task and cgroup definition together, let's keep
+> them independent.
+>
+> then for cgroup we can do something like:
+>
+> struct {
+>     __u32 order;
+>     __u32 cgroup_fd; /* cgroup_fd ^ cgroup_id, exactly one can be non-zero */
+>     __u32 cgroup_id;
+> } cgroup
+>
+> Similar idea with task, but it's a bit more complicated because there
+> we have target that can be pid, pidfd, or cgroup (cgroup_fd and
+> cgroup_id). I haven't put much thought into the best representation,
+> though.
+>
 
-Thanks.
+The cgroup part sounds good to me. For the full picture, how about
+this? I'm just trying  a prototype, hoping that it can help people to
+get a clear picture.
 
--- 
-tejun
+union bpf_iter_link_info {
+          struct {
+                  __u32   map_fd;
+          } map;
+          struct {
+                  __u32   order; /* PRE/POST/UP/SELF */
+                  __u32   cgroup_fd;
+                  __u64   cgroup_id;
+          } cgroup;
+          struct {
+                  __u32   pid;
+                  __u32   pid_fd;
+                  __u64   cgroup_id;
+                  __u32   cgroup_fd;
+                  __u32   mode; /* SELF or others */
+          } task;
+};
+
+> > > > +               __u32   traversal_order;
+> > > > +       } cgroup;
+> > > >  };
+> > > >
+> > > >  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> > >
+> > > [...]
