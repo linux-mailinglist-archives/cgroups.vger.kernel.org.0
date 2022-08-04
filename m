@@ -2,224 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBE5589557
-	for <lists+cgroups@lfdr.de>; Thu,  4 Aug 2022 02:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186855895CB
+	for <lists+cgroups@lfdr.de>; Thu,  4 Aug 2022 04:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238499AbiHDAaK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Aug 2022 20:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S231613AbiHDCCW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Aug 2022 22:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238704AbiHDAaH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Aug 2022 20:30:07 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1EC58B7B
-        for <cgroups@vger.kernel.org>; Wed,  3 Aug 2022 17:30:05 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id j11so14114654qvt.10
-        for <cgroups@vger.kernel.org>; Wed, 03 Aug 2022 17:30:05 -0700 (PDT)
+        with ESMTP id S229758AbiHDCCV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Aug 2022 22:02:21 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB853D0E
+        for <cgroups@vger.kernel.org>; Wed,  3 Aug 2022 19:02:20 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id l64so1050338pge.0
+        for <cgroups@vger.kernel.org>; Wed, 03 Aug 2022 19:02:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m6XkC9SsYbws11fU/lKUsxSKL8HIjijhC5ukFJOVAg0=;
-        b=lxEIIB2x2iibG4PBjXLIXWtMcmcGyMl4ihpwyUY7PqULj9eFbsANj8sp9BO+MIUc8m
-         zgNMHvRyeehg1eLXEKH5zHrm09x2KfCSBSu6bQ61eEnE7/U8ZFIDtE1DBHsg89oyx8Xi
-         TzUM3+OD77maP7r32Y/hBG7zSRhgSIYYBeLg9HrW+kyLW+hNXP7nZNBWp/2n1zhfso8F
-         1xMgQDUNo4e32+zlSmzj1CyN7BCj/a/ucsdHY4YiGVIc5X0eHj8/l1dm4sVUjbwNn/g1
-         bdg8VkTe1CITpGeKNCaNEXdPGxxj/gQnFejEErFBpDXIlSYDeEqCFDviYLvbd692DIio
-         Hz4Q==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :content-language:from:in-reply-to:content-transfer-encoding;
+        bh=R8a2uTZpErjV8ZoEO/x1ZNaBxjx4vHWCt7mF0miAi5E=;
+        b=zZ1UG92HUINfBQ0MPaLPPVMGISoqyJK/vD/6sOBUj8XoURNF1lfjGeUqvP9Fd0Q0n4
+         S4tnowzf3rtmuMxZufeXmYMk6Idx/JgCkX3Plw150oX75qK9rOWR5ykDKz/sz3+WUMmV
+         qoFAxG0rCEOoKhTUc12aJo6XYNciiUvXjIJdrE1WLpbsMhASFxIFg9i+mVCKLFfEdRf4
+         79VgYyrQKQ1IuJT+owA5Geif2IltJJU2FgCCZb8FX9DuLUrLQiPPMA3fiLeIhVfrDhS6
+         lgBpNEPmcHiEORwN/t+xhP9fHEMu5jG2DSGj5k1P7NT0ZHbum9gVw4Knz8LQVXLxleRM
+         DJyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m6XkC9SsYbws11fU/lKUsxSKL8HIjijhC5ukFJOVAg0=;
-        b=qC1bn6ldYfU7kYRmAqOCtVaQgaPICgoawfYPd4a2r6+h84snC4jaMBAgMka+f+nWbb
-         iCng1FiS4dEk9RriMkfgusVVAgoHdcct0OPCnZTq/4qNEk9wWncdhTtv2QkESDt6w+fI
-         t5seFRDA6wto/RFdFHpcOqjo8CpAZgmlwG6WiOF3T8N86pqcoeiLziUqrcJ1vmX4vpWS
-         Rx9ED4oB/m0OkEHT0C74YiscLg+i1s6VrXFx2qdsROH2e09b43OCiPLoUHns+WlXf+pI
-         oSGmzZiwX7KdlYPeS2ec0oU1ydbbtlybgtLByWI92SXtdsE6LVeHcVrvgE3XnZXbim/o
-         6MeA==
-X-Gm-Message-State: ACgBeo3XG+8Q/xCBimgFmmMj1fBCAKIuIBISSaOZWV5pKb3Lf2rA0M4g
-        REOtCevMVYtrR557ExHjuBZ2bKgoJKFEOxvxg+DtiQ==
-X-Google-Smtp-Source: AA6agR6lahu4GM/VNiA4RD1/ceM/yj+jVGPjA2YZnH7aavqPzYhk9txYF8tPePFZuNAGK+/RFKNZQettinIlm70U8Dw=
-X-Received: by 2002:a0c:b31a:0:b0:473:8062:b1b4 with SMTP id
- s26-20020a0cb31a000000b004738062b1b4mr24728083qve.85.1659573004159; Wed, 03
- Aug 2022 17:30:04 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:content-language:from:in-reply-to
+         :content-transfer-encoding;
+        bh=R8a2uTZpErjV8ZoEO/x1ZNaBxjx4vHWCt7mF0miAi5E=;
+        b=bnPaETadn3xf1K6gkyyogGLqAIMP2tmOrNHA0aeCQLyjYEJ1FoRe6wz04dcQy54qI7
+         f9Vx9k7wko65ematXfV0PhP4XtDqDVaoUgZN2A+58wcj5Hyh260Tej5OHdvrjAMxllsg
+         c9aRG/WowPB0s/mG7h7n1G4VOvWcsvqw3nHy7BadyEziWUB4E2t7Ym8IcvhWiIzfz9k/
+         SmMROFYcuRBxTXW13HZ1lMeZ3LGVWUWJmMSX/8WDWDo+c9Hk9cKCsjgp13ALGCLoMtVQ
+         2LcTwyx4oUxcjd7VPInmfP9fhxLJnZlKWIkMsXHyt5AWZLwyuAF+VRj0Ot4SJ6AhsGE4
+         WzXw==
+X-Gm-Message-State: AJIora/OJlO4DeBuBRd/X/JYTCtOIPua78SiMVQo04bZfE6WavYqnD0f
+        KdgRG7Eso5Q82E4yLvDPvQdDUQ==
+X-Google-Smtp-Source: AGRyM1taVZO1N6EAUFFd6LVCOyUP7rwsRGObXVBy+H93Y4h3tUP8RyBFCKJp59eKeZktJHyBkWgolQ==
+X-Received: by 2002:a05:6a00:2282:b0:52b:bab:16a4 with SMTP id f2-20020a056a00228200b0052b0bab16a4mr28685867pfe.17.1659578539603;
+        Wed, 03 Aug 2022 19:02:19 -0700 (PDT)
+Received: from [10.200.231.53] ([139.177.225.233])
+        by smtp.gmail.com with ESMTPSA id i10-20020a056a00004a00b0052ab602a7d0sm6513352pfk.100.2022.08.03.19.02.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Aug 2022 19:02:19 -0700 (PDT)
+Message-ID: <94ddcd31-e168-06ed-c0f9-2ea25b802d60@bytedance.com>
+Date:   Thu, 4 Aug 2022 10:02:12 +0800
 MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com>
- <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
- <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
- <CAEf4BzYDqaTQr-S8TuLkysQ+FhT+6qMS0z=Sp_7+-wk84_4h6Q@mail.gmail.com>
- <CA+khW7jDD9p80xnZj0Z3m5oFHjb2u___NAiJkbyRgD5FKopGhg@mail.gmail.com> <CAEf4BzZhy49KLe5VG4aXZtWBExADskgA__MzhC+6k3DVgU5o5w@mail.gmail.com>
-In-Reply-To: <CAEf4BzZhy49KLe5VG4aXZtWBExADskgA__MzhC+6k3DVgU5o5w@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 3 Aug 2022 17:29:53 -0700
-Message-ID: <CA+khW7ggTFp8je0zwo83uGN8pKZXy+D07y+tPRRAXmY+e3pm-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        Kui-Feng Lee <kuifeng@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.1.0
+Subject: Re: [PATCH 8/9] sched/psi: add kernel cmdline parameter
+ psi_inner_cgroup
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, surenb@google.com,
+        mingo@redhat.com, peterz@infradead.org, corbet@lwn.net,
+        akpm@linux-foundation.org, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com, cgroups@vger.kernel.org
+References: <20220721040439.2651-1-zhouchengming@bytedance.com>
+ <20220721040439.2651-9-zhouchengming@bytedance.com>
+ <Yt7KQc0nnOypB2b2@cmpxchg.org> <YuAqWprKd6NsWs7C@slm.duckdns.org>
+ <5a3410d6-428d-9ad1-3e5a-01ca805ceeeb@bytedance.com>
+ <Yuq3Q6Y9dRnjjcPt@slm.duckdns.org>
+Content-Language: en-US
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <Yuq3Q6Y9dRnjjcPt@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 1:40 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Aug 3, 2022 at 1:30 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Tue, Aug 2, 2022 at 3:50 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Aug 2, 2022 at 3:27 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-[...]
-> > > > > > +};
-> > > > > > +
-> > > > > >  union bpf_iter_link_info {
-> > > > > >         struct {
-> > > > > >                 __u32   map_fd;
-> > > > > >         } map;
-> > > > > > +
-> > > > > > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
-> > > > > > +        * ancestors of a given cgroup.
-> > > > > > +        */
-> > > > > > +       struct {
-> > > > > > +               /* Cgroup file descriptor. This is root of the subtree if walking
-> > > > > > +                * descendants; it's the starting cgroup if walking the ancestors.
-> > > > > > +                * If it is left 0, the traversal starts from the default cgroup v2
-> > > > > > +                * root. For walking v1 hierarchy, one should always explicitly
-> > > > > > +                * specify the cgroup_fd.
-> > > > > > +                */
-> > > > > > +               __u32   cgroup_fd;
-> > > > >
-> > > > > Now, similar to what I argued in regard of pidfd vs pid, I think the
-> > > > > same applied to cgroup_fd vs cgroup_id. Why can't we support both?
-> > > > > cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
-> > > > > and not having to open/close/keep extra FDs (which can add up if we
-> > > > > want to periodically query something about a large set of cgroups).
-> > > > > Please see my arguments from [0] above.
-> > > > >
-> > > > > Thoughts?
-> > > > >
-> > > >
-> > > > We can support both, it's a good idea IMO. But what exactly is the
-> > > > interface going to look like? Can you be more specific about that?
-> > > > Below is something I tried based on your description.
-> > > >
-> > > > @@ -91,6 +91,18 @@ union bpf_iter_link_info {
-> > > >         struct {
-> > > >                 __u32   map_fd;
-> > > >         } map;
-> > > > +       struct {
-> > > > +               /* PRE/POST/UP/SELF */
-> > > > +               __u32 order;
-> > > > +               struct {
-> > > > +                       __u32 cgroup_fd;
-> > > > +                       __u64 cgroup_id;
-> > > > +               } cgroup;
-> > > > +               struct {
-> > > > +                       __u32 pid_fd;
-> > > > +                       __u64 pid;
-> > > > +               } task;
-> > > > +       };
-> > > >  };
-> > > >
-> > >
-> > > So I wouldn't combine task and cgroup definition together, let's keep
-> > > them independent.
-> > >
-> > > then for cgroup we can do something like:
-> > >
-> > > struct {
-> > >     __u32 order;
-> > >     __u32 cgroup_fd; /* cgroup_fd ^ cgroup_id, exactly one can be non-zero */
-> > >     __u32 cgroup_id;
-> > > } cgroup
-> > >
-> > > Similar idea with task, but it's a bit more complicated because there
-> > > we have target that can be pid, pidfd, or cgroup (cgroup_fd and
-> > > cgroup_id). I haven't put much thought into the best representation,
-> > > though.
-> > >
-> >
-> > The cgroup part sounds good to me. For the full picture, how about
-> > this? I'm just trying  a prototype, hoping that it can help people to
-> > get a clear picture.
-> >
-> > union bpf_iter_link_info {
-> >           struct {
-> >                   __u32   map_fd;
-> >           } map;
-> >           struct {
-> >                   __u32   order; /* PRE/POST/UP/SELF */
-> >                   __u32   cgroup_fd;
-> >                   __u64   cgroup_id;
-> >           } cgroup;
->
-> lgtm
->
-> >           struct {
-> >                   __u32   pid;
-> >                   __u32   pid_fd;
-> >                   __u64   cgroup_id;
-> >                   __u32   cgroup_fd;
-> >                   __u32   mode; /* SELF or others */
->
-> I'd move mode to be first. I'm undecided on using 4 separate fields
-> for pid/pid_fd/cgroup_{id,fd} vs a single union (or just generic "u64
-> target"  and then mode can define how we should treat target --
-> whether it's pid, pid_fd, cgroup ID or FD. I'm fine either way, I
-> think. But for cgroup case not having to duplicate PRE/POST/UP/SELF
-> for cgroup id and then for cgroup fd seems like a win. So separate
-> fields might be better. It's also pretty extendable. And I'm
-> personally not worried about using few more bytes in bpf_attr for
-> disjoin fields like this.
->
+On 2022/8/4 01:58, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Aug 03, 2022 at 08:17:22PM +0800, Chengming Zhou wrote:
+>>> Assuming the above isn't wrong, if we can figure out how we can re-enable
+>>> it, which is more difficult as the counters need to be resynchronized with
+>>> the current state, that'd be ideal. Then, we can just allow each cgroup to
+>>> enable / disable PSI reporting dynamically as they see fit.
+>>
+>> This method is more fine-grained but more difficult like you said above.
+>> I think it may meet most needs to disable PSI stats in intermediate cgroups?
+> 
+> So, I'm not necessarily against implementing something easier but we at
+> least wanna get the interface right, so that if we decide to do the full
+> thing later we can easily expand on the existing interface. ie. let's please
+> not be too hacky. I don't think it'd be that difficult to implement
+> per-cgroup disable-only operation that we can later expand to allow
+> re-enabling, right?
 
-Sounds good. Thanks for clarification. Using separate fields looks
-good to me. Since we settled on the cgroup part, I will apply update
-in cgroup_iter v7.
+Agree, the interface is important, per-cgroup disable-only operation maybe easier
+to implement. I will look into this more.
 
+Thanks!
 
-> >           } task;
-> > };
-> >
-> > > > > > +               __u32   traversal_order;
-> > > > > > +       } cgroup;
-> > > > > >  };
-> > > > > >
-> > > > > >  /* BPF syscall commands, see bpf(2) man-page for more details. */
-> > > > >
-> > > > > [...]
