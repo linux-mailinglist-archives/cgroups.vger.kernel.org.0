@@ -2,76 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E82589F94
-	for <lists+cgroups@lfdr.de>; Thu,  4 Aug 2022 18:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDC258AA08
+	for <lists+cgroups@lfdr.de>; Fri,  5 Aug 2022 13:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235499AbiHDQ4m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Aug 2022 12:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
+        id S240554AbiHELUc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Aug 2022 07:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235414AbiHDQ4k (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Aug 2022 12:56:40 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B791D31C
-        for <cgroups@vger.kernel.org>; Thu,  4 Aug 2022 09:56:38 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id h7so263951qtu.2
-        for <cgroups@vger.kernel.org>; Thu, 04 Aug 2022 09:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=2IfFvaqIAb3sUtS3vl0hfysQvE8nkRK4dXUfA9HeU1c=;
-        b=lld8bLFJEzHSiOXE8dUIcAFqeINLHHTaJxuZkKmUuLhszrVFhi4ZCdyJtYWJNrk+BN
-         3M1IoqDvZnGmJN/fl3PUrUqGJETgxVf94wPZH3+8YCmXIDF9+COkle9j6BLIkD9kmM6Q
-         fAC+EqXFhHuFxi9AjMLo7Q/qM7MLKi1kkLrBNc37Y+/86EgYV+wj0jI23Jagvfo2GSCj
-         flzBqpHyAqsWbI8ciADtfByA+J43zsddfZb9qiCtfD3AAVLXtGXBl9//LYixwYkvRO7I
-         DM6OPP115O7Y3uoCuiT70jkUovXqs+Y2yJLbIVfEGGfbLnRuJFXtbfRmEUf8KLz046kj
-         oXLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=2IfFvaqIAb3sUtS3vl0hfysQvE8nkRK4dXUfA9HeU1c=;
-        b=g16vjVElzIg34/mJIXg8GU5sbDEmNQ1SMgKFwGX+YMkXMc3Z/ya8c6rWVc7OWmKBTv
-         HRmyydiAnfHWnulwVkjk9oXC1/gT1IaGD43wHQC1IZdB773K2gh2yXReLJDImAYhGsxH
-         PxpvEsF/EGQBXrOSo4RKnTTs7dyZ9HWnaUnIRyBSlqk6pvBbIokb0iO2Xb9CnsXMZwI1
-         EMsK9TozSrqAnpgsulJlIcKZZFP7sRnbh5llbjFjprV7MMJ3+CdoEBqgh61Qs7UTLJT/
-         4cu4HhDwaYvF1DFKGoRWbc0hKJ24y7USsImymwr7p+ZJfBZuga/b1SiEF/AVaWZYEmgk
-         4FCw==
-X-Gm-Message-State: ACgBeo1u2ZIeEZargP+fX4rClRA8oEeSwsJt7SXLF9qKkdzvkY0Piifu
-        OGHQhP64br2nPOzgVO64emJP3g==
-X-Google-Smtp-Source: AA6agR4ucw3JsXuDN3v9VebA4uXtfn5U9BDGDOSS/aCIAHKAbcY9SjifajrjubtBrbbRIRKg2iNHww==
-X-Received: by 2002:ac8:5809:0:b0:33d:f8e6:350e with SMTP id g9-20020ac85809000000b0033df8e6350emr2324289qtg.682.1659632197970;
-        Thu, 04 Aug 2022 09:56:37 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::77e5])
-        by smtp.gmail.com with ESMTPSA id c25-20020ac84e19000000b00338ae1f5421sm971855qtw.0.2022.08.04.09.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Aug 2022 09:56:37 -0700 (PDT)
-Date:   Thu, 4 Aug 2022 12:56:36 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Tejun Heo <tj@kernel.org>, surenb@google.com, mingo@redhat.com,
-        peterz@infradead.org, corbet@lwn.net, akpm@linux-foundation.org,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 8/9] sched/psi: add kernel cmdline parameter
- psi_inner_cgroup
-Message-ID: <Yuv6RHY0GRGBw+as@cmpxchg.org>
-References: <20220721040439.2651-1-zhouchengming@bytedance.com>
- <20220721040439.2651-9-zhouchengming@bytedance.com>
- <Yt7KQc0nnOypB2b2@cmpxchg.org>
- <YuAqWprKd6NsWs7C@slm.duckdns.org>
- <5a3410d6-428d-9ad1-3e5a-01ca805ceeeb@bytedance.com>
- <Yuq3Q6Y9dRnjjcPt@slm.duckdns.org>
- <YurK6MXdJPrV2VYS@cmpxchg.org>
- <f8444db4-3235-d108-698a-6772e03a6b67@bytedance.com>
+        with ESMTP id S229484AbiHELU3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Aug 2022 07:20:29 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F60B488;
+        Fri,  5 Aug 2022 04:20:26 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Lzjlp6t5vzKGGR;
+        Fri,  5 Aug 2022 19:19:02 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgDHRzH0_OxiZWTmAA--.5716S3;
+        Fri, 05 Aug 2022 19:20:21 +0800 (CST)
+Subject: Re: [PATCH -next v10 3/4] block, bfq: refactor the counting of
+ 'num_groups_with_pending_reqs'
+To:     Yu Kuai <yukuai1@huaweicloud.com>,
+        Paolo VALENTE <paolo.valente@unimore.it>
+Cc:     Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20220610021701.2347602-1-yukuai3@huawei.com>
+ <20220610021701.2347602-4-yukuai3@huawei.com>
+ <27F2DF19-7CC6-42C5-8CEB-43583EB4AE46@linaro.org>
+ <abdbb5db-e280-62f8-0670-536fcb8ec4d9@huaweicloud.com>
+ <C2CF100A-9A7C-4300-9A70-1295BC939C66@unimore.it>
+ <9b2d667f-6636-9347-08a1-8bd0aa2346f2@huaweicloud.com>
+ <2f94f241-445f-1beb-c4a8-73f6efce5af2@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <57689e84-e47d-29e2-327e-b8f172329681@huaweicloud.com>
+Date:   Fri, 5 Aug 2022 19:20:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8444db4-3235-d108-698a-6772e03a6b67@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <2f94f241-445f-1beb-c4a8-73f6efce5af2@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgDHRzH0_OxiZWTmAA--.5716S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtrW3XrWruFy3WryDGFW8Crg_yoWxGrWUp3
+        yfKa17Ar4UXr1ftr1jq3WUXrySqryfJry8Wr1DJr1SyrnFyFn2qF12qw409Fy8ZrWkJr12
+        qr1UW3srZw1UtFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,84 +73,181 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 04, 2022 at 09:51:31PM +0800, Chengming Zhou wrote:
-> On 2022/8/4 03:22, Johannes Weiner wrote:
-> > On Wed, Aug 03, 2022 at 07:58:27AM -1000, Tejun Heo wrote:
-> >> Hello,
-> >>
-> >> On Wed, Aug 03, 2022 at 08:17:22PM +0800, Chengming Zhou wrote:
-> >>>> Assuming the above isn't wrong, if we can figure out how we can re-enable
-> >>>> it, which is more difficult as the counters need to be resynchronized with
-> >>>> the current state, that'd be ideal. Then, we can just allow each cgroup to
-> >>>> enable / disable PSI reporting dynamically as they see fit.
-> >>>
-> >>> This method is more fine-grained but more difficult like you said above.
-> >>> I think it may meet most needs to disable PSI stats in intermediate cgroups?
-> >>
-> >> So, I'm not necessarily against implementing something easier but we at
-> >> least wanna get the interface right, so that if we decide to do the full
-> >> thing later we can easily expand on the existing interface. ie. let's please
-> >> not be too hacky. I don't think it'd be that difficult to implement
-> >> per-cgroup disable-only operation that we can later expand to allow
-> >> re-enabling, right?
-> > 
-> > It should be relatively straight-forward to disable and re-enable
-> > state aggregation, time tracking, averaging on a per-cgroup level, if
-> > we can live with losing history from while it was disabled. I.e. the
-> > avgs will restart from 0, total= will have gaps - should be okay, IMO.
-> > 
-> > Where it gets trickier is also stopping the tracking of task counts in
-> > a cgroup. For re-enabling afterwards, we'd have to freeze scheduler
-> > and cgroup state and find all tasks of interest across all CPUs for
-> > the given cgroup to recreate the counts. I'm not quite sure whether
-> > that's feasible, and if so, whether it's worth the savings.
-> > 
-> > It might be good to benchmark the two disabling steps independently.
-> > Maybe stopping aggregation while keeping task counts is good enough,
-> > and we can commit to a disable/re-enable interface from the start.
-> > 
-> > Or maybe it's all in the cachelines and iteration, and stopping the
-> > aggregation while still writing task counts isn't saving much. In that
-> > case we'd have to look closer at reconstructing task counts, to see if
-> > later re-enabling is actually a practical option or whether a one-off
-> > kill switch is more realistic.
-> > 
-> > Chengming, can you experiment with disabling: record_times(), the
-> > test_state() loop and state_mask construction, and the averaging
-> > worker - while keeping the groupc->tasks updates?
-> 
-> Hello,
-> 
-> I did this experiment today with disabling record_times(), test_state()
-> loop and averaging worker, while only keeping groupc->tasks[] updates,
-> the results look promising.
-> 
-> mmtests/config-scheduler-perfpipe on Intel Xeon Platinum with 3 levels of cgroup:
-> 
-> perfpipe
->                                   tip                    tip                patched
->                               psi=off                 psi=on      only groupc->tasks[]
-> Min       Time        7.99 (   0.00%)        8.86 ( -10.95%)        8.31 (  -4.08%)
-> 1st-qrtle Time        8.11 (   0.00%)        8.94 ( -10.22%)        8.39 (  -3.46%)
-> 2nd-qrtle Time        8.17 (   0.00%)        9.02 ( -10.42%)        8.44 (  -3.37%)
-> 3rd-qrtle Time        8.20 (   0.00%)        9.08 ( -10.72%)        8.48 (  -3.43%)
-> Max-1     Time        7.99 (   0.00%)        8.86 ( -10.95%)        8.31 (  -4.08%)
-> Max-5     Time        7.99 (   0.00%)        8.86 ( -10.95%)        8.31 (  -4.08%)
-> Max-10    Time        8.09 (   0.00%)        8.89 (  -9.96%)        8.35 (  -3.22%)
-> Max-90    Time        8.31 (   0.00%)        9.13 (  -9.90%)        8.55 (  -2.95%)
-> Max-95    Time        8.32 (   0.00%)        9.14 (  -9.88%)        8.55 (  -2.81%)
-> Max-99    Time        8.39 (   0.00%)        9.26 ( -10.30%)        8.57 (  -2.09%)
-> Max       Time        8.56 (   0.00%)        9.26 (  -8.23%)        8.72 (  -1.90%)
-> Amean     Time        8.19 (   0.00%)        9.03 * -10.26%*        8.45 *  -3.27%*
 
-Fantastic!
-
-> Tejun suggested using a bitmap in task to remember whether the task is accounted
-> at a given level or not, which I think also is a very good idea, but I haven't
-> clearly figure out how to do it.
+在 2022/07/27 20:11, Yu Kuai 写道:
+> Hi, Paolo
 > 
-> The above performance test result looks good to me, so I think we can implement this
-> per-cgroup "cgroup.psi" interface to disable/re-enable PSI stats from the start,
-> and we can change to a better implementation if needed later?
+> Are you still interested in this patchset?
 
-Yes, that sounds good to me.
+Friendly ping...
+> 
+> 在 2022/07/20 19:38, Yu Kuai 写道:
+>> Hi
+>>
+>> 在 2022/07/20 19:24, Paolo VALENTE 写道:
+>>>
+>>>
+>>>> Il giorno 12 lug 2022, alle ore 15:30, Yu Kuai 
+>>>> <yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com>> ha scritto:
+>>>>
+>>>> Hi!
+>>>>
+>>>> I'm copying my reply with new mail address, because Paolo seems
+>>>> didn't receive my reply.
+>>>>
+>>>> 在 2022/06/23 23:32, Paolo Valente 写道:
+>>>>> Sorry for the delay.
+>>>>>> Il giorno 10 giu 2022, alle ore 04:17, Yu Kuai <yukuai3@huawei.com 
+>>>>>> <mailto:yukuai3@huawei.com>> ha scritto:
+>>>>>>
+>>>>>> Currently, bfq can't handle sync io concurrently as long as they
+>>>>>> are not issued from root group. This is because
+>>>>>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+>>>>>> bfq_asymmetric_scenario().
+>>>>>>
+>>>>>> The way that bfqg is counted into 'num_groups_with_pending_reqs':
+>>>>>>
+>>>>>> Before this patch:
+>>>>>> 1) root group will never be counted.
+>>>>>> 2) Count if bfqg or it's child bfqgs have pending requests.
+>>>>>> 3) Don't count if bfqg and it's child bfqgs complete all the 
+>>>>>> requests.
+>>>>>>
+>>>>>> After this patch:
+>>>>>> 1) root group is counted.
+>>>>>> 2) Count if bfqg have pending requests.
+>>>>>> 3) Don't count if bfqg complete all the requests.
+>>>>>>
+>>>>>> With this change, the occasion that only one group is activated 
+>>>>>> can be
+>>>>>> detected, and next patch will support concurrent sync io in the
+>>>>>> occasion.
+>>>>>>
+>>>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com 
+>>>>>> <mailto:yukuai3@huawei.com>>
+>>>>>> Reviewed-by: Jan Kara <jack@suse.cz <mailto:jack@suse.cz>>
+>>>>>> ---
+>>>>>> block/bfq-iosched.c | 42 ------------------------------------------
+>>>>>> block/bfq-iosched.h | 18 +++++++++---------
+>>>>>> block/bfq-wf2q.c    | 19 ++++---------------
+>>>>>> 3 files changed, 13 insertions(+), 66 deletions(-)
+>>>>>>
+>>>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>>>>>> index 0ec21018daba..03b04892440c 100644
+>>>>>> --- a/block/bfq-iosched.c
+>>>>>> +++ b/block/bfq-iosched.c
+>>>>>> @@ -970,48 +970,6 @@ void __bfq_weights_tree_remove(struct 
+>>>>>> bfq_data *bfqd,
+>>>>>> void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>>>>>>     struct bfq_queue *bfqq)
+>>>>>> {
+>>>>>> -struct bfq_entity *entity = bfqq->entity.parent;
+>>>>>> -
+>>>>>> -for_each_entity(entity) {
+>>>>>> -struct bfq_sched_data *sd = entity->my_sched_data;
+>>>>>> -
+>>>>>> -if (sd->next_in_service || sd->in_service_entity) {
+>>>>>> -/*
+>>>>>> -* entity is still active, because either
+>>>>>> -* next_in_service or in_service_entity is not
+>>>>>> -* NULL (see the comments on the definition of
+>>>>>> -* next_in_service for details on why
+>>>>>> -* in_service_entity must be checked too).
+>>>>>> -*
+>>>>>> -* As a consequence, its parent entities are
+>>>>>> -* active as well, and thus this loop must
+>>>>>> -* stop here.
+>>>>>> -*/
+>>>>>> -break;
+>>>>>> -}
+>>>>>> -
+>>>>>> -/*
+>>>>>> -* The decrement of num_groups_with_pending_reqs is
+>>>>>> -* not performed immediately upon the deactivation of
+>>>>>> -* entity, but it is delayed to when it also happens
+>>>>>> -* that the first leaf descendant bfqq of entity gets
+>>>>>> -* all its pending requests completed. The following
+>>>>>> -* instructions perform this delayed decrement, if
+>>>>>> -* needed. See the comments on
+>>>>>> -* num_groups_with_pending_reqs for details.
+>>>>>> -*/
+>>>>>> -if (entity->in_groups_with_pending_reqs) {
+>>>>>> -entity->in_groups_with_pending_reqs = false;
+>>>>>> -bfqd->num_groups_with_pending_reqs--;
+>>>>>> -}
+>>>>>> -}
+>>>>> With this part removed, I'm missing how you handle the following
+>>>>> sequence of events:
+>>>>> 1.  a queue Q becomes non busy but still has dispatched requests, so
+>>>>> it must not be removed from the counter of queues with pending reqs
+>>>>> yet
+>>>>> 2.  the last request of Q is completed with Q being still idle (non
+>>>>> busy).  At this point Q must be removed from the counter.  It seems to
+>>>>> me that this case is not handled any longer
+>>>> Hi, Paolo
+>>>>
+>>>> 1) At first, patch 1 support to track if bfqq has pending requests, 
+>>>> it's
+>>>> done by setting the flag 'entity->in_groups_with_pending_reqs' when the
+>>>> first request is inserted to bfqq, and it's cleared when the last
+>>>> request is completed(based on weights_tree insertion and removal).
+>>>>
+>>>
+>>> In patch 1 I don't see the flag cleared for the request-completion 
+>>> event :(
+>>>
+>>> The piece of code involved is this:
+>>>
+>>> static void bfq_completed_request(struct bfq_queue *bfqq, struct 
+>>> bfq_data *bfqd)
+>>> {
+>>> u64 now_ns;
+>>> u32 delta_us;
+>>>
+>>> bfq_update_hw_tag(bfqd);
+>>>
+>>> bfqd->rq_in_driver[bfqq->actuator_idx]--;
+>>> bfqd->tot_rq_in_driver--;
+>>> bfqq->dispatched--;
+>>>
+>>> if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
+>>> /*
+>>> * Set budget_timeout (which we overload to store the
+>>> * time at which the queue remains with no backlog and
+>>> * no outstanding request; used by the weight-raising
+>>> * mechanism).
+>>> */
+>>> bfqq->budget_timeout = jiffies;
+>>>
+>>> bfq_weights_tree_remove(bfqd, bfqq);
+>>> }
+>>> ...
+>>>
+>>> Am I missing something?
+>>
+>> I add a new api bfq_del_bfqq_in_groups_with_pending_reqs() in patch 1
+>> to clear the flag, and it's called both from bfq_del_bfqq_busy() and
+>> bfq_completed_request(). I think you may miss the later:
+>>
+>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>> index 0d46cb728bbf..0ec21018daba 100644
+>> --- a/block/bfq-iosched.c
+>> +++ b/block/bfq-iosched.c
+>> @@ -6263,6 +6263,7 @@ static void bfq_completed_request(struct 
+>> bfq_queue *bfqq, struct bfq_data *bfqd)
+>>           */
+>>          bfqq->budget_timeout = jiffies;
+>>
+>> +        bfq_del_bfqq_in_groups_with_pending_reqs(bfqq);
+>>          bfq_weights_tree_remove(bfqd, bfqq);
+>>      }
+>>
+>> Thanks,
+>> Kuai
+>>>
+>>> Thanks,
+>>> Paolo
+> 
+> .
+> 
+
