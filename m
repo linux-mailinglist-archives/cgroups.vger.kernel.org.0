@@ -2,244 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AD458C738
-	for <lists+cgroups@lfdr.de>; Mon,  8 Aug 2022 13:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AD258CED7
+	for <lists+cgroups@lfdr.de>; Mon,  8 Aug 2022 22:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242925AbiHHLGU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Aug 2022 07:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        id S236856AbiHHUG5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Aug 2022 16:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242967AbiHHLFp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Aug 2022 07:05:45 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E82F14D30
-        for <cgroups@vger.kernel.org>; Mon,  8 Aug 2022 04:05:31 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id t2-20020a17090a4e4200b001f21572f3a4so8778391pjl.0
-        for <cgroups@vger.kernel.org>; Mon, 08 Aug 2022 04:05:31 -0700 (PDT)
+        with ESMTP id S234285AbiHHUG5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Aug 2022 16:06:57 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D65B18B01
+        for <cgroups@vger.kernel.org>; Mon,  8 Aug 2022 13:06:55 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l22so12075459wrz.7
+        for <cgroups@vger.kernel.org>; Mon, 08 Aug 2022 13:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dgu0QebApDasttKV3uGy+5ar/hOmMsIwTE7SF/rUsQE=;
-        b=JQAfgMqTw1Wij8iFsPNSvejYSeAmgSkLt4FTBNAQfJJz6xO0iZLYdaLQsJBxP/qmyG
-         gHZ3Ei3C58TnGKPQNLjxv1tzHeYev80QU7LKN9qCwi9oEFml9xpyDRuhtekGLAZtbrRR
-         OwykBPrFL9pJitjJRrCW1AhRYCW0G0Mz54X+WpshocbCa1Wp4QuBaR0Wc6+i8lHgzffY
-         ZvCYBpUXUoyi1anfoTbnoUJzwGvnNYqw0ZexB6uvUPhzxn9SZaaObTBErCu9CDZp65jd
-         mcDur1rEwRPwOkOacd/1Iw5VCCLMGJib50ZXPMNWsH284FcJ2BzlRyGhA0WvZY/hpHJr
-         5mig==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0j4dwLC8wxMrSAowWiy7rSpW5tCFJnoA4YLc0AuNUGg=;
+        b=gld9078CrBQZkkr4yLFP8JyPjvlRn+4NpBrX7b60hIKWn28bkVbenIdUCbRuLNTTV0
+         1L/39r5DQ4UKsm46WbkBiD46ElgQhpGCrV3dL2IjRNVKWzoh4RcLMsGeUceFQUKOwfSS
+         lKuidI5W5eLJW4bvDU6NCAaZbpFulFWfNzi8pT0hS8wUhPwdVnzf53hNGbSb8efC0kW5
+         rAbRal6FivNDSIIFBYuhcY/SU+U3x4tV9f7yNkVkf0A8JI0x7IsYbZ2z7W64UW/k7roj
+         9D+5xVc9ZcwERLaDE3Stw31kBjsL/lFxJJhjsNTXENCu2Y/ZofRg5BFreVtm2omGqwjq
+         /cdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dgu0QebApDasttKV3uGy+5ar/hOmMsIwTE7SF/rUsQE=;
-        b=OUoQyqdLMtswHWaP+qdCIKE4aH6H7WK1gyRABAWB75DhlIh//01pqX0owCfdR7y5wH
-         p8g04Nx9k7s8Vl9Qayf7EQN4UY+w3lyeb2gYO2gDRQ6GUxi2lh6LerkmKKYUqY7tbnOQ
-         UbCpBHl2IANMP0WA4RvZv7mrPkywiRgmnwe9o5UWWnMSfHpPqSqRwrtqO9TPyx6zhdCh
-         tMM1f8QEHNBvgAYtuxGAjoXMSuImpMVnrxtz6ntxMuP4a2OXGgLTPp3lQcsubkoRvQXu
-         BGlrcF4BdWvKqIz2fpAW3Y+GOqS12jPXohTdIkFm85ozDnHgAd5zmTkYt7RycK0VjjDV
-         JIlg==
-X-Gm-Message-State: ACgBeo1mU8P250UeJCFgdH5Fn9es1eZGwzQihPUP79uo4PLdZS04BLbP
-        ILi9B8FvG50SXiojA4b4nKEfuw==
-X-Google-Smtp-Source: AA6agR7QRD8QV8oQ0lebhQrjGgnbIJTfLXmW6Y9k2ZDa83FrSr/HRZ3TFY9D/tzmq7opX7MyAW3uvA==
-X-Received: by 2002:a17:902:e744:b0:16e:f6c2:3731 with SMTP id p4-20020a170902e74400b0016ef6c23731mr18328588plf.104.1659956730459;
-        Mon, 08 Aug 2022 04:05:30 -0700 (PDT)
-Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id o12-20020aa7978c000000b0052dbad1ea2esm8393180pfp.6.2022.08.08.04.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Aug 2022 04:05:30 -0700 (PDT)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     hannes@cmpxchg.org, tj@kernel.org, corbet@lwn.net,
-        surenb@google.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v2 10/10] sched/psi: cache parent psi_group to speed up groups iterate
-Date:   Mon,  8 Aug 2022 19:03:41 +0800
-Message-Id: <20220808110341.15799-11-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220808110341.15799-1-zhouchengming@bytedance.com>
-References: <20220808110341.15799-1-zhouchengming@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0j4dwLC8wxMrSAowWiy7rSpW5tCFJnoA4YLc0AuNUGg=;
+        b=t038Lv9swdFFm/AMTT+LixRu7OU6fWcPRUd9kSq02le6r4WGNSQX73u1koHr1ZQRWd
+         Jzf6ytOJOjmpCLV0Bj51siulLlqgdW1a/40bYncZe2wfyc8Z2HA2yKLjs/JihONBnMc+
+         WUSxaXLkbdir9CZ4Kwfqr6zYpN8cV1muguQpvufqUt8VuJFxDmWynS/BBZ+M7Z7yBEB5
+         5VwANEix4ASNYXM8U+8KEwUhBJIQ6eg0Tk3zRVp0HCWFVEns/dshiDlYxHKdaRQ6kvQW
+         scnem1sQmOdAK+kxp04PWfQQ65v2pe89xxianD+cJ13W/FYIYW1kQpgYld9g7CgMp08W
+         +0vQ==
+X-Gm-Message-State: ACgBeo0qFTXlh7GXyJAiCrcDbAOV1H59gws1pPnaM85W2um/t9hHoWil
+        WLXtW0KhcK25hkjt4J4MhkkxHiC3r9sJhLSg1JNymQ==
+X-Google-Smtp-Source: AA6agR44E4ypoC5H9UBmr2E8FlvOT73br0ors/jVWYMC79q6xf+bqy0nmcGD1ZQ8O3weskn+aiRibfX/QNtndGD1TnE=
+X-Received: by 2002:a05:6000:1188:b0:220:6c20:fbf6 with SMTP id
+ g8-20020a056000118800b002206c20fbf6mr12635954wrx.372.1659989213525; Mon, 08
+ Aug 2022 13:06:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220628220938.3657876-1-yosryahmed@google.com>
+ <20220628220938.3657876-2-yosryahmed@google.com> <YsdJPeVOqlj4cf2a@google.com>
+ <CAJD7tkYE+pZdk=-psEP_Rq_1CmDjY7Go+s1LXm-ctryWvUdgLA@mail.gmail.com>
+ <Ys3+UTTC4Qgbm7pQ@google.com> <CAJD7tkY91oiDWTj5FY2Upc5vabsjLk+CBMNzAepXLUdF_GS11w@mail.gmail.com>
+In-Reply-To: <CAJD7tkY91oiDWTj5FY2Upc5vabsjLk+CBMNzAepXLUdF_GS11w@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 8 Aug 2022 13:06:15 -0700
+Message-ID: <CAJD7tkbc+E7f+ENRazf0SO7C3gR2bHiN4B0F1oPn8Pa6juAVfg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>, Huang@google.com,
+        Shaoqin <shaoqin.huang@intel.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We use iterate_groups() to iterate each level psi_group to update
-PSI stats, which is a very hot path.
+On Mon, Jul 18, 2022 at 11:26 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> On Tue, Jul 12, 2022 at 4:06 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Tue, Jul 12, 2022, Yosry Ahmed wrote:
+> > > Thanks for taking another look at this!
+> > >
+> > > On Thu, Jul 7, 2022 at 1:59 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > >
+> > > > On Tue, Jun 28, 2022, Yosry Ahmed wrote:
+> > > > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > > > > index aab70355d64f3..13190d298c986 100644
+> > > > > --- a/include/linux/mmzone.h
+> > > > > +++ b/include/linux/mmzone.h
+> > > > > @@ -216,6 +216,7 @@ enum node_stat_item {
+> > > > >       NR_KERNEL_SCS_KB,       /* measured in KiB */
+> > > > >  #endif
+> > > > >       NR_PAGETABLE,           /* used for pagetables */
+> > > > > +     NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
+> > > >
+> > > > Nit, s/kvm/KVM, and drop the "shadow", which might be misinterpreted as saying KVM
+> > > > pagetables are only accounted when KVM is using shadow paging.  KVM's usage of "shadow"
+> > > > is messy, so I totally understand why you included it, but in this case it's unnecessary
+> > > > and potentially confusing.
+> > > >
+> > > > And finally, something that's not a nit.  Should this be wrapped with CONFIG_KVM
+> > > > (using IS_ENABLED() because KVM can be built as a module)?  That could be removed
+> > > > if another non-KVM secondary MMU user comes along, but until then, #ifdeffery for
+> > > > stats the depend on a single feature seems to be the status quo for this code.
+> > > >
+> > >
+> > > I will #ifdef the stat, but I will emphasize in the docs that is
+> > > currently *only* used for KVM so that it makes sense if users without
+> > > KVM don't see the stat at all. I will also remove the stat from
+> > > show_free_areas() in mm/page_alloc.c as it seems like none of the
+> > > #ifdefed stats show up there.
+> >
+> > It's might be worth getting someone from mm/ to weigh in before going through the
+> > trouble, my suggestion/question is based purely on the existing code.
+>
+> Any mm folks with an opinion about this?
+>
+> Any preference on whether we should wrap NR_SECONDARY_PAGETABLE stats
+> with #ifdef CONFIG_KVM for now as it is currently the only source for
+> this stat?
 
-In current code, iterate_groups() have to use multiple branches and
-cgroup_parent() to get parent psi_group for each level, which is not
-very efficient.
+Any input here?
 
-This patch cache parent psi_group in struct psi_group, only need to get
-psi_group of task itself first, then just use group->parent to iterate.
-
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- include/linux/psi_types.h |  1 +
- kernel/sched/psi.c        | 51 ++++++++++++++++++++-------------------
- 2 files changed, 27 insertions(+), 25 deletions(-)
-
-diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
-index fced39e255aa..7459a47fcb1f 100644
---- a/include/linux/psi_types.h
-+++ b/include/linux/psi_types.h
-@@ -148,6 +148,7 @@ struct psi_trigger {
- 
- struct psi_group {
- 	bool enabled;
-+	struct psi_group *parent;
- 
- 	/* Protects data used by the aggregator */
- 	struct mutex avgs_lock;
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 9df1686ee02d..d3c1c49b9bcf 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -786,30 +786,22 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 		schedule_delayed_work(&group->avgs_work, PSI_FREQ);
- }
- 
--static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-+static inline struct psi_group *task_psi_group(struct task_struct *task)
- {
--	if (*iter == &psi_system)
--		return NULL;
--
- #ifdef CONFIG_CGROUPS
- 	if (static_branch_likely(&psi_cgroups_enabled)) {
--		struct cgroup *cgroup = NULL;
--
--		if (!*iter)
--			cgroup = task->cgroups->dfl_cgrp;
--		else
--			cgroup = cgroup_parent(*iter);
-+		struct cgroup *cgroup = task_dfl_cgroup(task);
- 
--		if (cgroup && cgroup_parent(cgroup)) {
--			*iter = cgroup;
-+		if (cgroup && cgroup_parent(cgroup))
- 			return cgroup_psi(cgroup);
--		}
- 	}
- #endif
--	*iter = &psi_system;
- 	return &psi_system;
- }
- 
-+#define for_each_psi_group(group) \
-+	for (; group; group = group->parent)
-+
- static void psi_flags_change(struct task_struct *task, int clear, int set)
- {
- 	if (((task->psi_flags & set) ||
-@@ -827,12 +819,11 @@ static void psi_flags_change(struct task_struct *task, int clear, int set)
- 
- void psi_change_groups(struct task_struct *task, int clear, int set)
- {
-+	struct psi_group *group = task_psi_group(task);
- 	int cpu = task_cpu(task);
--	struct psi_group *group;
--	void *iter = NULL;
- 	u64 now = cpu_clock(cpu);
- 
--	while ((group = iterate_groups(task, &iter)))
-+	for_each_psi_group(group)
- 		psi_group_change(group, cpu, clear, set, now, true);
- }
- 
-@@ -850,7 +841,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- {
- 	struct psi_group *group, *common = NULL;
- 	int cpu = task_cpu(prev);
--	void *iter;
- 	u64 now = cpu_clock(cpu);
- 
- 	if (next->pid) {
-@@ -861,8 +851,8 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		 * we reach the first common ancestor. Iterate @next's
- 		 * ancestors only until we encounter @prev's ONCPU.
- 		 */
--		iter = NULL;
--		while ((group = iterate_groups(next, &iter))) {
-+		group = task_psi_group(next);
-+		for_each_psi_group(group) {
- 			if (per_cpu_ptr(group->pcpu, cpu)->state_mask &
- 			    PSI_ONCPU) {
- 				common = group;
-@@ -903,9 +893,12 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 
- 		psi_flags_change(prev, clear, set);
- 
--		iter = NULL;
--		while ((group = iterate_groups(prev, &iter)) && group != common)
-+		group = task_psi_group(prev);
-+		for_each_psi_group(group) {
-+			if (group == common)
-+				break;
- 			psi_group_change(group, cpu, clear, set, now, wake_clock);
-+		}
- 
- 		/*
- 		 * TSK_ONCPU is handled up to the common ancestor. If we're tasked
-@@ -913,7 +906,7 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		 */
- 		if (sleep || unlikely(prev->in_memstall != next->in_memstall)) {
- 			clear &= ~TSK_ONCPU;
--			for (; group; group = iterate_groups(prev, &iter))
-+			for_each_psi_group(group)
- 				psi_group_change(group, cpu, clear, set, now, wake_clock);
- 		}
- 	}
-@@ -922,7 +915,6 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- void psi_account_irqtime(struct task_struct *task, u32 delta)
- {
- 	int cpu = task_cpu(task);
--	void *iter = NULL;
- 	struct psi_group *group;
- 	struct psi_group_cpu *groupc;
- 	u64 now;
-@@ -932,7 +924,8 @@ void psi_account_irqtime(struct task_struct *task, u32 delta)
- 
- 	now = cpu_clock(cpu);
- 
--	while ((group = iterate_groups(task, &iter))) {
-+	group = task_psi_group(task);
-+	for_each_psi_group(group) {
- 		groupc = per_cpu_ptr(group->pcpu, cpu);
- 
- 		write_seqcount_begin(&groupc->seq);
-@@ -1010,6 +1003,8 @@ void psi_memstall_leave(unsigned long *flags)
- #ifdef CONFIG_CGROUPS
- int psi_cgroup_alloc(struct cgroup *cgroup)
- {
-+	struct cgroup *parent;
-+
- 	if (!static_branch_likely(&psi_cgroups_enabled))
- 		return 0;
- 
-@@ -1017,6 +1012,12 @@ int psi_cgroup_alloc(struct cgroup *cgroup)
- 	if (!cgroup->psi.pcpu)
- 		return -ENOMEM;
- 	group_init(&cgroup->psi);
-+
-+	parent = cgroup_parent(cgroup);
-+	if (parent && cgroup_parent(parent))
-+		cgroup->psi.parent = cgroup_psi(parent);
-+	else
-+		cgroup->psi.parent = &psi_system;
- 	return 0;
- }
- 
--- 
-2.36.1
-
+Johannes, you have been involved in discussions in earlier versions of
+this series, any thoughts here?
