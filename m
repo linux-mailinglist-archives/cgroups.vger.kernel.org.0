@@ -2,99 +2,284 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452CF58F18C
-	for <lists+cgroups@lfdr.de>; Wed, 10 Aug 2022 19:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5228E58F589
+	for <lists+cgroups@lfdr.de>; Thu, 11 Aug 2022 03:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233424AbiHJR1R (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Aug 2022 13:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34170 "EHLO
+        id S233398AbiHKBTS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Aug 2022 21:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232538AbiHJR1Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Aug 2022 13:27:16 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140EE7B1F6;
-        Wed, 10 Aug 2022 10:27:14 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id x10so14838237plb.3;
-        Wed, 10 Aug 2022 10:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=lPqOojcmdOAU79rFEpjfZKvBUO43nFGE73fllT7UubM=;
-        b=eyIMIlC3NT7t/M/JASfHlCFAM/ZU0pftD5lYftV9y52nfgtwB67ojBpqf2XsOJyPSE
-         myoOkkToXgt6K3WrTFoFZsHIpdtUfS60IWEMULjtaEAE+TjV+RuhH4obNjaaAnckuTC6
-         BA8od9MxEGi7eaZv3+xOdXOZnJG8xOpM61nKy+o20Apn56jqN9sCRN20JqYq4Pv+iw65
-         HK2ViXVajAEPsYsQna5Rtt5YlPAEu3ZDWGIAtarHArRoEI4B1VFOHV8Y8a57Fcozd92H
-         RiqaFV32hD0ryvy5JOdno8MAxtJFWUmXq0AKTETBfUdepAD+T8BmAmE4OsqE3afLYwij
-         OsGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=lPqOojcmdOAU79rFEpjfZKvBUO43nFGE73fllT7UubM=;
-        b=pgvjHmGHgZhMPDKtnFCauGtCbSe+qrfsJjhO6+V2kL6tdrr7/5O8dGHzRBJVpvItV+
-         KNB0pwOqDz61qtD4G0xA6op5ItDeTBHFwP8l3yMiJ7ulGEv+ip5ZgrZO0al0JmdNGF4L
-         13ReKXjG7SYBllQgLbQXUr59LhuKrj+YSC6IqwiwUiZYjBpE2xzdcJ5UrvO57yVqLIex
-         Q94CdudkDWvjSFff5ZcKyC461glMWq6vt5zN7T5Y4uVrC1ESVRQplgXPRAkKNDgDPBH+
-         5cjffiCyXJIoYbnbNNQklstxvSpaf6onr65CANohzN+q8AcFKgMA0IMdEuJvZo0dF/yY
-         FyyQ==
-X-Gm-Message-State: ACgBeo1KAJKvQ1aK1Z8YkBd2jVBRQE8fwTnO8bJSgdc81wnjTbCwT6vp
-        RD4A9ji+TTu3Bxvr/fncCHs=
-X-Google-Smtp-Source: AA6agR6HimZCFCXcilZTgRuOlMb+mEEd0Usepl+nOvNphpTCT8ioe8FrPaDEA5NtEG5DEwW+MzXylg==
-X-Received: by 2002:a17:903:230e:b0:16f:784:ea3f with SMTP id d14-20020a170903230e00b0016f0784ea3fmr28892311plh.160.1660152434248;
-        Wed, 10 Aug 2022 10:27:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:237b])
-        by smtp.gmail.com with ESMTPSA id v12-20020a17090a458c00b001f5513f6fb9sm1961423pjg.14.2022.08.10.10.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Aug 2022 10:27:13 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 10 Aug 2022 07:27:12 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>, corbet@lwn.net,
-        surenb@google.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com
-Subject: Re: [PATCH v2 09/10] sched/psi: per-cgroup PSI stats
- disable/re-enable interface
-Message-ID: <YvPqcJh5Ffv4Yga9@slm.duckdns.org>
-References: <20220808110341.15799-1-zhouchengming@bytedance.com>
- <20220808110341.15799-10-zhouchengming@bytedance.com>
- <YvKd6dezPM6UxfD/@slm.duckdns.org>
- <fcd0bd39-3049-a279-23e6-a6c02b4680a7@bytedance.com>
- <b89155d3-9315-fefc-408b-4cf538360a1c@bytedance.com>
- <YvPN07UlaPFAdlet@cmpxchg.org>
+        with ESMTP id S232539AbiHKBTR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Aug 2022 21:19:17 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD487B7AB;
+        Wed, 10 Aug 2022 18:19:15 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M387L3QzNz6R22m;
+        Thu, 11 Aug 2022 09:17:50 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP2 (Coremail) with SMTP id Syh0CgC37roQWfRiNqTHAA--.61291S3;
+        Thu, 11 Aug 2022 09:19:13 +0800 (CST)
+Subject: Re: [PATCH -next v10 3/4] block, bfq: refactor the counting of
+ 'num_groups_with_pending_reqs'
+To:     Paolo Valente <paolo.valente@unimore.it>,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        LKML <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com,
+        "yukuai3@huawei.com >> yukuai (C)" <yukuai3@huawei.com>
+References: <20220610021701.2347602-1-yukuai3@huawei.com>
+ <20220610021701.2347602-4-yukuai3@huawei.com>
+ <27F2DF19-7CC6-42C5-8CEB-43583EB4AE46@linaro.org>
+ <abdbb5db-e280-62f8-0670-536fcb8ec4d9@huaweicloud.com>
+ <C2CF100A-9A7C-4300-9A70-1295BC939C66@unimore.it>
+ <9b2d667f-6636-9347-08a1-8bd0aa2346f2@huaweicloud.com>
+ <2f94f241-445f-1beb-c4a8-73f6efce5af2@huaweicloud.com>
+ <55A07102-BE55-4606-9E32-64E884064FB9@unimore.it>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5cb0e5bc-feec-86d6-6f60-3c28ee625efd@huaweicloud.com>
+Date:   Thu, 11 Aug 2022 09:19:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YvPN07UlaPFAdlet@cmpxchg.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <55A07102-BE55-4606-9E32-64E884064FB9@unimore.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgC37roQWfRiNqTHAA--.61291S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrW3Ar4fKr18Ww4kCry3Arb_yoW3Ar43p3
+        y3Ga17Cr4UXr15tr1jqw1UXr1Sq34fArykWr1DJryxArnFyFn7JF47tr4rury8Zr95Jr12
+        qr1jg3s7uw1UtFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi, Paolo
 
-On Wed, Aug 10, 2022 at 11:25:07AM -0400, Johannes Weiner wrote:
-> How about just cgroup.pressure? Too ambiguous?
+在 2022/08/10 18:49, Paolo Valente 写道:
 > 
-> cgroup.pressure.enable sounds good to me too. Or, because it's
-> default-enabled and that likely won't change, cgroup.pressure.disable.
+> 
+>> Il giorno 27 lug 2022, alle ore 14:11, Yu Kuai <yukuai1@huaweicloud.com> ha scritto:
+>>
+>> Hi, Paolo
+>>
+> 
+> hi
+> 
+>> Are you still interested in this patchset?
+>>
+> 
+> Yes. Sorry for replying very late again.
+> 
+> Probably the last fix that you suggest is enough, but I'm a little bit
+> concerned that it may be a little hasty.  In fact, before this fix, we
+> exchanged several messages, and I didn't seem to be very good at
+> convincing you about the need to keep into account also in-service
+> I/O.  So, my question is: are you sure that now you have a
 
-.disable sounds more logical but I like .enable better for some reason. As
-for just cgroup.pressure, yeah, maybe? The conundrum is that the prettiness
-order is the exact reverse of the logical order. So, I'm okay with any of
-the three.
+I'm confused here, I'm pretty aware that in-service I/O(as said pending
+requests is the patchset) should be counted, as you suggested in v7, are
+you still thinking that the way in this patchset is problematic?
 
-Thanks.
+I'll try to explain again that how to track is bfqq has pending pending
+requests, please let me know if you still think there are some problems:
 
--- 
-tejun
+patch 1 support to track if bfqq has pending requests, it's
+done by setting the flag 'entity->in_groups_with_pending_reqs' when the
+first request is inserted to bfqq, and it's cleared when the last
+request is completed. specifically the flag is set in
+bfq_add_bfqq_busy() when 'bfqq->dispatched' if false, and it's cleared
+both in bfq_completed_request() and bfq_del_bfqq_busy() when
+'bfqq->diapatched' is false.
+
+Thanks,
+Kuai
+> clear/complete understanding of this non-trivial matter?
+> Consequently, are we sure that this last fix is most certainly all we
+> need?  Of course, I will check on my own, but if you reassure me on
+> this point, I will feel more confident.
+> 
+> Thanks,
+> Paolo
+> 
+>> 在 2022/07/20 19:38, Yu Kuai 写道:
+>>> Hi
+>>>
+>>> 在 2022/07/20 19:24, Paolo VALENTE 写道:
+>>>>
+>>>>
+>>>>> Il giorno 12 lug 2022, alle ore 15:30, Yu Kuai <yukuai1@huaweicloud.com <mailto:yukuai1@huaweicloud.com>> ha scritto:
+>>>>>
+>>>>> Hi!
+>>>>>
+>>>>> I'm copying my reply with new mail address, because Paolo seems
+>>>>> didn't receive my reply.
+>>>>>
+>>>>> 在 2022/06/23 23:32, Paolo Valente 写道:
+>>>>>> Sorry for the delay.
+>>>>>>> Il giorno 10 giu 2022, alle ore 04:17, Yu Kuai <yukuai3@huawei.com <mailto:yukuai3@huawei.com>> ha scritto:
+>>>>>>>
+>>>>>>> Currently, bfq can't handle sync io concurrently as long as they
+>>>>>>> are not issued from root group. This is because
+>>>>>>> 'bfqd->num_groups_with_pending_reqs > 0' is always true in
+>>>>>>> bfq_asymmetric_scenario().
+>>>>>>>
+>>>>>>> The way that bfqg is counted into 'num_groups_with_pending_reqs':
+>>>>>>>
+>>>>>>> Before this patch:
+>>>>>>> 1) root group will never be counted.
+>>>>>>> 2) Count if bfqg or it's child bfqgs have pending requests.
+>>>>>>> 3) Don't count if bfqg and it's child bfqgs complete all the requests.
+>>>>>>>
+>>>>>>> After this patch:
+>>>>>>> 1) root group is counted.
+>>>>>>> 2) Count if bfqg have pending requests.
+>>>>>>> 3) Don't count if bfqg complete all the requests.
+>>>>>>>
+>>>>>>> With this change, the occasion that only one group is activated can be
+>>>>>>> detected, and next patch will support concurrent sync io in the
+>>>>>>> occasion.
+>>>>>>>
+>>>>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com <mailto:yukuai3@huawei.com>>
+>>>>>>> Reviewed-by: Jan Kara <jack@suse.cz <mailto:jack@suse.cz>>
+>>>>>>> ---
+>>>>>>> block/bfq-iosched.c | 42 ------------------------------------------
+>>>>>>> block/bfq-iosched.h | 18 +++++++++---------
+>>>>>>> block/bfq-wf2q.c    | 19 ++++---------------
+>>>>>>> 3 files changed, 13 insertions(+), 66 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>>>>>>> index 0ec21018daba..03b04892440c 100644
+>>>>>>> --- a/block/bfq-iosched.c
+>>>>>>> +++ b/block/bfq-iosched.c
+>>>>>>> @@ -970,48 +970,6 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd,
+>>>>>>> void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>>>>>>>      struct bfq_queue *bfqq)
+>>>>>>> {
+>>>>>>> -struct bfq_entity *entity = bfqq->entity.parent;
+>>>>>>> -
+>>>>>>> -for_each_entity(entity) {
+>>>>>>> -struct bfq_sched_data *sd = entity->my_sched_data;
+>>>>>>> -
+>>>>>>> -if (sd->next_in_service || sd->in_service_entity) {
+>>>>>>> -/*
+>>>>>>> -* entity is still active, because either
+>>>>>>> -* next_in_service or in_service_entity is not
+>>>>>>> -* NULL (see the comments on the definition of
+>>>>>>> -* next_in_service for details on why
+>>>>>>> -* in_service_entity must be checked too).
+>>>>>>> -*
+>>>>>>> -* As a consequence, its parent entities are
+>>>>>>> -* active as well, and thus this loop must
+>>>>>>> -* stop here.
+>>>>>>> -*/
+>>>>>>> -break;
+>>>>>>> -}
+>>>>>>> -
+>>>>>>> -/*
+>>>>>>> -* The decrement of num_groups_with_pending_reqs is
+>>>>>>> -* not performed immediately upon the deactivation of
+>>>>>>> -* entity, but it is delayed to when it also happens
+>>>>>>> -* that the first leaf descendant bfqq of entity gets
+>>>>>>> -* all its pending requests completed. The following
+>>>>>>> -* instructions perform this delayed decrement, if
+>>>>>>> -* needed. See the comments on
+>>>>>>> -* num_groups_with_pending_reqs for details.
+>>>>>>> -*/
+>>>>>>> -if (entity->in_groups_with_pending_reqs) {
+>>>>>>> -entity->in_groups_with_pending_reqs = false;
+>>>>>>> -bfqd->num_groups_with_pending_reqs--;
+>>>>>>> -}
+>>>>>>> -}
+>>>>>> With this part removed, I'm missing how you handle the following
+>>>>>> sequence of events:
+>>>>>> 1.  a queue Q becomes non busy but still has dispatched requests, so
+>>>>>> it must not be removed from the counter of queues with pending reqs
+>>>>>> yet
+>>>>>> 2.  the last request of Q is completed with Q being still idle (non
+>>>>>> busy).  At this point Q must be removed from the counter.  It seems to
+>>>>>> me that this case is not handled any longer
+>>>>> Hi, Paolo
+>>>>>
+>>>>> 1) At first, patch 1 support to track if bfqq has pending requests, it's
+>>>>> done by setting the flag 'entity->in_groups_with_pending_reqs' when the
+>>>>> first request is inserted to bfqq, and it's cleared when the last
+>>>>> request is completed(based on weights_tree insertion and removal).
+>>>>>
+>>>>
+>>>> In patch 1 I don't see the flag cleared for the request-completion event :(
+>>>>
+>>>> The piece of code involved is this:
+>>>>
+>>>> static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
+>>>> {
+>>>> u64 now_ns;
+>>>> u32 delta_us;
+>>>>
+>>>> bfq_update_hw_tag(bfqd);
+>>>>
+>>>> bfqd->rq_in_driver[bfqq->actuator_idx]--;
+>>>> bfqd->tot_rq_in_driver--;
+>>>> bfqq->dispatched--;
+>>>>
+>>>> if (!bfqq->dispatched && !bfq_bfqq_busy(bfqq)) {
+>>>> /*
+>>>> * Set budget_timeout (which we overload to store the
+>>>> * time at which the queue remains with no backlog and
+>>>> * no outstanding request; used by the weight-raising
+>>>> * mechanism).
+>>>> */
+>>>> bfqq->budget_timeout = jiffies;
+>>>>
+>>>> bfq_weights_tree_remove(bfqd, bfqq);
+>>>> }
+>>>> ...
+>>>>
+>>>> Am I missing something?
+>>>
+>>> I add a new api bfq_del_bfqq_in_groups_with_pending_reqs() in patch 1
+>>> to clear the flag, and it's called both from bfq_del_bfqq_busy() and
+>>> bfq_completed_request(). I think you may miss the later:
+>>>
+>>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>>> index 0d46cb728bbf..0ec21018daba 100644
+>>> --- a/block/bfq-iosched.c
+>>> +++ b/block/bfq-iosched.c
+>>> @@ -6263,6 +6263,7 @@ static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
+>>>            */
+>>>           bfqq->budget_timeout = jiffies;
+>>>
+>>> +        bfq_del_bfqq_in_groups_with_pending_reqs(bfqq);
+>>>           bfq_weights_tree_remove(bfqd, bfqq);
+>>>       }
+>>>
+>>> Thanks,
+>>> Kuai
+>>>>
+>>>> Thanks,
+>>>> Paolo
+>>
+> 
+> .
+> 
+
