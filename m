@@ -2,56 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A082D59164E
-	for <lists+cgroups@lfdr.de>; Fri, 12 Aug 2022 22:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A6659164B
+	for <lists+cgroups@lfdr.de>; Fri, 12 Aug 2022 22:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235777AbiHLU23 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Aug 2022 16:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        id S235384AbiHLU2d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Aug 2022 16:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbiHLU2N (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Aug 2022 16:28:13 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6122A1D5E
-        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 13:28:11 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-31f4e870a17so15617187b3.9
-        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 13:28:11 -0700 (PDT)
+        with ESMTP id S234668AbiHLU21 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Aug 2022 16:28:27 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCCCA99F9
+        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 13:28:14 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id s4-20020a17090a760400b001f3120342daso829793pjk.4
+        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 13:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=LxbW7vCL2TME4dq1WG2aLS0mV6nNyUzQfbiSxHPj2ms=;
-        b=mVkRYUgP1UYTOPLjsXEoRy5wvEjt6vUkn5SyDRgXb/il3Dlme2I0i5bAEFKoy9D0K/
-         Cyf5buUTHlXy/EDAtXlSmTS+J8LT+auDCtrFlxrqcp6NdQEpA01cgxoH0cKAf7epiSNU
-         Xx+rhCDvbvUAy61dbfR6QnaSxYnVCxj3NxIiQnat9wP2Xls6DjHgT6nJ54DY34TrrBDh
-         2F91l+AbMaPmXU1uMTRyGqwPToy6p6/uR/r9+KnYUcm1+64B7bzr+0RpAX+0qIdrl2yp
-         fMopmNtjIDakfjXb4mFf4MedxDS2XSqg832LsEAgMrp2zzp+CWFMr/Hw4I+QwZrgXmF+
-         1y0Q==
+        bh=h0j1tmcryfszvpEO+TtDzb67ntXXnPtNryRzQx2IqTE=;
+        b=MzUknYElmzrxfzYxkrf+jNcWgb84/EExUa+DMdz3KNODbK/pH9TGVY8ApMKHxf9PZ9
+         20MhbO/K2t8F04TjtAvuSrJBCDpLDyGsf0IZkf1teTHoy7Yqq1J4q+otxM5dVI/mQYXv
+         JoFx2TknRi3drwR4tXCdIUECBOhjpo8RMHNpBYTW3H3Zayab9mYysKBDf+6mXd+OoQIL
+         Bw+dGjgNEXrsW/L6RJZWD0Ydv7AWBEnyCDzDv+ZoUbgRdhMJFNQiBGDuoQ6Gzdx8yERI
+         GpVvWV/LkulDwuo7/7l2KNLjoUhc3k62bFO8L+a/b1sz4xQjEZ7jFgvXnRR2xxjTV3ik
+         SUhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=LxbW7vCL2TME4dq1WG2aLS0mV6nNyUzQfbiSxHPj2ms=;
-        b=a68Ul4m9j3FcyFKfmemRNRsrdn6x4oKZt9CXTDTOEQp4oEbHtQQGtOJX++p0xwo/uC
-         +GtiOpheCQ1goVuZylgtNNXVWouDptne3/pGvj2L3xYM9V9rEicRCgsUceZA6k739jJ1
-         RvUBDuh3AfJVnb1rQxGwuB4dSSHtgB3JPuAxINH4OLepoRBRtE5ILOL0w35W6G3K+ETZ
-         iRCA1NNUMfJ8p4Ot/325V4gRfjDdIXa6333ZJwPU/VxXLKynxm4bvh2JqUYnOV/Wtv9u
-         pcDd2/lFkCKhtSO2KUMRYPr/5ZURieddluv4PxgQbKR8fbboRyoCuMxFfMwkD/kk+cMa
-         0vWw==
-X-Gm-Message-State: ACgBeo0OtSYlPhPxozgJYqWo2o/1Tntm1KaZJhMSDELHnzjPmrH0XKhC
-        o2FmuBBi4xI90c7P6lAFa/ywfeaqR7A=
-X-Google-Smtp-Source: AA6agR5vZU7UWNdrEfKeWKP3EDFoGO3DA0qV0Oj3p0Jy5XO5lVIaB5F/DGYY+5vYGzjOwPcyydzfc5Pw2uo=
+        bh=h0j1tmcryfszvpEO+TtDzb67ntXXnPtNryRzQx2IqTE=;
+        b=JP81YQUbS1P18zGebSJGlUJ7sIAS3RdC0x1CYO115H40FVZseBvsbM30w9ok/DyNWX
+         +wkvCHLvuejrSukPq5ESy/iE/QlhvhzUJrIDrNF6UBf63HXlb3hRyfV26o0FngWpLDE4
+         EKi0elluCbX1ol5ButMOYVzt2t/zg3sbzUA9Oc3+wD9S1KG22aIjnp5SzbLKpVCIgvuU
+         toqtNhN1+UBEbDtuVcTCBd3In/WObq6PFXWxufjIIr1Cvna9SuimklikTIkbuaoXqf40
+         6v6wSkdaeLEcLumWHcfoGlRAMlqC/mQBMLFgjkGHsQoda01BQowijDCuTWdK5i0TmXMW
+         mHyw==
+X-Gm-Message-State: ACgBeo0QaG8I1nDYEOGytSTftLFa2uO2hN7H4ogpcCKzIHP3hHs7Fiw5
+        Q/k96PmugDMWzasl1Qp3epsIZXLKTcc=
+X-Google-Smtp-Source: AA6agR5fnr/CfyN8/juwe1x/CjcF4OI5zx4bcOpqulQbYRS/GyJFG7vZVJ0r20SSXvNBuA8ORSEFTbI9BlY=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2d4:203:da3d:b609:da67:694a])
- (user=haoluo job=sendgmr) by 2002:a81:25c6:0:b0:324:294e:6fea with SMTP id
- l189-20020a8125c6000000b00324294e6feamr5368988ywl.426.1660336091103; Fri, 12
- Aug 2022 13:28:11 -0700 (PDT)
-Date:   Fri, 12 Aug 2022 13:27:59 -0700
+ (user=haoluo job=sendgmr) by 2002:a05:6a00:999:b0:52e:cd5e:3453 with SMTP id
+ u25-20020a056a00099900b0052ecd5e3453mr5138255pfg.76.1660336093994; Fri, 12
+ Aug 2022 13:28:13 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 13:28:00 -0700
 In-Reply-To: <20220812202802.3774257-1-haoluo@google.com>
-Message-Id: <20220812202802.3774257-3-haoluo@google.com>
+Message-Id: <20220812202802.3774257-4-haoluo@google.com>
 Mime-Version: 1.0
 References: <20220812202802.3774257-1-haoluo@google.com>
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next v8 2/5] selftests/bpf: Test cgroup_iter.
+Subject: [PATCH bpf-next v8 3/5] cgroup: bpf: enable bpf programs to integrate
+ with rstat
 From:   Hao Luo <haoluo@google.com>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         cgroups@vger.kernel.org, netdev@vger.kernel.org
@@ -76,349 +77,107 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add a selftest for cgroup_iter. The selftest creates a mini cgroup tree
-of the following structure:
+From: Yosry Ahmed <yosryahmed@google.com>
 
-    ROOT (working cgroup)
-     |
-   PARENT
-  /      \
-CHILD1  CHILD2
+Enable bpf programs to make use of rstat to collect cgroup hierarchical
+stats efficiently:
+- Add cgroup_rstat_updated() kfunc, for bpf progs that collect stats.
+- Add cgroup_rstat_flush() sleepable kfunc, for bpf progs that read stats.
+- Add an empty bpf_rstat_flush() hook that is called during rstat
+  flushing, for bpf progs that flush stats to attach to. Attaching a bpf
+  prog to this hook effectively registers it as a flush callback.
 
-and tests the following scenarios:
-
- - invalid cgroup fd.
- - pre-order walk over descendants from PARENT.
- - post-order walk over descendants from PARENT.
- - walk of ancestors from PARENT.
- - process only a single object (i.e. PARENT).
- - early termination.
-
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- .../selftests/bpf/prog_tests/cgroup_iter.c    | 224 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
- .../testing/selftests/bpf/progs/cgroup_iter.c |  39 +++
- 3 files changed, 270 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
+ kernel/cgroup/rstat.c | 48 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-new file mode 100644
-index 000000000000..38958c37b9ce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-@@ -0,0 +1,224 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Google */
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index feb59380c896..793ecff29038 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -3,6 +3,10 @@
+ 
+ #include <linux/sched/cputime.h>
+ 
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/btf_ids.h>
 +
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/btf.h>
-+#include "cgroup_iter.skel.h"
-+#include "cgroup_helpers.h"
+ static DEFINE_SPINLOCK(cgroup_rstat_lock);
+ static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+ 
+@@ -141,6 +145,31 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
+ 	return pos;
+ }
+ 
++/*
++ * A hook for bpf stat collectors to attach to and flush their stats.
++ * Together with providing bpf kfuncs for cgroup_rstat_updated() and
++ * cgroup_rstat_flush(), this enables a complete workflow where bpf progs that
++ * collect cgroup stats can integrate with rstat for efficient flushing.
++ *
++ * A static noinline declaration here could cause the compiler to optimize away
++ * the function. A global noinline declaration will keep the definition, but may
++ * optimize away the callsite. Therefore, __weak is needed to ensure that the
++ * call is still emitted, by telling the compiler that we don't know what the
++ * function might eventually be.
++ *
++ * __diag_* below are needed to dismiss the missing prototype warning.
++ */
++__diag_push();
++__diag_ignore_all("-Wmissing-prototypes",
++		  "kfuncs which will be used in BPF programs");
 +
-+#define ROOT           0
-+#define PARENT         1
-+#define CHILD1         2
-+#define CHILD2         3
-+#define NUM_CGROUPS    4
++__weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
++				     struct cgroup *parent, int cpu)
++{
++}
 +
-+#define PROLOGUE       "prologue\n"
-+#define EPILOGUE       "epilogue\n"
++__diag_pop();
 +
-+static const char *cg_path[] = {
-+	"/", "/parent", "/parent/child1", "/parent/child2"
+ /* see cgroup_rstat_flush() */
+ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+ 	__releases(&cgroup_rstat_lock) __acquires(&cgroup_rstat_lock)
+@@ -168,6 +197,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
+ 			struct cgroup_subsys_state *css;
+ 
+ 			cgroup_base_stat_flush(pos, cpu);
++			bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
+ 
+ 			rcu_read_lock();
+ 			list_for_each_entry_rcu(css, &pos->rstat_css_list,
+@@ -501,3 +531,21 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 	seq_printf(seq, "core_sched.force_idle_usec %llu\n", forceidle_time);
+ #endif
+ }
++
++/* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush() */
++BTF_SET8_START(bpf_rstat_kfunc_ids)
++BTF_ID_FLAGS(func, cgroup_rstat_updated)
++BTF_ID_FLAGS(func, cgroup_rstat_flush, KF_SLEEPABLE)
++BTF_SET8_END(bpf_rstat_kfunc_ids)
++
++static const struct btf_kfunc_id_set bpf_rstat_kfunc_set = {
++	.owner          = THIS_MODULE,
++	.set            = &bpf_rstat_kfunc_ids,
 +};
 +
-+static int cg_fd[] = {-1, -1, -1, -1};
-+static unsigned long long cg_id[] = {0, 0, 0, 0};
-+static char expected_output[64];
-+
-+static int setup_cgroups(void)
++static int __init bpf_rstat_kfunc_init(void)
 +{
-+	int fd, i = 0;
-+
-+	for (i = 0; i < NUM_CGROUPS; i++) {
-+		fd = create_and_get_cgroup(cg_path[i]);
-+		if (fd < 0)
-+			return fd;
-+
-+		cg_fd[i] = fd;
-+		cg_id[i] = get_cgroup_id(cg_path[i]);
-+	}
-+	return 0;
++	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
++					 &bpf_rstat_kfunc_set);
 +}
-+
-+static void cleanup_cgroups(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < NUM_CGROUPS; i++)
-+		close(cg_fd[i]);
-+}
-+
-+static void read_from_cgroup_iter(struct bpf_program *prog, int cgroup_fd,
-+				  int order, const char *testname)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link *link;
-+	int len, iter_fd;
-+	static char buf[128];
-+	size_t left;
-+	char *p;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.cgroup.cgroup_fd = cgroup_fd;
-+	linfo.cgroup.order = order;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(prog, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_iter"))
-+		return;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (iter_fd < 0)
-+		goto free_link;
-+
-+	memset(buf, 0, sizeof(buf));
-+	left = ARRAY_SIZE(buf);
-+	p = buf;
-+	while ((len = read(iter_fd, p, left)) > 0) {
-+		p += len;
-+		left -= len;
-+	}
-+
-+	ASSERT_STREQ(buf, expected_output, testname);
-+
-+	/* read() after iter finishes should be ok. */
-+	if (len == 0)
-+		ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
-+
-+	close(iter_fd);
-+free_link:
-+	bpf_link__destroy(link);
-+}
-+
-+/* Invalid cgroup. */
-+static void test_invalid_cgroup(struct cgroup_iter *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link *link;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.cgroup.cgroup_fd = (__u32)-1;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
-+	ASSERT_ERR_PTR(link, "attach_iter");
-+	bpf_link__destroy(link);
-+}
-+
-+/* Specifying both cgroup_fd and cgroup_id is invalid. */
-+static void test_invalid_cgroup_spec(struct cgroup_iter *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link *link;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.cgroup.cgroup_fd = (__u32)cg_fd[PARENT];
-+	linfo.cgroup.cgroup_id = (__u64)cg_id[PARENT];
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+
-+	link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
-+	ASSERT_ERR_PTR(link, "attach_iter");
-+	bpf_link__destroy(link);
-+}
-+
-+/* Preorder walk prints parent and child in order. */
-+static void test_walk_preorder(struct cgroup_iter *skel)
-+{
-+	snprintf(expected_output, sizeof(expected_output),
-+		 PROLOGUE "%8llu\n%8llu\n%8llu\n" EPILOGUE,
-+		 cg_id[PARENT], cg_id[CHILD1], cg_id[CHILD2]);
-+
-+	read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[PARENT],
-+			      BPF_ITER_DESCENDANTS_PRE, "preorder");
-+}
-+
-+/* Postorder walk prints child and parent in order. */
-+static void test_walk_postorder(struct cgroup_iter *skel)
-+{
-+	snprintf(expected_output, sizeof(expected_output),
-+		 PROLOGUE "%8llu\n%8llu\n%8llu\n" EPILOGUE,
-+		 cg_id[CHILD1], cg_id[CHILD2], cg_id[PARENT]);
-+
-+	read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[PARENT],
-+			      BPF_ITER_DESCENDANTS_POST, "postorder");
-+}
-+
-+/* Walking parents prints parent and then root. */
-+static void test_walk_ancestors_up(struct cgroup_iter *skel)
-+{
-+	/* terminate the walk when ROOT is met. */
-+	skel->bss->terminal_cgroup = cg_id[ROOT];
-+
-+	snprintf(expected_output, sizeof(expected_output),
-+		 PROLOGUE "%8llu\n%8llu\n" EPILOGUE,
-+		 cg_id[PARENT], cg_id[ROOT]);
-+
-+	read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[PARENT],
-+			      BPF_ITER_ANCESTORS_UP, "ancestors_up");
-+
-+	skel->bss->terminal_cgroup = 0;
-+}
-+
-+/* Early termination prints parent only. */
-+static void test_early_termination(struct cgroup_iter *skel)
-+{
-+	/* terminate the walk after the first element is processed. */
-+	skel->bss->terminate_early = 1;
-+
-+	snprintf(expected_output, sizeof(expected_output),
-+		 PROLOGUE "%8llu\n" EPILOGUE, cg_id[PARENT]);
-+
-+	read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[PARENT],
-+			      BPF_ITER_DESCENDANTS_PRE, "early_termination");
-+
-+	skel->bss->terminate_early = 0;
-+}
-+
-+/* Waling self prints self only. */
-+static void test_walk_self_only(struct cgroup_iter *skel)
-+{
-+	snprintf(expected_output, sizeof(expected_output),
-+		 PROLOGUE "%8llu\n" EPILOGUE, cg_id[PARENT]);
-+
-+	read_from_cgroup_iter(skel->progs.cgroup_id_printer, cg_fd[PARENT],
-+			      BPF_ITER_SELF_ONLY, "self_only");
-+}
-+
-+void test_cgroup_iter(void)
-+{
-+	struct cgroup_iter *skel = NULL;
-+
-+	if (setup_cgroup_environment())
-+		return;
-+
-+	if (setup_cgroups())
-+		goto out;
-+
-+	skel = cgroup_iter__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "cgroup_iter__open_and_load"))
-+		goto out;
-+
-+	if (test__start_subtest("cgroup_iter__invalid_cgroup"))
-+		test_invalid_cgroup(skel);
-+	if (test__start_subtest("cgroup_iter__invalid_cgroup_spec"))
-+		test_invalid_cgroup_spec(skel);
-+	if (test__start_subtest("cgroup_iter__preorder"))
-+		test_walk_preorder(skel);
-+	if (test__start_subtest("cgroup_iter__postorder"))
-+		test_walk_postorder(skel);
-+	if (test__start_subtest("cgroup_iter__ancestors_up_walk"))
-+		test_walk_ancestors_up(skel);
-+	if (test__start_subtest("cgroup_iter__early_termination"))
-+		test_early_termination(skel);
-+	if (test__start_subtest("cgroup_iter__self_only"))
-+		test_walk_self_only(skel);
-+out:
-+	cgroup_iter__destroy(skel);
-+	cleanup_cgroups();
-+	cleanup_cgroup_environment();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index e9846606690d..c41ee80533ca 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -17,6 +17,7 @@
- #define bpf_iter__bpf_sk_storage_map bpf_iter__bpf_sk_storage_map___not_used
- #define bpf_iter__sockmap bpf_iter__sockmap___not_used
- #define bpf_iter__bpf_link bpf_iter__bpf_link___not_used
-+#define bpf_iter__cgroup bpf_iter__cgroup___not_used
- #define btf_ptr btf_ptr___not_used
- #define BTF_F_COMPACT BTF_F_COMPACT___not_used
- #define BTF_F_NONAME BTF_F_NONAME___not_used
-@@ -40,6 +41,7 @@
- #undef bpf_iter__bpf_sk_storage_map
- #undef bpf_iter__sockmap
- #undef bpf_iter__bpf_link
-+#undef bpf_iter__cgroup
- #undef btf_ptr
- #undef BTF_F_COMPACT
- #undef BTF_F_NONAME
-@@ -141,6 +143,11 @@ struct bpf_iter__bpf_link {
- 	struct bpf_link *link;
- };
- 
-+struct bpf_iter__cgroup {
-+	struct bpf_iter_meta *meta;
-+	struct cgroup *cgroup;
-+} __attribute__((preserve_access_index));
-+
- struct btf_ptr {
- 	void *ptr;
- 	__u32 type_id;
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_iter.c b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-new file mode 100644
-index 000000000000..de03997322a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Google */
-+
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+int terminate_early = 0;
-+u64 terminal_cgroup = 0;
-+
-+static inline u64 cgroup_id(struct cgroup *cgrp)
-+{
-+	return cgrp->kn->id;
-+}
-+
-+SEC("iter/cgroup")
-+int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
-+{
-+	struct seq_file *seq = ctx->meta->seq;
-+	struct cgroup *cgrp = ctx->cgroup;
-+
-+	/* epilogue */
-+	if (cgrp == NULL) {
-+		BPF_SEQ_PRINTF(seq, "epilogue\n");
-+		return 0;
-+	}
-+
-+	/* prologue */
-+	if (ctx->meta->seq_num == 0)
-+		BPF_SEQ_PRINTF(seq, "prologue\n");
-+
-+	BPF_SEQ_PRINTF(seq, "%8llu\n", cgroup_id(cgrp));
-+
-+	if (terminal_cgroup == cgroup_id(cgrp))
-+		return 1;
-+
-+	return terminate_early ? 1 : 0;
-+}
++late_initcall(bpf_rstat_kfunc_init);
 -- 
 2.37.1.595.g718a3a8f04-goog
 
