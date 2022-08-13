@@ -2,136 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 916915917DB
-	for <lists+cgroups@lfdr.de>; Sat, 13 Aug 2022 02:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D495918F8
+	for <lists+cgroups@lfdr.de>; Sat, 13 Aug 2022 07:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236313AbiHMAoa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Aug 2022 20:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
+        id S237678AbiHMF7u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 13 Aug 2022 01:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235116AbiHMAo3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Aug 2022 20:44:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0556101CA
-        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 17:44:27 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id q30so2731262wra.11
-        for <cgroups@vger.kernel.org>; Fri, 12 Aug 2022 17:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=nsBuNh8ySi6ShETxrYCuKi8D+pIFk/T+cDDfDt4bPtw=;
-        b=flhpfV8eLQphDY35QUDVJ7szN/37QPBxxglfSV+QSAbZ16HmGEjx4iXgN+A3uyEiy5
-         u+TX01e611Jk7krensRzI4SVwdTXzRykr7IwEg4tIDyxtRN/s1P+9E0kz+aaf58Y7Cv8
-         mT3IvEYgBb3t7lKpqzhzYpn/C4vsS7C5ZTNUM5zk710sz++5UEVtcFb0AxRGMLa6trcr
-         31xVxvDzY0e9/5TJSegj41peN9rpqzrhczVGSc2Io9vwX0TOK3QZhEKyL5YrHWSEzSBH
-         6KcFZGfBSt4Hcv5gGqfp4ALrC4XcY4b1KRXRj9b4m8o9ZGOnr2vyeghnnWm4gBvQbEQD
-         as2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=nsBuNh8ySi6ShETxrYCuKi8D+pIFk/T+cDDfDt4bPtw=;
-        b=pLy5AUyYQoD4j2rPiJSvvEJuAepTD+nlmmqoRo4uIiMjZyUokAxG2as+P1AKlHrrQk
-         i0ML7ylvz4iyrHuFLd3ySWbMB1mkGzDuDkzzBhD+DTmOBeeYMuglgyzlr32OU1PIHFVA
-         xRmBGQkX6Le+M3JSBpcjl1wmFivZkIgOyVV2L1H5Z3EUTVc8flZS7ZB10TD7BtOoeW3V
-         tzq68sgvLvYmvRRHMNflLaUOoSrYdOsJQHQuLavzWWic0L/1cjImM0vHMZ8T2EHJ5L9/
-         aZosENfNQnumBSLTfobnqHqTFJ5b7NsbahgXZbuWojtL8XILh0OZloYC3Vatmw4SOEW+
-         J9Lw==
-X-Gm-Message-State: ACgBeo3Ye/VnSZUMiPiBweEbkmV5XipuRI582zUPrnpq7AKdTmkjlWoj
-        FWYP06UnxJej26dEx2OnURpAU6KA50VCTCT+44eCvMfa51c=
-X-Google-Smtp-Source: AA6agR4Onx/CCa2VmVAMrVd2d+HZLgXRnIWsz7wkClVEYmWvnwDCELyXj1ufb3n1XkP6oJrpe7iz8Fw+v0iMO+gKQ9M=
-X-Received: by 2002:adf:d84e:0:b0:21e:bdc0:2847 with SMTP id
- k14-20020adfd84e000000b0021ebdc02847mr3241978wrl.582.1660351465995; Fri, 12
- Aug 2022 17:44:25 -0700 (PDT)
+        with ESMTP id S229507AbiHMF7s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 13 Aug 2022 01:59:48 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CC466A61;
+        Fri, 12 Aug 2022 22:59:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M4VGJ73LFzlClw;
+        Sat, 13 Aug 2022 13:58:32 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP2 (Coremail) with SMTP id Syh0CgDHsb3RPfdiDN4nAQ--.29091S3;
+        Sat, 13 Aug 2022 13:59:45 +0800 (CST)
+Subject: Re: [PATCH v7 0/9] bugfix and cleanup for blk-throttle
+To:     Yu Kuai <yukuai1@huaweicloud.com>, tj@kernel.org, mkoutny@suse.com,
+        axboe@kernel.dk, ming.lei@redhat.com
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <7030d59d-f840-c24c-0ac6-a802d0ff0243@huaweicloud.com>
+Date:   Sat, 13 Aug 2022 13:59:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220811081913.102770-1-liliguang@baidu.com> <YvWa9MOQWBICInjO@P9FQF9L96D.corp.robot.car>
- <CALvZod4nnn8BHYqAM4xtcR0Ddo2-Wr8uKm9h_CHWUaXw7g_DCg@mail.gmail.com>
-In-Reply-To: <CALvZod4nnn8BHYqAM4xtcR0Ddo2-Wr8uKm9h_CHWUaXw7g_DCg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 12 Aug 2022 17:43:49 -0700
-Message-ID: <CAJD7tkbrCNDMkE8dJDWHiTfi=nJJzrZwepaWb3YioRHMrSEuQA@mail.gmail.com>
-Subject: Re: [PATCH] mm: correctly charge compressed memory to its memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     liliguang <liliguang@baidu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgDHsb3RPfdiDN4nAQ--.29091S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF48Ar4ktF4UXFWDZrWDJwb_yoW5JF4kpF
+        W3Wr45Cw47Grn7Cay3Cw13ZFWrGws7Jw13X343tw1fZF1qkry8Gr1I9w4F9F92yFZ7K34I
+        qr1DtFn2kryUZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyU
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 12, 2022 at 2:56 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> +Andrew & linux-mm
->
-> On Thu, Aug 11, 2022 at 5:12 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> > On Thu, Aug 11, 2022 at 04:19:13PM +0800, liliguang wrote:
-> > > From: Li Liguang <liliguang@baidu.com>
-> > >
-> > > Kswapd will reclaim memory when memory pressure is high, the
-> > > annonymous memory will be compressed and stored in the zpool
-> > > if zswap is enabled. The memcg_kmem_bypass() in
-> > > get_obj_cgroup_from_page() will bypass the kernel thread and
-> > > cause the compressed memory not charged to its memory cgroup.
-> > >
-> > > Remove the memcg_kmem_bypass() and properly charge compressed
-> > > memory to its corresponding memory cgroup.
-> > >
-> > > Signed-off-by: Li Liguang <liliguang@baidu.com>
-> > > ---
-> > >  mm/memcontrol.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index b69979c9ced5..6a95ea7c5ee7 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2971,7 +2971,7 @@ struct obj_cgroup *get_obj_cgroup_from_page(struct page *page)
-> > >  {
-> > >       struct obj_cgroup *objcg;
-> > >
-> > > -     if (!memcg_kmem_enabled() || memcg_kmem_bypass())
-> > > +     if (!memcg_kmem_enabled())
+在 2022/08/02 22:04, Yu Kuai 写道:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Changes in v7:
+>   - add patch 5 to improve handling of re-entered bio for bps limit
+>   - as suggested by Tejun, add some comments
+>   - sdd some Acked tag by Tejun
+> Changes in v6:
+>   - rename parameter in patch 3
+>   - add comments and reviewed tag for patch 4
+> Changes in v5:
+>   - add comments in patch 4
+>   - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+>   patch 4
+>   - and cleanup patches 5-8
+> Changes in v4:
+>   - add reviewed-by tag for patch 1
+>   - add patch 2,3
+>   - use a different way to fix io hung in patch 4
+> Changes in v3:
+>   - fix a check in patch 1
+>   - fix link err in patch 2 on 32-bit platform
+>   - handle overflow in patch 2
+> Changes in v2:
+>   - use a new solution suggested by Ming
+>   - change the title of patch 1
+>   - add patch 2
+> 
+> Patch 1 fix that blk-throttle can't work if multiple bios are throttle.
+> Patch 2 fix overflow while calculating wait time.
+> Patch 3,4 fix io hung due to configuration updates.
+> Patch 5 improve handling of re-entered bio for bps limit.
+> Patch 6-9 are cleanup patches, there are no functional changes, just
+> some places that I think can be optimized during code review.
+> 
+friendly ping ...
+> Previous version:
+> v1: https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
+> v2: https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
+> v3: https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
+> v4: https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
+> v5: https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
+> v6: https://lore.kernel.org/all/20220701093441.885741-1-yukuai1@huaweicloud.com/
+> 
+> Yu Kuai (9):
+>    blk-throttle: fix that io throttle can only work for single bio
+>    blk-throttle: prevent overflow while calculating wait time
+>    blk-throttle: factor out code to calculate ios/bytes_allowed
+>    blk-throttle: fix io hung due to configuration updates
+>    blk-throttle: improve handling of re-entered bio for bps limit
+>    blk-throttle: use 'READ/WRITE' instead of '0/1'
+>    blk-throttle: calling throtl_dequeue/enqueue_tg in pairs
+>    blk-throttle: cleanup tg_update_disptime()
+>    blk-throttle: clean up flag 'THROTL_TG_PENDING'
+> 
+>   block/blk-throttle.c | 175 ++++++++++++++++++++++++++++++-------------
+>   block/blk-throttle.h |  20 ++++-
+>   2 files changed, 139 insertions(+), 56 deletions(-)
+> 
 
-
-Won't the memcg_kmem_enabled() check also cause a problem in that same
-scenario (e.g. if CONFIG_MEMCG_KMEM=n)? or am I missing something
-here?
-
->
-> > >               return NULL;
-> > >
-> > >       if (PageMemcgKmem(page)) {
-> > > --
-> > > 2.32.0 (Apple Git-132)
-> > >
-> >
-> > Hi Li!
-> >
-> > The fix looks good to me! As we get objcg pointer from a page and not from
-> > the current task, memcg_kmem_bypass() doesn't makes much sense.
-> >
-> > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> >
-> > Probably, we need to add
-> > Fixes: f4840ccfca25 ("zswap: memcg accounting")
-> >
-> > Thank you!
->
-> You can add:
->
-> Acked-by: Shakeel Butt <shakeelb@google.com>
->
