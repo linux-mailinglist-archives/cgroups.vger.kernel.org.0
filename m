@@ -2,73 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A89A593033
-	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 15:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA4C59303F
+	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 15:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbiHONrc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Aug 2022 09:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
+        id S231578AbiHONwh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Aug 2022 09:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiHONrZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 09:47:25 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965271EEDB
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 06:47:24 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id l4so9109814wrm.13
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 06:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=Yns/Jpj95x/nJs+G87dScDOGDHWXu34AZre/Qatzji0=;
-        b=tdkveuBu6uaMJub+24M/znCUtI3DkObWNMw10VbS9Nd/vD8SzGgbPG38IsiEeqbxkx
-         v3WNuqJmqbWiuztrkUQHhrrykz3j04t5AbBbAmOGwR+3iZvGnZ4qj2wNYwDjhclPm/T3
-         yvvFwFHnbcx8SJ/4lIJK5+zhKaAZ7kT5LZ9QMswh7fdUtMlqTcauTcQFCgMCtGuXTM4x
-         hVhdsLvc0FSKpmTELK5Lxtu8mlm9ksa21N4HDWXQigzhdAqmuClT7WHe9WGXfrXKHuyv
-         xrTii1J3G3ZdH/w0tZWGUHSoyEaJphj3Z4dTmw/yLRw4bbftBtoucTKx8M6591O16k3h
-         QpDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=Yns/Jpj95x/nJs+G87dScDOGDHWXu34AZre/Qatzji0=;
-        b=mCQ4qPTvtcqPptIPeBddcuAbRftW0FoYfc+JZIokgLCOqeZtSKG0p2osOwxPpKMLav
-         kmkweMQ4+Fcfzm7H76O26Oi5x85lLp5euejaSXDCxrl6/+W3WmmyHZ3ZRP4v7eZfMvgg
-         dquImULyw/0g3ymI5eTET8rw+S3C8pCy2rMEosU81ZqVtRmyjDGOo4pvyVL08Xvw9nKf
-         l6A5PnY22Zwm6R8XB7cMDdbBkxogkJoqZC4/bmcOFOWtTJo/2q+V5BibamZY96AzfcPC
-         NwSL4giqpx5iPyNhvXTCRkfZi1aN0AUNrzPWiJxrsiXz4IC/MGl6E8jC1D3qjDOpCbIv
-         uqyQ==
-X-Gm-Message-State: ACgBeo0pJipHSrswh4Dye3PkKlr7UWjeeH+F9KbZlx4C1s6MJCXU5xrn
-        fIViJMNwlQZUVGPxzQtPMpmGBT68hGFC5gAt/moUfQ==
-X-Google-Smtp-Source: AA6agR4DOqHCZB04YdslrHQLwV2PFDkZOo7chPxQ87lDW+6PmW4Um6uzPKlV2MDf8WQMBUTWzl1zVobDEFlakYPOxpI=
-X-Received: by 2002:a5d:4b03:0:b0:220:6b87:8f0f with SMTP id
- v3-20020a5d4b03000000b002206b878f0fmr8949012wrq.534.1660571242998; Mon, 15
- Aug 2022 06:47:22 -0700 (PDT)
+        with ESMTP id S230022AbiHONwg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 09:52:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46589CE31
+        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 06:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660571553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A0Oy07t9HeUyM/chaHP6TWWJCl778sh8kflz1rnE6aw=;
+        b=eDnA3d+heaobCI949ZPWjhndOz0O/Zl8eOVMDAXSAtrjy/EoNPOAiSbGKMmnRrjAs6suSb
+        0KQjM+7Xe46x09zLDxYxV/7ywTdqNpWqzSAGT/m2XOe5LKW9SOwsnRPQHbNcgUbO6r3oHh
+        dKo1P/9I9rMxTsG3nzfuw1MDDIImuh8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-327-PUbTJFO-OteY8AhLfq8DEw-1; Mon, 15 Aug 2022 09:52:29 -0400
+X-MC-Unique: PUbTJFO-OteY8AhLfq8DEw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C74CB101A592;
+        Mon, 15 Aug 2022 13:52:28 +0000 (UTC)
+Received: from [10.18.17.215] (dhcp-17-215.bos.redhat.com [10.18.17.215])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DB5002166B29;
+        Mon, 15 Aug 2022 13:52:27 +0000 (UTC)
+Message-ID: <401bae73-3063-e0ab-c288-2c6e3be75fc5@redhat.com>
+Date:   Mon, 15 Aug 2022 09:52:27 -0400
 MIME-Version: 1.0
-References: <20220811081913.102770-1-liliguang@baidu.com> <YvWa9MOQWBICInjO@P9FQF9L96D.corp.robot.car>
- <CALvZod4nnn8BHYqAM4xtcR0Ddo2-Wr8uKm9h_CHWUaXw7g_DCg@mail.gmail.com>
- <CAJD7tkbrCNDMkE8dJDWHiTfi=nJJzrZwepaWb3YioRHMrSEuQA@mail.gmail.com>
- <1704B09B-F758-47DF-BDDE-FEA9AB227E12@baidu.com> <CAJD7tkaW7qtaNpc3UHuQAcJAjdjzjmWZCqCMafT-nUES+2QtYg@mail.gmail.com>
- <E0E6FD3B-242B-4187-B4B4-9D4496A5B19A@baidu.com>
-In-Reply-To: <E0E6FD3B-242B-4187-B4B4-9D4496A5B19A@baidu.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 15 Aug 2022 06:46:46 -0700
-Message-ID: <CAJD7tkYdJrakJGp8XMt49ixZJuf=qpGm=vSxH6G_GWeenk35dQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: correctly charge compressed memory to its memcg
-To:     "Li,Liguang" <liliguang@baidu.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v3 1/3] sched: Use user_cpus_ptr for saving user provided
+ cpumask in sched_setaffinity()
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20220812203929.364341-1-longman@redhat.com>
+ <20220812203929.364341-2-longman@redhat.com>
+ <YvoKa3tbOaszsp1y@worktop.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <YvoKa3tbOaszsp1y@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,116 +76,39 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 4:48 AM Li,Liguang <liliguang@baidu.com> wrote:
->
->
-> > =E5=9C=A8 2022/8/15 =E4=B8=8B=E5=8D=884:10=EF=BC=8C=E2=80=9CYosry Ahmed=
-=E2=80=9D<yosryahmed@google.com> =E5=86=99=E5=85=A5:
-> >
-> > On Sun, Aug 14, 2022 at 7:52 PM Li,Liguang <liliguang@baidu.com> wrote:
-> > >
-> > > =E5=9C=A8 2022/8/13 =E4=B8=8A=E5=8D=888:44=EF=BC=8C=E2=80=9CYosry Ahm=
-ed=E2=80=9D<yosryahmed@google.com> =E5=86=99=E5=85=A5:
-> > >
-> > > > On Fri, Aug 12, 2022 at 2:56 PM Shakeel Butt <shakeelb@google.com> =
-wrote:
-> > > > >
-> > > > > +Andrew & linux-mm
-> > > > >
-> > > > > On Thu, Aug 11, 2022 at 5:12 PM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
-> > > > > >
-> > > > > > On Thu, Aug 11, 2022 at 04:19:13PM +0800, liliguang wrote:
-> > > > > > > From: Li Liguang <liliguang@baidu.com>
-> > > > > > >
-> > > > > > > Kswapd will reclaim memory when memory pressure is high, the
-> > > > > > > annonymous memory will be compressed and stored in the zpool
-> > > > > > > if zswap is enabled. The memcg_kmem_bypass() in
-> > > > > > > get_obj_cgroup_from_page() will bypass the kernel thread and
-> > > > > > > cause the compressed memory not charged to its memory cgroup.
-> > > > > > >
-> > > > > > > Remove the memcg_kmem_bypass() and properly charge compressed
-> > > > > > > memory to its corresponding memory cgroup.
-> > > > > > >
-> > > > > > > Signed-off-by: Li Liguang <liliguang@baidu.com>
-> > > > > > > ---
-> > > > > > >  mm/memcontrol.c | 2 +-
-> > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > > > > index b69979c9ced5..6a95ea7c5ee7 100644
-> > > > > > > --- a/mm/memcontrol.c
-> > > > > > > +++ b/mm/memcontrol.c
-> > > > > > > @@ -2971,7 +2971,7 @@ struct obj_cgroup *get_obj_cgroup_from_=
-page(struct page *page)
-> > > > > > >  {
-> > > > > > >       struct obj_cgroup *objcg;
-> > > > > > >
-> > > > > > > -     if (!memcg_kmem_enabled() || memcg_kmem_bypass())
-> > > > > > > +     if (!memcg_kmem_enabled())
-> > > >
-> > > >
-> > > > Won't the memcg_kmem_enabled() check also cause a problem in that s=
-ame
-> > > > scenario (e.g. if CONFIG_MEMCG_KMEM=3Dn)? or am I missing something
-> > > > here?
-> > > >
-> > >
-> > > Please notes that the return value is a pointer to obj_cgroup, not me=
-mcg.
-> > > If CONFIG_MEMCG_KMEM=3Dn or memcg kmem charge is disabled, the NULL n=
-eed
-> > > to be returned.
-> > >
-> >
-> > Right. I am not implying that the check should be removed, or that
-> > this is something this patch should address for that matter.
-> >
-> > I just realized while looking at this patch that because we are using
-> > objcg in zswap charging, it is dependent on memcg kmem charging. I am
-> > not sure I understand if such dependency is needed? IIUC swapped out
-> > pages hold references to the memcg they are charged to anyway, so why
-> > do we need to use objcgs in charging zswap? I feel like I am missing
-> > something.
-> >
->
-> The compressed size of swapped out pages is nearly a quarter of its RAM,
-> and a page in the zswap can store multiple compressed swapped out
-> pages. So objcg is used here.
->
-> Please check this post for more information.
-> https://lore.kernel.org/lkml/20220510152847.230957-1-hannes@cmpxchg.org/T=
-/#mbd0254ffd377bf843ac50850bf0a6d41505a925a
 
-Yeah I understand this much, what I don't understand is why we charge
-the zswap memory through objcg (thus tying it to memcg kmem charging)
-rather than directly through memcg.
+On 8/15/22 04:57, Peter Zijlstra wrote:
+> On Fri, Aug 12, 2022 at 04:39:27PM -0400, Waiman Long wrote:
+>> The user_cpus_ptr field is added by commit b90ca8badbd1 ("sched:
+>> Introduce task_struct::user_cpus_ptr to track requested affinity"). It
+>> is currently used only by arm64 arch due to possible asymmetric cpu
+>> setup. This patch extends its usage to save user provided cpumask when
+>> sched_setaffinity() is called for all arches.
+>>
+>> To preserve the existing arm64 use case, a new cpus_affinity_set flag is
+>> added to differentiate if user_cpus_ptr is set up by sched_setaffinity()
+>> or by force_compatible_cpus_allowed_ptr(). user_cpus_ptr
+>> set by sched_setaffinity() has priority and won't be
+>> overwritten by force_compatible_cpus_allowed_ptr() or
+>> relax_compatible_cpus_allowed_ptr().
+> What why ?! The only possible case where
+> restrict_cpus_allowed_ptr() will now need that weird new state is when
+> the affinity has never been set before, in that case cpus_ptr should be
+> possible_mask.
 
->
-> > > > >
-> > > > > > >               return NULL;
-> > > > > > >
-> > > > > > >       if (PageMemcgKmem(page)) {
-> > > > > > > --
-> > > > > > > 2.32.0 (Apple Git-132)
-> > > > > > >
-> > > > > >
-> > > > > > Hi Li!
-> > > > > >
-> > > > > > The fix looks good to me! As we get objcg pointer from a page a=
-nd not from
-> > > > > > the current task, memcg_kmem_bypass() doesn't makes much sense.
-> > > > > >
-> > > > > > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> > > > > >
-> > > > > > Probably, we need to add
-> > > > > > Fixes: f4840ccfca25 ("zswap: memcg accounting")
-> > > > > >
-> > > > > > Thank you!
-> > > > >
-> > > > > You can add:
-> > > > >
-> > > > > Acked-by: Shakeel Butt <shakeelb@google.com>
-> > > > >
-> > >
->
+Since I don't have a full history for this particular patch series that 
+add user_cpus_ptr, I am hesitant to change the current behavior for 
+arm64 systems. However, given the statement that user_cpus_ptr is for 
+tracking "requested affinity" which I assume is when user applications 
+call sched_setaffinity(). It does make sense we may not really need this 
+if sched_setaffinity() is never called.
+
+
+> Please just make a single consistent rule and don't make weird corner
+> cases like this.
+
+I will take a closer look to try to simplify the rule here.
+
+Cheers,
+Longman
+
