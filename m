@@ -2,103 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D324595156
-	for <lists+cgroups@lfdr.de>; Tue, 16 Aug 2022 06:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122315951B1
+	for <lists+cgroups@lfdr.de>; Tue, 16 Aug 2022 07:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbiHPE4b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 00:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
+        id S231968AbiHPFKn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 01:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbiHPEyk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 00:54:40 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0071A6CCC
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 13:53:14 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id g16so4304035qkl.11
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 13:53:14 -0700 (PDT)
+        with ESMTP id S233223AbiHPFK3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 01:10:29 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C66D23D;
+        Mon, 15 Aug 2022 14:17:19 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id q7-20020a17090a7a8700b001f300db8677so7828843pjf.5;
+        Mon, 15 Aug 2022 14:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc;
-        bh=ej3T27wdcOl5hgxFKEEvscpLUDARFbq7IX1O4+1Fbq8=;
-        b=D1FeCaMz7nA4+mXWTiLJNZGsM0GYC5RqkboS4hyipJF5qWe15L7h4VEv79qdRdPXZd
-         XMLX7gSYQiXupQnRk3v1ylBIc1G2NZiA/aDebM/xZja/YCBoUvj5NGwF7mPDywLSvcZf
-         34m+/HO4Zi7TPc7ktxkRuVamuwUXU3wSFyt7tpjqLQgSWasm9+rtYElO8d3cONdA2FgT
-         mutsApmf2dbc5VaEyCNygOYDUyt1L/tdgcxz1CCIlL6UtxToPGYajkShZg2KSjULrwHE
-         I/QcK3JdlrJNn4QZiDNoGnyfDzTGcOJ7MXeUcZEhf9byhRfWXO0z8LkecLR5VVhpo/4k
-         Ld9Q==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=gWg73cYfI3vn4ljKPn4NYzrF9DqHWCnArM+29mdyT+I=;
+        b=JdnWdzKSg3O1vPGcLmn7GlIHnJU/Z/J6io8Fo9ke8TmxNBQVwOYCBoi66M69jVhNAb
+         +9wgMaaslDSuSEQUV5pfj52eY1qRUbZ/LS4Z9UwUHPjivwimi+teLl0IixZ77o7nKeaO
+         dUnInH76iDFaiADer3fl19//dgpQ7cSvpFJAb2rPPVX7xS1S87WXZay9b3LRUOHqOar+
+         xRF7l3DTI4EgW15ppokevTzJQTlke5q3Zm35MpdrMsOJq45vXPM3U8eswj6d7vgLeMhu
+         uRJ5C4SKERyaTiDg7tN3KphglynvwlIZSAlXnAkUo/K1Zk5SR8+9WqhJVymF9vEN/TCN
+         hAXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=ej3T27wdcOl5hgxFKEEvscpLUDARFbq7IX1O4+1Fbq8=;
-        b=tWpxEvZH9BWVJ/k7ducixGGgdoK2M7wsAredsOkWTEX2XgS2ReAT3egfCjHZbnXUaa
-         teGN5dFehlJ0ziTWqSMqRnANwD5Sme8b6WHr0cl2fldsB6SdrQctLnsh3ZBO4RtJw4nG
-         P5MHlhxA5pVTyOtKcwrgPsCtvPLStrPJ0l/ig7Xn8KvcmmpLq4b0rGa/3An72RgnpIf8
-         ErbU0kSVmgGTG3tYQLnyLDOLgquhoN/7GVG2WSravCHcQ6FhdtxaL/aaCtgbj+V4KFsq
-         l09BeBO6AZ5S5mjqWeEUIZeHKF/1LINv0F7x5a1x+JETteFDupY+Hnu/8KrtJGL8hzcn
-         tSGQ==
-X-Gm-Message-State: ACgBeo0n7/C6m0ugpmKtsROPp6Tt/SScbcsOpYD2kCAWR1nJgro5nFJf
-        Qfk2SERzKKLk7jWCcdGmqktkb9Wc8LLUaoKGDwM=
-X-Google-Smtp-Source: AA6agR7kaA5dYnHibd6JhOYmNRaDZcAAkknb1ao/4FpYnQkvjzm1WMC3vkVYCaERBCo+VY8fb6g9saFj8NWbliVjViM=
-X-Received: by 2002:a05:620a:126c:b0:6bb:29b6:e309 with SMTP id
- b12-20020a05620a126c00b006bb29b6e309mr4915855qkl.516.1660596793897; Mon, 15
- Aug 2022 13:53:13 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=gWg73cYfI3vn4ljKPn4NYzrF9DqHWCnArM+29mdyT+I=;
+        b=SVpTQPwQw5H6WappGElqMErDR9XYq8yqJQwpUx3j9/ymvqPTLe9QsO3xepERZ6dLe4
+         Bf6oaf+Xo19vbM0DTjhVmWNc9TpMa8VWLn5KaXhHB0WZzrt2kOBuhJ9UQPl3S7M6nmH/
+         1NJfSVcnueAYOOoSZ578s4u3AOOuQWIRBkyjyuyEYHA7pfU3I10wtxjyVG1+58IbQFFM
+         zRBUdIEUFsTCrtFpRQsadDLb/4hWjFeA3WcrQLFgrXDzZvmHU5bOLmgGrrhJYjHGLaBs
+         K1sDK/MdnTMsKkdLj88lW8W0IWlD8mVQi+JS2V/jz98Bu1FHHxbvz4l9GJ8e5sIoSjVA
+         MH0A==
+X-Gm-Message-State: ACgBeo2I0TfpXk3bmyw3qy1tFCm1MJw3ZLwbM2ItKJ0rBzAAacLliihV
+        YF73idRaVyZPruo9dvKj1JHCZq9/kf0=
+X-Google-Smtp-Source: AA6agR5mZ4yUj2OIUywAQUhn9sLjDDE0zs2XVNVDH0HtX3bSYz1GS4zEzTW7gZk/pWDAhRVVyQIj3w==
+X-Received: by 2002:a17:902:c405:b0:170:88b3:c108 with SMTP id k5-20020a170902c40500b0017088b3c108mr19034977plk.172.1660598238617;
+        Mon, 15 Aug 2022 14:17:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:3a69])
+        by smtp.gmail.com with ESMTPSA id f7-20020a623807000000b0052acb753b8bsm6901114pfa.158.2022.08.15.14.17.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Aug 2022 14:17:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 15 Aug 2022 11:17:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Namhyung Kim <namhyung@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH v3 cgroup/for-5.20] cgroup: Replace
+ cgroup->ancestor_ids[] with ->ancestors[]
+Message-ID: <Yvq33G14AU0cuswB@slm.duckdns.org>
+References: <YuQvcCrcgNWbtndU@slm.duckdns.org>
+ <YuRJ7uzKY5/fokH5@slm.duckdns.org>
+ <YuRo2PLFH6wLgEkm@slm.duckdns.org>
 MIME-Version: 1.0
-Received: by 2002:ab3:ef88:0:b0:46d:3a61:256e with HTTP; Mon, 15 Aug 2022
- 13:53:13 -0700 (PDT)
-Reply-To: wijh555@gmail.com
-From:   "Prof. Chin Guang" <dmitrybogdanv07@gmail.com>
-Date:   Mon, 15 Aug 2022 13:53:13 -0700
-Message-ID: <CAPi14yJdzgN96+k0HsCyo_FoQrYX7vGgdDufFziwOX9rqeC6-Q@mail.gmail.com>
-Subject: Good Day,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:736 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5058]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [wijh555[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [dmitrybogdanv07[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [dmitrybogdanv07[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YuRo2PLFH6wLgEkm@slm.duckdns.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
--- 
-Hello,
-We the Board Directors believe you are in good health, doing great and
-with the hope that this mail will meet you in good condition, We are
-privileged and delighted to reach you via email" And we are urgently
-waiting to hear from you. and again your number is not connecting.
+On Fri, Jul 29, 2022 at 01:10:16PM -1000, Tejun Heo wrote:
+> Every cgroup knows all its ancestors through its ->ancestor_ids[]. There's
+> no advantage to remembering the IDs instead of the pointers directly and
+> this makes the array useless for finding an actual ancestor cgroup forcing
+> cgroup_ancestor() to iteratively walk up the hierarchy instead. Let's
+> replace cgroup->ancestor_ids[] with ->ancestors[] and remove the walking-up
+> from cgroup_ancestor().
+> 
+> While at it, improve comments around cgroup_root->cgrp_ancestor_storage.
+> 
+> This patch shouldn't cause user-visible behavior differences.
+> 
+> v2: Update cgroup_ancestor() to use ->ancestors[].
+> 
+> v3: cgroup_root->cgrp_ancestor_storage's type is updated to match
+>     cgroup->ancestors[]. Better comments.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Sincerely,
-Prof. Chin Guang
+Applied to cgroup/for-6.1.
+
+-- 
+tejun
