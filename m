@@ -2,71 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE38592C18
-	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 12:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46C1592C06
+	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 12:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240849AbiHOJRd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Aug 2022 05:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        id S232903AbiHOJTF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Aug 2022 05:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232000AbiHOJRV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 05:17:21 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AF122528;
-        Mon, 15 Aug 2022 02:17:17 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id d14so9835379lfl.13;
-        Mon, 15 Aug 2022 02:17:17 -0700 (PDT)
+        with ESMTP id S231660AbiHOJTA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 05:19:00 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5A622508
+        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 02:18:59 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id z16so8358327wrh.12
+        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 02:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=eiqkvF+xYiNF2DpRXQeLPgqIYFAmFLS0V8w6NeOkAps=;
-        b=nLzwUzH1mFhYYOp7STOZsHfn7f2SW3Gl6xJ8vP+9vPX2YAZB2C6OlzaSKAeYnmAQv1
-         1PdjeD/WpfSf7CrTfALpgrSOS4Z5IcOcuc/ZJTLrj+ypqyWlP8AusY08hpNwC6czmjy0
-         zc3VJeNGhdWq/xRoIuGB7Kygb2vskfasVGLXx0rbvEwJgKMLskTKjBNlQ388bRI6Mpcf
-         RvjU2kUboC2pvVZnkXL00TmNZnpEmLvxb59g9DI9T5v/teeX3DQaOM+ybyPGLI1qOL7l
-         Ys5Ddw4/L4rYxBm9Vvmxcq23T86HxaW/lYWcHNVjV0cjAhfpCGgmjCbWXyayuOFE9Om/
-         oqWw==
+        bh=OOL4Y5kIDK4GpzcnTvXTZTdG7FAR6zzCfj7Cij1BefI=;
+        b=CT2aSa6BZY94dkNNot3yaqnr3j9O7orSKuwxILRsqvRnd8WvEpXenBNae1eQ3He/Vr
+         3AhSFAuhYY2hqrnn0IDDF0KHetLNrj4QcIGdxSVAjSYmODvxB/brvk0Zl7qi20uhok1U
+         L8Vaasnomd+kIjC2rkJJhN7AU6emb3HjWMmp7U1Vlx8usn0ap0gN9exTvoztmuHkK+uZ
+         bbG7qHXipz8305jwg9NNwjHODD3YuBTXoLQlVrnf796/Ss23Cy7QGESwKPeZDSbvamLV
+         pmcUj/wRO29vXhL6WEKTuroMzefWNmVuDRvkPNn4jz3RLjyIYBjxzVAIO2YyineAt7Js
+         iEhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=eiqkvF+xYiNF2DpRXQeLPgqIYFAmFLS0V8w6NeOkAps=;
-        b=nCz0ovPiC8u3aMwwcLR9eiegH+kRAWzmqzTr+zvOppZUqgG0Z4qDNpG8j6ahVJ9d6Q
-         Z4itMMY/N1wu0xKxK8Q68t7iVVWwkTxv0pPZokRenzk6eMa8Vjvhdv9FkSK4DPon71SK
-         Ydspf3lCeh9Chb91nWxUoK49m/UFER4zdu4Cf8PREJDxbaKnQCFYlL9jV8X3zYPkvjqk
-         3mXqR0fL5UAnQLmOHaPxyOWw/RxbhwCJ6StVP00bffkx3dQOXCC/jzE+q0CAY+mN41kJ
-         qh9UJ4lhUODH/YQWwSm8vjOXpf9mQM+D0aUgN6nUwUGsy6DUKJ0tsmWafn+UUbGS6uDf
-         R8dw==
-X-Gm-Message-State: ACgBeo1FcuAdcwZXVKzdgSrPF44ZT0Qp2vsmtz3RVD7/aUBc8U8/FuYr
-        Ji/rtghYLE77Hng4G2QKtaqEO0t+W+8XYFJgQAM=
-X-Google-Smtp-Source: AA6agR6NRl73OVz82MXGLJl9DCyFw+Kd1gGiZOJDreYij/FP+Eg+bC+4oLHzg/8uCquuCYWlmwyz99uA1rF3z7USpMI=
-X-Received: by 2002:ac2:4e4f:0:b0:48c:e6b6:9d7e with SMTP id
- f15-20020ac24e4f000000b0048ce6b69d7emr4850618lfr.128.1660555035731; Mon, 15
- Aug 2022 02:17:15 -0700 (PDT)
+        bh=OOL4Y5kIDK4GpzcnTvXTZTdG7FAR6zzCfj7Cij1BefI=;
+        b=vnwzqO7DSE9dOLvuCfU7blkETSezU9xgmUGlpGTCWRUEXsQi6q5niUL4rgdQyiiS6o
+         JEYT1QnEC5f5BcAmLmJY80y9ZolNiPveAlndlPQhQO6/TMapGVRk+yPHWs4k0mHEbvds
+         uDbMNXMZj4aIBoFsYXx2q2sP1/i6/fxTUTJD0ETKGnwh73dAY+HIH2Bml9xVL8Q1VVSA
+         Dv3yMAZv0NN+9nIuriQ2woUfF6xXIGiOHLKdHkZnqbue16sYTvYVPtBMtesztya/wPqA
+         lxY+o80KOzhobBBPahODckvoajbu6GWrNzYuQl87woNaGr830yYkKqDMXtv8l/4eRVbY
+         +G4w==
+X-Gm-Message-State: ACgBeo1YBl64sX/edpB0xRGeCPwzaeKxuGzxHpvpks3rafOM1epa7Ub/
+        c+vkoHuKQaaWoWnKSi4OaUb3FYynLLvaq6fESepwYQ==
+X-Google-Smtp-Source: AA6agR4QK9DrJvHonI1zBR+KQRhkzI0CIqlFVXf7sQNjUkmnKeVQNB5PPIgTmo8PY85gS3TgTEj3HFWKmVMVmO9RYPA=
+X-Received: by 2002:a5d:5a82:0:b0:224:f744:1799 with SMTP id
+ bp2-20020a5d5a82000000b00224f7441799mr854866wrb.582.1660555137638; Mon, 15
+ Aug 2022 02:18:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <1660298966-11493-1-git-send-email-zhaoyang.huang@unisoc.com>
- <YvakpukeF9d35Bc8@slm.duckdns.org> <CAGWkznG6n=+v7hUKR8Rmg8VEF=BTDegk8bh6aHfvOU5TbmeXDw@mail.gmail.com>
- <CAGWkznHa9WTV2oK=HB1OVEdKeMZ1V2omDDiNrRdyBdyYd=q5Fg@mail.gmail.com>
-In-Reply-To: <CAGWkznHa9WTV2oK=HB1OVEdKeMZ1V2omDDiNrRdyBdyYd=q5Fg@mail.gmail.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Mon, 15 Aug 2022 17:17:03 +0800
-Message-ID: <CAGWkznEQ_njmNt8usr-DyaiYDAHJE-niC2QxoXPQkDqY7v_Mqg@mail.gmail.com>
-Subject: Re: [RFC PATCH] cgroup: use root_mem_cgroup as css when current is
- not enabled
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+References: <20220628220938.3657876-1-yosryahmed@google.com>
+ <20220628220938.3657876-2-yosryahmed@google.com> <YsdJPeVOqlj4cf2a@google.com>
+ <CAJD7tkYE+pZdk=-psEP_Rq_1CmDjY7Go+s1LXm-ctryWvUdgLA@mail.gmail.com>
+ <Ys3+UTTC4Qgbm7pQ@google.com> <CAJD7tkY91oiDWTj5FY2Upc5vabsjLk+CBMNzAepXLUdF_GS11w@mail.gmail.com>
+ <CAJD7tkbc+E7f+ENRazf0SO7C3gR2bHiN4B0F1oPn8Pa6juAVfg@mail.gmail.com>
+In-Reply-To: <CAJD7tkbc+E7f+ENRazf0SO7C3gR2bHiN4B0F1oPn8Pa6juAVfg@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 15 Aug 2022 02:18:20 -0700
+Message-ID: <CAJD7tkY5SfdhC7-4B7QuJGUVj_Ts+xwCP5FUZ-Lvg=fd1p_xAQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sean Christopherson <seanjc@google.com>, Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        Ke Wang <ke.wang@unisoc.com>,
         Zefan Li <lizefan.x@bytedance.com>,
-        Suren Baghdasaryan <surenb@google.com>
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Shaoqin <shaoqin.huang@intel.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,78 +90,64 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 9:38 AM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+On Mon, Aug 8, 2022 at 1:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 >
-> On Sun, Aug 14, 2022 at 2:40 PM Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
+> On Mon, Jul 18, 2022 at 11:26 AM Yosry Ahmed <yosryahmed@google.com> wrote:
 > >
-> > On Sat, Aug 13, 2022 at 3:06 AM Tejun Heo <tj@kernel.org> wrote:
+> > On Tue, Jul 12, 2022 at 4:06 PM Sean Christopherson <seanjc@google.com> wrote:
 > > >
-> > > On Fri, Aug 12, 2022 at 06:09:26PM +0800, zhaoyang.huang wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > > On Tue, Jul 12, 2022, Yosry Ahmed wrote:
+> > > > Thanks for taking another look at this!
 > > > >
-> > > > Memory charged on group B abserved on belowing v2 hierarchy where we just would
-> > > > like to only have group E's memory be controlled and B's descendants compete freely
-> > > > for memory. This should be the consequences of unified hierarchy. Solve this by
-> > > > have the cgroup without valid memory css alloced use root_mem_cgroup instead of
-> > > > its ancestor's.
+> > > > On Thu, Jul 7, 2022 at 1:59 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > > >
+> > > > > On Tue, Jun 28, 2022, Yosry Ahmed wrote:
+> > > > > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > > > > > index aab70355d64f3..13190d298c986 100644
+> > > > > > --- a/include/linux/mmzone.h
+> > > > > > +++ b/include/linux/mmzone.h
+> > > > > > @@ -216,6 +216,7 @@ enum node_stat_item {
+> > > > > >       NR_KERNEL_SCS_KB,       /* measured in KiB */
+> > > > > >  #endif
+> > > > > >       NR_PAGETABLE,           /* used for pagetables */
+> > > > > > +     NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
+> > > > >
+> > > > > Nit, s/kvm/KVM, and drop the "shadow", which might be misinterpreted as saying KVM
+> > > > > pagetables are only accounted when KVM is using shadow paging.  KVM's usage of "shadow"
+> > > > > is messy, so I totally understand why you included it, but in this case it's unnecessary
+> > > > > and potentially confusing.
+> > > > >
+> > > > > And finally, something that's not a nit.  Should this be wrapped with CONFIG_KVM
+> > > > > (using IS_ENABLED() because KVM can be built as a module)?  That could be removed
+> > > > > if another non-KVM secondary MMU user comes along, but until then, #ifdeffery for
+> > > > > stats the depend on a single feature seems to be the status quo for this code.
+> > > > >
 > > > >
-> > > >  A(subtree_control = memory) - B(subtree_control = NULL) - C()
-> > > >                                                          \ D()
-> > > >                            - E(subtree_control = memory) - F()
-> > > >                                                          \ G()
-> > > >
-> > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > ---
-> > > >  kernel/cgroup/cgroup.c | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> > > > index 1779ccd..b29b3f6 100644
-> > > > --- a/kernel/cgroup/cgroup.c
-> > > > +++ b/kernel/cgroup/cgroup.c
-> > > > @@ -533,6 +533,14 @@ static struct cgroup_subsys_state *cgroup_e_css_by_mask(struct cgroup *cgrp,
-> > > >        * can't test the csses directly.  Test ss_mask.
-> > > >        */
-> > > >       while (!(cgroup_ss_mask(cgrp) & (1 << ss->id))) {
-> > > > +             /*
-> > > > +              * charging to the parent cgroup which hasn't distribute
-> > > > +              * memory control to its descendants doesn't make sense
-> > > > +              * especially on cgroup v2, where the parent could be configured
-> > > > +              * to use memory controller as its sibling want to use it
-> > > > +              */
-> > > > +             if (memory_cgrp_id == ss->id)
-> > > > +                     return &root_mem_cgroup->css;
+> > > > I will #ifdef the stat, but I will emphasize in the docs that is
+> > > > currently *only* used for KVM so that it makes sense if users without
+> > > > KVM don't see the stat at all. I will also remove the stat from
+> > > > show_free_areas() in mm/page_alloc.c as it seems like none of the
+> > > > #ifdefed stats show up there.
 > > >
-> > > This is gonna be a hard nack. A given cgroup always encompasses all the
-> > > resources consumed in its self-including subtree.
-> > >
-> > > Thanks.
-> > IMHO, I would like to say if it makes more sense as "A given cgroup
-> > always encompasses all the resources consumed in its ENABLED
-> > self-including subtree." Otherwise, how should I couple with the
-> > scenarios I raised in the commit message which I prefer parts of the
-> > subtrees compete for "memory" while others are free for it. The free
-> > here is not only without "min/low/high watermarks" but also not
-> > charged to their own LRU.
-> I would like to state more why these make sense. Memory cgroup is a
-> little bit different to other cgroups, that is, memcg will have real
-> physical resources attached, say pages. From perspective of memory
-> reclaiming, it is odd to find that pages under free memcgs are charged
-> to separate LRUs but without any management(no watermark control) and
-> perhaps affect workingset mechanism by LRU reason. Furthermore, v2
-> should grant the groups with the right to reject the subsys which
-> introduced by sibling enable, which could be deemed as v2's
-> inconvenient. The memcg could also apply subtree_control to enroll all
-> memory back whenever it want.
-As suggested by zefan, raise the practical scenario here to make more
-sense. The issue is observed in android system where per-app cgroup is
-demanded by freezer subsys and part of them require memory control.
-Under this scenario, less efficient memory reclaim is observed when
-comparing with no memory control. It is believed that multi LRU
-scanning introduces some of the overhead. Furthermore, page thrashing
-is also heavier than global LRU which could be the consequences of
-partial failure of WORKINGSET mechanism as LRU is too short to protect
-the active pages.
-> > >
-> > > --
-> > > tejun
+> > > It's might be worth getting someone from mm/ to weigh in before going through the
+> > > trouble, my suggestion/question is based purely on the existing code.
+> >
+> > Any mm folks with an opinion about this?
+> >
+> > Any preference on whether we should wrap NR_SECONDARY_PAGETABLE stats
+> > with #ifdef CONFIG_KVM for now as it is currently the only source for
+> > this stat?
+>
+> Any input here?
+>
+> Johannes, you have been involved in discussions in earlier versions of
+> this series, any thoughts here?
+
+Andrew, do you have an opinion on this? If not, I will send a v7 with
+the nits discussed with Sean. I think otherwise this series has
+sufficient ACKs.
+
+Would this be merged through the mm tree or kvm tree? This was based
+on the kvm/queue branch but I think I can rebase it on top of
+mm-unstable, I think all dependencies that this would have added in
+kvm/queue would have been fanned to mm by now.
