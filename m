@@ -2,118 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A58E5930AC
-	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 16:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D876593113
+	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 16:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243014AbiHOO0K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Aug 2022 10:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
+        id S230189AbiHOO4X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Aug 2022 10:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243009AbiHOO0J (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 10:26:09 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2CA165B2;
-        Mon, 15 Aug 2022 07:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1ak0A9KD/FjrZcz3FKKCRHXNxZoMyEi6sn1tq4sEH4A=; b=Dfu8yp2ZRYkQ/bfgOWouSCakGM
-        FjtLjQvxl3pasiUTCcrmRFuGn2zFi7ovA1A2cC9loQ+tZTKkdcp3RUsnWYRsbTttHCmKFBpkzYWDi
-        airkFO86qhar9Q3Q7Npcyw/40fMvrGbK60+ILK2kediue/BA8kN/iGVpgj0VgdK7htSUWb5GPwe3o
-        tzV1BiMm4b3FA647u8t5sYg/YisnRLNMHqXUV3LORoLBMjefO+T8sOk9/TJ3VbjxAQlWzvaJuX+cb
-        Ny2aRkCU0DV64v9NEIT4JiwK3fnN+idFW3Oq1Pbmj46oDAqrCUGeRRXvipGxj5KCN58KZecK+VVKv
-        r61XLiGg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oNb2O-002gii-NC; Mon, 15 Aug 2022 14:25:52 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7C972980153; Mon, 15 Aug 2022 16:25:50 +0200 (CEST)
-Date:   Mon, 15 Aug 2022 16:25:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v3 1/3] sched: Use user_cpus_ptr for saving user provided
- cpumask in sched_setaffinity()
-Message-ID: <YvpXbofPloXkHWdq@worktop.programming.kicks-ass.net>
-References: <20220812203929.364341-1-longman@redhat.com>
- <20220812203929.364341-2-longman@redhat.com>
- <YvoKa3tbOaszsp1y@worktop.programming.kicks-ass.net>
- <401bae73-3063-e0ab-c288-2c6e3be75fc5@redhat.com>
+        with ESMTP id S229628AbiHOO4W (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 10:56:22 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1EC193E7;
+        Mon, 15 Aug 2022 07:56:22 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27FEoOiB016475;
+        Mon, 15 Aug 2022 14:56:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=JulapoFWk3dxtqxAH3G3jT1Nroa70FxVbmz4oDd1F2c=;
+ b=KR5sGZsx9MVkU2CoNuIQ426wYA8fwqUy4Rpy8RLT4lDjCKH8w37qfW3vGnQu9oonxR9m
+ H2fQPe7gbMc7dC1Zosg2Z2Um8cO0jrqldfxAeTImQ2CtUKYEVviXM0jmLHpaSxYhS3hv
+ FEquYyY1wJhIovoaqqRl3rFZ1E5pZMDheojt3tt0FWM/Zyesyvoi0MjqPXFJbHmYYwDe
+ s7FS3ZWBEHNMgSe0/B2Qg0KPgwJ9/h/TQ5p1TAwRIPuSTFlqZHeMP1Rcreyic2icI/Na
+ E8G9Pjn+Q78Hymy3YbyGS68kf6R0rE5wcCZQV5GSo/J+MVuAuRlOveIJ74IUqyJeNkPI FQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3hx3j6dcpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Aug 2022 14:56:10 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 27FEu9a9009487
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Aug 2022 14:56:09 GMT
+Received: from [10.216.30.233] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Mon, 15 Aug
+ 2022 07:56:05 -0700
+Message-ID: <4323bf73-7a29-7a0e-55ef-b75fcfa76414@quicinc.com>
+Date:   Mon, 15 Aug 2022 20:26:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <401bae73-3063-e0ab-c288-2c6e3be75fc5@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH v2 linux-next] mm: memcontrol: Fix a typo in comment
+Content-Language: en-US
+To:     <cgel.zte@gmail.com>, <hannes@cmpxchg.org>
+CC:     <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+        <shakeelb@google.com>, <songmuchun@bytedance.com>,
+        <akpm@linux-foundation.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        xupanda <xu.panda@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+References: <20220815065102.74347-1-xu.panda@zte.com.cn>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20220815065102.74347-1-xu.panda@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1qgREuCf1UUNqucLSo7q3YkWp08jjpjR
+X-Proofpoint-ORIG-GUID: 1qgREuCf1UUNqucLSo7q3YkWp08jjpjR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-15_08,2022-08-15_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 phishscore=0
+ bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2208150058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 09:52:27AM -0400, Waiman Long wrote:
+
+On 8/15/2022 12:21 PM, cgel.zte@gmail.com wrote:
+> From: xupanda <xu.panda@zte.com.cn>
 > 
-> On 8/15/22 04:57, Peter Zijlstra wrote:
-> > On Fri, Aug 12, 2022 at 04:39:27PM -0400, Waiman Long wrote:
-> > > The user_cpus_ptr field is added by commit b90ca8badbd1 ("sched:
-> > > Introduce task_struct::user_cpus_ptr to track requested affinity"). It
-> > > is currently used only by arm64 arch due to possible asymmetric cpu
-> > > setup. This patch extends its usage to save user provided cpumask when
-> > > sched_setaffinity() is called for all arches.
-> > > 
-> > > To preserve the existing arm64 use case, a new cpus_affinity_set flag is
-> > > added to differentiate if user_cpus_ptr is set up by sched_setaffinity()
-> > > or by force_compatible_cpus_allowed_ptr(). user_cpus_ptr
-> > > set by sched_setaffinity() has priority and won't be
-> > > overwritten by force_compatible_cpus_allowed_ptr() or
-> > > relax_compatible_cpus_allowed_ptr().
-> > What why ?! The only possible case where
-> > restrict_cpus_allowed_ptr() will now need that weird new state is when
-> > the affinity has never been set before, in that case cpus_ptr should be
-> > possible_mask.
+> Fix a spelling mistake in comment.
 > 
-> Since I don't have a full history for this particular patch series that add
-> user_cpus_ptr, I am hesitant to change the current behavior for arm64
-> systems. However, given the statement that user_cpus_ptr is for tracking
-> "requested affinity" which I assume is when user applications call
-> sched_setaffinity(). It does make sense we may not really need this if
-> sched_setaffinity() is never called.
-
-So it comes from the asymmetric arm stuff, where only little cores can
-still run arm32 code. This means that on those machines, 32bit code
-needs to be contrained so a subset of CPUs.
-
-A direct consequence of that was that if you have any 32bit program in
-your process hierarchy, you loose the big cores from you affinity mask.
-
-For some reason that wasn't popular..  Hence the save/restore of cpumasks.
-
-> > Please just make a single consistent rule and don't make weird corner
-> > cases like this.
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: xupanda <xu.panda@zte.com.cn>
+> Signed-off-by: CGEL ZTE <cgel.zte@gmail.com>
 > 
-> I will take a closer look to try to simplify the rule here.
+> ---
+> Change for v2:
+>   - fix wrong title
+> ---
+> 
+>   mm/memcontrol.c     |  2 +-
+>   1 files changed, 1 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b69979c9ced5..4dddd8be320a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1143,7 +1143,7 @@ static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
+>   	} while ((memcg = parent_mem_cgroup(memcg)));
+>   
+>   	/*
+> -	 * When cgruop1 non-hierarchy mode is used,
+> +	 * When cgroup1 non-hierarchy mode is used,
 
-I think something like:
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-	mask = p->user_cpus_ptr;
-	if (!mask)
-		mask = &init_task.cpus_mask;
+-Mukesh
 
-	// impose cpuset masks
-
-should 'just-work'.
-
+>   	 * parent_mem_cgroup() does not walk all the way up to the
+>   	 * cgroup root (root_mem_cgroup). So we have to handle
+>   	 * dead_memcg from cgroup root separately.
