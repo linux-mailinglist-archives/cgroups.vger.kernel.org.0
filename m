@@ -2,152 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E46C1592C06
-	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 12:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BE0592CC5
+	for <lists+cgroups@lfdr.de>; Mon, 15 Aug 2022 12:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbiHOJTF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Aug 2022 05:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S233074AbiHOJ0I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Aug 2022 05:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbiHOJTA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 05:19:00 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5A622508
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 02:18:59 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id z16so8358327wrh.12
-        for <cgroups@vger.kernel.org>; Mon, 15 Aug 2022 02:18:59 -0700 (PDT)
+        with ESMTP id S230431AbiHOJ0G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Aug 2022 05:26:06 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F01613F8B;
+        Mon, 15 Aug 2022 02:26:05 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z6so9875998lfu.9;
+        Mon, 15 Aug 2022 02:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=OOL4Y5kIDK4GpzcnTvXTZTdG7FAR6zzCfj7Cij1BefI=;
-        b=CT2aSa6BZY94dkNNot3yaqnr3j9O7orSKuwxILRsqvRnd8WvEpXenBNae1eQ3He/Vr
-         3AhSFAuhYY2hqrnn0IDDF0KHetLNrj4QcIGdxSVAjSYmODvxB/brvk0Zl7qi20uhok1U
-         L8Vaasnomd+kIjC2rkJJhN7AU6emb3HjWMmp7U1Vlx8usn0ap0gN9exTvoztmuHkK+uZ
-         bbG7qHXipz8305jwg9NNwjHODD3YuBTXoLQlVrnf796/Ss23Cy7QGESwKPeZDSbvamLV
-         pmcUj/wRO29vXhL6WEKTuroMzefWNmVuDRvkPNn4jz3RLjyIYBjxzVAIO2YyineAt7Js
-         iEhA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=m64dCm5y6abMgyqwAQFCPVcLqHA6yb02EbRC6+noQbw=;
+        b=nnmZdSGgeYdNQlt7klf2KWrMATSS13t2yHEkVMt+x0DICtLrR28QtzNdoDTRaEmPom
+         z+Gs8Dqq57cX383CEv81ElNXe4hwEdFC/yx/espCw2xpTQameFuDpE7JbCuTbWB+Kbol
+         yO27DHFvxupX+VcmZM86sl6boJZeqggbNf4o8YzZtEaZQeYGSShIxAUkWIBfNtoTsM9T
+         Cr27BqXZo98/XfG56V1Yvc/jztezBrzouNmTZvHA/wtgonY4MU0pci1t+I+tRr3mf5HO
+         sdAx6MpIxbc1GK37dE/4nGERixFc6AjZOLsoU/8XHkj2Yc63r6S/c5WZxknVrcBXx/3D
+         7pig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=OOL4Y5kIDK4GpzcnTvXTZTdG7FAR6zzCfj7Cij1BefI=;
-        b=vnwzqO7DSE9dOLvuCfU7blkETSezU9xgmUGlpGTCWRUEXsQi6q5niUL4rgdQyiiS6o
-         JEYT1QnEC5f5BcAmLmJY80y9ZolNiPveAlndlPQhQO6/TMapGVRk+yPHWs4k0mHEbvds
-         uDbMNXMZj4aIBoFsYXx2q2sP1/i6/fxTUTJD0ETKGnwh73dAY+HIH2Bml9xVL8Q1VVSA
-         Dv3yMAZv0NN+9nIuriQ2woUfF6xXIGiOHLKdHkZnqbue16sYTvYVPtBMtesztya/wPqA
-         lxY+o80KOzhobBBPahODckvoajbu6GWrNzYuQl87woNaGr830yYkKqDMXtv8l/4eRVbY
-         +G4w==
-X-Gm-Message-State: ACgBeo1YBl64sX/edpB0xRGeCPwzaeKxuGzxHpvpks3rafOM1epa7Ub/
-        c+vkoHuKQaaWoWnKSi4OaUb3FYynLLvaq6fESepwYQ==
-X-Google-Smtp-Source: AA6agR4QK9DrJvHonI1zBR+KQRhkzI0CIqlFVXf7sQNjUkmnKeVQNB5PPIgTmo8PY85gS3TgTEj3HFWKmVMVmO9RYPA=
-X-Received: by 2002:a5d:5a82:0:b0:224:f744:1799 with SMTP id
- bp2-20020a5d5a82000000b00224f7441799mr854866wrb.582.1660555137638; Mon, 15
- Aug 2022 02:18:57 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=m64dCm5y6abMgyqwAQFCPVcLqHA6yb02EbRC6+noQbw=;
+        b=RT6YJPAJueei7w63vVPs9dVCRx4QBOfpXclsM4r//GL8EYpiBly6Xu4QKMs8NNVE6H
+         o8F4fHgrQt/4fAn0axpS/aDhv0q0qHnc090DR/mqNB4SLdLb7EayCyCjc58BOIKe6TIM
+         NGSirZkSUAXUmj5MGKMlr6oF1l357jLYtLHkaP9lowxWqqp/9zHu1kwb0TMLxC1Srf/X
+         QrYT1oRsKWRFaPpFl/1cieJS0ff7j8Jj2Qv/ilCYnXQxT1E924OwTEulNX8bCtI/HSLX
+         R7d3gJNpMw2i/pO/U9qorihpa5qt8qb2RUY7woVaDoDGemCtYHLh8ZwcB+EQr2xh1q8Q
+         eDkw==
+X-Gm-Message-State: ACgBeo3Y/6eknJtqCYI3SgozN9+pUujbs9w/KxY8UWWnIk0U9QE8VLkg
+        Kklc77WFYZcCtYfGwfxpN8YoLgZYwV5v7fiihYk=
+X-Google-Smtp-Source: AA6agR6CMLudliLU8DkPuETG1wkoC+cdz48zIm15B0wjSPjwtbMMftxqAWoUVL/mbhEco5kEFVzLgUqmqMD3Vr4rsnk=
+X-Received: by 2002:a05:6512:168d:b0:491:3206:b63 with SMTP id
+ bu13-20020a056512168d00b0049132060b63mr3115806lfb.149.1660555563305; Mon, 15
+ Aug 2022 02:26:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220628220938.3657876-1-yosryahmed@google.com>
- <20220628220938.3657876-2-yosryahmed@google.com> <YsdJPeVOqlj4cf2a@google.com>
- <CAJD7tkYE+pZdk=-psEP_Rq_1CmDjY7Go+s1LXm-ctryWvUdgLA@mail.gmail.com>
- <Ys3+UTTC4Qgbm7pQ@google.com> <CAJD7tkY91oiDWTj5FY2Upc5vabsjLk+CBMNzAepXLUdF_GS11w@mail.gmail.com>
- <CAJD7tkbc+E7f+ENRazf0SO7C3gR2bHiN4B0F1oPn8Pa6juAVfg@mail.gmail.com>
-In-Reply-To: <CAJD7tkbc+E7f+ENRazf0SO7C3gR2bHiN4B0F1oPn8Pa6juAVfg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 15 Aug 2022 02:18:20 -0700
-Message-ID: <CAJD7tkY5SfdhC7-4B7QuJGUVj_Ts+xwCP5FUZ-Lvg=fd1p_xAQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sean Christopherson <seanjc@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
+References: <8245b710-8acb-d8e6-7045-99a5f71dad4e@oracle.com>
+ <26d0e4cc-be0e-2c12-6174-dfbb1edb1ed6@oracle.com> <bbc01477-231b-3dbb-3e09-9338f5413f06@oracle.com>
+ <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com> <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
+ <YthDz4BnfYHce1od@slm.duckdns.org> <YuGTBLkFerUboctl@slm.duckdns.org>
+ <dc0cff0e-b744-9d5d-e727-70d1c31b2a74@quicinc.com> <20220815090556.GB27407@blackbody.suse.cz>
+In-Reply-To: <20220815090556.GB27407@blackbody.suse.cz>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Mon, 15 Aug 2022 17:25:52 +0800
+Message-ID: <CAB8ipk90LxNNbq5OKamd-ArkqhEZjxS1fFZJXtnbQwGzyyJ3wQ@mail.gmail.com>
+Subject: Re: Query regarding deadlock involving cgroup_threadgroup_rwsem and cpu_hotplug_lock
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, Tejun Heo <tj@kernel.org>,
+        Imran Khan <imran.f.khan@oracle.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, tglx@linutronix.de, steven.price@arm.com,
+        peterz@infradead.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhao Gongyi <zhaogongyi@huawei.com>,
+        Zhang Qiao <zhangqiao22@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 1:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> On Mon, Jul 18, 2022 at 11:26 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Tue, Jul 12, 2022 at 4:06 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Tue, Jul 12, 2022, Yosry Ahmed wrote:
-> > > > Thanks for taking another look at this!
-> > > >
-> > > > On Thu, Jul 7, 2022 at 1:59 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > > >
-> > > > > On Tue, Jun 28, 2022, Yosry Ahmed wrote:
-> > > > > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > > > > > index aab70355d64f3..13190d298c986 100644
-> > > > > > --- a/include/linux/mmzone.h
-> > > > > > +++ b/include/linux/mmzone.h
-> > > > > > @@ -216,6 +216,7 @@ enum node_stat_item {
-> > > > > >       NR_KERNEL_SCS_KB,       /* measured in KiB */
-> > > > > >  #endif
-> > > > > >       NR_PAGETABLE,           /* used for pagetables */
-> > > > > > +     NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. kvm shadow pagetables */
-> > > > >
-> > > > > Nit, s/kvm/KVM, and drop the "shadow", which might be misinterpreted as saying KVM
-> > > > > pagetables are only accounted when KVM is using shadow paging.  KVM's usage of "shadow"
-> > > > > is messy, so I totally understand why you included it, but in this case it's unnecessary
-> > > > > and potentially confusing.
-> > > > >
-> > > > > And finally, something that's not a nit.  Should this be wrapped with CONFIG_KVM
-> > > > > (using IS_ENABLED() because KVM can be built as a module)?  That could be removed
-> > > > > if another non-KVM secondary MMU user comes along, but until then, #ifdeffery for
-> > > > > stats the depend on a single feature seems to be the status quo for this code.
-> > > > >
-> > > >
-> > > > I will #ifdef the stat, but I will emphasize in the docs that is
-> > > > currently *only* used for KVM so that it makes sense if users without
-> > > > KVM don't see the stat at all. I will also remove the stat from
-> > > > show_free_areas() in mm/page_alloc.c as it seems like none of the
-> > > > #ifdefed stats show up there.
-> > >
-> > > It's might be worth getting someone from mm/ to weigh in before going through the
-> > > trouble, my suggestion/question is based purely on the existing code.
-> >
-> > Any mm folks with an opinion about this?
-> >
-> > Any preference on whether we should wrap NR_SECONDARY_PAGETABLE stats
-> > with #ifdef CONFIG_KVM for now as it is currently the only source for
-> > this stat?
->
-> Any input here?
->
-> Johannes, you have been involved in discussions in earlier versions of
-> this series, any thoughts here?
+Hi Michal
 
-Andrew, do you have an opinion on this? If not, I will send a v7 with
-the nits discussed with Sean. I think otherwise this series has
-sufficient ACKs.
+On Mon, Aug 15, 2022 at 5:06 PM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+>
+> +Cc: Zhao Gongyi <zhaogongyi@huawei.com>, Zhang Qiao <zhangqiao22@huawei.=
+com>
+>
+> On Fri, Aug 12, 2022 at 03:57:00PM +0530, Mukesh Ojha <quic_mojha@quicinc=
+.com> wrote:
+> > The original patch of yours [1]  and the revert of [2] is fixing the is=
+sue
+> > and it is also confirmed here [3].
+> > Can we get proper fix merge on your tree?
+> >
+> > [1] https://lore.kernel.org/lkml/YuGbYCfAG81mZBnN@slm.duckdns.org/
+> >
+> > [2]
+> > https://lore.kernel.org/all/20220121101210.84926-1-zhangqiao22@huawei.c=
+om/
+>
+> The revert + Tejun's patch looks fine wrt the problem of the reverted
+> patch (just moves cpus_read_lock to upper callers).
 
-Would this be merged through the mm tree or kvm tree? This was based
-on the kvm/queue branch but I think I can rebase it on top of
-mm-unstable, I think all dependencies that this would have added in
-kvm/queue would have been fanned to mm by now.
+Your means is that the problem should be fixed by [1]+[2]'s revert ?
+I just tested the case which reverted the [2]. Need I test with [1] and [2]=
+?
+
+Thanks!
+
+>
+> I'd just suggest a comment that'd explicitly document also the lock
+> order that we stick to, IIUC, it should be:
+>
+>         cpu_hotplug_lock // cpus_read_lock
+>         cgroup_threadgroup_rwsem
+>         cpuset_rwsem
+>
+> Michal
+>
+> >
+> > [3] https://lore.kernel.org/lkml/CAB8ipk-72V-bYRfL-VcSRSyXTeQqkBVj+1d5M=
+HSVV5CTar9a0Q@mail.gmail.com/
+> >
+> > -Mukesh
