@@ -2,130 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BA75962C0
-	for <lists+cgroups@lfdr.de>; Tue, 16 Aug 2022 20:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3D59631F
+	for <lists+cgroups@lfdr.de>; Tue, 16 Aug 2022 21:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbiHPS6V (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 14:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
+        id S237176AbiHPT1u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 15:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236684AbiHPS6T (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 14:58:19 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B710C54C84;
-        Tue, 16 Aug 2022 11:58:16 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-10cf9f5b500so12655867fac.2;
-        Tue, 16 Aug 2022 11:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=CzN9U8S3U5wsu3LqNuDxk2kPbUdDS4xzFtJt6PkLgao=;
-        b=nEJGoYq9tv3G9+Ot3Wzbzv5hIglYLNiZQq9ZXoTqRMxHgwM8D52w9VWUrDhl3opKDD
-         5oF/RI5eAvBaSJMsNaQ0q0kQCgisTMna3oT0Irfh5bOmrLnOKEftArR+a3ajnYK0gITF
-         neIIREcQfSomM34o4HRxg4bKaH7isikWJMKJhysVdM7jxIOpLd8JHWGZWZMWeL+QFgQ6
-         DfF9Dw6+rZWkljsnOwhdmsIhKU5wEUYGvU+RRxCm65xnOZLkqRd8OZlYjKrFAxwIuIEw
-         vR/7Doj33/N+i0VuS+A/XMWQM1Kb3PZCb2sPBXCaOvEOgR/hZn5Ym/gWX/YAvkobcigl
-         i02w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=CzN9U8S3U5wsu3LqNuDxk2kPbUdDS4xzFtJt6PkLgao=;
-        b=LbWBQqbUsvNVrRydut2gSI2w3Rq0dRIjMxy/vNPEL3eLH2jkUZl8HVy7nRsCXQNai/
-         2IyxFKrx64GwuHJ3v2rh8YR5iZbM9Zcyc6ZJes6frGkHkyftTX9Kk9mZOpjsffNcofzS
-         Mm7psue9WwPpFVqeJH3znOYXFPwwNYc5jRpkXXOHuh7U25W+7oaQVGGZqE2X0SF1ZTwM
-         I2LFDD6Hpk12tvkePjSwr4mEneLCVwOc8KlWMGi2G0XB2TSX1cuYYtHFm8eUY+fYPnsc
-         BjpTF+4Q+98ynhpWIBX+cgSmpwLWitOmcMrUiSfac8mR9qr0Q8301UWQkalJ0MMkNfjE
-         SHOA==
-X-Gm-Message-State: ACgBeo0zPxexVyE71qzV8BeeTS30ZutNDJQ/askccE/HPiB380fv0mX8
-        URxzKrdYloApFM+m7RwFouVEsgU1xj0=
-X-Google-Smtp-Source: AA6agR4rl0FHA6RdwufQUK92DccC/euhsF80M+P7ndnIahAy1WEgG8+guuxUAUPtBOUXE9E6R5+JNw==
-X-Received: by 2002:a17:90b:17c8:b0:1f5:4724:981f with SMTP id me8-20020a17090b17c800b001f54724981fmr25564246pjb.205.1660676285155;
-        Tue, 16 Aug 2022 11:58:05 -0700 (PDT)
-Received: from localhost.localdomain (c-67-174-241-145.hsd1.ca.comcast.net. [67.174.241.145])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170902e54700b0016c78aaae7fsm9471731plf.23.2022.08.16.11.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Aug 2022 11:58:03 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, songmuchun@bytedance.com,
-        akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: memcg: export workingset refault stats for cgroup v1
-Date:   Tue, 16 Aug 2022 11:58:01 -0700
-Message-Id: <20220816185801.651091-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.3
+        with ESMTP id S237169AbiHPT1t (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 15:27:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AE67C1E2
+        for <cgroups@vger.kernel.org>; Tue, 16 Aug 2022 12:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660678067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AdMi5hAffNheIEpe+PDcz4KKHqhLgVrtN02bVmFviGo=;
+        b=MwPHGHOyB8upoeOr7x4VfOGs8gr6xOo5J9Nq39uye3xBcVfAHxhfwbOxRY3POTdaIb+OII
+        1K5Oqv1Ly3ApxcXLw2WwrVvt6MzqE+QRKVsJ4zTf3xPyU8K2uSe7ApyUly5ukyHOTJBNqE
+        8o8FOOYmP8wfxnIF3V8uYCArPnirCcs=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-462-3UYZxSw9PVS8DynTZNmmKw-1; Tue, 16 Aug 2022 15:27:44 -0400
+X-MC-Unique: 3UYZxSw9PVS8DynTZNmmKw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 091C03800C27;
+        Tue, 16 Aug 2022 19:27:44 +0000 (UTC)
+Received: from llong.com (unknown [10.22.10.201])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D6B801121314;
+        Tue, 16 Aug 2022 19:27:42 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Will Deacon <will@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v5 0/3] sched, cgroup/cpuset: Keep user set cpus affinity
+Date:   Tue, 16 Aug 2022 15:27:31 -0400
+Message-Id: <20220816192734.67115-1-longman@redhat.com>
 MIME-Version: 1.0
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Workingset refault stats are important and usefule metrics to measure
-how well reclaimer and swapping work and how healthy the services are,
-but they are just available for cgroup v2.  There are still plenty users
-with cgroup v1, export the stats for cgroup v1.
+v5:
+ - Update patch 3 to handle race with concurrent sched_setaffinity()
+   by rechecking a previously cleared user_cpus_ptr afterward.
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-I do understand the development of cgroup v1 is actually stalled and
-the community is reluctant to accept new features for v1.  However
-the workingset refault stats are really quite useful and exporting
-two new stats, which have been supported by v2, seems ok IMHO.  So
-hopefully this patch could be considered.  Thanks.
+v4:
+ - Update patch 1 to make sched_setaffinity() the only function to
+   update user_cpus_ptr to make the logic simpler and
+   easier to understand. restrict_cpus_allowed_ptr() and
+   relax_compatible_cpus_allowed_ptr() will just use it if present.
 
- mm/memcontrol.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+v3:
+ - Attach a new patch 2 to introduce a copy_user_cpus_mask() to copy
+   out user masks with lock protection & use it in patch 3.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b69979c9ced5..e300437896dc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3975,6 +3975,8 @@ static const unsigned int memcg1_stats[] = {
- 	NR_FILE_MAPPED,
- 	NR_FILE_DIRTY,
- 	NR_WRITEBACK,
-+	WORKINGSET_REFAULT_ANON,
-+	WORKINGSET_REFAULT_FILE,
- 	MEMCG_SWAP,
- };
- 
-@@ -3988,6 +3990,8 @@ static const char *const memcg1_stat_names[] = {
- 	"mapped_file",
- 	"dirty",
- 	"writeback",
-+	"workingset_refault_anon",
-+	"workingset_refault_file",
- 	"swap",
- };
- 
-@@ -4016,7 +4020,8 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 		if (memcg1_stats[i] == MEMCG_SWAP && !do_memsw_account())
- 			continue;
- 		nr = memcg_page_state_local(memcg, memcg1_stats[i]);
--		seq_printf(m, "%s %lu\n", memcg1_stat_names[i], nr * PAGE_SIZE);
-+		seq_printf(m, "%s %lu\n", memcg1_stat_names[i],
-+			   nr * memcg_page_state_unit(memcg1_stats[i]));
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
-@@ -4047,7 +4052,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
- 			continue;
- 		nr = memcg_page_state(memcg, memcg1_stats[i]);
- 		seq_printf(m, "total_%s %llu\n", memcg1_stat_names[i],
--						(u64)nr * PAGE_SIZE);
-+			   (u64)nr * memcg_page_state_unit(memcg1_stats[i]));
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
+v2:
+ - Rework the v1 patch by extending the semantics of user_cpus_ptr to
+   store user set cpus affinity and keeping to it as much as possible.
+
+The user_cpus_ptr field is added by commit b90ca8badbd1 ("sched:
+Introduce task_struct::user_cpus_ptr to track requested affinity")
+which uses it narrowly to allow keeping cpus affinity intact with
+asymmetric cpu setup.
+
+This patchset extends user_cpus_ptr to store user set cpus affinity via
+sched_setaffinity() API. With that information available, it will enable
+cpuset to keep cpus afinity as close to what the user wants as possible
+within the cpu list constraint of the current cpuset. Otherwise some
+change to the cpuset hierarchy may reset the cpumask of the tasks in
+the affected cpusets to the default cpuset value even if those tasks
+have cpus affinity explicitly set by the users before.
+
+It also means that once sched_setaffinity() is called, user_cpus_ptr
+will remain allocated until the task exits.
+
+Waiman Long (3):
+  sched: Use user_cpus_ptr for saving user provided cpumask in
+    sched_setaffinity()
+  sched: Provide copy_user_cpus_mask() to copy out user mask
+  cgroup/cpuset: Keep user set cpus affinity
+
+ include/linux/sched.h  |   1 +
+ kernel/cgroup/cpuset.c |  42 ++++++++++++++-
+ kernel/sched/core.c    | 119 ++++++++++++++++++++++++-----------------
+ kernel/sched/sched.h   |   1 -
+ 4 files changed, 112 insertions(+), 51 deletions(-)
+
 -- 
-2.26.3
+2.31.1
 
