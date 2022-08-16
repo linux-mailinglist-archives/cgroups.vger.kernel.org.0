@@ -2,49 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6948059653B
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 00:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3CA59656A
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 00:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237873AbiHPWLM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 18:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S237972AbiHPWUH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 18:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237453AbiHPWLK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 18:11:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D398B474DA
-        for <cgroups@vger.kernel.org>; Tue, 16 Aug 2022 15:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660687868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K219zFXEgyRo40dCsRP0DxF0BwKck2dNw2HkaSxa61Y=;
-        b=YOwnwUsWH8chTMbCLhEv623pf4Va9tUrG9oe4Jb4XKlHiF2jW0/eR0Pds2pz7bzG3WGmLa
-        SNkaocLHEhyZulg0xC3gUmoH7CPQVDbC3FcAzaZUPBC2Ji67FlT0sAUXkeIy/AgFw89mQi
-        lzMuUrIQfD/dOkX6rwKMFNFJhs7gbys=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-645-QGgImqF0P82MT71U89AKng-1; Tue, 16 Aug 2022 18:11:05 -0400
-X-MC-Unique: QGgImqF0P82MT71U89AKng-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E714329ABA39;
-        Tue, 16 Aug 2022 22:11:04 +0000 (UTC)
-Received: from [10.22.16.150] (unknown [10.22.16.150])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A5BD2026D4C;
-        Tue, 16 Aug 2022 22:11:03 +0000 (UTC)
-Message-ID: <c10e4f69-9951-6c38-6e28-fafcaec00d89@redhat.com>
-Date:   Tue, 16 Aug 2022 18:11:03 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v5 3/3] cgroup/cpuset: Keep user set cpus affinity
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
+        with ESMTP id S238053AbiHPWTY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 18:19:24 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3A17AC3A;
+        Tue, 16 Aug 2022 15:19:10 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id e8-20020a17090a280800b001f2fef7886eso175402pjd.3;
+        Tue, 16 Aug 2022 15:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=v/EIdBGUkUPtNpLpVOdmRMecyshYK7WIwF9D88OOScU=;
+        b=XFz549JzgGby3QShSMg1u6ld0qYxrMD3+idlLFNetfD3Uf4CUVmSJzQwu21B0nSuY3
+         DE4olgojem8eez9w5KVGDNKI9NvFlyOpx319HD1Xz0JPYqZ7GtDaO4Vyu517VUEk0vBa
+         3EPbHmc4qV8pUgXU3pMJS7zvviFi4hykmH28LUfjweBN4/f1jde/ZTjmWze/tOVxcjiD
+         4wVtggFwXqgarGqZBPJL4V5dNiKgZShkmuN19HOl8yD0CjcppHuDpJIaW2fOtUgfImf7
+         O+dicxS87PkLT0yR/gQzPEFBhH8VvmUxwvw6Z992mJ3fcqgr6NEgfIBdiJy8L84CfIGW
+         C8oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=v/EIdBGUkUPtNpLpVOdmRMecyshYK7WIwF9D88OOScU=;
+        b=PHunzgMkHWkSQGfpeSAxGHQNhMl4Xl2Mpzn2Wgz7ucL3OaPAQDcF3L8PwXFs8UWC4b
+         DgnIRhiQio7glLlV6Q0dPed1LpUhxxreK2VMvAgiJxjG9dOgiZYCexhN2BFvTsxO5+I6
+         Iiyetls0j7V9KuOoXpUK6Lby9aN2ktEbJlVQqMcAjAR2TmvamBBJ7CwR31bojmagZOKc
+         hUzAXkKHXxrq5HLeVnTAopdC0QW+G4DjjkVSOeQ/qYkbzC438W7t8851lRVxHdbGGypH
+         MTWGYP7t1w2f/aDpbKDHGES6t9W1ObNF1+UJVLH9xRwj5Ty77GAKGnmxhyyqLoRsOIB1
+         nxbA==
+X-Gm-Message-State: ACgBeo0QYxxhwIZFHC7UarjbotFsI/0sFU0khOUh9ucz3jWQKAiaF1hX
+        izQiOEHloUQgxB+gmGqNJCM=
+X-Google-Smtp-Source: AA6agR5444hR3/D5RFxnx5aA31sSW3PzrPcGowK1Az0EUVJCo7nNYyNnIRaopp2BUk8/pmHkiVzyjg==
+X-Received: by 2002:a17:90b:180f:b0:1f5:160c:a656 with SMTP id lw15-20020a17090b180f00b001f5160ca656mr693043pjb.193.1660688349662;
+        Tue, 16 Aug 2022 15:19:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:7229])
+        by smtp.gmail.com with ESMTPSA id n12-20020a170902d2cc00b0016cbb46806asm9595537plc.278.2022.08.16.15.19.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Aug 2022 15:19:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 16 Aug 2022 12:19:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
 Cc:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
@@ -59,69 +65,45 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v5 3/3] cgroup/cpuset: Keep user set cpus affinity
+Message-ID: <YvwX24GXadKQNp6V@slm.duckdns.org>
 References: <20220816192734.67115-1-longman@redhat.com>
  <20220816192734.67115-4-longman@redhat.com>
  <Yvv66EWygCwHUCqy@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <Yvv66EWygCwHUCqy@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <c10e4f69-9951-6c38-6e28-fafcaec00d89@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c10e4f69-9951-6c38-6e28-fafcaec00d89@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
-On 8/16/22 16:15, Tejun Heo wrote:
-> On Tue, Aug 16, 2022 at 03:27:34PM -0400, Waiman Long wrote:
->> +static int cpuset_set_cpus_allowed_ptr(struct task_struct *p,
->> +				       const struct cpumask *mask)
->> +{
->> +	cpumask_var_t new_mask;
->> +	int ret;
->> +
->> +	if (!READ_ONCE(p->user_cpus_ptr)) {
->> +		ret = set_cpus_allowed_ptr(p, mask);
->> +		/*
->> +		 * If user_cpus_ptr becomes set now, we are racing with
->> +		 * a concurrent sched_setaffinity(). So use the newly
->> +		 * set user_cpus_ptr and retry again.
->> +		 *
->> +		 * TODO: We cannot detect change in the cpumask pointed to
->> +		 * by user_cpus_ptr. We will have to add a sequence number
->> +		 * if such a race needs to be addressed.
->> +		 */
-> This is too ugly and obviously broken. Let's please do it properly.
+On Tue, Aug 16, 2022 at 06:11:03PM -0400, Waiman Long wrote:
+> It is hard to synchronize different subsystems atomically without running
+> into locking issue. Let me think about what can be done in this case.
 
-Actually, there is similar construct in __sched_setaffinity():
+I have a hard time seeing why this would be particularly difficult. cpuset
+just needs to make the latest cpumask available to sched core in an easily
+accessible form and whenever that changes, trigger a set_cpus_allowed call.
+There's no need to entangle operations across the whole subsystems. All
+that's needed to be communicated is the current cpumask.
 
-again:
-         retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK);
-         if (retval)
-                 goto out_free_new_mask;
+> Is using a sequence number to check for race with retry good enough?
 
-         cpuset_cpus_allowed(p, cpus_allowed);
-         if (!cpumask_subset(new_mask, cpus_allowed)) {
-                 /*
-                  * We must have raced with a concurrent cpuset update.
-                  * Just reset the cpumask to the cpuset's cpus_allowed.
-                  */
-                 cpumask_copy(new_mask, cpus_allowed);
-                 goto again;
-         }
+It seems unnecessarily fragile and complicated to me. If we're gonna change
+it, let's change it right.
 
-It is hard to synchronize different subsystems atomically without 
-running into locking issue. Let me think about what can be done in this 
-case.
+Thanks.
 
-Is using a sequence number to check for race with retry good enough?
-
-Cheers,
-Longman
-
+-- 
+tejun
