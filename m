@@ -2,215 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD3D59753F
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 19:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D46597536
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 19:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238101AbiHQRhY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 13:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S237983AbiHQRkg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 13:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237865AbiHQRhY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 13:37:24 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1623DA1A40
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 10:37:23 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id q16so12551379pgq.6
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 10:37:23 -0700 (PDT)
+        with ESMTP id S238083AbiHQRkf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 13:40:35 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0BFA1D62;
+        Wed, 17 Aug 2022 10:40:34 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id q16so12558513pgq.6;
+        Wed, 17 Aug 2022 10:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=oHpVPbvxrCLs+hDQJtokFiFQV5w1hhX8KPbSuFBFMus=;
-        b=rkXX2+3DhpH5kPN0GuvNmEMmFMRAP3sHQ5WYgRJMM5myi3cBvZ/q4NRNEF46zlU1Y8
-         HYoLtM0bC6bV4iLJRtxfb3xwC8HfysVffnCg64kw188YZn0qe2H8IXB5kUfhGnNdQovY
-         Unc/T855gSBad+woJ0nWXAwLgEr4SADSozNIaI1T/Qjxrm7glwGhxJalJc6808Pb1Fio
-         zoNIgdU6LaIyKRXJX/GLgVSubRgeBqoW5ma75upr6jzK6HIXYBsM88owEvuHA/ox3nMH
-         5SRBEVum7KWTxcNgcl4amFHXe2oy6hVJ2ShckQGxQuta/LIJyBBbL2tyv7JO+sWMDmuJ
-         DWYw==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=T2VfnDiJkdhY/17kNIzqsKCO/jg0LojKsxYaZr+7Rkg=;
+        b=KusRphF5DTFe7mhRnFmNMOI7jOlvj2TNyhLSCDAfuKCkSZkVyILc9k4eWlCXBjo/D8
+         2J2lHM41jl4/+729s5SBzsqUMEvrC57GMo+IgkG1gNUzbCt9r3jDVrQTcIU+h/Ltg40v
+         /WBy0rO5O4U24ET4N/ABS9JvMy0TJRmIIIOBHh0kT93W1Mw5dEnTfEkSHdViKcuks9vK
+         iLbVHtjFTztE53D3sBOZqsmTce3BHEOgwhyvwKl3adB3ENzkvc4mRxl8MlYYm94htLUG
+         +Ztsng8Hqv8SEzQRYgLzU9Iy35ACCmGVIWJS/G/haSnqrp2BafNL88aZARskAu+SuQJ8
+         4EMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=oHpVPbvxrCLs+hDQJtokFiFQV5w1hhX8KPbSuFBFMus=;
-        b=qDYLq+Y3XrvxbBTRllEvv0dDLeT7UcCTm0s2k+izB0UJJDBK+ixfCPxf7JBbH2lJm8
-         8Kc/RS2Hi6pMqivvp5SkAKQYRQELEEx2jeiamw+l49uRF9ycv8sWu6wYfEBrw3m8bfBW
-         fAr7NW661GaFFH/z3B/3KolV1Siot5aEIcltu3zLDeMwfd3nN4OiQHbmt6lKEMjOpMR6
-         5R8QWj/oqBq4xSyD6OJ56CitOY0OMCBr+rXQ8ZgmpODekv6JYlBFe5z6TrzC/7PEde4c
-         wdaXlVXOmuuUaq9rZJySUzp53f6nN6zAHABRl9oEpB+kewmiIreGROe8WOATGvPw41E9
-         VJZg==
-X-Gm-Message-State: ACgBeo3JU1eQy/oDt0HG0Q8c+ARrV/Ds0e2+a1FCK8dn1rtno4+UJQ92
-        8a+wcIRjCjCwZW+hMXe32K4ArMWuI526ltLkYwOkeQ==
-X-Google-Smtp-Source: AA6agR7RM8hrx5k1uS+mUtIXdZYFeE1DilOpajIypSCuyaPr/6V8tDnU7J/6WG+v5atkr8lrNrO/QsL57Rc0ItJv19c=
-X-Received: by 2002:a63:5f8e:0:b0:429:c286:4ef7 with SMTP id
- t136-20020a635f8e000000b00429c2864ef7mr4419598pgb.166.1660757842439; Wed, 17
- Aug 2022 10:37:22 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=T2VfnDiJkdhY/17kNIzqsKCO/jg0LojKsxYaZr+7Rkg=;
+        b=WTM2Gwlxty95rhFveUzMKw+sukHm4RdFhDXGQ4BRriuLI7HgUyDloR70XHPdsCgb0N
+         0PSkKmGcgga5I33J9al4ggeu2UYLWYksPYnc3OtvAc/mJy09z6VQRhC61U8DAsTnxdgR
+         /9BVCVZmW9qiwqtQSiIEQ0qbQGmU0chynCyFdFy96xOKuBEuy1/peZjny7Tj8BuW4McN
+         ZmE2XFYu8PVTi8nmOl8BldyxLmQcLlP0UzHhQsr70GFcalrAJJlUMyt0Vw67KH9nZDjN
+         nNNgDMfJgLQdDZhiCccC2YZfRbkSZKihFmYEi8SMW1jdx7JVlGsapujUwVqh4fkelTlk
+         Ry1A==
+X-Gm-Message-State: ACgBeo3AWMfwJp8cJezvTcRneU8yPODpcHbXg8rmv2G+sPkgGgDqJ/Fo
+        J7GDyU1AQot5rh25iAopxIQ=
+X-Google-Smtp-Source: AA6agR6+7z7osmZv0Xqd5YkMvSapXLzjYDM02hv/ytXpbZkfU+WfpooBrrnWGc43yI1lf8QcdP+Cag==
+X-Received: by 2002:a63:80c7:0:b0:41c:62dc:7d10 with SMTP id j190-20020a6380c7000000b0041c62dc7d10mr23382200pgd.313.1660758034134;
+        Wed, 17 Aug 2022 10:40:34 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id r21-20020a170902e3d500b0016f1319d2a7sm160185ple.297.2022.08.17.10.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Aug 2022 10:40:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 17 Aug 2022 07:40:32 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Xuewen Yan <xuewen.yan94@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, tglx@linutronix.de, steven.price@arm.com,
+        peterz@infradead.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhao Gongyi <zhaogongyi@huawei.com>,
+        Zhang Qiao <zhangqiao22@huawei.com>
+Subject: Re: [PATCH cgroup/for-6.0-fixes] cgroup: Fix threadgroup_rwsem <->
+ cpus_read_lock() deadlock
+Message-ID: <Yv0oEOXddKp+Xo1U@slm.duckdns.org>
+References: <ba48eac5-8ef7-251b-11fe-8163bb7a2d54@quicinc.com>
+ <224b19f3-912d-b858-7af4-185b8e55bc66@quicinc.com>
+ <YthDz4BnfYHce1od@slm.duckdns.org>
+ <YuGTBLkFerUboctl@slm.duckdns.org>
+ <dc0cff0e-b744-9d5d-e727-70d1c31b2a74@quicinc.com>
+ <20220815090556.GB27407@blackbody.suse.cz>
+ <CAB8ipk90LxNNbq5OKamd-ArkqhEZjxS1fFZJXtnbQwGzyyJ3wQ@mail.gmail.com>
+ <20220815093934.GA29323@blackbody.suse.cz>
+ <f584fecd-6ca4-4ab0-763d-2ed219009c61@quicinc.com>
+ <YvrWaml3F+x9Dk+T@slm.duckdns.org>
 MIME-Version: 1.0
-References: <CANOLnON11vzvVdyJfW+QJ36siWR4-s=HJ2aRKpRy7CP=aRPoSw@mail.gmail.com>
- <CANOLnOPeOi0gxYwd5+ybdv5w=RZEh5JakJPE9xgrSL1cecZHbw@mail.gmail.com> <Yv0h1PFxmK7rVWpy@cmpxchg.org>
-In-Reply-To: <Yv0h1PFxmK7rVWpy@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 17 Aug 2022 10:37:11 -0700
-Message-ID: <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
-Subject: Re: UDP rx packet loss in a cgroup with a memory limit
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Eric Dumazet <edumazet@google.com>,
-        netdev <netdev@vger.kernel.org>
-Cc:     =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
-        Wei Wang <weiwan@google.com>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YvrWaml3F+x9Dk+T@slm.duckdns.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-+ Eric and netdev
+On Mon, Aug 15, 2022 at 01:27:38PM -1000, Tejun Heo wrote:
+> Bringing up a CPU may involve creating new tasks which requires read-locking
+> threadgroup_rwsem, so threadgroup_rwsem nests inside cpus_read_lock().
+> However, cpuset's ->attach(), which may be called with thredagroup_rwsem
+> write-locked, also wants to disable CPU hotplug and acquires
+> cpus_read_lock(), leading to a deadlock.
+> 
+> Fix it by guaranteeing that ->attach() is always called with CPU hotplug
+> disabled and removing cpus_read_lock() call from cpuset_attach().
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-On Wed, Aug 17, 2022 at 10:13 AM Johannes Weiner <hannes@cmpxchg.org> wrote=
-:
->
-> On Wed, Aug 17, 2022 at 07:50:13PM +0300, Gra=C5=BEvydas Ignotas wrote:
-> > On Tue, Aug 16, 2022 at 9:52 PM Gra=C5=BEvydas Ignotas <notasas@gmail.c=
-om> wrote:
-> > > Basically, when there is git activity in the container with a memory
-> > > limit, other processes in the same container start to suffer (very)
-> > > occasional network issues (mostly DNS lookup failures).
-> >
-> > ok I've traced this and it's failing in try_charge_memcg(), which
-> > doesn't seem to be trying too hard because it's called from irq
-> > context.
-> >
-> > Here is the backtrace:
-> >  <IRQ>
-> >  ? fib_validate_source+0xb4/0x100
-> >  ? ip_route_input_slow+0xa11/0xb70
-> >  mem_cgroup_charge_skmem+0x4b/0xf0
-> >  __sk_mem_raise_allocated+0x17f/0x3e0
-> >  __udp_enqueue_schedule_skb+0x220/0x270
-> >  udp_queue_rcv_one_skb+0x330/0x5e0
-> >  udp_unicast_rcv_skb+0x75/0x90
-> >  __udp4_lib_rcv+0x1ba/0xca0
-> >  ? ip_rcv_finish_core.constprop.0+0x63/0x490
-> >  ip_protocol_deliver_rcu+0xd6/0x230
-> >  ip_local_deliver_finish+0x73/0xa0
-> >  __netif_receive_skb_one_core+0x8b/0xa0
-> >  process_backlog+0x8e/0x120
-> >  __napi_poll+0x2c/0x160
-> >  net_rx_action+0x2a2/0x360
-> >  ? rebalance_domains+0xeb/0x3b0
-> >  __do_softirq+0xeb/0x2eb
-> >  __irq_exit_rcu+0xb9/0x110
-> >  sysvec_apic_timer_interrupt+0xa2/0xd0
-> >  </IRQ>
-> >
-> > Calling mem_cgroup_print_oom_meminfo() in such a case reveals:
-> >
-> > memory: usage 7812476kB, limit 7812500kB, failcnt 775198
-> > swap: usage 0kB, limit 0kB, failcnt 0
-> > Memory cgroup stats for
-> > /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb8f4f0e9=
-_fb95_4f2d_8443_e6a78f235c9a.slice/docker-9e7cad93b2e0774d49148474989b41fe6=
-d67a5985d059d08d9d64495f1539a81.scope:
-> > anon 348016640
-> > file 7502163968
-> > kernel 146997248
-> > kernel_stack 327680
-> > pagetables 2224128
-> > percpu 0
-> > sock 4096
-> > vmalloc 0
-> > shmem 0
-> > zswap 0
-> > zswapped 0
-> > file_mapped 112041984
-> > file_dirty 1181028352
-> > file_writeback 2686976
-> > swapcached 0
-> > anon_thp 44040192
-> > file_thp 0
-> > shmem_thp 0
-> > inactive_anon 350756864
-> > active_anon 36864
-> > inactive_file 3614003200
-> > active_file 3888070656
-> > unevictable 0
-> > slab_reclaimable 143692600
-> > slab_unreclaimable 545120
-> > slab 144237720
-> > workingset_refault_anon 0
-> > workingset_refault_file 2318
-> > workingset_activate_anon 0
-> > workingset_activate_file 2318
-> > workingset_restore_anon 0
-> > workingset_restore_file 0
-> > workingset_nodereclaim 0
-> > pgfault 334152
-> > pgmajfault 1238
-> > pgrefill 3400
-> > pgscan 819608
-> > pgsteal 791005
-> > pgactivate 949122
-> > pgdeactivate 1694
-> > pglazyfree 0
-> > pglazyfreed 0
-> > zswpin 0
-> > zswpout 0
-> > thp_fault_alloc 709
-> > thp_collapse_alloc 0
-> >
-> > So it basically renders UDP inoperable because of disk cache. I hope
-> > this is not the intended behavior. Naturally booting with
-> > cgroup.memory=3Dnosocket solves this issue.
->
-> This is most likely a regression caused by this patch:
->
-> commit 4b1327be9fe57443295ae86fe0fcf24a18469e9f
-> Author: Wei Wang <weiwan@google.com>
-> Date:   Tue Aug 17 12:40:03 2021 -0700
->
->     net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
->
->     Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem(),
->     to give more control to the networking stack and enable it to change
->     memcg charging behavior. In the future, the networking stack may deci=
-de
->     to avoid oom-kills when fallbacks are more appropriate.
->
->     One behavior change in mem_cgroup_charge_skmem() by this patch is to
->     avoid force charging by default and let the caller decide when and if
->     force charging is needed through the presence or absence of
->     __GFP_NOFAIL.
->
->     Signed-off-by: Wei Wang <weiwan@google.com>
->     Reviewed-by: Shakeel Butt <shakeelb@google.com>
->     Signed-off-by: David S. Miller <davem@davemloft.net>
->
-> We never used to fail these allocations. Cgroups don't have a
-> kswapd-style watermark reclaimer, so the network relied on
-> force-charging and leaving reclaim to allocations that can block.
-> Now it seems network packets could just fail indefinitely.
->
-> The changelog is a bit terse given how drastic the behavior change
-> is. Wei, Shakeel, can you fill in why this was changed? Can we revert
-> this for the time being?
+Applied to cgroup/for-6.0-fixes w/ commit message and comment update
+suggested by Xuewen and Fixes / stable tags added.
 
-Does reverting the patch fix the issue? However I don't think it will.
+Thanks.
 
-Please note that we still have the force charging as before this
-patch. Previously when mem_cgroup_charge_skmem() force charges, it
-returns false and __sk_mem_raise_allocated takes suppress_allocation
-code path. Based on some heuristics, it may allow it or it may
-uncharge and return failure.
-
-The given patch has not changed any heuristic. It has only changed
-when forced charging happens. After the path the initial call
-mem_cgroup_charge_skmem() can fail and we take suppress_allocation
-code path and if heuristics allow, we force charge with __GFP_NOFAIL.
+-- 
+tejun
