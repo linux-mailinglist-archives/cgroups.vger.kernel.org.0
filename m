@@ -2,100 +2,250 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91152597560
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 19:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D66597591
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 20:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237783AbiHQRyT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 13:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        id S236390AbiHQSQb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 14:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238002AbiHQRyT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 13:54:19 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214C54B0E7;
-        Wed, 17 Aug 2022 10:54:18 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id 20so4011411plo.10;
-        Wed, 17 Aug 2022 10:54:18 -0700 (PDT)
+        with ESMTP id S230025AbiHQSQb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 14:16:31 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025EE8E0CB
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 11:16:30 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id d15so237576uak.11
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 11:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=M9F5QNFdEfK57sV2UQvJmFf03hDAwzaS3TgU89Piblw=;
-        b=LKm3raamiQttkOiXSxZhNzHXFXXkPDRQ+4So33YQ27Vizpu1Cu379NL61euS+MnNl3
-         uB4IGY1VmCTQlXPdq0AlITppYn2+v8d+5T7Ij6Itk5QWQBHeDxdAnDkH6Y6oOp2/ocN9
-         t40wnKzsqNYwfMf4PDSSN6XJHJf0tqOIPzrDSYRWQ0CqkO8+q5GW7afZmNxSwwNczKR0
-         0gTeSv3QwwleUSv2qWBT5NZ7jZmJGlgDhYolxttNqWjfwyBzonaxlXQSzVBa5yPmW8Pw
-         t65h/wtiBlWZ4GmzQebHBmX3XYeLm+gNygvcGB/uWweffCD6mNMKcOd2NmHQHf9s9zqb
-         0k8A==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=jF6fOBoAniDTOaX3xOb+ItOH+jdFpFd4N7hbk4radeI=;
+        b=Hy/0vTxvR/IbdTJaHDjir14s55iqwxip4Iepnmjnm32M6/zAZLAYOTlvhqRchovhvo
+         G9tgYsrpU/Qtf1Dg834zqh1N3EG9qCrns0MNfm6RJrtrslpGWI9Jddt/omTIRAdpJV5E
+         sWXz9NdtAFabSfm8UfzSSRSo2wJel32FOY7ynoCJvJ+HTZ1X3Mkv6J6NWZiFrBSgggUN
+         rZUclZaZXkggKv4BBz1kq7kVNCJL9NPoSadKfUEE0QU+1A6h5ObMmZOOe3ajGWjsk5Ex
+         kCqwVSJR1Q+dkYfVbmqgiy92Y8oJbp293OoWH7E0SRfIVCXxm0GZwGr4pyuiTMr0ao2G
+         htug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=M9F5QNFdEfK57sV2UQvJmFf03hDAwzaS3TgU89Piblw=;
-        b=vFZVTuuDYJwfJHNY+jWd9MtiwEfxWy6bTFQkGzCtA4bVAg0RQwT8qO72jxDMBC9nBx
-         PknQSiwm+j+jqPYQJTJM/59Bxw0eBWfBMYQU/bqDHvx/6/k77ZgJ6DjjdMGcuGgJ8gk4
-         xHx9Yi8hDW23utECrZPa7/7mLLA0Jcqiq0E7ZMbEYQC5QUQkQhryzSTJpJXkNOda5A7l
-         MXqzjfrcAC2Uzwl6q8EwkbOWCxl9rTSJmH3SoQPcRxA+wyDohBBXrFdMrg4w9ihrt9sL
-         2kO78vc/pcBgdmw23Ee7K9D27UdnDpisOI4Hfpj8TyGQOhZ6qGJsrQ6F5sDiR2TyuLKz
-         O8iA==
-X-Gm-Message-State: ACgBeo2e+PuMVHoelldO4veCAxYbhvdCfOHJhB1M6e+GnpIBarzJ3qqk
-        0+mNVyQ7ORTxhsyTX7Zih70=
-X-Google-Smtp-Source: AA6agR5qMHofsSUL07MTl7OwYTG1h6IT6uARLAgbhonQ+t3XwizXEz/pr6vbk1I/6ma3K4CDKLi6QA==
-X-Received: by 2002:a17:902:f548:b0:16f:9649:be69 with SMTP id h8-20020a170902f54800b0016f9649be69mr27164472plf.134.1660758857451;
-        Wed, 17 Aug 2022 10:54:17 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170903228800b001728eb339e2sm172415plh.286.2022.08.17.10.54.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Aug 2022 10:54:16 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 17 Aug 2022 07:54:15 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH v7 9/9] blk-throttle: clean up flag 'THROTL_TG_PENDING'
-Message-ID: <Yv0rR9gBL0qbYeXp@slm.duckdns.org>
-References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
- <20220802140415.2960284-10-yukuai1@huaweicloud.com>
- <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
- <65d93ec6-2465-35f1-314f-f092ce631100@huaweicloud.com>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=jF6fOBoAniDTOaX3xOb+ItOH+jdFpFd4N7hbk4radeI=;
+        b=pgdipaRiGdJvnL1YP+YiOvODlWzojTqQqD8n8hLWdVlcvS5z7d9Z9opcRD4FULchqD
+         73MIi5BiU0xPLsUkR6/xQiJg9D1CzCYYM+QREA5hxCeuYrKvYKCgtPw6447cLZPm9dzK
+         6GbCJx7NZaOLLCYiTODQ8TIo5YzMGfQ7tLhLx+WiRF+k6hQO+KOR0XiTnfpDvpE2vvzq
+         stxyVRm33KOxjrCWgFxFhJBQYnsYRrJpu6VMjB42JEuqUdFAMS1po2NJQjRfieSQeKwZ
+         DJoONvQBHqNZSKsamEfMUiOR5RwTvrmE6kGB0H6qbVJ/FL07zgB0Old8dXOgvyGF+4gP
+         4T8g==
+X-Gm-Message-State: ACgBeo3JAV35fVxTYeCZyNU4ryvMN53uoyFGQSY1GZtcWvAeSQ3PF/Ae
+        b14Vf0ZO323FEDIGMUhfqkFPofIM2gBtE7KM+lG3Gg==
+X-Google-Smtp-Source: AA6agR7I4J9m2paPHhPmXbf3JfEy7X63kMNvlXJ2YCx+5DxM+t4a5mcrSEAv8SgS9oc1EzYeZEImA6WG5Gr2J7tBg/U=
+X-Received: by 2002:a9f:3641:0:b0:384:78e4:3b9d with SMTP id
+ s1-20020a9f3641000000b0038478e43b9dmr11281756uad.90.1660760188926; Wed, 17
+ Aug 2022 11:16:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65d93ec6-2465-35f1-314f-f092ce631100@huaweicloud.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <CANOLnON11vzvVdyJfW+QJ36siWR4-s=HJ2aRKpRy7CP=aRPoSw@mail.gmail.com>
+ <CANOLnOPeOi0gxYwd5+ybdv5w=RZEh5JakJPE9xgrSL1cecZHbw@mail.gmail.com>
+ <Yv0h1PFxmK7rVWpy@cmpxchg.org> <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
+In-Reply-To: <CALvZod5_LVkOkF+gmefnctmx+bRjykSARm2JA9eqKJx85NYBGQ@mail.gmail.com>
+From:   Wei Wang <weiwan@google.com>
+Date:   Wed, 17 Aug 2022 11:16:18 -0700
+Message-ID: <CAEA6p_BhAh6f_kAHEoEJ38nunY=c=4WqxhJQUjT+dCSAr_rm8g@mail.gmail.com>
+Subject: Re: UDP rx packet loss in a cgroup with a memory limit
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Eric Dumazet <edumazet@google.com>,
+        netdev <netdev@vger.kernel.org>,
+        =?UTF-8?Q?Gra=C5=BEvydas_Ignotas?= <notasas@gmail.com>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Aug 17, 2022 at 10:37 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> + Eric and netdev
+>
+> On Wed, Aug 17, 2022 at 10:13 AM Johannes Weiner <hannes@cmpxchg.org> wro=
+te:
+> >
+> > On Wed, Aug 17, 2022 at 07:50:13PM +0300, Gra=C5=BEvydas Ignotas wrote:
+> > > On Tue, Aug 16, 2022 at 9:52 PM Gra=C5=BEvydas Ignotas <notasas@gmail=
+.com> wrote:
+> > > > Basically, when there is git activity in the container with a memor=
+y
+> > > > limit, other processes in the same container start to suffer (very)
+> > > > occasional network issues (mostly DNS lookup failures).
+> > >
+> > > ok I've traced this and it's failing in try_charge_memcg(), which
+> > > doesn't seem to be trying too hard because it's called from irq
+> > > context.
+> > >
+> > > Here is the backtrace:
+> > >  <IRQ>
+> > >  ? fib_validate_source+0xb4/0x100
+> > >  ? ip_route_input_slow+0xa11/0xb70
+> > >  mem_cgroup_charge_skmem+0x4b/0xf0
+> > >  __sk_mem_raise_allocated+0x17f/0x3e0
+> > >  __udp_enqueue_schedule_skb+0x220/0x270
+> > >  udp_queue_rcv_one_skb+0x330/0x5e0
+> > >  udp_unicast_rcv_skb+0x75/0x90
+> > >  __udp4_lib_rcv+0x1ba/0xca0
+> > >  ? ip_rcv_finish_core.constprop.0+0x63/0x490
+> > >  ip_protocol_deliver_rcu+0xd6/0x230
+> > >  ip_local_deliver_finish+0x73/0xa0
+> > >  __netif_receive_skb_one_core+0x8b/0xa0
+> > >  process_backlog+0x8e/0x120
+> > >  __napi_poll+0x2c/0x160
+> > >  net_rx_action+0x2a2/0x360
+> > >  ? rebalance_domains+0xeb/0x3b0
+> > >  __do_softirq+0xeb/0x2eb
+> > >  __irq_exit_rcu+0xb9/0x110
+> > >  sysvec_apic_timer_interrupt+0xa2/0xd0
+> > >  </IRQ>
+> > >
+> > > Calling mem_cgroup_print_oom_meminfo() in such a case reveals:
+> > >
+> > > memory: usage 7812476kB, limit 7812500kB, failcnt 775198
+> > > swap: usage 0kB, limit 0kB, failcnt 0
+> > > Memory cgroup stats for
+> > > /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb8f4f0=
+e9_fb95_4f2d_8443_e6a78f235c9a.slice/docker-9e7cad93b2e0774d49148474989b41f=
+e6d67a5985d059d08d9d64495f1539a81.scope:
+> > > anon 348016640
+> > > file 7502163968
+> > > kernel 146997248
+> > > kernel_stack 327680
+> > > pagetables 2224128
+> > > percpu 0
+> > > sock 4096
+> > > vmalloc 0
+> > > shmem 0
+> > > zswap 0
+> > > zswapped 0
+> > > file_mapped 112041984
+> > > file_dirty 1181028352
+> > > file_writeback 2686976
+> > > swapcached 0
+> > > anon_thp 44040192
+> > > file_thp 0
+> > > shmem_thp 0
+> > > inactive_anon 350756864
+> > > active_anon 36864
+> > > inactive_file 3614003200
+> > > active_file 3888070656
+> > > unevictable 0
+> > > slab_reclaimable 143692600
+> > > slab_unreclaimable 545120
+> > > slab 144237720
+> > > workingset_refault_anon 0
+> > > workingset_refault_file 2318
+> > > workingset_activate_anon 0
+> > > workingset_activate_file 2318
+> > > workingset_restore_anon 0
+> > > workingset_restore_file 0
+> > > workingset_nodereclaim 0
+> > > pgfault 334152
+> > > pgmajfault 1238
+> > > pgrefill 3400
+> > > pgscan 819608
+> > > pgsteal 791005
+> > > pgactivate 949122
+> > > pgdeactivate 1694
+> > > pglazyfree 0
+> > > pglazyfreed 0
+> > > zswpin 0
+> > > zswpout 0
+> > > thp_fault_alloc 709
+> > > thp_collapse_alloc 0
+> > >
+> > > So it basically renders UDP inoperable because of disk cache. I hope
+> > > this is not the intended behavior. Naturally booting with
+> > > cgroup.memory=3Dnosocket solves this issue.
+> >
+> > This is most likely a regression caused by this patch:
+> >
+> > commit 4b1327be9fe57443295ae86fe0fcf24a18469e9f
+> > Author: Wei Wang <weiwan@google.com>
+> > Date:   Tue Aug 17 12:40:03 2021 -0700
+> >
+> >     net-memcg: pass in gfp_t mask to mem_cgroup_charge_skmem()
+> >
+> >     Add gfp_t mask as an input parameter to mem_cgroup_charge_skmem(),
+> >     to give more control to the networking stack and enable it to chang=
+e
+> >     memcg charging behavior. In the future, the networking stack may de=
+cide
+> >     to avoid oom-kills when fallbacks are more appropriate.
+> >
+> >     One behavior change in mem_cgroup_charge_skmem() by this patch is t=
+o
+> >     avoid force charging by default and let the caller decide when and =
+if
+> >     force charging is needed through the presence or absence of
+> >     __GFP_NOFAIL.
+> >
+> >     Signed-off-by: Wei Wang <weiwan@google.com>
+> >     Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> >     Signed-off-by: David S. Miller <davem@davemloft.net>
+> >
+> > We never used to fail these allocations. Cgroups don't have a
+> > kswapd-style watermark reclaimer, so the network relied on
+> > force-charging and leaving reclaim to allocations that can block.
+> > Now it seems network packets could just fail indefinitely.
+> >
+> > The changelog is a bit terse given how drastic the behavior change
+> > is. Wei, Shakeel, can you fill in why this was changed? Can we revert
+> > this for the time being?
+>
+> Does reverting the patch fix the issue? However I don't think it will.
+>
+> Please note that we still have the force charging as before this
+> patch. Previously when mem_cgroup_charge_skmem() force charges, it
+> returns false and __sk_mem_raise_allocated takes suppress_allocation
+> code path. Based on some heuristics, it may allow it or it may
+> uncharge and return failure.
 
-On Wed, Aug 17, 2022 at 09:45:13AM +0800, Yu Kuai wrote:
-> > I don't know whether this is better or not. It's minutely less lines of code
-> > but also makes the code a bit more fragile. I'm ambivalent. At any rate,
-> > please move these trivial patches to the head of the series or post them
-> > separately.
-> 
-> Can I ask why do you think this patch makes the code a bit more fragile?
+The force charging logic in __sk_mem_raise_allocated only gets
+considered on tx path for STREAM socket. So it probably does not take
+effect on UDP path. And, that logic is NOT being altered in the above
+patch.
+So specifically for UDP receive path, what happens in
+__sk_mem_raise_allocated() BEFORE the above patch is:
+- mem_cgroup_charge_skmem() gets called:
+    - try_charge() with GFP_NOWAIT gets called and  failed
+    - try_charge() with __GFP_NOFAIL
+    - return false
+- goto suppress_allocation:
+    - mem_cgroup_uncharge_skmem() gets called
+- return 0 (which means failure)
 
-It's just one step further removed. Before, the flag was trivially in sync
-with the on queue status. After, the relationship is more indirect and
-easier to break accidentally. Not that it's a major problem. Just not sure
-what the benefit of the change is.
+AFTER the above patch, what happens in __sk_mem_raise_allocated() is:
+- mem_cgroup_charge_skmem() gets called:
+    - try_charge() with GFP_NOWAIT gets called and failed
+    - return false
+- goto suppress_allocation:
+    - We no longer calls mem_cgroup_uncharge_skmem()
+- return 0
 
-> By the way, I'll post these trivial patches separately.
+So I agree with Shakeel, that this change shouldn't alter the behavior
+of the above call path in such a situation.
+But do let us know if reverting this change has any effect on your test.
 
-Sounds great.
-
-Thanks.
-
--- 
-tejun
+>
+> The given patch has not changed any heuristic. It has only changed
+> when forced charging happens. After the path the initial call
+> mem_cgroup_charge_skmem() can fail and we take suppress_allocation
+> code path and if heuristics allow, we force charge with __GFP_NOFAIL.
