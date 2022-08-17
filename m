@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBCE5966DA
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 03:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01535966F5
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 03:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbiHQBjA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 21:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        id S238350AbiHQBpZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 21:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238257AbiHQBi5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 21:38:57 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCAA3ED69;
-        Tue, 16 Aug 2022 18:38:48 -0700 (PDT)
+        with ESMTP id S233644AbiHQBpS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 21:45:18 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA519752D;
+        Tue, 16 Aug 2022 18:45:16 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M6rH155CVzKK5b;
-        Wed, 17 Aug 2022 09:37:17 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M6rQV6NcDz6V06l;
+        Wed, 17 Aug 2022 09:43:46 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP2 (Coremail) with SMTP id Syh0CgDHsb2lRvxib5zWAQ--.29963S3;
-        Wed, 17 Aug 2022 09:38:46 +0800 (CST)
-Subject: Re: [PATCH v7 8/9] blk-throttle: cleanup tg_update_disptime()
+        by APP2 (Coremail) with SMTP id Syh0CgC3oLwpSPxiKtHWAQ--.19765S3;
+        Wed, 17 Aug 2022 09:45:15 +0800 (CST)
+Subject: Re: [PATCH v7 9/9] blk-throttle: clean up flag 'THROTL_TG_PENDING'
 To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
 Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         "yukuai (C)" <yukuai3@huawei.com>
 References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
- <20220802140415.2960284-9-yukuai1@huaweicloud.com>
- <Yvv5as5BVuqjw6PX@slm.duckdns.org>
+ <20220802140415.2960284-10-yukuai1@huaweicloud.com>
+ <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <b06bbbce-ffd1-4a07-3f74-eac8411edd97@huaweicloud.com>
-Date:   Wed, 17 Aug 2022 09:38:45 +0800
+Message-ID: <65d93ec6-2465-35f1-314f-f092ce631100@huaweicloud.com>
+Date:   Wed, 17 Aug 2022 09:45:13 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <Yvv5as5BVuqjw6PX@slm.duckdns.org>
+In-Reply-To: <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHsb2lRvxib5zWAQ--.29963S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr1xJF1xXF4xJFyUur1UGFg_yoW3Cwb_GF
-        yvyrW0y34UAFZavasxJ3ZxCa9rWr4rGFy3Xw4Ivw47Kry5Xan8Zan8G395Ar13Gw4DtrnI
-        krWDGr4avrWSkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: Syh0CgC3oLwpSPxiKtHWAQ--.19765S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruFWxtrWUJw18urW3CFyDWrg_yoWfJrgE9a
+        s2yrWDtwn7ZrsxGF45Gry5uFW2k3y8WrW7XFWUXFsrGFyfXFn8JF4qvw4S9F98Ja9YkFnx
+        Crs8Wa10vr429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
         6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
         Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
         I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
@@ -66,24 +66,26 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Tejun！
+Hi, Tejun!
 
-在 2022/08/17 4:09, Tejun Heo 写道:
-> On Tue, Aug 02, 2022 at 10:04:14PM +0800, Yu Kuai wrote:
+在 2022/08/17 4:14, Tejun Heo 写道:
+> On Tue, Aug 02, 2022 at 10:04:15PM +0800, Yu Kuai wrote:
 >> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> tg_update_disptime() only need to adjust postion for 'tg' in
->> 'parent_sq', there is no need to call throtl_enqueue/dequeue_tg().
->>
->> Save a little overhead in tg_update_disptime() and prepare to cleanup
->> flag 'THROTL_TG_PENDING', there are no functional changes.
+>> All related operations are inside 'queue_lock', there is no need to use
+>> the flag, we only need to make sure throtl_enqueue_tg() is called when
+>> the first bio is throttled, and throtl_dequeue_tg() is called when the
+>> last throttled bio is dispatched. There are no functional changes in
+>> this patch.
 > 
-> Does this actually help anything? Given that the heavy part of the operation
-> remains the same, this might not be much of an optimization. Is there even a
-> microbench that can show the difference?
+> I don't know whether this is better or not. It's minutely less lines of code
+> but also makes the code a bit more fragile. I'm ambivalent. At any rate,
+> please move these trivial patches to the head of the series or post them
+> separately.
 
-It's right heavy part remains the same, the patch just remove some
-unnecessary operations. And I didn't run benchmark to test that yet.
+Can I ask why do you think this patch makes the code a bit more fragile?
+
+By the way, I'll post these trivial patches separately.
 
 Thanks,
 Kuai
