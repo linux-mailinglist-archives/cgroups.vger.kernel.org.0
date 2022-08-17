@@ -2,94 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D01535966F5
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 03:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1BE59671D
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 04:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238350AbiHQBpZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 21:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S232908AbiHQCB0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 22:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbiHQBpS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 21:45:18 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA519752D;
-        Tue, 16 Aug 2022 18:45:16 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M6rQV6NcDz6V06l;
-        Wed, 17 Aug 2022 09:43:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP2 (Coremail) with SMTP id Syh0CgC3oLwpSPxiKtHWAQ--.19765S3;
-        Wed, 17 Aug 2022 09:45:15 +0800 (CST)
-Subject: Re: [PATCH v7 9/9] blk-throttle: clean up flag 'THROTL_TG_PENDING'
-To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
- <20220802140415.2960284-10-yukuai1@huaweicloud.com>
- <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <65d93ec6-2465-35f1-314f-f092ce631100@huaweicloud.com>
-Date:   Wed, 17 Aug 2022 09:45:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S238408AbiHQCBZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 22:01:25 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115747CB55;
+        Tue, 16 Aug 2022 19:01:25 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d10so10795763plr.6;
+        Tue, 16 Aug 2022 19:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=T2ryg0NvBsySTqlIKv0j1Rn9xWbe0EBoTZaBsyrpPQk=;
+        b=fkzQolUzAnY5hgZafY8CAOMAGcTJQnGvyMyLIFF1z3Xo2xxxUJuriGFc8UjEdg+BL2
+         AFcbfmvorQNxMfYo4o9tnxjUuTsOMdv7qr7e/cQ+wfDhTuMWn6MwHVmYVQ3hHda6zBlj
+         WDpfPmhDmD/yRJvHcrbNr+RWJH0W78oZ9Y6o5NqBIkCLcy8u7op/fAQxs1CkdlpkVNdc
+         Sr79Nb8kvT7YkFYBzO0fLT3gZ/YsfYvw9tKwRj+R+FuZUExgTdZ0bVWsEh9yqxmyzbqM
+         DXZvI3z2ajuIdycmi5DDSQDOA3kJRoPwYNIeTQJXExyYxtfR9r3fw3wQ605hgWmU7MpE
+         vatQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=T2ryg0NvBsySTqlIKv0j1Rn9xWbe0EBoTZaBsyrpPQk=;
+        b=4suV7b5Wd+badOCfUTBawPW6g7i+SOR9YRwS4BkyxRj+BB15sBHppYbLzx7Gxd1c1E
+         NgK0z3riovjCXX1UiE3Uu+VVrzj5KNLdtL85FtaJPV9nJntfelarDc0GAYBHgW8hht23
+         FW3ImHR1u5ur393zX8kJvU/H+sULit5hfNruQ4uLDzHVHi0ii93uZozZhof44tOdSRF9
+         xVZDYdSejx3RMt0lTQvGu7FZ48Ate8qAhX3QL6jKWimVztj8wLLXjY9EJKGYXHRb8mEG
+         lTb+LSPaFj673RIeK7tK8+KJJuL671fbqWb3hwo4yBiliFd25btJFdbDNwX90taHVIwv
+         +r/w==
+X-Gm-Message-State: ACgBeo0OSA/5hBPrx29qCw+Vyf/rTphe5ErCQfUrLUmIXj05L/V2FGiH
+        BeZer8fRBFQRL9Vo2lqHcrcD5PlHY8zscLMNxPQ=
+X-Google-Smtp-Source: AA6agR5t25H5wDg2upmmIB++dF11M8APhafDGzQfESqj4hDt5g67WIpGUgLl6JJdDd5YBUEAZk9bHawnNtWULZmJjGA=
+X-Received: by 2002:a17:90a:73cc:b0:1f5:353d:7374 with SMTP id
+ n12-20020a17090a73cc00b001f5353d7374mr1398826pjk.21.1660701684557; Tue, 16
+ Aug 2022 19:01:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgC3oLwpSPxiKtHWAQ--.19765S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruFWxtrWUJw18urW3CFyDWrg_yoWfJrgE9a
-        s2yrWDtwn7ZrsxGF45Gry5uFW2k3y8WrW7XFWUXFsrGFyfXFn8JF4qvw4S9F98Ja9YkFnx
-        Crs8Wa10vr429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
-        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220816185801.651091-1-shy828301@gmail.com> <CALvZod5t7Qo1NQ040pRyWco+nJGn3hSrxZyuFQ0UBi31Ni6=_g@mail.gmail.com>
+In-Reply-To: <CALvZod5t7Qo1NQ040pRyWco+nJGn3hSrxZyuFQ0UBi31Ni6=_g@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 16 Aug 2022 19:01:11 -0700
+Message-ID: <CAHbLzkrSU3ZHRiZAxy9Jju3-3ZFpDmE4uMx81c+yPWN28_j+tw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: export workingset refault stats for cgroup v1
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Tejun!
+On Tue, Aug 16, 2022 at 3:06 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Tue, Aug 16, 2022 at 11:58 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > Workingset refault stats are important and usefule metrics to measure
+> > how well reclaimer and swapping work and how healthy the services are,
+> > but they are just available for cgroup v2.  There are still plenty users
+> > with cgroup v1, export the stats for cgroup v1.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> > I do understand the development of cgroup v1 is actually stalled and
+> > the community is reluctant to accept new features for v1.  However
+> > the workingset refault stats are really quite useful and exporting
+> > two new stats, which have been supported by v2, seems ok IMHO.  So
+> > hopefully this patch could be considered.  Thanks.
+> >
+>
+> Is just workingset refault good enough for your use-case? What about
+> the other workingset stats? I don't have a strong opinion against
+> adding these to v1 and I think these specific stats should be fine.
 
-ÔÚ 2022/08/17 4:14, Tejun Heo Ð´µÀ:
-> On Tue, Aug 02, 2022 at 10:04:15PM +0800, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> All related operations are inside 'queue_lock', there is no need to use
->> the flag, we only need to make sure throtl_enqueue_tg() is called when
->> the first bio is throttled, and throtl_dequeue_tg() is called when the
->> last throttled bio is dispatched. There are no functional changes in
->> this patch.
-> 
-> I don't know whether this is better or not. It's minutely less lines of code
-> but also makes the code a bit more fragile. I'm ambivalent. At any rate,
-> please move these trivial patches to the head of the series or post them
-> separately.
+The workingset refault is good enough for our usercase, but I don't
+mind adding all the workingset_* stats if nobody has objection.
 
-Can I ask why do you think this patch makes the code a bit more fragile?
+> (There is subtlety in exposing objcg based stats (i.e. reparenting) in
+> v1 due to non-hierarchical stats in v1. I remember Yosry and Muchun
+> were looking into that.)
 
-By the way, I'll post these trivial patches separately.
-
-Thanks,
-Kuai
-> 
-> Thanks.
-> 
-
+The workingset_* stats should have nothing to do with obj based stats IIUC.
