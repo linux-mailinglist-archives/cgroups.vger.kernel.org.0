@@ -2,57 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F565966CD
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 03:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBCE5966DA
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 03:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238201AbiHQBdf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Aug 2022 21:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+        id S238284AbiHQBjA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Aug 2022 21:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237650AbiHQBde (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 21:33:34 -0400
+        with ESMTP id S238257AbiHQBi5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Aug 2022 21:38:57 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139D921E0A;
-        Tue, 16 Aug 2022 18:33:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCAA3ED69;
+        Tue, 16 Aug 2022 18:38:48 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M6r8z4bsCzKl4M;
-        Wed, 17 Aug 2022 09:32:03 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M6rH155CVzKK5b;
+        Wed, 17 Aug 2022 09:37:17 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP2 (Coremail) with SMTP id Syh0CgAH8bxrRfxiLHLWAQ--.23935S3;
-        Wed, 17 Aug 2022 09:33:32 +0800 (CST)
-Subject: Re: [PATCH v7 6/9] blk-throttle: use 'READ/WRITE' instead of '0/1'
+        by APP2 (Coremail) with SMTP id Syh0CgDHsb2lRvxib5zWAQ--.29963S3;
+        Wed, 17 Aug 2022 09:38:46 +0800 (CST)
+Subject: Re: [PATCH v7 8/9] blk-throttle: cleanup tg_update_disptime()
 To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
 Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         "yukuai (C)" <yukuai3@huawei.com>
 References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
- <20220802140415.2960284-7-yukuai1@huaweicloud.com>
- <Yvv4BOx92l20VqD1@slm.duckdns.org>
+ <20220802140415.2960284-9-yukuai1@huaweicloud.com>
+ <Yvv5as5BVuqjw6PX@slm.duckdns.org>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <3c60db26-540d-2cf3-1ebf-1d1fc47a0494@huaweicloud.com>
-Date:   Wed, 17 Aug 2022 09:33:31 +0800
+Message-ID: <b06bbbce-ffd1-4a07-3f74-eac8411edd97@huaweicloud.com>
+Date:   Wed, 17 Aug 2022 09:38:45 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <Yvv4BOx92l20VqD1@slm.duckdns.org>
+In-Reply-To: <Yvv5as5BVuqjw6PX@slm.duckdns.org>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAH8bxrRfxiLHLWAQ--.23935S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
-        rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
-        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-        wI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
+X-CM-TRANSID: Syh0CgDHsb2lRvxib5zWAQ--.29963S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr1xJF1xXF4xJFyUur1UGFg_yoW3Cwb_GF
+        yvyrW0y34UAFZavasxJ3ZxCa9rWr4rGFy3Xw4Ivw47Kry5Xan8Zan8G395Ar13Gw4DtrnI
+        krWDGr4avrWSkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3
+        Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -64,24 +66,28 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Tejun
+Hi, Tejun！
 
-在 2022/08/17 4:03, Tejun Heo 写道:
-> On Tue, Aug 02, 2022 at 10:04:12PM +0800, Yu Kuai wrote:
+在 2022/08/17 4:09, Tejun Heo 写道:
+> On Tue, Aug 02, 2022 at 10:04:14PM +0800, Yu Kuai wrote:
 >> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> Make the code easier to read, like everywhere else.
+>> tg_update_disptime() only need to adjust postion for 'tg' in
+>> 'parent_sq', there is no need to call throtl_enqueue/dequeue_tg().
 >>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> Acked-by: Tejun Heo <tj@kernel.org>
+>> Save a little overhead in tg_update_disptime() and prepare to cleanup
+>> flag 'THROTL_TG_PENDING', there are no functional changes.
 > 
-> Let's float trivial acked patches to the front so that they can applied
-> without waiting for the rest of the series.
-> 
-Good point! I'll move last 4 patches into a new patchset.
+> Does this actually help anything? Given that the heavy part of the operation
+> remains the same, this might not be much of an optimization. Is there even a
+> microbench that can show the difference?
+
+It's right heavy part remains the same, the patch just remove some
+unnecessary operations. And I didn't run benchmark to test that yet.
 
 Thanks,
 Kuai
+> 
 > Thanks.
 > 
 
