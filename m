@@ -2,63 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D563D596DDB
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 13:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEB15972CC
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbiHQL4I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 07:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        id S240262AbiHQPTc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 11:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbiHQL4H (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 07:56:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A066659FA;
-        Wed, 17 Aug 2022 04:56:06 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D13F034FAC;
-        Wed, 17 Aug 2022 11:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1660737364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ePbZ8e/KCVZTNO/c7x8PC9Lp2X0HZVdFE7ASGKd/ftA=;
-        b=AWros+//PP3JC4fSGrDgSZoj/249TX1DSF3BITyVDHGY76ULpycVEq69ALeirAowvj5cOx
-        dTNJWWKfCv1HCDSoaNUdQgp2dUHRO/GPfoq3VJk6YHjZoMXP8JAA7LdLVRIh4/0rnAWwUS
-        YMnsDzadYVhQp17cEs3RAQBtVzV7nKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1660737364;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ePbZ8e/KCVZTNO/c7x8PC9Lp2X0HZVdFE7ASGKd/ftA=;
-        b=YUJKjJfLMLrNFMGghBCaxKOKYgJtxgu1B3bHZEfkeQXoxzzuBtESZsUYpDD6BztErnqIrs
-        al/N8Qw6eKiHJHCQ==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A26482C178;
-        Wed, 17 Aug 2022 11:56:04 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 08B23A066B; Wed, 17 Aug 2022 13:56:04 +0200 (CEST)
-Date:   Wed, 17 Aug 2022 13:56:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     jack@suse.cz, axboe@kernel.dk, paolo.valente@linaro.org,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH -next 3/3] block, bfq: remove useless parameter for
- bfq_add/del_bfqq_busy()
-Message-ID: <20220817115604.llq3rx2pdf64ii2w@quack3>
-References: <20220816015631.1323948-1-yukuai1@huaweicloud.com>
- <20220816015631.1323948-4-yukuai1@huaweicloud.com>
+        with ESMTP id S239900AbiHQPTc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 11:19:32 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794851A046
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id s4-20020a17090a5d0400b001fabc6bb0baso834075pji.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=2Dzsz0z2prfhgcbdQayKeKRlLfrKQM5D6pSVBtZ7THM=;
+        b=GCmgVkz+4yjg/OIcr2ND13CCDmdSh+WHCUT6HE9iMQmhjE4cFo3stnG1YrZoN7u2jA
+         X50ubaDBe2N1zPHvWHi9l/NTCLsojyti+EbEBmECP0yxN9mvcFwnCZX6U5UqWeZGV4vd
+         UCp9Jj4DkuFnJ2uB+xOIyniJjwYfbdnuS0eTVMFLTlWm6kt96GEZeZSsspDqrubXzuck
+         DUXXm+Jxw/p/0xP9Atph6ZbCIOrc4E7iEKFavcTiP8r0rI29yFs4MdI82C1dJhvpqOGK
+         /2v7aN9fekT9Dl2kwXvNX5ouI+kmQ6XKxIBpmWB8XiS2dvIP6Annb8vwO7R2MwF9gMdK
+         ncag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=2Dzsz0z2prfhgcbdQayKeKRlLfrKQM5D6pSVBtZ7THM=;
+        b=uDRiBOaFGaD23c9OsUFG7DydwE1bivpF47lrf0nnd8sU+Aa+o8Y1d7/+C6KKnWTqvx
+         pASl0hwJCfbRNnzgPzzTw2ol/Jeet95H6hxnjj+CKk5YWZLL2yYdHzyS7qhotOn5XbXh
+         Rokk+Hqeyhc7eYFLqAKqbRAVZ9TQcZmCEdGZB/w3l4JEkDLPOMPENfRPdHpbQiSKdFcP
+         5d6yZ8xxe7eFOMMW43dYFKe4Mzv5HCuUaUQH00serocMgYhPe0ma+4c2TcOECBT8B9e4
+         pbFiY0dTRaOJpMHfRzxey/BfIqmjCj7VOL3zFqjU+q06z/SN0b60b45VkSBwyFkJVDv7
+         PqRw==
+X-Gm-Message-State: ACgBeo3vI+W6DgAi7Inc035e/goQJX2oaS0wu7ejqIfvtqw5EsupUxRz
+        7wL6Y/StnyStdt0v6SJbMJYhaQ==
+X-Google-Smtp-Source: AA6agR6kokDwE6+pMf5BQdL0piGfoMv4TNps5u+H7z2eEXQEoh698ZXAEgsCRmvmL5MAXJWLFaNIWw==
+X-Received: by 2002:a17:903:2589:b0:16d:c26c:d641 with SMTP id jb9-20020a170903258900b0016dc26cd641mr26813781plb.8.1660749570010;
+        Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
+Received: from ?IPV6:2409:8a28:e63:2e90:498e:2d75:1610:f371? ([2409:8a28:e63:2e90:498e:2d75:1610:f371])
+        by smtp.gmail.com with ESMTPSA id x185-20020a6263c2000000b0052dc3796cbfsm10562485pfb.75.2022.08.17.08.19.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Aug 2022 08:19:29 -0700 (PDT)
+Message-ID: <42c6d11d-d68a-e869-375e-550c495be5bb@bytedance.com>
+Date:   Wed, 17 Aug 2022 23:19:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220816015631.1323948-4-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.1.2
+Subject: Re: [PATCH v2 00/10] sched/psi: some optimization and extension
+Content-Language: en-US
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     hannes@cmpxchg.org, tj@kernel.org, corbet@lwn.net,
+        surenb@google.com, mingo@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+References: <20220808110341.15799-1-zhouchengming@bytedance.com>
+ <20220815132514.GB22640@blackbody.suse.cz>
+ <08ec9c4f-80b2-f731-aa8b-fb4e852ece25@bytedance.com>
+In-Reply-To: <08ec9c4f-80b2-f731-aa8b-fb4e852ece25@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,115 +80,32 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 16-08-22 09:56:31, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> 'bfqd' can be accessed through 'bfqq->bfqd', there is no need to pass
-> it as a parameter separately.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On 2022/8/16 22:01, Chengming Zhou wrote:
+> On 2022/8/15 21:25, Michal Koutný wrote:
+>> On Mon, Aug 08, 2022 at 07:03:31PM +0800, Chengming Zhou <zhouchengming@bytedance.com> wrote:
+>>> This patch series are some optimization and extension for PSI,
+>>
+>> BTW do you have some numbers/example how much these modifications save
+>> when aggregated together?
+>>
 
-I agree. That also seemed a bit strange to me in bfq code. Feel free to
-add:
+Sorry about delay...
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Performance test using mmtests/config-scheduler-perfpipe in /user.slice/user-0.slice/session-4.scope
 
-								Honza
+                                 next                patched       patched/only-leaf
+Min       Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+1st-qrtle Time        8.90 (   0.00%)        8.58 (   3.63%)        8.05 (   9.58%)
+2nd-qrtle Time        8.94 (   0.00%)        8.61 (   3.65%)        8.09 (   9.50%)
+3rd-qrtle Time        8.99 (   0.00%)        8.65 (   3.75%)        8.15 (   9.35%)
+Max-1     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-5     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-10    Time        8.84 (   0.00%)        8.55 (   3.20%)        8.04 (   9.05%)
+Max-90    Time        9.04 (   0.00%)        8.67 (   4.10%)        8.18 (   9.51%)
+Max-95    Time        9.04 (   0.00%)        8.68 (   4.03%)        8.20 (   9.26%)
+Max-99    Time        9.07 (   0.00%)        8.73 (   3.82%)        8.25 (   9.11%)
+Max       Time        9.12 (   0.00%)        8.89 (   2.54%)        8.27 (   9.29%)
+Amean     Time        8.95 (   0.00%)        8.62 *   3.67%*        8.11 *   9.43%*
 
-> ---
->  block/bfq-iosched.c | 8 ++++----
->  block/bfq-iosched.h | 5 ++---
->  block/bfq-wf2q.c    | 9 ++++++---
->  3 files changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index f39067389b2b..7ea427817f7f 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -1925,7 +1925,7 @@ static void bfq_bfqq_handle_idle_busy_switch(struct bfq_data *bfqd,
->  	bfqq->service_from_backlogged = 0;
->  	bfq_clear_bfqq_softrt_update(bfqq);
->  
-> -	bfq_add_bfqq_busy(bfqd, bfqq);
-> +	bfq_add_bfqq_busy(bfqq);
->  
->  	/*
->  	 * Expire in-service queue if preemption may be needed for
-> @@ -2419,7 +2419,7 @@ static void bfq_remove_request(struct request_queue *q,
->  		bfqq->next_rq = NULL;
->  
->  		if (bfq_bfqq_busy(bfqq) && bfqq != bfqd->in_service_queue) {
-> -			bfq_del_bfqq_busy(bfqd, bfqq, false);
-> +			bfq_del_bfqq_busy(bfqq, false);
->  			/*
->  			 * bfqq emptied. In normal operation, when
->  			 * bfqq is empty, bfqq->entity.service and
-> @@ -3098,7 +3098,7 @@ void bfq_release_process_ref(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->  	 */
->  	if (bfq_bfqq_busy(bfqq) && RB_EMPTY_ROOT(&bfqq->sort_list) &&
->  	    bfqq != bfqd->in_service_queue)
-> -		bfq_del_bfqq_busy(bfqd, bfqq, false);
-> +		bfq_del_bfqq_busy(bfqq, false);
->  
->  	bfq_reassign_last_bfqq(bfqq, NULL);
->  
-> @@ -3908,7 +3908,7 @@ static bool __bfq_bfqq_expire(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  			 */
->  			bfqq->budget_timeout = jiffies;
->  
-> -		bfq_del_bfqq_busy(bfqd, bfqq, true);
-> +		bfq_del_bfqq_busy(bfqq, true);
->  	} else {
->  		bfq_requeue_bfqq(bfqd, bfqq, true);
->  		/*
-> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> index f81ab3c8fa3c..64ee618064ba 100644
-> --- a/block/bfq-iosched.h
-> +++ b/block/bfq-iosched.h
-> @@ -1080,9 +1080,8 @@ void bfq_deactivate_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  void bfq_activate_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq);
->  void bfq_requeue_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  		      bool expiration);
-> -void bfq_del_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq,
-> -		       bool expiration);
-> -void bfq_add_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq);
-> +void bfq_del_bfqq_busy(struct bfq_queue *bfqq, bool expiration);
-> +void bfq_add_bfqq_busy(struct bfq_queue *bfqq);
->  
->  /* --------------- end of interface of B-WF2Q+ ---------------- */
->  
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index 983413cdefad..8fc3da4c23bb 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -1651,9 +1651,10 @@ void bfq_requeue_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->   * the service tree. As a special case, it can be invoked during an
->   * expiration.
->   */
-> -void bfq_del_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq,
-> -		       bool expiration)
-> +void bfq_del_bfqq_busy(struct bfq_queue *bfqq, bool expiration)
->  {
-> +	struct bfq_data *bfqd = bfqq->bfqd;
-> +
->  	bfq_log_bfqq(bfqd, bfqq, "del from busy");
->  
->  	bfq_clear_bfqq_busy(bfqq);
-> @@ -1674,8 +1675,10 @@ void bfq_del_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->  /*
->   * Called when an inactive queue receives a new request.
->   */
-> -void bfq_add_bfqq_busy(struct bfq_data *bfqd, struct bfq_queue *bfqq)
-> +void bfq_add_bfqq_busy(struct bfq_queue *bfqq)
->  {
-> +	struct bfq_data *bfqd = bfqq->bfqd;
-> +
->  	bfq_log_bfqq(bfqd, bfqq, "add to busy");
->  
->  	bfq_activate_bfqq(bfqd, bfqq);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Thanks!
