@@ -2,110 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEB15972CC
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 17:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FF9597439
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 18:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240262AbiHQPTc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 11:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        id S241018AbiHQQ1m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 12:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239900AbiHQPTc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 11:19:32 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794851A046
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id s4-20020a17090a5d0400b001fabc6bb0baso834075pji.1
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=2Dzsz0z2prfhgcbdQayKeKRlLfrKQM5D6pSVBtZ7THM=;
-        b=GCmgVkz+4yjg/OIcr2ND13CCDmdSh+WHCUT6HE9iMQmhjE4cFo3stnG1YrZoN7u2jA
-         X50ubaDBe2N1zPHvWHi9l/NTCLsojyti+EbEBmECP0yxN9mvcFwnCZX6U5UqWeZGV4vd
-         UCp9Jj4DkuFnJ2uB+xOIyniJjwYfbdnuS0eTVMFLTlWm6kt96GEZeZSsspDqrubXzuck
-         DUXXm+Jxw/p/0xP9Atph6ZbCIOrc4E7iEKFavcTiP8r0rI29yFs4MdI82C1dJhvpqOGK
-         /2v7aN9fekT9Dl2kwXvNX5ouI+kmQ6XKxIBpmWB8XiS2dvIP6Annb8vwO7R2MwF9gMdK
-         ncag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=2Dzsz0z2prfhgcbdQayKeKRlLfrKQM5D6pSVBtZ7THM=;
-        b=uDRiBOaFGaD23c9OsUFG7DydwE1bivpF47lrf0nnd8sU+Aa+o8Y1d7/+C6KKnWTqvx
-         pASl0hwJCfbRNnzgPzzTw2ol/Jeet95H6hxnjj+CKk5YWZLL2yYdHzyS7qhotOn5XbXh
-         Rokk+Hqeyhc7eYFLqAKqbRAVZ9TQcZmCEdGZB/w3l4JEkDLPOMPENfRPdHpbQiSKdFcP
-         5d6yZ8xxe7eFOMMW43dYFKe4Mzv5HCuUaUQH00serocMgYhPe0ma+4c2TcOECBT8B9e4
-         pbFiY0dTRaOJpMHfRzxey/BfIqmjCj7VOL3zFqjU+q06z/SN0b60b45VkSBwyFkJVDv7
-         PqRw==
-X-Gm-Message-State: ACgBeo3vI+W6DgAi7Inc035e/goQJX2oaS0wu7ejqIfvtqw5EsupUxRz
-        7wL6Y/StnyStdt0v6SJbMJYhaQ==
-X-Google-Smtp-Source: AA6agR6kokDwE6+pMf5BQdL0piGfoMv4TNps5u+H7z2eEXQEoh698ZXAEgsCRmvmL5MAXJWLFaNIWw==
-X-Received: by 2002:a17:903:2589:b0:16d:c26c:d641 with SMTP id jb9-20020a170903258900b0016dc26cd641mr26813781plb.8.1660749570010;
-        Wed, 17 Aug 2022 08:19:30 -0700 (PDT)
-Received: from ?IPV6:2409:8a28:e63:2e90:498e:2d75:1610:f371? ([2409:8a28:e63:2e90:498e:2d75:1610:f371])
-        by smtp.gmail.com with ESMTPSA id x185-20020a6263c2000000b0052dc3796cbfsm10562485pfb.75.2022.08.17.08.19.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Aug 2022 08:19:29 -0700 (PDT)
-Message-ID: <42c6d11d-d68a-e869-375e-550c495be5bb@bytedance.com>
-Date:   Wed, 17 Aug 2022 23:19:18 +0800
+        with ESMTP id S239344AbiHQQ1l (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 12:27:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C72A031D;
+        Wed, 17 Aug 2022 09:27:40 -0700 (PDT)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1660753657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=icKYkzOEkU10wqYj/AO1hlieqfsCO6opQIYue93MICc=;
+        b=WUwxVW+uGIaO0szg7BxOu1wCzapAwDdXZYNPFf3kiI2xBtu8Es480fO/5T71TMYiQKTjL2
+        Y5lWxIQqJ7x7BoSnhKaFZCzRhG7+8yHeQ5/tmMMThFpP2L1agJ4szHQY5JVMPUakod0IbE
+        yIc6Gl3i758gJbuMjFnB7KmeyFMZ5xJ0mfQb/Ikck/iVjEeodnOdRlmZ/pr1p0eX5sgM4R
+        M4paCBlURfexAPIOmkPU+fjGxjbUG3Dnqp+YkiX1A4mHylwtylhelH9PtNbQGgVaw0NytL
+        acYvZri+GlxU9tb6ucjTkjxdrXJYjietaE0V6tqA4Eq9vmaflVkD4q9k8U95TQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1660753657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=icKYkzOEkU10wqYj/AO1hlieqfsCO6opQIYue93MICc=;
+        b=500tFezzQJcGWrboXp6CHY0SHvmE+zDVA//pAXoHOs0Jh0IxU+Aa1gSbSy/Lv6WZU3qbC3
+        94vz4DsO75E0UxCQ==
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 6/9] mm/memcontrol: Replace the PREEMPT_RT conditionals
+Date:   Wed, 17 Aug 2022 18:27:00 +0200
+Message-Id: <20220817162703.728679-7-bigeasy@linutronix.de>
+In-Reply-To: <20220817162703.728679-1-bigeasy@linutronix.de>
+References: <20220817162703.728679-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.1.2
-Subject: Re: [PATCH v2 00/10] sched/psi: some optimization and extension
-Content-Language: en-US
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     hannes@cmpxchg.org, tj@kernel.org, corbet@lwn.net,
-        surenb@google.com, mingo@redhat.com, peterz@infradead.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com
-References: <20220808110341.15799-1-zhouchengming@bytedance.com>
- <20220815132514.GB22640@blackbody.suse.cz>
- <08ec9c4f-80b2-f731-aa8b-fb4e852ece25@bytedance.com>
-In-Reply-To: <08ec9c4f-80b2-f731-aa8b-fb4e852ece25@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/8/16 22:01, Chengming Zhou wrote:
-> On 2022/8/15 21:25, Michal Koutný wrote:
->> On Mon, Aug 08, 2022 at 07:03:31PM +0800, Chengming Zhou <zhouchengming@bytedance.com> wrote:
->>> This patch series are some optimization and extension for PSI,
->>
->> BTW do you have some numbers/example how much these modifications save
->> when aggregated together?
->>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Sorry about delay...
+Use VM_WARN_ON_IRQS_ENABLED() and preempt_disable/enable_nested() to
+replace the CONFIG_PREEMPT_RT #ifdeffery.
 
-Performance test using mmtests/config-scheduler-perfpipe in /user.slice/user-0.slice/session-4.scope
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ mm/memcontrol.c | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
-                                 next                patched       patched/only-leaf
-Min       Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
-1st-qrtle Time        8.90 (   0.00%)        8.58 (   3.63%)        8.05 (   9.58%)
-2nd-qrtle Time        8.94 (   0.00%)        8.61 (   3.65%)        8.09 (   9.50%)
-3rd-qrtle Time        8.99 (   0.00%)        8.65 (   3.75%)        8.15 (   9.35%)
-Max-1     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
-Max-5     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
-Max-10    Time        8.84 (   0.00%)        8.55 (   3.20%)        8.04 (   9.05%)
-Max-90    Time        9.04 (   0.00%)        8.67 (   4.10%)        8.18 (   9.51%)
-Max-95    Time        9.04 (   0.00%)        8.68 (   4.03%)        8.20 (   9.26%)
-Max-99    Time        9.07 (   0.00%)        8.73 (   3.82%)        8.25 (   9.11%)
-Max       Time        9.12 (   0.00%)        8.89 (   2.54%)        8.27 (   9.29%)
-Amean     Time        8.95 (   0.00%)        8.62 *   3.67%*        8.11 *   9.43%*
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b69979c9ced5c..d35b6fa560f0a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -597,25 +597,18 @@ static u64 flush_next_time;
+  */
+ static void memcg_stats_lock(void)
+ {
+-#ifdef CONFIG_PREEMPT_RT
+-      preempt_disable();
+-#else
+-      VM_BUG_ON(!irqs_disabled());
+-#endif
++	preempt_disable_nested();
++	VM_WARN_ON_IRQS_ENABLED();
+ }
+=20
+ static void __memcg_stats_lock(void)
+ {
+-#ifdef CONFIG_PREEMPT_RT
+-      preempt_disable();
+-#endif
++	preempt_disable_nested();
+ }
+=20
+ static void memcg_stats_unlock(void)
+ {
+-#ifdef CONFIG_PREEMPT_RT
+-      preempt_enable();
+-#endif
++	preempt_enable_nested();
+ }
+=20
+ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+@@ -715,7 +708,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
+um node_stat_item idx,
+ 	 * interrupt context while other caller need to have disabled interrupt.
+ 	 */
+ 	__memcg_stats_lock();
+-	if (IS_ENABLED(CONFIG_DEBUG_VM) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
++	if (IS_ENABLED(CONFIG_DEBUG_VM)) {
+ 		switch (idx) {
+ 		case NR_ANON_MAPPED:
+ 		case NR_FILE_MAPPED:
+@@ -725,7 +718,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
+um node_stat_item idx,
+ 			WARN_ON_ONCE(!in_task());
+ 			break;
+ 		default:
+-			WARN_ON_ONCE(!irqs_disabled());
++			VM_WARN_ON_IRQS_ENABLED();
+ 		}
+ 	}
+=20
+--=20
+2.37.2
 
-
-Thanks!
