@@ -2,50 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C025974E6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 19:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF085974EB
+	for <lists+cgroups@lfdr.de>; Wed, 17 Aug 2022 19:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbiHQRRH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 13:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        id S237652AbiHQRWM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 13:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbiHQRRG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 13:17:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F5798CAC
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 10:17:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0772AB81E7D
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 17:17:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 658CEC433C1;
-        Wed, 17 Aug 2022 17:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1660756622;
-        bh=sW2vlMqA2/k4m+CqkD1Vg77XK6jsg6cOZAQ48jZAEO4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZlumYuQX50WUifM8caT+mwnMVMdFTD+KKJBFBKSJ3IsTjf34CnZSzncE+xBuPGahC
-         Tc1J2GaYoN2BbSDjpm3OC6uBY+V2aXmteyfjnUK/mhhNR5Qzfc+cji4C0GfYtdHdai
-         rpTbb0iIH68t+kyo1aupJ8A3E6AvpNZRtfJRUVoc=
-Date:   Wed, 17 Aug 2022 10:17:01 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     liliguang <liliguang@baidu.com>, cgroups@vger.kernel.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        songmuchun@bytedance.com, linux-mm@kvack.org
-Subject: Re: [PATCH] mm: correctly charge compressed memory to its memcg
-Message-Id: <20220817101701.149fff9ef57f447dd8bb0dc9@linux-foundation.org>
-In-Reply-To: <YvpkK8fwCEPGmif+@cmpxchg.org>
-References: <20220811081913.102770-1-liliguang@baidu.com>
-        <YvpkK8fwCEPGmif+@cmpxchg.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        with ESMTP id S229678AbiHQRWK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 13:22:10 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9309F1B7
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 10:22:09 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3359a55dcb6so23855447b3.21
+        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 10:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=dSzSreqSgeWTr7IT3H9o9mfUnYWShCnFurU/IX78wck=;
+        b=dTD3RFmREPolvh67EVgPCaiqfPyrzjLIQk3j7COquerAm7hUK1GISZwu7LhnAsS8rx
+         9pHHdZosMxN0Q3SK3B5q37DPVuCJNtYYzBL6nVkLxz21xZhJitWg0GXoCxrcnTgN8Jwc
+         Cr5luIxno/kD6ed4ki0W2eh7XGjQc8VFXxqH3HJvH6A2OuDxGL/lXQ3owGk29+tpha+2
+         ZvsP4zzvlWLcA3uxDoxEtMWgbPdjTjufGW0fS4h0583eJL0YVXB6neXzbAJP86uUXlIq
+         9xzV/+A/HP2bIMAMWJIsATEziLl0Gk+d/FJLCiZColNnBniWGGmvtH2DhvD94kXfi14T
+         PTyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=dSzSreqSgeWTr7IT3H9o9mfUnYWShCnFurU/IX78wck=;
+        b=4qoQ5jvg47to1KT+KeEmMEG4r/C7gE4iXckjYd5FrcirxgMQ+ndBi7aRN22N20Pjvu
+         8MHV8ZV+pH/RKu7ub+4HktdZUZ8RkEvyh/syi8v1WU/LH/ghLDv+KSAuyBmXNCFs9vVm
+         wd3qfbaSxP/lubsBTkFAIjKKzLreORnXCW/c3kVLwz7FYDmhKkxdOdKiMGlc36SkE5o5
+         TYpFh+dVquFyXCClABnyVdt5kPqIEi0Ox+pwrinLvxW9DArK9LZNn637nAJpFU610/Ch
+         0GTCPqxeo+9Cvrsq0vV+UUnLsI60Tmul4cpoeBstneyxI8WWeHMtS+uenGUrEN5mBBnJ
+         p1CA==
+X-Gm-Message-State: ACgBeo0xLEaPgcIQkk3eaM0hxTlfHlWJloDRii5OWQkcR7L5rkyg3lLw
+        Xju+/vr8KsbnD/0njjM//bDfW1utlTXeDQ==
+X-Google-Smtp-Source: AA6agR7jpqI5gHh0L3BshFzAgkpfAr7thcx3wVGMnmFl2krsRkYhz8IM1V25L53py8VgBd9yt3hx4SPwZCczSg==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:a5b:ac9:0:b0:67b:4ba1:cde7 with SMTP id
+ a9-20020a5b0ac9000000b0067b4ba1cde7mr21506046ybr.70.1660756929175; Wed, 17
+ Aug 2022 10:22:09 -0700 (PDT)
+Date:   Wed, 17 Aug 2022 17:21:39 +0000
+Message-Id: <20220817172139.3141101-1-shakeelb@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
+Subject: [PATCH] Revert "memcg: cleanup racy sum avoidance code"
+From:   Shakeel Butt <shakeelb@google.com>
+To:     "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Greg Thelen <gthelen@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,20 +72,79 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 15 Aug 2022 11:20:11 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+This reverts commit 96e51ccf1af33e82f429a0d6baebba29c6448d0f.
 
-> Great catch. I think this qualifies for stable.
-> 
-> Cc: stable@vger.kernel.org # 5.19
-> Fixes: f4840ccfca25 ("zswap: memcg accounting")
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Andrew, can you please take this through the MM tree?
+Recently we started running the kernel with rstat infrastructure on
+production traffic and begin to see negative memcg stats values.
+Particularly the 'sock' stat is the one which we observed having
+negative value.
 
-Sure, but I'm not subscribed to cgroups@ and it wasn't cc'ed to
-linux-kernel so no patch for me.
+$ grep "sock " /mnt/memory/job/memory.stat
+sock 253952
+total_sock 18446744073708724224
 
-I could reconstitute it from the quoted patch but that's a bit lame and
-we don't get a usable Link: tag.
+Re-run after couple of seconds
 
-So please redo, refresh, retest and resend?
+$ grep "sock " /mnt/memory/job/memory.stat
+sock 253952
+total_sock 53248
+
+For now we are only seeing this issue on large machines (256 CPUs) and
+only with 'sock' stat. I think the networking stack increase the stat on
+one cpu and decrease it on another cpu much more often. So, this
+negative sock is due to rstat flusher flushing the stats on the CPU that
+has seen the decrement of sock but missed the CPU that has increments. A
+typical race condition.
+
+For easy stable backport, revert is the most simple solution. For long
+term solution, I am thinking of two directions. First is just reduce the
+race window by optimizing the rstat flusher. Second is if the reader
+sees a negative stat value, force flush and restart the stat collection.
+Basically retry but limited.
+
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Cc: stable@vger.kernel.org # 5.15
+---
+ include/linux/memcontrol.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 4d31ce55b1c0..6257867fbf95 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -987,19 +987,30 @@ static inline void mod_memcg_page_state(struct page *page,
+ 
+ static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+ {
+-	return READ_ONCE(memcg->vmstats.state[idx]);
++	long x = READ_ONCE(memcg->vmstats.state[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
+ }
+ 
+ static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+ 					      enum node_stat_item idx)
+ {
+ 	struct mem_cgroup_per_node *pn;
++	long x;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	return READ_ONCE(pn->lruvec_stats.state[idx]);
++	x = READ_ONCE(pn->lruvec_stats.state[idx]);
++#ifdef CONFIG_SMP
++	if (x < 0)
++		x = 0;
++#endif
++	return x;
+ }
+ 
+ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+-- 
+2.37.1.595.g718a3a8f04-goog
+
