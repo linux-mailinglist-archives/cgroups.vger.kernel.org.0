@@ -2,198 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 285535979A1
-	for <lists+cgroups@lfdr.de>; Thu, 18 Aug 2022 00:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F154C597AE2
+	for <lists+cgroups@lfdr.de>; Thu, 18 Aug 2022 03:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240996AbiHQW2k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Aug 2022 18:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38644 "EHLO
+        id S239713AbiHRBQf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Aug 2022 21:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238621AbiHQW2j (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 18:28:39 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95EA4BD35
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 15:28:36 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id k16so2520839wrx.11
-        for <cgroups@vger.kernel.org>; Wed, 17 Aug 2022 15:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=o1hj40RfZIutgTtHY6Ei4iwhGh1778mLr0oxD454ZKw=;
-        b=dxQEBsrSOL6uneP8vspbdKN8cBHPLmh476RXn4nJLef2SC2AaP3hEaVfFfI+RNXVBC
-         vgzrUEQdxYMNrJ+jezUDoyob0kbiLE7ORKCdTBLFa2i3RQKy1foqJ61Gs3yaQS61PK99
-         hKCF/kgqBaIHTekyfAfoVByipKAm6EgVGHNqnfh0M6ZBcTluXibNNSDJkKCQJH9N0cWp
-         MaZ/MngfqLuXRrfljnJ/CdzaaBF5y3lB2jjOH9eC3r36yDFw56U7vu6Y6F/AWxpmWg4k
-         +gFmn3dYTFKgVYuqjbtEl0Io2egt9yfZOdljmrlRETUhbMaQg7UXCc4GMk8ygxXXKw4u
-         zrMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=o1hj40RfZIutgTtHY6Ei4iwhGh1778mLr0oxD454ZKw=;
-        b=FeN16LaaE6fpIa5UdtaZlc8Iok4S3uz+UOY/mlLvX4nqsvv1HBtDyvwamSYTi8NWf4
-         K5KF6YVp6Cbp8rtD1lzv2tS7YDTKxOrSy9yRaGadX6sDm+f7OIn8fMYidfJu9vwwv7DW
-         cFwCzRRWC04ieOS38lWporm+mZzfcTmuMVbP87BofXaKczwXKaC6+UgFQ3YbT4e22REA
-         /vBRRHlYkzObpBzJmviHijTYQNsdN3pgv2YCJsV22RK6Bt1CTVjyfZVsxAo/O+0JdiTr
-         TeW1K+RCewH3ld2pahrAkLhAy/ahKOygZrnuW8mojohNpLqZ+opuiwmdpyZoIH8k9Myu
-         mrlA==
-X-Gm-Message-State: ACgBeo0AIDvAXDshFSGChakdiKX0r8BQwD7mZjsSMX2Cah/Rx5539012
-        und3+jmKBlU5XDESjGvO0SdBZlE/idnWVzKw0fFBwg==
-X-Google-Smtp-Source: AA6agR7tp4biFjNEHKNs+HqaDuNi3dJzl8FDIEl5tWodRn34g8QXrKQ82nA0862GDnxXcX0/CDLqX7FOZ/emHPTcrpA=
-X-Received: by 2002:a05:6000:11d0:b0:225:1c12:65f8 with SMTP id
- i16-20020a05600011d000b002251c1265f8mr76041wrx.80.1660775315237; Wed, 17 Aug
- 2022 15:28:35 -0700 (PDT)
+        with ESMTP id S231627AbiHRBQf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Aug 2022 21:16:35 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EDA91D30;
+        Wed, 17 Aug 2022 18:16:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M7Rks366zz6R9dc;
+        Thu, 18 Aug 2022 09:15:01 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgBXXOnskv1ixcflAQ--.22050S3;
+        Thu, 18 Aug 2022 09:16:30 +0800 (CST)
+Subject: Re: [PATCH v7 4/9] blk-throttle: fix io hung due to configuration
+ updates
+To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai3@huawei.com >> yukuai (C)" <yukuai3@huawei.com>
+References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
+ <20220802140415.2960284-5-yukuai1@huaweicloud.com>
+ <Yvv3jcycOguuEbA3@slm.duckdns.org>
+ <215b4842-c09f-d622-7127-c8b1d9ce3aa9@huaweicloud.com>
+ <Yv0q7T5Eg6MzOIuU@slm.duckdns.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d82305ef-1672-a648-f0b6-882bef1659f1@huaweicloud.com>
+Date:   Thu, 18 Aug 2022 09:16:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20220628220938.3657876-1-yosryahmed@google.com>
- <20220628220938.3657876-2-yosryahmed@google.com> <20220817102408.7b048f198a736f053ced2862@linux-foundation.org>
-In-Reply-To: <20220817102408.7b048f198a736f053ced2862@linux-foundation.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 17 Aug 2022 15:27:58 -0700
-Message-ID: <CAJD7tkZQ07dZtcTSirj0qLawaE3Ndyn-385m_kL09=gsfO9QwA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
- page table uses.
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Yv0q7T5Eg6MzOIuU@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBXXOnskv1ixcflAQ--.22050S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1kWFWfJw47KF45CFyxuFg_yoW8XrW8pr
+        48tF4kta1DX3srA3ZFv3W2qwnYyr48WFW5Jr98G3Wrt3Z8WryIgrs2kr4rCFy09r48Jay0
+        v34Sq3s5Ars5AFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 10:24 AM Andrew Morton
-<akpm@linux-foundation.org> wrote:
->
-> On Tue, 28 Jun 2022 22:09:35 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> > We keep track of several kernel memory stats (total kernel memory, page
-> > tables, stack, vmalloc, etc) on multiple levels (global, per-node,
-> > per-memcg, etc). These stats give insights to users to how much memory
-> > is used by the kernel and for what purposes.
-> >
-> > Currently, memory used by kvm mmu is not accounted in any of those
-> > kernel memory stats. This patch series accounts the memory pages
-> > used by KVM for page tables in those stats in a new
-> > NR_SECONDARY_PAGETABLE stat. This stat can be later extended to account
-> > for other types of secondary pages tables (e.g. iommu page tables).
-> >
-> > KVM has a decent number of large allocations that aren't for page
-> > tables, but for most of them, the number/size of those allocations
-> > scales linearly with either the number of vCPUs or the amount of memory
-> > assigned to the VM. KVM's secondary page table allocations do not scale
-> > linearly, especially when nested virtualization is in use.
-> >
-> > >From a KVM perspective, NR_SECONDARY_PAGETABLE will scale with KVM's
-> > per-VM pages_{4k,2m,1g} stats unless the guest is doing something
-> > bizarre (e.g. accessing only 4kb chunks of 2mb pages so that KVM is
-> > forced to allocate a large number of page tables even though the guest
-> > isn't accessing that much memory). However, someone would need to either
-> > understand how KVM works to make that connection, or know (or be told) to
-> > go look at KVM's stats if they're running VMs to better decipher the stats.
-> >
-> > Furthermore, having NR_PAGETABLE side-by-side with NR_SECONDARY_PAGETABLE
-> > is informative. For example, when backing a VM with THP vs. HugeTLB,
-> > NR_SECONDARY_PAGETABLE is roughly the same, but NR_PAGETABLE is an order
-> > of magnitude higher with THP. So having this stat will at the very least
-> > prove to be useful for understanding tradeoffs between VM backing types,
-> > and likely even steer folks towards potential optimizations.
-> >
-> > The original discussion with more details about the rationale:
-> > https://lore.kernel.org/all/87ilqoi77b.wl-maz@kernel.org
-> >
-> > This stat will be used by subsequent patches to count KVM mmu
-> > memory usage.
->
-> Nits and triviata:
->
-> > --- a/Documentation/filesystems/proc.rst
-> > +++ b/Documentation/filesystems/proc.rst
-> > @@ -977,6 +977,7 @@ Example output. You may not have all of these fields.
-> >      SUnreclaim:       142336 kB
-> >      KernelStack:       11168 kB
-> >      PageTables:        20540 kB
-> > +    SecPageTables:         0 kB
-> >      NFS_Unstable:          0 kB
-> >      Bounce:                0 kB
-> >      WritebackTmp:          0 kB
-> > @@ -1085,6 +1086,9 @@ KernelStack
-> >                Memory consumed by the kernel stacks of all tasks
-> >  PageTables
-> >                Memory consumed by userspace page tables
-> > +SecPageTables
-> > +              Memory consumed by secondary page tables, this currently
-> > +           currently includes KVM mmu allocations on x86 and arm64.
->
-> Something happened to the whitespace there.
+Hi, Tejun!
 
-Yeah I have the fix for this queued for v7. Thanks!
+ÔÚ 2022/08/18 1:52, Tejun Heo Ð´µÀ:
+> On Wed, Aug 17, 2022 at 09:30:30AM +0800, Yu Kuai wrote:
+>>> Would it be easier if the fields were signed? It's fragile and odd to
+>>> explain "these are unsigned but if they underflow they behave just like
+>>> signed when added" when they can just be signed. Also, I have a hard time
+>>> understand what "preempt" means above.
+>>
+>> I think preempt shound never happen based on current FIFO
+>> implementation, perhaps
+> 
+> Can you elaborate what "preempt" is?
 
->
-> > +                          "Node %d SecPageTables:  %8lu kB\n"
-> > ...
-> > +                          nid, K(node_page_state(pgdat, NR_SECONDARY_PAGETABLE)),
->
-> The use of "sec" in the user-facing changes and "secondary" in the
-> programmer-facing changes is irksome.  Can we be consistent?  I'd
-> prefer "secondary" throughout.
->
+Here preempt means that the bio that is throttled later somehow get
+dispatched earlier, Michal thinks it's better to comment that the code
+still works fine in this particular scenario.
 
-SecondaryPageTables is too long (unfortunately), it messes up the
-formatting in node_read_meminfo() and meminfo_proc_show(). I would
-prefer "secondary" as well, but I don't know if breaking the format in
-this way is okay.
+> 
+>>>> +	if (bps_limit != U64_MAX)
+>>>> +		tg->bytes_skipped[rw] +=
+>>>> +			calculate_bytes_allowed(bps_limit, jiffy_elapsed) -
+>>>> +			tg->bytes_disp[rw];
+>>>> +	if (iops_limit != UINT_MAX)
+>>>> +		tg->io_skipped[rw] +=
+>>>> +			calculate_io_allowed(iops_limit, jiffy_elapsed) -
+>>>> +			tg->io_disp[rw];
+>>>
+>>> So, this is calculating the budgets to carry over. Can we name them
+>>> accordingly? I don't know what "skipped" means.
+>>
+>> Yeah, thanks for you advice, art of naming is a little hard for me...
+>> How do you think about these name: extended_bytes/io_budget?
+> 
+> How about carryover_{ios|bytes}?
 
-This is what I mean by breaking the format btw (the numbers become misaligned):
+Yes, that sounds good.
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 5ad56a0cd593..4f85750a0f8e 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -433,7 +433,7 @@ static ssize_t node_read_meminfo(struct device *dev,
-                             "Node %d ShadowCallStack:%8lu kB\n"
- #endif
-                             "Node %d PageTables:     %8lu kB\n"
--                            "Node %d SecPageTables:  %8lu kB\n"
-+                            "Node %d SecondaryPageTables:  %8lu kB\n"
-                             "Node %d NFS_Unstable:   %8lu kB\n"
-                             "Node %d Bounce:         %8lu kB\n"
-                             "Node %d WritebackTmp:   %8lu kB\n"
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 208efd4fa52c..b7166d09a38f 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -115,7 +115,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- #endif
-        show_val_kb(m, "PageTables:     ",
-                    global_node_page_state(NR_PAGETABLE));
--       show_val_kb(m, "SecPageTables:  ",
-+       show_val_kb(m, "SecondaryPageTables:    ",
-                    global_node_page_state(NR_SECONDARY_PAGETABLE));
+By the way, should I use 'ios' here instead of 'io'? I was confused
+because there are many places that is using 'io' currently.
 
-        show_val_kb(m, "NFS_Unstable:   ", 0);
+Thanks,
+Kuai
+> 
+> Thanks.
+> 
+
