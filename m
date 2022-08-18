@@ -2,65 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E6E5980D3
-	for <lists+cgroups@lfdr.de>; Thu, 18 Aug 2022 11:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10D6598140
+	for <lists+cgroups@lfdr.de>; Thu, 18 Aug 2022 12:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbiHRJ3r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Aug 2022 05:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S240541AbiHRKEv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Aug 2022 06:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbiHRJ3q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 05:29:46 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429297F112;
-        Thu, 18 Aug 2022 02:29:43 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M7fgv49wJzKMvT;
-        Thu, 18 Aug 2022 17:28:11 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAXHfqDBv5ibCYCAg--.62434S3;
-        Thu, 18 Aug 2022 17:29:41 +0800 (CST)
-Subject: Re: [PATCH v7 9/9] blk-throttle: clean up flag 'THROTL_TG_PENDING'
-To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
- <20220802140415.2960284-10-yukuai1@huaweicloud.com>
- <Yvv6kk/RD5LT+3dk@slm.duckdns.org>
- <65d93ec6-2465-35f1-314f-f092ce631100@huaweicloud.com>
- <Yv0rR9gBL0qbYeXp@slm.duckdns.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <841b7b5a-b908-649a-c09d-32c8de5f1c14@huaweicloud.com>
-Date:   Thu, 18 Aug 2022 17:29:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP id S232910AbiHRKEu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 06:04:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7CB474FC;
+        Thu, 18 Aug 2022 03:04:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 31652353CA;
+        Thu, 18 Aug 2022 10:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1660817088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yGB57PLr3/XCzM4eFzUWiwdrtPGGJcwk3YhcDibPx8M=;
+        b=gvEy9i+g+y8d7rIZ0U0o86DQsVZwmbcNxlRYSpGPZr0T18g6ijVFRl1wyUxyWXaJJFfxPx
+        9qoD12WHed4RQwOShceW3e3jpd7+bBtOWgXhiU9NWNAk7soVGUTTfqS40al6REZE5TWySi
+        1MximM3wxgOE7vjWSPav2gtm55geZkg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA66E139B7;
+        Thu, 18 Aug 2022 10:04:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Kkw+NL8O/mJLCgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 18 Aug 2022 10:04:47 +0000
+Date:   Thu, 18 Aug 2022 12:04:46 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert "memcg: cleanup racy sum avoidance code"
+Message-ID: <20220818100446.GA789@blackbody.suse.cz>
+References: <20220817172139.3141101-1-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <Yv0rR9gBL0qbYeXp@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXHfqDBv5ibCYCAg--.62434S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr1xAr1xGFyfAr13Xw1fWFg_yoWkZFbE93
-        4YkrZ7Kwn5ZrsxAanxKrn0va9rWF1rWry7Xry8Jw1DXryfXFn8GFWqqw4fuay5C3yfAFnx
-        ur1DJa18Ar12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220817172139.3141101-1-shakeelb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,43 +69,40 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Tejun!
-
-ÔÚ 2022/08/18 1:54, Tejun Heo Ð´µÀ:
-> Hello,
+On Wed, Aug 17, 2022 at 05:21:39PM +0000, Shakeel Butt <shakeelb@google.com> wrote:
+> $ grep "sock " /mnt/memory/job/memory.stat
+> sock 253952
+> total_sock 18446744073708724224
 > 
-> On Wed, Aug 17, 2022 at 09:45:13AM +0800, Yu Kuai wrote:
->>> I don't know whether this is better or not. It's minutely less lines of code
->>> but also makes the code a bit more fragile. I'm ambivalent. At any rate,
->>> please move these trivial patches to the head of the series or post them
->>> separately.
->>
->> Can I ask why do you think this patch makes the code a bit more fragile?
+> Re-run after couple of seconds
 > 
-> It's just one step further removed. Before, the flag was trivially in sync
-> with the on queue status. After, the relationship is more indirect and
-> easier to break accidentally. Not that it's a major problem. Just not sure
-> what the benefit of the change is.
+> $ grep "sock " /mnt/memory/job/memory.stat
+> sock 253952
+> total_sock 53248
+> 
+> For now we are only seeing this issue on large machines (256 CPUs) and
+> only with 'sock' stat. I think the networking stack increase the stat on
+> one cpu and decrease it on another cpu much more often. So, this
+> negative sock is due to rstat flusher flushing the stats on the CPU that
+> has seen the decrement of sock but missed the CPU that has increments. A
+> typical race condition.
 
-If you are worried about that, I can keep the flag, then the last two
-patches will cleanup:
+This theory adds up :-) (Provided the numbers.)
 
-Before, the flag will be set and cleared frequently when each each bio
-is handled.
+> For easy stable backport, revert is the most simple solution.
 
-After, the flag will only set then the first bio is throttled, and
-it's cleared when last bio is dispatched.
+Sounds reasonable.
 
-Of course, if you think this cleanup is not necessary, I'll drop the
-last two patches.
+> For long term solution, I am thinking of two directions. First is just
+> reduce the race window by optimizing the rstat flusher. Second is if
+> the reader sees a negative stat value, force flush and restart the
+> stat collection.  Basically retry but limited.
+
+Or just stick with the revert since it already reduces the observed
+error by rounding to zero in simple way.
+
+(Or if the imprecision was worth extra storage, use two-stage flushing
+to accumulate (cpus x cgroups) and assign in two steps.)
 
 Thanks,
-Kuai
-> 
->> By the way, I'll post these trivial patches separately.
-> 
-> Sounds great.
-> 
-> Thanks.
-> 
-
+Michal
