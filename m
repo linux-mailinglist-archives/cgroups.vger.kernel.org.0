@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A48059905E
-	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 00:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F75599095
+	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 00:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbiHRWUk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Aug 2022 18:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
+        id S1345411AbiHRWdG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Aug 2022 18:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346323AbiHRWUh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 18:20:37 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C66D7CFA;
-        Thu, 18 Aug 2022 15:20:36 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id x63-20020a17090a6c4500b001fabbf8debfso3167097pjj.4;
-        Thu, 18 Aug 2022 15:20:36 -0700 (PDT)
+        with ESMTP id S238901AbiHRWdF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 18:33:05 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05D4D7D06;
+        Thu, 18 Aug 2022 15:33:04 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id jl18so2675911plb.1;
+        Thu, 18 Aug 2022 15:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc;
-        bh=tr2YfKFFpUU37xf4ManQv+y3/4pV4AbAVOF71yP0UDM=;
-        b=KY80Ec2EYHn5WFnbgKROZvwVrPBKR9TCPDJ4Bw/+YH1nWvZ8zBC4HiM3kL62FVSIHI
-         V0sdJqE1+X9/hYSAmkHX0ttVunBfUUbxdDrijYE1S/aTAyrKetMJtSJdoIjYHfPOQ3gD
-         BQwpS4K/1PXEiiH3xvM+lKbDEHg7ytztTUVJXVqOAJI9gHejz/CO3QZAQx8IfbGXsn4J
-         5bGMKpnl8EWu/l4SxhTYFUOiXMIhjxYbCo3JCHVlgJw0rKdbSnaJKuxVV3Hg2XNzKGy/
-         ykd1zcDd2xq+d6sycmuHscFeHGXchvlK3L+cVKS4i45SaDcrLIhwWniy+rYMw7SUKrM1
-         BomA==
+        bh=YHQ4Wh5SK0V1LEg6WvbUjjafnUpUy0D2IL3Ade8VZXw=;
+        b=Xa18u0tB7HMzsnmKGxkVoZCzL7kLgnVNbrEM/pnut+g3QuGlZU8T82rRYMT+uH7JX8
+         mJ2vZoVMfZ7DeQ3N/hRq0QVoE0dHnDCC6jHkB69qMIcAnfLOTXLgyZGlTOdJ4eKUvXXw
+         4flHnx5l6ko15DdAn6q2TkKoxgnP4dUxXLL/EG6Sv5XUar7vSGs83fHEjEds6EMZiGtz
+         OUBPUoY96/cACPNVbxTxEcH679zbytL6ggf+FUTfKgSAuhsuxedQglqb7+rqBqR9FhJ4
+         LY0s3HpL/nWX/J45KMRDwAi5O0M0gueWwTXP3KDbK6EUtSzFPD5Sdz9+niAgDzYC3gNx
+         7x8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=tr2YfKFFpUU37xf4ManQv+y3/4pV4AbAVOF71yP0UDM=;
-        b=z0UhjmP5LdmQ5rGHxrmwXyOq+OfvzIABtUiGs2ftqK4Tpib4tS2NIqoYjtavXcCg9H
-         1Mq5MY/5cG26pJbqVM1klgtOau92NoKPqpsGg+W4sMA+rDVPq1ZB6myxCwmV83XAx0XF
-         FnAmVVx/aALCYRcPaLQnHlAPtF1CkPQHpKy1qJ+5JODX7ekkA86bMY6grosWq1/jXtQO
-         kie+eoEq1SzlJW4aii902J8gvN7VQPwAjsy+LXNjYyhblocfRCsfo3FU9EcJPhU6+NX9
-         Kpc3UGV+P/Ob3vyFGPG4z8m3XR6G/EZFifl/THsOiS4iUmrI1YAHnBCTV66iS9jBYol/
-         ftyA==
-X-Gm-Message-State: ACgBeo3sJyMcLvTZP8AjqNph6PxLB4WHciQIgeScNLYlLtBZRLpC/CHq
-        3A5awWQOXX/YMljr3yLYOxE=
-X-Google-Smtp-Source: AA6agR6n9/ROxNFwoI1/6v2qOdwWNT55R5GNh1WmF2RNjQvaps8yoCjJOuhOltGV9kEx+rTK8QvldQ==
-X-Received: by 2002:a17:903:1205:b0:171:4f8d:22a8 with SMTP id l5-20020a170903120500b001714f8d22a8mr4336955plh.11.1660861235443;
-        Thu, 18 Aug 2022 15:20:35 -0700 (PDT)
+        bh=YHQ4Wh5SK0V1LEg6WvbUjjafnUpUy0D2IL3Ade8VZXw=;
+        b=QNE35aSTaAusExkMU5Jp/rb7ol+yNF4vIjFvaU1b54dkfnJVWTyGvGhgMOtCTMgmJQ
+         XWdYYMc/UIMzUssrPcF/2J2gEYq25YgWCTmjfiPfI+LkLRtueuRIh+WHWYRqSFZ+qAdx
+         7Bcjue3RNtMlIKTQb3jmTCfa1KF8Onfj5YA+3eamool8OAAHGT2v0F/tGlv0jkIhiqKa
+         BHUdp9qIyCR8+c+MuLObjTyiTlDaO5tBA3600G8yFzCk4gN1hs03/V3cziOQhmzLLfBd
+         TOI8jk63V/2Lc6ivgDWHbcNSzNT5jRPp9fCT+CYOjd5HvkBuYN89MYlz6Lwb+cXYD9U8
+         l2vA==
+X-Gm-Message-State: ACgBeo1xf6rl/MqDcMvPZsHv4GBuyFBN6/PP4/7pQ15J2SzHi6WmttYj
+        Kod+4UpnEUy7yverYQld9ok=
+X-Google-Smtp-Source: AA6agR6Xhtkg1508+cxIa3H0yo59iUpgPdxMF1/w3fj7YurA36mIAWVBDXjz/rRfFCZPgfR9CMv5Pw==
+X-Received: by 2002:a17:903:2310:b0:16e:e0c0:463d with SMTP id d16-20020a170903231000b0016ee0c0463dmr4345769plh.18.1660861984065;
+        Thu, 18 Aug 2022 15:33:04 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:3b7])
-        by smtp.gmail.com with ESMTPSA id j2-20020a63fc02000000b0041a615381d5sm1736207pgi.4.2022.08.18.15.20.34
+        by smtp.gmail.com with ESMTPSA id x7-20020aa79a47000000b0052d3a442760sm2094200pfj.161.2022.08.18.15.33.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Aug 2022 15:20:34 -0700 (PDT)
+        Thu, 18 Aug 2022 15:33:03 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 18 Aug 2022 12:20:33 -1000
+Date:   Thu, 18 Aug 2022 12:33:02 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -61,12 +61,13 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for
  bpf map
-Message-ID: <Yv67MRQLPreR9GU5@slm.duckdns.org>
+Message-ID: <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
 References: <20220818143118.17733-1-laoar.shao@gmail.com>
+ <Yv67MRQLPreR9GU5@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818143118.17733-1-laoar.shao@gmail.com>
+In-Reply-To: <Yv67MRQLPreR9GU5@slm.duckdns.org>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -78,42 +79,20 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
+> We have the exact same problem for any resources which span multiple
+> instances of a service including page cache, tmpfs instances and any other
+> thing which can persist longer than procss life time. My current opinion is
 
-On Thu, Aug 18, 2022 at 02:31:06PM +0000, Yafang Shao wrote:
-> After switching to memcg-based bpf memory accounting to limit the bpf
-> memory, some unexpected issues jumped out at us.
-> 1. The memory usage is not consistent between the first generation and
-> new generations.
-> 2. After the first generation is destroyed, the bpf memory can't be
-> limited if the bpf maps are not preallocated, because they will be
-> reparented.
-> 
-> This patchset tries to resolve these issues by introducing an
-> independent memcg to limit the bpf memory.
+To expand a bit more on this point, once we start including page cache and
+tmpfs, we now get entangled with memory reclaim which then brings in IO and
+not-yet-but-eventually CPU usage. Once you start splitting the tree like
+you're suggesting here, all those will break down and now we have to worry
+about how to split resource accounting and control for the same entities
+across two split branches of the tree, which doesn't really make any sense.
 
-memcg folks would have better informed opinions but from generic cgroup pov
-I don't think this is a good direction to take. This isn't a problem limited
-to bpf progs and it doesn't make whole lot of sense to solve this for bpf.
-
-We have the exact same problem for any resources which span multiple
-instances of a service including page cache, tmpfs instances and any other
-thing which can persist longer than procss life time. My current opinion is
-that this is best solved by introducing an extra cgroup layer to represent
-the persistent entity and put the per-instance cgroup under it.
-
-It does require reorganizing how things are organized from userspace POV but
-the end result is really desirable. We get entities accurately representing
-what needs to be tracked and control over the granularity of accounting and
-control (e.g. folks who don't care about telling apart the current
-instance's usage can simply not enable controllers at the persistent entity
-level).
-
-We surely can discuss other approaches but my current intuition is that it'd
-be really difficult to come up with a better solution than layering to
-introduce persistent service entities.
-
-So, please consider the approach nacked for the time being.
+So, we *really* don't wanna paint ourselves into that kind of a corner. This
+is a dead-end. Please ditch it.
 
 Thanks.
 
