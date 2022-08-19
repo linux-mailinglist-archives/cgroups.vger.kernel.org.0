@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB3A59A36B
-	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 20:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F172659A4B6
+	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 20:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354605AbiHSR2B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Aug 2022 13:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S1351983AbiHSRpG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Aug 2022 13:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354565AbiHSR1l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 13:27:41 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC0153E35;
-        Fri, 19 Aug 2022 09:46:03 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id x23so4596347pll.7;
-        Fri, 19 Aug 2022 09:46:03 -0700 (PDT)
+        with ESMTP id S1351245AbiHSRoj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 13:44:39 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E364E42C1;
+        Fri, 19 Aug 2022 10:06:55 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id y4so4656418plb.2;
+        Fri, 19 Aug 2022 10:06:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc;
-        bh=43IB1l85zFZx2xfIvsACnvdd0hD/Sqi80j0FvnZgz+w=;
-        b=JQy2QfMvU993ELBmz2m2IaJHojQluWlc2EN1XG0ztr6V8OaUTHOJN6euMR6ZmYAlbl
-         v0gDSEyBQCndO31qlao27Cg9HJjzj49/CDBem77UVSFkGSlC71Kw1brKSCMjzxi5Hfnj
-         st8s2amoKpXOB2XplmnOm2Sony8Fk5a8Q21/jD4R+Vl1Ku3mG0/4G4ifVq6qmy0a8fuj
-         apyv5fnK9IzqKogBCTmEjTQ3i6v3yXfFFJztAVKLeoGNEaP1vWx4w+k0o9AK2gZNiN+S
-         kxlNRXmxImlpHp1cYsPdNZW3sHdtC2KjL+HkwJgEXQ7oaY97sWNrcStYnF/hITQJBwUo
-         B13Q==
+        bh=UZnrLccuewBeUTHa7he/1pdbfRtAri2WoHO63fUtNRc=;
+        b=XAW0y0n14GbbI93QKgU2Mko3gRIRMRbjNK8yh6f00kxV2u+FwfJBFOdIFc4ubGtXnZ
+         96Q7W+i5mtTv/AvpxsVclO3S1wahAB9QAbiT33xETdG3I+uCk/1gLZGnE5/tLTsGvFFo
+         0I1/8QoikeezFphqIzolui9+0fafgFMClIoRK29EKwdtKR/ArQz1f/PwmdqHMOlsUEsG
+         dqop2MHzljQjY7dyyBDVAy6aQF6pfzlwuE2uTIsOz0RjIQnTjgUncRBAtxpzCdihOVK4
+         J5eGefsDHsvQ+K+HppyuUs/yFRkhgEdyNd4tDdrkcRyyCjtSWG74pKB6qGa2PWRznqxB
+         5AvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=43IB1l85zFZx2xfIvsACnvdd0hD/Sqi80j0FvnZgz+w=;
-        b=WkghK2aTx8hWDzwW+lm6fwI16rVLYO0+q9WtbknRV9905ZPgGt0dTfhS/C5rfTNQHp
-         PfMHoz43vpC2zBZ8zhxIxkxqgS1sZXIllitsr9phLXDUj3I01ayn/j/+tHX2eZqvwxa5
-         5yApVu6GRBxjryYWUxpWKn4dihj2Bw6kZesquMTFVUTMhAvTi/f+IwR/22VMYd1g6Og6
-         SEvn3YS07nvkZNLQbyGSJEAsQVvdLpaQqHhpW5FTvOmpEqhD5eTd7Ky+uYEcrxuSXmaT
-         r0Aj9Y6nwXau2o7wVHnDvsdPDHS8Ih9Xxc49RZMocYBfdokDF8iYXKcn3zElZ3DE6Vg3
-         SmPA==
-X-Gm-Message-State: ACgBeo2yJn4ufS8OFf2NGMcrXfUHjtZ2BXEGzlb7agbDihTyPc5R/GP2
-        yv/4YnfMttrOHvgpOzhwhw0=
-X-Google-Smtp-Source: AA6agR7/XdV145+Mma974ZWG9OzesPe18qlL2A2CqA2hmJsnMTcginuIa1kkrjcH2PeZz70ips7QyA==
-X-Received: by 2002:a17:90b:1bce:b0:1fa:ecc3:9068 with SMTP id oa14-20020a17090b1bce00b001faecc39068mr2850604pjb.116.1660927546012;
-        Fri, 19 Aug 2022 09:45:46 -0700 (PDT)
+        bh=UZnrLccuewBeUTHa7he/1pdbfRtAri2WoHO63fUtNRc=;
+        b=D4e9lJfff+YGMKF8kwDx3gTP0JsrDLmf3N23eSr+k1OwtMLYHrDha2CB1Vo/PHmk03
+         drKMZd3cKKEOSV8DZCGSXgcJyaJAsyrQcthxLMgYgXHdW8KeKR+U8C1U7tXrMi5hMdrn
+         6n+0HR/IHZQrKh8N8+ivE/SS8HhpKsC/g+B7KTGUelqtebHvtEjTE5i3PXGiGletk3cI
+         Bz1wW/RqVJ74Ce5gVzsy9b/E0jix1al3YtrUlhrVzCjKR1RiaHuVDf94BZwf4cH7fkhw
+         DU4IZFhopIi1qUI+lKF5/iLHB3cqt6o2NzdzfFQx+tgCqFUxcMR2A8UHAwln9qOEZ99J
+         Yq8w==
+X-Gm-Message-State: ACgBeo0ZEVgu5O7pMhs3OYm93CF6Q/ZrkOhKLZk0EkVOw+SQyV4RxNcE
+        F91/2DUxBP8H8bQtrePA3tfP+MkzQcE=
+X-Google-Smtp-Source: AA6agR520zkVb1ab+1IFrWSRolYaFHIavEFl2N7Y7Y3JZORzp6bFg/A0aCnrdfpBhO9U8UXqp9Af9g==
+X-Received: by 2002:a17:902:d4c7:b0:16e:d1fd:f212 with SMTP id o7-20020a170902d4c700b0016ed1fdf212mr8198729plg.79.1660928814306;
+        Fri, 19 Aug 2022 10:06:54 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:db7d])
-        by smtp.gmail.com with ESMTPSA id k1-20020a170902c40100b00172a670607asm3442468plk.300.2022.08.19.09.45.44
+        by smtp.gmail.com with ESMTPSA id 201-20020a6214d2000000b0052dbad1ea2esm3657782pfu.6.2022.08.19.10.06.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 09:45:45 -0700 (PDT)
+        Fri, 19 Aug 2022 10:06:53 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 19 Aug 2022 06:45:43 -1000
+Date:   Fri, 19 Aug 2022 07:06:51 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -70,14 +70,15 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Linux MM <linux-mm@kvack.org>
 Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for
  bpf map
-Message-ID: <Yv++N6OFEe6I9uEQ@slm.duckdns.org>
+Message-ID: <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
 References: <20220818143118.17733-1-laoar.shao@gmail.com>
  <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <CALOAHbDt9NUv9qK_J1_9CU0tmW9kiJ+nig_0NfzGJgJmrSk2fw@mail.gmail.com>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
+ <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbDt9NUv9qK_J1_9CU0tmW9kiJ+nig_0NfzGJgJmrSk2fw@mail.gmail.com>
+In-Reply-To: <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -91,58 +92,84 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Fri, Aug 19, 2022 at 08:59:20AM +0800, Yafang Shao wrote:
-> On Fri, Aug 19, 2022 at 6:20 AM Tejun Heo <tj@kernel.org> wrote:
-> > memcg folks would have better informed opinions but from generic cgroup pov
-> > I don't think this is a good direction to take. This isn't a problem limited
-> > to bpf progs and it doesn't make whole lot of sense to solve this for bpf.
+On Fri, Aug 19, 2022 at 09:09:25AM +0800, Yafang Shao wrote:
+> On Fri, Aug 19, 2022 at 6:33 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
+> > > We have the exact same problem for any resources which span multiple
+> > > instances of a service including page cache, tmpfs instances and any other
+> > > thing which can persist longer than procss life time. My current opinion is
+> >
+> > To expand a bit more on this point, once we start including page cache and
+> > tmpfs, we now get entangled with memory reclaim which then brings in IO and
+> > not-yet-but-eventually CPU usage.
 > 
-> This change is bpf specific. It doesn't refactor a whole lot of things.
+> Introduce-a-new-layer vs introduce-a-new-cgroup, which one is more overhead?
 
-I'm not sure what point the above sentence is making. It may not change a
-lot of code but it does introduce significantly new mode of operation which
-affects memcg and cgroup in general.
+Introducing a new layer in cgroup2 doesn't mean that any specific resource
+controller is enabled, so there is no runtime overhead difference. In terms
+of logical complexity, introducing a localized layer seems a lot more
+straightforward than building a whole separate tree.
 
-> > We have the exact same problem for any resources which span multiple
-> > instances of a service including page cache, tmpfs instances and any other
-> > thing which can persist longer than procss life time. My current opinion is
-> > that this is best solved by introducing an extra cgroup layer to represent
-> > the persistent entity and put the per-instance cgroup under it.
+Note that the same applies to cgroup1 where collapsed controller tree is
+represented by simply not creating those layers in that particular
+controller tree.
+
+No matter how we cut the problem here, if we want to track these persistent
+resources, we have to create a cgroup to host them somewhere. The discussion
+we're having is mostly around where to put them. With your proposal, it can
+be anywhere and you draw out an example where the persistent cgroups form
+their own separate tree. What I'm saying is that the logical place to put it
+is where the current resource consumption is and we just need to put the
+persistent entity as the parent of the instances.
+
+Flexibility, just like anything else, isn't free. Here, if we extrapolate
+this approach, the cost is evidently hefty in that it doesn't generically
+work with the basic resource control structure.
+
+> > Once you start splitting the tree like
+> > you're suggesting here, all those will break down and now we have to worry
+> > about how to split resource accounting and control for the same entities
+> > across two split branches of the tree, which doesn't really make any sense.
 > 
-> It is not practical on k8s.
-> Because, before the persistent entity, the cgroup dir is stateless.
-> After, it is stateful.
-> Pls, don't continue keeping blind eyes on k8s.
-
-Can you please elaborate why it isn't practical for k8s? I don't know the
-details of k8s and what you wrote above is not a detailed enough technical
-argument.
-
-> > It does require reorganizing how things are organized from userspace POV but
-> > the end result is really desirable. We get entities accurately representing
-> > what needs to be tracked and control over the granularity of accounting and
-> > control (e.g. folks who don't care about telling apart the current
-> > instance's usage can simply not enable controllers at the persistent entity
-> > level).
+> The k8s has already been broken thanks to the memcg accounting on  bpf memory.
+> If you ignored it, I paste it below.
+> [0]"1. The memory usage is not consistent between the first generation and
+> new generations."
 > 
-> Pls.s also think about why k8s refuse to use cgroup2.
+> This issue will persist even if you introduce a new layer.
 
-This attitude really bothers me. You aren't spelling it out fully but
-instead of engaging in the technical argument at the hand, you're putting
-forth conforming upstream to the current k8s's assumptions and behaviors as
-a requirement and then insisting that it's upstream's fault that k8s is
-staying with cgroup1.
+Please watch your tone.
 
-This is not an acceptable form of argument and it would be irresponsible to
-grant any kind weight to this line of reasoning. k8s may seem like the world
-to you but it is one of many use cases of the upstream kernel. We all should
-pay attention to the use cases and technical arguments to determine how we
-chart our way forward, but being k8s or whoever else clearly isn't a waiver
-to claim this kind of unilateral demand.
+Again, this isn't a problem specific to k8s. We have the same problem with
+e.g. persistent tmpfs. One idea which I'm not against is allowing specific
+resources to be charged to an ancestor. We gotta think carefully about how
+such charges should be granted / denied but an approach like that jives well
+with the existing hierarchical control structure and because introducing a
+persistent layer does too, the combination of the two works well.
 
-It's okay to emphasize the gravity of the specific use case at hand but
-please realize that it's one of the many factors that should be considered
-and sometimes one which can and should get trumped by others.
+> > So, we *really* don't wanna paint ourselves into that kind of a corner. This
+> > is a dead-end. Please ditch it.
+> 
+> It makes non-sensen to ditch it.
+> Because, the hierarchy I described in the commit log is *one* use case
+> of the selectable memcg, but not *the only one* use case of it. If you
+> dislike that hierarchy, I will remove it to avoid misleading you.
+
+But if you drop that, what'd be the rationale for adding what you're
+proposing? Why would we want bpf memory charges to be attached any part of
+the hierarchy?
+
+> Even if you introduce a new layer, you still need the selectable memcg.
+> For example, to avoid the issue I described in [0],  you still need to
+> charge to the parent cgroup instead of the current cgroup.
+
+As I wrote above, we've been discussing the above. Again, I'd be a lot more
+amenable to such approach because it fits with how everything is structured.
+
+> That's why I described in the commit log that the selectable memcg is flexible.
+
+Hopefully, my point on this is clear by now.
 
 Thanks.
 
