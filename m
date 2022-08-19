@@ -2,133 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F7D5994E8
-	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 08:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C838599606
+	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345757AbiHSFyE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Aug 2022 01:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1346771AbiHSHXK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Aug 2022 03:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346194AbiHSFx7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 01:53:59 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD893C17A
-        for <cgroups@vger.kernel.org>; Thu, 18 Aug 2022 22:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=LXIju/pZq7pSNW6LnM8b4sTVTukd
-        FnVNMRzhxn6c1LQ=; b=zuNyA9ScwNDOoqj1m0F1nLXHuOuHWyBfZTuf7kGHaDi/
-        NB2VMiPDZSHWlp3JKPA9dZWtPjROsS909xjd10SGWpkdL5Yb8VLziuAZZEp9Qu2P
-        IYOhMSR8tBCyRo8SibXE9UDWqoiJB+2Xt5E8Z1GcxHj3afBeYJkkn/NU5UnnXTE=
-Received: (qmail 4115059 invoked from network); 19 Aug 2022 07:53:52 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Aug 2022 07:53:52 +0200
-X-UD-Smtp-Session: l3s3148p1@Scn+uJHmpZMucrTL
-Date:   Fri, 19 Aug 2022 07:53:51 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
-Message-ID: <Yv8lb1tUKxYlAcp8@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
- <20220818181506.0d838d02@gandalf.local.home>
+        with ESMTP id S1346691AbiHSHXF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 03:23:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF08E39AC;
+        Fri, 19 Aug 2022 00:23:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A17860AB9;
+        Fri, 19 Aug 2022 07:23:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B19C433C1;
+        Fri, 19 Aug 2022 07:22:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660893784;
+        bh=K9+P7h5q0PmWOPO+ARUr893KkCchsaHz1glvXYWe8wQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V4zptkXT1wl0ArPwz9SGtpJZy0ko2FIZbpeeeEPWj2Pxj3BNFvSj4plhk2sETGqW/
+         RnAH1/UMUPZwBvKgJiG1wkAOkEk1oKUj6iVxRDt4RYR9BgsL1YDPEguAu/CpfKwqXV
+         11zlA22ypdLJxDDsgJJ2aHZ7IN8NZgwg1QnP4zkxy0Z8ZBBQo5dbCkqW6BrDY48LFy
+         FtgFxI1sEgH58lErElCYqeHR1AOUzo3zOwRpyKOv2pDIFw+5RYi4jVi3rkVIVosLQh
+         SO2Ai8opHivy/bGsjwTESK1nEYT2G0IwW+VcPxwYJre9n3AHhjt1wyotzA6vwj5mNR
+         /mBaJA/cPTxdw==
+Date:   Fri, 19 Aug 2022 09:22:56 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Abhishek Shah <abhishek.shah@columbia.edu>
+Cc:     linux-kernel@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, tj@kernel.org,
+        yhs@fb.com, Gabriel Ryan <gabe@cs.columbia.edu>
+Subject: Re: data-race in cgroup_get_tree / proc_cgroup_show
+Message-ID: <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
+References: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imGX9vdjm3pSRE9T"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220818181506.0d838d02@gandalf.local.home>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Aug 18, 2022 at 07:24:00PM -0400, Abhishek Shah wrote:
+> Hi all,
+> 
+> We found the following data race involving the *cgrp_dfl_visible *variable.
+> We think it has security implications as the racing variable controls the
+> contents used in /proc/<pid>/cgroup which has been used in prior work
+> <https://www.cyberark.com/resources/threat-research-blog/the-strange-case-of-how-we-escaped-the-docker-default-container>
+> in container escapes. Please let us know what you think. Thanks!
 
---imGX9vdjm3pSRE9T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+One straightforward fix might be to use
+cmpxchg(&cgrp_dfl_visible, false, true) in cgroup_get_tree()
+and READ_ONCE(cgrp_dfl_visible) in proc_cgroup_show() or sm like that.
+I'm not sure this is an issue though but might still be nice to fix it.
 
-Hi Steven,
-
-> But in my cases I actually do trust the source string. They are all
-
-The ultimate goal is to remove strlcpy entirely. My motivation is to get
-rid of the extra work for maintainers that they need to ensure that the
-author of a patch paid attention to the detail that the source string
-must be trusted.
-
-Happy hacking,
-
-   Wolfram
-
---imGX9vdjm3pSRE9T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmL/JW8ACgkQFA3kzBSg
-Kbb/cxAAnj8gY2iJMJEMUNF2CQXBszyFdlW8pM+4lHflaDhlrdBOhhKlq9vCX5Td
-aAs0S5K8tk2DANywxX4gtQHGIR9h9HfDBFOTAONRnJ5fkmb6olQFUBqhIjQt/uNR
-VxjPKDYmWQqBFv/F4dAxnesfIA8M34Psd0zFVfNMFbu8hVcsE6VaLcUCU2AskKQx
-Q0ULNoIW9MGMSfZhaHH1iO7sowNu+Wy2BrBbb5+Bjzo85BSseCgyHTb1lgio2bSN
-OZTTWZV6AOJWy7C14VMKm5/swgyjcqaiyNZPGqtMUxEakGIer+4fd1AH43ILsEk/
-PoGsHT9F+myYBnlBAyRIhO4eSGxTJGekD4vRT/wVCYe1IrPRqFyfa7MaNitjzSTS
-ObyG7vVbwoCl4tzPCGXMU46b0Ydq8dYw5XBP1xQmcK77Z8IZY9WyIOY0vbcPizo6
-IcRK3ubeUTz/FOw9IG+sZ8kL+TcchTyoKKP6a68IzisCsdeOPPpGT6VEDPxuM0S0
-X7nfso4wX7FXzDUYy9lbhQrJ3YnxUvGuqoBHpM9fAXwYQ0PcBgUWVSaWZEE/X50m
-VB5k/mTzhrnVAjFwhaLyaJei10mjQ4vDUOD5LSvzkGpzbUk8iDHNDKXSKued8t9u
-nH5ZIQ0JLb5roFTZjnvbSHRGEMTkPkIEibxH/uSoEJCWaoJehDo=
-=t18q
------END PGP SIGNATURE-----
-
---imGX9vdjm3pSRE9T--
+> 
+> *-----------------------------Report--------------------------------------*
+> *write* to 0xffffffff881d0344 of 1 bytes by task 6542 on cpu 0:
+>  cgroup_get_tree+0x30/0x1c0 kernel/cgroup/cgroup.c:2153
+>  vfs_get_tree+0x53/0x1b0 fs/super.c:1497
+>  do_new_mount+0x208/0x6a0 fs/namespace.c:3040
+>  path_mount+0x4a0/0xbd0 fs/namespace.c:3370
+>  do_mount fs/namespace.c:3383 [inline]
+>  __do_sys_mount fs/namespace.c:3591 [inline]
+>  __se_sys_mount+0x215/0x2d0 fs/namespace.c:3568
+>  __x64_sys_mount+0x67/0x80 fs/namespace.c:3568
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> *read* to 0xffffffff881d0344 of 1 bytes by task 6541 on cpu 1:
+>  proc_cgroup_show+0x1ec/0x4e0 kernel/cgroup/cgroup.c:6017
+>  proc_single_show+0x96/0x120 fs/proc/base.c:777
+>  seq_read_iter+0x2d2/0x8e0 fs/seq_file.c:230
+>  seq_read+0x1c9/0x210 fs/seq_file.c:162
+>  vfs_read+0x1b5/0x6e0 fs/read_write.c:480
+>  ksys_read+0xde/0x190 fs/read_write.c:620
+>  __do_sys_read fs/read_write.c:630 [inline]
+>  __se_sys_read fs/read_write.c:628 [inline]
+>  __x64_sys_read+0x43/0x50 fs/read_write.c:628
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Reported by Kernel Concurrency Sanitizer on:
+> CPU: 1 PID: 6541 Comm: syz-executor2-n Not tainted 5.18.0-rc5+ #107
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
+> 04/01/2014
+> 
+> 
+> *Reproducing Inputs*
+> Input CPU 0:
+> r0 = fsopen(&(0x7f0000000000)='cgroup2\x00', 0x0)
+> fsconfig$FSCONFIG_CMD_CREATE(r0, 0x6, 0x0, 0x0, 0x0)
+> fsmount(r0, 0x0, 0x83)
+> 
+> Input CPU 1:
+> r0 = syz_open_procfs(0x0, &(0x7f0000000040)='cgroup\x00')
+> read$eventfd(r0, &(0x7f0000000080), 0x8)
