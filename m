@@ -2,139 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D21599AF2
-	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 13:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB759A330
+	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 20:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348551AbiHSL3i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Aug 2022 07:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
+        id S1350516AbiHSREy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Aug 2022 13:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348356AbiHSL3h (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 07:29:37 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337FC12AFF
-        for <cgroups@vger.kernel.org>; Fri, 19 Aug 2022 04:29:35 -0700 (PDT)
-Received: from SHSend.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-        by SHSQR01.spreadtrum.com with ESMTPS id 27JBTQbI043766
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NO);
-        Fri, 19 Aug 2022 19:29:26 +0800 (CST)
-        (envelope-from zhaoyang.huang@unisoc.com)
-Received: from bj03382pcu.spreadtrum.com (10.0.74.65) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 19 Aug 2022 19:29:27 +0800
-From:   "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <ke.wang@unisoc.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
-Date:   Fri, 19 Aug 2022 19:29:22 +0800
-Message-ID: <1660908562-17409-1-git-send-email-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        with ESMTP id S1349920AbiHSREh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 13:04:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCED13729B;
+        Fri, 19 Aug 2022 09:25:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DFE46B8281F;
+        Fri, 19 Aug 2022 16:23:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DEF7C433D6;
+        Fri, 19 Aug 2022 16:23:47 +0000 (UTC)
+Date:   Fri, 19 Aug 2022 12:23:59 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
+Message-ID: <20220819122359.050a3432@gandalf.local.home>
+In-Reply-To: <Yv8lb1tUKxYlAcp8@shikoro>
+References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
+        <20220818181506.0d838d02@gandalf.local.home>
+        <Yv8lb1tUKxYlAcp8@shikoro>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.74.65]
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL: SHSQR01.spreadtrum.com 27JBTQbI043766
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Fri, 19 Aug 2022 07:53:51 +0200
+Wolfram Sang <wsa+renesas@sang-engineering.com> wrote:
 
-It is observed in android system where per-app cgroup is demanded by freezer
-subsys and part of groups require memory control. The hierarchy could be simplized
-as bellowing where memory charged on group B abserved while we only want have
-group E's memory be controlled and B's descendants compete freely for memory.
-This should be the consequences of unified hierarchy.
-Under this scenario, less efficient memory reclaim is observed when comparing
-with no memory control. It is believed that multi LRU scanning introduces some
-of the overhead. Furthermore, page thrashing is also heavier than global LRU
-which could be the consequences of partial failure of WORKINGSET mechanism as
-LRU is too short to protect the active pages.
+> > But in my cases I actually do trust the source string. They are all  
+> 
+> The ultimate goal is to remove strlcpy entirely. My motivation is to get
+> rid of the extra work for maintainers that they need to ensure that the
+> author of a patch paid attention to the detail that the source string
+> must be trusted.
 
-A(subtree_control = memory) - B(subtree_control = NULL) - C()
-							\ D()
-			    - E(subtree_control = memory) - F()
-							  \ G()
+After reading Linus's rant, I figured as much.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- include/linux/cgroup.h |  1 +
- kernel/cgroup/cgroup.c | 11 +++++++++++
- mm/memcontrol.c        |  5 ++++-
- 3 files changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 0d1ada8..747f0f4 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -136,6 +136,7 @@ extern void cgroup_post_fork(struct task_struct *p,
- 
- int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v);
- 
-+struct cgroup *get_task_cgroup(struct task_struct *task);
- /*
-  * Iteration helpers and macros.
-  */
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1779ccd..3f34c58 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1457,6 +1457,17 @@ struct cgroup *task_cgroup_from_root(struct task_struct *task,
- 	return cset_cgroup_from_root(task_css_set(task), root);
- }
- 
-+struct cgroup *get_task_cgroup(struct task_struct *task)
-+{
-+	struct cgroup *src_cgrp;
-+	/* find the source cgroup */
-+	spin_lock_irq(&css_set_lock);
-+	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
-+	spin_unlock_irq(&css_set_lock);
-+
-+	return src_cgrp;
-+}
-+
- /*
-  * A task must hold cgroup_mutex to modify cgroups.
-  *
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index abec50f..c81012b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -930,6 +930,7 @@ static __always_inline struct mem_cgroup *active_memcg(void)
- struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- {
- 	struct mem_cgroup *memcg;
-+	struct cgroup *cgrp;
- 
- 	if (mem_cgroup_disabled())
- 		return NULL;
-@@ -956,9 +957,11 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
- 	}
- 
- 	rcu_read_lock();
-+	cgrp = get_task_cgroup(rcu_dereference(mm->owner));
- 	do {
- 		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
--		if (unlikely(!memcg))
-+		if (unlikely(!memcg)
-+			|| !(cgroup_ss_mask(cgrp) & (1 << memory_cgrp_id)))
- 			memcg = root_mem_cgroup;
- 	} while (!css_tryget(&memcg->css));
- 	rcu_read_unlock();
--- 
-1.9.1
-
+-- Steve
