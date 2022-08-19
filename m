@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFC159922C
-	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 03:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C945F59924B
+	for <lists+cgroups@lfdr.de>; Fri, 19 Aug 2022 03:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344833AbiHSBAB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Aug 2022 21:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S243498AbiHSBKF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Aug 2022 21:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243846AbiHSBAA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 21:00:00 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C02B6D2A;
-        Thu, 18 Aug 2022 17:59:58 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id i2so1586110vkk.13;
-        Thu, 18 Aug 2022 17:59:58 -0700 (PDT)
+        with ESMTP id S239326AbiHSBKE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Aug 2022 21:10:04 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32442DDA8F;
+        Thu, 18 Aug 2022 18:10:03 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id n125so3152049vsc.5;
+        Thu, 18 Aug 2022 18:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=XmfAUBn1gArqpjhXlxsozSzKVKhtwcuq/x+I+Cb3JzY=;
-        b=Qo3NPm1+YvEv8c/eNWWuQFae5XughAMFYdkSqiR35cDKbnL8eJWtPd0Qvb5yLNCtMC
-         0yZnB5M4GAGOEqeZ6Y3z5l6Xnr5D2ly83lWAX3lQmYV+Cd7UO/2krUBvtRMrdjf/GWZM
-         KIt5Zfdjv1m1Br4cZlsYbCTFbYv/lOmKgYjnqyqKQGqW8bjmYPopiDWCj0L9VoQXlo0E
-         8bzWAqhogkYmdRNYJDWi05oP9XPaZWRT8LUFfgst0CIC3mIRU6GJKnueDWqUioS5Efub
-         xXxg6xCAZ+pX8K/X2jQ7JHrX50aTo7L9D23bKrhlSF3HnWi8sZ92KFjfYELFZBqadizo
-         VkbQ==
+        bh=a+4YJ1LhJSNyK/sLr7JdvqPtNEtaZ4Z5AzpDGJs51kw=;
+        b=h+9pelx8eiiyd0IkVd1BlXhfKkkVTdikoxVEKKTeMkhxIYLKe9yfAYzjs4f1ZmtKrU
+         AoIO1SoacdD8rFz8JbEeRcVXK+nyPNnmo9MuTYvBPQi0wq1e2UIUwVL+wNpCpTvqPBvw
+         6HiikZi3QWNvcmRMnTEuua2YNoKu0s2gQqiqh+E/IH+HSL8s7GbQtAnN9kQPx1uZxF/n
+         g/1vQg5vuVOfW/XT0wbQtQ148FtewpbQ3dV/NKwl+wU0yzni5gqS2EpN1SuhoQAUNx6v
+         sBY81kKYi4HXys1m7OQpV6+gybAhuqRD1NmMJZ9kgHuwLGW/vdVmmBGbEw4Wk5QYRd6p
+         uoMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=XmfAUBn1gArqpjhXlxsozSzKVKhtwcuq/x+I+Cb3JzY=;
-        b=JbICi3D2HctZmGEVK0jkOqqmVgu3532iYKCDMDtkikTGaN/biwunxVtfNhTrgtq/FX
-         oRjxSxlAgN9/EU7JBtR8Jov9V/7Uyok7B9uVufssEjg4jmzObLwKGSqL6odr2d2W44T9
-         7ExMazXB1KLMKJANahZNjuZ+uIcEk67u9HINtBhw4KDCMdDgFx5mmKmouISYMiNGnL26
-         xY2G7gWK9vETgRWAwxnRCyj9bu2N36fjHe4TpvqSMDlrjXqMjiUAUPCH9uevUnauNN0n
-         Ootj8KW6wFcBlz+s5WuOxliVj6lNbH8+CUeIL1az8tpdG4szkXoI75iXhY0VuBXXH87S
-         GYHA==
-X-Gm-Message-State: ACgBeo1vgsPYq1V1+HnpvUBou+9EOHe7b2ftKFV2yPVXMbmOL9MHt8lh
-        1b5C6mDiRWA2ITHOh08MoNe6M6fFc7IiuN9WdV4=
-X-Google-Smtp-Source: AA6agR4z9O4ng7MR/K7VSMtafo49b8X4OSLL8KeOKzrQ51KNyScyZXPsVkxF0WgmkYDssPirwhyDHTyw0JGjzd78feE=
-X-Received: by 2002:a1f:251:0:b0:380:d262:4f4f with SMTP id
- 78-20020a1f0251000000b00380d2624f4fmr2294285vkc.5.1660870797677; Thu, 18 Aug
- 2022 17:59:57 -0700 (PDT)
+        bh=a+4YJ1LhJSNyK/sLr7JdvqPtNEtaZ4Z5AzpDGJs51kw=;
+        b=I9ge8oYRZlZ0qgG94BKpgr51OozXje6bmeMY3gEzvBjy0gMk6g4mZXoqBSALnaX0lo
+         IAh1v8jyK4gdmgGdzoORqLhX7rltJC4wj8KE56iBY5QALrLj6wR4ZfkL9BRaHUK17WQr
+         wMd0YbdEiMYyw15TulAg5EKIhv9FcNtHdI6kLQLcSyCO4pZWCIKDGphJvjFKX1U/kR9l
+         X+yNvTGCi6S484gjI3K6yc5h0ziKQWkSqRaUwNe1HpKibuhKEDkxnQV8jBfHJ+dfeW5g
+         6iw2qXScHl/QVk1F9twrtTHee7RHTxbUbWawt/cycm8mt6TmneDU+RIGJRrmyEYr5JCA
+         IQeA==
+X-Gm-Message-State: ACgBeo1X5C6hIcMcWV0VUrPwpPkkVVbE340Vcjp2L1iTmOPMOYcZO3om
+        9Yl05+V8Me/8WoO1mPsvP7Zjqtq5LEKesP5xpA8=
+X-Google-Smtp-Source: AA6agR61Oz/IzjKiBVm75sJ2/yHFLftaP8V01ijTbHM1H9PG+RiBdgq0LsaeUAx4kcfnWkXvkcm6noi2/eLvHbtBRiM=
+X-Received: by 2002:a67:d50c:0:b0:38a:c107:25e0 with SMTP id
+ l12-20020a67d50c000000b0038ac10725e0mr2073409vsj.11.1660871402196; Thu, 18
+ Aug 2022 18:10:02 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
-In-Reply-To: <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
+In-Reply-To: <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 19 Aug 2022 08:59:20 +0800
-Message-ID: <CALOAHbDt9NUv9qK_J1_9CU0tmW9kiJ+nig_0NfzGJgJmrSk2fw@mail.gmail.com>
+Date:   Fri, 19 Aug 2022 09:09:25 +0800
+Message-ID: <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for bpf map
 To:     Tejun Heo <tj@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -80,60 +81,46 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 6:20 AM Tejun Heo <tj@kernel.org> wrote:
+On Fri, Aug 19, 2022 at 6:33 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> Hello,
+> On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
+> > We have the exact same problem for any resources which span multiple
+> > instances of a service including page cache, tmpfs instances and any other
+> > thing which can persist longer than procss life time. My current opinion is
 >
-> On Thu, Aug 18, 2022 at 02:31:06PM +0000, Yafang Shao wrote:
-> > After switching to memcg-based bpf memory accounting to limit the bpf
-> > memory, some unexpected issues jumped out at us.
-> > 1. The memory usage is not consistent between the first generation and
-> > new generations.
-> > 2. After the first generation is destroyed, the bpf memory can't be
-> > limited if the bpf maps are not preallocated, because they will be
-> > reparented.
-> >
-> > This patchset tries to resolve these issues by introducing an
-> > independent memcg to limit the bpf memory.
->
-> memcg folks would have better informed opinions but from generic cgroup pov
-> I don't think this is a good direction to take. This isn't a problem limited
-> to bpf progs and it doesn't make whole lot of sense to solve this for bpf.
+> To expand a bit more on this point, once we start including page cache and
+> tmpfs, we now get entangled with memory reclaim which then brings in IO and
+> not-yet-but-eventually CPU usage.
+
+Introduce-a-new-layer vs introduce-a-new-cgroup, which one is more overhead?
+
+> Once you start splitting the tree like
+> you're suggesting here, all those will break down and now we have to worry
+> about how to split resource accounting and control for the same entities
+> across two split branches of the tree, which doesn't really make any sense.
 >
 
-This change is bpf specific. It doesn't refactor a whole lot of things.
+The k8s has already been broken thanks to the memcg accounting on  bpf memory.
+If you ignored it, I paste it below.
+[0]"1. The memory usage is not consistent between the first generation and
+new generations."
 
-> We have the exact same problem for any resources which span multiple
-> instances of a service including page cache, tmpfs instances and any other
-> thing which can persist longer than procss life time. My current opinion is
-> that this is best solved by introducing an extra cgroup layer to represent
-> the persistent entity and put the per-instance cgroup under it.
+This issue will persist even if you introduce a new layer.
+
+> So, we *really* don't wanna paint ourselves into that kind of a corner. This
+> is a dead-end. Please ditch it.
 >
 
-It is not practical on k8s.
-Because, before the persistent entity, the cgroup dir is stateless.
-After, it is stateful.
-Pls, don't continue keeping blind eyes on k8s.
+It makes non-sensen to ditch it.
+Because, the hierarchy I described in the commit log is *one* use case
+of the selectable memcg, but not *the only one* use case of it. If you
+dislike that hierarchy, I will remove it to avoid misleading you.
 
-> It does require reorganizing how things are organized from userspace POV but
-> the end result is really desirable. We get entities accurately representing
-> what needs to be tracked and control over the granularity of accounting and
-> control (e.g. folks who don't care about telling apart the current
-> instance's usage can simply not enable controllers at the persistent entity
-> level).
->
+Even if you introduce a new layer, you still need the selectable memcg.
+For example, to avoid the issue I described in [0],  you still need to
+charge to the parent cgroup instead of the current cgroup.
 
-Pls.s also think about why k8s refuse to use cgroup2.
-
-> We surely can discuss other approaches but my current intuition is that it'd
-> be really difficult to come up with a better solution than layering to
-> introduce persistent service entities.
->
-> So, please consider the approach nacked for the time being.
->
-
-It doesn't make sense to nack it.
-I will explain to you by replying to your other email.
+That's why I described in the commit log that the selectable memcg is flexible.
 
 -- 
 Regards
