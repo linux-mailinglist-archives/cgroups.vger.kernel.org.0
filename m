@@ -2,101 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F1959AACF
-	for <lists+cgroups@lfdr.de>; Sat, 20 Aug 2022 05:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C001159B298
+	for <lists+cgroups@lfdr.de>; Sun, 21 Aug 2022 09:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbiHTDAw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Aug 2022 23:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
+        id S229543AbiHUHeQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 21 Aug 2022 03:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbiHTDAu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Aug 2022 23:00:50 -0400
-X-Greylist: delayed 536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Aug 2022 20:00:49 PDT
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0199ECD534
-        for <cgroups@vger.kernel.org>; Fri, 19 Aug 2022 20:00:48 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DF7FD580729
-        for <cgroups@vger.kernel.org>; Fri, 19 Aug 2022 22:51:48 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute3.internal (MEProxy); Fri, 19 Aug 2022 22:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        colorremedies.com; h=cc:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1660963908; x=1660967508; bh=CySVD2aXxm
-        hI+TuehF6fV37tTPOWww490mlaiYMjGoQ=; b=MrQ4H/yqRLgd4uB4MJG3Bm2A/v
-        80UcBetvHM95cQC0BWqLIaSFaUaUy68q0hpHlO/dyXYUI0lhJAXgneJGibYnFFa+
-        oKQ5GS693Ksr9CeFLI4Xi4DW3a+CAcnc1ddRTQGMB9yFurUluAm47UjfcIeaHUD1
-        HElFhvxoBHMtpaU8dflueA1DhSjUPlYIm9hQqHOfZQH8XPoJO8wxmJkKgGt8vTfz
-        yIcWAmOEQmywwl05GFizYBuhmJ0SFa8SKIBbJ7lCc7y6ItLHaNohe1VxMjiIoj6M
-        MqdF0cJqyp8BQAPcLLwrRFhjkH5923I8dnWGlofUV/ybyUs7OOn3ydr3jUGQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:message-id:mime-version
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1660963908; x=
-        1660967508; bh=CySVD2aXxmhI+TuehF6fV37tTPOWww490mlaiYMjGoQ=; b=0
-        SiUMNo4dXrPnteHYqVhOgZeN9vtAJ56CaIxKFW0YRxFDg0FsqkkCSb5VP8YNE2q6
-        EQllrv5cC3zoNkS6kKW3hBUFVmQVxA6eKkhOmGE3URI3gToBNxpHhWS5xp+NN9on
-        Yr1WkRfubBaSGU/C2qEhXnXjg5NLk6qTzLp+orDtuMMwVMj4kUaQF1YEuId+ZPgv
-        vAyhmnpm8MT56er9sDfhPWbC2a6OOYwvxzZ/vX+5BRctswKTgyFyRushEq9Tf5vV
-        TPWu+fwGCChbR4IK4RNGVYWLpVSH33JPussbXekbigpafVI3vVF5ay866juyWe2w
-        Ri6Z5jrV8LmVLdMaNtU4Q==
-X-ME-Sender: <xms:REwAY-fNpbOxl2CteMru8nv7G7xXOWn8vjysmMESNSqLL1sRLdzoLw>
-    <xme:REwAY4NRgN-uEAUxWgjzUg05ooigpRGgZR3IIP7vvuPSj6otrfa36GGWCfrLBMNAo
-    8Z-S3B3MQhTyQVEzbg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeivddgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtsehttdertd
-    erredtnecuhfhrohhmpedfvehhrhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhl
-    ohhrrhgvmhgvughivghsrdgtohhmqeenucggtffrrghtthgvrhhnpeeffeeltdejheefud
-    etjedvleffvdevieegueegffdvffevffevkeeivdfhkeeikeenucffohhmrghinheprhgv
-    ughhrghtrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomheplhhishhtshestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:REwAY_i-Ail5FkOwnIR5jvuYFx7rRBaQ9zBTsVTTN0m5gTbUZBUyxg>
-    <xmx:REwAY7-LQU-u6_t-xQeGX07mc3F9ao9Jz20ZR2J3ShdXGDvujPN2Tw>
-    <xmx:REwAY6vezVTHsPyj_kSFrSRac60wTlWm4Z5Ijcwu_kXz1fRU2oOKsQ>
-    <xmx:REwAY45u9eo9Nl3hGvUXA-r9TKLeDoavnyjn5MjfqaFtSvOQj8AsqQ>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5CB4F1700404; Fri, 19 Aug 2022 22:51:48 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-841-g7899e99a45-fm-20220811.002-g7899e99a
-Mime-Version: 1.0
-Message-Id: <d0df567c-1f6a-418d-8db7-3f777bd109c8@www.fastmail.com>
-Date:   Fri, 19 Aug 2022 22:51:27 -0400
-From:   "Chris Murphy" <lists@colorremedies.com>
-To:     cgroups@vger.kernel.org
-Subject: oomd with 6.0-rc1 has ridiculously high memory pressure stats wit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229535AbiHUHeP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 21 Aug 2022 03:34:15 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A8522BE6
+        for <cgroups@vger.kernel.org>; Sun, 21 Aug 2022 00:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661067254; x=1692603254;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O6fFd+1PtGhiYQl5WIAchCwfjiLwvujhPK8p2OjYqOA=;
+  b=JcBA/w0JJFA9GNjqoSoSSPhfuwEOuK+3rv+/R3SK62TD2Q2b222EBSKx
+   I27sBSgL0jExB/TdosDM5ZytELE//XMOozdTs9ni6/keqyh7JBywojTCq
+   amPsa1c5MBHdZBjcehb3kV0DsSogzHkCrbUaC5DfnuwP6n5qtwePTVrK0
+   3AGA3GJMdhqbt2VuKzUSBLxx2LVQLFtJ2Yb696MH+zIiMh5TE6uLhrII7
+   +qdZWResLRxVUkZh5x5IxLifOLbJ7Yt6ZbN9Xng2tBLGO3o+lmQbBvRU/
+   iYxqnLUEx1yjlv90XiY0Jgg1bD9DMWVQ1JMZCUbR4aEOFUm57dc63ecib
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10445"; a="290789915"
+X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
+   d="scan'208";a="290789915"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2022 00:34:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
+   d="scan'208";a="750941440"
+Received: from shbuild999.sh.intel.com ([10.239.147.181])
+  by fmsmga001.fm.intel.com with ESMTP; 21 Aug 2022 00:34:12 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [PATCH] cgroup: cleanup the format of /proc/cgroups
+Date:   Sun, 21 Aug 2022 15:34:46 +0800
+Message-Id: <20220821073446.92669-1-feng.tang@intel.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Currrent /proc/cgroup output is like:
 
-Tracking a downstream bug in Fedora Rawhide testing, where 6.0-rc1 has landed, and we're seeing various GNOME components getting kllled off by systemd-oomd, with the stats showing suspiciously high values:
+  #subsys_name	hierarchy	num_cgroups	enabled
+  cpuset	6	1	1
+  cpu	4	7	1
+  cpuacct	4	7	1
+  blkio	8	7	1
+  memory	9	7	1
+  ...
 
-https://bugzilla.redhat.com/show_bug.cgi?id=2119518
+Add some indentation to make it more readable without any functional
+change:
 
-e.g.
+  #subsys_name         hierarchy        num_cgroups      enabled
+  cpuset               8                1                1
+  cpu                  4                7                1
+  cpuacct              4                7                1
+  blkio                2                7                1
+  memory               5                7                1
+  ...
 
-Killed /user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service due to memory pressure for /user.slice/user-1000.slice/user@1000.service being 27925460729.27% > 50.00% for > 20s with reclaim activity
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ kernel/cgroup/cgroup-v1.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-I'm not seeing evidence of high memory pressure in /proc/pressure though, whereas oomd is reporting really high memory pressure and absolute time for it that makes no sense at all:
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 2ade21b54dc4..e370ce3afdad 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -670,14 +670,20 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
+ 	struct cgroup_subsys *ss;
+ 	int i;
+ 
+-	seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
++	seq_printf(m, "%-20s %-16s %-16s %-16s\n",
++			"#subsys_name",
++			"hierarchy",
++			"num_cgroups",
++			"enabled"
++			);
++
+ 	/*
+ 	 * Grab the subsystems state racily. No need to add avenue to
+ 	 * cgroup_mutex contention.
+ 	 */
+ 
+ 	for_each_subsys(ss, i)
+-		seq_printf(m, "%s\t%d\t%d\t%d\n",
++		seq_printf(m, "%-20s %-16d %-16d %-16d\n",
+ 			   ss->legacy_name, ss->root->hierarchy_id,
+ 			   atomic_read(&ss->root->nr_cgrps),
+ 			   cgroup_ssid_enabled(i));
+-- 
+2.27.0
 
->>Sep 09 03:01:05 fedora systemd-oomd[604]:                 Pressure: Avg10: 1255260529528.42 Avg60: 325612.68 Avg300: 757127258245.62 Total: 2month 4w 2d 8h 15min 12s
-
-It's been up for about 2 minutes at this point, not 3 months.
-
-Thanks,
-
-
---
-Chris Murphy Murphy
