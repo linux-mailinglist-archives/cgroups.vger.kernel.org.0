@@ -2,164 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BD259B899
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 06:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF8759BA36
+	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 09:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbiHVE7d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 00:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
+        id S233217AbiHVH0G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 03:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbiHVE7d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 00:59:33 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114481C125
-        for <cgroups@vger.kernel.org>; Sun, 21 Aug 2022 21:59:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id bh13so8417352pgb.4
-        for <cgroups@vger.kernel.org>; Sun, 21 Aug 2022 21:59:32 -0700 (PDT)
+        with ESMTP id S232526AbiHVHZ4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 03:25:56 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F1929CA3;
+        Mon, 22 Aug 2022 00:25:54 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id y141so9504782pfb.7;
+        Mon, 22 Aug 2022 00:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=9XhZmihVWYtN8pqGhGwupTf+AWRqtf1YyaQ/pGiog9k=;
-        b=e4g+T2mMYZZcLZKVuyYTBE7KioYD6BNBNG1cLqDFZ5B9t0E6FIRD5EvbyAzLTCr3kJ
-         rA6ZK7oCz9GEATt82qpw+2JFjAHNx6MWzrOEJkCcglpPUJI6hS1usRrjSP0PtvLaklzt
-         2SWFQW3etXo3F8BRQXjkvsEAD1xWTy3389fS+y8cwwh/ZpGZYzfVQV4mAVDrVneI1RKY
-         LqoHhaNoGRAKG4D6abLWZ4z6qaxhraGCM7tcAmHqKNXwMFf8R6WZS65/KM+mSpunicvW
-         NoZagRqgMyd0mx1A/gtNa8G0tjAlwmRM7GukYQSHxRJh5NrCaUN7Ht0Ligb/wX1I4ajV
-         MSHA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=msDkfbAvjPj8tG1+VbcyJyurZyD89z+69jjtCZT96Cw=;
+        b=Wm8Ji1NHluqt74CopL6xSV0sx0lEWK55ZRr+ompfbpqjBuTbFHU8kiCO46OANmUSMP
+         +I4sNY9RvnDKp3fB0C6rXVUNkiWkILHs2+xC1t+U2NHmbvSspDBomtr/f3aHzGVznzv/
+         SaNQChOeWNEV1BOjEp3byhGvdsTZalvTGy9HQ9UcsA/bDVY4mIxl20ARf35ceYjgT4LI
+         wKabvHKz4Bb3n66vzbfYgHaHWzE2gLVwbNq9SJrIAPwZNnA1+urGvpvqHxuFakHMQlBb
+         t3P8IVcve2cLPI12k+dFsMDNBYWncQ+t0xzVus9MqggqoXYR/JadregHgH8nkRjEBUV+
+         3AVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=9XhZmihVWYtN8pqGhGwupTf+AWRqtf1YyaQ/pGiog9k=;
-        b=QVh+EO+ECgupwL3NGF7O1Hoqbi46kHh2IqNpjSXudH1gU7kYnnVyv1JPDGV+ehZwGC
-         L2PHzgXtpDn7jCP2AaXkyqFQRzzJro1nv5/jaWk4dznoDFluQyFh/rJbpyCi+YwuNUO9
-         IYDKQ9ZJRRdUAC2V4lhnuZD5R8bxYUnT043XO2tiDK0b1/aQzbtTqGPXEJDzyOIfjUwf
-         unL+qwOd7LMFYG+04RtVUpt0tzKcCmFLepRwkUzcpuw+C8uQxJGlCFlX53O/pAzqMGz5
-         9xr7O5da6PV6GDBJ7qchev8DlAbyKY98P0qpseReNHoN9NtchcD89FMw2l5Q7mhl99E0
-         Ok3Q==
-X-Gm-Message-State: ACgBeo27GjigRAa67GE0ebkFRGJ1CMqmLCmnyTcU4zXGfC4R87//m0gH
-        D9dgMuBAr4lhDMnM45olPeJNvpZZ6yT2nMU6XfMmvw==
-X-Google-Smtp-Source: AA6agR4/1s7y++qNsA2/cfFgEIhAK4Q20RaQ1xUDhpnZDmYg93tgbnj5pntFlvFsEA9PvT9gkP9gZgjLoqCg32dK4EA=
-X-Received: by 2002:a62:6497:0:b0:52e:e0cd:1963 with SMTP id
- y145-20020a626497000000b0052ee0cd1963mr19195169pfb.58.1661144371422; Sun, 21
- Aug 2022 21:59:31 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=msDkfbAvjPj8tG1+VbcyJyurZyD89z+69jjtCZT96Cw=;
+        b=wFvLJPDLHxO5s6CAgjlIlBR0b4JH+dCaRJTx52pizjcYu+zCSmIuQsxQlqO4jsmK+3
+         e2B6SB7Z6hqRvUeq8nHBbAXOwSsr7H/qnBG/+pTnueupK4PJIgEZlNwb3Gby3xKtDMCc
+         rI/3EHS52V7AF42EWd18eUAnlIVytLURDoEBR81HFol47QA5IMonkRxVHtQPCk10/1Sj
+         v6g5bWd9u9Rx6+XByqdHm8s5GNm5EuDkUQjdJHjerAmkUTBBdN8Yn8L3OKmznAWkzk44
+         GDeieQeJGEtTm+DR0yX4r+q/Z5l60UWRzxQHaDWk31s+z1BUd7p0X0A71pGDteTR1gj/
+         7bHQ==
+X-Gm-Message-State: ACgBeo0bJ1VmCBZ8JxVNXwGjABWHvMMry/BmoFgOqxCftKUObXkqI5Fk
+        XZNIgybRsBnnAp2Yhc0ncoU=
+X-Google-Smtp-Source: AA6agR6rUdzkK82sm1UBcvd5xL8mxZXyJiI+lw59UgR63AlGd2zrshfJy4MVXbMQxPnnTsDxddlEGQ==
+X-Received: by 2002:a63:d0:0:b0:41b:c075:acb5 with SMTP id 199-20020a6300d0000000b0041bc075acb5mr15768848pga.480.1661153154100;
+        Mon, 22 Aug 2022 00:25:54 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id i5-20020a635405000000b004298d7b6e70sm6717648pgb.54.2022.08.22.00.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Aug 2022 00:25:53 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 21 Aug 2022 21:25:52 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     mkoutny@suse.com, axboe@kernel.dk, ming.lei@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH v7 1/9] blk-throttle: fix that io throttle can only work
+ for single bio
+Message-ID: <YwMvgN0YxNvkC1gm@slm.duckdns.org>
+References: <20220802140415.2960284-1-yukuai1@huaweicloud.com>
+ <20220802140415.2960284-2-yukuai1@huaweicloud.com>
+ <Yvvx+/d2+OMROUOe@slm.duckdns.org>
+ <712e0f29-94ba-d3d3-ce21-cba4d6092008@huaweicloud.com>
+ <Yv0qbDR+cxKeZ3nD@slm.duckdns.org>
+ <83c8b253-2ebb-5af6-8ce1-6dc3b84cf182@huaweicloud.com>
+ <b1791e41-4945-a0d8-8067-3841ce10fddd@huaweicloud.com>
 MIME-Version: 1.0
-References: <20220822001737.4120417-1-shakeelb@google.com> <20220822001737.4120417-3-shakeelb@google.com>
- <YwLlsr0jNq5m6v8z@feng-clx>
-In-Reply-To: <YwLlsr0jNq5m6v8z@feng-clx>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 21 Aug 2022 21:59:20 -0700
-Message-ID: <CALvZod6d_0ERWy3bsCaLwoNhn7H6YnGeJfs_S5H+Fy2xb3eM9w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: page_counter: rearrange struct page_counter fields
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Michal Koutn??" <mkoutny@suse.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1791e41-4945-a0d8-8067-3841ce10fddd@huaweicloud.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Aug 21, 2022 at 7:12 PM Feng Tang <feng.tang@intel.com> wrote:
->
-> On Mon, Aug 22, 2022 at 08:17:36AM +0800, Shakeel Butt wrote:
-> > With memcg v2 enabled, memcg->memory.usage is a very hot member for
-> > the workloads doing memcg charging on multiple CPUs concurrently.
-> > Particularly the network intensive workloads. In addition, there is a
-> > false cache sharing between memory.usage and memory.high on the charge
-> > path. This patch moves the usage into a separate cacheline and move all
-> > the read most fields into separate cacheline.
-> >
-> > To evaluate the impact of this optimization, on a 72 CPUs machine, we
-> > ran the following workload in a three level of cgroup hierarchy with top
-> > level having min and low setup appropriately. More specifically
-> > memory.min equal to size of netperf binary and memory.low double of
-> > that.
-> >
-> >  $ netserver -6
-> >  # 36 instances of netperf with following params
-> >  $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
-> >
-> > Results (average throughput of netperf):
-> > Without (6.0-rc1)     10482.7 Mbps
-> > With patch            12413.7 Mbps (18.4% improvement)
-> >
-> > With the patch, the throughput improved by 18.4%.
-> >
-> > One side-effect of this patch is the increase in the size of struct
-> > mem_cgroup. However for the performance improvement, this additional
-> > size is worth it. In addition there are opportunities to reduce the size
-> > of struct mem_cgroup like deprecation of kmem and tcpmem page counters
-> > and better packing.
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
->
-> Looks good to me, with one nit below.
->
-> Reviewed-by: Feng Tang <feng.tang@intel.com>
+Hello,
+
+On Mon, Aug 22, 2022 at 11:06:44AM +0800, Yu Kuai wrote:
+> While implementing the new method, I found that there seems to be a
+> misunderstanding here, the code seems to try to add flag to split bio
+> so that it won't be throttled again for bps limit, however:
+> 
+> 1) for blk throttle, split bio is issued directly and will never be
+> throttled again, while orignal bio will go through throttle path again.
+> 2) if cloned bio is directed to a new disk, the flag is cleared anyway.
+
+Doesn't that make the current code correct then? But you were seeing
+incorrect behaviors, right?
 
 Thanks.
 
->
-> > ---
-> >  include/linux/page_counter.h | 34 +++++++++++++++++++++++-----------
-> >  1 file changed, 23 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> > index 679591301994..8ce99bde645f 100644
-> > --- a/include/linux/page_counter.h
-> > +++ b/include/linux/page_counter.h
-> > @@ -3,15 +3,27 @@
-> >  #define _LINUX_PAGE_COUNTER_H
-> >
-> >  #include <linux/atomic.h>
-> > +#include <linux/cache.h>
-> >  #include <linux/kernel.h>
-> >  #include <asm/page.h>
-> >
-> > +#if defined(CONFIG_SMP)
-> > +struct pc_padding {
-> > +     char x[0];
-> > +} ____cacheline_internodealigned_in_smp;
-> > +#define PC_PADDING(name)     struct pc_padding name
-> > +#else
-> > +#define PC_PADDING(name)
-> > +#endif
->
-> There are 2 similar padding definitions in mmzone.h and memcontrol.h:
->
->         struct memcg_padding {
->                 char x[0];
->         } ____cacheline_internodealigned_in_smp;
->         #define MEMCG_PADDING(name)      struct memcg_padding name
->
->         struct zone_padding {
->                 char x[0];
->         } ____cacheline_internodealigned_in_smp;
->         #define ZONE_PADDING(name)      struct zone_padding name;
->
-> Maybe we can generalize them, and lift it into include/cache.h? so
-> that more places can reuse it in future.
->
-
-This makes sense but let me do that in a separate patch.
+-- 
+tejun
