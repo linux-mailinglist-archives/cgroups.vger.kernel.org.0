@@ -2,68 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D0B59C8FC
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 21:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8369259CAB5
+	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 23:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbiHVTfD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 15:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        id S238013AbiHVVT6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 17:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiHVTfC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 15:35:02 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56911BE1;
-        Mon, 22 Aug 2022 12:35:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0946C5CA41;
-        Mon, 22 Aug 2022 19:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661196900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8LOpaT2Q971EUbjBeeWliYNilDBmmPl4LkCkk2UWfDk=;
-        b=pGEsQUrii2Ffpmtr8KAOdRMqyQVwo8KxxpKgeV2D/hGy/FAz5HnnGfP7IbIGRpYoALy/83
-        Z0JgiA3PYFUqXzFCRRTdOyzmioQ6Bv6y4aiwX2z9ik5cMyyYrSK5ef31rrS/qDgN6JTj/9
-        FKohA1XnzPJ/oDg92mSqV9HH3EYkttw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD8BA1332D;
-        Mon, 22 Aug 2022 19:34:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BZy/MmPaA2OcbgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 22 Aug 2022 19:34:59 +0000
-Date:   Mon, 22 Aug 2022 21:34:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S238000AbiHVVTz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 17:19:55 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEE95071C
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 14:19:53 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id n7so14728014wrv.4
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 14:19:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=FxIK9S2wTvBehSQmWm4iua73649GO/cf0KFcF96zw1A=;
+        b=WnSB6qB0/v5bDg0UBCH8XvyxgD+Go42M4ZW04QIoDlf1WY4R6dUzsRq/FJxljUgvzR
+         P8qFnCxXLOwjhK7ac/biGzbje7m4mVABX+7q40/X8QQmMMdbA6H5JXrBHCxVySNiyAPs
+         r0/0smN1EzbeaFhpHFykf4O6d1mRCTGlBWWv2uELOaSU/MgujmUXcl5XklPFCiFSh1Pt
+         ALTePm2DGoPtixANbDQWxpnEW/X1Jjl9+nVLJQBMSTG0rKcXD4R7LsUwqlw/cXODDTXk
+         CfNRxjJ+zttWupmRR1E9wx5X+sZwOtAvDfXvbyKPLJVhlUkJz74jPbl8/iGSz4N4tBc0
+         3zPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=FxIK9S2wTvBehSQmWm4iua73649GO/cf0KFcF96zw1A=;
+        b=6h9eLiVFMN/HiF6lUB8MJpIcOcDcdQkeuBtZZ4QPU67D3m5QKm7wxw/1llGr08bKDD
+         yhXZ+lBUv3NcxpMK4tnhHG2iwYz/U3odEP/MHx9Qi+Zco+2T1Eoy9zUeL4r7OfrZ52FB
+         EAecMwj4V2yskXhHsD+BAw2e6tKNaiK5Pr/ls2bo9lVl5hfGN8CmMbxkJMnkR3+d9rm7
+         R+lfKZK60PGxJ9e1FYxku0XjTYBODMy+WaUcyzOOYeimQiaaTw2yhJr9bsr4RloaNEjn
+         KdyphRVgbYERWpvMsPKCbnHaJS6x2Zk4w/eRROvUTfyffRVTtXAdUHutpLdcWeccw1Pq
+         vP+A==
+X-Gm-Message-State: ACgBeo3QXHVd3uOxpa27W8XNMyGcNeN0n0Z2MACWAsBuBdUNnmRSE5fa
+        ZSaWgzzTMpG2umGonFIc2/uU1w==
+X-Google-Smtp-Source: AA6agR4WU200zopccA4rrsFBPH8Sb9d69Jkv0/J3olW29m0bbzj5YvGRv3feSz9ga0iywhlx9awj4A==
+X-Received: by 2002:a5d:5a9b:0:b0:225:3fa0:f9ca with SMTP id bp27-20020a5d5a9b000000b002253fa0f9camr8045558wrb.204.1661203191880;
+        Mon, 22 Aug 2022 14:19:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:400::5:4e25])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c384900b003a35ec4bf4fsm15911202wmr.20.2022.08.22.14.19.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Aug 2022 14:19:51 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 17:19:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
         Muchun Song <songmuchun@bytedance.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] memcg: increase MEMCG_CHARGE_BATCH to 64
-Message-ID: <YwPZ1lpJ98pZSLmw@dhcp22.suse.cz>
-References: <20220822001737.4120417-1-shakeelb@google.com>
- <20220822001737.4120417-4-shakeelb@google.com>
- <YwPM6o1+pZ2kRyy3@P9FQF9L96D>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+Message-ID: <YwPy9hervVxfuuYE@cmpxchg.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com>
+ <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
+ <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
+ <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org>
+ <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YwPM6o1+pZ2kRyy3@P9FQF9L96D>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,24 +95,65 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 22-08-22 11:37:30, Roman Gushchin wrote:
-[...]
-> I wonder only if we want to make it configurable (Idk a sysctl or maybe
-> a config option) and close the topic.
+On Mon, Aug 22, 2022 at 12:02:48PM -0700, Mina Almasry wrote:
+> On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
+> > b. Let userspace specify which cgroup to charge for some of constructs like
+> >    tmpfs and bpf maps. The key problems with this approach are
+> >
+> >    1. How to grant/deny what can be charged where. We must ensure that a
+> >       descendant can't move charges up or across the tree without the
+> >       ancestors allowing it.
+> >
+> >    2. How to specify the cgroup to charge. While specifying the target
+> >       cgroup directly might seem like an obvious solution, it has a couple
+> >       rather serious problems. First, if the descendant is inside a cgroup
+> >       namespace, it might be able to see the target cgroup at all. Second,
+> >       it's an interface which is likely to cause misunderstandings on how it
+> >       can be used. It's too broad an interface.
+> >
+> 
+> This is pretty much the solution I sent out for review about a year
+> ago and yes, it suffers from the issues you've brought up:
+> https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+> 
+> 
+> >    One solution that I can think of is leveraging the resource domain
+> >    concept which is currently only used for threaded cgroups. All memory
+> >    usages of threaded cgroups are charged to their resource domain cgroup
+> >    which hosts the processes for those threads. The persistent usages have a
+> >    similar pattern, so maybe the service level cgroup can declare that it's
+> >    the encompassing resource domain and the instance cgroup can say whether
+> >    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
+> >    resource domain.
+> >
+> 
+> I think this sounds excellent and addresses our use cases. Basically
+> the tmpfs/bpf memory would get charged to the encompassing resource
+> domain cgroup rather than the instance cgroup, making the memory usage
+> of the first and second+ instances consistent and predictable.
+> 
+> Would love to hear from other memcg folks what they would think of
+> such an approach. I would also love to hear what kind of interface you
+> have in mind. Perhaps a cgroup tunable that says whether it's going to
+> charge the tmpfs/bpf instance to itself or to the encompassing
+> resource domain?
 
-I do not think this is a good idea. We have other examples where we have
-outsourced internal tunning to the userspace and it has mostly proven
-impractical and long term more problematic than useful (e.g.
-lowmem_reserve_ratio, percpu_pagelist_high_fraction, swappiness just to
-name some that come to my mind). I have seen more often these to be used
-incorrectly than useful.
+I like this too. It makes shared charging predictable, with a coherent
+resource hierarchy (congruent OOM, CPU, IO domains), and without the
+need for cgroup paths in tmpfs mounts or similar.
 
-In this case, I guess we should consider either moving to per memcg
-charge batching and see whether the pcp overhead x memcg_count is worth
-that or some automagic tuning of the batch size depending on how
-effectively the batch is used. Certainly a lot of room for
-experimenting.
+As far as who is declaring what goes, though: if the instance groups
+can declare arbitrary files/objects persistent or shared, they'd be
+able to abuse this and sneak private memory past local limits and
+burden the wider persistent/shared domain with it.
 
--- 
-Michal Hocko
-SUSE Labs
+I'm thinking it might make more sense for the service level to declare
+which objects are persistent and shared across instances.
+
+If that's the case, we may not need a two-component interface. Just
+the ability for an intermediate cgroup to say: "This object's future
+memory is to be charged to me, not the instantiating cgroup."
+
+Can we require a process in the intermediate cgroup to set up the file
+or object, and use madvise/fadvise to say "charge me", before any
+instances are launched?
