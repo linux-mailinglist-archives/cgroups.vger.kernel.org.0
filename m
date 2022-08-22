@@ -2,33 +2,33 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F3759C636
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 20:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4890C59C695
+	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 20:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236488AbiHVS2I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 14:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S237001AbiHVSiB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 14:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237179AbiHVS2C (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 14:28:02 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3038C48E84;
-        Mon, 22 Aug 2022 11:27:52 -0700 (PDT)
-Date:   Mon, 22 Aug 2022 11:27:46 -0700
+        with ESMTP id S236455AbiHVSho (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 14:37:44 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1444248E93;
+        Mon, 22 Aug 2022 11:37:38 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 11:37:30 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1661192870;
+        t=1661193456;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=859bRFvYP0PwP1RQEaN1BuNqPudeM49yRCMP2gzbo/M=;
-        b=mCGQi+2b3AdYVcCk9kc+RYKSR5DNMp8IBmyH6G+E69Cq3b2l19KvwGFIuMAQgaZ1ip974E
-        Gfuml2lG4ZQJmNqdc9vHZ1ompfYFjZdFzV0Xj/H73RUciXDYNcSERvs7e3WDbYpIjcVsB1
-        T0npKZERgo9FQlUXzHgUKV2CBE3OL1Y=
+        bh=3icLRlffoR+2bh6AZBpCk9+vi7OPaMiHjmut8kzqVHM=;
+        b=HbWlYxX1EJmz75AZbYDPBp74453btzjOhTRWKtlJOGuc1jQO24pHe/hVo32YJuG3ao8+iO
+        ZKgUv+hqXTU6VWEGEungqgWleeZt4YEED0xXWrB3WsujuUR2ZsuOFwGTRy18nWJVgzW3fD
+        YRJ16tZfmzfWWnGq3Ow3YE7Ru4ZjXyg=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Roman Gushchin <roman.gushchin@linux.dev>
 To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Muchun Song <songmuchun@bytedance.com>,
         Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
         Eric Dumazet <edumazet@google.com>,
@@ -36,22 +36,16 @@ Cc:     Michal Hocko <mhocko@suse.com>,
         Feng Tang <feng.tang@intel.com>,
         Oliver Sang <oliver.sang@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] mm: page_counter: rearrange struct page_counter
- fields
-Message-ID: <YwPKojTHxV4PFoKn@P9FQF9L96D>
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] memcg: increase MEMCG_CHARGE_BATCH to 64
+Message-ID: <YwPM6o1+pZ2kRyy3@P9FQF9L96D>
 References: <20220822001737.4120417-1-shakeelb@google.com>
- <20220822001737.4120417-3-shakeelb@google.com>
- <YwNZD4YlRkvQCWFi@dhcp22.suse.cz>
- <CALvZod5pw_7hnH44hdC3rDGQxQB2XATrViNNGosG3FnUoWo-4A@mail.gmail.com>
- <YwOde3qFvne7Umld@dhcp22.suse.cz>
- <CALvZod4whYX+0ZuCGgyKuG-Q_9d0g7N_x+=WXOeB_1TM=3Q7vg@mail.gmail.com>
+ <20220822001737.4120417-4-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod4whYX+0ZuCGgyKuG-Q_9d0g7N_x+=WXOeB_1TM=3Q7vg@mail.gmail.com>
+In-Reply-To: <20220822001737.4120417-4-shakeelb@google.com>
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,41 +58,37 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 09:04:59AM -0700, Shakeel Butt wrote:
-> On Mon, Aug 22, 2022 at 8:15 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 22-08-22 08:06:14, Shakeel Butt wrote:
-> > [...]
-> > > > >  struct page_counter {
-> > > > > +     /*
-> > > > > +      * Make sure 'usage' does not share cacheline with any other field. The
-> > > > > +      * memcg->memory.usage is a hot member of struct mem_cgroup.
-> > > > > +      */
-> > > > > +     PC_PADDING(_pad1_);
-> > > >
-> > > > Why don't you simply require alignment for the structure?
-> > >
-> > > I don't just want the alignment of the structure. I want different
-> > > fields of this structure to not share the cache line. More
-> > > specifically the 'high' and 'usage' fields. With this change the usage
-> > > will be its own cache line, the read-most fields will be on separate
-> > > cache line and the fields which sometimes get updated on charge path
-> > > based on some condition will be a different cache line from the
-> > > previous two.
-> >
-> > I do not follow. If you make an explicit requirement for the structure
-> > alignement then the first field in the structure will be guarantied to
-> > have that alignement and you achieve the rest to be in the other cache
-> > line by adding padding behind that.
+On Mon, Aug 22, 2022 at 12:17:37AM +0000, Shakeel Butt wrote:
+> For several years, MEMCG_CHARGE_BATCH was kept at 32 but with bigger
+> machines and the network intensive workloads requiring througput in
+> Gbps, 32 is too small and makes the memcg charging path a bottleneck.
+> For now, increase it to 64 for easy acceptance to 6.0. We will need to
+> revisit this in future for ever increasing demand of higher performance.
 > 
-> Oh, you were talking explicitly about _pad1_, yes, we can remove it
-> and make the struct cache align. I will do it in the next version.
+> Please note that the memcg charge path drain the per-cpu memcg charge
+> stock, so there should not be any oom behavior change.
+> 
+> To evaluate the impact of this optimization, on a 72 CPUs machine, we
+> ran the following workload in a three level of cgroup hierarchy with top
+> level having min and low setup appropriately. More specifically
+> memory.min equal to size of netperf binary and memory.low double of
+> that.
+> 
+>  $ netserver -6
+>  # 36 instances of netperf with following params
+>  $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
+> 
+> Results (average throughput of netperf):
+> Without (6.0-rc1)       10482.7 Mbps
+> With patch              17064.7 Mbps (62.7% improvement)
+> 
+> With the patch, the throughput improved by 62.7%.
 
-Yes, please, it caught my eyes too.
-With this change:
+This is pretty significant!
+
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Also, can you, please, include the numbers on the additional memory overhead?
-I think it still worth it, just think we need to include them for a record.
+I wonder only if we want to make it configurable (Idk a sysctl or maybe
+a config option) and close the topic.
 
 Thanks!
