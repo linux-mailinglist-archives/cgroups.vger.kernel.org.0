@@ -2,56 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BF959C1F4
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 16:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B4259C234
+	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 17:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbiHVO4M (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 10:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S235201AbiHVPI0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 11:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235465AbiHVO4L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 10:56:11 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDA2193D2
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 07:56:10 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id bf22so11228536pjb.4
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 07:56:10 -0700 (PDT)
+        with ESMTP id S236100AbiHVPII (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 11:08:08 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB3DEF
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 08:06:29 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id w29so5053042pfj.3
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 08:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=Q7WYgfj+D74q3tCpU5JrwR7f8DS8YPdEHB5QL4Zw+3E=;
-        b=jjZM2OFr/3FVWHbl+N6HxUndM4ZQsTxjvR0U5CsuexneKgVxqdV1bXLtaFMj4Z0OGG
-         3rbrlz78/uOXN4/dBpeueMFz7QDTr89EvKklVfCjuU38Xe6odVZy5ZIZfFogK2w9Kz08
-         O2Xg6uOeH2cAeEZ7kHIG3YkhVp1G7ltowW0IQOo8qvWCACurSPdYzcOV5ebirHsqU4fv
-         BrKhmOCSgPClIiIzFGj5oOJ2erOyckssP0wY1islBfgBntr7B/hpZWVE5+nTof6D/jks
-         FYtLJt7EkaEUp/kmK6o9V8yjRSu6idnj6Btq68OCK3Qjp59HUWfIapwm0yH6RRbPlx4F
-         UBMA==
+        bh=rfnLOnYHfibKVs6Fb4CyKhxW8tJzjkgGwDzJoC+bA0Y=;
+        b=WrEDmTe0u3FiZugr1PESRLE48S+q7XVC3UauDjAcW6HIAjvR0HdyDSvY4Yh8Xv56pD
+         zPk2pcgIpSUnoaMXQGMFXbv7itfEgQxASZu3plwAPK03XvXa6lCQJD9NZXVJ5o1FBtB8
+         X3x7rF1QRsVh4MXlsOXYfj66zh30hHfyZ2JsCANksMqp18M7jGVX8W3hXJJrdalpRqiG
+         suK5gjJfRKexqrQW/aKqFE+rYX7mOOZjjtfZCMzUoTVD8zZSvk9fiLVnIeZIGLgGzJaA
+         dDSVJr3UUABWryrmO8Xl1VpIQ5ZWGOWL9XjGltxQGHICMF2l1LmnoW0euDwnBGjZS2e+
+         1bmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=Q7WYgfj+D74q3tCpU5JrwR7f8DS8YPdEHB5QL4Zw+3E=;
-        b=QMjekpYtvz/GmijTPOUQWaqbX2JATjsuN9kjtdFq+iWAFRDhvCpzeazFsqkNEmErFF
-         onbrx0EKXEdWOioSbbAPy0ctk/W173e6vlgnKqw4BqDbRv04LoyWalnR9QSRgK+Sb8Lc
-         aOuXE0T07VKzgj9Qluoi8/5sov+A4+/j7L3oopRGAHv9QGjOceHjMC4HFp3UChcU52Br
-         6UVVfIfTrxGyiLMAUA3SwxVZQQd5BWvsgbM4vbAzP1rJeblov9oiC4oXLxccbHif4vIN
-         pvEeqMvQQXL3plPQDIRU8m2eLOQAO0CjAjqBZotfIBc1fwvsfP3fqWzthi6EKaHJvPCB
-         E4+w==
-X-Gm-Message-State: ACgBeo2fTIqLI4Q92rPL/SQjft/WQIQETlJvQt0oDrmA6ACdmfVY79Ei
-        kz8C69VdcOHoJsshup14HZV9RrNE2zEyx+tuslCLUw==
-X-Google-Smtp-Source: AA6agR4pjeCo4sfTRvPxIMsKbhBf7tq6lkeLni7LueWtlNFZuZBasGE1lD6mN+eHQeRHv7PGybIw63IFG+r7joXQ1gM=
-X-Received: by 2002:a17:90b:4d0f:b0:1f7:ae99:b39d with SMTP id
- mw15-20020a17090b4d0f00b001f7ae99b39dmr23665783pjb.237.1661180169772; Mon, 22
- Aug 2022 07:56:09 -0700 (PDT)
+        bh=rfnLOnYHfibKVs6Fb4CyKhxW8tJzjkgGwDzJoC+bA0Y=;
+        b=AHCL0dw1J7raoU95ghZClfvy16KCCPkd4L+CZUQdkvUHXZB5Od7vXVeMtwmIGEVfmJ
+         y5bIYnQuRH9+/j3En3iy0cOnydIw/LfEPW/zkfd1K1tWR8W0D9b/kEFQJBl29NLbYJV0
+         g+M2YEDYPHq/EAPD1MbhKiSR+HodOznQ7w3BLgKC/p06SMQ/20MZbQSs4IfoSNn6MZr8
+         z+rn/5z2U0D3zzQhofIAXVQTSYt4aMe7fB/SRaw/t4t1Xi8/2KNPa4yiSaax0pUpDgJR
+         9uMKdNMXhaw2/K9jAyoNI8Ezaor6UPeSfSuUnPDq8JtR7Af2do1lGf/WHQyxoW8mOQfg
+         IdoA==
+X-Gm-Message-State: ACgBeo2tS4mdhNgXhRTEd8yDJbMxC0LPLgoC2bRasYgj4/XorHi7gxeL
+        nL8jvMmiODXFEZdXF1UoVB0Be9g/HSByg+3OpmjW6sfifuM=
+X-Google-Smtp-Source: AA6agR5ItK2qWDc7jjr7fBTr2W7+SERWzFKsbKa/joz2WD3UuK5X9GUCKjlxWu+Hd97AdsMRT/n9+/7Fvy1T5C4iolI=
+X-Received: by 2002:a05:6a00:2392:b0:52e:b4fb:848 with SMTP id
+ f18-20020a056a00239200b0052eb4fb0848mr21499685pfc.8.1661180785557; Mon, 22
+ Aug 2022 08:06:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220822001737.4120417-1-shakeelb@google.com> <20220822001737.4120417-2-shakeelb@google.com>
- <YwNSlZFPMgclrSCz@dhcp22.suse.cz> <YwNX+vq9svMynVgW@dhcp22.suse.cz>
-In-Reply-To: <YwNX+vq9svMynVgW@dhcp22.suse.cz>
+References: <20220822001737.4120417-1-shakeelb@google.com> <20220822001737.4120417-3-shakeelb@google.com>
+ <YwNZD4YlRkvQCWFi@dhcp22.suse.cz>
+In-Reply-To: <YwNZD4YlRkvQCWFi@dhcp22.suse.cz>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Aug 2022 07:55:58 -0700
-Message-ID: <CALvZod720nwfP68OM2QtyyWJpOV5aO8xF6iuN0U2hpX9Pzj8PA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mm: page_counter: remove unneeded atomic ops for low/min
+Date:   Mon, 22 Aug 2022 08:06:14 -0700
+Message-ID: <CALvZod5pw_7hnH44hdC3rDGQxQB2XATrViNNGosG3FnUoWo-4A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: page_counter: rearrange struct page_counter fields
 To:     Michal Hocko <mhocko@suse.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
@@ -77,50 +77,93 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 3:18 AM Michal Hocko <mhocko@suse.com> wrote:
+On Mon, Aug 22, 2022 at 3:23 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Mon 22-08-22 11:55:33, Michal Hocko wrote:
-> > On Mon 22-08-22 00:17:35, Shakeel Butt wrote:
-> [...]
-> > > diff --git a/mm/page_counter.c b/mm/page_counter.c
-> > > index eb156ff5d603..47711aa28161 100644
-> > > --- a/mm/page_counter.c
-> > > +++ b/mm/page_counter.c
-> > > @@ -17,24 +17,23 @@ static void propagate_protected_usage(struct page_counter *c,
-> > >                                   unsigned long usage)
-> > >  {
-> > >     unsigned long protected, old_protected;
-> > > -   unsigned long low, min;
-> > >     long delta;
-> > >
-> > >     if (!c->parent)
-> > >             return;
-> > >
-> > > -   min = READ_ONCE(c->min);
-> > > -   if (min || atomic_long_read(&c->min_usage)) {
-> > > -           protected = min(usage, min);
-> > > +   protected = min(usage, READ_ONCE(c->min));
-> > > +   old_protected = atomic_long_read(&c->min_usage);
-> > > +   if (protected != old_protected) {
+> On Mon 22-08-22 00:17:36, Shakeel Butt wrote:
+> > With memcg v2 enabled, memcg->memory.usage is a very hot member for
+> > the workloads doing memcg charging on multiple CPUs concurrently.
+> > Particularly the network intensive workloads. In addition, there is a
+> > false cache sharing between memory.usage and memory.high on the charge
+> > path. This patch moves the usage into a separate cacheline and move all
+> > the read most fields into separate cacheline.
 > >
-> > I have to cache that code back into brain. It is really subtle thing and
-> > it is not really obvious why this is still correct. I will think about
-> > that some more but the changelog could help with that a lot.
+> > To evaluate the impact of this optimization, on a 72 CPUs machine, we
+> > ran the following workload in a three level of cgroup hierarchy with top
+> > level having min and low setup appropriately. More specifically
+> > memory.min equal to size of netperf binary and memory.low double of
+> > that.
 >
-> OK, so the this patch will be most useful when the min > 0 && min <
-> usage because then the protection doesn't really change since the last
-> call. In other words when the usage grows above the protection and your
-> workload benefits from this change because that happens a lot as only a
-> part of the workload is protected. Correct?
-
-Yes, that is correct. I hope the experiment setup is clear now.
-
+> Again the workload description is not particularly useful. I guess the
+> only important aspect is the netserver part below and the number of CPUs
+> because min and low setup doesn't have much to do with this, right? At
+> least that is my reading of the memory.high mentioned above.
 >
-> Unless I have missed anything this shouldn't break the correctness but I
-> still have to think about the proportional distribution of the
-> protection because that adds to the complexity here.
 
-The patch is not changing any semantics. It is just removing an
-unnecessary atomic xchg() for a specific scenario (min > 0 && min <
-usage). I don't think there will be any change related to proportional
-distribution of the protection.
+The experiment numbers below are for only this patch independently
+i.e. the unnecessary min/low atomic xchg() is still happening for both
+setups. I could run the experiment without setting min and low but I
+wanted to keep the setup exactly the same for all three optimizations.
+
+This patch and the following perf numbers shows only the impact of
+removing false sharing in struct page_counter for memcg->memory on the
+charging code path.
+
+> >  $ netserver -6
+> >  # 36 instances of netperf with following params
+> >  $ netperf -6 -H ::1 -l 60 -t TCP_SENDFILE -- -m 10K
+> >
+> > Results (average throughput of netperf):
+> > Without (6.0-rc1)     10482.7 Mbps
+> > With patch            12413.7 Mbps (18.4% improvement)
+> >
+> > With the patch, the throughput improved by 18.4%.
+> >
+> > One side-effect of this patch is the increase in the size of struct
+> > mem_cgroup. However for the performance improvement, this additional
+> > size is worth it. In addition there are opportunities to reduce the size
+> > of struct mem_cgroup like deprecation of kmem and tcpmem page counters
+> > and better packing.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > ---
+> >  include/linux/page_counter.h | 34 +++++++++++++++++++++++-----------
+> >  1 file changed, 23 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+> > index 679591301994..8ce99bde645f 100644
+> > --- a/include/linux/page_counter.h
+> > +++ b/include/linux/page_counter.h
+> > @@ -3,15 +3,27 @@
+> >  #define _LINUX_PAGE_COUNTER_H
+> >
+> >  #include <linux/atomic.h>
+> > +#include <linux/cache.h>
+> >  #include <linux/kernel.h>
+> >  #include <asm/page.h>
+> >
+> > +#if defined(CONFIG_SMP)
+> > +struct pc_padding {
+> > +     char x[0];
+> > +} ____cacheline_internodealigned_in_smp;
+> > +#define PC_PADDING(name)     struct pc_padding name
+> > +#else
+> > +#define PC_PADDING(name)
+> > +#endif
+> > +
+> >  struct page_counter {
+> > +     /*
+> > +      * Make sure 'usage' does not share cacheline with any other field. The
+> > +      * memcg->memory.usage is a hot member of struct mem_cgroup.
+> > +      */
+> > +     PC_PADDING(_pad1_);
+>
+> Why don't you simply require alignment for the structure?
+
+I don't just want the alignment of the structure. I want different
+fields of this structure to not share the cache line. More
+specifically the 'high' and 'usage' fields. With this change the usage
+will be its own cache line, the read-most fields will be on separate
+cache line and the fields which sometimes get updated on charge path
+based on some condition will be a different cache line from the
+previous two.
