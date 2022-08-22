@@ -2,105 +2,259 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1011B59C3BD
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 18:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4259C3CA
+	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 18:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbiHVQHu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 12:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S235323AbiHVQMj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 12:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235745AbiHVQHt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 12:07:49 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166C632DAC
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 09:07:47 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s36-20020a17090a69a700b001faad0a7a34so14433089pjj.4
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 09:07:47 -0700 (PDT)
+        with ESMTP id S234858AbiHVQMi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 12:12:38 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B7C32D88
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 09:12:37 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q9so743908pgq.6
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 09:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=gUVeYVstiPrcbddnMA7a91R1MVlm8VXe4cQjO+uITck=;
-        b=qJU/J6milNR1oV5NO1gr1r9vhtxCS9d8ZKRW1oRrJmNJqHRx2lxTImH8vetGV6ilAh
-         xUphI7Un4qyUSuEDND0A7UNpIdiG7vRWpyafS5+WDaQhQoAGAG+bLu1MvmhojfFqODDr
-         E2t3KE+j4c9Q/2wqW9Adu8yQo2vKApYIwPjwoEFAVlrMSBiR+Iwkb5mq1xKM6v96mpv+
-         50JdfOsjLfzxqZv7VnwabsQ0nGoiOw2s7iWe+FOic0ZSVUCpFyO7jFRxcGiKV62loMir
-         cdsgS511CkPCukoKUkZNZhTCS8NPNZyo1mRO4Lk3b2TNTW9poBkTfUMYiZOcMyMOgoHn
-         YziQ==
+        bh=7BuvMVyleR3Hw8mkAELF9i7HfPKnfLamJfP4eJKjBTI=;
+        b=ZtGfm781LiOy0zfGugOT2dFYFP8nCYjMngUuJ7i43OurHzkaxNOOp48ZZ5Ic7V9ea7
+         96CJQmAYiGjoSdQ/OW7s6NZVSvpFZkwG8ooJftJJQUudaffxgCUJmDVVyMWSj0GHdtAz
+         0xdv5P8CWQ+8cnaRjWZIPKPAGoXwsKu8I7vz8/rQcsDEtiifrBvJp87PfaAOa0ByiFNI
+         /HoUTLj0gUoD/xrKelAJev5/wgXe+l8rCYLAJGS7XdvJ4n5ENREjWDMqEcmbFla824ds
+         oyqdZt7x4ZxO7+9MkkiPRbX2va9gqg4hR/e5RHohZSmOcYkglmAcXjzSUAagTWYCGm/Y
+         12Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=gUVeYVstiPrcbddnMA7a91R1MVlm8VXe4cQjO+uITck=;
-        b=PrsF+7E3eiNfEfOYJbeVL0pvMjDDCfYkom1wrrpTYQsQhSyt/MnwUaSbNT4AOlC0qV
-         VB3YkNJ4DRhRViIY7++8DIzPNQgmJUmUVLl30ZY49q8hF3RTCiQXjMadPecAbIwwFwqy
-         Cz9SpWFpsPHU9XDdBWeDW/ybbvg+vzosZeYMadRuRj4gG/sko6CUYAN5RNaKtPGuL8/T
-         5PuWjSgr1EeP+OT88ny9tuNH6TL2uil2oAUDdlrYgv1WIsMrnmU3Rn5OV24q3ENDou7D
-         zZd12Y7J0VWcuCrK440fNrDZ8sq2mQ+wyhBPch782vEt1dNJPObxKBaiE5IrEO3N3HTo
-         xOBQ==
-X-Gm-Message-State: ACgBeo3EU5x8iPXDWw/yc2SttmC+uxQHgILqhPRXylimmdJighskuErm
-        K0MD1edadb9lPTqiU400Yn25mIW4fuiIjzG+0vB37Q==
-X-Google-Smtp-Source: AA6agR5MHC/BTxgzO7qC6dLvR96E17Sxi3/i1RXs5BlWoSY9hIdl7PlVXMVRxG/WkibXxiXxoUC6q2ONfVMOvTLKYOs=
-X-Received: by 2002:a17:90b:4d0f:b0:1f7:ae99:b39d with SMTP id
- mw15-20020a17090b4d0f00b001f7ae99b39dmr23982623pjb.237.1661184467070; Mon, 22
- Aug 2022 09:07:47 -0700 (PDT)
+        bh=7BuvMVyleR3Hw8mkAELF9i7HfPKnfLamJfP4eJKjBTI=;
+        b=4Vs/Q1PwhOWKzy+WC8S+QcJ/DuL8e9okfx037ThHcaL97w4ieGO5gWun46awsN9sCW
+         bP99n8ln3yt/NdjOqSO39nje+NCf9xj+qMQAzwE2SAMKsnxaUWkF9U4i9zjBfGqgpwcF
+         JKDTRHCEGjdtIkkMzOdhnOLhP8b6tRToh0I6JvoFOW13J9G+w3WmEFYqfz2NO7bgfRcn
+         GDXDdKoxd7Q0UyvCsJfUupYfQrI7CYDkT4CPG7C1Zcbu6lpjR1q41DW7U3WUh6nnmWzY
+         etzBARi17s6ulwKLiQG8JHIi/XT+J2UwVC1RN1EbFNAxO3t/Aj5B9XbYkcRMh08HdcIy
+         e9nw==
+X-Gm-Message-State: ACgBeo1EKO0ZwTV35p0dRbUZ9wUllJlDJ2fllkM8xMmnu52xLsI/Q1pV
+        M86lxXMrxFKmjPhqGRdpET2EQcweQeI4IQxMQ/X9hQ==
+X-Google-Smtp-Source: AA6agR5S9hFZUry+hlyQRfRO4ySXHQzaQtQaXSyPXOPlH8Vcmh2GSOHNGAYWBhzwTjcJ5JM90zrpdU1qmSiVtTolLgg=
+X-Received: by 2002:a65:494b:0:b0:428:d68c:35bf with SMTP id
+ q11-20020a65494b000000b00428d68c35bfmr16904973pgs.509.1661184756390; Mon, 22
+ Aug 2022 09:12:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220822001737.4120417-1-shakeelb@google.com> <20220822001737.4120417-4-shakeelb@google.com>
- <YwNe3HBxzF+fWb2n@dhcp22.suse.cz> <CALvZod5YGVSTvsg25P6goqyGEY21eVnahsXcs2BGsp6OXxLwsg@mail.gmail.com>
- <YwOfP/6PtS8BxNhz@dhcp22.suse.cz>
-In-Reply-To: <YwOfP/6PtS8BxNhz@dhcp22.suse.cz>
+References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org>
+In-Reply-To: <YwNold0GMOappUxc@slm.duckdns.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Aug 2022 09:07:36 -0700
-Message-ID: <CALvZod5mgn6eUaCBV3bNJKA8k_sOAYs5QKyX7at+2OW_+5GNGQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] memcg: increase MEMCG_CHARGE_BATCH to 64
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Mon, 22 Aug 2022 09:12:25 -0700
+Message-ID: <CALvZod6EHB74L2kJz7=gv3ev3+UTbBX3a1AsRgF2rgesjXCx3w@mail.gmail.com>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+To:     Tejun Heo <tj@kernel.org>, Mina Almasry <almasrymina@google.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <songmuchun@bytedance.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 8:22 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 22-08-22 08:09:01, Shakeel Butt wrote:
-> > On Mon, Aug 22, 2022 at 3:47 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > [...]
-> > >
-> > > > To evaluate the impact of this optimization, on a 72 CPUs machine, we
-> > > > ran the following workload in a three level of cgroup hierarchy with top
-> > > > level having min and low setup appropriately. More specifically
-> > > > memory.min equal to size of netperf binary and memory.low double of
-> > > > that.
-> > >
-> > > a similar feedback to the test case description as with other patches.
-> >
-> > What more info should I add to the description? Why did I set up min
-> > and low or something else?
->
-> I do see why you wanted to keep the test consistent over those three
-> patches. I would just drop the reference to the protection configuration
-> because it likely doesn't make much of an impact, does it? It is the
-> multi cpu setup and false sharing that makes the real difference. Or am
-> I wrong in assuming that?
->
+Ccing Mina.
 
-No, you are correct. I will cleanup the commit message in the next version.
+On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> (Sorry, this is a resend. I messed up the header in the first posting.)
+>
+> Hello,
+>
+> This thread started on a bpf-specific memory tracking change proposal and
+> went south, but a lot of people who would be interested are already cc'd, so
+> I'm hijacking it to discuss what to do w/ persistent memory usage tracking.
+>
+> Cc'ing Mina and Yosry who were involved in the discussions on the similar
+> problem re. tmpfs, Dan Schatzberg who has a lot more prod knowledge and
+> experience than me, and Lennart for his thoughts from systemd side.
+>
+> The root problem is that there are resources (almost solely memory
+> currently) that outlive a given instance of a, to use systemd-lingo,
+> service. Page cache is the most common case.
+>
+> Let's say there's system.slice/hello.service. When it runs for the first
+> time, page cache backing its binary will be charged to hello.service.
+> However, when it restarts after e.g. a config change, when the initial
+> hello.service cgroup gets destroyed, we reparent the page cache charges to
+> the parent system.slice and when the second instance starts, its binary will
+> stay charged to system.slice. Over time, some may get reclaimed and
+> refaulted into the new hello.service but that's not guaranteed and most hot
+> pages likely won't.
+>
+> The same problem exists for any memory which is not freed synchronously when
+> the current instance exits. While this isn't a problem for many cases, it's
+> not difficult to imagine situations where the amount of memory which ends up
+> getting pushed to the parent is significant, even clear majority, with big
+> page cache footprint, persistent tmpfs instances and so on, creating issues
+> with accounting accuracy and thus control.
+>
+> I think there are two broad issues to discuss here:
+>
+> [1] Can this be solved by layering the instance cgroups under persistent
+>     entity cgroup?
+>
+> So, instead of systemd.slice/hello.service, the application runs inside
+> something like systemd.slice/hello.service/hello.service.instance and the
+> service-level cgroup hello.service is not destroyed as long as it is
+> something worth tracking on the system.
+>
+> The benefits are
+>
+> a. While requiring changing how userland organizes cgroup hiearchy, it is a
+>    straight-forward extension of the current architecture and doesn't
+>    require any conceptual or structural changes. All the accounting and
+>    control schemes work exactly the same as before. The only difference is
+>    that we now have a persistent entity representing each service as we want
+>    to track their persistent resource usages.
+>
+> b. Per-instance tracking and control is optional. To me, it seems that the
+>    persistent resource usages would be more meaningful than per-instance and
+>    tracking down to the persistent usages shouldn't add noticeable runtime
+>    overheads while keeping per-instance process management niceties and
+>    allowing use cases to opt-in for per-instance resource tracking and
+>    control as needed.
+>
+> The complications are:
+>
+> a. It requires changing cgroup hierarchy in a very visible way.
+>
+> b. What should be the lifetime rules for persistent cgroups? Do we keep them
+>    around forever or maybe they can be created on the first use and kept
+>    around until the service is removed from the system? When the persistent
+>    cgroup is removed, do we need to make sure that the remaining resource
+>    usages are low enough? Note that this problem exists for any approach
+>    that tries to track persistent usages no matter how it's done.
+>
+> c. Do we need to worry about nesting overhead? Given that there's no reason
+>    to enable controllers w/o persisten states for the instance level and the
+>    nesting overhead is pretty low for memcg, this doesn't seem like a
+>    problem to me. If this becomes a problem, we just need to fix it.
+>
+> A couple alternatives discussed are:
+>
+> a. Userspace keeps reusing the same cgroup for different instances of the
+>    same service. This simplifies some aspects while making others more
+>    complicated. e.g. Determining the current instance's CPU or IO usages now
+>    require the monitoring software remembering what they were when this
+>    instance started and calculating the deltas. Also, if some use cases want
+>    to distinguish persistent vs. instance usages (more on this later), this
+>    isn't gonna work. That said, this definitely is attractive in that it
+>    miminizes overt user visible changes.
+>
+> b. Memory is disassociated rather than just reparented on cgroup destruction
+>    and get re-charged to the next first user. This is attractive in that it
+>    doesn't require any userspace changes; however, I'm not sure how this
+>    would work for non-pageable memory usages such as bpf maps. How would we
+>    detect the next first usage?
+>
+>
+> [2] Whether and how to solve first and second+ instance charge differences.
+>
+> If we take the layering approach, the first instance will get charged for
+> all memory that it uses while the second+ instances likely won't get charged
+> for a lot of persistent usages. I don't think there is a consensus on
+> whether this needs to be solved and I don't have enough context to form a
+> strong opinion. memcg folks are a lot better equipped to make this decision.
+>
+> Assuming this needs to be solved, here's a braindump to be taken with a big
+> pinch of salt:
+>
+> I have a bit of difficult time imagining a perfect solution given that
+> whether a given page cache page is persistent or not would be really
+> difficult to know (or maybe all page cache is persistent by default while
+> anon is not). However, the problem still seems worthwhile to consider for
+> big ticket items such as persistent tmpfs mounts and huge bpf maps as they
+> can easily make the differences really big.
+>
+> If we want to solve this problem, here are options that I can think of:
+>
+> a. Let userspace put the charges where they belong using the current
+>    mechanisms. ie. Create persistent entities in the persistent parent
+>    cgroup while there's no current instance.
+>
+>    Pro: It won't require any major kernel or interface changes. There still
+>    need to be some tweaking such as allowing tmpfs pages to be always
+>    charged to the cgroup which created the instance (maybe as long as it's
+>    an ancestor of the faulting cgroup?) but nothing too invasive.
+>
+>    Con: It may not be flexible enough.
+>
+> b. Let userspace specify which cgroup to charge for some of constructs like
+>    tmpfs and bpf maps. The key problems with this approach are
+>
+>    1. How to grant/deny what can be charged where. We must ensure that a
+>       descendant can't move charges up or across the tree without the
+>       ancestors allowing it.
+>
+>    2. How to specify the cgroup to charge. While specifying the target
+>       cgroup directly might seem like an obvious solution, it has a couple
+>       rather serious problems. First, if the descendant is inside a cgroup
+>       namespace, it might be able to see the target cgroup at all. Second,
+>       it's an interface which is likely to cause misunderstandings on how it
+>       can be used. It's too broad an interface.
+>
+>    One solution that I can think of is leveraging the resource domain
+>    concept which is currently only used for threaded cgroups. All memory
+>    usages of threaded cgroups are charged to their resource domain cgroup
+>    which hosts the processes for those threads. The persistent usages have a
+>    similar pattern, so maybe the service level cgroup can declare that it's
+>    the encompassing resource domain and the instance cgroup can say whether
+>    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
+>    resource domain.
+>
+>    This has the benefit that the user only needs to indicate its intention
+>    without worrying about how cgroups are composed and what their IDs are.
+>    It just indicates whether the given resource is persistent and if the
+>    cgroup hierarchy is set up for that, it gets charged that way and if not
+>    it can be just charged to itself.
+>
+>    This is a shower thought but, if we allow nesting such domains (and maybe
+>    name them), we can use it for shared resources too so that co-services
+>    are put inside a shared slice and shared resources are pushed to the
+>    slice level.
+>
+> This became pretty long. I obviously have a pretty strong bias towards
+> solving this within the current basic architecture but other than that most
+> of these decisions are best made by memcg folks. We can hopefully build some
+> consensus on the issue.
+>
+> Thanks.
+>
+> --
+> tejun
