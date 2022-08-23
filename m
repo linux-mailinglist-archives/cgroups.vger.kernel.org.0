@@ -2,122 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C47959CF51
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 05:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A359959CF5C
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 05:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbiHWDW6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 23:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        id S239988AbiHWDUJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 23:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbiHWDW5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 23:22:57 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C3E4E603
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 20:22:56 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c2so11681695plo.3
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 20:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=bNUjpvmBAwk/P6cxUtt2FxYhiH7UbJpC/KjVw1DvQyI=;
-        b=B7f2yea+67/amPKu9MkN+JDwqA7oNEV79q8FkfFvZ0xqT50fhXDcyeSXhgTlWBgy6w
-         9L4N/tzPn0fpr2+Kx7w49c/7NcH5ODp/W3ikw69fE5L1NqOLb+ud07nMnkppJqRJmMH2
-         rfuPCeEwa+8hQSBi6SA8NPyLNwZyugqOpEV1gk/EM5Hmgnlv3yj9oKA1H1T3PpMoScX+
-         ShAqm7m5uyQvgxz4B/dSPKNMx+maxPVijuQ3v+wIz8AL6opDzVy4u+LrkyJT+x42klPA
-         hWTCpak7q8y8Yo9PmvX9mazXRV4qwqYnh5ORzGo900NeIG2AVcNAvKMeW8go0OAAnRSo
-         T5UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=bNUjpvmBAwk/P6cxUtt2FxYhiH7UbJpC/KjVw1DvQyI=;
-        b=t8ZR2DDThOO6AxzgPY9wVmJwN8fJ12n1CqfkyeHb+gX2TYUgetBdLgstBK4BQOLekg
-         wA+xC4r9rChC+EZ8FtldNtBq3+dNZRJXgCcxeQDL86N3OkZzb7WzrMzo+/6/+69J2ION
-         +ODxFM/j8KUoAWDzX6sWpT4xlWoz2cJ7f98aq6/NukDhIwojN6OSS27c58MpbqLYdbdZ
-         4Ua6qylbMSYilMFuNXiQj+MnZkayCbd2sUtIcd/1mjkzfwgY2EPyHxMZN1HWYi+2iQPb
-         ZV/1aLmujnzvVKxDjTX1KX4DeUKWoPDwulGURAYaR4FiussxAVKoC5FYgT6ZtZUfxZjt
-         bktg==
-X-Gm-Message-State: ACgBeo1vCnJNslFcNTvFNk6xqNIxI0Dx1QqK6HdQNtJXKWHZapnXgC9G
-        TMDW7TPOCI/oPT1162UmmeU=
-X-Google-Smtp-Source: AA6agR7nqs9IG78dxMEZojNys8CtotzvEee3wNtQHEbGVahAu+CAno4zfBhecFldg5SKz8KQk2W4lQ==
-X-Received: by 2002:a17:90a:e7d0:b0:1f6:a38b:e0be with SMTP id kb16-20020a17090ae7d000b001f6a38be0bemr1330427pjb.100.1661224975354;
-        Mon, 22 Aug 2022 20:22:55 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:2dc2])
-        by smtp.gmail.com with ESMTPSA id y4-20020a170902864400b0016ecc7d5297sm2267765plt.292.2022.08.22.20.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Aug 2022 20:22:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 22 Aug 2022 17:22:53 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Chris Frey <cdfrey@foursquare.net>
-Cc:     cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: an argument for keeping oom_control in cgroups v2
-Message-ID: <YwRIDTmZJflhKP2n@slm.duckdns.org>
-References: <20220822120402.GA20333@foursquare.net>
+        with ESMTP id S239944AbiHWDUH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 23:20:07 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9157B4D140;
+        Mon, 22 Aug 2022 20:20:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MBZF14Tdrz6V2rm;
+        Tue, 23 Aug 2022 11:18:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+        by APP1 (Coremail) with SMTP id cCh0CgDXkO1fRwRj66O+Ag--.4888S4;
+        Tue, 23 Aug 2022 11:20:00 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     axboe@kernel.dk, tj@kernel.org, ming.lei@redhat.com,
+        mkoutny@suse.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, yukuai3@huawei.com,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com
+Subject: [PATCH v8 0/4] blk-throttle bugfix
+Date:   Tue, 23 Aug 2022 11:31:26 +0800
+Message-Id: <20220823033130.874230-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220822120402.GA20333@foursquare.net>
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDXkO1fRwRj66O+Ag--.4888S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WrW3tFWktFykAF1rCr15Jwb_yoW8tF4fpF
+        WSgr45Cr17urn7G3y3Ca1a9Fy5Kan5Xry5WwnxJw1rCF4q9ryUCwn29w45uFyIvrZ3K3yI
+        qrnIyFn2kryUZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        UdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-(cc'ing memcg folks for visiblity)
+From: Yu Kuai <yukuai3@huawei.com>
 
-On Mon, Aug 22, 2022 at 08:04:02AM -0400, Chris Frey wrote:
-> In cgroups v1 we had:
-> 
-> 	memory.soft_limit_in_bytes
-> 	memory.limit_in_bytes
-> 	memory.memsw.limit_in_bytes
-> 	memory.oom_control
-> 
-> Using these features, we could achieve:
-> 
-> 	- cause programs that were memory hungry to suffer performance, but
-> 	  not stop (soft limit)
-> 
-> 	- cause programs to swap before the system actually ran out of memory
-> 	  (limit)
-> 
-> 	- cause programs to be OOM-killed if they used too much swap
-> 	  (memsw.limit...)
-> 
-> 	- cause programs to halt instead of get killed (oom_control)
-> 
-> That last feature is something I haven't seen duplicated in the settings
-> for cgroups v2.  In terms of handling a truly non-malicious memory hungry
-> program, it is a feature that has no equal, because the user may require
-> time to free up memory elsewhere before allocating more to the program,
-> and he may not want the performance degredation, nor the loss of work,
-> that comes from the other options.
-> 
-> Is there a reason why it wasn't included in v2?  Is there hope that it will
-> come back?
+Changes in v8:
+ - use a new solution in patch 1
+ - move cleanups to a separate patchset
+ - rename bytes/io_skipped to carryover_bytes/ios in patch 4
+Changes in v7:
+ - add patch 5 to improve handling of re-entered bio for bps limit
+ - as suggested by Tejun, add some comments
+ - sdd some Acked tag by Tejun
+Changes in v6:
+ - rename parameter in patch 3
+ - add comments and reviewed tag for patch 4
+Changes in v5:
+ - add comments in patch 4
+ - clear bytes/io_skipped in throtl_start_new_slice_with_credit() in
+ patch 4
+ - and cleanup patches 5-8
+Changes in v4:
+ - add reviewed-by tag for patch 1
+ - add patch 2,3
+ - use a different way to fix io hung in patch 4
+Changes in v3:
+ - fix a check in patch 1
+ - fix link err in patch 2 on 32-bit platform
+ - handle overflow in patch 2
+Changes in v2:
+ - use a new solution suggested by Ming
+ - change the title of patch 1
+ - add patch 2
 
-memcg folks will have better answers but the short answer is that the kernel
-really doesn't like giving control of a task stuck with an arbitrary
-backtrace to userspace, and that kernel OOM detection often is way too late,
-so cgroup2 instead goes for enabling userspace-drive OOM detection and
-handling through PSI. The following doc has some information on it.
+Patch 1 fix that blk-throttle can't work if multiple bios are throttle.
+Patch 2 fix overflow while calculating wait time.
+Patch 3,4 fix io hung due to configuration updates.
 
- https://facebookmicrosites.github.io/resctl-demo-website/docs/demo_docs/res_protection/oomd-daemon
+Previous version:
+v1: https://lore.kernel.org/all/20220517134909.2910251-1-yukuai3@huawei.com/
+v2: https://lore.kernel.org/all/20220518072751.1188163-1-yukuai3@huawei.com/
+v3: https://lore.kernel.org/all/20220519085811.879097-1-yukuai3@huawei.com/
+v4: https://lore.kernel.org/all/20220523082633.2324980-1-yukuai3@huawei.com/
+v5: https://lore.kernel.org/all/20220528064330.3471000-1-yukuai3@huawei.com/
+v6: https://lore.kernel.org/all/20220701093441.885741-1-yukuai1@huaweicloud.com/
+v7: https://lore.kernel.org/all/20220802140415.2960284-1-yukuai1@huaweicloud.com/
+Yu Kuai (4):
+  blk-throttle: fix that io throttle can only work for single bio
+  blk-throttle: prevent overflow while calculating wait time
+  blk-throttle: factor out code to calculate ios/bytes_allowed
+  blk-throttle: fix io hung due to configuration updates
 
-FYI, systemd already has its own oomd implementation in systemd-oomd.
-
-Thanks.
+ block/bio.c               |   2 -
+ block/blk-merge.c         |   7 ++
+ block/blk-throttle.c      | 138 +++++++++++++++++++++++++++-----------
+ block/blk-throttle.h      |  15 ++++-
+ include/linux/bio.h       |   6 +-
+ include/linux/blk_types.h |   6 +-
+ 6 files changed, 125 insertions(+), 49 deletions(-)
 
 -- 
-tejun
+2.31.1
+
