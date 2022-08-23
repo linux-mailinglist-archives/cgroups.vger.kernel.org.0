@@ -2,125 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7417F59D254
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 09:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5308E59D718
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 11:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240440AbiHWHfN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 03:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        id S241375AbiHWJWP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 05:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240147AbiHWHfL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 03:35:11 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA4763F33;
-        Tue, 23 Aug 2022 00:35:10 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27N5PS1d019134;
-        Tue, 23 Aug 2022 07:34:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3d/ElBXcPYxKWyW49KyvVjAnEwq+qBCx+4YLXDcWY5k=;
- b=SaDJhOAG/4gQ0onXSxFKM92KFD5cJU3jtNBuWjvn4DFo87n6AM77r46kFw39bsFSQ8ai
- E9JDHh31e8YzMtCepEro/qOb88neXAtYAFOMXm/0HsZfPRfaVtWc++ztIcqpXiALHp1e
- 5QS8NFLtCCDILYcwluQnJERkJb5r9pcWJy85KRzM4qTt3JAsnUGdrAZCf+Vz/UZZlRRz
- sVljtmbkPISxsK+7XtLLznl2zglxSGhhTsoPjtfiBco/CXBoeH2kwA24cM88YK4pfE+J
- +A1DiBli75rgxkwScHDJiEpNu527ye6an99ivw2sABtOa1iDw+eU7O9AIFPtca+c3+DU 3A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3j4je3sp2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Aug 2022 07:34:47 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 27N7YkHc030663
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Aug 2022 07:34:46 GMT
-Received: from [10.216.34.138] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Tue, 23 Aug
- 2022 00:34:39 -0700
-Message-ID: <45e18c45-1c09-863a-65a0-3ae03ba4f859@quicinc.com>
-Date:   Tue, 23 Aug 2022 13:03:58 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH 1/1] cgroup: Fix race condition at rebind_subsystems()
-Content-Language: en-US
-To:     Jing-Ting Wu <Jing-Ting.Wu@mediatek.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        with ESMTP id S1350397AbiHWJVp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 05:21:45 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14D38C039;
+        Tue, 23 Aug 2022 01:34:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7A80020EFF;
+        Tue, 23 Aug 2022 08:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1661243617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JXhtiVs1Pea0+3tSyFvIt2OFwCvUnOkhvBpBR3hLHJ0=;
+        b=itIsnssHRKDHR9XCvqruAA80oSf8XNyabWsyTGumPDHDXGN9IEy42MmKzZi7rYCqRALpUy
+        anrc2/ssKuHRWVtuu0qrWAxP8cCFlfwjJKBTlxdsmpO0ESwlj3fToH3WoPcL+5pXSPOu2e
+        Jtss8aiqbHbTvHKhu+P2bl7GijmoUo0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E8B013A89;
+        Tue, 23 Aug 2022 08:33:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HnZcFuGQBGPeWAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 23 Aug 2022 08:33:37 +0000
+Date:   Tue, 23 Aug 2022 10:33:36 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <Jonathan.JMChen@mediatek.com>, <Lixiong.Liu@mediatek.com>,
-        <wsd_upstream@mediatek.com>, <Wenju.Xu@mediatek.com>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20220823054148.29346-1-Jing-Ting.Wu@mediatek.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20220823054148.29346-1-Jing-Ting.Wu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9J5LNFkzL4ueqBV8-ngLYs_wAa--4W4Q
-X-Proofpoint-GUID: 9J5LNFkzL4ueqBV8-ngLYs_wAa--4W4Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-23_03,2022-08-22_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 clxscore=1011 spamscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208230028
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
+Message-ID: <YwSQ4APOu/H7lYGL@dhcp22.suse.cz>
+References: <1660908562-17409-1-git-send-email-zhaoyang.huang@unisoc.com>
+ <Yv+6YjaGAv52yvq9@slm.duckdns.org>
+ <CALvZod7QdLSMdBoD2WztL72qS8kJe7F79JuCH6t19rRcw6Pn1w@mail.gmail.com>
+ <Yv/EArPDTcCrGqJh@slm.duckdns.org>
+ <YwNpI1ydy0yDnBH0@dhcp22.suse.cz>
+ <CAGWkznEB+R0YBaBFBL7dPqs8R=qKC6+ixTWEGCYy2PaczXkaPA@mail.gmail.com>
+ <YwRjyx6wFLk8WTDe@dhcp22.suse.cz>
+ <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue 23-08-22 14:03:04, Zhaoyang Huang wrote:
+> On Tue, Aug 23, 2022 at 1:21 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 23-08-22 10:31:57, Zhaoyang Huang wrote:
+[...]
+> > > I would like to quote the comments from google side for more details
+> > > which can also be observed from different vendors.
+> > > "Also be advised that when you enable memcg v2 you will be using
+> > > per-app memcg configuration which implies noticeable overhead because
+> > > every app will have its own group. For example pagefault path will
+> > > regress by about 15%. And obviously there will be some memory overhead
+> > > as well. That's the reason we don't enable them in Android by
+> > > default."
+> >
+> > This should be reported and investigated. Because per-application memcg
+> > vs. memcg in general shouldn't make much of a difference from the
+> > performance side. I can see a potential performance impact for no-memcg
+> > vs. memcg case but even then 15% is quite a lot.
+> Less efficiency on memory reclaim caused by multi-LRU should be one of
+> the reason, which has been proved by comparing per-app memcg on/off.
+> Besides, theoretically workingset could also broken as LRU is too
+> short to compose workingset.
 
+Do you have any data to back these claims? Is this something that could
+be handled on the configuration level? E.g. by applying low limit
+protection to keep the workingset in the memory?
 
-On 8/23/2022 11:11 AM, Jing-Ting Wu wrote:
-> Root cause:
-> The rebind_subsystems() is no lock held when move css object from A
-> list to B list,then let B's head be treated as css node at
-> list_for_each_entry_rcu().
-> 
-> Solution:
-> Add grace period before invalidating the removed rstat_css_node.
-> 
-> Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Suggested-by: Michal Koutný <mkoutny@suse.com>
-> Signed-off-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Tested-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Link: https://lore.kernel.org/linux-arm-kernel/d8f0bc5e2fb6ed259f9334c83279b4c011283c41.camel@mediatek.com/T/
-> ---
->   kernel/cgroup/cgroup.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index ffaccd6373f1..0d0c959966ed 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1820,6 +1820,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
->   
->   		if (ss->css_rstat_flush) {
->   			list_del_rcu(&css->rstat_css_node);
-> +			synchronize_rcu();
->   			list_add_rcu(&css->rstat_css_node,
->   				     &dcgrp->rstat_css_list);
->   		}
+> > > > My very vague understanding is that the Android system would like to
+> > > > freeze specific applications and for that it requires each application
+> > > > to live in its own cgroup. This clashes with a requirement to age and
+> > > > reclaim memory on a different granularity (aka no per process reclaim).
+> > > > So in fact something that cgroup v1 would achieve by having 2
+> > > > hierarchies, one for the freezer which would have a dedicated cgroup for
+> > > > each application and the other for the memory controller where tasks are
+> > > > grouped by a different criteria. This would rule out that a global (or
+> > > > any external memory pressure) reclaim would age LRUs that contain a mix
+> > > > bag of application pages rather than iterate over per-application LRUs.
+> > > > Is that understanding correct?
+> > > Correct, this is just our confusion. Besides, we believe that charge
+> > > the pages to implicit memory enabled parent control group doesn't make
+> > > sense as the memory cannot be managed at all.
+> >
+> > I do not get that part. The parent can manange and control the memory
+> > usage so how come it cannot be managed at all?
+> What I mean is the kind of parent which is enabled implicitly by
+> enabling on its sibling group like belowing hierarchy. Imagine that C
+> has no intention of memory control but has to be enabled as B would
+> have it. IMO, it doesn't make sense to charge C1's memory.current to C
+> until an explicitly echo "+memory" >  C/subtree_control.
+> A----B---B1
+>      \ C---C1
 
-Good catch.
+So let me just expand your example for clarity
 
-Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
+A.cgroup.controllers = memory
+A.cgroup.subtree_control = memory
 
--Mukesh
+A/B.cgroup.controllers = memory
+A/B.cgroup.subtree_control = memory
+A/B/B1.cgroup.controllers = memory
 
+A/C.cgroup.controllers = memory
+A/C.cgroup.subtree_control = ""
+A/C/C1.cgroup.controllers = ""
+
+Is your concern that C1 is charged to A/C or that you cannot actually make
+A/C.cgroup.controllers = "" because you want to maintain memory in A?
+Because that would be breaking the internal node constrain rule AFAICS.
+
+Or maybe you just really want a different hierarchy where
+A == root_cgroup and want the memory acocunted in B
+(root/B.cgroup.controllers = memory) but not in C (root/C.cgroup.controllers = "")?
+
+That would mean that C memory would be maintained on the global (root
+memcg) LRUs which is the only internal node which is allowed to have
+resources because it is special.
+-- 
+Michal Hocko
+SUSE Labs
