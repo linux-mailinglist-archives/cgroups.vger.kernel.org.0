@@ -2,36 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F85A59CCD9
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 02:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4F759CD5D
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 02:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238604AbiHWAI0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 20:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S239122AbiHWAqr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 20:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238677AbiHWAIZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 20:08:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C4EAE44;
-        Mon, 22 Aug 2022 17:08:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 58D6FB81992;
-        Tue, 23 Aug 2022 00:08:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36841C433D6;
-        Tue, 23 Aug 2022 00:08:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1661213301;
-        bh=ql3WhYwvtGyV0nnW4S8Tm+rGjMLwd8ee87bzIsZn2ms=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vRwnTZRxoiSrk0tZjUMMz0NWpy3KJjQW1Gzwl4s5BxfTEsZyNaPKh3ddH+egMSRAD
-         2sR4hnNN+xm0NXU8iGalWA3ooH8VIUWkt4psle8L7uIrU6rbO7bDLYXnhrZRLNscHk
-         bIFHQN8LlfFrHCUIGNFAHen8hRb613xJNDRLoVjU=
-Date:   Mon, 22 Aug 2022 17:08:19 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        with ESMTP id S239074AbiHWAqq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 20:46:46 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B7D4CA21
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 17:46:43 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id z18-20020a170903019200b00172dd6da065so3896775plg.14
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 17:46:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=+5ILiONNT2Raf8lvKVWoFP9Lx9r+QT/j1xkxXvfLAg4=;
+        b=o+XzIuiX0mVrmTljlwxKQE5BPa7fWhxeXonBF2ujsHDIIkmrP/BArjGG8vKGXZzxHZ
+         aGCyHZQGHV5fEhDCrdkCSs+rAYyXOsbuGhwIvEGUIpM+alq9pj57H5dboCmNEc09TK0z
+         c6heO/8eSor/4/h1izel8Myn9DtJfj72/a/q7U1fFyl1Dno74zfJPMJQRSCl7AkmFpA2
+         YVxX7c0VRywxlO0x4/jEhIDRhafho11s7qXBSJr3SCWVNdlEtnYGvZenzxKVAARYwX+f
+         oi9flWWlqVqqz3XGywpOOfYXa3KiMvQtqdVJT3SmOpYgrc6NAr9neqgsbzx2bpt4Hix/
+         1rNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=+5ILiONNT2Raf8lvKVWoFP9Lx9r+QT/j1xkxXvfLAg4=;
+        b=XYSX9LV/e44thvyl2g+FVyLIkYjS+IoFEwBArQzJewZgSho8VHATDdI+cbmoTYDUOp
+         KJYPxQcE3JLUrT4EmhvFUuXir6UYVl6RwcctPfuayKkU05IEXITVOBSWnDN0PgbEirwW
+         +hgd2FfEHpJKQ5wFDyS0g+6vsWqiYE6wAcpqooJlVQF371He6VEflIJH2yrIiQ1dPART
+         WM3xxE6dNxQbjstajp4V7AKpLpAPWikFu6q6QTHH8OypoEOVC3S8J34ONRzIo7OdDpt5
+         7Z1FzHVugTzUqC9qat1coClsZQL8f5GOMvf1L1nYQ3J/Z6ovCuhXBPNhzR5FP0AJhKGq
+         IhvQ==
+X-Gm-Message-State: ACgBeo1qVn1cgI2RYvFbvIfpP5jaET06jEZGNsO+7IcnKfQz1O+f5IYs
+        swy/cKw4wRD/OCn1MeRQtfwrmtnbOo1+dRtg
+X-Google-Smtp-Source: AA6agR7n4HaZkWJXrjZPxJF0LYP1shjmb62PXEmeLlBFj/2/BudXQckF9s5n2JZ4jSwiCza7N/CifAgyNs456d/H
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90b:4c8c:b0:1fa:c44f:473a with SMTP
+ id my12-20020a17090b4c8c00b001fac44f473amr840678pjb.195.1661215603362; Mon,
+ 22 Aug 2022 17:46:43 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 00:46:35 +0000
+Message-Id: <20220823004639.2387269-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
+Subject: [PATCH v7 0/4] KVM: mm: count KVM mmu usage in memory stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
@@ -43,46 +62,100 @@ Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
         Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Oliver Upton <oupton@google.com>, Huang@google.com,
-        Shaoqin <shaoqin.huang@intel.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>
+Cc:     Huang@google.com, Shaoqin <shaoqin.huang@intel.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count
- secondary page table uses.
-Message-Id: <20220822170819.60d888a5d3e23f40fd1b2e16@linux-foundation.org>
-In-Reply-To: <CAJD7tkYiVBsWfwQ6qZ3NVzW=3UPTAjSmR5aYgT2M3gk+5Hq0_Q@mail.gmail.com>
-References: <20220628220938.3657876-1-yosryahmed@google.com>
-        <20220628220938.3657876-2-yosryahmed@google.com>
-        <20220817102408.7b048f198a736f053ced2862@linux-foundation.org>
-        <CAJD7tkZQ07dZtcTSirj0qLawaE3Ndyn-385m_kL09=gsfO9QwA@mail.gmail.com>
-        <CAJD7tkYiVBsWfwQ6qZ3NVzW=3UPTAjSmR5aYgT2M3gk+5Hq0_Q@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 22 Aug 2022 17:04:57 -0700 Yosry Ahmed <yosryahmed@google.com> wrote:
+Add NR_SECONDARY_PAGETABLE memory stat and use it to account KVM mmu
+usage as the first type of accounted secondary page tables. This stat
+can be later extended to account for other types of secondary pages
+tables (e.g. iommu page tables).
 
-> > SecondaryPageTables is too long (unfortunately), it messes up the
-> > formatting in node_read_meminfo() and meminfo_proc_show(). I would
-> > prefer "secondary" as well, but I don't know if breaking the format in
-> > this way is okay.
-> 
-> Any thoughts here Andrew? Change to SecondaryPageTables anyway? Change
-> all to use "sec" instead of "secondary"? Leave as-is?
+Rationale behind why this is useful and link to extended discussion in
+the first patch.
 
-Leave as-is, I guess.  
+---
+
+Changes in V7:
+- Rebased on top of kvm/queue.
+- Fixed doc spaces in proc.rst (Sean).
+- Commit message s/kvm/KVM (Sean).
+- Example of NR_SECONDARY_PAGETABLE s/KVM shadow pagetables/KVM pagetables
+  (Sean).
+- Added comment that kvm_account_pgtable_pages() is thread-safe (Sean).
+- Collected Acks and Reviewed-by's from Sean and Marc (Thanks!).
+
+Changes in V6:
+- Rebased on top of kvm/queue and fixed conflicts.
+- Fixed docs spaces and tabs (Sean).
+- More narrative commit logs (Sean and Oliver).
+- Updated kvm_account_pgtable_pages() documentation to describe the
+  rules of using it more clearly (Sean).
+- Collected Acks and Reviewed-by's by Shakeel and Oliver (Thanks!)
+
+Changes in V5:
+- Updated cover letter to explain more the rationale behind the change
+  (Thanks to contributions by Sean Christopherson).
+- Removed extraneous + in arm64 patch (Oliver Upton, Marc Zyngier).
+- Shortened secondary_pagetables to sec_pagetables (Shakeel Butt).
+- Removed dependency on other patchsets (applies to queue branch).
+
+Changes in V4:
+- Changed accounting hooks in arm64 to only account s2 page tables and
+  refactored them to a much cleaner form, based on recommendations from
+  Oliver Upton and Marc Zyngier.
+- Dropped patches for mips and riscv. I am not interested in those archs
+  anyway and don't have the resources to test them. I posted them for
+  completeness but it doesn't seem like anyone was interested.
+
+Changes in V3:
+- Added NR_SECONDARY_PAGETABLE instead of piggybacking on NR_PAGETABLE
+  stats.
+
+Changes in V2:
+- Added accounting stats for other archs than x86.
+- Changed locations in the code where x86 KVM page table stats were
+  accounted based on suggestions from Sean Christopherson.
+
+---
+
+Yosry Ahmed (4):
+  mm: add NR_SECONDARY_PAGETABLE to count secondary page table uses.
+  KVM: mmu: add a helper to account memory used by KVM MMU.
+  KVM: x86/mmu: count KVM mmu usage in secondary pagetable stats.
+  KVM: arm64/mmu: count KVM s2 mmu usage in secondary pagetable stats
+
+ Documentation/admin-guide/cgroup-v2.rst |  5 ++++
+ Documentation/filesystems/proc.rst      |  4 +++
+ arch/arm64/kvm/mmu.c                    | 36 ++++++++++++++++++++++---
+ arch/x86/kvm/mmu/mmu.c                  | 16 +++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c              | 12 +++++++++
+ drivers/base/node.c                     |  2 ++
+ fs/proc/meminfo.c                       |  2 ++
+ include/linux/kvm_host.h                | 13 +++++++++
+ include/linux/mmzone.h                  |  1 +
+ mm/memcontrol.c                         |  1 +
+ mm/page_alloc.c                         |  6 ++++-
+ mm/vmstat.c                             |  1 +
+ 12 files changed, 92 insertions(+), 7 deletions(-)
+
+-- 
+2.37.1.595.g718a3a8f04-goog
+
