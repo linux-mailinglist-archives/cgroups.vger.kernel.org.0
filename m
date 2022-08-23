@@ -2,60 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFE259E32C
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 14:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70C559E37A
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 14:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239965AbiHWMSi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 08:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S241347AbiHWMWg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 08:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359737AbiHWMQS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 08:16:18 -0400
+        with ESMTP id S243684AbiHWMUI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 08:20:08 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3519926D;
-        Tue, 23 Aug 2022 02:41:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14213EF9D8;
+        Tue, 23 Aug 2022 02:42:52 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C3A5833B4A;
-        Tue, 23 Aug 2022 09:41:44 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5202D34299;
+        Tue, 23 Aug 2022 09:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661247704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1661247748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yRu5XT+5vnVozy2B9jrgC9j7gnP78QLLHJ2olzlomGw=;
-        b=NIFqyjZzrKwd1GfRkh8IWWX10l8YJnEFlnc7qU058Mtuw8PxMdfm/fmgYmPjvcNkYF5WiQ
-        /MJuoK1BuB3qpyiSQPcv4eLdWCy2MwvER9mc5Uy5RsveC1YlPxfJtaP7atIzPIxMJpFgWY
-        fOAwSXCJ5pTkKtr++8a6uZW6KGmogxI=
+        bh=a5e+aBtB4V09GgYckhU7qkp/jydUu2L/ktWuXDsvUUg=;
+        b=OKRFeR44shGwU0EljaE1Yk98KkScecHFvhrQ5yejUOssX5zl4uJX8SMi15/0k+AdOOx/Il
+        1MMu5RDHls3J7toCCAhfVHlseTgH3LpppxNutvATRuchyb5zxA1BYToFrVbXH0DgMKUqVQ
+        G28kJ+yPjCDh98TnptwlS13a3X6saZw=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A30913AB7;
-        Tue, 23 Aug 2022 09:41:44 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FA8313AB7;
+        Tue, 23 Aug 2022 09:42:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id IAuxINigBGOUeQAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 23 Aug 2022 09:41:44 +0000
-Date:   Tue, 23 Aug 2022 11:41:43 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, tj@kernel.org, ming.lei@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com
-Subject: Re: [PATCH v8 4/4] blk-throttle: fix io hung due to configuration
- updates
-Message-ID: <20220823094143.GA1729@blackbody.suse.cz>
-References: <20220823033130.874230-1-yukuai1@huaweicloud.com>
- <20220823033130.874230-5-yukuai1@huaweicloud.com>
+        id x1afDgShBGP9eQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 23 Aug 2022 09:42:28 +0000
+Date:   Tue, 23 Aug 2022 11:42:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Oliver Sang <oliver.sang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>, lkp@lists.01.org,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mm: page_counter: remove unneeded atomic ops for
+ low/min
+Message-ID: <YwShA6npuK0ZsjPI@dhcp22.suse.cz>
+References: <20220822001737.4120417-1-shakeelb@google.com>
+ <20220822001737.4120417-2-shakeelb@google.com>
+ <YwNSlZFPMgclrSCz@dhcp22.suse.cz>
+ <YwNX+vq9svMynVgW@dhcp22.suse.cz>
+ <CALvZod720nwfP68OM2QtyyWJpOV5aO8xF6iuN0U2hpX9Pzj8PA@mail.gmail.com>
+ <YwOeocdkF/lacpKn@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220823033130.874230-5-yukuai1@huaweicloud.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YwOeocdkF/lacpKn@dhcp22.suse.cz>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -65,20 +75,34 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
+On Mon 22-08-22 17:20:02, Michal Hocko wrote:
+> On Mon 22-08-22 07:55:58, Shakeel Butt wrote:
+> > On Mon, Aug 22, 2022 at 3:18 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > > Unless I have missed anything this shouldn't break the correctness but I
+> > > still have to think about the proportional distribution of the
+> > > protection because that adds to the complexity here.
+> > 
+> > The patch is not changing any semantics. It is just removing an
+> > unnecessary atomic xchg() for a specific scenario (min > 0 && min <
+> > usage). I don't think there will be any change related to proportional
+> > distribution of the protection.
+> 
+> Yes, I suspect you are right. I just remembered previous fixes
+> like 503970e42325 ("mm: memcontrol: fix memory.low proportional
+> distribution") which just made me nervous that this is a tricky area.
+> 
+> I will have another look tomorrow with a fresh brain and send an ack.
 
-On Tue, Aug 23, 2022 at 11:31:30AM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  block/blk-throttle.c | 58 +++++++++++++++++++++++++++++++++++++++-----
->  block/blk-throttle.h |  9 +++++++
->  2 files changed, 61 insertions(+), 6 deletions(-)
+I cannot spot any problem. But I guess it would be good to have a little
+comment to explain that races on the min_usage update (mentioned by Roman)
+are acceptable and savings from atomic update are preferred.
 
-I see v8 is just naming+comments [1] change, calculations remain, so it
-can have
-
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
-
-[1] I assume dropping of the overflow/signedness is intentional after
-previous debate.
-
+The worst case I can imagine would be something like uncharge 4kB racing
+with charge 2MB. The first reduces the protection (min_usage) while the other one
+misses that update and doesn't increase it. But even then the effect
+shouldn't be really large. At least I have hard time imagine this would
+throw things off too much.
+-- 
+Michal Hocko
+SUSE Labs
