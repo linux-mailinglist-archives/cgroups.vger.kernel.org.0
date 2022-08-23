@@ -2,82 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFB459EA2C
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 19:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9C159EA7E
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 20:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbiHWRsS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 13:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        id S233178AbiHWSEc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 14:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbiHWRrk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 13:47:40 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB83AE9EE
-        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 08:43:59 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id x19so13165532plc.5
-        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 08:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=WdZUWMe+w6NdkvEjJaHucwMuy21ym8cPJg6eP925ZQ0=;
-        b=UhhdlLKQ2gDM2vQTqxNR3H3P54QELCmTYoRtFWOv3E2w4om1CvRbYVwedRQTd+Afao
-         0qpcZIs3VEdxcpn3t4fBlWL3FsZsdeDru+azac3lUBr84uuKZTZ3mlZIQxwNYTEZ0+C3
-         8myH9iaSwznHp48212VmuEt2w9h9vxetHBO1SHhA4XfmymVTL5vD34Si4OZGaZxmyCXq
-         JZG25rmhvCeKVbiXdYQMg17r6Lw9PzEXpisKPi4dfNc9NyP3gXR5ayybTb+TbfD2MB3B
-         gYFlnt6Ovve7/HS9Ci6ZQe4S/dcIGq/iyuwy9Rlll8tcHQ8vwDqGYJC8Fdolad+HrDWr
-         CHFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=WdZUWMe+w6NdkvEjJaHucwMuy21ym8cPJg6eP925ZQ0=;
-        b=BEYWvBUqKTsP1Fc9Z+3dHHvnjVJ8ZdQut7VEWsOHlg0/8/Bh24wWDkoLPqU6OehwJm
-         TgyhXManwLVfuGT6OODKxwpFmQUHqmys1zD/uYhtLwqqmQOZeRyw7NzPmYgkdRV5kWIo
-         duVmodzj/S2pLEzro60h8NvwqQugQEcmYyVxcef0qxHcTywixqGbGqPspZ7pqFHv00f3
-         7j0H17uni5asg02ddnth7BPHAG5dsf0FLH64YKt50lPRVxUPv6S6BBs3ptms4eTz3t9B
-         GrjEXKSAR/XYavKUb88dYciO66GxMTlMISktlwDfp2rFMF994cwrxmZ0+OrLN6IJULMA
-         Yx2A==
-X-Gm-Message-State: ACgBeo2oZ+9cX/7PqYvHNaUUPejsQ7w0iRb+dsPTnVNse3tV2vuJfrq0
-        9sQ+Zyij76T9m4nipZH89e5Cwg==
-X-Google-Smtp-Source: AA6agR7OpXoJDkm2+4ZBvbYX/W5se8d30EMUB4Q5KliLBfi18pBw/Gf4DLXJmE2fUpqYnxLetm9FLg==
-X-Received: by 2002:a17:903:258f:b0:172:a6ac:1504 with SMTP id jb15-20020a170903258f00b00172a6ac1504mr24930414plb.60.1661269439249;
-        Tue, 23 Aug 2022 08:43:59 -0700 (PDT)
-Received: from [10.4.208.12] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id h16-20020a170902f55000b00172ad292b6bsm2148581plf.116.2022.08.23.08.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Aug 2022 08:43:58 -0700 (PDT)
-Message-ID: <a562ede6-262c-b31b-4c96-75a69c265c41@bytedance.com>
-Date:   Tue, 23 Aug 2022 23:43:51 +0800
+        with ESMTP id S233248AbiHWSEI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 14:04:08 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DF8B99C6
+        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 09:10:57 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 09:10:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1661271056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qlxaZaSbPuFAJAQmo0ckaf7Kb7p2BorSsDJez+m/eoE=;
+        b=J9YnRL0W8M84pc3H0HjPvYnR1NkEHKI4fQ80YSaSPLrwa5jf41S40YOYdw+wD6ywLUcj3e
+        E5cIimTUCD6vkRDK2wYktIeDPJFHHRxxTG36JatJBY/f80tEU7tujUSsr2/UvK7147Fs4w
+        S/OUrXqfNb8X9sfMmjaSY5vw7QV7cB4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Chris Frey <cdfrey@foursquare.net>,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: an argument for keeping oom_control in cgroups v2
+Message-ID: <YwT7/VFUTNmjarTh@P9FQF9L96D>
+References: <20220822120402.GA20333@foursquare.net>
+ <YwRIDTmZJflhKP2n@slm.duckdns.org>
+ <YwRgOcfagx4FfQcY@dhcp22.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.1.2
-Subject: Re: [PATCH v2 09/10] sched/psi: per-cgroup PSI stats
- disable/re-enable interface
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, corbet@lwn.net, surenb@google.com,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
-References: <20220808110341.15799-1-zhouchengming@bytedance.com>
- <20220808110341.15799-10-zhouchengming@bytedance.com>
- <YvKd6dezPM6UxfD/@slm.duckdns.org>
- <fcd0bd39-3049-a279-23e6-a6c02b4680a7@bytedance.com>
- <b89155d3-9315-fefc-408b-4cf538360a1c@bytedance.com>
- <YvPN07UlaPFAdlet@cmpxchg.org> <20220815132343.GA22640@blackbody.suse.cz>
- <9d1997a4-9278-07bd-7f57-952306b28b14@bytedance.com>
- <YwTz32VWuZeLHOHe@cmpxchg.org>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <YwTz32VWuZeLHOHe@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YwRgOcfagx4FfQcY@dhcp22.suse.cz>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,49 +51,68 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/8/23 23:35, Johannes Weiner wrote:
-> On Tue, Aug 23, 2022 at 02:18:21PM +0800, Chengming Zhou wrote:
->> On 2022/8/15 21:23, Michal Koutný wrote:
->>> On Wed, Aug 10, 2022 at 11:25:07AM -0400, Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>> cgroup.pressure.enable sounds good to me too. Or, because it's
->>>> default-enabled and that likely won't change, cgroup.pressure.disable.
->>>
->>> Will it not change?
->>>
->>> I'd say that user would be interested in particular level or even just
->>> level in subtree for PSI, so the opt-out may result in lots of explicit
->>> disablements (or even watch for cgroups created and disable PSI there)
->>> to get some performance back.
->>>
->>> I have two suggestions based on the above:
->>> 1) Make the default globally configurable (mount option?)
->>> 2) Allow implicit enablement upon trigger creation
->>>
->>
->> I think suggestion 1) make sense in some use case, like make per-cgroup
->> PSI disabled by default using a mount option, then enable using the
->> "cgroup.pressure" interface.
->>
->> But suggestion 2) auto enable upon trigger creation, if we hide the
->> {cpu,memory,io}.pressure files when disabled, how can we create trigger?
->>
->> Want to see what do Johannes and Tejun think about these suggestions?
+On Tue, Aug 23, 2022 at 07:06:01AM +0200, Michal Hocko wrote:
+> On Mon 22-08-22 17:22:53, Tejun Heo wrote:
+> > (cc'ing memcg folks for visiblity)
+> > 
+> > On Mon, Aug 22, 2022 at 08:04:02AM -0400, Chris Frey wrote:
+> > > In cgroups v1 we had:
+> > > 
+> > > 	memory.soft_limit_in_bytes
+> > > 	memory.limit_in_bytes
+> > > 	memory.memsw.limit_in_bytes
+> > > 	memory.oom_control
+> > > 
+> > > Using these features, we could achieve:
+> > > 
+> > > 	- cause programs that were memory hungry to suffer performance, but
+> > > 	  not stop (soft limit)
 > 
-> Re 1: I agree. If desired in the future we can make the default
-> configurable. Kconfig, mount option, what have you. cgroup.pressure
-> will work fine as a name regardless of what the default is.
+> There is memory.high with a much more sensible semantic and
+> implementation to achieve a similar thing.
 > 
-> Re 2: Not all consumers of the pressure metrics create trigger. I
-> would argue that few do. So it isn't the best signal to decide on
-> whether aggregation should occur. And yes, it's further complicated by
-> the triggers being written to the very pressure files. If we don't
-> hide them, we have to come up with another way to mark them as stale,
-> lest they confuse the heck out of users. Without breaking format...
+> > > 	- cause programs to swap before the system actually ran out of memory
+> > > 	  (limit)
 > 
-> So IMO, default-enable, "cgroup.pressure" as a name, and hiding the
-> pressure files should be good for now while allowing to make the
-> default configurable down the line.
+> Not sure what this is supposed to mean.
+> 
+> > > 	- cause programs to be OOM-killed if they used too much swap
+> > > 	  (memsw.limit...)
+> 
+> 
+> There is an explicit swap limit. It is true that the semantic is
+> different but do you have an example where you cannot really achieve
+> what you need by the swap limit?
+> 
+> > > 
+> > > 	- cause programs to halt instead of get killed (oom_control)
+> > > 
+> > > That last feature is something I haven't seen duplicated in the settings
+> > > for cgroups v2.  In terms of handling a truly non-malicious memory hungry
+> > > program, it is a feature that has no equal, because the user may require
+> > > time to free up memory elsewhere before allocating more to the program,
+> > > and he may not want the performance degredation, nor the loss of work,
+> > > that comes from the other options.
+> 
+> Yes this functionality is not available in v2 anymore. One reason is
+> that the implementation had to be considerably reduced to only block on
+> OOM for user space triggered page faults 3812c8c8f395 ("mm: memcg: do
+> not trap chargers with full callstack on OOM"). The primary reason is,
+> as Tejun indicated, that we cannot simply block a random kernel code
+> path and wait for userspace because that is a potential DoS on the rest
+> of the system and unrelated workloads which is a trivial breakage of
+> workload separation.
+> 
+> This means that many other kernel paths which can cause memcg OOM cannot
+> be blocked and so the feature is severly crippled. In order to allow for
+> this feature we would essentially need a safe place to wait for the
+> userspace for any allocation (charging) kernel path where no locks are
+> held yet allocation failure is not observed and that is not feasible.
 
-Agree, it's what we want for now. Thanks for your reply!
+Btw, it's fairly easy to emulate the oom_control behaviour using cgroups v2:
+a userspace agent can listen to memory.high/max events and use the cgroup v2
+freezer to stop the workload and handle the oom in v1 oom_control style.
+An agent can have a high/real-time priority, so I guess the behavior will be
+actually quite close to the v1 experience. Much safer though.
 
-
+Thanks!
