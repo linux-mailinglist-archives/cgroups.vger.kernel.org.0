@@ -2,63 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAFE59EC69
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 21:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E52C59EC7B
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 21:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbiHWTeU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 15:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
+        id S229868AbiHWTfi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 15:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbiHWTdx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 15:33:53 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13760137195
-        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 11:27:41 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id s36-20020a17090a69a700b001faad0a7a34so18038297pjj.4
-        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 11:27:41 -0700 (PDT)
+        with ESMTP id S232571AbiHWTfS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 15:35:18 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F525D11C0;
+        Tue, 23 Aug 2022 11:29:50 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g18so14791801pju.0;
+        Tue, 23 Aug 2022 11:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc;
-        bh=+WvRv1MoYZ7sQiK7t+GyZ70lGFaAzp9tw2tlccfkvmk=;
-        b=pCNYuN0qV52Vx7RAFA8Tjg3Hz2xw7hy2GFRZk03BroITwWpspQ7kVFl8GnZiNZYwj0
-         6C+RyprsHjGX+lB/VB448WO6TPXxcTCz8IQpmcewZ+5X7hrEH/mw/4vqw4BWqkDc6FwA
-         OnedAe+4BAqfBX66VcLX4VQ3mk0DDHXK62gsv2WXu76Rh1Vxd5BUkHkWob8uVYX3ss+s
-         2KrYSA6S9db5oVTTEotHhuRx3PgK4/XNXr5Jg90SB8QO5BDvINKA1Y6A+8/993IWlez2
-         qeWGAT7VZiCib09D/F47cQay89J7W8T/fmqFCYwj6jSnRGLYHKswyNcMxRfYb/lHcFJu
-         Pqlw==
+        bh=M2hrrnjzGGDhp1wkMOokst/GRD85/gv0Qg6iilAzV1k=;
+        b=OjUPGn/imFgBiDsB0U79V5mA/4F1MBgRH/FFpHAH17+hJjJ9TU77qiyIqRVdvYoWEs
+         d5YvATv2F4Gau8mbSWpVGGTnT2B7um/7W8T1oy1/jGX5eeZuWP/+DoZvBBvHgjp9BFf4
+         +mALYB5AniEaU/VKxwQTokaQ53CRRjVBzF3fgZrnHd61mlTngp77CF5APCB2Dk4mBOXQ
+         TXMVGfenVSXmsecWVzJadWfzXedN4zCGOf1mW4D2jBh2rQDmxnnaZ1uV9AlGuzUDa2UX
+         mNBjF0dBUhYpv7QyWYm5sACexkkec0CoP8EEWNoKyW6M+0Bbox0mwhXHWhpFCcF+yi9F
+         p1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=+WvRv1MoYZ7sQiK7t+GyZ70lGFaAzp9tw2tlccfkvmk=;
-        b=WJP8BHh5uDbCSOWmBAFtj5cPn96Cou/yRE/hSwApFwmscZPtcPdgshcdezha6Rx+m/
-         dn0q3QnhjaPtNyooXLFhkywCuW+ifqPitXZoZdCv0h2GHR017vl0qFYkgKr/heEhtuG8
-         cAfLjMLPvID0QZ/pQkj1pBKpr9ADoF49zvTAo/ifJti20oJ7tZmoaIi0//vtpVhT+msJ
-         +Cyva9zqhYMfL0Nn97/viEMZf04YN0Jvhi0cfzXRrcZyo7LE60yFlrKuh2cH67Y4QcJ5
-         cgyBvt8ImEv58HOMBYvONqUyaKtL1wQmYdvu0uxkK34w+ifriqDtjrGo5YdfsHpwK3ro
-         vDaA==
-X-Gm-Message-State: ACgBeo2yF0wTxEs2wGdU737x7rzR1yrzgBe2gUezv0dXmlqwoyqgnbTw
-        yQ/mGTDgd6H0PkxepqVUrRgwam8KzoU=
-X-Google-Smtp-Source: AA6agR5h2wRhzo6Q+mixovyI4lDL4caVETpTtrwMwCxWjqwxGi4KkWHgwqxPYazlI6g6Ki1NuJOeFw==
-X-Received: by 2002:a17:902:e548:b0:172:aafb:4927 with SMTP id n8-20020a170902e54800b00172aafb4927mr26251458plf.106.1661279260406;
-        Tue, 23 Aug 2022 11:27:40 -0700 (PDT)
+        bh=M2hrrnjzGGDhp1wkMOokst/GRD85/gv0Qg6iilAzV1k=;
+        b=h7aufdsVjrc9LIrrciHx2L6tDfjLVWfIOHREwfFiat2kw7aSZ4Jr9YYeP63XWl2Fpl
+         yN0gmO4ss7+IJWTFCTlLn7DrYMUt9waZtzxFEDPl4HLram3jc/ptgCoVAjjWYK+ccmWl
+         lBvQmX1Le12uuYtNbCgLEHBmQXlZZ5zdDPc9zJP8BWQbGX8SQM4p/9tHYzKk/hQNZ9d8
+         aNregQkIIjz7y/D2vLIx2XBSBPQjKdzMpfgqrE9O/USVoL2N4dbws4otK13udRA2RGVF
+         IIBJ3LPokpmus2A5lg0KXFNBWxyrHO+uHnjkw7ubmMyHN3APg2ORoBGpBNIeObiPpSem
+         ZOJA==
+X-Gm-Message-State: ACgBeo1INrzOq27CDmy/UOP0AlFoy9PMibBLKZlVaq1DPGy9nb8fDXGv
+        X76tafgRvUAggUu7sVuN68c=
+X-Google-Smtp-Source: AA6agR6JMAJOCfdI4pbVFUnHmJY1KLz1de8eJEeikNZ7laSIZGbfiw7LZErylHwPVRRgkEAyhhHGxA==
+X-Received: by 2002:a17:902:e890:b0:172:d3d6:16ec with SMTP id w16-20020a170902e89000b00172d3d616ecmr15499440plg.8.1661279390020;
+        Tue, 23 Aug 2022 11:29:50 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:90fa])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b00172bd7505e6sm9271326pln.12.2022.08.23.11.27.39
+        by smtp.gmail.com with ESMTPSA id f14-20020a65590e000000b00422c003cf78sm9615163pgu.82.2022.08.23.11.29.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Aug 2022 11:27:39 -0700 (PDT)
+        Tue, 23 Aug 2022 11:29:49 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 23 Aug 2022 08:27:38 -1000
+Date:   Tue, 23 Aug 2022 08:29:47 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: oomd with 6.0-rc1 has ridiculously high memory pressure stats wit
-Message-ID: <YwUcGvE/rhHEZ+KO@slm.duckdns.org>
-References: <d0df567c-1f6a-418d-8db7-3f777bd109c8@www.fastmail.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com
+Subject: Re: [PATCH 3/4] blk-throttle: cleanup tg_update_disptime()
+Message-ID: <YwUcm4CimyyOFlP9@slm.duckdns.org>
+References: <20220823013810.406075-1-yukuai1@huaweicloud.com>
+ <20220823013810.406075-4-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d0df567c-1f6a-418d-8db7-3f777bd109c8@www.fastmail.com>
+In-Reply-To: <20220823013810.406075-4-yukuai1@huaweicloud.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -70,30 +73,22 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-(cc'ing Johannes for visibility)
+On Tue, Aug 23, 2022 at 09:38:09AM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> tg_update_disptime() only need to adjust postion for 'tg' in
+> 'parent_sq', there is no need to call throtl_enqueue/dequeue_tg(),
+> since they will set/clear flag THROTL_TG_PENDING and increase/decrease
+> nr_pending, which is useless. By the way, clear the flag/decrease
+> nr_pending while there are still throttled bios is not good for debugging.
+> 
+> There are no functional changes.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-On Fri, Aug 19, 2022 at 10:51:27PM -0400, Chris Murphy wrote:
-> Hi,
-> 
-> Tracking a downstream bug in Fedora Rawhide testing, where 6.0-rc1 has landed, and we're seeing various GNOME components getting kllled off by systemd-oomd, with the stats showing suspiciously high values:
-> 
-> https://bugzilla.redhat.com/show_bug.cgi?id=2119518
-> 
-> e.g.
-> 
-> Killed /user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service due to memory pressure for /user.slice/user-1000.slice/user@1000.service being 27925460729.27% > 50.00% for > 20s with reclaim activity
-> 
-> I'm not seeing evidence of high memory pressure in /proc/pressure though, whereas oomd is reporting really high memory pressure and absolute time for it that makes no sense at all:
-> 
-> >>Sep 09 03:01:05 fedora systemd-oomd[604]:                 Pressure: Avg10: 1255260529528.42 Avg60: 325612.68 Avg300: 757127258245.62 Total: 2month 4w 2d 8h 15min 12s
-> 
-> It's been up for about 2 minutes at this point, not 3 months.
-> 
-> Thanks,
-> 
-> 
-> --
-> Chris Murphy Murphy
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
 
 -- 
 tejun
