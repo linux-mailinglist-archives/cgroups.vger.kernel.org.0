@@ -2,178 +2,206 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACC459CB20
-	for <lists+cgroups@lfdr.de>; Mon, 22 Aug 2022 23:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B229659CCC4
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 02:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237551AbiHVVxD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Aug 2022 17:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S238955AbiHWAFi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Aug 2022 20:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232277AbiHVVxC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 17:53:02 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5417552468
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 14:53:01 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id l26so4907057uai.2
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 14:53:01 -0700 (PDT)
+        with ESMTP id S238945AbiHWAFh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Aug 2022 20:05:37 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F1154CB1
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 17:05:35 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id d16so9786186wrr.3
+        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 17:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=2XNHoc9outJ6+FrRa+lvTbUCgpYDkDMEQnlx6lAVru4=;
-        b=DoxhsSzF4mkTjC/l5iKWrNX1D3FuMiXOo5jZExAuxkdIzhGio0bIYfEJEocLCor3Xw
-         dxzfOZYWeZ7PYceVCfCi5TaaZ43gQQUZ2xQqLIHKRl442YLxaNVd31DaYDp7/OQT21RW
-         IU9cUwfSViaxVMf79gY7HJHDLOnQsGFF/Ggf6uKrOHbKzALbxokg39jTp5Avl4lY7rOb
-         4rdtqNDeIzeBeM452bP2s5Bx0+Ak7hIX2pvDe+x01CVNNp2sb9wnTOVX/QvWPW3X4O10
-         rMuspP1afMN/Sp8mXaPAmdoPAyMgx77p5hQfV7sU2RUip9cqwS6yCx6fF6VgXJAUO8Q5
-         6nsA==
+        bh=qokcu5tCtpQLCQgO9pVTazHLwMpC9kMD5hOC340KS1I=;
+        b=jBPLk8bHlDLGIvGVE4zL26EtBtv9avfUdg557Lw4E+XzpuWZRA6yrM8jemnayVxmTu
+         HFUGMWr/PHR8LguRaK0GVi7w26Qnt3CxyVGcW0n7UF3R4pU31QDsJO6/jSpmu9xmtRvy
+         GHEx+99kDAzCMm28iwalvBDKvUcqcKRg/skmcRT/eIrUVHr5GG/kBpafDR+G5cad3XCs
+         SCh0iHzLtcfdouEA1DsVo0u8G4R8t2qE8/4a4DAj7CCMmsaTPR1R4XpS2cOFX5Kk+Ew+
+         PN7CoifI1ft5ccWK48IE5B74fHCM7d5LD91G37VfgpN9TcT7S+yGetYQj7xs0JO8WSdi
+         opgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=2XNHoc9outJ6+FrRa+lvTbUCgpYDkDMEQnlx6lAVru4=;
-        b=PVuOhbMf33sbnJ12vLlTDyWr0RoVxxkWYZKY4TNuw3eb50r7IKPkNEJCDychpWVRcP
-         VJhFzJIixYu/erqIG5pe3GveL1n6XhLkutThqCNPnH3ibTfU7GOC8yMrtz8CsaZOeSlC
-         mhMd9eewPBRApJ0gVJNzCD8D99/kXwuathLtk2AcM8R9ZZmonhN1lYnnDvLkK6Cg/NcC
-         Q8K9CWa4V/wX/KpS/4TIku8K49Tmx57/TYHWQyuLE23tFC8U+d8ukBQGvXESoBceoDAW
-         hrqzxUkykdqv6SeTN3yRArzFPeV/fQir2x5cqeBMQZ+IAe7l3BItnl1uDvvdS06bIG6i
-         NNLg==
-X-Gm-Message-State: ACgBeo3GyWEsZk9nkZIi1lg7SemBnYZlpytrQ+csyPA+gkYNBBNGhhJK
-        CucA5MXJkeiHs+Kg439N4F5WwDiqDSpNgqOUz1w+lQ==
-X-Google-Smtp-Source: AA6agR5qk2qbmqQpmyckbmBB/PpgF54yQcjMVlJIyWGkpldhgtRZPCmVOEm/t4a60iGO5IWUmBjGbCoLM+nu215XFUA=
-X-Received: by 2002:a9f:3641:0:b0:384:78e4:3b9d with SMTP id
- s1-20020a9f3641000000b0038478e43b9dmr8129139uad.90.1661205180349; Mon, 22 Aug
- 2022 14:53:00 -0700 (PDT)
+        bh=qokcu5tCtpQLCQgO9pVTazHLwMpC9kMD5hOC340KS1I=;
+        b=fUCdpTuSiejghSYFrVbFHJN6psDEi8myaiBSDkkpx8AELxNLwWSYYjNO0o602TFCFU
+         jTbMKxW0SOSarbBUiUJ1p7xRAdTSDnwAhC37rkxZEoFmdjlmmMmxA/prHhAXgDpcduUd
+         B2oaRDYCEOLwbftQEYWCCwQ+h/C+NxjK8gucrRYErWs+eKGMADUzPocSI8MuC2opsyKS
+         jtD/r10v7LLRqFnUmpCZIAeIzA0SWzqPNGOoMo0UKevOaHzb53UjIzMQmeUMUX7k7+96
+         7wvN/pow1Z3MbZ1Ru7yDnCMSttD+mIpkgjbAyZDPRJBXcR85U9FTCOQYuzsOsq7VVv9I
+         bVpA==
+X-Gm-Message-State: ACgBeo3705ycl/xQq9rxv2mB9j5UuQEx3tSzofeSMYVulql27avgAm/W
+        2rAxzR2KOMWd/Tl5/36IV4PFZQPGaFBHDr0o7DF5hw==
+X-Google-Smtp-Source: AA6agR5Lo8c+tVx21B5A2il5HGzGcfxxCY5VNzyOQ8xHSFF9B9ZhcgyTcMW2pafj/S8owJMHXTCJIeOP/v9Ei+X67uo=
+X-Received: by 2002:a05:6000:1188:b0:220:6c20:fbf6 with SMTP id
+ g8-20020a056000118800b002206c20fbf6mr12350055wrx.372.1661213133858; Mon, 22
+ Aug 2022 17:05:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
- <YwNold0GMOappUxc@slm.duckdns.org> <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
- <YwPy9hervVxfuuYE@cmpxchg.org>
-In-Reply-To: <YwPy9hervVxfuuYE@cmpxchg.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 22 Aug 2022 14:52:48 -0700
-Message-ID: <CAHS8izON5xo6GNmNAo_0121Hb=ikF7wjoh+44wU3M9Q2KOFdBg@mail.gmail.com>
-Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+References: <20220628220938.3657876-1-yosryahmed@google.com>
+ <20220628220938.3657876-2-yosryahmed@google.com> <20220817102408.7b048f198a736f053ced2862@linux-foundation.org>
+ <CAJD7tkZQ07dZtcTSirj0qLawaE3Ndyn-385m_kL09=gsfO9QwA@mail.gmail.com>
+In-Reply-To: <CAJD7tkZQ07dZtcTSirj0qLawaE3Ndyn-385m_kL09=gsfO9QwA@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 22 Aug 2022 17:04:57 -0700
+Message-ID: <CAJD7tkYiVBsWfwQ6qZ3NVzW=3UPTAjSmR5aYgT2M3gk+5Hq0_Q@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
+        Oliver Upton <oupton@google.com>, Huang@google.com,
+        Shaoqin <shaoqin.huang@intel.com>,
         Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Lennart Poettering <lennart@poettering.net>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 2:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Wed, Aug 17, 2022 at 3:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 >
-> On Mon, Aug 22, 2022 at 12:02:48PM -0700, Mina Almasry wrote:
-> > On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
-> > > b. Let userspace specify which cgroup to charge for some of constructs like
-> > >    tmpfs and bpf maps. The key problems with this approach are
+> On Wed, Aug 17, 2022 at 10:24 AM Andrew Morton
+> <akpm@linux-foundation.org> wrote:
+> >
+> > On Tue, 28 Jun 2022 22:09:35 +0000 Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > > We keep track of several kernel memory stats (total kernel memory, page
+> > > tables, stack, vmalloc, etc) on multiple levels (global, per-node,
+> > > per-memcg, etc). These stats give insights to users to how much memory
+> > > is used by the kernel and for what purposes.
 > > >
-> > >    1. How to grant/deny what can be charged where. We must ensure that a
-> > >       descendant can't move charges up or across the tree without the
-> > >       ancestors allowing it.
+> > > Currently, memory used by kvm mmu is not accounted in any of those
+> > > kernel memory stats. This patch series accounts the memory pages
+> > > used by KVM for page tables in those stats in a new
+> > > NR_SECONDARY_PAGETABLE stat. This stat can be later extended to account
+> > > for other types of secondary pages tables (e.g. iommu page tables).
 > > >
-> > >    2. How to specify the cgroup to charge. While specifying the target
-> > >       cgroup directly might seem like an obvious solution, it has a couple
-> > >       rather serious problems. First, if the descendant is inside a cgroup
-> > >       namespace, it might be able to see the target cgroup at all. Second,
-> > >       it's an interface which is likely to cause misunderstandings on how it
-> > >       can be used. It's too broad an interface.
+> > > KVM has a decent number of large allocations that aren't for page
+> > > tables, but for most of them, the number/size of those allocations
+> > > scales linearly with either the number of vCPUs or the amount of memory
+> > > assigned to the VM. KVM's secondary page table allocations do not scale
+> > > linearly, especially when nested virtualization is in use.
 > > >
-> >
-> > This is pretty much the solution I sent out for review about a year
-> > ago and yes, it suffers from the issues you've brought up:
-> > https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
-> >
-> >
-> > >    One solution that I can think of is leveraging the resource domain
-> > >    concept which is currently only used for threaded cgroups. All memory
-> > >    usages of threaded cgroups are charged to their resource domain cgroup
-> > >    which hosts the processes for those threads. The persistent usages have a
-> > >    similar pattern, so maybe the service level cgroup can declare that it's
-> > >    the encompassing resource domain and the instance cgroup can say whether
-> > >    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
-> > >    resource domain.
+> > > >From a KVM perspective, NR_SECONDARY_PAGETABLE will scale with KVM's
+> > > per-VM pages_{4k,2m,1g} stats unless the guest is doing something
+> > > bizarre (e.g. accessing only 4kb chunks of 2mb pages so that KVM is
+> > > forced to allocate a large number of page tables even though the guest
+> > > isn't accessing that much memory). However, someone would need to either
+> > > understand how KVM works to make that connection, or know (or be told) to
+> > > go look at KVM's stats if they're running VMs to better decipher the stats.
 > > >
+> > > Furthermore, having NR_PAGETABLE side-by-side with NR_SECONDARY_PAGETABLE
+> > > is informative. For example, when backing a VM with THP vs. HugeTLB,
+> > > NR_SECONDARY_PAGETABLE is roughly the same, but NR_PAGETABLE is an order
+> > > of magnitude higher with THP. So having this stat will at the very least
+> > > prove to be useful for understanding tradeoffs between VM backing types,
+> > > and likely even steer folks towards potential optimizations.
+> > >
+> > > The original discussion with more details about the rationale:
+> > > https://lore.kernel.org/all/87ilqoi77b.wl-maz@kernel.org
+> > >
+> > > This stat will be used by subsequent patches to count KVM mmu
+> > > memory usage.
 > >
-> > I think this sounds excellent and addresses our use cases. Basically
-> > the tmpfs/bpf memory would get charged to the encompassing resource
-> > domain cgroup rather than the instance cgroup, making the memory usage
-> > of the first and second+ instances consistent and predictable.
+> > Nits and triviata:
 > >
-> > Would love to hear from other memcg folks what they would think of
-> > such an approach. I would also love to hear what kind of interface you
-> > have in mind. Perhaps a cgroup tunable that says whether it's going to
-> > charge the tmpfs/bpf instance to itself or to the encompassing
-> > resource domain?
+> > > --- a/Documentation/filesystems/proc.rst
+> > > +++ b/Documentation/filesystems/proc.rst
+> > > @@ -977,6 +977,7 @@ Example output. You may not have all of these fields.
+> > >      SUnreclaim:       142336 kB
+> > >      KernelStack:       11168 kB
+> > >      PageTables:        20540 kB
+> > > +    SecPageTables:         0 kB
+> > >      NFS_Unstable:          0 kB
+> > >      Bounce:                0 kB
+> > >      WritebackTmp:          0 kB
+> > > @@ -1085,6 +1086,9 @@ KernelStack
+> > >                Memory consumed by the kernel stacks of all tasks
+> > >  PageTables
+> > >                Memory consumed by userspace page tables
+> > > +SecPageTables
+> > > +              Memory consumed by secondary page tables, this currently
+> > > +           currently includes KVM mmu allocations on x86 and arm64.
+> >
+> > Something happened to the whitespace there.
 >
-> I like this too. It makes shared charging predictable, with a coherent
-> resource hierarchy (congruent OOM, CPU, IO domains), and without the
-> need for cgroup paths in tmpfs mounts or similar.
+> Yeah I have the fix for this queued for v7. Thanks!
 >
-> As far as who is declaring what goes, though: if the instance groups
-> can declare arbitrary files/objects persistent or shared, they'd be
-> able to abuse this and sneak private memory past local limits and
-> burden the wider persistent/shared domain with it.
+> >
+> > > +                          "Node %d SecPageTables:  %8lu kB\n"
+> > > ...
+> > > +                          nid, K(node_page_state(pgdat, NR_SECONDARY_PAGETABLE)),
+> >
+> > The use of "sec" in the user-facing changes and "secondary" in the
+> > programmer-facing changes is irksome.  Can we be consistent?  I'd
+> > prefer "secondary" throughout.
+> >
 >
-> I'm thinking it might make more sense for the service level to declare
-> which objects are persistent and shared across instances.
+> SecondaryPageTables is too long (unfortunately), it messes up the
+> formatting in node_read_meminfo() and meminfo_proc_show(). I would
+> prefer "secondary" as well, but I don't know if breaking the format in
+> this way is okay.
+
+Any thoughts here Andrew? Change to SecondaryPageTables anyway? Change
+all to use "sec" instead of "secondary"? Leave as-is?
+
+
 >
-> If that's the case, we may not need a two-component interface. Just
-> the ability for an intermediate cgroup to say: "This object's future
-> memory is to be charged to me, not the instantiating cgroup."
+> This is what I mean by breaking the format btw (the numbers become misaligned):
 >
-> Can we require a process in the intermediate cgroup to set up the file
-> or object, and use madvise/fadvise to say "charge me", before any
-> instances are launched?
-
-I think doing this on a file granularity makes it logistically hard to
-use, no? The service needs to create a file in the shared domain and
-all its instances need to re-use this exact same file.
-
-Our kubernetes use case from [1] shares a mount between subtasks
-rather than specific files. This allows subtasks to create files at
-will in the mount with the memory charged to the shared domain. I
-imagine this is more convenient than a shared file.
-
-Our other use case, which I hope to address here as well, is a
-service-client relationship from [1] where the service would like to
-charge per-client memory back to the client itself. In this case the
-service or client can create a mount from the shared domain and pass
-it to the service at which point the service is free to create/remove
-files in this mount as it sees fit.
-
-Would you be open to a per-mount interface rather than a per-file
-fadvise interface?
-
-Yosry, would a proposal like so be extensible to address the bpf
-charging issues?
-
-[1] https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 5ad56a0cd593..4f85750a0f8e 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -433,7 +433,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+>                              "Node %d ShadowCallStack:%8lu kB\n"
+>  #endif
+>                              "Node %d PageTables:     %8lu kB\n"
+> -                            "Node %d SecPageTables:  %8lu kB\n"
+> +                            "Node %d SecondaryPageTables:  %8lu kB\n"
+>                              "Node %d NFS_Unstable:   %8lu kB\n"
+>                              "Node %d Bounce:         %8lu kB\n"
+>                              "Node %d WritebackTmp:   %8lu kB\n"
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 208efd4fa52c..b7166d09a38f 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -115,7 +115,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>  #endif
+>         show_val_kb(m, "PageTables:     ",
+>                     global_node_page_state(NR_PAGETABLE));
+> -       show_val_kb(m, "SecPageTables:  ",
+> +       show_val_kb(m, "SecondaryPageTables:    ",
+>                     global_node_page_state(NR_SECONDARY_PAGETABLE));
+>
+>         show_val_kb(m, "NFS_Unstable:   ", 0);
