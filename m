@@ -2,74 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0D059EC44
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 21:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAFE59EC69
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 21:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbiHWT0W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 15:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S232228AbiHWTeU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 15:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbiHWT0F (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 15:26:05 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF5813DBA4;
-        Tue, 23 Aug 2022 11:12:15 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id r14-20020a17090a4dce00b001faa76931beso18027129pjl.1;
-        Tue, 23 Aug 2022 11:12:15 -0700 (PDT)
+        with ESMTP id S231347AbiHWTdx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 15:33:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13760137195
+        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 11:27:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id s36-20020a17090a69a700b001faad0a7a34so18038297pjj.4
+        for <cgroups@vger.kernel.org>; Tue, 23 Aug 2022 11:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc;
-        bh=w6Y6IjnB/7GXBq23acV5syGhC64cBXwxU4OuyhZd8CQ=;
-        b=IaP7cFBpGcNi3/hhyxFebsnvxJsMy54QTl7EkiYLgJCebOU1/sY6ya+8Jj7s9gc5zJ
-         m96Jd0oUB9ii7t+kjHWa0AYbqnMm5HXw9j51y4fR0GTSjpmruV6mcpR1pH2bNOo7Eh9J
-         1+m93Urk2CcVD+dQQvvEOgbAJqBAErrzKbUqYPqCFKfnC9JQXmYBIYNVyoJZVAbB6LO2
-         5fvVxUuzhxJTX2ZCcqC78LL+jJzs7uc6dP6iwGIMRwK76xIIh3W8VDmSaT8p0QyXPYzZ
-         WxnHrnIHJWsGCnNde81/z4kR2sB4563gvDfugD+mJi4dvRasMOT9T+3eMQq+GiKhQ+Kp
-         xOkA==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=+WvRv1MoYZ7sQiK7t+GyZ70lGFaAzp9tw2tlccfkvmk=;
+        b=pCNYuN0qV52Vx7RAFA8Tjg3Hz2xw7hy2GFRZk03BroITwWpspQ7kVFl8GnZiNZYwj0
+         6C+RyprsHjGX+lB/VB448WO6TPXxcTCz8IQpmcewZ+5X7hrEH/mw/4vqw4BWqkDc6FwA
+         OnedAe+4BAqfBX66VcLX4VQ3mk0DDHXK62gsv2WXu76Rh1Vxd5BUkHkWob8uVYX3ss+s
+         2KrYSA6S9db5oVTTEotHhuRx3PgK4/XNXr5Jg90SB8QO5BDvINKA1Y6A+8/993IWlez2
+         qeWGAT7VZiCib09D/F47cQay89J7W8T/fmqFCYwj6jSnRGLYHKswyNcMxRfYb/lHcFJu
+         Pqlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc;
-        bh=w6Y6IjnB/7GXBq23acV5syGhC64cBXwxU4OuyhZd8CQ=;
-        b=bY7IFJWo7EOkjQAhMK4xYCvW/Fi12t7Wl7B5zuFElR4MXyNlSqrcrNCxry+TEVvLW/
-         MNrGKzJCd/NxPrwy1uZzN6Zez4KBNyor1WAxbIlqZxqrMvuAiI6I2pEmkGg6SYPZBkQC
-         +BEqSlDVH8YHoyzUNDCWp0i+fvFYlMZpl3NWI48E6YO6N5ck1qqPuh2iYb9rMAlo92kM
-         2Jq+PhrF3W9nBe4ca+72QGQR948pfGXbJceBvLuQWGQyH473CkhrMun4aSdFnaUzjQq/
-         MXiK3/UNaYWVsbMBrUP2wI7BsDZpz1TIquRYSbBrcg62FFDrBY8/PA0oHsxauor3X3+C
-         2IOQ==
-X-Gm-Message-State: ACgBeo2ML8rxxKuFNqRishtP5+5BMWieVKOAEDXTZe8kmtXxxJ5ajs+L
-        9p97UkG7Fxp+S7SLkKR/Svk=
-X-Google-Smtp-Source: AA6agR5OMzXPWSEia1ICuDVxlmd5kDRtjxcPzDjzeIQnJSzFFes7fZNXVlt3vyVCqQga04y7fD0YmQ==
-X-Received: by 2002:a17:902:d712:b0:172:e2f8:7f02 with SMTP id w18-20020a170902d71200b00172e2f87f02mr11541384ply.26.1661278334213;
-        Tue, 23 Aug 2022 11:12:14 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=+WvRv1MoYZ7sQiK7t+GyZ70lGFaAzp9tw2tlccfkvmk=;
+        b=WJP8BHh5uDbCSOWmBAFtj5cPn96Cou/yRE/hSwApFwmscZPtcPdgshcdezha6Rx+m/
+         dn0q3QnhjaPtNyooXLFhkywCuW+ifqPitXZoZdCv0h2GHR017vl0qFYkgKr/heEhtuG8
+         cAfLjMLPvID0QZ/pQkj1pBKpr9ADoF49zvTAo/ifJti20oJ7tZmoaIi0//vtpVhT+msJ
+         +Cyva9zqhYMfL0Nn97/viEMZf04YN0Jvhi0cfzXRrcZyo7LE60yFlrKuh2cH67Y4QcJ5
+         cgyBvt8ImEv58HOMBYvONqUyaKtL1wQmYdvu0uxkK34w+ifriqDtjrGo5YdfsHpwK3ro
+         vDaA==
+X-Gm-Message-State: ACgBeo2yF0wTxEs2wGdU737x7rzR1yrzgBe2gUezv0dXmlqwoyqgnbTw
+        yQ/mGTDgd6H0PkxepqVUrRgwam8KzoU=
+X-Google-Smtp-Source: AA6agR5h2wRhzo6Q+mixovyI4lDL4caVETpTtrwMwCxWjqwxGi4KkWHgwqxPYazlI6g6Ki1NuJOeFw==
+X-Received: by 2002:a17:902:e548:b0:172:aafb:4927 with SMTP id n8-20020a170902e54800b00172aafb4927mr26251458plf.106.1661279260406;
+        Tue, 23 Aug 2022 11:27:40 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:90fa])
-        by smtp.gmail.com with ESMTPSA id l9-20020a170902f68900b0016be96e07d1sm10712480plg.121.2022.08.23.11.12.13
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b00172bd7505e6sm9271326pln.12.2022.08.23.11.27.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Aug 2022 11:12:13 -0700 (PDT)
+        Tue, 23 Aug 2022 11:27:39 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 23 Aug 2022 08:12:12 -1000
+Date:   Tue, 23 Aug 2022 08:27:38 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Jing-Ting Wu <Jing-Ting.Wu@mediatek.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jonathan.JMChen@mediatek.com, Lixiong.Liu@mediatek.com,
-        wsd_upstream@mediatek.com, Wenju.Xu@mediatek.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/1] cgroup: Fix race condition at rebind_subsystems()
-Message-ID: <YwUYfNEVIOyQXP8d@slm.duckdns.org>
-References: <20220823054148.29346-1-Jing-Ting.Wu@mediatek.com>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: oomd with 6.0-rc1 has ridiculously high memory pressure stats wit
+Message-ID: <YwUcGvE/rhHEZ+KO@slm.duckdns.org>
+References: <d0df567c-1f6a-418d-8db7-3f777bd109c8@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220823054148.29346-1-Jing-Ting.Wu@mediatek.com>
+In-Reply-To: <d0df567c-1f6a-418d-8db7-3f777bd109c8@www.fastmail.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -81,24 +70,30 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 01:41:46PM +0800, Jing-Ting Wu wrote:
-> Root cause:
-> The rebind_subsystems() is no lock held when move css object from A
-> list to B list,then let B's head be treated as css node at
-> list_for_each_entry_rcu().
-> 
-> Solution:
-> Add grace period before invalidating the removed rstat_css_node.
-> 
-> Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Suggested-by: Michal Koutný <mkoutny@suse.com>
-> Signed-off-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Tested-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-> Link: https://lore.kernel.org/linux-arm-kernel/d8f0bc5e2fb6ed259f9334c83279b4c011283c41.camel@mediatek.com/T/
+(cc'ing Johannes for visibility)
 
-Applied to cgroup/for-6.0-fixes w/ stable tag added.
-
-Thanks.
+On Fri, Aug 19, 2022 at 10:51:27PM -0400, Chris Murphy wrote:
+> Hi,
+> 
+> Tracking a downstream bug in Fedora Rawhide testing, where 6.0-rc1 has landed, and we're seeing various GNOME components getting kllled off by systemd-oomd, with the stats showing suspiciously high values:
+> 
+> https://bugzilla.redhat.com/show_bug.cgi?id=2119518
+> 
+> e.g.
+> 
+> Killed /user.slice/user-1000.slice/user@1000.service/session.slice/org.gnome.Shell@wayland.service due to memory pressure for /user.slice/user-1000.slice/user@1000.service being 27925460729.27% > 50.00% for > 20s with reclaim activity
+> 
+> I'm not seeing evidence of high memory pressure in /proc/pressure though, whereas oomd is reporting really high memory pressure and absolute time for it that makes no sense at all:
+> 
+> >>Sep 09 03:01:05 fedora systemd-oomd[604]:                 Pressure: Avg10: 1255260529528.42 Avg60: 325612.68 Avg300: 757127258245.62 Total: 2month 4w 2d 8h 15min 12s
+> 
+> It's been up for about 2 minutes at this point, not 3 months.
+> 
+> Thanks,
+> 
+> 
+> --
+> Chris Murphy Murphy
 
 -- 
 tejun
