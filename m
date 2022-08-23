@@ -2,125 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FF059D04F
-	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 07:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5727C59D051
+	for <lists+cgroups@lfdr.de>; Tue, 23 Aug 2022 07:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbiHWFGI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 01:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        id S236517AbiHWFLT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 01:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236517AbiHWFGG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 01:06:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6ECD52FD5
-        for <cgroups@vger.kernel.org>; Mon, 22 Aug 2022 22:06:03 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0AC8533BAC;
-        Tue, 23 Aug 2022 05:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661231162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n13NAN9ffJ2MVaULyYx08l67c4Jvz9ioDGiOIBNWoTA=;
-        b=kV4cusk4xw/njZv0QPW2NMdhCsG/V77aYBeqmeW6P1+q8rM2Rd/aGS9Vqwrcub7DJK2QBR
-        DFE0caAsqwYmUCjtoNCTBFiJ80LY25e+Cj0vqwR20ImkMyeEaNymjdOJpkGJ3nrZcvnk4P
-        DCwR71kL2yF8tTBLIclCp4Nn+l3Y/Nw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0FF213AB7;
-        Tue, 23 Aug 2022 05:06:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yqOiNDlgBGNPDwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 23 Aug 2022 05:06:01 +0000
-Date:   Tue, 23 Aug 2022 07:06:01 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Chris Frey <cdfrey@foursquare.net>, cgroups@vger.kernel.org,
+        with ESMTP id S229811AbiHWFLT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 01:11:19 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED91BF7F;
+        Mon, 22 Aug 2022 22:11:13 -0700 (PDT)
+X-UUID: e23580cfd354418cb259c541853515fd-20220823
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ijokMmJKsT0+CBQ8Gdmv6lUHjb9/6ryw7rMwmSGnkVw=;
+        b=GByrc0r3KGPbaCEiHMyIryxylUl/rH/AF3p/EIBetbHVoteuc28GINy4DQQZhC3G2vtFfGpjEJ+1SbHZR1GNitPZLcOFZVjjvOA0V8hjwNaJS4C1FSSXg/ilHhI1NBN5o83jhC6g0jQfHM9dOU72A7+kJD5dJRLpoxhkAXvsodU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.10,REQID:90c676c6-7bd7-47ce-bdb3-a80e92190630,OB:0,L
+        OB:0,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Relea
+        se_Ham,ACTION:release,TS:95
+X-CID-INFO: VERSION:1.1.10,REQID:90c676c6-7bd7-47ce-bdb3-a80e92190630,OB:0,LOB
+        :0,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS
+        981B3D,ACTION:quarantine,TS:95
+X-CID-META: VersionHash:84eae18,CLOUDID:69ca0168-a9d9-4672-a3c8-12721739a220,C
+        OID:973335c3ec86,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: e23580cfd354418cb259c541853515fd-20220823
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <jing-ting.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 498602566; Tue, 23 Aug 2022 13:11:08 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Tue, 23 Aug 2022 13:11:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Tue, 23 Aug 2022 13:11:06 +0800
+From:   Jing-Ting Wu <Jing-Ting.Wu@mediatek.com>
+To:     =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: an argument for keeping oom_control in cgroups v2
-Message-ID: <YwRgOcfagx4FfQcY@dhcp22.suse.cz>
-References: <20220822120402.GA20333@foursquare.net>
- <YwRIDTmZJflhKP2n@slm.duckdns.org>
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <Jonathan.JMChen@mediatek.com>, <Lixiong.Liu@mediatek.com>,
+        <wsd_upstream@mediatek.com>, <Wenju.Xu@mediatek.com>,
+        Jing-Ting Wu <Jing-Ting.Wu@mediatek.com>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 1/1] cgroup: Fix race condition at rebind_subsystems()
+Date:   Tue, 23 Aug 2022 13:09:41 +0800
+Message-ID: <20220823050943.28619-1-Jing-Ting.Wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YwRIDTmZJflhKP2n@slm.duckdns.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-MTK:  N
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 22-08-22 17:22:53, Tejun Heo wrote:
-> (cc'ing memcg folks for visiblity)
-> 
-> On Mon, Aug 22, 2022 at 08:04:02AM -0400, Chris Frey wrote:
-> > In cgroups v1 we had:
-> > 
-> > 	memory.soft_limit_in_bytes
-> > 	memory.limit_in_bytes
-> > 	memory.memsw.limit_in_bytes
-> > 	memory.oom_control
-> > 
-> > Using these features, we could achieve:
-> > 
-> > 	- cause programs that were memory hungry to suffer performance, but
-> > 	  not stop (soft limit)
+Root cause:
+The rebind_subsystems() is no lock held when move css object from A
+list to B list,then let B's head be treated as css node at
+list_for_each_entry_rcu().
 
-There is memory.high with a much more sensible semantic and
-implementation to achieve a similar thing.
+Solution:
+Add grace period before invalidating the removed rstat_css_node.
 
-> > 	- cause programs to swap before the system actually ran out of memory
-> > 	  (limit)
+Suggested-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Jing-Ting Wu <Jing-Ting.Wu@mediatek.com>
+---
+ kernel/cgroup/cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Not sure what this is supposed to mean.
-
-> > 	- cause programs to be OOM-killed if they used too much swap
-> > 	  (memsw.limit...)
-
-
-There is an explicit swap limit. It is true that the semantic is
-different but do you have an example where you cannot really achieve
-what you need by the swap limit?
-
-> > 
-> > 	- cause programs to halt instead of get killed (oom_control)
-> > 
-> > That last feature is something I haven't seen duplicated in the settings
-> > for cgroups v2.  In terms of handling a truly non-malicious memory hungry
-> > program, it is a feature that has no equal, because the user may require
-> > time to free up memory elsewhere before allocating more to the program,
-> > and he may not want the performance degredation, nor the loss of work,
-> > that comes from the other options.
-
-Yes this functionality is not available in v2 anymore. One reason is
-that the implementation had to be considerably reduced to only block on
-OOM for user space triggered page faults 3812c8c8f395 ("mm: memcg: do
-not trap chargers with full callstack on OOM"). The primary reason is,
-as Tejun indicated, that we cannot simply block a random kernel code
-path and wait for userspace because that is a potential DoS on the rest
-of the system and unrelated workloads which is a trivial breakage of
-workload separation.
-
-This means that many other kernel paths which can cause memcg OOM cannot
-be blocked and so the feature is severly crippled. In order to allow for
-this feature we would essentially need a safe place to wait for the
-userspace for any allocation (charging) kernel path where no locks are
-held yet allocation failure is not observed and that is not feasible.
-
-Hope this helps clarify
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ffaccd6373f1..0d0c959966ed 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1820,6 +1820,7 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 
+ 		if (ss->css_rstat_flush) {
+ 			list_del_rcu(&css->rstat_css_node);
++			synchronize_rcu();
+ 			list_add_rcu(&css->rstat_css_node,
+ 				     &dcgrp->rstat_css_list);
+ 		}
 -- 
-Michal Hocko
-SUSE Labs
+2.18.0
+
