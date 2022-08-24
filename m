@@ -2,277 +2,194 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5BA59F8E7
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 13:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D27059FC2B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 15:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236684AbiHXL60 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 07:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        id S238468AbiHXNrh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 09:47:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236618AbiHXL60 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 07:58:26 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935D589CCC;
-        Wed, 24 Aug 2022 04:58:24 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id p6so16895529vsr.9;
-        Wed, 24 Aug 2022 04:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Eox6EyQ1Oerj12qBsic5JiOxegll7gmv6Zzm6c/Jyw4=;
-        b=M4voFZgYS9F3LD2hkQaN5T2ZO6XvIYvX8aD7IWHMYrWvgy9X+IZ1+b24FiiHTGp0iO
-         09OLureDLYgwqvF0pBUd44qKGt0QIg/KEJVV1bzsf9krXXM+rfAcBFCS8OS/9VaMIIpY
-         wiGEHTyCeUffTzGCBZU+RSPKSRbnu6ShJN0zow1uVMZ9u4C8Mb/1ML0CaZoi8LKarT3w
-         KTGAfN4qMnMAiPw0GDoE3+SqBk7YhsdTBE/yeE9wLH1maHH3/bMpv7hRTiZ+yYDP7jyr
-         h4SjxbRmAGHf5LzrXg6UN13lmVdqCk+NOUManYQe2YiWc+xBh7YD7J/HB0qk42/4Ii4P
-         QZCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Eox6EyQ1Oerj12qBsic5JiOxegll7gmv6Zzm6c/Jyw4=;
-        b=LRIDHcG6k68kMCkEyOHZduXJGLiGf1b+ScFDLXln2mz0Uyylu7iRmTm4XJF8RM2X8U
-         tpQBPVNa13bS33g1+iv9hWLiL0ZELlY7Un1nmJ7dts2Akcr9U78Pnt5ngdxVDrqIPuy+
-         baQcyfbF2K2g+kTIf6mWDU4V781wC/Nb/kSQPwT/f5B8nU8qfLd0GRNb1ZTC9RRm33ZZ
-         MPXKpuZ7yBIswh+ynKnqNt4NGoNG3LdiNP5KpFfSBRcracxtAjr8dchFFKDnRRSUin3u
-         0N6IjXzhoNcsdYuSTX+dboCfstZPLCJHGkDUAGDVSRDPuBRgId9PWpXQy6yayl7LJeO5
-         4E9w==
-X-Gm-Message-State: ACgBeo2VDH9gK4RCe9IzzHcY0Xx3+aMmKc8wXPaTQ34ShgcTiYEFOQbc
-        IfzfjYx5/3BOeEpqZVcguS8BgCCRw/n8eEsihi0=
-X-Google-Smtp-Source: AA6agR7xBfn6UIZbUCryOVkxZndxMBgcxW/JTAvTJJmgW76VTWpIu17AhLHr0i5T5TrPaWmUy54YwxPQYU4VfMI60Tk=
-X-Received: by 2002:a67:b40a:0:b0:390:37f4:ba23 with SMTP id
- x10-20020a67b40a000000b0039037f4ba23mr8775071vsl.22.1661342303647; Wed, 24
- Aug 2022 04:58:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
- <YwNold0GMOappUxc@slm.duckdns.org> <CALOAHbBTR-07La=-KPehFab0WDY4V6LovXbrhLXOqKDurHD-9g@mail.gmail.com>
- <YwUKZWXbqzfy0w4o@slm.duckdns.org>
-In-Reply-To: <YwUKZWXbqzfy0w4o@slm.duckdns.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 24 Aug 2022 19:57:44 +0800
-Message-ID: <CALOAHbArQ=TdgiYnpBh-2OEKpFhnYAeAUbBaGV7FSfsaVb46tg@mail.gmail.com>
-Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        with ESMTP id S238647AbiHXNqg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 09:46:36 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2045.outbound.protection.outlook.com [40.107.22.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E49E9836D;
+        Wed, 24 Aug 2022 06:42:49 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
+ b=PxvFaIPDf/9QJVoja447Oxf+Fce0XALcMjRtkQa+i+AhYgRwQgN1b+fgBNUbxnRu+PLUftIvwlSaZY7B2FRQyoQaiUVuPjoJGmnAb2mjHs8wPx/XqiulF5IpyBBjQd5CFwV2uEQq1yLjYx5EPHB7unMwU2GNpV/GPeacUS5bAQuqm7O223WObYc2cukvOI/fegj1jGMby8dWt+IsTHVgSYuzJ3kFBpQa/e2bdMJ0ZFJUVzATegUtaGWgofZ/UOrAumT7ZzCi0bbSTxlgsxvzh/J98nGxatvzujiHse4GbRCKw7CWSV71g8d6jH12JZioh2h+gRBli4vVm5ZpAYSOPg==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M8QO4NfCRvPIxHD4KoVawSEO35sm00qw6iLvrhxKuD8=;
+ b=Ut80eTtUX2SkDxDF+0yLCqtRnXfkWXJgCAxwsHPZvctKksPEQ6fSu6w8gKjKvX2FHPt7SnLsEAVECUfI8bqttPPb/3DE1CvLss5ah8UEzlQ/6zUcFWlDkUhO6QWQP3iuRk+JU0p5xeQK2PqUrMLonD2Yc3Yr9SzuNHYS4p6te+hVV1ABLjWhuL0dOq2CpA2pJ95thDv203iEPozr7w3PDhtp0u/PvOlM/WybUdxpWPAhjN7ALxMWZn4vi3SuB3BdIROY8p0ePIfUH0EhPmWsgJIyKitT5KgSj1ifnbA2YOZsAklpDaCtz5U3yO98i51wGZc5jtm4h512k5EzMUe88A==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
+ 63.35.35.123) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=arm.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
+ dkim=pass (signature was verified) header.d=armh.onmicrosoft.com; arc=pass (0
+ oda=1 ltdi=1 spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
+ dmarc=[1,1,header.from=arm.com])
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M8QO4NfCRvPIxHD4KoVawSEO35sm00qw6iLvrhxKuD8=;
+ b=2Dnu/yQaOPnMvsog7c+Q5GKZuzvmuIUdZMsEOklil0M49jnr7hazZ9kZnsP7oItBXvjxEXVvb8r5Thxm6oNGXAu/83ZlvJ+3c6GA7rR52eLKpzq0LjU8r2NFhcZ85/ksWwmXKXUrE7EQNoVN0o1TKrTUr2/3fNu8WHN8NmnU8ZA=
+Received: from AS9PR04CA0171.eurprd04.prod.outlook.com (2603:10a6:20b:530::11)
+ by DB7PR08MB3036.eurprd08.prod.outlook.com (2603:10a6:5:18::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.17; Wed, 24 Aug
+ 2022 13:42:30 +0000
+Received: from VE1EUR03FT056.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:530:cafe::b1) by AS9PR04CA0171.outlook.office365.com
+ (2603:10a6:20b:530::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15 via Frontend
+ Transport; Wed, 24 Aug 2022 13:42:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ VE1EUR03FT056.mail.protection.outlook.com (10.152.19.28) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5566.15 via Frontend Transport; Wed, 24 Aug 2022 13:42:29 +0000
+Received: ("Tessian outbound fa99bf31ee7d:v123"); Wed, 24 Aug 2022 13:42:29 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: dda6bddcba923024
+X-CR-MTA-TID: 64aa7808
+Received: from 300ff34e6f6d.1
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 407FC9D3-4CAB-45A9-82A6-AE6267AA466D.1;
+        Wed, 24 Aug 2022 13:42:17 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 300ff34e6f6d.1
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Wed, 24 Aug 2022 13:42:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KCGvbLCJO1HYa//Uuwn9sHn2nmfE6J5xmWtxR602Ep6YMbW90XrsocBdcoCIQ/0NLh2Mp4U8YgfKrQF5G8HWR5Tx4dS1B7pyZy2b7pOnGbqYKbZx3KeNdKMj24E05AxU+di6CgaFRTm/3mQvE9pzjfFcEY6h/ruin/fR0AAwH8eDAA8nnhQtdqhCRlaNe9JhexvStFXO0bpcvnsaU50XFeifwG9htdYr00Ek6CrRV8D7xyY04GFqyJ08v/ERKpplL3/xXga9Q8SgidUIbG/HhGQxI4WNoXEtGRpJOtpb+689I5dU86Kfr3s4LMnNcRGHlxdlyppkuccg8ypu06Q0sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M8QO4NfCRvPIxHD4KoVawSEO35sm00qw6iLvrhxKuD8=;
+ b=H4AnQMuRSbIx9LnhL7ut8SfpoPLW/NoK5UUW/x3ASWTslBYmy9BYpRpQql66cJ5ryRnDOm96c3Lsyxr5x+yNUYQanpSyrflOonOJObi4VhhCOfFxrcyjl/DWMRCCe/zeeQEU67Rh0AEr8LYis176fSwRbJOsrD+6y9O/uDDWSOfFqYINJs3oNNvTuOqdE2rjMM8xEa2Se0hFTq4feYs1kUWy248AYWmPNsiHUmwNrw8/YVIsSgqLkdWqUmkuJevMOpUoQ62PrxqThP3ErXtl1EA3/6xctc5irR/mT8j7WYqQp2yXNOMpeg9i6H9R5Rmactf/b/opVrodrHfM6lonGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M8QO4NfCRvPIxHD4KoVawSEO35sm00qw6iLvrhxKuD8=;
+ b=2Dnu/yQaOPnMvsog7c+Q5GKZuzvmuIUdZMsEOklil0M49jnr7hazZ9kZnsP7oItBXvjxEXVvb8r5Thxm6oNGXAu/83ZlvJ+3c6GA7rR52eLKpzq0LjU8r2NFhcZ85/ksWwmXKXUrE7EQNoVN0o1TKrTUr2/3fNu8WHN8NmnU8ZA=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from AS8PR08MB6995.eurprd08.prod.outlook.com (2603:10a6:20b:34d::13)
+ by VE1PR08MB5278.eurprd08.prod.outlook.com (2603:10a6:803:10b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.18; Wed, 24 Aug
+ 2022 13:42:14 +0000
+Received: from AS8PR08MB6995.eurprd08.prod.outlook.com
+ ([fe80::bc0f:339f:d2d4:e559]) by AS8PR08MB6995.eurprd08.prod.outlook.com
+ ([fe80::bc0f:339f:d2d4:e559%4]) with mapi id 15.20.5546.024; Wed, 24 Aug 2022
+ 13:42:14 +0000
+Message-ID: <5ac13c91-0e42-533b-42d0-c78573c7aef3@arm.com>
+Date:   Wed, 24 Aug 2022 14:41:49 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.1.2
+From:   Ryan Roberts <ryan.roberts@arm.com>
+Subject: Re: [PATCH v7 1/4] mm: add NR_SECONDARY_PAGETABLE to count secondary
+ page table uses.
+To:     Yosry Ahmed <yosryahmed@google.com>, Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Lennart Poettering <lennart@poettering.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Oliver Upton <oupton@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huang@google.com, Shaoqin <shaoqin.huang@intel.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        nd@arm.com
+References: <20220823004639.2387269-1-yosryahmed@google.com>
+ <20220823004639.2387269-2-yosryahmed@google.com>
+Content-Language: en-US
+In-Reply-To: <20220823004639.2387269-2-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0089.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:190::22) To AS8PR08MB6995.eurprd08.prod.outlook.com
+ (2603:10a6:20b:34d::13)
+MIME-Version: 1.0
+X-MS-Office365-Filtering-Correlation-Id: a08f522d-b099-4572-81fd-08da85d67d56
+X-MS-TrafficTypeDiagnostic: VE1PR08MB5278:EE_|VE1EUR03FT056:EE_|DB7PR08MB3036:EE_
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: 5QaZrytaEGdys57g+8iflDV5L5qmJhs+bsBtHXx6faGJY9MlfHx7VAjFExNpVneFzjuw4Gr3CQ7FUY4ilWY33jxG5Mz34lx5fij4v/Ggv3yus5xJU1/XrL7QgmibIxBslLPocKP6aN7/Un5xKFuOIxo1bPlJqzttTd9CwOQ6hh31oFYLy2DtTLH9eJkRDwH2946XtXRCHbhQCiUoflvKxdhmpF6OMqwC0CFL8vCkFLm++3ZXHge6oGfltOuxDRKQuZtY7FUYyrxgyacr+J5c2boIwLDYW5LK7+HML8rTm8VaISSblrSuw2TXVn5686SFGrH5gt6G29twI6TLPJhRG3XoOgtZ1rsDdrUl3QyrmFXNE2PXflXMrg3DCt+uNkEU/RiX7/CmPeNjid0X+lsEiYLX5FOfXAfIOUvuPy5r8PJ83cZdasxFA9nYN3LM8C34/KgpkJt88NeoPIq9Z7kjscTdcn2b92NtUVtBd/V+6txeaEmkkGNDDtFaX9sAC+eIdtc6rfH5p0HTpB0OA9sRZfTS0ajmasKff4A1RCx2N/k0N9jnmEkti4O0bH/xe/W4qeeDAfa7XISz8WdKIDhMHlp9s0ydRb+rKy7o1tsovY3PKNuvswuOGbcomBv2FWgMkU7/NFIXY1julYD4ZbFkNc2wC7kfV4pha5WH0e681ojq8ZAK1oVB0R1AsHl7XlR6gVdRiOqeLXFeiAnz2u7sJKgpNtec0Ex35ZjfuXpjAWiRu7IrYFPbXvqiJ2+k7OcWgKVEcA7hJusMAb7T+7Cg/Lq1JLQQBVGJxQJb3q4mX3S2JHOyTlnQaXzkpgJ2oV/y
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR08MB6995.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(39860400002)(366004)(376002)(136003)(31696002)(86362001)(186003)(2616005)(921005)(83380400001)(38100700002)(8936002)(7416002)(5660300002)(66476007)(4326008)(31686004)(66556008)(8676002)(2906002)(4744005)(44832011)(36756003)(6486002)(6666004)(478600001)(41300700001)(316002)(110136005)(26005)(66946007)(6506007)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR08MB5278
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT056.eop-EUR03.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs: ca70c4cd-609a-4ad6-2d7f-08da85d673c7
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZO+wi4xNL9Zu2BdOyd1h3IC38ynp2vkIiFqJfmPBMqFUPnL92IxMz7Ew1uXYGKtTyf1o2Yuj0mbFhvot0qgbouq313Qsa8I/ltUqjXW6Shn5tsVuVK1/iVa4x7bD6LZpmh8s+xRfJpYf3Tmf/UmfLw8tcZ94oJIpiKy+AZYd57bBYByQN9/OVD+qklWE8nmH0IZVuIHs9I2msfLSD23gtUtYXOQfwNpp3IbUlzpBMq4ql5hDy5DYOcDkNnxC5SUHX1fK2uo/v2Vg4r06TXKYTBFABzVcWxFaGmesllkKD3N6EIjpi/eJCDCA5sVmUPToC+XTL7l7+jd/BiFs1c47Z+VbcM8TwuI+nkWWaELY33eRvYZopBfctfC4ermykUACQakIFi1g2IjD7cnFc+KtlMFxMNwbML3oG9PMb+B0aIm/7+1+4NuW/V9SpoRLfkqWHbLvUcBFGme43o2bZ9i/zEAJnZP4bR+sG2uUM5uusurYWw5l5Xey754gkt4NN/bFgp2Wgiuj/rqEzSu6dVzpqU2pZjY8tLWqmIFXflmMnb1EJU1tyQ26LAz/nPZ/1mqddfcy+ukmeZrSvSen4lR7AKELpJWQ1EhaxqlqVhMNIYcTOru2EsmDl6D5Bi6qW30talEDWHPPOTo+Xe6xbQpsVNpaeK6kLEd88k85vhgMpWKMwLMu/eIsSulk6pD8LOPkMns4qAV3ki3q0BBgNVV+sc1ZKvYbtswR07OfEhLG2rEmbBP2e3Qeo2xl78PrBeN9M+QgYNYynT7FnVeuJ95duy+WQfLkSTgb4mTJnbTiWPeXxLuVpdsJRJQUG6mK4MaE
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(136003)(39860400002)(346002)(40470700004)(36840700001)(46966006)(40480700001)(6666004)(186003)(31686004)(6512007)(8936002)(4744005)(2616005)(6506007)(47076005)(6486002)(336012)(478600001)(36756003)(26005)(41300700001)(5660300002)(44832011)(86362001)(31696002)(81166007)(356005)(83380400001)(8676002)(70586007)(82740400003)(2906002)(110136005)(82310400005)(40460700003)(36860700001)(921005)(450100002)(70206006)(4326008)(316002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2022 13:42:29.6931
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a08f522d-b099-4572-81fd-08da85d67d56
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT056.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR08MB3036
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 1:12 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Aug 23, 2022 at 07:08:17PM +0800, Yafang Shao wrote:
-> > On Mon, Aug 22, 2022 at 7:29 PM Tejun Heo <tj@kernel.org> wrote:
-> > > [1] Can this be solved by layering the instance cgroups under persistent
-> > >     entity cgroup?
-> >
-> > Below is some background of kubernetes.
-> > In kubernetes, a pod is organized as follows,
-> >
-> >                pod
-> >                |- Container
-> >                |- Container
-> >
-> > IOW, it is a two-layer unit, or a two-layer instance.
-> > The cgroup dir of the pod is named with a UUID assigned by kubernetes-apiserver.
-> > Once the old pod is destroyed (that can happen when the user wants to
-> > update their service), the new pod will have a different UUID.
-> > That said, different instances will have different cgroup dir.
-> >
-> > If we want to introduce a  persistent entity cgroup, we have to make
-> > it a three-layer unit.
-> >
-> >            persistent-entity
-> >            |- pod
-> >                  |- Container
-> >                  |- Container
-> >
-> > There will be some issues,
-> > 1.  The kuber-apiserver must maintain the persistent-entity on each host.
-> >      It needs a great refactor and the compatibility is also a problem
-> > per my discussion with kubernetes experts.
->
-> This is gonna be true for anybody. The basic strategy here should be
-> defining a clear boundary between system agent and applications so that
-> individual applications, even when they build their own subhierarchy
-> internally, aren't affected by system level hierarchy configuration changes.
-> systemd is already like that with clear delegation boundary. Our (fb)
-> container management is like that too. So, while this requires some
-> reorganization from the agent side, things like this don't create huge
-> backward compatbility issues involving applications. I have no idea about
-> k8s, so the situation may differ but in the long term at least, it'd be a
-> good idea to build in similar conceptual separation even if it stays with
-> cgroup1.
->
-> > 2.  How to do the monitor?
-> >      If there's only one pod under this persistent-entity, we can
-> > easily get the memory size of  shared resources by:
-> >          Sizeof(shared-resources) = Sizeof(persistent-entity) - Sizeof(pod)
-> >     But what if it has N pods and N is dynamically changed ?
->
-> There should only be one live pod instance inside the pod's persistent
-> cgroup, so the calculation doesn't really change.
->
-> > 3.  What if it has more than one shared resource?
-> >      For example, pod-foo has two shared resources A and B, pod-bar
-> > has two shared resources A and C, and another pod has two shared
-> > resources B and C.
-> >      How to deploy them?
-> >      Pls, note that we can introduce multiple-layer persistent-entity,
-> > but which one should be the parent ?
-> >
-> > So from my perspective, it is almost impossible.
->
-> Yeah, this is a different problem and cgroup has never been good at tracking
-> resources shared across multiple groups. There is always tension between
-> overhead, complexity and accuracy and the tradeoff re. resource sharing has
-> almost always been towards the former two.
->
-> Naming specific resources and designating them as being shared and
-> accounting them commonly somehow does make sense as an approach as we get to
-> avoid the biggest headaches (e.g. how to split a page cache page?) and maybe
-> it can even be claimed that a lot of use cases which may want cross-group
-> sharing can be sufficiently served by such approach.
->
-> That said, it still has to be balanced against other factors. For example,
-> memory pressure caused by the shared resources should affect all
-> participants in the sharing group in terms of both memory and IO, which
-> means that they'll have to stay within a nested subtree structure. This does
-> restrict overlapping partial sharing that you described above but the goal
-> is finding a reasonable tradeoff, so something has to give.
->
-> > > b. Memory is disassociated rather than just reparented on cgroup destruction
-> > >    and get re-charged to the next first user. This is attractive in that it
-> > >    doesn't require any userspace changes; however, I'm not sure how this
-> > >    would work for non-pageable memory usages such as bpf maps. How would we
-> > >    detect the next first usage?
-> > >
-> >
-> > JFYI, There is a reuse path for the bpf map, see my previous RFC[1].
-> > [1] https://lore.kernel.org/bpf/20220619155032.32515-1-laoar.shao@gmail.com/
->
-> I'm not a big fan of explicit recharging. It's too hairy to use requiring
-> mixing system level hierarchy configuration knoweldge with in-application
-> resource handling. There should be clear isolation between the two. This is
-> also what leads to namespace and visibility issues. Ideally, these should be
-> handled by structuring the resource hierarchay correctly from the get-go.
->
-> ...
-> > > b. Let userspace specify which cgroup to charge for some of constructs like
-> > >    tmpfs and bpf maps. The key problems with this approach are
-> > >
-> > >    1. How to grant/deny what can be charged where. We must ensure that a
-> > >       descendant can't move charges up or across the tree without the
-> > >       ancestors allowing it.
-> > >
-> >
-> > We can add restrictions to check which memcg can be selected
-> > (regarding the selectable memcg).
-> > But I think it may be too early to do the restrictions, as only the
-> > privileged user can set it.
-> > It is the sys admin's responsbility to select a proper memcg.
-> > That said, the selectable memcg is not going south.
->
-> I generally tend towards shaping interfaces more carefully. We can of course
-> add a do-whatever-you-want interface and declare that it's for root only but
-> even that becomes complicated with things like userns as we're finding out
-> in different areas, but again, nothing is free and approaches like that
-> often bring more longterm headaches than the problems they solve.
->
-> > >    2. How to specify the cgroup to charge. While specifying the target
-> > >       cgroup directly might seem like an obvious solution, it has a couple
-> > >       rather serious problems. First, if the descendant is inside a cgroup
-> > >       namespace, it might be able to see the target cgroup at all.
-> >
-> > It is not a problem. Just sharing our practice below.
-> > $ docker run -tid --privileged    \
-> >                       --mount
-> > type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf    \
-> >                       --mount
-> > type=bind,source=/sys/fs/cgroup/memory/bpf,target=/bpf-memcg    \
-> >                       docker-image
-> >
-> > The bind-mount can make it work.
->
-> Not mount namespace. cgroup namespace which is used to isolate the cgroup
-> subtree that's visible to each container. Please take a look at
-> cgroup_namespaces(7).
->
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index e7aafc82be99..898c99eae8e4 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -982,6 +982,7 @@ Example output. You may not have all of these fields.
+>       SUnreclaim:       142336 kB
+>       KernelStack:       11168 kB
+>       PageTables:        20540 kB
+> +    SecPageTables:         0 kB
+>       NFS_Unstable:          0 kB
+>       Bounce:                0 kB
+>       WritebackTmp:          0 kB
+> @@ -1090,6 +1091,9 @@ KernelStack
+>                 Memory consumed by the kernel stacks of all tasks
+>   PageTables
+>                 Memory consumed by userspace page tables
+> +SecPageTables
+> +              Memory consumed by secondary page tables, this currently
+> +              currently includes KVM mmu allocations on x86 and arm64.
 
-IIUC, we can get the target cgroup with a relative path if cgroup
-namespace is enabled, for example ../bpf, right ?
-(If not, then I think we can extend it.)
+nit: I think you have a typo here: "currently currently".
 
-> > >  Second,
-> > >       it's an interface which is likely to cause misunderstandings on how it
-> > >       can be used. It's too broad an interface.
-> > >
-> >
-> > As I said above, we just need some restrictions or guidance if that is
-> > desired now.
->
-> I'm really unlikely to go down that path because as I said before I believe
-> that that's a road to long term headaches and already creates immediate
-> problems in terms of how it'd interact with other resources. No matter what
-> approach we may choose, it has to work with the existing resource hierarchy.
-
-Unfortunately,  the bpf map has already broken and is still breaking
-the existing resource hierarchy.
-What I'm doing is to improve or even fix this breakage.
-
-The reason I say it is breaking the existing resource hierarchy is
-that the bpf map is improperly treated as a process while it is really
-a shared resource.
-
-A bpf-map can be written by processes running in other memcgs, but the
-memory allocated caused by the writing won't be charged to the
-writer's memcg, but will be charged to bpf-map's memcg.
-
-That's why I try to convey to you that what I'm trying to fix is a bpf
-specific issue.
-
-> Otherwise, we end up in a situation where we have to split accounting and
-> control of other controllers too which makes little sense for non-memory
-> controllers (not that it's great for memory in the first place).
->
-
-If the resource hierarchy is what you concern, then I think it can be
-addressed with below addition change,
-
-if (cgroup_is_not_ancestor(cgrp))
-    return -EINVAL;
-
--- 
-Regards
-Yafang
+Thanks,
+Ryan
