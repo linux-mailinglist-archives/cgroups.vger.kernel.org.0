@@ -2,74 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CEC59F4A2
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 09:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD3459F4E7
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 10:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbiHXH71 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 03:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
+        id S235613AbiHXITn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 04:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbiHXH71 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 03:59:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B0D857ED;
-        Wed, 24 Aug 2022 00:59:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E1FC033C7A;
-        Wed, 24 Aug 2022 07:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661327964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V++k96zrKA+x4VrYQcjFRU0h85hnHFbQNXixpGjkrsQ=;
-        b=IqZinnwQdu40DfoRGPFhFDObyG6y9HuBHOxzDQz57qkA5Ptk+105F7+HjvDaP6nShBO1X8
-        78rRkHWteb/XdLdQX3NVO23OP1069frkqE96ClKy5FpdehLuOfo3Bh6L/ioROo3k8bQ/iz
-        9IWCjnsbujxefljz69XX4KKm/cME1x0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C43DC13AC0;
-        Wed, 24 Aug 2022 07:59:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yI+aLVzaBWO2WQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 24 Aug 2022 07:59:24 +0000
-Date:   Wed, 24 Aug 2022 09:59:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
-Message-ID: <YwXaXHRhy51xH4rk@dhcp22.suse.cz>
-References: <CALvZod7QdLSMdBoD2WztL72qS8kJe7F79JuCH6t19rRcw6Pn1w@mail.gmail.com>
- <Yv/EArPDTcCrGqJh@slm.duckdns.org>
- <YwNpI1ydy0yDnBH0@dhcp22.suse.cz>
- <CAGWkznEB+R0YBaBFBL7dPqs8R=qKC6+ixTWEGCYy2PaczXkaPA@mail.gmail.com>
- <YwRjyx6wFLk8WTDe@dhcp22.suse.cz>
- <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
- <YwSQ4APOu/H7lYGL@dhcp22.suse.cz>
- <CAGWkznGd6mgareABseMKY5p0f1=5dkfVkj=NS7_B6OkXBYSwyw@mail.gmail.com>
- <YwS/S9Sd1OWnT81Q@dhcp22.suse.cz>
- <CAJuCfpH+T9+eOVYDfOv9yNSfAvq=pJtMp4ZaoYaM7iMY9XkaUw@mail.gmail.com>
+        with ESMTP id S234996AbiHXITl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 04:19:41 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E602B8A1F8
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 01:19:39 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c13-20020a17090a4d0d00b001fb6921b42aso788577pjg.2
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 01:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=sIwNmqerjqaiTdP/9SuVUBFcXcyvJnbToq4VHqojaB8=;
+        b=Om+ippFq5VDjfampfj8skRptXpd8NK2EmMp93WkO1WFM2P+9cmvM50W9OIQ8PYKZ3Z
+         V7YaOExX88F5cnsKw+Yx6nnJ1spX+YL2qWPVeXJyCeECldNQm/Yy9dajP8ZBfunV0mZT
+         VKAK8TXVEQs6Bso6BAxV40s72baz1S0t1fRI77xf4iTajYadAHra4Z6LEo6mexc/KEVH
+         TZ7EcwSaIQtHsiCvDWxTC6jHbBxc8LbvGRrhqGsgCDqPIHrTyUhZpFm2DX48W6DSAFxL
+         NsRG6zAsn4cyfoRZjvWKOHogMQwNFHla7+6OrD+EXHdzhEuSDeoOqq+igUU8PuC2KTTV
+         SmgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=sIwNmqerjqaiTdP/9SuVUBFcXcyvJnbToq4VHqojaB8=;
+        b=FqXzCQmaHiFrcnDAjFXBeN6oPpIFq5gM70C6VLN5MQ2qkiQkiGGs03w1JHDKbstktT
+         q0jLYPkf5QXUlEY/3XcwV2/nTXQjyQFIey8Z92mLW3UzxPcUhmlHL+TexGBhfgWcx6j5
+         84k2eteVBGRlW5uckKu8tBBvYXeyj+ZSldAsPg54bi+Csq4rhuGW+nMJr3iddrdhFKOd
+         xEVk1E/QiSMl0bpByy84by9SCvO/kiL5r+OC6wWwq327oFeWAa7T50BL3sOsD0Hah/5L
+         BEdzPMaOQzTgZfJURvY/U2sdkE27DcdtJMl0o8x5K3O3tBdlvtaT5XMjpNM26Jpjbp9Z
+         quKw==
+X-Gm-Message-State: ACgBeo0k4+xe5zFe+a3cOZAPTmcJH91YHnxT2XtdlH5lC0L5xDVdCpN5
+        hLmBaY2jb2qAv+KZXiflJLAAXg==
+X-Google-Smtp-Source: AA6agR4NpnRl7tswuvOVEEShny7ZGZFjiBpQFwhiy6DYHpH87TljkmO6cvTMvAAr/laPHWUTA38cbA==
+X-Received: by 2002:a17:90a:e7ce:b0:1fb:3f8b:95ee with SMTP id kb14-20020a17090ae7ce00b001fb3f8b95eemr7301543pjb.110.1661329179179;
+        Wed, 24 Aug 2022 01:19:39 -0700 (PDT)
+Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id q31-20020a635c1f000000b00421841943dfsm10486587pgb.12.2022.08.24.01.19.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 01:19:38 -0700 (PDT)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+        surenb@google.com
+Cc:     gregkh@linuxfoundation.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, songmuchun@bytedance.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH v3 00/10] sched/psi: some optimization and extension
+Date:   Wed, 24 Aug 2022 16:18:19 +0800
+Message-Id: <20220824081829.33748-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpH+T9+eOVYDfOv9yNSfAvq=pJtMp4ZaoYaM7iMY9XkaUw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,106 +71,100 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 23-08-22 09:21:16, Suren Baghdasaryan wrote:
-> On Tue, Aug 23, 2022 at 4:51 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 23-08-22 17:20:59, Zhaoyang Huang wrote:
-> > > On Tue, Aug 23, 2022 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Tue 23-08-22 14:03:04, Zhaoyang Huang wrote:
-> > > > > On Tue, Aug 23, 2022 at 1:21 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > >
-> > > > > > On Tue 23-08-22 10:31:57, Zhaoyang Huang wrote:
-> > > > [...]
-> > > > > > > I would like to quote the comments from google side for more details
-> > > > > > > which can also be observed from different vendors.
-> > > > > > > "Also be advised that when you enable memcg v2 you will be using
-> > > > > > > per-app memcg configuration which implies noticeable overhead because
-> > > > > > > every app will have its own group. For example pagefault path will
-> > > > > > > regress by about 15%. And obviously there will be some memory overhead
-> > > > > > > as well. That's the reason we don't enable them in Android by
-> > > > > > > default."
-> > > > > >
-> > > > > > This should be reported and investigated. Because per-application memcg
-> > > > > > vs. memcg in general shouldn't make much of a difference from the
-> > > > > > performance side. I can see a potential performance impact for no-memcg
-> > > > > > vs. memcg case but even then 15% is quite a lot.
-> > > > > Less efficiency on memory reclaim caused by multi-LRU should be one of
-> > > > > the reason, which has been proved by comparing per-app memcg on/off.
-> > > > > Besides, theoretically workingset could also broken as LRU is too
-> > > > > short to compose workingset.
-> > > >
-> > > > Do you have any data to back these claims? Is this something that could
-> > > > be handled on the configuration level? E.g. by applying low limit
-> > > > protection to keep the workingset in the memory?
-> > > I don't think so. IMO, workingset works when there are pages evicted
-> > > from LRU and then refault which provide refault distance for pages.
-> > > Applying memcg's protection will have all LRU out of evicted which
-> > > make the mechanism fail.
-> >
-> > It is really hard to help you out without any actual data. The idea was
-> > though to use the low limit protection to adaptively configure
-> > respective memcgs to reduce refaults. You already have data about
-> > refaults ready so increasing the limit for often refaulting memcgs would
-> > reduce the trashing.
-> 
-> Sorry for joining late.
-> A couple years ago I tested root-memcg vs per-app memcg configurations
-> on an Android phone. Here is a snapshot from my findings:
-> 
-> Problem
-> =======
-> We see tangible increase in major faults and workingset refaults when
-> transitioning from root-only memory cgroup to per-application cgroups
-> on Android.
-> 
-> Test results
-> ============
-> Results while running memory-demanding workload:
-> root memcg     per-app memcg     delta
-> workingset_refault 1771228 3874281 +118.73%
-> workingset_nodereclaim 4543 13928 +206.58%
-> pgpgin 13319208 20618944 +54.81%
-> pgpgout 1739552 3080664 +77.1%
-> pgpgoutclean 2616571 4805755 +83.67%
-> pswpin 359211 3918716 +990.92%
-> pswpout 1082238 5697463 +426.45%
-> pgfree 28978393 32531010 +12.26%
-> pgactivate 2586562 8731113 +237.56%
-> pgdeactivate 3811074 11670051 +206.21%
-> pgfault 38692510 46096963 +19.14%
-> pgmajfault 441288 4100020 +829.1%
-> pgrefill 4590451 12768165 +178.15%
-> 
-> Results while running application cycle test (20 apps, 20 cycles):
-> root memcg     per-app memcg     delta
-> workingset_refault 10634691 11429223 +7.47%
-> workingset_nodereclaim 37477 59033 +57.52%
-> pgpgin 70662840 69569516 -1.55%
-> pgpgout 2605968 2695596 +3.44%
-> pgpgoutclean 13514955 14980610 +10.84%
-> pswpin 1489851 3780868 +153.77%
-> pswpout 4125547 8050819 +95.15%
-> pgfree 99823083 105104637 +5.29%
-> pgactivate 7685275 11647913 +51.56%
-> pgdeactivate 14193660 21459784 +51.19%
-> pgfault 89173166 100598528 +12.81%
-> pgmajfault 1856172 4227190 +127.74%
-> pgrefill 16643554 23203927 +39.42%
+Hi all,
 
-Thanks! It would be interesting to see per memcg stats as well. Are
-there any outliers? Are there any signs of over-reclaim (more pages
-scanned & reclaimed by both kswapd and direct reclaim?
+This patch series are some optimizations and extensions for PSI.
 
-> Tests were conducted on an Android phone with 4GB RAM.
-> Similar regression was reported a couple years ago here:
-> https://www.spinics.net/lists/linux-mm/msg121665.html
-> 
-> I plan on checking the difference again on newer kernels (likely 5.15)
-> after LPC this September.
+patch 1/10 fix periodic aggregation shut off problem introduced by earlier
+commit 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups").
 
-Thanks, that would be useful!
+patch 2-4 are some misc optimizations, so put them in front of this series.
+
+patch 5/10 optimize task switch inside shared cgroups when in_memstall status
+of prev task and next task are different.
+
+patch 6/10 remove NR_ONCPU task accounting to save 4 bytes in the first
+cacheline to be used by the following patch 7/10, which introduce new
+PSI resource PSI_IRQ to track IRQ/SOFTIRQ pressure stall information.
+
+patch 8-9 cache parent psi_group in struct psi_group to speed up
+the hot iteration path.
+
+patch 10/10 introduce a per-cgroup interface "cgroup.pressure" to disable
+or re-enable PSI in the cgroup level, and we implement hiding and unhiding
+the pressure files per Tejun's suggestion[1], which depends on his work[2].
+
+[1] https://lore.kernel.org/all/YvqjhqJQi2J8RG3X@slm.duckdns.org/
+[2] https://lore.kernel.org/all/20220820000550.367085-1-tj@kernel.org/
+
+Performance test using mmtests/config-scheduler-perfpipe in /user.slice/user-0.slice/session-4.scope
+
+                                 next                patched       patched/only-leaf
+Min       Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+1st-qrtle Time        8.90 (   0.00%)        8.58 (   3.63%)        8.05 (   9.58%)
+2nd-qrtle Time        8.94 (   0.00%)        8.61 (   3.65%)        8.09 (   9.50%)
+3rd-qrtle Time        8.99 (   0.00%)        8.65 (   3.75%)        8.15 (   9.35%)
+Max-1     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-5     Time        8.82 (   0.00%)        8.49 (   3.74%)        8.00 (   9.32%)
+Max-10    Time        8.84 (   0.00%)        8.55 (   3.20%)        8.04 (   9.05%)
+Max-90    Time        9.04 (   0.00%)        8.67 (   4.10%)        8.18 (   9.51%)
+Max-95    Time        9.04 (   0.00%)        8.68 (   4.03%)        8.20 (   9.26%)
+Max-99    Time        9.07 (   0.00%)        8.73 (   3.82%)        8.25 (   9.11%)
+Max       Time        9.12 (   0.00%)        8.89 (   2.54%)        8.27 (   9.29%)
+Amean     Time        8.95 (   0.00%)        8.62 *   3.67%*        8.11 *   9.43%*
+
+Thanks!
+
+Changes in v3:
+ - Rebase on linux-next and reorder patches to put misc optimizations
+   patches in the front of this series.
+ - Drop patch "sched/psi: don't change task psi_flags when migrate CPU/group"
+   since it caused a little performance regression and it's just
+   code refactoring, so drop it.
+ - Don't define PSI_IRQ and PSI_IRQ_FULL when !CONFIG_IRQ_TIME_ACCOUNTING,
+   in which case they are not used.
+ - Add patch 8/10 "sched/psi: consolidate cgroup_psi()" make cgroup_psi()
+   can handle all cgroups including root cgroup, make patch 9/10 simpler.
+ - Rename interface to "cgroup.pressure" and add some explanation
+   per Michal's suggestion.
+ - Hide and unhide pressure files when disable/re-enable cgroup PSI,
+   depends on Tejun's work.
+
+Changes in v2:
+ - Add Acked-by tags from Johannes Weiner. Thanks for review!
+ - Fix periodic aggregation wakeup for common ancestors in
+   psi_task_switch().
+ - Add patch 7/10 from Johannes Weiner, which remove NR_ONCPU
+   task accounting to save 4 bytes in the first cacheline.
+ - Remove "psi_irq=" kernel cmdline parameter in last version.
+ - Add per-cgroup interface "cgroup.psi" to disable/re-enable
+   PSI stats accounting in the cgroup level.
+
+Chengming Zhou (9):
+  sched/psi: fix periodic aggregation shut off
+  sched/psi: don't create cgroup PSI files when psi_disabled
+  sched/psi: save percpu memory when !psi_cgroups_enabled
+  sched/psi: move private helpers to sched/stats.h
+  sched/psi: optimize task switch inside shared cgroups again
+  sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ pressure
+  sched/psi: consolidate cgroup_psi()
+  sched/psi: cache parent psi_group to speed up groups iterate
+  sched/psi: per-cgroup PSI accounting disable/re-enable interface
+
+Johannes Weiner (1):
+  sched/psi: remove NR_ONCPU task accounting
+
+ Documentation/admin-guide/cgroup-v2.rst |  23 +++
+ include/linux/cgroup-defs.h             |   3 +
+ include/linux/cgroup.h                  |   5 -
+ include/linux/psi.h                     |  12 +-
+ include/linux/psi_types.h               |  29 ++-
+ kernel/cgroup/cgroup.c                  |  94 ++++++++-
+ kernel/sched/core.c                     |   1 +
+ kernel/sched/psi.c                      | 256 +++++++++++++++++-------
+ kernel/sched/stats.h                    |   6 +
+ 9 files changed, 338 insertions(+), 91 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.37.2
+
