@@ -2,59 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147095A017B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 20:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDD95A01B8
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 21:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbiHXSle (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 14:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S239911AbiHXTC2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 15:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbiHXSle (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 14:41:34 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A81578BD7
-        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 11:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661366493; x=1692902493;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=oIPySqj+sHYhRiBTiZzz0o+5rieiD04KIZEhKsO6xzE=;
-  b=MgDyTDb52XLYEl7V0hT9aZWSkikEnM0fNo912EyPcgHwW1txBt8fvgV/
-   mro0ABZ2+u/Cf0OHRNsXhRnER7F1rHA8aCUeMEPvQ8nq32meaBLxA25e5
-   LJUdTB+4xptUh1826RrqgHakpbY/s3FVHXOKvHcJYnQF6O+Z9KPrGBszD
-   7U2Z4VDUD6yPzrlDUTb/MmNOJOPvxvTUZ2xuZTrDpZzmdaTsDDVxz1Voz
-   SqfnpHdNucS0diANGniNpJO8PXQsL4vYw6Mx+XE098Sy25ykD8XDzVDfa
-   yHMH701jKlKGfI1tLs12KV/hnLG/9rntszQ7tSX6CyihPUJmWbJ03qm6q
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10449"; a="291615670"
-X-IronPort-AV: E=Sophos;i="5.93,261,1654585200"; 
-   d="scan'208";a="291615670"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2022 11:41:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,261,1654585200"; 
-   d="scan'208";a="639243457"
-Received: from lkp-server02.sh.intel.com (HELO 34e741d32628) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2022 11:41:31 -0700
-Received: from kbuild by 34e741d32628 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oQvJi-00010r-2P;
-        Wed, 24 Aug 2022 18:41:30 +0000
-Date:   Thu, 25 Aug 2022 02:40:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.0-fixes] BUILD SUCCESS
- 763f4fb76e24959c370cdaa889b2492ba6175580
-Message-ID: <630670a5.s/4w3lZrlXHmGHdx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S239874AbiHXTCS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 15:02:18 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36EB18E00
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 12:02:16 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id b13so925966ils.0
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 12:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=vBlDS68ELiZr1QTGxJOPvYivh7LG+VsuyP+e5BkDizs=;
+        b=KFgXrxcerQ3S3zXFOe9MmxseJphuExDFjgTrOTgMM5c828OwMG24lYumRxP31doY51
+         K3cCe4S/6ni0oRgdRPgOkwDxqUe2EkEF41lt78W5XERFXOPcHB1Vmy1+NVexHW7RsEtj
+         5wmzydLf5j6aH97yWc7b5GXH1MRAmKZyQeJ4rkkIdnI2o9NkcuTf4MH8xLurDgiB1Ld9
+         KaA5GWUyP1EakYttIWAzdT0zbylCN4iGgdmjhx2I79snHw8drJY9PzikTZV8arxTMbsZ
+         dAouvU+bhh2FPmxFp0+8M6bTInr4nLWqSqrIqdudgOI4HErlyyW4Fm8K+iyW2UfrIA80
+         M1Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=vBlDS68ELiZr1QTGxJOPvYivh7LG+VsuyP+e5BkDizs=;
+        b=yaMRzpwf0Nv1QPf3jxEVIAFi29pCFbhCYF4aPs+wLwCg6QC3QYOj9fRhHImTk0rMzF
+         idwzNimKzQEKA8GXPd1FcR1RNXmJ/uDlw00BSy+/epMyTpsQmXz/QAEBYxxA7X6hlreB
+         8iULHrO9mv9cjHfz9Rr8i8ZBeMb1Hni8NBt9bxraBd84a0MhTWBwMCi0GqbbHfiTG9D6
+         d8eXadZWuBrs6GHwMTfXhPP2e0lpNXnzZ3Gx5hM82aa0dzUgwZClTtGhD9Ywe7kuA5m8
+         NzUNQGph4vHwNE16XN/8XY8dfVqeY8DGnYaaT5n+3mLY79eUbmoWMAcI197NKYEv2Ifg
+         fdAg==
+X-Gm-Message-State: ACgBeo04bYm1HYbARsIQQp//TzJN+wMCAaguBTHh/OsHw5t9nK+EeXok
+        Kz8bX204x1+qfYuLSqBMXV19kgHw372tcIj2dPy+aA==
+X-Google-Smtp-Source: AA6agR6kheze9pyJF4whRD8WXKbfetrZ6izDyQszCHM6aVpmA/tkPpShcjsBYFMe0z/XRNEgnfahZPqeHb1fLLgo3tc=
+X-Received: by 2002:a05:6e02:2194:b0:2e9:7f9b:f1c4 with SMTP id
+ j20-20020a056e02219400b002e97f9bf1c4mr207575ila.79.1661367735898; Wed, 24 Aug
+ 2022 12:02:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org> <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
+ <YwPy9hervVxfuuYE@cmpxchg.org> <YwRDFe+K837tKGED@P9FQF9L96D> <YwRF+df9P2TPu7Zw@slm.duckdns.org>
+In-Reply-To: <YwRF+df9P2TPu7Zw@slm.duckdns.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 24 Aug 2022 12:02:04 -0700
+Message-ID: <CAHS8izMFMtM5ry12iEo72nwkynDpgycETn6QoXLGj=O6b8z1jg@mail.gmail.com>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,170 +90,129 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.0-fixes
-branch HEAD: 763f4fb76e24959c370cdaa889b2492ba6175580  cgroup: Fix race condition at rebind_subsystems()
+On Mon, Aug 22, 2022 at 8:14 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Mon, Aug 22, 2022 at 08:01:41PM -0700, Roman Gushchin wrote:
+> > > > >    One solution that I can think of is leveraging the resource domain
+> > > > >    concept which is currently only used for threaded cgroups. All memory
+> > > > >    usages of threaded cgroups are charged to their resource domain cgroup
+> > > > >    which hosts the processes for those threads. The persistent usages have a
+> > > > >    similar pattern, so maybe the service level cgroup can declare that it's
+> > > > >    the encompassing resource domain and the instance cgroup can say whether
+> > > > >    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
+> > > > >    resource domain.
+> > > > >
+> > > >
+> > > > I think this sounds excellent and addresses our use cases. Basically
+> > > > the tmpfs/bpf memory would get charged to the encompassing resource
+> > > > domain cgroup rather than the instance cgroup, making the memory usage
+> > > > of the first and second+ instances consistent and predictable.
+> > > >
+> > > > Would love to hear from other memcg folks what they would think of
+> > > > such an approach. I would also love to hear what kind of interface you
+> > > > have in mind. Perhaps a cgroup tunable that says whether it's going to
+> > > > charge the tmpfs/bpf instance to itself or to the encompassing
+> > > > resource domain?
+> > >
+> > > I like this too. It makes shared charging predictable, with a coherent
+> > > resource hierarchy (congruent OOM, CPU, IO domains), and without the
+> > > need for cgroup paths in tmpfs mounts or similar.
+> > >
+> > > As far as who is declaring what goes, though: if the instance groups
+> > > can declare arbitrary files/objects persistent or shared, they'd be
+> > > able to abuse this and sneak private memory past local limits and
+> > > burden the wider persistent/shared domain with it.
+>
+> My thought was that the persistent cgroup and instance cgroups should belong
+> to the same trust domain and system level control should be applied at the
+> resource domain level. The application may decide to shift between
+> persistent and per-instance however it wants to and may even configure
+> resource control at that level but all that's for its own accounting
+> accuracy and benefit.
+>
+> > > I'm thinking it might make more sense for the service level to declare
+> > > which objects are persistent and shared across instances.
+> >
+> > I like this idea.
+> >
+> > > If that's the case, we may not need a two-component interface. Just
+> > > the ability for an intermediate cgroup to say: "This object's future
+> > > memory is to be charged to me, not the instantiating cgroup."
+> > >
+> > > Can we require a process in the intermediate cgroup to set up the file
+> > > or object, and use madvise/fadvise to say "charge me", before any
+> > > instances are launched?
+> >
+> > We need to think how to make this interface convenient to use.
+> > First, these persistent resources are likely created by some agent software,
+> > not the main workload. So the requirement to call madvise() from the
+> > actual cgroup might be not easily achievable.
+>
+> So one worry that I have for this is that it requires the application itself
+> to be aware of cgroup topolgies and restructure itself so that allocation of
+> those resources are factored out into something else. Maybe that's not a
+> huge problem but it may limit its applicability quite a bit.
+>
 
-elapsed time: 1445m
+I agree with this point 100%. The interfaces being discussed here
+require existing applications restructuring themselves which I don't
+imagine will be very useful for us at least.
 
-configs tested: 149
-configs skipped: 4
+> If we can express all the resource contraints and structures in the cgroup
+> side and configured by the management agent, the application can simply e.g.
+> madvise whatever memory region or flag bpf maps as "these are persistent"
+> and the rest can be handled by the system. If the agent set up the
+> environment for that, it gets accounted accordingly; otherwise, it'd behave
+> as if those tagging didn't exist. Asking the application to set up all its
+> resources in separate steps, that might require significant restructuring
+> and knowledge of how the hierarchy is setup in many cases.
+>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I don't know if this level of granularity is needed with a madvise()
+or such. The kernel knows whether resources are persistent due to the
+nature of the resource. For example a shared tmpfs file is a resource
+that is persistent and not cleaned up after the process using it dies,
+but private memory is. madvise(PERSISTENT) on private memory would not
+make sense, and I don't think madvise(NOT_PERSISTENT) on tmpfs-backed
+memory region would make sense. Also, this requires adding madvise()
+hints in userspace code to leverage this.
 
-gcc tested configs:
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-csky                              allnoconfig
-alpha                             allnoconfig
-arc                               allnoconfig
-riscv                             allnoconfig
-loongarch                           defconfig
-loongarch                         allnoconfig
-powerpc                           allnoconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-sh                               allmodconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-sh                           se7724_defconfig
-arm                         lubbock_defconfig
-powerpc                   currituck_defconfig
-i386                          debian-10.3-kvm
-i386                        debian-10.3-kunit
-i386                         debian-10.3-func
-i386                          randconfig-c001
-m68k                        m5272c3_defconfig
-m68k                          atari_defconfig
-sh                          sdk7786_defconfig
-powerpc                    klondike_defconfig
-i386                             allyesconfig
-i386                                defconfig
-s390                                defconfig
-s390                             allmodconfig
-arc                                 defconfig
-alpha                               defconfig
-s390                             allyesconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-arm                       omap2plus_defconfig
-arc                          axs101_defconfig
-arc                         haps_hs_defconfig
-powerpc                          allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                           rhel-8.3-kvm
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                    rhel-8.3-kselftests
-x86_64                         rhel-8.3-kunit
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-sh                        sh7763rdp_defconfig
-m68k                          multi_defconfig
-arc                      axs103_smp_defconfig
-m68k                            mac_defconfig
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-nios2                            allyesconfig
-nios2                               defconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-arm64                            allyesconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                            hisi_defconfig
-um                                  defconfig
-sh                     sh7710voipgw_defconfig
-parisc64                         alldefconfig
-sh                          kfr2r09_defconfig
-xtensa                          iss_defconfig
-arm                           h5000_defconfig
-ia64                                defconfig
-sparc                               defconfig
-xtensa                           allyesconfig
-csky                                defconfig
-sparc                            allyesconfig
-x86_64                                  kexec
-arc                        nsim_700_defconfig
-sh                   sh7770_generic_defconfig
-arm                          gemini_defconfig
-ia64                         bigsur_defconfig
-parisc                           alldefconfig
-powerpc                     tqm8555_defconfig
-arm64                               defconfig
-arm                              allmodconfig
-m68k                                defconfig
-mips                             allmodconfig
-sparc                             allnoconfig
-microblaze                          defconfig
-m68k                        mvme16x_defconfig
-m68k                            q40_defconfig
-ia64                        generic_defconfig
-sh                             shx3_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                      tqm8xx_defconfig
-m68k                        stmark2_defconfig
-m68k                         apollo_defconfig
-arm                        shmobile_defconfig
-ia64                          tiger_defconfig
-mips                      loongson3_defconfig
-arm                             rpc_defconfig
-ia64                             allmodconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-arm                            lart_defconfig
-m68k                       m5249evb_defconfig
-sh                             espt_defconfig
+> > So _maybe_ something like writing a fd into cgroup.memory.resources.
+> >
 
-clang tested configs:
-hexagon              randconfig-r045-20220823
-riscv                randconfig-r042-20220823
-hexagon              randconfig-r041-20220823
-s390                 randconfig-r044-20220823
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-k001
-mips                     loongson1c_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                  mpc866_ads_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-arm                            mmp2_defconfig
-powerpc                     powernv_defconfig
-hexagon              randconfig-r045-20220824
-hexagon              randconfig-r041-20220824
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-mips                     cu1000-neo_defconfig
-powerpc                    gamecube_defconfig
-mips                        omega2p_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                        neponset_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                          g5_defconfig
-mips                     decstation_defconfig
-mips                           ci20_defconfig
+Sorry, I don't see this being useful - to us at least - if it is an
+fd-based interface. It needs to support marking entire tmpfs mounts as
+persistent. The reasoning is as Tejun alludes to: our container
+management agent generally sets up the container hierarchy for a job
+and also sets up the filesystem mounts the job requests. This is
+generally because the job doesn't run as root and doesn't bother with
+mount namespaces. Thus, our jobs are well-trained in receiving mounts
+set up for them from our container management agent. Jobs are _not_
+well-trained in receiving an fd from the container management agent,
+and restructuring our jobs/services for such an interface will not be
+feasible I think.
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+This applies to us but I imagine it is common practice for the
+container management agent to set up mounts for the jobs to use,
+rather than provide the job with an fd or collection of fds.
+
+> > Second, it would be really useful to export the current configuration
+> > to userspace. E.g. a user should be able to query to which cgroup the given
+> > bpf map "belongs" and which bpf maps belong to the given cgroups. Otherwise
+> > it will create a problem for userspace programs which manage cgroups
+> > (e.g. systemd): they should be able to restore the current configuration
+> > from the kernel state, without "remembering" what has been configured
+> > before.
+>
+> This too can be achieved by separating out cgroup setup and tagging specific
+> resources. Agent and cgroup know what each cgroup is supposed to do as they
+> already do now and each resource is tagged whether they're persistent or
+> not, so everything is always known without the agent and the application
+> having to explicitly share the information.
+>
+> Thanks.
+>
+> --
+> tejun
