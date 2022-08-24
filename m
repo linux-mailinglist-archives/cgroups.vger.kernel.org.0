@@ -2,60 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ED059F0BD
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 03:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B139159F0C1
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 03:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbiHXBPj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Aug 2022 21:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S233046AbiHXBTz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Aug 2022 21:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbiHXBPg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 21:15:36 -0400
+        with ESMTP id S231830AbiHXBTz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Aug 2022 21:19:55 -0400
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E763B942;
-        Tue, 23 Aug 2022 18:15:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D751D4BD28;
+        Tue, 23 Aug 2022 18:19:53 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MC7Qv4vmsz6S686;
-        Wed, 24 Aug 2022 09:13:59 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MC7Wt13MXz6S2XJ;
+        Wed, 24 Aug 2022 09:18:18 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP2 (Coremail) with SMTP id Syh0CgBXQLy0ewVjY6sPAw--.59906S3;
-        Wed, 24 Aug 2022 09:15:33 +0800 (CST)
-Subject: Re: [PATCH v8 1/4] blk-throttle: fix that io throttle can only work
- for single bio
+        by APP2 (Coremail) with SMTP id Syh0CgAH8r23fAVjzNAPAw--.10560S3;
+        Wed, 24 Aug 2022 09:19:52 +0800 (CST)
+Subject: Re: [PATCH 4/4] blk-throttle: cleanup throtl_dequeue_tg()
 To:     Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, ming.lei@redhat.com, mkoutny@suse.com,
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, yi.zhang@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20220823033130.874230-1-yukuai1@huaweicloud.com>
- <20220823033130.874230-2-yukuai1@huaweicloud.com>
- <YwUXTL+8E/sPcEUB@slm.duckdns.org>
+        yi.zhang@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20220823013810.406075-1-yukuai1@huaweicloud.com>
+ <20220823013810.406075-5-yukuai1@huaweicloud.com>
+ <YwUdouGld9Z7K8r1@slm.duckdns.org>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <73c72914-e27d-b261-e040-2dd31e8a6b9f@huaweicloud.com>
-Date:   Wed, 24 Aug 2022 09:15:32 +0800
+Message-ID: <dd9b7a59-a16a-74f5-011c-664ca91e8ada@huaweicloud.com>
+Date:   Wed, 24 Aug 2022 09:19:51 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <YwUXTL+8E/sPcEUB@slm.duckdns.org>
+In-Reply-To: <YwUdouGld9Z7K8r1@slm.duckdns.org>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgBXQLy0ewVjY6sPAw--.59906S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4xZr4fGr13Xr18Zr15CFg_yoWfWrc_ZF
-        4YyrWxGw18uFs7AF1jyF45WrZIgrWfW3s7uw4vgFy7tw1rA3s09Fs5Kr92yrW5X3yrKr9I
-        qw109ayrCryS9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
-        04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
-        C2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-TRANSID: Syh0CgAH8r23fAVjzNAPAw--.10560S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF4DXr1kWw13Ww45Ar1fJFb_yoW8AFyrpF
+        y5A3WrCF42qr4qkr1Yq3ZrXFWSvws7JF4rAws7J3WSyr42vry3KFn7ZFyrXaykZFZ7XrWr
+        ZF4Dtwn5A3WUZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
+        UUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -69,24 +67,50 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hi, Tejun
 
-在 2022/08/24 2:07, Tejun Heo 写道:
-> Hello,
+在 2022/08/24 2:34, Tejun Heo 写道:
+> On Tue, Aug 23, 2022 at 09:38:10AM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Now that throtl_dequeue_tg() is called when the last bio is dispatched,
+>> there is no need to check the flag THROTL_TG_PENDING, since it's ensured
+>> to be set when bio is throttled.
+>>
+>> There are no functional changes.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/blk-throttle.c | 11 ++++-------
+>>   1 file changed, 4 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+>> index 47142a1dd102..e47506a8ef47 100644
+>> --- a/block/blk-throttle.c
+>> +++ b/block/blk-throttle.c
+>> @@ -570,14 +570,11 @@ static void throtl_enqueue_tg(struct throtl_grp *tg)
+>>   
+>>   static void throtl_dequeue_tg(struct throtl_grp *tg)
+>>   {
+>> -	if (tg->flags & THROTL_TG_PENDING) {
+>> -		struct throtl_service_queue *parent_sq =
+>> -			tg->service_queue.parent_sq;
+>> +	struct throtl_service_queue *parent_sq = tg->service_queue.parent_sq;
+>>   
+>> -		throtl_rb_erase(&tg->rb_node, parent_sq);
+>> -		--parent_sq->nr_pending;
+>> -		tg->flags &= ~THROTL_TG_PENDING;
+>> -	}
+>> +	throtl_rb_erase(&tg->rb_node, parent_sq);
+>> +	--parent_sq->nr_pending;
+>> +	tg->flags &= ~THROTL_TG_PENDING;
 > 
-> Should have asked you earlier but with the BIO_THROTTLED flag setting from
-> clone removed, with single BIO_THROTTLED flag, does the fix still require
-> bytes subtraction? If we can do single flag and we don't need the bytes
-> subtraction, might as well just stay with single flag?
+> Yeah, I don't know about this one. This breaks the symmetry with
+> throtl_enqueue_tg() and it's a bit odd that we aren't at least
+> WARN_ON_ONCE() on the flag given what the flag tracks. If you want to do
+> this, I think the prev approach of just removing the flag is better as that
+> was symmetric at least.
 
-Do you mean 'compensate the over-accounting' for bytes subtraction? If
-so, yes, it's not required.
-
-This patch actually set two flags when bio is throttled and
-dispatched, and only iops flag is cleared after the original bio is
-split. If only one flag can be used, the way that I come up with is
-that let iops limit become default, which means bio is always counted
-for iops limit each time blk_throtl_bio() is called. I'm not quite
-sure yet if iops limit can be counted excessively this way in some
-special scenario...
+Yes, you are right, thanks for the advice. Since now it's a bit
+ambivalent, we might as well just remove this patch?
 
 Thanks,
 Kuai
