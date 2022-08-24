@@ -2,146 +2,277 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A269959F8DB
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 13:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5BA59F8E7
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 13:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbiHXLyG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 07:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
+        id S236684AbiHXL60 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 07:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236272AbiHXLyG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 07:54:06 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7D186714
-        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 04:54:05 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id f17so10096399pfk.11
-        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 04:54:05 -0700 (PDT)
+        with ESMTP id S236618AbiHXL60 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 07:58:26 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935D589CCC;
+        Wed, 24 Aug 2022 04:58:24 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id p6so16895529vsr.9;
+        Wed, 24 Aug 2022 04:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=mdfwmPodCkN/tga61cvp2E/By8brPAPT4bch4OmZBrY=;
-        b=jQkEZX35Ws1c7ZeEwSoJBemqsqFfAypyELXqRGaM1Iwi5lyiq2xztSyATJfhvxF75Z
-         ul8dBoqZHEckEFGA2Vj+QqOizPpteP5iRhGYBJ5PgqcPGaXIQs5ZopwVs6VuSY1l5tRg
-         3Iz7Q0hkGTSLDWRi2xN7rYUTm402YSXBbyMt8JPsRE032tVM8R9dHI40vgO74WPOSuv8
-         l25FKg7I2R437aLqahE1+UG+kYgpxhIf1V7fiRgSC94VISztjWh5wCUYNaoDtWjm2QGX
-         eRxMkA21nMzsbRc6hdRrJqqfJ8QBfsu0aKk1Ldf41vLMtxNHZFFgbr58kBl4gPrKSG0S
-         oh2Q==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=Eox6EyQ1Oerj12qBsic5JiOxegll7gmv6Zzm6c/Jyw4=;
+        b=M4voFZgYS9F3LD2hkQaN5T2ZO6XvIYvX8aD7IWHMYrWvgy9X+IZ1+b24FiiHTGp0iO
+         09OLureDLYgwqvF0pBUd44qKGt0QIg/KEJVV1bzsf9krXXM+rfAcBFCS8OS/9VaMIIpY
+         wiGEHTyCeUffTzGCBZU+RSPKSRbnu6ShJN0zow1uVMZ9u4C8Mb/1ML0CaZoi8LKarT3w
+         KTGAfN4qMnMAiPw0GDoE3+SqBk7YhsdTBE/yeE9wLH1maHH3/bMpv7hRTiZ+yYDP7jyr
+         h4SjxbRmAGHf5LzrXg6UN13lmVdqCk+NOUManYQe2YiWc+xBh7YD7J/HB0qk42/4Ii4P
+         QZCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=mdfwmPodCkN/tga61cvp2E/By8brPAPT4bch4OmZBrY=;
-        b=F3iUYDnPxJQ1WrUp1CQ4gkaootVFfgi3iSRJS+sBB0a1YXqJIWqg6pm8y+GjJemuqd
-         G5owyX532LLzUQgf6UNawLJYHXfk4S81GtdE164E98Qn+Xc0dxtAqvCvavu3OJHiMsko
-         PLFemCCMRraVmqzA6YKgMwdLHnjw9SyOliOoStQcpeBAVeWGJml7YV1VNcXDA+Hq/YKf
-         3fFc1eaVGHUzcdtJK93wJ2f5LPFrdxTDjfgw197ixLSX6TaaHcWjW9nqBmyzTDjAMN2J
-         WcXh0ShBDj0qUIe4HNArCG4GXfJTjGmvHsC2KaIt1UH6elZe3HbpW8Gpqx/DVywxQcmE
-         qC8w==
-X-Gm-Message-State: ACgBeo3XjNvP+2vcD44tLNk9TcIPfb0M4BJLjtkHMf3sdFWLk0k3ghw7
-        aTnvC1MEufyFSSfy1PtnyLpX3w==
-X-Google-Smtp-Source: AA6agR4hUD37SHwdWeTevNNHwild8/Vtbrr4Wc7zIQIiAtuLWmwOFvjW9Z50/UwEJ9jdc27TVN+xWA==
-X-Received: by 2002:a65:6c10:0:b0:429:4a5:a4d0 with SMTP id y16-20020a656c10000000b0042904a5a4d0mr24569071pgu.614.1661342044601;
-        Wed, 24 Aug 2022 04:54:04 -0700 (PDT)
-Received: from [10.4.208.12] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id g126-20020a625284000000b0052d7cca96acsm12750758pfb.110.2022.08.24.04.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Aug 2022 04:54:04 -0700 (PDT)
-Message-ID: <911cd0fc-0027-6da5-767a-fea4c7731c81@bytedance.com>
-Date:   Wed, 24 Aug 2022 19:53:52 +0800
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=Eox6EyQ1Oerj12qBsic5JiOxegll7gmv6Zzm6c/Jyw4=;
+        b=LRIDHcG6k68kMCkEyOHZduXJGLiGf1b+ScFDLXln2mz0Uyylu7iRmTm4XJF8RM2X8U
+         tpQBPVNa13bS33g1+iv9hWLiL0ZELlY7Un1nmJ7dts2Akcr9U78Pnt5ngdxVDrqIPuy+
+         baQcyfbF2K2g+kTIf6mWDU4V781wC/Nb/kSQPwT/f5B8nU8qfLd0GRNb1ZTC9RRm33ZZ
+         MPXKpuZ7yBIswh+ynKnqNt4NGoNG3LdiNP5KpFfSBRcracxtAjr8dchFFKDnRRSUin3u
+         0N6IjXzhoNcsdYuSTX+dboCfstZPLCJHGkDUAGDVSRDPuBRgId9PWpXQy6yayl7LJeO5
+         4E9w==
+X-Gm-Message-State: ACgBeo2VDH9gK4RCe9IzzHcY0Xx3+aMmKc8wXPaTQ34ShgcTiYEFOQbc
+        IfzfjYx5/3BOeEpqZVcguS8BgCCRw/n8eEsihi0=
+X-Google-Smtp-Source: AA6agR7xBfn6UIZbUCryOVkxZndxMBgcxW/JTAvTJJmgW76VTWpIu17AhLHr0i5T5TrPaWmUy54YwxPQYU4VfMI60Tk=
+X-Received: by 2002:a67:b40a:0:b0:390:37f4:ba23 with SMTP id
+ x10-20020a67b40a000000b0039037f4ba23mr8775071vsl.22.1661342303647; Wed, 24
+ Aug 2022 04:58:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.1.2
-Subject: Re: [PATCH v3 07/10] sched/psi: add PSI_IRQ to track IRQ/SOFTIRQ
- pressure
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     tj@kernel.org, mkoutny@suse.com, surenb@google.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net, mingo@redhat.com,
-        peterz@infradead.org, songmuchun@bytedance.com,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220824081829.33748-1-zhouchengming@bytedance.com>
- <20220824081829.33748-8-zhouchengming@bytedance.com>
- <YwYBasgyIU0iQgL3@cmpxchg.org>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <YwYBasgyIU0iQgL3@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org> <CALOAHbBTR-07La=-KPehFab0WDY4V6LovXbrhLXOqKDurHD-9g@mail.gmail.com>
+ <YwUKZWXbqzfy0w4o@slm.duckdns.org>
+In-Reply-To: <YwUKZWXbqzfy0w4o@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 24 Aug 2022 19:57:44 +0800
+Message-ID: <CALOAHbArQ=TdgiYnpBh-2OEKpFhnYAeAUbBaGV7FSfsaVb46tg@mail.gmail.com>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2022/8/24 18:46, Johannes Weiner wrote:
-> On Wed, Aug 24, 2022 at 04:18:26PM +0800, Chengming Zhou wrote:
->> @@ -903,6 +903,36 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
->>  	}
->>  }
->>  
->> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
->> +void psi_account_irqtime(struct task_struct *task, u32 delta)
->> +{
->> +	int cpu = task_cpu(task);
->> +	void *iter = NULL;
->> +	struct psi_group *group;
->> +	struct psi_group_cpu *groupc;
->> +	u64 now;
->> +
->> +	if (!task->pid)
->> +		return;
->> +
->> +	now = cpu_clock(cpu);
->> +
->> +	while ((group = iterate_groups(task, &iter))) {
->> +		groupc = per_cpu_ptr(group->pcpu, cpu);
->> +
->> +		write_seqcount_begin(&groupc->seq);
->> +
->> +		record_times(groupc, now);
->> +		groupc->times[PSI_IRQ_FULL] += delta;
->> +
->> +		write_seqcount_end(&groupc->seq);
->> +
->> +		if (group->poll_states & (1 << PSI_IRQ_FULL))
->> +			psi_schedule_poll_work(group, 1);
->> +	}
-> 
-> Shouldn't this kick avgs_work too? If the CPU is otherwise idle,
-> times[PSI_IRQ_FULL] would overflow after two missed averaging runs.
+On Wed, Aug 24, 2022 at 1:12 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, Aug 23, 2022 at 07:08:17PM +0800, Yafang Shao wrote:
+> > On Mon, Aug 22, 2022 at 7:29 PM Tejun Heo <tj@kernel.org> wrote:
+> > > [1] Can this be solved by layering the instance cgroups under persistent
+> > >     entity cgroup?
+> >
+> > Below is some background of kubernetes.
+> > In kubernetes, a pod is organized as follows,
+> >
+> >                pod
+> >                |- Container
+> >                |- Container
+> >
+> > IOW, it is a two-layer unit, or a two-layer instance.
+> > The cgroup dir of the pod is named with a UUID assigned by kubernetes-apiserver.
+> > Once the old pod is destroyed (that can happen when the user wants to
+> > update their service), the new pod will have a different UUID.
+> > That said, different instances will have different cgroup dir.
+> >
+> > If we want to introduce a  persistent entity cgroup, we have to make
+> > it a three-layer unit.
+> >
+> >            persistent-entity
+> >            |- pod
+> >                  |- Container
+> >                  |- Container
+> >
+> > There will be some issues,
+> > 1.  The kuber-apiserver must maintain the persistent-entity on each host.
+> >      It needs a great refactor and the compatibility is also a problem
+> > per my discussion with kubernetes experts.
+>
+> This is gonna be true for anybody. The basic strategy here should be
+> defining a clear boundary between system agent and applications so that
+> individual applications, even when they build their own subhierarchy
+> internally, aren't affected by system level hierarchy configuration changes.
+> systemd is already like that with clear delegation boundary. Our (fb)
+> container management is like that too. So, while this requires some
+> reorganization from the agent side, things like this don't create huge
+> backward compatbility issues involving applications. I have no idea about
+> k8s, so the situation may differ but in the long term at least, it'd be a
+> good idea to build in similar conceptual separation even if it stays with
+> cgroup1.
+>
+> > 2.  How to do the monitor?
+> >      If there's only one pod under this persistent-entity, we can
+> > easily get the memory size of  shared resources by:
+> >          Sizeof(shared-resources) = Sizeof(persistent-entity) - Sizeof(pod)
+> >     But what if it has N pods and N is dynamically changed ?
+>
+> There should only be one live pod instance inside the pod's persistent
+> cgroup, so the calculation doesn't really change.
+>
+> > 3.  What if it has more than one shared resource?
+> >      For example, pod-foo has two shared resources A and B, pod-bar
+> > has two shared resources A and C, and another pod has two shared
+> > resources B and C.
+> >      How to deploy them?
+> >      Pls, note that we can introduce multiple-layer persistent-entity,
+> > but which one should be the parent ?
+> >
+> > So from my perspective, it is almost impossible.
+>
+> Yeah, this is a different problem and cgroup has never been good at tracking
+> resources shared across multiple groups. There is always tension between
+> overhead, complexity and accuracy and the tradeoff re. resource sharing has
+> almost always been towards the former two.
+>
+> Naming specific resources and designating them as being shared and
+> accounting them commonly somehow does make sense as an approach as we get to
+> avoid the biggest headaches (e.g. how to split a page cache page?) and maybe
+> it can even be claimed that a lot of use cases which may want cross-group
+> sharing can be sufficiently served by such approach.
+>
+> That said, it still has to be balanced against other factors. For example,
+> memory pressure caused by the shared resources should affect all
+> participants in the sharing group in terms of both memory and IO, which
+> means that they'll have to stay within a nested subtree structure. This does
+> restrict overlapping partial sharing that you described above but the goal
+> is finding a reasonable tradeoff, so something has to give.
+>
+> > > b. Memory is disassociated rather than just reparented on cgroup destruction
+> > >    and get re-charged to the next first user. This is attractive in that it
+> > >    doesn't require any userspace changes; however, I'm not sure how this
+> > >    would work for non-pageable memory usages such as bpf maps. How would we
+> > >    detect the next first usage?
+> > >
+> >
+> > JFYI, There is a reuse path for the bpf map, see my previous RFC[1].
+> > [1] https://lore.kernel.org/bpf/20220619155032.32515-1-laoar.shao@gmail.com/
+>
+> I'm not a big fan of explicit recharging. It's too hairy to use requiring
+> mixing system level hierarchy configuration knoweldge with in-application
+> resource handling. There should be clear isolation between the two. This is
+> also what leads to namespace and visibility issues. Ideally, these should be
+> handled by structuring the resource hierarchay correctly from the get-go.
+>
+> ...
+> > > b. Let userspace specify which cgroup to charge for some of constructs like
+> > >    tmpfs and bpf maps. The key problems with this approach are
+> > >
+> > >    1. How to grant/deny what can be charged where. We must ensure that a
+> > >       descendant can't move charges up or across the tree without the
+> > >       ancestors allowing it.
+> > >
+> >
+> > We can add restrictions to check which memcg can be selected
+> > (regarding the selectable memcg).
+> > But I think it may be too early to do the restrictions, as only the
+> > privileged user can set it.
+> > It is the sys admin's responsbility to select a proper memcg.
+> > That said, the selectable memcg is not going south.
+>
+> I generally tend towards shaping interfaces more carefully. We can of course
+> add a do-whatever-you-want interface and declare that it's for root only but
+> even that becomes complicated with things like userns as we're finding out
+> in different areas, but again, nothing is free and approaches like that
+> often bring more longterm headaches than the problems they solve.
+>
+> > >    2. How to specify the cgroup to charge. While specifying the target
+> > >       cgroup directly might seem like an obvious solution, it has a couple
+> > >       rather serious problems. First, if the descendant is inside a cgroup
+> > >       namespace, it might be able to see the target cgroup at all.
+> >
+> > It is not a problem. Just sharing our practice below.
+> > $ docker run -tid --privileged    \
+> >                       --mount
+> > type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf    \
+> >                       --mount
+> > type=bind,source=/sys/fs/cgroup/memory/bpf,target=/bpf-memcg    \
+> >                       docker-image
+> >
+> > The bind-mount can make it work.
+>
+> Not mount namespace. cgroup namespace which is used to isolate the cgroup
+> subtree that's visible to each container. Please take a look at
+> cgroup_namespaces(7).
+>
 
-If the CPU is idle, task->pid == 0, so no times[PSI_IRQ_FULL] would accumulate?
-I was thinking if task->pid != 0, avgs_work should be active.
+IIUC, we can get the target cgroup with a relative path if cgroup
+namespace is enabled, for example ../bpf, right ?
+(If not, then I think we can extend it.)
 
-Not sure, maybe I missed something.
+> > >  Second,
+> > >       it's an interface which is likely to cause misunderstandings on how it
+> > >       can be used. It's too broad an interface.
+> > >
+> >
+> > As I said above, we just need some restrictions or guidance if that is
+> > desired now.
+>
+> I'm really unlikely to go down that path because as I said before I believe
+> that that's a road to long term headaches and already creates immediate
+> problems in terms of how it'd interact with other resources. No matter what
+> approach we may choose, it has to work with the existing resource hierarchy.
 
-> 
-> avgs_work should probably also self-perpetuate when PSI_IRQ_FULL is in
-> changed_states. (Looking at that code, I think it can be simplified:
-> delete nonidle and do `if (changed_states) schedule_delayed_work()`.)
+Unfortunately,  the bpf map has already broken and is still breaking
+the existing resource hierarchy.
+What I'm doing is to improve or even fix this breakage.
 
-```
-collect_percpu_times(group, PSI_AVGS, &changed_states);
-nonidle = changed_states & (1 << PSI_NONIDLE);
+The reason I say it is breaking the existing resource hierarchy is
+that the bpf map is improperly treated as a process while it is really
+a shared resource.
 
-if (nonidle) {
-	schedule_delayed_work(dwork, nsecs_to_jiffies(
-			group->avg_next_update - now) + 1);
-}
-```
+A bpf-map can be written by processes running in other memcgs, but the
+memory allocated caused by the writing won't be charged to the
+writer's memcg, but will be charged to bpf-map's memcg.
 
-Yes, changed_states include PSI_IRQ_FULL, here we only check nonidle
-= changed_states & (1 << PSI_NONIDLE), so it will not restart
-if only PSI_IRQ_FULL?
+That's why I try to convey to you that what I'm trying to fix is a bpf
+specific issue.
 
-If use `if (changed_states) schedule_delayed_work()`, avgs_work will
-self-restart when only PSI_IRQ_FULL changes?
+> Otherwise, we end up in a situation where we have to split accounting and
+> control of other controllers too which makes little sense for non-memory
+> controllers (not that it's great for memory in the first place).
+>
 
-Thanks!
+If the resource hierarchy is what you concern, then I think it can be
+addressed with below addition change,
 
+if (cgroup_is_not_ancestor(cgrp))
+    return -EINVAL;
+
+-- 
+Regards
+Yafang
