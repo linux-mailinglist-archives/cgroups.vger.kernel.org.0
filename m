@@ -2,119 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B65559F65F
-	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 11:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9B859F704
+	for <lists+cgroups@lfdr.de>; Wed, 24 Aug 2022 11:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbiHXJfO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Aug 2022 05:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S236289AbiHXJ7t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Aug 2022 05:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbiHXJfN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 05:35:13 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6CB43338;
-        Wed, 24 Aug 2022 02:35:12 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id u24so10293316lji.0;
-        Wed, 24 Aug 2022 02:35:12 -0700 (PDT)
+        with ESMTP id S236335AbiHXJ7r (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Aug 2022 05:59:47 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63388298
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 02:59:44 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id ca13so21225427ejb.9
+        for <cgroups@vger.kernel.org>; Wed, 24 Aug 2022 02:59:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=GCl8dHqPSzKvC1qvvjcvE0b120LUuRhLO2pWkva8f+U=;
-        b=GstEXS+VfViwMMFI9HBPPaVshMA7v+fU6E0LQ2UW84b7h0tAoknsXgpbrvStzEf8p6
-         aHTgEit/8mjbIJRRSRjqQkyTybpZ9qjHpci+7CAA2JFANBa9HpMekvB3o+4Ebcl5nwIM
-         nF2pdYIK6LxUdCW+Q8djZYUjpkrYCkZbafYjdD9U2N8TBmEG/r+Gr+UEW27jzJyRozif
-         +rAcIQSy5Uw8kJlnIuswEMcxNWjKkl9gGBnw+Aan0zqqY/1MYB0YYJBOdWAN5hisBrDF
-         NXOsjql7wKVQ+X5UqkHjyRsg2FwE1r2BPa6GXfl8ePOee01L0QVZfoqfNqLxCG8KsoXg
-         qn9w==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=KDrwIuEhT+5ed/QHPncJMrlSCfotDJCP28NTdWL4Z+8=;
+        b=FUdbq4Ey9WfkBGooYh1jtUkdsUaCaWZPuwYV3PkH7QaJ6rIuPi95KEyNjCkcKjaUhs
+         pIAD/64crbo5hfuYw7IQnI5SE/VWZojQajcqMjOBLaHqJtPnCBS5+FQay9YxHB2pgLLm
+         qMLo5SLvf/bh9qEVLS4tH+aah2FYaseQaxsjwzA62Hu5QnonD+hFcmPFH82kW4mDQaUX
+         +ZzYA1UtkfEokBQiNK7TMxkke0mamFuB3H9psq4TU0e95ZwOQc6fBIQL7Fzq/BdOSDP5
+         AzyQeD2ztdmWD7M3Eti7MaeFc/MXhS4skbQhVSvgxhgzwUCDIxFluMVEwvKGA1iYeCqm
+         FtPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=GCl8dHqPSzKvC1qvvjcvE0b120LUuRhLO2pWkva8f+U=;
-        b=mJ+P/gDjiy7m9BSTMCg1eA91RadmkKFzhuOeofvO1qxTiwmvegxWCsgmweSOvLkzpa
-         4npxe1BhzTmDta0mIcAzjwOPsqfj5fCuTnitsYyImcwwQBcbyXRa1fJd0AdDMV4Esavv
-         mfv0TR1XmU/OctDT4FQhse1JBwFq666PlxmPR+Wj2Zy2bK6kyWnjH5Wa9zxTbJL3DOvz
-         d2Jdz8tN6qK3ApRHqfcSXpzX/A7Z7ceL6AKyC0AM3lOX06eO1mbubZjIdj1MAoL3OLxz
-         jg+hlnL7fGyrXRariT++P1JdZaabamtWWQuOtRcB37FsuiqjtrxgDknAlZgzyPsiO/dI
-         qdXA==
-X-Gm-Message-State: ACgBeo3iET1x0ZnVO/6MRHR4B5aWLbaany3ASSwvwZ2xZNIaK4mdGY8+
-        MQVv/bxj6JR4J6NlvLOrurgISUx4kaRHvyoRrq8=
-X-Google-Smtp-Source: AA6agR4kNB8iDWAsESnEdzdfkRFZhXH8xbseiOV/TuKM2jj0O2Om/84Aa7+cv8ErMcnwUyyopAL+Tb1683zvVamx0HQ=
-X-Received: by 2002:a2e:a80b:0:b0:261:c107:8823 with SMTP id
- l11-20020a2ea80b000000b00261c1078823mr6263213ljq.323.1661333710483; Wed, 24
- Aug 2022 02:35:10 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=KDrwIuEhT+5ed/QHPncJMrlSCfotDJCP28NTdWL4Z+8=;
+        b=kouKwaC+Yq88OvbMM8x4jTQ+VmFMCDsMU4dSiehso+EFVqw4kWUhPGWl+1JjMs8ngd
+         +Q7MZzffxm+8Zp3UQcDFMbz2EbUPzFNDPuEJc3yg69GxOdWKLhhPTR2AHUT/nh9hWGkh
+         KK0euyj4n3RDYegAcb4+rUh/1ihCKsCVvShxMCFSg4YavWYXEvA3iWQP8pGaSIHWUFlB
+         rwiycxD7U0XTTYWevBGPSsNarD6dvyJjXiFsEn1EcCmXGpCmyfPfOQ80MeFXUW8zc8pX
+         tyhAiWOboNgn8j2NzOtHn+C9lVM16HvJcEe6SLVHC9+FWkZCvgnAfoto2KZM3p4fjWrS
+         DGlQ==
+X-Gm-Message-State: ACgBeo2BA7+Pohmzl4P11rB0QCqxh/xh5OtFMIUqmH6IwqIfXerxY2sn
+        Zz9dm/xjAZaj6Z5MrNIPIymXMA==
+X-Google-Smtp-Source: AA6agR4ON0AirUp+ldMgYG/5RQsnHb+A553EVcg1HVAwwv4Hce3qfQdtqarSlYV26Z9mLDludtLbug==
+X-Received: by 2002:a17:907:628a:b0:72f:678d:6047 with SMTP id nd10-20020a170907628a00b0072f678d6047mr2382383ejc.456.1661335182638;
+        Wed, 24 Aug 2022 02:59:42 -0700 (PDT)
+Received: from localhost ([2a02:8070:6389:a4c0:2ca9:6d59:782b:fff3])
+        by smtp.gmail.com with ESMTPSA id f2-20020a17090631c200b006fee7b5dff2sm938817ejf.143.2022.08.24.02.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 02:59:42 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 05:59:40 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     tj@kernel.org, mkoutny@suse.com, surenb@google.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, songmuchun@bytedance.com,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 10/10] sched/psi: per-cgroup PSI accounting
+ disable/re-enable interface
+Message-ID: <YwX2jC2UQ/zeY2E8@cmpxchg.org>
+References: <20220824081829.33748-1-zhouchengming@bytedance.com>
+ <20220824081829.33748-11-zhouchengming@bytedance.com>
 MIME-Version: 1.0
-References: <CALvZod7QdLSMdBoD2WztL72qS8kJe7F79JuCH6t19rRcw6Pn1w@mail.gmail.com>
- <Yv/EArPDTcCrGqJh@slm.duckdns.org> <YwNpI1ydy0yDnBH0@dhcp22.suse.cz>
- <CAGWkznEB+R0YBaBFBL7dPqs8R=qKC6+ixTWEGCYy2PaczXkaPA@mail.gmail.com>
- <YwRjyx6wFLk8WTDe@dhcp22.suse.cz> <CAGWkznGaYTv4u4kOo-rupfyWzDNJXNKTchwP6dbUK-=UXWm47w@mail.gmail.com>
- <YwSQ4APOu/H7lYGL@dhcp22.suse.cz> <CAGWkznGd6mgareABseMKY5p0f1=5dkfVkj=NS7_B6OkXBYSwyw@mail.gmail.com>
- <YwS/S9Sd1OWnT81Q@dhcp22.suse.cz> <CAGWkznGYLyF+njUB0gFF3JVdThnK9JaNsqxXYFhbdSwEQpCxvA@mail.gmail.com>
- <YwXYVjRpXQjQMsxr@dhcp22.suse.cz>
-In-Reply-To: <YwXYVjRpXQjQMsxr@dhcp22.suse.cz>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Wed, 24 Aug 2022 17:34:42 +0800
-Message-ID: <CAGWkznEqX3DwHW_owiK+HuuQ-HsUYK4vKmLhSxgzGn20Vzid2A@mail.gmail.com>
-Subject: Re: [RFC PATCH] memcg: use root_mem_cgroup when css is inherited
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Ke Wang <ke.wang@unisoc.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220824081829.33748-11-zhouchengming@bytedance.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 3:50 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 24-08-22 10:23:14, Zhaoyang Huang wrote:
-> > On Tue, Aug 23, 2022 at 7:51 PM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > One way to achieve that would be shaping the hierarchy the following way
-> > >             root
-> > >         /         \
-> > > no_memcg[1]      memcg[2]
-> > > ||||||||         |||||
-> > > app_cgroups     app_cgroups
-> > >
-> > > with
-> > > no_memcg.subtree_control = ""
-> > > memcg.subtree_control = memory
-> > >
-> > > no?
-> > According to my understanding, No as there will be no no_memcg. All
-> > children groups under root would have its cgroup.controllers = memory
-> > as long as root has memory enabled.
->
-> Correct
->
-> > Under this circumstance, all
-> > descendants group under 'no_memcg' will charge memory to its parent
-> > group.
->
-> Correct. And why is that a problem? I thought you main concern was a per
-> application LRUs. With the above configuration all app_cgroups which do
-> not require an explicit memory control will share the same (no_memcg)
-> LRU and they will be aged together.
-I can't agree since this indicates the processes want memory free
-depending on a specific hierarchy which could have been determined by
-other subsys. IMHO, charging the pages which out of explicitly memory
-enabled group to root could solve all of the above constraints with no
-harm.
-> --
-> Michal Hocko
-> SUSE Labs
+Hi Chengming,
+
+Thanks for incorporating all the feedback. I have a few nitpicks
+below, but with those considered, please add:
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+On Wed, Aug 24, 2022 at 04:18:29PM +0800, Chengming Zhou wrote:
+> @@ -5171,12 +5220,19 @@ static struct cftype cgroup_base_files[] = {
+>  	{
+>  		.name = "irq.pressure",
+>  		.flags = CFTYPE_PRESSURE,
+> +		.file_offset = offsetof(struct cgroup, psi_files[PSI_IRQ]),
+>  		.seq_show = cgroup_irq_pressure_show,
+>  		.write = cgroup_irq_pressure_write,
+>  		.poll = cgroup_pressure_poll,
+>  		.release = cgroup_pressure_release,
+>  	},
+>  #endif
+> +	{
+> +		.name = "cgroup.pressure",
+> +		.flags = CFTYPE_PRESSURE,
+> +		.seq_show = cgroup_psi_show,
+> +		.write = cgroup_psi_write,
+
+To match the naming convention, these should be called
+cgroup_pressure_show() and cgroup_pressure_write().
+
+> @@ -745,6 +745,14 @@ static void psi_group_change(struct psi_group *group, int cpu,
+>  		if (set & (1 << t))
+>  			groupc->tasks[t]++;
+>  
+> +	if (!group->enabled) {
+> +		if (groupc->state_mask & (1 << PSI_NONIDLE))
+> +			record_times(groupc, now);
+
+Thanks for the explanation in the other thread, it made sense. But can
+you please add a comment to document it? Something like:
+
+	/*
+	 * On the first group change after disabling PSI, conclude
+	 * the current state and flush its time. This is unlikely
+	 * to matter to the user, but aggregation (get_recent_times)
+	 * may have already incorporated the live state into times_prev;
+	 * avoid a delta sample underflow when PSI is later re-enabled.
+	 */
+
+An unlikely() would also make sense on that branch.
+
+> @@ -1081,6 +1092,40 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
+>  
+>  	task_rq_unlock(rq, task, &rf);
+>  }
+> +
+> +void psi_cgroup_enabled_sync(struct psi_group *group)
+> +{
+> +	int cpu;
+> +
+> +	/*
+> +	 * After we disable psi_group->enabled, we don't actually
+> +	 * stop percpu tasks accounting in each psi_group_cpu,
+> +	 * instead only stop test_state() loop, record_times()
+> +	 * and averaging worker, see psi_group_change() for details.
+> +	 *
+> +	 * When disable cgroup PSI, this function has nothing to sync
+> +	 * since cgroup pressure files are hidden and percpu psi_group_cpu
+> +	 * would see !psi_group->enabled and only do task accounting.
+> +	 *
+> +	 * When re-enable cgroup PSI, this function use psi_group_change()
+> +	 * to get correct state mask from test_state() loop on tasks[],
+> +	 * and restart groupc->state_start from now, use .clear = .set = 0
+> +	 * here since no task status really changed.
+> +	 */
+> +	if (!group->enabled)
+> +		return;
+
+Thanks for adding the comment, that's helpful.
+
+I think the function would be a tad clearer and self-documenting if
+you called it psi_cgroup_restart(), and only call it on enabling.
+
+> +	for_each_possible_cpu(cpu) {
+> +		struct rq *rq = cpu_rq(cpu);
+> +		struct rq_flags rf;
+> +		u64 now;
+> +
+> +		rq_lock_irq(rq, &rf);
+> +		now = cpu_clock(cpu);
+> +		psi_group_change(group, cpu, 0, 0, now, true);
+> +		rq_unlock_irq(rq, &rf);
+> +	}
+> +}
+>  #endif /* CONFIG_CGROUPS */
+
+Thanks,
+Johannes
