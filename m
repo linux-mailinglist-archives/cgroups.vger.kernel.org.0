@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9945A1701
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 18:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2225A170B
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 18:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243117AbiHYQoX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 12:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        id S243069AbiHYQob (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 12:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241730AbiHYQnm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 12:43:42 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3187BC11D
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:51 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x26so3071929pfo.8
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:51 -0700 (PDT)
+        with ESMTP id S243061AbiHYQnq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 12:43:46 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7403BC130
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:56 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id f21so20877398pjt.2
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 09:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=KFhoipy95bP113xci+lGCwwditMpaEg770tCZfK2FCQ=;
-        b=rnj3VBn/MhfZHnIBhXiPV3dAIiOKhTdG3N9c6tQZbbmST0ZwO/XwgL1cpBP0HCijxa
-         z4TaTH9FWOVs97NqlVz7IVrxwH3vpxw5wTzUUxlt1FRc1a2wE5Nm9IsZDzqqUxs1En42
-         mM5zHiB6x2roWKOP0Z6lROQMejSsqZxUzgEWt5LvTryYKRMi2nh8Q5g/k+HilzMVcD3Q
-         iJ18Ki2jbPVPv1wta/DxdZx+dR4yM+WxjEM5JWnwC90G5YPBii5lykHk6lLfdWu3z79J
-         QwjMMA9Xc7CmeHHpE/bF5hMfKfFKJmCd3t74sAt0L/3Cpbk1Eb6sPm59pnLn0VZ+GJus
-         Y4wg==
+        bh=T5Xd8mmYM32aYWsV+JS4zJF3yib8jGf3ov52iW7dkys=;
+        b=a247I2rc5JAOD5ORKb3punvZ2pFvBSqM3A39uthrzLajeyXc85gOrdcNy3BgNnqo8B
+         nUbn0XfHwV6+uojKSFxqqzA5v8Mj4NtnMzq//ATHO0+HsXT8XuREqfHrEeJaFvVAuRXI
+         SABXuO68ZnK0GrKNBamHmmW/ybwjCsXas/hkcvr+sOts7EtnEuJSucGoxilYjU28MitS
+         cHtoAX7xT5ZaltNlcjhiWBgM3fp0ShLjMTvh6695T22SaarIZaqTq9s9kSM5IdCcQqtO
+         eTtx+b2QxFmXP8+m/6F+KizCCfjy/eGiZeJHzGtiBokhXtpmqJdxzwHGH8OcAf06lwzR
+         eRvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=KFhoipy95bP113xci+lGCwwditMpaEg770tCZfK2FCQ=;
-        b=CpTjf1i7p1eQq65/u+X8KXzCe875APponped+ZkFcpxFk7Rxtgx4GudYQKmk1MjSVX
-         YzKGdqRc2tBqnKrLNLCB8wPfIy5ICpvYgz0yjF9mOMSq9qzhyVzStwNY2lwIzMjI42Le
-         mrTZFzifGZITl3/BOY3IdfwdzVgmoBpWd5X4HOTdLYQgkt9ZGPJxWhjkJh5PkzFlgYXR
-         BOBowr5ch+GriiG7QYmUD09bUUCqPjEgiFWgmrb/cs+4NfLt5ZUqo9t8hvD3fkZmo9nV
-         sr5D86QnvStZS4LqUoP+OjGvGzwatgJ9S7i5nvRe8GNn+3q206z1Lt0Snm+pcaR2pGyP
-         Pf1g==
-X-Gm-Message-State: ACgBeo0uezz4vfXJE6TveFAZYfAXdEUMhRn1YyXbFlDZ6fCvIlsicyae
-        GgSEpju2ic5BbdZYT/IQcUSXFg==
-X-Google-Smtp-Source: AA6agR4XuZNrg70sDQ9tHgd2IZF0CQDjhmKOIsDO1T71ZQBR0mwZiSOlCcWerAsbM2iTQqRq/mtHuA==
-X-Received: by 2002:a63:ff09:0:b0:42a:59ee:1775 with SMTP id k9-20020a63ff09000000b0042a59ee1775mr3899200pgi.85.1661445770749;
-        Thu, 25 Aug 2022 09:42:50 -0700 (PDT)
+        bh=T5Xd8mmYM32aYWsV+JS4zJF3yib8jGf3ov52iW7dkys=;
+        b=Pzah4LYiTsSUvu7TaY9R1frJuM+OGLgtwktp0E3YVE00M7qgW0AX2aACew8w/IL8+o
+         +82zTq8cx/cYtVZQNUHJr+bmxPEV1ySkGhvr6UXsG9yNOGTxRFrcLlsz+CxsvgoagyCG
+         5cEsjwOwMgtKn7W4MalN9fFxZewBd82JqWJRER7HjkC9DjPCknxFjOL2UcJvYrWAptKJ
+         OocrqKpvYTCUUVRUTLqKIgMBRYz9FsSCb9AQBVbhzTJFVP0L811XedqK3WDNQaqPlkvj
+         1l+ZYkxZfn/8V/53n/dku1Ubma/I1W9GlSFoz1gDNcU5mltsTxCI6pllxEKFp7Kn18I6
+         W0TQ==
+X-Gm-Message-State: ACgBeo2utGgDaIUWPJddn9ECyQCP10/rH7tPRl8yUrS+fJZQi5Uy8K3V
+        JMXHj7oSXOXMu67wyIsTBIUyBw==
+X-Google-Smtp-Source: AA6agR6PtZRPH8DOa+cYNqYMkQRMGalD5fCgQzcKEGsbin0/QYLIG4ZScAZFg7GTIkLOKuSSHA5UFQ==
+X-Received: by 2002:a17:903:234f:b0:16f:18a6:451a with SMTP id c15-20020a170903234f00b0016f18a6451amr4528142plh.82.1661445776366;
+        Thu, 25 Aug 2022 09:42:56 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id b18-20020a62a112000000b005362314bf80sm12779408pff.67.2022.08.25.09.42.45
+        by smtp.gmail.com with ESMTPSA id b18-20020a62a112000000b005362314bf80sm12779408pff.67.2022.08.25.09.42.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 09:42:50 -0700 (PDT)
+        Thu, 25 Aug 2022 09:42:55 -0700 (PDT)
 From:   Chengming Zhou <zhouchengming@bytedance.com>
 To:     hannes@cmpxchg.org, tj@kernel.org, mkoutny@suse.com,
         surenb@google.com
@@ -54,9 +54,9 @@ Cc:     mingo@redhat.com, peterz@infradead.org, gregkh@linuxfoundation.org,
         corbet@lwn.net, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
         Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [PATCH v4 03/10] sched/psi: save percpu memory when !psi_cgroups_enabled
-Date:   Fri, 26 Aug 2022 00:41:04 +0800
-Message-Id: <20220825164111.29534-4-zhouchengming@bytedance.com>
+Subject: [PATCH v4 04/10] sched/psi: move private helpers to sched/stats.h
+Date:   Fri, 26 Aug 2022 00:41:05 +0800
+Message-Id: <20220825164111.29534-5-zhouchengming@bytedance.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220825164111.29534-1-zhouchengming@bytedance.com>
 References: <20220825164111.29534-1-zhouchengming@bytedance.com>
@@ -72,57 +72,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We won't use cgroup psi_group when !psi_cgroups_enabled, so don't
-bother to alloc percpu memory and init for it.
+This patch move psi_task_change/psi_task_switch declarations out of
+PSI public header, since they are only needed for implementing the
+PSI stats tracking in sched/stats.h
 
-Also don't need to migrate task PSI stats between cgroups in
-cgroup_move_task().
+psi_task_switch is obvious, psi_task_change can't be public helper
+since it doesn't check psi_disabled static key. And there is no
+any user now, so put it in sched/stats.h too.
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- kernel/sched/psi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/linux/psi.h  | 4 ----
+ kernel/sched/stats.h | 4 ++++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 39463dcc16bb..77d53c03a76f 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -201,6 +201,7 @@ void __init psi_init(void)
- {
- 	if (!psi_enable) {
- 		static_branch_enable(&psi_disabled);
-+		static_branch_disable(&psi_cgroups_enabled);
- 		return;
- 	}
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index dd74411ac21d..fffd229fbf19 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -18,10 +18,6 @@ extern struct psi_group psi_system;
  
-@@ -950,7 +951,7 @@ void psi_memstall_leave(unsigned long *flags)
- #ifdef CONFIG_CGROUPS
- int psi_cgroup_alloc(struct cgroup *cgroup)
- {
--	if (static_branch_likely(&psi_disabled))
-+	if (!static_branch_likely(&psi_cgroups_enabled))
- 		return 0;
+ void psi_init(void);
  
- 	cgroup->psi = kzalloc(sizeof(struct psi_group), GFP_KERNEL);
-@@ -968,7 +969,7 @@ int psi_cgroup_alloc(struct cgroup *cgroup)
+-void psi_task_change(struct task_struct *task, int clear, int set);
+-void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+-		     bool sleep);
+-
+ void psi_memstall_enter(unsigned long *flags);
+ void psi_memstall_leave(unsigned long *flags);
  
- void psi_cgroup_free(struct cgroup *cgroup)
- {
--	if (static_branch_likely(&psi_disabled))
-+	if (!static_branch_likely(&psi_cgroups_enabled))
- 		return;
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index baa839c1ba96..c39b467ece43 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -107,6 +107,10 @@ __schedstats_from_se(struct sched_entity *se)
+ }
  
- 	cancel_delayed_work_sync(&cgroup->psi->avgs_work);
-@@ -996,7 +997,7 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
- 	struct rq_flags rf;
- 	struct rq *rq;
- 
--	if (static_branch_likely(&psi_disabled)) {
-+	if (!static_branch_likely(&psi_cgroups_enabled)) {
- 		/*
- 		 * Lame to do this here, but the scheduler cannot be locked
- 		 * from the outside, so we move cgroups from inside sched/.
+ #ifdef CONFIG_PSI
++void psi_task_change(struct task_struct *task, int clear, int set);
++void psi_task_switch(struct task_struct *prev, struct task_struct *next,
++		     bool sleep);
++
+ /*
+  * PSI tracks state that persists across sleeps, such as iowaits and
+  * memory stalls. As a result, it has to distinguish between sleeps,
 -- 
 2.37.2
 
