@@ -2,116 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C375A1A62
-	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 22:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1C85A1A98
+	for <lists+cgroups@lfdr.de>; Thu, 25 Aug 2022 22:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243466AbiHYUfP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Aug 2022 16:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        id S230315AbiHYUxT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Aug 2022 16:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241669AbiHYUfO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 16:35:14 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E01832D6
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 13:35:12 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id l5so16193126qtv.4
-        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 13:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=W38//0BN+Mpi0ment/DsNSBH0AG+YpTWl5XPod3ELr0=;
-        b=dGjDuNJ77b0qiF7A7XJwWcfiPoVvBgARtQyqNLS8IOmEjPKNCo+Y6HtxCvKY+Ybt9d
-         NQX5ik4AKTRY2tR63EXfYAvOIY/tq+aG7/TE2kPhRsXRw9fYhpy9/0bUSsQ/5mjMU8dU
-         Gb43y1FYS9WQXZeJSFo9pt1A9Rf2Ho/fK3R61GbJ9sB2+hIaAY8GIig01Rfh6+sEGLIE
-         SD747ay13SeKdEJgvPwoRilBilWpdK4MRdDikVgu8HtSBq78DDXkUsrg1JyGujpPZYpI
-         FheTBoQejDtki6MVt3z6RV3X0pn5U1SQ3BWgyDLLmkirlx0AYA7czdk5nKNnhh3NOsKz
-         A6uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=W38//0BN+Mpi0ment/DsNSBH0AG+YpTWl5XPod3ELr0=;
-        b=ljrPz4GGeEKjs4pMe+OodUqolH5/3bfBtac0U9qMp/09WxXk+GDh8O0xjMQPUNPw6c
-         +rnMERtUiVopBHQrdwLfkRZSA9B3tXyWaaHeaDnakzWB8r4qdAF/croZ4w6ip1NJ5Efp
-         0pLtcTbEZMG3hFyorDfgHh7sBTQicVxvwlAmEjL7t+fNGv70KgfGchwHDyno5YOUmgPn
-         TPI8AH6IoK0fQPhghNk56YVN28M3tuRnzm1zeCbXhp16sqx0x/IlKdOWbahmCsg/gP2b
-         Cec5pqiwbzLJ3SHn4mslZ/IELr3qVZmoLLFT2hl5z+EWTxiZUUo/rZp/VDGH4VHm05I+
-         0zYA==
-X-Gm-Message-State: ACgBeo2yRJVOzB+LyfjN18yRxKaME3dFA7xBWdmUfEpr05tEPVB6yAVL
-        T3YggB8py7+nvocC9795wHmBQOwmIULosxQi+EDGtg==
-X-Google-Smtp-Source: AA6agR4Hs5T238NpECmNZXKSZ/N2q9+IQQdN3rjH+KX3J52d9R1NUUbxYt4bJMUf6oj+LM14J6BhhZHuswOZygRYZJg=
-X-Received: by 2002:ac8:7f04:0:b0:343:36d:9a1f with SMTP id
- f4-20020ac87f04000000b00343036d9a1fmr5195675qtk.566.1661459711891; Thu, 25
- Aug 2022 13:35:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824030031.1013441-1-haoluo@google.com> <20220824030031.1013441-2-haoluo@google.com>
- <CAEf4BzYfA5uzSVsRXJXKnUQFSD1Wmk29VPge-iEO+Los3e2VOg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYfA5uzSVsRXJXKnUQFSD1Wmk29VPge-iEO+Los3e2VOg@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 25 Aug 2022 13:35:01 -0700
-Message-ID: <CA+khW7hHA2gjv_UhbyhU8HkFwemt4pARVw+e1SHHOteO60PF1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S242651AbiHYUxS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Aug 2022 16:53:18 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9139AD982
+        for <cgroups@vger.kernel.org>; Thu, 25 Aug 2022 13:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=6AQOodmRYhiBHPJku0/KQnZuH4bu
+        aowrp/Re1ISUE2I=; b=zHBzvPwMzrT30ZuQESeQ0WB3zDlH36zoP0o69ouSCYGz
+        pjziUHmiIOIIihWk23x18LpSZky4T04LmoP0uRnPDJrwFJZyBDg217KLeEjeVx31
+        GdMCJ+72b2bbgJn795NCLBl3uEWfapnPLcWUq4lUnC5kLR5bxc6NbwrOVge8eY4=
+Received: (qmail 2843961 invoked from network); 25 Aug 2022 22:53:12 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 Aug 2022 22:53:12 +0200
+X-UD-Smtp-Session: l3s3148p1@toIf/BbnAcUucrQf
+Date:   Thu, 25 Aug 2022 22:53:08 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
+Message-ID: <YwfhNNwis4b3qwdX@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
+ <YwdAknZFyKxCXZuL@alley>
+ <YwdtunymYd4VO83D@shikoro>
+ <Ywd+jrlh+6ZJw7u5@alley>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fz94ukbbgpPoi98t"
+Content-Disposition: inline
+In-Reply-To: <Ywd+jrlh+6ZJw7u5@alley>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 1:18 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Aug 23, 2022 at 8:01 PM Hao Luo <haoluo@google.com> wrote:
-> >
-[...]
-> >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 934a2a8beb87..1c4e1c583880 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -87,10 +87,29 @@ struct bpf_cgroup_storage_key {
-> >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
-> >  };
-> >
-> > +enum bpf_cgroup_iter_order {
-> > +       BPF_ITER_ORDER_UNSPEC = 0,
-> > +       BPF_ITER_SELF_ONLY,             /* process only a single object. */
-> > +       BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
-> > +       BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
-> > +       BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
-> > +};
->
-> just skimming through this, I noticed that we have "enum
-> bpf_cgroup_iter_order" (good, I like) but BPF_ITER_xxx with no CGROUP
-> part in it (not good, don't like :). All the enumerator names have
-> global visibility, so it would probably be best for them to be
-> CGROUP-specific and roughly match the enum name itself:
-> BPF_CGROUP_ITER_SELF_ONLY, etc?
->
 
-Ack. I will send a patch to fix this right now.
+--fz94ukbbgpPoi98t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+> Also he might prefer to get the script that did the tree-wide change so
+> that he knows what exactly has changed.
+
+The script was also published in the thread originating all this [1].
+
+[1] https://lore.kernel.org/all/YvhXzarjOLEJ8nsW@shikoro/
+
+
+--fz94ukbbgpPoi98t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmMH4TAACgkQFA3kzBSg
+KbYP/g//aVNK4imScpt4qSn7pT65itBbV6E0v08ayuKks5ZT2rcrGdfJyCfX6LSV
+PVku2MNOXlDaDdDbgS46m223zggvOiSVmOqOvHykRszXKsm9g+vmZE/UNW8s8Po9
+dKY4gz1eIlQD0+eFlZQEazTdPHohC18xLwHg/IKKk2xt1MZ+5tJM/mDE05vXhvdM
+lyJl8EZsKIE0f6xMAc1JJ/soTxvgzWCOR5IU9j9tp2OyPiEA8oseD9DGUyLoAJ1q
+ORw5KyghzMt4J2cIjONRz/bF82upiijk3y8Llip2dlHiqXIGb2kYd7OECLZQ0+08
+wBwy5Dg9ssBT77nyl2aJjHVDY6x3TzlcCERn+gaF29vmeP4Ks0/AKuJ9cQQ4wbwL
+bknBVNmmnuLv7beMr8LBZHccr2lFAk2M4FovY4nXtRFhFNhszDMCDSCyBNDtqYyX
+2MKs95ejp14Q05FYrAoOVZPWIrOUa0Uk0Gk1bqE7dq9Ym74a4/bneiqPPxhkZbxo
+dukbxVJlJ4NzzuStc4iRS01UDZEO6ewy6FbwijcvUav8zGYu3RkkHbUHEd9LIzIw
+fUqs88whXatJVQr1nda8CrOG1AIa/6LeiGeD+1pS/wORmqskp757mwJhNVBgk38a
+Ev2HkqgZnTkGzI5ecc8nlv7vJonMDl0OPHSVamWTOs/arGcBHmY=
+=lPL3
+-----END PGP SIGNATURE-----
+
+--fz94ukbbgpPoi98t--
